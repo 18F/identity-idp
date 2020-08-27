@@ -29,15 +29,19 @@ describe('document-capture/components/document-capture', () => {
 
   describe('getFormattedErrorMessages', () => {
     it('formats one message', () => {
-      const { container } = render(getFormattedErrorMessages(['Boom!']));
+      const error = new UploadFormEntriesError();
+      error.rawErrors = [{ fieldName: 'front', errorMessages: ['Too blurry'] }];
+      const { container } = render(getFormattedErrorMessages(error.rawErrors));
 
-      expect(container.innerHTML).to.equal('Boom!');
+      expect(container.innerHTML).to.equal('Too blurry');
     });
 
     it('formats many messages', () => {
-      const { container } = render(getFormattedErrorMessages(['Boom!', 'Wham!', 'Ka-pow!']));
+      const error = new UploadFormEntriesError();
+      error.rawErrors = [{ fieldName: 'front', errorMessages: ['Too blurry', 'Wrong document'] }];
+      const { container } = render(getFormattedErrorMessages(error.rawErrors));
 
-      expect(container.innerHTML).to.equal('Boom!<br>Wham!<br>Ka-pow!');
+      expect(container.innerHTML).to.equal('Too blurry<br>Wrong document');
     });
   });
 
@@ -182,8 +186,11 @@ describe('document-capture/components/document-capture', () => {
   });
 
   it('renders handled submission failure', async () => {
-    const uploadError = new UploadFormEntriesError('Front image has glare, Back image is missing');
-    uploadError.rawErrorMessages = ['Front image has glare', 'Back image is missing'];
+    const uploadError = new UploadFormEntriesError();
+    uploadError.rawErrors = [
+      { fieldName: 'front', errorMessages: ['Image has glare'] },
+      { fieldName: 'back', errorMessages: ['Please fill in this field'] },
+    ];
     const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
       <DocumentCapture />,
       {
@@ -217,7 +224,7 @@ describe('document-capture/components/document-capture', () => {
 
     const notice = await findByRole('alert');
     expect(notice.querySelector('p').innerHTML).to.equal(
-      'Front image has glare<br>Back image is missing',
+      'Image has glare<br>Please fill in this field',
     );
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);

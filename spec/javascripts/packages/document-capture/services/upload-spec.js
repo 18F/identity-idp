@@ -51,7 +51,10 @@ describe('document-capture/services/upload', () => {
           json: () =>
             Promise.resolve({
               success: false,
-              errors: ['Foo missing', 'Baz missing'],
+              errors: [
+                { field_name: 'front', error_messages: ['Please fill in this field'] },
+                { field_name: 'front', error_messages: ['Please fill in this field'] },
+              ],
             }),
         }),
       ),
@@ -59,9 +62,13 @@ describe('document-capture/services/upload', () => {
 
     try {
       await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y' });
+      throw new Error('This is a safeguard and should never be reached, since upload should error');
     } catch (error) {
       expect(error).to.be.instanceOf(UploadFormEntriesError);
-      expect(error.message).to.equal('Foo missing, Baz missing');
+      expect(error.rawErrors).to.deep.equal([
+        { fieldName: 'front', errorMessages: ['Please fill in this field'] },
+        { fieldName: 'front', errorMessages: ['Please fill in this field'] },
+      ]);
     }
   });
 
