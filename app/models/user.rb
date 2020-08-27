@@ -48,6 +48,7 @@ class User < ApplicationRecord
   has_many :throttles, dependent: :destroy
   has_one :registration_log, dependent: :destroy
   has_one :proofing_component, dependent: :destroy
+  has_many :service_providers, through: :identities, source: :service_provider_record
 
   attr_accessor :asserted_attributes
 
