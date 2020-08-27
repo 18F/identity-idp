@@ -32,7 +32,7 @@ ActiveRecord::Migration.maintain_test_schema!
 Dir[Rails.root.join('spec', 'support', '**', '*.rb')].sort.each { |f| require f }
 
 RSpec.configure do |config|
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
   config.infer_spec_type_from_file_location!
 
   config.include EmailSpec::Helpers
