@@ -15,7 +15,7 @@ feature 'saml api' do
       expect(sp.acs_url).to_not be_blank
     end
 
-    it 'returns the user to the account page after authentication' do
+    it 'returns the user to the acs url after authentication' do
       expect(page).
         to have_link t('links.back_to_sp', sp: sp.friendly_name), href: sp.return_to_sp_url
 
@@ -34,7 +34,7 @@ feature 'saml api' do
       sp.save
     end
 
-    it 'returns the user to the acs url after authentication' do
+    it 'returns the user to the account page after authentication' do
       expect(page).
         to have_link t('links.back_to_sp', sp: sp.friendly_name), href: sp.return_to_sp_url
 
