@@ -6,17 +6,20 @@ import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
 import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 
+/** @typedef {import('react').ReactNode} ReactNode */
+
 /**
  * @typedef SelfieCaptureProps
  *
  * @prop {Blob?=} value Current value.
  * @prop {(nextValue:Blob?)=>void} onChange Change handler.
+ * @prop {ReactNode=} errorMessage Error to show.
  */
 
 /**
  * @param {SelfieCaptureProps} props Props object.
  */
-function SelfieCapture({ value, onChange }) {
+function SelfieCapture({ value, onChange, errorMessage }) {
   const instanceId = useInstanceId();
   const { t } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
@@ -108,10 +111,17 @@ function SelfieCapture({ value, onChange }) {
     canvas.toBlob(ifStillMounted(onChange));
   }
 
+  let shownErrorMessage;
+  if (isAccessRejected) {
+    shownErrorMessage = t('errors.doc_auth.document_capture_selfie_consent_blocked');
+  } else if (errorMessage) {
+    shownErrorMessage = errorMessage;
+  }
+
   const classes = [
     'selfie-capture',
     isCapturing && 'selfie-capture--capturing',
-    isAccessRejected && 'selfie-capture--access-rejected',
+    shownErrorMessage && 'selfie-capture--error',
     value && 'selfie-capture--has-value',
   ]
     .filter(Boolean)
@@ -125,15 +135,15 @@ function SelfieCapture({ value, onChange }) {
         ref={labelRef}
         id={labelId}
         tabIndex={-1}
-        className={['selfie-capture__label', 'usa-label', isAccessRejected && 'usa-label--error']
+        className={['selfie-capture__label', 'usa-label', shownErrorMessage && 'usa-label--error']
           .filter(Boolean)
           .join(' ')}
       >
         {t('doc_auth.headings.document_capture_selfie')}
       </div>
-      {isAccessRejected && (
+      {shownErrorMessage && (
         <span className="usa-error-message" role="alert">
-          {t('errors.doc_auth.document_capture_selfie_consent_blocked')}
+          {shownErrorMessage}
         </span>
       )}
       <div ref={wrapperRef} className={classes}>

@@ -15,6 +15,16 @@ class FormResponse
     { success: success, errors: errors }.merge!(extra)
   end
 
+  def merge(other)
+    errors = @errors.presence || other.errors
+    errors = { other: other.errors } if other.errors.is_a?(Array)
+    FormResponse.new(
+      success: success? && other.success?,
+      errors: errors,
+      extra: extra.merge(other.extra),
+    )
+  end
+
   private
 
   attr_reader :success

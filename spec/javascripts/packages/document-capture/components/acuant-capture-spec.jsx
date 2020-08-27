@@ -1,6 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { waitForElementToBeRemoved } from '@testing-library/dom';
 import sinon from 'sinon';
 import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
@@ -123,8 +124,29 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end.called).to.be.false();
     });
 
-    it('calls onChange with the captured image on successful capture', () => {
-      const onChange = sinon.spy();
+    it('shows error if capture fails', async () => {
+      const { container, getByLabelText, findByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsArgWithAsync(1, new Error()),
+      });
+
+      const button = getByLabelText('Image');
+      fireEvent.click(button);
+
+      await findByText('errors.doc_auth.capture_failure');
+      expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+      expect(container.querySelector('.full-screen')).to.be.null();
+    });
+
+    it('calls onChange with the captured image on successful capture', async () => {
+      const onChange = sinon.mock();
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
@@ -133,20 +155,19 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      initialize();
-      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
-        const capture = {
+      initialize({
+        start: sinon.stub().callsArgWithAsync(0, {
           glare: 70,
           sharpness: 70,
           image: {
             data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
           },
-        };
-        onImageCaptureSuccess(capture);
+        }),
       });
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
+      await new Promise((resolve) => onChange.callsFake(resolve));
 
       expect(onChange.getCall(0).args).to.have.lengthOf(1);
       expect(onChange.getCall(0).args[0]).to.be.instanceOf(window.Blob);
@@ -214,8 +235,8 @@ describe('document-capture/components/acuant-capture', () => {
       userEvent.click(button);
     });
 
-    it('renders error message if capture succeeds but photo glare exceeds threshold', () => {
-      const { getByText } = render(
+    it('renders error message if capture succeeds but photo glare exceeds threshold', async () => {
+      const { getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
             <AcuantCapture label="Image" />
@@ -223,28 +244,26 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      initialize();
-      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
-        const capture = {
+      initialize({
+        start: sinon.stub().callsArgWithAsync(0, {
           glare: 38,
           sharpness: 70,
           image: {
             data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
           },
-        };
-        onImageCaptureSuccess(capture);
+        }),
       });
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = getByText('errors.doc_auth.photo_glare');
+      const error = await findByText('errors.doc_auth.photo_glare');
 
       expect(error).to.be.ok();
     });
 
-    it('renders error message if capture succeeds but photo is too blurry', () => {
-      const { getByText } = render(
+    it('renders error message if capture succeeds but photo is too blurry', async () => {
+      const { getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
             <AcuantCapture label="Image" />
@@ -252,28 +271,26 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      initialize();
-      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
-        const capture = {
+      initialize({
+        start: sinon.stub().callsArgWithAsync(0, {
           glare: 70,
           sharpness: 20,
           image: {
             data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
           },
-        };
-        onImageCaptureSuccess(capture);
+        }),
       });
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = getByText('errors.doc_auth.photo_blurry');
+      const error = await findByText('errors.doc_auth.photo_blurry');
 
       expect(error).to.be.ok();
     });
 
-    it('shows at most one error message between AcuantCapture and FileInput', () => {
-      const { getByLabelText, getByText } = render(
+    it('shows at most one error message between AcuantCapture and FileInput', async () => {
+      const { getByLabelText, getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
             <AcuantCapture label="Image" />
@@ -281,16 +298,14 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      initialize();
-      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
-        const capture = {
+      initialize({
+        start: sinon.stub().callsArgWithAsync(0, {
           glare: 70,
           sharpness: 20,
           image: {
             data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
           },
-        };
-        onImageCaptureSuccess(capture);
+        }),
       });
 
       const file = new window.File([''], 'upload.txt', { type: 'text/plain' });
@@ -298,7 +313,7 @@ describe('document-capture/components/acuant-capture', () => {
       const input = getByLabelText('Image');
       userEvent.upload(input, file);
 
-      expect(getByText('errors.doc_auth.selfie')).to.be.ok();
+      expect(await findByText('errors.doc_auth.selfie')).to.be.ok();
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
@@ -307,8 +322,8 @@ describe('document-capture/components/acuant-capture', () => {
       expect(() => getByText('errors.doc_auth.selfie')).to.throw();
     });
 
-    it('removes error message once image is corrected', () => {
-      const { getByText } = render(
+    it('removes error message once image is corrected', async () => {
+      const { getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
             <AcuantCapture label="Image" />
@@ -316,32 +331,38 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      let isBlurry = true;
-
-      initialize();
-      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
-        const capture = {
-          glare: 70,
-          sharpness: isBlurry ? 20 : 70,
-          image: {
-            data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-          },
-        };
-        onImageCaptureSuccess(capture);
+      initialize({
+        start: sinon
+          .stub()
+          .onFirstCall()
+          .callsArgWithAsync(0, {
+            glare: 70,
+            sharpness: 20,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          })
+          .onSecondCall()
+          .callsArgWithAsync(0, {
+            glare: 70,
+            sharpness: 70,
+            image: {
+              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+            },
+          }),
       });
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      isBlurry = false;
+      const error = await findByText('errors.doc_auth.photo_blurry');
 
       fireEvent.click(button);
-
-      expect(() => getByText('errors.doc_auth.photo_file_size')).to.throw();
+      await waitForElementToBeRemoved(error);
     });
 
-    it('renders error message if capture succeeds but photo is too small', () => {
-      const { getByText } = render(
+    it('renders error message if capture succeeds but photo is too small', async () => {
+      const { getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
             <AcuantCapture label="Image" minimumFileSize={500 * 1024} />
@@ -349,22 +370,20 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      initialize();
-      window.AcuantCameraUI.start.callsFake((onImageCaptureSuccess) => {
-        const capture = {
+      initialize({
+        start: sinon.stub().callsArgWithAsync(0, {
           glare: 70,
           sharpness: 38,
           image: {
             data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
           },
-        };
-        onImageCaptureSuccess(capture);
+        }),
       });
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = getByText('errors.doc_auth.photo_blurry');
+      const error = await findByText('errors.doc_auth.photo_blurry');
 
       expect(error).to.be.ok();
     });

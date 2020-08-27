@@ -1,25 +1,26 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
-import SelfieStep, { isValid } from '@18f/identity-document-capture/components/selfie-step';
+import SelfieStep, { validate } from '@18f/identity-document-capture/components/selfie-step';
 import render from '../../../support/render';
 
 describe('document-capture/components/selfie-step', () => {
-  describe('isValid', () => {
-    it('returns false if selfie is unset', () => {
+  describe('validate', () => {
+    it('returns object with error if selfie is unset', () => {
       const value = {};
-      const result = isValid(value);
+      const result = validate(value);
 
-      expect(result).to.be.false();
+      expect(result).to.have.keys(['selfie']);
+      expect(result.selfie).to.be.instanceof(Error);
     });
 
-    it('returns true if selfie is set', () => {
+    it('returns empty object if selfie is set', () => {
       const value = {
         selfie: new window.File([], 'upload.png', { type: 'image/png' }),
       };
-      const result = isValid(value);
+      const result = validate(value);
 
-      expect(result).to.be.true();
+      expect(result).to.deep.equal({});
     });
   });
 
