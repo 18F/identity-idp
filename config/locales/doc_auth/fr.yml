@@ -12,6 +12,9 @@ fr:
       take_picture_retry: Reprendre la photo
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
+    errors:
+      must_be_image: doit être une image
+      not_a_file: n'a pas été joint en tant que fichier
     forms:
       address1: Adresse
       change_file: Changer de fichier
@@ -40,8 +43,9 @@ fr:
         officielle et une photo de vous
       document_capture_selfie: Ta photo
       front: De face
+      interstitial: Nous traitons vos images…
       photo: Photo
-      selfie: Prendre un selfie
+      selfie: Prenez une photo de vous
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_pic_back: Prenez une photo au verso de votre identifiant
       take_pic_front: Prenez une photo du recto de votre identifiant
@@ -52,8 +56,11 @@ fr:
         l'état.
       upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
         votre pièce d'identité
+      upload_from_phone_liveness_enabled: Utilisez un téléphone mobile pour ajouter
+        votre pièce d'identité et prendre une photo de vous
       upload_front: Veuillez télécharger une photo du recto de votre identifiant émis
         par l'État.
+      upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify: S'il vous plaît vérifier vos informations
       welcome: Nous devons vérifier votre identité
     info:
@@ -64,6 +71,9 @@ fr:
         images que vous téléchargez. Nous vérifions uniquement votre identité.
       document_capture_upload_image: Nous n'utilisons votre identifiant que pour vérifier
         votre identité, et nous n'enregistrerons aucune image.
+      interstitial_eta: Cela peut prendre jusqu'à une minute. Nous chargerons automatiquement
+        l’étape suivante une fois celle-ci terminée.
+      interstitial_thanks: Merci pour votre patience!
       link_sent:
       - Veuillez vérifier votre téléphone et suivre les instructions pour prendre
         une photo de votre identité émise par l'État.
@@ -77,13 +87,21 @@ fr:
         Nous vérifions uniquement votre identité.
       upload_computer_link: Téléchargez depuis votre ordinateur
       upload_from_computer: Vous n'avez pas de téléphone?
+      upload_from_computer_not_allowed: Connectez-vous à votre compte login.gov sur
+        n'importe quel appareil équipé d'une caméra, comme une tablette ou un ordinateur
+        avec une webcam.
       upload_from_phone: Téléchargez des images directement depuis l'appareil photo
         de votre téléphone
       upload_image: Nous n'utilisons votre identifiant que pour vérifier votre identité,
         et nous n'enregistrerons aucune image. Nous acceptons les formats BMP, PNG,
         TIFF et JPG.
-      use_cac_html: "<strong>Êtes-vous DoD ou militaire?</strong> %{link}"
-      use_cac_link: Utilisez plutôt votre carte CAC
+      upload_liveness_enabled: Nous collecterons des informations vous concernant
+        en lisant votre pièce d'identité délivrée par l'État. Ensuite, vous prendrez
+        une photo de vous pour confirmer que vous êtes le propriétaire de la pièce
+        d'identité.
+      upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
+      use_cac_html: Avez-vous un identifiant d'employé du gouvernement? %{link}
+      use_cac_link: Utilisez plutôt un PIV/CAC
       welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
         et non quelqu'un prétendant être vous. La vérification de votre identité vous
         permet d'accéder à des services traitant des informations sensibles.
@@ -97,6 +115,13 @@ fr:
         que pour vérifier votre identité.
       document_capture_fallback_html: Avoir des problèmes? %{link}
       document_capture_fallback_link: Cliquez ici pour télécharger une image
+      document_capture_selfie_consent_banner: Autorisez login.gov à utiliser la caméra
+        de votre appareil
+      document_capture_selfie_consent_blocked: Vérifiez les paramètres de votre navigateur
+        Web pour ce site pour autoriser login.gov à accéder à la caméra.
+      document_capture_selfie_consent_reason: login.gov a besoin d'une autorisation
+        pour utiliser votre caméra afin que vous puissiez prouver que votre identifiant
+        vous appartient.
       document_capture_selfie_instructions: Maintenant, prenez une photo de vous.
         Nous le comparerons à l'image au recto de votre pièce d'identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau

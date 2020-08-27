@@ -4,7 +4,6 @@ module Flow
 
     def initialize(flow, name)
       @flow = flow
-      @form_response = nil
       @name = name
     end
 

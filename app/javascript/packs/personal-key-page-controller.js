@@ -27,7 +27,9 @@ const personalKey = scrapePersonalKey();
 // The following methods are strictly fallbacks for IE < 11. There is limited
 // support for HTML5 validation attributes in those browsers
 function setInvalidHTML() {
-  if (isInvalidForm) return;
+  if (isInvalidForm) {
+    return;
+  }
 
   document.getElementById('personal-key-alert').classList.remove('display-none');
 

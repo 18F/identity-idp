@@ -44,6 +44,7 @@ en:
         <li>Your selfie is taken in a well-lit area with a plain background</li>
         <li>You are not wearing a hat or glasses, and your head is fully visible</li>
         </ul>
+      document_capture_selfie_consent_blocked: Your camera is blocked
       general_error: We could not read or verify your ID. Try to take and upload new
         images of both the front and back of your ID. Make sure everything can be
         easily read, including the barcode.
@@ -61,7 +62,9 @@ en:
         </ul>
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
-      photo_glare: Photo has too much glare. Please try again.
+      photo_blurry: Photo is too blurry, please try again.
+      photo_file_size: Photo is too compressed, please try again with a higher quality.
+      photo_glare: Photo has glare, please try again.
       quota_reached: Sorry your service provider has reached its identity verification
         limit.  Please contact your service provider for more information.
       selfie: Sorry, your photo was not accepted. Please try again.

@@ -3,9 +3,13 @@
     "allowJs": true,
     "checkJs": true,
     "noEmit": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
     "jsx": "react",
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "target": "ESNext"
   },
-  "include": ["app/javascript/app/document-capture"]
+  "include": ["app/javascript/packages"]
 }

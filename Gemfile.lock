@@ -20,10 +20,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: 188eeeb462a5853cf69acc87aeb1c46e37122a58
-  tag: v2.2.0
+  revision: 1bef47ea242d0aa2e7d777370cafaa7556f7874f
+  tag: v2.3.0
   specs:
-    lexisnexis (2.2.0)
+    lexisnexis (2.3.0)
       dotenv
       faraday
 
@@ -43,10 +43,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: f18dc9e8e629e57e5d7ba0b44f043f8d66545482
-  tag: 0.10.0.pre.18f
+  revision: 19c0c7ec6f4e7b0dd90e2cfb2d3da1225018f2b4
+  tag: 0.11.0.18f
   specs:
-    saml_idp (0.10.0.pre.18f)
+    saml_idp (0.11.0.pre.18f)
       activesupport
       builder
       httparty
@@ -204,7 +204,7 @@ GEM
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     colorize (0.8.1)
-    concurrent-ruby (1.1.6)
+    concurrent-ruby (1.1.7)
     connection_pool (2.2.2)
     cose (0.10.0)
       cbor (~> 0.5.9)
@@ -309,7 +309,7 @@ GEM
     hiredis (0.6.3)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
-    httparty (0.18.0)
+    httparty (0.18.1)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
     i18n (1.7.1)
@@ -325,9 +325,7 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
-    iniparse (1.4.4)
     irb (1.0.0)
-    jaro_winkler (1.5.4)
     jmespath (1.4.0)
     json (2.3.0)
     json-jwt (1.12.0)
@@ -391,14 +389,11 @@ GEM
       sawyer (~> 0.8.0, >= 0.5.3)
     openssl (2.1.2)
     orm_adapter (0.5.0)
-    overcommit (0.51.0)
-      childprocess (>= 0.6.3, < 4)
-      iniparse (~> 1.4)
-    parallel (1.19.1)
+    parallel (1.19.2)
     parallel_tests (2.29.2)
       parallel
-    parser (2.7.1.3)
-      ast (~> 2.4.0)
+    parser (2.7.1.4)
+      ast (~> 2.4.1)
     pg (1.1.4)
     phonelib (0.6.39)
     pkcs11 (0.3.2)
@@ -529,13 +524,17 @@ GEM
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.3)
-    rubocop (0.72.0)
-      jaro_winkler (~> 1.5.1)
+    rubocop (0.85.1)
       parallel (~> 1.10)
-      parser (>= 2.6)
+      parser (>= 2.7.0.1)
       rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.7)
+      rexml
+      rubocop-ast (>= 0.0.3)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 1.7)
+      unicode-display_width (>= 1.4.0, < 2.0)
+    rubocop-ast (0.3.0)
+      parser (>= 2.7.1.4)
     rubocop-rails (2.5.2)
       activesupport
       rack (>= 1.1)
@@ -635,7 +634,7 @@ GEM
       thread_safe (~> 0.1)
     uglifier (3.2.0)
       execjs (>= 0.3.0, < 3)
-    unicode-display_width (1.6.1)
+    unicode-display_width (1.7.0)
     unicode_plot (0.0.4)
       enumerable-statistics (>= 2.0.1)
     uniform_notifier (1.13.0)
@@ -744,7 +743,6 @@ DEPENDENCIES
   net-sftp
   newrelic_rpm
   octokit
-  overcommit
   parallel_tests
   pg
   phonelib
@@ -772,8 +770,8 @@ DEPENDENCIES
   rotp (~> 3.3.1)
   rqrcode
   rspec-rails (~> 3.9, >= 3.9.1)
-  rubocop (~> 0.72.0)
-  rubocop-rails (>= 2.3.2)
+  rubocop (~> 0.85.0)
+  rubocop-rails (>= 2.5.2)
   ruby-progressbar
   ruby-saml
   safe_target_blank (>= 1.0.2)

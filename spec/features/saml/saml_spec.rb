@@ -7,6 +7,43 @@ feature 'saml api' do
   include IdvHelper
 
   let(:user) { create(:user, :signed_up) }
+  let(:sp) { ServiceProvider.find_by(issuer: 'http://localhost:3000') }
+
+  context 'when assertion consumer service url is defined' do
+    before do
+      visit_saml_auth_path
+      expect(sp.acs_url).to_not be_blank
+    end
+
+    it 'returns the user to the account page after authentication' do
+      expect(page).
+        to have_link t('links.back_to_sp', sp: sp.friendly_name), href: sp.return_to_sp_url
+
+      sign_in_via_branded_page(user)
+      click_agree_and_continue
+      click_submit_default
+
+      expect(current_url).to eq sp.acs_url
+    end
+  end
+
+  context 'when assertion consumer service url is blank' do
+    before do
+      visit_saml_auth_path
+      sp.acs_url = ''
+      sp.save
+    end
+
+    it 'returns the user to the acs url after authentication' do
+      expect(page).
+        to have_link t('links.back_to_sp', sp: sp.friendly_name), href: sp.return_to_sp_url
+
+      sign_in_via_branded_page(user)
+      click_agree_and_continue
+
+      expect(current_url).to eq account_url
+    end
+  end
 
   it 'it sets the sp_issuer cookie' do
     visit authnrequest_get

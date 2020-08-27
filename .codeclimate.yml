@@ -9,8 +9,7 @@ checks:
   file-lines:
     enabled: false
   method-complexity:
-    config:
-      threshold: 15
+    enabled: false
   method-count:
     enabled: false
   method-lines:
@@ -72,9 +71,6 @@ plugins:
     enabled: true
   reek:
     enabled: false
-  rubocop:
-    enabled: true
-    channel: rubocop-0-72
   scss-lint:
     enabled: true
     checks:

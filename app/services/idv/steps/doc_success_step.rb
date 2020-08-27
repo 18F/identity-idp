@@ -18,7 +18,7 @@ module Idv
       end
 
       def doc_auth
-        @doc_auth ||= ::DocAuth.find_or_create_by(user_id: current_user.id)
+        @doc_auth ||= ::DocAuthRecord.find_or_create_by(user_id: current_user.id)
       end
     end
   end

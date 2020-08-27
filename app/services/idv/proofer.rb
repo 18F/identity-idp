@@ -68,7 +68,7 @@ module Idv
 
       def require_mock_vendors_if_enabled
         return unless mock_fallback_enabled?
-        Dir[Rails.root.join('lib', 'proofer_mocks', '*')].each { |file| require file }
+        Dir[Rails.root.join('lib', 'proofer_mocks', '*')].sort.each { |file| require file }
       end
 
       def mock_fallback_enabled?

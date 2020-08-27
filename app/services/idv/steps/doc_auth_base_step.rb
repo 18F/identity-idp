@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ClassLength
 module Idv
   module Steps
     class DocAuthBaseStep < Flow::BaseStep
@@ -58,10 +57,10 @@ module Idv
       end
 
       def save_proofing_components
-        Db::ProofingComponent::Add.call(user_id, :document_check, DocAuthClient.doc_auth_vendor)
+        Db::ProofingComponent::Add.call(user_id, :document_check, DocAuth::Client.doc_auth_vendor)
         Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
         return unless liveness_checking_enabled?
-        Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuthClient.doc_auth_vendor)
+        Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuth::Client.doc_auth_vendor)
       end
 
       def extract_pii_from_doc(response)
@@ -78,7 +77,7 @@ module Idv
       def post_front_image
         return throttled_response if throttled_else_increment
 
-        result = DocAuthClient.client.post_front_image(
+        result = DocAuth::Client.client.post_front_image(
           image: image.read,
           instance_id: flow_session[:instance_id],
         )
@@ -89,7 +88,7 @@ module Idv
       def post_back_image
         return throttled_response if throttled_else_increment
 
-        result = DocAuthClient.client.post_back_image(
+        result = DocAuth::Client.client.post_back_image(
           image: image.read,
           instance_id: flow_session[:instance_id],
         )
@@ -100,7 +99,7 @@ module Idv
       def post_images
         return throttled_response if throttled_else_increment
 
-        result = DocAuthClient.client.post_images(
+        result = DocAuth::Client.client.post_images(
           front_image: front_image.read,
           back_image: back_image.read,
           selfie_image: selfie_image&.read,
@@ -118,7 +117,7 @@ module Idv
 
       def throttled_response
         redirect_to throttled_url
-        ::Acuant::Response.new(
+        DocAuth::Response.new(
           success: false,
           errors: [I18n.t('errors.doc_auth.acuant_throttle')],
         )
@@ -167,12 +166,22 @@ module Idv
           mark_step_complete(:mobile_back_image)
         else
           mark_step_complete(:document_capture)
-          mark_step_complete(:mobile_document_capture)
         end
       end
 
       def liveness_checking_enabled?
         FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial2_strict])
+      end
+
+      def create_document_capture_session
+        document_capture_session = DocumentCaptureSession.create(user_id: user_id)
+        flow_session[:document_capture_session_uuid] = document_capture_session.uuid
+      end
+
+      def document_capture_session
+        @document_capture_session ||= DocumentCaptureSession.find_by(
+          uuid: flow_session[:document_capture_session_uuid],
+        )
       end
 
       def no_sp?
@@ -184,9 +193,14 @@ module Idv
         client.device_type != 'desktop'
       end
 
+      def log_document_error(get_results_response)
+        # DP: handle multiple clients
+        return unless get_results_response.is_a?(DocAuth::Acuant::Responses::GetResultsResponse)
+        Funnel::DocAuth::LogDocumentError.call(user_id,
+                                               get_results_response&.result_code&.name.to_s)
+      end
+
       delegate :idv_session, :session, to: :@flow
     end
   end
 end
-
-# rubocop:enable Metrics/ClassLength

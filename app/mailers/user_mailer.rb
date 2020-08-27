@@ -1,10 +1,9 @@
-# rubocop:disable Metrics/ClassLength
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
   before_action :attach_images
-  default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from),
-          reply_to: email_with_name(Figaro.env.email_from, Figaro.env.email_from)
+  default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from_display_name),
+          reply_to: email_with_name(Figaro.env.email_from, Figaro.env.email_from_display_name)
 
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
     presenter = ConfirmationEmailPresenter.new(user, view_context)
@@ -171,4 +170,3 @@ class UserMailer < ActionMailer::Base
     !banlist.include?(modified_email)
   end
 end
-# rubocop:enable Metrics/ClassLength

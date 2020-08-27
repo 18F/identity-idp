@@ -125,6 +125,7 @@ describe SamlIdpController do
           authn_request: this_authn_request,
           name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           decrypted_pii: pii,
+          user_session: {},
         )
       end
 
@@ -357,17 +358,8 @@ describe SamlIdpController do
           expect(session.key?(:sp)).to eq(true)
         end
 
-        it 'does links the user to the service provider' do
-          expect(user_identity).to_not be_nil
-        end
-
-        it 'sets verified attributes on the identity to nothing' do
-          expect(user_identity.verified_attributes).to eq([])
-        end
-
-        it 'sets user identity ial value to 1 after verifying attributes' do
-          saml_get_auth(saml_settings)
-          expect(user_identity.ial).to eq(1)
+        it 'does not create an identity record until the user confirms attributes ' do
+          expect(user_identity).to be_nil
         end
 
         it 'redirects to verify attributes' do
@@ -387,8 +379,6 @@ describe SamlIdpController do
         it 'redirects if verified attributes dont match requested attributes' do
           saml_get_auth(saml_settings)
 
-          user_identity.update!(verified_attributes: nil)
-          saml_get_auth(saml_settings)
           expect(response).to redirect_to sign_up_completed_url
         end
       end
@@ -439,7 +429,7 @@ describe SamlIdpController do
         allow(@analytics).to receive(:track_event)
       end
 
-      it 'defaults to persistant' do
+      it 'defaults to persistent' do
         auth_settings = missing_nameid_format_saml_settings
         IdentityLinker.new(user, auth_settings.issuer).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
@@ -544,13 +534,12 @@ describe SamlIdpController do
     end
 
     context 'after signing in' do
-      it 'calls IdentityLinker' do
+      it 'does not call IdentityLinker' do
         user = create(:user, :signed_up)
         linker = instance_double(IdentityLinker)
 
-        expect(IdentityLinker).to receive(:new).once.
-          with(user, saml_settings.issuer).and_return(linker)
-        expect(linker).to receive(:link_identity)
+        expect(IdentityLinker).to_not receive(:new)
+        expect(linker).to_not receive(:link_identity)
 
         generate_saml_response(user, link: false)
       end

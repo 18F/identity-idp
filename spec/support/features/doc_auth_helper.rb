@@ -46,10 +46,6 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :document_capture)
   end
 
-  def idv_doc_auth_mobile_document_capture_step
-    idv_doc_auth_step_path(step: :mobile_document_capture)
-  end
-
   def idv_doc_auth_front_image_step
     idv_doc_auth_step_path(step: :front_image)
   end
@@ -106,12 +102,6 @@ module DocAuthHelper
     complete_doc_auth_steps_before_upload_step(expect_accessible: expect_accessible)
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     click_on t('doc_auth.info.upload_computer_link')
-  end
-
-  def complete_doc_auth_steps_before_mobile_document_capture_step
-    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
-    complete_doc_auth_steps_before_upload_step
-    click_on t('doc_auth.buttons.use_phone')
   end
 
   def complete_doc_auth_steps_before_front_image_step(expect_accessible: false)
@@ -204,12 +194,23 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def mock_general_doc_auth_client_error(method)
-    DocAuthMock::DocAuthMockClient.mock_response!(
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,
-      response: Acuant::Response.new(
+      response: DocAuth::Response.new(
         success: false,
         errors: [I18n.t('errors.doc_auth.general_error')],
       ),
+    )
+  end
+
+  def mock_doc_auth_acuant_error_unknown
+    failed_http_response = instance_double(
+      Faraday::Response,
+      body: AcuantFixtures.get_results_response_failure,
+    )
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: :get_results,
+      response: DocAuth::Acuant::Responses::GetResultsResponse.new(failed_http_response),
     )
   end
 
@@ -227,6 +228,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     File.read('spec/support/fixtures/doc_auth_front_image_data_url.data')
   end
 
+  def doc_auth_front_image_multipart_file
+    Rack::Test::UploadedFile.new('spec/support/fixtures/doc_auth_front_image.jpeg', 'image/jpeg')
+  end
+
   def doc_auth_front_image_data_url_data
     Base64.decode64(doc_auth_front_image_data_url.split(',').last)
   end
@@ -239,6 +244,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     File.read('spec/support/fixtures/doc_auth_back_image_data_url.data')
   end
 
+  def doc_auth_back_image_multipart_file
+    Rack::Test::UploadedFile.new('spec/support/fixtures/doc_auth_back_image.jpeg', 'image/jpeg')
+  end
+
   def doc_auth_back_image_data_url_data
     Base64.decode64(doc_auth_back_image_data_url.split(',').last)
   end
@@ -249,6 +258,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def doc_auth_selfie_image_data_url
     File.read('spec/support/fixtures/doc_auth_selfie_image_data_url.data')
+  end
+
+  def doc_auth_selfie_image_multipart_file
+    Rack::Test::UploadedFile.new('spec/support/fixtures/doc_auth_selfie_image.jpeg', 'image/jpeg')
   end
 
   def doc_auth_selfie_image_data_url_data

@@ -53,7 +53,15 @@ module Idv
     end
 
     def add_unsafe_eval_to_capture_steps
-      capture_steps = %w[front_image back_image mobile_front_image mobile_back_image selfie]
+      capture_steps = %w[
+        front_image
+        back_image
+        mobile_front_image
+        mobile_back_image
+        capture_mobile_back_image
+        selfie
+        document_capture
+      ]
       return unless capture_steps.include?(params[:step])
 
       # required to run wasm until wasm-eval is available

@@ -13,15 +13,10 @@ GEO_DATA_FILEPATH = Rails.root.join('geo_data', 'GeoLite2-City.mmdb').freeze
 
 if !Rails.env.production? && !File.exist?(GEO_DATA_FILEPATH)
   Geocoder.configure(ip_lookup: :test)
-  Geocoder::Lookup::Test.add_stub(
-    '127.0.0.1', [
+  Geocoder::Lookup::Test.set_default_stub(
+    [
       { 'city' => '', 'country' => 'United States', 'state_code' => '' },
-    ]
-  )
-  Geocoder::Lookup::Test.add_stub(
-    '::1', [
-      { 'city' => '', 'country' => 'United States', 'state_code' => '' },
-    ]
+    ],
   )
 else
   Geocoder.configure(

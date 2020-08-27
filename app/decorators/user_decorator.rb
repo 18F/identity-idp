@@ -1,4 +1,4 @@
-class UserDecorator # rubocop:disable Metrics/ClassLength
+class UserDecorator
   include ActionView::Helpers::DateHelper
 
   attr_reader :user

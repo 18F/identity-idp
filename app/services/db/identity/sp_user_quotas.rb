@@ -1,7 +1,6 @@
 module Db
   module Identity
     class SpUserQuotas
-      # rubocop:disable Metrics/MethodLength
       def self.call(start_date)
         sql = <<~SQL
           SELECT
@@ -27,7 +26,6 @@ module Db
         SQL
         ActiveRecord::Base.connection.execute(sql)
       end
-      # rubocop:enable Metrics/MethodLength
     end
   end
 end

@@ -26,7 +26,7 @@ describe Db::Identity::SpUserQuotas do
 
     tuples = subject.call(fiscal_start_date)
     expect(tuples.ntuples).to eq(2)
-    expect(tuples[0].to_json).to eq(result)
-    expect(tuples[1].to_json).to eq(result2)
+    expect(tuples.to_json).to include(result)
+    expect(tuples.to_json).to include(result2)
   end
 end

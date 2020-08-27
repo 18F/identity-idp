@@ -1,41 +1,41 @@
 {
   "extends": "airbnb",
-  "parser": "babel-eslint",
-  "plugins": ["prettier"],
+  "parser": "@babel/eslint-parser",
+  "plugins": ["prettier", "@babel"],
   "env": {
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "mocha": true
+    "mocha": true,
+    "jquery": true
   },
   "globals": {
-    "$": true,
-    "__DEV__": true,
-    "assert": true,
-    "chai": true,
-    "sinon": true,
-    "expect": true,
-    "fixture": true
+    "expect": true
   },
   "rules": {
+    "@babel/no-unused-expressions": "error",
+    "consistent-return": "off",
+    "curly": ["error", "all"],
     "prettier/prettier": "error",
     "func-names": 0,
     "function-paren-newline": "off",
     "prefer-arrow-callback": 0,
     "import/prefer-default-export": "off",
     "import/extensions": ["off", "never"],
+    "indent": "off",
     "newline-per-chained-call": "off",
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
+    "no-plusplus": "off",
+    "no-unused-expressions": "off",
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
     "operator-linebreak": "off",
+    "react/jsx-curly-newline": "off",
+    "react/jsx-indent": "off",
     "react/jsx-one-expression-per-line": "off",
-    "react/prop-types": "off"
-  },
-  "parserOptions": {
-    "ecmaVersion": 6,
-    "sourceType": "module"
+    "react/prop-types": "off",
+    "require-await": "error"
   },
   "settings": {
     "import/core-modules": [
@@ -49,6 +49,15 @@
       "app/utils/ms-formatter",
       "app/phone-internationalization",
       "app/i18n-dropdown"
-    ]
-  }
+    ],
+    "import/internal-regex": "^@18f/identity-"
+  },
+  "overrides": [
+    {
+      "files": "spec/javascripts/**/*",
+      "rules": {
+        "react/jsx-props-no-spreading": "off"
+      }
+    }
+  ]
 }

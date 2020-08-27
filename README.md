@@ -68,13 +68,6 @@ See the [Docker documentation](./docs/Docker.md) to get up and running
   $ make run
   ```
 
-Before making any commits, you'll also need to run `overcommit --sign.`
-This verifies that the commit hooks defined in our `.overcommit.yml` file are
-the ones we expect. Each change to the `.overcommit.yml` file, including the initial install
-performed in the setup script, will necessitate a new signature.
-
-For more information, see [overcommit](https://github.com/brigade/overcommit)
-
 
 If you want to develop without an internet connection, you can set
 `RAILS_OFFLINE=1` in your environment. This disables the `mx` record

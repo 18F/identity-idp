@@ -22,7 +22,7 @@ describe Encryption::KmsClient do
         and_return(plaintext)
     end
     allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
-    allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Metrics/LineLength
+    allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Layout/LineLength
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
   end
 

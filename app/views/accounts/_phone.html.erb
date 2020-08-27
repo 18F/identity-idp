@@ -1,0 +1,29 @@
+<div class='clearfix border-top border-blue-light'>
+  <div class='p2 col col-12'>
+    <div class='col col-6 bold'>
+      <%= t('account.index.phone') %>
+    </div>
+    <div class='right-align col col-6'>
+      <div class='btn btn-account-action rounded-lg bg-light-blue'>
+        <%= link_to t('account.index.phone_add'), add_phone_path %>
+      </div>
+    </div>
+  </div>
+  <% MfaContext.new(current_user).phone_configurations.each do |phone_configuration| %>
+    <div class='p2 col col-12 border-top border-blue-light'>
+      <div class='col col-8'>
+        <div class='col col-12 sm-col-6 account-list-item'>
+          <%= phone_configuration.phone %>
+        </div>
+        <div class='col col-12 sm-col-6 truncate'>
+          <%= PhoneConfigurationDecorator.new(phone_configuration).default_number_message %>
+        </div>
+      </div>
+      <div class='col col-4 right-align'>
+        <%= render @view_model.manage_action_partial,
+                   path: manage_phone_path(id: phone_configuration.id),
+                   name: t('account.index.phone') %>
+      </div>
+    </div>
+  <% end %>
+</div>

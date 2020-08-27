@@ -14,7 +14,7 @@ module Idv
       private
 
       def send_selfie_request
-        selfie_response = DocAuthClient.client.post_selfie(
+        selfie_response = DocAuth::Client.client.post_selfie(
           instance_id: instance_id, image: image.read,
         )
         if selfie_response.success?
@@ -28,6 +28,7 @@ module Idv
         save_proofing_components
 
         if user_id_from_token.present?
+          # DP: handle multiple clients?
           CaptureDoc::UpdateAcuantToken.call(user_id_from_token, flow_session[:instance_id])
         else
           extract_pii_from_doc(results_response)
@@ -43,11 +44,12 @@ module Idv
           mark_step_incomplete(:front_image)
           mark_step_incomplete(:back_image)
         end
+        log_document_error(failure_response)
         failure(failure_response.errors.first, failure_response.to_h)
       end
 
       def results_response
-        @results_response ||= DocAuthClient.client.get_results(
+        @results_response ||= DocAuth::Client.client.get_results(
           instance_id: flow_session[:instance_id],
         )
       end

@@ -74,7 +74,7 @@ saml_*.key
 /kitchen/data_bags/config/databag_secrets.json
 /public/packs
 /public/packs-test
-/node_modules
+**/node_modules
 yarn-debug.log*
 yarn-error.log*
 .yarn-integrity
