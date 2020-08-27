@@ -18,7 +18,7 @@ RSpec.describe SecurityEventForm do
 
   let(:jwt_payload) do
     {
-      iss: identity.service_provider,
+      iss: identity.issuer,
       jti: jti,
       iat: Time.zone.now.to_i,
       aud: api_risc_security_events_url,

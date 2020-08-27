@@ -31,7 +31,7 @@ class IdTokenBuilder
     {
       acr: acr,
       nonce: identity.nonce,
-      aud: identity.service_provider,
+      aud: identity.issuer,
       jti: SecureRandom.urlsafe_base64,
       at_hash: hash_token(identity.access_token),
       c_hash: hash_token(code),

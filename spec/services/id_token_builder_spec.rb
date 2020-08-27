@@ -44,7 +44,7 @@ RSpec.describe IdTokenBuilder do
     end
 
     it 'sets the audience to the service provider' do
-      expect(decoded_payload[:aud]).to eq(identity.service_provider)
+      expect(decoded_payload[:aud]).to eq(identity.issuer)
     end
 
     it 'sets the subject as the uuid' do

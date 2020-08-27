@@ -161,7 +161,7 @@ feature 'saml api' do
       end
 
       it 'stores SP identifier in Identity model' do
-        expect(user.last_identity.service_provider).to eq saml_spec_settings.issuer
+        expect(user.last_identity.issuer).to eq saml_spec_settings.issuer
       end
 
       it 'stores last_authenticated_at in Identity model' do

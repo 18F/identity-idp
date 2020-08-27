@@ -192,7 +192,7 @@ describe User do
 
     describe '#last_identity' do
       it 'returns the most recently authenticated identity' do
-        expect(user.last_identity.service_provider).to eq('last')
+        expect(user.last_identity.issuer).to eq('last')
       end
     end
   end

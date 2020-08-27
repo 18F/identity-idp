@@ -78,7 +78,7 @@ describe AgencyIdentityLinker do
       sp_identity = AgencyIdentityLinker.sp_identity_from_uuid_and_sp('UUID2',
                                                                       'http://localhost:3000')
       expect(sp_identity.uuid).to eq('UUID1')
-      expect(sp_identity.service_provider).to eq('http://localhost:3000')
+      expect(sp_identity.issuer).to eq('http://localhost:3000')
     end
 
     it 'returns nil if sp_identity does not exist' do

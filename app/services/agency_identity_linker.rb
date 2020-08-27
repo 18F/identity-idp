@@ -35,7 +35,7 @@ class AgencyIdentityLinker
   def agency_identity
     ai = AgencyIdentity.where(uuid: @sp_identity.uuid).take
     return ai if ai
-    sp = ServiceProvider.where(issuer: @sp_identity.service_provider).take
+    sp = @sp_identity.service_provider
     return unless agency_id(sp)
     AgencyIdentity.where(agency_id: agency_id, user_id: @sp_identity.user_id).take
   end

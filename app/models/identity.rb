@@ -10,7 +10,9 @@ class Identity < ApplicationRecord
 
   delegate :metadata, to: :sp, prefix: true
 
+  # rubocop:disable Rails/InverseOf
   belongs_to :service_provider, foreign_key: 'service_provider', primary_key: 'issuer'
+  # rubocop:enable Rails/InverseOf
 
   CONSENT_EXPIRATION = 1.year
 
@@ -25,6 +27,7 @@ class Identity < ApplicationRecord
     update!(session_uuid: nil)
   end
 
+  # Use this instead of service_provider when you want to fall back to NullServiceProvider
   def sp
     @sp ||= ServiceProvider.from_issuer(issuer)
   end
