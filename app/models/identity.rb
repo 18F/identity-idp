@@ -1,10 +1,16 @@
 class Identity < ApplicationRecord
   include NonNullUuid
 
+  # We have a string column "service_provider"
+  # but it maps to the "issuer" column in the service_provider table
+  alias_attribute :issuer, :service_provider
+
   belongs_to :user
-  validates :service_provider, presence: true
+  validates :issuer, presence: true
 
   delegate :metadata, to: :sp, prefix: true
+
+  belongs_to :service_provider, foreign_key: 'service_provider', primary_key: 'issuer'
 
   CONSENT_EXPIRATION = 1.year
 
@@ -20,15 +26,15 @@ class Identity < ApplicationRecord
   end
 
   def sp
-    @sp ||= ServiceProvider.from_issuer(service_provider)
+    @sp ||= ServiceProvider.from_issuer(issuer)
   end
 
   def display_name
-    sp_metadata[:friendly_name] || sp.agency&.name || service_provider
+    sp_metadata[:friendly_name] || sp.agency&.name || issuer
   end
 
   def agency_name
-    sp.agency&.name || sp_metadata[:friendly_name] || service_provider
+    sp.agency&.name || sp_metadata[:friendly_name] || issuer
   end
 
   def piv_cac_enabled?

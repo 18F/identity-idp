@@ -12,6 +12,10 @@ class ServiceProvider < ApplicationRecord
 
   scope(:active, -> { where(active: true) })
 
+  scope(:with_push_notification_urls,
+        -> { where("push_notification_url is NOT NULL and push_notification_url!=''") })
+
+
   def self.from_issuer(issuer)
     return NullServiceProvider.new(issuer: nil) if issuer.blank?
     find_by(issuer: issuer) || NullServiceProvider.new(issuer: issuer)
