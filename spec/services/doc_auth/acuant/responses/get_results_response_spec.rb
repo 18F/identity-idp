@@ -8,6 +8,7 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
         body: AcuantFixtures.get_results_response_success,
       )
     end
+    let(:raw_alerts) { JSON.parse(AcuantFixtures.get_results_response_success)['Alerts'] }
 
     subject(:response) { described_class.new(http_response) }
 
@@ -21,6 +22,7 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
         exception: nil,
         billed: true,
         result: 'Passed',
+        raw_alerts: raw_alerts,
       )
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::PASSED)
       expect(response.result_code.billed?).to eq(true)
@@ -51,6 +53,7 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
         body: AcuantFixtures.get_results_response_failure,
       )
     end
+    let(:raw_alerts) { JSON.parse(AcuantFixtures.get_results_response_success)['Alerts'] }
 
     subject(:response) { described_class.new(http_response) }
 
@@ -85,8 +88,25 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
       end
     end
 
-    it 'does not parse any PII from the doc' do
-      expect(response.pii_from_doc).to eq({})
+    context 'when multiple alerts have the same friendly error' do
+      let(:http_response) do
+        parsed_response_body = JSON.parse(AcuantFixtures.get_results_response_failure)
+        parsed_response_body['Alerts'].first['Disposition'] = 'This message does not have key'
+        parsed_response_body['Alerts'][1] = parsed_response_body['Alerts'].first
+        instance_double(
+          Faraday::Response,
+          body: parsed_response_body.to_json,
+        )
+      end
+
+      it 'only returns one copy of the friendly error' do
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq(
+          # This is the error message for the error in the response fixture
+          results: [I18n.t('errors.doc_auth.general_error')],
+        )
+        expect(response.exception).to be_nil
+      end
     end
   end
 end
