@@ -48,8 +48,8 @@ module Idv
           success: true,
         }
       else
-        errors = form_response.errors.map do |key, errs|
-          { field_name: key, error_messages: Array(errs) }
+        errors = form_response.errors.flat_map do |key, errs|
+          Array(errs).map { |err| { field_name: key, error_message: err } }
         end
 
         render json: form_response.to_h.merge(errors: errors),

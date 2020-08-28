@@ -44,7 +44,7 @@ describe Idv::ImageUploadsController do
           json = JSON.parse(response.body, symbolize_names: true)
           expect(json[:success]).to eq(false)
           expect(json[:errors]).to eq([
-            { front: ['Please fill in this field.'] },
+            { field_name: 'front', error_message: 'Please fill in this field.' },
           ])
         end
       end
@@ -57,7 +57,7 @@ describe Idv::ImageUploadsController do
 
           json = JSON.parse(response.body, symbolize_names: true)
           expect(json[:errors]).to eq([
-            { front: [I18n.t('doc_auth.errors.not_a_file')] },
+            { field_name: 'front', error_message: I18n.t('doc_auth.errors.not_a_file') },
           ])
         end
 
@@ -69,7 +69,7 @@ describe Idv::ImageUploadsController do
 
             json = JSON.parse(response.body, symbolize_names: true)
             expect(json[:errors]).to eq([
-              { front: [I18n.t('doc_auth.errors.not_a_file', locale: 'es')] },
+              { field_name: 'front', error_message: I18n.t('doc_auth.errors.not_a_file', locale: 'es') },
             ])
           end
         end
@@ -103,7 +103,8 @@ describe Idv::ImageUploadsController do
           json = JSON.parse(response.body, symbolize_names: true)
           expect(json[:success]).to eq(false)
           expect(json[:errors]).to eq([
-            { field_name: 'front', error_messages: ['Too blurry', 'Wrong document'] }
+            { field_name: 'front', error_message: 'Too blurry' },
+            { field_name: 'front', error_message: 'Wrong document' }
           ])
         end
       end
