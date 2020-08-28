@@ -43,7 +43,7 @@ import useHistoryParam from '../hooks/use-history-param';
  *
  * @prop {string} name Step name, used in history parameter.
  * @prop {string} title Step title, shown as heading.
- * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} component Step component.
+ * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} form Step form component.
  * @prop {FormStepValidate<Record<string,any>>} validate Step validity function. Given set of form
  * values, returns an object with keys from form values mapped to an error, if applicable. Returns
  * undefined or an empty object if there are no errors.
@@ -210,7 +210,7 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
     headingRef.current?.focus();
   }
 
-  const { component: Component, name, title } = effectiveStep;
+  const { form: Form, name, title } = effectiveStep;
   const isLastStep = effectiveStepIndex + 1 === steps.length;
 
   return (
@@ -218,7 +218,7 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
       <PageHeading key="title" ref={headingRef} tabIndex={-1}>
         {title}
       </PageHeading>
-      <Component
+      <Form
         key={name}
         value={values}
         errors={activeErrors}
