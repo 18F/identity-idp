@@ -7,7 +7,7 @@ module PushNotification
     attr_reader :event
 
     # shorthand for creating an instance then calling #deliver, easier to stub
-    def self.deliver(event, now: now)
+    def self.deliver(event, now: Time.zone.now)
       new(event, now: now).deliver
     end
 
