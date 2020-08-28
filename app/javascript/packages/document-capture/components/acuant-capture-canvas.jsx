@@ -8,7 +8,7 @@ import useI18n from '../hooks/use-i18n';
  *
  * @prop {string} NONE No document detected.
  * @prop {string} SMALL_DOCUMENT Document does not fill frame.
- * @prop {null} GOOD_DOCUMENT Document is good and capture is pending.
+ * @prop {string?} GOOD_DOCUMENT Document is good and capture is pending.
  * @prop {string} CAPTURING Document is being captured.
  * @prop {string} TAP_TO_CAPTURE Explicit user action to capture after delay.
  */

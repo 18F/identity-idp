@@ -38,6 +38,7 @@ loadPolyfills(['fetch']).then(() => {
         csrf={getMetaContent('csrf-token')}
         formData={{
           document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
+          locale: i18n.currentLocale(),
         }}
       >
         <I18nContext.Provider value={i18n.strings}>
