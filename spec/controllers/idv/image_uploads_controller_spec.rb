@@ -43,9 +43,9 @@ describe Idv::ImageUploadsController do
 
           json = JSON.parse(response.body, symbolize_names: true)
           expect(json[:success]).to eq(false)
-          expect(json[:errors]).to eq([
+          expect(json[:errors]).to eq [
             { field: 'front', message: 'Please fill in this field.' },
-          ])
+          ]
         end
       end
 
@@ -56,9 +56,9 @@ describe Idv::ImageUploadsController do
           action
 
           json = JSON.parse(response.body, symbolize_names: true)
-          expect(json[:errors]).to eq([
+          expect(json[:errors]).to eq [
             { field: 'front', message: I18n.t('doc_auth.errors.not_a_file') },
-          ])
+          ]
         end
 
         context 'with a locale param' do
@@ -68,9 +68,9 @@ describe Idv::ImageUploadsController do
             action
 
             json = JSON.parse(response.body, symbolize_names: true)
-            expect(json[:errors]).to eq([
+            expect(json[:errors]).to eq [
               { field: 'front', message: I18n.t('doc_auth.errors.not_a_file', locale: 'es') },
-            ])
+            ]
           end
         end
       end
@@ -102,10 +102,10 @@ describe Idv::ImageUploadsController do
 
           json = JSON.parse(response.body, symbolize_names: true)
           expect(json[:success]).to eq(false)
-          expect(json[:errors]).to eq([
+          expect(json[:errors]).to eq [
             { field: 'front', message: 'Too blurry' },
-            { field: 'front', message: 'Wrong document' }
-          ])
+            { field: 'front', message: 'Wrong document' },
+          ]
         end
       end
     end
