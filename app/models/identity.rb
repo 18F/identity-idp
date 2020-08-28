@@ -6,11 +6,6 @@ class Identity < ApplicationRecord
 
   delegate :metadata, to: :sp, prefix: true
 
-  belongs_to :service_provider_record,
-             class_name: 'ServiceProvider',
-             foreign_key: 'service_provider',
-             primary_key: 'issuer'
-
   CONSENT_EXPIRATION = 1.year
 
   IAL_MAX = 0
