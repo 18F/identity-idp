@@ -50,6 +50,9 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       name: 'documents',
       title: t('doc_auth.headings.document_capture'),
       form: DocumentsStep,
+      footer: isMobile
+        ? undefined
+        : () => <p>{t('doc_auth.info.document_capture_upload_image')}</p>,
       validate: validateDocumentsStep,
     },
     isLivenessEnabled && {
