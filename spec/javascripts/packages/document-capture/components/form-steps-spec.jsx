@@ -251,4 +251,18 @@ describe('document-capture/components/form-steps', () => {
     expect(window.location.hash).to.equal('#step=second');
     expect(document.activeElement).to.equal(getByLabelText('Second'));
   });
+
+  it('renders with optional footer', () => {
+    const steps = [
+      {
+        name: 'one',
+        title: 'Step One',
+        form: () => <span>Form Fields</span>,
+        footer: () => <span>Footer</span>,
+      },
+    ];
+    const { getByText } = render(<FormSteps steps={steps} />);
+
+    expect(getByText('Footer')).to.be.ok();
+  });
 });

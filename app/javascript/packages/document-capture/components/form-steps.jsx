@@ -44,6 +44,7 @@ import useHistoryParam from '../hooks/use-history-param';
  * @prop {string} name Step name, used in history parameter.
  * @prop {string} title Step title, shown as heading.
  * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} form Step form component.
+ * @prop {import('react').FC=} footer Optional step footer component.
  * @prop {FormStepValidate<Record<string,any>>} validate Step validity function. Given set of form
  * values, returns an object with keys from form values mapped to an error, if applicable. Returns
  * undefined or an empty object if there are no errors.
@@ -210,7 +211,7 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
     headingRef.current?.focus();
   }
 
-  const { form: Form, name, title } = effectiveStep;
+  const { form: Form, footer: Footer, name, title } = effectiveStep;
   const isLastStep = effectiveStepIndex + 1 === steps.length;
 
   return (
@@ -240,6 +241,7 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
       <Button type="submit" isPrimary className="margin-y-5">
         {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
       </Button>
+      {Footer && <Footer />}
     </form>
   );
 }
