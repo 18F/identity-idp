@@ -28,8 +28,7 @@ import useI18n from '../hooks/use-i18n';
  * @return {ReactNode[]} Formatted error messages.
  */
 export function getFormattedErrorMessages(errors) {
-  const errorMessages = errors.flatMap((error) => error.errorMessages);
-  return errorMessages.flatMap((errorMessage, i) => [<br key={i} />, errorMessage]).slice(1);
+  return errors.flatMap((error, i) => [<br key={i} />, error.errorMessage]).slice(1);
 }
 
 /**

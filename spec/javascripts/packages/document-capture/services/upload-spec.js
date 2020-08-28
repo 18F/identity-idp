@@ -52,8 +52,8 @@ describe('document-capture/services/upload', () => {
             Promise.resolve({
               success: false,
               errors: [
-                { field_name: 'front', error_messages: ['Please fill in this field'] },
-                { field_name: 'front', error_messages: ['Please fill in this field'] },
+                { field_name: 'front', error_message: 'Please fill in this field' },
+                { field_name: 'back', error_message: 'Please fill in this field' },
               ],
             }),
         }),
@@ -66,8 +66,8 @@ describe('document-capture/services/upload', () => {
     } catch (error) {
       expect(error).to.be.instanceOf(UploadFormEntriesError);
       expect(error.rawErrors).to.deep.equal([
-        { fieldName: 'front', errorMessages: ['Please fill in this field'] },
-        { fieldName: 'front', errorMessages: ['Please fill in this field'] },
+        { fieldName: 'front', errorMessage: 'Please fill in this field' },
+        { fieldName: 'back', errorMessage: 'Please fill in this field' },
       ]);
     }
   });

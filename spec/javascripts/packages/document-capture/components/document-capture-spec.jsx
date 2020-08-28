@@ -30,7 +30,7 @@ describe('document-capture/components/document-capture', () => {
   describe('getFormattedErrorMessages', () => {
     it('formats one message', () => {
       const error = new UploadFormEntriesError();
-      error.rawErrors = [{ fieldName: 'front', errorMessages: ['Too blurry'] }];
+      error.rawErrors = [{ fieldName: 'front', errorMessage: 'Too blurry' }];
       const { container } = render(getFormattedErrorMessages(error.rawErrors));
 
       expect(container.innerHTML).to.equal('Too blurry');
@@ -38,10 +38,13 @@ describe('document-capture/components/document-capture', () => {
 
     it('formats many messages', () => {
       const error = new UploadFormEntriesError();
-      error.rawErrors = [{ fieldName: 'front', errorMessages: ['Too blurry', 'Wrong document'] }];
+      error.rawErrors = [
+        { fieldName: 'front', errorMessage: 'Too blurry' },
+        { fieldName: 'front', errorMessage: 'File size too small' },
+      ];
       const { container } = render(getFormattedErrorMessages(error.rawErrors));
 
-      expect(container.innerHTML).to.equal('Too blurry<br>Wrong document');
+      expect(container.innerHTML).to.equal('Too blurry<br>File size too small');
     });
   });
 
@@ -188,8 +191,8 @@ describe('document-capture/components/document-capture', () => {
   it('renders handled submission failure', async () => {
     const uploadError = new UploadFormEntriesError();
     uploadError.rawErrors = [
-      { fieldName: 'front', errorMessages: ['Image has glare'] },
-      { fieldName: 'back', errorMessages: ['Please fill in this field'] },
+      { fieldName: 'front', errorMessage: 'Image has glare' },
+      { fieldName: 'back', errorMessage: 'Please fill in this field' },
     ];
     const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
       <DocumentCapture />,
