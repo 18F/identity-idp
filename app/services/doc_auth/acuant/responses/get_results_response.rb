@@ -10,6 +10,7 @@ module DocAuth
             extra: {
               result: result_code.name,
               billed: result_code.billed,
+              raw_alerts: raw_alerts,
             },
           )
         end
@@ -25,6 +26,7 @@ module DocAuth
             exception: exception,
             result: result_code.name,
             billed: result_code.billed,
+            raw_alerts: raw_alerts,
           }
         end
 
@@ -56,7 +58,7 @@ module DocAuth
             friendly_message
           end
 
-          { results: messages }
+          { results: messages.uniq }
         end
 
         def parsed_response_body
