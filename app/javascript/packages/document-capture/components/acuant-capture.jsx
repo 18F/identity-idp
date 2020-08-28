@@ -1,4 +1,12 @@
-import React, { useContext, useRef, useState, useMemo, useEffect } from 'react';
+import React, {
+  forwardRef,
+  useContext,
+  useRef,
+  useState,
+  useMemo,
+  useEffect,
+  useImperativeHandle,
+} from 'react';
 import AcuantContext from '../context/acuant';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
@@ -74,19 +82,22 @@ function toBlob(dataURL) {
  *
  * @param {AcuantCaptureProps} props Props object.
  */
-function AcuantCapture({
-  label,
-  bannerText,
-  value,
-  onChange = () => {},
-  capture,
-  className,
-  minimumGlareScore = DEFAULT_ACCEPTABLE_GLARE_SCORE,
-  minimumSharpnessScore = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-  minimumFileSize = DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES,
-  allowUpload = true,
-  errorMessage,
-}) {
+function AcuantCapture(
+  {
+    label,
+    bannerText,
+    value,
+    onChange = () => {},
+    capture,
+    className,
+    minimumGlareScore = DEFAULT_ACCEPTABLE_GLARE_SCORE,
+    minimumSharpnessScore = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+    minimumFileSize = DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES,
+    allowUpload = true,
+    errorMessage,
+  },
+  ref,
+) {
   const fileCache = useContext(FileBase64CacheContext);
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
@@ -105,6 +116,7 @@ function AcuantCapture({
       setIsCapturing(false);
     }
   }, [hasCapture]);
+  useImperativeHandle(ref, () => inputRef.current);
 
   /**
    * Responds to a click by starting capture if supported in the environment, or triggering the
@@ -241,4 +253,4 @@ function AcuantCapture({
   );
 }
 
-export default AcuantCapture;
+export default forwardRef(AcuantCapture);

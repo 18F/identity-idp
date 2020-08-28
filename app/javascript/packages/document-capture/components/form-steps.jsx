@@ -4,12 +4,32 @@ import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 
-/** @typedef {import('react').FunctionComponent} FunctionComponent */
+/**
+ * @typedef FormStepError
+ *
+ * @prop {keyof V} field Name of field for which error occurred.
+ * @prop {Error} error Error object.
+ *
+ * @template V
+ */
+
+/**
+ * @typedef FormStepComponentProps
+ *
+ * @prop {(nextValues:Partial<V>)=>void} onChange Values change callback, merged with
+ * existing values.
+ * @prop {Partial<V>} value Current values.
+ * @prop {FormStepError<V>[]=} errors Current active errors.
+ * @prop {(field:string)=>undefined|((fieldNode:HTMLElement?)=>void)} registerField Registers field
+ * by given name, returning ref assignment function.
+ *
+ * @template V
+ */
 
 /**
  * @template {Record<string,any>} V
  *
- * @typedef {Partial<Record<keyof V,Error>>} FormStepValidateResult
+ * @typedef {FormStepError<V>[]} FormStepValidateResult
  */
 
 /**
@@ -23,10 +43,17 @@ import useHistoryParam from '../hooks/use-history-param';
  *
  * @prop {string} name Step name, used in history parameter.
  * @prop {string} title Step title, shown as heading.
- * @prop {FunctionComponent} component Step component implementation.
+ * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} component Step component.
  * @prop {FormStepValidate<Record<string,any>>} validate Step validity function. Given set of form
  * values, returns an object with keys from form values mapped to an error, if applicable. Returns
  * undefined or an empty object if there are no errors.
+ */
+
+/**
+ * @typedef FieldsRefEntry
+ *
+ * @prop {import('react').RefCallback<HTMLElement>} refCallback Ref callback.
+ * @prop {HTMLElement?=} element Element assigned by ref callback.
  */
 
 /**
@@ -107,6 +134,16 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step', initialStep);
   const { t } = useI18n();
+  const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
+  const didSubmitWithErrors = useRef(false);
+  useEffect(() => {
+    if (activeErrors?.length && didSubmitWithErrors.current) {
+      const firstActiveError = activeErrors[0];
+      fields.current[firstActiveError.field]?.element?.focus();
+    }
+
+    didSubmitWithErrors.current = false;
+  }, [activeErrors]);
 
   // An "effective" step is computed in consideration of the facts that (1) there may be no history
   // parameter present, in which case the first step should be used, and (2) the values may not be
@@ -154,7 +191,8 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
 
     const nextActiveErrors = getValidationErrors(effectiveStep, values);
     setActiveErrors(nextActiveErrors);
-    if (nextActiveErrors && Object.keys(nextActiveErrors).length) {
+    didSubmitWithErrors.current = true;
+    if (nextActiveErrors?.length) {
       return;
     }
 
@@ -186,6 +224,17 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
         errors={activeErrors}
         onChange={(nextValuesPatch) => {
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
+        }}
+        registerField={(field) => {
+          if (!fields.current[field]) {
+            fields.current[field] = {
+              refCallback(fieldNode) {
+                fields.current[field].element = fieldNode;
+              },
+            };
+          }
+
+          return fields.current[field].refCallback;
         }}
       />
       <Button type="submit" isPrimary className="margin-y-5">

@@ -1,4 +1,12 @@
-import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  forwardRef,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useImperativeHandle,
+} from 'react';
 import { Icon } from '@18f/identity-components';
 import FileImage from './file-image';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
@@ -19,23 +27,24 @@ import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 /**
  * @param {SelfieCaptureProps} props Props object.
  */
-function SelfieCapture({ value, onChange, errorMessage }) {
+function SelfieCapture({ value, onChange, errorMessage }, ref) {
   const instanceId = useInstanceId();
   const { t } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const wrapperRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const retryButtonRef = useFocusFallbackRef(labelRef);
   const captureButtonRef = useFocusFallbackRef(labelRef);
+  useImperativeHandle(ref, () => labelRef.current);
 
   const videoRef = useRef(/** @type {HTMLVideoElement?} */ (null));
-  const setVideoRef = useCallback((ref) => {
+  const setVideoRef = useCallback((nextVideoRef) => {
     // React will call an assigned `ref` callback with `null` at the time the element is being
     // removed, which is an opportunity to stop any in-progress capture.
-    if (!ref && videoRef.current && videoRef.current.srcObject instanceof window.MediaStream) {
+    if (!nextVideoRef && videoRef.current?.srcObject instanceof window.MediaStream) {
       videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
     }
 
-    videoRef.current = ref;
+    videoRef.current = nextVideoRef;
   }, []);
 
   const [isAccessRejected, setIsAccessRejected] = useState(false);
@@ -203,4 +212,4 @@ function SelfieCapture({ value, onChange, errorMessage }) {
   );
 }
 
-export default SelfieCapture;
+export default forwardRef(SelfieCapture);

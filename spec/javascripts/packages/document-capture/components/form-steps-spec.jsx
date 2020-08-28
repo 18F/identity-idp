@@ -14,11 +14,12 @@ describe('document-capture/components/form-steps', () => {
     {
       name: 'second',
       title: 'Second Title',
-      component: ({ value = {}, onChange }) => (
+      component: ({ value = {}, onChange, registerField }) => (
         // eslint-disable-next-line jsx-a11y/label-has-associated-control
         <label>
           Second
           <input
+            ref={registerField('second')}
             value={value.second || ''}
             onChange={(event) => {
               onChange({ changed: true });
@@ -27,7 +28,7 @@ describe('document-capture/components/form-steps', () => {
           />
         </label>
       ),
-      validate: (value) => (value.second ? undefined : { second: new Error() }),
+      validate: (value) => (value.second ? [] : [{ field: 'second', error: new Error() }]),
     },
     { name: 'last', title: 'Last Title', component: () => <span>Last</span> },
   ];
@@ -240,5 +241,14 @@ describe('document-capture/components/form-steps', () => {
     const input = getByLabelText('Second');
 
     expect(input.value).to.equal('prefilled');
+  });
+
+  it('prevents submission if step is invalid', () => {
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} initialStep="second" />);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+
+    expect(window.location.hash).to.equal('#step=second');
+    expect(document.activeElement).to.equal(getByLabelText('Second'));
   });
 });
