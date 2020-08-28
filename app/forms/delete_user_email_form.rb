@@ -12,7 +12,6 @@ class DeleteUserEmailForm
 
   def submit
     success = valid? && email_address_destroyed
-    notify_subscribers if success
     FormResponse.new(success: success, errors: errors.messages)
   end
 
@@ -42,10 +41,5 @@ class DeleteUserEmailForm
     user.email_addresses.reload
     update_user_email_column
     true
-  end
-
-  def notify_subscribers
-    event = PushNotification::IdentifierChangedEvent.new(user: user, email: email_address)
-    PushNotification::HttpPush.new(event).deliver
   end
 end

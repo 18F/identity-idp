@@ -11,8 +11,6 @@ class ServiceProvider < ApplicationRecord
   include IdentityValidations::ServiceProviderValidation
 
   scope(:active, -> { where(active: true) })
-  scope(:with_push_notification_urls,
-        -> { where.not(push_notification_url: nil).where.not(push_notification_url: '') })
 
   def self.from_issuer(issuer)
     return NullServiceProvider.new(issuer: nil) if issuer.blank?
