@@ -255,7 +255,7 @@ describe DocAuth::Acuant::AcuantClient do
         )
 
         expect(result.success?).to eq(false)
-        expect(result.errors).to eq(facial_match: I18n.t('errors.doc_auth.selfie'))
+        expect(result.errors).to eq(selfie: I18n.t('errors.doc_auth.selfie'))
       end
     end
 
