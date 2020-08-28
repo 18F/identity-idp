@@ -2,6 +2,7 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import SelfieStep, { validate } from '@18f/identity-document-capture/components/selfie-step';
+import { RequiredValueMissingError } from '@18f/identity-document-capture/components/form-steps';
 import render from '../../../support/render';
 
 describe('document-capture/components/selfie-step', () => {
@@ -10,17 +11,18 @@ describe('document-capture/components/selfie-step', () => {
       const value = {};
       const result = validate(value);
 
-      expect(result).to.have.keys(['selfie']);
-      expect(result.selfie).to.be.instanceof(Error);
+      expect(result).to.have.lengthOf(1);
+      expect(result[0].fieldName).to.equal('selfie');
+      expect(result[0].error).to.be.instanceOf(RequiredValueMissingError);
     });
 
-    it('returns empty object if selfie is set', () => {
+    it('returns empty array if selfie is set', () => {
       const value = {
         selfie: new window.File([], 'upload.png', { type: 'image/png' }),
       };
       const result = validate(value);
 
-      expect(result).to.deep.equal({});
+      expect(result).to.deep.equal([]);
     });
   });
 

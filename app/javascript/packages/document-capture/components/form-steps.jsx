@@ -5,12 +5,21 @@ import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 
 /**
+ * @typedef FormStepError
+ *
+ * @prop {keyof V} fieldName Name of field for which error occurred.
+ * @prop {Error} error Error object.
+ *
+ * @template V
+ */
+
+/**
  * @typedef FormStepComponentProps
  *
  * @prop {(nextValues:Partial<V>)=>void} onChange Values change callback, merged with
  * existing values.
  * @prop {Partial<V>} value Current values.
- * @prop {Partial<Record<keyof V,Error>>=} errors Current active errors.
+ * @prop {FormStepError<V>[]=} errors Current active errors.
  * @prop {(fieldName:string)=>undefined|((fieldNode:HTMLElement?)=>void)} registerField Registers
  * field by given name, returning ref assignment function.
  *
@@ -20,7 +29,7 @@ import useHistoryParam from '../hooks/use-history-param';
 /**
  * @template {Record<string,any>} V
  *
- * @typedef {Partial<Record<keyof V,Error>>} FormStepValidateResult
+ * @typedef {FormStepError<V>[]} FormStepValidateResult
  */
 
 /**
@@ -124,9 +133,9 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
   }, [stepName]);
   const didSubmitWithErrors = useRef(false);
   useEffect(() => {
-    if (activeErrors && didSubmitWithErrors.current) {
-      const firstActiveError = Object.keys(activeErrors)[0];
-      fields.current[firstActiveError]?.focus();
+    if (activeErrors?.length && didSubmitWithErrors.current) {
+      const firstActiveError = activeErrors[0];
+      fields.current[firstActiveError.fieldName]?.focus();
     }
 
     didSubmitWithErrors.current = false;
@@ -179,7 +188,7 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
     const nextActiveErrors = getValidationErrors(effectiveStep, values);
     setActiveErrors(nextActiveErrors);
     didSubmitWithErrors.current = true;
-    if (nextActiveErrors && Object.keys(nextActiveErrors).length) {
+    if (nextActiveErrors?.length) {
       return;
     }
 

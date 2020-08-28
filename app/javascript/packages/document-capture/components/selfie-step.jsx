@@ -24,11 +24,12 @@ import FormErrorMessage from './form-error-message';
 function SelfieStep({
   value = {},
   onChange = () => {},
-  errors = {},
+  errors = [],
   registerField = () => undefined,
 }) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
+  const error = errors.find(({ fieldName }) => fieldName === 'selfie')?.error;
 
   return (
     <>
@@ -49,14 +50,14 @@ function SelfieStep({
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           allowUpload={false}
           className="id-card-file-input"
-          errorMessage={errors.selfie ? <FormErrorMessage error={errors.selfie} /> : undefined}
+          errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
         />
       ) : (
         <SelfieCapture
           ref={registerField('selfie')}
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-          errorMessage={errors.selfie ? <FormErrorMessage error={errors.selfie} /> : undefined}
+          errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
         />
       )}
     </>
@@ -67,13 +68,7 @@ function SelfieStep({
  * @type {import('./form-steps').FormStepValidate<SelfieStepValue>}
  */
 export function validate(values) {
-  const errors = {};
-
-  if (!values.selfie) {
-    errors.selfie = new RequiredValueMissingError();
-  }
-
-  return errors;
+  return values.selfie ? [] : [{ fieldName: 'selfie', error: new RequiredValueMissingError() }];
 }
 
 export default SelfieStep;

@@ -20,7 +20,7 @@ import DeviceContext from '../context/device';
 /**
  * Sides of document to present as file input.
  *
- * @type {string[]}
+ * @type {Array<keyof DocumentsStepValue>}
  */
 const DOCUMENT_SIDES = ['front', 'back'];
 
@@ -30,7 +30,7 @@ const DOCUMENT_SIDES = ['front', 'back'];
 function DocumentsStep({
   value = {},
   onChange = () => {},
-  errors = {},
+  errors = [],
   registerField = () => undefined,
 }) {
   const { t } = useI18n();
@@ -45,22 +45,26 @@ function DocumentsStep({
         <li>{t('doc_auth.tips.document_capture_id_text3')}</li>
         {!isMobile && <li>{t('doc_auth.tips.document_capture_id_text4')}</li>}
       </ul>
-      {DOCUMENT_SIDES.map((side) => (
-        <AcuantCapture
-          key={side}
-          ref={registerField(side)}
-          /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
-          /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
-          label={t(`doc_auth.headings.document_capture_${side}`)}
-          /* i18n-tasks-use t('doc_auth.headings.back') */
-          /* i18n-tasks-use t('doc_auth.headings.front') */
-          bannerText={t(`doc_auth.headings.${side}`)}
-          value={value[side]}
-          onChange={(nextValue) => onChange({ [side]: nextValue })}
-          className="id-card-file-input"
-          errorMessage={errors[side] ? <FormErrorMessage error={errors[side]} /> : undefined}
-        />
-      ))}
+      {DOCUMENT_SIDES.map((side) => {
+        const error = errors.find(({ fieldName }) => fieldName === side)?.error;
+
+        return (
+          <AcuantCapture
+            key={side}
+            ref={registerField(side)}
+            /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
+            /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
+            label={t(`doc_auth.headings.document_capture_${side}`)}
+            /* i18n-tasks-use t('doc_auth.headings.back') */
+            /* i18n-tasks-use t('doc_auth.headings.front') */
+            bannerText={t(`doc_auth.headings.${side}`)}
+            value={value[side]}
+            onChange={(nextValue) => onChange({ [side]: nextValue })}
+            className="id-card-file-input"
+            errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
+          />
+        );
+      })}
     </>
   );
 }
@@ -69,17 +73,10 @@ function DocumentsStep({
  * @type {import('./form-steps').FormStepValidate<DocumentsStepValue>}
  */
 export function validate(values) {
-  const errors = {};
-
-  if (!values.front) {
-    errors.front = new RequiredValueMissingError();
-  }
-
-  if (!values.back) {
-    errors.back = new RequiredValueMissingError();
-  }
-
-  return errors;
+  return DOCUMENT_SIDES.filter((side) => !values[side]).map((side) => ({
+    fieldName: side,
+    error: new RequiredValueMissingError(),
+  }));
 }
 
 export default DocumentsStep;
