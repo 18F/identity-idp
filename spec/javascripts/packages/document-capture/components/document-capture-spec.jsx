@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import { fireEvent } from '@testing-library/react';
 import { UploadFormEntriesError } from '@18f/identity-document-capture/services/upload';
-import { AcuantProvider } from '@18f/identity-document-capture';
+import { AcuantProvider, DeviceContext } from '@18f/identity-document-capture';
 import DocumentCapture, {
   getFormattedErrorMessages,
 } from '@18f/identity-document-capture/components/document-capture';
@@ -54,6 +54,42 @@ describe('document-capture/components/document-capture', () => {
     const step = getByText('doc_auth.headings.document_capture_front');
 
     expect(step).to.be.ok();
+  });
+
+  context('mobile', () => {
+    it('starts with introductory step', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <DocumentCapture />
+        </DeviceContext.Provider>,
+      );
+
+      expect(getByText('doc_auth.info.document_capture_intro_acknowledgment')).to.be.ok();
+    });
+
+    it('does not show document step footer', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <DocumentCapture />
+        </DeviceContext.Provider>,
+      );
+
+      userEvent.click(getByText('forms.buttons.continue'));
+
+      expect(() => getByText('doc_auth.info.document_capture_upload_image')).to.throw();
+    });
+  });
+
+  context('desktop', () => {
+    it('shows document step footer', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: false }}>
+          <DocumentCapture />
+        </DeviceContext.Provider>,
+      );
+
+      expect(getByText('doc_auth.info.document_capture_upload_image')).to.be.ok();
+    });
   });
 
   it('progresses through steps to completion', async () => {
