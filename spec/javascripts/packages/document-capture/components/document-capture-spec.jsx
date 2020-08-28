@@ -2,10 +2,13 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import { fireEvent } from '@testing-library/react';
-import { UploadFormEntriesError } from '@18f/identity-document-capture/services/upload';
+import {
+  UploadFormEntriesError,
+  toFormEntryError,
+} from '@18f/identity-document-capture/services/upload';
 import { AcuantProvider } from '@18f/identity-document-capture';
 import DocumentCapture, {
-  getFormattedErrorMessages,
+  getInitialStep,
 } from '@18f/identity-document-capture/components/document-capture';
 import render from '../../../support/render';
 import { useAcuant } from '../../../support/acuant';
@@ -27,24 +30,33 @@ describe('document-capture/components/document-capture', () => {
     window.location.hash = originalHash;
   });
 
-  describe('getFormattedErrorMessages', () => {
-    it('formats one message', () => {
-      const error = new UploadFormEntriesError();
-      error.rawErrors = [{ field: 'front', message: 'Too blurry' }];
-      const { container } = render(getFormattedErrorMessages(error.rawErrors));
+  describe('getInitialStep', () => {
+    const steps = [
+      { name: 'first' },
+      { name: 'second', fields: ['a', 'b'] },
+      { name: 'third', fields: ['c'] },
+    ];
 
-      expect(container.innerHTML).to.equal('Too blurry');
+    it('undefined if there are no errors', () => {
+      const initialStep = getInitialStep(steps, []);
+
+      expect(initialStep).to.be.undefined();
     });
 
-    it('formats many messages', () => {
-      const error = new UploadFormEntriesError();
-      error.rawErrors = [
-        { field: 'front', message: 'Too blurry' },
-        { field: 'front', message: 'File size too small' },
-      ];
-      const { container } = render(getFormattedErrorMessages(error.rawErrors));
+    it('returns undefined if step for error field does not exist', () => {
+      const initialStep = getInitialStep(steps, [
+        toFormEntryError({ field: 'network', message: 'Unknown' }),
+      ]);
 
-      expect(container.innerHTML).to.equal('Too blurry<br>File size too small');
+      expect(initialStep).to.be.undefined();
+    });
+
+    it('returns first of steps where error exists', () => {
+      const initialStep = getInitialStep(steps, [
+        toFormEntryError({ field: 'b', message: 'Field is missing' }),
+      ]);
+
+      expect(initialStep).to.be.equal('second');
     });
   });
 
@@ -211,8 +223,8 @@ describe('document-capture/components/document-capture', () => {
     uploadError.rawErrors = [
       { field: 'front', message: 'Image has glare' },
       { field: 'back', message: 'Please fill in this field' },
-    ];
-    const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
+    ].map(toFormEntryError);
+    const { getByLabelText, getByText, getAllByText, findAllByText, findAllByRole } = render(
       <DocumentCapture />,
       {
         uploadError,
@@ -243,20 +255,16 @@ describe('document-capture/components/document-capture', () => {
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
 
-    const notice = await findByRole('alert');
-    expect(notice.querySelector('p').innerHTML).to.equal(
-      'Image has glare<br>Please fill in this field',
-    );
+    const notices = await findAllByRole('alert');
+    expect(notices[0].textContent).to.equal('Image has glare');
+    expect(notices[1].textContent).to.equal('Please fill in this field');
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    const heading = getByText('doc_auth.headings.document_capture');
-    expect(document.activeElement).to.equal(heading);
-
-    const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');
-    expect(hasValueSelected).to.be.true();
+    const front = getByLabelText('doc_auth.headings.document_capture_front');
+    expect(document.activeElement).to.equal(front);
   });
 });

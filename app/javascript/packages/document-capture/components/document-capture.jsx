@@ -12,6 +12,7 @@ import useI18n from '../hooks/use-i18n';
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./form-steps').FormStep} FormStep */
 /** @typedef {import('../context/upload').UploadFieldError} UploadFieldError */
+/** @typedef {import('./form-steps').FormStepError<Record<string,any>>} FormStepError */
 
 /**
  * @typedef DocumentCaptureProps
@@ -21,14 +22,23 @@ import useI18n from '../hooks/use-i18n';
  */
 
 /**
- * Returns error messages interspersed with line break React element.
+ * Returns the first step name associated with an array of errors, or undefined if there are no
+ * errors or the step cannot be determined.
  *
- * @param {UploadFieldError[]} errors Error messages.
+ * @param {FormStep[]} steps Form steps.
+ * @param {FormStepError[]} errors Form errors.
  *
- * @return {ReactNode[]} Formatted error messages.
+ * @return {string=} Initial step name, if known.
  */
-export function getFormattedErrorMessages(errors) {
-  return errors.flatMap((error, i) => [<br key={i} />, error.message]).slice(1);
+export function getInitialStep(steps, errors) {
+  return steps.find((step) => {
+    const stepHasError = step.fields?.some((field) => {
+      const fieldHasError = errors.some((error) => error.field === field);
+      return fieldHasError;
+    });
+
+    return stepHasError;
+  })?.name;
 }
 
 /**
@@ -51,12 +61,14 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       title: t('doc_auth.headings.document_capture'),
       component: DocumentsStep,
       validate: validateDocumentsStep,
+      fields: ['front', 'back'],
     },
     isLivenessEnabled && {
       name: 'selfie',
       title: t('doc_auth.headings.selfie'),
       component: SelfieStep,
       validate: validateSelfieStep,
+      fields: ['selfie'],
     },
   ].filter(Boolean));
 
@@ -70,10 +82,27 @@ function DocumentCapture({ isLivenessEnabled = true }) {
     setFormValues(nextFormValues);
   }
 
-  const isFormEntriesError = submissionError && submissionError instanceof UploadFormEntriesError;
+  /** @type {string=} */
   let initialStep;
+
+  /** @type {FormStepError[]=} */
+  let initialActiveErrors;
+
+  /** @type {boolean} */
+  let isUnknownError = false;
+
   if (submissionError) {
-    initialStep = isFormEntriesError || !isLivenessEnabled ? 'documents' : 'selfie';
+    if (submissionError instanceof UploadFormEntriesError) {
+      initialActiveErrors = submissionError.rawErrors.map((error) => ({
+        field: error.field,
+        error,
+      }));
+
+      initialStep = getInitialStep(steps, initialActiveErrors);
+    } else {
+      isUnknownError = true;
+      initialStep = steps[steps.length - 1].name;
+    }
   }
 
   return formValues && !submissionError ? (
@@ -83,18 +112,15 @@ function DocumentCapture({ isLivenessEnabled = true }) {
     />
   ) : (
     <>
-      {submissionError && (
+      {isUnknownError && (
         <Alert type="error" className="margin-bottom-2">
-          {isFormEntriesError
-            ? getFormattedErrorMessages(
-                /** @type {UploadFormEntriesError} */ (submissionError).rawErrors,
-              )
-            : t('errors.doc_auth.acuant_network_error')}
+          {t('errors.doc_auth.acuant_network_error')}
         </Alert>
       )}
       <FormSteps
         steps={steps}
         initialValues={submissionError && formValues ? formValues : undefined}
+        initialActiveErrors={initialActiveErrors}
         initialStep={initialStep}
         onComplete={submitForm}
       />

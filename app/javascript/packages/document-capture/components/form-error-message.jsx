@@ -1,5 +1,6 @@
 import React from 'react';
 import { RequiredValueMissingError } from './form-steps';
+import { UploadFormEntryError } from '../services/upload';
 import useI18n from '../hooks/use-i18n';
 
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -18,6 +19,10 @@ function FormErrorMessage({ error }) {
 
   if (error instanceof RequiredValueMissingError) {
     return <>{t('simple_form.required.text')}</>;
+  }
+
+  if (error instanceof UploadFormEntryError) {
+    return <>{error.message}</>;
   }
 
   return null;

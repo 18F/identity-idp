@@ -1,6 +1,8 @@
 import upload, {
   UploadFormEntriesError,
+  UploadFormEntryError,
   toFormData,
+  toFormEntryError,
 } from '@18f/identity-document-capture/services/upload';
 import { useSandbox } from '../../../support/sinon';
 
@@ -13,6 +15,16 @@ describe('document-capture/services/upload', () => {
 
       expect(result).to.be.instanceOf(window.FormData);
       expect(/** @type {FormData} */ (result).get('foo')).to.equal('bar');
+    });
+  });
+
+  describe('toFormEntryError', () => {
+    it('maps server response error to UploadFormEntryError', () => {
+      const result = toFormEntryError({ field: 'front', message: 'Image has glare' });
+
+      expect(result).to.be.instanceof(UploadFormEntryError);
+      expect(result.field).to.equal('front');
+      expect(result.message).to.equal('Image has glare');
     });
   });
 
@@ -65,10 +77,12 @@ describe('document-capture/services/upload', () => {
       throw new Error('This is a safeguard and should never be reached, since upload should error');
     } catch (error) {
       expect(error).to.be.instanceOf(UploadFormEntriesError);
-      expect(error.rawErrors).to.deep.equal([
-        { field: 'front', message: 'Please fill in this field' },
-        { field: 'back', message: 'Please fill in this field' },
-      ]);
+      expect(error.rawErrors[0]).to.be.instanceOf(UploadFormEntryError);
+      expect(error.rawErrors[0].field).to.equal('front');
+      expect(error.rawErrors[0].message).to.equal('Please fill in this field');
+      expect(error.rawErrors[1]).to.be.instanceOf(UploadFormEntryError);
+      expect(error.rawErrors[1].field).to.equal('back');
+      expect(error.rawErrors[1].message).to.equal('Please fill in this field');
     }
   });
 

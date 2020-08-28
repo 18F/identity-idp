@@ -2,8 +2,13 @@
 /** @typedef {import('../context/upload').UploadErrorResponse} UploadErrorResponse */
 /** @typedef {import('../context/upload').UploadFieldError} UploadFieldError */
 
+export class UploadFormEntryError extends Error {
+  /** @type {string} */
+  field = '';
+}
+
 export class UploadFormEntriesError extends Error {
-  /** @type {UploadFieldError[]} */
+  /** @type {UploadFormEntryError[]} */
   rawErrors = [];
 }
 
@@ -19,6 +24,20 @@ export function toFormData(object) {
     form.append(key, object[key]);
     return form;
   }, new window.FormData());
+}
+
+/**
+ * Returns error as received by server as an instance of UploadFormEntryError.
+ *
+ * @param {UploadFieldError} uploadFieldError Error received from server.
+ *
+ * @return {UploadFormEntryError}
+ */
+export function toFormEntryError(uploadFieldError) {
+  const { field, message } = uploadFieldError;
+  const formEntryError = new UploadFormEntryError(message);
+  formEntryError.field = field;
+  return formEntryError;
 }
 
 /**
@@ -44,7 +63,7 @@ async function upload(payload, { endpoint, csrf }) {
     /** @type {UploadErrorResponse} */
     const errorResult = result;
     const error = new UploadFormEntriesError();
-    error.rawErrors = errorResult.errors;
+    error.rawErrors = errorResult.errors.map(toFormEntryError);
     throw error;
   }
 

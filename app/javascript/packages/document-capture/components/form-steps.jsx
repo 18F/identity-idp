@@ -35,7 +35,7 @@ import useHistoryParam from '../hooks/use-history-param';
 /**
  * @template {Record<string,any>} V
  *
- * @typedef {(values:V)=>undefined|FormStepValidateResult<V>} FormStepValidate
+ * @typedef {(values:V)=>FormStepValidateResult<V>} FormStepValidate
  */
 
 /**
@@ -47,6 +47,7 @@ import useHistoryParam from '../hooks/use-history-param';
  * @prop {FormStepValidate<Record<string,any>>} validate Step validity function. Given set of form
  * values, returns an object with keys from form values mapped to an error, if applicable. Returns
  * undefined or an empty object if there are no errors.
+ * @prop {string[]=} fields Field names present in step.
  */
 
 /**
@@ -60,6 +61,7 @@ import useHistoryParam from '../hooks/use-history-param';
  * @typedef FormStepsProps
  *
  * @prop {FormStep[]=} steps Form steps.
+ * @prop {FormStepValidateResult<Record<string,Error>>=} initialActiveErrors Initial errors to show.
  * @prop {Record<string,any>=} initialValues Form values to populate initial state.
  * @prop {string=} initialStep Step to start from.
  * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
@@ -78,7 +80,7 @@ export class RequiredValueMissingError extends Error {}
  * @param {Record<string,any>} values Current form values.
  */
 function getValidationErrors(step, values) {
-  const { validate = () => undefined } = step;
+  const { validate = () => [] } = step;
   return validate(values);
 }
 
@@ -125,11 +127,15 @@ export function getLastValidStepIndex(steps, values) {
 /**
  * @param {FormStepsProps} props Props object.
  */
-function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, initialStep }) {
+function FormSteps({
+  steps = [],
+  onComplete = () => {},
+  initialValues = {},
+  initialActiveErrors = [],
+  initialStep,
+}) {
   const [values, setValues] = useState(initialValues);
-  const [activeErrors, setActiveErrors] = useState(
-    /** @type {FormStepValidateResult<Record<string,Error>>=} */ (undefined),
-  );
+  const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step', initialStep);
@@ -137,7 +143,10 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
   const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
   const didSubmitWithErrors = useRef(false);
   useEffect(() => {
-    if (activeErrors?.length && didSubmitWithErrors.current) {
+    if (
+      activeErrors.length &&
+      (didSubmitWithErrors.current || activeErrors === initialActiveErrors)
+    ) {
       const firstActiveError = activeErrors[0];
       fields.current[firstActiveError.field]?.element?.focus();
     }
@@ -161,19 +170,10 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
     }
 
     // Treat explicit initial step the same as step transition, placing focus to header.
-    if (initialStep && headingRef.current) {
+    if (initialStep && !initialActiveErrors.length && headingRef.current) {
       headingRef.current.focus();
     }
   }, []);
-
-  useEffect(() => {
-    // Errors are assigned at the first attempt to submit. Once errors are assigned, track value
-    // changes to remove validation errors as they become resolved.
-    if (activeErrors) {
-      const nextActiveErrors = getValidationErrors(effectiveStep, values);
-      setActiveErrors(nextActiveErrors);
-    }
-  }, [values]);
 
   // An empty steps array is allowed, in which case there is nothing to render.
   if (!effectiveStep) {
@@ -189,10 +189,13 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
   function toNextStep(event) {
     event.preventDefault();
 
-    const nextActiveErrors = getValidationErrors(effectiveStep, values);
-    setActiveErrors(nextActiveErrors);
-    didSubmitWithErrors.current = true;
-    if (nextActiveErrors?.length) {
+    const nextActiveErrors = activeErrors.length
+      ? [...activeErrors] // Create a clone to force a render.
+      : getValidationErrors(effectiveStep, values);
+
+    if (nextActiveErrors.length) {
+      setActiveErrors(nextActiveErrors);
+      didSubmitWithErrors.current = true;
       return;
     }
 
@@ -224,6 +227,10 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
         errors={activeErrors}
         onChange={(nextValuesPatch) => {
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
+          setActiveErrors((prevActiveErrors) =>
+            // Remove active errors if field was changed.
+            prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),
+          );
         }}
         registerField={(field) => {
           if (!fields.current[field]) {
