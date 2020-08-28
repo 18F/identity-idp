@@ -65,13 +65,3 @@ module PushNotification
     end
   end
 end
-
-# (iss_sub: agency_uuid(service_provider))
-
-# def agency_uuid(service_provider)
-#   AgencyIdentity.find_by(user_id: user.id, agency_id: service_provider.agency_id)&.uuid ||
-#     Identity.where(user_id: user.id, service_provider: service_provider.issuer)&.uuid
-# end
-
-# event = PushNotification::IdentifierRecycledEvent.new(user: user, email: email)
-# PushNotification::HttpPush.new(event).deliver
