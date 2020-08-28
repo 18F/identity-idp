@@ -10,17 +10,8 @@ const UploadContext = createContext(defaultUpload);
  *
  * @typedef UploadFieldError
  *
- * @prop {'front'|'back'|'selfie'|'network'} fieldName Field name.
- * @prop {string[]} errorMessage Error message.
- */
-
-/**
- * Upload field error, as received from server response.
- *
- * @typedef UploadFieldResponseError
- *
- * @prop {'front'|'back'|'selfie'|'network'} field_name Field name.
- * @prop {string} error_message Error message.
+ * @prop {'front'|'back'|'selfie'|'network'} field Field name.
+ * @prop {string} message Error message.
  */
 
 /**
@@ -40,7 +31,7 @@ const UploadContext = createContext(defaultUpload);
  * @typedef UploadErrorResponse
  *
  * @prop {false} success Whether request was successful.
- * @prop {UploadFieldResponseError[]} errors Error messages.
+ * @prop {UploadFieldError[]} errors Error messages.
  */
 
 /**

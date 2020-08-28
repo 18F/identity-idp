@@ -44,10 +44,7 @@ async function upload(payload, { endpoint, csrf }) {
     /** @type {UploadErrorResponse} */
     const errorResult = result;
     const error = new UploadFormEntriesError();
-    error.rawErrors = errorResult.errors.map((rawError) => ({
-      fieldName: rawError.field_name,
-      errorMessage: rawError.error_message,
-    }));
+    error.rawErrors = errorResult.errors;
     throw error;
   }
 
