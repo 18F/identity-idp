@@ -28,7 +28,7 @@ describe('document-capture/components/form-steps', () => {
           />
         </label>
       ),
-      validate: (value) => (value.second ? [] : [{ fieldName: 'second', error: new Error() }]),
+      validate: (value) => (value.second ? [] : [{ field: 'second', error: new Error() }]),
     },
     { name: 'last', title: 'Last Title', component: () => <span>Last</span> },
   ];

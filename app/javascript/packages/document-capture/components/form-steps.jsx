@@ -7,7 +7,7 @@ import useHistoryParam from '../hooks/use-history-param';
 /**
  * @typedef FormStepError
  *
- * @prop {keyof V} fieldName Name of field for which error occurred.
+ * @prop {keyof V} field Name of field for which error occurred.
  * @prop {Error} error Error object.
  *
  * @template V
@@ -20,8 +20,8 @@ import useHistoryParam from '../hooks/use-history-param';
  * existing values.
  * @prop {Partial<V>} value Current values.
  * @prop {FormStepError<V>[]=} errors Current active errors.
- * @prop {(fieldName:string)=>undefined|((fieldNode:HTMLElement?)=>void)} registerField Registers
- * field by given name, returning ref assignment function.
+ * @prop {(field:string)=>undefined|((fieldNode:HTMLElement?)=>void)} registerField Registers field
+ * by given name, returning ref assignment function.
  *
  * @template V
  */
@@ -139,7 +139,7 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
   useEffect(() => {
     if (activeErrors?.length && didSubmitWithErrors.current) {
       const firstActiveError = activeErrors[0];
-      fields.current[firstActiveError.fieldName]?.element?.focus();
+      fields.current[firstActiveError.field]?.element?.focus();
     }
 
     didSubmitWithErrors.current = false;
@@ -225,16 +225,16 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
         onChange={(nextValuesPatch) => {
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
         }}
-        registerField={(fieldName) => {
-          if (!fields.current[fieldName]) {
-            fields.current[fieldName] = {
+        registerField={(field) => {
+          if (!fields.current[field]) {
+            fields.current[field] = {
               refCallback(fieldNode) {
-                fields.current[fieldName].element = fieldNode;
+                fields.current[field].element = fieldNode;
               },
             };
           }
 
-          return fields.current[fieldName].refCallback;
+          return fields.current[field].refCallback;
         }}
       />
       <Button type="submit" isPrimary className="margin-y-5">

@@ -13,9 +13,9 @@ describe('document-capture/components/documents-step', () => {
       const result = validate(value);
 
       expect(result).to.have.lengthOf(2);
-      expect(result[0].fieldName).to.equal('front');
+      expect(result[0].field).to.equal('front');
       expect(result[0].error).to.be.instanceOf(RequiredValueMissingError);
-      expect(result[1].fieldName).to.equal('back');
+      expect(result[1].field).to.equal('back');
       expect(result[1].error).to.be.instanceOf(RequiredValueMissingError);
     });
 
@@ -24,7 +24,7 @@ describe('document-capture/components/documents-step', () => {
       const result = validate(value);
 
       expect(result).to.have.lengthOf(1);
-      expect(result[0].fieldName).to.equal('back');
+      expect(result[0].field).to.equal('back');
       expect(result[0].error).to.be.instanceOf(RequiredValueMissingError);
     });
 

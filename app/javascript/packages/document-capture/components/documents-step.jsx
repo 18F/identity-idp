@@ -46,7 +46,7 @@ function DocumentsStep({
         {!isMobile && <li>{t('doc_auth.tips.document_capture_id_text4')}</li>}
       </ul>
       {DOCUMENT_SIDES.map((side) => {
-        const error = errors.find(({ fieldName }) => fieldName === side)?.error;
+        const error = errors.find(({ field }) => field === side)?.error;
 
         return (
           <AcuantCapture
@@ -74,7 +74,7 @@ function DocumentsStep({
  */
 export function validate(values) {
   return DOCUMENT_SIDES.filter((side) => !values[side]).map((side) => ({
-    fieldName: side,
+    field: side,
     error: new RequiredValueMissingError(),
   }));
 }

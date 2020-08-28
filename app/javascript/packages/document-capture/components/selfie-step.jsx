@@ -29,7 +29,7 @@ function SelfieStep({
 }) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
-  const error = errors.find(({ fieldName }) => fieldName === 'selfie')?.error;
+  const error = errors.find(({ field }) => field === 'selfie')?.error;
 
   return (
     <>
@@ -68,7 +68,7 @@ function SelfieStep({
  * @type {import('./form-steps').FormStepValidate<SelfieStepValue>}
  */
 export function validate(values) {
-  return values.selfie ? [] : [{ fieldName: 'selfie', error: new RequiredValueMissingError() }];
+  return values.selfie ? [] : [{ field: 'selfie', error: new RequiredValueMissingError() }];
 }
 
 export default SelfieStep;

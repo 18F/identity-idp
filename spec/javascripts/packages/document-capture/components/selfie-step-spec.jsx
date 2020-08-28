@@ -12,7 +12,7 @@ describe('document-capture/components/selfie-step', () => {
       const result = validate(value);
 
       expect(result).to.have.lengthOf(1);
-      expect(result[0].fieldName).to.equal('selfie');
+      expect(result[0].field).to.equal('selfie');
       expect(result[0].error).to.be.instanceOf(RequiredValueMissingError);
     });
 
