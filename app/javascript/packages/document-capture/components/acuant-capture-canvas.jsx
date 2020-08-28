@@ -1,6 +1,23 @@
 import React, { useContext, useEffect } from 'react';
 import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
+import useI18n from '../hooks/use-i18n';
+
+/**
+ * @typedef AcuantCameraUIText
+ *
+ * @prop {string} NONE No document detected.
+ * @prop {string} SMALL_DOCUMENT Document does not fill frame.
+ * @prop {null} GOOD_DOCUMENT Document is good and capture is pending.
+ * @prop {string} CAPTURING Document is being captured.
+ * @prop {string} TAP_TO_CAPTURE Explicit user action to capture after delay.
+ */
+
+/**
+ * @typedef AcuantCameraUIOptions
+ *
+ * @prop {AcuantCameraUIText} text Camera UI text strings.
+ */
 
 /**
  * Document type.
@@ -26,7 +43,8 @@ import useAsset from '../hooks/use-asset';
  *
  * @prop {(
  *   callbacks: AcuantCameraUICallbacks,
- *   onError: AcuantFailureCallback
+ *   onFailure: AcuantFailureCallback,
+ *   options?: AcuantCameraUIOptions
  * )=>void} start Start capture.
  * @prop {()=>void} end End capture.
  */
@@ -93,6 +111,7 @@ function AcuantCaptureCanvas({
 }) {
   const { isReady } = useContext(AcuantContext);
   const { getAssetPath } = useAsset();
+  const { t } = useI18n();
 
   useEffect(() => {
     if (isReady) {
@@ -108,6 +127,15 @@ function AcuantCaptureCanvas({
           },
         },
         onImageCaptureFailure,
+        {
+          text: {
+            NONE: t('doc_auth.info.capture_status_none'),
+            SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
+            GOOD_DOCUMENT: null,
+            CAPTURING: t('doc_auth.info.capture_status_capturing'),
+            TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
+          },
+        },
       );
     }
 
