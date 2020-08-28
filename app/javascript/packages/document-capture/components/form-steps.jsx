@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from './button';
 import PageHeading from './page-heading';
 import useI18n from '../hooks/use-i18n';
@@ -47,6 +47,13 @@ import useHistoryParam from '../hooks/use-history-param';
  * @prop {FormStepValidate<Record<string,any>>} validate Step validity function. Given set of form
  * values, returns an object with keys from form values mapped to an error, if applicable. Returns
  * undefined or an empty object if there are no errors.
+ */
+
+/**
+ * @typedef FieldsRefEntry
+ *
+ * @prop {import('react').RefCallback<HTMLElement>} refCallback Ref callback.
+ * @prop {HTMLElement?=} element Element assigned by ref callback.
  */
 
 /**
@@ -127,15 +134,12 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step', initialStep);
   const { t } = useI18n();
-  const fields = useRef(/** @type {Record<string,HTMLElement?>} */ ({}));
-  useMemo(() => {
-    fields.current = {};
-  }, [stepName]);
+  const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
   const didSubmitWithErrors = useRef(false);
   useEffect(() => {
     if (activeErrors?.length && didSubmitWithErrors.current) {
       const firstActiveError = activeErrors[0];
-      fields.current[firstActiveError.fieldName]?.focus();
+      fields.current[firstActiveError.fieldName]?.element?.focus();
     }
 
     didSubmitWithErrors.current = false;
@@ -221,8 +225,16 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
         onChange={(nextValuesPatch) => {
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
         }}
-        registerField={(fieldName) => (fieldNode) => {
-          fields.current[fieldName] = fieldNode;
+        registerField={(fieldName) => {
+          if (!fields.current[fieldName]) {
+            fields.current[fieldName] = {
+              refCallback(fieldNode) {
+                fields.current[fieldName].element = fieldNode;
+              },
+            };
+          }
+
+          return fields.current[fieldName].refCallback;
         }}
       />
       <Button type="submit" isPrimary className="margin-y-5">
