@@ -9,24 +9,12 @@ class AccountShow
     @pii = determine_pii
   end
 
-  def header_partial
-    'accounts/header'
+  def show_personal_key_partial?
+    personal_key.present?
   end
 
-  def personal_key_partial
-    if personal_key.present?
-      'accounts/personal_key'
-    else
-      'shared/null'
-    end
-  end
-
-  def password_reset_partial
-    if decorated_user.password_reset_profile.present?
-      'accounts/password_reset'
-    else
-      'shared/null'
-    end
+  def show_password_reset_partial?
+    decorated_user.password_reset_profile.present?
   end
 
   def pending_profile_partial
@@ -39,10 +27,6 @@ class AccountShow
     else
       'shared/null'
     end
-  end
-
-  def badges_partial
-    'accounts/badges'
   end
 
   def unphishable_badge_partial

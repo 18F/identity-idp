@@ -4,11 +4,16 @@
 
 <% title t('titles.account') %>
 
-<%= render @view_model.personal_key_partial, view_model: @view_model %>
-<%= render @view_model.password_reset_partial, view_model: @view_model %>
-<%= render @view_model.pending_profile_partial, view_model: @view_model %>
+<% if @view_model.show_personal_key_partial? %>
+  <%= render 'accounts/personal_key', view_model: @view_model %>
+<% end %>
 
-<%= render @view_model.header_partial, view_model: @view_model %>
+<% if @view_model.show_password_reset_partial? %>
+  <%= render 'accounts/password_reset', view_model: @view_model %>
+<% end %>
+
+<%= render @view_model.pending_profile_partial, view_model: @view_model %>
+<%= render 'accounts/header', view_model: @view_model %>
 
 
 <div class="mb3 profile-info-box">
