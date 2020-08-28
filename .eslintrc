@@ -23,6 +23,7 @@
     "import/prefer-default-export": "off",
     "import/extensions": ["off", "never"],
     "indent": "off",
+    "max-classes-per-file": "off",
     "newline-per-chained-call": "off",
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
