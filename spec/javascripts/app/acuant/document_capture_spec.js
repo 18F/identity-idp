@@ -50,7 +50,7 @@ describe('acuant/document_capture', () => {
       loadAndInitializeAcuantSdk();
 
       const script = document.querySelector('script');
-      expect(script.src).to.eq('AcuantJavascriptWebSdk.min.js');
+      expect(script.src).to.eq('11.4.1/AcuantJavascriptWebSdk.min.js');
       expect(script.async).to.eq(true);
       expect(window.onAcuantSdkLoaded).to.eq(initializeAcuantSdk);
     });
@@ -120,6 +120,7 @@ describe('acuant/document_capture', () => {
     const event = { preventDefault: () => {} };
 
     beforeEach(() => {
+      window.AcuantCamera = { isCameraSupported: true };
       window.AcuantCameraUI = {
         start: sinon.spy(),
         end: sinon.spy(),
@@ -154,8 +155,9 @@ describe('acuant/document_capture', () => {
 
       expect(window.AcuantCameraUI.end.calledOnce).to.eq(false);
 
-      const successCallback = window.AcuantCameraUI.start.lastCall.args[0];
-      successCallback(response);
+      const callbacks = window.AcuantCameraUI.start.lastCall.args[0];
+      callbacks.onCaptured();
+      callbacks.onCropped(response);
 
       expect(window.AcuantCameraUI.end.calledOnce).to.eq(true);
 
@@ -178,8 +180,9 @@ describe('acuant/document_capture', () => {
 
       expect(window.AcuantCameraUI.end.calledOnce).to.eq(false);
 
-      const successCallback = window.AcuantCameraUI.start.lastCall.args[0];
-      successCallback(response);
+      const callbacks = window.AcuantCameraUI.start.lastCall.args[0];
+      callbacks.onCaptured();
+      callbacks.onCropped(response);
 
       expect(window.AcuantCameraUI.end.calledOnce).to.eq(true);
 

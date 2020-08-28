@@ -57,12 +57,17 @@ describe('document-capture/components/document-capture', () => {
     );
 
     initialize();
-    window.AcuantCameraUI.start.callsArgWithAsync(0, {
-      glare: 70,
-      sharpness: 70,
-      image: {
-        data: 'data:image/png;base64,',
-      },
+    window.AcuantCameraUI.start.callsFake(async (callbacks) => {
+      await Promise.resolve();
+      callbacks.onCaptured();
+      await Promise.resolve();
+      callbacks.onCropped({
+        glare: 70,
+        sharpness: 70,
+        image: {
+          data: 'data:image/png;base64,',
+        },
+      });
     });
 
     // Continue is enabled, but attempting to proceed without providing values will trigger error

@@ -261,9 +261,11 @@ Rails.application.routes.draw do
     delete '/users' => 'users#destroy', as: :destroy_user
 
     AcuantSdkController::ACUANT_SDK_STATIC_FILES.each do |acuant_sdk_file|
-      get "/verify/doc_auth/#{acuant_sdk_file}" => 'acuant_sdk#show'
-      get "/verify/capture_doc/#{acuant_sdk_file}" => 'acuant_sdk#show'
-      get "/verify/capture-doc/#{acuant_sdk_file}" => 'acuant_sdk#show'
+      constraints version: /\d+\.\d+\.\d+/ do
+        get "/verify/doc_auth(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
+        get "/verify/capture_doc(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
+        get "/verify/capture-doc(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
+      end
     end
 
     scope '/verify', as: 'idv' do
