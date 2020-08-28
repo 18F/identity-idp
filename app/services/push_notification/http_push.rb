@@ -6,6 +6,11 @@ module PushNotification
 
     attr_reader :event
 
+    # shorthand for creating an instance then calling #deliver, easier to stub
+    def self.deliver(event, now: now)
+      new(event, now: now).deliver
+    end
+
     def initialize(event, now: Time.zone.now)
       @event = event
       @now = now
@@ -14,7 +19,6 @@ module PushNotification
     def deliver
       event.user.
         service_providers.
-        includes(:agency).
         with_push_notification_urls.each do |service_provider|
           deliver_one(service_provider)
         end
