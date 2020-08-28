@@ -25,7 +25,7 @@ module DocAuth
         def error_messages
           return {} if successful_result?
           {
-            liveness: I18n.t('errors.doc_auth.selfie'),
+            selfie: I18n.t('errors.doc_auth.selfie'),
           }
         end
 

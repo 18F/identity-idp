@@ -11,6 +11,7 @@ import useI18n from '../hooks/use-i18n';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./form-steps').FormStep} FormStep */
+/** @typedef {import('../context/upload').UploadFieldError} UploadFieldError */
 
 /**
  * @typedef DocumentCaptureProps
@@ -22,12 +23,12 @@ import useI18n from '../hooks/use-i18n';
 /**
  * Returns error messages interspersed with line break React element.
  *
- * @param {string[]} errors Error messages.
+ * @param {UploadFieldError[]} errors Error messages.
  *
  * @return {ReactNode[]} Formatted error messages.
  */
 export function getFormattedErrorMessages(errors) {
-  return errors.flatMap((error, i) => [<br key={i} />, error]).slice(1);
+  return errors.flatMap((error, i) => [<br key={i} />, error.message]).slice(1);
 }
 
 /**
@@ -86,7 +87,7 @@ function DocumentCapture({ isLivenessEnabled = true }) {
         <Alert type="error" className="margin-bottom-2">
           {isFormEntriesError
             ? getFormattedErrorMessages(
-                /** @type {UploadFormEntriesError} */ (submissionError).rawErrorMessages,
+                /** @type {UploadFormEntriesError} */ (submissionError).rawErrors,
               )
             : t('errors.doc_auth.acuant_network_error')}
         </Alert>

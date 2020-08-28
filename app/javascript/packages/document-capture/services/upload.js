@@ -1,9 +1,10 @@
 /** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
 /** @typedef {import('../context/upload').UploadErrorResponse} UploadErrorResponse */
+/** @typedef {import('../context/upload').UploadFieldError} UploadFieldError */
 
 export class UploadFormEntriesError extends Error {
-  /** @type {string[]} */
-  rawErrorMessages = [];
+  /** @type {UploadFieldError[]} */
+  rawErrors = [];
 }
 
 /**
@@ -42,8 +43,8 @@ async function upload(payload, { endpoint, csrf }) {
   if (!result.success) {
     /** @type {UploadErrorResponse} */
     const errorResult = result;
-    const error = new UploadFormEntriesError(errorResult.errors.join(', '));
-    error.rawErrorMessages = errorResult.errors;
+    const error = new UploadFormEntriesError();
+    error.rawErrors = errorResult.errors;
     throw error;
   }
 
