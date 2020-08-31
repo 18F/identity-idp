@@ -59,6 +59,21 @@ class SecurityEventForm
     errors.full_messages.join(', ')
   end
 
+  def event_type
+    return nil if jwt_payload['events'].blank?
+
+    matching_event_types = jwt_payload['events'].keys & SecurityEvent::EVENT_TYPES
+    if matching_event_types.present?
+      matching_event_types.first
+    else
+      jwt_payload['events'].keys.first
+    end
+  end
+
+  def user
+    identity&.user
+  end
+
   private
 
   attr_reader :body, :jwt_payload, :jwt_headers
@@ -195,17 +210,6 @@ class SecurityEventForm
     jwt_payload.dig('events', event_type) || {}
   end
 
-  def event_type
-    return nil if jwt_payload['events'].blank?
-
-    matching_event_types = jwt_payload['events'].keys & SecurityEvent::EVENT_TYPES
-    if matching_event_types.present?
-      matching_event_types.first
-    else
-      jwt_payload['events'].keys.first
-    end
-  end
-
   def subject_type
     event.dig('subject', 'subject_type')
   end
@@ -233,10 +237,6 @@ class SecurityEventForm
       uuid: event.dig('subject', 'sub'),
       service_provider: service_provider.issuer,
     )
-  end
-
-  def user
-    identity&.user
   end
 
   def occurred_at

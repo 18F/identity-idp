@@ -21,7 +21,7 @@ class ResetUserPasswordAndSendEmail
     affected_emails.each do |email|
       user = User.find_with_email(email)
       if user
-        ResetUserPassword.new(user: user).call
+        ResetUserPassword.new(user: user, log_stdout: true).call
         notify_user_to_reset_password(user)
       else
         Kernel.puts "user with email #{email} not found"
