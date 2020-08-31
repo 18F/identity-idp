@@ -16,6 +16,7 @@ RSpec.describe Risc::SecurityEventsController do
   describe '#create' do
     let(:action) { post :create, body: jwt, as: :secevent_jwt }
     let(:jti) { SecureRandom.urlsafe_base64 }
+    let(:event_type) { SecurityEvent::AUTHORIZATION_FRAUD_DETECTED }
     let(:jwt_payload) do
       {
         iss: identity.service_provider,
@@ -23,7 +24,7 @@ RSpec.describe Risc::SecurityEventsController do
         iat: Time.zone.now.to_i,
         aud: api_risc_security_events_url,
         events: {
-          SecurityEvent::AUTHORIZATION_FRAUD_DETECTED => {
+          event_type => {
             subject: {
               subject_type: 'iss_sub',
               iss: root_url,
@@ -56,6 +57,18 @@ RSpec.describe Risc::SecurityEventsController do
              user_id: user.uuid)
 
       action
+    end
+
+    it 'resets the user password for authorization fraud detected events' do
+      expect { action }.to(change { user.reload.encrypted_password_digest })
+    end
+
+    context 'for identity fraud events' do
+      let(:event_type) { SecurityEvent::IDENTITY_FRAUD_DETECTED }
+
+      it 'does not reset the user password' do
+        expect { action }.to_not(change { user.reload.encrypted_password_digest })
+      end
     end
 
     context 'with a bad request' do
