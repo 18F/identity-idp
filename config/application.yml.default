@@ -66,12 +66,14 @@ in_person_proofing_enabled:
 job_run_healthchecks_enabled: 'true'
 lexisnexis_account_id: test_account
 lexisnexis_base_url: https://www.example.com
-lexisnexis_instant_verify_workflow: customers.gsa.instant.verify.workflow
 lexisnexis_password: test_password
-lexisnexis_phone_finder_workflow: customers.gsa.phonefinder.workflow
 lexisnexis_request_mode: testing
 lexisnexis_timeout: '45'
 lexisnexis_username: test_username
+lexisnexis_phone_finder_workflow: customers.gsa.phonefinder.workflow
+lexisnexis_instant_verify_workflow: customers.gsa.instant.verify.workflow
+lexisnexis_trueid_liveness_workflow: customers.gsa.instant.verify.workflow
+lexisnexis_trueid_noliveness_workflow: customers.gsa.instant.verify.workflow
 log_to_stdout: 'false'
 logins_per_email_and_ip_bantime: '60'
 logins_per_email_and_ip_period: '60'

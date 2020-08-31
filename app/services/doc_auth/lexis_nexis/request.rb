@@ -23,8 +23,9 @@ module DocAuth
 
       def headers
         {
-          'Authorization' => "Basic #{encoded_credentials}",
-          'Content-Type' => 'application/json',
+          Authorization: "Basic #{encoded_credentials}",
+          Accepts: 'application/json',
+          'Content-Type': 'application/json',
         }
       end
 
@@ -41,12 +42,14 @@ module DocAuth
 
       def settings
         {
+          Type: 'Initiate',
           Settings: {
             AccountNumber: account_id,
             Workflow: workflow,
             Mode: request_mode,
             Locale: I18n.locale,
-            Venue: "online",
+            Venue: 'online',
+            Reference: "TrueIDTestRef"
           },
         }
       end
@@ -56,7 +59,7 @@ module DocAuth
       end
 
       def workflow
-        Figaro.env.lexisnexis_instant_verify_workflow
+        raise NotImplementedError
       end
 
       def request_mode
@@ -114,6 +117,7 @@ module DocAuth
           http_response.status,
         ].join(' ')
         exception = RuntimeError.new(message)
+        NewRelic::Agent.notice_error(exception)
         DocAuth::Response.new(
           success: false,
           errors: [I18n.t('errors.doc_auth.lexisnexis_network_error')],
@@ -132,7 +136,7 @@ module DocAuth
 
       def encoded_credentials
         Base64.strict_encode64(
-          "#{Figaro.env.lexisnexis_username}:#{Figaro.env.lexisnexis_password}"
+          "#{Figaro.env.lexisnexis_username}:#{Figaro.env.lexisnexis_password}",
         )
       end
     end
