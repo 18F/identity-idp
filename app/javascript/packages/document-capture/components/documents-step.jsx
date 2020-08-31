@@ -79,4 +79,6 @@ export function validate(values) {
   }));
 }
 
+export { DOCUMENT_SIDES as fields };
+
 export default DocumentsStep;

@@ -2,8 +2,14 @@ import React, { useState, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import FormSteps from './form-steps';
 import { UploadFormEntriesError } from '../services/upload';
-import DocumentsStep, { validate as validateDocumentsStep } from './documents-step';
-import SelfieStep, { validate as validateSelfieStep } from './selfie-step';
+import DocumentsStep, {
+  validate as validateDocumentsStep,
+  fields as documentsStepFields,
+} from './documents-step';
+import SelfieStep, {
+  validate as validateSelfieStep,
+  fields as selfieStepFields,
+} from './selfie-step';
 import MobileIntroStep from './mobile-intro-step';
 import DeviceContext from '../context/device';
 import Submission from './submission';
@@ -61,14 +67,14 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       title: t('doc_auth.headings.document_capture'),
       component: DocumentsStep,
       validate: validateDocumentsStep,
-      fields: ['front', 'back'],
+      fields: documentsStepFields,
     },
     isLivenessEnabled && {
       name: 'selfie',
       title: t('doc_auth.headings.selfie'),
       component: SelfieStep,
       validate: validateSelfieStep,
-      fields: ['selfie'],
+      fields: selfieStepFields,
     },
   ].filter(Boolean));
 

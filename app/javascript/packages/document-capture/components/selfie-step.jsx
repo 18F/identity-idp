@@ -71,4 +71,6 @@ export function validate(values) {
   return values.selfie ? [] : [{ field: 'selfie', error: new RequiredValueMissingError() }];
 }
 
+export const fields = ['selfie'];
+
 export default SelfieStep;
