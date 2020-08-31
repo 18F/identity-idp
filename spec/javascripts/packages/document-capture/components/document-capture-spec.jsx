@@ -220,7 +220,7 @@ describe('document-capture/components/document-capture', () => {
 
   it('renders handled submission failure', async () => {
     const uploadError = new UploadFormEntriesError();
-    uploadError.rawErrors = [
+    uploadError.formEntryErrors = [
       { field: 'front', message: 'Image has glare' },
       { field: 'back', message: 'Please fill in this field' },
     ].map(toFormEntryError);

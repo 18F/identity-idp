@@ -9,7 +9,7 @@ export class UploadFormEntryError extends Error {
 
 export class UploadFormEntriesError extends Error {
   /** @type {UploadFormEntryError[]} */
-  rawErrors = [];
+  formEntryErrors = [];
 }
 
 /**
@@ -63,7 +63,7 @@ async function upload(payload, { endpoint, csrf }) {
     /** @type {UploadErrorResponse} */
     const errorResult = result;
     const error = new UploadFormEntriesError();
-    error.rawErrors = errorResult.errors.map(toFormEntryError);
+    error.formEntryErrors = errorResult.errors.map(toFormEntryError);
     throw error;
   }
 

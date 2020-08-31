@@ -77,12 +77,12 @@ describe('document-capture/services/upload', () => {
       throw new Error('This is a safeguard and should never be reached, since upload should error');
     } catch (error) {
       expect(error).to.be.instanceOf(UploadFormEntriesError);
-      expect(error.rawErrors[0]).to.be.instanceOf(UploadFormEntryError);
-      expect(error.rawErrors[0].field).to.equal('front');
-      expect(error.rawErrors[0].message).to.equal('Please fill in this field');
-      expect(error.rawErrors[1]).to.be.instanceOf(UploadFormEntryError);
-      expect(error.rawErrors[1].field).to.equal('back');
-      expect(error.rawErrors[1].message).to.equal('Please fill in this field');
+      expect(error.formEntryErrors[0]).to.be.instanceOf(UploadFormEntryError);
+      expect(error.formEntryErrors[0].field).to.equal('front');
+      expect(error.formEntryErrors[0].message).to.equal('Please fill in this field');
+      expect(error.formEntryErrors[1]).to.be.instanceOf(UploadFormEntryError);
+      expect(error.formEntryErrors[1].field).to.equal('back');
+      expect(error.formEntryErrors[1].message).to.equal('Please fill in this field');
     }
   });
 

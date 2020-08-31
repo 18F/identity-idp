@@ -93,7 +93,7 @@ function DocumentCapture({ isLivenessEnabled = true }) {
 
   if (submissionError) {
     if (submissionError instanceof UploadFormEntriesError) {
-      initialActiveErrors = submissionError.rawErrors.map((error) => ({
+      initialActiveErrors = submissionError.formEntryErrors.map((error) => ({
         field: error.field,
         error,
       }));
