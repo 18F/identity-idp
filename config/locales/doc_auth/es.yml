@@ -103,6 +103,7 @@ es:
         a servicios que manejan información confidencial.
     instructions:
       bullet1: Sube tu ID
+      bullet1a: Toma una foto de ti mismo
       bullet2: Confirma tu direccion
       bullet3: Asegure su cuenta
       bullet4: Recuperación de cuenta
@@ -132,6 +133,7 @@ es:
       take_pic3: No uses el flash en tu cámara
       take_pic4: Usa la orientación del paisaje
       text1: junto con su número de seguro social
+      text1a: con tu teléfono o webcam
       text2: usando un número de teléfono o dirección de correo
       text3: volviendo a ingresar su contraseña de login.gov
       text4: asegúrate de tener siempre acceso

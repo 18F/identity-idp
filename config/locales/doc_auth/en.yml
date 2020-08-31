@@ -98,6 +98,7 @@ en:
         information.
     instructions:
       bullet1: Upload your ID
+      bullet1a: Take a photo of yourself
       bullet2: Confirm your address
       bullet3: Secure your account
       bullet4: Account recovery
@@ -125,6 +126,7 @@ en:
       take_pic3: Do not use the flash on your camera
       take_pic4: Use the landscape orientation
       text1: along with your Social Security Number
+      text1a: with your phone or webcam
       text2: using a phone number or mailing address
       text3: by re-entering your login.gov password
       text4: make sure you always have access

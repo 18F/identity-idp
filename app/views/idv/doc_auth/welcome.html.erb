@@ -1,3 +1,4 @@
+<% step = 0 %>
 <% if flow_session[:error_message] %>
   <div class='alert alert-error'><%= flow_session[:error_message] %></div>
 <% end %>
@@ -9,7 +10,7 @@
 <ul class='list-reset'>
   <li class='pt2 pb1'>
     <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
-      1
+      <%= step += 1 %>
     </div>
     <div class='mr1 inline-block'>
       <div class='h1 inline-block bold'>
@@ -21,9 +22,25 @@
       </div>
     </div>
   </li>
+  <% if liveness_checking_enabled? %>
   <li class='pt2 pb1'>
     <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
-      2
+      <%= step += 1 %>
+    </div>
+    <div class='mr1 inline-block'>
+      <div class='h1 inline-block bold'>
+        <%= t('doc_auth.instructions.bullet1a') %>
+      </div>
+      <br/>
+      <div>
+        <%= t('doc_auth.instructions.text1a') %>
+      </div>
+    </div>
+  </li>
+  <% end %>
+  <li class='pt2 pb1'>
+    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <%= step += 1 %>
     </div>
     <div class='mr1 inline-block'>
       <div class='h1 inline-block bold'>
@@ -37,7 +54,7 @@
   </li>
   <li class='pt2 pb1'>
     <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
-      3
+      <%= step += 1 %>
     </div>
     <div class='mr1 inline-block'>
       <div class='h1 inline-block bold'>
@@ -51,7 +68,7 @@
   </li>
   <li class='pt2 pb1'>
     <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
-      4
+      <%= step += 1 %>
     </div>
     <div class='mr1 inline-block'>
       <div class='h1 inline-block bold'>

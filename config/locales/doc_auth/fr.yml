@@ -111,6 +111,7 @@ fr:
         permet d'accéder à des services traitant des informations sensibles.
     instructions:
       bullet1: Téléchargez votre identifiant
+      bullet1a: Prenez une photo de vous
       bullet2: Confirmez votre adresse
       bullet3: Sécurise ton compte
       bullet4: Récupération du compte
@@ -142,6 +143,7 @@ fr:
       take_pic3: Ne pas utiliser le flash sur votre appareil photo
       take_pic4: Utilisez l'orientation paysage
       text1: avec votre numéro de sécurité sociale
+      text1a: avec votre téléphone ou webcam
       text2: en utilisant un numéro de téléphone ou une adresse postale
       text3: en ressaisissant votre mot de passe login.gov
       text4: assurez-vous d'avoir toujours accès
