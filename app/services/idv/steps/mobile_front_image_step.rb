@@ -9,7 +9,7 @@ module Idv
           upload_front_image
         else
           failure(
-            create_document_response.errors.values.flatten.join(' '),
+            create_document_response.first_error_message,
             create_document_response.to_h,
           )
         end
@@ -23,7 +23,7 @@ module Idv
 
       def upload_front_image
         response = post_front_image
-        failure(response.errors.values.flatten.join(' '), response.to_h) unless response.success?
+        failure(response.first_error_message, response.to_h) unless response.success?
       end
     end
   end

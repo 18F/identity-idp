@@ -33,5 +33,11 @@ module DocAuth
         exception: exception,
       }.merge(extra)
     end
+
+    def first_error_message
+      return if errors.blank?
+      _key, message_or_messages = errors.first
+      Array(message_or_messages).first
+    end
   end
 end
