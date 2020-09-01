@@ -151,8 +151,8 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
             Result: 2,
             Alerts: [
               { Result: 1, Disposition: 'The birth date is valid' },
-              { Result: 2, Disposition: 'The document type could not be determined' }
-            ]
+              { Result: 2, Disposition: 'The document type could not be determined' },
+            ],
           }.to_json,
         )
       end
