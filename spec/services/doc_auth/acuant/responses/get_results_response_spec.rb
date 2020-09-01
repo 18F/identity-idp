@@ -142,5 +142,29 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
         expect(response.exception).to be_nil
       end
     end
+
+    context 'when there are alerts with success result codes' do
+      let(:http_response) do
+        instance_double(
+          Faraday::Response,
+          body: {
+            Result: 2,
+            Alerts: [
+              { Result: 1, Disposition: 'The birth date is valid' },
+              { Result: 2, Disposition: 'The document type could not be determined' }
+            ]
+          }.to_json,
+        )
+      end
+
+      it 'does not return errors for alerts with success result codes' do
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq(
+          # This is the error message for the error in the response fixture
+          results: [I18n.t('friendly_errors.doc_auth.document_type_could_not_be_determined')],
+        )
+        expect(response.exception).to be_nil
+      end
+    end
   end
 end
