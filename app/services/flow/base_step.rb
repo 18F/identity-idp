@@ -10,7 +10,7 @@ module Flow
     def base_call
       form_response = form_submit
       unless form_response.success?
-        flow_session[:error_message] = form_response.errors
+        flow_session[:error_message] = form_response.errors.values.flatten.join(' ')
         return form_response
       end
       create_response(form_response, call)

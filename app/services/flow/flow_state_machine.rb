@@ -73,7 +73,7 @@ module Flow
 
     def set_error_and_render(step, result)
       flow_session = flow.flow_session
-      flow_session[:error_message] = result.errors.values.join(' ')
+      flow_session[:error_message] = result.errors.values.flatten.join(' ')
       render_step(step, flow_session)
     end
 

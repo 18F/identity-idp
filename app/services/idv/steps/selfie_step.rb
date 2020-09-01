@@ -45,7 +45,7 @@ module Idv
           mark_step_incomplete(:back_image)
         end
         log_document_error(failure_response)
-        failure(failure_response.errors.first, failure_response.to_h)
+        failure(failure_response.errors.values.flatten.join(' '), failure_response.to_h)
       end
 
       def results_response
