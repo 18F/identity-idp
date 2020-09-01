@@ -23,6 +23,12 @@ class FormResponse
     )
   end
 
+  def first_error_message
+    return if errors.blank?
+    _key, message_or_messages = errors.first
+    Array(message_or_messages).first
+  end
+
   private
 
   attr_reader :success

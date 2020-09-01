@@ -30,7 +30,7 @@ module Idv
 
       def handle_document_verification_failure(get_results_response)
         mark_step_incomplete(:send_link)
-        failure(get_results_response.errors.first, get_results_response.to_h)
+        failure(get_results_response.first_error_message, get_results_response.to_h)
       end
 
       def render_step_incomplete_error

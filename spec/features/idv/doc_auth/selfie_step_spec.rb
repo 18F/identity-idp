@@ -58,6 +58,7 @@ feature 'doc auth self image step' do
 
     expect(page).to have_current_path(idv_doc_auth_front_image_step)
     expect(page).to have_content(t('errors.doc_auth.selfie'))
+    expect(page).to_not have_content('"results"') # don't show the error key, only messages
   end
 
   it 'logs the last doc auth error' do

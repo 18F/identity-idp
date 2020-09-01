@@ -36,7 +36,7 @@ module Idv
                  end
         log_document_error(response)
         extra = response.to_h.merge(notice)
-        failure(response.errors.first, extra)
+        failure(response.first_error_message, extra)
       end
 
       def handle_stored_result

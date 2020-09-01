@@ -6,7 +6,7 @@ module Idv
         if back_image_response.success?
           fetch_doc_auth_results_or_redirect_to_selfie
         else
-          failure(back_image_response.errors.first, back_image_response.to_h)
+          failure(back_image_response.first_error_message, back_image_response.to_h)
         end
       end
 
@@ -36,7 +36,7 @@ module Idv
           notice: I18n.t('errors.doc_auth.general_info'),
         )
         log_document_error(get_results_response)
-        failure(get_results_response.errors.first, extra)
+        failure(get_results_response.first_error_message, extra)
       end
 
       def form_submit
