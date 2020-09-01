@@ -52,21 +52,27 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
         Faraday::Response,
         body: {
           Result: 5,
-          Alerts: [first_alert],
+          Alerts: alerts,
         }.to_json,
       )
     end
 
-    context 'when the first error is barcode could not be read' do
-      let(:first_alert) { { Disposition: 'The 2D barcode could not be read' } }
+    context 'when the only unsuccessful alert is attention barcode could not be read' do
+      let(:alerts) do
+        [{ Result: 5, Disposition: 'The 2D barcode could not be read' },
+         { Result: 1, Disposition: 'The birth date is valid' }]
+      end
 
       it 'is a successful result' do
         expect(response.success?).to eq(true)
       end
     end
 
-    context 'when the first error code is something else' do
-      let(:first_alert) { { Disposition: 'The birth dates do not match' } }
+    context 'when there are other unsuccessful alerts' do
+      let(:alerts) do
+        [{ Result: 5, Disposition: 'The 2D barcode could not be read' },
+         { Result: 4, Disposition: 'The birth dates do not match' }]
+      end
 
       it 'is not a successful result' do
         expect(response.success?).to eq(false)

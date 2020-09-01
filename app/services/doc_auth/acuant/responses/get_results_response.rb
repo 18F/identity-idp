@@ -78,10 +78,16 @@ module DocAuth
         end
 
         def attention_with_barcode?
-          first_error = FriendlyError::FindKey.call(raw_alerts.first&.[]('Disposition'), 'doc_auth')
+          return false unless result_code == DocAuth::Acuant::ResultCodes::ATTENTION
 
-          result_code == DocAuth::Acuant::ResultCodes::ATTENTION &&
-            first_error == 'barcode_could_not_be_read'
+          raw_alerts.all? do |alert|
+            error_key = FriendlyError::FindKey.call(alert['Disposition'], 'doc_auth')
+            alert_result_code = DocAuth::Acuant::ResultCodes.from_int(alert['Result'])
+
+            alert_result_code == DocAuth::Acuant::ResultCodes::PASSED ||
+              (alert_result_code == DocAuth::Acuant::ResultCodes::ATTENTION &&
+               error_key == 'barcode_could_not_be_read')
+          end
         end
       end
     end
