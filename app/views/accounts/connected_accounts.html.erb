@@ -1,0 +1,15 @@
+<h1 class='mt0'>
+  <%= t('headings.account.connected_accounts') %>
+</h1>
+
+<p>
+  <%= t('account.connected_apps.description') %>
+</p>
+
+<div class="mb3 card profile-info-box border-bottom border-light-blue">
+  <div class='border-bottom border-light-blue'>
+    <% @view_model.connected_apps.each do |identity| %>
+      <%= render identity.connected_app_partial, identity: identity %>
+    <% end %>
+</div>
+

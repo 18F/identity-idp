@@ -158,9 +158,11 @@ Rails.application.routes.draw do
         as: :risc_configuration
 
     get '/account' => 'accounts#show'
+    get '/account/connected_accounts' => 'accounts#connected_accounts'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
     post '/account/delete' => 'users/delete#delete'
+    get '/account/history' => 'accounts#history'
     get '/account/reactivate/start' => 'reactivate_account#index', as: :reactivate_account
     put '/account/reactivate/start' => 'reactivate_account#update'
     get '/account/reactivate/verify_password' => 'users/verify_password#new', as: :verify_password
@@ -169,6 +171,7 @@ Rails.application.routes.draw do
         as: :verify_personal_key
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
          as: :create_verify_personal_key
+    get '/account/two_factor_authentication' => 'accounts#two_factor_authentication'
 
     get '/events/disavow' => 'event_disavowal#new', as: :event_disavowal
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal

@@ -1,7 +1,7 @@
-<nav class='bg-white'>
-  <div class='container px2 sm-py3 pt2 pb0'>
+<div class='bg-white'>
+  <div class='container sm-px2 sm-py3'>
     <div class='clearfix'>
-      <div class='mb1 sm-m0 col col-4'>
+      <div class='my1 ml2 sm-m0 col col-4'>
         <%= link_to image_tag(asset_url('logo.svg'),
                               alt: APP_NAME,
                               class: 'align-bottom',
@@ -21,9 +21,14 @@
           </p>
         </div>
       </div>
-      <div class='right sm-hide'>
-        <%= link_to t('links.sign_out'), destroy_user_session_path %>
-      </div>
+        <div class='sm-hide'>
+          <% if enable_mobile_nav %>
+            <button class='usa-menu-btn right'>Menu</button>
+          <% end %>
+          <div class='right mt1 mr2'>
+            <%= link_to t('links.sign_out'), destroy_user_session_path %>
+          </div>
+        </div>
     </div>
   </div>
-</nav>
+</div>

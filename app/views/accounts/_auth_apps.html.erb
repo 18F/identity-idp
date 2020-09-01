@@ -1,10 +1,10 @@
-<div class="clearfix border-top border-blue-light">
-  <div class="p2 col col-12">
-    <div class="col col-6 bold">
-      Authentication apps
-    </div>
+<div>
+  <div class="grid-row mb1 mt0">
+    <h2 class='grid-col-6 m0'>
+      <%= t('headings.account.authentication_apps') %>
+    </h2>
     <% if current_user.auth_app_configurations.count < Figaro.env.max_auth_apps_per_account.to_i %>
-      <div class="right-align col col-6">
+      <div class="right-align grid-col-6">
         <div class="btn btn-account-action rounded-lg bg-light-blue">
           <%= link_to t('forms.buttons.enable'), authenticator_setup_url %>
         </div>
@@ -12,19 +12,21 @@
     <% end %>
   </div>
 
-  <% MfaContext.new(current_user).auth_app_configurations.each do |auth_app_configuration| %>
-    <div class="p2 col col-12 border-top border-blue-light">
-      <div class="col col-8">
-        <div class="col col-12 sm-col-6 account-list-item">
-          <%= auth_app_configuration.name %>
+  <div class='border-bottom border-light-blue'>
+    <% MfaContext.new(current_user).auth_app_configurations.each do |auth_app_configuration| %>
+      <div class='p1 grid-row border-top border-left border-right border-light-blue'>
+        <div class="grid-col-8">
+          <div class="grid-col-12 mobile-lg:grid-col-6">
+            <%= auth_app_configuration.name %>
+          </div>
+          <div class="grid-col-12 mobile-lg:grid-col-6 truncate">
+            <%= PhoneConfigurationDecorator.new(auth_app_configuration).default_number_message %>
+          </div>
         </div>
-        <div class="col col-12 sm-col-6 truncate">
-          <%= PhoneConfigurationDecorator.new(auth_app_configuration).default_number_message %>
+        <div class="grid-col-4 right-align">
+          <%= render @view_model.totp_partial, id: auth_app_configuration.id %>
         </div>
       </div>
-      <div class="col col-4 right-align">
-        <%= render @view_model.totp_partial, id: auth_app_configuration.id %>
-      </div>
-    </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>

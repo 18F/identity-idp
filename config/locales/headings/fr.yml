@@ -3,10 +3,12 @@ fr:
   headings:
     account:
       account_history: Historique du compte
-      account_management: Gestion de compte
-      connected_apps: Applications
+      activity: Activité
+      authentication_apps: Applications d'authentification
+      connected_accounts: Vos comptes connectés
       devices: Dispositifs
       events: Événements
+      federal_employee_id: Identification des employés fédéraux
       login_info: Votre compte
       profile_info: Information du profil
       reactivate: Réactivez votre compte

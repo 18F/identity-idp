@@ -3,10 +3,12 @@ en:
   headings:
     account:
       account_history: Account history
-      account_management: Account Management
-      connected_apps: Applications
+      activity: Activity
+      authentication_apps: Authentication apps
+      connected_accounts: Your connected accounts
       devices: Devices
       events: Events
+      federal_employee_id: Federal Employee ID
       login_info: Your account
       profile_info: Profile information
       reactivate: Reactivate your account

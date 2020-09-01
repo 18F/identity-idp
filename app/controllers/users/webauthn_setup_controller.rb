@@ -34,7 +34,7 @@ module Users
       else
         handle_failed_delete
       end
-      redirect_to account_url
+      redirect_to account_two_factor_authentication_path
     end
 
     def show_delete
@@ -109,7 +109,7 @@ module Users
         render :new
       else
         flash[:error] = t('errors.webauthn_setup.general_error')
-        redirect_to account_url
+        redirect_to account_two_factor_authentication_path
       end
     end
 

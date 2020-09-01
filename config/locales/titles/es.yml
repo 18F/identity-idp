@@ -48,7 +48,6 @@ es:
     reactivate_account: Reactive su cuenta
     registrations:
       new: Regístrese para una cuenta
-    remembered_browsers: Navegadores recordados
     revoke_consent: Revocar consentimiento
     sign_up:
       completion_html: Tiene %{accent} con %{app}

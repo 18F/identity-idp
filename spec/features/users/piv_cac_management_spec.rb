@@ -18,7 +18,7 @@ feature 'PIV/CAC Management' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
-      visit account_path
+      visit account_two_factor_authentication_path
       click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
       expect(page.response_headers['Content-Security-Policy']).
@@ -32,6 +32,7 @@ feature 'PIV/CAC Management' do
                             subject: 'SomeIgnoredSubject')
 
       expect(current_path).to eq account_path
+      visit account_two_factor_authentication_path
       expect(page.find('.remove-piv')).to_not be_nil
 
       user.reload
@@ -61,7 +62,7 @@ feature 'PIV/CAC Management' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
-      visit account_path
+      visit account_two_factor_authentication_path
       click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
       nonce = piv_cac_nonce_from_form_action
@@ -73,6 +74,7 @@ feature 'PIV/CAC Management' do
 
       expect(current_path).to eq account_path
 
+      visit account_two_factor_authentication_path
       click_link t('forms.buttons.enable'), href: setup_piv_cac_url
       user.reload
       fill_in 'name', with: user.piv_cac_configurations.first.name

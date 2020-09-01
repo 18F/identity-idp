@@ -1,0 +1,33 @@
+<h1 class='mt0'>
+  <%= t('headings.account.two_factor') %>
+</h1>
+
+<div class="mb3 card profile-info-box">
+  <% if TwoFactorAuthentication::PhonePolicy.new(current_user).visible? %>
+    <%= render 'phone' %>
+  <% end %>
+</div>
+
+<div class="mb3 card profile-info-box">
+  <%= render 'auth_apps' %>
+</div>
+
+<% if TwoFactorAuthentication::WebauthnPolicy.new(current_user).visible? %>
+  <div class="mb3 card profile-info-box">
+    <%= render 'webauthn' %>
+  </div>
+<% end %>
+
+<div class="mb3 card profile-info-box">
+  <%= render 'piv_cac' %>
+</div>
+
+<div class="mb3 card profile-info-box">
+  <%= render 'backup_codes' %>
+</div>
+
+<% if @view_model.show_manage_personal_key_partial? %>
+  <div class="mb3 card profile-info-box">
+    <%= render 'accounts/manage_personal_key' %>
+  </div>
+<% end %>

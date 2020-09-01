@@ -2,11 +2,11 @@
 fr:
   account:
     connected_apps:
-      associated: Associé %{timestamp}
+      associated: Lié %{timestamp}
+      description: Avec votre compte login.gov, vous pouvez vous connecter en toute
+        sécurité à plusieurs comptes gouvernementaux en ligne. Vous trouverez ci-dessous
+        une liste de tous les comptes actuellement connectés.
     forget_all_browsers:
-      description: Utilisez-le pour déconnecter tous les navigateurs mémorisés de
-        votre compte login.gov
-      link_title: Oubliez tous les navigateurs
       longer_description: Une fois que vous aurez choisi "d'oublier tous les navigateurs",
         nous aurons besoin d'informations supplémentaires pour savoir qu'il s'agit
         bien de votre connexion à votre compte. Nous vous demanderons une méthode
@@ -18,8 +18,8 @@ fr:
       auth_app_enabled: activée
       backup_code_confirm_delete: Oui, supprimer les codes
       backup_code_confirm_regenerate: Oui, régénérer les codes
-      backup_codes_exist: généré
-      backup_codes_no_exist: non généré
+      backup_codes_exist: Généré
+      backup_codes_no_exist: Non généré
       default: défaut
       device: "%{browser} sur %{os}"
       dob: Date de naissance
@@ -27,7 +27,6 @@ fr:
       email_add: "+ Ajouter un email"
       email_addresses: Adresses courriel
       full_name: Nom complet
-      login: Information de connexion
       password: Mot de passe
       phone: Numéro de téléphone
       phone_add: "+ Ajouter un téléphone"
@@ -68,13 +67,28 @@ fr:
         ial2: Si vous avez ajouté votre carte PIV / CAC à votre compte, vous pouvez
           l’utiliser à la place de votre adresse courriel. Vous devrez fournir votre
           mot de passe pour déverrouiller votre profil.
+    navigation:
+      add_authentication_apps: Ajouter des applications d'authentification
+      add_email: Ajouter une adresse e-mail
+      add_federal_id: Ajouter un identifiant d'employé fédéral
+      add_phone_number: Ajouter un numéro de téléphone
+      add_security_key: Ajouter une clé de sécurité
+      connected_accounts: Vos comptes connectés
+      customer_support: Service client
+      delete_account: Supprimer le compte
+      edit_password: Modifier le mot de passe
+      forget_browsers: Oubliez tous les navigateurs
+      get_backup_codes: Obtenez des codes de secours
+      history: L'histoire
+      two_factor_authentication: Authentification à deux facteurs
+      your_account: Votre compte
     re_verify:
       banner: Nous avons masqué les informations de votre profil pour protéger votre
         vie privée.
       footer: Veuillez vous authentifier à nouveau pour afficher les informations
         de votre profil
     revoke_consent:
-      link_title: Révoquer le consentement
+      link_title: Déconnecter
       longer_description_html: Vos informations ne seront plus partagées avec %{service_provider}.
         Pour accéder à %{service_provider} à l'avenir, vous devez donner votre consentement
         pour partager vos informations. Vous pouvez donner votre consentement en allant

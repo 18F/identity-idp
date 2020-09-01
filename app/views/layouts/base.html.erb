@@ -58,15 +58,15 @@
     <%= render 'shared/banner' %>
     <div aria-label="main-navigation" role="navigation">
       <% if content_for?(:nav) %>
-      <%=   yield(:nav) %>
+        <%= yield(:nav) %>
       <% else %>
-      <%=   render decorated_session.nav_partial %>
+        <%= render decorated_session.nav_partial %>
       <% end %>
     </div>
     <div class="container">
-      <div class="px2 py2 sm-py5 sm-px6 mx-auto sm-mb5 border-box card <%= yield(:card_cls) %>" role="main">
+      <div class="px2 py2 sm-py5 sm-px6 mx-auto sm-mb5 border-box <%= local_assigns[:disable_card].present? ? '' : 'card' %> <%= yield(:card_cls) %>" role="main">
         <%= render 'shared/flashes' %>
-        <%= yield %>
+        <%= content_for?(:content) ? yield(:content) : yield %>
       </div>
     </div>
   </div>

@@ -15,9 +15,29 @@
   .nav-nonbranded {
     height: 72px;
   }
-
-  .nav-nonbranded {
+.nav-nonbranded {
     a { line-height: 17px; }
     img { height: 17px; }
+  }
+}
+
+.sidenav-mobile {
+  @include at-media("desktop") {
+    display: none;
+  }
+
+  .usa-nav__close {
+    @include add-background-svg("close-blue-60v-alt");
+    @include u-square(6);
+    background-position: center center;
+    background-repeat: no-repeat;
+  }
+}
+
+.sidenav {
+  display: none;
+
+  @include at-media("desktop") {
+    display: block;
   }
 }

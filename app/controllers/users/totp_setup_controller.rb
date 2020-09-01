@@ -34,7 +34,7 @@ module Users
     def disable
       process_successful_disable if MfaPolicy.new(current_user).multiple_factors_enabled?
 
-      redirect_to account_url
+      redirect_to account_two_factor_authentication_path
     end
 
     private
@@ -124,7 +124,9 @@ module Users
     end
 
     def cap_auth_app_count
-      redirect_to account_url if Figaro.env.max_auth_apps_per_account.to_i <= current_auth_app_count
+      if Figaro.env.max_auth_apps_per_account.to_i <= current_auth_app_count
+        redirect_to account_two_factor_authentication_path
+      end
     end
 
     def current_auth_app_count

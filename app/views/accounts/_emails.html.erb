@@ -1,8 +1,8 @@
-<div class='clearfix border-top border-blue-light'>
-  <div class='p2 col col-12'>
-    <div class='col col-6 bold'>
+<div class='clearfix border-bottom border-light-blue'>
+  <div class='col col-12 mb1 mt0'>
+    <h2 class='col col-6 m0'>
       <%= t('account.index.email_addresses') %>
-    </div>
+    </h2>
     <div class='right-align col col-6'>
       <% if EmailPolicy.new(current_user).can_add_email? %>
         <div class='btn btn-account-action rounded-lg bg-light-blue'>
@@ -12,7 +12,7 @@
     </div>
   </div>
   <% @view_model.decorated_user.visible_email_addresses.each do |email| %>
-    <div class='p2 col col-12 border-top border-blue-light account-list-item'>
+    <div class='p1 col col-12 border-top border-left border-right border-light-blue'>
       <div class='col col-8 sm-6'>
         <span class='break-word'>
           <%= email.email %>

@@ -1,6 +1,26 @@
 .profile-info-box {
   border: 0;
-  border-bottom: $border-width solid $border-color;
+  border-radius: 0;
+  margin-bottom: 0;
+  padding: $space-3;
+  overflow: hidden;
+
+  .bg-lightest-blue img {
+    margin-top: -2px;
+    vertical-align: middle;
+  }
+}
+
+@media #{$breakpoint-sm} {
+  .profile-info-box {
+    border-radius: $border-radius-md;
+    margin-bottom: $space-3;
+  }
+}
+
+.events-info-box {
+  border: 0;
+  border: $border-width solid $border-color;
   border-radius: 0;
   margin-bottom: 0;
   overflow: hidden;
@@ -12,7 +32,7 @@
 }
 
 @media #{$breakpoint-sm} {
-  .profile-info-box {
+  .events-info-box {
     border: $border-width solid $border-color;
     border-radius: $border-radius-md;
     margin-bottom: $space-3;
