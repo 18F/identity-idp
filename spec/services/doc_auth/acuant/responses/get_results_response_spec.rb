@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe DocAuth::Acuant::Responses::GetResultsResponse do
+  subject(:response) { described_class.new(http_response) }
+
   context 'with a successful result' do
     let(:http_response) do
       instance_double(
@@ -9,8 +11,6 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
       )
     end
     let(:raw_alerts) { JSON.parse(AcuantFixtures.get_results_response_success)['Alerts'] }
-
-    subject(:response) { described_class.new(http_response) }
 
     it 'returns a successful response with no errors' do
       expect(response.success?).to eq(true)
@@ -43,6 +43,34 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
         state_id_jurisdiction: 'ND',
         state_id_type: 'drivers_license',
       )
+    end
+  end
+
+  context 'with an attention result' do
+    let(:http_response) do
+      instance_double(
+        Faraday::Response,
+        body: {
+          Result: 5,
+          Alerts: [first_alert],
+        }.to_json,
+      )
+    end
+
+    context 'when the first error is barcode could not be read' do
+      let(:first_alert) { { Disposition: 'The 2D barcode could not be read' } }
+
+      it 'is a successful result' do
+        expect(response.success?).to eq(true)
+      end
+    end
+
+    context 'when the first error code is something else' do
+      let(:first_alert) { { Disposition: 'The birth dates do not match' } }
+
+      it 'is not a successful result' do
+        expect(response.success?).to eq(false)
+      end
     end
   end
 

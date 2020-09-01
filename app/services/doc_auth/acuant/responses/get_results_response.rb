@@ -66,11 +66,22 @@ module DocAuth
         end
 
         def raw_alerts
-          parsed_response_body['Alerts']
+          parsed_response_body['Alerts'] || []
         end
 
         def successful_result?
+          passed_result? || attention_with_barcode?
+        end
+
+        def passed_result?
           result_code == DocAuth::Acuant::ResultCodes::PASSED
+        end
+
+        def attention_with_barcode?
+          first_error = FriendlyError::FindKey.call(raw_alerts.first['Disposition'], 'doc_auth')
+
+          result_code == DocAuth::Acuant::ResultCodes::ATTENTION &&
+            first_error == 'barcode_could_not_be_read'
         end
       end
     end
