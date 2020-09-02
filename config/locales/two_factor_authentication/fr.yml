@@ -31,6 +31,7 @@ fr:
       piv_cac: PIV/CAC
       webauthn: Clé de sécurité
     header_text: Entrez votre code de sécurité
+    important_alert_icon: Icône d'alerte importante
     invalid_backup_code: Ce code de sauvegarde est invalide.
     invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l'entrer
       de nouveau ou demander un nouveau code de sécurité à utilisation unique.
@@ -129,10 +130,11 @@ fr:
     totp_fallback:
       question: Vous n'avez pas votre application d'authentification?
     totp_header_text: Entrez votre code d'application d'authentification
-    two_factor_aal3_choice: Additional authentication required
-    two_factor_aal3_choice_intro: This app requires a higher level of security. You
-      need to verify your identity using a physical device such as a security key
-      or government employee ID (PIV/CAC) to access your information.
+    two_factor_aal3_choice: Authentification supplémentaire requise
+    two_factor_aal3_choice_intro: Cette application nécessite un haut niveau de sécurité.
+      Vous devez vérifier votre identité à l'aide d'un appareil physique tel qu'une clé de
+      sécurité ou un identifiant d'employé du gouvernement (PIC/CAC) pour accéder à vos
+      informations.
     two_factor_choice: Configuration de la méthode d'authentification
     two_factor_choice_intro: Ajoutez une deuxième couche de sécurité pour que vous
       puissiez vous connecter à votre compte.
@@ -164,9 +166,10 @@ fr:
         physique que vous branchez ou qui est intégré à votre ordinateur ou à votre
         téléphone (il ressemble souvent à une clé USB).
     two_factor_hspd12_choice: Authentification supplémentaire requise
-    two_factor_hspd12_choice_intro: Cette application nécessite un niveau de sécurité
-      plus élevé. Vous devez vérifier votre identité à l'aide d'un identifiant d'employé
-      du gouvernement (PIV / CAC) pour accéder à vos informations.
+    two_factor_hspd12_choice_intro: Cette application nécessite un haut niveau de sécurité.
+      Vous devez vérifier votre identité à l'aide d'un appareil physique tel qu'une clé de
+      sécurité ou un identifiant d'employé du gouvernement (PIC/CAC) pour accéder à vos
+      informations.
     webauthn_fallback:
       question: Votre clé de sécurité n'est-elle pas disponible?
     webauthn_header_text: Présentez votre clé de sécurité
