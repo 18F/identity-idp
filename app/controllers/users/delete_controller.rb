@@ -43,7 +43,7 @@ module Users
 
     def send_push_notifications
       return if Figaro.env.push_notifications_enabled != 'true'
-      event = PushNotification::AccountDeleteEvent.new(user: user)
+      event = PushNotification::AccountPurgedEvent.new(user: current_user)
       PushNotification::HttpPush.deliver(event)
     end
   end
