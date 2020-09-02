@@ -2,6 +2,21 @@ module Idv
   module Steps
     class LinkSentStep < DocAuthBaseStep
       def call
+        if FeatureManagement.document_capture_step_enabled?
+          validate_document_capture_session_results
+        else
+          validate_doc_auth_results
+        end
+      end
+
+      private
+
+      def validate_document_capture_session_results
+        result = document_capture_session&.load_result
+        mark_steps_complete if result.present? && result.success?
+      end
+
+      def validate_doc_auth_results
         return render_step_incomplete_error unless take_photo_with_phone_successful?
 
         # The doc capture flow will have fetched the results already. We need
@@ -13,8 +28,6 @@ module Idv
           handle_document_verification_failure(get_results_response)
         end
       end
-
-      private
 
       def fetch_doc_auth_results
         DocAuth::Client.client.get_results(
@@ -47,7 +60,7 @@ module Idv
 
       def mark_steps_complete
         %i[send_link link_sent email_sent mobile_front_image mobile_back_image front_image
-           back_image selfie].each do |step|
+           back_image selfie document_capture].each do |step|
           mark_step_complete(step)
         end
       end

@@ -12,13 +12,51 @@ module Idv
       analytics_id: Analytics::CAPTURE_DOC,
     }.freeze
 
+    def index
+      ##
+      # This allows us to switch between the old doc auth step by step flow and
+      # the new document capture flow. When the old step by step flow is retired
+      # we should remove this logic and redirect the user directly to the show
+      # action.
+      #
+      if FeatureManagement.document_capture_step_enabled?
+        @flow.flow_session['Idv::Steps::MobileFrontImageStep'] = true
+        @flow.flow_session['Idv::Steps::CaptureMobileBackImageStep'] = true
+        @flow.flow_session['Idv::Steps::SelfieStep'] = true
+      else
+        @flow.flow_session['Idv::Steps::DocumentCaptureStep'] = true
+      end
+      redirect_to_step(next_step)
+    end
+
     private
 
     def ensure_user_id_in_session
-      return if session[:doc_capture_user_id] && token.blank?
-      result = CaptureDoc::ValidateRequestToken.new(token).call
+      return if session[:doc_capture_user_id] &&
+                token.blank? &&
+                document_capture_session_uuid.blank?
+
+      result = if FeatureManagement.document_capture_step_enabled?
+                 validate_document_capture_session_from_uuid
+               else
+                 CaptureDoc::ValidateRequestToken.new(token).call
+               end
+
       analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
+    end
+
+    def validate_document_capture_session_from_uuid
+      document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
+      FormResponse.new(
+        success: document_capture_session.present? && !document_capture_session.expired?,
+        errors: {},
+        extra: {
+          for_user_id: document_capture_session&.user_id,
+          user_id: 'anonymous-uuid',
+          event: 'Request token validation',
+        },
+      )
     end
 
     def add_unsafe_eval_to_capture_steps
@@ -43,6 +81,7 @@ module Idv
       if result.success?
         reset_session
         session[:doc_capture_user_id] = result.extra[:for_user_id]
+        session[:document_capture_session_uuid] = document_capture_session_uuid
       else
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
@@ -51,6 +90,10 @@ module Idv
 
     def token
       params[:token]
+    end
+
+    def document_capture_session_uuid
+      params['document-capture-session']
     end
   end
 end

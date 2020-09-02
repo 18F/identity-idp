@@ -42,4 +42,32 @@ describe DocumentCaptureSession do
       expect(result).to eq(nil)
     end
   end
+
+  describe '#expired?' do
+    before do
+      allow(Figaro.env).to receive(:doc_capture_request_valid_for_minutes).and_return('15')
+    end
+
+    context 'requested_at is nil' do
+      it 'returns true' do
+        record = DocumentCaptureSession.new
+
+        expect(record.expired?).to eq(true)
+      end
+    end
+
+    context 'requested_at is datetime' do
+      it 'returns true if expired' do
+        record = DocumentCaptureSession.new(requested_at: 1.hour.ago)
+
+        expect(record.expired?).to eq(true)
+      end
+
+      it 'returns false if not expired' do
+        record = DocumentCaptureSession.new(requested_at: 1.minute.ago)
+
+        expect(record.expired?).to eq(false)
+      end
+    end
+  end
 end

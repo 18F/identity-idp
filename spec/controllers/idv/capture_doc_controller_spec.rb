@@ -14,56 +14,114 @@ describe Idv::CaptureDocController do
   end
 
   let(:user) { create(:user) }
-  token = nil
 
   before do
     stub_analytics
     allow(@analytics).to receive(:track_event)
-    capture_doc = CaptureDoc::CreateRequest.call(user.id)
-    token = capture_doc.request_token
   end
 
   describe '#index' do
-    context 'with no token' do
-      it 'redirects to the root url' do
-        get :index
-
-        expect(response).to redirect_to root_url
+    context 'document capture step disabled' do
+      token = nil
+      before do
+        allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
+        capture_doc = CaptureDoc::CreateRequest.call(user.id)
+        token = capture_doc.request_token
       end
-    end
 
-    context 'with a bad token' do
-      it 'redirects to the root url' do
-        get :index, params: { token: 'foo' }
+      context 'with no token' do
+        it 'redirects to the root url' do
+          get :index
 
-        expect(response).to redirect_to root_url
-      end
-    end
-
-    context 'with an expired token' do
-      it 'redirects to the root url' do
-        Timecop.travel(Time.zone.now + 1.day) do
-          get :index, params: { token: token }
+          expect(response).to redirect_to root_url
         end
+      end
 
-        expect(response).to redirect_to root_url
+      context 'with a bad token' do
+        it 'redirects to the root url' do
+          get :index, params: { token: 'foo' }
+
+          expect(response).to redirect_to root_url
+        end
+      end
+
+      context 'with an expired token' do
+        it 'redirects to the root url' do
+          Timecop.travel(Time.zone.now + 1.day) do
+            get :index, params: { token: token }
+          end
+
+          expect(response).to redirect_to root_url
+        end
+      end
+
+      context 'with a good token' do
+        it 'redirects to the first step' do
+          get :index, params: { token: token }
+
+          expect(response).to redirect_to idv_capture_doc_step_url(step: :mobile_front_image)
+        end
+      end
+
+      context 'with a user id in session and no token' do
+        it 'redirects to the first step' do
+          mock_session(user.id)
+          get :index
+
+          expect(response).to redirect_to idv_capture_doc_step_url(step: :mobile_front_image)
+        end
       end
     end
 
-    context 'with a good token' do
-      it 'redirects to the first step' do
-        get :index, params: { token: token }
-
-        expect(response).to redirect_to idv_capture_doc_step_url(step: :mobile_front_image)
+    context 'document capture step enabled' do
+      session_uuid = nil
+      before do
+        allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(true)
+        document_capture_session = DocumentCaptureSession.create!(requested_at: Time.zone.now)
+        session_uuid = document_capture_session.uuid
       end
-    end
 
-    context 'with a user id in session and no token' do
-      it 'redirects to the first step' do
-        mock_session(user.id)
-        get :index
+      context 'with no session' do
+        it 'redirects to the root url' do
+          get :index
 
-        expect(response).to redirect_to idv_capture_doc_step_url(step: :mobile_front_image)
+          expect(response).to redirect_to root_url
+        end
+      end
+
+      context 'with a bad session' do
+        it 'redirects to the root url' do
+          get :index, params: { 'document-capture-session': 'foo' }
+
+          expect(response).to redirect_to root_url
+        end
+      end
+
+      context 'with an expired token' do
+        it 'redirects to the root url' do
+          Timecop.travel(Time.zone.now + 1.day) do
+            get :index, params: { 'document-capture-session': session_uuid }
+          end
+
+          expect(response).to redirect_to root_url
+        end
+      end
+
+      context 'with a good session uuid' do
+        it 'redirects to the first step' do
+          get :index, params: { 'document-capture-session': session_uuid }
+
+          expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
+        end
+      end
+
+      context 'with a user id in session and no session uuid' do
+        it 'redirects to the first step' do
+          mock_session(user.id)
+          get :index
+
+          expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
+        end
       end
     end
   end
@@ -74,18 +132,11 @@ describe Idv::CaptureDocController do
         mock_session(user.id)
       end
 
-      it 'renders the front_image template' do
-        mock_next_step(:mobile_front_image)
-        get :show, params: { step: 'mobile_front_image' }
+      it 'renders the document_capture template' do
+        mock_next_step(:document_capture)
+        get :show, params: { step: 'document_capture' }
 
-        expect(response).to render_template :mobile_front_image
-      end
-
-      it 'renders the back_image template' do
-        mock_next_step(:capture_mobile_back_image)
-        get :show, params: { step: 'capture_mobile_back_image' }
-
-        expect(response).to render_template :capture_mobile_back_image
+        expect(response).to render_template :document_capture
       end
 
       it 'renders the capture_complete template' do
@@ -113,7 +164,7 @@ describe Idv::CaptureDocController do
       end
 
       it 'add unsafe-eval to the CSP for capture steps' do
-        steps = %i[mobile_front_image capture_mobile_back_image selfie]
+        steps = %i[document_capture]
         steps.each do |step|
           mock_next_step(step)
 

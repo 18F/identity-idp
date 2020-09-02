@@ -7,11 +7,13 @@ feature 'doc capture mobile front image step' do
 
   token = nil
   before do
-    token = complete_doc_capture_steps_before_mobile_front_image_step
+    allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
+    complete_doc_capture_steps_before_first_step
+    token = DocCapture.last.request_token
   end
 
   it 'is on the correct page' do
-    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(token))
+    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step)
     expect(page).to have_content(t('doc_auth.headings.take_pic_front'))
   end
 
@@ -37,7 +39,7 @@ feature 'doc capture mobile front image step' do
     attach_image
     click_idv_continue
 
-    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(nil))
+    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step)
   end
 
   it 'resets the session if a link is used again' do
@@ -46,7 +48,7 @@ feature 'doc capture mobile front image step' do
 
     expect(page).to have_current_path(idv_capture_doc_capture_mobile_back_image_step)
 
-    visit idv_capture_doc_mobile_front_image_step(token)
-    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(token))
+    visit idv_capture_doc_url(token: token)
+    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step)
   end
 end

@@ -64,6 +64,7 @@ module Idv
       end
 
       def extract_pii_from_doc(response)
+        current_user = User.find(user_id)
         flow_session[:pii_from_doc] = response.pii_from_doc.merge(
           uuid: current_user.uuid,
           phone: current_user.phone_configurations.take&.phone,
