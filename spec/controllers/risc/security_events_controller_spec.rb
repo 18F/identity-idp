@@ -26,7 +26,7 @@ RSpec.describe Risc::SecurityEventsController do
         events: {
           event_type => {
             subject: {
-              subject_type: 'iss_sub',
+              subject_type: 'iss-sub',
               iss: root_url,
               sub: AgencyIdentityLinker.new(identity).link_identity.uuid,
             },
