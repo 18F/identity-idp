@@ -133,8 +133,8 @@ es:
     totp_header_text: Ingrese su código de la app de autenticación
     two_factor_aal3_choice: Se requiere autenticación adicional
     two_factor_aal3_choice_intro: Esta aplicación requiere un mayor nivel de seguridad.
-      Para poder acceder a su información, deberá verificar su identidad a través de un
-      dispositivo físico como una clave de seguridad o identificación de empleado
+      Para poder acceder a su información, deberá verificar su identidad a través
+      de un dispositivo físico como una clave de seguridad o identificación de empleado
       gubernamental (PIV/CAC)
     two_factor_choice: Configuración del método de autenticación
     two_factor_choice_intro: Agregue una segunda capa de seguridad para que solo usted
@@ -169,8 +169,8 @@ es:
         menudo parece una unidad flash USB).
     two_factor_hspd12_choice: Se requiere autenticación adicional
     two_factor_hspd12_choice_intro: Esta aplicación requiere un mayor nivel de seguridad.
-      Para poder acceder a su información, deberá verificar su identidad a través de un
-      dispositivo físico como una clave de seguridad o identificación de empleado
+      Para poder acceder a su información, deberá verificar su identidad a través
+      de un dispositivo físico como una clave de seguridad o identificación de empleado
       gubernamental (PIV/CAC)
     webauthn_fallback:
       question: "¿No tienes tu llave de seguridad disponible?"
