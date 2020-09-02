@@ -61,7 +61,7 @@ RSpec.describe PushNotification::HttpPush do
       it 'sends the agency-specific uuid' do
         stub_request(:post, sp_with_push_url.push_notification_url).
           with do |request|
-            payload, headers = JWT.decode(
+            payload, _headers = JWT.decode(
               request.body,
               RequestKeyManager.public_key,
               true,

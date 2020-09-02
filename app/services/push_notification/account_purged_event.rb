@@ -18,7 +18,7 @@ module PushNotification
           subject_type: 'iss-sub',
           iss: Rails.application.routes.url_helpers.root_url,
           sub: iss_sub,
-        }
+        },
       }
     end
   end
