@@ -5,7 +5,7 @@ module PushNotificationsHelper
         request.body,
         RequestKeyManager.public_key,
         true,
-        algorithm: 'RS256'
+        algorithm: 'RS256',
       )
 
       expect(request.headers['Content-Type']).to eq('application/secevent+jwt')
