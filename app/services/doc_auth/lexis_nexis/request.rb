@@ -2,7 +2,7 @@ module DocAuth
   module LexisNexis
     class Request
       def path
-        raise NotImplementedError
+        "/restws/identity/v2/#{account_id}/#{workflow}/conversation"
       end
 
       def body
@@ -49,7 +49,7 @@ module DocAuth
             Mode: request_mode,
             Locale: I18n.locale,
             Venue: 'online',
-            Reference: "TrueIDTestRef"
+            Reference: uuid
           },
         }
       end
@@ -58,12 +58,32 @@ module DocAuth
         Figaro.env.lexisnexis_account_id
       end
 
+      def username
+        Figaro.env.lexisnexis_username
+      end
+
+      def password
+        Figaro.env.lexisnexis_password
+      end
+
       def workflow
         raise NotImplementedError
       end
 
       def request_mode
         Figaro.env.lexisnexis_request_mode
+      end
+
+      #AM: We'll have to figure out if/how to make the prefix work with trueid.
+      def uuid
+        uuid = attributes.fetch(:uuid, SecureRandom.uuid)
+        uuid_prefix = attributes[:uuid_prefix]
+
+        if uuid_prefix.present?
+          "#{uuid_prefix}:#{uuid}"
+        else
+          uuid
+        end
       end
 
       private
@@ -135,9 +155,7 @@ module DocAuth
       end
 
       def encoded_credentials
-        Base64.strict_encode64(
-          "#{Figaro.env.lexisnexis_username}:#{Figaro.env.lexisnexis_password}",
-        )
+        Base64.strict_encode64("#{username}:#{password}")
       end
     end
   end

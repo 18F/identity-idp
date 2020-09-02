@@ -17,7 +17,7 @@ module DocAuth
         end
 
         def path
-          "/restws/identity/v2/#{account_id}/#{workflow}/conversation"
+          "/restws/identity/v3/#{account_id}/workflows/#{workflow}/conversation"
         end
 
         def body
@@ -43,8 +43,22 @@ module DocAuth
           :post
         end
 
-        protected def workflow
-          if(FeatureManagement.liveness_checking_enabled?)
+        protected
+
+        def account_id
+          Figaro.env.lexisnexis_trueid_account_id
+        end
+
+        def username
+          Figaro.env.lexisnexis_trueid_username
+        end
+
+        def password
+          Figaro.env.lexisnexis_trueid_password
+        end
+
+        def workflow
+          if liveness_checking_enabled
             Figaro.env.lexisnexis_trueid_liveness_workflow
           else
             Figaro.env.lexisnexis_trueid_noliveness_workflow
