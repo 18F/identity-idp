@@ -48,13 +48,18 @@ module DocAuth
         def error_messages_from_alerts
           return {} if successful_result?
 
-          messages = raw_alerts.map do |raw_alert|
+          unsuccessful_alerts = raw_alerts.filter do |raw_alert|
+            alert_result_code = DocAuth::Acuant::ResultCodes.from_int(raw_alert['Result'])
+            alert_result_code != DocAuth::Acuant::ResultCodes::PASSED
+          end
+
+          messages = unsuccessful_alerts.map do |alert|
             # If a friendly message exists for this alert, we want to return that.
             # If a friendly message does not exist, FriendlyError::Message will return the raw alert
             # to us. In that case we respond with a general error.
-            raw_alert_message = raw_alert['Disposition']
-            friendly_message = FriendlyError::Message.call(raw_alert_message, 'doc_auth')
-            next I18n.t('errors.doc_auth.general_error') if friendly_message == raw_alert_message
+            alert_message = alert['Disposition']
+            friendly_message = FriendlyError::Message.call(alert_message, 'doc_auth')
+            next I18n.t('errors.doc_auth.general_error') if friendly_message == alert_message
             friendly_message
           end
 
@@ -66,11 +71,28 @@ module DocAuth
         end
 
         def raw_alerts
-          parsed_response_body['Alerts']
+          parsed_response_body['Alerts'] || []
         end
 
         def successful_result?
+          passed_result? || attention_with_barcode?
+        end
+
+        def passed_result?
           result_code == DocAuth::Acuant::ResultCodes::PASSED
+        end
+
+        def attention_with_barcode?
+          return false unless result_code == DocAuth::Acuant::ResultCodes::ATTENTION
+
+          raw_alerts.all? do |alert|
+            error_key = FriendlyError::FindKey.call(alert['Disposition'], 'doc_auth')
+            alert_result_code = DocAuth::Acuant::ResultCodes.from_int(alert['Result'])
+
+            alert_result_code == DocAuth::Acuant::ResultCodes::PASSED ||
+              (alert_result_code == DocAuth::Acuant::ResultCodes::ATTENTION &&
+               error_key == 'barcode_could_not_be_read')
+          end
         end
       end
     end

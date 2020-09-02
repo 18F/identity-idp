@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe DocAuth::Acuant::Responses::GetResultsResponse do
+  subject(:response) { described_class.new(http_response) }
+
   context 'with a successful result' do
     let(:http_response) do
       instance_double(
@@ -9,8 +11,6 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
       )
     end
     let(:raw_alerts) { JSON.parse(AcuantFixtures.get_results_response_success)['Alerts'] }
-
-    subject(:response) { described_class.new(http_response) }
 
     it 'returns a successful response with no errors' do
       expect(response.success?).to eq(true)
@@ -43,6 +43,40 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
         state_id_jurisdiction: 'ND',
         state_id_type: 'drivers_license',
       )
+    end
+  end
+
+  context 'with an attention result' do
+    let(:http_response) do
+      instance_double(
+        Faraday::Response,
+        body: {
+          Result: 5,
+          Alerts: alerts,
+        }.to_json,
+      )
+    end
+
+    context 'when the only unsuccessful alert is attention barcode could not be read' do
+      let(:alerts) do
+        [{ Result: 5, Disposition: 'The 2D barcode could not be read' },
+         { Result: 1, Disposition: 'The birth date is valid' }]
+      end
+
+      it 'is a successful result' do
+        expect(response.success?).to eq(true)
+      end
+    end
+
+    context 'when there are other unsuccessful alerts' do
+      let(:alerts) do
+        [{ Result: 5, Disposition: 'The 2D barcode could not be read' },
+         { Result: 4, Disposition: 'The birth dates do not match' }]
+      end
+
+      it 'is not a successful result' do
+        expect(response.success?).to eq(false)
+      end
     end
   end
 
@@ -104,6 +138,30 @@ describe DocAuth::Acuant::Responses::GetResultsResponse do
         expect(response.errors).to eq(
           # This is the error message for the error in the response fixture
           results: [I18n.t('errors.doc_auth.general_error')],
+        )
+        expect(response.exception).to be_nil
+      end
+    end
+
+    context 'when there are alerts with success result codes' do
+      let(:http_response) do
+        instance_double(
+          Faraday::Response,
+          body: {
+            Result: 2,
+            Alerts: [
+              { Result: 1, Disposition: 'The birth date is valid' },
+              { Result: 2, Disposition: 'The document type could not be determined' },
+            ],
+          }.to_json,
+        )
+      end
+
+      it 'does not return errors for alerts with success result codes' do
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq(
+          # This is the error message for the error in the response fixture
+          results: [I18n.t('friendly_errors.doc_auth.document_type_could_not_be_determined')],
         )
         expect(response.exception).to be_nil
       end
