@@ -60,13 +60,18 @@ module PushNotification
         jti: SecureRandom.hex,
         aud: service_provider.push_notification_url,
         events: {
-          event.event_type => event.payload,
+          event.event_type => event.payload(iss_sub: agency_uuid(service_provider)),
         },
       }
     end
 
     def faraday
       Faraday.new { |faraday| faraday.adapter :net_http }
+    end
+
+    def agency_uuid(service_provider)
+      AgencyIdentity.find_by(user_id: event.user.id, agency_id: service_provider.agency_id)&.uuid ||
+        Identity.find_by(user_id: event.user.id, service_provider: service_provider.issuer)&.uuid
     end
   end
 end

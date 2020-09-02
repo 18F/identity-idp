@@ -45,6 +45,7 @@ class DeleteUserEmailForm
   end
 
   def notify_subscribers
+    return if Figaro.env.push_notifications_enabled != 'true'
     event = PushNotification::IdentifierRecycledEvent.new(user: user, email: email_address)
     PushNotification::HttpPush.deliver(event)
   end
