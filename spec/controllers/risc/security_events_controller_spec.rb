@@ -59,18 +59,6 @@ RSpec.describe Risc::SecurityEventsController do
       action
     end
 
-    it 'resets the user password for authorization fraud detected events' do
-      expect { action }.to(change { user.reload.encrypted_password_digest })
-    end
-
-    context 'for identity fraud events' do
-      let(:event_type) { SecurityEvent::IDENTITY_FRAUD_DETECTED }
-
-      it 'does not reset the user password' do
-        expect { action }.to_not(change { user.reload.encrypted_password_digest })
-      end
-    end
-
     context 'with a bad request' do
       before { jwt_payload[:aud] = 'http://bad.example' }
 

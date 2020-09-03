@@ -42,6 +42,12 @@ class SecurityEventForm
         user: user,
         occurred_at: occurred_at,
       )
+
+      if event_type == SecurityEvent::AUTHORIZATION_FRAUD_DETECTED
+        ResetUserPassword.new(user: user).call
+        UserEventCreator.new(current_user: user).
+          create_out_of_band_user_event(:password_invalidated)
+      end
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
@@ -57,21 +63,6 @@ class SecurityEventForm
     return if valid?
 
     errors.full_messages.join(', ')
-  end
-
-  def event_type
-    return nil if jwt_payload['events'].blank?
-
-    matching_event_types = jwt_payload['events'].keys & SecurityEvent::EVENT_TYPES
-    if matching_event_types.present?
-      matching_event_types.first
-    else
-      jwt_payload['events'].keys.first
-    end
-  end
-
-  def user
-    identity&.user
   end
 
   private
@@ -210,6 +201,17 @@ class SecurityEventForm
     jwt_payload.dig('events', event_type) || {}
   end
 
+  def event_type
+    return nil if jwt_payload['events'].blank?
+
+    matching_event_types = jwt_payload['events'].keys & SecurityEvent::EVENT_TYPES
+    if matching_event_types.present?
+      matching_event_types.first
+    else
+      jwt_payload['events'].keys.first
+    end
+  end
+
   def subject_type
     event.dig('subject', 'subject_type')
   end
@@ -237,6 +239,10 @@ class SecurityEventForm
       uuid: event.dig('subject', 'sub'),
       service_provider: service_provider.issuer,
     )
+  end
+
+  def user
+    identity&.user
   end
 
   def occurred_at

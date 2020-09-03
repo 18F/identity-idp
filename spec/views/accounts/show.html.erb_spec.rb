@@ -132,6 +132,20 @@ describe 'accounts/show.html.erb' do
     expect(rendered).to have_content t('headings.account.account_history')
   end
 
+  context 'events' do
+    let!(:event_without_ip) do
+      create(:event, event_type: :password_invalidated,
+                     user: user, created_at: Time.zone.now - 30.days)
+    end
+
+    it 'contains user events' do
+      render
+
+      expect(rendered).to have_content(event_without_ip.decorate.event_type)
+      expect(rendered).to_not have_content('IP address potentially located in')
+    end
+  end
+
   context 'connected apps' do
     it 'contains connected applications' do
       render
