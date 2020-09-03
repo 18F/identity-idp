@@ -13,7 +13,7 @@ es:
     email_deleted: Dirección de correo electrónico eliminada
     new_personal_key: Clave personal cambiado
     password_changed: Contraseña cambiada
-    password_invalidated: Contraseña invalidada
+    password_invalidated: Contraseña invalidada por %{app_name}
     personal_key_used: Clave personal utilizada para iniciar sesión
     phone_added: Teléfono añadido
     phone_changed: Número de teléfono cambiado

@@ -8,6 +8,15 @@ describe EventDecorator do
     it 'returns the localized event_type' do
       expect(decorator.event_type).to eq t('event_types.email_changed')
     end
+
+    context 'for an event type that interpolates the app name' do
+      let(:event) { build_stubbed(:event, event_type: :password_invalidated) }
+
+      it 'returns the localized event_type' do
+        expect(decorator.event_type).to eq t('event_types.password_invalidated', app_name: APP_NAME)
+        expect(decorator.event_type).to include(APP_NAME)
+      end
+    end
   end
 
   describe '#last_sign_in_location_and_ip' do
