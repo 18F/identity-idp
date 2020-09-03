@@ -13,7 +13,7 @@ en:
     email_deleted: Email address deleted
     new_personal_key: Personal key changed
     password_changed: Password changed
-    password_invalidated: Password invalidated by %{app_name}
+    password_invalidated: Password reset
     personal_key_used: Personal key used to sign in
     phone_added: Phone number added
     phone_changed: Phone number changed
