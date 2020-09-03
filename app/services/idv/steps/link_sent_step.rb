@@ -2,21 +2,6 @@ module Idv
   module Steps
     class LinkSentStep < DocAuthBaseStep
       def call
-        if FeatureManagement.document_capture_step_enabled?
-          validate_document_capture_session_results
-        else
-          validate_doc_auth_results
-        end
-      end
-
-      private
-
-      def validate_document_capture_session_results
-        result = document_capture_session&.load_result
-        mark_steps_complete if result.present? && result.success?
-      end
-
-      def validate_doc_auth_results
         return render_step_incomplete_error unless take_photo_with_phone_successful?
 
         # The doc capture flow will have fetched the results already. We need
@@ -29,10 +14,16 @@ module Idv
         end
       end
 
+      private
+
       def fetch_doc_auth_results
-        DocAuth::Client.client.get_results(
-          instance_id: doc_capture_record.acuant_token,
-        )
+        if FeatureManagement.document_capture_step_enabled?
+          document_capture_session_result
+        else
+          DocAuth::Client.client.get_results(
+            instance_id: doc_capture_record.acuant_token,
+          )
+        end
       end
 
       def handle_document_verification_success(get_results_response)
@@ -51,11 +42,19 @@ module Idv
       end
 
       def take_photo_with_phone_successful?
-        doc_capture_record&.acuant_token.present?
+        if FeatureManagement.document_capture_step_enabled?
+          document_capture_session_result.present?
+        else
+          doc_capture_record&.acuant_token.present?
+        end
       end
 
       def doc_capture_record
         @doc_capture_record ||= DocCapture.find_by(user_id: user_id)
+      end
+
+      def document_capture_session_result
+        @document_capture_session_result ||= document_capture_session&.load_result
       end
 
       def mark_steps_complete
