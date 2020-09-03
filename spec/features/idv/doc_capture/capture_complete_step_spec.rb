@@ -7,6 +7,7 @@ feature 'capture complete step' do
 
   before do
     complete_doc_capture_steps_before_capture_complete_step
+    allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
   end
 
   context 'document capture step enabled' do

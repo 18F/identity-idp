@@ -15,6 +15,7 @@ feature 'doc capture document capture step' do
       and_return(liveness_enabled)
     allow(Figaro.env).to receive(:acuant_sdk_document_capture_enabled).and_return('true')
     complete_doc_capture_steps_before_first_step(user)
+    allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
   end
 
   context 'when liveness checking is enabled' do

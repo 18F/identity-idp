@@ -10,6 +10,7 @@ feature 'doc capture mobile front image step' do
     allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
     complete_doc_capture_steps_before_first_step
     token = DocCapture.last.request_token
+    allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
   end
 
   it 'is on the correct page' do
