@@ -25,7 +25,7 @@ RSpec.describe SecurityEventForm do
       events: {
         SecurityEvent::AUTHORIZATION_FRAUD_DETECTED => {
           subject: {
-            subject_type: 'iss_sub',
+            subject_type: 'iss-sub',
             iss: root_url,
             sub: subject_sub,
           },
@@ -263,7 +263,7 @@ RSpec.describe SecurityEventForm do
 
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:subject_type]).to include('subject_type must be iss_sub')
+          expect(form.errors[:subject_type]).to include('subject_type must be iss-sub')
         end
       end
     end

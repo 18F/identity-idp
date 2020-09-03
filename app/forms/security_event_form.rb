@@ -165,11 +165,11 @@ class SecurityEventForm
   end
 
   def validate_subject_type
-    return if subject_type == 'iss_sub'
+    return if subject_type == 'iss-sub'
 
     errors.add(
       :subject_type,
-      t('risc.security_event.errors.subject_type_unsupported', expected_subject_type: 'iss_sub'),
+      t('risc.security_event.errors.subject_type_unsupported', expected_subject_type: 'iss-sub'),
     )
   end
 
