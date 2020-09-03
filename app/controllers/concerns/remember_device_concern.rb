@@ -62,8 +62,6 @@ module RememberDeviceConcern
   end
 
   def handle_valid_remember_device_cookie
-    # After RC 116 this next line can be removed
-    user_session[:mfa_device_remembered] = true
     user_session[:auth_method] = 'remember_device'
     mark_user_session_authenticated(:device_remembered)
     handle_valid_remember_device_analytics
