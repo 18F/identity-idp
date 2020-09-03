@@ -10,11 +10,11 @@ import render from '../../../support/render';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [
-    { name: 'first', title: 'First Title', component: () => <span>First</span> },
+    { name: 'first', title: 'First Title', form: () => <span>First</span> },
     {
       name: 'second',
       title: 'Second Title',
-      component: ({ value = {}, onChange, registerField }) => (
+      form: ({ value = {}, onChange, registerField }) => (
         // eslint-disable-next-line jsx-a11y/label-has-associated-control
         <label>
           Second
@@ -30,7 +30,7 @@ describe('document-capture/components/form-steps', () => {
       ),
       validate: (value) => (value.second ? [] : [{ field: 'second', error: new Error() }]),
     },
-    { name: 'last', title: 'Last Title', component: () => <span>Last</span> },
+    { name: 'last', title: 'Last Title', form: () => <span>Last</span> },
   ];
 
   let originalHash;
@@ -250,5 +250,19 @@ describe('document-capture/components/form-steps', () => {
 
     expect(window.location.hash).to.equal('#step=second');
     expect(document.activeElement).to.equal(getByLabelText('Second'));
+  });
+
+  it('renders with optional footer', () => {
+    const steps = [
+      {
+        name: 'one',
+        title: 'Step One',
+        form: () => <span>Form Fields</span>,
+        footer: () => <span>Footer</span>,
+      },
+    ];
+    const { getByText } = render(<FormSteps steps={steps} />);
+
+    expect(getByText('Footer')).to.be.ok();
   });
 });

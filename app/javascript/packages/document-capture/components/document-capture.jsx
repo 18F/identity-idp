@@ -44,18 +44,21 @@ function DocumentCapture({ isLivenessEnabled = true }) {
     isMobile && {
       name: 'intro',
       title: t('doc_auth.headings.document_capture'),
-      component: MobileIntroStep,
+      form: MobileIntroStep,
     },
     {
       name: 'documents',
       title: t('doc_auth.headings.document_capture'),
-      component: DocumentsStep,
+      form: DocumentsStep,
+      footer: isMobile
+        ? undefined
+        : () => <p>{t('doc_auth.info.document_capture_upload_image')}</p>,
       validate: validateDocumentsStep,
     },
     isLivenessEnabled && {
       name: 'selfie',
       title: t('doc_auth.headings.selfie'),
-      component: SelfieStep,
+      form: SelfieStep,
       validate: validateSelfieStep,
     },
   ].filter(Boolean));
