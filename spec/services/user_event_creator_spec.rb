@@ -103,7 +103,6 @@ describe UserEventCreator do
     end
   end
 
-
   describe '#create_out_of_band_user_event' do
     let(:request) { nil }
     let(:event_type) { :password_invalidated }

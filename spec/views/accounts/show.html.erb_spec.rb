@@ -139,12 +139,12 @@ describe 'accounts/show.html.erb' do
                      ip: nil)
     end
 
-    it 'contains user events' do
+    it 'contains user events that may not contain IP addresses' do
       render
 
       page = Capybara.string(rendered)
       events_section = page.find(
-        ".profile-info-box:contains('#{t('headings.account.account_history')}')"
+        ".profile-info-box:contains('#{t('headings.account.account_history')}')",
       )
 
       expect(events_section).to have_content(event_without_ip.decorate.event_type)
