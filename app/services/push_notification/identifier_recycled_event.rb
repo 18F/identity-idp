@@ -13,7 +13,7 @@ module PushNotification
       EVENT_TYPE
     end
 
-    def payload
+    def payload(*)
       {
         subject: {
           subject_type: 'email',

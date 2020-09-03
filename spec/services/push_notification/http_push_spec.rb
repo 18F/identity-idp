@@ -8,8 +8,10 @@ RSpec.describe PushNotification::HttpPush do
   let(:sp_with_push_url) { create(:service_provider, push_notification_url: 'http://foo.bar/push') }
   let(:sp_no_push_url) { create(:service_provider, push_notification_url: nil) }
 
-  before do
+  let!(:sp_with_push_url_identity) do
     IdentityLinker.new(user, sp_with_push_url.issuer).link_identity
+  end
+  let!(:sp_no_push_url_identity) do
     IdentityLinker.new(user, sp_no_push_url.issuer).link_identity
   end
 
@@ -49,6 +51,28 @@ RSpec.describe PushNotification::HttpPush do
         end
 
       deliver
+    end
+
+    context 'with an event that sends agency-specific iss_sub' do
+      let(:event) { PushNotification::AccountPurgedEvent.new(user: user) }
+
+      let(:agency_uuid) { AgencyIdentityLinker.new(sp_with_push_url_identity).link_identity.uuid }
+
+      it 'sends the agency-specific uuid' do
+        stub_request(:post, sp_with_push_url.push_notification_url).
+          with do |request|
+            payload, _headers = JWT.decode(
+              request.body,
+              RequestKeyManager.public_key,
+              true,
+              algorithm: 'RS256',
+            )
+
+            expect(payload['events'][event.event_type]['subject']['sub']).to eq(agency_uuid)
+          end
+
+        deliver
+      end
     end
 
     context 'with a timeout when posting to one url' do

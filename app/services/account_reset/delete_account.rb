@@ -47,7 +47,9 @@ module AccountReset
 
     def send_push_notifications
       return if Figaro.env.push_notifications_enabled != 'true'
-      PushNotification::AccountDelete.new.call(user.id)
+
+      event = PushNotification::AccountPurgedEvent.new(user: user)
+      PushNotification::HttpPush.deliver(event)
     end
 
     def notify_user_via_email_of_deletion
