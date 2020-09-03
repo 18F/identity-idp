@@ -37,26 +37,13 @@ module Idv
                 document_capture_session_uuid.blank?
 
       result = if FeatureManagement.document_capture_step_enabled?
-                 validate_document_capture_session_from_uuid
+                 CaptureDoc::ValidateDocumentCaptureSession.new(document_capture_session_uuid).call
                else
                  CaptureDoc::ValidateRequestToken.new(token).call
                end
 
       analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
-    end
-
-    def validate_document_capture_session_from_uuid
-      document_capture_session = DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
-      FormResponse.new(
-        success: document_capture_session.present? && !document_capture_session.expired?,
-        errors: {},
-        extra: {
-          for_user_id: document_capture_session&.user_id,
-          user_id: 'anonymous-uuid',
-          event: 'Request token validation',
-        },
-      )
     end
 
     def add_unsafe_eval_to_capture_steps
