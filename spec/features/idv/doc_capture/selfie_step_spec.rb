@@ -50,5 +50,15 @@ feature 'doc auth self image step' do
 
     expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(nil))
     expect(page).to have_content(t('errors.doc_auth.selfie'))
+
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_capture_doc_capture_mobile_back_image_step)
+
+    attach_image
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_capture_doc_capture_selfie_step)
   end
 end
