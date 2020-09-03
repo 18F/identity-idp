@@ -135,14 +135,20 @@ describe 'accounts/show.html.erb' do
   context 'events' do
     let!(:event_without_ip) do
       create(:event, event_type: :password_invalidated,
-                     user: user, created_at: Time.zone.now - 30.days)
+                     user: user,
+                     ip: nil)
     end
 
     it 'contains user events' do
       render
 
-      expect(rendered).to have_content(event_without_ip.decorate.event_type)
-      expect(rendered).to_not have_content('IP address potentially located in')
+      page = Capybara.string(rendered)
+      events_section = page.find(
+        ".profile-info-box:contains('#{t('headings.account.account_history')}')"
+      )
+
+      expect(events_section).to have_content(event_without_ip.decorate.event_type)
+      expect(events_section).to_not have_content('IP address potentially located in')
     end
   end
 
