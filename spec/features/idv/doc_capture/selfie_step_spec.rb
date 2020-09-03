@@ -9,6 +9,7 @@ feature 'doc auth self image step' do
     allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
     allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
     complete_doc_capture_steps_before_capture_complete_step
+    allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
   end
 
   it 'is on the correct page' do
