@@ -32,7 +32,7 @@ es:
     headings:
       address: Dirección de envio
       back: Parte posterior
-      capture_complete: Hemos verificado la identificación emitida por su estado
+      capture_complete: Hemos verificado su identificación emitida por el estado
       document_capture: Agregue su identificación emitida por el estado
       document_capture_back: Detrás de su identificación
       document_capture_front: Frente de su identificación

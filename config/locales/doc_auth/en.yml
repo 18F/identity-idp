@@ -31,7 +31,7 @@ en:
     headings:
       address: Mailing Address
       back: Back
-      capture_complete: We have verified your state issued ID
+      capture_complete: We have verified your state-issued ID
       document_capture: Add your state-issued ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
