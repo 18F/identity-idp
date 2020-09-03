@@ -1,0 +1,132 @@
+{
+   "Status":    {
+      "ConversationId": "31000175156586",
+      "RequestId": "399948246",
+      "TransactionStatus": "passed",
+      "Reference": "Reference1",
+      "ServerInfo": "server.server.regn.net"
+   },
+   "Products": [   {
+      "ProductType": "TrueID",
+      "ExecutedStepName": "True_ID_Step",
+      "ProductConfigurationName": "TrueID_Flow",
+      "ProductStatus": "pass",
+      "ParameterDetails":       [
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocumentName",
+            "Values": [{"Value": "Arkansas (AR) Drivers License Under 21"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocAuthResult",
+            "Values": [{"Value": "Passed"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocIssuerCode",
+            "Values": [{"Value": "AR"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocIssuerName",
+            "Values": [{"Value": "Arkansas"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocClassCode",
+            "Values": [{"Value": "DriversLicense"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocClass",
+            "Values": [{"Value": "DriversLicense"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocClassName",
+            "Values": [{"Value": "Drivers License"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocIsGeneric",
+            "Values": [{"Value": "false"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocIssue",
+            "Values": [{"Value": "2001"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocIssueType",
+            "Values": [{"Value": "Drivers License Under 21"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DocSize",
+            "Values": [{"Value": "ID1"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "ClassificationMode",
+            "Values": [{"Value": "Automatic"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "OrientationChanged",
+            "Values": [{"Value": "false"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "PresentationChanged",
+            "Values": [{"Value": "false"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "FullName",
+            "Values": [{"Value": "MARY MARSUPIAL"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "Sex",
+            "Values": [{"Value": "Female"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "Age",
+            "Values": [{"Value": "34"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DOB_Year",
+            "Values": [{"Value": "1985"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DOB_Month",
+            "Values": [{"Value": "1"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "DOB_Day",
+            "Values": [{"Value": "#"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "ExpirationDate_Year",
+            "Values": [{"Value": "2007"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "ExpirationDate_Month",
+            "Values": [{"Value": "1"}]
+         },
+                  {
+            "Group": "AUTHENTICATION_RESULT",
+            "Name": "ExpirationDate_Day",
+            "Values": [{"Value": "1"}]
+         }
+      ]
+   }]
+}
