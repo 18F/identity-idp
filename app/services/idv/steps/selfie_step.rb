@@ -22,9 +22,7 @@ module Idv
           instance_id: instance_id, image: image.read,
         )
 
-        if selfie_response.success?
-          handle_successful_selfie_match
-        end
+        handle_successful_selfie_match if selfie_response.success?
 
         selfie_response
       end
