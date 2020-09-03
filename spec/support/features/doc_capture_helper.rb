@@ -1,23 +1,50 @@
 module DocCaptureHelper
-  def complete_doc_capture_steps_before_first_step(user = user_with_2fa)
-    allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('desktop')
+  def doc_capture_request_uri(user = user_with_2fa)
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_link_sent_step
     url = Telephony::Test::Message.messages.last.body.split(' ').first
+    URI.parse(url).request_uri
+  end
+
+  def in_doc_capture_session(user = user_with_2fa)
+    allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('desktop')
+    request_uri = doc_capture_request_uri(user)
+    Capybara.using_session 'doc capture' do
+      allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
+      visit request_uri
+      yield
+      allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('desktop')
+    end
+  end
+
+  def complete_doc_capture_steps_before_first_step(user = user_with_2fa)
+    request_uri = doc_capture_request_uri(user)
     Capybara.reset_session!
     allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
-    visit URI.parse(url).request_uri
+    visit request_uri
   end
 
   def complete_doc_capture_steps_before_mobile_back_image_step(user = user_with_2fa)
-    complete_doc_capture_steps_before_first_step(user)
+    complete_doc_capture_steps_before_first_step(user) unless
+      current_path == idv_capture_doc_mobile_front_image_step
     attach_image
     click_idv_continue
   end
 
+  def complete_doc_capture_steps_before_document_capture_step(user = user_with_2fa)
+    complete_doc_capture_steps_before_first_step(user) unless
+      current_path == idv_capture_doc_document_capture_step
+  end
+
   def complete_doc_capture_steps_before_capture_complete_step(user = user_with_2fa)
-    complete_doc_capture_steps_before_mobile_back_image_step(user)
-    attach_image
+    if FeatureManagement.document_capture_step_enabled?
+      complete_doc_capture_steps_before_document_capture_step
+      attach_images(liveness_enabled: Figaro.env.liveness_checking_enabled == 'true')
+    else
+      complete_doc_capture_steps_before_mobile_back_image_step(user)
+      attach_image
+    end
+
     click_idv_continue
   end
 
