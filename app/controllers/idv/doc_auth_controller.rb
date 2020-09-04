@@ -17,13 +17,31 @@ module Idv
     }.freeze
 
     def doc_capture_poll
+      result = if FeatureManagement.document_capture_step_enabled?
+                 document_capture_session_poll_render_result
+               else
+                 doc_capture_poll_render_result
+               end
+
+      render result
+    end
+
+    def doc_capture_poll_render_result
       doc_capture = DocCapture.find_by(user_id: user_id)
-      render plain: 'Not authorized', status: :not_authorized if doc_capture.blank?
-      if doc_capture.acuant_token.present?
-        render plain: 'Complete', status: :ok
-      else
-        render plain: 'Pending', status: :accepted
-      end
+      return { plain: 'Not authorized', status: :not_authorized } if doc_capture.blank?
+      return { plain: 'Pending', status: :accepted } if doc_capture.acuant_token.blank?
+      { plain: 'Complete', status: :ok }
+    end
+
+    def document_capture_session_poll_render_result
+      session_uuid = flow_session[:document_capture_session_uuid]
+      document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
+      return { plain: 'Not authorized', status: :not_authorized } unless document_capture_session
+
+      result = document_capture_session.load_result
+      return { plain: 'Pending', status: :accepted } if result.blank?
+      return { plain: 'Not authorized', status: :not_authorized } unless result.success?
+      { plain: 'Complete', status: :ok }
     end
 
     def redirect_if_mail_bounced

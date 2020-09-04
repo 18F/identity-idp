@@ -20,6 +20,7 @@ module Idv
         response = post_images
         if response.success?
           save_proofing_components
+          document_capture_session.store_result_from_response(response)
           extract_pii_from_doc(response)
           response
         else

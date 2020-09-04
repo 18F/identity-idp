@@ -6,9 +6,10 @@ feature 'doc auth self image step' do
   include DocCaptureHelper
 
   before do
-    allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
+    allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
     allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
     complete_doc_capture_steps_before_capture_complete_step
+    allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
   end
 
   it 'is on the correct page' do
@@ -32,7 +33,7 @@ feature 'doc auth self image step' do
     attach_image
     click_idv_continue
 
-    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(nil))
+    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step)
     expect(page).to have_content(I18n.t('errors.doc_auth.general_error'))
   end
 
@@ -48,7 +49,7 @@ feature 'doc auth self image step' do
     attach_image
     click_idv_continue
 
-    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step(nil))
+    expect(page).to have_current_path(idv_capture_doc_mobile_front_image_step)
     expect(page).to have_content(t('errors.doc_auth.selfie'))
 
     attach_image

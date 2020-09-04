@@ -16,6 +16,11 @@ class DocumentCaptureSession < ApplicationRecord
     save!
   end
 
+  def expired?
+    return true unless requested_at
+    requested_at + Figaro.env.doc_capture_request_valid_for_minutes.to_i.minutes < Time.zone.now
+  end
+
   private
 
   def generate_result_id
