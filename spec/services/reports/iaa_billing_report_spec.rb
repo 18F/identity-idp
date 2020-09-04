@@ -118,8 +118,12 @@ describe Reports::IaaBillingReport do
     expect(subject.call).to eq([].to_json)
   end
 
-  it 'ignores sps without an IAA' do
+  it 'ignores sps without an IAA or a start date or an end date' do
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, ial: 1)
+    ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, ial: 1, iaa: iaa,
+                           iaa_start_date: iaa_start_date1)
+    ServiceProvider.create(issuer: issuer3, friendly_name: issuer3, ial: 1, iaa: iaa2,
+                           iaa_end_date: iaa_end_date1)
 
     expect(subject.call).to eq([].to_json)
   end
