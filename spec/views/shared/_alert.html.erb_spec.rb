@@ -8,7 +8,7 @@ describe 'shared/_alert.html.erb' do
   end
 
   it 'renders message from block' do
-    render 'shared/alert' do 'FYI' end
+    render('shared/alert') { 'FYI' }
 
     expect(rendered).to have_content('FYI')
   end
