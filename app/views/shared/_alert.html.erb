@@ -2,8 +2,11 @@
   type = local_assigns.fetch(:type, 'other')
   role = type === 'error' ? 'alert' : 'status'
 
-  classes = 'usa-alert usa-alert--' + type
-  classes += ' ' + local_assigns[:class] if local_assigns[:class]
+  classes = [
+    'usa-alert',
+    "usa-alert--#{type}",
+  ]
+  classes << local_assigns[:class] if local_assigns[:class]
   message = yield.presence || local_assigns.fetch(:message)
 %>
 
