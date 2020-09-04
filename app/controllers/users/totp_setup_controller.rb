@@ -124,9 +124,8 @@ module Users
     end
 
     def cap_auth_app_count
-      if Figaro.env.max_auth_apps_per_account.to_i <= current_auth_app_count
-        redirect_to account_two_factor_authentication_path
-      end
+      return unless Figaro.env.max_auth_apps_per_account.to_i <= current_auth_app_count
+      redirect_to account_two_factor_authentication_path
     end
 
     def current_auth_app_count
