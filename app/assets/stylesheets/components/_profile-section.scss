@@ -2,8 +2,8 @@
   border: 0;
   border-radius: 0;
   margin-bottom: 0;
-  padding: $space-3;
   overflow: hidden;
+  padding: $space-3;
 
   .bg-lightest-blue img {
     margin-top: -2px;
@@ -19,7 +19,6 @@
 }
 
 .events-info-box {
-  border: 0;
   border: $border-width solid $border-color;
   border-radius: 0;
   margin-bottom: 0;
