@@ -30,7 +30,7 @@ module Db
           select count(welcome_view_at) as welcome, count(upload_view_at) as upload_option,
           count(COALESCE(front_image_view_at,mobile_front_image_view_at)) as front_image,
           count(COALESCE(back_image_view_at,mobile_back_image_view_at,capture_mobile_back_image_view_at,present_cac_view_at)) as back_image,
-          count(ssn_view_at,enter_info_view_at) as ssn,
+          count(COALESCE(ssn_view_at,enter_info_view_at)) as ssn,
           count(verify_view_at) as verify_info,
           count(doc_success_view_at) as doc_success,
           count(verify_phone_view_at) as phone,
