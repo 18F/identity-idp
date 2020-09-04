@@ -1,7 +1,7 @@
 class UserEventCreator
   attr_reader :request, :current_user
 
-  def initialize(request, current_user)
+  def initialize(request: nil, current_user:)
     @request = request
     @current_user = current_user
   end
@@ -14,6 +14,11 @@ class UserEventCreator
     else
       create_event_for_new_device(event_type: event_type, user: user)
     end
+  end
+
+  # Create an event without a device or IP address
+  def create_out_of_band_user_event(event_type)
+    create_event_for_device(event_type: event_type, user: current_user, device: nil)
   end
 
   def create_user_event_with_disavowal(event_type, user = current_user)
@@ -60,7 +65,7 @@ class UserEventCreator
 
   def create_event_for_device(event_type:, user:, device:)
     Event.create(
-      user_id: user.id, device_id: device.id, ip: request.remote_ip, event_type: event_type,
+      user_id: user.id, device_id: device&.id, ip: request&.remote_ip, event_type: event_type,
     )
   end
 

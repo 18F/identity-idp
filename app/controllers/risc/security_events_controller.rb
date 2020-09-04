@@ -10,10 +10,6 @@ module Risc
       analytics.track_event(Analytics::SECURITY_EVENT_RECEIVED, result.to_h)
 
       if result.success?
-        if form.event_type == SecurityEvent::AUTHORIZATION_FRAUD_DETECTED
-          ResetUserPassword.new(user: form.user).call
-        end
-
         head :accepted
       else
         render status: :bad_request,
