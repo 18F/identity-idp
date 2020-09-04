@@ -14,6 +14,7 @@ feature 'doc auth ssn step' do
     it 'is on the correct page' do
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
       expect(page).to have_content(t('doc_auth.headings.ssn'))
+      expect(page).to have_content(t('doc_auth.headings.capture_complete'))
     end
 
     it 'proceeds to the next page with valid info' do
@@ -51,6 +52,7 @@ feature 'doc auth ssn step' do
       it 'is on the correct page' do
         expect(page).to have_current_path(idv_doc_auth_ssn_step)
         expect(page).to have_content(t('doc_auth.headings.ssn'))
+        expect(page).to have_content(t('doc_auth.headings.capture_complete'))
       end
 
       it 'proceeds to the next page with valid info' do

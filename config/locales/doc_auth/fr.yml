@@ -33,7 +33,7 @@ fr:
     headings:
       address: Adresse mail
       back: Verso
-      capture_complete: Nous avons vérifié votre ID émis par l'état
+      capture_complete: Nous avons vérifié votre pièce d'identité officielle
       document_capture: Ajoutez votre pièce d'identité émise par l'État
       document_capture_back: Dos de votre pièce d'identité
       document_capture_front: Recto de votre pièce d'identité
