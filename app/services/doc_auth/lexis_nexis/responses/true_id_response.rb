@@ -31,26 +31,16 @@ module DocAuth
           end
         end
 
-        def transaction_status
-          return @transaction_status if defined?(@transaction_status)
-
-          @transaction_status = parsed_response_body.dig(:Status, :TransactionStatus)
-        end
-
-        def product_status
-          return @product_status if defined?(@product_status)
-
-          @product_status = true_id_product.dig(:ProductStatus)
-        end
-
         def doc_auth_result
-          return @doc_auth_result if defined?(@doc_auth_result)
-
-          @doc_auth_result = true_id_product.dig(:AUTHENTICATION_RESULT, :DocAuthResult)
+          @doc_auth_result ||= true_id_product.dig(:AUTHENTICATION_RESULT, :DocAuthResult)
         end
 
         def true_id_product
           products[:TrueID]
+        end
+
+        def product_status
+          @product_status ||= true_id_product.dig(:ProductStatus)
         end
 
         def detail_groups

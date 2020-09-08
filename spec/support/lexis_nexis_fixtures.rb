@@ -8,6 +8,10 @@ module LexisNexisFixtures
     load_response_fixture('get_results_response_failure.json')
   end
 
+  def self.true_id_response_failure
+    load_response_fixture('true_id_response_failure.json')
+  end
+
   def self.load_response_fixture(filename)
     path = File.join(
       File.dirname(__FILE__),

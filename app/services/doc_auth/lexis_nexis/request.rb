@@ -31,7 +31,6 @@ module DocAuth
 
       def fetch
         http_response = send_http_request
-        return handle_invalid_response(http_response) unless http_response.success?
 
         handle_http_response(http_response)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
@@ -74,16 +73,9 @@ module DocAuth
         Figaro.env.lexisnexis_request_mode
       end
 
-      #AM: We'll have to figure out if/how to make the prefix work with trueid.
+      #AM: Need to account for the uuid-prefix when folding in the lexisnexis gem.
       def uuid
-        uuid = attributes.fetch(:uuid, SecureRandom.uuid)
-        uuid_prefix = attributes[:uuid_prefix]
-
-        if uuid_prefix.present?
-          "#{uuid_prefix}:#{uuid}"
-        else
-          uuid
-        end
+        SecureRandom.uuid
       end
 
       private
@@ -113,36 +105,21 @@ module DocAuth
           interval: 0.05,
           interval_randomness: 0.5,
           backoff_factor: 2,
-          retry_statuses: [404, 438, 439],
+          retry_statuses: [404, 500],
           retry_block: lambda do |_env, _options, retries, exc|
             NewRelic::Agent.notice_error(exc, custom_params: { retry: retries })
           end,
         }
 
         Faraday.new(request: faraday_request_params, url: url.to_s, headers: headers) do |conn|
-          conn.adapter :net_http
           conn.request :retry, retry_options
+          conn.adapter :net_http
         end
       end
 
       def faraday_request_params
         timeout = Figaro.env.lexisnexis_timeout&.to_i || 45
         { open_timeout: timeout, timeout: timeout }
-      end
-
-      def handle_invalid_response(http_response)
-        message = [
-          self.class.name,
-          'Unexpected HTTP response',
-          http_response.status,
-        ].join(' ')
-        exception = RuntimeError.new(message)
-        NewRelic::Agent.notice_error(exception)
-        DocAuth::Response.new(
-          success: false,
-          errors: [I18n.t('errors.doc_auth.lexisnexis_network_error')],
-          exception: exception,
-        )
       end
 
       def handle_connection_error(exception)

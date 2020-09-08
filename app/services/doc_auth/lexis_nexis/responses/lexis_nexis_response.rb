@@ -24,6 +24,9 @@ module DocAuth
 
         def initialize(http_response)
           @http_response = http_response
+          #AM: This doesn't really work yet, I don't think. We'll need to make sure things get wrapped up there.
+          handle_invalid_response(http_response) unless http_response.status == 200
+
           super(
             success: successful_result?,
             errors: error_messages,
@@ -58,6 +61,22 @@ module DocAuth
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
         end
 
+        def status
+          @status ||= parsed_response_body.dig(:Status)
+        end
+
+        def conversation_id
+          @conversation_id ||= status.dig(:ConversationId)
+        end
+
+        def reference
+          @reference ||= status.dig(:Reference)
+        end
+
+        def transaction_status
+          @transaction_status ||= status.dig(:TransactionStatus)
+        end
+
         def products
           @products ||= begin
             product_list = {}
@@ -80,6 +99,22 @@ module DocAuth
           end
           details.with_indifferent_access
         end
+      end
+
+      def handle_invalid_response(http_response)
+        message = [
+          self.class.name,
+          'Unexpected HTTP response',
+          http_response.status,
+        ].join(' ')
+
+        exception = RuntimeError.new(message)
+        NewRelic::Agent.notice_error(exception)
+        DocAuth::Response.new(
+          success: false,
+          errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
+          exception: exception,
+          )
       end
     end
   end
