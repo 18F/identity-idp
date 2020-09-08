@@ -42,3 +42,11 @@
     display: block;
   }
 }
+
+.authnav-greeting {
+  display: none;
+
+  @include at-media("desktop") {
+    display: block;
+  }
+}

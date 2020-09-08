@@ -1,13 +1,13 @@
 <div class='bg-white'>
-  <div class='container lg-px2 lg-py3'>
+  <div class='container sm-px2 sm-py3'>
     <div class='clearfix'>
-      <div class='my1 ml2 lg-m0 col col-4'>
+      <div class='my1 ml2 sm-m0 col col-4'>
         <%= link_to image_tag(asset_url('logo.svg'),
                               alt: APP_NAME,
                               class: 'align-bottom',
                               width: 170), root_path %>
       </div>
-      <div class='right-align col col-8 lg-display-inline-block display-none pr1'>
+      <div class='right-align col col-8 pr1 authnav-greeting'>
         <div class='inline-block mr1 truncate-inline'>
           <p class='inline-block truncate m0'>
             <%= t('account.welcome') %>
@@ -21,7 +21,7 @@
           </p>
         </div>
       </div>
-      <div class='lg-hide'>
+      <div class='desktop:display-none'>
         <% if enable_mobile_nav %>
           <button class='usa-menu-btn right'><%= t('account.navigation.menu') %></button>
         <% end %>
