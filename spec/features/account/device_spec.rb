@@ -12,7 +12,7 @@ describe 'Devices' do
 AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
            last_used_at: Time.zone.now,
            last_ip: '127.0.0.1')
-    visit account_path
+    visit account_history_path
   end
 
   scenario 'viewing devices' do

@@ -16,7 +16,7 @@ describe 'webauthn management' do
 
   def expect_webauthn_setup_success
     expect(page).to have_content(t('notices.webauthn_configured'))
-    expect(page).to have_current_path(account_path)
+    expect(page).to have_current_path(account_two_factor_authentication_path)
   end
 
   def expect_webauthn_setup_error

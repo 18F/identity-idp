@@ -11,8 +11,10 @@ feature 'removing a phone number from an account' do
 
     click_button t('forms.phone.buttons.delete')
 
-    expect(page).to have_content t('event_types.phone_removed')
     expect(page).to have_current_path(account_path)
+
+    visit account_history_path
+    expect(page).to have_content t('event_types.phone_removed')
     expect(PhoneConfiguration.find_by(id: phone_configuration.id)).to eq(nil)
     expect(MfaPolicy.new(user.reload).multiple_factors_enabled?).to eq false
   end

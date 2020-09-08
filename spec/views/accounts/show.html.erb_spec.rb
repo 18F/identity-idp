@@ -66,18 +66,6 @@ describe 'accounts/show.html.erb' do
     end
   end
 
-  it 'shows the auth nav bar' do
-    render
-
-    expect(view).to render_template(partial: '_nav_auth')
-  end
-
-  it 'shows the delete account link' do
-    render
-
-    expect(view).to have_link(t('account.navigation.delete_account'), href: account_delete_path)
-  end
-
   context 'phone listing and adding' do
     it 'renders the phone section' do
       render

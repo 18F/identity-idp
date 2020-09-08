@@ -44,7 +44,7 @@ describe 'Account history' do
   before do
     sign_in_and_2fa_user(user)
     build_account_history
-    visit account_path
+    visit account_history_path
   end
 
   scenario 'viewing account history' do

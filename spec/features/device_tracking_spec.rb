@@ -12,7 +12,7 @@ describe 'Device tracking' do
 
   context 'with account history' do
     it 'has account created events' do
-      visit account_path
+      visit account_history_path
       expect(page).to have_content(t('event_types.account_created'))
 
       click_link t('headings.account.events')

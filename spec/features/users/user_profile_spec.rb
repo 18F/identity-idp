@@ -28,7 +28,7 @@ feature 'User profile' do
       user.agency_identities << AgencyIdentity.create(user_id: user.id, agency_id: 1, uuid: '1234')
       visit account_path
 
-      find_sidenav_delete_account_button.click
+      find_sidenav_delete_account_link.click
       expect(User.count).to eq 1
       expect(AgencyIdentity.count).to eq 1
 
@@ -49,7 +49,7 @@ feature 'User profile' do
 
       visit account_path
 
-      find_sidenav_delete_account_button.click
+      find_sidenav_delete_account_link.click
 
       request = stub_push_notification_request(
         sp_push_notification_endpoint: push_notification_url,
@@ -75,7 +75,7 @@ feature 'User profile' do
       sign_in_live_with_2fa(profile.user)
       visit account_path
 
-      find_sidenav_delete_account_button.click
+      find_sidenav_delete_account_link.click
       expect(User.count).to eq 1
       expect(Profile.count).to eq 1
 
@@ -94,7 +94,7 @@ feature 'User profile' do
       expect(User.count).to eq 1
       sign_in_live_with_2fa(profile.user)
       visit account_path
-      find_sidenav_delete_account_button.click
+      find_sidenav_delete_account_link.click
       fill_in(t('idv.form.password'), with: profile.user.password)
       click_button t('users.delete.actions.delete')
 
