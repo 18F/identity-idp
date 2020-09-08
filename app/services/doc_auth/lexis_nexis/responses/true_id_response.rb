@@ -1,20 +1,13 @@
 module DocAuth
   module LexisNexis
     module Responses
-      class TrueIdResponse < DocAuth::Response
-        attr_reader :http_response
+      class TrueIdResponse < LexisNexisResponse
 
         def initialize(http_response)
-          @http_response = http_response
-          super(
-            success: successful_result?,
-            errors: error_messages,
-            extra: extra_attributes,
-            pii_from_doc: pii_from_doc,
-          )
+          super http_response
         end
 
-        # private
+         # private
 
         def successful_result?
           transaction_status == 'passed' &&
@@ -27,56 +20,46 @@ module DocAuth
         end
 
         def extra_attributes
+          true_id_product[:AUTHENTICATION_RESULT].delete_if do |k, _v|
+            PII_DETAILS.include? k
+          end
         end
 
         def pii_from_doc
-        end
-
-        def parsed_response_body
-          @parsed_response_body ||= JSON.parse(http_response.body)
+          true_id_product[:AUTHENTICATION_RESULT].keep_if do |k, _v|
+            PII_DETAILS.include? k
+          end
         end
 
         def transaction_status
           return @transaction_status if defined?(@transaction_status)
 
-          @transaction_status = parsed_response_body.dig('Status', 'TransactionStatus')
+          @transaction_status = parsed_response_body.dig(:Status, :TransactionStatus)
         end
 
         def product_status
           return @product_status if defined?(@product_status)
 
-          @product_status = true_id_product.dig('ProductStatus')
+          @product_status = true_id_product.dig(:ProductStatus)
         end
 
         def doc_auth_result
           return @doc_auth_result if defined?(@doc_auth_result)
 
-          @doc_auth_result = true_id_product.dig('authentication_result_details', 'DocAuthResult')
+          @doc_auth_result = true_id_product.dig(:AUTHENTICATION_RESULT, :DocAuthResult)
         end
 
         def true_id_product
-          products['TrueID']
+          products[:TrueID]
         end
 
-        def products
-          @products ||= begin
-            product_list = {}
-            parsed_response_body.dig('Products').each do |product|
-              product['authentication_result_details'] = authentication_result_details(product)
-              product_list[product['ProductType']] = product
-            end
-            product_list
-          end
-        end
-
-        def authentication_result_details(product)
-          details = {}
-          product['ParameterDetails'].each do |detail|
-            if detail['Group'] == 'AUTHENTICATION_RESULT'
-              details[detail['Name']] = detail['Values'][0]['Value']
-            end
-          end
-          details
+        def detail_groups
+          [
+            'AUTHENTICATION_RESULT'.freeze,
+            'IDAUTH_FIELD_DATA'.freeze,
+            'IDAUTH_FIELD_NATIVE_DATA'.freeze,
+            'PORTRAIT_MATCH_RESULT'.freeze,
+          ].freeze
         end
       end
     end

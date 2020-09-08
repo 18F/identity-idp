@@ -58,7 +58,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
     let(:image_upload_url) do
       URI.join(
         Figaro.env.lexisnexis_base_url,
-        '/restws/identity/v2/12345/customers.gsa.instant.verify.workflow/conversation'
+        '/restws/identity/v2/test_account/customers.gsa.instant.verify.workflow/conversation'
       )
     end
 
@@ -94,7 +94,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
 
     context 'when the results return failure' do
       it 'returns a FormResponse with failure' do
-        stub_request(:get, image_upload_url).to_return(body: LexisNexisFixtures.get_results_response_failure)
+        stub_request(:post, image_upload_url).to_return(body: LexisNexisFixtures.get_results_response_failure)
 
         result = subject.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
