@@ -1,25 +1,27 @@
 require 'rails_helper'
 
 describe EmailConfirmationTokenValidator do
-  describe '#new' do
-    subject { described_class.new(email_address, user) }
+  describe '#submit' do
+    subject { described_class.new(email_address, current_user) }
 
     context 'the email of the user does not match the user confirming' do
-      let(:user) { create(:user, :signed_up) }
+      let(:current_user) { create(:user, :signed_up) }
       let(:email_address) do
         create(:email_address, confirmed_at: nil, confirmation_sent_at: Time.zone.now)
       end
 
-      it 'does not set the email address' do
-        expect(subject.email_address).to eq(nil)
+      it 'returns an unsucessful result' do
+        result = subject.submit
+
+        expect(result.success?).to eq(false)
+        expect(subject.email_address_already_confirmed?).to eq(false)
+        expect(subject.confirmation_period_expired?).to eq(false)
+        expect(result.extra).to eq(user_id: email_address.user.uuid)
       end
     end
-  end
-
-  describe '#submit' do
-    subject { described_class.new(email_address) }
 
     context 'the email address exists and the token is not expired' do
+      let(:current_user) { nil }
       let(:email_address) do
         create(:email_address, confirmed_at: nil, confirmation_sent_at: Time.zone.now)
       end
@@ -36,6 +38,7 @@ describe EmailConfirmationTokenValidator do
     end
 
     context 'the email address exists and the token is expired' do
+      let(:current_user) { nil }
       let(:email_address) do
         create(:email_address, confirmed_at: nil, confirmation_sent_at: 3.days.ago)
       end
@@ -52,6 +55,7 @@ describe EmailConfirmationTokenValidator do
     end
 
     context 'the email address exists and is already confirmed' do
+      let(:current_user) { nil }
       let(:email_address) do
         create(:email_address, confirmed_at: 5.hours.ago, confirmation_sent_at: 6.hours.ago)
       end
@@ -68,6 +72,7 @@ describe EmailConfirmationTokenValidator do
     end
 
     context 'the email address does not exist' do
+      let(:current_user) { nil }
       let(:email_address) { nil }
 
       it 'returns an unsuccessful result' do
