@@ -28,7 +28,7 @@ module Users
       clear_piv_cac_information
       create_user_event(:piv_cac_disabled)
       flash[:success] = t('notices.piv_cac_disabled')
-      redirect_to account_url
+      redirect_to account_two_factor_authentication_path
     end
 
     def submit_new_piv_cac

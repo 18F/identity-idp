@@ -7,6 +7,7 @@
   <%= render 'accounts/password_reset', view_model: @view_model %>
 <% end %>
 <%= render @view_model.pending_profile_partial, view_model: @view_model %>
+<%= render 'accounts/header', view_model: @view_model %>
 
 <div class="mb3 card profile-info-box">
   <%= render 'emails' %>

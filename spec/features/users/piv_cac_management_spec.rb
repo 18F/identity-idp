@@ -46,12 +46,13 @@ feature 'PIV/CAC Management' do
       ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'foo', name: 'key1')
 
       sign_in_and_2fa_user(user)
+      visit account_two_factor_authentication_path
 
       expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
-      visit account_path
+      visit account_two_factor_authentication_path
 
       ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
-      visit account_path
+      visit account_two_factor_authentication_path
       expect(page).to_not have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
 
       visit setup_piv_cac_path
@@ -87,7 +88,7 @@ feature 'PIV/CAC Management' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
-      visit account_path
+      visit account_two_factor_authentication_path
       click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
       nonce = piv_cac_nonce_from_form_action
@@ -103,7 +104,7 @@ feature 'PIV/CAC Management' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
-      visit account_path
+      visit account_two_factor_authentication_path
       click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
       nonce = piv_cac_nonce_from_form_action
@@ -134,7 +135,7 @@ feature 'PIV/CAC Management' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
-      visit account_path
+      visit account_two_factor_authentication_path
       expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
     end
 
@@ -142,7 +143,7 @@ feature 'PIV/CAC Management' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
-      visit account_path
+      visit account_two_factor_authentication_path
 
       expect(page.find('.remove-piv')).to_not be_nil
       page.find('.remove-piv').click
@@ -150,7 +151,7 @@ feature 'PIV/CAC Management' do
       expect(current_path).to eq piv_cac_delete_path
       click_on t('account.index.piv_cac_confirm_delete')
 
-      expect(current_path).to eq account_path
+      expect(current_path).to eq account_two_factor_authentication_path
 
       expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
 
