@@ -35,15 +35,4 @@ class AccountsController < ApplicationController
       locked_for_session: pii_locked_for_session?(current_user),
     )
   end
-
-  def two_factor_authentication
-    session[:account_redirect_path] = account_two_factor_authentication_path
-    cacher = Pii::Cacher.new(current_user, user_session)
-    @view_model = AccountShow.new(
-      decrypted_pii: cacher.fetch,
-      personal_key: flash[:personal_key],
-      decorated_user: current_user.decorate,
-      locked_for_session: pii_locked_for_session?(current_user),
-    )
-  end
 end
