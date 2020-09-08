@@ -50,7 +50,8 @@ module UnconfirmedUserConcern
   end
 
   def email_confirmation_token_validator
-    @email_confirmation_token_validator ||= EmailConfirmationTokenValidator.new(@email_address)
+    @email_confirmation_token_validator ||= EmailConfirmationTokenValidator.
+                                            new(@email_address, current_user)
   end
 
   def process_valid_confirmation_token
