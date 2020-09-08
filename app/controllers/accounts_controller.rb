@@ -6,6 +6,7 @@ class AccountsController < ApplicationController
 
   def show
     analytics.track_event(Analytics::ACCOUNT_VISIT)
+    session[:account_redirect_path] = account_path
     cacher = Pii::Cacher.new(current_user, user_session)
     @view_model = AccountShow.new(
       decrypted_pii: cacher.fetch,
@@ -36,6 +37,7 @@ class AccountsController < ApplicationController
   end
 
   def two_factor_authentication
+    session[:account_redirect_path] = account_two_factor_authentication_path
     cacher = Pii::Cacher.new(current_user, user_session)
     @view_model = AccountShow.new(
       decrypted_pii: cacher.fetch,
