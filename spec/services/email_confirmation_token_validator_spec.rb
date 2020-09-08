@@ -1,6 +1,21 @@
 require 'rails_helper'
 
 describe EmailConfirmationTokenValidator do
+  describe '#new' do
+    subject { described_class.new(email_address, user) }
+
+    context 'the email of the user does not match the user confirming' do
+      let(:user) { create(:user, :signed_up) }
+      let(:email_address) do
+        create(:email_address, confirmed_at: nil, confirmation_sent_at: Time.zone.now)
+      end
+
+      it 'does not set the email address' do
+        expect(subject.email_address).to eq(nil)
+      end
+    end
+  end
+
   describe '#submit' do
     subject { described_class.new(email_address) }
 
