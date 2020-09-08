@@ -158,11 +158,11 @@ Rails.application.routes.draw do
         as: :risc_configuration
 
     get '/account' => 'accounts#show'
-    get '/account/connected_accounts' => 'accounts#connected_accounts'
+    get '/account/connected_accounts' => 'accounts/connected_accounts#show'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
     post '/account/delete' => 'users/delete#delete'
-    get '/account/history' => 'accounts#history'
+    get '/account/history' => 'accounts/history#show'
     get '/account/reactivate/start' => 'reactivate_account#index', as: :reactivate_account
     put '/account/reactivate/start' => 'reactivate_account#update'
     get '/account/reactivate/verify_password' => 'users/verify_password#new', as: :verify_password
