@@ -80,6 +80,7 @@ fr:
       forget_browsers: Oubliez tous les navigateurs
       get_backup_codes: Obtenez des codes de secours
       history: L'histoire
+      menu: Menu
       two_factor_authentication: Authentification à deux facteurs
       your_account: Votre compte
     re_verify:

@@ -79,6 +79,7 @@ es:
       forget_browsers: Olvídese de todos los navegadores
       get_backup_codes: Obtener códigos de respaldo
       history: Historia
+      menu: Menú
       two_factor_authentication: Autenticación de dos factores
       your_account: Su cuenta
     re_verify:

@@ -23,7 +23,7 @@
       </div>
         <div class='sm-hide'>
           <% if enable_mobile_nav %>
-            <button class='usa-menu-btn right'>Menu</button>
+            <button class='usa-menu-btn right'><%= t('account.navigation.menu') %></button>
           <% end %>
           <div class='right mt1 mr2'>
             <%= link_to t('links.sign_out'), destroy_user_session_path %>

@@ -77,6 +77,7 @@ en:
       forget_browsers: Forget all browsers
       get_backup_codes: Get backup codes
       history: History
+      menu: Menu
       two_factor_authentication: Two-factor authentication
       your_account: Your Account
     re_verify:
