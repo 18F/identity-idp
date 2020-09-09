@@ -11,7 +11,7 @@
   }
 }
 
-@media #{$breakpoint-sm} {
+@include at-media('mobile') {
   .profile-info-box {
     border-radius: $border-radius-md;
     margin-bottom: $space-3;
@@ -30,7 +30,7 @@
   }
 }
 
-@media #{$breakpoint-sm} {
+@include at-media('mobile') {
   .events-info-box {
     border: $border-width solid $border-color;
     border-radius: $border-radius-md;
