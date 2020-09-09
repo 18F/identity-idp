@@ -67,7 +67,8 @@ es:
           de su correo electrónico. Deberá proporcionar su contraseña para desbloquear
           su perfil.
     navigation:
-      access_services: Acceda a los beneficios y servicios de su gobierno desde su cuenta login.gov.
+      access_services: Acceda a los beneficios y servicios de su gobierno desde su
+        cuenta login.gov.
       add_authentication_apps: Agregar aplicaciones de autenticación
       add_email: Agregar dirección de correo electrónico
       add_federal_id: Agregar identificación de empleado federal
