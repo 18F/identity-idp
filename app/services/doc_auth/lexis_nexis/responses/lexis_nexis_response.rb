@@ -119,22 +119,22 @@ module DocAuth
             product[group][detail_name] = value
           end
         end
-      end
 
-      def handle_invalid_response(http_response)
-        message = [
-          self.class.name,
-          'Unexpected HTTP response',
-          http_response.status,
-        ].join(' ')
+        def handle_invalid_response(http_response)
+          message = [
+            self.class.name,
+            'Unexpected HTTP response',
+            http_response.status,
+          ].join(' ')
 
-        exception = RuntimeError.new(message)
-        NewRelic::Agent.notice_error(exception)
-        DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
-          exception: exception,
-          )
+          exception = RuntimeError.new(message)
+          NewRelic::Agent.notice_error(exception)
+          DocAuth::Response.new(
+            success: false,
+            errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
+            exception: exception,
+            )
+        end
       end
     end
   end
