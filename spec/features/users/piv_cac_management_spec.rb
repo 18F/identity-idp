@@ -56,7 +56,7 @@ feature 'PIV/CAC Management' do
       expect(page).to_not have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
 
       visit setup_piv_cac_path
-      expect(current_path).to eq account_path
+      expect(current_path).to eq account_two_factor_authentication_path
     end
 
     scenario 'disallows association of a piv/cac with the same name' do
