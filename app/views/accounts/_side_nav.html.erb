@@ -1,14 +1,14 @@
-<nav class='sidenav'>
-  <ul class='card usa-sidenav'>
+<nav class="sidenav">
+  <ul class="card usa-sidenav">
     <% Navigation.navigation_items(current_user).each do |nav_item| %>
-      <li class='usa-sidenav__item'>
+      <li class="usa-sidenav__item">
         <%= link_to nav_item.href, class: current_page?(nav_item.href) ? 'usa-current' : '' do %>
           <strong><%= nav_item.title %></strong>
         <% end %>
         <% if nav_item.children&.any? %>
-          <ul class='usa-sidenav__sublist'>
+          <ul class="usa-sidenav__sublist">
             <% nav_item.children.each do |child_nav_item| %>
-              <li class='usa-sidenav__item'>
+              <li class="usa-sidenav__item">
                 <%= link_to child_nav_item.title, child_nav_item.href, class: current_page?(child_nav_item.href) ? 'usa-current' : '' %>
               </li>
             <% end %>

@@ -1,18 +1,18 @@
-<nav role='navigation' class='usa-nav sidenav-mobile'>
-  <button class='usa-nav__close'>
-    <span class='usa-sr-only'>Close</span>
+<nav role="navigation" class="usa-nav sidenav-mobile">
+  <button class="usa-nav__close">
+    <span class="usa-sr-only">Close</span>
   </button>
-  <div class='usa-nav__inner'>
+  <div class="usa-nav__inner">
     <ul class="usa-nav__primary usa-accordion">
       <% Navigation.navigation_items(current_user).each do |nav_item| %>
-        <li class='usa-nav__primary-item'>
+        <li class="usa-nav__primary-item">
           <%= link_to nav_item.href, class: current_page?(nav_item.href) ? 'usa-current' : '' do %>
             <strong><%= nav_item.title %></strong>
           <% end %>
           <% if nav_item.children&.any? %>
-            <ul class='usa-nav__submenu'>
+            <ul class="usa-nav__submenu">
               <% nav_item.children.each do |child_nav_item| %>
-                <li class='usa-nav__submenu-item'>
+                <li class="usa-nav__submenu-item">
                   <%= link_to child_nav_item.title, child_nav_item.href, class: current_page?(child_nav_item.href) ? 'usa-current' : '' %>
                 </li>
               <% end %>

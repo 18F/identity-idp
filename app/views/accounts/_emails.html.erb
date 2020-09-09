@@ -1,20 +1,20 @@
-<div class='clearfix border-bottom border-light-blue'>
-  <div class='col col-12 mb1 mt0'>
-    <h2 class='col col-6 m0'>
+<div class="clearfix border-bottom border-light-blue">
+  <div class="col col-12 mb1 mt0">
+    <h2 class="col col-6 m0">
       <%= t('account.index.email_addresses') %>
     </h2>
-    <div class='right-align col col-6'>
+    <div class="right-align col col-6">
       <% if EmailPolicy.new(current_user).can_add_email? %>
-        <div class='btn btn-account-action rounded-lg bg-light-blue'>
+        <div class="btn btn-account-action rounded-lg bg-light-blue">
           <%= link_to t('account.index.email_add'), add_email_path %>
         </div>
       <% end %>
     </div>
   </div>
   <% @view_model.decorated_user.visible_email_addresses.each do |email| %>
-    <div class='p1 col col-12 border-top border-left border-right border-light-blue'>
-      <div class='col col-8 sm-6'>
-        <span class='break-word'>
+    <div class="p1 col col-12 border-top border-left border-right border-light-blue">
+      <div class="col col-8 sm-6">
+        <span class="break-word">
           <%= email.email %>
           &nbsp;
         </span>
@@ -22,7 +22,7 @@
           <%= t('email_addresses.unconfirmed') unless email.confirmed_at %>
         </span>
       </div>
-      <div class='col col-4 sm-6 right-align'>
+      <div class="col col-4 sm-6 right-align">
         <% if EmailPolicy.new(current_user).can_delete_email?(email) %>
           &nbsp; &nbsp;
           <%= render(

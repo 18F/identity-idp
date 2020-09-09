@@ -1,8 +1,8 @@
 <% if locked_for_session %>
-  <div class='mb2'>
-    <div class='usa-alert usa-alert--warning'>
-      <div class='usa-alert__body'>
-        <div class='usa-alert__text'>
+  <div class="mb2">
+    <div class="usa-alert usa-alert--warning">
+      <div class="usa-alert__body">
+        <div class="usa-alert__text">
           <%= t('account.re_verify.banner') %>
 
           <%= link_to(t('account.re_verify.footer'), user_password_confirm_path) %>
@@ -11,60 +11,60 @@
     </div>
   </div>
 <% end %>
-<div class='mb3 card profile-info-box'>
-  <div class='grid-row mb1 mt0'>
-    <div class='grid-col-12'>
-      <h2 class='m0'>
+<div class="mb3 card profile-info-box">
+  <div class="grid-row mb1 mt0">
+    <div class="grid-col-12">
+      <h2 class="m0">
         <%= t('headings.account.profile_info') %>
         <%= image_tag asset_url('lock.svg'), width: 8 %>
       </h2>
     </div>
   </div>
-  <div class='border-bottom border-light-blue'>
-    <div class='p1 grid-row border-top border-left border-right border-light-blue'>
-      <div class='mobile-lg:grid-col-4 bold'>
+  <div class="border-bottom border-light-blue">
+    <div class="p1 grid-row border-top border-left border-right border-light-blue">
+      <div class="mobile-lg:grid-col-4 bold">
         <%= t('account.index.full_name') %>
       </div>
-      <div class='mobile-lg:grid-col-8 px1 truncate'>
+      <div class="mobile-lg:grid-col-8 px1 truncate">
         <%= pii.full_name %>
       </div>
     </div>
-    <div class='p1 grid-row border-top border-left border-right border-light-blue'>
-      <div class='mobile-lg:grid-col-4 bold'>
+    <div class="p1 grid-row border-top border-left border-right border-light-blue">
+      <div class="mobile-lg:grid-col-4 bold">
         <%= t('account.index.address') %>
       </div>
-      <div class='mobile-lg:grid-col-8 px1'>
+      <div class="mobile-lg:grid-col-8 px1">
         <%= render 'shared/address', address: pii %>
       </div>
     </div>
-    <div class='p1 grid-row border-top border-left border-right border-light-blue'>
-      <div class='mobile-lg:grid-col-4 bold'>
+    <div class="p1 grid-row border-top border-left border-right border-light-blue">
+      <div class="mobile-lg:grid-col-4 bold">
         <%= t('account.index.dob') %>
       </div>
-      <div class='mobile-lg:grid-col-8 px1'>
+      <div class="mobile-lg:grid-col-8 px1">
         <%= pii.dob %>
       </div>
     </div>
-    <div class='p1 grid-row border-top border-left border-right border-light-blue'>
-      <div class='mobile-lg:grid-col-4 bold'>
+    <div class="p1 grid-row border-top border-left border-right border-light-blue">
+      <div class="mobile-lg:grid-col-4 bold">
         <%= t('account.index.ssn') %>
       </div>
-      <div class='mobile-lg:grid-col-8 px1'>
+      <div class="mobile-lg:grid-col-8 px1">
         ***-**-****
       </div>
     </div>
-    <div class='p1 grid-row border-top border-left border-right border-light-blue'>
-      <div class='mobile-lg:grid-col-4 bold'>
+    <div class="p1 grid-row border-top border-left border-right border-light-blue">
+      <div class="mobile-lg:grid-col-4 bold">
         <%= t('account.index.phone') %>
       </div>
-      <div class='mobile-lg:grid-col-8 px1'>
+      <div class="mobile-lg:grid-col-8 px1">
         <%= pii.phone %>
       </div>
     </div>
   </div>
   <% unless locked_for_session %>
-    <div class='grid-row bg-gray-lighter px2 py1 clearfix fs-12p'>
-      <div class='grid-col-12'>
+    <div class="grid-row bg-gray-lighter px2 py1 clearfix fs-12p">
+      <div class="grid-col-12">
         <%= image_tag asset_url('lock.svg'), width: 8, class: 'mr1' %>
         <%= t('account.security.text') %>
       </div>

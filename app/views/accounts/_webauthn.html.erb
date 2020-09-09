@@ -1,23 +1,23 @@
 <div>
-  <div class='grid-row mb1 mt0'>
-    <h2 class='grid-col-6 m0'>
+  <div class="grid-row mb1 mt0">
+    <h2 class="grid-col-6 m0">
       <%= t('account.index.webauthn') %>
     </h2>
-    <div class='right-align grid-col-6'>
-      <div class='btn btn-account-action rounded-lg bg-light-blue'>
+    <div class="right-align grid-col-6">
+      <div class="btn btn-account-action rounded-lg bg-light-blue">
         <%= link_to t('account.index.webauthn_add'), webauthn_setup_path %>
       </div>
     </div>
   </div>
 
-  <div class='border-bottom border-light-blue'>
+  <div class="border-bottom border-light-blue">
     <% MfaContext.new(current_user).webauthn_configurations.each do |cfg| %>
-      <div class='grid-row p1 border-top border-left border-right border-light-blue'>
-        <div class='grid-col-8 mobile-lg:grid-col-6 truncate'>
+      <div class="grid-row p1 border-top border-left border-right border-light-blue">
+        <div class="grid-col-8 mobile-lg:grid-col-6 truncate">
           <%= cfg.name %>
         </div>
         <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
-          <div class='grid-col-4 mobile-lg:grid-col-6 right-align'>
+          <div class="grid-col-4 mobile-lg:grid-col-6 right-align">
             <%= link_to(
               t('account.index.webauthn_delete'),
               webauthn_setup_delete_path(id: cfg.id),
@@ -27,7 +27,7 @@
           </div>
         <% end %>
       </div>
-      <div class='clearfix'></div>
+      <div class="clearfix"></div>
     <% end %>
   </div>
 </div>
