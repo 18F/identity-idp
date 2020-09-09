@@ -46,7 +46,7 @@
 .authnav-greeting {
   display: none;
 
-  @include at-media("desktop") {
+  @include at-media('desktop') {
     display: block;
   }
 }
