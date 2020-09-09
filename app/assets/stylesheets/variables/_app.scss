@@ -106,6 +106,8 @@ $container-skinny-width: 620px !default;
 $container-xskinny-width: 416px !default;
 $container-xxskinny-width: 296px !default;
 
+$mobile: '(max-width: 1023px)' !default;
+
 // Asset configuration for identity-style-guide
 $font-path: 'identity-style-guide/dist/assets/fonts';
 $image-path: 'identity-style-guide/dist/assets/img';
