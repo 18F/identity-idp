@@ -68,6 +68,7 @@ fr:
           l’utiliser à la place de votre adresse courriel. Vous devrez fournir votre
           mot de passe pour déverrouiller votre profil.
     navigation:
+      access_services: Accédez à vos avantages et services gouvernementaux depuis votre compte login.gov.
       add_authentication_apps: Ajouter des applications d'authentification
       add_email: Ajouter une adresse e-mail
       add_federal_id: Ajouter un identifiant d'employé fédéral
@@ -80,6 +81,7 @@ fr:
       forget_browsers: Oubliez tous les navigateurs
       get_backup_codes: Obtenez des codes de secours
       history: L'histoire
+      learn_more: En savoir plus sur login.gov
       menu: Menu
       two_factor_authentication: Authentification à deux facteurs
       your_account: Votre compte
