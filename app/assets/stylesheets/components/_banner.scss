@@ -14,7 +14,7 @@
   justify-content: center;
 }
 
-#gov-banner {
+.usa-banner__header + .usa-banner__content.usa-accordion__content {
   position: relative;
 }
 
@@ -32,15 +32,15 @@
   }
 
   .close-banner-how-you-know {
-    display: inline-block;
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    height: 1rem;
-    width: 1rem;
-    margin-left: 1.5rem;
-    border: 0;
     background: url(#{$image-path}/close-primary.svg) top left no-repeat;
     background-size: contain;
+    border: 0;
+    display: inline-block;
+    height: 1rem;
+    margin-left: 1.5rem;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    width: 1rem;
   }
 }
