@@ -3,7 +3,7 @@ class Navigation
 
   NavItem = Struct.new(:title, :href, :children)
 
-  def initialize(user: user)
+  def initialize(user:)
     @user = user
   end
 
