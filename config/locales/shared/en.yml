@@ -2,6 +2,7 @@
 en:
   shared:
     banner:
+      close: Close banner popup
       fake_site: A DEMO website of the United States government.
       gov_description: Federal government websites often end in .gov or .mil. Before
         sharing sensitive information, make sure you’re on a federal government site.

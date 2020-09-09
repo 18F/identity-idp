@@ -13,7 +13,7 @@
   flex-direction: column;
   justify-content: center;
 
-  &+ .usa-banner__content.usa-accordion__content {
+  + .usa-banner__content.usa-accordion__content {
     position: relative;
   }
 }
