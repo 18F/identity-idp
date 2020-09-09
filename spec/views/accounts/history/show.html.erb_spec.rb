@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'accounts/history.html.erb' do
+describe 'accounts/history/show.html.erb' do
   let(:user) { create(:user, :signed_up, :with_personal_key) }
   let(:decorated_user) { user.decorate }
 

@@ -3,7 +3,7 @@ module Users
     before_action :confirm_two_factor_authenticated
 
     rescue_from ActiveRecord::RecordNotFound do
-      redirect_to account_url
+      redirect_to account_connected_accounts_path
     end
 
     def show

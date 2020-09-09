@@ -1,5 +1,5 @@
 require 'rails_helper'
-describe 'accounts/connected_accounts.html.erb' do
+describe 'accounts/connected_accounts/show.html.erb' do
   let(:user) { create(:user, :signed_up, :with_personal_key) }
   let(:decorated_user) { user.decorate }
 
