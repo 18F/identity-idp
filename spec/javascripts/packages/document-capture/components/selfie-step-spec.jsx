@@ -35,13 +35,4 @@ describe('document-capture/components/selfie-step', () => {
 
     expect(onChange.getCall(0).args[0]).to.deep.equal({ selfie: file });
   });
-
-  it('restricts accepted file types', () => {
-    const onChange = sinon.spy();
-    const { getByLabelText } = render(<SelfieStep onChange={onChange} />);
-
-    const input = getByLabelText('doc_auth.headings.document_capture_selfie');
-
-    expect(input.getAttribute('accept')).to.equal('image/*');
-  });
 });

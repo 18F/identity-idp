@@ -3,15 +3,65 @@ import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitForElementToBeRemoved } from '@testing-library/dom';
 import sinon from 'sinon';
-import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
+import AcuantCapture, {
+  getInputAccept,
+  getMinimumFileSize,
+  ACCEPTABLE_FILE_SIZE_BYTES,
+} from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
 import render from '../../../support/render';
 import { useAcuant } from '../../../support/acuant';
+import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
+  const sandbox = useSandbox();
+
+  describe('getInputAccept', () => {
+    context('NODE_ENV=production', () => {
+      beforeEach(() => {
+        sandbox.stub(process.env, 'NODE_ENV').value('production');
+      });
+
+      it('returns array', () => {
+        expect(getInputAccept()).to.be.instanceOf(Array);
+      });
+    });
+
+    context('NODE_ENV=test', () => {
+      beforeEach(() => {
+        sandbox.stub(process.env, 'NODE_ENV').value('test');
+      });
+
+      it('returns undefined', () => {
+        expect(getInputAccept()).to.be.undefined();
+      });
+    });
+
+    context('NODE_ENV=development', () => {
+      beforeEach(() => {
+        sandbox.stub(process.env, 'NODE_ENV').value('development');
+      });
+
+      it('returns undefined', () => {
+        expect(getInputAccept()).to.be.undefined();
+      });
+    });
+  });
+
+  describe('getMinimumFileSize', () => {
+    it('returns zero for non-image file', () => {
+      const file = new window.File([], 'file.yml', { type: 'application/x-yaml' });
+      expect(getMinimumFileSize(file)).to.equal(0);
+    });
+
+    it('returns non-zero for image file', () => {
+      const file = new window.File([], 'file.png', { type: 'image/png' });
+      expect(getMinimumFileSize(file)).to.be.gt(0);
+    });
+  });
 
   context('mobile', () => {
     it('renders with assumed capture button support while acuant is not ready and on mobile', () => {
@@ -146,6 +196,8 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('calls onChange with the captured image on successful capture', async () => {
+      sandbox.stub(window.Blob.prototype, 'size').value(ACCEPTABLE_FILE_SIZE_BYTES);
+
       const onChange = sinon.mock();
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
@@ -305,6 +357,8 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('shows at most one error message between AcuantCapture and FileInput', async () => {
+      sandbox.stub(process.env, 'NODE_ENV').value('production');
+
       const { getByLabelText, getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
@@ -343,6 +397,8 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('removes error message once image is corrected', async () => {
+      sandbox.stub(window.Blob.prototype, 'size').value(ACCEPTABLE_FILE_SIZE_BYTES);
+
       const { getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
@@ -601,5 +657,19 @@ describe('document-capture/components/acuant-capture', () => {
 
     expect(defaultPrevented).to.be.false();
     expect(window.AcuantCameraUI.start.called).to.be.false();
+  });
+
+  it('restricts accepted file types', () => {
+    sandbox.stub(process.env, 'NODE_ENV').value('production');
+
+    const { getByLabelText } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantCapture label="Image" capture="environment" />
+      </AcuantContextProvider>,
+    );
+
+    const input = getByLabelText('Image');
+
+    expect(input.getAttribute('accept')).to.equal('image/*');
   });
 });

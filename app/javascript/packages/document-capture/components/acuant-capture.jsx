@@ -28,9 +28,6 @@ import FileBase64CacheContext from '../context/file-base64-cache';
  * @prop {'user'|'environment'=} capture Facing mode of capture. If capture is not specified and a
  * camera is supported, defaults to the Acuant environment camera capture.
  * @prop {string=} className Optional additional class names.
- * @prop {number=} minimumGlareScore Minimum glare score to be considered acceptable.
- * @prop {number=} minimumSharpnessScore Minimum sharpness score to be considered acceptable.
- * @prop {number=} minimumFileSize Minimum file size (in bytes) to be considered acceptable.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  * @prop {ReactNode=} errorMessage Error to show.
  */
@@ -40,24 +37,42 @@ import FileBase64CacheContext from '../context/file-base64-cache';
  *
  * @type {number}
  */
-const DEFAULT_ACCEPTABLE_GLARE_SCORE = 50;
+const ACCEPTABLE_GLARE_SCORE = 50;
 
 /**
  * The minimum sharpness score value to be considered acceptable.
  *
  * @type {number}
  */
-const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 50;
+const ACCEPTABLE_SHARPNESS_SCORE = 50;
 
 /**
  * The minimum file size (bytes) for an image to be considered acceptable.
  *
  * @type {number}
  */
-const DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES =
-  process.env.ACUANT_MINIMUM_FILE_SIZE === undefined
-    ? 250 * 1024
-    : Number(process.env.ACUANT_MINIMUM_FILE_SIZE);
+export const ACCEPTABLE_FILE_SIZE_BYTES = 250 * 1024;
+
+/**
+ * Returns attribute value to assign to the input field, depending on the current environment.
+ *
+ * @return {string[]=} Minimum file size, in bytes.
+ */
+export function getInputAccept() {
+  return process.env.NODE_ENV === 'production' ? ['image/*'] : undefined;
+}
+
+/**
+ * Given a file, returns minimum acceptable file size in bytes, depending on the type of file and
+ * the current environment.
+ *
+ * @param {Blob} file File to assess.
+ *
+ * @return {number} Minimum file size, in bytes.
+ */
+export function getMinimumFileSize(file) {
+  return file.type.startsWith('image/') ? ACCEPTABLE_FILE_SIZE_BYTES : 0;
+}
 
 /**
  * Returns an instance of File representing the given data URL.
@@ -90,9 +105,6 @@ function AcuantCapture(
     onChange = () => {},
     capture,
     className,
-    minimumGlareScore = DEFAULT_ACCEPTABLE_GLARE_SCORE,
-    minimumSharpnessScore = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-    minimumFileSize = DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES,
     allowUpload = true,
     errorMessage,
   },
@@ -151,7 +163,7 @@ function AcuantCapture(
    * @param {Blob?} nextValue Next value candidate.
    */
   function onChangeIfValid(nextValue) {
-    if (nextValue && nextValue.size < minimumFileSize) {
+    if (nextValue && nextValue.size < getMinimumFileSize(nextValue)) {
       setOwnErrorMessage(t('errors.doc_auth.photo_file_size'));
     } else {
       setOwnErrorMessage(null);
@@ -190,9 +202,9 @@ function AcuantCapture(
         <FullScreen onRequestClose={() => setIsCapturing(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
-              if (nextCapture.glare < minimumGlareScore) {
+              if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
-              } else if (nextCapture.sharpness < minimumSharpnessScore) {
+              } else if (nextCapture.sharpness < ACCEPTABLE_SHARPNESS_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
               } else {
                 const dataAsBlob = toBlob(nextCapture.image.data);
@@ -214,7 +226,7 @@ function AcuantCapture(
         label={label}
         hint={hasCapture || !allowUpload ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
-        accept={['image/*']}
+        accept={getInputAccept()}
         capture={capture}
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
