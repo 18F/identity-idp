@@ -2,3 +2,45 @@
   background-color: #fff;
   box-shadow: inset 0 -1px 0 0 #ccc;
 }
+
+.usa-banner__inner {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.usa-banner__header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#gov-banner {
+  position: relative;
+}
+
+.close-banner-how-you-know {
+  display: none;
+}
+
+@media #{$mobile} {
+  .usa-banner__header--expanded .usa-banner__inner {
+    margin-left: auto;
+  }
+
+  .usa-banner__button[aria-expanded=true]::after {
+    display: none;
+  }
+
+  .close-banner-how-you-know {
+    display: inline-block;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    height: 1rem;
+    width: 1rem;
+    margin-left: 1.5rem;
+    border: 0;
+    background: url(#{$image-path}/close-primary.svg) top left no-repeat;
+    background-size: contain;
+  }
+}
