@@ -12,10 +12,10 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-}
 
-.usa-banner__header + .usa-banner__content.usa-accordion__content {
-  position: relative;
+  &+ .usa-banner__content.usa-accordion__content {
+    position: relative;
+  }
 }
 
 .close-banner-how-you-know {
