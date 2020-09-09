@@ -20,13 +20,13 @@ module DocAuth
         end
 
         def extra_attributes
-          true_id_product[:AUTHENTICATION_RESULT].delete_if do |k, _v|
-            PII_DETAILS.include? k
+          true_id_product[:AUTHENTICATION_RESULT].select do |k, _v|
+            !PII_DETAILS.include? k
           end
         end
 
         def pii_from_doc
-          true_id_product[:AUTHENTICATION_RESULT].keep_if do |k, _v|
+          true_id_product[:AUTHENTICATION_RESULT].select do |k, _v|
             PII_DETAILS.include? k
           end
         end
