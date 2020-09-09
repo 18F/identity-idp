@@ -55,7 +55,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors[:selfie]).to eq(['was not attached as a file'])
+        expect(form.errors[:selfie]).to eq(['The selection was not a valid file'])
       end
     end
 
@@ -70,7 +70,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors[:selfie]).to eq(['must be an image'])
+        expect(form.errors[:selfie]).to eq(['File must be an image'])
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors[:selfie]).to eq(['must be an image'])
+        expect(form.errors[:selfie]).to eq(['File must be an image'])
       end
 
       after { tempfile.unlink }

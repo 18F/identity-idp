@@ -13,8 +13,8 @@ en:
       upload_picture: Upload a photo
       use_phone: Use your phone
     errors:
-      must_be_image: must be an image
-      not_a_file: was not attached as a file
+      must_be_image: File must be an image
+      not_a_file: The selection was not a valid file
     forms:
       address1: Address
       change_file: Change file
