@@ -1,0 +1,25 @@
+<div class="alert alert-error" role="alert">
+  <%= @presenter.title %>
+</div>
+
+<h1 class="h3 my0">
+  <%= @presenter.heading %>
+</h1>
+
+<p class="mt-tiny mb3">
+  <%= @presenter.description %>
+</p>
+
+<div class="mt2 pt1 border-top">
+  <p>
+    <%= link_to t('forms.piv_cac_setup.choose_different_certificate'),
+                setup_piv_cac_url %>
+  </p>
+  <p>
+    <% if MfaPolicy.new(current_user).two_factor_enabled? %>
+      <%= link_to t('links.cancel'), account_path %>
+    <% else %>
+      <%= link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path %>
+    <% end %>
+  </p>
+</div>
