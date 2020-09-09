@@ -81,23 +81,43 @@ module DocAuth
           @products ||= begin
             product_list = {}
             parsed_response_body.dig(:Products).each do |product|
-              detail_groups.each do |group|
-                product[group] = product_details(product: product, group: group)
-              end
+              # detail_groups.each do |group|
+              #   product[group] = product_details(product: product, group: group)
+              # end
+              puts "\n\n\n\n\n"
+              extract_details(product)
               product_list[product[:ProductType]] = product
+              puts "\n\n\n\n\n"
+              detail_groups.each do |group|
+                puts "\nproduct_list[product[:ProductType]][#{group}]:"
+                pp product_list[product[:ProductType]][group]
+              end
+              puts "\n\n\n\n\n"
             end
             product_list.with_indifferent_access
           end
         end
 
-        def product_details(product:, group:)
-          details = {}
+        # def product_details(product:, group:)
+        #   details = {}
+        #   product[:ParameterDetails].each do |detail|
+        #     if detail[:Group] == group
+        #       details[detail[:Name]] = detail[:Values][0][:Value]
+        #     end
+        #   end
+        #   details.with_indifferent_access
+        # end
+
+        def extract_details(product)
           product[:ParameterDetails].each do |detail|
-            if detail[:Group] == group
-              details[detail[:Name]] = detail[:Values][0][:Value]
-            end
+            group = detail[:Group]
+            detail_name = detail[:Name]
+            value = detail[:Values][0][:Value]
+
+            product[group] = {} unless product[group]
+
+            product[group][detail_name] = value
           end
-          details.with_indifferent_access
         end
       end
 

@@ -48,6 +48,7 @@ module DocAuth
             'AUTHENTICATION_RESULT'.freeze,
             'IDAUTH_FIELD_DATA'.freeze,
             'IDAUTH_FIELD_NATIVE_DATA'.freeze,
+            'IMAGE_METRICS_RESULT'.freeze,
             'PORTRAIT_MATCH_RESULT'.freeze,
           ].freeze
         end
