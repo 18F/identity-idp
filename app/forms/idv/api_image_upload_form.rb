@@ -84,7 +84,20 @@ module Idv
       file.rewind
 
       return if file.content_type.start_with?('image/') && data.present?
-      errors.add(image_key, t('doc_auth.errors.must_be_image'))
+      error = error_from_yaml(data) if !Rails.env.production? && yaml_file?(file)
+      error ||= t('doc_auth.errors.must_be_image')
+      errors.add(image_key, error)
+    end
+
+    def yaml_file?(file)
+      file.original_filename =~ /\.ya?ml$/
+    end
+
+    def error_from_yaml(data)
+      parsed_yaml = YAML.safe_load(data)
+      parsed_yaml.dig('friendly_error')
+    rescue Psych::SyntaxError
+      nil
     end
   end
 end

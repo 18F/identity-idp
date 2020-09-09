@@ -31,6 +31,14 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(fixture_path('selfie.jpg'), 'image/jpeg')
   end
 
+  def self.error_yaml_multipart
+    path = File.join(
+      File.dirname(__FILE__),
+      '../fixtures/ial2_test_credential_forces_error.yml',
+    )
+    Rack::Test::UploadedFile.new(path, Mime[:yaml])
+  end
+
   def self.fixture_path(filename)
     File.join(
       File.dirname(__FILE__),
