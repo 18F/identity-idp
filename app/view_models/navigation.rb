@@ -1,10 +1,13 @@
 class Navigation
-  class << self
-    include Rails.application.routes.url_helpers
-  end
+  include Rails.application.routes.url_helpers
+
   NavItem = Struct.new(:title, :href, :children)
 
-  def self.navigation_items(user)
+  def initialize(user: user)
+    @user = user
+  end
+
+  def navigation_items
     [
       NavItem.new(I18n.t('account.navigation.your_account'), account_path, [
                     NavItem.new(I18n.t('account.navigation.add_email'), add_email_path),
@@ -19,7 +22,7 @@ class Navigation
                     NavItem.new(I18n.t('account.navigation.add_security_key'), webauthn_setup_path),
                     NavItem.new(I18n.t('account.navigation.add_federal_id'), setup_piv_cac_path),
                     NavItem.new(I18n.t('account.navigation.get_backup_codes'),
-                                backup_codes_path(user)),
+                                backup_codes_path),
                   ]),
       NavItem.new(I18n.t('account.navigation.connected_accounts'),
                   account_connected_accounts_path, []),
@@ -31,8 +34,8 @@ class Navigation
     ]
   end
 
-  def self.backup_codes_path(user)
-    if TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
+  def backup_codes_path
+    if TwoFactorAuthentication::BackupCodePolicy.new(@user).configured?
       backup_code_regenerate_path
     else
       backup_code_create_path

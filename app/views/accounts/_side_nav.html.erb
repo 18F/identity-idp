@@ -1,6 +1,6 @@
 <nav class="sidenav">
   <ul class="card usa-sidenav">
-    <% Navigation.navigation_items(current_user).each do |nav_item| %>
+    <% Navigation.new(user: current_user).navigation_items.each do |nav_item| %>
       <li class="usa-sidenav__item">
         <%= link_to nav_item.href, class: current_page?(nav_item.href) ? 'usa-current' : '' do %>
           <strong><%= nav_item.title %></strong>
