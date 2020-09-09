@@ -106,7 +106,10 @@ describe Idv::ImageUploadsController do
 
             json = JSON.parse(response.body, symbolize_names: true)
             expect(json[:errors]).to eq [
-              { field: 'front', message: I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read') },
+              {
+                field: 'front',
+                message: I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read'),
+              },
             ]
           end
         end
