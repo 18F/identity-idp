@@ -18,7 +18,9 @@ module MonitorSpSteps
   end
 
   def visit_idp_from_oidc_sp_with_ial2
-    visit monitor.config.oidc_sp_url + '?ial=2'
+    visit monitor.config.oidc_sp_url
+    find(:css, '.details-popup summary').click
+    select 'IAL 2', from: 'ial'
     find(:css, '.sign-in-bttn').click
 
     expect(page).to have_content(
