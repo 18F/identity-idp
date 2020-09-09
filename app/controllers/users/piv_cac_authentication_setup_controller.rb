@@ -118,7 +118,7 @@ module Users
     end
 
     def authorize_piv_cac_disable
-      return redirect_to account_url unless piv_cac_enabled? &&
+      return redirect_to account_two_factor_authentication_path unless piv_cac_enabled? &&
                                             MfaPolicy.new(current_user).multiple_factors_enabled?
     end
 
@@ -128,7 +128,7 @@ module Users
     end
 
     def cap_piv_cac_count
-      redirect_to account_url if Figaro.env.max_piv_cac_per_account.to_i <= current_cac_count
+      redirect_to account_two_factor_authentication_path if Figaro.env.max_piv_cac_per_account.to_i <= current_cac_count
     end
 
     def current_cac_count
