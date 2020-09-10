@@ -2,7 +2,6 @@
 es:
   headings:
     account:
-      account_history: Historial de cuenta
       activity: Actividad
       authentication_apps: Aplicaciones de autenticación
       connected_accounts: Tus cuentas conectadas

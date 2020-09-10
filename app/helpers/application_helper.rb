@@ -3,10 +3,6 @@ module ApplicationHelper
     content_for(:title) { title }
   end
 
-  def card_cls(cls)
-    content_for(:card_cls) { cls }
-  end
-
   def background_cls(cls)
     content_for(:background_cls) { cls }
   end
