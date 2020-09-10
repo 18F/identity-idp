@@ -74,6 +74,7 @@ module DocAuth
         Faraday.new(request: faraday_request_params, url: url.to_s, headers: headers) do |conn|
           conn.request :retry, retry_options
           conn.adapter :net_http
+          conn.basic_auth username, password
         end
       end
 
@@ -96,7 +97,6 @@ module DocAuth
 
       def headers
         {
-          Authorization: "Basic #{encoded_credentials}",
           Accepts: 'application/json',
           'Content-Type': 'application/json',
         }
@@ -119,10 +119,6 @@ module DocAuth
       # AM: Need to account for the uuid-prefix when folding in the lexisnexis gem.
       def uuid
         SecureRandom.uuid
-      end
-
-      def encoded_credentials
-        Base64.strict_encode64("#{username}:#{password}")
       end
 
       def username

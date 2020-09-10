@@ -2,24 +2,24 @@ module DocAuth
   module LexisNexis
     module Responses
       class LexisNexisResponse < DocAuth::Response
-        PII_DETAILS = [
-          'Age'.freeze,
-          'DocIssuerCode'.freeze,
-          'DocIssuerName'.freeze,
-          'DocumentName'.freeze,
-          'DOB_Day'.freeze,
-          'DOB_Month'.freeze,
-          'DOB_Year'.freeze,
-          'FullName'.freeze,
-          'Sex'.freeze,
-          'Fields_Address'.freeze,
-          'Fields_AddressLine1'.freeze,
-          'Fields_AddressLine2'.freeze,
-          'Fields_City'.freeze,
-          'Fields_State'.freeze,
-          'Fields_PostalCode'.freeze,
-          'Fields_Height'.freeze,
-        ].freeze
+        PII_DETAILS = %w[
+          Age
+          DocIssuerCode
+          DocIssuerName
+          DocumentName
+          DOB_Day
+          DOB_Month
+          DOB_Year
+          FullName
+          Sex
+          Fields_Address
+          Fields_AddressLine1
+          Fields_AddressLine2
+          Fields_City
+          Fields_State
+          Fields_PostalCode
+          Fields_Height
+        ].map(&:freeze).freeze
         attr_reader :http_response
 
         def initialize(http_response)
@@ -91,9 +91,8 @@ module DocAuth
           product[:ParameterDetails].each do |detail|
             group = detail[:Group]
             detail_name = detail[:Name]
-            value = detail[:Values][0][:Value]
-
-            product[group] = {} unless product[group]
+            value = detail.dig(:Values, 0, :Value)
+            product[group] ||= {}
 
             product[group][detail_name] = value
           end

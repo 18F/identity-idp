@@ -61,8 +61,8 @@ en:
         <li class="mxn3">The background behind your ID is a solid color</li>
         <li class="mxn3">Background is visible behind the document</li>
         </ul>
-      lexisnexis_network_error: Sorry we are experiencing technical difficulties. Please
-        try again later.
+      lexisnexis_network_error: Sorry we are experiencing technical difficulties.
+        Please try again later.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
       photo_blurry: Photo is too blurry, please try again.

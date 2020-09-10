@@ -43,13 +43,13 @@ module DocAuth
         end
 
         def detail_groups
-          [
-            'AUTHENTICATION_RESULT'.freeze,
-            'IDAUTH_FIELD_DATA'.freeze,
-            'IDAUTH_FIELD_NATIVE_DATA'.freeze,
-            'IMAGE_METRICS_RESULT'.freeze,
-            'PORTRAIT_MATCH_RESULT'.freeze,
-          ].freeze
+          %w[
+            AUTHENTICATION_RESULT
+            IDAUTH_FIELD_DATA
+            IDAUTH_FIELD_NATIVE_DATA
+            IMAGE_METRICS_RESULT
+            PORTRAIT_MATCH_RESULT
+          ].map(&:freeze).freeze
         end
       end
     end

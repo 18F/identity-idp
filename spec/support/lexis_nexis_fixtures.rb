@@ -1,4 +1,3 @@
-# rubocop:disable Naming/AccessorMethodName
 module LexisNexisFixtures
   def self.true_id_response_success
     load_response_fixture('true_id_response_success.json')
@@ -17,4 +16,3 @@ module LexisNexisFixtures
     File.read(path)
   end
 end
-# rubocop:enable Naming/AccessorMethodName

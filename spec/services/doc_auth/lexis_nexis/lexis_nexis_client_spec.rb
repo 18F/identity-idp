@@ -6,7 +6,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
   let(:image_upload_url) do
     URI.join(
       Figaro.env.lexisnexis_base_url,
-      "/restws/identity/v3/test_account/workflows/#{workflow}/conversation"
+      "/restws/identity/v3/test_account/workflows/#{workflow}/conversation",
     )
   end
 
@@ -20,7 +20,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
     it 'raises a NotImplemented error' do
       expect do
         subject.post_front_image(
-          instance_id: 12345,
+          instance_id: 123,
           image: DocAuthImageFixtures.document_front_image,
         )
       end.to raise_error(NotImplementedError)
@@ -31,7 +31,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
     it 'raises a NotImplemented error' do
       expect do
         subject.post_back_image(
-          instance_id: 12345,
+          instance_id: 123,
           image: DocAuthImageFixtures.document_back_image,
         )
       end.to raise_error(NotImplementedError)
@@ -42,7 +42,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
     it 'raises a NotImplemented error' do
       expect do
         subject.post_selfie(
-          instance_id: 12345,
+          instance_id: 123,
           image: DocAuthImageFixtures.selfie_image,
         )
       end.to raise_error(NotImplementedError)
@@ -53,7 +53,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
     it 'raises a NotImplemented error' do
       expect do
         subject.get_results(
-          instance_id: 12345,
+          instance_id: 123,
         )
       end.to raise_error(NotImplementedError)
     end
@@ -62,7 +62,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
   describe '#post_images' do
     before do
       stub_request(:post, image_upload_url).to_return(
-        body: LexisNexisFixtures.true_id_response_success
+        body: LexisNexisFixtures.true_id_response_success,
       )
     end
 
@@ -102,7 +102,9 @@ describe DocAuth::LexisNexis::LexisNexisClient do
 
     context 'when the results return failure' do
       it 'returns a FormResponse with failure' do
-        stub_request(:post, image_upload_url).to_return(body: LexisNexisFixtures.true_id_response_failure)
+        stub_request(:post, image_upload_url).to_return(
+          body: LexisNexisFixtures.true_id_response_failure,
+        )
 
         result = subject.post_images(
           front_image: DocAuthImageFixtures.document_front_image,
