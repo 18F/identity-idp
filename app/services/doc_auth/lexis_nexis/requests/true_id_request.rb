@@ -16,11 +16,7 @@ module DocAuth
           @liveness_checking_enabled = liveness_checking_enabled
         end
 
-        protected
-
-        def path
-          "/restws/identity/v3/#{account_id}/workflows/#{workflow}/conversation"
-        end
+        private
 
         def body
           document = {
@@ -63,8 +59,6 @@ module DocAuth
             Figaro.env.lexisnexis_trueid_noliveness_workflow
           end
         end
-
-        private
 
         def encode(image)
           Base64.strict_encode64(image)

@@ -405,6 +405,7 @@ test:
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: https://rp1.serviceprovider.com/auth/saml/metadata
+  lexisnexis_trueid_account_id: 'test_account'
   liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '5'
   login_with_piv_cac: 'true'

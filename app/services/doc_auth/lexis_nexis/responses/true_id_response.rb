@@ -2,7 +2,6 @@ module DocAuth
   module LexisNexis
     module Responses
       class TrueIdResponse < LexisNexisResponse
-
         def initialize(http_response)
           super http_response
         end
@@ -18,8 +17,8 @@ module DocAuth
         end
 
         def extra_attributes
-          true_id_product[:AUTHENTICATION_RESULT].select do |k, _v|
-            !PII_DETAILS.include? k
+          true_id_product[:AUTHENTICATION_RESULT].reject do |k, _v|
+            PII_DETAILS.include? k
           end
         end
 

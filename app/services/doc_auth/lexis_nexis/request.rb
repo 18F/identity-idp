@@ -10,75 +10,6 @@ module DocAuth
         handle_connection_error(e)
       end
 
-      protected
-
-      def path
-        "/restws/identity/v2/#{account_id}/#{workflow}/conversation"
-      end
-
-      def body
-        raise NotImplementedError
-      end
-
-      def handle_http_response(_response)
-        raise NotImplementedError
-      end
-
-      def method
-        :get
-      end
-
-      def url
-        URI.join(Figaro.env.lexisnexis_base_url, path)
-      end
-
-      def headers
-        {
-          Authorization: "Basic #{encoded_credentials}",
-          Accepts: 'application/json',
-          'Content-Type': 'application/json',
-        }
-      end
-
-      def settings
-        {
-          Type: 'Initiate',
-          Settings: {
-            AccountNumber: account_id,
-            Workflow: workflow,
-            Mode: request_mode,
-            Locale: I18n.locale,
-            Venue: 'online',
-            Reference: uuid
-          },
-        }
-      end
-
-      def account_id
-        Figaro.env.lexisnexis_account_id
-      end
-
-      def username
-        Figaro.env.lexisnexis_username
-      end
-
-      def password
-        Figaro.env.lexisnexis_password
-      end
-
-      def workflow
-        raise NotImplementedError
-      end
-
-      def request_mode
-        Figaro.env.lexisnexis_request_mode
-      end
-
-      #AM: Need to account for the uuid-prefix when folding in the lexisnexis gem.
-      def uuid
-        SecureRandom.uuid
-      end
-
       private
 
       def send_http_request
@@ -88,6 +19,34 @@ module DocAuth
         when :get
           send_http_get_request
         end
+      end
+
+      def handle_http_response(_response)
+        raise NotImplementedError
+      end
+
+      def handle_invalid_response(http_response)
+        message = [
+          self.class.name,
+          'Unexpected HTTP response',
+          http_response.status,
+        ].join(' ')
+        exception = RuntimeError.new(message)
+        NewRelic::Agent.notice_error(exception)
+        DocAuth::Response.new(
+          success: false,
+          errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
+          exception: exception,
+        )
+      end
+
+      def handle_connection_error(exception)
+        NewRelic::Agent.notice_error(exception)
+        DocAuth::Response.new(
+          success: false,
+          errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
+          exception: exception,
+        )
       end
 
       def send_http_get_request
@@ -123,32 +82,71 @@ module DocAuth
         { open_timeout: timeout, timeout: timeout }
       end
 
-      def handle_connection_error(exception)
-        NewRelic::Agent.notice_error(exception)
-        DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
-          exception: exception,
-        )
+      def path
+        "/restws/identity/v3/#{account_id}/workflows/#{workflow}/conversation"
       end
 
-      def handle_invalid_response(http_response)
-        message = [
-          self.class.name,
-          'Unexpected HTTP response',
-          http_response.status,
-        ].join(' ')
-        exception = RuntimeError.new(message)
-        NewRelic::Agent.notice_error(exception)
-        DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
-          exception: exception,
-        )
+      def method
+        :get
+      end
+
+      def url
+        URI.join(Figaro.env.lexisnexis_base_url, path)
+      end
+
+      def headers
+        {
+          Authorization: "Basic #{encoded_credentials}",
+          Accepts: 'application/json',
+          'Content-Type': 'application/json',
+        }
+      end
+
+      def settings
+        {
+          Type: 'Initiate',
+          Settings: {
+            AccountNumber: account_id,
+            Workflow: workflow,
+            Mode: request_mode,
+            Locale: I18n.locale,
+            Venue: 'online',
+            Reference: uuid,
+          },
+        }
+      end
+
+      # AM: Need to account for the uuid-prefix when folding in the lexisnexis gem.
+      def uuid
+        SecureRandom.uuid
       end
 
       def encoded_credentials
         Base64.strict_encode64("#{username}:#{password}")
+      end
+
+      def username
+        raise NotImplementedError
+      end
+
+      def password
+        raise NotImplementedError
+      end
+
+      def account_id
+        Figaro.env.lexisnexis_account_id
+      end
+
+      def workflow
+        raise NotImplementedError
+      end
+
+      def body
+        raise NotImplementedError
+      end
+
+      def request_mode
+        Figaro.env.lexisnexis_request_mode
       end
     end
   end
