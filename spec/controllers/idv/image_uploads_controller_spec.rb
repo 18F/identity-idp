@@ -42,6 +42,7 @@ describe Idv::ImageUploadsController do
           action
 
           json = JSON.parse(response.body, symbolize_names: true)
+          expect(response.status).to eq(400)
           expect(json[:success]).to eq(false)
           expect(json[:errors]).to eq [
             { field: 'front', message: 'Please fill in this field.' },
@@ -56,6 +57,7 @@ describe Idv::ImageUploadsController do
           action
 
           json = JSON.parse(response.body, symbolize_names: true)
+          expect(response.status).to eq(400)
           expect(json[:errors]).to eq [
             { field: 'front', message: I18n.t('doc_auth.errors.not_a_file') },
           ]
@@ -68,10 +70,46 @@ describe Idv::ImageUploadsController do
             action
 
             json = JSON.parse(response.body, symbolize_names: true)
+            expect(response.status).to eq(400)
             expect(json[:errors]).to eq [
               { field: 'front', message: I18n.t('doc_auth.errors.not_a_file', locale: 'es') },
             ]
           end
+        end
+      end
+
+      context 'throttling' do
+        it 'returns remaining_attempts with error' do
+          params.delete(:front)
+          allow(Throttler::RemainingCount).to receive(:call).and_return(3)
+
+          action
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          expect(response.status).to eq(400)
+          expect(json).to eq({
+                               success: false,
+                               errors: [{ field: 'front', message: 'Please fill in this field.' }],
+                               remaining_attempts: 3,
+                             })
+        end
+
+        it 'returns an error when throttled' do
+          allow(Throttler::IsThrottledElseIncrement).to receive(:call).and_return(true)
+          allow(Throttler::RemainingCount).to receive(:call).and_return(0)
+
+          action
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          expect(response.status).to eq(429)
+          expect(json).to eq({
+                               success: false,
+                               errors: [{
+                                 field: 'limit',
+                                 message: I18n.t('errors.doc_auth.acuant_throttle'),
+                               }],
+                               remaining_attempts: 0,
+                             })
         end
       end
 
@@ -80,8 +118,8 @@ describe Idv::ImageUploadsController do
           action
 
           json = JSON.parse(response.body, symbolize_names: true)
+          expect(response.status).to eq(200)
           expect(json[:success]).to eq(true)
-
           expect(document_capture_session.reload.load_result.success?).to eq(true)
         end
       end
@@ -101,6 +139,7 @@ describe Idv::ImageUploadsController do
           action
 
           json = JSON.parse(response.body, symbolize_names: true)
+          expect(response.status).to eq(400)
           expect(json[:success]).to eq(false)
           expect(json[:errors]).to eq [
             { field: 'front', message: 'Too blurry' },

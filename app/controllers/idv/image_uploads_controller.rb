@@ -52,8 +52,8 @@ module Idv
           Array(errs).map { |err| { field: key, message: err } }
         end
 
-        render json: form_response.to_h.merge(errors: errors),
-               status: :bad_request
+        render json: form_response.to_h.except(:status).merge(errors: errors),
+               status: form_response.extra.fetch(:status, :bad_request)
       end
     end
 

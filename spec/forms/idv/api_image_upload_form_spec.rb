@@ -76,5 +76,16 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(form.errors[:document_capture_session]).to eq(['Please fill in this field.'])
       end
     end
+
+    context 'when throttled' do
+      before do
+        allow(Throttler::IsThrottledElseIncrement).to receive(:call).and_return(true)
+      end
+
+      it 'is not valid' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.acuant_throttle')])
+      end
+    end
   end
 end

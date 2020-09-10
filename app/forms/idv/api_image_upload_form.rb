@@ -15,6 +15,7 @@ module Idv
     validates_presence_of :selfie, if: :liveness_checking_enabled?
 
     validate :validate_images
+    validate :throttle_if_rate_limited
 
     def initialize(params, liveness_checking_enabled:)
       @params = params
@@ -25,8 +26,22 @@ module Idv
       FormResponse.new(
         success: valid?,
         errors: errors.messages,
-        extra: {},
+        extra: {
+          status: status,
+          remaining_attempts: remaining_attempts,
+        },
       )
+    end
+
+    def status
+      return :ok if valid?
+      return :too_many_requests if errors.key?(:limit)
+      :bad_request
+    end
+
+    def remaining_attempts
+      return if valid?
+      Throttler::RemainingCount.call(document_capture_session.user_id, :idv_acuant)
     end
 
     def liveness_checking_enabled?
@@ -65,6 +80,15 @@ module Idv
     private
 
     attr_reader :params
+
+    def throttle_if_rate_limited
+      return unless document_capture_session && throttled_else_increment
+      errors.add(:limit, t('errors.doc_auth.acuant_throttle'))
+    end
+
+    def throttled_else_increment
+      Throttler::IsThrottledElseIncrement.call(document_capture_session.user_id, :idv_acuant)
+    end
 
     def validate_images
       IMAGE_KEYS.each do |image_key|
