@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
+import FileBase64CacheContext from '../context/file-base64-cache';
 
 /**
  * @typedef FileImageProps
@@ -13,12 +14,17 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
  * @param {FileImageProps} props Props object.
  */
 function FileImage({ file, alt, className }) {
-  const [imageData, setImageData] = useState(/** @type {string?} */ (null));
+  const cache = useContext(FileBase64CacheContext);
+  const [, forceRender] = useState();
+  const imageData = cache.get(file);
   const ifStillMounted = useIfStillMounted();
 
   useEffect(() => {
     const reader = new window.FileReader();
-    reader.onload = ifStillMounted(({ target }) => setImageData(target.result));
+    reader.onload = ({ target }) => {
+      cache.set(file, /** @type {string} */ (target?.result));
+      ifStillMounted(forceRender)((prevState = 0) => 1 - prevState);
+    };
     reader.readAsDataURL(file);
   }, [file]);
 

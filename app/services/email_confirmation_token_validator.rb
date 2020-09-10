@@ -7,7 +7,8 @@ class EmailConfirmationTokenValidator
   validate :email_not_already_confirmed, if: :email_address_found_with_token?
   validate :token_not_expired, if: :email_address_found_with_token?
 
-  def initialize(email_address)
+  def initialize(email_address, current_user = nil)
+    @current_user = current_user
     @email_address = email_address
     @user = email_address&.user
   end
@@ -41,7 +42,7 @@ class EmailConfirmationTokenValidator
 
   private
 
-  attr_accessor :user
+  attr_accessor :user, :current_user
   attr_reader :success
 
   def extra_analytics_attributes
@@ -70,6 +71,7 @@ class EmailConfirmationTokenValidator
   end
 
   def email_address_found_with_token?
+    return if current_user.present? && user != current_user
     email_address.present?
   end
 

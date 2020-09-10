@@ -2,7 +2,7 @@ module Idv
   class SessionErrorsController < ApplicationController
     include IdvSession
 
-    before_action :confirm_two_factor_authenticated_or_recovery
+    before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
 
     def warning
@@ -19,8 +19,10 @@ module Idv
       Throttler::RemainingCount.call(user_id, :idv_resolution)
     end
 
-    def confirm_two_factor_authenticated_or_recovery
+    def confirm_two_factor_authenticated_or_user_id_in_session
       return if session[:ial2_recovery_user_id].present?
+      return if session[:doc_capture_user_id].present?
+
       confirm_two_factor_authenticated
     end
 
@@ -32,6 +34,10 @@ module Idv
     def user_id
       ial2_recovery_user_id = session[:ial2_recovery_user_id]
       return ial2_recovery_user_id if ial2_recovery_user_id.present?
+
+      doc_capture_user_id = session[:doc_capture_user_id]
+      return doc_capture_user_id if doc_capture_user_id.present?
+
       current_user.id
     end
   end

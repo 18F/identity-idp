@@ -9,7 +9,7 @@ describe DocAuth::Mock::ResultResponseBuilder do
         response = builder.call
 
         expect(response.success?).to eq(true)
-        expect(response.errors).to eq([])
+        expect(response.errors).to eq({})
         expect(response.exception).to eq(nil)
         expect(response.pii_from_doc).to eq(
           first_name: 'FAKEY',
@@ -54,7 +54,7 @@ describe DocAuth::Mock::ResultResponseBuilder do
         response = builder.call
 
         expect(response.success?).to eq(true)
-        expect(response.errors).to eq([])
+        expect(response.errors).to eq({})
         expect(response.exception).to eq(nil)
         expect(response.pii_from_doc).to eq(
           first_name: 'Susan',
@@ -86,7 +86,7 @@ describe DocAuth::Mock::ResultResponseBuilder do
         response = builder.call
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq(['This is a test error'])
+        expect(response.errors).to eq(results: ['This is a test error'])
         expect(response.exception).to eq(nil)
         expect(response.pii_from_doc).to eq({})
       end

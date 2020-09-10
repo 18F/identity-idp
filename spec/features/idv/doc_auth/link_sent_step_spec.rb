@@ -6,8 +6,14 @@ feature 'doc auth link sent step' do
   include DocCaptureHelper
 
   let(:user) { sign_in_and_2fa_user }
+  let(:doc_capture_polling_enabled) { false }
+  let(:document_capture_step_enabled) { false }
 
   before do
+    allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).
+      and_return(doc_capture_polling_enabled)
+    allow(FeatureManagement).to receive(:document_capture_step_enabled?).
+      and_return(document_capture_step_enabled)
     user
     complete_doc_auth_steps_before_link_sent_step
   end
@@ -51,9 +57,11 @@ feature 'doc auth link sent step' do
     expect(page).to have_content(I18n.t('errors.doc_auth.general_error'))
   end
 
-  context 'with doc capture polling enabled', :js do
+  shared_examples 'with doc capture polling enabled' do
+    metadata[:js] = true
+    let(:doc_capture_polling_enabled) { true }
+
     before do
-      allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
       visit current_path
     end
 
@@ -69,9 +77,10 @@ feature 'doc auth link sent step' do
     end
   end
 
-  context 'with doc capture polling disabled' do
+  shared_examples 'with doc capture polling disabled' do
+    let(:doc_capture_polling_enabled) { false }
+
     before do
-      allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(false)
       visit current_path
     end
 
@@ -86,5 +95,19 @@ feature 'doc auth link sent step' do
       complete_doc_auth_steps_before_link_sent_step
       expect(page).to have_css 'meta[http-equiv="refresh"]', visible: false
     end
+  end
+
+  context 'with document capture step enabled' do
+    let(:document_capture_step_enabled) { true }
+
+    it_behaves_like 'with doc capture polling enabled'
+    it_behaves_like 'with doc capture polling disabled'
+  end
+
+  context 'with document capture step disabled' do
+    let(:document_capture_step_enabled) { false }
+
+    it_behaves_like 'with doc capture polling enabled'
+    it_behaves_like 'with doc capture polling disabled'
   end
 end

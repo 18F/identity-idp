@@ -6,7 +6,9 @@ feature 'doc capture mobile back image step' do
   include DocCaptureHelper
 
   before do
+    allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
     complete_doc_capture_steps_before_mobile_back_image_step
+    allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
   end
 
   it 'is on the correct page' do

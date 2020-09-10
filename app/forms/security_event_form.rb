@@ -42,6 +42,12 @@ class SecurityEventForm
         user: user,
         occurred_at: occurred_at,
       )
+
+      if event_type == SecurityEvent::AUTHORIZATION_FRAUD_DETECTED
+        ResetUserPassword.new(user: user).call
+        UserEventCreator.new(current_user: user).
+          create_out_of_band_user_event(:password_invalidated)
+      end
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
@@ -150,11 +156,11 @@ class SecurityEventForm
   end
 
   def validate_subject_type
-    return if subject_type == 'iss_sub'
+    return if subject_type == 'iss-sub'
 
     errors.add(
       :subject_type,
-      t('risc.security_event.errors.subject_type_unsupported', expected_subject_type: 'iss_sub'),
+      t('risc.security_event.errors.subject_type_unsupported', expected_subject_type: 'iss-sub'),
     )
   end
 

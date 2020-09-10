@@ -11,7 +11,7 @@ describe DocAuth::Acuant::Responses::CreateDocumentResponse do
 
     expect(response.success?).to eq(true)
     expect(response.instance_id).to eq('this-is-a-test-instance-id') # Value from the fixture
-    expect(response.errors).to eq([])
+    expect(response.errors).to eq({})
     expect(response.exception).to be_nil
   end
 end

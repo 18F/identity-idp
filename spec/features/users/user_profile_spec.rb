@@ -43,19 +43,21 @@ feature 'User profile' do
       allow(Figaro.env).to receive(:push_notifications_enabled).and_return('true')
 
       user = sign_in_and_2fa_user
-      user.agency_identities << AgencyIdentity.create(user_id: user.id, agency_id: 1, uuid: '1234')
+      identity = IdentityLinker.new(user, 'urn:gov:gsa:openidconnect:test').link_identity
+      agency_identity = AgencyIdentityLinker.new(identity).link_identity
+
       visit account_path
 
       click_link(t('account.links.delete_account'), href: account_delete_path)
 
       request = stub_push_notification_request(
         sp_push_notification_endpoint: push_notification_url,
-        topic: 'account_delete',
+        event_type: PushNotification::AccountPurgedEvent::EVENT_TYPE,
         payload: {
           'subject' => {
             'subject_type' => 'iss-sub',
-            'iss' => 'urn:gov:gsa:openidconnect:test',
-            'sub' => '1234',
+            'iss' => Rails.application.routes.url_helpers.root_url,
+            'sub' => agency_identity.uuid,
           },
         },
       )

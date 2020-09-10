@@ -16,6 +16,7 @@ RSpec.describe Risc::SecurityEventsController do
   describe '#create' do
     let(:action) { post :create, body: jwt, as: :secevent_jwt }
     let(:jti) { SecureRandom.urlsafe_base64 }
+    let(:event_type) { SecurityEvent::AUTHORIZATION_FRAUD_DETECTED }
     let(:jwt_payload) do
       {
         iss: identity.service_provider,
@@ -23,9 +24,9 @@ RSpec.describe Risc::SecurityEventsController do
         iat: Time.zone.now.to_i,
         aud: api_risc_security_events_url,
         events: {
-          SecurityEvent::AUTHORIZATION_FRAUD_DETECTED => {
+          event_type => {
             subject: {
-              subject_type: 'iss_sub',
+              subject_type: 'iss-sub',
               iss: root_url,
               sub: AgencyIdentityLinker.new(identity).link_identity.uuid,
             },

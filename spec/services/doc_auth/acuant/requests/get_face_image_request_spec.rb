@@ -18,7 +18,7 @@ describe DocAuth::Acuant::Requests::GetFaceImageRequest do
 
       expect(response.success?).to eq(true)
       expect(response.image).to eq(AcuantFixtures.get_face_image_response)
-      expect(response.errors).to eq([])
+      expect(response.errors).to eq({})
       expect(response.exception).to be_nil
       expect(request_stub).to have_been_requested
     end

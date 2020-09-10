@@ -21,7 +21,7 @@ describe DocAuth::Acuant::Requests::UploadImageRequest do
       response = request.fetch
 
       expect(response.success?).to eq(true)
-      expect(response.errors).to eq([])
+      expect(response.errors).to eq({})
       expect(response.exception).to be_nil
       expect(request_stub).to have_been_requested
     end
@@ -42,7 +42,7 @@ describe DocAuth::Acuant::Requests::UploadImageRequest do
       response = request.fetch
 
       expect(response.success?).to eq(true)
-      expect(response.errors).to eq([])
+      expect(response.errors).to eq({})
       expect(response.exception).to be_nil
       expect(request_stub).to have_been_requested
     end

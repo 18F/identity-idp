@@ -28,4 +28,28 @@ describe 'idv/doc_auth/welcome.html.erb' do
       expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
     end
   end
+
+  context 'when liveness checking enabled' do
+    before do
+      allow(view).to receive(:liveness_checking_enabled?).and_return(true)
+    end
+
+    it 'renders selfie instructions' do
+      render template: 'idv/doc_auth/welcome.html.erb'
+
+      expect(rendered).to have_text(t('doc_auth.instructions.bullet1a'))
+    end
+  end
+
+  context 'when liveness checking is disabled' do
+    before do
+      allow(view).to receive(:liveness_checking_enabled?).and_return(false)
+    end
+
+    it 'renders selfie instructions' do
+      render template: 'idv/doc_auth/welcome.html.erb'
+
+      expect(rendered).to_not have_text(t('doc_auth.instructions.bullet1a'))
+    end
+  end
 end

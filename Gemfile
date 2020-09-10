@@ -103,7 +103,6 @@ group :test do
   gem 'capybara-screenshot', '>= 1.0.23'
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'codeclimate-test-reporter', require: false
-  gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'faker'

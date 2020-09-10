@@ -11,9 +11,11 @@ module Idv
 
       def send_link
         capture_doc = CaptureDoc::CreateRequest.call(user_id)
+        session_uuid = flow_session[:document_capture_session_uuid]
+        update_document_capture_session_requested_at(session_uuid)
         Telephony.send_doc_auth_link(
           to: formatted_destination_phone,
-          link: link(capture_doc.request_token),
+          link: link(capture_doc.request_token, session_uuid),
         )
       end
 
@@ -26,8 +28,19 @@ module Idv
         PhoneFormatter.format(raw_phone, country_code: 'US')
       end
 
-      def link(token)
-        idv_capture_doc_step_dashes_url(step: :mobile_front_image.to_s.dasherize, token: token)
+      def update_document_capture_session_requested_at(session_uuid)
+        return unless FeatureManagement.document_capture_step_enabled?
+        document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
+        return unless document_capture_session
+        document_capture_session.update!(requested_at: Time.zone.now)
+      end
+
+      def link(token, session_uuid)
+        if FeatureManagement.document_capture_step_enabled?
+          idv_capture_doc_dashes_url('document-capture-session': session_uuid)
+        else
+          idv_capture_doc_dashes_url(token: token)
+        end
       end
 
       def throttled_else_increment

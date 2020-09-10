@@ -13,8 +13,8 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
-      must_be_image: doit être une image
-      not_a_file: n'a pas été joint en tant que fichier
+      must_be_image: Le fichier doit être une image
+      not_a_file: La sélection n'était pas un fichier valide
     forms:
       address1: Adresse
       change_file: Changer de fichier
@@ -33,7 +33,7 @@ fr:
     headings:
       address: Adresse mail
       back: Verso
-      capture_complete: Nous avons vérifié votre ID émis par l'état
+      capture_complete: Nous avons vérifié votre pièce d'identité officielle
       document_capture: Ajoutez votre pièce d'identité émise par l'État
       document_capture_back: Dos de votre pièce d'identité
       document_capture_front: Recto de votre pièce d'identité
@@ -66,6 +66,10 @@ fr:
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur
         Web
+      capture_status_capturing: Prendre la photo
+      capture_status_none: Alignez
+      capture_status_small_document: Approchez-vous
+      capture_status_tap_to_capture: Appuyez pour capturer
       document_capture_intro_acknowledgment: Nous collecterons des informations sur
         vous en lisant votre pièce d'identité officielle. Nous ne stockons pas les
         images que vous téléchargez. Nous vérifions uniquement votre identité.
@@ -107,6 +111,7 @@ fr:
         permet d'accéder à des services traitant des informations sensibles.
     instructions:
       bullet1: Téléchargez votre identifiant
+      bullet1a: Prenez une photo de vous
       bullet2: Confirmez votre adresse
       bullet3: Sécurise ton compte
       bullet4: Récupération du compte
@@ -138,6 +143,7 @@ fr:
       take_pic3: Ne pas utiliser le flash sur votre appareil photo
       take_pic4: Utilisez l'orientation paysage
       text1: avec votre numéro de sécurité sociale
+      text1a: avec votre téléphone ou webcam
       text2: en utilisant un numéro de téléphone ou une adresse postale
       text3: en ressaisissant votre mot de passe login.gov
       text4: assurez-vous d'avoir toujours accès

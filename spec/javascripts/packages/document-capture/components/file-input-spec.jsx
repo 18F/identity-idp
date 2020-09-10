@@ -274,7 +274,7 @@ describe('document-capture/components/file-input', () => {
     expect(getByText('errors.doc_auth.selfie')).to.be.ok();
     expect(onError.getCall(0).args[0]).to.equal('errors.doc_auth.selfie');
 
-    rerender(<FileInput {...props} error="Oops!" />);
+    rerender(<FileInput {...props} errorMessage="Oops!" />);
 
     expect(getByText('Oops!')).to.be.ok();
     expect(() => getByText('errors.doc_auth.selfie')).to.throw();

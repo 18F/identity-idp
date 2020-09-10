@@ -15,6 +15,20 @@ class FormResponse
     { success: success, errors: errors }.merge!(extra)
   end
 
+  def merge(other)
+    FormResponse.new(
+      success: success? && other.success?,
+      errors: errors.merge(other.errors),
+      extra: extra.merge(other.extra),
+    )
+  end
+
+  def first_error_message
+    return if errors.blank?
+    _key, message_or_messages = errors.first
+    Array(message_or_messages).first
+  end
+
   private
 
   attr_reader :success

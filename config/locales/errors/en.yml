@@ -22,6 +22,7 @@ en:
         try again later.
       acuant_throttle: To prevent abuse we limit the number of times you can attempt
         to validate a document.  Please try again later.
+      capture_failure: Camera failed to start, please try again.
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
       document_capture_info_html: |-

@@ -5,35 +5,94 @@ import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 
 /**
+ * @typedef FormStepError
+ *
+ * @prop {keyof V} field Name of field for which error occurred.
+ * @prop {Error} error Error object.
+ *
+ * @template V
+ */
+
+/**
+ * @typedef FormStepComponentProps
+ *
+ * @prop {(nextValues:Partial<V>)=>void} onChange Values change callback, merged with
+ * existing values.
+ * @prop {Partial<V>} value Current values.
+ * @prop {FormStepError<V>[]=} errors Current active errors.
+ * @prop {(field:string)=>undefined|((fieldNode:HTMLElement?)=>void)} registerField Registers field
+ * by given name, returning ref assignment function.
+ *
+ * @template V
+ */
+
+/**
+ * @template {Record<string,any>} V
+ *
+ * @typedef {FormStepError<V>[]} FormStepValidateResult
+ */
+
+/**
+ * @template {Record<string,any>} V
+ *
+ * @typedef {(values:V)=>undefined|FormStepValidateResult<V>} FormStepValidate
+ */
+
+/**
  * @typedef FormStep
  *
- * @prop {string}                            name      Step name, used in history parameter.
- * @prop {string}                            title     Step title, shown as heading.
- * @prop {import('react').FunctionComponent} component Step component implementation.
- * @prop {(values:object)=>boolean=}         isValid   Step validity function. Given set of form
- *                                                     values, returns true if values satisfy
- *                                                     requirements.
+ * @prop {string} name Step name, used in history parameter.
+ * @prop {string} title Step title, shown as heading.
+ * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} form Step form component.
+ * @prop {import('react').FC=} footer Optional step footer component.
+ * @prop {FormStepValidate<Record<string,any>>} validate Step validity function. Given set of form
+ * values, returns an object with keys from form values mapped to an error, if applicable. Returns
+ * undefined or an empty object if there are no errors.
+ */
+
+/**
+ * @typedef FieldsRefEntry
+ *
+ * @prop {import('react').RefCallback<HTMLElement>} refCallback Ref callback.
+ * @prop {HTMLElement?=} element Element assigned by ref callback.
  */
 
 /**
  * @typedef FormStepsProps
  *
- * @prop {FormStep[]=}                        steps         Form steps.
- * @prop {Record<string,any>=}                initialValues Form values to populate initial state.
- * @prop {string=}                            initialStep   Step to start from.
- * @prop {(values:Record<string,any>)=>void=} onComplete    Form completion callback.
+ * @prop {FormStep[]=} steps Form steps.
+ * @prop {Record<string,any>=} initialValues Form values to populate initial state.
+ * @prop {string=} initialStep Step to start from.
+ * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
  */
+
+/**
+ * An error representing a state where a required form value is missing.
+ */
+export class RequiredValueMissingError extends Error {}
 
 /**
  * Given a step object and current set of form values, returns true if the form values would satisfy
  * the validity requirements of the step.
  *
- * @param {FormStep} step   Form step.
- * @param {object}   values Current form values.
+ * @param {FormStep} step Form step.
+ * @param {Record<string,any>} values Current form values.
+ */
+function getValidationErrors(step, values) {
+  const { validate = () => undefined } = step;
+  return validate(values);
+}
+
+/**
+ * Given a step object and current set of form values, returns true if the form values would satisfy
+ * the validity requirements of the step.
+ *
+ * @param {FormStep} step Form step.
+ * @param {Record<string,any>} values Current form values.
  */
 export function isStepValid(step, values) {
-  const { isValid = () => true } = step;
-  return isValid(values);
+  const errors = getValidationErrors(step, values);
+  return !errors || !Object.keys(errors).length;
 }
 
 /**
@@ -69,10 +128,23 @@ export function getLastValidStepIndex(steps, values) {
  */
 function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, initialStep }) {
   const [values, setValues] = useState(initialValues);
+  const [activeErrors, setActiveErrors] = useState(
+    /** @type {FormStepValidateResult<Record<string,Error>>=} */ (undefined),
+  );
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step', initialStep);
   const { t } = useI18n();
+  const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
+  const didSubmitWithErrors = useRef(false);
+  useEffect(() => {
+    if (activeErrors?.length && didSubmitWithErrors.current) {
+      const firstActiveError = activeErrors[0];
+      fields.current[firstActiveError.field]?.element?.focus();
+    }
+
+    didSubmitWithErrors.current = false;
+  }, [activeErrors]);
 
   // An "effective" step is computed in consideration of the facts that (1) there may be no history
   // parameter present, in which case the first step should be used, and (2) the values may not be
@@ -95,6 +167,15 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
     }
   }, []);
 
+  useEffect(() => {
+    // Errors are assigned at the first attempt to submit. Once errors are assigned, track value
+    // changes to remove validation errors as they become resolved.
+    if (activeErrors) {
+      const nextActiveErrors = getValidationErrors(effectiveStep, values);
+      setActiveErrors(nextActiveErrors);
+    }
+  }, [values]);
+
   // An empty steps array is allowed, in which case there is nothing to render.
   if (!effectiveStep) {
     return null;
@@ -109,19 +190,12 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
   function toNextStep(event) {
     event.preventDefault();
 
-    // It shouldn't be necessary to perform validation of the step at this point, since the spec
-    // guarantees us that submission will occur as a click on the button, which will be suppressed
-    // by the presence of the disabled attribute.
-    //
-    // "If the user agent supports letting the user submit a form implicitly (for example, on some
-    // platforms hitting the "enter" key while a text control is focused implicitly submits the
-    // form), then doing so for a form, whose default button has activation behavior and is not
-    // disabled, must cause the user agent to fire a click event at that default button."
-    //
-    // See: https://html.spec.whatwg.org/multipage/form-control-infrastructure.html#implicit-submission
-    //
-    // Furthermore, even if the step was progressed, the logic of effective step computation would
-    // avoid the next step being shown prematurely.
+    const nextActiveErrors = getValidationErrors(effectiveStep, values);
+    setActiveErrors(nextActiveErrors);
+    didSubmitWithErrors.current = true;
+    if (nextActiveErrors?.length) {
+      return;
+    }
 
     const nextStepIndex = effectiveStepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
@@ -137,7 +211,7 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
     headingRef.current?.focus();
   }
 
-  const { component: Component, name, title } = effectiveStep;
+  const { form: Form, footer: Footer, name, title } = effectiveStep;
   const isLastStep = effectiveStepIndex + 1 === steps.length;
 
   return (
@@ -145,21 +219,29 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
       <PageHeading key="title" ref={headingRef} tabIndex={-1}>
         {title}
       </PageHeading>
-      <Component
+      <Form
         key={name}
         value={values}
+        errors={activeErrors}
         onChange={(nextValuesPatch) => {
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
         }}
+        registerField={(field) => {
+          if (!fields.current[field]) {
+            fields.current[field] = {
+              refCallback(fieldNode) {
+                fields.current[field].element = fieldNode;
+              },
+            };
+          }
+
+          return fields.current[field].refCallback;
+        }}
       />
-      <Button
-        type="submit"
-        isPrimary
-        isDisabled={!isStepValid(effectiveStep, values)}
-        className="margin-y-5"
-      >
+      <Button type="submit" isPrimary className="margin-y-5">
         {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
       </Button>
+      {Footer && <Footer />}
     </form>
   );
 }

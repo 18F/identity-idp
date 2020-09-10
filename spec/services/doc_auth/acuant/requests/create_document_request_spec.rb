@@ -38,7 +38,7 @@ describe DocAuth::Acuant::Requests::CreateDocumentRequest do
       response = described_class.new.fetch
 
       expect(response.success?).to eq(true)
-      expect(response.errors).to eq([])
+      expect(response.errors).to eq({})
       expect(response.exception).to be_nil
       expect(response.instance_id).to eq('this-is-a-test-instance-id') # instance ID from fixture
       expect(request_stub).to have_been_requested

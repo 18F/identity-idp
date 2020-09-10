@@ -16,8 +16,10 @@ module DocAuth
         private
 
         def error_messages
-          return [] if successful_result?
-          [I18n.t('errors.doc_auth.selfie')]
+          return {} if successful_result?
+          {
+            selfie: I18n.t('errors.doc_auth.selfie'),
+          }
         end
 
         def extra_attributes

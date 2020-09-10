@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module Db
   module DocAuthLog
     module DropOffRatesHelper
@@ -28,10 +29,10 @@ module Db
         <<~SQL
           select count(welcome_view_at) as welcome, count(upload_view_at) as upload_option,
           count(COALESCE(front_image_view_at,mobile_front_image_view_at)) as front_image,
-          count(COALESCE(back_image_view_at,mobile_back_image_view_at,capture_mobile_back_image_view_at)) as back_image,
-          count(ssn_view_at) as ssn,
+          count(COALESCE(back_image_view_at,mobile_back_image_view_at,capture_mobile_back_image_view_at,present_cac_view_at)) as back_image,
+          count(COALESCE(ssn_view_at,enter_info_view_at)) as ssn,
           count(verify_view_at) as verify_info,
-          count(doc_success_view_at) as doc_success,
+          count(COALESCE(doc_success_view_at,success_view_at)) as doc_success,
           count(verify_phone_view_at) as phone,
           count(encrypt_view_at) as encrypt,
           count(verified_view_at) as personal_key
@@ -39,12 +40,23 @@ module Db
         SQL
       end
 
-      def at_least_one_image_submitted
+      def images_submitted
         predicates = [
-          'front_image_submit_count>0',
           'back_image_submit_count>0',
           'mobile_back_image_submit_count>0',
           'capture_mobile_back_image_submit_count>0',
+        ].join(' or ')
+
+        "(#{predicates})"
+      end
+
+      def images_or_piv_cac_submitted
+        "(#{images_submitted} OR #{piv_cac_submitted})"
+      end
+
+      def piv_cac_submitted
+        predicates = [
+          'present_cac_submit_count>0',
         ].join(' or ')
 
         "(#{predicates})"
@@ -119,3 +131,4 @@ module Db
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

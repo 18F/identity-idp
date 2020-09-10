@@ -1,4 +1,12 @@
-import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  forwardRef,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useImperativeHandle,
+} from 'react';
 import { Icon } from '@18f/identity-components';
 import FileImage from './file-image';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
@@ -6,33 +14,37 @@ import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
 import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 
+/** @typedef {import('react').ReactNode} ReactNode */
+
 /**
  * @typedef SelfieCaptureProps
  *
  * @prop {Blob?=} value Current value.
  * @prop {(nextValue:Blob?)=>void} onChange Change handler.
+ * @prop {ReactNode=} errorMessage Error to show.
  */
 
 /**
  * @param {SelfieCaptureProps} props Props object.
  */
-function SelfieCapture({ value, onChange }) {
+function SelfieCapture({ value, onChange, errorMessage }, ref) {
   const instanceId = useInstanceId();
   const { t } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const wrapperRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const retryButtonRef = useFocusFallbackRef(labelRef);
   const captureButtonRef = useFocusFallbackRef(labelRef);
+  useImperativeHandle(ref, () => labelRef.current);
 
   const videoRef = useRef(/** @type {HTMLVideoElement?} */ (null));
-  const setVideoRef = useCallback((ref) => {
+  const setVideoRef = useCallback((nextVideoRef) => {
     // React will call an assigned `ref` callback with `null` at the time the element is being
     // removed, which is an opportunity to stop any in-progress capture.
-    if (!ref && videoRef.current && videoRef.current.srcObject instanceof window.MediaStream) {
+    if (!nextVideoRef && videoRef.current?.srcObject instanceof window.MediaStream) {
       videoRef.current.srcObject.getTracks().forEach((track) => track.stop());
     }
 
-    videoRef.current = ref;
+    videoRef.current = nextVideoRef;
   }, []);
 
   const [isAccessRejected, setIsAccessRejected] = useState(false);
@@ -108,10 +120,17 @@ function SelfieCapture({ value, onChange }) {
     canvas.toBlob(ifStillMounted(onChange));
   }
 
+  let shownErrorMessage;
+  if (isAccessRejected) {
+    shownErrorMessage = t('errors.doc_auth.document_capture_selfie_consent_blocked');
+  } else if (errorMessage) {
+    shownErrorMessage = errorMessage;
+  }
+
   const classes = [
     'selfie-capture',
     isCapturing && 'selfie-capture--capturing',
-    isAccessRejected && 'selfie-capture--access-rejected',
+    shownErrorMessage && 'selfie-capture--error',
     value && 'selfie-capture--has-value',
   ]
     .filter(Boolean)
@@ -125,15 +144,15 @@ function SelfieCapture({ value, onChange }) {
         ref={labelRef}
         id={labelId}
         tabIndex={-1}
-        className={['selfie-capture__label', 'usa-label', isAccessRejected && 'usa-label--error']
+        className={['selfie-capture__label', 'usa-label', shownErrorMessage && 'usa-label--error']
           .filter(Boolean)
           .join(' ')}
       >
         {t('doc_auth.headings.document_capture_selfie')}
       </div>
-      {isAccessRejected && (
+      {shownErrorMessage && (
         <span className="usa-error-message" role="alert">
-          {t('errors.doc_auth.document_capture_selfie_consent_blocked')}
+          {shownErrorMessage}
         </span>
       )}
       <div ref={wrapperRef} className={classes}>
@@ -193,4 +212,4 @@ function SelfieCapture({ value, onChange }) {
   );
 }
 
-export default SelfieCapture;
+export default forwardRef(SelfieCapture);

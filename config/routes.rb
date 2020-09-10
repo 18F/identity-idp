@@ -261,9 +261,11 @@ Rails.application.routes.draw do
     delete '/users' => 'users#destroy', as: :destroy_user
 
     AcuantSdkController::ACUANT_SDK_STATIC_FILES.each do |acuant_sdk_file|
-      get "/verify/doc_auth/#{acuant_sdk_file}" => 'acuant_sdk#show'
-      get "/verify/capture_doc/#{acuant_sdk_file}" => 'acuant_sdk#show'
-      get "/verify/capture-doc/#{acuant_sdk_file}" => 'acuant_sdk#show'
+      constraints version: /\d+\.\d+\.\d+/ do
+        get "/verify/doc_auth(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
+        get "/verify/capture_doc(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
+        get "/verify/capture-doc(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
+      end
     end
 
     scope '/verify', as: 'idv' do
@@ -310,11 +312,11 @@ Rails.application.routes.draw do
       put '/doc_auth/:step' => 'doc_auth#update'
       get '/doc_auth/link_sent/poll' => 'doc_auth#doc_capture_poll'
       get '/capture_doc' => 'capture_doc#index'
+      get '/capture-doc' => 'capture_doc#index',
+          # sometimes underscores get messed up when linked to via SMS
+          as: :capture_doc_dashes
       get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
       put '/capture_doc/:step' => 'capture_doc#update'
-      get '/capture-doc/:step' => 'capture_doc#show',
-          # sometimes underscores get messed up when linked to via SMS
-          as: :capture_doc_step_dashes
       unless FeatureManagement.disallow_ial2_recovery?
         get '/recovery' => 'recovery#index'
         get '/recovery/:step' => 'recovery#show', as: :recovery_step

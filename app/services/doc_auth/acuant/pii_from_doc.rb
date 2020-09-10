@@ -30,14 +30,20 @@ module DocAuth
         hash
       end
 
+      ACUANT_TIMESTAMP_FORMAT = %r{/Date\((?<milliseconds>\d+)\)/}.freeze
+
+      # @api private
+      def convert_date(date)
+        match = ACUANT_TIMESTAMP_FORMAT.match(date)
+        return if !match || !match[:milliseconds]
+
+        Time.zone.at(match[:milliseconds].to_f / 1000).utc.strftime('%m/%d/%Y')
+      end
+
       private
 
       def hash
         @hash ||= {}
-      end
-
-      def convert_date(date)
-        Time.zone.at(date[6..-3].to_f / 1000).utc.strftime('%m/%d/%Y')
       end
     end
   end

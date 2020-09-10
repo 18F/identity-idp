@@ -7,6 +7,7 @@ import useI18n from '../hooks/use-i18n';
 /** @typedef {import('react').MouseEvent} ReactMouseEvent */
 /** @typedef {import('react').ChangeEvent} ReactChangeEvent */
 /** @typedef {import('react').RefAttributes} ReactRefAttributes */
+/** @typedef {import('react').ReactNode} ReactNode */
 
 /**
  * @typedef FileInputProps
@@ -17,10 +18,10 @@ import useI18n from '../hooks/use-i18n';
  * @prop {string[]=} accept Optional array of file input accept patterns.
  * @prop {'user'|'environment'=} capture Optional facing mode if file input is used for capture.
  * @prop {Blob?=} value Current value.
- * @prop {string=} error Error to show.
+ * @prop {ReactNode=} errorMessage Error to show.
  * @prop {(event:ReactMouseEvent)=>void=} onClick Input click handler.
  * @prop {(nextValue:Blob?)=>void=} onChange Input change handler.
- * @prop {(message:string)=>void=} onError Callback to trigger if upload error occurs.
+ * @prop {(message:ReactNode)=>void=} onError Callback to trigger if upload error occurs.
  */
 
 /**
@@ -88,7 +89,7 @@ const FileInput = forwardRef((props, ref) => {
     accept,
     capture,
     value,
-    error,
+    errorMessage,
     onClick = () => {},
     onChange = () => {},
     onError = () => {},
@@ -97,8 +98,8 @@ const FileInput = forwardRef((props, ref) => {
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const [ownError, setOwnError] = useState(/** @type {string?} */ (null));
-  useMemo(() => setOwnError(null), [value]);
+  const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {string?} */ (null));
+  useMemo(() => setOwnErrorMessage(null), [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
 
@@ -114,20 +115,22 @@ const FileInput = forwardRef((props, ref) => {
       if (isValidForAccepts(file.type, accept)) {
         onChange(file);
       } else {
-        const nextOwnError = t('errors.doc_auth.selfie');
-        setOwnError(nextOwnError);
-        onError(nextOwnError);
+        const nextOwnErrorMessage = t('errors.doc_auth.selfie');
+        setOwnErrorMessage(nextOwnErrorMessage);
+        onError(nextOwnErrorMessage);
       }
     } else {
       onChange(null);
     }
   }
 
-  const shownError = error ?? ownError;
+  const shownErrorMessage = errorMessage ?? ownErrorMessage;
 
   return (
     <div
-      className={[shownError && 'usa-form-group usa-form-group--error'].filter(Boolean).join(' ')}
+      className={[shownErrorMessage && 'usa-form-group usa-form-group--error']
+        .filter(Boolean)
+        .join(' ')}
     >
       {/*
        * Disable reason: The Airbnb configuration of the `jsx-a11y` rule is strict in that it
@@ -142,13 +145,13 @@ const FileInput = forwardRef((props, ref) => {
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
         htmlFor={inputId}
-        className={['usa-label', shownError && 'usa-label--error'].filter(Boolean).join(' ')}
+        className={['usa-label', shownErrorMessage && 'usa-label--error'].filter(Boolean).join(' ')}
       >
         {label}
       </label>
-      {shownError && (
+      {shownErrorMessage && (
         <span className="usa-error-message" role="alert">
-          {shownError}
+          {shownErrorMessage}
         </span>
       )}
       {hint && (

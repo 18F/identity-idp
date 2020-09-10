@@ -16,6 +16,7 @@ RSpec.describe SecurityEventForm do
   let(:identity) { IdentityLinker.new(user, service_provider.issuer).link_identity }
   let(:jti) { SecureRandom.urlsafe_base64 }
 
+  let(:event_type) { SecurityEvent::AUTHORIZATION_FRAUD_DETECTED }
   let(:jwt_payload) do
     {
       iss: identity.service_provider,
@@ -23,9 +24,9 @@ RSpec.describe SecurityEventForm do
       iat: Time.zone.now.to_i,
       aud: api_risc_security_events_url,
       events: {
-        SecurityEvent::AUTHORIZATION_FRAUD_DETECTED => {
+        event_type => {
           subject: {
-            subject_type: 'iss_sub',
+            subject_type: 'iss-sub',
             iss: root_url,
             sub: subject_sub,
           },
@@ -63,6 +64,27 @@ RSpec.describe SecurityEventForm do
         submit
 
         expect(SecurityEvent.last.occurred_at.to_i).to eq(occurred_at.to_i)
+      end
+    end
+
+    context 'for authorization fraud events' do
+      let(:event_type) { SecurityEvent::AUTHORIZATION_FRAUD_DETECTED }
+
+      it 'resets the user password for authorization fraud detected events' do
+        expect { submit }.to(change { user.reload.encrypted_password_digest })
+      end
+
+      it 'creates a password_invalidated event' do
+        expect { submit }.
+          to(change { user.events.password_invalidated.size }.from(0).to(1))
+      end
+    end
+
+    context 'for identity fraud events' do
+      let(:event_type) { SecurityEvent::IDENTITY_FRAUD_DETECTED }
+
+      it 'does not reset the user password' do
+        expect { submit }.to_not(change { user.reload.encrypted_password_digest })
       end
     end
 
@@ -263,7 +285,7 @@ RSpec.describe SecurityEventForm do
 
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:subject_type]).to include('subject_type must be iss_sub')
+          expect(form.errors[:subject_type]).to include('subject_type must be iss-sub')
         end
       end
     end

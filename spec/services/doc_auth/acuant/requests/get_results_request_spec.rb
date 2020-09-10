@@ -14,7 +14,7 @@ describe DocAuth::Acuant::Requests::GetResultsRequest do
       response = described_class.new(instance_id: instance_id).fetch
 
       expect(response.success?).to eq(true)
-      expect(response.errors).to eq([])
+      expect(response.errors).to eq({})
       expect(response.exception).to be_nil
       expect(response.pii_from_doc).to_not be_empty
       expect(request_stub).to have_been_requested

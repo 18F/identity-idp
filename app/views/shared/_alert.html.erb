@@ -1,0 +1,17 @@
+<%
+  type = local_assigns.fetch(:type, 'other')
+  role = type === 'error' ? 'alert' : 'status'
+
+  classes = [
+    'usa-alert',
+    "usa-alert--#{type}",
+  ]
+  classes << local_assigns[:class] if local_assigns[:class]
+  message = yield.presence || local_assigns.fetch(:message)
+%>
+
+<%= tag.div class: classes, role: role do %>
+  <div class="usa-alert__body">
+    <p class="usa-alert__text"><%= message %></p>
+  </div>
+<% end %>
