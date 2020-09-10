@@ -1,13 +1,17 @@
 FactoryBot.define do
   factory :agency do
     agency_name_templates = [
-      'Department of %{industry}',
-      'Bureau of %{industry}',
-      '%{industry} Administration',
-      '%{industry} Agency',
+      'Department of %{industry} %{tag}',
+      'Bureau of %{industry} %{tag}',
+      '%{industry} Administration %{tag}',
+      '%{industry} Agency %{tag}',
     ]
 
     id { Agency.last&.id.to_i + 1 } # autoincrementer is messed up for this table
-    name { format(agency_name_templates.sample, industry: Faker::Company.industry) }
+    name do
+      format(agency_name_templates.sample,
+             industry: Faker::Company.industry,
+             tag: SecureRandom.hex)
+    end
   end
 end
