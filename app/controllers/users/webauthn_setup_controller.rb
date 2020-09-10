@@ -95,6 +95,7 @@ module Users
       handle_remember_device
       Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
       flash[:success] = t('notices.webauthn_configured')
+      user_session[:auth_method] = 'webauthn'
       redirect_to after_mfa_setup_path
     end
 
