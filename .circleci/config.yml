@@ -259,12 +259,6 @@ workflows:
     jobs:
       - build
       - lints
-      - build-latest-dev-container:
-          requires:
-            - build
-      - build-latest-container:
-          requires:
-            - build
       - build-release-container:
           requires:
             - build
