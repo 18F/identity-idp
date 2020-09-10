@@ -30,7 +30,7 @@ module DocAuth
         hash
       end
 
-      ACUANT_TIMESTAMP_FORMAT = %r{/Date\((?<milliseconds>\d+)\)/}.freeze
+      ACUANT_TIMESTAMP_FORMAT = %r{/Date\((?<milliseconds>-?\d+)\)/}.freeze
 
       # @api private
       def convert_date(date)

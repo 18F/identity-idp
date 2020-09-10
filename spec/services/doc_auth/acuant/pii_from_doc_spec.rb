@@ -30,6 +30,10 @@ describe DocAuth::Acuant::PiiFromDoc do
       expect(pii_from_doc.convert_date('/Date(449625600000)/')).to eq('04/01/1984')
     end
 
+    it 'parses and formats negative numbers' do
+      expect(pii_from_doc.convert_date('/Date(-985824000000)/')).to eq('10/06/1938')
+    end
+
     it 'is nil for a bad format' do
       expect(pii_from_doc.convert_date('/Foobar(111111)/')).to eq(nil)
     end
