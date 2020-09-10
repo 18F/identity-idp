@@ -48,6 +48,7 @@ class OpenidConnectUserInfoPresenter
   def x509_attributes
     {
       x509_subject: stringify_attr(x509_data.subject),
+      x509_issuer: stringify_attr(x509_data.issuer),
       x509_presented: x509_data.presented,
     }
   end

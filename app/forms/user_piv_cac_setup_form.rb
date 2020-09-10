@@ -2,8 +2,8 @@ class UserPivCacSetupForm
   include ActiveModel::Model
   include PivCacFormHelpers
 
-  attr_accessor :x509_dn_uuid, :x509_dn, :token, :user, :nonce, :error_type, :name, :key_id,
-                :piv_cac_required
+  attr_accessor :x509_dn_uuid, :x509_dn, :x509_issuer, :token, :user, :nonce, :error_type, :name,
+                :key_id, :piv_cac_required
   attr_reader :name_taken
 
   validates :token, presence: true
@@ -40,6 +40,7 @@ class UserPivCacSetupForm
   def piv_cac_not_already_associated
     self.x509_dn_uuid = @data['uuid']
     self.x509_dn = @data['subject']
+    self.x509_issuer = @data['issuer']
     if Db::PivCacConfiguration::FindUserByX509.call(x509_dn_uuid)
       self.error_type = 'piv_cac.already_associated'
       false

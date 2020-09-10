@@ -65,6 +65,7 @@ module Users
 
       save_piv_cac_information(
         subject: piv_cac_login_form.x509_dn,
+        issuer: piv_cac_login_form.x509_issuer,
         presented: true,
       )
 

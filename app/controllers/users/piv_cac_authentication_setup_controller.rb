@@ -94,6 +94,7 @@ module Users
       flash[:success] = t('notices.piv_cac_configured')
       save_piv_cac_information(
         subject: user_piv_cac_form.x509_dn,
+        issuer: user_piv_cac_form.x509_issuer,
         presented: true,
       )
       create_user_event(:piv_cac_enabled)

@@ -86,6 +86,7 @@ class AttributeAsserter
 
   def add_x509(attrs)
     attrs[:x509_subject] = { getter: ->(_principal) { x509_data.subject } }
+    attrs[:x509_issuer] = { getter: ->(_principal) { x509_data.issuer } }
     attrs[:x509_presented] = { getter: ->(_principal) { x509_data.presented } }
   end
 

@@ -11,6 +11,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
   let(:nonce) { 'once' }
 
   let(:x509_subject) { 'o=US, ou=DoD, cn=John.Doe.1234' }
+  let(:x509_issuer) { 'foo' }
 
   before(:each) do
     session_info = { piv_cac_nonce: nonce }
@@ -18,21 +19,25 @@ describe TwoFactorAuthentication::PivCacVerificationController do
     allow(PivCacService).to receive(:decode_token).with('good-token').and_return(
       'uuid' => user.piv_cac_configurations.first.x509_dn_uuid,
       'subject' => x509_subject,
+      'issuer' => x509_issuer,
       'nonce' => nonce,
     )
     allow(PivCacService).to receive(:decode_token).with('good-other-token').and_return(
       'uuid' => user.piv_cac_configurations.first.x509_dn_uuid + 'X',
       'subject' => x509_subject + 'X',
+      'issuer' => x509_issuer,
       'nonce' => nonce,
     )
     allow(PivCacService).to receive(:decode_token).with('bad-token').and_return(
       'uuid' => 'bad-uuid',
       'subject' => 'bad-dn',
+      'issuer' => x509_issuer,
       'nonce' => nonce,
     )
     allow(PivCacService).to receive(:decode_token).with('bad-nonce').and_return(
       'uuid' => user.piv_cac_configurations.first.x509_dn_uuid,
       'subject' => x509_subject,
+      'issuer' => x509_issuer,
       'nonce' => 'bad-' + nonce,
     )
     cookies['_ga'] = ga_cookie
@@ -64,6 +69,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(response).to redirect_to account_path
         expect(subject.user_session[:decrypted_x509]).to eq({
           'subject' => x509_subject,
+          'issuer' => nil,
           'presented' => true,
         }.to_json)
       end
