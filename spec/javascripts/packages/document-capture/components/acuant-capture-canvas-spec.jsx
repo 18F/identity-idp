@@ -21,6 +21,15 @@ describe('document-capture/components/acuant-capture-canvas', () => {
     initialize();
 
     expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
+    expect(window.AcuantCameraUI.start.getCall(0).args[2]).to.deep.equal({
+      text: {
+        CAPTURING: 'doc_auth.info.capture_status_capturing',
+        GOOD_DOCUMENT: null,
+        NONE: 'doc_auth.info.capture_status_none',
+        SMALL_DOCUMENT: 'doc_auth.info.capture_status_small_document',
+        TAP_TO_CAPTURE: 'doc_auth.info.capture_status_tap_to_capture',
+      },
+    });
   });
 
   it('ends on unmount', () => {

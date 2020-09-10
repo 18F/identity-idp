@@ -2,7 +2,7 @@ class AcuantSdkController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   ACUANT_SDK_STATIC_FILES = %w[
-    AcuantImageProcessingService.wasm
+    AcuantImageProcessingService.js.mem
     AcuantImageProcessingWorker.min.js
     AcuantImageProcessingWorker.wasm
     AcuantJavascriptWebSdk.min.js
@@ -40,6 +40,8 @@ class AcuantSdkController < ApplicationController
       'application/javascript'
     when '.wasm'
       'application/wasm'
+    when '.mem'
+      'application/octet-stream'
     end
   end
 end

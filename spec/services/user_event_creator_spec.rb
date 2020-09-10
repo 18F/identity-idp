@@ -19,7 +19,7 @@ describe UserEventCreator do
   let(:device) { create(:device, user: user, cookie_uuid: existing_device_cookie) }
   let(:event_type) { 'account_created' }
 
-  subject { described_class.new(request, user) }
+  subject { UserEventCreator.new(request: request, current_user: user) }
 
   before do
     # Memoize user and device before specs run
@@ -100,6 +100,19 @@ describe UserEventCreator do
 
       expect(event.disavowal_token).to_not be_nil
       expect(event.disavowal_token_fingerprint).to_not be_nil
+    end
+  end
+
+  describe '#create_out_of_band_user_event' do
+    let(:request) { nil }
+    let(:event_type) { :password_invalidated }
+
+    it 'creates an event without a device and without an IP address' do
+      event = subject.create_out_of_band_user_event(event_type)
+
+      expect(event.event_type).to eq(event_type.to_s)
+      expect(event.ip).to be_blank
+      expect(event.device).to be_blank
     end
   end
 end

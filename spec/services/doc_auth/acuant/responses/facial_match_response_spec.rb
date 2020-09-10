@@ -11,11 +11,11 @@ describe DocAuth::Acuant::Responses::FacialMatchResponse do
       response = described_class.new(http_response)
 
       expect(response.success?).to eq(true)
-      expect(response.errors).to eq([])
+      expect(response.errors).to eq({})
       expect(response.exception).to be_nil
       expect(response.to_h).to eq(
         success: true,
-        errors: [],
+        errors: {},
         exception: nil,
         match_score: 83,
       )
@@ -32,11 +32,11 @@ describe DocAuth::Acuant::Responses::FacialMatchResponse do
       response = described_class.new(http_response)
 
       expect(response.success?).to eq(false)
-      expect(response.errors).to eq([I18n.t('errors.doc_auth.selfie')])
+      expect(response.errors).to eq(selfie: I18n.t('errors.doc_auth.selfie'))
       expect(response.exception).to be_nil
       expect(response.to_h).to eq(
         success: false,
-        errors: [I18n.t('errors.doc_auth.selfie')],
+        errors: { selfie: I18n.t('errors.doc_auth.selfie') },
         exception: nil,
         match_score: 68,
       )

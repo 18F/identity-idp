@@ -3,6 +3,8 @@ import { render } from '@testing-library/react';
 import sinon from 'sinon';
 import { UploadContextProvider } from '@18f/identity-document-capture';
 
+/** @typedef {import('@testing-library/react').RenderOptions} BaseRenderOptions */
+
 /**
  * @typedef RenderOptions
  *
@@ -17,12 +19,12 @@ import { UploadContextProvider } from '@18f/identity-document-capture';
  * @see https://testing-library.com/docs/react-testing-library/setup#custom-render
  *
  * @param {import('react').ReactElement} element Element to render.
- * @param {RenderOptions=}               options Optional options.
+ * @param {RenderOptions&BaseRenderOptions=} options Optional options.
  *
  * @return {import('@testing-library/react').RenderResult}
  */
 function renderWithDefaultContext(element, options = {}) {
-  const { uploadError, expectedUploads = 1 } = options;
+  const { uploadError, expectedUploads = 1, ...baseRenderOptions } = options;
 
   const upload = sinon
     .stub()
@@ -36,7 +38,12 @@ function renderWithDefaultContext(element, options = {}) {
       ),
     );
 
-  return render(<UploadContextProvider upload={upload}>{element}</UploadContextProvider>);
+  return render(element, {
+    ...baseRenderOptions,
+    wrapper: ({ children }) => (
+      <UploadContextProvider upload={upload}>{children}</UploadContextProvider>
+    ),
+  });
 }
 
 export default renderWithDefaultContext;

@@ -4,8 +4,12 @@ module Idv
       def call
         add_cost(:acuant_result) if results_response.to_h[:billed]
         if results_response.success?
-          send_selfie_request
-          results_response
+          selfie_response = send_selfie_request
+          if selfie_response.success?
+            results_response
+          else
+            handle_selfie_step_failure(selfie_response)
+          end
         else
           handle_selfie_step_failure(results_response)
         end
@@ -17,11 +21,10 @@ module Idv
         selfie_response = DocAuth::Client.client.post_selfie(
           instance_id: instance_id, image: image.read,
         )
-        if selfie_response.success?
-          handle_successful_selfie_match
-        else
-          handle_selfie_step_failure(selfie_response)
-        end
+
+        handle_successful_selfie_match if selfie_response.success?
+
+        selfie_response
       end
 
       def handle_successful_selfie_match
@@ -45,7 +48,7 @@ module Idv
           mark_step_incomplete(:back_image)
         end
         log_document_error(failure_response)
-        failure(failure_response.errors.first, failure_response.to_h)
+        failure(failure_response.first_error_message, failure_response.to_h)
       end
 
       def results_response

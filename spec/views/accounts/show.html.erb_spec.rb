@@ -132,6 +132,26 @@ describe 'accounts/show.html.erb' do
     expect(rendered).to have_content t('headings.account.account_history')
   end
 
+  context 'events' do
+    let!(:event_without_ip) do
+      create(:event, event_type: :password_invalidated,
+                     user: user,
+                     ip: nil)
+    end
+
+    it 'contains user events that may not contain IP addresses' do
+      render
+
+      page = Capybara.string(rendered)
+      events_section = page.find(
+        ".profile-info-box:contains('#{t('headings.account.account_history')}')",
+      )
+
+      expect(events_section).to have_content(event_without_ip.decorate.event_type)
+      expect(events_section).to_not have_content('IP address potentially located in')
+    end
+  end
+
   context 'connected apps' do
     it 'contains connected applications' do
       render

@@ -159,6 +159,7 @@ shared_examples 'creating two accounts during the same session' do |sp|
     end
 
     perform_in_browser(:two) do
+      Capybara.reset_session!
       confirm_email_in_a_different_browser(second_email)
       click_agree_and_continue
 

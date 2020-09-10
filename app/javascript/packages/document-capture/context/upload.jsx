@@ -6,6 +6,15 @@ const UploadContext = createContext(defaultUpload);
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
+ * Upload field error, after normalized to error instance.
+ *
+ * @typedef UploadFieldError
+ *
+ * @prop {'front'|'back'|'selfie'|'network'} field Field name.
+ * @prop {string} message Error message.
+ */
+
+/**
  * @typedef UploadOptions
  *
  * @prop {string} endpoint Endpoint to which payload should be sent.
@@ -22,7 +31,7 @@ const UploadContext = createContext(defaultUpload);
  * @typedef UploadErrorResponse
  *
  * @prop {false} success Whether request was successful.
- * @prop {string[]} errors Error messages.
+ * @prop {UploadFieldError[]} errors Error messages.
  */
 
 /**

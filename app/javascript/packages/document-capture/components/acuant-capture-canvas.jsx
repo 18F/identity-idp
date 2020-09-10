@@ -1,12 +1,52 @@
 import React, { useContext, useEffect } from 'react';
 import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
+import useI18n from '../hooks/use-i18n';
+
+/**
+ * @typedef AcuantCameraUIText
+ *
+ * @prop {string} NONE No document detected.
+ * @prop {string} SMALL_DOCUMENT Document does not fill frame.
+ * @prop {string?} GOOD_DOCUMENT Document is good and capture is pending.
+ * @prop {string} CAPTURING Document is being captured.
+ * @prop {string} TAP_TO_CAPTURE Explicit user action to capture after delay.
+ */
+
+/**
+ * @typedef AcuantCameraUIOptions
+ *
+ * @prop {AcuantCameraUIText} text Camera UI text strings.
+ */
+
+/**
+ * Document type.
+ *
+ * 0 = None
+ * 1 = ID
+ * 2 = Passport
+ *
+ * @typedef {0|1|2} AcuantDocumentType
+ */
+
+/**
+ * @typedef AcuantCameraUICallbacks
+ *
+ * @prop {(response: AcuantCaptureImage)=>void} onCaptured Document captured callback.
+ * @prop {(response: AcuantSuccessResponse?)=>void} onCropped Document cropped callback. Null if
+ * cropping error.
+ * @prop {(response: object)=>void=} onFrameAvailable Optional frame available callback.
+ */
 
 /**
  * @typedef AcuantCameraUI
  *
- * @prop {(AcuantSuccessCallback,AcuantFailureCallback)=>void} start Start capture.
- * @prop {()=>void}                                            end   End capture.
+ * @prop {(
+ *   callbacks: AcuantCameraUICallbacks,
+ *   onFailure: AcuantFailureCallback,
+ *   options?: AcuantCameraUIOptions
+ * )=>void} start Start capture.
+ * @prop {()=>void} end End capture.
  */
 
 /**
@@ -20,23 +60,31 @@ import useAsset from '../hooks/use-asset';
  */
 
 /**
+ * @typedef AcuantCaptureImage
+ *
+ * @prop {Blob} data Pre-cropped image data.
+ * @prop {number} width  Image width.
+ * @prop {number} height Image height.
+ */
+
+/**
  * @typedef AcuantImage
  *
- * @prop {string} data   Base64-encoded image data.
- * @prop {number} width  Image width.
+ * @prop {string} data Base64-encoded image data.
+ * @prop {number} width Image width.
  * @prop {number} height Image height.
  */
 
 /**
  * @typedef AcuantSuccessResponse
  *
- * @prop {AcuantImage} image      Image object.
- * @prop {boolean}     isPassport Whether document is passport.
- * @prop {number}      glare      Detected image glare.
- * @prop {number}      sharpness  Detected image sharpness.
- * @prop {number}      dpi        Detected image resolution.
+ * @prop {AcuantImage} image Image object.
+ * @prop {AcuantDocumentType} cardType Document type.
+ * @prop {number} glare Detected image glare.
+ * @prop {number} sharpness Detected image sharpness.
+ * @prop {number} dpi Detected image resolution.
  *
- * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.3.3/SimpleHTMLApp#acuantcamera
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.1/SimpleHTMLApp#acuantcameraui
  */
 
 /**
@@ -44,7 +92,7 @@ import useAsset from '../hooks/use-asset';
  */
 
 /**
- * @typedef {(error:Error)=>void} AcuantFailureCallback
+ * @typedef {(error?:Error)=>void} AcuantFailureCallback
  */
 
 /**
@@ -63,12 +111,31 @@ function AcuantCaptureCanvas({
 }) {
   const { isReady } = useContext(AcuantContext);
   const { getAssetPath } = useAsset();
+  const { t } = useI18n();
 
   useEffect(() => {
     if (isReady) {
       /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
-        onImageCaptureSuccess,
+        {
+          onCaptured() {},
+          onCropped(response) {
+            if (response) {
+              onImageCaptureSuccess(response);
+            } else {
+              onImageCaptureFailure();
+            }
+          },
+        },
         onImageCaptureFailure,
+        {
+          text: {
+            NONE: t('doc_auth.info.capture_status_none'),
+            SMALL_DOCUMENT: t('doc_auth.info.capture_status_small_document'),
+            GOOD_DOCUMENT: null,
+            CAPTURING: t('doc_auth.info.capture_status_capturing'),
+            TAP_TO_CAPTURE: t('doc_auth.info.capture_status_tap_to_capture'),
+          },
+        },
       );
     }
 

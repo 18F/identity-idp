@@ -13,8 +13,8 @@ en:
       upload_picture: Upload a photo
       use_phone: Use your phone
     errors:
-      must_be_image: must be an image
-      not_a_file: was not attached as a file
+      must_be_image: File must be an image
+      not_a_file: The selection was not a valid file
     forms:
       address1: Address
       change_file: Change file
@@ -31,7 +31,7 @@ en:
     headings:
       address: Mailing Address
       back: Back
-      capture_complete: We have verified your state issued ID
+      capture_complete: We have verified your state-issued ID
       document_capture: Add your state-issued ID
       document_capture_back: Back of your ID
       document_capture_front: Front of your ID
@@ -59,6 +59,10 @@ en:
       welcome: We need to verify your identity
     info:
       camera_required: Your mobile phone must have a camera and a web browser
+      capture_status_capturing: Capturing
+      capture_status_none: Align
+      capture_status_small_document: Move Closer
+      capture_status_tap_to_capture: Tap to Capture
       document_capture_intro_acknowledgment: We’ll collect information about you by
         reading your state-issued ID. We do not store images you upload. We only verify
         your identity.
@@ -94,6 +98,7 @@ en:
         information.
     instructions:
       bullet1: Upload your ID
+      bullet1a: Take a photo of yourself
       bullet2: Confirm your address
       bullet3: Secure your account
       bullet4: Account recovery
@@ -121,6 +126,7 @@ en:
       take_pic3: Do not use the flash on your camera
       take_pic4: Use the landscape orientation
       text1: along with your Social Security Number
+      text1a: with your phone or webcam
       text2: using a phone number or mailing address
       text3: by re-entering your login.gov password
       text4: make sure you always have access

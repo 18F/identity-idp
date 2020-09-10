@@ -60,7 +60,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_event_creator
-    @user_event_creator ||= UserEventCreator.new(request, current_user)
+    @user_event_creator ||= UserEventCreator.new(request: request, current_user: current_user)
   end
   delegate :create_user_event, :create_user_event_with_disavowal, to: :user_event_creator
   delegate :remember_device_default, to: :decorated_session

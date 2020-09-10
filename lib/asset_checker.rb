@@ -1,7 +1,7 @@
 require 'yaml'
 
 class AssetChecker
-  ASSETS_FILE = 'app/views/idv/doc_auth/document_capture.html.erb'.freeze
+  ASSETS_FILE = 'app/views/idv/shared/_document_capture.html.erb'.freeze
   TRANSLATIONS_FILE = 'config/js_locale_strings.yml'.freeze
 
   attr_reader :files, :assets_file, :translations_file

@@ -1,9 +1,16 @@
 import React, { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
+import { RequiredValueMissingError } from './form-steps';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
+import FormErrorMessage from './form-error-message';
+
+/**
+ * @template V
+ * @typedef {import('./form-steps').FormStepValidateResult<V>} FormStepValidateResult
+ */
 
 /**
  * @typedef SelfieStepValue
@@ -12,18 +19,17 @@ import SelfieCapture from './selfie-capture';
  */
 
 /**
- * @typedef SelfieStepProps
- *
- * @prop {SelfieStepValue=}                            value    Current value.
- * @prop {(nextValue:Partial<SelfieStepValue>)=>void=} onChange Change handler.
+ * @param {import('./form-steps').FormStepComponentProps<SelfieStepValue>} props Props object.
  */
-
-/**
- * @param {SelfieStepProps} props Props object.
- */
-function SelfieStep({ value = {}, onChange = () => {} }) {
+function SelfieStep({
+  value = {},
+  onChange = () => {},
+  errors = [],
+  registerField = () => undefined,
+}) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
+  const error = errors.find(({ field }) => field === 'selfie')?.error;
 
   return (
     <>
@@ -36,6 +42,7 @@ function SelfieStep({ value = {}, onChange = () => {} }) {
       </ul>
       {isMobile || !hasMediaAccess() ? (
         <AcuantCapture
+          ref={registerField('selfie')}
           capture="user"
           label={t('doc_auth.headings.document_capture_selfie')}
           bannerText={t('doc_auth.headings.photo')}
@@ -43,11 +50,14 @@ function SelfieStep({ value = {}, onChange = () => {} }) {
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           allowUpload={false}
           className="id-card-file-input"
+          errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
         />
       ) : (
         <SelfieCapture
+          ref={registerField('selfie')}
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
+          errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
         />
       )}
     </>
@@ -55,12 +65,10 @@ function SelfieStep({ value = {}, onChange = () => {} }) {
 }
 
 /**
- * Returns true if the step is valid for the given values, or false otherwise.
- *
- * @param {Record<string,string>} value Current form values.
- *
- * @return {boolean} Whether step is valid.
+ * @type {import('./form-steps').FormStepValidate<SelfieStepValue>}
  */
-export const isValid = (value) => Boolean(value.selfie);
+export function validate(values) {
+  return values.selfie ? [] : [{ field: 'selfie', error: new RequiredValueMissingError() }];
+}
 
 export default SelfieStep;

@@ -26,7 +26,7 @@ describe DocAuth::Acuant::Requests::LivenessRequest do
         response = described_class.new(image: DocAuthImageFixtures.selfie_image).fetch
 
         expect(response.success?).to eq(true)
-        expect(response.errors).to eq([])
+        expect(response.errors).to eq({})
         expect(response.exception).to be_nil
         expect(request_stub).to have_been_requested
       end
@@ -43,7 +43,7 @@ describe DocAuth::Acuant::Requests::LivenessRequest do
         response = described_class.new(image: DocAuthImageFixtures.selfie_image).fetch
 
         expect(response.success?).to eq(false)
-        expect(response.errors).to eq([I18n.t('errors.doc_auth.selfie')])
+        expect(response.errors).to eq(selfie: I18n.t('errors.doc_auth.selfie'))
         expect(response.exception).to be_nil
         expect(request_stub).to have_been_requested
       end

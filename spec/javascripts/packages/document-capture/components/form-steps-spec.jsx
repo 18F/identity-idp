@@ -10,15 +10,16 @@ import render from '../../../support/render';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [
-    { name: 'first', title: 'First Title', component: () => <span>First</span> },
+    { name: 'first', title: 'First Title', form: () => <span>First</span> },
     {
       name: 'second',
       title: 'Second Title',
-      component: ({ value = {}, onChange }) => (
+      form: ({ value = {}, onChange, registerField }) => (
         // eslint-disable-next-line jsx-a11y/label-has-associated-control
         <label>
           Second
           <input
+            ref={registerField('second')}
             value={value.second || ''}
             onChange={(event) => {
               onChange({ changed: true });
@@ -27,9 +28,9 @@ describe('document-capture/components/form-steps', () => {
           />
         </label>
       ),
-      isValid: (value) => Boolean(value.second),
+      validate: (value) => (value.second ? [] : [{ field: 'second', error: new Error() }]),
     },
-    { name: 'last', title: 'Last Title', component: () => <span>Last</span> },
+    { name: 'last', title: 'Last Title', form: () => <span>Last</span> },
   ];
 
   let originalHash;
@@ -52,7 +53,10 @@ describe('document-capture/components/form-steps', () => {
     });
 
     it('returns the result of the validity function given form values', () => {
-      const step = { name: 'example', isValid: (value) => value.ok };
+      const step = {
+        name: 'example',
+        validate: (values) => (values.ok ? undefined : { ok: new Error() }),
+      };
 
       const result = isStepValid(step, { ok: false });
 
@@ -82,7 +86,10 @@ describe('document-capture/components/form-steps', () => {
     });
 
     it('returns -1 if all steps are invalid', () => {
-      const steps = [...STEPS].map((step) => ({ ...step, isValid: () => false }));
+      const steps = [...STEPS].map((step) => ({
+        ...step,
+        validate: () => ({ missing: new Error() }),
+      }));
       const result = getLastValidStepIndex(steps, {});
 
       expect(result).to.be.equal(-1);
@@ -234,5 +241,28 @@ describe('document-capture/components/form-steps', () => {
     const input = getByLabelText('Second');
 
     expect(input.value).to.equal('prefilled');
+  });
+
+  it('prevents submission if step is invalid', () => {
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} initialStep="second" />);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+
+    expect(window.location.hash).to.equal('#step=second');
+    expect(document.activeElement).to.equal(getByLabelText('Second'));
+  });
+
+  it('renders with optional footer', () => {
+    const steps = [
+      {
+        name: 'one',
+        title: 'Step One',
+        form: () => <span>Form Fields</span>,
+        footer: () => <span>Footer</span>,
+      },
+    ];
+    const { getByText } = render(<FormSteps steps={steps} />);
+
+    expect(getByText('Footer')).to.be.ok();
   });
 });

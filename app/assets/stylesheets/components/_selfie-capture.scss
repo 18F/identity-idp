@@ -21,8 +21,9 @@
   border-width: 1px;
 }
 
-.selfie-capture--access-rejected {
+.selfie-capture--error {
   border-color: color('error');
+  border-radius: .375rem;
   border-width: 3px;
 
   &:hover {

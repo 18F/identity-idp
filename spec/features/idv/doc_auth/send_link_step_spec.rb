@@ -86,4 +86,53 @@ feature 'doc auth send link step' do
       expect(page).to have_current_path(idv_doc_auth_link_sent_step)
     end
   end
+
+  context 'document capture step enabled' do
+    let(:document_capture_session) { DocumentCaptureSession.create! }
+
+    before do
+      allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(true)
+      allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(
+        document_capture_session_uuid: document_capture_session.uuid,
+      )
+    end
+
+    it 'includes expected URL parameters' do
+      expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+        params = Rack::Utils.parse_nested_query URI(config[:link]).query
+        expect(params).to eq('document-capture-session' => document_capture_session.uuid)
+
+        impl.call(config)
+      end
+
+      fill_in :doc_auth_phone, with: '415-555-0199'
+      click_idv_continue
+    end
+
+    it 'sets requested_at on the capture session' do
+      fill_in :doc_auth_phone, with: '415-555-0199'
+      click_idv_continue
+
+      document_capture_session.reload
+      expect(document_capture_session).to have_attributes(requested_at: a_kind_of(Time))
+    end
+  end
+
+  context 'document capture step disabled' do
+    before do
+      allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
+    end
+
+    it 'includes expected URL parameters' do
+      expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+        params = Rack::Utils.parse_nested_query URI(config[:link]).query
+        expect(params).to include('token')
+
+        impl.call(config)
+      end
+
+      fill_in :doc_auth_phone, with: '415-555-0199'
+      click_idv_continue
+    end
+  end
 end

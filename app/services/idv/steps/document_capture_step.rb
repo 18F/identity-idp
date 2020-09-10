@@ -20,6 +20,7 @@ module Idv
         response = post_images
         if response.success?
           save_proofing_components
+          document_capture_session.store_result_from_response(response)
           extract_pii_from_doc(response)
           response
         else
@@ -36,7 +37,7 @@ module Idv
                  end
         log_document_error(response)
         extra = response.to_h.merge(notice)
-        failure(response.errors.first, extra)
+        failure(response.first_error_message, extra)
       end
 
       def handle_stored_result

@@ -6,14 +6,21 @@ class Identity < ApplicationRecord
 
   delegate :metadata, to: :sp, prefix: true
 
+  # rubocop:disable Rails/InverseOf
+  belongs_to :service_provider_record,
+             class_name: 'ServiceProvider',
+             foreign_key: 'service_provider',
+             primary_key: 'issuer'
+  # rubocop:enable Rails/InverseOf
+
+  scope :not_deleted, -> { where(deleted_at: nil) }
+
   CONSENT_EXPIRATION = 1.year
 
   IAL_MAX = 0
   IAL1 = 1
   IAL2 = 2
   IAL2_STRICT = 22
-
-  scope :not_deleted, -> { where(deleted_at: nil) }
 
   def deactivate
     update!(session_uuid: nil)

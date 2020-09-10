@@ -17,6 +17,10 @@ class TwoFactorOptionsPresenter
                                               (aal3_only? && mfa_policy.two_factor_enabled?)
   end
 
+  def icon_alt_text
+    t('two_factor_authentication.important_alert_icon')
+  end
+
   def heading
     if piv_cac_required?
       t('two_factor_authentication.two_factor_hspd12_choice')

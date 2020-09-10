@@ -94,7 +94,7 @@ module DocAuth
         NewRelic::Agent.notice_error(exception)
         DocAuth::Response.new(
           success: false,
-          errors: [I18n.t('errors.doc_auth.acuant_network_error')],
+          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
           exception: exception,
         )
       end
@@ -103,7 +103,7 @@ module DocAuth
         NewRelic::Agent.notice_error(exception)
         DocAuth::Response.new(
           success: false,
-          errors: [I18n.t('errors.doc_auth.acuant_network_error')],
+          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
           exception: exception,
         )
       end

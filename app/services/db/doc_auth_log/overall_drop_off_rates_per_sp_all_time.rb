@@ -13,7 +13,7 @@ module Db
         <<~SQL
           select count(*) from identities
           where service_provider='#{issuer}' and ial>=2
-          and user_id in (select user_id from doc_auth_logs where #{at_least_one_image_submitted})
+          and user_id in (select user_id from doc_auth_logs where #{images_or_piv_cac_submitted})
           and user_id in (select user_id from profiles)
         SQL
       end
@@ -21,7 +21,7 @@ module Db
       def drop_offs_query
         <<~SQL
           #{select_counts_from_doc_auth_logs}
-          where issuer='#{issuer}' and #{at_least_one_image_submitted}
+          where issuer='#{issuer}' and #{images_or_piv_cac_submitted}
         SQL
       end
     end
