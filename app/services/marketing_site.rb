@@ -38,7 +38,7 @@ class MarketingSite
     URI.join(
       BASE_URL,
       locale_segment,
-      'help/authentication-methods/which-authentication-method-should-i-use/'
+      'help/authentication-methods/which-authentication-method-should-i-use/',
     ).to_s
   end
 
