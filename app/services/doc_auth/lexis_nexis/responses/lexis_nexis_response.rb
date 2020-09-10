@@ -24,9 +24,6 @@ module DocAuth
 
         def initialize(http_response)
           @http_response = http_response
-          #AM: This doesn't really work yet, I don't think. We'll need to make sure things get wrapped up there.
-          handle_invalid_response(http_response) unless http_response.status == 200
-
           super(
             success: successful_result?,
             errors: error_messages,
@@ -34,8 +31,6 @@ module DocAuth
             pii_from_doc: pii_from_doc,
           )
         end
-
-        # private
 
         def successful_result?
           raise NotImplementedError
@@ -52,6 +47,8 @@ module DocAuth
         def pii_from_doc
           raise NotImplementedError
         end
+
+        private
 
         def detail_groups
           raise NotImplementedError
@@ -89,6 +86,8 @@ module DocAuth
         end
 
         def extract_details(product)
+          return unless product[:ParameterDetails]
+
           product[:ParameterDetails].each do |detail|
             group = detail[:Group]
             detail_name = detail[:Name]
@@ -98,22 +97,6 @@ module DocAuth
 
             product[group][detail_name] = value
           end
-        end
-
-        def handle_invalid_response(http_response)
-          message = [
-            self.class.name,
-            'Unexpected HTTP response',
-            http_response.status,
-          ].join(' ')
-
-          exception = RuntimeError.new(message)
-          NewRelic::Agent.notice_error(exception)
-          DocAuth::Response.new(
-            success: false,
-            errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
-            exception: exception,
-            )
         end
       end
     end

@@ -1,6 +1,17 @@
 module DocAuth
   module LexisNexis
     class Request
+      def fetch
+        http_response = send_http_request
+        return handle_invalid_response(http_response) unless http_response.success?
+
+        handle_http_response(http_response)
+      rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
+        handle_connection_error(e)
+      end
+
+      protected
+
       def path
         "/restws/identity/v2/#{account_id}/#{workflow}/conversation"
       end
@@ -28,16 +39,6 @@ module DocAuth
           'Content-Type': 'application/json',
         }
       end
-
-      def fetch
-        http_response = send_http_request
-
-        handle_http_response(http_response)
-      rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
-        handle_connection_error(e)
-      end
-
-      protected
 
       def settings
         {
@@ -126,7 +127,22 @@ module DocAuth
         NewRelic::Agent.notice_error(exception)
         DocAuth::Response.new(
           success: false,
-          errors: [I18n.t('errors.doc_auth.lexisnexis_network_error')],
+          errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
+          exception: exception,
+        )
+      end
+
+      def handle_invalid_response(http_response)
+        message = [
+          self.class.name,
+          'Unexpected HTTP response',
+          http_response.status,
+        ].join(' ')
+        exception = RuntimeError.new(message)
+        NewRelic::Agent.notice_error(exception)
+        DocAuth::Response.new(
+          success: false,
+          errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
           exception: exception,
         )
       end

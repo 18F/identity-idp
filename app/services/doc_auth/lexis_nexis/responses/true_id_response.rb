@@ -7,8 +7,6 @@ module DocAuth
           super http_response
         end
 
-         # private
-
         def successful_result?
           transaction_status == 'passed' &&
             product_status == 'pass' &&
@@ -30,6 +28,8 @@ module DocAuth
             PII_DETAILS.include? k
           end
         end
+
+        private
 
         def doc_auth_result
           @doc_auth_result ||= true_id_product.dig(:AUTHENTICATION_RESULT, :DocAuthResult)

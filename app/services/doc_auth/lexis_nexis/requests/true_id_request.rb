@@ -16,6 +16,8 @@ module DocAuth
           @liveness_checking_enabled = liveness_checking_enabled
         end
 
+        protected
+
         def path
           "/restws/identity/v3/#{account_id}/workflows/#{workflow}/conversation"
         end
@@ -35,15 +37,12 @@ module DocAuth
         end
 
         def handle_http_response(http_response)
-          # DP: need to capture the info returned and include it in the response
-          DocAuth::Response.new(success: http_response.status == 200)
+          DocAuth::LexisNexis::Responses::TrueIdResponse.new(http_response)
         end
 
         def method
           :post
         end
-
-        protected
 
         def account_id
           Figaro.env.lexisnexis_trueid_account_id

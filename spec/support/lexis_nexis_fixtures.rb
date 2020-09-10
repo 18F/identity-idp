@@ -1,11 +1,7 @@
 # rubocop:disable Naming/AccessorMethodName
 module LexisNexisFixtures
-  def self.get_results_response_success
-    load_response_fixture('get_results_response_success.json')
-  end
-
-  def self.get_results_response_failure
-    load_response_fixture('get_results_response_failure.json')
+  def self.true_id_response_success
+    load_response_fixture('true_id_response_success.json')
   end
 
   def self.true_id_response_failure
