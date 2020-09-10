@@ -150,17 +150,19 @@ en:
       intro: A new phone number was added to your %{app} profile.
       subject: New phone number added
     please_reset_password:
-      additional_help_html: If you’ve used your login.gov password on other websites,
-        we encourage you to update these passwords as well. If you have any questions,
-        please leave a message for our team at %{contact_url} — we will respond within
-        two business days.
-      call_to_action: To regain access to your login.gov account, you will need to
-        reset your password using the link below.
-      intro: We recently identified a security issue with your password. We have disabled
-        your password to keep your account safe. This was not a result of a security
-        problem with login.gov, but was an issue with your password being compromised.
-      link_text: Reset your password
-      subject: Please reset your password
+      call_to_action: 'As a precaution, we’ve disabled your password to keep your
+        information safe. Please follow the steps below to reset your password and
+        secure your account:'
+      intro: We’ve detected unusual activity on your login.gov account. We are concerned
+        someone other than you may be trying to access your information.
+      learn_more_link_text: Learn more about your options
+      reminder_html: As a reminder, <b>login.gov will never ask for your login credentials
+        by phone or email</b>. You can take additional steps to secure your account
+        by enabling two-factor authentication.
+      step_1: Visit the login.gov website and select sign in
+      step_2: Select “forgot your password?” at the bottom of the page
+      step_3: Follow the instructions to reset your password
+      subject: Unusual activity — reset your login.gov password
     reset_password_instructions:
       footer: This link expires in %{expires} hours.
       header: To finish resetting your password, please click the link below  or copy

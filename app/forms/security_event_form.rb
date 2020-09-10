@@ -45,8 +45,6 @@ class SecurityEventForm
 
       if event_type == SecurityEvent::AUTHORIZATION_FRAUD_DETECTED
         ResetUserPassword.new(user: user).call
-        UserEventCreator.new(current_user: user).
-          create_out_of_band_user_event(:password_invalidated)
       end
     end
 

@@ -336,7 +336,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'please_reset_password' do
-    let(:mail) { UserMailer.please_reset_password(email_address.email, 'This is a test.') }
+    let(:mail) { UserMailer.please_reset_password(email_address.email) }
 
     it_behaves_like 'a system email'
 
@@ -354,9 +354,6 @@ describe UserMailer, type: :mailer do
 
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.please_reset_password.call_to_action')))
-
-      expect(mail.html_part.body).
-        to have_content('This is a test.')
     end
   end
 

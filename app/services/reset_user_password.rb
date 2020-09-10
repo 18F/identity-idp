@@ -1,20 +1,30 @@
 class ResetUserPassword
-  def initialize(user:, log_stdout: false)
+  def initialize(user:)
     @user = user
-    @log_stdout = log_stdout
   end
 
   def call
-    reset_user_password_and_log_event
+    reset_user_password
+    log_event
+    notify_user
   end
 
   private
 
   attr_reader :user
 
-  def reset_user_password_and_log_event
+  def reset_user_password
     user.update!(password: SecureRandom.hex(8))
-    return unless @log_stdout
-    Kernel.puts "Password for user with email #{user.email_addresses.take.email} has been reset"
+  end
+
+  def log_event
+    UserEventCreator.new(current_user: user).
+      create_out_of_band_user_event(:password_invalidated)
+  end
+
+  def notify_user
+    user.email_addresses.each do |email_address|
+      UserMailer.please_reset_password(email_address.email).deliver_now
+    end
   end
 end
