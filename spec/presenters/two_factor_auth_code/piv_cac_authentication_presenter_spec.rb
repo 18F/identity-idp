@@ -14,9 +14,11 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
 
   let(:allow_user_to_switch_method) { false }
   let(:aal3_required) { true }
+  let(:piv_cac_required) { false }
   let(:service_provider_mfa_policy) do
     instance_double(ServiceProviderMfaPolicy,
                     aal3_required?: aal3_required,
+                    piv_cac_required?: piv_cac_required,
                     allow_user_to_switch_method?: allow_user_to_switch_method)
   end
 
@@ -32,28 +34,37 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     it { expect(presenter.header).to eq expected_header }
   end
 
-  describe '#help_text' do
+  describe '#piv_cac_help' do
     let(:expected_help_text) do
       t('instructions.mfa.piv_cac.confirm_piv_cac_html',
         email: content_tag(:strong, user_email),
         app: content_tag(:strong, APP_NAME))
     end
 
-    context 'with AAL3 required, and only one method enabled' do
+    context 'with AAL3 required' do
       let(:aal3_required) { true }
 
       let(:expected_help_text) do
         t('instructions.mfa.piv_cac.confirm_piv_cac_only_html')
       end
+
       it 'finds the PIV/CAC only help text' do
-        expect(presenter.help_text).to eq expected_help_text
+        expect(presenter.piv_cac_help).to eq expected_help_text
       end
     end
+
     context 'without AAL3 required' do
       let(:aal3_required) { false }
+
       it 'finds the help text' do
-        expect(presenter.help_text).to eq expected_help_text
+        expect(presenter.piv_cac_help).to eq expected_help_text
       end
+    end
+  end
+
+  describe 'help_text' do
+    it 'supplies no help text' do
+      expect(presenter.help_text).to eq('')
     end
   end
 
