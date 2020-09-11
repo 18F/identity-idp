@@ -60,9 +60,9 @@ module TwoFactorAuthCode
     def fallback_question
       return if @hide_fallback_question
       if service_provider_mfa_policy.allow_user_to_switch_method?
-        ''
-      else
         t('two_factor_authentication.piv_cac_fallback.question')
+      else
+        ''
       end
     end
 
