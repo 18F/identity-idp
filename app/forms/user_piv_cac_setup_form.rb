@@ -26,7 +26,7 @@ class UserPivCacSetupForm
   private
 
   def process_valid_submission
-    Db::PivCacConfiguration::Create.call(user, x509_dn_uuid, @name)
+    Db::PivCacConfiguration::Create.call(user, x509_dn_uuid, @name, x509_issuer)
     true
   rescue PG::UniqueViolation
     self.error_type = 'piv_cac.already_associated'

@@ -21,6 +21,7 @@ module PivCacFormHelpers
     else
       self.x509_dn_uuid = @data['uuid']
       self.x509_dn = @data['subject']
+      self.x509_issuer = @data['issuer']
       true
     end
   end
