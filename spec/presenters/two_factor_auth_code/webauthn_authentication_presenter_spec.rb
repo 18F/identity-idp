@@ -50,7 +50,7 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   end
 
   describe '#fallback_question' do
-    let(:aal3_required) { false }
+    let(:allow_user_to_switch_method) { true }
 
     it 'supplies a fallback_question' do
       expect(presenter.fallback_question).to \
