@@ -1,29 +1,27 @@
-<div>
-  <div class="grid-row mb1 mt0">
-    <h2 class="grid-col-6 m0">
-      <%= t('forms.backup_code.title') %>
-    </h2>
-    <div class="right-align grid-col-6">
-      <%= render @view_model.backup_codes_partial %>
+<div class="grid-row mb1 mt0">
+  <h2 class="grid-col-6 m0">
+    <%= t('forms.backup_code.title') %>
+  </h2>
+  <div class="right-align grid-col-6">
+    <%= render @view_model.backup_codes_partial %>
+  </div>
+</div>
+<div class="grid-row p1 border border-light-blue">
+  <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
+    <div class="grid-col-9">
+      <%= t 'account.index.backup_codes_exist' %>
+      <%=
+        local_time(@view_model.backup_codes_generated_at, t('time.formats.event_timestamp'))
+      %>
     </div>
-  </div>
-  <div class="grid-row p1 border border-light-blue">
-    <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
-      <div class="grid-col-9">
-        <%= t 'account.index.backup_codes_exist' %>
-        <%=
-          local_time(@view_model.backup_codes_generated_at, t('time.formats.event_timestamp'))
-        %>
-      </div>
-      <div class="grid-col-3 right-align">
-        <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
-          <%= link_to t('forms.buttons.delete'), backup_code_delete_path %>
-        <% end %>
-      </div>
-    <% else %>
-      <div class="grid-col-12">
-        <em><%= t 'account.index.backup_codes_no_exist' %></em>
-      </div>
-    <% end %>
-  </div>
+    <div class="grid-col-3 right-align">
+      <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
+        <%= link_to t('forms.buttons.delete'), backup_code_delete_path %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="grid-col-12">
+      <em><%= t 'account.index.backup_codes_no_exist' %></em>
+    </div>
+  <% end %>
 </div>

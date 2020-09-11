@@ -21,13 +21,11 @@
           </p>
         </div>
       </div>
-      <div class="desktop:display-none">
+      <div class="desktop:display-none display-flex flex-row flex-justify-end">
+        <%= link_to t('links.sign_out'), destroy_user_session_path, class: 'mt1 mr2'%>
         <% if enable_mobile_nav %>
-          <button class="usa-menu-btn right"><%= t('account.navigation.menu') %></button>
+          <button class="usa-menu-btn"><%= t('account.navigation.menu') %></button>
         <% end %>
-        <div class="right mt1 mr2">
-          <%= link_to t('links.sign_out'), destroy_user_session_path %>
-        </div>
       </div>
     </div>
   </div>
