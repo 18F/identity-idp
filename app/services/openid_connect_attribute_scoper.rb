@@ -11,6 +11,7 @@ class OpenidConnectAttributeScoper
     social_security_number
     x509
     x509:subject
+    x509:issuer
     x509:presented
   ].freeze
 
@@ -20,6 +21,7 @@ class OpenidConnectAttributeScoper
     profile:verified_at
     x509
     x509:subject
+    x509:issuer
     x509:presented
   ].freeze
 

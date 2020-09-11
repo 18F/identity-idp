@@ -11,7 +11,9 @@ describe TwoFactorAuthentication::PivCacVerificationController do
   let(:nonce) { 'once' }
 
   let(:x509_subject) { 'o=US, ou=DoD, cn=John.Doe.1234' }
-  let(:x509_issuer) { 'foo' }
+  let(:x509_issuer) do
+    '/C=US/O=Entrust/OU=Certification Authorities/OU=Entrust Managed Services SSP CA'
+  end
 
   before(:each) do
     session_info = { piv_cac_nonce: nonce }
