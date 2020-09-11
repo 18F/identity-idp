@@ -23,6 +23,8 @@ module Idv
     end
 
     def submit
+      throttled_else_increment
+
       FormResponse.new(
         success: valid?,
         errors: errors.messages,
@@ -81,12 +83,12 @@ module Idv
     attr_reader :params
 
     def throttle_if_rate_limited
-      return unless document_capture_session && throttled_else_increment
+      return unless @throttled
       errors.add(:limit, t('errors.doc_auth.acuant_throttle'))
     end
 
     def throttled_else_increment
-      @throttled ||= Throttler::IsThrottledElseIncrement.call(
+      @throttled = Throttler::IsThrottledElseIncrement.call(
         document_capture_session.user_id,
         :idv_acuant,
       )
