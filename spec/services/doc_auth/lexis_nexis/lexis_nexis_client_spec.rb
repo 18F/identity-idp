@@ -6,7 +6,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
   let(:image_upload_url) do
     URI.join(
       Figaro.env.lexisnexis_base_url,
-      "/restws/identity/v3/test_account/workflows/#{workflow}/conversation",
+      "/restws/identity/v3/accounts/test_account/workflows/#{workflow}/conversations",
     )
   end
 
