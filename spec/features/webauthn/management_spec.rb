@@ -10,18 +10,18 @@ describe 'webauthn management' do
 
   def visit_webauthn_setup
     sign_in_and_2fa_user(user)
-    visit account_path
+    visit account_two_factor_authentication_path
     click_link t('account.index.webauthn_add'), href: webauthn_setup_path
   end
 
   def expect_webauthn_setup_success
     expect(page).to have_content(t('notices.webauthn_configured'))
-    expect(page).to have_current_path(account_path)
+    expect(page).to have_current_path(account_two_factor_authentication_path)
   end
 
   def expect_webauthn_setup_error
     expect(page).to have_content t('errors.webauthn_setup.general_error')
-    expect(current_path).to eq account_path
+    expect(current_path).to eq account_two_factor_authentication_path
   end
 
   context 'with webauthn associations' do
@@ -30,7 +30,7 @@ describe 'webauthn management' do
       webauthn_config2 = create(:webauthn_configuration, user: user)
 
       sign_in_and_2fa_user(user)
-      visit account_path
+      visit account_two_factor_authentication_path
 
       expect(page).to have_content webauthn_config1.name
       expect(page).to have_content webauthn_config2.name
@@ -56,7 +56,7 @@ describe 'webauthn management' do
       webauthn_config = create(:webauthn_configuration, user: user)
 
       sign_in_and_2fa_user(user)
-      visit account_path
+      visit account_two_factor_authentication_path
 
       expect(page).to have_content webauthn_config.name
 
@@ -75,7 +75,7 @@ describe 'webauthn management' do
       webauthn_config = create(:webauthn_configuration, user: user)
 
       sign_in_and_2fa_user(user)
-      visit account_path
+      visit account_two_factor_authentication_path
 
       expect(page).to have_content webauthn_config.name
 
@@ -95,8 +95,8 @@ describe 'webauthn management' do
       PhoneConfiguration.first.update(mfa_enabled: false)
       user.backup_code_configurations.destroy_all
 
-      visit account_path
-      expect(current_path).to eq account_path
+      visit account_two_factor_authentication_path
+      expect(current_path).to eq account_two_factor_authentication_path
 
       expect(page).to have_content webauthn_config.name
       expect(page).to_not have_link t('account.index.webauthn_delete')
@@ -108,8 +108,8 @@ describe 'webauthn management' do
       mock_webauthn_setup_challenge
       sign_in_and_2fa_user(user)
 
-      visit account_path
-      expect(current_path).to eq account_path
+      visit account_two_factor_authentication_path
+      expect(current_path).to eq account_two_factor_authentication_path
 
       click_link t('account.index.webauthn_add'), href: webauthn_setup_path
       expect(current_path).to eq webauthn_setup_path

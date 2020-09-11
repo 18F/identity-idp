@@ -28,7 +28,7 @@ module Users
       clear_piv_cac_information
       create_user_event(:piv_cac_disabled)
       flash[:success] = t('notices.piv_cac_disabled')
-      redirect_to account_url
+      redirect_to account_two_factor_authentication_path
     end
 
     def submit_new_piv_cac
@@ -118,8 +118,8 @@ module Users
     end
 
     def authorize_piv_cac_disable
-      return redirect_to account_url unless piv_cac_enabled? &&
-                                            MfaPolicy.new(current_user).multiple_factors_enabled?
+      return if piv_cac_enabled? && MfaPolicy.new(current_user).multiple_factors_enabled?
+      redirect_to account_two_factor_authentication_path
     end
 
     def good_nickname
@@ -128,7 +128,8 @@ module Users
     end
 
     def cap_piv_cac_count
-      redirect_to account_url if Figaro.env.max_piv_cac_per_account.to_i <= current_cac_count
+      return unless Figaro.env.max_piv_cac_per_account.to_i <= current_cac_count
+      redirect_to account_two_factor_authentication_path
     end
 
     def current_cac_count

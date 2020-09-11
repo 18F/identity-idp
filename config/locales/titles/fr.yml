@@ -47,7 +47,6 @@ fr:
     reactivate_account: Réactiver le profil
     registrations:
       new: S'inscrire et créer un compte
-    remembered_browsers: Navigateurs mémorisés
     revoke_consent: Révoquer le consentement
     sign_up:
       completion_html: Vous avez %{accent} avec %{app}

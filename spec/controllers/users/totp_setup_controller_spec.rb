@@ -230,7 +230,7 @@ describe Users::TotpSetupController, devise: true do
         delete :disable
 
         expect(user.reload.totp_enabled?).to be(false)
-        expect(response).to redirect_to(account_path)
+        expect(response).to redirect_to(account_two_factor_authentication_path)
         expect(flash[:success]).to eq t('notices.totp_disabled')
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_USER_DISABLED)
         expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)
@@ -243,7 +243,7 @@ describe Users::TotpSetupController, devise: true do
         sign_in user
 
         delete :disable
-        expect(response).to redirect_to(account_path)
+        expect(response).to redirect_to(account_two_factor_authentication_path)
       end
     end
   end
