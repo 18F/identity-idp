@@ -84,7 +84,7 @@ module DocAuth
       end
 
       def path
-        "/restws/identity/v3/#{account_id}/workflows/#{workflow}/conversation"
+        "/restws/identity/v3/accounts/#{account_id}/workflows/#{workflow}/conversations"
       end
 
       def method
@@ -106,8 +106,6 @@ module DocAuth
         {
           Type: 'Initiate',
           Settings: {
-            AccountNumber: account_id,
-            Workflow: workflow,
             Mode: request_mode,
             Locale: I18n.locale,
             Venue: 'online',
