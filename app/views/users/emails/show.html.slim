@@ -14,4 +14,10 @@ h1.h3.my0 = t('headings.add_email')
 = render 'shared/cancel', link: decorated_session.cancel_link_url
 
 p.mt2
-  = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
+  = link_to t('notices.privacy.security_and_privacy_practices'),
+            MarketingSite.security_and_privacy_practices_url,
+            target: '_blank'
+p
+  = link_to t('notices.privacy.privacy_act_statement'),
+            MarketingSite.privacy_act_statement_url,
+            target: '_blank'

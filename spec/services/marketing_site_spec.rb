@@ -15,16 +15,18 @@ RSpec.describe MarketingSite do
     end
   end
 
-  describe '.privacy_url' do
+  describe '.security_and_privacy_practices_url' do
     it 'points to the privacy page' do
-      expect(MarketingSite.privacy_url).to eq('https://www.login.gov/policy')
+      expect(MarketingSite.security_and_privacy_practices_url).
+        to eq('https://www.login.gov/policy')
     end
 
     context 'when the user has set their locale to :es' do
       before { I18n.locale = :es }
 
       it 'points to the privacy page with the locale appended' do
-        expect(MarketingSite.privacy_url).to eq('https://www.login.gov/es/policy')
+        expect(MarketingSite.security_and_privacy_practices_url).
+          to eq('https://www.login.gov/es/policy')
       end
     end
   end
@@ -32,7 +34,7 @@ RSpec.describe MarketingSite do
   describe '.messaging_practices_url' do
     it 'points to messaging practices section of the privacy page' do
       expect(MarketingSite.messaging_practices_url).
-        to eq('https://www.login.gov/policy/#our-messaging-practices')
+        to eq('https://www.login.gov/policy/messaging-terms-and-conditions/')
     end
 
     context 'when the user has set their locale to :es' do
@@ -40,7 +42,7 @@ RSpec.describe MarketingSite do
 
       it 'points to the privacy page section with the locale appended' do
         expect(MarketingSite.messaging_practices_url).
-          to eq('https://www.login.gov/es/policy/#our-messaging-practices')
+          to eq('https://www.login.gov/es/policy/messaging-terms-and-conditions/')
       end
     end
   end
