@@ -79,7 +79,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'when throttled' do
       before do
-        allow(Throttler::IsThrottledElseIncrement).to receive(:call).and_return(true)
+        allow(Throttler::IsThrottledElseIncrement).to receive(:call).once.and_return(true)
       end
 
       it 'is not valid' do

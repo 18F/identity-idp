@@ -86,7 +86,10 @@ module Idv
     end
 
     def throttled_else_increment
-      Throttler::IsThrottledElseIncrement.call(document_capture_session.user_id, :idv_acuant)
+      @throttled ||= Throttler::IsThrottledElseIncrement.call(
+        document_capture_session.user_id,
+        :idv_acuant,
+      )
     end
 
     def validate_images

@@ -95,7 +95,7 @@ describe Idv::ImageUploadsController do
         end
 
         it 'returns an error when throttled' do
-          allow(Throttler::IsThrottledElseIncrement).to receive(:call).and_return(true)
+          allow(Throttler::IsThrottledElseIncrement).to receive(:call).once.and_return(true)
           allow(Throttler::RemainingCount).to receive(:call).and_return(0)
 
           action
