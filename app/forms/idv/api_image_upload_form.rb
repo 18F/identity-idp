@@ -27,7 +27,6 @@ module Idv
         success: valid?,
         errors: errors.messages,
         extra: {
-          status: status,
           remaining_attempts: remaining_attempts,
         },
       )

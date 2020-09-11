@@ -21,7 +21,7 @@ module Idv
 
         render_form_response(doc_response)
       else
-        render_form_response(form_response)
+        render_form_response(form_response, image_form.status)
       end
     end
 
@@ -42,18 +42,19 @@ module Idv
       image_form.document_capture_session.store_result_from_response(doc_response)
     end
 
-    def render_form_response(form_response)
+    def render_form_response(form_response, status = nil)
       if form_response.success?
-        render json: {
-          success: true,
-        }
+        status ||= :ok
+        render json: { success: true },
+               status: status
       else
+        status ||= :bad_request
         errors = form_response.errors.flat_map do |key, errs|
           Array(errs).map { |err| { field: key, message: err } }
         end
 
-        render json: form_response.to_h.except(:status).merge(errors: errors),
-               status: form_response.extra.fetch(:status, :bad_request)
+        render json: form_response.to_h.merge(errors: errors),
+               status: status
       end
     end
 
