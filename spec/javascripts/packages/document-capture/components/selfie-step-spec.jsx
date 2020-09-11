@@ -1,11 +1,19 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
+import { ACCEPTABLE_FILE_SIZE_BYTES } from '@18f/identity-document-capture/components/acuant-capture';
 import SelfieStep, { validate } from '@18f/identity-document-capture/components/selfie-step';
 import { RequiredValueMissingError } from '@18f/identity-document-capture/components/form-steps';
 import render from '../../../support/render';
+import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/selfie-step', () => {
+  const sandbox = useSandbox();
+
+  beforeEach(() => {
+    sandbox.stub(window.Blob.prototype, 'size').value(ACCEPTABLE_FILE_SIZE_BYTES);
+  });
+
   describe('validate', () => {
     it('returns object with error if selfie is unset', () => {
       const value = {};
@@ -34,14 +42,5 @@ describe('document-capture/components/selfie-step', () => {
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_selfie'), file);
 
     expect(onChange.getCall(0).args[0]).to.deep.equal({ selfie: file });
-  });
-
-  it('restricts accepted file types', () => {
-    const onChange = sinon.spy();
-    const { getByLabelText } = render(<SelfieStep onChange={onChange} />);
-
-    const input = getByLabelText('doc_auth.headings.document_capture_selfie');
-
-    expect(input.getAttribute('accept')).to.equal('image/*');
   });
 });

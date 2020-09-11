@@ -27,6 +27,7 @@ document.body.classList.add('js-skip-form-validation');
 loadPolyfills(['fetch']).then(() => {
   const appRoot = document.getElementById('document-capture-form');
   const isLivenessEnabled = appRoot.hasAttribute('data-liveness');
+  const isMockClient = appRoot.hasAttribute('data-mock-client');
 
   render(
     <AcuantProvider
@@ -36,6 +37,7 @@ loadPolyfills(['fetch']).then(() => {
       <UploadContextProvider
         endpoint={appRoot.getAttribute('data-endpoint')}
         csrf={getMetaContent('csrf-token')}
+        isMockClient={isMockClient}
         formData={{
           document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
           locale: i18n.currentLocale(),

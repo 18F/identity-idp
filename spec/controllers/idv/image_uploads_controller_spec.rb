@@ -108,6 +108,22 @@ describe Idv::ImageUploadsController do
           ]
         end
       end
+
+      context 'when a value is an error-formatted yaml file' do
+        before { params.merge!(back: DocAuthImageFixtures.error_yaml_multipart) }
+
+        it 'returns error from yaml file' do
+          action
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          expect(json[:errors]).to eq [
+            {
+              field: 'results',
+              message: I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read'),
+            },
+          ]
+        end
+      end
     end
   end
 end

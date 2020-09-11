@@ -13,7 +13,6 @@ es:
       upload_picture: Sube una foto
       use_phone: Usa tu telefono
     errors:
-      must_be_image: El archivo debe ser una imagen
       not_a_file: La selección no era un archivo válido
     forms:
       address1: Dirección

@@ -75,16 +75,8 @@ module Idv
     def validate_image(image_key)
       file = params[image_key]
 
-      unless file.respond_to?(:content_type)
-        errors.add(image_key, t('doc_auth.errors.not_a_file'))
-        return
-      end
-
-      data = file.read
-      file.rewind
-
-      return if file.content_type.start_with?('image/') && data.present?
-      errors.add(image_key, t('doc_auth.errors.must_be_image'))
+      return if file.respond_to?(:read)
+      errors.add(image_key, t('doc_auth.errors.not_a_file'))
     end
   end
 end

@@ -13,7 +13,6 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
-      must_be_image: Le fichier doit être une image
       not_a_file: La sélection n'était pas un fichier valide
     forms:
       address1: Adresse
