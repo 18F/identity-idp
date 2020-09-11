@@ -20,6 +20,9 @@ fr:
     phone_confirmed: Téléphone confirmé avec succès.
     piv_cac_configured: Carte PIV/CAC liée avec succès.
     piv_cac_disabled: Carte PIV/CAC dissociée avec succès.
+    privacy:
+      privacy_act_statement: Déclaration de confidentialité
+      security_and_privacy_practices: Pratiques de sécurité et de confidentialité
     resend_confirmation_email:
       success: Nous avons envoyé un autre courriel de confirmation.
     session_cleared: Pour votre sécurité, nous effacerons l'information que vous avez
@@ -38,9 +41,6 @@ fr:
         le lien pour continuer à créer votre compte.
       first_paragraph_start: Nous avons envoyé un courriel à
       no_email_sent_explanation_start: Vous n'avez pas reçu d'e-mail?
-    terms_of_service:
-      link: Pratiques en matière de sécurité et énoncé concernant la Loi sur la protection
-        des renseignements personnels
     timeout_warning:
       partially_signed_in:
         continue: Continuer la connexion
