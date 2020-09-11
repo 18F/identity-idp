@@ -41,7 +41,6 @@ module Idv
     end
 
     def remaining_attempts
-      return if valid?
       Throttler::RemainingCount.call(document_capture_session.user_id, :idv_acuant)
     end
 

@@ -141,6 +141,7 @@ describe Idv::ImageUploadsController do
           json = JSON.parse(response.body, symbolize_names: true)
           expect(response.status).to eq(400)
           expect(json[:success]).to eq(false)
+          expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
           expect(json[:errors]).to eq [
             { field: 'front', message: 'Too blurry' },
             { field: 'front', message: 'Wrong document' },
@@ -155,6 +156,7 @@ describe Idv::ImageUploadsController do
           action
 
           json = JSON.parse(response.body, symbolize_names: true)
+          expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
           expect(json[:errors]).to eq [
             {
               field: 'results',

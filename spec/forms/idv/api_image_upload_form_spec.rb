@@ -89,4 +89,11 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
   end
+
+  describe '#submit' do
+    it 'includes remaining_attempts' do
+      response = form.submit
+      expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+    end
+  end
 end
