@@ -44,17 +44,15 @@ module Idv
 
     def render_form_response(form_response, status = nil)
       if form_response.success?
-        status ||= :ok
         render json: { success: true },
-               status: status
+               status: status || :ok
       else
-        status ||= :bad_request
         errors = form_response.errors.flat_map do |key, errs|
           Array(errs).map { |err| { field: key, message: err } }
         end
 
         render json: form_response.to_h.merge(errors: errors),
-               status: status
+               status: status || :bad_request
       end
     end
 
