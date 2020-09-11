@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 5.2.4', '>= 5.2.4.3'
+gem 'rails', '~> 5.2.4', '>= 5.2.4.4'
 
 gem 'ahoy_matey', '~> 2.2', '>= 2.2.1'
 gem 'american_date'
@@ -11,7 +11,7 @@ gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'base32-crockford'
 gem 'device_detector'
-gem 'devise', '~> 4.7.1'
+gem 'devise', '~> 4.7.2'
 gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
