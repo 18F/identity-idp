@@ -1,6 +1,6 @@
 module X509
   Attributes = Struct.new(
-    :subject, :presented
+    :subject, :issuer, :presented
   ) do
     def self.new_from_hash(hash)
       attrs = new

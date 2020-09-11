@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_01_134021) do
+ActiveRecord::Schema.define(version: 2020_09_09_135409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -337,6 +337,7 @@ ActiveRecord::Schema.define(version: 2020_09_01_134021) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "x509_issuer"
     t.index ["user_id", "created_at"], name: "index_piv_cac_configurations_on_user_id_and_created_at", unique: true
     t.index ["user_id", "name"], name: "index_piv_cac_configurations_on_user_id_and_name", unique: true
     t.index ["x509_dn_uuid"], name: "index_piv_cac_configurations_on_x509_dn_uuid", unique: true

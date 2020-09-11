@@ -42,6 +42,7 @@ module TwoFactorAuthentication
       clear_piv_cac_nonce
       save_piv_cac_information(
         subject: piv_cac_verfication_form.x509_dn,
+        issuer: piv_cac_verfication_form.x509_issuer,
         presented: true,
       )
 

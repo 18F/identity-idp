@@ -103,6 +103,7 @@ describe Users::PivCacAuthenticationSetupController do
             get :new, params: { token: good_token }
             json = {
               'subject' => 'some dn',
+              'issuer' => nil,
               'presented' => true,
             }.to_json
 
