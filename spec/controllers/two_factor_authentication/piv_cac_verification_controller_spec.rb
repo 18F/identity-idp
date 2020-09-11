@@ -71,7 +71,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(response).to redirect_to account_path
         expect(subject.user_session[:decrypted_x509]).to eq({
           'subject' => x509_subject,
-          'issuer' => nil,
+          'issuer' => x509_issuer,
           'presented' => true,
         }.to_json)
       end
