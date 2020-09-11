@@ -3,14 +3,14 @@
 <% end %>
 
 <% content_for :content do %>
-  <div class="grid-row grid-gap mb3">
-    <div class="desktop:grid-offset-3 desktop:grid-col-3">
+  <div class="top-banner grid-row grid-gap mb3">
+    <div class="desktop:grid-offset-3 desktop:grid-col-3 grid-col-6 grid-offset-3">
       <%= image_tag(
         asset_path('user-access.svg'),
         alt: '',
       ) %>
     </div>
-    <div class="desktop:grid-col-5">
+    <div class="desktop:grid-col-5 grid-col-12">
       <div>
         <%= t('account.navigation.access_services') %>
       </div>
