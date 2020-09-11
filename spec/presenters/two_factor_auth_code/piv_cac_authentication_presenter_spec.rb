@@ -76,6 +76,26 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     end
   end
 
+  describe '#fallback_question' do
+    context 'when the user can switch to a different method' do
+      let(:allow_user_to_switch_method) { true }
+
+      it 'returns a question about switching methods' do
+        expect(presenter.fallback_question).to eq(
+          t('two_factor_authentication.piv_cac_fallback.question'),
+        )
+      end
+    end
+
+    context 'when the user cannot switch to a different method' do
+      let(:allow_user_to_switch_method) { false }
+
+      it 'returns an empty string' do
+        expect(presenter.fallback_question).to eq('')
+      end
+    end
+  end
+
   describe '#piv_cac_capture_text' do
     let(:expected_text) { t('forms.piv_cac_mfa.submit') }
 
