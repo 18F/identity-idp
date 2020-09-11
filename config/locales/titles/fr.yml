@@ -43,7 +43,7 @@ fr:
         invalid: Erreur de certificat PIV/CAC
         missing: Erreur interne
     present_piv_cac: Veuillez présenter votre carte PIV/CAC
-    present_webauthn: Présentez votre clé de sécurité physique
+    present_webauthn: Branchez votre clé de sécurité physique
     reactivate_account: Réactiver le profil
     registrations:
       new: S'inscrire et créer un compte

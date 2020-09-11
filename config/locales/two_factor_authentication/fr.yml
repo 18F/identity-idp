@@ -172,7 +172,7 @@ fr:
       pour accéder à vos informations.
     webauthn_fallback:
       question: Votre clé de sécurité n'est-elle pas disponible?
-    webauthn_header_text: Présentez votre clé de sécurité
+    webauthn_header_text: Branchez votre clé de sécurité
     webauthn_piv_available: Utilisez votre identifiant d'employé du gouvernement
     webauthn_verified:
       header: Clé de sécurité vérifiée
