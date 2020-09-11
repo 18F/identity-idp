@@ -75,29 +75,8 @@ module Idv
     def validate_image(image_key)
       file = params[image_key]
 
-      unless file.respond_to?(:content_type)
-        errors.add(image_key, t('doc_auth.errors.not_a_file'))
-        return
-      end
-
-      data = file.read
-      file.rewind
-
-      return if file.content_type.start_with?('image/') && data.present?
-      error = error_from_yaml(data) if !Rails.env.production? && yaml_file?(file)
-      error ||= t('doc_auth.errors.must_be_image')
-      errors.add(image_key, error)
-    end
-
-    def yaml_file?(file)
-      file.original_filename =~ /\.ya?ml$/
-    end
-
-    def error_from_yaml(data)
-      parsed_yaml = YAML.safe_load(data)
-      parsed_yaml.dig('friendly_error')
-    rescue Psych::SyntaxError
-      nil
+      return if file.respond_to?(:read)
+      errors.add(image_key, t('doc_auth.errors.not_a_file'))
     end
   end
 end

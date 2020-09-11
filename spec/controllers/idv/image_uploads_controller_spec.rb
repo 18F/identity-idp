@@ -52,93 +52,25 @@ describe Idv::ImageUploadsController do
       context 'when a value is not a file' do
         before { params.merge!(front: 'some string') }
 
-        shared_examples 'failed non-file response' do
-          it 'returns an error' do
+        it 'returns an error' do
+          action
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          expect(json[:errors]).to eq [
+            { field: 'front', message: I18n.t('doc_auth.errors.not_a_file') },
+          ]
+        end
+
+        context 'with a locale param' do
+          before { params.merge!(locale: 'es') }
+
+          it 'translates errors using the locale param' do
             action
 
             json = JSON.parse(response.body, symbolize_names: true)
             expect(json[:errors]).to eq [
-              { field: 'front', message: I18n.t('doc_auth.errors.not_a_file') },
+              { field: 'front', message: I18n.t('doc_auth.errors.not_a_file', locale: 'es') },
             ]
-          end
-
-          context 'with a locale param' do
-            before { params.merge!(locale: 'es') }
-
-            it 'translates errors using the locale param' do
-              action
-
-              json = JSON.parse(response.body, symbolize_names: true)
-              expect(json[:errors]).to eq [
-                { field: 'front', message: I18n.t('doc_auth.errors.not_a_file', locale: 'es') },
-              ]
-            end
-          end
-        end
-
-        context 'development' do
-          before do
-            allow(Rails.env).to receive(:production?).and_return(false)
-          end
-
-          it_behaves_like 'failed non-file response'
-        end
-
-        context 'production' do
-          before do
-            allow(Rails.env).to receive(:production?).and_return(true)
-          end
-
-          it_behaves_like 'failed non-file response'
-        end
-      end
-
-      context 'when a value is an error-formatted yaml file' do
-        before { params.merge!(front: DocAuthImageFixtures.error_yaml_multipart) }
-
-        context 'development' do
-          before do
-            allow(Rails.env).to receive(:production?).and_return(false)
-          end
-
-          it 'returns error from yaml file' do
-            action
-
-            json = JSON.parse(response.body, symbolize_names: true)
-            expect(json[:errors]).to eq [
-              {
-                field: 'front',
-                message: I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read'),
-              },
-            ]
-          end
-        end
-
-        context 'production' do
-          before do
-            allow(Rails.env).to receive(:production?).and_return(true)
-          end
-
-          it 'returns non-image error' do
-            action
-
-            json = JSON.parse(response.body, symbolize_names: true)
-            expect(json[:errors]).to eq [
-              { field: 'front', message: I18n.t('doc_auth.errors.must_be_image') },
-            ]
-          end
-
-          context 'with a locale param' do
-            before { params.merge!(locale: 'es') }
-
-            it 'translates errors using the locale param' do
-              action
-
-              json = JSON.parse(response.body, symbolize_names: true)
-              expect(json[:errors]).to eq [
-                { field: 'front', message: I18n.t('doc_auth.errors.must_be_image', locale: 'es') },
-              ]
-            end
           end
         end
       end
@@ -173,6 +105,22 @@ describe Idv::ImageUploadsController do
           expect(json[:errors]).to eq [
             { field: 'front', message: 'Too blurry' },
             { field: 'front', message: 'Wrong document' },
+          ]
+        end
+      end
+
+      context 'when a value is an error-formatted yaml file' do
+        before { params.merge!(back: DocAuthImageFixtures.error_yaml_multipart) }
+
+        it 'returns error from yaml file' do
+          action
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          expect(json[:errors]).to eq [
+            {
+              field: 'results',
+              message: I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read'),
+            },
           ]
         end
       end
