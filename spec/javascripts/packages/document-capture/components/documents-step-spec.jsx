@@ -12,7 +12,6 @@ describe('document-capture/components/documents-step', () => {
   const sandbox = useSandbox();
 
   beforeEach(() => {
-    sandbox.stub(process.env, 'NODE_ENV').value('production');
     sandbox.stub(window.Blob.prototype, 'size').value(ACCEPTABLE_FILE_SIZE_BYTES);
   });
 

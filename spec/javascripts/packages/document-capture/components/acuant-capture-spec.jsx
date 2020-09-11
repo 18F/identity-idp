@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event';
 import { waitForElementToBeRemoved } from '@testing-library/dom';
 import sinon from 'sinon';
 import AcuantCapture, {
-  getInputAccept,
   getMinimumFileSize,
   ACCEPTABLE_FILE_SIZE_BYTES,
 } from '@18f/identity-document-capture/components/acuant-capture';
@@ -18,38 +17,6 @@ import { useSandbox } from '../../../support/sinon';
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
   const sandbox = useSandbox();
-
-  describe('getInputAccept', () => {
-    context('NODE_ENV=production', () => {
-      beforeEach(() => {
-        sandbox.stub(process.env, 'NODE_ENV').value('production');
-      });
-
-      it('returns array', () => {
-        expect(getInputAccept()).to.be.instanceOf(Array);
-      });
-    });
-
-    context('NODE_ENV=test', () => {
-      beforeEach(() => {
-        sandbox.stub(process.env, 'NODE_ENV').value('test');
-      });
-
-      it('returns undefined', () => {
-        expect(getInputAccept()).to.be.undefined();
-      });
-    });
-
-    context('NODE_ENV=development', () => {
-      beforeEach(() => {
-        sandbox.stub(process.env, 'NODE_ENV').value('development');
-      });
-
-      it('returns undefined', () => {
-        expect(getInputAccept()).to.be.undefined();
-      });
-    });
-  });
 
   describe('getMinimumFileSize', () => {
     it('returns zero for non-image file', () => {
@@ -357,14 +324,13 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('shows at most one error message between AcuantCapture and FileInput', async () => {
-      sandbox.stub(process.env, 'NODE_ENV').value('production');
-
       const { getByLabelText, getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
+        { isMockClient: false },
       );
 
       initialize({
@@ -660,12 +626,11 @@ describe('document-capture/components/acuant-capture', () => {
   });
 
   it('restricts accepted file types', () => {
-    sandbox.stub(process.env, 'NODE_ENV').value('production');
-
     const { getByLabelText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
         <AcuantCapture label="Image" capture="environment" />
       </AcuantContextProvider>,
+      { isMockClient: false },
     );
 
     const input = getByLabelText('Image');

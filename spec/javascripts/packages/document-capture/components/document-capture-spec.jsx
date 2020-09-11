@@ -24,7 +24,6 @@ describe('document-capture/components/document-capture', () => {
 
   beforeEach(() => {
     originalHash = window.location.hash;
-    sandbox.stub(process.env, 'NODE_ENV').value('production');
     sandbox.stub(window.Blob.prototype, 'size').value(ACCEPTABLE_FILE_SIZE_BYTES);
   });
 

@@ -15,6 +15,7 @@ import Button from './button';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import FileBase64CacheContext from '../context/file-base64-cache';
+import UploadContext from '../context/upload';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -52,15 +53,6 @@ const ACCEPTABLE_SHARPNESS_SCORE = 50;
  * @type {number}
  */
 export const ACCEPTABLE_FILE_SIZE_BYTES = 250 * 1024;
-
-/**
- * Returns attribute value to assign to the input field, depending on the current environment.
- *
- * @return {string[]=} Minimum file size, in bytes.
- */
-export function getInputAccept() {
-  return process.env.NODE_ENV === 'production' ? ['image/*'] : undefined;
-}
 
 /**
  * Given a file, returns minimum acceptable file size in bytes, depending on the type of file and
@@ -112,6 +104,7 @@ function AcuantCapture(
 ) {
   const fileCache = useContext(FileBase64CacheContext);
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
+  const { isMockClient } = useContext(UploadContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
   const [isCapturing, setIsCapturing] = useState(false);
@@ -226,7 +219,7 @@ function AcuantCapture(
         label={label}
         hint={hasCapture || !allowUpload ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
-        accept={getInputAccept()}
+        accept={isMockClient ? undefined : ['image/*']}
         capture={capture}
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
