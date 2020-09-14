@@ -52,9 +52,9 @@
 }
 
 .top-banner {
-  text-align: center;
+  display: none;
 
   @include at-media('desktop') {
-    text-align: left;
+    display: flex;
   }
 }
