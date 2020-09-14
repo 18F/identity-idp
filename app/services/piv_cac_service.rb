@@ -1,6 +1,5 @@
 require 'base64'
 require 'cgi'
-require 'net/https'
 
 module PivCacService
   class << self
@@ -61,24 +60,21 @@ module PivCacService
     end
 
     def token_response(token)
-      # FUTURE: For consistency replace raw NET::HTTP with Faraday equivalent.
-      http = Net::HTTP.new(verify_token_uri.hostname, verify_token_uri.port)
-      http.use_ssl = verify_token_uri.scheme == 'https'
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE if FeatureManagement.identity_pki_local_dev?
-      http.start do |post|
-        post.request(decode_request(verify_token_uri, token))
+      # Assume ssl is off unless verify_token_uri uses https
+      sslConfig = false
+      if(verify_token_uri.scheme == 'https')
+        sslConfig = { verify: !FeatureManagement.identity_pki_local_dev? }
       end
+
+      Faraday.new(ssl: sslConfig).post(
+        verify_token_uri,
+        URI.encode_www_form({ token: token }),
+        Authentication: authenticate(token),
+      )
     end
 
     def verify_token_uri
       URI(piv_cac_verify_token_link)
-    end
-
-    def decode_request(uri, token)
-      # FUTURE: For consistency replace raw NET::HTTP with Faraday equivalent.
-      req = Net::HTTP::Post.new(uri, 'Authentication' => authenticate(token))
-      req.form_data = { token: token }
-      req
     end
 
     def authenticate(token)
@@ -92,7 +88,7 @@ module PivCacService
     end
 
     def decode_token_response(res)
-      return { 'error' => 'token.bad' } unless res.code.to_i == 200
+      return { 'error' => 'token.bad' } unless res.status.to_i == 200
       JSON.parse(res.body)
     rescue JSON::JSONError
       { 'error' => 'token.bad' }
