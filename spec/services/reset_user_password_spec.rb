@@ -1,8 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe ResetUserPassword do
-  subject(:reset_user_password) { ResetUserPassword.new(user: user) }
-  let(:user) { create(:user, :with_multiple_emails) }
+  subject(:reset_user_password) do
+    ResetUserPassword.new(user: user, remember_device_revoked_at: now)
+  end
+  let(:user) { create(:user, :with_multiple_emails, encrypted_password_digest: 30.days.from_now) }
+  let(:now) { Time.zone.now }
 
   describe '#call' do
     subject(:call) { reset_user_password.call }
@@ -22,6 +25,11 @@ RSpec.describe ResetUserPassword do
 
       mails = ActionMailer::Base.deliveries.last(2)
       expect(mails.map(&:to).flatten).to match_array(user.email_addresses.map(&:email))
+    end
+
+    it 'clears all remembered browsers by updating the remember_device_revoked_at timestamp' do
+      expect { call }.
+        to(change { user.reload.remember_device_revoked_at.to_i }.to(now.to_i))
     end
   end
 end
