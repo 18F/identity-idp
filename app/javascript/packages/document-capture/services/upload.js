@@ -24,7 +24,7 @@ export function toFormData(object) {
 /**
  * @type {import('../context/upload').UploadImplementation}
  */
-async function upload(payload, { endpoint, csrf }) {
+async function upload(payload, { endpoint, csrf, errorRedirects }) {
   const response = await window.fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -33,10 +33,17 @@ async function upload(payload, { endpoint, csrf }) {
     body: toFormData(payload),
   });
 
-  if (!response.ok && response.status !== 400) {
-    // 400 is an expected error state, handled after JSON deserialization. Anything else not OK
+  if (!response.ok && !response.status.toString().startsWith('4')) {
+    // 4xx is an expected error state, handled after JSON deserialization. Anything else not OK
     // should be treated as an unhandled error.
     throw new Error(response.statusText);
+  }
+
+  if (errorRedirects[response.status]) {
+    window.location.href = errorRedirects[response.status];
+
+    // Avoid settling the promise, allowing the redirect to complete.
+    return new Promise(() => {});
   }
 
   const result = /** @type {UploadSuccessResponse|UploadErrorResponse} */ (await response.json());

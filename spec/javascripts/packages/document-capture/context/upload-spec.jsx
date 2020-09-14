@@ -47,18 +47,20 @@ describe('document-capture/context/upload', () => {
     );
   });
 
-  it('can provide endpoint and csrf to make available to uploader', (done) => {
+  it('can provide endpoint, csrf, errorRedirects to make available to uploader', (done) => {
     render(
       <UploadContextProvider
-        upload={(payload, { endpoint, csrf }) =>
+        upload={(payload, { endpoint, csrf, errorRedirects }) =>
           Promise.resolve({
             ...payload,
             receivedEndpoint: endpoint,
             receivedCSRF: csrf,
+            errorRedirects,
           })
         }
         csrf="example"
         endpoint="https://example.com"
+        errorRedirects={{ 418: '#teapot' }}
       >
         {createElement(() => {
           const { upload } = useContext(UploadContext);
@@ -68,6 +70,7 @@ describe('document-capture/context/upload', () => {
                 sent: true,
                 receivedEndpoint: 'https://example.com',
                 receivedCSRF: 'example',
+                errorRedirects: { 418: '#teapot' },
               });
               done();
             });

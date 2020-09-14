@@ -22,6 +22,7 @@ const UploadContext = createContext({
  *
  * @prop {string} endpoint Endpoint to which payload should be sent.
  * @prop {string} csrf CSRF token to send as parameter to upload implementation.
+ * @prop {Record<string,string>} errorRedirects Object of error codes to redirect URLs.
  */
 
 /**
@@ -49,6 +50,7 @@ const UploadContext = createContext({
  *
  * @prop {UploadImplementation=} upload Custom upload implementation.
  * @prop {boolean=} isMockClient Whether to treat upload as a mock implementation.
+ * @prop {Record<string,string>=} errorRedirects Object of error codes to redirect URLs.
  * @prop {string} endpoint Endpoint to which payload should be sent.
  * @prop {string} csrf CSRF token to send as parameter to upload implementation.
  * @prop {Record<string,any>} formData Extra form data to merge into the payload before uploading
@@ -61,12 +63,14 @@ const UploadContext = createContext({
 function UploadContextProvider({
   upload = defaultUpload,
   isMockClient = false,
+  errorRedirects = {},
   endpoint,
   csrf,
   formData,
   children,
 }) {
-  const uploadWithCSRF = (payload) => upload({ ...payload, ...formData }, { endpoint, csrf });
+  const uploadWithCSRF = (payload) =>
+    upload({ ...payload, ...formData }, { endpoint, csrf, errorRedirects });
   const value = useMemo(() => ({ upload: uploadWithCSRF, isMockClient }), [upload, isMockClient]);
 
   return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;

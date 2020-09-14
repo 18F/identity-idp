@@ -38,7 +38,7 @@ describe('document-capture/services/upload', () => {
       );
     });
 
-    const result = await upload({ foo: 'bar' }, { endpoint, csrf });
+    const result = await upload({ foo: 'bar' }, { endpoint, csrf, errorRedirects: {} });
     expect(result).to.deep.equal({ success: true });
   });
 
@@ -61,7 +61,7 @@ describe('document-capture/services/upload', () => {
     );
 
     try {
-      await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y' });
+      await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y', errorRedirects: {} });
       throw new Error('This is a safeguard and should never be reached, since upload should error');
     } catch (error) {
       expect(error).to.be.instanceOf(UploadFormEntriesError);
@@ -70,6 +70,35 @@ describe('document-capture/services/upload', () => {
         { field: 'back', message: 'Please fill in this field' },
       ]);
     }
+  });
+
+  it('redirects using errorRedirects', async () => {
+    sandbox.stub(window, 'fetch').callsFake(() =>
+      Promise.resolve(
+        /** @type {Partial<Response>} */ ({
+          ok: false,
+          status: 418,
+          statusText: "I'm a teapot",
+        }),
+      ),
+    );
+
+    await Promise.race([
+      new Promise((resolve) => {
+        window.onhashchange = () => {
+          expect(window.location.hash).to.equal('#teapot');
+          resolve();
+        };
+      }),
+      upload(
+        {},
+        {
+          endpoint: 'https://example.com',
+          csrf: 'TYsqyyQ66Y',
+          errorRedirects: { 418: '#teapot' },
+        },
+      ),
+    ]);
   });
 
   it('throws unhandled response', async () => {
@@ -84,7 +113,7 @@ describe('document-capture/services/upload', () => {
     );
 
     try {
-      await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y' });
+      await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y', errorRedirects: {} });
     } catch (error) {
       expect(error).to.be.instanceof(Error);
       expect(error.message).to.equal('Server error');
