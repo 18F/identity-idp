@@ -60,10 +60,11 @@ module PivCacService
     end
 
     def token_response(token)
-      # Assume ssl is off unless verify_token_uri uses https
-      ssl_config = false
-      if verify_token_uri.scheme == 'https'
-        ssl_config = { verify: !FeatureManagement.identity_pki_local_dev? }
+      # SSL and SSL verify_mode should always be turned on in production
+      if FeatureManagement.identity_pki_local_dev?
+        ssl_config = verify_token_uri.scheme == 'https' ? { verify: false } : false
+      else
+        raise ArgumentError, 'piv_cac_verify_token_url must use https' if verify_token_uri.scheme != 'https'
       end
 
       Faraday.new(ssl: ssl_config).post(
