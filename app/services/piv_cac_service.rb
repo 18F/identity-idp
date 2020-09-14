@@ -61,12 +61,12 @@ module PivCacService
 
     def token_response(token)
       # Assume ssl is off unless verify_token_uri uses https
-      sslConfig = false
-      if(verify_token_uri.scheme == 'https')
-        sslConfig = { verify: !FeatureManagement.identity_pki_local_dev? }
+      ssl_config = false
+      if (verify_token_uri.scheme == 'https')
+        ssl_config = { verify: !FeatureManagement.identity_pki_local_dev? }
       end
 
-      Faraday.new(ssl: sslConfig).post(
+      Faraday.new(ssl: ssl_config).post(
         verify_token_uri,
         URI.encode_www_form({ token: token }),
         Authentication: authenticate(token),
