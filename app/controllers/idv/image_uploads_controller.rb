@@ -10,19 +10,26 @@ module Idv
       form_response = image_form.submit
 
       if form_response.success?
-        doc_response = doc_auth_client.post_images(
+        client_response = doc_auth_client.post_images(
           front_image: image_form.front.read,
           back_image: image_form.back.read,
           selfie_image: image_form.selfie&.read,
           liveness_checking_enabled: liveness_checking_enabled?,
         )
 
-        store_pii(doc_response) if doc_response.success?
-
-        render_form_response(doc_response)
+        store_pii(client_response) if client_response.success?
+        status = :bad_request unless client_response.success?
       else
-        render_form_response(form_response)
+        status = image_form.status
       end
+
+      presenter = ImageUploadResponsePresenter.new(
+        form: image_form,
+        form_response: client_response || form_response,
+      )
+
+      render json: presenter,
+             status: status || :ok
     end
 
     private
@@ -40,21 +47,6 @@ module Idv
 
     def store_pii(doc_response)
       image_form.document_capture_session.store_result_from_response(doc_response)
-    end
-
-    def render_form_response(form_response)
-      if form_response.success?
-        render json: {
-          success: true,
-        }
-      else
-        errors = form_response.errors.flat_map do |key, errs|
-          Array(errs).map { |err| { field: key, message: err } }
-        end
-
-        render json: form_response.to_h.merge(errors: errors),
-               status: :bad_request
-      end
     end
 
     def doc_auth_client
