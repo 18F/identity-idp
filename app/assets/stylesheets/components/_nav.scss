@@ -50,3 +50,11 @@
     display: block;
   }
 }
+
+.top-banner {
+  text-align: center;
+
+  @include at-media('desktop') {
+    text-align: left;
+  }
+}
