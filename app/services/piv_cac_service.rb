@@ -62,7 +62,7 @@ module PivCacService
     def token_response(token)
       # Assume ssl is off unless verify_token_uri uses https
       ssl_config = false
-      if (verify_token_uri.scheme == 'https')
+      if verify_token_uri.scheme == 'https'
         ssl_config = { verify: !FeatureManagement.identity_pki_local_dev? }
       end
 
