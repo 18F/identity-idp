@@ -109,6 +109,8 @@ class Analytics
   IDV_CANCELLATION = 'IdV: cancellation visited'.freeze
   IDV_CANCELLATION_CONFIRMED = 'IdV: cancellation confirmed'.freeze
   IDV_COME_BACK_LATER_VISIT = 'IdV: come back later visited'.freeze
+  IDV_DOC_AUTH_SUBMITTED_FORM = 'IdV: doc auth form submitted'.freeze
+  IDV_DOC_AUTH_SUBMITTED_VENDOR = 'IdV: doc auth vendor submitted'.freeze
   IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'.freeze
