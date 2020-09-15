@@ -17,8 +17,12 @@ module Idv
           liveness_checking_enabled: liveness_checking_enabled?,
         )
 
-        store_pii(client_response) if client_response.success?
-        status = :bad_request unless client_response.success?
+        if client_response.success?
+          store_pii(client_response)
+        else
+          log_document_error(client_response)
+          status = :bad_request
+        end
       else
         status = image_form.status
       end
@@ -51,6 +55,15 @@ module Idv
 
     def doc_auth_client
       @doc_auth_client ||= DocAuth::Client.client
+    end
+
+    def user_id
+      image_form.document_capture_session.user_id
+    end
+
+    def log_document_error(response)
+      return unless response.is_a?(DocAuth::Acuant::Responses::GetResultsResponse)
+      Funnel::DocAuth::LogDocumentError.call(user_id, response&.result_code&.name.to_s)
     end
   end
 end

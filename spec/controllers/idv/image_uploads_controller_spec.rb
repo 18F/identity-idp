@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Idv::ImageUploadsController do
+  include DocAuthHelper
+
   describe '#create' do
     before do
       sign_in_as_user
@@ -126,13 +128,7 @@ describe Idv::ImageUploadsController do
 
       context 'when image upload fails' do
         before do
-          DocAuth::Mock::DocAuthMockClient.mock_response!(
-            method: :post_images,
-            response: DocAuth::Response.new(
-              success: false,
-              errors: { front: ['Too blurry', 'Wrong document'] },
-            ),
-          )
+          mock_doc_auth_acuant_error_unknown
         end
 
         it 'returns an error response' do
@@ -142,10 +138,36 @@ describe Idv::ImageUploadsController do
           expect(response.status).to eq(400)
           expect(json[:success]).to eq(false)
           expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
-          expect(json[:errors]).to eq [
-            { field: 'front', message: 'Too blurry' },
-            { field: 'front', message: 'Wrong document' },
-          ]
+          expect(json[:errors]).to eq([
+            # This is the error message for the error in the response fixture
+            {
+              field: 'results',
+              message: I18n.t('friendly_errors.doc_auth.document_type_could_not_be_determined'),
+            },
+          ])
+        end
+
+        context 'with active doc auth funnel' do
+          before do
+            Funnel::DocAuth::RegisterStep.new(
+              controller.current_user.id,
+              'issuer',
+            ).call('welcome', :view, true)
+          end
+
+          it 'logs the last doc auth error' do
+            action
+
+            expect(DocAuthLog.first.last_document_error).to eq('Unknown')
+          end
+        end
+
+        context 'without active doc auth funnel' do
+          it 'does not log' do
+            action
+
+            expect(DocAuthLog.count).to eq(0)
+          end
         end
       end
 
