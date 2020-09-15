@@ -3,5 +3,4 @@ import { setDocumentCaptureFallbackTimeout } from '../app/acuant/document_captur
 
 document.addEventListener('DOMContentLoaded', () => {
   loadAndInitializeAcuantSdk();
-  setDocumentCaptureFallbackTimeout();
 });
