@@ -149,7 +149,7 @@ describe 'devise/sessions/new.html.erb' do
     it 'renders the warning banner and the normal form' do
       render
 
-      expect(rendered).to have_content('We are currently under maintence')
+      expect(rendered).to have_content('We are currently under maintenance')
       expect(rendered).to have_selector('input.email')
     end
   end

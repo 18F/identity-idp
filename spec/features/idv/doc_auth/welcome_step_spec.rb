@@ -48,7 +48,7 @@ feature 'doc auth welcome step' do
       end
 
       it 'renders the warning banner but no other content' do
-        expect(page).to have_content('We are currently under maintence')
+        expect(page).to have_content('We are currently under maintenance')
         expect(page).to_not have_content(t('doc_auth.headings.welcome'))
       end
     end

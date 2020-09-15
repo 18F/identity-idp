@@ -22,7 +22,7 @@ RSpec.describe 'shared/_maintenance_window_alert.html.erb' do
     it 'renders a warning and not the contents of the block' do
       render_partial
 
-      expect(rendered).to have_content('We are currently under maintence')
+      expect(rendered).to have_content('We are currently under maintenance')
 
       formatted_finish = l(
         finish.in_time_zone('America/New_York'),
@@ -42,7 +42,7 @@ RSpec.describe 'shared/_maintenance_window_alert.html.erb' do
 
       expect(rendered).to have_content('contents of block')
 
-      expect(rendered).to_not have_content('We are currently under maintence')
+      expect(rendered).to_not have_content('We are currently under maintenance')
     end
   end
 end

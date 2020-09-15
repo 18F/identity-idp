@@ -70,7 +70,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
     it 'renders the warning banner but no other content' do
       render template: 'idv/doc_auth/welcome.html.erb'
 
-      expect(rendered).to have_content('We are currently under maintence')
+      expect(rendered).to have_content('We are currently under maintenance')
       expect(rendered).to_not have_content(t('doc_auth.headings.welcome'))
     end
   end
