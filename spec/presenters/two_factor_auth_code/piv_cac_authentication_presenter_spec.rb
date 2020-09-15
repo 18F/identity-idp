@@ -35,29 +35,65 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   end
 
   describe '#piv_cac_help' do
-    let(:expected_help_text) do
-      t('instructions.mfa.piv_cac.confirm_piv_cac_html',
+    let(:aal3_required) { false }
+    let(:piv_cac_required) { false }
+
+    it 'returns help text' do
+      expected_help_text = t(
+        'instructions.mfa.piv_cac.confirm_piv_cac_html',
         email: content_tag(:strong, user_email),
-        app: content_tag(:strong, APP_NAME))
+        app: content_tag(:strong, APP_NAME),
+      )
+      expect(presenter.piv_cac_help).to eq expected_help_text
     end
 
-    context 'with AAL3 required' do
+    context 'with PIV/CAC only requested' do
       let(:aal3_required) { true }
+      let(:piv_cac_required) { true }
 
-      let(:expected_help_text) do
-        t('instructions.mfa.piv_cac.confirm_piv_cac_only_html')
+      context 'with a user who only has a PIV' do
+        let(:allow_user_to_switch_method) { false }
+
+        it 'returns the PIV only help text' do
+          expect(presenter.piv_cac_help).to eq(
+            t('instructions.mfa.piv_cac.confirm_piv_cac_only_html'),
+          )
+        end
       end
 
-      it 'finds the PIV/CAC only help text' do
-        expect(presenter.piv_cac_help).to eq expected_help_text
+      context 'with a user who has a PIV and security key' do
+        let(:allow_user_to_switch_method) { false }
+
+        it 'returns the PIV only help text' do
+          expect(presenter.piv_cac_help).to eq(
+            t('instructions.mfa.piv_cac.confirm_piv_cac_only_html'),
+          )
+        end
       end
     end
 
-    context 'without AAL3 required' do
-      let(:aal3_required) { false }
+    context 'with AAL3 requested' do
+      let(:aal3_required) { true }
+      let(:piv_cac_required) { false }
 
-      it 'finds the help text' do
-        expect(presenter.piv_cac_help).to eq expected_help_text
+      context 'with a user who only has a PIV' do
+        let(:allow_user_to_switch_method) { false }
+
+        it 'returns the PIV only help text' do
+          expect(presenter.piv_cac_help).to eq(
+            t('instructions.mfa.piv_cac.confirm_piv_cac_only_html'),
+          )
+        end
+      end
+
+      context 'with a user who has a PIV and security key' do
+        let(:allow_user_to_switch_method) { true }
+
+        it 'returns the PIV or AAL3 help text' do
+          expect(presenter.piv_cac_help).to eq(
+            t('instructions.mfa.piv_cac.confirm_piv_cac_or_aal3_html'),
+          )
+        end
       end
     end
   end

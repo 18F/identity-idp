@@ -27,14 +27,31 @@ describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   describe '#webauthn_help' do
     context 'with aal3 required' do
       let(:aal3_required) { true }
-      it 'displays the help text for AAL3 only' do
-        expect(presenter.webauthn_help).to eq(
-          t('instructions.mfa.webauthn.confirm_webauthn_only_html'),
-        )
+
+      context 'the user only has a security key enabled' do
+        let(:allow_user_to_switch_method) { false }
+
+        it 'returns the help text for just the security key' do
+          expect(presenter.webauthn_help).to eq(
+            t('instructions.mfa.webauthn.confirm_webauthn_only_html'),
+          )
+        end
+      end
+
+      context 'the user has a security key and PIV enabled' do
+        let(:allow_user_to_switch_method) { true }
+
+        it 'returns the help text for the security key or PIV' do
+          expect(presenter.webauthn_help).to eq(
+            t('instructions.mfa.webauthn.confirm_webauthn_or_aal3_html'),
+          )
+        end
       end
     end
 
     context 'with aal3 not required' do
+      let(:aal3_required) { false }
+
       it 'displays the help text' do
         expect(presenter.webauthn_help).to eq(
           t('instructions.mfa.webauthn.confirm_webauthn_html'),

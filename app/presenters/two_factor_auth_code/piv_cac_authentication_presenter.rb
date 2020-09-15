@@ -8,8 +8,11 @@ module TwoFactorAuthCode
     end
 
     def piv_cac_help
-      if service_provider_mfa_policy.aal3_required? ||
-         service_provider_mfa_policy.piv_cac_required?
+      if service_provider_mfa_policy.aal3_required? &&
+         service_provider_mfa_policy.allow_user_to_switch_method?
+        t('instructions.mfa.piv_cac.confirm_piv_cac_or_aal3_html')
+      elsif service_provider_mfa_policy.aal3_required? ||
+            service_provider_mfa_policy.piv_cac_required?
         t('instructions.mfa.piv_cac.confirm_piv_cac_only_html')
       else
         t('instructions.mfa.piv_cac.confirm_piv_cac_html')
