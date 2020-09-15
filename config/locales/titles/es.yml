@@ -44,11 +44,10 @@ es:
         invalid: Error en el certificado PIV/CAC
         missing: Error interno
     present_piv_cac: Presenta tu PIV/CAC
-    present_webauthn: Presente su clave de seguridad de hardware
+    present_webauthn: Conecte su clave de seguridad de hardware
     reactivate_account: Reactive su cuenta
     registrations:
       new: Regístrese para una cuenta
-    remembered_browsers: Navegadores recordados
     revoke_consent: Revocar consentimiento
     sign_up:
       completion_html: Tiene %{accent} con %{app}

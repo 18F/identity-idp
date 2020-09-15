@@ -2,11 +2,11 @@
 es:
   account:
     connected_apps:
-      associated: Asociado %{timestamp}
+      associated: Conectado %{timestamp}
+      description: Con su cuenta login.gov, puede conectarse de manera segura a múltiples
+        cuentas gubernamentales en línea. A continuación se muestra una lista de todas
+        las cuentas que tiene actualmente conectadas.
     forget_all_browsers:
-      description: Use esto para desconectar todos los navegadores recordados de su
-        cuenta login.gov
-      link_title: Olvídate de todos los navegadores
       longer_description: Una vez que elija "olvidar todos los navegadores", necesitaremos
         información adicional para saber que en realidad está iniciando sesión en
         su cuenta. Le pediremos un método de autenticación de múltiples factores (como
@@ -18,8 +18,8 @@ es:
       auth_app_enabled: permitido
       backup_code_confirm_delete: Sí, borrar códigos
       backup_code_confirm_regenerate: Sí, regenerar códigos.
-      backup_codes_exist: generado
-      backup_codes_no_exist: no generado
+      backup_codes_exist: Generado
+      backup_codes_no_exist: No generado
       default: defecto
       device: "%{browser} en %{os}"
       dob: Fecha de nacimiento
@@ -27,7 +27,6 @@ es:
       email_add: "+ Agregar email"
       email_addresses: Correos electrónicos
       full_name: Nombre completo
-      login: Información para iniciar sesión
       password: Contraseña
       phone: Teléfono
       phone_add: "+ Añadir teléfono"
@@ -67,11 +66,30 @@ es:
         ial2: Si ha agregado su tarjeta PIV / CAC a su cuenta, puede usarla en lugar
           de su correo electrónico. Deberá proporcionar su contraseña para desbloquear
           su perfil.
+    navigation:
+      access_services: Acceda a los beneficios y servicios de su gobierno desde su
+        cuenta login.gov.
+      add_authentication_apps: Agregar aplicaciones de autenticación
+      add_email: Agregar dirección de correo electrónico
+      add_federal_id: Agregar identificación de empleado federal
+      add_phone_number: Agregar el número de teléfono
+      add_security_key: Agregar llave de seguridad
+      connected_accounts: Tus cuentas conectadas
+      customer_support: Atención al cliente
+      delete_account: Borrar cuenta
+      edit_password: Editar contraseña
+      forget_browsers: Olvídese de todos los navegadores
+      get_backup_codes: Obtener códigos de respaldo
+      history: Historia
+      learn_more: Obtenga más información sobre login.gov
+      menu: Menú
+      two_factor_authentication: Autenticación de dos factores
+      your_account: Su cuenta
     re_verify:
       banner: Hemos ocultado la información de su perfil para proteger su privacidad.
       footer: Autentíquese nuevamente para ver la información de su perfil
     revoke_consent:
-      link_title: Revocar consentimiento
+      link_title: Desconectar
       longer_description_html: Su información ya no se compartirá con %{service_provider}.
         Para acceder a %{service_provider} en el futuro, debe dar su consentimiento
         para compartir su información. Puede dar su consentimiento yendo al sitio

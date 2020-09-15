@@ -28,7 +28,7 @@ en:
         code can only be used once. After you’ve used all 10 codes, we’ll give you
         10 new codes.  Keep your codes as safe as your password."
       subtitle: Your backup codes
-      title: Backup Codes
+      title: Backup codes
     backup_code_regenerate:
       caution: If you regenerate your backup codes you will receive a new set of backup
         codes. Your original backup codes will no longer be valid.

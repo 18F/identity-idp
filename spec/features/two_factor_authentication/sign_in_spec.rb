@@ -386,7 +386,7 @@ feature 'Two Factor Authentication' do
       visit login_two_factor_path(otp_delivery_preference: 'sms')
       click_link t('links.privacy_policy')
 
-      expect(current_url).to eq MarketingSite.privacy_url
+      expect(current_url).to eq MarketingSite.security_and_privacy_practices_url
     end
   end
 end

@@ -19,6 +19,9 @@ es:
     phone_confirmed: Teléfono confirmado con éxito.
     piv_cac_configured: Tarjeta PIV/CAC vinculada con éxito.
     piv_cac_disabled: Tarjeta PIV/CAC desvinculada con éxito.
+    privacy:
+      privacy_act_statement: Declaración de la ley de privacidad
+      security_and_privacy_practices: Prácticas de seguridad y privacidad
     resend_confirmation_email:
       success: Enviamos otro email de confirmación.
     session_cleared: Para su seguridad, borramos lo que ingresó si no pasa a una página
@@ -35,8 +38,6 @@ es:
         continuar creando su cuenta.
       first_paragraph_start: Enviamos un email a
       no_email_sent_explanation_start: "¿No recibió un email?"
-    terms_of_service:
-      link: Prácticas de Seguridad y Declaración de Privacidad
     timeout_warning:
       partially_signed_in:
         continue: Continuar el inicio de sesión

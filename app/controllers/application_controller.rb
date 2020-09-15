@@ -174,7 +174,7 @@ class ApplicationController < ActionController::Base
     elsif user_needs_to_reactivate_account?
       reactivate_account_url
     else
-      after_sign_in_path_for(current_user)
+      session[:account_redirect_path] || after_sign_in_path_for(current_user)
     end
   end
 

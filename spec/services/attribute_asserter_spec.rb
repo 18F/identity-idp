@@ -151,7 +151,7 @@ describe AttributeAsserter do
       context 'x509 attributes included in the SP attribute bundle' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email x509_subject x509_presented])
+            and_return(%w[email x509_subject x509_issuer x509_presented])
           subject.build
         end
 
@@ -162,7 +162,7 @@ describe AttributeAsserter do
             }
           end
 
-          it 'does not include x509_subject and x509_presented' do
+          it 'does not include x509_subject, x509_issuer, and x509_presented' do
             expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at]
           end
         end
@@ -177,8 +177,8 @@ describe AttributeAsserter do
             }
           end
 
-          it 'includes x509_subject and x509_presented' do
-            expected = %i[uuid email verified_at x509_subject x509_presented]
+          it 'includes x509_subject x509_issuer x509_presented' do
+            expected = %i[uuid email verified_at x509_subject x509_issuer x509_presented]
             expect(user.asserted_attributes.keys).to eq expected
           end
         end
@@ -299,7 +299,7 @@ describe AttributeAsserter do
       context 'x509 attributes included in the SP attribute bundle' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email x509_subject x509_presented])
+            and_return(%w[email x509_subject x509_issuer x509_presented])
           subject.build
         end
 
@@ -310,7 +310,7 @@ describe AttributeAsserter do
             }
           end
 
-          it 'does not include x509_subject and x509_presented' do
+          it 'does not include x509_subject x509_issuer and x509_presented' do
             expect(user.asserted_attributes.keys).to eq %i[uuid email]
           end
         end
@@ -325,8 +325,8 @@ describe AttributeAsserter do
             }
           end
 
-          it 'includes x509_subject and x509_presented' do
-            expected = %i[uuid email x509_subject x509_presented]
+          it 'includes x509_subject x509_issuer and x509_presented' do
+            expected = %i[uuid email x509_subject x509_issuer x509_presented]
             expect(user.asserted_attributes.keys).to eq expected
           end
         end

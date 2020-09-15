@@ -10,12 +10,16 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment).to_s
   end
 
-  def self.privacy_url
+  def self.security_and_privacy_practices_url
     URI.join(BASE_URL, locale_segment, 'policy').to_s
   end
 
+  def self.privacy_act_statement_url
+    URI.join(BASE_URL, locale_segment, 'policy/our-privacy-act-statement/').to_s
+  end
+
   def self.messaging_practices_url
-    "#{privacy_url}/#our-messaging-practices"
+    URI.join(BASE_URL, locale_segment, 'policy/messaging-terms-and-conditions/').to_s
   end
 
   def self.contact_url
