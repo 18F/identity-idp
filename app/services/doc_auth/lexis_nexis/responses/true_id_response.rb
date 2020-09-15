@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module LexisNexis
     module Responses
@@ -49,7 +51,7 @@ module DocAuth
             IDAUTH_FIELD_NATIVE_DATA
             IMAGE_METRICS_RESULT
             PORTRAIT_MATCH_RESULT
-          ].map(&:freeze).freeze
+          ].freeze
         end
       end
     end

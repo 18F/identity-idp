@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DocAuth
   module LexisNexis
     module Responses
@@ -19,7 +21,7 @@ module DocAuth
           Fields_State
           Fields_PostalCode
           Fields_Height
-        ].map(&:freeze).freeze
+        ].freeze
         attr_reader :http_response
 
         def initialize(http_response)
