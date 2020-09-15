@@ -60,20 +60,8 @@ module DocAuth
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
         end
 
-        def status
-          parsed_response_body.dig(:Status)
-        end
-
-        def conversation_id
-          status.dig(:ConversationId)
-        end
-
-        def reference
-          status.dig(:Reference)
-        end
-
         def transaction_status
-          status.dig(:TransactionStatus)
+          parsed_response_body.dig(:Status, :TransactionStatus)
         end
 
         def products

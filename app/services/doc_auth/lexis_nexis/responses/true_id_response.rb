@@ -32,28 +32,6 @@ module DocAuth
 
         private
 
-        def doc_auth_result
-          true_id_product.dig(:AUTHENTICATION_RESULT, :DocAuthResult)
-        end
-
-        def true_id_product
-          products[:TrueID]
-        end
-
-        def product_status
-          true_id_product.dig(:ProductStatus)
-        end
-
-        def detail_groups
-          %w[
-            AUTHENTICATION_RESULT
-            IDAUTH_FIELD_DATA
-            IDAUTH_FIELD_NATIVE_DATA
-            IMAGE_METRICS_RESULT
-            PORTRAIT_MATCH_RESULT
-          ].freeze
-        end
-
         def transaction_status_passed?
           transaction_status == 'passed'
         end
@@ -64,6 +42,28 @@ module DocAuth
 
         def doc_auth_result_passed?
           doc_auth_result == 'Passed'
+        end
+
+        def doc_auth_result
+          true_id_product.dig(:AUTHENTICATION_RESULT, :DocAuthResult)
+        end
+
+        def product_status
+          true_id_product.dig(:ProductStatus)
+        end
+
+        def true_id_product
+          products[:TrueID]
+        end
+
+        def detail_groups
+          %w[
+            AUTHENTICATION_RESULT
+            IDAUTH_FIELD_DATA
+            IDAUTH_FIELD_NATIVE_DATA
+            IMAGE_METRICS_RESULT
+            PORTRAIT_MATCH_RESULT
+          ].freeze
         end
       end
     end
