@@ -2,7 +2,6 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import { fireEvent } from '@testing-library/react';
-import { ACCEPTABLE_FILE_SIZE_BYTES } from '@18f/identity-document-capture/components/acuant-capture';
 import { UploadFormEntriesError } from '@18f/identity-document-capture/services/upload';
 import { AcuantProvider, DeviceContext } from '@18f/identity-document-capture';
 import DocumentCapture, {
@@ -10,11 +9,9 @@ import DocumentCapture, {
 } from '@18f/identity-document-capture/components/document-capture';
 import render from '../../../support/render';
 import { useAcuant } from '../../../support/acuant';
-import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/document-capture', () => {
   const { initialize } = useAcuant();
-  const sandbox = useSandbox();
 
   function isFormValid(form) {
     return [...form.querySelectorAll('input')].every((input) => input.checkValidity());
@@ -24,7 +21,6 @@ describe('document-capture/components/document-capture', () => {
 
   beforeEach(() => {
     originalHash = window.location.hash;
-    sandbox.stub(window.Blob.prototype, 'size').value(ACCEPTABLE_FILE_SIZE_BYTES);
   });
 
   afterEach(() => {
