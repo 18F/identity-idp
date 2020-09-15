@@ -138,13 +138,9 @@ describe Idv::ImageUploadsController do
           expect(response.status).to eq(400)
           expect(json[:success]).to eq(false)
           expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
-          expect(json[:errors]).to eq([
-            # This is the error message for the error in the response fixture
-            {
-              field: 'results',
-              message: I18n.t('friendly_errors.doc_auth.document_type_could_not_be_determined'),
-            },
-          ])
+          # This is the error message for the error in the response fixture
+          message = I18n.t('friendly_errors.doc_auth.document_type_could_not_be_determined')
+          expect(json[:errors]).to eq [{ field: 'results', message: message }]
         end
 
         context 'with active doc auth funnel' do
