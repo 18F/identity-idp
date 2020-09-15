@@ -6,21 +6,17 @@
   )
 %>
 <% if maintenance_window.active? %>
-  <div class="usa-alert usa-alert--warning margin-bottom-2">
-    <div class="usa-alert__body">
-      <div class="usa-alert__text">
-        <p>
-          <%= t('notices.maintenance.currently_under_maintenance_html',
-                finish: l(maintenance_window.finish,
-                          format: t('time.formats.event_timestamp_with_zone'))) %>
-        </p>
-        <p class="margin-bottom-0">
-          <%= t('notices.maintenance.need_assistance') %>
-          <%= link_to(t('notices.maintenance.contact_us'), MarketingSite.contact_url) %>
-        </p>
-      </div>
-    </div>
-  </div>
+  <%= render 'shared/alert', { type: 'warning', class: 'margin-bottom-2' } do %>
+    <p>
+      <%= t('notices.maintenance.currently_under_maintenance_html',
+            finish: l(maintenance_window.finish,
+                      format: t('time.formats.event_timestamp_with_zone'))) %>
+    </p>
+    <p class="margin-bottom-0">
+      <%= t('notices.maintenance.need_assistance') %>
+      <%= link_to(t('notices.maintenance.contact_us'), MarketingSite.contact_url) %>
+    </p>
+  <% end %>
 <% else %>
   <%= yield %>
 <% end %>
