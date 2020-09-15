@@ -38,9 +38,6 @@ loadPolyfills(['fetch']).then(() => {
         endpoint={appRoot.getAttribute('data-endpoint')}
         csrf={getMetaContent('csrf-token')}
         isMockClient={isMockClient}
-        errorRedirects={{
-          429: appRoot.getAttribute('data-throttled-url'),
-        }}
         formData={{
           document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
           locale: i18n.currentLocale(),

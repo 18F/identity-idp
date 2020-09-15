@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe ImageUploadResponsePresenter do
+  include Rails.application.routes.url_helpers
+
   let(:form) { Idv::ApiImageUploadForm.new({}, liveness_checking_enabled: false) }
   let(:form_response) { FormResponse.new(success: true, errors: {}, extra: {}) }
   let(:presenter) { described_class.new(form: form, form_response: form_response) }
@@ -59,14 +61,55 @@ describe ImageUploadResponsePresenter do
   end
 
   describe '#as_json' do
-    it 'returns hash of properties' do
-      expected = {
-        success: true,
-        errors: [],
-        remaining_attempts: 3,
-      }
+    context 'success' do
+      it 'returns hash of properties' do
+        expect(presenter.as_json).to eq(
+          { success: true },
+        )
+      end
+    end
 
-      expect(presenter.as_json).to eq expected
+    context 'throttled' do
+      let(:form_response) do
+        FormResponse.new(
+          success: false,
+          errors: {
+            limit: t('errors.doc_auth.acuant_throttle'),
+          },
+          extra: {},
+        )
+      end
+
+      it 'returns hash of properties' do
+        expected = {
+          success: false,
+          redirect: idv_session_errors_throttled_url,
+        }
+
+        expect(presenter.as_json).to eq expected
+      end
+    end
+
+    context 'error' do
+      let(:form_response) do
+        FormResponse.new(
+          success: false,
+          errors: {
+            front: t('doc_auth.errors.not_a_file'),
+          },
+          extra: {},
+        )
+      end
+
+      it 'returns hash of properties' do
+        expected = {
+          success: false,
+          errors: [{ field: :front, message: t('doc_auth.errors.not_a_file') }],
+          remaining_attempts: 3,
+        }
+
+        expect(presenter.as_json).to eq expected
+      end
     end
   end
 end

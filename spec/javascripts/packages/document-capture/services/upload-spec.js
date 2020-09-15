@@ -38,7 +38,7 @@ describe('document-capture/services/upload', () => {
       );
     });
 
-    const result = await upload({ foo: 'bar' }, { endpoint, csrf, errorRedirects: {} });
+    const result = await upload({ foo: 'bar' }, { endpoint, csrf });
     expect(result).to.deep.equal({ success: true });
   });
 
@@ -61,7 +61,7 @@ describe('document-capture/services/upload', () => {
     );
 
     try {
-      await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y', errorRedirects: {} });
+      await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y' });
       throw new Error('This is a safeguard and should never be reached, since upload should error');
     } catch (error) {
       expect(error).to.be.instanceOf(UploadFormEntriesError);
@@ -72,13 +72,18 @@ describe('document-capture/services/upload', () => {
     }
   });
 
-  it('redirects using errorRedirects', async () => {
+  it('redirects error', async () => {
     sandbox.stub(window, 'fetch').callsFake(() =>
       Promise.resolve(
         /** @type {Partial<Response>} */ ({
           ok: false,
           status: 418,
           statusText: "I'm a teapot",
+          json: () =>
+            Promise.resolve({
+              success: false,
+              redirect: '#teapot',
+            }),
         }),
       ),
     );
@@ -95,7 +100,6 @@ describe('document-capture/services/upload', () => {
         {
           endpoint: 'https://example.com',
           csrf: 'TYsqyyQ66Y',
-          errorRedirects: { 418: '#teapot' },
         },
       ),
     ]);
@@ -113,7 +117,7 @@ describe('document-capture/services/upload', () => {
     );
 
     try {
-      await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y', errorRedirects: {} });
+      await upload({}, { endpoint: 'https://example.com', csrf: 'TYsqyyQ66Y' });
     } catch (error) {
       expect(error).to.be.instanceof(Error);
       expect(error.message).to.equal('Server error');

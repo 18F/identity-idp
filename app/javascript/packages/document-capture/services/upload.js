@@ -24,7 +24,7 @@ export function toFormData(object) {
 /**
  * @type {import('../context/upload').UploadImplementation}
  */
-async function upload(payload, { endpoint, csrf, errorRedirects }) {
+async function upload(payload, { endpoint, csrf }) {
   const response = await window.fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -39,19 +39,20 @@ async function upload(payload, { endpoint, csrf, errorRedirects }) {
     throw new Error(response.statusText);
   }
 
-  if (errorRedirects[response.status]) {
-    window.location.href = errorRedirects[response.status];
-
-    // Avoid settling the promise, allowing the redirect to complete.
-    return new Promise(() => {});
-  }
-
   const result = /** @type {UploadSuccessResponse|UploadErrorResponse} */ (await response.json());
   if (!result.success) {
     /** @type {UploadErrorResponse} */
     const errorResult = result;
+
+    if (errorResult.redirect) {
+      window.location.href = errorResult.redirect;
+
+      // Avoid settling the promise, allowing the redirect to complete.
+      return new Promise(() => {});
+    }
+
     const error = new UploadFormEntriesError();
-    error.rawErrors = errorResult.errors;
+    error.rawErrors = /** @type {UploadFieldError[]} */ (errorResult.errors);
     throw error;
   }
 
