@@ -1,6 +1,7 @@
 <%
   type = local_assigns.fetch(:type, 'other')
   role = type === 'error' ? 'alert' : 'status'
+  text_tag = local_assigns.fetch(:text_tag, 'p')
 
   classes = [
     'usa-alert',
@@ -12,6 +13,6 @@
 
 <%= tag.div class: classes, role: role do %>
   <div class="usa-alert__body">
-    <p class="usa-alert__text"><%= message %></p>
+    <%= content_tag(text_tag, message, class: 'usa-alert__text') %>
   </div>
 <% end %>
