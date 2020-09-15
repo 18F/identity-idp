@@ -32,6 +32,7 @@ module DocAuth
           http_response.status,
         ].join(' ')
         exception = RuntimeError.new(message)
+
         NewRelic::Agent.notice_error(exception)
         DocAuth::Response.new(
           success: false,
@@ -97,7 +98,7 @@ module DocAuth
 
       def headers
         {
-          Accepts: 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
         }
       end

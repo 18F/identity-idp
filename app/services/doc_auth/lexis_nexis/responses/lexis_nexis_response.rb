@@ -61,30 +61,27 @@ module DocAuth
         end
 
         def status
-          @status ||= parsed_response_body.dig(:Status)
+          parsed_response_body.dig(:Status)
         end
 
         def conversation_id
-          @conversation_id ||= status.dig(:ConversationId)
+          status.dig(:ConversationId)
         end
 
         def reference
-          @reference ||= status.dig(:Reference)
+          status.dig(:Reference)
         end
 
         def transaction_status
-          @transaction_status ||= status.dig(:TransactionStatus)
+          status.dig(:TransactionStatus)
         end
 
         def products
-          @products ||= begin
-            product_list = {}
-            parsed_response_body.dig(:Products).each do |product|
+          @products ||=
+            parsed_response_body.dig(:Products).each_with_object({}) do |product, product_list|
               extract_details(product)
               product_list[product[:ProductType]] = product
-            end
-            product_list.with_indifferent_access
-          end
+            end.with_indifferent_access
         end
 
         def extract_details(product)

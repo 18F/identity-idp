@@ -9,9 +9,9 @@ module DocAuth
         end
 
         def successful_result?
-          transaction_status == 'passed' &&
-            product_status == 'pass' &&
-            doc_auth_result == 'Passed'
+          transaction_status_passed? &&
+            product_status_passed? &&
+            doc_auth_result_passed?
         end
 
         def error_messages
@@ -33,7 +33,7 @@ module DocAuth
         private
 
         def doc_auth_result
-          @doc_auth_result ||= true_id_product.dig(:AUTHENTICATION_RESULT, :DocAuthResult)
+          true_id_product.dig(:AUTHENTICATION_RESULT, :DocAuthResult)
         end
 
         def true_id_product
@@ -41,7 +41,7 @@ module DocAuth
         end
 
         def product_status
-          @product_status ||= true_id_product.dig(:ProductStatus)
+          true_id_product.dig(:ProductStatus)
         end
 
         def detail_groups
@@ -52,6 +52,18 @@ module DocAuth
             IMAGE_METRICS_RESULT
             PORTRAIT_MATCH_RESULT
           ].freeze
+        end
+
+        def transaction_status_passed?
+          transaction_status == 'passed'
+        end
+
+        def product_status_passed?
+          product_status == 'pass'
+        end
+
+        def doc_auth_result_passed?
+          doc_auth_result == 'Passed'
         end
       end
     end
