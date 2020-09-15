@@ -7,18 +7,18 @@ describe DocAuth::LexisNexis::Request do
   let(:path) { "/restws/identity/v3/accounts/#{account_id}/workflows/#{workflow}/conversations" }
   let(:full_url) { base_url + path }
 
-  before do
-    allow(subject).to receive(:username).and_return('test_username')
-    allow(subject).to receive(:password).and_return('test_password')
-    allow(subject).to receive(:account_id).and_return(account_id)
-    allow(subject).to receive(:workflow).and_return(workflow)
-    allow(subject).to receive(:body).and_return('test_body')
-    allow(subject).to receive(:method).and_return(http_method)
-
-    stub_request(http_method, full_url).to_return(status: status, body: '')
-  end
-
   describe '#fetch' do
+    before do
+      allow(subject).to receive(:username).and_return('test_username')
+      allow(subject).to receive(:password).and_return('test_password')
+      allow(subject).to receive(:account_id).and_return(account_id)
+      allow(subject).to receive(:workflow).and_return(workflow)
+      allow(subject).to receive(:body).and_return('test_body')
+      allow(subject).to receive(:method).and_return(http_method)
+
+      stub_request(http_method, full_url).to_return(status: status, body: '')
+    end
+
     context 'GET request' do
       let(:http_method) { :get }
 
@@ -86,6 +86,38 @@ describe DocAuth::LexisNexis::Request do
 
           expect(response.exception.message).to eq(expected_message)
         end
+      end
+    end
+  end
+
+  describe 'unimplemented methods' do
+    describe '#handle_http_response' do
+      it 'raises NotImplementedError' do
+        expect { subject.send(:handle_http_response, 'foo') }.to raise_error(NotImplementedError)
+      end
+    end
+
+    describe '#username' do
+      it 'raises NotImplementedError' do
+        expect { subject.send(:username) }.to raise_error(NotImplementedError)
+      end
+    end
+
+    describe '#password' do
+      it 'raises NotImplementedError' do
+        expect { subject.send(:password) }.to raise_error(NotImplementedError)
+      end
+    end
+
+    describe '#workflow' do
+      it 'raises NotImplementedError' do
+        expect { subject.send(:workflow) }.to raise_error(NotImplementedError)
+      end
+    end
+
+    describe '#body' do
+      it 'raises NotImplementedError' do
+        expect { subject.send(:body) }.to raise_error(NotImplementedError)
       end
     end
   end
