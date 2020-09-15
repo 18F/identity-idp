@@ -104,11 +104,7 @@ describe Idv::ImageUploadsController do
           expect(response.status).to eq(429)
           expect(json).to eq({
                                success: false,
-                               errors: [{
-                                 field: 'limit',
-                                 message: I18n.t('errors.doc_auth.acuant_throttle'),
-                               }],
-                               remaining_attempts: 0,
+                               redirect: idv_session_errors_throttled_url,
                              })
         end
       end
