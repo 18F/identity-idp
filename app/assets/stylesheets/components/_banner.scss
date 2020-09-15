@@ -32,7 +32,9 @@
   }
 
   .close-banner-how-you-know {
-    background: url(image-path('#{$image-path}/close-primary.svg')) top left no-repeat;
+    @include add-background-svg("close-primary");
+    background-position: top left;
+    background-repeat: no-repeat;
     background-size: contain;
     border: 0;
     display: inline-block;
