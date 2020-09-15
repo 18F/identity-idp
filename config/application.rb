@@ -8,7 +8,7 @@ APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
-    config.active_job.queue_adapter = 'inline'
+    config.active_job.queue_adapter = :inline
     config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
 
