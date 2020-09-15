@@ -32,10 +32,6 @@ module DocAuth
 
         private
 
-        def transaction_status_passed?
-          transaction_status == 'passed'
-        end
-
         def product_status_passed?
           product_status == 'pass'
         end

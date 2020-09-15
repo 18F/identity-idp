@@ -60,6 +60,10 @@ module DocAuth
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
         end
 
+        def transaction_status_passed?
+          transaction_status == 'passed'
+        end
+
         def transaction_status
           parsed_response_body.dig(:Status, :TransactionStatus)
         end
