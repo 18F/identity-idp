@@ -16,10 +16,12 @@ module Idv
         end
       end
 
-      def after_call(pii, result)
+      def after_call(pii, idv_result)
         # binding.pry
 
-        result = check_ssn(pii) if result.success?
+        add_proofing_costs(idv_result)
+        response = idv_result_to_form_response(idv_result)
+        result = check_ssn(pii) if response.success?
         summarize_result_and_throttle_failures(result)
       end
 
@@ -58,7 +60,7 @@ module Idv
         proofer_result = ::Proofer::Result.new(
           errors: proofing_job_result.result['errors'],
           messages: Set.new(proofing_job_result.result['messages']),
-          context: proofing_job_result.result['context'],
+          context: proofing_job_result.result['context'].with_indifferent_access,
           exception: proofing_job_result.result['exception']
         )
 
