@@ -2,6 +2,10 @@
   <%= render 'accounts/nav_auth', enable_mobile_nav: true, greeting: @view_model.header_personalization %>
 <% end %>
 
+<% content_for(:mobile_nav) do %>
+  <%= render 'accounts/mobile_nav' %>
+<% end %>
+
 <% content_for :content do %>
   <div class="top-banner grid-row grid-gap mb3">
     <div class="grid-offset-3 grid-col-3">
