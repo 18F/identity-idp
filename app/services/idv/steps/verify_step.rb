@@ -33,11 +33,11 @@ module Idv
       def async_state
         dcs_uuid = flow_session[:idv_verify_step_document_capture_session_uuid]
         dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
-        return State.new(:none, nil, nil) if dcs_uuid == nil
-        return State.new(:timed_out, nil, nil) if dcs == nil
+        return State.new(:none, nil, nil) if dcs_uuid.nil?
+        return State.new(:timed_out, nil, nil) if dcs.nil?
 
         proofing_job_result = dcs.load_proofing_result
-        return State.new(:timed_out, nil, nil) if proofing_job_result == nil
+        return State.new(:timed_out, nil, nil) if proofing_job_result.nil?
 
         if proofing_job_result.result
           proofing_result = convert_job_result(proofing_job_result)

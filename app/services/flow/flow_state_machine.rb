@@ -28,7 +28,6 @@ module Flow
       flow_handler = flow.handler(current_step).new(flow)
 
       if flow_handler.async?
-        # binding.pry
         async_update(flow_handler)
       else
         result = flow.handle(current_step)
@@ -44,12 +43,10 @@ module Flow
       when :none
         begin_step
       when :in_progress
-        # binding.pry
         redirect_to send(@step_url, step: current_step)
       when :timed_out
         begin_step
       when :done
-        # binding.pry
         result = flow_handler.after_call(async_state.pii, async_state.result)
         flow_handler.mark_step_complete(current_step) if result.success?
         flow_handler.delete_async unless result.success?
@@ -68,7 +65,6 @@ module Flow
         redirect_to send(@step_url, step: current_step) and return
       when :timed_out
         flow.handle(current_step)
-        # binding.pry
         flow_handler.mark_step_incomplete(current_step)
         redirect_to send(@step_url, step: current_step) and return
       when :done
@@ -85,7 +81,9 @@ module Flow
 
     def end_step(result)
       # binding.pry
-      analytics.track_event(analytics_submitted, result.to_h.merge(step: current_step)) if @analytics_id
+      if @analytics_id
+        analytics.track_event(analytics_submitted, result.to_h.merge(step: current_step))
+      end
       register_update_step(current_step, result)
       flow_finish and return unless next_step
 
