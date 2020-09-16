@@ -25,6 +25,8 @@ aamva_cert_enabled: 'true'
 aamva_sp_banlist_issuers: '[]'
 account_reset_token_valid_for_days: '1'
 account_reset_wait_period_days: '1'
+acuant_maintenance_window_start: '2020-09-19T03:00:00Z' # 9/18 11pm Eastern
+acuant_maintenance_window_finish: '2020-09-19T05:00:00Z' # 9/19 1am Eastern
 acuant_assure_id_password: ''
 acuant_assure_id_subscription_id: ''
 acuant_assure_id_username: ''
@@ -351,6 +353,8 @@ test:
   aamva_public_key: 123abc
   aamva_verification_url: https://example.org:12345/verification/url
   account_reset_auth_token: test
+  acuant_maintenance_window_start: ''
+  acuant_maintenance_window_finish: ''
   acuant_assure_id_url: https://example.com
   acuant_facial_match_url: https://facial_match.example.com
   acuant_max_attempts: '4'
