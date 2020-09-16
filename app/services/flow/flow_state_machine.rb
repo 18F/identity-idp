@@ -17,10 +17,9 @@ module Flow
       flow_handler = flow.handler(current_step).new(flow)
 
       if flow_handler.async?
-        binding.pry
+        # binding.pry
         async_show(flow_handler)
       else
-        binding.pry
         begin_step
       end
     end
@@ -29,7 +28,7 @@ module Flow
       flow_handler = flow.handler(current_step).new(flow)
 
       if flow_handler.async?
-        binding.pry
+        # binding.pry
         async_update(flow_handler)
       else
         result = flow.handle(current_step)
@@ -40,19 +39,19 @@ module Flow
     private
 
     def async_show(flow_handler)
-      binding.pry
-      case flow_handler.async_state.status
+      async_state = flow_handler.async_state
+      case async_state.status
       when :none
         begin_step
       when :in_progress
-        binding.pry
-        sleep(2)
+        # binding.pry
         redirect_to send(@step_url, step: current_step)
-        # render waiting
-      # when :timed_out
+      when :timed_out
+        begin_step
       when :done
-        binding.pry
-        flow_handler.after_call
+        # binding.pry
+        flow_handler.after_call(async_state.pii, async_state.result)
+        flow_handler.mark_step_complete(current_step)
         end_step(async_state.result)
       end
     end
@@ -61,9 +60,15 @@ module Flow
       case flow_handler.async_state.status
       when :none
         flow.handle(current_step)
-        binding.pry
+        # binding.pry
+        flow_handler.mark_step_incomplete(current_step)
         redirect_to send(@step_url, step: current_step) and return
       when :in_progress
+        redirect_to send(@step_url, step: current_step) and return
+      when :timed_out
+        flow.handle(current_step)
+        # binding.pry
+        flow_handler.mark_step_incomplete(current_step)
         redirect_to send(@step_url, step: current_step) and return
       when :done
         redirect_to send(@step_url, step: current_step) and return
@@ -78,7 +83,7 @@ module Flow
     end
 
     def end_step(result)
-      binding.pry
+      # binding.pry
       analytics.track_event(analytics_submitted, result.to_h.merge(step: current_step)) if @analytics_id
       register_update_step(current_step, result)
       flow_finish and return unless next_step
