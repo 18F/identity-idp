@@ -1,7 +1,7 @@
 module Idv
   module Steps
     class VerifyStep < VerifyBaseStep
-      State = Struct.new(:status, :result)
+      State = Struct.new(:status, :pii, :result)
 
       def call
         case async_state.status
@@ -16,9 +16,10 @@ module Idv
         end
       end
 
-      def after_call
-        binding.pry
-        result = check_ssn(pii_from_doc) if result.success?
+      def after_call(pii, result)
+        # binding.pry
+
+        result = check_ssn(pii) if result.success?
         summarize_result_and_throttle_failures(result)
       end
 
@@ -26,23 +27,47 @@ module Idv
         true
       end
 
-      # @return [State] async state
+      # @return [State]
       def async_state
         dcs_uuid = flow_session[:idv_verify_step_document_capture_session_uuid]
         dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
-        return State.new(:none, nil) if dcs_uuid == nil
-        return State.new(:timed_out, nil) if dcs == nil
+        return State.new(:none, nil, nil) if dcs_uuid == nil
+        return State.new(:timed_out, nil, nil) if dcs == nil
 
-        proofing_result = dcs.load_proofing_result
+        proofing_job_result = dcs.load_proofing_result
+        return State.new(:timed_out, nil, nil) if proofing_job_result == nil
 
-        if proofing_result.result
-          State.new(:done, proofing_result)
+        if proofing_job_result.result
+          proofing_result = convert_job_result(proofing_job_result)
+          State.new(:done, proofing_result.pii, proofing_result.result)
         elsif dcs.pii
-          State.new(:in_progress, nil)
+          State.new(:in_progress, nil, nil)
         end
       end
 
       private
+
+      # Converts result hash into Proofer::Result and
+      # pii into hash to hash with indifferent access.
+      #
+      # This is because the flow expects result class instances
+      # but job results can't serialize/deserialize those.
+      # @param [ProofingDocumentCaptureSessionResult]
+      # @return [ProofingDocumentCaptureSessionResult]
+      def convert_job_result(proofing_job_result)
+        proofer_result = ::Proofer::Result.new(
+          errors: proofing_job_result.result['errors'],
+          messages: Set.new(proofing_job_result.result['messages']),
+          context: proofing_job_result.result['context'],
+          exception: proofing_job_result.result['exception']
+        )
+
+        ProofingDocumentCaptureSessionResult.new(
+          id: proofing_job_result.id,
+          result: proofer_result,
+          pii: proofing_job_result.pii.with_indifferent_access,
+        )
+      end
 
       def enqueue_job
         pii_from_doc = flow_session[:pii_from_doc]
