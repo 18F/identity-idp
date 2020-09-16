@@ -21,8 +21,8 @@ module Idv
 
         add_proofing_costs(idv_result)
         response = idv_result_to_form_response(idv_result)
-        result = check_ssn(pii) if response.success?
-        summarize_result_and_throttle_failures(result)
+        response = check_ssn(pii) if response.success?
+        summarize_result_and_throttle_failures(response)
       end
 
       def async?
