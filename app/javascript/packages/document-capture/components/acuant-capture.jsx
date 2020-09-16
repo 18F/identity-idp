@@ -48,25 +48,6 @@ const ACCEPTABLE_GLARE_SCORE = 50;
 const ACCEPTABLE_SHARPNESS_SCORE = 50;
 
 /**
- * The minimum file size (bytes) for an image to be considered acceptable.
- *
- * @type {number}
- */
-export const ACCEPTABLE_FILE_SIZE_BYTES = 250 * 1024;
-
-/**
- * Given a file, returns minimum acceptable file size in bytes, depending on the type of file and
- * the current environment.
- *
- * @param {Blob} file File to assess.
- *
- * @return {number} Minimum file size, in bytes.
- */
-export function getMinimumFileSize(file) {
-  return file.type.startsWith('image/') ? ACCEPTABLE_FILE_SIZE_BYTES : 0;
-}
-
-/**
  * Returns an instance of File representing the given data URL.
  *
  * @param {string} dataURL Data URL.
@@ -149,19 +130,13 @@ function AcuantCapture(
   }
 
   /**
-   * Calls onChange with next value if valid. Validation occurs separately to AcuantCaptureCanvas
-   * for common checks derived from file properties (file size, etc). If invalid, error state is
-   * assigned with appropriate error message.
+   * Calls onChange with next value and resets any errors which may be present.
    *
-   * @param {Blob?} nextValue Next value candidate.
+   * @param {Blob?} nextValue Next value.
    */
-  function onChangeIfValid(nextValue) {
-    if (nextValue && nextValue.size < getMinimumFileSize(nextValue)) {
-      setOwnErrorMessage(t('errors.doc_auth.photo_file_size'));
-    } else {
-      setOwnErrorMessage(null);
-      onChange(nextValue);
-    }
+  function onChangeAndResetError(nextValue) {
+    setOwnErrorMessage(null);
+    onChange(nextValue);
   }
 
   /**
@@ -202,7 +177,7 @@ function AcuantCapture(
               } else {
                 const dataAsBlob = toBlob(nextCapture.image.data);
                 fileCache.set(dataAsBlob, nextCapture.image.data);
-                onChangeIfValid(dataAsBlob);
+                onChangeAndResetError(dataAsBlob);
               }
 
               setIsCapturing(false);
@@ -224,7 +199,7 @@ function AcuantCapture(
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
         onClick={startCaptureOrTriggerUpload}
-        onChange={onChangeIfValid}
+        onChange={onChangeAndResetError}
         onError={() => setOwnErrorMessage(null)}
       />
       <div className="margin-top-2">

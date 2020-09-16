@@ -3,32 +3,15 @@ import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitForElementToBeRemoved } from '@testing-library/dom';
 import sinon from 'sinon';
-import AcuantCapture, {
-  getMinimumFileSize,
-  ACCEPTABLE_FILE_SIZE_BYTES,
-} from '@18f/identity-document-capture/components/acuant-capture';
+import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
 import render from '../../../support/render';
 import { useAcuant } from '../../../support/acuant';
-import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
-  const sandbox = useSandbox();
-
-  describe('getMinimumFileSize', () => {
-    it('returns zero for non-image file', () => {
-      const file = new window.File([], 'file.yml', { type: 'application/x-yaml' });
-      expect(getMinimumFileSize(file)).to.equal(0);
-    });
-
-    it('returns non-zero for image file', () => {
-      const file = new window.File([], 'file.png', { type: 'image/png' });
-      expect(getMinimumFileSize(file)).to.be.gt(0);
-    });
-  });
 
   context('mobile', () => {
     it('renders with assumed capture button support while acuant is not ready and on mobile', () => {
@@ -163,8 +146,6 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('calls onChange with the captured image on successful capture', async () => {
-      sandbox.stub(window.Blob.prototype, 'size').value(ACCEPTABLE_FILE_SIZE_BYTES);
-
       const onChange = sinon.mock();
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
@@ -363,8 +344,6 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('removes error message once image is corrected', async () => {
-      sandbox.stub(window.Blob.prototype, 'size').value(ACCEPTABLE_FILE_SIZE_BYTES);
-
       const { getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
@@ -411,38 +390,6 @@ describe('document-capture/components/acuant-capture', () => {
 
       fireEvent.click(button);
       await waitForElementToBeRemoved(error);
-    });
-
-    it('renders error message if capture succeeds but photo is too small', async () => {
-      const { getByText, findByText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
-            <AcuantCapture label="Image" minimumFileSize={500 * 1024} />
-          </AcuantContextProvider>
-        </DeviceContext.Provider>,
-      );
-
-      initialize({
-        start: sinon.stub().callsFake(async (callbacks) => {
-          await Promise.resolve();
-          callbacks.onCaptured();
-          await Promise.resolve();
-          callbacks.onCropped({
-            glare: 70,
-            sharpness: 38,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          });
-        }),
-      });
-
-      const button = getByText('doc_auth.buttons.take_picture');
-      fireEvent.click(button);
-
-      const error = await findByText('errors.doc_auth.photo_blurry');
-
-      expect(error).to.be.ok();
     });
 
     it('triggers forced upload', () => {
