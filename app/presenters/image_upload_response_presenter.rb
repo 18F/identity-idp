@@ -1,4 +1,6 @@
 class ImageUploadResponsePresenter
+  include Rails.application.routes.url_helpers
+
   def initialize(form:, form_response:)
     @form = form
     @form_response = form_response
@@ -19,10 +21,12 @@ class ImageUploadResponsePresenter
   end
 
   def as_json(*)
-    {
-      success: success,
-      errors: errors,
-      remaining_attempts: remaining_attempts,
-    }
+    if success
+      { success: true }
+    elsif @form_response.errors.key?(:limit)
+      { success: false, redirect: idv_session_errors_throttled_url }
+    else
+      { success: false, errors: errors, remaining_attempts: remaining_attempts }
+    end
   end
 end

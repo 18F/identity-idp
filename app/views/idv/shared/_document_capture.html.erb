@@ -14,7 +14,7 @@
     liveness: liveness_checking_enabled?.presence,
     mock_client: (DocAuth::Client.doc_auth_vendor == 'mock').presence,
     document_capture_session_uuid: flow_session[:document_capture_session_uuid],
-    endpoint: api_verify_images_url
+    endpoint: api_verify_images_url,
   } %>
   <div class="js-fallback">
     <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>

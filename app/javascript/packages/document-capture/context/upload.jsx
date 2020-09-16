@@ -34,7 +34,8 @@ const UploadContext = createContext({
  * @typedef UploadErrorResponse
  *
  * @prop {false} success Whether request was successful.
- * @prop {UploadFieldError[]} errors Error messages.
+ * @prop {UploadFieldError[]=} errors Error messages.
+ * @prop {string=} redirect URL to which user should be redirected.
  */
 
 /**
