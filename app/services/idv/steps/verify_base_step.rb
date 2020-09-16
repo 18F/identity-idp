@@ -11,8 +11,10 @@ module Idv
       def perform_resolution_and_check_ssn(result)
         pii_from_doc = flow_session[:pii_from_doc]
         # do resolution first to prevent ssn time/discovery. resolution time order > than db call
-        result = perform_resolution(pii_from_doc)
-        result = check_ssn(pii_from_doc) if result.success?
+        idv_result = perform_resolution(pii_from_doc)
+        add_proofing_costs(idv_result)
+        response = idv_result_to_form_response(idv_result)
+        result = check_ssn(pii_from_doc) if response.success?
         summarize_result_and_throttle_failures(result)
       end
 
@@ -54,9 +56,10 @@ module Idv
 
       def perform_resolution(pii_from_doc)
         stages = should_use_aamva?(pii_from_doc) ? %i[resolution state_id] : [:resolution]
-        # ASYNC ME
-        idv_result = Idv::Agent.new(pii_from_doc).proof(*stages)
-        add_proofing_costs(idv_result)
+        Idv::Agent.new(pii_from_doc).proof(*stages)
+      end
+
+      def idv_result_to_form_response(idv_result)
         FormResponse.new(
           success: idv_success(idv_result),
           errors: idv_errors(idv_result),
@@ -65,6 +68,7 @@ module Idv
       end
 
       def add_proofing_costs(results)
+        binding.pry
         vendors = results[:context][:stages]
         vendors.each do |hash|
           add_cost(:aamva) if hash[:state_id]
