@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "dependencies": {
-    "focus-trap": "^2.3.0",
+    "focus-trap": "^6.0.1",
     "react": "^16.13.1"
   }
 }
