@@ -50,9 +50,9 @@ module Flow
         begin_step
       when :done
         # binding.pry
-        flow_handler.after_call(async_state.pii, async_state.result)
-        flow_handler.mark_step_complete(current_step)
-        end_step(async_state.result)
+        result = flow_handler.after_call(async_state.pii, async_state.result)
+        flow_handler.mark_step_complete(current_step) if result.success?
+        end_step(result)
       end
     end
 
