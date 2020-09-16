@@ -1,8 +1,6 @@
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
-      async_result_id
-      async_result_started_at
       address_verification_mechanism
       applicant
       vendor_phone_confirmation
@@ -15,7 +13,6 @@ module Idv
       profile_step_params
       personal_key
       resolution_successful
-      selected_jurisdiction
       step_attempts
     ].freeze
 

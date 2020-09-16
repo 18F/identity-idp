@@ -14,6 +14,7 @@ module Idv
         mobile_back_image: Idv::Steps::MobileBackImageStep,
         selfie: Idv::Steps::SelfieStep,
         ssn: Idv::Steps::SsnStep,
+        # HERE
         verify: Idv::Steps::VerifyStep,
         doc_success: Idv::Steps::DocSuccessStep,
       }.freeze

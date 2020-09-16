@@ -8,7 +8,7 @@ module Idv
 
       private
 
-      def perform_resolution_and_check_ssn
+      def perform_resolution_and_check_ssn(result)
         pii_from_doc = flow_session[:pii_from_doc]
         # do resolution first to prevent ssn time/discovery. resolution time order > than db call
         result = perform_resolution(pii_from_doc)
@@ -37,6 +37,7 @@ module Idv
       end
 
       def save_legacy_state(pii_from_doc)
+        # TODO: set these values when checking job status if it is complete
         skip_legacy_steps
         idv_session['params'] = pii_from_doc
         idv_session['applicant'] = pii_from_doc
@@ -53,6 +54,7 @@ module Idv
 
       def perform_resolution(pii_from_doc)
         stages = should_use_aamva?(pii_from_doc) ? %i[resolution state_id] : [:resolution]
+        # ASYNC ME
         idv_result = Idv::Agent.new(pii_from_doc).proof(*stages)
         add_proofing_costs(idv_result)
         FormResponse.new(
