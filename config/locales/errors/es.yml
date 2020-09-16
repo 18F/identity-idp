@@ -61,6 +61,8 @@ es:
         <li class="mxn3">El fondo detrás de su identificación es un color sólido</li>
         <li class="mxn3">El fondo es visible detrás del documento</li>
         </ul>
+      lexisnexis_network_error: Lo sentimos, estamos experimentando dificultades técnicas.
+        Por favor, inténtelo de nuevo más tarde.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
       photo_blurry: La foto está demasiado borrosa. Vuelve a intentarlo.
