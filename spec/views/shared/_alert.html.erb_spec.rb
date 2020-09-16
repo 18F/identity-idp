@@ -25,6 +25,19 @@ describe 'shared/_alert.html.erb' do
     expect(rendered).to have_selector('.usa-alert.usa-alert--success')
   end
 
+  it 'defaults to <p> tag for text' do
+    render 'shared/alert', { type: 'success', message: 'Hooray!' }
+
+    expect(rendered).to have_selector('p.usa-alert__text')
+  end
+
+  it 'accepts text_tag param' do
+    render 'shared/alert', { type: 'success', message: 'Hooray!', text_tag: 'div' }
+
+    expect(rendered).to have_selector('div.usa-alert__text')
+    expect(rendered).to_not have_selector('p.usa-alert__text')
+  end
+
   it 'accepts custom class names' do
     render 'shared/alert', { message: 'FYI', class: 'my-custom-class' }
 

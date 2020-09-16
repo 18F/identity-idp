@@ -1,23 +1,24 @@
-<h1 class="h3 mt0 mb1"><%= t('cac_proofing.headings.choose_method') %></h1>
-<%= t('cac_proofing.info.choose_method') %>
-<hr/>
-<br/>
-<%= image_tag asset_url('dod-logo.jpg'), height: 150 %>
-<br/>
-<%= simple_form_for :cac,
-                    url: url_for,
-                    method: 'put',
-                    html: { autocomplete: 'off', role: 'form', class: 'mt2' } do |f| %>
-  <button class="btn btn-primary" type="submit"><%= t('cac_proofing.buttons.use_cac') %></button>
+<%= render 'shared/maintenance_window_alert' do %>
+  <h1 class="h3 mt0 mb1"><%= t('cac_proofing.headings.choose_method') %></h1>
+  <%= t('cac_proofing.info.choose_method') %>
+  <hr/>
+  <br/>
+  <%= image_tag asset_url('dod-logo.jpg'), height: 150 %>
+  <br/>
+  <%= simple_form_for :cac,
+                      url: url_for,
+                      method: 'put',
+                      html: { autocomplete: 'off', role: 'form', class: 'mt2' } do |f| %>
+    <button class="btn btn-primary" type="submit"><%= t('cac_proofing.buttons.use_cac') %></button>
+  <% end %>
+  <br/>
+  <br/>
+  <hr/>
+  <%= image_tag asset_url('state-id-confirm@3x.png'), height: 150 %>
+  <br/>
+  <br/>
+  <%= link_to t('cac_proofing.buttons.use_doc_auth'), idv_doc_auth_path, class: 'btn btn-primary' %>
+  <br/>
+  <br/>
+  <div class="mt2 pt1 border-top"><%= link_to t('links.cancel'), idv_cancel_path %></div>
 <% end %>
-<br/>
-<br/>
-<hr/>
-<%= image_tag asset_url('state-id-confirm@3x.png'), height: 150 %>
-<br/>
-<br/>
-<%= link_to t('cac_proofing.buttons.use_doc_auth'), idv_doc_auth_path, class: 'btn btn-primary' %>
-<br/>
-<br/>
-<div class="mt2 pt1 border-top"><%= link_to t('links.cancel'), idv_cancel_path %></div>
-
