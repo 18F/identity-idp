@@ -40,8 +40,9 @@ module Idv
         return State.new(:timed_out, nil, nil) if proofing_job_result.nil?
 
         if proofing_job_result.result
-          proofing_result = convert_job_result(proofing_job_result)
-          State.new(:done, proofing_result.pii, proofing_result.result)
+          proofing_job_result.result.deep_symbolize_keys!
+          proofing_job_result.pii.deep_symbolize_keys!
+          State.new(:done, proofing_job_result.pii, proofing_job_result.result)
         elsif dcs.pii
           State.new(:in_progress, nil, nil)
         end
@@ -52,31 +53,6 @@ module Idv
       end
 
       private
-
-      # Converts result hash into Proofer::Result and
-      # pii into hash to hash with indifferent access.
-      #
-      # This is because the flow expects result class instances
-      # but job results can't serialize/deserialize those.
-      # @param [ProofingDocumentCaptureSessionResult]
-      # @return [ProofingDocumentCaptureSessionResult]
-      def convert_job_result(proofing_job_result)
-        # proofer_result = ::Proofer::Result.new(
-        #   errors: proofing_job_result.result['errors'],
-        #   messages: Set.new(proofing_job_result.result['messages']),
-        #   context: proofing_job_result.result['context'].with_indifferent_access,
-        #   exception: proofing_job_result.result['exception']
-        # )
-        result = proofing_job_result.result.with_indifferent_access
-        result[:context] = result[:context].with_indifferent_access
-        result[:context][:stages] = result[:context][:stages].map(&:with_indifferent_access)
-
-        ProofingDocumentCaptureSessionResult.new(
-          id: proofing_job_result.id,
-          result: result,
-          pii: proofing_job_result.pii.with_indifferent_access,
-        )
-      end
 
       def enqueue_job
         pii_from_doc = flow_session[:pii_from_doc]
