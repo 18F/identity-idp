@@ -9,7 +9,7 @@ module Idv
     def create
       form_response = image_form.submit
 
-      analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_FORM, form_response.to_h)
+      analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM, form_response.to_h)
 
       if form_response.success?
         client_response = doc_auth_client.post_images(
@@ -19,7 +19,10 @@ module Idv
           liveness_checking_enabled: liveness_checking_enabled?,
         )
 
-        analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_VENDOR, client_response.to_h)
+        analytics.track_event(
+          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+          client_response.to_h,
+        )
 
         store_pii(client_response) if client_response.success?
         status = :bad_request unless client_response.success?

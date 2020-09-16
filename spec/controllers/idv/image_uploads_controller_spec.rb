@@ -53,18 +53,18 @@ describe Idv::ImageUploadsController do
           stub_analytics
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_FORM,
             {
               success: false,
               errors: {
                 front: ['Please fill in this field.'],
               },
               remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
             },
           )
 
           expect(@analytics).not_to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_VENDOR,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
             any_args,
           )
 
@@ -103,18 +103,18 @@ describe Idv::ImageUploadsController do
           stub_analytics
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_FORM,
             {
               success: false,
               errors: {
                 front: [I18n.t('doc_auth.errors.not_a_file')],
               },
               remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
             },
           )
 
           expect(@analytics).not_to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_VENDOR,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
             any_args,
           )
 
@@ -163,18 +163,18 @@ describe Idv::ImageUploadsController do
           stub_analytics
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_FORM,
             {
               success: false,
               errors: {
                 limit: [I18n.t('errors.doc_auth.acuant_throttle')],
               },
               remaining_attempts: 0,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
             },
           )
 
           expect(@analytics).not_to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_VENDOR,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
             any_args,
           )
 
@@ -196,16 +196,15 @@ describe Idv::ImageUploadsController do
           stub_analytics
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_FORM,
             {
               success: true,
               errors: {},
               remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
             },
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
           )
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_VENDOR,
             {
               success: true,
               errors: {},
@@ -213,6 +212,7 @@ describe Idv::ImageUploadsController do
               exception: nil,
               result: 'Passed',
             },
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
           )
 
           action
@@ -247,22 +247,22 @@ describe Idv::ImageUploadsController do
           stub_analytics
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_FORM,
             {
               success: true,
               errors: {},
               remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
             },
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
           )
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_VENDOR,
             {
               success: false,
               errors: {
                 front: ['Too blurry', 'Wrong document'],
               },
               exception: nil,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
             },
           )
 
@@ -290,16 +290,15 @@ describe Idv::ImageUploadsController do
           stub_analytics
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_FORM,
             {
               success: true,
               errors: {},
               remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
             },
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
           )
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_VENDOR,
             {
               success: false,
               errors: {
@@ -308,6 +307,7 @@ describe Idv::ImageUploadsController do
               billed: true,
               result: 'Caution',
               exception: nil,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
             },
           )
 
