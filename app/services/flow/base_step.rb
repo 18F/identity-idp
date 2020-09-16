@@ -30,10 +30,6 @@ module Flow
       false
     end
 
-    def async_status
-      raise "haha not an async step"
-    end
-
     def self.acceptable_response_object?(obj)
       obj.is_a?(FormResponse) || obj.is_a?(DocAuth::Response)
     end
