@@ -23,7 +23,7 @@ describe ActiveJob::Logging::LogSubscriber do
 
     # In this case, we need to assert before the action which logs, block-style to
     # match the initializer
-    expect(Rails.logger).to receive(:info) do |&blk|
+    expect(Rails.logger).to receive(:info).exactly(3).times do |&blk|
       output = JSON.parse(blk.call)
 
       # [Sidenote: The nested assertions don't seem to be reflected in the spec
