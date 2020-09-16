@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import createFocusTrap from 'focus-trap';
 import useI18n from '../hooks/use-i18n';
 import useAsset from '../hooks/use-asset';
@@ -26,7 +26,6 @@ let activeInstances = 0;
 function FullScreen({ onRequestClose = () => {}, children }) {
   const { t } = useI18n();
   const { getAssetPath } = useAsset();
-  const modalRef = useRef(/** @type {?HTMLDivElement} */ (null));
   const trapRef = useRef(/** @type {?import('focus-trap').FocusTrap} */ (null));
   const onRequestCloseRef = useRef(onRequestClose);
   useEffect(() => {
@@ -35,13 +34,18 @@ function FullScreen({ onRequestClose = () => {}, children }) {
     // to reference in the deactivation.
     onRequestCloseRef.current = onRequestClose;
   }, [onRequestClose]);
-  useEffect(() => {
-    if (modalRef.current) {
-      trapRef.current = createFocusTrap(modalRef.current, {
+
+  const setFocusTrapRef = useCallback((node) => {
+    if (trapRef.current) {
+      trapRef.current.deactivate();
+    }
+
+    if (node) {
+      trapRef.current = createFocusTrap(node, {
         onDeactivate: () => onRequestCloseRef.current(),
       });
+
       trapRef.current.activate();
-      return trapRef.current.deactivate;
     }
   }, []);
 
@@ -58,7 +62,7 @@ function FullScreen({ onRequestClose = () => {}, children }) {
   }, []);
 
   return (
-    <div ref={modalRef} aria-modal="true" className="full-screen bg-white">
+    <div ref={setFocusTrapRef} aria-modal="true" className="full-screen bg-white">
       <button
         type="button"
         aria-label={t('users.personal_key.close')}
