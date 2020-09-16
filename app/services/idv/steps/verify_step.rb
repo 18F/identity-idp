@@ -47,6 +47,10 @@ module Idv
         end
       end
 
+      def delete_async
+        flow_session.delete(:idv_verify_step_document_capture_session_uuid)
+      end
+
       private
 
       # Converts result hash into Proofer::Result and
