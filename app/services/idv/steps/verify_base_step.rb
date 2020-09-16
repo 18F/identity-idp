@@ -68,7 +68,7 @@ module Idv
       end
 
       def add_proofing_costs(results)
-        binding.pry
+        # binding.pry
         vendors = results[:context][:stages]
         vendors.each do |hash|
           add_cost(:aamva) if hash[:state_id]
