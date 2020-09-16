@@ -56,7 +56,6 @@
     "jsdom": "^16.2.2",
     "mocha": "^6.1.4",
     "prettier": "^2.0.5",
-    "proxyquire": "^1.8.0",
     "sinon": "^9.0.2",
     "typescript": "^3.9.7",
     "webpack-dev-server": "^3.11.0"
