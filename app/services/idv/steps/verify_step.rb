@@ -57,16 +57,19 @@ module Idv
       # @param [ProofingDocumentCaptureSessionResult]
       # @return [ProofingDocumentCaptureSessionResult]
       def convert_job_result(proofing_job_result)
-        proofer_result = ::Proofer::Result.new(
-          errors: proofing_job_result.result['errors'],
-          messages: Set.new(proofing_job_result.result['messages']),
-          context: proofing_job_result.result['context'].with_indifferent_access,
-          exception: proofing_job_result.result['exception']
-        )
+        # proofer_result = ::Proofer::Result.new(
+        #   errors: proofing_job_result.result['errors'],
+        #   messages: Set.new(proofing_job_result.result['messages']),
+        #   context: proofing_job_result.result['context'].with_indifferent_access,
+        #   exception: proofing_job_result.result['exception']
+        # )
+        result = proofing_job_result.result.with_indifferent_access
+        result[:context] = result[:context].with_indifferent_access
+        result[:context][:stages] = result[:context][:stages].map(&:with_indifferent_access)
 
         ProofingDocumentCaptureSessionResult.new(
           id: proofing_job_result.id,
-          result: proofer_result,
+          result: result,
           pii: proofing_job_result.pii.with_indifferent_access,
         )
       end
