@@ -14,23 +14,77 @@ module Flow
     end
 
     def show
-      step = current_step
-      analytics.track_event(analytics_visited, step: step) if @analytics_id
-      Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(step, :view, true)
-      register_campaign
-      render_step(step, flow.flow_session)
+      flow_handler = flow.handler(current_step).new(flow)
+
+      if flow_handler.async?
+        binding.pry
+        async_show(flow_handler)
+      else
+        binding.pry
+        begin_step
+      end
     end
 
     def update
-      step = current_step
-      result = flow.handle(step)
-      analytics.track_event(analytics_submitted, result.to_h.merge(step: step)) if @analytics_id
-      register_update_step(step, result)
-      flow_finish and return unless next_step
-      render_update(step, result)
+      flow_handler = flow.handler(current_step).new(flow)
+
+      if flow_handler.async?
+        binding.pry
+        async_update(flow_handler)
+      else
+        result = flow.handle(current_step)
+        end_step(result)
+      end
     end
 
     private
+
+    def async_show(flow_handler)
+      binding.pry
+      case flow_handler.async_state.status
+      when :none
+        begin_step
+      when :in_progress
+        binding.pry
+        sleep(2)
+        redirect_to send(@step_url, step: current_step)
+        # render waiting
+      # when :timed_out
+      when :done
+        binding.pry
+        flow_handler.after_call
+        end_step(async_state.result)
+      end
+    end
+
+    def async_update(flow_handler)
+      case flow_handler.async_state.status
+      when :none
+        flow.handle(current_step)
+        binding.pry
+        redirect_to send(@step_url, step: current_step) and return
+      when :in_progress
+        redirect_to send(@step_url, step: current_step) and return
+      when :done
+        redirect_to send(@step_url, step: current_step) and return
+      end
+    end
+
+    def begin_step
+      analytics.track_event(analytics_visited, step: current_step) if @analytics_id
+      Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(current_step, :view, true)
+      register_campaign
+      render_step(current_step, flow.flow_session)
+    end
+
+    def end_step(result)
+      binding.pry
+      analytics.track_event(analytics_submitted, result.to_h.merge(step: current_step)) if @analytics_id
+      register_update_step(current_step, result)
+      flow_finish and return unless next_step
+
+      render_update(current_step, result)
+    end
 
     def current_step
       params[:step]&.underscore
@@ -64,6 +118,7 @@ module Flow
       @analytics_id = klass::FSM_SETTINGS[:analytics_id]
       @view = klass::FSM_SETTINGS[:view]
       @name = klass.name.underscore.gsub('_controller', '')
+
       current_session[@name] ||= {}
       @flow = flow.new(self, current_session, @name)
     end

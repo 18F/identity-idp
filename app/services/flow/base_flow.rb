@@ -26,15 +26,19 @@ module Flow
     def handle(step)
       @flow_session[:error_message] = nil
       @flow_session[:notice] = nil
-      handler = steps[step] || actions[step]
-      return failure("Unhandled step #{step}") unless handler
-      wrap_send(handler)
+      return failure("Unhandled step #{step}") unless handler(step)
+      wrap_send(step)
+    end
+
+    # This is a Step class, e.g. Idv:Steps::VerifyStep
+    def handler(step)
+      steps[step] || actions[step]
     end
 
     private
 
-    def wrap_send(handler)
-      obj = handler.new(self)
+    def wrap_send(step)
+      obj = handler(step).new(self)
       value = obj.base_call
       form_response(obj, value)
     end

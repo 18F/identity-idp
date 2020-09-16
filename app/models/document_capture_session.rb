@@ -7,6 +7,10 @@ class DocumentCaptureSession < ApplicationRecord
     DocumentCaptureSessionResult.load(result_id)
   end
 
+  def load_proofing_result
+    ProofingDocumentCaptureSessionResult.load(result_id)
+  end
+
   def store_result_from_response(doc_auth_response)
     DocumentCaptureSessionResult.store(
       id: generate_result_id,
@@ -14,6 +18,21 @@ class DocumentCaptureSession < ApplicationRecord
       pii: doc_auth_response.pii_from_doc,
     )
     save!
+  end
+
+  def store_proofing_pii_from_doc(pii_from_doc)
+    ProofingDocumentCaptureSessionResult.store_pii(
+      id: generate_result_id,
+      pii: pii_from_doc,
+    )
+    save!
+  end
+
+  def store_proofing_result(result)
+    ProofingDocumentCaptureSessionResult.store_result(
+      id: result_id,
+      result: result
+    )
   end
 
   def expired?
