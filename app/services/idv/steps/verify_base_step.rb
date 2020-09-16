@@ -39,7 +39,6 @@ module Idv
       end
 
       def save_legacy_state(pii_from_doc)
-        # TODO: set these values when checking job status if it is complete
         skip_legacy_steps
         idv_session['params'] = pii_from_doc
         idv_session['applicant'] = pii_from_doc

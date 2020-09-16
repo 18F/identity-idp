@@ -30,7 +30,6 @@ module Flow
       wrap_send(step)
     end
 
-    # This is a Step class, e.g. Idv:Steps::VerifyStep
     def handler(step)
       steps[step] || actions[step]
     end
