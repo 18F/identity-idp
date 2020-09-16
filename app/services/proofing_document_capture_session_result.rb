@@ -10,15 +10,8 @@ class ProofingDocumentCaptureSessionResult
       decrypt_and_deserialize(id, ciphertext)
     end
 
-    def store_pii(id:, pii:)
+    def store(id:, pii:, result:)
       result = new(id: id, pii: pii, result: result)
-      REDIS_POOL.with do |client|
-        client.write(key(id), result.serialize_and_encrypt, expires_in: 60)
-      end
-    end
-
-    def store_result(id:, result:)
-      result = new(id: id, pii: nil, result: result)
       REDIS_POOL.with do |client|
         client.write(key(id), result.serialize_and_encrypt, expires_in: 60)
       end

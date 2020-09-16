@@ -21,17 +21,19 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def store_proofing_pii_from_doc(pii_from_doc)
-    ProofingDocumentCaptureSessionResult.store_pii(
+    ProofingDocumentCaptureSessionResult.store(
       id: generate_result_id,
       pii: pii_from_doc,
+      result: nil,
     )
     save!
   end
 
-  def store_proofing_result(result)
-    ProofingDocumentCaptureSessionResult.store_result(
+  def store_proofing_result(pii_from_doc, result)
+    ProofingDocumentCaptureSessionResult.store(
       id: result_id,
-      result: result
+      pii: pii_from_doc,
+      result: result,
     )
   end
 
