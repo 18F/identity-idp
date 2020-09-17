@@ -1,45 +1,48 @@
-const proxyquire = require('proxyquire');
-const sinon = require('sinon');
+import sinon from 'sinon';
+import countdownTimer from '../../../../app/javascript/app/utils/countdown-timer';
 
-const spy = sinon.spy();
-const countdownTimer = proxyquire('../../../../app/javascript/app/utils/countdown-timer.js', {
-  './ms-formatter': { default: spy },
-  '@noCallThru': true,
-}).default;
-
-const fakeEl = {
-  innerHTML: '',
-};
-
-describe('#countdownTimer', () => {
+describe('countdownTimer', () => {
   it('does nothing if a HTMLElement is not supplied as the first argument', () => {
     expect(countdownTimer(false)).to.be.undefined();
-    expect(spy.called).to.be.false();
   });
 
   describe('with clock', () => {
     let clock;
+    let el;
 
     beforeEach(() => {
       clock = sinon.useFakeTimers();
+      el = document.createElement('div');
     });
 
     afterEach(() => {
       clock.restore();
-      spy.resetHistory();
     });
 
-    it('with the default interval runs exactly once when given an HTMLElement', () => {
-      countdownTimer(fakeEl);
+    it('stays at 0s when time is exhausted', () => {
+      countdownTimer(el);
+
+      expect(el.innerHTML).to.equal('0:00');
       clock.tick(1000);
-      expect(spy.calledOnce).to.be.true();
+      expect(el.innerHTML).to.equal('0:00');
     });
 
-    it('calls the msFormatter function once per second', () => {
-      countdownTimer(fakeEl, 10000);
-      clock.tick(4000);
+    it('updates once per second', () => {
+      countdownTimer(el, 10000);
 
-      expect(spy.callCount).to.equal(5);
+      expect(el.innerHTML).to.equal('0:10');
+      clock.tick(1000);
+
+      expect(el.innerHTML).to.equal('0:09');
+      clock.tick(1000);
+
+      expect(el.innerHTML).to.equal('0:08');
+      clock.tick(1000);
+
+      expect(el.innerHTML).to.equal('0:07');
+      clock.tick(1000);
+
+      expect(el.innerHTML).to.equal('0:06');
     });
   });
 });
