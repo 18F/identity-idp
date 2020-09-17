@@ -6,4 +6,5 @@ DocumentCaptureSessionResult = Struct.new(:id, :success, :pii, keyword_init: tru
   end
 
   alias_method :success?, :success
+  alias_method :pii_from_doc, :pii
 end
