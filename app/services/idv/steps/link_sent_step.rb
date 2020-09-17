@@ -28,7 +28,7 @@ module Idv
 
       def handle_document_verification_success(get_results_response)
         save_proofing_components
-        extract_pii_from_doc(get_results_response.pii_from_doc)
+        extract_pii_from_doc(get_results_response)
         mark_steps_complete
       end
 

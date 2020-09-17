@@ -21,7 +21,7 @@ module Idv
         if response.success?
           save_proofing_components
           document_capture_session.store_result_from_response(response)
-          extract_pii_from_doc(response.pii_from_doc)
+          extract_pii_from_doc(response)
           response
         else
           handle_document_verification_failure(response)
@@ -42,7 +42,7 @@ module Idv
 
       def handle_stored_result
         if stored_result.success?
-          extract_pii_from_doc(stored_result.pii)
+          extract_pii_from_doc(stored_result)
         else
           extra = { stored_result_present: stored_result.present? }
           failure(I18n.t('errors.doc_auth.acuant_network_error'), extra)
