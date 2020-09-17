@@ -52,7 +52,6 @@ module EncryptedRedisStructStorage
         payload = result.as_json
         payload.delete('id')
 
-
         client.write(
           key(id),
           Encryption::Encryptors::SessionEncryptor.new.encrypt(payload.to_json),
