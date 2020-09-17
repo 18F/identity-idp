@@ -1,9 +1,12 @@
 require 'rails_helper'
 
 describe 'accounts/_nav_auth.html.erb' do
+  include Devise::Test::ControllerHelpers
+
   before do
-    @user = build_stubbed(:user, :signed_up)
+    @user = build_stubbed(:user, :with_backup_code)
     allow(view).to receive(:greeting).and_return(@user.email)
+    allow(view).to receive(:current_user).and_return(@user)
   end
 
   context 'user is signed in' do

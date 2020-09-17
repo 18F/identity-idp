@@ -54,6 +54,8 @@
 </head>
 
 <body class="<%= Rails.env %>-env site <%= yield(:background_cls) %>">
+  <div class="usa-overlay"></div>
+  <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
   <div class="site-wrap bg-light-blue">
     <%= render 'shared/banner' %>
     <div aria-label="main-navigation" role="navigation">
