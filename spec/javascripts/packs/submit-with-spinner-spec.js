@@ -31,6 +31,8 @@ describe('submit-with-spinner', () => {
   it('should show spinner on form submit', async () => {
     await initialize();
 
+    // JSDOM doesn't support submitting a form natively.
+    // See: https://github.com/jsdom/jsdom/issues/123
     const form = document.querySelector('form');
     const event = new window.Event('submit', { target: form });
     form.dispatchEvent(event);
