@@ -1,0 +1,42 @@
+<div class="pl5 pb3">
+  <div class="h6">
+    <%= t('idv.review.full_name') %>
+  </div>
+
+  <div class="h4 bold ico-absolute ico-absolute-success">
+    <%= "#{pii[:first_name]} #{pii[:last_name]}" %>
+  </div>
+
+  <div class="mt3 h6">
+    <%= t('idv.review.mailing_address') %>
+  </div>
+
+  <div class="h4 bold ico-absolute ico-absolute-success">
+    <%= render 'shared/address', address: pii %>
+  </div>
+
+  <div class="mt3 h6">
+    <%= t('idv.review.dob') %>
+  </div>
+
+  <div class="h4 bold ico-absolute ico-absolute-success">
+    <%= "#{pii[:dob].to_date.to_formatted_s(:long)}" %>
+  </div>
+
+  <div class="mt3 h6">
+    <%= t('idv.review.ssn') %>
+  </div>
+
+  <div class="h4 bold ico-absolute ico-absolute-success">
+    <%= "#{pii[:ssn]}" %>
+  </div>
+
+  <% if phone %>
+    <div class="h6 mt3">
+      <%= t('idv.messages.phone.phone_of_record') %>
+    </div>
+    <div class="h4 bold ico-absolute ico-absolute-success">
+      <%= "#{phone}" %>
+    </div>
+  <% end %>
+</div>
