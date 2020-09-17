@@ -54,7 +54,7 @@
 </head>
 
 <body class="<%= Rails.env %>-env site <%= yield(:background_cls) %>">
-  <%= content_for?(:mobile_nav) ? yield(:mobile_nav) : yield %>
+  <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
   <div class="site-wrap bg-light-blue">
     <%= render 'shared/banner' %>
     <div aria-label="main-navigation" role="navigation">
