@@ -18,7 +18,8 @@ describe DocumentCaptureSession do
       record.store_result_from_response(doc_auth_response)
 
       result_id = record.result_id
-      data = REDIS_POOL.with { |client| client.read(DocumentCaptureSessionResult.key(result_id)) }
+      key = EncryptedRedisStructStorage.key(result_id, type: DocumentCaptureSessionResult)
+      data = REDIS_POOL.with { |client| client.read(key) }
       expect(data).to be_a(String)
       expect(data).to_not include('Testy')
       expect(data).to_not include('Testerson')

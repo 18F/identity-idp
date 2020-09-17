@@ -1,7 +1,9 @@
-DocumentCaptureSessionResult = Struct.new(:id, :success, :pii, keyword_init: true) do
-  include EncryptedRedisStructStorage
+# frozen_string_literal: true
 
-  configure_encrypted_redis_struct key_prefix: 'dcs:result'
+DocumentCaptureSessionResult = Struct.new(:id, :success, :pii, keyword_init: true) do
+  def self.redis_key_prefix
+    'dcs:result'
+  end
 
   alias_method :success?, :success
 end
