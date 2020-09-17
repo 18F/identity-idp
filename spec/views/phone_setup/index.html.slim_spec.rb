@@ -25,9 +25,4 @@ describe 'users/phone_setup/index.html.erb' do
       href: two_factor_options_path,
     )
   end
-
-  it 'it has auto enable off for the submit button' do
-    expect(rendered).
-      to have_xpath('//input[@type="submit" and contains(@class, "no-auto-enable")]')
-  end
 end
