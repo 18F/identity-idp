@@ -60,15 +60,15 @@ module Flow
         flow.handle(current_step)
         # binding.pry
         flow_handler.mark_step_incomplete(current_step)
-        redirect_to send(@step_url, step: current_step) and return
+        redirect_to send(@step_url, step: current_step)
       when :in_progress
-        redirect_to send(@step_url, step: current_step) and return
+        redirect_to send(@step_url, step: current_step)
       when :timed_out
         flow.handle(current_step)
         flow_handler.mark_step_incomplete(current_step)
-        redirect_to send(@step_url, step: current_step) and return
+        redirect_to send(@step_url, step: current_step)
       when :done
-        redirect_to send(@step_url, step: current_step) and return
+        redirect_to send(@step_url, step: current_step)
       end
     end
 
