@@ -46,65 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      const conditionalRequiredInputs = form.querySelectorAll('input[data-required-if-checked]');
-
-      if (conditionalRequiredInputs.length !== 0) {
-        [].forEach.call(conditionalRequiredInputs, function (drivenInput) {
-          const selector = drivenInput.getAttribute('data-required-if-checked');
-          const drivingElement = form.querySelector(selector);
-
-          if (drivingElement) {
-            const otherInputs = form.querySelectorAll(`input[name="${drivingElement.name}"]`);
-            const handler = function () {
-              drivenInput.required = this === drivingElement;
-              return true;
-            };
-            if (otherInputs.count !== 0) {
-              [].forEach.call(otherInputs, function (input) {
-                input.addEventListener('click', handler);
-              });
-            }
-            drivenInput.addEventListener('focus', function () {
-              drivingElement.click();
-              return true;
-            });
-          }
-        });
-      }
-
-      const conditionalVisibleInputs = form.querySelectorAll('input[data-visible-if-checked]');
-
-      if (conditionalVisibleInputs.length !== 0) {
-        [].forEach.call(conditionalVisibleInputs, function (drivenInput) {
-          const selector = drivenInput.getAttribute('data-visible-if-checked');
-          const drivingElement = form.querySelector(selector);
-
-          if (drivingElement) {
-            const otherInputs = form.querySelectorAll(`input[name="${drivingElement.name}"]`);
-
-            const handler = function () {
-              const visible = this === drivingElement;
-              if (drivenInput.classList) {
-                drivenInput.classList.toggle('hidden', !visible);
-              } else if (visible) {
-                drivenInput.className = drivenInput.className.replace(/\bhidden\b/g, '');
-              } else {
-                drivenInput.className = `${drivenInput.className} hidden`;
-              }
-
-              drivenInput.required = this === drivingElement;
-              return true;
-            };
-
-            if (otherInputs.count !== 0) {
-              [].forEach.call(otherInputs, function (input) {
-                input.addEventListener('click', handler);
-              });
-            }
-          }
-        });
-      }
-
       const inputs = form.querySelectorAll('.field');
 
       if (inputs.length !== 0) {
