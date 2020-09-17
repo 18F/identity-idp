@@ -24,7 +24,7 @@ module Idv
         if get_results_response.success?
           mark_step_complete(:selfie)
           save_proofing_components
-          extract_pii_from_doc(get_results_response)
+          extract_pii_from_doc(get_results_response.pii_from_doc)
         else
           handle_document_verification_failure(get_results_response)
         end

@@ -34,7 +34,7 @@ module Idv
           # DP: handle multiple clients?
           CaptureDoc::UpdateAcuantToken.call(user_id_from_token, flow_session[:instance_id])
         else
-          extract_pii_from_doc(results_response)
+          extract_pii_from_doc(results_response.pii_from_doc)
         end
       end
 

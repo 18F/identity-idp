@@ -63,9 +63,9 @@ module Idv
         Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuth::Client.doc_auth_vendor)
       end
 
-      def extract_pii_from_doc(response)
+      def extract_pii_from_doc(pii)
         current_user = User.find(user_id)
-        flow_session[:pii_from_doc] = response.pii_from_doc.merge(
+        flow_session[:pii_from_doc] = pii.merge(
           uuid: current_user.uuid,
           phone: current_user.phone_configurations.take&.phone,
         )
