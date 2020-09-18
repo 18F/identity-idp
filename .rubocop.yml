@@ -31,6 +31,9 @@ Metrics/AbcSize:
   Exclude:
   - spec/**/*
 
+Metrics/CyclomaticComplexity:
+  Enabled: false
+
 Metrics/BlockLength:
   CountComments: false  # count full line comments?
   Enabled: true
@@ -74,8 +77,8 @@ Metrics/MethodLength:
 
 Metrics/ModuleLength:
   CountComments: false
-  Max: 100
-  Description: Avoid modules longer than 100 lines of code.
+  Max: 200
+  Description: Avoid modules longer than 200 lines of code.
   Enabled: true
   Exclude:
   - spec/**/*
@@ -351,3 +354,129 @@ Style/SlicingWithRange:
 
 Rails/ApplicationMailer:
   Enabled: false
+
+Lint/BinaryOperatorWithIdenticalOperands:
+  Enabled: true
+
+Lint/DuplicateElsifCondition:
+  Enabled: true
+
+Lint/DuplicateRescueException:
+    Enabled: true
+
+Lint/FloatComparison:
+  Enabled: true
+
+Lint/MissingSuper:
+  Enabled: false
+
+Lint/OutOfRangeRegexpRef:
+  Enabled: true
+
+Lint/RedundantRequireStatement:
+  Enabled: true
+
+Lint/RedundantSplatExpansion:
+  Enabled: true
+
+Lint/SafeNavigationWithEmpty:
+  Enabled: true
+
+Lint/SelfAssignment:
+  Enabled: true
+
+Lint/TopLevelReturnWithArgument:
+  Enabled: true
+
+Style/GlobalStdStream:
+  Enabled: false
+
+Style/RedundantAssignment:
+  Enabled: true
+
+Style/RedundantFetchBlock:
+  Enabled: true
+
+Style/RedundantFileExtensionInRequire:
+  Enabled: true
+
+Lint/EmptyConditionalBody:
+  Enabled: false
+
+Lint/UnreachableLoop:
+  Enabled: false
+
+Style/AccessorGrouping:
+  Enabled: false
+
+Style/ArrayCoercion:
+  Enabled: false
+
+Style/BisectedAttrAccessor:
+  Enabled: false
+
+Style/CaseLikeIf:
+  Enabled: false
+
+Style/ExplicitBlockArgument:
+  Enabled: false
+
+Style/HashAsLastArrayItem:
+  Enabled: false
+
+Style/HashLikeCase:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Style/SingleArgumentDig:
+  Enabled: false
+
+Style/StringConcatenation:
+  Enabled: false
+
+Style/MultilineWhenThen:
+  Enabled: true
+
+Style/KeywordParametersOrder:
+  Enabled: true
+
+Lint/DuplicateRequire:
+  Enabled: true
+
+Lint/TrailingCommaInAttributeDeclaration:
+  Enabled: true
+
+Lint/EmptyFile:
+  Enabled: false
+
+Lint/UselessMethodDefinition:
+  Enabled: false
+
+Style/CombinableLoops:
+  Enabled: false
+
+Style/RedundantSelfAssignment:
+  Enabled: false
+
+Style/SoleNestedConditional:
+  Enabled: false
+
+Lint/UselessTimes:
+  Enabled: true
+
+Layout/BeginEndAlignment:
+  Enabled: true
+
+Lint/ConstantDefinitionInBlock:
+  Enabled: false
+
+Lint/IdentityComparison:
+  Enabled: true
+
+Bundler/DuplicatedGem:
+  Enabled: true
+
+Naming/BinaryOperatorParameterName:
+  Enabled: true

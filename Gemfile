@@ -93,7 +93,7 @@ group :development, :test do
   gem 'psych'
   gem 'puma'
   gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
-  gem 'rubocop', '~> 0.85.0', require: false
+  gem 'rubocop', '~> 0.91.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
   gem 'slim_lint'
 end
@@ -107,8 +107,8 @@ group :test do
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'faker'
   gem 'gmail'
-  gem 'rack-test', '>= 1.1.0'
   gem 'rack_session_access', '>= 0.2.0'
+  gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'shoulda-matchers', '~> 4.0.1', require: false
   gem 'timecop'

@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ModuleLength
 module Db
   module DocAuthLog
     module DropOffRatesHelper
@@ -131,4 +130,3 @@ module Db
     end
   end
 end
-# rubocop:enable Metrics/ModuleLength

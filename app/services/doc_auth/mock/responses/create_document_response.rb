@@ -4,7 +4,7 @@ module DocAuth
       class CreateDocumentResponse < DocAuth::Response
         attr_reader :instance_id
 
-        def initialize(success: true, errors: [], exception: nil, instance_id:)
+        def initialize(instance_id:, success: true, errors: [], exception: nil)
           @instance_id = instance_id
           super(
             success: success,
