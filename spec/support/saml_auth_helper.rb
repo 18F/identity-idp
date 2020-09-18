@@ -315,7 +315,7 @@ module SamlAuthHelper
     end
   end
 
-  def visit_idp_from_oidc_sp_with_ial1(state: SecureRandom.hex, client_id:, nonce:)
+  def visit_idp_from_oidc_sp_with_ial1(client_id:, nonce:, state: SecureRandom.hex)
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',

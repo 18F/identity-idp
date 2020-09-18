@@ -69,9 +69,9 @@ module IdvHelper
   end
 
   def visit_idp_from_oidc_sp_with_ial2(
-    state: SecureRandom.hex,
     client_id:,
     nonce:,
+    state: SecureRandom.hex,
     verified_within: nil
   )
     visit openid_connect_authorize_path(
