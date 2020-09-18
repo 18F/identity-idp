@@ -2,6 +2,8 @@ require 'set'
 
 # rubocop:disable Rails/HelperInstanceVariable
 module ScriptHelper
+  include Webpacker::Helper
+
   def javascript_pack_tag_once(name)
     @scripts ||= Set.new
     @scripts.add(name)
