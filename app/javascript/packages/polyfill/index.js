@@ -6,7 +6,7 @@
  */
 
 /**
- * @typedef {"fetch"} SupportedPolyfills
+ * @typedef {"fetch"|"element-closest"} SupportedPolyfills
  */
 
 /**
@@ -16,6 +16,10 @@ const POLYFILLS = {
   fetch: {
     test: () => 'fetch' in window,
     load: () => import(/* webpackChunkName: "whatwg-fetch" */ 'whatwg-fetch'),
+  },
+  'element-closest': {
+    test: () => !!Element.prototype.closest,
+    load: () => import(/* webpackChunkName: "element-closest" */ 'element-closest'),
   },
 };
 

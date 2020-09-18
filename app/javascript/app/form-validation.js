@@ -24,10 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
               button.disabled = true;
             });
           }
-          const submitSpinner = document.getElementById('submit-spinner');
-          if (submitSpinner) {
-            submitSpinner.className = '';
-          }
         },
         false,
       );
