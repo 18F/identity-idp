@@ -95,7 +95,7 @@ module FormHelper
     }
   end
 
-  def idp_simple_form_for(record, options = {}, &block)
-    simple_form_for(record, options, &block) + javascript_pack_tag('simple-form-validation')
+  def idp_simple_form_for(*args, &block)
+    simple_form_for(*args, &block) + javascript_pack_tag('simple-form-validation')
   end
 end
