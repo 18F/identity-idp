@@ -9,7 +9,7 @@ module ScriptHelper
     @scripts.add(name)
   end
 
-  def print_javascript_pack_once_tags
+  def render_javascript_pack_once_tags
     javascript_pack_tag(*@scripts) if @scripts
   end
 end

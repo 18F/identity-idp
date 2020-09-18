@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe ScriptHelper do
   include ScriptHelper
 
-  describe '#print_javascript_pack_once_tags' do
+  describe '#render_javascript_pack_once_tags' do
     context 'no scripts enqueued' do
       it 'is nil' do
-        expect(print_javascript_pack_once_tags).to be_nil
+        expect(render_javascript_pack_once_tags).to be_nil
       end
     end
 
@@ -18,7 +18,7 @@ RSpec.describe ScriptHelper do
       end
 
       it 'prints all unique packs' do
-        output = print_javascript_pack_once_tags
+        output = render_javascript_pack_once_tags
 
         expect(output).to have_css('script', count: 2, visible: false)
         expect(output).to have_css('script[src^="/packs-test/js/application-"]', visible: false)
