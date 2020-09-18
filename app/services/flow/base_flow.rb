@@ -31,6 +31,15 @@ module Flow
       wrap_send(handler)
     end
 
+    def mark_step_complete(step)
+      return if step.nil?
+
+      klass = steps[step]
+      retun if klass.nil?
+
+      flow_session[klass.to_s] = true
+    end
+
     private
 
     def wrap_send(handler)
