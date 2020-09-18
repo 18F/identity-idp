@@ -3,8 +3,6 @@ import { loadPolyfills } from '@18f/identity-polyfill';
 /** @typedef {{t:(key:string)=>string, key:(key:string)=>string}} LoginGovI18n */
 /** @typedef {{LoginGov:{I18n:LoginGovI18n}}} LoginGovGlobal */
 
-const { I18n } = /** @type {typeof window & LoginGovGlobal}} */ (window).LoginGov;
-
 const PATTERN_TYPES = ['dob', 'personal-key', 'ssn', 'state_id_number', 'zipcode'];
 
 /**
@@ -14,7 +12,7 @@ const PATTERN_TYPES = ['dob', 'personal-key', 'ssn', 'state_id_number', 'zipcode
  */
 function disableFormSubmit(event) {
   const form = /** @type {HTMLFormElement} */ (event.target);
-  [...form.querySelectorAll('[type="submit"]')].forEach((submit) => {
+  [...form.querySelectorAll('button:not([type]),[type="submit"]')].forEach((submit) => {
     /** @type {HTMLInputElement|HTMLButtonElement} */ (submit).disabled = true;
   });
 }
@@ -28,12 +26,14 @@ function checkInputValidity(event) {
   const input = /** @type {HTMLInputElement} */ (event.target);
   input.setCustomValidity('');
 
+  const { t, key } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov.I18n;
+
   if (input.validity.valueMissing) {
-    input.setCustomValidity(I18n.t('simple_form.required.text'));
+    input.setCustomValidity(t('simple_form.required.text'));
   } else if (input.validity.patternMismatch) {
     PATTERN_TYPES.forEach((type) => {
       if (input.classList.contains(type)) {
-        input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${I18n.key(type)}`));
+        input.setCustomValidity(t(`idv.errors.pattern_mismatch.${key(type)}`));
       }
     });
   }
