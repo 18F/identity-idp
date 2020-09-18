@@ -11,5 +11,9 @@
     "module": "ESNext",
     "target": "ESNext"
   },
-  "include": ["app/javascript/packages", "app/javascript/packs/submit-with-spinner.js"]
+  "include": [
+    "app/javascript/packages",
+    "app/javascript/packs/simple-form-validation.js",
+    "app/javascript/packs/submit-with-spinner.js"
+  ]
 }

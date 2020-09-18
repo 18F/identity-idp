@@ -94,4 +94,8 @@ module FormHelper
       country_name: code_data['name'],
     }
   end
+
+  def idp_simple_form_for(record, options = {}, &block)
+    simple_form_for(record, options, &block) + javascript_pack_tag('simple-form-validation')
+  end
 end
