@@ -152,6 +152,7 @@ function AcuantCapture(
         /** @type {AcuantGlobal} */ (window).AcuantPassiveLiveness.startSelfieCapture(
           ifStillMounted((nextImageData) => {
             const dataAsBlob = toBlob(`data:image/jpeg;base64,${nextImageData}`);
+            fileCache.set(dataAsBlob, nextImageData);
             onChangeAndResetError(dataAsBlob);
           }),
         );
