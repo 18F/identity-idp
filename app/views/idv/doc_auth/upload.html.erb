@@ -62,7 +62,7 @@
     </div>
     <%= t('doc_auth.info.upload_from_phone') %>
     <br/>
-    <%= simple_form_for(
+    <%= validated_form_for(
       :doc_auth,
       url: url_for(type: :mobile),
       method: 'PUT',
@@ -81,7 +81,7 @@
   <div id="upload-comp-liveness-off"
     class='sm-col sm-col-12 <%= 'hidden' if liveness_checking_enabled? %>'>
     <%= t('doc_auth.info.upload_from_computer') %>&nbsp;
-    <%= simple_form_for(
+    <%= validated_form_for(
       :doc_auth,
       url: url_for(type: :desktop),
       method: 'PUT',

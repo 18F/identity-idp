@@ -37,7 +37,7 @@ ul.list-reset
       .h1.inline-block.bold = t('cac_proofing.instructions.bullet5')
       br
       = t('cac_proofing.instructions.text5')
-= simple_form_for(:cac, url: url_for, method: 'PUT',
+= validated_form_for(:cac, url: url_for, method: 'PUT',
         html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do
   br
   .mt0

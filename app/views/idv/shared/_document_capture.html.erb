@@ -27,7 +27,7 @@
       <% end %>
     </h1>
 
-    <%= simple_form_for(
+    <%= validated_form_for(
       :doc_auth,
       url: url_for,
       method: 'PUT',
@@ -102,7 +102,7 @@
       <div class='mt4 mb4'>
         <%= render 'idv/doc_auth/submit_with_spinner' %>
       </div>
-    <% end %> <%# end simple_form_for %>
+    <% end %> <%# end validated_form_for %>
 
     <p class='mt3 mb0'><%= t('doc_auth.info.document_capture_upload_image') %></p>
 

@@ -10,8 +10,8 @@
   <%= t('in_person_proofing.headings.zip_code') %>
 </h1>
 
-<%= simple_form_for(:in_person, url: url_for, method: 'PUT',
-                    html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f| %>
+<%= validated_form_for(:in_person, url: url_for, method: 'PUT',
+                       html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f| %>
   <div class="clearfix mxn1">
     <div class="sm-col sm-col-6 px1 mt2">
       <%= f.input :zip_code,

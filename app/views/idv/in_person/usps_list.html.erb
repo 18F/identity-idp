@@ -1,8 +1,8 @@
 <h5 class="my1 caps bold accent-blue"><%= t('in_person_proofing.step', step: 1) %></h5>
 <h1 class="h3 my0"><%= t('in_person_proofing.headings.usps_list') %></h1>
 
-<%= simple_form_for(:in_person_proofing, url: url_for, method: 'PUT',
-                    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
+<%= validated_form_for(:in_person_proofing, url: url_for, method: 'PUT',
+                       html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
 <div class="mb3">
   <fieldset class="m0 p0 border-none">
     <legend class="mb2 serif bold">Choose a post office near you:</legend>

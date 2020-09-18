@@ -16,7 +16,7 @@
                 class: 'btn btn-primary btn-wide sm-col-6 col-12') %>
 </div>
 
-<%= form_for('', url: url_for, method: 'PUT',
-             html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f| %>
+<%= validated_form_for('', url: url_for, method: 'PUT',
+                       html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f| %>
 <% end %>
 <%= render 'idv/cac/start_over_or_cancel' %>

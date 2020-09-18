@@ -4,7 +4,7 @@
   <%= t('headings.passwords.change') %>
 </h1>
 
-<%= simple_form_for(@reset_password_form,
+<%= validated_form_for(@reset_password_form,
     url: user_password_path,
     html: { autocomplete: 'off',
     method: :put,

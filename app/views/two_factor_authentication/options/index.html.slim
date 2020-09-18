@@ -3,7 +3,7 @@
 h1.h3.my0 = @presenter.heading
 p.mt-tiny.mb3 = @presenter.info
 
-= simple_form_for(@two_factor_options_form,
+= validated_form_for(@two_factor_options_form,
         html: { autocomplete: 'off', role: 'form' },
         method: :post,
         url: login_two_factor_options_path) do |f|

@@ -11,10 +11,10 @@
   <%= t('two_factor_authentication.phone_fee_disclosure') %>
 </p>
 
-<%= simple_form_for(@new_phone_form,
-                    html: { autocomplete: 'off', method: :patch, role: 'form' },
-                    data: { international_phone_form: true },
-                    url: phone_setup_path) do |f| %>
+<%= validated_form_for(@new_phone_form,
+                       html: { autocomplete: 'off', method: :patch, role: 'form' },
+                       data: { international_phone_form: true },
+                       url: phone_setup_path) do |f| %>
 
   <%= render 'users/shared/phone_number_edit', f: f %>
 
