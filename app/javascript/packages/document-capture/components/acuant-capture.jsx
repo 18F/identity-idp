@@ -16,8 +16,25 @@ import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import FileBase64CacheContext from '../context/file-base64-cache';
 import UploadContext from '../context/upload';
+import useIfStillMounted from '../hooks/use-if-still-mounted';
 
 /** @typedef {import('react').ReactNode} ReactNode */
+
+/**
+ * @typedef AcuantPassiveLiveness
+ *
+ * @prop {(callback:(nextImageData:string)=>void)=>void} startSelfieCapture Start liveness capture.
+ */
+
+/**
+ * @typedef AcuantGlobals
+ *
+ * @prop {AcuantPassiveLiveness} AcuantPassiveLiveness Acuant Passive Liveness API.
+ */
+
+/**
+ * @typedef {typeof window & AcuantGlobals} AcuantGlobal
+ */
 
 /**
  * @typedef AcuantCaptureProps
@@ -26,8 +43,8 @@ import UploadContext from '../context/upload';
  * @prop {string=} bannerText Optional banner text to show in file input.
  * @prop {Blob?=} value Current value.
  * @prop {(nextValue:Blob?)=>void} onChange Callback receiving next value on change.
- * @prop {'user'|'environment'=} capture Facing mode of capture. If capture is not specified and a
- * camera is supported, defaults to the Acuant environment camera capture.
+ * @prop {'user'=} capture Facing mode of capture. If capture is not specified and a camera is
+ * supported, defaults to the Acuant environment camera capture.
  * @prop {string=} className Optional additional class names.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  * @prop {ReactNode=} errorMessage Error to show.
@@ -88,8 +105,9 @@ function AcuantCapture(
   const { isMockClient } = useContext(UploadContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
-  const [isCapturing, setIsCapturing] = useState(false);
+  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {?string} */ (null));
+  const ifStillMounted = useIfStillMounted();
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
@@ -99,10 +117,20 @@ function AcuantCapture(
     // capture is supported. This takes advantage of the fact that state setter is noop if value of
     // `isCapturing` is already false.
     if (!hasCapture) {
-      setIsCapturing(false);
+      setIsCapturingEnvironment(false);
     }
   }, [hasCapture]);
   useImperativeHandle(ref, () => inputRef.current);
+
+  /**
+   * Calls onChange with next value and resets any errors which may be present.
+   *
+   * @param {Blob?} nextValue Next value.
+   */
+  function onChangeAndResetError(nextValue) {
+    setOwnErrorMessage(null);
+    onChange(nextValue);
+  }
 
   /**
    * Responds to a click by starting capture if supported in the environment, or triggering the
@@ -113,30 +141,28 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event) {
     if (event.target === inputRef.current) {
-      const shouldStartCapture = hasCapture && !capture && !isForceUploading.current;
+      const shouldStartEnvironmentCapture =
+        hasCapture && capture !== 'user' && !isForceUploading.current;
 
-      if ((!allowUpload && !capture) || shouldStartCapture) {
+      if (!allowUpload || capture === 'user' || shouldStartEnvironmentCapture) {
         event.preventDefault();
       }
 
-      if (shouldStartCapture) {
-        setIsCapturing(true);
+      if (capture === 'user') {
+        /** @type {AcuantGlobal} */ (window).AcuantPassiveLiveness.startSelfieCapture(
+          ifStillMounted((nextImageData) => {
+            const dataAsBlob = toBlob(`data:image/jpeg;base64,${nextImageData}`);
+            onChangeAndResetError(dataAsBlob);
+          }),
+        );
+      } else if (shouldStartEnvironmentCapture) {
+        setIsCapturingEnvironment(true);
       }
 
       isForceUploading.current = false;
     } else {
       inputRef.current?.click();
     }
-  }
-
-  /**
-   * Calls onChange with next value and resets any errors which may be present.
-   *
-   * @param {Blob?} nextValue Next value.
-   */
-  function onChangeAndResetError(nextValue) {
-    setOwnErrorMessage(null);
-    onChange(nextValue);
   }
 
   /**
@@ -166,8 +192,8 @@ function AcuantCapture(
 
   return (
     <div className={className}>
-      {isCapturing && !capture && (
-        <FullScreen onRequestClose={() => setIsCapturing(false)}>
+      {isCapturingEnvironment && (
+        <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
               if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
@@ -180,11 +206,11 @@ function AcuantCapture(
                 onChangeAndResetError(dataAsBlob);
               }
 
-              setIsCapturing(false);
+              setIsCapturingEnvironment(false);
             }}
             onImageCaptureFailure={() => {
               setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
-              setIsCapturing(false);
+              setIsCapturingEnvironment(false);
             }}
           />
         </FullScreen>
