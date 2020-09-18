@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <meta content="<%= content_for?(:description) ? yield(:description) : APP_NAME %>" name="description" />
+  <meta content="<%= APP_NAME %>" name="description" />
   <meta content="IE=edge" http-equiv="X-UA-Compatible" />
   <meta content="none" name="msapplication-config" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
@@ -53,7 +53,7 @@
   <% end %>
 </head>
 
-<body class="<%= Rails.env %>-env site <%= yield(:background_cls) %>">
+<body class="site <%= yield(:background_cls) %>">
   <div class="usa-overlay"></div>
   <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
   <div class="site-wrap bg-light-blue">
