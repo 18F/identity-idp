@@ -95,7 +95,10 @@ module FormHelper
     }
   end
 
-  def validated_form_for(*args, &block)
-    simple_form_for(*args, &block) + javascript_pack_tag('simple-form-validation')
+  def validated_form_for(record, options = {}, &block)
+    options[:data] ||= {}
+    options[:data][:validate] = true
+    javascript_pack_tag_once('form-validation')
+    simple_form_for(record, options, &block)
   end
 end

@@ -60,8 +60,9 @@ export function initialize(form) {
 }
 
 loadPolyfills(['classlist']).then(() => {
-  if (document.currentScript) {
-    const form = /** @type {HTMLFormElement} */ (document.currentScript.previousElementSibling);
-    initialize(form);
-  }
+  const forms = /** @type {HTMLFormElement[]} */ ([
+    ...document.querySelectorAll('form[data-validate]'),
+  ]);
+
+  forms.forEach(initialize);
 });
