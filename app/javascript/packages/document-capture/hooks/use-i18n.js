@@ -21,8 +21,8 @@ import I18nContext from '../context/i18n';
  * });
  * ```
  *
- * @param {string}                   html     HTML to format.
- * @param {Record<string,Component>} handlers Mapping of tag names to components.
+ * @param {string} html HTML to format.
+ * @param {Record<string,Component|string>} handlers Mapping of tag names to tag name or component.
  *
  * @return {import('react').ReactNode}
  */

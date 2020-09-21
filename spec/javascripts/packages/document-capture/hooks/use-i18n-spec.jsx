@@ -14,9 +14,19 @@ describe('document-capture/hooks/use-i18n', () => {
       expect(container.innerHTML).to.equal('Hello &lt;strong&gt;world&lt;/strong&gt;!');
     });
 
-    it('returns html string chunked by handlers', () => {
+    it('returns html string chunked by component handlers', () => {
       const formatted = formatHTML('Hello <strong>world</strong>!', {
         strong: ({ children }) => <strong>{children}</strong>,
+      });
+
+      const { container } = render(formatted);
+
+      expect(container.innerHTML).to.equal('Hello <strong>world</strong>!');
+    });
+
+    it('returns html string chunked by string handlers', () => {
+      const formatted = formatHTML('Hello <strong>world</strong>!', {
+        strong: 'strong',
       });
 
       const { container } = render(formatted);
