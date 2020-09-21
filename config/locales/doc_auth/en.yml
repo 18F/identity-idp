@@ -13,6 +13,46 @@ en:
       upload_picture: Upload a photo
       use_phone: Use your phone
     errors:
+      lexis_nexis:
+        1d_control_number_check: We couldn't read the control number barcode. Try
+          taking new pictures.
+        barcode_content_check: We couldn't read the barcode on the back of your ID.
+          It could be because of a problem with the barcode, or the barcode is a new
+          type that we don't recognize yet. Use another state-issued ID if you have
+          one.
+        barcode_read_check: We couldn't read the barcode on the back of your ID. Try
+          taking a new picture.
+        birth_date_checks: We couldn’t read the birth date on your ID. Try taking
+          new pictures.
+        control_number_check: We couldn't read the reference number on the back of
+          your ID. Try taking a new picture.
+        doc_crosscheck: We couldn’t recognize your ID. It may be worn or damaged,
+          or the front and the back of the ID don't match. Try taking new pictures.
+        doc_number_checks: We couldn’t read the document number on your ID. Try taking
+          new pictures.
+        expiration_checks: The document has expired, or we couldn't read the expiration
+          date on your ID. If your ID is not expired, try taking new pictures.
+        full_name_check: We couldn't read the full name on your ID. Try taking new
+          pictures.
+        general_error_liveness: We couldn't verify your ID and photo of yourself.
+          Try taking new pictures.
+        general_error_no_liveness: We couldn't verify your ID. Try taking new pictures.
+        id_not_recognized: We couldn’t recognize your ID. It may be worn, damaged,
+          or a type of ID that we don’t recognize. Try taking new pictures.
+        id_not_verified: We couldn't verify your ID. It might have moved when you
+          took the picture. Try taking new pictures.
+        issue_date_checks: We couldn't read the issue date on your ID. Try taking
+          new pictures.
+        network_error: Sorry we are experiencing technical difficulties. Please try
+          again later.
+        selfie_failure: We couldn't match the photo of you to your ID. Try taking
+          a new picture of yourself or the front of your ID.
+        sex_check: We couldn't read the sex on your ID. Try taking new pictures.
+        visible_color_check: We couldn't verify your ID. It might have moved when
+          you took the picture, or the picture is too dark. Try taking new pictures
+          in brighter lighting.
+        visible_photo_check: We couldn't verify the photo on your ID. Try taking new
+          pictures.
       not_a_file: The selection was not a valid file
     forms:
       address1: Address
