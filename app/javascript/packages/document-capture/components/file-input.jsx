@@ -172,11 +172,15 @@ const FileInput = forwardRef((props, ref) => {
         onDrop={() => setIsDraggingOver(false)}
       >
         <div className="usa-file-input__target">
-          {value && value instanceof window.File && !isMobile && (
+          {value && value instanceof window.Blob && !isMobile && (
             <div className="usa-file-input__preview-heading">
               <span>
-                <span className="usa-sr-only">{t('doc_auth.forms.selected_file')}: </span>
-                {value.name}{' '}
+                {value instanceof window.File && (
+                  <>
+                    <span className="usa-sr-only">{t('doc_auth.forms.selected_file')}: </span>
+                    {value.name}{' '}
+                  </>
+                )}
               </span>
               <span className="usa-file-input__choose">{t('doc_auth.forms.change_file')}</span>
             </div>
