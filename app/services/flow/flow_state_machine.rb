@@ -1,3 +1,17 @@
+# sample usage:
+#
+# class FooController
+#   include Flow::FlowStateMachine
+#
+#   FSM_SETTINGS = {
+#     step_url: :foo_step_url,
+#     final_url: :after_foo_url,
+#     flow: FooFlow,
+#     analytics_id: Analytics::FOO,
+#   }.freeze
+# end
+
+# rubocop:disable Metrics/ModuleLength
 module Flow
   module FlowStateMachine
     extend ActiveSupport::Concern
@@ -85,6 +99,13 @@ module Flow
     def render_step(step, flow_session)
       @params = params
       @request = request
+      if @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
+        optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[step]
+        if optional_show_step
+          obj = optional_show_step.new(self)
+          obj.base_call
+        end
+      end
       render template: "#{@view || @name}/#{step}", locals: { flow_session: flow_session }
     end
 
@@ -122,16 +143,4 @@ module Flow
     end
   end
 end
-
-# sample usage:
-#
-# class FooController
-#   include Flow::FlowStateMachine
-#
-#   FSM_SETTINGS = {
-#     step_url: :foo_step_url,
-#     final_url: :after_foo_url,
-#     flow: FooFlow,
-#     analytics_id: Analytics::FOO,
-#   }.freeze
-# end
+# rubocop:enable Metrics/ModuleLength
