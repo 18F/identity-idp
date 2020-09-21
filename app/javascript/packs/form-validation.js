@@ -26,14 +26,14 @@ function checkInputValidity(event) {
   const input = /** @type {HTMLInputElement} */ (event.target);
   input.setCustomValidity('');
 
-  const { t, key } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov.I18n;
+  const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
 
   if (input.validity.valueMissing) {
-    input.setCustomValidity(t('simple_form.required.text'));
+    input.setCustomValidity(I18n.t('simple_form.required.text'));
   } else if (input.validity.patternMismatch) {
     PATTERN_TYPES.forEach((type) => {
       if (input.classList.contains(type)) {
-        input.setCustomValidity(t(`idv.errors.pattern_mismatch.${key(type)}`));
+        input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${I18n.key(type)}`));
       }
     });
   }
