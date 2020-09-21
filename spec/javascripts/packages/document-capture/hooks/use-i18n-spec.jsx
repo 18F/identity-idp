@@ -1,7 +1,10 @@
 import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
-import useI18n, { formatHTML } from '@18f/identity-document-capture/hooks/use-i18n';
+import useI18n, {
+  formatHTML,
+  replaceVariables,
+} from '@18f/identity-document-capture/hooks/use-i18n';
 import render from '../../../support/render';
 
 describe('document-capture/hooks/use-i18n', () => {
@@ -56,6 +59,14 @@ describe('document-capture/hooks/use-i18n', () => {
       const { container } = render(formatted);
 
       expect(container.childNodes).to.have.lengthOf(2);
+    });
+  });
+
+  describe('replaceVariables', () => {
+    it('replaces all variables', () => {
+      const result = replaceVariables('The price is $%{price}, not %{price} €', { price: '2' });
+
+      expect(result).to.equal('The price is $2, not 2 €');
     });
   });
 
