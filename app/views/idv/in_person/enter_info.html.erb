@@ -1,8 +1,8 @@
 <h5 class="my1 caps bold accent-blue"><%= t('in_person_proofing.step', step: 2) %></h5>
 <h1 class="h3 my0"><%= t('in_person_proofing.headings.enter_info') %></h1>
 
-<%= simple_form_for(:in_person_proofing, url: url_for, method: 'PUT',
-                    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
+<%= validated_form_for(:in_person_proofing, url: url_for, method: 'PUT',
+                       html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
   <fieldset class="ml0 p0 border-none">
     <div class="mb3 string required profile_first_name">
       <label class="bold string required" for="profile_first_name"><abbr title="required" class="red display-none">*</abbr>

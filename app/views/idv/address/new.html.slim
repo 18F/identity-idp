@@ -3,7 +3,7 @@
 h1.h3.my0 = t('doc_auth.headings.address')
 
 .mt3.mb3
-  = simple_form_for(:idv_form, url: idv_address_path, method: 'POST',
+  = validated_form_for(:idv_form, url: idv_address_path, method: 'POST',
           html: {autocomplete: 'off', role: 'form', class: 'mt2'}) do |f|
 
     = f.input :address1, label: t('idv.form.address1'), wrapper_html: {class: 'mb1'},

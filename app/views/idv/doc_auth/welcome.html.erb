@@ -83,10 +83,10 @@
     </li>
   </ul>
 
-  <%= simple_form_for :doc_auth,
-                      url: url_for,
-                      method: 'put',
-                      html: { autocomplete: 'off', role: 'form', class: 'mt2 js-consent-form' } do |f| %>
+  <%= validated_form_for :doc_auth,
+                         url: url_for,
+                         method: 'put',
+                         html: { autocomplete: 'off', role: 'form', class: 'mt2 js-consent-form' } do |f| %>
     <br/>
     <label class="mtn1 mb3" for="ial2_consent_given">
       <div class="checkbox">

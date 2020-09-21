@@ -6,7 +6,7 @@
  */
 
 /**
- * @typedef {"fetch"|"element-closest"} SupportedPolyfills
+ * @typedef {"fetch"|"element-closest"|"classlist"} SupportedPolyfills
  */
 
 /**
@@ -20,6 +20,10 @@ const POLYFILLS = {
   'element-closest': {
     test: () => !!Element.prototype.closest,
     load: () => import(/* webpackChunkName: "element-closest" */ 'element-closest'),
+  },
+  classlist: {
+    test: () => 'classList' in Element.prototype,
+    load: () => import(/* webpackChunkName: "classlist-polyfill" */ 'classlist-polyfill'),
   },
 };
 

@@ -3,9 +3,9 @@
   <%= t('headings.edit_info.phone') %>
 </h1>
 
-<%= simple_form_for(@edit_phone_form,
-                    html: {autocomplete: 'off', method: :put, role: 'form'},
-                    url: manage_phone_path(id: @phone_configuration.id)) do |f| %>
+<%= validated_form_for(@edit_phone_form,
+                       html: {autocomplete: 'off', method: :put, role: 'form'},
+                       url: manage_phone_path(id: @phone_configuration.id)) do |f| %>
 
   <div class="mb1 h4">
     <%= t('two_factor_authentication.phone_label') %>:&nbsp;

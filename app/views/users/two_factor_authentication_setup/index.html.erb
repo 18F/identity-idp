@@ -10,10 +10,10 @@
 
 <p class="mt-tiny"><%== @presenter.intro %></p>
 
-<%= simple_form_for @two_factor_options_form,
-                    html: { autocomplete: 'off', role: 'form' },
-                    method: :patch,
-                    url: two_factor_options_path do |f| %>
+<%= validated_form_for @two_factor_options_form,
+                       html: { autocomplete: 'off', role: 'form' },
+                       method: :patch,
+                       url: two_factor_options_path do |f| %>
   <div class="mb3">
     <fieldset class="m0 p0 border-none">
       <legend class="mb2 serif bold"><%= t('forms.two_factor_choice.legend') %>:</legend>

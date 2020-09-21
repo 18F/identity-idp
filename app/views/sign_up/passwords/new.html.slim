@@ -3,7 +3,7 @@
 h1.h3.my0 = t('forms.confirmation.show_hdr')
 p.mt2.mb0#password-description
   = t('instructions.password.info.lead', min_length: Devise.password_length.first)
-= simple_form_for(@password_form,
+= validated_form_for(@password_form,
     url: sign_up_create_password_path,
     method: :post,
     html: { role: 'form', autocomplete: 'off' }) do |f|
