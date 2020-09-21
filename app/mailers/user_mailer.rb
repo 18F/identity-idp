@@ -107,10 +107,9 @@ class UserMailer < ActionMailer::Base
     mail(to: email_address.email, subject: t('user_mailer.undeliverable_address.subject'))
   end
 
-  def doc_auth_desktop_link_to_sp(email_address, application, link, liveness_checking_enabled)
+  def doc_auth_desktop_link_to_sp(email_address, application, link)
     @link = link
     @application = application
-    @liveness_checking_enabled = liveness_checking_enabled
     mail(to: email_address, subject: t('user_mailer.doc_auth_link.subject'))
   end
 

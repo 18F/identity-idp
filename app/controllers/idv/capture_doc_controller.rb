@@ -69,9 +69,11 @@ module Idv
         reset_session
         session[:doc_capture_user_id] = result.extra[:for_user_id]
         session[:document_capture_session_uuid] = document_capture_session_uuid
-        session[:sp] ||= {}
-        session[:sp][:ial2_strict] = document_capture_session.ial2_strict
-        session[:sp][:issuer] = document_capture_session.issuer
+        if FeatureManagement.document_capture_step_enabled?
+          session[:sp] ||= {}
+          session[:sp][:ial2_strict] = document_capture_session.ial2_strict
+          session[:sp][:issuer] = document_capture_session.issuer
+        end
       else
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
