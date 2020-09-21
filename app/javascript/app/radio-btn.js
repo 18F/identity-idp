@@ -1,4 +1,4 @@
-import 'classlist.js';
+import 'classlist-polyfill';
 
 function clearHighlight(name) {
   const radioGroup = document.querySelectorAll(`input[name='${name}']`);

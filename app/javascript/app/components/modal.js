@@ -1,4 +1,4 @@
-import 'classlist.js';
+import 'classlist-polyfill';
 import { createFocusTrap } from 'focus-trap';
 import Events from '../utils/events';
 
