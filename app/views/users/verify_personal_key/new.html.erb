@@ -1,0 +1,26 @@
+<div class="relative">
+  <%= form_tag create_verify_personal_key_path, id: 'verify-key', method: 'post', name: 'verify-key' do %>
+    <div class="pt4 px1 sm-px5 key-badge border border-dashed border-red rounded-xl">
+      <h3 class="mt0 mb2">
+        <%= t('forms.personal_key.title') %>
+      </h3>
+      <p class="mb3">
+        <%= t('forms.personal_key.instructions') %>
+      </p>
+
+      <%= render 'shared/personal_key_input', code: '' %>
+    </div>
+
+    <div class="mt3">
+      <%= button_tag t('forms.buttons.continue'), type: 'submit', class: 'btn btn-primary btn-wide' %>
+    </div>
+  <% end %>
+</div>
+
+<div class="mt2">
+  <%= t('forms.personal_key.alternative') %>
+  <%= button_to(t('links.reverify'), reactivate_account_path, method: :put,
+                class: 'btn btn-link ml1', form_class: 'inline-block') %>
+</div>
+
+<%= render 'shared/cancel', link: account_path %>

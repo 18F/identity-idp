@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'idv/come_back_later/show.html.slim' do
+describe 'idv/come_back_later/show.html.erb' do
   let(:sp_return_url) { 'https://www.example.com' }
   let(:sp_name) { '🔒🌐💻' }
 

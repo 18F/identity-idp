@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/passwords/new.html.slim' do
+describe 'devise/passwords/new.html.erb' do
   let(:sp) do
     build_stubbed(
       :service_provider,
