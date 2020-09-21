@@ -143,12 +143,13 @@ function AcuantCapture(
     if (event.target === inputRef.current) {
       const shouldStartEnvironmentCapture =
         hasCapture && capture !== 'user' && !isForceUploading.current;
+      const shouldStartSelfieCapture = capture === 'user' && !isForceUploading.current;
 
-      if (!allowUpload || capture === 'user' || shouldStartEnvironmentCapture) {
+      if (!allowUpload || shouldStartSelfieCapture || shouldStartEnvironmentCapture) {
         event.preventDefault();
       }
 
-      if (capture === 'user') {
+      if (shouldStartSelfieCapture) {
         /** @type {AcuantGlobal} */ (window).AcuantPassiveLiveness.startSelfieCapture(
           ifStillMounted((nextImageData) => {
             const dataAsBlob = toBlob(`data:image/jpeg;base64,${nextImageData}`);

@@ -112,6 +112,7 @@ describe('document-capture/components/document-capture', () => {
         },
       });
     });
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
 
     // Continue is enabled, but attempting to proceed without providing values will trigger error
     // messages.
@@ -153,13 +154,7 @@ describe('document-capture/components/document-capture', () => {
 
     // Provide value.
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    const didClick = fireEvent.click(selfieInput);
-    expect(didClick).to.be.true();
-    fireEvent.change(selfieInput, {
-      target: {
-        files: [new window.File([''], 'upload.png', { type: 'image/png' })],
-      },
-    });
+    fireEvent.click(selfieInput);
 
     // Continue only once all errors have been removed.
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
@@ -181,12 +176,17 @@ describe('document-capture/components/document-capture', () => {
 
   it('renders unhandled submission failure', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
-      <DocumentCapture />,
+      <AcuantProvider sdkSrc="about:blank">
+        <DocumentCapture />
+      </AcuantProvider>,
       {
         uploadError: new Error('Server unavailable'),
         expectedUploads: 2,
       },
     );
+
+    initialize({ isCameraSupported: false });
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
 
     const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
@@ -205,10 +205,8 @@ describe('document-capture/components/document-capture', () => {
     let submitButton = getByText('forms.buttons.submit.default');
     userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_selfie'),
-      new window.File([''], 'selfie.png', { type: 'image/png' }),
-    );
+    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
+    fireEvent.click(selfieInput);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
 
@@ -249,11 +247,16 @@ describe('document-capture/components/document-capture', () => {
       { field: 'back', message: 'Please fill in this field' },
     ];
     const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
-      <DocumentCapture />,
+      <AcuantProvider sdkSrc="about:blank">
+        <DocumentCapture />
+      </AcuantProvider>,
       {
         uploadError,
       },
     );
+
+    initialize({ isCameraSupported: false });
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
 
     const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
@@ -272,10 +275,8 @@ describe('document-capture/components/document-capture', () => {
     const submitButton = getByText('forms.buttons.submit.default');
     userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_selfie'),
-      new window.File([''], 'selfie.png', { type: 'image/png' }),
-    );
+    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
+    fireEvent.click(selfieInput);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
 
