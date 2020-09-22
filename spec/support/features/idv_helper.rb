@@ -30,7 +30,7 @@ module IdvHelper
   end
 
   def click_idv_continue
-    click_on t('forms.buttons.continue')
+    click_on t('forms.buttons.continue'), match: :first
   end
 
   def choose_idv_otp_delivery_method_sms
