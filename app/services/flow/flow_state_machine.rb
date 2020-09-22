@@ -102,8 +102,11 @@ module Flow
       if @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
         optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[step]
         if optional_show_step
-          obj = optional_show_step.new(self)
-          obj.base_call
+          optional_show_step.new(@flow).base_call
+          if next_step.to_s != step
+            redirect_to_step(next_step)
+            return
+          end
         end
       end
       render template: "#{@view || @name}/#{step}", locals: { flow_session: flow_session }
