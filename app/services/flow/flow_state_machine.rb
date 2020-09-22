@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module Flow
   module FlowStateMachine
     extend ActiveSupport::Concern
@@ -132,6 +133,7 @@ module Flow
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength
 
 # sample usage:
 #
