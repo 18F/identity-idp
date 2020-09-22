@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_18_154850) do
+ActiveRecord::Schema.define(version: 2020_09_22_144112) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -168,12 +168,12 @@ ActiveRecord::Schema.define(version: 2020_09_18_154850) do
     t.integer "choose_method_view_count", default: 0
     t.datetime "present_cac_view_at"
     t.integer "present_cac_view_count", default: 0
-    t.integer "present_cac_submit_count", default: 0
-    t.integer "present_cac_error_count", default: 0
     t.datetime "enter_info_view_at"
     t.integer "enter_info_view_count", default: 0
     t.datetime "success_view_at"
     t.integer "success_view_count", default: 0
+    t.integer "present_cac_submit_count", default: 0
+    t.integer "present_cac_error_count", default: 0
     t.datetime "selfie_view_at"
     t.integer "selfie_view_count", default: 0
     t.integer "selfie_submit_count", default: 0
@@ -202,6 +202,8 @@ ActiveRecord::Schema.define(version: 2020_09_18_154850) do
     t.string "acuant_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "ial2_strict"
+    t.string "issuer"
     t.index ["request_token"], name: "index_doc_captures_on_request_token", unique: true
     t.index ["user_id"], name: "index_doc_captures_on_user_id", unique: true
   end
