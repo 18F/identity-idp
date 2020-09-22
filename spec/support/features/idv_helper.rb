@@ -69,9 +69,9 @@ module IdvHelper
   end
 
   def visit_idp_from_oidc_sp_with_ial2(
-    client_id:,
-    nonce:,
+    client_id: 'urn:gov:gsa:openidconnect:sp:server',
     state: SecureRandom.hex,
+    nonce: SecureRandom.hex,
     verified_within: nil
   )
     visit openid_connect_authorize_path(
