@@ -25,7 +25,7 @@ describe Idv::CaptureDocController do
       token = nil
       before do
         allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
-        capture_doc = CaptureDoc::CreateRequest.call(user.id)
+        capture_doc = CaptureDoc::CreateRequest.call(user.id, {})
         token = capture_doc.request_token
       end
 
