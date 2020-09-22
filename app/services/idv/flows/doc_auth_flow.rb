@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module Idv
   module Flows
     class DocAuthFlow < Flow::BaseFlow
@@ -20,7 +21,7 @@ module Idv
       }.freeze
       OPTIONAL_SHOW_STEPS = {
         verify_wait: Idv::Steps::VerifyWaitStepShow,
-      }
+      }.freeze
 
       ACTIONS = {
         reset: Idv::Actions::ResetAction,
@@ -40,3 +41,5 @@ module Idv
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength
+
