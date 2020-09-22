@@ -12,7 +12,7 @@ describe CaptureDoc::CreateRequest do
   let(:old_timestamp) { Time.zone.now - 1.year }
 
   it 'creates a new request if one does not exist' do
-    result = subject.call(user_id)
+    result = subject.call(user_id, sp_session)
     expect(result).to be_kind_of(DocCapture)
 
     doc_capture = DocCapture.find_by(user_id: user_id)
@@ -32,7 +32,7 @@ describe CaptureDoc::CreateRequest do
       acuant_token: 'foo',
     )
 
-    result = subject.call(user_id)
+    result = subject.call(user_id, sp_session)
     expect(result).to be_kind_of(DocCapture)
 
     doc_capture = DocCapture.find_by(user_id: user_id)
