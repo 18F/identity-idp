@@ -89,9 +89,5 @@ module Idv
     def document_capture_session_uuid
       params['document-capture-session']
     end
-
-    def document_capture_session
-      DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
-    end
   end
 end
