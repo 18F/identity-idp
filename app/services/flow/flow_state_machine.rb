@@ -1,17 +1,3 @@
-# sample usage:
-#
-# class FooController
-#   include Flow::FlowStateMachine
-#
-#   FSM_SETTINGS = {
-#     step_url: :foo_step_url,
-#     final_url: :after_foo_url,
-#     flow: FooFlow,
-#     analytics_id: Analytics::FOO,
-#   }.freeze
-# end
-
-# rubocop:disable Metrics/ModuleLength
 module Flow
   module FlowStateMachine
     extend ActiveSupport::Concern
@@ -146,4 +132,16 @@ module Flow
     end
   end
 end
-# rubocop:enable Metrics/ModuleLength
+
+# sample usage:
+#
+# class FooController
+#   include Flow::FlowStateMachine
+#
+#   FSM_SETTINGS = {
+#     step_url: :foo_step_url,
+#     final_url: :after_foo_url,
+#     flow: FooFlow,
+#     analytics_id: Analytics::FOO,
+#   }.freeze
+# end
