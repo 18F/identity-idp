@@ -7,6 +7,7 @@ import {
   DeviceContext,
   AcuantProvider,
   UploadContextProvider,
+  ServiceProviderContext,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -27,6 +28,11 @@ loadPolyfills(['fetch']).then(() => {
   const isLivenessEnabled = appRoot.hasAttribute('data-liveness');
   const isMockClient = appRoot.hasAttribute('data-mock-client');
 
+  const serviceProvider = {
+    name: appRoot.getAttribute('data-sp-name'),
+    failureToProofURL: appRoot.getAttribute('data-failure-to-proof-url'),
+  };
+
   render(
     <AcuantProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
@@ -42,11 +48,15 @@ loadPolyfills(['fetch']).then(() => {
         }}
       >
         <I18nContext.Provider value={i18n.strings}>
-          <AssetContext.Provider value={assets}>
-            <DeviceContext.Provider value={device}>
-              <DocumentCapture isLivenessEnabled={isLivenessEnabled} />
-            </DeviceContext.Provider>
-          </AssetContext.Provider>
+          <ServiceProviderContext.Provider
+            value={serviceProvider.name ? serviceProvider : undefined}
+          >
+            <AssetContext.Provider value={assets}>
+              <DeviceContext.Provider value={device}>
+                <DocumentCapture isLivenessEnabled={isLivenessEnabled} />
+              </DeviceContext.Provider>
+            </AssetContext.Provider>
+          </ServiceProviderContext.Provider>
         </I18nContext.Provider>
       </UploadContextProvider>
     </AcuantProvider>,
