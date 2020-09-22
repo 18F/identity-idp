@@ -6,7 +6,7 @@ describe CaptureDoc::UpdateAcuantToken do
   let(:token) { 'foo' }
 
   it 'updates the token if the entry exists' do
-    CaptureDoc::CreateRequest.call(user_id)
+    CaptureDoc::CreateRequest.call(user_id, {})
 
     result = subject.call(user_id, token)
     expect(result).to be_truthy

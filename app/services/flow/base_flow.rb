@@ -35,7 +35,7 @@ module Flow
       return if step.nil?
 
       klass = steps[step]
-      retun if klass.nil?
+      return if klass.nil?
 
       flow_session[klass.to_s] = true
     end
