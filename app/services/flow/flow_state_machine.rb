@@ -86,17 +86,24 @@ module Flow
     def render_step(step, flow_session)
       @params = params
       @request = request
-      if @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
-        optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[step]
-        if optional_show_step
-          optional_show_step.new(@flow).base_call
-          if next_step.to_s != step
-            redirect_to_step(next_step)
-            return
-          end
-        end
-      end
+      call_optional_show_step(step) and return
       render template: "#{@view || @name}/#{step}", locals: { flow_session: flow_session }
+    end
+
+    def call_optional_show_step(step)
+      return unless @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
+      optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[step]
+      return unless optional_show_step
+      optional_show_step.new(@flow).base_call
+      if next_step.to_s != step
+        if next_step_is_url
+          redirect_to next_step
+        else
+          redirect_to_step(next_step)
+        end
+        return true
+      end
+      false
     end
 
     def ensure_correct_step
