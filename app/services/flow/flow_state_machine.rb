@@ -86,7 +86,7 @@ module Flow
     def render_step(step, flow_session)
       @params = params
       @request = request
-      call_optional_show_step(step) and return
+      return if call_optional_show_step(step)
       render template: "#{@view || @name}/#{step}", locals: { flow_session: flow_session }
     end
 
