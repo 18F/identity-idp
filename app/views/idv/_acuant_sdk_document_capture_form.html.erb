@@ -1,66 +1,64 @@
-<% if Figaro.env.acuant_sdk_document_capture_enabled == 'true' %>
-  <% content_for :meta_tags do %>
-    <meta
-      name='acuant-sdk-initialization-endpoint'
-      content='<%= Figaro.env.acuant_sdk_initialization_endpoint %>'
-    >
-    <meta
-      name='acuant-sdk-initialization-creds'
-      content='<%= Figaro.env.acuant_sdk_initialization_creds %>'
-    >
-  <% end %>
-
-  <div id='acuant-sdk-upload-form' class='hidden'>
-    <button id='acuant-sdk-capture' class='btn btn-primary'>
-      <%= capture_button_label %>
-    </button>
-  </div>
-
-  <div id='acuant-sdk-spinner' class='hidden'>
-    <%= image_tag(
-      asset_url('wait.gif'),
-      srcset: asset_url('wait.gif'),
-      height: 50,
-      width: 50,
-      alt: t('image_description.spinner')
-    ) %>
-  </div>
-
-  <!-- This view is never displayed, but it needs to be present in the DOM for
-  the SDK to capture the feed from the camera -->
-  <video id="acuant-player" controls autoPlay playsInline class='hidden'></video>
-  <div id='acuant-sdk-capture-view' class='hidden full-screen full-screen-fallback' >
-    <div id='acuant-sdk-capture-view-close' class="full-screen-close-button full-screen-close-button-fallback" >
-      <%= image_tag(
-              asset_url('close-white-alt.svg'),
-              srcset: asset_url('close-white-alt.svg'),
-              class: 'full-screen-close-icon full-screen-close-icon-fallback',
-              alt: t('image_description.close')
-          ) %>
-    </div>
-    <canvas id="acuant-video-canvas" class="full-screen-canvas-fallback"></canvas>
-  </div>
-
-  <div id='acuant-sdk-continue-form' class='hidden'>
-    <img id='acuant-sdk-preview' class='mb2'>
-    <%= submit_tag t('forms.buttons.continue'), class: 'block btn btn-primary btn-wide' %>
-    <%= link_to(
-      retry_capture_button_label,
-      url_for,
-      class: 'center btn btn-secondary btn-wide mt2',
-    ) %>
-  </div>
-
-  <p id='acuant-fallback-text' class='my3 hidden'>
-    <%= t(
-      'doc_auth.instructions.document_capture_fallback_html',
-      link: link_to(
-        t('doc_auth.instructions.document_capture_fallback_link'),
-        '#',
-        id: 'acuant-fallback-link'
-      )
-    ) %>
-  </p>
-
-  <%= javascript_pack_tag 'acuant_document_capture' %>
+<% content_for :meta_tags do %>
+  <meta
+    name='acuant-sdk-initialization-endpoint'
+    content='<%= Figaro.env.acuant_sdk_initialization_endpoint %>'
+  >
+  <meta
+    name='acuant-sdk-initialization-creds'
+    content='<%= Figaro.env.acuant_sdk_initialization_creds %>'
+  >
 <% end %>
+
+<div id='acuant-sdk-upload-form' class='hidden'>
+  <button id='acuant-sdk-capture' class='btn btn-primary'>
+    <%= capture_button_label %>
+  </button>
+</div>
+
+<div id='acuant-sdk-spinner' class='hidden'>
+  <%= image_tag(
+    asset_url('wait.gif'),
+    srcset: asset_url('wait.gif'),
+    height: 50,
+    width: 50,
+    alt: t('image_description.spinner')
+  ) %>
+</div>
+
+<!-- This view is never displayed, but it needs to be present in the DOM for
+the SDK to capture the feed from the camera -->
+<video id="acuant-player" controls autoPlay playsInline class='hidden'></video>
+<div id='acuant-sdk-capture-view' class='hidden full-screen full-screen-fallback' >
+  <div id='acuant-sdk-capture-view-close' class="full-screen-close-button full-screen-close-button-fallback" >
+    <%= image_tag(
+            asset_url('close-white-alt.svg'),
+            srcset: asset_url('close-white-alt.svg'),
+            class: 'full-screen-close-icon full-screen-close-icon-fallback',
+            alt: t('image_description.close')
+        ) %>
+  </div>
+  <canvas id="acuant-video-canvas" class="full-screen-canvas-fallback"></canvas>
+</div>
+
+<div id='acuant-sdk-continue-form' class='hidden'>
+  <img id='acuant-sdk-preview' class='mb2'>
+  <%= submit_tag t('forms.buttons.continue'), class: 'block btn btn-primary btn-wide' %>
+  <%= link_to(
+    retry_capture_button_label,
+    url_for,
+    class: 'center btn btn-secondary btn-wide mt2',
+  ) %>
+</div>
+
+<p id='acuant-fallback-text' class='my3 hidden'>
+  <%= t(
+    'doc_auth.instructions.document_capture_fallback_html',
+    link: link_to(
+      t('doc_auth.instructions.document_capture_fallback_link'),
+      '#',
+      id: 'acuant-fallback-link'
+    )
+  ) %>
+</p>
+
+<%= javascript_pack_tag 'acuant_document_capture' %>

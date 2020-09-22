@@ -14,7 +14,6 @@ feature 'doc capture document capture step' do
     allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('true')
     allow(Figaro.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
-    allow(Figaro.env).to receive(:acuant_sdk_document_capture_enabled).and_return('true')
     if sp_requests_ial2_strict
       visit_idp_from_oidc_sp_with_ial2_strict
     else
