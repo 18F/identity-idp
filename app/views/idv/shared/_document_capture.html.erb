@@ -1,13 +1,7 @@
 <% title t('doc_auth.titles.doc_auth') %>
 <% content_for :meta_tags do %>
-  <meta
-    name="acuant-sdk-initialization-endpoint"
-    content="<%= Figaro.env.acuant_sdk_initialization_endpoint %>"
-  >
-  <meta
-    name="acuant-sdk-initialization-creds"
-    content="<%= Figaro.env.acuant_sdk_initialization_creds %>"
-  >
+  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: Figaro.env.acuant_sdk_initialization_endpoint %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: Figaro.env.acuant_sdk_initialization_creds %>
 <% end %>
 <%= tag.div id: 'document-capture-form', data: {
   liveness: liveness_checking_enabled?.presence,
