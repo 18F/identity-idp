@@ -305,7 +305,6 @@ Rails.application.routes.draw do
       get '/session/errors/recovery_exception' => 'session_errors#recovery_exception'
       get '/session/errors/recovery_throttled' => 'session_errors#recovery_throttled'
       delete '/session' => 'sessions#destroy'
-      get '/jurisdiction/errors/no_id' => 'jurisdiction_errors#no_id'
       get '/cancel/' => 'cancellations#new', as: :cancel
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'

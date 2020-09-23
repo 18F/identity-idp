@@ -105,9 +105,6 @@ es:
       confirm: Usted ha encriptado sus datos verificados.
       hardfail: No puedes iniciar sesión en estos instantes pero puedes intentar verificar
         tu edad de nuevo en %{hours} horas.
-      jurisdiction:
-        no_id_failure: Estamos trabajando arduamente para agregar más formas de verificar
-          su identidad.
       mail_sent: Su carta está en camino
       otp_delivery_method:
         phone_number_html: Te enviaremos un código a <strong>%{phone}</strong>
@@ -160,8 +157,6 @@ es:
       mail:
         resend: "¿Desea otra carta?"
         verify: "¿Desea una carta?"
-      no_id: No podemos verificar su identidad sin una identificación emitida por
-        el estado
       otp_delivery_method: "¿Cómo te gustaría recibir el código?"
       phone: Número de teléfono del registro
       review: Revise y envíe

@@ -114,9 +114,6 @@ fr:
       confirm: Vous avez crypté vos données vérifiées
       hardfail: Nous ne pouvons pas vous connecter pour le moment, mais vous pouvez
         retenter d'effectuer la vérification de votre identité dans %{hours} heures.
-      jurisdiction:
-        no_id_failure: Nous travaillons dur pour ajouter plus de moyens de vérifier
-          votre identité.
       mail_sent: Votre lettre est en route
       otp_delivery_method:
         phone_number_html: Nous enverrons un code au <strong>%{phone}</strong>
@@ -173,8 +170,6 @@ fr:
       mail:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
-      no_id: Nous ne sommes pas en mesure de vérifier votre identité sans une pièce
-        d'identité officielle
       otp_delivery_method: Comment souhaitez-vous recevoir le code ?
       phone: Numéro de téléphone enregistré
       review: Réviser et soumettre
