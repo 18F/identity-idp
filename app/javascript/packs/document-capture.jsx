@@ -14,6 +14,18 @@ import { isCameraCapableMobile } from '@18f/identity-device';
 
 const { I18n: i18n, assets } = window.LoginGov;
 
+const appRoot = document.getElementById('document-capture-form');
+const isLivenessEnabled = appRoot.hasAttribute('data-liveness');
+const isMockClient = appRoot.hasAttribute('data-mock-client');
+
+function getServiceProvider() {
+  const name = appRoot.getAttribute('data-sp-name');
+  const failureToProofURL = appRoot.getAttribute('data-failure-to-proof-url');
+  if (name && failureToProofURL) {
+    return { name, failureToProofURL };
+  }
+}
+
 function getMetaContent(name) {
   return document.querySelector(`meta[name="${name}"]`)?.content ?? null;
 }
@@ -24,15 +36,6 @@ const device = {
 };
 
 loadPolyfills(['fetch']).then(() => {
-  const appRoot = document.getElementById('document-capture-form');
-  const isLivenessEnabled = appRoot.hasAttribute('data-liveness');
-  const isMockClient = appRoot.hasAttribute('data-mock-client');
-
-  const serviceProvider = {
-    name: appRoot.getAttribute('data-sp-name'),
-    failureToProofURL: appRoot.getAttribute('data-failure-to-proof-url'),
-  };
-
   render(
     <AcuantProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
@@ -48,9 +51,7 @@ loadPolyfills(['fetch']).then(() => {
         }}
       >
         <I18nContext.Provider value={i18n.strings}>
-          <ServiceProviderContext.Provider
-            value={serviceProvider.name ? serviceProvider : undefined}
-          >
+          <ServiceProviderContext.Provider value={getServiceProvider()}>
             <AssetContext.Provider value={assets}>
               <DeviceContext.Provider value={device}>
                 <DocumentCapture isLivenessEnabled={isLivenessEnabled} />
