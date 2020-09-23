@@ -96,6 +96,7 @@ pinpoint_sms_shortcode:
 pinpoint_voice_credential_role_arn:
 pinpoint_voice_longcode_pool:
 pinpoint_voice_region:
+poll_rate_for_verify_in_seconds: '10'
 proofer_mock_fallback: 'true'
 proofer_vendors:
 push_notifications_enabled:
