@@ -5,9 +5,18 @@ feature 'doc capture mobile back image step' do
   include DocAuthHelper
   include DocCaptureHelper
 
+  let(:sp_requested_ial2_strict) { false }
+
   before do
     allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
+
+    if sp_requested_ial2_strict
+      visit_idp_from_oidc_sp_with_ial2_strict
+    else
+      visit_idp_from_oidc_sp_with_ial2
+    end
     complete_doc_capture_steps_before_mobile_back_image_step
+
     allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
   end
 
@@ -46,17 +55,39 @@ feature 'doc capture mobile back image step' do
     expect(page).to have_current_path(idv_capture_doc_capture_mobile_back_image_step)
   end
 
-  it 'does not attempt to verify the document if selfie checking is enabled' do
-    allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+  context 'with liveness enabled' do
+    before do
+      allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+    end
 
-    mock_client = DocAuth::Mock::DocAuthMockClient.new
-    allow(DocAuth::Mock::DocAuthMockClient).to receive(:new).and_return(mock_client)
+    context 'the SP requested IAL2 strict' do
+      let(:sp_requested_ial2_strict) { true }
 
-    expect(mock_client).to_not receive(:get_results)
+      it 'does not attempt to verify the document until the selfie step' do
+        mock_client = DocAuth::Mock::DocAuthMockClient.new
+        allow(DocAuth::Mock::DocAuthMockClient).to receive(:new).and_return(mock_client)
 
-    attach_image
-    click_idv_continue
+        expect(mock_client).to_not receive(:get_results)
 
-    expect(page).to have_current_path(idv_capture_doc_capture_selfie_step)
+        attach_image
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_capture_doc_capture_selfie_step)
+      end
+    end
+
+    context 'the SP does not request IAL2 strict' do
+      let(:sp_requested_ial2_strict) { false }
+
+      it 'does not redirect to the selfie step' do
+        attach_image_data_url
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
+        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
+          doc_auth_image_data_url_data,
+        )
+      end
+    end
   end
 end

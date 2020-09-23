@@ -1,0 +1,36 @@
+<% content_for(:nav) do %>
+  <%= render 'accounts/nav_auth', enable_mobile_nav: true, greeting: @view_model.header_personalization %>
+<% end %>
+
+<% content_for(:mobile_nav) do %>
+  <%= render 'accounts/mobile_nav' %>
+<% end %>
+
+<% content_for :content do %>
+  <div class="top-banner grid-row grid-gap mb3">
+    <div class="grid-offset-3 grid-col-3">
+      <%= image_tag(
+        asset_path('user-access.svg'),
+        alt: '',
+      ) %>
+    </div>
+    <div class="grid-col-5">
+      <div>
+        <%= t('account.navigation.access_services') %>
+      </div>
+      <div>
+        <%= link_to t('account.navigation.learn_more'), MarketingSite.base_url %>
+      </div>
+    </div>
+  </div>
+  <div class="grid-row grid-gap">
+    <div class="desktop:grid-col-4">
+      <%= render 'accounts/side_nav' %>
+    </div>
+    <div class="desktop:grid-col-8">
+      <%= yield %>
+    </div>
+  </div>
+<% end %>
+
+<%= render template: 'layouts/base', locals: { disable_card: true } %>

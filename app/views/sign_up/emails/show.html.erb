@@ -18,9 +18,9 @@
   <hr class="my3 bw3 border-teal rounded"/>
 </div>
 
-<%= simple_form_for @resend_email_confirmation_form,
-                    html: { class: 'mb2' },
-                    url: sign_up_register_path do |f| %>
+<%= validated_form_for @resend_email_confirmation_form,
+                       html: { class: 'mb2' },
+                       url: sign_up_register_path do |f| %>
 
   <%= f.input :email, as: :hidden, wrapper: false %>
   <%= f.input :resend, as: :hidden, wrapper: false %>

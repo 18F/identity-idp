@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   include RememberDeviceConcern
   before_action :confirm_two_factor_authenticated
-  layout 'card_wide'
+  layout 'no_card'
 
   EVENTS_PAGE_SIZE = 25
 

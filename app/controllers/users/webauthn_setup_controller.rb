@@ -34,7 +34,7 @@ module Users
       else
         handle_failed_delete
       end
-      redirect_to account_url
+      redirect_to account_two_factor_authentication_path
     end
 
     def show_delete
@@ -95,6 +95,7 @@ module Users
       handle_remember_device
       Funnel::Registration::AddMfa.call(current_user.id, 'webauthn')
       flash[:success] = t('notices.webauthn_configured')
+      user_session[:auth_method] = 'webauthn'
       redirect_to after_mfa_setup_path
     end
 
@@ -109,7 +110,7 @@ module Users
         render :new
       else
         flash[:error] = t('errors.webauthn_setup.general_error')
-        redirect_to account_url
+        redirect_to account_two_factor_authentication_path
       end
     end
 

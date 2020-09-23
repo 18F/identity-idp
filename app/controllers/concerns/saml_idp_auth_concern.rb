@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/ModuleLength
 module SamlIdpAuthConcern
   extend ActiveSupport::Concern
   extend Forwardable
@@ -151,4 +150,3 @@ module SamlIdpAuthConcern
     url.to_s
   end
 end
-# rubocop:enable Metrics/ModuleLength

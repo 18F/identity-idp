@@ -72,6 +72,39 @@ describe('document-capture/services/upload', () => {
     }
   });
 
+  it('redirects error', async () => {
+    sandbox.stub(window, 'fetch').callsFake(() =>
+      Promise.resolve(
+        /** @type {Partial<Response>} */ ({
+          ok: false,
+          status: 418,
+          statusText: "I'm a teapot",
+          json: () =>
+            Promise.resolve({
+              success: false,
+              redirect: '#teapot',
+            }),
+        }),
+      ),
+    );
+
+    await Promise.race([
+      new Promise((resolve) => {
+        window.onhashchange = () => {
+          expect(window.location.hash).to.equal('#teapot');
+          resolve();
+        };
+      }),
+      upload(
+        {},
+        {
+          endpoint: 'https://example.com',
+          csrf: 'TYsqyyQ66Y',
+        },
+      ),
+    ]);
+  });
+
   it('throws unhandled response', async () => {
     sandbox.stub(window, 'fetch').callsFake(() =>
       Promise.resolve(

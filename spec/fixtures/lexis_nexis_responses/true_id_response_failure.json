@@ -1,0 +1,715 @@
+{
+  "Status": {
+    "ConversationId": "31000406185568",
+    "RequestId": "708870588",
+    "TransactionStatus": "failed",
+    "TransactionReasonCode": {
+      "Code": "failed_true_id",
+      "Description": "Failed: TrueID document authentication"
+    },
+    "Reference": "Reference1",
+    "ServerInfo": "bctlsidmapp01.risk.regn.net"
+  },
+  "Products": [
+    {
+      "ProductType": "TrueID",
+      "ExecutedStepName": "True_ID_Step",
+      "ProductConfigurationName": "AndreV3_TrueID_Flow",
+      "ProductStatus": "pass",
+      "ParameterDetails": [
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocumentName",
+          "Values": [{"Value": "Connecticut (CT) Driver License"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocAuthResult",
+          "Values": [{"Value": "Failed"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocIssuerCode",
+          "Values": [{"Value": "CT"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocIssuerName",
+          "Values": [{"Value": "Connecticut"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocClassCode",
+          "Values": [{"Value": "DriversLicense"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocClass",
+          "Values": [{"Value": "DriversLicense"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocClassName",
+          "Values": [{"Value": "Drivers License"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocIsGeneric",
+          "Values": [{"Value": "false"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocIssue",
+          "Values": [{"Value": "2009"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocIssueType",
+          "Values": [{"Value": "Driver License"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DocSize",
+          "Values": [{"Value": "ID1"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "ClassificationMode",
+          "Values": [{"Value": "Automatic"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "OrientationChanged",
+          "Values": [{"Value": "false"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "PresentationChanged",
+          "Values": [{"Value": "false"}]
+        },
+        {
+          "Group": "IMAGE_METRICS_RESULT",
+          "Name": "Side",
+          "Values":[
+            {"Value": "Front"},
+            {"Value": "Back"}
+          ]
+        },
+        {
+          "Group": "IMAGE_METRICS_RESULT",
+          "Name": "GlareMetric",
+          "Values": [
+            {"Value": "100"},
+            {"Value": "100"}
+          ]
+        },
+        {
+          "Group": "IMAGE_METRICS_RESULT",
+          "Name": "SharpnessMetric",
+          "Values":[
+            {"Value": "50"},
+            {"Value": "56"}
+          ]
+        },
+        {
+          "Group": "IMAGE_METRICS_RESULT",
+          "Name": "IsTampered",
+          "Values":[
+            {"Value": "0"},
+            {"Value": "0"}
+          ]
+        },
+        {
+          "Group": "IMAGE_METRICS_RESULT",
+          "Name": "IsCropped",
+          "Values":[
+            {"Value": "1"},
+            {"Value": "1"}
+          ]
+        },
+        {
+          "Group": "IMAGE_METRICS_RESULT",
+          "Name": "HorizontalResolution",
+          "Values":[
+            {"Value": "418"},
+            {"Value": "420"}
+          ]
+        },
+        {
+          "Group": "IMAGE_METRICS_RESULT",
+          "Name": "VerticalResolution",
+          "Values":[
+            {"Value": "418"},
+            {"Value": "420"}
+          ]
+        },
+        {
+          "Group": "IMAGE_METRICS_RESULT",
+          "Name": "Light",
+          "Values":[
+            {"Value": "White"},
+            {"Value": "White"}
+          ]
+        },
+        {
+          "Group": "IMAGE_METRICS_RESULT",
+          "Name": "MimeType",
+          "Values":[
+            {"Value": "image/vnd.ms-photo"},
+            {"Value": "image/vnd.ms-photo"}
+          ]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "FullName",
+          "Values": [{"Value": "EVAN M MOZINGO"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Sex",
+          "Values": [{"Value": "Male"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Age",
+          "Values": [{"Value": "30"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DOB_Year",
+          "Values": [{"Value": "1989"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DOB_Month",
+          "Values": [{"Value": "9"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "DOB_Day",
+          "Values": [{"Value": "11"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "ExpirationDate_Year",
+          "Values": [{"Value": "2017"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "ExpirationDate_Month",
+          "Values": [{"Value": "9"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "ExpirationDate_Day",
+          "Values": [{"Value": "11"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Portrait",
+          "Values": [{"Value": "/9j/4AAQSkZJRgABAQEBogGiAAD/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9\nPDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhC\nY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAAR\nCAI1AagDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAA\nAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkK\nFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWG\nh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl\n5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREA\nAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYk\nNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOE\nhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk\n5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDvOlVr2QRwjOeeOKtGqmok/ZwB6jmluNu2\npkzbmbcOcimEFgQykVKRgDpTQSDkkjHr0o9mP61IhiTy3KgfK3OaWVdwAGfYipdpUeYr8Z5B\nGaeyjdnGaXsx/WplSOHzThl2qvRQetOaz3jKnB9Ksxrt471E1yc7UGOTnn0o9mH1qaKcqOow\nycDrg9aiVv3i7Uz61baRm4AzmkkiUehOKr2RP1yYTNyAFIyASRWeYpPNOVOCeuOlX1kUrhk6\ncD3pnGSCPeq9iH12aK+XjJwhZfam+ZLliEOPp1q2MFscZ96axIJCn5fY8U/ZIX16ZBlin3Tg\ne3WkzuOAMAdR71PkClwWPzfnR7JC+vVCDgMPl57UjrzvCAMeBz0qdsAfSmgADFHsg+vVCBQT\n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\nRxR5agcDGKKKLABRc520UUUAf//Z"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_1_AlertName",
+          "Values": [{"Value": "Visible Pattern"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_2_AlertName",
+          "Values": [{"Value": "Visible Pattern"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_3_AlertName",
+          "Values": [{"Value": "Visible Pattern"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_4_AlertName",
+          "Values": [{"Value": "Visible Pattern"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_5_AlertName",
+          "Values": [{"Value": "1D Control Number Valid"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_6_AlertName",
+          "Values": [{"Value": "2D Barcode Content"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_7_AlertName",
+          "Values": [{"Value": "Control Number Crosscheck"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_8_AlertName",
+          "Values": [{"Value": "Document Expired"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_9_AlertName",
+          "Values": [{"Value": "2D Barcode Read"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_10_AlertName",
+          "Values": [{"Value": "Birth Date Crosscheck"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_11_AlertName",
+          "Values": [{"Value": "Birth Date Valid"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_12_AlertName",
+          "Values": [{"Value": "Document Classification"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_13_AlertName",
+          "Values": [{"Value": "Document Crosscheck Aggregation"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_14_AlertName",
+          "Values": [{"Value": "Document Number Crosscheck"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_15_AlertName",
+          "Values": [{"Value": "Expiration Date Crosscheck"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_16_AlertName",
+          "Values": [{"Value": "Expiration Date Valid"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_17_AlertName",
+          "Values": [{"Value": "Full Name Crosscheck"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_18_AlertName",
+          "Values": [{"Value": "Issue Date Crosscheck"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_19_AlertName",
+          "Values": [{"Value": "Issue Date Valid"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_20_AlertName",
+          "Values": [{"Value": "Layout Valid"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_21_AlertName",
+          "Values": [{"Value": "Sex Crosscheck"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_22_AlertName",
+          "Values": [{"Value": "Visible Color Response"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_23_AlertName",
+          "Values": [{"Value": "Visible Pattern"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_24_AlertName",
+          "Values": [{"Value": "Visible Photo Characteristics"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_1_AuthenticationResult",
+          "Values": [{
+            "Value": "Failed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_2_AuthenticationResult",
+          "Values": [{
+            "Value": "Failed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_3_AuthenticationResult",
+          "Values": [{
+            "Value": "Failed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_4_AuthenticationResult",
+          "Values": [{
+            "Value": "Failed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_5_AuthenticationResult",
+          "Values": [{
+            "Value": "Failed",
+            "Detail": "Checks whether the 1D barcode is indicative of known-fake documents."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_6_AuthenticationResult",
+          "Values": [{
+            "Value": "Failed",
+            "Detail": "Checked the contents of the two-dimensional barcode on the document."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_7_AuthenticationResult",
+          "Values": [{
+            "Value": "Caution",
+            "Detail": "Compare the machine-readable control number field to the human-readable control number field."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_8_AuthenticationResult",
+          "Values": [{
+            "Value": "Attention",
+            "Detail": "Checked if the document is expired."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_9_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Verified that the two-dimensional barcode on the document was read successfully."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_10_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable birth date field to the human-readable birth date field."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_11_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Verified that the birth date is valid."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_12_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Verified that the type of document is supported and is able to be fully authenticated."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_13_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Compared the machine-readable fields to the human-readable fields."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_14_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable document number field to the human-readable document number field."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_15_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable expiration date field to the human-readable expiration date field."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_16_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Verified that the expiration date is valid."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_17_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable full name field to the human-readable full name field."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_18_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable issue date field to the human-readable issue date field."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_19_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Verified that the issue date is valid."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_20_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Verified that the layout of the document is correct."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_21_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable sex field to the human-readable sex field."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_22_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Verified the color response of an element on the visible image."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_23_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_24_AuthenticationResult",
+          "Values": [{
+            "Value": "Passed",
+            "Detail": "Verifies the visible characteristics of the Photo"
+          }]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_1_Regions",
+          "Values": [{"Value": "Stylized DOB Label"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_2_Regions",
+          "Values": [{"Value": "Expires Label"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_3_Regions",
+          "Values": [{"Value": "Inches"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_4_Regions",
+          "Values": [{"Value": "Background Center"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_20_Regions",
+          "Values":[
+            {"Value": "2D Barcode Bottom Left"},
+            {"Value": "2D Barcode Top Left"}
+          ]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_22_Regions",
+          "Values": [{"Value": "Background Salmon"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_23_Regions",
+          "Values": [{"Value": "Background Boat"}]
+        },
+        {
+          "Group": "AUTHENTICATION_RESULT",
+          "Name": "Alert_24_Regions",
+          "Values": [{"Value": "Photo"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_FullName",
+          "Values": [{"Value": "EVAN M MOZINGO"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_Surname",
+          "Values": [{"Value": "MOZINGO"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_GivenName",
+          "Values": [{"Value": "EVAN M"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_FirstName",
+          "Values": [{"Value": "EVAN"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_MiddleName",
+          "Values": [{"Value": "M"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_DOB_Year",
+          "Values": [{"Value": "1989"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_DOB_Month",
+          "Values": [{"Value": "9"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_DOB_Day",
+          "Values": [{"Value": "11"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_DocumentClassName",
+          "Values": [{"Value": "Drivers License"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_DocumentNumber",
+          "Values": [{"Value": "096760377"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_ExpirationDate_Year",
+          "Values": [{"Value": "2017"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_ExpirationDate_Month",
+          "Values": [{"Value": "9"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_xpirationDate_Day",
+          "Values": [{"Value": "11"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_IssuingStateCode",
+          "Values": [{"Value": "CT"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_IssuingStateName",
+          "Values": [{"Value": "Connecticut"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_Address",
+          "Values": [{"Value": "1 MUDRY FARM RDâ€¨BRISTOL, CT 02809-2366"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_AddressLine1",
+          "Values": [{"Value": "1 MUDRY FARM RD"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_City",
+          "Values": [{"Value": "BRISTOL"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_State",
+          "Values": [{"Value": "CT"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_PostalCode",
+          "Values": [{"Value": "02809-2366"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_Sex",
+          "Values": [{"Value": "M"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_ControlNumber",
+          "Values": [{"Value": "demo a11230009"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_Height",
+          "Values": [{"Value": "5' 9\""}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_IssueDate_Year",
+          "Values": [{"Value": "2010"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_IssueDate_Month",
+          "Values": [{"Value": "10"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_IssueDate_Day",
+          "Values": [{"Value": "12"}]
+        },
+        {
+          "Group": "IDAUTH_FIELD_DATA",
+          "Name": "Fields_LicenseClass",
+          "Values": [{"Value": "D"}]
+        }
+      ]
+    },
+    {
+      "ProductType": "TrueID_Decision",
+      "ExecutedStepName": "Decision",
+      "ProductConfigurationName": "TRUEID_FAIL",
+      "ProductStatus": "fail",
+      "ProductReason":          {
+        "Code": "failed_true_id",
+        "Description": "Failed: TrueID document authentication"
+      }
+    }
+  ]
+}

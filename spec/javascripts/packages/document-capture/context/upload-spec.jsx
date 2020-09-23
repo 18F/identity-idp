@@ -10,8 +10,9 @@ describe('document-capture/context/upload', () => {
   it('defaults to the default upload service', () => {
     baseRender(
       createElement(() => {
-        const upload = useContext(UploadContext);
+        const { upload, isMockClient } = useContext(UploadContext);
         expect(upload).to.equal(defaultUpload);
+        expect(isMockClient).to.equal(false);
         return null;
       }),
     );
@@ -21,13 +22,25 @@ describe('document-capture/context/upload', () => {
     render(
       <UploadContextProvider upload={(payload) => Promise.resolve({ ...payload, received: true })}>
         {createElement(() => {
-          const upload = useContext(UploadContext);
+          const { upload } = useContext(UploadContext);
           useEffect(() => {
             upload({ sent: true }).then((result) => {
               expect(result).to.deep.equal({ sent: true, received: true });
               done();
             });
           }, [upload]);
+          return null;
+        })}
+      </UploadContextProvider>,
+    );
+  });
+
+  it('can be overridden with isMockClient value', () => {
+    render(
+      <UploadContextProvider isMockClient>
+        {createElement(() => {
+          const { isMockClient } = useContext(UploadContext);
+          expect(isMockClient).to.equal(true);
           return null;
         })}
       </UploadContextProvider>,
@@ -48,7 +61,7 @@ describe('document-capture/context/upload', () => {
         endpoint="https://example.com"
       >
         {createElement(() => {
-          const upload = useContext(UploadContext);
+          const { upload } = useContext(UploadContext);
           useEffect(() => {
             upload({ sent: true }).then((result) => {
               expect(result).to.deep.equal({
@@ -72,7 +85,7 @@ describe('document-capture/context/upload', () => {
         formData={{ foo: 'bar' }}
       >
         {createElement(() => {
-          const upload = useContext(UploadContext);
+          const { upload } = useContext(UploadContext);
           useEffect(() => {
             upload({ sent: true }).then((result) => {
               expect(result).to.deep.equal({

@@ -37,16 +37,5 @@
     ) %>
   </div>
 
-  <p id='acuant-fallback-text' class='my3 hidden'>
-    <%= t(
-      'doc_auth.instructions.document_capture_fallback_html',
-      link: link_to(
-        t('doc_auth.instructions.document_capture_fallback_link'),
-        '#',
-        id: 'acuant-fallback-link'
-      )
-    ) %>
-  </p>
-
   <%= javascript_pack_tag 'acuant_selfie_capture' %>
 <% end %>

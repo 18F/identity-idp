@@ -4,6 +4,8 @@ module DocAuth
       case doc_auth_vendor
       when 'acuant'
         DocAuth::Acuant::AcuantClient.new
+      when 'lexisnexis'
+        DocAuth::LexisNexis::LexisNexisClient.new
       when 'mock'
         DocAuth::Mock::DocAuthMockClient.new
       else

@@ -45,10 +45,10 @@ module DocAuth
 
       def parsed_yaml_from_uploaded_file
         @parsed_yaml_from_uploaded_file ||= begin
-                                              YAML.safe_load(uploaded_file)
-                                            rescue Psych::SyntaxError
-                                              nil
-                                            end
+          YAML.safe_load(uploaded_file)
+        rescue Psych::SyntaxError
+          nil
+        end
       end
 
       def pii_from_doc

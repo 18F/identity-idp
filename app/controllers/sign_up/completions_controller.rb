@@ -117,6 +117,7 @@ module SignUp
         email: email,
         verified_at: verified_at,
         x509_subject: current_user.piv_cac_configurations.first&.x509_dn_uuid,
+        x509_issuer: current_user.piv_cac_configurations.first&.x509_issuer,
       }
     end
 
@@ -144,6 +145,7 @@ module SignUp
         email: email,
         verified_at: verified_at,
         x509_subject: current_user.piv_cac_configurations.first&.x509_dn_uuid,
+        x509_issuer: current_user.piv_cac_configurations.first&.x509_issuer,
       }
     end
   end

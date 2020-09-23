@@ -1,12 +1,17 @@
 require 'rails_helper'
 
 describe 'accounts/_nav_auth.html.erb' do
+  include Devise::Test::ControllerHelpers
+
+  before do
+    @user = build_stubbed(:user, :with_backup_code)
+    allow(view).to receive(:greeting).and_return(@user.email)
+    allow(view).to receive(:current_user).and_return(@user)
+  end
+
   context 'user is signed in' do
     before do
-      @user = build_stubbed(:user, :signed_up)
-      allow(view).to receive(:current_user).and_return(@user)
-      allow(view).to receive(:greeting).and_return(@user.email)
-      render
+      render partial: 'accounts/nav_auth.html.erb', locals: { enable_mobile_nav: false }
     end
 
     it 'contains welcome message' do
@@ -19,6 +24,16 @@ describe 'accounts/_nav_auth.html.erb' do
 
     it 'contains sign out link' do
       expect(rendered).to have_link(t('links.sign_out'), href: destroy_user_session_path)
+    end
+  end
+
+  context 'mobile nav is enabled' do
+    before do
+      render partial: 'accounts/nav_auth.html.erb', locals: { enable_mobile_nav: true }
+    end
+
+    it 'contains menu button' do
+      expect(rendered).to have_button t('account.navigation.menu')
     end
   end
 end

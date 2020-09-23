@@ -15,8 +15,26 @@ import Button from './button';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import FileBase64CacheContext from '../context/file-base64-cache';
+import UploadContext from '../context/upload';
+import useIfStillMounted from '../hooks/use-if-still-mounted';
 
 /** @typedef {import('react').ReactNode} ReactNode */
+
+/**
+ * @typedef AcuantPassiveLiveness
+ *
+ * @prop {(callback:(nextImageData:string)=>void)=>void} startSelfieCapture Start liveness capture.
+ */
+
+/**
+ * @typedef AcuantGlobals
+ *
+ * @prop {AcuantPassiveLiveness} AcuantPassiveLiveness Acuant Passive Liveness API.
+ */
+
+/**
+ * @typedef {typeof window & AcuantGlobals} AcuantGlobal
+ */
 
 /**
  * @typedef AcuantCaptureProps
@@ -25,12 +43,9 @@ import FileBase64CacheContext from '../context/file-base64-cache';
  * @prop {string=} bannerText Optional banner text to show in file input.
  * @prop {Blob?=} value Current value.
  * @prop {(nextValue:Blob?)=>void} onChange Callback receiving next value on change.
- * @prop {'user'|'environment'=} capture Facing mode of capture. If capture is not specified and a
- * camera is supported, defaults to the Acuant environment camera capture.
+ * @prop {'user'=} capture Facing mode of capture. If capture is not specified and a camera is
+ * supported, defaults to the Acuant environment camera capture.
  * @prop {string=} className Optional additional class names.
- * @prop {number=} minimumGlareScore Minimum glare score to be considered acceptable.
- * @prop {number=} minimumSharpnessScore Minimum sharpness score to be considered acceptable.
- * @prop {number=} minimumFileSize Minimum file size (in bytes) to be considered acceptable.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  * @prop {ReactNode=} errorMessage Error to show.
  */
@@ -40,24 +55,14 @@ import FileBase64CacheContext from '../context/file-base64-cache';
  *
  * @type {number}
  */
-const DEFAULT_ACCEPTABLE_GLARE_SCORE = 50;
+const ACCEPTABLE_GLARE_SCORE = 50;
 
 /**
  * The minimum sharpness score value to be considered acceptable.
  *
  * @type {number}
  */
-const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 50;
-
-/**
- * The minimum file size (bytes) for an image to be considered acceptable.
- *
- * @type {number}
- */
-const DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES =
-  process.env.ACUANT_MINIMUM_FILE_SIZE === undefined
-    ? 250 * 1024
-    : Number(process.env.ACUANT_MINIMUM_FILE_SIZE);
+const ACCEPTABLE_SHARPNESS_SCORE = 50;
 
 /**
  * Returns an instance of File representing the given data URL.
@@ -90,9 +95,6 @@ function AcuantCapture(
     onChange = () => {},
     capture,
     className,
-    minimumGlareScore = DEFAULT_ACCEPTABLE_GLARE_SCORE,
-    minimumSharpnessScore = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
-    minimumFileSize = DEFAULT_ACCEPTABLE_FILE_SIZE_BYTES,
     allowUpload = true,
     errorMessage,
   },
@@ -100,10 +102,12 @@ function AcuantCapture(
 ) {
   const fileCache = useContext(FileBase64CacheContext);
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
+  const { isMockClient } = useContext(UploadContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
-  const [isCapturing, setIsCapturing] = useState(false);
+  const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {?string} */ (null));
+  const ifStillMounted = useIfStillMounted();
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
@@ -113,10 +117,20 @@ function AcuantCapture(
     // capture is supported. This takes advantage of the fact that state setter is noop if value of
     // `isCapturing` is already false.
     if (!hasCapture) {
-      setIsCapturing(false);
+      setIsCapturingEnvironment(false);
     }
   }, [hasCapture]);
   useImperativeHandle(ref, () => inputRef.current);
+
+  /**
+   * Calls onChange with next value and resets any errors which may be present.
+   *
+   * @param {Blob?} nextValue Next value.
+   */
+  function onChangeAndResetError(nextValue) {
+    setOwnErrorMessage(null);
+    onChange(nextValue);
+  }
 
   /**
    * Responds to a click by starting capture if supported in the environment, or triggering the
@@ -127,35 +141,29 @@ function AcuantCapture(
    */
   function startCaptureOrTriggerUpload(event) {
     if (event.target === inputRef.current) {
-      const shouldStartCapture = hasCapture && !capture && !isForceUploading.current;
+      const shouldStartEnvironmentCapture =
+        hasCapture && capture !== 'user' && !isForceUploading.current;
+      const shouldStartSelfieCapture = capture === 'user' && !isForceUploading.current;
 
-      if ((!allowUpload && !capture) || shouldStartCapture) {
+      if (!allowUpload || shouldStartSelfieCapture || shouldStartEnvironmentCapture) {
         event.preventDefault();
       }
 
-      if (shouldStartCapture) {
-        setIsCapturing(true);
+      if (shouldStartSelfieCapture) {
+        /** @type {AcuantGlobal} */ (window).AcuantPassiveLiveness.startSelfieCapture(
+          ifStillMounted((nextImageData) => {
+            const dataAsBlob = toBlob(`data:image/jpeg;base64,${nextImageData}`);
+            fileCache.set(dataAsBlob, nextImageData);
+            onChangeAndResetError(dataAsBlob);
+          }),
+        );
+      } else if (shouldStartEnvironmentCapture) {
+        setIsCapturingEnvironment(true);
       }
 
       isForceUploading.current = false;
     } else {
       inputRef.current?.click();
-    }
-  }
-
-  /**
-   * Calls onChange with next value if valid. Validation occurs separately to AcuantCaptureCanvas
-   * for common checks derived from file properties (file size, etc). If invalid, error state is
-   * assigned with appropriate error message.
-   *
-   * @param {Blob?} nextValue Next value candidate.
-   */
-  function onChangeIfValid(nextValue) {
-    if (nextValue && nextValue.size < minimumFileSize) {
-      setOwnErrorMessage(t('errors.doc_auth.photo_file_size'));
-    } else {
-      setOwnErrorMessage(null);
-      onChange(nextValue);
     }
   }
 
@@ -186,25 +194,25 @@ function AcuantCapture(
 
   return (
     <div className={className}>
-      {isCapturing && !capture && (
-        <FullScreen onRequestClose={() => setIsCapturing(false)}>
+      {isCapturingEnvironment && (
+        <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
-              if (nextCapture.glare < minimumGlareScore) {
+              if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
-              } else if (nextCapture.sharpness < minimumSharpnessScore) {
+              } else if (nextCapture.sharpness < ACCEPTABLE_SHARPNESS_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
               } else {
                 const dataAsBlob = toBlob(nextCapture.image.data);
                 fileCache.set(dataAsBlob, nextCapture.image.data);
-                onChangeIfValid(dataAsBlob);
+                onChangeAndResetError(dataAsBlob);
               }
 
-              setIsCapturing(false);
+              setIsCapturingEnvironment(false);
             }}
             onImageCaptureFailure={() => {
               setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
-              setIsCapturing(false);
+              setIsCapturingEnvironment(false);
             }}
           />
         </FullScreen>
@@ -214,12 +222,12 @@ function AcuantCapture(
         label={label}
         hint={hasCapture || !allowUpload ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
-        accept={['image/*']}
+        accept={isMockClient ? undefined : ['image/*']}
         capture={capture}
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
         onClick={startCaptureOrTriggerUpload}
-        onChange={onChangeIfValid}
+        onChange={onChangeAndResetError}
         onError={() => setOwnErrorMessage(null)}
       />
       <div className="margin-top-2">

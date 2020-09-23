@@ -7,7 +7,7 @@
 h1.h3.my0 = t('doc_auth.headings.upload_back')
 
 = t('doc_auth.info.upload_image')
-= simple_form_for(:doc_auth, url: idv_capture_doc_step_path(step: :back_image), method: 'PUT',
+= validated_form_for(:doc_auth, url: idv_capture_doc_step_path(step: :back_image), method: 'PUT',
     html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
   = f.input :image_data_url, as: :hidden
   .clearfix.mxn1

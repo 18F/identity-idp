@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'taking an action that revokes remember device' do
+  include NavigationHelper
+
   before do
     allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
   end
@@ -32,6 +34,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
+      visit account_two_factor_authentication_path
       click_on t('account.index.webauthn_delete')
       click_on t('account.index.webauthn_confirm_delete')
       first(:link, t('links.sign_out')).click
@@ -47,6 +50,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
+      visit account_two_factor_authentication_path
       page.find('.remove-piv').click
       click_on t('account.index.piv_cac_confirm_delete')
       first(:link, t('links.sign_out')).click
@@ -62,6 +66,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
+      visit account_two_factor_authentication_path
       page.find('.remove-auth-app').click # Delete
       click_on t('account.index.totp_confirm_delete')
       first(:link, t('links.sign_out')).click
@@ -77,6 +82,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
+      visit account_two_factor_authentication_path
       click_on t('forms.backup_code.regenerate')
       click_on t('account.index.backup_code_confirm_regenerate')
       expect(page).to have_content(t('forms.backup_code.subtitle'))
@@ -91,6 +97,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
+      visit account_two_factor_authentication_path
       click_on t('forms.backup_code.generate')
       click_continue
       click_continue
@@ -118,7 +125,7 @@ feature 'taking an action that revokes remember device' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
-      click_on(t('account.forget_all_browsers.link_title'))
+      find_sidenav_forget_browsers_link.click
       click_on(t('forms.buttons.confirm'))
 
       first(:link, t('links.sign_out')).click
@@ -135,7 +142,7 @@ feature 'taking an action that revokes remember device' do
         sign_in_with_remember_device_and_sign_out
 
         sign_in_user(user)
-        click_on(t('account.forget_all_browsers.link_title'))
+        find_sidenav_forget_browsers_link.click
         click_on(t('forms.buttons.confirm'))
 
         first(:link, t('links.sign_out')).click

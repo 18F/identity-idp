@@ -1,11 +1,16 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
+import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
+import { AcuantProvider } from '@18f/identity-document-capture';
 import SelfieStep, { validate } from '@18f/identity-document-capture/components/selfie-step';
 import { RequiredValueMissingError } from '@18f/identity-document-capture/components/form-steps';
 import render from '../../../support/render';
+import { useAcuant } from '../../../support/acuant';
 
 describe('document-capture/components/selfie-step', () => {
+  const { initialize } = useAcuant();
+
   describe('validate', () => {
     it('returns object with error if selfie is unset', () => {
       const value = {};
@@ -26,22 +31,18 @@ describe('document-capture/components/selfie-step', () => {
     });
   });
 
-  it('calls onChange callback with uploaded image', () => {
+  it('calls onChange callback with uploaded image', async () => {
     const onChange = sinon.stub();
-    const { getByLabelText } = render(<SelfieStep onChange={onChange} />);
-    const file = new window.File([''], 'upload.png', { type: 'image/png' });
+    const { getByLabelText } = render(
+      <AcuantProvider sdkSrc="about:blank">
+        <SelfieStep onChange={onChange} />
+      </AcuantProvider>,
+    );
+    initialize();
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
 
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_selfie'), file);
+    userEvent.click(getByLabelText('doc_auth.headings.document_capture_selfie'));
 
-    expect(onChange.getCall(0).args[0]).to.deep.equal({ selfie: file });
-  });
-
-  it('restricts accepted file types', () => {
-    const onChange = sinon.spy();
-    const { getByLabelText } = render(<SelfieStep onChange={onChange} />);
-
-    const input = getByLabelText('doc_auth.headings.document_capture_selfie');
-
-    expect(input.getAttribute('accept')).to.equal('image/*');
+    await waitFor(() => expect(onChange.getCall(0).args[0].selfie).to.be.instanceOf(window.Blob));
   });
 });

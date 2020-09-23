@@ -12,8 +12,8 @@
     <li class="mb1"><%= t('users.delete.bullet_3', app: APP_NAME) %></li>
   </ul>
   <div>
-    <%= simple_form_for(current_user, url: account_delete_path,
-                        html: { autocomplete: 'off', method: :post, role: 'form' }) do |f| %>
+    <%= validated_form_for(current_user, url: account_delete_path,
+                           html: { autocomplete: 'off', method: :post, role: 'form' }) do |f| %>
       <div class="mb3">
         <%= t('users.delete.instructions') %>
       </div>

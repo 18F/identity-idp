@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { waitForElementToBeRemoved } from '@testing-library/dom';
+import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import sinon from 'sinon';
 import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
@@ -311,6 +311,7 @@ describe('document-capture/components/acuant-capture', () => {
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
+        { isMockClient: false },
       );
 
       initialize({
@@ -391,38 +392,6 @@ describe('document-capture/components/acuant-capture', () => {
       await waitForElementToBeRemoved(error);
     });
 
-    it('renders error message if capture succeeds but photo is too small', async () => {
-      const { getByText, findByText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
-            <AcuantCapture label="Image" minimumFileSize={500 * 1024} />
-          </AcuantContextProvider>
-        </DeviceContext.Provider>,
-      );
-
-      initialize({
-        start: sinon.stub().callsFake(async (callbacks) => {
-          await Promise.resolve();
-          callbacks.onCaptured();
-          await Promise.resolve();
-          callbacks.onCropped({
-            glare: 70,
-            sharpness: 38,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          });
-        }),
-      });
-
-      const button = getByText('doc_auth.buttons.take_picture');
-      fireEvent.click(button);
-
-      const error = await findByText('errors.doc_auth.photo_blurry');
-
-      expect(error).to.be.ok();
-    });
-
     it('triggers forced upload', () => {
       const { getByText } = render(
         <I18nContext.Provider
@@ -439,8 +408,9 @@ describe('document-capture/components/acuant-capture', () => {
       initialize();
 
       const button = getByText('Upload');
-      fireEvent.click(button);
+      const defaultPrevented = !fireEvent.click(button);
 
+      expect(defaultPrevented).to.be.false();
       expect(window.AcuantCameraUI.start.called).to.be.false();
     });
 
@@ -451,7 +421,7 @@ describe('document-capture/components/acuant-capture', () => {
         >
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" capture="environment" />
+              <AcuantCapture label="Image" capture="user" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </I18nContext.Provider>,
@@ -461,10 +431,12 @@ describe('document-capture/components/acuant-capture', () => {
 
       const button = getByText('Upload');
       const input = getByLabelText('Image');
-      fireEvent.click(button);
+      const defaultPrevented = !fireEvent.click(button);
 
+      expect(defaultPrevented).to.be.false();
       expect(window.AcuantCameraUI.start.called).to.be.false();
-      expect(input.getAttribute('capture')).to.equal('environment');
+      expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.false();
+      expect(input.getAttribute('capture')).to.equal('user');
     });
 
     it('optionally disallows upload', () => {
@@ -491,10 +463,10 @@ describe('document-capture/components/acuant-capture', () => {
       expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
     });
 
-    it('still captures by `capture` value when upload disallowed', () => {
+    it('still captures selfie value when upload disallowed', () => {
       const { getByLabelText } = render(
         <AcuantContextProvider sdkSrc="about:blank">
-          <AcuantCapture label="Image" capture="environment" allowUpload={false} />
+          <AcuantCapture label="Image" capture="user" allowUpload={false} />
         </AcuantContextProvider>,
       );
 
@@ -503,8 +475,9 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByLabelText('Image');
       const defaultPrevented = !fireEvent.click(button);
 
-      expect(defaultPrevented).to.be.false();
+      expect(defaultPrevented).to.be.true();
       expect(window.AcuantCameraUI.start.called).to.be.false();
+      expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.true();
     });
   });
 
@@ -587,19 +560,37 @@ describe('document-capture/components/acuant-capture', () => {
     expect(hint).to.be.ok();
   });
 
-  it('captures by `capture` value', () => {
+  it('captures selfie', async () => {
+    const onChange = sinon.stub();
     const { getByLabelText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture label="Image" capture="environment" />
+        <AcuantCapture label="Image" capture="user" onChange={onChange} />
       </AcuantContextProvider>,
     );
 
-    initialize();
+    initialize({
+      startSelfieCapture: sinon.stub().callsArgWithAsync(0, ''),
+    });
 
     const button = getByLabelText('Image');
     const defaultPrevented = !fireEvent.click(button);
 
-    expect(defaultPrevented).to.be.false();
+    expect(defaultPrevented).to.be.true();
     expect(window.AcuantCameraUI.start.called).to.be.false();
+    expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.true();
+    await waitFor(() => expect(onChange.calledOnce).to.be.true());
+  });
+
+  it('restricts accepted file types', () => {
+    const { getByLabelText } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantCapture label="Image" />
+      </AcuantContextProvider>,
+      { isMockClient: false },
+    );
+
+    const input = getByLabelText('Image');
+
+    expect(input.getAttribute('accept')).to.equal('image/*');
   });
 });

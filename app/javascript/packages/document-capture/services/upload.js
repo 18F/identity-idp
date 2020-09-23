@@ -33,8 +33,8 @@ async function upload(payload, { endpoint, csrf }) {
     body: toFormData(payload),
   });
 
-  if (!response.ok && response.status !== 400) {
-    // 400 is an expected error state, handled after JSON deserialization. Anything else not OK
+  if (!response.ok && !response.status.toString().startsWith('4')) {
+    // 4xx is an expected error state, handled after JSON deserialization. Anything else not OK
     // should be treated as an unhandled error.
     throw new Error(response.statusText);
   }
@@ -43,8 +43,16 @@ async function upload(payload, { endpoint, csrf }) {
   if (!result.success) {
     /** @type {UploadErrorResponse} */
     const errorResult = result;
+
+    if (errorResult.redirect) {
+      window.location.href = errorResult.redirect;
+
+      // Avoid settling the promise, allowing the redirect to complete.
+      return new Promise(() => {});
+    }
+
     const error = new UploadFormEntriesError();
-    error.rawErrors = errorResult.errors;
+    error.rawErrors = /** @type {UploadFieldError[]} */ (errorResult.errors);
     throw error;
   }
 

@@ -59,33 +59,6 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'when file does not have an image content type' do
-      let(:tempfile) do
-        Tempfile.new.tap do |f|
-          f.write('test')
-          f.close
-        end
-      end
-      let(:selfie_image) { Rack::Test::UploadedFile.new(tempfile.path, 'text/plain') }
-
-      it 'is not valid' do
-        expect(form.valid?).to eq(false)
-        expect(form.errors[:selfie]).to eq(['File must be an image'])
-      end
-    end
-
-    context 'when file is empty' do
-      let(:tempfile) { Tempfile.new }
-      let(:selfie_image) { Rack::Test::UploadedFile.new(tempfile.path, 'image/jpeg') }
-
-      it 'is not valid' do
-        expect(form.valid?).to eq(false)
-        expect(form.errors[:selfie]).to eq(['File must be an image'])
-      end
-
-      after { tempfile.unlink }
-    end
-
     context 'when document_capture_session_uuid param is missing' do
       let(:document_capture_session_uuid) { nil }
 
@@ -102,6 +75,25 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(form.valid?).to eq(false)
         expect(form.errors[:document_capture_session]).to eq(['Please fill in this field.'])
       end
+    end
+
+    context 'when throttled from submission' do
+      before do
+        allow(Throttler::IsThrottledElseIncrement).to receive(:call).once.and_return(true)
+        form.submit
+      end
+
+      it 'is not valid' do
+        expect(form.valid?).to eq(false)
+        expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.acuant_throttle')])
+      end
+    end
+  end
+
+  describe '#submit' do
+    it 'includes remaining_attempts' do
+      response = form.submit
+      expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
     end
   end
 end

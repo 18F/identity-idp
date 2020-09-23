@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'Backup codes' do
   before do
     sign_in_and_2fa_user(user)
+    visit account_two_factor_authentication_path
   end
 
   context 'with backup codes' do
@@ -19,7 +20,7 @@ feature 'Backup codes' do
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(page).to have_current_path(account_path)
+      expect(page).to have_current_path(account_two_factor_authentication_path)
     end
 
     it 'allows you to delete the backup codes' do
@@ -31,7 +32,7 @@ feature 'Backup codes' do
       click_button t('account.index.backup_code_confirm_delete')
 
       expect(page).to have_content(t('notices.backup_codes_deleted'))
-      expect(page).to have_current_path(account_path)
+      expect(page).to have_current_path(account_two_factor_authentication_path)
     end
   end
 
@@ -58,13 +59,14 @@ feature 'Backup codes' do
                      in_time_zone('UTC')
       formatted_generated_at = l(generated_at, format: t('time.formats.event_timestamp'))
 
-      expected_message = "#{t('account.index.backup_codes_exist')}\n#{formatted_generated_at}"
+      expected_message = "#{t('account.index.backup_codes_exist')} #{formatted_generated_at}"
 
       expect(page).to have_current_path(backup_code_setup_path)
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(page).to have_current_path(account_path)
+      expect(page).to have_current_path(account_two_factor_authentication_path)
+
       expect(page).to have_content(expected_message)
     end
   end
@@ -73,7 +75,7 @@ feature 'Backup codes' do
     let(:user) { create(:user, :with_backup_code) }
 
     it 'the user is not prompted to set up another MFA upon login' do
-      expect(current_url).to eq account_url
+      expect(current_path).to eq account_two_factor_authentication_path
     end
   end
 end

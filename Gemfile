@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 5.2.4', '>= 5.2.4.3'
+gem 'rails', '~> 5.2.4', '>= 5.2.4.4'
 
 gem 'ahoy_matey', '~> 2.2', '>= 2.2.1'
 gem 'american_date'
@@ -11,7 +11,7 @@ gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'base32-crockford'
 gem 'device_detector'
-gem 'devise', '~> 4.7.1'
+gem 'devise', '~> 4.7.2'
 gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
@@ -93,7 +93,7 @@ group :development, :test do
   gem 'psych'
   gem 'puma'
   gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
-  gem 'rubocop', '~> 0.85.0', require: false
+  gem 'rubocop', '~> 0.91.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
   gem 'slim_lint'
 end
@@ -107,8 +107,8 @@ group :test do
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'faker'
   gem 'gmail'
-  gem 'rack-test', '>= 1.1.0'
   gem 'rack_session_access', '>= 0.2.0'
+  gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'shoulda-matchers', '~> 4.0.1', require: false
   gem 'timecop'

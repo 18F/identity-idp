@@ -19,7 +19,7 @@
   <li><%= t('doc_auth.instructions.take_pic4') %></li>
 </ul>
 
-<%= simple_form_for(
+<%= validated_form_for(
   :doc_auth,
   url: idv_capture_doc_step_path(step: :mobile_front_image),
   method: 'PUT',

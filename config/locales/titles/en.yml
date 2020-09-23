@@ -43,11 +43,10 @@ en:
         invalid: PIV/CAC certificate error
         missing: Internal error
     present_piv_cac: Present your PIV/CAC
-    present_webauthn: Present your hardware security key
+    present_webauthn: Connect your hardware security key
     reactivate_account: Reactivate your account
     registrations:
       new: Sign up for an account
-    remembered_browsers: Remembered browsers
     revoke_consent: Revoke Consent
     sign_up:
       completion_html: You've %{accent} with %{app}

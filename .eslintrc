@@ -42,7 +42,6 @@
       "app/components/index",
       "app/utils/index",
       "app/pw-toggle",
-      "app/form-validation",
       "app/form-field-format",
       "app/radio-btn",
       "app/print-personal-key",

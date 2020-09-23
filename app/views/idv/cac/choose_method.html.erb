@@ -5,10 +5,10 @@
   <br/>
   <%= image_tag asset_url('dod-logo.jpg'), height: 150 %>
   <br/>
-  <%= simple_form_for :cac,
-                      url: url_for,
-                      method: 'put',
-                      html: { autocomplete: 'off', role: 'form', class: 'mt2' } do |f| %>
+  <%= validated_form_for :cac,
+                         url: url_for,
+                         method: 'put',
+                         html: { autocomplete: 'off', role: 'form', class: 'mt2' } do |f| %>
     <button class="btn btn-primary" type="submit"><%= t('cac_proofing.buttons.use_cac') %></button>
   <% end %>
   <br/>

@@ -42,7 +42,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
 
       it 'does not error, just redirects to the account page' do
         subject
-        expect(response).to redirect_to(account_url)
+        expect(response).to redirect_to(account_connected_accounts_path)
       end
     end
 
@@ -51,7 +51,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
 
       it 'does not error, just redirects to the account page' do
         subject
-        expect(response).to redirect_to(account_url)
+        expect(response).to redirect_to(account_connected_accounts_path)
       end
     end
   end
@@ -64,7 +64,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
       expect { Timecop.freeze(now) { subject } }.
         to change { @identity.reload.deleted_at&.to_i }.
         from(nil).to(now.to_i)
-      expect(response).to redirect_to(account_url)
+      expect(response).to redirect_to(account_connected_accounts_path)
     end
 
     it 'logs an analytics event for revoking' do
@@ -80,7 +80,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
 
       it 'does not error, just redirects to the account page' do
         subject
-        expect(response).to redirect_to(account_url)
+        expect(response).to redirect_to(account_connected_accounts_path)
       end
     end
 
@@ -89,7 +89,7 @@ RSpec.describe Users::ServiceProviderRevokeController do
 
       it 'does not error, just redirects to the account page' do
         subject
-        expect(response).to redirect_to(account_url)
+        expect(response).to redirect_to(account_connected_accounts_path)
       end
     end
   end

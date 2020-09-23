@@ -11,7 +11,7 @@
   <%= t('doc_auth.headings.ssn') %>
 </h1>
 
-<%= simple_form_for(
+<%= validated_form_for(
   :doc_auth,
   url: url_for,
   method: :put,

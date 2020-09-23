@@ -20,11 +20,11 @@ module Idv
       # action.
       #
       if FeatureManagement.document_capture_step_enabled?
-        @flow.flow_session['Idv::Steps::MobileFrontImageStep'] = true
-        @flow.flow_session['Idv::Steps::CaptureMobileBackImageStep'] = true
-        @flow.flow_session['Idv::Steps::SelfieStep'] = true
+        flow.mark_step_complete(:mobile_front_image)
+        flow.mark_step_complete(:capture_mobile_back_image)
+        flow.mark_step_complete(:selfie)
       else
-        @flow.flow_session['Idv::Steps::DocumentCaptureStep'] = true
+        flow.mark_step_complete(:document_capture)
       end
       redirect_to_step(next_step)
     end
@@ -69,10 +69,17 @@ module Idv
         reset_session
         session[:doc_capture_user_id] = result.extra[:for_user_id]
         session[:document_capture_session_uuid] = document_capture_session_uuid
+        update_sp_session_with_result(result)
       else
         flash[:error] = t('errors.capture_doc.invalid_link')
         redirect_to root_url
       end
+    end
+
+    def update_sp_session_with_result(result)
+      session[:sp] ||= {}
+      session[:sp][:ial2_strict] = result.extra[:ial2_strict]
+      session[:sp][:issuer] = result.extra[:sp_issuer]
     end
 
     def token

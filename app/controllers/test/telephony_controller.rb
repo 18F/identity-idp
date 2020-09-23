@@ -1,6 +1,6 @@
 module Test
   class TelephonyController < ApplicationController
-    layout 'card_wide'
+    layout 'no_card'
 
     before_action :render_not_found_in_production
 

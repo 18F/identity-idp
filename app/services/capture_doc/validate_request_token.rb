@@ -22,6 +22,8 @@ module CaptureDoc
         for_user_id: capture_doc_request&.user_id,
         user_id: 'anonymous-uuid',
         event: 'Request token validation',
+        ial2_strict: capture_doc_request&.ial2_strict?,
+        sp_issuer: capture_doc_request&.issuer,
       }
     end
   end

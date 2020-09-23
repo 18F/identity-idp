@@ -61,10 +61,11 @@ en:
         <li class="mxn3">The background behind your ID is a solid color</li>
         <li class="mxn3">Background is visible behind the document</li>
         </ul>
+      lexisnexis_network_error: Sorry we are experiencing technical difficulties.
+        Please try again later.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
       photo_blurry: Photo is too blurry, please try again.
-      photo_file_size: Photo is too compressed, please try again with a higher quality.
       photo_glare: Photo has glare, please try again.
       quota_reached: Sorry your service provider has reached its identity verification
         limit.  Please contact your service provider for more information.

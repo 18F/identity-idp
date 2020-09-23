@@ -175,7 +175,11 @@ module Idv
       end
 
       def create_document_capture_session
-        document_capture_session = DocumentCaptureSession.create(user_id: user_id)
+        document_capture_session = DocumentCaptureSession.create(
+          user_id: user_id,
+          issuer: sp_session[:issuer],
+          ial2_strict: sp_session[:ial2_strict],
+        )
         flow_session[:document_capture_session_uuid] = document_capture_session.uuid
       end
 

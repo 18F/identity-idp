@@ -1,7 +1,7 @@
 ---
 en:
   user_authorization_confirmation:
-    continue: Sign in
+    continue: Continue
     currently_logged_in: 'You are already signed in with the following email:'
     or: Or
     sign_in: Switch emails

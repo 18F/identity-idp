@@ -174,7 +174,7 @@ es:
       gubernamental (PIV/CAC)
     webauthn_fallback:
       question: "¿No tienes tu llave de seguridad disponible?"
-    webauthn_header_text: Presenta tu llave de seguridad
+    webauthn_header_text: Conecte tu llave de seguridad
     webauthn_piv_available: Use su identificación de empleado del gobierno
     webauthn_verified:
       header: Llave de seguridad verificada

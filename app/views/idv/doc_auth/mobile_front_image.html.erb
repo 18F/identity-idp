@@ -19,7 +19,7 @@
   <li><%= t('doc_auth.instructions.take_pic4') %></li>
 </ul>
 
-<%= simple_form_for(
+<%= validated_form_for(
   :doc_auth,
   url: url_for,
   method: 'PUT',

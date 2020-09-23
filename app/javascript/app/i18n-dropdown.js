@@ -1,4 +1,4 @@
-import 'classlist.js';
+import 'classlist-polyfill';
 
 document.addEventListener('DOMContentLoaded', () => {
   const mobileLink = document.querySelector('.i18n-mobile-toggle > a');

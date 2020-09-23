@@ -91,7 +91,7 @@ describe Users::WebauthnSetupController do
 
         delete :delete, params: { id: webauthn_configuration.id }
 
-        expect(response).to redirect_to(account_url)
+        expect(response).to redirect_to(account_two_factor_authentication_path)
         expect(flash.now[:success]).to eq t('notices.webauthn_deleted')
         expect(WebauthnConfiguration.count).to eq(0)
       end

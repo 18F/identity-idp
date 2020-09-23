@@ -22,6 +22,7 @@ feature 'View personal key' do
         expect(Telephony).to receive(:send_personal_key_regeneration_notice).
           with(to: user.phone_configurations.first.phone)
 
+        visit account_two_factor_authentication_path
         click_button t('account.links.regenerate_personal_key')
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
@@ -38,6 +39,7 @@ feature 'View personal key' do
 
         first(:link, t('forms.buttons.edit')).click
         click_on(t('links.cancel'))
+        visit account_two_factor_authentication_path
         click_on(t('account.links.regenerate_personal_key'))
 
         expect(user.reload.encrypted_recovery_code_digest).to_not eq old_digest
@@ -47,6 +49,7 @@ feature 'View personal key' do
     context 'personal key actions and information' do
       before do
         sign_in_and_2fa_user(user)
+        visit account_two_factor_authentication_path
         click_button t('account.links.regenerate_personal_key')
       end
 
@@ -73,6 +76,7 @@ feature 'View personal key' do
 
     it 'prompts the user to enter their personal key to confirm they have it' do
       sign_in_and_2fa_user(user)
+      visit account_two_factor_authentication_path
       click_button t('account.links.regenerate_personal_key')
 
       click_acknowledge_personal_key
@@ -99,6 +103,7 @@ feature 'View personal key' do
 
     it 'confirms personal key on mobile', driver: :headless_chrome_mobile do
       sign_in_and_2fa_user(user)
+      visit account_two_factor_authentication_path
       click_button t('account.links.regenerate_personal_key')
 
       click_acknowledge_personal_key
