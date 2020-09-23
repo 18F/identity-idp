@@ -1,13 +1,11 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
+import { renderHook } from '@testing-library/react-hooks';
 import AssetContext from '@18f/identity-document-capture/context/asset';
-import render from '../../../support/render';
 
 describe('document-capture/context/asset', () => {
-  const ContextValue = () => JSON.stringify(useContext(AssetContext));
-
   it('defaults to empty object', () => {
-    const { container } = render(<ContextValue />);
+    const { result } = renderHook(() => useContext(AssetContext));
 
-    expect(container.textContent).to.equal('{}');
+    expect(result.current).to.deep.equal({});
   });
 });

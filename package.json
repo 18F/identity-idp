@@ -42,6 +42,7 @@
     "@rails/webpacker": "^4.1.0",
     "@testing-library/dom": "^7.21.8",
     "@testing-library/react": "^10.4.8",
+    "@testing-library/react-hooks": "^3.4.1",
     "@testing-library/user-event": "^12.0.11",
     "@types/react": "^16.9.46",
     "chai": "^3.5.0",
@@ -56,6 +57,7 @@
     "jsdom": "^16.2.2",
     "mocha": "^6.1.4",
     "prettier": "^2.0.5",
+    "react-test-renderer": "^16.13.1",
     "sinon": "^9.0.2",
     "typescript": "^3.9.7",
     "webpack-dev-server": "^3.11.0"

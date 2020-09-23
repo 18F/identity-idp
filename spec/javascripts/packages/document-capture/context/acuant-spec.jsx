@@ -1,4 +1,5 @@
-import React, { createElement, useContext } from 'react';
+import React, { useContext } from 'react';
+import { renderHook } from '@testing-library/react-hooks';
 import AcuantContext, {
   Provider as AcuantContextProvider,
 } from '@18f/identity-document-capture/context/acuant';
@@ -10,15 +11,10 @@ describe('document-capture/context/acuant', () => {
     delete window.AcuantCamera;
   });
 
-  function ContextReader() {
-    const value = useContext(AcuantContext);
-    return JSON.stringify(value);
-  }
-
   it('provides default context value', () => {
-    const { container } = render(<ContextReader />);
+    const { result } = renderHook(() => useContext(AcuantContext));
 
-    expect(JSON.parse(container.textContent)).to.eql({
+    expect(result.current).to.eql({
       isReady: false,
       isError: false,
       isCameraSupported: null,
@@ -28,11 +24,7 @@ describe('document-capture/context/acuant', () => {
   });
 
   it('appends script element', () => {
-    render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <ContextReader />
-      </AcuantContextProvider>,
-    );
+    render(<AcuantContextProvider sdkSrc="about:blank" />);
 
     const script = document.querySelector('script[src="about:blank"]');
 
@@ -40,13 +32,15 @@ describe('document-capture/context/acuant', () => {
   });
 
   it('provides context from provider crendentials', () => {
-    const { container } = render(
-      <AcuantContextProvider sdkSrc="about:blank" credentials="a" endpoint="b">
-        <ContextReader />
-      </AcuantContextProvider>,
-    );
+    const { result } = renderHook(() => useContext(AcuantContext), {
+      wrapper: ({ children }) => (
+        <AcuantContextProvider sdkSrc="about:blank" credentials="a" endpoint="b">
+          {children}
+        </AcuantContextProvider>
+      ),
+    });
 
-    expect(JSON.parse(container.textContent)).to.eql({
+    expect(result.current).to.eql({
       isReady: false,
       isError: false,
       isCameraSupported: null,
@@ -56,11 +50,11 @@ describe('document-capture/context/acuant', () => {
   });
 
   it('provides ready context when successfully loaded', () => {
-    const { container } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <ContextReader />
-      </AcuantContextProvider>,
-    );
+    const { result } = renderHook(() => useContext(AcuantContext), {
+      wrapper: ({ children }) => (
+        <AcuantContextProvider sdkSrc="about:blank">{children}</AcuantContextProvider>
+      ),
+    });
 
     window.AcuantJavascriptWebSdk = {
       initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
@@ -68,7 +62,7 @@ describe('document-capture/context/acuant', () => {
     window.AcuantCamera = { isCameraSupported: true };
     window.onAcuantSdkLoaded();
 
-    expect(JSON.parse(container.textContent)).to.eql({
+    expect(result.current).to.eql({
       isReady: true,
       isError: false,
       isCameraSupported: true,
@@ -78,40 +72,34 @@ describe('document-capture/context/acuant', () => {
   });
 
   it('has camera availability at time of ready', () => {
-    render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        {createElement(() => {
-          const { isReady, isCameraSupported } = useContext(AcuantContext);
-
-          if (isReady) {
-            expect(isCameraSupported).to.be.true();
-          }
-
-          return null;
-        })}
-      </AcuantContextProvider>,
-    );
+    const { result } = renderHook(() => useContext(AcuantContext), {
+      wrapper: ({ children }) => (
+        <AcuantContextProvider sdkSrc="about:blank">{children}</AcuantContextProvider>
+      ),
+    });
 
     window.AcuantJavascriptWebSdk = {
       initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
     };
     window.AcuantCamera = { isCameraSupported: true };
     window.onAcuantSdkLoaded();
+
+    expect(result.current.isCameraSupported).to.be.true();
   });
 
   it('provides error context when failed to loaded', () => {
-    const { container } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <ContextReader />
-      </AcuantContextProvider>,
-    );
+    const { result } = renderHook(() => useContext(AcuantContext), {
+      wrapper: ({ children }) => (
+        <AcuantContextProvider sdkSrc="about:blank">{children}</AcuantContextProvider>
+      ),
+    });
 
     window.AcuantJavascriptWebSdk = {
       initialize: (_credentials, _endpoint, { onFail }) => onFail(),
     };
     window.onAcuantSdkLoaded();
 
-    expect(JSON.parse(container.textContent)).to.eql({
+    expect(result.current).to.eql({
       isReady: false,
       isError: true,
       isCameraSupported: null,
@@ -121,11 +109,7 @@ describe('document-capture/context/acuant', () => {
   });
 
   it('cleans up after itself on unmount', () => {
-    const { unmount } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <ContextReader />
-      </AcuantContextProvider>,
-    );
+    const { unmount } = render(<AcuantContextProvider sdkSrc="about:blank" />);
 
     unmount();
 
