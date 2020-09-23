@@ -3,7 +3,11 @@ module Idv
     class VerifyWaitStepShow < VerifyBaseStep
       def call
         result = perform_resolution_and_check_ssn
-        mark_step_complete(:verify_wait) if result.success?
+        if result.success?
+          mark_step_complete(:verify_wait)
+        else
+          mark_step_incomplete(:verify)
+        end
       end
     end
   end
