@@ -1,4 +1,5 @@
 import React from 'react';
+import { renderHook } from '@testing-library/react-hooks';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
 import useI18n, { formatHTML } from '@18f/identity-document-capture/hooks/use-i18n';
 import render from '../../../support/render';
@@ -49,22 +50,24 @@ describe('document-capture/hooks/use-i18n', () => {
   });
 
   describe('t', () => {
-    const LocalizedString = ({ stringKey }) => useI18n().t(stringKey);
-
     it('returns localized key value', () => {
-      const { container } = render(
-        <I18nContext.Provider value={{ sample: 'translation' }}>
-          <LocalizedString stringKey="sample" />
-        </I18nContext.Provider>,
-      );
+      const { result } = renderHook(() => useI18n(), {
+        wrapper: ({ children }) => (
+          <I18nContext.Provider value={{ sample: 'translation' }}>{children}</I18nContext.Provider>
+        ),
+      });
 
-      expect(container.textContent).to.equal('translation');
+      const { t } = result.current;
+
+      expect(t('sample')).to.equal('translation');
     });
 
     it('falls back to key value', () => {
-      const { container } = render(<LocalizedString stringKey="sample" />);
+      const { result } = renderHook(() => useI18n());
 
-      expect(container.textContent).to.equal('sample');
+      const { t } = result.current;
+
+      expect(t('sample')).to.equal('sample');
     });
   });
 });
