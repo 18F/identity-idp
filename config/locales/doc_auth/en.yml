@@ -97,7 +97,7 @@ en:
         are the owner of the ID.
       upload_no_image_storage: We do not store images you upload. We only verify your
         identity.
-      use_cac_html: Do you have a government employee ID?
+      use_cac: Do you have a government employee ID?
       use_cac_link: Use a PIV/CAC instead
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity lets you access services that handle sensitive

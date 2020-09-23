@@ -102,7 +102,7 @@ es:
         propietario de la identificación.
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos
         su identidad.
-      use_cac_html: "¿Tiene una identificación de empleado del gobierno?"
+      use_cac: "¿Tiene una identificación de empleado del gobierno?"
       use_cac_link: Usa un PIV/CAC en su lugar
       welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
         no alguien que pretende ser usted. Verificar su identidad le permite acceder

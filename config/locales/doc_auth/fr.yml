@@ -111,7 +111,7 @@ fr:
         une photo de vous pour confirmer que vous êtes le propriétaire de la pièce
         d'identité.
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
-      use_cac_html: Avez-vous un identifiant d'employé du gouvernement?
+      use_cac: Avez-vous un identifiant d'employé du gouvernement?
       use_cac_link: Utilisez plutôt un PIV/CAC
       welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
         et non quelqu'un prétendant être vous. La vérification de votre identité vous
