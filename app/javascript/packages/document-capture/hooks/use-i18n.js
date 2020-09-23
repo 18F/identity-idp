@@ -27,7 +27,7 @@ import I18nContext from '../context/i18n';
  * @return {import('react').ReactNode}
  */
 export function formatHTML(html, handlers) {
-  const pattern = new RegExp(`</?(?:${Object.keys(handlers).join('|')})>`, 'g');
+  const pattern = new RegExp(`</?(?:${Object.keys(handlers).join('|')})(?: .*?)?>`, 'g');
   const matches = html.match(pattern);
   if (!matches) {
     return html;
@@ -37,7 +37,9 @@ export function formatHTML(html, handlers) {
   const parts = html.split(pattern);
 
   for (let i = 0; i < matches.length; i += 2) {
-    const tag = matches[i].slice(1, -1);
+    const match = matches[i];
+    const end = match.search(/[ >]/);
+    const tag = matches[i].slice(1, end);
     const part = /** @type {string} */ (parts[i + 1]);
     const replacement = createElement(handlers[tag], null, part);
     parts[i + 1] = cloneElement(replacement, { key: part });

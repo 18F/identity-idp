@@ -60,6 +60,20 @@ describe('document-capture/hooks/use-i18n', () => {
 
       expect(container.childNodes).to.have.lengthOf(2);
     });
+
+    it('allows (but discards) attributes in the input string', () => {
+      const formatted = formatHTML(
+        '<strong data-before>Hello</strong> <strong data-before>world</strong>',
+        {
+          strong: ({ children }) => <strong data-after>{children}</strong>,
+        },
+      );
+
+      const { container } = render(formatted);
+
+      expect(container.querySelectorAll('[data-after]')).to.have.lengthOf(2);
+      expect(container.querySelectorAll('[data-before]')).to.have.lengthOf(0);
+    });
   });
 
   describe('replaceVariables', () => {
