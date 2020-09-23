@@ -6,6 +6,7 @@ module Idv
         if result.success?
           mark_step_complete(:verify_wait)
         else
+          # return if result says continue to wait else...
           mark_step_incomplete(:verify)
         end
       end
