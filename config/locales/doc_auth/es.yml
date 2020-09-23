@@ -14,7 +14,7 @@ es:
       use_phone: Usa tu telefono
     errors:
       lexis_nexis:
-        1d_control_number_check: No pudimos leer el código de barras del número de
+        ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
         barcode_content_check: No pudimos leer el código de barras en la parte posterior
           de su identificación. Podría deberse a un problema con el código de barras

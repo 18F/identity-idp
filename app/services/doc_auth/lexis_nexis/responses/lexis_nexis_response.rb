@@ -74,7 +74,8 @@ module DocAuth
         end
 
         def transaction_reason_code
-          @transaction_reason_code ||= parsed_response_body.dig(:Status, :TransactionReasonCode, :Code)
+          @transaction_reason_code ||=
+            parsed_response_body.dig(:Status, :TransactionReasonCode, :Code)
         end
 
         def conversation_id

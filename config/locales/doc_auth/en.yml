@@ -14,7 +14,7 @@ en:
       use_phone: Use your phone
     errors:
       lexis_nexis:
-        1d_control_number_check: We couldn't read the control number barcode. Try
+        ref_control_number_check: We couldn't read the control number barcode. Try
           taking new pictures.
         barcode_content_check: We couldn't read the barcode on the back of your ID.
           It could be because of a problem with the barcode, or the barcode is a new

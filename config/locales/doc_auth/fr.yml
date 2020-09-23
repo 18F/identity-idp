@@ -14,7 +14,7 @@ fr:
       use_phone: Utilisez votre téléphone
     errors:
       lexis_nexis:
-        1d_control_number_check: Nous n'avons pas pu lire le code-barres du numéro
+        ref_control_number_check: Nous n'avons pas pu lire le code-barres du numéro
           de contrôle. Essayez de prendre de nouvelles photos.
         barcode_content_check: Nous n'avons pas pu lire le code-barres au dos de votre
           pièce d'identité. Cela peut être dû à un problème avec le code-barres, ou

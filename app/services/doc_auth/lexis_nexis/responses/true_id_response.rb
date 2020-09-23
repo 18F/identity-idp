@@ -68,15 +68,17 @@ module DocAuth
 
         def parse_alerts
           new_alerts = []
-          all_alerts = true_id_product[:AUTHENTICATION_RESULT].select { |key| key.start_with?('Alert_')  }
+          all_alerts = true_id_product[:AUTHENTICATION_RESULT].select do |key|
+            key.start_with?('Alert_')
+          end
           alert_names = all_alerts.select { |key| key.end_with?('_AlertName') }
 
           # Make the assumption that every alert will have an *_AlertName associated with it
-          alert_names.each do |key, value|
+          alert_names.each do |alert_name, _v|
             new_set = {}
-            alert_value = key.scan(/Alert_\d{1,2}_/).first
+            alert_value = alert_name.scan(/Alert_\d{1,2}_/).first
 
-            # Get the set of Alerts that are all the same number (e.g. Alert_11) so we can pull the values together
+            # Get the set of Alerts that are all the same number (e.g. Alert_11)
             alert_set = all_alerts.select { |key| key.match?(alert_value) }
 
             alert_set.each do |key, value|
