@@ -63,7 +63,7 @@ module Idv
           proofing_job_result.result.deep_symbolize_keys!
           proofing_job_result.pii.deep_symbolize_keys!
           State.done(pii: proofing_job_result.pii, result: proofing_job_result.result)
-        elsif dcs.pii
+        elsif proofing_job_result.pii
           State.in_progress
         end
       end
