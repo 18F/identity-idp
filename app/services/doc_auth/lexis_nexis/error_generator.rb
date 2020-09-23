@@ -71,14 +71,14 @@ module DocAuth
                 # AM: Log to Ahoy/Cloudwatch
                 errors[alert_msg_hash[:type]].add(I18n.t(alert_msg_hash[:msg_key]))
               end
-            # else
+              # else
               # We always want to make sure any unknown alerts that come through are noted
               # AM: Log to Ahoy/Cloudwatch
             end
           end
         elsif liveness_checking_enabled && response_info[:PortraitMatchResults].present?
           # Only bother to look for selfie_results if ID Auth was successful
-          if response_info[:PortraitMatchResults].dig(:FaceMatchResult) != "Pass"
+          if response_info[:PortraitMatchResults].dig(:FaceMatchResult) != 'Pass'
             errors[:selfie].add(I18n.t('doc_auth.errors.lexis_nexis.selfie_failure'))
             # else
             # Should probably log if selfie results isn't populated when we expect it to be?
@@ -86,7 +86,7 @@ module DocAuth
         end
 
         if errors.empty?
-          e = UnknownTrueIDError.new("TrueID failure escaped without useful errors")
+          e = UnknownTrueIDError.new('TrueID failure escaped without useful errors')
           # AM: Log to Ahoy/Cloudwatch
           NewRelic::Agent.notice_error(e, { custom_params: { response_info: response_info } })
 
