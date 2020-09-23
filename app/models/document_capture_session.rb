@@ -4,36 +4,42 @@ class DocumentCaptureSession < ApplicationRecord
   belongs_to :user
 
   def load_result
-    DocumentCaptureSessionResult.load(result_id)
+    EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
   end
 
   def load_proofing_result
-    ProofingDocumentCaptureSessionResult.load(result_id)
+    EncryptedRedisStructStorage.load(result_id, type: ProofingDocumentCaptureSessionResult)
   end
 
   def store_result_from_response(doc_auth_response)
-    DocumentCaptureSessionResult.store(
-      id: generate_result_id,
-      success: doc_auth_response.success?,
-      pii: doc_auth_response.pii_from_doc,
+    EncryptedRedisStructStorage.store(
+      DocumentCaptureSessionResult.new(
+        id: generate_result_id,
+        success: doc_auth_response.success?,
+        pii: doc_auth_response.pii_from_doc,
+      ),
     )
     save!
   end
 
   def store_proofing_pii_from_doc(pii_from_doc)
-    ProofingDocumentCaptureSessionResult.store(
-      id: generate_result_id,
-      pii: pii_from_doc,
-      result: nil,
+    EncryptedRedisStructStorage.store(
+      ProofingDocumentCaptureSessionResult.new(
+        id: generate_result_id,
+        pii: pii_from_doc,
+        result: nil,
+      ),
     )
     save!
   end
 
   def store_proofing_result(pii_from_doc, result)
-    ProofingDocumentCaptureSessionResult.store(
-      id: result_id,
-      pii: pii_from_doc,
-      result: result,
+    EncryptedRedisStructStorage.store(
+      ProofingDocumentCaptureSessionResult.new(
+        id: result_id,
+        pii: pii_from_doc,
+        result: result,
+      ),
     )
   end
 
