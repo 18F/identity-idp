@@ -40,7 +40,7 @@ describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         I18n.t('doc_auth.errors.lexis_nexis.expiration_checks'),
       )
       expect(errors[:back]).to contain_exactly(
-        I18n.t('doc_auth.errors.lexis_nexis.1d_control_number_check'),
+        I18n.t('doc_auth.errors.lexis_nexis.ref_control_number_check'),
         I18n.t('doc_auth.errors.lexis_nexis.control_number_check'),
         I18n.t('doc_auth.errors.lexis_nexis.barcode_content_check'),
       )

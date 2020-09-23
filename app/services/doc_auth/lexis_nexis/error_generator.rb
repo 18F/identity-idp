@@ -55,6 +55,7 @@ module DocAuth
       }.freeze
       # rubocop:enable Layout/LineLength
 
+      # rubocop:disable Metrics/PerceivedComplexity
       def self.generate_trueid_errors(response_info, liveness_checking_enabled)
         errors = Hash.new { |hash, key| hash[key] = Set.new }
 
@@ -65,23 +66,23 @@ module DocAuth
             if alert_msg_hash.present?
               # Don't show alert errors if the DocAuthResult has passed
               # With liveness turned on DocAuthResult can pass but the liveness check fails
-              if response_info[:DocAuthResult] != 'Passed' && alert[:result] != 'Passed'
+              if alert[:result] != 'Passed'
                 # We should log the counts of failing alerts that are given to users for analytics
                 # AM: Log to Ahoy/Cloudwatch
                 errors[alert_msg_hash[:type]].add(I18n.t(alert_msg_hash[:msg_key]))
               end
-            else
+            # else
               # We always want to make sure any unknown alerts that come through are noted
               # AM: Log to Ahoy/Cloudwatch
             end
           end
-        end
-
-        selfie_results = response_info[:PortraitMatchResults]
-        if selfie_results.present? && selfie_results.dig(:FaceMatchResult) != "Pass" && response_info[:DocAuthResult] == 'Passed'
+        elsif liveness_checking_enabled && response_info[:PortraitMatchResults].present?
+          # Only bother to look for selfie_results if ID Auth was successful
+          if response_info[:PortraitMatchResults].dig(:FaceMatchResult) != "Pass"
             errors[:selfie].add(I18n.t('doc_auth.errors.lexis_nexis.selfie_failure'))
-        else
-          # Should probably log if selfie results isn't populated when we expect it to be?
+            # else
+            # Should probably log if selfie results isn't populated when we expect it to be?
+          end
         end
 
         if errors.empty?
@@ -98,6 +99,7 @@ module DocAuth
 
         errors.transform_values(&:to_a)
       end
+      # rubocop:enable Metrics/PerceivedComplexity
     end
   end
 end
