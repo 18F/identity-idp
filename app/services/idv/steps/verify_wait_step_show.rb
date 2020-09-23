@@ -2,6 +2,7 @@ module Idv
   module Steps
     class VerifyWaitStepShow < VerifyBaseStep
       def call
+        poll_with_meta_refresh(10)
         result = perform_resolution_and_check_ssn
         if result.success?
           mark_step_complete(:verify_wait)

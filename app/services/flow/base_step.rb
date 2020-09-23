@@ -67,6 +67,7 @@ module Flow
       @flow.flow_session = {}
     end
 
-    delegate :flash, :session, :flow_session, :current_user, :params, :steps, :request, to: :@flow
+    delegate :flash, :session, :flow_session, :current_user, :params, :steps, :request,
+             :poll_with_meta_refresh, to: :@flow
   end
 end

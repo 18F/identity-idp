@@ -31,6 +31,10 @@ module Flow
       render_update(step, result)
     end
 
+    def poll_with_meta_refresh(seconds)
+      @meta_refresh = seconds
+    end
+
     private
 
     def current_step
