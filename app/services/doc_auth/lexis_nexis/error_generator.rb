@@ -4,9 +4,9 @@ module DocAuth
 
     class ErrorGenerator
       # These constants are the key names for the TrueID errors hash that is returned
-      ID = 'id'.to_sym
-      FRONT = 'front'.to_sym
-      BACK = 'back'.to_sym
+      ID = :id
+      FRONT = :front
+      BACK = :back
 
       # rubocop:disable Layout/LineLength
       TRUE_ID_MESSAGES = {
@@ -71,7 +71,6 @@ module DocAuth
                 # AM: Log to Ahoy/Cloudwatch
                 errors[alert_msg_hash[:type]].add(I18n.t(alert_msg_hash[:msg_key]))
               end
-              # else
               # We always want to make sure any unknown alerts that come through are noted
               # AM: Log to Ahoy/Cloudwatch
             end
@@ -80,7 +79,6 @@ module DocAuth
           # Only bother to look for selfie_results if ID Auth was successful
           if response_info[:PortraitMatchResults].dig(:FaceMatchResult) != 'Pass'
             errors[:selfie].add(I18n.t('doc_auth.errors.lexis_nexis.selfie_failure'))
-            # else
             # Should probably log if selfie results isn't populated when we expect it to be?
           end
         end
