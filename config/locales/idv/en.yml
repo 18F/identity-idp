@@ -105,7 +105,6 @@ en:
       hardfail: We can't log you in right now, but you can try verifying your identity
         again in %{hours} hours.
       jurisdiction:
-        no_id: I don't have a state-issued ID
         no_id_failure: We're working hard to add more ways to verify your identity.
       mail_sent: Your letter is on its way
       otp_delivery_method:

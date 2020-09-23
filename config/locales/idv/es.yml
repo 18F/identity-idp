@@ -106,7 +106,6 @@ es:
       hardfail: No puedes iniciar sesión en estos instantes pero puedes intentar verificar
         tu edad de nuevo en %{hours} horas.
       jurisdiction:
-        no_id: No tengo una identificación emitida por el estado
         no_id_failure: Estamos trabajando arduamente para agregar más formas de verificar
           su identidad.
       mail_sent: Su carta está en camino

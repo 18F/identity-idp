@@ -115,7 +115,6 @@ fr:
       hardfail: Nous ne pouvons pas vous connecter pour le moment, mais vous pouvez
         retenter d'effectuer la vérification de votre identité dans %{hours} heures.
       jurisdiction:
-        no_id: Je n'ai pas de carte d'identité officielle
         no_id_failure: Nous travaillons dur pour ajouter plus de moyens de vérifier
           votre identité.
       mail_sent: Votre lettre est en route
