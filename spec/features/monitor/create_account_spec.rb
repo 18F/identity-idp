@@ -37,8 +37,6 @@ RSpec.describe 'smoke test: create account' do
       before { monitor.filter_if('INT') }
 
       it 'creates new IAL2 account with SMS option for 2FA' do
-        pending 'missing personal key field error' if monitor.remote?
-
         visit_idp_from_oidc_sp_with_ial2
         verify_identity_with_doc_auth
         expect_user_is_redirected_to_oidc_sp
