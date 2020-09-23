@@ -24,7 +24,7 @@
 - doc_auth.info.id_worn_html
 - doc_auth.info.interstitial_eta
 - doc_auth.info.interstitial_thanks
-- doc_auth.info.no_other_id_help_bold
+- doc_auth.info.no_other_id_help_bold_html
 - doc_auth.instructions.document_capture_selfie_consent_banner
 - doc_auth.instructions.document_capture_selfie_consent_blocked
 - doc_auth.instructions.document_capture_selfie_consent_reason

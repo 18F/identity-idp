@@ -17,12 +17,13 @@ function MobileIntroStep() {
       </p>
       {serviceProvider && (
         <p>
-          {formatHTML(t('doc_auth.info.no_other_id_help_bold', { sp_name: serviceProvider.name }), {
-            'lg-strong': 'strong',
-            'lg-get-help-link': ({ children }) => (
-              <a href={serviceProvider.failureToProofURL}>{children}</a>
-            ),
-          })}
+          {formatHTML(
+            t('doc_auth.info.no_other_id_help_bold_html', { sp_name: serviceProvider.name }),
+            {
+              strong: 'strong',
+              a: ({ children }) => <a href={serviceProvider.failureToProofURL}>{children}</a>,
+            },
+          )}
         </p>
       )}
       <p className="margin-top-4 margin-bottom-0">

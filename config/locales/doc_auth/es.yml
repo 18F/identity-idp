@@ -80,8 +80,6 @@ es:
         la identificación emitida por su estado.
       - Cuando haya terminado, haga clic en continuar aquí para terminar de verificar
         su identidad.
-      no_other_id_help_bold: "<lg-strong>Si no tiene otra identificación emitida por
-        el estado</lg-strong>, <lg-get-help-link>obtenga ayuda en %{sp_name}.</lg-get-help-link>"
       no_other_id_help_bold_html: "<strong>Si no tiene otra identificación emitida
         por el estado</strong>, <a href=%{failure_to_proof_url}>obtenga ayuda en %{sp_name}.</a>"
       tag: Recomendar

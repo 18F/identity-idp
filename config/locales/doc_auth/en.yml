@@ -77,8 +77,6 @@ en:
       - Please check your phone and follow instructions to take a photo of your state
         issued ID.
       - When you are done click continue here to finish verifying your identity.
-      no_other_id_help_bold: "<lg-strong>If you do not have another state-issued ID</lg-strong>,
-        <lg-get-help-link>get help at %{sp_name}.</lg-get-help-link>"
       no_other_id_help_bold_html: "<strong>If you do not have another state-issued
         ID</strong>, <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
       tag: Recommended

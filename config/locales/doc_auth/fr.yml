@@ -84,8 +84,6 @@ fr:
       - Veuillez vérifier votre téléphone et suivre les instructions pour prendre
         une photo de votre identité émise par l'État.
       - Lorsque vous avez terminé, cliquez ici pour continuer à vérifier votre identité.
-      no_other_id_help_bold: "<lg-strong>Si vous n'avez pas d'autre identifiant émis
-        par l'État</lg-strong>, <lg-get-help-link>obtenez de l'aide auprès de %{sp_name}.</lg-get-help-link>"
       no_other_id_help_bold_html: "<strong>Si vous n'avez pas d'autre identifiant
         émis par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
         auprès de %{sp_name}.</a>"
