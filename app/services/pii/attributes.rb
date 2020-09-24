@@ -12,8 +12,8 @@ module Pii
   ) do
     def self.new_from_hash(hash)
       attrs = new
-      hash.
-        select { |key, _val| members.include?(key&.to_sym) }.
+      hash.with_indifferent_access.
+        slice(*members).
         each { |key, val| attrs[key] = val }
       attrs
     end

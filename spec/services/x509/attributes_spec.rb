@@ -27,6 +27,15 @@ describe X509::Attributes do
       expect(x509.subject).to eq nil
       expect(x509.presented).to eq nil
     end
+
+    it 'ignores unknown keys' do
+      x509 = described_class.new_from_hash(
+        subject: 'O=US, OU=DoD, CN=John.Doe.1234',
+        some_unknown_field: 'unknown'
+      )
+
+      expect(x509.subject).to eq('O=US, OU=DoD, CN=John.Doe.1234')
+    end
   end
 
   describe '#new_from_json' do
