@@ -23,7 +23,7 @@ module EncryptedRedisStructStorage
     return nil if ciphertext.blank?
 
     json = Encryption::Encryptors::SessionEncryptor.new.decrypt(ciphertext)
-    data = JSON.parse(json)
+    data = JSON.parse(json, symbolize_names: true)
     type.new.tap do |struct|
       struct.id = id
       init_fields(struct: struct, data: data)
@@ -57,9 +57,10 @@ module EncryptedRedisStructStorage
   # Assigns member fields from a hash. That way, it doesn't matter
   # if a Struct was created with keyword_init or not (and we can't currently
   # reflect on that field)
+  # @param [Struct] struct
   # @param [Hash] data
   def init_fields(struct:, data:)
-    data.each do |key, value|
+    data.slice(*struct.members).each do |key, value|
       struct[key] = value
     end
   end

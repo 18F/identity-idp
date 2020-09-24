@@ -144,4 +144,20 @@ RSpec.describe EncryptedRedisStructStorage do
       end
     end
   end
+
+  describe '.init_fields' do
+    it 'does not blow up with unknown keys' do
+      struct = struct_class.new
+
+      EncryptedRedisStructStorage.init_fields(
+        struct: struct,
+        data: {
+          a: 'a',
+          unknown_key: 'unknown_key',
+        },
+      )
+
+      expect(struct.a).to eq('a')
+    end
+  end
 end
