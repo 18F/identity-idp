@@ -13,6 +13,51 @@ es:
       upload_picture: Sube una foto
       use_phone: Usa tu telefono
     errors:
+      lexis_nexis:
+        ref_control_number_check: No pudimos leer el código de barras del número de
+          control. Intente tomar nuevas fotografías.
+        barcode_content_check: No pudimos leer el código de barras en la parte posterior
+          de su identificación. Podría deberse a un problema con el código de barras
+          o el código de barras es de un tipo nuevo que aún no reconocemos. Use otra
+          identificación emitida por el estado si tiene una.
+        barcode_read_check: No pudimos leer el código de barras en la parte posterior
+          de su identificación. Intente tomar una nueva foto.
+        birth_date_checks: No pudimos leer la fecha de nacimiento en su identificación.
+          Intente tomar nuevas fotografías.
+        control_number_check: No pudimos leer el número de referencia al dorso de
+          su identificación. Intente tomar una nueva foto.
+        doc_crosscheck: No pudimos reconocer su identificación. Puede estar gastado
+          o dañado, o el anverso y el reverso de la identificación no coinciden. Intente
+          tomar nuevas fotografías.
+        doc_number_checks: No pudimos leer el número de documento en su identificación.
+          Intente tomar nuevas fotografías.
+        expiration_checks: El documento ha caducado o no pudimos leer la fecha de
+          caducidad en su identificación. Si su identificación no está vencida, intente
+          tomar nuevas fotografías.
+        full_name_check: No pudimos leer el nombre completo en su identificación.
+          Intente tomar nuevas fotografías.
+        general_error_liveness: No pudimos verificar su identificación y foto suya.
+          Intente tomar nuevas fotografías.
+        general_error_no_liveness: No pudimos verificar su identificación. Intente
+          tomar nuevas fotografías.
+        id_not_recognized: No pudimos reconocer su identificación. Puede estar desgastado,
+          dañado o ser un tipo de identificación que no reconocemos. Intente tomar
+          nuevas fotografías.
+        id_not_verified: No pudimos verificar su identificación. Es posible que se
+          haya movido cuando tomó la foto. Intente tomar nuevas fotografías.
+        issue_date_checks: No pudimos leer la fecha de emisión en su identificación.
+          Intente tomar nuevas fotografías.
+        network_error: Lo sentimos, estamos experimentando dificultades técnicas.
+          Por favor, inténtelo de nuevo más tarde.
+        selfie_failure: No pudimos hacer coincidir tu foto con tu identificación.
+          Intente tomar una nueva foto de usted mismo o del frente de su identificación.
+        sex_check: No pudimos leer el sexo en tu identificación. Intente tomar nuevas
+          fotografías.
+        visible_color_check: No pudimos verificar su identificación. Es posible que
+          se haya movido cuando tomó la foto o que la imagen es demasiado oscura.
+          Intente tomar nuevas fotografías con una iluminación más brillante.
+        visible_photo_check: No pudimos verificar la foto de su identificación. Intente
+          tomar nuevas fotografías.
       not_a_file: La selección no era un archivo válido
     forms:
       address1: Dirección

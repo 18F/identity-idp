@@ -13,6 +13,52 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
+      lexis_nexis:
+        ref_control_number_check: Nous n'avons pas pu lire le code-barres du numéro
+          de contrôle. Essayez de prendre de nouvelles photos.
+        barcode_content_check: Nous n'avons pas pu lire le code-barres au dos de votre
+          pièce d'identité. Cela peut être dû à un problème avec le code-barres, ou
+          le code-barres est un nouveau type que nous ne reconnaissons pas encore.
+          Utilisez un autre identifiant émis par l'État si vous en avez un.
+        barcode_read_check: Nous n'avons pas pu lire le code-barres au dos de votre
+          pièce d'identité. Essayez de prendre une nouvelle photo.
+        birth_date_checks: Nous n'avons pas pu lire la date de naissance sur votre
+          pièce d'identité. Essayez de prendre de nouvelles photos.
+        control_number_check: Nous n'avons pas pu lire le numéro de référence au dos
+          de votre pièce d'identité. Essayez de prendre une nouvelle photo.
+        doc_crosscheck: Nous n'avons pas pu reconnaître votre identifiant. Elle peut
+          être usée ou endommagée, ou l'avant et l'arrière de la pièce d'identité
+          ne correspondent pas. Essayez de prendre de nouvelles photos.
+        doc_number_checks: Nous n'avons pas pu lire le numéro de document sur votre
+          pièce d'identité. Essayez de prendre de nouvelles photos.
+        expiration_checks: Le document a expiré ou nous n'avons pas pu lire la date
+          d'expiration sur votre pièce d'identité. Si votre pièce d'identité n'est
+          pas expirée, essayez de prendre de nouvelles photos.
+        full_name_check: Nous n'avons pas pu lire le nom complet sur votre pièce d'identité.
+          Essayez de prendre de nouvelles photos.
+        general_error_liveness: Nous n'avons pas pu vérifier votre pièce d'identité
+          et votre photo de vous. Essayez de prendre de nouvelles photos.
+        general_error_no_liveness: Nous n'avons pas pu vérifier votre identifiant.
+          Essayez de prendre de nouvelles photos.
+        id_not_recognized: Nous n'avons pas pu reconnaître votre identifiant. Il peut
+          être porté, endommagé ou d'un type d'identification que nous ne reconnaissons
+          pas. Essayez de prendre de nouvelles photos.
+        id_not_verified: Nous n'avons pas pu vérifier votre identifiant. Il a peut-être
+          bougé lorsque vous avez pris la photo. Essayez de prendre de nouvelles photos.
+        issue_date_checks: Nous n'avons pas pu lire la date d'émission sur votre pièce
+          d'identité. Essayez de prendre de nouvelles photos.
+        network_error: Désolé, nous rencontrons des difficultés techniques. Veuillez
+          réessayer plus tard.
+        selfie_failure: Nous n'avons pas pu faire correspondre la photo de vous à
+          votre pièce d'identité. Essayez de prendre une nouvelle photo de vous-même
+          ou du recto de votre pièce d'identité.
+        sex_check: Nous n'avons pas pu lire le sexe sur votre pièce d'identité. Essayez
+          de prendre de nouvelles photos.
+        visible_color_check: Nous n'avons pas pu vérifier votre identifiant. Il a
+          peut-être bougé lorsque vous avez pris la photo ou la photo est trop sombre.
+          Essayez de prendre de nouvelles photos avec un éclairage plus lumineux.
+        visible_photo_check: Nous n'avons pas pu vérifier la photo sur votre pièce
+          d'identité. Essayez de prendre de nouvelles photos.
       not_a_file: La sélection n'était pas un fichier valide
     forms:
       address1: Adresse

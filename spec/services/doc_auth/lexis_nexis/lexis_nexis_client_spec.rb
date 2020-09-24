@@ -130,7 +130,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
       )
 
       expect(result.success?).to eq(false)
-      expect(result.errors).to eq({ network: I18n.t('errors.doc_auth.lexisnexis_network_error') })
+      expect(result.errors).to eq({ network: I18n.t('doc_auth.errors.lexis_nexis.network_error') })
       expect(result.exception.message).to eq(
         'DocAuth::LexisNexis::Requests::TrueIdRequest Unexpected HTTP response 500',
       )
@@ -149,7 +149,7 @@ describe DocAuth::LexisNexis::LexisNexisClient do
       )
 
       expect(result.success?).to eq(false)
-      expect(result.errors).to eq({ network: I18n.t('errors.doc_auth.lexisnexis_network_error') })
+      expect(result.errors).to eq({ network: I18n.t('doc_auth.errors.lexis_nexis.network_error') })
       expect(result.exception.message).to eq(
         'Connection failed',
       )

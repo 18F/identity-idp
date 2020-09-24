@@ -27,7 +27,7 @@ module DocAuth
           Fields_PostalCode
           Fields_Height
         ].freeze
-        attr_reader :http_response
+        attr_reader :http_response, :liveness_checking_enabled
 
         def initialize(http_response)
           @http_response = http_response
@@ -71,6 +71,19 @@ module DocAuth
 
         def transaction_status
           parsed_response_body.dig(:Status, :TransactionStatus)
+        end
+
+        def transaction_reason_code
+          @transaction_reason_code ||=
+            parsed_response_body.dig(:Status, :TransactionReasonCode, :Code)
+        end
+
+        def conversation_id
+          @conversation_id ||= parsed_response_body.dig(:Status, :ConversationId)
+        end
+
+        def reference
+          @reference ||= parsed_response_body.dig(:Status, :Reference)
         end
 
         def products
