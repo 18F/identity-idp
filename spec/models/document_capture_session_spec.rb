@@ -33,7 +33,7 @@ describe DocumentCaptureSession do
       result = record.load_result
 
       expect(result.success?).to eq(doc_auth_response.success?)
-      expect(result.pii).to eq(doc_auth_response.pii_from_doc.stringify_keys)
+      expect(result.pii).to eq(doc_auth_response.pii_from_doc.deep_symbolize_keys)
     end
 
     it 'returns nil if the previously stored result does not exist or expired' do

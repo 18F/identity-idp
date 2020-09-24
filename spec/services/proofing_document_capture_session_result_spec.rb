@@ -16,9 +16,9 @@ RSpec.describe ProofingDocumentCaptureSessionResult do
       )
 
       expect(loaded_result.id).to eq(id)
-      expect(loaded_result.pii).to eq(pii)
+      expect(loaded_result.pii).to eq(pii.deep_symbolize_keys)
 
-      expect(loaded_result.result.deep_symbolize_keys!).to eq(idv_result)
+      expect(loaded_result.result).to eq(idv_result.deep_symbolize_keys)
     end
   end
 end
