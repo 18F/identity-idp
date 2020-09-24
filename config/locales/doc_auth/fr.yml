@@ -74,6 +74,8 @@ fr:
         images que vous téléchargez. Nous vérifions uniquement votre identité.
       document_capture_upload_image: Nous n'utilisons votre identifiant que pour vérifier
         votre identité, et nous n'enregistrerons aucune image.
+      id_worn_html: "<strong>Votre pièce d'identité est-elle usée ou endommagée?</strong>
+        Utilisez un autre identifiant émis par l'État si vous en avez un."
       interstitial_eta: Cela peut prendre jusqu'à une minute. Nous chargerons automatiquement
         l’étape suivante une fois celle-ci terminée.
       interstitial_thanks: Merci pour votre patience!
@@ -81,6 +83,9 @@ fr:
       - Veuillez vérifier votre téléphone et suivre les instructions pour prendre
         une photo de votre identité émise par l'État.
       - Lorsque vous avez terminé, cliquez ici pour continuer à vérifier votre identité.
+      no_other_id_help_bold_html: "<strong>Si vous n'avez pas d'autre identifiant
+        émis par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
+        auprès de %{sp_name}.</a>"
       tag: Recommander
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
@@ -103,7 +108,7 @@ fr:
         une photo de vous pour confirmer que vous êtes le propriétaire de la pièce
         d'identité.
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
-      use_cac_html: Avez-vous un identifiant d'employé du gouvernement? %{link}
+      use_cac: Avez-vous un identifiant d'employé du gouvernement?
       use_cac_link: Utilisez plutôt un PIV/CAC
       welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
         et non quelqu'un prétendant être vous. La vérification de votre identité vous

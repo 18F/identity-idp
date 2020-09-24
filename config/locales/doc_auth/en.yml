@@ -67,6 +67,8 @@ en:
         your identity.
       document_capture_upload_image: We only use your ID to verify your identity,
         and we will not save any images.
+      id_worn_html: "<strong>Is your ID worn or damaged?</strong> Use another state-issued
+        ID if you have one."
       interstitial_eta: This might take up to a minute. We’ll load the next step automatically
         when it’s done.
       interstitial_thanks: Thanks for your patience!
@@ -74,6 +76,8 @@ en:
       - Please check your phone and follow instructions to take a photo of your state
         issued ID.
       - When you are done click continue here to finish verifying your identity.
+      no_other_id_help_bold_html: "<strong>If you do not have another state-issued
+        ID</strong>, <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
@@ -90,7 +94,7 @@ en:
         are the owner of the ID.
       upload_no_image_storage: We do not store images you upload. We only verify your
         identity.
-      use_cac_html: Do you have a government employee ID? %{link}
+      use_cac: Do you have a government employee ID?
       use_cac_link: Use a PIV/CAC instead
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity lets you access services that handle sensitive

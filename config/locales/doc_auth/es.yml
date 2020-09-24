@@ -69,6 +69,8 @@ es:
         que subes. Solo verificamos su identidad.
       document_capture_upload_image: Solo utilizamos su ID para verificar su identidad
         y no guardaremos ninguna imagen.
+      id_worn_html: "<strong>¿Su identificación está desgastada o dañada?</strong>
+        Use otra identificación emitida por el estado si tiene una."
       interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente
         paso automáticamente cuando esté listo.
       interstitial_thanks: "¡Gracias por su paciencia!"
@@ -77,6 +79,8 @@ es:
         la identificación emitida por su estado.
       - Cuando haya terminado, haga clic en continuar aquí para terminar de verificar
         su identidad.
+      no_other_id_help_bold_html: "<strong>Si no tiene otra identificación emitida
+        por el estado</strong>, <a href=%{failure_to_proof_url}>obtenga ayuda en %{sp_name}.</a>"
       tag: Recomendar
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su identificación.
         Solo usamos las imágenes para verificar su identidad.
@@ -95,7 +99,7 @@ es:
         propietario de la identificación.
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos
         su identidad.
-      use_cac_html: "¿Tiene una identificación de empleado del gobierno? %{link}"
+      use_cac: "¿Tiene una identificación de empleado del gobierno?"
       use_cac_link: Usa un PIV/CAC en su lugar
       welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
         no alguien que pretende ser usted. Verificar su identidad le permite acceder

@@ -20,8 +20,10 @@
 - doc_auth.info.capture_status_tap_to_capture
 - doc_auth.info.document_capture_intro_acknowledgment
 - doc_auth.info.document_capture_upload_image
+- doc_auth.info.id_worn_html
 - doc_auth.info.interstitial_eta
 - doc_auth.info.interstitial_thanks
+- doc_auth.info.no_other_id_help_bold_html
 - doc_auth.instructions.document_capture_selfie_consent_banner
 - doc_auth.instructions.document_capture_selfie_consent_blocked
 - doc_auth.instructions.document_capture_selfie_consent_reason
@@ -52,7 +54,6 @@
 - idv.errors.pattern_mismatch.state_id_number
 - idv.errors.pattern_mismatch.zipcode
 - idv.failure.button.warning
-- idv.messages.jurisdiction.no_id
 - instructions.password.strength.i
 - instructions.password.strength.ii
 - instructions.password.strength.iii

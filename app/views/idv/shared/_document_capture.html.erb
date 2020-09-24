@@ -8,6 +8,8 @@
   mock_client: (DocAuth::Client.doc_auth_vendor == 'mock').presence,
   document_capture_session_uuid: flow_session[:document_capture_session_uuid],
   endpoint: api_verify_images_url,
+  sp_name: sp_name,
+  failure_to_proof_url: failure_to_proof_url,
 } %>
 <div class="js-fallback">
   <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
