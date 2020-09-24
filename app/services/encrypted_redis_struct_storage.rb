@@ -23,7 +23,7 @@ module EncryptedRedisStructStorage
     return nil if ciphertext.blank?
 
     json = Encryption::Encryptors::SessionEncryptor.new.decrypt(ciphertext)
-    data = JSON.parse(json, symbolize_names: true)
+    data = JSON.parse(json, symbolize_names: true).with_indifferent_access
     type.new.tap do |struct|
       struct.id = id
       init_fields(struct: struct, data: data)
