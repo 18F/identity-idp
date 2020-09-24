@@ -47,11 +47,8 @@ module EncryptedRedisStructStorage
   end
 
   def key(id, type:)
-    if type.respond_to?(:redis_key_prefix)
-      [type.redis_key_prefix, id].join(':')
-    else
-      raise "#{self} expected #{type.name} to have defined class method redis_key_prefix"
-    end
+    return [type.redis_key_prefix, id].join(':') if type.respond_to?(:redis_key_prefix)
+    raise "#{self} expected #{type.name} to have defined class method redis_key_prefix"
   end
 
   # Assigns member fields from a hash. That way, it doesn't matter
