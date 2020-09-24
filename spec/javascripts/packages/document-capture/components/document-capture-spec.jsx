@@ -188,7 +188,7 @@ describe('document-capture/components/document-capture', () => {
     initialize({ isCameraSupported: false });
     window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
 
-    let continueButton = getByText('forms.buttons.continue');
+    const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
     userEvent.upload(
@@ -218,12 +218,10 @@ describe('document-capture/components/document-capture', () => {
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    const heading = getByText('doc_auth.headings.document_capture');
+    const heading = getByText('doc_auth.headings.review_issues');
     expect(document.activeElement).to.equal(heading);
-    continueButton = getByText('forms.buttons.continue');
-    userEvent.click(continueButton);
 
-    const hasValueSelected = !!getByText('doc_auth.forms.change_file');
+    const hasValueSelected = getAllByText('doc_auth.forms.change_file').length === 3;
     expect(hasValueSelected).to.be.true();
 
     // Verify re-submission. It will fail again, but test can at least assure that the interstitial
@@ -292,7 +290,7 @@ describe('document-capture/components/document-capture', () => {
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    const heading = getByText('doc_auth.headings.document_capture');
+    const heading = getByText('doc_auth.headings.review_issues');
     expect(document.activeElement).to.equal(heading);
 
     const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');

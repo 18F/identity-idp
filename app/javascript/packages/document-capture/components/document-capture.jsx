@@ -4,9 +4,11 @@ import FormSteps from './form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep from './documents-step';
 import SelfieStep from './selfie-step';
+import ReviewIssuesStep from './review-issues-step';
 import MobileIntroStep from './mobile-intro-step';
 import DeviceContext from '../context/device';
 import Submission from './submission';
+import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import useI18n from '../hooks/use-i18n';
 
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -40,27 +42,6 @@ function DocumentCapture({ isLivenessEnabled = true }) {
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
 
-  const steps = /** @type {FormStep[]} */ ([
-    isMobile && {
-      name: 'intro',
-      title: t('doc_auth.headings.document_capture'),
-      form: MobileIntroStep,
-    },
-    {
-      name: 'documents',
-      title: t('doc_auth.headings.document_capture'),
-      form: DocumentsStep,
-      footer: isMobile
-        ? undefined
-        : () => <p>{t('doc_auth.info.document_capture_upload_image')}</p>,
-    },
-    isLivenessEnabled && {
-      name: 'selfie',
-      title: t('doc_auth.headings.selfie'),
-      form: SelfieStep,
-    },
-  ].filter(Boolean));
-
   /**
    * Clears error state and sets form values for submission.
    *
@@ -72,6 +53,35 @@ function DocumentCapture({ isLivenessEnabled = true }) {
   }
 
   const isFormEntriesError = submissionError && submissionError instanceof UploadFormEntriesError;
+
+  /** @type {FormStep[]} */
+  const steps = submissionError
+    ? [
+        {
+          name: 'review',
+          title: t('doc_auth.headings.review_issues'),
+          form: ReviewIssuesStep,
+          footer: DesktopDocumentDisclosure,
+        },
+      ]
+    : /** @type {FormStep[]} */ ([
+        isMobile && {
+          name: 'intro',
+          title: t('doc_auth.headings.document_capture'),
+          form: MobileIntroStep,
+        },
+        {
+          name: 'documents',
+          title: t('doc_auth.headings.document_capture'),
+          form: DocumentsStep,
+          footer: DesktopDocumentDisclosure,
+        },
+        isLivenessEnabled && {
+          name: 'selfie',
+          title: t('doc_auth.headings.selfie'),
+          form: SelfieStep,
+        },
+      ].filter(Boolean));
 
   return formValues && !submissionError ? (
     <Submission

@@ -10,6 +10,7 @@
 - doc_auth.headings.document_capture_back
 - doc_auth.headings.document_capture_front
 - doc_auth.headings.document_capture_selfie
+- doc_auth.headings.review_issues
 - doc_auth.headings.front
 - doc_auth.headings.interstitial
 - doc_auth.headings.photo
@@ -37,6 +38,16 @@
 - doc_auth.tips.document_capture_selfie_text1
 - doc_auth.tips.document_capture_selfie_text2
 - doc_auth.tips.document_capture_selfie_text3
+- doc_auth.tips.review_issues_id_header_text
+- doc_auth.tips.review_issues_id_text1
+- doc_auth.tips.review_issues_id_text2
+- doc_auth.tips.review_issues_id_text3
+- doc_auth.tips.review_issues_id_text4
+- doc_auth.tips.review_issues_selfie_header_text
+- doc_auth.tips.review_issues_selfie_text1
+- doc_auth.tips.review_issues_selfie_text2
+- doc_auth.tips.review_issues_selfie_text3
+- doc_auth.tips.review_issues_selfie_text4
 - errors.doc_auth.acuant_network_error
 - errors.doc_auth.capture_failure
 - errors.doc_auth.document_capture_selfie_consent_blocked
