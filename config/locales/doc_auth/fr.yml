@@ -63,7 +63,6 @@ fr:
       verify: S'il vous plaît vérifier vos informations
       welcome: Nous devons vérifier votre identité
     info:
-      accepted_ids: Liste complète des identifiants acceptés
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur
         Web
       capture_status_capturing: Prendre la photo

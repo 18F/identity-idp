@@ -59,7 +59,6 @@ es:
       verify: Por favor verifica tu información
       welcome: Nosotros necesitamos verificar tu identidad
     info:
-      accepted_ids: Lista completa de identificaciones aceptadas
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web
       capture_status_capturing: Capturando
       capture_status_none: Alinea

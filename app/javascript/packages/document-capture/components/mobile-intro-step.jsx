@@ -12,8 +12,7 @@ function MobileIntroStep() {
       <p>
         {formatHTML(t('doc_auth.info.id_worn_html'), {
           strong: 'strong',
-        })}{' '}
-        <a href="/">{t('doc_auth.info.accepted_ids')}</a>
+        })}
       </p>
       {serviceProvider && (
         <p>

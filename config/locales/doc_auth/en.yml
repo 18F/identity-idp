@@ -57,7 +57,6 @@ en:
       verify: Please verify your information
       welcome: We need to verify your identity
     info:
-      accepted_ids: Full list of accepted IDs
       camera_required: Your mobile phone must have a camera and a web browser
       capture_status_capturing: Capturing
       capture_status_none: Align
