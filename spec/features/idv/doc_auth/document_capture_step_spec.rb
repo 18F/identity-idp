@@ -14,7 +14,6 @@ feature 'doc auth document capture step' do
       and_return(document_capture_step_enabled)
     allow(Figaro.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
-    allow(Figaro.env).to receive(:acuant_sdk_document_capture_enabled).and_return('true')
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
   end

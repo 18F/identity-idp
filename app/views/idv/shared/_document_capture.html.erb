@@ -1,123 +1,115 @@
-<% if Figaro.env.acuant_sdk_document_capture_enabled == 'true' %>
-  <% title t('doc_auth.titles.doc_auth') %>
-  <% content_for :meta_tags do %>
-    <meta
-      name="acuant-sdk-initialization-endpoint"
-      content="<%= Figaro.env.acuant_sdk_initialization_endpoint %>"
-    >
-    <meta
-      name="acuant-sdk-initialization-creds"
-      content="<%= Figaro.env.acuant_sdk_initialization_creds %>"
-    >
-  <% end %>
-  <%= tag.div id: 'document-capture-form', data: {
-    liveness: liveness_checking_enabled?.presence,
-    mock_client: (DocAuth::Client.doc_auth_vendor == 'mock').presence,
-    document_capture_session_uuid: flow_session[:document_capture_session_uuid],
-    endpoint: api_verify_images_url,
-  } %>
-  <div class="js-fallback">
-    <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
-
-    <h1 class="h3 my0">
-      <% if liveness_checking_enabled? %>
-        <%= t('doc_auth.headings.document_capture_heading_with_selfie_html') %>
-      <% else %>
-        <%= t('doc_auth.headings.document_capture_heading_html') %>
-      <% end %>
-    </h1>
-
-    <%= validated_form_for(
-      :doc_auth,
-      url: url_for,
-      method: 'PUT',
-      html: { autocomplete: 'off', role: 'form', class: 'mt2 js-document-capture-form' }
-    ) do |f| %>
-      <%# ---- Front Image ----- %>
-
-      <p class="mt2 mb0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
-      <ul>
-        <li><%= t('doc_auth.tips.document_capture_id_text1') %></li>
-        <li><%= t('doc_auth.tips.document_capture_id_text2') %></li>
-        <li><%= t('doc_auth.tips.document_capture_id_text3') %></li>
-        <li><%= t('doc_auth.tips.document_capture_id_text4') %></li>
-      </ul>
-
-      <div class="front-image mt2">
-        <p>
-          <strong>
-            <%= t('doc_auth.headings.document_capture_front') %><br/>
-          </strong>
-          <%= t('doc_auth.tips.document_capture_hint') %>
-        </p>
-
-        <%= f.input :front_image_data_url, as: :hidden %>
-        <%= f.input :front_image, label: false, as: :file, required: true %>
-        <div class='my2' id='front_target'></div>
-      </div>
-
-      <%# ---- Back Image ----- %>
-
-      <div class="back-image mt3">
-        <p>
-          <strong>
-            <%= t('doc_auth.headings.document_capture_back') %><br/>
-          </strong>
-          <%= t('doc_auth.tips.document_capture_hint') %>
-        </p>
-
-        <%= f.input :back_image_data_url, as: :hidden %>
-        <%= f.input :back_image, label: false, as: :file, required: true %>
-        <div class='my2' id='back_target'></div>
-      </div>
-
-      <%# ---- Selfie ----- %>
-      <% if liveness_checking_enabled? %>
-        <hr class="mt3 mb3"/>
-        <div class="selfie">
-          <p><%= t('doc_auth.instructions.document_capture_selfie_instructions') %></p>
-
-          <p class="mt2 mb0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
-          <ul>
-            <li><%= t('doc_auth.tips.document_capture_selfie_text1') %></li>
-            <li><%= t('doc_auth.tips.document_capture_selfie_text2') %></li>
-            <li><%= t('doc_auth.tips.document_capture_selfie_text3') %></li>
-          </ul>
-
-          <p class='mt3'>
-            <strong>
-              <%= t('doc_auth.headings.document_capture_selfie') %><br/>
-            </strong>
-            <%= t('doc_auth.tips.document_capture_hint') %>
-          </p>
-
-          <%= f.input :selfie_image_data_url, as: :hidden %>
-          <%= f.input :selfie_image, label: false, as: :file, required: true %>
-          <div class='my2' id='selfie_target'></div>
-        </div>
-      <% end %>
-
-      <%# ---- Submit ----- %>
-
-      <div class='mt4 mb4'>
-        <%= render 'idv/doc_auth/submit_with_spinner' %>
-      </div>
-    <% end %> <%# end validated_form_for %>
-
-    <p class='mt3 mb0'><%= t('doc_auth.info.document_capture_upload_image') %></p>
-
-    <%= javascript_pack_tag 'image-preview' %>
-  </div>
-  <%= render 'idv/doc_auth/start_over_or_cancel' %>
-  <%= nonced_javascript_tag do %>
-    <% asset_keys = [
-      'close-white-alt.svg',
-      'id-card.svg',
-      'spinner.gif',
-      'spinner@2x.gif'
-    ] %>
-    window.LoginGov = window.LoginGov || {};
-    window.LoginGov.assets = <%= raw asset_keys.map { |key| [key, asset_path(key)] }.to_h.to_json %>;
-  <% end %>
-  <%= javascript_pack_tag 'document-capture' %>
+<% title t('doc_auth.titles.doc_auth') %>
+<% content_for :meta_tags do %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: Figaro.env.acuant_sdk_initialization_endpoint %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: Figaro.env.acuant_sdk_initialization_creds %>
 <% end %>
+<%= tag.div id: 'document-capture-form', data: {
+  liveness: liveness_checking_enabled?.presence,
+  mock_client: (DocAuth::Client.doc_auth_vendor == 'mock').presence,
+  document_capture_session_uuid: flow_session[:document_capture_session_uuid],
+  endpoint: api_verify_images_url,
+} %>
+<div class="js-fallback">
+  <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
+
+  <h1 class="h3 my0">
+    <% if liveness_checking_enabled? %>
+      <%= t('doc_auth.headings.document_capture_heading_with_selfie_html') %>
+    <% else %>
+      <%= t('doc_auth.headings.document_capture_heading_html') %>
+    <% end %>
+  </h1>
+
+  <%= validated_form_for(
+    :doc_auth,
+    url: url_for,
+    method: 'PUT',
+    html: { autocomplete: 'off', role: 'form', class: 'mt2 js-document-capture-form' }
+  ) do |f| %>
+    <%# ---- Front Image ----- %>
+
+    <p class="mt2 mb0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
+    <ul>
+      <li><%= t('doc_auth.tips.document_capture_id_text1') %></li>
+      <li><%= t('doc_auth.tips.document_capture_id_text2') %></li>
+      <li><%= t('doc_auth.tips.document_capture_id_text3') %></li>
+      <li><%= t('doc_auth.tips.document_capture_id_text4') %></li>
+    </ul>
+
+    <div class="front-image mt2">
+      <p>
+        <strong>
+          <%= t('doc_auth.headings.document_capture_front') %><br/>
+        </strong>
+        <%= t('doc_auth.tips.document_capture_hint') %>
+      </p>
+
+      <%= f.input :front_image_data_url, as: :hidden %>
+      <%= f.input :front_image, label: false, as: :file, required: true %>
+      <div class='my2' id='front_target'></div>
+    </div>
+
+    <%# ---- Back Image ----- %>
+
+    <div class="back-image mt3">
+      <p>
+        <strong>
+          <%= t('doc_auth.headings.document_capture_back') %><br/>
+        </strong>
+        <%= t('doc_auth.tips.document_capture_hint') %>
+      </p>
+
+      <%= f.input :back_image_data_url, as: :hidden %>
+      <%= f.input :back_image, label: false, as: :file, required: true %>
+      <div class='my2' id='back_target'></div>
+    </div>
+
+    <%# ---- Selfie ----- %>
+    <% if liveness_checking_enabled? %>
+      <hr class="mt3 mb3"/>
+      <div class="selfie">
+        <p><%= t('doc_auth.instructions.document_capture_selfie_instructions') %></p>
+
+        <p class="mt2 mb0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
+        <ul>
+          <li><%= t('doc_auth.tips.document_capture_selfie_text1') %></li>
+          <li><%= t('doc_auth.tips.document_capture_selfie_text2') %></li>
+          <li><%= t('doc_auth.tips.document_capture_selfie_text3') %></li>
+        </ul>
+
+        <p class='mt3'>
+          <strong>
+            <%= t('doc_auth.headings.document_capture_selfie') %><br/>
+          </strong>
+          <%= t('doc_auth.tips.document_capture_hint') %>
+        </p>
+
+        <%= f.input :selfie_image_data_url, as: :hidden %>
+        <%= f.input :selfie_image, label: false, as: :file, required: true %>
+        <div class='my2' id='selfie_target'></div>
+      </div>
+    <% end %>
+
+    <%# ---- Submit ----- %>
+
+    <div class='mt4 mb4'>
+      <%= render 'idv/doc_auth/submit_with_spinner' %>
+    </div>
+  <% end %> <%# end validated_form_for %>
+
+  <p class='mt3 mb0'><%= t('doc_auth.info.document_capture_upload_image') %></p>
+
+  <%= javascript_pack_tag 'image-preview' %>
+</div>
+<%= render 'idv/doc_auth/start_over_or_cancel' %>
+<%= nonced_javascript_tag do %>
+  <% asset_keys = [
+    'close-white-alt.svg',
+    'id-card.svg',
+    'spinner.gif',
+    'spinner@2x.gif'
+  ] %>
+  window.LoginGov = window.LoginGov || {};
+  window.LoginGov.assets = <%= raw asset_keys.map { |key| [key, asset_path(key)] }.to_h.to_json %>;
+<% end %>
+<%= javascript_pack_tag 'document-capture' %>
