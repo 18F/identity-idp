@@ -31,7 +31,7 @@ describe X509::Attributes do
     it 'ignores unknown keys' do
       x509 = described_class.new_from_hash(
         subject: 'O=US, OU=DoD, CN=John.Doe.1234',
-        some_unknown_field: 'unknown'
+        some_unknown_field: 'unknown',
       )
 
       expect(x509.subject).to eq('O=US, OU=DoD, CN=John.Doe.1234')

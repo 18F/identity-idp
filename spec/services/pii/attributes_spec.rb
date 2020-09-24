@@ -30,7 +30,7 @@ describe Pii::Attributes do
     it 'ignores unknown keys' do
       pii = described_class.new_from_hash(
         first_name: 'Test',
-        some_unknown_field: 'unknown'
+        some_unknown_field: 'unknown',
       )
 
       expect(pii.first_name).to eq('Test')
