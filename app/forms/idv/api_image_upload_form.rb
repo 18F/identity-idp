@@ -15,6 +15,7 @@ module Idv
     validates_presence_of :selfie, if: :liveness_checking_enabled?
 
     validate :validate_images
+    validate :throttle_if_rate_limited
 
     def initialize(params, liveness_checking_enabled:)
       @params = params
@@ -22,11 +23,25 @@ module Idv
     end
 
     def submit
+      throttled_else_increment
+
       FormResponse.new(
         success: valid?,
         errors: errors.messages,
-        extra: {},
+        extra: {
+          remaining_attempts: remaining_attempts,
+        },
       )
+    end
+
+    def status
+      return :ok if valid?
+      return :too_many_requests if errors.key?(:limit)
+      :bad_request
+    end
+
+    def remaining_attempts
+      Throttler::RemainingCount.call(document_capture_session.user_id, :idv_acuant)
     end
 
     def liveness_checking_enabled?
@@ -66,6 +81,18 @@ module Idv
 
     attr_reader :params
 
+    def throttle_if_rate_limited
+      return unless @throttled
+      errors.add(:limit, t('errors.doc_auth.acuant_throttle'))
+    end
+
+    def throttled_else_increment
+      @throttled = Throttler::IsThrottledElseIncrement.call(
+        document_capture_session.user_id,
+        :idv_acuant,
+      )
+    end
+
     def validate_images
       IMAGE_KEYS.each do |image_key|
         validate_image(image_key) if params[image_key]
@@ -75,16 +102,8 @@ module Idv
     def validate_image(image_key)
       file = params[image_key]
 
-      unless file.respond_to?(:content_type)
-        errors.add(image_key, t('doc_auth.errors.not_a_file'))
-        return
-      end
-
-      data = file.read
-      file.rewind
-
-      return if file.content_type.start_with?('image/') && data.present?
-      errors.add(image_key, t('doc_auth.errors.must_be_image'))
+      return if file.respond_to?(:read)
+      errors.add(image_key, t('doc_auth.errors.not_a_file'))
     end
   end
 end

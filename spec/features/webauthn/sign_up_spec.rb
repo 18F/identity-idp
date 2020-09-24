@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 feature 'webauthn sign up' do
+  include OidcAuthHelper
   include WebAuthnHelper
 
   let!(:user) { sign_up_and_set_password }
@@ -21,4 +22,20 @@ feature 'webauthn sign up' do
   end
 
   it_behaves_like 'webauthn setup'
+
+  describe 'AAL3 setup' do
+    it 'marks the session AAL3 on setup and does not require authentication' do
+      mock_webauthn_setup_challenge
+
+      visit_idp_from_ial1_oidc_sp_requesting_aal3(prompt: 'select_account')
+      select_2fa_option('webauthn', visible: :all)
+
+      expect(current_path).to eq webauthn_setup_path
+
+      fill_in_nickname_and_click_continue
+      mock_press_button_on_hardware_key_on_setup
+
+      expect(current_path).to eq(sign_up_completed_path)
+    end
+  end
 end

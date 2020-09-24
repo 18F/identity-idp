@@ -7,13 +7,20 @@ module TwoFactorAuthCode
       t('two_factor_authentication.piv_cac_header_text')
     end
 
-    def help_text
+    def piv_cac_help
       if service_provider_mfa_policy.aal3_required? &&
-         !service_provider_mfa_policy.allow_user_to_switch_method?
+         service_provider_mfa_policy.allow_user_to_switch_method?
+        t('instructions.mfa.piv_cac.confirm_piv_cac_or_aal3_html')
+      elsif service_provider_mfa_policy.aal3_required? ||
+            service_provider_mfa_policy.piv_cac_required?
         t('instructions.mfa.piv_cac.confirm_piv_cac_only_html')
       else
         t('instructions.mfa.piv_cac.confirm_piv_cac_html')
       end
+    end
+
+    def help_text
+      ''
     end
 
     def piv_cac_capture_text
@@ -60,9 +67,9 @@ module TwoFactorAuthCode
     def fallback_question
       return if @hide_fallback_question
       if service_provider_mfa_policy.allow_user_to_switch_method?
-        ''
-      else
         t('two_factor_authentication.piv_cac_fallback.question')
+      else
+        ''
       end
     end
 

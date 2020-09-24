@@ -1,7 +1,7 @@
 class UserEventCreator
   attr_reader :request, :current_user
 
-  def initialize(request: nil, current_user:)
+  def initialize(current_user:, request: nil)
     @request = request
     @current_user = current_user
   end

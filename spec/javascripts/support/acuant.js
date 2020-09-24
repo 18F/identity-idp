@@ -10,6 +10,7 @@ export function useAcuant() {
     delete window.AcuantJavascriptWebSdk;
     delete window.AcuantCamera;
     delete window.AcuantCameraUI;
+    delete window.AcuantPassiveLiveness;
   });
 
   return {
@@ -18,6 +19,7 @@ export function useAcuant() {
       isCameraSupported = true,
       start = sinon.stub(),
       end = sinon.stub(),
+      startSelfieCapture = sinon.stub(),
     } = {}) {
       window.AcuantJavascriptWebSdk = {
         initialize: (_credentials, _endpoint, { onSuccess, onFail }) =>
@@ -25,6 +27,7 @@ export function useAcuant() {
       };
       window.AcuantCamera = { isCameraSupported };
       window.AcuantCameraUI = { start, end };
+      window.AcuantPassiveLiveness = { startSelfieCapture };
       act(window.onAcuantSdkLoaded);
     },
   };

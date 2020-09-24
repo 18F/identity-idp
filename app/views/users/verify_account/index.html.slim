@@ -2,7 +2,7 @@
 
 h1.h3.my0 = t('forms.verify_profile.title')
 p.mt-tiny.mb0 = t('forms.verify_profile.instructions')
-= simple_form_for(@verify_account_form, url: verify_account_path,
+= validated_form_for(@verify_account_form, url: verify_account_path,
   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
   = f.error :base
   = f.input :otp, required: true, label: t('forms.verify_profile.name'),

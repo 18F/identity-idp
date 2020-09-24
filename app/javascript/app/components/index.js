@@ -1,10 +1,4 @@
-import focusTrapProxy from './focus-trap-proxy';
-import modal from './modal';
+import Modal from './modal';
 
 window.LoginGov = window.LoginGov || {};
-const { LoginGov } = window;
-const trapModal = modal(focusTrapProxy);
-
-LoginGov.Modal = trapModal;
-
-export { trapModal as Modal };
+window.LoginGov.Modal = Modal;

@@ -22,6 +22,8 @@ module CaptureDoc
         for_user_id: document_capture_session&.user_id,
         user_id: 'anonymous-uuid',
         event: 'Document capture session validation',
+        ial2_strict: document_capture_session&.ial2_strict?,
+        sp_issuer: document_capture_session&.issuer,
       }
     end
   end

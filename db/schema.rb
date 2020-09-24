@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_01_134021) do
+ActiveRecord::Schema.define(version: 2020_09_22_144112) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -202,6 +202,8 @@ ActiveRecord::Schema.define(version: 2020_09_01_134021) do
     t.string "acuant_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "ial2_strict"
+    t.string "issuer"
     t.index ["request_token"], name: "index_doc_captures_on_request_token", unique: true
     t.index ["user_id"], name: "index_doc_captures_on_user_id", unique: true
   end
@@ -213,6 +215,8 @@ ActiveRecord::Schema.define(version: 2020_09_01_134021) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "requested_at"
+    t.boolean "ial2_strict"
+    t.string "issuer"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
   end
@@ -337,6 +341,7 @@ ActiveRecord::Schema.define(version: 2020_09_01_134021) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "x509_issuer"
     t.index ["user_id", "created_at"], name: "index_piv_cac_configurations_on_user_id_and_created_at", unique: true
     t.index ["user_id", "name"], name: "index_piv_cac_configurations_on_user_id_and_name", unique: true
     t.index ["x509_dn_uuid"], name: "index_piv_cac_configurations_on_x509_dn_uuid", unique: true

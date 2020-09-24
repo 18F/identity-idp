@@ -79,7 +79,7 @@ shared_examples 'remember device' do
                     end
 
     expect(page).to have_current_path(expected_path)
-    visit account_path
+    visit account_two_factor_authentication_path
     expect(page).to have_current_path(expected_path)
   end
 end

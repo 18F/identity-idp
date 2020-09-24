@@ -103,6 +103,7 @@ describe Users::PivCacAuthenticationSetupController do
             get :new, params: { token: good_token }
             json = {
               'subject' => 'some dn',
+              'issuer' => nil,
               'presented' => true,
             }.to_json
 
@@ -129,9 +130,9 @@ describe Users::PivCacAuthenticationSetupController do
       end
 
       describe 'DELETE delete' do
-        it 'redirects to account page' do
+        it 'redirects to account 2FA page' do
           delete :delete
-          expect(response).to redirect_to(account_url)
+          expect(response).to redirect_to(account_two_factor_authentication_path)
         end
       end
     end
@@ -151,7 +152,7 @@ describe Users::PivCacAuthenticationSetupController do
 
         it 'redirects to account page' do
           delete :delete, params: { id: piv_cac_configuration_id }
-          expect(response).to redirect_to(account_url)
+          expect(response).to redirect_to(account_two_factor_authentication_path)
         end
 
         it 'removes the piv/cac association' do
@@ -177,7 +178,7 @@ describe Users::PivCacAuthenticationSetupController do
 
           delete :delete, params: { id: piv_cac_configuration_id }
 
-          expect(response).to redirect_to(account_url)
+          expect(response).to redirect_to(account_two_factor_authentication_path)
           expect(user.reload.piv_cac_configurations.first.x509_dn_uuid).to_not be_nil
         end
       end

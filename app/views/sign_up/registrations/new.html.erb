@@ -13,7 +13,7 @@
 <h1 class='h3 my0'><%= t('headings.registrations.enter_email') %></h1>
 
 <div class='mb4'>
-  <%= simple_form_for(@register_user_email_form,
+  <%= validated_form_for(@register_user_email_form,
       html: { autocomplete: 'off', role: 'form' },
       url: sign_up_register_path) do |f| %>
     <%= f.input :email, label: t('forms.registration.labels.email'), required: true %>
@@ -29,7 +29,11 @@
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
 
 <p class='mt2'>
-  <%= link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank' %>
+  <%= link_to t('notices.privacy.security_and_privacy_practices'), MarketingSite.security_and_privacy_practices_url, target: '_blank' %>
+</p>
+
+<p>
+  <%= link_to t('notices.privacy.privacy_act_statement'), MarketingSite.privacy_act_statement_url, target: '_blank' %>
 </p>
 
 <%= javascript_pack_tag 'email-validation' %>

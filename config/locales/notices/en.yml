@@ -24,6 +24,9 @@ en:
     phone_confirmed: Phone confirmed successfully.
     piv_cac_configured: PIV/CAC card linked successfully.
     piv_cac_disabled: PIV/CAC card unlinked successfully.
+    privacy:
+      privacy_act_statement: Privacy Act Statement
+      security_and_privacy_practices: Security and Privacy Practices
     resend_confirmation_email:
       success: We sent another confirmation email.
     session_cleared: For your security, we clear what you entered if you don't move
@@ -40,8 +43,6 @@ en:
         to continue creating your account.
       first_paragraph_start: We sent an email to
       no_email_sent_explanation_start: Didn’t receive an email?
-    terms_of_service:
-      link: Security Practices and Privacy Act Statement
     timeout_warning:
       partially_signed_in:
         continue: Continue sign in

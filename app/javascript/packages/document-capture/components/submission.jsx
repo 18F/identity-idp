@@ -17,7 +17,7 @@ import CallbackOnMount from './callback-on-mount';
  * @param {SubmissionProps} props Props object.
  */
 function Submission({ payload, onError }) {
-  const upload = useContext(UploadContext);
+  const { upload } = useContext(UploadContext);
   const resource = useAsync(upload, payload);
 
   return (

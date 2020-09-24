@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>
+      The server took too long to process your request. (503)
+    </title>
+
+    <%= stylesheet_link_tag '/css/static.css' %>
+  </head>
+
+  <body>
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <div class="masthead clearfix">
+            <div class="inner">
+                <%= image_tag asset_url('logo-white.svg'), width: 150, alt: APP_NAME,
+                  class: 'masthead-brand' %>
+            </div>
+          </div>
+          <div class="inner cover">
+            <h1>
+              <%= t('pages.page_took_too_long.header') %>
+            </h1>
+            <p>
+              <%= t('pages.page_took_too_long.body') %>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

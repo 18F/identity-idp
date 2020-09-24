@@ -5,8 +5,8 @@
   <div class="alert alert-error"><%= flow_session[:error_message] %></div>
 <% end %>
 
-<%= simple_form_for(:cac, url: url_for, method: 'PUT',
-                    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
+<%= validated_form_for(:cac, url: url_for, method: 'PUT',
+                       html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
   <% if flow_session[:first_name].nil? && flow_session[:last_name].nil? %>
   <fieldset class="m0 p0 border-none">
     <div class="mb3 string required profile_first_name mb1">

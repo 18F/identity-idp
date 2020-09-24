@@ -45,7 +45,7 @@ module Users
       current_user.backup_code_configurations.destroy_all
       flash[:success] = t('notices.backup_codes_deleted')
       revoke_remember_device(current_user)
-      redirect_to account_url
+      redirect_to account_two_factor_authentication_path
     end
 
     private

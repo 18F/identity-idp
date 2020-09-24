@@ -37,7 +37,11 @@ es:
         confirm_piv_cac_html: Presenta la PIV/CAC que asociaste con tu cuenta.
         confirm_piv_cac_only_html: Esta aplicación requiere un mayor nivel de seguridad.
           Debe verificar su identidad utilizando una identificación de empleado del
-          gobierno que configuró previamente para acceder a su información
+          gobierno que configuró previamente para acceder a su información.
+        confirm_piv_cac_or_aal3_html: Esta aplicación requiere un mayor nivel de seguridad.
+          Debe verificar su identidad mediante un dispositivo físico, como una llave
+          de seguridad o una identificación de empleado del gobierno (PIV / CAC) para
+          acceder a su información.
         did_not_work: Puede haber un problema con su PIV / CAC o PIN. Si cree que
           esto es un error, %{try_again}.  Si este problema continúa, comuníquese
           con el administrador de su agencia.
@@ -66,6 +70,10 @@ es:
         confirm_webauthn_only_html: Esta aplicación requiere un mayor nivel de seguridad.
           Debe verificar su identidad utilizando una clave de seguridad que configuró
           previamente para acceder a su información.
+        confirm_webauthn_or_aal3_html: Esta aplicación requiere un mayor nivel de
+          seguridad. Debe verificar su identidad mediante un dispositivo físico, como
+          una llave de seguridad o una identificación de empleado del gobierno (PIV
+          / CAC) para acceder a su información.
       wrong_number_html: "¿Ingresó el número de teléfono equivocado? %{link}"
     password:
       forgot: "¿No sabe su contraseña? Restablézcala después de confirmar su email."

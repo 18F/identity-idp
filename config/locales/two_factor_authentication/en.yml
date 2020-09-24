@@ -162,7 +162,7 @@ en:
       access your information.
     webauthn_fallback:
       question: Don't have your security key available?
-    webauthn_header_text: Present your security key
+    webauthn_header_text: Connect your security key
     webauthn_piv_available: Use your government employee ID
     webauthn_verified:
       header: Security key verified

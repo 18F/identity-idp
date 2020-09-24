@@ -39,16 +39,18 @@ Vagrantfile
 /config/aws.yml
 /config/service_providers.yml
 /config/agencies.yml
-/geo_data/*
-/keys
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv
 /docs/security/exports
 /docs/security/opencontrols
 /fixtures
+/geo_data/*
+/identity-idp-config
+/keys
 /kitchen/cookbooks
 /log/*
+/postgres-data
 /public/system
 /public/user_flows
 /pwned_passwords/*
@@ -58,7 +60,6 @@ Vagrantfile
 /tmp/*
 /.tmp/
 /vendor/bundle
-/postgres-data
 
 package-lock.json
 

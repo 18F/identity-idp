@@ -60,12 +60,12 @@ fr:
         <li class="mxn3">Le fond derrière votre ID est une couleur unie</li>
         <li class="mxn3">Le fond est visible derrière le document</li>
         </ul>
+      lexisnexis_network_error: Désolé, nous rencontrons des difficultés techniques.
+        Veuillez réessayer plus tard.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé un
         lien avec des instructions.
       photo_blurry: La photo est trop floue, veuillez réessayer.
-      photo_file_size: La photo est trop compressée, veuillez réessayer avec une qualité
-        supérieure.
       photo_glare: La photo a des reflets, veuillez réessayer.
       quota_reached: Désolé, votre fournisseur de services a atteint sa limite de
         vérification d'identité. Veuillez contacter votre fournisseur de services

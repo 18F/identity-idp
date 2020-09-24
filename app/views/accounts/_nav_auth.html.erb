@@ -1,29 +1,32 @@
-<nav class='bg-white'>
-  <div class='container px2 sm-py3 pt2 pb0'>
-    <div class='clearfix'>
-      <div class='mb1 sm-m0 col col-4'>
+<div class="bg-white">
+  <div class="container sm-px2 sm-py3">
+    <div class="clearfix">
+      <div class="my1 ml2 sm-m0 col col-4">
         <%= link_to image_tag(asset_url('logo.svg'),
                               alt: APP_NAME,
                               class: 'align-bottom',
                               width: 170), root_path %>
       </div>
-      <div class='right-align col col-8 sm-display-inline-block display-none pr1'>
-        <div class='inline-block mr1 truncate-inline'>
-          <p class='inline-block truncate m0'>
+      <div class="right-align col col-8 pr1 authnav-greeting">
+        <div class="inline-block mr1 truncate-inline">
+          <p class="inline-block truncate m0">
             <%= t('account.welcome') %>
             <strong><%= greeting %></strong>
           </p>
         </div>
-        <div class='inline-block right border-silver border-left'>
-          <p class='m0'>
+        <div class="inline-block right border-silver border-left">
+          <p class="m0">
             <%= link_to t('links.sign_out'), destroy_user_session_path,
                         class: 'pl1' %>
           </p>
         </div>
       </div>
-      <div class='right sm-hide'>
-        <%= link_to t('links.sign_out'), destroy_user_session_path %>
+      <div class="desktop:display-none display-flex flex-row flex-justify-end">
+        <%= link_to t('links.sign_out'), destroy_user_session_path, class: 'mt1 mr2'%>
+        <% if enable_mobile_nav %>
+          <button class="usa-menu-btn"><%= t('account.navigation.menu') %></button>
+        <% end %>
       </div>
     </div>
   </div>
-</nav>
+</div>

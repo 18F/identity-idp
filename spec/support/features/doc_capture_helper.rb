@@ -74,7 +74,7 @@ module DocCaptureHelper
       response = DocAuth::Response.new(success: true)
       user.document_capture_sessions.last.store_result_from_response(response)
     else
-      doc_capture = CaptureDoc::CreateRequest.call(user_id)
+      doc_capture = CaptureDoc::CreateRequest.call(user_id, {})
       doc_capture.acuant_token = 'foo'
       doc_capture.save!
     end

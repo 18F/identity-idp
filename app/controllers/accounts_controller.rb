@@ -2,10 +2,11 @@ class AccountsController < ApplicationController
   include RememberDeviceConcern
   before_action :confirm_two_factor_authenticated
 
-  layout 'card_wide'
+  layout 'account_side_nav'
 
   def show
     analytics.track_event(Analytics::ACCOUNT_VISIT)
+    session[:account_redirect_path] = account_path
     cacher = Pii::Cacher.new(current_user, user_session)
     @view_model = AccountShow.new(
       decrypted_pii: cacher.fetch,

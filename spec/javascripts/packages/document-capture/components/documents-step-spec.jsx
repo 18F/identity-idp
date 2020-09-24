@@ -58,15 +58,6 @@ describe('document-capture/components/documents-step', () => {
     expect(onChange.getCall(0).args[0]).to.deep.equal({ front: file });
   });
 
-  it('restricts accepted file types', () => {
-    const onChange = sinon.spy();
-    const { getByLabelText } = render(<DocumentsStep onChange={onChange} />);
-
-    const input = getByLabelText('doc_auth.headings.document_capture_front');
-
-    expect(input.getAttribute('accept')).to.equal('image/*');
-  });
-
   it('renders device-specific instructions', () => {
     let { getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>

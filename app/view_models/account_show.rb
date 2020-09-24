@@ -9,24 +9,12 @@ class AccountShow
     @pii = determine_pii
   end
 
-  def header_partial
-    'accounts/header'
+  def show_personal_key_partial?
+    personal_key.present?
   end
 
-  def personal_key_partial
-    if personal_key.present?
-      'accounts/personal_key'
-    else
-      'shared/null'
-    end
-  end
-
-  def password_reset_partial
-    if decorated_user.password_reset_profile.present?
-      'accounts/password_reset'
-    else
-      'shared/null'
-    end
+  def show_password_reset_partial?
+    decorated_user.password_reset_profile.present?
   end
 
   def pending_profile_partial
@@ -39,10 +27,6 @@ class AccountShow
     else
       'shared/null'
     end
-  end
-
-  def badges_partial
-    'accounts/badges'
   end
 
   def unphishable_badge_partial
@@ -69,14 +53,6 @@ class AccountShow
 
   def show_pii_partial?
     decrypted_pii.present? || decorated_user.identity_verified?
-  end
-
-  def pii_partial
-    if show_pii_partial?
-      'accounts/pii'
-    else
-      'shared/null'
-    end
   end
 
   def totp_partial
@@ -113,16 +89,13 @@ class AccountShow
     'accounts/actions/enable_piv_cac'
   end
 
-  def manage_personal_key_partial
-    yield if decorated_user.password_reset_profile.blank?
-  end
-
-  def personal_key_action_partial
-    'accounts/actions/manage_personal_key'
-  end
-
-  def personal_key_item_partial
-    'accounts/personal_key_item_heading'
+  def show_manage_personal_key_partial?
+    if TwoFactorAuthentication::PersonalKeyPolicy.new(decorated_user.user).visible? &&
+       decorated_user.password_reset_profile.blank?
+      true
+    else
+      false
+    end
   end
 
   def backup_codes_partial
@@ -143,10 +116,6 @@ class AccountShow
 
   def backup_codes_generated_at
     decorated_user.user.backup_code_configurations.order(created_at: :asc).first&.created_at
-  end
-
-  def recent_event_partial
-    'accounts/event_item'
   end
 
   def header_personalization

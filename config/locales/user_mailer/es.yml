@@ -156,18 +156,19 @@ es:
       intro: Se agregó un nuevo número de teléfono a su perfil de %{app}.
       subject: Nuevo número de teléfono añadido
     please_reset_password:
-      additional_help_html: Si ha utilizado su contraseña de login.gov en otros sitios,
-        le pedimos que actualice estas contraseñas también. Si tiene preguntas, por
-        favor deje un mensaje para nuestro equipo en %{contact_url}, y le responderemos
-        en dos días hábiles.
-      call_to_action: Para retomar acceso a su cuenta en login.gov, tendrá que restablecer
-        su contraseña utilizando el enlace a continuación.
-      intro: Recientemente identificamos un problema de seguridad con su contraseña.
-        Hemos deshabilitado su contraseña para mantener su cuenta segura. Esto no
-        fue el resultado de un problema de seguridad con login.gov, sino un problema
-        con su contraseña que ha sido comprometida.
-      link_text: Restablezca su contraseña
-      subject: Restablece tu contraseña
+      call_to_action: 'Como medida de precaución, inhabilitamos su contraseña para
+        mantener su información segura. Siga los pasos a continuación para restablecer
+        su contraseña y asegure su cuenta:'
+      intro: Hemos detectado actividad inusual en su cuenta login.gov. Estamos preocupados
+        alguien que no sea usted puede estar intentando acceder a su información.
+      learn_more_link_text: Conozca más sobre sus opciones
+      reminder_html: Le recordamos que <b>login.gov nunca le pedirá sus credenciales
+        de inicio de sesión. por teléfono o correo electrónico</b>. Puede tomar medidas
+        adicionales para proteger su cuenta habilitando la autenticación de dos factores.
+      step_1: Visite el sitio web login.gov y seleccione iniciar sesión
+      step_2: Seleccione "¿olvidó su contraseña?" al final de la página
+      step_3: Siga las instrucciones para restablecer su contraseña
+      subject: Actividad inusual — restablezca su contraseña de login.gov
     reset_password_instructions:
       footer: Este enlace expira en %{expires} horas.
       header: Para terminar de restablecer su contraseña, haga clic en el enlace de

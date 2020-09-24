@@ -5,7 +5,7 @@ describe CaptureDoc::FindUserId do
   let(:user_id) { 1 }
 
   it 'finds the user_id if it exists and is not expired' do
-    doc_capture = CaptureDoc::CreateRequest.call(user_id)
+    doc_capture = CaptureDoc::CreateRequest.call(user_id, {})
     result = subject.call(doc_capture.request_token)
 
     expect(result).to eq(user_id)
@@ -14,7 +14,7 @@ describe CaptureDoc::FindUserId do
   it 'does not find the user_id if it the token is expired' do
     doc_capture = nil
     Timecop.travel(Time.zone.now - 1.day) do
-      doc_capture = CaptureDoc::CreateRequest.call(user_id)
+      doc_capture = CaptureDoc::CreateRequest.call(user_id, {})
     end
 
     result = subject.call(doc_capture.request_token)

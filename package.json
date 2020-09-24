@@ -18,10 +18,10 @@
   "dependencies": {
     "base32-crockford-browser": "^1.0.0",
     "basscss-sass": "^3.0.0",
-    "classlist.js": "^1.1.20150312",
+    "classlist-polyfill": "^1.2.0",
     "cleave.js": "^1.5.3",
     "clipboard": "^1.6.1",
-    "focus-trap": "^2.3.0",
+    "focus-trap": "^6.0.1",
     "hint.css": "^2.3.2",
     "identity-style-guide": "^2.1.5",
     "intl-tel-input": "^16.0.7",
@@ -56,7 +56,6 @@
     "jsdom": "^16.2.2",
     "mocha": "^6.1.4",
     "prettier": "^2.0.5",
-    "proxyquire": "^1.8.0",
     "sinon": "^9.0.2",
     "typescript": "^3.9.7",
     "webpack-dev-server": "^3.11.0"

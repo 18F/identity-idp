@@ -10,7 +10,7 @@ module Idv
       private
 
       def send_link
-        capture_doc = CaptureDoc::CreateRequest.call(user_id)
+        capture_doc = CaptureDoc::CreateRequest.call(user_id, sp_session)
         session_uuid = flow_session[:document_capture_session_uuid]
         update_document_capture_session_requested_at(session_uuid)
         Telephony.send_doc_auth_link(
@@ -32,7 +32,11 @@ module Idv
         return unless FeatureManagement.document_capture_step_enabled?
         document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
         return unless document_capture_session
-        document_capture_session.update!(requested_at: Time.zone.now)
+        document_capture_session.update!(
+          requested_at: Time.zone.now,
+          issuer: sp_session[:issuer],
+          ial2_strict: sp_session[:ial2_strict],
+        )
       end
 
       def link(token, session_uuid)

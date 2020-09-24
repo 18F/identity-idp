@@ -1,0 +1,23 @@
+<% title t('forms.backup_code.confirm_delete') %>
+
+<%= image_tag(asset_url('alert/warning-lg.svg'), alt: '', width: 54) %>
+
+<h1 class="h3 mb1 mt3 my0">
+  <%= t('forms.backup_code.confirm_delete') %>
+</h1>
+
+<div class="col-2 mb2">
+  <hr class="mt3 mb2 bw4 rounded border-yellow"></hr>
+</div>
+
+<p class="mb4">
+  <%= t('forms.backup_code.caution_delete') %>
+</p>
+
+<%= form_tag(backup_code_delete_path, method: :delete, role: 'form') do %>
+  <%= button_tag t('account.index.backup_code_confirm_delete'), type: 'submit',
+                 class: 'btn btn-primary col-6 mb2 p2 rounded-lg center' %>
+<% end %>
+
+<%= link_to t('links.cancel'), account_path,
+            class: 'btn p2 rounded-lg border border-blue blue center' %>
