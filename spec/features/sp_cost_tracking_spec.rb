@@ -26,11 +26,12 @@ feature 'SP Costing', :email do
     expect_sp_cost_type(0, 2, 'sms')
     expect_sp_cost_type(1, 2, 'acuant_front_image')
     expect_sp_cost_type(2, 2, 'acuant_back_image')
-    expect_sp_cost_type(3, 2, 'lexis_nexis_resolution')
-    expect_sp_cost_type(4, 2, 'aamva')
-    expect_sp_cost_type(5, 2, 'lexis_nexis_address')
-    expect_sp_cost_type(6, 2, 'user_added')
-    expect_sp_cost_type(7, 2, 'authentication')
+    expect_sp_cost_type(3, 2, 'acuant_result')
+    expect_sp_cost_type(4, 2, 'lexis_nexis_resolution')
+    expect_sp_cost_type(5, 2, 'aamva')
+    expect_sp_cost_type(6, 2, 'lexis_nexis_address')
+    expect_sp_cost_type(7, 2, 'user_added')
+    expect_sp_cost_type(8, 2, 'authentication')
   end
 
   it 'logs the cost to the SP for reproofing' do
