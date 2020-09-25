@@ -63,14 +63,7 @@ module DocAuth
         back_image_response = post_back_image(image: back_image, instance_id: instance_id)
         return back_image_response unless back_image_response.success?
 
-        results_response = get_results(instance_id: instance_id)
-        return results_response unless results_response.success?
-
-        if liveness_checking_enabled
-          post_selfie(image: selfie_image, instance_id: instance_id).merge(results_response)
-        else
-          results_response
-        end
+        process_results(instance_id, liveness_checking_enabled)
       end
 
       def get_results(instance_id:)
@@ -80,6 +73,17 @@ module DocAuth
       end
 
       private
+
+      def process_results(instance_id, liveness_checking_enabled)
+        results_response = get_results(instance_id: instance_id)
+        return results_response unless results_response.success?
+
+        if liveness_checking_enabled
+          post_selfie(image: selfie_image, instance_id: instance_id).merge(results_response)
+        else
+          results_response
+        end
+      end
 
       def method_mocked?(method_name)
         mocked_response_for_method(method_name).present?
