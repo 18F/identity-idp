@@ -63,7 +63,7 @@ module DocAuth
         back_image_response = post_back_image(image: back_image, instance_id: instance_id)
         return back_image_response unless back_image_response.success?
 
-        process_results(instance_id, liveness_checking_enabled)
+        process_results(instance_id, liveness_checking_enabled, selfie_image)
       end
 
       def get_results(instance_id:)
@@ -74,7 +74,7 @@ module DocAuth
 
       private
 
-      def process_results(instance_id, liveness_checking_enabled)
+      def process_results(instance_id, liveness_checking_enabled, selfie_image)
         results_response = get_results(instance_id: instance_id)
         return results_response unless results_response.success?
 
