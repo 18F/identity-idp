@@ -1,6 +1,8 @@
 module Db
   module SpCost
     class AddSpCost
+      class SpCostTypeError < StandardError; end
+
       TOKEN_WHITELIST = %i[
         aamva
         acuant_front_image
@@ -21,7 +23,7 @@ module Db
       def self.call(issuer, ial, token)
         return if issuer.nil? || token.blank?
         unless TOKEN_WHITELIST.include?(token.to_sym)
-          NewRelic::Agent.notice_error("sp_cost type ignored: #{token}")
+          NewRelic::Agent.notice_error(SpCostTypeError.new(token.to_s))
           return
         end
         sp = ServiceProvider.find_by(issuer: issuer)

@@ -1,6 +1,8 @@
 module Db
   module ProofingCost
     class AddUserProofingCost
+      class ProofingCostTypeError < StandardError; end
+
       TOKEN_WHITELIST = %i[
         acuant_front_image
         acuant_back_image
@@ -17,7 +19,7 @@ module Db
         return unless user_id
         proofing_cost = ::ProofingCost.find_or_create_by(user_id: user_id)
         unless TOKEN_WHITELIST.include?(token.to_sym)
-          NewRelic::Agent.notice_error("proofing_cost type ignored: #{token}")
+          NewRelic::Agent.notice_error(ProofingCostTypeError.new(token.to_s))
           return
         end
         proofing_cost["#{token}_count"] += 1
