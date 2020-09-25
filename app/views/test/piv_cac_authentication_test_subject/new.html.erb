@@ -1,0 +1,103 @@
+<% title 'Enter PIV/CAC Test Information' %>
+
+<h1 class="h3 my0">
+  Enter PIV/CAC Test Information
+</h1>
+
+<p class="mt-tiny mb3">
+  Either enter a subject for a certificate or select an error to simulate a piv/cac response.
+</p>
+
+<div class="sm-col-9 sm-ml-28p">
+  <%= form_tag do %>
+    <%= hidden_field_tag(:referer, @referrer) %>
+    <div class="clearfix mxn1">
+      <div class="col col-12 px1">
+        <legend class="mb1 h4 serif bold">
+          Certificate Subject
+        </legend>
+        <%= text_field_tag(:subject, '', class: 'block col-12 field monospace') %>
+      </div>
+      <div class="mb3">
+        <fieldset class="m0 p0 border-none">
+          <legend class="mb1 h4 serif bold">
+            Error Conditions
+          </legend>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, '') %>
+              <%= label_tag(:error_, 'No error') %>
+            </div>
+          </label>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, 'certificate.none') %>
+              <%= label_tag(:'error_certificate.none', 'No certificate') %>
+            </div>
+          </label>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, 'certificate.bad') %>
+              <%= label_tag(:'error_certificate.bad', 'Bad certificate') %>
+            </div>
+          </label>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, 'certificate.expired') %>
+              <%= label_tag(:'error_certificate.expired', 'Expired certificate') %>
+            </div>
+          </label>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, 'certificate.revoked') %>
+              <%= label_tag(:'error_certificate.revoked', 'Revoked certificate') %>
+            </div>
+          </label>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, 'certificate.timeout') %>
+              <%= label_tag(:'error_certificate.timeout', 'Certificate timeout') %>
+            </div>
+          </label>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, 'certificate.ocsp_error') %>
+              <%= label_tag(:'error_certificate.ocsp_error', 'Certificate OCSP error') %>
+            </div>
+          </label>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, 'certificate.invalid') %>
+              <%= label_tag(:'error_certificate.invalid', 'Invalid certificate') %>
+            </div>
+          </label>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, 'certificate.unverified') %>
+              <%= label_tag(:'error_certificate.unverified', 'Unverified certificate') %>
+            </div>
+          </label>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, 'token.missing') %>
+              <%= label_tag(:'error_token.missing', 'Missing token') %>
+            </div>
+          </label>
+          <label class="btn-border col-12 mb2">
+            <div class="radio">
+              <%= radio_button_tag(:error, 'token.invalid') %>
+              <%= label_tag(:'error_token.invalid', 'Invalid token') %>
+            </div>
+          </label>
+        </fieldset>
+      </div>
+      <div class="col col-6 sm-col-5 px1">
+        <%= button_tag(class: 'btn btn-primary col-12 align-top') { 'Proceed' } %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%= render 'shared/cancel', link: @referrer %>
+
+<%= javascript_pack_tag 'clipboard' %>
