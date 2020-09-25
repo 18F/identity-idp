@@ -20,7 +20,7 @@ module Db
 
       def self.call(issuer, ial, token)
         return if issuer.nil? || token.blank?
-        unless TOKEN_WHITELIST.index(token.to_sym)
+        unless TOKEN_WHITELIST.include?(token.to_sym)
           NewRelic::Agent.notice_error("sp_cost type ignored: #{token}")
           return
         end
