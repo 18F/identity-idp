@@ -24,8 +24,12 @@ module Idv
       def call
         poll_with_meta_refresh(Figaro.env.poll_rate_for_verify_in_seconds.to_i)
 
-        current_async_state = async_state
+        process_async_state(async_state)
+      end
 
+      private
+
+      def process_async_state(current_async_state)
         case current_async_state.status
         when :none
           mark_step_incomplete(:verify)
@@ -34,21 +38,23 @@ module Idv
         when :timed_out
           mark_step_incomplete(:verify)
         when :done
-          add_proofing_costs(current_async_state.result)
-          response = idv_result_to_form_response(current_async_state.result)
-          response = check_ssn(current_async_state.pii) if response.success?
-          summarize_result_and_throttle_failures(response)
-
-          if response.success?
-            delete_async
-            mark_step_complete(:verify_wait)
-          else
-            mark_step_incomplete(:verify)
-          end
+          async_state_done(current_async_state)
         end
       end
 
-      private
+      def async_state_done(current_async_state)
+        add_proofing_costs(current_async_state.result)
+        response = idv_result_to_form_response(current_async_state.result)
+        response = check_ssn(current_async_state.pii) if response.success?
+        summarize_result_and_throttle_failures(response)
+
+        if response.success?
+          delete_async
+          mark_step_complete(:verify_wait)
+        else
+          mark_step_incomplete(:verify)
+        end
+      end
 
       def async_state
         dcs_uuid = flow_session[:idv_verify_step_document_capture_session_uuid]
