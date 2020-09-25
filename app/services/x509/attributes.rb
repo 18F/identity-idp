@@ -4,7 +4,7 @@ module X509
   ) do
     def self.new_from_hash(hash)
       attrs = new
-      hash.each { |key, val| attrs[key] = val }
+      hash.slice(*members).each { |key, val| attrs[key] = val }
       attrs
     end
 
