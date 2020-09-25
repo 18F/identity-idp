@@ -63,10 +63,15 @@ module Flow
 
     def fsm_initialize
       klass = self.class
+      flow = klass::FSM_SETTINGS[:flow]
       @name = klass.name.underscore.gsub('_controller', '')
-      klass::FSM_SETTINGS.each { |key, value| instance_variable_set("@#{key}", value) }
+      @step_url = klass::FSM_SETTINGS[:step_url]
+      @final_url = klass::FSM_SETTINGS[:final_url]
+      @analytics_id = klass::FSM_SETTINGS[:analytics_id]
+      @view = klass::FSM_SETTINGS[:view]
+
       current_session[@name] ||= {}
-      @flow = @flow.new(self, current_session, @name)
+      @flow = flow.new(self, current_session, @name)
     end
 
     def render_update(step, result)

@@ -18,7 +18,8 @@ describe DocumentCaptureSession do
       record.store_result_from_response(doc_auth_response)
 
       result_id = record.result_id
-      data = REDIS_POOL.with { |client| client.read(DocumentCaptureSessionResult.key(result_id)) }
+      key = EncryptedRedisStructStorage.key(result_id, type: DocumentCaptureSessionResult)
+      data = REDIS_POOL.with { |client| client.read(key) }
       expect(data).to be_a(String)
       expect(data).to_not include('Testy')
       expect(data).to_not include('Testerson')
@@ -32,7 +33,7 @@ describe DocumentCaptureSession do
       result = record.load_result
 
       expect(result.success?).to eq(doc_auth_response.success?)
-      expect(result.pii).to eq(doc_auth_response.pii_from_doc.stringify_keys)
+      expect(result.pii).to eq(doc_auth_response.pii_from_doc.deep_symbolize_keys)
     end
 
     it 'returns nil if the previously stored result does not exist or expired' do
