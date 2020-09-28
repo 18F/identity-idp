@@ -91,7 +91,7 @@ function DocumentCapture({ isLivenessEnabled = true }) {
   ) : (
     <>
       {submissionError && (
-        <Alert type="error" className="margin-bottom-2">
+        <Alert type="error" className="margin-bottom-4">
           {isFormEntriesError
             ? getFormattedErrorMessages(
                 /** @type {UploadFormEntriesError} */ (submissionError).rawErrors,
