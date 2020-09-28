@@ -91,6 +91,8 @@ describe Encryption::KmsClient do
       end
       context 'with multi region disabled' do
         let(:kms_multi_region_enabled) { false }
+        before { allow(Figaro.env).to receive(:aws_kms_key_id).and_return('key1') }
+
         it 'encrypts with KMS legacy single region' do
           result = subject.encrypt(plaintext, encryption_context)
           expect(result).to eq(kms_legacy_ciphertext)

@@ -40,9 +40,9 @@ describe Encryption::MultiRegionKMSClient do
 
   let(:legacy_kms_ciphertext) { 'key1:kms1' }
 
-  let(:aws_key_id) { Figaro.env.aws_kms_key_id }
-
   describe '#encrypt' do
+    let(:aws_key_id) { 'key1' }
+
     context 'with multi region enabled' do
       it 'encrypts with KMS' do
         result = subject.encrypt(aws_key_id, plaintext, encryption_context)
