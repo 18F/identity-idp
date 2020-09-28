@@ -159,7 +159,7 @@ development:
   aws_kms_key_id: alias/login-dot-gov-development-keymaker
   aws_logo_bucket:
   aws_region: us-east-1
-  aws_kms_regions: '["us-west-2", "us-east-1"]'
+  aws_kms_region_configs: '[]'
   backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
   basic_auth_user_name: user
@@ -267,7 +267,7 @@ production:
   attribute_encryption_key_queue:
   aws_kms_key_id:
   aws_region:
-  aws_kms_regions: '["us-west-2"]'
+  aws_kms_region_configs: '[]'
   aws_logo_bucket:
   backup_codes_as_only_2fa:
   basic_auth_password:
@@ -375,7 +375,7 @@ test:
     }]'
   aws_kms_key_id: alias/login-dot-gov-test-keymaker
   aws_region: us-east-1
-  aws_kms_regions: '["us-west-2", "us-east-1"]'
+  aws_kms_region_configs: '[]'
   backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
   basic_auth_user_name: user

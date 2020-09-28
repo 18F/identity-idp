@@ -3,9 +3,19 @@ require 'rails_helper'
 describe Encryption::KmsClient do
   before do
     stub_mapped_aws_kms_client(
-      'a' * 3000 => 'kms1',
-      'b' * 3000 => 'kms2',
-      'c' * 3000 => 'kms3',
+      [
+        { plaintext: 'a' * 3000, ciphertext: 'kms1', key_id: 'key1' },
+        { plaintext: 'a' * 3000, ciphertext: 'kms1', key_id: 'key2' },
+        { plaintext: 'a' * 3000, ciphertext: 'kms1', key_id: 'key3' },
+
+        { plaintext: 'b' * 3000, ciphertext: 'kms2', key_id: 'key1' },
+        { plaintext: 'b' * 3000, ciphertext: 'kms2', key_id: 'key2' },
+        { plaintext: 'b' * 3000, ciphertext: 'kms2', key_id: 'key3' },
+
+        { plaintext: 'c' * 3000, ciphertext: 'kms3', key_id: 'key1' },
+        { plaintext: 'c' * 3000, ciphertext: 'kms3', key_id: 'key2' },
+        { plaintext: 'c' * 3000, ciphertext: 'kms3', key_id: 'key3' },
+      ],
     )
 
     encryptor = Encryption::Encryptors::AesEncryptor.new
@@ -24,6 +34,8 @@ describe Encryption::KmsClient do
     allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
     allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Layout/LineLength
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
+    allow(Figaro.env).to receive(:aws_kms_region_configs).and_return(kms_region_configs.to_json)
+    allow(Figaro.env).to receive(:aws_region).and_return(aws_region)
   end
 
   let(:plaintext) { 'a' * 3000 + 'b' * 3000 + 'c' * 3000 }
@@ -37,16 +49,25 @@ describe Encryption::KmsClient do
     )
   end
 
-  let(:kms_regions) { %w[us-west-2 us-east-1] }
+  let(:aws_region) { 'us-north-by-northwest-1' }
+  let(:kms_region_configs) do
+    [
+      { region: 'us-north-by-northwest-1', key_id: 'key1' },
+      { region: 'us-south-by-southwest-1', key_id: 'key2' },
+    ]
+  end
+
   let(:kms_multi_region_enabled) { true }
 
   let(:kms_regionalized_ciphertext) do
     'KMSc' + %w[kms1 kms2 kms3].map do |c|
-      region_hash = {}
-      kms_regions.each do |r|
-        region_hash[r] = Base64.strict_encode64(c)
-      end
-      Base64.strict_encode64({ regions: region_hash }.to_json)
+      payload = {
+        regions: {
+          'us-north-by-northwest-1' => Base64.strict_encode64(c),
+          'us-south-by-southwest-1' => Base64.strict_encode64(c),
+        },
+      }
+      Base64.strict_encode64(payload.to_json)
     end.to_json
   end
 

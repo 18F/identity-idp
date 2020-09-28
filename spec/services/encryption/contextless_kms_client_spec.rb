@@ -103,8 +103,18 @@ describe Encryption::ContextlessKmsClient do
       allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
 
       stub_mapped_aws_kms_client(
-        long_kms_plaintext[0..long_kms_plaintext_chunksize - 1] => 'chunk1',
-        long_kms_plaintext[long_kms_plaintext_chunksize..-1] => 'chunk2',
+        [
+          {
+            plaintext: long_kms_plaintext[0..long_kms_plaintext_chunksize - 1],
+            ciphertext: 'chunk1',
+            key_id: Figaro.env.aws_kms_key_id,
+          },
+          {
+            plaintext: long_kms_plaintext[long_kms_plaintext_chunksize..-1],
+            ciphertext: 'chunk2',
+            key_id: Figaro.env.aws_kms_key_id,
+          },
+        ],
       )
       allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
     end
