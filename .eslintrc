@@ -28,6 +28,7 @@
     "no-confusing-arrow": "off",
     "no-plusplus": "off",
     "no-unused-expressions": "off",
+    "no-use-before-define": "off",
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
     "operator-linebreak": "off",
