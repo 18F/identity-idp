@@ -18,6 +18,7 @@ body.has-full-screen-overlay { // scss-lint:disable QualifyingElement
   right: 0;
   top: 0;
   width: auto;
+  z-index: 10;
 
   &:hover,
   &:focus {
