@@ -3,33 +3,12 @@ import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import { AcuantProvider } from '@18f/identity-document-capture';
-import SelfieStep, { validate } from '@18f/identity-document-capture/components/selfie-step';
-import { RequiredValueMissingError } from '@18f/identity-document-capture/components/form-steps';
+import SelfieStep from '@18f/identity-document-capture/components/selfie-step';
 import render from '../../../support/render';
 import { useAcuant } from '../../../support/acuant';
 
 describe('document-capture/components/selfie-step', () => {
   const { initialize } = useAcuant();
-
-  describe('validate', () => {
-    it('returns object with error if selfie is unset', () => {
-      const value = {};
-      const result = validate(value);
-
-      expect(result).to.have.lengthOf(1);
-      expect(result[0].field).to.equal('selfie');
-      expect(result[0].error).to.be.instanceOf(RequiredValueMissingError);
-    });
-
-    it('returns empty array if selfie is set', () => {
-      const value = {
-        selfie: new window.File([], 'upload.png', { type: 'image/png' }),
-      };
-      const result = validate(value);
-
-      expect(result).to.deep.equal([]);
-    });
-  });
 
   it('calls onChange callback with uploaded image', async () => {
     const onChange = sinon.stub();

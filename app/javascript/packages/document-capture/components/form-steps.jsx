@@ -14,28 +14,25 @@ import useHistoryParam from '../hooks/use-history-param';
  */
 
 /**
+ * @typedef FormStepRegisterFieldOptions
+ *
+ * @prop {boolean} isRequired Whether field is required.
+ */
+
+/**
  * @typedef FormStepComponentProps
  *
  * @prop {(nextValues:Partial<V>)=>void} onChange Values change callback, merged with
  * existing values.
  * @prop {Partial<V>} value Current values.
  * @prop {FormStepError<V>[]=} errors Current active errors.
- * @prop {(field:string)=>undefined|((fieldNode:HTMLElement?)=>void)} registerField Registers field
+ * @prop {(
+ *   field:string,
+ *   options?:Partial<FormStepRegisterFieldOptions>
+ * )=>undefined|import('react').RefCallback<HTMLElement>} registerField Registers field
  * by given name, returning ref assignment function.
  *
  * @template V
- */
-
-/**
- * @template {Record<string,any>} V
- *
- * @typedef {FormStepError<V>[]} FormStepValidateResult
- */
-
-/**
- * @template {Record<string,any>} V
- *
- * @typedef {(values:V)=>undefined|FormStepValidateResult<V>} FormStepValidate
  */
 
 /**
@@ -45,15 +42,13 @@ import useHistoryParam from '../hooks/use-history-param';
  * @prop {string} title Step title, shown as heading.
  * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} form Step form component.
  * @prop {import('react').FC=} footer Optional step footer component.
- * @prop {FormStepValidate<Record<string,any>>} validate Step validity function. Given set of form
- * values, returns an object with keys from form values mapped to an error, if applicable. Returns
- * undefined or an empty object if there are no errors.
  */
 
 /**
  * @typedef FieldsRefEntry
  *
  * @prop {import('react').RefCallback<HTMLElement>} refCallback Ref callback.
+ * @prop {boolean} isRequired Whether field is required.
  * @prop {HTMLElement?=} element Element assigned by ref callback.
  */
 
@@ -62,7 +57,7 @@ import useHistoryParam from '../hooks/use-history-param';
  *
  * @prop {FormStep[]=} steps Form steps.
  * @prop {Record<string,any>=} initialValues Form values to populate initial state.
- * @prop {string=} initialStep Step to start from.
+ * @prop {boolean=} autoFocus Whether to automatically focus heading on mount.
  * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
  */
 
@@ -70,30 +65,6 @@ import useHistoryParam from '../hooks/use-history-param';
  * An error representing a state where a required form value is missing.
  */
 export class RequiredValueMissingError extends Error {}
-
-/**
- * Given a step object and current set of form values, returns true if the form values would satisfy
- * the validity requirements of the step.
- *
- * @param {FormStep} step Form step.
- * @param {Record<string,any>} values Current form values.
- */
-function getValidationErrors(step, values) {
-  const { validate = () => undefined } = step;
-  return validate(values);
-}
-
-/**
- * Given a step object and current set of form values, returns true if the form values would satisfy
- * the validity requirements of the step.
- *
- * @param {FormStep} step Form step.
- * @param {Record<string,any>} values Current form values.
- */
-export function isStepValid(step, values) {
-  const errors = getValidationErrors(step, values);
-  return !errors || !Object.keys(errors).length;
-}
 
 /**
  * Returns the index of the step in the array which matches the given name. Returns `-1` if there is
@@ -109,31 +80,16 @@ export function getStepIndexByName(steps, name) {
 }
 
 /**
- * Returns the index of the last step in the array where the values satisfy the requirements of the
- * step. If all steps are valid, returns the index of the last member. Returns `-1` if all steps are
- * invalid, or if the array is empty.
- *
- * @param {FormStep[]} steps  Form steps.
- * @param {object}     values Current form values.
- *
- * @return {number} Step index.
- */
-export function getLastValidStepIndex(steps, values) {
-  const index = steps.findIndex((step) => !isStepValid(step, values));
-  return index === -1 ? steps.length - 1 : index - 1;
-}
-
-/**
  * @param {FormStepsProps} props Props object.
  */
-function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, initialStep }) {
+function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, autoFocus }) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(
-    /** @type {FormStepValidateResult<Record<string,Error>>=} */ (undefined),
+    /** @type {FormStepError<Record<string,Error>>[]=} */ (undefined),
   );
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
-  const [stepName, setStepName] = useHistoryParam('step', initialStep);
+  const [stepName, setStepName] = useHistoryParam('step', null);
   const { t } = useI18n();
   const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
   const didSubmitWithErrors = useRef(false);
@@ -146,23 +102,12 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
     didSubmitWithErrors.current = false;
   }, [activeErrors]);
 
-  // An "effective" step is computed in consideration of the facts that (1) there may be no history
-  // parameter present, in which case the first step should be used, and (2) the values may not be
-  // valid for previous steps, in which case the furthest valid step should be set.
-  const effectiveStepIndex = Math.max(
-    Math.min(getStepIndexByName(steps, stepName), getLastValidStepIndex(steps, values) + 1),
-    0,
-  );
-  const effectiveStep = steps[effectiveStepIndex];
-  useEffect(() => {
-    // The effective step is used in the initial render, but since it may be out of sync with the
-    // history parameter, it is synced after mount.
-    if (effectiveStep && stepName && effectiveStep.name !== stepName) {
-      setStepName(effectiveStep.name);
-    }
+  const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
+  const step = steps[stepIndex];
 
+  useEffect(() => {
     // Treat explicit initial step the same as step transition, placing focus to header.
-    if (initialStep && headingRef.current) {
+    if (autoFocus && headingRef.current) {
       headingRef.current.focus();
     }
   }, []);
@@ -171,14 +116,32 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
     // Errors are assigned at the first attempt to submit. Once errors are assigned, track value
     // changes to remove validation errors as they become resolved.
     if (activeErrors) {
-      const nextActiveErrors = getValidationErrors(effectiveStep, values);
+      const nextActiveErrors = getValidationErrors();
       setActiveErrors(nextActiveErrors);
     }
   }, [values]);
 
   // An empty steps array is allowed, in which case there is nothing to render.
-  if (!effectiveStep) {
+  if (!step) {
     return null;
+  }
+
+  /**
+   * Returns array of form errors for the current set of values.
+   *
+   * @return {FormStepError<Record<string,Error>>[]}
+   */
+  function getValidationErrors() {
+    return Object.keys(fields.current).reduce((result, key) => {
+      const { element, isRequired } = fields.current[key];
+      const isActive = !!element;
+
+      if (isActive && isRequired && !values[key]) {
+        result = result.concat({ field: key, error: new RequiredValueMissingError() });
+      }
+
+      return result;
+    }, /** @type {FormStepError<Record<string,Error>>[]} */ ([]));
   }
 
   /**
@@ -190,14 +153,14 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
   function toNextStep(event) {
     event.preventDefault();
 
-    const nextActiveErrors = getValidationErrors(effectiveStep, values);
+    const nextActiveErrors = getValidationErrors();
     setActiveErrors(nextActiveErrors);
     didSubmitWithErrors.current = true;
     if (nextActiveErrors?.length) {
       return;
     }
 
-    const nextStepIndex = effectiveStepIndex + 1;
+    const nextStepIndex = stepIndex + 1;
     const isComplete = nextStepIndex === steps.length;
     if (isComplete) {
       // Clear step parameter from URL.
@@ -211,8 +174,8 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
     headingRef.current?.focus();
   }
 
-  const { form: Form, footer: Footer, name, title } = effectiveStep;
-  const isLastStep = effectiveStepIndex + 1 === steps.length;
+  const { form: Form, footer: Footer, name, title } = step;
+  const isLastStep = stepIndex + 1 === steps.length;
 
   return (
     <form ref={formRef} onSubmit={toNextStep}>
@@ -226,12 +189,13 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, init
         onChange={(nextValuesPatch) => {
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
         }}
-        registerField={(field) => {
+        registerField={(field, options = {}) => {
           if (!fields.current[field]) {
             fields.current[field] = {
               refCallback(fieldNode) {
                 fields.current[field].element = fieldNode;
               },
+              isRequired: !!options.isRequired,
             };
           }
 

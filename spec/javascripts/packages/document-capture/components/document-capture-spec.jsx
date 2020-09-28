@@ -188,7 +188,7 @@ describe('document-capture/components/document-capture', () => {
     initialize({ isCameraSupported: false });
     window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
 
-    const continueButton = getByText('forms.buttons.continue');
+    let continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
     userEvent.upload(
@@ -218,8 +218,10 @@ describe('document-capture/components/document-capture', () => {
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    const heading = getByText('doc_auth.headings.selfie');
+    const heading = getByText('doc_auth.headings.document_capture');
     expect(document.activeElement).to.equal(heading);
+    continueButton = getByText('forms.buttons.continue');
+    userEvent.click(continueButton);
 
     const hasValueSelected = !!getByText('doc_auth.forms.change_file');
     expect(hasValueSelected).to.be.true();
