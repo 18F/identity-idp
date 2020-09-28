@@ -33,7 +33,7 @@ describe('document-capture/components/review-issues-step', () => {
         <I18nContext.Provider
           value={{
             'doc_auth.info.no_other_id_help_bold_html':
-              '<strong>If you do not have another state-issued ID</strong>, ' +
+              'If you do not have another state-issued ID, ' +
               '<a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>',
           }}
         >
@@ -51,7 +51,7 @@ describe('document-capture/components/review-issues-step', () => {
       const help = getByText(
         (_content, element) =>
           element.innerHTML ===
-          '<strong>If you do not have another state-issued ID</strong>, ' +
+          'If you do not have another state-issued ID, ' +
             '<a href="https://example.com">get help at Example App.</a>',
       );
 

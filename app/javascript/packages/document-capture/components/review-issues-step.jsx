@@ -47,7 +47,7 @@ function ReviewIssuesStep({
           {formatHTML(
             t('doc_auth.info.no_other_id_help_bold_html', { sp_name: serviceProvider.name }),
             {
-              strong: 'strong',
+              strong: ({ children }) => <>{children}</>,
               a: ({ children }) => <a href={serviceProvider.failureToProofURL}>{children}</a>,
             },
           )}
