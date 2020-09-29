@@ -87,6 +87,7 @@ es:
       front: Frente
       interstitial: Estamos procesando tus imágenes…
       photo: Foto
+      review_issues: Revisa tus imágenes y vuelve a intentarlo
       selfie: Toma una foto de ti mismo
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Toma una foto de la parte posterior de tu identificación
@@ -198,6 +199,18 @@ es:
       document_capture_selfie_text2: Toma una foto sobre un fondo liso
       document_capture_selfie_text3: No use sombrero o lentes de sol
       header_text: Pautas para tomar una foto de su identificación
+      review_issues_id_header_text: 'Revise las imágenes de su identificación emitida
+        por el estado:'
+      review_issues_id_text1: "¿Usaste un fondo oscuro?"
+      review_issues_id_text2: "¿Hiciste la foto en una superficie plana?"
+      review_issues_id_text3: "¿Está apagado el flash de la cámara?"
+      review_issues_id_text4: "¿Son todos los detalles nítidos y claramente visibles?"
+      review_issues_selfie_header_text: 'Revisa la foto tuya:'
+      review_issues_selfie_text1: "¿Estás frente a la cámara?"
+      review_issues_selfie_text2: "¿Está toda tu cabeza y tu cara en la foto?"
+      review_issues_selfie_text3: "¿La foto tiene un fondo liso?"
+      review_issues_selfie_text4: "¿Su cara es completamente visible, no está cubierta
+        por un sombrero o anteojos?"
       text1: Tómalo en una habitación con mucha luz. La luz solar indirecta es la
         mejor.
       text2: Asegúrese de que su identificación no tenga suciedad o códigos de barras

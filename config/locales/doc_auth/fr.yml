@@ -90,6 +90,7 @@ fr:
       front: De face
       interstitial: Nous traitons vos images…
       photo: Photo
+      review_issues: Vérifiez vos images et réessayez
       selfie: Prenez une photo de vous
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_pic_back: Prenez une photo au verso de votre identifiant
@@ -210,6 +211,19 @@ fr:
       document_capture_selfie_text2: Prenez une photo sur un fond uni
       document_capture_selfie_text3: Ne portez pas de chapeau ni de lunettes de soleil
       header_text: Directives pour prendre une photo de votre identité
+      review_issues_id_header_text: 'Examinez les images de votre pièce d''identité
+        délivrée par l''État:'
+      review_issues_id_text1: Avez-vous utilisé un fond sombre?
+      review_issues_id_text2: Avez-vous pris la photo sur une surface plane?
+      review_issues_id_text3: Le flash de votre appareil photo est-il éteint?
+      review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles?
+      review_issues_selfie_header_text: 'Examinez la photo de vous-même:'
+      review_issues_selfie_text1: Êtes-vous face à la caméra?
+      review_issues_selfie_text2: Votre tête et votre visage sont-ils entiers sur
+        la photo?
+      review_issues_selfie_text3: La photo est-elle sur un fond uni?
+      review_issues_selfie_text4: Votre visage est-il entièrement visible, non couvert
+        par un chapeau ou des lunettes?
       text1: Prenez-le dans une pièce très éclairée. La lumière solaire indirecte
         est la meilleure.
       text2: Assurez-vous que votre identité n’a pas de poussière ni de codes à barres

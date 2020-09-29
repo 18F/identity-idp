@@ -81,6 +81,7 @@ en:
       front: Front
       interstitial: We are processing your images…
       photo: Photo
+      review_issues: Check your images and try again
       selfie: Take a photo of yourself
       ssn: Please enter your social security number.
       take_pic_back: Take a photo of the back of your ID
@@ -186,6 +187,17 @@ en:
       document_capture_selfie_text2: Take a photo against a plain background
       document_capture_selfie_text3: Do not wear a hat or sunglasses
       header_text: Guidelines for taking a photo of your ID
+      review_issues_id_header_text: 'Review the images of your state-issued ID:'
+      review_issues_id_text1: Did you use a dark background?
+      review_issues_id_text2: Did you take the photo on a flat surface?
+      review_issues_id_text3: Is the flash on your camera off?
+      review_issues_id_text4: Are all details sharp and clearly visible?
+      review_issues_selfie_header_text: 'Review the photo of yourself:'
+      review_issues_selfie_text1: Are you facing the camera?
+      review_issues_selfie_text2: Is your entire head and face in the photo?
+      review_issues_selfie_text3: Is the photo against a plain background?
+      review_issues_selfie_text4: Is your face fully visible, not covered by a hat
+        or glasses?
       text1: Take it in a room with lots of light. Indirect sunlight is best.
       text2: Make sure your ID doesn't have dirt or damaged barcodes.
       text3: Place your ID on a dark solid-colored surface that makes it easy to see
