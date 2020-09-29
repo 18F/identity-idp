@@ -1,14 +1,8 @@
 import React, { useContext } from 'react';
 import AcuantCapture from './acuant-capture';
 import FormErrorMessage from './form-error-message';
-import { RequiredValueMissingError } from './form-steps';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
-
-/**
- * @template V
- * @typedef {import('./form-steps').FormStepValidateResult<V>} FormStepValidateResult
- */
 
 /**
  * @typedef DocumentsStepValue
@@ -51,7 +45,7 @@ function DocumentsStep({
         return (
           <AcuantCapture
             key={side}
-            ref={registerField(side)}
+            ref={registerField(side, { isRequired: true })}
             /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
             /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
             label={t(`doc_auth.headings.document_capture_${side}`)}
@@ -67,16 +61,6 @@ function DocumentsStep({
       })}
     </>
   );
-}
-
-/**
- * @type {import('./form-steps').FormStepValidate<DocumentsStepValue>}
- */
-export function validate(values) {
-  return DOCUMENT_SIDES.filter((side) => !values[side]).map((side) => ({
-    field: side,
-    error: new RequiredValueMissingError(),
-  }));
 }
 
 export default DocumentsStep;

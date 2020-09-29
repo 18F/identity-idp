@@ -2,9 +2,7 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import FormSteps, {
-  isStepValid,
   getStepIndexByName,
-  getLastValidStepIndex,
 } from '@18f/identity-document-capture/components/form-steps';
 import render from '../../../support/render';
 
@@ -19,7 +17,7 @@ describe('document-capture/components/form-steps', () => {
         <label>
           Second
           <input
-            ref={registerField('second')}
+            ref={registerField('second', { isRequired: true })}
             value={value.second || ''}
             onChange={(event) => {
               onChange({ changed: true });
@@ -28,7 +26,6 @@ describe('document-capture/components/form-steps', () => {
           />
         </label>
       ),
-      validate: (value) => (value.second ? [] : [{ field: 'second', error: new Error() }]),
     },
     { name: 'last', title: 'Last Title', form: () => <span>Last</span> },
   ];
@@ -43,27 +40,6 @@ describe('document-capture/components/form-steps', () => {
     window.location.hash = originalHash;
   });
 
-  describe('isStepValid', () => {
-    it('defaults to true if there is no specified validity function', () => {
-      const step = { name: 'example' };
-
-      const result = isStepValid(step, {});
-
-      expect(result).to.be.true();
-    });
-
-    it('returns the result of the validity function given form values', () => {
-      const step = {
-        name: 'example',
-        validate: (values) => (values.ok ? undefined : { ok: new Error() }),
-      };
-
-      const result = isStepValid(step, { ok: false });
-
-      expect(result).to.be.false();
-    });
-  });
-
   describe('getStepIndexByName', () => {
     it('returns -1 if no step by name', () => {
       const result = getStepIndexByName(STEPS, 'third');
@@ -75,30 +51,6 @@ describe('document-capture/components/form-steps', () => {
       const result = getStepIndexByName(STEPS, 'second');
 
       expect(result).to.be.equal(1);
-    });
-  });
-
-  describe('getLastValidStepIndex', () => {
-    it('returns -1 if array is empty', () => {
-      const result = getLastValidStepIndex([], {});
-
-      expect(result).to.be.equal(-1);
-    });
-
-    it('returns -1 if all steps are invalid', () => {
-      const steps = [...STEPS].map((step) => ({
-        ...step,
-        validate: () => ({ missing: new Error() }),
-      }));
-      const result = getLastValidStepIndex(steps, {});
-
-      expect(result).to.be.equal(-1);
-    });
-
-    it('returns index of the last valid step', () => {
-      const result = getLastValidStepIndex(STEPS, { second: 'valid' });
-
-      expect(result).to.be.equal(2);
     });
   });
 
@@ -217,35 +169,35 @@ describe('document-capture/components/form-steps', () => {
     expect(document.activeElement).to.equal(originalActiveElement);
   });
 
-  it('validates step completion', () => {
+  it('resets to first step at mount', () => {
     window.location.hash = '#step=last';
 
     render(<FormSteps steps={STEPS} />);
 
-    expect(window.location.hash).to.equal('#step=second');
+    expect(window.location.hash).to.equal('');
   });
 
-  it('accepts initial step', () => {
-    const { getByText } = render(<FormSteps steps={STEPS} initialStep="second" />);
+  it('optionally auto-focuses', () => {
+    const { getByText } = render(<FormSteps steps={STEPS} autoFocus />);
 
-    expect(window.location.hash).to.equal('#step=second');
-    expect(document.activeElement).to.equal(getByText('Second Title'));
-    expect(getByText('Second')).to.be.ok();
+    expect(document.activeElement).to.equal(getByText('First Title'));
   });
 
   it('accepts initial values', () => {
-    const { getByLabelText } = render(
-      <FormSteps steps={STEPS} initialStep="second" initialValues={{ second: 'prefilled' }} />,
+    const { getByText, getByLabelText } = render(
+      <FormSteps steps={STEPS} initialValues={{ second: 'prefilled' }} />,
     );
 
+    userEvent.click(getByText('forms.buttons.continue'));
     const input = getByLabelText('Second');
 
     expect(input.value).to.equal('prefilled');
   });
 
   it('prevents submission if step is invalid', () => {
-    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} initialStep="second" />);
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
+    userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.continue'));
 
     expect(window.location.hash).to.equal('#step=second');

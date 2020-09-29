@@ -2,8 +2,8 @@ import React, { useState, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import FormSteps from './form-steps';
 import { UploadFormEntriesError } from '../services/upload';
-import DocumentsStep, { validate as validateDocumentsStep } from './documents-step';
-import SelfieStep, { validate as validateSelfieStep } from './selfie-step';
+import DocumentsStep from './documents-step';
+import SelfieStep from './selfie-step';
 import MobileIntroStep from './mobile-intro-step';
 import DeviceContext from '../context/device';
 import Submission from './submission';
@@ -53,13 +53,11 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       footer: isMobile
         ? undefined
         : () => <p>{t('doc_auth.info.document_capture_upload_image')}</p>,
-      validate: validateDocumentsStep,
     },
     isLivenessEnabled && {
       name: 'selfie',
       title: t('doc_auth.headings.selfie'),
       form: SelfieStep,
-      validate: validateSelfieStep,
     },
   ].filter(Boolean));
 
@@ -74,10 +72,6 @@ function DocumentCapture({ isLivenessEnabled = true }) {
   }
 
   const isFormEntriesError = submissionError && submissionError instanceof UploadFormEntriesError;
-  let initialStep;
-  if (submissionError) {
-    initialStep = isFormEntriesError || !isLivenessEnabled ? 'documents' : 'selfie';
-  }
 
   return formValues && !submissionError ? (
     <Submission
@@ -98,8 +92,8 @@ function DocumentCapture({ isLivenessEnabled = true }) {
       <FormSteps
         steps={steps}
         initialValues={submissionError && formValues ? formValues : undefined}
-        initialStep={initialStep}
         onComplete={submitForm}
+        autoFocus={!!submissionError}
       />
     </>
   );
