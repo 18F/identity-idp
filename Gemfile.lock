@@ -65,6 +65,11 @@ GIT
       i18n
       twilio-ruby
 
+PATH
+  remote: ../identity-idp-functions
+  specs:
+    identity-idp-functions (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -728,6 +733,7 @@ DEPENDENCIES
   http_accept_language
   i18n-tasks (>= 0.9.31)
   identity-hostdata!
+  identity-idp-functions!
   identity-telephony!
   identity_validations!
   irb
