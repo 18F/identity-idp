@@ -237,6 +237,15 @@ describe('document-capture/components/form-steps', () => {
     expect(document.activeElement).to.equal(getByText('Last Title'));
   });
 
+  it('distinguishes empty errors from progressive error removal', async () => {
+    const { getByText, getByLabelText, container } = render(<FormSteps steps={STEPS} />);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
+  });
+
   it('renders with optional footer', () => {
     const steps = [
       {

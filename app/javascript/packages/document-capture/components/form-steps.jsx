@@ -115,10 +115,10 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
   /**
    * Returns array of form errors for the current set of values.
    *
-   * @return {FormStepError<Record<string,Error>>[]}
+   * @return {FormStepError<Record<string,Error>>[]|undefined}
    */
   function getValidationErrors() {
-    return Object.keys(fields.current).reduce((result, key) => {
+    const errors = Object.keys(fields.current).reduce((result, key) => {
       const { element, isRequired } = fields.current[key];
       const isActive = !!element;
 
@@ -128,6 +128,10 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
 
       return result;
     }, /** @type {FormStepError<Record<string,Error>>[]} */ ([]));
+
+    if (errors.length) {
+      return errors;
+    }
   }
 
   useEffect(() => {
