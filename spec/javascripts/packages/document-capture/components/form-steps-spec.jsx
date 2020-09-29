@@ -13,13 +13,13 @@ describe('document-capture/components/form-steps', () => {
     {
       name: 'second',
       title: 'Second Title',
-      form: ({ value = {}, onChange, registerField }) => (
-        // eslint-disable-next-line jsx-a11y/label-has-associated-control
+      form: ({ value = {}, errors = [], onChange, registerField }) => (
         <>
           <input
             aria-label="Second Input One"
             ref={registerField('secondInputOne', { isRequired: true })}
             value={value.secondInputOne || ''}
+            data-is-error={errors.some(({ field }) => field === 'secondInputOne') || undefined}
             onChange={(event) => {
               onChange({ changed: true });
               onChange({ secondInputOne: event.target.value });
@@ -29,6 +29,7 @@ describe('document-capture/components/form-steps', () => {
             aria-label="Second Input Two"
             ref={registerField('secondInputTwo', { isRequired: true })}
             value={value.secondInputTwo || ''}
+            data-is-error={errors.some(({ field }) => field === 'secondInputTwo') || undefined}
             onChange={(event) => {
               onChange({ changed: true });
               onChange({ secondInputTwo: event.target.value });
@@ -212,14 +213,28 @@ describe('document-capture/components/form-steps', () => {
     expect(input.value).to.equal('prefilled');
   });
 
-  it('prevents submission if step is invalid', () => {
-    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
+  it('prevents submission if step is invalid', async () => {
+    const { getByText, getByLabelText, container } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.continue'));
 
     expect(window.location.hash).to.equal('#step=second');
     expect(document.activeElement).to.equal(getByLabelText('Second Input One'));
+    expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(2);
+
+    await userEvent.type(document.activeElement, 'one');
+    expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(1);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+    expect(document.activeElement).to.equal(getByLabelText('Second Input Two'));
+    expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(1);
+
+    await userEvent.type(document.activeElement, 'two');
+    expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
+    userEvent.click(getByText('forms.buttons.continue'));
+
+    expect(document.activeElement).to.equal(getByText('Last Title'));
   });
 
   it('renders with optional footer', () => {
