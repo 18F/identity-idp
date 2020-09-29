@@ -25,7 +25,7 @@ import useHistoryParam from '../hooks/use-history-param';
  * @prop {(nextValues:Partial<V>)=>void} onChange Values change callback, merged with
  * existing values.
  * @prop {Partial<V>} value Current values.
- * @prop {FormStepError<V>[]=} errors Current active errors.
+ * @prop {FormStepError<V>[]} errors Current active errors.
  * @prop {(
  *   field:string,
  *   options?:Partial<FormStepRegisterFieldOptions>
@@ -85,7 +85,7 @@ export function getStepIndexByName(steps, name) {
 function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, autoFocus }) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(
-    /** @type {FormStepError<Record<string,Error>>[]=} */ (undefined),
+    /** @type {FormStepError<Record<string,Error>>[]} */ ([]),
   );
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
@@ -94,7 +94,7 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
   const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
   const didSubmitWithErrors = useRef(false);
   useEffect(() => {
-    if (activeErrors?.length && didSubmitWithErrors.current) {
+    if (activeErrors.length && didSubmitWithErrors.current) {
       const firstActiveError = activeErrors[0];
       fields.current[firstActiveError.field]?.element?.focus();
     }
@@ -115,10 +115,10 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
   /**
    * Returns array of form errors for the current set of values.
    *
-   * @return {FormStepError<Record<string,Error>>[]|undefined}
+   * @return {FormStepError<Record<string,Error>>[]}
    */
   function getValidationErrors() {
-    const errors = Object.keys(fields.current).reduce((result, key) => {
+    return Object.keys(fields.current).reduce((result, key) => {
       const { element, isRequired } = fields.current[key];
       const isActive = !!element;
 
@@ -128,16 +128,12 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
 
       return result;
     }, /** @type {FormStepError<Record<string,Error>>[]} */ ([]));
-
-    if (errors.length) {
-      return errors;
-    }
   }
 
   useEffect(() => {
     // Errors are assigned at the first attempt to submit. Once errors are assigned, track value
     // changes to remove validation errors as they become resolved.
-    if (activeErrors) {
+    if (activeErrors.length) {
       const nextActiveErrors = getValidationErrors();
       setActiveErrors(nextActiveErrors);
     }
@@ -160,7 +156,7 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
     const nextActiveErrors = getValidationErrors();
     setActiveErrors(nextActiveErrors);
     didSubmitWithErrors.current = true;
-    if (nextActiveErrors?.length) {
+    if (nextActiveErrors.length) {
       return;
     }
 
