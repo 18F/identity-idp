@@ -79,33 +79,37 @@ function ReviewIssuesStep({
           />
         );
       })}
-      <hr className="margin-y-4" />
-      <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_selfie_header_text')}</p>
-      <ul>
-        <li>{t('doc_auth.tips.review_issues_selfie_text1')}</li>
-        <li>{t('doc_auth.tips.review_issues_selfie_text2')}</li>
-        <li>{t('doc_auth.tips.review_issues_selfie_text3')}</li>
-        <li>{t('doc_auth.tips.review_issues_selfie_text4')}</li>
-      </ul>
-      {isMobile || !hasMediaAccess() ? (
-        <AcuantCapture
-          ref={registerField('selfie', { isRequired: true })}
-          capture="user"
-          label={t('doc_auth.headings.document_capture_selfie')}
-          bannerText={t('doc_auth.headings.photo')}
-          value={value.selfie}
-          onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-          allowUpload={false}
-          className="id-card-file-input"
-          errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
-        />
-      ) : (
-        <SelfieCapture
-          ref={registerField('selfie', { isRequired: true })}
-          value={value.selfie}
-          onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-          errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
-        />
+      {serviceProvider?.ial2Strict !== false && (
+        <>
+          <hr className="margin-y-4" />
+          <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_selfie_header_text')}</p>
+          <ul>
+            <li>{t('doc_auth.tips.review_issues_selfie_text1')}</li>
+            <li>{t('doc_auth.tips.review_issues_selfie_text2')}</li>
+            <li>{t('doc_auth.tips.review_issues_selfie_text3')}</li>
+            <li>{t('doc_auth.tips.review_issues_selfie_text4')}</li>
+          </ul>
+          {isMobile || !hasMediaAccess() ? (
+            <AcuantCapture
+              ref={registerField('selfie', { isRequired: true })}
+              capture="user"
+              label={t('doc_auth.headings.document_capture_selfie')}
+              bannerText={t('doc_auth.headings.photo')}
+              value={value.selfie}
+              onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
+              allowUpload={false}
+              className="id-card-file-input"
+              errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+            />
+          ) : (
+            <SelfieCapture
+              ref={registerField('selfie', { isRequired: true })}
+              value={value.selfie}
+              onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
+              errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+            />
+          )}
+        </>
       )}
     </>
   );

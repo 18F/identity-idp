@@ -9,13 +9,9 @@ describe('document-capture/components/review-issues-step', () => {
   it('renders with front, back, and selfie inputs', () => {
     const { getByLabelText } = render(<ReviewIssuesStep />);
 
-    const front = getByLabelText('doc_auth.headings.document_capture_front');
-    const back = getByLabelText('doc_auth.headings.document_capture_back');
-    const selfie = getByLabelText('doc_auth.headings.document_capture_selfie');
-
-    expect(front).to.be.ok();
-    expect(back).to.be.ok();
-    expect(selfie).to.be.ok();
+    expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
+    expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
+    expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
   });
 
   it('calls onChange callback with uploaded image', () => {
@@ -41,6 +37,7 @@ describe('document-capture/components/review-issues-step', () => {
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
+              ial2Strict: false,
             }}
           >
             <ReviewIssuesStep />
@@ -56,6 +53,46 @@ describe('document-capture/components/review-issues-step', () => {
       );
 
       expect(help).to.be.ok();
+    });
+
+    context('ial2', () => {
+      it('renders with front and back inputs', () => {
+        const { getByLabelText } = render(
+          <ServiceProviderContext.Provider
+            value={{
+              name: 'Example App',
+              failureToProofURL: 'https://example.com',
+              ial2Strict: false,
+            }}
+          >
+            <ReviewIssuesStep />
+          </ServiceProviderContext.Provider>,
+        );
+
+        expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
+        expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
+        expect(() => getByLabelText('doc_auth.headings.document_capture_selfie')).to.throw();
+      });
+    });
+
+    context('ial2 strict', () => {
+      it('renders with front, back, and selfie inputs', () => {
+        const { getByLabelText } = render(
+          <ServiceProviderContext.Provider
+            value={{
+              name: 'Example App',
+              failureToProofURL: 'https://example.com',
+              ial2Strict: true,
+            }}
+          >
+            <ReviewIssuesStep />
+          </ServiceProviderContext.Provider>,
+        );
+
+        expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
+        expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
+        expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
+      });
     });
   });
 });

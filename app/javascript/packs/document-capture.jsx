@@ -15,14 +15,14 @@ import { isCameraCapableMobile } from '@18f/identity-device';
 const { I18n: i18n, assets } = window.LoginGov;
 
 const appRoot = document.getElementById('document-capture-form');
-const isLivenessEnabled = appRoot.hasAttribute('data-liveness');
 const isMockClient = appRoot.hasAttribute('data-mock-client');
 
 function getServiceProvider() {
   const name = appRoot.getAttribute('data-sp-name');
   const failureToProofURL = appRoot.getAttribute('data-failure-to-proof-url');
+  const ial2Strict = appRoot.hasAttribute('data-ial2-strict');
   if (name && failureToProofURL) {
-    return { name, failureToProofURL };
+    return { name, failureToProofURL, ial2Strict };
   }
 }
 
@@ -54,7 +54,7 @@ loadPolyfills(['fetch']).then(() => {
           <ServiceProviderContext.Provider value={getServiceProvider()}>
             <AssetContext.Provider value={assets}>
               <DeviceContext.Provider value={device}>
-                <DocumentCapture isLivenessEnabled={isLivenessEnabled} />
+                <DocumentCapture />
               </DeviceContext.Provider>
             </AssetContext.Provider>
           </ServiceProviderContext.Provider>

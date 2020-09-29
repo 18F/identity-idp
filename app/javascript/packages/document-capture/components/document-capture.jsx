@@ -7,6 +7,7 @@ import SelfieStep from './selfie-step';
 import ReviewIssuesStep from './review-issues-step';
 import MobileIntroStep from './mobile-intro-step';
 import DeviceContext from '../context/device';
+import ServiceProviderContext from '../context/service-provider';
 import Submission from './submission';
 import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import useI18n from '../hooks/use-i18n';
@@ -14,13 +15,6 @@ import useI18n from '../hooks/use-i18n';
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./form-steps').FormStep} FormStep */
 /** @typedef {import('../context/upload').UploadFieldError} UploadFieldError */
-
-/**
- * @typedef DocumentCaptureProps
- *
- * @prop {boolean=} isLivenessEnabled Whether liveness capture should be expected from the user.
- *                                    Defaults to false.
- */
 
 /**
  * Returns error messages interspersed with line break React element.
@@ -33,14 +27,12 @@ export function getFormattedErrorMessages(errors) {
   return errors.flatMap((error, i) => [<br key={i} />, error.message]).slice(1);
 }
 
-/**
- * @param {DocumentCaptureProps} props Props object.
- */
-function DocumentCapture({ isLivenessEnabled = true }) {
+function DocumentCapture() {
   const [formValues, setFormValues] = useState(/** @type {Record<string,any>?} */ (null));
   const [submissionError, setSubmissionError] = useState(/** @type {Error?} */ (null));
   const { t } = useI18n();
   const { isMobile } = useContext(DeviceContext);
+  const serviceProvider = useContext(ServiceProviderContext);
 
   /**
    * Clears error state and sets form values for submission.
@@ -76,7 +68,7 @@ function DocumentCapture({ isLivenessEnabled = true }) {
           form: DocumentsStep,
           footer: DesktopDocumentDisclosure,
         },
-        isLivenessEnabled && {
+        serviceProvider?.ial2Strict !== false && {
           name: 'selfie',
           title: t('doc_auth.headings.selfie'),
           form: SelfieStep,
