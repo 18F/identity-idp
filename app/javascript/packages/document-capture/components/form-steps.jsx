@@ -112,20 +112,6 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
     }
   }, []);
 
-  useEffect(() => {
-    // Errors are assigned at the first attempt to submit. Once errors are assigned, track value
-    // changes to remove validation errors as they become resolved.
-    if (activeErrors) {
-      const nextActiveErrors = getValidationErrors();
-      setActiveErrors(nextActiveErrors);
-    }
-  }, [values]);
-
-  // An empty steps array is allowed, in which case there is nothing to render.
-  if (!step) {
-    return null;
-  }
-
   /**
    * Returns array of form errors for the current set of values.
    *
@@ -142,6 +128,20 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
 
       return result;
     }, /** @type {FormStepError<Record<string,Error>>[]} */ ([]));
+  }
+
+  useEffect(() => {
+    // Errors are assigned at the first attempt to submit. Once errors are assigned, track value
+    // changes to remove validation errors as they become resolved.
+    if (activeErrors) {
+      const nextActiveErrors = getValidationErrors();
+      setActiveErrors(nextActiveErrors);
+    }
+  }, [values]);
+
+  // An empty steps array is allowed, in which case there is nothing to render.
+  if (!step) {
+    return null;
   }
 
   /**
