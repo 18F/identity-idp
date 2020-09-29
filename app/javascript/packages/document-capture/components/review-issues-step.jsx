@@ -65,7 +65,7 @@ function ReviewIssuesStep({
         return (
           <AcuantCapture
             key={side}
-            ref={registerField(side, { required: true })}
+            ref={registerField(side, { isRequired: true })}
             /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
             /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
             label={t(`doc_auth.headings.document_capture_${side}`)}
@@ -89,7 +89,7 @@ function ReviewIssuesStep({
       </ul>
       {isMobile || !hasMediaAccess() ? (
         <AcuantCapture
-          ref={registerField('selfie', { required: true })}
+          ref={registerField('selfie', { isRequired: true })}
           capture="user"
           label={t('doc_auth.headings.document_capture_selfie')}
           bannerText={t('doc_auth.headings.photo')}
@@ -101,7 +101,7 @@ function ReviewIssuesStep({
         />
       ) : (
         <SelfieCapture
-          ref={registerField('selfie', { required: true })}
+          ref={registerField('selfie', { isRequired: true })}
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
