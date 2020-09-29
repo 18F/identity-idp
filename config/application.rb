@@ -33,10 +33,6 @@ module Upaya
       event.payload.except(:params, :headers)
     end
 
-    # Refuse to run if migraitons are pending. Migrations should be run out
-    # of band from launching the app
-    config.active_record.migration_error = :page_load
-
     # Use a custom log formatter to get timestamp
     config.log_formatter = Upaya::UpayaLogFormatter.new
 
