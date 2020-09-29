@@ -1,5 +1,6 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
+import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import FormSteps, {
   getStepIndexByName,
@@ -14,17 +15,26 @@ describe('document-capture/components/form-steps', () => {
       title: 'Second Title',
       form: ({ value = {}, onChange, registerField }) => (
         // eslint-disable-next-line jsx-a11y/label-has-associated-control
-        <label>
-          Second
+        <>
           <input
-            ref={registerField('second', { isRequired: true })}
-            value={value.second || ''}
+            aria-label="Second Input One"
+            ref={registerField('secondInputOne', { isRequired: true })}
+            value={value.secondInputOne || ''}
             onChange={(event) => {
               onChange({ changed: true });
-              onChange({ second: event.target.value });
+              onChange({ secondInputOne: event.target.value });
             }}
           />
-        </label>
+          <input
+            aria-label="Second Input Two"
+            ref={registerField('secondInputTwo', { isRequired: true })}
+            value={value.secondInputTwo || ''}
+            onChange={(event) => {
+              onChange({ changed: true });
+              onChange({ secondInputTwo: event.target.value });
+            }}
+          />
+        </>
       ),
     },
     { name: 'last', title: 'Last Title', form: () => <span>Last</span> },
@@ -77,7 +87,7 @@ describe('document-capture/components/form-steps', () => {
 
     userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(getByText('Second')).to.be.ok();
+    expect(getByText('Second Title')).to.be.ok();
   });
 
   it('renders continue button until at last step', () => {
@@ -88,27 +98,32 @@ describe('document-capture/components/form-steps', () => {
     expect(getByText('forms.buttons.continue')).to.be.ok();
   });
 
-  it('renders submit button at last step', () => {
-    const { getByText, getByRole } = render(<FormSteps steps={STEPS} />);
+  it('renders submit button at last step', async () => {
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.type(getByRole('textbox'), 'val');
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two');
     userEvent.click(getByText('forms.buttons.continue'));
 
     expect(getByText('forms.buttons.submit.default')).to.be.ok();
   });
 
-  it('submits with form values', () => {
+  it('submits with form values', async () => {
     const onComplete = sinon.spy();
-    const { getByText, getByRole } = render(<FormSteps steps={STEPS} onComplete={onComplete} />);
+    const { getByText, getByLabelText } = render(
+      <FormSteps steps={STEPS} onComplete={onComplete} />,
+    );
 
     userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.type(getByRole('textbox'), 'val');
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two');
     userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.submit.default'));
 
     expect(onComplete.getCall(0).args[0]).to.eql({
-      second: 'val',
+      secondInputOne: 'one',
+      secondInputTwo: 'two',
       changed: true,
     });
   });
@@ -124,35 +139,38 @@ describe('document-capture/components/form-steps', () => {
   });
 
   it('syncs step by history events', async () => {
-    const { getByText, findByText, getByRole } = render(<FormSteps steps={STEPS} />);
+    const { getByText, findByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.type(getByRole('textbox'), 'val');
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two');
 
     window.history.back();
 
-    expect(await findByText('First')).to.be.ok();
+    expect(await findByText('First Title')).to.be.ok();
     expect(window.location.hash).to.equal('');
 
     window.history.forward();
 
-    expect(await findByText('Second')).to.be.ok();
-    expect(getByRole('textbox').value).to.equal('val');
+    expect(await findByText('Second Title')).to.be.ok();
+    expect(getByLabelText('Second Input One').value).to.equal('one');
+    expect(getByLabelText('Second Input Two').value).to.equal('two');
     expect(window.location.hash).to.equal('#step=second');
   });
 
-  it('clear URL parameter after submission', (done) => {
-    const onComplete = sinon.spy(() => {
-      expect(window.location.hash).to.equal('');
-
-      done();
-    });
-    const { getByText, getByRole } = render(<FormSteps steps={STEPS} onComplete={onComplete} />);
+  it('clear URL parameter after submission', async () => {
+    const onComplete = sinon.spy();
+    const { getByText, getByLabelText } = render(
+      <FormSteps steps={STEPS} onComplete={onComplete} />,
+    );
 
     userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.type(getByRole('textbox'), 'val');
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two');
     userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.submit.default'));
+    await waitFor(() => expect(onComplete.calledOnce).to.be.true());
+    expect(window.location.hash).to.equal('');
   });
 
   it('shifts focus to next heading on step change', () => {
@@ -185,11 +203,11 @@ describe('document-capture/components/form-steps', () => {
 
   it('accepts initial values', () => {
     const { getByText, getByLabelText } = render(
-      <FormSteps steps={STEPS} initialValues={{ second: 'prefilled' }} />,
+      <FormSteps steps={STEPS} initialValues={{ secondInputOne: 'prefilled' }} />,
     );
 
     userEvent.click(getByText('forms.buttons.continue'));
-    const input = getByLabelText('Second');
+    const input = getByLabelText('Second Input One');
 
     expect(input.value).to.equal('prefilled');
   });
@@ -201,7 +219,7 @@ describe('document-capture/components/form-steps', () => {
     userEvent.click(getByText('forms.buttons.continue'));
 
     expect(window.location.hash).to.equal('#step=second');
-    expect(document.activeElement).to.equal(getByLabelText('Second'));
+    expect(document.activeElement).to.equal(getByLabelText('Second Input One'));
   });
 
   it('renders with optional footer', () => {
