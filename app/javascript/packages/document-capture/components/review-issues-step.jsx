@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
-import { RequiredValueMissingError } from './form-steps';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
