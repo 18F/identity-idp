@@ -94,10 +94,18 @@ module Idv
     end
 
     def as_readable(value)
-      return value if value.respond_to?(:read)
-      return DataUrlImage.new(value) if value.is_a? String
-    rescue URI::InvalidURIError => error
-      error
+      @readable ||= {}
+      return @readable[value] if @readable.has_key?(value)
+
+      @readable[value] = begin
+        if value.respond_to?(:read)
+          value
+        elsif value.is_a? String
+          DataUrlImage.new(value)
+        end
+      rescue URI::InvalidURIError => error
+        error
+      end
     end
   end
 end
