@@ -44,15 +44,15 @@ module Idv
     end
 
     def front
-      as_readable(params[:front])
+      as_readable(:front)
     end
 
     def back
-      as_readable(params[:back])
+      as_readable(:back)
     end
 
     def selfie
-      as_readable(params[:selfie])
+      as_readable(:selfie)
     end
 
     def document_capture_session_uuid
@@ -94,10 +94,11 @@ module Idv
       errors.add(:selfie, t('doc_auth.errors.not_a_file')) if selfie.is_a? URI::InvalidURIError
     end
 
-    def as_readable(value)
-      return @readable[value] if @readable.key?(value)
+    def as_readable(image_key)
+      return @readable[image_key] if @readable.key?(image_key)
 
-      @readable[value] = begin
+      value = params[image_key]
+      @readable[image_key] = begin
         if value.respond_to?(:read)
           value
         elsif value.is_a? String
