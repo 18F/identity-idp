@@ -4,7 +4,6 @@ module Idv
       @applicant = applicant.symbolize_keys
     end
 
-
     def proof_resolution(proof_state_id:)
       vendor = Idv::Proofer.resolution_vendor.new
       results = submit_applicant(vendor: vendor, results: init_results)
