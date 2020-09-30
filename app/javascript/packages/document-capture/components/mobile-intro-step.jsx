@@ -14,13 +14,18 @@ function MobileIntroStep() {
           strong: 'strong',
         })}
       </p>
-      {serviceProvider && (
+      {serviceProvider.name && (
         <p>
           {formatHTML(
             t('doc_auth.info.no_other_id_help_bold_html', { sp_name: serviceProvider.name }),
             {
               strong: 'strong',
-              a: ({ children }) => <a href={serviceProvider.failureToProofURL}>{children}</a>,
+              a: ({ children }) =>
+                serviceProvider.failureToProofURL ? (
+                  <a href={serviceProvider.failureToProofURL}>{children}</a>
+                ) : (
+                  <>{children}</>
+                ),
             },
           )}
         </p>

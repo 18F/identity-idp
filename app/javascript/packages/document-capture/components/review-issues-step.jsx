@@ -41,13 +41,18 @@ function ReviewIssuesStep({
           strong: 'strong',
         })}
       </p>
-      {serviceProvider && (
+      {serviceProvider.name && (
         <p>
           {formatHTML(
             t('doc_auth.info.no_other_id_help_bold_html', { sp_name: serviceProvider.name }),
             {
               strong: ({ children }) => <>{children}</>,
-              a: ({ children }) => <a href={serviceProvider.failureToProofURL}>{children}</a>,
+              a: ({ children }) =>
+                serviceProvider.failureToProofURL ? (
+                  <a href={serviceProvider.failureToProofURL}>{children}</a>
+                ) : (
+                  <>{children}</>
+                ),
             },
           )}
         </p>
@@ -79,33 +84,37 @@ function ReviewIssuesStep({
           />
         );
       })}
-      <hr className="margin-y-4" />
-      <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_selfie_header_text')}</p>
-      <ul>
-        <li>{t('doc_auth.tips.review_issues_selfie_text1')}</li>
-        <li>{t('doc_auth.tips.review_issues_selfie_text2')}</li>
-        <li>{t('doc_auth.tips.review_issues_selfie_text3')}</li>
-        <li>{t('doc_auth.tips.review_issues_selfie_text4')}</li>
-      </ul>
-      {isMobile || !hasMediaAccess() ? (
-        <AcuantCapture
-          ref={registerField('selfie', { isRequired: true })}
-          capture="user"
-          label={t('doc_auth.headings.document_capture_selfie')}
-          bannerText={t('doc_auth.headings.photo')}
-          value={value.selfie}
-          onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-          allowUpload={false}
-          className="id-card-file-input"
-          errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
-        />
-      ) : (
-        <SelfieCapture
-          ref={registerField('selfie', { isRequired: true })}
-          value={value.selfie}
-          onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-          errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
-        />
+      {serviceProvider.isLivenessRequired && (
+        <>
+          <hr className="margin-y-4" />
+          <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_selfie_header_text')}</p>
+          <ul>
+            <li>{t('doc_auth.tips.review_issues_selfie_text1')}</li>
+            <li>{t('doc_auth.tips.review_issues_selfie_text2')}</li>
+            <li>{t('doc_auth.tips.review_issues_selfie_text3')}</li>
+            <li>{t('doc_auth.tips.review_issues_selfie_text4')}</li>
+          </ul>
+          {isMobile || !hasMediaAccess() ? (
+            <AcuantCapture
+              ref={registerField('selfie', { isRequired: true })}
+              capture="user"
+              label={t('doc_auth.headings.document_capture_selfie')}
+              bannerText={t('doc_auth.headings.photo')}
+              value={value.selfie}
+              onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
+              allowUpload={false}
+              className="id-card-file-input"
+              errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+            />
+          ) : (
+            <SelfieCapture
+              ref={registerField('selfie', { isRequired: true })}
+              value={value.selfie}
+              onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
+              errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+            />
+          )}
+        </>
       )}
     </>
   );

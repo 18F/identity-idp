@@ -9,13 +9,9 @@ describe('document-capture/components/review-issues-step', () => {
   it('renders with front, back, and selfie inputs', () => {
     const { getByLabelText } = render(<ReviewIssuesStep />);
 
-    const front = getByLabelText('doc_auth.headings.document_capture_front');
-    const back = getByLabelText('doc_auth.headings.document_capture_back');
-    const selfie = getByLabelText('doc_auth.headings.document_capture_selfie');
-
-    expect(front).to.be.ok();
-    expect(back).to.be.ok();
-    expect(selfie).to.be.ok();
+    expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
+    expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
+    expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
   });
 
   it('calls onChange callback with uploaded image', () => {
@@ -28,7 +24,7 @@ describe('document-capture/components/review-issues-step', () => {
   });
 
   context('service provider context', () => {
-    it('renders with help link', () => {
+    it('renders with name and help link', () => {
       const { getByText } = render(
         <I18nContext.Provider
           value={{
@@ -41,6 +37,7 @@ describe('document-capture/components/review-issues-step', () => {
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
+              isLivenessRequired: false,
             }}
           >
             <ReviewIssuesStep />
@@ -56,6 +53,76 @@ describe('document-capture/components/review-issues-step', () => {
       );
 
       expect(help).to.be.ok();
+    });
+
+    it('renders with name', () => {
+      const { getByText } = render(
+        <I18nContext.Provider
+          value={{
+            'doc_auth.info.no_other_id_help_bold_html':
+              'If you do not have another state-issued ID, ' +
+              '<a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>',
+          }}
+        >
+          <ServiceProviderContext.Provider
+            value={{
+              name: 'Example App',
+              failureToProofURL: null,
+              isLivenessRequired: false,
+            }}
+          >
+            <ReviewIssuesStep />
+          </ServiceProviderContext.Provider>
+        </I18nContext.Provider>,
+      );
+
+      const help = getByText(
+        (_content, element) =>
+          element.innerHTML ===
+          'If you do not have another state-issued ID, get help at Example App.',
+      );
+
+      expect(help).to.be.ok();
+    });
+
+    context('ial2', () => {
+      it('renders with front and back inputs', () => {
+        const { getByLabelText } = render(
+          <ServiceProviderContext.Provider
+            value={{
+              name: 'Example App',
+              failureToProofURL: 'https://example.com',
+              isLivenessRequired: false,
+            }}
+          >
+            <ReviewIssuesStep />
+          </ServiceProviderContext.Provider>,
+        );
+
+        expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
+        expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
+        expect(() => getByLabelText('doc_auth.headings.document_capture_selfie')).to.throw();
+      });
+    });
+
+    context('ial2 strict', () => {
+      it('renders with front, back, and selfie inputs', () => {
+        const { getByLabelText } = render(
+          <ServiceProviderContext.Provider
+            value={{
+              name: 'Example App',
+              failureToProofURL: 'https://example.com',
+              isLivenessRequired: true,
+            }}
+          >
+            <ReviewIssuesStep />
+          </ServiceProviderContext.Provider>,
+        );
+
+        expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
+        expect(getByLabelText('doc_auth.headings.document_capture_back')).to.be.ok();
+        expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
+      });
     });
   });
 });
