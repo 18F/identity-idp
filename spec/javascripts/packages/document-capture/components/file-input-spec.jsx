@@ -69,12 +69,24 @@ describe('document-capture/components/file-input', () => {
   });
 
   describe('isImage', () => {
-    it('returns false if given file is not an image', () => {
-      expect(isImage(new window.File([], 'demo.txt', { type: 'text/plain' }))).to.be.false();
+    context('file', () => {
+      it('returns false if not an image', () => {
+        expect(isImage(new window.File([], 'demo.txt', { type: 'text/plain' }))).to.be.false();
+      });
+
+      it('returns true if an image', () => {
+        expect(isImage(new window.File([], 'demo.png', { type: 'image/png' }))).to.be.true();
+      });
     });
 
-    it('returns true if given file is an image', () => {
-      expect(isImage(new window.File([], 'demo.png', { type: 'image/png' }))).to.be.true();
+    context('data URL', () => {
+      it('returns false if not an image', () => {
+        expect(isImage('data:text/plain;base64,8J+Riw==')).to.be.false();
+      });
+
+      it('returns true if an image', () => {
+        expect(isImage('data:image/jpeg;base64,8J+Riw==')).to.be.true();
+      });
     });
   });
 
