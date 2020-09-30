@@ -5,12 +5,5 @@ class VendorProofJob
     stages = stages.map(&:to_sym)
     idv_result = Idv::Agent.new(result.pii).proof(*stages)
     dcs.store_proofing_result(result.pii, idv_result)
-
-    # something like....
-    LambdaJobs::Runner.execute(
-      job_name: 'ProoferJobFunction',
-      args: result.pii,
-      job_class: Identity::Idp::Functions::ProoferJob
-    )
   end
 end
