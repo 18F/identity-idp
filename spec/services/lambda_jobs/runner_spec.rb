@@ -6,7 +6,7 @@ RSpec.describe LambdaJobs::Runner do
   end
 
   let(:job_name) { 'my-job' }
-  let(:args) { { foo: 'bar'} }
+  let(:args) { { foo: 'bar' } }
   let(:job_class) { double('JobClass') }
 
   let(:git_ref) { '1234567890abcdefghijklmnop' }
