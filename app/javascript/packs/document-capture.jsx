@@ -17,13 +17,17 @@ const { I18n: i18n, assets } = window.LoginGov;
 const appRoot = document.getElementById('document-capture-form');
 const isMockClient = appRoot.hasAttribute('data-mock-client');
 
+/**
+ * @return {import(
+ *   '@18f/identity-document-capture/context/service-provider'
+ * ).ServiceProviderContext}
+ */
 function getServiceProvider() {
   const name = appRoot.getAttribute('data-sp-name');
   const failureToProofURL = appRoot.getAttribute('data-failure-to-proof-url');
   const isLivenessRequired = appRoot.hasAttribute('data-liveness-required');
-  if (name && failureToProofURL) {
-    return { name, failureToProofURL, isLivenessRequired };
-  }
+
+  return { name, failureToProofURL, isLivenessRequired };
 }
 
 function getMetaContent(name) {
