@@ -19,6 +19,7 @@ module Idv
           liveness_checking_enabled: liveness_checking_enabled?,
         )
 
+        add_costs(client_response)
         analytics.track_event(
           Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
           client_response.to_h,
@@ -58,6 +59,14 @@ module Idv
 
     def doc_auth_client
       @doc_auth_client ||= DocAuth::Client.client
+    end
+
+    def add_costs(client_response)
+      Db::AddDocumentVerificationAndSelfieCosts.
+        new(user_id: current_user.id,
+            issuer: sp_session[:issuer].to_s,
+            liveness_checking_enabled: liveness_checking_enabled?).
+        call(client_response)
     end
   end
 end

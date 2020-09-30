@@ -21,7 +21,7 @@ module Idv
         selfie_response = DocAuth::Client.client.post_selfie(
           instance_id: instance_id, image: image.read,
         )
-
+        add_cost(:acuant_selfie)
         handle_successful_selfie_match if selfie_response.success?
 
         selfie_response
