@@ -58,6 +58,7 @@ module Flow
       FormResponse.new(success: true, errors: {})
     end
 
-    delegate :flash, :session, :current_user, :params, :request, to: :@controller
+    delegate :flash, :session, :current_user, :params, :request, :poll_with_meta_refresh,
+             to: :@controller
   end
 end
