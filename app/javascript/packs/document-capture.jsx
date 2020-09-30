@@ -20,9 +20,9 @@ const isMockClient = appRoot.hasAttribute('data-mock-client');
 function getServiceProvider() {
   const name = appRoot.getAttribute('data-sp-name');
   const failureToProofURL = appRoot.getAttribute('data-failure-to-proof-url');
-  const ial2Strict = appRoot.hasAttribute('data-ial2-strict');
+  const isLivenessRequired = appRoot.hasAttribute('data-liveness-required');
   if (name && failureToProofURL) {
-    return { name, failureToProofURL, ial2Strict };
+    return { name, failureToProofURL, isLivenessRequired };
   }
 }
 

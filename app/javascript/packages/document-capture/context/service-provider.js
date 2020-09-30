@@ -5,7 +5,7 @@ import { createContext } from 'react';
  *
  * @prop {string} name Service provider name.
  * @prop {string} failureToProofURL URL to redirect user on failure to proof.
- * @prop {boolean} ial2Strict Whether liveness capture should be expected from the user.
+ * @prop {boolean} isLivenessRequired Whether liveness capture should be expected from the user.
  */
 
 const ServiceProviderContext = createContext(/** @type {ServiceProviderContext=} */ (undefined));

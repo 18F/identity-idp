@@ -4,7 +4,7 @@
   <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: Figaro.env.acuant_sdk_initialization_creds %>
 <% end %>
 <%= tag.div id: 'document-capture-form', data: {
-  ial2_strict: liveness_checking_enabled?.presence,
+  liveness_required: liveness_checking_enabled?.presence,
   mock_client: (DocAuth::Client.doc_auth_vendor == 'mock').presence,
   document_capture_session_uuid: flow_session[:document_capture_session_uuid],
   endpoint: api_verify_images_url,

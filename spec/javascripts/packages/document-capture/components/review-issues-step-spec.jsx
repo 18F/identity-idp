@@ -37,7 +37,7 @@ describe('document-capture/components/review-issues-step', () => {
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
-              ial2Strict: false,
+              isLivenessRequired: false,
             }}
           >
             <ReviewIssuesStep />
@@ -62,7 +62,7 @@ describe('document-capture/components/review-issues-step', () => {
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
-              ial2Strict: false,
+              isLivenessRequired: false,
             }}
           >
             <ReviewIssuesStep />
@@ -82,7 +82,7 @@ describe('document-capture/components/review-issues-step', () => {
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
-              ial2Strict: true,
+              isLivenessRequired: true,
             }}
           >
             <ReviewIssuesStep />

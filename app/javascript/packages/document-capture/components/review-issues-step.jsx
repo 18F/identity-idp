@@ -79,7 +79,7 @@ function ReviewIssuesStep({
           />
         );
       })}
-      {serviceProvider?.ial2Strict !== false && (
+      {serviceProvider?.isLivenessRequired !== false && (
         <>
           <hr className="margin-y-4" />
           <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_selfie_header_text')}</p>
