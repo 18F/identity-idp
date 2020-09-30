@@ -7,8 +7,8 @@ import DeviceContext from '../context/device';
 /**
  * @typedef DocumentsStepValue
  *
- * @prop {Blob=} front Front image value.
- * @prop {Blob=} back Back image value.
+ * @prop {Blob|string|null|undefined} front Front image value.
+ * @prop {Blob|string|null|undefined} back Back image value.
  */
 
 /**

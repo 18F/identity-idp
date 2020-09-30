@@ -14,7 +14,6 @@ import FullScreen from './full-screen';
 import Button from './button';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
-import FileBase64CacheContext from '../context/file-base64-cache';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 
@@ -41,8 +40,8 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
  *
  * @prop {string} label Label associated with file input.
  * @prop {string=} bannerText Optional banner text to show in file input.
- * @prop {Blob?=} value Current value.
- * @prop {(nextValue:Blob?)=>void} onChange Callback receiving next value on change.
+ * @prop {string|Blob|null|undefined} value Current value.
+ * @prop {(nextValue:string|Blob|null)=>void} onChange Callback receiving next value on change.
  * @prop {'user'=} capture Facing mode of capture. If capture is not specified and a camera is
  * supported, defaults to the Acuant environment camera capture.
  * @prop {string=} className Optional additional class names.
@@ -65,23 +64,6 @@ const ACCEPTABLE_GLARE_SCORE = 50;
 const ACCEPTABLE_SHARPNESS_SCORE = 50;
 
 /**
- * Returns an instance of File representing the given data URL.
- *
- * @param {string} dataURL Data URL.
- *
- * @return {Blob} File representation.
- */
-function toBlob(dataURL) {
-  const [header, data] = dataURL.split(',');
-  const isBase64 = /;base64$/.test(header);
-  const [type] = header.replace(/^data:/, '').split(';');
-  const decodedData = isBase64 ? window.atob(data) : decodeURIComponent(data);
-
-  const view = Uint8Array.from(decodedData, (chunk) => chunk.charCodeAt(0));
-  return new window.Blob([view], { type });
-}
-
-/**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
  * in supported devices.
  *
@@ -100,7 +82,6 @@ function AcuantCapture(
   },
   ref,
 ) {
-  const fileCache = useContext(FileBase64CacheContext);
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
@@ -125,7 +106,7 @@ function AcuantCapture(
   /**
    * Calls onChange with next value and resets any errors which may be present.
    *
-   * @param {Blob?} nextValue Next value.
+   * @param {Blob|string|null} nextValue Next value.
    */
   function onChangeAndResetError(nextValue) {
     setOwnErrorMessage(null);
@@ -152,9 +133,8 @@ function AcuantCapture(
       if (shouldStartSelfieCapture) {
         /** @type {AcuantGlobal} */ (window).AcuantPassiveLiveness.startSelfieCapture(
           ifStillMounted((nextImageData) => {
-            const dataAsBlob = toBlob(`data:image/jpeg;base64,${nextImageData}`);
-            fileCache.set(dataAsBlob, nextImageData);
-            onChangeAndResetError(dataAsBlob);
+            const dataURI = `data:image/jpeg;base64,${nextImageData}`;
+            onChangeAndResetError(dataURI);
           }),
         );
       } else if (shouldStartEnvironmentCapture) {
@@ -203,9 +183,7 @@ function AcuantCapture(
               } else if (nextCapture.sharpness < ACCEPTABLE_SHARPNESS_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
               } else {
-                const dataAsBlob = toBlob(nextCapture.image.data);
-                fileCache.set(dataAsBlob, nextCapture.image.data);
-                onChangeAndResetError(dataAsBlob);
+                onChangeAndResetError(nextCapture.image.data);
               }
 
               setIsCapturingEnvironment(false);

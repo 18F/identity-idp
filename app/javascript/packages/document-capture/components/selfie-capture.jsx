@@ -19,8 +19,8 @@ import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 /**
  * @typedef SelfieCaptureProps
  *
- * @prop {Blob?=} value Current value.
- * @prop {(nextValue:Blob?)=>void} onChange Change handler.
+ * @prop {Blob|string|null|undefined} value Current value.
+ * @prop {(nextValue:Blob|string|null)=>void} onChange Change handler.
  * @prop {ReactNode=} errorMessage Error to show.
  */
 
@@ -169,7 +169,11 @@ function SelfieCapture({ value, onChange, errorMessage }, ref) {
                 {t('doc_auth.buttons.take_picture_retry')}
               </button>
             </div>
-            <FileImage file={value} alt="" className="selfie-capture__preview-image" />
+            {value instanceof window.Blob ? (
+              <FileImage file={value} alt="" className="selfie-capture__preview-image" />
+            ) : (
+              <img src={value} alt="" className="selfie-capture__preview-image" />
+            )}
           </>
         ) : (
           <>

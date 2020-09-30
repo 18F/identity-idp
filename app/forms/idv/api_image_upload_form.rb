@@ -14,7 +14,6 @@ module Idv
     validates_presence_of :document_capture_session
     validates_presence_of :selfie, if: :liveness_checking_enabled?
 
-    validate :validate_images
     validate :throttle_if_rate_limited
 
     def initialize(params, liveness_checking_enabled:)
@@ -49,15 +48,15 @@ module Idv
     end
 
     def front
-      params[:front]
+      as_readable(params[:front])
     end
 
     def back
-      params[:back]
+      as_readable(params[:back])
     end
 
     def selfie
-      params[:selfie]
+      as_readable(params[:selfie])
     end
 
     def document_capture_session_uuid
@@ -93,17 +92,9 @@ module Idv
       )
     end
 
-    def validate_images
-      IMAGE_KEYS.each do |image_key|
-        validate_image(image_key) if params[image_key]
-      end
-    end
-
-    def validate_image(image_key)
-      file = params[image_key]
-
-      return if file.respond_to?(:read)
-      errors.add(image_key, t('doc_auth.errors.not_a_file'))
+    def as_readable(value)
+      return value if value.respond_to?(:read)
+      return DataUrlImage.new(value) if value.is_a? String
     end
   end
 end

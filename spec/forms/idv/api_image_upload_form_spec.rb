@@ -50,12 +50,12 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'when an image is not a multipart file' do
-      let(:selfie_image) { 'aaaa' }
+    context 'when any image is a base64 file' do
+      let(:selfie_image) { DocAuthImageFixtures.selfie_image_data_url }
 
-      it 'is not valid' do
-        expect(form.valid?).to eq(false)
-        expect(form.errors[:selfie]).to eq(['The selection was not a valid file'])
+      it 'is valid' do
+        expect(form.valid?).to eq(true)
+        expect(form.errors).to be_blank
       end
     end
 

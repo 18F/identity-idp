@@ -17,7 +17,7 @@ import useI18n from '../hooks/use-i18n';
  * @prop {string=} bannerText Optional banner overlay text.
  * @prop {string[]=} accept Optional array of file input accept patterns.
  * @prop {'user'|'environment'=} capture Optional facing mode if file input is used for capture.
- * @prop {Blob?=} value Current value.
+ * @prop {Blob|string|null|undefined} value Current value.
  * @prop {ReactNode=} errorMessage Error to show.
  * @prop {(event:ReactMouseEvent)=>void=} onClick Input click handler.
  * @prop {(nextValue:Blob?)=>void=} onChange Input change handler.
@@ -54,13 +54,17 @@ export function getAcceptPattern(accept) {
 /**
  * Returns true if the given file represents an image, or false otherwise.
  *
- * @param {Blob} file File to test.
+ * @param {Blob|string} value File value to test.
  *
  * @return {boolean} Whether given file is an image.
  */
-export function isImage(file) {
-  const pattern = /** @type {RegExp} */ (getAcceptPattern('image/*'));
-  return pattern.test(file.type);
+export function isImage(value) {
+  if (value instanceof window.Blob) {
+    const pattern = /** @type {RegExp} */ (getAcceptPattern('image/*'));
+    return pattern.test(value.type);
+  }
+
+  return /^data:image\//.test(value);
 }
 
 /**
@@ -172,7 +176,7 @@ const FileInput = forwardRef((props, ref) => {
         onDrop={() => setIsDraggingOver(false)}
       >
         <div className="usa-file-input__target">
-          {value && value instanceof window.Blob && !isMobile && (
+          {value && !isMobile && (
             <div className="usa-file-input__preview-heading">
               <span>
                 {value instanceof window.File && (
@@ -187,7 +191,11 @@ const FileInput = forwardRef((props, ref) => {
           )}
           {value && isImage(value) && (
             <div className="usa-file-input__preview" aria-hidden="true">
-              <FileImage file={value} alt="" className="usa-file-input__preview__image" />
+              {value instanceof window.Blob ? (
+                <FileImage file={value} alt="" className="usa-file-input__preview__image" />
+              ) : (
+                <img src={value} alt="" className="usa-file-input__preview__image" />
+              )}
             </div>
           )}
           {!value && (
