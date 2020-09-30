@@ -25,8 +25,6 @@ require File.join(__dir__, 'app', 'services', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions',
   require: 'identity/idp/functions',
   github: '18F/identity-idp-functions',
-  # uncomment this for local dev
-  # path: '../identity-idp-functions',
   ref: LambdaJobs::GIT_REF
 gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.5'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'

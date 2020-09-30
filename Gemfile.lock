@@ -19,6 +19,13 @@ GIT
       aws-sdk-s3 (~> 1.8)
 
 GIT
+  remote: https://github.com/18F/identity-idp-functions.git
+  revision: 0464d0c4c889d03f8e269b304e861cdb91a5b15d
+  ref: 0464d0c4c889d03f8e269b304e861cdb91a5b15d
+  specs:
+    identity-idp-functions (0.1.0)
+
+GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
   revision: 1bef47ea242d0aa2e7d777370cafaa7556f7874f
   tag: v2.3.0
@@ -64,11 +71,6 @@ GIT
       aws-sdk-pinpointsmsvoice
       i18n
       twilio-ruby
-
-PATH
-  remote: ../identity-idp-functions
-  specs:
-    identity-idp-functions (0.1.0)
 
 GEM
   remote: https://rubygems.org/
