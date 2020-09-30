@@ -7,6 +7,10 @@ class VendorProofJob
     dcs.store_proofing_result(result.pii, idv_result)
 
     # something like....
-    LambdaJobs::Runner.execute(job_name: 'proofer-job', args: result.pii)
+    LambdaJobs::Runner.execute(
+      job_name: 'ProoferJobFunction',
+      args: result.pii,
+      job_class: Identity::Idp::Functions::ProoferJob
+    )
   end
 end
