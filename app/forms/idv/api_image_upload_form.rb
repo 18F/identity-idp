@@ -14,6 +14,7 @@ module Idv
     def initialize(params, liveness_checking_enabled:)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
+      @readable = {}
     end
 
     def submit
@@ -94,7 +95,6 @@ module Idv
     end
 
     def as_readable(value)
-      @readable ||= {}
       return @readable[value] if @readable.key?(value)
 
       @readable[value] = begin
