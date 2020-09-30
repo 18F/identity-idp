@@ -24,8 +24,6 @@ gem 'http_accept_language'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.1'
 require File.join(__dir__, 'app', 'services', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions',
-  # require: 'identity/idp/functions',
-  require: false,
   github: '18F/identity-idp-functions',
   ref: LambdaJobs::GIT_REF
 gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.5'
