@@ -27,6 +27,7 @@ feature 'doc auth self image step' do
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
     expect(proofing_cost.reload.acuant_result_count).to eq(count + 1)
+    expect(proofing_cost.reload.acuant_selfie_count).to eq(count + 1)
     expect(fake_analytics).to have_logged_event(
       Analytics::DOC_AUTH + ' submitted',
       step: 'selfie',
