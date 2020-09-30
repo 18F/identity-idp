@@ -95,7 +95,7 @@ module Idv
 
     def as_readable(value)
       @readable ||= {}
-      return @readable[value] if @readable.has_key?(value)
+      return @readable[value] if @readable.key?(value)
 
       @readable[value] = begin
         if value.respond_to?(:read)
