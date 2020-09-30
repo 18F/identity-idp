@@ -1,10 +1,5 @@
 module LambdaJobs
   class Runner
-    # shorthand for .new.run, easier to stub
-    def self.execute(**args)
-      new(**args).run
-    end
-
     attr_reader :job_name, :job_class, :args
 
     def initialize(job_name:, job_class:, args:)
