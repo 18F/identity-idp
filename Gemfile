@@ -9,6 +9,7 @@ gem 'ahoy_matey', '~> 2.2', '>= 2.2.1'
 gem 'american_date'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
+gem 'aws-sdk-lambda'
 gem 'base32-crockford'
 gem 'device_detector'
 gem 'devise', '~> 4.7.2'
@@ -23,7 +24,8 @@ gem 'http_accept_language'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.1'
 require File.join(__dir__, 'app', 'services', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions',
-  require: 'identity/idp/functions',
+  # require: 'identity/idp/functions',
+  require: false,
   github: '18F/identity-idp-functions',
   ref: LambdaJobs::GIT_REF
 gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.5'

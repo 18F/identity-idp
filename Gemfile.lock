@@ -20,8 +20,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 0464d0c4c889d03f8e269b304e861cdb91a5b15d
-  ref: 0464d0c4c889d03f8e269b304e861cdb91a5b15d
+  revision: f7f955eeb9c3ef1f20c836654893ad170b0ebebf
+  ref: f7f955eeb9c3ef1f20c836654893ad170b0ebebf
   specs:
     identity-idp-functions (0.1.0)
 
@@ -141,6 +141,9 @@ GEM
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
     aws-sdk-kms (1.25.0)
+      aws-sdk-core (~> 3, >= 3.71.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-lambda (1.42.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-pinpoint (1.41.0)
@@ -704,6 +707,7 @@ DEPENDENCIES
   ahoy_matey (~> 2.2, >= 2.2.1)
   american_date
   aws-sdk-kms (~> 1.4)
+  aws-sdk-lambda
   aws-sdk-ses (~> 1.6)
   axe-matchers (~> 2.6.0)
   base32-crockford
