@@ -139,6 +139,21 @@ describe('document-capture/components/file-input', () => {
     expect(hint).to.equal('Must be small');
   });
 
+  it('renders a value preview for a blob', async () => {
+    const { container, findByRole, getByLabelText } = render(
+      <FileInput label="File" value={new window.Blob([], { type: 'image/png' })} />,
+    );
+
+    const preview = await findByRole('img', { hidden: true });
+    const input = getByLabelText('File');
+
+    expect(input).to.be.ok();
+    expect(preview.getAttribute('src')).to.match(/^data:image\/png;base64,/);
+    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
+      'doc_auth.forms.change_file',
+    );
+  });
+
   it('renders a value preview for a file', async () => {
     const { container, findByRole, getByLabelText } = render(
       <FileInput label="File" value={new window.File([], 'demo.png', { type: 'image/png' })} />,
@@ -151,6 +166,21 @@ describe('document-capture/components/file-input', () => {
     expect(preview.getAttribute('src')).to.match(/^data:image\/png;base64,/);
     expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
       'doc_auth.forms.selected_file: demo.png doc_auth.forms.change_file',
+    );
+  });
+
+  it('renders a value preview for a data URL', async () => {
+    const { container, findByRole, getByLabelText } = render(
+      <FileInput label="File" value="data:image/jpeg;base64,8J+Riw==" />,
+    );
+
+    const preview = await findByRole('img', { hidden: true });
+    const input = getByLabelText('File');
+
+    expect(input).to.be.ok();
+    expect(preview.getAttribute('src')).to.match(/^data:image\/jpeg;base64,/);
+    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
+      'doc_auth.forms.change_file',
     );
   });
 
