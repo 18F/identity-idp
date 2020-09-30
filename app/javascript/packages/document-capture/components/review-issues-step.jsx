@@ -84,7 +84,7 @@ function ReviewIssuesStep({
           />
         );
       })}
-      {serviceProvider?.isLivenessRequired !== false && (
+      {serviceProvider?.isLivenessRequired && (
         <>
           <hr className="margin-y-4" />
           <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_selfie_header_text')}</p>

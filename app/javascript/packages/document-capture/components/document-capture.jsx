@@ -68,7 +68,7 @@ function DocumentCapture() {
           form: DocumentsStep,
           footer: DesktopDocumentDisclosure,
         },
-        serviceProvider?.isLivenessRequired !== false && {
+        serviceProvider?.isLivenessRequired && {
           name: 'selfie',
           title: t('doc_auth.headings.selfie'),
           form: SelfieStep,
