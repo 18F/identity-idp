@@ -18,10 +18,12 @@ describe('document-capture/components/selfie-step', () => {
       </AcuantProvider>,
     );
     initialize();
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '8J+Riw==');
 
     userEvent.click(getByLabelText('doc_auth.headings.document_capture_selfie'));
 
-    await waitFor(() => expect(onChange.getCall(0).args[0].selfie).to.be.instanceOf(window.Blob));
+    await waitFor(() =>
+      expect(onChange.getCall(0).args[0].selfie).to.equal('data:image/jpeg;base64,8J+Riw=='),
+    );
   });
 });

@@ -10,9 +10,9 @@ import ServiceProviderContext from '../context/service-provider';
 /**
  * @typedef ReviewIssuesStepValue
  *
- * @prop {Blob=} front Front image value.
- * @prop {Blob=} back Back image value.
- * @prop {Blob?=} selfie Back image value.
+ * @prop {Blob|string|null|undefined} front Front image value.
+ * @prop {Blob|string|null|undefined} back Back image value.
+ * @prop {Blob|string|null|undefined} selfie Back image value.
  */
 
 /**

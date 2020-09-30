@@ -9,7 +9,7 @@ import FormErrorMessage from './form-error-message';
 /**
  * @typedef SelfieStepValue
  *
- * @prop {Blob?=} selfie Selfie value.
+ * @prop {Blob|string|null|undefined} selfie Selfie value.
  */
 
 /**
