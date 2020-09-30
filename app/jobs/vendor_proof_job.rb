@@ -1,9 +1,8 @@
 class VendorProofJob
-  def self.perform(document_capture_session_id, stages)
+  def self.perform_resolution_proof(document_capture_session_id, proof_state_id)
     dcs = DocumentCaptureSession.find_by(uuid: document_capture_session_id)
     result = dcs.load_proofing_result
-    stages = stages.map(&:to_sym)
-    idv_result = Idv::Agent.new(result.pii).proof(*stages)
+    idv_result = Idv::Agent.new(result.pii).proof_resolution(proof_state_id: proof_state_id)
     dcs.store_proofing_result(result.pii, idv_result)
   end
 end

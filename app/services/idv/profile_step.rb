@@ -6,7 +6,7 @@ module Idv
 
     def submit(step_params)
       consume_step_params(step_params)
-      self.idv_result = Idv::Agent.new(applicant).proof(:resolution, :state_id)
+      self.idv_result = Idv::Agent.new(applicant).proof_resolution(proof_state_id: true)
       Throttler::Increment.call(*idv_throttle_params) unless failed_due_to_timeout_or_exception?
       update_idv_session if success?
       FormResponse.new(
