@@ -3,17 +3,12 @@ module Idv
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
 
-    IMAGE_KEYS = %i[
-      front
-      back
-      selfie
-    ].freeze
-
     validates_presence_of :front
     validates_presence_of :back
     validates_presence_of :document_capture_session
     validates_presence_of :selfie, if: :liveness_checking_enabled?
 
+    validate :validate_images
     validate :throttle_if_rate_limited
 
     def initialize(params, liveness_checking_enabled:)
@@ -92,9 +87,17 @@ module Idv
       )
     end
 
+    def validate_images
+      errors.add(:front, t('doc_auth.errors.not_a_file')) if front.is_a? URI::InvalidURIError
+      errors.add(:back, t('doc_auth.errors.not_a_file')) if back.is_a? URI::InvalidURIError
+      errors.add(:selfie, t('doc_auth.errors.not_a_file')) if selfie.is_a? URI::InvalidURIError
+    end
+
     def as_readable(value)
       return value if value.respond_to?(:read)
       return DataUrlImage.new(value) if value.is_a? String
+    rescue URI::InvalidURIError => error
+      error
     end
   end
 end
