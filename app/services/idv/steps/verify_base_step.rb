@@ -54,8 +54,9 @@ module Idv
       end
 
       def perform_resolution(pii_from_doc)
-        stages = should_use_aamva?(pii_from_doc) ? %i[resolution state_id] : [:resolution]
-        Idv::Agent.new(pii_from_doc).proof(*stages)
+        Idv::Agent.new(pii_from_doc).proof_resolution(
+          should_proof_state_id: should_use_aamva?(pii_from_doc),
+        )
       end
 
       def idv_result_to_form_response(idv_result)

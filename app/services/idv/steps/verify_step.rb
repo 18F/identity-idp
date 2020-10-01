@@ -16,8 +16,8 @@ module Idv
 
         flow_session[:idv_verify_step_document_capture_session_uuid] = document_capture_session.uuid
 
-        stages = should_use_aamva?(pii_from_doc) ? %w[resolution state_id] : ['resolution']
-        VendorProofJob.perform(document_capture_session.uuid, stages)
+        VendorProofJob.perform_resolution_proof(document_capture_session.uuid,
+                                                should_use_aamva?(pii_from_doc))
       end
     end
   end
