@@ -87,7 +87,7 @@ export function getStepIndexByName(steps, name) {
  * @return {HTMLElement=}
  */
 function getFieldActiveErrorFieldElement(errors, fields) {
-  const error = errors.find(({ field }) => !!fields[field]?.element);
+  const error = errors.find(({ field }) => fields[field]?.element);
 
   if (error) {
     return fields[error.field].element || undefined;
