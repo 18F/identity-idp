@@ -130,15 +130,6 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
     }, /** @type {FormStepError<Record<string,Error>>[]} */ ([]));
   }
 
-  useEffect(() => {
-    // Errors are assigned at the first attempt to submit. Once errors are assigned, track value
-    // changes to remove validation errors as they become resolved.
-    if (activeErrors.length) {
-      const nextActiveErrors = getValidationErrors();
-      setActiveErrors(nextActiveErrors);
-    }
-  }, [values]);
-
   // An empty steps array is allowed, in which case there is nothing to render.
   if (!step) {
     return null;
@@ -187,6 +178,9 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
         value={values}
         errors={activeErrors}
         onChange={(nextValuesPatch) => {
+          setActiveErrors((prevActiveErrors) =>
+            prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),
+          );
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
         }}
         registerField={(field, options = {}) => {
