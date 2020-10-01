@@ -89,9 +89,11 @@ describe Idv::Agent do
         expect(NewRelic::Agent).to receive(:notice_error).with(exception)
         expect(ExceptionNotifier).to receive(:notify_exception).with(exception)
 
-        expect(agent.proof_resolution(should_proof_state_id: false)).to include(
+        result = agent.proof_resolution(should_proof_state_id: false)
+
+        expect(result[:exception]).to be_instance_of(exception)
+        expect(result).to include(
           success: false,
-          exception: exception,
           timed_out: true,
         )
       end
