@@ -52,7 +52,7 @@ import useForceRender from '../hooks/use-force-render';
  *
  * @prop {import('react').RefCallback<HTMLElement>} refCallback Ref callback.
  * @prop {boolean} isRequired Whether field is required.
- * @prop {HTMLElement?=} element Element assigned by ref callback.
+ * @prop {HTMLElement?} element Element assigned by ref callback.
  */
 
 /**
@@ -84,13 +84,13 @@ export function getStepIndexByName(steps, name) {
  * @param {FormStepError<Record<string,Error>>[]} errors Active form step errors.
  * @param {Record<string,FieldsRefEntry>} fields Current fields.
  *
- * @return {HTMLElement|null|undefined}
+ * @return {HTMLElement=}
  */
 function getFieldActiveErrorFieldElement(errors, fields) {
   const error = errors.find(({ field }) => !!fields[field]?.element);
 
   if (error) {
-    return fields[error.field].element;
+    return fields[error.field].element || undefined;
   }
 }
 
@@ -230,6 +230,7 @@ function FormSteps({
                   forceRender();
                 }
               },
+              element: null,
               isRequired: !!options.isRequired,
             };
           }
