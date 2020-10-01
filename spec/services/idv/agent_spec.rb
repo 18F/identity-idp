@@ -83,8 +83,8 @@ describe Idv::Agent do
       it 'returns an unsuccessful result and notifies exception trackers if an exception occurs' do
         exception = Proofer::TimeoutError
 
-        agent = Idv::Agent.new({ ssn: '444-55-8888', first_name: 'Time Exception',
-                                 zipcode: '11111' })
+        agent = Idv::Agent.new(ssn: '444-55-8888', first_name: 'Time Exception',
+                               zipcode: '11111')
 
         expect(NewRelic::Agent).to receive(:notice_error).with(exception)
         expect(ExceptionNotifier).to receive(:notify_exception).with(exception)
