@@ -50,7 +50,7 @@ describe Idv::Agent do
         it 'does not proof state_id if resolution fails' do
           agent = Idv::Agent.new({ ssn: '444-55-6666', first_name: Faker::Name.first_name,
                                    zipcode: '11111' })
-          result = agent.proof_resolution(proof_state_id: true)
+          result = agent.proof_resolution(should_proof_state_id: true)
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include({ state_id: 'StateIdMock' })
         end
@@ -58,7 +58,7 @@ describe Idv::Agent do
         it 'does proof state_id if resolution succeeds' do
           agent = Idv::Agent.new({ ssn: '444-55-8888', first_name: Faker::Name.first_name,
                                    zipcode: '11111' })
-          result = agent.proof_resolution(proof_state_id: true)
+          result = agent.proof_resolution(should_proof_state_id: true)
           expect(result[:context][:stages]).to include({ state_id: 'StateIdMock' })
         end
       end
@@ -67,7 +67,7 @@ describe Idv::Agent do
         it 'does not proof state_id if resolution fails' do
           agent = Idv::Agent.new({ ssn: '444-55-6666', first_name: Faker::Name.first_name,
                                    zipcode: '11111' })
-          result = agent.proof_resolution(proof_state_id: false)
+          result = agent.proof_resolution(should_proof_state_id: false)
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include({ state_id: 'StateIdMock' })
         end
@@ -75,7 +75,7 @@ describe Idv::Agent do
         it 'does not proof state_id if resolution succeeds' do
           agent = Idv::Agent.new({ ssn: '444-55-8888', first_name: Faker::Name.first_name,
                                    zipcode: '11111' })
-          result = agent.proof_resolution(proof_state_id: false)
+          result = agent.proof_resolution(should_proof_state_id: false)
           expect(result[:context][:stages]).to_not include({ state_id: 'StateIdMock' })
         end
       end
@@ -89,7 +89,7 @@ describe Idv::Agent do
         expect(NewRelic::Agent).to receive(:notice_error).with(exception)
         expect(ExceptionNotifier).to receive(:notify_exception).with(exception)
 
-        expect(agent.proof_resolution(proof_state_id: false)).to include(
+        expect(agent.proof_resolution(should_proof_state_id: false)).to include(
           success: false,
           exception: exception,
           timed_out: true,
