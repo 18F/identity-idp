@@ -16,17 +16,6 @@ import useI18n from '../hooks/use-i18n';
 /** @typedef {import('./form-steps').FormStep} FormStep */
 /** @typedef {import('../context/upload').UploadFieldError} UploadFieldError */
 
-/**
- * Returns error messages interspersed with line break React element.
- *
- * @param {UploadFieldError[]} errors Error messages.
- *
- * @return {ReactNode[]} Formatted error messages.
- */
-export function getFormattedErrorMessages(errors) {
-  return errors.flatMap((error, i) => [<br key={i} />, error.message]).slice(1);
-}
-
 function DocumentCapture() {
   const [formValues, setFormValues] = useState(/** @type {Record<string,any>?} */ (null));
   const [submissionError, setSubmissionError] = useState(/** @type {Error?} */ (null));
@@ -44,7 +33,13 @@ function DocumentCapture() {
     setFormValues(nextFormValues);
   }
 
-  const isFormEntriesError = submissionError && submissionError instanceof UploadFormEntriesError;
+  let initialActiveErrors;
+  if (submissionError instanceof UploadFormEntriesError) {
+    initialActiveErrors = submissionError.formEntryErrors.map((error) => ({
+      field: error.field,
+      error,
+    }));
+  }
 
   /** @type {FormStep[]} */
   const steps = submissionError
@@ -82,18 +77,15 @@ function DocumentCapture() {
     />
   ) : (
     <>
-      {submissionError && (
+      {submissionError && !(submissionError instanceof UploadFormEntriesError) && (
         <Alert type="error" className="margin-bottom-4 margin-top-2 tablet:margin-top-0">
-          {isFormEntriesError
-            ? getFormattedErrorMessages(
-                /** @type {UploadFormEntriesError} */ (submissionError).rawErrors,
-              )
-            : t('errors.doc_auth.acuant_network_error')}
+          {t('errors.doc_auth.acuant_network_error')}
         </Alert>
       )}
       <FormSteps
         steps={steps}
         initialValues={submissionError && formValues ? formValues : undefined}
+        initialActiveErrors={initialActiveErrors}
         onComplete={submitForm}
         autoFocus={!!submissionError}
       />

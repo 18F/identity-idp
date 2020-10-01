@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import FormSteps, {
   getStepIndexByName,
 } from '@18f/identity-document-capture/components/form-steps';
+import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import render from '../../../support/render';
 
 describe('document-capture/components/form-steps', () => {
@@ -258,5 +259,69 @@ describe('document-capture/components/form-steps', () => {
     const { getByText } = render(<FormSteps steps={steps} />);
 
     expect(getByText('Footer')).to.be.ok();
+  });
+
+  it('renders with initial active errors', async () => {
+    // Assumption: initialActiveErrors are only shown in combination with a flow of a single step.
+    const steps = [STEPS[1]];
+    const onComplete = sinon.spy();
+
+    const { getByLabelText, getByText, getByRole } = render(
+      <FormSteps
+        steps={steps}
+        initialActiveErrors={[
+          {
+            field: 'unknown',
+            error: toFormEntryError({ field: 'unknown', message: 'An unknown error occurred' }),
+          },
+          {
+            field: 'secondInputOne',
+            error: toFormEntryError({ field: 'secondInputOne', message: 'Bad input' }),
+          },
+        ]}
+        onComplete={onComplete}
+      />,
+    );
+
+    // Unknown errors show prior to title, and persist until submission.
+    const alert = getByRole('alert');
+    expect(alert.textContent).to.equal('An unknown error occurred');
+    expect(alert.nextElementSibling.textContent).to.equal('Second Title');
+
+    // Field associated errors are handled by the field. There should only be one.
+    const inputOne = getByLabelText('Second Input One');
+    const inputTwo = getByLabelText('Second Input Two');
+    expect(inputOne.matches('[data-is-error]')).to.be.true();
+    expect(inputTwo.matches('[data-is-error]')).to.be.false();
+
+    // Attempting to submit without adjusting field value does not submit and shows error.
+    userEvent.click(getByText('forms.buttons.submit.default'));
+    expect(onComplete.called).to.be.false();
+    await waitFor(() => expect(document.activeElement).to.equal(inputOne));
+
+    // Changing the value for the field should unset the error.
+    await userEvent.type(inputOne, 'one');
+    expect(inputOne.matches('[data-is-error]')).to.be.false();
+    expect(inputTwo.matches('[data-is-error]')).to.be.false();
+
+    // Unknown errors should still be present.
+    expect(getByRole('alert')).to.be.ok();
+
+    // Default required validation should still happen and take the place of any unknown errors.
+    userEvent.click(getByText('forms.buttons.submit.default'));
+    expect(onComplete.called).to.be.false();
+    await waitFor(() => expect(document.activeElement).to.equal(inputTwo));
+    expect(inputOne.matches('[data-is-error]')).to.be.false();
+    expect(inputTwo.matches('[data-is-error]')).to.be.true();
+    expect(() => getByRole('alert')).to.throw();
+
+    // Changing the value for the field should unset the error.
+    await userEvent.type(inputTwo, 'two');
+    expect(inputOne.matches('[data-is-error]')).to.be.false();
+    expect(inputTwo.matches('[data-is-error]')).to.be.false();
+
+    // The user can submit once all errors have been resolved.
+    userEvent.click(getByText('forms.buttons.submit.default'));
+    expect(onComplete.calledOnce).to.be.true();
   });
 });
