@@ -18,7 +18,6 @@ describe LambdaCallback::AddressProofResultController do
                                 address_result: proofer_result.to_h }
 
         proofing_result = document_capture_session.load_proofing_result
-        expect(proofing_result.pii).to eq nil
         expect(proofing_result.result).to eq({ exception: '', success: 'true' })
       end
 
@@ -31,10 +30,9 @@ describe LambdaCallback::AddressProofResultController do
                                 address_result: proofer_result.to_h }
 
         proofing_result = document_capture_session.load_proofing_result
-        expect(proofing_result.pii).to eq nil
         expect(proofing_result.result[:success]).to eq 'false'
         expect(proofing_result.result[:errors]).to eq(
-          { phone: ['The phone number could not be verified.'] }
+          { phone: ['The phone number could not be verified.'] },
         )
       end
     end

@@ -3,7 +3,7 @@ module LambdaCallback
     def create
       dcs = DocumentCaptureSession.new
       dcs.result_id = result_id_parameter
-      dcs.store_proofing_result(nil, address_result_parameter)
+      dcs.store_proofing_result(address_result_parameter)
     end
 
     private
