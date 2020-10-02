@@ -34,7 +34,8 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def store_proofing_result(proofing_result)
-    existing = EncryptedRedisStructStorage.load(result_id, type: ProofingDocumentCaptureSessionResult)
+    existing = EncryptedRedisStructStorage.load(result_id,
+                                                type: ProofingDocumentCaptureSessionResult)
     pii = existing&.pii
     EncryptedRedisStructStorage.store(
       ProofingDocumentCaptureSessionResult.new(
