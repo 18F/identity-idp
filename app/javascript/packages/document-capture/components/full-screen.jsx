@@ -43,6 +43,7 @@ function FullScreen({ onRequestClose = () => {}, children }) {
     if (node) {
       trapRef.current = createFocusTrap(node, {
         onDeactivate: () => onRequestCloseRef.current(),
+        clickOutsideDeactivates: true,
       });
 
       trapRef.current.activate();
