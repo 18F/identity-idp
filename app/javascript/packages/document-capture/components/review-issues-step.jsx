@@ -6,6 +6,7 @@ import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
 import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
+import './review-issues-step.scss';
 
 /**
  * @typedef ReviewIssuesStepValue
@@ -79,7 +80,7 @@ function ReviewIssuesStep({
             bannerText={t(`doc_auth.headings.${side}`)}
             value={value[side]}
             onChange={(nextValue) => onChange({ [side]: nextValue })}
-            className="id-card-file-input"
+            className="id-card-file-input document-capture-review-issues-step__input"
             errorMessage={sideError ? <FormErrorMessage error={sideError} /> : undefined}
           />
         );
@@ -103,11 +104,11 @@ function ReviewIssuesStep({
               value={value.selfie}
               onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
               allowUpload={false}
-              className="id-card-file-input"
+              className="id-card-file-input document-capture-review-issues-step__input"
               errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
             />
           ) : (
-            <div style={{ maxWidth: '375px' }}>
+            <div className="document-capture-review-issues-step__input">
               <SelfieCapture
                 ref={registerField('selfie', { isRequired: true })}
                 value={value.selfie}
