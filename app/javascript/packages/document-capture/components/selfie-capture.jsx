@@ -22,12 +22,13 @@ import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
  * @prop {Blob|string|null|undefined} value Current value.
  * @prop {(nextValue:Blob|string|null)=>void} onChange Change handler.
  * @prop {ReactNode=} errorMessage Error to show.
+ * @prop {string=} className Optional additional class names to apply to wrapper element.
  */
 
 /**
  * @param {SelfieCaptureProps} props Props object.
  */
-function SelfieCapture({ value, onChange, errorMessage }, ref) {
+function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
   const instanceId = useInstanceId();
   const { t } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
@@ -132,6 +133,7 @@ function SelfieCapture({ value, onChange, errorMessage }, ref) {
     isCapturing && 'selfie-capture--capturing',
     shownErrorMessage && 'selfie-capture--error',
     value && 'selfie-capture--has-value',
+    className,
   ]
     .filter(Boolean)
     .join(' ');
