@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Alert } from '@18f/identity-components';
 import Button from './button';
 import PageHeading from './page-heading';
+import FormErrorMessage, { RequiredValueMissingError } from './form-error-message';
 import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
+import useForceRender from '../hooks/use-force-render';
 
 /**
  * @typedef FormStepError
@@ -49,7 +52,7 @@ import useHistoryParam from '../hooks/use-history-param';
  *
  * @prop {import('react').RefCallback<HTMLElement>} refCallback Ref callback.
  * @prop {boolean} isRequired Whether field is required.
- * @prop {HTMLElement?=} element Element assigned by ref callback.
+ * @prop {HTMLElement?} element Element assigned by ref callback.
  */
 
 /**
@@ -57,14 +60,10 @@ import useHistoryParam from '../hooks/use-history-param';
  *
  * @prop {FormStep[]=} steps Form steps.
  * @prop {Record<string,any>=} initialValues Form values to populate initial state.
+ * @prop {FormStepError<Record<string,Error>>[]=} initialActiveErrors Errors to initialize state.
  * @prop {boolean=} autoFocus Whether to automatically focus heading on mount.
  * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
  */
-
-/**
- * An error representing a state where a required form value is missing.
- */
-export class RequiredValueMissingError extends Error {}
 
 /**
  * Returns the index of the step in the array which matches the given name. Returns `-1` if there is
@@ -80,23 +79,43 @@ export function getStepIndexByName(steps, name) {
 }
 
 /**
+ * Returns the first element matched to a field from a set of errors, if exists.
+ *
+ * @param {FormStepError<Record<string,Error>>[]} errors Active form step errors.
+ * @param {Record<string,FieldsRefEntry>} fields Current fields.
+ *
+ * @return {HTMLElement=}
+ */
+function getFieldActiveErrorFieldElement(errors, fields) {
+  const error = errors.find(({ field }) => fields[field]?.element);
+
+  if (error) {
+    return fields[error.field].element || undefined;
+  }
+}
+
+/**
  * @param {FormStepsProps} props Props object.
  */
-function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, autoFocus }) {
+function FormSteps({
+  steps = [],
+  onComplete = () => {},
+  initialValues = {},
+  initialActiveErrors = [],
+  autoFocus,
+}) {
   const [values, setValues] = useState(initialValues);
-  const [activeErrors, setActiveErrors] = useState(
-    /** @type {FormStepError<Record<string,Error>>[]} */ ([]),
-  );
+  const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step', null);
   const { t } = useI18n();
   const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
   const didSubmitWithErrors = useRef(false);
+  const forceRender = useForceRender();
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
-      const firstActiveError = activeErrors[0];
-      fields.current[firstActiveError.field]?.element?.focus();
+      getFieldActiveErrorFieldElement(activeErrors, fields.current)?.focus();
     }
 
     didSubmitWithErrors.current = false;
@@ -130,19 +149,12 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
     }, /** @type {FormStepError<Record<string,Error>>[]} */ ([]));
   }
 
-  useEffect(() => {
-    // Errors are assigned at the first attempt to submit. Once errors are assigned, track value
-    // changes to remove validation errors as they become resolved.
-    if (activeErrors.length) {
-      const nextActiveErrors = getValidationErrors();
-      setActiveErrors(nextActiveErrors);
-    }
-  }, [values]);
-
   // An empty steps array is allowed, in which case there is nothing to render.
   if (!step) {
     return null;
   }
+
+  const unknownFieldErrors = activeErrors.filter((error) => !fields.current[error.field]?.element);
 
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
@@ -152,6 +164,13 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
    */
   function toNextStep(event) {
     event.preventDefault();
+
+    // Don't proceed if field errors have yet to be resolved.
+    if (activeErrors.length && activeErrors.length > unknownFieldErrors.length) {
+      setActiveErrors([...activeErrors]);
+      didSubmitWithErrors.current = true;
+      return;
+    }
 
     const nextActiveErrors = getValidationErrors();
     setActiveErrors(nextActiveErrors);
@@ -179,6 +198,15 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
 
   return (
     <form ref={formRef} onSubmit={toNextStep}>
+      {unknownFieldErrors.map(({ field, error }) => (
+        <Alert
+          key={[field, error.message].join()}
+          type="error"
+          className="margin-bottom-4 margin-top-2 tablet:margin-top-0"
+        >
+          <FormErrorMessage error={error} />
+        </Alert>
+      ))}
       <PageHeading key="title" ref={headingRef} tabIndex={-1}>
         {title}
       </PageHeading>
@@ -187,6 +215,9 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
         value={values}
         errors={activeErrors}
         onChange={(nextValuesPatch) => {
+          setActiveErrors((prevActiveErrors) =>
+            prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),
+          );
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
         }}
         registerField={(field, options = {}) => {
@@ -194,7 +225,12 @@ function FormSteps({ steps = [], onComplete = () => {}, initialValues = {}, auto
             fields.current[field] = {
               refCallback(fieldNode) {
                 fields.current[field].element = fieldNode;
+
+                if (activeErrors.length) {
+                  forceRender();
+                }
               },
+              element: null,
               isRequired: !!options.isRequired,
             };
           }
