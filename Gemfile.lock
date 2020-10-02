@@ -20,10 +20,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 97a07927e96d17e5ec204e5476de25ca52e5bf01
-  ref: 97a07927e96d17e5ec204e5476de25ca52e5bf01
+  revision: dcf845f09aba43addb8891676288e3e7ed4cc0de
+  ref: dcf845f09aba43addb8891676288e3e7ed4cc0de
   specs:
-    identity-idp-functions (0.1.0)
+    identity-idp-functions (0.2.1)
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
