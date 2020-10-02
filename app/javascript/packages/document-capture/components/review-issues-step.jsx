@@ -107,12 +107,14 @@ function ReviewIssuesStep({
               errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
             />
           ) : (
-            <SelfieCapture
-              ref={registerField('selfie', { isRequired: true })}
-              value={value.selfie}
-              onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-              errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
-            />
+            <div style={{ maxWidth: '375px' }}>
+              <SelfieCapture
+                ref={registerField('selfie', { isRequired: true })}
+                value={value.selfie}
+                onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
+                errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+              />
+            </div>
           )}
         </>
       )}
