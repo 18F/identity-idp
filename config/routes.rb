@@ -43,8 +43,8 @@ Rails.application.routes.draw do
   end
 
   scope module: :lambda_callback do
-    post '/api/address_proof_result' => 'address_proof_result#create', as: 'address_proof_result'
-    # post '/api/address_proof_result/:result_id' => 'address_proof_result#create', as: 'address_proof_result'
+    post '/api/proofing_results/address/:result_id' => 'address_proof_result#create', as: 'address_proof_result'
+    # post '/api/proofing_results/resolution/:result_id' => 'resolution_proof_result#create', as: 'resolution_proof_result'
   end
 
   # i18n routes. Alphabetically sorted.

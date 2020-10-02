@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe LambdaCallback::AddressProofResultController do
   describe '#create' do
-    let(:document_capture_session) { DocumentCaptureSession.new(user: create(:user))}
+    let(:document_capture_session) { DocumentCaptureSession.new(user: create(:user)) }
 
     context 'with valid API token' do
       before do
@@ -14,14 +14,12 @@ describe LambdaCallback::AddressProofResultController do
         document_capture_session.store_proofing_pii_from_doc(applicant)
         proofer_result = AddressMock.new.proof(applicant)
 
-        post :create, params: {result_id: document_capture_session.result_id,
-                               address_result: proofer_result.to_h}
-        # post address_proof_result_path(result_id: document_capture_session.result_id),
-        #   params: {result_id: '1', a: 'b'}
+        post :create, params: { result_id: document_capture_session.result_id,
+                                address_result: proofer_result.to_h }
 
         proofing_result = document_capture_session.load_proofing_result
         expect(proofing_result.pii).to eq nil
-        expect(proofing_result.result).to eq({ exception: "", success: 'true' })
+        expect(proofing_result.result).to eq({ exception: '', success: 'true' })
       end
 
       it 'accepts and stores unsuccessful address proofing results' do
@@ -29,16 +27,15 @@ describe LambdaCallback::AddressProofResultController do
         document_capture_session.store_proofing_pii_from_doc(applicant)
         proofer_result = AddressMock.new.proof(applicant)
 
-        post :create, params: {result_id: document_capture_session.result_id,
-                               address_result: proofer_result.to_h}
-
-        # post address_proof_result_path(result_id: document_capture_session.result_id),
-        #   params: {result_id: '1', a: 'b'}
+        post :create, params: { result_id: document_capture_session.result_id,
+                                address_result: proofer_result.to_h }
 
         proofing_result = document_capture_session.load_proofing_result
         expect(proofing_result.pii).to eq nil
         expect(proofing_result.result[:success]).to eq 'false'
-        expect(proofing_result.result[:errors]).to eq({ phone: ['The phone number could not be verified.']})
+        expect(proofing_result.result[:errors]).to eq(
+          { phone: ['The phone number could not be verified.'] }
+        )
       end
     end
 
@@ -48,9 +45,7 @@ describe LambdaCallback::AddressProofResultController do
       end
 
       it 'returns unauthorized error' do
-        post :create, params: {result_id: 'abc123', address_result: {}}
-        # post address_proof_result_path(result_id: 'abc123'),
-        #   params: {}
+        post :create, params: { result_id: 'abc123', address_result: {} }
 
         expect(response.status).to eq 401
       end

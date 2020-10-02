@@ -1,3 +1,7 @@
+# Subclass this class to implement a controller that requires
+# an authentication token supplied in the X-API-AUTH-TOKEN header.
+# The required token value is defined by implementing a
+# #config_auth_token method.
 class AuthTokenController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :authorize
