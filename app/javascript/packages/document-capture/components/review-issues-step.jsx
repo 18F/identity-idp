@@ -108,14 +108,18 @@ function ReviewIssuesStep({
               errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
             />
           ) : (
-            <div className="document-capture-review-issues-step__input">
-              <SelfieCapture
-                ref={registerField('selfie', { isRequired: true })}
-                value={value.selfie}
-                onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
-                errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
-              />
-            </div>
+            <SelfieCapture
+              ref={registerField('selfie', { isRequired: true })}
+              value={value.selfie}
+              onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
+              errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+              className={[
+                'document-capture-review-issues-step__input',
+                !value.selfie && 'document-capture-review-issues-step__input--unconstrained-width',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            />
           )}
         </>
       )}
