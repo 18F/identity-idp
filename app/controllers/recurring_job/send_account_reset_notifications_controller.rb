@@ -1,5 +1,5 @@
 module RecurringJob
-  class SendAccountResetNotificationsController < BaseController
+  class SendAccountResetNotificationsController < AuthTokenController
     def create
       render(
         plain: 'This endpoint has been removed in favor of idp-jobs.',

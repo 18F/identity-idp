@@ -1,5 +1,5 @@
 module RecurringJob
-  class UndeliverableAddressController < BaseController
+  class UndeliverableAddressController < AuthTokenController
     def create
       UndeliverableAddressNotifier.new.call
       render plain: 'ok'
