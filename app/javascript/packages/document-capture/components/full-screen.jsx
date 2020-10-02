@@ -52,11 +52,13 @@ function FullScreen({ onRequestClose = () => {}, children }) {
   useEffect(() => {
     if (activeInstances++ === 0) {
       document.body.classList.add('has-full-screen-overlay');
+      document.documentElement.classList.add('has-full-screen-overlay');
     }
 
     return () => {
       if (--activeInstances === 0) {
         document.body.classList.remove('has-full-screen-overlay');
+        document.documentElement.classList.remove('has-full-screen-overlay');
       }
     };
   }, []);
