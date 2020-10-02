@@ -42,6 +42,11 @@ Rails.application.routes.draw do
     post '/api/usps_upload' => 'usps_upload#create'
   end
 
+  scope module: :lambda_callback do
+    post '/api/address_proof_result' => 'address_proof_result#create', as: 'address_proof_result'
+    # post '/api/address_proof_result/:result_id' => 'address_proof_result#create', as: 'address_proof_result'
+  end
+
   # i18n routes. Alphabetically sorted.
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
     # Devise handles login itself. It's first in the chain to avoid a redirect loop during
