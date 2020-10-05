@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-ProofingDocumentCaptureSessionResult = Struct.new(:id, :pii, :result, :status, keyword_init: true) do
+ProofingDocumentCaptureSessionResult = Struct.new(:id, :pii, :result, :status,
+                                                  keyword_init: true) do
   def self.redis_key_prefix
     'dcs-proofing:result'
   end

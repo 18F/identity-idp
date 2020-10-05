@@ -9,14 +9,26 @@ module Idv
     before_action :set_idv_form
 
     def new
-      analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
+      async_state = step.async_state
+
+      case async_state.status
+      when :none
+        analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
+        render :new
+      when :in_progress
+        render :wait
+      when :timed_out
+        render :new
+      when :done
+        async_state_done(async_state)
+      end
     end
 
     def create
       result = idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
-      return render(:new) unless result.success?
       submit_proofing_attempt
+      redirect_to idv_phone_path
     end
 
     private
@@ -34,14 +46,11 @@ module Idv
     end
 
     def submit_proofing_attempt
-      idv_result = step.submit(step_params.to_h)
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_VENDOR, idv_result.to_h)
-      redirect_to_next_step and return if idv_result.success?
-      handle_proofing_failure
+      step.submit(step_params.to_h)
     end
 
-    def handle_proofing_failure
-      idv_session.previous_phone_step_params = step_params.to_h
+    def handle_proofing_failure(pii)
+      idv_session.previous_phone_step_params = { 'phone' => pii[:phone] }
       redirect_to failure_url(step.failure_reason)
     end
 
@@ -79,6 +88,13 @@ module Idv
       when :fail
         idv_phone_errors_failure_url
       end
+    end
+
+    def async_state_done(async_state)
+      step.async_state_done(async_state)
+      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_VENDOR, async_state.result)
+      redirect_to_next_step and return if async_state.result[:success]
+      handle_proofing_failure(async_state.pii)
     end
   end
 end
