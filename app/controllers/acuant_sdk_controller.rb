@@ -6,6 +6,8 @@ class AcuantSdkController < ApplicationController
     AcuantImageProcessingWorker.wasm
   ].freeze
 
+  ACUANT_VERSION = '11.4.1'.freeze
+
   def show
     # Only render files on an allowlist to prevent path traversal issues
     return render(plain: 'Not found', status: :not_found) unless requested_asset_permitted?
@@ -15,7 +17,7 @@ class AcuantSdkController < ApplicationController
       script_src: ['\'unsafe-eval\''],
     )
     send_file(
-      Rails.root.join('public', requested_asset_name),
+      Rails.root.join('public', 'acuant', ACUANT_VERSION, requested_asset_name),
       type: response_content_type,
       disposition: :inline,
     )
