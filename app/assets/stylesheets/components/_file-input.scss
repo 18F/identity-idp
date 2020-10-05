@@ -26,6 +26,12 @@
       padding-bottom: ((2.125 / 3.375) * 100) + unquote('%');
     }
   }
+
+  .document-capture-file-image--loading {
+    display: block;
+    // 2.125" x 3.375" are common standard ID dimensions
+    padding-bottom: ((2.125 / 3.375) * 100) + unquote('%');
+  }
 }
 
 //================================================
