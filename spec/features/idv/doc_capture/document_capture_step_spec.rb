@@ -14,6 +14,8 @@ feature 'doc capture document capture step' do
     allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('true')
     allow(Figaro.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
+    allow(LoginGov::Hostdata::EC2).to receive(:load).
+      and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     if sp_requests_ial2_strict
       visit_idp_from_oidc_sp_with_ial2_strict
     else

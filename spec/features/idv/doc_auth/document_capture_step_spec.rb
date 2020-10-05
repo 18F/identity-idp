@@ -15,7 +15,7 @@ feature 'doc auth document capture step' do
     allow(Figaro.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(LoginGov::Hostdata::EC2).to receive(:load).
-      and_return(OpenStruct.new(region: 'us-west-2', domain: 'example.com'))
+      and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
   end
