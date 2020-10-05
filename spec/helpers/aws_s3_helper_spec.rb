@@ -33,9 +33,12 @@ describe 'AwsS3Helper' do
 
   describe '#s3_presigned_url' do
     it 'returns a URL' do
-      url = URI(helper.s3_presigned_url(
+      url = URI(
+        helper.s3_presigned_url(
           bucket_prefix: prefix,
-          keyname: "#{session_uuid}-#{image_type}"))
+          keyname: "#{session_uuid}-#{image_type}",
+        ),
+      )
       query = Hash[*url.query.split(/[&=]/)]
 
       expect(url.host).to eq(host)

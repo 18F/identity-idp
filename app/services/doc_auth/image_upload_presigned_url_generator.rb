@@ -14,4 +14,3 @@ module DocAuth
     end
   end
 end
-
