@@ -1,5 +1,5 @@
 require 'rails_helper'
-describe 'AwsHelper' do
+describe 'AwsS3Helper' do
   let(:session_uuid) { SecureRandom.uuid }
   let(:env) { 'dev' }
   let(:account_id) { '123456789' }
@@ -29,6 +29,11 @@ describe 'AwsHelper' do
       "X-Amz-Expires=900&" \
       "X-Amz-SignedHeaders=host&" \
       "X-Amz-Signature=ABC123"
+  end
+
+  before do
+    allow(LoginGov::Hostdata::EC2).to receive(:load).
+      and_return(OpenStruct.new(region: 'us-west-2', domain: 'example.com'))
   end
 
   describe '#presigned_image_upload_url' do
