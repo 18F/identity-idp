@@ -30,7 +30,8 @@ describe Profile do
 
       expect(profile.encrypted_pii).to_not be_nil
       expect(profile.encrypted_pii).to_not match 'Jane'
-      expect(profile.encrypted_pii).to_not match '666'
+      expect(profile.encrypted_pii).to_not match(ssn)
+      expect(profile.encrypted_pii).to_not match(ssn.tr('-', ''))
     end
 
     it 'generates new personal key' do
