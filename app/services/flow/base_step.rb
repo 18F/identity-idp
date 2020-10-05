@@ -30,6 +30,11 @@ module Flow
       obj.is_a?(FormResponse) || obj.is_a?(DocAuth::Response)
     end
 
+    def pre_render
+      # Return a hash of local variables required for step view template
+      {}
+    end
+
     private
 
     def create_response(form_submit_response, call_response)

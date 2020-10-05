@@ -14,6 +14,25 @@ module Idv
         end
       end
 
+      def pre_render
+        url_builder = DocAuth::ImageUploadPresignedUrlGenerator.new
+
+        {
+          front_image_upload_url: url_builder.presigned_image_upload_url(
+            image_type: 'front',
+            transaction_id: flow_session[:document_capture_session_uuid],
+          ),
+          back_image_upload_url: url_builder.presigned_image_upload_url(
+            image_type: 'back',
+            transaction_id: flow_session[:document_capture_session_uuid],
+          ),
+          selfie_image_upload_url: url_builder.presigned_image_upload_url(
+            image_type: 'selfie',
+            transaction_id: flow_session[:document_capture_session_uuid],
+          ),
+        }
+      end
+
       private
 
       def post_images_and_handle_result

@@ -40,6 +40,13 @@ module Flow
       flow_session[klass.to_s] = true
     end
 
+    def pre_render(step)
+      handler = steps[step] || actions[step]
+      return failure("Unhandled step #{step}") unless handler
+      obj = handler.new(self)
+      obj.pre_render
+    end
+
     private
 
     def wrap_send(handler)

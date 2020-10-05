@@ -1,11 +1,4 @@
-module AwsHelper
-  def presigned_image_upload_url(image_type:, transaction_id:)
-    s3_presigned_url(
-      bucket_prefix: 'login-gov-idp-doc-capture',
-      keyname: "#{transaction_id}-#{image_type}",
-    )
-  end
-
+module AwsS3Helper
   def s3_presigned_url(bucket_prefix:, keyname:)
     raise(ArgumentError, 'keyname is required') if keyname.nil?
     return nil unless s3_resource
@@ -39,7 +32,7 @@ module AwsHelper
 
   def ec2_data
     LoginGov::Hostdata::EC2.load
-  rescue Net::OpenTimeout => e
+  rescue Net::OpenTimeout, Errno::EHOSTDOWN, Errno::EHOSTUNREACH => e
     raise e if LoginGov::Hostdata.in_datacenter?
 
     OpenStruct.new(account_id: '123456789', region: 'us-west-2')

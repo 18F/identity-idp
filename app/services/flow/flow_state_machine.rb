@@ -95,7 +95,10 @@ module Flow
       @params = params
       @request = request
       return if call_optional_show_step(step)
-      render template: "#{@view || @name}/#{step}", locals: { flow_session: flow_session }
+      @step_params = flow.pre_render(step)
+      local_params = @step_params.merge(flow_session: flow_session)
+      byebug
+      render "#{@view || @name}/#{step}", locals: local_params
     end
 
     def call_optional_show_step(step)
