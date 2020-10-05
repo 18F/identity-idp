@@ -153,14 +153,14 @@ const FileInput = forwardRef((props, ref) => {
       >
         {label}
       </label>
-      {shownErrorMessage && (
-        <span className="usa-error-message" role="alert">
-          {shownErrorMessage}
-        </span>
-      )}
       {hint && (
         <span className="usa-hint" id={hintId}>
           {hint}
+        </span>
+      )}
+      {shownErrorMessage && (
+        <span className="usa-error-message" role="alert">
+          {shownErrorMessage}
         </span>
       )}
       <div
