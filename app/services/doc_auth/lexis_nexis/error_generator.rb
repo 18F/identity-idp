@@ -1,12 +1,15 @@
 module DocAuth
   module LexisNexis
     class UnknownTrueIDError < StandardError; end
+    class UnknownTrueIDAlert < StandardError; end
 
     class ErrorGenerator
       # These constants are the key names for the TrueID errors hash that is returned
       ID = :id
       FRONT = :front
       BACK = :back
+      SELFIE = :selfie
+      GENERAL = :general
 
       # rubocop:disable Layout/LineLength
       TRUE_ID_MESSAGES = {
@@ -56,48 +59,91 @@ module DocAuth
       # rubocop:enable Layout/LineLength
 
       # rubocop:disable Metrics/PerceivedComplexity
-      def self.generate_trueid_errors(response_info, liveness_checking_enabled)
-        errors = Hash.new { |hash, key| hash[key] = Set.new }
+      def self.generate_trueid_errors(response_info, liveness_enabled)
+        user_error_count = response_info[:AlertFailureCount]
 
-        if response_info[:DocAuthResult] != 'Passed'
-          response_info[:Alerts]&.each do |alert|
-            alert_msg_hash = TRUE_ID_MESSAGES[alert[:name].to_sym]
+        errors = get_error_messages(liveness_enabled, response_info)
+        user_error_count += 1 if errors.include?(:SELFIE)
 
-            if alert_msg_hash.present?
-              # Don't show alert errors if the DocAuthResult has passed
-              # With liveness turned on DocAuthResult can pass but the liveness check fails
-              if alert[:result] != 'Passed'
-                # We should log the counts of failing alerts that are given to users for analytics
-                # AM: Log to Ahoy/Cloudwatch
-                errors[alert_msg_hash[:type]].add(I18n.t(alert_msg_hash[:msg_key]))
-              end
-              # We always want to make sure any unknown alerts that come through are noted
-              # AM: Log to Ahoy/Cloudwatch
-            end
-          end
-        elsif liveness_checking_enabled && response_info[:PortraitMatchResults].present?
-          # Only bother to look for selfie_results if ID Auth was successful
-          if response_info[:PortraitMatchResults].dig(:FaceMatchResult) != 'Pass'
-            errors[:selfie].add(I18n.t('doc_auth.errors.lexis_nexis.selfie_failure'))
-            # Should probably log if selfie results isn't populated when we expect it to be?
-          end
-        end
+        scan_for_unknown_alerts(response_info)
 
-        if errors.empty?
-          e = UnknownTrueIDError.new('TrueID failure escaped without useful errors')
-          # AM: Log to Ahoy/Cloudwatch
+        if user_error_count == 0
+          e = UnknownTrueIDError.new('LN TrueID failure escaped without useful errors')
           NewRelic::Agent.notice_error(e, { custom_params: { response_info: response_info } })
 
-          if liveness_checking_enabled
-            errors[:general].add(I18n.t('doc_auth.errors.lexis_nexis.general_error_liveness'))
-          else
-            errors[:general].add(I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness'))
+          return { GENERAL => [general_error(liveness_enabled)] }
+        # if the user_error_count is 1 it is just passed along
+        elsif user_error_count > 1
+          # Simplify multiple errors into a single error for the user
+          error_fields = errors.keys
+          if error_fields.length == 1
+            case error_fields.first
+            when ID
+              errors[ID] = Set[general_error(false)]
+            when FRONT
+              errors[FRONT] = Set[I18n.t('doc_auth.errors.lexis_nexis.multiple_front_id_failures')]
+            when BACK
+              errors[BACK] = Set[I18n.t('doc_auth.errors.lexis_nexis.multiple_back_id_failures')]
+            end
+          elsif error_fields.length > 1
+            if error_fields.include?(SELFIE)
+              return { GENERAL => [general_error(liveness_enabled)] }
+            else
+              # If we don't have a selfie error don't give the message suggesting retaking selfie.
+              return { GENERAL => [general_error(false)] }
+            end
           end
         end
 
         errors.transform_values(&:to_a)
       end
       # rubocop:enable Metrics/PerceivedComplexity
+
+      private
+
+      def self.get_error_messages(liveness_enabled, response_info)
+        errors = Hash.new { |hash, key| hash[key] = Set.new }
+
+        if response_info[:DocAuthResult] != 'Passed'
+          response_info[:Alerts][:failed]&.each do |alert|
+            alert_msg_hash = TRUE_ID_MESSAGES[alert[:name].to_sym]
+
+            if alert_msg_hash.present?
+              errors[alert_msg_hash[:type]].add(I18n.t(alert_msg_hash[:msg_key]))
+            end
+          end
+        end
+
+        pm_results = response_info[:PortraitMatchResults]
+        if liveness_enabled && pm_results.present? && pm_results.dig(:FaceMatchResult) != 'Pass'
+          errors[SELFIE].add(I18n.t('doc_auth.errors.lexis_nexis.selfie_failure'))
+        end
+
+        errors
+      end
+
+      def self.general_error(liveness_enabled)
+        if liveness_enabled
+          I18n.t('doc_auth.errors.lexis_nexis.general_error_liveness')
+        else
+          I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')
+        end
+      end
+
+      def self.scan_for_unknown_alerts(response_info)
+        all_alerts = response_info[:Alerts][:failed] + response_info[:Alerts][:passed]
+
+        unknown_alerts = []
+        all_alerts.each do |alert|
+          unknown_alerts.push(alert[:name]) if TRUE_ID_MESSAGES[alert[:name].to_sym].present?
+        end
+
+        unless unknown_alerts.empty?
+          message = 'LN TrueID responded with alert name(s) we do not handle: ' + unknown_alerts.to_s
+          e = UnknownTrueIDAlert.new(message)
+          NewRelic::Agent.notice_error(e, {custom_params: {response_info: response_info}})
+        end
+      end
     end
   end
 end

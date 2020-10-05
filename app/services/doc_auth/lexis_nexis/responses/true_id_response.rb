@@ -6,6 +6,7 @@ module DocAuth
       class TrueIdResponse < LexisNexisResponse
         def initialize(http_response, liveness_checking_enabled)
           @liveness_checking_enabled = liveness_checking_enabled
+          @response_error_info = {}
 
           super http_response
         end
@@ -19,21 +20,26 @@ module DocAuth
         def error_messages
           return {} if successful_result?
 
-          response_error_info = {
+          alerts = parse_alerts
+
+          @response_error_info = {
             ConversationId: conversation_id,
             Reference: reference,
-            Product: 'TrueID',
+            ProductType: 'TrueID',
             TransactionReasonCode: transaction_reason_code,
             DocAuthResult: doc_auth_result,
-            Alerts: parse_alerts,
+            Alerts: alerts,
+            AlertFailureCount: alerts[:failed].length,
             PortraitMatchResults: true_id_product[:PORTRAIT_MATCH_RESULT],
+            ImageMetrics: parse_image_metrics,
           }
 
-          ErrorGenerator.generate_trueid_errors(response_error_info, liveness_checking_enabled)
+          ErrorGenerator.generate_trueid_errors(@response_error_info, @liveness_checking_enabled)
         end
 
         def extra_attributes
-          true_id_product[:AUTHENTICATION_RESULT].reject do |k, _v|
+          attrs = @response_error_info.merge(true_id_product[:AUTHENTICATION_RESULT])
+          attrs.reject do |k, _v|
             PII_DETAILS.include? k
           end
         end
@@ -67,16 +73,20 @@ module DocAuth
         end
 
         def parse_alerts
-          new_alerts = []
+          new_alerts = { passed: [], failed: [] }
           all_alerts = true_id_product[:AUTHENTICATION_RESULT].select do |key|
             key.start_with?('Alert_')
           end
 
-          # Make the assumption that every alert will have an *_AlertName associated with it
           alert_names = all_alerts.select { |key| key.end_with?('_AlertName') }
           alert_names.each do |alert_name, _v|
             alert_prefix = alert_name.scan(/Alert_\d{1,2}_/).first
-            new_alerts.push(combine_alert_data(all_alerts, alert_prefix))
+            alert = combine_alert_data(all_alerts, alert_prefix)
+            if alert[:result] == 'Passed'
+              new_alerts[:passed].push(alert)
+            else
+              new_alerts[:failed].push(alert)
+            end
           end
 
           new_alerts
@@ -97,14 +107,26 @@ module DocAuth
           new_alert_data
         end
 
-        def detail_groups
-          %w[
-            AUTHENTICATION_RESULT
-            IDAUTH_FIELD_DATA
-            IDAUTH_FIELD_NATIVE_DATA
-            IMAGE_METRICS_RESULT
-            PORTRAIT_MATCH_RESULT
-          ].freeze
+        def parse_image_metrics
+          image_metrics = {}
+
+          true_id_product[:ParameterDetails].each do |detail|
+            next unless detail[:Group] == 'IMAGE_METRICS_RESULT'
+
+            value = detail.dig(:Values).collect { |value| value.dig(:Value) }
+            image_metrics[detail[:Name]] = value
+          end
+
+          transform_metrics(image_metrics)
+        end
+
+        def transform_metrics(img_metrics)
+          new_metrics = {}
+          img_metrics["Side"].each_with_index do |side, i|
+            new_metrics[side] = img_metrics.transform_values { |v| v[i] }
+          end
+
+          new_metrics
         end
       end
     end

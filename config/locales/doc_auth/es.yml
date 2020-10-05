@@ -14,8 +14,6 @@ es:
       use_phone: Usa tu telefono
     errors:
       lexis_nexis:
-        ref_control_number_check: No pudimos leer el código de barras del número de
-          control. Intente tomar nuevas fotografías.
         barcode_content_check: No pudimos leer el código de barras en la parte posterior
           de su identificación. Podría deberse a un problema con el código de barras
           o el código de barras es de un tipo nuevo que aún no reconocemos. Use otra
@@ -47,8 +45,14 @@ es:
           haya movido cuando tomó la foto. Intente tomar nuevas fotografías.
         issue_date_checks: No pudimos leer la fecha de emisión en su identificación.
           Intente tomar nuevas fotografías.
-        network_error: Lo sentimos, estamos experimentando dificultades técnicas.
-          Por favor, inténtelo de nuevo más tarde.
+        multiple_back_id_failures: No pudimos verificar la parte trasera de su documento
+          de identidad. Intente tomar una nueva foto.
+        multiple_front_id_failures: No pudimos verificar la parte delantera de su
+          documento de identidad. Intente tomar una nueva foto.
+        network_error: Estamos teniendo problemas técnicos por nuestra parte. Intente
+          enviar sus imágenes de nuevo más tarde.
+        ref_control_number_check: No pudimos leer el código de barras del número de
+          control. Intente tomar nuevas fotografías.
         selfie_failure: No pudimos hacer coincidir tu foto con tu identificación.
           Intente tomar una nueva foto de usted mismo o del frente de su identificación.
         sex_check: No pudimos leer el sexo en tu identificación. Intente tomar nuevas
