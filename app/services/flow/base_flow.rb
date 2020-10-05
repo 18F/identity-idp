@@ -40,11 +40,11 @@ module Flow
       flow_session[klass.to_s] = true
     end
 
-    def pre_render(step)
+    def extra_view_variables(step)
       handler = steps[step] || actions[step]
       return failure("Unhandled step #{step}") unless handler
       obj = handler.new(self)
-      obj.pre_render
+      obj.extra_view_variables
     end
 
     private

@@ -1,6 +1,7 @@
 module AwsS3Helper
   def s3_presigned_url(bucket_prefix:, keyname:)
-    raise(ArgumentError, 'keyname is required') if keyname.nil?
+    raise(ArgumentError, 'keyname is required') if keyname.blank?
+    raise(ArgumentError, 'bucket_prefix is required') if bucket_prefix.blank?
     return nil unless s3_resource
 
     obj = s3_resource.bucket(bucket(prefix: bucket_prefix)).object(keyname)

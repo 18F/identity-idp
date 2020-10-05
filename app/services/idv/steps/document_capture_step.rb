@@ -14,7 +14,7 @@ module Idv
         end
       end
 
-      def pre_render
+      def extra_view_variables
         url_builder = DocAuth::ImageUploadPresignedUrlGenerator.new
 
         {
