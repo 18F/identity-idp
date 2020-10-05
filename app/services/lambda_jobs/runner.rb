@@ -8,8 +8,8 @@ module LambdaJobs
       @args = args
     end
 
-    def run
-      if LoginGov::Hostdata.in_datacenter?
+    def run(&local_callback)
+      if LoginGov::Hostdata.in_datacenter? && Figaro.env.aws_lambda_proofing_enabled == 'true'
         aws_lambda_client.invoke(
           function_name: function_name,
           invocation_type: 'Event',
@@ -20,6 +20,7 @@ module LambdaJobs
         job_class.handle(
           event: { body: args.to_json },
           context: nil,
+          &local_callback
         )
       end
     end
