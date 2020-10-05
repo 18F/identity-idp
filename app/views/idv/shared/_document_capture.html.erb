@@ -3,7 +3,6 @@
   <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: Figaro.env.acuant_sdk_initialization_endpoint %>
   <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: Figaro.env.acuant_sdk_initialization_creds %>
 <% end %>
-<% byebug %>
 <%= tag.div id: 'document-capture-form', data: {
   liveness_required: liveness_checking_enabled?.presence,
   mock_client: (DocAuth::Client.doc_auth_vendor == 'mock').presence,
@@ -11,9 +10,9 @@
   endpoint: api_verify_images_url,
   sp_name: sp_name,
   failure_to_proof_url: failure_to_proof_url,
-  # front_image_upload_url: front_image_upload_url,
-  # back_image_upload_url: back_image_upload_url,
-  # selfie_image_upload_url: selfie_image_upload_url,
+  front_image_upload_url: @local_params[:front_image_upload_url],
+  back_image_upload_url: @local_params[:back_image_upload_url],
+  selfie_image_upload_url: @local_params[:selfie_image_upload_url],
 } %>
 <div class="js-fallback">
   <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
