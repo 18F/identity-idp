@@ -43,7 +43,7 @@ export const loadAndInitializeAcuantSdk = () => {
   window.onAcuantSdkLoaded = initializeAcuantSdk;
 
   const sdk = document.createElement('script');
-  sdk.src = '11.4.1/AcuantJavascriptWebSdk.min.js';
+  sdk.src = '/AcuantJavascriptWebSdk.min.js';
   sdk.async = true;
 
   document.body.appendChild(sdk);

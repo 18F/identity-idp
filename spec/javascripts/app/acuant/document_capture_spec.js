@@ -50,7 +50,7 @@ describe('acuant/document_capture', () => {
       loadAndInitializeAcuantSdk();
 
       const script = document.querySelector('script');
-      expect(script.src).to.eq('11.4.1/AcuantJavascriptWebSdk.min.js');
+      expect(script.src).to.eq('/AcuantJavascriptWebSdk.min.js');
       expect(script.async).to.eq(true);
       expect(window.onAcuantSdkLoaded).to.eq(initializeAcuantSdk);
     });
