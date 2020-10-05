@@ -38,6 +38,8 @@ feature 'doc auth ssn step' do
     before do
       allow(FeatureManagement).to receive(:document_capture_step_enabled?).
         and_return(document_capture_step_enabled)
+      allow(LoginGov::Hostdata::EC2).to receive(:load).
+        and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
       in_doc_capture_session { complete_doc_capture_steps_before_capture_complete_step }
       click_on t('forms.buttons.continue')
     end
