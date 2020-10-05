@@ -5,7 +5,6 @@ ruby '~> 2.6.5'
 
 gem 'rails', '~> 5.2.4', '>= 5.2.4.4'
 
-gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
 gem 'ahoy_matey', '~> 2.2', '>= 2.2.1'
 gem 'american_date'
 gem 'aws-sdk-kms', '~> 1.4'
@@ -29,7 +28,6 @@ gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.5'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
 gem 'json-jwt', '>= 1.11.0'
 gem 'jwt'
-gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.3.0'
 gem 'local_time'
 gem 'lograge', '>= 0.11.2'
 gem 'maxminddb'
@@ -120,4 +118,9 @@ group :test do
   gem 'webdrivers', '~> 3.0'
   gem 'webmock'
   gem 'zonebie'
+end
+
+group :production do
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.3.0'
 end
