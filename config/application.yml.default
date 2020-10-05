@@ -150,6 +150,7 @@ development:
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
+  address_proof_result_lambda_token: 123ABC
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -226,6 +227,7 @@ development:
   requests_per_ip_period: '300'
   reset_password_email_max_attempts: '20'
   reset_password_email_window_in_minutes: '60'
+  resolution_proof_result_lambda_token: ABC123
   s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
@@ -261,6 +263,7 @@ production:
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
+  address_proof_result_lambda_token:
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
   attribute_encryption_key:
@@ -333,6 +336,7 @@ production:
   requests_per_ip_period: '300'
   reset_password_email_max_attempts: '20'
   reset_password_email_window_in_minutes: '60'
+  resolution_proof_result_lambda_token:
   s3_report_bucket_prefix: login-gov.reports
   s3_reports_enabled: 'true'
   saml_endpoint_configs:
@@ -367,6 +371,7 @@ test:
   acuant_facial_match_url: https://facial_match.example.com
   acuant_max_attempts: '4'
   acuant_passlive_url: https://liveness.example.com
+  address_proof_result_lambda_token: test_token_address
   async_job_refresh_interval_seconds: '1'
   attribute_cost: 800$8$1$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -440,6 +445,7 @@ test:
   requests_per_ip_period: '60'
   reset_password_email_max_attempts: '5'
   reset_password_email_window_in_minutes: '80'
+  resolution_proof_result_lambda_token: test_token_resolution
   s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
