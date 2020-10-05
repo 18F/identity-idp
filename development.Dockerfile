@@ -4,9 +4,12 @@ FROM logindotgov/build as build
 # Everything happens here from now on   
 WORKDIR /upaya
 
+# Set MAKEFLAGS to scale with compute capacity
+ENV MAKEFLAGS "-j$(nproc)"
+
 # Install dev and test gems
 COPY Gemfile Gemfile.lock ./
-RUN bundle install --system --with development test
+RUN bundle install -j $(nproc) --system --with development test
 
 # Install NPM packages
 COPY package.json yarn.lock ./
