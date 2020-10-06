@@ -82,7 +82,7 @@ module Idv
     end
 
     def read_file(url)
-      # decrypt whe encryption is available
+      # decrypt when encryption is available
       uri = URI.parse(url)
       resp = s3_client.get_object(bucket: document_bucket, key: uri.path[1..-1])
       resp.body.read
