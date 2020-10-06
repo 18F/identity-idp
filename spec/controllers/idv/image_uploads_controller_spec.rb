@@ -2,14 +2,10 @@ require 'rails_helper'
 
 describe Idv::ImageUploadsController do
   describe '#create' do
-    before do
-      sign_in_as_user
-      controller.current_user.document_capture_sessions.create!
-    end
-
     subject(:action) { post :create, params: params }
 
-    let(:document_capture_session) { controller.current_user.document_capture_sessions.last }
+    let(:user) { create(:user) }
+    let!(:document_capture_session) { user.document_capture_sessions.create! }
     let(:params) do
       {
         front: DocAuthImageFixtures.document_front_image_multipart,
