@@ -31,7 +31,7 @@ Rails.application.routes.draw do
 
   post '/api/verify/images' => 'idv/image_uploads#create'
   post '/api/verify/document' => 'idv/verify_document#create'
-  get '/api/verify/document_status' => 'idv/verify_document#index'
+  get '/api/verify/document/:document_capture_session_uuid' => 'idv/verify_document#index'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
