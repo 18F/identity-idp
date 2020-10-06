@@ -59,10 +59,11 @@ module Idv
     def proof_address
       document_capture_session = DocumentCaptureSession.create(user_id: idv_session.current_user.id,
                                                                requested_at: Time.zone.now)
+
       document_capture_session.store_proofing_pii_from_doc(applicant)
       idv_session.idv_phone_step_document_capture_session_uuid = document_capture_session.uuid
 
-      VendorProofJob.perform_address_proof(document_capture_session.uuid)
+      run_job(document_capture_session)
       add_proofing_cost
     end
 
@@ -145,6 +146,24 @@ module Idv
       {
         vendor: idv_result.except(:errors, :success),
       }
+    end
+
+    def run_job(document_capture_session)
+      callback_url = Rails.application.routes.url_helpers.address_proof_result_url(
+        document_capture_session.result_id,
+      )
+
+      if Figaro.env.proofing_lambda_http_callback == 'true'
+        LambdaJobs::Runner.new(job_name: nil, job_class: AddressProofJob,
+                               args: { applicant_pii: applicant, callback_url: callback_url }).run
+      else
+        LambdaJobs::Runner.new(
+          job_name: nil, job_class: AddressProofJob,
+          args: { applicant_pii: applicant, callback_url: callback_url }
+        ).run do |idv_result|
+          document_capture_session.store_proofing_result(idv_result)
+        end
+      end
     end
   end
 end
