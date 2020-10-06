@@ -36,7 +36,7 @@ describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:success]).to eq(false)
       expect(errors.keys).to contain_exactly(:general)
       expect(errors[:general]).to contain_exactly(
-        I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')
+        I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness'),
       )
     end
   end

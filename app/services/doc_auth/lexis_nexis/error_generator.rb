@@ -131,7 +131,7 @@ module DocAuth
 
         unknown_alerts = []
         all_alerts.each do |alert|
-          unknown_alerts.push(alert[:name]) unless TRUE_ID_MESSAGES[alert[:name].to_sym].present?
+          unknown_alerts.push(alert[:name]) if TRUE_ID_MESSAGES[alert[:name].to_sym].blank?
         end
 
         return if unknown_alerts.empty?
