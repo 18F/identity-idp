@@ -1,3 +1,5 @@
+# API to submit image urls for processing to verification vendor and poll for results
+
 module Idv
   class VerifyDocumentsController < ApplicationController
     include ApplicationHelper
