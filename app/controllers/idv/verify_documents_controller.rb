@@ -1,5 +1,5 @@
 module Idv
-  class VerifyDocumentController < ApplicationController
+  class VerifyDocumentsController < ApplicationController
     include ApplicationHelper
 
     IMAGE_UPLOAD_PARAM_NAMES = %i[

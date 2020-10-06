@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe Idv::VerifyDocumentController do
+describe Idv::VerifyDocumentsController do
   describe '#create' do
     before do
       sign_in_as_user
-      allow_any_instance_of(Idv::VerifyDocumentController).to receive(:read_file).and_return('foo')
+      allow_any_instance_of(Idv::VerifyDocumentsController).to receive(:read_file).and_return('foo')
       controller.current_user.document_capture_sessions.create!
     end
 
