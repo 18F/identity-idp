@@ -27,7 +27,7 @@ module DocAuth
           Fields_PostalCode
           Fields_Height
         ].freeze
-        attr_reader :http_response, :liveness_checking_enabled
+        attr_reader :http_response
 
         def initialize(http_response)
           @http_response = http_response
@@ -56,10 +56,6 @@ module DocAuth
         end
 
         private
-
-        def detail_groups
-          raise NotImplementedError
-        end
 
         def parsed_response_body
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access

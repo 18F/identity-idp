@@ -14,8 +14,6 @@ en:
       use_phone: Use your phone
     errors:
       lexis_nexis:
-        ref_control_number_check: We couldn't read the control number barcode. Try
-          taking new pictures.
         barcode_content_check: We couldn't read the barcode on the back of your ID.
           It could be because of a problem with the barcode, or the barcode is a new
           type that we don't recognize yet. Use another state-issued ID if you have
@@ -43,8 +41,14 @@ en:
           took the picture. Try taking new pictures.
         issue_date_checks: We couldn't read the issue date on your ID. Try taking
           new pictures.
-        network_error: Sorry we are experiencing technical difficulties. Please try
-          again later.
+        multiple_back_id_failures: We couldn't verify the back of your ID. Try taking
+          a new picture.
+        multiple_front_id_failures: We couldn't verify the front of your ID. Try taking
+          a new picture.
+        network_error: We are having technical difficulties on our end. Please try
+          to submit your images again later.
+        ref_control_number_check: We couldn't read the control number barcode. Try
+          taking new pictures.
         selfie_failure: We couldn't match the photo of you to your ID. Try taking
           a new picture of yourself or the front of your ID.
         sex_check: We couldn't read the sex on your ID. Try taking new pictures.

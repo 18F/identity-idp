@@ -34,15 +34,9 @@ describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       errors = output[:errors]
 
       expect(output[:success]).to eq(false)
-      expect(errors.keys).to contain_exactly(:id, :back)
-      expect(errors[:id]).to contain_exactly(
-        I18n.t('doc_auth.errors.lexis_nexis.id_not_verified'),
-        I18n.t('doc_auth.errors.lexis_nexis.expiration_checks'),
-      )
-      expect(errors[:back]).to contain_exactly(
-        I18n.t('doc_auth.errors.lexis_nexis.ref_control_number_check'),
-        I18n.t('doc_auth.errors.lexis_nexis.control_number_check'),
-        I18n.t('doc_auth.errors.lexis_nexis.barcode_content_check'),
+      expect(errors.keys).to contain_exactly(:general)
+      expect(errors[:general]).to contain_exactly(
+        I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness'),
       )
     end
   end
