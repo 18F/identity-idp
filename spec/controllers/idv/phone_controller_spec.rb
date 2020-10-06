@@ -133,6 +133,8 @@ describe Idv::PhoneController do
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
 
+          expect(response).to redirect_to idv_phone_path
+          get :new
           expect(response).to redirect_to idv_review_path
 
           expected_applicant = {
@@ -140,7 +142,7 @@ describe Idv::PhoneController do
             last_name: 'One',
             phone: normalized_phone,
             uuid_prefix: nil,
-          }.with_indifferent_access
+          }
 
           expect(subject.idv_session.applicant).to eq expected_applicant
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
@@ -157,6 +159,8 @@ describe Idv::PhoneController do
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
 
+          expect(response).to redirect_to idv_phone_path
+          get :new
           expect(response).to redirect_to idv_otp_delivery_method_path
 
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
@@ -186,6 +190,8 @@ describe Idv::PhoneController do
         )
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
+        expect(response).to redirect_to idv_phone_path
+        get :new
       end
     end
 
@@ -196,7 +202,9 @@ describe Idv::PhoneController do
 
         put :create, params: { idv_phone_form: { phone: '7035555555' } }
 
-        expect(response).to redirect_to idv_phone_errors_warning_url
+        expect(response).to redirect_to idv_phone_path
+        get :new
+        expect(response).to redirect_to idv_phone_errors_warning_path
 
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
         expect(subject.idv_session.user_phone_confirmation).to be_falsy
@@ -226,6 +234,8 @@ describe Idv::PhoneController do
         )
 
         put :create, params: { idv_phone_form: { phone: '7035555555' } }
+        expect(response).to redirect_to idv_phone_path
+        get :new
       end
     end
   end
