@@ -63,7 +63,7 @@ module DocAuth
         user_error_count = response_info[:AlertFailureCount]
 
         errors = get_error_messages(liveness_enabled, response_info)
-        user_error_count += 1 if errors.include?(:SELFIE)
+        user_error_count += 1 if errors.include?(SELFIE)
 
         scan_for_unknown_alerts(response_info)
 
@@ -97,6 +97,8 @@ module DocAuth
       end
       # rubocop:enable Metrics/PerceivedComplexity
 
+      # private
+
       def self.get_error_messages(liveness_enabled, response_info)
         errors = Hash.new { |hash, key| hash[key] = Set.new }
 
@@ -110,8 +112,8 @@ module DocAuth
           end
         end
 
-        pm_results = response_info[:PortraitMatchResults]
-        if liveness_enabled && pm_results.present? && pm_results.dig(:FaceMatchResult) != 'Pass'
+        pm_results = response_info[:PortraitMatchResults] || {}
+        if liveness_enabled && pm_results.dig(:FaceMatchResult) != 'Pass'
           errors[SELFIE].add(I18n.t('doc_auth.errors.lexis_nexis.selfie_failure'))
         end
 
@@ -127,7 +129,7 @@ module DocAuth
       end
 
       def self.scan_for_unknown_alerts(response_info)
-        all_alerts = response_info[:Alerts][:failed] + response_info[:Alerts][:passed]
+        all_alerts = [*response_info[:Alerts][:failed], *response_info[:Alerts][:passed]]
 
         unknown_alerts = []
         all_alerts.each do |alert|

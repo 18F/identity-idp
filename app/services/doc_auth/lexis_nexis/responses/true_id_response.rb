@@ -6,7 +6,6 @@ module DocAuth
       class TrueIdResponse < LexisNexisResponse
         def initialize(http_response, liveness_checking_enabled)
           @liveness_checking_enabled = liveness_checking_enabled
-          @response_error_info = {}
 
           super http_response
         end
@@ -20,25 +19,11 @@ module DocAuth
         def error_messages
           return {} if successful_result?
 
-          alerts = parse_alerts
-
-          @response_error_info = {
-            ConversationId: conversation_id,
-            Reference: reference,
-            ProductType: 'TrueID',
-            TransactionReasonCode: transaction_reason_code,
-            DocAuthResult: doc_auth_result,
-            Alerts: alerts,
-            AlertFailureCount: alerts[:failed].length,
-            PortraitMatchResults: true_id_product[:PORTRAIT_MATCH_RESULT],
-            ImageMetrics: parse_image_metrics,
-          }
-
-          ErrorGenerator.generate_trueid_errors(@response_error_info, @liveness_checking_enabled)
+          ErrorGenerator.generate_trueid_errors(response_info, @liveness_checking_enabled)
         end
 
         def extra_attributes
-          attrs = @response_error_info.merge(true_id_product[:AUTHENTICATION_RESULT])
+          attrs = response_info.merge(true_id_product[:AUTHENTICATION_RESULT])
           attrs.reject do |k, _v|
             PII_DETAILS.include? k
           end
@@ -51,6 +36,27 @@ module DocAuth
         end
 
         private
+
+        def response_info
+          @response_info ||= create_response_info
+        end
+
+        def create_response_info
+          alerts = parse_alerts
+
+          {
+            ConversationId: conversation_id,
+            Reference: reference,
+            LivenessChecking: @liveness_checking_enabled,
+            ProductType: 'TrueID',
+            TransactionReasonCode: transaction_reason_code,
+            DocAuthResult: doc_auth_result,
+            Alerts: alerts,
+            AlertFailureCount: alerts[:failed].length,
+            PortraitMatchResults: true_id_product[:PORTRAIT_MATCH_RESULT],
+            ImageMetrics: parse_image_metrics,
+          }
+        end
 
         def product_status_passed?
           product_status == 'pass'
