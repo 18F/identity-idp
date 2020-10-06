@@ -41,13 +41,7 @@ module Idv
         status = verify_document_form.status
       end
 
-      presenter = ImageUploadResponsePresenter.new(
-        form: verify_document_form,
-        form_response: client_response || form_response,
-      )
-
-      render json: presenter,
-             status: status || :ok
+      render json: { status: status }
     end
 
     private
