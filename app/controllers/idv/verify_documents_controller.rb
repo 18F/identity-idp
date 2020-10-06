@@ -2,11 +2,6 @@ module Idv
   class VerifyDocumentsController < ApplicationController
     include ApplicationHelper
 
-    IMAGE_UPLOAD_PARAM_NAMES = %i[
-      front_image back_image selfie_image front_image_data_url back_image_data_url
-      selfie_image_data_url
-    ].freeze
-
     before_action :render_404_if_disabled
 
     respond_to :json
