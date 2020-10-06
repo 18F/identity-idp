@@ -77,7 +77,7 @@ lexisnexis_password: test_password
 lexisnexis_phone_finder_workflow: customers.gsa.phonefinder.workflow
 lexisnexis_instant_verify_workflow: customers.gsa.instant.verify.workflow
 # TrueID DocAuth Integration
-lexisnexis_trueid_account_id: 12345
+lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
 lexisnexis_trueid_password: test_password
 lexisnexis_trueid_liveness_workflow: customers.gsa.instant.verify.workflow
