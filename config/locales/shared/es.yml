@@ -10,9 +10,8 @@ es:
       gov_heading: La .gov significa que es oficial.
       how: Así es como sabes
       official_site: Un sitio oficial del Gobierno de Estados Unidos.
-      secure_description_html: El <strong>https://</strong> garantiza que se está
-        conectando al sitio web oficial y que toda la información que proporciona
-        está encriptada y transmitida de forma segura.
+      secure_description_html: El <strong>https://</strong> garantiza que cualquier
+        información que proporciones esté cifrada y transmitida de forma segura.
       secure_heading: El sitio es seguro.
     footer_lite:
       gsa: Administración General de Servicios de EE. UU.
