@@ -63,7 +63,7 @@ module Idv
 
     def add_costs(client_response)
       Db::AddDocumentVerificationAndSelfieCosts.
-        new(user_id: current_user.id,
+        new(user_id: image_form.document_capture_session.user.id,
             issuer: sp_session[:issuer].to_s,
             liveness_checking_enabled: liveness_checking_enabled?).
         call(client_response)
