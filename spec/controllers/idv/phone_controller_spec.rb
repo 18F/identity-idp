@@ -61,6 +61,15 @@ describe Idv::PhoneController do
 
       expect(response).to redirect_to idv_phone_errors_failure_url
     end
+
+    it 'shows phone form if async process times out' do
+      # setting the document capture session to a nonexistent uuid will trigger async
+      # timed_out behavior
+      subject.idv_session.idv_phone_step_document_capture_session_uuid = 'abc123'
+
+      get :new
+      expect(response).to render_template :new
+    end
   end
 
   describe '#create' do
