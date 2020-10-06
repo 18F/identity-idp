@@ -122,7 +122,7 @@ module DocAuth
 
         def transform_metrics(img_metrics)
           new_metrics = {}
-          img_metrics["Side"].each_with_index do |side, i|
+          img_metrics['Side'].each_with_index do |side, i|
             new_metrics[side] = img_metrics.transform_values { |v| v[i] }
           end
 

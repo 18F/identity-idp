@@ -67,7 +67,7 @@ module DocAuth
 
         scan_for_unknown_alerts(response_info)
 
-        if user_error_count == 0
+        if user_error_count.zero?
           e = UnknownTrueIDError.new('LN TrueID failure escaped without useful errors')
           NewRelic::Agent.notice_error(e, { custom_params: { response_info: response_info } })
 
@@ -86,20 +86,16 @@ module DocAuth
               errors[BACK] = Set[I18n.t('doc_auth.errors.lexis_nexis.multiple_back_id_failures')]
             end
           elsif error_fields.length > 1
-            if error_fields.include?(SELFIE)
-              return { GENERAL => [general_error(liveness_enabled)] }
-            else
-              # If we don't have a selfie error don't give the message suggesting retaking selfie.
-              return { GENERAL => [general_error(false)] }
-            end
+            return { GENERAL => [general_error(liveness_enabled)] } if error_fields.include?(SELFIE)
+
+            # If we don't have a selfie error don't give the message suggesting retaking selfie.
+            return { GENERAL => [general_error(false)] }
           end
         end
 
         errors.transform_values(&:to_a)
       end
       # rubocop:enable Metrics/PerceivedComplexity
-
-      private
 
       def self.get_error_messages(liveness_enabled, response_info)
         errors = Hash.new { |hash, key| hash[key] = Set.new }
@@ -135,15 +131,17 @@ module DocAuth
 
         unknown_alerts = []
         all_alerts.each do |alert|
-          unknown_alerts.push(alert[:name]) if TRUE_ID_MESSAGES[alert[:name].to_sym].present?
+          unknown_alerts.push(alert[:name]) unless TRUE_ID_MESSAGES[alert[:name].to_sym].present?
         end
 
-        unless unknown_alerts.empty?
-          message = 'LN TrueID responded with alert name(s) we do not handle: ' + unknown_alerts.to_s
-          e = UnknownTrueIDAlert.new(message)
-          NewRelic::Agent.notice_error(e, {custom_params: {response_info: response_info}})
-        end
+        return if unknown_alerts.empty?
+
+        message = 'LN TrueID responded with alert name(s) we do not handle: ' + unknown_alerts.to_s
+        e = UnknownTrueIDAlert.new(message)
+        NewRelic::Agent.notice_error(e, { custom_params: { response_info: response_info } })
       end
+
+      private_class_method :get_error_messages, :general_error, :scan_for_unknown_alerts
     end
   end
 end
