@@ -49,7 +49,7 @@ database_statement_timeout: '2500'
 disallow_ial2_recovery:
 doc_capture_request_valid_for_minutes: '15'
 doc_auth_extend_timeout_by_minutes: '40'
-document_capture_step_enabled: 'false'
+document_capture_step_enabled: 'true'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: 'false'
@@ -400,6 +400,9 @@ test:
   disallow_ial2_recovery: 'false'
   doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'false'
+  # Here to support legacy tests. Once we remove the code for the old steps, we
+  # should remove this config entirely and the tests that assume this is false.
+  document_capture_step_enabled: 'false'
   domain_name: www.example.com
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'true'
