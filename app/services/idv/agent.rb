@@ -25,7 +25,8 @@ module Idv
           args: { applicant_pii: @applicant, callback_url: callback_url }
         ).run do |idv_result|
           document_capture_session.store_proofing_result(idv_result[:address_result])
-          idv_result[:address_result]
+
+          nil
         end
       else
         LambdaJobs::Runner.new(
