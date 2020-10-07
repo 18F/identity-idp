@@ -30,8 +30,8 @@ Rails.application.routes.draw do
         format: :xml
 
   post '/api/verify/images' => 'idv/image_uploads#create'
-  post '/api/verify/document' => 'idv/verify_document#create'
-  get '/api/verify/document/:document_capture_session_uuid' => 'idv/verify_document#index'
+  post '/api/verify/documents' => 'idv/verify_documents#create'
+  get '/api/verify/documents/:document_capture_session_uuid' => 'idv/verify_documents#index'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
