@@ -22,6 +22,7 @@ module Db
           NewRelic::Agent.notice_error(ProofingCostTypeError.new(token.to_s))
           return
         end
+        proofing_cost["#{token}_count"] ||= 0
         proofing_cost["#{token}_count"] += 1
         proofing_cost.save
       end
