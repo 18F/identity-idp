@@ -19,20 +19,13 @@ module Idv
         document_capture_session.result_id,
       )
 
-      if Idv::Proofer.mock_fallback_enabled?
-        LambdaJobs::Runner.new(
-          job_name: nil, job_class: IdentityIdpFunctions::ProofAddressMock,
-          args: { applicant_pii: @applicant, callback_url: callback_url }
-        ).run do |idv_result|
-          document_capture_session.store_proofing_result(idv_result[:address_result])
+      LambdaJobs::Runner.new(
+        job_name: nil, job_class: Idv::Proofer.address_job_class,
+        args: { applicant_pii: @applicant, callback_url: callback_url }
+      ).run do |idv_result|
+        document_capture_session.store_proofing_result(idv_result[:address_result])
 
-          nil
-        end
-      else
-        LambdaJobs::Runner.new(
-          job_name: nil, job_class: IdentityIdpFunctions::ProofAddress,
-          args: { applicant_pii: @applicant, callback_url: callback_url }
-        )
+        nil
       end
     end
 

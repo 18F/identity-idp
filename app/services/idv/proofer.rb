@@ -30,6 +30,14 @@ module Idv
         end
       end
 
+      def address_job_class
+        if mock_fallback_enabled?
+          IdentityIdpFunctions::ProofAddressMock
+        else
+          IdentityIdpFunctions::ProofAddress
+        end
+      end
+
       def mock_fallback_enabled?
         Figaro.env.proofer_mock_fallback == 'true'
       end
