@@ -15,7 +15,11 @@ module Idv
         selfie: Idv::Steps::SelfieStep,
         ssn: Idv::Steps::SsnStep,
         verify: Idv::Steps::VerifyStep,
+        verify_wait: Idv::Steps::VerifyWaitStep,
         doc_success: Idv::Steps::DocSuccessStep,
+      }.freeze
+      OPTIONAL_SHOW_STEPS = {
+        verify_wait: Idv::Steps::VerifyWaitStepShow,
       }.freeze
 
       ACTIONS = {

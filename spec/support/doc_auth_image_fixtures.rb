@@ -7,12 +7,20 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(fixture_path('id-front.jpg'), 'image/jpeg')
   end
 
+  def self.document_front_image_data_url
+    "data:image/jpeg,#{CGI.escape(document_front_image)}"
+  end
+
   def self.document_back_image
     load_image_data('id-back.jpg')
   end
 
   def self.document_back_image_multipart
     Rack::Test::UploadedFile.new(fixture_path('id-back.jpg'), 'image/jpeg')
+  end
+
+  def self.document_back_image_data_url
+    "data:image/jpeg,#{CGI.escape(document_back_image)}"
   end
 
   def self.document_face_image
@@ -29,6 +37,10 @@ module DocAuthImageFixtures
 
   def self.selfie_image_multipart
     Rack::Test::UploadedFile.new(fixture_path('selfie.jpg'), 'image/jpeg')
+  end
+
+  def self.selfie_image_data_url
+    "data:image/jpeg,#{CGI.escape(selfie_image)}"
   end
 
   def self.error_yaml_multipart

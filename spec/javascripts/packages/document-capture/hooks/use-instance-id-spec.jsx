@@ -1,28 +1,13 @@
-import React from 'react';
+import { renderHook } from '@testing-library/react-hooks';
 import useInstanceId from '@18f/identity-document-capture/hooks/use-instance-id';
-import render from '../../../support/render';
 
 describe('document-capture/hooks/use-instance-id', () => {
-  function TestComponent() {
-    const instanceId = useInstanceId();
-
-    return `${typeof instanceId}${instanceId}`;
-  }
-
   it('returns a unique string id', () => {
-    const { getByText } = render(
-      <>
-        <span>First</span>
-        <TestComponent />
-        <span>Second</span>
-        <TestComponent />
-      </>,
-    );
+    const { result: result1 } = renderHook(() => useInstanceId());
+    const { result: result2 } = renderHook(() => useInstanceId());
 
-    const first = getByText('First').nextSibling.nodeValue;
-    const second = getByText('Second').nextSibling.nodeValue;
-    expect(first).to.match(/^string/);
-    expect(second).to.match(/^string/);
-    expect(first).to.not.equal(second);
+    expect(result1.current).to.be.a('string');
+    expect(result2.current).to.be.a('string');
+    expect(result1.current).to.not.equal(result2.current);
   });
 });

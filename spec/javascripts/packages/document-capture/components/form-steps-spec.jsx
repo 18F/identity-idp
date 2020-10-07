@@ -1,11 +1,11 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
+import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import FormSteps, {
-  isStepValid,
   getStepIndexByName,
-  getLastValidStepIndex,
 } from '@18f/identity-document-capture/components/form-steps';
+import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import render from '../../../support/render';
 
 describe('document-capture/components/form-steps', () => {
@@ -14,21 +14,30 @@ describe('document-capture/components/form-steps', () => {
     {
       name: 'second',
       title: 'Second Title',
-      form: ({ value = {}, onChange, registerField }) => (
-        // eslint-disable-next-line jsx-a11y/label-has-associated-control
-        <label>
-          Second
+      form: ({ value = {}, errors = [], onChange, registerField }) => (
+        <>
           <input
-            ref={registerField('second')}
-            value={value.second || ''}
+            aria-label="Second Input One"
+            ref={registerField('secondInputOne', { isRequired: true })}
+            value={value.secondInputOne || ''}
+            data-is-error={errors.some(({ field }) => field === 'secondInputOne') || undefined}
             onChange={(event) => {
               onChange({ changed: true });
-              onChange({ second: event.target.value });
+              onChange({ secondInputOne: event.target.value });
             }}
           />
-        </label>
+          <input
+            aria-label="Second Input Two"
+            ref={registerField('secondInputTwo', { isRequired: true })}
+            value={value.secondInputTwo || ''}
+            data-is-error={errors.some(({ field }) => field === 'secondInputTwo') || undefined}
+            onChange={(event) => {
+              onChange({ changed: true });
+              onChange({ secondInputTwo: event.target.value });
+            }}
+          />
+        </>
       ),
-      validate: (value) => (value.second ? [] : [{ field: 'second', error: new Error() }]),
     },
     { name: 'last', title: 'Last Title', form: () => <span>Last</span> },
   ];
@@ -43,27 +52,6 @@ describe('document-capture/components/form-steps', () => {
     window.location.hash = originalHash;
   });
 
-  describe('isStepValid', () => {
-    it('defaults to true if there is no specified validity function', () => {
-      const step = { name: 'example' };
-
-      const result = isStepValid(step, {});
-
-      expect(result).to.be.true();
-    });
-
-    it('returns the result of the validity function given form values', () => {
-      const step = {
-        name: 'example',
-        validate: (values) => (values.ok ? undefined : { ok: new Error() }),
-      };
-
-      const result = isStepValid(step, { ok: false });
-
-      expect(result).to.be.false();
-    });
-  });
-
   describe('getStepIndexByName', () => {
     it('returns -1 if no step by name', () => {
       const result = getStepIndexByName(STEPS, 'third');
@@ -75,30 +63,6 @@ describe('document-capture/components/form-steps', () => {
       const result = getStepIndexByName(STEPS, 'second');
 
       expect(result).to.be.equal(1);
-    });
-  });
-
-  describe('getLastValidStepIndex', () => {
-    it('returns -1 if array is empty', () => {
-      const result = getLastValidStepIndex([], {});
-
-      expect(result).to.be.equal(-1);
-    });
-
-    it('returns -1 if all steps are invalid', () => {
-      const steps = [...STEPS].map((step) => ({
-        ...step,
-        validate: () => ({ missing: new Error() }),
-      }));
-      const result = getLastValidStepIndex(steps, {});
-
-      expect(result).to.be.equal(-1);
-    });
-
-    it('returns index of the last valid step', () => {
-      const result = getLastValidStepIndex(STEPS, { second: 'valid' });
-
-      expect(result).to.be.equal(2);
     });
   });
 
@@ -125,7 +89,7 @@ describe('document-capture/components/form-steps', () => {
 
     userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(getByText('Second')).to.be.ok();
+    expect(getByText('Second Title')).to.be.ok();
   });
 
   it('renders continue button until at last step', () => {
@@ -136,27 +100,32 @@ describe('document-capture/components/form-steps', () => {
     expect(getByText('forms.buttons.continue')).to.be.ok();
   });
 
-  it('renders submit button at last step', () => {
-    const { getByText, getByRole } = render(<FormSteps steps={STEPS} />);
+  it('renders submit button at last step', async () => {
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.type(getByRole('textbox'), 'val');
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two');
     userEvent.click(getByText('forms.buttons.continue'));
 
     expect(getByText('forms.buttons.submit.default')).to.be.ok();
   });
 
-  it('submits with form values', () => {
+  it('submits with form values', async () => {
     const onComplete = sinon.spy();
-    const { getByText, getByRole } = render(<FormSteps steps={STEPS} onComplete={onComplete} />);
+    const { getByText, getByLabelText } = render(
+      <FormSteps steps={STEPS} onComplete={onComplete} />,
+    );
 
     userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.type(getByRole('textbox'), 'val');
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two');
     userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.submit.default'));
 
     expect(onComplete.getCall(0).args[0]).to.eql({
-      second: 'val',
+      secondInputOne: 'one',
+      secondInputTwo: 'two',
       changed: true,
     });
   });
@@ -172,35 +141,38 @@ describe('document-capture/components/form-steps', () => {
   });
 
   it('syncs step by history events', async () => {
-    const { getByText, findByText, getByRole } = render(<FormSteps steps={STEPS} />);
+    const { getByText, findByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.type(getByRole('textbox'), 'val');
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two');
 
     window.history.back();
 
-    expect(await findByText('First')).to.be.ok();
+    expect(await findByText('First Title')).to.be.ok();
     expect(window.location.hash).to.equal('');
 
     window.history.forward();
 
-    expect(await findByText('Second')).to.be.ok();
-    expect(getByRole('textbox').value).to.equal('val');
+    expect(await findByText('Second Title')).to.be.ok();
+    expect(getByLabelText('Second Input One').value).to.equal('one');
+    expect(getByLabelText('Second Input Two').value).to.equal('two');
     expect(window.location.hash).to.equal('#step=second');
   });
 
-  it('clear URL parameter after submission', (done) => {
-    const onComplete = sinon.spy(() => {
-      expect(window.location.hash).to.equal('');
-
-      done();
-    });
-    const { getByText, getByRole } = render(<FormSteps steps={STEPS} onComplete={onComplete} />);
+  it('clear URL parameter after submission', async () => {
+    const onComplete = sinon.spy();
+    const { getByText, getByLabelText } = render(
+      <FormSteps steps={STEPS} onComplete={onComplete} />,
+    );
 
     userEvent.click(getByText('forms.buttons.continue'));
-    userEvent.type(getByRole('textbox'), 'val');
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    await userEvent.type(getByLabelText('Second Input Two'), 'two');
     userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.submit.default'));
+    await waitFor(() => expect(onComplete.calledOnce).to.be.true());
+    expect(window.location.hash).to.equal('');
   });
 
   it('shifts focus to next heading on step change', () => {
@@ -217,39 +189,62 @@ describe('document-capture/components/form-steps', () => {
     expect(document.activeElement).to.equal(originalActiveElement);
   });
 
-  it('validates step completion', () => {
+  it('resets to first step at mount', () => {
     window.location.hash = '#step=last';
 
     render(<FormSteps steps={STEPS} />);
 
-    expect(window.location.hash).to.equal('#step=second');
+    expect(window.location.hash).to.equal('');
   });
 
-  it('accepts initial step', () => {
-    const { getByText } = render(<FormSteps steps={STEPS} initialStep="second" />);
+  it('optionally auto-focuses', () => {
+    const { getByText } = render(<FormSteps steps={STEPS} autoFocus />);
 
-    expect(window.location.hash).to.equal('#step=second');
-    expect(document.activeElement).to.equal(getByText('Second Title'));
-    expect(getByText('Second')).to.be.ok();
+    expect(document.activeElement).to.equal(getByText('First Title'));
   });
 
   it('accepts initial values', () => {
-    const { getByLabelText } = render(
-      <FormSteps steps={STEPS} initialStep="second" initialValues={{ second: 'prefilled' }} />,
+    const { getByText, getByLabelText } = render(
+      <FormSteps steps={STEPS} initialValues={{ secondInputOne: 'prefilled' }} />,
     );
 
-    const input = getByLabelText('Second');
+    userEvent.click(getByText('forms.buttons.continue'));
+    const input = getByLabelText('Second Input One');
 
     expect(input.value).to.equal('prefilled');
   });
 
-  it('prevents submission if step is invalid', () => {
-    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} initialStep="second" />);
+  it('prevents submission if step is invalid', async () => {
+    const { getByText, getByLabelText, container } = render(<FormSteps steps={STEPS} />);
 
+    userEvent.click(getByText('forms.buttons.continue'));
     userEvent.click(getByText('forms.buttons.continue'));
 
     expect(window.location.hash).to.equal('#step=second');
-    expect(document.activeElement).to.equal(getByLabelText('Second'));
+    expect(document.activeElement).to.equal(getByLabelText('Second Input One'));
+    expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(2);
+
+    await userEvent.type(document.activeElement, 'one');
+    expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(1);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+    expect(document.activeElement).to.equal(getByLabelText('Second Input Two'));
+    expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(1);
+
+    await userEvent.type(document.activeElement, 'two');
+    expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
+    userEvent.click(getByText('forms.buttons.continue'));
+
+    expect(document.activeElement).to.equal(getByText('Last Title'));
+  });
+
+  it('distinguishes empty errors from progressive error removal', async () => {
+    const { getByText, getByLabelText, container } = render(<FormSteps steps={STEPS} />);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+    expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
   });
 
   it('renders with optional footer', () => {
@@ -264,5 +259,69 @@ describe('document-capture/components/form-steps', () => {
     const { getByText } = render(<FormSteps steps={steps} />);
 
     expect(getByText('Footer')).to.be.ok();
+  });
+
+  it('renders with initial active errors', async () => {
+    // Assumption: initialActiveErrors are only shown in combination with a flow of a single step.
+    const steps = [STEPS[1]];
+    const onComplete = sinon.spy();
+
+    const { getByLabelText, getByText, getByRole } = render(
+      <FormSteps
+        steps={steps}
+        initialActiveErrors={[
+          {
+            field: 'unknown',
+            error: toFormEntryError({ field: 'unknown', message: 'An unknown error occurred' }),
+          },
+          {
+            field: 'secondInputOne',
+            error: toFormEntryError({ field: 'secondInputOne', message: 'Bad input' }),
+          },
+        ]}
+        onComplete={onComplete}
+      />,
+    );
+
+    // Unknown errors show prior to title, and persist until submission.
+    const alert = getByRole('alert');
+    expect(alert.textContent).to.equal('An unknown error occurred');
+    expect(alert.nextElementSibling.textContent).to.equal('Second Title');
+
+    // Field associated errors are handled by the field. There should only be one.
+    const inputOne = getByLabelText('Second Input One');
+    const inputTwo = getByLabelText('Second Input Two');
+    expect(inputOne.matches('[data-is-error]')).to.be.true();
+    expect(inputTwo.matches('[data-is-error]')).to.be.false();
+
+    // Attempting to submit without adjusting field value does not submit and shows error.
+    userEvent.click(getByText('forms.buttons.submit.default'));
+    expect(onComplete.called).to.be.false();
+    await waitFor(() => expect(document.activeElement).to.equal(inputOne));
+
+    // Changing the value for the field should unset the error.
+    await userEvent.type(inputOne, 'one');
+    expect(inputOne.matches('[data-is-error]')).to.be.false();
+    expect(inputTwo.matches('[data-is-error]')).to.be.false();
+
+    // Unknown errors should still be present.
+    expect(getByRole('alert')).to.be.ok();
+
+    // Default required validation should still happen and take the place of any unknown errors.
+    userEvent.click(getByText('forms.buttons.submit.default'));
+    expect(onComplete.called).to.be.false();
+    await waitFor(() => expect(document.activeElement).to.equal(inputTwo));
+    expect(inputOne.matches('[data-is-error]')).to.be.false();
+    expect(inputTwo.matches('[data-is-error]')).to.be.true();
+    expect(() => getByRole('alert')).to.throw();
+
+    // Changing the value for the field should unset the error.
+    await userEvent.type(inputTwo, 'two');
+    expect(inputOne.matches('[data-is-error]')).to.be.false();
+    expect(inputTwo.matches('[data-is-error]')).to.be.false();
+
+    // The user can submit once all errors have been resolved.
+    userEvent.click(getByText('forms.buttons.submit.default'));
+    expect(onComplete.calledOnce).to.be.true();
   });
 });

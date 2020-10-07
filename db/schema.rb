@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_22_144112) do
+ActiveRecord::Schema.define(version: 2020_09_24_144755) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -394,6 +394,7 @@ ActiveRecord::Schema.define(version: 2020_09_22_144112) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "acuant_result_count", default: 0
+    t.integer "acuant_selfie_count", default: 0
     t.index ["user_id"], name: "index_proofing_costs_on_user_id", unique: true
   end
 

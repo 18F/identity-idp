@@ -89,4 +89,10 @@ describe('document-capture/components/selfie-capture', () => {
 
     await findByText('doc_auth.buttons.take_picture_retry');
   });
+
+  it('accepts additional className to apply to container element', () => {
+    const { container } = render(<SelfieCapture className="example" />);
+
+    expect(container.querySelector('.selfie-capture.example')).to.be.ok();
+  });
 });

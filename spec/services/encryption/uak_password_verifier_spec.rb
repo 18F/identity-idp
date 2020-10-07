@@ -1,6 +1,24 @@
 require 'rails_helper'
 
 describe Encryption::UakPasswordVerifier do
+  describe Encryption::UakPasswordVerifier::PasswordDigest do
+    describe '.parse_from_string' do
+      it 'does not blow up with unknown/new keys' do
+        digest = Encryption::UakPasswordVerifier.digest('password')
+        str = JSON.parse(digest).merge(some_new_field: 'some_new_field').to_json
+
+        digest = Encryption::UakPasswordVerifier::PasswordDigest.parse_from_string(str)
+        expect(digest.encrypted_password).to be_present
+      end
+
+      it 'raises an encryption error when the password digest is nil' do
+        expect do
+          Encryption::UakPasswordVerifier::PasswordDigest.parse_from_string(nil)
+        end.to raise_error(Encryption::EncryptionError)
+      end
+    end
+  end
+
   describe '.digest' do
     it 'creates a digest from the password' do
       salt = '1' * 64 # 32 hex encoded bytes is 64 characters
@@ -71,11 +89,5 @@ describe Encryption::UakPasswordVerifier do
 
       expect(result).to eq(true)
     end
-  end
-
-  it 'raises an encryption error when the password digest is nil' do
-    expect do
-      Encryption::UakPasswordVerifier::PasswordDigest.parse_from_string(nil)
-    end.to raise_error(Encryption::EncryptionError)
   end
 end

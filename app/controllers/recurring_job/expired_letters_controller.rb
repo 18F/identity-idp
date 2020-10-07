@@ -1,5 +1,5 @@
 module RecurringJob
-  class ExpiredLettersController < BaseController
+  class ExpiredLettersController < AuthTokenController
     def create
       count = SendExpiredLetterNotifications.new.call
       analytics.track_event(Analytics::EXPIRED_LETTERS, event: :notifications, count: count)

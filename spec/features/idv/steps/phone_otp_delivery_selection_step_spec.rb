@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'IdV phone OTP deleivery method selection' do
+feature 'IdV phone OTP delivery method selection' do
   include IdvStepHelper
 
   context 'the users chooses sms' do

@@ -10,6 +10,7 @@
 - doc_auth.headings.document_capture_back
 - doc_auth.headings.document_capture_front
 - doc_auth.headings.document_capture_selfie
+- doc_auth.headings.review_issues
 - doc_auth.headings.front
 - doc_auth.headings.interstitial
 - doc_auth.headings.photo
@@ -20,8 +21,10 @@
 - doc_auth.info.capture_status_tap_to_capture
 - doc_auth.info.document_capture_intro_acknowledgment
 - doc_auth.info.document_capture_upload_image
+- doc_auth.info.id_worn_html
 - doc_auth.info.interstitial_eta
 - doc_auth.info.interstitial_thanks
+- doc_auth.info.no_other_id_help_bold_html
 - doc_auth.instructions.document_capture_selfie_consent_banner
 - doc_auth.instructions.document_capture_selfie_consent_blocked
 - doc_auth.instructions.document_capture_selfie_consent_reason
@@ -35,6 +38,16 @@
 - doc_auth.tips.document_capture_selfie_text1
 - doc_auth.tips.document_capture_selfie_text2
 - doc_auth.tips.document_capture_selfie_text3
+- doc_auth.tips.review_issues_id_header_text
+- doc_auth.tips.review_issues_id_text1
+- doc_auth.tips.review_issues_id_text2
+- doc_auth.tips.review_issues_id_text3
+- doc_auth.tips.review_issues_id_text4
+- doc_auth.tips.review_issues_selfie_header_text
+- doc_auth.tips.review_issues_selfie_text1
+- doc_auth.tips.review_issues_selfie_text2
+- doc_auth.tips.review_issues_selfie_text3
+- doc_auth.tips.review_issues_selfie_text4
 - errors.doc_auth.acuant_network_error
 - errors.doc_auth.capture_failure
 - errors.doc_auth.document_capture_selfie_consent_blocked
@@ -52,7 +65,6 @@
 - idv.errors.pattern_mismatch.state_id_number
 - idv.errors.pattern_mismatch.zipcode
 - idv.failure.button.warning
-- idv.messages.jurisdiction.no_id
 - instructions.password.strength.i
 - instructions.password.strength.ii
 - instructions.password.strength.iii

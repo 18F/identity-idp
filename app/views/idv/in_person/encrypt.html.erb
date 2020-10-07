@@ -1,0 +1,31 @@
+<% title t('idv.titles.review') %>
+
+<h5 class="my1 caps bold accent-blue">
+  <%= t('in_person_proofing.step', step: 2) %>
+</h5>
+
+<br/>
+
+<h1 class="h3">
+  <%= t('idv.titles.session.review') %>
+</h1>
+
+<p>
+  <%= t('in_person_proofing.instructions.encrypt') %>
+</p>
+
+<%= link_to t('in_person_proofing.instructions.read_more_encrypt'), MarketingSite.security_url, target: '_blank' %>
+
+<%= validated_form_for(:in_person_proofing, url: url_for, method: 'PUT',
+                       html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
+  <%= f.input :password, label: t('idv.form.password'), required: true %>
+  <div class="right-align mtn2 mb4">
+                <%= t('idv.forgot_password.link_html',
+                      link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url,
+                              class: 'btn btn-link ml1', form_class: 'inline-block')) %>
+  </div>
+
+  <%= f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-12' %>
+<% end %>
+
+<%= render 'idv/in_person/start_over_or_cancel' %>

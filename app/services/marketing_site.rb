@@ -59,4 +59,8 @@ class MarketingSite
       'how-does-logingov-protect-my-data',
     ).to_s
   end
+
+  def self.security_url
+    URI.join(BASE_URL, locale_segment, 'security/').to_s
+  end
 end

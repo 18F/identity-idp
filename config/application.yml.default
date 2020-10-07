@@ -47,9 +47,10 @@ aws_kms_multi_region_enabled: 'false'
 cac_proofing_enabled: 'true'
 database_statement_timeout: '2500'
 disallow_ial2_recovery:
-doc_capture_request_valid_for_minutes: '15'
 doc_auth_extend_timeout_by_minutes: '40'
-document_capture_step_enabled: 'false'
+doc_auth_enable_presigned_s3_urls: 'false'
+doc_capture_request_valid_for_minutes: '15'
+document_capture_step_enabled: 'true'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: 'false'
@@ -76,7 +77,7 @@ lexisnexis_password: test_password
 lexisnexis_phone_finder_workflow: customers.gsa.phonefinder.workflow
 lexisnexis_instant_verify_workflow: customers.gsa.instant.verify.workflow
 # TrueID DocAuth Integration
-lexisnexis_trueid_account_id: 12345
+lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
 lexisnexis_trueid_password: test_password
 lexisnexis_trueid_liveness_workflow: customers.gsa.instant.verify.workflow
@@ -106,8 +107,8 @@ pinpoint_sms_shortcode:
 pinpoint_voice_credential_role_arn:
 pinpoint_voice_longcode_pool:
 pinpoint_voice_region:
+poll_rate_for_verify_in_seconds: '10'
 proofer_mock_fallback: 'true'
-proofer_vendors:
 push_notifications_enabled:
 reauthn_window: '120'
 recaptcha_enabled_percent: '0'
@@ -150,7 +151,7 @@ development:
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
-  acuant_sdk_document_capture_enabled: 'true'
+  address_proof_result_lambda_token: 123ABC
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -227,6 +228,7 @@ development:
   requests_per_ip_period: '300'
   reset_password_email_max_attempts: '20'
   reset_password_email_window_in_minutes: '60'
+  resolution_proof_result_lambda_token: ABC123
   s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
@@ -262,7 +264,7 @@ production:
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
-  acuant_sdk_document_capture_enabled: 'false'
+  address_proof_result_lambda_token:
   async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
   attribute_encryption_key:
@@ -335,6 +337,7 @@ production:
   requests_per_ip_period: '300'
   reset_password_email_max_attempts: '20'
   reset_password_email_window_in_minutes: '60'
+  resolution_proof_result_lambda_token:
   s3_report_bucket_prefix: login-gov.reports
   s3_reports_enabled: 'true'
   saml_endpoint_configs:
@@ -369,7 +372,7 @@ test:
   acuant_facial_match_url: https://facial_match.example.com
   acuant_max_attempts: '4'
   acuant_passlive_url: https://liveness.example.com
-  acuant_sdk_document_capture_enabled: 'false'
+  address_proof_result_lambda_token: test_token_address
   async_job_refresh_interval_seconds: '1'
   attribute_cost: 800$8$1$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -396,8 +399,12 @@ test:
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
+  doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'false'
+  # Here to support legacy tests. Once we remove the code for the old steps, we
+  # should remove this config entirely and the tests that assume this is false.
+  document_capture_step_enabled: 'false'
   domain_name: www.example.com
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'true'
@@ -443,6 +450,7 @@ test:
   requests_per_ip_period: '60'
   reset_password_email_max_attempts: '5'
   reset_password_email_window_in_minutes: '80'
+  resolution_proof_result_lambda_token: test_token_resolution
   s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'

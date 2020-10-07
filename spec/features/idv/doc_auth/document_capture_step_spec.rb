@@ -14,7 +14,8 @@ feature 'doc auth document capture step' do
       and_return(document_capture_step_enabled)
     allow(Figaro.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
-    allow(Figaro.env).to receive(:acuant_sdk_document_capture_enabled).and_return('true')
+    allow(LoginGov::Hostdata::EC2).to receive(:load).
+      and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
   end
@@ -72,6 +73,7 @@ feature 'doc auth document capture step' do
           result: 'Passed',
           billed: true,
         )
+        expect_costing_for_document
       end
 
       it 'allows the use of a base64 encoded data url representation of the image' do
@@ -190,6 +192,7 @@ feature 'doc auth document capture step' do
         click_idv_continue
 
         expect(page).to have_current_path(next_step)
+        expect_costing_for_document
       end
 
       it 'allows the use of a base64 encoded data url representation of the image' do
@@ -304,5 +307,15 @@ feature 'doc auth document capture step' do
       doc_auth: { front_image: nil, back_image: nil, selfie_image: nil },
     )
     visit current_path
+  end
+
+  def expect_costing_for_document
+    %i[acuant_front_image acuant_back_image acuant_result].each do |cost_type|
+      expect(costing_for(cost_type)).to be_present
+    end
+  end
+
+  def costing_for(cost_type)
+    SpCost.where(ial: 2, issuer: '', agency_id: 0, cost_type: cost_type.to_s).first
   end
 end

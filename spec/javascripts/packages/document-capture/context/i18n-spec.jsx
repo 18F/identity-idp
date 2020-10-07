@@ -1,13 +1,11 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
+import { renderHook } from '@testing-library/react-hooks';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
-import render from '../../../support/render';
 
 describe('document-capture/context/i18n', () => {
-  const ContextValue = () => JSON.stringify(useContext(I18nContext));
-
   it('defaults to empty object', () => {
-    const { container } = render(<ContextValue />);
+    const { result } = renderHook(() => useContext(I18nContext));
 
-    expect(container.textContent).to.equal('{}');
+    expect(result.current).to.deep.equal({});
   });
 });

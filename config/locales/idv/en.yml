@@ -104,9 +104,6 @@ en:
       confirm: You have encrypted your verified data
       hardfail: We can't log you in right now, but you can try verifying your identity
         again in %{hours} hours.
-      jurisdiction:
-        no_id: I don't have a state-issued ID
-        no_id_failure: We're working hard to add more ways to verify your identity.
       mail_sent: Your letter is on its way
       otp_delivery_method:
         phone_number_html: We'll send a code to <strong>%{phone}</strong>
@@ -157,7 +154,6 @@ en:
       mail:
         resend: Want another letter?
         verify: Want a letter?
-      no_id: We are unable to verify your identity without a state-issued ID
       otp_delivery_method: How would you like to receive a code?
       phone: Phone number of record
       review: Review and submit

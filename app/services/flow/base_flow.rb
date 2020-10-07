@@ -40,6 +40,13 @@ module Flow
       flow_session[klass.to_s] = true
     end
 
+    def extra_view_variables(step)
+      handler = steps[step] || actions[step]
+      return failure("Unhandled step #{step}") unless handler
+      obj = handler.new(self)
+      obj.extra_view_variables
+    end
+
     private
 
     def wrap_send(handler)
@@ -58,6 +65,7 @@ module Flow
       FormResponse.new(success: true, errors: {})
     end
 
-    delegate :flash, :session, :current_user, :params, :request, to: :@controller
+    delegate :flash, :session, :current_user, :params, :request, :poll_with_meta_refresh,
+             to: :@controller
   end
 end

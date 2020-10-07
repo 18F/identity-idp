@@ -144,10 +144,11 @@ module Idv
       end
 
       def add_costs(result)
-        add_cost(:acuant_front_image)
-        add_cost(:acuant_back_image)
-        add_cost(:acuant_selfie) if liveness_checking_enabled?
-        add_cost(:acuant_result) if result.to_h[:billed]
+        Db::AddDocumentVerificationAndSelfieCosts.
+          new(user_id: user_id,
+              issuer: sp_session[:issuer].to_s,
+              liveness_checking_enabled: liveness_checking_enabled?).
+          call(result)
       end
 
       def sp_session

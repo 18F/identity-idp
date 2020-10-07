@@ -19,15 +19,16 @@ import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 /**
  * @typedef SelfieCaptureProps
  *
- * @prop {Blob?=} value Current value.
- * @prop {(nextValue:Blob?)=>void} onChange Change handler.
+ * @prop {Blob|string|null|undefined} value Current value.
+ * @prop {(nextValue:Blob|string|null)=>void} onChange Change handler.
  * @prop {ReactNode=} errorMessage Error to show.
+ * @prop {string=} className Optional additional class names to apply to wrapper element.
  */
 
 /**
  * @param {SelfieCaptureProps} props Props object.
  */
-function SelfieCapture({ value, onChange, errorMessage }, ref) {
+function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
   const instanceId = useInstanceId();
   const { t } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
@@ -132,6 +133,7 @@ function SelfieCapture({ value, onChange, errorMessage }, ref) {
     isCapturing && 'selfie-capture--capturing',
     shownErrorMessage && 'selfie-capture--error',
     value && 'selfie-capture--has-value',
+    className,
   ]
     .filter(Boolean)
     .join(' ');
@@ -169,7 +171,11 @@ function SelfieCapture({ value, onChange, errorMessage }, ref) {
                 {t('doc_auth.buttons.take_picture_retry')}
               </button>
             </div>
-            <FileImage file={value} alt="" className="selfie-capture__preview-image" />
+            {value instanceof window.Blob ? (
+              <FileImage file={value} alt="" className="selfie-capture__preview-image" />
+            ) : (
+              <img src={value} alt="" className="selfie-capture__preview-image" />
+            )}
           </>
         ) : (
           <>

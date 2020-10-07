@@ -13,6 +13,50 @@ en:
       upload_picture: Upload a photo
       use_phone: Use your phone
     errors:
+      lexis_nexis:
+        barcode_content_check: We couldn't read the barcode on the back of your ID.
+          It could be because of a problem with the barcode, or the barcode is a new
+          type that we don't recognize yet. Use another state-issued ID if you have
+          one.
+        barcode_read_check: We couldn't read the barcode on the back of your ID. Try
+          taking a new picture.
+        birth_date_checks: We couldn’t read the birth date on your ID. Try taking
+          new pictures.
+        control_number_check: We couldn't read the reference number on the back of
+          your ID. Try taking a new picture.
+        doc_crosscheck: We couldn’t recognize your ID. It may be worn or damaged,
+          or the front and the back of the ID don't match. Try taking new pictures.
+        doc_number_checks: We couldn’t read the document number on your ID. Try taking
+          new pictures.
+        expiration_checks: The document has expired, or we couldn't read the expiration
+          date on your ID. If your ID is not expired, try taking new pictures.
+        full_name_check: We couldn't read the full name on your ID. Try taking new
+          pictures.
+        general_error_liveness: We couldn't verify your ID and photo of yourself.
+          Try taking new pictures.
+        general_error_no_liveness: We couldn't verify your ID. Try taking new pictures.
+        id_not_recognized: We couldn’t recognize your ID. It may be worn, damaged,
+          or a type of ID that we don’t recognize. Try taking new pictures.
+        id_not_verified: We couldn't verify your ID. It might have moved when you
+          took the picture. Try taking new pictures.
+        issue_date_checks: We couldn't read the issue date on your ID. Try taking
+          new pictures.
+        multiple_back_id_failures: We couldn't verify the back of your ID. Try taking
+          a new picture.
+        multiple_front_id_failures: We couldn't verify the front of your ID. Try taking
+          a new picture.
+        network_error: We are having technical difficulties on our end. Please try
+          to submit your images again later.
+        ref_control_number_check: We couldn't read the control number barcode. Try
+          taking new pictures.
+        selfie_failure: We couldn't match the photo of you to your ID. Try taking
+          a new picture of yourself or the front of your ID.
+        sex_check: We couldn't read the sex on your ID. Try taking new pictures.
+        visible_color_check: We couldn't verify your ID. It might have moved when
+          you took the picture, or the picture is too dark. Try taking new pictures
+          in brighter lighting.
+        visible_photo_check: We couldn't verify the photo on your ID. Try taking new
+          pictures.
       not_a_file: The selection was not a valid file
     forms:
       address1: Address
@@ -39,8 +83,9 @@ en:
         and selfie
       document_capture_selfie: Your photo
       front: Front
-      interstitial: We are processing your images…
+      interstitial: We are processing your images
       photo: Photo
+      review_issues: Check your images and try again
       selfie: Take a photo of yourself
       ssn: Please enter your social security number.
       take_pic_back: Take a photo of the back of your ID
@@ -67,6 +112,8 @@ en:
         your identity.
       document_capture_upload_image: We only use your ID to verify your identity,
         and we will not save any images.
+      id_worn_html: "<strong>Is your ID worn or damaged?</strong> Use another state-issued
+        ID if you have one."
       interstitial_eta: This might take up to a minute. We’ll load the next step automatically
         when it’s done.
       interstitial_thanks: Thanks for your patience!
@@ -74,6 +121,8 @@ en:
       - Please check your phone and follow instructions to take a photo of your state
         issued ID.
       - When you are done click continue here to finish verifying your identity.
+      no_other_id_help_bold_html: "<strong>If you do not have another state-issued
+        ID</strong>, <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
@@ -90,7 +139,7 @@ en:
         are the owner of the ID.
       upload_no_image_storage: We do not store images you upload. We only verify your
         identity.
-      use_cac_html: Do you have a government employee ID? %{link}
+      use_cac: Do you have a government employee ID?
       use_cac_link: Use a PIV/CAC instead
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity lets you access services that handle sensitive
@@ -140,8 +189,19 @@ en:
       document_capture_selfie_text1: Face the camera and ensure your entire head is
         in the photo
       document_capture_selfie_text2: Take a photo against a plain background
-      document_capture_selfie_text3: Do not wear a hat or sunglasses
+      document_capture_selfie_text3: Do not wear a hat or glasses
       header_text: Guidelines for taking a photo of your ID
+      review_issues_id_header_text: 'Review the images of your state-issued ID:'
+      review_issues_id_text1: Did you use a dark background?
+      review_issues_id_text2: Did you take the photo on a flat surface?
+      review_issues_id_text3: Is the flash on your camera off?
+      review_issues_id_text4: Are all details sharp and clearly visible?
+      review_issues_selfie_header_text: 'Review the photo of yourself:'
+      review_issues_selfie_text1: Are you facing the camera?
+      review_issues_selfie_text2: Is your entire head and face in the photo?
+      review_issues_selfie_text3: Is the photo against a plain background?
+      review_issues_selfie_text4: Is your face fully visible, not covered by a hat
+        or glasses?
       text1: Take it in a room with lots of light. Indirect sunlight is best.
       text2: Make sure your ID doesn't have dirt or damaged barcodes.
       text3: Place your ID on a dark solid-colored surface that makes it easy to see

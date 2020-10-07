@@ -59,10 +59,6 @@ module MonitorIdvSteps
 
     fill_in 'personal_key', with: (personal_key + extra_characters_get_ignored), disabled: :all
     click_on 'Continue', class: 'personal-key-confirm'
-
-    # HTML fallback for failed personal key
-    fill_in 'personal_key', with: personal_key, disabled: :all
-    click_on 'Continue', class: 'personal-key-confirm'
   end
 
   def click_doc_auth_fallback_link

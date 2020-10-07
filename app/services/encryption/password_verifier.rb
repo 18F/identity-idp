@@ -8,7 +8,7 @@ module Encryption
       keyword_init: true,
     ) do
       def self.parse_from_string(digest_string)
-        data = JSON.parse(digest_string, symbolize_names: true)
+        data = JSON.parse(digest_string, symbolize_names: true).slice(*members)
         new(data)
       rescue JSON::ParserError, TypeError, ArgumentError
         raise EncryptionError, 'digest contains invalid json'

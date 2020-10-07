@@ -33,19 +33,14 @@ module DocAuth
         ].join(' ')
         exception = RuntimeError.new(message)
 
-        NewRelic::Agent.notice_error(exception)
-        DocAuth::Response.new(
-          success: false,
-          errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
-          exception: exception,
-        )
+        handle_connection_error(exception)
       end
 
       def handle_connection_error(exception)
         NewRelic::Agent.notice_error(exception)
         DocAuth::Response.new(
           success: false,
-          errors: { network: I18n.t('errors.doc_auth.lexisnexis_network_error') },
+          errors: { network: I18n.t('doc_auth.errors.lexis_nexis.network_error') },
           exception: exception,
         )
       end

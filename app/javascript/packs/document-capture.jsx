@@ -7,11 +7,28 @@ import {
   DeviceContext,
   AcuantProvider,
   UploadContextProvider,
+  ServiceProviderContext,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
 
 const { I18n: i18n, assets } = window.LoginGov;
+
+const appRoot = document.getElementById('document-capture-form');
+const isMockClient = appRoot.hasAttribute('data-mock-client');
+
+/**
+ * @return {import(
+ *   '@18f/identity-document-capture/context/service-provider'
+ * ).ServiceProviderContext}
+ */
+function getServiceProvider() {
+  const name = appRoot.getAttribute('data-sp-name');
+  const failureToProofURL = appRoot.getAttribute('data-failure-to-proof-url');
+  const isLivenessRequired = appRoot.hasAttribute('data-liveness-required');
+
+  return { name, failureToProofURL, isLivenessRequired };
+}
 
 function getMetaContent(name) {
   return document.querySelector(`meta[name="${name}"]`)?.content ?? null;
@@ -23,10 +40,6 @@ const device = {
 };
 
 loadPolyfills(['fetch']).then(() => {
-  const appRoot = document.getElementById('document-capture-form');
-  const isLivenessEnabled = appRoot.hasAttribute('data-liveness');
-  const isMockClient = appRoot.hasAttribute('data-mock-client');
-
   render(
     <AcuantProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
@@ -42,11 +55,13 @@ loadPolyfills(['fetch']).then(() => {
         }}
       >
         <I18nContext.Provider value={i18n.strings}>
-          <AssetContext.Provider value={assets}>
-            <DeviceContext.Provider value={device}>
-              <DocumentCapture isLivenessEnabled={isLivenessEnabled} />
-            </DeviceContext.Provider>
-          </AssetContext.Provider>
+          <ServiceProviderContext.Provider value={getServiceProvider()}>
+            <AssetContext.Provider value={assets}>
+              <DeviceContext.Provider value={device}>
+                <DocumentCapture />
+              </DeviceContext.Provider>
+            </AssetContext.Provider>
+          </ServiceProviderContext.Provider>
         </I18nContext.Provider>
       </UploadContextProvider>
     </AcuantProvider>,

@@ -61,15 +61,14 @@ en:
         <li class="mxn3">The background behind your ID is a solid color</li>
         <li class="mxn3">Background is visible behind the document</li>
         </ul>
-      lexisnexis_network_error: Sorry we are experiencing technical difficulties.
-        Please try again later.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
       photo_blurry: Photo is too blurry, please try again.
       photo_glare: Photo has glare, please try again.
       quota_reached: Sorry your service provider has reached its identity verification
         limit.  Please contact your service provider for more information.
-      selfie: Sorry, your photo was not accepted. Please try again.
+      selfie: We couldn't read the photo of yourself, or match the photo to your ID.
+        Try taking a new picture.
       send_link_throttle: You tried too many times, please try again in 10 minutes.
         You can also click on Start Over and choose to use your computer instead.
     invalid_authenticity_token: Oops, something went wrong. Please try again.

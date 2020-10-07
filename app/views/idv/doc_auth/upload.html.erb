@@ -19,28 +19,33 @@
 <% end %>
 
 <p>
-  <strong><%= t('doc_auth.info.upload_no_image_storage') %></strong>
+  <%= t('doc_auth.info.upload_no_image_storage') %>
 </p>
 
-<% if Figaro.env.cac_proofing_enabled == 'true' && desktop_device? %>
-  <div class='mt2 mb2'>
+<p>
+  <%= t('doc_auth.info.id_worn_html') %>
+</p>
+
+<% if decorated_session.sp_name %>
+  <p>
     <%= t(
-      'doc_auth.info.use_cac_html',
-      link: link_to(
-        t('doc_auth.info.use_cac_link'),
-        idv_cac_step_path(step: :choose_method),
-      ),
+      'doc_auth.info.no_other_id_help_bold_html',
+      failure_to_proof_url: decorated_session.failure_to_proof_url,
+      sp_name: decorated_session.sp_name,
     ) %>
-  </div>
+  </p>
 <% end %>
 
-<div class='mt2 mb3'>
-  <%= link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_errors_no_id_path %>
-</div>
+<% if Figaro.env.cac_proofing_enabled == 'true' && desktop_device? %>
+  <p>
+    <strong><%= t('doc_auth.info.use_cac') %></strong>
+    <%= link_to(t('doc_auth.info.use_cac_link'), idv_cac_step_path(step: :choose_method)) %>
+  </p>
+<% end %>
 
-<hr/>
+<hr class="margin-y-4" />
 
-<div class='clearfix mt3 mb3'>
+<div class='clearfix'>
   <div class='sm-col sm-col-3'>
     <%= image_tag(
       asset_url('idv/phone.png'),
@@ -75,9 +80,9 @@
   </div>
 </div>
 
-<hr/>
+<hr class="margin-y-4" />
 
-<div class='clearfix mt3 mb3'>
+<div class='clearfix'>
   <div id="upload-comp-liveness-off"
     class='sm-col sm-col-12 <%= 'hidden' if liveness_checking_enabled? %>'>
     <%= t('doc_auth.info.upload_from_computer') %>&nbsp;

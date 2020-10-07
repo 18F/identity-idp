@@ -2,43 +2,10 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import DeviceContext from '@18f/identity-document-capture/context/device';
-import DocumentsStep, { validate } from '@18f/identity-document-capture/components/documents-step';
-import { RequiredValueMissingError } from '@18f/identity-document-capture/components/form-steps';
+import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import render from '../../../support/render';
 
 describe('document-capture/components/documents-step', () => {
-  describe('validate', () => {
-    it('returns errors if both front and back are unset', () => {
-      const value = {};
-      const result = validate(value);
-
-      expect(result).to.have.lengthOf(2);
-      expect(result[0].field).to.equal('front');
-      expect(result[0].error).to.be.instanceOf(RequiredValueMissingError);
-      expect(result[1].field).to.equal('back');
-      expect(result[1].error).to.be.instanceOf(RequiredValueMissingError);
-    });
-
-    it('returns error if one of front and back are unset', () => {
-      const value = { front: new window.File([], 'upload.png', { type: 'image/png' }) };
-      const result = validate(value);
-
-      expect(result).to.have.lengthOf(1);
-      expect(result[0].field).to.equal('back');
-      expect(result[0].error).to.be.instanceOf(RequiredValueMissingError);
-    });
-
-    it('returns empty array if both front and back are set', () => {
-      const value = {
-        front: new window.File([], 'upload.png', { type: 'image/png' }),
-        back: new window.File([], 'upload.png', { type: 'image/png' }),
-      };
-      const result = validate(value);
-
-      expect(result).to.deep.equal([]);
-    });
-  });
-
   it('renders with front and back inputs', () => {
     const { getByLabelText } = render(<DocumentsStep />);
 

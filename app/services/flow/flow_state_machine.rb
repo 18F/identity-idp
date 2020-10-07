@@ -30,6 +30,10 @@ module Flow
       render_update(step, result)
     end
 
+    def poll_with_meta_refresh(seconds)
+      @meta_refresh = seconds
+    end
+
     private
 
     def current_step
@@ -58,10 +62,15 @@ module Flow
 
     def fsm_initialize
       klass = self.class
+      flow = klass::FSM_SETTINGS[:flow]
       @name = klass.name.underscore.gsub('_controller', '')
-      klass::FSM_SETTINGS.each { |key, value| instance_variable_set("@#{key}", value) }
+      @step_url = klass::FSM_SETTINGS[:step_url]
+      @final_url = klass::FSM_SETTINGS[:final_url]
+      @analytics_id = klass::FSM_SETTINGS[:analytics_id]
+      @view = klass::FSM_SETTINGS[:view]
+
       current_session[@name] ||= {}
-      @flow = @flow.new(self, current_session, @name)
+      @flow = flow.new(self, current_session, @name)
     end
 
     def render_update(step, result)
@@ -85,7 +94,26 @@ module Flow
     def render_step(step, flow_session)
       @params = params
       @request = request
-      render template: "#{@view || @name}/#{step}", locals: { flow_session: flow_session }
+      return if call_optional_show_step(step)
+      step_params = flow.extra_view_variables(step)
+      local_params = step_params.merge(flow_session: flow_session)
+      render template: "#{@view || @name}/#{step}", locals: local_params
+    end
+
+    def call_optional_show_step(step)
+      return unless @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
+      optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[step]
+      return unless optional_show_step
+      optional_show_step.new(@flow).base_call
+      if next_step.to_s != step
+        if next_step_is_url
+          redirect_to next_step
+        else
+          redirect_to_step(next_step)
+        end
+        return true
+      end
+      false
     end
 
     def ensure_correct_step
