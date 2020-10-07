@@ -71,7 +71,7 @@ describe Idv::VerifyDocumentsController do
         end
       end
 
-      context 'when a value is not a file' do
+      context 'when a value is not a url' do
         before { params.merge!(front_image_url: 'some string') }
 
         it 'returns an error' do
@@ -175,7 +175,7 @@ describe Idv::VerifyDocumentsController do
         end
       end
 
-      context 'when image upload succeeds' do
+      context 'when document verification submission succeeds' do
         it 'returns a successful response and modifies the session' do
           action
 
@@ -208,7 +208,7 @@ describe Idv::VerifyDocumentsController do
         end
       end
 
-      context 'when image upload fails' do
+      context 'when document verification submission fails' do
         before do
           DocAuth::Mock::DocAuthMockClient.mock_response!(
             method: :post_images,
