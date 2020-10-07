@@ -255,12 +255,14 @@ describe Idv::PhoneController do
         expect(@analytics).to receive(:track_event).ordered.with(
           Analytics::IDV_PHONE_CONFIRMATION_FORM, hash_including(:success)
         )
+
+        put :create, params: { idv_phone_form: { phone: bad_phone } }
+
         expect(@analytics).to receive(:track_event).ordered.with(
           Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
         )
-
-        put :create, params: { idv_phone_form: { phone: bad_phone } }
         expect(response).to redirect_to idv_phone_path
+
         get :new
       end
     end
