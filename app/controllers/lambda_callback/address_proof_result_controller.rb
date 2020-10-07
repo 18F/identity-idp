@@ -3,7 +3,6 @@ module LambdaCallback
     def create
       dcs = DocumentCaptureSession.new
       dcs.result_id = result_id_parameter
-      puts address_result_parameter.to_h.inspect
       dcs.store_proofing_result(address_result_parameter.to_h)
     end
 
