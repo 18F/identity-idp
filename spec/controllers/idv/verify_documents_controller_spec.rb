@@ -198,7 +198,6 @@ describe Idv::VerifyDocumentsController do
             Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
             success: true,
             errors: {},
-            success: true,
           )
 
           action
