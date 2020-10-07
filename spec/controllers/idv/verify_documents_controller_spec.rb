@@ -176,13 +176,12 @@ describe Idv::VerifyDocumentsController do
       end
 
       context 'when document verification submission succeeds' do
-        it 'returns a successful response and modifies the session' do
+        it 'returns a successful response' do
           action
 
           json = JSON.parse(response.body, symbolize_names: true)
           expect(response.status).to eq(200)
           expect(json[:success]).to eq(true)
-          expect(document_capture_session.reload.load_result.success?).to eq(true)
         end
 
         it 'tracks analytics' do
@@ -199,9 +198,7 @@ describe Idv::VerifyDocumentsController do
             Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
             success: true,
             errors: {},
-            billed: true,
-            exception: nil,
-            result: 'Passed',
+            success: true,
           )
 
           action
