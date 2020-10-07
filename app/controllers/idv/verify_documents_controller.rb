@@ -39,7 +39,7 @@ module Idv
         status = verify_document_form.status
       end
 
-      presenter = VerifyDocumentsResponsePresenter.new(
+      presenter = ImageUploadResponsePresenter.new(
         form: verify_document_form,
         form_response: client_response || form_response,
       )
