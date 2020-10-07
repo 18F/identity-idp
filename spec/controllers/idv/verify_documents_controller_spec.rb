@@ -46,7 +46,7 @@ describe Idv::VerifyDocumentsController do
           expect(response.status).to eq(400)
           expect(json[:success]).to eq(false)
           expect(json[:errors]).to eq [
-            { field: 'front_image_url', message: 'Please fill in this field.' },
+            { field: 'front_image_url', message: I18n.t('doc_auth.errors.not_a_file') },
           ]
         end
 
@@ -57,7 +57,7 @@ describe Idv::VerifyDocumentsController do
             Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_PROCESSING_FORM,
             success: false,
             errors: {
-              front: ['Please fill in this field.'],
+              front_image_url: [I18n.t('doc_auth.errors.not_a_file')],
             },
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
