@@ -39,7 +39,7 @@ module Idv
         status = verify_document_form.status
       end
 
-      render json: { status: status }
+      render json: { status: status }, status: status || :ok
     end
 
     private
@@ -49,8 +49,8 @@ module Idv
     end
 
     def verify_document_form
-      Idv::ApiDocumentVerificationForm.
-        new(params, liveness_checking_enabled: liveness_checking_enabled?)
+      @verify_document_form ||= Idv::ApiDocumentVerificationForm.
+                                new(params, liveness_checking_enabled: liveness_checking_enabled?)
     end
   end
 end
