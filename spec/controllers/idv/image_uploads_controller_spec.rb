@@ -54,6 +54,7 @@ describe Idv::ImageUploadsController do
             errors: {
               front: ['Please fill in this field.'],
             },
+            user_id: user.uuid,
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
 
@@ -102,6 +103,7 @@ describe Idv::ImageUploadsController do
             errors: {
               front: [I18n.t('doc_auth.errors.not_a_file')],
             },
+            user_id: user.uuid,
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
 
@@ -156,6 +158,7 @@ describe Idv::ImageUploadsController do
             errors: {
               limit: [I18n.t('errors.doc_auth.acuant_throttle')],
             },
+            user_id: user.uuid,
             remaining_attempts: 0,
           )
 
@@ -185,6 +188,7 @@ describe Idv::ImageUploadsController do
             Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
             success: true,
             errors: {},
+            user_id: user.uuid,
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
 
@@ -195,6 +199,7 @@ describe Idv::ImageUploadsController do
             billed: true,
             exception: nil,
             result: 'Passed',
+            user_id: user.uuid,
           )
 
           action
@@ -232,6 +237,7 @@ describe Idv::ImageUploadsController do
             Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
             success: true,
             errors: {},
+            user_id: user.uuid,
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
 
@@ -241,6 +247,7 @@ describe Idv::ImageUploadsController do
             errors: {
               front: ['Too blurry', 'Wrong document'],
             },
+            user_id: user.uuid,
             exception: nil,
           )
 
@@ -271,6 +278,7 @@ describe Idv::ImageUploadsController do
             Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
             success: true,
             errors: {},
+            user_id: user.uuid,
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
 
@@ -283,6 +291,7 @@ describe Idv::ImageUploadsController do
             billed: true,
             result: 'Caution',
             exception: nil,
+            user_id: user.uuid,
           )
 
           action
