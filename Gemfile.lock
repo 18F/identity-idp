@@ -20,10 +20,11 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 2e0201eff12307373cee597643029e6b62b5f8b5
-  ref: 2e0201eff12307373cee597643029e6b62b5f8b5
+  revision: d9a9f012e32f6b185a7c5580c910891ba677a341
+  ref: d9a9f012e32f6b185a7c5580c910891ba677a341
   specs:
-    identity-idp-functions (0.3.0)
+    identity-idp-functions (0.3.1)
+      retries (>= 0.0.5)
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
@@ -779,7 +780,6 @@ DEPENDENCIES
   readthis
   recaptcha
   redis-session-store (>= 0.11.3)
-  retries (= 0.0.5)
   rotp (~> 3.3.1)
   rqrcode
   rspec-rails (~> 3.9, >= 3.9.1)
