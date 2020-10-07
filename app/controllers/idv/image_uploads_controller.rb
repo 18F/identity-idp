@@ -22,7 +22,7 @@ module Idv
         add_costs(client_response)
         analytics.track_event(
           Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-          client_response.to_h,
+          client_response.to_h.merge(user_id: image_form.document_capture_session.user.uuid),
         )
 
         store_pii(client_response) if client_response.success?
