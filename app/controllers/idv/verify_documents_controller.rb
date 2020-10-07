@@ -23,9 +23,9 @@ module Idv
       if form_response.success?
         client_response = VendorDocumentVerificationJob.perform(
           document_capture_session_uuid: verify_document_form.document_capture_session_uuid,
-          front_image_url: read_file(params[:front_image_url]),
-          back_image_url: read_file(params[:back_image_url]),
-          selfie_image_url: read_file(params[:selfie_image_url]),
+          front_image_url: params[:front_image_url],
+          back_image_url: params[:back_image_url],
+          selfie_image_url: params[:selfie_image_url],
           liveness_checking_enabled: liveness_checking_enabled?,
         )
 
