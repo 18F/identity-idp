@@ -206,13 +206,9 @@ describe Idv::VerifyDocumentsController do
 
       context 'when document verification submission fails' do
         before do
-          DocAuth::Mock::DocAuthMockClient.mock_response!(
-            method: :post_images,
-            response: DocAuth::Response.new(
-              success: false,
-              errors: { front_image_url: ['Too blurry', 'Wrong document'] },
-            ),
-          )
+          allow(VendorDocumentVerificationJob).to receive(:perform).
+            and_return(FormResponse.new(success: false,
+                                        errors: { front_image_url: ['Could not read file'] }))
         end
 
         it 'returns an error response' do
@@ -223,8 +219,7 @@ describe Idv::VerifyDocumentsController do
           expect(json[:success]).to eq(false)
           expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
           expect(json[:errors]).to eq [
-            { field: 'front_image_url', message: 'Too blurry' },
-            { field: 'front_image_url', message: 'Wrong document' },
+            { field: 'front_image_url', message: 'Could not read file' },
           ]
         end
 
