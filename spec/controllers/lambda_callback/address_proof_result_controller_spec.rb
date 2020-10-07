@@ -12,7 +12,7 @@ describe LambdaCallback::AddressProofResultController do
       it 'accepts and stores successful address proofing results' do
         applicant = { phone: Faker::PhoneNumber.cell_phone }
         document_capture_session.store_proofing_pii_from_doc(applicant)
-        proofer_result = AddressMock.new.proof(applicant)
+        proofer_result = IdentityIdpFunctions::MockProofers::AddressMock.new.proof(applicant)
 
         post :create, params: { result_id: document_capture_session.result_id,
                                 address_result: proofer_result.to_h }
@@ -24,7 +24,7 @@ describe LambdaCallback::AddressProofResultController do
       it 'accepts and stores unsuccessful address proofing results' do
         applicant = { phone: '7035555555' }
         document_capture_session.store_proofing_pii_from_doc(applicant)
-        proofer_result = AddressMock.new.proof(applicant)
+        proofer_result = IdentityIdpFunctions::MockProofers::AddressMock.new.proof(applicant)
 
         post :create, params: { result_id: document_capture_session.result_id,
                                 address_result: proofer_result.to_h }

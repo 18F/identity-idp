@@ -18,9 +18,11 @@ ProofingDocumentCaptureSessionResult = Struct.new(:id, :pii, :result, :status,
     new(status: :in_progress)
   end
 
-  def done!
-    result.deep_symbolize_keys!
-    pii.deep_symbolize_keys!
-    self.status = :done
+  def done
+    ProofingDocumentCaptureSessionResult.new(
+      pii: pii.deep_symbolize_keys,
+      result: result.deep_symbolize_keys,
+      status: :done
+    )
   end
 end

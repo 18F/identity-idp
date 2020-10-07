@@ -14,9 +14,25 @@ module Idv
       submit_applicant(vendor: vendor, results: results)
     end
 
-    def proof_address
-      vendor = Idv::Proofer.address_vendor.new
-      submit_applicant(vendor: vendor, results: init_results)
+    def proof_address(document_capture_session)
+      callback_url = Rails.application.routes.url_helpers.address_proof_result_url(
+        document_capture_session.result_id,
+      )
+
+      if Idv::Proofer.mock_fallback_enabled?
+        LambdaJobs::Runner.new(
+          job_name: nil, job_class: IdentityIdpFunctions::ProofAddressMock,
+          args: { applicant_pii: @applicant, callback_url: callback_url }
+        ).run do |idv_result|
+          document_capture_session.store_proofing_result(idv_result[:address_result])
+          idv_result[:address_result]
+        end
+      else
+        LambdaJobs::Runner.new(
+          job_name: nil, job_class: IdentityIdpFunctions::ProofAddress,
+          args: { applicant_pii: @applicant, callback_url: callback_url }
+        )
+      end
     end
 
     private

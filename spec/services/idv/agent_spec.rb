@@ -100,16 +100,18 @@ describe Idv::Agent do
     end
 
     describe '#proof_address' do
+      let (:document_capture_session) { DocumentCaptureSession.new(result_id: 'abc123') }
+
       it 'proofs addresses successfully with valid information' do
         agent = Idv::Agent.new({ phone: Faker::PhoneNumber.cell_phone })
-        result = agent.proof_address
+        result = agent.proof_address(document_capture_session)
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq true
       end
 
       it 'fails to proof addresses with invalid information' do
         agent = Idv::Agent.new({ phone: '7035555555' })
-        result = agent.proof_address
+        result = agent.proof_address(document_capture_session)
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq false
       end

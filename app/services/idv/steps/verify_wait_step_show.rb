@@ -46,9 +46,7 @@ module Idv
         return ProofingDocumentCaptureSessionResult.timed_out if proofing_job_result.nil?
 
         if proofing_job_result.result
-          proofing_job_result.done!
-
-          proofing_job_result
+          proofing_job_result.done
         elsif proofing_job_result.pii
           ProofingDocumentCaptureSessionResult.in_progress
         end

@@ -4,9 +4,14 @@ module Idv
 
     class << self
       def validate_vendors!
+        if mock_fallback_enabled?
+          require 'identity-idp-functions/proof_address_mock'
+        else
+          require 'identity-idp-functions/proof_address'
+        end
+
         resolution_vendor.new
         state_id_vendor.new
-        address_vendor.new
       end
 
       def resolution_vendor
@@ -24,16 +29,6 @@ module Idv
           Aamva::Proofer
         end
       end
-
-      def address_vendor
-        if mock_fallback_enabled?
-          AddressMock
-        else
-          LexisNexis::PhoneFinder::Proofer
-        end
-      end
-
-      private
 
       def mock_fallback_enabled?
         Figaro.env.proofer_mock_fallback == 'true'

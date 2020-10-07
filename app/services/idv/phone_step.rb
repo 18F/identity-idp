@@ -26,9 +26,7 @@ module Idv
       return ProofingDocumentCaptureSessionResult.timed_out if proofing_job_result.nil?
 
       if proofing_job_result.result
-        proofing_job_result.done!
-
-        proofing_job_result
+        proofing_job_result.done
       elsif proofing_job_result.pii
         ProofingDocumentCaptureSessionResult.in_progress
       end
@@ -149,21 +147,7 @@ module Idv
     end
 
     def run_job(document_capture_session)
-      callback_url = Rails.application.routes.url_helpers.address_proof_result_url(
-        document_capture_session.result_id,
-      )
-
-      if Figaro.env.proofing_lambda_http_callback == 'true'
-        LambdaJobs::Runner.new(job_name: nil, job_class: AddressProofJob,
-                               args: { applicant_pii: applicant, callback_url: callback_url }).run
-      else
-        LambdaJobs::Runner.new(
-          job_name: nil, job_class: AddressProofJob,
-          args: { applicant_pii: applicant, callback_url: callback_url }
-        ).run do |idv_result|
-          document_capture_session.store_proofing_result(idv_result)
-        end
-      end
+      Idv::Agent.new(applicant).proof_address(document_capture_session)
     end
   end
 end
