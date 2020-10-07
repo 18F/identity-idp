@@ -73,6 +73,16 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
       expect(costing_for(:acuant_result)).to be_nil
       expect(costing_for(:acuant_selfie)).to be_present
     end
+
+    it 'does not fail when _count field is null' do
+      proofing_cost = ::ProofingCost.find_or_create_by(user_id: user_id)
+      proofing_cost.acuant_front_image_count = nil
+      proofing_cost.save
+
+      subject.call(billed_response)
+
+      expect(proofing_cost.reload.acuant_front_image_count).to eq 1
+    end
   end
 
   def costing_for(cost_type)
