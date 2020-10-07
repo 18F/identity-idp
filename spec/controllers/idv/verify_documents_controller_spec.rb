@@ -46,7 +46,7 @@ describe Idv::VerifyDocumentsController do
           expect(response.status).to eq(400)
           expect(json[:success]).to eq(false)
           expect(json[:errors]).to eq [
-            { field: 'front', message: 'Please fill in this field.' },
+            { field: 'front_image_url', message: 'Please fill in this field.' },
           ]
         end
 
@@ -80,7 +80,7 @@ describe Idv::VerifyDocumentsController do
           json = JSON.parse(response.body, symbolize_names: true)
           expect(response.status).to eq(400)
           expect(json[:errors]).to eq [
-            { field: 'front', message: I18n.t('doc_auth.errors.not_a_file') },
+            { field: 'front_image_url', message: I18n.t('doc_auth.errors.not_a_file') },
           ]
         end
 
@@ -93,7 +93,8 @@ describe Idv::VerifyDocumentsController do
             json = JSON.parse(response.body, symbolize_names: true)
             expect(response.status).to eq(400)
             expect(json[:errors]).to eq [
-              { field: 'front', message: I18n.t('doc_auth.errors.not_a_file', locale: 'es') },
+              { field: 'front_image_url', message: I18n.t('doc_auth.errors.not_a_file',
+                                                          locale: 'es') },
             ]
           end
         end
@@ -130,7 +131,8 @@ describe Idv::VerifyDocumentsController do
           expect(response.status).to eq(400)
           expect(json).to eq({
                                success: false,
-                               errors: [{ field: 'front', message: 'Please fill in this field.' }],
+                               errors: [{ field: 'front_image_url',
+                                          message: 'Please fill in this field.' }],
                                remaining_attempts: 3,
                              })
         end
@@ -225,8 +227,8 @@ describe Idv::VerifyDocumentsController do
           expect(json[:success]).to eq(false)
           expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
           expect(json[:errors]).to eq [
-            { field: 'front', message: 'Too blurry' },
-            { field: 'front', message: 'Wrong document' },
+            { field: 'front_image_url', message: 'Too blurry' },
+            { field: 'front_image_url', message: 'Wrong document' },
           ]
         end
 
@@ -336,7 +338,8 @@ describe Idv::VerifyDocumentsController do
           json = JSON.parse(response.body, symbolize_names: true)
           expect(response.status).to eq(400)
           expect(json[:success]).to eq(false)
-          expect(json[:errors]).to eq [{ field: 'front', message: 'Please fill in this field.' }]
+          expect(json[:errors]).to eq [{ field: 'front_image_url',
+                                         message: 'Please fill in this field.' }]
         end
 
         it 'tracks analytics' do

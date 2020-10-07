@@ -59,8 +59,10 @@ module Idv
       params[:encryption_key]
     end
 
-    def valid_url?(uri)
-      URI.parse(uri) && uri.host
+    def valid_url?(key)
+      uri = params[key]
+      parsed_uri = URI.parse(uri)
+      parsed_uri.scheme.present? && parsed_uri.host.present?
     rescue URI::InvalidURIError
       false
     end
@@ -78,10 +80,14 @@ module Idv
     end
 
     def validate_image_urls
-      errors.add(:front_image_url, t('doc_auth.errors.not_a_file')) if valid_url?(:front_image_url)
-      errors.add(:back_image_url, t('doc_auth.errors.not_a_file')) if valid_url?(:back_image_url)
+      errors.add(:front_image_url, invalid_link) unless valid_url?(:front_image_url)
+      errors.add(:back_image_url, invalid_link) unless valid_url?(:back_image_url)
       return if valid_url?(:selfie_image_url)
-      errors.add(:back_image_url, t('doc_auth.errors.not_a_file')) if liveness_checking_enabled?
+      errors.add(:selfie_image_url, invalid_link) unless liveness_checking_enabled?
+    end
+
+    def invalid_link
+      t('doc_auth.errors.not_a_file')
     end
   end
 end
