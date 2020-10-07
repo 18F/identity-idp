@@ -189,7 +189,7 @@ describe Idv::VerifyDocumentsController do
 
           expect(@analytics).to receive(:track_event).with(
             Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_PROCESSING_FORM,
-            success: true,
+            success: false,
             errors: {},
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
@@ -228,7 +228,7 @@ describe Idv::VerifyDocumentsController do
 
           expect(@analytics).to receive(:track_event).with(
             Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_PROCESSING_FORM,
-            success: true,
+            success: false,
             errors: {},
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
@@ -237,7 +237,7 @@ describe Idv::VerifyDocumentsController do
             Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
             success: false,
             errors: {
-              front_image_url: ['Too blurry', 'Wrong document'],
+              front_image_url: ['Could not read file'],
             },
             exception: nil,
           )
@@ -289,13 +289,13 @@ describe Idv::VerifyDocumentsController do
     end
   end
 
-  describe '#index' do
+  describe '#show' do
     before do
       sign_in_as_user
       controller.current_user.document_capture_sessions.create!
     end
 
-    subject(:action) { get :index, params: params }
+    subject(:action) { get :show, params: params }
 
     let(:document_capture_session) { controller.current_user.document_capture_sessions.last }
     let(:params) do

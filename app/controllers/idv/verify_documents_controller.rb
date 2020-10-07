@@ -8,7 +8,7 @@ module Idv
 
     respond_to :json
 
-    def index
+    def show
       analytics.track_event(Analytics::IDV_DOC_AUTH_DOCUMENT_STATUS)
 
       render json: { status: :success }
