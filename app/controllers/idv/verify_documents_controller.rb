@@ -39,7 +39,11 @@ module Idv
         status = verify_document_form.status
       end
 
-      render json: { status: status }, status: status || :ok
+      presenter = VerifyDocumentsResponsePresenter.new(
+        form: verify_document_form,
+        form_response: client_response || form_response,
+      )
+      render json: presenter, status: status || :ok
     end
 
     private

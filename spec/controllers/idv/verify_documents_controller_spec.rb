@@ -122,7 +122,7 @@ describe Idv::VerifyDocumentsController do
 
       context 'throttling' do
         it 'returns remaining_attempts with error' do
-          params.delete(:front)
+          params.delete(:front_image_url)
           allow(Throttler::RemainingCount).to receive(:call).and_return(3)
 
           action
@@ -329,7 +329,7 @@ describe Idv::VerifyDocumentsController do
       end
 
       context 'when fields are missing' do
-        before { params.delete(:front) }
+        before { params.delete(:front_image_url) }
 
         it 'returns error status when not provided image fields' do
           action
