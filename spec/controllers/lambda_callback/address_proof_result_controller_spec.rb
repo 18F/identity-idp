@@ -12,19 +12,24 @@ describe LambdaCallback::AddressProofResultController do
       it 'accepts and stores successful address proofing results' do
         applicant = { phone: Faker::PhoneNumber.cell_phone }
         document_capture_session.store_proofing_pii_from_doc(applicant)
-        proofer_result = AddressMock.new.proof(applicant)
+        Idv::Agent.new(applicant).proof_address(document_capture_session)
+        proofer_result = document_capture_session.load_proofing_result[:result]
 
         post :create, params: { result_id: document_capture_session.result_id,
                                 address_result: proofer_result.to_h }
 
         proofing_result = document_capture_session.load_proofing_result
-        expect(proofing_result.result).to eq({ exception: '', success: 'true' })
+        expect(proofing_result.result).to include({ exception: '', success: 'true' })
       end
 
       it 'accepts and stores unsuccessful address proofing results' do
-        applicant = { phone: '7035555555' }
+        applicant = {
+          phone: IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
+        }
+
         document_capture_session.store_proofing_pii_from_doc(applicant)
-        proofer_result = AddressMock.new.proof(applicant)
+        Idv::Agent.new(applicant).proof_address(document_capture_session)
+        proofer_result = document_capture_session.load_proofing_result[:result]
 
         post :create, params: { result_id: document_capture_session.result_id,
                                 address_result: proofer_result.to_h }

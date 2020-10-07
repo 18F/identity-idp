@@ -3,7 +3,7 @@ module LambdaCallback
     def create
       dcs = DocumentCaptureSession.new
       dcs.result_id = result_id_parameter
-      dcs.store_proofing_result(address_result_parameter)
+      dcs.store_proofing_result(address_result_parameter.to_h)
     end
 
     private
@@ -13,7 +13,8 @@ module LambdaCallback
     end
 
     def address_result_parameter
-      params.require(:address_result)
+      params.require(:address_result).permit(:exception, :success, :timed_out,
+                                             errors: {}, context: {})
     end
 
     def config_auth_token
