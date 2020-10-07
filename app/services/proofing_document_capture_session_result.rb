@@ -22,7 +22,7 @@ ProofingDocumentCaptureSessionResult = Struct.new(:id, :pii, :result, :status,
     ProofingDocumentCaptureSessionResult.new(
       pii: pii.deep_symbolize_keys,
       result: result.deep_symbolize_keys,
-      status: :done
+      status: :done,
     )
   end
 end

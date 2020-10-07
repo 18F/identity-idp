@@ -56,7 +56,7 @@ describe Idv::Proofer do
     context 'without vendors configured for each stage' do
       it 'does raise' do
         expect { described_class.validate_vendors! }.to raise_error(
-          LoadError
+          LoadError,
         )
       end
     end

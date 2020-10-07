@@ -100,7 +100,7 @@ describe Idv::Agent do
     end
 
     describe '#proof_address' do
-      let (:document_capture_session) { DocumentCaptureSession.new(result_id: 'abc123') }
+      let(:document_capture_session) { DocumentCaptureSession.new(result_id: 'abc123') }
 
       it 'proofs addresses successfully with valid information' do
         agent = Idv::Agent.new({ phone: Faker::PhoneNumber.cell_phone })
