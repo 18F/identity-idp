@@ -70,6 +70,20 @@ describe Idv::PhoneController do
       get :new
       expect(response).to render_template :new
     end
+
+    it 'shows waiting interstitial if async process is in progress' do
+      # having a document capture session with PII but without results will trigger
+      # in progress behavior
+      document_capture_session = DocumentCaptureSession.create(user_id: user.id,
+                                                               requested_at: Time.zone.now)
+      document_capture_session.store_proofing_pii_from_doc({})
+
+      subject.idv_session.idv_phone_step_document_capture_session_uuid =
+        document_capture_session.uuid
+
+      get :new
+      expect(response).to render_template :wait
+    end
   end
 
   describe '#create' do
