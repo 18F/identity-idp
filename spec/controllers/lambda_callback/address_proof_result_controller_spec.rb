@@ -23,7 +23,10 @@ describe LambdaCallback::AddressProofResultController do
       end
 
       it 'accepts and stores unsuccessful address proofing results' do
-        applicant = { phone: '7035555555' }
+        applicant = {
+          phone: IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
+        }
+
         document_capture_session.store_proofing_pii_from_doc(applicant)
         Idv::Agent.new(applicant).proof_address(document_capture_session)
         proofer_result = document_capture_session.load_proofing_result[:result]

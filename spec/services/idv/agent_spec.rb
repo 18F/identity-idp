@@ -2,6 +2,9 @@ require 'rails_helper'
 require 'ostruct'
 
 describe Idv::Agent do
+  let(:bad_phone) do
+    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+  end
   describe 'instance' do
     let(:applicant) { { foo: 'bar' } }
 
@@ -111,7 +114,7 @@ describe Idv::Agent do
       end
 
       it 'fails to proof addresses with invalid information' do
-        agent = Idv::Agent.new({ phone: '7035555555' })
+        agent = Idv::Agent.new(phone: bad_phone)
         agent.proof_address(document_capture_session)
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })

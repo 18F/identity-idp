@@ -5,6 +5,9 @@ describe Idv::PhoneController do
 
   let(:max_attempts) { idv_max_attempts }
   let(:good_phone) { '+1 (703) 555-0000' }
+  let(:bad_phone) do
+    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+  end
   let(:normalized_phone) { '7035550000' }
   let(:bad_phone) { '+1 (703) 555-5555' }
 
@@ -223,7 +226,7 @@ describe Idv::PhoneController do
         user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
-        put :create, params: { idv_phone_form: { phone: '7035555555' } }
+        put :create, params: { idv_phone_form: { phone: bad_phone } }
 
         expect(response).to redirect_to idv_phone_path
         get :new
@@ -256,7 +259,7 @@ describe Idv::PhoneController do
           Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
         )
 
-        put :create, params: { idv_phone_form: { phone: '7035555555' } }
+        put :create, params: { idv_phone_form: { phone: bad_phone } }
         expect(response).to redirect_to idv_phone_path
         get :new
       end

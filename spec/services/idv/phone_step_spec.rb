@@ -17,9 +17,15 @@ describe Idv::PhoneStep do
     idvs
   end
   let(:good_phone) { '2255555000' }
-  let(:bad_phone) { '7035555555' }
-  let(:fail_phone) { '7035555999' }
-  let(:timeout_phone) { '7035555888' }
+  let(:bad_phone) do
+    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+  end
+  let(:fail_phone) do
+    IdentityIdpFunctions::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
+  end
+  let(:timeout_phone) do
+    IdentityIdpFunctions::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
+  end
 
   subject { described_class.new(idv_session: idv_session) }
 
