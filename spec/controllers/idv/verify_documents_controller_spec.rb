@@ -72,7 +72,7 @@ describe Idv::VerifyDocumentsController do
       end
 
       context 'when a value is not a file' do
-        before { params.merge!(front: 'some string') }
+        before { params.merge!(front_image_url: 'some string') }
 
         it 'returns an error' do
           action
