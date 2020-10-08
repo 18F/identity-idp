@@ -4,14 +4,20 @@ module Idv
       @applicant = applicant.symbolize_keys
     end
 
-    def proof_resolution(should_proof_state_id:)
-      vendor = Idv::Proofer.resolution_vendor.new
-      results = submit_applicant(vendor: vendor, results: init_results)
+    def proof_resolution(document_capture_session, should_proof_state_id:)
+      callback_url = Rails.application.routes.url_helpers.resolution_proof_result_url(
+        document_capture_session.result_id,
+      )
 
-      return results unless results[:success] && should_proof_state_id
+      LambdaJobs::Runner.new(
+        job_name: nil, job_class: Idv::Proofer.resolution_job_class,
+        args: { applicant_pii: @applicant, callback_url: callback_url,
+                should_proof_state_id: should_proof_state_id }
+      ).run do |idv_result|
+        document_capture_session.store_proofing_result(idv_result[:resolution_result])
 
-      vendor = Idv::Proofer.state_id_vendor.new
-      submit_applicant(vendor: vendor, results: results)
+        nil
+      end
     end
 
     def proof_address(document_capture_session)

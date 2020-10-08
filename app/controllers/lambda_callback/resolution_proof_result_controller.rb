@@ -15,11 +15,12 @@ module LambdaCallback
     end
 
     def resolution_result_parameter
-      params.require(:resolution_result)
+      params.require(:resolution_result).permit(:exception, :success, :timed_out,
+                                                errors: {}, context: {})
     end
 
     def track_exception_in_result(result)
-      exception = resolution_result_parameter[:exception]
+      exception = result[:exception]
       return if exception.nil?
 
       NewRelic::Agent.notice_error(exception)

@@ -49,11 +49,14 @@ describe Idv::Agent do
     end
 
     describe '#proof_resolution' do
+      let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
+
       context 'proofing state_id enabled' do
         it 'does not proof state_id if resolution fails' do
           agent = Idv::Agent.new({ ssn: '444-55-6666', first_name: Faker::Name.first_name,
                                    zipcode: '11111' })
-          result = agent.proof_resolution(should_proof_state_id: true)
+          agent.proof_resolution(document_capture_session, should_proof_state_id: true)
+          result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include({ state_id: 'StateIdMock' })
         end
@@ -61,7 +64,8 @@ describe Idv::Agent do
         it 'does proof state_id if resolution succeeds' do
           agent = Idv::Agent.new({ ssn: '444-55-8888', first_name: Faker::Name.first_name,
                                    zipcode: '11111' })
-          result = agent.proof_resolution(should_proof_state_id: true)
+          agent.proof_resolution(document_capture_session, should_proof_state_id: true)
+          result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to include({ state_id: 'StateIdMock' })
         end
       end
@@ -70,7 +74,8 @@ describe Idv::Agent do
         it 'does not proof state_id if resolution fails' do
           agent = Idv::Agent.new({ ssn: '444-55-6666', first_name: Faker::Name.first_name,
                                    zipcode: '11111' })
-          result = agent.proof_resolution(should_proof_state_id: false)
+          agent.proof_resolution(document_capture_session, should_proof_state_id: true)
+          result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include({ state_id: 'StateIdMock' })
         end
@@ -78,23 +83,20 @@ describe Idv::Agent do
         it 'does not proof state_id if resolution succeeds' do
           agent = Idv::Agent.new({ ssn: '444-55-8888', first_name: Faker::Name.first_name,
                                    zipcode: '11111' })
-          result = agent.proof_resolution(should_proof_state_id: false)
+          agent.proof_resolution(document_capture_session, should_proof_state_id: false)
+          result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to_not include({ state_id: 'StateIdMock' })
         end
       end
 
       it 'returns an unsuccessful result and notifies exception trackers if an exception occurs' do
-        exception = Proofer::TimeoutError
-
         agent = Idv::Agent.new(ssn: '444-55-8888', first_name: 'Time Exception',
                                zipcode: '11111')
 
-        expect(NewRelic::Agent).to receive(:notice_error).with(exception)
-        expect(ExceptionNotifier).to receive(:notify_exception).with(exception)
+        agent.proof_resolution(document_capture_session, should_proof_state_id: true)
+        result = document_capture_session.load_proofing_result.result
 
-        result = agent.proof_resolution(should_proof_state_id: false)
-
-        expect(result[:exception]).to be_instance_of(exception)
+        expect(result[:exception]).to start_with('#<Proofer::TimeoutError: ')
         expect(result).to include(
           success: false,
           timed_out: true,
@@ -103,7 +105,7 @@ describe Idv::Agent do
     end
 
     describe '#proof_address' do
-      let(:document_capture_session) { DocumentCaptureSession.new(result_id: 'abc123') }
+      let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
 
       it 'proofs addresses successfully with valid information' do
         agent = Idv::Agent.new({ phone: Faker::PhoneNumber.cell_phone })

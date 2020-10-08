@@ -6,27 +6,18 @@ module Idv
       def validate_vendors!
         if mock_fallback_enabled?
           require 'identity-idp-functions/proof_address_mock'
+          require 'identity-idp-functions/proof_resolution_mock'
         else
           require 'identity-idp-functions/proof_address'
-        end
-
-        resolution_vendor.new
-        state_id_vendor.new
-      end
-
-      def resolution_vendor
-        if mock_fallback_enabled?
-          ResolutionMock
-        else
-          LexisNexis::InstantVerify::Proofer
+          require 'identity-idp-functions/proof_resolution'
         end
       end
 
-      def state_id_vendor
+      def resolution_job_class
         if mock_fallback_enabled?
-          StateIdMock
+          IdentityIdpFunctions::ProofResolutionMock
         else
-          Aamva::Proofer
+          IdentityIdpFunctions::ProofResolution
         end
       end
 

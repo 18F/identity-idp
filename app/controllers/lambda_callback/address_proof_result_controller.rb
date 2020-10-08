@@ -20,7 +20,7 @@ module LambdaCallback
     end
 
     def track_exception_in_result(result)
-      exception = resolution_result_parameter[:exception]
+      exception = result[:exception]
       return if exception.nil?
 
       NewRelic::Agent.notice_error(exception)
