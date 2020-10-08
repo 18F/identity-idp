@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_24_144755) do
+ActiveRecord::Schema.define(version: 2020_10_08_112531) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -217,6 +217,10 @@ ActiveRecord::Schema.define(version: 2020_09_24_144755) do
     t.datetime "requested_at"
     t.boolean "ial2_strict"
     t.string "issuer"
+    t.datetime "verify_doc_submitted_at"
+    t.datetime "verify_doc_results_at"
+    t.string "verify_doc_results"
+    t.string "verify_doc_status"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
   end
