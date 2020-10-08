@@ -5,9 +5,11 @@
     </h2>
     <% if current_user.piv_cac_configurations.count < Figaro.env.max_piv_cac_per_account.to_i %>
       <div class="right-align grid-col-6">
-        <div class="btn btn-account-action rounded-lg bg-light-blue">
-          <%= link_to t('forms.buttons.enable'), setup_piv_cac_url %>
-        </div>
+        <%= link_to(
+          t('forms.buttons.enable'),
+          setup_piv_cac_url,
+          class: 'btn btn-account-action rounded-lg bg-light-blue',
+        ) %>
       </div>
     <% end %>
   </div>
