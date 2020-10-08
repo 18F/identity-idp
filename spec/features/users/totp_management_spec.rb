@@ -93,7 +93,8 @@ describe 'totp management' do
 
         expect(page).to have_current_path(account_two_factor_authentication_path)
         expect(user.auth_app_configurations.count).to eq(2)
-        expect(page).to_not have_link("+ #{t('forms.buttons.enable')}", href: authenticator_setup_url)
+        expect(page).
+          to_not have_link("+ #{t('forms.buttons.enable')}", href: authenticator_setup_url)
       end
     end
   end
