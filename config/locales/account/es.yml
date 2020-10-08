@@ -24,12 +24,12 @@ es:
       device: "%{browser} en %{os}"
       dob: Fecha de nacimiento
       email: Correo electrónico
-      email_add: "+ Agregar email"
+      email_add: "Agregar email"
       email_addresses: Correos electrónicos
       full_name: Nombre completo
       password: Contraseña
       phone: Teléfono
-      phone_add: "+ Añadir teléfono"
+      phone_add: "Añadir teléfono"
       piv_cac_card: Tarjetas PIV/CAC
       piv_cac_confirm_delete: Sí, retire la tarjeta
       piv_cac_disabled: desactivada
@@ -49,7 +49,7 @@ es:
         success: Su cuenta ha sido verificada.
         update_address: Please update your address to be verified.
       webauthn: Clave de seguridad
-      webauthn_add: "+ Añadir clave de seguridad"
+      webauthn_add: "Añadir clave de seguridad"
       webauthn_confirm_delete: Si quitar la llave
       webauthn_delete: Quitar llave
     items:

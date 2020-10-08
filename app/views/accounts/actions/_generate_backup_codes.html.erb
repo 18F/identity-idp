@@ -1,2 +1,3 @@
-<%= link_to t('forms.backup_code.generate'), backup_code_create_path,
+<%= link_to prefix_with_plus(t('forms.backup_code.generate')),
+            backup_code_create_path,
             class: 'btn btn-account-action rounded-lg bg-light-blue' %>

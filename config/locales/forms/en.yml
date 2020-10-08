@@ -21,9 +21,9 @@ en:
         can sign in again in the future.
       depleted_title: Create new backup codes
       download: Download
-      generate: "+ Get codes"
+      generate: "Get codes"
       print: Print
-      regenerate: "+ Get new codes"
+      regenerate: "Get new codes"
       subinfo: "<b>Don't lose these codes</b>. Download, print, or copy them. Each
         code can only be used once. After you’ve used all 10 codes, we’ll give you
         10 new codes.  Keep your codes as safe as your password."
@@ -42,7 +42,7 @@ en:
       delete: Delete
       disable: Delete
       edit: Edit
-      enable: "+ Add"
+      enable: "Add"
       manage: Manage
       resend_confirmation: Resend confirmation instructions
       send_security_code: Send code

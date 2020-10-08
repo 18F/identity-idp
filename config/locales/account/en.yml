@@ -23,12 +23,12 @@ en:
       device: "%{browser} on %{os}"
       dob: Date of birth
       email: Email address
-      email_add: "+ Add email"
+      email_add: "Add email"
       email_addresses: Email addresses
       full_name: Full name
       password: Password
       phone: Phone numbers
-      phone_add: "+ Add phone"
+      phone_add: "Add phone"
       piv_cac_card: PIV/CAC Cards
       piv_cac_confirm_delete: Yes, remove card
       piv_cac_disabled: not enabled
@@ -47,7 +47,7 @@ en:
         success: Your account has been verified.
         update_address: Please update your address to be verified.
       webauthn: Security key
-      webauthn_add: "+ Add security key"
+      webauthn_add: "Add security key"
       webauthn_confirm_delete: Yes, remove key
       webauthn_delete: Remove key
     items:
