@@ -11,7 +11,9 @@ module Idv
     def show
       analytics.track_event(Analytics::IDV_DOC_AUTH_DOCUMENT_STATUS)
 
-      render json: { status: :success }
+      uuid = params[:document_capture_session_uuid]
+      status = Db::DocumentCaptureSession::ReadVerifyDocStatus.call(uuid)
+      render json: { status: status }
     end
 
     def create
