@@ -6,7 +6,7 @@
     <div class="right-align grid-col-6">
       <% if EmailPolicy.new(current_user).can_add_email? %>
         <%= link_to(
-          t('account.index.phone_add'),
+          prefix_with_plus(t('account.index.phone_add')),
           add_phone_path,
           class: 'btn btn-account-action rounded-lg bg-light-blue',
         ) %>
