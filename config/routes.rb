@@ -317,13 +317,13 @@ Rails.application.routes.draw do
       get '/doc_auth' => 'doc_auth#index'
       get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
       put '/doc_auth/:step' => 'doc_auth#update'
+      get '/doc_auth/link_sent/poll' => 'capture_doc_status#show'
       get '/capture_doc' => 'capture_doc#index'
       get '/capture-doc' => 'capture_doc#index',
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
       get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
       put '/capture_doc/:step' => 'capture_doc#update'
-      get '/capture_doc_status' => 'capture_doc_status#show'
       unless FeatureManagement.disallow_ial2_recovery?
         get '/recovery' => 'recovery#index'
         get '/recovery/:step' => 'recovery#show', as: :recovery_step
