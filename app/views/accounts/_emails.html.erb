@@ -5,9 +5,11 @@
     </h2>
     <div class="right-align col col-6">
       <% if EmailPolicy.new(current_user).can_add_email? %>
-        <div class="btn btn-account-action rounded-lg bg-light-blue">
-          <%= link_to prefix_with_plus(t('account.index.email_add')), add_email_path %>
-        </div>
+        <%= link_to(
+          prefix_with_plus(t('account.index.email_add')),
+          add_email_path,
+          class: 'btn btn-account-action rounded-lg bg-light-blue',
+        ) %>
       <% end %>
     </div>
   </div>

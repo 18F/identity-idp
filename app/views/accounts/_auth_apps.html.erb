@@ -5,9 +5,11 @@
     </h2>
     <% if current_user.auth_app_configurations.count < Figaro.env.max_auth_apps_per_account.to_i %>
       <div class="right-align grid-col-6">
-        <div class="btn btn-account-action rounded-lg bg-light-blue">
-          <%= link_to prefix_with_plus(t('forms.buttons.enable')), authenticator_setup_url %>
-        </div>
+        <%= link_to(
+          prefix_with_plus(t('forms.buttons.enable')),
+          authenticator_setup_url,
+          class: 'btn btn-account-action rounded-lg bg-light-blue',
+        ) %>
       </div>
     <% end %>
   </div>
