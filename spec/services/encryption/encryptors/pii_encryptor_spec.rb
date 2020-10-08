@@ -6,6 +6,18 @@ describe Encryption::Encryptors::PiiEncryptor do
 
   subject { described_class.new(password) }
 
+  describe Encryption::Encryptors::PiiEncryptor::Ciphertext do
+    describe '.parse_from_string' do
+      it 'does not blow up with unknown/new keys' do
+        blob = Encryption::Encryptors::PiiEncryptor::Ciphertext.new('encrypted_data').to_s
+        str = JSON.parse(blob).merge(some_new_field: 'some_new_field').to_json
+
+        ciphertext = Encryption::Encryptors::PiiEncryptor::Ciphertext.parse_from_string(str)
+        expect(ciphertext.encrypted_data).to eq('encrypted_data')
+      end
+    end
+  end
+
   describe '#encrypt' do
     it 'returns encrypted text' do
       ciphertext = subject.encrypt(plaintext, user_uuid: 'uuid-123-abc')

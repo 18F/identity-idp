@@ -21,13 +21,13 @@ import I18nContext from '../context/i18n';
  * });
  * ```
  *
- * @param {string}                   html     HTML to format.
- * @param {Record<string,Component>} handlers Mapping of tag names to components.
+ * @param {string} html HTML to format.
+ * @param {Record<string,Component|string>} handlers Mapping of tag names to tag name or component.
  *
  * @return {import('react').ReactNode}
  */
 export function formatHTML(html, handlers) {
-  const pattern = new RegExp(`</?(?:${Object.keys(handlers).join('|')})>`, 'g');
+  const pattern = new RegExp(`</?(?:${Object.keys(handlers).join('|')})(?: .*?)?>`, 'g');
   const matches = html.match(pattern);
   if (!matches) {
     return html;
@@ -37,13 +37,30 @@ export function formatHTML(html, handlers) {
   const parts = html.split(pattern);
 
   for (let i = 0; i < matches.length; i += 2) {
-    const tag = matches[i].slice(1, -1);
+    const match = matches[i];
+    const end = match.search(/[ >]/);
+    const tag = matches[i].slice(1, end);
     const part = /** @type {string} */ (parts[i + 1]);
     const replacement = createElement(handlers[tag], null, part);
     parts[i + 1] = cloneElement(replacement, { key: part });
   }
 
   return parts.filter(Boolean);
+}
+
+/**
+ * Returns string with variable substitution.
+ *
+ * @param {string} string Original string.
+ * @param {Record<string,string>} variables Variables to replace.
+ *
+ * @return {string} String with variables substituted.
+ */
+export function replaceVariables(string, variables) {
+  return Object.keys(variables).reduce(
+    (result, key) => result.replace(new RegExp(`%{${key}}`, 'g'), variables[key]),
+    string,
+  );
 }
 
 function useI18n() {
@@ -53,10 +70,14 @@ function useI18n() {
    * Returns the translated string by the given key.
    *
    * @param {string} key Key to retrieve.
+   * @param {Record<string,string>=} variables Variables to substitute in string.
    *
    * @return {string} Translated string.
    */
-  const t = (key) => (Object.prototype.hasOwnProperty.call(strings, key) ? strings[key] : key);
+  function t(key, variables) {
+    const string = Object.prototype.hasOwnProperty.call(strings, key) ? strings[key] : key;
+    return variables ? replaceVariables(string, variables) : string;
+  }
 
   return {
     t,

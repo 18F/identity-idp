@@ -60,8 +60,6 @@ fr:
         <li class="mxn3">Le fond derrière votre ID est une couleur unie</li>
         <li class="mxn3">Le fond est visible derrière le document</li>
         </ul>
-      lexisnexis_network_error: Désolé, nous rencontrons des difficultés techniques.
-        Veuillez réessayer plus tard.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé un
         lien avec des instructions.
@@ -70,7 +68,8 @@ fr:
       quota_reached: Désolé, votre fournisseur de services a atteint sa limite de
         vérification d'identité. Veuillez contacter votre fournisseur de services
         pour plus d'informations.
-      selfie: Désolé, votre photo n'a pas été acceptée. Veuillez réessayer.
+      selfie: Nous n'avons pas pu lire la photo de vous ni faire correspondre la photo
+        à votre pièce d'identité. Essayez de prendre une nouvelle photo.
       send_link_throttle: Vous avez essayé plusieurs fois, essayez à nouveau dans
         10 minutes. Vous pouvez également cliquer sur recommencer et choisir d'utiliser
         votre ordinateur.

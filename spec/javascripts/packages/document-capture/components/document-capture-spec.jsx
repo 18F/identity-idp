@@ -2,11 +2,12 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import { fireEvent } from '@testing-library/react';
-import { UploadFormEntriesError } from '@18f/identity-document-capture/services/upload';
+import {
+  UploadFormEntriesError,
+  toFormEntryError,
+} from '@18f/identity-document-capture/services/upload';
 import { AcuantProvider, DeviceContext } from '@18f/identity-document-capture';
-import DocumentCapture, {
-  getFormattedErrorMessages,
-} from '@18f/identity-document-capture/components/document-capture';
+import DocumentCapture from '@18f/identity-document-capture/components/document-capture';
 import render from '../../../support/render';
 import { useAcuant } from '../../../support/acuant';
 
@@ -25,27 +26,6 @@ describe('document-capture/components/document-capture', () => {
 
   afterEach(() => {
     window.location.hash = originalHash;
-  });
-
-  describe('getFormattedErrorMessages', () => {
-    it('formats one message', () => {
-      const error = new UploadFormEntriesError();
-      error.rawErrors = [{ field: 'front', message: 'Too blurry' }];
-      const { container } = render(getFormattedErrorMessages(error.rawErrors));
-
-      expect(container.innerHTML).to.equal('Too blurry');
-    });
-
-    it('formats many messages', () => {
-      const error = new UploadFormEntriesError();
-      error.rawErrors = [
-        { field: 'front', message: 'Too blurry' },
-        { field: 'front', message: 'File size too small' },
-      ];
-      const { container } = render(getFormattedErrorMessages(error.rawErrors));
-
-      expect(container.innerHTML).to.equal('Too blurry<br>File size too small');
-    });
   });
 
   it('renders the form steps', () => {
@@ -218,10 +198,10 @@ describe('document-capture/components/document-capture', () => {
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    const heading = getByText('doc_auth.headings.selfie');
+    const heading = getByText('doc_auth.headings.review_issues');
     expect(document.activeElement).to.equal(heading);
 
-    const hasValueSelected = !!getByText('doc_auth.forms.change_file');
+    const hasValueSelected = getAllByText('doc_auth.forms.change_file').length === 3;
     expect(hasValueSelected).to.be.true();
 
     // Verify re-submission. It will fail again, but test can at least assure that the interstitial
@@ -242,11 +222,11 @@ describe('document-capture/components/document-capture', () => {
 
   it('renders handled submission failure', async () => {
     const uploadError = new UploadFormEntriesError();
-    uploadError.rawErrors = [
+    uploadError.formEntryErrors = [
       { field: 'front', message: 'Image has glare' },
       { field: 'back', message: 'Please fill in this field' },
-    ];
-    const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
+    ].map(toFormEntryError);
+    const { getByLabelText, getByText, getAllByText, findAllByText, findAllByRole } = render(
       <AcuantProvider sdkSrc="about:blank">
         <DocumentCapture />
       </AcuantProvider>,
@@ -280,17 +260,16 @@ describe('document-capture/components/document-capture', () => {
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
 
-    const notice = await findByRole('alert');
-    expect(notice.querySelector('p').innerHTML).to.equal(
-      'Image has glare<br>Please fill in this field',
-    );
+    const notices = await findAllByRole('alert');
+    expect(notices[0].textContent).to.equal('Image has glare');
+    expect(notices[1].textContent).to.equal('Please fill in this field');
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    const heading = getByText('doc_auth.headings.document_capture');
+    const heading = getByText('doc_auth.headings.review_issues');
     expect(document.activeElement).to.equal(heading);
 
     const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');

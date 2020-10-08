@@ -13,6 +13,56 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
+      lexis_nexis:
+        barcode_content_check: Nous n'avons pas pu lire le code-barres au dos de votre
+          pièce d'identité. Cela peut être dû à un problème avec le code-barres, ou
+          le code-barres est un nouveau type que nous ne reconnaissons pas encore.
+          Utilisez un autre identifiant émis par l'État si vous en avez un.
+        barcode_read_check: Nous n'avons pas pu lire le code-barres au dos de votre
+          pièce d'identité. Essayez de prendre une nouvelle photo.
+        birth_date_checks: Nous n'avons pas pu lire la date de naissance sur votre
+          pièce d'identité. Essayez de prendre de nouvelles photos.
+        control_number_check: Nous n'avons pas pu lire le numéro de référence au dos
+          de votre pièce d'identité. Essayez de prendre une nouvelle photo.
+        doc_crosscheck: Nous n'avons pas pu reconnaître votre identifiant. Elle peut
+          être usée ou endommagée, ou l'avant et l'arrière de la pièce d'identité
+          ne correspondent pas. Essayez de prendre de nouvelles photos.
+        doc_number_checks: Nous n'avons pas pu lire le numéro de document sur votre
+          pièce d'identité. Essayez de prendre de nouvelles photos.
+        expiration_checks: Le document a expiré ou nous n'avons pas pu lire la date
+          d'expiration sur votre pièce d'identité. Si votre pièce d'identité n'est
+          pas expirée, essayez de prendre de nouvelles photos.
+        full_name_check: Nous n'avons pas pu lire le nom complet sur votre pièce d'identité.
+          Essayez de prendre de nouvelles photos.
+        general_error_liveness: Nous n'avons pas pu vérifier votre pièce d'identité
+          et votre photo de vous. Essayez de prendre de nouvelles photos.
+        general_error_no_liveness: Nous n'avons pas pu vérifier votre identifiant.
+          Essayez de prendre de nouvelles photos.
+        id_not_recognized: Nous n'avons pas pu reconnaître votre identifiant. Il peut
+          être porté, endommagé ou d'un type d'identification que nous ne reconnaissons
+          pas. Essayez de prendre de nouvelles photos.
+        id_not_verified: Nous n'avons pas pu vérifier votre identifiant. Il a peut-être
+          bougé lorsque vous avez pris la photo. Essayez de prendre de nouvelles photos.
+        issue_date_checks: Nous n'avons pas pu lire la date d'émission sur votre pièce
+          d'identité. Essayez de prendre de nouvelles photos.
+        multiple_back_id_failures: Nous n'avons pas pu vérifier le verso de votre
+          pièce d'identité. Essayez de prendre une nouvelle photo.
+        multiple_front_id_failures: Nous n'avons pas pu vérifier le recto de votre
+          pièce d'identité. Essayez de prendre une nouvelle photo.
+        network_error: Nous avons des difficultés techniques de notre côté. Veuillez
+          essayer de soumettre à nouveau vos images plus tard.
+        ref_control_number_check: Nous n'avons pas pu lire le code-barres du numéro
+          de contrôle. Essayez de prendre de nouvelles photos.
+        selfie_failure: Nous n'avons pas pu faire correspondre la photo de vous à
+          votre pièce d'identité. Essayez de prendre une nouvelle photo de vous-même
+          ou du recto de votre pièce d'identité.
+        sex_check: Nous n'avons pas pu lire le sexe sur votre pièce d'identité. Essayez
+          de prendre de nouvelles photos.
+        visible_color_check: Nous n'avons pas pu vérifier votre identifiant. Il a
+          peut-être bougé lorsque vous avez pris la photo ou la photo est trop sombre.
+          Essayez de prendre de nouvelles photos avec un éclairage plus lumineux.
+        visible_photo_check: Nous n'avons pas pu vérifier la photo sur votre pièce
+          d'identité. Essayez de prendre de nouvelles photos.
       not_a_file: La sélection n'était pas un fichier valide
     forms:
       address1: Adresse
@@ -42,8 +92,9 @@ fr:
         officielle et une photo de vous
       document_capture_selfie: Ta photo
       front: De face
-      interstitial: Nous traitons vos images…
+      interstitial: Nous traitons vos images
       photo: Photo
+      review_issues: Vérifiez vos images et réessayez
       selfie: Prenez une photo de vous
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_pic_back: Prenez une photo au verso de votre identifiant
@@ -74,6 +125,8 @@ fr:
         images que vous téléchargez. Nous vérifions uniquement votre identité.
       document_capture_upload_image: Nous n'utilisons votre identifiant que pour vérifier
         votre identité, et nous n'enregistrerons aucune image.
+      id_worn_html: "<strong>Votre pièce d'identité est-elle usée ou endommagée?</strong>
+        Utilisez un autre identifiant émis par l'État si vous en avez un."
       interstitial_eta: Cela peut prendre jusqu'à une minute. Nous chargerons automatiquement
         l’étape suivante une fois celle-ci terminée.
       interstitial_thanks: Merci pour votre patience!
@@ -81,6 +134,9 @@ fr:
       - Veuillez vérifier votre téléphone et suivre les instructions pour prendre
         une photo de votre identité émise par l'État.
       - Lorsque vous avez terminé, cliquez ici pour continuer à vérifier votre identité.
+      no_other_id_help_bold_html: "<strong>Si vous n'avez pas d'autre identifiant
+        émis par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
+        auprès de %{sp_name}.</a>"
       tag: Recommander
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
@@ -103,7 +159,7 @@ fr:
         une photo de vous pour confirmer que vous êtes le propriétaire de la pièce
         d'identité.
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
-      use_cac_html: Avez-vous un identifiant d'employé du gouvernement? %{link}
+      use_cac: Avez-vous un identifiant d'employé du gouvernement?
       use_cac_link: Utilisez plutôt un PIV/CAC
       welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
         et non quelqu'un prétendant être vous. La vérification de votre identité vous
@@ -157,8 +213,21 @@ fr:
       document_capture_selfie_text1: Faites face à la caméra et assurez-vous que toute
         votre tête est sur la photo
       document_capture_selfie_text2: Prenez une photo sur un fond uni
-      document_capture_selfie_text3: Ne portez pas de chapeau ni de lunettes de soleil
+      document_capture_selfie_text3: Ne portez pas de chapeau ni de lunettes
       header_text: Directives pour prendre une photo de votre identité
+      review_issues_id_header_text: 'Examinez les images de votre pièce d''identité
+        délivrée par l''État:'
+      review_issues_id_text1: Avez-vous utilisé un fond sombre?
+      review_issues_id_text2: Avez-vous pris la photo sur une surface plane?
+      review_issues_id_text3: Le flash de votre appareil photo est-il éteint?
+      review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles?
+      review_issues_selfie_header_text: 'Examinez la photo de vous-même:'
+      review_issues_selfie_text1: Êtes-vous face à la caméra?
+      review_issues_selfie_text2: Votre tête et votre visage sont-ils entiers sur
+        la photo?
+      review_issues_selfie_text3: La photo est-elle sur un fond uni?
+      review_issues_selfie_text4: Votre visage est-il entièrement visible, non couvert
+        par un chapeau ou des lunettes?
       text1: Prenez-le dans une pièce très éclairée. La lumière solaire indirecte
         est la meilleure.
       text2: Assurez-vous que votre identité n’a pas de poussière ni de codes à barres

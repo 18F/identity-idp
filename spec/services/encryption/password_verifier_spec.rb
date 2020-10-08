@@ -4,6 +4,23 @@ describe Encryption::PasswordVerifier do
   let(:password) { 'saltypickles' }
   let(:user_uuid) { 'asdf-1234' }
 
+  describe Encryption::PasswordVerifier::PasswordDigest do
+    describe '.parse_from_string' do
+      it 'does not blow up with unknown/new keys' do
+        str = {
+          encrypted_password: 'encrypted_password',
+          encryption_key: 'encryption_key',
+          password_salt: 'password_salt',
+          password_cost: 'password_cost',
+          some_new_field: 'some_new_field',
+        }.to_json
+
+        digest = Encryption::PasswordVerifier::PasswordDigest.parse_from_string(str)
+        expect(digest.encrypted_password).to eq('encrypted_password')
+      end
+    end
+  end
+
   describe '#digest' do
     it 'creates a digest from the password' do
       salt = '1' * 64 # 32 hex encoded bytes is 64 characters

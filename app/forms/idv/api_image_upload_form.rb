@@ -3,12 +3,6 @@ module Idv
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
 
-    IMAGE_KEYS = %i[
-      front
-      back
-      selfie
-    ].freeze
-
     validates_presence_of :front
     validates_presence_of :back
     validates_presence_of :document_capture_session
@@ -20,6 +14,7 @@ module Idv
     def initialize(params, liveness_checking_enabled:)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
+      @readable = {}
     end
 
     def submit
@@ -49,15 +44,15 @@ module Idv
     end
 
     def front
-      params[:front]
+      as_readable(:front)
     end
 
     def back
-      params[:back]
+      as_readable(:back)
     end
 
     def selfie
-      params[:selfie]
+      as_readable(:selfie)
     end
 
     def document_capture_session_uuid
@@ -94,16 +89,24 @@ module Idv
     end
 
     def validate_images
-      IMAGE_KEYS.each do |image_key|
-        validate_image(image_key) if params[image_key]
-      end
+      errors.add(:front, t('doc_auth.errors.not_a_file')) if front.is_a? URI::InvalidURIError
+      errors.add(:back, t('doc_auth.errors.not_a_file')) if back.is_a? URI::InvalidURIError
+      errors.add(:selfie, t('doc_auth.errors.not_a_file')) if selfie.is_a? URI::InvalidURIError
     end
 
-    def validate_image(image_key)
-      file = params[image_key]
+    def as_readable(image_key)
+      return @readable[image_key] if @readable.key?(image_key)
 
-      return if file.respond_to?(:read)
-      errors.add(image_key, t('doc_auth.errors.not_a_file'))
+      value = params[image_key]
+      @readable[image_key] = begin
+        if value.respond_to?(:read)
+          value
+        elsif value.is_a? String
+          DataUrlImage.new(value)
+        end
+      rescue URI::InvalidURIError => error
+        error
+      end
     end
   end
 end

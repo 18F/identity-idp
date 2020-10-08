@@ -175,8 +175,9 @@ describe('document-capture/components/acuant-capture', () => {
       await new Promise((resolve) => onChange.callsFake(resolve));
 
       expect(onChange.getCall(0).args).to.have.lengthOf(1);
-      expect(onChange.getCall(0).args[0]).to.be.instanceOf(window.Blob);
-      expect(onChange.getCall(0).args[0].type).to.be.equal('image/svg+xml');
+      expect(onChange.getCall(0).args[0]).to.equal(
+        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
+      );
       expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
     });
 

@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
-import { RequiredValueMissingError } from './form-steps';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
@@ -8,14 +7,9 @@ import SelfieCapture from './selfie-capture';
 import FormErrorMessage from './form-error-message';
 
 /**
- * @template V
- * @typedef {import('./form-steps').FormStepValidateResult<V>} FormStepValidateResult
- */
-
-/**
  * @typedef SelfieStepValue
  *
- * @prop {Blob?=} selfie Selfie value.
+ * @prop {Blob|string|null|undefined} selfie Selfie value.
  */
 
 /**
@@ -42,7 +36,7 @@ function SelfieStep({
       </ul>
       {isMobile || !hasMediaAccess() ? (
         <AcuantCapture
-          ref={registerField('selfie')}
+          ref={registerField('selfie', { isRequired: true })}
           capture="user"
           label={t('doc_auth.headings.document_capture_selfie')}
           bannerText={t('doc_auth.headings.photo')}
@@ -54,7 +48,7 @@ function SelfieStep({
         />
       ) : (
         <SelfieCapture
-          ref={registerField('selfie')}
+          ref={registerField('selfie', { isRequired: true })}
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
@@ -62,13 +56,6 @@ function SelfieStep({
       )}
     </>
   );
-}
-
-/**
- * @type {import('./form-steps').FormStepValidate<SelfieStepValue>}
- */
-export function validate(values) {
-  return values.selfie ? [] : [{ field: 'selfie', error: new RequiredValueMissingError() }];
 }
 
 export default SelfieStep;

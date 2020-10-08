@@ -55,8 +55,8 @@ function scrollTo(left, top) {
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/History/pushState
  *
- * @param {string}  name         Parameter name to sync.
- * @param {string=} initialValue Value to use as initial in absence of another value.
+ * @param {string} name Parameter name to sync.
+ * @param {string?=} initialValue Value to use as initial in absence of another value.
  *
  * @return {[any,(nextParamValue:any)=>void]} Tuple of current state, state setter.
  */
@@ -87,8 +87,8 @@ function useHistoryParam(name, initialValue) {
       setValue(getCurrentQueryParam());
     }
 
-    if (value === undefined && initialValue) {
-      setValue(initialValue);
+    if (initialValue !== undefined) {
+      setValue(initialValue ?? undefined);
       window.history.replaceState(null, '', getValueURL(initialValue));
     }
 

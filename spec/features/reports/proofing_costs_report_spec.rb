@@ -22,6 +22,7 @@ feature 'Proofing Costs report' do
       'acuant_front_image_count_average' => 1.0,
       'acuant_back_image_count_average' => 1.0,
       'acuant_result_count_average' => 1.0,
+      'acuant_selfie_count_average' => 0.0,
       'aamva_count_average' => 1.0,
       'lexis_nexis_resolution_count_average' => 1.0,
       'gpo_letter_count_average' => 0.0,

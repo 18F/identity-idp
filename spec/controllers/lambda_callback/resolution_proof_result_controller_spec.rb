@@ -1,0 +1,54 @@
+require 'rails_helper'
+
+describe LambdaCallback::ResolutionProofResultController do
+  describe '#create' do
+    let(:document_capture_session) { DocumentCaptureSession.new(user: create(:user)) }
+
+    context 'with valid API token' do
+      before do
+        request.headers['X-API-AUTH-TOKEN'] = Figaro.env.resolution_proof_result_lambda_token
+      end
+
+      it 'accepts and stores successful resolution proofing results' do
+        applicant = { first_name: Faker::Name.first_name, ssn: Faker::IDNumber.valid,
+                      zipcode: Faker::Address.zip_code }
+        document_capture_session.store_proofing_pii_from_doc(applicant)
+        proofer_result = ResolutionMock.new.proof(applicant)
+
+        post :create, params: { result_id: document_capture_session.result_id,
+                                resolution_result: proofer_result.to_h }
+
+        proofing_result = document_capture_session.load_proofing_result
+        expect(proofing_result.result).to eq({ exception: '', success: 'true' })
+      end
+
+      it 'accepts and stores unsuccessful resolution proofing results' do
+        applicant = { first_name: 'Bad Name', ssn: Faker::IDNumber.valid,
+                      zipcode: Faker::Address.zip_code }
+        document_capture_session.store_proofing_pii_from_doc(applicant)
+        proofer_result = ResolutionMock.new.proof(applicant)
+
+        post :create, params: { result_id: document_capture_session.result_id,
+                                resolution_result: proofer_result.to_h }
+
+        proofing_result = document_capture_session.load_proofing_result
+        expect(proofing_result.result[:success]).to eq 'false'
+        expect(proofing_result.result[:errors]).to eq(
+          { first_name: ['Unverified first name.'] },
+        )
+      end
+    end
+
+    context 'with invalid API token' do
+      before do
+        request.headers['X-API-AUTH-TOKEN'] = 'zyx'
+      end
+
+      it 'returns unauthorized error' do
+        post :create, params: { result_id: 'abc123', resolution_result: {} }
+
+        expect(response.status).to eq 401
+      end
+    end
+  end
+end

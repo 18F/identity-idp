@@ -2,11 +2,11 @@ class AcuantSdkController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   ACUANT_SDK_STATIC_FILES = %w[
-    AcuantImageProcessingService.js.mem
     AcuantImageProcessingWorker.min.js
     AcuantImageProcessingWorker.wasm
-    AcuantJavascriptWebSdk.min.js
   ].freeze
+
+  ACUANT_VERSION = '11.4.1'.freeze
 
   def show
     # Only render files on an allowlist to prevent path traversal issues
@@ -17,7 +17,7 @@ class AcuantSdkController < ApplicationController
       script_src: ['\'unsafe-eval\''],
     )
     send_file(
-      Rails.root.join('public', requested_asset_name),
+      Rails.root.join('public', 'acuant', ACUANT_VERSION, requested_asset_name),
       type: response_content_type,
       disposition: :inline,
     )
@@ -40,8 +40,6 @@ class AcuantSdkController < ApplicationController
       'application/javascript'
     when '.wasm'
       'application/wasm'
-    when '.mem'
-      'application/octet-stream'
     end
   end
 end

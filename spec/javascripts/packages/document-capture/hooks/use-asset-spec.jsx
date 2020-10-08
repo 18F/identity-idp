@@ -1,36 +1,30 @@
-import React, { createElement } from 'react';
+import React from 'react';
+import { renderHook } from '@testing-library/react-hooks';
 import useAsset from '@18f/identity-document-capture/hooks/use-asset';
 import AssetContext from '@18f/identity-document-capture/context/asset';
-import render from '../../../support/render';
 
 describe('document-capture/hooks/use-asset', () => {
   describe('getAssetPath', () => {
     it('returns undefined if the asset is not known', () => {
-      const { getByAltText } = render(
-        createElement(() => {
-          const { getAssetPath } = useAsset();
-          return <img src={getAssetPath('unknown.png')} alt="unknown" />;
-        }),
-      );
+      const { result } = renderHook(() => useAsset());
 
-      const img = getByAltText('unknown');
+      const { getAssetPath } = result.current;
 
-      expect(img.hasAttribute('src')).to.be.false();
+      expect(getAssetPath('unknown.png')).to.be.undefined();
     });
 
     it('returns mapped src if known by context', () => {
-      const { getByAltText } = render(
-        <AssetContext.Provider value={{ 'icon.png': 'icon-12345.png' }}>
-          {createElement(() => {
-            const { getAssetPath } = useAsset();
-            return <img src={getAssetPath('icon.png')} alt="icon" />;
-          })}
-        </AssetContext.Provider>,
-      );
+      const { result } = renderHook(() => useAsset(), {
+        wrapper: ({ children }) => (
+          <AssetContext.Provider value={{ 'icon.png': 'icon-12345.png' }}>
+            {children}
+          </AssetContext.Provider>
+        ),
+      });
 
-      const img = getByAltText('icon');
+      const { getAssetPath } = result.current;
 
-      expect(img.getAttribute('src')).to.equal('icon-12345.png');
+      expect(getAssetPath('icon.png')).to.equal('icon-12345.png');
     });
   });
 });

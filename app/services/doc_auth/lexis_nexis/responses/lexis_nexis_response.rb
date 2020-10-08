@@ -57,10 +57,6 @@ module DocAuth
 
         private
 
-        def detail_groups
-          raise NotImplementedError
-        end
-
         def parsed_response_body
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
         end
@@ -71,6 +67,19 @@ module DocAuth
 
         def transaction_status
           parsed_response_body.dig(:Status, :TransactionStatus)
+        end
+
+        def transaction_reason_code
+          @transaction_reason_code ||=
+            parsed_response_body.dig(:Status, :TransactionReasonCode, :Code)
+        end
+
+        def conversation_id
+          @conversation_id ||= parsed_response_body.dig(:Status, :ConversationId)
+        end
+
+        def reference
+          @reference ||= parsed_response_body.dig(:Status, :Reference)
         end
 
         def products

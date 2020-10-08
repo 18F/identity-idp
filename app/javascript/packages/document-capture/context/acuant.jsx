@@ -58,7 +58,7 @@ const AcuantContext = createContext({
  * @param {AcuantContextProviderProps} props Props object.
  */
 function AcuantContextProvider({
-  sdkSrc = '11.4.1/AcuantJavascriptWebSdk.min.js',
+  sdkSrc = '/acuant/11.4.1/AcuantJavascriptWebSdk.min.js',
   credentials = null,
   endpoint = null,
   children,

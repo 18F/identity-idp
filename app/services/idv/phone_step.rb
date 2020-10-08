@@ -32,7 +32,7 @@ module Idv
     end
 
     def proof_address
-      self.idv_result = Idv::Agent.new(applicant).proof(:address)
+      self.idv_result = Idv::Agent.new(applicant).proof_address
       add_proofing_cost
     end
 

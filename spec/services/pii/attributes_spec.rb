@@ -26,6 +26,15 @@ describe Pii::Attributes do
 
       expect(pii.last_name).to eq nil
     end
+
+    it 'ignores unknown keys' do
+      pii = described_class.new_from_hash(
+        first_name: 'Test',
+        some_unknown_field: 'unknown',
+      )
+
+      expect(pii.first_name).to eq('Test')
+    end
   end
 
   describe '#new_from_json' do

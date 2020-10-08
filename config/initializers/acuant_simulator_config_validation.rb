@@ -7,7 +7,7 @@
 # from starting if the acuant simulator is enabled but the mock doc auth vendor
 # vendor is not turned on.
 #
-FORCE_ACUANT_CONFIG_UPGRADE = false
+FORCE_ACUANT_CONFIG_UPGRADE = true
 
 if Figaro.env.acuant_simulator == 'true' &&
    Figaro.env.doc_auth_vendor != 'mock'

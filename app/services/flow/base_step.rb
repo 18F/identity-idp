@@ -30,6 +30,11 @@ module Flow
       obj.is_a?(FormResponse) || obj.is_a?(DocAuth::Response)
     end
 
+    # Return a hash of local variables required for step view template
+    def extra_view_variables
+      {}
+    end
+
     private
 
     def create_response(form_submit_response, call_response)
@@ -67,6 +72,7 @@ module Flow
       @flow.flow_session = {}
     end
 
-    delegate :flash, :session, :flow_session, :current_user, :params, :steps, :request, to: :@flow
+    delegate :flash, :session, :flow_session, :current_user, :params, :steps, :request,
+             :poll_with_meta_refresh, to: :@flow
   end
 end

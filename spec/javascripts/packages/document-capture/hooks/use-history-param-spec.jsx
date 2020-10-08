@@ -68,11 +68,18 @@ describe('useHistoryParam', () => {
     expect(getByDisplayValue('5')).to.be.ok();
   });
 
-  it('accepts an initial value to use in absence of an initial URL', () => {
+  it('accepts an initial value', () => {
     const { getByDisplayValue } = render(<TestComponent initialValue="5" />);
 
     expect(window.location.hash).to.equal('#the%20count=5');
     expect(getByDisplayValue('5')).to.be.ok();
+  });
+
+  it('accepts empty initial value', () => {
+    const { getByDisplayValue } = render(<TestComponent initialValue={null} />);
+
+    expect(window.location.hash).to.equal('');
+    expect(getByDisplayValue('0')).to.be.ok();
   });
 
   it('syncs by setter', () => {

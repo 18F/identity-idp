@@ -1,26 +1,22 @@
 module Idv
   class Agent
-    class << self
-      def proofer_attribute?(key)
-        Idv::Proofer.attribute?(key)
-      end
-    end
-
     def initialize(applicant)
       @applicant = applicant.symbolize_keys
     end
 
-    def proof(*stages)
-      results = init_results
+    def proof_resolution(should_proof_state_id:)
+      vendor = Idv::Proofer.resolution_vendor.new
+      results = submit_applicant(vendor: vendor, results: init_results)
 
-      stages.each do |stage|
-        proofer_result = submit_applicant(applicant: @applicant, stage: stage, results: results)
-        track_exception_in_result(proofer_result)
-        results = merge_results(results, proofer_result)
-        results[:timed_out] = proofer_result.timed_out?
-        break unless proofer_result.success?
-      end
-      results
+      return results unless results[:success] && should_proof_state_id
+
+      vendor = Idv::Proofer.state_id_vendor.new
+      submit_applicant(vendor: vendor, results: results)
+    end
+
+    def proof_address
+      vendor = Idv::Proofer.address_vendor.new
+      submit_applicant(vendor: vendor, results: init_results)
     end
 
     private
@@ -38,10 +34,15 @@ module Idv
       }
     end
 
-    def submit_applicant(applicant:, stage:, results:)
-      vendor = Idv::Proofer.get_vendor(stage).new
-      log_vendor(vendor, results, stage)
-      vendor.proof(applicant)
+    def submit_applicant(vendor:, results:)
+      log_vendor(vendor, results, vendor.class.stage)
+      proofer_result = vendor.proof(@applicant)
+
+      track_exception_in_result(proofer_result)
+      results = merge_results(results, proofer_result)
+      results[:timed_out] = proofer_result.timed_out?
+
+      results
     end
 
     def log_vendor(vendor, results, stage)

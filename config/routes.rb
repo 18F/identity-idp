@@ -42,6 +42,11 @@ Rails.application.routes.draw do
     post '/api/usps_upload' => 'usps_upload#create'
   end
 
+  scope module: :lambda_callback do
+    post '/api/proofing_results/address/:result_id' => 'address_proof_result#create', as: 'address_proof_result'
+    post '/api/proofing_results/resolution/:result_id' => 'resolution_proof_result#create', as: 'resolution_proof_result'
+  end
+
   # i18n routes. Alphabetically sorted.
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
     # Devise handles login itself. It's first in the chain to avoid a redirect loop during
@@ -305,7 +310,6 @@ Rails.application.routes.draw do
       get '/session/errors/recovery_exception' => 'session_errors#recovery_exception'
       get '/session/errors/recovery_throttled' => 'session_errors#recovery_throttled'
       delete '/session' => 'sessions#destroy'
-      get '/jurisdiction/errors/no_id' => 'jurisdiction_errors#no_id'
       get '/cancel/' => 'cancellations#new', as: :cancel
       delete '/cancel' => 'cancellations#destroy'
       get '/address' => 'address#new'

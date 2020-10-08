@@ -5,7 +5,7 @@ feature 'use cac step' do
   include DocAuthHelper
 
   let(:use_cac_content) do
-    strip_tags(t('doc_auth.info.use_cac_html', link: t('doc_auth.info.use_cac_link')))
+    strip_tags(t('doc_auth.info.use_cac', link: t('doc_auth.info.use_cac_link')))
   end
 
   it 'shows cac proofing option if cac proofing is enabled' do
