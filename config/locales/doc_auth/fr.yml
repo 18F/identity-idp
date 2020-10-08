@@ -13,9 +13,8 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
+      invalid_token: Jeton invalide
       lexis_nexis:
-        ref_control_number_check: Nous n'avons pas pu lire le code-barres du numéro
-          de contrôle. Essayez de prendre de nouvelles photos.
         barcode_content_check: Nous n'avons pas pu lire le code-barres au dos de votre
           pièce d'identité. Cela peut être dû à un problème avec le code-barres, ou
           le code-barres est un nouveau type que nous ne reconnaissons pas encore.
@@ -49,6 +48,8 @@ fr:
           d'identité. Essayez de prendre de nouvelles photos.
         network_error: Désolé, nous rencontrons des difficultés techniques. Veuillez
           réessayer plus tard.
+        ref_control_number_check: Nous n'avons pas pu lire le code-barres du numéro
+          de contrôle. Essayez de prendre de nouvelles photos.
         selfie_failure: Nous n'avons pas pu faire correspondre la photo de vous à
           votre pièce d'identité. Essayez de prendre une nouvelle photo de vous-même
           ou du recto de votre pièce d'identité.

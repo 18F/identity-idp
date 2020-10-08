@@ -320,38 +320,34 @@ describe Idv::VerifyDocumentsController do
         allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(true)
       end
 
-      context 'when fields are missing' do
-        before { params.delete(:front_image_url) }
+      it 'returns error status when not provided image fields' do
+        action
 
-        it 'returns error status when not provided image fields' do
-          action
+        json = JSON.parse(response.body, symbolize_names: true)
+        expect(response.status).to eq(400)
+        expect(json[:success]).to eq(false)
+        expect(json[:errors]).to eq [{ field: 'front_image_url',
+                                       message: I18n.t('doc_auth.errors.not_a_file') }]
+      end
 
-          json = JSON.parse(response.body, symbolize_names: true)
-          expect(response.status).to eq(400)
-          expect(json[:success]).to eq(false)
-          expect(json[:errors]).to eq [{ field: 'front_image_url',
-                                         message: I18n.t('doc_auth.errors.not_a_file') }]
-        end
+      it 'tracks analytics' do
+        stub_analytics
 
-        it 'tracks analytics' do
-          stub_analytics
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_PROCESSING_FORM,
+          success: false,
+          errors: {
+            front_image_url: [I18n.t('doc_auth.errors.not_a_file')],
+          },
+          remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
+        )
 
-          expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_PROCESSING_FORM,
-            success: false,
-            errors: {
-              front_image_url: [I18n.t('doc_auth.errors.not_a_file')],
-            },
-            remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
-          )
+        expect(@analytics).not_to receive(:track_event).with(
+          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+          any_args,
+        )
 
-          expect(@analytics).not_to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-            any_args,
-          )
-
-          action
-        end
+        action
       end
     end
   end

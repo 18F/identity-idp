@@ -11,9 +11,9 @@ module Idv
     def show
       analytics.track_event(Analytics::IDV_DOC_AUTH_DOCUMENT_STATUS)
 
-      uuid = params[:document_capture_session_uuid]
-      status = Db::DocumentCaptureSession::ReadVerifyDocStatus.call(uuid)
-      render json: { status: status }
+      status = Db::DocumentCaptureSession::ReadVerifyDocStatus.call(document_capture_session_uuid)
+      render json: { status: status,
+                     errors: status.nil? ? [I18n.t('doc_auth.errors.invalid_token')] : [] }
     end
 
     def create
@@ -49,6 +49,10 @@ module Idv
     end
 
     private
+
+    def document_capture_session_uuid
+      params[:document_capture_session_uuid]
+    end
 
     def render_404_if_disabled
       render_not_found unless FeatureManagement.document_capture_step_enabled?
