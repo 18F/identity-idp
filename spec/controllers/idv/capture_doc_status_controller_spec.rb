@@ -4,15 +4,17 @@ describe Idv::CaptureDocStatusController do
   let(:user) { build(:user) }
   let(:document_capture_step_enabled) { false }
 
-  before do |example|
-    stub_sign_in(user) unless example.metadata[:skip_sign_in]
+  before do
+    stub_sign_in(user) if user
 
     allow(FeatureManagement).to receive(:document_capture_step_enabled?).
       and_return(document_capture_step_enabled)
   end
 
   describe '#show' do
-    context 'when unauthenticated', :skip_sign_in do
+    context 'when unauthenticated' do
+      let(:user) { nil }
+
       it 'redirects to the root url' do
         get :show
 
