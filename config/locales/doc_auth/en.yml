@@ -15,6 +15,8 @@ en:
     errors:
       invalid_token: Invalid token
       lexis_nexis:
+        ref_control_number_check: We couldn't read the control number barcode. Try
+          taking new pictures.
         barcode_content_check: We couldn't read the barcode on the back of your ID.
           It could be because of a problem with the barcode, or the barcode is a new
           type that we don't recognize yet. Use another state-issued ID if you have
@@ -44,8 +46,6 @@ en:
           new pictures.
         network_error: Sorry we are experiencing technical difficulties. Please try
           again later.
-        ref_control_number_check: We couldn't read the control number barcode. Try
-          taking new pictures.
         selfie_failure: We couldn't match the photo of you to your ID. Try taking
           a new picture of yourself or the front of your ID.
         sex_check: We couldn't read the sex on your ID. Try taking new pictures.
