@@ -2,56 +2,23 @@ module Idv
   module Steps
     class RecoverVerifyStep < VerifyBaseStep
       def call
-        perform_resolution_and_check_ssn
+        enqueue_job
       end
 
       private
 
-      def idv_failure(result)
-        attempter_increment if result.extra.dig(:proofing_results, :exception).blank?
-        if attempter_throttled?
-          redirect_to idv_session_errors_recovery_failure_url
-        elsif result.extra.dig(:proofing_results, :exception).present?
-          redirect_to idv_session_errors_recovery_exception_url
-        else
-          redirect_to idv_session_errors_recovery_warning_url
-        end
-        result
-      end
+      def enqueue_job
+        pii_from_doc = flow_session[:pii_from_doc]
 
-      def summarize_result_and_throttle_failures(summary_result)
-        if summary_result.success? && doc_auth_pii_matches_decrypted_pii
-          add_proofing_components
-          summary_result
-        else
-          idv_failure(summary_result)
-        end
-      end
+        document_capture_session = DocumentCaptureSession.create(user_id: user_id,
+                                                                 requested_at: Time.zone.now)
+        document_capture_session.store_proofing_pii_from_doc(pii_from_doc)
 
-      def doc_auth_pii_matches_decrypted_pii
-        pii_from_doc = session['idv/recovery']['pii_from_doc']
-        decrypted_pii = JSON.parse(saved_pii)
-        return unless pii_matches_data_on_file?(pii_from_doc, decrypted_pii)
+        flow_session[:idv_recover_verify_step_document_capture_session_uuid] =
+          document_capture_session.uuid
 
-        recovery_success
-      end
-
-      def recovery_success
-        flash[:success] = I18n.t('recover.reverify.success')
-        redirect_to account_url
-        session['need_two_factor_authentication'] = false
-        true
-      end
-
-      def saved_pii
-        session['decrypted_pii']
-      end
-
-      def pii_matches_data_on_file?(pii_from_doc, decrypted_pii)
-        %w[first_name last_name dob ssn].each do |key|
-          return false unless pii_from_doc[key] == decrypted_pii[key]
-        end
-        true
+        VendorProofJob.perform_resolution_proof(document_capture_session.uuid,
+                                                should_use_aamva?(pii_from_doc))
       end
     end
   end

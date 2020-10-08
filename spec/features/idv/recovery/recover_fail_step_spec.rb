@@ -12,7 +12,7 @@ feature 'recovery doc fail step' do
 
   before do
     sign_in_before_2fa(user)
-    allow_any_instance_of(Idv::Steps::RecoverVerifyStep).to receive(:saved_pii).
+    allow_any_instance_of(Idv::Steps::RecoverVerifyWaitStepShow).to receive(:saved_pii).
       and_return(bad_pii.to_json)
     complete_recovery_steps_before_doc_success_step
   end
