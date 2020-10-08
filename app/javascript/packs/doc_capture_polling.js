@@ -20,7 +20,7 @@ const docCaptureComplete = () => {
 
 const sendDocAuthPollRequest = () => {
   const request = new XMLHttpRequest();
-  request.open('GET', '/verify/doc_auth/link_sent/poll/', true);
+  request.open('GET', '/verify/capture_doc_status/', true);
   request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
   request.onload = function () {
     // This endpoint renders a 202 for a pending request
