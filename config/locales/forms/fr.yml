@@ -46,7 +46,7 @@ fr:
       delete: Effacer
       disable: Effacer
       edit: Modifier
-      enable: "Activer"
+      enable: Activer
       manage: Administrer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
       send_security_code: Envoyer le code
