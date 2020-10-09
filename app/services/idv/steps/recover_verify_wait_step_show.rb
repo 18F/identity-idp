@@ -96,11 +96,20 @@ module Idv
         session['decrypted_pii']
       end
 
+      # This method securely compares all fields to mitigate
+      # timing attacks from normal comparisons and early exits.
       def pii_matches_data_on_file?(pii_from_doc, decrypted_pii)
+        all_match = true
         %w[first_name last_name dob ssn].each do |key|
-          return false unless pii_from_doc[key] == decrypted_pii[key]
+          match = ActiveSupport::SecurityUtils.secure_compare(
+            pii_from_doc[key],
+            decrypted_pii[key],
+          )
+
+          all_match &&= match
         end
-        true
+
+        all_match
       end
     end
   end
