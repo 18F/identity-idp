@@ -7,7 +7,12 @@ module Idv
         present_cac: Idv::Steps::Cac::PresentCacStep,
         enter_info: Idv::Steps::Cac::EnterInfoStep,
         verify: Idv::Steps::Cac::VerifyStep,
+        verify_wait: Idv::Steps::Cac::VerifyWaitStep,
         success: Idv::Steps::Cac::SuccessStep,
+      }.freeze
+
+      OPTIONAL_SHOW_STEPS = {
+        verify_wait: Idv::Steps::Cac::VerifyWaitStepShow,
       }.freeze
 
       ACTIONS = {
