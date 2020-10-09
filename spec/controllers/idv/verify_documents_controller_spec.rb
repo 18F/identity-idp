@@ -279,7 +279,7 @@ describe Idv::VerifyDocumentsController do
       end
 
       it 'returns error if the token is invalid' do
-        get :show, params: { document_capture_session_uuid: 'foo' }
+        get :show, params: { document_capture_session_uuid: document_capture_session.uuid }
 
         json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(400)
@@ -287,6 +287,18 @@ describe Idv::VerifyDocumentsController do
         expect(json[:errors]).to eq(
           { document_capture_session_uuid: [I18n.t('doc_auth.errors.invalid_token')] },
         )
+      end
+
+      it 'returns sucess if the token is valid' do
+        document_capture_session.verify_doc_submitted_at = Time.zone.now
+        document_capture_session.verify_doc_status = 'in_progress'
+        document_capture_session.save
+
+        get :show, params: { document_capture_session_uuid: document_capture_session.uuid }
+
+        json = JSON.parse(response.body, symbolize_names: true)
+        expect(response.status).to eq(200)
+        expect(json[:success]).to eq(true)
       end
     end
   end
