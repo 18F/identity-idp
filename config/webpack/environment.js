@@ -1,5 +1,7 @@
 const { environment } = require('@rails/webpacker');
 
+environment.loaders.delete('file');
+environment.loaders.delete('nodeModules');
 environment.loaders.delete('moduleSass');
 environment.loaders.delete('moduleCss');
 environment.loaders.delete('css');
