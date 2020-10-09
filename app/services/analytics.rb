@@ -112,6 +112,7 @@ class Analytics
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR = 'IdV: doc auth image upload vendor submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_DOCUMENT_PROCESSING_FORM = 'IdV: doc auth document processing submitted'.freeze
+  IDV_DOC_AUTH_SUBMITTED_DOCUMENT_TO_VENDOR = 'IdV: doc auth document processing submitted to vendor'.freeze
   IDV_DOC_AUTH_DOCUMENT_STATUS = 'IdV: doc auth document status requested'.freeze
   IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze

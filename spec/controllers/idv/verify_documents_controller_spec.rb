@@ -63,7 +63,7 @@ describe Idv::VerifyDocumentsController do
           )
 
           expect(@analytics).not_to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_TO_VENDOR,
             any_args,
           )
 
@@ -112,7 +112,7 @@ describe Idv::VerifyDocumentsController do
           )
 
           expect(@analytics).not_to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_TO_VENDOR,
             any_args,
           )
 
@@ -167,7 +167,7 @@ describe Idv::VerifyDocumentsController do
           )
 
           expect(@analytics).not_to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_TO_VENDOR,
             any_args,
           )
 
@@ -195,7 +195,7 @@ describe Idv::VerifyDocumentsController do
           )
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_TO_VENDOR,
             success: true,
             errors: {},
           )
@@ -234,7 +234,7 @@ describe Idv::VerifyDocumentsController do
           )
 
           expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_TO_VENDOR,
             success: false,
             errors: {
               front_image_url: ['Could not read file'],

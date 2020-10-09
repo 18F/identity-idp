@@ -32,7 +32,7 @@ module Idv
         )
 
         analytics.track_event(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+          Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_TO_VENDOR,
           client_response.to_h,
         )
 
