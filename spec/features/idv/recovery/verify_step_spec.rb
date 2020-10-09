@@ -24,7 +24,7 @@ feature 'recovery verify step' do
   end
 
   it 'proceeds to the next page upon confirmation' do
-    allow_any_instance_of(Idv::Steps::RecoverVerifyStep).to receive(:saved_pii).
+    allow_any_instance_of(Idv::Steps::RecoverVerifyWaitStepShow).to receive(:saved_pii).
       and_return(saved_pii.to_json)
     complete_recovery_steps_before_verify_step
     click_idv_continue
