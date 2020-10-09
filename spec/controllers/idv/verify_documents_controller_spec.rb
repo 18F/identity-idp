@@ -189,7 +189,7 @@ describe Idv::VerifyDocumentsController do
 
           expect(@analytics).to receive(:track_event).with(
             Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_PROCESSING_FORM,
-            success: false,
+            success: true,
             errors: {},
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
