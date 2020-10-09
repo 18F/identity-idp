@@ -175,18 +175,20 @@ module Idv
         FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial2_strict])
       end
 
-      def create_document_capture_session
+      def create_document_capture_session(key)
         document_capture_session = DocumentCaptureSession.create(
           user_id: user_id,
           issuer: sp_session[:issuer],
           ial2_strict: sp_session[:ial2_strict],
         )
-        flow_session[:document_capture_session_uuid] = document_capture_session.uuid
+        flow_session[key] = document_capture_session.uuid
+
+        document_capture_session
       end
 
       def document_capture_session
         @document_capture_session ||= DocumentCaptureSession.find_by(
-          uuid: flow_session[:document_capture_session_uuid],
+          uuid: flow_session[document_capture_session_uuid_key],
         )
       end
 
@@ -204,6 +206,14 @@ module Idv
         return unless get_results_response.is_a?(DocAuth::Acuant::Responses::GetResultsResponse)
         Funnel::DocAuth::LogDocumentError.call(user_id,
                                                get_results_response&.result_code&.name.to_s)
+      end
+
+      def document_capture_session_uuid_key
+        :document_capture_session_uuid
+      end
+
+      def cac_verify_document_capture_session_uuid_key
+        :cac_verify_step_document_capture_session_uuid
       end
 
       delegate :idv_session, :session, to: :@flow
