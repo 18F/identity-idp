@@ -10,7 +10,10 @@ module Idv
       def enqueue_job
         pii_from_doc = flow_session[:pii_from_doc]
 
-        document_capture_session = create_document_capture_session
+        document_capture_session = create_document_capture_session(
+          recover_verify_document_capture_session_uuid_key
+        )
+
         document_capture_session.requested_at = Time.zone.now
         document_capture_session.store_proofing_pii_from_doc(pii_from_doc)
 
