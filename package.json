@@ -35,7 +35,6 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@18f/identity-es5-safe": "file:./app/javascript/packages/es5-safe",
     "@babel/core": "^7.11.1",
     "@babel/eslint-parser": "^7.11.3",
     "@babel/eslint-plugin": "^7.11.3",
