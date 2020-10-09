@@ -244,47 +244,6 @@ describe Idv::VerifyDocumentsController do
           action
         end
       end
-
-      xcontext 'when a value is an error-formatted yaml file' do
-        before { params.merge!(back: DocAuthImageFixtures.error_yaml_multipart) }
-
-        it 'returns error from yaml file' do
-          action
-
-          json = JSON.parse(response.body, symbolize_names: true)
-          expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
-          expect(json[:errors]).to eq [
-            {
-              field: 'results',
-              message: I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read'),
-            },
-          ]
-        end
-
-        it 'tracks analytics' do
-          stub_analytics
-
-          expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_PROCESSING_FORM,
-            success: true,
-            errors: {},
-            remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
-          )
-
-          expect(@analytics).to receive(:track_event).with(
-            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-            success: false,
-            errors: {
-              results: [I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read')],
-            },
-            billed: true,
-            result: 'Caution',
-            exception: nil,
-          )
-
-          action
-        end
-      end
     end
   end
 
@@ -319,34 +278,15 @@ describe Idv::VerifyDocumentsController do
         allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(true)
       end
 
-      it 'returns error status when not provided image fields' do
-        action
+      it 'returns error if the token is invalid' do
+        get :show, params: { document_capture_session_uuid: 'foo' }
 
         json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
-        expect(json[:errors]).to eq [{ field: 'front_image_url',
-                                       message: I18n.t('doc_auth.errors.not_a_file') }]
-      end
-
-      it 'tracks analytics' do
-        stub_analytics
-
-        expect(@analytics).to receive(:track_event).with(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_DOCUMENT_PROCESSING_FORM,
-          success: false,
-          errors: {
-            front_image_url: [I18n.t('doc_auth.errors.not_a_file')],
-          },
-          remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
+        expect(json[:errors]).to eq(
+          { document_capture_session_uuid: [I18n.t('doc_auth.errors.invalid_token')] },
         )
-
-        expect(@analytics).not_to receive(:track_event).with(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-          any_args,
-        )
-
-        action
       end
     end
   end

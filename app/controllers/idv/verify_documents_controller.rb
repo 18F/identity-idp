@@ -9,11 +9,11 @@ module Idv
     respond_to :json
 
     def show
-      analytics.track_event(Analytics::IDV_DOC_AUTH_DOCUMENT_STATUS)
-
       status = Db::DocumentCaptureSession::ReadVerifyDocStatus.call(document_capture_session_uuid)
-      render json: { status: status,
-                     errors: status.nil? ? [I18n.t('doc_auth.errors.invalid_token')] : [] }
+      presenter = VerifyDocumentsStatusResponsePresenter.new(status)
+
+      analytics.track_event(Analytics::IDV_DOC_AUTH_DOCUMENT_STATUS, presenter.to_h)
+      render json: presenter, status: presenter.status
     end
 
     def create
