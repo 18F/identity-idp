@@ -12,7 +12,7 @@
   "scripts": {
     "typecheck": "tsc",
     "lint": "eslint app spec babel.config.js --ext .js,.jsx",
-    "test": "mocha 'spec/javascripts/**/**spec.js?(x)'",
+    "test": "mocha 'spec/javascripts/**/**spec.js?(x)' 'app/javascript/packages/**/*.spec.js?(x)'",
     "es5-safe": "is-es5-safe public/packs/js/*.js",
     "build": "true"
   },
