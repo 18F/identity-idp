@@ -6,11 +6,6 @@ module Idv
           poll_with_meta_refresh(Figaro.env.poll_rate_for_verify_in_seconds.to_i)
 
           process_async_state(async_state)
-          # pii_from_doc = flow_session[:pii_from_doc]
-          # do resolution first to prevent ssn time/discovery. resolution time order > than db call
-          # result = perform_resolution(pii_from_doc)
-          # result = check_ssn(pii_from_doc) if result.success?
-          # summarize_result_and_throttle_failures(result)
         end
 
         private
