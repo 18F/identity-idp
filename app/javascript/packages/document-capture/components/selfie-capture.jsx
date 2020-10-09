@@ -94,31 +94,22 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
 
     const canvas = document.createElement('canvas');
     const { videoWidth, videoHeight } = videoRef.current;
-    const { clientWidth: width, clientHeight: height } = wrapperRef.current;
+    const { clientWidth, clientHeight } = wrapperRef.current;
 
-    // The capture is shown as a square, even if the video input aspect ratio is not square. To
-    // ensure that the captured image matches what is shown to the user, offset the source to X
-    // corresponding with centered squared height.
-    const downsizeRatio = height / videoHeight;
-    const sourceX = (videoWidth - width / downsizeRatio) / 2;
+    const height = Math.min(videoHeight, 720);
+    const aspectRatio = clientWidth / clientHeight;
+    const width = height * aspectRatio;
+
+    const sourceX = (videoWidth - width) / 2;
 
     canvas.height = height;
     canvas.width = width;
 
     canvas
       .getContext('2d')
-      ?.drawImage(
-        videoRef.current,
-        sourceX,
-        0,
-        width / downsizeRatio,
-        height / downsizeRatio,
-        0,
-        0,
-        width,
-        height,
-      );
-    canvas.toBlob(ifStillMounted(onChange));
+      ?.drawImage(videoRef.current, sourceX, 0, width, height, 0, 0, width, height);
+
+    onChange(canvas.toDataURL('image/jpeg', 0.8));
   }
 
   let shownErrorMessage;
