@@ -55,7 +55,11 @@ module Reports
     def unique_iaa_sps
       iaa_done = {}
       sps = []
-      ServiceProvider.where.not(iaa: nil, iaa_start_date: nil, iaa_end_date: nil).each do |sp|
+      ServiceProvider.where.not(
+        iaa: nil,
+        iaa_start_date: nil,
+        iaa_end_date: nil,
+      ).sort_by(&:issuer).each do |sp|
         iaa = sp.iaa
         (sps_for_iaa[iaa] ||= []) << sp
         next if iaa_done[iaa]
