@@ -37,7 +37,7 @@ export async function isAllSafe(patterns) {
 
   const queue = [];
   for await (const file of files) {
-    queue.push(() => isSafe(file));
+    queue.push(() => isSafe(/** @type {string} */ (file)));
   }
 
   return (await pAll(queue, { concurrency: cpus().length })).every(Boolean);
