@@ -11,7 +11,7 @@ module Idv
         pii_from_doc = flow_session[:pii_from_doc]
 
         document_capture_session = create_document_capture_session(
-          recover_verify_document_capture_session_uuid_key
+          recover_verify_document_capture_session_uuid_key,
         )
 
         document_capture_session.requested_at = Time.zone.now
