@@ -119,7 +119,7 @@ class ServiceProviderSessionDecorator
   end
 
   def failure_to_proof_url
-    sp.failure_to_proof_url || sp_return_url
+    sp.failure_to_proof_url.presence || sp_return_url
   end
 
   def sp_alert?(path)
