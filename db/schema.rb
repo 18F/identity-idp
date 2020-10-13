@@ -219,7 +219,7 @@ ActiveRecord::Schema.define(version: 2020_10_08_112531) do
     t.string "issuer"
     t.datetime "verify_doc_submitted_at"
     t.datetime "verify_doc_results_at"
-    t.string "verify_doc_results"
+    t.jsonb "verify_doc_results"
     t.string "verify_doc_status"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
