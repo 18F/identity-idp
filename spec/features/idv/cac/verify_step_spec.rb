@@ -25,7 +25,8 @@ feature 'cac proofing verify info step' do
 
     it 'renders in progress form' do
       # the user gets shown the wait page until a result has been stored
-      allow_any_instance_of(DocumentCaptureSession).to receive(:store_proofing_result).and_return(nil)
+      allow_any_instance_of(DocumentCaptureSession).to receive(:store_proofing_result).
+        and_return(nil)
       click_continue
 
       expect(page).to have_current_path(idv_cac_proofing_verify_wait_step)

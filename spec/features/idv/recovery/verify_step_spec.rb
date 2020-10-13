@@ -87,7 +87,8 @@ feature 'recovery verify step' do
     it 'renders in progress form' do
       complete_recovery_steps_before_verify_step
       # the user gets shown the wait page until a result has been stored
-      allow_any_instance_of(DocumentCaptureSession).to receive(:store_proofing_result).and_return(nil)
+      allow_any_instance_of(DocumentCaptureSession).to receive(:store_proofing_result).
+        and_return(nil)
       click_continue
 
       expect(page).to have_current_path(idv_recovery_verify_wait_step)
