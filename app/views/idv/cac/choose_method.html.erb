@@ -14,10 +14,7 @@
   <p><%= t('cac_proofing.info.choose_method') %></p>
   <p><%= t('cac_proofing.info.disclaimer') %></p>
   <div class="flex-container margin-y-4">
-    <%= image_tag asset_url('piv-cac-round.svg'),
-                  width: 120,
-                  height: 116,
-                  class: 'margin-right-3 margin-bottom-2' %>
+    <%= image_tag asset_url('piv-cac-round.svg'), width: 120, height: 116, class: 'margin-right-3 margin-bottom-2' %>
     <div>
       <div class='usa-tag caps text-ink bg-primary-lighter margin-top-1 margin-bottom-2 display-inline-block'>
         <%= t('doc_auth.info.tag') %>
@@ -27,7 +24,7 @@
                              url: url_for,
                              method: 'put',
                              html: {autocomplete: 'off', role: 'form', class: 'margin-top-2'} do |f| %>
-        <button class="btn btn-primary" type="submit" style="text-align:center;">
+        <button class="btn btn-primary text-center" type="submit">
           <%= t('cac_proofing.buttons.use_cac') %>
         </button>
       <% end %>
@@ -35,16 +32,10 @@
   </div>
   <hr/>
   <div class="flex-container margin-top-3">
-    <%= image_tag asset_url('state-id-round.svg'),
-                  width: 122,
-                  height: 116,
-                  class: 'margin-right-3 margin-bottom-2' %>
+    <%= image_tag asset_url('state-id-round.svg'), width: 122, height: 116, class: 'margin-right-3 margin-bottom-2' %>
     <div>
       <p><%= t('cac_proofing.info.state_id_description') %></p>
-      <%= link_to t('cac_proofing.buttons.use_doc_auth'),
-                  idv_doc_auth_path,
-                  class: 'btn btn-primary',
-                  style: 'text-align:center;' %>
+      <%= link_to t('cac_proofing.buttons.use_doc_auth'), idv_doc_auth_path, class: 'btn btn-primary text-center' %>
     </div>
   </div>
   <div class="mt3 pt1 border-top"><%= link_to t('links.cancel'), idv_cancel_path %></div>
