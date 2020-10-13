@@ -131,7 +131,7 @@ es:
         su identidad.
       no_other_id_help_bold_html: "<strong>Si no tiene otra identificación emitida
         por el estado</strong>, <a href=%{failure_to_proof_url}>obtenga ayuda en %{sp_name}.</a>"
-      tag: Recomendar
+      tag: Recomendado
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su identificación.
         Solo usamos las imágenes para verificar su identidad.
       upload: Recopilaremos información sobre usted leyendo su identificación emitida

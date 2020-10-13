@@ -1,24 +1,45 @@
 <%= render 'shared/maintenance_window_alert' do %>
+  <style>
+    .flex-container {
+        display: flex;
+    }
+    @media (max-width: 30em) {
+        .flex-container {
+            flex-direction: column;
+        }
+    }
+  </style>
   <h1 class="h3 mt0 mb1"><%= t('cac_proofing.headings.choose_method') %></h1>
-  <%= t('cac_proofing.info.choose_method') %>
+  <p><%= t('cac_proofing.info.choose_method') %></p>
+  <p><%= t('cac_proofing.info.disclaimer') %></p>
+  <div class="flex-container mt3 mb3">
+    <%= image_tag asset_url('PIV-CAC-round.svg'), width: 120, height: 116, class: 'mr3 mb2'%>
+    <div>
+      <div id="recommended-tag"
+           class='usa-tag caps text-ink bg-primary-lighter margin-top-1 mb2 display-inline-block'>
+        <%= t('doc_auth.info.tag') %>
+      </div>
+      <p><%= t('cac_proofing.info.piv_cac_description') %></p>
+      <%= validated_form_for :cac,
+                             url: url_for,
+                             method: 'put',
+                             html: { autocomplete: 'off', role: 'form', class: 'mt2' } do |f| %>
+        <button class="btn btn-primary" type="submit" style="text-align:center;">
+          <%= t('cac_proofing.buttons.use_cac') %>
+        </button>
+      <% end %>
+    </div>
+  </div>
   <hr/>
-  <br/>
-  <%= image_tag asset_url('dod-logo.jpg'), height: 150 %>
-  <br/>
-  <%= validated_form_for :cac,
-                         url: url_for,
-                         method: 'put',
-                         html: { autocomplete: 'off', role: 'form', class: 'mt2' } do |f| %>
-    <button class="btn btn-primary" type="submit"><%= t('cac_proofing.buttons.use_cac') %></button>
-  <% end %>
-  <br/>
-  <br/>
-  <hr/>
-  <%= image_tag asset_url('state-id-confirm@3x.png'), height: 150 %>
-  <br/>
-  <br/>
-  <%= link_to t('cac_proofing.buttons.use_doc_auth'), idv_doc_auth_path, class: 'btn btn-primary' %>
-  <br/>
-  <br/>
-  <div class="mt2 pt1 border-top"><%= link_to t('links.cancel'), idv_cancel_path %></div>
+  <div class="flex-container mt3">
+    <%= image_tag asset_url('state-id-round.svg'), width: 122, height: 116, class: 'mr3 mb2' %>
+    <div>
+      <p><%= t('cac_proofing.info.state_id_description') %></p>
+      <%= link_to t('cac_proofing.buttons.use_doc_auth'),
+                  idv_doc_auth_path,
+                  class: 'btn btn-primary',
+                  style: 'text-align:center;' %>
+    </div>
+  </div>
+  <div class="mt3 pt1 border-top"><%= link_to t('links.cancel'), idv_cancel_path %></div>
 <% end %>
