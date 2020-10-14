@@ -20,8 +20,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: d32d49bc27c62a510695c6fe498c6d9b8942f6be
-  ref: d32d49bc27c62a510695c6fe498c6d9b8942f6be
+  revision: ba23bc6d0a5673a1a1f27a0abcfa54fd72372104
+  ref: ba23bc6d0a5673a1a1f27a0abcfa54fd72372104
   specs:
     identity-idp-functions (0.3.2)
       retries (>= 0.0.5)
