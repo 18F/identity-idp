@@ -18,7 +18,10 @@ module Idv
           document_capture_session.requested_at = Time.zone.now
           document_capture_session.store_proofing_pii_from_doc(pii_from_doc)
 
-          VendorProofJob.perform_resolution_proof(document_capture_session.uuid, false)
+          Idv::Agent.new(pii_from_doc).proof_resolution(
+            document_capture_session,
+            should_proof_state_id: false,
+          )
         end
       end
     end
