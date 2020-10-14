@@ -3,6 +3,7 @@ module DocAuthRouter
   def self.client
     case doc_auth_vendor
     when 'acuant'
+      # i18n-tasks-use t('errors.doc_auth.general_error')
       IdentityDocAuth::Acuant::AcuantClient.new(
         assure_id_password: Figaro.env.acuant_assure_id_password,
         assure_id_subscription_id: Figaro.env.acuant_assure_id_subscription_id,
@@ -17,7 +18,29 @@ module DocAuthRouter
         i18n: I18n,
       )
     when 'lexisnexis'
-      IdentityDocAuth::LexisNexis::LexisNexisClient.new(
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.barcode_content_check')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.barcode_read_check')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.birth_date_checks')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.control_number_check')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.doc_crosscheck')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.doc_number_checks')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.expiration_checks')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.full_name_check')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.general_error_liveness')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.general_error_no_liveness')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.id_not_recognized')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.id_not_verified')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.issue_date_checks')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.issue_date_checks')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.multiple_back_id_failures')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.multiple_front_id_failures')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.network_error')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.ref_control_number_check')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.selfie_failure')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.sex_check')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.visible_color_check')
+      # i18n-tasks-use t('doc_auth.errors.lexis_nexis.visible_photo_check')
+      IdentityDocAuth:LexisNexis::LexisNexisClient.new(
         account_id: Figaro.env.lexisnexis_account_id,
         base_url: Figaro.env.lexisnexis_base_url,
         request_mode: Figaro.env.lexisnexis_request_mode,
