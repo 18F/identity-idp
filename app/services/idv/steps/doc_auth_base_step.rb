@@ -118,7 +118,7 @@ module Idv
 
       def throttled_response
         redirect_to throttled_url
-        DocAuth::Response.new(
+        IdentityDocAuth::Response.new(
           success: false,
           errors: { limit: I18n.t('errors.doc_auth.acuant_throttle') },
         )
@@ -201,7 +201,7 @@ module Idv
 
       def log_document_error(get_results_response)
         # DP: handle multiple clients
-        return unless get_results_response.is_a?(DocAuth::Acuant::Responses::GetResultsResponse)
+        return unless get_results_response.is_a?(IdentityDocAuth::Acuant::Responses::GetResultsResponse)
         Funnel::DocAuth::LogDocumentError.call(user_id,
                                                get_results_response&.result_code&.name.to_s)
       end

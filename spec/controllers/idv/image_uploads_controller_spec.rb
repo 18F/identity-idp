@@ -208,9 +208,9 @@ describe Idv::ImageUploadsController do
 
       context 'when image upload fails' do
         before do
-          DocAuth::Mock::DocAuthMockClient.mock_response!(
+          IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
             method: :post_images,
-            response: DocAuth::Response.new(
+            response: IdentityDocAuth::Response.new(
               success: false,
               errors: { front: ['Too blurry', 'Wrong document'] },
             ),

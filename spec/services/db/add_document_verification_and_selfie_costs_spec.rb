@@ -5,7 +5,7 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
   let(:issuer) { 'foo' }
   let(:liveness_checking_enabled) { false }
   let(:billed_response) do
-    DocAuth::Response.new(
+    IdentityDocAuth::Response.new(
       success: true,
       errors: [],
       pii_from_doc: {},
@@ -16,7 +16,7 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
     )
   end
   let(:not_billed_response) do
-    DocAuth::Response.new(
+    IdentityDocAuth::Response.new(
       success: true,
       errors: [],
       pii_from_doc: {},

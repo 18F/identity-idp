@@ -38,7 +38,7 @@ feature 'doc auth back image step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
-    expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
+    expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
       doc_auth_image_data_url_data,
     )
   end
@@ -54,9 +54,9 @@ feature 'doc auth back image step' do
   end
 
   it 'does not proceed to the next page if the image upload fails' do
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
+    IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :post_back_image,
-      response: DocAuth::Response.new(
+      response: IdentityDocAuth::Response.new(
         success: false,
         errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
       ),
@@ -83,8 +83,8 @@ feature 'doc auth back image step' do
   it 'does not attempt to verify the document if selfie checking is enabled' do
     allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
 
-    mock_client = DocAuth::Mock::DocAuthMockClient.new
-    allow(DocAuth::Mock::DocAuthMockClient).to receive(:new).and_return(mock_client)
+    mock_client = IdentityDocAuth::Mock::DocAuthMockClient.new
+    allow(IdentityDocAuth::Mock::DocAuthMockClient).to receive(:new).and_return(mock_client)
 
     expect(mock_client).to_not receive(:get_results)
 
@@ -96,9 +96,9 @@ feature 'doc auth back image step' do
 
   it 'renders a friendly error message if one is present on the response' do
     error_message = I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read')
-    DocAuth::Mock::DocAuthMockClient.mock_response!(
+    IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
-      response: DocAuth::Response.new(
+      response: IdentityDocAuth::Response.new(
         success: false,
         errors: { result: [error_message] },
       ),
