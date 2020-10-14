@@ -13,7 +13,7 @@
       <label class="bold string required" for="profile_first_name"><abbr title="required" class="red display-none">*</abbr>
         <%= t('in_person_proofing.forms.first_name') %>
       </label>
-      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="doc_auth[first_name]" id="profile_first_name"/>
+      <input class="block col-12 field string required" required="required" aria-invalid="true" aria-required="true" maxlength="255" size="255" type="text" name="doc_auth[first_name]" id="profile_first_name"/>
     </div>
     <div class="mb3 string optional profile_last_name">
       <label class="bold string optional" for="profile_last_name">
@@ -31,7 +31,7 @@
             <%= t('in_person_proofing.forms.dob') %>
           </label>
           <div id="dob-instructs" class="italic mb1">example: 01/17/1964</div>
-          <input class="block col-12 field string tel required dob" aria-describedby="dob-instructs" required="required" aria-required="true" pattern="(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])/[0-9]{4}" type="tel" name="doc_auth[dob]" id="profile_dob"/>
+          <input class="block col-12 field string tel required dob" aria-describedby="dob-instructs" required="required" aria-invalid="true" aria-required="true" pattern="(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])/[0-9]{4}" type="tel" name="doc_auth[dob]" id="profile_dob"/>
         </div>
       </div>
     </div>
@@ -41,7 +41,7 @@
           <label class="bold tel required" for="profile_ssn"><abbr title="required" class="red display-none">*</abbr>
             <%= t('in_person_proofing.forms.ssn') %>
           </label>
-          <input class="block col-12 field string tel required ssn" required="required" aria-required="true" pattern="^\d{3}-?\d{2}-?\d{4}$" type="tel" name="doc_auth[ssn]" id="profile_ssn"/>
+          <input class="block col-12 field string tel required ssn" required="required" aria-invalid="true" aria-required="true" pattern="^\d{3}-?\d{2}-?\d{4}$" type="tel" name="doc_auth[ssn]" id="profile_ssn"/>
         </div>
       </div>
     </div>
@@ -51,7 +51,7 @@
       <label class="bold string required" for="profile_address1"><abbr title="required" class="red display-none">*</abbr>
         <%= t('in_person_proofing.forms.address1') %>
       </label>
-      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="doc_auth[address1]" id="profile_address1"/>
+      <input class="block col-12 field string required" required="required" aria-invalid="true" aria-required="true" maxlength="255" size="255" type="text" name="doc_auth[address1]" id="profile_address1"/>
     </div>
     <div class="mb3 string optional profile_address2">
       <label class="bold string optional" for="profile_address2">
@@ -63,7 +63,7 @@
       <label class="bold string required" for="profile_city"><abbr title="required" class="red display-none">*</abbr>
         <%= t('in_person_proofing.forms.city') %>
       </label>
-      <input class="block col-12 field string required" required="required" aria-required="true" maxlength="255" size="255" type="text" name="doc_auth[city]" id="profile_city"/>
+      <input class="block col-12 field string required" required="required" aria-invalid="true" aria-required="true" maxlength="255" size="255" type="text" name="doc_auth[city]" id="profile_city"/>
     </div>
     <div class="clearfix mxn1">
       <div class="sm-col sm-col-8 px1">
@@ -71,7 +71,7 @@
           <label class="bold select required" for="profile_state"><abbr title="required" class="red display-none">*</abbr>
             <%= t('in_person_proofing.forms.state') %>
           </label>
-          <select class="block col-12 field select required" required="required" aria-required="true" name="doc_auth[state]" id="profile_state">
+          <select class="block col-12 field select required" required="required" aria-invalid="true" aria-required="true" name="doc_auth[state]" id="profile_state">
           <option value="AL">Alabama</option>
           <option value="AK">Alaska</option>
           <option value="AS">American Samoa</option>
@@ -139,7 +139,7 @@
           <label class="bold tel required" for="profile_zipcode"><abbr title="required" class="red display-none">*</abbr>
             <%= t('in_person_proofing.forms.zip_code') %>
           </label>
-          <input class="block col-12 field string tel required zipcode" required="required" aria-required="true" pattern="(\d{5}([\-]\d{4})?)" type="tel" name="doc_auth[zipcode]" id="profile_zipcode"/>
+          <input class="block col-12 field string tel required zipcode" required="required" aria-invalid="true" aria-required="true" pattern="(\d{5}([\-]\d{4})?)" type="tel" name="doc_auth[zipcode]" id="profile_zipcode"/>
         </div>
       </div>
     </div>

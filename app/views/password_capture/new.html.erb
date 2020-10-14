@@ -5,7 +5,7 @@
                        url: capture_password_url,
                        method: :post,
                        html: { autocomplete: 'off', role: 'form' }) do |f| %>
-  <%= f.input :password, label: t('account.index.password'), required: true %>
+  <%= f.input :password, label: t('account.index.password'), required: true, input_html: { aria: { invalid: true } } %>
   <div>
     <%= f.button :submit, t('links.next'), class: 'sm-col-6 col-12 btn-wide mb3' %>
   </div>

@@ -22,8 +22,14 @@
   url: session_path(resource_name),
   html: { autocomplete: 'off', role: 'form' }) do |f|
 %>
-  <%= f.input :email, label: t('account.index.email'), required: true, input_html: { class: 'mb4' } %>
-  <%= f.input :password, label: t('account.index.password'), required: true %>
+  <%= f.input :email,
+              label: t('account.index.email'),
+              required: true,
+              input_html: { class: 'mb4', aria: { invalid: true } } %>
+  <%= f.input :password,
+              label: t('account.index.password'),
+              required: true,
+              input_html: { aria: { invalid: true } } %>
   <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
   <div class='mb3'>
     <%= submit_tag t('links.next'), class: 'usa-button usa-button--primary grid-col-12 mb2' %>

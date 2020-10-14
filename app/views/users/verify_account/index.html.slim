@@ -5,7 +5,7 @@ p.mt-tiny.mb0 = t('forms.verify_profile.instructions')
 = validated_form_for(@verify_account_form, url: verify_account_path,
   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
   = f.error :base
-  = f.input :otp, required: true, label: t('forms.verify_profile.name'),
+  = f.input :otp, required: true, input_html: { aria: { invalid: true } }, label: t('forms.verify_profile.name'),
     wrapper_html: { class: 'mb3' }, wrapper: :inline_form do
     = f.input_field :otp, as: :inline, autofocus: true, type: 'text', maxlength: '10', value: @code
     = f.button :submit, t('forms.verify_profile.submit')
