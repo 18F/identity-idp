@@ -216,9 +216,10 @@ module Idv
       result = form_response(idv_result, success)
 
       pii = async_state.pii
+      idv_session.idv_usps_document_capture_session_uuid = nil
 
       analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
-      result[:success] ? resolution_success(pii) : failure
+      result.success? ? resolution_success(pii) : failure
     end
   end
 end
