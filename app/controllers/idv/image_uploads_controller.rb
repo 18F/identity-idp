@@ -58,7 +58,7 @@ module Idv
     end
 
     def doc_auth_client
-      @doc_auth_client ||= DocAuth::Client.client
+      @doc_auth_client ||= DocAuthRouter.client
     end
 
     def add_costs(client_response)

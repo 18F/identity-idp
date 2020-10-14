@@ -73,6 +73,13 @@ GIT
       i18n
       twilio-ruby
 
+PATH
+  remote: ../identity-doc-auth
+  specs:
+    identity-doc-auth (0.1.0)
+      activesupport
+      faraday
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -741,6 +748,7 @@ DEPENDENCIES
   hiredis
   http_accept_language
   i18n-tasks (>= 0.9.31)
+  identity-doc-auth!
   identity-hostdata!
   identity-idp-functions!
   identity-telephony!
