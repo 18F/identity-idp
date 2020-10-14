@@ -22,7 +22,7 @@
                        class: 'col-12 field monospace mfa',
                        'aria-describedby': 'code-instructs',
                        maxlength: Devise.direct_otp_length,
-                       type: 'tel') %>
+                       autocomplete: 'one-time-code', type: 'tel') %>
   </div>
   <%= hidden_field_tag 'otp_make_default_number',
                        @presenter.otp_make_default_number %>
