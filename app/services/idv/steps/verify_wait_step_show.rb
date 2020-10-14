@@ -34,6 +34,8 @@ module Idv
         else
           mark_step_incomplete(:verify)
         end
+
+        response
       end
 
       def async_state
