@@ -121,10 +121,10 @@ fr:
         dans un endroit sécuritaire. Vous en aurez besoin si vous perdez votre mot
         de passe.
       phone:
-        alert: Ce numéro de téléphone <strong>doit être</strong>
+        alert_html: Ce numéro de téléphone <strong>doit être</strong>
         description: Nous vérifions les dossiers pour vous assurer que vous êtes ce
           que vous dites et que vous êtes propriétaire de votre compte.
-        final_note: "<strong>Si vous configurez un téléphone pour l'authentification
+        final_note_html: "<strong>Si vous configurez un téléphone pour l'authentification
           à deux facteurs</strong>, il peut s'agir d'un numéro différent."
         phone_of_record: numéro de téléphone enregistré
         rules:
