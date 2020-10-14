@@ -3,10 +3,10 @@
   <p><%= t('cac_proofing.info.choose_method') %></p>
   <p><%= t('cac_proofing.info.disclaimer') %></p>
   <div class="grid-row margin-y-4">
-    <div class="tablet:grid-col-4 margin-bottom-2">
-      <%= image_tag asset_url('piv-cac-round.svg'), width: 120, height: 116 %>
+    <div class="mobile-lg:grid-col-4 margin-bottom-2">
+      <%= image_tag asset_url('piv-cac-round.svg') %>
     </div>
-    <div class="tablet:grid-col-8">
+    <div class="mobile-lg:grid-col-8">
       <div class='usa-tag caps text-ink bg-primary-lighter margin-bottom-2 display-inline-block'>
         <%= t('doc_auth.info.tag') %>
       </div>
@@ -23,10 +23,10 @@
   </div>
   <hr/>
   <div class="grid-row margin-top-3">
-    <div class="tablet:grid-col-4">
-      <%= image_tag asset_url('state-id-round.svg'), width: 122, height: 116 %>
+    <div class="mobile-lg:grid-col-4 margin-bottom-2">
+      <%= image_tag asset_url('state-id-round.svg') %>
     </div>
-    <div class="tablet:grid-col-8">
+    <div class="mobile-lg:grid-col-8">
       <p><%= t('cac_proofing.info.state_id_description') %></p>
       <%= link_to t('cac_proofing.buttons.use_doc_auth'), idv_doc_auth_path, class: 'btn btn-primary text-center' %>
     </div>
