@@ -1,22 +1,13 @@
 <%= render 'shared/maintenance_window_alert' do %>
-  <!-- This style block should probably be replaced with USWDS grid system -->
-  <style>
-    .flex-container {
-        display: flex;
-    }
-    @media (max-width: 30em) {
-        .flex-container {
-            flex-direction: column;
-        }
-    }
-  </style>
   <h1 class="h3 margin-top-0 margin-bottom-1"><%= t('cac_proofing.headings.choose_method') %></h1>
   <p><%= t('cac_proofing.info.choose_method') %></p>
   <p><%= t('cac_proofing.info.disclaimer') %></p>
-  <div class="flex-container margin-y-4">
-    <%= image_tag asset_url('piv-cac-round.svg'), width: 120, height: 116, class: 'margin-right-3 margin-bottom-2' %>
-    <div>
-      <div class='usa-tag caps text-ink bg-primary-lighter margin-top-1 margin-bottom-2 display-inline-block'>
+  <div class="grid-row margin-y-4">
+    <div class="tablet:grid-col-4 margin-bottom-2">
+      <%= image_tag asset_url('piv-cac-round.svg'), width: 120, height: 116 %>
+    </div>
+    <div class="tablet:grid-col-8">
+      <div class='usa-tag caps text-ink bg-primary-lighter margin-bottom-2 display-inline-block'>
         <%= t('doc_auth.info.tag') %>
       </div>
       <p><%= t('cac_proofing.info.piv_cac_description') %></p>
@@ -31,9 +22,11 @@
     </div>
   </div>
   <hr/>
-  <div class="flex-container margin-top-3">
-    <%= image_tag asset_url('state-id-round.svg'), width: 122, height: 116, class: 'margin-right-3 margin-bottom-2' %>
-    <div>
+  <div class="grid-row margin-top-3">
+    <div class="tablet:grid-col-4">
+      <%= image_tag asset_url('state-id-round.svg'), width: 122, height: 116 %>
+    </div>
+    <div class="tablet:grid-col-8">
       <p><%= t('cac_proofing.info.state_id_description') %></p>
       <%= link_to t('cac_proofing.buttons.use_doc_auth'), idv_doc_auth_path, class: 'btn btn-primary text-center' %>
     </div>
