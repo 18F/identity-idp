@@ -137,7 +137,7 @@ fr:
       no_other_id_help_bold_html: "<strong>Si vous n'avez pas d'autre identifiant
         émis par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
         auprès de %{sp_name}.</a>"
-      tag: Recommander
+      tag: Recommandation
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
         vérifier votre identité.

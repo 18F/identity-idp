@@ -3,8 +3,8 @@ fr:
   cac_proofing:
     buttons:
       get_started: Get started
-      use_cac: Utilisez votre PIV/CAC
-      use_doc_auth: Utilisez votre pièce d'identité délivrée par l'État
+      use_cac: Utilisez votre PIV ou CAC
+      use_doc_auth: Utilisez votre pièce d'identité officielle
     errors:
       does_not_work: Votre PIV/CAC n'a pas pu être traité. Veuillez essayer un autre
         PIV/CAC ou vous pouvez vérifier en utilisant votre %{link}.
@@ -14,17 +14,24 @@ fr:
         à votre carte.
       state_id: identifiant émis par l'état
     headings:
-      choose_method: Comment aimeriez-vous vérifier votre identité?
+      choose_method: Comment souhaitez-vous vérifier votre identité?
       enter_info: Enter in your information
       present_cac: Present your PIV/CAC card to verify your account
       success: We've verified your information and PIV/CAC card.
       verify: Verify your information
       welcome: We need to verify your identity
     info:
-      choose_method: Nous collecterons des informations sur vous en lisant votre identifiant
-        ou PIV/CAC émis par l'État.
+      choose_method: Nous collecterons des informations qui vous concernent en lisant
+        votre pièce d'identité.
+      disclaimer: Nous ne stockons pas les images que vous téléchargez. Nous vérifions
+        uniquement votre identité.
+      piv_cac_description: Utilisez une carte d'identité d'employé du gouvernement
+        fédéral ou une carte d'identité militaire (PIV ou CAC) pour vérifier votre
+        identité de façon rapide et sécurisée.
       present_cac: After clicking "Present PIV/CAC" your browser will prompt you for
         your PIV/CAC PIN and have you select a certificate.
+      state_id_description: Si vous n'avez pas de PIV ou de CAC, vous pouvez utiliser
+        un identifiant émis par l'État pour vérifier votre identité.
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity also allows you to access services that
         handle Personal Identifiable Information.
