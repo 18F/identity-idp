@@ -189,7 +189,10 @@ module Idv
 
       document_capture_session.store_proofing_pii_from_doc(pii)
       idv_session.idv_usps_document_capture_session_uuid = document_capture_session.uuid
-      VendorProofJob.perform_resolution_proof(document_capture_session.uuid, false)
+      Idv::Agent.new(pii).proof_resolution(
+        document_capture_session,
+        should_proof_state_id: false,
+      )
     end
 
     def async_state
