@@ -1,6 +1,6 @@
 require Rails.root.join('lib', 'config_validator.rb')
 
-Figaro.require_keys(
+Figaro.require_keys([
   'attribute_encryption_key',
   'database_statement_timeout',
   'disallow_all_web_crawlers',
@@ -42,6 +42,4 @@ Figaro.require_keys(
   'session_timeout_in_minutes',
   'use_kms',
   'valid_authn_contexts',
-)
-
-ConfigValidator.new.validate
+])

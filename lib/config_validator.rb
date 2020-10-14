@@ -1,5 +1,5 @@
 class ConfigValidator
-  ENV_PREFIX = Figaro::Application::FIGARO_ENV_PREFIX
+  ENV_PREFIX = ""
 
   def validate(env = ENV)
     validate_boolean_keys(env)

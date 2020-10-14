@@ -1,6 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 require_relative '../lib/upaya_log_formatter'
+require_relative '../lib/figaro'
 
 Bundler.require(*Rails.groups)
 
@@ -8,6 +9,7 @@ APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
+    Figaro.setup('config/application.yml')
     config.active_job.queue_adapter = 'inline'
     config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
