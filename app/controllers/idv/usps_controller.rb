@@ -139,10 +139,6 @@ module Idv
       params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
     end
 
-    def perform_resolution(pii_from_doc)
-      idv_result = Idv::Agent.new(pii_from_doc).proof_resolution(should_proof_state_id: false)
-    end
-
     def form_response(result, success)
       FormResponse.new(success: success, errors: result[:errors])
     end
@@ -191,7 +187,7 @@ module Idv
         requested_at: Time.zone.now,
       )
 
-      document_capture_session.store_proofing_pii_from_doc(pii_from_doc)
+      document_capture_session.store_proofing_pii_from_doc(pii)
       idv_session.idv_usps_document_capture_session_uuid = document_capture_session.uuid
       VendorProofJob.perform_resolution_proof(document_capture_session.uuid, false)
     end
