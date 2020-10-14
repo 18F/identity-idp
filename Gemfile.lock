@@ -11,6 +11,15 @@ GIT
       xmldsig
 
 GIT
+  remote: https://github.com/18F/identity-doc-auth.git
+  revision: afd9f8c44d1902f479fb59bcba9ca65f3babd661
+  ref: afd9f8c44d1902f479fb59bcba9ca65f3babd661
+  specs:
+    identity-doc-auth (0.1.0)
+      activesupport
+      faraday
+
+GIT
   remote: https://github.com/18F/identity-hostdata.git
   revision: da013056e3a5ffcb46001a3f4fca21b80640838e
   tag: v0.4.1
@@ -72,13 +81,6 @@ GIT
       aws-sdk-pinpointsmsvoice
       i18n
       twilio-ruby
-
-PATH
-  remote: ../identity-doc-auth
-  specs:
-    identity-doc-auth (0.1.0)
-      activesupport
-      faraday
 
 GEM
   remote: https://rubygems.org/

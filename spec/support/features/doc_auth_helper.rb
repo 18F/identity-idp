@@ -207,9 +207,16 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       Faraday::Response,
       body: AcuantFixtures.get_results_response_failure,
     )
+    config = IdentityDocAuth::Acuant::Config.new(
+      friendly_error_message: FriendlyError::Message,
+      friendly_error_find_key: FriendlyError::FindKey,
+    )
     IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
-      response: IdentityDocAuth::Acuant::Responses::GetResultsResponse.new(failed_http_response),
+      response: IdentityDocAuth::Acuant::Responses::GetResultsResponse.new(
+        failed_http_response,
+        config,
+      ),
     )
   end
 
