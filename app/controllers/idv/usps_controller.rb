@@ -9,8 +9,19 @@ module Idv
     before_action :max_attempts_reached, only: [:update]
 
     def index
-      analytics.track_event(Analytics::IDV_USPS_ADDRESS_VISITED)
       @presenter = UspsPresenter.new(current_user)
+
+      case async_state.status
+      when :none
+        analytics.track_event(Analytics::IDV_USPS_ADDRESS_VISITED)
+        render :index
+      when :in_progress
+        render :wait
+      when :timed_out
+        render :index
+      when :done
+        async_state_done(async_state)
+      end
     end
 
     def create
@@ -26,9 +37,12 @@ module Idv
     end
 
     def update
-      result = submit_form_and_perform_resolution
-      analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
-      result.success? ? resolution_success(pii) : failure
+      result = idv_form.submit(profile_params)
+      enqueue_job if result.success?
+      redirect_to idv_usps_path
+      # result = submit_form_and_perform_resolution
+      # analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
+      # result.success? ? resolution_success(pii) : failure
     end
 
     def usps_mail_service
@@ -41,12 +55,6 @@ module Idv
       analytics.track_event(Analytics::IDV_USPS_ADDRESS_LETTER_REQUESTED)
       create_user_event(:usps_mail_sent, current_user)
       Db::ProofingComponent::Add.call(current_user.id, :address_check, 'gpo_letter')
-    end
-
-    def submit_form_and_perform_resolution
-      result = idv_form.submit(profile_params)
-      result = perform_resolution(pii) if result.success?
-      result
     end
 
     def failure
@@ -136,9 +144,6 @@ module Idv
 
     def perform_resolution(pii_from_doc)
       idv_result = Idv::Agent.new(pii_from_doc).proof_resolution(should_proof_state_id: false)
-      success = idv_result[:success]
-      throttle_failure unless success
-      form_response(idv_result, success)
     end
 
     def form_response(result, success)
@@ -179,6 +184,48 @@ module Idv
       current_user.confirmed_email_addresses.each do |email_address|
         UserMailer.letter_reminder(email_address.email).deliver_later
       end
+    end
+
+    def enqueue_job
+      document_capture_session = DocumentCaptureSession.create(
+        user_id: current_user.id,
+        issuer: sp_session[:issuer],
+        ial2_strict: sp_session[:ial2_strict],
+        requested_at: Time.zone.now,
+      )
+
+      document_capture_session.store_proofing_pii_from_doc(pii_from_doc)
+      idv_session.idv_usps_document_capture_session_uuid = document_capture_session.uuid
+      VendorProofJob.perform_resolution_proof(document_capture_session.uuid, false)
+    end
+
+    def async_state
+      dcs_uuid = idv_session.idv_usps_document_capture_session_uuid
+      dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
+      return ProofingDocumentCaptureSessionResult.none if dcs_uuid.nil?
+      return ProofingDocumentCaptureSessionResult.timed_out if dcs.nil?
+
+      proofing_job_result = dcs.load_proofing_result
+      return ProofingDocumentCaptureSessionResult.timed_out if proofing_job_result.nil?
+
+      if proofing_job_result.result
+        proofing_job_result.done
+      elsif proofing_job_result.pii
+        ProofingDocumentCaptureSessionResult.in_progress
+      end
+    end
+
+    def async_state_done(async_state)
+      idv_result = async_state.result
+      success = idv_result[:success]
+
+      throttle_failure unless success
+      result = form_response(idv_result, success)
+
+      pii = async_state.pii
+
+      analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
+      result[:success] ? resolution_success(pii) : failure
     end
   end
 end
