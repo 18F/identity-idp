@@ -40,9 +40,6 @@ module Idv
       result = idv_form.submit(profile_params)
       enqueue_job if result.success?
       redirect_to idv_usps_path
-      # result = submit_form_and_perform_resolution
-      # analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
-      # result.success? ? resolution_success(pii) : failure
     end
 
     def usps_mail_service
