@@ -65,11 +65,12 @@
 
 <p class="my1">
   <%= link_to(
-    t('notices.privacy.security_and_privacy_practices'),
+    "#{t('notices.privacy.security_and_privacy_practices')} #{t('links.new_window')}",
     MarketingSite.security_and_privacy_practices_url,
     target: '_blank',
   ) %>
 </p>
 <p class="my1">
-  <%= link_to t('notices.privacy.privacy_act_statement'), MarketingSite.privacy_act_statement_url, target: '_blank' %>
+<%= link_to "#{t('notices.privacy.privacy_act_statement')} #{t('links.new_window')}",
+            MarketingSite.privacy_act_statement_url, target: '_blank' %>
 </p>

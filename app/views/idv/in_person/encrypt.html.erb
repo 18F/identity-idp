@@ -14,7 +14,7 @@
   <%= t('in_person_proofing.instructions.encrypt') %>
 </p>
 
-<%= link_to t('in_person_proofing.instructions.read_more_encrypt'), MarketingSite.security_url, target: '_blank' %>
+<%= link_to "#{t('in_person_proofing.instructions.read_more_encrypt')} #{t('links.new_window')}", MarketingSite.security_url, target: '_blank' %>
 
 <%= validated_form_for(:in_person_proofing, url: url_for, method: 'PUT',
                        html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>

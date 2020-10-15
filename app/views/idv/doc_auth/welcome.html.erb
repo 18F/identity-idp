@@ -93,7 +93,8 @@
         <%= check_box_tag :ial2_consent_given, true, false %>
         <span class="indicator"></span>
         <%= t('doc_auth.instructions.consent') %>
-        <%= link_to(t('doc_auth.instructions.learn_more'), 'https://login.gov/policy/', target: '_blank') %>
+        <%= link_to("#{t('doc_auth.instructions.learn_more')} #{t('links.new_window')}.",
+                    'https://login.gov/policy/', target: '_blank') %>
       </div>
     </label>
     <%= f.button :submit, t('doc_auth.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-6' %>
