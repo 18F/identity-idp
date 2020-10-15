@@ -55,6 +55,7 @@ module Idv
     end
 
     def proof_address
+      return if idv_session.idv_phone_step_document_capture_session_uuid
       document_capture_session = DocumentCaptureSession.create(user_id: idv_session.current_user.id,
                                                                requested_at: Time.zone.now)
 

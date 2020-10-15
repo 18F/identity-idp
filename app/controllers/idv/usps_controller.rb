@@ -180,6 +180,7 @@ module Idv
     end
 
     def enqueue_job
+      return if idv_session.idv_usps_document_capture_session_uuid
       document_capture_session = DocumentCaptureSession.create(
         user_id: current_user.id,
         issuer: sp_session[:issuer],

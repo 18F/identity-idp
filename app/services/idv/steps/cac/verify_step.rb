@@ -9,6 +9,7 @@ module Idv
         private
 
         def enqueue_job
+          return if flow_session[cac_verify_document_capture_session_uuid_key]
           pii_from_doc = flow_session[:pii_from_doc]
 
           document_capture_session = create_document_capture_session(
