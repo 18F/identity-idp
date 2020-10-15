@@ -49,9 +49,9 @@ en:
         step_1_info: If you add more than one PIV/CAC, you'll know which one's which.
         step_2: Insert your PIV/CAC into your card reader
         step_3: Add your PIV/CAC
-        step_3_info: You'll need to <strong>choose a certificate</strong> (the right
-          one likely has your name in it) and <strong>enter your PIN</strong> (your
-          PIN was created when you set up your PIV/CAC).
+        step_3_info_html: You'll need to <strong>choose a certificate</strong> (the
+          right one likely has your name in it) and <strong>enter your PIN</strong>
+          (your PIN was created when you set up your PIV/CAC).
         temporary_error: Please try again later or sign in with your email and password
           instead.
         try_again: try again
