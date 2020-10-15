@@ -82,4 +82,16 @@ feature 'recovery verify step' do
     click_on t('two_factor_authentication.account_reset.reset_your_account')
     expect(page).to have_current_path(account_reset_request_path)
   end
+
+  context 'in progress' do
+    it 'renders in progress form' do
+      complete_recovery_steps_before_verify_step
+      # the user gets shown the wait page until a result has been stored
+      allow_any_instance_of(DocumentCaptureSession).to receive(:store_proofing_result).
+        and_return(nil)
+      click_continue
+
+      expect(page).to have_current_path(idv_recovery_verify_wait_step)
+    end
+  end
 end
