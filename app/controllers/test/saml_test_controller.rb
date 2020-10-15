@@ -43,7 +43,7 @@ module Test
 
     def render_template_for(validity, response)
       render(
-        template: 'test/saml_test/decode_response.html.slim',
+        template: 'test/saml_test/decode_response.html.erb',
         locals: { is_valid: validity, response: response },
       )
     end

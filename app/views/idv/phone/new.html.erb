@@ -1,0 +1,44 @@
+<% title t('idv.titles.phone') %>
+
+<h1 class="h3 my0">
+  <%= t('idv.titles.session.phone') %>
+</h1>
+
+<div class="py1 m0">
+  <%= t('idv.messages.phone.description') %>
+</div>
+
+<div class="mt2">
+  <%= t('idv.messages.phone.alert_html') %>
+</div>
+
+<ul class="py1 m0">
+  <% t('idv.messages.phone.rules').each do |msg| %>
+    <li>
+      <%= msg %>
+    </li>
+  <% end %>
+</ul>
+
+<div class="mt2">
+  <%= t('idv.messages.phone.final_note_html') %>
+  <br/>
+  <br/>
+</div>
+
+<%= validated_form_for(@idv_form, url: idv_phone_path,
+                       html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f| %>
+ <%= f.label :phone, label: t('idv.form.phone'), class: 'bold' %>
+ <%= f.input :phone, required: true, input_html: { class: 'sm-col-8' }, label: false,
+   wrapper_html: { class: 'mr2' } %>
+
+  <% if FeatureManagement.enable_usps_verification? %>
+    <%= render 'idv/phone/verification_options' %>
+  <% end %>
+
+  <%= f.button :submit, t('forms.buttons.continue'), class: 'btn-wide mt3 sm-col-6 col-12' %>
+<% end %>
+
+<div class="mt2 pt1 border-top">
+  <%= link_to t('links.cancel'), idv_cancel_path, class: 'h5' %>
+</div>

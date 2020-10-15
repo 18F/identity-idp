@@ -3,8 +3,8 @@ en:
   cac_proofing:
     buttons:
       get_started: Get started
-      use_cac: Use your PIV/CAC
-      use_doc_auth: Use your state issued ID
+      use_cac: Use your PIV or CAC
+      use_doc_auth: Use your state-issued ID
     errors:
       does_not_work: Your PIV/CAC could not be processed.  Please try a different
         PIV/CAC or you can verify using your %{link}.
@@ -20,10 +20,14 @@ en:
       verify: Verify your information
       welcome: We need to verify your identity
     info:
-      choose_method: We'll collect information about you by reading from your state-issued
-        ID or PIV/CAC.
+      choose_method: We’ll collect information about you by reading your identification.
+      disclaimer: We do not store the images you upload. We only verify your identity.
+      piv_cac_description: Use a federal government employee ID or military ID (PIV
+        or CAC) for a fast and secure way to verify your identity.
       present_cac: After clicking "Present PIV/CAC" your browser will prompt you for
         your PIV/CAC PIN and have you select a certificate.
+      state_id_description: If you don't have a PIV or CAC, you can use a state-issued
+        ID to verify your identity.
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity also allows you to access services that
         handle Personal Identifiable Information.

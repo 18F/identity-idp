@@ -2,7 +2,6 @@
 fr:
   shared:
     banner:
-      close: Fermer la fenêtre contextuelle de la bannière
       fake_site: Un site de DEMO du gouvernement des États-Unis.
       gov_description: Les sites Web du gouvernement fédéral se terminent souvent
         par .gov ou .mil. Avant de partager des informations sensibles, assurez-vous
