@@ -164,7 +164,7 @@ en:
         compare it to the image on the front of your ID.
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
-      learn_more: Learn more.
+      learn_more: Learn more
       send_sms: We'll send a text message to your device with a link.  Follow that
         link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity
