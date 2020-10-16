@@ -24,7 +24,7 @@ describe LambdaCallback::ResolutionProofResultController do
                                 resolution_result: proofer_result.to_h }
 
         proofing_result = document_capture_session.load_proofing_result
-        expect(proofing_result.result).to include({ exception: '', success: 'true' })
+        expect(proofing_result.result).to include(exception: '', success: 'true')
       end
 
       it 'accepts and stores unsuccessful resolution proofing results' do
