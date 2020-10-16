@@ -18,7 +18,7 @@
         <%= @presenter.label %>
       </legend>
       <% @presenter.options.each_with_index do |option, index| %>
-        <span id="<%= "select_#{option.type}" %>" class="<%= "#{option.html_class}" %>">
+        <span id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <label class="btn-border col-12 mb2" for="<%= "two_factor_options_form_selection_#{option.type}" %>">
             <div class="radio">
               <%= radio_button_tag('two_factor_options_form[selection]',
