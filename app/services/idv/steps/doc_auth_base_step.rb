@@ -224,6 +224,10 @@ module Idv
         :idv_recover_verify_step_document_capture_session_uuid
       end
 
+      def verify_document_capture_session_uuid_key
+        :verify_document_action_document_capture_session_uuid
+      end
+
       delegate :idv_session, :session, to: :@flow
     end
   end
