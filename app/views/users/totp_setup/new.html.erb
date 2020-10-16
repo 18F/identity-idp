@@ -51,7 +51,7 @@
       <div class="sm-col-9 sm-ml-28p">
         <div class="clearfix mxn1">
           <div class="col col-6 sm-col-7 px1">
-            <%= text_field_tag :code, '', required: true, aria: { invalid: true }, pattern: '[0-9]*', type: 'tel',
+            <%= text_field_tag :code, '', required: true, aria: { invalid: false }, pattern: '[0-9]*', type: 'tel',
                 class: 'block col-12 field monospace mfa', maxlength: Devise.otp_length,
                 'aria-labelledby': 'totp-label' %>
           </div>

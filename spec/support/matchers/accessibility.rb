@@ -3,7 +3,7 @@ RSpec::Matchers.define :label_required_fields do
 
   match do |page|
     page.all(:css, 'input[required]').each do |input|
-      elements << input if input['aria-invalid'] != 'false'
+      elements << input if input['aria-invalid'].blank?
     end
     elements.empty?
   end
@@ -19,7 +19,7 @@ RSpec::Matchers.define :label_required_fields do
 
     <<-STR.squish
       On #{page.current_path} found #{elements.count} elements with
-      required=true but missing aria-invalid (#{elem_summaries})
+      required=true but missing aria-invalid=false (#{elem_summaries})
     STR
   end
 end
