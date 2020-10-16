@@ -5,6 +5,7 @@ import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
 import FormErrorMessage from './form-error-message';
+import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 
 /**
  * @typedef SelfieStepValue
@@ -58,4 +59,4 @@ function SelfieStep({
   );
 }
 
-export default SelfieStep;
+export default withBackgroundEncryptedUpload(SelfieStep);
