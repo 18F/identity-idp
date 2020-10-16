@@ -161,21 +161,6 @@ describe Idv::DocAuthController do
     end
 
     it 'works' do
-      allow_any_instance_of(Flow::BaseFlow).to \
-        receive(:flow_session).and_return(
-          'Idv::Steps::FrontImageStep' => true,
-          'Idv::Steps::BackImageStep' => true,
-          'Idv::Steps::SelfieStep' => true,
-          'Idv::Steps::MobileFrontImageStep' => true,
-          'Idv::Steps::MobileBackImageStep' => true,
-          'document_capture_session_uuid' => 'foo',
-          'Idv::Steps::WelcomeStep' => true,
-          'Idv::Steps::SendLinkStep' => true,
-          'Idv::Steps::LinkSentStep' => true,
-          'Idv::Steps::EmailSentStep' => true,
-          'Idv::Steps::UploadStep' => true,
-        )
-
       put :update, params: { step: 'verify_document' }
 
       expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
