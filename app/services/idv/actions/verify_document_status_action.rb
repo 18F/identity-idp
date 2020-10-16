@@ -1,6 +1,6 @@
 module Idv
   module Actions
-    class VerifyDocumentStatusAction < Idv::Steps::DocAuthBaseStep
+    class VerifyDocumentStatusAction < Idv::Steps::VerifyBaseStep
       def call
         process_async_state(async_state)
       end
@@ -34,7 +34,7 @@ module Idv
 
       def process_result(result)
         add_cost(:acuant_result) if result.to_h[:billed]
-        response = idv_result_to_form_response(current_async_state.result)
+        response = idv_result_to_form_response(result)
         response.success?
       end
 

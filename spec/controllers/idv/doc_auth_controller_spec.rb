@@ -160,7 +160,7 @@ describe Idv::DocAuthController do
       mock_document_capture_step
     end
 
-    it 'works' do
+    it 'successfully submits the images' do
       put :update, params: { step: 'verify_document' }
 
       expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
@@ -171,8 +171,10 @@ describe Idv::DocAuthController do
     before do
       mock_document_capture_step
     end
+    let(:good_result) { { errors: {}, messages: ['some message'] } }
 
-    it 'works' do
+    it 'returns status of success' do
+      mock_document_capture_result(good_result)
       put :update, params: { step: 'verify_document_status' }
 
       expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
@@ -183,7 +185,19 @@ describe Idv::DocAuthController do
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
   end
 
+  def mock_document_capture_result(idv_result)
+    id = SecureRandom.uuid
+    pii = { 'first_name' => 'Testy', 'last_name' => 'Testerson' }
+
+    result = ProofingDocumentCaptureSessionResult.new(id: id, pii: pii, result: idv_result)
+    allow_any_instance_of(DocumentCaptureSession).to receive(:load_proofing_result).
+      and_return(result)
+  end
+
   def mock_document_capture_step
+    user = create(:user, :signed_up)
+    stub_sign_in(user)
+    DocumentCaptureSession.create(user_id: user.id, result_id: 1, uuid: 'foo')
     allow_any_instance_of(Flow::BaseFlow).to \
       receive(:flow_session).and_return(
         'Idv::Steps::FrontImageStep' => true,
@@ -197,6 +211,7 @@ describe Idv::DocAuthController do
         'Idv::Steps::LinkSentStep' => true,
         'Idv::Steps::EmailSentStep' => true,
         'Idv::Steps::UploadStep' => true,
+        verify_document_action_document_capture_session_uuid: 'foo',
       )
   end
 end
