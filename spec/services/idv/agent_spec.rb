@@ -10,44 +10,6 @@ describe Idv::Agent do
 
     let(:agent) { Idv::Agent.new(applicant) }
 
-    describe '#merge_results' do
-      let(:orig_results) do
-        {
-          errors: { foo: 'bar', bar: 'baz' },
-          messages: ['reason 1'],
-          success: true,
-          exception: StandardError.new,
-        }
-      end
-
-      let(:new_result) do
-        {
-          errors: { foo: 'blarg', baz: 'foo' },
-          messages: ['reason 2'],
-          success: false,
-          exception: StandardError.new,
-        }
-      end
-
-      let(:merged_results) { agent.send(:merge_results, orig_results, new_result) }
-
-      it 'keeps the last errors' do
-        expect(merged_results[:errors]).to eq(new_result[:errors])
-      end
-
-      it 'concatenates messages' do
-        expect(merged_results[:messages]).to eq(orig_results[:messages] + new_result[:messages])
-      end
-
-      it 'keeps the last success' do
-        expect(merged_results[:success]).to eq(false)
-      end
-
-      it 'keeps the last exception' do
-        expect(merged_results[:exception]).to eq(new_result[:exception])
-      end
-    end
-
     describe '#proof_resolution' do
       let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
 
