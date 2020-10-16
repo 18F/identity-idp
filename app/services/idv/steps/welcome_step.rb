@@ -3,7 +3,7 @@ module Idv
     class WelcomeStep < DocAuthBaseStep
       def call
         mark_document_capture_or_image_upload_steps_complete
-        create_document_capture_session
+        create_document_capture_session(document_capture_session_uuid_key)
       end
 
       def form_submit

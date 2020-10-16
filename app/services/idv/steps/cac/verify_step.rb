@@ -3,45 +3,22 @@ module Idv
     module Cac
       class VerifyStep < DocAuthBaseStep
         def call
-          pii_from_doc = flow_session[:pii_from_doc]
-          # do resolution first to prevent ssn time/discovery. resolution time order > than db call
-          result = perform_resolution(pii_from_doc)
-          result = check_ssn(pii_from_doc) if result.success?
-          summarize_result_and_throttle_failures(result)
+          enqueue_job
         end
 
         private
 
-        def summarize_result_and_throttle_failures(summary_result)
-          summary_result.success? ? summary_result : idv_failure(summary_result)
-        end
+        def enqueue_job
+          pii_from_doc = flow_session[:pii_from_doc]
 
-        def check_ssn(pii_from_doc)
-          result = Idv::SsnForm.new(current_user).submit(ssn: pii_from_doc[:ssn])
-          save_legacy_state(pii_from_doc) if result.success?
-          result
-        end
-
-        def save_legacy_state(pii_from_doc)
-          skip_legacy_steps
-          idv_session['params'] = pii_from_doc
-          idv_session['applicant'] = pii_from_doc
-          idv_session['applicant']['uuid'] = current_user.uuid
-        end
-
-        def skip_legacy_steps
-          idv_session['profile_confirmation'] = true
-          idv_session['vendor_phone_confirmation'] = false
-          idv_session['user_phone_confirmation'] = false
-          idv_session['address_verification_mechanism'] = 'phone'
-          idv_session['resolution_successful'] = 'phone'
-        end
-
-        def perform_resolution(pii_from_doc)
-          idv_result = Idv::Agent.new(pii_from_doc).proof_resolution(should_proof_state_id: false)
-          FormResponse.new(
-            success: idv_result[:success], errors: idv_result[:errors],
+          document_capture_session = create_document_capture_session(
+            cac_verify_document_capture_session_uuid_key,
           )
+
+          document_capture_session.requested_at = Time.zone.now
+          document_capture_session.store_proofing_pii_from_doc(pii_from_doc)
+
+          VendorProofJob.perform_resolution_proof(document_capture_session.uuid, false)
         end
       end
     end
