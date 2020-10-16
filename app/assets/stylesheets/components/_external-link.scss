@@ -1,0 +1,7 @@
+.external-link {
+  @include display-icon('external-link', 'after', .65em, units(.5), '');
+}
+
+.external-link--alt {
+  @include display-icon('external-link-alt', 'after', .65em, units(.5), '');
+}

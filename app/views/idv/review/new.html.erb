@@ -8,8 +8,8 @@
   <%= t('idv.messages.sessions.review_message') %>
 </p>
 
-<%= link_to "#{t('idv.messages.sessions.read_more_encrypt')} #{t('links.new_window')}",
-            "https://login.gov/security/", target: "_blank" %>
+<%= render 'shared/link_new_window', text: t('idv.messages.sessions.read_more_encrypt'),
+           href: MarketingSite.security_url, class: 'external-link' %>
 
 <%= validated_form_for(current_user, url: idv_review_path,
                        html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>

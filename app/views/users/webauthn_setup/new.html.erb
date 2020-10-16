@@ -1,6 +1,6 @@
 <% title t('titles.totp_setup.new') %>
-<% help_link = link_to "#{t('links.what_is_webauthn')} #{t('links.new_window')}",
-                       MarketingSite.help_hardware_security_key_url, target: :_blank %>
+<% help_link = render 'shared/link_new_window', text: t('links.what_is_webauthn'),
+                      href: MarketingSite.help_hardware_security_key_url, class: 'external-link' %>
 
 <%= image_tag asset_url('security-key.svg'), alt: '', width: '90', class: 'ml1' %>
 

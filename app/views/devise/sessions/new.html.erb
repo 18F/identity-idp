@@ -64,13 +64,12 @@
 <% end %>
 
 <p class="my1">
-  <%= link_to(
-    "#{t('notices.privacy.security_and_privacy_practices')} #{t('links.new_window')}",
-    MarketingSite.security_and_privacy_practices_url,
-    target: '_blank',
+  <%= render('shared/link_new_window', text: t('notices.privacy.security_and_privacy_practices'),
+    href: MarketingSite.security_and_privacy_practices_url, class: 'external-link'
   ) %>
 </p>
 <p class="my1">
-<%= link_to "#{t('notices.privacy.privacy_act_statement')} #{t('links.new_window')}",
-            MarketingSite.privacy_act_statement_url, target: '_blank' %>
+  <%= render('shared/link_new_window', text: t('notices.privacy.privacy_act_statement'),
+    href: MarketingSite.privacy_act_statement_url, class: 'external-link'
+  ) %>
 </p>

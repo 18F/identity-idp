@@ -28,12 +28,12 @@
   <div class='container py1 px2 lg-px0 <%= 'sm-py0' if show_language_dropdown %>'>
     <div class='flex flex-center'>
       <div class='flex flex-auto flex-first'>
-        <%= link_to("https://gsa.gov ", class: 'flex flex-center text-decoration-none white h6', target: '_blank',
-                    'aria-label': "#{t('shared.footer_lite.gsa')} #{t('links.new_window')}") do %>
+        <%= render('shared/link_new_window', href: 'https://gsa.gov', class: 'flex flex-center text-decoration-none white h6 mr1 external-link--alt',
+                    'aria-label': t('shared.footer_lite.gsa')) do %>
           <%= image_tag asset_url('sp-logos/square-gsa.svg'),
             width: 20, class: 'mr1 sm-show', alt: '' %>
           <%= image_tag asset_url('sp-logos/square-gsa-dark.svg'),
-            width: 20, class: 'mr1 sm-hide', alt: '' %>
+            width: 20, class: 'sm-hide', alt: '' %>
           <span class='sm-show'>
             <%= t('shared.footer_lite.gsa') %>
           </span>
@@ -42,7 +42,7 @@
       <div class='flex flex-center'>
         <% if show_language_dropdown %>
           <ul class='list-reset sm-show mb0'>
-            <li class='i18n-desktop-toggle flex my1 mx3 relative'>
+            <li class='i18n-desktop-toggle flex my1 mx2 relative'>
               <%= link_to '#', class: 'white text-decoration-none border border-blue rounded-lg px1 py-tiny', 'aria-expanded': 'false' do %>
                 <%= image_tag asset_url('globe-white.svg'), width: 12, class: 'mr1', alt: '',
                   'aria-hidden': 'true' %>
@@ -61,13 +61,14 @@
             </li>
           </ul>
         <% end %>
-        <%= link_to "#{t('links.help')} #{t('links.new_window')}", MarketingSite.help_url,
-          class: 'caps h6 blue sm-white text-decoration-none mr3', target: '_blank' %>
-        <%= link_to  "#{t('links.contact')} #{t('links.new_window')}", MarketingSite.contact_url,
-          class: 'caps h6 blue sm-white text-decoration-none mr3', target: '_blank' %>
-        <%= link_to   "#{t('links.privacy_policy')} #{t('links.new_window')}",
-          MarketingSite.security_and_privacy_practices_url,
-          class: 'caps h6 blue sm-white text-decoration-none', target: '_blank' %>
+
+        <%= render 'shared/link_new_window', text: t('links.help'), href: MarketingSite.help_url,
+                   class: 'caps h6 blue sm-white text-decoration-none mr2 external-link--alt' %>
+        <%= render 'shared/link_new_window', text: t('links.contact'), href: MarketingSite.contact_url,
+                   class: 'caps h6 blue sm-white text-decoration-none mr2 external-link--alt' %>
+        <%= render 'shared/link_new_window', text: t('links.privacy_policy'),
+                   href: MarketingSite.security_and_privacy_practices_url,
+                   class: 'caps h6 blue sm-white text-decoration-none mr2 external-link--alt' %>
       </div>
     </div>
   </div>
