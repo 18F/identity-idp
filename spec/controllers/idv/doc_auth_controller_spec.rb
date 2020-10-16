@@ -155,7 +155,63 @@ describe Idv::DocAuthController do
     end
   end
 
+  describe 'async document verify' do
+    before do
+      mock_document_capture_step
+    end
+
+    it 'works' do
+      allow_any_instance_of(Flow::BaseFlow).to \
+        receive(:flow_session).and_return(
+          'Idv::Steps::FrontImageStep' => true,
+          'Idv::Steps::BackImageStep' => true,
+          'Idv::Steps::SelfieStep' => true,
+          'Idv::Steps::MobileFrontImageStep' => true,
+          'Idv::Steps::MobileBackImageStep' => true,
+          'document_capture_session_uuid' => 'foo',
+          'Idv::Steps::WelcomeStep' => true,
+          'Idv::Steps::SendLinkStep' => true,
+          'Idv::Steps::LinkSentStep' => true,
+          'Idv::Steps::EmailSentStep' => true,
+          'Idv::Steps::UploadStep' => true,
+        )
+
+      put :update, params: { step: 'verify_document' }
+
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
+    end
+  end
+
+  describe 'async document verify status' do
+    before do
+      mock_document_capture_step
+    end
+
+    it 'works' do
+      put :update, params: { step: 'verify_document_status' }
+
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
+    end
+  end
+
   def mock_next_step(step)
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
+  end
+
+  def mock_document_capture_step
+    allow_any_instance_of(Flow::BaseFlow).to \
+      receive(:flow_session).and_return(
+        'Idv::Steps::FrontImageStep' => true,
+        'Idv::Steps::BackImageStep' => true,
+        'Idv::Steps::SelfieStep' => true,
+        'Idv::Steps::MobileFrontImageStep' => true,
+        'Idv::Steps::MobileBackImageStep' => true,
+        'document_capture_session_uuid' => 'foo',
+        'Idv::Steps::WelcomeStep' => true,
+        'Idv::Steps::SendLinkStep' => true,
+        'Idv::Steps::LinkSentStep' => true,
+        'Idv::Steps::EmailSentStep' => true,
+        'Idv::Steps::UploadStep' => true,
+      )
   end
 end
