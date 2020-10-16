@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'reactivate_account/index.html.slim' do
+describe 'reactivate_account/index.html.erb' do
   it 'displays a fallback warning alert when js is off' do
     render
 
