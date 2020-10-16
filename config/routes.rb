@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  get '/test/cipher' => 'test_cipher#show'
+  post '/test/cipher' => 'test_cipher#update'
+  
   # Non i18n routes. Alphabetically sorted.
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'

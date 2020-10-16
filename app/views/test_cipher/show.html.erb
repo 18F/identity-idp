@@ -1,0 +1,6 @@
+<h1>Test Ciphers</h1>
+<div id=cipher-root data-plaintext=@plaintext />
+<%= tag.div id: 'cipher-root', data: {
+  plaintext: @plaintext,
+} %>
+<%= javascript_pack_tag 'test-cipher' %>
