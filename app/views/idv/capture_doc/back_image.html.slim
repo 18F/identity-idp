@@ -13,7 +13,7 @@ h1.h3.my0 = t('doc_auth.headings.upload_back')
   .clearfix.mxn1
     .sm-col.sm-col-8.px1.mt2
       = f.input :image, label: false, as: 'file', required: true,
-                input_html: { aria: { invalid: true } }
+                input_html: { aria: { invalid: false } }
   = render 'idv/doc_auth/notices', flow_session: flow_session
   .mb4 id= 'target'
   .mt2

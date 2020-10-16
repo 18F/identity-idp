@@ -6,7 +6,7 @@
 <%= validated_form_for(@resend_email_confirmation_form,
                        url: sign_up_register_path,
                        html: { autocomplete: 'off', method: :post, role: 'form' }) do |f| %>
-  <%= f.input :email, required: true, input_html: { aria: { invalid: true } } %>
+  <%= f.input :email, required: true, input_html: { aria: { invalid: false } } %>
   <%= f.input :request_id, as: :hidden %>
   <%= f.button :submit, t('forms.buttons.resend_confirmation'), class: 'mt2 mb1' %>
 <% end %>

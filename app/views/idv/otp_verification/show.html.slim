@@ -12,7 +12,7 @@ p == @presenter.phone_number_message
     = text_field_tag(:code, '',
       value: @code,
       required: true,
-      aria: { invalid: true, describedby: 'code-instructs' },
+      aria: { invalid: false, describedby: 'code-instructs' },
       autofocus: true,
       pattern: '[0-9]*',
       class: 'col-12 field monospace mfa',

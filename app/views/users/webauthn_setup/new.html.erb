@@ -22,7 +22,7 @@
       <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
       <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
       <%= label_tag 'code', t('forms.webauthn_setup.nickname'), class: 'block bold', for: 'nickname' %>
-      <%= text_field_tag :name, '', required: true, aria: { invalid: true }, id: 'nickname',
+      <%= text_field_tag :name, '', required: true, aria: { invalid: false }, id: 'nickname',
             class: 'block col-12 field monospace', size: 16, maxlength: 20 %>
      <div class='border border-light-blue rounded-lg px2 py1 mt3'>
        <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>

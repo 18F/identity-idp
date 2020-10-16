@@ -3,7 +3,7 @@ RSpec::Matchers.define :label_required_fields do
 
   match do |page|
     page.all(:css, 'input[required]').each do |input|
-      elements << input if input['aria-invalid'].blank?
+      elements << input if input['aria-invalid'] != 'false'
     end
     elements.empty?
   end

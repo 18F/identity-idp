@@ -50,7 +50,7 @@
       </p>
 
       <%= f.input :front_image_data_url, as: :hidden %>
-      <%= f.input :front_image, label: false, as: :file, required: true, aria: { invalid: true } %>
+      <%= f.input :front_image, label: false, as: :file, required: true, aria: { invalid: false } %>
       <div class='my2' id='front_target'></div>
     </div>
 
@@ -65,7 +65,7 @@
       </p>
 
       <%= f.input :back_image_data_url, as: :hidden %>
-      <%= f.input :back_image, label: false, as: :file, required: true, aria: { invalid: true } %>
+      <%= f.input :back_image, label: false, as: :file, required: true, aria: { invalid: false } %>
       <div class='my2' id='back_target'></div>
     </div>
 
@@ -90,7 +90,7 @@
         </p>
 
         <%= f.input :selfie_image_data_url, as: :hidden %>
-        <%= f.input :selfie_image, label: false, as: :file, required: true, aria: { invalid: true } %>
+        <%= f.input :selfie_image, label: false, as: :file, required: true, aria: { invalid: false } %>
         <div class='my2' id='selfie_target'></div>
       </div>
     <% end %>
