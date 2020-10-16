@@ -171,7 +171,7 @@ describe Idv::DocAuthController do
     before do
       mock_document_capture_step
     end
-    let(:good_result) { { errors: {}, messages: ['some message'] } }
+    let(:good_result) { { pii_from_doc: {}, success: true, errors: {}, messages: ['some message'] } }
 
     it 'returns status of success' do
       mock_document_capture_result(good_result)

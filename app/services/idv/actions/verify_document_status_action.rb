@@ -28,7 +28,7 @@ module Idv
         delete_async
         mark_step_complete(:document_capture)
         save_proofing_components
-        extract_pii_from_doc(result)
+        # extract_pii_from_doc(result)
         true
       end
 
