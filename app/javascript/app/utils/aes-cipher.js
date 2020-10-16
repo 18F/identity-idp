@@ -1,12 +1,22 @@
+// @ts-check
+
 const encode = function (text) {
   const enc = new TextEncoder();
   return enc.encode(text);
   // btoa(text);
 };
 
+function ab2str(buf) {
+  return String.fromCharCode.apply(null, new Uint16Array(buf));
+}
+
+function getTag(encrypted, tagLength = 128) {
+  return encrypted.slice(encrypted.byteLength - ((tagLength + 7) >> 3));
+}
+
 class AesCipher {
-  constructor() {
-    this.key = window.crypto.subtle.generateKey(
+  static async encrypt(plaintext) {
+    const key = await window.crypto.subtle.generateKey(
       {
         name: 'AES-GCM',
         length: 256,
@@ -14,23 +24,28 @@ class AesCipher {
       true,
       ['encrypt', 'decrypt'],
     );
-  }
 
-  encrypt(plaintext) {
     const iv = window.crypto.getRandomValues(new Uint8Array(32));
-    return window.crypto.subtle.encrypt(
-      {
-        name: 'AES-GCM',
-        // eslint-disable-next-line object-shorthand
-        iv: iv,
-      },
-      this.key,
-      encode(plaintext),
-    );
-  }
 
-  key() {
-    return this.key;
+    const [ciphertext, rawKey] = await Promise.all([
+      window.crypto.subtle.encrypt(
+        {
+          name: 'AES-GCM',
+          iv,
+        },
+        key,
+        encode(plaintext),
+      ),
+      window.crypto.subtle.exportKey('raw', key),
+    ]);
+
+    return {
+      key: new Uint8Array(rawKey),
+      iv: iv,
+      ciphertext: new Uint8Array(ciphertext),
+      tag: new Uint8Array(getTag(ciphertext)),
+      plaintext,
+    };
   }
 }
 
