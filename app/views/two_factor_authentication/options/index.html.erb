@@ -1,0 +1,58 @@
+<% title @presenter.title %>
+
+<h1 class="h3 my0">
+  <%= @presenter.heading %>
+</h1>
+
+<p class="mt-tiny mb3">
+  <%= @presenter.info %>
+</p>
+
+<%= validated_form_for(@two_factor_options_form,
+        html: { autocomplete: 'off', role: 'form' },
+        method: :post,
+        url: login_two_factor_options_path) do |f| %>
+  <div class="mb3">
+    <fieldset class="m0 p0 border-none">
+      <legend class="mb2 serif bold">
+        <%= @presenter.label %>
+      </legend>
+      <% @presenter.options.each_with_index do |option, index| %>
+        <span id="<%= "select_#{option.type}" %>" class="<%= "#{option.html_class}" %>">
+          <label class="btn-border col-12 mb2" for="<%= "two_factor_options_form_selection_#{option.type}" %>">
+            <div class="radio">
+              <%= radio_button_tag('two_factor_options_form[selection]',
+                    option.type,
+                    index.zero?,
+                    class: option.html_class.to_s) %>
+              <span class="indicator mt-tiny"></span>
+              <span class="blue bold fs-20p">
+                <%= option.label %>
+              </span>
+              <div class="regular gray-dark fs-10p mb-tiny">
+                <%= option.info %>
+              </div>
+            </div>
+          </label>
+        </span>
+      <% end %>
+    </fieldset>
+  </div>
+
+  <%= f.button :submit, t('forms.buttons.continue') %>
+<% end %>
+
+<br/>
+<% if current_user.decorate.identity_verified? && !FeatureManagement.disallow_ial2_recovery? %>
+  <p>
+    <%= @presenter.reverify_link %>
+  </p>
+<% else %>
+  <p>
+    <%= @presenter.account_reset_or_cancel_link %>
+  </p>
+<% end %>
+
+<%= render 'shared/cancel', link: destroy_user_session_path %>
+
+<%= javascript_pack_tag 'webauthn-unhide-signin' %>
