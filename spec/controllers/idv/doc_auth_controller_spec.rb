@@ -171,10 +171,17 @@ describe Idv::DocAuthController do
     before do
       mock_document_capture_step
     end
-    let(:good_result) { { pii_from_doc: {}, success: true, errors: {}, messages: ['some message'] } }
+    let(:good_result) { { pii_from_doc: {}, success: true, errors: {}, messages: ['message'] } }
 
     it 'returns status of success' do
       mock_document_capture_result(good_result)
+      put :update, params: { step: 'verify_document_status' }
+
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
+    end
+
+    it 'returns status of pending' do
+      mock_document_capture_result(nil)
       put :update, params: { step: 'verify_document_status' }
 
       expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
