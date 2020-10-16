@@ -28,7 +28,7 @@
   <div class='container py1 px2 lg-px0 <%= 'sm-py0' if show_language_dropdown %>'>
     <div class='flex flex-center'>
       <div class='flex flex-auto flex-first'>
-        <%= render('shared/link_new_window', href: 'https://gsa.gov', class: 'flex flex-center text-decoration-none white h6 mr1 external-link--alt',
+        <%= render('shared/link_new_window', href: 'https://gsa.gov', class: 'flex flex-center text-decoration-none white h6 mr1',
                     'aria-label': t('shared.footer_lite.gsa')) do %>
           <%= image_tag asset_url('sp-logos/square-gsa.svg'),
             width: 20, class: 'mr1 sm-show', alt: '' %>
@@ -63,12 +63,12 @@
         <% end %>
 
         <%= render 'shared/link_new_window', text: t('links.help'), href: MarketingSite.help_url,
-                   class: 'caps h6 blue sm-white text-decoration-none mr2 external-link--alt' %>
+                   class: 'caps h6 blue sm-white text-decoration-none mr2' %>
         <%= render 'shared/link_new_window', text: t('links.contact'), href: MarketingSite.contact_url,
-                   class: 'caps h6 blue sm-white text-decoration-none mr2 external-link--alt' %>
+                   class: 'caps h6 blue sm-white text-decoration-none mr2' %>
         <%= render 'shared/link_new_window', text: t('links.privacy_policy'),
                    href: MarketingSite.security_and_privacy_practices_url,
-                   class: 'caps h6 blue sm-white text-decoration-none mr2 external-link--alt' %>
+                   class: 'caps h6 blue sm-white text-decoration-none mr2' %>
       </div>
     </div>
   </div>

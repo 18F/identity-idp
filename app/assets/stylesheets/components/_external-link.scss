@@ -1,7 +1,7 @@
-.external-link {
+a[target=_blank] {
   @include display-icon('external-link', 'after', .65em, units(.5), '');
 }
 
-.external-link--alt {
+footer a[target=_blank] {
   @include display-icon('external-link-alt', 'after', .65em, units(.5), '');
 }
