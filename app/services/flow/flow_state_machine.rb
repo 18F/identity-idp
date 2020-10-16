@@ -143,7 +143,7 @@ module Flow
     end
 
     def analytics_optional_step
-      @analytics_id + 'optional submitted'
+      [@analytics_id, 'optional submitted'].join(' ')
     end
 
     def next_step
