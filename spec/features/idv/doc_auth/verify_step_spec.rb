@@ -147,7 +147,7 @@ feature 'doc auth verify step' do
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
 
-      expect(agent).to have_received(:proof_resolution).with(should_proof_state_id: true)
+      expect(agent).to have_received(:proof_resolution).with(anything, should_proof_state_id: true)
     end
   end
 
@@ -169,7 +169,7 @@ feature 'doc auth verify step' do
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
 
-      expect(agent).to have_received(:proof_resolution).with(should_proof_state_id: false)
+      expect(agent).to have_received(:proof_resolution).with(anything, should_proof_state_id: false)
     end
   end
 
@@ -189,7 +189,7 @@ feature 'doc auth verify step' do
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
 
-      expect(agent).to have_received(:proof_resolution).with(should_proof_state_id: false)
+      expect(agent).to have_received(:proof_resolution).with(anything, should_proof_state_id: false)
     end
   end
 end
