@@ -9,16 +9,16 @@ module Idv
 
       def process_async_state(current_async_state)
         render_json case current_async_state.status
-        when :none
-          { success: true, status: nil }
-        when :in_progress
-          { success: true, status: 'in_progress' }
-        when :timed_out
-          { success: false, status: nil, errors: ['timeout'] }
-        when :done
-          status = async_state_done(current_async_state)
-          { success: true, status: status ? 'success' : 'fail' }
-        end
+                    when :none
+                      { success: true, status: nil }
+                    when :in_progress
+                      { success: true, status: 'in_progress' }
+                    when :timed_out
+                      { success: false, status: nil, errors: ['timeout'] }
+                    when :done
+                      status = async_state_done(current_async_state)
+                      { success: true, status: status ? 'success' : 'fail' }
+                    end
       end
 
       def async_state_done(current_async_state)
