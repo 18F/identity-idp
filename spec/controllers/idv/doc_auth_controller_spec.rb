@@ -181,6 +181,7 @@ describe Idv::DocAuthController do
       mock_document_capture_step
     end
     let(:good_result) { { pii_from_doc: {}, success: true, errors: {}, messages: ['message'] } }
+    let(:fail_result) { { pii_from_doc: {}, success: false, errors: {}, messages: ['message'] } }
 
     it 'returns status of success' do
       mock_document_capture_result(good_result)
@@ -196,6 +197,14 @@ describe Idv::DocAuthController do
 
       expect(response.status).to eq(200)
       expect(response.body).to eq({ success: true, status: 'in_progress' }.to_json)
+    end
+
+    it 'returns status of fail' do
+      mock_document_capture_result(fail_result)
+      put :update, params: { step: 'verify_document_status' }
+
+      expect(response.status).to eq(200)
+      expect(response.body).to eq({ success: true, status: 'fail' }.to_json)
     end
   end
 
