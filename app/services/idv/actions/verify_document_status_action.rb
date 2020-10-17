@@ -8,7 +8,7 @@ module Idv
       private
 
       def process_async_state(current_async_state)
-        case current_async_state.status
+        render_json case current_async_state.status
         when :none
           { success: true, status: nil }
         when :in_progress

@@ -68,6 +68,10 @@ module Flow
       @flow.redirect_to(url)
     end
 
+    def render_json(json)
+      @flow.render_json(json)
+    end
+
     def reset
       @flow.flow_session = {}
     end

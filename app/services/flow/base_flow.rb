@@ -1,13 +1,14 @@
 module Flow
   class BaseFlow
     attr_accessor :flow_session
-    attr_reader :steps, :actions, :current_user, :params, :request
+    attr_reader :steps, :actions, :current_user, :params, :request, :json
 
     def initialize(controller, steps, actions, session)
       @controller = controller
       @steps = steps.with_indifferent_access
       @actions = actions.with_indifferent_access
       @redirect = nil
+      @json = nil
       @flow_session = session
     end
 
@@ -21,6 +22,10 @@ module Flow
 
     def redirect_to(url)
       @redirect = url
+    end
+
+    def render_json(json)
+      @json = json
     end
 
     def handle(step)

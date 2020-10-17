@@ -159,11 +159,20 @@ describe Idv::DocAuthController do
     before do
       mock_document_capture_step
     end
+    let(:successful_response) do
+      { success: true, errors: {}, extra: { remaining_attempts: 3 } }.to_json
+    end
 
     it 'successfully submits the images' do
-      put :update, params: { step: 'verify_document' }
+      put :update, params: { step: 'verify_document',
+                             document_capture_session_uuid: 'foo',
+                             encryption_key: 'bar',
+                             front_image_url: 'http://foo.com/bar1',
+                             back_image_url: 'http://foo.com/bar2',
+                             selfie_image_url: 'http://foo.com/bar3' }
 
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq(successful_response)
     end
   end
 
@@ -177,14 +186,16 @@ describe Idv::DocAuthController do
       mock_document_capture_result(good_result)
       put :update, params: { step: 'verify_document_status' }
 
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq({ success: true, status: 'success' }.to_json)
     end
 
-    it 'returns status of pending' do
+    it 'returns status of in progress' do
       mock_document_capture_result(nil)
       put :update, params: { step: 'verify_document_status' }
 
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :welcome)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq({ success: true, status: 'in_progress' }.to_json)
     end
   end
 

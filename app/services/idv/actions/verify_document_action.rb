@@ -5,6 +5,15 @@ module Idv
         enqueue_job
       end
 
+      private
+
+      def form_submit
+        render_json Idv::ApiDocumentVerificationForm.new(
+          params,
+          liveness_checking_enabled: liveness_checking_enabled?,
+        ).submit
+      end
+
       def enqueue_job
         document_capture_session = create_document_capture_session(
           verify_document_capture_session_uuid_key,
