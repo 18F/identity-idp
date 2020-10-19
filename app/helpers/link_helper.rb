@@ -8,7 +8,6 @@ module LinkHelper
 
     classes = html_options[:class].split(' ').append(EXTERNAL_LINK_CLASS)
 
-
     html_options[:class] = classes.uniq.join(' ')
 
     link_to(url, html_options) do
