@@ -11,7 +11,7 @@
           html: { autocomplete: 'off', role: 'form' },
           url: add_email_path) do |f| %>
     <%= f.input :email, label: t('forms.registration.labels.email'), required: true,
-        input_html: { aria: { invalid: false } } %>
+                input_html: { aria: { invalid: false } } %>
     <%= f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide' %>
   <% end %>
 </div>
