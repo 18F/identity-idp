@@ -5,6 +5,7 @@ module LinkHelper
   def new_window_link_to(name = nil, url = nil, html_options = nil)
     html_options ||= {}
     html_options[:class] ||= html_options[:class].to_s
+    html_options[:target] = '_blank'
 
     classes = html_options[:class].split(' ')
 
