@@ -44,11 +44,11 @@ describe('document-capture/components/file-input', () => {
     });
 
     it('returns a pattern for mime type matching', () => {
-      const accept = 'image/jpg';
+      const accept = 'image/jpeg';
       const pattern = getAcceptPattern(accept);
 
-      expect(pattern.test('image/jpg')).to.be.true();
-      expect(pattern.test('ximage/jpg')).to.be.false();
+      expect(pattern.test('image/jpeg')).to.be.true();
+      expect(pattern.test('ximage/jpeg')).to.be.false();
       expect(pattern.test('audio/mp3')).to.be.false();
       expect(pattern.test('video/mp4')).to.be.false();
     });
