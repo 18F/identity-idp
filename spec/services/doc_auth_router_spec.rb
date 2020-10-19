@@ -43,4 +43,24 @@ RSpec.describe DocAuthRouter do
       end
     end
   end
+
+  describe '.notify_exception' do
+    let(:exception) { RuntimeError.new }
+
+    it 'notifies NewRelic' do
+      expect(NewRelic::Agent).to receive(:notice_error).with(exception)
+
+      DocAuthRouter.notify_exception(exception)
+    end
+
+    context 'with custom params' do
+      let(:params) { { count: 1 } }
+
+      it 'forwards on custom_params to NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error).with(exception, custom_params: params)
+
+        DocAuthRouter.notify_exception(exception, params)
+      end
+    end
+  end
 end
