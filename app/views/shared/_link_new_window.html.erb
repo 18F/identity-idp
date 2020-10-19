@@ -1,8 +1,0 @@
-<%= link_to href, **local_assigns.except(:href, :text), target: '_blank' do %>
-  <% if local_assigns[:text] %>
-    <%= local_assigns[:text] %>
-  <% else %>
-    <%= yield %>
-  <% end %>
-  <span class="usa-sr-only"><%= t('links.new_window')%></span>
-<% end %>

@@ -8,8 +8,8 @@
   <%= t('idv.messages.sessions.review_message') %>
 </p>
 
-<%= render 'shared/link_new_window', text: t('idv.messages.sessions.read_more_encrypt'),
-           href: MarketingSite.security_url %>
+<%= new_window_link_to t('in_person_proofing.instructions.read_more_encrypt'),
+                       MarketingSite.security_url %>
 
 <%= validated_form_for(current_user, url: idv_review_path,
                        html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
