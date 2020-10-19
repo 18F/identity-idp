@@ -9,10 +9,16 @@ p == @presenter.phone_number_message
     t('simple_form.required.html') + t('forms.two_factor.code'), \
     class: 'block bold'
   .col-12.sm-col-5.mb2.sm-mb0.sm-mr-20p.inline-block
-    = text_field_tag(:code, '', value: @code, required: true,
-      autofocus: true, pattern: '[0-9]*', class: 'col-12 field monospace mfa',
-      'aria-describedby': 'code-instructs', maxlength: Devise.direct_otp_length,
-      autocomplete: 'one-time-code', type: 'tel')
+    = text_field_tag(:code, '',
+      value: @code,
+      required: true,
+      aria: { invalid: false, describedby: 'code-instructs' },
+      autofocus: true,
+      pattern: '[0-9]*',
+      class: 'col-12 field monospace mfa',
+      maxlength: Devise.direct_otp_length,
+      autocomplete: 'one-time-code',
+      type: 'tel')
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top sm-col-6 col-12'
   br
   br
