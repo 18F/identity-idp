@@ -1,15 +1,7 @@
-.usa-link:hover {
-  color: '';
-}
-
-.usa-link--alt:hover {
-  color: '';
-}
-
-.usa-link--external.usa-link {
+.usa-link--external {
   @include external-link(external-link, external-link);
-}
 
-.usa-link--external.usa-link--alt {
-  @include external-link(external-link-alt, external-link-alt);
+  &.usa-link--alt {
+    @include external-link(external-link-alt, external-link-alt);
+  }
 }
