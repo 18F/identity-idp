@@ -44,11 +44,11 @@ describe('document-capture/components/file-input', () => {
     });
 
     it('returns a pattern for mime type matching', () => {
-      const accept = 'image/jpg';
+      const accept = 'image/jpeg';
       const pattern = getAcceptPattern(accept);
 
-      expect(pattern.test('image/jpg')).to.be.true();
-      expect(pattern.test('ximage/jpg')).to.be.false();
+      expect(pattern.test('image/jpeg')).to.be.true();
+      expect(pattern.test('ximage/jpeg')).to.be.false();
       expect(pattern.test('audio/mp3')).to.be.false();
       expect(pattern.test('video/mp4')).to.be.false();
     });
@@ -299,8 +299,8 @@ describe('document-capture/components/file-input', () => {
     const input = getByLabelText('File');
     userEvent.upload(input, file);
 
-    expect(getByText('errors.doc_auth.selfie')).to.be.ok();
-    expect(onError.getCall(0).args[0]).to.equal('errors.doc_auth.selfie');
+    expect(getByText('errors.file_input.invalid_type')).to.be.ok();
+    expect(onError.getCall(0).args[0]).to.equal('errors.file_input.invalid_type');
   });
 
   it('shows an error from rendering parent', () => {
@@ -313,13 +313,13 @@ describe('document-capture/components/file-input', () => {
     const input = getByLabelText('File');
     userEvent.upload(input, file);
 
-    expect(getByText('errors.doc_auth.selfie')).to.be.ok();
-    expect(onError.getCall(0).args[0]).to.equal('errors.doc_auth.selfie');
+    expect(getByText('errors.file_input.invalid_type')).to.be.ok();
+    expect(onError.getCall(0).args[0]).to.equal('errors.file_input.invalid_type');
 
     rerender(<FileInput {...props} errorMessage="Oops!" />);
 
     expect(getByText('Oops!')).to.be.ok();
-    expect(() => getByText('errors.doc_auth.selfie')).to.throw();
+    expect(() => getByText('errors.file_input.invalid_type')).to.throw();
     expect(onError.callCount).to.equal(1);
   });
 
