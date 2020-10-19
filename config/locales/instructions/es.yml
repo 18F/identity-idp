@@ -51,9 +51,9 @@ es:
         step_1_info: Si agrega más de un PIV / CAC, sabrá cuál es cuál.
         step_2: Inserte su PIV/CAC en su lector de tarjetas
         step_3: Agregue su PIV/CAC
-        step_3_info: Tendrá que <strong> elegir un certificado </strong> (el correcto
-          probablemente tenga su nombre) e <strong> ingrese su PIN </strong> (su PIN
-          se creó cuando configuró su PIV/CAC)
+        step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (el
+          correcto probablemente tenga su nombre) e <strong> ingrese su PIN </strong>
+          (su PIN se creó cuando configuró su PIV/CAC)
         temporary_error: Vuelve a intentarlo más tarde o inicia sesión con tu correo
           electrónico y contraseña.
         try_again: inténtalo de nuevo

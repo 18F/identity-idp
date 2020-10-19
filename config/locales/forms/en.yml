@@ -24,9 +24,9 @@ en:
       generate: Get codes
       print: Print
       regenerate: Get new codes
-      subinfo: "<b>Don't lose these codes</b>. Download, print, or copy them. Each
-        code can only be used once. After you’ve used all 10 codes, we’ll give you
-        10 new codes.  Keep your codes as safe as your password."
+      subinfo_html: "<b>Don't lose these codes</b>. Download, print, or copy them.
+        Each code can only be used once. After you’ve used all 10 codes, we’ll give
+        you 10 new codes.  Keep your codes as safe as your password."
       subtitle: Your backup codes
       title: Backup codes
     backup_code_regenerate:

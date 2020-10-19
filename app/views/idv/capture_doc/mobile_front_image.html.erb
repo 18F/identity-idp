@@ -31,7 +31,7 @@
     <button class='btn btn-secondary mt3' id='take_picture'>
       <%= t('doc_auth.buttons.take_picture') %>
     </button>
-    <%= f.input :image, label: false, as: :file, required: true, wrapper_class: 'hidden' %>
+    <%= f.input :image, label: false, as: :file, required: true, input_html: { aria: { invalid: false } }, wrapper_class: 'hidden' %>
     <div class='my2' id='target'></div>
     <div class='mt3'>
       <%= render 'idv/doc_auth/submit_with_spinner' %>

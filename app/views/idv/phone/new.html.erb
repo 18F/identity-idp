@@ -29,7 +29,7 @@
 <%= validated_form_for(@idv_form, url: idv_phone_path,
                        html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f| %>
  <%= f.label :phone, label: t('idv.form.phone'), class: 'bold' %>
- <%= f.input :phone, required: true, input_html: { class: 'sm-col-8' }, label: false,
+ <%= f.input :phone, required: true, input_html: { aria: { invalid: false }, class: 'sm-col-8' }, label: false,
    wrapper_html: { class: 'mr2' } %>
 
   <% if FeatureManagement.enable_usps_verification? %>

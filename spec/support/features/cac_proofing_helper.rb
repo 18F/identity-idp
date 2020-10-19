@@ -19,6 +19,10 @@ module CacProofingHelper
     idv_cac_step_path(step: :verify)
   end
 
+  def idv_cac_proofing_verify_wait_step
+    idv_cac_step_path(step: :verify_wait)
+  end
+
   def idv_cac_proofing_success_step
     idv_cac_step_path(step: :success)
   end

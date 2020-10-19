@@ -25,6 +25,7 @@ function disableFormSubmit(event) {
 function checkInputValidity(event) {
   const input = /** @type {HTMLInputElement} */ (event.target);
   input.setCustomValidity('');
+  input.setAttribute('aria-invalid', String(!input.validity.valid));
 
   const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
 

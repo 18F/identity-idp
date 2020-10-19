@@ -104,7 +104,12 @@ module Flow
       return unless @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
       optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[step]
       return unless optional_show_step
-      optional_show_step.new(@flow).base_call
+      result = optional_show_step.new(@flow).base_call
+
+      if @analytics_id
+        analytics.track_event(analytics_optional_step, result.to_h.merge(step: optional_show_step))
+      end
+
       if next_step.to_s != step
         if next_step_is_url
           redirect_to next_step
@@ -135,6 +140,10 @@ module Flow
 
     def analytics_visited
       @analytics_id + ' visited'
+    end
+
+    def analytics_optional_step
+      [@analytics_id, 'optional submitted'].join(' ')
     end
 
     def next_step

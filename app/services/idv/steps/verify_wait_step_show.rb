@@ -34,10 +34,12 @@ module Idv
         else
           mark_step_incomplete(:verify)
         end
+
+        response
       end
 
       def async_state
-        dcs_uuid = flow_session[:idv_verify_step_document_capture_session_uuid]
+        dcs_uuid = flow_session[verify_step_document_capture_session_uuid_key]
         dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
         return ProofingDocumentCaptureSessionResult.none if dcs_uuid.nil?
         return ProofingDocumentCaptureSessionResult.timed_out if dcs.nil?
@@ -53,7 +55,7 @@ module Idv
       end
 
       def delete_async
-        flow_session.delete(:idv_verify_step_document_capture_session_uuid)
+        flow_session.delete(verify_step_document_capture_session_uuid_key)
       end
     end
   end
