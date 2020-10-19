@@ -11,7 +11,6 @@ feature 'doc capture document capture step' do
   let(:sp_requests_ial2_strict) { true }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
-    allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('true')
     allow(Figaro.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(LoginGov::Hostdata::EC2).to receive(:load).

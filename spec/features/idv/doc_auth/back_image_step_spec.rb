@@ -8,6 +8,8 @@ feature 'doc auth back image step' do
   let(:user) { user_with_2fa }
 
   before do
+    allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
+
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_back_image_step
   end
