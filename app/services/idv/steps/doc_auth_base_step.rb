@@ -201,7 +201,7 @@ module Idv
 
       def log_document_error(get_results_response)
         # DP: handle multiple clients
-        if !get_results_response.is_a?(IdentityDocAuth::Acuant::Responses::GetResultsResponse)
+        unless get_results_response.is_a?(IdentityDocAuth::Acuant::Responses::GetResultsResponse)
           return
         end
         Funnel::DocAuth::LogDocumentError.call(user_id,

@@ -40,7 +40,7 @@ module DocAuthRouter
       # i18n-tasks-use t('doc_auth.errors.lexis_nexis.sex_check')
       # i18n-tasks-use t('doc_auth.errors.lexis_nexis.visible_color_check')
       # i18n-tasks-use t('doc_auth.errors.lexis_nexis.visible_photo_check')
-      IdentityDocAuth:LexisNexis::LexisNexisClient.new(
+      IdentityDocAuth::LexisNexis::LexisNexisClient.new(
         account_id: Figaro.env.lexisnexis_account_id,
         base_url: Figaro.env.lexisnexis_base_url,
         request_mode: Figaro.env.lexisnexis_request_mode,
@@ -68,7 +68,7 @@ module DocAuthRouter
     end
   end
 
-  ##
+  #
   # The `acuant_simulator` config is deprecated. The logic to switch vendors
   # based on its value can be removed once FORCE_ACUANT_CONFIG_UPGRADE in
   # acuant_simulator_config_validation.rb has been set to true for at least
