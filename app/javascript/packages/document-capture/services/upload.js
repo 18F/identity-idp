@@ -21,7 +21,11 @@ export class UploadFormEntriesError extends Error {
  */
 export function toFormData(object) {
   return Object.keys(object).reduce((form, key) => {
-    form.append(key, object[key]);
+    const value = object[key];
+    if (value !== undefined) {
+      form.append(key, value);
+    }
+
     return form;
   }, new window.FormData());
 }
