@@ -12,8 +12,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: afd9f8c44d1902f479fb59bcba9ca65f3babd661
-  ref: afd9f8c44d1902f479fb59bcba9ca65f3babd661
+  revision: f61b5b76c71659d33a40b87e769252dc80d2af43
+  tag: v0.1.0
   specs:
     identity-doc-auth (0.1.0)
       activesupport
