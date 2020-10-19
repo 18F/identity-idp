@@ -3,6 +3,7 @@ import AcuantCapture from './acuant-capture';
 import FormErrorMessage from './form-error-message';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
+import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 
 /**
  * @typedef DocumentsStepValue
@@ -63,4 +64,4 @@ function DocumentsStep({
   );
 }
 
-export default DocumentsStep;
+export default withBackgroundEncryptedUpload(DocumentsStep);

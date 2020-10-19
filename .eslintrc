@@ -28,6 +28,7 @@
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
     "no-plusplus": "off",
+    "no-restricted-syntax": "off",
     "no-unused-expressions": "off",
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
