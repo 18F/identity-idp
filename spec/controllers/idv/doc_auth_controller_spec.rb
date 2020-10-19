@@ -163,16 +163,48 @@ describe Idv::DocAuthController do
       { success: true, errors: {}, extra: { remaining_attempts: 3 } }.to_json
     end
 
-    it 'successfully submits the images' do
-      put :update, params: { step: 'verify_document',
-                             document_capture_session_uuid: 'foo',
-                             encryption_key: 'bar',
-                             front_image_url: 'http://foo.com/bar1',
-                             back_image_url: 'http://foo.com/bar2',
-                             selfie_image_url: 'http://foo.com/bar3' }
+    context 'with selfie checking disabled' do
+      it 'successfully submits the images' do
+        put :update, params: { step: 'verify_document',
+                               document_capture_session_uuid: 'foo',
+                               encryption_key: 'bar',
+                               front_image_url: 'http://foo.com/bar1',
+                               back_image_url: 'http://foo.com/bar2',
+                               selfie_image_url: 'http://foo.com/bar3' }
 
-      expect(response.status).to eq(200)
-      expect(response.body).to eq(successful_response)
+        expect(response.status).to eq(200)
+        expect(response.body).to eq(successful_response)
+      end
+
+      it 'fails to submit the images' do
+        put :update, params: { step: 'verify_document' }
+
+        expect(response.status).to eq(400)
+      end
+    end
+
+    context 'with selfie checking enabled' do
+      before do
+        allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+      end
+
+      it 'successfully submits the images' do
+        put :update, params: { step: 'verify_document',
+                               document_capture_session_uuid: 'foo',
+                               encryption_key: 'bar',
+                               front_image_url: 'http://foo.com/bar1',
+                               back_image_url: 'http://foo.com/bar2',
+                               selfie_image_url: 'http://foo.com/bar3' }
+
+        expect(response.status).to eq(200)
+        expect(response.body).to eq(successful_response)
+      end
+
+      it 'fails to submit the images' do
+        put :update, params: { step: 'verify_document' }
+
+        expect(response.status).to eq(400)
+      end
     end
   end
 
