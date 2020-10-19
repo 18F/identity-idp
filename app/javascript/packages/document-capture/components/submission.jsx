@@ -37,7 +37,7 @@ export async function resolveObjectValues(object) {
  * @return {(...args:any)=>Promise<any>} Promise resolving once all promise creators in series have
  * run.
  */
-export const series = (promiseCreators) => (value) =>
+export const series = (...promiseCreators) => (value) =>
   promiseCreators.reduce((current, next) => current.then(next), Promise.resolve(value));
 
 /**
@@ -52,7 +52,7 @@ export const series = (promiseCreators) => (value) =>
  */
 function Submission({ payload, onError }) {
   const { upload } = useContext(UploadContext);
-  const resource = useAsync(series([resolveObjectValues, upload]), payload);
+  const resource = useAsync(series(resolveObjectValues, upload), payload);
 
   return (
     <SuspenseErrorBoundary

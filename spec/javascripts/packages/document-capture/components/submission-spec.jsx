@@ -18,10 +18,10 @@ describe('resolveObjectValues', () => {
 
 describe('series', () => {
   it('runs promise in chain series', async () => {
-    const run = series([
+    const run = series(
       (current) => Promise.resolve(`${current}b`),
       (current) => Promise.resolve(`${current}c`),
-    ]);
+    );
 
     const result = await run('a');
 
