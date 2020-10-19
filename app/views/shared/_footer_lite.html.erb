@@ -62,13 +62,12 @@
           </ul>
         <% end %>
 
-        <%= render 'shared/link_new_window', text: t('links.help'), href: MarketingSite.help_url,
-                   class: 'caps h6 blue sm-white text-decoration-none mr2' %>
-        <%= render 'shared/link_new_window', text: t('links.contact'), href: MarketingSite.contact_url,
-                   class: 'caps h6 blue sm-white text-decoration-none mr2' %>
-        <%= render 'shared/link_new_window', text: t('links.privacy_policy'),
-                   href: MarketingSite.security_and_privacy_practices_url,
-                   class: 'caps h6 blue sm-white text-decoration-none mr2' %>
+        <%= new_window_link_to(t('links.help'), MarketingSite.help_url,
+                               class: 'caps h6 blue sm-white text-decoration-none mr2 usa-link--alt usa-link--external') %>
+        <%= new_window_link_to(t('links.contact'), MarketingSite.contact_url,
+                               class: 'caps h6 blue sm-white text-decoration-none mr2 usa-link--alt usa-link--external') %>
+        <%= new_window_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
+                               class: 'caps h6 blue sm-white text-decoration-none mr2 usa-link--alt usa-link--external') %>
       </div>
     </div>
   </div>
