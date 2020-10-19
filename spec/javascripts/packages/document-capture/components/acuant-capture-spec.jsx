@@ -592,6 +592,6 @@ describe('document-capture/components/acuant-capture', () => {
 
     const input = getByLabelText('Image');
 
-    expect(input.getAttribute('accept')).to.equal('image/*');
+    expect(input.getAttribute('accept')).to.equal('image/jpeg,image/png,image/bmp,image/tiff');
   });
 });
