@@ -13,10 +13,9 @@ const withBackgroundEncryptedUpload = (Component) => ({ onChange, ...props }) =>
       nextValuesWithUpload[key] = value;
       const url = backgroundUploadURLs[key];
       if (url && value) {
-        nextValuesWithUpload[`${key}BackgroundUpload`] = window.fetch(url, {
-          method: 'POST',
-          body: value,
-        });
+        nextValuesWithUpload[`${key}BackgroundUpload`] = window
+          .fetch(url, { method: 'POST', body: value })
+          .then(() => undefined);
       }
     }
 
