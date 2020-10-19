@@ -18,7 +18,7 @@ module Idv
       private
 
       def send_selfie_request
-        selfie_response = DocAuth::Client.client.post_selfie(
+        selfie_response = DocAuthRouter.client.post_selfie(
           instance_id: instance_id, image: image.read,
         )
         add_cost(:acuant_selfie)
@@ -52,7 +52,7 @@ module Idv
       end
 
       def results_response
-        @results_response ||= DocAuth::Client.client.get_results(
+        @results_response ||= DocAuthRouter.client.get_results(
           instance_id: flow_session[:instance_id],
         )
       end

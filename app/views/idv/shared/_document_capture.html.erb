@@ -5,7 +5,7 @@
 <% end %>
 <%= tag.div id: 'document-capture-form', data: {
   liveness_required: liveness_checking_enabled?.presence,
-  mock_client: (DocAuth::Client.doc_auth_vendor == 'mock').presence,
+  mock_client: (DocAuthRouter.doc_auth_vendor == 'mock').presence,
   document_capture_session_uuid: flow_session[:document_capture_session_uuid],
   endpoint: api_verify_images_url,
   sp_name: sp_name,
