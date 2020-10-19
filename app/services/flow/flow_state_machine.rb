@@ -27,7 +27,7 @@ module Flow
       analytics.track_event(analytics_submitted, result.to_h.merge(step: step)) if @analytics_id
       register_update_step(step, result)
       if flow.json
-        render json: flow.json
+        render json: flow.json, status: flow.http_status
         return
       end
       flow_finish and return unless next_step

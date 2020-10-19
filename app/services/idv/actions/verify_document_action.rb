@@ -8,10 +8,16 @@ module Idv
       private
 
       def form_submit
-        render_json Idv::ApiDocumentVerificationForm.new(
+        json = form.submit
+        render_json(json, status: form.status)
+        json
+      end
+
+      def form
+        @form ||= Idv::ApiDocumentVerificationForm.new(
           params,
           liveness_checking_enabled: liveness_checking_enabled?,
-        ).submit
+        )
       end
 
       def enqueue_job
