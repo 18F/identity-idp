@@ -3,7 +3,9 @@ module DocAuthRouter
   def self.client
     case doc_auth_vendor
     when 'acuant'
+      # i18n-tasks-use t('errors.doc_auth.acuant_network_error')
       # i18n-tasks-use t('errors.doc_auth.general_error')
+      # i18n-tasks-use t('errors.doc_auth.selfie')
       IdentityDocAuth::Acuant::AcuantClient.new(
         assure_id_password: Figaro.env.acuant_assure_id_password,
         assure_id_subscription_id: Figaro.env.acuant_assure_id_subscription_id,
