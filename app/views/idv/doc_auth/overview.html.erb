@@ -61,7 +61,7 @@
       <%= check_box_tag :ial2_consent_given, true, false %>
       <span class="indicator"></span>
       <%= t('recover.instructions.consent') %>
-      <%= link_to(t('recover.instructions.learn_more'), 'https://login.gov/policy/', target: '_blank') %>
+      <%= new_window_link_to(t('recover.instructions.learn_more'), 'https://login.gov/policy/') %>
     </div>
   </label>
   <%= f.button :submit, t('recover.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-6' %>

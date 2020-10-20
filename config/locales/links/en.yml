@@ -15,6 +15,7 @@ en:
     go_back: Go back
     help: Help
     my_account: my account
+    new_window: "(opens new window)"
     next: Sign in
     passwords:
       forgot: Forgot your password?
