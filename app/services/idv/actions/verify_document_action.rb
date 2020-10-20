@@ -28,7 +28,7 @@ module Idv
         document_capture_session.store_proofing_pii_from_doc({})
 
         VendorDocumentVerificationJob.perform(
-          _document_capture_session_uuid: params[:document_capture_session_uuid],
+          _document_capture_session_result_id: document_capture_session.result_id,
           _encryption_key: params[:encryption_key],
           _front_image_url: params[:front_image_url],
           _back_image_url: params[:back_image_url],
