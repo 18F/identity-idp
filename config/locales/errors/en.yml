@@ -67,6 +67,8 @@ en:
       photo_glare: Photo has glare, please try again.
       quota_reached: Sorry your service provider has reached its identity verification
         limit.  Please contact your service provider for more information.
+      selfie: We couldn't read the photo of yourself, or match the photo to your ID.
+        Try taking a new picture.
       send_link_throttle: You tried too many times, please try again in 10 minutes.
         You can also click on Start Over and choose to use your computer instead.
     file_input:
