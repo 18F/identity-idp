@@ -33,14 +33,10 @@ loadPolyfills(['fetch']).then(() => {
   render(
     <div id="react-wrapper">
       <form id="cipher-form" method='post' onSubmit={doEncryption}>
-        <label htmlFor="origtext">Enter some text to encipher:</label>
-        <input type="text" name="origtext" id="original-text" />
-        <input type="hidden" name="key" id="key" />
-        <input type="hidden" name="iv" id="iv" />
-        <input type="hidden" name="tag" id="tag" />
-        <input type="hidden" name="ciphertext" id="ciphertext"/>
-        <button type="submit" formMethod="post">
-          Encipher!
+        <label class='usa-label' htmlFor="origtext">Enter some text to encipher:</label>
+        <textarea class='usa-textarea margin-bottom-3' type="text" name="origtext" id="original-text" />
+        <button type="submit" formMethod="post" class='usa-button'>
+          Send to server for decryption
         </button>
       </form>
     </div>,

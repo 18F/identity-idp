@@ -1,8 +1,10 @@
-<h1>Test Ciphers</h1>
+<h1>Testing Ciphers</h1>
+<h2>Encrypting text in the brower:</h2>
 <div id=cipher-root data-plaintext="<%= @plaintext %>"></div>
 <%= tag.div id: 'cipher-root', data: {
   plaintext: @plaintext,
 } %>
 <%= javascript_pack_tag 'test-cipher' %>
 
+<h2>Deciphered text received from server:</h2>
 <div id=deciphered></div>
