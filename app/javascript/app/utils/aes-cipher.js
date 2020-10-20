@@ -5,19 +5,6 @@ const encode = function (text) {
   return enc.encode(text);
 };
 
-// function ab2str(buf) {
-//   return String.fromCharCode.apply(null, new Uint16Array(buf));
-// }
-
-function getTag(encrypted, tagLength = 128) {
-  return encrypted.slice(encrypted.byteLength - ((tagLength + 7) >> 3));
-}
-
-function arr2b64(array) {
-  const utf8decoder = new TextDecoder();
-  return btoa(utf8decoder.decode(new Uint8Array(array)));
-}
-
 function base64ArrayBuffer(arrayBuffer) {
   let base64 = '';
   let encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -72,9 +59,6 @@ function base64ArrayBuffer(arrayBuffer) {
 
 class AesCipher {
   static async encrypt(plaintext) {
-    console.log('~~~~~~ doEncryption!! ~~~~~~~~~~');
-    console.log('message: ', plaintext);
-
     const plaintextArrayBuffer = encode(plaintext);
 
     const keyObject = await window.crypto.subtle.generateKey(
@@ -107,7 +91,6 @@ class AesCipher {
       key: encodedKey,
       iv: encodedIv,
       ciphertext: encodedCiphertext,
-      plaintext,
     };
   }
 }

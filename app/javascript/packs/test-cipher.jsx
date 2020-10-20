@@ -16,10 +16,8 @@ export function toFormData(object) {
 
 async function doEncryption(event) {
   event.preventDefault();
-  // const form = event.currentTarget.closest('[action]');
   const messageBox = document.querySelector('#original-text');
   const message = messageBox.value;
-  console.log(`We want to encrypt ${message}`);
   const payload = await AesCipher.encrypt(message);
   const response = await window.fetch(location.href, {
     method: 'POST',
@@ -33,9 +31,11 @@ loadPolyfills(['fetch']).then(() => {
   render(
     <div id="react-wrapper">
       <form id="cipher-form" method='post' onSubmit={doEncryption}>
-        <label class='usa-label' htmlFor="origtext">Enter some text to encipher:</label>
-        <textarea class='usa-textarea margin-bottom-3' type="text" name="origtext" id="original-text" />
-        <button type="submit" formMethod="post" class='usa-button'>
+        <label className="usa-label" htmlFor="origtext">
+          Enter some text to encipher:
+        </label>
+        <textarea className="usa-textarea margin-bottom-3" name="origtext" id="original-text" />
+        <button className='usa-button' type="submit" formMethod="post">
           Send to server for decryption
         </button>
       </form>
