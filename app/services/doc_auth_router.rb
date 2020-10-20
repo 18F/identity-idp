@@ -1,6 +1,6 @@
 # Helps route between various doc auth backends, provided by the identity-doc-auth gem
 module DocAuthRouter
-  class AcuantErrorTranslatorProxy < BasicObject
+  class AcuantErrorTranslatorProxy
     def initialize(client)
       @client = client
     end
@@ -26,7 +26,7 @@ module DocAuthRouter
 
     # Translates IdentityDocAuth::GetResultsResponse errors
     def translate_form_response!(response)
-      return response unless response.is_a?(::IdentityDocAuth::Response)
+      return response unless response.is_a?(IdentityDocAuth::Response)
 
       translate_friendly_errors!(response)
       translate_generic_errors!(response)
@@ -36,9 +36,9 @@ module DocAuthRouter
 
     def translate_friendly_errors!(response)
       response.errors[:results]&.map! do |untranslated_error|
-        friendly_message = ::FriendlyError::Message.call(untranslated_error, 'doc_auth')
+        friendly_message = FriendlyError::Message.call(untranslated_error, 'doc_auth')
         if friendly_message == untranslated_error
-          ::I18n.t('errors.doc_auth.general_error')
+          I18n.t('errors.doc_auth.general_error')
         else
           friendly_message
         end
@@ -48,11 +48,11 @@ module DocAuthRouter
     # rubocop:disable Style/GuardClause
     def translate_generic_errors!(response)
       if response.errors[:network] == true
-        response.errors[:network] = ::I18n.t('errors.doc_auth.acuant_network_error')
+        response.errors[:network] = I18n.t('errors.doc_auth.acuant_network_error')
       end
 
       if response.errors[:selfie] == true
-        response.errors[:selfie] = ::I18n.t('errors.doc_auth.selfie')
+        response.errors[:selfie] = I18n.t('errors.doc_auth.selfie')
       end
     end
     # rubocop:enable Style/GuardClause
