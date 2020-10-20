@@ -1035,7 +1035,8 @@ describe SamlIdpController do
   end
 
   def expect_sp_authentication_cost
-    sp_cost = SpCost.where(issuer: 'http://localhost:3000', cost_type: 'authentication').first
+    sp_cost = SpCost.where(issuer: 'http://localhost:3000',
+                           cost_type: 'authentication').first
     expect(sp_cost).to be_present
   end
 end
