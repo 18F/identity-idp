@@ -1,23 +1,75 @@
 # Helps route between various doc auth backends, provided by the identity-doc-auth gem
 module DocAuthRouter
+  class AcuantErrorTranslatorProxy < BasicObject
+    def initialize(client)
+      @client = client
+    end
+
+    # Used for detecting if we have a proxy or the real thing
+    def proxy?
+      true
+    end
+
+    def method_missing(name, *args, &block)
+      if @client.respond_to?(name)
+        translate_form_response!(@client.send(name, *args, &block))
+      else
+        super
+      end
+    end
+
+    def respond_to_missing?(method_name, include_private = false)
+      @client.respond_to?(method_name) || super
+    end
+
+    private
+
+    # Translates IdentityDocAuth::GetResultsResponse errors
+    def translate_form_response!(response)
+      return response unless response.is_a?(::IdentityDocAuth::Response)
+
+      translate_friendly_errors!(response)
+      translate_generic_errors!(response)
+
+      response
+    end
+
+    def translate_friendly_errors!(response)
+      response.errors[:results]&.map! do |untranslated_error|
+        friendly_message = ::FriendlyError::Message.call(untranslated_error, 'doc_auth')
+        if friendly_message == untranslated_error
+          ::I18n.t('errors.doc_auth.general_error')
+        else
+          friendly_message
+        end
+      end&.uniq!
+    end
+
+    def translate_generic_errors!(response)
+      if response.errors[:network] == true
+        response.errors[:network] = ::I18n.t('errors.doc_auth.acuant_network_error')
+      end
+
+      if response.errors[:selfie] == true
+        response.errors[:selfie] = ::I18n.t('errors.doc_auth.selfie')
+      end
+    end
+  end
+
   def self.client
     case doc_auth_vendor
     when 'acuant'
-      # i18n-tasks-use t('errors.doc_auth.acuant_network_error')
-      # i18n-tasks-use t('errors.doc_auth.general_error')
-      # i18n-tasks-use t('errors.doc_auth.selfie')
-      IdentityDocAuth::Acuant::AcuantClient.new(
-        assure_id_password: Figaro.env.acuant_assure_id_password,
-        assure_id_subscription_id: Figaro.env.acuant_assure_id_subscription_id,
-        assure_id_url: Figaro.env.acuant_assure_id_url,
-        assure_id_username: Figaro.env.acuant_assure_id_username,
-        facial_match_url: Figaro.env.acuant_facial_match_url,
-        passlive_url: Figaro.env.acuant_passlive_url,
-        timeout: Figaro.env.acuant_timeout,
-        friendly_error_message: FriendlyError::Message,
-        friendly_error_find_key: FriendlyError::FindKey,
-        exception_notifier: method(:notify_exception),
-        i18n: I18n,
+      AcuantErrorTranslatorProxy.new(
+        IdentityDocAuth::Acuant::AcuantClient.new(
+          assure_id_password: Figaro.env.acuant_assure_id_password,
+          assure_id_subscription_id: Figaro.env.acuant_assure_id_subscription_id,
+          assure_id_url: Figaro.env.acuant_assure_id_url,
+          assure_id_username: Figaro.env.acuant_assure_id_username,
+          facial_match_url: Figaro.env.acuant_facial_match_url,
+          passlive_url: Figaro.env.acuant_passlive_url,
+          timeout: Figaro.env.acuant_timeout,
+          exception_notifier: method(:notify_exception),
+        )
       )
     when 'lexisnexis'
       # i18n-tasks-use t('doc_auth.errors.lexis_nexis.barcode_content_check')

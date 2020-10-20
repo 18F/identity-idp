@@ -20,8 +20,9 @@ RSpec.describe DocAuthRouter do
       let(:doc_auth_vendor) { 'acuant' }
       let(:acuant_simulator) { '' }
 
-      it 'is the acuant client' do
+      it 'is a translation-proxied acuant client' do
         expect(DocAuthRouter.client).to be_a(IdentityDocAuth::Acuant::AcuantClient)
+        expect(DocAuthRouter.client.proxy?).to eq(true)
       end
     end
 
@@ -61,6 +62,68 @@ RSpec.describe DocAuthRouter do
 
         DocAuthRouter.notify_exception(exception, params)
       end
+    end
+  end
+
+  describe DocAuthRouter::AcuantErrorTranslatorProxy do
+    subject(:proxy) do
+      DocAuthRouter::AcuantErrorTranslatorProxy.new(IdentityDocAuth::Mock::DocAuthMockClient.new)
+    end
+
+    it 'translates errors[:results] using FriendlyError' do
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :get_results,
+        response: IdentityDocAuth::Response.new(
+          success: false,
+          errors: {
+            some_other_key: ['will not be translated'],
+            results: [
+              'The 2D barcode could not be read',
+              'Some unknown error that will be the generic message',
+            ],
+          },
+        ),
+      )
+
+      response = I18n.with_locale(:es) { proxy.get_results(instance_id: 'abcdef') }
+
+      expect(response.errors[:some_other_key]).to eq(['will not be translated'])
+      expect(response.errors[:results]).to match_array([
+        I18n.t('errors.doc_auth.general_error', locale: :es),
+        I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read', locale: :es),
+      ])
+    end
+
+    it 'translates generic network errors' do
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :get_results,
+        response: IdentityDocAuth::Response.new(
+          success: false,
+          errors: {
+            network: true,
+          },
+        ),
+      )
+
+      response = proxy.get_results(instance_id: 'abcdef')
+
+      expect(response.errors[:network]).to eq(I18n.t('errors.doc_auth.acuant_network_error'))
+    end
+
+    it 'translates generic selfie errors' do
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :get_results,
+        response: IdentityDocAuth::Response.new(
+          success: false,
+          errors: {
+            selfie: true,
+          },
+        ),
+      )
+
+      response = proxy.get_results(instance_id: 'abcdef')
+
+      expect(response.errors[:selfie]).to eq(I18n.t('errors.doc_auth.selfie'))
     end
   end
 end
