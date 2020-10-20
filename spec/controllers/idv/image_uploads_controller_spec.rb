@@ -15,6 +15,10 @@ describe Idv::ImageUploadsController do
       }
     end
 
+    before do
+      Funnel::DocAuth::RegisterStep.new(user.id, '').call('welcome', :view, true)
+    end
+
     context 'when document capture is not enabled' do
       before do
         allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
@@ -64,6 +68,8 @@ describe Idv::ImageUploadsController do
           )
 
           action
+
+          expect_funnel_update_counts(user, 0)
         end
       end
 
@@ -113,6 +119,8 @@ describe Idv::ImageUploadsController do
           )
 
           action
+
+          expect_funnel_update_counts(user, 0)
         end
       end
 
@@ -168,6 +176,8 @@ describe Idv::ImageUploadsController do
           )
 
           action
+
+          expect_funnel_update_counts(user, 0)
         end
       end
 
@@ -203,6 +213,8 @@ describe Idv::ImageUploadsController do
           )
 
           action
+
+          expect_funnel_update_counts(user, 1)
         end
       end
 
@@ -252,6 +264,8 @@ describe Idv::ImageUploadsController do
           )
 
           action
+
+          expect_funnel_update_counts(user, 1)
         end
       end
 
@@ -295,8 +309,16 @@ describe Idv::ImageUploadsController do
           )
 
           action
+
+          expect_funnel_update_counts(user, 1)
         end
       end
     end
+  end
+
+  def expect_funnel_update_counts(user, count)
+    doc_auth_log = DocAuthLog.where(user_id: user.id).first
+    expect(doc_auth_log.front_image_submit_count).to eq(count)
+    expect(doc_auth_log.back_image_submit_count).to eq(count)
   end
 end
