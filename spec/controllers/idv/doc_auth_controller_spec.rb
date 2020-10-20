@@ -168,6 +168,9 @@ describe Idv::DocAuthController do
         put :update, params: { step: 'verify_document',
                                document_capture_session_uuid: 'foo',
                                encryption_key: 'bar',
+                               front_image_iv: 'iv1',
+                               back_image_iv: 'iv2',
+                               selfie_image_iv: 'iv3',
                                front_image_url: 'http://foo.com/bar1',
                                back_image_url: 'http://foo.com/bar2',
                                selfie_image_url: 'http://foo.com/bar3' }
@@ -192,6 +195,9 @@ describe Idv::DocAuthController do
         put :update, params: { step: 'verify_document',
                                document_capture_session_uuid: 'foo',
                                encryption_key: 'bar',
+                               front_image_iv: 'iv1',
+                               back_image_iv: 'iv2',
+                               selfie_image_iv: 'iv3',
                                front_image_url: 'http://foo.com/bar1',
                                back_image_url: 'http://foo.com/bar2',
                                selfie_image_url: 'http://foo.com/bar3' }

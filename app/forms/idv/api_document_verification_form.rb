@@ -6,6 +6,9 @@ module Idv
     validates_presence_of :encryption_key
     validate :validate_image_urls
     validates_presence_of :document_capture_session
+    validates_presence_of :front_image_iv
+    validates_presence_of :back_image_iv
+    validates_presence_of :selfie_image_iv, if: :liveness_checking_enabled?
 
     validate :throttle_if_rate_limited
 
@@ -58,6 +61,18 @@ module Idv
 
     def encryption_key
       params[:encryption_key]
+    end
+
+    def front_image_iv
+      params[:front_image_iv]
+    end
+
+    def back_image_iv
+      params[:back_image_iv]
+    end
+
+    def selfie_image_iv
+      params[:selfie_image_iv]
     end
 
     def valid_url?(key)

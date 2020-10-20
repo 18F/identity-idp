@@ -30,6 +30,9 @@ module Idv
         VendorDocumentVerificationJob.perform(
           _document_capture_session_result_id: document_capture_session.result_id,
           _encryption_key: params[:encryption_key],
+          _front_image_iv: params[:front_image_iv],
+          _back_image_iv: params[:back_image_iv],
+          _selfie_image_iv: params[:selfie_image_iv],
           _front_image_url: params[:front_image_url],
           _back_image_url: params[:back_image_url],
           _selfie_image_url: params[:selfie_image_url],
