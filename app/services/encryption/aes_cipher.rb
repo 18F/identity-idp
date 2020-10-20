@@ -14,8 +14,10 @@ module Encryption
     end
 
     def decrypt(payload, cek)
+      # byebug
       self.cipher = OpenSSL::Cipher.new 'aes-256-gcm'
       cipher.decrypt
+      puts "\ncipher.key = #{cek[0..31]}\n"
       cipher.key = cek[0..31]
       decipher(payload)
     end
@@ -33,14 +35,19 @@ module Encryption
     end
 
     def decipher(payload)
+      puts "\nunpacked_payload = #{unpack_payload(payload)}"
       unpacked_payload = unpack_payload(payload)
+      puts "cipher.iv = #{unpacked_payload[:iv]}"
       cipher.iv = iv(unpacked_payload)
+      puts "cipher.auth_tag = #{unpacked_payload[:tag]}"
       cipher.auth_tag = tag(unpacked_payload)
       cipher.auth_data = 'PII'
       try_decipher(unpacked_payload)
     end
 
     def try_decipher(unpacked_payload)
+      # byebug
+      puts "ciphertext = #{unpacked_payload[:ciphertext]}"
       cipher.update(ciphertext(unpacked_payload)) + cipher.final
     rescue OpenSSL::Cipher::CipherError => err
       raise EncryptionError, 'failed to decipher payload: ' + err.to_s

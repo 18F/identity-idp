@@ -14,28 +14,19 @@ export function toFormData(object) {
   }, new window.FormData());
 }
 
-function doEncryption(event) {
+async function doEncryption(event) {
   event.preventDefault();
   // const form = event.currentTarget.closest('[action]');
   const messageBox = document.querySelector('#original-text');
   const message = messageBox.value;
-  AesCipher.encrypt(message).then((payload) => {
-    console.log('~~~~~~ doEncryption!! ~~~~~~~~~~');
-    console.log('message: ', message);
-    // console.log(cipher);
-    // console.log("key: ", cipher.key);
-    // console.log("rawkey: ", cipher.rawkey);
-    console.log("payload: ", payload);
-    window.fetch(location.href, {
-      method: 'POST',
-      body: toFormData(payload),
-    });
+  console.log(`We want to encrypt ${message}`);
+  const payload = await AesCipher.encrypt(message);
+  const response = await window.fetch(location.href, {
+    method: 'POST',
+    body: toFormData(payload),
   });
-  // document.querySelector('#key').value = payload.key;
-  // document.querySelector('#tag').value = payload.tag;
-  // document.querySelector('#iv').value = payload.iv;
-  // document.querySelector('#ciphertext').value = payload.ciphertext;
-  // document.getElementById('cipher-form').submit();
+  const json = await response.json();
+  document.getElementById('deciphered').innerHTML = json.deciphered;
 }
 
 loadPolyfills(['fetch']).then(() => {
