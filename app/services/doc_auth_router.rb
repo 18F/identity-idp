@@ -45,6 +45,7 @@ module DocAuthRouter
       end&.uniq!
     end
 
+    # rubocop:disable Style/GuardClause
     def translate_generic_errors!(response)
       if response.errors[:network] == true
         response.errors[:network] = ::I18n.t('errors.doc_auth.acuant_network_error')
@@ -54,6 +55,7 @@ module DocAuthRouter
         response.errors[:selfie] = ::I18n.t('errors.doc_auth.selfie')
       end
     end
+    # rubocop:enable Style/GuardClause
   end
 
   def self.client
@@ -69,7 +71,7 @@ module DocAuthRouter
           passlive_url: Figaro.env.acuant_passlive_url,
           timeout: Figaro.env.acuant_timeout,
           exception_notifier: method(:notify_exception),
-        )
+        ),
       )
     when 'lexisnexis'
       # i18n-tasks-use t('doc_auth.errors.lexis_nexis.barcode_content_check')

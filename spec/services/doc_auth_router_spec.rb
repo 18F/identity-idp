@@ -88,10 +88,12 @@ RSpec.describe DocAuthRouter do
       response = I18n.with_locale(:es) { proxy.get_results(instance_id: 'abcdef') }
 
       expect(response.errors[:some_other_key]).to eq(['will not be translated'])
-      expect(response.errors[:results]).to match_array([
-        I18n.t('errors.doc_auth.general_error', locale: :es),
-        I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read', locale: :es),
-      ])
+      expect(response.errors[:results]).to match_array(
+        [
+          I18n.t('errors.doc_auth.general_error', locale: :es),
+          I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read', locale: :es),
+        ],
+      )
     end
 
     it 'translates generic network errors' do
