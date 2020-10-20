@@ -8,17 +8,16 @@ module LinkHelper
       name = block
     end
     options ||= {}
-
-    html_options = convert_options_to_data_attributes(options, html_options)
+    html_options ||= {}
 
     url = url_for(options)
-    html_options['href'] ||= url
-    html_options['class'] ||= html_options['class'].to_s
-    html_options['target'] = '_blank'
+    html_options[:href] ||= url
+    html_options[:class] ||= html_options[:class].to_s
+    html_options[:target] = '_blank'
 
-    classes = html_options['class'].split(' ').append(EXTERNAL_LINK_CLASS)
+    classes = html_options[:class].split(' ').append(EXTERNAL_LINK_CLASS)
 
-    html_options['class'] = classes.uniq.join(' ')
+    html_options[:class] = classes.uniq.join(' ')
 
     if block_given?
       link_to(url, html_options) do
