@@ -318,7 +318,7 @@ describe Idv::ImageUploadsController do
 
   def expect_funnel_update_counts(user, count)
     doc_auth_log = DocAuthLog.where(user_id: user.id).first
-    expect(doc_auth_log.front_image_submit_count).to eq(count)
     expect(doc_auth_log.back_image_submit_count).to eq(count)
+    expect(doc_auth_log.front_image_submit_count).to eq(count)
   end
 end
