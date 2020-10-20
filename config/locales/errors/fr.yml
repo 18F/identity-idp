@@ -68,6 +68,8 @@ fr:
       quota_reached: Désolé, votre fournisseur de services a atteint sa limite de
         vérification d'identité. Veuillez contacter votre fournisseur de services
         pour plus d'informations.
+      selfie: Nous n'avons pas pu lire la photo de vous ni faire correspondre la photo
+        à votre pièce d'identité. Essayez de prendre une nouvelle photo.
       send_link_throttle: Vous avez essayé plusieurs fois, essayez à nouveau dans
         10 minutes. Vous pouvez également cliquer sur recommencer et choisir d'utiliser
         votre ordinateur.
