@@ -1,13 +1,11 @@
 # Helps route between various doc auth backends, provided by the identity-doc-auth gem
 module DocAuthRouter
+  # Adds translations to responses from Acuant
   class AcuantErrorTranslatorProxy
+    attr_reader :client
+
     def initialize(client)
       @client = client
-    end
-
-    # Used for detecting if we have a proxy or the real thing
-    def proxy?
-      true
     end
 
     def method_missing(name, *args, &block)

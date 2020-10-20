@@ -21,8 +21,8 @@ RSpec.describe DocAuthRouter do
       let(:acuant_simulator) { '' }
 
       it 'is a translation-proxied acuant client' do
-        expect(DocAuthRouter.client).to be_a(IdentityDocAuth::Acuant::AcuantClient)
-        expect(DocAuthRouter.client.proxy?).to eq(true)
+        expect(DocAuthRouter.client).to be_a(DocAuthRouter::AcuantErrorTranslatorProxy)
+        expect(DocAuthRouter.client.client).to be_a(IdentityDocAuth::Acuant::AcuantClient)
       end
     end
 
