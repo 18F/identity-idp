@@ -989,6 +989,8 @@ describe SamlIdpController do
         expect(@analytics).to receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
         generate_saml_response(user)
+
+        expect_sp_authentication_cost
       end
     end
 
@@ -1014,6 +1016,8 @@ describe SamlIdpController do
         expect(@analytics).to receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
         generate_saml_response(user)
+
+        expect_sp_authentication_cost
       end
     end
   end
@@ -1028,5 +1032,11 @@ describe SamlIdpController do
         :store_saml_request,
       )
     end
+  end
+
+  def expect_sp_authentication_cost
+    sp_cost = SpCost.where(issuer: 'http://localhost:3000',
+                           cost_type: 'authentication').first
+    expect(sp_cost).to be_present
   end
 end
