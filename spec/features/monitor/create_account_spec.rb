@@ -7,6 +7,11 @@ RSpec.describe 'smoke test: create account' do
 
   before { monitor.setup }
 
+  before do
+    allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('true')
+    allow(Figaro.env).to receive(:doc_auth_enable_presigned_s3_urls).and_return('false')
+  end
+
   context 'OIDC' do
     context 'not staging' do
       before { monitor.filter_unless('STAGING') }
