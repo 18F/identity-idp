@@ -14,7 +14,12 @@ module OtpDeliveryPreferenceValidator
     end
   end
 
+  def invalid_otp_delivery_preference?
+    %w[voice sms].include?(otp_delivery_preference)
+  end
+
   def otp_delivery_preference_supported
+    return if invalid_otp_delivery_preference?
     return if otp_delivery_preference_supported?
 
     errors.add(

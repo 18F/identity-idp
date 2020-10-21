@@ -4,7 +4,7 @@ describe OtpDeliverySelectionForm do
   let(:phone_to_deliver_to) { '+1 (202) 555-1234' }
   subject do
     OtpDeliverySelectionForm.new(
-      build_stubbed(:user),
+      build(:user),
       phone_to_deliver_to,
       'authentication',
     )
@@ -42,7 +42,10 @@ describe OtpDeliverySelectionForm do
       it 'returns false for success? and includes errors' do
         errors = {
           otp_delivery_preference: ['is not included in the list'],
-          phone: ['Please fill in this field.'],
+          phone: [
+            "We're unable to make phone calls to people in  at this time.",
+            'Please fill in this field.',
+          ],
         }
 
         extra = {
