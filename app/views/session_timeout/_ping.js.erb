@@ -6,7 +6,12 @@ var warningEl = document.getElementById('session-timeout-cntnr');
 warningEl.insertAdjacentHTML('afterbegin', warning_info);
 
 var modal = new window.LoginGov.Modal({ el: '#session-timeout-msg' });
+var keepaliveEl = document.getElementById('session-keepalive-btn');
+
+keepaliveEl.addEventListener('click', keepalive, false);
+
 var ping_timeout;
+var countdown_interval;
 
 function ping() {
   var request = new XMLHttpRequest();
@@ -38,7 +43,11 @@ function success(data) {
 
   if (show_warning && !modal.shown) {
     modal.show();
-    window.LoginGov.countdownTimer(
+
+    if(countdown_interval) {
+      cancelInterval(countdown_interval)
+    }
+    countdown_interval = window.LoginGov.countdownTimer(
       document.getElementById('countdown'), time_remaining, time_timeout
     );
   }
@@ -49,6 +58,21 @@ function success(data) {
     time_remaining = time_remaining < 0 ? 0 : time_remaining
     ping_timeout = setTimeout(ping, time_remaining)
   }
+}
+
+function keepalive() {
+  var request = new XMLHttpRequest();
+  request.open('GET', '/sessions/keepalive', true);
+  request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+  request.onload = function() {
+    if (request.status >= 200 && request.status < 400) {
+      success(JSON.parse(request.responseText));
+      modal.hide();
+    }
+  };
+
+  request.send();
 }
 
 setTimeout(ping, start);

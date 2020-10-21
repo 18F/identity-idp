@@ -7,7 +7,7 @@ module Users
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
-    skip_before_action :session_expires_at, only: [:active]
+    skip_before_action :session_expires_at, only: [:active, :keepalive]
     skip_before_action :require_no_authentication, only: [:new]
     before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
@@ -43,6 +43,14 @@ module Users
       response.headers['Etag'] = '' # clear etags to prevent caching
       session[:pinged_at] = now
       Rails.logger.debug(alive?: alive?, expires_at: expires_at)
+      render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
+    end
+
+    def keepalive
+      response.headers['Etag'] = '' # clear etags to prevent caching
+      session[:session_expires_at] = now + Devise.timeout_in if alive?
+      analytics.track_event(Analytics::SESSION_KEPT_ALIVE) if alive?
+
       render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
     end
 
@@ -113,7 +121,7 @@ module Users
     end
 
     def expires_at
-      @_expires_at ||= (session[:session_expires_at]&.to_datetime || (now - 1))
+      session[:session_expires_at]&.to_datetime || (now - 1)
     end
 
     def remaining_session_time

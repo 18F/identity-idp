@@ -3,6 +3,7 @@ const msFormatter = require('./ms-formatter').default;
 export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
   let remaining = timeLeft;
   let currentTime;
+  let timer;
 
   if (!el || !('innerHTML' in el)) {
     return;
@@ -18,10 +19,13 @@ export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
     el.innerHTML = msFormatter(remaining);
 
     if (remaining <= 0) {
+      cancelInterval(timer);
       return;
     }
+
     remaining -= interval;
-    setTimeout(tick, interval);
   }
-  tick();
+
+  timer = setInterval(tick, interval);
+  return timer;
 };

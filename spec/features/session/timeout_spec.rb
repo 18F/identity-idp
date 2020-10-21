@@ -29,4 +29,26 @@ feature 'Session Timeout' do
       expect(page).to have_css('img[src*=sp-logos]')
     end
   end
+
+  context 'allows extending session', js: true do
+    let(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
+
+    before do
+      allow(Figaro.env).
+        to receive(:session_check_frequency).and_return('1')
+      allow(Figaro.env).
+        to receive(:session_check_delay).and_return('0')
+      allow(Figaro.env).
+        to receive(:session_timeout_warning_seconds).and_return('1000')
+      allow(Figaro.env).
+        to receive(:session_timeout_in_minutes).and_return('1')
+    end
+
+    it 'shows warning with button to extend' do
+      sign_in_and_2fa_user(user)
+
+      visit account_path
+      click_button(t('notices.timeout_warning.signed_in.continue'))
+    end
+  end
 end

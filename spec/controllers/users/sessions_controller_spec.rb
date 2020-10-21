@@ -504,4 +504,86 @@ describe Users::SessionsController, devise: true do
       end
     end
   end
+
+
+  describe 'GET /sessions/keepalive' do
+    context 'when user is present' do
+      before do
+        stub_sign_in
+      end
+
+      it 'returns a 200 status code' do
+        get :keepalive
+
+        expect(response.status).to eq(200)
+      end
+
+      it 'clears the Etag header' do
+        get :keepalive
+
+        expect(response.headers['Etag']).to eq ''
+      end
+
+      it 'renders json' do
+        get :keepalive
+
+        expect(response.content_type).to eq('application/json')
+      end
+
+      it 'resets the timeout key' do
+        timeout =  Time.zone.now + 2
+        controller.session[:session_expires_at] = timeout
+        get :keepalive
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['timeout'].to_datetime.to_i).to be >= timeout.to_i
+        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i + Figaro.env.session_timeout_in_minutes.to_i * 60)
+      end
+
+      it 'resets the remaining key' do
+        controller.session[:session_expires_at] = Time.zone.now + 10
+        get :keepalive
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['remaining']).to be_within(1).of(Figaro.env.session_timeout_in_minutes.to_i * 60)
+      end
+    end
+
+    context 'when user is not present' do
+      it 'sets live key to false' do
+        get :keepalive
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['live']).to eq false
+      end
+
+      it 'includes session_expires_at' do
+        get :keepalive
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i - 1)
+      end
+
+      it 'includes the remaining time' do
+        get :keepalive
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['remaining']).to eq(-1)
+      end
+    end
+
+    it 'does not track analytics event' do
+      stub_sign_in
+      stub_analytics
+
+      expect(@analytics).to_not receive(:track_event)
+
+      get :active
+    end
+  end
 end
