@@ -14,18 +14,12 @@ module MonitorIdvSteps
     expect(page).to have_current_path('/verify/doc_auth/upload')
 
     click_on 'Upload from your computer'
-    expect(page).to have_current_path('/verify/doc_auth/front_image')
+    expect(page).to have_current_path('/verify/doc_auth/document_capture')
 
-    click_doc_auth_fallback_link
+    attach_file 'file-input-1', File.expand_path('spec/fixtures/ial2_test_credential.yml')
 
-    attach_file 'doc_auth_image', File.expand_path('spec/fixtures/ial2_test_credential.yml')
-    click_on 'Continue'
-    expect(page).to have_current_path('/verify/doc_auth/back_image')
-
-    click_doc_auth_fallback_link
-
-    attach_file 'doc_auth_image', File.expand_path('spec/fixtures/ial2_test_credential.yml')
-    click_on 'Continue'
+    attach_file 'file-input-2', File.expand_path('spec/fixtures/ial2_test_credential.yml')
+    click_on 'Submit'
     expect(page).to have_current_path('/verify/doc_auth/ssn')
 
     fill_in 'doc_auth_ssn', with: format('%09d', SecureRandom.random_number(1e9))
