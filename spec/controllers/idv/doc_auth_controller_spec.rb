@@ -155,7 +155,128 @@ describe Idv::DocAuthController do
     end
   end
 
+  describe 'async document verify' do
+    before do
+      mock_document_capture_step
+    end
+    let(:successful_response) do
+      { success: true, errors: {}, extra: { remaining_attempts: 3 } }.to_json
+    end
+
+    context 'with selfie checking disabled' do
+      it 'successfully submits the images' do
+        put :update, params: { step: 'verify_document',
+                               document_capture_session_uuid: 'foo',
+                               encryption_key: 'bar',
+                               front_image_iv: 'iv1',
+                               back_image_iv: 'iv2',
+                               selfie_image_iv: 'iv3',
+                               front_image_url: 'http://foo.com/bar1',
+                               back_image_url: 'http://foo.com/bar2',
+                               selfie_image_url: 'http://foo.com/bar3' }
+
+        expect(response.status).to eq(200)
+        expect(response.body).to eq(successful_response)
+      end
+
+      it 'fails to submit the images' do
+        put :update, params: { step: 'verify_document' }
+
+        expect(response.status).to eq(400)
+      end
+    end
+
+    context 'with selfie checking enabled' do
+      before do
+        allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+      end
+
+      it 'successfully submits the images' do
+        put :update, params: { step: 'verify_document',
+                               document_capture_session_uuid: 'foo',
+                               encryption_key: 'bar',
+                               front_image_iv: 'iv1',
+                               back_image_iv: 'iv2',
+                               selfie_image_iv: 'iv3',
+                               front_image_url: 'http://foo.com/bar1',
+                               back_image_url: 'http://foo.com/bar2',
+                               selfie_image_url: 'http://foo.com/bar3' }
+
+        expect(response.status).to eq(200)
+        expect(response.body).to eq(successful_response)
+      end
+
+      it 'fails to submit the images' do
+        put :update, params: { step: 'verify_document' }
+
+        expect(response.status).to eq(400)
+      end
+    end
+  end
+
+  describe 'async document verify status' do
+    before do
+      mock_document_capture_step
+    end
+    let(:good_result) { { pii_from_doc: {}, success: true, errors: {}, messages: ['message'] } }
+    let(:fail_result) { { pii_from_doc: {}, success: false, errors: {}, messages: ['message'] } }
+
+    it 'returns status of success' do
+      mock_document_capture_result(good_result)
+      put :update, params: { step: 'verify_document_status' }
+
+      expect(response.status).to eq(200)
+      expect(response.body).to eq({ success: true, status: 'success' }.to_json)
+    end
+
+    it 'returns status of in progress' do
+      mock_document_capture_result(nil)
+      put :update, params: { step: 'verify_document_status' }
+
+      expect(response.status).to eq(200)
+      expect(response.body).to eq({ success: true, status: 'in_progress' }.to_json)
+    end
+
+    it 'returns status of fail' do
+      mock_document_capture_result(fail_result)
+      put :update, params: { step: 'verify_document_status' }
+
+      expect(response.status).to eq(200)
+      expect(response.body).to eq({ success: true, status: 'fail' }.to_json)
+    end
+  end
+
   def mock_next_step(step)
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
+  end
+
+  def mock_document_capture_result(idv_result)
+    id = SecureRandom.uuid
+    pii = { 'first_name' => 'Testy', 'last_name' => 'Testerson' }
+
+    result = ProofingDocumentCaptureSessionResult.new(id: id, pii: pii, result: idv_result)
+    allow_any_instance_of(DocumentCaptureSession).to receive(:load_proofing_result).
+      and_return(result)
+  end
+
+  def mock_document_capture_step
+    user = create(:user, :signed_up)
+    stub_sign_in(user)
+    DocumentCaptureSession.create(user_id: user.id, result_id: 1, uuid: 'foo')
+    allow_any_instance_of(Flow::BaseFlow).to \
+      receive(:flow_session).and_return(
+        'Idv::Steps::FrontImageStep' => true,
+        'Idv::Steps::BackImageStep' => true,
+        'Idv::Steps::SelfieStep' => true,
+        'Idv::Steps::MobileFrontImageStep' => true,
+        'Idv::Steps::MobileBackImageStep' => true,
+        'document_capture_session_uuid' => 'foo',
+        'Idv::Steps::WelcomeStep' => true,
+        'Idv::Steps::SendLinkStep' => true,
+        'Idv::Steps::LinkSentStep' => true,
+        'Idv::Steps::EmailSentStep' => true,
+        'Idv::Steps::UploadStep' => true,
+        verify_document_action_document_capture_session_uuid: 'foo',
+      )
   end
 end
