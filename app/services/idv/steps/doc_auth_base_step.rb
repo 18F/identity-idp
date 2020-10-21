@@ -57,10 +57,10 @@ module Idv
       end
 
       def save_proofing_components
-        Db::ProofingComponent::Add.call(user_id, :document_check, DocAuth::Client.doc_auth_vendor)
+        Db::ProofingComponent::Add.call(user_id, :document_check, DocAuthRouter.doc_auth_vendor)
         Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
         return unless liveness_checking_enabled?
-        Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuth::Client.doc_auth_vendor)
+        Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuthRouter.doc_auth_vendor)
       end
 
       def extract_pii_from_doc(response)
@@ -78,7 +78,7 @@ module Idv
       def post_front_image
         return throttled_response if throttled_else_increment
 
-        result = DocAuth::Client.client.post_front_image(
+        result = DocAuthRouter.client.post_front_image(
           image: image.read,
           instance_id: flow_session[:instance_id],
         )
@@ -89,7 +89,7 @@ module Idv
       def post_back_image
         return throttled_response if throttled_else_increment
 
-        result = DocAuth::Client.client.post_back_image(
+        result = DocAuthRouter.client.post_back_image(
           image: image.read,
           instance_id: flow_session[:instance_id],
         )
@@ -100,7 +100,7 @@ module Idv
       def post_images
         return throttled_response if throttled_else_increment
 
-        result = DocAuth::Client.client.post_images(
+        result = DocAuthRouter.client.post_images(
           front_image: front_image.read,
           back_image: back_image.read,
           selfie_image: selfie_image&.read,
@@ -118,7 +118,7 @@ module Idv
 
       def throttled_response
         redirect_to throttled_url
-        DocAuth::Response.new(
+        IdentityDocAuth::Response.new(
           success: false,
           errors: { limit: I18n.t('errors.doc_auth.acuant_throttle') },
         )
@@ -175,18 +175,20 @@ module Idv
         FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial2_strict])
       end
 
-      def create_document_capture_session
+      def create_document_capture_session(key)
         document_capture_session = DocumentCaptureSession.create(
           user_id: user_id,
           issuer: sp_session[:issuer],
           ial2_strict: sp_session[:ial2_strict],
         )
-        flow_session[:document_capture_session_uuid] = document_capture_session.uuid
+        flow_session[key] = document_capture_session.uuid
+
+        document_capture_session
       end
 
       def document_capture_session
         @document_capture_session ||= DocumentCaptureSession.find_by(
-          uuid: flow_session[:document_capture_session_uuid],
+          uuid: flow_session[document_capture_session_uuid_key],
         )
       end
 
@@ -201,9 +203,31 @@ module Idv
 
       def log_document_error(get_results_response)
         # DP: handle multiple clients
-        return unless get_results_response.is_a?(DocAuth::Acuant::Responses::GetResultsResponse)
+        unless get_results_response.is_a?(IdentityDocAuth::Acuant::Responses::GetResultsResponse)
+          return
+        end
         Funnel::DocAuth::LogDocumentError.call(user_id,
                                                get_results_response&.result_code&.name.to_s)
+      end
+
+      def document_capture_session_uuid_key
+        :document_capture_session_uuid
+      end
+
+      def verify_step_document_capture_session_uuid_key
+        :idv_verify_step_document_capture_session_uuid
+      end
+
+      def cac_verify_document_capture_session_uuid_key
+        :cac_verify_step_document_capture_session_uuid
+      end
+
+      def recover_verify_document_capture_session_uuid_key
+        :idv_recover_verify_step_document_capture_session_uuid
+      end
+
+      def verify_document_capture_session_uuid_key
+        :verify_document_action_document_capture_session_uuid
       end
 
       delegate :idv_session, :session, to: :@flow

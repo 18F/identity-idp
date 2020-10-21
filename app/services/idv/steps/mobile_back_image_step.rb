@@ -18,7 +18,7 @@ module Idv
         # validate them here before continuing.
         return if liveness_checking_enabled?
 
-        get_results_response = DocAuth::Client.client.get_results(
+        get_results_response = DocAuthRouter.client.get_results(
           instance_id: flow_session[:instance_id],
         )
         if get_results_response.success?

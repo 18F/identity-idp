@@ -9,7 +9,7 @@ feature 'recovery verify step' do
   let(:good_ssn) { '666-66-1234' }
   let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
   let(:saved_pii) do
-    DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(ssn: good_ssn)
+    IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(ssn: good_ssn)
   end
   let(:max_attempts) { idv_max_attempts }
   before do
@@ -24,7 +24,7 @@ feature 'recovery verify step' do
   end
 
   it 'proceeds to the next page upon confirmation' do
-    allow_any_instance_of(Idv::Steps::RecoverVerifyStep).to receive(:saved_pii).
+    allow_any_instance_of(Idv::Steps::RecoverVerifyWaitStepShow).to receive(:saved_pii).
       and_return(saved_pii.to_json)
     complete_recovery_steps_before_verify_step
     click_idv_continue
@@ -81,5 +81,17 @@ feature 'recovery verify step' do
 
     click_on t('two_factor_authentication.account_reset.reset_your_account')
     expect(page).to have_current_path(account_reset_request_path)
+  end
+
+  context 'in progress' do
+    it 'renders in progress form' do
+      complete_recovery_steps_before_verify_step
+      # the user gets shown the wait page until a result has been stored
+      allow_any_instance_of(DocumentCaptureSession).to receive(:store_proofing_result).
+        and_return(nil)
+      click_continue
+
+      expect(page).to have_current_path(idv_recovery_verify_wait_step)
+    end
   end
 end

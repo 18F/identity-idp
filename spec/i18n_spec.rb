@@ -89,7 +89,8 @@ RSpec.describe 'I18n' do
   end
 
   def extract_interpolation_arguments(translation)
-    translation.scan(I18n::INTERPOLATION_PATTERN).map(&:compact).map(&:first).to_set
+    translation.scan(Regexp.union(I18n::DEFAULT_INTERPOLATION_PATTERNS)).
+      map(&:compact).map(&:first).to_set
   end
 
   def flatten_hash(hash, parent_keys: [], out_hash: {}, &block)

@@ -27,7 +27,7 @@ module Flow
     end
 
     def self.acceptable_response_object?(obj)
-      obj.is_a?(FormResponse) || obj.is_a?(DocAuth::Response)
+      obj.is_a?(FormResponse) || obj.is_a?(IdentityDocAuth::Response)
     end
 
     # Return a hash of local variables required for step view template
@@ -66,6 +66,10 @@ module Flow
 
     def redirect_to(url)
       @flow.redirect_to(url)
+    end
+
+    def render_json(json, status: nil)
+      @flow.render_json(json, status: status)
     end
 
     def reset

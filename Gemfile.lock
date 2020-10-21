@@ -11,6 +11,15 @@ GIT
       xmldsig
 
 GIT
+  remote: https://github.com/18F/identity-doc-auth.git
+  revision: f61b5b76c71659d33a40b87e769252dc80d2af43
+  tag: v0.1.0
+  specs:
+    identity-doc-auth (0.1.0)
+      activesupport
+      faraday
+
+GIT
   remote: https://github.com/18F/identity-hostdata.git
   revision: da013056e3a5ffcb46001a3f4fca21b80640838e
   tag: v0.4.1
@@ -20,10 +29,11 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 1ffdce9da7fd2d69de2b51a04873bc8bbd9c3f4b
-  ref: 1ffdce9da7fd2d69de2b51a04873bc8bbd9c3f4b
+  revision: ba23bc6d0a5673a1a1f27a0abcfa54fd72372104
+  ref: ba23bc6d0a5673a1a1f27a0abcfa54fd72372104
   specs:
-    identity-idp-functions (0.3.0)
+    identity-idp-functions (0.3.2)
+      retries (>= 0.0.5)
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
@@ -740,6 +750,7 @@ DEPENDENCIES
   hiredis
   http_accept_language
   i18n-tasks (>= 0.9.31)
+  identity-doc-auth!
   identity-hostdata!
   identity-idp-functions!
   identity-telephony!

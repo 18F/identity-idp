@@ -71,7 +71,7 @@ module DocCaptureHelper
   def mock_doc_captured(user_id)
     if FeatureManagement.document_capture_step_enabled?
       user = User.find(user_id)
-      response = DocAuth::Response.new(success: true)
+      response = IdentityDocAuth::Response.new(success: true)
       user.document_capture_sessions.last.store_result_from_response(response)
     else
       doc_capture = CaptureDoc::CreateRequest.call(user_id, {})

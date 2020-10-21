@@ -12,7 +12,8 @@ h1.h3.my0 = t('doc_auth.headings.upload_front')
   = f.input :image_data_url, as: :hidden
   .clearfix.mxn1
     .sm-col.sm-col-8.px1.mt2
-      = f.input :image, label: false, as: 'file', required: true
+      = f.input :image, label: false, as: 'file', required: true,
+                input_html: { aria: { invalid: false } }
 
   = render 'idv/doc_auth/notices', flow_session: flow_session
 

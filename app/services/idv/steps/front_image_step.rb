@@ -2,7 +2,7 @@ module Idv
   module Steps
     class FrontImageStep < DocAuthBaseStep
       def call
-        create_document_response = DocAuth::Client.client.create_document
+        create_document_response = DocAuthRouter.client.create_document
 
         if create_document_response.success?
           flow_session[:instance_id] = create_document_response.instance_id

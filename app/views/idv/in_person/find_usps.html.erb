@@ -17,7 +17,7 @@
       <%= f.input :zip_code,
                   label: t('in_person_proofing.forms.zip_code'), required: true,
                   pattern: '^\d{5}$',
-                  input_html: { class: 'zip_code', value: '' } %>
+                  input_html: { aria: { invalid: false }, class: 'zip_code', value: '' } %>
     </div>
   </div>
   <p>

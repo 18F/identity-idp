@@ -25,6 +25,8 @@ module Idv
       ACTIONS = {
         reset: Idv::Actions::ResetAction,
         redo_ssn: Idv::Actions::RedoSsnAction,
+        verify_document: Idv::Actions::VerifyDocumentAction,
+        verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze
 
       attr_reader :idv_session # this is needed to support (and satisfy) the current LOA3 flow

@@ -110,10 +110,10 @@ en:
       personal_key: This is your new personal key. Write it down and keep it in a
         safe place. You will need it if you ever lose your password.
       phone:
-        alert: "<strong>This phone number must...</strong>"
+        alert_html: "<strong>This phone number must...</strong>"
         description: We'll check this number with phone bill records.  This is to
           help verify your identity; we won't use it to call or text you.
-        final_note: "<strong>If you set up a phone for two-factor authentication</strong>,
+        final_note_html: "<strong>If you set up a phone for two-factor authentication</strong>,
           this can be a different number."
         phone_of_record: Phone of record
         rules:

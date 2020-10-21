@@ -16,6 +16,12 @@ describe('document-capture/services/upload', () => {
       expect(result).to.be.instanceOf(window.FormData);
       expect(/** @type {FormData} */ (result).get('foo')).to.equal('bar');
     });
+
+    it('omits undefined values', () => {
+      const result = toFormData({ foo: 'bar', bar: null, baz: undefined });
+
+      expect([...result.keys()]).to.have.members(['foo', 'bar']);
+    });
   });
 
   describe('toFormEntryError', () => {

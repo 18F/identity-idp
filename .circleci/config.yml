@@ -184,6 +184,7 @@ jobs:
             bundle exec rubocop
             bundle exec slim-lint app/views
             make check_asset_strings
+            ./bin/webpack && yarn es5-safe
   build-release-container:
     working_directory: ~/identity-idp
     docker:

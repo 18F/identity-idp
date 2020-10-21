@@ -2,56 +2,27 @@ module Idv
   module Steps
     class RecoverVerifyStep < VerifyBaseStep
       def call
-        perform_resolution_and_check_ssn
+        enqueue_job
       end
 
       private
 
-      def idv_failure(result)
-        attempter_increment if result.extra.dig(:proofing_results, :exception).blank?
-        if attempter_throttled?
-          redirect_to idv_session_errors_recovery_failure_url
-        elsif result.extra.dig(:proofing_results, :exception).present?
-          redirect_to idv_session_errors_recovery_exception_url
-        else
-          redirect_to idv_session_errors_recovery_warning_url
-        end
-        result
-      end
+      def enqueue_job
+        return if flow_session[recover_verify_document_capture_session_uuid_key]
 
-      def summarize_result_and_throttle_failures(summary_result)
-        if summary_result.success? && doc_auth_pii_matches_decrypted_pii
-          add_proofing_components
-          summary_result
-        else
-          idv_failure(summary_result)
-        end
-      end
+        pii_from_doc = flow_session[:pii_from_doc]
 
-      def doc_auth_pii_matches_decrypted_pii
-        pii_from_doc = session['idv/recovery']['pii_from_doc']
-        decrypted_pii = JSON.parse(saved_pii)
-        return unless pii_matches_data_on_file?(pii_from_doc, decrypted_pii)
+        document_capture_session = create_document_capture_session(
+          recover_verify_document_capture_session_uuid_key,
+        )
 
-        recovery_success
-      end
+        document_capture_session.requested_at = Time.zone.now
+        document_capture_session.store_proofing_pii_from_doc(pii_from_doc)
 
-      def recovery_success
-        flash[:success] = I18n.t('recover.reverify.success')
-        redirect_to account_url
-        session['need_two_factor_authentication'] = false
-        true
-      end
-
-      def saved_pii
-        session['decrypted_pii']
-      end
-
-      def pii_matches_data_on_file?(pii_from_doc, decrypted_pii)
-        %w[first_name last_name dob ssn].each do |key|
-          return false unless pii_from_doc[key] == decrypted_pii[key]
-        end
-        true
+        Idv::Agent.new(pii_from_doc).proof_resolution(
+          document_capture_session,
+          should_proof_state_id: should_use_aamva?(pii_from_doc),
+        )
       end
     end
   end

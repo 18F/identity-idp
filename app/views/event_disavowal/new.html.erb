@@ -11,7 +11,7 @@
     role: 'form' }) do |f| %>
     <%= f.input :disavowal_token, as: :hidden,
                 input_html: { value: @disavowal_token, name: :disavowal_token } %>
-    <%= f.input :password, label: t('forms.passwords.edit.labels.password'), required: true %>
+    <%= f.input :password, label: t('forms.passwords.edit.labels.password'), required: true, input_html: { aria: { invalid: false } } %>
     <%= render 'devise/shared/password_strength' %>
     <%= f.button :submit, t('forms.passwords.edit.buttons.submit'), class: 'mb3' %>
 <% end %>

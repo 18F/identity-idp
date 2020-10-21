@@ -18,29 +18,17 @@
   }
 }
 
-.close-banner-how-you-know {
-  display: none;
-}
-
 @media #{$mobile} {
   .usa-banner__header--expanded .usa-banner__inner {
     margin-left: auto;
   }
+}
 
-  .usa-banner__button[aria-expanded=true]::after {
-    display: none;
-  }
-
-  .close-banner-how-you-know {
-    background: url(image-path('#{$image-path}/close-primary.svg')) top left no-repeat;
-    background-size: contain;
-    border: 0;
-    display: inline-block;
-    height: 1rem;
-    margin-left: 1.5rem;
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-    width: 1rem;
+.usa-banner__button[aria-expanded="true"]::after {
+  @include at-media-max('tablet') {
+    background-color: transparent;
+    right: 0;
+    top: 100%;
+    z-index: 10;
   }
 }

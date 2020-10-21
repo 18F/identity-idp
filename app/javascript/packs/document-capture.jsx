@@ -30,6 +30,20 @@ function getServiceProvider() {
   return { name, failureToProofURL, isLivenessRequired };
 }
 
+/**
+ * @return {Record<'front'|'back'|'selfie', string>}
+ */
+function getBackgroundUploadURLs() {
+  return ['front', 'back', 'selfie'].reduce((result, key) => {
+    const url = appRoot.getAttribute(`data-${key}-image-upload-url`);
+    if (url) {
+      result[key] = url;
+    }
+
+    return result;
+  }, {});
+}
+
 function getMetaContent(name) {
   return document.querySelector(`meta[name="${name}"]`)?.content ?? null;
 }
@@ -49,6 +63,7 @@ loadPolyfills(['fetch']).then(() => {
         endpoint={appRoot.getAttribute('data-endpoint')}
         csrf={getMetaContent('csrf-token')}
         isMockClient={isMockClient}
+        backgroundUploadURLs={getBackgroundUploadURLs()}
         formData={{
           document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
           locale: i18n.currentLocale(),

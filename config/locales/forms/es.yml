@@ -26,8 +26,8 @@ es:
       generate: Obtener códigos
       print: Impresión
       regenerate: Obtener nuevos códigos
-      subinfo: "<b>No pierdas estos códigos</b>. Descarga, imprime, o copialos. Cada
-        código solo se puede usar una vez. Después de que haya utilizado el décimo
+      subinfo_html: "<b>No pierdas estos códigos</b>. Descarga, imprime, o copialos.
+        Cada código solo se puede usar una vez. Después de que haya utilizado el décimo
         código, le daremos 10 códigos nuevos. Mantenga sus códigos tan seguros como
         una contraseña."
       subtitle: Tus códigos de respaldo
@@ -47,7 +47,7 @@ es:
       delete: Borrar
       disable: Borrar
       edit: Editar
-      enable: "+ Permitir"
+      enable: Permitir
       manage: Administrar
       resend_confirmation: Reenviar instrucciones de confirmación
       send_security_code: Enviar código

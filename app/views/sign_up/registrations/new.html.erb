@@ -16,7 +16,7 @@
   <%= validated_form_for(@register_user_email_form,
       html: { autocomplete: 'off', role: 'form' },
       url: sign_up_register_path) do |f| %>
-    <%= f.input :email, label: t('forms.registration.labels.email'), required: true %>
+    <%= f.input :email, label: t('forms.registration.labels.email'), required: true, input_html: { aria: { invalid: false } } %>
     <span class='email-invalid-alert-inline usa-error-message margin-top-neg-3 margin-bottom-3 hide' role='alert' hidden='true'>
       <%= t('sign_up.email.invalid_email_alert_inline') %>
     </span>
@@ -29,11 +29,13 @@
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
 
 <p class='mt2'>
-  <%= link_to t('notices.privacy.security_and_privacy_practices'), MarketingSite.security_and_privacy_practices_url, target: '_blank' %>
+   <%= new_window_link_to(t('notices.privacy.security_and_privacy_practices'),
+                          MarketingSite.security_and_privacy_practices_url) %>
 </p>
 
 <p>
-  <%= link_to t('notices.privacy.privacy_act_statement'), MarketingSite.privacy_act_statement_url, target: '_blank' %>
+   <%= new_window_link_to(t('notices.privacy.privacy_act_statement'),
+                          MarketingSite.privacy_act_statement_url) %>
 </p>
 
 <%= javascript_pack_tag 'email-validation' %>
