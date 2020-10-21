@@ -14,8 +14,10 @@ class TestCipherController < ApplicationController
     # puts
     key = decode(params[:key])
     plaintext = Encryption::AesCipher.new.decrypt(payload, key)
-    # puts "\nplaintext = #{plaintext}\n"
-    render json: { deciphered: plaintext }
+    puts "\nplaintext #{'-' * 70}\n#{plaintext}\n#{'-' * 80}\n"
+    
+    plainjson = { deciphered: plaintext }.to_json
+    render json: plainjson
   end
   
   def payload

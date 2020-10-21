@@ -14,6 +14,11 @@ export function toFormData(object) {
   }, new window.FormData());
 }
 
+const decode = function (text) {
+  const enc = new TextDecoder();
+  return enc.decode(text);
+};
+
 async function doEncryption(event) {
   event.preventDefault();
   const messageBox = document.querySelector('#original-text');
