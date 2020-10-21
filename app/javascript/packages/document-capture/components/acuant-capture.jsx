@@ -16,6 +16,7 @@ import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
+import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -173,7 +174,7 @@ function AcuantCapture(
   }
 
   return (
-    <div className={className}>
+    <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
         <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
