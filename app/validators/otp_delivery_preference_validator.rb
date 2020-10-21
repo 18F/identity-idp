@@ -10,7 +10,7 @@ module OtpDeliveryPreferenceValidator
     when 'voice'
       phone_number_capabilities.supports_voice?
     when 'sms'
-      phone_number_capabilities.sms?
+      phone_number_capabilities.supports_sms?
     end
   end
 
