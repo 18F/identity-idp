@@ -477,7 +477,7 @@ describe UserMailer, type: :mailer do
       UserMailer.deleted_user_accounts_report(
         email: email_address.email,
         name: 'my name',
-        issuers: ['issuer1', 'issuer2'],
+        issuers: %w[issuer1 issuer2],
         data: 'data',
       )
     end
