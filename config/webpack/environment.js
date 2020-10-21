@@ -11,7 +11,6 @@ babelLoader.include.push(/node_modules\/@18f\/identity-/);
 babelLoader.exclude = /node_modules\/(?!@18f\/identity-)/;
 
 const sassLoader = environment.loaders.get('sass');
-sassLoader.use = sassLoader.use.filter(({ loader }) => loader !== 'postcss-loader');
 
 const sourceMapLoader = {
   test: /\.js$/,
