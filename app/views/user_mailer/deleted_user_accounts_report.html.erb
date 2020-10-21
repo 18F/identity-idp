@@ -1,4 +1,4 @@
-Name: <%= @name %><br>
-Issuers: <%= @issuers.join(',') %><br>
-Data:<br>
+<%= t('user_mailer.deleted_accounts_report.name') %>: <%= @name %><br>
+<%= t('user_mailer.deleted_accounts_report.issuers') %>: <%= @issuers.join(',') %><br>
+<%= t('user_mailer.deleted_accounts_report.data') %>:<br>
 <%= @data %>
