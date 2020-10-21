@@ -25,7 +25,29 @@
     invariant "^2.2.4"
     semver "^5.5.0"
 
-"@babel/core@^7.11.1", "@babel/core@^7.7.2":
+"@babel/core@^7.12.3":
+  version "7.12.3"
+  resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.12.3.tgz#1b436884e1e3bff6fb1328dc02b208759de92ad8"
+  integrity sha512-0qXcZYKZp3/6N2jKYVxZv0aNCsxTSVCiK72DTiTYZAu7sjg73W0/aynWjMbiGd87EQL4WyA8reiJVh92AVla9g==
+  dependencies:
+    "@babel/code-frame" "^7.10.4"
+    "@babel/generator" "^7.12.1"
+    "@babel/helper-module-transforms" "^7.12.1"
+    "@babel/helpers" "^7.12.1"
+    "@babel/parser" "^7.12.3"
+    "@babel/template" "^7.10.4"
+    "@babel/traverse" "^7.12.1"
+    "@babel/types" "^7.12.1"
+    convert-source-map "^1.7.0"
+    debug "^4.1.0"
+    gensync "^1.0.0-beta.1"
+    json5 "^2.1.2"
+    lodash "^4.17.19"
+    resolve "^1.3.2"
+    semver "^5.4.1"
+    source-map "^0.5.0"
+
+"@babel/core@^7.7.2":
   version "7.11.1"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.11.1.tgz#2c55b604e73a40dc21b0e52650b11c65cf276643"
   integrity sha512-XqF7F6FWQdKGGWAzGELL+aCO1p+lRY5Tj5/tbT3St1G8NaH70jhhDIKknIZaDans0OQBG5wRAldROLHSt44BgQ==
@@ -47,19 +69,19 @@
     semver "^5.4.1"
     source-map "^0.5.0"
 
-"@babel/eslint-parser@^7.11.3":
-  version "7.11.3"
-  resolved "https://registry.yarnpkg.com/@babel/eslint-parser/-/eslint-parser-7.11.3.tgz#ceb94cb6e2457c4a4d2d87db29925e6b48d20786"
-  integrity sha512-OdCt/CVXdR/eTNTYDEobf4e55m/AAc04ki+/Oe2/GE8ivh2FxX4yDab48lA6t7ysP4M7luap6Fxx3hUVNTwzFQ==
+"@babel/eslint-parser@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/eslint-parser/-/eslint-parser-7.12.1.tgz#b3ae38e6174d2d0d2d00d2dcd919b4086b6bb8f0"
+  integrity sha512-cc7WQHnHQY3++/bghgbDtPx+5bf6xTsokyGzV6Qzh65NLz/unv+mPQuACkQ9GFhIhcTFv6yqwNaEcfX7EkOEsg==
   dependencies:
     eslint-scope "5.1.0"
     eslint-visitor-keys "^1.3.0"
     semver "^6.3.0"
 
-"@babel/eslint-plugin@^7.11.3":
-  version "7.11.3"
-  resolved "https://registry.yarnpkg.com/@babel/eslint-plugin/-/eslint-plugin-7.11.3.tgz#66b531f90592f8f0621d072b59ea2c37c91e8d0d"
-  integrity sha512-gmi3lgaWlYpNb+h7qPfv5GVz2ZVwzCDyV+kAGj+3il+Mv5uan5Yccvdw7m14UAAY2tdTbB0VgRF6ZLjUbrUm0g==
+"@babel/eslint-plugin@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/eslint-plugin/-/eslint-plugin-7.12.1.tgz#67626a16312dfe7c5dd7685a1a8af7b03c43985b"
+  integrity sha512-rOjrD5yupTYCO4x0kEbQmi/NsaD+VGOD/9Cvso64WMVPY2y6o5Nvw2sqFWdeSEBdR1Dsa07YjplBs067x5YbXg==
   dependencies:
     eslint-rule-composer "^0.3.0"
 
@@ -69,6 +91,15 @@
   integrity sha512-fEm3Uzw7Mc9Xi//qU20cBKatTfs2aOtKqmvy/Vm7RkJEGFQ4xc9myCfbXxqK//ZS8MR/ciOHw6meGASJuKmDfQ==
   dependencies:
     "@babel/types" "^7.11.0"
+    jsesc "^2.5.1"
+    source-map "^0.5.0"
+
+"@babel/generator@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/generator/-/generator-7.12.1.tgz#0d70be32bdaa03d7c51c8597dda76e0df1f15468"
+  integrity sha512-DB+6rafIdc9o72Yc3/Ph5h+6hUjeOp66pF0naQBgUFFuPqzQwIlPTm3xZR7YNvduIMtkDIj2t21LSQwnbCrXvg==
+  dependencies:
+    "@babel/types" "^7.12.1"
     jsesc "^2.5.1"
     source-map "^0.5.0"
 
@@ -87,14 +118,14 @@
     "@babel/helper-explode-assignable-expression" "^7.10.4"
     "@babel/types" "^7.10.4"
 
-"@babel/helper-builder-react-jsx-experimental@^7.10.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/helper-builder-react-jsx-experimental/-/helper-builder-react-jsx-experimental-7.10.4.tgz#d0ffb875184d749c63ffe1f4f65be15143ec322d"
-  integrity sha512-LyacH/kgQPgLAuaWrvvq1+E7f5bLyT8jXCh7nM67sRsy2cpIGfgWJ+FCnAKQXfY+F0tXUaN6FqLkp4JiCzdK8Q==
+"@babel/helper-builder-react-jsx-experimental@^7.12.1":
+  version "7.12.4"
+  resolved "https://registry.yarnpkg.com/@babel/helper-builder-react-jsx-experimental/-/helper-builder-react-jsx-experimental-7.12.4.tgz#55fc1ead5242caa0ca2875dcb8eed6d311e50f48"
+  integrity sha512-AjEa0jrQqNk7eDQOo0pTfUOwQBMF+xVqrausQwT9/rTKy0g04ggFNaJpaE09IQMn9yExluigWMJcj0WC7bq+Og==
   dependencies:
     "@babel/helper-annotate-as-pure" "^7.10.4"
-    "@babel/helper-module-imports" "^7.10.4"
-    "@babel/types" "^7.10.4"
+    "@babel/helper-module-imports" "^7.12.1"
+    "@babel/types" "^7.12.1"
 
 "@babel/helper-builder-react-jsx@^7.10.4":
   version "7.10.4"
@@ -183,12 +214,26 @@
   dependencies:
     "@babel/types" "^7.11.0"
 
+"@babel/helper-member-expression-to-functions@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-member-expression-to-functions/-/helper-member-expression-to-functions-7.12.1.tgz#fba0f2fcff3fba00e6ecb664bb5e6e26e2d6165c"
+  integrity sha512-k0CIe3tXUKTRSoEx1LQEPFU9vRQfqHtl+kf8eNnDqb4AUJEy5pz6aIiog+YWtVm2jpggjS1laH68bPsR+KWWPQ==
+  dependencies:
+    "@babel/types" "^7.12.1"
+
 "@babel/helper-module-imports@^7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/helper-module-imports/-/helper-module-imports-7.10.4.tgz#4c5c54be04bd31670a7382797d75b9fa2e5b5620"
   integrity sha512-nEQJHqYavI217oD9+s5MUBzk6x1IlvoS9WTPfgG43CbMEeStE0v+r+TucWdx8KFGowPGvyOkDT9+7DHedIDnVw==
   dependencies:
     "@babel/types" "^7.10.4"
+
+"@babel/helper-module-imports@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-module-imports/-/helper-module-imports-7.12.1.tgz#1644c01591a15a2f084dd6d092d9430eb1d1216c"
+  integrity sha512-ZeC1TlMSvikvJNy1v/wPIazCu3NdOwgYZLIkmIyAsGhqkNpiDoQQRmaCK8YP4Pq3GPTLPV9WXaPCJKvx06JxKA==
+  dependencies:
+    "@babel/types" "^7.12.1"
 
 "@babel/helper-module-transforms@^7.10.4", "@babel/helper-module-transforms@^7.10.5", "@babel/helper-module-transforms@^7.11.0":
   version "7.11.0"
@@ -201,6 +246,21 @@
     "@babel/helper-split-export-declaration" "^7.11.0"
     "@babel/template" "^7.10.4"
     "@babel/types" "^7.11.0"
+    lodash "^4.17.19"
+
+"@babel/helper-module-transforms@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-module-transforms/-/helper-module-transforms-7.12.1.tgz#7954fec71f5b32c48e4b303b437c34453fd7247c"
+  integrity sha512-QQzehgFAZ2bbISiCpmVGfiGux8YVFXQ0abBic2Envhej22DVXV9nCFaS5hIQbkyo1AdGb+gNME2TSh3hYJVV/w==
+  dependencies:
+    "@babel/helper-module-imports" "^7.12.1"
+    "@babel/helper-replace-supers" "^7.12.1"
+    "@babel/helper-simple-access" "^7.12.1"
+    "@babel/helper-split-export-declaration" "^7.11.0"
+    "@babel/helper-validator-identifier" "^7.10.4"
+    "@babel/template" "^7.10.4"
+    "@babel/traverse" "^7.12.1"
+    "@babel/types" "^7.12.1"
     lodash "^4.17.19"
 
 "@babel/helper-optimise-call-expression@^7.10.4":
@@ -243,6 +303,16 @@
     "@babel/traverse" "^7.10.4"
     "@babel/types" "^7.10.4"
 
+"@babel/helper-replace-supers@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-replace-supers/-/helper-replace-supers-7.12.1.tgz#f15c9cc897439281891e11d5ce12562ac0cf3fa9"
+  integrity sha512-zJjTvtNJnCFsCXVi5rUInstLd/EIVNmIKA1Q9ynESmMBWPWd+7sdR+G4/wdu+Mppfep0XLyG2m7EBPvjCeFyrw==
+  dependencies:
+    "@babel/helper-member-expression-to-functions" "^7.12.1"
+    "@babel/helper-optimise-call-expression" "^7.10.4"
+    "@babel/traverse" "^7.12.1"
+    "@babel/types" "^7.12.1"
+
 "@babel/helper-simple-access@^7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/helper-simple-access/-/helper-simple-access-7.10.4.tgz#0f5ccda2945277a2a7a2d3a821e15395edcf3461"
@@ -250,6 +320,13 @@
   dependencies:
     "@babel/template" "^7.10.4"
     "@babel/types" "^7.10.4"
+
+"@babel/helper-simple-access@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/helper-simple-access/-/helper-simple-access-7.12.1.tgz#32427e5aa61547d38eb1e6eaf5fd1426fdad9136"
+  integrity sha512-OxBp7pMrjVewSSC8fXDFrHrBcJATOOFssZwv16F3/6Xtc138GHybBfPbm9kfiqQHKhYQrlamWILwlDCeyMFEaA==
+  dependencies:
+    "@babel/types" "^7.12.1"
 
 "@babel/helper-skip-transparent-expression-wrappers@^7.11.0":
   version "7.11.0"
@@ -301,6 +378,15 @@
     "@babel/traverse" "^7.10.4"
     "@babel/types" "^7.10.4"
 
+"@babel/helpers@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/helpers/-/helpers-7.12.1.tgz#8a8261c1d438ec18cb890434df4ec768734c1e79"
+  integrity sha512-9JoDSBGoWtmbay98efmT2+mySkwjzeFeAL9BuWNoVQpkPFQF8SIIFUfY5os9u8wVzglzoiPRSW7cuJmBDUt43g==
+  dependencies:
+    "@babel/template" "^7.10.4"
+    "@babel/traverse" "^7.12.1"
+    "@babel/types" "^7.12.1"
+
 "@babel/highlight@^7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/highlight/-/highlight-7.10.4.tgz#7d1bdfd65753538fabe6c38596cdb76d9ac60143"
@@ -323,6 +409,11 @@
   version "7.11.3"
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.11.3.tgz#9e1eae46738bcd08e23e867bab43e7b95299a8f9"
   integrity sha512-REo8xv7+sDxkKvoxEywIdsNFiZLybwdI7hcT5uEPyQrSMB4YQ973BfC9OOrD/81MaIjh6UxdulIQXkjmiH3PcA==
+
+"@babel/parser@^7.12.1", "@babel/parser@^7.12.3":
+  version "7.12.3"
+  resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.12.3.tgz#a305415ebe7a6c7023b40b5122a0662d928334cd"
+  integrity sha512-kFsOS0IbsuhO5ojF8Hc8z/8vEIOkylVBrjiZUbLTE3XFe0Qi+uu6HjzQixkFaqr0ZPAMZcBVxEwmsnsLPZ2Xsw==
 
 "@babel/plugin-proposal-async-generator-functions@^7.10.4":
   version "7.10.5"
@@ -466,10 +557,10 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.8.0"
 
-"@babel/plugin-syntax-jsx@^7.10.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-jsx/-/plugin-syntax-jsx-7.10.4.tgz#39abaae3cbf710c4373d8429484e6ba21340166c"
-  integrity sha512-KCg9mio9jwiARCB7WAcQ7Y1q+qicILjoK8LP/VkPkEKaf5dkaZZK1EcTe91a3JJlZ3qy6L5s9X52boEYi8DM9g==
+"@babel/plugin-syntax-jsx@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-jsx/-/plugin-syntax-jsx-7.12.1.tgz#9d9d357cc818aa7ae7935917c1257f67677a0926"
+  integrity sha512-1yRi7yAtB0ETgxdY9ti/p2TivUxJkTdhu/ZbF9MshVGqOx1TdB3b7xCXs49Fupgg50N45KcAsRP/ZqWjs9SRjg==
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
 
@@ -706,52 +797,50 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
 
-"@babel/plugin-transform-react-display-name@^7.10.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-display-name/-/plugin-transform-react-display-name-7.10.4.tgz#b5795f4e3e3140419c3611b7a2a3832b9aef328d"
-  integrity sha512-Zd4X54Mu9SBfPGnEcaGcOrVAYOtjT2on8QZkLKEq1S/tHexG39d9XXGZv19VfRrDjPJzFmPfTAqOQS1pfFOujw==
+"@babel/plugin-transform-react-display-name@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-display-name/-/plugin-transform-react-display-name-7.12.1.tgz#1cbcd0c3b1d6648c55374a22fc9b6b7e5341c00d"
+  integrity sha512-cAzB+UzBIrekfYxyLlFqf/OagTvHLcVBb5vpouzkYkBclRPraiygVnafvAoipErZLI8ANv8Ecn6E/m5qPXD26w==
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
 
-"@babel/plugin-transform-react-jsx-development@^7.10.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-jsx-development/-/plugin-transform-react-jsx-development-7.10.4.tgz#6ec90f244394604623880e15ebc3c34c356258ba"
-  integrity sha512-RM3ZAd1sU1iQ7rI2dhrZRZGv0aqzNQMbkIUCS1txYpi9wHQ2ZHNjo5TwX+UD6pvFW4AbWqLVYvKy5qJSAyRGjQ==
+"@babel/plugin-transform-react-jsx-development@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-jsx-development/-/plugin-transform-react-jsx-development-7.12.1.tgz#0b8f8cd531dcf7991f1e5f2c10a2a4f1cfc78e36"
+  integrity sha512-IilcGWdN1yNgEGOrB96jbTplRh+V2Pz1EoEwsKsHfX1a/L40cUYuD71Zepa7C+ujv7kJIxnDftWeZbKNEqZjCQ==
   dependencies:
-    "@babel/helper-builder-react-jsx-experimental" "^7.10.4"
+    "@babel/helper-builder-react-jsx-experimental" "^7.12.1"
     "@babel/helper-plugin-utils" "^7.10.4"
-    "@babel/plugin-syntax-jsx" "^7.10.4"
+    "@babel/plugin-syntax-jsx" "^7.12.1"
 
-"@babel/plugin-transform-react-jsx-self@^7.10.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-jsx-self/-/plugin-transform-react-jsx-self-7.10.4.tgz#cd301a5fed8988c182ed0b9d55e9bd6db0bd9369"
-  integrity sha512-yOvxY2pDiVJi0axdTWHSMi5T0DILN+H+SaeJeACHKjQLezEzhLx9nEF9xgpBLPtkZsks9cnb5P9iBEi21En3gg==
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.10.4"
-    "@babel/plugin-syntax-jsx" "^7.10.4"
-
-"@babel/plugin-transform-react-jsx-source@^7.10.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-jsx-source/-/plugin-transform-react-jsx-source-7.10.4.tgz#86baf0fcccfe58084e06446a80858e1deae8f291"
-  integrity sha512-FTK3eQFrPv2aveerUSazFmGygqIdTtvskG50SnGnbEUnRPcGx2ylBhdFIzoVS1ty44hEgcPoCAyw5r3VDEq+Ug==
+"@babel/plugin-transform-react-jsx-self@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-jsx-self/-/plugin-transform-react-jsx-self-7.12.1.tgz#ef43cbca2a14f1bd17807dbe4376ff89d714cf28"
+  integrity sha512-FbpL0ieNWiiBB5tCldX17EtXgmzeEZjFrix72rQYeq9X6nUK38HCaxexzVQrZWXanxKJPKVVIU37gFjEQYkPkA==
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
-    "@babel/plugin-syntax-jsx" "^7.10.4"
 
-"@babel/plugin-transform-react-jsx@^7.10.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-jsx/-/plugin-transform-react-jsx-7.10.4.tgz#673c9f913948764a4421683b2bef2936968fddf2"
-  integrity sha512-L+MfRhWjX0eI7Js093MM6MacKU4M6dnCRa/QPDwYMxjljzSCzzlzKzj9Pk4P3OtrPcxr2N3znR419nr3Xw+65A==
+"@babel/plugin-transform-react-jsx-source@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-jsx-source/-/plugin-transform-react-jsx-source-7.12.1.tgz#d07de6863f468da0809edcf79a1aa8ce2a82a26b"
+  integrity sha512-keQ5kBfjJNRc6zZN1/nVHCd6LLIHq4aUKcVnvE/2l+ZZROSbqoiGFRtT5t3Is89XJxBQaP7NLZX2jgGHdZvvFQ==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.10.4"
+
+"@babel/plugin-transform-react-jsx@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-jsx/-/plugin-transform-react-jsx-7.12.1.tgz#c2d96c77c2b0e4362cc4e77a43ce7c2539d478cb"
+  integrity sha512-RmKejwnT0T0QzQUzcbP5p1VWlpnP8QHtdhEtLG55ZDQnJNalbF3eeDyu3dnGKvGzFIQiBzFhBYTwvv435p9Xpw==
   dependencies:
     "@babel/helper-builder-react-jsx" "^7.10.4"
-    "@babel/helper-builder-react-jsx-experimental" "^7.10.4"
+    "@babel/helper-builder-react-jsx-experimental" "^7.12.1"
     "@babel/helper-plugin-utils" "^7.10.4"
-    "@babel/plugin-syntax-jsx" "^7.10.4"
+    "@babel/plugin-syntax-jsx" "^7.12.1"
 
-"@babel/plugin-transform-react-pure-annotations@^7.10.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-pure-annotations/-/plugin-transform-react-pure-annotations-7.10.4.tgz#3eefbb73db94afbc075f097523e445354a1c6501"
-  integrity sha512-+njZkqcOuS8RaPakrnR9KvxjoG1ASJWpoIv/doyWngId88JoFlPlISenGXjrVacZUIALGUr6eodRs1vmPnF23A==
+"@babel/plugin-transform-react-pure-annotations@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-pure-annotations/-/plugin-transform-react-pure-annotations-7.12.1.tgz#05d46f0ab4d1339ac59adf20a1462c91b37a1a42"
+  integrity sha512-RqeaHiwZtphSIUZ5I85PEH19LOSzxfuEazoY7/pWASCAIBuATQzpSVD+eT6MebeeZT2F4eSL0u4vw6n4Nm0Mjg==
   dependencies:
     "@babel/helper-annotate-as-pure" "^7.10.4"
     "@babel/helper-plugin-utils" "^7.10.4"
@@ -918,26 +1007,26 @@
     "@babel/types" "^7.4.4"
     esutils "^2.0.2"
 
-"@babel/preset-react@^7.10.4":
-  version "7.10.4"
-  resolved "https://registry.yarnpkg.com/@babel/preset-react/-/preset-react-7.10.4.tgz#92e8a66d816f9911d11d4cc935be67adfc82dbcf"
-  integrity sha512-BrHp4TgOIy4M19JAfO1LhycVXOPWdDbTRep7eVyatf174Hff+6Uk53sDyajqZPu8W1qXRBiYOfIamek6jA7YVw==
+"@babel/preset-react@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/preset-react/-/preset-react-7.12.1.tgz#7f022b13f55b6dd82f00f16d1c599ae62985358c"
+  integrity sha512-euCExymHCi0qB9u5fKw7rvlw7AZSjw/NaB9h7EkdTt5+yHRrXdiRTh7fkG3uBPpJg82CqLfp1LHLqWGSCrab+g==
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.4"
-    "@babel/plugin-transform-react-display-name" "^7.10.4"
-    "@babel/plugin-transform-react-jsx" "^7.10.4"
-    "@babel/plugin-transform-react-jsx-development" "^7.10.4"
-    "@babel/plugin-transform-react-jsx-self" "^7.10.4"
-    "@babel/plugin-transform-react-jsx-source" "^7.10.4"
-    "@babel/plugin-transform-react-pure-annotations" "^7.10.4"
+    "@babel/plugin-transform-react-display-name" "^7.12.1"
+    "@babel/plugin-transform-react-jsx" "^7.12.1"
+    "@babel/plugin-transform-react-jsx-development" "^7.12.1"
+    "@babel/plugin-transform-react-jsx-self" "^7.12.1"
+    "@babel/plugin-transform-react-jsx-source" "^7.12.1"
+    "@babel/plugin-transform-react-pure-annotations" "^7.12.1"
 
-"@babel/register@^7.4.4":
-  version "7.9.0"
-  resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.9.0.tgz#02464ede57548bddbb5e9f705d263b7c3f43d48b"
-  integrity sha512-Tv8Zyi2J2VRR8g7pC5gTeIN8Ihultbmk0ocyNz8H2nEZbmhp1N6q0A1UGsQbDvGP/sNinQKUHf3SqXwqjtFv4Q==
+"@babel/register@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/register/-/register-7.12.1.tgz#cdb087bdfc4f7241c03231f22e15d211acf21438"
+  integrity sha512-XWcmseMIncOjoydKZnWvWi0/5CUCD+ZYKhRwgYlWOrA8fGZ/FjuLRpqtIhLOVD/fvR1b9DQHtZPn68VvhpYf+Q==
   dependencies:
     find-cache-dir "^2.0.0"
-    lodash "^4.17.13"
+    lodash "^4.17.19"
     make-dir "^2.1.0"
     pirates "^4.0.0"
     source-map-support "^0.5.16"
@@ -995,10 +1084,34 @@
     globals "^11.1.0"
     lodash "^4.17.19"
 
+"@babel/traverse@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/traverse/-/traverse-7.12.1.tgz#941395e0c5cc86d5d3e75caa095d3924526f0c1e"
+  integrity sha512-MA3WPoRt1ZHo2ZmoGKNqi20YnPt0B1S0GTZEPhhd+hw2KGUzBlHuVunj6K4sNuK+reEvyiPwtp0cpaqLzJDmAw==
+  dependencies:
+    "@babel/code-frame" "^7.10.4"
+    "@babel/generator" "^7.12.1"
+    "@babel/helper-function-name" "^7.10.4"
+    "@babel/helper-split-export-declaration" "^7.11.0"
+    "@babel/parser" "^7.12.1"
+    "@babel/types" "^7.12.1"
+    debug "^4.1.0"
+    globals "^11.1.0"
+    lodash "^4.17.19"
+
 "@babel/types@^7.10.4", "@babel/types@^7.10.5", "@babel/types@^7.11.0", "@babel/types@^7.4.4":
   version "7.11.0"
   resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.11.0.tgz#2ae6bf1ba9ae8c3c43824e5861269871b206e90d"
   integrity sha512-O53yME4ZZI0jO1EVGtF1ePGl0LHirG4P1ibcD80XyzZcKhcMFeCXmh4Xb1ifGBIV233Qg12x4rBfQgA+tmOukA==
+  dependencies:
+    "@babel/helper-validator-identifier" "^7.10.4"
+    lodash "^4.17.19"
+    to-fast-properties "^2.0.0"
+
+"@babel/types@^7.12.1":
+  version "7.12.1"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.12.1.tgz#e109d9ab99a8de735be287ee3d6a9947a190c4ae"
+  integrity sha512-BzSY3NJBKM4kyatSOWh3D/JJ2O3CVzBybHWxtgxnggaxEuaSTTDqeiSb/xk9lrkw2Tbqyivw5ZU4rT+EfznQsA==
   dependencies:
     "@babel/helper-validator-identifier" "^7.10.4"
     lodash "^4.17.19"
@@ -5785,7 +5898,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-lodash@^4.0.0, lodash@^4.17.13, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.5, lodash@~4.17.10:
+lodash@^4.0.0, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.5, lodash@~4.17.10:
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.19.tgz#e48ddedbe30b3321783c5b4301fbd353bc1e4a4b"
   integrity sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==
