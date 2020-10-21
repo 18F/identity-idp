@@ -16,19 +16,16 @@ module Idv
                     when :timed_out
                       { success: false, status: nil, errors: ['timeout'] }
                     when :done
-                      status = async_state_done(current_async_state)
-                      { success: true, status: status ? 'success' : 'fail' }
+                      success = process_result(current_async_state.result)
+                      async_state_done if success
+                      { success: true, status: success ? 'success' : 'fail' }
                     end
       end
 
-      def async_state_done(current_async_state)
-        result = current_async_state.result
-        return false unless process_result(result)
-
+      def async_state_done
         delete_async
         mark_step_complete(:document_capture)
         save_proofing_components
-        true
       end
 
       def process_result(result)
