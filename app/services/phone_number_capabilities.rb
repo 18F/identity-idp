@@ -21,9 +21,7 @@ class PhoneNumberCapabilities
   private
 
   def country_code_data
-    @country_code_data ||= INTERNATIONAL_CODES.select do |key, _|
-      key == two_letter_country_code
-    end.values.first
+    INTERNATIONAL_CODES[two_letter_country_code]
   end
 
   def two_letter_country_code
