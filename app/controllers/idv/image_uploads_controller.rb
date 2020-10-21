@@ -19,11 +19,7 @@ module Idv
           liveness_checking_enabled: liveness_checking_enabled?,
         )
 
-        add_costs(client_response)
-        analytics.track_event(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-          client_response.to_h.merge(user_id: image_form.document_capture_session.user.uuid),
-        )
+        update_analytics(client_response)
 
         store_pii(client_response) if client_response.success?
         status = :bad_request unless client_response.success?
@@ -59,6 +55,25 @@ module Idv
 
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client
+    end
+
+    def update_analytics(client_response)
+      add_costs(client_response)
+      update_funnel(client_response)
+      analytics.track_event(
+        Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+        client_response.to_h.merge(user_id: image_form.document_capture_session.user.uuid),
+      )
+    end
+
+    def update_funnel(result)
+      user_id = image_form.document_capture_session.user.id
+      issuer = sp_session[:issuer]
+      steps = %i[front_image back_image]
+      steps << :selfie if liveness_checking_enabled?
+      steps.each do |step|
+        Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(step.to_s, :update, result.success?)
+      end
     end
 
     def add_costs(client_response)

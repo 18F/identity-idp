@@ -105,6 +105,6 @@ class SamlIdpController < ApplicationController
     analytics.track_event(Analytics::SP_REDIRECT_INITIATED)
     Db::SpReturnLog::AddReturn.call(request_id, current_user.id)
     increment_monthly_auth_count
-    add_sp_cost(sp_session[:ial2] ? :ial2_authentication : :ial1_authentication)
+    add_sp_cost(:authentication)
   end
 end

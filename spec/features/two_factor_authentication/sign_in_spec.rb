@@ -374,17 +374,17 @@ feature 'Two Factor Authentication' do
     it 'renders the requested pages' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
-      click_link t('links.help')
+      click_link t('links.help'), match: :first
 
       expect(current_url).to eq MarketingSite.help_url
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
-      click_link t('links.contact')
+      click_link t('links.contact'), match: :first
 
       expect(current_url).to eq MarketingSite.contact_url
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
-      click_link t('links.privacy_policy')
+      click_link t('links.privacy_policy'), match: :first
 
       expect(current_url).to eq MarketingSite.security_and_privacy_practices_url
     end
