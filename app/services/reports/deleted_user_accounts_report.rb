@@ -1,0 +1,40 @@
+require 'login_gov/hostdata'
+
+module Reports
+  class DeletedUserAccountsReport < BaseReport
+    REPORT_NAME = 'deleted-user-accounts-report'.freeze
+
+    def call
+      configs = JSON.parse(Figaro.env.deleted_user_accounts_report_configs || '[]')
+      configs.each do |report_hash|
+        name = report_hash['name']
+        emails = report_hash['emails']
+        issuers = report_hash['issuers']
+        report = deleted_user_accounts_data_for_issuers(issuers)
+        emails.each do |email|
+          UserMailer.deleted_user_accounts_report(
+            email: email,
+            name: name,
+            issuers: issuers,
+            data: report,
+          ).deliver_later
+        end
+      end
+    end
+
+    private
+
+    def deleted_user_accounts_data_for_issuers(issuers)
+      recs = []
+      issuers.each do |issuer|
+        transaction_with_timeout do
+          rows = DeletedAccountsReport.call(issuer, 10_000)
+          rows.each do |row|
+            recs << "#{row['last_authenticated_at']}, #{row['identity_uuid']}\r\n"
+          end
+        end
+      end
+      recs.join
+    end
+  end
+end

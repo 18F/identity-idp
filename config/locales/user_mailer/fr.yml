@@ -56,6 +56,11 @@ fr:
       reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
         %{app} pour le réinitialiser.
     contact_link_text: communiquez avec nous
+    deleted_accounts_report:
+      data: Data
+      issuers: Issuers
+      name: Name
+      subject: Deleted accounts report
     doc_auth_link:
       message: You've requested to verify your identity on a desktop computer.  Please
         sign in to %{sp_link}
