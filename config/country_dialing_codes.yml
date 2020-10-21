@@ -1,932 +1,1165 @@
 US:
   name: United States of America
   country_code: '1'
-  sms_only: false
+  supports_sms: true
+  supports_voice: true
 AF:
   name: Afghanistan
   country_code: '93'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AX:
   name: Åland Islands
   country_code: '358'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AL:
   name: Albania
   country_code: '355'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 DZ:
   name: Algeria
   country_code: '213'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AS:
   name: American Samoa
   country_code: '1684'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AD:
   name: Andorra
   country_code: '376'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AO:
   name: Angola
   country_code: '244'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AI:
   name: Anguilla
   country_code: '1264'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AG:
   name: Antigua and Barbuda
   country_code: '1268'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AR:
   name: Argentina
   country_code: '54'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AM:
   name: Armenia
   country_code: '374'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AW:
   name: Aruba
   country_code: '297'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AU:
   name: Australia/Cocos/Christmas Island
   country_code: '61'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AT:
   name: Austria
   country_code: '43'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AZ:
   name: Azerbaijan
   country_code: '994'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BS:
   name: Bahamas
   country_code: '1242'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BH:
   name: Bahrain
   country_code: '973'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BD:
   name: Bangladesh
   country_code: '880'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BB:
   name: Barbados
   country_code: '1246'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BY:
   name: Belarus
   country_code: '375'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BE:
   name: Belgium
   country_code: '32'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BZ:
   name: Belize
   country_code: '501'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BJ:
   name: Benin
   country_code: '229'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BM:
   name: Bermuda
   country_code: '1441'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BT:
   name: Bhutan
   country_code: '975'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BO:
   name: Bolivia
   country_code: '591'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BA:
   name: Bosnia and Herzegovina
   country_code: '387'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BW:
   name: Botswana
   country_code: '267'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BR:
   name: Brazil
   country_code: '55'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BN:
   name: Brunei
   country_code: '673'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BG:
   name: Bulgaria
   country_code: '359'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BF:
   name: Burkina Faso
   country_code: '226'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BI:
   name: Burundi
   country_code: '257'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 KH:
   name: Cambodia
   country_code: '855'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CM:
   name: Cameroon
   country_code: '237'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CA:
   name: Canada
   country_code: '1'
-  sms_only: false
+  supports_sms: true
+  supports_voice: true
 CV:
   name: Cape Verde
   country_code: '238'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 KY:
   name: Cayman Islands
   country_code: '1345'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CF:
   name: Central Africa
   country_code: '236'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TD:
   name: Chad
   country_code: '235'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CL:
   name: Chile
   country_code: '56'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CN:
   name: China
   country_code: '86'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CX:
   name: Christmas Island
   country_code: '61'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CC:
   name: Cocos (Keeling) Islands
   country_code: '61'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CO:
   name: Colombia
   country_code: '57'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 KM:
   name: Comoros
   country_code: '269'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CG:
   name: Congo
   country_code: '242'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CD:
   name: Congo (Democratic Republic of the)
   country_code: '243'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CK:
   name: Cook Islands
   country_code: '682'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CR:
   name: Costa Rica
   country_code: '506'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 HR:
   name: Croatia
   country_code: '385'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CU:
   name: Cuba
   country_code: '53'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CW:
   name: Curaçao
   country_code: '599'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CY:
   name: Cyprus
   country_code: '357'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CZ:
   name: Czech Republic
   country_code: '420'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 DK:
   name: Denmark
   country_code: '45'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 DJ:
   name: Djibouti
   country_code: '253'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 DM:
   name: Dominica
   country_code: '1767'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 DO:
   name: Dominican Republic (República Dominicana)
   country_code: '1'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TL:
   name: East Timor
   country_code: '670'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 EC:
   name: Ecuador
   country_code: '593'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 EG:
   name: Egypt
   country_code: '20'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SV:
   name: El Salvador
   country_code: '503'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GQ:
   name: Equatorial Guinea
   country_code: '240'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 ER:
   name: Eritrea
   country_code: '291'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 EE:
   name: Estonia
   country_code: '372'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 ET:
   name: Ethiopia
   country_code: '251'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 FK:
   name: Falkland Islands
   country_code: '500'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 FO:
   name: Faroe Islands
   country_code: '298'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 FJ:
   name: Fiji
   country_code: '679'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 FI:
   name: Finland/Aland Islands
   country_code: '358'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 FR:
   name: France
   country_code: '33'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GF:
   name: French Guiana
   country_code: '594'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PF:
   name: French Polynesia
   country_code: '689'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GA:
   name: Gabon
   country_code: '241'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GM:
   name: Gambia
   country_code: '220'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GE:
   name: Georgia
   country_code: '995'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 DE:
   name: Germany
   country_code: '49'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GH:
   name: Ghana
   country_code: '233'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GI:
   name: Gibraltar
   country_code: '350'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GD:
   name: Grenada
   country_code: '1473'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GR:
   name: Greece
   country_code: '30'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GL:
   name: Greenland
   country_code: '299'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GP:
   name: Guadeloupe
   country_code: '590'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GU:
   name: Guam
   country_code: '1671'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GT:
   name: Guatemala
   country_code: '502'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GG:
   name: Guernsey
   country_code: '44'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GN:
   name: Guinea
   country_code: '224'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GW:
   name: Guinea-Bissau
   country_code: '245'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GY:
   name: Guyana
   country_code: '592'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 HT:
   name: Haiti
   country_code: '509'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 HN:
   name: Honduras
   country_code: '504'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 HK:
   name: Hong Kong
   country_code: '852'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 HU:
   name: Hungary
   country_code: '36'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 IS:
   name: Iceland
   country_code: '354'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 IN:
   name: India
   country_code: '91'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 ID:
   name: Indonesia
   country_code: '62'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 IR:
   name: Iran
   country_code: '98'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 IQ:
   name: Iraq
   country_code: '964'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 IE:
   name: Ireland
   country_code: '353'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 IM:
   name: Isle of Man
   country_code: '44'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 IL:
   name: Israel
   country_code: '972'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 IT:
   name: Italy
   country_code: '39'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CI:
   name: Ivory Coast
   country_code: '225'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 JM:
   name: Jamaica
   country_code: '1876'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 JP:
   name: Japan
   country_code: '81'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 JE:
   name: Jersey
   country_code: '44'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 JO:
   name: Jordan
   country_code: '962'
-  sms_only: false
+  supports_sms: true
+  supports_voice: true
 KZ:
   name: Kazakhstan
   country_code: '7'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 KE:
   name: Kenya
   country_code: '254'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 KP:
   name: Korea (Democratic People's Republic of)
   country_code: '850'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 KR:
   name: Korea (Republic of)
   country_code: '82'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 KW:
   name: Kuwait
   country_code: '965'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 KG:
   name: Kyrgyzstan
   country_code: '996'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LA:
   name: Laos People's Democratic Republic
   country_code: '856'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LV:
   name: Latvia
   country_code: '371'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LB:
   name: Lebanon
   country_code: '961'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LS:
   name: Lesotho
   country_code: '266'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LR:
   name: Liberia
   country_code: '231'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LY:
   name: Libya
   country_code: '218'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LI:
   name: Liechtenstein
   country_code: '423'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LT:
   name: Lithuania
   country_code: '370'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LU:
   name: Luxembourg
   country_code: '352'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MO:
   name: Macau
   country_code: '853'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MK:
   name: Macedonia
   country_code: '389'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MG:
   name: Madagascar
   country_code: '261'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MW:
   name: Malawi
   country_code: '265'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MY:
   name: Malaysia
   country_code: '60'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MV:
   name: Maldives
   country_code: '960'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 ML:
   name: Mali
   country_code: '223'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MT:
   name: Malta
   country_code: '356'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MH:
   name: Marshall Islands
   country_code: '692'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MQ:
   name: Martinique
   country_code: '596'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MR:
   name: Mauritania
   country_code: '222'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MU:
   name: Mauritius
   country_code: '230'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 YT:
   name: Mayotte
   country_code: '262'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MX:
   name: Mexico
   country_code: '52'
-  sms_only: false
+  supports_sms: true
+  supports_voice: true
 FM:
   name: Micronesia
   country_code: '691'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MD:
   name: Moldo
   country_code: '373'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MC:
   name: Monaco
   country_code: '377'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MN:
   name: Mongolia
   country_code: '976'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 ME:
   name: Montenegro
   country_code: '382'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MS:
   name: Montserrat
   country_code: '1664'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MA:
   name: Morocco
   country_code: '212'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MZ:
   name: Mozambique
   country_code: '258'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MM:
   name: Myanmar
   country_code: '95'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 NA:
   name: Namibia
   country_code: '264'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 NP:
   name: Nepal
   country_code: '977'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 NL:
   name: Netherlands
   country_code: '31'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BQ:
   name: Netherlands Antilles
   country_code: '599'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 NC:
   name: New Caledonia
   country_code: '687'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 NZ:
   name: New Zealand
   country_code: '64'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 NI:
   name: Nicaragua
   country_code: '505'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 NE:
   name: Niger
   country_code: '227'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 NG:
   name: Nigeria
   country_code: '234'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MP:
   name: Northern Mariana Islands
   country_code: '1670'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 'NO':
   name: Norway
   country_code: '47'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 OM:
   name: Oman
   country_code: '968'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PK:
   name: Pakistan
   country_code: '92'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PW:
   name: Palau
   country_code: '680'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PS:
   name: Palestine
   country_code: '970'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PA:
   name: Panama
   country_code: '507'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PG:
   name: Papua New Guinea
   country_code: '675'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PY:
   name: Paraguay
   country_code: '595'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PE:
   name: Peru
   country_code: '51'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PH:
   name: Philippines
   country_code: '63'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PL:
   name: Poland
   country_code: '48'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PT:
   name: Portugal
   country_code: '351'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PR:
   name: Puerto Rico (U.S.)
   country_code: '1'
-  sms_only: false
+  supports_sms: true
+  supports_voice: true
 QA:
   name: Qatar
   country_code: '974'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 RE:
   name: Reunion
   country_code: '262'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 RO:
   name: Romania
   country_code: '40'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 RU:
   name: Russia
   country_code: '7'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 RW:
   name: Rwanda
   country_code: '250'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 BL:
   name: Saint Barthélemy
   country_code: '590'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 KN:
   name: Saint Kitts and Nevis
   country_code: '1869'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LC:
   name: Saint Lucia
   country_code: '1758'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 MF:
   name: Saint Martin (Saint-Martin (partie française))
   country_code: '590'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 PM:
   name: Saint Pierre and Miquelon
   country_code: '508'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 VC:
   name: Saint Vincent and the Grenadines
   country_code: '1784'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 WS:
   name: Samoa
   country_code: '685'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SM:
   name: San Marino
   country_code: '378'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 ST:
   name: Sao Tome and Principe
   country_code: '239'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SA:
   name: Saudi Arabia
   country_code: '966'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SN:
   name: Senegal
   country_code: '221'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 RS:
   name: Serbia
   country_code: '381'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SC:
   name: Seychelles
   country_code: '248'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SL:
   name: Sierra Leone
   country_code: '232'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SG:
   name: Singapore
   country_code: '65'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SK:
   name: Slovakia
   country_code: '421'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SI:
   name: Slovenia
   country_code: '386'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SB:
   name: Solomon Islands
   country_code: '677'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SO:
   name: Somalia
   country_code: '252'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 ZA:
   name: South Africa
   country_code: '27'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SS:
   name: South Sudan
   country_code: '211'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 ES:
   name: Spain
   country_code: '34'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 LK:
   name: Sri Lanka
   country_code: '94'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SD:
   name: Sudan
   country_code: '249'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SR:
   name: Suriname
   country_code: '597'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SJ:
   name: Svalbard and Jan Mayen
   country_code: '47'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SZ:
   name: Swaziland
   country_code: '268'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SE:
   name: Sweden
   country_code: '46'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 CH:
   name: Switzerland
   country_code: '41'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 SY:
   name: Syria
   country_code: '963'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TW:
   name: Taiwan
   country_code: '886'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TJ:
   name: Tajikistan
   country_code: '992'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TZ:
   name: Tanzania, United Republic of
   country_code: '255'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TH:
   name: Thailand
   country_code: '66'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TG:
   name: Togo
   country_code: '228'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TO:
   name: Tonga
   country_code: '676'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TT:
   name: Trinidad and Tobago
   country_code: '1868'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TN:
   name: Tunisia
   country_code: '216'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TR:
   name: Turkey
   country_code: '90'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TM:
   name: Turkmenistan
   country_code: '993'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TC:
   name: Turks and Caicos Islands
   country_code: '1649'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 TV:
   name: Tuvalu
   country_code: '688'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 UG:
   name: Uganda
   country_code: '256'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 UA:
   name: Ukraine
   country_code: '380'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 AE:
   name: United Arab Emirates
   country_code: '971'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 GB:
   name: United Kingdom
   country_code: '44'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 UY:
   name: Uruguay
   country_code: '598'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 UZ:
   name: Uzbekistan
   country_code: '998'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 VU:
   name: Vanuatu
   country_code: '678'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 VA:
   name: Vatican City (Città del Vaticano)
   country_code: '39'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 VE:
   name: Venezuela
   country_code: '58'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 VG:
   name: Virgin Islands (British)
   country_code: '1284'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 VI:
   name: Virgin Islands (U.S.)
   country_code: '1340'
-  sms_only: false
+  supports_sms: true
+  supports_voice: true
 VN:
   name: Vietnam
   country_code: '84'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 EH:
   name: Western Sahara (‫الصحراء الغربية‬‎)
   country_code: '212'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 YE:
   name: Yemen
   country_code: '967'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 ZM:
   name: Zambia
   country_code: '260'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false
 ZW:
   name: Zimbabwe
   country_code: '263'
-  sms_only: true
+  supports_sms: true
+  supports_voice: false

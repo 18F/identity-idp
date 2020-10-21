@@ -17,10 +17,18 @@ class PhoneConfiguration < ApplicationRecord
   end
 
   def selection_presenters
-    options = [TwoFactorAuthentication::SmsSelectionPresenter.new(self)]
-    unless PhoneNumberCapabilities.new(phone).sms_only?
+    options = []
+
+    capabilities = PhoneNumberCapabilities.new(phone)
+
+    if capabilities.supports_sms?
+      options << TwoFactorAuthentication::SmsSelectionPresenter.new(self)
+    end
+
+    if capabilities.supports_voice?
       options << TwoFactorAuthentication::VoiceSelectionPresenter.new(self)
     end
+
     options
   end
 

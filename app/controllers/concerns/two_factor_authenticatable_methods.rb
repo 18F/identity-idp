@@ -285,7 +285,7 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
                    else
                      user_session[:unconfirmed_phone]
                    end
-    PhoneNumberCapabilities.new(phone_number).sms_only?
+    !PhoneNumberCapabilities.new(phone_number).supports_voice?
   end
 
   def decorated_user

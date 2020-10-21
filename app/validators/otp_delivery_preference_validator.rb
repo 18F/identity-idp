@@ -6,8 +6,12 @@ module OtpDeliveryPreferenceValidator
   end
 
   def otp_delivery_preference_supported?
-    return true unless otp_delivery_preference == 'voice'
-    !phone_number_capabilities.sms_only?
+    case otp_delivery_preference
+    when 'voice'
+      phone_number_capabilities.supports_voice?
+    when 'sms'
+      phone_number_capabilities.sms?
+    end
   end
 
   def otp_delivery_preference_supported
