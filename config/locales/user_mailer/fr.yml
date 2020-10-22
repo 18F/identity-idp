@@ -57,7 +57,6 @@ fr:
         %{app} pour le réinitialiser.
     contact_link_text: communiquez avec nous
     deleted_accounts_report:
-      data: Data
       issuers: Issuers
       name: Name
       subject: Deleted accounts report

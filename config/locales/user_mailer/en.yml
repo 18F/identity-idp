@@ -53,7 +53,6 @@ en:
       reset_password: If you can't remember your password, go to %{app} to reset it.
     contact_link_text: contact us
     deleted_accounts_report:
-      data: Data
       issuers: Issuers
       name: Name
       subject: Deleted accounts report
