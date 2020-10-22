@@ -496,7 +496,6 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content('my name')
       expect(mail.html_part.body).to have_content('issuer1')
       expect(mail.html_part.body).to have_content('issuer2')
-      expect(mail.html_part.body).to have_content('data')
     end
   end
 
