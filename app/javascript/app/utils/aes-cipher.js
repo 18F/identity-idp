@@ -69,6 +69,8 @@ class AesCipher {
       true,
       ['encrypt', 'decrypt'],
     );
+    const keyArrayBuffer = await window.crypto.subtle.exportKey('raw', keyObject);
+    const encodedKey = base64ArrayBuffer(keyArrayBuffer);
 
     const iv = window.crypto.getRandomValues(new Uint8Array(12));
     const encodedIv = base64ArrayBuffer(iv);
@@ -82,9 +84,6 @@ class AesCipher {
       keyObject,
       plaintextArrayBuffer,
     );
-    const keyArrayBuffer = await window.crypto.subtle.exportKey('raw', keyObject);
-
-    const encodedKey = base64ArrayBuffer(keyArrayBuffer);
     const encodedCiphertext = base64ArrayBuffer(ciphertext);
 
     return {
