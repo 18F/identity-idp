@@ -74,6 +74,9 @@ module FormHelper
         key,
         { data: international_phone_codes_data(value) },
       ]
+    end.sort_by do |label, key, _data|
+      # Sort alphabetically by label, but put the US first
+      [ key == 'US' ? -1 : 1, label ]
     end
   end
 
