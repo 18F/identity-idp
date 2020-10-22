@@ -61,6 +61,8 @@ es:
         <li class="mxn3">El fondo detrás de su identificación es un color sólido</li>
         <li class="mxn3">El fondo es visible detrás del documento</li>
         </ul>
+      invalid_file_input_type: No se acepta este tipo de archivo, elija un archivo
+        JPG, PNG, BMP o TIFF.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
       photo_blurry: La foto está demasiado borrosa. Vuelve a intentarlo.
@@ -73,7 +75,7 @@ es:
       send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en 10 minutos.
         También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
     file_input:
-      invalid_type: Este tipo de archivo no es aceptado, elija otro archivo.
+      invalid_type: Este tipo de archivo no es aceptado, elija otro.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.

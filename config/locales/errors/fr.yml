@@ -74,8 +74,7 @@ fr:
         10 minutes. Vous pouvez également cliquer sur recommencer et choisir d'utiliser
         votre ordinateur.
     file_input:
-      invalid_type: Ce type de fichier n'est pas accepté, veuillez choisir un autre
-        fichier.
+      invalid_type: Ce type de fichier n'est pas accepté, veuillez en choisir un autre.
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
       de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
