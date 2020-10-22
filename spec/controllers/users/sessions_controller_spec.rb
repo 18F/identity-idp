@@ -512,19 +512,19 @@ describe Users::SessionsController, devise: true do
       end
 
       it 'returns a 200 status code' do
-        get :keepalive
+        post :keepalive
 
         expect(response.status).to eq(200)
       end
 
       it 'clears the Etag header' do
-        get :keepalive
+        post :keepalive
 
         expect(response.headers['Etag']).to eq ''
       end
 
       it 'renders json' do
-        get :keepalive
+        post :keepalive
 
         expect(response.content_type).to eq('application/json')
       end
@@ -532,7 +532,7 @@ describe Users::SessionsController, devise: true do
       it 'resets the timeout key' do
         timeout = Time.zone.now + 2
         controller.session[:session_expires_at] = timeout
-        get :keepalive
+        post :keepalive
 
         json ||= JSON.parse(response.body)
 
@@ -544,7 +544,7 @@ describe Users::SessionsController, devise: true do
 
       it 'resets the remaining key' do
         controller.session[:session_expires_at] = Time.zone.now + 10
-        get :keepalive
+        post :keepalive
 
         json ||= JSON.parse(response.body)
 
@@ -559,13 +559,13 @@ describe Users::SessionsController, devise: true do
 
         expect(@analytics).to receive(:track_event).with(Analytics::SESSION_KEPT_ALIVE)
 
-        get :keepalive
+        post :keepalive
       end
     end
 
     context 'when user is not present' do
       it 'sets live key to false' do
-        get :keepalive
+        post :keepalive
 
         json ||= JSON.parse(response.body)
 
@@ -573,7 +573,7 @@ describe Users::SessionsController, devise: true do
       end
 
       it 'includes session_expires_at' do
-        get :keepalive
+        post :keepalive
 
         json ||= JSON.parse(response.body)
 
@@ -581,7 +581,7 @@ describe Users::SessionsController, devise: true do
       end
 
       it 'includes the remaining time' do
-        get :keepalive
+        post :keepalive
 
         json ||= JSON.parse(response.body)
 
