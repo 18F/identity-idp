@@ -26,6 +26,7 @@ export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
     remaining -= interval;
   }
 
+  tick();
   timer = setInterval(tick, interval);
   return timer;
 };
