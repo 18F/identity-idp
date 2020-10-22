@@ -164,6 +164,7 @@ class UserMailer < ActionMailer::Base
     @name = name
     @issuers = issuers
     @data = data
+    attachments['deleted_user_accounts.csv'] = data
     mail(to: email, subject: t('user_mailer.deleted_accounts_report.subject'))
   end
 
