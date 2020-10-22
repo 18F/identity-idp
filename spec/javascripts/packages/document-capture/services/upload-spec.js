@@ -57,7 +57,33 @@ describe('document-capture/services/upload', () => {
     });
 
     const result = await upload({ foo: 'bar' }, { endpoint, csrf });
-    expect(result).to.deep.equal({ success: true });
+    expect(result).to.deep.equal({ success: true, isPending: false });
+  });
+
+  it('handles pending success success', async () => {
+    const endpoint = 'https://example.com';
+    const csrf = 'TYsqyyQ66Y';
+
+    sandbox.stub(window, 'fetch').callsFake((url, init) => {
+      expect(url).to.equal(endpoint);
+      expect(init.headers['X-CSRF-Token']).to.equal(csrf);
+      expect(init.body).to.be.instanceOf(window.FormData);
+      expect(init.body.get('foo')).to.equal('bar');
+
+      return Promise.resolve(
+        /** @type {Partial<Response>} */ ({
+          ok: true,
+          status: 202,
+          json: () =>
+            Promise.resolve({
+              success: true,
+            }),
+        }),
+      );
+    });
+
+    const result = await upload({ foo: 'bar' }, { endpoint, csrf });
+    expect(result).to.deep.equal({ success: true, isPending: true });
   });
 
   it('handles invalid request', async () => {

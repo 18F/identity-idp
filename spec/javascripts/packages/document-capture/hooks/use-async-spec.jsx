@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import sinon from 'sinon';
 import useAsync from '@18f/identity-document-capture/hooks/use-async';
 import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
@@ -12,11 +12,12 @@ describe('document-capture/hooks/use-async', () => {
   }
 
   function Parent({ createPromise }) {
+    const [error, setError] = useState();
     const resource = useAsync(createPromise);
 
     return (
-      <SuspenseErrorBoundary fallback="Loading" errorFallback="Error">
-        <Child resource={resource} />
+      <SuspenseErrorBoundary fallback="Loading" onError={setError} handledError={error}>
+        {error ? 'Error' : <Child resource={resource} />}
       </SuspenseErrorBoundary>
     );
   }
