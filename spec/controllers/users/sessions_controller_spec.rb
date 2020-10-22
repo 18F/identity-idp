@@ -505,7 +505,7 @@ describe Users::SessionsController, devise: true do
     end
   end
 
-  describe 'GET /sessions/keepalive' do
+  describe 'POST /sessions/keepalive' do
     context 'when user is present' do
       before do
         stub_sign_in
