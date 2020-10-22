@@ -1,13 +1,12 @@
 require 'spec_helper'
-# require 'rails_helper'
 require 'pinpoint_supported_countries'
 
 RSpec.describe PinpointSupportedCountries do
   before do
-      stub_request(:get, PinpointSupportedCountries::PINPOINT_SMS_URL).
-        to_return(body: sms_table)
-      stub_request(:get, PinpointSupportedCountries::PINPOINT_VOICE_URL).
-        to_return(body: voice_table)
+    stub_request(:get, PinpointSupportedCountries::PINPOINT_SMS_URL).
+      to_return(body: sms_table)
+    stub_request(:get, PinpointSupportedCountries::PINPOINT_VOICE_URL).
+      to_return(body: voice_table)
 
     stub_const('STDERR', StringIO.new)
   end
@@ -73,7 +72,7 @@ RSpec.describe PinpointSupportedCountries do
 
   describe '#run' do
     it 'returns a hash that matches the structure of country_dialing_codes.yml' do
-      expect(countries.run).to eq YAML.load <<-STR
+      expect(countries.run).to eq YAML.safe_load <<-STR
         AR:
           country_code: '54'
           name: Argentina
