@@ -415,7 +415,7 @@ GEM
     parser (2.7.1.4)
       ast (~> 2.4.1)
     pg (1.1.4)
-    phonelib (0.6.39)
+    phonelib (0.6.46)
     pkcs11 (0.3.2)
     premailer (1.13.1)
       addressable

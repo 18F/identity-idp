@@ -1,5 +1,4 @@
 require 'active_support/core_ext/hash/except'
-require 'active_model/serializers/json'
 require 'faraday'
 require 'nokogiri'
 require 'phonelib'
@@ -31,7 +30,7 @@ class PinpointSupportedCountries
     sms = TableConverter.new(Faraday.get(PINPOINT_SMS_URL).body).convert.map do |sms_config|
       CountrySupport.new(
         iso_code: sms_config['ISO code'],
-        name: sms_config['Country or region'],
+        name: trim_trailing_digits(sms_config['Country or region']),
         # The list is of supported countries, but ones that are 'Yes1' require sender IDs,
         # which we do not have (so we do not support them)
         supports_sms: sms_config['Supports sender IDs'] != 'Yes1',
@@ -40,7 +39,7 @@ class PinpointSupportedCountries
 
     voice = TableConverter.new(Faraday.get(PINPOINT_VOICE_URL).body).convert.map do |voice_config|
       CountrySupport.new(
-        name: voice_config['Country or Region'], # Yes, it is capitalized differently :[
+        name: trim_trailing_digits(voice_config['Country or Region']), # Yes, it is capitalized differently :[
         supports_voice: true,
       )
     end
@@ -53,7 +52,7 @@ class PinpointSupportedCountries
 
       CountryDialingCode.new(
         iso_code: iso_code,
-        country_code: phone_data[:country_code],
+        country_code: country_code(phone_data),
         name: config1.name || config2&.name,
         supports_sms: config1.supports_sms || config2&.supports_sms || false,
         supports_voice: config1.supports_voice || config2&.supports_voice || false,
@@ -61,14 +60,31 @@ class PinpointSupportedCountries
     end
 
     country_dialing_codes.sort_by(&:name).map do |country_dialing_code|
-      [ country_dialing_code.iso_code, country_dialing_code.to_h.except(:iso_code).as_json ]
+      [
+        country_dialing_code.iso_code,
+        country_dialing_code.to_h.except(:iso_code).transform_keys(&:to_s),
+      ]
     end.to_h
+  end
+
+  def country_code(phone_data)
+    code = phone_data[:country_code]
+    code += phone_data[:leading_digits] if digits_only?(phone_data[:leading_digits])
+    code
   end
 
   def remap_iso_code(iso_code)
     {
       'AN' => 'BQ',
     }.fetch(iso_code, iso_code)
+  end
+
+  def trim_trailing_digits(str)
+    str.gsub(/\d$/, '')
+  end
+
+  def digits_only?(str)
+    str.to_i.to_s == str
   end
 
   # Parses a <table> into into an array of hashes, where the <td> values are
