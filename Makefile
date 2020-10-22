@@ -52,6 +52,9 @@ normalize_yaml:
 	i18n-tasks normalize
 	find ./config/locales -type f | xargs ./scripts/normalize-yaml config/country_dialing_codes.yml
 
+update_country_dialing_codes:
+	bundle exec ./scripts/pinpoint-supported-countries > config/country_dialing_codes.yml
+
 check_asset_strings:
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
 

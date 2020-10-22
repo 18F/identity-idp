@@ -3,6 +3,8 @@ require 'faraday'
 require 'nokogiri'
 require 'phonelib'
 
+# Scrapes HTML tables from Pinpoint help sites to parse out supported countries, and
+# puts them in a format compatible with country_dialig_codes.yml
 class PinpointSupportedCountries
   PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-countries.html'.freeze
   PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-voice-countries.html'.freeze
@@ -13,7 +15,11 @@ class PinpointSupportedCountries
     :supports_sms,
     :supports_voice,
     keyword_init: true,
-  )
+  ) do
+    def merge(other)
+      self.class.new(**to_h.merge(other.to_h) { |_k, a, b| a || b })
+    end
+  end
 
   # Corresponds to a block in country_dialing_codes.yml
   CountryDialingCode = Struct.new(
@@ -27,7 +33,17 @@ class PinpointSupportedCountries
 
   # @return [Hash<String, String>] a hash that matches the structure of country_dialing_codes.yml
   def run
-    sms = TableConverter.new(Faraday.get(PINPOINT_SMS_URL).body).convert.map do |sms_config|
+    country_dialing_codes.sort_by(&:name).map do |country_dialing_code|
+      [
+        country_dialing_code.iso_code,
+        country_dialing_code.to_h.except(:iso_code).transform_keys(&:to_s),
+      ]
+    end.to_h
+  end
+
+  # @return [Array<CountrySupport>]
+  def sms_support
+    TableConverter.new(download(PINPOINT_SMS_URL)).convert.map do |sms_config|
       CountrySupport.new(
         iso_code: sms_config['ISO code'],
         name: trim_trailing_digits(sms_config['Country or region']),
@@ -36,16 +52,26 @@ class PinpointSupportedCountries
         supports_sms: sms_config['Supports sender IDs'] != 'Yes1',
       )
     end
+  end
 
-    voice = TableConverter.new(Faraday.get(PINPOINT_VOICE_URL).body).convert.map do |voice_config|
+  # @return [Array<CountrySupport>]
+  def voice_support
+    TableConverter.new(download(PINPOINT_VOICE_URL)).convert.map do |voice_config|
       CountrySupport.new(
-        name: trim_trailing_digits(voice_config['Country or Region']), # Yes, it is capitalized differently :[
+        name: trim_trailing_digits(
+          voice_config['Country or Region'], # Yes, it is capitalized differently :[
+        ),
         supports_voice: true,
       )
     end
+  end
 
-    country_dialing_codes = (sms + voice).group_by(&:name).map do |_name, (config1, config2)|
-      iso_code = remap_iso_code(config1.iso_code || config2&.iso_code)
+  # @return [Array<CountryDialingCode>] combines sms and voice support into one array of configs
+  def country_dialing_codes
+    (sms_support + voice_support).group_by(&:name).map do |_name, configs|
+      combined = configs.reduce(:merge)
+
+      iso_code = remap_iso_code(combined.iso_code)
       phone_data = Phonelib.phone_data[iso_code]
 
       raise "no phone_data for '#{iso_code}', maybe it needs to be remapped?" unless phone_data
@@ -53,18 +79,11 @@ class PinpointSupportedCountries
       CountryDialingCode.new(
         iso_code: iso_code,
         country_code: country_code(phone_data),
-        name: config1.name || config2&.name,
-        supports_sms: config1.supports_sms || config2&.supports_sms || false,
-        supports_voice: config1.supports_voice || config2&.supports_voice || false,
+        name: combined.name,
+        supports_sms: combined.supports_sms || false,
+        supports_voice: combined.supports_voice || false,
       )
     end
-
-    country_dialing_codes.sort_by(&:name).map do |country_dialing_code|
-      [
-        country_dialing_code.iso_code,
-        country_dialing_code.to_h.except(:iso_code).transform_keys(&:to_s),
-      ]
-    end.to_h
   end
 
   def country_code(phone_data)
@@ -86,6 +105,16 @@ class PinpointSupportedCountries
   def digits_only?(str)
     str.to_i.to_s == str
   end
+
+  # Downloads a URL and prints updates to STDERR
+  # rubocop:disable Style/StderrPuts
+  def download(url)
+    STDERR.print "loading #{url}"
+    response = Faraday.get(url)
+    STDERR.puts ' (done)'
+    response.body
+  end
+  # rubocop:enable Style/StderrPuts
 
   # Parses a <table> into into an array of hashes, where the <td> values are
   # keyed by the corresponding <td>
