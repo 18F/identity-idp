@@ -549,6 +549,15 @@ describe Users::SessionsController, devise: true do
 
         expect(json['remaining']).to be_within(1).of(Figaro.env.session_timeout_in_minutes.to_i * 60)
       end
+
+      it 'tracks session refresh visit' do
+        controller.session[:session_expires_at] = Time.zone.now + 10
+        stub_analytics
+
+        expect(@analytics).to receive(:track_event).with(Analytics::SESSION_KEPT_ALIVE)
+
+        get :keepalive
+      end
     end
 
     context 'when user is not present' do
