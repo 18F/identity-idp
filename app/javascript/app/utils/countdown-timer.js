@@ -19,7 +19,7 @@ export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
     el.innerHTML = msFormatter(remaining);
 
     if (remaining <= 0) {
-      clearInterval(timer)
+      clearInterval(timer);
       return;
     }
 
