@@ -201,6 +201,7 @@ function AcuantCapture(
         label={label}
         hint={hasCapture || !allowUpload ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
+        invalidTypeText={t('errors.doc_auth.invalid_file_input_type')}
         accept={isMockClient ? undefined : ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff']}
         capture={capture}
         value={value}

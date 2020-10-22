@@ -60,6 +60,8 @@ fr:
         <li class="mxn3">Le fond derrière votre ID est une couleur unie</li>
         <li class="mxn3">Le fond est visible derrière le document</li>
         </ul>
+      invalid_file_input_type: Ce type de fichier n'est pas accepté, veuillez choisir
+        un fichier JPG, PNG, BMP ou TIFF.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
         photos de votre identifiant avant de continuer. Nous vous avons envoyé un
         lien avec des instructions.

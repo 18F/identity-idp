@@ -61,6 +61,8 @@ en:
         <li class="mxn3">The background behind your ID is a solid color</li>
         <li class="mxn3">Background is visible behind the document</li>
         </ul>
+      invalid_file_input_type: This file type is not accepted, please choose a JPG,
+        PNG, BMP, or TIFF file.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
       photo_blurry: Photo is too blurry, please try again.
