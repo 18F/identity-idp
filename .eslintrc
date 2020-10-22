@@ -22,6 +22,7 @@
     "prefer-arrow-callback": 0,
     "import/prefer-default-export": "off",
     "import/extensions": ["off", "never"],
+    "import/no-extraneous-dependencies": "error",
     "indent": "off",
     "max-classes-per-file": "off",
     "newline-per-chained-call": "off",

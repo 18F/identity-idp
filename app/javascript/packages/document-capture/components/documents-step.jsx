@@ -55,7 +55,6 @@ function DocumentsStep({
             bannerText={t(`doc_auth.headings.${side}`)}
             value={value[side]}
             onChange={(nextValue) => onChange({ [side]: nextValue })}
-            className="id-card-file-input"
             errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
           />
         );
