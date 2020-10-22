@@ -45,7 +45,7 @@ function success(data) {
     modal.show();
 
     if(countdown_interval) {
-      cancelInterval(countdown_interval)
+      clearInterval(countdown_interval)
     }
     countdown_interval = window.LoginGov.countdownTimer(
       document.getElementById('countdown'), time_remaining, time_timeout
