@@ -5,8 +5,8 @@ describe Reports::DeletedUserAccountsReport do
   let(:email) { 'foo@bar.com' }
   let(:name) { 'An SP' }
   let(:user) { create(:user) }
-  let(:last_authenticated_at) { '2020-01-02 12:03:04' }
   let(:uuid) { 'foo' }
+  let(:last_authenticated_at) { '2020-01-02 12:03:04' }
 
   subject { described_class.new }
 
