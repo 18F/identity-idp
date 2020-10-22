@@ -1,9 +1,11 @@
 require 'yaml'
 require 'active_support/core_ext/object/try'
 
-class YamlNormalizer
+module YamlNormalizer
+  module_function
+
   # Reads in YAML at a path, trims whitespace from each key, and writes it back to the file
-  def self.run(argv)
+  def run(argv)
     argv.each do |file|
       warn file
       data = YAML.load_file(file)
@@ -12,11 +14,11 @@ class YamlNormalizer
     end
   end
 
-  def self.dump(file, data)
+  def dump(file, data)
     File.open(file, 'w') { |io| io.puts YAML.dump(data) }
   end
 
-  def self.handle_hash(hash)
+  def handle_hash(hash)
     copy = hash.each_value { |value| handle_value(value) }.dup
     hash.clear
     copy.keys.sort.each do |key|
@@ -25,25 +27,25 @@ class YamlNormalizer
     hash
   end
 
-  def self.handle_array(array)
+  alias normalize handle_hash
+
+  def handle_array(array)
     array.each { |value| handle_value(value) }
   end
 
-  def self.handle_value(value)
+  def handle_value(value)
     if value.is_a?(String)
       trim(value)
     elsif value.is_a?(Array)
       handle_array(value)
     elsif value.is_a?(Hash)
       handle_hash(value)
-    elsif value == true || value == false
-      return
-    elsif value
+    elsif value && value != true && value != false
       raise ArgumentError, "unknown YAML value #{value}"
     end
   end
 
-  def self.trim(str)
+  def trim(str)
     str.sub!(/\A\n+/, '')
     ended_with_space_after_colon = str =~ /: \s*\Z/
     str.rstrip!
