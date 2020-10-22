@@ -7,7 +7,12 @@ warningEl.insertAdjacentHTML('afterbegin', warning_info);
 
 var modal = new window.LoginGov.Modal({ el: '#session-timeout-msg' });
 var keepaliveEl = document.getElementById('session-keepalive-btn');
-var token = document.querySelector('meta[name="csrf-token"]').content
+var csrfEl = document.querySelector('meta[name="csrf-token"]')
+
+var csrfToken = "";
+if (csrfEl) {
+  csrfToken = csrfEl.content
+}
 
 keepaliveEl.addEventListener('click', keepalive, false);
 
@@ -65,7 +70,7 @@ function keepalive() {
   var request = new XMLHttpRequest();
   request.open('POST', '/sessions/keepalive', true);
   request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-  request.setRequestHeader('X-CSRF-Token', token);
+  request.setRequestHeader('X-CSRF-Token', csrfToken);
 
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
