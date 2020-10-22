@@ -303,6 +303,27 @@ describe('document-capture/components/file-input', () => {
     expect(onError.getCall(0).args[0]).to.equal('errors.file_input.invalid_type');
   });
 
+  it('allows customization of invalid file type error message', () => {
+    const file = new window.File([''], 'upload.png', { type: 'image/png' });
+    const onChange = sinon.stub();
+    const onError = sinon.stub();
+    const { getByLabelText, getByText } = render(
+      <FileInput
+        label="File"
+        accept={['text/*']}
+        onChange={onChange}
+        onError={onError}
+        invalidTypeText="Wrong type"
+      />,
+    );
+
+    const input = getByLabelText('File');
+    userEvent.upload(input, file);
+
+    expect(getByText('Wrong type')).to.be.ok();
+    expect(onError.getCall(0).args[0]).to.equal('Wrong type');
+  });
+
   it('shows an error from rendering parent', () => {
     const file = new window.File([''], 'upload.png', { type: 'image/png' });
     const onChange = sinon.stub();

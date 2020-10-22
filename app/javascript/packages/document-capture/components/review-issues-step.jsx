@@ -80,7 +80,7 @@ function ReviewIssuesStep({
             bannerText={t(`doc_auth.headings.${side}`)}
             value={value[side]}
             onChange={(nextValue) => onChange({ [side]: nextValue })}
-            className="id-card-file-input document-capture-review-issues-step__input"
+            className="document-capture-review-issues-step__input"
             errorMessage={sideError ? <FormErrorMessage error={sideError} /> : undefined}
           />
         );
@@ -104,7 +104,7 @@ function ReviewIssuesStep({
               value={value.selfie}
               onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
               allowUpload={false}
-              className="id-card-file-input document-capture-review-issues-step__input"
+              className="document-capture-review-issues-step__input"
               errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
             />
           ) : (

@@ -51,6 +51,7 @@
 - errors.doc_auth.acuant_network_error
 - errors.doc_auth.capture_failure
 - errors.doc_auth.document_capture_selfie_consent_blocked
+- errors.doc_auth.invalid_file_input_type
 - errors.doc_auth.photo_blurry
 - errors.doc_auth.photo_glare
 - errors.file_input.invalid_type
