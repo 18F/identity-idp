@@ -15,6 +15,7 @@ import useI18n from '../hooks/use-i18n';
  * @prop {string} label Input label.
  * @prop {string=} hint Optional hint text.
  * @prop {string=} bannerText Optional banner overlay text.
+ * @prop {string=} invalidTypeText Error message text to show on invalid file type selection.
  * @prop {string[]=} accept Optional array of file input accept patterns.
  * @prop {'user'|'environment'=} capture Optional facing mode if file input is used for capture.
  * @prop {Blob|string|null|undefined} value Current value.
@@ -90,6 +91,7 @@ const FileInput = forwardRef((props, ref) => {
     label,
     hint,
     bannerText,
+    invalidTypeText,
     accept,
     capture,
     value,
@@ -119,7 +121,7 @@ const FileInput = forwardRef((props, ref) => {
       if (isValidForAccepts(file.type, accept)) {
         onChange(file);
       } else {
-        const nextOwnErrorMessage = t('errors.file_input.invalid_type');
+        const nextOwnErrorMessage = invalidTypeText ?? t('errors.file_input.invalid_type');
         setOwnErrorMessage(nextOwnErrorMessage);
         onError(nextOwnErrorMessage);
       }
