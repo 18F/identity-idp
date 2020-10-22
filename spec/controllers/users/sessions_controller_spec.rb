@@ -505,7 +505,6 @@ describe Users::SessionsController, devise: true do
     end
   end
 
-
   describe 'GET /sessions/keepalive' do
     context 'when user is present' do
       before do
@@ -531,14 +530,16 @@ describe Users::SessionsController, devise: true do
       end
 
       it 'resets the timeout key' do
-        timeout =  Time.zone.now + 2
+        timeout = Time.zone.now + 2
         controller.session[:session_expires_at] = timeout
         get :keepalive
 
         json ||= JSON.parse(response.body)
 
         expect(json['timeout'].to_datetime.to_i).to be >= timeout.to_i
-        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i + Figaro.env.session_timeout_in_minutes.to_i * 60)
+        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(
+          Time.zone.now.to_i + Figaro.env.session_timeout_in_minutes.to_i * 60,
+        )
       end
 
       it 'resets the remaining key' do
@@ -547,7 +548,9 @@ describe Users::SessionsController, devise: true do
 
         json ||= JSON.parse(response.body)
 
-        expect(json['remaining']).to be_within(1).of(Figaro.env.session_timeout_in_minutes.to_i * 60)
+        expect(json['remaining']).to be_within(1).of(
+          Figaro.env.session_timeout_in_minutes.to_i * 60,
+        )
       end
 
       it 'tracks session refresh visit' do

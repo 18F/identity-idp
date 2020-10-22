@@ -7,7 +7,7 @@ module Users
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
-    skip_before_action :session_expires_at, only: [:active, :keepalive]
+    skip_before_action :session_expires_at, only: %i[active keepalive]
     skip_before_action :require_no_authentication, only: [:new]
     before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
