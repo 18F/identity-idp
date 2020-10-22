@@ -1,5 +1,4 @@
-require 'spec_helper'
-require 'yaml_normalizer'
+require 'rails_helper'
 
 RSpec.describe 'config/country_dialing_codes.yml' do
   subject(:config_path) { 'config/country_dialing_codes.yml' }

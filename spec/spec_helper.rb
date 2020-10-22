@@ -6,8 +6,6 @@ if ENV['CI'] || ENV['KNAPSACK_GENERATE_REPORT']
   Knapsack::Adapters::RSpecAdapter.bind
 end
 
-require 'active_support/core_ext/object/blank'
-
 RSPEC_RUNNING_IN_PARALLEL = ENV['PARALLEL_PID_FILE'].present?
 
 RSpec.configure do |config|
