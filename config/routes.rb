@@ -82,6 +82,7 @@ Rails.application.routes.draw do
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       get '/active' => 'users/sessions#active'
+      post '/sessions/keepalive' => 'users/sessions#keepalive'
 
       if FeatureManagement.allow_piv_cac_login?
         get '/login/piv_cac' => 'users/piv_cac_login#new'
