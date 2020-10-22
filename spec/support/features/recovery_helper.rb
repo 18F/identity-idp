@@ -72,6 +72,10 @@ module RecoveryHelper
     idv_recovery_step_path(step: :verify)
   end
 
+  def idv_recovery_verify_wait_step
+    idv_recovery_step_path(step: :verify_wait)
+  end
+
   def idv_recovery_success_step
     idv_recovery_step_path(step: :doc_success)
   end

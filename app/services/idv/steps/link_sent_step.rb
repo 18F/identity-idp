@@ -20,7 +20,7 @@ module Idv
         if FeatureManagement.document_capture_step_enabled?
           document_capture_session_result
         else
-          DocAuth::Client.client.get_results(
+          DocAuthRouter.client.get_results(
             instance_id: doc_capture_record.acuant_token,
           )
         end

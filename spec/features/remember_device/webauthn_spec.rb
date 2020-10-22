@@ -57,7 +57,7 @@ describe 'Remembering a webauthn device' do
       mock_webauthn_setup_challenge
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
-      click_link t('account.index.webauthn_add'), href: webauthn_setup_path
+      click_link "+ #{t('account.index.webauthn_add')}", href: webauthn_setup_path
       fill_in_nickname_and_click_continue
       check :remember_device
       mock_press_button_on_hardware_key_on_setup

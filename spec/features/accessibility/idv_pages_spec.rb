@@ -11,6 +11,7 @@ feature 'Accessibility on IDV pages', :js do
       visit idv_path
 
       expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to label_required_fields
     end
 
     scenario 'cancel idv' do
@@ -20,6 +21,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_cancel_path
       expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to label_required_fields
     end
 
     scenario 'phone info' do
@@ -29,6 +31,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_phone_path
       expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to label_required_fields
     end
 
     scenario 'review page' do
@@ -39,6 +42,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_review_path
       expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to label_required_fields
     end
 
     scenario 'personal key / confirmation page' do
@@ -51,6 +55,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_confirmations_path
       expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to label_required_fields
     end
 
     scenario 'doc auth steps accessibility' do
@@ -63,6 +68,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_confirmations_path
       expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to label_required_fields
     end
 
     scenario 'doc auth steps accessibility on mobile', driver: :headless_chrome_mobile do
@@ -75,6 +81,7 @@ feature 'Accessibility on IDV pages', :js do
 
       expect(current_path).to eq idv_confirmations_path
       expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to label_required_fields
     end
   end
 end

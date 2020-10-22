@@ -119,7 +119,7 @@ const FileInput = forwardRef((props, ref) => {
       if (isValidForAccepts(file.type, accept)) {
         onChange(file);
       } else {
-        const nextOwnErrorMessage = t('errors.doc_auth.selfie');
+        const nextOwnErrorMessage = t('errors.file_input.invalid_type');
         setOwnErrorMessage(nextOwnErrorMessage);
         onError(nextOwnErrorMessage);
       }

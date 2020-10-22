@@ -137,7 +137,7 @@ fr:
       no_other_id_help_bold_html: "<strong>Si vous n'avez pas d'autre identifiant
         émis par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
         auprès de %{sp_name}.</a>"
-      tag: Recommander
+      tag: Recommandation
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
         vérifier votre identité.
@@ -186,7 +186,7 @@ fr:
         Nous le comparerons à l'image au recto de votre pièce d'identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
         et suivez les instructions pour vérifier votre identité.
-      learn_more: Apprendre encore plus.
+      learn_more: Apprendre encore plus
       send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
         ce lien vers votre navigateur pour prendre des photos du recto et du verso
         de votre identifiant.

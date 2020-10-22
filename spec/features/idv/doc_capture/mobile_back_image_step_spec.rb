@@ -41,7 +41,7 @@ feature 'doc capture mobile back image step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
-    expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
+    expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
       doc_auth_image_data_url_data,
     )
   end
@@ -64,8 +64,8 @@ feature 'doc capture mobile back image step' do
       let(:sp_requested_ial2_strict) { true }
 
       it 'does not attempt to verify the document until the selfie step' do
-        mock_client = DocAuth::Mock::DocAuthMockClient.new
-        allow(DocAuth::Mock::DocAuthMockClient).to receive(:new).and_return(mock_client)
+        mock_client = IdentityDocAuth::Mock::DocAuthMockClient.new
+        allow(IdentityDocAuth::Mock::DocAuthMockClient).to receive(:new).and_return(mock_client)
 
         expect(mock_client).to_not receive(:get_results)
 
@@ -84,7 +84,7 @@ feature 'doc capture mobile back image step' do
         click_idv_continue
 
         expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
-        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
+        expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
           doc_auth_image_data_url_data,
         )
       end

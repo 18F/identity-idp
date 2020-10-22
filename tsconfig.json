@@ -15,5 +15,9 @@
     "app/javascript/packages",
     "app/javascript/packs/form-validation.js",
     "app/javascript/packs/submit-with-spinner.js"
+  ],
+  "exclude": [
+    "**/fixtures",
+    "**/*.spec.js"
   ]
 }

@@ -25,6 +25,7 @@ module Idv
         errors: errors.messages,
         extra: {
           remaining_attempts: remaining_attempts,
+          user_id: document_capture_session&.user&.uuid,
         },
       )
     end

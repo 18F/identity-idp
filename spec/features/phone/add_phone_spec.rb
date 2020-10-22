@@ -6,7 +6,7 @@ describe 'Add a new phone number' do
     phone = '+1 (225) 278-1234'
 
     sign_in_and_2fa_user(user)
-    click_on t('account.index.phone_add')
+    click_on "+ #{t('account.index.phone_add')}"
     fill_in :new_phone_form_phone, with: phone
     click_continue
     fill_in_code_with_last_phone_otp
@@ -27,7 +27,7 @@ describe 'Add a new phone number' do
       and_call_original
 
     sign_in_and_2fa_user(user)
-    click_on t('account.index.phone_add')
+    click_on "+ #{t('account.index.phone_add')}"
     fill_in :new_phone_form_phone, with: phone
     click_continue
     fill_in_code_with_last_phone_otp
@@ -39,7 +39,7 @@ describe 'Add a new phone number' do
     phone = user.phone_configurations.first.phone
 
     sign_in_and_2fa_user(user)
-    click_on t('account.index.phone_add')
+    click_on "+ #{t('account.index.phone_add')}"
     fill_in :new_phone_form_phone, with: phone
     click_continue
     fill_in_code_with_last_phone_otp
@@ -54,7 +54,7 @@ describe 'Add a new phone number' do
       user = create(:user, :with_authentication_app)
       phone = '+1 (225) 278-1234'
       sign_in_and_2fa_user(user)
-      click_on t('account.index.phone_add')
+      click_on "+ #{t('account.index.phone_add')}"
       fill_in :new_phone_form_phone, with: phone
       click_continue
       click_link t('links.cancel')

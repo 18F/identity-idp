@@ -111,11 +111,11 @@ es:
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert: Este número de teléfono <strong>debe ser</strong>
+        alert_html: Este número de teléfono <strong>debe ser</strong>
         description: Verificamos los registros para asegurarnos de que eres quien
           eres, y de que eres el propietario de tu cuenta.
-        final_note: "<strong>Si configura un teléfono para la autenticación de dos
-          factores</strong>, este puede ser un número diferente."
+        final_note_html: "<strong>Si configura un teléfono para la autenticación de
+          dos factores</strong>, este puede ser un número diferente."
         phone_of_record: Teléfono del registro
         rules:
         - en un plan de teléfono con su nombre en él

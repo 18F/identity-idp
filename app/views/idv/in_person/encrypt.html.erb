@@ -14,11 +14,12 @@
   <%= t('in_person_proofing.instructions.encrypt') %>
 </p>
 
-<%= link_to t('in_person_proofing.instructions.read_more_encrypt'), MarketingSite.security_url, target: '_blank' %>
+<%= new_window_link_to t('in_person_proofing.instructions.read_more_encrypt'),
+                       MarketingSite.security_url %>
 
 <%= validated_form_for(:in_person_proofing, url: url_for, method: 'PUT',
                        html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
-  <%= f.input :password, label: t('idv.form.password'), required: true %>
+  <%= f.input :password, label: t('idv.form.password'), required: true, input_html: { aria: { invalid: false } } %>
   <div class="right-align mtn2 mb4">
                 <%= t('idv.forgot_password.link_html',
                       link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url,

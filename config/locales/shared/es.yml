@@ -2,7 +2,6 @@
 es:
   shared:
     banner:
-      close: Cerrar ventana emergente de banner
       fake_site: Un sitio web de DEMO del gobierno de Estados Unidos.
       gov_description: Los sitios web del gobierno federal a menudo terminan en .gov
         o .mil. Antes de compartir información confidencial, asegúrese de estar en

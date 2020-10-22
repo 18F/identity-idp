@@ -26,7 +26,7 @@ fr:
       generate: Obtenir des codes
       print: Impression
       regenerate: Obtenir de nouveaux codes
-      subinfo: "<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou copiez-les.
+      subinfo_html: "<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou copiez-les.
         Chaque code ne peut être utilisé qu'une seule fois. Une fois que vous avez
         utilisé les 10 codes, nous vous en donnons 10 nouveaux. Gardez vos codes aussi
         sûr qu'un mot de passe."
@@ -46,7 +46,7 @@ fr:
       delete: Effacer
       disable: Effacer
       edit: Modifier
-      enable: "+ Activer"
+      enable: Activer
       manage: Administrer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
       send_security_code: Envoyer le code

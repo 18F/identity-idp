@@ -7,9 +7,16 @@ h1.h3.my0 = @presenter.header
   = label_tag 'code', t('simple_form.required.html') + t('forms.two_factor.code'),
     class: 'block bold'
   .col-12.sm-col-5.mb1.sm-mb0.sm-mr-20p.inline-block
-    = text_field_tag :code, '', value: @code, required: true, autofocus: true,
-      pattern: '[0-9]*', class: 'col-12 field monospace mfa', type: 'tel',
-      'aria-describedby': 'code-instructs', maxlength: Devise.otp_length
+    = text_field_tag :code, '',
+                     value: @code,
+                     required: true,
+                     aria: { invalid: false, describedby: 'code-instructs' },
+                     autofocus: true,
+                     pattern: '[0-9]*',
+                     class: 'col-12 field monospace mfa',
+                     type: 'tel',
+                     maxlength: Devise.otp_length,
+                     autocomplete: 'one-time-code'
   .border.border-light-blue.rounded-lg.py1.mt2.mb4.sm-my2.col-12.sm-col-7
     = hidden_field_tag 'remember_device', false, id: 'remember_device_preference'
     = check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?,

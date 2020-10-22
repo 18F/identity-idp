@@ -53,7 +53,7 @@
 - errors.doc_auth.document_capture_selfie_consent_blocked
 - errors.doc_auth.photo_blurry
 - errors.doc_auth.photo_glare
-- errors.doc_auth.selfie
+- errors.file_input.invalid_type
 - errors.messages.format_mismatch
 - errors.messages.missing_field
 - forms.buttons.continue

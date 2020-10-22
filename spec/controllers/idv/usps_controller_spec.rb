@@ -40,6 +40,15 @@ describe Idv::UspsController do
 
       expect(response).to be_ok
     end
+
+    it 'renders wait page while job is in progress' do
+      allow(controller).to receive(:async_state).and_return(
+        ProofingDocumentCaptureSessionResult.in_progress,
+      )
+      get :index
+
+      expect(response).to render_template :wait
+    end
   end
 
   describe '#create' do

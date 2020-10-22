@@ -14,7 +14,12 @@ module Idv
         mobile_back_image: Idv::Steps::MobileBackImageStep,
         ssn: Idv::Steps::SsnStep,
         verify: Idv::Steps::RecoverVerifyStep,
+        verify_wait: Idv::Steps::RecoverVerifyWaitStep,
         doc_success: Idv::Steps::DocSuccessStep,
+      }.freeze
+
+      OPTIONAL_SHOW_STEPS = {
+        verify_wait: Idv::Steps::RecoverVerifyWaitStepShow,
       }.freeze
 
       ACTIONS = {

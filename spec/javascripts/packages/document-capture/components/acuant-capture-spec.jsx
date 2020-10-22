@@ -335,13 +335,13 @@ describe('document-capture/components/acuant-capture', () => {
       const input = getByLabelText('Image');
       userEvent.upload(input, file);
 
-      expect(await findByText('errors.doc_auth.selfie')).to.be.ok();
+      expect(await findByText('errors.file_input.invalid_type')).to.be.ok();
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
       expect(getByText('errors.doc_auth.photo_blurry')).to.be.ok();
-      expect(() => getByText('errors.doc_auth.selfie')).to.throw();
+      expect(() => getByText('errors.file_input.invalid_type')).to.throw();
     });
 
     it('removes error message once image is corrected', async () => {
@@ -592,6 +592,6 @@ describe('document-capture/components/acuant-capture', () => {
 
     const input = getByLabelText('Image');
 
-    expect(input.getAttribute('accept')).to.equal('image/*');
+    expect(input.getAttribute('accept')).to.equal('image/jpeg,image/png,image/bmp,image/tiff');
   });
 });

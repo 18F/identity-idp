@@ -15,6 +15,10 @@ describe Idv::ImageUploadsController do
       }
     end
 
+    before do
+      Funnel::DocAuth::RegisterStep.new(user.id, '').call('welcome', :view, true)
+    end
+
     context 'when document capture is not enabled' do
       before do
         allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
@@ -54,6 +58,7 @@ describe Idv::ImageUploadsController do
             errors: {
               front: ['Please fill in this field.'],
             },
+            user_id: user.uuid,
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
 
@@ -63,6 +68,8 @@ describe Idv::ImageUploadsController do
           )
 
           action
+
+          expect_funnel_update_counts(user, 0)
         end
       end
 
@@ -102,6 +109,7 @@ describe Idv::ImageUploadsController do
             errors: {
               front: [I18n.t('doc_auth.errors.not_a_file')],
             },
+            user_id: user.uuid,
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
 
@@ -111,6 +119,8 @@ describe Idv::ImageUploadsController do
           )
 
           action
+
+          expect_funnel_update_counts(user, 0)
         end
       end
 
@@ -156,6 +166,7 @@ describe Idv::ImageUploadsController do
             errors: {
               limit: [I18n.t('errors.doc_auth.acuant_throttle')],
             },
+            user_id: user.uuid,
             remaining_attempts: 0,
           )
 
@@ -165,6 +176,8 @@ describe Idv::ImageUploadsController do
           )
 
           action
+
+          expect_funnel_update_counts(user, 0)
         end
       end
 
@@ -185,6 +198,7 @@ describe Idv::ImageUploadsController do
             Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
             success: true,
             errors: {},
+            user_id: user.uuid,
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
 
@@ -195,17 +209,20 @@ describe Idv::ImageUploadsController do
             billed: true,
             exception: nil,
             result: 'Passed',
+            user_id: user.uuid,
           )
 
           action
+
+          expect_funnel_update_counts(user, 1)
         end
       end
 
       context 'when image upload fails' do
         before do
-          DocAuth::Mock::DocAuthMockClient.mock_response!(
+          IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
             method: :post_images,
-            response: DocAuth::Response.new(
+            response: IdentityDocAuth::Response.new(
               success: false,
               errors: { front: ['Too blurry', 'Wrong document'] },
             ),
@@ -232,6 +249,7 @@ describe Idv::ImageUploadsController do
             Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
             success: true,
             errors: {},
+            user_id: user.uuid,
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
 
@@ -241,10 +259,13 @@ describe Idv::ImageUploadsController do
             errors: {
               front: ['Too blurry', 'Wrong document'],
             },
+            user_id: user.uuid,
             exception: nil,
           )
 
           action
+
+          expect_funnel_update_counts(user, 1)
         end
       end
 
@@ -271,6 +292,7 @@ describe Idv::ImageUploadsController do
             Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
             success: true,
             errors: {},
+            user_id: user.uuid,
             remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
           )
 
@@ -283,11 +305,20 @@ describe Idv::ImageUploadsController do
             billed: true,
             result: 'Caution',
             exception: nil,
+            user_id: user.uuid,
           )
 
           action
+
+          expect_funnel_update_counts(user, 1)
         end
       end
     end
+  end
+
+  def expect_funnel_update_counts(user, count)
+    doc_auth_log = DocAuthLog.where(user_id: user.id).first
+    expect(doc_auth_log.back_image_submit_count).to eq(count)
+    expect(doc_auth_log.front_image_submit_count).to eq(count)
   end
 end

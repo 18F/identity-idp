@@ -8,16 +8,6 @@ module Idv
 
       private
 
-      def perform_resolution_and_check_ssn
-        pii_from_doc = flow_session[:pii_from_doc]
-        # do resolution first to prevent ssn time/discovery. resolution time order > than db call
-        idv_result = perform_resolution(pii_from_doc)
-        add_proofing_costs(idv_result)
-        response = idv_result_to_form_response(idv_result)
-        response = check_ssn(pii_from_doc) if response.success?
-        summarize_result_and_throttle_failures(response)
-      end
-
       def summarize_result_and_throttle_failures(summary_result)
         if summary_result.success?
           add_proofing_components

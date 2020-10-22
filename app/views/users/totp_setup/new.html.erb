@@ -1,4 +1,5 @@
-<% help_link = link_to t('links.what_is_totp'), MarketingSite.help_authentication_app_url, target: :_blank %>
+<% help_link = new_window_link_to t('links.what_is_totp'),
+                                  MarketingSite.help_authentication_app_url %>
 <h1 class="h3 my0"><%= t('headings.totp_setup.new') %></h1>
 <p class="mt-tiny mb3"><%= t('forms.totp_setup.totp_intro_html', link: help_link) %></p>
 <%= form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do %>
@@ -12,7 +13,7 @@
       <div class="sm-col-9 sm-ml-28p">
         <div class="clearfix mxn1">
           <div class="col col-6 sm-col-7 px1">
-            <%= text_field_tag :name, '', required: true, class: 'block col-12 field monospace',
+            <%= text_field_tag :name, '', required: true, aria: { invalid: false }, class: 'block col-12 field monospace',
                                 maxlength: 20, 'aria-labelledby': 'totp-nickname' %>
           </div>
         </div>
@@ -51,7 +52,7 @@
       <div class="sm-col-9 sm-ml-28p">
         <div class="clearfix mxn1">
           <div class="col col-6 sm-col-7 px1">
-            <%= text_field_tag :code, '', required: true, pattern: '[0-9]*', type: 'tel',
+            <%= text_field_tag :code, '', required: true, aria: { invalid: false }, pattern: '[0-9]*', type: 'tel',
                 class: 'block col-12 field monospace mfa', maxlength: Devise.otp_length,
                 'aria-labelledby': 'totp-label' %>
           </div>

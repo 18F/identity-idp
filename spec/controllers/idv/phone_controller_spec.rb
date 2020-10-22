@@ -5,6 +5,9 @@ describe Idv::PhoneController do
 
   let(:max_attempts) { idv_max_attempts }
   let(:good_phone) { '+1 (703) 555-0000' }
+  let(:bad_phone) do
+    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+  end
   let(:normalized_phone) { '7035550000' }
   let(:bad_phone) { '+1 (703) 555-5555' }
 
@@ -60,6 +63,29 @@ describe Idv::PhoneController do
       get :new
 
       expect(response).to redirect_to idv_phone_errors_failure_url
+    end
+
+    it 'shows phone form if async process times out' do
+      # setting the document capture session to a nonexistent uuid will trigger async
+      # timed_out behavior
+      subject.idv_session.idv_phone_step_document_capture_session_uuid = 'abc123'
+
+      get :new
+      expect(response).to render_template :new
+    end
+
+    it 'shows waiting interstitial if async process is in progress' do
+      # having a document capture session with PII but without results will trigger
+      # in progress behavior
+      document_capture_session = DocumentCaptureSession.create(user_id: user.id,
+                                                               requested_at: Time.zone.now)
+      document_capture_session.store_proofing_pii_from_doc({})
+
+      subject.idv_session.idv_phone_step_document_capture_session_uuid =
+        document_capture_session.uuid
+
+      get :new
+      expect(response).to render_template :wait
     end
   end
 
@@ -133,6 +159,8 @@ describe Idv::PhoneController do
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
 
+          expect(response).to redirect_to idv_phone_path
+          get :new
           expect(response).to redirect_to idv_review_path
 
           expected_applicant = {
@@ -140,7 +168,7 @@ describe Idv::PhoneController do
             last_name: 'One',
             phone: normalized_phone,
             uuid_prefix: nil,
-          }.with_indifferent_access
+          }
 
           expect(subject.idv_session.applicant).to eq expected_applicant
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
@@ -157,6 +185,8 @@ describe Idv::PhoneController do
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
 
+          expect(response).to redirect_to idv_phone_path
+          get :new
           expect(response).to redirect_to idv_otp_delivery_method_path
 
           expect(subject.idv_session.vendor_phone_confirmation).to eq true
@@ -186,6 +216,8 @@ describe Idv::PhoneController do
         )
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
+        expect(response).to redirect_to idv_phone_path
+        get :new
       end
     end
 
@@ -194,9 +226,11 @@ describe Idv::PhoneController do
         user = build(:user, with: { phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now })
         stub_verify_steps_one_and_two(user)
 
-        put :create, params: { idv_phone_form: { phone: '7035555555' } }
+        put :create, params: { idv_phone_form: { phone: bad_phone } }
 
-        expect(response).to redirect_to idv_phone_errors_warning_url
+        expect(response).to redirect_to idv_phone_path
+        get :new
+        expect(response).to redirect_to idv_phone_errors_warning_path
 
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
         expect(subject.idv_session.user_phone_confirmation).to be_falsy
@@ -221,11 +255,15 @@ describe Idv::PhoneController do
         expect(@analytics).to receive(:track_event).ordered.with(
           Analytics::IDV_PHONE_CONFIRMATION_FORM, hash_including(:success)
         )
+
+        put :create, params: { idv_phone_form: { phone: bad_phone } }
+
         expect(@analytics).to receive(:track_event).ordered.with(
           Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result
         )
+        expect(response).to redirect_to idv_phone_path
 
-        put :create, params: { idv_phone_form: { phone: '7035555555' } }
+        get :new
       end
     end
   end
