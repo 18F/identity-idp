@@ -10,8 +10,8 @@ var keepaliveEl = document.getElementById('session-keepalive-btn');
 
 keepaliveEl.addEventListener('click', keepalive, false);
 
-var ping_timeout;
-var countdown_interval;
+var pingTimeout;
+var countdownInterval;
 
 function ping() {
   var request = new XMLHttpRequest();
@@ -25,7 +25,7 @@ function ping() {
   };
 
   request.send();
-  ping_timeout = setTimeout(ping, frequency)
+  pingTimeout = setTimeout(ping, frequency)
 }
 
 function success(data) {
@@ -44,10 +44,10 @@ function success(data) {
   if (show_warning && !modal.shown) {
     modal.show();
 
-    if(countdown_interval) {
-      clearInterval(countdown_interval);
+    if(countdownInterval) {
+      clearInterval(countdownInterval);
     }
-    countdown_interval = window.LoginGov.countdownTimer(
+    countdownInterval = window.LoginGov.countdownTimer(
       document.getElementById('countdown'), time_remaining, time_timeout
     );
   }
