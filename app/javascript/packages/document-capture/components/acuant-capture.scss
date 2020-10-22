@@ -2,6 +2,12 @@
 #document-capture-form .document-capture-acuant-capture { // scss-lint:disable IdSelector
   max-width: 375px;
 
+  %pad-common-id-card {
+    display: block;
+    // 2.125" x 3.375" are common standard ID dimensions
+    padding-bottom: ((2.125 / 3.375) * 100) + unquote('%');
+  }
+
   .usa-file-input:not(.usa-file-input--has-value) {
     @include u-margin-top(1);
     position: relative;
@@ -22,16 +28,12 @@
     }
 
     &::after {
+      @extend %pad-common-id-card;
       content: '';
-      display: block;
-      // 2.125" x 3.375" are common standard ID dimensions
-      padding-bottom: ((2.125 / 3.375) * 100) + unquote('%');
     }
   }
 
   .document-capture-file-image--loading {
-    display: block;
-    // 2.125" x 3.375" are common standard ID dimensions
-    padding-bottom: ((2.125 / 3.375) * 100) + unquote('%');
+    @extend %pad-common-id-card;
   }
 }
