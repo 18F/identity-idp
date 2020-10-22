@@ -36,7 +36,12 @@ describe Users::PhoneSetupController do
       stub_analytics
       result = {
         success: false,
-        errors: { phone: [t('errors.messages.improbable_phone')] },
+        errors: {
+          phone: [
+            t('errors.messages.improbable_phone'),
+            t('two_factor_authentication.otp_delivery_preference.phone_unsupported', location: ''),
+          ],
+        },
         otp_delivery_preference: 'sms',
       }
 

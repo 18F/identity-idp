@@ -19,7 +19,9 @@ class OtpDeliverySelectionForm
 
     @success = valid?
 
-    change_otp_delivery_preference_to_sms if unsupported_phone?
+    if !otp_delivery_preference_supported? && phone_number_capabilities.supports_sms?
+      change_otp_delivery_preference_to_sms
+    end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
@@ -33,13 +35,6 @@ class OtpDeliverySelectionForm
   def change_otp_delivery_preference_to_sms
     user_attributes = { otp_delivery_preference: 'sms' }
     UpdateUser.new(user: user, attributes: user_attributes).call
-  end
-
-  def unsupported_phone?
-    error_messages = errors.messages
-    return false unless error_messages.key?(:phone)
-
-    error_messages[:phone].first != I18n.t('errors.messages.missing_field')
   end
 
   def extra_analytics_attributes

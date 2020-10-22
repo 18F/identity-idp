@@ -10,8 +10,17 @@ class PhoneNumberCapabilities
   end
 
   def sms_only?
-    return true if country_code_data.nil?
-    country_code_data['sms_only']
+    supports_sms? && !supports_voice?
+  end
+
+  def supports_sms?
+    return false if country_code_data.nil?
+    country_code_data['supports_sms']
+  end
+
+  def supports_voice?
+    return false if country_code_data.nil?
+    country_code_data['supports_voice']
   end
 
   def unsupported_location
