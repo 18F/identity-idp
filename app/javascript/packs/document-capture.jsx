@@ -53,7 +53,7 @@ const device = {
   isMobile: isCameraCapableMobile(),
 };
 
-loadPolyfills(['fetch']).then(async () => {
+loadPolyfills(['fetch', 'crypto']).then(async () => {
   const backgroundUploadURLs = getBackgroundUploadURLs();
   const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
 
