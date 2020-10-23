@@ -265,7 +265,7 @@ jobs:
             diff <(bundle exec ./scripts/pinpoint-supported-countries) config/country_dialing_codes.yml
       - slack/status:
           fail_only: true
-          failure_message: ":login-gov::red_circle: external link check failed"
+          failure_message: ":aws-emoji: :red_circle: AWS pinpoint configuration is out of date"
 
 workflows:
   version: 2
