@@ -69,7 +69,7 @@ gem 'uglifier', '~> 3.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
 gem 'webauthn', '~> 2.1.0'
-gem 'webpacker', '~> 3.6', '>= 3.6.0'
+gem 'webpacker', '~> 5.1.1'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'zxcvbn-js'
 
