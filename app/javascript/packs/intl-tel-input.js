@@ -6,8 +6,8 @@ const intlCode = document.querySelector('#new_phone_form_international_code');
 
 // initialise plugin
 intlTelInput(telInput, {
-  preferredCountries: ['us', 'ca'],
-  excludeCountries: ['io', 'ki', 'nf', 'nr', 'nu', 'sh', 'sx', 'tk', 'wf'],
+  preferredCountries: ['US', 'CA'],
+  onlyCountries: JSON.parse(intlCode.getAttribute('data-countries')),
 });
 
 // OnChange event
