@@ -19,11 +19,6 @@ describe PhoneNumberCapabilities do
       it { expect(subject.sms_only?).to eq(true) }
     end
 
-    context 'voice is supported for the international code' do
-      let(:phone) { '+55 (555) 555-5000' }
-      it { expect(subject.sms_only?).to eq(true) }
-    end
-
     context 'Morocco number' do
       let(:phone) { '+212 661-289325' }
       it { expect(subject.sms_only?).to eq(true) }

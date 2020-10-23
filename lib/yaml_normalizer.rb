@@ -14,6 +14,10 @@ module YamlNormalizer
     end
   end
 
+  def normalize(hash)
+    handle_hash(hash)
+  end
+
   def dump(file, data)
     File.open(file, 'w') { |io| io.puts YAML.dump(data) }
   end
@@ -26,8 +30,6 @@ module YamlNormalizer
     end
     hash
   end
-
-  alias normalize handle_hash
 
   def handle_array(array)
     array.each { |value| handle_value(value) }
