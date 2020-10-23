@@ -260,12 +260,12 @@ jobs:
       - checkout
       - bundle-yarn-install
       - run:
-          name: Check current AWS Pinpoint Configs
+          name: Check current AWS Pinpoint country support
           command: |-
             diff <(bundle exec ./scripts/pinpoint-supported-countries) config/country_dialing_codes.yml
       - slack/status:
           fail_only: true
-          failure_message: ":aws-emoji: :red_circle: AWS pinpoint configuration is out of date"
+          failure_message: ":aws-emoji: :red_circle: AWS Pinpoint country configuration is out of date"
 
 workflows:
   version: 2
