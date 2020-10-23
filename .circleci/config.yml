@@ -283,14 +283,6 @@ workflows:
   daily-external-pinpoint-checker:
     jobs:
       - check-pinpoint-config
-    triggers:
-      - schedule:
-          # Once a day at 12pm
-          cron: "0 12 * * *"
-          filters:
-            branches:
-              only:
-                - master
 
   # Theses are staggered separately from the smoke tests in the identity-monitor repo
   # because they share credentials and would mess each other up if run concurrently
