@@ -1,6 +1,6 @@
 ---
 AD:
-  country_code: '1111111111'
+  country_code: '376'
   name: Andorra
   supports_sms: true
   supports_voice: false
