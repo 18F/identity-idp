@@ -60,6 +60,7 @@
 - forms.buttons.continue
 - forms.buttons.submit.default
 - forms.passwords.show
+- forms.ssn.show
 - idv.errors.pattern_mismatch.dob
 - idv.errors.pattern_mismatch.personal_key
 - idv.errors.pattern_mismatch.ssn
