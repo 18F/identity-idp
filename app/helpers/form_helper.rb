@@ -82,6 +82,10 @@ module FormHelper
     end
   end
 
+  def supported_country_codes
+    PhoneNumberCapabilities::INTERNATIONAL_CODES.keys
+  end
+
   def state_name_for_abbrev(abbrev)
     us_states_territories.find([]) { |state| state.second == abbrev }.first
   end
