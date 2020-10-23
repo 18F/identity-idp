@@ -14,7 +14,7 @@ const sassLoader = environment.loaders.get('sass');
 // Note: This option is renamed `additionalData` in newer versions of `sass-loader`.
 // Note: Import paths for USWDS required imports have improved in newer versions.
 //       See: https://github.com/uswds/uswds/blob/50f6ffd6/src/stylesheets/packages/_required.scss
-sassLoader.use.find(({ loader }) => loader === 'sass-loader').options.data = `
+sassLoader.use.find(({ loader }) => loader === 'sass-loader').options.prependData = `
 $font-path: '~identity-style-guide/dist/assets/fonts';
 $image-path: '~identity-style-guide/dist/assets/img';
 @import '~identity-style-guide/dist/assets/scss/functions/asset-path';
