@@ -17,8 +17,8 @@ module MonitorIdvSteps
 
     if current_path == '/verify/doc_auth/document_capture'
       # React-based document capture flow is enabled
-      attach_file 'file-input-1', File.expand_path('spec/fixtures/ial2_test_credential.yml')
-      attach_file 'file-input-2', File.expand_path('spec/fixtures/ial2_test_credential.yml')
+      attach_file 'Front of your ID', File.expand_path('spec/fixtures/ial2_test_credential.yml')
+      attach_file 'Back of your ID', File.expand_path('spec/fixtures/ial2_test_credential.yml')
       click_on 'Submit'
     else
       expect(page).to have_current_path('/verify/doc_auth/front_image')
