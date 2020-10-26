@@ -39,6 +39,12 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.infer_spec_type_from_file_location!
 
+  # Enable JS for smoke tests, matches monitor_spec_helper.rb
+  config.define_derived_metadata(file_path: %r{/spec/features/monitor}) do |metadata|
+    metadata[:type] = :feature
+    metadata[:js] = true
+  end
+
   config.include EmailSpec::Helpers
   config.include EmailSpec::Matchers
   config.include AbstractController::Translation
