@@ -15,7 +15,6 @@ module Idv
     def initialize(params, liveness_checking_enabled:)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
-      @readable = {}
     end
 
     def submit
