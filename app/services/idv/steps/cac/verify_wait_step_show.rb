@@ -24,6 +24,7 @@ module Idv
         end
 
         def async_state_done(current_async_state)
+          add_cost(:lexis_nexis_resolution)
           response = idv_result_to_form_response(current_async_state.result)
           response = check_ssn(current_async_state.pii) if response.success?
           summarize_result_and_throttle_failures(response)

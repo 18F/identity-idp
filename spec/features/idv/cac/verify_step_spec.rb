@@ -14,6 +14,11 @@ feature 'cac proofing verify info step' do
       click_continue
 
       expect(page).to have_current_path(idv_cac_proofing_success_step)
+
+      expect(SpCost.count).to eq(1)
+      sp_cost = SpCost.first
+      expect(sp_cost.cost_type).to eq('lexis_nexis_resolution')
+      expect(sp_cost.ial).to eq(2)
     end
   end
 
