@@ -160,7 +160,7 @@ describe Idv::DocAuthController do
       mock_document_capture_step
     end
     let(:successful_response) do
-      { success: true, errors: {}, extra: { remaining_attempts: 3 } }.to_json
+      { success: true }.to_json
     end
 
     context 'with selfie checking disabled' do
@@ -175,7 +175,7 @@ describe Idv::DocAuthController do
                                back_image_url: 'http://foo.com/bar2',
                                selfie_image_url: 'http://foo.com/bar3' }
 
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(202)
         expect(response.body).to eq(successful_response)
       end
 
@@ -202,7 +202,7 @@ describe Idv::DocAuthController do
                                back_image_url: 'http://foo.com/bar2',
                                selfie_image_url: 'http://foo.com/bar3' }
 
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(202)
         expect(response.body).to eq(successful_response)
       end
 
@@ -219,30 +219,41 @@ describe Idv::DocAuthController do
       mock_document_capture_step
     end
     let(:good_result) { { pii_from_doc: {}, success: true, errors: {}, messages: ['message'] } }
-    let(:fail_result) { { pii_from_doc: {}, success: false, errors: {}, messages: ['message'] } }
+    let(:fail_result) do
+      {
+        pii_from_doc: {},
+        success: false,
+        errors: { front: 'Wrong document' },
+        messages: ['message'],
+      }
+    end
 
     it 'returns status of success' do
       mock_document_capture_result(good_result)
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(200)
-      expect(response.body).to eq({ success: true, status: 'success' }.to_json)
+      expect(response.body).to eq({ success: true }.to_json)
     end
 
     it 'returns status of in progress' do
       mock_document_capture_result(nil)
       put :update, params: { step: 'verify_document_status' }
 
-      expect(response.status).to eq(200)
-      expect(response.body).to eq({ success: true, status: 'in_progress' }.to_json)
+      expect(response.status).to eq(202)
+      expect(response.body).to eq({ success: true }.to_json)
     end
 
     it 'returns status of fail' do
       mock_document_capture_result(fail_result)
       put :update, params: { step: 'verify_document_status' }
 
-      expect(response.status).to eq(200)
-      expect(response.body).to eq({ success: true, status: 'fail' }.to_json)
+      expect(response.status).to eq(400)
+      expect(response.body).to eq({
+        success: false,
+        errors: [{ field: 'front', message: 'Wrong document' }],
+        remaining_attempts: Figaro.env.acuant_max_attempts.to_i,
+      }.to_json)
     end
   end
 

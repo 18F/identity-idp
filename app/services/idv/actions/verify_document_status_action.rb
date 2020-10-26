@@ -8,18 +8,29 @@ module Idv
       private
 
       def process_async_state(current_async_state)
-        render_json case current_async_state.status
-                    when :none
-                      { success: true, status: nil }
-                    when :in_progress
-                      { success: true, status: 'in_progress' }
-                    when :timed_out
-                      { success: false, status: nil, errors: ['timeout'] }
-                    when :done
-                      success = process_result(current_async_state.result)
-                      async_state_done if success
-                      { success: true, status: success ? 'success' : 'fail' }
-                    end
+        form = ApiDocumentVerificationStatusForm.new(
+          async_state: current_async_state,
+          document_capture_session: document_capture_session,
+        )
+
+        form_response = form.submit
+
+        if current_async_state.status == :done
+          process_result(current_async_state.result)
+          async_state_done if form_response.success?
+        end
+
+        presenter = ImageUploadResponsePresenter.new(
+          form: form,
+          form_response: form_response,
+        )
+
+        status = :accepted if current_async_state.status == :in_progress
+
+        render_json(
+          presenter,
+          status: status || presenter.status,
+        )
       end
 
       def async_state_done
@@ -30,17 +41,17 @@ module Idv
 
       def process_result(result)
         add_cost(:acuant_result) if result.to_h[:billed]
-        response = idv_result_to_form_response(result)
-        response.success?
+      end
+
+      def document_capture_session
+        dcs_uuid = flow_session[verify_document_capture_session_uuid_key]
+        @document_capture_session ||= DocumentCaptureSession.find_by(uuid: dcs_uuid)
       end
 
       def async_state
-        dcs_uuid = flow_session[verify_document_capture_session_uuid_key]
-        dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
-        return ProofingDocumentCaptureSessionResult.none if dcs_uuid.nil?
-        return ProofingDocumentCaptureSessionResult.timed_out if dcs.nil?
+        return ProofingDocumentCaptureSessionResult.timed_out if document_capture_session.nil?
 
-        proofing_job_result = dcs.load_proofing_result
+        proofing_job_result = document_capture_session.load_proofing_result
         return ProofingDocumentCaptureSessionResult.timed_out if proofing_job_result.nil?
 
         if proofing_job_result.result

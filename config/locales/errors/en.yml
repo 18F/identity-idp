@@ -46,6 +46,8 @@ en:
         <li>You are not wearing a hat or glasses, and your head is fully visible</li>
         </ul>
       document_capture_selfie_consent_blocked: Your camera is blocked
+      document_verification_timeout: The server took too long to respond. Please try
+        again.
       general_error: We could not read or verify your ID. Try to take and upload new
         images of both the front and back of your ID. Make sure everything can be
         easily read, including the barcode.

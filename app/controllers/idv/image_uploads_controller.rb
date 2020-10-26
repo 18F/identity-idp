@@ -22,9 +22,6 @@ module Idv
         update_analytics(client_response)
 
         store_pii(client_response) if client_response.success?
-        status = :bad_request unless client_response.success?
-      else
-        status = image_form.status
       end
 
       presenter = ImageUploadResponsePresenter.new(
@@ -32,8 +29,7 @@ module Idv
         form_response: client_response || form_response,
       )
 
-      render json: presenter,
-             status: status || :ok
+      render json: presenter, status: presenter.status
     end
 
     private

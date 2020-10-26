@@ -46,6 +46,8 @@ es:
         <li>No lleva puesto un sombrero o anteojos, y su cabeza es completamente visible</li>
         </ul>
       document_capture_selfie_consent_blocked: El acceso a su cámara está bloqueado
+      document_verification_timeout: El servidor tardó demasiado en responder. Inténtalo
+        de nuevo.
       general_error: No pudimos leer ni verificar su identificación. Intenta tomar
         y subir nuevas imágenes de la parte delantera y trasera de tu ID. Asegúrese
         de que todo se pueda leer fácilmente, incluido el código de barras.

@@ -30,12 +30,6 @@ module Idv
       )
     end
 
-    def status
-      return :ok if valid?
-      return :too_many_requests if errors.key?(:limit)
-      :bad_request
-    end
-
     def remaining_attempts
       Throttler::RemainingCount.call(document_capture_session.user_id, :idv_acuant)
     end

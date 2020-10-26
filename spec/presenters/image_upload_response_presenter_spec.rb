@@ -60,6 +60,44 @@ describe ImageUploadResponsePresenter do
     end
   end
 
+  describe '#status' do
+    context 'limit error' do
+      let(:form_response) do
+        FormResponse.new(
+          success: false,
+          errors: {
+            limit: t('errors.doc_auth.acuant_throttle'),
+          },
+        )
+      end
+
+      it 'returns bad request' do
+        expect(presenter.status).to eq :too_many_requests
+      end
+    end
+
+    context 'failure' do
+      let(:form_response) do
+        FormResponse.new(
+          success: false,
+          errors: {
+            front: t('doc_auth.errors.not_a_file'),
+          },
+        )
+      end
+
+      it 'returns bad request' do
+        expect(presenter.status).to eq :bad_request
+      end
+    end
+
+    context 'success' do
+      it 'returns ok' do
+        expect(presenter.status).to eq :ok
+      end
+    end
+  end
+
   describe '#as_json' do
     context 'success' do
       it 'returns hash of properties' do

@@ -20,6 +20,16 @@ class ImageUploadResponsePresenter
     @form.remaining_attempts
   end
 
+  def status
+    if success
+      :ok
+    elsif @form_response.errors.key?(:limit)
+      :too_many_requests
+    else
+      :bad_request
+    end
+  end
+
   def as_json(*)
     if success
       { success: true }
