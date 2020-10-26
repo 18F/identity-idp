@@ -45,6 +45,7 @@ function formatSSNField() {
 
           input.maxLength = 9;
         } else {
+          // SSN is 9 characters plus 2 for dashes
           input.maxLength = 11;
 
           ssnCleave.destroy();
