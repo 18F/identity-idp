@@ -1,4 +1,5 @@
 import Cleave from 'cleave.js';
+
 const { I18n } = window.LoginGov;
 
 /* eslint-disable no-new */
@@ -27,10 +28,9 @@ function formatSSNField() {
 
       const toggle = document.getElementById(`ssn-toggle-${i}`);
       toggle.addEventListener('change', function () {
-
         input.type = toggle.checked ? 'text' : 'password';
 
-        if(!toggle.checked) {
+        if (!toggle.checked) {
           if (ssnCleave) {
             ssnCleave.destroy();
 
