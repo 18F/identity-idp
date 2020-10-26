@@ -114,7 +114,7 @@ group :test do
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
-  gem 'shoulda-matchers', '~> 4.0.1', require: false
+  gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'timecop'
   gem 'webdrivers', '~> 3.0'
   gem 'webmock'
