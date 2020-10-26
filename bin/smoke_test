@@ -4,7 +4,7 @@ set -euo pipefail
 params=""
 spec_helper="rails_helper"
 should_source_env=1
-retry_count=3
+retry_count=0
 
 function help() {
   cat <<EOS
