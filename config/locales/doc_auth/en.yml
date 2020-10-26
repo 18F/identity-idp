@@ -10,7 +10,7 @@ en:
         photo</lg-upload>"
       take_picture: Take photo
       take_picture_retry: Retake photo
-      upload_picture: Upload a photo
+      upload_picture: Upload photo
       use_phone: Use your phone
     errors:
       lexis_nexis:
@@ -57,7 +57,13 @@ en:
           in brighter lighting.
         visible_photo_check: We couldn't verify the photo on your ID. Try taking new
           pictures.
-      not_a_file: The selection was not a valid file
+      not_a_file: The selection was not a valid file.
+      fields:
+        file_must_be_image: File must be an image.
+        image_small: Image is too small, please try again.
+        image_blurry: Image is blurry, please try again.
+        image_glare: Image has glare, please try again.
+        invalid_document: Not a valid document, please try again.
     forms:
       address1: Address
       change_file: Change file
@@ -92,8 +98,8 @@ en:
       take_pic_front: Take a photo of the front of your ID
       take_picture: Take a photo with a phone
       text_message: We sent a message to your phone
-      upload: How would you like to upload your state issued ID?
-      upload_back: Upload an image of the back of your state issued ID
+      upload: How would you like to upload your state-issued ID?
+      upload_back: Upload an image of the back of your state-issued ID
       upload_from_phone: Take a photo with a mobile phone to upload your ID
       upload_from_phone_liveness_enabled: Use a mobile phone to add your ID and take
         a photo of yourself
@@ -122,7 +128,7 @@ en:
       - Please check your phone and follow instructions to take a photo of your state
         issued ID.
       - When you are done click continue here to finish verifying your identity.
-      no_other_id_help_bold_html: "<strong>If you do not have another state-issued
+      no_other_id_help_bold_html: "<strong>If you do not have a state-issued
         ID</strong>, <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
@@ -155,12 +161,9 @@ en:
         and share your personal information. We will only use it to verify your identity.
       document_capture_fallback_html: Having trouble? %{link}
       document_capture_fallback_link: Click here to upload an image
-      document_capture_selfie_consent_banner: Allow login.gov to use your device's
-        camera
-      document_capture_selfie_consent_blocked: Check your web browser’s settings for
-        this site to allow login.gov to access the camera.
-      document_capture_selfie_consent_reason: login.gov needs permission to use your
-        camera so that you can prove your ID belongs to you.
+      document_capture_selfie_consent_banner: login.gov needs permission to use your device's camera
+      document_capture_selfie_consent_blocked: Check your web browser's settings for this site or computer's system settings to allow login.gov to access the camera.
+      document_capture_selfie_consent_reason: Allow access to the camera and look for a notification in your browser or check your system settings to confirm camera access.
       document_capture_selfie_instructions: Now take a picture of yourself. We'll
         compare it to the image on the front of your ID.
       email_sent: Link sent to %{email}. Please check your desktop email and follow

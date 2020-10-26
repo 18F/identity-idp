@@ -23,8 +23,7 @@ fr:
     info:
       choose_method: Nous collecterons des informations qui vous concernent en lisant
         votre pièce d'identité.
-      disclaimer: Nous ne stockons pas les images que vous téléchargez. Nous vérifions
-        uniquement votre identité.
+      disclaimer: Nous ne stockons pas les images que vous téléchargez. Nous vérifions uniquement votre identité.
       piv_cac_description: Utilisez une carte d'identité d'employé du gouvernement
         fédéral ou une carte d'identité militaire (PIV ou CAC) pour vérifier votre
         identité de façon rapide et sécurisée.

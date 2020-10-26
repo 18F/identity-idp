@@ -8,43 +8,25 @@ es:
       start_over: Comenzar de nuevo
       take_or_upload_picture: "<lg-take-photo>Toma una foto</lg-take-photo> o <lg-upload>Sube
         una foto</lg-upload>"
-      take_picture: Tomar la foto
-      take_picture_retry: Retomar foto
-      upload_picture: Sube una foto
+      take_picture: Tomar una foto
+      take_picture_retry: Retirar la foto
+      upload_picture: Subir foto
       use_phone: Usa tu telefono
     errors:
       lexis_nexis:
-        barcode_content_check: No pudimos leer el código de barras en la parte posterior
-          de su identificación. Podría deberse a un problema con el código de barras
-          o el código de barras es de un tipo nuevo que aún no reconocemos. Use otra
-          identificación emitida por el estado si tiene una.
-        barcode_read_check: No pudimos leer el código de barras en la parte posterior
-          de su identificación. Intente tomar una nueva foto.
-        birth_date_checks: No pudimos leer la fecha de nacimiento en su identificación.
-          Intente tomar nuevas fotografías.
-        control_number_check: No pudimos leer el número de referencia al dorso de
-          su identificación. Intente tomar una nueva foto.
-        doc_crosscheck: No pudimos reconocer su identificación. Puede estar gastado
-          o dañado, o el anverso y el reverso de la identificación no coinciden. Intente
-          tomar nuevas fotografías.
-        doc_number_checks: No pudimos leer el número de documento en su identificación.
-          Intente tomar nuevas fotografías.
-        expiration_checks: El documento ha caducado o no pudimos leer la fecha de
-          caducidad en su identificación. Si su identificación no está vencida, intente
-          tomar nuevas fotografías.
-        full_name_check: No pudimos leer el nombre completo en su identificación.
-          Intente tomar nuevas fotografías.
-        general_error_liveness: No pudimos verificar su identificación y foto suya.
-          Intente tomar nuevas fotografías.
-        general_error_no_liveness: No pudimos verificar su identificación. Intente
-          tomar nuevas fotografías.
-        id_not_recognized: No pudimos reconocer su identificación. Puede estar desgastado,
-          dañado o ser un tipo de identificación que no reconocemos. Intente tomar
-          nuevas fotografías.
-        id_not_verified: No pudimos verificar su identificación. Es posible que se
-          haya movido cuando tomó la foto. Intente tomar nuevas fotografías.
-        issue_date_checks: No pudimos leer la fecha de emisión en su identificación.
-          Intente tomar nuevas fotografías.
+        barcode_content_check: No pudimos leer el código de barras en el reverso de su documento de identidad. Puede ser debido a un problema con el código de barras, o bien el código de barras es un nuevo tipo que aún no reconocemos. Use otro documento de identidad expedido por el estado si tiene uno.
+        barcode_read_check: No pudimos leer el código de barras en el reverso de su documento de identidad. Intente tomar una nueva foto.
+        birth_date_checks: No pudimos leer la fecha de nacimiento en su documento de identidad. Intente tomar nuevas fotografías.
+        control_number_check: No pudimos leer el número de referencia en el reverso de su documento de identidad. Intente tomar una nueva foto.
+        doc_crosscheck: No pudimos reconocer su documento de identidad. Puede estar desgastado o dañado, o la parte delantera y trasera del documento de identidad no coinciden. Intente tomar nuevas fotos.
+        doc_number_checks: No pudimos leer el número de documento en su documento de identidad. Intente tomar nuevas fotografías.
+        expiration_checks: El documento ha caducado, o no pudimos leer la fecha de caducidad en su documento de identidad. Si su documento de identidad no ha caducado, intente tomar nuevas fotografías.
+        full_name_check: No pudimos leer el nombre completo en su documento de identidad. Intente tomar nuevas fotos.
+        general_error_liveness: No pudimos verificar su documento de identidad y su foto. Intente tomar nuevas fotografías.
+        general_error_no_liveness: No pudimos verificar su documento de identidad. Intente tomar nuevas fotografías.
+        id_not_recognized: No pudimos reconocer su documento de identidad. Puede estar desgastado o dañado, o ser un tipo de documento de identidad que no reconocemos. Intente tomar nuevas fotografías.
+        id_not_verified: No pudimos verificar su documento de identidad. Puede que se haya movido cuando tomó la foto. Intente tomar nuevas fotos.
+        issue_date_checks: No pudimos leer la fecha de emisión en su documento de identidad. Intente tomar nuevas fotos.
         multiple_back_id_failures: No pudimos verificar la parte trasera de su documento
           de identidad. Intente tomar una nueva foto.
         multiple_front_id_failures: No pudimos verificar la parte delantera de su
@@ -53,16 +35,18 @@ es:
           enviar sus imágenes de nuevo más tarde.
         ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
-        selfie_failure: No pudimos hacer coincidir tu foto con tu identificación.
-          Intente tomar una nueva foto de usted mismo o del frente de su identificación.
-        sex_check: No pudimos leer el sexo en tu identificación. Intente tomar nuevas
-          fotografías.
-        visible_color_check: No pudimos verificar su identificación. Es posible que
-          se haya movido cuando tomó la foto o que la imagen es demasiado oscura.
-          Intente tomar nuevas fotografías con una iluminación más brillante.
+        selfie_failure: No pudimos hacer coincidir su foto con su documento de identidad. Intente tomarse una nueva foto de usted o de la parte delantera de su documento de identidad.
+        sex_check: No pudimos leer el sexo en su documento de identidad. Intente tomar nuevas fotos.
+        visible_color_check: No pudimos verificar su documento de identidad. Puede que se haya movido cuando tomó la foto, o la foto es demasiado oscura. Intente tomar nuevas fotografías con una luz más brillante.
         visible_photo_check: No pudimos verificar la foto de su identificación. Intente
           tomar nuevas fotografías.
-      not_a_file: La selección no era un archivo válido
+      not_a_file: La selección no era un archivo válido.
+      fields:
+        file_must_be_image: El archivo debe ser una imagen.
+        image_small: La imagen es demasiado pequeña, inténtelo de nuevo.
+        image_blurry: La imagen está borrosa, inténtelo de nuevo.
+        image_glare: La imagen tiene brillo, inténtelo de nuevo.
+        invalid_document: No es un documento válido, inténtelo de nuevo.
     forms:
       address1: Dirección
       change_file: Cambiar archivo
@@ -79,33 +63,32 @@ es:
       zip_code: Código postal
     headings:
       address: Dirección de envio
-      back: Parte posterior
-      capture_complete: Hemos verificado su identificación emitida por el estado
-      document_capture: Agregue su identificación emitida por el estado
-      document_capture_back: Detrás de su identificación
-      document_capture_front: Frente de su identificación
+      back: Parte Trasera
+      capture_complete: Hemos verificado su identificación expedida por el estado
+      document_capture: Añada su documento de identidad expedido por el estado
+      document_capture_back: Parte trasera de su documento de identidad
+      document_capture_front: Parte delantera de su documento de identidad
       document_capture_heading_html: Cargue su identificación emitida por el estado
       document_capture_heading_with_selfie_html: Cargue su identificación emitida
         por el estado y una foto suya
-      document_capture_selfie: Tu foto
-      front: Frente
-      interstitial: Estamos procesando tus imágenes
+      document_capture_selfie: Su foto
+      front: Parte Delantera
+      interstitial: Estamos procesando sus imágenes
       photo: Foto
-      review_issues: Revisa tus imágenes y vuelve a intentarlo
-      selfie: Toma una foto de ti mismo
+      review_issues: Revise sus imágenes e inténtelo de nuevo
+      selfie: Tómese una foto
       ssn: Por favor ingrese su número de seguro social.
       take_pic_back: Toma una foto de la parte posterior de tu identificación
       take_pic_front: Toma una foto del frente de tu identificación
       take_picture: Toma una foto con un teléfono
       text_message: Enviamos un mensaje a su teléfono
-      upload: "¿Cómo te gustaría subir tu identificación emitida por el estado?"
+      upload: "¿Cómo le gustaría subir su documento de identidad expedido por el estado?"
       upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
-      upload_from_phone_liveness_enabled: Use un teléfono móvil para agregar su identificación
-        y tomar una foto de usted mismo
+      upload_from_phone_liveness_enabled: Utilice un celular para agregar su documento de identidad y tomarse
       upload_front: Cargue una foto del frente de su identificación emitida por el
         estado.
-      upload_liveness_enabled: "¿Cómo te gustaría verificar tu identidad?"
+      upload_liveness_enabled: "¿Cómo te gustaría verificar su identidad?"
       verify: Por favor verifica tu información
       welcome: Nosotros necesitamos verificar tu identidad
     info:
@@ -119,45 +102,38 @@ es:
         que subes. Solo verificamos su identidad.
       document_capture_upload_image: Solo utilizamos su ID para verificar su identidad
         y no guardaremos ninguna imagen.
-      id_worn_html: "<strong>¿Su identificación está desgastada o dañada?</strong>
-        Use otra identificación emitida por el estado si tiene una."
+      id_worn_html: "<strong>¿Su documento de identidad está desgastado o dañado?</strong>
+        Utilice otro documento de identidad expedido por el estado, si lo tiene."
       image_updated: Imagen actualizada
-      interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente
-        paso automáticamente cuando esté listo.
+      interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente paso automáticamente cuando esté terminado.
       interstitial_thanks: "¡Gracias por su paciencia!"
       link_sent:
       - Verifique su teléfono y siga las instrucciones para tomar una fotografía de
         la identificación emitida por su estado.
       - Cuando haya terminado, haga clic en continuar aquí para terminar de verificar
         su identidad.
-      no_other_id_help_bold_html: "<strong>Si no tiene otra identificación emitida
-        por el estado</strong>, <a href=%{failure_to_proof_url}>obtenga ayuda en %{sp_name}.</a>"
+      no_other_id_help_bold_html: "<strong>Si no tiene un documento de identidad expedido por el estado</strong>, <a href=%{failure_to_proof_url}>obtenga ayuda en %{sp_name}.</a>"
       tag: Recomendado
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su identificación.
         Solo usamos las imágenes para verificar su identidad.
-      upload: Recopilaremos información sobre usted leyendo su identificación emitida
-        por el estado. No almacenamos imágenes que cargue. Solo verificamos su identidad.
+      upload: Recopilaremos información sobre usted leyendo su documento de identidad expedido por el estado.
       upload_computer_link: Sube desde tu computadora
-      upload_from_computer: "¿No tienes teléfono?"
-      upload_from_computer_not_allowed: Inicie sesión en su cuenta login.gov en cualquier
-        dispositivo que tenga una cámara, como una tableta o computadora con una cámara
-        web.
+      upload_from_computer: "¿No tiene un teléfono?"
+      upload_from_computer_not_allowed: Inicie sesión en su cuenta de login.gov en cualquier dispositivo que tenga una cámara, como una tableta o una computadora con una cámara web.
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
       upload_image: Solo utilizamos su ID para verificar su identidad y no guardaremos
         ninguna imagen. Aceptamos los formatos BMP, PNG, TIFF y JPG.
-      upload_liveness_enabled: Recopilaremos información sobre usted leyendo su identificación
-        emitida por el estado. Luego, se tomará una foto para confirmar que es el
-        propietario de la identificación.
+      upload_liveness_enabled: Recopilaremos información sobre usted leyendo su documento de identidad expedido por el estado. Luego, se tomará una foto para confirmar que es el propietario del documento de identidad.
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos
         su identidad.
-      use_cac: "¿Tiene una identificación de empleado del gobierno?"
-      use_cac_link: Usa un PIV/CAC en su lugar
+      use_cac: "¿Tiene un documento de identidad de empleado del gobierno?"
+      use_cac_link: Utilice un PIV/CAC en su lugar
       welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
         no alguien que pretende ser usted. Verificar su identidad le permite acceder
         a servicios que manejan información confidencial.
     instructions:
       bullet1: Sube tu ID
-      bullet1a: Toma una foto de ti mismo
+      bullet1a: Tómese una foto
       bullet2: Confirma tu direccion
       bullet3: Asegure su cuenta
       bullet4: Recuperación de cuenta
@@ -166,14 +142,10 @@ es:
         su identidad.
       document_capture_fallback_html: "¿Teniendo problemas? %{link}"
       document_capture_fallback_link: Haga clic aquí para cargar una imagen.
-      document_capture_selfie_consent_banner: Permita que login.gov use la cámara
-        de su dispositivo
-      document_capture_selfie_consent_blocked: Verifique la configuración de su navegador
-        web para este sitio para permitir que login.gov acceda a la cámara.
-      document_capture_selfie_consent_reason: login.gov necesita permiso para usar
-        su cámara para que pueda probar que su identificación le pertenece.
-      document_capture_selfie_instructions: Ahora toma una foto de ti mismo. Lo compararemos
-        con la imagen en el frente de su identificación.
+      document_capture_selfie_consent_banner: login.gov necesita permiso para usar la cámara de su dispositivo
+      document_capture_selfie_consent_blocked: Compruebe la configuración de su navegador de Internet para este sitio o la configuración del sistema de la computadora para permitir a login.gov acceder a la cámara.
+      document_capture_selfie_consent_reason: Permita el acceso a la cámara y busque una notificación en su navegador o revise la configuración del sistema para confirmar el acceso a la cámara.
+      document_capture_selfie_instructions: Ahora tómese una foto. La compararemos con la imagen de la parte delantera de su documento de identidad.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Aprende más
@@ -181,41 +153,38 @@ es:
         Siga ese enlace a su navegador para tomar fotografías de la parte delantera
         y trasera de su identificación.
       switch_back: Vuelve a tu computadora para terminar de verificar tu identidad
-      take_pic: 'Para mejores resultados:'
-      take_pic1: Usa un fondo oscuro
-      take_pic2: Toma la foto sobre una superficie plana
-      take_pic3: No uses el flash en tu cámara
+      take_pic: 'Para obtener los mejores resultados:'
+      take_pic1: Use un fondo oscuro
+      take_pic2: Tome la foto en una superficie plana
+      take_pic3: No use el flash de su cámara
       take_pic4: Usa la orientación del paisaje
       text1: junto con su número de seguro social
-      text1a: con tu teléfono o webcam
+      text1a: con un teléfono o cámara web
       text2: usando un número de teléfono o dirección de correo
       text3: volviendo a ingresar su contraseña de login.gov
       text4: asegúrate de tener siempre acceso
       welcome: 'Lo que necesitarás hacer:'
     tips:
-      document_capture_header_text: 'Para mejores resultados:'
-      document_capture_hint: Aceptamos los formatos BMP, PNG, TIFF y JPG.
-      document_capture_id_text1: Usa un fondo oscuro
-      document_capture_id_text2: Toma la foto sobre una superficie plana
-      document_capture_id_text3: No uses el flash en tu cámara
+      document_capture_header_text: 'Para obtener los mejores resultados:'
+      document_capture_hint: Debe ser un JPG, BMP, PNG o TIFF
+      document_capture_id_text1: Use un fondo oscuro
+      document_capture_id_text2: Tome la foto en una superficie plana
+      document_capture_id_text3: No use el flash de su cámara
       document_capture_id_text4: El tamaño del archivo debe ser de al menos 2 MB
-      document_capture_selfie_text1: Mira a la cámara y asegúrate de que toda tu cabeza
-        esté en la foto
-      document_capture_selfie_text2: Toma una foto sobre un fondo liso
-      document_capture_selfie_text3: No use sombrero ni anteojos
+      document_capture_selfie_text1: Mire a la cámara y asegúrese de que tiene toda la cabeza en la foto
+      document_capture_selfie_text2: Tome una foto contra un fondo plano
+      document_capture_selfie_text3: No use sombrero o anteojos
       header_text: Pautas para tomar una foto de su identificación
-      review_issues_id_header_text: 'Revise las imágenes de su identificación emitida
-        por el estado:'
-      review_issues_id_text1: "¿Usaste un fondo oscuro?"
-      review_issues_id_text2: "¿Hiciste la foto en una superficie plana?"
-      review_issues_id_text3: "¿Está apagado el flash de la cámara?"
-      review_issues_id_text4: "¿Son todos los detalles nítidos y claramente visibles?"
-      review_issues_selfie_header_text: 'Revisa la foto tuya:'
-      review_issues_selfie_text1: "¿Estás frente a la cámara?"
-      review_issues_selfie_text2: "¿Está toda tu cabeza y tu cara en la foto?"
-      review_issues_selfie_text3: "¿La foto tiene un fondo liso?"
-      review_issues_selfie_text4: "¿Su cara es completamente visible, no está cubierta
-        por un sombrero o anteojos?"
+      review_issues_id_header_text: 'Revise las imágenes de su documento de identidad expedido por el estado:'
+      review_issues_id_text1: "¿Ha usado un fondo oscuro?"
+      review_issues_id_text2: "¿Tomó la foto en una superficie plana?"
+      review_issues_id_text3: "¿Tiene el flash de su cámara apagado?"
+      review_issues_id_text4: "¿Todos los detalles están nítidos y claramente visibles?"
+      review_issues_selfie_header_text: 'Revise su propia foto:'
+      review_issues_selfie_text1: "¿Está de cara a la cámara?"
+      review_issues_selfie_text2: "¿Tiene en la foto toda la cabeza y la cara?"
+      review_issues_selfie_text3: "¿Está la foto contra un fondo liso?"
+      review_issues_selfie_text4: "¿Su cara está totalmente visible, no está cubierta por un sombrero o por anteojos?"
       text1: Tómalo en una habitación con mucha luz. La luz solar indirecta es la
         mejor.
       text2: Asegúrese de que su identificación no tenga suciedad o códigos de barras
