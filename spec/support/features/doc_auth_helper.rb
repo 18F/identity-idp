@@ -140,9 +140,9 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)
-    complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_back_image_step(expect_accessible: expect_accessible)
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    attach_images(liveness_enabled: false)
+    attach_image
     click_idv_continue
   end
 

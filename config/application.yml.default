@@ -402,11 +402,12 @@ test:
   disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
-  doc_auth_enable_presigned_s3_urls: 'false'
+  doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'false'
   # Here to support legacy tests. Once we remove the code for the old steps, we
   # should remove this config entirely and the tests that assume this is false.
+  document_capture_step_enabled: 'false'
   domain_name: www.example.com
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'true'
