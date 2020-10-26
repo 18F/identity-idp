@@ -8,7 +8,7 @@ p.mt2.mb0#password-description
     method: :post,
     html: { role: 'form', autocomplete: 'off' }) do |f|
   = f.input :password, required: true,
-      input_html: { aria: { invalid: false, describedby: 'password-description' } }
+      input_html: { aria: { invalid: false, class: 'password-toggle', describedby: 'password-description' } }
   = render 'devise/shared/password_strength'
   = hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token'
   = f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id }
