@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo, forwardRef } from 'react';
+import React, { useContext, useState, useRef, useMemo, forwardRef } from 'react';
 import FileImage from './file-image';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
@@ -16,6 +16,7 @@ import useI18n from '../hooks/use-i18n';
  * @prop {string=} hint Optional hint text.
  * @prop {string=} bannerText Optional banner overlay text.
  * @prop {string=} invalidTypeText Error message text to show on invalid file type selection.
+ * @prop {string=} fileUpdatedText Success message text to show when selected file is updated.
  * @prop {string[]=} accept Optional array of file input accept patterns.
  * @prop {'user'|'environment'=} capture Optional facing mode if file input is used for capture.
  * @prop {Blob|string|null|undefined} value Current value.
@@ -92,6 +93,7 @@ const FileInput = forwardRef((props, ref) => {
     hint,
     bannerText,
     invalidTypeText,
+    fileUpdatedText,
     accept,
     capture,
     value,
@@ -104,6 +106,12 @@ const FileInput = forwardRef((props, ref) => {
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
+  const hadValue = useRef(false);
+  const isUpdated = useMemo(() => {
+    const nextIsUpdated = Boolean(value && hadValue.current);
+    hadValue.current = Boolean(value);
+    return nextIsUpdated;
+  }, [value]);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {string?} */ (null));
   useMemo(() => setOwnErrorMessage(null), [value]);
   const inputId = `file-input-${instanceId}`;
@@ -134,7 +142,11 @@ const FileInput = forwardRef((props, ref) => {
 
   return (
     <div
-      className={[shownErrorMessage && 'usa-form-group usa-form-group--error']
+      className={[
+        (shownErrorMessage || isUpdated) && 'usa-form-group',
+        shownErrorMessage && 'usa-form-group--error',
+        isUpdated && !shownErrorMessage && 'usa-form-group--success',
+      ]
         .filter(Boolean)
         .join(' ')}
     >
@@ -163,6 +175,11 @@ const FileInput = forwardRef((props, ref) => {
       {shownErrorMessage && (
         <span className="usa-error-message" role="alert">
           {shownErrorMessage}
+        </span>
+      )}
+      {isUpdated && !shownErrorMessage && (
+        <span className="usa-success-message" role="alert">
+          {fileUpdatedText ?? t('forms.file_input.file_updated')}
         </span>
       )}
       <div

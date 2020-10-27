@@ -60,6 +60,8 @@ fr:
       buttons:
         delete: Supprimer l'email
     example: 'exemple:'
+    file_input:
+      file_updated: Fichier mis à jour
     messages:
       remember_device: Enregistrer ce navigateur
     passwords:

@@ -30,6 +30,15 @@
   }
 }
 
+.usa-form-group--success .usa-file-input .usa-file-input__target {
+  border-color: color('success');
+  border-width: 2px;
+
+  &:hover {
+    border-color: color('success-dark');
+  }
+}
+
 .usa-file-input__banner-text {
   @include u-font-family('sans');
   color: color('primary');

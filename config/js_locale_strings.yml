@@ -59,6 +59,7 @@
 - errors.messages.missing_field
 - forms.buttons.continue
 - forms.buttons.submit.default
+- forms.file_input.file_updated
 - forms.passwords.show
 - forms.ssn.show
 - idv.errors.pattern_mismatch.dob
