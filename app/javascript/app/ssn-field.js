@@ -2,6 +2,23 @@ import Cleave from 'cleave.js';
 
 const { I18n } = window.LoginGov;
 
+function sync(input, toggle, ssnCleave) {
+  input.type = toggle.checked ? 'text' : 'password';
+
+  ssnCleave?.destroy();
+
+  if (toggle.checked) {
+    return new Cleave(input, {
+      numericOnly: true,
+      blocks: [3, 2, 4],
+      delimiter: '-',
+    });
+  }
+  input.value = input.value.replace(/-/g, '');
+
+  return null;
+}
+
 /* eslint-disable no-new */
 function formatSSNField() {
   const inputs = document.querySelectorAll('input.ssn-toggle[type="password"]');
@@ -20,25 +37,13 @@ function formatSSNField() {
         </div>`;
       input.insertAdjacentHTML('afterend', el);
 
-      let ssnCleave;
       const toggle = document.getElementById(`ssn-toggle-${i}`);
+      let ssnCleave;
+
+      ssnCleave = sync(input, toggle, ssnCleave);
+
       toggle.addEventListener('change', function () {
-        input.type = toggle.checked ? 'text' : 'password';
-
-        if (!toggle.checked) {
-          if (ssnCleave) {
-            ssnCleave.destroy();
-          }
-
-          input.value = input.value.replace(/-/g, '');
-        } else {
-          ssnCleave.destroy();
-          ssnCleave = new Cleave(input, {
-            numericOnly: true,
-            blocks: [3, 2, 4],
-            delimiter: '-',
-          });
-        }
+        ssnCleave = sync(input, toggle, ssnCleave);
       });
     });
   }
