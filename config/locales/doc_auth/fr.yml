@@ -127,6 +127,7 @@ fr:
         votre identité, et nous n'enregistrerons aucune image.
       id_worn_html: "<strong>Votre pièce d'identité est-elle usée ou endommagée?</strong>
         Utilisez un autre identifiant émis par l'État si vous en avez un."
+      image_updated: Image mise à jour
       interstitial_eta: Cela peut prendre jusqu'à une minute. Nous chargerons automatiquement
         l’étape suivante une fois celle-ci terminée.
       interstitial_thanks: Merci pour votre patience!
