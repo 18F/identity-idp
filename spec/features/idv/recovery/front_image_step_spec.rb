@@ -9,6 +9,7 @@ feature 'recovery front image step' do
   let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
 
   before do
+    allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
     sign_in_before_2fa(user)
     complete_recovery_steps_before_front_image_step(user)
   end

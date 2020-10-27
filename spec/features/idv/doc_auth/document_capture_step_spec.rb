@@ -63,8 +63,7 @@ feature 'doc auth document capture step' do
         allow_any_instance_of(ApplicationController).
           to receive(:analytics).and_return(fake_analytics)
 
-        attach_images
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_current_path(next_step)
         expect(fake_analytics).to have_logged_event(
@@ -96,8 +95,8 @@ feature 'doc auth document capture step' do
 
       it 'does not proceed to the next page with invalid info' do
         mock_general_doc_auth_client_error(:create_document)
-        attach_images
-        click_idv_continue
+
+        attach_and_submit_images
 
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
       end
@@ -107,8 +106,7 @@ feature 'doc auth document capture step' do
           to receive(:analytics).and_return(fake_analytics)
 
         mock_doc_auth_no_name_pii(:post_images)
-        attach_images
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
 
@@ -128,8 +126,7 @@ feature 'doc auth document capture step' do
                                       href: idv_in_person_welcome_step)
 
         mock_general_doc_auth_client_error(:create_document)
-        attach_images
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_link(t('in_person_proofing.opt_in_link'),
                                   href: idv_in_person_welcome_step)
@@ -138,24 +135,21 @@ feature 'doc auth document capture step' do
       it 'throttles calls to acuant and allows retry after the attempt window' do
         allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
         max_attempts.times do
-          attach_images
-          click_idv_continue
+          attach_and_submit_images
 
           expect(page).to have_current_path(next_step)
           click_on t('doc_auth.buttons.start_over')
           complete_doc_auth_steps_before_document_capture_step
         end
 
-        attach_images
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_current_path(idv_session_errors_throttled_path)
 
         Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
           sign_in_and_2fa_user(user)
           complete_doc_auth_steps_before_document_capture_step
-          attach_images
-          click_idv_continue
+          attach_and_submit_images
 
           expect(page).to have_current_path(next_step)
         end
@@ -170,8 +164,7 @@ feature 'doc auth document capture step' do
           ),
         )
 
-        attach_images
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
         expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
@@ -207,8 +200,7 @@ feature 'doc auth document capture step' do
       end
 
       it 'proceeds to the next page with valid info' do
-        attach_images(liveness_enabled: false)
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_current_path(next_step)
         expect_costing_for_document
@@ -232,24 +224,21 @@ feature 'doc auth document capture step' do
       it 'throttles calls to acuant and allows retry after the attempt window' do
         allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
         max_attempts.times do
-          attach_images(liveness_enabled: false)
-          click_idv_continue
+          attach_and_submit_images
 
           expect(page).to have_current_path(next_step)
           click_on t('doc_auth.buttons.start_over')
           complete_doc_auth_steps_before_document_capture_step
         end
 
-        attach_images(liveness_enabled: false)
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_current_path(idv_session_errors_throttled_path)
 
         Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
           sign_in_and_2fa_user(user)
           complete_doc_auth_steps_before_document_capture_step
-          attach_images(liveness_enabled: false)
-          click_idv_continue
+          attach_and_submit_images
 
           expect(page).to have_current_path(next_step)
         end
@@ -264,8 +253,7 @@ feature 'doc auth document capture step' do
           ),
         )
 
-        attach_images(liveness_enabled: false)
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
         expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
@@ -308,8 +296,7 @@ feature 'doc auth document capture step' do
         document_capture_session.store_result_from_response(response)
         document_capture_session.save!
 
-        attach_images(liveness_enabled: false)
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_current_path(next_step)
       end
@@ -344,7 +331,9 @@ feature 'doc auth document capture step' do
           },
         )
 
-        attach_images(liveness_enabled: false)
+        attach_file 'Front of your ID', 'app/assets/images/logo.png'
+        attach_file 'Back of your ID', 'app/assets/images/logo.png'
+
         form = page.find('#document-capture-form')
         front_url = form['data-front-image-upload-url']
         back_url = form['data-back-image-upload-url']

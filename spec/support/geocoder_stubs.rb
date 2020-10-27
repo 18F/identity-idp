@@ -39,3 +39,13 @@ Geocoder::Lookup::Test.add_stub(
     },
   ]
 )
+
+Geocoder::Lookup::Test.add_stub(
+  '0.0.0.0', [
+    {
+      'city' => '',
+      'country' => 'United States',
+      'state_code' => '',
+    },
+  ]
+)

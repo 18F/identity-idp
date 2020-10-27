@@ -12,6 +12,7 @@ feature 'recovery back image step' do
   let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
 
   before do |example|
+    allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
     select_user = example.metadata[:no_phone] ? user_no_phone : user
     sign_in_before_2fa(user)
     complete_recovery_steps_before_back_image_step(select_user)
