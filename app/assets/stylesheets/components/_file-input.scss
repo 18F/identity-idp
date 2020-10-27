@@ -6,11 +6,16 @@
   outline-offset: 2px;
 }
 
+.usa-file-input:not(.usa-file-input--has-value) .usa-file-input__target,
+.usa-form-group--error .usa-file-input .usa-file-input__target,
+.usa-form-group--success .usa-file-input .usa-file-input__target {
+  border-width: 3px;
+}
+
 .usa-file-input:not(.usa-file-input--has-value) {
   .usa-file-input__target {
     border-color: color('primary');
     border-radius: .375rem;
-    border-width: 2px;
 
     &:hover {
       border-color: color('primary-dark');
@@ -32,7 +37,6 @@
 
 .usa-form-group--success .usa-file-input .usa-file-input__target {
   border-color: color('success');
-  border-width: 2px;
 
   &:hover {
     border-color: color('success-dark');
