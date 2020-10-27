@@ -20,12 +20,7 @@ function formatSSNField() {
         </div>`;
       input.insertAdjacentHTML('afterend', el);
 
-      let ssnCleave = new Cleave(input, {
-        numericOnly: true,
-        blocks: [3, 2, 4],
-        delimiter: '',
-      });
-
+      let ssnCleave;
       const toggle = document.getElementById(`ssn-toggle-${i}`);
       toggle.addEventListener('change', function () {
         input.type = toggle.checked ? 'text' : 'password';
@@ -33,12 +28,6 @@ function formatSSNField() {
         if (!toggle.checked) {
           if (ssnCleave) {
             ssnCleave.destroy();
-
-            ssnCleave = new Cleave(input, {
-              numericOnly: true,
-              blocks: [3, 2, 4],
-              delimiter: '',
-            });
           }
 
           input.value = input.value.replace(/-/g, '');
