@@ -29,7 +29,7 @@
   <%= f.input :password,
               label: t('account.index.password'),
               required: true,
-              input_html: { aria: { invalid: false } } %>
+              input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
   <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
   <div class='mb3'>
     <%= submit_tag t('links.next'), class: 'usa-button usa-button--primary grid-col-12 mb2' %>

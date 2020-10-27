@@ -126,6 +126,8 @@ es:
     registration:
       labels:
         email: Email
+    ssn:
+      show: Mostrar Número de Seguro Social
     totp_delete:
       caution: Si elimina su aplicación de autenticación, no podrá usarla para acceder
         a su cuenta login.gov.

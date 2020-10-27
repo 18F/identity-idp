@@ -118,6 +118,8 @@ en:
     registration:
       labels:
         email: Email address
+    ssn:
+      show: Show Social Security Number
     totp_delete:
       caution: If you remove your authentication app you won't be able to use it to
         access your login.gov account.
