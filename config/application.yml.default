@@ -182,6 +182,7 @@ development:
   disallow_ial2_recovery: 'false'
   doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'true'
+  document_proof_result_lambda_token: ABC123
   domain_name: localhost:3000
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'false'
@@ -294,6 +295,7 @@ production:
   disallow_ial2_recovery: 'true'
   doc_auth_vendor: 'acuant'
   doc_capture_polling_enabled: 'true'
+  document_proof_result_lambda_token:
   domain_name: login.gov
   email_deletion_enabled: 'false'
   enable_rate_limiting: 'true'
@@ -408,6 +410,7 @@ test:
   # Here to support legacy tests. Once we remove the code for the old steps, we
   # should remove this config entirely and the tests that assume this is false.
   document_capture_step_enabled: 'false'
+  document_proof_result_lambda_token: test_token_document
   domain_name: www.example.com
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'true'
