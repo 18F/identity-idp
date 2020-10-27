@@ -12,7 +12,7 @@ module Idv
       LambdaJobs::Runner.new(
         job_class: Idv::Proofer.resolution_job_class,
         args: { applicant_pii: @applicant, callback_url: callback_url,
-                should_proof_state_id: should_proof_state_id }
+                should_proof_state_id: should_proof_state_id },
       ).run do |idv_result|
         document_capture_session.store_proofing_result(idv_result[:resolution_result])
 
@@ -27,7 +27,7 @@ module Idv
 
       LambdaJobs::Runner.new(
         job_class: Idv::Proofer.address_job_class,
-        args: { applicant_pii: @applicant, callback_url: callback_url }
+        args: { applicant_pii: @applicant, callback_url: callback_url },
       ).run do |idv_result|
         document_capture_session.store_proofing_result(idv_result[:address_result])
 

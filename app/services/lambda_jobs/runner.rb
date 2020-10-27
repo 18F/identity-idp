@@ -1,6 +1,6 @@
 module LambdaJobs
   class Runner
-    attr_reader :job_name, :job_class, :args
+    attr_reader :job_class, :args
 
     def initialize(job_class:, args:)
       @job_class = job_class
