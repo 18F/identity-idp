@@ -29,11 +29,8 @@ export function chaiConsoleSpy(chai, utils) {
         expect(index).to.not.equal(-1, error);
 
         console.unverifiedCalls.splice(index, 1);
-        if (console.unverifiedCalls.length === 0) {
-          delete console.unverifiedCalls;
-        }
       } else {
-        delete console.unverifiedCalls;
+        console.unverifiedCalls = [];
       }
     },
     undefined,
@@ -47,15 +44,16 @@ export function chaiConsoleSpy(chai, utils) {
  */
 export function useConsoleLogSpy() {
   beforeEach(() => {
+    console.unverifiedCalls = [];
     sinon.stub(console, 'error').callsFake((message) => {
-      console.unverifiedCalls = (console.unverifiedCalls || []).concat(message);
+      console.unverifiedCalls = console.unverifiedCalls.concat(message);
     });
   });
 
   afterEach(() => {
     console.error.restore();
-    expect(console.unverifiedCalls).to.be.undefined(
-      `Unexpected console logging: ${(console.unverifiedCalls || []).join(', ')}`,
+    expect(console.unverifiedCalls).to.be.empty(
+      `Unexpected console logging: ${console.unverifiedCalls.join(', ')}`,
     );
   });
 }
