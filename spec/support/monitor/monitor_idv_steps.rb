@@ -54,7 +54,6 @@ module MonitorIdvSteps
     click_on 'Continue'
     expect(page).to have_current_path('/verify/confirmations')
 
-    extra_characters_get_ignored = 'abc123qwerty'
     code_words = []
     page.all(:css, '[data-personal-key]').map do |node|
       code_words << node.text
@@ -64,9 +63,9 @@ module MonitorIdvSteps
     # Need to figure out what feature flag enables the personal key code locally
     return unless monitor.remote?
 
-    personal_key = code_words.join('-').downcase
+    personal_key = code_words.join.downcase
 
-    fill_in 'personal_key', with: (personal_key + extra_characters_get_ignored), disabled: :all
+    fill_in 'personal_key', with: personal_key, disabled: :all
     click_on 'Continue', class: 'personal-key-confirm'
   end
 
