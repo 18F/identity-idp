@@ -239,7 +239,7 @@ jobs:
           name: "Smoke tests"
           command: |
             bin/smoke_test --remote --no-source-env
-      # - notify-slack-smoke-test-status
+      - notify-slack-smoke-test-status
   smoketest-prod:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -252,7 +252,7 @@ jobs:
           name: "Smoke tests"
           command: |
             bin/smoke_test --remote --no-source-env
-      # - notify-slack-smoke-test-status
+      - notify-slack-smoke-test-status
   check-pinpoint-config:
     docker:
       - image: circleci/ruby:2.6-node-browsers
