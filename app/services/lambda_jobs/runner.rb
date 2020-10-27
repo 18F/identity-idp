@@ -2,8 +2,7 @@ module LambdaJobs
   class Runner
     attr_reader :job_name, :job_class, :args
 
-    def initialize(job_name:, job_class:, args:)
-      @job_name = job_name
+    def initialize(job_class:, args:)
       @job_class = job_class
       @args = args
     end
@@ -31,7 +30,15 @@ module LambdaJobs
 
     # Due to length limits, we can only use the first 10 characters of a git SHA
     def function_name
-      "#{job_name}:#{LambdaJobs::GIT_REF[0...10]}"
+      "#{LoginGov::Hostdata.env}-idp-functions-#{job_name}Function:#{LambdaJobs::GIT_REF[0...10]}"
+    end
+
+    # @example
+    #   new(job_class: IdentityIdpFunctions::ProofResolutionMock).job_name
+    #   => "ProofResolutionMock"
+    # @return [String]
+    def job_name
+      job_class.name.split('::').last
     end
   end
 end
