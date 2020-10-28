@@ -17,7 +17,7 @@ module LambdaJobs
         )
       else
         job_class.handle(
-          event: { 'body' => args.to_json },
+          event: args,
           context: nil,
           &local_callback
         )
