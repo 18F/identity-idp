@@ -14,7 +14,7 @@ export function blobToDataView(blob) {
     reader.onload = ({ target }) => {
       resolve(new DataView(/** @type {ArrayBuffer} */ (target?.result)));
     };
-    reader.onerror = () => reject();
+    reader.onerror = () => reject(reader.error);
     reader.readAsArrayBuffer(blob);
   });
 }

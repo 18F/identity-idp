@@ -31,6 +31,8 @@ function isArrayBufferEqual(a, b) {
 }
 
 describe('document-capture/higher-order/with-background-encrypted-upload', () => {
+  const sandbox = useSandbox();
+
   describe('blobToDataView', () => {
     it('converts blob to data view', async () => {
       const data = new window.File(['Hello world'], 'demo.text', { type: 'text/plain' });
@@ -39,11 +41,23 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
       const dataView = await blobToDataView(data);
       expect(isArrayBufferEqual(dataView.buffer, expected)).to.be.true();
     });
+
+    it('rejects on filereader error', async () => {
+      const error = new Error();
+      sandbox.stub(window.FileReader.prototype, 'readAsArrayBuffer').callsFake(function () {
+        Object.defineProperty(this, 'error', { value: error });
+        this.onerror(new window.Event('error'));
+      });
+
+      try {
+        await blobToDataView(new window.File(['Hello world'], 'demo.text', { type: 'text/plain' }));
+      } catch (actualError) {
+        expect(actualError).to.equal(error);
+      }
+    });
   });
 
   describe('withBackgroundEncryptedUpload', () => {
-    const sandbox = useSandbox();
-
     const Component = withBackgroundEncryptedUpload(({ onChange }) => {
       useEffect(() => {
         onChange({ foo: 'bar', baz: 'quux' });
