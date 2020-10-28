@@ -8,10 +8,13 @@ import defaultUpload from '@18f/identity-document-capture/services/upload';
 describe('document-capture/context/upload', () => {
   it('defaults to the default upload service', () => {
     const { result } = renderHook(() => useContext(UploadContext));
-    const { upload, isMockClient } = result.current;
 
-    expect(upload).to.equal(defaultUpload);
-    expect(isMockClient).to.equal(false);
+    expect(result.current).to.deep.equal({
+      upload: defaultUpload,
+      isMockClient: false,
+      backgroundUploadURLs: {},
+      backgroundUploadEncryptKey: undefined,
+    });
   });
 
   it('can be overridden with custom upload behavior', async () => {
@@ -37,6 +40,37 @@ describe('document-capture/context/upload', () => {
     });
 
     expect(result.current.isMockClient).to.be.true();
+  });
+
+  it('can be overridden with background upload URLs', () => {
+    const backgroundUploadURLs = { foo: '/' };
+    const { result } = renderHook(() => useContext(UploadContext), {
+      wrapper: ({ children }) => (
+        <UploadContextProvider backgroundUploadURLs={backgroundUploadURLs}>
+          {children}
+        </UploadContextProvider>
+      ),
+    });
+
+    expect(result.current.backgroundUploadURLs).to.deep.equal(backgroundUploadURLs);
+  });
+
+  it('can be overridden with background upload encrypt key', async () => {
+    const key = await window.crypto.subtle.generateKey(
+      {
+        name: 'AES-GCM',
+        length: 256,
+      },
+      true,
+      ['encrypt', 'decrypt'],
+    );
+    const { result } = renderHook(() => useContext(UploadContext), {
+      wrapper: ({ children }) => (
+        <UploadContextProvider backgroundUploadEncryptKey={key}>{children}</UploadContextProvider>
+      ),
+    });
+
+    expect(result.current.backgroundUploadEncryptKey).to.equal(key);
   });
 
   it('can provide endpoint and csrf to make available to uploader', async () => {

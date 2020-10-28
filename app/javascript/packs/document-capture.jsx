@@ -53,7 +53,22 @@ const device = {
   isMobile: isCameraCapableMobile(),
 };
 
-loadPolyfills(['fetch']).then(() => {
+loadPolyfills(['fetch', 'crypto']).then(async () => {
+  const backgroundUploadURLs = getBackgroundUploadURLs();
+  const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
+
+  let backgroundUploadEncryptKey;
+  if (isAsyncForm) {
+    backgroundUploadEncryptKey = await window.crypto.subtle.generateKey(
+      {
+        name: 'AES-GCM',
+        length: 256,
+      },
+      true,
+      ['encrypt', 'decrypt'],
+    );
+  }
+
   render(
     <AcuantProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
@@ -63,7 +78,8 @@ loadPolyfills(['fetch']).then(() => {
         endpoint={appRoot.getAttribute('data-endpoint')}
         csrf={getMetaContent('csrf-token')}
         isMockClient={isMockClient}
-        backgroundUploadURLs={getBackgroundUploadURLs()}
+        backgroundUploadURLs={backgroundUploadURLs}
+        backgroundUploadEncryptKey={backgroundUploadEncryptKey}
         formData={{
           document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
           locale: i18n.currentLocale(),
