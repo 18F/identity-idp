@@ -15,7 +15,7 @@ A Identity Management System powering login.gov.
 - Ruby 2.6
 - [Postgresql](http://www.postgresql.org/download/)
 - [Redis 2.8+](http://redis.io/)
-- [Node.js v12.x.x](https://nodejs.org)
+- [Node.js v14.x.x](https://nodejs.org)
 - [Yarn](https://yarnpkg.com/en/)
 
 #### Running the app with Docker
