@@ -6,7 +6,7 @@ class ImageUploadResponsePresenter
     @form_response = form_response
   end
 
-  def success
+  def success?
     @form_response.success?
   end
 
@@ -21,7 +21,7 @@ class ImageUploadResponsePresenter
   end
 
   def status
-    if success
+    if success?
       :ok
     elsif @form_response.errors.key?(:limit)
       :too_many_requests
@@ -31,7 +31,7 @@ class ImageUploadResponsePresenter
   end
 
   def as_json(*)
-    if success
+    if success?
       { success: true }
     elsif @form_response.errors.key?(:limit)
       { success: false, redirect: idv_session_errors_throttled_url }

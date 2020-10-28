@@ -14,18 +14,18 @@ describe ImageUploadResponsePresenter do
     )
   end
 
-  describe '#success' do
+  describe '#success?' do
     context 'failure' do
       let(:form_response) { FormResponse.new(success: false, errors: {}, extra: {}) }
 
       it 'returns false' do
-        expect(presenter.success).to eq false
+        expect(presenter.success?).to eq false
       end
     end
 
     context 'success' do
       it 'returns true' do
-        expect(presenter.success).to eq true
+        expect(presenter.success?).to eq true
       end
     end
   end
