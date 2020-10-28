@@ -14,7 +14,11 @@ function sync(input, toggle, ssnCleave) {
       delimiter: '-',
     });
   }
-  input.value = input.value.replace(/-/g, '');
+
+  const nextValue = input.value.replace(/-/g, '');
+  if (input.value !== nextValue) {
+    input.value = nextValue;
+  }
 
   return null;
 }
