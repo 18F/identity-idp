@@ -44,8 +44,9 @@ module Idv
       end
 
       def document_capture_session
+        return @document_capture_session if defined?(@document_capture_session)
         dcs_uuid = flow_session[verify_document_capture_session_uuid_key]
-        @document_capture_session ||= DocumentCaptureSession.find_by(uuid: dcs_uuid)
+        @document_capture_session = DocumentCaptureSession.find_by(uuid: dcs_uuid)
       end
 
       def async_state
