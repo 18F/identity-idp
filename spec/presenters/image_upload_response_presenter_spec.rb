@@ -71,7 +71,7 @@ describe ImageUploadResponsePresenter do
         )
       end
 
-      it 'returns bad request' do
+      it 'returns 429 too many requests' do
         expect(presenter.status).to eq :too_many_requests
       end
     end
@@ -86,7 +86,7 @@ describe ImageUploadResponsePresenter do
         )
       end
 
-      it 'returns bad request' do
+      it 'returns 400 bad request' do
         expect(presenter.status).to eq :bad_request
       end
     end
