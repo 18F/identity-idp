@@ -6,12 +6,13 @@
 # To exclude a table/column from this check add a `[table, column]` item into excluded_columns:
 #
 # Ex: excluded_columns = [[:users, :my_new_id]]
-
-excluded_columns = []
+class IdpStrongMigrations
+  EXCLUDED_COLUMNS = [].freeze
+end
 
 StrongMigrations.add_check do |method, (table, column, type, _options)|
-  excluded = excluded_columns.include?([table, column])
-  if !excluded && method == :add_column && column.to_s.ends_with?('_id') && type == :integer
+  is_excluded = IdpStrongMigrations::EXCLUDED_COLUMNS.include?([table, column])
+  if !is_excluded && method == :add_column && column.to_s.ends_with?('_id') && type == :integer
     stop! """
     Columns referencing another table should use :bigint instead of integer.
 
