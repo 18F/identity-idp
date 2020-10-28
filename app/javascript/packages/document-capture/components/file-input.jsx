@@ -1,8 +1,9 @@
-import React, { useContext, useState, useRef, useMemo, forwardRef } from 'react';
+import React, { useContext, useState, useMemo, forwardRef } from 'react';
 import FileImage from './file-image';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
 import useI18n from '../hooks/use-i18n';
+import usePrevious from '../hooks/use-previous';
 
 /** @typedef {import('react').MouseEvent} ReactMouseEvent */
 /** @typedef {import('react').ChangeEvent} ReactChangeEvent */
@@ -106,16 +107,12 @@ const FileInput = forwardRef((props, ref) => {
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
-  const hadValue = useRef(false);
-  const isUpdated = useMemo(() => {
-    const nextIsUpdated = Boolean(value && hadValue.current);
-    hadValue.current = Boolean(value);
-    return nextIsUpdated;
-  }, [value]);
+  const previousValue = usePrevious(value);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {string?} */ (null));
   useMemo(() => setOwnErrorMessage(null), [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
+  const isUpdated = Boolean(previousValue && value && previousValue !== value);
 
   /**
    * In response to a file input change event, confirms that the file is valid before calling

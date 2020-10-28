@@ -356,6 +356,10 @@ describe('document-capture/components/file-input', () => {
 
     expect(() => getByText('forms.file_input.file_updated')).to.throw();
 
+    rerender(<FileInput label="File" value={file1} />);
+
+    expect(() => getByText('forms.file_input.file_updated')).to.throw();
+
     rerender(<FileInput label="File" value={file2} />);
 
     expect(getByText('forms.file_input.file_updated')).to.be.ok();
