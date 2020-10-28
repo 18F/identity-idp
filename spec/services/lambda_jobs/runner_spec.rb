@@ -57,7 +57,7 @@ RSpec.describe LambdaJobs::Runner do
 
         it 'calls JobClass.handle' do
           expect(job_class).to receive(:handle).with(
-            event: { 'body' => args.to_json },
+            event: args,
             context: nil,
           )
 
@@ -71,7 +71,7 @@ RSpec.describe LambdaJobs::Runner do
 
       it 'calls JobClass.handle' do
         expect(job_class).to receive(:handle).with(
-          event: { 'body' => args.to_json },
+          event: args,
           context: nil,
         )
 
@@ -83,7 +83,7 @@ RSpec.describe LambdaJobs::Runner do
           result = Object.new
 
           expect(job_class).to receive(:handle).with(
-            event: { 'body' => args.to_json },
+            event: args,
             context: nil,
           ).and_yield(result)
 
