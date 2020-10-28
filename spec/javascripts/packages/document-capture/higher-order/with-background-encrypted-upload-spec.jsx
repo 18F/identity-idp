@@ -77,35 +77,11 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
         );
         const iv = new Uint8Array(12);
         const data = 'Hello world';
-        const expected = new Uint8Array([
-          134,
-          194,
-          44,
-          81,
-          34,
-          64,
-          28,
-          1,
-          117,
-          34,
-          161,
-          11,
-          192,
-          7,
-          169,
-          19,
-          140,
-          29,
-          89,
-          104,
-          50,
-          208,
-          250,
-          152,
-          208,
-          214,
-          65,
-        ]).buffer;
+        const expected = new Uint8Array(
+          '134,194,44,81,34,64,28,1,117,34,161,11,192,7,169,19,140,29,89,104,50,208,250,152,208,214,65'.split(
+            ',',
+          ),
+        ).buffer;
 
         const encrypted = await encrypt(key, iv, data);
         expect(isArrayBufferEqual(encrypted, expected)).to.be.true();
@@ -121,35 +97,11 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
         );
         const iv = new Uint8Array(12);
         const data = new window.File(['Hello world'], 'demo.text', { type: 'text/plain' });
-        const expected = new Uint8Array([
-          134,
-          194,
-          44,
-          81,
-          34,
-          64,
-          28,
-          1,
-          117,
-          34,
-          161,
-          11,
-          192,
-          7,
-          169,
-          19,
-          140,
-          29,
-          89,
-          104,
-          50,
-          208,
-          250,
-          152,
-          208,
-          214,
-          65,
-        ]).buffer;
+        const expected = new Uint8Array(
+          '134,194,44,81,34,64,28,1,117,34,161,11,192,7,169,19,140,29,89,104,50,208,250,152,208,214,65'.split(
+            ',',
+          ),
+        ).buffer;
 
         const encrypted = await encrypt(key, iv, data);
         expect(isArrayBufferEqual(encrypted, expected)).to.be.true();
