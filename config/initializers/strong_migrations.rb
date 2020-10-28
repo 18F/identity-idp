@@ -9,8 +9,7 @@
 
 excluded_columns = []
 
-StrongMigrations.add_check do |method, args|
-  table, column, type, _options = args
+StrongMigrations.add_check do |method, (table, column, type, _options)|
   excluded = excluded_columns.include?([table, column])
   if !excluded && method == :add_column && column.to_s.ends_with?('_id') && type == :integer
     stop! """
