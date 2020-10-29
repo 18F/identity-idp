@@ -1,5 +1,5 @@
 import React from 'react';
-import { render as baseRender } from '@testing-library/react';
+import { render as baseRender, act, cleanup } from '@testing-library/react';
 import sinon from 'sinon';
 import { UploadContextProvider } from '@18f/identity-document-capture';
 
@@ -47,4 +47,36 @@ export function render(element, options = {}) {
       </UploadContextProvider>
     ),
   });
+}
+
+export function useAcuant() {
+  afterEach(() => {
+    // While React Testing Library will perform this automatically, it must to occur prior to
+    // resetting the global variables, since otherwise the component's effect unsubscribe will
+    // attempt to reference globals that no longer exist.
+    cleanup();
+    delete window.AcuantJavascriptWebSdk;
+    delete window.AcuantCamera;
+    delete window.AcuantCameraUI;
+    delete window.AcuantPassiveLiveness;
+  });
+
+  return {
+    initialize({
+      isSuccess = true,
+      isCameraSupported = true,
+      start = sinon.stub(),
+      end = sinon.stub(),
+      startSelfieCapture = sinon.stub(),
+    } = {}) {
+      window.AcuantJavascriptWebSdk = {
+        initialize: (_credentials, _endpoint, { onSuccess, onFail }) =>
+          isSuccess ? onSuccess() : onFail(),
+      };
+      window.AcuantCamera = { isCameraSupported };
+      window.AcuantCameraUI = { start, end };
+      window.AcuantPassiveLiveness = { startSelfieCapture };
+      act(window.onAcuantSdkLoaded);
+    },
+  };
 }

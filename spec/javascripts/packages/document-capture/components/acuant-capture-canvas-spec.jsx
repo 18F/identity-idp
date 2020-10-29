@@ -1,8 +1,7 @@
 import React from 'react';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import AcuantCaptureCanvas from '@18f/identity-document-capture/components/acuant-capture-canvas';
-import { render } from '../../../support/document-capture';
-import { useAcuant } from '../../../support/acuant';
+import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/components/acuant-capture-canvas', () => {
   const { initialize } = useAcuant();
