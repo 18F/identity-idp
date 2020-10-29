@@ -6,48 +6,60 @@ class UserMailer < ActionMailer::Base
           reply_to: email_with_name(Figaro.env.email_from, Figaro.env.email_from_display_name)
 
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
-    presenter = ConfirmationEmailPresenter.new(user, view_context)
-    @first_sentence = instructions || presenter.first_sentence
-    @confirmation_period = presenter.confirmation_period
-    @request_id = request_id
-    @locale = locale_url_param
-    @token = token
-    mail(to: email, subject: t('user_mailer.email_confirmation_instructions.subject'))
+    with_user_locale(user) do
+      presenter = ConfirmationEmailPresenter.new(user, view_context)
+      @first_sentence = instructions || presenter.first_sentence
+      @confirmation_period = presenter.confirmation_period
+      @request_id = request_id
+      @locale = locale_url_param
+      @token = token
+      mail(to: email, subject: t('user_mailer.email_confirmation_instructions.subject'))
+    end
   end
 
   def unconfirmed_email_instructions(user, email, token, request_id:, instructions:)
-    presenter = ConfirmationEmailPresenter.new(user, view_context)
-    @first_sentence = instructions || presenter.first_sentence
-    @confirmation_period = presenter.confirmation_period
-    @request_id = request_id
-    @locale = locale_url_param
-    @token = token
-    mail(to: email, subject: t('user_mailer.email_confirmation_instructions.email_not_found'))
+    with_user_locale(user) do
+      presenter = ConfirmationEmailPresenter.new(user, view_context)
+      @first_sentence = instructions || presenter.first_sentence
+      @confirmation_period = presenter.confirmation_period
+      @request_id = request_id
+      @locale = locale_url_param
+      @token = token
+      mail(to: email, subject: t('user_mailer.email_confirmation_instructions.email_not_found'))
+    end
   end
 
-  def signup_with_your_email(email)
-    @root_url = root_url(locale: locale_url_param)
-    mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
+  def signup_with_your_email(user, email)
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
+    end
   end
 
-  def reset_password_instructions(email, token:)
-    @locale = locale_url_param
-    @token = token
-    mail(to: email, subject: t('user_mailer.reset_password_instructions.subject'))
+  def reset_password_instructions(user, email, token:)
+    with_user_locale(user) do
+      @locale = locale_url_param
+      @token = token
+      mail(to: email, subject: t('user_mailer.reset_password_instructions.subject'))
+    end
   end
 
-  def password_changed(email_address, disavowal_token:)
+  def password_changed(user, email_address, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
-    @disavowal_token = disavowal_token
-    mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
+    with_user_locale(user) do
+      @disavowal_token = disavowal_token
+      mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
+    end
   end
 
-  def phone_added(email_address, disavowal_token:)
+  def phone_added(user, email_address, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
-    @disavowal_token = disavowal_token
-    mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
+    with_user_locale(user) do
+      @disavowal_token = disavowal_token
+      mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
+    end
   end
 
   def account_does_not_exist(email, request_id)
@@ -55,100 +67,132 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
   end
 
-  def personal_key_sign_in(email, disavowal_token:)
+  def personal_key_sign_in(user, email, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email)
 
-    @disavowal_token = disavowal_token
-    mail(to: email, subject: t('user_mailer.personal_key_sign_in.subject'))
+    with_user_locale(user) do
+      @disavowal_token = disavowal_token
+      mail(to: email, subject: t('user_mailer.personal_key_sign_in.subject'))
+    end
   end
 
-  def new_device_sign_in(email_address, date, location, disavowal_token)
+  def new_device_sign_in(user, email_address, date, location, disavowal_token)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
-    @login_date = date
-    @login_location = location
-    @disavowal_token = disavowal_token
-    mail(to: email_address.email, subject: t('user_mailer.new_device_sign_in.subject'))
+    with_user_locale(user) do
+      @login_date = date
+      @login_location = location
+      @disavowal_token = disavowal_token
+      mail(to: email_address.email, subject: t('user_mailer.new_device_sign_in.subject'))
+    end
   end
 
-  def personal_key_regenerated(email)
+  def personal_key_regenerated(user, email)
     return unless email_should_receive_nonessential_notifications?(email)
 
-    mail(to: email, subject: t('user_mailer.personal_key_regenerated.subject'))
+    with_user_locale(user) do
+      mail(to: email, subject: t('user_mailer.personal_key_regenerated.subject'))
+    end
   end
 
-  def account_reset_request(email_address, account_reset)
-    @token = account_reset&.request_token
-    @header = t('user_mailer.account_reset_request.header')
-    mail(to: email_address.email, subject: t('user_mailer.account_reset_request.subject'))
+  def account_reset_request(user, email_address, account_reset)
+    with_user_locale(user) do
+      @token = account_reset&.request_token
+      @header = t('user_mailer.account_reset_request.header')
+      mail(to: email_address.email, subject: t('user_mailer.account_reset_request.subject'))
+    end
   end
 
-  def account_reset_granted(email_address, account_reset)
-    @token = account_reset&.request_token
-    @granted_token = account_reset&.granted_token
-    mail(to: email_address.email, subject: t('user_mailer.account_reset_granted.subject'))
+  def account_reset_granted(user, email_address, account_reset)
+    with_user_locale(user) do
+      @token = account_reset&.request_token
+      @granted_token = account_reset&.granted_token
+      mail(to: email_address.email, subject: t('user_mailer.account_reset_granted.subject'))
+    end
   end
 
-  def account_reset_complete(email_address)
-    mail(to: email_address.email, subject: t('user_mailer.account_reset_complete.subject'))
+  def account_reset_complete(user, email_address)
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.account_reset_complete.subject'))
+    end
   end
 
-  def account_reset_cancel(email_address)
-    mail(to: email_address.email, subject: t('user_mailer.account_reset_cancel.subject'))
+  def account_reset_cancel(user, email_address)
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.account_reset_cancel.subject'))
+    end
   end
 
-  def please_reset_password(email_address)
-    mail(to: email_address, subject: t('user_mailer.please_reset_password.subject'))
+  def please_reset_password(user, email_address)
+    with_user_locale(user) do
+      mail(to: email_address, subject: t('user_mailer.please_reset_password.subject'))
+    end
   end
 
-  def undeliverable_address(email_address)
+  def undeliverable_address(user, email_address)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
-    mail(to: email_address.email, subject: t('user_mailer.undeliverable_address.subject'))
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.undeliverable_address.subject'))
+    end
   end
 
-  def doc_auth_desktop_link_to_sp(email_address, application, link)
-    @link = link
-    @application = application
-    mail(to: email_address, subject: t('user_mailer.doc_auth_link.subject'))
+  def doc_auth_desktop_link_to_sp(user, email_address, application, link)
+    with_user_locale(user) do
+      @link = link
+      @application = application
+      mail(to: email_address, subject: t('user_mailer.doc_auth_link.subject'))
+    end
   end
 
-  def letter_reminder(email)
+  def letter_reminder(user, email)
     return unless email_should_receive_nonessential_notifications?(email)
 
-    mail(to: email, subject: t('user_mailer.letter_reminder.subject'))
+    with_user_locale(user) do
+      mail(to: email, subject: t('user_mailer.letter_reminder.subject'))
+    end
   end
 
-  def letter_expired(email)
+  def letter_expired(user, email)
     return unless email_should_receive_nonessential_notifications?(email)
 
-    mail(to: email, subject: t('user_mailer.letter_expired.subject'))
+    with_user_locale(user) do
+      mail(to: email, subject: t('user_mailer.letter_expired.subject'))
+    end
   end
 
-  def confirm_email_and_reverify(email, account_recovery_request)
-    @token = account_recovery_request.request_token
-    mail(to: email.email, subject: t('recover.email.confirm'))
+  def confirm_email_and_reverify(user, email, account_recovery_request)
+    with_user_locale(user) do
+      @token = account_recovery_request.request_token
+      mail(to: email.email, subject: t('recover.email.confirm'))
+    end
   end
 
   def add_email(user, email, token)
-    presenter = ConfirmationEmailPresenter.new(user, view_context)
-    @first_sentence = presenter.first_sentence
-    @confirmation_period = presenter.confirmation_period
-    @locale = locale_url_param
-    @token = token
-    mail(to: email, subject: t('user_mailer.add_email.subject'))
+    with_user_locale(user) do
+      presenter = ConfirmationEmailPresenter.new(user, view_context)
+      @first_sentence = presenter.first_sentence
+      @confirmation_period = presenter.confirmation_period
+      @locale = locale_url_param
+      @token = token
+      mail(to: email, subject: t('user_mailer.add_email.subject'))
+    end
   end
 
-  def email_added(email)
+  def email_added(user, email)
     return unless email_should_receive_nonessential_notifications?(email)
 
-    mail(to: email, subject: t('user_mailer.email_added.subject'))
+    with_user_locale(user) do
+      mail(to: email, subject: t('user_mailer.email_added.subject'))
+    end
   end
 
-  def email_deleted(email)
+  def email_deleted(user, email)
     return unless email_should_receive_nonessential_notifications?(email)
 
-    mail(to: email, subject: t('user_mailer.email_deleted.subject'))
+    with_user_locale(user) do
+      mail(to: email, subject: t('user_mailer.email_deleted.subject'))
+    end
   end
 
   def add_email_associated_with_another_account(email)

@@ -128,6 +128,7 @@ es:
     registration:
       labels:
         email: Email
+        email_language: Seleccionar preferencia de idioma de correo electrónico
     ssn:
       show: Mostrar Número de Seguro Social
     totp_delete:

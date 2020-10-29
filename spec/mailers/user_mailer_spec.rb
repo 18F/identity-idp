@@ -5,10 +5,11 @@ describe UserMailer, type: :mailer do
   let(:email_address) { user.email_addresses.first }
   let(:banned_email) { 'banned_email+123abc@gmail.com' }
 
-  describe 'email_deleted' do
-    let(:mail) { UserMailer.email_deleted('old@email.com') }
+  describe '#email_deleted' do
+    let(:mail) { UserMailer.email_deleted(user, 'old@email.com') }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the old email' do
       expect(mail.to).to eq ['old@email.com']
@@ -26,15 +27,16 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.email_deleted(banned_email)
+      mail = UserMailer.email_deleted(user, banned_email)
       expect(mail.to).to eq(nil)
     end
   end
 
-  describe 'password_changed' do
-    let(:mail) { UserMailer.password_changed(email_address, disavowal_token: '123abc') }
+  describe '#password_changed' do
+    let(:mail) { UserMailer.password_changed(user, email_address, disavowal_token: '123abc') }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -56,15 +58,16 @@ describe UserMailer, type: :mailer do
 
     it 'does not send mail to emails in nonessential email banlist' do
       email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.password_changed(email_address, disavowal_token: '123abc')
+      mail = UserMailer.password_changed(user, email_address, disavowal_token: '123abc')
       expect(mail.to).to eq(nil)
     end
   end
 
-  describe 'personal_key_sign_in' do
-    let(:mail) { UserMailer.personal_key_sign_in(user.email, disavowal_token: 'asdf1234') }
+  describe '#personal_key_sign_in' do
+    let(:mail) { UserMailer.personal_key_sign_in(user, user.email, disavowal_token: 'asdf1234') }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [user.email]
@@ -84,12 +87,12 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.personal_key_sign_in(banned_email, disavowal_token: 'asdf1234')
+      mail = UserMailer.personal_key_sign_in(user, banned_email, disavowal_token: 'asdf1234')
       expect(mail.to).to eq(nil)
     end
   end
 
-  describe 'email_confirmation_instructions' do
+  describe '#email_confirmation_instructions' do
     let(:instructions) { 'do the things' }
     let(:request_id) { '1234-abcd' }
     let(:token) { 'asdf123' }
@@ -105,13 +108,16 @@ describe UserMailer, type: :mailer do
     end
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
   end
 
-  describe 'sign in from new device' do
+  describe '#new_device_sign_in' do
     date = 'Washington, DC'
     location = 'February 25, 2019 15:02'
     disavowal_token = 'asdf1234'
-    let(:mail) { UserMailer.new_device_sign_in(email_address, date, location, disavowal_token) }
+    let(:mail) do
+      UserMailer.new_device_sign_in(user, email_address, date, location, disavowal_token)
+    end
 
     it_behaves_like 'a system email'
 
@@ -135,15 +141,16 @@ describe UserMailer, type: :mailer do
 
     it 'does not send mail to emails in nonessential email banlist' do
       email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.new_device_sign_in(email_address, date, location, disavowal_token)
+      mail = UserMailer.new_device_sign_in(user, email_address, date, location, disavowal_token)
       expect(mail.to).to eq(nil)
     end
   end
 
-  describe 'personal_key_regenerated' do
-    let(:mail) { UserMailer.personal_key_regenerated(user.email) }
+  describe '#personal_key_regenerated' do
+    let(:mail) { UserMailer.personal_key_regenerated(user, user.email) }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [user.email]
@@ -160,15 +167,16 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.personal_key_regenerated(banned_email)
+      mail = UserMailer.personal_key_regenerated(user, banned_email)
       expect(mail.to).to eq(nil)
     end
   end
 
-  describe 'signup_with_your_email' do
-    let(:mail) { UserMailer.signup_with_your_email(user.email) }
+  describe '#signup_with_your_email' do
+    let(:mail) { UserMailer.signup_with_your_email(user, user.email) }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [user.email]
@@ -197,11 +205,12 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe 'phone_added' do
+  describe '#phone_added' do
     disavowal_token = 'i_am_disavowal_token'
-    let(:mail) { UserMailer.phone_added(email_address, disavowal_token: disavowal_token) }
+    let(:mail) { UserMailer.phone_added(user, email_address, disavowal_token: disavowal_token) }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -219,12 +228,12 @@ describe UserMailer, type: :mailer do
 
     it 'does not send mail to emails in nonessential email banlist' do
       email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.phone_added(email_address, disavowal_token: disavowal_token)
+      mail = UserMailer.phone_added(user, email_address, disavowal_token: disavowal_token)
       expect(mail.to).to eq(nil)
     end
   end
 
-  describe 'account_does_not_exist' do
+  describe '#account_does_not_exist' do
     let(:mail) { UserMailer.account_does_not_exist('test@test.com', 'request_id') }
 
     it_behaves_like 'a system email'
@@ -257,11 +266,12 @@ describe UserMailer, type: :mailer do
     )
   end
 
-  describe 'account_reset_request' do
-    let(:mail) { UserMailer.account_reset_request(email_address, account_reset) }
+  describe '#account_reset_request' do
+    let(:mail) { UserMailer.account_reset_request(user, email_address, account_reset) }
     let(:account_reset) { user.account_reset_request }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -297,10 +307,11 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe 'account_reset_granted' do
-    let(:mail) { UserMailer.account_reset_granted(email_address, user.account_reset_request) }
+  describe '#account_reset_granted' do
+    let(:mail) { UserMailer.account_reset_granted(user, email_address, user.account_reset_request) }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -316,10 +327,11 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe 'account_reset_complete' do
-    let(:mail) { UserMailer.account_reset_complete(email_address) }
+  describe '#account_reset_complete' do
+    let(:mail) { UserMailer.account_reset_complete(user, email_address) }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -335,10 +347,11 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe 'please_reset_password' do
-    let(:mail) { UserMailer.please_reset_password(email_address.email) }
+  describe '#please_reset_password' do
+    let(:mail) { UserMailer.please_reset_password(user, email_address.email) }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -357,10 +370,11 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe 'undeliverable_address' do
-    let(:mail) { UserMailer.undeliverable_address(email_address) }
+  describe '#undeliverable_address' do
+    let(:mail) { UserMailer.undeliverable_address(user, email_address) }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -377,17 +391,18 @@ describe UserMailer, type: :mailer do
 
     it 'does not send mail to emails in nonessential email banlist' do
       email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.undeliverable_address(email_address)
+      mail = UserMailer.undeliverable_address(user, email_address)
       expect(mail.to).to eq(nil)
     end
   end
 
-  describe 'doc_auth_desktop_link_to_sp' do
+  describe '#doc_auth_desktop_link_to_sp' do
     let(:app) { 'login.gov' }
     let(:link) { root_url }
-    let(:mail) { UserMailer.doc_auth_desktop_link_to_sp(email_address.email, app, link) }
+    let(:mail) { UserMailer.doc_auth_desktop_link_to_sp(user, email_address.email, app, link) }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -405,10 +420,11 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe 'expired letter' do
-    let(:mail) { UserMailer.letter_expired(email_address.email) }
+  describe '#letter_expired' do
+    let(:mail) { UserMailer.letter_expired(user, email_address.email) }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -424,15 +440,16 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.letter_expired(banned_email)
+      mail = UserMailer.letter_expired(user, banned_email)
       expect(mail.to).to eq(nil)
     end
   end
 
-  describe 'reminder letter' do
-    let(:mail) { UserMailer.letter_reminder(email_address.email) }
+  describe '#letter_reminder' do
+    let(:mail) { UserMailer.letter_reminder(user, email_address.email) }
 
     it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [email_address.email]
@@ -448,12 +465,12 @@ describe UserMailer, type: :mailer do
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.letter_reminder(banned_email)
+      mail = UserMailer.letter_reminder(user, banned_email)
       expect(mail.to).to eq(nil)
     end
   end
 
-  describe 'sps_over_quota_limit' do
+  describe '#sps_over_quota_limit' do
     let(:mail) { UserMailer.sps_over_quota_limit(email_address.email) }
 
     it_behaves_like 'a system email'

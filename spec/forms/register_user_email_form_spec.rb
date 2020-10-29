@@ -116,6 +116,26 @@ describe RegisterUserEmailForm do
         expect(submit_form).to eq result
       end
 
+      it 'saves the user email_language for a valid form' do
+        captcha_results = mock_captcha(enabled: true, present: true, valid: true)
+        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results)
+
+        response = form.submit(email: 'not_taken@gmail.com', email_language: 'fr')
+        expect(response).to be_success
+
+        expect(User.find_with_email('not_taken@gmail.com').email_language).to eq('fr')
+      end
+
+      it 'does not save the user email_language for an invalid form' do
+        captcha_results = mock_captcha(enabled: true, present: true, valid: false)
+        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results)
+
+        response = form.submit(email: 'not_taken@gmail.com', email_language: 'fr')
+        expect(response).to_not be_success
+
+        expect(User.find_with_email('not_taken@gmail.com')&.email_language).to be_nil
+      end
+
       it 'is invalid with invalid recaptcha' do
         result = instance_double(FormResponse)
         allow(FormResponse).to receive(:new).and_return(result)

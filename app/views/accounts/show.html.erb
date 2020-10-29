@@ -9,8 +9,20 @@
 <%= render @view_model.pending_profile_partial, view_model: @view_model %>
 <%= render 'accounts/header', view_model: @view_model %>
 
+<h2><%= t('account.index.email_preferences') %></h2>
+
 <div class="mb3 card profile-info-box">
   <%= render 'emails' %>
+
+  <h2><%= t('i18n.language') %></h2>
+  <div class="grid-row p1 border border-light-blue">
+    <div class="grid-col-8">
+      <%= @view_model.decorated_user.email_language_preference_description %>
+    </div>
+    <div class="grid-col-4 right-align">
+      <%= link_to(t('forms.buttons.edit'), account_email_language_path) %>
+    </div>
+  </div>
 </div>
 
 <div class="mb3 card profile-info-box">

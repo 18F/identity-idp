@@ -133,6 +133,7 @@ fr:
     registration:
       labels:
         email: Adresse courriel
+        email_language: Sélectionnez la préférence de langue des e-mails
     ssn:
       show: Afficher le numéro de sécurité sociale
     totp_delete:
