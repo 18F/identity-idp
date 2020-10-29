@@ -15,7 +15,7 @@ import {
 import DocumentCapture, {
   except,
 } from '@18f/identity-document-capture/components/document-capture';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
 import { useAcuant } from '../../../support/acuant';
 

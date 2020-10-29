@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
+import { render as baseRender } from '@testing-library/react';
 import sinon from 'sinon';
 import { UploadContextProvider } from '@18f/identity-document-capture';
 
@@ -24,7 +24,7 @@ import { UploadContextProvider } from '@18f/identity-document-capture';
  *
  * @return {import('@testing-library/react').RenderResult}
  */
-function renderWithDefaultContext(element, options = {}) {
+export function render(element, options = {}) {
   const { uploadError, expectedUploads = 1, isMockClient = true, ...baseRenderOptions } = options;
 
   const upload = sinon
@@ -39,7 +39,7 @@ function renderWithDefaultContext(element, options = {}) {
       ),
     );
 
-  return render(element, {
+  return baseRender(element, {
     ...baseRenderOptions,
     wrapper: ({ children }) => (
       <UploadContextProvider upload={upload} isMockClient={isMockClient}>
@@ -48,5 +48,3 @@ function renderWithDefaultContext(element, options = {}) {
     ),
   });
 }
-
-export default renderWithDefaultContext;

@@ -3,7 +3,7 @@ import FormErrorMessage, {
   RequiredValueMissingError,
 } from '@18f/identity-document-capture/components/form-error-message';
 import { UploadFormEntryError } from '@18f/identity-document-capture/services/upload';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/form-error-message', () => {
   it('returns formatted RequiredValueMissingError', () => {

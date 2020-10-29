@@ -1,6 +1,6 @@
 import React, { createRef } from 'react';
 import PageHeading from '@18f/identity-document-capture/components/page-heading';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/page-heading', () => {
   it('renders as h1', () => {

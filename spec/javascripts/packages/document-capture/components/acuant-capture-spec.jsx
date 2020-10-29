@@ -7,7 +7,7 @@ import AcuantCapture from '@18f/identity-document-capture/components/acuant-capt
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 import { useAcuant } from '../../../support/acuant';
 
 describe('document-capture/components/acuant-capture', () => {

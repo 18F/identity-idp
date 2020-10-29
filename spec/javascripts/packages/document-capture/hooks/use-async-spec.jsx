@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import sinon from 'sinon';
 import useAsync from '@18f/identity-document-capture/hooks/use-async';
 import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/hooks/use-async', () => {
   function Child({ resource }) {

@@ -9,7 +9,7 @@ import FileInput, {
   isValidForAccepts,
 } from '@18f/identity-document-capture/components/file-input';
 import DeviceContext from '@18f/identity-document-capture/context/device';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/file-input', () => {
   describe('getAcceptPattern', () => {

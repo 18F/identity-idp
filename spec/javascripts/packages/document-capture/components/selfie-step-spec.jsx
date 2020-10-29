@@ -4,7 +4,7 @@ import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import { AcuantProvider } from '@18f/identity-document-capture';
 import SelfieStep from '@18f/identity-document-capture/components/selfie-step';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 import { useAcuant } from '../../../support/acuant';
 
 describe('document-capture/components/selfie-step', () => {
