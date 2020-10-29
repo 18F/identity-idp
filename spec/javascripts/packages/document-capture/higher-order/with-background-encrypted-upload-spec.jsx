@@ -6,7 +6,7 @@ import withBackgroundEncryptedUpload, {
   encrypt,
 } from '@18f/identity-document-capture/higher-order/with-background-encrypted-upload';
 import { useSandbox } from '../../../support/sinon';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 /**
  * @param {ArrayBuffer} a

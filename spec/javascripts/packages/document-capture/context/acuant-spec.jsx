@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import AcuantContext, {
   Provider as AcuantContextProvider,
 } from '@18f/identity-document-capture/context/acuant';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/context/acuant', () => {
   afterEach(() => {

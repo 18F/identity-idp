@@ -2,7 +2,7 @@ import React from 'react';
 import sinon from 'sinon';
 import { cleanup } from '@testing-library/react';
 import SelfieCapture from '@18f/identity-document-capture/components/selfie-capture';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/selfie-capture', () => {

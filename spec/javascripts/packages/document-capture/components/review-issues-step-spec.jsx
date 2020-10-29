@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import { I18nContext, ServiceProviderContext } from '@18f/identity-document-capture';
 import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/review-issues-step', () => {
   it('renders with front, back, and selfie inputs', () => {

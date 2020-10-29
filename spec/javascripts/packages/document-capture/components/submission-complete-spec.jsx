@@ -6,13 +6,12 @@ import SubmissionComplete, {
   RetrySubmissionError,
 } from '@18f/identity-document-capture/components/submission-complete';
 import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
-import render from '../../../support/render';
-import { useCleanDOM } from '../../../support/dom';
+import { render, useDocumentCaptureForm } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/submission-complete-step', () => {
+  const onSubmit = useDocumentCaptureForm();
   const sandbox = useSandbox();
-  useCleanDOM();
 
   let response = { success: true };
 
@@ -32,13 +31,6 @@ describe('document-capture/components/submission-complete-step', () => {
   });
 
   it('submits form once loading is complete', async () => {
-    const onSubmit = sinon.mock().callsFake((event) => event.preventDefault());
-
-    const form = document.createElement('form');
-    form.className = 'js-document-capture-form';
-    form.addEventListener('submit', onSubmit);
-    document.body.appendChild(form);
-
     render(
       <SuspenseErrorBoundary fallback="Loading...">
         <TestComponent />
@@ -49,14 +41,8 @@ describe('document-capture/components/submission-complete-step', () => {
   });
 
   it('retries on pending success', async () => {
-    const onSubmit = sinon.mock().callsFake((event) => event.preventDefault());
     const onError = sinon.spy();
     sandbox.spy(window, 'setTimeout');
-
-    const form = document.createElement('form');
-    form.className = 'js-document-capture-form';
-    form.addEventListener('submit', onSubmit);
-    document.body.appendChild(form);
 
     response = { success: true, isPending: true };
 

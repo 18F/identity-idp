@@ -2,7 +2,7 @@ import React, { lazy, useState } from 'react';
 import sinon from 'sinon';
 import { waitFor } from '@testing-library/dom';
 import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/suspense-error-boundary', () => {
   it('renders its children', () => {

@@ -6,7 +6,7 @@ import FormSteps, {
   getStepIndexByName,
 } from '@18f/identity-document-capture/components/form-steps';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [
