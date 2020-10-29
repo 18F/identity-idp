@@ -108,11 +108,13 @@ const FileInput = forwardRef((props, ref) => {
   const { isMobile } = useContext(DeviceContext);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const previousValue = usePrevious(value);
+  const isUpdated = useMemo(() => Boolean(previousValue && value && previousValue !== value), [
+    value,
+  ]);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {string?} */ (null));
   useMemo(() => setOwnErrorMessage(null), [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
-  const isUpdated = Boolean(previousValue && value && previousValue !== value);
 
   /**
    * In response to a file input change event, confirms that the file is valid before calling

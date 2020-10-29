@@ -363,6 +363,10 @@ describe('document-capture/components/file-input', () => {
     rerender(<FileInput label="File" value={file2} />);
 
     expect(getByText('forms.file_input.file_updated')).to.be.ok();
+
+    rerender(<FileInput label="File" value={file2} />);
+
+    expect(getByText('forms.file_input.file_updated')).to.be.ok();
   });
 
   it('allows customization of updated file text', () => {
