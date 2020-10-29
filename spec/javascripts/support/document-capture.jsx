@@ -80,3 +80,34 @@ export function useAcuant() {
     },
   };
 }
+
+/**
+ * Prepares test environment to behave as document capture form page, returning `onSubmit` Sinon
+ * mock instance of page form.
+ *
+ * @return {import('sinon').SinonMockStatic}
+ */
+export function useDocumentCaptureForm() {
+  const onSubmit = sinon.mock();
+  let form;
+
+  beforeEach(() => {
+    onSubmit.reset();
+
+    form = document.createElement('form');
+    form.className = 'js-document-capture-form';
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      onSubmit();
+    });
+    document.body.appendChild(form);
+  });
+
+  afterEach(() => {
+    if ([...document.body.childNodes].includes(form)) {
+      document.body.removeChild(form);
+    }
+  });
+
+  return onSubmit;
+}

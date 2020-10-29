@@ -15,10 +15,11 @@ import {
 import DocumentCapture, {
   except,
 } from '@18f/identity-document-capture/components/document-capture';
-import { render, useAcuant } from '../../../support/document-capture';
+import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/document-capture', () => {
+  const onSubmit = useDocumentCaptureForm();
   const sandbox = useSandbox();
   const { initialize } = useAcuant();
 
@@ -159,15 +160,7 @@ describe('document-capture/components/document-capture', () => {
     expect(isFormValid(submitButton.closest('form'))).to.be.true();
 
     return new Promise((resolve) => {
-      const form = document.createElement('form');
-      form.className = 'js-document-capture-form';
-      document.body.appendChild(form);
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        document.body.removeChild(form);
-        resolve();
-      });
-
+      onSubmit.callsFake(resolve);
       userEvent.click(submitButton);
     });
   });
@@ -372,13 +365,7 @@ describe('document-capture/components/document-capture', () => {
     userEvent.click(submitButton);
 
     return new Promise((resolve) => {
-      const form = document.createElement('form');
-      form.className = 'js-document-capture-form';
-      document.body.appendChild(form);
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        document.body.removeChild(form);
-
+      onSubmit.callsFake(() => {
         // Error logged at initial pending retry.
         expect(console).to.have.loggedError(/^Error: Uncaught/);
         expect(console).to.have.loggedError(/React will try to recreate this component/);
