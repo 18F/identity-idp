@@ -14,18 +14,18 @@ describe ImageUploadResponsePresenter do
     )
   end
 
-  describe '#success' do
+  describe '#success?' do
     context 'failure' do
       let(:form_response) { FormResponse.new(success: false, errors: {}, extra: {}) }
 
       it 'returns false' do
-        expect(presenter.success).to eq false
+        expect(presenter.success?).to eq false
       end
     end
 
     context 'success' do
       it 'returns true' do
-        expect(presenter.success).to eq true
+        expect(presenter.success?).to eq true
       end
     end
   end
@@ -57,6 +57,44 @@ describe ImageUploadResponsePresenter do
   describe '#remaining_attempts' do
     it 'returns remaining attempts' do
       expect(presenter.remaining_attempts).to eq 3
+    end
+  end
+
+  describe '#status' do
+    context 'limit error' do
+      let(:form_response) do
+        FormResponse.new(
+          success: false,
+          errors: {
+            limit: t('errors.doc_auth.acuant_throttle'),
+          },
+        )
+      end
+
+      it 'returns 429 too many requests' do
+        expect(presenter.status).to eq :too_many_requests
+      end
+    end
+
+    context 'failure' do
+      let(:form_response) do
+        FormResponse.new(
+          success: false,
+          errors: {
+            front: t('doc_auth.errors.not_a_file'),
+          },
+        )
+      end
+
+      it 'returns 400 bad request' do
+        expect(presenter.status).to eq :bad_request
+      end
+    end
+
+    context 'success' do
+      it 'returns ok' do
+        expect(presenter.status).to eq :ok
+      end
     end
   end
 

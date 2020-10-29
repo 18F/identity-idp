@@ -46,6 +46,8 @@ fr:
         <li>Vous ne portez pas de chapeau ni de lunettes et votre tête est entièrement visible</li>
         </ul>
       document_capture_selfie_consent_blocked: L'accès à votre caméra est bloqué
+      document_verification_timeout: Le serveur a mis trop de temps à répondre. Veuillez
+        réessayer.
       general_error: Nous n'avons pas pu lire ni vérifier votre identité. Essayez
         de prendre et de télécharger de nouvelles images des deux côtés de votre ID.
         Assurez-vous que tout peut être facilement lu, y compris le code à barres.
