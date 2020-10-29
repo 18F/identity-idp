@@ -76,6 +76,14 @@ describe('document-capture/components/selfie-capture', () => {
     await findByText('doc_auth.instructions.document_capture_selfie_consent_blocked');
   });
 
+  it('renders updated state after retaking photo', async () => {
+    const { rerender, findByText } = render(<SelfieCapture value={value} />);
+    rerender(<SelfieCapture />);
+    rerender(<SelfieCapture value={value} />);
+
+    await findByText('doc_auth.info.image_updated');
+  });
+
   it('stops capture after rerendered with value', async () => {
     const { findByLabelText, rerender } = render(<SelfieCapture />);
 

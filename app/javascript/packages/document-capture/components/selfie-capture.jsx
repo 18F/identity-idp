@@ -33,6 +33,12 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
   const { t } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const wrapperRef = useRef(/** @type {HTMLDivElement?} */ (null));
+  const hadValue = useRef(false);
+  const isUpdated = useMemo(() => {
+    const nextIsUpdated = Boolean(value && hadValue.current);
+    hadValue.current = hadValue.current || Boolean(value);
+    return nextIsUpdated;
+  }, [value]);
   const retryButtonRef = useFocusFallbackRef(labelRef);
   const captureButtonRef = useFocusFallbackRef(labelRef);
   useImperativeHandle(ref, () => labelRef.current);
@@ -123,6 +129,7 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
     'selfie-capture',
     isCapturing && 'selfie-capture--capturing',
     shownErrorMessage && 'selfie-capture--error',
+    isUpdated && !shownErrorMessage && 'selfie-capture--updated',
     value && 'selfie-capture--has-value',
     className,
   ]
@@ -146,6 +153,11 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
       {shownErrorMessage && (
         <span className="usa-error-message" role="alert">
           {shownErrorMessage}
+        </span>
+      )}
+      {isUpdated && !shownErrorMessage && (
+        <span className="usa-success-message" role="alert">
+          {t('doc_auth.info.image_updated')}
         </span>
       )}
       <div ref={wrapperRef} className={classes}>

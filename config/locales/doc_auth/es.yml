@@ -121,6 +121,7 @@ es:
         y no guardaremos ninguna imagen.
       id_worn_html: "<strong>¿Su identificación está desgastada o dañada?</strong>
         Use otra identificación emitida por el estado si tiene una."
+      image_updated: Imagen actualizada
       interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente
         paso automáticamente cuando esté listo.
       interstitial_thanks: "¡Gracias por su paciencia!"

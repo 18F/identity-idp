@@ -21,6 +21,7 @@
 - doc_auth.info.capture_status_tap_to_capture
 - doc_auth.info.document_capture_intro_acknowledgment
 - doc_auth.info.document_capture_upload_image
+- doc_auth.info.image_updated
 - doc_auth.info.id_worn_html
 - doc_auth.info.interstitial_eta
 - doc_auth.info.interstitial_thanks
@@ -59,6 +60,7 @@
 - errors.messages.missing_field
 - forms.buttons.continue
 - forms.buttons.submit.default
+- forms.file_input.file_updated
 - forms.passwords.show
 - forms.ssn.show
 - idv.errors.pattern_mismatch.dob

@@ -21,13 +21,25 @@
   border-width: 1px;
 }
 
+.selfie-capture--error,
+.selfie-capture--updated {
+  border-width: 3px;
+}
+
 .selfie-capture--error {
   border-color: color('error');
   border-radius: .375rem;
-  border-width: 3px;
 
   &:hover {
     border-color: color('error-dark');
+  }
+}
+
+.selfie-capture--updated {
+  border-color: color('success');
+
+  &:hover {
+    border-color: color('success-dark');
   }
 }
 

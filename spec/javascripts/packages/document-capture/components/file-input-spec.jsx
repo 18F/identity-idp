@@ -344,6 +344,48 @@ describe('document-capture/components/file-input', () => {
     expect(onError.callCount).to.equal(1);
   });
 
+  it('shows an updated state', () => {
+    const file1 = new window.File([''], 'upload.png', { type: 'image/png' });
+    const file2 = new window.File([''], 'upload.png', { type: 'image/png' });
+
+    const { getByText, rerender } = render(<FileInput label="File" />);
+
+    expect(() => getByText('forms.file_input.file_updated')).to.throw();
+
+    rerender(<FileInput label="File" value={file1} />);
+
+    expect(() => getByText('forms.file_input.file_updated')).to.throw();
+
+    rerender(<FileInput label="File" value={file1} />);
+
+    expect(() => getByText('forms.file_input.file_updated')).to.throw();
+
+    rerender(<FileInput label="File" value={file2} />);
+
+    expect(getByText('forms.file_input.file_updated')).to.be.ok();
+
+    rerender(<FileInput label="File" value={file2} />);
+
+    expect(getByText('forms.file_input.file_updated')).to.be.ok();
+  });
+
+  it('allows customization of updated file text', () => {
+    const file1 = new window.File([''], 'upload.png', { type: 'image/png' });
+    const file2 = new window.File([''], 'upload.png', { type: 'image/png' });
+
+    const { getByText, rerender } = render(<FileInput label="File" fileUpdatedText="Updated" />);
+
+    expect(() => getByText('Updated')).to.throw();
+
+    rerender(<FileInput label="File" fileUpdatedText="Updated" value={file1} />);
+
+    expect(() => getByText('Updated')).to.throw();
+
+    rerender(<FileInput label="File" fileUpdatedText="Updated" value={file2} />);
+
+    expect(getByText('Updated')).to.be.ok();
+  });
+
   it('forwards ref', () => {
     const ref = createRef();
     render(<FileInput ref={ref} label="File" />);

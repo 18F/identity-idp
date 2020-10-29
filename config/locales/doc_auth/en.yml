@@ -114,6 +114,7 @@ en:
         and we will not save any images.
       id_worn_html: "<strong>Is your ID worn or damaged?</strong> Use another state-issued
         ID if you have one."
+      image_updated: Image updated
       interstitial_eta: This might take up to a minute. We’ll load the next step automatically
         when it’s done.
       interstitial_thanks: Thanks for your patience!
