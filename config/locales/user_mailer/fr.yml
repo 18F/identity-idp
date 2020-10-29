@@ -197,10 +197,6 @@ fr:
       link_text: Allez à %{app}
       reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
         %{app} pour le réinitialiser.
-    sps_over_quota_limit:
-      help: ''
-      info: Certains SP ont dépassé leur limite de quota.
-      subject: Certains SP ont atteint leur limite de quota
     undeliverable_address:
       call_to_action: Veuillez vous connecter à %{link} et suivre les instructions.
       help: ''

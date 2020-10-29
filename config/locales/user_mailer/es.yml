@@ -184,10 +184,6 @@ es:
         este email, puede ignorar este mensaje.
       link_text: Ir a %{app}
       reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
-    sps_over_quota_limit:
-      help: ''
-      info: Hay SP que han superado su límite de cuota.
-      subject: Algunos SP han alcanzado su límite de cuota.
     undeliverable_address:
       call_to_action: Por favor inicie sesión en %{link} y siga las instrucciones.
       help: ''

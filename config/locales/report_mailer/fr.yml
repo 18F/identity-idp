@@ -1,0 +1,7 @@
+---
+fr:
+  report_mailer:
+    sps_over_quota_limit:
+      help: ''
+      info: Certains SP ont dépassé leur limite de quota.
+      subject: Certains SP ont atteint leur limite de quota

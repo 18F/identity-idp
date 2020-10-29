@@ -156,10 +156,6 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
   end
 
-  def sps_over_quota_limit(email)
-    mail(to: email, subject: t('user_mailer.sps_over_quota_limit.subject'))
-  end
-
   private
 
   def email_should_receive_nonessential_notifications?(email)
