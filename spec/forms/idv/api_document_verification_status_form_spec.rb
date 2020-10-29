@@ -38,7 +38,7 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
             success: false,
             errors: { front: 'Wrong document' },
           },
-          status: :done
+          status: :done,
         )
       end
 
@@ -56,7 +56,7 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
           result: {
             success: true,
           },
-          status: :done
+          status: :done,
         )
       end
 
