@@ -7,12 +7,10 @@ import SubmissionComplete, {
 } from '@18f/identity-document-capture/components/submission-complete';
 import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
 import { render } from '../../../support/document-capture';
-import { useCleanDOM } from '../../../support/dom';
 import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/submission-complete-step', () => {
   const sandbox = useSandbox();
-  useCleanDOM();
 
   let response = { success: true };
 
