@@ -359,6 +359,20 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
+  describe '#document_capture_async_uploads_enabled?' do
+    it 'returns true when Figaro presigned S3 URL setting is true' do
+      allow(Figaro.env).to receive(:doc_auth_enable_presigned_s3_urls) { 'true' }
+
+      expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(true)
+    end
+
+    it 'returns false when Figaro presigned S3 URL setting is false' do
+      allow(Figaro.env).to receive(:doc_auth_enable_presigned_s3_urls) { 'false' }
+
+      expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(false)
+    end
+  end
+
   describe 'log_to_stdout?' do
     context 'outside the test environment' do
       before { allow(Rails.env).to receive(:test?).and_return(false) }

@@ -1,13 +1,13 @@
-import React, { lazy } from 'react';
+import React, { lazy, useState } from 'react';
+import sinon from 'sinon';
+import { waitFor } from '@testing-library/dom';
 import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
 import render from '../../../support/render';
 
 describe('document-capture/components/suspense-error-boundary', () => {
   it('renders its children', () => {
     const { container } = render(
-      <SuspenseErrorBoundary fallback="Loading" errorFallback="Error">
-        No error
-      </SuspenseErrorBoundary>,
+      <SuspenseErrorBoundary fallback="Loading">No error</SuspenseErrorBoundary>,
     );
 
     expect(container.textContent).to.equal('No error');
@@ -17,7 +17,7 @@ describe('document-capture/components/suspense-error-boundary', () => {
     const Child = lazy(() => Promise.resolve({ default: () => 'Done' }));
 
     const { container, findByText } = render(
-      <SuspenseErrorBoundary fallback="Loading" errorFallback="Error">
+      <SuspenseErrorBoundary fallback="Loading">
         <Child />
       </SuspenseErrorBoundary>,
     );
@@ -26,33 +26,52 @@ describe('document-capture/components/suspense-error-boundary', () => {
     expect(await findByText('Done')).to.be.ok();
   });
 
-  it('returns errorFallback prop if an error is caught', async () => {
+  it('calls onError prop if an error is caught', async () => {
+    const onError = sinon.spy();
+    const error = new Error('Ouch!');
+
     const Child = () => {
-      throw new Error();
+      throw error;
     };
 
-    const { findByText } = render(
-      <SuspenseErrorBoundary fallback="Loading" errorFallback="Error">
+    const { container } = render(
+      <SuspenseErrorBoundary fallback="Loading" onError={onError}>
         <Child />
       </SuspenseErrorBoundary>,
     );
 
-    expect(await findByText('Error')).to.be.ok();
-    expect(console).to.have.loggedError();
+    await waitFor(() => expect(onError.calledOnce).to.be.true());
+    expect(onError.getCall(0).args[0]).to.equal(error);
+    expect(container.childNodes).to.be.empty();
+    expect(console).to.have.loggedError(/^Error: Uncaught/);
+    expect(console).to.have.loggedError(/React will try to recreate this component/);
   });
 
-  it('returns errorFallback rendered component with error prop if an error is caught', async () => {
+  it('rendered component if thrown error is acknowledged by handledError', async () => {
+    const error = new Error('Ouch!');
+
     const Child = () => {
-      throw new Error('Ouch!');
+      throw error;
     };
 
-    const { findByText } = render(
-      <SuspenseErrorBoundary fallback="Loading" errorFallback={({ error }) => error.message}>
-        <Child />
-      </SuspenseErrorBoundary>,
-    );
+    const TestComponent = () => {
+      const [handledError, setHandledError] = useState();
 
-    expect(await findByText('Ouch!')).to.be.ok();
-    expect(console).to.have.loggedError();
+      return (
+        <SuspenseErrorBoundary
+          fallback="Loading"
+          onError={setHandledError}
+          handledError={handledError}
+        >
+          {handledError ? 'Handled' : <Child />}
+        </SuspenseErrorBoundary>
+      );
+    };
+
+    const { findByText } = render(<TestComponent />);
+
+    await findByText('Handled');
+    expect(console).to.have.loggedError(/^Error: Uncaught/);
+    expect(console).to.have.loggedError(/React will try to recreate this component/);
   });
 });

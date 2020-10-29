@@ -9,12 +9,18 @@ describe('document-capture/context/upload', () => {
   it('defaults to the default upload service', () => {
     const { result } = renderHook(() => useContext(UploadContext));
 
-    expect(result.current).to.deep.equal({
-      upload: defaultUpload,
-      isMockClient: false,
-      backgroundUploadURLs: {},
-      backgroundUploadEncryptKey: undefined,
-    });
+    expect(result.current).to.have.keys([
+      'upload',
+      'isMockClient',
+      'getStatus',
+      'backgroundUploadURLs',
+      'backgroundUploadEncryptKey',
+    ]);
+    expect(result.current.upload).to.equal(defaultUpload);
+    expect(result.current.getStatus).to.be.instanceOf(Function);
+    expect(result.current.isMockClient).to.be.false();
+    expect(result.current.backgroundUploadURLs).to.deep.equal({});
+    expect(result.current.backgroundUploadEncryptKey).to.be.undefined();
   });
 
   it('can be overridden with custom upload behavior', async () => {
