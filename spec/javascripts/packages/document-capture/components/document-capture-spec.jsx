@@ -336,7 +336,7 @@ describe('document-capture/components/document-capture', () => {
         backgroundUploadURLs={{
           front: 'about:blank#front',
           back: 'about:blank#back',
-          selfie: 'about:blank#back',
+          selfie: 'about:blank#selfie',
         }}
         backgroundUploadEncryptKey={key}
         upload={upload}
