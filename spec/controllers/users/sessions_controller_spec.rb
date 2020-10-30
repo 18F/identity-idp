@@ -503,6 +503,16 @@ describe Users::SessionsController, devise: true do
         expect(response).to redirect_to verify_account_path
       end
     end
+
+    context 'with a garbage request_id' do
+      render_views
+
+      it 'does not blow up' do
+        expect do
+          get :new, params: { request_id: { '0' => "exp'\"\\(", '1' => '=1' } }
+        end.to_not raise_error
+      end
+    end
   end
 
   describe 'POST /sessions/keepalive' do

@@ -20,6 +20,9 @@ module Users
         stored_location: session['user_return_to'],
       )
 
+      request_id = params[:request_id] || sp_session[:request_id]
+      @request_id = request_id.present? && request_id.is_a?(String) ? request_id : nil
+
       @ial = sp_session ? sp_session_ial : 1
       session[:ial2_with_no_sp_campaign] = campaign if sp_session.blank? && params[:ial] == '2'
       super
