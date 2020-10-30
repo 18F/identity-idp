@@ -116,7 +116,13 @@ describe UserMailer, type: :mailer do
     location = 'February 25, 2019 15:02'
     disavowal_token = 'asdf1234'
     let(:mail) do
-      UserMailer.new_device_sign_in(user, email_address, date, location, disavowal_token)
+      UserMailer.new_device_sign_in(
+        user: user,
+        email_address: email_address,
+        date: date,
+        location: location,
+        disavowal_token: disavowal_token,
+      )
     end
 
     it_behaves_like 'a system email'
@@ -141,7 +147,13 @@ describe UserMailer, type: :mailer do
 
     it 'does not send mail to emails in nonessential email banlist' do
       email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.new_device_sign_in(user, email_address, date, location, disavowal_token)
+      mail = UserMailer.new_device_sign_in(
+        user: user,
+        email_address: email_address,
+        date: date,
+        location: location,
+        disavowal_token: disavowal_token,
+      )
       expect(mail.to).to eq(nil)
     end
   end
