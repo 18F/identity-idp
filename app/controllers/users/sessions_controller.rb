@@ -20,9 +20,7 @@ module Users
         stored_location: session['user_return_to'],
       )
 
-      request_id = params[:request_id] || sp_session[:request_id]
-      @request_id = request_id.present? && request_id.is_a?(String) ? request_id : nil
-
+      @request_id = request_id_if_valid
       @ial = sp_session ? sp_session_ial : 1
       session[:ial2_with_no_sp_campaign] = campaign if sp_session.blank? && params[:ial] == '2'
       super
@@ -191,6 +189,14 @@ module Users
       AccountReset::FindPendingRequestForUser.new(
         current_user,
       ).call
+    end
+
+    LETTERS_AND_DASHES = /\A[a-z0-9\-]+\Z/i.freeze
+
+    def request_id_if_valid
+      request_id = (params[:request_id] || sp_session[:request_id]).to_s
+
+      request_id if LETTERS_AND_DASHES.match?(request_id)
     end
   end
 end
