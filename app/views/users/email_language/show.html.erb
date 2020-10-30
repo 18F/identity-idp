@@ -1,4 +1,4 @@
-<h2><%= t('account.email_language.edit_title') %></h2>
+<h1 class="h2"><%= t('account.email_language.edit_title') %></h1>
 
 <p class="margin-bottom-4">
   <%= t('account.email_language.languages_list',
@@ -8,13 +8,14 @@
           to_sentence(last_word_connector: " #{t('account.email_language.sentence_connector')} ")) %>
 </p>
 
-<p><%= t('account.email_language.please_select') %></p>
-
 <%= validated_form_for(current_user, url: account_email_language_path, method: 'PATCH') do |f| %>
-  <%= render partial: 'shared/email_languages',
-             locals: {
-               selection: current_user.email_language,
-               f: f
-             } %>
+  <fieldset class="usa-fieldset">
+    <legend><%= t('account.email_language.please_select') %></legend>
+    <%= render partial: 'shared/email_languages',
+               locals: {
+                 selection: current_user.email_language,
+                 f: f
+               } %>
+  </fieldset>
   <%= f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide col-6' %>
 <% end %>
