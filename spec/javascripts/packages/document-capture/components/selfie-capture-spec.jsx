@@ -1,6 +1,8 @@
 import React from 'react';
 import sinon from 'sinon';
+import userEvent from '@testing-library/user-event';
 import { cleanup } from '@testing-library/react';
+import { I18nContext } from '@18f/identity-document-capture';
 import SelfieCapture from '@18f/identity-document-capture/components/selfie-capture';
 import { render } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
@@ -12,13 +14,26 @@ describe('document-capture/components/selfie-capture', () => {
 
   const sandbox = useSandbox();
 
+  const wrapper = ({ children }) => (
+    <I18nContext.Provider
+      value={{
+        'doc_auth.instructions.document_capture_selfie_consent_action':
+          '<lg-underline>Allow access</lg-underline>',
+      }}
+    >
+      {children}
+    </I18nContext.Provider>
+  );
+
   const track = { stop: sinon.stub() };
   const value = new window.File([], 'image.png', { type: 'image/png' });
 
   let originalMediaDevices;
   let originalMediaStream;
+  let originalPermissions;
   beforeEach(() => {
     originalMediaDevices = navigator.mediaDevices;
+    originalPermissions = navigator.permissions;
 
     function MediaStream() {}
     MediaStream.prototype = { play() {}, getTracks() {} };
@@ -49,9 +64,27 @@ describe('document-capture/components/selfie-capture', () => {
     } else {
       window.MediaStream = originalMediaStream;
     }
+
+    if (originalPermissions === undefined) {
+      delete navigator.permissions;
+    } else {
+      navigator.permissions = originalPermissions;
+    }
   });
 
-  it('renders video element that auto-plays when devices retrieved', async () => {
+  it('renders a consent prompt', () => {
+    const { getByText } = render(<SelfieCapture />);
+
+    expect(getByText('doc_auth.instructions.document_capture_selfie_consent_banner')).to.be.ok();
+  });
+
+  it('renders video element that auto-plays if previous consent granted', async () => {
+    navigator.permissions = {
+      query: sinon
+        .stub()
+        .withArgs({ name: 'camera' })
+        .returns(Promise.resolve({ state: 'granted' })),
+    };
     const { getByLabelText, findByLabelText } = render(<SelfieCapture />);
 
     await findByLabelText('doc_auth.buttons.take_picture');
@@ -59,19 +92,42 @@ describe('document-capture/components/selfie-capture', () => {
     expect(video.srcObject).to.be.instanceOf(window.MediaStream);
   });
 
+  it('renders video element that plays after consent granted', async () => {
+    const { getByText, getByLabelText, findByLabelText } = render(<SelfieCapture />, { wrapper });
+    userEvent.click(getByText('Allow access'));
+
+    await findByLabelText('doc_auth.buttons.take_picture');
+    const video = getByLabelText('doc_auth.headings.document_capture_selfie');
+    expect(video.srcObject).to.be.instanceOf(window.MediaStream);
+  });
+
   it('stops capture when unmounted', async () => {
-    const { findByLabelText, unmount } = render(<SelfieCapture />);
+    const { getByText, findByLabelText, unmount } = render(<SelfieCapture />, { wrapper });
+    userEvent.click(getByText('Allow access'));
 
     await findByLabelText('doc_auth.buttons.take_picture');
     unmount();
     expect(track.stop.calledOnce).to.be.true();
   });
 
+  it('renders error state if previous consent denied', async () => {
+    navigator.permissions = {
+      query: sinon
+        .stub()
+        .withArgs({ name: 'camera' })
+        .returns(Promise.resolve({ state: 'denied' })),
+    };
+    const { findByText } = render(<SelfieCapture />);
+
+    await findByText('doc_auth.instructions.document_capture_selfie_consent_blocked');
+  });
+
   it('renders error state if devices access restricted', async () => {
     const error = new Error();
     error.name = 'NotAllowedError';
     navigator.mediaDevices.getUserMedia = () => Promise.reject(error);
-    const { findByText } = render(<SelfieCapture />);
+    const { getByText, findByText } = render(<SelfieCapture />, { wrapper });
+    userEvent.click(getByText('Allow access'));
 
     await findByText('doc_auth.instructions.document_capture_selfie_consent_blocked');
   });
@@ -85,8 +141,9 @@ describe('document-capture/components/selfie-capture', () => {
   });
 
   it('stops capture after rerendered with value', async () => {
-    const { findByLabelText, rerender } = render(<SelfieCapture />);
+    const { findByLabelText, getByText, rerender } = render(<SelfieCapture />, { wrapper });
 
+    userEvent.click(getByText('Allow access'));
     await findByLabelText('doc_auth.buttons.take_picture');
     rerender(<SelfieCapture value={value} />);
     expect(track.stop.calledOnce).to.be.true();

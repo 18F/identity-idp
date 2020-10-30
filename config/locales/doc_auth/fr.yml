@@ -181,16 +181,19 @@ fr:
         que pour vérifier votre identité.
       document_capture_fallback_html: Avoir des problèmes? %{link}
       document_capture_fallback_link: Cliquez ici pour télécharger une image
+      document_capture_selfie_consent_action: "<lg-underline>Autorisez l'accès à la
+        caméra</lg-underline> et recherchez une notification dans votre navigateur
+        ou vérifiez les paramètres de votre système pour confirmer l'accès à la caméra."
       document_capture_selfie_consent_banner: login.gov a besoin d'une autorisation
         pour utiliser la caméra de votre appareil
-      document_capture_selfie_consent_blocked: Vérifiez les paramètres de votre navigateur
-        Web pour ce site ou les paramètres système de votre ordinateur pour permettre
-        à login.gov d'accéder à la caméra.
-      document_capture_selfie_consent_reason: Autorisez l'accès à la caméra et recherchez
-        une notification dans votre navigateur ou vérifiez les paramètres de votre
-        système pour confirmer l'accès à la caméra.
-      document_capture_selfie_instructions: Maintenant, prenez une photo de vous-même.
-        Nous la comparerons à l'image qui figure au recto de votre carte d'identité.
+      document_capture_selfie_consent_blocked: login.gov a besoin d'une autorisation
+        pour utiliser votre caméra afin que vous puissiez prouver que votre identifiant
+        vous appartient.
+      document_capture_selfie_consent_blocked_action: Vérifiez les paramètres de votre
+        navigateur Web pour ce site ou les paramètres système de votre ordinateur
+        pour permettre à login.gov d'accéder à la caméra.
+      document_capture_selfie_instructions: Maintenant, prenez une photo de vous.
+        Nous le comparerons à l'image au recto de votre pièce d'identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
         et suivez les instructions pour vérifier votre identité.
       learn_more: Apprendre encore plus

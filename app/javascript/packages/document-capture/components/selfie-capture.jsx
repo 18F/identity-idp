@@ -31,7 +31,7 @@ import './selfie-capture.scss';
  */
 function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
   const instanceId = useInstanceId();
-  const { t } = useI18n();
+  const { t, formatHTML } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const wrapperRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const hadValue = useRef(false);
@@ -64,12 +64,7 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
 
   const ifStillMounted = useIfStillMounted();
 
-  useEffect(() => {
-    // Start capturing only if not already capturing, and if value has yet to be assigned.
-    if (value || isCapturing) {
-      return;
-    }
-
+  function startCapture() {
     navigator.mediaDevices
       .getUserMedia({ video: true })
       .then(
@@ -92,6 +87,23 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
           setIsAccessRejected(true);
         }),
       );
+  }
+
+  useEffect(() => {
+    // Start capturing only if not already capturing, and if value has yet to be assigned.
+    if (value || isCapturing || !navigator.permissions) {
+      return;
+    }
+
+    navigator.permissions.query({ name: 'camera' }).then(
+      ifStillMounted((/** @type {PermissionStatus} */ result) => {
+        if (result.state === 'granted') {
+          startCapture();
+        } else if (result.state === 'denied') {
+          setIsAccessRejected(true);
+        }
+      }),
+    );
   }, [value]);
 
   function onCapture() {
@@ -205,15 +217,48 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
                 </button>
               </>
             ) : (
-              <div className="selfie-capture__consent-prompt">
-                <strong className="selfie-capture__consent-prompt-banner usa-file-input__banner-text">
-                  {t('doc_auth.instructions.document_capture_selfie_consent_banner')}
-                </strong>
-                <p>{t('doc_auth.instructions.document_capture_selfie_consent_reason')}</p>
-                {isAccessRejected && (
-                  <p>{t('doc_auth.instructions.document_capture_selfie_consent_blocked')}</p>
-                )}
-              </div>
+              <>
+                <div className="selfie-capture__consent-prompt">
+                  <strong className="selfie-capture__consent-prompt-banner usa-file-input__banner-text">
+                    {t('doc_auth.instructions.document_capture_selfie_consent_banner')}
+                  </strong>
+                  {!isAccessRejected && (
+                    <p>
+                      {formatHTML(
+                        t('doc_auth.instructions.document_capture_selfie_consent_action'),
+                        {
+                          'lg-underline': ({ children }) => (
+                            <button
+                              type="button"
+                              onClick={startCapture}
+                              className="usa-button--unstyled"
+                            >
+                              {children}
+                            </button>
+                          ),
+                        },
+                      )}
+                    </p>
+                  )}
+                  {isAccessRejected && (
+                    <>
+                      <p>{t('doc_auth.instructions.document_capture_selfie_consent_blocked')}</p>
+                      <p>
+                        {t('doc_auth.instructions.document_capture_selfie_consent_blocked_action')}
+                      </p>
+                    </>
+                  )}
+                </div>
+                {/* Disable reason: This button is hidden from assistive technology */}
+                {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={startCapture}
+                  aria-hidden
+                  className="selfie-capture__consent-overlay-button"
+                />
+              </>
             )}
           </>
         )}
