@@ -11,7 +11,6 @@
 <p><%= t('account.email_language.please_select') %></p>
 
 <%= validated_form_for(current_user, url: account_email_language_path, method: 'PATCH') do |f| %>
-
   <%= render partial: 'shared/email_languages',
              locals: {
                selection: current_user.email_language,
