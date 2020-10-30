@@ -132,7 +132,10 @@ es:
       question: "¿No tiene su aplicación de autenticación?"
     totp_header_text: Ingrese su código de la app de autenticación
     two_factor_aal3_choice: Se requiere autenticación adicional
-    two_factor_aal3_choice_intro: Esta aplicación requiere un mayor nivel de seguridad. Debe verificar su identidad con un dispositivo físico, como una llave de seguridad o una identificación de empleado del Gobierno (PIV o CAC) para acceder a su información.
+    two_factor_aal3_choice_intro: Esta aplicación requiere un mayor nivel de seguridad.
+      Debe verificar su identidad con un dispositivo físico, como una llave de seguridad
+      o una identificación de empleado del Gobierno (PIV o CAC) para acceder a su
+      información.
     two_factor_choice: Configuración del método de autenticación
     two_factor_choice_intro: Agregue una segunda capa de seguridad para que solo usted
       pueda iniciar sesión en su cuenta.

@@ -131,7 +131,10 @@ fr:
       question: Vous n'avez pas votre application d'authentification?
     totp_header_text: Entrez votre code d'application d'authentification
     two_factor_aal3_choice: Authentification supplémentaire requise
-    two_factor_aal3_choice_intro: Cette application nécessite un niveau de sécurité plus élevé. Vous devez vérifier votre identité à l'aide d'un dispositif physique tel qu'une clé de sécurité ou un badge d'employé du gouvernement (PIV ou CAC) pour accéder à vos informations.
+    two_factor_aal3_choice_intro: Cette application nécessite un niveau de sécurité
+      plus élevé. Vous devez vérifier votre identité à l'aide d'un dispositif physique
+      tel qu'une clé de sécurité ou un badge d'employé du gouvernement (PIV ou CAC)
+      pour accéder à vos informations.
     two_factor_choice: Configuration de la méthode d'authentification
     two_factor_choice_intro: Ajoutez une deuxième couche de sécurité pour que vous
       puissiez vous connecter à votre compte.
