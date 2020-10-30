@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import sinon from 'sinon';
 import { UploadContextProvider } from '@18f/identity-document-capture';
 import withBackgroundEncryptedUpload, {

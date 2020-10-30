@@ -1,4 +1,3 @@
-import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import { I18nContext, ServiceProviderContext } from '@18f/identity-document-capture';

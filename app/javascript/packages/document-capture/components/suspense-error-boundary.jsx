@@ -1,4 +1,4 @@
-import React, { Component, Suspense } from 'react';
+import { Component, Suspense } from 'react';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('react').FunctionComponent} FunctionComponent */

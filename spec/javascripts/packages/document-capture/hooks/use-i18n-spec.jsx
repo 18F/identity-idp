@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
 import useI18n, {

@@ -1,4 +1,3 @@
-import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';

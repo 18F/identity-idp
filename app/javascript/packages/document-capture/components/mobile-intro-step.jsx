@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import ServiceProviderContext from '../context/service-provider';
 import useI18n from '../hooks/use-i18n';
 

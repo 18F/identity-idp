@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import { createRef } from 'react';
 import PageHeading from '@18f/identity-document-capture/components/page-heading';
 import { render } from '../../../support/document-capture';
 

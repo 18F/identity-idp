@@ -1,4 +1,3 @@
-import React from 'react';
 import sinon from 'sinon';
 import { waitFor } from '@testing-library/dom';
 import useAsync from '@18f/identity-document-capture/hooks/use-async';
