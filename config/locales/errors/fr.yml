@@ -45,13 +45,9 @@ fr:
         <li>Votre selfie est pris dans une zone bien éclairée avec un arrière-plan uni</li>
         <li>Vous ne portez pas de chapeau ni de lunettes et votre tête est entièrement visible</li>
         </ul>
-<<<<<<< HEAD
-      document_capture_selfie_consent_blocked: L'accès à votre caméra est bloqué
+      document_capture_selfie_consent_blocked: Votre caméra est bloquée
       document_verification_timeout: Le serveur a mis trop de temps à répondre. Veuillez
         réessayer.
-=======
-      document_capture_selfie_consent_blocked: Votre caméra est bloquée
->>>>>>> IAL2 Translations
       general_error: Nous n'avons pas pu lire ni vérifier votre identité. Essayez
         de prendre et de télécharger de nouvelles images des deux côtés de votre ID.
         Assurez-vous que tout peut être facilement lu, y compris le code à barres.

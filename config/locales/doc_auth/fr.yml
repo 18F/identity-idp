@@ -13,20 +13,48 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
+      fields:
+        file_must_be_image: Le fichier doit être une image.
+        image_blurry: L'image est floue, veuillez réessayer.
+        image_glare: L'image est éblouissante, veuillez réessayer.
+        image_small: L'image est trop petite, veuillez réessayer.
+        invalid_document: Il ne s'agit pas d'un document valide, veuillez réessayer.
       lexis_nexis:
-        barcode_content_check: Nous n'avons pas pu lire le code-barres au verso de votre carte d'identité. Cela pourrait être dû à un problème avec le code-barres, ou le code-barres est d'un type nouveau que nous ne reconnaissons pas encore. Utilisez une autre carte d'identité délivrée par l'État si vous en avez une.
-        barcode_read_check: Nous n'avons pas pu lire le code-barres au verso de votre carte d'identité. Essayez de prendre une nouvelle photo.
-        birth_date_checks: Nous n'avons pas pu lire la date de naissance sur votre pièce d'identité. Essayez de prendre de nouvelles photos.
-        control_number_check: Nous n'avons pas pu lire le numéro de référence au verso de votre carte d'identité. Essayez de prendre une nouvelle photo.
-        doc_crosscheck: Nous n'avons pas pu reconnaître votre pièce d'identité. Il se peut qu'elle soit usée ou endommagée, ou que le recto et le verso de la carte d'identité ne correspondent pas. Essayez de prendre de nouvelles photos.
-        doc_number_checks: Nous n'avons pas pu lire le numéro du document sur votre carte d'identité. Essayez de prendre de nouvelles photos.
-        expiration_checks: Le document a expiré ou nous n'avons pas pu lire la date d'expiration sur votre carte d'identité. Si votre pièce d'identité n'est pas expirée, essayez de prendre de nouvelles photos.
-        full_name_check: Nous n'avons pas pu lire le nom complet sur votre pièce d'identité. Essayez de prendre de nouvelles photos.
-        general_error_liveness: Nous n'avons pas pu vérifier votre pièce d'identité et votre photo. Essayez de prendre de nouvelles photos.
-        general_error_no_liveness: Nous n'avons pas pu vérifier votre pièce d'identité. Essayez de prendre de nouvelles photos.
-        id_not_recognized: Nous n'avons pas pu reconnaître votre pièce d'identité. Elle est peut-être usée ou endommagée, ou bien il s'agit d'un type de carte d'identité que nous ne reconnaissons pas. Essayez de prendre de nouvelles photos.
-        id_not_verified: Nous n'avons pas pu vérifier votre pièce d'identité. Il se peut qu'elle ait bougé lorsque vous avez pris la photo. Essayez de prendre de nouvelles photos.
-        issue_date_checks: Nous n'avons pas pu lire la date d'émission sur votre pièce d'identité. Essayez de prendre de nouvelles photos.
+        barcode_content_check: Nous n'avons pas pu lire le code-barres au verso de
+          votre carte d'identité. Cela pourrait être dû à un problème avec le code-barres,
+          ou le code-barres est d'un type nouveau que nous ne reconnaissons pas encore.
+          Utilisez une autre carte d'identité délivrée par l'État si vous en avez
+          une.
+        barcode_read_check: Nous n'avons pas pu lire le code-barres au verso de votre
+          carte d'identité. Essayez de prendre une nouvelle photo.
+        birth_date_checks: Nous n'avons pas pu lire la date de naissance sur votre
+          pièce d'identité. Essayez de prendre de nouvelles photos.
+        control_number_check: Nous n'avons pas pu lire le numéro de référence au verso
+          de votre carte d'identité. Essayez de prendre une nouvelle photo.
+        doc_crosscheck: Nous n'avons pas pu reconnaître votre pièce d'identité. Il
+          se peut qu'elle soit usée ou endommagée, ou que le recto et le verso de
+          la carte d'identité ne correspondent pas. Essayez de prendre de nouvelles
+          photos.
+        doc_number_checks: Nous n'avons pas pu lire le numéro du document sur votre
+          carte d'identité. Essayez de prendre de nouvelles photos.
+        expiration_checks: Le document a expiré ou nous n'avons pas pu lire la date
+          d'expiration sur votre carte d'identité. Si votre pièce d'identité n'est
+          pas expirée, essayez de prendre de nouvelles photos.
+        full_name_check: Nous n'avons pas pu lire le nom complet sur votre pièce d'identité.
+          Essayez de prendre de nouvelles photos.
+        general_error_liveness: Nous n'avons pas pu vérifier votre pièce d'identité
+          et votre photo. Essayez de prendre de nouvelles photos.
+        general_error_no_liveness: Nous n'avons pas pu vérifier votre pièce d'identité.
+          Essayez de prendre de nouvelles photos.
+        id_not_recognized: Nous n'avons pas pu reconnaître votre pièce d'identité.
+          Elle est peut-être usée ou endommagée, ou bien il s'agit d'un type de carte
+          d'identité que nous ne reconnaissons pas. Essayez de prendre de nouvelles
+          photos.
+        id_not_verified: Nous n'avons pas pu vérifier votre pièce d'identité. Il se
+          peut qu'elle ait bougé lorsque vous avez pris la photo. Essayez de prendre
+          de nouvelles photos.
+        issue_date_checks: Nous n'avons pas pu lire la date d'émission sur votre pièce
+          d'identité. Essayez de prendre de nouvelles photos.
         multiple_back_id_failures: Nous n'avons pas pu vérifier le verso de votre
           pièce d'identité. Essayez de prendre une nouvelle photo.
         multiple_front_id_failures: Nous n'avons pas pu vérifier le recto de votre
@@ -35,18 +63,18 @@ fr:
           essayer de soumettre à nouveau vos images plus tard.
         ref_control_number_check: Nous n'avons pas pu lire le code-barres du numéro
           de contrôle. Essayez de prendre de nouvelles photos.
-        selfie_failure: Nous n'avons pas pu associer votre photo à votre pièce d'identité. Essayez de prendre une nouvelle photo de vous-même ou du recto de votre carte d'identité.
-        sex_check: Nous n'avons pas pu lire le sexe sur votre pièce d'identité. Essayez de prendre de nouvelles photos.
-        visible_color_check: Nous n'avons pas pu vérifier votre pièce d'identité. Elle a peut-être bougé lorsque vous avez pris la photo, ou la photo est trop sombre. Essayez de prendre de nouvelles photos avec un éclairage plus fort.
+        selfie_failure: Nous n'avons pas pu associer votre photo à votre pièce d'identité.
+          Essayez de prendre une nouvelle photo de vous-même ou du recto de votre
+          carte d'identité.
+        sex_check: Nous n'avons pas pu lire le sexe sur votre pièce d'identité. Essayez
+          de prendre de nouvelles photos.
+        visible_color_check: Nous n'avons pas pu vérifier votre pièce d'identité.
+          Elle a peut-être bougé lorsque vous avez pris la photo, ou la photo est
+          trop sombre. Essayez de prendre de nouvelles photos avec un éclairage plus
+          fort.
         visible_photo_check: Nous n'avons pas pu vérifier la photo sur votre pièce
           d'identité. Essayez de prendre de nouvelles photos.
       not_a_file: La sélection n'était pas un fichier valide.
-      fields:
-        file_must_be_image: Le fichier doit être une image.
-        image_small: L'image est trop petite, veuillez réessayer.
-        image_blurry: L'image est floue, veuillez réessayer.
-        image_glare: L'image est éblouissante, veuillez réessayer.
-        invalid_document: Il ne s'agit pas d'un document valide, veuillez réessayer.
     forms:
       address1: Adresse
       change_file: Changer de fichier
@@ -84,12 +112,14 @@ fr:
       take_pic_front: Prenez une photo du recto de votre identifiant
       take_picture: Prendre une photo avec un téléphone
       text_message: Nous avons envoyé un message à votre téléphone
-      upload: Comment souhaitez-vous télécharger votre carte d'identité délivrée par l'État?
+      upload: Comment souhaitez-vous télécharger votre carte d'identité délivrée par
+        l'État?
       upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par
         l'état.
       upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
         votre pièce d'identité
-      upload_from_phone_liveness_enabled: Utilisez un téléphone portable pour ajouter votre pièce d'identité et prendre une photo de vous-même
+      upload_from_phone_liveness_enabled: Utilisez un téléphone portable pour ajouter
+        votre pièce d'identité et prendre une photo de vous-même
       upload_front: Veuillez télécharger une photo du recto de votre identifiant émis
         par l'État.
       upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
@@ -110,27 +140,36 @@ fr:
       id_worn_html: "<strong>Votre carte d'identité est-elle usée ou endommagée?</strong>
         Utilisez une autre carte d'identité délivrée par l'État si vous en avez une."
       image_updated: Image mise à jour
-      interstitial_eta: Cette opération peut prendre jusqu'à une minute. Nous chargerons automatiquement l'étape suivante lorsqu'elle sera terminée.
+      interstitial_eta: Cette opération peut prendre jusqu'à une minute. Nous chargerons
+        automatiquement l'étape suivante lorsqu'elle sera terminée.
       interstitial_thanks: Merci de votre patience!
       link_sent:
       - Veuillez vérifier votre téléphone et suivre les instructions pour prendre
         une photo de votre identité émise par l'État.
       - Lorsque vous avez terminé, cliquez ici pour continuer à vérifier votre identité.
-      no_other_id_help_bold_html: "<strong>Si vous n'avez pas de carte d'identité délivrée par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide à l'adresse %{sp_name}.</a>"
+      no_other_id_help_bold_html: "<strong>Si vous n'avez pas de carte d'identité
+        délivrée par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
+        à l'adresse %{sp_name}.</a>"
       tag: Recommandation
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
         vérifier votre identité.
-      upload: Nous recueillons des informations vous concernant en lisant votre carte d'identité délivrée par l'État.
+      upload: Nous recueillons des informations vous concernant en lisant votre carte
+        d'identité délivrée par l'État.
       upload_computer_link: Téléchargez depuis votre ordinateur
       upload_from_computer: Vous n'avez pas de téléphone?
-      upload_from_computer_not_allowed: Connectez-vous à votre compte login.gov sur tout appareil doté d'une caméra, comme une tablette ou un ordinateur avec une caméra Web.
+      upload_from_computer_not_allowed: Connectez-vous à votre compte login.gov sur
+        tout appareil doté d'une caméra, comme une tablette ou un ordinateur avec
+        une caméra Web.
       upload_from_phone: Téléchargez des images directement depuis l'appareil photo
         de votre téléphone
       upload_image: Nous n'utilisons votre identifiant que pour vérifier votre identité,
         et nous n'enregistrerons aucune image. Nous acceptons les formats BMP, PNG,
         TIFF et JPG.
-      upload_liveness_enabled: Nous recueillons des informations sur vous en lisant votre carte d'identité délivrée par l'État. Ensuite, vous prendrez une photo de vous-même pour confirmer que vous êtes bien le propriétaire de la carte d'identité.
+      upload_liveness_enabled: Nous recueillons des informations sur vous en lisant
+        votre carte d'identité délivrée par l'État. Ensuite, vous prendrez une photo
+        de vous-même pour confirmer que vous êtes bien le propriétaire de la carte
+        d'identité.
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       use_cac: Avez-vous une carte d'identité d'employé du gouvernement?
       use_cac_link: Utilisez plutôt une PIV/CAC
@@ -148,10 +187,16 @@ fr:
         que pour vérifier votre identité.
       document_capture_fallback_html: Avoir des problèmes? %{link}
       document_capture_fallback_link: Cliquez ici pour télécharger une image
-      document_capture_selfie_consent_banner: login.gov a besoin d'une autorisation pour utiliser la caméra de votre appareil
-      document_capture_selfie_consent_blocked: Vérifiez les paramètres de votre navigateur Web pour ce site ou les paramètres système de votre ordinateur pour permettre à login.gov d'accéder à la caméra.
-      document_capture_selfie_consent_reason: Autorisez l'accès à la caméra et recherchez une notification dans votre navigateur ou vérifiez les paramètres de votre système pour confirmer l'accès à la caméra.
-      document_capture_selfie_instructions: Maintenant, prenez une photo de vous-même. Nous la comparerons à l'image qui figure au recto de votre carte d'identité.
+      document_capture_selfie_consent_banner: login.gov a besoin d'une autorisation
+        pour utiliser la caméra de votre appareil
+      document_capture_selfie_consent_blocked: Vérifiez les paramètres de votre navigateur
+        Web pour ce site ou les paramètres système de votre ordinateur pour permettre
+        à login.gov d'accéder à la caméra.
+      document_capture_selfie_consent_reason: Autorisez l'accès à la caméra et recherchez
+        une notification dans votre navigateur ou vérifiez les paramètres de votre
+        système pour confirmer l'accès à la caméra.
+      document_capture_selfie_instructions: Maintenant, prenez une photo de vous-même.
+        Nous la comparerons à l'image qui figure au recto de votre carte d'identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
         et suivez les instructions pour vérifier votre identité.
       learn_more: Apprendre encore plus
@@ -178,20 +223,24 @@ fr:
       document_capture_id_text2: Prenez la photo sur une surface plane
       document_capture_id_text3: N'utilisez pas le flash de votre appareil photo
       document_capture_id_text4: La taille du fichier doit être d'au moins 2 Mo
-      document_capture_selfie_text1: Faites face à l'appareil photo et assurez-vous que toute votre tête est visible sur la photo
+      document_capture_selfie_text1: Faites face à l'appareil photo et assurez-vous
+        que toute votre tête est visible sur la photo
       document_capture_selfie_text2: Prenez une photo avec un arrière-plan uni
       document_capture_selfie_text3: Ne pas porter de chapeau ou de lunettes
       header_text: Directives pour prendre une photo de votre identité
-      review_issues_id_header_text: "Examinez les images de votre carte d'identité délivrée par l'État:"
+      review_issues_id_header_text: 'Examinez les images de votre carte d''identité
+        délivrée par l''État:'
       review_issues_id_text1: Avez-vous utilisé un fond sombre?
       review_issues_id_text2: Avez-vous pris la photo sur une surface plane?
       review_issues_id_text3: Le flash de votre caméra est-il éteint?
       review_issues_id_text4: Tous les détails sont-ils nets et clairement visibles?
-      review_issues_selfie_header_text: "Examinez l'auto-portrait:"
+      review_issues_selfie_header_text: 'Examinez l''auto-portrait:'
       review_issues_selfie_text1: Êtes-vous face à la caméra?
-      review_issues_selfie_text2: Est-ce que vous avez toute la tête et le visage sur la photo?
+      review_issues_selfie_text2: Est-ce que vous avez toute la tête et le visage
+        sur la photo?
       review_issues_selfie_text3: La photo est-elle sur un fond uni?
-      review_issues_selfie_text4: Votre visage est-il entièrement visible, sans être couvert par un chapeau ou des lunettes?
+      review_issues_selfie_text4: Votre visage est-il entièrement visible, sans être
+        couvert par un chapeau ou des lunettes?
       text1: Prenez-le dans une pièce très éclairée. La lumière solaire indirecte
         est la meilleure.
       text2: Assurez-vous que votre identité n’a pas de poussière ni de codes à barres
