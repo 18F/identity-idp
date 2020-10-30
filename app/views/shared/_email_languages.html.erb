@@ -1,12 +1,14 @@
 <%#
 locals:
-* selection: the current language selection
 * f: from validated_form_for
+* labelledby: id of element that radio boxes are labelled by
+* selection: the current language selection
 %>
 <div class="margin-bottom-4">
   <ul class="usa-input-list">
     <% I18n.available_locales.each do |locale| %>
       <% item_id = "email-locale-#{locale}" %>
+      <% label_id = SecureRandom.hex %>
       <li class="col-6">
         <%= f.input_field(:email_language,
                           type: :radio,
@@ -15,12 +17,14 @@ locals:
                             selection.to_s == locale.to_s :
                             (I18n.locale.to_s == locale.to_s),
                           class: 'usa-radio__input',
-                          id: item_id) %>
+                          id: item_id,
+                          aria: { labelledby: "#{labelledby} #{label_id}" }) %>
         <%= f.label(:email_language,
                     locale == I18n.default_locale ?
                       t("account.email_language.name.default") :
                       t("account.email_language.name.#{locale}"),
                     for: item_id,
+                    id: label_id,
                     class: 'usa-radio__label usa-radio-bordered') %>
       </li>
     <% end %>

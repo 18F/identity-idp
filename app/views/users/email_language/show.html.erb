@@ -10,10 +10,12 @@
 
 <%= validated_form_for(current_user, url: account_email_language_path, method: 'PATCH') do |f| %>
   <fieldset class="usa-fieldset">
-    <legend><%= t('account.email_language.please_select') %></legend>
+    <% label_id = SecureRandom.hex %>
+    <%= content_tag :label, t('account.email_language.please_select'), id: label_id %>
     <%= render partial: 'shared/email_languages',
                locals: {
                  selection: current_user.email_language,
+                 labelledby: label_id,
                  f: f
                } %>
   </fieldset>
