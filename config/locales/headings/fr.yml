@@ -23,8 +23,7 @@ fr:
     confirmations:
       new: Envoyer un autre courriel de confirmation
     create_account_with_sp:
-      sp_text: utilise login.gov pour vous permettre de vous connecter à votre compte
-        en toute sécurité.
+      sp_text: utilise login.gov pour vous permettre de vous connecter à votre compte de façon sûre et sécurisée.
     create_account_without_sp: Créer un compte login.gov
     edit_info:
       password: Changez votre mot de passe

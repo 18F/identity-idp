@@ -37,9 +37,7 @@ en:
         confirm_piv_cac_only_html: This app requires a higher level of security. You
           need to verify your identity using a government employee ID that you previously
           set up to access your information.
-        confirm_piv_cac_or_aal3_html: This app requires a higher level of security.
-          You need to verxify your identity using a physical device such as a security
-          key or government employee ID (PIV/CAC) to access your information.
+        confirm_piv_cac_or_aal3_html: This app requires a higher level of security. You need to verify your identity using a physical device such as a security key or government employee ID (PIV or CAC) to access your information.
         did_not_work: There may be a problem with your PIV/CAC or PIN.  If you think
           this is an error, %{try_again}.  If this problem continues, contact your
           agency administrator.
@@ -69,9 +67,7 @@ en:
         confirm_webauthn_only_html: This app requires a higher level of security.
           You need to verify your identity using a security key that you previously
           set up to access your information.
-        confirm_webauthn_or_aal3_html: This app requires a higher level of security.
-          You need to verxify your identity using a physical device such as a security
-          key or government employee ID (PIV/CAC) to access your information.
+        confirm_webauthn_or_aal3_html: This app requires a higher level of security. You need to verify your identity using a physical device such as a security key or government employee ID (PIV or CAC) to access your information.
       wrong_number_html: Entered the wrong phone number? %{link}
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.

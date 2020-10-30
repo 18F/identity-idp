@@ -131,10 +131,7 @@ fr:
       question: Vous n'avez pas votre application d'authentification?
     totp_header_text: Entrez votre code d'application d'authentification
     two_factor_aal3_choice: Authentification supplémentaire requise
-    two_factor_aal3_choice_intro: Cette application nécessite un haut niveau de sécurité.
-      Vous devez vérifier votre identité à l'aide d'un appareil physique tel qu'une
-      clé de sécurité ou un identifiant d'employé du gouvernement (PIC/CAC) pour accéder
-      à vos informations.
+    two_factor_aal3_choice_intro: Cette application nécessite un niveau de sécurité plus élevé. Vous devez vérifier votre identité à l'aide d'un dispositif physique tel qu'une clé de sécurité ou un badge d'employé du gouvernement (PIV ou CAC) pour accéder à vos informations.
     two_factor_choice: Configuration de la méthode d'authentification
     two_factor_choice_intro: Ajoutez une deuxième couche de sécurité pour que vous
       puissiez vous connecter à votre compte.
@@ -171,9 +168,9 @@ fr:
       tel qu'une clé de sécurité ou un identifiant d'employé du gouvernement (PIC/CAC)
       pour accéder à vos informations.
     webauthn_fallback:
-      question: Votre clé de sécurité n'est-elle pas disponible?
-    webauthn_header_text: Branchez votre clé de sécurité
-    webauthn_piv_available: Utilisez votre identifiant d'employé du gouvernement
+      question: Vous n'avez pas votre clé de sécurité avec vous?
+    webauthn_header_text: Connectez votre clé de sécurité
+    webauthn_piv_available: Utilisez votre badge d'employé du gouvernement.
     webauthn_verified:
       header: Clé de sécurité vérifiée
       info: Nous avons vérifié votre clé de sécurité. Cliquez sur Continuer pour vous

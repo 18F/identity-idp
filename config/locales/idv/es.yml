@@ -3,7 +3,7 @@ es:
   idv:
     buttons:
       cancel: Cancele y regrese a su perfil
-      continue_plain: Continúe
+      continue_plain: Continuar
       mail:
         resend: Enviar otra carta
         send: Enviar una carta
