@@ -9,7 +9,7 @@ es:
     email_language:
       edit_title: Editar la preferencia de idioma del correo electrónico
       languages_list: "%{app_name} le permite recibir su comunicación por correo electrónico
-         en %{list}"
+        en %{list}"
       name:
         default: Inglés (predeterminado)
         en: Inglés
