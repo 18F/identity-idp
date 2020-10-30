@@ -52,7 +52,7 @@ describe Users::PasswordsController do
         mail = double
         expect(mail).to receive(:deliver_later)
         expect(UserMailer).to receive(:password_changed).
-          with(user.email_addresses.first, hash_including(:disavowal_token)).
+          with(user, user.email_addresses.first, hash_including(:disavowal_token)).
           and_return(mail)
 
         stub_sign_in(user)

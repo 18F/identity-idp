@@ -23,7 +23,7 @@ describe 'Add a new phone number' do
     phone = '+1 (225) 278-1234'
 
     expect(UserMailer).to receive(:phone_added).
-      with(user.email_addresses.first, hash_including(:disavowal_token)).
+      with(user, user.email_addresses.first, hash_including(:disavowal_token)).
       and_call_original
 
     sign_in_and_2fa_user(user)

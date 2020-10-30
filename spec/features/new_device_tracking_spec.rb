@@ -19,11 +19,12 @@ describe 'New device tracking' do
 
       expect(UserMailer).to have_received(:new_device_sign_in).
         with(
-          user.email_addresses.first,
-          device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
+          user: user,
+          email_address: user.email_addresses.first,
+          date: device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
             strftime('%B %-d, %Y %H:%M Eastern Time'),
-          'From 127.0.0.1 (IP address potentially located in United States)',
-          instance_of(String),
+          location: 'From 127.0.0.1 (IP address potentially located in United States)',
+          disavowal_token: instance_of(String),
         )
     end
   end
@@ -57,11 +58,12 @@ describe 'New device tracking' do
 
       expect(UserMailer).to have_received(:new_device_sign_in).
         with(
-          user.email_addresses.first,
-          device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
+          user: user,
+          email_address: user.email_addresses.first,
+          date: device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
             strftime('%B %-d, %Y %H:%M Eastern Time'),
-          'From 127.0.0.1 (IP address potentially located in United States)',
-          instance_of(String),
+          location: 'From 127.0.0.1 (IP address potentially located in United States)',
+          disavowal_token: instance_of(String),
         )
     end
   end

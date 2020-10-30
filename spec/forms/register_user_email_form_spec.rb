@@ -12,7 +12,7 @@ describe RegisterUserEmailForm do
 
         mailer = instance_double(ActionMailer::MessageDelivery)
         allow(UserMailer).to receive(:signup_with_your_email).
-          with(existing_user.email).and_return(mailer)
+          with(existing_user, existing_user.email).and_return(mailer)
         allow(mailer).to receive(:deliver_later)
 
         extra = {
