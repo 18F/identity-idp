@@ -5,14 +5,14 @@ module LocaleHelper
   end
 
   def with_user_locale(user, &block)
-    email_language = user.email_language
+    locale = user.email_language
 
-    if email_language.present?
-      return I18n.with_locale(email_language, &block) if I18n.locale_available?(email_language)
+    if I18n.locale_available?(locale)
+      I18n.with_locale(locale, &block)
+    else
+      Rails.logger.warn("user_id=#{user.uuid} has bad email_language=#{locale}") if locale.present?
 
-      Rails.logger.warn("user_id=#{user.uuid} has bad email_language=#{email_language}")
+      yield
     end
-
-    yield
   end
 end
