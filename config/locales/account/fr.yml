@@ -23,7 +23,7 @@ fr:
       default: défaut
       device: "%{browser} sur %{os}"
       dob: Date de naissance
-      email: Adresse courriel
+      email: Adresse e-mail
       email_add: Ajouter un email
       email_addresses: Adresses courriel
       full_name: Nom complet
