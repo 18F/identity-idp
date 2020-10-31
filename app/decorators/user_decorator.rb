@@ -16,8 +16,7 @@ class UserDecorator
   end
 
   def email_language_preference_description
-    case user.email_language.to_s
-    when *I18n.available_locales.map(&:to_s)
+    if I18n.locale_available?(user.email_language)
       # i18n-tasks-use t('account.email_language.name.en')
       # i18n-tasks-use t('account.email_language.name.es')
       # i18n-tasks-use t('account.email_language.name.fr')
