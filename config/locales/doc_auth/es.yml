@@ -13,12 +13,12 @@ es:
       upload_picture: Subir foto
       use_phone: Usa tu telefono
     errors:
-      fields:
-        file_must_be_image: El archivo debe ser una imagen.
-        image_blurry: La imagen está borrosa, inténtelo de nuevo.
-        image_glare: La imagen tiene brillo, inténtelo de nuevo.
-        image_small: La imagen es demasiado pequeña, inténtelo de nuevo.
-        invalid_document: No es un documento válido, inténtelo de nuevo.
+      # fields:
+      #   file_must_be_image: El archivo debe ser una imagen.
+      #   image_blurry: La imagen está borrosa, inténtelo de nuevo.
+      #   image_glare: La imagen tiene brillo, inténtelo de nuevo.
+      #   image_small: La imagen es demasiado pequeña, inténtelo de nuevo.
+      #   invalid_document: No es un documento válido, inténtelo de nuevo.
       lexis_nexis:
         barcode_content_check: No pudimos leer el código de barras en el reverso de
           su documento de identidad. Puede ser debido a un problema con el código

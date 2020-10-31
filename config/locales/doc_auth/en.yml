@@ -13,12 +13,12 @@ en:
       upload_picture: Upload photo
       use_phone: Use your phone
     errors:
-      fields:
-        file_must_be_image: File must be an image.
-        image_blurry: Image is blurry, please try again.
-        image_glare: Image has glare, please try again.
-        image_small: Image is too small, please try again.
-        invalid_document: Not a valid document, please try again.
+      # fields:
+      #   file_must_be_image: File must be an image.
+      #   image_blurry: Image is blurry, please try again.
+      #   image_glare: Image has glare, please try again.
+      #   image_small: Image is too small, please try again.
+      #   invalid_document: Not a valid document, please try again.
       lexis_nexis:
         barcode_content_check: We couldn't read the barcode on the back of your ID.
           It could be because of a problem with the barcode, or the barcode is a new

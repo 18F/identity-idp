@@ -13,12 +13,12 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
-      fields:
-        file_must_be_image: Le fichier doit être une image.
-        image_blurry: L'image est floue, veuillez réessayer.
-        image_glare: L'image est éblouissante, veuillez réessayer.
-        image_small: L'image est trop petite, veuillez réessayer.
-        invalid_document: Il ne s'agit pas d'un document valide, veuillez réessayer.
+      # fields:
+      #   file_must_be_image: Le fichier doit être une image.
+      #   image_blurry: L'image est floue, veuillez réessayer.
+      #   image_glare: L'image est éblouissante, veuillez réessayer.
+      #   image_small: L'image est trop petite, veuillez réessayer.
+      #   invalid_document: Il ne s'agit pas d'un document valide, veuillez réessayer.
       lexis_nexis:
         barcode_content_check: Nous n'avons pas pu lire le code-barres au verso de
           votre carte d'identité. Cela pourrait être dû à un problème avec le code-barres,
