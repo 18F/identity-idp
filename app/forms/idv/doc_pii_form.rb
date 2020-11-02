@@ -39,9 +39,8 @@ module Idv
     end
 
     def name_error
-      if errors.include?(:first_name) || errors.include?(:last_name)
-        I18n.t('doc_auth.errors.lexis_nexis.full_name_check')
-      end
+      return unless errors.include?(:first_name) || errors.include?(:last_name)
+      I18n.t('doc_auth.errors.lexis_nexis.full_name_check')
     end
 
     def dob_error
