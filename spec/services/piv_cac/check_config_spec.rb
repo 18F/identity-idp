@@ -23,7 +23,7 @@ describe PivCac::CheckConfig do
     context 'non-https config' do
       it 'does raise an error' do
         expect { PivCac::CheckConfig.call }.
-          to raise_error(RuntimeError, "PIV/CAC configured without SSL: #{url}")
+          to raise_error(RuntimeError, "piv_cac_verify_token_url configured without SSL: #{url}")
       end
     end
 

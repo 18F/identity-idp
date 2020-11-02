@@ -6,8 +6,11 @@ module PivCac
       url = URI.parse(Figaro.env.piv_cac_verify_token_url)
       return if url.scheme == 'https'
 
-      message = "PIV/CAC configured without SSL: #{Figaro.env.piv_cac_verify_token_url}"
+      # rubocop:disable Layout/LineLength
+      message = "piv_cac_verify_token_url configured without SSL: #{Figaro.env.piv_cac_verify_token_url}"
+      # rubocop:enable Layout/LineLength
       Rails.logger.error { "#{message} - EXITING" }
+      NewRelic::Agent.notice_error("#{message} - EXITING")
       raise message
     end
   end
