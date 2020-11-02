@@ -8,10 +8,17 @@ describe Idv::DocPiiForm do
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
       dob: Time.zone.today.to_s,
+      state: Faker::Address.state_abbr,
     }
   end
-  let(:name_errors_pii) { { first_name: nil, last_name: nil, dob: Time.zone.today.to_s } }
-  let(:name_and_dob_errors_pii) { { first_name: nil, last_name: nil, dob: nil } }
+  let(:name_errors_pii) do
+    { first_name: nil, last_name: nil, dob: Time.zone.today.to_s,
+      state: Faker::Address.state_abbr }
+  end
+  let(:name_and_dob_errors_pii) do
+    { first_name: nil, last_name: nil, dob: nil,
+      state: Faker::Address.state_abbr }
+  end
 
   describe '#submit' do
     context 'when the form is valid' do
