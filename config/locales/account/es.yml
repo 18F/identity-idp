@@ -35,7 +35,7 @@ es:
       default: defecto
       device: "%{browser} en %{os}"
       dob: Fecha de nacimiento
-      email: Correo electrónico
+      email: Dirección de correo electrónico
       email_add: Agregar email
       email_addresses: Correos electrónicos
       email_preferences: Preferencias de correo electrónico

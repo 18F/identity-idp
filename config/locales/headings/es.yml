@@ -24,7 +24,7 @@ es:
       new: Enviar otro email de confirmación
     create_account_with_sp:
       sp_text: está utilizando login.gov para permitirle iniciar sesión en su cuenta
-        de manera segura.
+        de forma segura.
     create_account_without_sp: Establezca una cuenta de login.gov
     edit_info:
       password: Cambie su contraseña

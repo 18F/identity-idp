@@ -127,7 +127,7 @@ es:
         missing_html: Elige un método diferente como tu segundo factor.
     registration:
       labels:
-        email: Email
+        email: Dirección de correo electrónico
         email_language: Seleccionar preferencia de idioma de correo electrónico
     ssn:
       show: Mostrar Número de Seguro Social
@@ -163,7 +163,7 @@ es:
       continue: Continuar
       instructions_text: Presione el botón en su clave de seguridad para registrarlo
         con login.gov
-      instructions_title: Conecte su clave de seguridad
+      instructions_title: Conecte su llave de seguridad
       intro_html: Agregue una clave de seguridad como método de autenticación a su
         cuenta. Su clave de seguridad debe ser compatible con el estándar FIDO. Puede
         agregar tantas claves de seguridad como desee, y le recomendamos al menos

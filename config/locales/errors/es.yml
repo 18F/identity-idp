@@ -45,7 +45,7 @@ es:
         <li>Su selfie se toma en un área bien iluminada con un fondo liso</li>
         <li>No lleva puesto un sombrero o anteojos, y su cabeza es completamente visible</li>
         </ul>
-      document_capture_selfie_consent_blocked: El acceso a su cámara está bloqueado
+      document_capture_selfie_consent_blocked: Su cámara está bloqueada
       document_verification_timeout: El servidor tardó demasiado en responder. Inténtalo
         de nuevo.
       general_error: No pudimos leer ni verificar su identificación. Intenta tomar

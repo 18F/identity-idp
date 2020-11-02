@@ -9,7 +9,7 @@ fr:
     requested_attributes:
       address: Adresse postale
       birthdate: Date de naissance
-      email: Adresse courriel
+      email: Adresse e-mail
       full_name: Nom complet
       intro_html: 'Nous partagerons cette information avec %{sp}:'
       outro_html: "%{sp} utilisera cette information uniquement pour se connecter
