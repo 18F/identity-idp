@@ -167,16 +167,18 @@ es:
         su identidad.
       document_capture_fallback_html: "¿Teniendo problemas? %{link}"
       document_capture_fallback_link: Haga clic aquí para cargar una imagen.
+      document_capture_selfie_consent_action: "<lg-underline>Permita el acceso a la
+        cámara</lg-underline> y busque una notificación en su navegador o revise la
+        configuración del sistema para confirmar el acceso a la cámara."
       document_capture_selfie_consent_banner: login.gov necesita permiso para usar
         la cámara de su dispositivo
-      document_capture_selfie_consent_blocked: Compruebe la configuración de su navegador
-        de Internet para este sitio o la configuración del sistema de la computadora
-        para permitir a login.gov acceder a la cámara.
-      document_capture_selfie_consent_reason: Permita el acceso a la cámara y busque
-        una notificación en su navegador o revise la configuración del sistema para
-        confirmar el acceso a la cámara.
-      document_capture_selfie_instructions: Ahora tómese una foto. La compararemos
-        con la imagen de la parte delantera de su documento de identidad.
+      document_capture_selfie_consent_blocked: login.gov necesita permiso para usar
+        su cámara para que pueda probar que su identificación le pertenece.
+      document_capture_selfie_consent_blocked_action: Verifique la configuración de
+        su navegador web para este sitio o la configuración del sistema de su computadora
+        para permitir que login.gov acceda a la cámara.
+      document_capture_selfie_instructions: Ahora toma una foto de ti mismo. Lo compararemos
+        con la imagen en el frente de su identificación.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
       learn_more: Aprende más
