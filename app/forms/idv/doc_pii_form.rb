@@ -44,8 +44,7 @@ module Idv
     end
 
     def dob_error
-      return I18n.t('doc_auth.errors.lexis_nexis.birth_date_checks') if errors.include?(:dob)
-      nil
+      I18n.t('doc_auth.errors.lexis_nexis.birth_date_checks') if errors.include?(:dob)
     end
   end
 end
