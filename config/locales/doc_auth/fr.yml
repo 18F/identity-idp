@@ -63,6 +63,13 @@ fr:
           Essayez de prendre de nouvelles photos avec un éclairage plus lumineux.
         visible_photo_check: Nous n'avons pas pu vérifier la photo sur votre pièce
           d'identité. Essayez de prendre de nouvelles photos.
+      no_camera:
+        explanation: Nous recueillons des informations vous concernant en lisant
+          votre carte d'identité délivrée par l'État. Ensuite, vous prendrez une photo
+          de vous-même pour confirmer que vous êtes bien le propriétaire de la carte
+          d'identité.
+        heading: Vous avez besoin d'une caméra pour vérifier votre identité
+        title: Camera needed
       not_a_file: La sélection n'était pas un fichier valide
     forms:
       address1: Adresse

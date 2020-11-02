@@ -57,6 +57,11 @@ en:
           in brighter lighting.
         visible_photo_check: We couldn't verify the photo on your ID. Try taking new
           pictures.
+      no_camera:
+        explanation: To continue, sign in to your login.gov account on any device
+          that has a camera, like a mobile phone, tablet or computer with a webcam.
+        heading: You need a camera to verify your identity
+        title: Camera needed
       not_a_file: The selection was not a valid file
     forms:
       address1: Address

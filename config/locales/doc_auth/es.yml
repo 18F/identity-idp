@@ -62,6 +62,12 @@ es:
           Intente tomar nuevas fotografías con una iluminación más brillante.
         visible_photo_check: No pudimos verificar la foto de su identificación. Intente
           tomar nuevas fotografías.
+      no_camera:
+        explanation: Recopilaremos información sobre usted leyendo su documento de
+          identidad expedido por el estado. Luego, se tomará una foto para confirmar
+          que es el propietario de la identificación.
+        heading: Necesita una cámara para verificar su identidad
+        title: Camera needed
       not_a_file: La selección no era un archivo válido
     forms:
       address1: Dirección
