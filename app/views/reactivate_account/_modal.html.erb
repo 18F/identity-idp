@@ -1,0 +1,26 @@
+<div id="reactivate-account-modal" class="display-none">
+  <%= render layout: '/shared/modal_layout' do %>
+    <div class="p4 cntnr-xxskinny border-box bg-white rounded-xxl modal-warning">
+      <h2 class="my2 fs-20p sans-serif regular center">
+        <%= t('instructions.account.reactivate.modal.heading') %>
+      </h2>
+      <hr class="mb3 bw4 rounded" />
+      <div class="mb5">
+        <%= t('instructions.account.reactivate.modal.copy') %>
+      </div>
+      <div class="center">
+        <%= form_tag reactivate_account_path, method: :put do %>
+          <%= button_tag t('forms.buttons.continue'), type: 'submit',
+            class: 'btn btn-primary col-12 mb2 p2 rounded-lg', name: :personal_key %>
+        <% end %>
+
+        <button class="btn col-12 p2 rounded-lg border border-blue blue" type="button" id="no-key-reactivate-dismiss">
+         <%= t('links.cancel') %>
+        </button>
+      </div>
+    </div>
+
+  <% end %>
+</div>
+
+<%= javascript_pack_tag 'reactivate-account-modal' %>
