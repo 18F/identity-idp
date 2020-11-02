@@ -3,6 +3,7 @@ import { Alert } from '@18f/identity-components';
 import Button from './button';
 import PageHeading from './page-heading';
 import FormErrorMessage, { RequiredValueMissingError } from './form-error-message';
+import PromptOnNavigate from './prompt-on-navigate';
 import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
@@ -198,6 +199,7 @@ function FormSteps({
 
   return (
     <form ref={formRef} onSubmit={toNextStep}>
+      {Object.keys(values).length > 0 && <PromptOnNavigate />}
       {unknownFieldErrors.map(({ field, error }) => (
         <Alert
           key={[field, error.message].join()}

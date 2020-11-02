@@ -15,6 +15,7 @@ import useI18n from '../hooks/use-i18n';
 import { RetrySubmissionError } from './submission-complete';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
+import PromptOnNavigate from './prompt-on-navigate';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./form-steps').FormStep} FormStep */
@@ -110,7 +111,12 @@ function DocumentCapture({ isAsyncForm = false }) {
   return submissionFormValues &&
     (!submissionError || submissionError instanceof RetrySubmissionError) ? (
     <SuspenseErrorBoundary
-      fallback={<SubmissionInterstitial autoFocus />}
+      fallback={
+        <>
+          <PromptOnNavigate />
+          <SubmissionInterstitial autoFocus />
+        </>
+      }
       onError={setSubmissionError}
       handledError={submissionError}
     >
