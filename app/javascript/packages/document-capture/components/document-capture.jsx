@@ -111,11 +111,15 @@ function DocumentCapture({ isAsyncForm = false }) {
   return submissionFormValues &&
     (!submissionError || submissionError instanceof RetrySubmissionError) ? (
     <SuspenseErrorBoundary
-      fallback={<SubmissionInterstitial autoFocus />}
+      fallback={
+        <>
+          <PromptOnNavigate />
+          <SubmissionInterstitial autoFocus />
+        </>
+      }
       onError={setSubmissionError}
       handledError={submissionError}
     >
-      <PromptOnNavigate />
       {submissionError instanceof RetrySubmissionError ? (
         <SubmissionStatus />
       ) : (

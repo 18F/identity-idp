@@ -159,10 +159,16 @@ describe('document-capture/components/document-capture', () => {
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     expect(isFormValid(submitButton.closest('form'))).to.be.true();
 
-    return new Promise((resolve) => {
+    await new Promise((resolve) => {
       onSubmit.callsFake(resolve);
       userEvent.click(submitButton);
     });
+
+    // At this point, the page should redirect, so we do not expect that the user should be prompted
+    // about unsaved changes in navigating.
+    const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+    window.dispatchEvent(event);
+    expect(event.defaultPrevented).to.be.false();
   });
 
   it('renders unhandled submission failure', async () => {
