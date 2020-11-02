@@ -40,9 +40,8 @@ module Idv
 
     def name_error
       if errors.include?(:first_name) || errors.include?(:last_name)
-        return I18n.t('doc_auth.errors.lexis_nexis.full_name_check')
+        I18n.t('doc_auth.errors.lexis_nexis.full_name_check')
       end
-      nil
     end
 
     def dob_error
