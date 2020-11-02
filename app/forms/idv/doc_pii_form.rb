@@ -26,7 +26,7 @@ module Idv
 
     def error_hash
       if name_error.present? && dob_error.present?
-        { pii: multiple_errors_message } 
+        { pii: multiple_errors_message }
       elsif name_error.present? || dob_error.present?
         { pii: name_error || dob_error }
       else
