@@ -2,9 +2,7 @@ module Idv
   class DocPiiForm
     include ActiveModel::Model
 
-    validates_presence_of :first_name
-    validates_presence_of :last_name
-    validates_presence_of :dob
+    validate :validate_pii
 
     attr_reader :first_name, :last_name, :dob
 
@@ -17,20 +15,19 @@ module Idv
     def submit
       FormResponse.new(
         success: valid?,
-        errors: error_hash,
-        extra: { original_errors: errors },
+        errors: errors.messages,
       )
     end
 
     private
 
-    def error_hash
-      if name_error.present? && dob_error.present?
-        { pii: multiple_errors_message }
-      elsif name_error.present? || dob_error.present?
-        { pii: name_error || dob_error }
-      else
-        {}
+    def validate_pii
+      if (first_name.blank? || last_name.blank?) && dob.blank?
+        errors.add(:pii, multiple_errors_message)
+      elsif dob.blank?
+        errors.add(:pii, dob_error)
+      elsif first_name.blank? || last_name.blank?
+        errors.add(:pii, name_error)
       end
     end
 
@@ -39,12 +36,11 @@ module Idv
     end
 
     def name_error
-      return unless errors.include?(:first_name) || errors.include?(:last_name)
       I18n.t('doc_auth.errors.lexis_nexis.full_name_check')
     end
 
     def dob_error
-      I18n.t('doc_auth.errors.lexis_nexis.birth_date_checks') if errors.include?(:dob)
+      I18n.t('doc_auth.errors.lexis_nexis.birth_date_checks')
     end
   end
 end
