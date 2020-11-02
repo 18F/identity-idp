@@ -291,7 +291,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
         subject.current_user.email_addresses.each do |email_address|
           allow(UserMailer).to receive(:phone_added).
-            with(email_address, disavowal_token: instance_of(String)).
+            with(subject.current_user, email_address, disavowal_token: instance_of(String)).
             and_return(@mailer)
         end
         @previous_phone = MfaContext.new(subject.current_user).phone_configurations.first&.phone
@@ -331,7 +331,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             expect(subject).to have_received(:create_user_event).exactly(:once)
             subject.current_user.email_addresses.each do |email_address|
               expect(UserMailer).to have_received(:phone_added).
-                with(email_address, disavowal_token: instance_of(String))
+                with(subject.current_user, email_address, disavowal_token: instance_of(String))
             end
             expect(@mailer).to have_received(:deliver_later)
           end

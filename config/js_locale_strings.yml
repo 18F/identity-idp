@@ -28,7 +28,8 @@
 - doc_auth.info.no_other_id_help_bold_html
 - doc_auth.instructions.document_capture_selfie_consent_banner
 - doc_auth.instructions.document_capture_selfie_consent_blocked
-- doc_auth.instructions.document_capture_selfie_consent_reason
+- doc_auth.instructions.document_capture_selfie_consent_blocked_action
+- doc_auth.instructions.document_capture_selfie_consent_action
 - doc_auth.instructions.document_capture_selfie_instructions
 - doc_auth.tips.document_capture_header_text
 - doc_auth.tips.document_capture_hint

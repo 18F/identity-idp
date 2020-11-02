@@ -1,0 +1,1 @@
+PivCac::CheckConfig.call

@@ -119,6 +119,15 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to label_required_fields
   end
 
+  scenario 'edit email language page' do
+    sign_in_and_2fa_user
+
+    visit account_email_language_path
+
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
+    expect(page).to label_required_fields
+  end
+
   scenario 'add phone page' do
     sign_in_and_2fa_user
 

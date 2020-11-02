@@ -6,6 +6,18 @@ en:
       description: With your login.gov account, you can securely connect to multiple
         government accounts online. Below is a list of all the accounts you currently
         have connected.
+    email_language:
+      edit_title: Edit email language preference
+      languages_list: "%{app_name} allows you to receive your email communication
+        in %{list}."
+      name:
+        default: English (default)
+        en: English
+        es: Spanish
+        fr: French
+      please_select: Please select your language preference below.
+      sentence_connector: or
+      updated: Your email language preference has been updated.
     forget_all_browsers:
       longer_description: Once you choose to ‘forget all browsers,’ we’ll need additional
         information to know that it’s actually you signing in to your account. We’ll
@@ -25,6 +37,7 @@ en:
       email: Email address
       email_add: Add email
       email_addresses: Email addresses
+      email_preferences: Email preferences
       full_name: Full name
       password: Password
       phone: Phone numbers

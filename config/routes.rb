@@ -169,6 +169,8 @@ Rails.application.routes.draw do
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
     post '/account/delete' => 'users/delete#delete'
+    get '/account/email_language' => 'users/email_language#show', as: :account_email_language
+    patch '/account/email_language' => 'users/email_language#update'
     get '/account/history' => 'accounts/history#show'
     get '/account/reactivate/start' => 'reactivate_account#index', as: :reactivate_account
     put '/account/reactivate/start' => 'reactivate_account#update'

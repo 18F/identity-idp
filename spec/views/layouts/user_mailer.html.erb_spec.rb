@@ -1,8 +1,10 @@
 require 'rails_helper'
 
 describe 'layouts/user_mailer.html.erb' do
+  let(:user) { build_stubbed(:user) }
+
   before do
-    @mail = UserMailer.email_added('foo@example.com')
+    @mail = UserMailer.email_added(user, 'foo@example.com')
     allow(view).to receive(:message).and_return(@mail)
     allow(view).to receive(:attachments).and_return(@mail.attachments)
 

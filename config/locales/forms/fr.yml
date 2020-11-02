@@ -2,7 +2,7 @@
 fr:
   forms:
     backup_code:
-      are_you_sure_continue: continuez avec les codes de sauvegarde
+      are_you_sure_continue: Continuer
       are_you_sure_continue_prologue: Si vous n'avez accès à aucune autre méthode
         d'authentification,
       are_you_sure_desc: "<br><b>Les codes de sauvegarde ne sont pas très sûrs</b>
@@ -132,7 +132,8 @@ fr:
           d'authentification.
     registration:
       labels:
-        email: Adresse courriel
+        email: Adresse e-mail
+        email_language: Sélectionnez la préférence de langue des e-mails
     ssn:
       show: Afficher le numéro de sécurité sociale
     totp_delete:

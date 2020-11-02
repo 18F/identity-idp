@@ -27,7 +27,9 @@ module Idv
       def mobile_to_desktop
         mark_step_complete(:send_link)
         mark_step_complete(:link_sent)
-        UserMailer.doc_auth_desktop_link_to_sp(current_user.email, application, link).deliver_later
+        UserMailer.doc_auth_desktop_link_to_sp(
+          current_user, current_user.email, application, link
+        ).deliver_later
       end
 
       def desktop

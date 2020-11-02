@@ -59,6 +59,7 @@ Vagrantfile
 /test
 /tmp/*
 /.tmp/
+/.vscode/
 /vendor/bundle
 
 package-lock.json

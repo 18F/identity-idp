@@ -39,11 +39,14 @@ export function render(element, options = {}) {
       ),
     );
 
+  const defaultBaseWrapper = ({ children }) => children;
+  const { wrapper: baseWrapper = defaultBaseWrapper } = baseRenderOptions;
+
   return baseRender(element, {
     ...baseRenderOptions,
     wrapper: ({ children }) => (
       <UploadContextProvider upload={upload} isMockClient={isMockClient}>
-        {children}
+        {baseWrapper({ children })}
       </UploadContextProvider>
     ),
   });

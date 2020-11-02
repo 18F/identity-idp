@@ -37,6 +37,7 @@
     "react/jsx-curly-newline": "off",
     "react/jsx-indent": "off",
     "react/jsx-one-expression-per-line": "off",
+    "react/jsx-wrap-multilines": "off",
     "react/prop-types": "off",
     "require-await": "error"
   },

@@ -85,6 +85,16 @@ describe SignUp::RegistrationsController, devise: true do
         expect(subject).to have_received(:create_user_event).with(:account_created, user)
       end
 
+      it 'sets the users preferred email locale and sends an email in that locale' do
+        post :create, params: { user: { email: 'test@test.com', email_language: 'es' } }
+
+        expect(User.find_with_email('test@test.com').email_language).to eq('es')
+
+        mail = ActionMailer::Base.deliveries.last
+        expect(mail.subject).
+          to eq(I18n.t('user_mailer.email_confirmation_instructions.subject', locale: 'es'))
+      end
+
       it 'sets the email in the session and redirects to sign_up_verify_email_path' do
         post :create, params: { user: { email: 'test@test.com' } }
 

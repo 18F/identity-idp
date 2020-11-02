@@ -15,9 +15,9 @@ describe UserAlerts::AlertUserAboutPasswordChange do
 
       expect(UserMailer).to have_received(:password_changed).twice
       expect(UserMailer).to have_received(:password_changed).
-        with(confirmed_email_addresses[0], disavowal_token: disavowal_token)
+        with(user, confirmed_email_addresses[0], disavowal_token: disavowal_token)
       expect(UserMailer).to have_received(:password_changed).
-        with(confirmed_email_addresses[1], disavowal_token: disavowal_token)
+        with(user, confirmed_email_addresses[1], disavowal_token: disavowal_token)
     end
   end
 end

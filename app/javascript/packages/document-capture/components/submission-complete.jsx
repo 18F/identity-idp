@@ -1,5 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import SubmissionInterstitial from './submission-interstitial';
+import CallbackOnMount from './callback-on-mount';
 
 /** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
 
@@ -34,7 +35,7 @@ function SubmissionComplete({ resource }) {
   const sleepTimeout = useRef(/** @type {number=} */ (undefined));
   const response = resource.read();
 
-  useEffect(() => {
+  function handleResponse() {
     if (response.isPending) {
       sleepTimeout.current = window.setTimeout(() => {
         setRetryError(() => {
@@ -48,9 +49,14 @@ function SubmissionComplete({ resource }) {
     }
 
     return () => window.clearTimeout(sleepTimeout.current);
-  }, []);
+  }
 
-  return <SubmissionInterstitial />;
+  return (
+    <>
+      <CallbackOnMount onMount={handleResponse} />
+      <SubmissionInterstitial />
+    </>
+  );
 }
 
 export default SubmissionComplete;

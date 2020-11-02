@@ -15,6 +15,17 @@ class UserDecorator
     user.email_addresses.take&.email
   end
 
+  def email_language_preference_description
+    if I18n.locale_available?(user.email_language)
+      # i18n-tasks-use t('account.email_language.name.en')
+      # i18n-tasks-use t('account.email_language.name.es')
+      # i18n-tasks-use t('account.email_language.name.fr')
+      I18n.t("account.email_language.name.#{user.email_language}")
+    else
+      I18n.t('account.email_language.name.default')
+    end
+  end
+
   def visible_email_addresses
     user.email_addresses.filter do |email_address|
       email_address.confirmed? || !email_address.confirmation_period_expired?
