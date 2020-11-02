@@ -1,0 +1,29 @@
+<% title t('titles.confirmations.show') %>
+
+<h1 class="h3 my0">
+  <%= t('forms.confirmation.show_hdr') %>
+</h1>
+
+<p class="mt2 mb0" id="password-description">
+  <%= t('instructions.password.info.lead', min_length: Devise.password_length.first) %>
+</p>
+<%= validated_form_for(@password_form,
+                       url: sign_up_create_password_path,
+                       method: :post,
+                       html: { role: 'form', autocomplete: 'off' }) do |f| %>
+  <%= f.input :password, required: true,
+              input_html: { aria: { invalid: false, describedby: 'password-description' },
+                            class: 'password-toggle' } %>
+  <%= render 'devise/shared/password_strength' %>
+  <%= hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token' %>
+  <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>
+  <div>
+    <%= f.button :submit, t('forms.buttons.continue'), class: 'sm-col-6 col-12 btn-wide mb3' %>
+  </div>
+<% end %>
+
+  <%= render 'shared/password_accordion' %>
+
+<%= render 'shared/cancel', link: destroy_user_session_path %>
+
+<%= javascript_pack_tag 'pw-strength' %>

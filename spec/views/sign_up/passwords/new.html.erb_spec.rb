@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'sign_up/passwords/new.html.slim' do
+describe 'sign_up/passwords/new.html.erb' do
   before do
     user = build_stubbed(:user)
     allow(view).to receive(:current_user).and_return(nil)
