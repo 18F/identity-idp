@@ -25,11 +25,13 @@ module Idv
     private
 
     def error_hash
-      error_count = [name_error, dob_error].count(&:present?)
-
-      return {} if error_count.zero?
-      return { pii: multiple_errors_message } if error_count > 1
-      { pii: name_error || dob_error || state_id_error }
+      if name_error.present? && dob_error.present?
+        { pii: multiple_errors_message } 
+      elsif name_error.present? || dob_error.present?
+        { pii: name_error || dob_error }
+      else
+        {}
+      end
     end
 
     def multiple_errors_message
