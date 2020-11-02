@@ -222,7 +222,14 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
                   <strong className="selfie-capture__consent-prompt-banner usa-file-input__banner-text">
                     {t('doc_auth.instructions.document_capture_selfie_consent_banner')}
                   </strong>
-                  {!isAccessRejected && (
+                  {isAccessRejected ? (
+                    <>
+                      <p>{t('doc_auth.instructions.document_capture_selfie_consent_blocked')}</p>
+                      <p>
+                        {t('doc_auth.instructions.document_capture_selfie_consent_blocked_action')}
+                      </p>
+                    </>
+                  ) : (
                     <p>
                       {formatHTML(
                         t('doc_auth.instructions.document_capture_selfie_consent_action'),
@@ -239,14 +246,6 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
                         },
                       )}
                     </p>
-                  )}
-                  {isAccessRejected && (
-                    <>
-                      <p>{t('doc_auth.instructions.document_capture_selfie_consent_blocked')}</p>
-                      <p>
-                        {t('doc_auth.instructions.document_capture_selfie_consent_blocked_action')}
-                      </p>
-                    </>
                   )}
                 </div>
                 {/* Disable reason: This button is hidden from assistive technology */}
