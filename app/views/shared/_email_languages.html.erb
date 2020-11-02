@@ -7,7 +7,7 @@ locals:
   <ul class="usa-input-list">
     <% I18n.available_locales.each do |locale| %>
       <% item_id = "email-locale-#{locale}" %>
-      <li class="col-6">
+      <li class="grid-col-8 mobile-lg:grid-col-6">
         <%= f.input_field(:email_language,
                           type: :radio,
                           value: locale,
