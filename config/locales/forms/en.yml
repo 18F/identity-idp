@@ -120,6 +120,7 @@ en:
     registration:
       labels:
         email: Email address
+        email_language: Select email language preference
     ssn:
       show: Show Social Security Number
     totp_delete:

@@ -90,6 +90,8 @@ class Analytics
   IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'.freeze
+  EMAIL_LANGUAGE_VISITED = 'Email Language: Visited'.freeze
+  EMAIL_LANGUAGE_UPDATED = 'Email Language: Updated'.freeze
   EVENT_DISAVOWAL = 'Event disavowal visited'.freeze
   EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'.freeze
   EVENT_DISAVOWAL_TOKEN_INVALID = 'Event disavowal token invalid'.freeze

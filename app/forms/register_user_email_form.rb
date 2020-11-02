@@ -6,6 +6,7 @@ class RegisterUserEmailForm
   validate :service_provider_request_exists
 
   attr_reader :email_address
+  attr_accessor :email_language
   attr_accessor :password_reset_requested
 
   def self.model_name
@@ -31,7 +32,10 @@ class RegisterUserEmailForm
   end
 
   def submit(params, instructions = nil)
-    build_user_and_email_address_with_email(params[:email])
+    build_user_and_email_address_with_email(
+      email: params[:email],
+      email_language: params[:email_language],
+    )
     self.request_id = params[:request_id]
     if valid_form?
       process_successful_submission(request_id, instructions)
@@ -56,12 +60,15 @@ class RegisterUserEmailForm
   attr_writer :email, :email_address
   attr_accessor :success, :request_id
 
-  def build_user_and_email_address_with_email(email)
+  def build_user_and_email_address_with_email(email:, email_language:)
     self.email_address = user.email_addresses.build(
       user: user,
       email: email,
     )
     user.email = email # Delete this when email address is retired
+
+    self.email_language = email_language
+    user.email_language = email_language
   end
 
   def valid_form?
@@ -121,7 +128,7 @@ class RegisterUserEmailForm
 
   def send_sign_up_confirmed_email
     @throttled = Throttler::IsThrottledElseIncrement.call(existing_user.id, :reg_confirmed_email)
-    UserMailer.signup_with_your_email(email).deliver_later unless @throttled
+    UserMailer.signup_with_your_email(existing_user, email).deliver_later unless @throttled
   end
 
   def user_unconfirmed?

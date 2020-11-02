@@ -28,4 +28,55 @@ RSpec.describe LocaleHelper do
       end
     end
   end
+
+  describe '#with_user_locale' do
+    let(:user) { build_stubbed(:user, email_language: email_language) }
+
+    subject do
+      with_user_locale(user) do
+        @locale_inside_block = I18n.locale
+        @did_yield = true
+      end
+    end
+
+    context 'when the user has no email_language' do
+      let(:email_language) { '' }
+
+      it 'yields the block and does not change the locale' do
+        subject
+
+        expect(@locale_inside_block).to eq(:en)
+        expect(@did_yield).to eq(true)
+      end
+    end
+
+    context 'when the user has an email_language' do
+      let(:email_language) { 'es' }
+
+      it 'sets the language inside the block and yields' do
+        subject
+
+        expect(@locale_inside_block).to eq(:es)
+        expect(@did_yield).to eq(true)
+      end
+    end
+
+    context 'when the user has an invalid email_language' do
+      let(:email_language) { 'zz' }
+
+      it 'yields the block and does not change the locale' do
+        subject
+
+        expect(@locale_inside_block).to eq(:en)
+        expect(@did_yield).to eq(true)
+      end
+
+      it 'warns about a bad email_language' do
+        expect(Rails.logger).to receive(:warn).
+          with("user_id=#{user.uuid} has bad email_language=#{user.email_language}")
+
+        subject
+      end
+    end
+  end
 end

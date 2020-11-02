@@ -20,9 +20,9 @@ describe UserAlerts::AlertUserAboutPersonalKeySignIn do
 
       expect(UserMailer).to have_received(:personal_key_sign_in).twice
       expect(UserMailer).to have_received(:personal_key_sign_in).
-        with(confirmed_email_addresses[0].email, disavowal_token: disavowal_token)
+        with(user, confirmed_email_addresses[0].email, disavowal_token: disavowal_token)
       expect(UserMailer).to have_received(:personal_key_sign_in).
-        with(confirmed_email_addresses[1].email, disavowal_token: disavowal_token)
+        with(user, confirmed_email_addresses[1].email, disavowal_token: disavowal_token)
       expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
         with(to: phone_configurations[0].phone)
       expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
