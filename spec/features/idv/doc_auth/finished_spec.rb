@@ -15,7 +15,7 @@ feature 'doc auth success step' do
 
   it 'is on the correct page when using the back button after final step' do
     expect(page).to have_current_path(idv_phone_path)
-    visit '/verify/doc_auth/doc_success'
+    visit '/verify/doc_auth/verify'
     expect(page).to have_current_path(idv_phone_path)
   end
 end

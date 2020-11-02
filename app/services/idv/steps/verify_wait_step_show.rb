@@ -30,6 +30,7 @@ module Idv
         delete_async
 
         if response.success?
+          flash[:success] = I18n.t('doc_auth.forms.doc_success')
           mark_step_complete(:verify_wait)
         else
           mark_step_incomplete(:verify)

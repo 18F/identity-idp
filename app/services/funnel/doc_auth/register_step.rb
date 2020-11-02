@@ -17,7 +17,6 @@ module Funnel
         verify_phone
         encrypt
         verified
-        doc_success
         usps_address
         usps_letter_sent
         capture_mobile_back_image

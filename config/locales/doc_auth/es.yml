@@ -70,8 +70,7 @@ es:
       choose_file_html: Arrastre el archivo aquí o <lg-underline>elija de la carpeta</lg-underline>
       city: Ciudad
       dob: Fecha de nacimiento
-      doc_success: Verificamos su número de seguro social y su identificación emitida
-        por el estado.
+      doc_success: Hemos verificado su información personal
       first_name: Nombre de pila
       last_name: Apellido
       selected_file: Archivo seleccionado

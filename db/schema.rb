@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_29_192324) do
+ActiveRecord::Schema.define(version: 2020_11_02_150543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -138,8 +138,6 @@ ActiveRecord::Schema.define(version: 2020_10_29_192324) do
     t.integer "verify_view_count", default: 0
     t.integer "verify_submit_count", default: 0
     t.integer "verify_error_count", default: 0
-    t.datetime "doc_success_view_at"
-    t.integer "doc_success_view_count", default: 0
     t.datetime "verify_phone_view_at"
     t.integer "verify_phone_view_count", default: 0
     t.datetime "usps_address_view_at"

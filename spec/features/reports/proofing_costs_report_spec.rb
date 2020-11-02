@@ -17,7 +17,7 @@ feature 'Proofing Costs report' do
       'total_proofing_costs_users_count' => 2,
     }
   end
-  let(:doc_success_funnel) do
+  let(:verify_funnel) do
     {
       'acuant_front_image_count_average' => 1.0,
       'acuant_back_image_count_average' => 1.0,
@@ -37,17 +37,17 @@ feature 'Proofing Costs report' do
 
   it 'works for one flow' do
     sign_in_and_2fa_user(user)
-    complete_doc_auth_steps_before_doc_success_step
+    complete_all_doc_auth_steps
 
-    expect(report).to eq(doc_success_funnel.merge(summary1))
+    expect(report).to eq(verify_funnel.merge(summary1))
   end
 
   it 'works for two flows' do
     sign_in_and_2fa_user(user)
-    complete_doc_auth_steps_before_doc_success_step
+    complete_all_doc_auth_steps
     sign_in_and_2fa_user(user2)
-    complete_doc_auth_steps_before_doc_success_step
+    complete_all_doc_auth_steps
 
-    expect(report).to eq(doc_success_funnel.merge(summary2))
+    expect(report).to eq(verify_funnel.merge(summary2))
   end
 end

@@ -15,7 +15,6 @@ module Idv
         ssn: Idv::Steps::SsnStep,
         verify: Idv::Steps::RecoverVerifyStep,
         verify_wait: Idv::Steps::RecoverVerifyWaitStep,
-        doc_success: Idv::Steps::DocSuccessStep,
       }.freeze
 
       OPTIONAL_SHOW_STEPS = {

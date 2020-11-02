@@ -16,7 +16,8 @@ feature 'recovery doc fail step' do
     sign_in_before_2fa(user)
     allow_any_instance_of(Idv::Steps::RecoverVerifyWaitStepShow).to receive(:saved_pii).
       and_return(bad_pii.to_json)
-    complete_recovery_steps_before_doc_success_step
+    complete_recovery_steps_before_verify_step
+    click_idv_continue
   end
 
   it 'fails to re-verify if the pii does not match and then it proceeds to start re-verify over' do

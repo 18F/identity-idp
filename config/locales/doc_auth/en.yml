@@ -64,7 +64,7 @@ en:
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
       city: City
       dob: Date of Birth
-      doc_success: We've verified your social security number and state-issued ID.
+      doc_success: We have verified your personal information
       first_name: First Name
       last_name: Last Name
       selected_file: Selected file
