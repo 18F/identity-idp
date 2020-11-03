@@ -57,8 +57,6 @@
 - errors.doc_auth.photo_blurry
 - errors.doc_auth.photo_glare
 - errors.file_input.invalid_type
-- errors.messages.format_mismatch
-- errors.messages.missing_field
 - forms.buttons.continue
 - forms.buttons.submit.default
 - forms.file_input.file_updated
@@ -69,7 +67,6 @@
 - idv.errors.pattern_mismatch.ssn
 - idv.errors.pattern_mismatch.state_id_number
 - idv.errors.pattern_mismatch.zipcode
-- idv.failure.button.warning
 - instructions.password.strength.i
 - instructions.password.strength.ii
 - instructions.password.strength.iii
@@ -79,7 +76,6 @@
 - two_factor_authentication.otp_delivery_preference.instruction
 - two_factor_authentication.otp_delivery_preference.phone_unsupported
 - users.personal_key.close
-- valid_email.validations.email.invalid
 - zxcvbn.feedback.a_word_by_itself_is_easy_to_guess
 - zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better
 - zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase
