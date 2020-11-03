@@ -3,8 +3,6 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "bin": {
-  },
   "dependencies": {
     "base32-decode": "^1.0.0",
     "base32-encode": "^1.1.1"
