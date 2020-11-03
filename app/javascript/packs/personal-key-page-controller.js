@@ -75,7 +75,6 @@ function show(event) {
 
   modal.on('show', function () {
     input.focus();
-    personalKeyContainer.classList.add('invisible');
   });
 
   modal.show();
@@ -84,7 +83,6 @@ function show(event) {
 function hide() {
   modal.on('hide', function () {
     resetForm();
-    personalKeyContainer.classList.remove('invisible');
   });
 
   modal.hide();
