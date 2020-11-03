@@ -1,4 +1,4 @@
-import base32Crockford from 'base32-crockford-browser';
+import { encodeInput } from './personal-key-input-encoder';
 
 const modalSelector = '#personal-key-confirm';
 const modal = new window.LoginGov.Modal({ el: modalSelector });
@@ -47,19 +47,6 @@ function resetForm() {
   unsetInvalidHTML();
 }
 
-function formatInput(value) {
-  // Coerce mistaken user input from 'problem' letters:
-  // https://en.wikipedia.org/wiki/Base32#Crockford.27s_Base32
-  value = base32Crockford.decode(value);
-  value = base32Crockford.encode(value);
-
-  // Add back the dashes
-  value = value.toString().match(/.{4}/g).join('-');
-
-  // And uppercase
-  return value.toUpperCase();
-}
-
 function handleSubmit(event) {
   event.preventDefault();
 
@@ -69,7 +56,7 @@ function handleSubmit(event) {
     return;
   }
 
-  const value = formatInput(input.value);
+  const value = encodeInput(input.value);
 
   if (value === personalKey) {
     unsetInvalidHTML();
