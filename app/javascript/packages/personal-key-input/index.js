@@ -15,7 +15,7 @@ export function encodeInput(value) {
   value = base32Encode(value, 'Crockford');
 
   // Add back the dashes
-  value = value.toString().match(/.{4}/g).join('-');
+  value = (value.match(/.{4}/g) || [value]).join('-');
 
   // And uppercase
   return value.toUpperCase();
