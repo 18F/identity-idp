@@ -17,7 +17,6 @@
     "build": "true"
   },
   "dependencies": {
-    "base32-crockford-browser": "^1.0.0",
     "basscss-sass": "^3.0.0",
     "classlist-polyfill": "^1.2.0",
     "cleave.js": "^1.5.3",
