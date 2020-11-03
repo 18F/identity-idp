@@ -1,3 +1,10 @@
+<%#
+locals:
+* type: One of: "info", "success", "warning", "error", "other". Defaults to "info".
+* text_tag: Optional override HTML tag for text content. Defaults to `p`.
+* class: Additional class names to add to alert wrapper.
+* message: Text to display in alert. Text can also be provided through block.
+%>
 <%
   type = local_assigns.fetch(:type, 'info')
   type = 'error' if type === 'alert'
