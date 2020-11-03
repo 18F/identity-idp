@@ -20,12 +20,13 @@ module Idv
 
           if form_response.success?
             async_result_response = async_state_done(current_async_state.result)
+            form_response = async_result_response.merge(form_response)
           end
         end
 
         presenter = ImageUploadResponsePresenter.new(
           form: form,
-          form_response: async_result_response || form_response,
+          form_response: form_response,
         )
 
         status = :accepted if current_async_state.status == :in_progress
