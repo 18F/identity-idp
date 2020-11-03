@@ -140,6 +140,25 @@ describe Idv::DocAuthController do
 
         expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
       end
+
+      it 'redirects from welcome to no camera error' do
+        result = {
+          success: false,
+          errors: {
+            message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
+          },
+          step: 'welcome',
+        }
+
+        expect(NewRelic::Agent).to receive(:notice_error)
+
+        put :update, params: { step: 'welcome', ial2_consent_given: true, no_camera: true }
+
+        expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::DOC_AUTH + ' submitted', result
+        )
+      end
     end
 
     describe 'when document capture is disabled' do

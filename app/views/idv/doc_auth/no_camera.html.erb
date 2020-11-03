@@ -1,0 +1,35 @@
+<% title t('doc_auth.errors.no_camera.title') %>
+
+<%= image_tag(asset_url('alert/warning-lg'), width: 54, alt: '') %>
+
+<h1 class="h3 mb1 mt3 my0">
+  <%= t('doc_auth.errors.no_camera.heading') %>
+</h1>
+
+<p>
+  <% if liveness_checking_enabled? %>
+    <%= t('doc_auth.info.upload_liveness_enabled') %>
+  <% else %>
+    <%= t('doc_auth.info.upload') %>
+  <% end %>
+</p>
+
+<p class="text-bold">
+  <%= t('doc_auth.errors.no_camera.explanation') %>
+</p>
+
+<p>
+  <%= t('doc_auth.info.id_worn_html') %>
+</p>
+
+<% if decorated_session.sp_name %>
+  <p>
+    <%= t(
+            'doc_auth.info.no_other_id_help_bold_html',
+            failure_to_proof_url: decorated_session.failure_to_proof_url,
+            sp_name: decorated_session.sp_name,
+        ) %>
+  </p>
+<% end %>
+
+<%= render 'idv/doc_auth/start_over_or_cancel' %>
