@@ -145,7 +145,7 @@ describe Idv::DocAuthController do
         result = {
           success: false,
           errors: {
-            message: 'Doc Auth error: Javascript could not detect camera on mobile device.'
+            message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
           },
           step: 'welcome',
         }
