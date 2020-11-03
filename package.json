@@ -17,8 +17,7 @@
     "build": "true"
   },
   "dependencies": {
-    "base32-decode": "^1.0.0",
-    "base32-encode": "^1.1.1",
+    "@18f/identity-personal-key-input": "file:./app/javascript/packages/personal-key-input",
     "basscss-sass": "^3.0.0",
     "classlist-polyfill": "^1.2.0",
     "cleave.js": "^1.5.3",

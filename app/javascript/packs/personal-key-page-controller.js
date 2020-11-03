@@ -1,4 +1,4 @@
-import { encodeInput } from './personal-key-input-encoder';
+import { encodeInput } from '@18f/identity-personal-key-input';
 
 const modalSelector = '#personal-key-confirm';
 const modal = new window.LoginGov.Modal({ el: modalSelector });

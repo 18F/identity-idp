@@ -2,6 +2,12 @@
 # yarn lockfile v1
 
 
+"@18f/identity-personal-key-input@file:./app/javascript/packages/personal-key-input":
+  version "1.0.0"
+  dependencies:
+    base32-decode "^1.0.0"
+    base32-encode "^1.1.1"
+
 "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"
