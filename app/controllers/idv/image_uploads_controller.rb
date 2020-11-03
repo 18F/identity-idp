@@ -22,14 +22,15 @@ module Idv
         update_analytics(client_response)
 
         if client_response.success?
-          doc_pii_form_result = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
-          store_pii(client_response) if client_response.success? && doc_pii_form_result.success?
+          doc_pii_form_response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
+          form_response = form_response.merge(doc_pii_form_response)
+          store_pii(client_response) if client_response.success? && doc_pii_form_response.success?
         end
       end
 
       presenter = ImageUploadResponsePresenter.new(
         form: image_form,
-        form_response: doc_pii_form_result || client_response || form_response,
+        form_response: client_response || form_response,
       )
 
       render json: presenter, status: presenter.status
