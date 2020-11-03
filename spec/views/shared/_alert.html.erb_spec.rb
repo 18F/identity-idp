@@ -73,4 +73,10 @@ describe 'shared/_alert.html.erb' do
 
     expect(rendered).to have_selector('.usa-alert.usa-alert--info[role="status"]')
   end
+
+  it 'coerces unknown types to info' do
+    render 'shared/alert', { type: 'nonsense', message: 'FYI' }
+
+    expect(rendered).to have_selector('.usa-alert.usa-alert--info')
+  end
 end
