@@ -11,8 +11,7 @@ import base32Encode from 'base32-encode';
  */
 export function encodeInput(value) {
   value = value.replace(/-/g, '');
-  value = base32Decode(value, 'Crockford');
-  value = base32Encode(value, 'Crockford');
+  value = base32Encode(base32Decode(value, 'Crockford'), 'Crockford');
 
   // Add back the dashes
   value = (value.match(/.{4}/g) || [value]).join('-');
