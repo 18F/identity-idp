@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+    <%= javascript_pack_tag 'saml-post' %>
+  </head>
+  <body>
+    <div class="container sm-py4">
+      <div class="card mx-auto sm-col-6">
+        <h1 class="h3 my0">
+          <%= t('.heading') %>
+        </h1>
+
+        <p>
+          <%= t('.no_js') %>
+        </p>
+
+        <form action="<%= action_url %>" method="POST" id="saml-post-binding">
+          <%= hidden_field_tag('csp_uris', csp_uris) if Rails.env.test? %>
+          <%= hidden_field_tag(type, message) %>
+          <% if params.key?(:RelayState) %>
+            <%= hidden_field_tag('RelayState', params[:RelayState]) %>
+          <% end %>
+          <%= submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary' %>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
