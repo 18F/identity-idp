@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'shared/_alert.html.erb' do
-  it 'renders message from param' do
+  it 'renders message from locals' do
     render 'shared/alert', { message: 'FYI' }
 
     expect(rendered).to have_content('FYI')
@@ -11,6 +11,12 @@ describe 'shared/_alert.html.erb' do
     render('shared/alert') { 'FYI' }
 
     expect(rendered).to have_content('FYI')
+  end
+
+  it 'prefers message from locals' do
+    render('shared/alert', { message: 'locals' }) { 'block' }
+
+    expect(rendered).to have_content('locals')
   end
 
   it 'defaults to type "info"' do

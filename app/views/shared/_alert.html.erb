@@ -8,7 +8,7 @@
     "usa-alert--#{type}",
   ]
   classes << local_assigns[:class] if local_assigns[:class]
-  message = yield.presence || local_assigns.fetch(:message)
+  message = local_assigns.fetch(:message, yield.presence)
 %>
 
 <%= tag.div class: classes, role: role do %>
