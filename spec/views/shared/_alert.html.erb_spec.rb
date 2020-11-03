@@ -13,10 +13,10 @@ describe 'shared/_alert.html.erb' do
     expect(rendered).to have_content('FYI')
   end
 
-  it 'defaults to type "other"' do
+  it 'defaults to type "info"' do
     render 'shared/alert', { message: 'FYI' }
 
-    expect(rendered).to have_selector('.usa-alert.usa-alert--other')
+    expect(rendered).to have_selector('.usa-alert.usa-alert--info')
   end
 
   it 'accepts alert type param' do

@@ -1,5 +1,5 @@
 <%
-  type = local_assigns.fetch(:type, 'other')
+  type = local_assigns.fetch(:type, 'info')
   role = type === 'error' ? 'alert' : 'status'
   text_tag = local_assigns.fetch(:text_tag, 'p')
 
