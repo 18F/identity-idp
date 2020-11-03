@@ -40,7 +40,10 @@ module Idv
         return handle_document_verification_failure(response) unless response.success?
         doc_pii_form_result = Idv::DocPiiForm.new(response.pii_from_doc).submit
         unless doc_pii_form_result.success?
-          return handle_document_verification_failure(doc_pii_form_result)
+          doc_auth_form_result = IdentityDocAuth::Response.new(success: false,
+                                                               errors: doc_pii_form_result.errors)
+          doc_auth_form_result = doc_auth_form_result.merge(response)
+          return handle_document_verification_failure(doc_auth_form_result)
         end
 
         save_proofing_components

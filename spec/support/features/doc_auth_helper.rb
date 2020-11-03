@@ -192,6 +192,23 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_idv_continue
   end
 
+  def mock_doc_auth_no_name_pii(method)
+    pii_with_no_name = IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.dup
+    pii_with_no_name[:last_name] = nil
+    IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: method,
+      response: IdentityDocAuth::Response.new(
+        pii_from_doc: pii_with_no_name,
+        extra: {
+          result: 'Passed',
+          billed: true,
+        },
+        success: true,
+        errors: {},
+      ),
+    )
+  end
+
   def mock_general_doc_auth_client_error(method)
     IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,
