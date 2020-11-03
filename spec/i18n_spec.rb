@@ -13,6 +13,7 @@ module I18n
           result << key if locales.any? do |current_locale|
             node = data[current_locale].first.children[key]
             next unless node&.value&.is_a?(String)
+            next if node.value.empty?
             node.value == value
           end
 
