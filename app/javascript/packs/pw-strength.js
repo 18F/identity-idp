@@ -42,6 +42,7 @@ function getFeedback(z) {
   const { warning, suggestions } = z.feedback;
 
   function lookup(str) {
+    /* eslint-disable max-len */
     // i18n-tasks-use t('zxcvbn.feedback.a_word_by_itself_is_easy_to_guess')
     // i18n-tasks-use t('zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better')
     // i18n-tasks-use t('zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase')
@@ -69,6 +70,7 @@ function getFeedback(z) {
     // i18n-tasks-use t('zxcvbn.feedback.this_is_a_very_common_password')
     // i18n-tasks-use t('zxcvbn.feedback.this_is_similar_to_a_commonly_used_password')
     // i18n-tasks-use t('zxcvbn.feedback.use_a_longer_keyboard_pattern_with_more_turns')
+    /* eslint-enable max-len */
     return I18n.t(`zxcvbn.feedback.${I18n.key(str)}`);
   }
 
