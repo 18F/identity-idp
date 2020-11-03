@@ -7,9 +7,11 @@ module Idv
       end
 
       def form_submit
-        return no_camera_redirect if params[:no_camera]
+        if FeatureManagement.document_capture_step_enabled?
+          return no_camera_redirect if params[:no_camera]
 
-        skip_to_capture if params[:skip_upload] && FeatureManagement.document_capture_step_enabled?
+          skip_to_capture if params[:skip_upload]
+        end
 
         Idv::ConsentForm.new.submit(consent_form_params)
       end
@@ -33,12 +35,10 @@ module Idv
 
       def no_camera_redirect
         redirect_to idv_doc_auth_errors_no_camera_url
-        exception = StandardError.new(
-          'Doc Auth error: Javascript could not detect camera on mobile device.',
-        )
+        msg = 'Doc Auth error: Javascript could not detect camera on mobile device.'
 
-        NewRelic::Agent.notice_error(exception)
-        failure(exception)
+        NewRelic::Agent.notice_error(StandardError.new(msg))
+        failure(msg)
       end
     end
   end
