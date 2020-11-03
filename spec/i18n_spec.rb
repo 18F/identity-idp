@@ -3,10 +3,31 @@
 require 'i18n/tasks'
 require 'yaml_normalizer'
 
+module I18n
+  module Tasks
+    class BaseTask
+      def untranslated_keys
+        locales = self.locales - [base_locale]
+        data[base_locale].key_values.each_with_object([]) do |key_value, result|
+          key, value = key_value
+          result << key if locales.any? do |current_locale|
+            node = data[current_locale].first.children[key]
+            next unless node&.value&.is_a?(String)
+            node.value == value
+          end
+
+          result
+        end
+      end
+    end
+  end
+end
+
 RSpec.describe 'I18n' do
   let(:i18n) { I18n::Tasks::BaseTask.new }
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }
+  let(:untranslated_keys) { i18n.untranslated_keys }
 
   it 'does not have missing keys' do
     expect(missing_keys).to(
@@ -19,6 +40,13 @@ RSpec.describe 'I18n' do
     expect(unused_keys).to(
       be_empty,
       "#{unused_keys.leaves.count} unused i18n keys, run `i18n-tasks unused' to show them",
+    )
+  end
+
+  it 'does not have untranslated keys' do
+    expect(untranslated_keys).to(
+      be_empty,
+      "untranslated i18n keys: #{untranslated_keys}",
     )
   end
 
