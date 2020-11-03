@@ -10,6 +10,10 @@ describe('personal-key-input', () => {
       expect(encodeInput('1234-1234-1234-1234')).to.equal('1234-1234-1234-1234');
 
       expect(encodeInput('7P41-1JFN-W7JA-DVR2')).to.equal('7P41-1JFN-W7JA-DVR2');
+
+      expect(encodeInput('')).to.be.a('string');
+
+      expect(encodeInput('abc')).to.be.a('string');
     });
   });
 });
