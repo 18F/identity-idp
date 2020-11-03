@@ -50,11 +50,15 @@
   font-size: 1.625rem;
   letter-spacing: .4px;
   line-height: 1.5;
+  // For content to appear as vertically centered, offset the larger line-height of the banner to
+  // match the space below the drag text.
+  margin-top: ((1.5rem - size('body', '2xs')) - ((1.625rem * 1.5) - 1.625rem)) / 2;
   text-transform: uppercase;
 
   + .usa-file-input__drag-text {
     @include u-display('block');
     @include u-margin-top(2);
+    line-height: 1.5rem;
   }
 }
 
