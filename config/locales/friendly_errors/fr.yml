@@ -31,9 +31,10 @@ fr:
       control_numbers_do_not_match: 'Nous n''avons pas pu vérifier votre identité.
         Essayez de prendre une nouvelle photo. Assurez-vous que le texte et le code
         à barres sont visibles, propres et non éblouissants. (Code d''''erreur: 1700)'
-      document_complete_or_error: 'Votre document n''a pas pu être chargé. Vérifiez
-        les paramètres de connexion Internet et de pare-feu et réessayez, ou essayez
-        avec un autre navigateur Web. (Code d''''erreur: 2500)'
+      document_complete_or_error: 'Vos photos n''ont pas pu être téléchargées. Vérifiez
+        votre connexion Internet et les paramètres de votre pare-feu et essayez de
+        soumettre vos images à nouveau, ou essayez d''utiliser un autre navigateur
+        Web. (Code d''erreur: 2500)'
       document_has_expired: 'Nous n''avons pas pu lire votre identité. Essayez de
         prendre de nouvelles photos. Assurez-vous que le texte est visible, propre
         et non éblouissant. (Code d''''erreur: 600)'

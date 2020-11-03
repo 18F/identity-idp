@@ -67,8 +67,8 @@ es:
         JPG, PNG, BMP o TIFF.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
-      photo_blurry: La foto está demasiado borrosa. Vuelve a intentarlo.
-      photo_glare: La foto tiene un resplandor. Vuelve a intentarlo.
+      photo_blurry: La imagen está borrosa, inténtelo de nuevo.
+      photo_glare: La imagen tiene brillo, inténtelo de nuevo.
       quota_reached: Lo sentimos, su proveedor de servicios ha alcanzado su límite
         de verificación de identidad. Póngase en contacto con su proveedor de servicios
         para obtener más información.
