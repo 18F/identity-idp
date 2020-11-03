@@ -3,7 +3,6 @@ import { encodeInput } from '@18f/identity-personal-key-input';
 const modalSelector = '#personal-key-confirm';
 const modal = new window.LoginGov.Modal({ el: modalSelector });
 
-const personalKeyContainer = document.getElementById('personal-key');
 const personalKeyWords = [].slice.call(document.querySelectorAll('[data-personal-key]'));
 const formEl = document.getElementById('confirm-key');
 const input = formEl.querySelector('input[type="text"]');
