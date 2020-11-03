@@ -61,4 +61,16 @@ describe 'shared/_alert.html.erb' do
 
     expect(rendered).to have_selector('.usa-alert[role="alert"]')
   end
+
+  it 'normalizes "alert" type as "error"' do
+    render 'shared/alert', { type: 'alert', message: 'Attention!' }
+
+    expect(rendered).to have_selector('.usa-alert.usa-alert--error[role="alert"]')
+  end
+
+  it 'normalizes "notice" type as "info"' do
+    render 'shared/alert', { type: 'notice', message: 'FYI' }
+
+    expect(rendered).to have_selector('.usa-alert.usa-alert--info[role="status"]')
+  end
 end
