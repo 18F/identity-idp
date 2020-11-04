@@ -68,7 +68,7 @@ es:
           identidad expedido por el estado. Luego, se tomará una foto para confirmar
           que es el propietario de la identificación.
         heading: Necesita una cámara para verificar su identidad
-        title: Camera needed
+        title: Necesita cámara
       not_a_file: La selección no era un archivo válido.
     forms:
       address1: Dirección

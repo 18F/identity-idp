@@ -3,7 +3,7 @@ es:
   openid_connect:
     authorization:
       errors:
-        bad_client_id: Bad client_id
+        bad_client_id: Client_id incorrecto
         invalid_verified_within_duration:
           one: el valor debe ser al menos %{count} día o más
           other: el valor debe tener al menos %{count} días o más

@@ -5,7 +5,15 @@ require 'yaml_normalizer'
 
 ALLOWED_UNTRANSLATED_KEYS = [
   'account.navigation.menu', # "Menu" is "Menu" in French
+  'doc_auth.headings.photo', # "Photo" is "Photo" in French
   /^i18n\.locale\./, # Show locale options translated as that language, regardless of current locale
+  'links.contact', # "Contact" is "Contact" in French
+  'simple_form.no', # "No" is "No" in Spanish
+  'simple_form.required.html', # No text content
+  'simple_form.required.mark', # No text content
+  'time.am', # "AM" is "AM" in French and Spanish
+  'time.pm', # "PM" is "PM" in French and Spanish
+  'two_factor_authentication.devices.piv_cac', # "PIV/CAC" does not translate
 ]
 
 module I18n

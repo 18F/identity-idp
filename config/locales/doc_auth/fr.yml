@@ -74,7 +74,7 @@ fr:
           vous-même pour confirmer que vous êtes bien le propriétaire de la carte
           d'identité.
         heading: Vous avez besoin d'une caméra pour vérifier votre identité
-        title: Camera needed
+        title: Appareil photo nécessaire
       not_a_file: La sélection n'était pas un fichier valide.
     forms:
       address1: Adresse
