@@ -32,7 +32,7 @@ RSpec.describe 'I18n' do
 
       expect(missing_key_names).to(
         be_empty,
-        "js string keys used but missing from config/js_locale_strings.yml: #{missing_key_names}"
+        "js string keys used but missing from config/js_locale_strings.yml: #{missing_key_names}",
       )
     end
 
@@ -41,7 +41,7 @@ RSpec.describe 'I18n' do
 
       expect(unused_key_names).to(
         be_empty,
-        "js string keys exist in config/js_locale_strings.yml but are unused: #{unused_key_names}"
+        "js string keys exist in config/js_locale_strings.yml but are unused: #{unused_key_names}",
       )
     end
   end
