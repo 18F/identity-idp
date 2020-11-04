@@ -22,6 +22,30 @@ RSpec.describe 'I18n' do
     )
   end
 
+  context 'javascript strings' do
+    let(:i18n) { I18n::Tasks::BaseTask.new({ search: { paths: ['app/javascript'] } }) }
+    let(:key_names) { YAML.load_file('config/js_locale_strings.yml') }
+    let(:used_key_names) { i18n.used_tree.key_names }
+
+    it 'does not have missing keys' do
+      missing_key_names = used_key_names - key_names
+
+      expect(missing_key_names).to(
+        be_empty,
+        "js string keys used but missing from config/js_locale_strings.yml: #{missing_key_names}",
+      )
+    end
+
+    it 'does not have unused keys' do
+      unused_key_names = key_names - used_key_names
+
+      expect(unused_key_names).to(
+        be_empty,
+        "js string keys exist in config/js_locale_strings.yml but are unused: #{unused_key_names}",
+      )
+    end
+  end
+
   it 'does not have keys with missing interpolation arguments' do
     missing_interpolation_argument_keys = []
 

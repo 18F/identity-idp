@@ -241,7 +241,7 @@ function FormSteps({
         }}
       />
       <Button type="submit" isPrimary className="margin-y-5">
-        {t(isLastStep ? 'forms.buttons.submit.default' : 'forms.buttons.continue')}
+        {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
       </Button>
       {Footer && <Footer />}
     </form>
