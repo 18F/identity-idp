@@ -14,7 +14,7 @@ ALLOWED_UNTRANSLATED_KEYS = [
   'time.am', # "AM" is "AM" in French and Spanish
   'time.pm', # "PM" is "PM" in French and Spanish
   'two_factor_authentication.devices.piv_cac', # "PIV/CAC" does not translate
-]
+].freeze
 
 module I18n
   module Tasks
