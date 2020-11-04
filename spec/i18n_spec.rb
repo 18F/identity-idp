@@ -3,6 +3,11 @@
 require 'i18n/tasks'
 require 'yaml_normalizer'
 
+ALLOWED_UNTRANSLATED_KEYS = [
+  'account.navigation.menu', # "Menu" is "Menu" in French
+  /^i18n\.locale\./, # Show locale options translated as that language, regardless of current locale
+]
+
 module I18n
   module Tasks
     class BaseTask
@@ -45,9 +50,13 @@ RSpec.describe 'I18n' do
   end
 
   it 'does not have untranslated keys' do
-    expect(untranslated_keys).to(
+    unallowed_untranslated_keys = untranslated_keys.reject do |key|
+      ALLOWED_UNTRANSLATED_KEYS.any? { |pattern_or_key| key =~ Regexp.new(pattern_or_key) }
+    end
+
+    expect(unallowed_untranslated_keys).to(
       be_empty,
-      "untranslated i18n keys: #{untranslated_keys}",
+      "untranslated i18n keys: #{unallowed_untranslated_keys}",
     )
   end
 
