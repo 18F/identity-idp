@@ -28,10 +28,17 @@ executors:
 commands:
   bundle-yarn-install:
     steps:
+      - restore_cache:
+          keys:
+            - v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
       - run:
           name: Install dependencies
           command: |
-            bundle check || bundle install --deployment --jobs=4 --retry=3 --path vendor/bundle
+            bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/bundle
+      - save_cache:
+          key: v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
       - restore_cache:
           keys:
             - v1-identity-idp-yarn-{{ checksum "yarn.lock" }}

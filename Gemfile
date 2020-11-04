@@ -90,7 +90,6 @@ end
 group :development, :test do
   gem 'bootsnap', '~> 1.4.7', require: false
   gem 'bullet', '>= 6.0.2'
-  gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
   gem 'parallel_tests'
   gem 'pry-byebug'
@@ -111,6 +110,7 @@ group :test do
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'faker'
   gem 'gmail'
+  gem 'i18n-tasks', '>= 0.9.31'
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
