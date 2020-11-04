@@ -62,10 +62,6 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :mobile_back_image)
   end
 
-  def idv_doc_auth_success_step
-    idv_doc_auth_step_path(step: :doc_success)
-  end
-
   def idv_doc_auth_verify_step
     idv_doc_auth_step_path(step: :verify)
   end
@@ -164,14 +160,8 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_link t('doc_auth.buttons.change_address')
   end
 
-  def complete_doc_auth_steps_before_doc_success_step(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    click_idv_continue
-  end
-
   def complete_doc_auth_steps_before_self_image_step
-    complete_doc_auth_steps_before_doc_success_step
+    complete_doc_auth_steps_before_verify_step
     click_idv_continue
   end
 
@@ -187,7 +177,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def complete_all_doc_auth_steps(expect_accessible: false)
-    complete_doc_auth_steps_before_doc_success_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     click_idv_continue
   end

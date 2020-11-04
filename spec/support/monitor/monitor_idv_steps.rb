@@ -42,9 +42,6 @@ module MonitorIdvSteps
     expect(page).to have_current_path('/verify/doc_auth/verify')
 
     click_on 'Continue'
-    expect(page).to have_current_path('/verify/doc_auth/doc_success')
-
-    click_on 'Continue'
     expect(page).to have_current_path('/verify/phone')
 
     click_on 'Continue'

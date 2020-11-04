@@ -83,8 +83,7 @@ fr:
         un dossier</lg-underline>
       city: Ville
       dob: Date de naissance
-      doc_success: Nous avons vérifié votre numéro de sécurité sociale et votre identifiant
-        délivré par l'État.
+      doc_success: Nous avons vérifié vos informations personnelles
       first_name: Prénom
       last_name: Nom de famille
       selected_file: Fichier sélectionné

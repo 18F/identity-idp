@@ -20,7 +20,7 @@ feature 'Doc Auth Funnel report' do
       'total_verify_attempted_users_count' => 2,
     }
   end
-  let(:doc_success_funnel) do
+  let(:verify_funnel) do
     {
       'back_image_error_count_average' => 0.0,
       'back_image_submit_count_average' => 1.0,
@@ -34,8 +34,6 @@ feature 'Doc Auth Funnel report' do
       'capture_mobile_back_image_submit_count_average' => 0.0,
       'choose_method_view_count_average' => 0.0,
       'choose_method_view_percent' => 0.0,
-      'doc_success_view_count_average' => 1.0,
-      'doc_success_view_percent' => 100.0,
       'email_sent_view_count_average' => 0.0,
       'email_sent_view_percent' => 0.0,
       'encrypt_view_count_average' => 0.0,
@@ -79,8 +77,8 @@ feature 'Doc Auth Funnel report' do
       'verified_view_count_average' => 0.0,
       'verified_view_percent' => 0.0,
       'verify_error_count_average' => 0.0,
-      'verify_phone_view_count_average' => 0.0,
-      'verify_phone_view_percent' => 0.0,
+      'verify_phone_view_count_average' => 1.0,
+      'verify_phone_view_percent' => 100.0,
       'verify_submit_count_average' => 1.0,
       'verify_view_count_average' => 1.0,
       'verify_view_percent' => 100.0,
@@ -95,21 +93,21 @@ feature 'Doc Auth Funnel report' do
 
   it 'works for one flow' do
     sign_in_and_2fa_user(user)
-    complete_doc_auth_steps_before_doc_success_step
+    complete_all_doc_auth_steps
 
-    expect(subject.new.call).to eq(doc_success_funnel.merge(summary1))
+    expect(subject.new.call).to eq(verify_funnel.merge(summary1))
 
     Funnel::DocAuth::ResetSteps.call(user.id)
-    expect(subject.new.call).to_not eq(doc_success_funnel.merge(summary1))
+    expect(subject.new.call).to_not eq(verify_funnel.merge(summary1))
   end
 
   it 'works for two flows' do
     sign_in_and_2fa_user(user)
-    complete_doc_auth_steps_before_doc_success_step
+    complete_all_doc_auth_steps
     sign_in_and_2fa_user(user2)
-    complete_doc_auth_steps_before_doc_success_step
+    complete_all_doc_auth_steps
 
-    expect(subject.new.call).to eq(doc_success_funnel.merge(summary2))
+    expect(subject.new.call).to eq(verify_funnel.merge(summary2))
   end
 
   it 'does not create a doc_auth_log entry without a welcome first' do
