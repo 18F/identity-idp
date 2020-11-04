@@ -42,10 +42,10 @@ module MonitorIdvSteps
     expect(page).to have_current_path('/verify/doc_auth/verify')
 
     click_on 'Continue'
-    expect(page).to have_current_path('/verify/phone')
+    sleep 1 while page.has_content?('This might take up to a minute')
 
     click_on 'Continue'
-    expect(page).to have_current_path('/verify/review')
+    expect(page).to have_current_path('/verify/doc_auth/verify')
 
     fill_in 'Password', with: monitor.config.login_gov_sign_in_password
     click_on 'Continue'
