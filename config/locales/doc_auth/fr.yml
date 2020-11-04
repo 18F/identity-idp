@@ -75,7 +75,7 @@ fr:
           d'identité.
         heading: Vous avez besoin d'une caméra pour vérifier votre identité
         title: Camera needed
-      not_a_file: La sélection n'était pas un fichier valide
+      not_a_file: La sélection n'était pas un fichier valide.
     forms:
       address1: Adresse
       change_file: Changer de fichier

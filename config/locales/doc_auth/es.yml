@@ -69,7 +69,7 @@ es:
           que es el propietario de la identificación.
         heading: Necesita una cámara para verificar su identidad
         title: Camera needed
-      not_a_file: La selección no era un archivo válido
+      not_a_file: La selección no era un archivo válido.
     forms:
       address1: Dirección
       change_file: Cambiar archivo

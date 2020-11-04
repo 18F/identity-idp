@@ -62,7 +62,7 @@ en:
           that has a camera, like a mobile phone, tablet or computer with a webcam.
         heading: You need a camera to verify your identity
         title: Camera needed
-      not_a_file: The selection was not a valid file
+      not_a_file: The selection was not a valid file.
     forms:
       address1: Address
       change_file: Change file
