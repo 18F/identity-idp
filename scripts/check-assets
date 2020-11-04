@@ -4,16 +4,3 @@ require 'asset_checker'
 
 has_missing_assets = AssetChecker.new(ARGV).check_files
 exit 1 if has_missing_assets
-
-require 'i18n/tasks'
-i18n = I18n::Tasks::BaseTask.new({ search: { paths: ['app/javascript'] } })
-key_names = YAML.load_file('config/js_locale_strings.yml')
-used_key_names = i18n.used_tree.key_names
-
-missing_key_names = used_key_names - key_names
-missing_key_names.each { |key| warn "Missing translation in js_locale_strings.yml: #{key}" }
-exit 1 if missing_key_names.any?
-
-unused_key_names = key_names - used_key_names
-unused_key_names.each { |key| warn "Unused translation js_locale_strings.yml: #{key}" }
-exit 1 if unused_key_names.any?
