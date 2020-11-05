@@ -17,7 +17,11 @@ module Idv
 
         if current_async_state.status == :done
           process_result(current_async_state.result)
-          async_state_done if form_response.success?
+
+          if form_response.success?
+            async_result_response = async_state_done(current_async_state.result)
+            form_response = async_result_response.merge(form_response)
+          end
         end
 
         presenter = ImageUploadResponsePresenter.new(
@@ -31,12 +35,20 @@ module Idv
           presenter,
           status: status || presenter.status,
         )
+
+        form_response
       end
 
-      def async_state_done
+      def async_state_done(async_result)
+        doc_pii_form_result = Idv::DocPiiForm.new(async_result[:pii_from_doc]).submit
+
         delete_async
-        mark_step_complete(:document_capture)
-        save_proofing_components
+        if doc_pii_form_result.success?
+          mark_step_complete(:document_capture)
+          save_proofing_components
+        end
+
+        doc_pii_form_result
       end
 
       def process_result(result)
