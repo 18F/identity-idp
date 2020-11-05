@@ -27,7 +27,7 @@ RSpec.describe 'Account email language' do
           click_link('Edit')
         end
 
-        choose 'French'
+        choose 'Français'
         click_button 'Submit'
       end
 
