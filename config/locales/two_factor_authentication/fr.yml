@@ -19,10 +19,10 @@ fr:
       text_html: Si vous ne pouvez pas utiliser l'une de ces options de sécurité ci-dessus,
         vous pouvez réinitialiser vos préférences par %{link}.
     backup_code_fallback:
-      question: Don't have your backup codes available?
-    backup_code_header_text: Enter your backup security code
-    backup_code_prompt: You can use this security code once. After you enter it, you'll
-      need to use a new key.
+      question: Vous n'avez pas vos codes de secours disponibles?
+    backup_code_header_text: Entrez votre code de sécurité de secours
+    backup_code_prompt: Vous pouvez utiliser ce code de sécurité une fois. Après l'avoir
+      entré, vous devrez utiliser une nouvelle clé.
     choose_another_option: "‹ Choisissez une autre option"
     devices:
       auth_app: Application d'authentification

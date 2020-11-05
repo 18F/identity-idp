@@ -39,7 +39,7 @@ fr:
       confirm: Êtes-vous sûr de vouloir régénérer vos codes de sauvegarde?
     buttons:
       back: Retour
-      cac: Present PIV/CAC card
+      cac: Insérez votre PIV/CAC
       cancel: Oui, annuler
       confirm: Confirmer
       continue: Continuer
