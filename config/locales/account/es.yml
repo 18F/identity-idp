@@ -7,10 +7,10 @@ es:
         cuentas gubernamentales en línea. A continuación se muestra una lista de todas
         las cuentas que tiene actualmente conectadas.
     email_language:
+      default: "%{language} (predeterminado)"
       edit_title: Editar la preferencia de idioma del correo electrónico
       languages_list: "%{app_name} le permite recibir su comunicación por correo electrónico
         en %{list}"
-      default: "%{language} (predeterminado)"
       name:
         en: Inglés
         es: Español

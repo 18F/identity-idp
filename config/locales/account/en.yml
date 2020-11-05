@@ -7,10 +7,10 @@ en:
         government accounts online. Below is a list of all the accounts you currently
         have connected.
     email_language:
+      default: "%{language} (default)"
       edit_title: Edit email language preference
       languages_list: "%{app_name} allows you to receive your email communication
         in %{list}."
-      default: "%{language} (default)"
       name:
         en: English
         es: Spanish
