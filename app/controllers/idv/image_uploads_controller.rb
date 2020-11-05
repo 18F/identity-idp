@@ -9,8 +9,6 @@ module Idv
     def create
       form_response = image_form.submit
 
-      analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM, form_response.to_h)
-
       if form_response.success?
         client_response = doc_auth_client.post_images(
           front_image: image_form.front.read,
@@ -27,6 +25,8 @@ module Idv
           store_pii(client_response) if client_response.success? && doc_pii_form_response.success?
         end
       end
+
+      analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM, form_response.to_h)
 
       presenter = ImageUploadResponsePresenter.new(
         form: image_form,
