@@ -18,14 +18,14 @@
           <%= t('.no_js') %>
         </p>
 
-        <form action="<%= action_url %>" method="POST" id="saml-post-binding">
+        <%= form_tag action_url, id: 'saml-post-binding' do %>
           <%= hidden_field_tag('csp_uris', csp_uris) if Rails.env.test? %>
           <%= hidden_field_tag(type, message) %>
           <% if params.key?(:RelayState) %>
             <%= hidden_field_tag('RelayState', params[:RelayState]) %>
           <% end %>
           <%= submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary' %>
-        </form>
+        <% end %>
       </div>
     </div>
   </body>
