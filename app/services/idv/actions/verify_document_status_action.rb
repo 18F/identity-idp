@@ -35,6 +35,8 @@ module Idv
           presenter,
           status: status || presenter.status,
         )
+
+        form_response
       end
 
       def async_state_done(async_result)

@@ -290,9 +290,18 @@ describe Idv::DocAuthController do
       expect(response.status).to eq(400)
       expect(response.body).to eq({
         success: false,
-        errors: [{ field: 'pii', message: I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')}],
+        errors: [{ field: 'pii',
+                   message: I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness') }],
         remaining_attempts: Figaro.env.acuant_max_attempts.to_i,
       }.to_json)
+      expect(@analytics).to have_received(:track_event).with(
+        Analytics::DOC_AUTH + ' submitted', {
+          errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
+          success: false,
+          remaining_attempts: Figaro.env.acuant_max_attempts.to_i,
+          step: 'verify_document_status',
+        }
+      )
     end
   end
 
