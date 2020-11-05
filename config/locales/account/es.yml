@@ -10,8 +10,8 @@ es:
       edit_title: Editar la preferencia de idioma del correo electrónico
       languages_list: "%{app_name} le permite recibir su comunicación por correo electrónico
         en %{list}"
+      default: "%{language} (predeterminado)"
       name:
-        default: Inglés (predeterminado)
         en: Inglés
         es: Español
         fr: Francés

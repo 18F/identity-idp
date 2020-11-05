@@ -10,8 +10,8 @@ fr:
       edit_title: Modifier la préférence de langue des e-mails
       languages_list: "%{app_name} vous permet de recevoir votre communication par
         e-mail dans %{list}."
+      default: "%{language} (par défaut)"
       name:
-        default: Anglais (par défaut)
         en: Anglais
         es: l'Espagnol
         fr: langue française

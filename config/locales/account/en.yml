@@ -10,8 +10,8 @@ en:
       edit_title: Edit email language preference
       languages_list: "%{app_name} allows you to receive your email communication
         in %{list}."
+      default: "%{language} (default)"
       name:
-        default: English (default)
         en: English
         es: Spanish
         fr: French

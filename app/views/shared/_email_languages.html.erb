@@ -17,9 +17,9 @@ locals:
                           class: 'usa-radio__input',
                           id: item_id) %>
         <%= f.label(:email_language,
-                    locale == I18n.default_locale ?
-                      t("account.email_language.name.default") :
-                      t("account.email_language.name.#{locale}"),
+                    locale == I18n.locale ?
+                      t("account.email_language.default", language: t("i18n.locale.#{locale}")) :
+                      t("i18n.locale.#{locale}"),
                     for: item_id,
                     class: 'usa-radio__label usa-radio-bordered') %>
       </li>

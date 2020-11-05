@@ -22,7 +22,7 @@ class UserDecorator
       # i18n-tasks-use t('account.email_language.name.fr')
       I18n.t("account.email_language.name.#{user.email_language}")
     else
-      I18n.t('account.email_language.name.default')
+      I18n.t('account.email_language.name.en')
     end
   end
 
