@@ -13,8 +13,10 @@ function PromptOnNavigate() {
       event.returnValue = '';
     }
 
-    window.addEventListener('beforeunload', onBeforeUnload);
-    return () => window.removeEventListener('beforeunload', onBeforeUnload);
+    window.onbeforeunload = onBeforeUnload;
+    return () => {
+      window.onbeforeunload = null;
+    };
   });
 
   return null;
