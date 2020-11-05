@@ -9,7 +9,7 @@ module I18n
       ALLOWED_UNTRANSLATED_KEYS = [
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
-        { key: /^i18n\.locale\./ }, # Show locale options translated as that language, regardless of current locale
+        { key: /^i18n\.locale\./ }, # Show locale options translated as that language
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
         { key: 'simple_form.required.html' }, # No text content
@@ -20,25 +20,28 @@ module I18n
       ].freeze
 
       def untranslated_keys
-        locales = self.locales - [base_locale]
         data[base_locale].key_values.each_with_object([]) do |key_value, result|
           key, value = key_value
-          result << key if locales.any? do |current_locale|
-            node = data[current_locale].first.children[key]
-            next unless node&.value&.is_a?(String)
-            next if node.value.empty?
-            next if allowed_untranslated_key?(current_locale, key)
-            node.value == value
-          end
-
+          result << key if untranslated_key?(key, value)
           result
+        end
+      end
+
+      def untranslated_key?(key, base_locale_value)
+        locales = self.locales - [base_locale]
+        locales.any? do |current_locale|
+          node = data[current_locale].first.children[key]
+          next unless node&.value&.is_a?(String)
+          next if node.value.empty?
+          next if allowed_untranslated_key?(current_locale, key)
+          node.value == base_locale_value
         end
       end
 
       def allowed_untranslated_key?(locale, key)
         ALLOWED_UNTRANSLATED_KEYS.any? do |entry|
           next unless key =~ Regexp.new(entry[:key])
-          !entry.has_key?(:locales) || entry[:locales].include?(locale.to_sym)
+          !entry.key?(:locales) || entry[:locales].include?(locale.to_sym)
         end
       end
     end
