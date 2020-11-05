@@ -3,22 +3,22 @@
 require 'i18n/tasks'
 require 'yaml_normalizer'
 
-ALLOWED_UNTRANSLATED_KEYS = [
-  'account.navigation.menu', # "Menu" is "Menu" in French
-  'doc_auth.headings.photo', # "Photo" is "Photo" in French
-  /^i18n\.locale\./, # Show locale options translated as that language, regardless of current locale
-  'links.contact', # "Contact" is "Contact" in French
-  'simple_form.no', # "No" is "No" in Spanish
-  'simple_form.required.html', # No text content
-  'simple_form.required.mark', # No text content
-  'time.am', # "AM" is "AM" in French and Spanish
-  'time.pm', # "PM" is "PM" in French and Spanish
-  'two_factor_authentication.devices.piv_cac', # "PIV/CAC" does not translate
-].freeze
-
 module I18n
   module Tasks
     class BaseTask
+      ALLOWED_UNTRANSLATED_KEYS = [
+        { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
+        { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
+        { key: /^i18n\.locale\./ }, # Show locale options translated as that language, regardless of current locale
+        { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
+        { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
+        { key: 'simple_form.required.html' }, # No text content
+        { key: 'simple_form.required.mark' }, # No text content
+        { key: 'time.am' }, # "AM" is "AM" in French and Spanish
+        { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
+        { key: 'two_factor_authentication.devices.piv_cac' }, # "PIV/CAC" does not translate
+      ].freeze
+
       def untranslated_keys
         locales = self.locales - [base_locale]
         data[base_locale].key_values.each_with_object([]) do |key_value, result|
@@ -27,10 +27,18 @@ module I18n
             node = data[current_locale].first.children[key]
             next unless node&.value&.is_a?(String)
             next if node.value.empty?
+            next if allowed_untranslated_key?(current_locale, key)
             node.value == value
           end
 
           result
+        end
+      end
+
+      def allowed_untranslated_key?(locale, key)
+        ALLOWED_UNTRANSLATED_KEYS.any? do |entry|
+          next unless key =~ Regexp.new(entry[:key])
+          !entry.has_key?(:locales) || entry[:locales].include?(locale.to_sym)
         end
       end
     end
@@ -58,13 +66,9 @@ RSpec.describe 'I18n' do
   end
 
   it 'does not have untranslated keys' do
-    unallowed_untranslated_keys = untranslated_keys.reject do |key|
-      ALLOWED_UNTRANSLATED_KEYS.any? { |pattern_or_key| key =~ Regexp.new(pattern_or_key) }
-    end
-
-    expect(unallowed_untranslated_keys).to(
+    expect(untranslated_keys).to(
       be_empty,
-      "untranslated i18n keys: #{unallowed_untranslated_keys}",
+      "untranslated i18n keys: #{untranslated_keys}",
     )
   end
 
