@@ -1,0 +1,34 @@
+<% title t('titles.enter_2fa_code') %>
+
+<h1 class="h3 my0">
+  <%= @presenter.header %>
+</h1>
+
+<%= form_tag(:login_two_factor_authenticator, method: :post, role: 'form', class: 'mt3 sm-mt4') do %>
+  <%= render @presenter.reauthn_hidden_field_partial %>
+  <%= label_tag 'code', t('simple_form.required.html') + t('forms.two_factor.code'), class: 'block bold' %>
+  <div class="col-12 sm-col-5 mb1 sm-mb0 sm-mr-20p inline-block">
+    <%= text_field_tag :code, '',
+                       value: @code,
+                       required: true,
+                       aria: { invalid: false, describedby: 'code-instructs' },
+                       autofocus: true,
+                       pattern: '[0-9]*',
+                       class: 'col-12 field monospace mfa',
+                       type: 'tel',
+                       maxlength: Devise.otp_length,
+                       autocomplete: 'one-time-code' %>
+  </div>
+  <div class="border border-light-blue rounded-lg py1 mt2 mb4 sm-my2 col-12 sm-col-7">
+    <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
+    <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?,
+                      class: 'mr1 ml2' %>
+    <%= label_tag 'remember_device',
+                  t('forms.messages.remember_device'),
+                  class: 'blue mr2' %>
+  </div>
+  <%= submit_tag 'Submit', class: 'btn btn-primary align-top' %>
+<% end %>
+
+<%= render 'shared/fallback_links', presenter: @presenter %>
+<%= render 'shared/cancel', link: @presenter.cancel_link %>
