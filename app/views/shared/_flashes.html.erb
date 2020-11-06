@@ -1,7 +1,11 @@
-<% flash.to_hash.slice(*ApplicationController::FLASH_KEYS).each do |type, message| %>
+<%
+flash.
+  to_hash.
+  slice(*ApplicationController::FLASH_KEYS + ApplicationController::FLASH_KEY_MAP.keys).
+  each do |type, message| %>
   <% if message.present? %>
     <%= render 'shared/alert', {
-      type: type,
+      type: ApplicationController::FLASH_KEY_MAP.fetch(type, type),
       message: safe_join([message.html_safe]),
       class: 'margin-bottom-4',
     } %>
