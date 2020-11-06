@@ -50,6 +50,7 @@ feature 'cac proofing verify info step' do
       click_continue
 
       expect(page).to have_current_path(idv_cac_proofing_verify_step)
+      expect(page).to have_content t('idv.failure.timeout')
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_continue
       expect(page).to have_current_path(idv_cac_proofing_success_step)
