@@ -16,7 +16,7 @@ module Users
     def new
       analytics.track_event(
         Analytics::SIGN_IN_PAGE_VISIT,
-        flash: flash[:error],
+        flash: flash[:alert],
         stored_location: session['user_return_to'],
       )
 
