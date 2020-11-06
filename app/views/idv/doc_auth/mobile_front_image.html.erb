@@ -32,7 +32,6 @@
       <%= t('doc_auth.buttons.take_picture') %>
     </button>
     <%= f.input :image, label: false, as: :file, required: true, input_html: { aria: { invalid: false } }, wrapper_class: 'hidden' %>
-    <div class='my2' id='target'></div>
     <div class='mt3'>
       <%= render 'idv/doc_auth/submit_with_spinner' %>
     </div>
@@ -47,4 +46,3 @@
 <% end %>
 
 <%= render 'idv/doc_auth/start_over_or_cancel' %>
-<%= javascript_pack_tag 'image-preview' %>

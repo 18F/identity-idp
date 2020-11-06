@@ -12,7 +12,6 @@
   <%= render 'idv/doc_auth/notices', flow_session: flow_session %>
   <div id='acuant-fallback-image-form'>
     <%= f.input :image, label: false, as: :file, required: true, input_html: { aria: { invalid: false } }, wrapper_class: 'mt3 sm-col-8' %>
-    <div class='my2' id='target'></div>
     <div class='mt3'>
       <%= render 'idv/doc_auth/submit_with_spinner' %>
     </div>
@@ -27,4 +26,3 @@
 <% end %>
 
 <%= render 'idv/doc_auth/start_over_or_cancel' %>
-<%= javascript_pack_tag 'image-preview' %>
