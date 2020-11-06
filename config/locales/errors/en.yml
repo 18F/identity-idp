@@ -46,6 +46,8 @@ en:
         <li>You are not wearing a hat or glasses, and your head is fully visible</li>
         </ul>
       document_capture_selfie_consent_blocked: Your camera is blocked
+      document_verification_timeout: The server took too long to respond. Please try
+        again.
       general_error: We could not read or verify your ID. Try to take and upload new
         images of both the front and back of your ID. Make sure everything can be
         easily read, including the barcode.
@@ -61,10 +63,12 @@ en:
         <li class="mxn3">The background behind your ID is a solid color</li>
         <li class="mxn3">Background is visible behind the document</li>
         </ul>
+      invalid_file_input_type: This file type is not accepted, please choose a JPG,
+        PNG, BMP, or TIFF file.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
-      photo_blurry: Photo is too blurry, please try again.
-      photo_glare: Photo has glare, please try again.
+      photo_blurry: Image is blurry, please try again.
+      photo_glare: Image has glare, please try again.
       quota_reached: Sorry your service provider has reached its identity verification
         limit.  Please contact your service provider for more information.
       selfie: We couldn't read the photo of yourself, or match the photo to your ID.
@@ -72,7 +76,7 @@ en:
       send_link_throttle: You tried too many times, please try again in 10 minutes.
         You can also click on Start Over and choose to use your computer instead.
     file_input:
-      invalid_type: This file type is not accepted, please choose another file.
+      invalid_type: This file type is not accepted, please try again.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You've entered too many incorrect passwords. You

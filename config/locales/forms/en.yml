@@ -56,6 +56,8 @@ en:
       buttons:
         delete: Delete email address
     example: 'example:'
+    file_input:
+      file_updated: File updated
     messages:
       remember_device: Remember this browser
     passwords:
@@ -118,6 +120,9 @@ en:
     registration:
       labels:
         email: Email address
+        email_language: Select email language preference
+    ssn:
+      show: Show Social Security Number
     totp_delete:
       caution: If you remove your authentication app you won't be able to use it to
         access your login.gov account.

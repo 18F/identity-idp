@@ -45,11 +45,11 @@ class MonitorHelper
     !local?
   end
 
-  def filter_if(env_name)
+  def filter_if(*env_names)
     return if local? # always run all tests on local
 
-    return if env_name == config.monitor_env
-    context.skip "skipping test only meant for #{env_name}"
+    return if env_names.include?(config.monitor_env)
+    context.skip "skipping test only meant for #{env_names.join('|')}"
   end
 
   def filter_unless(env_name)

@@ -47,9 +47,9 @@ export function toFormEntryError(uploadFieldError) {
 /**
  * @type {import('../context/upload').UploadImplementation}
  */
-async function upload(payload, { endpoint, csrf }) {
+async function upload(payload, { method = 'POST', endpoint, csrf }) {
   const response = await window.fetch(endpoint, {
-    method: 'POST',
+    method,
     headers: {
       'X-CSRF-Token': csrf,
     },
@@ -81,6 +81,8 @@ async function upload(payload, { endpoint, csrf }) {
 
     throw error;
   }
+
+  result.isPending = response.status === 202;
 
   return /** @type {UploadSuccessResponse} */ (result);
 }

@@ -102,6 +102,25 @@ feature 'doc auth document capture step' do
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
       end
 
+      it 'does not proceed to the next page with a successful doc auth but missing information' do
+        allow_any_instance_of(ApplicationController).
+          to receive(:analytics).and_return(fake_analytics)
+
+        mock_doc_auth_no_name_pii(:post_images)
+        attach_images
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+
+        expect(fake_analytics).to have_logged_event(
+          Analytics::DOC_AUTH + ' submitted',
+          step: 'document_capture',
+          result: 'Passed',
+          billed: true,
+          success: false,
+        )
+      end
+
       it 'offers in person option on failure' do
         enable_in_person_proofing
 

@@ -175,7 +175,7 @@ module Idv
 
     def send_reminder
       current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.letter_reminder(email_address.email).deliver_later
+        UserMailer.letter_reminder(current_user, email_address.email).deliver_later
       end
     end
 
@@ -222,8 +222,14 @@ module Idv
       pii = async_state.pii
       idv_session.idv_usps_document_capture_session_uuid = nil
 
-      analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
+      async_state_done_analytics(result)
       result.success? ? resolution_success(pii) : failure
+    end
+
+    def async_state_done_analytics(result)
+      analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
+      Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, 2, :lexis_nexis_resolution)
+      Db::ProofingCost::AddUserProofingCost.call(current_user.id, :lexis_nexis_resolution)
     end
   end
 end

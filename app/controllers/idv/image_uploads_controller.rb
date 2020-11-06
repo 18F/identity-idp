@@ -9,8 +9,6 @@ module Idv
     def create
       form_response = image_form.submit
 
-      analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM, form_response.to_h)
-
       if form_response.success?
         client_response = doc_auth_client.post_images(
           front_image: image_form.front.read,
@@ -21,19 +19,21 @@ module Idv
 
         update_analytics(client_response)
 
-        store_pii(client_response) if client_response.success?
-        status = :bad_request unless client_response.success?
-      else
-        status = image_form.status
+        if client_response.success?
+          doc_pii_form_response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
+          form_response = form_response.merge(doc_pii_form_response)
+          store_pii(client_response) if client_response.success? && doc_pii_form_response.success?
+        end
       end
+
+      analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM, form_response.to_h)
 
       presenter = ImageUploadResponsePresenter.new(
         form: image_form,
         form_response: client_response || form_response,
       )
 
-      render json: presenter,
-             status: status || :ok
+      render json: presenter, status: presenter.status
     end
 
     private

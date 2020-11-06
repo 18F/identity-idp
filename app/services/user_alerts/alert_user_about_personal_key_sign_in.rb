@@ -4,7 +4,7 @@ module UserAlerts
     def self.call(user, disavowal_token)
       emails = user.confirmed_email_addresses.map do |email_address|
         UserMailer.personal_key_sign_in(
-          email_address.email, disavowal_token: disavowal_token
+          user, email_address.email, disavowal_token: disavowal_token
         ).deliver_now
       end
       telephony_responses = MfaContext.new(user).phone_configurations.map do |phone_configuration|

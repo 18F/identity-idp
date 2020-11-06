@@ -109,7 +109,6 @@ pinpoint_voice_longcode_pool:
 pinpoint_voice_region:
 poll_rate_for_verify_in_seconds: '10'
 proofer_mock_fallback: 'true'
-proofing_lambda_http_callback:
 push_notifications_enabled:
 reauthn_window: '120'
 recaptcha_enabled_percent: '0'
@@ -182,6 +181,7 @@ development:
   disallow_ial2_recovery: 'false'
   doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'true'
+  document_proof_result_lambda_token: ABC123
   domain_name: localhost:3000
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'false'
@@ -209,7 +209,6 @@ development:
   otp_delivery_blocklist_maxretry: '10'
   participate_in_dap:
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
-  proofing_lambda_http_callback: 'true'
   identity_pki_disabled: 'false'
   identity_pki_local_dev: 'true'
   piv_cac_service_url: https://localhost:8443/
@@ -294,6 +293,7 @@ production:
   disallow_ial2_recovery: 'true'
   doc_auth_vendor: 'acuant'
   doc_capture_polling_enabled: 'true'
+  document_proof_result_lambda_token:
   domain_name: login.gov
   email_deletion_enabled: 'false'
   enable_rate_limiting: 'true'
@@ -324,7 +324,6 @@ production:
   piv_cac_service_url:
   piv_cac_verify_token_secret:
   piv_cac_verify_token_url:
-  proofing_lambda_http_callback:
   rack_mini_profiler:
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
@@ -408,6 +407,7 @@ test:
   # Here to support legacy tests. Once we remove the code for the old steps, we
   # should remove this config entirely and the tests that assume this is false.
   document_capture_step_enabled: 'false'
+  document_proof_result_lambda_token: test_token_document
   domain_name: www.example.com
   email_deletion_enabled: 'true'
   enable_rate_limiting: 'true'
@@ -438,7 +438,6 @@ test:
   piv_cac_service_url: https://localhost:8443/
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   piv_cac_verify_token_url: https://localhost:8443/
-  proofing_lambda_http_callback: false
   rack_mini_profiler:
   recurring_jobs_disabled_names: '["disabled job"]'
   redis_throttle_url: redis://localhost:6379/1

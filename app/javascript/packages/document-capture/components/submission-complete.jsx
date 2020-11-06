@@ -1,6 +1,8 @@
-import React from 'react';
-import CallbackOnMount from './callback-on-mount';
+import React, { useState, useRef } from 'react';
 import SubmissionInterstitial from './submission-interstitial';
+import CallbackOnMount from './callback-on-mount';
+
+/** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
 
 /**
  * @typedef Resource
@@ -13,25 +15,46 @@ import SubmissionInterstitial from './submission-interstitial';
 /**
  * @typedef SubmissionCompleteProps
  *
- * @prop {Resource<any>} resource Resource object.
+ * @prop {Resource<UploadSuccessResponse>} resource Resource object.
  */
+
+export class RetrySubmissionError extends Error {}
+
+/**
+ * Interval after which to retry submission, in milliseconds.
+ *
+ * @type {number}
+ */
+const RETRY_INTERVAL = process.env.NODE_ENV === 'test' ? 0 : 2500;
 
 /**
  * @param {SubmissionCompleteProps} props Props object.
  */
 function SubmissionComplete({ resource }) {
-  resource.read();
+  const [, setRetryError] = useState(/** @type {Error=} */ (undefined));
+  const sleepTimeout = useRef(/** @type {number=} */ (undefined));
+  const response = resource.read();
 
-  function submitCaptureForm() {
-    /** @type {HTMLFormElement?} */
-    const form = document.querySelector('.js-document-capture-form');
-    form?.submit();
+  function handleResponse() {
+    if (response.isPending) {
+      sleepTimeout.current = window.setTimeout(() => {
+        setRetryError(() => {
+          throw new RetrySubmissionError();
+        });
+      }, RETRY_INTERVAL);
+    } else {
+      /** @type {HTMLFormElement?} */
+      const form = document.querySelector('.js-document-capture-form');
+      form?.submit();
+    }
+
+    return () => window.clearTimeout(sleepTimeout.current);
   }
 
   return (
     <>
+      <CallbackOnMount onMount={handleResponse} />
       <SubmissionInterstitial />
-      <CallbackOnMount onMount={submitCaptureForm} />
     </>
   );
 }

@@ -53,7 +53,31 @@ const device = {
   isMobile: isCameraCapableMobile(),
 };
 
-loadPolyfills(['fetch']).then(() => {
+loadPolyfills(['fetch', 'crypto']).then(async () => {
+  const backgroundUploadURLs = getBackgroundUploadURLs();
+  const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
+
+  const formData = {
+    document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
+    locale: i18n.currentLocale(),
+  };
+
+  let backgroundUploadEncryptKey;
+  if (isAsyncForm) {
+    backgroundUploadEncryptKey = await window.crypto.subtle.generateKey(
+      {
+        name: 'AES-GCM',
+        length: 256,
+      },
+      true,
+      ['encrypt', 'decrypt'],
+    );
+
+    const exportedKey = await window.crypto.subtle.exportKey('raw', backgroundUploadEncryptKey);
+    formData.encryption_key = btoa(String.fromCharCode(...new Uint8Array(exportedKey)));
+    formData.step = 'verify_document';
+  }
+
   render(
     <AcuantProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
@@ -61,19 +85,19 @@ loadPolyfills(['fetch']).then(() => {
     >
       <UploadContextProvider
         endpoint={appRoot.getAttribute('data-endpoint')}
+        statusEndpoint={appRoot.getAttribute('data-status-endpoint')}
+        method={isAsyncForm ? 'PUT' : 'POST'}
         csrf={getMetaContent('csrf-token')}
         isMockClient={isMockClient}
-        backgroundUploadURLs={getBackgroundUploadURLs()}
-        formData={{
-          document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
-          locale: i18n.currentLocale(),
-        }}
+        backgroundUploadURLs={backgroundUploadURLs}
+        backgroundUploadEncryptKey={backgroundUploadEncryptKey}
+        formData={formData}
       >
         <I18nContext.Provider value={i18n.strings}>
           <ServiceProviderContext.Provider value={getServiceProvider()}>
             <AssetContext.Provider value={assets}>
               <DeviceContext.Provider value={device}>
-                <DocumentCapture />
+                <DocumentCapture isAsyncForm={isAsyncForm} />
               </DeviceContext.Provider>
             </AssetContext.Provider>
           </ServiceProviderContext.Provider>

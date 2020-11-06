@@ -7,8 +7,7 @@ import AcuantCapture from '@18f/identity-document-capture/components/acuant-capt
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
-import render from '../../../support/render';
-import { useAcuant } from '../../../support/acuant';
+import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
@@ -335,13 +334,13 @@ describe('document-capture/components/acuant-capture', () => {
       const input = getByLabelText('Image');
       userEvent.upload(input, file);
 
-      expect(await findByText('errors.file_input.invalid_type')).to.be.ok();
+      expect(await findByText('errors.doc_auth.invalid_file_input_type')).to.be.ok();
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
       expect(getByText('errors.doc_auth.photo_blurry')).to.be.ok();
-      expect(() => getByText('errors.file_input.invalid_type')).to.throw();
+      expect(() => getByText('errors.doc_auth.invalid_file_input_type')).to.throw();
     });
 
     it('removes error message once image is corrected', async () => {

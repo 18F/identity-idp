@@ -9,7 +9,7 @@ import FileInput, {
   isValidForAccepts,
 } from '@18f/identity-document-capture/components/file-input';
 import DeviceContext from '@18f/identity-document-capture/context/device';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/file-input', () => {
   describe('getAcceptPattern', () => {
@@ -303,6 +303,27 @@ describe('document-capture/components/file-input', () => {
     expect(onError.getCall(0).args[0]).to.equal('errors.file_input.invalid_type');
   });
 
+  it('allows customization of invalid file type error message', () => {
+    const file = new window.File([''], 'upload.png', { type: 'image/png' });
+    const onChange = sinon.stub();
+    const onError = sinon.stub();
+    const { getByLabelText, getByText } = render(
+      <FileInput
+        label="File"
+        accept={['text/*']}
+        onChange={onChange}
+        onError={onError}
+        invalidTypeText="Wrong type"
+      />,
+    );
+
+    const input = getByLabelText('File');
+    userEvent.upload(input, file);
+
+    expect(getByText('Wrong type')).to.be.ok();
+    expect(onError.getCall(0).args[0]).to.equal('Wrong type');
+  });
+
   it('shows an error from rendering parent', () => {
     const file = new window.File([''], 'upload.png', { type: 'image/png' });
     const onChange = sinon.stub();
@@ -321,6 +342,48 @@ describe('document-capture/components/file-input', () => {
     expect(getByText('Oops!')).to.be.ok();
     expect(() => getByText('errors.file_input.invalid_type')).to.throw();
     expect(onError.callCount).to.equal(1);
+  });
+
+  it('shows an updated state', () => {
+    const file1 = new window.File([''], 'upload.png', { type: 'image/png' });
+    const file2 = new window.File([''], 'upload.png', { type: 'image/png' });
+
+    const { getByText, rerender } = render(<FileInput label="File" />);
+
+    expect(() => getByText('forms.file_input.file_updated')).to.throw();
+
+    rerender(<FileInput label="File" value={file1} />);
+
+    expect(() => getByText('forms.file_input.file_updated')).to.throw();
+
+    rerender(<FileInput label="File" value={file1} />);
+
+    expect(() => getByText('forms.file_input.file_updated')).to.throw();
+
+    rerender(<FileInput label="File" value={file2} />);
+
+    expect(getByText('forms.file_input.file_updated')).to.be.ok();
+
+    rerender(<FileInput label="File" value={file2} />);
+
+    expect(getByText('forms.file_input.file_updated')).to.be.ok();
+  });
+
+  it('allows customization of updated file text', () => {
+    const file1 = new window.File([''], 'upload.png', { type: 'image/png' });
+    const file2 = new window.File([''], 'upload.png', { type: 'image/png' });
+
+    const { getByText, rerender } = render(<FileInput label="File" fileUpdatedText="Updated" />);
+
+    expect(() => getByText('Updated')).to.throw();
+
+    rerender(<FileInput label="File" fileUpdatedText="Updated" value={file1} />);
+
+    expect(() => getByText('Updated')).to.throw();
+
+    rerender(<FileInput label="File" fileUpdatedText="Updated" value={file2} />);
+
+    expect(getByText('Updated')).to.be.ok();
   });
 
   it('forwards ref', () => {

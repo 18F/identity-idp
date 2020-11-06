@@ -194,3 +194,10 @@ input::-webkit-inner-spin-button {
     margin-left: 0;
   }
 }
+
+.usa-success-message {
+  @include u-padding-y(.5);
+  color: color('success');
+  display: block;
+  font-weight: font-weight('bold');
+}

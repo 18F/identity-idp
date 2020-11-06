@@ -38,7 +38,7 @@ describe RequestPasswordReset do
         mail = double
         expect(mail).to receive(:deliver_now)
         expect(UserMailer).to receive(:reset_password_instructions).
-          with(email, token: 'asdf1234').
+          with(user, email, token: 'asdf1234').
           and_return(mail)
 
         RequestPasswordReset.new(email).perform
@@ -58,7 +58,7 @@ describe RequestPasswordReset do
         mail = double
         expect(mail).to receive(:deliver_now)
         expect(UserMailer).to receive(:reset_password_instructions).
-          with(email, token: 'asdf1234').
+          with(user, email, token: 'asdf1234').
           and_return(mail)
 
         RequestPasswordReset.new(email).perform

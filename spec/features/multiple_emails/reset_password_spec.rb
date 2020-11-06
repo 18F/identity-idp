@@ -8,7 +8,7 @@ describe 'reset password with multiple emails' do
     mail1 = double
     expect(mail1).to receive(:deliver_now)
     expect(UserMailer).to receive(:reset_password_instructions).
-      with(email1, hash_including(:token)).
+      with(user, email1, hash_including(:token)).
       and_return(mail1)
 
     visit root_path
@@ -21,7 +21,7 @@ describe 'reset password with multiple emails' do
     mail2 = double
     expect(mail2).to receive(:deliver_now)
     expect(UserMailer).to receive(:reset_password_instructions).
-      with(email2, hash_including(:token)).
+      with(user, email2, hash_including(:token)).
       and_return(mail2)
 
     visit root_path

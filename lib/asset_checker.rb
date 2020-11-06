@@ -2,38 +2,30 @@ require 'yaml'
 
 class AssetChecker
   ASSETS_FILE = 'app/views/idv/shared/_document_capture.html.erb'.freeze
-  TRANSLATIONS_FILE = 'config/js_locale_strings.yml'.freeze
 
-  attr_reader :files, :assets_file, :translations_file
+  attr_reader :files, :assets_file
 
-  def initialize(files, assets_file: ASSETS_FILE, translations_file: TRANSLATIONS_FILE)
+  def initialize(files, assets_file: ASSETS_FILE)
     @files = files
     @assets_file = assets_file
-    @translations_file = translations_file
   end
 
   # @return [Boolean] true if any files are missing
   def check_files
     @asset_strings = load_included_strings(assets_file)
-    @translation_strings = YAML.load_file(translations_file)
     files.any? { |f| file_has_missing?(f) }
   end
 
   def file_has_missing?(file)
     data = File.open(file).read
-    missing_translations = find_missing(data, /\Wt\s?\(['"]([^'"]*?)['"]\)/, @translation_strings)
     missing_assets = find_missing(data, /\WgetAssetPath\(["'](.*?)['"]\)/, @asset_strings)
-    has_missing = (missing_translations.any? || missing_assets.any?)
-    if has_missing
+    if missing_assets.any?
       warn file
-      missing_translations.each do |t|
-        warn "Missing translation, #{t}"
-      end
       missing_assets.each do |a|
         warn "Missing asset, #{a}"
       end
     end
-    has_missing
+    missing_assets.any?
   end
 
   def find_missing(file_data, pattern, source)

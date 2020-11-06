@@ -140,6 +140,25 @@ describe Idv::DocAuthController do
 
         expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
       end
+
+      it 'redirects from welcome to no camera error' do
+        result = {
+          success: false,
+          errors: {
+            message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
+          },
+          step: 'welcome',
+        }
+
+        expect(NewRelic::Agent).to receive(:notice_error)
+
+        put :update, params: { step: 'welcome', ial2_consent_given: true, no_camera: true }
+
+        expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::DOC_AUTH + ' submitted', result
+        )
+      end
     end
 
     describe 'when document capture is disabled' do
@@ -160,7 +179,7 @@ describe Idv::DocAuthController do
       mock_document_capture_step
     end
     let(:successful_response) do
-      { success: true, errors: {}, extra: { remaining_attempts: 3 } }.to_json
+      { success: true }.to_json
     end
 
     context 'with selfie checking disabled' do
@@ -175,7 +194,7 @@ describe Idv::DocAuthController do
                                back_image_url: 'http://foo.com/bar2',
                                selfie_image_url: 'http://foo.com/bar3' }
 
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(202)
         expect(response.body).to eq(successful_response)
       end
 
@@ -202,7 +221,7 @@ describe Idv::DocAuthController do
                                back_image_url: 'http://foo.com/bar2',
                                selfie_image_url: 'http://foo.com/bar3' }
 
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(202)
         expect(response.body).to eq(successful_response)
       end
 
@@ -218,31 +237,90 @@ describe Idv::DocAuthController do
     before do
       mock_document_capture_step
     end
-    let(:good_result) { { pii_from_doc: {}, success: true, errors: {}, messages: ['message'] } }
-    let(:fail_result) { { pii_from_doc: {}, success: false, errors: {}, messages: ['message'] } }
+    let(:good_result) do
+      { pii_from_doc: {
+        first_name: Faker::Name.first_name,
+        last_name: Faker::Name.last_name,
+        dob: Time.zone.today.to_s,
+        address1: Faker::Address.street_address,
+        city: Faker::Address.city,
+        state: Faker::Address.state_abbr,
+        zipcode: Faker::Address.zip_code,
+        state_id_type: 'drivers_license',
+        state_id_number: '111',
+        state_id_jurisdiction: 'WI',
+      }, success: true, errors: {}, messages: ['message'] }
+    end
+    let(:bad_pii_result) do
+      { pii_from_doc: {
+        first_name: Faker::Name.first_name,
+        last_name: nil,
+        dob: nil,
+        address1: Faker::Address.street_address,
+        city: Faker::Address.city,
+        state: Faker::Address.state_abbr,
+        zipcode: Faker::Address.zip_code,
+        state_id_type: 'drivers_license',
+        state_id_number: '111',
+        state_id_jurisdiction: 'WI',
+      }, success: true, errors: {}, messages: ['message'] }
+    end
+    let(:fail_result) do
+      {
+        pii_from_doc: {},
+        success: false,
+        errors: { front: 'Wrong document' },
+        messages: ['message'],
+      }
+    end
 
     it 'returns status of success' do
       mock_document_capture_result(good_result)
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(200)
-      expect(response.body).to eq({ success: true, status: 'success' }.to_json)
+      expect(response.body).to eq({ success: true }.to_json)
     end
 
     it 'returns status of in progress' do
       mock_document_capture_result(nil)
       put :update, params: { step: 'verify_document_status' }
 
-      expect(response.status).to eq(200)
-      expect(response.body).to eq({ success: true, status: 'in_progress' }.to_json)
+      expect(response.status).to eq(202)
+      expect(response.body).to eq({ success: true }.to_json)
     end
 
     it 'returns status of fail' do
       mock_document_capture_result(fail_result)
       put :update, params: { step: 'verify_document_status' }
 
-      expect(response.status).to eq(200)
-      expect(response.body).to eq({ success: true, status: 'fail' }.to_json)
+      expect(response.status).to eq(400)
+      expect(response.body).to eq({
+        success: false,
+        errors: [{ field: 'front', message: 'Wrong document' }],
+        remaining_attempts: Figaro.env.acuant_max_attempts.to_i,
+      }.to_json)
+    end
+
+    it 'returns status of fail with incomplete PII from doc auth' do
+      mock_document_capture_result(bad_pii_result)
+      put :update, params: { step: 'verify_document_status' }
+
+      expect(response.status).to eq(400)
+      expect(response.body).to eq({
+        success: false,
+        errors: [{ field: 'pii',
+                   message: I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness') }],
+        remaining_attempts: Figaro.env.acuant_max_attempts.to_i,
+      }.to_json)
+      expect(@analytics).to have_received(:track_event).with(
+        Analytics::DOC_AUTH + ' submitted', {
+          errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
+          success: false,
+          remaining_attempts: Figaro.env.acuant_max_attempts.to_i,
+          step: 'verify_document_status',
+        }
+      )
     end
   end
 

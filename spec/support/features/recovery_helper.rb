@@ -39,11 +39,6 @@ module RecoveryHelper
     click_idv_continue
   end
 
-  def complete_recovery_steps_before_doc_success_step(user = user_with_2fa)
-    complete_recovery_steps_before_verify_step(user)
-    click_idv_continue
-  end
-
   def idv_recovery_recover_step(token)
     idv_recovery_step_path(step: :recover, token: token)
   end
@@ -74,9 +69,5 @@ module RecoveryHelper
 
   def idv_recovery_verify_wait_step
     idv_recovery_step_path(step: :verify_wait)
-  end
-
-  def idv_recovery_success_step
-    idv_recovery_step_path(step: :doc_success)
   end
 end

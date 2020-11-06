@@ -116,6 +116,10 @@ class FeatureManagement
     Figaro.env.document_capture_step_enabled == 'true'
   end
 
+  def self.document_capture_async_uploads_enabled?
+    Figaro.env.doc_auth_enable_presigned_s3_urls == 'true'
+  end
+
   def self.hide_phone_mfa_signup?
     Figaro.env.hide_phone_mfa_signup == 'true'
   end

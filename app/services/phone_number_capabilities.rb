@@ -10,8 +10,17 @@ class PhoneNumberCapabilities
   end
 
   def sms_only?
-    return true if country_code_data.nil?
-    country_code_data['sms_only']
+    supports_sms? && !supports_voice?
+  end
+
+  def supports_sms?
+    return false if country_code_data.nil?
+    country_code_data['supports_sms']
+  end
+
+  def supports_voice?
+    return false if country_code_data.nil?
+    country_code_data['supports_voice']
   end
 
   def unsupported_location
@@ -21,9 +30,7 @@ class PhoneNumberCapabilities
   private
 
   def country_code_data
-    @country_code_data ||= INTERNATIONAL_CODES.select do |key, _|
-      key == two_letter_country_code
-    end.values.first
+    INTERNATIONAL_CODES[two_letter_country_code]
   end
 
   def two_letter_country_code

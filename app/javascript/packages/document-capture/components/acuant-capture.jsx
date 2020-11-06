@@ -16,6 +16,7 @@ import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
+import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -173,7 +174,7 @@ function AcuantCapture(
   }
 
   return (
-    <div className={className}>
+    <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
         <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
@@ -200,6 +201,8 @@ function AcuantCapture(
         label={label}
         hint={hasCapture || !allowUpload ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
+        invalidTypeText={t('errors.doc_auth.invalid_file_input_type')}
+        fileUpdatedText={t('doc_auth.info.image_updated')}
         accept={isMockClient ? undefined : ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff']}
         capture={capture}
         value={value}

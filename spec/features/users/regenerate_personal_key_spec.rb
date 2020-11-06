@@ -17,7 +17,7 @@ feature 'View personal key' do
         personal_key_sign_in_mail = double
         expect(personal_key_sign_in_mail).to receive(:deliver_now)
         expect(UserMailer).to receive(:personal_key_regenerated).
-          with(user.email).
+          with(user, user.email).
           and_return(personal_key_sign_in_mail)
         expect(Telephony).to receive(:send_personal_key_regeneration_notice).
           with(to: user.phone_configurations.first.phone)
@@ -72,8 +72,6 @@ feature 'View personal key' do
   end
 
   context 'with javascript enabled', js: true do
-    let(:invisible_selector) { generate_class_selector('invisible') }
-
     it 'prompts the user to enter their personal key to confirm they have it' do
       sign_in_and_2fa_user(user)
       visit account_two_factor_authentication_path
@@ -140,7 +138,6 @@ end
 
 def expect_confirmation_modal_to_appear_with_first_code_field_in_focus
   expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='display-none']")
-  expect(page).not_to have_xpath("//#{invisible_selector}[@id='personal-key']")
   expect(page.evaluate_script('document.activeElement.name')).to eq 'personal_key'
 end
 

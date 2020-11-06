@@ -6,12 +6,22 @@ var warningEl = document.getElementById('session-timeout-cntnr');
 warningEl.insertAdjacentHTML('afterbegin', warning_info);
 
 var modal = new window.LoginGov.Modal({ el: '#session-timeout-msg' });
-var ping_timeout;
+var keepaliveEl = document.getElementById('session-keepalive-btn');
+var csrfEl = document.querySelector('meta[name="csrf-token"]')
+
+var csrfToken = "";
+if (csrfEl) {
+  csrfToken = csrfEl.content
+}
+
+keepaliveEl.addEventListener('click', keepalive, false);
+
+var pingTimeout;
+var countdownInterval;
 
 function ping() {
   var request = new XMLHttpRequest();
   request.open('GET', '/active', true);
-  request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
   request.onload = function() {
     if (request.status >= 200 && request.status < 400) {
@@ -20,7 +30,7 @@ function ping() {
   };
 
   request.send();
-  ping_timeout = setTimeout(ping, frequency)
+  pingTimeout = setTimeout(ping, frequency)
 }
 
 function success(data) {
@@ -38,7 +48,11 @@ function success(data) {
 
   if (show_warning && !modal.shown) {
     modal.show();
-    window.LoginGov.countdownTimer(
+
+    if(countdownInterval) {
+      clearInterval(countdownInterval);
+    }
+    countdownInterval = window.LoginGov.countdownTimer(
       document.getElementById('countdown'), time_remaining, time_timeout
     );
   }
@@ -49,6 +63,21 @@ function success(data) {
     time_remaining = time_remaining < 0 ? 0 : time_remaining
     ping_timeout = setTimeout(ping, time_remaining)
   }
+}
+
+function keepalive() {
+  var request = new XMLHttpRequest();
+  request.open('POST', '/sessions/keepalive', true);
+  request.setRequestHeader('X-CSRF-Token', csrfToken);
+
+  request.onload = function() {
+    if (request.status >= 200 && request.status < 400) {
+      success(JSON.parse(request.responseText));
+      modal.hide();
+    }
+  };
+
+  request.send();
 }
 
 setTimeout(ping, start);

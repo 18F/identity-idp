@@ -1,11 +1,9 @@
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import { useCleanDOM } from '../support/dom';
 import { useSandbox } from '../support/sinon';
 import { initialize } from '../../../app/javascript/packs/form-validation';
 
 describe('form-validation', () => {
-  useCleanDOM();
   const sandbox = useSandbox();
 
   const onSubmit = (event) => event.preventDefault();

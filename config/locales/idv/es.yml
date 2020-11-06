@@ -3,7 +3,7 @@ es:
   idv:
     buttons:
       cancel: Cancele y regrese a su perfil
-      continue_plain: Continúe
+      continue_plain: Continuar
       mail:
         resend: Enviar otra carta
         send: Enviar una carta
@@ -140,8 +140,8 @@ es:
       usps:
         address_on_file: Le enviaremos una carta con un código de confirmación a su
           dirección verificada en el archivo.
-        new_address: We will mail a letter with a confirmation code to the address
-          you specify.
+        new_address: Le enviaremos una carta con un código de confirmación a la dirección
+          que especifique.
         resend: Envíeme otra carta
         success: Debe llegar en 5 a 10 días laborales.
     review:

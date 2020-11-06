@@ -1,17 +1,26 @@
 import React from 'react';
+import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
-import { fireEvent } from '@testing-library/react';
+import { render as baseRender, fireEvent } from '@testing-library/react';
 import {
   UploadFormEntriesError,
   toFormEntryError,
 } from '@18f/identity-document-capture/services/upload';
-import { AcuantProvider, DeviceContext } from '@18f/identity-document-capture';
-import DocumentCapture from '@18f/identity-document-capture/components/document-capture';
-import render from '../../../support/render';
-import { useAcuant } from '../../../support/acuant';
+import {
+  UploadContextProvider,
+  AcuantProvider,
+  DeviceContext,
+} from '@18f/identity-document-capture';
+import DocumentCapture, {
+  except,
+} from '@18f/identity-document-capture/components/document-capture';
+import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
+import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/document-capture', () => {
+  const onSubmit = useDocumentCaptureForm();
+  const sandbox = useSandbox();
   const { initialize } = useAcuant();
 
   function isFormValid(form) {
@@ -26,6 +35,16 @@ describe('document-capture/components/document-capture', () => {
 
   afterEach(() => {
     window.location.hash = originalHash;
+  });
+
+  describe('except', () => {
+    it('returns a new object without the specified keys', () => {
+      const original = { a: 1, b: 2, c: 3, d: 4 };
+      const result = except(original, 'b', 'c');
+
+      expect(result).to.not.equal(original);
+      expect(result).to.deep.equal({ a: 1, d: 4 });
+    });
   });
 
   it('renders the form steps', () => {
@@ -140,18 +159,16 @@ describe('document-capture/components/document-capture', () => {
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     expect(isFormValid(submitButton.closest('form'))).to.be.true();
 
-    return new Promise((resolve) => {
-      const form = document.createElement('form');
-      form.className = 'js-document-capture-form';
-      document.body.appendChild(form);
-      form.addEventListener('submit', (event) => {
-        event.preventDefault();
-        document.body.removeChild(form);
-        resolve();
-      });
-
+    await new Promise((resolve) => {
+      onSubmit.callsFake(resolve);
       userEvent.click(submitButton);
     });
+
+    // At this point, the page should redirect, so we do not expect that the user should be prompted
+    // about unsaved changes in navigating.
+    const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+    window.dispatchEvent(event);
+    expect(event.defaultPrevented).to.be.false();
   });
 
   it('renders unhandled submission failure', async () => {
@@ -274,5 +291,101 @@ describe('document-capture/components/document-capture', () => {
 
     const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');
     expect(hasValueSelected).to.be.true();
+  });
+
+  it('renders async upload pending progress', async () => {
+    const statusChecks = 3;
+    let remainingStatusChecks = statusChecks;
+    sandbox.stub(window, 'fetch');
+    const upload = sinon.stub().callsFake((payload, { endpoint }) => {
+      switch (endpoint) {
+        case 'about:blank#upload':
+          expect(payload).to.have.keys([
+            'front_image_iv',
+            'front_image_url',
+            'back_image_iv',
+            'back_image_url',
+            'selfie_image_iv',
+            'selfie_image_url',
+          ]);
+
+          return Promise.resolve({ success: true, isPending: true });
+        case 'about:blank#status':
+          expect(payload).to.be.empty();
+
+          return Promise.resolve({ success: true, isPending: Boolean(remainingStatusChecks--) });
+        default:
+          throw new Error();
+      }
+    });
+    const key = await window.crypto.subtle.generateKey(
+      {
+        name: 'AES-GCM',
+        length: 256,
+      },
+      true,
+      ['encrypt', 'decrypt'],
+    );
+
+    const { getByLabelText, getByText, getAllByText, findAllByText } = baseRender(
+      <UploadContextProvider
+        endpoint="about:blank#upload"
+        statusEndpoint="about:blank#status"
+        backgroundUploadURLs={{
+          front: 'about:blank#front',
+          back: 'about:blank#back',
+          selfie: 'about:blank#selfie',
+        }}
+        backgroundUploadEncryptKey={key}
+        upload={upload}
+      >
+        <AcuantProvider sdkSrc="about:blank">
+          <DocumentCapture isAsyncForm />
+        </AcuantProvider>
+      </UploadContextProvider>,
+    );
+
+    initialize({ isCameraSupported: false });
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
+
+    const continueButton = getByText('forms.buttons.continue');
+    userEvent.click(continueButton);
+    await findAllByText('simple_form.required.text');
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_back'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    userEvent.click(continueButton);
+
+    const submitButton = getByText('forms.buttons.submit.default');
+    userEvent.click(submitButton);
+    await findAllByText('simple_form.required.text');
+    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
+    fireEvent.click(selfieInput);
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    userEvent.click(submitButton);
+
+    return new Promise((resolve) => {
+      onSubmit.callsFake(() => {
+        // Error logged at initial pending retry.
+        expect(console).to.have.loggedError(/^Error: Uncaught/);
+        expect(console).to.have.loggedError(/React will try to recreate this component/);
+
+        // Error logged at every scheduled check thereafter.
+        for (let i = 0; i < statusChecks; i++) {
+          expect(console).to.have.loggedError(/^Error: Uncaught/);
+          expect(console).to.have.loggedError(/React will try to recreate this component/);
+        }
+
+        resolve();
+      });
+
+      userEvent.click(submitButton);
+    });
   });
 });

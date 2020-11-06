@@ -6,7 +6,7 @@
  */
 
 /**
- * @typedef {"fetch"|"element-closest"|"classlist"} SupportedPolyfills
+ * @typedef {"fetch"|"element-closest"|"classlist"|"crypto"} SupportedPolyfills
  */
 
 /**
@@ -24,6 +24,10 @@ const POLYFILLS = {
   classlist: {
     test: () => 'classList' in Element.prototype,
     load: () => import(/* webpackChunkName: "classlist-polyfill" */ 'classlist-polyfill'),
+  },
+  crypto: {
+    test: () => 'crypto' in window,
+    load: () => import(/* webpackChunkName: "webcrypto-shim" */ 'webcrypto-shim'),
   },
 };
 

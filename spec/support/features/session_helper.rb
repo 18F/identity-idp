@@ -451,7 +451,7 @@ module Features
     end
 
     def submit_form_with_valid_email(email = 'test@test.com')
-      fill_in 'Email', with: email
+      fill_in t('account.index.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
 

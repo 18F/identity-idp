@@ -1,9 +1,6 @@
 import { screen } from '@testing-library/dom';
-import { useCleanDOM } from '../support/dom';
 
 describe('submit-with-spinner', () => {
-  useCleanDOM();
-
   async function initialize({ withForm = true } = {}) {
     const parent = withForm
       ? document.body.appendChild(document.createElement('form'))

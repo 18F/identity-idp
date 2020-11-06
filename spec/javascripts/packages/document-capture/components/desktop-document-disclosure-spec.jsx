@@ -1,7 +1,7 @@
 import React from 'react';
 import { DeviceContext } from '@18f/identity-document-capture';
 import DesktopDocumentDisclosure from '@18f/identity-document-capture/components/desktop-document-disclosure';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/desktop-document-disclosure', () => {
   context('mobile', () => {

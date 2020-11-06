@@ -6,6 +6,18 @@ fr:
       description: Avec votre compte login.gov, vous pouvez vous connecter en toute
         sécurité à plusieurs comptes gouvernementaux en ligne. Vous trouverez ci-dessous
         une liste de tous les comptes actuellement connectés.
+    email_language:
+      default: "%{language} (par défaut)"
+      edit_title: Modifier la préférence de langue des e-mails
+      languages_list: "%{app_name} vous permet de recevoir votre communication par
+        e-mail dans %{list}."
+      name:
+        en: Anglais
+        es: l'Espagnol
+        fr: langue française
+      please_select: Veuillez sélectionner votre préférence de langue ci-dessous.
+      sentence_connector: ou
+      updated: Votre préférence de langue pour les e-mails a été mise à jour.
     forget_all_browsers:
       longer_description: Une fois que vous aurez choisi "d'oublier tous les navigateurs",
         nous aurons besoin d'informations supplémentaires pour savoir qu'il s'agit
@@ -23,9 +35,10 @@ fr:
       default: défaut
       device: "%{browser} sur %{os}"
       dob: Date de naissance
-      email: Adresse courriel
+      email: Adresse e-mail
       email_add: Ajouter un email
       email_addresses: Adresses courriel
+      email_preferences: Préférences de messagerie
       full_name: Nom complet
       password: Mot de passe
       phone: Numéro de téléphone
@@ -48,7 +61,7 @@ fr:
         instructions: Votre compte nécessite un code de confirmation pour être vérifié.
         reactivate_button: Entrez le code que vous avez reçu par la poste
         success: Votre compte a été vérifié.
-        update_address: Please update your address to be verified.
+        update_address: Veuillez mettre à jour votre adresse pour être vérifiée.
       webauthn: Clé de sécurité
       webauthn_add: Ajouter une clé de sécurité
       webauthn_confirm_delete: Oui, supprimer la clé

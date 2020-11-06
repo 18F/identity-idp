@@ -27,9 +27,10 @@ module Idv
         response = idv_result_to_form_response(current_async_state.result)
         response = check_ssn(current_async_state.pii) if response.success?
         summarize_result_and_throttle_failures(response)
+        delete_async
 
         if response.success?
-          delete_async
+          flash[:success] = I18n.t('doc_auth.forms.doc_success')
           mark_step_complete(:verify_wait)
         else
           mark_step_incomplete(:verify)

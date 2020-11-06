@@ -13,8 +13,10 @@ describe AccountReset::NotifyUserOfRequestCancellation do
       mail1 = double
       mail2 = double
 
-      expect(UserMailer).to receive(:account_reset_cancel).with(email_address1).and_return(mail1)
-      expect(UserMailer).to receive(:account_reset_cancel).with(email_address2).and_return(mail2)
+      expect(UserMailer).to receive(:account_reset_cancel).
+        with(user, email_address1).and_return(mail1)
+      expect(UserMailer).to receive(:account_reset_cancel).
+        with(user, email_address2).and_return(mail2)
 
       expect(mail1).to receive(:deliver_later)
       expect(mail2).to receive(:deliver_later)
