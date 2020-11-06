@@ -197,4 +197,20 @@ feature 'doc auth verify step' do
       expect(agent).to have_received(:proof_resolution).with(anything, should_proof_state_id: false)
     end
   end
+
+  context 'async timed out' do
+    it 'allows resubmitting form' do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+
+      allow(DocumentCaptureSession).to receive(:find_by).
+        and_return(nil)
+
+      click_continue
+      expect(page).to have_current_path(idv_doc_auth_verify_step)
+      allow(DocumentCaptureSession).to receive(:find_by).and_call_original
+      click_continue
+      expect(page).to have_current_path(idv_phone_path)
+    end
+  end
 end

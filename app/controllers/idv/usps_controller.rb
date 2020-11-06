@@ -200,10 +200,10 @@ module Idv
       dcs_uuid = idv_session.idv_usps_document_capture_session_uuid
       dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
       return ProofingDocumentCaptureSessionResult.none if dcs_uuid.nil?
-      return ProofingDocumentCaptureSessionResult.timed_out if dcs.nil?
+      return timed_out if dcs.nil?
 
       proofing_job_result = dcs.load_proofing_result
-      return ProofingDocumentCaptureSessionResult.timed_out if proofing_job_result.nil?
+      return timed_out if proofing_job_result.nil?
 
       if proofing_job_result.result
         proofing_job_result.done
@@ -220,7 +220,7 @@ module Idv
       result = form_response(idv_result, success)
 
       pii = async_state.pii
-      idv_session.idv_usps_document_capture_session_uuid = nil
+      delete_async
 
       async_state_done_analytics(result)
       result.success? ? resolution_success(pii) : failure
@@ -230,6 +230,16 @@ module Idv
       analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
       Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, 2, :lexis_nexis_resolution)
       Db::ProofingCost::AddUserProofingCost.call(current_user.id, :lexis_nexis_resolution)
+    end
+
+    def delete_async
+      idv_session.idv_usps_document_capture_session_uuid = nil
+    end
+
+    def timed_out
+      flash[:notice] = I18n.t('idv.failure.timeout')
+      delete_async
+      ProofingDocumentCaptureSessionResult.timed_out
     end
   end
 end
