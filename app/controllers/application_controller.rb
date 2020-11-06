@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   include LocaleHelper
   include VerifySPAttributesConcern
 
-  FLASH_KEYS = %w[alert error notice success warning].freeze
+  FLASH_KEYS = %w[error info success warning other].freeze
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
