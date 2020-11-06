@@ -51,4 +51,38 @@ RSpec.describe 'shared/_email_languages.html.erb' do
       expect(radio[:value]).to eq(selection)
     end
   end
+
+  it 'marks the current locale as the default' do
+    render_partial
+
+    doc = Nokogiri::HTML(rendered)
+    english_input = doc.css('input[type=radio][value=en]').first
+    english_label = doc.css("label[for=#{english_input[:id]}]").first
+    expect(english_label.text).to eq('English (default)')
+
+    others = doc.css('input[type=radio]:not([value=en])')
+    others.each do |radio|
+      label = doc.css("label[for=#{radio[:id]}]")
+      expect(label.text).to_not include('(default)')
+    end
+  end
+
+  context 'in french' do
+    before { I18n.locale = :fr }
+
+    it 'marks the current locale as the default' do
+      render_partial
+
+      doc = Nokogiri::HTML(rendered)
+      french_input = doc.css('input[type=radio][value=fr]').first
+      french_label = doc.css("label[for=#{french_input[:id]}]").first
+      expect(french_label.text).to eq('Français (par défaut)')
+
+      others = doc.css('input[type=radio]:not([value=fr])')
+      others.each do |radio|
+        label = doc.css("label[for=#{radio[:id]}]")
+        expect(label.text).to_not include('(par défaut)')
+      end
+    end
+  end
 end

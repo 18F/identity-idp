@@ -7,11 +7,11 @@ fr:
         sécurité à plusieurs comptes gouvernementaux en ligne. Vous trouverez ci-dessous
         une liste de tous les comptes actuellement connectés.
     email_language:
+      default: "%{language} (par défaut)"
       edit_title: Modifier la préférence de langue des e-mails
       languages_list: "%{app_name} vous permet de recevoir votre communication par
         e-mail dans %{list}."
       name:
-        default: Anglais (par défaut)
         en: Anglais
         es: l'Espagnol
         fr: langue française

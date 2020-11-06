@@ -53,7 +53,7 @@ describe UserDecorator do
       let(:email_language) { nil }
 
       it 'is the default language' do
-        expect(description).to eq(I18n.t('account.email_language.name.default'))
+        expect(description).to eq(I18n.t('account.email_language.name.en'))
       end
     end
 
@@ -61,7 +61,7 @@ describe UserDecorator do
       let(:email_language) { 'zz' }
 
       it 'is the default language' do
-        expect(description).to eq(I18n.t('account.email_language.name.default'))
+        expect(description).to eq(I18n.t('account.email_language.name.en'))
       end
     end
   end
