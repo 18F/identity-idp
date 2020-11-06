@@ -275,7 +275,7 @@ describe ApplicationController do
 
         get :index, params: { timeout: true, request_id: '123' }
 
-        expect(flash[:notice]).to be_nil
+        expect(flash[:info]).to be_nil
       end
     end
 
@@ -295,7 +295,7 @@ describe ApplicationController do
 
         get :index, params: { timeout: true, request_id: '123' }
 
-        expect(flash[:notice]).
+        expect(flash[:info]).
           to eq t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
       end
     end

@@ -16,7 +16,7 @@ module Users
     def new
       analytics.track_event(
         Analytics::SIGN_IN_PAGE_VISIT,
-        flash: flash[:alert],
+        flash: flash[:error],
         stored_location: session['user_return_to'],
       )
 
@@ -59,7 +59,7 @@ module Users
       analytics.track_event(Analytics::SESSION_TIMED_OUT)
       request_id = sp_session[:request_id]
       sign_out
-      flash[:notice] = t(
+      flash[:info] = t(
         'notices.session_timedout',
         app: APP_NAME,
         minutes: Figaro.env.session_timeout_in_minutes,
@@ -77,7 +77,7 @@ module Users
       controller_info = 'users/sessions#create'
       analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN, controller: controller_info)
       sign_out
-      flash[:alert] = t('errors.invalid_authenticity_token')
+      flash[:error] = t('errors.invalid_authenticity_token')
       redirect_back fallback_location: new_user_session_url
     end
 

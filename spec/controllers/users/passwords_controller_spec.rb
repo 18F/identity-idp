@@ -16,7 +16,7 @@ describe Users::PasswordsController do
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PASSWORD_CHANGED, success: true, errors: {})
         expect(response).to redirect_to account_url
-        expect(flash[:notice]).to eq t('notices.password_changed')
+        expect(flash[:info]).to eq t('notices.password_changed')
         expect(flash[:personal_key]).to be_nil
       end
 
