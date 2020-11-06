@@ -34,7 +34,7 @@ module Users
       bypass_sign_in current_user
 
       flash[:personal_key] = @update_user_password_form.personal_key
-      redirect_to account_url, notice: t('notices.password_changed')
+      redirect_to account_url, flash: { info: t('notices.password_changed') }
     end
 
     def create_event_and_notify_user_about_password_change
