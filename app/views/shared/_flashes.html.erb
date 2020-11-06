@@ -6,7 +6,7 @@ flash.
   <% if message.present? %>
     <%= render 'shared/alert', {
       type: ApplicationController::FLASH_KEY_MAP.fetch(type, type),
-      message: safe_join([message.html_safe]),
+      message: message.html_safe,
       class: 'margin-bottom-4',
     } %>
   <% end %>
