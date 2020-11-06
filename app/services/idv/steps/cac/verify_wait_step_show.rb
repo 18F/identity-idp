@@ -17,6 +17,7 @@ module Idv
           when :in_progress
             nil
           when :timed_out
+            delete_async
             mark_step_incomplete(:verify)
           when :done
             async_state_done(current_async_state)

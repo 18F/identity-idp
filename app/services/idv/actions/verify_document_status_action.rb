@@ -62,16 +62,21 @@ module Idv
       end
 
       def async_state
-        return ProofingDocumentCaptureSessionResult.timed_out if document_capture_session.nil?
+        return timed_out if document_capture_session.nil?
 
         proofing_job_result = document_capture_session.load_proofing_result
-        return ProofingDocumentCaptureSessionResult.timed_out if proofing_job_result.nil?
+        return timed_out if proofing_job_result.nil?
 
         if proofing_job_result.result
           proofing_job_result.done
         elsif proofing_job_result.pii
           ProofingDocumentCaptureSessionResult.in_progress
         end
+      end
+
+      def timed_out
+        delete_async
+        ProofingDocumentCaptureSessionResult.timed_out
       end
 
       def delete_async
