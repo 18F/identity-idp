@@ -7,8 +7,7 @@ locals:
 %>
 <%
   type = local_assigns.fetch(:type, 'info')
-  type = 'error' if type === 'alert'
-  type = 'info' unless ['info', 'success', 'warning', 'error', 'other'].include?(type)
+  raise "unknown alert type=#{type}" unless %w[info success warning error other].include?(type)
   role = type === 'error' ? 'alert' : 'status'
   text_tag = local_assigns.fetch(:text_tag, 'p')
 
