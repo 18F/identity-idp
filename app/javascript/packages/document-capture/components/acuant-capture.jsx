@@ -179,13 +179,21 @@ function AcuantCapture(
         <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
+              let result;
               if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
+                result = 'glare';
               } else if (nextCapture.sharpness < ACCEPTABLE_SHARPNESS_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
+                result = 'blurry';
               } else {
                 onChangeAndResetError(nextCapture.image.data);
+                result = 'success';
               }
+
+              /** @type {{addPageAction(name: string, attributes: object): void}=} */
+              const agent = window.newrelic;
+              agent?.addPageAction('documentCapture.acuantResult', { result });
 
               setIsCapturingEnvironment(false);
             }}
