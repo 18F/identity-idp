@@ -21,6 +21,12 @@ import './acuant-capture.scss';
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
+ * @typedef NewRelicAgent
+ *
+ * @prop {(name: string, attributes: object) => void} addPageAction Log page action to New Relic.
+ */
+
+/**
  * @typedef AcuantPassiveLiveness
  *
  * @prop {(callback:(nextImageData:string)=>void)=>void} startSelfieCapture Start liveness capture.
@@ -33,7 +39,17 @@ import './acuant-capture.scss';
  */
 
 /**
+ * @typedef NewRelicGlobals
+ *
+ * @prop {NewRelicAgent=} newrelic New Relic agent.
+ */
+
+/**
  * @typedef {typeof window & AcuantGlobals} AcuantGlobal
+ */
+
+/**
+ * @typedef {typeof window & NewRelicGlobals} NewRelicGlobal
  */
 
 /**
@@ -191,8 +207,7 @@ function AcuantCapture(
                 result = 'success';
               }
 
-              /** @type {{addPageAction(name: string, attributes: object): void}=} */
-              const agent = window.newrelic;
+              const agent = /** @type {NewRelicGlobal} */ (window).newrelic;
               agent?.addPageAction('documentCapture.acuantResult', { result });
 
               setIsCapturingEnvironment(false);
