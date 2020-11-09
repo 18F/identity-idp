@@ -43,6 +43,6 @@ class MfaConfirmationController < ApplicationController
   def handle_max_password_attempts_reached
     analytics.track_event(Analytics::PASSWORD_MAX_ATTEMPTS)
     sign_out
-    redirect_to root_url, alert: t('errors.max_password_attempts_reached')
+    redirect_to root_url, flash: { error: t('errors.max_password_attempts_reached') }
   end
 end

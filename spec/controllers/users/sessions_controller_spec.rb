@@ -138,7 +138,7 @@ describe Users::SessionsController, devise: true do
 
       get :timeout
 
-      expect(flash[:notice]).to eq t(
+      expect(flash[:info]).to eq t(
         'notices.session_timedout',
         app: APP_NAME,
         minutes: Figaro.env.session_timeout_in_minutes,
@@ -356,7 +356,7 @@ describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: user.email, password: user.password } }
 
       expect(response).to redirect_to new_user_session_url
-      expect(flash[:alert]).to eq t('errors.invalid_authenticity_token')
+      expect(flash[:error]).to eq t('errors.invalid_authenticity_token')
     end
 
     it 'returns to sign in page if email is a Hash' do

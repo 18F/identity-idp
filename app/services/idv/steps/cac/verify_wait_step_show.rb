@@ -17,7 +17,7 @@ module Idv
           when :in_progress
             nil
           when :timed_out
-            flash[:notice] = I18n.t('idv.failure.timeout')
+            flash[:info] = I18n.t('idv.failure.timeout')
             delete_async
             mark_step_incomplete(:verify)
           when :done

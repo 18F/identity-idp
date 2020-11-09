@@ -7,7 +7,8 @@ class ApplicationController < ActionController::Base
   include LocaleHelper
   include VerifySPAttributesConcern
 
-  FLASH_KEYS = %w[alert error notice success warning].freeze
+  FLASH_KEYS = %w[error info success warning other].freeze
+  FLASH_KEY_MAP = { 'notice' => 'info', 'alert' => 'error' }.freeze
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -113,7 +114,7 @@ class ApplicationController < ActionController::Base
     return unless params[:timeout]
 
     unless current_user
-      flash[:notice] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+      flash[:info] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
     end
     begin
       redirect_to url_for(permitted_timeout_params)
