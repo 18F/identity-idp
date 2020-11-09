@@ -1,8 +1,8 @@
 import React from 'react';
+import sinon from 'sinon';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
-import sinon from 'sinon';
 import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
 import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
 import DeviceContext from '@18f/identity-document-capture/context/device';
@@ -11,6 +11,16 @@ import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
+
+  let originalNewRelic;
+  before(() => {
+    originalNewRelic = window.newrelic;
+    window.newrelic = { addPageAction: sinon.spy() };
+  });
+
+  after(() => {
+    window.newrelic = originalNewRelic;
+  });
 
   context('mobile', () => {
     it('renders with assumed capture button support while acuant is not ready and on mobile', () => {
@@ -268,6 +278,11 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
 
       const error = await findByText('errors.doc_auth.photo_glare');
+      expect(
+        window.newrelic.addPageAction.calledWith('documentCapture.acuantWebSDKResult', {
+          result: 'glare',
+        }),
+      ).to.be.true();
 
       expect(error).to.be.ok();
     });
@@ -300,6 +315,11 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
 
       const error = await findByText('errors.doc_auth.photo_blurry');
+      expect(
+        window.newrelic.addPageAction.calledWith('documentCapture.acuantWebSDKResult', {
+          result: 'blurry',
+        }),
+      ).to.be.true();
 
       expect(error).to.be.ok();
     });
@@ -390,6 +410,11 @@ describe('document-capture/components/acuant-capture', () => {
 
       fireEvent.click(button);
       await waitForElementToBeRemoved(error);
+      expect(
+        window.newrelic.addPageAction.calledWith('documentCapture.acuantWebSDKResult', {
+          result: 'success',
+        }),
+      ).to.be.true();
     });
 
     it('triggers forced upload', () => {
