@@ -1,5 +1,9 @@
 <% title t('titles.visitors.index') %>
 
+<h1 class='h3 my0'>
+  <%= t('headings.passwords.confirm') %>
+</h1>
+
 <%= validated_form_for(current_user,
                        as: :user,
                        url: capture_password_url,

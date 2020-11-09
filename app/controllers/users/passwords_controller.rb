@@ -1,6 +1,7 @@
 module Users
   class PasswordsController < ReauthnRequiredController
     before_action :confirm_two_factor_authenticated
+    before_action :pii_requested_but_locked?
 
     def edit
       @update_user_password_form = UpdateUserPasswordForm.new(current_user)
@@ -24,6 +25,15 @@ module Users
     end
 
     private
+
+    def pii_requested_but_locked?
+      if UserDecorator.new(current_user).identity_verified? &&
+         user_session[:decrypted_pii].blank?
+
+        store_location(request.url)
+        redirect_to capture_password_url
+      end
+    end
 
     def user_params
       params.require(:update_user_password_form).permit(:password)
@@ -52,6 +62,10 @@ module Users
         ForbiddenPasswords.new(email_address.email).call
       end
       render :edit
+    end
+
+    def store_location(url)
+      user_session[:stored_location] = url
     end
   end
 end

@@ -93,4 +93,29 @@ describe Users::PasswordsController do
       end
     end
   end
+
+  describe '#edit' do
+    context 'user has a profile with PII' do
+      let(:pii) { { first_name: 'Jane' } }
+      before do
+        user = create(:user)
+        create(:profile, :active, :verified, user: user, pii: pii)
+        stub_sign_in(user)
+      end
+
+      it 'redirects to capture password if PII is not decrypted' do
+        get :edit
+
+        expect(response).to redirect_to capture_password_path
+      end
+
+      it 'renders form if PII is decrypted' do
+        controller.user_session[:decrypted_pii] = pii
+
+        get :edit
+
+        expect(response).to render_template(:edit)
+      end
+    end
+  end
 end
