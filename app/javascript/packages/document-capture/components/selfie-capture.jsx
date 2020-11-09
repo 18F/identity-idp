@@ -13,6 +13,7 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
 import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
+import './selfie-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -30,9 +31,15 @@ import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
  */
 function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
   const instanceId = useInstanceId();
-  const { t } = useI18n();
+  const { t, formatHTML } = useI18n();
   const labelRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const wrapperRef = useRef(/** @type {HTMLDivElement?} */ (null));
+  const hadValue = useRef(false);
+  const isUpdated = useMemo(() => {
+    const nextIsUpdated = Boolean(value && hadValue.current);
+    hadValue.current = hadValue.current || Boolean(value);
+    return nextIsUpdated;
+  }, [value]);
   const retryButtonRef = useFocusFallbackRef(labelRef);
   const captureButtonRef = useFocusFallbackRef(labelRef);
   useImperativeHandle(ref, () => labelRef.current);
@@ -57,12 +64,7 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
 
   const ifStillMounted = useIfStillMounted();
 
-  useEffect(() => {
-    // Start capturing only if not already capturing, and if value has yet to be assigned.
-    if (value || isCapturing) {
-      return;
-    }
-
+  function startCapture() {
     navigator.mediaDevices
       .getUserMedia({ video: true })
       .then(
@@ -85,6 +87,23 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
           setIsAccessRejected(true);
         }),
       );
+  }
+
+  useEffect(() => {
+    // Start capturing only if not already capturing, and if value has yet to be assigned.
+    if (value || isCapturing || !navigator.permissions) {
+      return;
+    }
+
+    navigator.permissions.query({ name: 'camera' }).then(
+      ifStillMounted((/** @type {PermissionStatus} */ result) => {
+        if (result.state === 'granted') {
+          startCapture();
+        } else if (result.state === 'denied') {
+          setIsAccessRejected(true);
+        }
+      }),
+    );
   }, [value]);
 
   function onCapture() {
@@ -123,6 +142,7 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
     'selfie-capture',
     isCapturing && 'selfie-capture--capturing',
     shownErrorMessage && 'selfie-capture--error',
+    isUpdated && !shownErrorMessage && 'selfie-capture--updated',
     value && 'selfie-capture--has-value',
     className,
   ]
@@ -146,6 +166,11 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
       {shownErrorMessage && (
         <span className="usa-error-message" role="alert">
           {shownErrorMessage}
+        </span>
+      )}
+      {isUpdated && !shownErrorMessage && (
+        <span className="usa-success-message" role="alert">
+          {t('doc_auth.info.image_updated')}
         </span>
       )}
       <div ref={wrapperRef} className={classes}>
@@ -192,15 +217,47 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
                 </button>
               </>
             ) : (
-              <div className="selfie-capture__consent-prompt">
-                <strong className="selfie-capture__consent-prompt-banner usa-file-input__banner-text">
-                  {t('doc_auth.instructions.document_capture_selfie_consent_banner')}
-                </strong>
-                <p>{t('doc_auth.instructions.document_capture_selfie_consent_reason')}</p>
-                {isAccessRejected && (
-                  <p>{t('doc_auth.instructions.document_capture_selfie_consent_blocked')}</p>
-                )}
-              </div>
+              <>
+                <div className="selfie-capture__consent-prompt">
+                  <strong className="selfie-capture__consent-prompt-banner usa-file-input__banner-text">
+                    {t('doc_auth.instructions.document_capture_selfie_consent_banner')}
+                  </strong>
+                  {isAccessRejected ? (
+                    <>
+                      <p>{t('doc_auth.instructions.document_capture_selfie_consent_blocked')}</p>
+                      <p>
+                        {t('doc_auth.instructions.document_capture_selfie_consent_blocked_action')}
+                      </p>
+                    </>
+                  ) : (
+                    <p>
+                      {formatHTML(
+                        t('doc_auth.instructions.document_capture_selfie_consent_action'),
+                        {
+                          'lg-underline': ({ children }) => (
+                            <button
+                              type="button"
+                              onClick={startCapture}
+                              className="usa-button--unstyled"
+                            >
+                              {children}
+                            </button>
+                          ),
+                        },
+                      )}
+                    </p>
+                  )}
+                </div>
+                {/* Disable reason: This button is hidden from assistive technology */}
+                {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={startCapture}
+                  aria-hidden
+                  className="selfie-capture__consent-overlay-button"
+                />
+              </>
             )}
           </>
         )}

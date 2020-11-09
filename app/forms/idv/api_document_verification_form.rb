@@ -15,7 +15,6 @@ module Idv
     def initialize(params, liveness_checking_enabled:)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
-      @readable = {}
     end
 
     def submit
@@ -28,12 +27,6 @@ module Idv
           remaining_attempts: remaining_attempts,
         },
       )
-    end
-
-    def status
-      return :ok if valid?
-      return :too_many_requests if errors.key?(:limit)
-      :bad_request
     end
 
     def remaining_attempts

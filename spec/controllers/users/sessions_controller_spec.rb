@@ -503,5 +503,115 @@ describe Users::SessionsController, devise: true do
         expect(response).to redirect_to verify_account_path
       end
     end
+
+    context 'with a garbage request_id' do
+      render_views
+
+      it 'does not blow up with a hash' do
+        expect do
+          get :new, params: { request_id: { '0' => "exp'\"\\(", '1' => '=1' } }
+        end.to_not raise_error
+      end
+
+      it 'does not reflect request_id values that do not look like UUIDs' do
+        get :new, params: { request_id: '<script>alert("my xss script")</script>' }
+
+        expect(response.body).to_not include('my xss script')
+      end
+    end
+  end
+
+  describe 'POST /sessions/keepalive' do
+    context 'when user is present' do
+      before do
+        stub_sign_in
+      end
+
+      it 'returns a 200 status code' do
+        post :keepalive
+
+        expect(response.status).to eq(200)
+      end
+
+      it 'clears the Etag header' do
+        post :keepalive
+
+        expect(response.headers['Etag']).to eq ''
+      end
+
+      it 'renders json' do
+        post :keepalive
+
+        expect(response.content_type).to eq('application/json')
+      end
+
+      it 'resets the timeout key' do
+        timeout = Time.zone.now + 2
+        controller.session[:session_expires_at] = timeout
+        post :keepalive
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['timeout'].to_datetime.to_i).to be >= timeout.to_i
+        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(
+          Time.zone.now.to_i + Figaro.env.session_timeout_in_minutes.to_i * 60,
+        )
+      end
+
+      it 'resets the remaining key' do
+        controller.session[:session_expires_at] = Time.zone.now + 10
+        post :keepalive
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['remaining']).to be_within(1).of(
+          Figaro.env.session_timeout_in_minutes.to_i * 60,
+        )
+      end
+
+      it 'tracks session refresh visit' do
+        controller.session[:session_expires_at] = Time.zone.now + 10
+        stub_analytics
+
+        expect(@analytics).to receive(:track_event).with(Analytics::SESSION_KEPT_ALIVE)
+
+        post :keepalive
+      end
+    end
+
+    context 'when user is not present' do
+      it 'sets live key to false' do
+        post :keepalive
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['live']).to eq false
+      end
+
+      it 'includes session_expires_at' do
+        post :keepalive
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['timeout'].to_datetime.to_i).to be_within(1).of(Time.zone.now.to_i - 1)
+      end
+
+      it 'includes the remaining time' do
+        post :keepalive
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['remaining']).to eq(-1)
+      end
+    end
+
+    it 'does not track analytics event' do
+      stub_sign_in
+      stub_analytics
+
+      expect(@analytics).to_not receive(:track_event)
+
+      get :active
+    end
   end
 end

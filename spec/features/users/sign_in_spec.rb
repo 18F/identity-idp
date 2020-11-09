@@ -261,7 +261,7 @@ feature 'Sign in' do
     end
 
     scenario 'user can continue browsing' do
-      find_link(t('notices.timeout_warning.signed_in.continue')).click
+      find_button(t('notices.timeout_warning.signed_in.continue')).click
 
       expect(current_path).to eq account_path
     end

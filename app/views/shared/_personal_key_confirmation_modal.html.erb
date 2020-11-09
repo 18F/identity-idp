@@ -1,0 +1,38 @@
+<div id="personal-key-confirm" class="display-none">
+  <%= render layout: '/shared/modal_layout' do %>
+    <div class="py5 px2 sm-px5 cntnr-skinny border-box bg-white rounded rounded-lg key-badge">
+      <h3 class="mt0 mb2">
+        <%= t('forms.personal_key.title') %>
+      </h3>
+      <p class="mb3">
+        <%= t('forms.personal_key.instructions') %>
+      </p>
+
+      <div id="personal-key-alert" class="alert alert-alert display-none" role="alert">
+        <%= t('users.personal_key.confirmation_error') %>
+      </div>
+      <form id="confirm-key" method="post" action="<%= update_path %>" name="key-confirm">
+        <%= render 'shared/personal_key_input', code: code %>
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+
+        <div class="clearfix mxn2">
+          <div class="col col-12 sm-col-6 px2 mb2 sm-mb0 sm-hide">
+            <button type="submit" class="col-12 btn btn-primary personal-key-confirm">
+              <%= t('forms.buttons.continue') %>
+            </button>
+          </div>
+          <div class="col col-12 sm-col-6 px2">
+            <button class="col-12 btn btn-outline blue rounded-lg" type="button" data-dismiss="personal-key-confirm">
+              <%= t('forms.buttons.back') %>
+            </button>
+          </div>
+          <div class="col col-12 sm-col-6 px2 mb2 sm-mb0 sm-show">
+            <button type="submit" class="col-12 btn btn-primary personal-key-confirm">
+              <%= t('forms.buttons.continue') %>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  <% end %>
+</div>

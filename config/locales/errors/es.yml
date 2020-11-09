@@ -45,7 +45,9 @@ es:
         <li>Su selfie se toma en un área bien iluminada con un fondo liso</li>
         <li>No lleva puesto un sombrero o anteojos, y su cabeza es completamente visible</li>
         </ul>
-      document_capture_selfie_consent_blocked: El acceso a su cámara está bloqueado
+      document_capture_selfie_consent_blocked: Su cámara está bloqueada
+      document_verification_timeout: El servidor tardó demasiado en responder. Inténtalo
+        de nuevo.
       general_error: No pudimos leer ni verificar su identificación. Intenta tomar
         y subir nuevas imágenes de la parte delantera y trasera de tu ID. Asegúrese
         de que todo se pueda leer fácilmente, incluido el código de barras.
@@ -61,10 +63,12 @@ es:
         <li class="mxn3">El fondo detrás de su identificación es un color sólido</li>
         <li class="mxn3">El fondo es visible detrás del documento</li>
         </ul>
+      invalid_file_input_type: No se acepta este tipo de archivo, elija un archivo
+        JPG, PNG, BMP o TIFF.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
-      photo_blurry: La foto está demasiado borrosa. Vuelve a intentarlo.
-      photo_glare: La foto tiene un resplandor. Vuelve a intentarlo.
+      photo_blurry: La imagen está borrosa, inténtelo de nuevo.
+      photo_glare: La imagen tiene brillo, inténtelo de nuevo.
       quota_reached: Lo sentimos, su proveedor de servicios ha alcanzado su límite
         de verificación de identidad. Póngase en contacto con su proveedor de servicios
         para obtener más información.
@@ -73,7 +77,7 @@ es:
       send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en 10 minutos.
         También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
     file_input:
-      invalid_type: Este tipo de archivo no es aceptado, elija otro archivo.
+      invalid_type: Este tipo de archivo no es aceptado, inténtalo de nuevo.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.

@@ -7,7 +7,12 @@
   liveness_required: liveness_checking_enabled?.presence,
   mock_client: (DocAuthRouter.doc_auth_vendor == 'mock').presence,
   document_capture_session_uuid: flow_session[:document_capture_session_uuid],
-  endpoint: api_verify_images_url,
+  endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
+    idv_doc_auth_step_path(step: :verify_document) :
+    api_verify_images_url,
+  status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
+    idv_doc_auth_step_path(step: :verify_document_status) :
+    nil,
   sp_name: sp_name,
   failure_to_proof_url: failure_to_proof_url,
   front_image_upload_url: front_image_upload_url,

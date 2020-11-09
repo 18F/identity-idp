@@ -17,6 +17,8 @@ module Idv
           when :in_progress
             nil
           when :timed_out
+            flash[:notice] = I18n.t('idv.failure.timeout')
+            delete_async
             mark_step_incomplete(:verify)
           when :done
             async_state_done(current_async_state)
@@ -24,12 +26,13 @@ module Idv
         end
 
         def async_state_done(current_async_state)
+          add_cost(:lexis_nexis_resolution)
           response = idv_result_to_form_response(current_async_state.result)
           response = check_ssn(current_async_state.pii) if response.success?
           summarize_result_and_throttle_failures(response)
+          delete_async
 
           if response.success?
-            delete_async
             mark_step_complete(:verify_wait)
           else
             mark_step_incomplete(:verify)

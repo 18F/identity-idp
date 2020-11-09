@@ -1,7 +1,7 @@
 const { I18n } = window.LoginGov;
 
 function togglePw() {
-  const inputs = document.querySelectorAll('input[type="password"]');
+  const inputs = document.querySelectorAll('input.password-toggle[type="password"]');
 
   if (inputs) {
     [].slice.call(inputs).forEach((input, i) => {

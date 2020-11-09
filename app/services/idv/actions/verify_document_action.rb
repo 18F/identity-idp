@@ -8,9 +8,17 @@ module Idv
       private
 
       def form_submit
-        json = form.submit
-        render_json(json, status: form.status)
-        json
+        response = form.submit
+        presenter = ImageUploadResponsePresenter.new(
+          form: form,
+          form_response: response,
+        )
+        status = :accepted if response.success?
+        render_json(
+          presenter,
+          status: status || presenter.status,
+        )
+        response
       end
 
       def form

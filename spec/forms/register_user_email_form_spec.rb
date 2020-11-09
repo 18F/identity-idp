@@ -12,7 +12,7 @@ describe RegisterUserEmailForm do
 
         mailer = instance_double(ActionMailer::MessageDelivery)
         allow(UserMailer).to receive(:signup_with_your_email).
-          with(existing_user.email).and_return(mailer)
+          with(existing_user, existing_user.email).and_return(mailer)
         allow(mailer).to receive(:deliver_later)
 
         extra = {
@@ -114,6 +114,26 @@ describe RegisterUserEmailForm do
         expect(FormResponse).to have_received(:new).
           with(success: true, errors: {}, extra: extra)
         expect(submit_form).to eq result
+      end
+
+      it 'saves the user email_language for a valid form' do
+        captcha_results = mock_captcha(enabled: true, present: true, valid: true)
+        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results)
+
+        response = form.submit(email: 'not_taken@gmail.com', email_language: 'fr')
+        expect(response).to be_success
+
+        expect(User.find_with_email('not_taken@gmail.com').email_language).to eq('fr')
+      end
+
+      it 'does not save the user email_language for an invalid form' do
+        captcha_results = mock_captcha(enabled: true, present: true, valid: false)
+        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results)
+
+        response = form.submit(email: 'not_taken@gmail.com', email_language: 'fr')
+        expect(response).to_not be_success
+
+        expect(User.find_with_email('not_taken@gmail.com')&.email_language).to be_nil
       end
 
       it 'is invalid with invalid recaptcha' do

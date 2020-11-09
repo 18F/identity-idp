@@ -1,7 +1,7 @@
 import React, { createRef } from 'react';
 import sinon from 'sinon';
 import useFocusFallbackRef from '@18f/identity-document-capture/hooks/use-focus-fallback-ref';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/hooks/use-focus-fallback', () => {
   function ButtonWithFocusFallback({ fallbackRef }) {

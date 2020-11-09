@@ -60,6 +60,6 @@ fr:
     totp_disabled: Vous avez supprimé votre application d'authentification.
     use_diff_email:
       link: utilisez une adresse courriel différente
-      text_html: Or, %{link}
+      text_html: Ou %{link}
     webauthn_configured: Ha permitido una clé de sécurité.
     webauthn_deleted: Vous avez supprimé une clé de sécurité.

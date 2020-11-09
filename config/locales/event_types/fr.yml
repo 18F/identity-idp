@@ -8,7 +8,7 @@ fr:
     authenticator_disabled: Application d'authentification supprimée
     authenticator_enabled: Application authenticator ajoutée
     backup_codes_added: Codes de sauvegarde ajoutés
-    eastern_timestamp: "%{timestamp} (Eastern)"
+    eastern_timestamp: "%{timestamp} (est)"
     email_changed: Adresse courriel modifiée
     email_deleted: Adresse e-mail supprimée
     new_personal_key: Clé personnelle modifié

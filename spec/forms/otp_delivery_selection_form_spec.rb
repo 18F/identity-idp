@@ -4,7 +4,7 @@ describe OtpDeliverySelectionForm do
   let(:phone_to_deliver_to) { '+1 (202) 555-1234' }
   subject do
     OtpDeliverySelectionForm.new(
-      build_stubbed(:user),
+      build(:user),
       phone_to_deliver_to,
       'authentication',
     )

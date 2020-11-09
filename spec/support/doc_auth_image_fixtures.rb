@@ -51,6 +51,14 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(path, Mime[:yaml])
   end
 
+  def self.error_yaml_no_db_multipart
+    path = File.join(
+      File.dirname(__FILE__),
+      '../fixtures/ial2_test_credential_no_dob.yml',
+    )
+    Rack::Test::UploadedFile.new(path, Mime[:yaml])
+  end
+
   def self.fixture_path(filename)
     File.join(
       File.dirname(__FILE__),

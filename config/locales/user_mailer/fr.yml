@@ -57,9 +57,9 @@ fr:
         %{app} pour le réinitialiser.
     contact_link_text: communiquez avec nous
     doc_auth_link:
-      message: You've requested to verify your identity on a desktop computer.  Please
-        sign in to %{sp_link}
-      subject: Verify your identity on a desktop computer
+      message: Vous avez demandé à vérifier votre identité sur un ordinateur de bureau.
+        Veuillez vous connecter à %{sp_link}
+      subject: Vérifiez votre identité sur un ordinateur de bureau
     email_added:
       header: Une nouvelle adresse e-mail a été ajoutée à votre profil login.gov.
       help: Si vous n'avez pas apporté cette modification, connectez-vous à votre

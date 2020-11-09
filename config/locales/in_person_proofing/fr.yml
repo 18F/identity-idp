@@ -2,52 +2,53 @@
 fr:
   in_person_proofing:
     buttons:
-      change_address: change
-      change_ssn: change
-      get_started: Get started
-    enrollment_form: Enrollment form
+      change_address: changement
+      change_ssn: changement
+      get_started: Commencer
+    enrollment_form: Formulaire d'engagement
     forms:
-      address1: Address
-      address2: Address (optional)
-      city: City
-      dob: Date of birth
-      first_name: First name
-      last_name: Last Name
-      ssn: Social security number
-      state: State
-      zip_code: Zip code
+      address1: Adresse
+      address2: Adresse (facultatif)
+      city: Ville
+      dob: Date de naissance
+      first_name: Prénom
+      last_name: Nom de famille
+      ssn: Numéro de sécurité sociale
+      state: Etat
+      zip_code: Code postal
     headings:
-      enrollment_form: Bring this form to your post office
-      enter_info: Enter in your information
-      usps_list: Choose a post office
-      welcome: Verify your identity in person
-      zip_code: Find a post office
+      enrollment_form: Apportez ce formulaire à votre bureau de poste
+      enter_info: Entrez vos informations
+      usps_list: Choisissez un bureau de poste
+      welcome: Vérifiez votre identité en personne
+      zip_code: Trouver un bureau de poste
     info:
-      enrollment_form: Please print or save this form and take it to the post office
-        you chose.
-      welcome: We can verify your identity at your local post office.
+      enrollment_form: Veuillez imprimer ou enregistrer ce formulaire et l'apporter
+        au bureau de poste de votre choix.
+      welcome: Nous pouvons vérifier votre identité à votre bureau de poste local.
     instructions:
-      bullet1: Choose a nearby post office
-      bullet2: Enter your information
-      bullet3: Print or save your enrollment form
-      bullet4: Visit the post office to get verified
-      bullet5: Come back to login.gov
+      bullet1: Choisissez un bureau de poste à proximité
+      bullet2: Entrez vos informations
+      bullet3: Imprimez ou enregistrez votre formulaire d'inscription
+      bullet4: Visitez le bureau de poste pour être vérifié
+      bullet5: Revenez à login.gov
       encrypt: Lorsque vous ressaisissez votre mot de passe, login.gov protégera les
         informations que vous nous avez fournies, afin que vous seul puissiez y accéder.
-      enrollment_form: 'Bring this code to the following post office along with a
-        government-issued ID:'
+      enrollment_form: 'Apportez ce code au bureau de poste suivant avec une pièce
+        d''identité officielle:'
       read_more_encrypt: En savoir plus sur la façon dont login.gov protège vos informations
         personnelles
-      text1: by entering your ZIP code
-      text2: name, date of birth, address, and social security number
-      text3: a bar code that you need to take to the post office with you
-      text4: bring your enrollment code and a government-issued ID
-      text5: sign in and finish the process
-      welcome: 'What you''ll need to do:'
-    opt_in_link: Verify your identity in person at a local post office instead
-    step: Verify your identity in person - Step %{step} of 5
+      text1: en entrant votre code postal
+      text2: nom, date de naissance, adresse et numéro de sécurité sociale
+      text3: un code-barres que vous devez emporter au bureau de poste avec vous
+      text4: apportez votre code d'inscription et une pièce d'identité officielle
+      text5: connectez-vous et terminez le processus
+      welcome: 'Ce que vous devez faire:'
+    opt_in_link: Vérifiez plutôt votre identité en personne dans un bureau de poste
+      local
+    step: Vérifiez votre identité en personne - Étape %{step} sur 5
     titles:
-      in_person_proofing: Verify your identity in person
+      in_person_proofing: Vérifiez votre identité en personne
     warning:
-      enrollment_form: Download, print, or save your enrollment form.  A copy has
-        also been sent to your email.
+      enrollment_form: Téléchargez, imprimez ou enregistrez votre formulaire d'inscription.
+        Une copie a également été envoyée à votre adresse e-mail.

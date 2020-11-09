@@ -19,7 +19,8 @@ feature 'doc auth verify step' do
   it 'proceeds to the next page upon confirmation' do
     click_idv_continue
 
-    expect(page).to have_current_path(idv_doc_auth_success_step)
+    expect(page).to have_current_path(idv_phone_path)
+    expect(page).to have_content(t('doc_auth.forms.doc_success'))
     user = User.first
     expect(user.proofing_component.resolution_check).to eq('lexis_nexis')
     expect(user.proofing_component.source_check).to eq('aamva')
@@ -111,7 +112,7 @@ feature 'doc auth verify step' do
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_success_step)
+      expect(page).to have_current_path(idv_phone_path)
     end
   end
 
@@ -194,6 +195,22 @@ feature 'doc auth verify step' do
       click_idv_continue
 
       expect(agent).to have_received(:proof_resolution).with(anything, should_proof_state_id: false)
+    end
+  end
+
+  context 'async timed out' do
+    it 'allows resubmitting form' do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_verify_step
+
+      allow(DocumentCaptureSession).to receive(:find_by).
+        and_return(nil)
+
+      click_continue
+      expect(page).to have_current_path(idv_doc_auth_verify_step)
+      allow(DocumentCaptureSession).to receive(:find_by).and_call_original
+      click_continue
+      expect(page).to have_current_path(idv_phone_path)
     end
   end
 end

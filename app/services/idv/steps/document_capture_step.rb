@@ -37,14 +37,19 @@ module Idv
 
       def post_images_and_handle_result
         response = post_images
-        if response.success?
-          save_proofing_components
-          document_capture_session.store_result_from_response(response)
-          extract_pii_from_doc(response)
-          response
-        else
-          handle_document_verification_failure(response)
+        return handle_document_verification_failure(response) unless response.success?
+        doc_pii_form_result = Idv::DocPiiForm.new(response.pii_from_doc).submit
+        unless doc_pii_form_result.success?
+          doc_auth_form_result = IdentityDocAuth::Response.new(success: false,
+                                                               errors: doc_pii_form_result.errors)
+          doc_auth_form_result = doc_auth_form_result.merge(response)
+          return handle_document_verification_failure(doc_auth_form_result)
         end
+
+        save_proofing_components
+        document_capture_session.store_result_from_response(response)
+        extract_pii_from_doc(response)
+        response
       end
 
       def handle_document_verification_failure(response)

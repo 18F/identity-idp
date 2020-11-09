@@ -1,5 +1,4 @@
 <% title t('titles.visitors.index') %>
-<% request_id = params[:request_id] || sp_session[:request_id] %>
 
 <%= render 'shared/maintenance_window_alert' %>
 
@@ -29,13 +28,13 @@
   <%= f.input :password,
               label: t('account.index.password'),
               required: true,
-              input_html: { aria: { invalid: false } } %>
-  <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
+              input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
+  <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
   <div class='mb3'>
     <%= submit_tag t('links.next'), class: 'usa-button usa-button--primary grid-col-12 mb2' %>
     <%= link_to(
       t('links.create_account'),
-      sign_up_email_url(request_id: request_id),
+      sign_up_email_url(request_id: @request_id),
       class: 'text-decoration-none usa-button usa-button--outline grid-col-12'
     ) %>
   </div>
@@ -60,7 +59,7 @@
 <div class='mxn1 my1'>
   <%= link_to(
     t('links.passwords.forgot'),
-    new_user_password_url(request_id: request_id),
+    new_user_password_url(request_id: @request_id),
     class: 'px1',
   ) %>
 </div>

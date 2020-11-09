@@ -2,22 +2,23 @@ require 'rails_helper'
 
 RSpec.describe LambdaJobs::Runner do
   subject(:runner) do
-    LambdaJobs::Runner.new(job_name: job_name, args: args, job_class: job_class)
+    LambdaJobs::Runner.new(args: args, job_class: job_class)
   end
 
-  let(:job_name) { 'my-job' }
   let(:args) { { foo: 'bar' } }
-  let(:job_class) { double('JobClass') }
+  let(:job_class) { double('JobClass', name: 'SomeModule::OtherModule::JobClass') }
   let(:aws_lambda_proofing_enabled) { 'true' }
 
+  let(:env) { 'dev' }
   let(:git_ref) { '1234567890abcdefghijklmnop' }
   before do
     stub_const('LambdaJobs::GIT_REF', git_ref)
+    allow(LoginGov::Hostdata).to receive(:env).and_return(env)
   end
 
   describe '#function_name' do
-    it 'adds the first 10 characters of the GIT_REF' do
-      expect(runner.function_name).to eq('my-job:1234567890')
+    it 'has the env, job class and first 10 characters of the GIT_REF' do
+      expect(runner.function_name).to eq('dev-idp-functions-JobClassFunction:1234567890')
     end
   end
 
@@ -41,7 +42,7 @@ RSpec.describe LambdaJobs::Runner do
 
         it 'involves a lambda in AWS' do
           expect(aws_lambda_client).to receive(:invoke).with(
-            function_name: 'my-job:1234567890',
+            function_name: 'dev-idp-functions-JobClassFunction:1234567890',
             invocation_type: 'Event',
             log_type: 'None',
             payload: args.to_json,
@@ -56,7 +57,7 @@ RSpec.describe LambdaJobs::Runner do
 
         it 'calls JobClass.handle' do
           expect(job_class).to receive(:handle).with(
-            event: { 'body' => args.to_json },
+            event: args,
             context: nil,
           )
 
@@ -70,7 +71,7 @@ RSpec.describe LambdaJobs::Runner do
 
       it 'calls JobClass.handle' do
         expect(job_class).to receive(:handle).with(
-          event: { 'body' => args.to_json },
+          event: args,
           context: nil,
         )
 
@@ -82,7 +83,7 @@ RSpec.describe LambdaJobs::Runner do
           result = Object.new
 
           expect(job_class).to receive(:handle).with(
-            event: { 'body' => args.to_json },
+            event: args,
             context: nil,
           ).and_yield(result)
 

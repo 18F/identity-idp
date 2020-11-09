@@ -6,7 +6,7 @@ import FormSteps, {
   getStepIndexByName,
 } from '@18f/identity-document-capture/components/form-steps';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [
@@ -128,6 +128,29 @@ describe('document-capture/components/form-steps', () => {
       secondInputTwo: 'two',
       changed: true,
     });
+  });
+
+  it('prompts on navigate if values have been assigned', async () => {
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+    await userEvent.type(getByLabelText('Second Input One'), 'one');
+
+    const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+    window.dispatchEvent(event);
+
+    expect(event.defaultPrevented).to.be.true();
+    expect(event.returnValue).to.be.false();
+  });
+
+  it('does not prompt on navigate if no values have been assigned', () => {
+    render(<FormSteps steps={STEPS} />);
+
+    const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+    window.dispatchEvent(event);
+
+    expect(event.defaultPrevented).to.be.false();
+    expect(event.returnValue).to.be.true();
   });
 
   it('pushes step to URL', () => {

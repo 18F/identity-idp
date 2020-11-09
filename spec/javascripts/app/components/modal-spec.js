@@ -1,10 +1,8 @@
 import { waitFor } from '@testing-library/dom';
 import BaseModal from '../../../../app/javascript/app/components/modal';
-import { useCleanDOM } from '../../support/dom';
 import { useSandbox } from '../../support/sinon';
 
 describe('components/modal', () => {
-  useCleanDOM();
   const sandbox = useSandbox();
 
   class Modal extends BaseModal {

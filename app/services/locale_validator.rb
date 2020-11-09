@@ -4,7 +4,7 @@ class LocaleValidator
   end
 
   def success?
-    locale.present? && I18n.available_locales.include?(locale.to_sym)
+    locale.present? && I18n.locale_available?(locale)
   end
 
   private

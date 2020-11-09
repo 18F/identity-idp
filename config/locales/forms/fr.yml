@@ -2,7 +2,7 @@
 fr:
   forms:
     backup_code:
-      are_you_sure_continue: continuez avec les codes de sauvegarde
+      are_you_sure_continue: Continuer
       are_you_sure_continue_prologue: Si vous n'avez accès à aucune autre méthode
         d'authentification,
       are_you_sure_desc: "<br><b>Les codes de sauvegarde ne sont pas très sûrs</b>
@@ -39,7 +39,7 @@ fr:
       confirm: Êtes-vous sûr de vouloir régénérer vos codes de sauvegarde?
     buttons:
       back: Retour
-      cac: Present PIV/CAC card
+      cac: Insérez votre PIV/CAC
       cancel: Oui, annuler
       confirm: Confirmer
       continue: Continuer
@@ -60,6 +60,8 @@ fr:
       buttons:
         delete: Supprimer l'email
     example: 'exemple:'
+    file_input:
+      file_updated: Fichier mis à jour
     messages:
       remember_device: Enregistrer ce navigateur
     passwords:
@@ -130,7 +132,10 @@ fr:
           d'authentification.
     registration:
       labels:
-        email: Adresse courriel
+        email: Adresse e-mail
+        email_language: Sélectionnez la préférence de langue des e-mails
+    ssn:
+      show: Afficher le numéro de sécurité sociale
     totp_delete:
       caution: Si vous supprimez votre application d'authentification, vous ne pourrez
         plus l'utiliser pour accéder à votre compte login.gov.

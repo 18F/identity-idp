@@ -7,7 +7,7 @@ module Users
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
-    skip_before_action :session_expires_at, only: [:active]
+    skip_before_action :session_expires_at, only: %i[active keepalive]
     skip_before_action :require_no_authentication, only: [:new]
     before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
@@ -20,6 +20,7 @@ module Users
         stored_location: session['user_return_to'],
       )
 
+      @request_id = request_id_if_valid
       @ial = sp_session ? sp_session_ial : 1
       session[:ial2_with_no_sp_campaign] = campaign if sp_session.blank? && params[:ial] == '2'
       super
@@ -43,6 +44,14 @@ module Users
       response.headers['Etag'] = '' # clear etags to prevent caching
       session[:pinged_at] = now
       Rails.logger.debug(alive?: alive?, expires_at: expires_at)
+      render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
+    end
+
+    def keepalive
+      response.headers['Etag'] = '' # clear etags to prevent caching
+      session[:session_expires_at] = now + Devise.timeout_in if alive?
+      analytics.track_event(Analytics::SESSION_KEPT_ALIVE) if alive?
+
       render json: { live: alive?, timeout: expires_at, remaining: remaining_session_time }
     end
 
@@ -113,7 +122,7 @@ module Users
     end
 
     def expires_at
-      @_expires_at ||= (session[:session_expires_at]&.to_datetime || (now - 1))
+      session[:session_expires_at]&.to_datetime || (now - 1)
     end
 
     def remaining_session_time
@@ -180,6 +189,14 @@ module Users
       AccountReset::FindPendingRequestForUser.new(
         current_user,
       ).call
+    end
+
+    LETTERS_AND_DASHES = /\A[a-z0-9\-]+\Z/i.freeze
+
+    def request_id_if_valid
+      request_id = (params[:request_id] || sp_session[:request_id]).to_s
+
+      request_id if LETTERS_AND_DASHES.match?(request_id)
     end
   end
 end

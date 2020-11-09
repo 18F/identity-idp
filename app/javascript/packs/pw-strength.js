@@ -42,6 +42,35 @@ function getFeedback(z) {
   const { warning, suggestions } = z.feedback;
 
   function lookup(str) {
+    /* eslint-disable max-len */
+    // i18n-tasks-use t('zxcvbn.feedback.a_word_by_itself_is_easy_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.add_another_word_or_two_uncommon_words_are_better')
+    // i18n-tasks-use t('zxcvbn.feedback.all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase')
+    // i18n-tasks-use t('zxcvbn.feedback.avoid_dates_and_years_that_are_associated_with_you')
+    // i18n-tasks-use t('zxcvbn.feedback.avoid_recent_years')
+    // i18n-tasks-use t('zxcvbn.feedback.avoid_repeated_words_and_characters')
+    // i18n-tasks-use t('zxcvbn.feedback.avoid_sequences')
+    // i18n-tasks-use t('zxcvbn.feedback.avoid_years_that_are_associated_with_you')
+    // i18n-tasks-use t('zxcvbn.feedback.capitalization_doesnt_help_very_much')
+    // i18n-tasks-use t('zxcvbn.feedback.common_names_and_surnames_are_easy_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.dates_are_often_easy_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.for_a_stronger_password_use_a_few_words_separated_by_spaces_but_avoid_common_phrases')
+    // i18n-tasks-use t('zxcvbn.feedback.names_and_surnames_by_themselves_are_easy_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.predictable_substitutions_like__instead_of_a_dont_help_very_much')
+    // i18n-tasks-use t('zxcvbn.feedback.recent_years_are_easy_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.repeats_like_aaa_are_easy_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.repeats_like_abcabcabc_are_only_slightly_harder_to_guess_than_abc')
+    // i18n-tasks-use t('zxcvbn.feedback.reversed_words_arent_much_harder_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.sequences_like_abc_or_6543_are_easy_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.short_keyboard_patterns_are_easy_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.straight_rows_of_keys_are_easy_to_guess')
+    // i18n-tasks-use t('zxcvbn.feedback.there_is_no_need_for_symbols_digits_or_uppercase_letters')
+    // i18n-tasks-use t('zxcvbn.feedback.this_is_a_top_100_common_password')
+    // i18n-tasks-use t('zxcvbn.feedback.this_is_a_top_10_common_password')
+    // i18n-tasks-use t('zxcvbn.feedback.this_is_a_very_common_password')
+    // i18n-tasks-use t('zxcvbn.feedback.this_is_similar_to_a_commonly_used_password')
+    // i18n-tasks-use t('zxcvbn.feedback.use_a_longer_keyboard_pattern_with_more_turns')
+    /* eslint-enable max-len */
     return I18n.t(`zxcvbn.feedback.${I18n.key(str)}`);
   }
 

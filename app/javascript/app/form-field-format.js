@@ -23,14 +23,6 @@ function formatForm() {
     });
   }
 
-  if (document.querySelector('.ssn')) {
-    new Cleave('.ssn', {
-      numericOnly: true,
-      blocks: [3, 2, 4],
-      delimiter: '-',
-    });
-  }
-
   if (document.querySelector('.zipcode')) {
     new Cleave('.zipcode', {
       numericOnly: true,

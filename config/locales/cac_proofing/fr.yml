@@ -2,7 +2,7 @@
 fr:
   cac_proofing:
     buttons:
-      get_started: Get started
+      get_started: Commencer
       use_cac: Utilisez votre PIV ou CAC
       use_doc_auth: Utilisez votre pièce d'identité officielle
     errors:
@@ -15,11 +15,11 @@ fr:
       state_id: identifiant émis par l'état
     headings:
       choose_method: Comment souhaitez-vous vérifier votre identité?
-      enter_info: Enter in your information
-      present_cac: Present your PIV/CAC card to verify your account
-      success: We've verified your information and PIV/CAC card.
-      verify: Verify your information
-      welcome: We need to verify your identity
+      enter_info: Entrez vos informations
+      present_cac: Presente su tarjeta PIV / CAC para verificar su cuenta
+      success: Nous avons vérifié vos informations et votre carte PIV / CAC.
+      verify: Vérifiez vos informations
+      welcome: Nous devons vérifier votre identité
     info:
       choose_method: Nous collecterons des informations qui vous concernent en lisant
         votre pièce d'identité.
@@ -28,25 +28,27 @@ fr:
       piv_cac_description: Utilisez une carte d'identité d'employé du gouvernement
         fédéral ou une carte d'identité militaire (PIV ou CAC) pour vérifier votre
         identité de façon rapide et sécurisée.
-      present_cac: After clicking "Present PIV/CAC" your browser will prompt you for
-        your PIV/CAC PIN and have you select a certificate.
+      present_cac: Après avoir cliqué sur "Présenter PIV / CAC", votre navigateur
+        vous demandera votre code PIN PIV / CAC et vous demandera de sélectionner
+        un certificat.
       state_id_description: Si vous n'avez pas de PIV ou de CAC, vous pouvez utiliser
         un identifiant émis par l'État pour vérifier votre identité.
-      welcome: We verify your identity to make sure you are you—not someone pretending
-        to be you.  Verifying your identity also allows you to access services that
-        handle Personal Identifiable Information.
+      welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien
+        vous, et non quelqu'un qui se fait passer pour vous. La vérification de votre
+        identité vous permet également d'accéder aux services qui traitent les informations
+        personnelles identifiables.
     instructions:
-      bullet1: Present your PIV/CAC card
-      bullet2: Enter your information
-      bullet3: Confirm your address
-      bullet4: Secure your account
-      bullet5: Account recovery
-      text1: your government issued ID card
-      text2: Social Security Number, date of birth, and address
-      text3: using a phone number or mailing address
-      text4: by re-entering your login.gov password
-      text5: make sure you always have access
-      welcome: 'What you''ll need to do:'
-    step: Verify your identity with PIV/CAC card - Step %{step} of 5
+      bullet1: Présentez votre carte PIV / CAC
+      bullet2: Entrez vos informations
+      bullet3: Confirmez votre adresse
+      bullet4: Sécurise ton compte
+      bullet5: Récupération du compte
+      text1: votre carte d'identité émise par le gouvernement
+      text2: Numéro de sécurité sociale, date de naissance et adresse
+      text3: en utilisant un numéro de téléphone ou une adresse postale
+      text4: en saisissant à nouveau votre mot de passe login.gov
+      text5: assurez-vous d'avoir toujours accès
+      welcome: 'Ce que vous devez faire:'
+    step: Vérifiez votre identité avec la carte PIV / CAC - Étape %{step} sur 5
     titles:
-      cac_proofing: Verify your identity with a PIV/CAC card
+      cac_proofing: Vérifiez votre identité avec une carte PIV / CAC
