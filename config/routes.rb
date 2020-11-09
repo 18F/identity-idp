@@ -155,6 +155,9 @@ Rails.application.routes.draw do
 
         get '/telephony' => 'telephony#index'
         delete '/telephony' => 'telephony#destroy'
+
+        get '/s3/:key' => 'fake_s3#show', as: :fake_s3
+        post '/s3/:key' => 'fake_s3#create'
       end
     end
 
