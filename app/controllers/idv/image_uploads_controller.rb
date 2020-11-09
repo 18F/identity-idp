@@ -8,6 +8,7 @@ module Idv
 
     def create
       form_response = image_form.submit
+      client_response = nil
 
       if form_response.success?
         client_response = doc_auth_client.post_images(
@@ -30,7 +31,7 @@ module Idv
 
       presenter = ImageUploadResponsePresenter.new(
         form: image_form,
-        form_response: client_response || form_response,
+        form_response: presenter_response(form_response, client_response),
       )
 
       render json: presenter, status: presenter.status
@@ -82,6 +83,11 @@ module Idv
             issuer: sp_session[:issuer].to_s,
             liveness_checking_enabled: liveness_checking_enabled?).
         call(client_response)
+    end
+
+    def presenter_response(form_response, client_response)
+      return client_response if form_response.success? && client_response.present?
+      form_response
     end
   end
 end
