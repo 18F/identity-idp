@@ -208,7 +208,7 @@ function AcuantCapture(
               }
 
               const agent = /** @type {NewRelicGlobal} */ (window).newrelic;
-              agent?.addPageAction('documentCapture.acuantResult', { result });
+              agent?.addPageAction('documentCapture.acuantWebSDKResult', { result });
 
               setIsCapturingEnvironment(false);
             }}

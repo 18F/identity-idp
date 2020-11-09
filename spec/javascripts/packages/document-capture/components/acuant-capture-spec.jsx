@@ -279,7 +279,7 @@ describe('document-capture/components/acuant-capture', () => {
 
       const error = await findByText('errors.doc_auth.photo_glare');
       expect(
-        window.newrelic.addPageAction.calledWith('documentCapture.acuantResult', {
+        window.newrelic.addPageAction.calledWith('documentCapture.acuantWebSDKResult', {
           result: 'glare',
         }),
       ).to.be.true();
@@ -316,7 +316,7 @@ describe('document-capture/components/acuant-capture', () => {
 
       const error = await findByText('errors.doc_auth.photo_blurry');
       expect(
-        window.newrelic.addPageAction.calledWith('documentCapture.acuantResult', {
+        window.newrelic.addPageAction.calledWith('documentCapture.acuantWebSDKResult', {
           result: 'blurry',
         }),
       ).to.be.true();
@@ -411,7 +411,7 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
       await waitForElementToBeRemoved(error);
       expect(
-        window.newrelic.addPageAction.calledWith('documentCapture.acuantResult', {
+        window.newrelic.addPageAction.calledWith('documentCapture.acuantWebSDKResult', {
           result: 'success',
         }),
       ).to.be.true();
