@@ -61,11 +61,13 @@ const withBackgroundEncryptedUpload = (Component) => ({ onChange, ...props }) =>
           iv,
           value,
         )
-          .then((encryptedValue) => window.fetch(url, {
-            method: 'POST',
-            body: encryptedValue,
-            headers: { 'Content-Type': 'application/octet-stream' }
-          }))
+          .then((encryptedValue) =>
+            window.fetch(url, {
+              method: 'POST',
+              body: encryptedValue,
+              headers: { 'Content-Type': 'application/octet-stream' },
+            }),
+          )
           .then(() => url);
       }
     }
