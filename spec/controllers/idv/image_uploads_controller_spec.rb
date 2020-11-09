@@ -313,6 +313,25 @@ describe Idv::ImageUploadsController do
           expect_funnel_update_counts(user, 1)
         end
       end
+
+      context 'when required pii field is missing from doc response' do
+        before { params.merge!(back: DocAuthImageFixtures.error_yaml_no_db_multipart) }
+
+        it 'returns error' do
+          action
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          expect(response.status).to eq(400)
+          expect(json[:success]).to eq(false)
+          expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+          expect(json[:errors]).to eq [
+            {
+              field: 'pii',
+              message: I18n.t('doc_auth.errors.lexis_nexis.birth_date_checks'),
+            },
+          ]
+        end
+      end
     end
   end
 
