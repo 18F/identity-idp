@@ -237,7 +237,7 @@ module Idv
     end
 
     def timed_out
-      flash[:notice] = I18n.t('idv.failure.timeout')
+      flash[:info] = I18n.t('idv.failure.timeout')
       delete_async
       ProofingDocumentCaptureSessionResult.timed_out
     end
