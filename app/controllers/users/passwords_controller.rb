@@ -27,10 +27,9 @@ module Users
     private
 
     def pii_requested_but_locked?
-      if current_user.decorate.identity_verified? && user_session[:decrypted_pii].blank?
-        store_location(request.url)
-        redirect_to capture_password_url
-      end
+      return unless current_user.decorate.identity_verified? && user_session[:decrypted_pii].blank?
+      user_session[:stored_location] = request.url
+      redirect_to capture_password_url
     end
 
     def user_params
@@ -60,10 +59,6 @@ module Users
         ForbiddenPasswords.new(email_address.email).call
       end
       render :edit
-    end
-
-    def store_location(url)
-      user_session[:stored_location] = url
     end
   end
 end
