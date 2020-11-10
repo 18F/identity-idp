@@ -11,12 +11,16 @@ import { render, useDocumentCaptureForm } from '../../../support/document-captur
 describe('document-capture/components/submission-complete-step', () => {
   const onSubmit = useDocumentCaptureForm();
 
-  let response = { success: true };
+  let response;
 
   function TestComponent() {
     const resource = useAsync(() => Promise.resolve(response));
     return <SubmissionComplete resource={resource} />;
   }
+
+  beforeEach(() => {
+    response = { success: true };
+  });
 
   it('renders fallback while loading', () => {
     const { getByText } = render(
