@@ -45,7 +45,7 @@ export function render(element, options = {}) {
   return baseRender(element, {
     ...baseRenderOptions,
     wrapper: ({ children }) => (
-      <UploadContextProvider upload={upload} isMockClient={isMockClient} statusPollInterval={0}>
+      <UploadContextProvider upload={upload} isMockClient={isMockClient}>
         {baseWrapper({ children })}
       </UploadContextProvider>
     ),
