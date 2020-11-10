@@ -27,9 +27,7 @@ module Users
     private
 
     def pii_requested_but_locked?
-      if UserDecorator.new(current_user).identity_verified? &&
-         user_session[:decrypted_pii].blank?
-
+      if current_user.decorate.identity_verified? && user_session[:decrypted_pii].blank?
         store_location(request.url)
         redirect_to capture_password_url
       end
