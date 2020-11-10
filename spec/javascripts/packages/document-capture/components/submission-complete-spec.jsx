@@ -7,11 +7,9 @@ import SubmissionComplete, {
 } from '@18f/identity-document-capture/components/submission-complete';
 import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';
 import { render, useDocumentCaptureForm } from '../../../support/document-capture';
-import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/submission-complete-step', () => {
   const onSubmit = useDocumentCaptureForm();
-  const sandbox = useSandbox();
 
   let response = { success: true };
 
@@ -42,8 +40,6 @@ describe('document-capture/components/submission-complete-step', () => {
 
   it('retries on pending success', async () => {
     const onError = sinon.spy();
-    sandbox.spy(window, 'setTimeout');
-
     response = { success: true, isPending: true };
 
     render(
