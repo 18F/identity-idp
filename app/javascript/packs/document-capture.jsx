@@ -86,7 +86,9 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
       <UploadContextProvider
         endpoint={appRoot.getAttribute('data-endpoint')}
         statusEndpoint={appRoot.getAttribute('data-status-endpoint')}
-        statusPollInterval={Number(appRoot.getAttribute('data-status-poll-interval'))}
+        statusPollInterval={
+          Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined
+        }
         method={isAsyncForm ? 'PUT' : 'POST'}
         csrf={getMetaContent('csrf-token')}
         isMockClient={isMockClient}
