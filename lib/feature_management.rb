@@ -69,8 +69,12 @@ class FeatureManagement
     ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED.include?(Figaro.env.domain_name)
   end
 
-  def self.fake_banner_mode?
-    Rails.env.production? && LoginGov::Hostdata.domain != 'login.gov'
+  def self.show_demo_banner?
+    LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.env != 'prod'
+  end
+
+  def self.show_no_pii_banner?
+    LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.domain != 'login.gov'
   end
 
   def self.enable_saml_cert_rotation?

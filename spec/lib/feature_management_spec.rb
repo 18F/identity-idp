@@ -132,28 +132,62 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
-  describe '.fake_banner_mode?' do
-    context 'when in the production environment: secure.login.gov, idp.staging.login.gov' do
-      it 'does not display the fake banner' do
-        allow(LoginGov::Hostdata).to receive(:domain).and_return('login.gov')
-        allow(Rails.env).to receive(:production?).and_return(true)
-        expect(FeatureManagement.fake_banner_mode?).to eq(false)
+  describe '.show_demo_banner?' do
+    subject(:show_demo_banner?) { FeatureManagement.show_demo_banner? }
+
+    context 'in local development' do
+      it 'is false' do
+        expect(show_demo_banner?).to be_falsey
       end
     end
 
-    context 'when the in the sandbox environment: identitysandbox.gov' do
-      it 'displays the fake banner' do
-        allow(LoginGov::Hostdata).to receive(:domain).and_return('identitysandbox.gov')
-        allow(Rails.env).to receive(:production?).and_return(true)
-        expect(FeatureManagement.fake_banner_mode?).to eq(true)
+    context 'in a deployed environment' do
+      before { expect(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true) }
+
+      context 'in a non-prod env' do
+        before { expect(LoginGov::Hostdata).to receive(:env).and_return('staging') }
+
+        it 'is true' do
+          expect(show_demo_banner?).to be_truthy
+        end
+      end
+
+      context 'in production' do
+        before { expect(LoginGov::Hostdata).to receive(:env).and_return('prod') }
+
+        it 'is false' do
+          expect(show_demo_banner?).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe '.show_no_pii_banner?' do
+    subject(:show_no_pii_banner?) { FeatureManagement.show_no_pii_banner? }
+
+    context 'in local development' do
+      it 'is false' do
+        expect(show_no_pii_banner?).to eq(false)
       end
     end
 
-    context 'when the host is not secure.login.gov and the Rails env is not in production' do
-      it 'does not display the fake banner' do
-        allow(LoginGov::Hostdata).to receive(:domain).and_return(nil)
-        allow(Rails.env).to receive(:production?).and_return(false)
-        expect(FeatureManagement.fake_banner_mode?).to eq(false)
+    context 'in a deployed environment' do
+      before { expect(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true) }
+
+      context 'in the sandbox domain' do
+        before { expect(LoginGov::Hostdata).to receive(:domain).and_return('identitysandbox.gov') }
+
+        it 'is true' do
+          expect(show_no_pii_banner?).to eq(true)
+        end
+      end
+
+      context 'in the prod domain' do
+        before { expect(LoginGov::Hostdata).to receive(:domain).and_return('login.gov') }
+
+        it 'is false' do
+          expect(show_no_pii_banner?).to eq(false)
+        end
       end
     end
   end
