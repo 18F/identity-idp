@@ -12,8 +12,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: a7141c7cf504497a0dd389c2e988c21aee416d2a
-  branch: margolis-remove-i18n-lexisnexis
+  revision: 8e72339df22b381059b9c792117b5a171381e9bf
+  tag: v0.3.0
   specs:
     identity-doc-auth (0.3.0)
       activesupport
