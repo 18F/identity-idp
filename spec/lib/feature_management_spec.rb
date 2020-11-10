@@ -136,8 +136,6 @@ describe 'FeatureManagement', type: :feature do
     subject(:show_demo_banner?) { FeatureManagement.show_demo_banner? }
 
     context 'in local development' do
-      # before { expect(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(false) }
-
       it 'is false' do
         expect(show_demo_banner?).to be_falsey
       end
