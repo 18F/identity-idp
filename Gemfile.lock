@@ -12,10 +12,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: f4d5bcecd3c14d3d3183d1bb88ddccfff296f4c1
-  tag: v0.2.0
+  revision: a7141c7cf504497a0dd389c2e988c21aee416d2a
+  branch: margolis-remove-i18n-lexisnexis
   specs:
-    identity-doc-auth (0.2.0)
+    identity-doc-auth (0.3.0)
       activesupport
       faraday
 
