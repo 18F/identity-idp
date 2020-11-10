@@ -121,7 +121,7 @@ module Features
 
     def fill_in_password_and_submit(password)
       fill_in 'user_password', with: password
-      click_button t('links.next')
+      click_button t('forms.buttons.submit.default')
     end
 
     def sign_up
