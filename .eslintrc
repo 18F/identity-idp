@@ -7,7 +7,6 @@
     "commonjs": true,
     "es6": true,
     "mocha": true,
-    "jquery": true
   },
   "globals": {
     "expect": true

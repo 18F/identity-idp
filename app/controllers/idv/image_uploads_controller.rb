@@ -8,8 +8,7 @@ module Idv
 
     def create
       form_response = image_form.submit
-
-      analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM, form_response.to_h)
+      client_response = nil
 
       if form_response.success?
         client_response = doc_auth_client.post_images(
@@ -21,12 +20,18 @@ module Idv
 
         update_analytics(client_response)
 
-        store_pii(client_response) if client_response.success?
+        if client_response.success?
+          doc_pii_form_response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
+          form_response = form_response.merge(doc_pii_form_response)
+          store_pii(client_response) if client_response.success? && doc_pii_form_response.success?
+        end
       end
+
+      analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM, form_response.to_h)
 
       presenter = ImageUploadResponsePresenter.new(
         form: image_form,
-        form_response: client_response || form_response,
+        form_response: presenter_response(form_response, client_response),
       )
 
       render json: presenter, status: presenter.status
@@ -78,6 +83,11 @@ module Idv
             issuer: sp_session[:issuer].to_s,
             liveness_checking_enabled: liveness_checking_enabled?).
         call(client_response)
+    end
+
+    def presenter_response(form_response, client_response)
+      return client_response if form_response.success? && client_response.present?
+      form_response
     end
   end
 end

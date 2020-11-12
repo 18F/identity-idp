@@ -56,9 +56,9 @@ es:
       reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
     contact_link_text: Contáctenos
     doc_auth_link:
-      message: You've requested to verify your identity on a desktop computer.  Please
-        sign in to %{sp_link}
-      subject: Verify your identity on a desktop computer
+      message: Ha solicitado verificar su identidad en una computadora de escritorio.
+        Inicie sesión en %{sp_link}
+      subject: Verifique su identidad en una computadora de escritorio
     email_added:
       header: Se agregó una nueva dirección de correo electrónico a su perfil de login.gov.
       help: Si no realizó este cambio, inicie sesión en su perfil y administre sus

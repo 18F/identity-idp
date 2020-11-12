@@ -69,7 +69,7 @@ describe SignUp::PersonalKeysController do
       patch :update
 
       expect(response).to redirect_to new_user_session_url
-      expect(flash[:alert]).to eq t('errors.invalid_authenticity_token')
+      expect(flash[:error]).to eq t('errors.invalid_authenticity_token')
     end
 
     it 'deletes the personal key from the session' do

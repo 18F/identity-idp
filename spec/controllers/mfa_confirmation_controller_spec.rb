@@ -75,7 +75,7 @@ describe MfaConfirmationController do
 
         expect(response).to redirect_to(root_path)
         expect(controller.current_user).to be_nil
-        expect(flash[:alert]).to eq t('errors.max_password_attempts_reached')
+        expect(flash[:error]).to eq t('errors.max_password_attempts_reached')
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PASSWORD_MAX_ATTEMPTS)
       end

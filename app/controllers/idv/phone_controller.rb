@@ -18,6 +18,7 @@ module Idv
       when :in_progress
         render :wait
       when :timed_out
+        flash[:info] = I18n.t('idv.failure.timeout')
         render :new
       when :done
         async_state_done(async_state)

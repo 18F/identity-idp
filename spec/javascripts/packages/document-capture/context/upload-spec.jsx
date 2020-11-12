@@ -4,23 +4,29 @@ import UploadContext, {
   Provider as UploadContextProvider,
 } from '@18f/identity-document-capture/context/upload';
 import defaultUpload from '@18f/identity-document-capture/services/upload';
+import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/context/upload', () => {
-  it('defaults to the default upload service', () => {
+  const sandbox = useSandbox();
+
+  it('defaults to the default upload service', async () => {
     const { result } = renderHook(() => useContext(UploadContext));
 
     expect(result.current).to.have.keys([
       'upload',
       'isMockClient',
+      'statusPollInterval',
       'getStatus',
       'backgroundUploadURLs',
       'backgroundUploadEncryptKey',
     ]);
     expect(result.current.upload).to.equal(defaultUpload);
     expect(result.current.getStatus).to.be.instanceOf(Function);
+    expect(result.current.statusPollInterval).to.be.undefined();
     expect(result.current.isMockClient).to.be.false();
     expect(result.current.backgroundUploadURLs).to.deep.equal({});
     expect(result.current.backgroundUploadEncryptKey).to.be.undefined();
+    await new Promise((resolve) => result.current.getStatus().catch(resolve));
   });
 
   it('can be overridden with custom upload behavior', async () => {
@@ -46,6 +52,24 @@ describe('document-capture/context/upload', () => {
     });
 
     expect(result.current.isMockClient).to.be.true();
+  });
+
+  it('can be overridden with status endpoint', async () => {
+    const { result } = renderHook(() => useContext(UploadContext), {
+      wrapper: ({ children }) => (
+        <UploadContextProvider statusEndpoint="about:blank" statusPollInterval={1000}>
+          {children}
+        </UploadContextProvider>
+      ),
+    });
+
+    sandbox
+      .stub(window, 'fetch')
+      .withArgs('about:blank')
+      .resolves({ ok: true, json: () => Promise.resolve({ success: true }) });
+
+    await result.current.getStatus();
+    expect(result.current.statusPollInterval).to.equal(1000);
   });
 
   it('can be overridden with background upload URLs', () => {

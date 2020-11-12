@@ -12,10 +12,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: f4d5bcecd3c14d3d3183d1bb88ddccfff296f4c1
-  tag: v0.2.0
+  revision: 8e72339df22b381059b9c792117b5a171381e9bf
+  tag: v0.3.0
   specs:
-    identity-doc-auth (0.2.0)
+    identity-doc-auth (0.3.0)
       activesupport
       faraday
 
@@ -29,10 +29,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: d192473f2221e13c380bfb1403edc91913494279
-  ref: d192473f2221e13c380bfb1403edc91913494279
+  revision: 9ebe1c042b3db499507687a57e945b30fc1c437d
+  ref: 9ebe1c042b3db499507687a57e945b30fc1c437d
   specs:
-    identity-idp-functions (0.5.1)
+    identity-idp-functions (0.5.3)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
       retries (>= 0.0.5)

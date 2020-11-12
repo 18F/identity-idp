@@ -25,7 +25,6 @@
     "hint.css": "^2.3.2",
     "identity-style-guide": "^2.1.5",
     "intl-tel-input": "^16.0.7",
-    "jquery": "^3.5.0",
     "libphonenumber-js": "^1.7.26",
     "normalize.css": "^4.2.0",
     "react": "^16.13.1",

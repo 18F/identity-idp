@@ -7,11 +7,11 @@ fr:
         sécurité à plusieurs comptes gouvernementaux en ligne. Vous trouverez ci-dessous
         une liste de tous les comptes actuellement connectés.
     email_language:
+      default: "%{language} (par défaut)"
       edit_title: Modifier la préférence de langue des e-mails
       languages_list: "%{app_name} vous permet de recevoir votre communication par
         e-mail dans %{list}."
       name:
-        default: Anglais (par défaut)
         en: Anglais
         es: l'Espagnol
         fr: langue française
@@ -61,7 +61,7 @@ fr:
         instructions: Votre compte nécessite un code de confirmation pour être vérifié.
         reactivate_button: Entrez le code que vous avez reçu par la poste
         success: Votre compte a été vérifié.
-        update_address: Please update your address to be verified.
+        update_address: Veuillez mettre à jour votre adresse pour être vérifiée.
       webauthn: Clé de sécurité
       webauthn_add: Ajouter une clé de sécurité
       webauthn_confirm_delete: Oui, supprimer la clé

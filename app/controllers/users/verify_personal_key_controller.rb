@@ -29,7 +29,7 @@ module Users
     def init_account_reactivation
       return if reactivate_account_session.started?
 
-      flash.now[:notice] = t('notices.account_reactivation')
+      flash.now[:info] = t('notices.account_reactivation')
       reactivate_account_session.start
     end
 
