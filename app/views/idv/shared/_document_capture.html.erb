@@ -13,6 +13,7 @@
   status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     idv_doc_auth_step_path(step: :verify_document_status) :
     nil,
+  status_poll_interval_ms: Figaro.env.poll_rate_for_verify_in_seconds.to_i * 1000,
   sp_name: sp_name,
   failure_to_proof_url: failure_to_proof_url,
   front_image_upload_url: front_image_upload_url,

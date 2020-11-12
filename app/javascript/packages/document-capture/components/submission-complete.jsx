@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import SubmissionInterstitial from './submission-interstitial';
 import CallbackOnMount from './callback-on-mount';
+import UploadContext from '../context/upload';
 
 /** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
 
@@ -21,27 +22,23 @@ import CallbackOnMount from './callback-on-mount';
 export class RetrySubmissionError extends Error {}
 
 /**
- * Interval after which to retry submission, in milliseconds.
- *
- * @type {number}
- */
-const RETRY_INTERVAL = process.env.NODE_ENV === 'test' ? 0 : 2500;
-
-/**
  * @param {SubmissionCompleteProps} props Props object.
  */
 function SubmissionComplete({ resource }) {
   const [, setRetryError] = useState(/** @type {Error=} */ (undefined));
   const sleepTimeout = useRef(/** @type {number=} */ (undefined));
+  const { statusPollInterval } = useContext(UploadContext);
   const response = resource.read();
 
   function handleResponse() {
     if (response.isPending) {
-      sleepTimeout.current = window.setTimeout(() => {
-        setRetryError(() => {
-          throw new RetrySubmissionError();
-        });
-      }, RETRY_INTERVAL);
+      if (statusPollInterval !== undefined) {
+        sleepTimeout.current = window.setTimeout(() => {
+          setRetryError(() => {
+            throw new RetrySubmissionError();
+          });
+        }, statusPollInterval);
+      }
     } else {
       /** @type {HTMLFormElement?} */
       const form = document.querySelector('.js-document-capture-form');
