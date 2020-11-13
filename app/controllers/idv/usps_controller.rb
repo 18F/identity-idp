@@ -74,6 +74,8 @@ module Idv
       %w[first_name middle_name last_name dob phone ssn].each do |key|
         hash[key] = pii_h[key]
       end
+
+      hash[:uuid_prefix] = ServiceProvider.from_issuer(sp_session[:issuer]).app_id
     end
 
     def pii_to_h
