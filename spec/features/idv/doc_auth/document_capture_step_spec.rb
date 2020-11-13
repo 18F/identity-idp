@@ -325,6 +325,10 @@ feature 'doc auth document capture step' do
       let(:document_capture_async_uploads_enabled) { true }
       let(:doc_auth_enable_presigned_s3_urls) { true }
 
+      before do
+        allow(VendorDocumentVerificationJob).to receive(:perform).and_call_original
+      end
+
       it 'proceeds to the next page with valid info' do
         mock_document_capture_result
         attach_images(liveness_enabled: false)
@@ -334,11 +338,31 @@ feature 'doc auth document capture step' do
         click_on 'Submit'
 
         expect(page).to have_current_path(next_step, wait: 20)
-        Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`
-        visit front_url
-        expect(page).to have_http_status(200)
-        visit back_url
-        expect(page).to have_http_status(200)
+        expect(VendorDocumentVerificationJob).to have_received(:perform) do |params|
+          original = File.read('app/assets/images/logo.png')
+
+          decipher = OpenSSL::Cipher.new('aes-256-gcm')
+          decipher.decrypt
+          decipher.key = Base64.decode64(params[:_encryption_key])
+
+          Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`
+
+          page.driver.get front_url
+          expect(page).to have_http_status(200)
+          decipher.iv = Base64.decode64(params[:_front_image_iv])
+          decipher.auth_tag = page.body[-16..-1]
+          decipher.auth_data = ''
+          front_plain = decipher.update(page.body[0..-17]) + decipher.final
+          expect(front_plain.b).to eq(original.b)
+
+          page.driver.get back_url
+          expect(page).to have_http_status(200)
+          decipher.iv = Base64.decode64(params[:_back_image_iv])
+          decipher.auth_tag = page.body[-16..-1]
+          decipher.auth_data = ''
+          back_plain = decipher.update(page.body[0..-17]) + decipher.final
+          expect(back_plain.b).to eq(original.b)
+        end
       end
     end
   end
