@@ -30,9 +30,9 @@ RSpec.describe Test::FakeS3Controller do
     end
   end
 
-  describe '#create' do
+  describe '#update' do
     subject(:action) do
-      post :create, body: data, params: { key: key }
+      post :update, body: data, params: { key: key }
     end
 
     it 'stores the data in memory' do

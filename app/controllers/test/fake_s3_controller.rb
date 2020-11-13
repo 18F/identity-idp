@@ -20,7 +20,7 @@ module Test
       end
     end
 
-    def create
+    def update
       key = params[:key]
 
       self.class.data[key] = request.body.read
