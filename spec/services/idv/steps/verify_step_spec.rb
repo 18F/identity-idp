@@ -13,6 +13,10 @@ describe Idv::Steps::VerifyStep do
       controller = instance_double('controller',
                                    session: { sp: { issuer: service_provider.issuer } },
                                    current_user: user)
+
+      expect(Idv::Agent).to receive(:new).
+        with(hash_including(uuid_prefix: service_provider.app_id)).and_call_original
+
       flow = Idv::Flows::DocAuthFlow.new(controller, {}, 'idv/doc_auth')
       flow.flow_session = { pii_from_doc: {} }
       step = Idv::Steps::VerifyStep.new(flow)
