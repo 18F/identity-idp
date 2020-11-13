@@ -328,9 +328,17 @@ feature 'doc auth document capture step' do
       it 'proceeds to the next page with valid info' do
         mock_document_capture_result
         attach_images(liveness_enabled: false)
+        form = page.find('#document-capture-form')
+        front_url = form['data-front-image-upload-url']
+        back_url = form['data-back-image-upload-url']
         click_on 'Submit'
 
         expect(page).to have_current_path(next_step, wait: 20)
+        Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`
+        visit front_url
+        expect(page).to have_http_status(200)
+        visit back_url
+        expect(page).to have_http_status(200)
       end
     end
   end
