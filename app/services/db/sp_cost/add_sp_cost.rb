@@ -26,9 +26,8 @@ module Db
           NewRelic::Agent.notice_error(SpCostTypeError.new(token.to_s))
           return
         end
-        sp = issuer.blank? ? nil : ServiceProvider.find_by(issuer: issuer)
-        agency_id = sp ? sp.agency_id : 0
-        ::SpCost.create(issuer: issuer.to_s, ial: ial, agency_id: agency_id.to_i, cost_type: token)
+        agency_id = (issuer.present? && ServiceProvider.find_by(issuer: issuer)&.agency_id) || 0
+        ::SpCost.create(issuer: issuer.to_s, ial: ial, agency_id: agency_id, cost_type: token)
       end
     end
   end
