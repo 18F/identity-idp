@@ -237,20 +237,7 @@ describe Idv::DocAuthController do
     before do
       mock_document_capture_step
     end
-    let(:good_result) do
-      { pii_from_doc: {
-        first_name: Faker::Name.first_name,
-        last_name: Faker::Name.last_name,
-        dob: Time.zone.today.to_s,
-        address1: Faker::Address.street_address,
-        city: Faker::Address.city,
-        state: Faker::Address.state_abbr,
-        zipcode: Faker::Address.zip_code,
-        state_id_type: 'drivers_license',
-        state_id_number: '111',
-        state_id_jurisdiction: 'WI',
-      }, success: true, errors: {}, messages: ['message'] }
-    end
+    let(:good_result) { nil }
     let(:bad_pii_result) do
       { pii_from_doc: {
         first_name: Faker::Name.first_name,
@@ -326,15 +313,6 @@ describe Idv::DocAuthController do
 
   def mock_next_step(step)
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
-  end
-
-  def mock_document_capture_result(idv_result)
-    id = SecureRandom.uuid
-    pii = { 'first_name' => 'Testy', 'last_name' => 'Testerson' }
-
-    result = ProofingDocumentCaptureSessionResult.new(id: id, pii: pii, result: idv_result)
-    allow_any_instance_of(DocumentCaptureSession).to receive(:load_proofing_result).
-      and_return(result)
   end
 
   def mock_document_capture_step
