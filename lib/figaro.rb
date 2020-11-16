@@ -31,7 +31,7 @@ class Figaro
           @config[key] = env_value
         else
           @config[key] = value
-          ENV[key] = value if key == key.upcase
+          ENV[key] = value
         end
       end
     end
