@@ -17,7 +17,7 @@ class ImageUploadPresignedUrlGenerator
   end
 
   def bucket_url
-    s3_resource.bucket(bucket(prefix: bucket_prefix))&.url
+    s3_resource&.bucket(bucket(prefix: bucket_prefix))&.url
   end
 
   def bucket_prefix
