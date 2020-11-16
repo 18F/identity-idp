@@ -14,6 +14,8 @@ class Figaro
   end
 
   class Environment
+    attr_reader :config
+
     def initialize(configuration, env)
       @config = {}
 

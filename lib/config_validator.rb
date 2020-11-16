@@ -1,7 +1,7 @@
 class ConfigValidator
   ENV_PREFIX = ''.freeze
 
-  def validate(env = ENV)
+  def validate(env)
     validate_boolean_keys(env)
   end
 
@@ -13,28 +13,15 @@ class ConfigValidator
     "Please change them to true or false."
   end
 
-  def candidate_keys(env)
-    @candidate_keys ||= env.keys.keep_if { |key| candidate_key?(env, key) }
-  end
-
-  def candidate_key?(env, key)
-    # A key is associated with a configuration setting if there are two
-    # settings in the environment: one with and without the Figaro prefix.
-    # We're only interested in the configuration settings and not other
-    # environment variables.
-
-    env.include?(key) and env.include?(ENV_PREFIX + key)
-  end
-
   def keys_with_bad_boolean_values(env, keys)
     # Configuration settings for boolean values need to be "true/false"
     # and not "yes/no".
 
-    keys.keep_if { |key| %w[yes no].include?(env[key].strip.downcase) }
+    keys.keep_if { |key| %w[yes no].include?(env[key].to_s.strip.downcase) }
   end
 
   def validate_boolean_keys(env)
-    bad_keys = keys_with_bad_boolean_values(env, candidate_keys(env))
+    bad_keys = keys_with_bad_boolean_values(env, env.keys)
     return unless bad_keys.any?
     raise boolean_warning(bad_keys).tr("\n", ' ')
   end

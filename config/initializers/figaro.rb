@@ -51,3 +51,5 @@ Figaro.require_keys(%w[
                       use_kms
                       valid_authn_contexts
                     ])
+
+ConfigValidator.new.validate(Figaro.env.config)
