@@ -5,6 +5,9 @@ Figaro.require_keys(%w[
                       database_statement_timeout
                       disallow_all_web_crawlers
                       database_name
+                      database_host
+                      database_password
+                      database_username
                       domain_name
                       enable_rate_limiting
                       enable_test_routes

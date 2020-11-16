@@ -7,20 +7,32 @@ class ProductionDatabaseConfiguration
 
   def self.host
     env = Figaro.env
-    return env.database_read_replica_host! if readonly_mode?
-    env.database_host!
+    if readonly_mode?
+      raise if env.database_read_replica_host.blank?
+      env.database_read_replica_host
+    else
+      env.database_host
+    end
   end
 
   def self.username
     env = Figaro.env
-    return env.database_username! unless readonly_mode?
-    env.database_readonly_username!
+    if readonly_mode?
+      raise if env.database_readonly_username.blank?
+      env.database_readonly_username
+    else
+      env.database_username
+    end
   end
 
   def self.password
     env = Figaro.env
-    return env.database_password! unless readonly_mode?
-    env.database_readonly_password!
+    if readonly_mode?
+      raise if env.database_readonly_password.blank?
+      env.database_readonly_password
+    else
+      env.database_password
+    end
   end
 
   def self.pool
