@@ -7,15 +7,15 @@ class Figaro
   end
 
   def self.setup(path)
-    Environment.setup(path)
+    env.setup(path)
   end
 
   def self.require_keys(keys)
-    Environment.require_keys(keys)
+    env.require_keys(keys)
   end
 
   class Environment
-    def self.setup(path, env = Rails.env)
+    def setup(path, env = Rails.env)
       @config = {}
       values = YAML.safe_load(File.read(path))
 
@@ -33,12 +33,12 @@ class Figaro
       @config
     end
 
-    def self.respond_to_missing?(method_name, _include_private = false)
+    def respond_to_missing?(method_name, _include_private = false)
       key = method_name.to_s.tr('?!', '')
       @config.key?(key)
     end
 
-    def self.method_missing(method, *_args)
+    def method_missing(method, *_args)
       string_key = method.to_s
       key = string_key.tr('?!', '')
       raise_exception = string_key.ends_with?('!')
@@ -52,7 +52,7 @@ class Figaro
       end
     end
 
-    def self.require_keys(keys)
+    def require_keys(keys)
       keys.each do |key|
         raise "#{key} is missing" unless @config.key?(key)
       end
