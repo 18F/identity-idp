@@ -25,16 +25,16 @@ module Reports
     private
 
     def deleted_user_accounts_data_for_issuers(issuers)
-      recs = []
+      csv = CSV.new(String.new, row_sep: "\r\n")
       issuers.each do |issuer|
         transaction_with_timeout do
           rows = DeletedAccountsReport.call(issuer, 10_000)
           rows.each do |row|
-            recs << "#{row['last_authenticated_at']}, #{row['identity_uuid']}\r\n"
+            csv << [row['last_authenticated_at'], row['identity_uuid']]
           end
         end
       end
-      recs.join
+      csv.string
     end
   end
 end
