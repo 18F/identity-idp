@@ -69,7 +69,9 @@ RSpec.configure do |config|
   config.before(:each, js: true) do
     allow(Figaro.env).to receive(:domain_name).and_return('127.0.0.1')
     server = Capybara.current_session.server
-    Rails.application.routes.default_url_options[:host] = "#{server.host}:#{server.port}"
+    allow(Rails.application.routes).to receive(:default_url_options).and_return(
+      Rails.application.routes.default_url_options.merge(host: "#{server.host}:#{server.port}"),
+    )
   end
 
   config.before(:each, type: :controller) do
