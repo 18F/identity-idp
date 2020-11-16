@@ -18,7 +18,7 @@ describe Figaro::Environment do
 
   describe '#initialize' do
     it 'warns and uses ENV when key is set in ENV and file config' do
-      stub_const('ENV', 'test_key' => 'overridden value')
+      ENV['test_key'] = 'aaa'
       expect do
         environment = described_class.new(config, config_environment)
         expect(environment.test_key).to eq 'overridden value'
