@@ -21,7 +21,7 @@ describe Figaro::Environment do
       ENV['test_key'] = 'aaa'
       expect do
         environment = described_class.new(config, config_environment)
-        expect(environment.test_key).to eq 'overridden value'
+        expect(environment.test_key).to eq 'aaa'
       end.to output(
         /test_key is being loaded from ENV/,
       ).to_stderr
