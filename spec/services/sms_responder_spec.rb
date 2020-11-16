@@ -20,7 +20,7 @@ describe SmsResponder do
         with(url, params, signature).
         and_return(signature_valid)
       allow(Twilio::Security::RequestValidator).to receive(:new).
-        with(Figaro.env.twilio_auth_token).
+        with(AppConfig.env.twilio_auth_token).
         and_return(fake_validator)
     end
 

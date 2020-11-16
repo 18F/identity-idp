@@ -178,28 +178,28 @@ module DocAuthRouter
     when 'acuant'
       AcuantErrorTranslatorProxy.new(
         IdentityDocAuth::Acuant::AcuantClient.new(
-          assure_id_password: Figaro.env.acuant_assure_id_password,
-          assure_id_subscription_id: Figaro.env.acuant_assure_id_subscription_id,
-          assure_id_url: Figaro.env.acuant_assure_id_url,
-          assure_id_username: Figaro.env.acuant_assure_id_username,
-          facial_match_url: Figaro.env.acuant_facial_match_url,
-          passlive_url: Figaro.env.acuant_passlive_url,
-          timeout: Figaro.env.acuant_timeout,
+          assure_id_password: AppConfig.env.acuant_assure_id_password,
+          assure_id_subscription_id: AppConfig.env.acuant_assure_id_subscription_id,
+          assure_id_url: AppConfig.env.acuant_assure_id_url,
+          assure_id_username: AppConfig.env.acuant_assure_id_username,
+          facial_match_url: AppConfig.env.acuant_facial_match_url,
+          passlive_url: AppConfig.env.acuant_passlive_url,
+          timeout: AppConfig.env.acuant_timeout,
           exception_notifier: method(:notify_exception),
         ),
       )
     when 'lexisnexis'
       LexisNexisTranslatorProxy.new(
         IdentityDocAuth::LexisNexis::LexisNexisClient.new(
-          account_id: Figaro.env.lexisnexis_account_id,
-          base_url: Figaro.env.lexisnexis_base_url,
-          request_mode: Figaro.env.lexisnexis_request_mode,
-          trueid_account_id: Figaro.env.lexisnexis_trueid_account_id,
-          trueid_liveness_workflow: Figaro.env.lexisnexis_trueid_liveness_workflow,
-          trueid_noliveness_workflow: Figaro.env.lexisnexis_trueid_noliveness_workflow,
-          trueid_password: Figaro.env.lexisnexis_trueid_password,
-          trueid_username: Figaro.env.lexisnexis_trueid_username,
-          timeout: Figaro.env.lexisnexis_timeout,
+          account_id: AppConfig.env.lexisnexis_account_id,
+          base_url: AppConfig.env.lexisnexis_base_url,
+          request_mode: AppConfig.env.lexisnexis_request_mode,
+          trueid_account_id: AppConfig.env.lexisnexis_trueid_account_id,
+          trueid_liveness_workflow: AppConfig.env.lexisnexis_trueid_liveness_workflow,
+          trueid_noliveness_workflow: AppConfig.env.lexisnexis_trueid_noliveness_workflow,
+          trueid_password: AppConfig.env.lexisnexis_trueid_password,
+          trueid_username: AppConfig.env.lexisnexis_trueid_username,
+          timeout: AppConfig.env.lexisnexis_timeout,
           exception_notifier: method(:notify_exception),
           locale: I18n.locale,
         ),
@@ -226,9 +226,9 @@ module DocAuthRouter
   # a deploy cycle.
   #
   def self.doc_auth_vendor
-    vendor_from_config = Figaro.env.doc_auth_vendor
+    vendor_from_config = AppConfig.env.doc_auth_vendor
     if vendor_from_config.blank?
-      return Figaro.env.acuant_simulator == 'true' ? 'mock' : 'acuant'
+      return AppConfig.env.acuant_simulator == 'true' ? 'mock' : 'acuant'
     end
     vendor_from_config
   end

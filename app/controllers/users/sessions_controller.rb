@@ -62,7 +62,7 @@ module Users
       flash[:info] = t(
         'notices.session_timedout',
         app: APP_NAME,
-        minutes: Figaro.env.session_timeout_in_minutes,
+        minutes: AppConfig.env.session_timeout_in_minutes,
       )
       redirect_to root_url(request_id: request_id)
     end

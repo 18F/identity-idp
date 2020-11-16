@@ -3,7 +3,7 @@ class UspsConfirmationExporter
   LINE_ENDING = "\r\n".freeze
   HEADER_ROW_ID = '01'.freeze
   CONTENT_ROW_ID = '02'.freeze
-  OTP_MAX_VALID_DAYS = Figaro.env.usps_confirmation_max_days.to_i
+  OTP_MAX_VALID_DAYS = AppConfig.env.usps_confirmation_max_days.to_i
 
   def initialize(confirmations)
     @confirmations = confirmations
@@ -45,7 +45,7 @@ class UspsConfirmationExporter
       format_date(now),
       format_date(due),
       service_provider.friendly_name || 'Login.gov',
-      "https://#{Figaro.env.domain_name}",
+      "https://#{AppConfig.env.domain_name}",
     ]
   end
 

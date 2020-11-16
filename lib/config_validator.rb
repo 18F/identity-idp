@@ -1,6 +1,4 @@
 class ConfigValidator
-  ENV_PREFIX = ''.freeze
-
   def validate(env)
     validate_boolean_keys(env)
   end

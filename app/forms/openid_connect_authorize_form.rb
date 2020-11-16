@@ -138,7 +138,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_unauthorized_scope
-    return unless @unauthorized_scope && Figaro.env.unauthorized_scope_enabled == 'true'
+    return unless @unauthorized_scope && AppConfig.env.unauthorized_scope_enabled == 'true'
     errors.add(:scope, t('openid_connect.authorization.errors.unauthorized_scope'))
   end
 

@@ -81,7 +81,7 @@ module Idv
 
       def aamva_disallowed_for_service_provider?
         return false if sp_session.nil?
-        banlist = JSON.parse(Figaro.env.aamva_sp_banlist_issuers || '[]')
+        banlist = JSON.parse(AppConfig.env.aamva_sp_banlist_issuers || '[]')
         banlist.include?(sp_session[:issuer])
       end
     end

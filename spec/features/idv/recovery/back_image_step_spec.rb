@@ -9,7 +9,7 @@ feature 'recovery back image step' do
   let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
   let(:user_no_phone) { create(:user, :with_authentication_app, :with_piv_or_cac) }
   let(:profile) { build(:profile, :active, :verified, user: user_no_phone, pii: { ssn: '1234' }) }
-  let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
+  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
 
   before do |example|
     select_user = example.metadata[:no_phone] ? user_no_phone : user

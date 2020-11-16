@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Figaro::Environment do
+describe AppConfig::Environment do
   let(:config) do
     {
       'test_key' => 'value',

@@ -8,7 +8,7 @@ module LambdaJobs
     end
 
     def run(&local_callback)
-      if LoginGov::Hostdata.in_datacenter? && Figaro.env.aws_lambda_proofing_enabled == 'true'
+      if LoginGov::Hostdata.in_datacenter? && AppConfig.env.aws_lambda_proofing_enabled == 'true'
         aws_lambda_client.invoke(
           function_name: function_name,
           invocation_type: 'Event',
@@ -25,7 +25,7 @@ module LambdaJobs
     end
 
     def aws_lambda_client
-      Aws::Lambda::Client.new(region: Figaro.env.aws_region)
+      Aws::Lambda::Client.new(region: AppConfig.env.aws_region)
     end
 
     # Due to length limits, we can only use the first 10 characters of a git SHA

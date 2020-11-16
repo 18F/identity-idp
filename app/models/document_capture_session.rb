@@ -48,7 +48,7 @@ class DocumentCaptureSession < ApplicationRecord
 
   def expired?
     return true unless requested_at
-    requested_at + Figaro.env.doc_capture_request_valid_for_minutes.to_i.minutes < Time.zone.now
+    requested_at + AppConfig.env.doc_capture_request_valid_for_minutes.to_i.minutes < Time.zone.now
   end
 
   private

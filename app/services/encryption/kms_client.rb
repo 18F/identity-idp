@@ -50,7 +50,7 @@ module Encryption
 
     def encrypt_raw_kms(plaintext, encryption_context)
       raise ArgumentError, 'kms plaintext exceeds 4096 bytes' if plaintext.bytesize > 4096
-      multi_aws_client.encrypt(Figaro.env.aws_kms_key_id, plaintext, encryption_context)
+      multi_aws_client.encrypt(AppConfig.env.aws_kms_key_id, plaintext, encryption_context)
     end
 
     def decrypt_kms(ciphertext, encryption_context)
@@ -96,7 +96,7 @@ module Encryption
     def local_encryption_key(encryption_context)
       OpenSSL::HMAC.digest(
         'sha256',
-        Figaro.env.password_pepper,
+        AppConfig.env.password_pepper,
         (encryption_context.keys + encryption_context.values).sort.join(''),
       )
     end

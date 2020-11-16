@@ -67,11 +67,11 @@ RSpec.configure do |config|
   end
 
   config.before(:each, js: true) do
-    allow(Figaro.env).to receive(:domain_name).and_return('127.0.0.1')
+    allow(AppConfig.env).to receive(:domain_name).and_return('127.0.0.1')
   end
 
   config.before(:each, type: :controller) do
-    @request.host = Figaro.env.domain_name
+    @request.host = AppConfig.env.domain_name
   end
 
   config.before(:each) do

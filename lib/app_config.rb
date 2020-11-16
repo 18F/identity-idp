@@ -1,6 +1,6 @@
 require 'yaml'
 
-class Figaro
+class AppConfig
   class << self
     attr_reader :env
   end
@@ -55,11 +55,11 @@ class Figaro
     private
 
     def check_string_key(key)
-      warn "FIGARO WARNING: key #{key} must be String" unless key.is_a?(String)
+      warn "AppConfig WARNING: key #{key} must be String" unless key.is_a?(String)
     end
 
     def check_string_value(key, value)
-      warn "FIGARO WARNING: #{key} value must be String" unless value.nil? || value.is_a?(String)
+      warn "AppConfig WARNING: #{key} value must be String" unless value.nil? || value.is_a?(String)
     end
 
     def respond_to_missing?(method_name, _include_private = false)

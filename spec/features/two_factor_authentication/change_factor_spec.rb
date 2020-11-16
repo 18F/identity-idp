@@ -6,7 +6,7 @@ feature 'Changing authentication factor' do
 
     before do
       user # Sign up the user
-      reauthn_date = (Figaro.env.reauthn_window.to_i + 1).seconds.from_now
+      reauthn_date = (AppConfig.env.reauthn_window.to_i + 1).seconds.from_now
       Timecop.travel reauthn_date
     end
 
@@ -32,7 +32,7 @@ feature 'Changing authentication factor' do
         phone_configuration = MfaContext.new(user).phone_configurations.first
         old_phone = phone_configuration.phone
 
-        Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
+        Timecop.travel(AppConfig.env.reauthn_window.to_i + 1) do
           visit manage_phone_path(id: phone_configuration)
           complete_2fa_confirmation_without_entering_otp
           click_link t('links.two_factor_authentication.get_another_code')
@@ -91,7 +91,7 @@ feature 'Changing authentication factor' do
   describe 'attempting to bypass current password entry' do
     it 'does not allow bypassing this step' do
       sign_in_and_2fa_user
-      Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
+      Timecop.travel(AppConfig.env.reauthn_window.to_i + 1) do
         visit manage_password_path
         expect(current_path).to eq user_password_confirm_path
 

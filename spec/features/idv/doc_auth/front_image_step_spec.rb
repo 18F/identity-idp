@@ -5,7 +5,7 @@ feature 'doc auth front image step' do
   include DocAuthHelper
   include InPersonHelper
 
-  let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
+  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
   before do
     sign_in_and_2fa_user(user)
@@ -63,7 +63,7 @@ feature 'doc auth front image step' do
   end
 
   it 'throttles calls to acuant and allows retry after the attempt window' do
-    allow(Figaro.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+    allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
     max_attempts.times do
       attach_image
       click_idv_continue
@@ -78,7 +78,7 @@ feature 'doc auth front image step' do
 
     expect(page).to have_current_path(idv_session_errors_throttled_path)
 
-    Timecop.travel(Figaro.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+    Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_front_image_step
       attach_image

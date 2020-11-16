@@ -11,7 +11,7 @@
     window.onload=function(){grecaptcha.execute();}
   <% end %>
 
-  <div id="recaptcha" class="g-recaptcha" data-sitekey="<%= Figaro.env.recaptcha_site_key %>"
+  <div id="recaptcha" class="g-recaptcha" data-sitekey="<%= AppConfig.env.recaptcha_site_key %>"
                                           data-callback="onSubmit" data-size="invisible">
   </div>
 <% end %>

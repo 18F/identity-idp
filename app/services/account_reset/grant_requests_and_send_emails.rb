@@ -4,7 +4,7 @@ module AccountReset
       notifications_sent = 0
       AccountResetRequest.where(
         sql_query_for_users_eligible_to_delete_their_accounts,
-        tvalue: Time.zone.now - Figaro.env.account_reset_wait_period_days.to_i.days,
+        tvalue: Time.zone.now - AppConfig.env.account_reset_wait_period_days.to_i.days,
       ).order('requested_at ASC').each do |arr|
         notifications_sent += 1 if grant_request_and_send_email(arr)
       end

@@ -13,7 +13,7 @@ module Idv
     def phone_number_message
       t("instructions.mfa.#{otp_delivery_preference}.number_message_html",
         number: content_tag(:strong, phone_number),
-        expiration: Figaro.env.otp_valid_for)
+        expiration: AppConfig.env.otp_valid_for)
     end
 
     def update_phone_link

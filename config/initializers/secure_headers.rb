@@ -15,14 +15,14 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: connect_src.flatten,
-    font_src: ["'self'", 'data:', Figaro.env.asset_host],
+    font_src: ["'self'", 'data:', AppConfig.env.asset_host],
     img_src: [
       "'self'",
       'data:',
       'login.gov',
-      Figaro.env.asset_host,
+      AppConfig.env.asset_host,
       'idscangoweb.acuant.com',
-      Figaro.env.aws_region && "https://s3.#{Figaro.env.aws_region}.amazonaws.com",
+      AppConfig.env.aws_region && "https://s3.#{AppConfig.env.aws_region}.amazonaws.com",
     ].select(&:present?),
     media_src: ["'self'"],
     object_src: ["'none'"],
@@ -34,9 +34,9 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
       '*.google-analytics.com',
       'www.google.com',
       'www.gstatic.com',
-      Figaro.env.asset_host,
+      AppConfig.env.asset_host,
     ],
-    style_src: ["'self'", Figaro.env.asset_host],
+    style_src: ["'self'", AppConfig.env.asset_host],
     base_uri: ["'self'"],
   }
 

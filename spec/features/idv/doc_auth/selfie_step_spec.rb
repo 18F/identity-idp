@@ -5,7 +5,7 @@ feature 'doc auth self image step' do
   include DocAuthHelper
 
   before do
-    allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+    allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
     @user = sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
   end

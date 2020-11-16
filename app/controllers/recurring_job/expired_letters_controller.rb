@@ -9,7 +9,7 @@ module RecurringJob
     private
 
     def config_auth_token
-      Figaro.env.expired_letters_auth_token
+      AppConfig.env.expired_letters_auth_token
     end
   end
 end

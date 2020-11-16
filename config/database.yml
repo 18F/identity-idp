@@ -12,7 +12,7 @@ defaults: &defaults
   pool: 5
   <<: *postgresql
   # timeout settings
-  timeout: <%= Figaro.env.database_timeout.to_i %>
+  timeout: <%= AppConfig.env.database_timeout.to_i %>
   reconnect: true
   connect_timeout: 2
   keepalives_idle: 10
@@ -21,7 +21,7 @@ defaults: &defaults
   checkout_timeout: 5
   reaping_frequency: 10
   variables:
-    statement_timeout: <%= Figaro.env.database_statement_timeout.to_i %>
+    statement_timeout: <%= AppConfig.env.database_statement_timeout.to_i %>
 
 development:
   <<: *defaults
@@ -34,7 +34,7 @@ test:
 
 production:
   <<: *defaults
-  database: <%= Figaro.env.database_name %>
+  database: <%= AppConfig.env.database_name %>
   username: <%= ProductionDatabaseConfiguration.username %>
   host: <%= ProductionDatabaseConfiguration.host %>
   password: <%= ProductionDatabaseConfiguration.password %>

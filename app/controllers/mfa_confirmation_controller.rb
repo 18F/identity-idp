@@ -32,7 +32,7 @@ class MfaConfirmationController < ApplicationController
   def handle_invalid_password
     session[:password_attempts] += 1
 
-    if session[:password_attempts] < Figaro.env.password_max_attempts.to_i
+    if session[:password_attempts] < AppConfig.env.password_max_attempts.to_i
       flash[:error] = t('errors.confirm_password_incorrect')
       redirect_to user_password_confirm_url
     else

@@ -1,6 +1,6 @@
 class PersonalKeyFormatter
   CHAR_COUNT = RandomPhrase::WORD_LENGTH
-  WORD_COUNT = Figaro.env.recovery_code_length.to_i
+  WORD_COUNT = AppConfig.env.recovery_code_length.to_i
   VALID_CHAR = '[a-zA-Z0-9]'.freeze
   VALID_WORD = "#{VALID_CHAR}{#{CHAR_COUNT}}".freeze
   REGEXP = "(?:#{VALID_WORD}([\s-])?){#{WORD_COUNT - 1}}#{VALID_WORD}".freeze

@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe DocAuthRouter do
   describe '.client' do
     before do
-      allow(Figaro.env).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(acuant_simulator)
+      allow(AppConfig.env).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
+      allow(AppConfig.env).to receive(:acuant_simulator).and_return(acuant_simulator)
     end
 
     context 'legacy mock configuration' do

@@ -1,7 +1,7 @@
 <%
   maintenance_window = MaintenanceWindow.new(
-    start: Figaro.env.acuant_maintenance_window_start,
-    finish: Figaro.env.acuant_maintenance_window_finish,
+    start: AppConfig.env.acuant_maintenance_window_start,
+    finish: AppConfig.env.acuant_maintenance_window_finish,
     now: local_assigns[:now],
   )
 %>

@@ -2,7 +2,7 @@ module Idv
   module Steps
     class RecoverVerifyWaitStepShow < VerifyBaseStep
       def call
-        poll_with_meta_refresh(Figaro.env.poll_rate_for_verify_in_seconds.to_i)
+        poll_with_meta_refresh(AppConfig.env.poll_rate_for_verify_in_seconds.to_i)
 
         process_async_state(async_state)
       end

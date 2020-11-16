@@ -19,7 +19,7 @@ feature 'use cac step' do
   end
 
   it 'does not show cac proofing option if cac proofing is disabled' do
-    allow(Figaro.env).to receive(:cac_proofing_enabled).and_return('false')
+    allow(AppConfig.env).to receive(:cac_proofing_enabled).and_return('false')
 
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_upload_step

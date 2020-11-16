@@ -6,7 +6,7 @@ describe LambdaCallback::ResolutionProofResultController do
 
     context 'with valid API token' do
       before do
-        request.headers['X-API-AUTH-TOKEN'] = Figaro.env.resolution_proof_result_lambda_token
+        request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.resolution_proof_result_lambda_token
       end
 
       it 'accepts and stores successful resolution proofing results' do

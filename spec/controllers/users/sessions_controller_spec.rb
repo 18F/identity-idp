@@ -141,7 +141,7 @@ describe Users::SessionsController, devise: true do
       expect(flash[:info]).to eq t(
         'notices.session_timedout',
         app: APP_NAME,
-        minutes: Figaro.env.session_timeout_in_minutes,
+        minutes: AppConfig.env.session_timeout_in_minutes,
       )
 
       expect(subject.current_user).to be_nil
@@ -410,7 +410,7 @@ describe Users::SessionsController, devise: true do
       it 'only tracks the cookie presence in analytics' do
         user = create(:user, :signed_up)
 
-        allow(Figaro.env).to receive(:remember_device_expiration_days).and_return('2')
+        allow(AppConfig.env).to receive(:remember_device_expiration_days).and_return('2')
 
         cookies.encrypted[:remember_device] = {
           value: RememberDeviceCookie.new(user_id: user.id, created_at: 2.days.ago).to_json,
@@ -554,7 +554,7 @@ describe Users::SessionsController, devise: true do
 
         expect(json['timeout'].to_datetime.to_i).to be >= timeout.to_i
         expect(json['timeout'].to_datetime.to_i).to be_within(1).of(
-          Time.zone.now.to_i + Figaro.env.session_timeout_in_minutes.to_i * 60,
+          Time.zone.now.to_i + AppConfig.env.session_timeout_in_minutes.to_i * 60,
         )
       end
 
@@ -565,7 +565,7 @@ describe Users::SessionsController, devise: true do
         json ||= JSON.parse(response.body)
 
         expect(json['remaining']).to be_within(1).of(
-          Figaro.env.session_timeout_in_minutes.to_i * 60,
+          AppConfig.env.session_timeout_in_minutes.to_i * 60,
         )
       end
 

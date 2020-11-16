@@ -27,11 +27,11 @@ module Reports
     end
 
     def gen_s3_bucket_name
-      "#{Figaro.env.s3_report_bucket_prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
+      "#{AppConfig.env.s3_report_bucket_prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
     end
 
     def report_timeout
-      Figaro.env.report_timeout.to_i
+      AppConfig.env.report_timeout.to_i
     end
 
     def transaction_with_timeout
@@ -44,7 +44,7 @@ module Reports
     end
 
     def save_report(report_name, body)
-      if Figaro.env.s3_reports_enabled == 'false'
+      if AppConfig.env.s3_reports_enabled == 'false'
         logger.info('Not uploading report to S3, s3_reports_enabled is false')
         return body
       end

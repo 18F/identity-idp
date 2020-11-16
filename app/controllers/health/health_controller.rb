@@ -14,7 +14,7 @@ module Health
     end
 
     def job_run_healthchecks_enabled?
-      Figaro.env.job_run_healthchecks_enabled == 'true'
+      AppConfig.env.job_run_healthchecks_enabled == 'true'
     end
   end
 end

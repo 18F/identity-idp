@@ -11,7 +11,7 @@ describe Encryption::ContextlessKmsClient do
     let(:kms_enabled) { true }
 
     before do
-      allow(Figaro.env).to receive(:password_pepper).and_return(password_pepper)
+      allow(AppConfig.env).to receive(:password_pepper).and_return(password_pepper)
 
       encryptor = Encryption::Encryptors::AesEncryptor.new
       allow(encryptor).to receive(:encrypt).
@@ -91,7 +91,7 @@ describe Encryption::ContextlessKmsClient do
     let(:kms_enabled) { true }
 
     before do
-      allow(Figaro.env).to receive(:password_pepper).and_return(password_pepper)
+      allow(AppConfig.env).to receive(:password_pepper).and_return(password_pepper)
 
       encryptor = Encryption::Encryptors::AesEncryptor.new
       allow(encryptor).to receive(:encrypt).
