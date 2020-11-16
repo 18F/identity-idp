@@ -4,6 +4,7 @@ Figaro.require_keys(%w[
                       attribute_encryption_key
                       database_statement_timeout
                       disallow_all_web_crawlers
+                      database_name
                       domain_name
                       enable_rate_limiting
                       enable_test_routes
@@ -21,6 +22,7 @@ Figaro.require_keys(%w[
                       max_mail_events_window_in_days
                       min_password_score
                       mx_timeout
+                      newrelic_license_key
                       otp_delivery_blocklist_findtime
                       otp_delivery_blocklist_maxretry
                       otp_valid_for
@@ -29,6 +31,7 @@ Figaro.require_keys(%w[
                       RACK_TIMEOUT_SERVICE_TIMEOUT
                       reauthn_window
                       recovery_code_length
+                      recurring_jobs_disabled_names
                       redis_url
                       requests_per_ip_limit
                       requests_per_ip_period
@@ -36,6 +39,8 @@ Figaro.require_keys(%w[
                       remember_device_expiration_hours_aal_1
                       remember_device_expiration_hours_aal_2
                       saml_endpoint_configs
+                      s3_report_bucket_prefix
+                      s3_reports_enabled
                       scrypt_cost
                       secret_key_base
                       session_encryption_key

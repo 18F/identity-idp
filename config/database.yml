@@ -34,7 +34,7 @@ test:
 
 production:
   <<: *defaults
-  database: <%= Figaro.env.database_name! %>
+  database: <%= Figaro.env.database_name %>
   username: <%= ProductionDatabaseConfiguration.username %>
   host: <%= ProductionDatabaseConfiguration.host %>
   password: <%= ProductionDatabaseConfiguration.password %>

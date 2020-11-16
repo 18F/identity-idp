@@ -34,22 +34,14 @@ class Figaro
     end
 
     def respond_to_missing?(method_name, _include_private = false)
-      key = method_name.to_s.tr('?!', '')
+      key = method_name.to_s
       @config.key?(key)
     end
 
     def method_missing(method, *_args)
-      string_key = method.to_s
-      key = string_key.tr('?!', '')
-      raise_exception = string_key.ends_with?('!')
+      key = method.to_s
 
-      if raise_exception
-        value = send(key)
-        raise "Missing config key #{key}" unless value
-        value
-      else
-        @config[key]
-      end
+      @config[key]
     end
 
     def require_keys(keys)
