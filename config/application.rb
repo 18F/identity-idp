@@ -9,7 +9,7 @@ APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
-    Figaro.setup(Rails.root.join('config', 'application.yml'))
+    Figaro.setup(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))))
     config.active_job.queue_adapter = 'inline'
     config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'

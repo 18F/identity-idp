@@ -1,12 +1,12 @@
 require 'yaml'
 
 class Figaro
-  def self.env
-    @env ||= Environment.new
+  class << self
+    attr_reader :env
   end
 
-  def self.setup(path)
-    env.setup(path)
+  def self.setup(path, env = Rails.env)
+    @env ||= Environment.new(path, env)
   end
 
   def self.require_keys(keys)
@@ -14,15 +14,14 @@ class Figaro
   end
 
   class Environment
-    def setup(path, env = Rails.env)
+    def initialize(configuration, env)
       @config = {}
-      values = YAML.safe_load(File.read(path))
 
-      keys = Set.new(values.keys - %w[production development test])
-      keys |= values[env].keys
+      keys = Set.new(configuration.keys - %w[production development test])
+      keys |= configuration[env]&.keys || []
 
       keys.each do |key|
-        value = values[env][key] || values[key]
+        value = configuration.dig(env, key) || configuration[key]
         env_value = ENV[key]
 
         if env_value
@@ -33,9 +32,22 @@ class Figaro
           ENV[key] = value if key == key.upcase
         end
       end
-
-      @config
     end
+
+    def require_keys(keys)
+      keys.each do |key|
+        raise "#{key} is missing" unless @config.key?(key)
+      end
+
+      true
+    end
+
+    def respond_to?(method_name)
+      key = method_name.to_s
+      @config.key?(key)
+    end
+
+    private
 
     def respond_to_missing?(method_name, _include_private = false)
       key = method_name.to_s
@@ -46,14 +58,6 @@ class Figaro
       key = method.to_s
 
       @config[key]
-    end
-
-    def require_keys(keys)
-      keys.each do |key|
-        raise "#{key} is missing" unless @config.key?(key)
-      end
-
-      true
     end
   end
 end
