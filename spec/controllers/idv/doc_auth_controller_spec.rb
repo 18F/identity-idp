@@ -328,15 +328,6 @@ describe Idv::DocAuthController do
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
   end
 
-  def mock_document_capture_result(idv_result)
-    id = SecureRandom.uuid
-    pii = { 'first_name' => 'Testy', 'last_name' => 'Testerson' }
-
-    result = ProofingDocumentCaptureSessionResult.new(id: id, pii: pii, result: idv_result)
-    allow_any_instance_of(DocumentCaptureSession).to receive(:load_proofing_result).
-      and_return(result)
-  end
-
   def mock_document_capture_step
     user = create(:user, :signed_up)
     stub_sign_in(user)
