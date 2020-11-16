@@ -10,7 +10,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
                  'services.assureid.net']
   connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
   image_upload_bucket_url = ImageUploadPresignedUrlGenerator.new.bucket_url
-  connect_src << "#{image_upload_bucket_url.gsub(/\/$/, '')}/*" if image_upload_bucket_url
+  connect_src << "#{image_upload_bucket_url.chomp('/')}/*" if image_upload_bucket_url
   default_csp_config = {
     default_src: ["'self'"],
     child_src: ["'self'", 'www.google.com'], # CSP 2.0 only; replaces frame_src
