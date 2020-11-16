@@ -237,7 +237,20 @@ describe Idv::DocAuthController do
     before do
       mock_document_capture_step
     end
-    let(:good_result) { nil }
+    let(:good_result) do
+      { pii_from_doc: {
+        first_name: Faker::Name.first_name,
+        last_name: Faker::Name.last_name,
+        dob: Time.zone.today.to_s,
+        address1: Faker::Address.street_address,
+        city: Faker::Address.city,
+        state: Faker::Address.state_abbr,
+        zipcode: Faker::Address.zip_code,
+        state_id_type: 'drivers_license',
+        state_id_number: '111',
+        state_id_jurisdiction: 'WI',
+      }, success: true, errors: {}, messages: ['message'] }
+    end
     let(:bad_pii_result) do
       { pii_from_doc: {
         first_name: Faker::Name.first_name,
