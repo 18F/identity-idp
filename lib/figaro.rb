@@ -3,7 +3,7 @@ require 'erb'
 
 class Figaro
   def self.env
-    Environment
+    @env ||= Environment.new
   end
 
   def self.setup(path)
