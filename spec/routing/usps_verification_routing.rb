@@ -16,7 +16,7 @@ describe 'USPS verification routes' do
 
   context 'when FeatureManagement.enable_usps_verification? is false' do
     before do
-      allow(Figaro.env).to receive(:enable_usps_verification).and_return('false')
+      allow(AppConfig.env).to receive(:enable_usps_verification).and_return('false')
       Rails.application.reload_routes!
     end
 
@@ -44,7 +44,7 @@ describe 'USPS verification routes' do
 
   context 'when FeatureManagement.enable_usps_verification? is true' do
     before do
-      allow(Figaro.env).to receive(:enable_usps_verification).and_return('true')
+      allow(AppConfig.env).to receive(:enable_usps_verification).and_return('true')
       Rails.application.reload_routes!
     end
 

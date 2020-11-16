@@ -24,6 +24,6 @@ module DeprecatedUserAttributes
   private
 
   def show_user_attribute_deprecation_warnings
-    Figaro.env.show_user_attribute_deprecation_warnings == 'true'
+    AppConfig.env.show_user_attribute_deprecation_warnings == 'true'
   end
 end

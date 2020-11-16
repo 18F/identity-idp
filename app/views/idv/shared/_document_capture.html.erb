@@ -1,7 +1,7 @@
 <% title t('doc_auth.titles.doc_auth') %>
 <% content_for :meta_tags do %>
-  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: Figaro.env.acuant_sdk_initialization_endpoint %>
-  <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: Figaro.env.acuant_sdk_initialization_creds %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: AppConfig.env.acuant_sdk_initialization_endpoint %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: AppConfig.env.acuant_sdk_initialization_creds %>
 <% end %>
 <%= tag.div id: 'document-capture-form', data: {
   liveness_required: liveness_checking_enabled?.presence,
@@ -13,7 +13,7 @@
   status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     idv_doc_auth_step_path(step: :verify_document_status) :
     nil,
-  status_poll_interval_ms: Figaro.env.poll_rate_for_verify_in_seconds.to_i * 1000,
+  status_poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
   sp_name: sp_name,
   failure_to_proof_url: failure_to_proof_url,
   front_image_upload_url: front_image_upload_url,

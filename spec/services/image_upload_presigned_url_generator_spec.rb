@@ -14,7 +14,7 @@ RSpec.describe ImageUploadPresignedUrlGenerator do
     let(:transaction_id) { SecureRandom.uuid }
 
     before do
-      expect(Figaro.env).
+      expect(AppConfig.env).
         to receive(:doc_auth_enable_presigned_s3_urls).and_return(doc_auth_enable_presigned_s3_urls)
     end
 

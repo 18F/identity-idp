@@ -24,7 +24,7 @@ class SmsResponder
 
   def signature_valid?
     Twilio::Security::RequestValidator.new(
-      Figaro.env.twilio_auth_token,
+      AppConfig.env.twilio_auth_token,
     ).validate(url, params, signature)
   end
 

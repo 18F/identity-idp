@@ -44,7 +44,7 @@ RSpec.describe UspsConfirmationCode do
     it 'returns true for an expired otp' do
       confirmation_code = build(
         :usps_confirmation_code,
-        code_sent_at: (Figaro.env.usps_confirmation_max_days.to_i + 1).days.ago,
+        code_sent_at: (AppConfig.env.usps_confirmation_max_days.to_i + 1).days.ago,
       )
 
       expect(confirmation_code.expired?).to eq(true)

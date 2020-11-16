@@ -29,7 +29,7 @@ shared_examples 'verification step max attempts' do |step, sp|
     scenario 'after 24 hours the user can retry and complete idv' do
       visit account_path
       first(:link, t('links.sign_out')).click
-      reattempt_interval = (Figaro.env.idv_attempt_window_in_hours.to_i + 1).hours
+      reattempt_interval = (AppConfig.env.idv_attempt_window_in_hours.to_i + 1).hours
 
       Timecop.travel reattempt_interval do
         visit_idp_from_sp_with_ial2(:oidc)

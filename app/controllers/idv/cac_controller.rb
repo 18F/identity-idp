@@ -27,7 +27,7 @@ module Idv
     private
 
     def render_404_if_disabled
-      render_not_found unless Figaro.env.cac_proofing_enabled == 'true'
+      render_not_found unless AppConfig.env.cac_proofing_enabled == 'true'
     end
 
     def cac_callback

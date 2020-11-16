@@ -38,7 +38,7 @@ class CancellationPresenter < FailurePresenter
     return if referer_string.blank?
     referer_uri = URI.parse(referer_string)
     return if referer_uri.scheme == 'javascript'
-    return unless referer_uri.host == Figaro.env.domain_name.split(':')[0]
+    return unless referer_uri.host == AppConfig.env.domain_name.split(':')[0]
     extract_path_and_query_from_uri(referer_uri)
   end
 

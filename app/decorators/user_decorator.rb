@@ -176,7 +176,7 @@ class UserDecorator
   end
 
   def lockout_period_config
-    @config ||= Figaro.env.lockout_period_in_minutes
+    @config ||= AppConfig.env.lockout_period_in_minutes
   end
 
   def lockout_period_expired?

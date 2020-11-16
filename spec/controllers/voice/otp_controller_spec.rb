@@ -9,7 +9,7 @@ RSpec.describe Voice::OtpController do
     end
     let(:locale) { nil }
     let(:repeat_count) { nil }
-    let(:cipher) { Gibberish::AES.new(Figaro.env.attribute_encryption_key) }
+    let(:cipher) { Gibberish::AES.new(AppConfig.env.attribute_encryption_key) }
 
     context 'with a blank encrypted_code in the URL' do
       let(:encrypted_code) { '' }

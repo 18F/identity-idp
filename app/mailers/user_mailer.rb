@@ -2,8 +2,8 @@ class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
   before_action :attach_images
-  default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from_display_name),
-          reply_to: email_with_name(Figaro.env.email_from, Figaro.env.email_from_display_name)
+  default from: email_with_name(AppConfig.env.email_from, AppConfig.env.email_from_display_name),
+          reply_to: email_with_name(AppConfig.env.email_from, AppConfig.env.email_from_display_name)
 
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
     with_user_locale(user) do
@@ -207,7 +207,7 @@ class UserMailer < ActionMailer::Base
   private
 
   def email_should_receive_nonessential_notifications?(email)
-    banlist = JSON.parse(Figaro.env.nonessential_email_banlist || '[]')
+    banlist = JSON.parse(AppConfig.env.nonessential_email_banlist || '[]')
     return true if banlist.empty?
     modified_email = email.gsub(/\+[^@]+@/, '@')
     !banlist.include?(modified_email)

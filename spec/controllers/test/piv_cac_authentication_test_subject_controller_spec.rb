@@ -4,7 +4,7 @@ describe Test::PivCacAuthenticationTestSubjectController do
   describe 'when not in development' do
     before(:each) do
       allow(Rails.env).to receive(:development?) { false }
-      allow(Figaro.env).to receive(:enable_test_routes) { 'true' }
+      allow(AppConfig.env).to receive(:enable_test_routes) { 'true' }
     end
 
     describe 'FeatureManagement#development_and_identity_pki_disabled?' do
@@ -37,7 +37,7 @@ describe Test::PivCacAuthenticationTestSubjectController do
   describe 'when in development' do
     before(:each) do
       allow(Rails.env).to receive(:development?) { true }
-      allow(Figaro.env).to receive(:enable_test_routes) { 'true' }
+      allow(AppConfig.env).to receive(:enable_test_routes) { 'true' }
     end
 
     describe 'FeatureManagement#development_and_identity_pki_disabled?' do

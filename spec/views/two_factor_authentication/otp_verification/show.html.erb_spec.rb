@@ -49,7 +49,7 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
       let(:help_text) do
         t('instructions.mfa.sms.number_message_html',
           number: content_tag(:strong, presenter_data[:phone_number]),
-          expiration: Figaro.env.otp_valid_for)
+          expiration: AppConfig.env.otp_valid_for)
       end
 
       it 'informs the user that an OTP has been sent to their number via #help_text' do

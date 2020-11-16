@@ -297,8 +297,6 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    figaro (1.1.1)
-      thor (~> 0.14)
     formatador (0.2.5)
     foundation_emails (2.2.1.0)
     geocoder (1.6.3)
@@ -750,7 +748,6 @@ DEPENDENCIES
   faker
   faraday
   fasterer
-  figaro
   foundation_emails
   gibberish
   gmail

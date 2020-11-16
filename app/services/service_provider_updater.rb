@@ -47,7 +47,7 @@ class ServiceProviderUpdater
   end
 
   def url
-    Figaro.env.dashboard_url
+    AppConfig.env.dashboard_url
   end
 
   def dashboard_service_providers

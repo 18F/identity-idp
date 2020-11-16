@@ -1,6 +1,6 @@
 <% content_for :meta_tags do %>
-  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: Figaro.env.acuant_sdk_initialization_endpoint %>
-  <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: Figaro.env.acuant_sdk_initialization_creds %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: AppConfig.env.acuant_sdk_initialization_endpoint %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: AppConfig.env.acuant_sdk_initialization_creds %>
 <% end %>
 
 <div id='acuant-sdk-upload-form' class='hidden'>

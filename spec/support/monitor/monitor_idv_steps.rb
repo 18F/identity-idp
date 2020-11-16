@@ -1,6 +1,6 @@
 module MonitorIdvSteps
   def verify_identity_with_doc_auth
-    allow(Figaro.env).to receive(:doc_auth_vendor).and_return('mock') if monitor.local?
+    allow(AppConfig.env).to receive(:doc_auth_vendor).and_return('mock') if monitor.local?
 
     expect(page).to have_content 'You will also need'
     click_on 'Create an account'

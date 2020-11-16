@@ -1,14 +1,14 @@
 module SessionTimeoutWarningHelper
   def frequency
-    (Figaro.env.session_check_frequency || 150).to_i
+    (AppConfig.env.session_check_frequency || 150).to_i
   end
 
   def start
-    (Figaro.env.session_check_delay || 30).to_i
+    (AppConfig.env.session_check_delay || 30).to_i
   end
 
   def warning
-    (Figaro.env.session_timeout_warning_seconds || 30).to_i
+    (AppConfig.env.session_timeout_warning_seconds || 30).to_i
   end
 
   def timeout_refresh_path

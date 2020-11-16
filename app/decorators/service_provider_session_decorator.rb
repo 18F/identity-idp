@@ -42,8 +42,8 @@ class ServiceProviderSessionDecorator
   end
 
   def s3_logo_url(service_provider)
-    region = Figaro.env.aws_region
-    bucket = Figaro.env.aws_logo_bucket
+    region = AppConfig.env.aws_region
+    bucket = AppConfig.env.aws_logo_bucket
     key = service_provider.remote_logo_key
 
     "https://s3.#{region}.amazonaws.com/#{bucket}/#{key}"
@@ -136,8 +136,8 @@ class ServiceProviderSessionDecorator
   end
 
   def mfa_expiration_interval
-    aal_1_expiration = Figaro.env.remember_device_expiration_hours_aal_1.to_i.hours
-    aal_2_expiration = Figaro.env.remember_device_expiration_hours_aal_2.to_i.hours
+    aal_1_expiration = AppConfig.env.remember_device_expiration_hours_aal_1.to_i.hours
+    aal_2_expiration = AppConfig.env.remember_device_expiration_hours_aal_2.to_i.hours
     return aal_2_expiration if sp_aal > 1
     return aal_2_expiration if sp_ial > 1
     aal_1_expiration

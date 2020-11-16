@@ -2,11 +2,11 @@ require 'rails_helper'
 
 describe RecurringJob::UspsUploadController do
   describe '#create' do
-    it_behaves_like 'a recurring job controller', Figaro.env.usps_upload_token
+    it_behaves_like 'a recurring job controller', AppConfig.env.usps_upload_token
 
     context 'with a valid token' do
       before do
-        request.headers['X-API-AUTH-TOKEN'] = Figaro.env.usps_upload_token
+        request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.usps_upload_token
       end
 
       context 'on a federal workday' do

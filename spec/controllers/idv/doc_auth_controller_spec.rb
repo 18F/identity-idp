@@ -126,7 +126,7 @@ describe Idv::DocAuthController do
 
     describe 'when document capture is enabled' do
       before(:each) do
-        allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('true')
+        allow(AppConfig.env).to receive(:document_capture_step_enabled).and_return('true')
       end
 
       it 'progresses from welcome to upload' do
@@ -163,7 +163,7 @@ describe Idv::DocAuthController do
 
     describe 'when document capture is disabled' do
       before(:each) do
-        allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('false')
+        allow(AppConfig.env).to receive(:document_capture_step_enabled).and_return('false')
       end
 
       it 'progresses from welcome to upload' do
@@ -207,7 +207,7 @@ describe Idv::DocAuthController do
 
     context 'with selfie checking enabled' do
       before do
-        allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+        allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
       end
 
       it 'successfully submits the images' do
@@ -298,7 +298,7 @@ describe Idv::DocAuthController do
       expect(response.body).to eq({
         success: false,
         errors: [{ field: 'front', message: 'Wrong document' }],
-        remaining_attempts: Figaro.env.acuant_max_attempts.to_i,
+        remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
       }.to_json)
     end
 
@@ -311,13 +311,13 @@ describe Idv::DocAuthController do
         success: false,
         errors: [{ field: 'pii',
                    message: I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness') }],
-        remaining_attempts: Figaro.env.acuant_max_attempts.to_i,
+        remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
       }.to_json)
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', {
           errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
           success: false,
-          remaining_attempts: Figaro.env.acuant_max_attempts.to_i,
+          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
           step: 'verify_document_status',
         }
       )

@@ -4,7 +4,7 @@ describe RecurringJob::SendAccountResetNotificationsController do
   describe '#create' do
     context 'with a good auth token' do
       before do
-        request.headers['X-API-AUTH-TOKEN'] = Figaro.env.account_reset_auth_token
+        request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.account_reset_auth_token
       end
 
       # controller is disabled

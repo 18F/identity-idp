@@ -3,7 +3,7 @@ require 'service_provider'
 
 SamlIdp.configure do |config|
   protocol = Rails.env.development? ? 'http://' : 'https://'
-  api_base = protocol + Figaro.env.domain_name + '/api'
+  api_base = protocol + AppConfig.env.domain_name + '/api'
 
   config.algorithm = OpenSSL::Digest::SHA256
   # config.signature_alg = 'rsa-sha256'

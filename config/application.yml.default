@@ -1,4 +1,4 @@
-# This file is used by the Figaro gem: https://github.com/laserlemon/figaro
+# This file is used by the AppConfig class
 
 # The defaults set in this file are used as the basis for configuration in all
 # production and development environments. On deployed EC2 servers, we run
@@ -13,11 +13,11 @@
 # if you're sharing your code publicly.
 
 # Make sure any new entries you add are enclosed in single quotes.
-# Figaro requires all values to be explicit strings.
+# AppConfig requires all values to be explicit strings.
 
 # How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
 # Note that the key name must be capitalized because the gem looks for
-# ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and Figaro does not automatically make lowercase keys
+# ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and AppConfig does not automatically make lowercase keys
 # available to ENV as uppercase keys.
 RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
 

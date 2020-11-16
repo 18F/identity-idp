@@ -4,7 +4,7 @@ feature 'doc auth back image step' do
   include IdvStepHelper
   include DocAuthHelper
 
-  let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
+  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
 
   before do
@@ -81,7 +81,7 @@ feature 'doc auth back image step' do
   end
 
   it 'does not attempt to verify the document if selfie checking is enabled' do
-    allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+    allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
 
     mock_client = IdentityDocAuth::Mock::DocAuthMockClient.new
     allow(IdentityDocAuth::Mock::DocAuthMockClient).to receive(:new).and_return(mock_client)
@@ -124,7 +124,7 @@ feature 'doc auth back image step' do
 
     expect(page).to have_current_path(idv_session_errors_throttled_path)
 
-    Timecop.travel((Figaro.env.acuant_attempt_window_in_minutes.to_i + 1).minutes.from_now) do
+    Timecop.travel((AppConfig.env.acuant_attempt_window_in_minutes.to_i + 1).minutes.from_now) do
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_back_image_step
       attach_image

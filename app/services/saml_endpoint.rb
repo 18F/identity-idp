@@ -10,7 +10,7 @@ class SamlEndpoint
   end
 
   def self.endpoint_configs
-    @endpoint_configs ||= JSON.parse(Figaro.env.saml_endpoint_configs, symbolize_names: true)
+    @endpoint_configs ||= JSON.parse(AppConfig.env.saml_endpoint_configs, symbolize_names: true)
   end
 
   def secret_key

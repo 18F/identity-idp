@@ -32,7 +32,7 @@ describe Encryption::KmsClient do
   let(:local_encryption_key) do
     OpenSSL::HMAC.digest(
       'sha256',
-      Figaro.env.password_pepper,
+      AppConfig.env.password_pepper,
       '123-abc-456-defattribute-bundlecontextuser_id',
     )
   end

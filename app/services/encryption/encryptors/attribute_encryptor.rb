@@ -43,7 +43,7 @@ module Encryption
       end
 
       def current_key
-        Figaro.env.attribute_encryption_key
+        AppConfig.env.attribute_encryption_key
       end
 
       def all_keys
@@ -51,7 +51,7 @@ module Encryption
       end
 
       def old_keys
-        JSON.parse(Figaro.env.attribute_encryption_key_queue)
+        JSON.parse(AppConfig.env.attribute_encryption_key_queue)
       end
     end
   end

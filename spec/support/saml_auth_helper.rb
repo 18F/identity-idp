@@ -22,8 +22,8 @@ module SamlAuthHelper
     settings.security[:signature_method] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
     settings.double_quote_xml_attribute_values = true
     # IdP setting
-    settings.idp_sso_target_url = "http://#{Figaro.env.domain_name}/api/saml/auth2019"
-    settings.idp_slo_target_url = "http://#{Figaro.env.domain_name}/api/saml/logout2019"
+    settings.idp_sso_target_url = "http://#{AppConfig.env.domain_name}/api/saml/auth2019"
+    settings.idp_slo_target_url = "http://#{AppConfig.env.domain_name}/api/saml/logout2019"
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 

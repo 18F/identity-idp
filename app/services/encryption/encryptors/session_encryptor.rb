@@ -23,7 +23,7 @@ module Encryption
       end
 
       def aes_encryption_key
-        Figaro.env.session_encryption_key[0...32]
+        AppConfig.env.session_encryption_key[0...32]
       end
     end
   end

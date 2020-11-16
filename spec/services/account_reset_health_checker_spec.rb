@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AccountResetHealthChecker do
-  let(:wait_period) { Figaro.env.account_reset_wait_period_days.to_i.days }
+  let(:wait_period) { AppConfig.env.account_reset_wait_period_days.to_i.days }
   let(:buffer_period) { 2.hours } # window buffer to allow servicing requests after 24 hours
   describe '.check' do
     subject(:summary) { AccountResetHealthChecker.check }

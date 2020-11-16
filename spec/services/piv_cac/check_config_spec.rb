@@ -8,7 +8,7 @@ describe PivCac::CheckConfig do
 
   before do
     allow(Rails.env).to receive(:production?).and_return(is_production)
-    allow(Figaro.env).to receive(:piv_cac_verify_token_url).and_return(url)
+    allow(AppConfig.env).to receive(:piv_cac_verify_token_url).and_return(url)
   end
 
   context 'non-production environments' do
