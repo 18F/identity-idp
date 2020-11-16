@@ -23,10 +23,15 @@ class Figaro
 
       keys.each do |key|
         value = values[env][key] || values[key]
+        env_value = ENV[key]
 
-        ENV[key] = value if key == key.upcase
-
-        @config[key] = value
+        if env_value
+          warn "WARNING: #{key} is being loaded from ENV instead of application.yml"
+          @config[key] = env_value
+        else
+          @config[key] = value
+          ENV[key] = value if key == key.upcase
+        end
       end
 
       @config
