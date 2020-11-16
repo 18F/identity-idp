@@ -1,14 +1,16 @@
 class VendorDocumentVerificationJob
-  def self.perform(_document_capture_session_result_id:,
-                   _encryption_key:,
-                   _front_image_iv:,
-                   _back_image_iv:,
-                   _selfie_image_iv:,
-                   _front_image_url:,
-                   _back_image_url:,
-                   _selfie_image_url:,
-                   _liveness_checking_enabled:)
+  # rubocop:disable Lint/UnusedMethodArgument
+  def self.perform(document_capture_session_result_id:,
+                   encryption_key:,
+                   front_image_iv:,
+                   back_image_iv:,
+                   selfie_image_iv:,
+                   front_image_url:,
+                   back_image_url:,
+                   selfie_image_url:,
+                   liveness_checking_enabled:)
 
     FormResponse.new(success: true, errors: {})
   end
+  # rubocop:enable Lint/UnusedMethodArgument
 end
