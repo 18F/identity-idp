@@ -12,10 +12,13 @@ describe Figaro::Environment do
 
   let(:config_environment) { 'test' }
 
+  before do
+    stub_const('ENV', {})
+  end
+
   describe '#initialize' do
     it 'warns and uses ENV when key is set in ENV and file config' do
-      allow(ENV).to receive(:[]).with('test_key').and_return('overridden value')
-
+      stub_const('ENV', 'test_key' => 'overridden value')
       expect do
         environment = described_class.new(config, config_environment)
         expect(environment.test_key).to eq 'overridden value'
@@ -28,6 +31,12 @@ describe Figaro::Environment do
       environment = described_class.new(config, 'production')
 
       expect(environment.test_key).to eq 'overridden value'
+    end
+
+    it 'sets ENV' do
+      described_class.new(config, config_environment)
+
+      expect(ENV['test_key']).to eq 'value'
     end
   end
 
