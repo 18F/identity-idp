@@ -343,13 +343,13 @@ feature 'doc auth document capture step' do
 
           decipher = OpenSSL::Cipher.new('aes-256-gcm')
           decipher.decrypt
-          decipher.key = Base64.decode64(params[:_encryption_key])
+          decipher.key = Base64.decode64(params[:encryption_key])
 
           Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`
 
           page.driver.get front_url
           expect(page).to have_http_status(200)
-          decipher.iv = Base64.decode64(params[:_front_image_iv])
+          decipher.iv = Base64.decode64(params[:front_image_iv])
           decipher.auth_tag = page.body[-16..-1]
           decipher.auth_data = ''
           front_plain = decipher.update(page.body[0..-17]) + decipher.final
@@ -357,7 +357,7 @@ feature 'doc auth document capture step' do
 
           page.driver.get back_url
           expect(page).to have_http_status(200)
-          decipher.iv = Base64.decode64(params[:_back_image_iv])
+          decipher.iv = Base64.decode64(params[:back_image_iv])
           decipher.auth_tag = page.body[-16..-1]
           decipher.auth_data = ''
           back_plain = decipher.update(page.body[0..-17]) + decipher.final
