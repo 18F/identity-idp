@@ -59,16 +59,21 @@ RSpec.describe ImageUploadPresignedUrlGenerator do
     end
   end
 
-  describe '#bucket' do
+  describe '#bucket_url' do
     before do
       allow(LoginGov::Hostdata).to receive(:env).and_return('test')
       allow(LoginGov::Hostdata::EC2).to receive(:load).and_return(
         OpenStruct.new(account_id: '123456789', region: 'us-west-2'),
       )
+      client_stub = Aws::S3::Client.new(region: 'us-west-2', stub_responses: true)
+      resource_stub = Aws::S3::Resource.new(client: client_stub)
+      allow(generator).to receive(:s3_resource).and_return(resource_stub)
     end
 
-    it 'is S3 bucket name' do
-      expect(generator.bucket).to eq('login-gov-idp-doc-capture-test.123456789-us-west-2')
+    it 'is S3 bucket url' do
+      expect(generator.bucket_url).to eq(
+        'https://s3.us-west-2.amazonaws.com/login-gov-idp-doc-capture-test.123456789-us-west-2',
+      )
     end
   end
 end
