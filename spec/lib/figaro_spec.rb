@@ -27,6 +27,30 @@ describe Figaro::Environment do
       ).to_stderr
     end
 
+    it 'warns if config value is not a string' do
+      integer_value_config = {
+        'test_key' => 1,
+      }
+
+      expect do
+        described_class.new(integer_value_config, config_environment)
+      end.to output(
+        /test_key value must be String/,
+      ).to_stderr
+    end
+
+    it 'warns if config value is not a string' do
+      integer_key_config = {
+        1 => 'test',
+      }
+
+      expect do
+        described_class.new(integer_key_config, config_environment)
+      end.to output(
+        /key 1 must be String/,
+      ).to_stderr
+    end
+
     it 'overrides from specified environment key' do
       environment = described_class.new(config, 'production')
 

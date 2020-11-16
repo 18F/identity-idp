@@ -26,6 +26,9 @@ class Figaro
         value = configuration.dig(env, key) || configuration[key]
         env_value = ENV[key]
 
+        check_string_key(key)
+        check_string_value(key, value)
+
         if env_value
           warn "WARNING: #{key} is being loaded from ENV instead of application.yml"
           @config[key] = env_value
@@ -50,6 +53,14 @@ class Figaro
     end
 
     private
+
+    def check_string_key(key)
+      warn "FIGARO WARNING: key #{key} must be String" unless key.is_a?(String)
+    end
+
+    def check_string_value(key, value)
+      warn "FIGARO WARNING: #{key} value must be String" unless value.nil? || value.is_a?(String)
+    end
 
     def respond_to_missing?(method_name, _include_private = false)
       key = method_name.to_s
