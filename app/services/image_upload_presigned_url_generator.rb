@@ -16,6 +16,10 @@ class ImageUploadPresignedUrlGenerator
     end
   end
 
+  def bucket
+    super(prefix: bucket_prefix)
+  end
+
   def bucket_prefix
     'login-gov-idp-doc-capture'.freeze
   end

@@ -58,4 +58,17 @@ RSpec.describe ImageUploadPresignedUrlGenerator do
       end
     end
   end
+
+  describe '#bucket' do
+    before do
+      allow(LoginGov::Hostdata).to receive(:env).and_return('test')
+      allow(LoginGov::Hostdata::EC2).to receive(:load).and_return(
+        OpenStruct.new(account_id: '123456789', region: 'us-west-2'),
+      )
+    end
+
+    it 'is S3 bucket name' do
+      expect(generator.bucket).to eq('login-gov-idp-doc-capture-test.123456789-us-west-2')
+    end
+  end
 end

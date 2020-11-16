@@ -9,6 +9,10 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   connect_src = ["'self'", '*.newrelic.com', '*.nr-data.net', '*.google-analytics.com',
                  'services.assureid.net']
   connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
+  if LoginGov::Hostdata.in_datacenter? && Figaro.env.aws_region
+    image_upload_bucket = ImageUploadPresignedUrlGenerator.new.bucket
+    connect_src << "https://s3.#{Figaro.env.aws_region}.amazonaws.com/#{image_upload_bucket}/*"
+  end
   default_csp_config = {
     default_src: ["'self'"],
     child_src: ["'self'", 'www.google.com'], # CSP 2.0 only; replaces frame_src
