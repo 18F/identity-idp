@@ -58,4 +58,40 @@ RSpec.describe ImageUploadPresignedUrlGenerator do
       end
     end
   end
+
+  describe '#bucket_url' do
+    before do
+    end
+
+    context 'AWS credentials are not set' do
+      before do
+        allow(LoginGov::Hostdata::EC2).to receive(:load).
+          and_raise(Net::OpenTimeout)
+        allow(Aws::S3::Resource).to receive(:new).
+          and_raise(Aws::Sigv4::Errors::MissingCredentialsError, 'Credentials not set')
+      end
+
+      it 'returns nil' do
+        expect(generator.bucket_url).to be_nil
+      end
+    end
+
+    context 'AWS credentials are set' do
+      before do
+        allow(LoginGov::Hostdata).to receive(:env).and_return('test')
+        allow(LoginGov::Hostdata::EC2).to receive(:load).and_return(
+          OpenStruct.new(account_id: '123456789', region: 'us-west-2'),
+        )
+        client_stub = Aws::S3::Client.new(region: 'us-west-2', stub_responses: true)
+        resource_stub = Aws::S3::Resource.new(client: client_stub)
+        allow(generator).to receive(:s3_resource).and_return(resource_stub)
+      end
+
+      it 'returns S3 bucket url' do
+        expect(generator.bucket_url).to eq(
+          'https://s3.us-west-2.amazonaws.com/login-gov-idp-doc-capture-test.123456789-us-west-2',
+        )
+      end
+    end
+  end
 end
