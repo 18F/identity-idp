@@ -14,49 +14,50 @@ class Figaro
     Environment.require_keys(keys)
   end
 
-  private
-end
+  class Environment
+    def self.setup(path, env = Rails.env)
+      @config = {}
+      values = YAML.safe_load(File.read(path))
 
-class Environment
-  def self.setup(path, env = Rails.env)
-    @config = {}
-    values = YAML.load(ERB.new(File.read(path)).result)
+      keys = Set.new(values.keys - %w[production development test])
+      keys |= values[env].keys
 
-    keys = Set.new(values.keys - ['production', 'development', 'test'])
-    keys |= values[env].keys
+      keys.each do |key|
+        value = values[env][key] || values[key]
 
-    keys.each do |key|
-      value = values[env][key] || values[key]
+        ENV[key] = value if key == key.upcase
 
-      if key == key.upcase
-        ENV[key] = value
+        @config[key] = value
       end
 
-      @config[key] = value
+      @config
     end
 
-    @config
-  end
-
-  def self.method_missing(m, *args, &block)
-    string_key = m.to_s
-    key = string_key.tr('?!', '')
-    raise_exception = string_key.ends_with?('!')
-
-    if raise_exception
-      value = send(key)
-      raise "Missing config key #{key}" unless value
-      value
-    else
-      @config[key]
-    end
-  end
-
-  def self.require_keys(keys)
-    keys.each do |key|
-      raise "#{key} is missing" unless @config.has_key?(key)
+    def self.respond_to_missing?(method_name, _include_private = false)
+      key = method_name.to_s.tr('?!', '')
+      @config.key?(key)
     end
 
-    true
+    def self.method_missing(method, *_args)
+      string_key = method.to_s
+      key = string_key.tr('?!', '')
+      raise_exception = string_key.ends_with?('!')
+
+      if raise_exception
+        value = send(key)
+        raise "Missing config key #{key}" unless value
+        value
+      else
+        @config[key]
+      end
+    end
+
+    def self.require_keys(keys)
+      keys.each do |key|
+        raise "#{key} is missing" unless @config.key?(key)
+      end
+
+      true
+    end
   end
 end
