@@ -20,10 +20,10 @@ module Idv
       dcs_uuid = idv_session.idv_phone_step_document_capture_session_uuid
       dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
       return ProofingDocumentCaptureSessionResult.none if dcs_uuid.nil?
-      return ProofingDocumentCaptureSessionResult.timed_out if dcs.nil?
+      return timed_out if dcs.nil?
 
       proofing_job_result = dcs.load_proofing_result
-      return ProofingDocumentCaptureSessionResult.timed_out if proofing_job_result.nil?
+      return timed_out if proofing_job_result.nil?
 
       if proofing_job_result.result
         proofing_job_result.done
@@ -39,7 +39,7 @@ module Idv
       increment_attempts_count unless failed_due_to_timeout_or_exception?
       success = idv_result[:success]
       handle_successful_proofing_attempt(pii) if success
-      idv_session.idv_phone_step_document_capture_session_uuid = nil
+      delete_async
       FormResponse.new(
         success: success, errors: idv_result[:errors],
         extra: extra_analytics_attributes
@@ -149,6 +149,15 @@ module Idv
 
     def run_job(document_capture_session)
       Idv::Agent.new(applicant).proof_address(document_capture_session)
+    end
+
+    def timed_out
+      delete_async
+      ProofingDocumentCaptureSessionResult.timed_out
+    end
+
+    def delete_async
+      idv_session.idv_phone_step_document_capture_session_uuid = nil
     end
   end
 end

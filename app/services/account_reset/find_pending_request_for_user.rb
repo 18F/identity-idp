@@ -13,7 +13,7 @@ module AccountReset
         cancelled_at: nil,
       ).where(
         'requested_at > ?',
-        Figaro.env.account_reset_wait_period_days.to_i.days.ago,
+        AppConfig.env.account_reset_wait_period_days.to_i.days.ago,
       ).order(requested_at: :asc).first
     end
   end

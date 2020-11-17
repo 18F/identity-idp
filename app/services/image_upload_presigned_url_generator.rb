@@ -2,12 +2,22 @@ class ImageUploadPresignedUrlGenerator
   include AwsS3Helper
 
   def presigned_image_upload_url(image_type:, transaction_id:)
-    return nil unless Figaro.env.doc_auth_enable_presigned_s3_urls == 'true'
+    keyname = "#{transaction_id}-#{image_type}"
 
-    s3_presigned_url(
-      bucket_prefix: bucket_prefix,
-      keyname: "#{transaction_id}-#{image_type}",
-    ).to_s
+    if AppConfig.env.doc_auth_enable_presigned_s3_urls != 'true'
+      nil
+    elsif !LoginGov::Hostdata.in_datacenter?
+      Rails.application.routes.url_helpers.test_fake_s3_url(key: keyname)
+    else
+      s3_presigned_url(
+        bucket_prefix: bucket_prefix,
+        keyname: keyname,
+      ).to_s
+    end
+  end
+
+  def bucket_url
+    s3_resource&.bucket(bucket(prefix: bucket_prefix))&.url
   end
 
   def bucket_prefix

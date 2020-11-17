@@ -1,6 +1,7 @@
 module Users
   class PasswordsController < ReauthnRequiredController
     before_action :confirm_two_factor_authenticated
+    before_action :capture_password_if_pii_requested_but_locked
 
     def edit
       @update_user_password_form = UpdateUserPasswordForm.new(current_user)
@@ -25,6 +26,12 @@ module Users
 
     private
 
+    def capture_password_if_pii_requested_but_locked
+      return unless current_user.decorate.identity_verified? && user_session[:decrypted_pii].blank?
+      user_session[:stored_location] = request.url
+      redirect_to capture_password_url
+    end
+
     def user_params
       params.require(:update_user_password_form).permit(:password)
     end
@@ -34,7 +41,7 @@ module Users
       bypass_sign_in current_user
 
       flash[:personal_key] = @update_user_password_form.personal_key
-      redirect_to account_url, notice: t('notices.password_changed')
+      redirect_to account_url, flash: { info: t('notices.password_changed') }
     end
 
     def create_event_and_notify_user_about_password_change

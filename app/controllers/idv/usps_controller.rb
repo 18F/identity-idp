@@ -74,6 +74,8 @@ module Idv
       %w[first_name middle_name last_name dob phone ssn].each do |key|
         hash[key] = pii_h[key]
       end
+
+      hash[:uuid_prefix] = ServiceProvider.from_issuer(sp_session[:issuer]).app_id
     end
 
     def pii_to_h
@@ -175,7 +177,7 @@ module Idv
 
     def send_reminder
       current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.letter_reminder(email_address.email).deliver_later
+        UserMailer.letter_reminder(current_user, email_address.email).deliver_later
       end
     end
 
@@ -200,10 +202,10 @@ module Idv
       dcs_uuid = idv_session.idv_usps_document_capture_session_uuid
       dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
       return ProofingDocumentCaptureSessionResult.none if dcs_uuid.nil?
-      return ProofingDocumentCaptureSessionResult.timed_out if dcs.nil?
+      return timed_out if dcs.nil?
 
       proofing_job_result = dcs.load_proofing_result
-      return ProofingDocumentCaptureSessionResult.timed_out if proofing_job_result.nil?
+      return timed_out if proofing_job_result.nil?
 
       if proofing_job_result.result
         proofing_job_result.done
@@ -220,10 +222,26 @@ module Idv
       result = form_response(idv_result, success)
 
       pii = async_state.pii
-      idv_session.idv_usps_document_capture_session_uuid = nil
+      delete_async
 
-      analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
+      async_state_done_analytics(result)
       result.success? ? resolution_success(pii) : failure
+    end
+
+    def async_state_done_analytics(result)
+      analytics.track_event(Analytics::IDV_USPS_ADDRESS_SUBMITTED, result.to_h)
+      Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, 2, :lexis_nexis_resolution)
+      Db::ProofingCost::AddUserProofingCost.call(current_user.id, :lexis_nexis_resolution)
+    end
+
+    def delete_async
+      idv_session.idv_usps_document_capture_session_uuid = nil
+    end
+
+    def timed_out
+      flash[:info] = I18n.t('idv.failure.timeout')
+      delete_async
+      ProofingDocumentCaptureSessionResult.timed_out
     end
   end
 end

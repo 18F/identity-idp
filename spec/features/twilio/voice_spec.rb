@@ -6,7 +6,7 @@ describe 'Twilio request validation' do
   end
 
   it 'validates requests to the /api/voice/otp endpoint' do
-    cipher = Gibberish::AES.new(Figaro.env.attribute_encryption_key)
+    cipher = Gibberish::AES.new(AppConfig.env.attribute_encryption_key)
     encrypted_code = cipher.encrypt('1234')
 
     twilio_post_voice({ encrypted_code: encrypted_code }, false)
@@ -15,7 +15,7 @@ describe 'Twilio request validation' do
   end
 
   it 'renders the voice message text when the signature is valid' do
-    cipher = Gibberish::AES.new(Figaro.env.attribute_encryption_key)
+    cipher = Gibberish::AES.new(AppConfig.env.attribute_encryption_key)
     encrypted_code = cipher.encrypt('1234')
 
     twilio_post_voice(encrypted_code: encrypted_code)
@@ -36,7 +36,7 @@ def twilio_post(tw_params, post_sig, post_url)
 end
 
 def correct_signature(tw_params, post_path = '')
-  Twilio::Security::RequestValidator.new(Figaro.env.twilio_auth_token).
+  Twilio::Security::RequestValidator.new(AppConfig.env.twilio_auth_token).
     build_signature_for("#{myhost}#{post_path}", tw_params)
 end
 

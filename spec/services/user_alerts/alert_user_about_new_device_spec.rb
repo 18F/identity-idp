@@ -17,15 +17,17 @@ describe UserAlerts::AlertUserAboutNewDevice do
 
       expect(UserMailer).to have_received(:new_device_sign_in).twice
       expect(UserMailer).to have_received(:new_device_sign_in).
-        with(confirmed_email_addresses[0],
-             instance_of(String),
-             instance_of(String),
-             disavowal_token)
+        with(user: user,
+             email_address: confirmed_email_addresses[0],
+             date: instance_of(String),
+             location: instance_of(String),
+             disavowal_token: disavowal_token)
       expect(UserMailer).to have_received(:new_device_sign_in).
-        with(confirmed_email_addresses[1],
-             instance_of(String),
-             instance_of(String),
-             disavowal_token)
+        with(user: user,
+             email_address: confirmed_email_addresses[1],
+             date: instance_of(String),
+             location: instance_of(String),
+             disavowal_token: disavowal_token)
     end
   end
 end

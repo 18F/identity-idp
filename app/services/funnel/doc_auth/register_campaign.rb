@@ -11,7 +11,7 @@ module Funnel
       end
 
       def self.campaign_whitelisted?(campaign)
-        whitelist = JSON.parse(Figaro.env.no_sp_campaigns_whitelist || '[]')
+        whitelist = JSON.parse(AppConfig.env.no_sp_campaigns_whitelist || '[]')
         whitelist.include?(campaign)
       end
       private_class_method :campaign_whitelisted?

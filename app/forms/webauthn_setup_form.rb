@@ -29,7 +29,7 @@ class WebauthnSetupForm
 
   # this gives us a hook to override the domain embedded in the attestation test object
   def self.domain_name
-    Figaro.env.domain_name
+    AppConfig.env.domain_name
   end
 
   private

@@ -3,7 +3,7 @@ es:
   idv:
     buttons:
       cancel: Cancele y regrese a su perfil
-      continue_plain: Continúe
+      continue_plain: Continuar
       mail:
         resend: Enviar otra carta
         send: Enviar una carta
@@ -61,6 +61,7 @@ es:
           personal.
         warning: Compruebe la información que ingresó. Los errores comunes son números
           incorrectos de Seguro Social, código postal o fecha de nacimiento.
+      timeout: Estamos teniendo dificultades técnicas. Por favor inténtelo de nuevo.
     forgot_password:
       link_html: "¿Se te olvidó tu contraseña? %{link}"
       link_text: Siga estas instrucciones
@@ -140,8 +141,8 @@ es:
       usps:
         address_on_file: Le enviaremos una carta con un código de confirmación a su
           dirección verificada en el archivo.
-        new_address: We will mail a letter with a confirmation code to the address
-          you specify.
+        new_address: Le enviaremos una carta con un código de confirmación a la dirección
+          que especifique.
         resend: Envíeme otra carta
         success: Debe llegar en 5 a 10 días laborales.
     review:

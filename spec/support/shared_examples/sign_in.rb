@@ -284,14 +284,14 @@ def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
 
   expect(current_url).to eq capture_password_url
 
-  max_allowed_attempts = Figaro.env.password_max_attempts.to_i
+  max_allowed_attempts = AppConfig.env.password_max_attempts.to_i
   (max_allowed_attempts - 1).times do
     fill_in 'user_password', with: 'badpassword'
-    click_button t('links.next')
+    click_button t('forms.buttons.submit.default')
     expect(page).to have_content(t('errors.confirm_password_incorrect'))
   end
 
   fill_in 'user_password', with: 'badpassword'
-  click_button t('links.next')
+  click_button t('forms.buttons.submit.default')
   expect(page).to have_content(t('errors.max_password_attempts_reached'))
 end

@@ -68,13 +68,22 @@ module FormHelper
   # rubocop:enable Style/WordArray
 
   def international_phone_codes
-    PhoneNumberCapabilities::INTERNATIONAL_CODES.map do |key, value|
+    codes = PhoneNumberCapabilities::INTERNATIONAL_CODES.map do |key, value|
       [
         international_phone_code_label(value),
         key,
         { data: international_phone_codes_data(value) },
       ]
     end
+
+    # Sort alphabetically by label, but put the US first in the list
+    codes.sort_by do |label, key, _data|
+      [key == 'US' ? -1 : 1, label]
+    end
+  end
+
+  def supported_country_codes
+    PhoneNumberCapabilities::INTERNATIONAL_CODES.keys
   end
 
   def state_name_for_abbrev(abbrev)

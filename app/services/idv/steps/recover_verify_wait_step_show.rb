@@ -2,7 +2,7 @@ module Idv
   module Steps
     class RecoverVerifyWaitStepShow < VerifyBaseStep
       def call
-        poll_with_meta_refresh(Figaro.env.poll_rate_for_verify_in_seconds.to_i)
+        poll_with_meta_refresh(AppConfig.env.poll_rate_for_verify_in_seconds.to_i)
 
         process_async_state(async_state)
       end
@@ -16,6 +16,8 @@ module Idv
         when :in_progress
           nil
         when :timed_out
+          flash[:info] = I18n.t('idv.failure.timeout')
+          delete_async
           mark_step_incomplete(:verify)
         when :done
           async_state_done(current_async_state)
@@ -27,9 +29,9 @@ module Idv
         response = idv_result_to_form_response(current_async_state.result)
         response = check_ssn(current_async_state.pii) if response.success?
         summarize_result_and_throttle_failures(response)
+        delete_async
 
         if response.success?
-          delete_async
           mark_step_complete(:verify_wait)
         else
           mark_step_incomplete(:verify)

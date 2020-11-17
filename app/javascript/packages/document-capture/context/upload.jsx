@@ -3,8 +3,11 @@ import defaultUpload from '../services/upload';
 
 const UploadContext = createContext({
   upload: defaultUpload,
+  getStatus: /** @type {() => Promise<UploadSuccessResponse>} */ (() => Promise.reject()),
+  statusPollInterval: /** @type {number=} */ (undefined),
   isMockClient: false,
   backgroundUploadURLs: /** @type {Record<string,string>} */ ({}),
+  backgroundUploadEncryptKey: /** @type {CryptoKey=} */ (undefined),
 });
 
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -21,6 +24,7 @@ const UploadContext = createContext({
 /**
  * @typedef UploadOptions
  *
+ * @prop {'POST'|'PUT'} method HTTP method to send payload.
  * @prop {string} endpoint Endpoint to which payload should be sent.
  * @prop {string} csrf CSRF token to send as parameter to upload implementation.
  */
@@ -29,6 +33,7 @@ const UploadContext = createContext({
  * @typedef UploadSuccessResponse
  *
  * @prop {true} success Whether request was successful.
+ * @prop {boolean} isPending Whether verification result is still pending.
  */
 
 /**
@@ -53,9 +58,13 @@ const UploadContext = createContext({
  * @prop {boolean=} isMockClient Whether to treat upload as a mock implementation.
  * @prop {Record<string,string>} backgroundUploadURLs URLs to which payload values corresponding to
  * key should be uploaded as soon as possible.
+ * @prop {CryptoKey} backgroundUploadEncryptKey Background upload encryption key.
  * @prop {string} endpoint Endpoint to which payload should be sent.
+ * @prop {string=} statusEndpoint Endpoint from which to request async upload status.
+ * @prop {number=} statusPollInterval Interval at which to poll for status, in milliseconds.
+ * @prop {'POST'|'PUT'} method HTTP method to send payload.
  * @prop {string} csrf CSRF token to send as parameter to upload implementation.
- * @prop {Record<string,any>} formData Extra form data to merge into the payload before uploading
+ * @prop {Record<string,any>=} formData Extra form data to merge into the payload before uploading
  * @prop {ReactNode} children Child elements.
  */
 
@@ -66,17 +75,41 @@ function UploadContextProvider({
   upload = defaultUpload,
   isMockClient = false,
   backgroundUploadURLs = {},
+  backgroundUploadEncryptKey,
   endpoint,
+  statusEndpoint,
+  statusPollInterval,
+  method,
   csrf,
   formData,
   children,
 }) {
-  const uploadWithCSRF = (payload) => upload({ ...payload, ...formData }, { endpoint, csrf });
-  const value = useMemo(() => ({ upload: uploadWithCSRF, backgroundUploadURLs, isMockClient }), [
-    upload,
-    backgroundUploadURLs,
-    isMockClient,
-  ]);
+  const uploadWithCSRF = (payload) =>
+    upload({ ...payload, ...formData }, { endpoint, method, csrf });
+
+  const getStatus = () =>
+    statusEndpoint
+      ? upload({ ...formData }, { endpoint: statusEndpoint, method, csrf })
+      : Promise.reject();
+
+  const value = useMemo(
+    () => ({
+      upload: uploadWithCSRF,
+      getStatus,
+      statusPollInterval,
+      backgroundUploadURLs,
+      backgroundUploadEncryptKey,
+      isMockClient,
+    }),
+    [
+      upload,
+      getStatus,
+      statusPollInterval,
+      backgroundUploadURLs,
+      backgroundUploadEncryptKey,
+      isMockClient,
+    ],
+  );
 
   return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;
 }

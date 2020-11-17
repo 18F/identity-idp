@@ -15,7 +15,7 @@ class UndeliverableAddressNotifier
   def download_file
     file = Tempfile.new(TEMP_FILE_BASENAME)
     Net::SFTP.start(*sftp_config) do |sftp|
-      sftp.download!(Figaro.env.usps_download_sftp_directory, file.path)
+      sftp.download!(AppConfig.env.usps_download_sftp_directory, file.path)
     end
     file
   end
@@ -50,7 +50,7 @@ class UndeliverableAddressNotifier
   end
 
   def env
-    Figaro.env
+    AppConfig.env
   end
 
   def usps_confirmation_code(otp)

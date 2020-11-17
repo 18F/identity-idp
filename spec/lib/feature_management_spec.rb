@@ -62,7 +62,7 @@ describe 'FeatureManagement', type: :feature do
 
       it 'returns false in production mode when server is pt' do
         allow(Rails.env).to receive(:production?).and_return(true)
-        allow(Figaro.env).to receive(:domain_name).and_return('idp.pt.login.gov')
+        allow(AppConfig.env).to receive(:domain_name).and_return('idp.pt.login.gov')
 
         expect(FeatureManagement.prefill_otp_codes?).to eq(false)
       end
@@ -72,7 +72,7 @@ describe 'FeatureManagement', type: :feature do
   describe '#use_kms?' do
     context 'when enabled' do
       before do
-        allow(Figaro.env).to receive(:use_kms).and_return('true')
+        allow(AppConfig.env).to receive(:use_kms).and_return('true')
       end
 
       it 'enables the feature' do
@@ -84,7 +84,7 @@ describe 'FeatureManagement', type: :feature do
   describe '#use_dashboard_service_providers?' do
     context 'when enabled' do
       before do
-        allow(Figaro.env).to receive(:use_dashboard_service_providers).and_return('true')
+        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return('true')
       end
 
       it 'enables the feature' do
@@ -94,7 +94,7 @@ describe 'FeatureManagement', type: :feature do
 
     context 'when disabled' do
       before do
-        allow(Figaro.env).to receive(:use_dashboard_service_providers).and_return('false')
+        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return('false')
       end
 
       it 'disables the feature' do
@@ -107,7 +107,7 @@ describe 'FeatureManagement', type: :feature do
     context 'server domain name is dev, qa, or int' do
       it 'returns true' do
         %w[idp.dev.login.gov idp.int.login.gov idp.qa.login.gov].each do |domain|
-          allow(Figaro.env).to receive(:domain_name).and_return(domain)
+          allow(AppConfig.env).to receive(:domain_name).and_return(domain)
 
           expect(FeatureManagement.reveal_usps_code?).to eq(true)
         end
@@ -125,35 +125,69 @@ describe 'FeatureManagement', type: :feature do
     context 'Rails env is not development and server is not dev, qa, or int' do
       it 'returns false' do
         allow(Rails.env).to receive(:development?).and_return(false)
-        allow(Figaro.env).to receive(:domain_name).and_return('foo.login.gov')
+        allow(AppConfig.env).to receive(:domain_name).and_return('foo.login.gov')
 
         expect(FeatureManagement.reveal_usps_code?).to eq(false)
       end
     end
   end
 
-  describe '.fake_banner_mode?' do
-    context 'when in the production environment: secure.login.gov, idp.staging.login.gov' do
-      it 'does not display the fake banner' do
-        allow(LoginGov::Hostdata).to receive(:domain).and_return('login.gov')
-        allow(Rails.env).to receive(:production?).and_return(true)
-        expect(FeatureManagement.fake_banner_mode?).to eq(false)
+  describe '.show_demo_banner?' do
+    subject(:show_demo_banner?) { FeatureManagement.show_demo_banner? }
+
+    context 'in local development' do
+      it 'is false' do
+        expect(show_demo_banner?).to be_falsey
       end
     end
 
-    context 'when the in the sandbox environment: identitysandbox.gov' do
-      it 'displays the fake banner' do
-        allow(LoginGov::Hostdata).to receive(:domain).and_return('identitysandbox.gov')
-        allow(Rails.env).to receive(:production?).and_return(true)
-        expect(FeatureManagement.fake_banner_mode?).to eq(true)
+    context 'in a deployed environment' do
+      before { expect(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true) }
+
+      context 'in a non-prod env' do
+        before { expect(LoginGov::Hostdata).to receive(:env).and_return('staging') }
+
+        it 'is true' do
+          expect(show_demo_banner?).to be_truthy
+        end
+      end
+
+      context 'in production' do
+        before { expect(LoginGov::Hostdata).to receive(:env).and_return('prod') }
+
+        it 'is false' do
+          expect(show_demo_banner?).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe '.show_no_pii_banner?' do
+    subject(:show_no_pii_banner?) { FeatureManagement.show_no_pii_banner? }
+
+    context 'in local development' do
+      it 'is false' do
+        expect(show_no_pii_banner?).to eq(false)
       end
     end
 
-    context 'when the host is not secure.login.gov and the Rails env is not in production' do
-      it 'does not display the fake banner' do
-        allow(LoginGov::Hostdata).to receive(:domain).and_return(nil)
-        allow(Rails.env).to receive(:production?).and_return(false)
-        expect(FeatureManagement.fake_banner_mode?).to eq(false)
+    context 'in a deployed environment' do
+      before { expect(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true) }
+
+      context 'in the sandbox domain' do
+        before { expect(LoginGov::Hostdata).to receive(:domain).and_return('identitysandbox.gov') }
+
+        it 'is true' do
+          expect(show_no_pii_banner?).to eq(true)
+        end
+      end
+
+      context 'in the prod domain' do
+        before { expect(LoginGov::Hostdata).to receive(:domain).and_return('login.gov') }
+
+        it 'is false' do
+          expect(show_no_pii_banner?).to eq(false)
+        end
       end
     end
   end
@@ -162,7 +196,7 @@ describe 'FeatureManagement', type: :feature do
     describe '#identity_pki_disabled?' do
       context 'when enabled' do
         before(:each) do
-          allow(Figaro.env).to receive(:identity_pki_disabled) { 'true' }
+          allow(AppConfig.env).to receive(:identity_pki_disabled) { 'true' }
         end
 
         it 'has the feature disabled' do
@@ -172,7 +206,7 @@ describe 'FeatureManagement', type: :feature do
 
       context 'when disabled' do
         before(:each) do
-          allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
+          allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
         end
 
         it 'has the feature disabled' do
@@ -189,14 +223,14 @@ describe 'FeatureManagement', type: :feature do
 
         context 'identity_pki disabled' do
           it 'returns true' do
-            allow(Figaro.env).to receive(:identity_pki_disabled) { 'true' }
+            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'true' }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_truthy
           end
         end
 
         context 'identity_pki not disabled' do
           it 'returns false' do
-            allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
+            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
@@ -210,14 +244,14 @@ describe 'FeatureManagement', type: :feature do
 
         context 'identity_pki disabled' do
           it 'returns false' do
-            allow(Figaro.env).to receive(:identity_pki_disabled) { 'true' }
+            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'true' }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
 
         context 'identity_pki not disabled' do
           it 'returns false' do
-            allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
+            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
@@ -227,7 +261,7 @@ describe 'FeatureManagement', type: :feature do
     describe '#recaptcha_enabled?' do
       context 'when recaptcha is enabled 100 percent' do
         before do
-          allow(Figaro.env).to receive(:recaptcha_enabled_percent).and_return('100')
+          allow(AppConfig.env).to receive(:recaptcha_enabled_percent).and_return('100')
         end
 
         it 'enables the feature when the session is new' do
@@ -244,7 +278,7 @@ describe 'FeatureManagement', type: :feature do
 
       context 'when recaptcha is enabled 0 percent' do
         before do
-          allow(Figaro.env).to receive(:recaptcha_enabled_percent).and_return('0')
+          allow(AppConfig.env).to receive(:recaptcha_enabled_percent).and_return('0')
         end
 
         it 'disables the feature when the session is new' do
@@ -261,7 +295,7 @@ describe 'FeatureManagement', type: :feature do
 
       context 'when recaptcha is enabled 50 percent' do
         before do
-          allow(Figaro.env).to receive(:recaptcha_enabled_percent).and_return('50')
+          allow(AppConfig.env).to receive(:recaptcha_enabled_percent).and_return('50')
         end
 
         it 'enables the feature when the session is new and random number is 70' do
@@ -294,28 +328,28 @@ describe 'FeatureManagement', type: :feature do
   end
 
   describe '#disallow_all_web_crawlers?' do
-    it 'returns true when Figaro setting is true' do
-      allow(Figaro.env).to receive(:disallow_all_web_crawlers) { 'true' }
+    it 'returns true when AppConfig setting is true' do
+      allow(AppConfig.env).to receive(:disallow_all_web_crawlers) { 'true' }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(true)
     end
 
-    it 'returns false when Figaro setting is false' do
-      allow(Figaro.env).to receive(:disallow_all_web_crawlers) { 'false' }
+    it 'returns false when AppConfig setting is false' do
+      allow(AppConfig.env).to receive(:disallow_all_web_crawlers) { 'false' }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
     end
   end
 
   describe '#disallow_ial2_recovery?' do
-    it 'returns true when Figaro setting is true' do
-      allow(Figaro.env).to receive(:disallow_ial2_recovery) { 'true' }
+    it 'returns true when AppConfig setting is true' do
+      allow(AppConfig.env).to receive(:disallow_ial2_recovery) { 'true' }
 
       expect(FeatureManagement.disallow_ial2_recovery?).to eq(true)
     end
 
-    it 'returns false when Figaro setting is false' do
-      allow(Figaro.env).to receive(:disallow_ial2_recovery) { 'false' }
+    it 'returns false when AppConfig setting is false' do
+      allow(AppConfig.env).to receive(:disallow_ial2_recovery) { 'false' }
 
       expect(FeatureManagement.disallow_ial2_recovery?).to eq(false)
     end
@@ -327,14 +361,14 @@ describe 'FeatureManagement', type: :feature do
         allow(Rails.env).to receive(:development?).and_return(true)
       end
 
-      it 'returns true when Figaro setting is true' do
-        allow(Figaro.env).to receive(:identity_pki_local_dev) { 'true' }
+      it 'returns true when AppConfig setting is true' do
+        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'true' }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(true)
       end
 
-      it 'returns false when Figaro setting is false' do
-        allow(Figaro.env).to receive(:identity_pki_local_dev) { 'false' }
+      it 'returns false when AppConfig setting is false' do
+        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'false' }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
@@ -345,17 +379,31 @@ describe 'FeatureManagement', type: :feature do
         allow(Rails.env).to receive(:development?).and_return(false)
       end
 
-      it 'returns false when Figaro setting is true' do
-        allow(Figaro.env).to receive(:identity_pki_local_dev) { 'true' }
+      it 'returns false when AppConfig setting is true' do
+        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'true' }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
 
-      it 'returns false when Figaro setting is false' do
-        allow(Figaro.env).to receive(:identity_pki_local_dev) { 'false' }
+      it 'returns false when AppConfig setting is false' do
+        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'false' }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
+    end
+  end
+
+  describe '#document_capture_async_uploads_enabled?' do
+    it 'returns true when AppConfig presigned S3 URL setting is true' do
+      allow(AppConfig.env).to receive(:doc_auth_enable_presigned_s3_urls) { 'true' }
+
+      expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(true)
+    end
+
+    it 'returns false when AppConfig presigned S3 URL setting is false' do
+      allow(AppConfig.env).to receive(:doc_auth_enable_presigned_s3_urls) { 'false' }
+
+      expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(false)
     end
   end
 
@@ -364,13 +412,13 @@ describe 'FeatureManagement', type: :feature do
       before { allow(Rails.env).to receive(:test?).and_return(false) }
 
       it 'returns true when enabled' do
-        allow(Figaro.env).to receive(:log_to_stdout).and_return('true')
+        allow(AppConfig.env).to receive(:log_to_stdout).and_return('true')
 
         expect(FeatureManagement.log_to_stdout?).to eq(true)
       end
 
       it 'returns false when disabled' do
-        allow(Figaro.env).to receive(:log_to_stdout).and_return('true')
+        allow(AppConfig.env).to receive(:log_to_stdout).and_return('true')
 
         expect(FeatureManagement.log_to_stdout?).to eq(true)
       end
@@ -378,10 +426,10 @@ describe 'FeatureManagement', type: :feature do
 
     context 'in the test environment' do
       it 'always returns true' do
-        allow(Figaro.env).to receive(:log_to_stdout).and_return('true')
+        allow(AppConfig.env).to receive(:log_to_stdout).and_return('true')
         expect(FeatureManagement.log_to_stdout?).to eq(false)
 
-        allow(Figaro.env).to receive(:log_to_stdout).and_return('false')
+        allow(AppConfig.env).to receive(:log_to_stdout).and_return('false')
         expect(FeatureManagement.log_to_stdout?).to eq(false)
       end
     end

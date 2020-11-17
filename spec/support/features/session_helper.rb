@@ -121,7 +121,7 @@ module Features
 
     def fill_in_password_and_submit(password)
       fill_in 'user_password', with: password
-      click_button t('links.next')
+      click_button t('forms.buttons.submit.default')
     end
 
     def sign_up
@@ -451,7 +451,7 @@ module Features
     end
 
     def submit_form_with_valid_email(email = 'test@test.com')
-      fill_in 'Email', with: email
+      fill_in t('account.index.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
 
@@ -562,9 +562,9 @@ module Features
     end
 
     def stub_piv_cac_service
-      allow(Figaro.env).to receive(:identity_pki_disabled).and_return('false')
-      allow(Figaro.env).to receive(:piv_cac_service_url).and_return('http://piv.example.com/')
-      allow(Figaro.env).to receive(:piv_cac_verify_token_url).and_return('http://piv.example.com/')
+      allow(AppConfig.env).to receive(:identity_pki_disabled).and_return('false')
+      allow(AppConfig.env).to receive(:piv_cac_service_url).and_return('http://piv.example.com/')
+      allow(AppConfig.env).to receive(:piv_cac_verify_token_url).and_return('http://piv.example.com/')
       stub_request(:post, 'piv.example.com').to_return do |request|
         {
           status: 200,

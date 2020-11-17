@@ -1,6 +1,6 @@
 module AwsKmsClientHelper
   def stub_aws_kms_client(random_key = random_str, ciphered_key = random_str)
-    aws_key_id = Figaro.env.aws_kms_key_id
+    aws_key_id = AppConfig.env.aws_kms_key_id
     Aws.config[:kms] = {
       stub_responses: {
         encrypt: { ciphertext_blob: ciphered_key, key_id: aws_key_id },
@@ -12,7 +12,7 @@ module AwsKmsClientHelper
 
   def stub_mapped_aws_kms_client(forward = {})
     reverse = forward.invert
-    aws_key_id = Figaro.env.aws_kms_key_id
+    aws_key_id = AppConfig.env.aws_kms_key_id
     Aws.config[:kms] = {
       stub_responses: {
         encrypt: lambda { |context|
@@ -26,7 +26,7 @@ module AwsKmsClientHelper
   end
 
   def stub_aws_kms_client_invalid_ciphertext(ciphered_key = random_str)
-    aws_key_id = Figaro.env.aws_kms_key_id
+    aws_key_id = AppConfig.env.aws_kms_key_id
     Aws.config[:kms] = {
       stub_responses: {
         encrypt: { ciphertext_blob: ciphered_key, key_id: aws_key_id },

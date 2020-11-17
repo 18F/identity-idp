@@ -34,6 +34,20 @@ feature 'Sign Up' do
     end
   end
 
+  context 'picking a preferred email language on signup' do
+    let(:email) { Faker::Internet.safe_email }
+
+    it 'allows a user to pick a language when entering email' do
+      visit sign_up_email_path
+      fill_in 'Email', with: email
+      choose 'Español'
+      click_button t('forms.buttons.submit.default')
+
+      user = User.find_with_email(email)
+      expect(user.email_language).to eq('es')
+    end
+  end
+
   context 'user cancels sign up on email screen' do
     before do
       visit sign_up_email_path
@@ -287,7 +301,7 @@ feature 'Sign Up' do
   end
 
   it 'forces user to setup a PIV/CAC and offers no other option or fallback question' do
-    allow(Figaro.env).to receive(:allow_piv_cac_required).and_return('true')
+    allow(AppConfig.env).to receive(:allow_piv_cac_required).and_return('true')
 
     visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac
     sign_up_and_set_password

@@ -58,7 +58,7 @@ describe SendExpiredLetterNotifications do
   end
 
   def after_the_letters_expire
-    days = Figaro.env.usps_confirmation_max_days.to_i.days
+    days = AppConfig.env.usps_confirmation_max_days.to_i.days
     Timecop.travel(Time.zone.now + days) do
       yield
     end

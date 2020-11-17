@@ -1,7 +1,7 @@
 import React from 'react';
 import sinon from 'sinon';
+import { render } from '@testing-library/react';
 import CallbackOnMount from '@18f/identity-document-capture/components/callback-on-mount';
-import render from '../../../support/render';
 
 describe('document-capture/components/callback-on-mount', () => {
   it('calls callback once on mount', () => {

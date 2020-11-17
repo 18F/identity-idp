@@ -1,4 +1,4 @@
-<% word_count = Figaro.env.recovery_code_length.to_i %>
+<% word_count = AppConfig.env.recovery_code_length.to_i %>
 
 <div class='mb3'>
   <%= f.input attribute_name,

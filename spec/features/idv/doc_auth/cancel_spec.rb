@@ -6,11 +6,11 @@ feature 'doc auth cancel' do
 
   before do
     sign_in_and_2fa_user
-    complete_doc_auth_steps_before_doc_success_step
+    complete_doc_auth_steps_before_verify_step
   end
 
   it 'correctly restarts doc auth flow upon cancel and revisit' do
-    expect(page).to have_current_path(idv_doc_auth_success_step)
+    expect(page).to have_current_path(idv_doc_auth_verify_step)
 
     click_link t('links.cancel')
 
@@ -24,7 +24,7 @@ feature 'doc auth cancel' do
     visit account_path
     expect(current_path).to eq(account_path)
 
-    visit(idv_doc_auth_success_step)
+    visit(idv_doc_auth_verify_step)
     expect(current_path).to eq(idv_doc_auth_welcome_step)
   end
 end

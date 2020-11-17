@@ -16,8 +16,15 @@ import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
+import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
+
+/**
+ * @typedef NewRelicAgent
+ *
+ * @prop {(name: string, attributes: object) => void} addPageAction Log page action to New Relic.
+ */
 
 /**
  * @typedef AcuantPassiveLiveness
@@ -32,7 +39,17 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
  */
 
 /**
+ * @typedef NewRelicGlobals
+ *
+ * @prop {NewRelicAgent=} newrelic New Relic agent.
+ */
+
+/**
  * @typedef {typeof window & AcuantGlobals} AcuantGlobal
+ */
+
+/**
+ * @typedef {typeof window & NewRelicGlobals} NewRelicGlobal
  */
 
 /**
@@ -173,18 +190,25 @@ function AcuantCapture(
   }
 
   return (
-    <div className={className}>
+    <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
         <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
+              let result;
               if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
+                result = 'glare';
               } else if (nextCapture.sharpness < ACCEPTABLE_SHARPNESS_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
+                result = 'blurry';
               } else {
                 onChangeAndResetError(nextCapture.image.data);
+                result = 'success';
               }
+
+              const agent = /** @type {NewRelicGlobal} */ (window).newrelic;
+              agent?.addPageAction('documentCapture.acuantWebSDKResult', { result });
 
               setIsCapturingEnvironment(false);
             }}
@@ -200,6 +224,8 @@ function AcuantCapture(
         label={label}
         hint={hasCapture || !allowUpload ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
+        invalidTypeText={t('errors.doc_auth.invalid_file_input_type')}
+        fileUpdatedText={t('doc_auth.info.image_updated')}
         accept={isMockClient ? undefined : ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff']}
         capture={capture}
         value={value}

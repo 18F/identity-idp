@@ -10,7 +10,7 @@ Rails.application.configure do
   config.action_controller.asset_host = proc do |_source, request|
     # we want precompiled assets to have domain-agnostic URLs
     # and request is nil during asset precompilation
-    (Figaro.env.asset_host || Figaro.env.domain_name) if request
+    (AppConfig.env.asset_host || AppConfig.env.domain_name) if request
   end
   config.assets.js_compressor = :uglifier
   config.assets.compile = false
@@ -20,12 +20,12 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.action_mailer.default_url_options = {
-    host: Figaro.env.domain_name,
+    host: AppConfig.env.domain_name,
     protocol: 'https',
   }
-  config.action_mailer.asset_host = Figaro.env.asset_host || Figaro.env.mailer_domain_name
+  config.action_mailer.asset_host = AppConfig.env.asset_host || AppConfig.env.mailer_domain_name
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = if Figaro.env.disable_email_sending == 'true'
+  config.action_mailer.delivery_method = if AppConfig.env.disable_email_sending == 'true'
                                            :test
                                          else
                                            :ses
@@ -37,7 +37,7 @@ Rails.application.configure do
   # creates false positive results.
   config.action_dispatch.ip_spoofing_check = false
 
-  if Figaro.env.log_to_stdout == 'true'
+  if AppConfig.env.log_to_stdout == 'true'
     Rails.logger = Logger.new(STDOUT)
     config.logger = ActiveSupport::Logger.new(STDOUT)
   end

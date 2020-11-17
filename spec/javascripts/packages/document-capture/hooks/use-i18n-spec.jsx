@@ -5,7 +5,7 @@ import useI18n, {
   formatHTML,
   replaceVariables,
 } from '@18f/identity-document-capture/hooks/use-i18n';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/hooks/use-i18n', () => {
   describe('formatHTML', () => {

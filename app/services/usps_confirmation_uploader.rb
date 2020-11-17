@@ -40,6 +40,6 @@ class UspsConfirmationUploader
   end
 
   def env
-    Figaro.env
+    AppConfig.env
   end
 end

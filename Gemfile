@@ -16,12 +16,11 @@ gem 'devise', '~> 4.7.2'
 gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
-gem 'figaro'
 gem 'foundation_emails'
 gem 'gibberish'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.1.0'
+gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.0'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.1'
 require File.join(__dir__, 'app', 'services', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
@@ -69,7 +68,7 @@ gem 'uglifier', '~> 3.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
 gem 'webauthn', '~> 2.1.0'
-gem 'webpacker', '~> 3.6', '>= 3.6.0'
+gem 'webpacker', '~> 5.1.1'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'zxcvbn-js'
 
@@ -114,7 +113,7 @@ group :test do
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
-  gem 'shoulda-matchers', '~> 4.0.1', require: false
+  gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'timecop'
   gem 'webdrivers', '~> 3.0'
   gem 'webmock'

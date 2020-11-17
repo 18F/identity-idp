@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   scope module: :lambda_callback do
     post '/api/proofing_results/address/:result_id' => 'address_proof_result#create', as: 'address_proof_result'
     post '/api/proofing_results/resolution/:result_id' => 'resolution_proof_result#create', as: 'resolution_proof_result'
+    post '/api/proofing_results/document/:result_id' => 'document_proof_result#create', as: 'document_proof_result'
   end
 
   # i18n routes. Alphabetically sorted.
@@ -82,6 +83,7 @@ Rails.application.routes.draw do
       post '/' => 'users/sessions#create', as: :user_session
       get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       get '/active' => 'users/sessions#active'
+      post '/sessions/keepalive' => 'users/sessions#keepalive'
 
       if FeatureManagement.allow_piv_cac_login?
         get '/login/piv_cac' => 'users/piv_cac_login#new'
@@ -138,7 +140,7 @@ Rails.application.routes.draw do
       get '/timeout' => 'users/sessions#timeout'
     end
 
-    if Figaro.env.enable_test_routes == 'true'
+    if AppConfig.env.enable_test_routes == 'true'
       namespace :test do
         # Assertion granting test start + return.
         get '/saml/login' => 'saml_test#index'
@@ -153,6 +155,9 @@ Rails.application.routes.draw do
 
         get '/telephony' => 'telephony#index'
         delete '/telephony' => 'telephony#destroy'
+
+        get '/s3/:key' => 'fake_s3#show', as: :fake_s3
+        put '/s3/:key' => 'fake_s3#update'
       end
     end
 
@@ -167,6 +172,8 @@ Rails.application.routes.draw do
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
     post '/account/delete' => 'users/delete#delete'
+    get '/account/email_language' => 'users/email_language#show', as: :account_email_language
+    patch '/account/email_language' => 'users/email_language#update'
     get '/account/history' => 'accounts/history#show'
     get '/account/reactivate/start' => 'reactivate_account#index', as: :reactivate_account
     put '/account/reactivate/start' => 'reactivate_account#update'
@@ -318,6 +325,7 @@ Rails.application.routes.draw do
       get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
       put '/doc_auth/:step' => 'doc_auth#update'
       get '/doc_auth/link_sent/poll' => 'capture_doc_status#show'
+      get '/doc_auth/errors/no_camera' => 'doc_auth#no_camera'
       get '/capture_doc' => 'capture_doc#index'
       get '/capture-doc' => 'capture_doc#index',
           # sometimes underscores get messed up when linked to via SMS

@@ -31,7 +31,7 @@ describe Encryption::MultiRegionKMSClient do
   let(:kms_enabled) { true }
   let(:kms_multi_region_enabled) { true }
 
-  let(:aws_key_id) { Figaro.env.aws_kms_key_id }
+  let(:aws_key_id) { AppConfig.env.aws_kms_key_id }
 
   describe '#encrypt' do
     context 'with multi region enabled' do

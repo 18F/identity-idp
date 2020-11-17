@@ -202,7 +202,7 @@ describe Users::ResetPasswordsController, devise: true do
           expect(user.events.password_changed.size).to be 1
 
           expect(response).to redirect_to new_user_session_path
-          expect(flash[:notice]).to eq t('devise.passwords.updated_not_active')
+          expect(flash[:info]).to eq t('devise.passwords.updated_not_active')
           expect(user.reload.confirmed_at).to eq old_confirmed_at
         end
       end
@@ -463,7 +463,7 @@ describe Users::ResetPasswordsController, devise: true do
     mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
     user.email_addresses.each do |email_address|
       allow(UserMailer).to receive(:password_changed).
-        with(email_address, disavowal_token: instance_of(String)).
+        with(user, email_address, disavowal_token: instance_of(String)).
         and_return(mailer)
     end
   end

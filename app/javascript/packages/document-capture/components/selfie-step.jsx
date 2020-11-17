@@ -44,7 +44,6 @@ function SelfieStep({
           value={value.selfie}
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           allowUpload={false}
-          className="id-card-file-input"
           errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
         />
       ) : (

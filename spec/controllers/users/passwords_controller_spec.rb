@@ -16,7 +16,7 @@ describe Users::PasswordsController do
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PASSWORD_CHANGED, success: true, errors: {})
         expect(response).to redirect_to account_url
-        expect(flash[:notice]).to eq t('notices.password_changed')
+        expect(flash[:info]).to eq t('notices.password_changed')
         expect(flash[:personal_key]).to be_nil
       end
 
@@ -52,7 +52,7 @@ describe Users::PasswordsController do
         mail = double
         expect(mail).to receive(:deliver_later)
         expect(UserMailer).to receive(:password_changed).
-          with(user.email_addresses.first, hash_including(:disavowal_token)).
+          with(user, user.email_addresses.first, hash_including(:disavowal_token)).
           and_return(mail)
 
         stub_sign_in(user)
@@ -90,6 +90,31 @@ describe Users::PasswordsController do
 
         params = { password: 'new' }
         patch :update, params: { update_user_password_form: params }
+      end
+    end
+  end
+
+  describe '#edit' do
+    context 'user has a profile with PII' do
+      let(:pii) { { first_name: 'Jane' } }
+      before do
+        user = create(:user)
+        create(:profile, :active, :verified, user: user, pii: pii)
+        stub_sign_in(user)
+      end
+
+      it 'redirects to capture password if PII is not decrypted' do
+        get :edit
+
+        expect(response).to redirect_to capture_password_path
+      end
+
+      it 'renders form if PII is decrypted' do
+        controller.user_session[:decrypted_pii] = pii
+
+        get :edit
+
+        expect(response).to render_template(:edit)
       end
     end
   end

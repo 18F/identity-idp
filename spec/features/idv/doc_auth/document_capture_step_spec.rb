@@ -5,15 +5,21 @@ feature 'doc auth document capture step' do
   include DocAuthHelper
   include InPersonHelper
 
-  let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
+  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { 'false' }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:document_capture_async_uploads_enabled) { false }
+  let(:doc_auth_enable_presigned_s3_urls) { false }
   before do
-    allow(Figaro.env).to receive(:document_capture_step_enabled).
+    allow(AppConfig.env).to receive(:document_capture_step_enabled).
       and_return(document_capture_step_enabled)
-    allow(Figaro.env).to receive(:liveness_checking_enabled).
+    allow(AppConfig.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
+    allow(FeatureManagement).to receive(:doc_auth_enable_presigned_s3_urls).
+      and_return(doc_auth_enable_presigned_s3_urls)
+    allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled).
+      and_return(document_capture_async_uploads_enabled)
     allow(LoginGov::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     sign_in_and_2fa_user(user)
@@ -102,6 +108,25 @@ feature 'doc auth document capture step' do
         expect(page).to have_current_path(idv_doc_auth_document_capture_step)
       end
 
+      it 'does not proceed to the next page with a successful doc auth but missing information' do
+        allow_any_instance_of(ApplicationController).
+          to receive(:analytics).and_return(fake_analytics)
+
+        mock_doc_auth_no_name_pii(:post_images)
+        attach_images
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+
+        expect(fake_analytics).to have_logged_event(
+          Analytics::DOC_AUTH + ' submitted',
+          step: 'document_capture',
+          result: 'Passed',
+          billed: true,
+          success: false,
+        )
+      end
+
       it 'offers in person option on failure' do
         enable_in_person_proofing
 
@@ -117,7 +142,7 @@ feature 'doc auth document capture step' do
       end
 
       it 'throttles calls to acuant and allows retry after the attempt window' do
-        allow(Figaro.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+        allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
         max_attempts.times do
           attach_images
           click_idv_continue
@@ -132,7 +157,7 @@ feature 'doc auth document capture step' do
 
         expect(page).to have_current_path(idv_session_errors_throttled_path)
 
-        Timecop.travel(Figaro.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+        Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
           sign_in_and_2fa_user(user)
           complete_doc_auth_steps_before_document_capture_step
           attach_images
@@ -211,7 +236,7 @@ feature 'doc auth document capture step' do
       end
 
       it 'throttles calls to acuant and allows retry after the attempt window' do
-        allow(Figaro.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+        allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
         max_attempts.times do
           attach_images(liveness_enabled: false)
           click_idv_continue
@@ -226,7 +251,7 @@ feature 'doc auth document capture step' do
 
         expect(page).to have_current_path(idv_session_errors_throttled_path)
 
-        Timecop.travel(Figaro.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+        Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
           sign_in_and_2fa_user(user)
           complete_doc_auth_steps_before_document_capture_step
           attach_images(liveness_enabled: false)
@@ -293,6 +318,62 @@ feature 'doc auth document capture step' do
         click_idv_continue
 
         expect(page).to have_current_path(next_step)
+      end
+    end
+
+    context 'when using async uploads', :js do
+      let(:document_capture_async_uploads_enabled) { true }
+      let(:doc_auth_enable_presigned_s3_urls) { true }
+
+      before do
+        allow(VendorDocumentVerificationJob).to receive(:perform).and_call_original
+      end
+
+      it 'proceeds to the next page with valid info' do
+        mock_document_capture_result pii_from_doc: {
+          first_name: Faker::Name.first_name,
+          last_name: Faker::Name.last_name,
+          dob: Time.zone.today.to_s,
+          address1: Faker::Address.street_address,
+          city: Faker::Address.city,
+          state: Faker::Address.state_abbr,
+          zipcode: Faker::Address.zip_code,
+          state_id_type: 'drivers_license',
+          state_id_number: '111',
+          state_id_jurisdiction: 'WI',
+        }, success: true, errors: {}, messages: ['message']
+        attach_images(liveness_enabled: false)
+        form = page.find('#document-capture-form')
+        front_url = form['data-front-image-upload-url']
+        back_url = form['data-back-image-upload-url']
+        click_on 'Submit'
+
+        expect(page).to have_current_path(next_step, wait: 20)
+        expect(VendorDocumentVerificationJob).to have_received(:perform) do |params|
+          original = File.read('app/assets/images/logo.png')
+
+          decipher = OpenSSL::Cipher.new('aes-256-gcm')
+          decipher.decrypt
+          decipher.key = Base64.decode64(params[:encryption_key])
+
+          Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`
+
+          page.driver.get front_url
+          expect(page).to have_http_status(200)
+          decipher.iv = Base64.decode64(params[:front_image_iv])
+          decipher.auth_tag = page.body[-16..-1]
+          decipher.auth_data = ''
+          front_plain = decipher.update(page.body[0..-17]) + decipher.final
+          expect(front_plain.b).to eq(original.b)
+
+          page.driver.get back_url
+          expect(page).to have_http_status(200)
+          decipher.iv = Base64.decode64(params[:back_image_iv])
+          decipher.auth_tag = page.body[-16..-1]
+          decipher.auth_data = ''
+          back_plain = decipher.update(page.body[0..-17]) + decipher.final
+          expect(back_plain.b).to eq(original.b)
+        end
       end
     end
   end

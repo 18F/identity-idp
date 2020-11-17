@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift(File.expand_path('../lib', File.dirname(__FILE__)))
+require 'pinpoint_supported_countries'
+require 'yaml'
+require 'yaml_normalizer'
+
+puts YAML.dump(YamlNormalizer.normalize(PinpointSupportedCountries.new.run))

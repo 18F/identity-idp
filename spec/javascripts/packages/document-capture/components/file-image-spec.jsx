@@ -1,6 +1,6 @@
 import React from 'react';
 import FileImage from '@18f/identity-document-capture/components/file-image';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/file-image', () => {
   it('renders span prior to load', () => {

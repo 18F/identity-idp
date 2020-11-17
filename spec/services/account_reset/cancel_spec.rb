@@ -59,7 +59,7 @@ describe AccountReset::Cancel do
 
       @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
       user.email_addresses.each do |email_address|
-        expect(UserMailer).to receive(:account_reset_cancel).with(email_address).
+        expect(UserMailer).to receive(:account_reset_cancel).with(user, email_address).
           and_return(@mailer)
       end
 

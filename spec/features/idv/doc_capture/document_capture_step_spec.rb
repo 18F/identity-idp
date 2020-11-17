@@ -5,14 +5,14 @@ feature 'doc capture document capture step' do
   include DocAuthHelper
   include DocCaptureHelper
 
-  let(:max_attempts) { Figaro.env.acuant_max_attempts.to_i }
+  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { 'false' }
   let(:sp_requests_ial2_strict) { true }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
-    allow(Figaro.env).to receive(:document_capture_step_enabled).and_return('true')
-    allow(Figaro.env).to receive(:liveness_checking_enabled).
+    allow(AppConfig.env).to receive(:document_capture_step_enabled).and_return('true')
+    allow(AppConfig.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(LoginGov::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
@@ -148,7 +148,7 @@ feature 'doc capture document capture step' do
         ),
       )
 
-      allow(Figaro.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_images
         click_idv_continue
@@ -161,7 +161,7 @@ feature 'doc capture document capture step' do
 
       IdentityDocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(Figaro.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
         complete_doc_capture_steps_before_first_step(user)
         attach_images
         click_idv_continue
@@ -246,7 +246,7 @@ feature 'doc capture document capture step' do
         ),
       )
 
-      allow(Figaro.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_images(liveness_enabled: false)
         click_idv_continue
@@ -259,7 +259,7 @@ feature 'doc capture document capture step' do
 
       IdentityDocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(Figaro.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
         complete_doc_capture_steps_before_first_step(user)
         attach_images(liveness_enabled: false)
         click_idv_continue

@@ -42,6 +42,6 @@ class PersonalKeyGenerator
   end
 
   def personal_key_length
-    Figaro.env.recovery_code_length.to_i || length
+    AppConfig.env.recovery_code_length.to_i || length
   end
 end

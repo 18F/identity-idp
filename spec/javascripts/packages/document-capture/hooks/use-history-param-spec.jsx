@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import useHistoryParam, {
   getQueryParam,
 } from '@18f/identity-document-capture/hooks/use-history-param';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('getQueryParam', () => {
   const queryString = 'a&b=Hello%20world&c';

@@ -29,21 +29,39 @@ describe 'layouts/application.html.erb' do
     end
   end
 
-  context 'when FeatureManagement.fake_banner_mode? is true' do
-    it 'displays the fake banner' do
-      allow(FeatureManagement).to receive(:fake_banner_mode?).and_return(true)
+  context 'when FeatureManagement.show_demo_banner? is true' do
+    it 'displays the demo banner' do
+      allow(FeatureManagement).to receive(:show_demo_banner?).and_return(true)
       render
 
       expect(rendered).to have_content('DEMO')
     end
   end
 
-  context 'when FeatureManagement.fake_banner_mode? is false' do
-    it 'does not display the fake banner' do
-      allow(FeatureManagement).to receive(:fake_banner_mode?).and_return(false)
+  context 'when FeatureManagement.show_demo_banner? is false' do
+    it 'does not display the demo banner' do
+      allow(FeatureManagement).to receive(:show_demo_banner?).and_return(false)
       render
 
       expect(rendered).to_not have_content('DEMO')
+    end
+  end
+
+  context 'when FeatureManagement.show_no_pii_banner? is true' do
+    it 'displays the no PII banner' do
+      allow(FeatureManagement).to receive(:show_no_pii_banner?).and_return(true)
+      render
+
+      expect(rendered).to have_content('Do not use real personal information')
+    end
+  end
+
+  context 'when FeatureManagement.show_no_pii_banner? is false' do
+    it 'does not display the no PII banner' do
+      allow(FeatureManagement).to receive(:show_no_pii_banner?).and_return(false)
+      render
+
+      expect(rendered).to_not have_content('Do not use real personal information')
     end
   end
 
@@ -91,7 +109,7 @@ describe 'layouts/application.html.erb' do
           service_provider_request: nil,
         ).call,
       )
-      allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
+      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
 
       render
 
@@ -101,7 +119,7 @@ describe 'layouts/application.html.erb' do
 
   context 'user is fully authenticated' do
     it 'does not render the DAP analytics' do
-      allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
+      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
 
       render
 
@@ -116,7 +134,7 @@ describe 'layouts/application.html.erb' do
     end
 
     it 'does not render the DAP analytics' do
-      allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
+      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
 
       render
 
@@ -126,8 +144,8 @@ describe 'layouts/application.html.erb' do
 
   context 'when new relic browser key and app id are present' do
     it 'it render the new relic javascript' do
-      allow(Figaro.env).to receive(:newrelic_browser_key).and_return('foo')
-      allow(Figaro.env).to receive(:newrelic_browser_app_id).and_return('foo')
+      allow(AppConfig.env).to receive(:newrelic_browser_key).and_return('foo')
+      allow(AppConfig.env).to receive(:newrelic_browser_app_id).and_return('foo')
 
       render
 
@@ -137,8 +155,8 @@ describe 'layouts/application.html.erb' do
 
   context 'when new relic browser key and app id are not present' do
     it 'it does not render the new relic javascript' do
-      allow(Figaro.env).to receive(:newrelic_browser_key).and_return('')
-      allow(Figaro.env).to receive(:newrelic_browser_app_id).and_return('')
+      allow(AppConfig.env).to receive(:newrelic_browser_key).and_return('')
+      allow(AppConfig.env).to receive(:newrelic_browser_app_id).and_return('')
 
       render
 

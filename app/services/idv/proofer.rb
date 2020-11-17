@@ -30,7 +30,7 @@ module Idv
       end
 
       def mock_fallback_enabled?
-        Figaro.env.proofer_mock_fallback == 'true'
+        AppConfig.env.proofer_mock_fallback == 'true'
       end
     end
   end

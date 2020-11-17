@@ -1,9 +1,8 @@
-import base32Crockford from 'base32-crockford-browser';
+import { encodeInput } from '@18f/identity-personal-key-input';
 
 const modalSelector = '#personal-key-confirm';
 const modal = new window.LoginGov.Modal({ el: modalSelector });
 
-const personalKeyContainer = document.getElementById('personal-key');
 const personalKeyWords = [].slice.call(document.querySelectorAll('[data-personal-key]'));
 const formEl = document.getElementById('confirm-key');
 const input = formEl.querySelector('input[type="text"]');
@@ -47,19 +46,6 @@ function resetForm() {
   unsetInvalidHTML();
 }
 
-function formatInput(value) {
-  // Coerce mistaken user input from 'problem' letters:
-  // https://en.wikipedia.org/wiki/Base32#Crockford.27s_Base32
-  value = base32Crockford.decode(value);
-  value = base32Crockford.encode(value);
-
-  // Add back the dashes
-  value = value.toString().match(/.{4}/g).join('-');
-
-  // And uppercase
-  return value.toUpperCase();
-}
-
 function handleSubmit(event) {
   event.preventDefault();
 
@@ -69,7 +55,7 @@ function handleSubmit(event) {
     return;
   }
 
-  const value = formatInput(input.value);
+  const value = encodeInput(input.value);
 
   if (value === personalKey) {
     unsetInvalidHTML();
@@ -88,7 +74,6 @@ function show(event) {
 
   modal.on('show', function () {
     input.focus();
-    personalKeyContainer.classList.add('invisible');
   });
 
   modal.show();
@@ -97,7 +82,6 @@ function show(event) {
 function hide() {
   modal.on('hide', function () {
     resetForm();
-    personalKeyContainer.classList.remove('invisible');
   });
 
   modal.hide();

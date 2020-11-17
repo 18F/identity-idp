@@ -90,6 +90,8 @@ class Analytics
   IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'.freeze
+  EMAIL_LANGUAGE_VISITED = 'Email Language: Visited'.freeze
+  EMAIL_LANGUAGE_UPDATED = 'Email Language: Updated'.freeze
   EVENT_DISAVOWAL = 'Event disavowal visited'.freeze
   EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'.freeze
   EVENT_DISAVOWAL_TOKEN_INVALID = 'Event disavowal token invalid'.freeze
@@ -190,6 +192,7 @@ class Analytics
   BACKUP_CODE_SETUP_SUBMITTED = 'Backup Code Setup submitted'.freeze
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
+  SESSION_KEPT_ALIVE = 'Session Kept Alive'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
   SP_REDIRECT_INITIATED = 'SP redirect initiated'.freeze
   TELEPHONY_OTP_SENT = 'Telephony: OTP sent'.freeze

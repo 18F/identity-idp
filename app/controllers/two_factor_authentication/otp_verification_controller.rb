@@ -44,7 +44,7 @@ module TwoFactorAuthentication
 
       capabilities = PhoneNumberCapabilities.new(phone)
 
-      return unless capabilities.sms_only?
+      return if capabilities.supports_voice?
 
       flash[:error] = t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',

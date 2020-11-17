@@ -10,7 +10,7 @@ en:
         photo</lg-upload>"
       take_picture: Take photo
       take_picture_retry: Retake photo
-      upload_picture: Upload a photo
+      upload_picture: Upload photo
       use_phone: Use your phone
     errors:
       lexis_nexis:
@@ -57,14 +57,19 @@ en:
           in brighter lighting.
         visible_photo_check: We couldn't verify the photo on your ID. Try taking new
           pictures.
-      not_a_file: The selection was not a valid file
+      no_camera:
+        explanation: To continue, sign in to your login.gov account on any device
+          that has a camera, like a mobile phone, tablet or computer with a webcam.
+        heading: You need a camera to verify your identity
+        title: Camera needed
+      not_a_file: The selection was not a valid file.
     forms:
       address1: Address
       change_file: Change file
       choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
       city: City
       dob: Date of Birth
-      doc_success: We've verified your social security number and state-issued ID.
+      doc_success: We have verified your personal information
       first_name: First Name
       last_name: Last Name
       selected_file: Selected file
@@ -92,8 +97,8 @@ en:
       take_pic_front: Take a photo of the front of your ID
       take_picture: Take a photo with a phone
       text_message: We sent a message to your phone
-      upload: How would you like to upload your state issued ID?
-      upload_back: Upload an image of the back of your state issued ID
+      upload: How would you like to upload your state-issued ID?
+      upload_back: Upload an image of the back of your state-issued ID
       upload_from_phone: Take a photo with a mobile phone to upload your ID
       upload_from_phone_liveness_enabled: Use a mobile phone to add your ID and take
         a photo of yourself
@@ -114,6 +119,7 @@ en:
         and we will not save any images.
       id_worn_html: "<strong>Is your ID worn or damaged?</strong> Use another state-issued
         ID if you have one."
+      image_updated: Image updated
       interstitial_eta: This might take up to a minute. We’ll load the next step automatically
         when it’s done.
       interstitial_thanks: Thanks for your patience!
@@ -121,8 +127,8 @@ en:
       - Please check your phone and follow instructions to take a photo of your state
         issued ID.
       - When you are done click continue here to finish verifying your identity.
-      no_other_id_help_bold_html: "<strong>If you do not have another state-issued
-        ID</strong>, <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
+      no_other_id_help_bold_html: "<strong>If you do not have a state-issued ID</strong>,
+        <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
@@ -154,12 +160,16 @@ en:
         and share your personal information. We will only use it to verify your identity.
       document_capture_fallback_html: Having trouble? %{link}
       document_capture_fallback_link: Click here to upload an image
-      document_capture_selfie_consent_banner: Allow login.gov to use your device's
-        camera
-      document_capture_selfie_consent_blocked: Check your web browser’s settings for
-        this site to allow login.gov to access the camera.
-      document_capture_selfie_consent_reason: login.gov needs permission to use your
+      document_capture_selfie_consent_action: "<lg-underline>Allow access to the camera</lg-underline>
+        and look for a notification in your browser or check your system settings
+        to confirm camera access."
+      document_capture_selfie_consent_banner: login.gov needs permission to use your
+        device's camera
+      document_capture_selfie_consent_blocked: login.gov needs permission to use your
         camera so that you can prove your ID belongs to you.
+      document_capture_selfie_consent_blocked_action: Check your web browser's settings
+        for this site or your computer's system settings to allow login.gov to access
+        the camera.
       document_capture_selfie_instructions: Now take a picture of yourself. We'll
         compare it to the image on the front of your ID.
       email_sent: Link sent to %{email}. Please check your desktop email and follow

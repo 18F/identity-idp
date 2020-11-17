@@ -12,10 +12,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: f61b5b76c71659d33a40b87e769252dc80d2af43
-  tag: v0.1.0
+  revision: 8e72339df22b381059b9c792117b5a171381e9bf
+  tag: v0.3.0
   specs:
-    identity-doc-auth (0.1.0)
+    identity-doc-auth (0.3.0)
       activesupport
       faraday
 
@@ -29,10 +29,12 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: ba23bc6d0a5673a1a1f27a0abcfa54fd72372104
-  ref: ba23bc6d0a5673a1a1f27a0abcfa54fd72372104
+  revision: 9ebe1c042b3db499507687a57e945b30fc1c437d
+  ref: 9ebe1c042b3db499507687a57e945b30fc1c437d
   specs:
-    identity-idp-functions (0.3.2)
+    identity-idp-functions (0.5.3)
+      aws-sdk-s3 (>= 1.73)
+      aws-sdk-ssm (>= 1.55)
       retries (>= 0.0.5)
 
 GIT
@@ -143,15 +145,15 @@ GEM
     arel (9.0.0)
     ast (2.4.1)
     awrence (1.1.1)
-    aws-eventstream (1.0.3)
-    aws-partitions (1.235.0)
-    aws-sdk-core (3.75.0)
-      aws-eventstream (~> 1.0, >= 1.0.2)
-      aws-partitions (~> 1, >= 1.228.0)
+    aws-eventstream (1.1.0)
+    aws-partitions (1.388.0)
+    aws-sdk-core (3.109.1)
+      aws-eventstream (~> 1, >= 1.0.2)
+      aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
-    aws-sdk-kms (1.25.0)
-      aws-sdk-core (~> 3, >= 3.71.0)
+    aws-sdk-kms (1.39.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-lambda (1.42.0)
       aws-sdk-core (~> 3, >= 3.71.0)
@@ -162,15 +164,18 @@ GEM
     aws-sdk-pinpointsmsvoice (1.16.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.53.0)
-      aws-sdk-core (~> 3, >= 3.71.0)
+    aws-sdk-s3 (1.83.1)
+      aws-sdk-core (~> 3, >= 3.109.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.1)
     aws-sdk-ses (1.27.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sigv4 (1.1.0)
-      aws-eventstream (~> 1.0, >= 1.0.2)
+    aws-sdk-ssm (1.95.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
+    aws-sigv4 (1.2.2)
+      aws-eventstream (~> 1, >= 1.0.2)
     axe-matchers (2.6.1)
       dumb_delegator (~> 0.8)
       virtus (~> 1.0)
@@ -200,7 +205,7 @@ GEM
       rainbow
       thor
     byebug (11.1.3)
-    capybara (3.32.2)
+    capybara (3.33.0)
       addressable
       mini_mime (>= 0.1.3)
       nokogiri (~> 1.8)
@@ -208,7 +213,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (~> 1.5)
       xpath (~> 3.2)
-    capybara-screenshot (1.0.24)
+    capybara-screenshot (1.0.25)
       capybara (>= 1.0, < 4)
       launchy
     capybara-selenium (0.0.6)
@@ -282,8 +287,9 @@ GEM
       railties (>= 5.0.0)
     faker (2.14.0)
       i18n (>= 1.6, < 2)
-    faraday (1.0.1)
+    faraday (1.1.0)
       multipart-post (>= 1.2, < 3)
+      ruby2_keywords
     fasterer (0.8.0)
       colorize (~> 0.7)
       ruby_parser (>= 3.14.1)
@@ -291,8 +297,6 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    figaro (1.1.1)
-      thor (~> 0.14)
     formatador (0.2.5)
     foundation_emails (2.2.1.0)
     geocoder (1.6.3)
@@ -397,14 +401,14 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (5.2.0)
     newrelic_rpm (6.12.0.367)
-    nio4r (2.5.3)
+    nio4r (2.5.4)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
     notiffany (0.1.3)
       nenv (~> 0.1)
       shellany (~> 0.0)
     oauth (0.5.4)
-    octokit (4.18.0)
+    octokit (4.19.0)
       faraday (>= 0.9)
       sawyer (~> 0.8.0, >= 0.5.3)
     openssl (2.1.2)
@@ -415,7 +419,7 @@ GEM
     parser (2.7.1.4)
       ast (~> 2.4.1)
     pg (1.1.4)
-    phonelib (0.6.39)
+    phonelib (0.6.46)
     pkcs11 (0.3.2)
     premailer (1.13.1)
       addressable
@@ -437,7 +441,7 @@ GEM
       pry (>= 0.10.4)
     psych (3.2.0)
     public_suffix (4.0.6)
-    puma (4.3.5)
+    puma (5.0.3)
       nio4r (~> 2.0)
     rack (2.2.3)
     rack-attack (6.3.1)
@@ -445,7 +449,7 @@ GEM
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
-    rack-mini-profiler (2.1.0)
+    rack-mini-profiler (2.2.0)
       rack (>= 1.2.0)
     rack-protection (2.0.8.1)
       rack
@@ -510,7 +514,7 @@ GEM
       actionpack (>= 3, < 7)
       redis (>= 3, < 5)
     referer-parser (0.3.0)
-    regexp_parser (1.7.1)
+    regexp_parser (1.8.2)
     reline (0.1.5)
       io-console (~> 0.5)
     request_store (1.5.0)
@@ -529,7 +533,7 @@ GEM
       rspec-core (~> 3.9.0)
       rspec-expectations (~> 3.9.0)
       rspec-mocks (~> 3.9.0)
-    rspec-core (3.9.2)
+    rspec-core (3.9.3)
       rspec-support (~> 3.9.3)
     rspec-expectations (3.9.2)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -545,7 +549,7 @@ GEM
       rspec-expectations (~> 3.9.0)
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
-    rspec-support (3.9.3)
+    rspec-support (3.9.4)
     rubocop (0.91.0)
       parallel (~> 1.10)
       parser (>= 2.7.1.1)
@@ -593,9 +597,10 @@ GEM
     selenium-webdriver (3.142.7)
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
+    semantic_range (2.3.0)
     sexp_processor (4.13.0)
     shellany (0.0.1)
-    shoulda-matchers (4.0.1)
+    shoulda-matchers (4.4.1)
       activesupport (>= 4.2.0)
     simple_form (5.0.3)
       actionpack (>= 5.0)
@@ -629,7 +634,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     stringex (2.8.5)
-    strong_migrations (0.6.8)
+    strong_migrations (0.7.2)
       activerecord (>= 5)
     subprocess (1.3.2)
     sysexits (1.2.0)
@@ -640,7 +645,7 @@ GEM
     thor (0.20.3)
     thread_safe (0.3.6)
     tilt (2.0.10)
-    timecop (0.9.1)
+    timecop (0.9.2)
     twilio-ruby (5.39.2)
       faraday (>= 0.9, < 2.0)
       jwt (>= 1.5, <= 2.5)
@@ -684,14 +689,15 @@ GEM
       nokogiri (~> 1.6)
       rubyzip (~> 1.0)
       selenium-webdriver (~> 3.0)
-    webmock (3.9.1)
+    webmock (3.9.3)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    webpacker (3.6.0)
-      activesupport (>= 4.2)
+    webpacker (5.1.1)
+      activesupport (>= 5.2)
       rack-proxy (>= 0.6.1)
-      railties (>= 4.2)
+      railties (>= 5.2)
+      semantic_range (>= 2.3.0)
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -742,7 +748,6 @@ DEPENDENCIES
   faker
   faraday
   fasterer
-  figaro
   foundation_emails
   gibberish
   gmail
@@ -802,7 +807,7 @@ DEPENDENCIES
   sassc-rails (~> 2.1.2)
   scrypt
   secure_headers (~> 6.3)
-  shoulda-matchers (~> 4.0.1)
+  shoulda-matchers (~> 4.0)
   simple_form (>= 5.0.2)
   sinatra (>= 2.0.7)
   slim-rails (>= 3.2.0)
@@ -819,7 +824,7 @@ DEPENDENCIES
   webauthn (~> 2.1.0)
   webdrivers (~> 3.0)
   webmock
-  webpacker (~> 3.6, >= 3.6.0)
+  webpacker (~> 5.1.1)
   xmlenc (~> 0.7, >= 0.7.1)
   zonebie
   zxcvbn-js

@@ -3,10 +3,56 @@
 require 'i18n/tasks'
 require 'yaml_normalizer'
 
+module I18n
+  module Tasks
+    class BaseTask
+      ALLOWED_UNTRANSLATED_KEYS = [
+        { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
+        { key: 'doc_auth.headings.photo', locales: %i[fr] }, # "Photo" is "Photo" in French
+        { key: /^i18n\.locale\./ }, # Show locale options translated as that language
+        { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
+        { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
+        { key: 'simple_form.required.html' }, # No text content
+        { key: 'simple_form.required.mark' }, # No text content
+        { key: 'time.am' }, # "AM" is "AM" in French and Spanish
+        { key: 'time.pm' }, # "PM" is "PM" in French and Spanish
+        { key: 'two_factor_authentication.devices.piv_cac' }, # "PIV/CAC" does not translate
+      ].freeze
+
+      def untranslated_keys
+        data[base_locale].key_values.each_with_object([]) do |key_value, result|
+          key, value = key_value
+          result << key if untranslated_key?(key, value)
+          result
+        end
+      end
+
+      def untranslated_key?(key, base_locale_value)
+        locales = self.locales - [base_locale]
+        locales.any? do |current_locale|
+          node = data[current_locale].first.children[key]
+          next unless node&.value&.is_a?(String)
+          next if node.value.empty?
+          next if allowed_untranslated_key?(current_locale, key)
+          node.value == base_locale_value
+        end
+      end
+
+      def allowed_untranslated_key?(locale, key)
+        ALLOWED_UNTRANSLATED_KEYS.any? do |entry|
+          next unless key =~ Regexp.new(entry[:key])
+          !entry.key?(:locales) || entry[:locales].include?(locale.to_sym)
+        end
+      end
+    end
+  end
+end
+
 RSpec.describe 'I18n' do
   let(:i18n) { I18n::Tasks::BaseTask.new }
   let(:missing_keys) { i18n.missing_keys }
   let(:unused_keys) { i18n.unused_keys }
+  let(:untranslated_keys) { i18n.untranslated_keys }
 
   it 'does not have missing keys' do
     expect(missing_keys).to(
@@ -20,6 +66,37 @@ RSpec.describe 'I18n' do
       be_empty,
       "#{unused_keys.leaves.count} unused i18n keys, run `i18n-tasks unused' to show them",
     )
+  end
+
+  it 'does not have untranslated keys' do
+    expect(untranslated_keys).to(
+      be_empty,
+      "untranslated i18n keys: #{untranslated_keys}",
+    )
+  end
+
+  context 'javascript strings' do
+    let(:i18n) { I18n::Tasks::BaseTask.new({ search: { paths: ['app/javascript'] } }) }
+    let(:key_names) { YAML.load_file('config/js_locale_strings.yml') }
+    let(:used_key_names) { i18n.used_tree.key_names }
+
+    it 'does not have missing keys' do
+      missing_key_names = used_key_names - key_names
+
+      expect(missing_key_names).to(
+        be_empty,
+        "js string keys used but missing from config/js_locale_strings.yml: #{missing_key_names}",
+      )
+    end
+
+    it 'does not have unused keys' do
+      unused_key_names = key_names - used_key_names
+
+      expect(unused_key_names).to(
+        be_empty,
+        "js string keys exist in config/js_locale_strings.yml but are unused: #{unused_key_names}",
+      )
+    end
   end
 
   it 'does not have keys with missing interpolation arguments' do

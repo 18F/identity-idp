@@ -1,6 +1,9 @@
-import React from 'react';
-import CallbackOnMount from './callback-on-mount';
+import React, { useState, useContext, useRef } from 'react';
 import SubmissionInterstitial from './submission-interstitial';
+import CallbackOnMount from './callback-on-mount';
+import UploadContext from '../context/upload';
+
+/** @typedef {import('../context/upload').UploadSuccessResponse} UploadSuccessResponse */
 
 /**
  * @typedef Resource
@@ -13,25 +16,42 @@ import SubmissionInterstitial from './submission-interstitial';
 /**
  * @typedef SubmissionCompleteProps
  *
- * @prop {Resource<any>} resource Resource object.
+ * @prop {Resource<UploadSuccessResponse>} resource Resource object.
  */
+
+export class RetrySubmissionError extends Error {}
 
 /**
  * @param {SubmissionCompleteProps} props Props object.
  */
 function SubmissionComplete({ resource }) {
-  resource.read();
+  const [, setRetryError] = useState(/** @type {Error=} */ (undefined));
+  const sleepTimeout = useRef(/** @type {number=} */ (undefined));
+  const { statusPollInterval } = useContext(UploadContext);
+  const response = resource.read();
 
-  function submitCaptureForm() {
-    /** @type {HTMLFormElement?} */
-    const form = document.querySelector('.js-document-capture-form');
-    form?.submit();
+  function handleResponse() {
+    if (response.isPending) {
+      if (statusPollInterval !== undefined) {
+        sleepTimeout.current = window.setTimeout(() => {
+          setRetryError(() => {
+            throw new RetrySubmissionError();
+          });
+        }, statusPollInterval);
+      }
+    } else {
+      /** @type {HTMLFormElement?} */
+      const form = document.querySelector('.js-document-capture-form');
+      form?.submit();
+    }
+
+    return () => window.clearTimeout(sleepTimeout.current);
   }
 
   return (
     <>
+      <CallbackOnMount onMount={handleResponse} />
       <SubmissionInterstitial />
-      <CallbackOnMount onMount={submitCaptureForm} />
     </>
   );
 }

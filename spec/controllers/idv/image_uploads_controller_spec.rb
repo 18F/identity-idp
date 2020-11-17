@@ -59,7 +59,7 @@ describe Idv::ImageUploadsController do
               front: ['Please fill in this field.'],
             },
             user_id: user.uuid,
-            remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
+            remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
           )
 
           expect(@analytics).not_to receive(:track_event).with(
@@ -110,7 +110,7 @@ describe Idv::ImageUploadsController do
               front: [I18n.t('doc_auth.errors.not_a_file')],
             },
             user_id: user.uuid,
-            remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
+            remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
           )
 
           expect(@analytics).not_to receive(:track_event).with(
@@ -199,7 +199,7 @@ describe Idv::ImageUploadsController do
             success: true,
             errors: {},
             user_id: user.uuid,
-            remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
+            remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
           )
 
           expect(@analytics).to receive(:track_event).with(
@@ -250,7 +250,7 @@ describe Idv::ImageUploadsController do
             success: true,
             errors: {},
             user_id: user.uuid,
-            remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
+            remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
           )
 
           expect(@analytics).to receive(:track_event).with(
@@ -293,7 +293,7 @@ describe Idv::ImageUploadsController do
             success: true,
             errors: {},
             user_id: user.uuid,
-            remaining_attempts: Figaro.env.acuant_max_attempts.to_i - 1,
+            remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
           )
 
           expect(@analytics).to receive(:track_event).with(
@@ -311,6 +311,25 @@ describe Idv::ImageUploadsController do
           action
 
           expect_funnel_update_counts(user, 1)
+        end
+      end
+
+      context 'when required pii field is missing from doc response' do
+        before { params.merge!(back: DocAuthImageFixtures.error_yaml_no_db_multipart) }
+
+        it 'returns error' do
+          action
+
+          json = JSON.parse(response.body, symbolize_names: true)
+          expect(response.status).to eq(400)
+          expect(json[:success]).to eq(false)
+          expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
+          expect(json[:errors]).to eq [
+            {
+              field: 'pii',
+              message: I18n.t('doc_auth.errors.lexis_nexis.birth_date_checks'),
+            },
+          ]
         end
       end
     end

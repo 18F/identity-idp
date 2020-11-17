@@ -33,8 +33,8 @@ RSpec.describe 'smoke test: create account' do
       end
     end
 
-    context 'on int' do
-      before { monitor.filter_if('INT') }
+    context 'not prod, not staging' do
+      before { monitor.filter_unless('PROD', 'STAGING') }
 
       it 'creates new IAL2 account with SMS option for 2FA' do
         visit_idp_from_oidc_sp_with_ial2

@@ -62,10 +62,6 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :mobile_back_image)
   end
 
-  def idv_doc_auth_success_step
-    idv_doc_auth_step_path(step: :doc_success)
-  end
-
   def idv_doc_auth_verify_step
     idv_doc_auth_step_path(step: :verify)
   end
@@ -164,14 +160,8 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     click_link t('doc_auth.buttons.change_address')
   end
 
-  def complete_doc_auth_steps_before_doc_success_step(expect_accessible: false)
-    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    click_idv_continue
-  end
-
   def complete_doc_auth_steps_before_self_image_step
-    complete_doc_auth_steps_before_doc_success_step
+    complete_doc_auth_steps_before_verify_step
     click_idv_continue
   end
 
@@ -187,9 +177,26 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def complete_all_doc_auth_steps(expect_accessible: false)
-    complete_doc_auth_steps_before_doc_success_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     click_idv_continue
+  end
+
+  def mock_doc_auth_no_name_pii(method)
+    pii_with_no_name = IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.dup
+    pii_with_no_name[:last_name] = nil
+    IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      method: method,
+      response: IdentityDocAuth::Response.new(
+        pii_from_doc: pii_with_no_name,
+        extra: {
+          result: 'Passed',
+          billed: true,
+        },
+        success: true,
+        errors: {},
+      ),
+    )
   end
 
   def mock_general_doc_auth_client_error(method)
@@ -207,23 +214,34 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       Faraday::Response,
       body: AcuantFixtures.get_results_response_failure,
     )
-    config = IdentityDocAuth::Acuant::Config.new(
-      friendly_error_message: FriendlyError::Message,
-      friendly_error_find_key: FriendlyError::FindKey,
-    )
     IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
       response: IdentityDocAuth::Acuant::Responses::GetResultsResponse.new(
         failed_http_response,
-        config,
+        IdentityDocAuth::Acuant::Config.new,
       ),
     )
   end
 
+  def mock_document_capture_result(idv_result)
+    id = SecureRandom.uuid
+    pii = { 'first_name' => 'Testy', 'last_name' => 'Testerson' }
+
+    result = ProofingDocumentCaptureSessionResult.new(id: id, pii: pii, result: idv_result)
+    allow_any_instance_of(DocumentCaptureSession).to receive(:load_proofing_result).
+      and_return(result)
+  end
+
   def attach_images(liveness_enabled: true)
-    attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
-    attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
-    attach_file 'doc_auth_selfie_image', 'app/assets/images/logo.png' if liveness_enabled
+    if Capybara.current_driver == Capybara.javascript_driver
+      attach_file 'Front of your ID', 'app/assets/images/logo.png'
+      attach_file 'Back of your ID', 'app/assets/images/logo.png'
+      raise ArgumentError, 'liveness not currently supported in JS tests' if liveness_enabled
+    else
+      attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
+      attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
+      attach_file 'doc_auth_selfie_image', 'app/assets/images/logo.png' if liveness_enabled
+    end
   end
 
   def attach_front_image_data_url

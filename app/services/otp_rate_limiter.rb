@@ -50,10 +50,10 @@ class OtpRateLimiter
   end
 
   def otp_findtime
-    Figaro.env.otp_delivery_blocklist_findtime.to_i.minutes
+    AppConfig.env.otp_delivery_blocklist_findtime.to_i.minutes
   end
 
   def otp_maxretry_times
-    Figaro.env.otp_delivery_blocklist_maxretry.to_i
+    AppConfig.env.otp_delivery_blocklist_maxretry.to_i
   end
 end

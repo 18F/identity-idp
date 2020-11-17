@@ -36,7 +36,7 @@ module FormPasswordValidator
   end
 
   def min_password_score
-    Figaro.env.min_password_score.to_i
+    AppConfig.env.min_password_score.to_i
   end
 
   def i18n_variables

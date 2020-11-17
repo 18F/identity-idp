@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'shared/_alert.html.erb' do
-  it 'renders message from param' do
+  it 'renders message from locals' do
     render 'shared/alert', { message: 'FYI' }
 
     expect(rendered).to have_content('FYI')
@@ -13,10 +13,16 @@ describe 'shared/_alert.html.erb' do
     expect(rendered).to have_content('FYI')
   end
 
-  it 'defaults to type "other"' do
+  it 'prefers message from locals' do
+    render('shared/alert', { message: 'locals' }) { 'block' }
+
+    expect(rendered).to have_content('locals')
+  end
+
+  it 'defaults to type "info"' do
     render 'shared/alert', { message: 'FYI' }
 
-    expect(rendered).to have_selector('.usa-alert.usa-alert--other')
+    expect(rendered).to have_selector('.usa-alert.usa-alert--info')
   end
 
   it 'accepts alert type param' do
@@ -54,5 +60,11 @@ describe 'shared/_alert.html.erb' do
     render 'shared/alert', { type: 'error', message: 'Attention!' }
 
     expect(rendered).to have_selector('.usa-alert[role="alert"]')
+  end
+
+  it 'raises error for unknown type' do
+    expect do
+      render 'shared/alert', { type: 'alert', message: 'Attention!' }
+    end.to raise_error('unknown alert type=alert')
   end
 end

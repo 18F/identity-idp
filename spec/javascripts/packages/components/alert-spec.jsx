@@ -1,6 +1,6 @@
 import React from 'react';
 import { Alert } from '@18f/identity-components';
-import render from '../../support/render';
+import { render } from '../../support/document-capture';
 
 describe('identity-components/alert', () => {
   it('should apply alert role', () => {

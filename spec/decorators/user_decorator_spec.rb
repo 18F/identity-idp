@@ -36,12 +36,42 @@ describe UserDecorator do
     end
   end
 
+  describe '#email_language_preference_description' do
+    let(:user) { build_stubbed(:user, email_language: email_language) }
+
+    subject(:description) { UserDecorator.new(user).email_language_preference_description }
+
+    context 'when the user has a supported email_language' do
+      let(:email_language) { 'es' }
+
+      it 'is the that language' do
+        expect(description).to eq(I18n.t('account.email_language.name.es'))
+      end
+    end
+
+    context 'when the user has a nil email_language' do
+      let(:email_language) { nil }
+
+      it 'is the default language' do
+        expect(description).to eq(I18n.t('account.email_language.name.en'))
+      end
+    end
+
+    context 'when the user has an unsupported email_language' do
+      let(:email_language) { 'zz' }
+
+      it 'is the default language' do
+        expect(description).to eq(I18n.t('account.email_language.name.en'))
+      end
+    end
+  end
+
   describe '#lockout_time_remaining' do
     it 'returns the difference in seconds between otp drift and second_factor_locked_at' do
       Timecop.freeze(Time.zone.now) do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
         user_decorator = UserDecorator.new(user)
-        allow(Figaro.env).to receive(:lockout_period_in_minutes).and_return('8')
+        allow(AppConfig.env).to receive(:lockout_period_in_minutes).and_return('8')
 
         expect(user_decorator.lockout_time_remaining).to eq 300
       end
@@ -53,7 +83,7 @@ describe UserDecorator do
       Timecop.freeze(Time.zone.now) do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
         user_decorator = UserDecorator.new(user)
-        allow(Figaro.env).to receive(:lockout_period_in_minutes).and_return('8')
+        allow(AppConfig.env).to receive(:lockout_period_in_minutes).and_return('8')
 
         expect(user_decorator.lockout_time_remaining_in_words).
           to eq '5 minutes'

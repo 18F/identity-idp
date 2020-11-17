@@ -11,9 +11,9 @@
         </p>
       </div>
       <div class='center'>
-        <%= link_to modal.continue,
-                    request.original_url,
-                    class: 'btn btn-primary col-12 mb2 p2 rounded-lg border-box' %>
+        <%= button_tag modal.continue,
+                       id: 'session-keepalive-btn',
+                       class: 'btn btn-primary col-12 mb2 p2 rounded-lg border-box' %>
         <%= link_to modal.sign_out,
                     destroy_user_session_path,
                     class: 'btn col-12 p2 rounded-lg border border-blue blue border-box' %>

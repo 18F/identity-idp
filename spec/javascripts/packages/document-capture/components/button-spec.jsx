@@ -2,7 +2,7 @@ import React from 'react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import Button from '@18f/identity-document-capture/components/button';
-import render from '../../../support/render';
+import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/button', () => {
   it('renders with default props', () => {
