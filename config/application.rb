@@ -72,16 +72,5 @@ module Upaya
       # explicitly remove it when we want to disable it
       config.middleware.delete Rack::Attack
     end
-
-    config.middleware.use(
-      Rack::TwilioWebhookAuthentication,
-      AppConfig.env.twilio_auth_token,
-      '/api/voice/otp',
-    )
-    config.middleware.use(
-      Rack::TwilioWebhookAuthentication,
-      AppConfig.env.twilio_auth_token,
-      '/api/twilio/voice',
-    )
   end
 end
