@@ -7,7 +7,7 @@ describe DataRequests::CreateUserEventsReport do
       event1 = create(:event, created_at: 1.day.ago, disavowed_at: 12.hours.ago, user: user)
       device = create(:device)
       _event2 = create(
-        :event, event_type: :webauthn_key_added, device: device, ip: '1.2.3.4', user: user,
+        :event, event_type: :webauthn_key_added, device: device, ip: '1.2.3.4', user: user
       )
 
       result = described_class.new(user).call

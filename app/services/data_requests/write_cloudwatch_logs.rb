@@ -40,7 +40,9 @@ module DataRequests
       timestamp = data.dig('time')
       event_name = data.dig('name')
       success = data.dig('properties', 'event_properties', 'success')
-      multi_factor_auth_method = data.dig('properties', 'event_properties', 'multi_factor_auth_method')
+      multi_factor_auth_method = data.dig(
+        'properties', 'event_properties', 'multi_factor_auth_method'
+      )
       service_provider = data.dig('properties', 'service_provider')
       ip_address = data.dig('properties', 'user_ip')
       user_agent = data.dig('properties', 'user_agent')

@@ -60,7 +60,7 @@ describe DataRequests::CreateMfaConfigurationsReport do
     it 'includes an array with backup codes' do
       user = create(:user)
       backup_code_configuration = create(
-        :backup_code_configuration, user: user, used_at: Time.zone.now,
+        :backup_code_configuration, user: user, used_at: Time.zone.now
       )
 
       result = described_class.new(user).call
