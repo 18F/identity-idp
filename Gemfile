@@ -73,6 +73,7 @@ gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'zxcvbn-js'
 
 group :development do
+  gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'better_errors', '>= 2.5.1'
   gem 'binding_of_caller'
   gem 'brakeman', require: false
