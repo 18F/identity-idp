@@ -1,4 +1,5 @@
 namespace :data_requests do
+  # UUIDS=123abc,456def rake data_requests:lookup_users_by_device
   desc 'Recursively lookup users using a network of shared devices'
   task lookup_users_by_device: :environment do
     ActiveRecord::Base.connection.execute('SET statement_timeout = 0')
@@ -10,8 +11,8 @@ namespace :data_requests do
     puts JSON.pretty_generate(result)
     puts "UUIDS: #{result.values.flatten.uniq.join(',')}"
   end
-  # UUIDS=123abc,456def rake data_requests:lookup_users_by_device
 
+  # UUIDS=123abc,456def REQUESTING_ISSUER=sample:app:issuer rake data_requests:create_users_report
   desc 'Create a JSON report with data for the specified users'
   task create_users_report: :environment do
     uuids = ENV.fetch('UUIDS', '').split(',')
@@ -24,8 +25,10 @@ namespace :data_requests do
     end.compact.to_json
     puts output
   end
-  # UUIDS=123abc,456def REQUESTING_ISSUER=sample:app:issuer rake data_requests:create_users_report
 
+  # export USERS_REPORT=/tmp/query-2020-11-17/user_report.json
+  # export OUTPUT_DIR=/tmp/query-2020-11-17/results/
+  # rake data_requests:process_users_report
   desc 'Take a JSON user report, download logs from cloud watch, and write user data'
   task process_users_report: :environment do
     users_report = JSON.parse(File.read(ENV['USERS_REPORT']), symbolize_names: true)
@@ -49,8 +52,5 @@ namespace :data_requests do
 
       DataRequests::WriteCloudwatchLogs.new(cloudwatch_results, user_output_dir).call
     end
-    # export USERS_REPORT=/tmp/query-2020-11-17/user_report.json
-    # export OUTPUT_DIR=/tmp/query-2020-11-17/results/
-    # rake data_requests:process_users_report
   end
 end
