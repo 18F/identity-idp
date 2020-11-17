@@ -56,9 +56,9 @@ es:
       reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
     contact_link_text: Contáctenos
     deleted_accounts_report:
-      issuers: Issuers
-      name: Name
-      subject: Deleted accounts report
+      issuers: Emisores
+      name: Nombre
+      subject: Informe de cuentas eliminadas
     doc_auth_link:
       message: Ha solicitado verificar su identidad en una computadora de escritorio.
         Inicie sesión en %{sp_link}

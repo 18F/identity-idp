@@ -57,9 +57,9 @@ fr:
         %{app} pour le réinitialiser.
     contact_link_text: communiquez avec nous
     deleted_accounts_report:
-      issuers: Issuers
-      name: Name
-      subject: Deleted accounts report
+      issuers: Émetteurs
+      name: Nom
+      subject: Rapport sur les comptes supprimés
     doc_auth_link:
       message: Vous avez demandé à vérifier votre identité sur un ordinateur de bureau.
         Veuillez vous connecter à %{sp_link}
