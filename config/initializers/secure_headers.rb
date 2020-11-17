@@ -9,8 +9,10 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   connect_src = ["'self'", '*.newrelic.com', '*.nr-data.net', '*.google-analytics.com',
                  'services.assureid.net']
   connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
-  image_upload_bucket_url = ImageUploadPresignedUrlGenerator.new.bucket_url
-  connect_src << "#{image_upload_bucket_url.chomp('/')}/*" if image_upload_bucket_url
+  if AppConfig.env.doc_auth_enable_presigned_s3_urls == 'true'
+    image_upload_bucket_url = ImageUploadPresignedUrlGenerator.new.bucket_url
+    connect_src << "#{image_upload_bucket_url.chomp('/')}/*" if image_upload_bucket_url
+  end
   default_csp_config = {
     default_src: ["'self'"],
     child_src: ["'self'", 'www.google.com'], # CSP 2.0 only; replaces frame_src
