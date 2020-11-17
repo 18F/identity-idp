@@ -204,6 +204,14 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.sps_over_quota_limit.subject'))
   end
 
+  def deleted_user_accounts_report(email:, name:, issuers:, data:)
+    @name = name
+    @issuers = issuers
+    @data = data
+    attachments['deleted_user_accounts.csv'] = data
+    mail(to: email, subject: t('user_mailer.deleted_accounts_report.subject'))
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)

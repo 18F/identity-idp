@@ -46,6 +46,7 @@ aws_logo_bucket:
 aws_kms_multi_region_enabled: 'false'
 cac_proofing_enabled: 'true'
 database_statement_timeout: '2500'
+deleted_user_accounts_report_configs: '[]'
 disallow_ial2_recovery:
 doc_auth_extend_timeout_by_minutes: '40'
 doc_auth_enable_presigned_s3_urls: 'false'
