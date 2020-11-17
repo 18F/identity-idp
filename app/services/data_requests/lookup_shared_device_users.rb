@@ -27,8 +27,8 @@ module DataRequests
       return if user_uuids_by_device.keys.include?(cookie_uuid)
 
       warn "Searching for new devices matching #{cookie_uuid}"
-      matching_device_records = Device.includes(:user).where(cookie_uuid: cookie_uuid).all
-      user_uuids_by_device[cookie_uuid] = matching_device_records.map(&:user).compact.map(&:uuid)
+      user_uuids = matching_device_records.map(&:user).compact.map(&:uuid)
+      user_uuids_by_device[cookie_uuid] = user_uuids
     end
 
     def lookup_users(users)
