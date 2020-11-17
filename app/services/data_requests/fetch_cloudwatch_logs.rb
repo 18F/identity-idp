@@ -16,6 +16,8 @@ module DataRequests
     end
 
     def call
+      raise "Only run #{self.class.name} locally" if LoginGov::Hostdata.in_datacenter?
+
       query_ids = start_queries
       wait_for_query_results(query_ids).flatten.uniq.sort_by(&:timestamp)
     end
