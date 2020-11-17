@@ -31,7 +31,7 @@ module DataRequests
     end
 
     def cloudwatch_client
-      @cloudwatch_client ||= Aws::CloudWatchLogs::Client.new
+      @cloudwatch_client ||= Aws::CloudWatchLogs::Client.new region: 'us-west-2'
     end
 
     def query_string
@@ -57,13 +57,16 @@ module DataRequests
     end
 
     def wait_for_query_results(query_ids)
-      results = []
+      results = Concurrent::Array.new
+      thread_pool = Concurrent::FixedThreadPool.new(4)
 
-      query_ids.map do |query_id|
-        Thread.new do
+      query_ids.each do |query_id|
+        thread_pool.post do
           results.push(wait_for_query_result(query_id))
         end
-      end.each(&:join)
+      end
+      thread_pool.shutdown
+      thread_pool.wait_for_termination
 
       results
     end
