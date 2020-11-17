@@ -5,7 +5,7 @@ module Reports
     REPORT_NAME = 'deleted-user-accounts-report'.freeze
 
     def call
-      configs = JSON.parse(Figaro.env.deleted_user_accounts_report_configs || '[]')
+      configs = JSON.parse(AppConfig.env.deleted_user_accounts_report_configs || '[]')
       configs.each do |report_hash|
         name = report_hash['name']
         emails = report_hash['emails']
