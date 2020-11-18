@@ -72,13 +72,11 @@ module DataRequests
     end
 
     def wait_for_query_result(query_id)
-      sleep 3
-      response = cloudwatch_client.get_query_results(query_id: query_id)
-      if response.status == 'Complete'
-        aws_results = response.results
-        return build_result_rows_from_aws_result(aws_results)
+      loop do
+        sleep 3
+        response = cloudwatch_client.get_query_results(query_id: query_id)
+        return build_result_rows_from_aws_result(response.results) if response.status == 'Complete'
       end
-      wait_for_query_result(query_id)
     end
   end
 end
