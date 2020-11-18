@@ -3,6 +3,10 @@
   <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: AppConfig.env.acuant_sdk_initialization_endpoint %>
   <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: AppConfig.env.acuant_sdk_initialization_creds %>
 <% end %>
+<% SecureHeaders.append_content_security_policy_directives(
+  request,
+  connect_src: [front_image_upload_url, back_image_upload_url, selfie_image_upload_url].compact
+) %>
 <%= tag.div id: 'document-capture-form', data: {
   liveness_required: liveness_checking_enabled?.presence,
   mock_client: (DocAuthRouter.doc_auth_vendor == 'mock').presence,
