@@ -47,9 +47,7 @@ module DataRequests
       dates.each do |date|
         thread_pool.post do
           warn "Downloading logs for #{date}"
-          query_id = start_query(date)
-          result = wait_for_query_result(query_id)
-          results.push(result)
+          results.push(wait_for_query_result(start_query(date)))
         end
       end
 
