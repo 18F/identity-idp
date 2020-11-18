@@ -1,5 +1,3 @@
-require 'aws-sdk-cloudwatchlogs'
-
 module DataRequests
   # This class depends on the AWS cloudwatch SDK gem. That gem is only available
   # in development. The IDP role is not able to query cloudwatch logs. As a
@@ -30,6 +28,7 @@ module DataRequests
     end
 
     def cloudwatch_client
+      require 'aws-sdk-cloudwatchlogs'
       @cloudwatch_client ||= Aws::CloudWatchLogs::Client.new region: 'us-west-2'
     end
 
