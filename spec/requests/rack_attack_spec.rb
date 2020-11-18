@@ -229,6 +229,33 @@ describe 'throttling requests' do
     end
   end
 
+  describe 'otps per ip' do
+    let(:otps_per_ip_limit) { AppConfig.env.otps_per_ip_limit.to_i }
+
+    context 'when the number of requests is under the limit' do
+      it 'does not throttle the request' do
+        (otps_per_ip_limit - 1).times do
+          get '/otp/send', headers: { REMOTE_ADDR: '1.2.3.4' }
+        end
+
+        expect(response.status).to eq(302)
+      end
+    end
+
+    context 'when the number of requests is over the limit' do
+      it 'throttles the request' do
+        (otps_per_ip_limit + 1).times do
+          get '/otp/send', headers: { REMOTE_ADDR: '1.2.3.4' }
+        end
+
+        expect(response.status).to eq(429)
+        expect(response.body).
+          to include('Please wait a few minutes before you try again.')
+        expect(response.header['Content-type']).to include('text/html')
+      end
+    end
+  end
+
   describe '#remote_ip' do
     let(:env) { double 'env' }
 
