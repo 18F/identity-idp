@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'aws-sdk-cloudwatchlogs'
 
 describe DataRequests::FetchCloudwatchLogs do
   it 'starts queries for each date and returns processed results' do
