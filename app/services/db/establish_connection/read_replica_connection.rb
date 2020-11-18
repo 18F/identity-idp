@@ -15,7 +15,7 @@ module Db
 
       def read_replica_connection_params
         rails_env = Rails.env
-        env = Figaro.env
+        env = AppConfig.env
         {
           adapter: 'postgresql',
           database: rails_env.production? ? env.database_name : "upaya_#{rails_env}",
@@ -27,7 +27,7 @@ module Db
 
       def primary_connection_params
         rails_env = Rails.env
-        env = Figaro.env
+        env = AppConfig.env
         {
           adapter: 'postgresql',
           database: rails_env.production? ? env.database_name : "upaya_#{rails_env}",

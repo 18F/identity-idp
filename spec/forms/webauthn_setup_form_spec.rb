@@ -10,7 +10,7 @@ describe WebauthnSetupForm do
   describe '#submit' do
     context 'when the input is valid' do
       it 'returns FormResponse with success: true' do
-        allow(Figaro.env).to receive(:domain_name).and_return('localhost:3000')
+        allow(AppConfig.env).to receive(:domain_name).and_return('localhost:3000')
         result = instance_double(FormResponse)
         params = {
           attestation_object: attestation_object,
@@ -47,7 +47,7 @@ describe WebauthnSetupForm do
       end
 
       it 'returns false with an error when the attestation response raises an error' do
-        allow(Figaro.env).to receive(:domain_name).and_return('localhost:3000')
+        allow(AppConfig.env).to receive(:domain_name).and_return('localhost:3000')
         allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
 
         result = instance_double(FormResponse)

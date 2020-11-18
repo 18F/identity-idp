@@ -34,7 +34,7 @@ class PasswordCaptureController < ApplicationController
   def handle_invalid_password
     session[:password_attempts] += 1
 
-    if session[:password_attempts] < Figaro.env.password_max_attempts.to_i
+    if session[:password_attempts] < AppConfig.env.password_max_attempts.to_i
       flash[:error] = t('errors.confirm_password_incorrect')
       redirect_to capture_password_url
     else
@@ -45,6 +45,6 @@ class PasswordCaptureController < ApplicationController
   def handle_max_password_attempts_reached
     analytics.track_event(Analytics::PASSWORD_MAX_ATTEMPTS)
     sign_out
-    redirect_to root_url, alert: t('errors.max_password_attempts_reached')
+    redirect_to root_url, flash: { error: t('errors.max_password_attempts_reached') }
   end
 end

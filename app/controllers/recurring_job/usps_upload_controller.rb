@@ -9,7 +9,7 @@ module RecurringJob
     private
 
     def config_auth_token
-      Figaro.env.usps_upload_token
+      AppConfig.env.usps_upload_token
     end
   end
 end

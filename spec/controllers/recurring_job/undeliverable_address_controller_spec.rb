@@ -8,11 +8,11 @@ describe RecurringJob::UndeliverableAddressController do
       allow(Net::SFTP).to receive(:start)
     end
 
-    it_behaves_like 'a recurring job controller', Figaro.env.usps_download_token
+    it_behaves_like 'a recurring job controller', AppConfig.env.usps_download_token
 
     context 'with a valid token' do
       before do
-        request.headers['X-API-AUTH-TOKEN'] = Figaro.env.usps_download_token
+        request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.usps_download_token
       end
 
       it 'returns triggers undeliverable address notifications' do

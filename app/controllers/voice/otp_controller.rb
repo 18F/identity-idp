@@ -53,7 +53,7 @@ module Voice
     end
 
     def cipher
-      Gibberish::AES.new(Figaro.env.attribute_encryption_key)
+      Gibberish::AES.new(AppConfig.env.attribute_encryption_key)
     end
   end
 end

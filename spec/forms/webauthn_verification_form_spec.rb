@@ -19,7 +19,7 @@ describe WebauthnVerificationForm do
 
     context 'when the input is valid' do
       it 'returns FormResponse with success: true' do
-        allow(Figaro.env).to receive(:domain_name).and_return('localhost:3000')
+        allow(AppConfig.env).to receive(:domain_name).and_return('localhost:3000')
 
         result = subject.submit(
           protocol,

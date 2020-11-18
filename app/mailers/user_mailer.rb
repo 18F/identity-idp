@@ -2,8 +2,8 @@ class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
   before_action :attach_images
-  default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from_display_name),
-          reply_to: email_with_name(Figaro.env.email_from, Figaro.env.email_from_display_name)
+  default from: email_with_name(AppConfig.env.email_from, AppConfig.env.email_from_display_name),
+          reply_to: email_with_name(AppConfig.env.email_from, AppConfig.env.email_from_display_name)
 
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
     with_user_locale(user) do
@@ -204,10 +204,18 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.sps_over_quota_limit.subject'))
   end
 
+  def deleted_user_accounts_report(email:, name:, issuers:, data:)
+    @name = name
+    @issuers = issuers
+    @data = data
+    attachments['deleted_user_accounts.csv'] = data
+    mail(to: email, subject: t('user_mailer.deleted_accounts_report.subject'))
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)
-    banlist = JSON.parse(Figaro.env.nonessential_email_banlist || '[]')
+    banlist = JSON.parse(AppConfig.env.nonessential_email_banlist || '[]')
     return true if banlist.empty?
     modified_email = email.gsub(/\+[^@]+@/, '@')
     !banlist.include?(modified_email)

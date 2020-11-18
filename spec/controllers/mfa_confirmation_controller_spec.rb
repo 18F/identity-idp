@@ -68,14 +68,14 @@ describe MfaConfirmationController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        max_allowed_attempts = Figaro.env.password_max_attempts.to_i
+        max_allowed_attempts = AppConfig.env.password_max_attempts.to_i
         max_allowed_attempts.times do
           post :create, params: { user: { password: 'wrong' } }
         end
 
         expect(response).to redirect_to(root_path)
         expect(controller.current_user).to be_nil
-        expect(flash[:alert]).to eq t('errors.max_password_attempts_reached')
+        expect(flash[:error]).to eq t('errors.max_password_attempts_reached')
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PASSWORD_MAX_ATTEMPTS)
       end
@@ -87,7 +87,7 @@ describe MfaConfirmationController do
         stub_sign_in user
         session[:password_attempts] = 0
 
-        max_allowed_attempts = Figaro.env.password_max_attempts.to_i
+        max_allowed_attempts = AppConfig.env.password_max_attempts.to_i
         (max_allowed_attempts - 1).times do
           post :create, params: { user: { password: 'wrong' } }
         end

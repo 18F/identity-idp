@@ -35,7 +35,7 @@ describe PersonalKeyGenerator do
     end
 
     it 'allows length to be configured via ENV var' do
-      allow(Figaro.env).to receive(:recovery_code_length).and_return('14')
+      allow(AppConfig.env).to receive(:recovery_code_length).and_return('14')
 
       fourteen_letters_and_spaces_start_end_with_letter = /\A(\w+\-){13}\w+\z/
       expect(generator.create).to match(fourteen_letters_and_spaces_start_end_with_letter)

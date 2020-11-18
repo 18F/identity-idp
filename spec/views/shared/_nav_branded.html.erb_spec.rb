@@ -33,11 +33,11 @@ describe 'shared/_nav_branded.html.erb' do
       )
     end
     let(:bucket) { 'bucket_id' }
-    let(:region) { Figaro.env.aws_region }
+    let(:region) { AppConfig.env.aws_region }
     let(:img_url) { "https://s3.#{region}.amazonaws.com/#{bucket}/key-to-logo" }
 
     before do
-      allow(Figaro.env).to receive(:aws_logo_bucket).and_return(bucket)
+      allow(AppConfig.env).to receive(:aws_logo_bucket).and_return(bucket)
       allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
       decorated_session = ServiceProviderSessionDecorator.new(
         sp: sp_with_s3_logo,

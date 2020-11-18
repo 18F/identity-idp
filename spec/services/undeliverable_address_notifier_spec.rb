@@ -70,7 +70,7 @@ RSpec.describe UndeliverableAddressNotifier do
   end
 
   def download_folder
-    File.join(Figaro.env.usps_download_sftp_directory, 'batch.psv')
+    File.join(AppConfig.env.usps_download_sftp_directory, 'batch.psv')
   end
 
   def sftp_options
@@ -83,6 +83,6 @@ RSpec.describe UndeliverableAddressNotifier do
   end
 
   def env
-    Figaro.env
+    AppConfig.env
   end
 end

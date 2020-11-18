@@ -331,6 +331,7 @@ describe('document-capture/components/document-capture', () => {
       <UploadContextProvider
         endpoint="about:blank#upload"
         statusEndpoint="about:blank#status"
+        statusPollInterval={0}
         backgroundUploadURLs={{
           front: 'about:blank#front',
           back: 'about:blank#back',

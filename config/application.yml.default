@@ -1,4 +1,4 @@
-# This file is used by the Figaro gem: https://github.com/laserlemon/figaro
+# This file is used by the AppConfig class
 
 # The defaults set in this file are used as the basis for configuration in all
 # production and development environments. On deployed EC2 servers, we run
@@ -13,11 +13,11 @@
 # if you're sharing your code publicly.
 
 # Make sure any new entries you add are enclosed in single quotes.
-# Figaro requires all values to be explicit strings.
+# AppConfig requires all values to be explicit strings.
 
 # How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
 # Note that the key name must be capitalized because the gem looks for
-# ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and Figaro does not automatically make lowercase keys
+# ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and AppConfig does not automatically make lowercase keys
 # available to ENV as uppercase keys.
 RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
 
@@ -46,6 +46,7 @@ aws_logo_bucket:
 aws_kms_multi_region_enabled: 'false'
 cac_proofing_enabled: 'true'
 database_statement_timeout: '2500'
+deleted_user_accounts_report_configs: '[]'
 disallow_ial2_recovery:
 doc_auth_extend_timeout_by_minutes: '40'
 doc_auth_enable_presigned_s3_urls: 'false'
@@ -107,7 +108,7 @@ pinpoint_sms_shortcode:
 pinpoint_voice_credential_role_arn:
 pinpoint_voice_longcode_pool:
 pinpoint_voice_region:
-poll_rate_for_verify_in_seconds: '10'
+poll_rate_for_verify_in_seconds: '3'
 proofer_mock_fallback: 'true'
 push_notifications_enabled:
 reauthn_window: '120'
@@ -438,6 +439,7 @@ test:
   piv_cac_service_url: https://localhost:8443/
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   piv_cac_verify_token_url: https://localhost:8443/
+  poll_rate_for_verify_in_seconds: '1'
   rack_mini_profiler:
   recurring_jobs_disabled_names: '["disabled job"]'
   redis_throttle_url: redis://localhost:6379/1

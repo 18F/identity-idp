@@ -140,7 +140,7 @@ Rails.application.routes.draw do
       get '/timeout' => 'users/sessions#timeout'
     end
 
-    if Figaro.env.enable_test_routes == 'true'
+    if AppConfig.env.enable_test_routes == 'true'
       namespace :test do
         # Assertion granting test start + return.
         get '/saml/login' => 'saml_test#index'
@@ -155,6 +155,9 @@ Rails.application.routes.draw do
 
         get '/telephony' => 'telephony#index'
         delete '/telephony' => 'telephony#destroy'
+
+        get '/s3/:key' => 'fake_s3#show', as: :fake_s3
+        put '/s3/:key' => 'fake_s3#update'
       end
     end
 

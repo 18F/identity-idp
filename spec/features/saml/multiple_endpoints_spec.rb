@@ -9,9 +9,10 @@ describe 'multiple saml endpoints' do
 
   let(:endpoint_saml_settings) do
     settings = saml_settings
-    settings.idp_sso_target_url = "http://#{Figaro.env.domain_name}/api/saml/auth#{endpoint_suffix}"
+    settings.idp_sso_target_url =
+      "http://#{AppConfig.env.domain_name}/api/saml/auth#{endpoint_suffix}"
     settings.idp_slo_target_url =
-      "http://#{Figaro.env.domain_name}/api/saml/logout#{endpoint_suffix}"
+      "http://#{AppConfig.env.domain_name}/api/saml/logout#{endpoint_suffix}"
     settings.issuer = 'http://localhost:3000'
     settings.idp_cert_fingerprint = Fingerprinter.fingerprint_cert(endpoint_cert)
     settings

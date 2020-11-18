@@ -137,7 +137,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
       expect(await patch.foo_image_url).to.equal('about:blank');
       const [url, params] = window.fetch.getCall(0).args;
       expect(url).to.equal('about:blank');
-      expect(params.method).to.equal('POST');
+      expect(params.method).to.equal('PUT');
       expect(params.body).to.be.instanceOf(ArrayBuffer);
       const bodyAsString = String.fromCharCode.apply(null, new Uint8Array(params.body));
       expect(bodyAsString).to.not.equal('bar');

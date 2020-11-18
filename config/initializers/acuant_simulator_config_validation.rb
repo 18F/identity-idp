@@ -9,8 +9,8 @@
 #
 FORCE_ACUANT_CONFIG_UPGRADE = true
 
-if Figaro.env.acuant_simulator == 'true' &&
-   Figaro.env.doc_auth_vendor != 'mock'
+if AppConfig.env.acuant_simulator == 'true' &&
+   AppConfig.env.doc_auth_vendor != 'mock'
 
   error_message = <<~HEREDOC
     The `acuant_simulator` config has been retired in favor of `doc_auth_vendor`.

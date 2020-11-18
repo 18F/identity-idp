@@ -59,10 +59,10 @@ module Users
       analytics.track_event(Analytics::SESSION_TIMED_OUT)
       request_id = sp_session[:request_id]
       sign_out
-      flash[:notice] = t(
+      flash[:info] = t(
         'notices.session_timedout',
         app: APP_NAME,
-        minutes: Figaro.env.session_timeout_in_minutes,
+        minutes: AppConfig.env.session_timeout_in_minutes,
       )
       redirect_to root_url(request_id: request_id)
     end
@@ -77,7 +77,7 @@ module Users
       controller_info = 'users/sessions#create'
       analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN, controller: controller_info)
       sign_out
-      flash[:alert] = t('errors.invalid_authenticity_token')
+      flash[:error] = t('errors.invalid_authenticity_token')
       redirect_back fallback_location: new_user_session_url
     end
 

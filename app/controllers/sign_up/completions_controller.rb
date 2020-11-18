@@ -70,7 +70,7 @@ module SignUp
 
     def sign_user_out_and_instruct_to_go_back_to_mobile_app
       sign_out
-      flash[:notice] = t(
+      flash[:info] = t(
         'instructions.go_back_to_mobile_app',
         friendly_name: view_model.decorated_session.sp_name,
       )

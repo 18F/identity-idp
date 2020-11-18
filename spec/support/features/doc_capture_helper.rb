@@ -39,7 +39,7 @@ module DocCaptureHelper
   def complete_doc_capture_steps_before_capture_complete_step(user = user_with_2fa)
     if FeatureManagement.document_capture_step_enabled?
       complete_doc_capture_steps_before_document_capture_step
-      attach_images(liveness_enabled: Figaro.env.liveness_checking_enabled == 'true')
+      attach_images(liveness_enabled: AppConfig.env.liveness_checking_enabled == 'true')
     else
       complete_doc_capture_steps_before_mobile_back_image_step(user)
       attach_image

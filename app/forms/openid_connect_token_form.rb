@@ -60,7 +60,7 @@ class OpenidConnectTokenForm
   def find_identity_with_code
     return if code.blank?
 
-    session_expiration = Figaro.env.session_timeout_in_minutes.to_i.minutes.ago
+    session_expiration = AppConfig.env.session_timeout_in_minutes.to_i.minutes.ago
     @identity = Identity.where(session_uuid: code).
                 where('updated_at >= ?', session_expiration).
                 order(updated_at: :desc).first

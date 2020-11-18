@@ -5,7 +5,7 @@ describe DeleteUserEmailForm do
     let(:push_notifications_enabled) { 'true' }
 
     before do
-      allow(Figaro.env).to receive(:push_notifications_enabled).
+      allow(AppConfig.env).to receive(:push_notifications_enabled).
         and_return(push_notifications_enabled)
     end
 

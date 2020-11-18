@@ -1,6 +1,6 @@
 module MonitorIdvSteps
   def verify_identity_with_doc_auth
-    allow(Figaro.env).to receive(:doc_auth_vendor).and_return('mock') if monitor.local?
+    allow(AppConfig.env).to receive(:doc_auth_vendor).and_return('mock') if monitor.local?
 
     expect(page).to have_content 'You will also need'
     click_on 'Create an account'
@@ -42,10 +42,10 @@ module MonitorIdvSteps
     expect(page).to have_current_path('/verify/doc_auth/verify')
 
     click_on 'Continue'
-    expect(page).to have_current_path('/verify/phone')
+    expect(page).to have_current_path('/verify/phone', wait: 30)
 
     click_on 'Continue'
-    expect(page).to have_current_path('/verify/review')
+    expect(page).to have_current_path('/verify/review', wait: 30)
 
     fill_in 'Password', with: monitor.config.login_gov_sign_in_password
     click_on 'Continue'

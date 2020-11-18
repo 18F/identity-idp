@@ -123,7 +123,9 @@ feature 'saml api' do
 
       it 'populates issuer with the idp name' do
         expect(xmldoc.issuer_nodeset.length).to eq(1)
-        expect(xmldoc.issuer_nodeset[0].content).to eq("https://#{Figaro.env.domain_name}/api/saml")
+        expect(xmldoc.issuer_nodeset[0].content).to eq(
+          "https://#{AppConfig.env.domain_name}/api/saml",
+        )
       end
 
       it 'signs the assertion' do
@@ -191,8 +193,8 @@ feature 'saml api' do
 
     context 'use_dashboard_service_providers true' do
       before do
-        allow(Figaro.env).to receive(:use_dashboard_service_providers).and_return('true')
-        allow(Figaro.env).to receive(:dashboard_url).and_return(fake_dashboard_url)
+        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return('true')
+        allow(AppConfig.env).to receive(:dashboard_url).and_return(fake_dashboard_url)
         stub_request(:get, fake_dashboard_url).to_return(
           status: 200,
           body: dashboard_service_providers.to_json,

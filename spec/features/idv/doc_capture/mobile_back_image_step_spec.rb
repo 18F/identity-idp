@@ -57,7 +57,7 @@ feature 'doc capture mobile back image step' do
 
   context 'with liveness enabled' do
     before do
-      allow(Figaro.env).to receive(:liveness_checking_enabled).and_return('true')
+      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
     end
 
     context 'the SP requested IAL2 strict' do

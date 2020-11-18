@@ -11,7 +11,7 @@ class UspsConfirmationCode < ApplicationRecord
   end
 
   def expired?
-    code_sent_at < Figaro.env.usps_confirmation_max_days.to_i.days.ago
+    code_sent_at < AppConfig.env.usps_confirmation_max_days.to_i.days.ago
   end
 
   def safe_update_bounced_at_and_send_notification

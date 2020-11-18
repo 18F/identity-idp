@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Health::HealthController do
   before do
-    allow(Figaro.env).to receive(:job_run_healthchecks_enabled).and_return('true')
+    allow(AppConfig.env).to receive(:job_run_healthchecks_enabled).and_return('true')
   end
 
   describe '#index' do
@@ -69,7 +69,7 @@ RSpec.describe Health::HealthController do
 
     context 'job run healthchecks are disabled' do
       it 'does not include job run healthchecks' do
-        allow(Figaro.env).to receive(:job_run_healthchecks_enabled).and_return('false')
+        allow(AppConfig.env).to receive(:job_run_healthchecks_enabled).and_return('false')
 
         allow(DatabaseHealthChecker).to receive(:simple_query).and_return('foo')
         allow(AccountResetHealthChecker).to receive(:check).

@@ -21,6 +21,12 @@ import './acuant-capture.scss';
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
+ * @typedef NewRelicAgent
+ *
+ * @prop {(name: string, attributes: object) => void} addPageAction Log page action to New Relic.
+ */
+
+/**
  * @typedef AcuantPassiveLiveness
  *
  * @prop {(callback:(nextImageData:string)=>void)=>void} startSelfieCapture Start liveness capture.
@@ -33,7 +39,17 @@ import './acuant-capture.scss';
  */
 
 /**
+ * @typedef NewRelicGlobals
+ *
+ * @prop {NewRelicAgent=} newrelic New Relic agent.
+ */
+
+/**
  * @typedef {typeof window & AcuantGlobals} AcuantGlobal
+ */
+
+/**
+ * @typedef {typeof window & NewRelicGlobals} NewRelicGlobal
  */
 
 /**
@@ -179,13 +195,20 @@ function AcuantCapture(
         <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={(nextCapture) => {
+              let result;
               if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
+                result = 'glare';
               } else if (nextCapture.sharpness < ACCEPTABLE_SHARPNESS_SCORE) {
                 setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
+                result = 'blurry';
               } else {
                 onChangeAndResetError(nextCapture.image.data);
+                result = 'success';
               }
+
+              const agent = /** @type {NewRelicGlobal} */ (window).newrelic;
+              agent?.addPageAction('documentCapture.acuantWebSDKResult', { result });
 
               setIsCapturingEnvironment(false);
             }}

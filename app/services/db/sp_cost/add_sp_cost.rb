@@ -21,14 +21,13 @@ module Db
       ].freeze
 
       def self.call(issuer, ial, token)
-        return if issuer.nil? || token.blank?
+        return if token.blank?
         unless TOKEN_WHITELIST.include?(token.to_sym)
           NewRelic::Agent.notice_error(SpCostTypeError.new(token.to_s))
           return
         end
-        sp = ServiceProvider.find_by(issuer: issuer)
-        agency_id = sp ? sp.agency_id : 0
-        ::SpCost.create(issuer: issuer, ial: ial, agency_id: agency_id.to_i, cost_type: token)
+        agency_id = (issuer.present? && ServiceProvider.find_by(issuer: issuer)&.agency_id) || 0
+        ::SpCost.create(issuer: issuer.to_s, ial: ial, agency_id: agency_id, cost_type: token)
       end
     end
   end

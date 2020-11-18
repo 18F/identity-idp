@@ -24,7 +24,7 @@ class EmailAddress < ApplicationRecord
   end
 
   def confirmation_period_expired?
-    expiration_time = confirmation_sent_at + Figaro.env.add_email_link_valid_for_hours.to_i.hours
+    expiration_time = confirmation_sent_at + AppConfig.env.add_email_link_valid_for_hours.to_i.hours
     Time.zone.now > expiration_time
   end
 

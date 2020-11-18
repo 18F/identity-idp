@@ -1,5 +1,9 @@
 <% title t('titles.visitors.index') %>
 
+<h1 class='h3 my0'>
+  <%= t('headings.passwords.confirm') %>
+</h1>
+
 <%= validated_form_for(current_user,
                        as: :user,
                        url: capture_password_url,
@@ -8,7 +12,7 @@
   <%= f.input :password, label: t('account.index.password'), required: true,
               input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
   <div>
-    <%= f.button :submit, t('links.next'), class: 'sm-col-6 col-12 btn-wide mb3' %>
+    <%= f.button :submit, t('forms.buttons.submit.default'), class: 'sm-col-6 col-12 btn-wide mb3' %>
   </div>
 <% end %>
 

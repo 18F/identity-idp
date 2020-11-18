@@ -223,10 +223,25 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     )
   end
 
+  def mock_document_capture_result(idv_result)
+    id = SecureRandom.uuid
+    pii = { 'first_name' => 'Testy', 'last_name' => 'Testerson' }
+
+    result = ProofingDocumentCaptureSessionResult.new(id: id, pii: pii, result: idv_result)
+    allow_any_instance_of(DocumentCaptureSession).to receive(:load_proofing_result).
+      and_return(result)
+  end
+
   def attach_images(liveness_enabled: true)
-    attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
-    attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
-    attach_file 'doc_auth_selfie_image', 'app/assets/images/logo.png' if liveness_enabled
+    if Capybara.current_driver == Capybara.javascript_driver
+      attach_file 'Front of your ID', 'app/assets/images/logo.png'
+      attach_file 'Back of your ID', 'app/assets/images/logo.png'
+      raise ArgumentError, 'liveness not currently supported in JS tests' if liveness_enabled
+    else
+      attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
+      attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
+      attach_file 'doc_auth_selfie_image', 'app/assets/images/logo.png' if liveness_enabled
+    end
   end
 
   def attach_front_image_data_url

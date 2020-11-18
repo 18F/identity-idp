@@ -32,7 +32,7 @@ class SessionDecorator
   end
 
   def mfa_expiration_interval
-    Figaro.env.remember_device_expiration_hours_aal_1.to_i.hours
+    AppConfig.env.remember_device_expiration_hours_aal_1.to_i.hours
   end
 
   def failure_to_proof_url; end

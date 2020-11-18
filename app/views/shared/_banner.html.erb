@@ -1,5 +1,5 @@
 <div aria-label="banner" role="banner">
-  <%= render 'shared/no_pii_banner' if FeatureManagement.fake_banner_mode? %>
+  <%= render 'shared/no_pii_banner' if FeatureManagement.show_no_pii_banner? %>
   <section class="usa-banner" aria-label="Official government website">
     <div class="usa-accordion">
       <header class="usa-banner__header">
@@ -11,9 +11,9 @@
             class: 'mr1'
           ) %>
           <div class="grid-col-fill tablet:grid-col-auto">
-            <p class="usa-banner__header-text"><%= FeatureManagement.fake_banner_mode? ?
-              t('shared.banner.fake_site') : t('shared.banner.official_site')
-            %></p>
+            <p class="usa-banner__header-text">
+              <%= FeatureManagement.show_demo_banner? ? t('shared.banner.fake_site') : t('shared.banner.official_site') %>
+            </p>
             <p class="usa-banner__header-action" aria-hidden="true"><%= t('shared.banner.how') %></p>
           </div>
           <button class="usa-accordion__button usa-banner__button" aria-expanded="false" aria-controls="gov-banner">

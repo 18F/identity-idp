@@ -19,7 +19,7 @@ describe LambdaCallback::DocumentProofResultController do
 
     context 'with valid API token' do
       before do
-        request.headers['X-API-AUTH-TOKEN'] = Figaro.env.document_proof_result_lambda_token
+        request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.document_proof_result_lambda_token
 
         document_capture_session.store_proofing_pii_from_doc(pii)
 

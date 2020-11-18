@@ -1,4 +1,4 @@
-p.lead == t('.intro', app: link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray'))
+p.lead == t('.intro', app: link_to(APP_NAME, AppConfig.env.mailer_domain_name, class: 'gray'))
 
 table.button.expanded.large.radius
   tbody
