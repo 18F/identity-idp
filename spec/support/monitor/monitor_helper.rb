@@ -56,7 +56,7 @@ class MonitorHelper
     return if local? # always run all tests on local
 
     return unless env_names.include?(config.monitor_env)
-    context.skip "skipping test not meant for #{env_name}"
+    context.skip "skipping test not meant for #{env_names.join('|')}"
   end
 
   # Capybara.reset_session! deletes the cookies for the current site. As such
