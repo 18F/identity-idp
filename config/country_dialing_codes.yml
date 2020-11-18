@@ -697,8 +697,8 @@ NG:
 NI:
   country_code: '505'
   name: Nicaragua
-  supports_sms: true
-  supports_voice: true
+  supports_sms: false
+  supports_voice: false
 NL:
   country_code: '31'
   name: Netherlands
