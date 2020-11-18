@@ -110,19 +110,19 @@ module Rack
     # Throttle SMS and voice transactions by IP address
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:otps/ip:#{req.remote_ip}"
-    if Figaro.env.otps_per_ip_track_only_mode == 'true'
+    if AppConfig.env.otps_per_ip_track_only_mode == 'true'
       track(
         'otps/ip',
-        limit: Figaro.env.otps_per_ip_limit.to_i,
-        period: Figaro.env.otps_per_ip_period.to_i,
+        limit: AppConfig.env.otps_per_ip_limit.to_i,
+        period: AppConfig.env.otps_per_ip_period.to_i,
       ) do |req|
         req.remote_ip if req.path.match?(%r{/otp/send})
       end
     else
       throttle(
         'otps/ip',
-        limit: Figaro.env.otps_per_ip_limit.to_i,
-        period: Figaro.env.otps_per_ip_period.to_i,
+        limit: AppConfig.env.otps_per_ip_limit.to_i,
+        period: AppConfig.env.otps_per_ip_period.to_i,
       ) do |req|
         req.remote_ip if req.path.match?(%r{/otp/send})
       end

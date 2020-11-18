@@ -230,7 +230,7 @@ describe 'throttling requests' do
   end
 
   describe 'otps per ip' do
-    let(:otps_per_ip_limit) { Figaro.env.otps_per_ip_limit.to_i }
+    let(:otps_per_ip_limit) { AppConfig.env.otps_per_ip_limit.to_i }
 
     context 'when the number of requests is under the limit' do
       it 'does not throttle the request' do
