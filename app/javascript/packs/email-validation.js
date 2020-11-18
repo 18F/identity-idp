@@ -5,16 +5,6 @@ function emailValidation() {
   const email = document.querySelector('input[type="email"]');
   let blurTimer;
 
-  function hideElem(elem) {
-    elem.classList.add('hide');
-    elem.hidden = true;
-  }
-
-  function showElem(elem) {
-    elem.classList.remove('hide');
-    elem.hidden = false;
-  }
-
   // remove focus from the email input after error is displayed
   function blurEmailInput(input) {
     blurTimer = setTimeout(function () {
@@ -24,15 +14,15 @@ function emailValidation() {
 
   function resetEmailInvalid(input) {
     input.classList.remove('usa-input--error');
-    hideElem(alert);
-    hideElem(alertInline);
+    alert.classList.add('display-none');
+    alertInline.classList.add('display-none');
     clearTimeout(blurTimer);
   }
 
   function displayEmailInvalid(input) {
     input.classList.add('usa-input--error');
-    showElem(alert);
-    showElem(alertInline);
+    alert.classList.remove('display-none');
+    alertInline.classList.remove('display-none');
     blurEmailInput(input);
   }
 

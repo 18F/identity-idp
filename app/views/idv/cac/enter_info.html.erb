@@ -4,7 +4,11 @@
 <h1 class="h3 my0"><%= t('cac_proofing.headings.enter_info') %></h1>
 
 <% if flow_session[:error_message] %>
-  <div class="alert alert-error"><%= flow_session[:error_message] %></div>
+  <%= render 'shared/alert', {
+    type: 'error',
+    message: flow_session[:error_message],
+    class: 'margin-bottom-4',
+  } %>
 <% end %>
 
 <%= validated_form_for(:cac, url: url_for, method: 'PUT',

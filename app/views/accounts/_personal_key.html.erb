@@ -1,8 +1,12 @@
-<div class='mb4 alert alert-warning'>
+<%= render 'shared/alert', {
+  type: 'warning',
+  class: 'margin-bottom-8',
+  text_tag: 'div',
+} do %>
   <p>
     <%= t('idv.messages.personal_key') %>
   </p>
-  <div class='mb1 py1 px2 inline-block fs-20p regular monospace bg-white rounded'>
+  <div class="margin-bottom-1 padding-y-1 padding-x-2 inline-block fs-20p text-normal monospace bg-white rounded">
     <%= view_model.personal_key %>
   </div>
-</div>
+<% end %>

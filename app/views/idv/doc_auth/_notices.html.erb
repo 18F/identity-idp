@@ -1,5 +1,6 @@
 <% if flow_session[:notice].present? %>
-  <div class='alert alert-notice'>
-    <%= flow_session[:notice].html_safe %>
-  </div>
+  <%= render 'shared/alert', {
+    class: 'margin-bottom-4',
+    message: flow_session[:notice].html_safe,
+  } %>
 <% end %>

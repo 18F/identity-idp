@@ -8,8 +8,12 @@
         <%= t('forms.personal_key.instructions') %>
       </p>
 
-      <div id="personal-key-alert" class="alert alert-alert display-none" role="alert">
-        <%= t('users.personal_key.confirmation_error') %>
+      <div id="personal-key-alert" class="display-none">
+        <%= render 'shared/alert', {
+          type: 'error',
+          class: 'margin-bottom-4',
+          message: t('users.personal_key.confirmation_error'),
+        } %>
       </div>
       <form id="confirm-key" method="post" action="<%= update_path %>" name="key-confirm">
         <%= render 'shared/personal_key_input', code: code %>
