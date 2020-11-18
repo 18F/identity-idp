@@ -229,6 +229,10 @@ describe 'throttling requests' do
     end
   end
 
+  describe 'otps per ip' do
+    # TODO
+  end
+
   describe '#remote_ip' do
     let(:env) { double 'env' }
 
