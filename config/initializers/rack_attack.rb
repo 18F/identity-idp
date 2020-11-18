@@ -116,7 +116,7 @@ module Rack
         limit: AppConfig.env.otps_per_ip_limit.to_i,
         period: AppConfig.env.otps_per_ip_period.to_i,
       ) do |req|
-        req.remote_ip if req.path =~ %r{/otp/send/}
+        req.remote_ip if req.path.matrch?(%r{/otp/send})
       end
     else
       throttle(
@@ -124,7 +124,7 @@ module Rack
         limit: AppConfig.env.otps_per_ip_limit.to_i,
         period: AppConfig.env.otps_per_ip_period.to_i,
       ) do |req|
-        req.remote_ip if req.path =~ %r{/otp/send/}
+        req.remote_ip if req.path.match?(%r{/otp/send})
       end
     end
 
