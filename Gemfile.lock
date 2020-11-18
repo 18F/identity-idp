@@ -147,6 +147,9 @@ GEM
     awrence (1.1.1)
     aws-eventstream (1.1.0)
     aws-partitions (1.388.0)
+    aws-sdk-cloudwatchlogs (1.38.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-core (3.109.1)
       aws-eventstream (~> 1, >= 1.0.2)
       aws-partitions (~> 1, >= 1.239.0)
@@ -724,6 +727,7 @@ DEPENDENCIES
   aamva!
   ahoy_matey (~> 2.2, >= 2.2.1)
   american_date
+  aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)
   aws-sdk-lambda
   aws-sdk-ses (~> 1.6)
