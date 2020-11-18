@@ -18,8 +18,7 @@ module DataRequests
     def call
       raise "Only run #{self.class.name} locally" if LoginGov::Hostdata.in_datacenter?
 
-      query_ids = start_queries
-      wait_for_query_results(query_ids).flatten.uniq.sort_by(&:timestamp)
+      start_queries.flatten.uniq.sort_by(&:timestamp)
     end
 
     private
@@ -42,43 +41,40 @@ module DataRequests
     end
 
     def start_queries
-      dates.map do |date|
-        warn "Downloading logs for #{date}"
-        query_start = (date - 12.hours).to_i
-        query_end = (date + 36.hours).to_i
-
-        cloudwatch_client.start_query(
-          log_group_name: 'prod_/srv/idp/shared/log/events.log',
-          start_time: query_start,
-          end_time: query_end,
-          query_string: query_string,
-        ).query_id
-      end
-    end
-
-    def wait_for_query_results(query_ids)
       results = Concurrent::Array.new
-      thread_pool = Concurrent::FixedThreadPool.new(4)
+      thread_pool = Concurrent::FixedThreadPool.new(5)
 
-      query_ids.each do |query_id|
+      dates.each do |date|
         thread_pool.post do
-          results.push(wait_for_query_result(query_id))
+          warn "Downloading logs for #{date}"
+          results.push(wait_for_query_result(start_query(date)))
         end
       end
+
       thread_pool.shutdown
       thread_pool.wait_for_termination
 
       results
     end
 
+    def start_query(date)
+      query_start = (date - 12.hours).to_i
+      query_end = (date + 36.hours).to_i
+
+      cloudwatch_client.start_query(
+        log_group_name: 'prod_/srv/idp/shared/log/events.log',
+        start_time: query_start,
+        end_time: query_end,
+        query_string: query_string,
+      ).query_id
+    end
+
     def wait_for_query_result(query_id)
-      sleep 3
-      response = cloudwatch_client.get_query_results(query_id: query_id)
-      if response.status == 'Complete'
-        aws_results = response.results
-        return build_result_rows_from_aws_result(aws_results)
+      loop do
+        sleep 3
+        response = cloudwatch_client.get_query_results(query_id: query_id)
+        return build_result_rows_from_aws_result(response.results) if response.status == 'Complete'
       end
-      wait_for_query_result(query_id)
     end
   end
 end
