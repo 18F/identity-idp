@@ -182,8 +182,8 @@ CG:
 CH:
   country_code: '41'
   name: Switzerland
-  supports_sms: true
-  supports_voice: true
+  supports_sms: false
+  supports_voice: false
 CI:
   country_code: '225'
   name: Ivory Coast
@@ -317,8 +317,8 @@ GA:
 GB:
   country_code: '44'
   name: United Kingdom
-  supports_sms: true
-  supports_voice: true
+  supports_sms: false
+  supports_voice: false
 GD:
   country_code: '1473'
   name: Grenada
@@ -457,8 +457,8 @@ IT:
 JM:
   country_code: '1'
   name: Jamaica
-  supports_sms: true
-  supports_voice: true
+  supports_sms: false
+  supports_voice: false
 JO:
   country_code: '962'
   name: Jordan

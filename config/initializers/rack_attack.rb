@@ -102,6 +102,32 @@ module Rack
       end
     end
 
+    ### Prevent SMS and voice spam ###
+
+    # A user can use the `/otp/send` path to spam phone numbers with SMSs and
+    # voice calls.
+
+    # Throttle SMS and voice transactions by IP address
+    #
+    # Key: "rack::attack:#{Time.now.to_i/:period}:otps/ip:#{req.remote_ip}"
+    if Figaro.env.otps_per_ip_track_only_mode == 'true'
+      track(
+        'otps/ip',
+        limit: Figaro.env.otps_per_ip_limit.to_i,
+        period: Figaro.env.otps_per_ip_period.to_i,
+      ) do |req|
+        req.remote_ip if req.path.match?(%r{/otp/send})
+      end
+    else
+      throttle(
+        'otps/ip',
+        limit: Figaro.env.otps_per_ip_limit.to_i,
+        period: Figaro.env.otps_per_ip_period.to_i,
+      ) do |req|
+        req.remote_ip if req.path.match?(%r{/otp/send})
+      end
+    end
+
     # Lockout IP addresses that are attempting to sign in with the same username
     # over and over.
     # After maxretry requests in findtime minutes, block all requests from that IP for bantime.
