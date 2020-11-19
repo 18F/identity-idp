@@ -10,11 +10,15 @@ es:
       new: Reenviar instrucciones de confirmación de su cuenta
       show: Elija una contraseña
     edit_info:
+      email_language: Editar la preferencia de idioma del correo electrónico
       password: Edite su contraseña
       phone: Edite su número de teléfono
     enter_2fa_code: Ingese su código de seguridad de sólo un uso
     forget_all_browsers: Olvídate de todos los navegadores
     no_auth_option: No se encontró mensaje de inicio de sesión
+    openid_connect:
+      authorization: Autorización de OpenID Connect
+      logout: Cierre de sesión de OpenID Connect
     passwords:
       change: Cambie la contraseña de su cuenta
       confirm: Confirme la contraseña de su cuenta
@@ -51,6 +55,7 @@ es:
     revoke_consent: Revocar consentimiento
     sign_up:
       completion_html: Tiene %{accent} con %{app}
+      confirmation: Continuar para iniciar sesión
       loa1: creó una cuenta
       new_sp: Acabas de iniciar sesión por primera vez
       refresh_consent: Ha pasado un año desde que nos dio su consentimiento para compartir

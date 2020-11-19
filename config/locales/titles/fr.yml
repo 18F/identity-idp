@@ -10,11 +10,15 @@ fr:
       new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe
     edit_info:
+      email_language: Modifier la préférence de langue des e-mails
       password: Modifier votre mot de passe
       phone: Modifier votre numéro de téléphone
     enter_2fa_code: Entrez le code de sécurité à utilisation unique
     forget_all_browsers: Oubliez tous les navigateurs
     no_auth_option: Aucun message de connexion trouvé
+    openid_connect:
+      authorization: Autorisation OpenID Connect
+      logout: Déconnexion OpenID Connect
     passwords:
       change: Changez le mot de passe de votre compte
       confirm: Confirmez le mot de passe de votre compte
@@ -50,6 +54,7 @@ fr:
     revoke_consent: Révoquer le consentement
     sign_up:
       completion_html: Vous avez %{accent} avec %{app}
+      confirmation: Continuer à vous connecter
       loa1: créé un compte
       new_sp: Vous vous connectez pour la première fois
       refresh_consent: Cela fait un an que vous nous avez donné votre consentement
