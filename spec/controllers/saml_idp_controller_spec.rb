@@ -564,7 +564,7 @@ describe SamlIdpController do
       it 'includes an Issuer element inherited from the base URL' do
         expect(issuer.name).to eq('Issuer')
         expect(issuer.namespace.href).to eq(Saml::XML::Namespaces::ASSERTION)
-        expect(issuer.text).to eq("https://#{Figaro.env.domain_name}/api/saml")
+        expect(issuer.text).to eq("https://#{AppConfig.env.domain_name}/api/saml")
       end
 
       it 'includes a Status element with a StatusCode child element' do

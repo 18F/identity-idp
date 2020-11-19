@@ -109,7 +109,7 @@ module Users
 
     def handle_successful_password_reset
       create_reset_event_and_send_notification
-      flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
+      flash[:info] = t('devise.passwords.updated_not_active') if is_flashing_format?
       redirect_to new_user_session_url
     end
 

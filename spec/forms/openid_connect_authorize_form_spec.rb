@@ -194,7 +194,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when scope is unauthorized and we block unauthorized scopes' do
       let(:scope) { 'email profile' }
       it 'has errors' do
-        allow(Figaro.env).to receive(:unauthorized_scope_enabled).and_return('true')
+        allow(AppConfig.env).to receive(:unauthorized_scope_enabled).and_return('true')
         expect(valid?).to eq(false)
         expect(form.errors[:scope]).
           to include(t('openid_connect.authorization.errors.unauthorized_scope'))
@@ -204,7 +204,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when scope is good and we block unauthorized scopes' do
       let(:scope) { 'email' }
       it 'does not have errors' do
-        allow(Figaro.env).to receive(:unauthorized_scope_enabled).and_return('false')
+        allow(AppConfig.env).to receive(:unauthorized_scope_enabled).and_return('false')
         expect(valid?).to eq(true)
       end
     end
@@ -212,7 +212,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when scope is unauthorized and we do not block unauthorized scopes' do
       let(:scope) { 'email profile' }
       it 'does not have errors' do
-        allow(Figaro.env).to receive(:unauthorized_scope_enabled).and_return('false')
+        allow(AppConfig.env).to receive(:unauthorized_scope_enabled).and_return('false')
         expect(valid?).to eq(true)
       end
     end
@@ -223,7 +223,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:scope) { 'email profile:verified_at' }
 
       it 'has errors' do
-        allow(Figaro.env).to receive(:unauthorized_scope_enabled).and_return('true')
+        allow(AppConfig.env).to receive(:unauthorized_scope_enabled).and_return('true')
         expect(valid?).to eq(false)
         expect(form.errors[:scope]).
           to include(t('openid_connect.authorization.errors.unauthorized_scope'))

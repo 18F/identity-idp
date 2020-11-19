@@ -51,7 +51,7 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       text = t(
         'instructions.mfa.sms.number_message_html',
         number: "<strong>#{data[:phone_number]}</strong>",
-        expiration: Figaro.env.otp_valid_for,
+        expiration: AppConfig.env.otp_valid_for,
       )
       expect(presenter.phone_number_message).to eq text
     end

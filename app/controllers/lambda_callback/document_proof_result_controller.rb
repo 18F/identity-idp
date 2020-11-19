@@ -28,7 +28,7 @@ module LambdaCallback
     end
 
     def config_auth_token
-      Figaro.env.document_proof_result_lambda_token
+      AppConfig.env.document_proof_result_lambda_token
     end
   end
 end

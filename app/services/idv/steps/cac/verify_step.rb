@@ -11,6 +11,7 @@ module Idv
         def enqueue_job
           return if flow_session[cac_verify_document_capture_session_uuid_key]
           pii_from_doc = flow_session[:pii_from_doc]
+          pii_from_doc[:uuid_prefix] = ServiceProvider.from_issuer(sp_session[:issuer]).app_id
 
           document_capture_session = create_document_capture_session(
             cac_verify_document_capture_session_uuid_key,

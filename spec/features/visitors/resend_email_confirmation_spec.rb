@@ -23,7 +23,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
     user.save!
     email = user.email
 
-    max_attempts = Figaro.env.reg_unconfirmed_email_max_attempts.to_i
+    max_attempts = AppConfig.env.reg_unconfirmed_email_max_attempts.to_i
     max_attempts.times do |i|
       submit_resend_email_confirmation(email)
       expect(unread_emails_for(user.email).size).to eq(i + 1)
@@ -33,7 +33,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
     submit_resend_email_confirmation(email)
     expect(unread_emails_for(user.email).size).to eq(max_attempts)
 
-    window_in_minutes = Figaro.env.reg_unconfirmed_email_window_in_minutes.to_i + 1
+    window_in_minutes = AppConfig.env.reg_unconfirmed_email_window_in_minutes.to_i + 1
     Timecop.travel(Time.zone.now + window_in_minutes.minutes) do
       submit_resend_email_confirmation(email)
       expect(unread_emails_for(user.email).size).to eq(max_attempts + 1)

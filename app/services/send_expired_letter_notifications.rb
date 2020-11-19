@@ -2,7 +2,7 @@ class SendExpiredLetterNotifications
   def call
     notifications_sent = 0
     UspsConfirmationCode.where(
-      'created_at < ?', Time.zone.now - Figaro.env.usps_confirmation_max_days.to_i.days
+      'created_at < ?', Time.zone.now - AppConfig.env.usps_confirmation_max_days.to_i.days
     ).where(bounced_at: nil, letter_expired_sent_at: nil).
       order(created_at: :asc).each do |usps_confirmation_code|
       mark_sent_and_send_email(usps_confirmation_code)

@@ -12,7 +12,7 @@ class ServiceProviderController < ApplicationController
   private
 
   def authorize
-    if authorization_token == Figaro.env.dashboard_api_token
+    if authorization_token == AppConfig.env.dashboard_api_token
       yield
     else
       head :unauthorized

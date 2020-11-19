@@ -11,6 +11,7 @@ describe Reports::TotalSpCostReport do
   end
 
   it 'totals the cost per sp' do
+    ::SpCost.create(issuer: '', ial: 1, agency_id: 0, cost_type: 'foo')
     ::SpCost.create(issuer: issuer1, ial: 1, agency_id: 2, cost_type: 'foo')
     ::SpCost.create(issuer: issuer1, ial: 1, agency_id: 2, cost_type: 'foo')
     ::SpCost.create(issuer: issuer2, ial: 2, agency_id: 3, cost_type: 'bar')
@@ -20,7 +21,7 @@ describe Reports::TotalSpCostReport do
                                            },
                                             {
                                               'cost_type' => 'foo',
-                                              'count' => 2,
+                                              'count' => 3,
                                             }])
   end
 end

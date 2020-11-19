@@ -4,6 +4,7 @@ import defaultUpload from '../services/upload';
 const UploadContext = createContext({
   upload: defaultUpload,
   getStatus: /** @type {() => Promise<UploadSuccessResponse>} */ (() => Promise.reject()),
+  statusPollInterval: /** @type {number=} */ (undefined),
   isMockClient: false,
   backgroundUploadURLs: /** @type {Record<string,string>} */ ({}),
   backgroundUploadEncryptKey: /** @type {CryptoKey=} */ (undefined),
@@ -60,9 +61,10 @@ const UploadContext = createContext({
  * @prop {CryptoKey} backgroundUploadEncryptKey Background upload encryption key.
  * @prop {string} endpoint Endpoint to which payload should be sent.
  * @prop {string=} statusEndpoint Endpoint from which to request async upload status.
+ * @prop {number=} statusPollInterval Interval at which to poll for status, in milliseconds.
  * @prop {'POST'|'PUT'} method HTTP method to send payload.
  * @prop {string} csrf CSRF token to send as parameter to upload implementation.
- * @prop {Record<string,any>} formData Extra form data to merge into the payload before uploading
+ * @prop {Record<string,any>=} formData Extra form data to merge into the payload before uploading
  * @prop {ReactNode} children Child elements.
  */
 
@@ -76,6 +78,7 @@ function UploadContextProvider({
   backgroundUploadEncryptKey,
   endpoint,
   statusEndpoint,
+  statusPollInterval,
   method,
   csrf,
   formData,
@@ -86,18 +89,26 @@ function UploadContextProvider({
 
   const getStatus = () =>
     statusEndpoint
-      ? upload(formData, { endpoint: statusEndpoint, method, csrf })
+      ? upload({ ...formData }, { endpoint: statusEndpoint, method, csrf })
       : Promise.reject();
 
   const value = useMemo(
     () => ({
       upload: uploadWithCSRF,
       getStatus,
+      statusPollInterval,
       backgroundUploadURLs,
       backgroundUploadEncryptKey,
       isMockClient,
     }),
-    [upload, getStatus, backgroundUploadURLs, backgroundUploadEncryptKey, isMockClient],
+    [
+      upload,
+      getStatus,
+      statusPollInterval,
+      backgroundUploadURLs,
+      backgroundUploadEncryptKey,
+      isMockClient,
+    ],
   );
 
   return <UploadContext.Provider value={value}>{children}</UploadContext.Provider>;

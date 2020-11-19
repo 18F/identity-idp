@@ -129,7 +129,7 @@ module Users
     end
 
     def cap_piv_cac_count
-      return unless Figaro.env.max_piv_cac_per_account.to_i <= current_cac_count
+      return unless AppConfig.env.max_piv_cac_per_account.to_i <= current_cac_count
       redirect_to account_two_factor_authentication_path
     end
 

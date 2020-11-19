@@ -5,7 +5,7 @@ Rails.application.configure do
   config.action_controller.asset_host = proc do |_source, request|
     # we want precompiled assets to have domain-agnostic URLs
     # and request is nil during asset precompilation
-    Figaro.env.domain_name if request
+    AppConfig.env.domain_name if request
   end
   config.cache_classes = false
   config.eager_load = false
@@ -19,10 +19,10 @@ Rails.application.configure do
   config.action_view.raise_on_missing_translations = true
 
   config.action_mailer.default_url_options = {
-    host: Figaro.env.domain_name,
+    host: AppConfig.env.domain_name,
     protocol: 'http',
   }
-  config.action_mailer.asset_host = Figaro.env.mailer_domain_name
+  config.action_mailer.asset_host = AppConfig.env.mailer_domain_name
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
 
   config.lograge.enabled = true

@@ -25,7 +25,7 @@ RSpec.describe LambdaJobs::Runner do
   describe '#run' do
     before do
       allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(in_datacenter)
-      allow(Figaro.env).to receive(:aws_lambda_proofing_enabled).
+      allow(AppConfig.env).to receive(:aws_lambda_proofing_enabled).
         and_return(aws_lambda_proofing_enabled)
     end
 

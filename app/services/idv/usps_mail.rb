@@ -1,7 +1,7 @@
 module Idv
   class UspsMail
-    MAX_MAIL_EVENTS = Figaro.env.max_mail_events.to_i
-    MAIL_EVENTS_WINDOW_DAYS = Figaro.env.max_mail_events_window_in_days.to_i
+    MAX_MAIL_EVENTS = AppConfig.env.max_mail_events.to_i
+    MAIL_EVENTS_WINDOW_DAYS = AppConfig.env.max_mail_events_window_in_days.to_i
 
     def initialize(current_user)
       @current_user = current_user

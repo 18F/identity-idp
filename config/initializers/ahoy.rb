@@ -2,7 +2,7 @@ require 'utf8_cleaner'
 
 Ahoy.api = false
 # Period of inactivity before a new visit is created
-Ahoy.visit_duration = Figaro.env.session_timeout_in_minutes.to_i.minutes
+Ahoy.visit_duration = AppConfig.env.session_timeout_in_minutes.to_i.minutes
 Ahoy.server_side_visits = false
 Ahoy.geocode = false
 Ahoy.user_agent_parser = :device_detector

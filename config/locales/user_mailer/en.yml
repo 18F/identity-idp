@@ -52,6 +52,10 @@ en:
       link_text: Go to %{app}
       reset_password: If you can't remember your password, go to %{app} to reset it.
     contact_link_text: contact us
+    deleted_accounts_report:
+      issuers: Issuers
+      name: Name
+      subject: Deleted accounts report
     doc_auth_link:
       message: You've requested to verify your identity on a desktop computer.  Please
         sign in to %{sp_link}

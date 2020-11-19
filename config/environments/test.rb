@@ -13,8 +13,8 @@ Rails.application.configure do
   config.action_view.raise_on_missing_translations = true
 
   config.action_mailer.delivery_method = :test
-  config.action_mailer.default_url_options = { host: Figaro.env.domain_name }
-  config.action_mailer.asset_host = Figaro.env.mailer_domain_name
+  config.action_mailer.default_url_options = { host: AppConfig.env.domain_name }
+  config.action_mailer.asset_host = AppConfig.env.mailer_domain_name
 
   config.assets.debug = false
 

@@ -66,7 +66,7 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
 
   function startCapture() {
     navigator.mediaDevices
-      .getUserMedia({ video: true })
+      .getUserMedia({ video: { width: 1920, height: 1080 } })
       .then(
         ifStillMounted((/** @type {MediaStream} */ stream) => {
           if (!videoRef.current) {

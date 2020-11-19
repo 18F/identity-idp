@@ -43,12 +43,6 @@ module Idv
         idv_session['resolution_successful'] = 'phone'
       end
 
-      def perform_resolution(pii_from_doc)
-        Idv::Agent.new(pii_from_doc).proof_resolution(
-          should_proof_state_id: should_use_aamva?(pii_from_doc),
-        )
-      end
-
       def idv_result_to_form_response(idv_result)
         FormResponse.new(
           success: idv_success(idv_result),
@@ -87,7 +81,7 @@ module Idv
 
       def aamva_disallowed_for_service_provider?
         return false if sp_session.nil?
-        banlist = JSON.parse(Figaro.env.aamva_sp_banlist_issuers || '[]')
+        banlist = JSON.parse(AppConfig.env.aamva_sp_banlist_issuers || '[]')
         banlist.include?(sp_session[:issuer])
       end
     end

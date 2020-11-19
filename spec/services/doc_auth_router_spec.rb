@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe DocAuthRouter do
   describe '.client' do
     before do
-      allow(Figaro.env).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-      allow(Figaro.env).to receive(:acuant_simulator).and_return(acuant_simulator)
+      allow(AppConfig.env).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
+      allow(AppConfig.env).to receive(:acuant_simulator).and_return(acuant_simulator)
     end
 
     context 'legacy mock configuration' do
@@ -30,8 +30,9 @@ RSpec.describe DocAuthRouter do
       let(:doc_auth_vendor) { 'lexisnexis' }
       let(:acuant_simulator) { '' }
 
-      it 'is the lexisnexis client' do
-        expect(DocAuthRouter.client).to be_a(IdentityDocAuth::LexisNexis::LexisNexisClient)
+      it 'is a translation-proxied lexisnexis client' do
+        expect(DocAuthRouter.client).to be_a(DocAuthRouter::LexisNexisTranslatorProxy)
+        expect(DocAuthRouter.client.client).to be_a(IdentityDocAuth::LexisNexis::LexisNexisClient)
       end
     end
 
@@ -126,6 +127,76 @@ RSpec.describe DocAuthRouter do
       response = proxy.get_results(instance_id: 'abcdef')
 
       expect(response.errors[:selfie]).to eq(I18n.t('errors.doc_auth.selfie'))
+    end
+  end
+
+  describe DocAuthRouter::LexisNexisTranslatorProxy do
+    subject(:proxy) do
+      DocAuthRouter::LexisNexisTranslatorProxy.new(IdentityDocAuth::Mock::DocAuthMockClient.new)
+    end
+
+    it 'translates generic network errors' do
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_images,
+        response: IdentityDocAuth::Response.new(
+          success: false,
+          errors: {
+            network: true,
+          },
+        ),
+      )
+
+      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+
+      expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.lexis_nexis.network_error'))
+    end
+
+    it 'translates individual error keys errors' do
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_images,
+        response: IdentityDocAuth::Response.new(
+          success: false,
+          errors: {
+            id: [IdentityDocAuth::LexisNexis::Errors::EXPIRATION_CHECKS],
+            front: [IdentityDocAuth::LexisNexis::Errors::VISIBLE_PHOTO_CHECK],
+            back: [IdentityDocAuth::LexisNexis::Errors::REF_CONTROL_NUMBER_CHECK],
+            selfie: [IdentityDocAuth::LexisNexis::Errors::SELFIE_FAILURE],
+            general: [IdentityDocAuth::LexisNexis::Errors::GENERAL_ERROR_LIVENESS],
+            not_translated: true,
+          },
+        ),
+      )
+
+      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+
+      expect(response.errors).to eq(
+        id: [I18n.t('doc_auth.errors.lexis_nexis.expiration_checks')],
+        front: [I18n.t('doc_auth.errors.lexis_nexis.visible_photo_check')],
+        back: [I18n.t('doc_auth.errors.lexis_nexis.ref_control_number_check')],
+        selfie: [I18n.t('doc_auth.errors.lexis_nexis.selfie_failure')],
+        general: [I18n.t('doc_auth.errors.lexis_nexis.general_error_liveness')],
+        not_translated: true,
+      )
+    end
+
+    it 'logs a warning for errors it does not recognize and returns a generic error' do
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_images,
+        response: IdentityDocAuth::Response.new(
+          success: false,
+          errors: {
+            id: ['some_obscure_error'],
+          },
+        ),
+      )
+
+      expect(Rails.logger).to receive(:warn).with('unknown LexisNexis error=some_obscure_error')
+
+      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+
+      expect(response.errors).to eq(
+        id: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')],
+      )
     end
   end
 end

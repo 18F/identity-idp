@@ -20,10 +20,10 @@ describe 'SMS receiving' do
 
     context 'with required credentials' do
       it 'returns authorized status' do
-        allow(Figaro.env).to(
+        allow(AppConfig.env).to(
           receive(:twilio_http_basic_auth_username).and_return(username),
         )
-        allow(Figaro.env).to(
+        allow(AppConfig.env).to(
           receive(:twilio_http_basic_auth_password).and_return(password),
         )
         allow_any_instance_of(Twilio::Security::RequestValidator).to(
@@ -39,10 +39,10 @@ describe 'SMS receiving' do
 
   describe 'receiving messages' do
     before do
-      allow(Figaro.env).to(
+      allow(AppConfig.env).to(
         receive(:twilio_http_basic_auth_username).and_return(username),
       )
-      allow(Figaro.env).to(
+      allow(AppConfig.env).to(
         receive(:twilio_http_basic_auth_password).and_return(password),
       )
     end

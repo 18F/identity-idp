@@ -153,3 +153,11 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   timeout: 300,
   callback: -> { Reports::IaaBillingReport.new.call },
 )
+
+# Send Agency User Counts Report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'Deleted user accounts report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::DeletedUserAccountsReport.new.call },
+)

@@ -4,7 +4,7 @@ describe Idv::Proofer do
   let(:proofer_mock_fallback) { 'false' }
 
   before do
-    allow(Figaro.env).to receive(:proofer_mock_fallback).
+    allow(AppConfig.env).to receive(:proofer_mock_fallback).
       and_return(proofer_mock_fallback)
   end
 

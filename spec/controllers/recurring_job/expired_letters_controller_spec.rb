@@ -2,11 +2,11 @@ require 'rails_helper'
 
 describe RecurringJob::ExpiredLettersController do
   describe '#create' do
-    it_behaves_like 'a recurring job controller', Figaro.env.expired_letters_auth_token
+    it_behaves_like 'a recurring job controller', AppConfig.env.expired_letters_auth_token
 
     context 'with a good auth token' do
       before do
-        request.headers['X-API-AUTH-TOKEN'] = Figaro.env.expired_letters_auth_token
+        request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.expired_letters_auth_token
       end
 
       it 'logs the number of notifications sent in the analytics' do

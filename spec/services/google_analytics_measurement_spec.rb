@@ -9,7 +9,7 @@ describe GoogleAnalyticsMeasurement do
     let(:expected_req_body) do
       {
         v: '1',
-        tid: Figaro.env.google_analytics_key,
+        tid: AppConfig.env.google_analytics_key,
         t: 'event',
         ec: category,
         ea: event_action,

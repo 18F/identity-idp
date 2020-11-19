@@ -1,5 +1,13 @@
+<%#
+locals:
+* type: One of: "info", "success", "warning", "error", "other". Defaults to "info".
+* text_tag: Optional override HTML tag for text content. Defaults to `p`.
+* class: Additional class names to add to alert wrapper.
+* message: Text to display in alert. Text can also be provided through block.
+%>
 <%
-  type = local_assigns.fetch(:type, 'other')
+  type = local_assigns.fetch(:type, 'info')
+  raise "unknown alert type=#{type}" unless %w[info success warning error other].include?(type)
   role = type === 'error' ? 'alert' : 'status'
   text_tag = local_assigns.fetch(:text_tag, 'p')
 
@@ -8,7 +16,7 @@
     "usa-alert--#{type}",
   ]
   classes << local_assigns[:class] if local_assigns[:class]
-  message = yield.presence || local_assigns.fetch(:message)
+  message = local_assigns.fetch(:message, yield.presence)
 %>
 
 <%= tag.div class: classes, role: role do %>

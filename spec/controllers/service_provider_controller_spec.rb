@@ -26,7 +26,7 @@ describe ServiceProviderController do
       before do
         correct_token = '123ABC'
         headers(correct_token)
-        allow(Figaro.env).to receive(:use_dashboard_service_providers).and_return('true')
+        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return('true')
         allow_any_instance_of(ServiceProviderUpdater).to receive(:dashboard_service_providers).
           and_return(dashboard_service_providers)
       end

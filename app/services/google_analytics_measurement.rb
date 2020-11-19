@@ -1,6 +1,6 @@
 class GoogleAnalyticsMeasurement
   GA_URL = 'https://www.google-analytics.com/collect'.freeze
-  TIMEOUT = Figaro.env.google_analytics_timeout.to_i
+  TIMEOUT = AppConfig.env.google_analytics_timeout.to_i
 
   attr_reader :category, :event_action, :method, :client_id
 
@@ -31,7 +31,7 @@ class GoogleAnalyticsMeasurement
   def request_body
     {
       v: '1',
-      tid: Figaro.env.google_analytics_key,
+      tid: AppConfig.env.google_analytics_key,
       t: :event,
       ec: category,
       ea: event_action,

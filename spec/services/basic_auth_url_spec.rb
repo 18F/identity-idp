@@ -21,7 +21,7 @@ RSpec.describe BasicAuthUrl do
     end
 
     context 'with basic auth username and pass set in the config' do
-      it 'uses the values in from application.yml/Figaro' do
+      it 'uses the values in from application.yml' do
         url = 'https://foo.example.com/bar'
         external_url = BasicAuthUrl.build(url)
 

@@ -3,7 +3,7 @@
     <h2 class="grid-col-6 m0">
       <%= t('headings.account.federal_employee_id') %>
     </h2>
-    <% if current_user.piv_cac_configurations.count < Figaro.env.max_piv_cac_per_account.to_i %>
+    <% if current_user.piv_cac_configurations.count < AppConfig.env.max_piv_cac_per_account.to_i %>
       <div class="right-align grid-col-6">
         <%= link_to(
           prefix_with_plus(t('forms.buttons.enable')),

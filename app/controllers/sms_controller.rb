@@ -42,7 +42,7 @@ class SmsController < ApplicationController
   # this method with a before action instead. (The former is a shortcut for the
   # following, which is called internally by Rails.)
   def authenticate
-    env = Figaro.env
+    env = AppConfig.env
 
     head :unauthorized unless auth_configured?(env)
 

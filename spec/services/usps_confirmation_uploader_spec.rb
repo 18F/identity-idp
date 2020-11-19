@@ -23,7 +23,7 @@ RSpec.describe UspsConfirmationUploader do
   end
 
   before do
-    allow(Figaro.env).to receive(:usps_upload_enabled).and_return('true')
+    allow(AppConfig.env).to receive(:usps_upload_enabled).and_return('true')
   end
 
   describe '#generate_export' do
@@ -63,7 +63,7 @@ RSpec.describe UspsConfirmationUploader do
     end
 
     it 'does not upload when USPS upload is disabled' do
-      allow(Figaro.env).to receive(:usps_upload_enabled).and_return('false')
+      allow(AppConfig.env).to receive(:usps_upload_enabled).and_return('false')
 
       expect(Net::SFTP).to_not receive(:start)
 
@@ -109,7 +109,7 @@ RSpec.describe UspsConfirmationUploader do
   end
 
   def upload_folder
-    File.join(Figaro.env.usps_upload_sftp_directory, 'batch.psv')
+    File.join(AppConfig.env.usps_upload_sftp_directory, 'batch.psv')
   end
 
   def write_permission
@@ -117,6 +117,6 @@ RSpec.describe UspsConfirmationUploader do
   end
 
   def env
-    Figaro.env
+    AppConfig.env
   end
 end
