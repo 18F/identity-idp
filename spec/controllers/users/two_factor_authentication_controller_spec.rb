@@ -83,30 +83,69 @@ describe Users::TwoFactorAuthenticationController do
     end
 
     context 'when user is TOTP enabled' do
-      it 'renders the :confirm_totp view' do
+      before do
         user = build(:user)
         stub_sign_in_before_2fa(user)
         allow_any_instance_of(
           TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(true)
+      end
 
+      it 'renders the :confirm_totp view' do
         get :show
 
         expect(response).to redirect_to login_two_factor_authenticator_path
       end
+
+      it 'passes reauthn parameter on redirect' do
+        get :show, params: { reauthn: 'true' }
+
+        expect(response).to redirect_to login_two_factor_authenticator_path(reauthn: 'true')
+      end
+    end
+
+    context 'when user has backup codes' do
+      before do
+        user = build(:user)
+        stub_sign_in_before_2fa(user)
+
+        allow_any_instance_of(
+          TwoFactorAuthentication::BackupCodePolicy,
+        ).to receive(:configured?).and_return(true)
+      end
+
+      it 'renders the :backup_code view' do
+        get :show
+
+        expect(response).to redirect_to login_two_factor_backup_code_url
+      end
+
+      it 'passes reauthn parameter on redirect' do
+        get :show, params: { reauthn: 'true' }
+
+        expect(response).to redirect_to login_two_factor_backup_code_url(reauthn: 'true')
+      end
     end
 
     context 'when user is webauthn enabled' do
-      it 'renders the :webauthn view' do
+      before do
         stub_sign_in_before_2fa(build(:user, :with_webauthn))
 
         allow_any_instance_of(
           TwoFactorAuthentication::WebauthnPolicy,
         ).to receive(:enabled?).and_return(true)
+      end
 
+      it 'renders the :webauthn view' do
         get :show
 
         expect(response).to redirect_to login_two_factor_webauthn_path
+      end
+
+      it 'passes reauthn parameter on redirect' do
+        get :show, params: { reauthn: 'true' }
+
+        expect(response).to redirect_to login_two_factor_webauthn_path(reauthn: 'true')
       end
     end
 

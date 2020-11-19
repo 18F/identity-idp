@@ -40,7 +40,7 @@ module Users
 
     def backup_code_redirect
       return unless TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured?
-      redirect_to login_two_factor_backup_code_url
+      redirect_to login_two_factor_backup_code_url(reauthn_params)
     end
 
     def redirect_on_nothing_enabled
@@ -223,11 +223,19 @@ module Users
 
     def redirect_url
       if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
-        login_two_factor_piv_cac_url
+        login_two_factor_piv_cac_url(reauthn_params)
       elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
-        login_two_factor_webauthn_url
+        login_two_factor_webauthn_url(reauthn_params)
       elsif TwoFactorAuthentication::AuthAppPolicy.new(current_user).enabled?
-        login_two_factor_authenticator_url
+        login_two_factor_authenticator_url(reauthn_params)
+      end
+    end
+
+    def reauthn_params
+      if reauthn?
+        { reauthn: reauthn? }
+      else
+        {}
       end
     end
   end

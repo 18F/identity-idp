@@ -66,7 +66,6 @@ module RememberDeviceConcern
     mark_user_session_authenticated(:device_remembered)
     handle_valid_remember_device_analytics
     bypass_sign_in current_user
-    redirect_to after_otp_verification_confirmation_url
     reset_otp_session_data
   end
 
