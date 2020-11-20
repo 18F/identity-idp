@@ -16,10 +16,6 @@ class ImageUploadPresignedUrlGenerator
     end
   end
 
-  def bucket_url
-    s3_resource&.bucket(bucket(prefix: bucket_prefix))&.url
-  end
-
   def bucket_prefix
     'login-gov-idp-doc-capture'.freeze
   end
