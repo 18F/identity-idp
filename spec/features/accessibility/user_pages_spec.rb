@@ -9,6 +9,7 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(current_path).to eq(sign_up_verify_email_path)
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   describe 'user confirmation page' do
@@ -19,6 +20,7 @@ feature 'Accessibility on pages that require authentication', :js do
       expect(current_path).to eq(sign_up_enter_password_path)
       expect(page).to be_accessible.according_to :section508, :"best-practice"
       expect(page).to label_required_fields
+      expect(page).to be_uniquely_titled
     end
 
     scenario 'invalid confirmation token' do
@@ -27,6 +29,7 @@ feature 'Accessibility on pages that require authentication', :js do
       expect(current_path).to eq(sign_up_email_resend_path)
       expect(page).to be_accessible.according_to :section508, :"best-practice"
       expect(page).to label_required_fields
+      expect(page).to be_uniquely_titled
     end
   end
 
@@ -37,6 +40,7 @@ feature 'Accessibility on pages that require authentication', :js do
       expect(current_path).to eq(two_factor_options_path)
       expect(page).to be_accessible.according_to :section508, :"best-practice"
       expect(page).to label_required_fields
+      expect(page).to be_uniquely_titled
     end
 
     scenario 'phone setup page' do
@@ -47,6 +51,7 @@ feature 'Accessibility on pages that require authentication', :js do
       expect(current_path).to eq(phone_setup_path)
       expect(page).to be_accessible.according_to :section508, :"best-practice"
       expect(page).to label_required_fields
+      expect(page).to be_uniquely_titled
     end
 
     scenario 'two factor auth page' do
@@ -56,6 +61,7 @@ feature 'Accessibility on pages that require authentication', :js do
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to be_accessible.according_to :section508, :"best-practice"
       expect(page).to label_required_fields
+      expect(page).to be_uniquely_titled
     end
 
     describe 'SMS' do
@@ -67,6 +73,7 @@ feature 'Accessibility on pages that require authentication', :js do
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
         expect(page).to be_accessible.according_to :section508, :"best-practice"
         expect(page).to label_required_fields
+        expect(page).to be_uniquely_titled
       end
     end
 
@@ -79,6 +86,7 @@ feature 'Accessibility on pages that require authentication', :js do
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
         expect(page).to be_accessible.according_to :section508, :"best-practice"
         expect(page).to label_required_fields
+        expect(page).to be_uniquely_titled
       end
     end
   end
@@ -89,6 +97,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'profile page' do
@@ -98,6 +107,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'edit email page' do
@@ -108,6 +118,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'edit password page' do
@@ -117,6 +128,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'edit email language page' do
@@ -126,6 +138,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'add phone page' do
@@ -135,6 +148,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'edit phone page' do
@@ -144,6 +158,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'generate new personal key page' do
@@ -153,6 +168,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'set up authenticator app page' do
@@ -162,6 +178,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'device events page' do
@@ -173,6 +190,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'delete user page' do
@@ -182,5 +200,6 @@ feature 'Accessibility on pages that require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 end

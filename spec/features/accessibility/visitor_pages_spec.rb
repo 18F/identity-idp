@@ -7,6 +7,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'forgot password page' do
@@ -14,6 +15,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'new user start registration page' do
@@ -21,6 +23,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'new user registration page' do
@@ -28,6 +31,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 
   scenario 'new user cancel registration page' do
@@ -35,5 +39,6 @@ feature 'Accessibility on pages that do not require authentication', :js do
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
   end
 end
