@@ -1,4 +1,4 @@
-import React, { useContext, useState, useMemo, forwardRef } from 'react';
+import { useContext, useState, useMemo, forwardRef } from 'react';
 import FileImage from './file-image';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';

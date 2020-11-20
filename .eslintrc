@@ -37,6 +37,8 @@
     "react/jsx-indent": "off",
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-wrap-multilines": "off",
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
     "react/prop-types": "off",
     "require-await": "error"
   },

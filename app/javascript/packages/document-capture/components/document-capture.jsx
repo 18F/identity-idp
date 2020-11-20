@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useContext } from 'react';
+import { useState, useMemo, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import FormSteps from './form-steps';
 import { UploadFormEntriesError } from '../services/upload';

@@ -1,4 +1,4 @@
-import React, { lazy, useState } from 'react';
+import { lazy, useState } from 'react';
 import sinon from 'sinon';
 import { waitFor } from '@testing-library/dom';
 import SuspenseErrorBoundary from '@18f/identity-document-capture/components/suspense-error-boundary';

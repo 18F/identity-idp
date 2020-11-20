@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import useI18n from '../hooks/use-i18n';
 import useAsset from '../hooks/use-asset';
 import PageHeading from './page-heading';

@@ -5,7 +5,7 @@
     "noEmit": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "moduleResolution": "node",
     "module": "ESNext",

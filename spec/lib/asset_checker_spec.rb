@@ -70,7 +70,6 @@ RSpec.describe AssetChecker do
 
   def build_js_with_strings(asset)
     <<-STR
-      import React from 'react';
       import useAsset from '../hooks/use-asset';
 
       function DocumentCapture() {

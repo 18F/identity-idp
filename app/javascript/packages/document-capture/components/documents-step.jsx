@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import AcuantCapture from './acuant-capture';
 import FormErrorMessage from './form-error-message';
 import useI18n from '../hooks/use-i18n';

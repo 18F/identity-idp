@@ -1,4 +1,4 @@
-import React, { createContext, useMemo } from 'react';
+import { createContext, useMemo } from 'react';
 import defaultUpload from '../services/upload';
 
 const UploadContext = createContext({

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
