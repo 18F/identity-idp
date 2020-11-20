@@ -12,6 +12,7 @@ es:
     doc_auth:
       choose_method: Elige cómo verificar
       enter_info: Ingrese su informacion
+      otp_delivery: Obtener código
       verify: Verifica tu identidad
     edit_info:
       email_language: Editar la preferencia de idioma del correo electrónico
