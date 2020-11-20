@@ -67,7 +67,7 @@ fr:
         pour partager vos informations
       verified: Vous avez verifié votre identité avec %{app}
     totp_setup:
-      new: Configurer l'authentification à deux facteurs
+      new: Ajouter une application d'authentification
     two_factor_setup: Configuration de l'authentification à deux facteurs
     verify_email: Consultez vos courriels
     verify_profile: Activez votre compte
