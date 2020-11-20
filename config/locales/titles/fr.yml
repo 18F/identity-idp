@@ -9,6 +9,8 @@ fr:
       delete: Veuillez confirmer
       new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe
+    doc_auth:
+      verify: Vérifiez votre identité
     edit_info:
       email_language: Modifier la préférence de langue des e-mails
       password: Modifier votre mot de passe
