@@ -11,6 +11,7 @@ en:
       show: Choose a password
     doc_auth:
       choose_method: Choose how to verify
+      enter_info: Enter your information
       verify: Verify identity
     edit_info:
       email_language: Edit email language preference

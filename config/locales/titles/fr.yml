@@ -11,6 +11,7 @@ fr:
       show: Choisissez un mot de passe
     doc_auth:
       choose_method: Choisissez comment vérifier
+      enter_info: Entrez vos informations
       verify: Vérifiez votre identité
     edit_info:
       email_language: Modifier la préférence de langue des e-mails
