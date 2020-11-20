@@ -104,6 +104,42 @@ describe Users::TwoFactorAuthenticationController do
       end
     end
 
+    context 'when user is authenticated with a remembered device via phone' do
+      it 'does redirect to the profile' do
+        user = create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        stub_sign_in_before_2fa(user)
+
+        cookies.encrypted[:remember_device] = {
+          value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
+          expires: 2.days.from_now,
+        }
+
+        get :show
+
+        expect(Telephony::Test::Message.messages.length).to eq(0)
+        expect(Telephony::Test::Call.calls.length).to eq(0)
+        expect(response).to redirect_to(account_path)
+      end
+
+      it 'does redirect to sms if reauthn parameter is true' do
+        user = create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        stub_sign_in_before_2fa(user)
+
+        cookies.encrypted[:remember_device] = {
+          value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
+          expires: 2.days.from_now,
+        }
+
+        get :show, params: { reauthn: 'true' }
+
+        expect(Telephony::Test::Message.messages.length).to eq(1)
+        expect(Telephony::Test::Call.calls.length).to eq(0)
+        expect(response).to redirect_to(
+          login_two_factor_path(otp_delivery_preference: 'sms', reauthn: 'true'),
+        )
+      end
+    end
+
     context 'when user has backup codes' do
       before do
         user = build(:user)
@@ -165,6 +201,8 @@ describe Users::TwoFactorAuthenticationController do
 
         get :show
 
+        expect(Telephony::Test::Message.messages.length).to eq(1)
+        expect(Telephony::Test::Call.calls.length).to eq(0)
         expect(response).
           to redirect_to login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
       end
