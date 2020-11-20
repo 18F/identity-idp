@@ -8,13 +8,13 @@ describe Idv::Steps::VerifyStep do
            app_id: '123')
   end
   let(:controller) do
-     instance_double('controller',
-                     session: { sp: { issuer: service_provider.issuer } },
-                     current_user: user,
-                     request: double('request',
-                                     headers: {
-                                       'X-Amzn-Trace-Id' => amzn_trace_id,
-                                     }))
+    instance_double('controller',
+                    session: { sp: { issuer: service_provider.issuer } },
+                    current_user: user,
+                    request: double('request',
+                                    headers: {
+                                      'X-Amzn-Trace-Id' => amzn_trace_id,
+                                    }))
   end
   let(:amzn_trace_id) { SecureRandom.uuid }
 
@@ -39,8 +39,12 @@ describe Idv::Steps::VerifyStep do
     end
 
     it 'passes the X-Amzn-Trace-Id to the lambda' do
-      expect(step.send(:idv_agent)).to receive(:proof_resolution)
-        .with(kind_of(DocumentCaptureSession), should_proof_state_id: anything, trace_id: amzn_trace_id)
+      expect(step.send(:idv_agent)).to receive(:proof_resolution).
+        with(
+          kind_of(DocumentCaptureSession),
+          should_proof_state_id: anything,
+          trace_id: amzn_trace_id,
+        )
 
       step.call
     end
