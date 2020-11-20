@@ -89,9 +89,11 @@ class ApplicationController < ActionController::Base
   # These attributes show up in New Relic traces for all requests.
   # https://docs.newrelic.com/docs/agents/manage-apm-agents/agent-data/collect-custom-attributes
   def add_new_relic_trace_attributes
-    ::NewRelic::Agent.add_custom_attributes(
-      amzn_trace_id: request.headers['X-Amzn-Trace-Id'],
-    )
+    ::NewRelic::Agent.add_custom_attributes(amzn_trace_id: amzn_trace_id)
+  end
+
+  def amzn_trace_id
+    request.headers['X-Amzn-Trace-Id']
   end
 
   def disable_caching

@@ -148,7 +148,7 @@ module Idv
     end
 
     def run_job(document_capture_session)
-      Idv::Agent.new(applicant).proof_address(document_capture_session)
+      Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: amzn_trace_id)
     end
 
     def timed_out

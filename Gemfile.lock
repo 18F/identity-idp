@@ -29,10 +29,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 9ebe1c042b3db499507687a57e945b30fc1c437d
-  ref: 9ebe1c042b3db499507687a57e945b30fc1c437d
+  revision: b05d49b3c463124d0e49265c0c79f22a8102d910
+  ref: b05d49b3c463124d0e49265c0c79f22a8102d910
   specs:
-    identity-idp-functions (0.5.3)
+    identity-idp-functions (0.6.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
       retries (>= 0.0.5)
@@ -174,7 +174,7 @@ GEM
     aws-sdk-ses (1.27.0)
       aws-sdk-core (~> 3, >= 3.71.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-ssm (1.95.0)
+    aws-sdk-ssm (1.98.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.2.2)
