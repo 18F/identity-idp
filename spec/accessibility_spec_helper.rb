@@ -7,7 +7,7 @@ module PageIsAccessible
   include RSpec::Matchers
 
   def visit(*args)
-    super(*args)
+    page.visit(*args)
 
     expect(page).to be_accessible.according_to :section508, :"best-practice"
     expect(page).to label_required_fields
