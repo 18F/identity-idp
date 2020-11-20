@@ -1,7 +1,8 @@
 module Idv
   class PhoneStep
-    def initialize(idv_session:)
+    def initialize(idv_session:, trace_id:)
       self.idv_session = idv_session
+      @trace_id = trace_id
     end
 
     def submit(step_params)
@@ -49,6 +50,7 @@ module Idv
     private
 
     attr_accessor :idv_session, :step_params, :idv_result
+    attr_reader :trace_id
 
     def idv_max_attempts
       Throttle::THROTTLE_CONFIG[:idv_resolution][:max_attempts]
@@ -148,7 +150,7 @@ module Idv
     end
 
     def run_job(document_capture_session)
-      Idv::Agent.new(applicant).proof_address(document_capture_session)
+      Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: trace_id)
     end
 
     def timed_out

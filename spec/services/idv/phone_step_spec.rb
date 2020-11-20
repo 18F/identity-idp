@@ -26,8 +26,9 @@ describe Idv::PhoneStep do
   let(:timeout_phone) do
     IdentityIdpFunctions::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
+  let(:trace_id) { SecureRandom.uuid }
 
-  subject { described_class.new(idv_session: idv_session) }
+  subject { described_class.new(idv_session: idv_session, trace_id: trace_id) }
 
   describe '#submit' do
     it 'succeeds with good params' do

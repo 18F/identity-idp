@@ -23,6 +23,7 @@ module Idv
         Idv::Agent.new(pii_from_doc).proof_resolution(
           document_capture_session,
           should_proof_state_id: should_use_aamva?(pii_from_doc),
+          trace_id: amzn_trace_id,
         )
       end
     end
