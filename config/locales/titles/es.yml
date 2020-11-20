@@ -10,6 +10,7 @@ es:
       new: Reenviar instrucciones de confirmación de su cuenta
       show: Elija una contraseña
     doc_auth:
+      choose_method: Elige cómo verificar
       verify: Verifica tu identidad
     edit_info:
       email_language: Editar la preferencia de idioma del correo electrónico
