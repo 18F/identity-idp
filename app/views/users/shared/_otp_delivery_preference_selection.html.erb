@@ -1,9 +1,8 @@
 <%= render 'shared/alert', type: 'warning', class: 'margin-bottom-2' do %>
   <p>
-    We are having trouble making phone calls to confirm phone numbers.
+    <%= t('two_factor_authentication.temp_disabled.p_1') %>
   </p>
   <p class='margin-bottom-0'>
-    Phones can still be confirmed with an SMS message. If you are unable to
-    receive SMS messages please choose a different authentication method.
+    <%= t('two_factor_authentication.temp_disabled.p_2') %>
   </p>
 <% end %>
