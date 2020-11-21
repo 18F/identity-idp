@@ -8,12 +8,14 @@ describe 'phone otp confirmation' do
     let!(:user) { sign_up_and_set_password }
 
     it_behaves_like 'phone otp confirmation', :sms
-    it_behaves_like 'phone otp confirmation', :voice
+    # Restore this line when voice confirmation is re-enabled
+    # it_behaves_like 'phone otp confirmation', :voice
 
-    def visit_otp_confirmation(delivery_method)
+    def visit_otp_confirmation(_delivery_method)
       select_2fa_option(:phone)
       fill_in :new_phone_form_phone, with: phone
-      select_phone_delivery_option(delivery_method)
+      # Restore this line when voice confirmation is re-enabled
+      # select_phone_delivery_option(delivery_method)
       click_send_security_code
     end
 
@@ -60,13 +62,15 @@ describe 'phone otp confirmation' do
     let(:user) { create(:user, :signed_up) }
 
     it_behaves_like 'phone otp confirmation', :sms
-    it_behaves_like 'phone otp confirmation', :voice
+    # Restore this line when voice confirmation is re-enabled
+    # it_behaves_like 'phone otp confirmation', :voice
 
-    def visit_otp_confirmation(delivery_method)
+    def visit_otp_confirmation(_delivery_method)
       sign_in_live_with_2fa(user)
       click_on "+ #{t('account.index.phone_add')}"
       fill_in :new_phone_form_phone, with: phone
-      select_phone_delivery_option(delivery_method)
+      # Restore this line when voice confirmation is re-enabled
+      # select_phone_delivery_option(delivery_method)
       click_continue
     end
 
