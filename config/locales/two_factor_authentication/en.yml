@@ -119,6 +119,10 @@ en:
     read_about_two_factor_authentication:
       link: read about two-factor authentication
       text_html: You can %{link} and why we use it at our Help page.
+    temp_disabled:
+      p_1: We are having trouble making phone calls to confirm phone numbers.
+      p_2: Phones can still be confirmed with an SMS message. If you are unable to
+        receive SMS messages please choose a different authentication method.
     totp_fallback:
       question: Don't have your authenticator app?
     totp_header_text: Enter your authentication app code

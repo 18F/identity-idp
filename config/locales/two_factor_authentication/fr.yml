@@ -127,6 +127,11 @@ fr:
     read_about_two_factor_authentication:
       link: lire sur l'authentification à deux facteurs
       text_html: Vous pouvez %{link} et pourquoi nous l'utilisons sur notre page d'aide.
+    temp_disabled:
+      p_1: Nous rencontrons des difficultés pour passer des appels téléphoniques pour
+        confirmer les numéros de téléphone.
+      p_2: Les téléphones peuvent toujours être confirmés par un message SMS. Si vous
+        ne pouvez pas recevoir de SMS, veuillez choisir une autre méthode d'authentification.
     totp_fallback:
       question: Vous n'avez pas votre application d'authentification?
     totp_header_text: Entrez votre code d'application d'authentification

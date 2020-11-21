@@ -204,9 +204,13 @@ module Users
     end
 
     def delivery_params
-      params.require(:otp_delivery_selection_form).permit(:otp_delivery_preference,
-                                                          :otp_make_default_number,
-                                                          :resend)
+      form_params = params.require(:otp_delivery_selection_form).permit(
+        :otp_delivery_preference,
+        :otp_make_default_number,
+        :resend,
+      ).to_h
+      form_params[:otp_delivery_preference] = 'sms' if confirmation_context?
+      form_params
     end
 
     def phone_to_deliver_to
