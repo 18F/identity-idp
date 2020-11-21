@@ -43,7 +43,8 @@ feature 'disavowing an action' do
 
     fill_in 'new_phone_form[phone]', with: '202-555-3434'
 
-    choose 'new_phone_form_otp_delivery_preference_sms'
+    # Restore this line when voice confirmation is re-enabled
+    # choose 'new_phone_form_otp_delivery_preference_sms'
     check 'new_phone_form_otp_make_default_number'
     click_button t('forms.buttons.continue')
 

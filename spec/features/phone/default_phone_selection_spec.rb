@@ -84,6 +84,8 @@ describe 'default phone selection' do
   describe 'voice delivery preference' do
     context 'when the user creates a new default phone number' do
       it 'displays the new default number for 2FA' do
+        pending 'disabled while voice OTP confirmation is disabled'
+
         sign_in_visit_add_phone_path(user, phone_config2)
 
         enter_phone_number('202-555-3434')

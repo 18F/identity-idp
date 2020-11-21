@@ -40,6 +40,8 @@ feature 'Two Factor Authentication' do
       let(:unsupported_phone) { '242-327-0143' }
 
       scenario 'renders an error if a user submits with JS disabled' do
+        pending 'disabled while voice OTP confirmation is disabled'
+
         sign_in_before_2fa
         select_2fa_option(:phone)
         select_phone_delivery_option(:voice)
@@ -79,6 +81,8 @@ feature 'Two Factor Authentication' do
       end
 
       scenario 'allows a user to continue typing even if a number is invalid', :js do
+        pending 'disabled while voice OTP confirmation is disabled'
+
         sign_in_before_2fa
         select_2fa_option(:phone)
 
