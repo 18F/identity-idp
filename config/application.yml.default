@@ -320,7 +320,7 @@ production:
   no_sp_campaigns_whitelist: '[]'
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: '5'
-  otp_delivery_blocklist_maxretry: '10'
+  otp_delivery_blocklist_maxretry: '5'
   participate_in_dap: 'false'
   password_pepper:
   piv_cac_service_url:
