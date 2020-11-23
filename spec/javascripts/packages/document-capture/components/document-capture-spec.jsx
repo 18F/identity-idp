@@ -295,7 +295,7 @@ describe('document-capture/components/document-capture', () => {
   it('renders async upload pending progress', async () => {
     const statusChecks = 3;
     let remainingStatusChecks = statusChecks;
-    sandbox.stub(window, 'fetch');
+    sandbox.stub(window, 'fetch').resolves({ ok: true, headers: new window.Headers() });
     const upload = sinon.stub().callsFake((payload, { endpoint }) => {
       switch (endpoint) {
         case 'about:blank#upload':

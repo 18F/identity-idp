@@ -1,5 +1,6 @@
 import { useContext } from 'react';
 import UploadContext from '../context/upload';
+import AnalyticsContext from '../context/analytics';
 
 /**
  * Returns a promise resolving to an DataView representation of the given Blob object.
@@ -44,6 +45,7 @@ export async function encrypt(key, iv, value) {
 
 const withBackgroundEncryptedUpload = (Component) => ({ onChange, ...props }) => {
   const { backgroundUploadURLs, backgroundUploadEncryptKey } = useContext(UploadContext);
+  const { addPageAction } = useContext(AnalyticsContext);
 
   /**
    * @param {Record<string, string|Blob|null|undefined>} nextValues Next values.
@@ -68,7 +70,16 @@ const withBackgroundEncryptedUpload = (Component) => ({ onChange, ...props }) =>
               headers: { 'Content-Type': 'application/octet-stream' },
             }),
           )
-          .then(() => url);
+          .then((response) => {
+            const traceId = response.headers.get('X-Amzn-Trace-Id');
+            addPageAction('documentCapture.asyncUpload', { success: response.ok, traceId });
+
+            if (!response.ok) {
+              throw new Error('Failed to upload image');
+            }
+
+            return url;
+          });
       }
     }
 
