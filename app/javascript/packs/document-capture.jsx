@@ -119,9 +119,7 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
     formData.step = 'verify_document';
   }
 
-  const { newrelic } = /** @type {DocumentCaptureGlobal} */ (window);
-
-  render(
+  let element = (
     <AcuantContextProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
       endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
@@ -141,17 +139,21 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
       >
         <I18nContext.Provider value={i18n.strings}>
           <ServiceProviderContext.Provider value={getServiceProvider()}>
-            <AnalyticsContext.Provider value={/** @type {NewRelicAgent} */ (newrelic)}>
-              <AssetContext.Provider value={assets}>
-                <DeviceContext.Provider value={device}>
-                  <DocumentCapture isAsyncForm={isAsyncForm} />
-                </DeviceContext.Provider>
-              </AssetContext.Provider>
-            </AnalyticsContext.Provider>
+            <AssetContext.Provider value={assets}>
+              <DeviceContext.Provider value={device}>
+                <DocumentCapture isAsyncForm={isAsyncForm} />
+              </DeviceContext.Provider>
+            </AssetContext.Provider>
           </ServiceProviderContext.Provider>
         </I18nContext.Provider>
       </UploadContextProvider>
-    </AcuantContextProvider>,
-    appRoot,
+    </AcuantContextProvider>
   );
+
+  const { newrelic } = /** @type {DocumentCaptureGlobal} */ (window);
+  if (newrelic) {
+    element = <AnalyticsContext.Provider value={newrelic}>{element}</AnalyticsContext.Provider>;
+  }
+
+  render(element, appRoot);
 });
