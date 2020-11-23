@@ -4,7 +4,7 @@ import {
   AssetContext,
   I18nContext,
   DeviceContext,
-  AcuantProvider,
+  AcuantContextProvider,
   UploadContextProvider,
   ServiceProviderContext,
 } from '@18f/identity-document-capture';
@@ -78,7 +78,7 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
   }
 
   render(
-    <AcuantProvider
+    <AcuantContextProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
       endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
     >
@@ -105,7 +105,7 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
           </ServiceProviderContext.Provider>
         </I18nContext.Provider>
       </UploadContextProvider>
-    </AcuantProvider>,
+    </AcuantContextProvider>,
     appRoot,
   );
 });
