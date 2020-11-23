@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include UserSessionContext
   include VerifyProfileConcern
   include LocaleHelper
-  include VerifySPAttributesConcern
+  include VerifySpAttributesConcern
 
   FLASH_KEYS = %w[error info success warning other].freeze
   FLASH_KEY_MAP = { 'notice' => 'info', 'alert' => 'error' }.freeze
