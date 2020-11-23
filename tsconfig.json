@@ -13,6 +13,7 @@
   },
   "include": [
     "app/javascript/packages",
+    "app/javascript/packs/document-capture.jsx",
     "app/javascript/packs/form-validation.js",
     "app/javascript/packs/submit-with-spinner.js"
   ],

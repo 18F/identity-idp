@@ -7,13 +7,51 @@ import {
   AcuantContextProvider,
   UploadContextProvider,
   ServiceProviderContext,
+  AnalyticsContext,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
 
-const { I18n: i18n, assets } = window.LoginGov;
+/**
+ * @typedef NewRelicAgent
+ *
+ * @prop {(name:string,attributes:object)=>void} addPageAction Log page action to New Relic.
+ */
 
-const appRoot = document.getElementById('document-capture-form');
+/**
+ * @typedef LoginGovI18n
+ *
+ * @prop {(key:string)=>string} t Translate a key.
+ * @prop {()=>string} currentLocale Get current locale.
+ * @prop {Record<string,string>} strings Object of strings.
+ */
+
+/**
+ * @typedef LoginGov
+ *
+ * @prop {LoginGovI18n} I18n
+ * @prop {Record<string,string>} assets
+ */
+
+/**
+ * @typedef NewRelicGlobals
+ *
+ * @prop {NewRelicAgent=} newrelic New Relic agent.
+ */
+
+/**
+ * @typedef LoginGovGlobals
+ *
+ * @prop {LoginGov} LoginGov
+ */
+
+/**
+ * @typedef {typeof window & NewRelicGlobals & LoginGovGlobals} DocumentCaptureGlobal
+ */
+
+const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
+
+const appRoot = /** @type {HTMLDivElement} */ (document.getElementById('document-capture-form'));
 const isMockClient = appRoot.hasAttribute('data-mock-client');
 
 /**
@@ -40,11 +78,15 @@ function getBackgroundUploadURLs() {
     }
 
     return result;
-  }, {});
+  }, /** @type {Record<'front'|'back'|'selfie', string>} */ ({}));
 }
 
+/**
+ * @return {string?}
+ */
 function getMetaContent(name) {
-  return document.querySelector(`meta[name="${name}"]`)?.content ?? null;
+  const meta = /** @type {HTMLMetaElement?} */ (document.querySelector(`meta[name="${name}"]`));
+  return meta?.content ?? null;
 }
 
 /** @type {import('@18f/identity-document-capture/context/device').DeviceContext} */
@@ -77,19 +119,21 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
     formData.step = 'verify_document';
   }
 
+  const { newrelic } = /** @type {DocumentCaptureGlobal} */ (window);
+
   render(
     <AcuantContextProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
       endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
     >
       <UploadContextProvider
-        endpoint={appRoot.getAttribute('data-endpoint')}
-        statusEndpoint={appRoot.getAttribute('data-status-endpoint')}
+        endpoint={/** @type {string} */ (appRoot.getAttribute('data-endpoint'))}
+        statusEndpoint={/** @type {string} */ (appRoot.getAttribute('data-status-endpoint'))}
         statusPollInterval={
           Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined
         }
         method={isAsyncForm ? 'PUT' : 'POST'}
-        csrf={getMetaContent('csrf-token')}
+        csrf={/** @type {string} */ (getMetaContent('csrf-token'))}
         isMockClient={isMockClient}
         backgroundUploadURLs={backgroundUploadURLs}
         backgroundUploadEncryptKey={backgroundUploadEncryptKey}
@@ -97,11 +141,13 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
       >
         <I18nContext.Provider value={i18n.strings}>
           <ServiceProviderContext.Provider value={getServiceProvider()}>
-            <AssetContext.Provider value={assets}>
-              <DeviceContext.Provider value={device}>
-                <DocumentCapture isAsyncForm={isAsyncForm} />
-              </DeviceContext.Provider>
-            </AssetContext.Provider>
+            <AnalyticsContext.Provider value={/** @type {NewRelicAgent} */ (newrelic)}>
+              <AssetContext.Provider value={assets}>
+                <DeviceContext.Provider value={device}>
+                  <DocumentCapture isAsyncForm={isAsyncForm} />
+                </DeviceContext.Provider>
+              </AssetContext.Provider>
+            </AnalyticsContext.Provider>
           </ServiceProviderContext.Provider>
         </I18nContext.Provider>
       </UploadContextProvider>

@@ -5,3 +5,4 @@ export { default as DeviceContext } from './context/device';
 export { Provider as AcuantContextProvider } from './context/acuant';
 export { Provider as UploadContextProvider } from './context/upload';
 export { default as ServiceProviderContext } from './context/service-provider';
+export { default as AnalyticsContext } from './context/analytics';

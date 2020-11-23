@@ -58,7 +58,7 @@ const UploadContext = createContext({
  * @prop {boolean=} isMockClient Whether to treat upload as a mock implementation.
  * @prop {Record<string,string>} backgroundUploadURLs URLs to which payload values corresponding to
  * key should be uploaded as soon as possible.
- * @prop {CryptoKey} backgroundUploadEncryptKey Background upload encryption key.
+ * @prop {CryptoKey=} backgroundUploadEncryptKey Background upload encryption key.
  * @prop {string} endpoint Endpoint to which payload should be sent.
  * @prop {string=} statusEndpoint Endpoint from which to request async upload status.
  * @prop {number=} statusPollInterval Interval at which to poll for status, in milliseconds.
