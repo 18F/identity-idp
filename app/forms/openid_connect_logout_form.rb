@@ -80,13 +80,13 @@ class OpenidConnectLogoutForm
   def logout_redirect_uri
     uri = post_logout_redirect_uri unless errors.include?(:redirect_uri)
 
-    URIService.add_params(uri, state: state)
+    UriService.add_params(uri, state: state)
   end
 
   def error_redirect_uri
     uri = post_logout_redirect_uri unless errors.include?(:redirect_uri)
 
-    URIService.add_params(
+    UriService.add_params(
       uri,
       error: 'invalid_request',
       error_description: errors.full_messages.join(' '),

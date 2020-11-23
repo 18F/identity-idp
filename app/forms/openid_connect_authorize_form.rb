@@ -83,7 +83,7 @@ class OpenidConnectAuthorizeForm
     uri = redirect_uri unless errors.include?(:redirect_uri)
     code = identity&.session_uuid
 
-    URIService.add_params(uri, code: code, state: state) if code
+    UriService.add_params(uri, code: code, state: state) if code
   end
 
   def ial_values
@@ -189,7 +189,7 @@ class OpenidConnectAuthorizeForm
   def error_redirect_uri
     uri = redirect_uri unless errors.include?(:redirect_uri)
 
-    URIService.add_params(
+    UriService.add_params(
       uri,
       error: 'invalid_request',
       error_description: errors.full_messages.join(' '),

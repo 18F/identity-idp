@@ -1,7 +1,7 @@
 module Users
   class PivCacLoginController < ApplicationController
     include PivCacConcern
-    include VerifySPAttributesConcern
+    include VerifySpAttributesConcern
     include TwoFactorAuthenticatableMethods
 
     def new

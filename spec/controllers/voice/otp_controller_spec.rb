@@ -83,7 +83,7 @@ RSpec.describe Voice::OtpController do
           doc = Nokogiri::XML(response.body)
           gather = doc.css('Gather').first
 
-          params = URIService.params(gather[:action])
+          params = UriService.params(gather[:action])
           expect(params[:locale]).to eq('es')
         end
       end
@@ -106,7 +106,7 @@ RSpec.describe Voice::OtpController do
           doc = Nokogiri::XML(response.body)
           gather = doc.css('Gather').first
 
-          params = URIService.params(gather[:action])
+          params = UriService.params(gather[:action])
           expect(params[:locale]).to eq('fr')
         end
       end
@@ -125,7 +125,7 @@ RSpec.describe Voice::OtpController do
 
         doc = Nokogiri::XML(response.body)
         gather = doc.css('Gather').first
-        params = URIService.params(gather[:action])
+        params = UriService.params(gather[:action])
 
         expect(cipher.decrypt(params[:encrypted_code])).to eq(code)
       end

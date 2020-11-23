@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe VerifySPAttributesConcern do
+RSpec.describe VerifySpAttributesConcern do
   controller ApplicationController do
-    # ApplicationController already includes VerifySPAttributesConcern
+    # ApplicationController already includes VerifySpAttributesConcern
   end
 
   describe '#consent_has_expired?' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Encryption::MultiRegionKMSClient do
+describe Encryption::MultiRegionKmsClient do
   before do
     stub_mapped_aws_kms_client(
       'a' * 3000 => 'kms1',

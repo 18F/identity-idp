@@ -104,7 +104,7 @@ class ServiceProviderSessionDecorator
 
   def sp_return_url
     if sp.redirect_uris.present? && valid_oidc_request?
-      URIService.add_params(
+      UriService.add_params(
         oidc_redirect_uri,
         error: 'access_denied',
         state: request_params[:state],
@@ -185,6 +185,6 @@ class ServiceProviderSessionDecorator
   end
 
   def request_params
-    @request_params ||= URIService.params(request_url)
+    @request_params ||= UriService.params(request_url)
   end
 end

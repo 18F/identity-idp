@@ -2,6 +2,7 @@ require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 require_relative '../lib/upaya_log_formatter'
 require_relative '../lib/app_config'
+require_relative '../lib/fingerprinter'
 
 Bundler.require(*Rails.groups)
 
@@ -10,8 +11,11 @@ APP_NAME = 'login.gov'.freeze
 module Upaya
   class Application < Rails::Application
     AppConfig.setup(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))))
+
+    config.load_defaults '5.2'
+    config.active_record.belongs_to_required_by_default = false
+
     config.active_job.queue_adapter = 'inline'
-    config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
