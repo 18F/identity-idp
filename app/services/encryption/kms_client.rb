@@ -119,7 +119,7 @@ module Encryption
     end
 
     def multi_aws_client
-      @multi_aws_client ||= MultiRegionKMSClient.new
+      @multi_aws_client ||= MultiRegionKmsClient.new
     end
   end
 end
