@@ -16,7 +16,6 @@ module Upaya
     config.active_record.belongs_to_required_by_default = false
 
     config.active_job.queue_adapter = 'inline'
-    config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
