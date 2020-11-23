@@ -11,6 +11,10 @@ APP_NAME = 'login.gov'.freeze
 module Upaya
   class Application < Rails::Application
     AppConfig.setup(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))))
+
+    config.load_defaults '5.2'
+    config.active_record.belongs_to_required_by_default = false
+
     config.active_job.queue_adapter = 'inline'
     config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
