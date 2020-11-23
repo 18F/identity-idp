@@ -39,7 +39,7 @@ RSpec.describe OpenidConnectLogoutForm do
       end
 
       it 'has a redirect URI without errors' do
-        expect(URIService.params(result.extra[:redirect_uri])).to_not have_key(:error)
+        expect(UriService.params(result.extra[:redirect_uri])).to_not have_key(:error)
       end
 
       it 'has a successful response' do
@@ -55,7 +55,7 @@ RSpec.describe OpenidConnectLogoutForm do
       end
 
       it 'has an error code in the redirect URI' do
-        expect(URIService.params(result.extra[:redirect_uri])[:error]).to eq('invalid_request')
+        expect(UriService.params(result.extra[:redirect_uri])[:error]).to eq('invalid_request')
       end
     end
   end

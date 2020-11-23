@@ -22,6 +22,6 @@ class CompletionsDecider
   end
 
   def redirect_uri
-    @redirect_uri ||= URIService.params(request_url)[:redirect_uri]
+    @redirect_uri ||= UriService.params(request_url)[:redirect_uri]
   end
 end

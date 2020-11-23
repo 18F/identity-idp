@@ -28,7 +28,7 @@ module SecureHeadersConcern
   end
 
   def authorize_params
-    URIService.params(stored_url_for_user)
+    UriService.params(stored_url_for_user)
   end
 
   private
