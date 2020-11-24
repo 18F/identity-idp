@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Telephony::Twilio::TwilioVoiceController do
+describe TwilioVoiceController do
   describe '#show' do
     context 'with nothing in the params' do
       it 'renders an error' do

@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require_relative 'boot'
 require 'rails/all'
 require_relative '../lib/upaya_log_formatter'
 require_relative '../lib/app_config'

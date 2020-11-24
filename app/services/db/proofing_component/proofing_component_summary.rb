@@ -1,6 +1,6 @@
 module Db
   module ProofingComponent
-    class ProofingComponentsSummary
+    class ProofingComponentSummary
       SKIP_FIELDS = %w[id user_id created_at updated_at].freeze
 
       def call
