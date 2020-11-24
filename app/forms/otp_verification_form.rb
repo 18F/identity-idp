@@ -26,7 +26,7 @@ class OtpVerificationForm
   end
 
   def otp_code_length
-    Devise.direct_otp_length
+    TwoFactorAuthenticatable.direct_otp_length
   end
 
   def extra_analytics_attributes

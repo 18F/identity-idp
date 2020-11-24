@@ -8,7 +8,6 @@ class User < ApplicationRecord
     :registerable,
     :timeoutable,
     :trackable,
-    :two_factor_authenticatable,
     authentication_keys: [:email],
   )
 
@@ -23,8 +22,6 @@ class User < ApplicationRecord
   include DeprecatedUserAttributes
 
   enum otp_delivery_preference: { sms: 0, voice: 1 }
-
-  has_one_time_password
 
   has_many :authorizations, dependent: :destroy
   # rubocop:disable Rails/HasManyOrHasOneDependent
@@ -62,17 +59,6 @@ class User < ApplicationRecord
     MfaPolicy.new(self).two_factor_enabled?
   end
 
-  def send_two_factor_authentication_code(_code)
-    # The two_factor_authentication gem assumes that if a user needs to receive
-    # a code, the code should be automatically sent right after Warden signs
-    # the user in by calling this method. However, we don't want a code to be
-    # automatically sent until the user has reached the TwoFactorAuthenticationController,
-    # where we prompt them to select how they would like to receive the OTP code.
-    #
-    # Hence, we define this method as a no-op method, meaning it doesn't do anything.
-    # See https://github.com/18F/identity-idp/pull/452 for more details.
-  end
-
   def confirmed?
     email_addresses.where.not(confirmed_at: nil).any?
   end
@@ -105,6 +91,43 @@ class User < ApplicationRecord
 
   def decorate
     UserDecorator.new(self)
+  end
+
+  def max_login_attempts?
+    second_factor_attempts_count.to_i >= max_login_attempts
+  end
+
+  def max_login_attempts
+    3
+  end
+
+  def create_direct_otp
+    update(
+      direct_otp: random_base10(TwoFactorAuthenticatable.direct_otp_length),
+      direct_otp_sent_at: Time.zone.now.utc,
+    )
+  end
+
+  def generate_totp_secret
+    ROTP::Base32.random_base32
+  end
+
+  def authenticate_direct_otp(code)
+    return false if direct_otp.nil? || direct_otp != code || direct_otp_expired?
+    clear_direct_otp
+    true
+  end
+
+  def clear_direct_otp
+    update(direct_otp: nil, direct_otp_sent_at: nil)
+  end
+
+  def direct_otp_expired?
+    Time.zone.now.utc > direct_otp_sent_at + AppConfig.env.otp_valid_for.to_i.minutes
+  end
+
+  def random_base10(digits)
+    SecureRandom.random_number(10**digits).to_s.rjust(digits, '0')
   end
 
   # Devise automatically downcases and strips any attribute defined in

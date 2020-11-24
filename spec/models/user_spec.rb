@@ -222,25 +222,17 @@ describe User do
   end
 
   describe 'OTP length' do
-    it 'uses Devise setting when set' do
-      allow(Devise).to receive(:direct_otp_length).and_return(10)
+    it 'uses TwoFactorAuthenticatable setting when set' do
+      allow(TwoFactorAuthenticatable).to receive(:direct_otp_length).and_return(10)
       user = build(:user)
-      user.send_new_otp
+      user.create_direct_otp
 
       expect(user.direct_otp.length).to eq 10
     end
 
-    it 'defaults to 6 when Devise setting is not set' do
-      allow(Devise).to receive(:direct_otp_length).and_return(nil)
-      user = build(:user)
-      user.send_new_otp
-
-      expect(user.direct_otp.length).to eq 6
-    end
-
     it 'is set to 6' do
       user = build(:user)
-      user.send_new_otp
+      user.create_direct_otp
 
       expect(user.direct_otp.length).to eq 6
     end

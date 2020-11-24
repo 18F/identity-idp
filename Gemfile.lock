@@ -274,7 +274,6 @@ GEM
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
       mail (~> 2.7)
-    encryptor (3.0.0)
     enumerable-statistics (2.0.1)
     equalizer (0.0.11)
     errbase (0.2.0)
@@ -503,7 +502,6 @@ GEM
     rainbow (3.0.0)
     raise-if-root (0.0.2)
     rake (13.0.1)
-    randexp (0.1.7)
     rb-fsevent (0.10.3)
     rb-inotify (0.10.0)
       ffi (~> 1.0)
@@ -653,12 +651,6 @@ GEM
       faraday (>= 0.9, < 2.0)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
-    two_factor_authentication (2.1.1)
-      devise
-      encryptor
-      rails (>= 3.1.1)
-      randexp
-      rotp (>= 3.2.0)
     tzinfo (1.2.8)
       thread_safe (~> 0.1)
     uglifier (3.2.0)
@@ -821,7 +813,6 @@ DEPENDENCIES
   subprocess
   timecop
   twilio-ruby
-  two_factor_authentication (>= 2.1.1)
   uglifier (~> 3.2)
   user_agent_parser
   valid_email (>= 0.1.3)

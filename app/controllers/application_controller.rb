@@ -33,8 +33,6 @@ class ApplicationController < ActionController::Base
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
 
-  skip_before_action :handle_two_factor_authentication
-
   def session_expires_at
     now = Time.zone.now
     session[:session_expires_at] = now + Devise.timeout_in
@@ -213,7 +211,12 @@ class ApplicationController < ActionController::Base
 
   def user_fully_authenticated?
     !reauthn? && user_signed_in? &&
-      two_factor_enabled? && is_fully_authenticated?
+      two_factor_enabled? &&
+      session['warden.user.user.session'] &&
+      !session['warden.user.user.session'].try(
+        :[],
+        TwoFactorAuthenticatable::NEED_AUTHENTICATION,
+      )
   end
 
   def reauthn?

@@ -181,7 +181,7 @@ module Users
       params = {
         to: phone_to_deliver_to,
         otp: current_user.direct_otp,
-        expiration: Devise.direct_otp_valid_for.to_i / 60,
+        expiration: TwoFactorAuthenticatable.direct_otp_valid_for_seconds / 60,
         channel: method.to_sym,
       }
       Telephony.send(send_otp_method_name, params)
