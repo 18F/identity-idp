@@ -30,7 +30,11 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_logo
-    sp.logo || DEFAULT_LOGO
+    if sp.logo.present?
+      sp.logo
+    else
+      DEFAULT_LOGO
+    end
   end
 
   def sp_logo_url
