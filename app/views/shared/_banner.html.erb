@@ -22,6 +22,9 @@
         </div>
       </header>
       <div class="usa-banner__content usa-accordion__content" id="gov-banner">
+        <%= nonced_javascript_tag do %>
+          document.getElementById('gov-banner').setAttribute('hidden', '');
+        <% end %>
         <div class="grid-row grid-gap-lg">
           <div class="usa-banner__guidance tablet:grid-col-6">
             <%= image_tag(
