@@ -26,6 +26,7 @@ es:
         a su cuenta.
     index:
       address: Dirección actual
+      auth_app_add: Agregar aplicación
       auth_app_disabled: no permitido
       auth_app_enabled: permitido
       backup_code_confirm_delete: Sí, borrar códigos
@@ -43,6 +44,7 @@ es:
       password: Contraseña
       phone: Teléfono
       phone_add: Añadir teléfono
+      piv_cac_add: Agregar ID
       piv_cac_card: Tarjetas PIV/CAC
       piv_cac_confirm_delete: Sí, retire la tarjeta
       piv_cac_disabled: desactivada

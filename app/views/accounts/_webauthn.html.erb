@@ -1,9 +1,9 @@
 <div>
   <div class="grid-row mb1 mt0">
-    <h2 class="grid-col-6 m0">
+    <h2 class="grid-col-fill margin-y-0 padding-right-1">
       <%= t('account.index.webauthn') %>
     </h2>
-    <div class="right-align grid-col-6">
+    <div class="grid-col-auto">
       <%= link_to(
         prefix_with_plus(t('account.index.webauthn_add')),
         webauthn_setup_path,
