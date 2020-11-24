@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
-import { AcuantProvider } from '@18f/identity-document-capture';
+import { AcuantContextProvider } from '@18f/identity-document-capture';
 import SelfieStep from '@18f/identity-document-capture/components/selfie-step';
 import { render, useAcuant } from '../../../support/document-capture';
 
@@ -11,9 +11,9 @@ describe('document-capture/components/selfie-step', () => {
   it('calls onChange callback with uploaded image', async () => {
     const onChange = sinon.stub();
     const { getByLabelText } = render(
-      <AcuantProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank">
         <SelfieStep onChange={onChange} />
-      </AcuantProvider>,
+      </AcuantContextProvider>,
     );
     initialize();
     window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '8J+Riw==');

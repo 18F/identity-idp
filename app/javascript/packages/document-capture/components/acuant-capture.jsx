@@ -7,6 +7,7 @@ import {
   useEffect,
   useImperativeHandle,
 } from 'react';
+import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
@@ -21,12 +22,6 @@ import './acuant-capture.scss';
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
- * @typedef NewRelicAgent
- *
- * @prop {(name: string, attributes: object) => void} addPageAction Log page action to New Relic.
- */
-
-/**
  * @typedef AcuantPassiveLiveness
  *
  * @prop {(callback:(nextImageData:string)=>void)=>void} startSelfieCapture Start liveness capture.
@@ -39,17 +34,7 @@ import './acuant-capture.scss';
  */
 
 /**
- * @typedef NewRelicGlobals
- *
- * @prop {NewRelicAgent=} newrelic New Relic agent.
- */
-
-/**
  * @typedef {typeof window & AcuantGlobals} AcuantGlobal
- */
-
-/**
- * @typedef {typeof window & NewRelicGlobals} NewRelicGlobal
  */
 
 /**
@@ -101,6 +86,7 @@ function AcuantCapture(
 ) {
   const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
+  const { addPageAction } = useContext(AnalyticsContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
   const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
@@ -207,8 +193,7 @@ function AcuantCapture(
                 result = 'success';
               }
 
-              const agent = /** @type {NewRelicGlobal} */ (window).newrelic;
-              agent?.addPageAction('documentCapture.acuantWebSDKResult', { result });
+              addPageAction('documentCapture.acuantWebSDKResult', { result });
 
               setIsCapturingEnvironment(false);
             }}
