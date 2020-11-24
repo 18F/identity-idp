@@ -1,9 +1,9 @@
 <div>
   <div class="grid-row mb1 mt0">
-    <h2 class="grid-col-6 m0">
+    <h2 class="grid-col-fill margin-y-0 padding-right-2">
       <%= t('account.index.phone') %>
     </h2>
-    <div class="right-align grid-col-6">
+    <div class="grid-col-auto">
       <% if EmailPolicy.new(current_user).can_add_email? %>
         <%= link_to(
           prefix_with_plus(t('account.index.phone_add')),

@@ -1,10 +1,10 @@
 <div>
   <div class="grid-row mb1 mt0">
-    <h2 class="grid-col-6 m0">
+    <h2 class="grid-col-fill margin-y-0 padding-right-2">
       <%= t('headings.account.authentication_apps') %>
     </h2>
     <% if current_user.auth_app_configurations.count < AppConfig.env.max_auth_apps_per_account.to_i %>
-      <div class="right-align grid-col-6">
+      <div class="grid-col-auto">
         <%= link_to(
           prefix_with_plus(t('account.index.auth_app_add')),
           authenticator_setup_url,
