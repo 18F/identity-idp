@@ -168,7 +168,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           expect(addPageAction.calledOnce).to.be.true();
           expect(addPageAction.getCall(0).args).to.deep.equal([
             'documentCapture.asyncUpload',
-            { success: true, traceId: null },
+            { success: true, trace_id: null },
           ]);
         });
       });
@@ -204,7 +204,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           expect(addPageAction.calledOnce).to.be.true();
           expect(addPageAction.getCall(0).args).to.deep.equal([
             'documentCapture.asyncUpload',
-            { success: false, traceId: '1-67891233-abcdef012345678912345678' },
+            { success: false, trace_id: '1-67891233-abcdef012345678912345678' },
           ]);
         });
       });

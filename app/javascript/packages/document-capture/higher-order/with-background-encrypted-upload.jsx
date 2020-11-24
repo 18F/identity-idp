@@ -72,7 +72,10 @@ const withBackgroundEncryptedUpload = (Component) => ({ onChange, ...props }) =>
           )
           .then((response) => {
             const traceId = response.headers.get('X-Amzn-Trace-Id');
-            addPageAction('documentCapture.asyncUpload', { success: response.ok, traceId });
+            addPageAction('documentCapture.asyncUpload', {
+              success: response.ok,
+              trace_id: traceId,
+            });
 
             if (!response.ok) {
               throw new Error('Failed to upload image');
