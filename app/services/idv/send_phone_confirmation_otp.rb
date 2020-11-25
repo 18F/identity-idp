@@ -57,7 +57,7 @@ module Idv
       @telephony_response = Telephony.send_confirmation_otp(
         otp: code,
         to: phone,
-        expiration: TwoFactorAuthenticatable.direct_otp_valid_for_seconds / 60,
+        expiration: TwoFactorAuthenticatable.direct_otp_valid_for_minutes,
         channel: delivery_method,
       )
       add_cost

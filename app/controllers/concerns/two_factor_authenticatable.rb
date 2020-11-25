@@ -5,7 +5,8 @@ module TwoFactorAuthenticatable
   NEED_AUTHENTICATION = 'need_two_factor_authentication'.freeze
   OTP_LENGTH = 6
   ALLOWED_OTP_DRIFT_SECONDS = 30
-  DIRECT_OTP_VALID_FOR_SECONDS = AppConfig.env.otp_valid_for.to_i.minutes
+  DIRECT_OTP_VALID_FOR_MINUTES = AppConfig.env.otp_valid_for.to_i
+  DIRECT_OTP_VALID_FOR_SECONDS = DIRECT_OTP_VALID_FOR_MINUTES * 60
   REMEMBER_2FA_COOKIE = 'remember_tfa'.freeze
 
   included do
@@ -24,6 +25,10 @@ module TwoFactorAuthenticatable
 
   def self.otp_length
     OTP_LENGTH
+  end
+
+  def self.direct_otp_valid_for_minutes
+    DIRECT_OTP_VALID_FOR_MINUTES
   end
 
   def self.direct_otp_valid_for_seconds
