@@ -75,7 +75,7 @@ module TwoFactorAuthentication
     end
 
     def two_factor_options_form_params
-      params.require(:two_factor_options_form).permit(:selection)
+      params.fetch(:two_factor_options_form, {}).permit(:selection)
     end
   end
 end
