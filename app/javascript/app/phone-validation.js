@@ -1,3 +1,5 @@
+import { loadPolyfills } from '@18f/identity-polyfill';
+import domready from 'domready';
 import { isValidNumber } from 'libphonenumber-js';
 
 const isPhoneValid = (phone, countryCode) => {
@@ -39,22 +41,24 @@ const checkPhoneValidity = () => {
     sendCodeButton.disabled = !phoneValid;
 
     if (!phoneValid) {
-      phoneInput.dispatchEvent(new Event('invalid'));
+      phoneInput.dispatchEvent(new CustomEvent('invalid'));
     }
   }
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  const intlPhoneInput =
-    document.querySelector('[data-international-phone-form] .phone') ||
-    document.querySelector('[data-international-phone-form] .new-phone');
-  const codeInput = document.querySelector('[data-international-phone-form] .international-code');
-  if (intlPhoneInput) {
-    intlPhoneInput.addEventListener('keyup', checkPhoneValidity);
-    intlPhoneInput.addEventListener('focus', checkPhoneValidity);
-  }
-  if (codeInput) {
-    codeInput.addEventListener('change', checkPhoneValidity);
-  }
-  checkPhoneValidity();
-});
+Promise.all([new Promise((resolve) => domready(resolve)), loadPolyfills(['custom-event'])]).then(
+  () => {
+    const intlPhoneInput =
+      document.querySelector('[data-international-phone-form] .phone') ||
+      document.querySelector('[data-international-phone-form] .new-phone');
+    const codeInput = document.querySelector('[data-international-phone-form] .international-code');
+    if (intlPhoneInput) {
+      intlPhoneInput.addEventListener('keyup', checkPhoneValidity);
+      intlPhoneInput.addEventListener('focus', checkPhoneValidity);
+    }
+    if (codeInput) {
+      codeInput.addEventListener('change', checkPhoneValidity);
+    }
+    checkPhoneValidity();
+  },
+);
