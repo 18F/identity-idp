@@ -12,9 +12,11 @@ describe 'default phone selection' do
     context 'when the user has not set a default phone number' do
       it 'uses the first phone created as the default' do
         sign_in_before_2fa(user)
-        expect(page).to have_content t('instructions.mfa.sms.number_message_html',
-                                       number: '***-***-1212',
-                                       expiration: AppConfig.env.otp_valid_for)
+        expect(page).to have_content t(
+          'instructions.mfa.sms.number_message_html',
+          number: '***-***-1212',
+          expiration: TwoFactorAuthenticatable.direct_otp_valid_for_minutes,
+        )
       end
     end
 
@@ -26,9 +28,11 @@ describe 'default phone selection' do
         check 'new_phone_form_otp_make_default_number'
         click_button t('forms.buttons.continue')
 
-        expect(page).to have_content t('instructions.mfa.sms.number_message_html',
-                                       number: '+1 202-555-3434',
-                                       expiration: AppConfig.env.otp_valid_for)
+        expect(page).to have_content t(
+          'instructions.mfa.sms.number_message_html',
+          number: '+1 202-555-3434',
+          expiration: TwoFactorAuthenticatable.direct_otp_valid_for_minutes,
+        )
 
         submit_prefilled_otp_code(user, 'sms')
 
@@ -37,9 +41,11 @@ describe 'default phone selection' do
 
         set_new_browser_session
         sign_in_before_2fa(user)
-        expect(page).to have_content t('instructions.mfa.sms.number_message_html',
-                                       number: '***-***-3434',
-                                       expiration: AppConfig.env.otp_valid_for)
+        expect(page).to have_content t(
+          'instructions.mfa.sms.number_message_html',
+          number: '***-***-3434',
+          expiration: TwoFactorAuthenticatable.direct_otp_valid_for_minutes,
+        )
       end
     end
 
@@ -74,9 +80,11 @@ describe 'default phone selection' do
 
         set_new_browser_session
         sign_in_before_2fa(user)
-        expect(page).to have_content t('instructions.mfa.sms.number_message_html',
-                                       number: '***-***-3111',
-                                       expiration: AppConfig.env.otp_valid_for)
+        expect(page).to have_content t(
+          'instructions.mfa.sms.number_message_html',
+          number: '***-***-3111',
+          expiration: TwoFactorAuthenticatable.direct_otp_valid_for_minutes,
+        )
       end
     end
   end
@@ -92,8 +100,7 @@ describe 'default phone selection' do
         click_button t('forms.buttons.continue')
 
         expect(page).to have_content t('instructions.mfa.voice.number_message_html',
-                                       number: '+1 202-555-3434',
-                                       expiration: AppConfig.env.otp_valid_for)
+                                       number: '+1 202-555-3434')
 
         submit_prefilled_otp_code(user, 'voice')
 
@@ -103,8 +110,7 @@ describe 'default phone selection' do
         set_new_browser_session
         sign_in_before_2fa(user)
         expect(page).to have_content t('instructions.mfa.voice.number_message_html',
-                                       number: '***-***-3434',
-                                       expiration: AppConfig.env.otp_valid_for)
+                                       number: '***-***-3434')
       end
     end
   end

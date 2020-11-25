@@ -13,7 +13,7 @@ module Idv
     def phone_number_message
       t("instructions.mfa.#{otp_delivery_preference}.number_message_html",
         number: content_tag(:strong, phone_number),
-        expiration: AppConfig.env.otp_valid_for)
+        expiration: TwoFactorAuthenticatable.direct_otp_valid_for_minutes)
     end
 
     def update_phone_link
