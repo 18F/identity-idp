@@ -20,6 +20,7 @@ class User < ApplicationRecord
   include UserEncryptedAttributeOverrides
   include EmailAddressCallback
   include DeprecatedUserAttributes
+  include UserOtpMethods
 
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
@@ -91,43 +92,6 @@ class User < ApplicationRecord
 
   def decorate
     UserDecorator.new(self)
-  end
-
-  def max_login_attempts?
-    second_factor_attempts_count.to_i >= max_login_attempts
-  end
-
-  def max_login_attempts
-    3
-  end
-
-  def create_direct_otp
-    update(
-      direct_otp: random_base10(TwoFactorAuthenticatable.direct_otp_length),
-      direct_otp_sent_at: Time.zone.now,
-    )
-  end
-
-  def generate_totp_secret
-    ROTP::Base32.random_base32
-  end
-
-  def authenticate_direct_otp(code)
-    return false if direct_otp.nil? || direct_otp != code || direct_otp_expired?
-    clear_direct_otp
-    true
-  end
-
-  def clear_direct_otp
-    update(direct_otp: nil, direct_otp_sent_at: nil)
-  end
-
-  def direct_otp_expired?
-    Time.zone.now > direct_otp_sent_at + TwoFactorAuthenticatable.direct_otp_valid_for_seconds
-  end
-
-  def random_base10(digits)
-    SecureRandom.random_number(10**digits).to_s.rjust(digits, '0')
   end
 
   # Devise automatically downcases and strips any attribute defined in
