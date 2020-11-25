@@ -359,7 +359,7 @@ GEM
       aes_key_wrap
       bindata
     jwt (2.2.1)
-    knapsack (1.19.0)
+    knapsack (1.20.0)
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
