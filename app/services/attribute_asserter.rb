@@ -37,6 +37,7 @@ class AttributeAsserter
     add_bundle(attrs) if user.active_profile.present? && ial_context.ial2_or_greater?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial_context.ial2_service_provider?
     add_aal(attrs) if authn_request.requested_aal_authn_context || !service_provider.aal.nil?
+    add_ial(attrs) if authn_request.requested_ial_authn_context || !service_provider.ial.nil?
     add_x509(attrs) if bundle.include?(:x509_presented) && x509_data
     user.asserted_attributes = attrs
   end
@@ -84,6 +85,12 @@ class AttributeAsserter
     attrs[:aal] = { getter: aal_getter_function(context) } if context
   end
 
+  def add_ial(attrs)
+    context = authn_request.requested_ial_authn_context
+    context ||= Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[service_provider.ial]
+    attrs[:ial] = { getter: ial_getter_function(context) } if context
+  end
+
   def add_x509(attrs)
     attrs[:x509_subject] = { getter: ->(_principal) { x509_data.subject } }
     attrs[:x509_issuer] = { getter: ->(_principal) { x509_data.issuer } }
@@ -103,6 +110,10 @@ class AttributeAsserter
 
   def aal_getter_function(aal_authn_context)
     ->(_principal) { aal_authn_context }
+  end
+
+  def ial_getter_function(ial_authn_context)
+    ->(_principal) { ial_authn_context }
   end
 
   def attribute_getter_function(attr)

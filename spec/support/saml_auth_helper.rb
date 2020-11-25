@@ -10,7 +10,7 @@ module SamlAuthHelper
     settings.assertion_consumer_logout_service_url = 'http://localhost:3000/test/saml/decode_slo_request'
     settings.certificate = saml_test_sp_cert
     settings.private_key = saml_test_sp_key
-    settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    settings.authn_context = response_authn_context
     settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
 
     # SP + IdP Settings
@@ -28,6 +28,14 @@ module SamlAuthHelper
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
     settings
+  end
+
+  def response_authn_context
+    if AppConfig.env.aal_authn_context_enabled == 'true'
+      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    else
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    end
   end
 
   def sp_fingerprint
