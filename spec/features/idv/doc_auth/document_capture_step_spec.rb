@@ -9,17 +9,11 @@ feature 'doc auth document capture step' do
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { 'false' }
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:document_capture_async_uploads_enabled) { false }
-  let(:doc_auth_enable_presigned_s3_urls) { false }
   before do
     allow(AppConfig.env).to receive(:document_capture_step_enabled).
       and_return(document_capture_step_enabled)
     allow(AppConfig.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
-    allow(FeatureManagement).to receive(:doc_auth_enable_presigned_s3_urls).
-      and_return(doc_auth_enable_presigned_s3_urls)
-    allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled).
-      and_return(document_capture_async_uploads_enabled)
     allow(LoginGov::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     sign_in_and_2fa_user(user)
@@ -322,9 +316,6 @@ feature 'doc auth document capture step' do
     end
 
     context 'when using async uploads', :js do
-      let(:document_capture_async_uploads_enabled) { true }
-      let(:doc_auth_enable_presigned_s3_urls) { true }
-
       before do
         allow(VendorDocumentVerificationJob).to receive(:perform).and_call_original
       end
