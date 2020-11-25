@@ -6,7 +6,7 @@
     "browser": true,
     "commonjs": true,
     "es6": true,
-    "mocha": true,
+    "mocha": true
   },
   "globals": {
     "expect": true
@@ -28,7 +28,13 @@
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
     "no-plusplus": "off",
-    "no-restricted-syntax": "off",
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "NewExpression[callee.name='Event']",
+        "message": "Use CustomEvent constructor with polyfill for Internet Explorer"
+      }
+    ],
     "no-unused-expressions": "off",
     "implicit-arrow-linebreak": "off",
     "object-curly-newline": "off",
