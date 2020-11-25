@@ -317,7 +317,9 @@ feature 'doc auth document capture step' do
 
     context 'when using async uploads', :js do
       before do
-        allow(VendorDocumentVerificationJob).to receive(:perform).and_call_original
+        allow(LambdaJobs::Runner).to receive(:new).
+          with(hash_including(job_class: Idv::Proofer.document_job_class)).
+          and_call_original
       end
 
       it 'proceeds to the next page with valid info' do
@@ -340,18 +342,18 @@ feature 'doc auth document capture step' do
         click_on 'Submit'
 
         expect(page).to have_current_path(next_step, wait: 20)
-        expect(VendorDocumentVerificationJob).to have_received(:perform) do |params|
+        expect(LambdaJobs::Runner).to have_received(:new) do |job_class:, args:|
           original = File.read('app/assets/images/logo.png')
 
           decipher = OpenSSL::Cipher.new('aes-256-gcm')
           decipher.decrypt
-          decipher.key = Base64.decode64(params[:encryption_key])
+          decipher.key = Base64.decode64(args[:encryption_key])
 
           Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`
 
           page.driver.get front_url
           expect(page).to have_http_status(200)
-          decipher.iv = Base64.decode64(params[:front_image_iv])
+          decipher.iv = Base64.decode64(args[:front_image_iv])
           decipher.auth_tag = page.body[-16..-1]
           decipher.auth_data = ''
           front_plain = decipher.update(page.body[0..-17]) + decipher.final
@@ -359,7 +361,7 @@ feature 'doc auth document capture step' do
 
           page.driver.get back_url
           expect(page).to have_http_status(200)
-          decipher.iv = Base64.decode64(params[:back_image_iv])
+          decipher.iv = Base64.decode64(args[:back_image_iv])
           decipher.auth_tag = page.body[-16..-1]
           decipher.auth_data = ''
           back_plain = decipher.update(page.body[0..-17]) + decipher.final

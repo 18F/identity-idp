@@ -7,9 +7,11 @@ module Idv
         if mock_fallback_enabled?
           require 'identity-idp-functions/proof_address_mock'
           require 'identity-idp-functions/proof_resolution_mock'
+          require 'identity-idp-functions/proof_document_mock'
         else
           require 'identity-idp-functions/proof_address'
           require 'identity-idp-functions/proof_resolution'
+          require 'identity-idp-functions/proof_document'
         end
       end
 
@@ -26,6 +28,14 @@ module Idv
           IdentityIdpFunctions::ProofAddressMock
         else
           IdentityIdpFunctions::ProofAddress
+        end
+      end
+
+      def document_job_class
+        if mock_fallback_enabled?
+          IdentityIdpFunctions::ProofDocumentMock
+        else
+          IdentityIdpFunctions::ProofDocument
         end
       end
 

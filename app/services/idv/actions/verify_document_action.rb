@@ -33,19 +33,31 @@ module Idv
           verify_document_capture_session_uuid_key,
         )
         document_capture_session.requested_at = Time.zone.now
-        document_capture_session.store_proofing_pii_from_doc({})
+        document_capture_session.store_proofing_pii_from_doc({}) # generates a result_id
 
-        VendorDocumentVerificationJob.perform(
-          document_capture_session_result_id: document_capture_session.result_id,
-          encryption_key: params[:encryption_key],
-          front_image_iv: params[:front_image_iv],
-          back_image_iv: params[:back_image_iv],
-          selfie_image_iv: params[:selfie_image_iv],
-          front_image_url: params[:front_image_url],
-          back_image_url: params[:back_image_url],
-          selfie_image_url: params[:selfie_image_url],
-          liveness_checking_enabled: params[:liveness_checking_enabled],
+        callback_url = Rails.application.routes.url_helpers.document_proof_result_url(
+          result_id: document_capture_session.result_id,
         )
+
+        LambdaJobs::Runner.new(
+          job_class: Idv::Proofer.document_job_class,
+          args: {
+            encryption_key: params[:encryption_key],
+            front_image_iv: params[:front_image_iv],
+            back_image_iv: params[:back_image_iv],
+            selfie_image_iv: params[:selfie_image_iv],
+            front_image_url: params[:front_image_url],
+            back_image_url: params[:back_image_url],
+            selfie_image_url: params[:selfie_image_url],
+            liveness_checking_enabled: params[:liveness_checking_enabled],
+            callback_url: callback_url,
+            trace_id: amzn_trace_id,
+          }
+        ).run do |doc_auth_result|
+          document_capture_session.store_proofing_pii_from_doc(doc_auth_result)
+
+          nil
+        end
       end
     end
   end
