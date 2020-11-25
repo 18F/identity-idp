@@ -3,7 +3,7 @@ import 'intl-tel-input/build/js/utils.js';
 import * as intlTelInput from 'intl-tel-input/build/js/intlTelInput';
 
 function intlTelInputNormalize() {
-  // remove duplacte items in the country list
+  // remove duplicate items in the country list
   const dupUsOption = document.querySelectorAll('#country-listbox #iti-item-us')[1];
   if (dupUsOption) {
     /** @type {HTMLElement} */ (dupUsOption.parentNode).removeChild(dupUsOption);
