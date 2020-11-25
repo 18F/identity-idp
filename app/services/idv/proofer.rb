@@ -1,7 +1,5 @@
 module Idv
   module Proofer
-    @vendors = nil
-
     class << self
       def resolution_job_class
         if Idv::ProoferValidator.mock_fallback_enabled?
