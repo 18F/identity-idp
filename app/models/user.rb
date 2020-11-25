@@ -123,7 +123,7 @@ class User < ApplicationRecord
   end
 
   def direct_otp_expired?
-    Time.zone.now.utc > direct_otp_sent_at + AppConfig.env.otp_valid_for.to_i.minutes
+    Time.zone.now > direct_otp_sent_at + TwoFactorAuthenticatable.direct_otp_valid_for_seconds
   end
 
   def random_base10(digits)
