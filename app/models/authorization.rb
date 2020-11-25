@@ -4,7 +4,7 @@ class Authorization < ApplicationRecord
   validates :user_id, :uid, :provider, presence: true
   validates :uid, uniqueness: { scope: :provider, case_sensitive: false }
 
-  AAL2 = 2
-  AAL3 = 3
+  AAL2 = Idp::Constants::AAL2
+  AAL3 = Idp::Constants::AAL3
 end
 # rubocop:enable Rails/UniqueValidationWithoutIndex

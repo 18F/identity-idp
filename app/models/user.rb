@@ -2,6 +2,9 @@ class User < ApplicationRecord
   self.ignored_columns = %w[x509_dn_uuid otp_secret_key totp_timestamp]
   include NonNullUuid
 
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
+
   devise(
     :database_authenticatable,
     :recoverable,

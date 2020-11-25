@@ -1,3 +1,5 @@
+require 'job_runner/lock_referee'
+
 module JobRunner
   class JobConfiguration
     attr_reader :name

@@ -1,3 +1,5 @@
+require 'idp_constants'
+
 # Global constants used by the SAML IdP
 module Saml
   module Idp
@@ -27,23 +29,23 @@ module Saml
       IAL2_AUTHN_CONTEXTS = [IAL2_AUTHN_CONTEXT_CLASSREF, LOA3_AUTHN_CONTEXT_CLASSREF].freeze
 
       AUTHN_CONTEXT_CLASSREF_TO_IAL = {
-        LOA1_AUTHN_CONTEXT_CLASSREF => Identity::IAL1,
-        LOA3_AUTHN_CONTEXT_CLASSREF => Identity::IAL2,
-        IAL1_AUTHN_CONTEXT_CLASSREF => Identity::IAL1,
-        IAL2_AUTHN_CONTEXT_CLASSREF => Identity::IAL2,
-        IAL2_STRICT_AUTHN_CONTEXT_CLASSREF => Identity::IAL2_STRICT,
-        IALMAX_AUTHN_CONTEXT_CLASSREF => Identity::IAL_MAX,
+        LOA1_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL1,
+        LOA3_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
+        IAL1_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL1,
+        IAL2_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2,
+        IAL2_STRICT_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL2_STRICT,
+        IALMAX_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL_MAX,
       }.freeze
 
       AUTHN_CONTEXT_CLASSREF_TO_AAL = {
-        AAL2_AUTHN_CONTEXT_CLASSREF => Authorization::AAL2,
-        AAL3_AUTHN_CONTEXT_CLASSREF => Authorization::AAL3,
-        AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF => Authorization::AAL3,
+        AAL2_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL2,
+        AAL3_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL3,
+        AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL3,
       }.freeze
 
       AUTHN_CONTEXT_AAL_TO_CLASSREF = {
-        Authorization::AAL2 => AAL2_AUTHN_CONTEXT_CLASSREF,
-        Authorization::AAL3 => AAL3_AUTHN_CONTEXT_CLASSREF,
+        ::Idp::Constants::AAL2 => AAL2_AUTHN_CONTEXT_CLASSREF,
+        ::Idp::Constants::AAL3 => AAL3_AUTHN_CONTEXT_CLASSREF,
       }.freeze
     end
   end
