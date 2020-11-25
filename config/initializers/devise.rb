@@ -31,7 +31,7 @@ Warden::Manager.after_authentication do |user, auth, options|
   if auth.env['action_dispatch.cookies']
     expected_cookie_value = "#{user.class}-#{user.id}"
     actual_cookie_value = auth.env['action_dispatch.cookies'].
-                          signed[TwoFactorAuthenticatable::REMEMBER_TFA_COOKIE]
+                          signed[TwoFactorAuthenticatable::REMEMBER_2FA_COOKIE]
     bypass_by_cookie = actual_cookie_value == expected_cookie_value
   end
 

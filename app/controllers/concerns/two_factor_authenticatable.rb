@@ -6,7 +6,7 @@ module TwoFactorAuthenticatable
   OTP_LENGTH = 6
   ALLOWED_OTP_DRIFT_SECONDS = 30
   DIRECT_OTP_VALID_FOR_SECONDS = AppConfig.env.otp_valid_for.to_i.minutes
-  REMEMBER_TFA_COOKIE = 'remember_tfa'.freeze
+  REMEMBER_2FA_COOKIE = 'remember_tfa'.freeze
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
