@@ -104,7 +104,7 @@ class User < ApplicationRecord
   def create_direct_otp
     update(
       direct_otp: random_base10(TwoFactorAuthenticatable.direct_otp_length),
-      direct_otp_sent_at: Time.zone.now.utc,
+      direct_otp_sent_at: Time.zone.now,
     )
   end
 
