@@ -20,7 +20,7 @@ gem 'foundation_emails'
 gem 'gibberish'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.0'
+gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.1'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.1'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
