@@ -12,9 +12,13 @@ module Upaya
   class Application < Rails::Application
     AppConfig.setup(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))))
 
-    config.load_defaults '5.2'
+    config.load_defaults '6.0'
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
+
+    # We can enable this once we know we're not rolling back from Rails 6
+    # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#purpose-in-signed-or-encrypted-cookie-is-now-embedded-within-cookies
+    config.action_dispatch.use_cookies_with_metadata = false
 
     config.active_job.queue_adapter = 'inline'
     config.time_zone = 'UTC'
