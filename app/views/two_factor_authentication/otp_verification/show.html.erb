@@ -21,7 +21,7 @@
                        pattern: '[0-9]*',
                        class: 'col-12 field monospace mfa',
                        aria: { invalid: false, describedby: 'code-instructs' },
-                       maxlength: TwoFactorAuthenticatable.direct_otp_length,
+                       maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
                        autocomplete: 'one-time-code', type: 'tel') %>
   </div>
   <%= hidden_field_tag 'otp_make_default_number',

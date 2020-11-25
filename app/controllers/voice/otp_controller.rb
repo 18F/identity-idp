@@ -29,7 +29,7 @@ module Voice
     end
 
     def message
-      expiration = TwoFactorAuthenticatable.direct_otp_valid_for_minutes
+      expiration = TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES
       t('voice.otp.message', code: code_with_pauses, expiration: expiration)
     end
 

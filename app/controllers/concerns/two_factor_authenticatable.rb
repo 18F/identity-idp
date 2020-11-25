@@ -4,6 +4,7 @@ module TwoFactorAuthenticatable
 
   NEED_AUTHENTICATION = 'need_two_factor_authentication'.freeze
   OTP_LENGTH = 6
+  DIRECT_OTP_LENGTH = 6
   ALLOWED_OTP_DRIFT_SECONDS = 30
   DIRECT_OTP_VALID_FOR_MINUTES = AppConfig.env.otp_valid_for.to_i
   DIRECT_OTP_VALID_FOR_SECONDS = DIRECT_OTP_VALID_FOR_MINUTES * 60
@@ -17,22 +18,6 @@ module TwoFactorAuthenticatable
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :create
     before_action :apply_secure_headers_override, only: %i[show create]
     # rubocop:enable Rails/LexicallyScopedActionFilter
-  end
-
-  def self.direct_otp_length
-    OTP_LENGTH
-  end
-
-  def self.otp_length
-    OTP_LENGTH
-  end
-
-  def self.direct_otp_valid_for_minutes
-    DIRECT_OTP_VALID_FOR_MINUTES
-  end
-
-  def self.direct_otp_valid_for_seconds
-    DIRECT_OTP_VALID_FOR_SECONDS
   end
 
   def self.allowed_otp_drift_seconds

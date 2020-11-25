@@ -3,8 +3,7 @@ require 'otp_code_generator'
 module PhoneConfirmation
   class CodeGenerator
     def self.call
-      digits = TwoFactorAuthenticatable.direct_otp_length
-      OtpCodeGenerator.generate_digits(digits)
+      OtpCodeGenerator.generate_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
     end
   end
 end

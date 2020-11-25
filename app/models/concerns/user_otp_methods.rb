@@ -9,7 +9,7 @@ module UserOtpMethods
 
   def create_direct_otp
     update(
-      direct_otp: OtpCodeGenerator.generate_digits(TwoFactorAuthenticatable.direct_otp_length),
+      direct_otp: OtpCodeGenerator.generate_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH),
       direct_otp_sent_at: Time.zone.now,
     )
   end
@@ -25,7 +25,7 @@ module UserOtpMethods
   end
 
   def direct_otp_expired?
-    Time.zone.now > direct_otp_sent_at + TwoFactorAuthenticatable.direct_otp_valid_for_seconds
+    Time.zone.now > direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
   end
 
   private

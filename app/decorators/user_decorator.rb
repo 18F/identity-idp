@@ -111,7 +111,7 @@ class UserDecorator
     options = {
       issuer: 'Login.gov',
       otp_secret_key: otp_secret_key,
-      digits: TwoFactorAuthenticatable.direct_otp_length,
+      digits: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
     }
     url = ROTP::TOTP.new(otp_secret_key, options).provisioning_uri(email)
     qrcode = RQRCode::QRCode.new(url)

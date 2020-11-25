@@ -223,7 +223,7 @@ describe User do
 
   describe 'OTP length' do
     it 'uses TwoFactorAuthenticatable setting when set' do
-      allow(TwoFactorAuthenticatable).to receive(:direct_otp_length).and_return(10)
+      stub_const('TwoFactorAuthenticatable::DIRECT_OTP_LENGTH', 10)
       user = build(:user)
       user.create_direct_otp
 

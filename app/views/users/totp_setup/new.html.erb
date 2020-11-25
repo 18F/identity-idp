@@ -55,7 +55,7 @@
         <div class="clearfix mxn1">
           <div class="col col-6 sm-col-7 px1">
             <%= text_field_tag :code, '', required: true, aria: { invalid: false }, pattern: '[0-9]*', type: 'tel',
-                class: 'block col-12 field monospace mfa', maxlength: TwoFactorAuthenticatable.otp_length,
+                class: 'block col-12 field monospace mfa', maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
                 'aria-labelledby': 'totp-label' %>
           </div>
           <div class="col col-6 sm-col-5 px1">

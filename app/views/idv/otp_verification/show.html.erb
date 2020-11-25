@@ -15,7 +15,7 @@
     <%= text_field_tag(:code, '', value: @code, required: true,
                        aria: { invalid: false, describedby: 'code-instructs' }, autofocus: true,
                        pattern: '[0-9]*', class: 'col-12 field monospace mfa',
-                       maxlength: TwoFactorAuthenticatable.direct_otp_length, autocomplete: 'one-time-code', type: 'tel') %>
+                       maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH, autocomplete: 'one-time-code', type: 'tel') %>
   </div>
   <%= submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top sm-col-6 col-12' %>
   <br/>
