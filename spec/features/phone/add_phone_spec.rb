@@ -34,6 +34,31 @@ describe 'Add a new phone number' do
     click_submit_default
   end
 
+  scenario 'adding a new phone number validates number', js: true do
+    user = create(:user, :signed_up)
+    sign_in_and_2fa_user(user)
+    click_on "+ #{t('account.index.phone_add')}"
+
+    hidden_select = page.find('[name="new_phone_form[international_code]"]', visible: :hidden)
+
+    find_button 'Continue', disabled: true
+    expect(hidden_select.value).to eq('US')
+
+    input = fill_in :new_phone_form_phone, with: '5135558410'
+    expect(input.value).to eq('5135558410')
+    find_button 'Continue', disabled: false
+    expect(hidden_select.value).to eq('US')
+
+    fill_in :new_phone_form_phone, with: 'abcd1234'
+    find_button 'Continue', disabled: true
+    expect(hidden_select.value).to eq('US')
+
+    input = fill_in :new_phone_form_phone, with: '+81543543643'
+    expect(input.value).to eq('+81 543543643')
+    find_button 'Continue', disabled: false
+    expect(hidden_select.value).to eq('JP')
+  end
+
   scenario 'adding a phone that is already on the user account does not add another phone config' do
     user = create(:user, :signed_up)
     phone = user.phone_configurations.first.phone
