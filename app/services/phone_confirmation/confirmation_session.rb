@@ -32,7 +32,7 @@ module PhoneConfirmation
     end
 
     def expired?
-      expiration_time = sent_at + AppConfig.env.otp_valid_for.to_i.minutes
+      expiration_time = sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS
       Time.zone.now > expiration_time
     end
 

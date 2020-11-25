@@ -20,7 +20,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   def handle_valid_password
-    if current_user.totp_enabled?
+    if current_user.auth_app_configurations.any?
       redirect_to login_two_factor_authenticator_url(reauthn: true)
     else
       redirect_to user_two_factor_authentication_url(reauthn: true)

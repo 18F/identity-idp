@@ -9,7 +9,7 @@ module ControllerHelper
 
   def sign_in_before_2fa(user = create(:user, :signed_up))
     sign_in_as_user(user)
-    controller.current_user.send_new_otp
+    controller.current_user.create_direct_otp
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
     allow(controller).to receive(:signed_in_url).and_return(account_url)
   end

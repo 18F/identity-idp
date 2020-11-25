@@ -63,7 +63,6 @@ gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'twilio-ruby'
-gem 'two_factor_authentication', '>= 2.1.1'
 gem 'uglifier', '~> 3.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'

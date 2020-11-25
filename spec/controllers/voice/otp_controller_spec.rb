@@ -142,7 +142,7 @@ RSpec.describe Voice::OtpController do
       end
 
       it 'includes the otp expiration in the message' do
-        allow(Devise).to receive(:direct_otp_valid_for).and_return(4.minutes)
+        stub_const('TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES', 4)
 
         action
         expect(response.body).to include('4 minutes')

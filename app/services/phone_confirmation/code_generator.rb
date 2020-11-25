@@ -1,8 +1,9 @@
+require 'otp_code_generator'
+
 module PhoneConfirmation
   class CodeGenerator
     def self.call
-      digits = Devise.direct_otp_length
-      SecureRandom.random_number(10**digits).to_s.rjust(digits, '0')
+      OtpCodeGenerator.generate_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
     end
   end
 end

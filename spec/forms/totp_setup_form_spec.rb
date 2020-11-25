@@ -18,7 +18,7 @@ describe TotpSetupForm do
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
         expect(form.submit).to eq result
-        expect(user.reload.auth_app_configurations.any?).to eq true
+        expect(user.auth_app_configurations.any?).to eq true
       end
     end
 
@@ -34,7 +34,7 @@ describe TotpSetupForm do
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
         expect(form.submit).to eq result
-        expect(user.reload.totp_enabled?).to eq false
+        expect(user.auth_app_configurations.any?).to eq false
       end
     end
 
@@ -52,7 +52,7 @@ describe TotpSetupForm do
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
         expect(form.submit).to eq result
-        expect(user.reload.totp_enabled?).to eq false
+        expect(user.auth_app_configurations.any?).to eq false
       end
     end
   end
