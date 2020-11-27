@@ -54,7 +54,7 @@ module Idv
             trace_id: amzn_trace_id,
           }
         ).run do |doc_auth_result|
-          document_capture_session.store_proofing_pii_from_doc(doc_auth_result)
+          document_capture_session.store_proofing_pii_from_doc(doc_auth_result[:document_result])
 
           nil
         end
