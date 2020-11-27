@@ -3,8 +3,8 @@
 #
 # See: https://github.com/heartcombo/simple_form/blob/master/lib/simple_form/error_notification.rb
 
-module SimpleForm
-  class ErrorNotification
+module Extensions
+  SimpleForm::ErrorNotification.class_eval do
     def render
       return unless has_errors?
       template.render 'shared/alert',
