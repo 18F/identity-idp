@@ -2,11 +2,12 @@ import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import { render as baseRender, fireEvent } from '@testing-library/react';
-import {
+import httpUpload, {
   UploadFormEntriesError,
   toFormEntryError,
 } from '@18f/identity-document-capture/services/upload';
 import {
+  ServiceProviderContext,
   UploadContextProvider,
   AcuantContextProvider,
   DeviceContext,
@@ -290,6 +291,50 @@ describe('document-capture/components/document-capture', () => {
 
     const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');
     expect(hasValueSelected).to.be.true();
+  });
+
+  it('redirects from a server error', async () => {
+    const { getByLabelText, getByText } = render(
+      <UploadContextProvider upload={httpUpload} endpoint="/upload">
+        <ServiceProviderContext.Provider value={{ isLivenessRequired: false }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <DocumentCapture />
+          </AcuantContextProvider>
+        </ServiceProviderContext.Provider>
+      </UploadContextProvider>,
+    );
+
+    sandbox
+      .stub(window, 'fetch')
+      .withArgs('/upload')
+      .resolves({
+        ok: false,
+        status: 418,
+        json: () =>
+          Promise.resolve({
+            redirect: '#teapot',
+          }),
+      });
+
+    initialize({ isCameraSupported: false });
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_back'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+
+    userEvent.click(getByText('forms.buttons.submit.default'));
+    await waitFor(() => window.location.hash === '#teapot');
+
+    // JSDOM doesn't support full page navigation, but at this point we should assume navigation
+    // would have been initiated, meaning it's also safe to assume that the user would not expect
+    // to see a "You have unsaved changed" prompt.
+    const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+    window.dispatchEvent(event);
+    expect(event.defaultPrevented).to.be.false();
   });
 
   it('renders async upload pending progress', async () => {

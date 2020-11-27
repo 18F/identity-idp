@@ -138,12 +138,6 @@ describe('document-capture/services/upload', () => {
     await Promise.race([
       new Promise((resolve) => {
         window.onhashchange = () => {
-          // Verify that if the redirect were a full-page redirect (as opposed to hash change), a
-          // prompt would not be shown to the user.
-          const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
-          window.dispatchEvent(event);
-          expect(event.defaultPrevented).to.be.false();
-
           expect(window.location.hash).to.equal('#teapot');
           resolve();
         };
