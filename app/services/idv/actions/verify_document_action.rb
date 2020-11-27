@@ -49,7 +49,7 @@ module Idv
             front_image_url: params[:front_image_url],
             back_image_url: params[:back_image_url],
             selfie_image_url: params[:selfie_image_url],
-            liveness_checking_enabled: params[:liveness_checking_enabled],
+            liveness_checking_enabled: liveness_checking_enabled?,
             callback_url: callback_url,
             trace_id: amzn_trace_id,
           }
