@@ -342,7 +342,7 @@ feature 'doc auth document capture step' do
         click_on 'Submit'
 
         expect(page).to have_current_path(next_step, wait: 20)
-        expect(LambdaJobs::Runner).to have_received(:new) do |job_class:, args:|
+        expect(LambdaJobs::Runner).to have_received(:new) do |args:, **|
           original = File.read('app/assets/images/logo.png')
 
           decipher = OpenSSL::Cipher.new('aes-256-gcm')
