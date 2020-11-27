@@ -9,17 +9,11 @@ feature 'doc auth document capture step' do
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { 'false' }
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:document_capture_async_uploads_enabled) { false }
-  let(:doc_auth_enable_presigned_s3_urls) { false }
   before do
     allow(AppConfig.env).to receive(:document_capture_step_enabled).
       and_return(document_capture_step_enabled)
     allow(AppConfig.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
-    allow(FeatureManagement).to receive(:doc_auth_enable_presigned_s3_urls).
-      and_return(doc_auth_enable_presigned_s3_urls)
-    allow(FeatureManagement).to receive(:document_capture_async_uploads_enabled).
-      and_return(document_capture_async_uploads_enabled)
     allow(LoginGov::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     sign_in_and_2fa_user(user)
@@ -322,11 +316,10 @@ feature 'doc auth document capture step' do
     end
 
     context 'when using async uploads', :js do
-      let(:document_capture_async_uploads_enabled) { true }
-      let(:doc_auth_enable_presigned_s3_urls) { true }
-
       before do
-        allow(VendorDocumentVerificationJob).to receive(:perform).and_call_original
+        allow(LambdaJobs::Runner).to receive(:new).
+          with(hash_including(job_class: Idv::Proofer.document_job_class)).
+          and_call_original
       end
 
       it 'proceeds to the next page with valid info' do
@@ -349,29 +342,26 @@ feature 'doc auth document capture step' do
         click_on 'Submit'
 
         expect(page).to have_current_path(next_step, wait: 20)
-        expect(VendorDocumentVerificationJob).to have_received(:perform) do |params|
+        expect(LambdaJobs::Runner).to have_received(:new) do |args:, **|
           original = File.read('app/assets/images/logo.png')
 
-          decipher = OpenSSL::Cipher.new('aes-256-gcm')
-          decipher.decrypt
-          decipher.key = Base64.decode64(params[:encryption_key])
+          encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+          encryption_key = Base64.decode64(args[:encryption_key])
 
           Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`
 
           page.driver.get front_url
           expect(page).to have_http_status(200)
-          decipher.iv = Base64.decode64(params[:front_image_iv])
-          decipher.auth_tag = page.body[-16..-1]
-          decipher.auth_data = ''
-          front_plain = decipher.update(page.body[0..-17]) + decipher.final
+          front_plain = encryption_helper.decrypt(
+            data: page.body, iv: Base64.decode64(args[:front_image_iv]), key: encryption_key,
+          )
           expect(front_plain.b).to eq(original.b)
 
           page.driver.get back_url
           expect(page).to have_http_status(200)
-          decipher.iv = Base64.decode64(params[:back_image_iv])
-          decipher.auth_tag = page.body[-16..-1]
-          decipher.auth_data = ''
-          back_plain = decipher.update(page.body[0..-17]) + decipher.final
+          back_plain = encryption_helper.decrypt(
+            data: page.body, iv: Base64.decode64(args[:back_image_iv]), key: encryption_key,
+          )
           expect(back_plain.b).to eq(original.b)
         end
       end
