@@ -345,26 +345,23 @@ feature 'doc auth document capture step' do
         expect(LambdaJobs::Runner).to have_received(:new) do |args:, **|
           original = File.read('app/assets/images/logo.png')
 
-          decipher = OpenSSL::Cipher.new('aes-256-gcm')
-          decipher.decrypt
-          decipher.key = Base64.decode64(args[:encryption_key])
+          encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+          encryption_key = Base64.decode64(args[:encryption_key])
 
           Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`
 
           page.driver.get front_url
           expect(page).to have_http_status(200)
-          decipher.iv = Base64.decode64(args[:front_image_iv])
-          decipher.auth_tag = page.body[-16..-1]
-          decipher.auth_data = ''
-          front_plain = decipher.update(page.body[0..-17]) + decipher.final
+          front_plain = encryption_helper.decrypt(
+            data: page.body, iv: Base64.decode64(args[:front_image_iv]), key: encryption_key
+          )
           expect(front_plain.b).to eq(original.b)
 
           page.driver.get back_url
           expect(page).to have_http_status(200)
-          decipher.iv = Base64.decode64(args[:back_image_iv])
-          decipher.auth_tag = page.body[-16..-1]
-          decipher.auth_data = ''
-          back_plain = decipher.update(page.body[0..-17]) + decipher.final
+          back_plain = encryption_helper.decrypt(
+            data: page.body, iv: Base64.decode64(args[:back_image_iv]), key: encryption_key
+          )
           expect(back_plain.b).to eq(original.b)
         end
       end
