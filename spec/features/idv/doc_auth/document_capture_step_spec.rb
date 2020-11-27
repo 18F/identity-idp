@@ -353,14 +353,14 @@ feature 'doc auth document capture step' do
           page.driver.get front_url
           expect(page).to have_http_status(200)
           front_plain = encryption_helper.decrypt(
-            data: page.body, iv: Base64.decode64(args[:front_image_iv]), key: encryption_key
+            data: page.body, iv: Base64.decode64(args[:front_image_iv]), key: encryption_key,
           )
           expect(front_plain.b).to eq(original.b)
 
           page.driver.get back_url
           expect(page).to have_http_status(200)
           back_plain = encryption_helper.decrypt(
-            data: page.body, iv: Base64.decode64(args[:back_image_iv]), key: encryption_key
+            data: page.body, iv: Base64.decode64(args[:back_image_iv]), key: encryption_key,
           )
           expect(back_plain.b).to eq(original.b)
         end
