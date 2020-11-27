@@ -164,7 +164,7 @@ class ServiceProviderSessionDecorator
 
   def custom_alert(section)
     language = I18n.locale.to_s
-    sp.help_text[section]&.dig(language)
+    sp.help_text.dig(section, language)
   end
 
   def request_url
