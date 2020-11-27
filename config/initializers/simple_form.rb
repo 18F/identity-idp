@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 SimpleForm.setup do |config|
-  require Rails.root.join('lib/simple_form/error_notification')
+  require Rails.root.join('lib', 'simple_form', 'error_notification')
 
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
