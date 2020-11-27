@@ -29,8 +29,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 7a4e5d0bc74121173f0175264aa4f6a2e5774036
-  branch: mock-proofer-handles-local-urls
+  revision: e4646b3918d61e72e68254dece4b2ddcff8bc456
+  ref: e4646b3918d61e72e68254dece4b2ddcff8bc456
   specs:
     identity-idp-functions (0.7.5)
       aws-sdk-s3 (>= 1.73)
