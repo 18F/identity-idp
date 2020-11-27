@@ -1,3 +1,8 @@
+# Monkey-patch SimpleForm::ErrorNotification to customize markup to reuse alert partial, which
+# requires more markup customization than is possible through default options.
+#
+# See: https://github.com/heartcombo/simple_form/blob/master/lib/simple_form/error_notification.rb
+
 module SimpleForm
   class ErrorNotification
     def render
