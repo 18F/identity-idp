@@ -52,7 +52,7 @@ module Idv
             liveness_checking_enabled: liveness_checking_enabled?,
             callback_url: callback_url,
             trace_id: amzn_trace_id,
-          }
+          },
         ).run do |doc_auth_result|
           document_capture_session.store_proofing_pii_from_doc(doc_auth_result[:document_result])
 
