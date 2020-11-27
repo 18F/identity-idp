@@ -54,7 +54,10 @@ describe 'devise/passwords/new.html.erb' do
   it 'has sp alert for certain service providers' do
     render
 
-    expect(rendered).to have_selector('.usa-alert')
+    expect(rendered).to have_selector(
+      '.usa-alert',
+      text: 'custom forgot password help text for Awesome Application!',
+    )
   end
 
   context 'service provider does not have custom help text' do

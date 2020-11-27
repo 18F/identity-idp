@@ -41,8 +41,6 @@ class SessionDecorator
     true
   end
 
-  def sp_msg; end
-
   def sp_name; end
 
   def sp_logo; end
