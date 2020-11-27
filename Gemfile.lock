@@ -29,8 +29,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: e4646b3918d61e72e68254dece4b2ddcff8bc456
-  ref: e4646b3918d61e72e68254dece4b2ddcff8bc456
+  revision: 642aa8b19897fbed4374a7db269beee3c7197c7f
+  branch: margolis-expose-encrypt
   specs:
     identity-idp-functions (0.7.5)
       aws-sdk-s3 (>= 1.73)
