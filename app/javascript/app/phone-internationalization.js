@@ -70,15 +70,8 @@ const internationalCodeFromPhone = (phone) => {
   return '1';
 };
 
-const updateInternationalCodeInPhone = (phone, newCode) => {
-  if (phone.match(/^\+[^d+]$/)) {
-    phone = phone.replace(/^\+[^d+]$/, '');
-  }
-  if (phone.match(INTERNATIONAL_CODE_REGEX)) {
-    return phone.replace(INTERNATIONAL_CODE_REGEX, `+${newCode} `);
-  }
-  return `+${newCode} ${phone}`;
-};
+const updateInternationalCodeInPhone = (phone, newCode) =>
+  phone.replace(new RegExp(`^\\+?(\\d+\\s+|${newCode})?`), `+${newCode} `);
 
 const updateInternationalCodeInput = () => {
   const phoneInput = document.querySelector('[data-international-phone-form] .phone');
