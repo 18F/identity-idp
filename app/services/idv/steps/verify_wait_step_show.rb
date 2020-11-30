@@ -32,6 +32,7 @@ module Idv
         delete_async
 
         if response.success?
+          flow_session[:pii_from_doc] = current_async_state.pii
           flash[:success] = I18n.t('doc_auth.forms.doc_success')
           mark_step_complete(:verify_wait)
         else
