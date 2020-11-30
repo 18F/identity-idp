@@ -17,11 +17,6 @@ class Identity < ApplicationRecord
 
   CONSENT_EXPIRATION = 1.year
 
-  IAL_MAX = Idp::Constants::IAL_MAX
-  IAL1 = Idp::Constants::IAL1
-  IAL2 = Idp::Constants::IAL2
-  IAL2_STRICT = Idp::Constants::IAL2_STRICT
-
   def deactivate
     update!(session_uuid: nil)
   end

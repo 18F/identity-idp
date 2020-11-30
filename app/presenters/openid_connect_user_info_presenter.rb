@@ -91,11 +91,11 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_session?
-    identity.ial == Identity::IAL2
+    identity.ial == Idp::Constants::IAL2
   end
 
   def ial2_strict_session?
-    identity.ial == Identity::IAL2_STRICT
+    identity.ial == Idp::Constants::IAL2_STRICT
   end
 
   def ialmax_session?
