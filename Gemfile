@@ -72,7 +72,6 @@ group :development do
   gem 'better_errors', '>= 2.5.1'
   gem 'binding_of_caller'
   gem 'brakeman', require: false
-  gem 'bummr', require: false
   gem 'derailed', '>= 0.1.0'
   gem 'fasterer', require: false
   gem 'guard-rspec', require: false
