@@ -57,7 +57,9 @@ module Reports
       sps = []
       ServiceProvider.where.not(
         iaa: nil,
+      ).where.not(
         iaa_start_date: nil,
+      ).where.not(
         iaa_end_date: nil,
       ).sort_by(&:issuer).each do |sp|
         iaa = sp.iaa

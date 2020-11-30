@@ -23,9 +23,9 @@ describe SignUp::RegistrationsController, devise: true do
 
     it 'gracefully handles invalid formats' do
       @request.env['HTTP_ACCEPT'] = "nessus=bad_bad_value'"
-      get :new
 
-      expect(response.status).to eq(200)
+      expect { get :new }.
+        to raise_error(Mime::Type::InvalidMimeType)
     end
   end
 

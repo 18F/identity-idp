@@ -18,6 +18,14 @@ feature 'Accessibility on static pages', :js do
     expect(page).to be_uniquely_titled
   end
 
+  scenario '406 page' do
+    visit '/406'
+
+    expect(page).to be_accessible.according_to :section508, :"best-practice"
+    expect(page).to label_required_fields
+    expect(page).to be_uniquely_titled
+  end
+
   scenario '422 page' do
     visit '/422'
 
