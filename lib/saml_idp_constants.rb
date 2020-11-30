@@ -39,10 +39,10 @@ module Saml
       }.freeze
 
       AUTHN_CONTEXT_IAL_TO_CLASSREF = {
-        Identity::IAL1 => IAL1_AUTHN_CONTEXT_CLASSREF,
-        Identity::IAL2 => IAL2_AUTHN_CONTEXT_CLASSREF,
-        Identity::IAL2_STRICT => IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
-        Identity::IAL_MAX => IALMAX_AUTHN_CONTEXT_CLASSREF,
+        ::Idp::Constants::IAL1 => IAL1_AUTHN_CONTEXT_CLASSREF,
+        ::Idp::Constants::IAL2 => IAL2_AUTHN_CONTEXT_CLASSREF,
+        ::Idp::Constants::IAL2_STRICT => IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
+        ::Idp::Constants::IAL_MAX => IALMAX_AUTHN_CONTEXT_CLASSREF,
       }.freeze
 
       AUTHN_CONTEXT_CLASSREF_TO_AAL = {
