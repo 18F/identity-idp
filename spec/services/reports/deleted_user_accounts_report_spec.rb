@@ -6,7 +6,7 @@ describe Reports::DeletedUserAccountsReport do
   let(:name) { 'An SP' }
   let(:user) { create(:user) }
   let(:uuid) { 'foo' }
-  let(:last_authenticated_at) { '2020-01-02 12:03:04' }
+  let(:last_authenticated_at) { '2020-01-02 12:03:04 UTC' }
 
   subject { described_class.new }
 
@@ -20,7 +20,7 @@ describe Reports::DeletedUserAccountsReport do
     create(:identity, service_provider: issuer,
                       user: user,
                       uuid: uuid,
-                      last_authenticated_at: last_authenticated_at + ' UTC')
+                      last_authenticated_at: last_authenticated_at)
     user.destroy!
 
     allow(AppConfig.env).to receive(:deleted_user_accounts_report_configs).and_return(
