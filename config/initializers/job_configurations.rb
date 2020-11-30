@@ -1,3 +1,6 @@
+require 'job_runner/runner'
+require 'job_runner/job_configuration'
+
 # Daily GPO letter mailings
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'Send GPO letter',

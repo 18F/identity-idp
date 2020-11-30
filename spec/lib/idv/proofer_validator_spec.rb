@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Idv::Proofer do
+describe Idv::ProoferValidator do
   let(:proofer_mock_fallback) { 'false' }
 
   before do

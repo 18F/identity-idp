@@ -1,6 +1,10 @@
 module Encryption
   module Encryptors
     class PiiEncryptor
+      include ::NewRelic::Agent::MethodTracer
+      add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+      add_method_tracer :decrypt, "Custom/#{name}/decrypt"
+
       Ciphertext = Struct.new(:encrypted_data, :salt, :cost) do
         include Encodable
         class << self

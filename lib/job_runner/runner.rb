@@ -1,3 +1,6 @@
+require 'job_runner/health_checker'
+require 'job_runner/health_checker_critical'
+
 module JobRunner
   # The Runner class manages the list of known configurations and is
   # responsible for running all of them in turn when {#run} is called.

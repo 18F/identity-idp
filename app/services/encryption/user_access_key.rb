@@ -10,6 +10,9 @@
 #
 module Encryption
   class UserAccessKey
+    include ::NewRelic::Agent::MethodTracer
+    add_method_tracer :initialize, "Custom/#{name}/build"
+
     attr_reader :cost, :salt, :z1, :z2, :random_r, :masked_ciphertext, :cek
 
     def initialize(password: nil, salt: nil, cost: nil, scrypt_hash: nil)

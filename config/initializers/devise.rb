@@ -1,5 +1,7 @@
 require 'saml_idp_constants'
 require 'custom_devise_failure_app'
+require 'mailable'
+
 Devise.setup do |config|
   include Mailable
   require 'devise/orm/active_record'

@@ -43,9 +43,7 @@ describe Encryption::Encryptors::PiiEncryptor do
         with(plaintext, decoded_scrypt_digest).
         and_return('aes_ciphertext')
 
-      kms_client = instance_double(Encryption::ContextlessKmsClient)
-      expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
-      expect(kms_client).to receive(:encrypt).
+      allow_any_instance_of(Encryption::KmsClient).to receive(:encrypt).
         with('aes_ciphertext', 'context' => 'pii-encryption', 'user_uuid' => 'uuid-123-abc').
         and_return('kms_ciphertext')
 

@@ -49,10 +49,10 @@ class IdTokenBuilder
   def acr
     ial = identity.ial
     case ial
-    when Identity::IAL_MAX then Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-    when Identity::IAL1 then Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    when Identity::IAL2 then Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-    when Identity::IAL2_STRICT then Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::IAL_MAX then Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::IAL1 then Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::IAL2 then Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::IAL2_STRICT then Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
     else
       raise "Unknown ial #{ial}"
     end

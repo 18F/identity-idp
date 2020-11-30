@@ -1,1 +1,3 @@
-Idv::Proofer.validate_vendors!
+require 'idv/proofer_validator'
+
+Idv::ProoferValidator.validate_vendors!

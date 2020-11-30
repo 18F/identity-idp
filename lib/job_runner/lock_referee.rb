@@ -1,3 +1,6 @@
+require 'job_runner/callback_executor'
+require 'job_runner/job_run_needed_resolver'
+
 module JobRunner
   class LockReferee
     attr_reader :job_configuration

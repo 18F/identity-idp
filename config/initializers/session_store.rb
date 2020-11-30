@@ -1,4 +1,5 @@
 require 'session_encryptor'
+require 'session_encryptor_error_handler'
 
 options = {
   key: '_upaya_session',

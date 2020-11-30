@@ -81,7 +81,7 @@ module Users
     end
 
     def request_is_ial2?
-      request_ial == Identity::IAL2
+      request_ial == Idp::Constants::IAL2
     end
 
     def request_ial
