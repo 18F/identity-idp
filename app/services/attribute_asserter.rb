@@ -80,8 +80,10 @@ class AttributeAsserter
   end
 
   def add_aal(attrs)
-    context = authn_request.requested_aal_authn_context
-    context ||= Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[service_provider.aal]
+    requested_context = authn_request.requested_aal_authn_context
+    requested_aal_level = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_context]
+    aal_level = [requested_aal_level.to_i, service_provider.aal.to_i].max
+    context = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[aal_level]
     attrs[:aal] = { getter: aal_getter_function(context) } if context
   end
 

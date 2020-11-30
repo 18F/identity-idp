@@ -50,8 +50,8 @@ module SamlIdpAuthConcern
   end
 
   def requested_authn_contexts
-    @requested_authn_context ||= saml_request.requested_authn_contexts.presence ||
-                                 [default_authn_context]
+    @requested_authn_contexts ||= saml_request.requested_authn_contexts.presence ||
+                                  [default_authn_context]
   end
 
   def requested_authn_context
@@ -71,11 +71,19 @@ module SamlIdpAuthConcern
   end
 
   def default_aal_context
-    Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    if current_service_provider.aal
+      Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[current_service_provider.aal]
+    else
+      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    end
   end
 
   def default_ial_context
-    Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    if current_service_provider.ial
+      Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[current_service_provider.ial]
+    else
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    end
   end
 
   def requested_aal_authn_context

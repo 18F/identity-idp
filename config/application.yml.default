@@ -369,7 +369,7 @@ production:
   usps_upload_token:
 
 test:
-  aal_authn_context_enabled: 'false'
+  aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   aamva_verification_url: https://example.org:12345/verification/url

@@ -153,6 +153,12 @@ module SamlAuthHelper
     settings
   end
 
+  def ial1_saml_settings
+    settings = sp1_saml_settings.dup
+    settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    settings
+  end
+
   def ial2_saml_settings
     settings = sp1_saml_settings.dup
     settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
@@ -224,7 +230,7 @@ module SamlAuthHelper
   def ial1_with_aal3_saml_settings
     settings = sp1_saml_settings
     settings.authn_context = [
-      settings.authn_context,
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
     ]
     settings
@@ -236,6 +242,10 @@ module SamlAuthHelper
 
   def sp2_authnrequest
     auth_request.create(sp2_saml_settings)
+  end
+
+  def ial1_authnrequest
+    auth_request.create(ial1_saml_settings)
   end
 
   def ial2_authnrequest
