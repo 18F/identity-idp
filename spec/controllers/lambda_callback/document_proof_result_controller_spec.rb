@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe LambdaCallback::DocumentProofResultController do
   describe '#create' do
-    let(:id) { SecureRandom.uuid }
     let(:pii) do
       {
         'first_name' => Faker::Name.first_name,
@@ -20,36 +19,25 @@ describe LambdaCallback::DocumentProofResultController do
     context 'with valid API token' do
       before do
         request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.document_proof_result_lambda_token
-
-        document_capture_session.store_proofing_pii_from_doc(pii)
-
-        proofer_result = ProofingDocumentCaptureSessionResult.new(id: id, pii: pii,
-                                                                  result: idv_result)
-        document_capture_session.store_proofing_result(proofer_result)
+        document_capture_session.store_proofing_pii_from_doc({}) # generates a result_id
       end
 
-      it 'accepts and stores successful document proofing results' do
+      it 'accepts and stores pii and successful document proofing results' do
         post :create, params: {
           result_id: document_capture_session.result_id,
           document_result: {
             success: true,
             exception: '',
-            pii_from_doc: {
-              first_name: 'Test',
-              last_name: 'McTest',
-            },
+            pii_from_doc: pii,
           },
-        }
+        }, as: :json
 
         proofing_result = document_capture_session.load_proofing_result
         expect(proofing_result.result).to include(
           exception: '',
-          success: 'true', # Q: why does this get converted from bool to string?
-          pii_from_doc: {
-            first_name: 'Test',
-            last_name: 'McTest',
-          },
+          success: true,
         )
+        expect(proofing_result.pii).to eq(pii.symbolize_keys)
       end
 
       it 'accepts and stores unsuccessful document proofing results' do
