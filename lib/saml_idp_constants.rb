@@ -1,4 +1,4 @@
-require 'idp_constants'
+require 'idp/constants'
 
 # Global constants used by the SAML IdP
 module Saml
