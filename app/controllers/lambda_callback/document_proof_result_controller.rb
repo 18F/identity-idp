@@ -15,8 +15,18 @@ module LambdaCallback
     end
 
     def document_result_parameter
-      params.require(:document_result).permit(:exception, :success, :timed_out,
-                                              errors: {}, context: {})
+      params.require(:document_result).permit(
+        :billed,
+        :exception,
+        :raw_alerts,
+        :result,
+        :success,
+        :timed_out,
+        context: {},
+        errors: {},
+        pii_from_doc: {},
+        raw_alerts: [],
+      )
     end
 
     def track_exception_in_result(result)

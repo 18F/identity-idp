@@ -29,11 +29,27 @@ describe LambdaCallback::DocumentProofResultController do
       end
 
       it 'accepts and stores successful document proofing results' do
-        post :create, params: { result_id: document_capture_session.result_id,
-                                document_result: { success: true, exception: '' } }
+        post :create, params: {
+          result_id: document_capture_session.result_id,
+          document_result: {
+            success: true,
+            exception: '',
+            pii_from_doc: {
+              first_name: 'Test',
+              last_name: 'McTest',
+            },
+          },
+        }
 
         proofing_result = document_capture_session.load_proofing_result
-        expect(proofing_result.result).to include(exception: '', success: 'true')
+        expect(proofing_result.result).to include(
+          exception: '',
+          success: 'true', # Q: why does this get converted from bool to string?
+          pii_from_doc: {
+            first_name: 'Test',
+            last_name: 'McTest',
+          },
+        )
       end
 
       it 'accepts and stores unsuccessful document proofing results' do

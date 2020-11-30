@@ -175,8 +175,30 @@ describe Idv::DocAuthController do
   end
 
   describe 'async document verify' do
+    let(:front_image_url) { 'http://foo.com/bar1' }
+    let(:back_image_url) { 'http://foo.com/bar2' }
+    let(:selfie_image_url) { 'http://foo.com/bar3' }
+    let(:encryption_key) { SecureRandom.random_bytes(32) }
+    let(:front_image_iv) { SecureRandom.random_bytes(12) }
+    let(:back_image_iv) { SecureRandom.random_bytes(12) }
+    let(:selfie_image_iv) { SecureRandom.random_bytes(12) }
+
     before do
       mock_document_capture_step
+
+      encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+      stub_request(:get, front_image_url).
+        to_return(body: encryption_helper.encrypt(
+          data: '{}', key: encryption_key, iv: front_image_iv,
+        ))
+      stub_request(:get, back_image_url).
+        to_return(body: encryption_helper.encrypt(
+          data: '{}', key: encryption_key, iv: back_image_iv,
+        ))
+      stub_request(:get, selfie_image_url).
+        to_return(body: encryption_helper.encrypt(
+          data: '{}', key: encryption_key, iv: selfie_image_iv,
+        ))
     end
     let(:successful_response) do
       { success: true }.to_json
@@ -186,13 +208,13 @@ describe Idv::DocAuthController do
       it 'successfully submits the images' do
         put :update, params: { step: 'verify_document',
                                document_capture_session_uuid: 'foo',
-                               encryption_key: 'bar',
-                               front_image_iv: 'iv1',
-                               back_image_iv: 'iv2',
-                               selfie_image_iv: 'iv3',
-                               front_image_url: 'http://foo.com/bar1',
-                               back_image_url: 'http://foo.com/bar2',
-                               selfie_image_url: 'http://foo.com/bar3' }
+                               encryption_key: Base64.encode64(encryption_key),
+                               front_image_iv: Base64.encode64(front_image_iv),
+                               back_image_iv: Base64.encode64(back_image_iv),
+                               selfie_image_iv: Base64.encode64(selfie_image_iv),
+                               front_image_url: front_image_url,
+                               back_image_url: back_image_url,
+                               selfie_image_url: selfie_image_url }
 
         expect(response.status).to eq(202)
         expect(response.body).to eq(successful_response)
@@ -213,13 +235,13 @@ describe Idv::DocAuthController do
       it 'successfully submits the images' do
         put :update, params: { step: 'verify_document',
                                document_capture_session_uuid: 'foo',
-                               encryption_key: 'bar',
-                               front_image_iv: 'iv1',
-                               back_image_iv: 'iv2',
-                               selfie_image_iv: 'iv3',
-                               front_image_url: 'http://foo.com/bar1',
-                               back_image_url: 'http://foo.com/bar2',
-                               selfie_image_url: 'http://foo.com/bar3' }
+                               encryption_key: Base64.encode64(encryption_key),
+                               front_image_iv: Base64.encode64(front_image_iv),
+                               back_image_iv: Base64.encode64(back_image_iv),
+                               selfie_image_iv: Base64.encode64(selfie_image_iv),
+                               front_image_url: front_image_url,
+                               back_image_url: back_image_url,
+                               selfie_image_url: selfie_image_url }
 
         expect(response.status).to eq(202)
         expect(response.body).to eq(successful_response)

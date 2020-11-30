@@ -134,6 +134,7 @@ describe('document-capture/services/upload', () => {
       ),
     );
 
+    // `Promise.race` because the `upload` promise should never resolve in case of a redirect.
     await Promise.race([
       new Promise((resolve) => {
         window.onhashchange = () => {
@@ -147,7 +148,9 @@ describe('document-capture/services/upload', () => {
           endpoint: 'https://example.com',
           csrf: 'TYsqyyQ66Y',
         },
-      ),
+      ).then(() => {
+        throw new Error('Unexpected upload resolution during redirect.');
+      }),
     ]);
   });
 
