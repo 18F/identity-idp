@@ -73,7 +73,6 @@ group :development do
   gem 'binding_of_caller'
   gem 'brakeman', require: false
   gem 'derailed', '>= 0.1.0'
-  gem 'fasterer', require: false
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'octokit'
