@@ -125,7 +125,7 @@ describe SamlIdpController do
       let(:asserter) do
         AttributeAsserter.new(
           user: user,
-          service_provider: ServiceProvider.from_issuer(ial2_saml_settings.issuer),
+          service_provider: ServiceProvider.from_issuer(sp1_ial2_saml_settings.issuer),
           authn_request: this_authn_request,
           name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           decrypted_pii: pii,
@@ -135,7 +135,7 @@ describe SamlIdpController do
 
       before do
         stub_sign_in(user)
-        IdentityLinker.new(user, ial2_saml_settings.issuer).link_identity(ial: 2)
+        IdentityLinker.new(user, sp1_ial2_saml_settings.issuer).link_identity(ial: 2)
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
         )
@@ -145,22 +145,22 @@ describe SamlIdpController do
       it 'calls AttributeAsserter#build' do
         expect(asserter).to receive(:build).at_least(:once).and_call_original
 
-        saml_get_auth(ial2_saml_settings)
+        saml_get_auth(sp1_ial2_saml_settings)
       end
 
       it 'sets identity ial to 2' do
-        saml_get_auth(ial2_saml_settings)
+        saml_get_auth(sp1_ial2_saml_settings)
         expect(user.identities.last.ial).to eq(2)
       end
 
       it 'does not redirect the user to the IdV URL' do
-        saml_get_auth(ial2_saml_settings)
+        saml_get_auth(sp1_ial2_saml_settings)
 
         expect(response).to_not be_redirect
       end
 
       it 'contains verified attributes' do
-        saml_get_auth(ial2_saml_settings)
+        saml_get_auth(sp1_ial2_saml_settings)
 
         expect(xmldoc.attribute_node_for('address1')).to be_nil
 
@@ -178,7 +178,7 @@ describe SamlIdpController do
     context 'with IAL2 and the identity is not already verified' do
       it 'redirects to IdV URL for IAL2 proofer' do
         user = create(:user, :signed_up)
-        generate_saml_response(user, ial2_saml_settings)
+        generate_saml_response(user, sp1_ial2_saml_settings)
 
         expect(response).to redirect_to idv_path
       end
