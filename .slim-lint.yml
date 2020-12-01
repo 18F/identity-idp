@@ -1,19 +1,11 @@
 exclude:
     - 'app/views/shared/_flashes.html.slim'
     - 'app/views/shared/_null.html.slim'
-    # The file below is ignored globally because for some reason,
-    # excluding it under the `TagCase` section below doesn't work.
-    # We need to exclude this file because slim-lint wants all XML
-    # tags to be lowercase, but Twilio requires them to be uppercase.
-    - 'app/views/voice/otp/show.xml.slim'
 linters:
   LineLength:
     max: 100
     exclude:
       - 'app/views/pages/help.html.slim'
       - 'app/views/pages/privacy_policy.html.slim'
-  TagCase:
-    exclude:
-      - 'app/views/voice/otp/show.xml.slim'
   RuboCop:
     enabled: false

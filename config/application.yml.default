@@ -132,14 +132,6 @@ session_timeout_in_minutes: '15'
 session_timeout_warning_seconds: '150'
 sp_handoff_bounce_max_seconds: '2'
 show_user_attribute_deprecation_warnings: 'false'
-twilio_auth_token: token1
-twilio_http_basic_auth_password:
-twilio_http_basic_auth_username:
-twilio_messaging_service_sid:
-twilio_numbers:
-twilio_record_voice: 'false'
-twilio_sid:
-twilio_timeout: '5'
 unauthorized_scope_enabled: 'false'
 usps_download_sftp_timeout: '5'
 usps_upload_enabled: 'false'
@@ -241,7 +233,6 @@ development:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: test
-  twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
   usps_confirmation_max_days: '10'
@@ -350,7 +341,6 @@ production:
   session_encryption_key:
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: pinpoint
-  twilio_voice_callback_encryption_key:
   use_dashboard_service_providers: 'false'
   use_kms: 'true'
   usps_confirmation_max_days: '30'
@@ -467,7 +457,6 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   sps_over_quota_limit_notify_email_list: '["test1@test.com"]'
   telephony_adapter: test
-  twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'false'
   use_kms: 'false'
   usps_confirmation_max_days: '10'

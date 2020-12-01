@@ -7,15 +7,6 @@ Telephony.config do |c|
                Logger.new('log/telephony.log', level: :info)
              end
 
-  c.twilio.numbers = JSON.parse(AppConfig.env.twilio_numbers || '[]')
-  c.twilio.sid = AppConfig.env.twilio_sid
-  c.twilio.auth_token = AppConfig.env.twilio_auth_token
-  c.twilio.messaging_service_sid = AppConfig.env.twilio_messaging_service_sid
-  c.twilio.voice_callback_encryption_key = AppConfig.env.twilio_voice_callback_encryption_key
-  c.twilio.voice_callback_base_url = "https://#{AppConfig.env.domain_name}/api/twilio/voice"
-  c.twilio.timeout = AppConfig.env.twilio_timeout.to_i unless AppConfig.env.twilio_timeout.nil?
-  c.twilio.record_voice = AppConfig.env.twilio_record_voice == 'true'
-
   if AppConfig.env.pinpoint_sms_configs.present?
     JSON.parse(AppConfig.env.pinpoint_sms_configs || '[]').each do |sms_json_config|
       c.pinpoint.add_sms_config do |sms|

@@ -1,4 +1,4 @@
-module TwilioHelper
+module OtpHelper
   def last_sms_otp(phone: nil)
     Telephony::Test::Message.last_otp(phone: phone)
   end

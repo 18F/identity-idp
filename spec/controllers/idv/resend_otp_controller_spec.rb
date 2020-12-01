@@ -62,7 +62,7 @@ describe Idv::ResendOtpController do
       )
     end
 
-    context 'twilio raises an exception' do
+    context 'Telephony raises an exception' do
       let(:telephony_error_analytics_hash) do
         {
           error: 'Telephony::TelephonyError',
@@ -96,7 +96,7 @@ describe Idv::ResendOtpController do
           ),
         )
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::TWILIO_PHONE_VALIDATION_FAILED, telephony_error_analytics_hash
+          Analytics::OTP_PHONE_VALIDATION_FAILED, telephony_error_analytics_hash
         )
 
         post :create

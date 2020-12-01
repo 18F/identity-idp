@@ -17,14 +17,13 @@ gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
 gem 'foundation_emails'
-gem 'gibberish'
 gem 'hiredis'
 gem 'http_accept_language'
 gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.1'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.1'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.6'
+gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.7'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
 gem 'json-jwt', '>= 1.11.0'
 gem 'jwt'
@@ -62,7 +61,6 @@ gem 'slim-rails', '>= 3.2.0'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
-gem 'twilio-ruby'
 gem 'uglifier', '~> 3.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'

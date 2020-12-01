@@ -1,7 +1,0 @@
----
-es:
-  voice:
-    otp:
-      message: "¡Hola! Su código de acceso de login.gov es, %{code}, nuevamente, su
-        código de acceso es %{code}. Este código caducará en %{expiration} minutos."
-      repeat_instructions: Presione 1 para repetir este mensaje.

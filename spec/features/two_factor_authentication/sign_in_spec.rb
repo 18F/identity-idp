@@ -257,7 +257,7 @@ feature 'Two Factor Authentication' do
       expect(page).to have_content(t('two_factor_authentication.invalid_piv_cac'))
     end
 
-    context 'user with Voice preference sends SMS, causing a Twilio error' do
+    context 'user with Voice preference sends SMS, causing a Telephony error' do
       let(:user) do
         create(:user, :signed_up,
                otp_delivery_preference: 'voice',

@@ -51,7 +51,7 @@ feature 'doc auth send link step' do
     expect(page).to have_current_path(idv_doc_auth_send_link_step)
   end
 
-  it 'does not proceed if Twilio raises a RestError' do
+  it 'does not proceed if Telephony raises an error' do
     fill_in :doc_auth_phone, with: '225-555-1000'
     click_idv_continue
 

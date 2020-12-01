@@ -1,7 +1,0 @@
----
-en:
-  voice:
-    otp:
-      message: Hello! Your login.gov one time passcode is, %{code}, again, your passcode
-        is, %{code}. This code expires in %{expiration} minutes.
-      repeat_instructions: Press 1 to repeat this message.
