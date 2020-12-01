@@ -104,7 +104,7 @@ es:
       subject: Le enviamos una carta a la dirección que tiene archivada
     new_device_sign_in:
       disavowal_link: aquí
-      help: Si no realizó este cambio puede restablecer su contraseña %{disavowal_link}.
+      help_html: Si no realizó este cambio puede restablecer su contraseña %{disavowal_link}.
         Para más ayuda, visite el %{app} %{help_link} o el %{contact_link}.
       info_html: "<p>Su cuenta Login.gov acaba de iniciar sesión en un nuevo dispositivo.</p><br/><br/>
         <p><strong>%{date}<br/>%{location}</strong></p>"

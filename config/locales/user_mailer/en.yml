@@ -102,7 +102,7 @@ en:
       subject: We mailed a letter to the address you have on file
     new_device_sign_in:
       disavowal_link: here
-      help: If you did not make this change, you can reset your password %{disavowal_link}.
+      help_html: If you did not make this change, you can reset your password %{disavowal_link}.
         For more help, please visit the %{app} %{help_link} or %{contact_link}.
       info_html: "<p>Your Login.gov account was just used to sign in on a new device.</p><br/>
         <p><strong>%{date}<br/>%{location}</strong></p>"
