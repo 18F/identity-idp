@@ -89,7 +89,7 @@ feature 'saml api' do
     context 'service provider does not explicitly disable encryption' do
       before do
         sign_in_and_2fa_user(user)
-        visit sp1_authnrequest
+        visit sp2_authnrequest
         click_agree_and_continue
       end
 
