@@ -473,7 +473,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.letter_reminder.info', link: APP_NAME)))
+        to have_content(strip_tags(t('user_mailer.letter_reminder.info_html', link: APP_NAME)))
     end
 
     it 'does not send mail to emails in nonessential email banlist' do

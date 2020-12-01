@@ -102,9 +102,8 @@ fr:
         demander une autre lettre.
       subject: Votre code de confirmation d'adresse a expiré
     letter_reminder:
-      help: ''
-      info: La lettre que vous êtes sur le point de recevoir contiendra un code de
-        confirmation nous permettant de vérifier votre adresse. Vous pouvez terminer
+      info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
+        de confirmation nous permettant de vérifier votre adresse. Vous pouvez terminer
         le processus de vérification d'identité en vous connectant à %{link} et en
         entrant le code de confirmation.
       subject: Nous avons envoyé une lettre à l'adresse que vous avez en dossier

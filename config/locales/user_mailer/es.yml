@@ -98,8 +98,7 @@ es:
         deberá iniciar sesión en %{link} y solicitar otra carta.
       subject: El código de confirmación de tu dirección ha caducado
     letter_reminder:
-      help: ''
-      info: La carta que está a punto de recibir contendrá un código de confirmación
+      info_html: La carta que está a punto de recibir contendrá un código de confirmación
         que nos ayudará a verificar su dirección. Puede completar el proceso de verificación
         de identidad iniciando sesión en %{link} e ingresando el código de confirmación.
       subject: Le enviamos una carta a la dirección que tiene archivada

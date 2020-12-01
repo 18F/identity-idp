@@ -95,10 +95,9 @@ en:
         will need to sign into %{link} and request another letter.
       subject: Your address confirmation code has expired
     letter_reminder:
-      help: ''
-      info: The letter you are about to receive will contain a confirmation code that
-        helps us verify your address. You can complete the identity verification process
-        by signing into %{link} and entering the confirmation code.
+      info_html: The letter you are about to receive will contain a confirmation code
+        that helps us verify your address. You can complete the identity verification
+        process by signing into %{link} and entering the confirmation code.
       subject: We mailed a letter to the address you have on file
     new_device_sign_in:
       disavowal_link: here
