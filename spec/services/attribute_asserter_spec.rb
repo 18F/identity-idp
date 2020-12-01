@@ -27,6 +27,7 @@ describe AttributeAsserter do
     )
   end
   let(:raw_sp1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
+  let(:raw_aal3_sp1_authn_request) { CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last }
   let(:raw_ial1_authn_request) { CGI.unescape ial1_authnrequest.split('SAMLRequest').last }
   let(:raw_ial2_authn_request) { CGI.unescape ial2_authnrequest.split('SAMLRequest').last }
   let(:raw_ial1_aal3_authn_request) do
@@ -34,6 +35,9 @@ describe AttributeAsserter do
   end
   let(:sp1_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_sp1_authn_request)
+  end
+  let(:aal3_sp1_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_aal3_sp1_authn_request)
   end
   let(:ial1_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial1_authn_request)
@@ -345,7 +349,7 @@ describe AttributeAsserter do
             user: user,
             name_id_format: name_id_format,
             service_provider: service_provider,
-            authn_request: sp1_authn_request,
+            authn_request: aal3_sp1_authn_request,
             decrypted_pii: decrypted_pii,
             user_session: user_session,
           )
