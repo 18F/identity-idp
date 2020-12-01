@@ -217,7 +217,7 @@ module SamlAuthHelper
   def ial1_with_verified_at_saml_settings
     settings = sp1_saml_settings
     settings.authn_context = [
-      settings.authn_context,
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,verified_at",
     ]
     settings
@@ -226,7 +226,7 @@ module SamlAuthHelper
   def ial1_with_bundle_saml_settings
     settings = sp1_saml_settings
     settings.authn_context = [
-      settings.authn_context,
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
       "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
     ]
