@@ -89,11 +89,10 @@ en:
       subject: Email address deleted
     help_link_text: Help Center
     letter_expired:
-      help: ''
-      info: The letter we mailed to your address has a confirmation code that has
-        expired and can no longer be used to complete the verification process. To
-        verify your address and complete the identity verification process you will
-        need to sign into %{link} and request another letter.
+      info_html: The letter we mailed to your address has a confirmation code that
+        has expired and can no longer be used to complete the verification process.
+        To verify your address and complete the identity verification process you
+        will need to sign into %{link} and request another letter.
       subject: Your address confirmation code has expired
     letter_reminder:
       help: ''

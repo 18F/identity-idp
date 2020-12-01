@@ -92,8 +92,7 @@ es:
       subject: Dirección de correo electrónico eliminada
     help_link_text: Centro de Ayuda
     letter_expired:
-      help: ''
-      info: La carta que le enviamos a su dirección tiene un código de confirmación
+      info_html: La carta que le enviamos a su dirección tiene un código de confirmación
         que ha caducado y ya no se puede utilizar para completar el proceso de verificación.
         Para verificar su dirección y completar el proceso de verificación de identidad,
         deberá iniciar sesión en %{link} y solicitar otra carta.

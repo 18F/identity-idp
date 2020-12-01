@@ -95,12 +95,11 @@ fr:
       subject: Adresse email supprimée
     help_link_text: Centre d'aide
     letter_expired:
-      help: ''
-      info: La lettre que nous avons postée à votre adresse contient un code de confirmation
-        arrivé à expiration et ne peut plus être utilisée pour terminer le processus
-        de vérification. Pour vérifier votre adresse et terminer le processus de vérification
-        de votre identité, vous devez vous connecter à %{link} et demander une autre
-        lettre.
+      info_html: La lettre que nous avons postée à votre adresse contient un code
+        de confirmation arrivé à expiration et ne peut plus être utilisée pour terminer
+        le processus de vérification. Pour vérifier votre adresse et terminer le processus
+        de vérification de votre identité, vous devez vous connecter à %{link} et
+        demander une autre lettre.
       subject: Votre code de confirmation d'adresse a expiré
     letter_reminder:
       help: ''
