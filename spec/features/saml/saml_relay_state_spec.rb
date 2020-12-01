@@ -9,7 +9,7 @@ feature 'SAML RelayState' do
     let(:params) { { RelayState: relay_state_value } }
 
     it 'returns RelayState on GET authn request' do
-      get_saml_authn_request(sp1_saml_settings, params)
+      get_saml_authn_request(sp1_ial1_saml_settings, params)
 
       login_and_confirm_sp(user)
 
@@ -18,7 +18,7 @@ feature 'SAML RelayState' do
     end
 
     it 'returns RelayState on POST authn request' do
-      post_saml_authn_request(sp1_saml_settings, params)
+      post_saml_authn_request(sp1_ial1_saml_settings, params)
 
       login_and_confirm_sp(user)
 
@@ -31,7 +31,7 @@ feature 'SAML RelayState' do
     let(:user) { create(:user, :signed_up) }
 
     it 'does not return RelayState on GET authn request' do
-      get_saml_authn_request(sp1_saml_settings)
+      get_saml_authn_request(sp1_ial1_saml_settings)
 
       login_and_confirm_sp(user)
 
@@ -42,7 +42,7 @@ feature 'SAML RelayState' do
     end
 
     it 'does not return RelayState on POST authn request' do
-      post_saml_authn_request(sp1_saml_settings)
+      post_saml_authn_request(sp1_ial1_saml_settings)
 
       login_and_confirm_sp(user)
 
