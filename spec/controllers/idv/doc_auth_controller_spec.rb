@@ -259,8 +259,8 @@ describe Idv::DocAuthController do
     before do
       mock_document_capture_step
     end
-    let(:good_result) do
-      { pii_from_doc: {
+    let(:good_pii) do
+      {
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name,
         dob: Time.zone.today.to_s,
@@ -271,10 +271,17 @@ describe Idv::DocAuthController do
         state_id_type: 'drivers_license',
         state_id_number: '111',
         state_id_jurisdiction: 'WI',
-      }, success: true, errors: {}, messages: ['message'] }
+      }
     end
-    let(:bad_pii_result) do
-      { pii_from_doc: {
+    let(:good_result) do
+      {
+        success: true,
+        errors: {},
+        messages: ['message'],
+      }
+    end
+    let(:bad_pii) do
+      {
         first_name: Faker::Name.first_name,
         last_name: nil,
         dob: nil,
@@ -285,7 +292,7 @@ describe Idv::DocAuthController do
         state_id_type: 'drivers_license',
         state_id_number: '111',
         state_id_jurisdiction: 'WI',
-      }, success: true, errors: {}, messages: ['message'] }
+      }
     end
     let(:fail_result) do
       {
@@ -297,7 +304,11 @@ describe Idv::DocAuthController do
     end
 
     it 'returns status of success' do
-      mock_document_capture_result(good_result)
+      set_up_document_capture_result(
+        uuid: verify_document_action_session_uuid,
+        idv_result: good_result,
+        pii: good_pii,
+      )
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(200)
@@ -305,7 +316,11 @@ describe Idv::DocAuthController do
     end
 
     it 'returns status of in progress' do
-      mock_document_capture_result(nil)
+      set_up_document_capture_result(
+        uuid: verify_document_action_session_uuid,
+        idv_result: nil,
+        pii: {},
+      )
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(202)
@@ -313,7 +328,11 @@ describe Idv::DocAuthController do
     end
 
     it 'returns status of fail' do
-      mock_document_capture_result(fail_result)
+      set_up_document_capture_result(
+        uuid: verify_document_action_session_uuid,
+        idv_result: fail_result,
+        pii: {},
+      )
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(400)
@@ -325,7 +344,11 @@ describe Idv::DocAuthController do
     end
 
     it 'returns status of fail with incomplete PII from doc auth' do
-      mock_document_capture_result(bad_pii_result)
+      set_up_document_capture_result(
+        uuid: verify_document_action_session_uuid,
+        idv_result: good_result,
+        pii: bad_pii,
+      )
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(400)
@@ -350,6 +373,8 @@ describe Idv::DocAuthController do
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
   end
 
+  let(:verify_document_action_session_uuid) { SecureRandom.uuid }
+
   def mock_document_capture_step
     user = create(:user, :signed_up)
     stub_sign_in(user)
@@ -367,7 +392,7 @@ describe Idv::DocAuthController do
         'Idv::Steps::LinkSentStep' => true,
         'Idv::Steps::EmailSentStep' => true,
         'Idv::Steps::UploadStep' => true,
-        verify_document_action_document_capture_session_uuid: 'foo',
+        verify_document_action_document_capture_session_uuid: verify_document_action_session_uuid,
       )
   end
 end
