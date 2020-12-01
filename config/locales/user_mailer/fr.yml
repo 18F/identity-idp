@@ -204,7 +204,6 @@ fr:
       info: Certains SP ont dépassé leur limite de quota.
       subject: Certains SP ont atteint leur limite de quota
     undeliverable_address:
-      call_to_action: Veuillez vous connecter à %{link} et suivre les instructions.
-      help: ''
+      call_to_action_html: Veuillez vous connecter à %{link} et suivre les instructions.
       intro: Nous n'avons pas pu envoyer votre lettre à l'adresse que vous avez indiquée.
       subject: La lettre envoyée à votre adresse était non livrable

@@ -191,7 +191,6 @@ es:
       info: Hay SP que han superado su límite de cuota.
       subject: Algunos SP han alcanzado su límite de cuota.
     undeliverable_address:
-      call_to_action: Por favor inicie sesión en %{link} y siga las instrucciones.
-      help: ''
+      call_to_action_html: Por favor inicie sesión en %{link} y siga las instrucciones.
       intro: No pudimos enviar su carta por correo a la dirección que proporcionó.
       subject: La carta enviada a su dirección no se pudo entregar

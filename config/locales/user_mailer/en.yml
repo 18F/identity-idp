@@ -186,7 +186,6 @@ en:
       info: There are SPs that have gone over their quota limit.
       subject: Some SPs have reached their quota limit
     undeliverable_address:
-      call_to_action: Please sign into %{link} and follow instructions.
-      help: ''
+      call_to_action_html: Please sign into %{link} and follow instructions.
       intro: We were unable to mail your letter to the address you provided.
       subject: The letter sent to your address was undeliverable
