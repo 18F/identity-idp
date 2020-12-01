@@ -59,11 +59,11 @@ gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
-gem 'uglifier', '~> 3.2'
+gem 'uglifier', '~> 4.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
-gem 'webauthn', '~> 2.1.0'
-gem 'webpacker', '~> 5.1.1'
+gem 'webauthn', '~> 2.1'
+gem 'webpacker', '~> 5.1'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'zxcvbn-js'
 
@@ -71,7 +71,7 @@ group :development do
   gem 'better_errors', '>= 2.5.1'
   gem 'binding_of_caller'
   gem 'brakeman', require: false
-  gem 'derailed', '>= 0.1.0'
+  gem 'derailed_benchmarks', '~> 1.8'
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'octokit'
@@ -81,7 +81,7 @@ end
 
 group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
-  gem 'bootsnap', '~> 1.4.7', require: false
+  gem 'bootsnap', '~> 1.5.0', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
@@ -108,7 +108,7 @@ group :test do
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'timecop'
-  gem 'webdrivers', '~> 3.0'
+  gem 'webdrivers', '~> 4.0'
   gem 'webmock'
   gem 'zonebie'
 end
