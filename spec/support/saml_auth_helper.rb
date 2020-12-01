@@ -227,6 +227,7 @@ module SamlAuthHelper
     settings = sp1_saml_settings
     settings.authn_context = [
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
       "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
       "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
     ]
