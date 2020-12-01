@@ -44,16 +44,16 @@ es:
         o copie y pegue el enlace completo en su navegador.
       subject: Confirme su correo electrónico
     add_email_associated_with_another_account:
-      help: Si no solicitó un nuevo correo electrónico o sospecha de un error, visite
-        %{app} %{help_link} o %{contact_link}.
-      intro: Esta dirección de correo electrónico ya está asociada con una cuenta
+      help_html: Si no solicitó un nuevo correo electrónico o sospecha de un error,
+        visite %{app} %{help_link} o %{contact_link}.
+      intro_html: Esta dirección de correo electrónico ya está asociada con una cuenta
         %{app}, por lo que no podemos agregarla a otra cuenta. Primero debe eliminarlo
         o eliminarlo de la cuenta con la que está asociado. Para hacer esto, siga
         el enlace de abajo e inicie sesión con esta dirección de correo electrónico.
         Si no está intentando agregar esta dirección de correo electrónico a una cuenta,
         puede ignorar este mensaje.
       link_text: Ir a %{app}
-      reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
+      reset_password_html: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
     contact_link_text: Contáctenos
     deleted_accounts_report:
       issuers: Emisores

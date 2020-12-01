@@ -44,17 +44,17 @@ fr:
         ou copiez et collez le lien en entier dans votre navigateur.
       subject: Confirmez votre email
     add_email_associated_with_another_account:
-      help: Si vous n'avez pas demandé de nouvel email ou que vous suspectez une erreur,
-        veuillez visiter le %{app} %{help_link} ou %{contact_link}.
-      intro: Cette adresse électronique est déjà associée à un compte %{app}, nous
-        ne pouvons donc pas l’ajouter à un autre compte. Vous devez d'abord le supprimer
-        ou le supprimer du compte auquel il est associé. Pour ce faire, suivez le
-        lien ci-dessous et connectez-vous avec cette adresse e-mail. Si vous n'essayez
-        pas d'ajouter cette adresse électronique à un compte, vous pouvez ignorer
-        ce message.
+      help_html: Si vous n'avez pas demandé de nouvel email ou que vous suspectez
+        une erreur, veuillez visiter le %{app} %{help_link} ou %{contact_link}.
+      intro_html: Cette adresse électronique est déjà associée à un compte %{app},
+        nous ne pouvons donc pas l’ajouter à un autre compte. Vous devez d'abord le
+        supprimer ou le supprimer du compte auquel il est associé. Pour ce faire,
+        suivez le lien ci-dessous et connectez-vous avec cette adresse e-mail. Si
+        vous n'essayez pas d'ajouter cette adresse électronique à un compte, vous
+        pouvez ignorer ce message.
       link_text: Allez à %{app}
-      reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
-        %{app} pour le réinitialiser.
+      reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
+        à %{app} pour le réinitialiser.
     contact_link_text: communiquez avec nous
     deleted_accounts_report:
       issuers: Émetteurs
