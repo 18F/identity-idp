@@ -48,7 +48,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.password_changed.intro', app: APP_NAME),
+        t('user_mailer.password_changed.intro_html', app: APP_NAME),
       )
       expect(mail.html_part.body).to include(
         '/events/disavow?disavowal_token=123abc',

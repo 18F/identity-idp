@@ -111,9 +111,9 @@ es:
       subject: Nuevo initio de sesion con su Login.gov cuenta
     password_changed:
       disavowal_link: aquí
-      help: Si no realizó este cambio puede restablecer su contraseña %{disavowal_link}.
+      help_html: Si no realizó este cambio puede restablecer su contraseña %{disavowal_link}.
         Para más ayuda, visite el %{app} %{help_link} o el %{contact_link}.
-      intro: Tiene una contraseña nueva para su cuenta de %{app}.
+      intro_html: Tiene una contraseña nueva para su cuenta de %{app}.
     personal_key_regenerated:
       help_html: <p>Tu cuenta de login.gov acaba de emitir una nueva clave personal
         de 16 caracteres. Estás recibiendo este correo electrónico para verificar

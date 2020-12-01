@@ -109,9 +109,9 @@ en:
       subject: New sign-in with your Login.gov account
     password_changed:
       disavowal_link: here
-      help: If you did not make this change, you can reset your password %{disavowal_link}.
+      help_html: If you did not make this change, you can reset your password %{disavowal_link}.
         For more help, please visit the %{app} %{help_link} or %{contact_link}.
-      intro: You have a new password for your %{app} account.
+      intro_html: You have a new password for your %{app} account.
     personal_key_regenerated:
       help_html: <p>Your login.gov account was just issued a new 16-character personal
         key. You're getting this email to make sure it was you.</p><p>If you just
