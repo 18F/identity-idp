@@ -117,19 +117,11 @@ module Users
         context: context,
         country: parsed_phone.country,
       }
-      analytics.track_event(Analytics::TWILIO_PHONE_VALIDATION_FAILED, attributes)
+      analytics.track_event(Analytics::OTP_PHONE_VALIDATION_FAILED, attributes)
     end
 
     def parsed_phone
       @parsed_phone ||= Phonelib.parse(phone_to_deliver_to)
-    end
-
-    def error_message(code)
-      twilio_errors.fetch(code, t('errors.messages.otp_failed'))
-    end
-
-    def twilio_errors
-      TwilioErrors::REST_ERRORS.merge(TwilioErrors::VERIFY_ERRORS)
     end
 
     def otp_delivery_selection_form

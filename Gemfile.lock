@@ -75,14 +75,13 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 08839be0e7608bd9fe78a576276ad4762495bced
-  tag: v0.1.6
+  revision: ebc61fc878f9413c32b6b1a0a6c82866f86ad60c
+  tag: v0.1.7
   specs:
-    identity-telephony (0.1.6)
+    identity-telephony (0.1.7)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
-      twilio-ruby
 
 GEM
   remote: https://rubygems.org/
@@ -317,7 +316,6 @@ GEM
     geocoder (1.6.3)
     get_process_mem (0.2.5)
       ffi (~> 1.0)
-    gibberish (2.1.1)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     gmail (0.7.1)
@@ -662,10 +660,6 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.10)
     timecop (0.9.2)
-    twilio-ruby (5.39.2)
-      faraday (>= 0.9, < 2.0)
-      jwt (>= 1.5, <= 2.5)
-      nokogiri (>= 1.6, < 2.0)
     tzinfo (1.2.8)
       thread_safe (~> 0.1)
     uglifier (3.2.0)
@@ -761,7 +755,6 @@ DEPENDENCIES
   faraday
   fasterer
   foundation_emails
-  gibberish
   gmail
   guard-rspec
   hiredis
@@ -828,7 +821,6 @@ DEPENDENCIES
   strong_migrations (>= 0.4.2)
   subprocess
   timecop
-  twilio-ruby
   uglifier (~> 3.2)
   user_agent_parser
   valid_email (>= 0.1.3)

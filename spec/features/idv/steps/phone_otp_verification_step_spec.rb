@@ -61,7 +61,7 @@ feature 'phone otp verification step spec' do
     expect(page).to have_current_path(idv_review_path)
   end
 
-  it 'redirects back to the step with an error if twilio raises an error on resend' do
+  it 'redirects back to the step with an error if Telephony raises an error on resend' do
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
 
