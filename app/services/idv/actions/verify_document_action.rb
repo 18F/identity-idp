@@ -54,7 +54,16 @@ module Idv
             trace_id: amzn_trace_id,
           },
         ).run do |doc_auth_result|
-          document_capture_session.store_proofing_pii_from_doc(doc_auth_result[:document_result])
+          document_result = doc_auth_result.to_h.fetch(:document_result, {})
+
+          EncryptedRedisStructStorage.store(
+            ProofingDocumentCaptureSessionResult.new(
+              id: document_capture_session.result_id,
+              pii: document_result[:pii_from_doc],
+              result: document_result.except(:pii_from_doc),
+            ),
+            expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+          )
 
           nil
         end

@@ -223,13 +223,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     )
   end
 
-  def mock_document_capture_result(idv_result)
-    id = SecureRandom.uuid
-    pii = { 'first_name' => 'Testy', 'last_name' => 'Testerson' }
-
-    result = ProofingDocumentCaptureSessionResult.new(id: id, pii: pii, result: idv_result)
-    allow_any_instance_of(DocumentCaptureSession).to receive(:load_proofing_result).
-      and_return(result)
+  def set_up_document_capture_result(uuid:, idv_result:, pii:)
+    dcs = DocumentCaptureSession.where(uuid: uuid).first_or_create
+    dcs.store_proofing_pii_from_doc(pii) # generates a result_id
+    dcs.store_proofing_result(idv_result)
   end
 
   def attach_images(liveness_enabled: true)

@@ -18,6 +18,8 @@ ProofingDocumentCaptureSessionResult = Struct.new(:id, :pii, :result, :status,
     new(status: :in_progress)
   end
 
+  alias_method :pii_from_doc, :pii
+
   def done
     ProofingDocumentCaptureSessionResult.new(
       pii: pii.deep_symbolize_keys,

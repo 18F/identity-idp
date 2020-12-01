@@ -19,7 +19,7 @@ module Idv
           process_result(current_async_state.result)
 
           if form_response.success?
-            async_result_response = async_state_done(current_async_state.result)
+            async_result_response = async_state_done(current_async_state)
             form_response = async_result_response.merge(form_response)
           end
         end
@@ -39,11 +39,14 @@ module Idv
         form_response
       end
 
+      # @param [ProofingDocumentCaptureSessionResult] async_result
       def async_state_done(async_result)
-        doc_pii_form_result = Idv::DocPiiForm.new(async_result[:pii_from_doc]).submit
+        doc_pii_form_result = Idv::DocPiiForm.new(async_result.pii).submit
 
         delete_async
         if doc_pii_form_result.success?
+          extract_pii_from_doc(async_result)
+
           mark_step_complete(:document_capture)
           save_proofing_components
         end
