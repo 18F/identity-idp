@@ -188,15 +188,16 @@ fr:
       link_text: Réinitialisez votre mot de passe
       subject: Réinitialisez votre mot de passe
     signup_with_your_email:
-      help: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez qu'une
-        erreur s'est produite, veuillez visiter le %{help_link} de %{app} ou %{contact_link}.
-      intro: Cette adresse courriel est déjà associée à un compte %{app}, nous ne
-        pouvons donc pas l'utiliser pour créer un nouveau compte. Pour vous connecter
+      help_html: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez
+        qu'une erreur s'est produite, veuillez visiter le %{help_link} de %{app} ou
+        %{contact_link}.
+      intro_html: Cette adresse courriel est déjà associée à un compte %{app}, nous
+        ne pouvons donc pas l'utiliser pour créer un nouveau compte. Pour vous connecter
         à votre compte existant, suivez le lien ci-dessous. Si vous ne tentez pas
         de vous connecter avec cette adresse courriel, vous pouvez ignorer ce message.
       link_text: Allez à %{app}
-      reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
-        %{app} pour le réinitialiser.
+      reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
+        à %{app} pour le réinitialiser.
     sps_over_quota_limit:
       help: ''
       info: Certains SP ont dépassé leur limite de quota.

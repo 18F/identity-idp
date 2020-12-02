@@ -201,7 +201,7 @@ describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
         I18n.t(
-          'user_mailer.signup_with_your_email.intro',
+          'user_mailer.signup_with_your_email.intro_html',
           app: APP_NAME,
         ),
       )

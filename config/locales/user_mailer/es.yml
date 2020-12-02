@@ -175,14 +175,14 @@ es:
       link_text: Restablezca su contraseña
       subject: Restablezca su contraseña.
     signup_with_your_email:
-      help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
+      help_html: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
         %{help_link} o el %{contact_link}.
-      intro: Este email ya está asociado a una cuenta %{app}, por lo tanto no podemos
-        usarlo para crear una cuenta nueva. Para iniciar una sesión con su cuenta
-        existente, siga el siguiente enlace. Si no intenta iniciar una sesión con
-        este email, puede ignorar este mensaje.
+      intro_html: Este email ya está asociado a una cuenta %{app}, por lo tanto no
+        podemos usarlo para crear una cuenta nueva. Para iniciar una sesión con su
+        cuenta existente, siga el siguiente enlace. Si no intenta iniciar una sesión
+        con este email, puede ignorar este mensaje.
       link_text: Ir a %{app}
-      reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
+      reset_password_html: Si no recuerda su contraseña, vaya a %{app} para restablecerla.
     sps_over_quota_limit:
       help: ''
       info: Hay SP que han superado su límite de cuota.

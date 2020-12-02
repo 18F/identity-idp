@@ -170,14 +170,15 @@ en:
       link_text: Reset your password
       subject: Reset your password
     signup_with_your_email:
-      help: If you did not request a new account or suspect an error, please visit
-        the %{app} %{help_link} or %{contact_link}.
-      intro: This email address is already associated with a %{app} account, so we
-        can't use it to create a new account. To sign in with your existing account,
-        follow the link below.  If you are not trying to sign in with this email address,
-        you can ignore this message.
+      help_html: If you did not request a new account or suspect an error, please
+        visit the %{app} %{help_link} or %{contact_link}.
+      intro_html: This email address is already associated with a %{app} account,
+        so we can't use it to create a new account. To sign in with your existing
+        account, follow the link below.  If you are not trying to sign in with this
+        email address, you can ignore this message.
       link_text: Go to %{app}
-      reset_password: If you can't remember your password, go to %{app} to reset it.
+      reset_password_html: If you can't remember your password, go to %{app} to reset
+        it.
     sps_over_quota_limit:
       help: ''
       info: There are SPs that have gone over their quota limit.
