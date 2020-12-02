@@ -2,11 +2,11 @@
 es:
   user_mailer:
     account_does_not_exist:
-      intro: Esta dirección de correo electrónico aún no está asociada con una cuenta
-        %{app}. Si quieres crear una cuenta login.gov usando esta dirección de correo
-        electrónico, haz clic en el siguiente enlace o copia y pega el enlace completo
-        en tu navegador. Si no has solicitado restablecer tu contraseña puedes ignorar
-        este mensaje.
+      intro_html: Esta dirección de correo electrónico aún no está asociada con una
+        cuenta %{app}. Si quieres crear una cuenta login.gov usando esta dirección
+        de correo electrónico, haz clic en el siguiente enlace o copia y pega el enlace
+        completo en tu navegador. Si no has solicitado restablecer tu contraseña puedes
+        ignorar este mensaje.
       link_text: Crea tu cuenta
       subject: Tu solicitud para restablecer tu contraseña de login.gov
     account_reset_cancel:

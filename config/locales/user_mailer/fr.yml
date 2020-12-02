@@ -2,8 +2,8 @@
 fr:
   user_mailer:
     account_does_not_exist:
-      intro: Cette adresse e-mail n'est pas encore associée à un compte %{app}. Si
-        vous souhaitez créer un compte login.gov avec cette adresse e-mail, veuillez
+      intro_html: Cette adresse e-mail n'est pas encore associée à un compte %{app}.
+        Si vous souhaitez créer un compte login.gov avec cette adresse e-mail, veuillez
         cliquer sur le lien ci-dessous ou faites un copier-coller de l'intégralité
         du lien sur votre navigateur. Si vous n'avez pas sollicité une réinitialisation
         de votre mot de passe, nous vous prions de bien vouloir ignorer ce message.

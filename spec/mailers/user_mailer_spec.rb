@@ -260,7 +260,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.account_does_not_exist.intro', app: APP_NAME),
+        t('user_mailer.account_does_not_exist.intro_html', app: APP_NAME),
       )
       expect(mail.html_part.body).to have_link(
         t('user_mailer.account_does_not_exist.link_text', app: APP_NAME),
