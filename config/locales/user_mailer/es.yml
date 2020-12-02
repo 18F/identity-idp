@@ -31,7 +31,6 @@ es:
       cancel: "¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta login.gov
         para cancelar."
       header: Su cuenta será eliminada en 24 horas
-      help: ''
       intro: Para garantizar la calidad y la seguridad, el proceso de eliminación
         de la cuenta lleva 24 horas. Recibirá un correo electrónico de confirmación
         una vez que se complete este proceso.
