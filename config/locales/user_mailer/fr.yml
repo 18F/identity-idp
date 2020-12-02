@@ -10,7 +10,6 @@ fr:
       link_text: Créer votre compte
       subject: Votre demande de réinitialisation de votre mot de passe login.gov
     account_reset_cancel:
-      help: ''
       intro: Cet e-mail confirme que vous avez annulé votre demande de suppression
         de votre compte login.gov.
       subject: Supprimer votre compte

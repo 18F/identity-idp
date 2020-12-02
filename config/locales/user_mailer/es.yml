@@ -10,7 +10,6 @@ es:
       link_text: Crea tu cuenta
       subject: Tu solicitud para restablecer tu contraseña de login.gov
     account_reset_cancel:
-      help: ''
       intro: Este correo electrónico confirma que ha cancelado su solicitud para eliminar
         su cuenta de login.gov.
       subject: Eliminar su cuenta
