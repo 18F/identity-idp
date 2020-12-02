@@ -1,0 +1,27 @@
+<p class="lead">
+  <strong><%= t('user_mailer.personal_key_regenerated.intro') %></strong>
+</p>
+
+<table class="spacer">
+  <tbody>
+    <tr>
+      <td class="s10" height="10px">
+        &nbsp;
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="hr">
+  <tr>
+    <th>
+      &nbsp;
+    </th>
+  </tr>
+</table>
+
+<p>
+  <%= t('user_mailer.personal_key_regenerated.help_html',
+        reset_password_url: forgot_password_url,
+        account_url: account_url) %>
+</p>
