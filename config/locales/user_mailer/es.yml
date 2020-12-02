@@ -19,8 +19,8 @@ es:
     account_reset_granted:
       button: Sí, continúa eliminando
       cancel_link_text: por favor cancele
-      help: Si no desea eliminar su cuenta, %{cancel_account_reset}.
-      intro: Recibes este correo electrónico porque solicitaste eliminar y restablecer
+      help_html: Si no desea eliminar su cuenta, %{cancel_account_reset}.
+      intro_html: Recibes este correo electrónico porque solicitaste eliminar y restablecer
         su cuenta de login.gov<br><br>Eliminar tu cuenta debería ser tu último recurso
         si está bloqueado de su cuenta. No podrás recuperar cualquier información
         vinculada a su cuenta. Una vez que su cuenta es eliminada, usted puede crear

@@ -335,7 +335,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to \
-        have_content(strip_tags(t('user_mailer.account_reset_granted.intro')))
+        have_content(strip_tags(t('user_mailer.account_reset_granted.intro_html')))
     end
   end
 
