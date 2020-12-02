@@ -35,7 +35,7 @@ module MonitorIdvSteps
       click_on 'Continue'
     end
 
-    expect(page).to have_current_path('/verify/doc_auth/ssn')
+    expect(page).to have_current_path('/verify/doc_auth/ssn', wait: 30)
 
     fill_in 'doc_auth_ssn', with: format('%09d', SecureRandom.random_number(1e9))
     click_on 'Continue'
