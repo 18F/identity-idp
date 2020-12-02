@@ -2,38 +2,36 @@
 fr:
   user_mailer:
     account_does_not_exist:
-      intro: Cette adresse e-mail n'est pas encore associée à un compte %{app}. Si
-        vous souhaitez créer un compte login.gov avec cette adresse e-mail, veuillez
+      intro_html: Cette adresse e-mail n'est pas encore associée à un compte %{app}.
+        Si vous souhaitez créer un compte login.gov avec cette adresse e-mail, veuillez
         cliquer sur le lien ci-dessous ou faites un copier-coller de l'intégralité
         du lien sur votre navigateur. Si vous n'avez pas sollicité une réinitialisation
         de votre mot de passe, nous vous prions de bien vouloir ignorer ce message.
       link_text: Créer votre compte
       subject: Votre demande de réinitialisation de votre mot de passe login.gov
     account_reset_cancel:
-      help: ''
       intro: Cet e-mail confirme que vous avez annulé votre demande de suppression
         de votre compte login.gov.
       subject: Supprimer votre compte
     account_reset_complete:
-      help: ''
       intro: Cet e-mail confirme que vous avez supprimé votre compte login.gov.
       subject: Compte supprimé
     account_reset_granted:
       button: Oui, continuez la suppression
       cancel_link_text: veuillez annuler
-      help: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset}.
-      intro: Vous recevez cet e-mail parce que vous avez demandé à supprimer et à
-        réinitialiser votre compte login.gov. <br> <br> Supprimer votre compte devrait
-        être votre dernier recours si vous êtes exclu de votre compte. Vous ne serez
-        pas en mesure de récupérer toute information liée à votre compte. Une fois
-        votre compte supprimé, vous pouvez en créer un nouveau en utilisant la même
-        adresse email.<br><br>Es-tu sûr de toi voulez-vous supprimer votre compte?
+      help_html: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset}.
+      intro_html: Vous recevez cet e-mail parce que vous avez demandé à supprimer
+        et à réinitialiser votre compte login.gov. <br> <br> Supprimer votre compte
+        devrait être votre dernier recours si vous êtes exclu de votre compte. Vous
+        ne serez pas en mesure de récupérer toute information liée à votre compte.
+        Une fois votre compte supprimé, vous pouvez en créer un nouveau en utilisant
+        la même adresse email.<br><br>Es-tu sûr de toi voulez-vous supprimer votre
+        compte?
       subject: Supprimer votre compte
     account_reset_request:
       cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte
         login.gov pour annuler.
       header: Votre compte sera supprimé dans 24 heures
-      help: ''
       intro: Pour garantir la qualité et la sécurité, le processus de suppression
         de compte prend 24 heures. Vous recevrez un e-mail de confirmation une fois
         ce processus terminé.
@@ -44,17 +42,17 @@ fr:
         ou copiez et collez le lien en entier dans votre navigateur.
       subject: Confirmez votre email
     add_email_associated_with_another_account:
-      help: Si vous n'avez pas demandé de nouvel email ou que vous suspectez une erreur,
-        veuillez visiter le %{app} %{help_link} ou %{contact_link}.
-      intro: Cette adresse électronique est déjà associée à un compte %{app}, nous
-        ne pouvons donc pas l’ajouter à un autre compte. Vous devez d'abord le supprimer
-        ou le supprimer du compte auquel il est associé. Pour ce faire, suivez le
-        lien ci-dessous et connectez-vous avec cette adresse e-mail. Si vous n'essayez
-        pas d'ajouter cette adresse électronique à un compte, vous pouvez ignorer
-        ce message.
+      help_html: Si vous n'avez pas demandé de nouvel email ou que vous suspectez
+        une erreur, veuillez visiter le %{app} %{help_link} ou %{contact_link}.
+      intro_html: Cette adresse électronique est déjà associée à un compte %{app},
+        nous ne pouvons donc pas l’ajouter à un autre compte. Vous devez d'abord le
+        supprimer ou le supprimer du compte auquel il est associé. Pour ce faire,
+        suivez le lien ci-dessous et connectez-vous avec cette adresse e-mail. Si
+        vous n'essayez pas d'ajouter cette adresse électronique à un compte, vous
+        pouvez ignorer ce message.
       link_text: Allez à %{app}
-      reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
-        %{app} pour le réinitialiser.
+      reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
+        à %{app} pour le réinitialiser.
     contact_link_text: communiquez avec nous
     deleted_accounts_report:
       issuers: Émetteurs
@@ -95,23 +93,21 @@ fr:
       subject: Adresse email supprimée
     help_link_text: Centre d'aide
     letter_expired:
-      help: ''
-      info: La lettre que nous avons postée à votre adresse contient un code de confirmation
-        arrivé à expiration et ne peut plus être utilisée pour terminer le processus
-        de vérification. Pour vérifier votre adresse et terminer le processus de vérification
-        de votre identité, vous devez vous connecter à %{link} et demander une autre
-        lettre.
+      info_html: La lettre que nous avons postée à votre adresse contient un code
+        de confirmation arrivé à expiration et ne peut plus être utilisée pour terminer
+        le processus de vérification. Pour vérifier votre adresse et terminer le processus
+        de vérification de votre identité, vous devez vous connecter à %{link} et
+        demander une autre lettre.
       subject: Votre code de confirmation d'adresse a expiré
     letter_reminder:
-      help: ''
-      info: La lettre que vous êtes sur le point de recevoir contiendra un code de
-        confirmation nous permettant de vérifier votre adresse. Vous pouvez terminer
+      info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
+        de confirmation nous permettant de vérifier votre adresse. Vous pouvez terminer
         le processus de vérification d'identité en vous connectant à %{link} et en
         entrant le code de confirmation.
       subject: Nous avons envoyé une lettre à l'adresse que vous avez en dossier
     new_device_sign_in:
       disavowal_link: ici
-      help: Si vous n'avez pas changé votre mot de passe, vous pouvez réinitialiser
+      help_html: Si vous n'avez pas changé votre mot de passe, vous pouvez réinitialiser
         votre mot de passe %{disavowal_link}. Pour plus d'aide, veuillez visiter le
         %{help_link} de %{app} ou %{contact_link}.
       info_html: "<p>Votre compte login.gov a été connecté sur un nouvel appareil.</p><br/><br/>
@@ -119,10 +115,10 @@ fr:
       subject: Nouvelle connexion avec votre compte Login.gov
     password_changed:
       disavowal_link: ici
-      help: Si vous n'avez pas changé votre mot de passe, vous pouvez réinitialiser
+      help_html: Si vous n'avez pas changé votre mot de passe, vous pouvez réinitialiser
         votre mot de passe %{disavowal_link}. Pour plus d'aide, veuillez visiter le
         %{help_link} de %{app} ou %{contact_link}.
-      intro: Le mot de passe de votre compte %{app} a été changé.
+      intro_html: Le mot de passe de votre compte %{app} a été changé.
     personal_key_regenerated:
       help_html: <p>Votre compte login.gov vient de recevoir une nouvelle clé personnelle
         de 16 caractères. Le but de cet e-mail est de s'assurer que c'est bien vous
@@ -192,21 +188,21 @@ fr:
       link_text: Réinitialisez votre mot de passe
       subject: Réinitialisez votre mot de passe
     signup_with_your_email:
-      help: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez qu'une
-        erreur s'est produite, veuillez visiter le %{help_link} de %{app} ou %{contact_link}.
-      intro: Cette adresse courriel est déjà associée à un compte %{app}, nous ne
-        pouvons donc pas l'utiliser pour créer un nouveau compte. Pour vous connecter
+      help_html: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez
+        qu'une erreur s'est produite, veuillez visiter le %{help_link} de %{app} ou
+        %{contact_link}.
+      intro_html: Cette adresse courriel est déjà associée à un compte %{app}, nous
+        ne pouvons donc pas l'utiliser pour créer un nouveau compte. Pour vous connecter
         à votre compte existant, suivez le lien ci-dessous. Si vous ne tentez pas
         de vous connecter avec cette adresse courriel, vous pouvez ignorer ce message.
       link_text: Allez à %{app}
-      reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
-        %{app} pour le réinitialiser.
+      reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
+        à %{app} pour le réinitialiser.
     sps_over_quota_limit:
       help: ''
       info: Certains SP ont dépassé leur limite de quota.
       subject: Certains SP ont atteint leur limite de quota
     undeliverable_address:
-      call_to_action: Veuillez vous connecter à %{link} et suivre les instructions.
-      help: ''
+      call_to_action_html: Veuillez vous connecter à %{link} et suivre les instructions.
       intro: Nous n'avons pas pu envoyer votre lettre à l'adresse que vous avez indiquée.
       subject: La lettre envoyée à votre adresse était non livrable

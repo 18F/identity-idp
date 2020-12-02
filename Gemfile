@@ -57,7 +57,6 @@ gem 'scrypt'
 gem 'secure_headers', '~> 6.3'
 gem 'simple_form', '>= 5.0.2'
 gem 'sinatra', '>= 2.0.7', require: false
-gem 'slim-rails', '>= 3.2.0'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
@@ -96,7 +95,6 @@ group :development, :test do
   gem 'rspec-rails', '~> 4.0'
   gem 'rubocop', '~> 0.91.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
-  gem 'slim_lint'
 end
 
 group :test do

@@ -48,7 +48,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.password_changed.intro', app: APP_NAME),
+        t('user_mailer.password_changed.intro_html', app: APP_NAME),
       )
       expect(mail.html_part.body).to include(
         '/events/disavow?disavowal_token=123abc',
@@ -201,7 +201,7 @@ describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
         I18n.t(
-          'user_mailer.signup_with_your_email.intro',
+          'user_mailer.signup_with_your_email.intro_html',
           app: APP_NAME,
         ),
       )
@@ -260,7 +260,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.account_does_not_exist.intro', app: APP_NAME),
+        t('user_mailer.account_does_not_exist.intro_html', app: APP_NAME),
       )
       expect(mail.html_part.body).to have_link(
         t('user_mailer.account_does_not_exist.link_text', app: APP_NAME),
@@ -335,7 +335,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to \
-        have_content(strip_tags(t('user_mailer.account_reset_granted.intro')))
+        have_content(strip_tags(t('user_mailer.account_reset_granted.intro_html')))
     end
   end
 
@@ -448,7 +448,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.letter_expired.info', link: APP_NAME)))
+        to have_content(strip_tags(t('user_mailer.letter_expired.info_html', link: APP_NAME)))
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
@@ -473,7 +473,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.letter_reminder.info', link: APP_NAME)))
+        to have_content(strip_tags(t('user_mailer.letter_reminder.info_html', link: APP_NAME)))
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
