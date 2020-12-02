@@ -5,19 +5,10 @@ describe CancellationPresenter do
   let(:good_url_with_path) { 'http://example.com/asdf?qwerty=123' }
   let(:bad_url) { 'http://evil.com/asdf/qwerty' }
 
-  let(:view_context) { ActionView::Base.new }
-
-  subject { described_class.new(view_context: view_context) }
+  subject { described_class.new(referer: referer_header) }
 
   describe '#go_back_link' do
     let(:sign_up_path) { '/two_factor_options' }
-
-    before do
-      allow(view_context).to receive(:sign_up_path).and_return(sign_up_path)
-      request = instance_double(ActionDispatch::Request)
-      allow(request).to receive(:env).and_return('HTTP_REFERER' => referer_header)
-      allow(view_context).to receive(:request).and_return(request)
-    end
 
     context 'without a referer header' do
       let(:referer_header) { nil }

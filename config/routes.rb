@@ -17,18 +17,7 @@ Rails.application.routes.draw do
     match "/api/saml/auth#{suffix}" => 'saml_idp#auth', via: %i[get post]
   end
 
-  # Twilio Request URL for inbound SMS
-  post '/api/sms/receive' => 'sms#receive'
-
   post '/api/service_provider' => 'service_provider#update'
-  match '/api/voice/otp' => 'voice/otp#show',
-        via: %i[get post],
-        as: :voice_otp,
-        defaults: { format: :xml }
-  match '/api/twilio/voice' => 'twilio_voice#show',
-        via: %i[get post],
-        format: :xml
-
   post '/api/verify/images' => 'idv/image_uploads#create'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'

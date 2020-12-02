@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 import useAsync from '../hooks/use-async';
 import UploadContext from '../context/upload';
 import SubmissionComplete from './submission-complete';

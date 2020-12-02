@@ -1,3 +1,5 @@
+development:
+  monitor_mode: false
 production:
   agent_enabled: true
   app_name: <%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>
@@ -21,3 +23,5 @@ production:
     transaction_threshold: apdex_f
   proxy_host:
   proxy_port:
+test:
+  monitor_mode: false

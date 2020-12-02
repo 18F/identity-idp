@@ -1,7 +1,7 @@
 module Users
   class PivCacLoginController < ApplicationController
     include PivCacConcern
-    include VerifySPAttributesConcern
+    include VerifySpAttributesConcern
     include TwoFactorAuthenticatableMethods
 
     def new
@@ -81,7 +81,7 @@ module Users
     end
 
     def request_is_ial2?
-      request_ial == Identity::IAL2
+      request_ial == Idp::Constants::IAL2
     end
 
     def request_ial
@@ -111,7 +111,7 @@ module Users
     end
 
     def mark_user_session_authenticated(authentication_type)
-      user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
+      user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
       analytics.track_event(
         Analytics::USER_MARKED_AUTHED,

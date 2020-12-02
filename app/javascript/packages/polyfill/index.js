@@ -6,7 +6,7 @@
  */
 
 /**
- * @typedef {"fetch"|"element-closest"|"classlist"|"crypto"} SupportedPolyfills
+ * @typedef {"fetch"|"element-closest"|"classlist"|"crypto"|"custom-event"} SupportedPolyfills
  */
 
 /**
@@ -28,6 +28,18 @@ const POLYFILLS = {
   crypto: {
     test: () => 'crypto' in window,
     load: () => import(/* webpackChunkName: "webcrypto-shim" */ 'webcrypto-shim'),
+  },
+  'custom-event': {
+    test() {
+      try {
+        // eslint-disable-next-line no-new
+        new window.CustomEvent('test');
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    load: () => import(/* webpackChunkName: "custom-event-polyfill" */ 'custom-event-polyfill'),
   },
 };
 

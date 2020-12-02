@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import SubmissionInterstitial from '@18f/identity-document-capture/components/submission-interstitial';
 

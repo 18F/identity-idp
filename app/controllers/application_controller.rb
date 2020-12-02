@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   include UserSessionContext
   include VerifyProfileConcern
   include LocaleHelper
-  include VerifySPAttributesConcern
+  include VerifySpAttributesConcern
 
   FLASH_KEYS = %w[error info success warning other].freeze
   FLASH_KEY_MAP = { 'notice' => 'info', 'alert' => 'error' }.freeze
@@ -32,8 +32,6 @@ class ApplicationController < ActionController::Base
   prepend_before_action :set_locale
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
-
-  skip_before_action :handle_two_factor_authentication
 
   def session_expires_at
     now = Time.zone.now
@@ -89,9 +87,11 @@ class ApplicationController < ActionController::Base
   # These attributes show up in New Relic traces for all requests.
   # https://docs.newrelic.com/docs/agents/manage-apm-agents/agent-data/collect-custom-attributes
   def add_new_relic_trace_attributes
-    ::NewRelic::Agent.add_custom_attributes(
-      amzn_trace_id: request.headers['X-Amzn-Trace-Id'],
-    )
+    ::NewRelic::Agent.add_custom_attributes(amzn_trace_id: amzn_trace_id)
+  end
+
+  def amzn_trace_id
+    request.headers['X-Amzn-Trace-Id']
   end
 
   def disable_caching
@@ -211,7 +211,12 @@ class ApplicationController < ActionController::Base
 
   def user_fully_authenticated?
     !reauthn? && user_signed_in? &&
-      two_factor_enabled? && is_fully_authenticated?
+      two_factor_enabled? &&
+      session['warden.user.user.session'] &&
+      !session['warden.user.user.session'].try(
+        :[],
+        TwoFactorAuthenticatable::NEED_AUTHENTICATION,
+      )
   end
 
   def reauthn?

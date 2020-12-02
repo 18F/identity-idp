@@ -90,7 +90,7 @@ describe Users::TotpSetupController, devise: true do
         it 'redirects with an error message' do
           expect(response).to redirect_to(authenticator_setup_path)
           expect(flash[:error]).to eq t('errors.invalid_totp')
-          expect(subject.current_user.totp_enabled?).to be(false)
+          expect(subject.current_user.auth_app_configurations.any?).to eq false
 
           result = {
             success: false,
@@ -147,7 +147,7 @@ describe Users::TotpSetupController, devise: true do
         it 'redirects with an error message' do
           expect(response).to redirect_to(authenticator_setup_path)
           expect(flash[:error]).to eq t('errors.invalid_totp')
-          expect(subject.current_user.totp_enabled?).to be(false)
+          expect(subject.current_user.auth_app_configurations.any?).to eq false
 
           result = {
             success: false,
@@ -199,7 +199,7 @@ describe Users::TotpSetupController, devise: true do
         it 'redirects with an error message' do
           expect(response).to redirect_to(authenticator_setup_path)
           expect(flash[:error]).to eq t('errors.invalid_totp')
-          expect(subject.current_user.totp_enabled?).to be(false)
+          expect(subject.current_user.auth_app_configurations.any?).to eq false
 
           result = {
             success: false,
@@ -218,8 +218,8 @@ describe Users::TotpSetupController, devise: true do
   describe '#disable' do
     context 'when a user has configured TOTP' do
       it 'disables TOTP' do
-        user = create(:user, :signed_up, :with_authentication_app)
-        user.auth_app_configurations.first.otp_secret_key = 'foo'
+        user = create(:user, :signed_up, :with_phone)
+        totp_app = user.auth_app_configurations.create(otp_secret_key: 'foo', name: 'My Auth App')
         user.save
         stub_sign_in(user)
 
@@ -227,9 +227,9 @@ describe Users::TotpSetupController, devise: true do
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
 
-        delete :disable
+        delete :disable, params: { id: totp_app.id }
 
-        expect(user.reload.totp_enabled?).to be(false)
+        expect(user.reload.auth_app_configurations.any?).to eq false
         expect(response).to redirect_to(account_two_factor_authentication_path)
         expect(flash[:success]).to eq t('notices.totp_disabled')
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_USER_DISABLED)
@@ -244,6 +244,7 @@ describe Users::TotpSetupController, devise: true do
 
         delete :disable
         expect(response).to redirect_to(account_two_factor_authentication_path)
+        expect(user.reload.auth_app_configurations.any?).to eq true
       end
     end
   end

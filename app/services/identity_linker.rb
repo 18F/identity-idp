@@ -25,7 +25,7 @@ class IdentityLinker
   end
 
   def process_ial_at(now)
-    if @ial == Identity::IAL2 || (identity.verified_at.present? && @ial&.zero?)
+    if @ial == Idp::Constants::IAL2 || (identity.verified_at.present? && @ial&.zero?)
       identity.last_ial2_authenticated_at = now
     else
       identity.last_ial1_authenticated_at = now
@@ -33,7 +33,7 @@ class IdentityLinker
   end
 
   def process_verified_at(now)
-    return unless @ial == Identity::IAL2 && identity.verified_at.nil?
+    return unless @ial == Idp::Constants::IAL2 && identity.verified_at.nil?
     identity.verified_at = now
   end
 

@@ -121,10 +121,6 @@ fr:
         ou utilisez votre clé personnelle.
       pwned_password: Le mot de passe que vous avez entré n'est pas sécurisé. C'est
         dans une liste de mots de passe connus exposés dans les violations de données.
-      twilio_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
-        Le service de messagerie texte peut avoir des problèmes. Vous pouvez vérifier
-        le statut avec <a href="https://status.twilio.com/" target='_blank'>notre
-        fournisseur de service de messages</a>.
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_nameid_format: Format non autorisé du nom d'identification
       unauthorized_service_provider: Fournisseur de service non autorisé

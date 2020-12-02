@@ -1,5 +1,3 @@
-import React from 'react';
-
 /** @typedef {import('react').MouseEvent} ReactMouseEvent */
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {"button"|"reset"|"submit"} ButtonType */

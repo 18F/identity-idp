@@ -3,6 +3,7 @@ require 'rails_helper'
 describe LambdaCallback::ResolutionProofResultController do
   describe '#create' do
     let(:document_capture_session) { DocumentCaptureSession.new(user: create(:user)) }
+    let(:trace_id) { SecureRandom.uuid }
 
     context 'with valid API token' do
       before do
@@ -17,6 +18,7 @@ describe LambdaCallback::ResolutionProofResultController do
         Idv::Agent.new(applicant).proof_resolution(
           document_capture_session,
           should_proof_state_id: true,
+          trace_id: trace_id,
         )
         proofer_result = document_capture_session.load_proofing_result[:result]
 
@@ -34,6 +36,7 @@ describe LambdaCallback::ResolutionProofResultController do
         Idv::Agent.new(applicant).proof_resolution(
           document_capture_session,
           should_proof_state_id: false,
+          trace_id: trace_id,
         )
         proofer_result = document_capture_session.load_proofing_result[:result]
 
@@ -58,6 +61,7 @@ describe LambdaCallback::ResolutionProofResultController do
         Idv::Agent.new(applicant).proof_resolution(
           document_capture_session,
           should_proof_state_id: false,
+          trace_id: trace_id,
         )
         proofer_result = document_capture_session.load_proofing_result[:result]
 

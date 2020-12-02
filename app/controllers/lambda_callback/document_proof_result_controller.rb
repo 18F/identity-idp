@@ -1,9 +1,14 @@
 module LambdaCallback
   class DocumentProofResultController < AuthTokenController
     def create
-      dcs = DocumentCaptureSession.new
-      dcs.result_id = result_id_parameter
-      dcs.store_proofing_result(document_result_parameter)
+      EncryptedRedisStructStorage.store(
+        ProofingDocumentCaptureSessionResult.new(
+          id: result_id_parameter,
+          pii: document_result_parameter[:pii_from_doc],
+          result: document_result_parameter.except(:pii_from_doc),
+        ),
+        expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+      )
 
       track_exception_in_result(document_result_parameter)
     end
@@ -15,8 +20,18 @@ module LambdaCallback
     end
 
     def document_result_parameter
-      params.require(:document_result).permit(:exception, :success, :timed_out,
-                                              errors: {}, context: {})
+      params.require(:document_result).permit(
+        :billed,
+        :exception,
+        :raw_alerts,
+        :result,
+        :success,
+        :timed_out,
+        context: {},
+        errors: {},
+        pii_from_doc: {},
+        raw_alerts: [],
+      )
     end
 
     def track_exception_in_result(result)

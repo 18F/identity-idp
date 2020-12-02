@@ -5,7 +5,7 @@
     "noEmit": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
-    "jsx": "react",
+    "jsx": "react-jsx",
     "esModuleInterop": true,
     "moduleResolution": "node",
     "module": "ESNext",
@@ -13,7 +13,9 @@
   },
   "include": [
     "app/javascript/packages",
+    "app/javascript/packs/document-capture.jsx",
     "app/javascript/packs/form-validation.js",
+    "app/javascript/packs/intl-tel-input.js",
     "app/javascript/packs/submit-with-spinner.js"
   ],
   "exclude": [

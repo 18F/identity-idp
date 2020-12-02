@@ -68,6 +68,7 @@ async function upload(payload, { method = 'POST', endpoint, csrf }) {
     const errorResult = result;
 
     if (errorResult.redirect) {
+      window.onbeforeunload = null;
       window.location.href = errorResult.redirect;
 
       // Avoid settling the promise, allowing the redirect to complete.

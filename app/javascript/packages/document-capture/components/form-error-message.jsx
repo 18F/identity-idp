@@ -1,4 +1,3 @@
-import React from 'react';
 import { UploadFormEntryError } from '../services/upload';
 import useI18n from '../hooks/use-i18n';
 

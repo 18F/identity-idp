@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 5.2.4', '>= 5.2.4.4'
+gem 'rails', '~> 6.0.0'
 
 gem 'ahoy_matey', '~> 2.2', '>= 2.2.1'
 gem 'american_date'
@@ -17,14 +17,13 @@ gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
 gem 'foundation_emails'
-gem 'gibberish'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.0'
+gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.1'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.1'
-require File.join(__dir__, 'app', 'services', 'lambda_jobs', 'git_ref.rb')
+require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.6'
+gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.7'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
 gem 'json-jwt', '>= 1.11.0'
 gem 'jwt'
@@ -62,8 +61,6 @@ gem 'slim-rails', '>= 3.2.0'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
-gem 'twilio-ruby'
-gem 'two_factor_authentication', '>= 2.1.1'
 gem 'uglifier', '~> 3.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
@@ -87,6 +84,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'bootsnap', '~> 1.4.7', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'i18n-tasks', '>= 0.9.31'
@@ -95,7 +93,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'psych'
   gem 'puma'
-  gem 'rspec-rails', '~> 3.9', '>= 3.9.1'
+  gem 'rspec-rails', '~> 4.0'
   gem 'rubocop', '~> 0.91.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
   gem 'slim_lint'

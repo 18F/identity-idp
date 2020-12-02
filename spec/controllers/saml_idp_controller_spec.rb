@@ -51,7 +51,7 @@ describe SamlIdpController do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'metadata', response) }
 
     it 'renders XML inline' do
-      expect(response.content_type).to eq 'text/xml'
+      expect(response.media_type).to eq 'text/xml'
     end
 
     it 'contains an EntityDescriptor nodeset' do

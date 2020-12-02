@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert } from '@18f/identity-components';
 import Button from './button';
 import PageHeading from './page-heading';

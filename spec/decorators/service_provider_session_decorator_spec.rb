@@ -172,6 +172,21 @@ RSpec.describe ServiceProviderSessionDecorator do
         expect(subject.sp_logo_url).to eq(logo)
       end
     end
+
+    context 'service provider has a poorly configured logo' do
+      it 'does not raise an exception' do
+        sp = build_stubbed(:service_provider, logo: 'abc')
+
+        subject = ServiceProviderSessionDecorator.new(
+          sp: sp,
+          view_context: view_context,
+          sp_session: {},
+          service_provider_request: ServiceProviderRequestProxy.new,
+        )
+
+        expect(subject.sp_logo_url).is_a? String
+      end
+    end
   end
 
   describe '#cancel_link_url' do

@@ -1,4 +1,3 @@
-import React from 'react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import DeviceContext from '@18f/identity-document-capture/context/device';

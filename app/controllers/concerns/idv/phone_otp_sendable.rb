@@ -37,7 +37,7 @@ module Idv
         context: 'idv',
         country: Phonelib.parse(send_phone_confirmation_otp_service.phone).country,
       }
-      analytics.track_event(Analytics::TWILIO_PHONE_VALIDATION_FAILED, attributes)
+      analytics.track_event(Analytics::OTP_PHONE_VALIDATION_FAILED, attributes)
     end
   end
 end

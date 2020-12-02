@@ -221,7 +221,7 @@ describe 'OpenID Connect' do
       verified_within: '1w',
     )
 
-    redirect_params = URIService.params(current_url)
+    redirect_params = UriService.params(current_url)
 
     expect(redirect_params[:error]).to eq('invalid_request')
     expect(redirect_params[:error_description]).

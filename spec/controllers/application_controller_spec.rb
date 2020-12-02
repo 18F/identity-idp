@@ -70,7 +70,7 @@ describe ApplicationController do
     it 'returns an html page' do
       get :index
 
-      expect(response.content_type).to eq 'text/html'
+      expect(response.media_type).to eq 'text/html'
     end
   end
 
