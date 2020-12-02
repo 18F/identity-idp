@@ -1,6 +1,8 @@
-<div class="alert alert-error" role="alert">
-  <%= @presenter.title %>
-</div>
+<%= render 'shared/alert', {
+  type: 'error',
+  class: 'margin-bottom-4',
+  message: @presenter.title,
+} %>
 
 <h1 class="h3 my0">
   <%= @presenter.heading %>

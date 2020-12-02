@@ -1,5 +1,9 @@
 <% if flow_session[:error_message] %>
-  <div class='alert alert-error'><%= flow_session[:error_message] %></div>
+  <%= render 'shared/alert', {
+    type: 'error',
+    class: 'margin-bottom-4',
+    message: flow_session[:error_message],
+  } %>
 <% end %>
 
 <h1 class='h3 my0'><%= t('recover.overview.heading') %></h1>

@@ -1,10 +1,10 @@
 # rubocop:disable Metrics/BlockLength
 SimpleForm.setup do |config|
+  require Rails.root.join('lib', 'extensions', 'simple_form', 'error_notification')
+
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
   config.default_form_class = 'mt3 sm-mt3'
-  config.error_notification_tag = :div
-  config.error_notification_class = 'alert alert-error'
   config.wrapper_mappings = { inline: :append }
 
   config.wrappers :base do |b|

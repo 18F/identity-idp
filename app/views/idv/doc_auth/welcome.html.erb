@@ -2,7 +2,11 @@
 
 <% step = 0 %>
 <% if flow_session[:error_message] %>
-  <div class='alert alert-error'><%= flow_session[:error_message] %></div>
+  <%= render 'shared/alert', {
+    type: 'error',
+    class: 'margin-bottom-4',
+    message: flow_session[:error_message],
+  } %>
 <% end %>
 
 <%= render 'shared/maintenance_window_alert' do %>

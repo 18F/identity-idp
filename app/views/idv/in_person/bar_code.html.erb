@@ -34,9 +34,11 @@
         1101 WILSON BLVD STE 1 ARLINGTON, VA 22209-9998
       </li>
       <li class="mb0 border-top">
-        <div class="alert-inline bold border-bottom">
-          <%= t('in_person_proofing.warning.enrollment_form') %>
-        </div>
+        <%= render 'shared/alert', {
+          type: 'warning',
+          class: 'bold border-bottom',
+          message: t('in_person_proofing.warning.enrollment_form'),
+        } %>
         <table class="pl4 pr3 monospace">
           <tr>
             <td class="center">
