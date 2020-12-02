@@ -14,7 +14,6 @@ es:
         su cuenta de login.gov.
       subject: Eliminar su cuenta
     account_reset_complete:
-      help: ''
       intro: Este correo electrónico confirma que ha eliminado su cuenta de login.gov.
       subject: Cuenta borrada
     account_reset_granted:

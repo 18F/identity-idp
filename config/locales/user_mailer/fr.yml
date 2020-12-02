@@ -14,7 +14,6 @@ fr:
         de votre compte login.gov.
       subject: Supprimer votre compte
     account_reset_complete:
-      help: ''
       intro: Cet e-mail confirme que vous avez supprimé votre compte login.gov.
       subject: Compte supprimé
     account_reset_granted:

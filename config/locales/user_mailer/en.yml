@@ -13,7 +13,6 @@ en:
         account.
       subject: Delete your account
     account_reset_complete:
-      help: ''
       intro: This email confirms you have deleted your login.gov account.
       subject: Account deleted
     account_reset_granted:
