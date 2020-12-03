@@ -1,4 +1,3 @@
-import React from 'react';
 import FormErrorMessage, {
   RequiredValueMissingError,
 } from '@18f/identity-document-capture/components/form-error-message';

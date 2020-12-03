@@ -1,4 +1,3 @@
-import React from 'react';
 import { I18nContext, ServiceProviderContext } from '@18f/identity-document-capture';
 import MobileIntroStep from '@18f/identity-document-capture/components/mobile-intro-step';
 import { render } from '../../../support/document-capture';

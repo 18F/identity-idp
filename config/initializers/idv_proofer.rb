@@ -1,2 +1,3 @@
-Dir[Rails.root.join('lib', 'proofer_mocks', '*')].sort.each { |file| require file }
-Idv::Proofer.validate_vendors!
+require 'idv/proofer_validator'
+
+Idv::ProoferValidator.validate_vendors!

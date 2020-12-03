@@ -26,6 +26,7 @@ fr:
         chaque fois que vous souhaitez accéder à votre compte.
     index:
       address: Adresse actuelle
+      auth_app_add: Ajouter une application
       auth_app_disabled: non activée
       auth_app_enabled: activée
       backup_code_confirm_delete: Oui, supprimer les codes
@@ -43,6 +44,7 @@ fr:
       password: Mot de passe
       phone: Numéro de téléphone
       phone_add: Ajouter un téléphone
+      piv_cac_add: Ajouter un identifiant
       piv_cac_card: Cartes PIV/CAC
       piv_cac_confirm_delete: Oui, retirer la carte
       piv_cac_disabled: désactivée

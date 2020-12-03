@@ -113,10 +113,6 @@ en:
         the phone call option below, or use your personal key.
       pwned_password: The password you entered is not safe. It's in a list of known
         passwords exposed in data breaches.
-      twilio_timeout: The server took too long to respond. Please try again.<br><br>The
-        text messaging service may be having trouble. You can check the status with
-        <a href="https://status.twilio.com/" target='_blank'>our messaging service
-        provider</a>.
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_nameid_format: Unauthorized nameID format
       unauthorized_service_provider: Unauthorized Service Provider

@@ -2,6 +2,9 @@ module Encryption
   module Encryptors
     class SessionEncryptor
       include Encodable
+      include ::NewRelic::Agent::MethodTracer
+      add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+      add_method_tracer :decrypt, "Custom/#{name}/decrypt"
 
       def encrypt(plaintext)
         aes_ciphertext = AesEncryptor.new.encrypt(plaintext, aes_encryption_key)

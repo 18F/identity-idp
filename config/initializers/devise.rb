@@ -1,7 +1,7 @@
 require 'saml_idp_constants'
 require 'custom_devise_failure_app'
+require 'mailable'
 
-# rubocop:disable Metrics/BlockLength
 Devise.setup do |config|
   include Mailable
   require 'devise/orm/active_record'
@@ -24,15 +24,21 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 12
   config.timeout_in = AppConfig.env.session_timeout_in_minutes.to_i.minutes
 
-  # ==> Two Factor Authentication
-  config.allowed_otp_drift_seconds = 30
-  config.direct_otp_length = 6
-  config.direct_otp_valid_for = AppConfig.env.otp_valid_for.to_i.minutes
-  config.max_login_attempts = 3 # max OTP login attempts, not devise strategies (e.g. pw auth)
-  config.otp_length = 6
-
   config.warden do |manager|
     manager.failure_app = CustomDeviseFailureApp
   end
 end
-# rubocop:enable Metrics/BlockLength
+
+Warden::Manager.after_authentication do |user, auth, options|
+  if auth.env['action_dispatch.cookies']
+    expected_cookie_value = "#{user.class}-#{user.id}"
+    actual_cookie_value = auth.env['action_dispatch.cookies'].
+                          signed[TwoFactorAuthenticatable::REMEMBER_2FA_COOKIE]
+    bypass_by_cookie = actual_cookie_value == expected_cookie_value
+  end
+
+  unless bypass_by_cookie
+    auth.session(options[:scope])[TwoFactorAuthenticatable::NEED_AUTHENTICATION] =
+      user.need_two_factor_authentication?(auth.request)
+  end
+end

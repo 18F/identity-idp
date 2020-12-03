@@ -1,4 +1,3 @@
-import React from 'react';
 import FileImage from '@18f/identity-document-capture/components/file-image';
 import { render } from '../../../support/document-capture';
 

@@ -2,13 +2,15 @@ class User < ApplicationRecord
   self.ignored_columns = %w[x509_dn_uuid otp_secret_key totp_timestamp]
   include NonNullUuid
 
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
+
   devise(
     :database_authenticatable,
     :recoverable,
     :registerable,
     :timeoutable,
     :trackable,
-    :two_factor_authenticatable,
     authentication_keys: [:email],
   )
 
@@ -21,10 +23,9 @@ class User < ApplicationRecord
   include UserEncryptedAttributeOverrides
   include EmailAddressCallback
   include DeprecatedUserAttributes
+  include UserOtpMethods
 
   enum otp_delivery_preference: { sms: 0, voice: 1 }
-
-  has_one_time_password
 
   has_many :authorizations, dependent: :destroy
   # rubocop:disable Rails/HasManyOrHasOneDependent
@@ -60,17 +61,6 @@ class User < ApplicationRecord
 
   def need_two_factor_authentication?(_request)
     MfaPolicy.new(self).two_factor_enabled?
-  end
-
-  def send_two_factor_authentication_code(_code)
-    # The two_factor_authentication gem assumes that if a user needs to receive
-    # a code, the code should be automatically sent right after Warden signs
-    # the user in by calling this method. However, we don't want a code to be
-    # automatically sent until the user has reached the TwoFactorAuthenticationController,
-    # where we prompt them to select how they would like to receive the OTP code.
-    #
-    # Hence, we define this method as a no-op method, meaning it doesn't do anything.
-    # See https://github.com/18F/identity-idp/pull/452 for more details.
   end
 
   def confirmed?

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
 import useI18n from '../hooks/use-i18n';

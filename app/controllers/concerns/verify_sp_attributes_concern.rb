@@ -1,4 +1,4 @@
-module VerifySPAttributesConcern
+module VerifySpAttributesConcern
   def needs_completions_screen?
     sp_session[:issuer].present? &&
       (sp_session_identity.nil? ||

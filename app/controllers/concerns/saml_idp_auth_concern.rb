@@ -142,8 +142,12 @@ module SamlIdpAuthConcern
     url = URI.parse request.original_url
     query_params = Rack::Utils.parse_nested_query url.query
     unless query_params['SAMLRequest']
-      orig_request = saml_request.options[:get_params][:SAMLRequest]
-      query_params['SAMLRequest'] = orig_request
+      orig_saml_request = saml_request.options[:get_params][:SAMLRequest]
+      query_params['SAMLRequest'] = orig_saml_request
+    end
+    unless query_params['RelayState']
+      orig_relay_state = saml_request.options[:get_params][:RelayState]
+      query_params['RelayState'] = orig_relay_state if orig_relay_state
     end
 
     url.query = Rack::Utils.build_query(query_params).presence

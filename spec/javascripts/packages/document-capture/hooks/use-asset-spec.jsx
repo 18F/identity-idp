@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import useAsset from '@18f/identity-document-capture/hooks/use-asset';
 import AssetContext from '@18f/identity-document-capture/context/asset';

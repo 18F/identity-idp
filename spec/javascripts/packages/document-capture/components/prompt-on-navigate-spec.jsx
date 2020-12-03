@@ -1,4 +1,3 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import PromptOnNavigate from '@18f/identity-document-capture/components/prompt-on-navigate';
 

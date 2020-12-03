@@ -1,12 +1,12 @@
 <div>
   <div class="grid-row mb1 mt0">
-    <h2 class="grid-col-6 m0">
+    <h2 class="grid-col-fill margin-y-0 padding-right-2">
       <%= t('headings.account.federal_employee_id') %>
     </h2>
     <% if current_user.piv_cac_configurations.count < AppConfig.env.max_piv_cac_per_account.to_i %>
-      <div class="right-align grid-col-6">
+      <div class="grid-col-auto">
         <%= link_to(
-          prefix_with_plus(t('forms.buttons.enable')),
+          prefix_with_plus(t('account.index.piv_cac_add')),
           setup_piv_cac_url,
           class: 'btn btn-account-action rounded-lg bg-light-blue',
         ) %>

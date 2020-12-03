@@ -14,7 +14,7 @@ class ServiceProviderRequestHandler
 
     metadata = StoreSpMetadataInSession.new(session: session, request_id: request_id).call
 
-    Db::SpReturnLog::CreateRequest.call(request_id, ial, metadata[:issuer])
+    Db::SpReturnLog::CreateRequest.call(request_id, ial, metadata[:issuer]) if metadata
   end
 
   private

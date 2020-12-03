@@ -1,4 +1,3 @@
-import React from 'react';
 import { Alert } from '@18f/identity-components';
 import { render } from '../../support/document-capture';
 

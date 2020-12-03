@@ -1,5 +1,4 @@
 require 'feature_management'
-require 'service_provider'
 
 SamlIdp.configure do |config|
   protocol = Rails.env.development? ? 'http://' : 'https://'

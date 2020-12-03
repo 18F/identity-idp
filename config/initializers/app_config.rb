@@ -1,6 +1,7 @@
 require Rails.root.join('lib', 'config_validator.rb')
 
 AppConfig.require_keys(%w[
+                         async_wait_timeout_seconds
                          attribute_encryption_key
                          database_statement_timeout
                          disallow_all_web_crawlers

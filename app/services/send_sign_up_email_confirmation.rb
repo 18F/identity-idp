@@ -1,4 +1,7 @@
 class SendSignUpEmailConfirmation
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer(:call, "Custom/#{name}/call")
+
   attr_reader :user
 
   def initialize(user)

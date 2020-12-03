@@ -2,13 +2,11 @@ class CancellationPresenter < FailurePresenter
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
-  delegate :request, to: :view_context
+  attr_reader :referer
 
-  attr_reader :view_context
-
-  def initialize(view_context:)
+  def initialize(referer:)
     super(:warning)
-    @view_context = view_context
+    @referer = referer
   end
 
   def title
@@ -34,9 +32,8 @@ class CancellationPresenter < FailurePresenter
   private
 
   def referer_path
-    referer_string = request.env['HTTP_REFERER']
-    return if referer_string.blank?
-    referer_uri = URI.parse(referer_string)
+    return if referer.blank?
+    referer_uri = URI.parse(referer)
     return if referer_uri.scheme == 'javascript'
     return unless referer_uri.host == AppConfig.env.domain_name.split(':')[0]
     extract_path_and_query_from_uri(referer_uri)

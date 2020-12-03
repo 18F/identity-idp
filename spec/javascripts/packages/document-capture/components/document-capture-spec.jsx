@@ -1,15 +1,15 @@
-import React from 'react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import { render as baseRender, fireEvent } from '@testing-library/react';
-import {
+import httpUpload, {
   UploadFormEntriesError,
   toFormEntryError,
 } from '@18f/identity-document-capture/services/upload';
 import {
+  ServiceProviderContext,
   UploadContextProvider,
-  AcuantProvider,
+  AcuantContextProvider,
   DeviceContext,
 } from '@18f/identity-document-capture';
 import DocumentCapture, {
@@ -93,9 +93,9 @@ describe('document-capture/components/document-capture', () => {
 
   it('progresses through steps to completion', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText } = render(
-      <AcuantProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank">
         <DocumentCapture />
-      </AcuantProvider>,
+      </AcuantContextProvider>,
     );
 
     initialize();
@@ -173,9 +173,9 @@ describe('document-capture/components/document-capture', () => {
 
   it('renders unhandled submission failure', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
-      <AcuantProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank">
         <DocumentCapture />
-      </AcuantProvider>,
+      </AcuantContextProvider>,
       {
         uploadError: new Error('Server unavailable'),
         expectedUploads: 2,
@@ -244,9 +244,9 @@ describe('document-capture/components/document-capture', () => {
       { field: 'back', message: 'Please fill in this field' },
     ].map(toFormEntryError);
     const { getByLabelText, getByText, getAllByText, findAllByText, findAllByRole } = render(
-      <AcuantProvider sdkSrc="about:blank">
+      <AcuantContextProvider sdkSrc="about:blank">
         <DocumentCapture />
-      </AcuantProvider>,
+      </AcuantContextProvider>,
       {
         uploadError,
       },
@@ -293,10 +293,54 @@ describe('document-capture/components/document-capture', () => {
     expect(hasValueSelected).to.be.true();
   });
 
+  it('redirects from a server error', async () => {
+    const { getByLabelText, getByText } = render(
+      <UploadContextProvider upload={httpUpload} endpoint="/upload">
+        <ServiceProviderContext.Provider value={{ isLivenessRequired: false }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <DocumentCapture />
+          </AcuantContextProvider>
+        </ServiceProviderContext.Provider>
+      </UploadContextProvider>,
+    );
+
+    sandbox
+      .stub(window, 'fetch')
+      .withArgs('/upload')
+      .resolves({
+        ok: false,
+        status: 418,
+        json: () =>
+          Promise.resolve({
+            redirect: '#teapot',
+          }),
+      });
+
+    initialize({ isCameraSupported: false });
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_back'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+
+    userEvent.click(getByText('forms.buttons.submit.default'));
+    await waitFor(() => window.location.hash === '#teapot');
+
+    // JSDOM doesn't support full page navigation, but at this point we should assume navigation
+    // would have been initiated, meaning it's also safe to assume that the user would not expect
+    // to see a "You have unsaved changed" prompt.
+    const event = new window.Event('beforeunload', { cancelable: true, bubbles: false });
+    window.dispatchEvent(event);
+    expect(event.defaultPrevented).to.be.false();
+  });
+
   it('renders async upload pending progress', async () => {
     const statusChecks = 3;
     let remainingStatusChecks = statusChecks;
-    sandbox.stub(window, 'fetch');
+    sandbox.stub(window, 'fetch').resolves({ ok: true, headers: new window.Headers() });
     const upload = sinon.stub().callsFake((payload, { endpoint }) => {
       switch (endpoint) {
         case 'about:blank#upload':
@@ -340,9 +384,9 @@ describe('document-capture/components/document-capture', () => {
         backgroundUploadEncryptKey={key}
         upload={upload}
       >
-        <AcuantProvider sdkSrc="about:blank">
+        <AcuantContextProvider sdkSrc="about:blank">
           <DocumentCapture isAsyncForm />
-        </AcuantProvider>
+        </AcuantContextProvider>
       </UploadContextProvider>,
     );
 

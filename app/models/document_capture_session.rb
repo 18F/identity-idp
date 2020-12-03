@@ -18,6 +18,7 @@ class DocumentCaptureSession < ApplicationRecord
         success: doc_auth_response.success?,
         pii: doc_auth_response.pii_from_doc,
       ),
+      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
     )
     save!
   end
@@ -29,6 +30,7 @@ class DocumentCaptureSession < ApplicationRecord
         pii: pii_from_doc,
         result: nil,
       ),
+      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
     )
     save!
   end
@@ -43,6 +45,7 @@ class DocumentCaptureSession < ApplicationRecord
         pii: pii,
         result: proofing_result,
       ),
+      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
     )
   end
 

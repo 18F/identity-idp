@@ -195,6 +195,7 @@ module Idv
       Idv::Agent.new(pii).proof_resolution(
         document_capture_session,
         should_proof_state_id: false,
+        trace_id: amzn_trace_id,
       )
     end
 

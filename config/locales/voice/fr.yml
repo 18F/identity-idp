@@ -1,8 +1,0 @@
----
-fr:
-  voice:
-    otp:
-      message: Bonjour! Votre code de sécurité à utilisation unique de login.gov est,
-        %{code}, de nouveau, votre code de sécurité est, %{code}. Ce code expirera
-        dans %{expiration} minutes.
-      repeat_instructions: Appuyez sur 1 pour répéter votre code.

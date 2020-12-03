@@ -175,8 +175,30 @@ describe Idv::DocAuthController do
   end
 
   describe 'async document verify' do
+    let(:front_image_url) { 'http://foo.com/bar1' }
+    let(:back_image_url) { 'http://foo.com/bar2' }
+    let(:selfie_image_url) { 'http://foo.com/bar3' }
+    let(:encryption_key) { SecureRandom.random_bytes(32) }
+    let(:front_image_iv) { SecureRandom.random_bytes(12) }
+    let(:back_image_iv) { SecureRandom.random_bytes(12) }
+    let(:selfie_image_iv) { SecureRandom.random_bytes(12) }
+
     before do
       mock_document_capture_step
+
+      encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+      stub_request(:get, front_image_url).
+        to_return(body: encryption_helper.encrypt(
+          data: '{}', key: encryption_key, iv: front_image_iv,
+        ))
+      stub_request(:get, back_image_url).
+        to_return(body: encryption_helper.encrypt(
+          data: '{}', key: encryption_key, iv: back_image_iv,
+        ))
+      stub_request(:get, selfie_image_url).
+        to_return(body: encryption_helper.encrypt(
+          data: '{}', key: encryption_key, iv: selfie_image_iv,
+        ))
     end
     let(:successful_response) do
       { success: true }.to_json
@@ -186,13 +208,13 @@ describe Idv::DocAuthController do
       it 'successfully submits the images' do
         put :update, params: { step: 'verify_document',
                                document_capture_session_uuid: 'foo',
-                               encryption_key: 'bar',
-                               front_image_iv: 'iv1',
-                               back_image_iv: 'iv2',
-                               selfie_image_iv: 'iv3',
-                               front_image_url: 'http://foo.com/bar1',
-                               back_image_url: 'http://foo.com/bar2',
-                               selfie_image_url: 'http://foo.com/bar3' }
+                               encryption_key: Base64.encode64(encryption_key),
+                               front_image_iv: Base64.encode64(front_image_iv),
+                               back_image_iv: Base64.encode64(back_image_iv),
+                               selfie_image_iv: Base64.encode64(selfie_image_iv),
+                               front_image_url: front_image_url,
+                               back_image_url: back_image_url,
+                               selfie_image_url: selfie_image_url }
 
         expect(response.status).to eq(202)
         expect(response.body).to eq(successful_response)
@@ -213,13 +235,13 @@ describe Idv::DocAuthController do
       it 'successfully submits the images' do
         put :update, params: { step: 'verify_document',
                                document_capture_session_uuid: 'foo',
-                               encryption_key: 'bar',
-                               front_image_iv: 'iv1',
-                               back_image_iv: 'iv2',
-                               selfie_image_iv: 'iv3',
-                               front_image_url: 'http://foo.com/bar1',
-                               back_image_url: 'http://foo.com/bar2',
-                               selfie_image_url: 'http://foo.com/bar3' }
+                               encryption_key: Base64.encode64(encryption_key),
+                               front_image_iv: Base64.encode64(front_image_iv),
+                               back_image_iv: Base64.encode64(back_image_iv),
+                               selfie_image_iv: Base64.encode64(selfie_image_iv),
+                               front_image_url: front_image_url,
+                               back_image_url: back_image_url,
+                               selfie_image_url: selfie_image_url }
 
         expect(response.status).to eq(202)
         expect(response.body).to eq(successful_response)
@@ -237,8 +259,8 @@ describe Idv::DocAuthController do
     before do
       mock_document_capture_step
     end
-    let(:good_result) do
-      { pii_from_doc: {
+    let(:good_pii) do
+      {
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name,
         dob: Time.zone.today.to_s,
@@ -249,10 +271,17 @@ describe Idv::DocAuthController do
         state_id_type: 'drivers_license',
         state_id_number: '111',
         state_id_jurisdiction: 'WI',
-      }, success: true, errors: {}, messages: ['message'] }
+      }
     end
-    let(:bad_pii_result) do
-      { pii_from_doc: {
+    let(:good_result) do
+      {
+        success: true,
+        errors: {},
+        messages: ['message'],
+      }
+    end
+    let(:bad_pii) do
+      {
         first_name: Faker::Name.first_name,
         last_name: nil,
         dob: nil,
@@ -263,7 +292,7 @@ describe Idv::DocAuthController do
         state_id_type: 'drivers_license',
         state_id_number: '111',
         state_id_jurisdiction: 'WI',
-      }, success: true, errors: {}, messages: ['message'] }
+      }
     end
     let(:fail_result) do
       {
@@ -275,7 +304,11 @@ describe Idv::DocAuthController do
     end
 
     it 'returns status of success' do
-      mock_document_capture_result(good_result)
+      set_up_document_capture_result(
+        uuid: verify_document_action_session_uuid,
+        idv_result: good_result,
+        pii: good_pii,
+      )
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(200)
@@ -283,7 +316,11 @@ describe Idv::DocAuthController do
     end
 
     it 'returns status of in progress' do
-      mock_document_capture_result(nil)
+      set_up_document_capture_result(
+        uuid: verify_document_action_session_uuid,
+        idv_result: nil,
+        pii: {},
+      )
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(202)
@@ -291,7 +328,11 @@ describe Idv::DocAuthController do
     end
 
     it 'returns status of fail' do
-      mock_document_capture_result(fail_result)
+      set_up_document_capture_result(
+        uuid: verify_document_action_session_uuid,
+        idv_result: fail_result,
+        pii: {},
+      )
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(400)
@@ -303,7 +344,11 @@ describe Idv::DocAuthController do
     end
 
     it 'returns status of fail with incomplete PII from doc auth' do
-      mock_document_capture_result(bad_pii_result)
+      set_up_document_capture_result(
+        uuid: verify_document_action_session_uuid,
+        idv_result: good_result,
+        pii: bad_pii,
+      )
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(400)
@@ -328,6 +373,8 @@ describe Idv::DocAuthController do
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
   end
 
+  let(:verify_document_action_session_uuid) { SecureRandom.uuid }
+
   def mock_document_capture_step
     user = create(:user, :signed_up)
     stub_sign_in(user)
@@ -345,7 +392,7 @@ describe Idv::DocAuthController do
         'Idv::Steps::LinkSentStep' => true,
         'Idv::Steps::EmailSentStep' => true,
         'Idv::Steps::UploadStep' => true,
-        verify_document_action_document_capture_session_uuid: 'foo',
+        verify_document_action_document_capture_session_uuid: verify_document_action_session_uuid,
       )
   end
 end

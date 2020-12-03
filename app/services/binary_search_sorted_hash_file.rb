@@ -1,4 +1,7 @@
 class BinarySearchSortedHashFile
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :call, "Custom/#{name}/call"
+
   RECORD_SIZE = 41
 
   def initialize(file_name)

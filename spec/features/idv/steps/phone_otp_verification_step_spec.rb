@@ -29,7 +29,7 @@ feature 'phone otp verification step spec' do
   end
 
   it 'rejects OTPs after they are expired' do
-    expiration_minutes = AppConfig.env.otp_valid_for.to_i + 1
+    expiration_minutes = TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES + 1
 
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
@@ -61,7 +61,7 @@ feature 'phone otp verification step spec' do
     expect(page).to have_current_path(idv_review_path)
   end
 
-  it 'redirects back to the step with an error if twilio raises an error on resend' do
+  it 'redirects back to the step with an error if Telephony raises an error on resend' do
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
 

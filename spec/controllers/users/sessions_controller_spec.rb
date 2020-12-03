@@ -34,7 +34,7 @@ describe Users::SessionsController, devise: true do
       it 'renders json' do
         get :active
 
-        expect(response.content_type).to eq('application/json')
+        expect(response.media_type).to eq('application/json')
       end
 
       it 'sets live key to true' do
@@ -542,7 +542,7 @@ describe Users::SessionsController, devise: true do
       it 'renders json' do
         post :keepalive
 
-        expect(response.content_type).to eq('application/json')
+        expect(response.media_type).to eq('application/json')
       end
 
       it 'resets the timeout key' do

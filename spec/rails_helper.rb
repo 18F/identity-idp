@@ -10,7 +10,7 @@ if ENV['COVERAGE']
 
     # this is loaded super early by the Gemfile so it gets ignored by SimpleCov
     # and sinks our coverage reports, so we ignore it
-    add_filter '/app/services/lambda_jobs/git_ref.rb'
+    add_filter '/lib/lambda_jobs/git_ref.rb'
   end
 end
 
@@ -48,7 +48,7 @@ RSpec.configure do |config|
   config.include AnalyticsHelper
   config.include AwsKmsClientHelper
   config.include KeyRotationHelper
-  config.include TwilioHelper
+  config.include OtpHelper
 
   config.before(:suite) do
     Rails.application.load_seed

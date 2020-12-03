@@ -40,7 +40,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
           expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
 
-          redirect_params = URIService.params(response.location)
+          redirect_params = UriService.params(response.location)
 
           expect(redirect_params[:code]).to be_present
           expect(redirect_params[:state]).to eq(params[:state])
@@ -124,7 +124,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
 
-            redirect_params = URIService.params(response.location)
+            redirect_params = UriService.params(response.location)
 
             expect(redirect_params[:code]).to be_present
             expect(redirect_params[:state]).to eq(params[:state])
@@ -140,7 +140,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
           expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
 
-          redirect_params = URIService.params(response.location)
+          redirect_params = UriService.params(response.location)
 
           expect(redirect_params[:error]).to eq('invalid_request')
           expect(redirect_params[:error_description]).to be_present

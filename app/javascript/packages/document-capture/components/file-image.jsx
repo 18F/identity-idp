@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
 import FileBase64CacheContext from '../context/file-base64-cache';
 

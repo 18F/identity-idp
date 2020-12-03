@@ -1,6 +1,6 @@
 require 'json'
 module Encryption
-  class MultiRegionKMSClient
+  class MultiRegionKmsClient
     def initialize
       @aws_clients = {}
       # Instantiate an array of aws clients based on the provided regions in the environment

@@ -1,4 +1,4 @@
-module URIService
+module UriService
   def self.params(original_uri)
     uri = URI(original_uri)
     Rack::Utils.parse_nested_query(uri.query).with_indifferent_access

@@ -2,6 +2,9 @@ module Encryption
   module Encryptors
     class AttributeEncryptor
       include Encodable
+      include ::NewRelic::Agent::MethodTracer
+      add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+      add_method_tracer :decrypt, "Custom/#{name}/decrypt"
 
       def initialize
         @aes_cipher = AesCipher.new

@@ -83,30 +83,105 @@ describe Users::TwoFactorAuthenticationController do
     end
 
     context 'when user is TOTP enabled' do
-      it 'renders the :confirm_totp view' do
+      before do
         user = build(:user)
         stub_sign_in_before_2fa(user)
         allow_any_instance_of(
           TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(true)
+      end
 
+      it 'renders the :confirm_totp view' do
         get :show
 
         expect(response).to redirect_to login_two_factor_authenticator_path
       end
+
+      it 'passes reauthn parameter on redirect' do
+        get :show, params: { reauthn: 'true' }
+
+        expect(response).to redirect_to login_two_factor_authenticator_path(reauthn: 'true')
+      end
+    end
+
+    context 'when user is authenticated with a remembered device via phone' do
+      it 'does redirect to the profile' do
+        user = create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        stub_sign_in_before_2fa(user)
+
+        cookies.encrypted[:remember_device] = {
+          value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
+          expires: 2.days.from_now,
+        }
+
+        get :show
+
+        expect(Telephony::Test::Message.messages.length).to eq(0)
+        expect(Telephony::Test::Call.calls.length).to eq(0)
+        expect(response).to redirect_to(account_path)
+      end
+
+      it 'does redirect to sms if reauthn parameter is true' do
+        user = create(:user, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        stub_sign_in_before_2fa(user)
+
+        cookies.encrypted[:remember_device] = {
+          value: RememberDeviceCookie.new(user_id: user.id, created_at: Time.zone.now).to_json,
+          expires: 2.days.from_now,
+        }
+
+        get :show, params: { reauthn: 'true' }
+
+        expect(Telephony::Test::Message.messages.length).to eq(1)
+        expect(Telephony::Test::Call.calls.length).to eq(0)
+        expect(response).to redirect_to(
+          login_two_factor_path(otp_delivery_preference: 'sms', reauthn: 'true'),
+        )
+      end
+    end
+
+    context 'when user has backup codes' do
+      before do
+        user = build(:user)
+        stub_sign_in_before_2fa(user)
+
+        allow_any_instance_of(
+          TwoFactorAuthentication::BackupCodePolicy,
+        ).to receive(:configured?).and_return(true)
+      end
+
+      it 'renders the :backup_code view' do
+        get :show
+
+        expect(response).to redirect_to login_two_factor_backup_code_url
+      end
+
+      it 'passes reauthn parameter on redirect' do
+        get :show, params: { reauthn: 'true' }
+
+        expect(response).to redirect_to login_two_factor_backup_code_url(reauthn: 'true')
+      end
     end
 
     context 'when user is webauthn enabled' do
-      it 'renders the :webauthn view' do
+      before do
         stub_sign_in_before_2fa(build(:user, :with_webauthn))
 
         allow_any_instance_of(
           TwoFactorAuthentication::WebauthnPolicy,
         ).to receive(:enabled?).and_return(true)
+      end
 
+      it 'renders the :webauthn view' do
         get :show
 
         expect(response).to redirect_to login_two_factor_webauthn_path
+      end
+
+      it 'passes reauthn parameter on redirect' do
+        get :show, params: { reauthn: 'true' }
+
+        expect(response).to redirect_to login_two_factor_webauthn_path(reauthn: 'true')
       end
     end
 
@@ -126,6 +201,8 @@ describe Users::TwoFactorAuthenticationController do
 
         get :show
 
+        expect(Telephony::Test::Message.messages.length).to eq(1)
+        expect(Telephony::Test::Call.calls.length).to eq(0)
         expect(response).
           to redirect_to login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
       end

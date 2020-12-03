@@ -23,6 +23,9 @@
     <%= APP_NAME %><%= raw(" - #{yield(:title)}") if content_for?(:title) %>
   </title>
 
+  <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/source-sans-pro/sourcesanspro-regular-webfont.woff2') %>
+  <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/source-sans-pro/sourcesanspro-bold-webfont.woff2') %>
+  <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/merriweather/Latin-Merriweather-Bold.woff2') %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <!--[if IE 8]>
   <%= javascript_include_tag 'es5-shim.min' %>

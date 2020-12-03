@@ -1,4 +1,3 @@
-import React from 'react';
 import { render as baseRender, act, cleanup } from '@testing-library/react';
 import sinon from 'sinon';
 import { UploadContextProvider } from '@18f/identity-document-capture';

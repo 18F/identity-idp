@@ -39,7 +39,7 @@ acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
 allow_piv_cac_required: 'true'
 asset_host:
-async_job_refresh_max_wait_seconds: '15'
+async_wait_timeout_seconds: '60'
 available_locales: en es fr
 aws_http_timeout: '5'
 aws_logo_bucket:
@@ -98,7 +98,7 @@ min_password_score: '3'
 mx_timeout: '3'
 otp_valid_for: '10'
 otps_per_ip_limit: '25'
-otps_per_ip_period: '5'
+otps_per_ip_period: '300'
 otps_per_ip_track_only_mode: 'true'
 password_max_attempts: '3'
 personal_key_retired: 'true'
@@ -132,14 +132,6 @@ session_timeout_in_minutes: '15'
 session_timeout_warning_seconds: '150'
 sp_handoff_bounce_max_seconds: '2'
 show_user_attribute_deprecation_warnings: 'false'
-twilio_auth_token: token1
-twilio_http_basic_auth_password:
-twilio_http_basic_auth_username:
-twilio_messaging_service_sid:
-twilio_numbers:
-twilio_record_voice: 'false'
-twilio_sid:
-twilio_timeout: '5'
 unauthorized_scope_enabled: 'false'
 usps_download_sftp_timeout: '5'
 usps_upload_enabled: 'false'
@@ -156,7 +148,6 @@ development:
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
   address_proof_result_lambda_token: 123ABC
-  async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost":
@@ -242,7 +233,6 @@ development:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: test
-  twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
   usps_confirmation_max_days: '10'
@@ -270,7 +260,6 @@ production:
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
   address_proof_result_lambda_token:
-  async_job_refresh_interval_seconds: '5'
   attribute_cost: 4000$8$4$
   attribute_encryption_key:
   attribute_encryption_key_queue:
@@ -352,7 +341,6 @@ production:
   session_encryption_key:
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: pinpoint
-  twilio_voice_callback_encryption_key:
   use_dashboard_service_providers: 'false'
   use_kms: 'true'
   usps_confirmation_max_days: '30'
@@ -379,7 +367,6 @@ test:
   acuant_max_attempts: '4'
   acuant_passlive_url: https://liveness.example.com
   address_proof_result_lambda_token: test_token_address
-  async_job_refresh_interval_seconds: '1'
   attribute_cost: 800$8$1$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost":
@@ -438,7 +425,7 @@ test:
   otp_delivery_blocklist_findtime: '1'
   otp_delivery_blocklist_maxretry: '2'
   otps_per_ip_limit: '3'
-  otps_per_ip_period: '1'
+  otps_per_ip_period: '10'
   otps_per_ip_track_only_mode: 'false'
   participate_in_dap:
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
@@ -470,7 +457,6 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   sps_over_quota_limit_notify_email_list: '["test1@test.com"]'
   telephony_adapter: test
-  twilio_voice_callback_encryption_key: MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=
   use_dashboard_service_providers: 'false'
   use_kms: 'false'
   usps_confirmation_max_days: '10'

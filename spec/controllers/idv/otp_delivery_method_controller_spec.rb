@@ -215,7 +215,7 @@ describe Idv::OtpDeliveryMethodController do
           ),
         )
         expect(@analytics).to receive(:track_event).ordered.with(
-          Analytics::TWILIO_PHONE_VALIDATION_FAILED, telephony_error_analytics_hash
+          Analytics::OTP_PHONE_VALIDATION_FAILED, telephony_error_analytics_hash
         )
 
         post :create, params: params

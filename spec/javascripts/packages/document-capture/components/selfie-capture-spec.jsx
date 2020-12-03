@@ -1,4 +1,3 @@
-import React from 'react';
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { cleanup } from '@testing-library/react';

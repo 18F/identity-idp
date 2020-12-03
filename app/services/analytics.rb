@@ -198,9 +198,9 @@ class Analytics
   TELEPHONY_OTP_SENT = 'Telephony: OTP sent'.freeze
   TOTP_SETUP_VISIT = 'TOTP Setup Visited'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
-  TWILIO_PHONE_VALIDATION_FAILED = 'Twilio Phone Validation Failed'.freeze
-  TWILIO_SMS_INBOUND_MESSAGE_RECEIVED = 'Twilio SMS Inbound Message Received'.freeze
-  TWILIO_SMS_INBOUND_MESSAGE_VALIDATION_FAILED = 'Twilio SMS Inbound Validation Failed'.freeze
+  OTP_PHONE_VALIDATION_FAILED = 'Twilio Phone Validation Failed'.freeze
+  OTP_SMS_INBOUND_MESSAGE_RECEIVED = 'Twilio SMS Inbound Message Received'.freeze
+  OTP_SMS_INBOUND_MESSAGE_VALIDATION_FAILED = 'Twilio SMS Inbound Validation Failed'.freeze
   USER_MARKED_AUTHED = 'User marked authenticated'.freeze
   USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT = 'User registration: agency handoff visited'.freeze
   USER_REGISTRATION_CANCELLATION = 'User registration: cancellation visited'.freeze

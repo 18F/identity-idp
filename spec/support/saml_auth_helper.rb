@@ -303,6 +303,35 @@ module SamlAuthHelper
     OneLogin::RubySaml::Authrequest.new.create(settings, params)
   end
 
+  # generates saml authn parameters for post
+  def authn_request_post_params(settings = saml_settings, params = {})
+    auth_params = OneLogin::RubySaml::Authrequest.new.create_params(settings, params)
+    auth_params.merge(params)
+    auth_params
+  end
+
+  def get_saml_authn_request(settings = saml_settings, params = {})
+    saml_authn_request = auth_request.create(settings, params)
+    visit saml_authn_request
+  end
+
+  def post_saml_authn_request(settings = saml_settings, params = {})
+    saml_authn_params = authn_request_post_params(settings, params)
+    response = page.driver.post(saml_settings.idp_sso_target_url, saml_authn_params)
+    visit response.location
+  end
+
+  def login_and_confirm_sp(user)
+    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+
+    expect(current_url).to match new_user_session_path
+    expect(page).to have_content(t('titles.sign_up.new_sp'))
+
+    click_agree_and_continue
+  end
+
   def visit_idp_from_sp_with_ial1(sp)
     if sp == :saml
       @saml_authn_request = auth_request.create(saml_settings)
