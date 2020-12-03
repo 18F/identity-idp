@@ -153,20 +153,6 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   To see outbound SMS messages and phone calls, visit `http://localhost:3000/test/telephony`.
 
-#### Adding a custom proofing vendor
-
-    We've added the ability for you to use a custom proofing vendor when developing locally. Here is an example of how you would configure that in your local development environment:
-
-    Check out the private repository for `somevendorname`
-
-    ```
-    $ cd vendor
-    $ git clone git@github.com:18F/identity-somevendorname-api-client-gem.git somevendorname
-    ```
-
-    Add appropriate vendor environment variables to `config/application.yml` -- see a member of the
-    login.gov team for credentials and other values.
-
 #### Developing without the internet
 
   If you want to develop without an internet connection, you can set
