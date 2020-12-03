@@ -26,7 +26,7 @@ This installation method is meant for those who are familiar with setting up loc
 
 - Ruby 2.6
 - [PostgreSQL](http://www.postgresql.org/download/)
-- [Redis 2.8+](http://redis.io/)
+- [Redis 5+](http://redis.io/)
 - [Node.js v14.x.x](https://nodejs.org)
 - [Yarn](https://yarnpkg.com/en/)
 
