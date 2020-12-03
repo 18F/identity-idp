@@ -5,7 +5,7 @@ ruby '~> 2.6.5'
 
 gem 'rails', '~> 6.0.0'
 
-gem 'ahoy_matey', '~> 2.2', '>= 2.2.1'
+gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-lambda'
@@ -46,7 +46,7 @@ gem 'raise-if-root'
 gem 'readthis'
 gem 'recaptcha', require: 'recaptcha/rails'
 gem 'redis-session-store', '>= 0.11.3'
-gem 'rotp', '~> 3.3.1'
+gem 'rotp', '~> 6.1'
 gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
@@ -56,15 +56,14 @@ gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.3'
 gem 'simple_form', '>= 5.0.2'
-gem 'sinatra', '>= 2.0.7', require: false
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
-gem 'uglifier', '~> 3.2'
+gem 'uglifier', '~> 4.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
-gem 'webauthn', '~> 2.1.0'
-gem 'webpacker', '~> 5.1.1'
+gem 'webauthn', '~> 2.1'
+gem 'webpacker', '~> 5.1'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'zxcvbn-js'
 
@@ -72,9 +71,7 @@ group :development do
   gem 'better_errors', '>= 2.5.1'
   gem 'binding_of_caller'
   gem 'brakeman', require: false
-  gem 'bummr', require: false
-  gem 'derailed', '>= 0.1.0'
-  gem 'fasterer', require: false
+  gem 'derailed_benchmarks', '~> 1.8'
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'octokit'
@@ -84,7 +81,7 @@ end
 
 group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
-  gem 'bootsnap', '~> 1.4.7', require: false
+  gem 'bootsnap', '~> 1.5.0', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
@@ -111,7 +108,7 @@ group :test do
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'timecop'
-  gem 'webdrivers', '~> 3.0'
+  gem 'webdrivers', '~> 4.0'
   gem 'webmock'
   gem 'zonebie'
 end
