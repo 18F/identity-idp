@@ -16,7 +16,7 @@ Thank you for your interest in contributing to the login.gov IdP! For complete i
 
 ## Creating your local development environment
 
-There are two methods that we recommend for installing for local development. One is container based with Docker, while the other is focused on your local machines installation (advanced). For those who are not familiar with setting up local environments on your machine, we recommend [installing with Docker](#installing-with-docker).
+There are two methods that we recommend for installing for local development. One is container based with Docker, while the other is focused on your local machine's installation (advanced). For those who are not familiar with setting up local environments on your machine, we recommend [installing with Docker](#installing-with-docker).
 
 ### Installing on your local machine
 
