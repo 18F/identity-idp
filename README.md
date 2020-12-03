@@ -49,6 +49,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   ```
 
   Q: Why "Upaya"?
+  
   A: "skill in means" https://en.wikipedia.org/wiki/Upaya
 
 4. Run the following command to set up your local environment:
