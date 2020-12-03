@@ -145,9 +145,9 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   $ make normalize_yaml
   ```
 
-  If you would like to preview the translations on a particular page, add
-  `?locale=es` to the end of the URL, such as `http://localhost:3000/?locale=es`.
-  Currently, you'll need to add `?locale=es` to each URL manually.
+  If you would like to preview the translations on a particular page, use the Language dropdown in the footer of the website. To manually override a locale, add the locale as the first segment of the URL:
+  - http://localhost:3000 becomes http://localhost:3000/es
+  - http://localhost:3000/sign_up/enter_email becomes http://localhost:3000/es/sign_up/enter_email  
 
 #### Viewing outbound SMS messages and phone calls
 
