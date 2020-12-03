@@ -25,11 +25,11 @@ RSpec.describe Reports::CountHelper do
     end
 
     it 'gets the correct count with missing intermediate ids' do
-      first, *middle, last = records_in_scope
+      _first, *middle, _last = records_in_scope
       middle.sample.destroy
 
       expect(Reports::CountHelper.count_in_batches(relation)).
-          to eq(records_in_scope.count - 1)
+        to eq(records_in_scope.count - 1)
     end
   end
 end

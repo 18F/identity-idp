@@ -11,10 +11,10 @@ module Reports
 
       loop do
         ids = activerecord_relation.
-          where(id_col.gt(min_id)).
-          limit(batch_size).
-          order(:id).
-          pluck(:id)
+              where(id_col.gt(min_id)).
+              limit(batch_size).
+              order(:id).
+              pluck(:id)
 
         break if ids.empty?
 
