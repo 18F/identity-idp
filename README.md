@@ -144,8 +144,6 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   $ make normalize_yaml
   ```
 
-  [mac-test-passphrase-prompt]: mac-test-passphrase-prompt.png "Mac Test Passphrase Prompt"
-
   If you would like to preview the translations on a particular page, add
   `?locale=es` to the end of the URL, such as `http://localhost:3000/?locale=es`.
   Currently, you'll need to add `?locale=es` to each URL manually.
@@ -317,6 +315,8 @@ This will output your site to `public/site/user/repository` for quick publishing
 If you are developing on OS X, and if you receive the following prompt the first time you run the test suite, enter `sekret` as the passphrase:
 
 ![alt text][mac-test-passphrase-prompt]
+
+[mac-test-passphrase-prompt]: mac-test-passphrase-prompt.png "Mac Test Passphrase Prompt"
 
 ### Installing with Docker
 
