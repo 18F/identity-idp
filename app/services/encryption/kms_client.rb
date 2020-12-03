@@ -4,8 +4,6 @@ module Encryption
   class KmsClient
     include Encodable
     include ::NewRelic::Agent::MethodTracer
-    add_method_tracer :decrypt, "Custom/#{name}/decrypt"
-    add_method_tracer :encrypt, "Custom/#{name}/encrypt"
 
     KEY_TYPE = {
       KMS: 'KMSc',
@@ -124,5 +122,8 @@ module Encryption
     def multi_aws_client
       @multi_aws_client ||= MultiRegionKmsClient.new
     end
+
+    add_method_tracer :decrypt, "Custom/#{name}/decrypt"
+    add_method_tracer :encrypt, "Custom/#{name}/encrypt"
   end
 end

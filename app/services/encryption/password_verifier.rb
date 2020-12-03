@@ -1,8 +1,6 @@
 module Encryption
   class PasswordVerifier
     include ::NewRelic::Agent::MethodTracer
-    add_method_tracer :digest, "Custom/#{name}/digest"
-    add_method_tracer :verify, "Custom/#{name}/verify"
 
     PasswordDigest = Struct.new(
       :encrypted_password,
@@ -108,5 +106,8 @@ module Encryption
     def verify_uak_digest(password, digest)
       UakPasswordVerifier.verify(password: password, digest: digest)
     end
+
+    add_method_tracer :digest, "Custom/#{name}/digest"
+    add_method_tracer :verify, "Custom/#{name}/verify"
   end
 end
