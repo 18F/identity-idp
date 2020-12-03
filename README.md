@@ -24,7 +24,7 @@ This installation method is meant for those who are familiar with setting up loc
 
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-- Ruby 2.6.5+
+- Ruby 2.6
 - [PostgreSQL](http://www.postgresql.org/download/)
 - [Redis 2.8+](http://redis.io/)
 - [Node.js v14.x.x](https://nodejs.org)
