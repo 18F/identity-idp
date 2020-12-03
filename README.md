@@ -49,7 +49,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   ```
 
   Q: Why "Upaya"?
-  
+
   A: "skill in means" https://en.wikipedia.org/wiki/Upaya
 
 4. Run the following command to set up your local environment:
@@ -162,14 +162,6 @@ The Geolite2-City database can be downloaded from MaxMind's site at [https://dev
 
 Download the GeoIP2 Binary and save it at `geo_data/GeoLite2-City.mmdb`.
 The app will start using that Geolite2 file for geolocation after restart.
-
-#### Troubleshooting
-
-If you are developing on OS X, and if you receive the following prompt the first time you run the test suite, enter `sekret` as the passphrase:
-
-![alt text][mac-test-passphrase-prompt]
-
-[mac-test-passphrase-prompt]: mac-test-passphrase-prompt.png "Mac Test Passphrase Prompt"
 
 ### Installing with Docker
 
