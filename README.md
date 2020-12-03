@@ -124,8 +124,9 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
 #### Viewing email messages
 
-  To view email messages, Mailcatcher must be running. You can check if it's
-  running by visiting http://localhost:1080/. To run Mailcatcher:
+  Login.gov uses a tool called [Mailcatcher](https://github.com/sj26/mailcatcher) to view email messages locally. When Mailcatcher is running, visit http://localhost:1080/ to see them.
+
+  We spin up a Mailcatcher process be default through `make run`, but if you want to run Mailcatcher as a standalone process, just run:
 
   ```
   $ mailcatcher
