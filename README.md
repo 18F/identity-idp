@@ -268,30 +268,6 @@ The Geolite2-City database can be downloaded from MaxMind's site at [https://dev
 Download the GeoIP2 Binary and save it at `geo_data/GeoLite2-City.mmdb`.
 The app will start using that Geolite2 file for geolocation after restart.
 
-### User flows
-
-We have an automated tool for generating user flows using real views generated from the application. These specs are excluded from our typical spec run because of the overhead of generating screenshots for each view.
-
-The local instance of the application must be running in order to serve up the assets (eg. `make run`). Then, you can specify where the assets are hosted from and generate the views with:
-
-```
-$ RAILS_ASSET_HOST=localhost:3000 rake spec:user_flows
-```
-
-Then, visit http://localhost:3000/user_flows in your browser!
-
-##### Exporting
-
-The user flows tool also has an export feature which allows you to export everything for the web. You may host these assets with someting like [`simplehttpserver`](https://www.npmjs.com/package/simplehttpserver) or publish to [Federalist](https://federalist.18f.gov/). To publish user flows for Federalist, first make sure the application is running locally (eg. localhost:3000) and run:
-
-```
-$ RAILS_ASSET_HOST=localhost:3000 FEDERALIST_PATH=/site/user/repository rake spec:user_flows:web
-```
-
-This will output your site to `public/site/user/repository` for quick publishing to [Federalist](https://federalist-docs.18f.gov/pages/using-federalist/). To test compatibility, run `simplehttpserver` from the app's `public` folder and visit `http://localhost:8000/<FEDERALIST PATH>/user_flows` in your browser.
-
-[laptop script]: https://github.com/18F/laptop
-
 ### Proofing vendors
 
 Some proofing vendor code is located in private Github repositories because of NDAs. You can still use it
