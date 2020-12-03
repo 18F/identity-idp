@@ -127,7 +127,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   Login.gov uses a tool called [Mailcatcher](https://github.com/sj26/mailcatcher) to view email messages locally. When Mailcatcher is running, visit http://localhost:1080/ to see them.
 
-  We spin up a Mailcatcher process be default through `make run`, but if you want to run Mailcatcher as a standalone process, just run:
+  We spin up a Mailcatcher process by default through `make run`, but if you want to run Mailcatcher as a standalone process, just run:
 
   ```
   $ mailcatcher
