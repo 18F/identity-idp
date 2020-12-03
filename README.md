@@ -165,7 +165,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   [rack_mini_profiler]: https://github.com/MiniProfiler/rack-mini-profiler
 
-#### Setting up gGeolocation
+#### Setting up Geolocation
 
 Login.gov uses MaxMind Geolite2 for geolocation. To test geolocation locally, you will need to add a copy of the Geolite2-City database to the IdP.
 
