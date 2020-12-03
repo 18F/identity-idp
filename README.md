@@ -153,18 +153,6 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   To see outbound SMS messages and phone calls, visit `http://localhost:3000/test/telephony`.
 
-#### Developing without the internet
-
-  If you want to develop without an internet connection, you can set
-  `RAILS_OFFLINE=1` in your environment. This disables the `mx` record
-  check on email addresses.
-
-  If you want to measure the app's performance in development, set the
-  `rack_mini_profiler` option to `'on'` in `config/application.yml` and
-  restart the server. See the [rack_mini_profiler] gem for more details.
-
-  [rack_mini_profiler]: https://github.com/MiniProfiler/rack-mini-profiler
-
 #### Setting up Geolocation
 
 Login.gov uses MaxMind Geolite2 for geolocation. To test geolocation locally, you will need to add a copy of the Geolite2-City database to the IdP.
@@ -173,26 +161,6 @@ The Geolite2-City database can be downloaded from MaxMind's site at [https://dev
 
 Download the GeoIP2 Binary and save it at `geo_data/GeoLite2-City.mmdb`.
 The app will start using that Geolite2 file for geolocation after restart.
-
-#### Generating IdP user flows
-
-We have an automated tool for generating user flows using real views generated from the application. These specs are excluded from our typical spec run because of the overhead of generating screenshots for each view.
-
-The local instance of the application must be running in order to serve up the assets (eg. `make run`). Then, you can specify where the assets are hosted from and generate the views with:
-
-```
-$ RAILS_ASSET_HOST=localhost:3000 rake spec:user_flows
-```
-
-Then, visit http://localhost:3000/user_flows in your browser!
-
-The user flows tool also has an export feature which allows you to export everything for the web. You may host these assets with someting like [`simplehttpserver`](https://www.npmjs.com/package/simplehttpserver) or publish to [Federalist](https://federalist.18f.gov/). To publish user flows for Federalist, first make sure the application is running locally (eg. localhost:3000) and run:
-
-```
-$ RAILS_ASSET_HOST=localhost:3000 FEDERALIST_PATH=/site/user/repository rake spec:user_flows:web
-```
-
-This will output your site to `public/site/user/repository` for quick publishing to [Federalist](https://federalist-docs.18f.gov/pages/using-federalist/). To test compatibility, run `simplehttpserver` from the app's `public` folder and visit `http://localhost:8000/<FEDERALIST PATH>/user_flows` in your browser.
 
 #### Troubleshooting
 
