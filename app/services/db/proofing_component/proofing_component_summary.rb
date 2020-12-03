@@ -4,7 +4,7 @@ module Db
       SKIP_FIELDS = %w[id user_id created_at updated_at].freeze
 
       def call
-        total_count = ::ProofingComponent.count
+        total_count = Reports::CountHelper.count_in_batches(::ProofingComponent)
         return {} if total_count.zero?
         results.each do |key, value|
           results[key] = (value.to_f / total_count).round(2)

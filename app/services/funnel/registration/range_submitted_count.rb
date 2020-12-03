@@ -2,7 +2,7 @@ module Funnel
   module Registration
     class RangeSubmittedCount
       def self.call(start, finish)
-        RegistrationLog.where('? < submitted_at AND submitted_at < ?', start, finish).count
+        Reports::CountHelper.count_in_batches(RegistrationLog.where(submitted_at: (start..finish)))
       end
     end
   end

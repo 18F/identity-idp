@@ -6,7 +6,7 @@ module Db
            last_document_error].freeze
 
       def call
-        total_count = ::DocAuthLog.count
+        total_count = Reports::CountHelper.count_in_batches(::DocAuthLog)
         return {} if total_count.zero?
         convert_percentages(total_count)
         results['total_verified_users_count'] = ::DocAuthLog.verified_users_count

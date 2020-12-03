@@ -2,7 +2,7 @@ module Funnel
   module Registration
     class TotalRegisteredCount
       def self.call
-        RegistrationLog.where.not(registered_at: nil).count
+        Reports::CountHelper.count_in_batches(RegistrationLog.where.not(registered_at: nil))
       end
     end
   end
