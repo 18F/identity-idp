@@ -144,16 +144,11 @@ GEM
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     aes_key_wrap (1.1.0)
-    ahoy_matey (2.2.1)
-      addressable
-      browser (~> 2.0)
+    ahoy_matey (3.0.5)
+      activesupport (>= 5)
       device_detector
       geocoder (>= 1.4.5)
-      railties (>= 4.2)
-      referer-parser (>= 0.3)
-      request_store
       safely_block (>= 0.2.1)
-      user_agent_parser
     american_date (1.1.1)
     android_key_attestation (0.3.0)
     ast (2.4.1)
@@ -212,7 +207,6 @@ GEM
     bootsnap (1.5.1)
       msgpack (~> 1.0)
     brakeman (4.10.0)
-    browser (2.7.1)
     builder (3.2.4)
     bullet (6.1.0)
       activesupport (>= 3.0.0)
@@ -516,7 +510,6 @@ GEM
     redis-session-store (0.11.3)
       actionpack (>= 3, < 7)
       redis (>= 3, < 5)
-    referer-parser (0.3.0)
     regexp_parser (1.8.2)
     reline (0.1.9)
       io-console (~> 0.5)
@@ -700,7 +693,7 @@ PLATFORMS
 
 DEPENDENCIES
   aamva!
-  ahoy_matey (~> 2.2, >= 2.2.1)
+  ahoy_matey (~> 3.0)
   american_date
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)
