@@ -18,7 +18,7 @@ RSpec.describe Reports::CountHelper do
     end
 
     it 'adds up across multiple batches' do
-      expect(relation).to receive(:where).exactly(records_in_scope.size + 1).times.and_call_original
+      expect(relation).to receive(:where).exactly(records_in_scope.size).times.and_call_original
 
       expect(Reports::CountHelper.count_in_batches(relation, batch_size: 1)).
         to eq(records_in_scope.size)

@@ -6,12 +6,17 @@ module Reports
     # Similar to ActiveRecord#find_in_batches, but uses #pluck to minimize allocations
     def count_in_batches(activerecord_relation, batch_size: 10_000)
       count = 0
-      min_id = 0
+      min_id = nil
       id_col = activerecord_relation.arel_table[:id]
 
       loop do
-        ids = activerecord_relation.
-              where(id_col.gt(min_id)).
+        scoped_relation = if min_id
+                            activerecord_relation.where(id_col.gt(min_id))
+                          else
+                            activerecord_relation
+                          end
+
+        ids = scoped_relation.
               limit(batch_size).
               order(:id).
               pluck(:id)
