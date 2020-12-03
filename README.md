@@ -58,7 +58,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   ```
 
   This command copies sample configuration files, installs required gems
-  and sets up the database. Check out our Makefile commands learn more about what this command does: https://github.com/18F/identity-idp/blob/master/Makefile
+  and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/master/Makefile
 
 5. Now that you have you have everything installed, you can run the following command to start your local server:
 
