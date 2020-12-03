@@ -20,7 +20,7 @@ There are two methods that we recommend for installing for local development. On
 
 ### Installing on your local machine
 
-This installation method is meant for those who are familiar with setting local development environments on their machines.
+This installation method is meant for those who are familiar with setting up local development environments on their machines.
 
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
