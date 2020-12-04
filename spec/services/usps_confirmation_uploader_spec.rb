@@ -109,7 +109,8 @@ RSpec.describe UspsConfirmationUploader do
   end
 
   def upload_folder
-    File.join(AppConfig.env.usps_upload_sftp_directory, 'batch.psv')
+    timestamp = Time.zone.now.strftime('%Y%m%d')
+    File.join(AppConfig.env.usps_upload_sftp_directory, "batch#{timestamp}.psv")
   end
 
   def write_permission

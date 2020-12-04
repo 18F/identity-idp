@@ -1,4 +1,4 @@
-class HolidayService
+class CalendarService
   # https://www.opm.gov/policy-data-oversight/snow-dismissal-procedures/federal-holidays
 
   class << self
@@ -8,6 +8,14 @@ class HolidayService
 
     def observed_holiday?(date)
       new(date.year).observed_holiday?(date)
+    end
+
+    def weekend?(date)
+      date.saturday? || date.sunday?
+    end
+
+    def weekend_or_holiday?(date)
+      weekend?(date) || holiday?(date)
     end
   end
 

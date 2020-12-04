@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe HolidayService do
+RSpec.describe CalendarService do
   let(:year) { 2018 }
 
   let(:instance) { described_class.new(year) }
@@ -90,6 +90,25 @@ RSpec.describe HolidayService do
   end
 
   context 'class methods' do
+    describe '.weekend?' do
+      let(:a_monday) { Date.new(2020, 11, 23) }
+      let(:a_friday) { Date.new(2020, 11, 27) }
+      let(:a_saturday) { Date.new(2020, 11, 28) }
+      let(:a_sunday) { Date.new(2020, 11, 29) }
+
+      subject { described_class }
+
+      it 'returns true for weekends' do
+        expect(subject.weekend?(a_saturday)).to eq(true)
+        expect(subject.weekend?(a_sunday)).to eq(true)
+      end
+
+      it 'returns false for weekdays' do
+        expect(subject.weekend?(a_friday)).to eq(false)
+        expect(subject.weekend?(a_monday)).to eq(false)
+      end
+    end
+
     describe '.holiday?' do
       subject { described_class.holiday?(date) }
 
@@ -103,6 +122,30 @@ RSpec.describe HolidayService do
         let(:date) { Date.new(year, 11, 12) }
 
         it { is_expected.to eq(false) }
+      end
+    end
+
+    describe '.weekend_or_holiday?' do
+      let(:a_monday) { Date.new(2020, 11, 23) }
+      let(:a_friday) { Date.new(2020, 11, 27) }
+      let(:a_saturday) { Date.new(2020, 11, 28) }
+      let(:a_sunday) { Date.new(2020, 11, 29) }
+      let(:a_thanksgiving) { Date.new(2020, 11, 26) }
+
+      subject { described_class }
+
+      it 'returns true for weekends' do
+        expect(subject.weekend_or_holiday?(a_saturday)).to eq(true)
+        expect(subject.weekend_or_holiday?(a_sunday)).to eq(true)
+      end
+
+      it 'returns false for weekdays' do
+        expect(subject.weekend_or_holiday?(a_monday)).to eq(false)
+        expect(subject.weekend_or_holiday?(a_friday)).to eq(false)
+      end
+
+      it 'returns true for holidays on a weekday' do
+        expect(subject.weekend_or_holiday?(a_thanksgiving)).to eq(true)
       end
     end
 
