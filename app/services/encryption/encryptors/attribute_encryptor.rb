@@ -3,8 +3,6 @@ module Encryption
     class AttributeEncryptor
       include Encodable
       include ::NewRelic::Agent::MethodTracer
-      add_method_tracer :encrypt, "Custom/#{name}/encrypt"
-      add_method_tracer :decrypt, "Custom/#{name}/decrypt"
 
       def initialize
         @aes_cipher = AesCipher.new
@@ -56,6 +54,9 @@ module Encryption
       def old_keys
         JSON.parse(AppConfig.env.attribute_encryption_key_queue)
       end
+
+      add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+      add_method_tracer :decrypt, "Custom/#{name}/decrypt"
     end
   end
 end
