@@ -1,5 +1,4 @@
-// Note: ID specifier necessary only until USWDS upgraded.
-#document-capture-form .document-capture-acuant-capture { // scss-lint:disable IdSelector
+.document-capture-acuant-capture {
   max-width: 375px;
 
   %pad-common-id-card {

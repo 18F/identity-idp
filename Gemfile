@@ -7,6 +7,7 @@ gem 'rails', '~> 6.0.0'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
+gem 'autoprefixer-rails', '~> 10.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-lambda'
 gem 'aws-sdk-ses', '~> 1.6'

@@ -210,9 +210,9 @@ const FileInput = forwardRef((props, ref) => {
           {value && isImage(value) && (
             <div className="usa-file-input__preview" aria-hidden="true">
               {value instanceof window.Blob ? (
-                <FileImage file={value} alt="" className="usa-file-input__preview__image" />
+                <FileImage file={value} alt="" className="usa-file-input__preview-image" />
               ) : (
-                <img src={value} alt="" className="usa-file-input__preview__image" />
+                <img src={value} alt="" className="usa-file-input__preview-image" />
               )}
             </div>
           )}

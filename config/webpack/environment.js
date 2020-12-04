@@ -11,9 +11,9 @@ babelLoader.include.push(/node_modules\/@18f\/identity-/);
 babelLoader.exclude = /node_modules\/(?!@18f\/identity-)/;
 
 const sassLoader = environment.loaders.get('sass');
+// Prepend minimum required design system variables, mixins, and functions to make available to all
+// Webpack-imported SCSS files. Notably, this should _not_ include any actual CSS output on its own.
 // Note: This option is renamed `additionalData` in newer versions of `sass-loader`.
-// Note: Import paths for USWDS required imports have improved in newer versions.
-//       See: https://github.com/uswds/uswds/blob/50f6ffd6/src/stylesheets/packages/_required.scss
 sassLoader.use.find(({ loader }) => loader === 'sass-loader').options.prependData = `
 $font-path: '~identity-style-guide/dist/assets/fonts';
 $image-path: '~identity-style-guide/dist/assets/img';
@@ -26,17 +26,7 @@ $image-path: '~identity-style-guide/dist/assets/img';
 @import '~identity-style-guide/dist/assets/scss/uswds-theme/color';
 @import '~identity-style-guide/dist/assets/scss/uswds-theme/utilities';
 @import '~identity-style-guide/dist/assets/scss/uswds-theme/components';
-@import '~identity-style-guide/dist/assets/scss/uswds/settings/settings-general';
-@import '~identity-style-guide/dist/assets/scss/uswds/settings/settings-typography';
-@import '~identity-style-guide/dist/assets/scss/uswds/settings/settings-color';
-@import '~identity-style-guide/dist/assets/scss/uswds/settings/settings-spacing';
-@import '~identity-style-guide/dist/assets/scss/uswds/settings/settings-utilities';
-@import '~identity-style-guide/dist/assets/scss/uswds/settings/settings-components';
-@import '~identity-style-guide/dist/assets/scss/uswds/core/functions';
-@import '~identity-style-guide/dist/assets/scss/uswds/core/system-tokens';
-@import '~identity-style-guide/dist/assets/scss/uswds/core/variables';
-@import '~identity-style-guide/dist/assets/scss/uswds/core/properties';
-@import '~identity-style-guide/dist/assets/scss/uswds/core/mixins/all';
+@import '~identity-style-guide/dist/assets/scss/uswds/packages/required';
 @import '~identity-style-guide/dist/assets/scss/uswds/utilities/palettes/all';
 @import '~identity-style-guide/dist/assets/scss/uswds/utilities/rules/all';
 @import '~identity-style-guide/dist/assets/scss/uswds/utilities/rules/package';`;
