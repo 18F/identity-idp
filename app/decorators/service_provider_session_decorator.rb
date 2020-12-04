@@ -20,7 +20,7 @@ class ServiceProviderSessionDecorator
   def custom_alert(section)
     language = I18n.locale.to_s
     alert = sp.help_text.dig(section, language)
-    format(alert, sp_name: sp_name, sp_create_link: sp_create_link) if alert
+    format(alert, sp_name: sp_name, sp_create_link: sp_create_link) if alert.present?
   end
 
   def sp_logo
