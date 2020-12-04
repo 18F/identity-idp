@@ -223,10 +223,13 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     )
   end
 
-  def set_up_document_capture_result(uuid:, idv_result:, pii:)
+  def set_up_document_capture_result(uuid:, idv_result:)
     dcs = DocumentCaptureSession.where(uuid: uuid).first_or_create
-    dcs.store_proofing_pii_from_doc(pii) # generates a result_id
-    dcs.store_proofing_result(idv_result)
+    dcs.create_doc_auth_session
+    if idv_result
+      dcs.store_doc_auth_result(result: idv_result.except(:pii_from_doc),
+                                pii: idv_result[:pii_from_doc])
+    end
   end
 
   def attach_images(liveness_enabled: true)

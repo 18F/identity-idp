@@ -8,12 +8,14 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
     )
   end
 
-  let(:async_state) { ProofingDocumentCaptureSessionResult.none }
+  let(:async_state) { DocumentCaptureSessionAsyncResult.new }
   let(:document_capture_session) { DocumentCaptureSession.create! }
 
   describe '#valid?' do
     context 'with timeout async state' do
-      let(:async_state) { ProofingDocumentCaptureSessionResult.timed_out }
+      let(:async_state) {
+        DocumentCaptureSessionAsyncResult.new(status: DocumentCaptureSessionAsyncResult::TIMED_OUT)
+      }
 
       it 'is invalid' do
         expect(form.valid?).to eq(false)
@@ -22,7 +24,11 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
     end
 
     context 'with pending result' do
-      let(:async_state) { ProofingDocumentCaptureSessionResult.in_progress }
+      let(:async_state) {
+        DocumentCaptureSessionAsyncResult.new(
+          status: DocumentCaptureSessionAsyncResult::IN_PROGRESS,
+        )
+      }
 
       it 'is valid' do
         expect(form.valid?).to eq(true)
@@ -31,14 +37,14 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
 
     context 'with unsuccessful result' do
       let(:async_state) do
-        ProofingDocumentCaptureSessionResult.new(
+        DocumentCaptureSessionAsyncResult.new(
           id: nil,
           pii: nil,
           result: {
             success: false,
             errors: { front: 'Wrong document' },
           },
-          status: :done,
+          status: DocumentCaptureSessionAsyncResult::DONE,
         )
       end
 
@@ -50,13 +56,13 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
 
     context 'with successful result' do
       let(:async_state) do
-        ProofingDocumentCaptureSessionResult.new(
+        DocumentCaptureSessionAsyncResult.new(
           id: nil,
           pii: nil,
           result: {
             success: true,
           },
-          status: :done,
+          status: DocumentCaptureSessionAsyncResult::DONE,
         )
       end
 
