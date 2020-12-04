@@ -1,5 +1,6 @@
 require 'idp/constants'
 
+# rubocop:disable Layout/LineLength
 # Global constants used by the SAML IdP
 module Saml
   module Idp
@@ -63,3 +64,5 @@ module Saml
     end
   end
 end
+# rubocop:enable Layout/LineLength
+

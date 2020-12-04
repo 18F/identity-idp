@@ -73,7 +73,7 @@ describe AttributeAsserter do
 
         it 'includes all requested attributes + uuid' do
           expect(user.asserted_attributes.keys).
-            to eq(%i[uuid email phone first_name verified_at ial])
+            to eq(%i[uuid email phone first_name verified_at aal ial])
         end
 
         it 'creates getter function' do
@@ -96,7 +96,7 @@ describe AttributeAsserter do
 
         it 'skips ascii as an attribute' do
           expect(user.asserted_attributes.keys).
-            to eq(%i[uuid email phone first_name verified_at ial])
+            to eq(%i[uuid email phone first_name verified_at aal ial])
         end
 
         it 'transliterates attributes to ASCII' do
@@ -113,7 +113,7 @@ describe AttributeAsserter do
 
         context 'authn request does not specify bundle' do
           it 'only returns uuid and verified_at' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid verified_at ial]
+            expect(user.asserted_attributes.keys).to eq %i[uuid verified_at aal ial]
           end
         end
 
@@ -126,7 +126,7 @@ describe AttributeAsserter do
 
           it 'uses authn request bundle' do
             expect(user.asserted_attributes.keys).
-              to eq(%i[uuid email first_name last_name ssn phone verified_at ial])
+              to eq(%i[uuid email first_name last_name ssn phone verified_at aal ial])
           end
         end
       end
@@ -139,7 +139,7 @@ describe AttributeAsserter do
         end
 
         it 'contains uuid and verified_at only' do
-          expect(user.asserted_attributes.keys).to eq(%i[uuid verified_at ial])
+          expect(user.asserted_attributes.keys).to eq(%i[uuid verified_at aal ial])
         end
       end
 
@@ -152,7 +152,7 @@ describe AttributeAsserter do
         end
 
         it 'silently skips invalid attribute name' do
-          expect(user.asserted_attributes.keys).to eq(%i[uuid email verified_at ial])
+          expect(user.asserted_attributes.keys).to eq(%i[uuid email verified_at aal ial])
         end
       end
 
@@ -171,7 +171,7 @@ describe AttributeAsserter do
           end
 
           it 'does not include x509_subject, x509_issuer, and x509_presented' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at ial]
+            expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
           end
         end
 
@@ -186,7 +186,7 @@ describe AttributeAsserter do
           end
 
           it 'includes x509_subject x509_issuer x509_presented' do
-            expected = %i[uuid email verified_at ial x509_subject x509_issuer x509_presented]
+            expected = %i[uuid email verified_at aal ial x509_subject x509_issuer x509_presented]
             expect(user.asserted_attributes.keys).to eq expected
           end
         end
@@ -412,7 +412,7 @@ describe AttributeAsserter do
         end
 
         it 'includes only UUID' do
-          expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid ial])
+          expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid aal ial])
         end
       end
 
@@ -425,7 +425,7 @@ describe AttributeAsserter do
         end
 
         it 'only includes UUID and email' do
-          expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid email ial])
+          expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
         end
       end
     end
