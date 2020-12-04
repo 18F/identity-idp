@@ -7,7 +7,7 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   interval: 24 * 60 * 60,
   timeout: 300,
   callback: lambda {
-    UspsConfirmationUploader.new.run unless IsWeekendOrHoliday.call(Time.zone.today)
+    UspsConfirmationUploader.new.run unless CalendarService.weekend_or_holiday?(Time.zone.today)
   },
 )
 

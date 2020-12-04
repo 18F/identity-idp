@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe HolidayService do
+RSpec.describe CalendarService do
   let(:year) { 2018 }
 
   let(:instance) { described_class.new(year) }

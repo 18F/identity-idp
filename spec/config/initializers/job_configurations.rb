@@ -11,7 +11,7 @@ describe JobRunner::Runner do
       expect(UspsConfirmationUploader).to receive(:new).and_return(stub)
       expect(stub).to receive(:run).and_return('the GPO test worked')
 
-      result = IsWeekendOrHoliday.call(Time.zone.today) ? nil : 'the GPO test worked'
+      result = CalendarService.weekend_or_holiday?(Time.zone.today) ? nil : 'the GPO test worked'
       expect(job.callback.call).to eq result
     end
 
