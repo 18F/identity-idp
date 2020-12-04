@@ -65,4 +65,3 @@ module Saml
   end
 end
 # rubocop:enable Layout/LineLength
-
