@@ -6,7 +6,7 @@ module Idp
     IAL2 = 2
     IAL2_STRICT = 22
 
-    DEFAULT_AAL = 1
+    DEFAULT_AAL = 0
     AAL1 = 1
     AAL2 = 2
     AAL3 = 3
