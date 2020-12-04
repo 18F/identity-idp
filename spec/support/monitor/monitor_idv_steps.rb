@@ -35,17 +35,17 @@ module MonitorIdvSteps
       click_on 'Continue'
     end
 
-    expect(page).to have_current_path('/verify/doc_auth/ssn', wait: 30)
+    expect(page).to have_current_path('/verify/doc_auth/ssn', wait: 60)
 
     fill_in 'doc_auth_ssn', with: format('%09d', SecureRandom.random_number(1e9))
     click_on 'Continue'
     expect(page).to have_current_path('/verify/doc_auth/verify')
 
     click_on 'Continue'
-    expect(page).to have_current_path('/verify/phone', wait: 30)
+    expect(page).to have_current_path('/verify/phone', wait: 60)
 
     click_on 'Continue'
-    expect(page).to have_current_path('/verify/review', wait: 30)
+    expect(page).to have_current_path('/verify/review', wait: 60)
 
     fill_in 'Password', with: monitor.config.login_gov_sign_in_password
     click_on 'Continue'
