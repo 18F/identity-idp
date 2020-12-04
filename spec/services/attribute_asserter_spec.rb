@@ -112,7 +112,7 @@ describe AttributeAsserter do
         end
 
         context 'authn request does not specify bundle' do
-          it 'only returns uuid and verified_at' do
+          it 'only returns uuid, verified_at, aal, and ial' do
             expect(user.asserted_attributes.keys).to eq %i[uuid verified_at aal ial]
           end
         end
@@ -138,7 +138,7 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'contains uuid and verified_at only' do
+        it 'only includes uuid, verified_at, aal, and ial' do
           expect(user.asserted_attributes.keys).to eq(%i[uuid verified_at aal ial])
         end
       end
@@ -213,7 +213,7 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'only includes uuid + email (no verified_at)' do
+        it 'only includes uuid, email, aal, and ial (no verified_at)' do
           expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
         end
 
@@ -239,7 +239,7 @@ describe AttributeAsserter do
         context 'the service provider is ial1' do
           let(:service_provider_ial) { 1 }
 
-          it 'only includes uuid + email (no verified_at)' do
+          it 'only includes uuid, email, aal, and ial (no verified_at)' do
             expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
           end
         end
@@ -261,7 +261,7 @@ describe AttributeAsserter do
         end
 
         context 'authn request does not specify bundle' do
-          it 'only returns uuid' do
+          it 'only includes uuid, aal, and ial' do
             expect(user.asserted_attributes.keys).to eq %i[uuid aal ial]
           end
         end
@@ -273,7 +273,7 @@ describe AttributeAsserter do
             )
           end
 
-          it 'only returns uuid + email' do
+          it 'only includes uuid, email, aal, and ial' do
             expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
           end
         end
@@ -286,7 +286,7 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'contains UUID only' do
+        it 'only includes UUID, aal, and ial' do
           expect(user.asserted_attributes.keys).to eq(%i[uuid aal ial])
         end
       end
@@ -411,7 +411,7 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'includes only UUID' do
+        it 'only includes UUID, aal, and ial' do
           expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid aal ial])
         end
       end
@@ -424,7 +424,7 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'only includes UUID and email' do
+        it 'only includes UUID, email, aal, and ial' do
           expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
         end
       end
