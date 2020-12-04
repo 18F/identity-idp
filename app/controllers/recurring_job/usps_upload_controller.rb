@@ -2,7 +2,7 @@ module RecurringJob
   class UspsUploadController < AuthTokenController
     def create
       today = Time.zone.today
-      UspsConfirmationUploader.new.run unless HolidayService.observed_holiday?(today)
+      UspsConfirmationUploader.new.run unless IsWeekendOrHoliday.call(today)
       render plain: 'ok'
     end
 
