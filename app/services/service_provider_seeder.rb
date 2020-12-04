@@ -1,11 +1,15 @@
 # Update ServiceProvider from config/service_providers.yml (all environments in rake db:seed)
 class ServiceProviderSeeder
+  class ExtraServiceProviderError < StandardError; end
+
   def initialize(rails_env: Rails.env, deploy_env: LoginGov::Hostdata.env)
     @rails_env = rails_env
     @deploy_env = deploy_env
   end
 
   def run
+    check_for_missing_sps
+
     service_providers.each do |issuer, config|
       next unless write_service_provider?(config)
       ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
@@ -49,5 +53,20 @@ class ServiceProviderSeeder
     is_production_or_has_a_restriction = (deploy_env == 'prod' || restrict_env.present?)
 
     !is_production_or_has_a_restriction || (restrict_env == deploy_env)
+  end
+
+  def check_for_missing_sps
+    return unless %w[prod staging].include? deploy_env
+
+    sps_in_db = ServiceProvider.pluck(:issuer)
+    sps_in_yaml = service_providers.keys
+    extra_sps = sps_in_db - sps_in_yaml
+
+    return if extra_sps.empty?
+
+    extra_sp_error = ExtraServiceProviderError.new(
+      "Extra service providers found in DB: #{extra_sps.join(', ')}",
+    )
+    NewRelic::Agent.notice_error(extra_sp_error)
   end
 end
