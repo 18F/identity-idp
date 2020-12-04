@@ -125,6 +125,30 @@ RSpec.describe CalendarService do
       end
     end
 
+    describe '.weekend_or_holiday?' do
+      let(:a_monday) { Date.new(2020, 11, 23) }
+      let(:a_friday) { Date.new(2020, 11, 27) }
+      let(:a_saturday) { Date.new(2020, 11, 28) }
+      let(:a_sunday) { Date.new(2020, 11, 29) }
+      let(:a_thanksgiving) { Date.new(2020, 11, 26) }
+
+      subject { described_class }
+
+      it 'returns true for weekends' do
+        expect(subject.weekend_or_holiday?(a_saturday)).to eq(true)
+        expect(subject.weekend_or_holiday?(a_sunday)).to eq(true)
+      end
+
+      it 'returns false for weekdays' do
+        expect(subject.weekend_or_holiday?(a_monday)).to eq(false)
+        expect(subject.weekend_or_holiday?(a_friday)).to eq(false)
+      end
+
+      it 'returns true for holidays on a weekday' do
+        expect(subject.weekend_or_holiday?(a_thanksgiving)).to eq(true)
+      end
+    end
+
     describe '.observed_holiday?' do
       subject { described_class.observed_holiday?(date) }
 
