@@ -104,8 +104,8 @@ RSpec.describe CalendarService do
       end
 
       it 'returns false for weekdays' do
-        expect(subject.weekend?(a_monday)).to eq(false)
         expect(subject.weekend?(a_friday)).to eq(false)
+        expect(subject.weekend?(a_monday)).to eq(false)
       end
     end
 
