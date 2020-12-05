@@ -23,6 +23,7 @@ function formatSSNField() {
       const toggle = document.getElementById(`ssn-toggle-${i}`);
 
       let cleave;
+      let maxlength;
 
       function sync() {
         const { value } = input;
@@ -34,12 +35,15 @@ function formatSSNField() {
             blocks: [3, 2, 4],
             delimiter: '-',
           });
+          maxlength = 11;
         } else {
           const nextValue = value.replace(/-/g, '');
           if (nextValue !== value) {
             input.value = nextValue;
           }
+          maxlength = 9;
         }
+        document.getElementById('doc_auth_ssn').maxLength = maxlength;
         const didFormat = input.value !== value;
         if (didFormat) {
           input.checkValidity();
