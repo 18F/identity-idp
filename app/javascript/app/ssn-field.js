@@ -28,7 +28,6 @@ function formatSSNFieldAndLimitLength() {
         const { value } = input;
         input.type = toggle.checked ? 'text' : 'password';
         cleave?.destroy();
-        alert(value.)
         if (toggle.checked) {
           cleave = new Cleave(input, {
             numericOnly: true,
