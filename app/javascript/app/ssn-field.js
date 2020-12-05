@@ -3,7 +3,7 @@ import Cleave from 'cleave.js';
 const { I18n } = window.LoginGov;
 
 /* eslint-disable no-new */
-function formatSSNField() {
+function formatSSNFieldAndLimitLength() {
   const inputs = document.querySelectorAll('input.ssn-toggle[type="password"]');
 
   if (inputs) {
@@ -23,27 +23,24 @@ function formatSSNField() {
       const toggle = document.getElementById(`ssn-toggle-${i}`);
 
       let cleave;
-      let maxlength;
 
       function sync() {
         const { value } = input;
         input.type = toggle.checked ? 'text' : 'password';
         cleave?.destroy();
+        alert(value.)
         if (toggle.checked) {
           cleave = new Cleave(input, {
             numericOnly: true,
             blocks: [3, 2, 4],
             delimiter: '-',
           });
-          maxlength = 11;
         } else {
           const nextValue = value.replace(/-/g, '');
           if (nextValue !== value) {
             input.value = nextValue;
           }
-          maxlength = 9;
         }
-        document.getElementById('doc_auth_ssn').maxLength = maxlength;
         const didFormat = input.value !== value;
         if (didFormat) {
           input.checkValidity();
@@ -52,8 +49,20 @@ function formatSSNField() {
 
       sync();
       toggle.addEventListener('change', sync);
+
+      const ssnBox = document.getElementById('doc_auth_ssn');
+      const maxLength = 9;
+
+      function limitLength() {
+        if (this.value.length > maxLength) {
+          this.value = this.value.slice(0, maxLength);
+        }
+      }
+
+      ssnBox.addEventListener('keydown', limitLength.bind(ssnBox));
+      ssnBox.addEventListener('keyup', limitLength.bind(ssnBox));
     });
   }
 }
 
-document.addEventListener('DOMContentLoaded', formatSSNField);
+document.addEventListener('DOMContentLoaded', formatSSNFieldAndLimitLength);
