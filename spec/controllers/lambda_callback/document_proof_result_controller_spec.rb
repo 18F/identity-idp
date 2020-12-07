@@ -72,6 +72,18 @@ describe LambdaCallback::DocumentProofResultController do
 
         expect(response.status).to eq 404
       end
+
+      it 'sends exception to new relic' do
+        expect(NewRelic::Agent).to receive(:notice_error).with(
+          'DocumentProofResult result_id not found',
+        )
+
+        post :create, params: {
+          result_id: '0000',
+          document_result: {
+          },
+        }, as: :json
+      end
     end
 
     context 'with invalid API token' do
