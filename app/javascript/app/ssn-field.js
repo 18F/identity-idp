@@ -49,8 +49,6 @@ function formatSSNFieldAndLimitLength() {
       sync();
       toggle.addEventListener('change', sync);
 
-      const ssnBox = document.getElementById('doc_auth_ssn');
-
       function limitLength() {
         const maxLength = 9 + (this.value.match(/-/g) || []).length;
         if (this.value.length > maxLength) {
