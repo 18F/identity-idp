@@ -325,8 +325,9 @@ feature 'doc auth document capture step' do
       it 'proceeds to the next page with valid info' do
         set_up_document_capture_result(
           uuid: DocumentCaptureSession.last.uuid,
-          idv_result: { success: true, errors: {}, messages: ['message'] },
-          pii: {
+          idv_result: {
+            success: true, errors: {}, messages: ['message'],
+            pii_from_doc: {
             first_name: Faker::Name.first_name,
             last_name: Faker::Name.last_name,
             dob: Time.zone.today.to_s,
@@ -337,6 +338,7 @@ feature 'doc auth document capture step' do
             state_id_type: 'drivers_license',
             state_id_number: '111',
             state_id_jurisdiction: 'WI',
+            }
           },
         )
 
