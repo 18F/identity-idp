@@ -50,15 +50,15 @@ function formatSSNFieldAndLimitLength() {
       toggle.addEventListener('change', sync);
 
       const ssnBox = document.getElementById('doc_auth_ssn');
-      const maxLength = 9;
 
       function limitLength() {
+        const maxLength = 9 + (this.value.match(/-/g) || []).length;
         if (this.value.length > maxLength) {
           this.value = this.value.slice(0, maxLength);
         }
       }
 
-      ssnBox.addEventListener('input', limitLength.bind(ssnBox));
+      input.addEventListener('input', limitLength.bind(input));
     });
   }
 }
