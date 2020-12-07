@@ -24,11 +24,11 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
     end
 
     context 'with pending result' do
-      let(:async_state) {
+      let(:async_state) do
         DocumentCaptureSessionAsyncResult.new(
           status: DocumentCaptureSessionAsyncResult::IN_PROGRESS,
         )
-      }
+      end
 
       it 'is valid' do
         expect(form.valid?).to eq(true)
