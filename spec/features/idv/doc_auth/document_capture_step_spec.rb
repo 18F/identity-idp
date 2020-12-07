@@ -340,7 +340,7 @@ feature 'doc auth document capture step' do
             state_id_type: 'drivers_license',
             state_id_number: '111',
             state_id_jurisdiction: 'WI',
-            }
+            },
           },
         )
 
