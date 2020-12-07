@@ -221,7 +221,7 @@ describe SamlIdpController do
       context 'aal_authn_context_enabled is true' do
         let(:aal_context_enabled) { 'true' }
 
-        it 'defaults to AAL2' do
+        it 'defaults to AAL1' do
           stub_analytics
           allow(@analytics).to receive(:track_event)
 
@@ -237,7 +237,7 @@ describe SamlIdpController do
             success: true,
             errors: {},
             nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF],
+            authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
             service_provider: 'http://localhost:3000',
             idv: false,
             finish_profile: false,
