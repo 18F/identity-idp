@@ -38,7 +38,7 @@ module Test
     private
 
     def test_saml_settings
-      sp1_saml_settings
+      sp1_ial1_saml_settings
     end
 
     def render_template_for(validity, response)

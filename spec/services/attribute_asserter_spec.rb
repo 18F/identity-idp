@@ -26,10 +26,18 @@ describe AttributeAsserter do
       metadata: {},
     )
   end
-  let(:raw_ial1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
+  let(:raw_sp1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
+  let(:raw_aal3_sp1_authn_request) { CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last }
+  let(:raw_ial1_authn_request) { CGI.unescape ial1_authnrequest.split('SAMLRequest').last }
   let(:raw_ial2_authn_request) { CGI.unescape ial2_authnrequest.split('SAMLRequest').last }
   let(:raw_ial1_aal3_authn_request) do
     CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last
+  end
+  let(:sp1_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_sp1_authn_request)
+  end
+  let(:aal3_sp1_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_aal3_sp1_authn_request)
   end
   let(:ial1_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial1_authn_request)
@@ -65,7 +73,7 @@ describe AttributeAsserter do
 
         it 'includes all requested attributes + uuid' do
           expect(user.asserted_attributes.keys).
-            to eq(%i[uuid email phone first_name verified_at])
+            to eq(%i[uuid email phone first_name verified_at aal ial])
         end
 
         it 'creates getter function' do
@@ -88,7 +96,7 @@ describe AttributeAsserter do
 
         it 'skips ascii as an attribute' do
           expect(user.asserted_attributes.keys).
-            to eq(%i[uuid email phone first_name verified_at])
+            to eq(%i[uuid email phone first_name verified_at aal ial])
         end
 
         it 'transliterates attributes to ASCII' do
@@ -104,8 +112,8 @@ describe AttributeAsserter do
         end
 
         context 'authn request does not specify bundle' do
-          it 'only returns uuid and verified_at' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid verified_at]
+          it 'only returns uuid, verified_at, aal, and ial' do
+            expect(user.asserted_attributes.keys).to eq %i[uuid verified_at aal ial]
           end
         end
 
@@ -118,7 +126,7 @@ describe AttributeAsserter do
 
           it 'uses authn request bundle' do
             expect(user.asserted_attributes.keys).
-              to eq(%i[uuid email first_name last_name ssn phone verified_at])
+              to eq(%i[uuid email first_name last_name ssn phone verified_at aal ial])
           end
         end
       end
@@ -130,8 +138,8 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'contains uuid and verified_at only' do
-          expect(user.asserted_attributes.keys).to eq(%i[uuid verified_at])
+        it 'only includes uuid, verified_at, aal, and ial' do
+          expect(user.asserted_attributes.keys).to eq(%i[uuid verified_at aal ial])
         end
       end
 
@@ -144,7 +152,7 @@ describe AttributeAsserter do
         end
 
         it 'silently skips invalid attribute name' do
-          expect(user.asserted_attributes.keys).to eq(%i[uuid email verified_at])
+          expect(user.asserted_attributes.keys).to eq(%i[uuid email verified_at aal ial])
         end
       end
 
@@ -163,7 +171,7 @@ describe AttributeAsserter do
           end
 
           it 'does not include x509_subject, x509_issuer, and x509_presented' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at]
+            expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
           end
         end
 
@@ -178,7 +186,7 @@ describe AttributeAsserter do
           end
 
           it 'includes x509_subject x509_issuer x509_presented' do
-            expected = %i[uuid email verified_at x509_subject x509_issuer x509_presented]
+            expected = %i[uuid email verified_at aal ial x509_subject x509_issuer x509_presented]
             expect(user.asserted_attributes.keys).to eq expected
           end
         end
@@ -191,7 +199,7 @@ describe AttributeAsserter do
           user: user,
           name_id_format: name_id_format,
           service_provider: service_provider,
-          authn_request: ial1_authn_request,
+          authn_request: sp1_authn_request,
           decrypted_pii: decrypted_pii,
           user_session: user_session,
         )
@@ -205,8 +213,8 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'only includes uuid + email (no verified_at)' do
-          expect(user.asserted_attributes.keys).to eq %i[uuid email]
+        it 'only includes uuid, email, aal, and ial (no verified_at)' do
+          expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
         end
 
         it 'does not create a getter function for IAL1 attributes' do
@@ -231,8 +239,8 @@ describe AttributeAsserter do
         context 'the service provider is ial1' do
           let(:service_provider_ial) { 1 }
 
-          it 'only includes uuid + email (no verified_at)' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email]
+          it 'only includes uuid, email, aal, and ial (no verified_at)' do
+            expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
           end
         end
 
@@ -240,7 +248,7 @@ describe AttributeAsserter do
           let(:service_provider_ial) { 2 }
 
           it 'includes verified_at' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at]
+            expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
           end
         end
       end
@@ -253,20 +261,20 @@ describe AttributeAsserter do
         end
 
         context 'authn request does not specify bundle' do
-          it 'only returns uuid' do
-            expect(user.asserted_attributes.keys).to eq [:uuid]
+          it 'only includes uuid, aal, and ial' do
+            expect(user.asserted_attributes.keys).to eq %i[uuid aal ial]
           end
         end
 
         context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
-          let(:raw_ial1_authn_request) do
+          let(:raw_sp1_authn_request) do
             CGI.unescape(
               auth_request.create(ial1_with_bundle_saml_settings).split('SAMLRequest').last,
             )
           end
 
-          it 'only returns uuid + email' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email]
+          it 'only includes uuid, email, aal, and ial' do
+            expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
           end
         end
       end
@@ -278,8 +286,8 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'contains UUID only' do
-          expect(user.asserted_attributes.keys).to eq([:uuid])
+        it 'only includes UUID, aal, and ial' do
+          expect(user.asserted_attributes.keys).to eq(%i[uuid aal ial])
         end
       end
 
@@ -292,7 +300,7 @@ describe AttributeAsserter do
         end
 
         it 'silently skips invalid attribute name' do
-          expect(user.asserted_attributes.keys).to eq(%i[uuid email])
+          expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
         end
       end
 
@@ -311,7 +319,7 @@ describe AttributeAsserter do
           end
 
           it 'does not include x509_subject x509_issuer and x509_presented' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email]
+            expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
           end
         end
 
@@ -326,7 +334,7 @@ describe AttributeAsserter do
           end
 
           it 'includes x509_subject x509_issuer and x509_presented' do
-            expected = %i[uuid email x509_subject x509_issuer x509_presented]
+            expected = %i[uuid email aal ial x509_subject x509_issuer x509_presented]
             expect(user.asserted_attributes.keys).to eq expected
           end
         end
@@ -341,7 +349,7 @@ describe AttributeAsserter do
             user: user,
             name_id_format: name_id_format,
             service_provider: service_provider,
-            authn_request: ial1_authn_request,
+            authn_request: aal3_sp1_authn_request,
             decrypted_pii: decrypted_pii,
             user_session: user_session,
           )
@@ -403,8 +411,8 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'includes only UUID' do
-          expect(ial1_user.asserted_attributes.keys).to eq([:uuid])
+        it 'only includes UUID, aal, and ial' do
+          expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid aal ial])
         end
       end
 
@@ -416,8 +424,8 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'only includes UUID and email' do
-          expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid email])
+        it 'only includes UUID, email, aal, and ial' do
+          expect(ial1_user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
         end
       end
     end

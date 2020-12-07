@@ -17,7 +17,7 @@ module SamlIdpAuthConcern
 
     @result = @saml_request_validator.call(
       service_provider: current_service_provider,
-      authn_context: requested_authn_context,
+      authn_context: requested_authn_contexts,
       nameid_format: name_id_format,
     )
 
@@ -49,17 +49,49 @@ module SamlIdpAuthConcern
     ).call
   end
 
+  def requested_authn_contexts
+    @requested_authn_contexts ||= saml_request.requested_authn_contexts.presence ||
+                                  [default_authn_context]
+  end
+
   def requested_authn_context
-    @requested_authn_context ||= saml_request.requested_authn_contexts.presence ||
-                                 [default_authn_context]
+    if AppConfig.env.aal_authn_context_enabled == 'true'
+      requested_aal_authn_context
+    else
+      requested_ial_authn_context
+    end
   end
 
   def default_authn_context
-    Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    if AppConfig.env.aal_authn_context_enabled == 'true'
+      default_aal_context
+    else
+      default_ial_context
+    end
+  end
+
+  def default_aal_context
+    if current_service_provider.aal
+      Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[current_service_provider.aal]
+    else
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
+    end
+  end
+
+  def default_ial_context
+    if current_service_provider.ial
+      Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[current_service_provider.ial]
+    else
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    end
+  end
+
+  def requested_aal_authn_context
+    saml_request.requested_aal_authn_context || default_aal_context
   end
 
   def requested_ial_authn_context
-    saml_request.requested_ial_authn_context || default_authn_context
+    saml_request.requested_ial_authn_context || default_ial_context
   end
 
   def link_identity_from_session_data
@@ -114,7 +146,7 @@ module SamlIdpAuthConcern
     encode_response(
       current_user,
       name_id_format: name_id_format,
-      authn_context_classref: requested_ial_authn_context,
+      authn_context_classref: requested_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: current_service_provider.encryption_opts,
       signature: saml_response_signature_options,
