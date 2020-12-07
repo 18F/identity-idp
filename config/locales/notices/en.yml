@@ -2,8 +2,8 @@
 en:
   notices:
     account_reactivation: Great! You have your personal key.
-    backup_codes_configured: Backup codes configured successfully.
-    backup_codes_deleted: Backup codes deleted successfully.
+    backup_codes_configured: Backup codes were added to your account.
+    backup_codes_deleted: Your backup codes were deleted from your account.
     dap_participation: We participate in the US government’s analytics program. See
       the data at analytics.usa.gov.
     forgot_password:
@@ -21,9 +21,9 @@ en:
         %{finish}</b> for some of our services.
       need_assistance: Need assistance?
     password_changed: You changed your password.
-    phone_confirmed: Phone confirmed successfully.
-    piv_cac_configured: PIV/CAC card linked successfully.
-    piv_cac_disabled: PIV/CAC card unlinked successfully.
+    phone_confirmed: A phone was added to your account.
+    piv_cac_configured: A PIV/CAC card was added to your account.
+    piv_cac_disabled: Your PIV/CAC was deleted from your account.
     privacy:
       privacy_act_statement: Privacy Act Statement
       security_and_privacy_practices: Security and Privacy Practices
@@ -54,10 +54,10 @@ en:
         message_html: For your security, we will sign you out in %{time_left_in_session}
           unless you tell us otherwise.
         sign_out: Sign me out
-    totp_configured: You added an authentication app.
-    totp_disabled: You removed your authentication app.
+    totp_configured: An authentication app was added to your account.
+    totp_disabled: Your authentication app was deleted from your account.
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link}
-    webauthn_configured: You enabled a security key.
-    webauthn_deleted: You removed a security key.
+    webauthn_configured: A security key was added to your account.
+    webauthn_deleted: Your security key was deleted from your account.
