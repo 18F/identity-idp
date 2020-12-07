@@ -71,21 +71,28 @@
         <% end %>
 
         <div class="sm-hide">
-          <%= new_window_link_to(t('links.help'), MarketingSite.help_url,
-                                 class: 'caps h6 blue text-decoration-none mr2') %>
-          <%= new_window_link_to(t('links.contact'), MarketingSite.contact_url,
-                                 class: 'caps h6 blue text-decoration-none mr2') %>
-          <%= new_window_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                                 class: 'caps h6 blue text-decoration-none mr2') %>
+          <div class="display-flex">
+            <%= new_window_link_to(t('links.help'), MarketingSite.help_url,
+                                  class: 'caps h6 blue text-decoration-none mr2') %>
+            <%= new_window_link_to(t('links.contact'), MarketingSite.contact_url,
+                                  class: 'caps h6 blue text-decoration-none mr2') %>
+            <%= new_window_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
+                                  class: 'caps h6 blue text-decoration-none mr2') %>
+          </div>
         </div>
 
         <div class="sm-show">
-          <%= new_window_link_to(t('links.help'), MarketingSite.help_url,
-                                 class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
-          <%= new_window_link_to(t('links.contact'), MarketingSite.contact_url,
-                                 class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
-          <%= new_window_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                                 class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
+          <%# Note: Once BassCSS is removed, absorb this wrapper into the parent and use class
+              `display-none tablet:display-flex`. This is not currently possible because BassCSS's
+              `display-none` applies using `!important`. %>
+          <div class="display-flex">
+            <%= new_window_link_to(t('links.help'), MarketingSite.help_url,
+                                  class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
+            <%= new_window_link_to(t('links.contact'), MarketingSite.contact_url,
+                                  class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
+            <%= new_window_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
+                                  class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
+          </div>
         </div>
       </div>
     </div>
