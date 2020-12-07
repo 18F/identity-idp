@@ -13,9 +13,9 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
 
   describe '#valid?' do
     context 'with timeout async state' do
-      let(:async_state) {
+      let(:async_state) do
         DocumentCaptureSessionAsyncResult.new(status: DocumentCaptureSessionAsyncResult::TIMED_OUT)
-      }
+      end
 
       it 'is invalid' do
         expect(form.valid?).to eq(false)
