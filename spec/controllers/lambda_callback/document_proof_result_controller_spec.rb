@@ -80,8 +80,7 @@ describe LambdaCallback::DocumentProofResultController do
 
         post :create, params: {
           result_id: '0000',
-          document_result: {
-          },
+          document_result: {},
         }, as: :json
       end
     end
