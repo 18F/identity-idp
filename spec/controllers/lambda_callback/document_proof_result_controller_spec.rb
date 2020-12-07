@@ -19,7 +19,7 @@ describe LambdaCallback::DocumentProofResultController do
     context 'with valid API token' do
       before do
         request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.document_proof_result_lambda_token
-        document_capture_session.store_proofing_pii_from_doc({}) # generates a result_id
+        document_capture_session.create_doc_auth_session
       end
 
       it 'accepts and stores pii and successful document proofing results' do
