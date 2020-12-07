@@ -58,8 +58,7 @@ function formatSSNFieldAndLimitLength() {
         }
       }
 
-      ssnBox.addEventListener('keyup', limitLength.bind(ssnBox));
-      ssnBox.addEventListener('keydown', limitLength.bind(ssnBox));
+      ssnBox.addEventListener('input', limitLength.bind(ssnBox));
     });
   }
 }
