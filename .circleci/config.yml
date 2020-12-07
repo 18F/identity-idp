@@ -183,7 +183,7 @@ jobs:
             yarn run typecheck
             bundle exec rubocop
             make check_asset_strings
-            ./bin/webpack && yarn es5-safe
+            NODE_ENV=production ./bin/webpack && yarn es5-safe
   build-release-container:
     working_directory: ~/identity-idp
     docker:
