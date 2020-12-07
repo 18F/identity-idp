@@ -326,7 +326,9 @@ feature 'doc auth document capture step' do
         set_up_document_capture_result(
           uuid: DocumentCaptureSession.last.uuid,
           idv_result: {
-            success: true, errors: {}, messages: ['message'],
+            success: true,
+            errors: {},
+            messages: ['message'],
             pii_from_doc: {
             first_name: Faker::Name.first_name,
             last_name: Faker::Name.last_name,
