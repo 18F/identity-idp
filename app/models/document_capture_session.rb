@@ -23,6 +23,34 @@ class DocumentCaptureSession < ApplicationRecord
     save!
   end
 
+  def load_doc_auth_async_result
+    EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionAsyncResult)
+  end
+
+  def create_doc_auth_session
+    EncryptedRedisStructStorage.store(
+      DocumentCaptureSessionAsyncResult.new(
+        id: generate_result_id,
+        status: DocumentCaptureSessionAsyncResult::IN_PROGRESS,
+      ),
+      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+    )
+    save!
+  end
+
+  def store_doc_auth_result(result:, pii:)
+    EncryptedRedisStructStorage.store(
+      DocumentCaptureSessionAsyncResult.new(
+        id: result_id,
+        pii: pii,
+        result: result,
+        status: DocumentCaptureSessionAsyncResult::DONE,
+      ),
+      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+    )
+    save!
+  end
+
   def store_proofing_pii_from_doc(pii_from_doc)
     EncryptedRedisStructStorage.store(
       ProofingDocumentCaptureSessionResult.new(

@@ -278,6 +278,7 @@ describe Idv::DocAuthController do
         success: true,
         errors: {},
         messages: ['message'],
+        pii_from_doc: good_pii,
       }
     end
     let(:bad_pii) do
@@ -294,6 +295,14 @@ describe Idv::DocAuthController do
         state_id_jurisdiction: 'WI',
       }
     end
+    let(:bad_pii_result) do
+      {
+        success: true,
+        errors: {},
+        messages: ['message'],
+        pii_from_doc: bad_pii,
+      }
+    end
     let(:fail_result) do
       {
         pii_from_doc: {},
@@ -307,7 +316,6 @@ describe Idv::DocAuthController do
       set_up_document_capture_result(
         uuid: verify_document_action_session_uuid,
         idv_result: good_result,
-        pii: good_pii,
       )
       put :update, params: { step: 'verify_document_status' }
 
@@ -319,7 +327,6 @@ describe Idv::DocAuthController do
       set_up_document_capture_result(
         uuid: verify_document_action_session_uuid,
         idv_result: nil,
-        pii: {},
       )
       put :update, params: { step: 'verify_document_status' }
 
@@ -331,7 +338,6 @@ describe Idv::DocAuthController do
       set_up_document_capture_result(
         uuid: verify_document_action_session_uuid,
         idv_result: fail_result,
-        pii: {},
       )
       put :update, params: { step: 'verify_document_status' }
 
@@ -346,8 +352,7 @@ describe Idv::DocAuthController do
     it 'returns status of fail with incomplete PII from doc auth' do
       set_up_document_capture_result(
         uuid: verify_document_action_session_uuid,
-        idv_result: good_result,
-        pii: bad_pii,
+        idv_result: bad_pii_result,
       )
       put :update, params: { step: 'verify_document_status' }
 

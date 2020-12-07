@@ -27,12 +27,12 @@ module Idv
     end
 
     def timeout_error
-      return unless @async_state.status == :timed_out
+      return unless @async_state.timed_out?
       errors.add(:timeout, t('errors.doc_auth.document_verification_timeout'))
     end
 
     def failed_result
-      return if @async_state.status != :done || @async_state.result[:success]
+      return if !@async_state.done? || @async_state.result[:success]
       @async_state.result[:errors].each { |key, error| errors.add(key, error) }
     end
   end
