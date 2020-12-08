@@ -48,14 +48,14 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def load_proofing_result
-    EncryptedRedisStructStorage.load(result_id, type: ProofingDocumentCaptureSessionResult)
+    EncryptedRedisStructStorage.load(result_id, type: ProofingSessionAsyncResult)
   end
 
   def create_proofing_session
     EncryptedRedisStructStorage.store(
-      ProofingDocumentCaptureSessionResult.new(
+      ProofingSessionAsyncResult.new(
         id: generate_result_id,
-        status: ProofingDocumentCaptureSessionResult::IN_PROGRESS,
+        status: ProofingSessionAsyncResult::IN_PROGRESS,
         result: nil,
       ),
       expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
@@ -65,10 +65,10 @@ class DocumentCaptureSession < ApplicationRecord
 
   def store_proofing_result(proofing_result)
     EncryptedRedisStructStorage.store(
-      ProofingDocumentCaptureSessionResult.new(
+      ProofingSessionAsyncResult.new(
         id: result_id,
         result: proofing_result,
-        status: ProofingDocumentCaptureSessionResult::DONE,
+        status: ProofingSessionAsyncResult::DONE,
       ),
       expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
     )

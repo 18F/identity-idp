@@ -39,7 +39,7 @@ module Idv
         form_response
       end
 
-      # @param [ProofingDocumentCaptureSessionResult] async_result
+      # @param [ProofingSessionAsyncResult] async_result
       def async_state_done(async_result)
         doc_pii_form_result = Idv::DocPiiForm.new(async_result.pii).submit
 

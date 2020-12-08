@@ -205,7 +205,7 @@ module Idv
     def async_state
       dcs_uuid = idv_session.idv_usps_document_capture_session_uuid
       dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
-      return ProofingDocumentCaptureSessionResult.none if dcs_uuid.nil?
+      return ProofingSessionAsyncResult.none if dcs_uuid.nil?
       return timed_out if dcs.nil?
 
       proofing_job_result = dcs.load_proofing_result
@@ -241,7 +241,7 @@ module Idv
     def timed_out
       flash[:info] = I18n.t('idv.failure.timeout')
       delete_async
-      ProofingDocumentCaptureSessionResult.timed_out
+      ProofingSessionAsyncResult.timed_out
     end
   end
 end

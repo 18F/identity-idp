@@ -43,11 +43,11 @@ module Idv
         def async_state
           dcs_uuid = flow_session[cac_verify_document_capture_session_uuid_key]
           dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
-          return ProofingDocumentCaptureSessionResult.none if dcs_uuid.nil?
-          return ProofingDocumentCaptureSessionResult.timed_out if dcs.nil?
+          return ProofingSessionAsyncResult.none if dcs_uuid.nil?
+          return ProofingSessionAsyncResult.timed_out if dcs.nil?
 
           proofing_job_result = dcs.load_proofing_result
-          return ProofingDocumentCaptureSessionResult.timed_out if proofing_job_result.nil?
+          return ProofingSessionAsyncResult.timed_out if proofing_job_result.nil?
 
           proofing_job_result
         end

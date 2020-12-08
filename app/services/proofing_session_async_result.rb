@@ -3,7 +3,7 @@
 # This is used by resolution and address proofing
 # Idv::Agent#proof_resolution and Idv::Agent#proof_address
 # NOTE: remove pii key after next deploy
-ProofingDocumentCaptureSessionResult = Struct.new(:id, :pii, :result, :status,
+ProofingSessionAsyncResult = Struct.new(:id, :pii, :result, :status,
                                                   keyword_init: true) do
   self::NONE = 'none'
   self::IN_PROGRESS = 'in_progress'
@@ -15,28 +15,32 @@ ProofingDocumentCaptureSessionResult = Struct.new(:id, :pii, :result, :status,
   end
 
   def self.none
-    new(status: ProofingDocumentCaptureSessionResult::NONE)
+    new(status: ProofingSessionAsyncResult::NONE)
   end
 
   def self.timed_out
-    new(status: ProofingDocumentCaptureSessionResult::TIMED_OUT)
+    new(status: ProofingSessionAsyncResult::TIMED_OUT)
+  end
+
+  def none?
+    status == ProofingSessionAsyncResult::NONE
   end
 
   def timed_out?
-    status == ProofingDocumentCaptureSessionResult::TIMED_OUT
+    status == ProofingSessionAsyncResult::TIMED_OUT
   end
 
   def done?
-    status == ProofingDocumentCaptureSessionResult::DONE
+    status == ProofingSessionAsyncResult::DONE || result.present?
   end
 
   def in_progress?
-    status == ProofingDocumentCaptureSessionResult::IN_PROGRESS ||
+    status == ProofingSessionAsyncResult::IN_PROGRESS ||
       pii.present?
   end
 
   def done
-    ProofingDocumentCaptureSessionResult.new(
+    ProofingSessionAsyncResult.new(
       result: result.deep_symbolize_keys,
       status: :done,
     )
