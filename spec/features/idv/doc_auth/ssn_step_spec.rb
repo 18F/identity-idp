@@ -60,15 +60,8 @@ feature 'doc auth ssn step' do
         expect(page).to have_current_path(idv_doc_auth_verify_step)
       end
 
-      it 'proceeds to the next page if the user enters extra digits with dashes' do
+      it 'proceeds to the next page if the user enters extra digits' do
         fill_in 'doc_auth_ssn', with: '666-66-12345'
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_doc_auth_verify_step)
-      end
-
-      it 'proceeds to the next page if the user enters extra digits with no dashes' do
-        fill_in 'doc_auth_ssn', with: '6666612345'
         click_idv_continue
 
         expect(page).to have_current_path(idv_doc_auth_verify_step)
