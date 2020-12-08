@@ -96,6 +96,17 @@ function disableSubmit(submitEl, length = 0, score = 0) {
   }
 }
 
+/**
+ * @param {HTMLElement?} element
+ *
+ * @return {string[]|undefined}
+ */
+export function getForbiddenPasswords(element) {
+  try {
+    return JSON.parse(element.dataset.forbiddenPasswords);
+  } catch {}
+}
+
 function analyzePw() {
   const { userAgent } = window.navigator;
   const input = document.querySelector(
@@ -106,7 +117,7 @@ function analyzePw() {
   const pwFeedback = document.getElementById('pw-strength-feedback');
   const submit = document.querySelector('input[type="submit"]');
   const forbiddenPasswordsElement = document.querySelector('[data-forbidden-passwords]');
-  const { forbiddenPasswords } = forbiddenPasswordsElement.dataset;
+  const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
 
   disableSubmit(submit);
 
@@ -116,7 +127,7 @@ function analyzePw() {
   pwCntnr.className = '';
 
   function checkPasswordStrength(e) {
-    const z = zxcvbn(e.target.value, JSON.parse(forbiddenPasswords));
+    const z = zxcvbn(e.target.value, forbiddenPasswords);
     const [cls, strength] = getStrength(z);
     const feedback = getFeedback(z);
     pwCntnr.className = cls;
