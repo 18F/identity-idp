@@ -58,24 +58,18 @@ module Idv
       redirect_to idv_usps_url unless performed?
     end
 
-    def pii(pii_params)
-      hash = {}
-      update_hash_with_address(hash, pii_params)
-      update_hash_with_non_address_pii(hash)
-      hash
+    def pii(address_pii)
+      merge_non_address_pii(address_pii.dup)
     end
 
-    def update_hash_with_address(hash, pii_params)
-      pii_params.each { |key, value| hash[key] = value }
-    end
-
-    def update_hash_with_non_address_pii(hash)
+    def merge_non_address_pii(hash)
       pii_h = pii_to_h
       %w[first_name middle_name last_name dob phone ssn].each do |key|
         hash[key] = pii_h[key]
       end
 
       hash[:uuid_prefix] = ServiceProvider.from_issuer(sp_session[:issuer]).app_id
+      hash
     end
 
     def pii_to_h
@@ -194,7 +188,7 @@ module Idv
 
       document_capture_session.create_proofing_session
       idv_session.idv_usps_document_capture_session_uuid = document_capture_session.uuid
-      applicant = pii(profile_params)
+      applicant = pii(profile_params.to_h)
       Idv::Agent.new(applicant).proof_resolution(
         document_capture_session,
         should_proof_state_id: false,
