@@ -26,7 +26,7 @@ describe('pw-strength', () => {
 
     it('returns undefined if element has invalid dataset value', () => {
       const element = document.createElement('span');
-      element.setAttribute('data-forbidden-passwords', 'nil');
+      element.setAttribute('data-forbidden', 'nil');
       const result = getForbiddenPasswords(element);
 
       expect(result).to.be.undefined();
@@ -34,7 +34,7 @@ describe('pw-strength', () => {
 
     it('parsed array of forbidden passwords', () => {
       const element = document.createElement('span');
-      element.setAttribute('data-forbidden-passwords', '["foo","bar","baz"]');
+      element.setAttribute('data-forbidden', '["foo","bar","baz"]');
       const result = getForbiddenPasswords(element);
 
       expect(result).to.be.deep.equal(['foo', 'bar', 'baz']);

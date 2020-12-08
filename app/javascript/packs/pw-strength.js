@@ -103,7 +103,7 @@ function disableSubmit(submitEl, length = 0, score = 0) {
  */
 export function getForbiddenPasswords(element) {
   try {
-    return JSON.parse(element.dataset.forbiddenPasswords);
+    return JSON.parse(element.dataset.forbidden);
   } catch {}
 }
 
@@ -116,7 +116,7 @@ function analyzePw() {
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');
   const submit = document.querySelector('input[type="submit"]');
-  const forbiddenPasswordsElement = document.querySelector('[data-forbidden-passwords]');
+  const forbiddenPasswordsElement = document.querySelector('[data-forbidden]');
   const forbiddenPasswords = getForbiddenPasswords(forbiddenPasswordsElement);
 
   disableSubmit(submit);
