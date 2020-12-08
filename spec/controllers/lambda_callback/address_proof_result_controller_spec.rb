@@ -12,7 +12,7 @@ describe LambdaCallback::AddressProofResultController do
 
       it 'accepts and stores successful address proofing results' do
         applicant = { phone: Faker::PhoneNumber.cell_phone }
-        document_capture_session.store_proofing_pii_from_doc(applicant)
+        document_capture_session.create_proofing_session
         Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: trace_id)
         proofer_result = document_capture_session.load_proofing_result[:result]
 
@@ -28,7 +28,7 @@ describe LambdaCallback::AddressProofResultController do
           phone: IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
         }
 
-        document_capture_session.store_proofing_pii_from_doc(applicant)
+        document_capture_session.create_proofing_session
         Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: trace_id)
         proofer_result = document_capture_session.load_proofing_result[:result]
 
@@ -50,7 +50,7 @@ describe LambdaCallback::AddressProofResultController do
           phone: IdentityIdpFunctions::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER,
         }
 
-        document_capture_session.store_proofing_pii_from_doc(applicant)
+        document_capture_session.create_proofing_session
         Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: trace_id)
         proofer_result = document_capture_session.load_proofing_result[:result]
 
