@@ -59,17 +59,13 @@ module Idv
     end
 
     def pii(address_pii)
-      merge_non_address_pii(address_pii.dup)
+      address_pii.dup.merge(non_address_pii)
     end
 
-    def merge_non_address_pii(hash)
-      pii_h = pii_to_h
-      %w[first_name middle_name last_name dob phone ssn].each do |key|
-        hash[key] = pii_h[key]
-      end
-
-      hash[:uuid_prefix] = ServiceProvider.from_issuer(sp_session[:issuer]).app_id
-      hash
+    def non_address_pii
+      pii_to_h.
+        slice(*%w[first_name middle_name last_name dob phone ssn]).
+        merge(uuid_prefix: ServiceProvider.from_issuer(sp_session[:issuer]).app_id)
     end
 
     def pii_to_h
