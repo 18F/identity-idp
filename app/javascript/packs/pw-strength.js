@@ -99,12 +99,14 @@ function disableSubmit(submitEl, length = 0, score = 0) {
 /**
  * @param {HTMLElement?} element
  *
- * @return {string[]|undefined}
+ * @return {string[]}
  */
 export function getForbiddenPasswords(element) {
   try {
     return JSON.parse(element.dataset.forbidden);
-  } catch {}
+  } catch {
+    return [];
+  }
 }
 
 function analyzePw() {

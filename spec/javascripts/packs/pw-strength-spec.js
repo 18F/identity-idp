@@ -10,26 +10,26 @@ describe('pw-strength', () => {
   });
 
   describe('getForbiddenPasswords', () => {
-    it('returns undefined if given argument is null', () => {
+    it('returns empty array if given argument is null', () => {
       const element = null;
       const result = getForbiddenPasswords(element);
 
-      expect(result).to.be.undefined();
+      expect(result).to.deep.equal([]);
     });
 
-    it('returns undefined if element has absent dataset value', () => {
+    it('returns empty array if element has absent dataset value', () => {
       const element = document.createElement('span');
       const result = getForbiddenPasswords(element);
 
-      expect(result).to.be.undefined();
+      expect(result).to.deep.equal([]);
     });
 
-    it('returns undefined if element has invalid dataset value', () => {
+    it('returns empty array if element has invalid dataset value', () => {
       const element = document.createElement('span');
       element.setAttribute('data-forbidden', 'nil');
       const result = getForbiddenPasswords(element);
 
-      expect(result).to.be.undefined();
+      expect(result).to.deep.equal([]);
     });
 
     it('parsed array of forbidden passwords', () => {
