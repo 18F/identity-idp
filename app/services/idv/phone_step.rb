@@ -7,7 +7,7 @@ module Idv
 
     def submit(step_params)
       self.step_params = step_params
-      idv_session.previous_phone_step_params = { phone: step_params[:phone] }
+      idv_session.previous_phone_step_params = step_params.slice(:phone)
       proof_address
     end
 
