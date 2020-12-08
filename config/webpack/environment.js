@@ -6,9 +6,14 @@ environment.loaders.delete('moduleSass');
 environment.loaders.delete('moduleCss');
 environment.loaders.delete('css');
 
+// Some files under `node_modules` should be compiled by Babel:
+// 1. Yarn workspace package symlinks, by package name starting with `@18f/identity-`.
+// 2. Specific dependencies that don't compile their own code to run safely in legacy browsers.
 const babelLoader = environment.loaders.get('babel');
-babelLoader.include.push(/node_modules\/@18f\/identity-/);
-babelLoader.exclude = /node_modules\/(?!@18f\/identity-)/;
+babelLoader.include.push(
+  /node_modules\/(@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
+);
+babelLoader.exclude = /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/;
 
 const sassLoader = environment.loaders.get('sass');
 // Prepend minimum required design system variables, mixins, and functions to make available to all
