@@ -4,7 +4,7 @@ describe 'devise/shared/_password_strength.html.erb' do
   let(:forbidden_passwords) { nil }
 
   before(:each) do
-    assign(:forbidden_passwords, forbidden_passwords)
+    allow(view).to receive(:forbidden_passwords).and_return(forbidden_passwords)
   end
 
   describe 'forbidden attributes' do
