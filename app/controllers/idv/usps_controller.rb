@@ -10,17 +10,17 @@ module Idv
 
     def index
       @presenter = UspsPresenter.new(current_user)
+      current_async_state = async_state
 
-      case async_state.status
-      when :none
+      if current_async_state.none?
         analytics.track_event(Analytics::IDV_USPS_ADDRESS_VISITED)
         render :index
-      when :in_progress
+      elsif current_async_state.in_progress?
         render :wait
-      when :timed_out
+      elsif current_async_state.timed_out?
         render :index
-      when :done
-        async_state_done(async_state)
+      elsif current_async_state.done?
+        async_state_done(current_async_state)
       end
     end
 
@@ -58,24 +58,14 @@ module Idv
       redirect_to idv_usps_url unless performed?
     end
 
-    def pii
-      hash = {}
-      update_hash_with_address(hash)
-      update_hash_with_non_address_pii(hash)
-      hash
+    def pii(address_pii)
+      address_pii.dup.merge(non_address_pii)
     end
 
-    def update_hash_with_address(hash)
-      profile_params.each { |key, value| hash[key] = value }
-    end
-
-    def update_hash_with_non_address_pii(hash)
-      pii_h = pii_to_h
-      %w[first_name middle_name last_name dob phone ssn].each do |key|
-        hash[key] = pii_h[key]
-      end
-
-      hash[:uuid_prefix] = ServiceProvider.from_issuer(sp_session[:issuer]).app_id
+    def non_address_pii
+      pii_to_h.
+        slice('first_name', 'middle_name', 'last_name', 'dob', 'phone', 'ssn').
+        merge(uuid_prefix: ServiceProvider.from_issuer(sp_session[:issuer]).app_id)
     end
 
     def pii_to_h
@@ -183,6 +173,8 @@ module Idv
 
     def enqueue_job
       return if idv_session.idv_usps_document_capture_session_uuid
+      idv_session.previous_usps_step_params = profile_params.to_h
+
       document_capture_session = DocumentCaptureSession.create(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
@@ -190,9 +182,10 @@ module Idv
         requested_at: Time.zone.now,
       )
 
-      document_capture_session.store_proofing_pii_from_doc(pii)
+      document_capture_session.create_proofing_session
       idv_session.idv_usps_document_capture_session_uuid = document_capture_session.uuid
-      Idv::Agent.new(pii).proof_resolution(
+      applicant = pii(profile_params.to_h)
+      Idv::Agent.new(applicant).proof_resolution(
         document_capture_session,
         should_proof_state_id: false,
         trace_id: amzn_trace_id,
@@ -202,17 +195,13 @@ module Idv
     def async_state
       dcs_uuid = idv_session.idv_usps_document_capture_session_uuid
       dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
-      return ProofingDocumentCaptureSessionResult.none if dcs_uuid.nil?
+      return ProofingSessionAsyncResult.none if dcs_uuid.nil?
       return timed_out if dcs.nil?
 
       proofing_job_result = dcs.load_proofing_result
       return timed_out if proofing_job_result.nil?
 
-      if proofing_job_result.result
-        proofing_job_result.done
-      elsif proofing_job_result.pii
-        ProofingDocumentCaptureSessionResult.in_progress
-      end
+      proofing_job_result
     end
 
     def async_state_done(async_state)
@@ -222,11 +211,11 @@ module Idv
       throttle_failure unless success
       result = form_response(idv_result, success)
 
-      pii = async_state.pii
       delete_async
 
       async_state_done_analytics(result)
-      result.success? ? resolution_success(pii) : failure
+      applicant = pii(idv_session.previous_usps_step_params)
+      result.success? ? resolution_success(applicant) : failure
     end
 
     def async_state_done_analytics(result)
@@ -242,7 +231,7 @@ module Idv
     def timed_out
       flash[:info] = I18n.t('idv.failure.timeout')
       delete_async
-      ProofingDocumentCaptureSessionResult.timed_out
+      ProofingSessionAsyncResult.timed_out
     end
   end
 end

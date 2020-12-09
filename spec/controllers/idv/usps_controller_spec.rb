@@ -43,7 +43,22 @@ describe Idv::UspsController do
 
     it 'renders wait page while job is in progress' do
       allow(controller).to receive(:async_state).and_return(
-        ProofingDocumentCaptureSessionResult.in_progress,
+        ProofingSessionAsyncResult.new(
+          status: ProofingSessionAsyncResult::IN_PROGRESS,
+        ),
+      )
+      get :index
+
+      expect(response).to render_template :wait
+    end
+
+    # can be removed after next deploy
+    it 'renders wait page while job is in progress using old session structure' do
+      allow(controller).to receive(:async_state).and_return(
+        ProofingSessionAsyncResult.new(
+          status: nil,
+          pii: { first_name: Faker::Name.first_name },
+        ),
       )
       get :index
 

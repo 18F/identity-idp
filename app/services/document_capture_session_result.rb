@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# This is used by hybrid doc auth capture
 DocumentCaptureSessionResult = Struct.new(:id, :success, :pii, keyword_init: true) do
   def self.redis_key_prefix
     'dcs:result'

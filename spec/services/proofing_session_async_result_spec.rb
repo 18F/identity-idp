@@ -1,18 +1,18 @@
 require 'rails_helper'
 
-RSpec.describe ProofingDocumentCaptureSessionResult do
+RSpec.describe ProofingSessionAsyncResult do
   let(:id) { SecureRandom.uuid }
   let(:pii) { { 'first_name' => 'Testy', 'last_name' => 'Testerson' } }
   let(:idv_result) { { errors: {}, messages: ['some message'] } }
 
   context 'EncryptedRedisStructStorage' do
     it 'works with EncryptedRedisStructStorage' do
-      result = ProofingDocumentCaptureSessionResult.new(id: id, pii: pii, result: idv_result)
+      result = ProofingSessionAsyncResult.new(id: id, pii: pii, result: idv_result)
 
       EncryptedRedisStructStorage.store(result)
 
       loaded_result = EncryptedRedisStructStorage.load(
-        id, type: ProofingDocumentCaptureSessionResult
+        id, type: ProofingSessionAsyncResult
       )
 
       expect(loaded_result.id).to eq(id)
