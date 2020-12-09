@@ -23,6 +23,17 @@ describe EventDisavowalController do
 
         get :new, params: { disavowal_token: disavowal_token }
       end
+
+      it 'assigns forbidden passwords' do
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::EVENT_DISAVOWAL,
+          build_analytics_hash,
+        )
+
+        get :new, params: { disavowal_token: disavowal_token }
+
+        expect(assigns(:forbidden_passwords)).to all(be_a(String))
+      end
     end
 
     context 'with an invalid disavowal_token' do
@@ -38,6 +49,22 @@ describe EventDisavowalController do
         )
 
         get :new, params: { disavowal_token: disavowal_token }
+      end
+
+      it 'does not assign forbidden passwords' do
+        event.update!(disavowed_at: Time.zone.now)
+
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::EVENT_DISAVOWAL_TOKEN_INVALID,
+          build_analytics_hash(
+            success: false,
+            errors: { event: [t('event_disavowals.errors.event_already_disavowed')] },
+          ),
+        )
+
+        get :new, params: { disavowal_token: disavowal_token }
+
+        expect(assigns(:forbidden_passwords)).to be_nil
       end
     end
   end
@@ -73,6 +100,25 @@ describe EventDisavowalController do
         }
 
         post :create, params: params
+      end
+
+      it 'assigns forbidden passwords' do
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::EVENT_DISAVOWAL_PASSWORD_RESET,
+          build_analytics_hash(
+            success: false,
+            errors: { password: ['is too short (minimum is 12 characters)'] },
+          ),
+        )
+
+        params = {
+          disavowal_token: disavowal_token,
+          event_disavowal_password_reset_from_disavowal_form: { password: 'too short' },
+        }
+
+        post :create, params: params
+
+        expect(assigns(:forbidden_passwords)).to all(be_a(String))
       end
     end
 
