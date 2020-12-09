@@ -64,7 +64,7 @@ module Idv
 
     def non_address_pii
       pii_to_h.
-        slice(*%w[first_name middle_name last_name dob phone ssn]).
+        slice('first_name', 'middle_name', 'last_name', 'dob', 'phone', 'ssn').
         merge(uuid_prefix: ServiceProvider.from_issuer(sp_session[:issuer]).app_id)
     end
 
