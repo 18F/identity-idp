@@ -184,7 +184,7 @@ CG:
 CH:
   country_code: '41'
   name: Switzerland
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 CI:
   country_code: '225'
@@ -319,7 +319,7 @@ GA:
 GB:
   country_code: '44'
   name: United Kingdom
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 GD:
   country_code: '1473'
@@ -459,7 +459,7 @@ IT:
 JM:
   country_code: '1'
   name: Jamaica
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 JO:
   country_code: '962'
@@ -699,7 +699,7 @@ NG:
 NI:
   country_code: '505'
   name: Nicaragua
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 NL:
   country_code: '31'
