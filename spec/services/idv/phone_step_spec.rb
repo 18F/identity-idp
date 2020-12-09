@@ -37,7 +37,7 @@ describe Idv::PhoneStep do
 
       subject.submit(phone: good_phone)
 
-      expect(subject.async_state.done?).to eq true
+      expect(subject.async_state).to be_done
       result = subject.async_state_done(subject.async_state)
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(true)
