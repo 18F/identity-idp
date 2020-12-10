@@ -3,6 +3,14 @@ require 'rails_helper'
 RSpec.describe ScriptHelper do
   include ScriptHelper
 
+  describe '#javascript_pack_tag_once' do
+    it 'returns nil' do
+      output = javascript_pack_tag_once('application')
+
+      expect(output).to be_nil
+    end
+  end
+
   describe '#render_javascript_pack_once_tags' do
     context 'no scripts enqueued' do
       it 'is nil' do
