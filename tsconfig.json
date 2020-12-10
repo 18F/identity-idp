@@ -16,10 +16,8 @@
     "app/javascript/packs/document-capture.jsx",
     "app/javascript/packs/form-validation.js",
     "app/javascript/packs/intl-tel-input.js",
+    "app/javascript/packs/spinner-button.js",
     "app/javascript/packs/submit-with-spinner.js"
   ],
-  "exclude": [
-    "**/fixtures",
-    "**/*.spec.js"
-  ]
+  "exclude": ["**/fixtures", "**/*.spec.js"]
 }

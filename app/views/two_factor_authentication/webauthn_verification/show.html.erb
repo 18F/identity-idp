@@ -4,10 +4,8 @@
   <%= t('two_factor_authentication.webauthn_header_text') %>
 </h1>
 
-<div class='no-spinner'>
-  <div class='mt-tiny mb3'>
-    <%= @presenter.webauthn_help %>
-  </div>
+<div class='mt-tiny mb3'>
+  <%= @presenter.webauthn_help %>
 </div>
 
 <%= form_tag(login_two_factor_webauthn_path, method: :patch, role: 'form', class: 'mb1 read-after-submit', id: 'webauthn_form') do %>
