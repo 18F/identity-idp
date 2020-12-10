@@ -3,6 +3,8 @@ class OpenidConnectTokenForm
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
+  ISSUED_AT_LEEWAY_SECONDS = 10.seconds.to_i
+
   ATTRS = %i[
     client_assertion
     client_assertion_type
@@ -104,10 +106,11 @@ class OpenidConnectTokenForm
     return if identity.blank?
 
     payload, _headers = JWT.decode(client_assertion, service_provider.ssl_cert.public_key, true,
-                                   algorithm: 'RS256', verify_iat: true,
-                                   iss: client_id, verify_iss: true,
-                                   sub: client_id, verify_sub: true)
+                                   algorithm: 'RS256', iss: client_id,
+                                   verify_iss: true, sub: client_id,
+                                   verify_sub: true)
     validate_aud_claim(payload)
+    validate_iat(payload)
   rescue JWT::DecodeError => err
     errors.add(:client_assertion, err.message)
   end
@@ -120,6 +123,14 @@ class OpenidConnectTokenForm
 
     errors.add(:client_assertion,
                t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url))
+  end
+
+  def validate_iat(payload)
+    return true unless payload.key?('iat')
+    iat = payload['iat']
+    return true if iat.is_a?(Integer) && (iat.to_i - ISSUED_AT_LEEWAY_SECONDS) < Time.zone.now.to_i
+
+    errors.add(:client_assertion, t('openid_connect.token.errors.invalid_iat'))
   end
 
   def service_provider
