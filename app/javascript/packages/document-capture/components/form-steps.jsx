@@ -197,6 +197,12 @@ function FormSteps({
   const { form: Form, footer: Footer, name, title } = step;
   const isLastStep = stepIndex + 1 === steps.length;
 
+
+  // fields.current doesn't contain the current step's field until after rendering, because of registerField()
+  const canContinue = Object.keys(values).length &&
+    Object.keys(fields.current).every(field => !!values[field]) &&
+    !activeErrors.length;
+
   return (
     <form ref={formRef} onSubmit={toNextStep}>
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
@@ -240,7 +246,7 @@ function FormSteps({
           return fields.current[field].refCallback;
         }}
       />
-      <Button type="submit" isPrimary className="margin-y-5">
+      <Button type="submit" isPrimary className="margin-y-5" isDisabled={!canContinue}>
         {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
       </Button>
       {Footer && <Footer />}
