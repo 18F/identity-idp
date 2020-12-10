@@ -126,9 +126,9 @@ class OpenidConnectTokenForm
   end
 
   def validate_iat(payload)
+    return true unless payload.key?('iat')
     iat = payload['iat']
-    return true if iat.blank?
-    return true if iat.is_a?(Numeric) && (iat.to_i - ISSUED_AT_LEEWAY_SECONDS) < Time.zone.now.to_i
+    return true if iat.is_a?(Integer) && (iat.to_i - ISSUED_AT_LEEWAY_SECONDS) < Time.zone.now.to_i
 
     errors.add(:client_assertion, t('openid_connect.token.errors.invalid_iat'))
   end
