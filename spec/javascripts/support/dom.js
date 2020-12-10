@@ -52,4 +52,6 @@ export function useCleanDOM() {
       document.body.removeChild(document.body.firstChild);
     }
   });
+
+  window.location.hash = '';
 }
