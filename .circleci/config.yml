@@ -152,6 +152,7 @@ jobs:
           command: |
             mkdir /tmp/test-results
             ./cc-test-reporter before-build
+            bin/rails zeitwerk:check
 
             bundle exec rake knapsack:rspec
             yarn test
