@@ -47,6 +47,16 @@ class ServiceProvider < ApplicationRecord
     }
   end
 
+  def skip_encryption_allowed
+    config = AppConfig.env.skip_encryption_allowed_list
+    if config
+      @allowed_list ||= JSON.parse(config, symbolize_names: true)
+      @allowed_list.include? issuer
+    else
+      false
+    end
+  end
+
   def live?
     active? && approved?
   end

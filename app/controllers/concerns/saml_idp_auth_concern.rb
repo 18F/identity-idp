@@ -148,10 +148,20 @@ module SamlIdpAuthConcern
       name_id_format: name_id_format,
       authn_context_classref: requested_authn_context,
       reference_id: active_identity.session_uuid,
-      encryption: current_service_provider.encryption_opts,
+      encryption: encryption_opts,
       signature: saml_response_signature_options,
       signed_response_message: current_service_provider.signed_response_message_requested,
     )
+  end
+
+  def encryption_opts
+    url = URI.parse request.original_url
+    query_params = Rack::Utils.parse_nested_query url.query
+    if query_params['skip_encryption'].present? && current_service_provider.skip_encryption_allowed
+      nil
+    else
+      current_service_provider.encryption_opts
+    end
   end
 
   def saml_response_signature_options
