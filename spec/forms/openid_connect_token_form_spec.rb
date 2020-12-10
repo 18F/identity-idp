@@ -245,7 +245,7 @@ RSpec.describe OpenidConnectTokenForm do
         context 'with no issued time' do
           before { jwt_payload.except!(:iat) }
 
-          it 'is invalid' do
+          it 'is still valid' do
             expect(valid?).to eq(true)
           end
         end
