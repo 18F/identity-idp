@@ -114,7 +114,7 @@ function analyzePw() {
   const input = document.querySelector(
     [
       '#password_form_password',
-      '#password_reset_from_disavowal_form_password',
+      '#event_disavowal_password_reset_from_disavowal_form_password',
       '#reset_password_form_password',
       '#update_user_password_form_password',
     ].join(','),
