@@ -31,6 +31,7 @@ RSpec.describe OpenidConnectTokenForm do
       aud: api_openid_connect_token_url,
       jti: SecureRandom.hex,
       exp: 5.minutes.from_now.to_i,
+      iat: Time.zone.now.to_i,
     }
   end
 
@@ -227,6 +228,25 @@ RSpec.describe OpenidConnectTokenForm do
           it 'is invalid' do
             expect(valid?).to eq(false)
             expect(form.errors[:client_assertion]).to include('Signature has expired')
+          end
+        end
+
+        context 'with an issued time in the future' do
+          before { jwt_payload[:iat] = Time.zone.now.to_i + 1.minute.to_i }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              t('openid_connect.token.errors.invalid_iat'),
+            )
+          end
+        end
+
+        context 'with no issued time' do
+          before { jwt_payload.except!(:iat) }
+
+          it 'is invalid' do
+            expect(valid?).to eq(true)
           end
         end
 
