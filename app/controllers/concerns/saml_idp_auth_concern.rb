@@ -155,9 +155,8 @@ module SamlIdpAuthConcern
   end
 
   def encryption_opts
-    url = URI.parse request.original_url
-    query_params = Rack::Utils.parse_nested_query url.query
-    if query_params['skip_encryption'].present? && current_service_provider.skip_encryption_allowed
+    query_params = UriService.params(request.original_url)
+    if query_params[:skip_encryption].present? && current_service_provider.skip_encryption_allowed
       nil
     else
       current_service_provider.encryption_opts
