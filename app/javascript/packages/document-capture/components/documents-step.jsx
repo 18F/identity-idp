@@ -72,7 +72,4 @@ function DocumentsStep({
 
 const DocumentsStepWithBackgroundUpload = withBackgroundEncryptedUpload(DocumentsStep);
 
-export {
-  DocumentsStepWithBackgroundUpload as DocumentsStep,
-  documentsStepValidator
-};
+export { DocumentsStepWithBackgroundUpload as DocumentsStep, documentsStepValidator };

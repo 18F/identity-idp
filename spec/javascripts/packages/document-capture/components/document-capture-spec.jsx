@@ -15,6 +15,7 @@ import {
 import DocumentCapture, {
   except,
 } from '@18f/identity-document-capture/components/document-capture';
+import { expect } from 'chai';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
 

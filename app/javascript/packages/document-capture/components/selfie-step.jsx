@@ -67,7 +67,4 @@ function SelfieStep({
 
 const SelfieStepWithBackgroundUpload = withBackgroundEncryptedUpload(SelfieStep);
 
-export {
-  SelfieStepWithBackgroundUpload as SelfieStep,
-  selfieStepValidator,
-};
+export { SelfieStepWithBackgroundUpload as SelfieStep, selfieStepValidator };
