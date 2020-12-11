@@ -53,6 +53,7 @@ function formatSSNFieldAndLimitLength() {
         const maxLength = 9 + (this.value.match(/-/g) || []).length;
         if (this.value.length > maxLength) {
           this.value = this.value.slice(0, maxLength);
+          this.checkValidity();
         }
       }
 

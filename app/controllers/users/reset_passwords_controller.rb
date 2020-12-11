@@ -121,6 +121,7 @@ module Users
         return
       end
 
+      @forbidden_passwords = forbidden_passwords(resource.email_addresses)
       render :edit
     end
 
