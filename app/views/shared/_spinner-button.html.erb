@@ -2,11 +2,11 @@
 yields: Button or link markup (required).
 %>
 <%
-  raise "no block content given" unless yield.presence
+  content = yield.presence or raise "no block content given"
 %>
 <div class="spinner-button">
   <div class="spinner-button__content">
-    <%= yield %>
+    <%= content %>
   </div>
   <%= image_tag asset_url('spinner.gif'),
                 srcset: "#{asset_url('spinner@2x.gif')} 2x",
