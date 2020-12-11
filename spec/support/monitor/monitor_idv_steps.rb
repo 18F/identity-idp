@@ -15,24 +15,15 @@ module MonitorIdvSteps
 
     click_on 'Upload from your computer'
 
-    if current_path == '/verify/doc_auth/document_capture'
+    if Capybara.current_driver == :desktop_rack_test
+      attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
+      attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
+      click_on 'Continue'
+    else
       # React-based document capture flow is enabled
       attach_file 'Front of your ID', File.expand_path('spec/fixtures/ial2_test_credential.yml')
       attach_file 'Back of your ID', File.expand_path('spec/fixtures/ial2_test_credential.yml')
       click_on 'Submit'
-    else
-      expect(page).to have_current_path('/verify/doc_auth/front_image')
-
-      click_doc_auth_fallback_link
-
-      attach_file 'doc_auth_image', File.expand_path('spec/fixtures/ial2_test_credential.yml')
-      click_on 'Continue'
-      expect(page).to have_current_path('/verify/doc_auth/back_image')
-
-      click_doc_auth_fallback_link
-
-      attach_file 'doc_auth_image', File.expand_path('spec/fixtures/ial2_test_credential.yml')
-      click_on 'Continue'
     end
 
     expect(page).to have_current_path('/verify/doc_auth/ssn', wait: 60)
