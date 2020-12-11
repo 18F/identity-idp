@@ -1,4 +1,4 @@
-RSpec.describe 'smoke test: create account', js: true do
+RSpec.describe 'smoke test: create account' do
   include MonitorIdpSteps
   include MonitorSpSteps
   include MonitorIdvSteps
