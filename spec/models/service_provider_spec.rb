@@ -174,4 +174,23 @@ describe ServiceProvider do
       end
     end
   end
+
+  describe '#skip_encryption_allowed' do
+    context 'SP in allowed list' do
+      before do
+        allow(AppConfig.env).to receive(:skip_encryption_allowed_list).
+          and_return('["http://localhost:3000"]')
+      end
+
+      it 'allows the SP to optionally skip encrypting the SAML response' do
+        expect(service_provider.skip_encryption_allowed).to be(true)
+      end
+    end
+
+    context 'SP not in allowed list' do
+      it 'does not allow the SP to optionally skip encrypting the SAML response' do
+        expect(service_provider.skip_encryption_allowed).to be(false)
+      end
+    end
+  end
 end
