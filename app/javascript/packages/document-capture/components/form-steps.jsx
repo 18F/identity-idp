@@ -46,6 +46,7 @@ import useForceRender from '../hooks/use-force-render';
  * @prop {string} title Step title, shown as heading.
  * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} form Step form component.
  * @prop {import('react').FC=} footer Optional step footer component.
+ * @prop {(Object)=>boolean=} validator Optional function to validate values for the step
  */
 
 /**
@@ -197,11 +198,7 @@ function FormSteps({
   const { form: Form, footer: Footer, name, title } = step;
   const isLastStep = stepIndex + 1 === steps.length;
 
-
-  // fields.current doesn't contain the current step's field until after rendering, because of registerField()
-  const canContinue = Object.keys(values).length &&
-    Object.keys(fields.current).every(field => !!values[field]) &&
-    !activeErrors.length;
+  const canContinue = (step.validator?.(values) ?? true) && !activeErrors.length;
 
   return (
     <form ref={formRef} onSubmit={toNextStep}>
@@ -246,7 +243,7 @@ function FormSteps({
           return fields.current[field].refCallback;
         }}
       />
-      <Button type="submit" isPrimary className="margin-y-5" isDisabled={!canContinue}>
+      <Button type="submit" isPrimary className="margin-y-5" isVisuallyDisabled={!canContinue}>
         {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
       </Button>
       {Footer && <Footer />}

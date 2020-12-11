@@ -14,6 +14,13 @@ import withBackgroundEncryptedUpload from '../higher-order/with-background-encry
  */
 
 /**
+ * @return {Boolean} whether or not the value is valid for the document step
+ */
+function selfieStepValidator(value = {}) {
+  return !!value.selfie;
+}
+
+/**
  * @param {import('./form-steps').FormStepComponentProps<SelfieStepValue>} props Props object.
  */
 function SelfieStep({
@@ -58,4 +65,9 @@ function SelfieStep({
   );
 }
 
-export default withBackgroundEncryptedUpload(SelfieStep);
+const SelfieStepWithBackgroundUpload = withBackgroundEncryptedUpload(SelfieStep);
+
+export {
+  SelfieStepWithBackgroundUpload as SelfieStep,
+  selfieStepValidator,
+};

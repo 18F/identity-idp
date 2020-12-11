@@ -113,9 +113,10 @@ describe('document-capture/components/document-capture', () => {
     });
     window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
 
-    // Continue is enabled, but attempting to proceed without providing values will trigger error
-    // messages.
+    // Continue is enabled (but grayed out).Attempting to proceed without providing values will
+    // trigger error messages.
     let continueButton = getByText('forms.buttons.continue');
+    expect(continueButton.classList.contains('btn-disabled')).to.be.true();
     userEvent.click(continueButton);
     let errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(2);
@@ -136,14 +137,17 @@ describe('document-capture/components/document-capture', () => {
 
     userEvent.click(getByLabelText('doc_auth.headings.document_capture_back'));
 
-    // Continue only once all errors have been removed.
+    // Continue only once all errors have been removed, button is no longer grayed out
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     continueButton = getByText('forms.buttons.continue');
     expect(isFormValid(continueButton.closest('form'))).to.be.true();
+    expect(continueButton.classList.contains('btn-disabled')).to.be.false();
     userEvent.click(continueButton);
 
-    // Trigger validation by attempting to submit.
+    // Trigger validation by attempting to submit, button is grayed out
     const submitButton = getByText('forms.buttons.submit.default');
+    expect(submitButton.classList.contains('btn-disabled')).to.be.true();
+
     userEvent.click(continueButton);
     errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(1);
@@ -155,8 +159,9 @@ describe('document-capture/components/document-capture', () => {
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
     fireEvent.click(selfieInput);
 
-    // Continue only once all errors have been removed.
+    // Continue only once all errors have been removed, button no longer grayed out
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    expect(submitButton.classList.contains('btn-disabled')).to.be.false();
     expect(isFormValid(submitButton.closest('form'))).to.be.true();
 
     await new Promise((resolve) => {
