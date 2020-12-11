@@ -50,28 +50,8 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :document_capture)
   end
 
-  def idv_doc_auth_front_image_step
-    idv_doc_auth_step_path(step: :front_image)
-  end
-
-  def idv_doc_auth_mobile_front_image_step
-    idv_doc_auth_step_path(step: :mobile_front_image)
-  end
-
-  def idv_doc_auth_back_image_step
-    idv_doc_auth_step_path(step: :back_image)
-  end
-
-  def idv_doc_auth_mobile_back_image_step
-    idv_doc_auth_step_path(step: :mobile_back_image)
-  end
-
   def idv_doc_auth_verify_step
     idv_doc_auth_step_path(step: :verify)
-  end
-
-  def idv_doc_auth_selfie_step
-    idv_doc_auth_step_path(step: :selfie)
   end
 
   def idv_doc_auth_send_link_step
@@ -103,43 +83,12 @@ module DocAuthHelper
     click_on t('doc_auth.info.upload_computer_link')
   end
 
-  def complete_doc_auth_steps_before_front_image_step(expect_accessible: false)
-    complete_doc_auth_steps_before_upload_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    click_on t('doc_auth.info.upload_computer_link')
-  end
-
-  def complete_doc_auth_steps_before_back_image_step(expect_accessible: false)
-    complete_doc_auth_steps_before_front_image_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    attach_image
-    click_idv_continue
-  end
-
-  def complete_doc_auth_steps_before_selfie_image_step(expect_accessible: false)
-    complete_doc_auth_steps_before_back_image_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    attach_image
-    click_idv_continue
-  end
-
   def complete_doc_auth_steps_before_email_sent_step
     allow(DeviceDetector).to receive(:new).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.info.upload_computer_link')
   end
 
-  def complete_doc_auth_steps_before_mobile_front_image_step
-    complete_doc_auth_steps_before_upload_step
-    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
-    click_on t('doc_auth.buttons.use_phone')
-  end
-
-  def complete_doc_auth_steps_before_mobile_back_image_step
-    complete_doc_auth_steps_before_mobile_front_image_step
-    attach_image
-    click_idv_continue
-  end
 
   def mobile_device
     DeviceDetector.new('Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) \
@@ -163,11 +112,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     complete_doc_auth_steps_before_verify_step
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     click_link t('doc_auth.buttons.change_address')
-  end
-
-  def complete_doc_auth_steps_before_self_image_step
-    complete_doc_auth_steps_before_verify_step
-    click_idv_continue
   end
 
   def complete_doc_auth_steps_before_send_link_step
@@ -235,70 +179,6 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       dcs.store_doc_auth_result(result: idv_result.except(:pii_from_doc),
                                 pii: idv_result[:pii_from_doc])
     end
-  end
-
-  def attach_front_image_data_url
-    page.find('#doc_auth_front_image_data_url', visible: false).set(doc_auth_front_image_data_url)
-  end
-
-  def doc_auth_front_image_data_url
-    File.read('spec/support/fixtures/doc_auth_front_image_data_url.data')
-  end
-
-  def doc_auth_front_image_multipart_file
-    Rack::Test::UploadedFile.new('spec/support/fixtures/doc_auth_front_image.jpeg', 'image/jpeg')
-  end
-
-  def doc_auth_front_image_data_url_data
-    Base64.decode64(doc_auth_front_image_data_url.split(',').last)
-  end
-
-  def attach_back_image_data_url
-    page.find('#doc_auth_back_image_data_url', visible: false).set(doc_auth_back_image_data_url)
-  end
-
-  def doc_auth_back_image_data_url
-    File.read('spec/support/fixtures/doc_auth_back_image_data_url.data')
-  end
-
-  def doc_auth_back_image_multipart_file
-    Rack::Test::UploadedFile.new('spec/support/fixtures/doc_auth_back_image.jpeg', 'image/jpeg')
-  end
-
-  def doc_auth_back_image_data_url_data
-    Base64.decode64(doc_auth_back_image_data_url.split(',').last)
-  end
-
-  def attach_selfie_image_data_url
-    page.find('#doc_auth_selfie_image_data_url', visible: false).set(doc_auth_selfie_image_data_url)
-  end
-
-  def doc_auth_selfie_image_data_url
-    File.read('spec/support/fixtures/doc_auth_selfie_image_data_url.data')
-  end
-
-  def doc_auth_selfie_image_multipart_file
-    Rack::Test::UploadedFile.new('spec/support/fixtures/doc_auth_selfie_image.jpeg', 'image/jpeg')
-  end
-
-  def doc_auth_selfie_image_data_url_data
-    Base64.decode64(doc_auth_selfie_image_data_url.split(',').last)
-  end
-
-  def attach_image
-    attach_file 'doc_auth_image', 'app/assets/images/logo.png'
-  end
-
-  def attach_image_data_url
-    page.find('#doc_auth_image_data_url', visible: false).set(doc_auth_image_data_url)
-  end
-
-  def doc_auth_image_data_url
-    File.read('spec/support/fixtures/doc_auth_image_data_url.data')
-  end
-
-  def doc_auth_image_data_url_data
-    Base64.decode64(doc_auth_image_data_url.split(',').last)
   end
 
   def fill_out_address_form_ok

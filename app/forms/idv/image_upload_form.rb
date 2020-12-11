@@ -2,11 +2,11 @@ module Idv
   class ImageUploadForm
     include ActiveModel::Model
 
-    ATTRIBUTES = %i[image image_data_url].freeze
+    ATTRIBUTES = %i[image].freeze
 
-    attr_accessor :image, :image_data_url
+    attr_accessor :image
 
-    validate :image_or_image_data_url_presence
+    validates :image, presence: true
 
     def self.model_name
       ActiveModel::Name.new(self, nil, 'Image')
@@ -22,11 +22,6 @@ module Idv
 
     def extra_analytics_attributes
       { is_fallback_link: image.present? }
-    end
-
-    def image_or_image_data_url_presence
-      return if image.present? || image_data_url.present?
-      errors.add(:image, :blank)
     end
 
     def consume_params(params)

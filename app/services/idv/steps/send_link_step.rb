@@ -10,12 +10,11 @@ module Idv
       private
 
       def send_link
-        capture_doc = CaptureDoc::CreateRequest.call(user_id, sp_session)
         session_uuid = flow_session[:document_capture_session_uuid]
         update_document_capture_session_requested_at(session_uuid)
         Telephony.send_doc_auth_link(
           to: formatted_destination_phone,
-          link: link(capture_doc.request_token, session_uuid),
+          link: link(session_uuid),
         )
       end
 
@@ -29,7 +28,6 @@ module Idv
       end
 
       def update_document_capture_session_requested_at(session_uuid)
-        return unless FeatureManagement.document_capture_step_enabled?
         document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
         return unless document_capture_session
         document_capture_session.update!(
@@ -39,12 +37,8 @@ module Idv
         )
       end
 
-      def link(token, session_uuid)
-        if FeatureManagement.document_capture_step_enabled?
-          idv_capture_doc_dashes_url('document-capture-session': session_uuid)
-        else
-          idv_capture_doc_dashes_url(token: token)
-        end
+      def link(session_uuid)
+        idv_capture_doc_dashes_url('document-capture-session': session_uuid)
       end
 
       def throttled_else_increment

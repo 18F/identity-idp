@@ -16,21 +16,14 @@ module RecoveryHelper
     click_on t('recover.buttons.continue')
   end
 
-  def complete_recovery_steps_before_front_image_step(user = user_with_2fa)
+  def complete_recovery_steps_before_document_capture_step(user = user_with_2fa)
     complete_recovery_steps_before_upload_step(user)
     click_on t('doc_auth.info.upload_computer_link')
   end
 
-  def complete_recovery_steps_before_back_image_step(user = user_with_2fa)
-    complete_recovery_steps_before_front_image_step(user)
-    attach_image
-    click_idv_continue
-  end
-
   def complete_recovery_steps_before_ssn_step(user = user_with_2fa)
-    complete_recovery_steps_before_back_image_step(user)
-    attach_image
-    click_idv_continue
+    complete_recovery_steps_before_document_capture_step(user)
+    attach_and_submit_images
   end
 
   def complete_recovery_steps_before_verify_step(user = user_with_2fa)
@@ -51,12 +44,8 @@ module RecoveryHelper
     idv_recovery_step_path(step: :upload)
   end
 
-  def idv_recovery_front_image_step
-    idv_recovery_step_path(step: :front_image)
-  end
-
-  def idv_recovery_back_image_step
-    idv_recovery_step_path(step: :back_image)
+  def idv_recovery_document_capture_step
+    idv_recovery_step_path(step: :document_capture)
   end
 
   def idv_recovery_ssn_step

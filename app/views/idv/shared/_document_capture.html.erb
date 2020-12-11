@@ -57,6 +57,8 @@
       <li><%= t('doc_auth.tips.document_capture_id_text4') %></li>
     </ul>
 
+    <%= f.input :empty_input, as: :hidden %>
+
     <div class="front-image mt2">
       <p>
         <strong>
@@ -65,7 +67,6 @@
         <%= t('doc_auth.tips.document_capture_hint') %>
       </p>
 
-      <%= f.input :front_image_data_url, as: :hidden %>
       <%= f.input :front_image, label: false, as: :file, required: true, aria: { invalid: false } %>
     </div>
 
@@ -79,7 +80,6 @@
         <%= t('doc_auth.tips.document_capture_hint') %>
       </p>
 
-      <%= f.input :back_image_data_url, as: :hidden %>
       <%= f.input :back_image, label: false, as: :file, required: true, aria: { invalid: false } %>
     </div>
 
@@ -103,7 +103,6 @@
           <%= t('doc_auth.tips.document_capture_hint') %>
         </p>
 
-        <%= f.input :selfie_image_data_url, as: :hidden %>
         <%= f.input :selfie_image, label: false, as: :file, required: true, aria: { invalid: false } %>
       </div>
     <% end %>

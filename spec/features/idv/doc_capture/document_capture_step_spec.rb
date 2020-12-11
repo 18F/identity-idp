@@ -11,7 +11,6 @@ feature 'doc capture document capture step' do
   let(:sp_requests_ial2_strict) { true }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
-    allow(AppConfig.env).to receive(:document_capture_step_enabled).and_return('true')
     allow(AppConfig.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(LoginGov::Hostdata::EC2).to receive(:load).
@@ -32,17 +31,11 @@ feature 'doc capture document capture step' do
       let(:sp_requests_ial2_strict) { false }
 
       it 'does not require selfie' do
-        attach_front_image_data_url
-        attach_back_image_data_url
+        attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
+        attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
         click_idv_continue
 
         expect(page).to have_current_path(next_step)
-        expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_front_image).to eq(
-          doc_auth_front_image_data_url_data,
-        )
-        expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
-          doc_auth_back_image_data_url_data,
-        )
         expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
       end
 
@@ -109,24 +102,6 @@ feature 'doc capture document capture step' do
         step: 'document_capture',
         result: 'Passed',
         billed: true,
-      )
-    end
-
-    it 'allows the use of a base64 encoded data url representation of the image' do
-      attach_front_image_data_url
-      attach_back_image_data_url
-      attach_selfie_image_data_url
-      click_idv_continue
-
-      expect(page).to have_current_path(next_step)
-      expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_front_image).to eq(
-        doc_auth_front_image_data_url_data,
-      )
-      expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
-        doc_auth_back_image_data_url_data,
-      )
-      expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to eq(
-        doc_auth_selfie_image_data_url_data,
       )
     end
 
@@ -213,21 +188,6 @@ feature 'doc capture document capture step' do
       attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
-    end
-
-    it 'allows the use of a base64 encoded data url representation of the image' do
-      attach_front_image_data_url
-      attach_back_image_data_url
-      click_idv_continue
-
-      expect(page).to have_current_path(next_step)
-      expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_front_image).to eq(
-        doc_auth_front_image_data_url_data,
-      )
-      expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
-        doc_auth_back_image_data_url_data,
-      )
-      expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do

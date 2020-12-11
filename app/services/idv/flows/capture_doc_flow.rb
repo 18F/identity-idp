@@ -2,9 +2,6 @@ module Idv
   module Flows
     class CaptureDocFlow < Flow::BaseFlow
       STEPS = {
-        mobile_front_image: Idv::Steps::MobileFrontImageStep,
-        capture_mobile_back_image: Idv::Steps::CaptureMobileBackImageStep,
-        selfie: Idv::Steps::SelfieStep,
         document_capture: Idv::Steps::DocumentCaptureStep,
         capture_complete: Idv::Steps::CaptureCompleteStep,
       }.freeze

@@ -23,107 +23,52 @@ describe Idv::CaptureDocController do
   end
 
   describe '#index' do
-    context 'document capture step disabled' do
-      token = nil
-      before do
-        allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
-        capture_doc = CaptureDoc::CreateRequest.call(user.id, {})
-        token = capture_doc.request_token
-      end
+    session_uuid = nil
+    before do
+      document_capture_session = DocumentCaptureSession.create!(requested_at: Time.zone.now)
+      session_uuid = document_capture_session.uuid
+    end
 
-      context 'with no token' do
-        it 'redirects to the root url' do
-          get :index
+    context 'with no session' do
+      it 'redirects to the root url' do
+        get :index
 
-          expect(response).to redirect_to root_url
-        end
-      end
-
-      context 'with a bad token' do
-        it 'redirects to the root url' do
-          get :index, params: { token: 'foo' }
-
-          expect(response).to redirect_to root_url
-        end
-      end
-
-      context 'with an expired token' do
-        it 'redirects to the root url' do
-          Timecop.travel(Time.zone.now + 1.day) do
-            get :index, params: { token: token }
-          end
-
-          expect(response).to redirect_to root_url
-        end
-      end
-
-      context 'with a good token' do
-        it 'redirects to the first step' do
-          get :index, params: { token: token }
-
-          expect(response).to redirect_to idv_capture_doc_step_url(step: :mobile_front_image)
-        end
-      end
-
-      context 'with a user id in session and no token' do
-        it 'redirects to the first step' do
-          mock_session(user.id)
-          get :index
-
-          expect(response).to redirect_to idv_capture_doc_step_url(step: :mobile_front_image)
-        end
+        expect(response).to redirect_to root_url
       end
     end
 
-    context 'document capture step enabled' do
-      session_uuid = nil
-      before do
-        allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(true)
-        document_capture_session = DocumentCaptureSession.create!(requested_at: Time.zone.now)
-        session_uuid = document_capture_session.uuid
+    context 'with a bad session' do
+      it 'redirects to the root url' do
+        get :index, params: { 'document-capture-session': 'foo' }
+
+        expect(response).to redirect_to root_url
       end
+    end
 
-      context 'with no session' do
-        it 'redirects to the root url' do
-          get :index
-
-          expect(response).to redirect_to root_url
-        end
-      end
-
-      context 'with a bad session' do
-        it 'redirects to the root url' do
-          get :index, params: { 'document-capture-session': 'foo' }
-
-          expect(response).to redirect_to root_url
-        end
-      end
-
-      context 'with an expired token' do
-        it 'redirects to the root url' do
-          Timecop.travel(Time.zone.now + 1.day) do
-            get :index, params: { 'document-capture-session': session_uuid }
-          end
-
-          expect(response).to redirect_to root_url
-        end
-      end
-
-      context 'with a good session uuid' do
-        it 'redirects to the first step' do
+    context 'with an expired token' do
+      it 'redirects to the root url' do
+        Timecop.travel(Time.zone.now + 1.day) do
           get :index, params: { 'document-capture-session': session_uuid }
-
-          expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
         end
+
+        expect(response).to redirect_to root_url
       end
+    end
 
-      context 'with a user id in session and no session uuid' do
-        it 'redirects to the first step' do
-          mock_session(user.id)
-          get :index
+    context 'with a good session uuid' do
+      it 'redirects to the first step' do
+        get :index, params: { 'document-capture-session': session_uuid }
 
-          expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
-        end
+        expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
+      end
+    end
+
+    context 'with a user id in session and no session uuid' do
+      it 'redirects to the first step' do
+        mock_session(user.id)
+        get :index
+
+        expect(response).to redirect_to idv_capture_doc_step_url(step: :document_capture)
       end
     end
   end
