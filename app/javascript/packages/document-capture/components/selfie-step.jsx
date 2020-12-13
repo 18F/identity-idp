@@ -14,7 +14,7 @@ import withBackgroundEncryptedUpload from '../higher-order/with-background-encry
  */
 
 /**
- * @return {Boolean} whether or not the value is valid for the document step
+ * @return {Boolean} whether or not the value is valid for the selfie step
  */
 function selfieStepValidator(value = {}) {
   return !!value.selfie;
