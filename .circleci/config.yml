@@ -212,6 +212,22 @@ jobs:
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
+  smoketest-dev-test:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    environment:
+      MONITOR_ENV: DEV
+    steps:
+      - jq/install
+      - checkout
+      - bundle-yarn-install
+      - run:
+          name: "Smoke tests"
+          command: |
+            bin/smoke_test --remote --no-source-env
+      - store_artifacts:
+          path: tmp/results
+          destination: results
   smoketest-int:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -260,6 +276,7 @@ workflows:
     jobs:
       - build
       - lints
+      - smoketest-dev-test
       - build-release-container:
           requires:
             - build

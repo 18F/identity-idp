@@ -26,7 +26,18 @@ module MonitorIdvSteps
       click_on 'Submit'
     end
 
-    expect(page).to have_current_path('/verify/doc_auth/ssn', wait: 60)
+    begin
+      expect(page).to have_current_path('/verify/doc_auth/ssn', wait: 60)
+    rescue => e
+      puts "==== DEBUG HTML ==="
+      puts page.html
+      puts "==== DEBUG HTML ==="
+
+      File.open(Rails.root.join("tmp/results/#{__method__}:#{__LINE__}.html"), 'w') { |f| f.puts page.html }
+      page.save_screenshot(Rails.root.join("tmp/results/#{__method__}:#{__LINE__}.png"))
+
+      raise e
+    end
 
     fill_in 'doc_auth_ssn', with: format('%09d', SecureRandom.random_number(1e9))
     click_on 'Continue'
