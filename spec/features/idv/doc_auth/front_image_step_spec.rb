@@ -7,7 +7,9 @@ feature 'doc auth front image step' do
 
   let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
+
   before do
+    allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_front_image_step
   end

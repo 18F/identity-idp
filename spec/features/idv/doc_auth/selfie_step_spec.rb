@@ -5,9 +5,10 @@ feature 'doc auth self image step' do
   include DocAuthHelper
 
   before do
+    allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
     allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
     @user = sign_in_and_2fa_user
-    complete_doc_auth_steps_before_ssn_step
+    complete_doc_auth_steps_before_selfie_image_step
   end
 
   let(:fake_analytics) { FakeAnalytics.new }

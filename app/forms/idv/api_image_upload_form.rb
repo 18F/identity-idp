@@ -91,7 +91,6 @@ module Idv
 
     def as_readable(image_key)
       return @readable[image_key] if @readable.key?(image_key)
-
       value = params[image_key]
       @readable[image_key] = begin
         if value.respond_to?(:read)

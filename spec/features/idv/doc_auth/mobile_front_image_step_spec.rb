@@ -5,6 +5,7 @@ feature 'doc auth mobile front image step' do
   include DocAuthHelper
 
   before do
+    allow(FeatureManagement).to receive(:document_capture_step_enabled?).and_return(false)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_mobile_front_image_step
   end
