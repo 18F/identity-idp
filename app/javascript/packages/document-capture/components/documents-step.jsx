@@ -70,6 +70,6 @@ function DocumentsStep({
   );
 }
 
-const DocumentsStepWithBackgroundUpload = withBackgroundEncryptedUpload(DocumentsStep);
+export default withBackgroundEncryptedUpload(DocumentsStep);
 
-export { DocumentsStepWithBackgroundUpload as DocumentsStep, documentsStepValidator };
+export { documentsStepValidator };
