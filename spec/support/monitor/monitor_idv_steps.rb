@@ -28,7 +28,7 @@ module MonitorIdvSteps
 
     begin
       expect(page).to have_current_path('/verify/doc_auth/ssn', wait: 60)
-    rescue => e
+    rescue Exception => e
       puts "==== DEBUG HTML ==="
       puts page.html
       puts "==== DEBUG HTML ==="
