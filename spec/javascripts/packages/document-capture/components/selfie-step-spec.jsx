@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
 import { AcuantContextProvider } from '@18f/identity-document-capture';
-import { SelfieStep } from '@18f/identity-document-capture/components/selfie-step';
+import SelfieStep from '@18f/identity-document-capture/components/selfie-step';
 import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/components/selfie-step', () => {
