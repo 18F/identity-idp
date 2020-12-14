@@ -87,6 +87,7 @@ class Analytics
   CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
   CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
+  DOC_AUTH_ASYNC = 'Doc Auth Async'.freeze
   IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'.freeze

@@ -66,7 +66,7 @@ module Idv
 
       def async_state
         if document_capture_session.nil?
-          @flow.analytics.track_event(Analytics::DOC_AUTH,
+          @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC,
                                       error: 'failed to load document_capture_session',
                                       uuid: flow_session[verify_document_capture_session_uuid_key],
                                      )
@@ -75,7 +75,7 @@ module Idv
 
         proofing_job_result = document_capture_session.load_doc_auth_async_result
         if proofing_job_result.nil?
-          @flow.analytics.track_event(Analytics::DOC_AUTH,
+          @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC,
                                       error: 'failed to load async result',
                                       uuid: document_capture_session.uuid,
                                       result_id: document_capture_session.result_id,
