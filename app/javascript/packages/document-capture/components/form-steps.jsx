@@ -46,7 +46,7 @@ import useForceRender from '../hooks/use-force-render';
  * @prop {string} title Step title, shown as heading.
  * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} form Step form component.
  * @prop {import('react').FC=} footer Optional step footer component.
- * @prop {(Object)=>boolean=} validator Optional function to validate values for the step
+ * @prop {(object)=>boolean=} validator Optional function to validate values for the step
  */
 
 /**
