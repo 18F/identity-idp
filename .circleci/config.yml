@@ -233,7 +233,9 @@ jobs:
     environment:
       MONITOR_ENV: STAGING
     steps:
-      - checkout
+      - jq/install
+      - checkout-deployed-sha:
+          sha_url: https://idp.staging.login.gov/api/deploy.json
       - bundle-yarn-install
       - run:
           name: "Smoke tests"
@@ -302,7 +304,7 @@ workflows:
           filters:
             branches:
               only:
-                - stages/staging
+                - master
     jobs:
       - smoketest-staging
 
