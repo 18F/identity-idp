@@ -37,7 +37,7 @@ feature 'Doc Auth Funnel report' do
       'document_capture_error_count_average' => 0.0,
       'document_capture_submit_count_average' => 1.0,
       'document_capture_view_count_average' => 1.0,
-      'document_capture_view_percent' => 1.0,
+      'document_capture_view_percent' => 100.0,
       'email_sent_view_count_average' => 0.0,
       'email_sent_view_percent' => 0.0,
       'encrypt_view_count_average' => 0.0,
