@@ -44,9 +44,12 @@ feature 'doc auth link sent step' do
   end
 
   it 'does not proceed to the next page if the document cannot be verified' do
-    mock_doc_captured(user.id)
+    response = IdentityDocAuth::Response.new(
+      success: false,
+      errors: { error: I18n.t('errors.doc_auth.general_error') },
+    )
 
-    mock_general_doc_auth_client_error(:get_results)
+    mock_doc_captured(user.id, response)
 
     click_idv_continue
 

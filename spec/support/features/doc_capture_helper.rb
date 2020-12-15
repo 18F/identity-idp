@@ -57,9 +57,8 @@ module DocCaptureHelper
     idv_capture_doc_step_path(step: :selfie)
   end
 
-  def mock_doc_captured(user_id)
+  def mock_doc_captured(user_id, response = IdentityDocAuth::Response.new(success: true))
     user = User.find(user_id)
-    response = IdentityDocAuth::Response.new(success: true)
     user.document_capture_sessions.last.store_result_from_response(response)
   end
 end

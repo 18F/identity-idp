@@ -13,7 +13,7 @@ describe Idv::CaptureDocStatusController do
 
     before do
       allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(flow_session)
-      controller.user_session['idv/doc_auth'] = flow_session
+      controller.user_session['idv/doc_auth'] = flow_session if user
     end
 
     context 'when unauthenticated' do
