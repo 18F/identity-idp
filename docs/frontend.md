@@ -38,7 +38,7 @@ disabled to err toward Prettier conventions when an option is not configurable.
 
 Prettier is integrated with [the project's linting setup](#eslint). Most issues
 can be resolved automatically by running `yarn run lint --fix`. You may also
-consider one of the [avaialable editor integrations](https://prettier.io/docs/en/editors.html),
+consider one of the [available editor integrations](https://prettier.io/docs/en/editors.html),
 which can simplify your workflow to apply formatting automatically on save.
 
 ### Dependencies

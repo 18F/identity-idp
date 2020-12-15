@@ -20,6 +20,13 @@ import withBackgroundEncryptedUpload from '../higher-order/with-background-encry
 const DOCUMENT_SIDES = ['front', 'back'];
 
 /**
+ * @return {Boolean} whether or not the value is valid for the document step
+ */
+function documentsStepValidator(value = {}) {
+  return DOCUMENT_SIDES.every((side) => !!value[side]);
+}
+
+/**
  * @param {import('./form-steps').FormStepComponentProps<DocumentsStepValue>} props Props object.
  */
 function DocumentsStep({
@@ -64,3 +71,5 @@ function DocumentsStep({
 }
 
 export default withBackgroundEncryptedUpload(DocumentsStep);
+
+export { documentsStepValidator };

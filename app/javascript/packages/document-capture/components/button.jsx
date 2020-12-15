@@ -13,6 +13,8 @@
  * @prop {boolean=}                 isDisabled  Whether button is disabled.
  * @prop {boolean=}                 isUnstyled  Whether button should be unstyled, visually as a
  *                                              link.
+ * @prop {boolean=}                 isVisuallyDisabled Whether button should appear disabled (but
+ *                                                     remain clickable).
  * @prop {string=}                  className   Optional additional class names.
  */
 
@@ -27,6 +29,7 @@ function Button({
   isSecondary,
   isDisabled,
   isUnstyled,
+  isVisuallyDisabled,
   className,
 }) {
   const classes = [
@@ -34,6 +37,7 @@ function Button({
     isPrimary && 'btn-primary btn-wide',
     isSecondary && 'btn-secondary',
     isUnstyled && 'btn-link',
+    isVisuallyDisabled && 'btn-disabled',
     className,
   ]
     .filter(Boolean)
