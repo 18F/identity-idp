@@ -2,7 +2,6 @@ module Idv
   module Steps
     class UploadStep < DocAuthBaseStep
       def call
-
         if params[:type] == 'desktop'
           handle_desktop_selection
         else

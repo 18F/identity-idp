@@ -7,9 +7,6 @@ feature 'doc auth send link step' do
   before do
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_send_link_step
-    allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(
-      document_capture_session_uuid: document_capture_session.uuid,
-    )
   end
 
   let(:idv_send_link_max_attempts) { AppConfig.env.idv_send_link_max_attempts.to_i }
@@ -92,6 +89,10 @@ feature 'doc auth send link step' do
   end
 
   it 'includes expected URL parameters' do
+    allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(
+      document_capture_session_uuid: document_capture_session.uuid,
+    )
+
     expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       params = Rack::Utils.parse_nested_query URI(config[:link]).query
       expect(params).to eq('document-capture-session' => document_capture_session.uuid)
@@ -104,6 +105,10 @@ feature 'doc auth send link step' do
   end
 
   it 'sets requested_at on the capture session' do
+    allow_any_instance_of(Flow::BaseFlow).to receive(:flow_session).and_return(
+      document_capture_session_uuid: document_capture_session.uuid,
+    )
+
     fill_in :doc_auth_phone, with: '415-555-0199'
     click_idv_continue
 
