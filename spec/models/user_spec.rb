@@ -284,6 +284,14 @@ describe User do
     end
   end
 
+  describe '#generate_totp_secret' do
+    it 'generates a secret 16 characters long' do
+      user = build(:user)
+      secret = user.generate_totp_secret
+      expect(secret.length).to eq 16
+    end
+  end
+
   context 'when a user has multiple phone_configurations' do
     before do
       @user = create(:user, email: 'test1@test.com')
