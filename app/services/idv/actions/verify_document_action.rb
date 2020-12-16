@@ -35,6 +35,15 @@ module Idv
         document_capture_session.requested_at = Time.zone.now
         document_capture_session.create_doc_auth_session
 
+        @flow.analytics.track_event(
+          Analytics::DOC_AUTH_ASYNC,
+          info: 'creating document capture session',
+          id: document_capture_session.id,
+          uuid: document_capture_session.uuid,
+          result_id: document_capture_session.result_id,
+          flow_session_key: flow_session[verify_document_capture_session_uuid_key],
+        )
+
         callback_url = Rails.application.routes.url_helpers.document_proof_result_url(
           result_id: document_capture_session.result_id,
         )
@@ -54,15 +63,15 @@ module Idv
             trace_id: amzn_trace_id,
           },
         ).run do |doc_auth_result|
-          document_result = doc_auth_result.to_h.fetch(:document_result, {})
-          dcs = DocumentCaptureSession.new(result_id: document_capture_session.result_id)
-          dcs.store_doc_auth_result(
-            result: document_result.except(:pii_from_doc),
-            pii: document_result[:pii_from_doc],
-          )
+            document_result = doc_auth_result.to_h.fetch(:document_result, {})
+            dcs = DocumentCaptureSession.new(result_id: document_capture_session.result_id)
+            dcs.store_doc_auth_result(
+              result: document_result.except(:pii_from_doc),
+              pii: document_result[:pii_from_doc],
+            )
 
-          nil
-        end
+            nil
+          end
       end
     end
   end
