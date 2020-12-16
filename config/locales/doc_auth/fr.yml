@@ -173,6 +173,7 @@ fr:
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       use_cac: Avez-vous une carte d'identité d'employé du gouvernement?
       use_cac_link: Utilisez plutôt une PIV/CAC
+      verifying: Vérification…
       welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
         et non quelqu'un prétendant être vous. La vérification de votre identité vous
         permet d'accéder à des services traitant des informations sensibles.
