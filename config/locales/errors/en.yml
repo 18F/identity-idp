@@ -51,18 +51,6 @@ en:
       general_error: We could not read or verify your ID. Try to take and upload new
         images of both the front and back of your ID. Make sure everything can be
         easily read, including the barcode.
-      general_info: |-
-        <div class="bold">If you are using a camera please ensure</div>
-        <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
-        <li class="mxn3">You are in a well-lit area</li>
-        <li class="mxn3">Your ID does not have any damaged barcodes</li>
-        <li class="mxn3">The ID represents 80% of the overall image</li>
-        <li class="mxn3">Images are clear (not blurry) and in focus</li>
-        <li class="mxn3">No glare, shadow, or reflection is present</li>
-        <li class="mxn3">The ID stands out from the background</li>
-        <li class="mxn3">The background behind your ID is a solid color</li>
-        <li class="mxn3">Background is visible behind the document</li>
-        </ul>
       invalid_file_input_type: This file type is not accepted, please choose a JPG,
         PNG, BMP, or TIFF file.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
