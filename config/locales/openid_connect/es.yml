@@ -28,8 +28,8 @@ es:
         invalid_code: no es válido porque ha caducado o no coincide con ningún usuario.
           Consulte nuestra documentación en https://developers.login.gov/oidc/#token
         invalid_code_verifier: code_verifier no coincide con code_challenge
-        invalid_iat: iat debe ser una marca de tiempo entera de Unix que represente
-          un tiempo en el pasado
+        invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o entero
+          que represente un tiempo en el pasado
     user_info:
       errors:
         malformed_authorization: Título de autorización mal formado
