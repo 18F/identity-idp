@@ -15,7 +15,7 @@ module UserOtpMethods
   end
 
   def generate_totp_secret
-    ROTP::Base32.random_base32
+    ROTP::Base32.random_base32(16)
   end
 
   def authenticate_direct_otp(code)

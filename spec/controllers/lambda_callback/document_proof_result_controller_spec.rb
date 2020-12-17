@@ -19,7 +19,7 @@ describe LambdaCallback::DocumentProofResultController do
     context 'with valid API token' do
       before do
         request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.document_proof_result_lambda_token
-        document_capture_session.store_proofing_pii_from_doc({}) # generates a result_id
+        document_capture_session.create_doc_auth_session
       end
 
       it 'accepts and stores pii and successful document proofing results' do
@@ -32,7 +32,7 @@ describe LambdaCallback::DocumentProofResultController do
           },
         }, as: :json
 
-        proofing_result = document_capture_session.load_proofing_result
+        proofing_result = document_capture_session.load_doc_auth_async_result
         expect(proofing_result.result).to include(
           exception: '',
           success: true,
@@ -44,7 +44,7 @@ describe LambdaCallback::DocumentProofResultController do
         post :create, params: { result_id: document_capture_session.result_id,
                                 document_result: { success: false, exception: '' } }
 
-        proofing_result = document_capture_session.load_proofing_result
+        proofing_result = document_capture_session.load_doc_auth_async_result
         expect(proofing_result.result[:success]).to eq 'false'
       end
 
@@ -53,8 +53,35 @@ describe LambdaCallback::DocumentProofResultController do
                                 document_result: { success: false,
                                                    exception: '#<Proofer::TimeoutError: ' } }
 
-        proofing_result = document_capture_session.load_proofing_result
+        proofing_result = document_capture_session.load_doc_auth_async_result
         expect(proofing_result.result[:exception]).to start_with('#<Proofer::TimeoutError: ')
+      end
+    end
+
+    context 'with invalid result_id' do
+      before do
+        request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.document_proof_result_lambda_token
+      end
+
+      it 'returns 404' do
+        post :create, params: {
+          result_id: '0000',
+          document_result: {
+          },
+        }, as: :json
+
+        expect(response.status).to eq 404
+      end
+
+      it 'sends exception to new relic' do
+        expect(NewRelic::Agent).to receive(:notice_error).with(
+          'DocumentProofResult result_id not found',
+        )
+
+        post :create, params: {
+          result_id: '0000',
+          document_result: {},
+        }, as: :json
       end
     end
 

@@ -15,7 +15,7 @@ module Idv
 
         form_response = form.submit
 
-        if current_async_state.status == :done
+        if current_async_state.done?
           process_result(current_async_state.result)
 
           if form_response.success?
@@ -29,7 +29,7 @@ module Idv
           form_response: form_response,
         )
 
-        status = :accepted if current_async_state.status == :in_progress
+        status = :accepted if current_async_state.in_progress?
 
         render_json(
           presenter,
@@ -39,7 +39,7 @@ module Idv
         form_response
       end
 
-      # @param [ProofingDocumentCaptureSessionResult] async_result
+      # @param [ProofingSessionAsyncResult] async_result
       def async_state_done(async_result)
         doc_pii_form_result = Idv::DocPiiForm.new(async_result.pii).submit
 
@@ -65,21 +65,30 @@ module Idv
       end
 
       def async_state
-        return timed_out if document_capture_session.nil?
-
-        proofing_job_result = document_capture_session.load_proofing_result
-        return timed_out if proofing_job_result.nil?
-
-        if proofing_job_result.result
-          proofing_job_result.done
-        elsif proofing_job_result.pii
-          ProofingDocumentCaptureSessionResult.in_progress
+        if document_capture_session.nil?
+          @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC,
+                                      error: 'failed to load document_capture_session',
+                                      uuid: flow_session[verify_document_capture_session_uuid_key],
+                                     )
+          return timed_out
         end
+
+        proofing_job_result = document_capture_session.load_doc_auth_async_result
+        if proofing_job_result.nil?
+          @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC,
+                                      error: 'failed to load async result',
+                                      uuid: document_capture_session.uuid,
+                                      result_id: document_capture_session.result_id,
+                                     )
+          return timed_out
+        end
+
+        proofing_job_result
       end
 
       def timed_out
         delete_async
-        ProofingDocumentCaptureSessionResult.timed_out
+        DocumentCaptureSessionAsyncResult.timed_out
       end
 
       def delete_async

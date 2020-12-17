@@ -7,6 +7,7 @@ module Idv
 
     def submit(step_params)
       self.step_params = step_params
+      idv_session.previous_phone_step_params = step_params.slice(:phone)
       proof_address
     end
 
@@ -20,26 +21,21 @@ module Idv
     def async_state
       dcs_uuid = idv_session.idv_phone_step_document_capture_session_uuid
       dcs = DocumentCaptureSession.find_by(uuid: dcs_uuid)
-      return ProofingDocumentCaptureSessionResult.none if dcs_uuid.nil?
+      return ProofingSessionAsyncResult.none if dcs_uuid.nil?
       return timed_out if dcs.nil?
 
       proofing_job_result = dcs.load_proofing_result
       return timed_out if proofing_job_result.nil?
 
-      if proofing_job_result.result
-        proofing_job_result.done
-      elsif proofing_job_result.pii
-        ProofingDocumentCaptureSessionResult.in_progress
-      end
+      proofing_job_result
     end
 
     def async_state_done(async_state)
       @idv_result = async_state.result
-      pii = async_state.pii
 
       increment_attempts_count unless failed_due_to_timeout_or_exception?
       success = idv_result[:success]
-      handle_successful_proofing_attempt(pii) if success
+      handle_successful_proofing_attempt if success
       delete_async
       FormResponse.new(
         success: success, errors: idv_result[:errors],
@@ -61,16 +57,16 @@ module Idv
       document_capture_session = DocumentCaptureSession.create(user_id: idv_session.current_user.id,
                                                                requested_at: Time.zone.now)
 
-      document_capture_session.store_proofing_pii_from_doc(applicant)
+      document_capture_session.create_proofing_session
       idv_session.idv_phone_step_document_capture_session_uuid = document_capture_session.uuid
 
       run_job(document_capture_session)
       add_proofing_cost
     end
 
-    def handle_successful_proofing_attempt(successful_applicant)
-      update_idv_session(successful_applicant)
-      start_phone_confirmation_session(successful_applicant)
+    def handle_successful_proofing_attempt
+      update_idv_session
+      start_phone_confirmation_session
     end
 
     def add_proofing_cost
@@ -97,9 +93,10 @@ module Idv
     end
 
     def phone_param
-      step_phone = step_params[:phone]
+      params = step_params || idv_session.previous_phone_step_params
+      step_phone = params[:phone]
       if step_phone == 'other'
-        step_params[:other_phone]
+        params[:other_phone]
       else
         step_phone
       end
@@ -113,24 +110,24 @@ module Idv
       idv_result[:timed_out] || idv_result[:exception]
     end
 
-    def update_idv_session(successful_applicant)
+    def update_idv_session
       idv_session.address_verification_mechanism = :phone
-      idv_session.applicant = successful_applicant
+      idv_session.applicant = applicant
       idv_session.vendor_phone_confirmation = true
-      idv_session.user_phone_confirmation = phone_matches_user_phone?(successful_applicant[:phone])
+      idv_session.user_phone_confirmation = phone_matches_user_phone?
       Db::ProofingComponent::Add.call(idv_session.current_user.id, :address_check,
                                       'lexis_nexis_address')
     end
 
-    def start_phone_confirmation_session(successful_applicant)
+    def start_phone_confirmation_session
       idv_session.user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.start(
-        phone: PhoneFormatter.format(successful_applicant[:phone]),
+        phone: PhoneFormatter.format(applicant[:phone]),
         delivery_method: :sms,
       )
     end
 
-    def phone_matches_user_phone?(phone)
-      applicant_phone = PhoneFormatter.format(phone)
+    def phone_matches_user_phone?
+      applicant_phone = PhoneFormatter.format(applicant[:phone])
       return false if applicant_phone.blank?
       user_phones.include?(applicant_phone)
     end
@@ -155,7 +152,7 @@ module Idv
 
     def timed_out
       delete_async
-      ProofingDocumentCaptureSessionResult.timed_out
+      ProofingSessionAsyncResult.timed_out
     end
 
     def delete_async

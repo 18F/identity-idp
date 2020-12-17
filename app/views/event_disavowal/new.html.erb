@@ -13,7 +13,7 @@
                 input_html: { value: @disavowal_token, name: :disavowal_token } %>
     <%= f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,
                 input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
-    <%= render 'devise/shared/password_strength' %>
+    <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
     <%= f.button :submit, t('forms.passwords.edit.buttons.submit'), class: 'mb3' %>
 <% end %>
 

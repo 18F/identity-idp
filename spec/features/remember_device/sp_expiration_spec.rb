@@ -5,7 +5,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
     user # Go through the signup flow and remember user before visiting SP
   end
 
-  context 'signing in' do
+  context "#{protocol}: signing in" do
     it "does not require MFA before #{expiration_time.inspect}" do
       Timecop.travel(expiration_time.from_now - 1.day) do
         visit_idp_from_sp_with_ial1(protocol)
@@ -31,7 +31,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
     end
   end
 
-  context 'visiting while already signed in' do
+  context "#{protocol}: visiting while already signed in" do
     it "does not require MFA before #{expiration_time.inspect}" do
       Timecop.travel(expiration_time.from_now - 1.day) do
         sign_in_user(user)

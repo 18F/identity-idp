@@ -14,7 +14,7 @@ describe LambdaCallback::ResolutionProofResultController do
         applicant = { first_name: Faker::Name.first_name, ssn: Faker::IDNumber.valid,
                       zipcode: Faker::Address.zip_code, state_id_number: '123',
                       state_id_type: 'drivers_license', state_id_jurisdiction: 'WI' }
-        document_capture_session.store_proofing_pii_from_doc(applicant)
+        document_capture_session.create_proofing_session
         Idv::Agent.new(applicant).proof_resolution(
           document_capture_session,
           should_proof_state_id: true,
@@ -32,7 +32,7 @@ describe LambdaCallback::ResolutionProofResultController do
       it 'accepts and stores unsuccessful resolution proofing results' do
         applicant = { first_name: 'Bad Name', ssn: Faker::IDNumber.valid,
                       zipcode: Faker::Address.zip_code }
-        document_capture_session.store_proofing_pii_from_doc(applicant)
+        document_capture_session.create_proofing_session
         Idv::Agent.new(applicant).proof_resolution(
           document_capture_session,
           should_proof_state_id: false,
@@ -57,7 +57,7 @@ describe LambdaCallback::ResolutionProofResultController do
         applicant = { first_name: 'Time', ssn: Faker::IDNumber.valid,
                       zipcode: Faker::Address.zip_code }
 
-        document_capture_session.store_proofing_pii_from_doc(applicant)
+        document_capture_session.create_proofing_session
         Idv::Agent.new(applicant).proof_resolution(
           document_capture_session,
           should_proof_state_id: false,

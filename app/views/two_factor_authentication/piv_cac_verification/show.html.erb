@@ -3,15 +3,15 @@
 <h1 class='h3 my0'>
   <%= @presenter.header %>
 </h1>
-<div class='no-spinner'>
-  <p class='mt-tiny mb3'>
-    <%= @presenter.piv_cac_help %>
-  </p>
 
+<p class='mt-tiny mb3'>
+  <%= @presenter.piv_cac_help %>
+</p>
+
+<%= render 'shared/spinner-button' do %>
   <%= link_to @presenter.piv_cac_capture_text,
               @presenter.piv_cac_service_link,
-              class: 'btn btn-primary activate-spinner' %>
-</div>
-<%= render 'shared/spinner' %>
+              class: 'btn btn-primary' %>
+<% end %>
 <%= render 'shared/fallback_links', presenter: @presenter %>
 <%= render 'shared/cancel', link: @presenter.cancel_link %>

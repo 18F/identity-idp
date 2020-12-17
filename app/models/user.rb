@@ -3,7 +3,6 @@ class User < ApplicationRecord
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
-  add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
 
   devise(
     :database_authenticatable,
@@ -131,4 +130,6 @@ class User < ApplicationRecord
   def send_confirmation_instructions
     # no-op
   end
+
+  add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
 end

@@ -21,6 +21,7 @@
 # available to ENV as uppercase keys.
 RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
 
+aal_authn_context_enabled: 'false'
 aamva_cert_enabled: 'true'
 aamva_sp_banlist_issuers: '[]'
 account_reset_token_valid_for_days: '1'
@@ -136,9 +137,10 @@ unauthorized_scope_enabled: 'false'
 usps_download_sftp_timeout: '5'
 usps_upload_enabled: 'false'
 usps_upload_sftp_timeout: '5'
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true"]'
 
 development:
+  aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   aamva_verification_url: https://example.org:12345/verification/url
@@ -231,6 +233,7 @@ development:
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: test
   use_dashboard_service_providers: 'true'
@@ -251,6 +254,7 @@ development:
 # includes *.identitysandbox.gov and *.login.gov.
 #
 production:
+  aal_authn_context_enabled: 'false'
   aamva_private_key:
   aamva_public_key:
   aamva_verification_url:
@@ -339,6 +343,7 @@ production:
   scrypt_cost: 10000$8$1$
   secret_key_base:
   session_encryption_key:
+  skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: pinpoint
   use_dashboard_service_providers: 'false'
@@ -356,6 +361,7 @@ production:
   usps_upload_token:
 
 test:
+  aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   aamva_verification_url: https://example.org:12345/verification/url
@@ -395,9 +401,6 @@ test:
   doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'false'
-  # Here to support legacy tests. Once we remove the code for the old steps, we
-  # should remove this config entirely and the tests that assume this is false.
-  document_capture_step_enabled: 'false'
   document_proof_result_lambda_token: test_token_document
   domain_name: www.example.com
   email_deletion_enabled: 'true'

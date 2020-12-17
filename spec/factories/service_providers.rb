@@ -22,6 +22,15 @@ FactoryBot.define do
       end
     end
 
+    trait :with_blank_help_text do
+      friendly_name { 'Test Service Provider with blank help text' }
+      help_text do
+        { 'sign_in': { en: '' },
+          'sign_up': { en: '' },
+          'forgot_password': { en: '' } }
+      end
+    end
+
     factory :service_provider_without_help_text, traits: [:without_help_text]
   end
 end

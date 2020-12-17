@@ -101,8 +101,7 @@ feature 'doc capture document capture step' do
       allow_any_instance_of(ApplicationController).
         to receive(:analytics).and_return(fake_analytics)
 
-      attach_images
-      click_idv_continue
+      attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
       expect(fake_analytics).to have_logged_event(
@@ -133,8 +132,7 @@ feature 'doc capture document capture step' do
 
     it 'does not proceed to the next page with invalid info' do
       mock_general_doc_auth_client_error(:create_document)
-      attach_images
-      click_idv_continue
+      attach_and_submit_images
 
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
     end
@@ -150,12 +148,10 @@ feature 'doc capture document capture step' do
 
       allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
-        attach_images
-        click_idv_continue
+        attach_and_submit_images
       end
 
-      attach_images
-      click_idv_continue
+      attach_and_submit_images
 
       expect(page).to have_current_path(idv_session_errors_throttled_path)
 
@@ -163,8 +159,7 @@ feature 'doc capture document capture step' do
 
       Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
         complete_doc_capture_steps_before_first_step(user)
-        attach_images
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_current_path(next_step)
       end
@@ -179,8 +174,7 @@ feature 'doc capture document capture step' do
         ),
       )
 
-      attach_images
-      click_idv_continue
+      attach_and_submit_images
 
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
       expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
@@ -216,8 +210,7 @@ feature 'doc capture document capture step' do
     end
 
     it 'proceeds to the next page with valid info' do
-      attach_images(liveness_enabled: false)
-      click_idv_continue
+      attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
     end
@@ -248,12 +241,10 @@ feature 'doc capture document capture step' do
 
       allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
-        attach_images(liveness_enabled: false)
-        click_idv_continue
+        attach_and_submit_images
       end
 
-      attach_images(liveness_enabled: false)
-      click_idv_continue
+      attach_and_submit_images
 
       expect(page).to have_current_path(idv_session_errors_throttled_path)
 
@@ -261,8 +252,7 @@ feature 'doc capture document capture step' do
 
       Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
         complete_doc_capture_steps_before_first_step(user)
-        attach_images(liveness_enabled: false)
-        click_idv_continue
+        attach_and_submit_images
 
         expect(page).to have_current_path(next_step)
       end
@@ -277,8 +267,7 @@ feature 'doc capture document capture step' do
         ),
       )
 
-      attach_images(liveness_enabled: false)
-      click_idv_continue
+      attach_and_submit_images
 
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
       expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
@@ -321,8 +310,7 @@ feature 'doc capture document capture step' do
       document_capture_session.store_result_from_response(response)
       document_capture_session.save!
 
-      attach_images(liveness_enabled: false)
-      click_idv_continue
+      attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
     end

@@ -39,13 +39,12 @@ module DocCaptureHelper
   def complete_doc_capture_steps_before_capture_complete_step(user = user_with_2fa)
     if FeatureManagement.document_capture_step_enabled?
       complete_doc_capture_steps_before_document_capture_step
-      attach_images(liveness_enabled: AppConfig.env.liveness_checking_enabled == 'true')
+      attach_and_submit_images
     else
       complete_doc_capture_steps_before_mobile_back_image_step(user)
       attach_image
+      click_idv_continue
     end
-
-    click_idv_continue
   end
 
   def idv_capture_doc_mobile_front_image_step

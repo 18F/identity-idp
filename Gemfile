@@ -5,8 +5,9 @@ ruby '~> 2.6.5'
 
 gem 'rails', '~> 6.0.0'
 
-gem 'ahoy_matey', '~> 2.2', '>= 2.2.1'
+gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
+gem 'autoprefixer-rails', '~> 10.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-lambda'
 gem 'aws-sdk-ses', '~> 1.6'
@@ -19,8 +20,8 @@ gem 'faraday'
 gem 'foundation_emails'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.1'
-gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.1'
+gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.3'
+gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.2'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
 gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.7'
@@ -36,8 +37,6 @@ gem 'pg'
 gem 'phonelib'
 gem 'premailer-rails', '>= 1.11.1'
 gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.7.0'
-gem 'pry-doc'
-gem 'pry-rails'
 gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
@@ -46,7 +45,7 @@ gem 'raise-if-root'
 gem 'readthis'
 gem 'recaptcha', require: 'recaptcha/rails'
 gem 'redis-session-store', '>= 0.11.3'
-gem 'rotp', '~> 3.3.1'
+gem 'rotp', '~> 6.1'
 gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
@@ -56,16 +55,14 @@ gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.3'
 gem 'simple_form', '>= 5.0.2'
-gem 'sinatra', '>= 2.0.7', require: false
-gem 'slim-rails', '>= 3.2.0'
 gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
-gem 'uglifier', '~> 3.2'
+gem 'uglifier', '~> 4.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
-gem 'webauthn', '~> 2.1.0'
-gem 'webpacker', '~> 5.1.1'
+gem 'webauthn', '~> 2.1'
+gem 'webpacker', '~> 5.1'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'zxcvbn-js'
 
@@ -73,9 +70,7 @@ group :development do
   gem 'better_errors', '>= 2.5.1'
   gem 'binding_of_caller'
   gem 'brakeman', require: false
-  gem 'bummr', require: false
-  gem 'derailed', '>= 0.1.0'
-  gem 'fasterer', require: false
+  gem 'derailed_benchmarks', '~> 1.8'
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'octokit'
@@ -85,18 +80,19 @@ end
 
 group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
-  gem 'bootsnap', '~> 1.4.7', require: false
+  gem 'bootsnap', '~> 1.5.0', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
   gem 'parallel_tests'
   gem 'pry-byebug'
+  gem 'pry-doc'
+  gem 'pry-rails'
   gem 'psych'
   gem 'puma'
   gem 'rspec-rails', '~> 4.0'
-  gem 'rubocop', '~> 0.91.0', require: false
+  gem 'rubocop', '~> 1.4.0', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
-  gem 'slim_lint'
 end
 
 group :test do
@@ -113,7 +109,7 @@ group :test do
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'timecop'
-  gem 'webdrivers', '~> 3.0'
+  gem 'webdrivers', '~> 4.0'
   gem 'webmock'
   gem 'zonebie'
 end

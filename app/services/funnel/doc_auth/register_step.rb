@@ -25,6 +25,7 @@ module Funnel
         present_cac
         enter_info
         success
+        document_capture
       ].freeze
       STEP_TYPE_TO_CLASS = {
         update: RegisterSubmitStep,

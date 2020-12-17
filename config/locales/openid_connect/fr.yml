@@ -29,6 +29,8 @@ fr:
           ne correspond à aucun utilisateur. Veuillez consulter notre documentation
           à https://developers.login.gov/oidc/#token
         invalid_code_verifier: code_verifier ne correspondait pas à code_challenge
+        invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante
+          représentant une heure dans le passé
     user_info:
       errors:
         malformed_authorization: Forme de l'en-tête d'autorisation non valide

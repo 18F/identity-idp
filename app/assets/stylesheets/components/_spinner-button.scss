@@ -1,0 +1,7 @@
+.spinner-button--spinner-active {
+  @include u-text('center');
+
+  .spinner-button__content {
+    @include u-display('none');
+  }
+}

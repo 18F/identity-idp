@@ -1,11 +1,16 @@
 module LambdaCallback
   class AddressProofResultController < AuthTokenController
     def create
-      dcs = DocumentCaptureSession.new
-      dcs.result_id = result_id_parameter
-      dcs.store_proofing_result(address_result_parameter.to_h)
+      dcs = DocumentCaptureSession.find_by(result_id: result_id_parameter)
 
-      track_exception_in_result(address_result_parameter)
+      if dcs
+        dcs.store_proofing_result(address_result_parameter.to_h)
+
+        track_exception_in_result(address_result_parameter)
+      else
+        NewRelic::Agent.notice_error('AddressProofResult result_id not found')
+        head :not_found
+      end
     end
 
     private

@@ -152,6 +152,7 @@ jobs:
           command: |
             mkdir /tmp/test-results
             ./cc-test-reporter before-build
+            bin/rails zeitwerk:check
 
             bundle exec rake knapsack:rspec
             yarn test
@@ -182,9 +183,8 @@ jobs:
             yarn run lint
             yarn run typecheck
             bundle exec rubocop
-            bundle exec slim-lint app/views
             make check_asset_strings
-            ./bin/webpack && yarn es5-safe
+            NODE_ENV=production ./bin/webpack && yarn es5-safe
   build-release-container:
     working_directory: ~/identity-idp
     docker:
@@ -233,7 +233,9 @@ jobs:
     environment:
       MONITOR_ENV: STAGING
     steps:
-      - checkout
+      - jq/install
+      - checkout-deployed-sha:
+          sha_url: https://idp.staging.login.gov/api/deploy.json
       - bundle-yarn-install
       - run:
           name: "Smoke tests"
@@ -302,7 +304,7 @@ workflows:
           filters:
             branches:
               only:
-                - stages/staging
+                - master
     jobs:
       - smoketest-staging
 

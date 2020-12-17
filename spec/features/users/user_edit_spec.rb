@@ -13,6 +13,7 @@ feature 'User edit' do
       fill_in 'New password', with: 'foo'
       click_button 'Update'
 
+      expect(page).to have_css '.usa-alert', text: 'Please review the problems below:'
       expect(page).
         to have_content t('errors.messages.too_short.other', count: Devise.password_length.first)
     end

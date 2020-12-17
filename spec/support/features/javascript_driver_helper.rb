@@ -1,5 +1,5 @@
 module JavascriptDriverHelper
   def javascript_enabled?
-    Capybara.current_driver == Capybara.javascript_driver
+    %i[headless_chrome headless_chrome_mobile].include?(Capybara.current_driver)
   end
 end

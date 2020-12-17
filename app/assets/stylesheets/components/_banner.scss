@@ -1,34 +1,14 @@
-.site .site-wrap .usa-banner {
-  background-color: #fff;
+.usa-banner,
+.usa-banner__button[aria-expanded='true']::before {
+  background-color: color('white');
+}
+
+.usa-banner {
   box-shadow: inset 0 -1px 0 0 #ccc;
 }
 
 .usa-banner__inner {
-  padding-left: 0;
-  padding-right: 0;
-}
-
-.usa-banner__header {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  + .usa-banner__content.usa-accordion__content {
-    position: relative;
-  }
-}
-
-@media #{$mobile} {
-  .usa-banner__header--expanded .usa-banner__inner {
-    margin-left: auto;
-  }
-}
-
-.usa-banner__button[aria-expanded="true"]::after {
-  @include at-media-max('tablet') {
-    background-color: transparent;
-    right: 0;
-    top: 100%;
-    z-index: 10;
+  @include at-media('tablet') {
+    justify-content: center;
   }
 }

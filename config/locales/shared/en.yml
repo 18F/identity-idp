@@ -2,15 +2,15 @@
 en:
   shared:
     banner:
-      fake_site: A DEMO website of the United States government.
-      gov_description: Federal government websites often end in .gov or .mil. Before
-        sharing sensitive information, make sure you’re on a federal government site.
-      gov_heading: The .gov means it’s official.
+      fake_site: A DEMO website of the United States government
+      gov_description_html: A <strong>.gov</strong> website belongs to an official
+        government organization in the United States.
+      gov_heading: Official websites use .gov
       how: Here’s how you know
-      official_site: An official website of the United States government.
-      secure_description_html: The <strong>https://</strong> ensures that you are
-        connecting to the official website and that any information you provide is
-        encrypted and transmitted securely.
-      secure_heading: The site is secure.
+      official_site: An official website of the United States government
+      secure_description_html: A <strong>lock</strong> (%{lock_icon}) or <strong>https://</strong>
+        means you’ve safely connected to the .gov website. Share sensitive information
+        only on official, secure websites.
+      secure_heading: Secure .gov websites use HTTPS
     footer_lite:
       gsa: US General Services Administration

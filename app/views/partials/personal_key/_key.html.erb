@@ -1,0 +1,19 @@
+<div class="bg-light-blue bg-personal-key">
+  <p class="bold center mt1 pt1 fs-20p">
+    <%= t('users.personal_key.header') %>
+  </p>
+  <div class="mt4 mb4 px0 sm-px1 py2 center bg-white bw2 separator-text bg-pk-box">
+    <%- code.split('-').each do |word|
+      -%><div class="inline fs-20p bold navy"
+        ><code class="monospace" data-personal-key="word"
+          ><%= word
+        %></code
+      ></div
+    ><%- end -%>
+  </div>
+
+  <div class="center h5 mt5 mb1 pt1 pb2 fs-12p">
+    <%= t('users.personal_key.generated_on_html',
+          date: content_tag(:strong, I18n.l(Time.zone.today, format: '%B %d, %Y'))) %>
+  </div>
+</div>

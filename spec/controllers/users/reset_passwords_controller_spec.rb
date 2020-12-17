@@ -139,6 +139,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         put :update, params: { reset_password_form: form_params }
 
+        expect(assigns(:forbidden_passwords)).to all(be_a(String))
         expect(response).to render_template(:edit)
       end
     end

@@ -7,6 +7,7 @@ module ScriptHelper
   def javascript_pack_tag_once(name)
     @scripts ||= Set.new
     @scripts.add(name)
+    nil
   end
 
   def render_javascript_pack_once_tags

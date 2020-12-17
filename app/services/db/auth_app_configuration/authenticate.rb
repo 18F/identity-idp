@@ -4,10 +4,11 @@ module Db
       def self.call(user, code)
         user.auth_app_configurations.each do |cfg|
           totp = ROTP::TOTP.new(cfg.otp_secret_key, digits: TwoFactorAuthenticatable::OTP_LENGTH)
-          new_timestamp = totp.verify_with_drift_and_prior(
+          new_timestamp = totp.verify(
             code,
-            TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
-            cfg.totp_timestamp,
+            drift_ahead: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
+            drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
+            after: cfg.totp_timestamp,
           )
           return true if update_timestamp(cfg, new_timestamp)
         end

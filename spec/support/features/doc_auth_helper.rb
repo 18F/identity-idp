@@ -1,4 +1,8 @@
+require_relative 'document_capture_step_helper'
+
 module DocAuthHelper
+  include DocumentCaptureStepHelper
+
   def session_from_completed_flow_steps(finished_step)
     session = { doc_auth: {} }
     Idv::Flows::DocAuthFlow::STEPS.each do |step, klass|
@@ -112,6 +116,13 @@ module DocAuthHelper
     click_idv_continue
   end
 
+  def complete_doc_auth_steps_before_selfie_image_step(expect_accessible: false)
+    complete_doc_auth_steps_before_back_image_step(expect_accessible: expect_accessible)
+    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+    attach_image
+    click_idv_continue
+  end
+
   def complete_doc_auth_steps_before_email_sent_step
     allow(DeviceDetector).to receive(:new).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step
@@ -136,20 +147,14 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)
-    complete_doc_auth_steps_before_back_image_step(expect_accessible: expect_accessible)
+    complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    attach_image
-    click_idv_continue
+    attach_and_submit_images
   end
 
   def complete_doc_auth_steps_before_verify_step(expect_accessible: false)
     complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    if page.current_path == idv_doc_auth_selfie_step
-      attach_image
-      click_idv_continue
-      expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    end
     fill_out_ssn_form_ok
     click_idv_continue
   end
@@ -223,21 +228,12 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     )
   end
 
-  def set_up_document_capture_result(uuid:, idv_result:, pii:)
+  def set_up_document_capture_result(uuid:, idv_result:)
     dcs = DocumentCaptureSession.where(uuid: uuid).first_or_create
-    dcs.store_proofing_pii_from_doc(pii) # generates a result_id
-    dcs.store_proofing_result(idv_result)
-  end
-
-  def attach_images(liveness_enabled: true)
-    if Capybara.current_driver == Capybara.javascript_driver
-      attach_file 'Front of your ID', 'app/assets/images/logo.png'
-      attach_file 'Back of your ID', 'app/assets/images/logo.png'
-      raise ArgumentError, 'liveness not currently supported in JS tests' if liveness_enabled
-    else
-      attach_file 'doc_auth_front_image', 'app/assets/images/logo.png'
-      attach_file 'doc_auth_back_image', 'app/assets/images/logo.png'
-      attach_file 'doc_auth_selfie_image', 'app/assets/images/logo.png' if liveness_enabled
+    dcs.create_doc_auth_session
+    if idv_result
+      dcs.store_doc_auth_result(result: idv_result.except(:pii_from_doc),
+                                pii: idv_result[:pii_from_doc])
     end
   end
 

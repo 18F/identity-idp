@@ -2,8 +2,6 @@ module Encryption
   module Encryptors
     class PiiEncryptor
       include ::NewRelic::Agent::MethodTracer
-      add_method_tracer :encrypt, "Custom/#{name}/encrypt"
-      add_method_tracer :decrypt, "Custom/#{name}/decrypt"
 
       Ciphertext = Struct.new(:encrypted_data, :salt, :cost) do
         include Encodable
@@ -78,6 +76,9 @@ module Encryption
         scrypt_password_digest = SCrypt::Password.new(scrypted).digest
         [scrypt_password_digest].pack('H*')
       end
+
+      add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+      add_method_tracer :decrypt, "Custom/#{name}/decrypt"
     end
   end
 end

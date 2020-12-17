@@ -1,6 +1,5 @@
 @import 'general';
 @import 'abbr';
-@import 'alert';
 @import 'background';
 @import 'banner';
 @import 'border';
@@ -9,6 +8,7 @@
 @import 'color';
 @import 'container';
 @import 'external-link';
+@import 'file-input';
 @import 'footer';
 @import 'form';
 @import 'icon';
@@ -25,7 +25,7 @@
 @import 'tooltip';
 @import 'util';
 @import 'verification-badge';
-@import 'spinner';
+@import 'spinner-button';
 @import 'full-screen';
 @import 'space-addon';
 @import 'space-misc';

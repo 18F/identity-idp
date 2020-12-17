@@ -28,6 +28,8 @@ en:
         invalid_code: is invalid either because it expired, or it doesn't match any
           user. Please see our documentation at https://developers.login.gov/oidc/#token
         invalid_code_verifier: code_verifier did not match code_challenge
+        invalid_iat: iat must be an integer or floating point Unix timestamp representing
+          a time in the past
     user_info:
       errors:
         malformed_authorization: Malformed Authorization header

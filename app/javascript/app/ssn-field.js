@@ -3,7 +3,7 @@ import Cleave from 'cleave.js';
 const { I18n } = window.LoginGov;
 
 /* eslint-disable no-new */
-function formatSSNField() {
+function formatSSNFieldAndLimitLength() {
   const inputs = document.querySelectorAll('input.ssn-toggle[type="password"]');
 
   if (inputs) {
@@ -48,8 +48,18 @@ function formatSSNField() {
 
       sync();
       toggle.addEventListener('change', sync);
+
+      function limitLength() {
+        const maxLength = 9 + (this.value.match(/-/g) || []).length;
+        if (this.value.length > maxLength) {
+          this.value = this.value.slice(0, maxLength);
+          this.checkValidity();
+        }
+      }
+
+      input.addEventListener('input', limitLength.bind(input));
     });
   }
 }
 
-document.addEventListener('DOMContentLoaded', formatSSNField);
+document.addEventListener('DOMContentLoaded', formatSSNFieldAndLimitLength);
