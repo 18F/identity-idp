@@ -43,20 +43,6 @@ feature 'doc auth link sent step' do
     expect(page).to have_current_path(idv_doc_auth_link_sent_step)
   end
 
-  it 'does not proceed to the next page if the document cannot be verified' do
-    response = IdentityDocAuth::Response.new(
-      success: false,
-      errors: { error: I18n.t('errors.doc_auth.general_error') },
-    )
-
-    mock_doc_captured(user.id, response)
-
-    click_idv_continue
-
-    expect(page).to have_current_path(idv_doc_auth_send_link_step)
-    expect(page).to have_content(I18n.t('errors.doc_auth.general_error'))
-  end
-
   shared_examples 'with doc capture polling enabled' do
     metadata[:js] = true
     let(:doc_capture_polling_enabled) { true }

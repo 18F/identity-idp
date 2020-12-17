@@ -8,15 +8,15 @@ module Idv
 
     attr_accessor :front_image,
                   :back_image,
-                  :selfie_image,
-                  :liveness_checking_enabled
+                  :selfie_image
+    attr_reader :liveness_checking_enabled
 
     validates :front_image, presence: true
     validates :back_image, presence: true
     validates :selfie_image, presence: true, if: :liveness_checking_enabled
 
     def initialize(**args)
-      liveness_checking_enabled = args.delete(:liveness_checking_enabled)
+      @liveness_checking_enabled = args.delete(:liveness_checking_enabled)
     end
 
     def self.model_name
