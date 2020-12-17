@@ -57,7 +57,11 @@
       <li><%= t('doc_auth.tips.document_capture_id_text4') %></li>
     </ul>
 
-    <%= f.input :empty_input, as: :hidden %>
+    <%= f.input(
+      :document_capture_session_uuid,
+      as: :hidden,
+      input_html: { value: flow_session[:document_capture_session_uuid] },
+    ) %>
 
     <div class="front-image mt2">
       <p>
