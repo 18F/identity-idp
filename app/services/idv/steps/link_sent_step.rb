@@ -30,10 +30,6 @@ module Idv
         document_capture_session_result.present?
       end
 
-      def doc_capture_record
-        @doc_capture_record ||= DocCapture.find_by(user_id: user_id)
-      end
-
       def document_capture_session_result
         @document_capture_session_result ||= document_capture_session&.load_result
       end
