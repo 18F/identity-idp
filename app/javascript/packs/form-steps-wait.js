@@ -47,25 +47,30 @@ class FormStepsWait {
     const { form } = this.elements;
     const { action, method } = form;
 
-    await window.fetch(action, {
+    const response = await window.fetch(action, {
       method,
       body: new window.FormData(form),
-      redirect: 'manual',
     });
 
-    setTimeout(() => this.poll(), this.options.pollIntervalMs);
+    this.handleResponse(response);
   }
 
-  async poll() {
+  handleResponse(response) {
     const { waitStepPath, pollIntervalMs } = this.options;
-    const response = await window.fetch(waitStepPath, { redirect: 'manual' });
     if (!response.ok) {
+      // If form submission fails, assume there's a server-side flash error to be shown to the user.
       window.location.reload();
     } else if (response.redirected && new URL(response.url).pathname !== waitStepPath) {
       window.location.href = response.url;
     } else {
       setTimeout(() => this.poll(), pollIntervalMs);
     }
+  }
+
+  async poll() {
+    const { waitStepPath } = this.options;
+    const response = await window.fetch(waitStepPath);
+    this.handleResponse(response);
   }
 }
 
