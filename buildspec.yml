@@ -1,0 +1,10 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - gem install bundler
+      - bundle install
+  build:
+    commands:
+      - ls
