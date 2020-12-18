@@ -3,8 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - yum -y install gcc
-      - ruby --version
+      - rbenv versions
   build:
     commands:
       - ls
