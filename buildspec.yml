@@ -3,7 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
-      - yum install gcc
+      - yum -y install gcc
       - ruby --version
   build:
     commands:
