@@ -147,10 +147,10 @@ en:
         identity.
       use_cac: Do you have a government employee ID?
       use_cac_link: Use a PIV/CAC instead
+      verifying: Verifying…
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity lets you access services that handle sensitive
         information.
-      verifying: Verifying…
     instructions:
       bullet1: Upload your ID
       bullet1a: Take a photo of yourself
