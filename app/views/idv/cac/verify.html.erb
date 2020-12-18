@@ -44,10 +44,25 @@
   </div>
   <%= "#{t('in_person_proofing.forms.ssn')}: #{flow_session[:pii_from_doc][:ssn]}" %>
 
-  <div class="mt4">
-    <%= button_to(t('forms.buttons.continue'), url_for, method: :put,
-                  class: 'btn btn-primary btn-wide sm-col-6 col-12') %>
-  </div>
+  <%= render 'shared/spinner-button',
+             action_message: t('cac_proofing.info.verifying'),
+             class: 'mt4' do %>
+    <%= button_to(
+      t('forms.buttons.continue'),
+      url_for,
+      method: :put,
+      form: {
+        class: 'button_to read-after-submit',
+        data: {
+          form_steps_wait: '',
+          wait_step_path: idv_cac_step_path(step: :verify_wait),
+          poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
+        },
+      },
+      class: 'btn btn-primary btn-wide sm-col-6 col-12'
+    ) %>
+  <% end %>
+  <% javascript_pack_tag_once 'form-steps-wait' %>
 </div>
 
 <%= render 'idv/cac/start_over_or_cancel' %>
