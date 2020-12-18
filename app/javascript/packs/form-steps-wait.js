@@ -69,7 +69,7 @@ class FormStepsWait {
 
   async poll() {
     const { waitStepPath } = this.options;
-    const response = await window.fetch(waitStepPath);
+    const response = await window.fetch(waitStepPath, { method: 'HEAD' });
     this.handleResponse(response);
   }
 }
