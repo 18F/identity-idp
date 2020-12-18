@@ -3,8 +3,8 @@ version: 0.2
 phases:
   install:
     commands:
-      - gem install bundler
-      - bundle install
+      - yum install gcc
+      - ruby --version
   build:
     commands:
       - ls
