@@ -19,7 +19,7 @@ const DEFAULT_OPTIONS = {
   waitStepPath: `${window.location.pathname}_wait`,
 };
 
-class FormStepsWait {
+export class FormStepsWait {
   constructor(form) {
     /** @type {FormStepsWaitElements} */
     this.elements = { form };
