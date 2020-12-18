@@ -18,9 +18,12 @@
   90% { transform: scale(0); }
 }
 
+.spinner-button {
+  display: inline-block;
+}
+
 .spinner-button--spinner-active {
   .spinner-button__content {
-    display: inline-block;
     position: relative;
 
     a,
