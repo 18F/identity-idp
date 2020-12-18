@@ -4,6 +4,7 @@ phases:
   install:
     commands:
       - rbenv versions
+      - bundle install
   build:
     commands:
       - ls
