@@ -11,8 +11,8 @@ class UspsInPersonProofer
     @token = "#{body['token_type']} #{body['access_token']}"
   end
 
-  def token_expired?
-    @token_expires_at.nil? || @token_expires_at.past?
+  def token_valid?
+    @token.present? && @token_expires_at.present? && @token_expires_at.future?
   end
 
   # Makes HTTP request to authentication endpoint
