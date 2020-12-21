@@ -58,10 +58,10 @@ module Idv
       end
 
       def mobile_device?
-        @mobile_device ||= begin
-          client = DeviceDetector.new(request.user_agent)
-          client.device_type != 'desktop'
-        end
+        return @mobile_device if defined?(@mobile_device)
+        
+        client = DeviceDetector.new(request.user_agent)
+        @mobile_device = client.device_type != 'desktop'
       end
     end
   end
