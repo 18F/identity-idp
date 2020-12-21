@@ -27,8 +27,9 @@
     position: relative;
 
     a,
-    button,
-    input {
+    button:not([type]),
+    [type="submit"],
+    [type="button"] {
       background-color: color('primary-darker');
       color: transparent;
       opacity: 1;
