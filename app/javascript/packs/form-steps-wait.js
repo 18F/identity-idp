@@ -30,11 +30,9 @@ export class FormStepsWait {
     };
 
     this.options.pollIntervalMs = Number(this.options.pollIntervalMs);
-
-    this.bindEvents();
   }
 
-  bindEvents() {
+  bind() {
     this.elements.form.addEventListener('submit', (event) => this.handleSubmit(event));
   }
 
@@ -75,7 +73,6 @@ export class FormStepsWait {
 }
 
 loadPolyfills(['fetch']).then(() => {
-  [...document.querySelectorAll('[data-form-steps-wait]')].forEach(
-    (form) => new FormStepsWait(form),
-  );
+  const forms = [...document.querySelectorAll('[data-form-steps-wait]')];
+  forms.forEach((form) => new FormStepsWait(form).bind());
 });

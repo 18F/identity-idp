@@ -23,7 +23,7 @@ describe('FormStepsWait', () => {
     const action = new URL('/', window.location).toString();
     const method = 'post';
     const form = createForm({ action, method });
-    new FormStepsWait(form);
+    new FormStepsWait(form).bind();
     const mock = sandbox
       .mock(window)
       .expects('fetch')
@@ -47,7 +47,7 @@ describe('FormStepsWait', () => {
     const action = new URL('/', window.location).toString();
     const method = 'post';
     const form = createForm({ action, method });
-    new FormStepsWait(form);
+    new FormStepsWait(form).bind();
     sandbox
       .stub(window, 'fetch')
       .withArgs(action, sandbox.match({ method }))
@@ -62,7 +62,7 @@ describe('FormStepsWait', () => {
     const redirect = new URL('/next', window.location).toString();
     const method = 'post';
     const form = createForm({ action, method });
-    new FormStepsWait(form);
+    new FormStepsWait(form).bind();
     sandbox
       .stub(window, 'fetch')
       .withArgs(action, sandbox.match({ method }))
@@ -86,7 +86,7 @@ describe('FormStepsWait', () => {
     const redirect = new URL('/next', window.location).toString();
     const method = 'post';
     const form = createForm({ action, method, options: { waitStepPath, pollIntervalMs } });
-    new FormStepsWait(form);
+    new FormStepsWait(form).bind();
     sandbox
       .stub(window, 'fetch')
       .withArgs(action, sandbox.match({ method }))
