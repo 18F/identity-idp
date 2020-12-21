@@ -44,7 +44,6 @@ describe Idv::DocumentCaptureForm do
                                   back_image: back_image_data,
                                   selfie_image: selfie_image_data)
 
-
           expect(result).to be_kind_of(FormResponse)
           expect(result.success?).to eq(true)
           expect(result.errors).to be_empty
