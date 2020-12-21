@@ -27,7 +27,6 @@
     "identity-style-guide": "^3.0.0",
     "intl-tel-input": "^16.0.7",
     "libphonenumber-js": "^1.7.26",
-    "normalize.css": "^4.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "zxcvbn": "^4.4.2"
