@@ -52,10 +52,10 @@ class UspsInPersonProofer
       zipCode: location.zip_code,
     }.to_json
 
-    headers = request_headers.merge({
+    headers = request_headers.merge(
       'Authorization' => @token,
       'RequestID' => request_id,
-    })
+    )
 
     resp = faraday.post(url, body, headers)
 
