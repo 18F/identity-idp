@@ -23,10 +23,8 @@ describe Idv::CaptureDocController do
   end
 
   describe '#index' do
-    session_uuid = nil
-    before do
-      document_capture_session = DocumentCaptureSession.create!(requested_at: Time.zone.now)
-      session_uuid = document_capture_session.uuid
+    let!(:session_uuid) do
+      DocumentCaptureSession.create!(requested_at: Time.zone.now).uuid
     end
 
     context 'with no session' do
