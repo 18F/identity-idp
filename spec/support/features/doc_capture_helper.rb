@@ -24,13 +24,6 @@ module DocCaptureHelper
     visit request_uri
   end
 
-  def complete_doc_capture_steps_before_mobile_back_image_step(user = user_with_2fa)
-    complete_doc_capture_steps_before_first_step(user) unless
-      current_path == idv_capture_doc_mobile_front_image_step
-    attach_image
-    click_idv_continue
-  end
-
   def complete_doc_capture_steps_before_document_capture_step(user = user_with_2fa)
     complete_doc_capture_steps_before_first_step(user) unless
       current_path == idv_capture_doc_document_capture_step
@@ -47,10 +40,6 @@ module DocCaptureHelper
 
   def idv_capture_doc_capture_complete_step
     idv_capture_doc_step_path(step: :capture_complete)
-  end
-
-  def idv_capture_doc_capture_selfie_step
-    idv_capture_doc_step_path(step: :selfie)
   end
 
   def mock_doc_captured(user_id, response = IdentityDocAuth::Response.new(success: true))
