@@ -1,7 +1,9 @@
 class UspsInPersonProofer
   attr_reader :token, :token_expires_at
 
-  PostOffice = Struct.new(:distance, :address, :city, :phone, :name, :zip_code, :state)
+  PostOffice = Struct.new(
+    :distance, :address, :city, :phone, :name, :zip_code, :state, keyword_init: true
+  )
 
   # Makes a request to retrieve a new OAuth token
   # and modifies self to store the token and when
@@ -66,13 +68,13 @@ class UspsInPersonProofer
     if resp.success?
       JSON.parse(resp.body)['postOffices'].map do |post_office|
         PostOffice.new(
-          post_office['distance'],
-          post_office['streetAddress'],
-          post_office['city'],
-          post_office['phone'],
-          post_office['name'],
-          post_office['zip5'],
-          post_office['state'],
+          distance: post_office['distance'],
+          address: post_office['streetAddress'],
+          city: post_office['city'],
+          phone: post_office['phone'],
+          name: post_office['name'],
+          zip_code: post_office['zip5'],
+          state: post_office['state'],
         )
       end
     else
