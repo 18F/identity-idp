@@ -1,3 +1,4 @@
+import { TextEncoder } from 'util';
 import * as WebAuthn from '../../../app/javascript/app/webauthn';
 
 describe('WebAuthn', () => {
@@ -70,13 +71,11 @@ describe('WebAuthn', () => {
           },
           excludeCredentials: [
             {
-              // encodes to 'credential123'
-              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 93, 118]).buffer,
+              id: new TextEncoder().encode('credential123').buffer,
               type: 'public-key',
             },
             {
-              // encodes to 'credential456'
-              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 94, 57]).buffer,
+              id: new TextEncoder().encode('credential456').buffer,
               type: 'public-key',
             },
           ],
@@ -151,13 +150,11 @@ describe('WebAuthn', () => {
           rpId: 'example.test',
           allowCredentials: [
             {
-              // encodes to 'credential123'
-              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 93, 118]).buffer,
+              id: new TextEncoder().encode('credential123').buffer,
               type: 'public-key',
             },
             {
-              // encodes to 'credential456'
-              id: Buffer.from([114, 183, 157, 122, 123, 98, 106, 94, 57]).buffer,
+              id: new TextEncoder().encode('credential456').buffer,
               type: 'public-key',
             },
           ],
