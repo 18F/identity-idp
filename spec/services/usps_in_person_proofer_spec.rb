@@ -27,39 +27,14 @@ RSpec.describe UspsInPersonProofer do
       subject.retrieve_token!
       facilities = subject.request_facilities(location)
 
-      facility = facilities['postOffices'][0]
-      expect(facility['distance']).to be_present
-      expect(facility['streetAddress']).to be_present
-      expect(facility['city']).to be_present
-      expect(facility['phone']).to be_present
-      expect(facility['name']).to be_present
-      expect(facility['zip5']).to be_present
-      expect(facility['state']).to be_present
-    end
-  end
-
-  describe '#request_facilities' do
-    it 'returns facilities' do
-      stub_request_token
-      stub_request_facilities
-      location = double('Location',
-        address: Faker::Address.street_address,
-        city: Faker::Address.city,
-        state: Faker::Address.state_abbr,
-        zip_code: Faker::Address.zip_code,
-      )
-
-      subject.retrieve_token!
-      facilities = subject.request_facilities(location)
-
-      facility = facilities['postOffices'][0]
-      expect(facility['distance']).to be_present
-      expect(facility['streetAddress']).to be_present
-      expect(facility['city']).to be_present
-      expect(facility['phone']).to be_present
-      expect(facility['name']).to be_present
-      expect(facility['zip5']).to be_present
-      expect(facility['state']).to be_present
+      facility = facilities[0]
+      expect(facility.distance).to be_present
+      expect(facility.address).to be_present
+      expect(facility.city).to be_present
+      expect(facility.phone).to be_present
+      expect(facility.name).to be_present
+      expect(facility.zip_code).to be_present
+      expect(facility.state).to be_present
     end
   end
 

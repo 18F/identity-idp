@@ -1,6 +1,8 @@
 class UspsInPersonProofer
   attr_reader :token, :token_expires_at
 
+  PostOffice = Struct.new(:distance, :address, :city, :phone, :name, :zip_code, :state)
+
   # Makes a request to retrieve a new OAuth token
   # and modifies self to store the token and when
   # it expires (15 minutes).
@@ -40,8 +42,10 @@ class UspsInPersonProofer
 
   # Makes HTTP request to get nearby in-person proofing facilities
   # Requires address, city, state and zip code.
+  # The PostOffice objects have a subset of the fields
+  # returned by the API.
   # @param location [Object]
-  # @return [Hash] API response
+  # @return [Array<PostOffice>] Facility locations
   def request_facilities(location)
     url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList"
     body = {
@@ -60,7 +64,17 @@ class UspsInPersonProofer
     resp = faraday.post(url, body, headers)
 
     if resp.success?
-      JSON.parse(resp.body)
+      JSON.parse(resp.body)['postOffices'].map do |post_office|
+        PostOffice.new(
+          post_office['distance'],
+          post_office['streetAddress'],
+          post_office['city'],
+          post_office['phone'],
+          post_office['name'],
+          post_office['zip5'],
+          post_office['state'],
+        )
+      end
     else
       { error: 'failed to get facilities', response: resp }
     end
