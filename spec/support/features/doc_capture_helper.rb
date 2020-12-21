@@ -41,10 +41,6 @@ module DocCaptureHelper
     attach_and_submit_images
   end
 
-  def idv_capture_doc_mobile_front_image_step
-    idv_capture_doc_step_path(step: :mobile_front_image)
-  end
-
   def idv_capture_doc_document_capture_step
     idv_capture_doc_step_path(step: :document_capture)
   end
