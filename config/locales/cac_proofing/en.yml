@@ -28,6 +28,7 @@ en:
         your PIV/CAC PIN and have you select a certificate.
       state_id_description: If you don't have a PIV or CAC, you can use a state-issued
         ID to verify your identity.
+      verifying: Verifying…
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity also allows you to access services that
         handle Personal Identifiable Information.
