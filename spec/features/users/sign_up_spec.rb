@@ -111,6 +111,18 @@ feature 'Sign Up' do
   end
 
   context 'with js', js: true do
+    before do
+      page.driver.browser.execute_cdp(
+        'Browser.grantPermissions',
+        origin: page.server_url,
+        permissions: ['clipboardReadWrite'],
+      )
+    end
+
+    after do
+      page.driver.browser.execute_cdp('Browser.resetPermissions')
+    end
+
     context 'user enters their email as their password', email: true do
       it 'treats it as a weak password' do
         email = 'test@test.com'
@@ -122,6 +134,27 @@ feature 'Sign Up' do
         fill_in 'Password', with: email
         expect(page).to have_content('Very weak')
       end
+    end
+
+    it 'allows a user to choose TOTP as 2FA method during sign up' do
+      sign_in_user
+      select_2fa_option('auth_app')
+
+      name = page.find_field('name')
+      name.execute_script('this.addEventListener("invalid", () => this.didValidate = true);')
+      did_validate_name = -> { name.evaluate_script('this.didValidate') }
+
+      click_on t('links.copy')
+      copied_text = page.evaluate_async_script('navigator.clipboard.readText().then(arguments[0])')
+      expect(did_validate_name.call).to_not eq true
+
+      fill_in 'code', with: generate_totp_code(copied_text)
+      click_button 'Submit'
+      expect(did_validate_name.call).to eq true
+
+      fill_in 'name', with: 'Authentication app'
+      click_button 'Submit'
+      expect(page).to have_current_path account_path
     end
   end
 
