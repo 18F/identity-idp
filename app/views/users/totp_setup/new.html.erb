@@ -40,6 +40,7 @@
         <div class="px2 py1 mt1 border border-dashed border-navy">
           <div class="inline fs-20p caps monospace" id="qr-code"><%= @code %></div>
           <button class="clipboard ml2 right mt-tiny btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center"
+                  type="button"
                   data-clipboard-text="<%= @code.upcase %>">
             <%= t('links.copy') %>
           </button>

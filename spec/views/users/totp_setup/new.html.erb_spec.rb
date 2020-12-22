@@ -40,7 +40,7 @@ describe 'users/totp_setup/new.html.erb' do
     it 'has a button to copy the QR code' do
       render
 
-      expect(rendered).to have_button(t('links.copy'))
+      expect(rendered).to have_button(t('links.copy'), type: 'button')
     end
 
     it 'has the correct aria-labelledby on the nickname field' do
