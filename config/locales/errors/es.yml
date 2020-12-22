@@ -51,18 +51,6 @@ es:
       general_error: No pudimos leer ni verificar su identificación. Intenta tomar
         y subir nuevas imágenes de la parte delantera y trasera de tu ID. Asegúrese
         de que todo se pueda leer fácilmente, incluido el código de barras.
-      general_info: |-
-        <div class="bold">Si está utilizando una cámara, asegúrese de</div>
-        <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
-        <li class="mxn3">Estás en una zona bien iluminada</li>
-        <li class="mxn3">Su identificación no tiene ningún código de barras dañado</li>
-        <li class="mxn3">La identificación representa el 80% de la imagen general</li>
-        <li class="mxn3">Las imágenes son claras (no borrosas) y enfocadas</li>
-        <li class="mxn3">No hay reflejos, sombras o reflejos</li>
-        <li class="mxn3">La identificación se destaca del fondo</li>
-        <li class="mxn3">El fondo detrás de su identificación es un color sólido</li>
-        <li class="mxn3">El fondo es visible detrás del documento</li>
-        </ul>
       invalid_file_input_type: No se acepta este tipo de archivo, elija un archivo
         JPG, PNG, BMP o TIFF.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación

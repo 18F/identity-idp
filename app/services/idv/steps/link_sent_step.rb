@@ -6,25 +6,10 @@ module Idv
 
         # The doc capture flow will have fetched the results already. We need
         # to fetch them again here to add the PII to this session
-        get_results_response = fetch_doc_auth_results
-        if get_results_response.success?
-          handle_document_verification_success(get_results_response)
-        else
-          handle_document_verification_failure(get_results_response)
-        end
+        handle_document_verification_success(document_capture_session_result)
       end
 
       private
-
-      def fetch_doc_auth_results
-        if FeatureManagement.document_capture_step_enabled?
-          document_capture_session_result
-        else
-          DocAuthRouter.client.get_results(
-            instance_id: doc_capture_record.acuant_token,
-          )
-        end
-      end
 
       def handle_document_verification_success(get_results_response)
         save_proofing_components
@@ -42,15 +27,7 @@ module Idv
       end
 
       def take_photo_with_phone_successful?
-        if FeatureManagement.document_capture_step_enabled?
-          document_capture_session_result.present?
-        else
-          doc_capture_record&.acuant_token.present?
-        end
-      end
-
-      def doc_capture_record
-        @doc_capture_record ||= DocCapture.find_by(user_id: user_id)
+        document_capture_session_result.present?
       end
 
       def document_capture_session_result
@@ -58,8 +35,7 @@ module Idv
       end
 
       def mark_steps_complete
-        %i[send_link link_sent email_sent mobile_front_image mobile_back_image front_image
-           back_image selfie document_capture].each do |step|
+        %i[send_link link_sent email_sent document_capture].each do |step|
           mark_step_complete(step)
         end
       end

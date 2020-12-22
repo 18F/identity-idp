@@ -51,17 +51,6 @@ fr:
       general_error: Nous n'avons pas pu lire ni vérifier votre identité. Essayez
         de prendre et de télécharger de nouvelles images des deux côtés de votre ID.
         Assurez-vous que tout peut être facilement lu, y compris le code à barres.
-      general_info: |-
-        <div class="bold">Si vous utilisez une caméra, veuillez vous assurer que</div>
-        <ul class="mxn2 mt1 pl3 mb1 lg-ml2">
-        <li class="mxn3">Vous êtes dans une zone bien éclairée</li>
-        <li class="mxn3">Votre identifiant n'a pas de code à barres endommagé</li>
-        <li class="mxn3">Les images sont claires (non floues) et nettes</li>
-        <li class="mxn3">Aucun éblouissement, ombre ou reflet n'est présent</li>
-        <li class="mxn3">L'identifiant se distingue de l'arrière-plan</li>
-        <li class="mxn3">Le fond derrière votre ID est une couleur unie</li>
-        <li class="mxn3">Le fond est visible derrière le document</li>
-        </ul>
       invalid_file_input_type: Ce type de fichier n'est pas accepté, veuillez choisir
         un fichier JPG, PNG, BMP ou TIFF.
       phone_step_incomplete: Vous devez aller sur votre téléphone et télécharger des
