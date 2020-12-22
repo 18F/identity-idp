@@ -2,9 +2,7 @@
 
 # This is used by resolution and address proofing
 # Idv::Agent#proof_resolution and Idv::Agent#proof_address
-# NOTE: remove pii key after next deploy
-ProofingSessionAsyncResult = Struct.new(:id, :pii, :result, :status,
-                                                  keyword_init: true) do
+ProofingSessionAsyncResult = Struct.new(:id, :result, :status, keyword_init: true) do
   self::NONE = 'none'
   self::IN_PROGRESS = 'in_progress'
   self::DONE = 'done'
@@ -31,18 +29,10 @@ ProofingSessionAsyncResult = Struct.new(:id, :pii, :result, :status,
   end
 
   def done?
-    status == ProofingSessionAsyncResult::DONE || result.present?
+    status == ProofingSessionAsyncResult::DONE
   end
 
   def in_progress?
-    status == ProofingSessionAsyncResult::IN_PROGRESS ||
-      pii.present?
-  end
-
-  def done
-    ProofingSessionAsyncResult.new(
-      result: result.deep_symbolize_keys,
-      status: :done,
-    )
+    status == ProofingSessionAsyncResult::IN_PROGRESS
   end
 end
