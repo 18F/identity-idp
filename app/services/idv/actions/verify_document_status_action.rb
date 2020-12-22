@@ -93,6 +93,10 @@ module Idv
       end
 
       def delete_async
+        @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC,
+                                    error: 'deleting document capture session key',
+                                    flow_session: flow_session,
+                                   )
         flow_session.delete(verify_document_capture_session_uuid_key)
       end
     end
