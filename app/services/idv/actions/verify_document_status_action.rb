@@ -69,6 +69,7 @@ module Idv
           @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC,
                                       error: 'failed to load document_capture_session',
                                       uuid: flow_session[verify_document_capture_session_uuid_key],
+                                      flow_session: flow_session,
                                      )
           return timed_out
         end
