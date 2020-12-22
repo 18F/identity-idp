@@ -66,10 +66,8 @@ module Idv
 
       def async_state
         if document_capture_session.nil?
-          @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC,
-                                      error: 'failed to load document_capture_session',
-                                      uuid: flow_session[verify_document_capture_session_uuid_key],
-                                     )
+          failed_to_load_document_capture_analytics
+
           return timed_out
         end
 
@@ -92,7 +90,24 @@ module Idv
       end
 
       def delete_async
+        failed_to_load_document_capture_analytics
         flow_session.delete(verify_document_capture_session_uuid_key)
+      end
+
+      def failed_to_load_document_capture_analytics
+        data = {
+          error: 'failed to load document_capture_session',
+          uuid: flow_session[verify_document_capture_session_uuid_key],
+        }
+
+        if LoginGov::Hostdata.env == 'dev'
+          data.merge!(
+            flow_session: flow_session.except(:pii_from_doc),
+            flow_session_keys: flow_session.keys,
+          )
+        end
+
+        @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC, data)
       end
     end
   end
