@@ -32,11 +32,9 @@ export class SpinnerButton {
     };
 
     this.options.longWaitDurationMs = Number(this.options.longWaitDurationMs);
-
-    this.bindEvents();
   }
 
-  bindEvents() {
+  bind() {
     this.elements.button.addEventListener('click', () => this.showSpinner());
   }
 
@@ -59,4 +57,5 @@ export class SpinnerButton {
   }
 }
 
-[...document.querySelectorAll('.spinner-button')].forEach((wrapper) => new SpinnerButton(wrapper));
+const wrappers = [...document.querySelectorAll('.spinner-button')];
+wrappers.forEach((wrapper) => new SpinnerButton(wrapper).bind());

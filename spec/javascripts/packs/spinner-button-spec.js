@@ -41,7 +41,9 @@ describe('SpinnerButton', () => {
 
   it('shows spinner on click', () => {
     const wrapper = createWrapper();
-    const { button } = new SpinnerButton(wrapper).elements;
+    const spinnerButton = new SpinnerButton(wrapper);
+    spinnerButton.bind();
+    const { button } = spinnerButton.elements;
 
     userEvent.click(button);
 
@@ -59,7 +61,9 @@ describe('SpinnerButton', () => {
     });
     document.body.appendChild(form);
     form.appendChild(wrapper);
-    const { button } = new SpinnerButton(wrapper).elements;
+    const spinnerButton = new SpinnerButton(wrapper);
+    spinnerButton.bind();
+    const { button } = spinnerButton.elements;
 
     userEvent.type(button, '{enter}');
     clock.tick(0);
@@ -71,7 +75,9 @@ describe('SpinnerButton', () => {
   it('announces action message', () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
-    const { button } = new SpinnerButton(wrapper).elements;
+    const spinnerButton = new SpinnerButton(wrapper);
+    spinnerButton.bind();
+    const { button } = spinnerButton.elements;
 
     expect(status.textContent).to.be.empty();
 
@@ -84,7 +90,9 @@ describe('SpinnerButton', () => {
   it('shows action message visually after long delay', () => {
     const wrapper = createWrapper({ actionMessage: 'Verifying...' });
     const status = getByRole(wrapper, 'status');
-    const { button } = new SpinnerButton(wrapper).elements;
+    const spinnerButton = new SpinnerButton(wrapper);
+    spinnerButton.bind();
+    const { button } = spinnerButton.elements;
 
     expect(status.textContent).to.be.empty();
 
