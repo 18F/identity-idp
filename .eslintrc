@@ -26,7 +26,6 @@
     "max-classes-per-file": "off",
     "newline-per-chained-call": "off",
     "no-empty": ["error", { "allowEmptyCatch": true }],
-    "no-new": "off",
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
     "no-plusplus": "off",
