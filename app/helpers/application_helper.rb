@@ -15,10 +15,6 @@ module ApplicationHelper
     end
   end
 
-  def tooltip(text)
-    render('shared/help-tooltip') { text }
-  end
-
   def sp_session
     session.fetch(:sp, {})
   end

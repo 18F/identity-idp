@@ -9,16 +9,6 @@ describe ApplicationHelper do
     end
   end
 
-  describe '#tooltip' do
-    it 'creates a span containing aria label with text and image' do
-      tooltip_text = 'foobar'
-
-      html = helper.tooltip(tooltip_text)
-
-      expect(html).to have_css(".help-tooltip__button[title='#{tooltip_text}']")
-    end
-  end
-
   describe '#session_with_trust?' do
     context 'no user present and page is not one with trust' do
       before do
