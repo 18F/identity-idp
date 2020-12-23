@@ -15,9 +15,7 @@ describe ApplicationHelper do
 
       html = helper.tooltip(tooltip_text)
 
-      expect(html).to have_css('.hint--top')
-      expect(html).to have_selector('img')
-      expect(html).to have_xpath("//span[@aria-label='#{tooltip_text}']")
+      expect(html).to have_css(".help-tooltip__button[title='#{tooltip_text}']")
     end
   end
 

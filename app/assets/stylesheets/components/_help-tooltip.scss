@@ -1,0 +1,13 @@
+.help-tooltip__button {
+  border-radius: 50%;
+}
+
+.help-tooltip__icon {
+  @include u-display('block');
+  @include u-text('middle');
+}
+
+.help-tooltip .usa-tooltip__body {
+  @include u-width('card-lg');
+  @include u-text('center', 'wrap');
+}
