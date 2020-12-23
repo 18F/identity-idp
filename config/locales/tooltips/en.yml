@@ -1,7 +1,7 @@
 ---
 en:
   tooltips:
-    trigger_label: More information
     authentication_app: An authentication application is a mobile security app that
       generates security codes even if you don't have an Internet connection or cellular
       service.
+    trigger_label: More information
