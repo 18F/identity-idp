@@ -11,7 +11,7 @@ es:
       login_info: Su cuenta
       profile_info: Información de perfil
       reactivate: Reactive su cuenta
-      two_factor: Autenticación de dos factores
+      two_factor: Tus métodos de autenticación
       unphishable: Incapaz de phish
       verified_account: Cuenta verificada
     add_email: Añadir una nueva dirección de correo electrónico
