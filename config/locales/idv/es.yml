@@ -46,7 +46,7 @@ es:
       help:
         get_help_html: Obtener ayuda en <strong>%{sp_name}</strong>
       phone:
-        fail_html: Para proteger su identidad, debe <strong>esperar 24 horas</strong>
+        fail_html: Para proteger su identidad, debe <strong>esperar 6 horas</strong>
           para volver a intentar un número de teléfono.
         heading: No pudimos coincidir su nombre y dirección con este número de teléfono.
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
@@ -56,7 +56,7 @@ es:
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
         fail_html: Para su seguridad, la verificación de identidad de su cuenta está
-          <strong>bloqueada durante 24 horas</strong>.
+          <strong>bloqueada durante 6 horas</strong>.
         heading: No hemos podido encontrar registros que coincidan con su información
           personal.
         warning: Compruebe la información que ingresó. Los errores comunes son números
