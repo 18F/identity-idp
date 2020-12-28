@@ -69,10 +69,6 @@ module Flow
       @flow.render_json(json, status: status)
     end
 
-    def reset
-      @flow.flow_session = {}
-    end
-
     def amzn_trace_id
       request.headers['X-Amzn-Trace-Id']
     end
