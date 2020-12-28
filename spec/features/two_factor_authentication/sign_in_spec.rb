@@ -102,7 +102,7 @@ feature 'Two Factor Authentication' do
 
   def select_country_and_type_phone_number(country:, number:)
     find('.iti__flag').click
-    find(".iti__country[id='iti-item-#{country}']").click
+    find(".iti__country[data-country-code='#{country}']").click
     phone_field.send_keys(number)
   end
 
