@@ -65,7 +65,8 @@ fr:
         warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
           de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont
           des erreurs communes.
-      timeout: Nous avons des difficultés techniques. Veuillez réessayer.
+      timeout: Le temps d'attente pour le traitement de votre demande est plus long
+        que d'habitude Veuillez réessayer.
     forgot_password:
       link_html: Mot de passe oublié? %{link}
       link_text: Suivez ces instructions

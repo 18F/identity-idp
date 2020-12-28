@@ -58,7 +58,8 @@ en:
         heading: We could not find records matching your personal information.
         warning: Please check the information you entered. Common mistakes are an
           incorrect Social Security Number, ZIP Code, or date of birth.
-      timeout: We are having technical difficulties. Please try again.
+      timeout: We are experiencing higher than usual wait time processing your request.
+        Please try again.
     forgot_password:
       link_html: Forgot password? %{link}
       link_text: Follow these instructions
