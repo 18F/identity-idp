@@ -60,7 +60,7 @@ module Idv
 
       def verify_document_capture_session
         return @verify_document_capture_session if defined?(@verify_document_capture_session)
-        @verify_document_capture_session = DocumentCaptureSession.find_by
+        @verify_document_capture_session = DocumentCaptureSession.find_by(
           uuid: flow_session[verify_document_capture_session_uuid_key]
         )
       end
