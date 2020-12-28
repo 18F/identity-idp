@@ -24,10 +24,13 @@ describe Idv::Actions::VerifyDocumentStatusAction do
     end
 
     it 'calls analytics if timed out from no result in document capture session' do
-      verify_document_capture_session = DocumentCaptureSession.new(uuid: 'uuid', result_id: 'result_id')
+      verify_document_capture_session = DocumentCaptureSession.new(
+        uuid: 'uuid',
+        result_id: 'result_id',
+      )
 
-      expect(subject).to receive(:verify_document_capture_session).and_return(verify_document_capture_session).
-        at_least(:once)
+      expect(subject).to receive(:verify_document_capture_session).
+        and_return(verify_document_capture_session).at_least(:once)
       expect(controller).to receive(:analytics).and_return(fake_analytics).twice
       response = subject.call
 
