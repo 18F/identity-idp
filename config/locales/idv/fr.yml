@@ -48,7 +48,7 @@ fr:
       help:
         get_help_html: Obtenir de l'aide à <strong>%{sp_name}</strong>
       phone:
-        fail_html: Pour protéger votre identité, vous devez <strong>attendre 24 heures</strong>
+        fail_html: Pour protéger votre identité, vous devez <strong>attendre 6 heures</strong>
           pour réessayer un numéro de téléphone.
         heading: Nous n'avons pas pu faire correspondre votre nom et votre adresse
           à ce numéro de téléphone.
@@ -59,7 +59,7 @@ fr:
       sessions:
         exception: Une erreur interne s'est produite lors du traitement de votre demande.
         fail_html: Pour votre sécurité, la vérification d'identité de votre compte
-          est <strong>verrouillée pendant 24 heures</strong>.
+          est <strong>verrouillée pendant 6 heures</strong>.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
         warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
