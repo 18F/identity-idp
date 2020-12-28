@@ -7,8 +7,7 @@ module TwoFactorAuthCode
     def help_text
       t("instructions.mfa.#{two_factor_authentication_method}.confirm_code_html",
         email: content_tag(:strong, user_email),
-        app: content_tag(:strong, APP_NAME),
-        tooltip: view.tooltip(t('tooltips.authentication_app')))
+        app: content_tag(:strong, APP_NAME))
     end
 
     def fallback_question
