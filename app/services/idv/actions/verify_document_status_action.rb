@@ -10,7 +10,7 @@ module Idv
       def process_async_state(current_async_state)
         form = ApiDocumentVerificationStatusForm.new(
           async_state: current_async_state,
-          verify_document_capture_session: verify_document_capture_session,
+          document_capture_session: verify_document_capture_session,
         )
 
         form_response = form.submit
