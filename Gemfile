@@ -25,7 +25,7 @@ gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.2'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
 gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.7'
-gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
+gem 'identity_validations', github: '18F/identity-validations', branch: 'main'
 gem 'json-jwt', '>= 1.11.0'
 gem 'jwt'
 gem 'local_time'
