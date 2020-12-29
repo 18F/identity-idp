@@ -281,7 +281,7 @@ describe ApplicationController do
 
     it 'returns a 400 bad request when a url generation error is raised on the redirect' do
       allow_any_instance_of(ApplicationController).to \
-        receive(:redirect_to).and_raise(ActionController::UrlGenerationError)
+        receive(:redirect_to).and_raise(ActionController::UrlGenerationError.new('bad request'))
       allow(subject).to receive(:current_user).and_return(user)
 
       get :index, params: { timeout: true, request_id: '123' }
