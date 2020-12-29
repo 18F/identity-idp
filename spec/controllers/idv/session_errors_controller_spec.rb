@@ -64,6 +64,12 @@ describe Idv::SessionErrorsController do
     allow(controller).to receive(:idv_session).and_return(idv_session)
   end
 
+  describe 'before_actions' do
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:before, :sp_context_needed?)
+    end
+  end
+
   describe '#warning' do
     let(:action) { :warning }
     let(:template) { 'idv/session_errors/warning' }

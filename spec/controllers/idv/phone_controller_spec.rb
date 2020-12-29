@@ -21,6 +21,12 @@ describe Idv::PhoneController do
     end
   end
 
+  describe 'before_actions' do
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:before, :sp_context_needed?)
+    end
+  end
+
   describe '#new' do
     let(:user) do
       build(:user, :with_phone,

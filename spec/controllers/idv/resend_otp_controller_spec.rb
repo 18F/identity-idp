@@ -24,6 +24,12 @@ describe Idv::ResendOtpController do
     subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
   end
 
+  describe 'before_actions' do
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:before, :sp_context_needed?)
+    end
+  end
+
   describe '#create' do
     context 'the user has not selected a delivery method' do
       let(:user_phone_confirmation_session) { nil }
