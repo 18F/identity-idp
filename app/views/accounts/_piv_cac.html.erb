@@ -21,9 +21,6 @@
           <div class="grid-col-12 mobile-lg:grid-col-6">
             <%= piv_cac_configuration.name %>
           </div>
-          <div class="grid-col-12 mobile-lg:grid-col-6 truncate">
-            <%= PhoneConfigurationDecorator.new(piv_cac_configuration).default_number_message %>
-          </div>
         </div>
         <div class="grid-col-4 right-align">
           <%= render @view_model.piv_cac_partial, id: piv_cac_configuration.id %>

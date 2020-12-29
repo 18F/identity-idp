@@ -125,34 +125,6 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
       end
     end
 
-    context 'user is unconfirmed' do
-      it 'does not provide an option to use a personal key' do
-        unconfirmed_data = presenter_data.merge(personal_key_unavailable: true)
-
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
-          data: unconfirmed_data,
-          view: view,
-        )
-
-        render
-
-        expect(rendered).not_to have_link(
-          t('two_factor_authentication.personal_key_fallback.link'),
-          href: login_two_factor_personal_key_path,
-        )
-      end
-    end
-
-    context 'when totp is not enabled' do
-      it 'does not allow user to sign in using an authenticator app' do
-        render
-
-        expect(rendered).not_to have_link(
-          t('links.two_factor_authentication.app'), href: login_two_factor_authenticator_path
-        )
-      end
-    end
-
     context 'when totp is enabled' do
       it 'allows user to sign in using an authenticator app' do
         totp_data = presenter_data.merge(totp_enabled: true)

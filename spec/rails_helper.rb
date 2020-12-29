@@ -15,6 +15,7 @@ end
 ENV['RAILS_ENV'] = 'test'
 
 require File.expand_path('../../config/environment', __FILE__)
+require 'rails/test_unit/railtie'
 require 'rspec/rails'
 require 'spec_helper'
 require 'email_spec'

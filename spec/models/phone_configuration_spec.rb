@@ -30,12 +30,4 @@ describe PhoneConfiguration do
       end
     end
   end
-
-  describe '#decorate' do
-    it 'returns a PhoneConfigurationDecorator' do
-      phone_configuration = build(:phone_configuration)
-
-      expect(phone_configuration.decorate).to be_a(PhoneConfigurationDecorator)
-    end
-  end
 end

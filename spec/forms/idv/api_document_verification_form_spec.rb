@@ -44,7 +44,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
 
         it 'is not valid' do
           expect(form.valid?).to eq(false)
-          expect(form.errors.keys).to eq([:selfie_image_url])
+          expect(form.errors.attribute_names).to eq([:selfie_image_url])
           expect(form.errors[:selfie_image_url]).to eq([t('doc_auth.errors.not_a_file')])
         end
       end
@@ -64,7 +64,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors.keys).to eq([:front_image_iv])
+        expect(form.errors.attribute_names).to eq([:front_image_iv])
         expect(form.errors[:front_image_iv]).to eq(['Please fill in this field.'])
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors.keys).to eq([:encryption_key])
+        expect(form.errors.attribute_names).to eq([:encryption_key])
         expect(form.errors[:encryption_key]).to eq(['Please fill in this field.'])
       end
     end
@@ -84,7 +84,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors.keys).to eq([:front_image_url])
+        expect(form.errors.attribute_names).to eq([:front_image_url])
         expect(form.errors[:front_image_url]).to eq([t('doc_auth.errors.not_a_file')])
       end
     end
@@ -94,7 +94,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors.keys).to eq([:document_capture_session])
+        expect(form.errors.attribute_names).to eq([:document_capture_session])
         expect(form.errors[:document_capture_session]).to eq(['Please fill in this field.'])
       end
     end
@@ -104,7 +104,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors.keys).to eq([:document_capture_session])
+        expect(form.errors.attribute_names).to eq([:document_capture_session])
         expect(form.errors[:document_capture_session]).to eq(['Please fill in this field.'])
       end
     end
@@ -117,7 +117,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
 
       it 'is not valid' do
         expect(form.valid?).to eq(false)
-        expect(form.errors.keys).to eq([:limit])
+        expect(form.errors.attribute_names).to eq([:limit])
         expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.acuant_throttle')])
       end
     end
