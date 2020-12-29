@@ -18,6 +18,12 @@ describe Idv::RecoveryController do
     allow(@analytics).to receive(:track_event)
   end
 
+  describe 'before_actions' do
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:sp_context_needed?)
+    end
+  end
+
   describe 'unauthenticated', :skip_sign_in do
     it 'redirects to the root url' do
       get :index

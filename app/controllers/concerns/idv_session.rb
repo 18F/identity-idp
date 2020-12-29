@@ -1,6 +1,17 @@
 module IdvSession
   extend ActiveSupport::Concern
 
+  included do
+    before_action :sp_context_needed?
+  end
+
+  def sp_context_needed?
+    return if sp_from_sp_session.present?
+    return if LoginGov::Hostdata.env != 'prod'
+
+    redirect_to account_url
+  end
+
   def confirm_idv_session_started
     redirect_to idv_doc_auth_url if idv_session.applicant.blank?
   end
@@ -39,12 +50,5 @@ module IdvSession
 
   def idv_attempter_throttled?
     Throttler::IsThrottled.call(current_user.id, :idv_resolution)
-  end
-
-  def sp_context_needed?
-    return if sp_from_sp_session.present?
-    return if LoginGov::Hostdata.env != 'prod'
-
-    redirect_to account_url
   end
 end

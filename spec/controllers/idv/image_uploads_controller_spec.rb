@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 describe Idv::ImageUploadsController do
+  describe 'before_actions' do
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:sp_context_needed?)
+    end
+  end
+
   describe '#create' do
     subject(:action) { post :create, params: params }
 
