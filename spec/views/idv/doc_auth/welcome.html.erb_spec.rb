@@ -13,7 +13,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
 
   context 'in doc auth with an authenticated user' do
     it 'renders a link to return to the SP' do
-      render template: 'idv/doc_auth/welcome.html.erb'
+      render template: 'idv/doc_auth/welcome'
 
       expect(rendered).to have_link(t('links.cancel'))
     end
@@ -23,7 +23,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
     let(:user_fully_authenticated) { false }
 
     it 'renders a link to return to the MFA step' do
-      render template: 'idv/doc_auth/welcome.html.erb'
+      render template: 'idv/doc_auth/welcome'
 
       expect(rendered).to have_link(t('two_factor_authentication.choose_another_option'))
     end
@@ -35,7 +35,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
     end
 
     it 'renders selfie instructions' do
-      render template: 'idv/doc_auth/welcome.html.erb'
+      render template: 'idv/doc_auth/welcome'
 
       expect(rendered).to have_text(t('doc_auth.instructions.bullet1a'))
     end
@@ -47,7 +47,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
     end
 
     it 'renders selfie instructions' do
-      render template: 'idv/doc_auth/welcome.html.erb'
+      render template: 'idv/doc_auth/welcome'
 
       expect(rendered).to_not have_text(t('doc_auth.instructions.bullet1a'))
     end
@@ -68,7 +68,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
     end
 
     it 'renders the warning banner but no other content' do
-      render template: 'idv/doc_auth/welcome.html.erb'
+      render template: 'idv/doc_auth/welcome'
 
       expect(rendered).to have_content('We are currently under maintenance')
       expect(rendered).to_not have_content(t('doc_auth.headings.welcome'))

@@ -7,7 +7,7 @@ Rails.application.configure do
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true
 
-  config.action_controller.asset_host = proc do |_source, request|
+  config.asset_host = proc do |_source, request|
     # we want precompiled assets to have domain-agnostic URLs
     # and request is nil during asset precompilation
     (AppConfig.env.asset_host || AppConfig.env.domain_name) if request
