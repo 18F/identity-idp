@@ -4982,10 +4982,10 @@ interpret@^1.4.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-1.4.0.tgz#665ab8bc4da27a774a40584e812e3e0fa45b1a1e"
   integrity sha512-agE4QfB2Lkp9uICn7BAqoscw4SZP9kTE2hxiFI3jBPmXJfdqiahTbUuKGsMoN2GtqL9AxhYioAcVvgsb1HvRbA==
 
-intl-tel-input@^16.0.7:
-  version "16.0.11"
-  resolved "https://registry.yarnpkg.com/intl-tel-input/-/intl-tel-input-16.0.11.tgz#6ab98d93b4995bd25463841ab30996ab7c9ec7b5"
-  integrity sha512-ouuoUDVM+iYtLJFwWAqATFWGxTIt/HTtWVVVIBRQdhbnjAkDU0gdzpk2JJn4i3Ttqvymo9Z5MkQr8zcxmVe2vg==
+intl-tel-input@^17.0.8:
+  version "17.0.8"
+  resolved "https://registry.yarnpkg.com/intl-tel-input/-/intl-tel-input-17.0.8.tgz#e1b38e27a6c941b713b757ecf7b1f9f345f88c80"
+  integrity sha512-Jf7IdNCSJrWMBbcLQJ8I3nVYnJ5xRODJhPa+0QFcTsg82E332DbMDKnzTBkEID4Q1I7Nf8+96WzmMveadRbxxg==
 
 ip-regex@^2.1.0:
   version "2.1.0"
