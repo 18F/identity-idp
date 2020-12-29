@@ -1,12 +1,6 @@
 require 'rails_helper'
 
 describe Idv::CacController do
-  describe 'before_actions' do
-    it 'includes corrects before_actions' do
-      expect(subject).to have_actions(:sp_context_needed?)
-    end
-  end
-
   let(:user) { create(:user) }
   let(:flow_session) do
     {
@@ -32,12 +26,6 @@ describe Idv::CacController do
 
   before do
     stub_sign_in(user)
-  end
-
-  describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:sp_context_needed?)
-    end
   end
 
   describe '#update' do

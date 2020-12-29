@@ -15,12 +15,6 @@ describe Idv::OtpDeliveryMethodController do
     subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
   end
 
-  describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:sp_context_needed?)
-    end
-  end
-
   describe '#new' do
     context 'user has not selected phone verification method' do
       before do
