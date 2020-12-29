@@ -11,7 +11,7 @@ describe ApplicationController do
     it 'sets headers to disable cache' do
       get :index
 
-      expect(response.headers['Cache-Control']).to eq 'private, no-store'
+      expect(response.headers['Cache-Control']).to eq 'no-store'
       expect(response.headers['Pragma']).to eq 'no-cache'
     end
   end
