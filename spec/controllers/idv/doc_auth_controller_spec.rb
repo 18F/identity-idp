@@ -10,6 +10,10 @@ describe Idv::DocAuthController do
                                       :fsm_initialize,
                                       :ensure_correct_step)
     end
+
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:sp_context_needed?)
+    end
   end
 
   before do |example|

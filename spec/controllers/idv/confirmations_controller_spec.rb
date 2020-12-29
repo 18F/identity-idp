@@ -48,6 +48,10 @@ describe Idv::ConfirmationsController do
       )
     end
 
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:sp_context_needed?)
+    end
+
     describe '#confirm_profile_has_been_created' do
       before do
         stub_idv_session
