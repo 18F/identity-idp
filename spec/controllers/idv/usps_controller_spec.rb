@@ -12,6 +12,10 @@ describe Idv::UspsController do
         :confirm_mail_not_spammed,
       )
     end
+
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:before, :sp_context_needed?)
+    end
   end
 
   describe '#index' do
