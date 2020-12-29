@@ -68,10 +68,6 @@ feature 'Sign Up' do
     it 'sends them to the cancel page' do
       expect(current_path).to eq sign_up_cancel_path
     end
-
-    it 'does not display a link to get back to their account' do
-      expect(page).to_not have_content t('links.back_to_account')
-    end
   end
 
   context 'user cancels on MFA screen', email: true do
@@ -83,10 +79,6 @@ feature 'Sign Up' do
 
     it 'sends them to the cancel page' do
       expect(current_path).to eq sign_up_cancel_path
-    end
-
-    it 'does not display a link to get back to their account' do
-      expect(page).to_not have_content t('links.back_to_account')
     end
   end
 

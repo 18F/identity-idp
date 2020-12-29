@@ -691,7 +691,7 @@ feature 'Sign in' do
 
     it 'does not display OTP Fallback text and links' do
       expect(page).
-        to_not have_content t('two_factor_authentication.totp_fallback.sms_link_text')
+        to_not have_content t('two_factor_authentication.phone_fallback.question')
     end
   end
 
