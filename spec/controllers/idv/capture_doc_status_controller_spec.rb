@@ -7,12 +7,6 @@ describe Idv::CaptureDocStatusController do
     stub_sign_in(user) if user
   end
 
-  describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:sp_context_needed?)
-    end
-  end
-
   describe '#show' do
     let(:document_capture_session) { DocumentCaptureSession.create! }
     let(:flow_session) { { document_capture_session_uuid: document_capture_session.uuid } }

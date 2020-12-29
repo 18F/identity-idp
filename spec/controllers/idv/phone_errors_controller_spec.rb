@@ -1,12 +1,6 @@
 require 'rails_helper'
 
 shared_examples_for 'an idv phone errors controller action' do
-  describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:sp_context_needed?)
-    end
-  end
-
   context 'the user is authenticated and has not confirmed their phone' do
     it 'renders the error' do
       stub_sign_in

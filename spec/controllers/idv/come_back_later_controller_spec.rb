@@ -12,12 +12,6 @@ describe Idv::ComeBackLaterController do
     stub_sign_in(user)
   end
 
-  describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:sp_context_needed?)
-    end
-  end
-
   context 'user needs USPS address verification' do
     it 'renders the show template' do
       stub_analytics
