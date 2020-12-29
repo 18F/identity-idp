@@ -21,7 +21,9 @@
           <%= phone_configuration.phone %>
         </div>
         <div class="grid-col-4 text-center">
-          <%= PhoneConfigurationDecorator.new(phone_configuration).default_number_message %>
+          <% if current_user.default_phone_configuration == phone_configuration %>
+            <%= I18n.t('account.index.default') %>
+          <% end %>
         </div>
         <div class="grid-col-3 right-align">
           <%= render @view_model.manage_action_partial,
