@@ -47,10 +47,6 @@
   <%= javascript_include_tag 'respond.min' %>
   <![endif]-->
 
-  <% if AppConfig.env.google_analytics_key.present? && !page_with_trust? %>
-  <%= render 'shared/google_analytics/page_tracking' %>
-  <% end %>
-
   <% if AppConfig.env.newrelic_browser_key.present? && AppConfig.env.newrelic_browser_app_id.present? %>
   <%= render 'shared/newrelic/browser_instrumentation' %>
   <% end %>

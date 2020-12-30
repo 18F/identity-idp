@@ -32,16 +32,9 @@ class Analytics
     Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, sp, event, success)
   end
 
-  def track_mfa_submit_event(attributes, ga_client_id)
+  def track_mfa_submit_event(attributes)
     track_event(MULTI_FACTOR_AUTH, attributes)
     mfa_event_type = (attributes[:success] ? 'success' : 'fail')
-
-    GoogleAnalyticsMeasurement.new(
-      category: 'authentication',
-      event_action: "multi+factor+#{mfa_event_type}",
-      method: attributes[:multi_factor_auth_method],
-      client_id: ga_client_id,
-    ).send_event
   end
 
   attr_reader :user, :request, :sp, :ahoy

@@ -184,16 +184,6 @@ class ApplicationController < ActionController::Base
     sp_session[:ial2] == true
   end
 
-  def ga_cookie_client_id
-    return if ga_cookie.blank?
-    ga_client_id = ga_cookie.match('GA1\.\d\.(\d+\.\d+)')
-    return ga_client_id[1] if ga_client_id
-  end
-
-  def ga_cookie
-    cookies[:_ga]
-  end
-
   def reauthn_param
     params[:reauthn]
   end

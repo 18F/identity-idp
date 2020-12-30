@@ -3,13 +3,6 @@ require 'rails_helper'
 describe TwoFactorAuthentication::WebauthnVerificationController do
   include WebAuthnHelper
 
-  let(:ga_client_id) { '123.456' }
-  let(:ga_cookie) { 'GA1.2.123.456' }
-
-  before do
-    cookies['_ga'] = ga_cookie
-  end
-
   describe 'when not signed in' do
     describe 'GET show' do
       it 'redirects to root url' do
@@ -49,7 +42,6 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
           client_data_json: verification_client_data_json,
           signature: signature,
           credential_id: credential_id,
-          ga_client_id: ga_client_id,
         }
       end
       before do
@@ -67,7 +59,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
                    success: true }
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(result, ga_client_id)
+          with(result)
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
@@ -78,7 +70,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
         result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
                    success: false }
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(result, ga_client_id)
+          with(result)
 
         patch :confirm, params: params
       end

@@ -30,8 +30,7 @@ module ApplicationHelper
   end
 
   def page_with_trust?
-    current_page?(controller: 'sign_up/passwords', action: 'new') ||
-      current_page?(controller: 'users/reset_passwords', action: 'edit')
+    !current_page?(controller: 'users/sessions', action: 'new')
   end
 
   def ial2_requested?

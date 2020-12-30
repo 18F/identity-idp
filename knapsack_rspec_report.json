@@ -454,7 +454,6 @@
   "spec/controllers/two_factor_authentication/options_controller_spec.rb": 0.26328516006469727,
   "spec/features/accessibility/static_pages_spec.rb": 6.647021532058716,
   "spec/services/reports/sp_user_quotas_report_spec.rb": 0.03179597854614258,
-  "spec/services/google_analytics_measurement_spec.rb": 0.002523183822631836,
   "spec/features/reports/doc_auth_funnel_report_spec.rb": 4.618161201477051,
   "spec/services/device_tracking/device_name_spec.rb": 0.026388168334960938,
   "spec/views/users/passwords/edit.html.erb_spec.rb": 0.05777883529663086,
