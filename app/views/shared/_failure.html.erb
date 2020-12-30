@@ -25,5 +25,5 @@
 <% presenter.next_steps.each do |step| %>
   <p><%== step %></p>
 <% end; if presenter.js %>
-  <%= nonced_javascript_tag presenter.js %>
+  <%= javascript_tag presenter.js, nonce: true %>
 <% end %>

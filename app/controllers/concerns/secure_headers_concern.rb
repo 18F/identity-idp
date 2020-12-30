@@ -12,10 +12,9 @@ module SecureHeadersConcern
   end
 
   def override_csp_with_uris
-    override_content_security_policy_directives(
-      form_action: csp_uris,
-      preserve_schemes: true,
-    )
+    self.class.content_security_policy do |p|
+      p.form_action *csp_uris
+    end
   end
 
   def csp_uris

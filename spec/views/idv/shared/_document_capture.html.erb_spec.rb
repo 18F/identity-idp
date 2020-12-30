@@ -23,8 +23,7 @@ describe 'idv/shared/_document_capture.html.erb' do
   describe 'async upload urls' do
     context 'when async upload is disabled' do
       it 'does not modify CSP connect_src headers' do
-        allow(SecureHeaders).to receive(:append_content_security_policy_directives).with(any_args)
-        expect(SecureHeaders).to receive(:append_content_security_policy_directives).with(
+        expect(SecureHeadersWhitelister).to receive(:append_content_security_policy_directives).with(
           controller.request,
           connect_src: [],
         )

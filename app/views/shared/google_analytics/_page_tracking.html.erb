@@ -1,6 +1,6 @@
 <% nonce = content_security_policy_script_nonce %>
 
-<%= nonced_javascript_tag do %>
+<%= javascript_tag nonce: true do %>
   var nonce = "<%= nonce %>";
   var analyticsKey = "<%= AppConfig.env.google_analytics_key %>";
 

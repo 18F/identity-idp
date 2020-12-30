@@ -19,7 +19,7 @@ module SessionTimeoutWarningHelper
   end
 
   def auto_session_timeout_js
-    nonced_javascript_tag do
+    javascript_tag nonce: true do
       render partial: 'session_timeout/ping',
              formats: [:js],
              locals: {
@@ -36,7 +36,7 @@ module SessionTimeoutWarningHelper
     return if @skip_session_expiration
 
     session_timeout_in = Devise.timeout_in
-    nonced_javascript_tag do
+    javascript_tag nonce: true do
       render(
         partial: 'session_timeout/expire_session',
         formats: [:js],

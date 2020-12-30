@@ -10,6 +10,7 @@ require 'sprockets/railtie'
 require_relative '../lib/upaya_log_formatter'
 require_relative '../lib/app_config'
 require_relative '../lib/fingerprinter'
+require_relative '../lib/secure_headers_whitelister'
 
 Bundler.require(*Rails.groups)
 
@@ -36,6 +37,10 @@ module Upaya
     config.i18n.available_locales = AppConfig.env.available_locales.try(:split, ' ') || %w[en]
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
+    config.action_dispatch.cookies_same_site_protection = :lax
+    config.action_dispatch.default_headers = {
+      'X-Frame-Options' => 'DENY',
+    }
 
     routes.default_url_options[:host] = AppConfig.env.domain_name
 
@@ -57,7 +62,9 @@ module Upaya
     config.log_formatter = Upaya::UpayaLogFormatter.new
 
     require 'headers_filter'
+    require 'httponly_cookies'
     config.middleware.insert_before 0, HeadersFilter
+    config.middleware.insert_before 0, HttponlyCookies
     require 'utf8_sanitizer'
     config.middleware.use Utf8Sanitizer
 

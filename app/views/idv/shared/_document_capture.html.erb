@@ -3,16 +3,16 @@
   <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: AppConfig.env.acuant_sdk_initialization_endpoint %>
   <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: AppConfig.env.acuant_sdk_initialization_creds %>
 <% end %>
-<% SecureHeaders.append_content_security_policy_directives(
-  request,
-  connect_src: [
+<% connect_src = [
     front_image_upload_url,
     back_image_upload_url,
     selfie_image_upload_url
-  ].
-    compact.
-    map { |url| URI(url).tap { |uri| uri.query = nil }.to_s }
-) %>
+  ].compact.map { |url| URI(url).tap { |uri| uri.query = nil }.to_s } %>
+
+<% controller.class.content_security_policy do |p|
+    p.connect_src *SecureHeadersWhitelister.append_connect_src(connect_src)
+  end
+%>
 <%= tag.div id: 'document-capture-form', data: {
   liveness_required: liveness_checking_enabled?.presence,
   mock_client: (DocAuthRouter.doc_auth_vendor == 'mock').presence,
@@ -121,7 +121,7 @@
   <p class='mt3 mb0'><%= t('doc_auth.info.document_capture_upload_image') %></p>
 </div>
 <%= render 'idv/doc_auth/start_over_or_cancel' %>
-<%= nonced_javascript_tag do %>
+<%= javascript_tag nonce: true do %>
   <% asset_keys = [
     'close-white-alt.svg',
     'id-card.svg',

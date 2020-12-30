@@ -29,10 +29,10 @@ module Idv
       return unless current_step == 'document_capture'
 
       # required to run wasm until wasm-eval is available
-      SecureHeaders.append_content_security_policy_directives(
-        request,
-        script_src: ['\'unsafe-eval\''],
-      )
+      script_src = SecureHeadersWhitelister.append_script_src([:unsafe_eval])
+      self.class.content_security_policy do |p|
+        p.script_src *script_src
+      end
     end
 
     def process_result(result)

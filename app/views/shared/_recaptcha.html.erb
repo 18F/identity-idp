@@ -1,10 +1,14 @@
 <% if FeatureManagement.recaptcha_enabled?(session, true) %>
-  <% SecureHeaders.append_content_security_policy_directives(request,
-                                                             style_src: ['\'unsafe-inline\'']) %>
+  <%
+      script_src = SecureHeadersWhitelister.append_script_src([:unsafe_inline])
+      controller.class.content_security_policy do |p|
+        p.script_src *script_src
+      end
+   %>
 
-  <%= javascript_tag '', nonce: content_security_policy_script_nonce, src: 'https://www.google.com/recaptcha/api.js' %>
+  <%= javascript_tag '', nonce: true, src: 'https://www.google.com/recaptcha/api.js' %>
 
-  <%= nonced_javascript_tag do %>
+  <%= javascript_tag nonce: true do %>
     var onSubmit=function(token) {
       document.getElementById('g-recaptcha-response').value = token;
     };

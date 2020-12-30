@@ -92,7 +92,10 @@ class SamlIdpController < ApplicationController
     csp_uris = SecureHeadersWhitelister.csp_with_sp_redirect_uris(
       domain, decorated_session.sp_redirect_uris
     )
-    override_content_security_policy_directives(form_action: csp_uris)
+
+    self.class.content_security_policy do |p|
+      p.form_action -> { csp_uris }
+    end
 
     render(
       template: 'saml_idp/shared/saml_post_binding',

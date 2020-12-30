@@ -28,10 +28,9 @@ module PivCacConcern
   end
 
   def set_piv_cac_setup_csp_form_action_uris
-    override_content_security_policy_directives(
-      form_action: piv_cac_setup_csp_form_action_uris,
-      preserve_schemes: true,
-    )
+    self.class.content_security_policy do |p|
+      p.form_action -> { piv_cac_setup_csp_form_action_uris }
+    end
   end
 
   def piv_cac_setup_csp_form_action_uris

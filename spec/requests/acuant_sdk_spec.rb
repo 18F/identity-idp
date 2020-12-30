@@ -24,6 +24,7 @@ describe 'requesting acuant SDK assets' do
 
     it 'adds unsafe-eval to the CSP' do
       get '/verify/doc_auth/AcuantImageProcessingWorker.min.js'
+      puts response.headers.inspect
 
       expect(response.headers['Content-Security-Policy']).to match(/script-src[^;]*'unsafe-eval'/)
     end
