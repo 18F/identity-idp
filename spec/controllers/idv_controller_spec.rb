@@ -105,7 +105,7 @@ describe IdvController do
 
       context 'local development' do
         before do
-          allow(LoginGov::Hostdata).to receive(:env).and_return('prod')
+          allow(LoginGov::Hostdata).to receive(:env).and_return(nil)
           allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(false)
         end
 
