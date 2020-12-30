@@ -30,7 +30,8 @@ module ApplicationHelper
   end
 
   def page_with_trust?
-    !current_page?(controller: 'users/sessions', action: 'new')
+    return false if current_page?(controller: 'users/sessions', action: 'new')
+    return true
   end
 
   def ial2_requested?
