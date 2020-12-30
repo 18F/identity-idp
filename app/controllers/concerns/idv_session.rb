@@ -43,6 +43,7 @@ module IdvSession
 
   def sp_context_needed?
     return if sp_from_sp_session.present?
+    return unless LoginGov::Hostdata.in_datacenter?
     return if LoginGov::Hostdata.env != AppConfig.env.sp_context_needed_environment
 
     redirect_to account_url
