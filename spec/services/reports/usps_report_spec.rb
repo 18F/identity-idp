@@ -16,8 +16,36 @@ describe Reports::UspsReport do
       'today' => Time.zone.today.to_s,
     }
   end
+  let(:one_letter_sent_and_verified_report) do
+    {
+      'letters_sent_and_validated_since_days' => {
+        '10000'=>1, '14'=>1, '30'=>1, '60'=>1, '7'=>1, '90'=>1
+      },
+      'letters_sent_since_days' => {
+        '10000'=>1, '14'=>1, '30'=>1, '60'=>1, '7'=>1, '90'=>1
+      },
+      'percent_sent_and_validated_since_days' => {
+        '10000'=>100.0, '14'=>100.0, '30'=>100.0, '60'=>100.0, '7'=>100.0, '90'=>100.0
+      },
+      'today' => Time.zone.today.to_s,
+    }
+  end
+  let(:user) { create(:user) }
+  let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
 
-  it 'is empty' do
+  it 'correctly reports zero letters sent' do
     expect(JSON.parse(subject.new.call)).to eq(empty_report)
+  end
+
+  it 'correctly reports one letter sent that was verified' do
+    create_ucc_for(profile)
+    expect(JSON.parse(subject.new.call)).to eq(one_letter_sent_and_verified_report)
+  end
+
+  def create_ucc_for(profile)
+    UspsConfirmationCode.create(
+      profile: profile,
+      otp_fingerprint: 'foo',
+    )
   end
 end
