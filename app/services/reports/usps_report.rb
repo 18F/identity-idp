@@ -14,7 +14,7 @@ module Reports
 
     def call
       create_reports
-      # save_report(REPORT_NAME, @results.to_json)
+      save_report(REPORT_NAME, @results.to_json)
       @results.to_json
     end
 
