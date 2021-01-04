@@ -3,6 +3,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     prepend_before_action :authenticate_user
+    before_action :personal_key_allowed?
 
     def show
       analytics.track_event(
@@ -23,6 +24,12 @@ module TwoFactorAuthentication
     end
 
     private
+
+    def personal_key_allowed?
+      return if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
+
+      redirect_to two_factor_options_url
+    end
 
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::PersonalKeyPresenter.new

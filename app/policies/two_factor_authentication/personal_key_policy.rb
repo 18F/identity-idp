@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     end
 
     def enabled?
-      configured?
+      configured? && user.profiles.none?
     end
 
     def visible?
