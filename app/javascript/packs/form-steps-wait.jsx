@@ -1,3 +1,5 @@
+import { render } from 'react-dom';
+import { Alert } from '@18f/identity-components';
 import { loadPolyfills } from '@18f/identity-polyfill';
 
 /**
@@ -11,6 +13,7 @@ import { loadPolyfills } from '@18f/identity-polyfill';
  *
  * @prop {number} pollIntervalMs Poll interval.
  * @prop {string} waitStepPath URL path to wait step, used in polling.
+ * @prop {string=} errorMessage Message to show on unhandled server error.
  */
 
 /** @type {FormStepsWaitOptions} */
@@ -55,13 +58,30 @@ export class FormStepsWait {
 
   handleResponse(response) {
     const { waitStepPath, pollIntervalMs } = this.options;
-    if (!response.ok) {
-      // If form submission fails, assume there's a server-side flash error to be shown to the user.
-      window.location.reload();
+    if (response.status >= 500) {
+      this.renderError();
     } else if (response.redirected && new URL(response.url).pathname !== waitStepPath) {
       window.location.href = response.url;
     } else {
       setTimeout(() => this.poll(), pollIntervalMs);
+    }
+  }
+
+  renderError() {
+    // TODO: Assign data-error-message on forms to be picked up here.
+    const { errorMessage } = this.options;
+    if (errorMessage) {
+      const errorRoot = document.createElement('div');
+      this.elements.form.prepend(errorRoot);
+
+      render(
+        <Alert type="error" className="margin-bottom-4">
+          {errorMessage}
+        </Alert>,
+        errorRoot,
+      );
+
+      // TODO: Stop spinner button from spinning.
     }
   }
 
