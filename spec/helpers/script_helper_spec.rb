@@ -36,9 +36,16 @@ RSpec.describe ScriptHelper do
       it 'prints all unique packs' do
         output = render_javascript_pack_once_tags
 
-        expect(output).to have_css('script', count: 2, visible: false)
-        expect(output).to have_css('script[src^="/packs-test/js/application-"]', visible: false)
-        expect(output).to have_css('script[src^="/packs-test/js/clipboard-"]', visible: false)
+        expect(output).to have_css(
+          'script[src^="/packs-test/js/application-"]',
+          count: 1,
+          visible: false,
+        )
+        expect(output).to have_css(
+          'script[src^="/packs-test/js/clipboard-"]',
+          count: 1,
+          visible: false,
+        )
       end
     end
   end
