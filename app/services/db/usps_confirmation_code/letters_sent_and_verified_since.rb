@@ -8,8 +8,14 @@ module Db
         sql = format(<<~SQL, params)
           SELECT COUNT(*)
           FROM profiles
-          WHERE active=true AND activated_at IS NOT NULL AND verified_at IS NOT NULL AND id IN
-          (SELECT profile_id FROM usps_confirmation_codes WHERE %{start}<=created_at)
+          WHERE active = true
+            AND activated_at IS NOT NULL
+            AND verified_at IS NOT NULL
+            AND id IN (
+              SELECT profile_id
+              FROM usps_confirmation_codes
+              WHERE %{start} <= created_at
+            )
         SQL
         recs = ActiveRecord::Base.connection.execute(sql)
         recs[0]['count'].to_i
