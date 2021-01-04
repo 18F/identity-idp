@@ -19,7 +19,7 @@ module ScriptHelper
   end
 
   def render_javascript_pack_once_tags
-    javascript_pack_tag(*@scripts) if @scripts
+    javascript_packs_with_chunks_tag(*@scripts) if @scripts
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable
