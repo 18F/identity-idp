@@ -91,6 +91,14 @@ module Flow
     end
 
     def move_to_next_step
+      analytics.track_event(
+        Analytics::DOC_AUTH_ASYNC,
+        info: 'moving to next step',
+        current_step: current_step,
+        next_step: next_step,
+        current_session_keys: current_session[@name]&.keys,
+        flow_session_keys: flow.flow_session&.keys,
+      ) if !%w[prod staging int].include?(LoginGov::Hostdata.env)
       current_session[@name] = flow.flow_session
       redirect_to_step(next_step)
     end
