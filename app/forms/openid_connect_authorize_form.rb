@@ -65,6 +65,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def service_provider
+    return NullServiceProvider.new(issuer: nil) if client_id && client_id.include?("\x00")
     @_service_provider ||= ServiceProvider.from_issuer(client_id)
   end
 
