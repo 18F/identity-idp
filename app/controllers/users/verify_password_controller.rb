@@ -7,19 +7,17 @@ module Users
     before_action :confirm_personal_key
 
     def new
-      @verify_password_form = VerifyPasswordForm.new(
-        user: current_user,
-        password: '',
-        decrypted_pii: decrypted_pii,
-      )
+      @decrypted_pii = decrypted_pii
     end
 
     def update
+      @decrypted_pii = decrypted_pii
       result = verify_password_form.submit
 
       if result.success?
         handle_success(result)
       else
+        flash[:error] = t('errors.messages.password_incorrect')
         render :new
       end
     end

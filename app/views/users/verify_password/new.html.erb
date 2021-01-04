@@ -17,7 +17,6 @@
 
 <div class='mt4'>
   <%=  accordion('review-verified-info', t('idv.messages.review.intro')) do %>
-    <% decrypted_pii = @verify_password_form.decrypted_pii %>
-    <%= render 'shared/pii_review', pii: decrypted_pii, phone: decrypted_pii[:phone] %>
+    <%= render 'shared/pii_review', pii: @decrypted_pii, phone: @decrypted_pii[:phone] %>
   <% end %>
 </div>
