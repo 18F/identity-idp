@@ -1,8 +1,9 @@
 class UspsConfirmationMaker
-  def initialize(pii:, issuer:, profile:)
+  def initialize(pii:, issuer:, profile:, otp: nil)
     @pii = pii
     @issuer = issuer
     @profile = profile
+    @otp = otp
   end
 
   def otp
@@ -22,7 +23,6 @@ class UspsConfirmationMaker
 
   attr_reader :pii, :issuer, :profile
 
-  # This method is single statement spread across many lines for readability
   def attributes
     {
       address1: pii[:address1],
