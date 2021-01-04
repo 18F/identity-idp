@@ -3,7 +3,7 @@ module Db
     class LettersSentSince
       def self.call(start_date)
         params = {
-            start: ActiveRecord::Base.connection.quote(start_date),
+          start: ActiveRecord::Base.connection.quote(start_date),
         }
         sql = format(<<~SQL, params)
           SELECT COUNT(*)
