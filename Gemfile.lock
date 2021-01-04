@@ -748,6 +748,7 @@ DEPENDENCIES
   maxminddb
   net-sftp
   newrelic_rpm
+  nokogiri (~> 1.11.0)
   octokit
   parallel_tests
   pg
