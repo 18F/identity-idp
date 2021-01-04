@@ -58,6 +58,7 @@ describe Users::VerifyPasswordController do
 
       describe '#update' do
         let(:form) { instance_double(VerifyPasswordForm) }
+        let(:pii) { { dob: Time.zone.today } }
 
         before do
           expect(controller).to receive(:verify_password_form).and_return(form)
@@ -79,8 +80,11 @@ describe Users::VerifyPasswordController do
         end
 
         context 'without valid password' do
+          render_views
+
           it 'renders the new template' do
             allow(form).to receive(:submit).and_return(response_bad)
+            allow(controller).to receive(:decrypted_pii).and_return(pii)
 
             put :update, params: { user: { password: user.password } }
 
