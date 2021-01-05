@@ -4,7 +4,7 @@ class UspsDailyTestSender
     if valid_designated_receiver_pii?
       UspsConfirmationMaker.new(
         pii: designated_receiver_pii,
-        issuer: nil, # TODO: login.gov internal issuer?
+        issuer: nil,
         profile_id: -1, # profile_id can't be null on UspsConfirmationCode
         otp: otp_from_date,
       ).perform
