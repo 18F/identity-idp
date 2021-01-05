@@ -5,7 +5,7 @@ class UspsDailyTestSender
       UspsConfirmationMaker.new(
         pii: designated_receiver_pii,
         issuer: nil, # TODO: login.gov internal issuer?
-        profile: profile,
+        profile_id: -1, # profile_id can't be null on UspsConfirmationCode
         otp: otp_from_date,
       ).perform
     else
@@ -31,17 +31,8 @@ class UspsDailyTestSender
   end
 
   def valid_designated_receiver_pii?
-    %i[email first_name last_name address1 city state zipcode].all? do |key|
+    %i[first_name last_name address1 city state zipcode].all? do |key|
       designated_receiver_pii[key].present?
     end
-  end
-
-  def profile
-    @profile ||= user.profiles.first || user.profiles.create
-  end
-
-  def user
-    email = designated_receiver_pii[:email]
-    @user ||= User.find_with_email(email) || User.create(email: email)
   end
 end
