@@ -5,11 +5,12 @@ module Reports
     REPORT_NAME = 'usps-report'.freeze
 
     def initialize
-      @results = {}
-      @results[:today] = Time.zone.today.to_s
-      @results[:letters_sent_since_days] = {}
-      @results[:letters_sent_and_validated_since_days] = {}
-      @results[:percent_sent_and_validated_since_days] = {}
+      @results = {
+        today: Time.zone.today.to_s,
+        letters_sent_since_days: {},
+        letters_sent_and_validated_since_days: {},
+        percent_sent_and_validated_since_days: {},
+      }
     end
 
     def call
