@@ -36,7 +36,8 @@ RSpec.describe UspsDailyTestSender do
 
       it 'does not create usps records' do
         expect { sender.run }.
-          to(change { UspsConfirmation.count }.by(0).and(change { UspsConfirmationCode.count }.by(0)))
+          to(change { UspsConfirmation.count }.by(0).
+            and(change { UspsConfirmationCode.count }.by(0)))
       end
 
       it 'does not blow up (so the calling job can continue normally) and notifies NewRelic' do
