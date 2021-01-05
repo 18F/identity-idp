@@ -15,12 +15,9 @@ class UspsConfirmationMaker
 
   def perform
     UspsConfirmation.create!(entry: attributes)
-
-    profile_attrs = profile ? { profile: profile } : { profile_id: profile_id }
-
     UspsConfirmationCode.create!(
+      profile_id: profile&.id || profile_id,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
-      **profile_attrs,
     )
 
     update_proofing_cost
