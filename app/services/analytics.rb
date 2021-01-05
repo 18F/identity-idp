@@ -140,6 +140,9 @@ class Analytics
   IDV_USPS_ADDRESS_VISITED = 'IdV: USPS address visited'.freeze
   IDV_VERIFICATION_ATTEMPT_CANCELLED = 'IdV: verification attempt cancelled'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
+  LAMBDA_RESULT_RESOLUTION_PROOF_RESULT = 'Lambda Resolution Proof Result Received'.freeze
+  LAMBDA_RESULT_ADDRESS_PROOF_RESULT = 'Lambda Address Proof Result Received'.freeze
+  LAMBDA_RESULT_DOCUMENT_PROOF_RESULT = 'Lambda Document Proof Result Received'.freeze
   LOGOUT_INITIATED = 'Logout Initiated'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze
