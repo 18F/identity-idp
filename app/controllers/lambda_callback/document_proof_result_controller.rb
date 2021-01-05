@@ -4,6 +4,11 @@ module LambdaCallback
       dcs = DocumentCaptureSession.find_by(result_id: result_id_parameter)
 
       if dcs
+        analytics.track_event(
+          Analytics::LAMBDA_RESULT_DOCUMENT_PROOF_RESULT,
+          result: document_result_parameter.except(:pii_from_doc),
+        )
+
         dcs.store_doc_auth_result(
           result: document_result_parameter.except(:pii_from_doc),
           pii: document_result_parameter[:pii_from_doc],
