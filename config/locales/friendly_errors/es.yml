@@ -30,10 +30,8 @@ es:
       control_numbers_do_not_match: 'No pudimos verificar su identificación. Intente
         tomar una nueva foto. Asegúrese de que el texto y el código de barras sean
         visibles, limpios y no tengan brillos. (Código de error: 1700)'
-      document_complete_or_error: 'No pudimos subir sus imágenes. Compruebe la configuración
-        de su conexión a Internet y del cortafuegos e intente enviar sus imágenes
-        de nuevo, o intente utilizar un navegador web diferente. (Código de error:
-        2500)'
+      document_complete_or_error: 'Il y a eu un problème avec votre connexion internet.
+        Veuillez réessayer. (Código de error: 2500)'
       document_has_expired: 'No pudimos leer su identificación. Intente tomar nuevas
         fotos. Asegúrese de que el texto sea visible, limpio y no tenga brillos. (Código
         de error: 600)'
@@ -43,10 +41,8 @@ es:
         una foto de una imagen. La imagen debe estar en formato BMP, PNG, TIFF o JPG
         y tener un tamaño de al menos 1476 x 1039 píxeles (se recomiendan 2953 x 2079
         píxeles o más). (Código de error: 2100)'
-      document_not_found: 'No pudimos subir sus imágenes. Compruebe la configuración
-        de su conexión a Internet y del cortafuegos e intente enviar sus imágenes
-        de nuevo, o intente utilizar un navegador web diferente. (Código de error:
-        2500)'
+      document_not_found: 'Il y a eu un problème avec votre connexion internet. Veuillez
+        réessayer. (Código de error: 2200)'
       document_number_check_digit_is_incorrect: 'No pudimos verificar su identificación.
         Intente tomar una nueva foto. Asegúrese de que el texto y el código de barras
         sean visibles, limpios y no tengan brillos. (Código de error: 1400)'

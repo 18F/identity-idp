@@ -28,9 +28,8 @@ en:
       control_numbers_do_not_match: 'We couldn''t verify your ID. Try taking a new
         picture. Make sure the text and barcode are visible, clean, and don''t have
         glares. (Error code: 1700)'
-      document_complete_or_error: 'Your images couldn''t be uploaded. Check your internet
-        connection and firewall settings and try submitting your images again, or
-        try using a different web browser. (Error code: 2500)'
+      document_complete_or_error: 'There was a problem with your internet connection.
+        Please try again. (Error code: 2500)'
       document_has_expired: 'The document has expired or we couldn''t read your ID.
         Try taking new pictures. Make sure the text is visible, clean, and doesn''t
         have glares. (Error code: 600)'
@@ -40,9 +39,8 @@ en:
         a picture of an image. The image must be in BMP, PNG, TIFF, or JPG format
         and at least 1476 x 1039 pixels in size (2953 x 2079 pixels or greater are
         recommended). (Error code: 2100)'
-      document_not_found: 'Your images couldn''t be uploaded. Check your internet
-        connection and firewall settings and try submitting your images again, or
-        try using a different web browser. (Error code: 2200)'
+      document_not_found: 'There was a problem with your internet connection. Please
+        try again. (Error code: 2200)'
       document_number_check_digit_is_incorrect: 'We couldn''t verify your ID. Try
         taking new pictures. Make sure the text, images, and barcode are all visible,
         clean, and don''t have glares. (Error code: 1400)'
