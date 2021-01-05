@@ -6,9 +6,11 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'Send GPO letter',
   interval: 24 * 60 * 60,
   timeout: 300,
-  callback: lambda {
+  callback: lambda do
+    UspsDailyTestSender.new.run
+
     UspsConfirmationUploader.new.run unless CalendarService.weekend_or_holiday?(Time.zone.today)
-  },
+  end,
 )
 
 # Send account deletion confirmation notifications
