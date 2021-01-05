@@ -3,7 +3,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     prepend_before_action :authenticate_user
-    before_action :personal_key_allowed?
+    before_action :check_personal_key_enabled
 
     def show
       analytics.track_event(
@@ -25,7 +25,7 @@ module TwoFactorAuthentication
 
     private
 
-    def personal_key_allowed?
+    def check_personal_key_enabled
       return if TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).enabled?
 
       redirect_to two_factor_options_url
