@@ -49,6 +49,7 @@ module SessionTimeoutWarningHelper
   def time_left_in_session
     distance_of_time_in_words(
       warning,
+      0,
       two_words_connector: " #{I18n.t('datetime.dotiw.two_words_connector')} ",
     )
   end
