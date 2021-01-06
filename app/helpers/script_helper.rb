@@ -15,7 +15,7 @@ module ScriptHelper
     if prepend
       @scripts = names | @scripts
     else
-      @scripts = @scripts | names
+      @scripts |= names
     end
     nil
   end
