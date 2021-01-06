@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
-import { getByRole } from '@testing-library/dom';
+import { getByRole, fireEvent } from '@testing-library/dom';
 import { SpinnerButton } from '../../../app/javascript/packs/spinner-button';
 
 describe('SpinnerButton', () => {
@@ -101,5 +101,16 @@ describe('SpinnerButton', () => {
     expect(status.classList.contains('usa-sr-only')).to.be.true();
     clock.tick(1);
     expect(status.classList.contains('usa-sr-only')).to.be.false();
+  });
+
+  it('supports external dispatched events to control spinner', () => {
+    const wrapper = createWrapper();
+    const spinnerButton = new SpinnerButton(wrapper);
+    spinnerButton.bind();
+
+    fireEvent(wrapper, new window.CustomEvent('spinner.start'));
+    expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.true();
+    fireEvent(wrapper, new window.CustomEvent('spinner.stop'));
+    expect(wrapper.classList.contains('spinner-button--spinner-active')).to.be.false();
   });
 });
