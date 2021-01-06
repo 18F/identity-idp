@@ -151,7 +151,6 @@ es:
         su identidad.
       use_cac: "¿Tiene un documento de identidad de empleado del gobierno?"
       use_cac_link: Utilice un PIV/CAC en su lugar
-      verifying: Verificando…
       welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
         no alguien que pretende ser usted. Verificar su identidad le permite acceder
         a servicios que manejan información confidencial.
