@@ -11,9 +11,9 @@ RSpec.describe ScriptHelper do
     end
   end
 
-  describe '#javascript_pack_tag_once' do
+  describe '#javascript_packs_tag_once' do
     it 'returns nil' do
-      output = javascript_pack_tag_once('application')
+      output = javascript_packs_tag_once('application')
 
       expect(output).to be_nil
     end
@@ -28,9 +28,8 @@ RSpec.describe ScriptHelper do
 
     context 'scripts enqueued' do
       before do
-        javascript_pack_tag_once('application')
-        javascript_pack_tag_once('application')
-        javascript_pack_tag_once('clipboard')
+        javascript_packs_tag_once('application', 'clipboard')
+        javascript_packs_tag_once('application')
       end
 
       it 'prints all unique packs' do

@@ -12,9 +12,9 @@ module ScriptHelper
     tag
   end
 
-  def javascript_pack_tag_once(name)
+  def javascript_packs_tag_once(*names)
     @scripts ||= Set.new
-    @scripts.add(name)
+    @scripts.merge(names)
     nil
   end
 
