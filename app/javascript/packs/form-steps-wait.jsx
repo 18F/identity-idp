@@ -60,6 +60,7 @@ export class FormStepsWait {
     const { waitStepPath, pollIntervalMs } = this.options;
     if (response.status >= 500) {
       this.renderError();
+      this.stopSpinner();
     } else if (response.redirected && new URL(response.url).pathname !== waitStepPath) {
       window.location.href = response.url;
     } else {
@@ -80,9 +81,19 @@ export class FormStepsWait {
         </Alert>,
         errorRoot,
       );
-
-      // TODO: Stop spinner button from spinning.
     }
+  }
+
+  /**
+   * Stops any active spinner buttons associated with this form.
+   */
+  stopSpinner() {
+    const { form } = this.elements;
+    const event = new window.CustomEvent('spinner.stop', { bubbles: true });
+    // Spinner button may be within the form, or an ancestor. To handle both cases, dispatch a
+    // bubbling event on the innermost element that could be associated with a spinner button.
+    const target = form.querySelector('.spinner-button--spinner-active') || form;
+    target.dispatchEvent(event);
   }
 
   async poll() {
@@ -92,7 +103,7 @@ export class FormStepsWait {
   }
 }
 
-loadPolyfills(['fetch']).then(() => {
+loadPolyfills(['fetch', 'custom-event']).then(() => {
   const forms = [...document.querySelectorAll('[data-form-steps-wait]')];
   forms.forEach((form) => new FormStepsWait(form).bind());
 });

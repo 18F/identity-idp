@@ -43,7 +43,7 @@ describe('FormStepsWait', () => {
     mock.verify();
   });
 
-  it('reloads on failed submit', (done) => {
+  it('stops spinner on failed submit', (done) => {
     const action = new URL('/', window.location).toString();
     const method = 'post';
     const form = createForm({ action, method });
@@ -51,10 +51,10 @@ describe('FormStepsWait', () => {
     sandbox
       .stub(window, 'fetch')
       .withArgs(action, sandbox.match({ method }))
-      .resolves({ ok: false });
-    defineProperty(window, 'location', { value: { reload: done } });
+      .resolves({ ok: false, status: 500 });
 
     fireEvent.submit(form);
+    form.addEventListener('spinner.stop', () => done());
   });
 
   it('navigates on redirected response', (done) => {
