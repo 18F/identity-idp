@@ -44,18 +44,10 @@ describe('FormStepsWait', () => {
   });
 
   describe('failure', () => {
-    /** @type {HTMLFormElement} */
-    let form;
+    const action = new URL('/', window.location).toString();
+    const method = 'post';
 
-    let errorMessage = beforeEach(() => {
-      const action = new URL('/', window.location).toString();
-      const method = 'post';
-      form = createForm({ action, method });
-      if (errorMessage) {
-        form.setAttribute('data-error-message', errorMessage);
-      }
-
-      new FormStepsWait(form).bind();
+    beforeEach(() => {
       sandbox
         .stub(window, 'fetch')
         .withArgs(action, sandbox.match({ method }))
@@ -63,12 +55,22 @@ describe('FormStepsWait', () => {
     });
 
     it('stops spinner', (done) => {
+      const form = createForm({ action, method });
+      new FormStepsWait(form).bind();
       fireEvent.submit(form);
       form.addEventListener('spinner.stop', () => done());
     });
 
     context('error message configured', () => {
-      errorMessage = 'An error occurred!';
+      const errorMessage = 'An error occurred!';
+
+      /** @type {HTMLFormElement} */
+      let form;
+      beforeEach(() => {
+        form = createForm({ action, method });
+        form.setAttribute('data-error-message', errorMessage);
+        new FormStepsWait(form).bind();
+      });
 
       it('shows message', async () => {
         fireEvent.submit(form);
