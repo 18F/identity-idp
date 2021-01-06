@@ -47,7 +47,10 @@ module SessionTimeoutWarningHelper
   # rubocop:enable Rails/HelperInstanceVariable
 
   def time_left_in_session
-    distance_of_time_in_words(warning)
+    distance_of_time_in_words(
+      warning,
+      two_words_connector: " #{I18n.t('datetime.dotiw.two_words_connector')} ",
+    )
   end
 
   def modal
