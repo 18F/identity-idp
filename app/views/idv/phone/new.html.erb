@@ -26,19 +26,8 @@
   <br/>
 </div>
 
-<%= validated_form_for(@idv_form,
-                       url: idv_phone_path,
-                       data: {
-                         form_steps_wait: '',
-                         wait_step_path: idv_phone_path,
-                         poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
-                       },
-                       html: {
-                         autocomplete: 'off',
-                         method: :put,
-                         role: 'form',
-                         class: 'mt2',
-                       }) do |f| %>
+<%= validated_form_for(@idv_form, url: idv_phone_path,
+                       html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f| %>
  <%= f.label :phone, label: t('idv.form.phone'), class: 'bold' %>
  <%= f.input :phone, required: true, input_html: { aria: { invalid: false }, class: 'sm-col-8' }, label: false,
    wrapper_html: { class: 'mr2' } %>
@@ -47,15 +36,9 @@
     <%= render 'idv/phone/verification_options' %>
   <% end %>
 
-  <%= render 'shared/spinner-button',
-             action_message: t('doc_auth.info.verifying'),
-             class: 'mt3' do %>
-    <%= f.button :submit, t('forms.buttons.continue'), class: 'btn-wide sm-col-6 col-12' %>
-  <% end %>
+  <%= f.button :submit, t('forms.buttons.continue'), class: 'btn-wide mt3 sm-col-6 col-12' %>
 <% end %>
 
 <div class="mt2 pt1 border-top">
   <%= link_to t('links.cancel'), idv_cancel_path, class: 'h5' %>
 </div>
-
-<% javascript_pack_tag_once 'form-steps-wait' %>
