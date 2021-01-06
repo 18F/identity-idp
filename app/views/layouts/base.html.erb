@@ -75,7 +75,7 @@
 
   <div id="session-timeout-cntnr"></div>
 
-  <%= javascript_packs_tag_once 'application' %>
+  <%= javascript_packs_tag_once 'application', prepend: true %>
   <%= render_javascript_pack_once_tags %>
 
   <% if current_user # Render the JS snipped that collects platform authenticator analytics %>
