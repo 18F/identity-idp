@@ -12,7 +12,7 @@ module ScriptHelper
 
   def javascript_packs_tag_once(*names, prepend: false)
     @scripts ||= []
-    if (prepend)
+    if prepend
       @scripts = names | @scripts
     else
       @scripts = @scripts | names
