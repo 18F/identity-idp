@@ -15,17 +15,14 @@ feature 'idv phone step' do
       expect(page).to have_current_path(idv_otp_delivery_method_path)
     end
 
-    it 'redirects to the confirmation step when the phone matches the 2fa phone number', js: true do
+    it 'redirects to the confirmation step when the phone matches the 2fa phone number' do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-
-      expect(page).to have_selector('.spinner-button')
       click_idv_continue
-      expect(page).to have_selector('.spinner-button--spinner-active')
 
-      expect(page).to have_content(t('idv.titles.session.review'), wait: 1)
+      expect(page).to have_content(t('idv.titles.session.review'))
       expect(page).to have_current_path(idv_review_path)
     end
 
