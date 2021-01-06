@@ -1,4 +1,4 @@
-import { fireEvent } from '@testing-library/dom';
+import { fireEvent, findByRole } from '@testing-library/dom';
 import { useSandbox } from '../support/sinon';
 import useDefineProperty from '../support/define-property';
 import { FormStepsWait } from '../../../app/javascript/packs/form-steps-wait';
@@ -43,18 +43,39 @@ describe('FormStepsWait', () => {
     mock.verify();
   });
 
-  it('stops spinner on failed submit', (done) => {
-    const action = new URL('/', window.location).toString();
-    const method = 'post';
-    const form = createForm({ action, method });
-    new FormStepsWait(form).bind();
-    sandbox
-      .stub(window, 'fetch')
-      .withArgs(action, sandbox.match({ method }))
-      .resolves({ ok: false, status: 500 });
+  describe('failure', () => {
+    /** @type {HTMLFormElement} */
+    let form;
 
-    fireEvent.submit(form);
-    form.addEventListener('spinner.stop', () => done());
+    let errorMessage = beforeEach(() => {
+      const action = new URL('/', window.location).toString();
+      const method = 'post';
+      form = createForm({ action, method });
+      if (errorMessage) {
+        form.setAttribute('data-error-message', errorMessage);
+      }
+
+      new FormStepsWait(form).bind();
+      sandbox
+        .stub(window, 'fetch')
+        .withArgs(action, sandbox.match({ method }))
+        .resolves({ ok: false, status: 500 });
+    });
+
+    it('stops spinner', (done) => {
+      fireEvent.submit(form);
+      form.addEventListener('spinner.stop', () => done());
+    });
+
+    context('error message configured', () => {
+      errorMessage = 'An error occurred!';
+
+      it('shows message', async () => {
+        fireEvent.submit(form);
+        const alert = await findByRole(form, 'alert');
+        expect(alert.textContent).to.equal(errorMessage);
+      });
+    });
   });
 
   it('navigates on redirected response', (done) => {

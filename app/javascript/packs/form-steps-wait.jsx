@@ -69,14 +69,13 @@ export class FormStepsWait {
   }
 
   renderError() {
-    // TODO: Assign data-error-message on forms to be picked up here.
     const { errorMessage } = this.options;
     if (errorMessage) {
       const errorRoot = document.createElement('div');
-      this.elements.form.prepend(errorRoot);
+      this.elements.form.appendChild(errorRoot);
 
       render(
-        <Alert type="error" className="margin-bottom-4">
+        <Alert type="error" className="margin-top-2">
           {errorMessage}
         </Alert>,
         errorRoot,
