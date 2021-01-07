@@ -11,7 +11,7 @@ describe ApplicationController do
     it 'sets headers to disable cache' do
       get :index
 
-      expect(response.headers['Cache-Control']).to eq 'private, no-store'
+      expect(response.headers['Cache-Control']).to eq 'no-store'
       expect(response.headers['Pragma']).to eq 'no-cache'
     end
   end
@@ -281,7 +281,7 @@ describe ApplicationController do
 
     it 'returns a 400 bad request when a url generation error is raised on the redirect' do
       allow_any_instance_of(ApplicationController).to \
-        receive(:redirect_to).and_raise(ActionController::UrlGenerationError)
+        receive(:redirect_to).and_raise(ActionController::UrlGenerationError.new('bad request'))
       allow(subject).to receive(:current_user).and_return(user)
 
       get :index, params: { timeout: true, request_id: '123' }

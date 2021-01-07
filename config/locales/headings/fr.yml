@@ -11,7 +11,7 @@ fr:
       login_info: Votre compte
       profile_info: Information du profil
       reactivate: Réactivez votre compte
-      two_factor: Authentification à deux facteurs
+      two_factor: Vos méthodes d'authentification
       unphishable: Incapable de phishing
       verified_account: Compte vérifié
     add_email: Ajouter une nouvelle adresse e-mail

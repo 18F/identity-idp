@@ -22,7 +22,7 @@ es:
       authenticator:
         confirm_code_html: Ingrese el código de su app de autenticación. Si tiene
           varias cuentas configuradas en su app, ingrese el código correspondiente
-          a %{email} en %{app}.%{tooltip}
+          a %{email} en %{app}.
         manual_entry: O ingrese este código manualmente en su aplicación de autenticación
       piv_cac:
         account_not_found:

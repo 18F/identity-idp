@@ -21,7 +21,7 @@ en:
       authenticator:
         confirm_code_html: Enter the code from your authenticator app. If you have
           several accounts set up in your app, enter the code corresponding to %{email}
-          at %{app}.%{tooltip}
+          at %{app}.
         manual_entry: Or enter this code manually into your authentication app
       piv_cac:
         account_not_found:

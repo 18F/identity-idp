@@ -16,7 +16,7 @@ namespace :data_requests do
   desc 'Create a JSON report with data for the specified users'
   task create_users_report: :environment do
     uuids = ENV.fetch('UUIDS', '').split(',')
-    requesting_issuers = ENV.fetch('REQESTING_ISSUER', nil)&.split(',')
+    requesting_issuers = ENV.fetch('REQUESTING_ISSUER', nil)&.split(',')
 
     output = uuids.map do |uuid|
       user = DataRequests::LookupUserByUuid.new(uuid).call

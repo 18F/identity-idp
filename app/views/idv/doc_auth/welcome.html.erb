@@ -16,7 +16,7 @@
 
   <ul class='list-reset'>
     <li class='pt2 pb1'>
-      <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='mr1 inline-block'>
@@ -31,7 +31,7 @@
     </li>
     <% if liveness_checking_enabled? %>
     <li class='pt2 pb1'>
-      <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='mr1 inline-block'>
@@ -46,7 +46,7 @@
     </li>
     <% end %>
     <li class='pt2 pb1'>
-      <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='mr1 inline-block'>
@@ -60,7 +60,7 @@
       </div>
     </li>
     <li class='pt2 pb1'>
-      <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='mr1 inline-block'>
@@ -74,7 +74,7 @@
       </div>
     </li>
     <li class='pt2 pb1'>
-      <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='mr1 inline-block'>
@@ -119,5 +119,5 @@
 
   <%= javascript_pack_tag('clipboard') %>
   <%= javascript_pack_tag('ial2-consent-button') %>
-  <%= javascript_pack_tag('document-capture-welcome') if FeatureManagement.document_capture_step_enabled? %>
+  <%= javascript_pack_tag('document-capture-welcome') %>
 <% end %>

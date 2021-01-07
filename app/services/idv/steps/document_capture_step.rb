@@ -2,8 +2,7 @@ module Idv
   module Steps
     class DocumentCaptureStep < DocAuthBaseStep
       IMAGE_UPLOAD_PARAM_NAMES = %i[
-        front_image back_image selfie_image front_image_data_url back_image_data_url
-        selfie_image_data_url
+        front_image back_image selfie_image
       ].freeze
 
       def call
@@ -52,6 +51,20 @@ module Idv
         response
       end
 
+      def post_images
+        return throttled_response if throttled_else_increment
+
+        result = DocAuthRouter.client.post_images(
+          front_image: front_image.read,
+          back_image: back_image.read,
+          selfie_image: selfie_image&.read,
+          liveness_checking_enabled: liveness_checking_enabled?,
+        )
+        # DP: should these cost recordings happen in the doc_auth_client?
+        add_costs(result)
+        result
+      end
+
       def handle_document_verification_failure(response)
         mark_step_incomplete(:document_capture)
         notice = if liveness_checking_enabled?
@@ -62,6 +75,14 @@ module Idv
         log_document_error(response)
         extra = response.to_h.merge(notice)
         failure(response.first_error_message, extra)
+      end
+
+      def log_document_error(get_results_response)
+        unless get_results_response.is_a?(IdentityDocAuth::Acuant::Responses::GetResultsResponse)
+          return
+        end
+        Funnel::DocAuth::LogDocumentError.call(user_id,
+                                               get_results_response&.result_code&.name.to_s)
       end
 
       def handle_stored_result
@@ -83,6 +104,19 @@ module Idv
           return false if flow_params[param_name].present?
         end
         true
+      end
+
+      def front_image
+        flow_params[:front_image]
+      end
+
+      def back_image
+        flow_params[:back_image]
+      end
+
+      def selfie_image
+        return nil unless liveness_checking_enabled?
+        flow_params[:selfie_image]
       end
 
       def form_submit

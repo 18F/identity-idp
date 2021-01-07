@@ -102,7 +102,7 @@ feature 'Two Factor Authentication' do
 
   def select_country_and_type_phone_number(country:, number:)
     find('.iti__flag').click
-    find(".iti__country[id='iti-item-#{country}']").click
+    find(".iti__country[data-country-code='#{country}']").click
     phone_field.send_keys(number)
   end
 
@@ -176,14 +176,6 @@ feature 'Two Factor Authentication' do
 
       expect(Telephony::Test::Message.messages.length).to eq(1)
       expect(Telephony::Test::Call.calls.length).to eq(1)
-    end
-
-    scenario 'the user cannot change delivery method if phone is unsupported' do
-      unsupported_phone = '+1 (242) 327-0143'
-      user = create(:user, :signed_up, with: { phone: unsupported_phone })
-      sign_in_before_2fa(user)
-
-      expect(page).to_not have_link t('links.two_factor_authentication.voice')
     end
   end
 
@@ -289,7 +281,7 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      expect(page).not_to have_link(t('two_factor_authentication.piv_cac_fallback.link'))
+      expect(page).not_to have_link(t('two_factor_authentication.piv_cac_fallback.question'))
     end
   end
 

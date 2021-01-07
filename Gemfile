@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 6.0.0'
+gem 'rails', '~> 6.1.0'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
@@ -25,7 +25,7 @@ gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.2'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
 gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.7'
-gem 'identity_validations', github: '18F/identity-validations', branch: 'master'
+gem 'identity_validations', github: '18F/identity-validations', branch: 'main'
 gem 'json-jwt', '>= 1.11.0'
 gem 'jwt'
 gem 'local_time'
@@ -84,6 +84,7 @@ group :development, :test do
   gem 'bullet', '>= 6.0.2'
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
+  gem 'nokogiri', '~> 1.11.0'
   gem 'parallel_tests'
   gem 'pry-byebug'
   gem 'pry-doc'

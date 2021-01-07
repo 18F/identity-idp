@@ -12,13 +12,22 @@ Rails.application.configure do
   config.action_controller.allow_forgery_protection = false
   config.active_support.test_order = :random
   config.active_support.deprecation = :stderr
-  config.action_view.raise_on_missing_translations = true
+  config.i18n.raise_on_missing_translations = true
 
   config.action_mailer.delivery_method = :test
   config.action_mailer.default_url_options = { host: AppConfig.env.domain_name }
   config.action_mailer.asset_host = AppConfig.env.mailer_domain_name
 
   config.assets.debug = false
+
+  # Raise exceptions for disallowed deprecations.
+  config.active_support.disallowed_deprecation = :raise
+
+  # Tell Active Support which deprecation messages to disallow.
+  config.active_support.disallowed_deprecation_warnings = []
+  #
+  # Annotate rendered view with file names.
+  # config.action_view.annotate_rendered_view_with_filenames = true
 
   config.action_controller.asset_host = if ENV.key?('RAILS_ASSET_HOST')
                                           ENV['RAILS_ASSET_HOST']

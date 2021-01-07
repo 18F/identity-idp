@@ -4,6 +4,11 @@ module LambdaCallback
       dcs = DocumentCaptureSession.find_by(result_id: result_id_parameter)
 
       if dcs
+        analytics.track_event(
+          Analytics::LAMBDA_RESULT_RESOLUTION_PROOF_RESULT,
+          result: resolution_result_parameter,
+        )
+
         dcs.store_proofing_result(resolution_result_parameter)
 
         track_exception_in_result(resolution_result_parameter)

@@ -137,6 +137,15 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
+    context 'with a client_id containing a null byte' do
+      let(:client_id) { "not_a_real_client_id\x00" }
+      it 'has errors' do
+        expect(valid?).to eq(false)
+        expect(form.errors[:client_id]).
+          to include(t('openid_connect.authorization.errors.bad_client_id'))
+      end
+    end
+
     context 'nonce' do
       context 'without a nonce' do
         let(:nonce) { nil }

@@ -50,15 +50,6 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'when any image is a base64 file' do
-      let(:selfie_image) { DocAuthImageFixtures.selfie_image_data_url }
-
-      it 'is valid' do
-        expect(form.valid?).to eq(true)
-        expect(form.errors).to be_blank
-      end
-    end
-
     context 'when document_capture_session_uuid param is missing' do
       let(:document_capture_session_uuid) { nil }
 

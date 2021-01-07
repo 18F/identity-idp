@@ -11,7 +11,7 @@ en:
       login_info: Your account
       profile_info: Profile information
       reactivate: Reactivate your account
-      two_factor: Two-factor authentication
+      two_factor: Your authentication methods
       unphishable: Unphishable
       verified_account: Verified Account
     add_email: Add a new email address

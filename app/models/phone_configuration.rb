@@ -8,10 +8,6 @@ class PhoneConfiguration < ApplicationRecord
 
   enum delivery_preference: { sms: 0, voice: 1 }
 
-  def decorate
-    PhoneConfigurationDecorator.new(self)
-  end
-
   def formatted_phone
     Phonelib.parse(phone).international
   end

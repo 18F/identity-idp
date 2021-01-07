@@ -1,6 +1,6 @@
-import Clipboard from 'clipboard';
+import ClipboardJS from 'clipboard';
 
-const clipboard = new Clipboard('.clipboard');
+const clipboard = new ClipboardJS('.clipboard');
 
 clipboard.on('success', function (e) {
   e.clearSelection();

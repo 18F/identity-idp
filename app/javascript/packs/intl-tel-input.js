@@ -2,25 +2,30 @@ import { loadPolyfills } from '@18f/identity-polyfill';
 import 'intl-tel-input/build/js/utils.js';
 import * as intlTelInput from 'intl-tel-input/build/js/intlTelInput';
 
-function intlTelInputNormalize() {
+/**
+ * @param {HTMLDivElement} iti
+ */
+function intlTelInputNormalize(iti) {
   // remove duplicate items in the country list
-  const dupUsOption = document.querySelectorAll('#country-listbox #iti-item-us')[1];
-  if (dupUsOption) {
-    /** @type {HTMLElement} */ (dupUsOption.parentNode).removeChild(dupUsOption);
-  }
-  const dupCanOption = document.querySelectorAll('#country-listbox #iti-item-ca')[1];
-  if (dupCanOption) {
-    /** @type {HTMLElement} */ (dupCanOption.parentNode).removeChild(dupCanOption);
-  }
+  /** @type {NodeListOf<HTMLLIElement>} */
+  const preferred = iti.querySelectorAll('.iti__preferred');
+  preferred.forEach((listItem) => {
+    const { countryCode } = listItem.dataset;
+    /** @type {NodeListOf<HTMLLIElement>} */
+    const duplicates = iti.querySelectorAll(`.iti__standard[data-country-code="${countryCode}"]`);
+    duplicates.forEach((duplicateListItem) => {
+      duplicateListItem.parentNode?.removeChild(duplicateListItem);
+    });
+  });
   // set accessibility label
-  const flagContainer = document.querySelectorAll('.iti__flag-container');
+  const flagContainer = iti.querySelectorAll('.iti__flag-container');
   if (flagContainer) {
     [].slice.call(flagContainer).forEach((element) => {
       element.setAttribute('aria-label', 'Country code');
     });
   }
   // fix knapsack error where aria-owns requires aria-expanded, use pop-up instead
-  const selectedFlag = document.querySelectorAll('.iti__flag-container .iti__selected-flag');
+  const selectedFlag = iti.querySelectorAll('.iti__flag-container .iti__selected-flag');
   if (selectedFlag) {
     [].slice.call(selectedFlag).forEach((element) => {
       element.setAttribute('aria-haspopup', 'true');
@@ -55,5 +60,7 @@ loadPolyfills(['custom-event']).then(() => {
     }
   });
 
-  intlTelInputNormalize();
+  /** @type {NodeListOf<HTMLDivElement>} */
+  const itiElements = document.querySelectorAll('.iti');
+  itiElements.forEach(intlTelInputNormalize);
 });
