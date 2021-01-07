@@ -24,7 +24,7 @@ module TwoFactorAuthentication
     end
 
     def security_level
-      I18n.t('two_factor_authentication.two_factor_choice_options.secure_label')
+      I18n.t('two_factor_authentication.two_factor_choice_options.less_secure_label')
     end
 
     private
