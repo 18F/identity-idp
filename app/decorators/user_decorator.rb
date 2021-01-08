@@ -36,7 +36,11 @@ class UserDecorator
     current_time = Time.zone.now
 
     distance_of_time_in_words(
-      current_time, current_time + lockout_time_remaining, true, highest_measures: 2
+      current_time,
+      current_time + lockout_time_remaining,
+      true,
+      highest_measures: 2,
+      two_words_connector: " #{I18n.t('datetime.dotiw.two_words_connector')} ",
     )
   end
 
@@ -52,7 +56,11 @@ class UserDecorator
     current_time = Time.zone.now
 
     distance_of_time_in_words(
-      current_time, current_time + Devise.confirm_within, true, accumulate_on: :hours
+      current_time,
+      current_time + Devise.confirm_within,
+      true,
+      accumulate_on: :hours,
+      two_words_connector: " #{I18n.t('datetime.dotiw.two_words_connector')} ",
     )
   end
 

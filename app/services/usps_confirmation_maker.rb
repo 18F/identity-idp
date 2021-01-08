@@ -1,8 +1,12 @@
 class UspsConfirmationMaker
-  def initialize(pii:, issuer:, profile:)
+  def initialize(pii:, issuer:, profile: nil, profile_id: nil, otp: nil)
+    raise ArgumentError 'must have either profile or profile_id' if !profile && !profile_id
+
     @pii = pii
     @issuer = issuer
     @profile = profile
+    @profile_id = profile_id
+    @otp = otp
   end
 
   def otp
@@ -12,17 +16,17 @@ class UspsConfirmationMaker
   def perform
     UspsConfirmation.create!(entry: attributes)
     UspsConfirmationCode.create!(
-      profile: profile,
+      profile_id: profile&.id || profile_id,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
+
     update_proofing_cost
   end
 
   private
 
-  attr_reader :pii, :issuer, :profile
+  attr_reader :pii, :issuer, :profile, :profile_id
 
-  # This method is single statement spread across many lines for readability
   def attributes
     {
       address1: pii[:address1],
@@ -43,7 +47,7 @@ class UspsConfirmationMaker
   end
 
   def update_proofing_cost
-    Db::ProofingCost::AddUserProofingCost.call(profile.user.id, :gpo_letter)
+    Db::ProofingCost::AddUserProofingCost.call(profile&.user&.id, :gpo_letter)
     Db::SpCost::AddSpCost.call(issuer, 2, :gpo_letter)
   end
 end

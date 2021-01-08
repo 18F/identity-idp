@@ -84,6 +84,7 @@ group :development, :test do
   gem 'bullet', '>= 6.0.2'
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
+  gem 'nokogiri', '~> 1.11.0'
   gem 'parallel_tests'
   gem 'pry-byebug'
   gem 'pry-doc'
