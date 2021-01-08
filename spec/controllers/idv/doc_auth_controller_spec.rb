@@ -122,10 +122,10 @@ describe Idv::DocAuthController do
       put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
       expect(@analytics).to have_received(:track_event).ordered.with(
-        Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 1),
+        Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 1)
       )
       expect(@analytics).to have_received(:track_event).ordered.with(
-        Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 2),
+        Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 2)
       )
     end
 
