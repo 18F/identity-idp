@@ -6,6 +6,7 @@ module Users
     before_action :confirm_verification_needed
 
     def index
+      analytics.track_event(Analytics::ACCOUNT_VERIFICATION_VISITED)
       usps_mail = Idv::UspsMail.new(current_user)
       @mail_spammed = usps_mail.mail_spammed?
       @verify_account_form = VerifyAccountForm.new(user: current_user)
@@ -16,7 +17,10 @@ module Users
     def create
       @verify_account_form = build_verify_account_form
 
-      if @verify_account_form.submit
+      result = @verify_account_form.submit
+      analytics.track_event(Analytics::ACCOUNT_VERIFICATION_SUBMITTED, result.to_h)
+
+      if result.success?
         create_user_event(:account_verified)
         flash[:success] = t('account.index.verification.success')
         redirect_to sign_up_completed_url

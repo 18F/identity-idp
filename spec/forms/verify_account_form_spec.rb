@@ -27,8 +27,9 @@ describe VerifyAccountForm do
       let(:entered_otp) { nil }
 
       it 'is invalid' do
-        expect(subject).to_not be_valid
-        expect(subject.errors[:otp]).to eq [t('errors.messages.blank')]
+        result = subject.submit
+        expect(result.success?).to eq(false)
+        expect(result.errors[:otp]).to eq [t('errors.messages.blank')]
       end
     end
 
@@ -37,8 +38,9 @@ describe VerifyAccountForm do
       let(:user) { build_stubbed(:user) }
 
       it 'is invalid' do
-        expect(subject).to_not be_valid
-        expect(subject.errors[:base]).to eq [t('errors.messages.no_pending_profile')]
+        result = subject.submit
+        expect(result.success?).to eq(false)
+        expect(result.errors[:base]).to eq [t('errors.messages.no_pending_profile')]
       end
     end
 
@@ -48,7 +50,8 @@ describe VerifyAccountForm do
         let(:otp) { 'ABCDEF12345' }
 
         it 'is valid' do
-          expect(subject).to be_valid
+          result = subject.submit
+          expect(result.success?).to eq(true)
         end
       end
 
@@ -57,7 +60,8 @@ describe VerifyAccountForm do
         let(:otp) { '0000000000' }
 
         it 'is valid' do
-          expect(subject).to be_valid
+          result = subject.submit
+          expect(result.success?).to eq(true)
         end
       end
     end
@@ -66,8 +70,9 @@ describe VerifyAccountForm do
       let(:entered_otp) { 'wrong' }
 
       it 'is invalid' do
-        expect(subject).to_not be_valid
-        expect(subject.errors[:otp]).to eq [t('errors.messages.confirmation_code_incorrect')]
+        result = subject.submit
+        expect(result.success?).to eq(false)
+        expect(result.errors[:otp]).to eq [t('errors.messages.confirmation_code_incorrect')]
       end
     end
 
@@ -75,7 +80,8 @@ describe VerifyAccountForm do
       let(:code_sent_at) { 11.days.ago }
 
       it 'is invalid' do
-        expect(subject).to_not be_valid
+        result = subject.submit
+        expect(result.success?).to eq(false)
         expect(subject.errors[:otp]).to eq [t('errors.messages.usps_otp_expired')]
       end
     end
@@ -84,7 +90,8 @@ describe VerifyAccountForm do
   describe '#submit' do
     context 'correct OTP' do
       it 'returns true' do
-        expect(subject.submit).to eq true
+        result = subject.submit
+        expect(result.success?).to eq true
       end
 
       it 'activates the pending profile' do

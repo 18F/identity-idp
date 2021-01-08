@@ -8,6 +8,7 @@ RSpec.describe Users::VerifyAccountController do
   let(:pending_profile) { build(:profile) }
 
   before do
+    stub_analytics
     user = stub_sign_in
     decorated_user = stub_decorated_user_with_pending_profile(user)
     create(
@@ -26,6 +27,8 @@ RSpec.describe Users::VerifyAccountController do
 
     context 'user has pending profile' do
       it 'renders page' do
+        expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_VERIFICATION_VISITED)
+
         action
 
         expect(response).to render_template('users/verify_account/index')
@@ -59,6 +62,11 @@ RSpec.describe Users::VerifyAccountController do
       let(:success) { true }
 
       it 'redirects to the sign_up/completions page' do
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
+          success: true, errors: {},
+        )
+
         action
 
         expect(response).to redirect_to(sign_up_completed_url)
@@ -69,6 +77,11 @@ RSpec.describe Users::VerifyAccountController do
       let(:submitted_otp) { 'the-wrong-otp' }
 
       it 'renders the index page to show errors' do
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
+          success: false, errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
+        )
+
         action
 
         expect(response).to render_template('users/verify_account/index')
