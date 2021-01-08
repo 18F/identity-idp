@@ -17,7 +17,7 @@ module TwoFactorAuthentication
       result = @personal_key_form.submit
       analytics_hash = result.to_h.merge(multi_factor_auth_method: 'personal-key')
 
-      analytics.track_mfa_submit_event(analytics_hash, ga_cookie_client_id)
+      analytics.track_mfa_submit_event(analytics_hash)
 
       handle_result(result)
     end

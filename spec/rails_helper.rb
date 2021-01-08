@@ -95,8 +95,4 @@ RSpec.configure do |config|
     example.run
     Bullet.enable = false
   end
-
-  config.before(:each) do
-    stub_request(:post, 'https://www.google-analytics.com/collect')
-  end
 end

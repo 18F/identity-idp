@@ -72,12 +72,6 @@ module RememberDeviceConcern
 
   def handle_valid_remember_device_analytics
     analytics.track_event(Analytics::REMEMBERED_DEVICE_USED_FOR_AUTH, {})
-    GoogleAnalyticsMeasurement.new(
-      category: 'authentication',
-      event_action: 'device-remembered',
-      method: 'same-device',
-      client_id: ga_cookie_client_id,
-    ).send_event
   end
 
   def remember_device_cookie_expiration

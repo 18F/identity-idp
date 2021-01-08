@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::PivCacVerificationController do
-  let(:ga_client_id) { '123.456' }
-  let(:ga_cookie) { 'GA1.2.123.456' }
   let(:user) do
     create(:user, :signed_up, :with_piv_or_cac,
            with: { phone: '+1 (703) 555-0000' })
@@ -42,7 +40,6 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       'issuer' => x509_issuer,
       'nonce' => 'bad-' + nonce,
     )
-    cookies['_ga'] = ga_cookie
   end
 
   describe '#show' do
@@ -105,12 +102,12 @@ describe TwoFactorAuthentication::PivCacVerificationController do
           multi_factor_auth_method: 'piv_cac',
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(submit_attributes, ga_client_id)
+          with(submit_attributes)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
-        get :show, params: { token: 'good-token', ga_client_id: ga_client_id }
+        get :show, params: { token: 'good-token' }
       end
     end
 
@@ -185,11 +182,11 @@ describe TwoFactorAuthentication::PivCacVerificationController do
           key_id: nil,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(submit_attributes, ga_client_id)
+          with(submit_attributes)
 
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        get :show, params: { token: 'bad-token', ga_client_id: ga_client_id }
+        get :show, params: { token: 'bad-token' }
       end
     end
 

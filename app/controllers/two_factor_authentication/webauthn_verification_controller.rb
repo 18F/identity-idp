@@ -15,7 +15,6 @@ module TwoFactorAuthentication
       result = form.submit(request.protocol, params)
       analytics.track_mfa_submit_event(
         result.to_h.merge(analytics_properties),
-        ga_cookie_client_id,
       )
       handle_webauthn_result(result)
     end
