@@ -15,7 +15,7 @@ module Idv
         elsif current_async_state.in_progress?
           nil
         elsif current_async_state.timed_out?
-          flow_session[:error_message] = I18n.t('idv.failure.timeout')
+          flash[:error] = I18n.t('idv.failure.timeout')
           delete_async
           mark_step_incomplete(:verify)
         elsif current_async_state.done?

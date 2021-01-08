@@ -1,7 +1,21 @@
 import { fireEvent, findByRole } from '@testing-library/dom';
 import { useSandbox } from '../support/sinon';
 import useDefineProperty from '../support/define-property';
-import { FormStepsWait } from '../../../app/javascript/packs/form-steps-wait';
+import { FormStepsWait, getContentFromHTML } from '../../../app/javascript/packs/form-steps-wait';
+
+describe('getContentFromHTML', () => {
+  it('returns trimmed content if element exists', () => {
+    const content = getContentFromHTML('<!doctype html><title>x </title>', 'title');
+
+    expect(content).to.equal('x');
+  });
+
+  it('returns null if element does not exist', () => {
+    const content = getContentFromHTML('<!doctype html><title>x </title>', 'div');
+
+    expect(content).to.be.null();
+  });
+});
 
 describe('FormStepsWait', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
@@ -35,7 +49,7 @@ describe('FormStepsWait', () => {
           body: sandbox.match((formData) => /** @type {FormData} */ (formData).has('foo')),
         }),
       )
-      .resolves({ ok: true });
+      .resolves({ status: 200 });
 
     const didNativeSubmit = fireEvent.submit(form);
 
@@ -47,35 +61,110 @@ describe('FormStepsWait', () => {
     const action = new URL('/', window.location).toString();
     const method = 'post';
 
-    beforeEach(() => {
-      sandbox
-        .stub(window, 'fetch')
-        .withArgs(action, sandbox.match({ method }))
-        .resolves({ ok: false, status: 500 });
-    });
-
-    it('stops spinner', (done) => {
-      const form = createForm({ action, method });
-      new FormStepsWait(form).bind();
-      fireEvent.submit(form);
-      form.addEventListener('spinner.stop', () => done());
-    });
-
-    context('error message configured', () => {
-      const errorMessage = 'An error occurred!';
-
-      /** @type {HTMLFormElement} */
-      let form;
+    context('server error', () => {
       beforeEach(() => {
-        form = createForm({ action, method });
-        form.setAttribute('data-error-message', errorMessage);
-        new FormStepsWait(form).bind();
+        sandbox
+          .stub(window, 'fetch')
+          .withArgs(action, sandbox.match({ method }))
+          .resolves({ ok: false, status: 500, url: 'http://example.com' });
       });
 
-      it('shows message', async () => {
+      it('stops spinner', (done) => {
+        const form = createForm({ action, method });
+        new FormStepsWait(form).bind();
         fireEvent.submit(form);
-        const alert = await findByRole(form, 'alert');
-        expect(alert.textContent).to.equal(errorMessage);
+        form.addEventListener('spinner.stop', () => done());
+      });
+
+      context('error message configured', () => {
+        const errorMessage = 'An error occurred!';
+
+        /** @type {HTMLFormElement} */
+        let form;
+        beforeEach(() => {
+          form = createForm({ action, method });
+          form.setAttribute('data-error-message', errorMessage);
+          new FormStepsWait(form).bind();
+        });
+
+        it('shows message', async () => {
+          fireEvent.submit(form);
+          const alert = await findByRole(form, 'alert');
+          expect(alert.textContent).to.equal(errorMessage);
+        });
+      });
+    });
+
+    context('handled error', () => {
+      context('alert not in response', () => {
+        const redirect = window.location.href;
+        beforeEach(() => {
+          sandbox
+            .stub(window, 'fetch')
+            .withArgs(action, sandbox.match({ method }))
+            .resolves({
+              status: 200,
+              url: redirect,
+              redirected: true,
+              text: () => Promise.resolve('<!doctype html><title>x</title>'),
+            });
+        });
+
+        it('redirects', (done) => {
+          const form = createForm({ action, method });
+          new FormStepsWait(form).bind();
+
+          fireEvent.submit(form);
+
+          const { pathname } = window.location;
+
+          defineProperty(window, 'location', {
+            value: {
+              get pathname() {
+                return pathname;
+              },
+              set href(url) {
+                expect(url).to.equal(redirect);
+                done();
+              },
+            },
+          });
+        });
+      });
+
+      context('alert in response', () => {
+        const errorMessage = 'An error occurred!';
+
+        beforeEach(() => {
+          sandbox
+            .stub(window, 'fetch')
+            .withArgs(action, sandbox.match({ method }))
+            .resolves({
+              status: 200,
+              url: window.location.href,
+              redirected: true,
+              text: () =>
+                Promise.resolve(
+                  `<!doctype html>
+                  <title>x</title>
+                  <div class="usa-alert usa-alert--error">
+                    <div class="usa-alert__body">
+                      <p class="usa-alert__text">${errorMessage}</p>
+                    </div>
+                  </div>`,
+                ),
+            });
+        });
+
+        it('shows message', async () => {
+          const form = createForm({ action, method });
+          new FormStepsWait(form).bind();
+
+          fireEvent.submit(form);
+
+          const alert = await findByRole(form, 'alert');
+          expect(alert.textContent).to.equal(errorMessage);
+        });
       });
     });
   });
@@ -89,7 +178,7 @@ describe('FormStepsWait', () => {
     sandbox
       .stub(window, 'fetch')
       .withArgs(action, sandbox.match({ method }))
-      .resolves({ ok: true, redirected: true, url: redirect });
+      .resolves({ status: 200, redirected: true, url: redirect });
     defineProperty(window, 'location', {
       value: {
         set href(url) {
@@ -114,12 +203,12 @@ describe('FormStepsWait', () => {
       .stub(window, 'fetch')
       .withArgs(action, sandbox.match({ method }))
       .resolves({
-        ok: true,
+        status: 200,
         redirected: true,
         url: new URL(waitStepPath, window.location).toString(),
       })
       .withArgs(waitStepPath, sandbox.match({ method: 'HEAD' }))
-      .resolves({ ok: true, redirected: true, url: redirect });
+      .resolves({ status: 200, redirected: true, url: redirect });
 
     defineProperty(window, 'location', {
       value: {

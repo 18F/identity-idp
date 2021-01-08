@@ -22,6 +22,21 @@ const DEFAULT_OPTIONS = {
   waitStepPath: `${window.location.pathname}_wait`,
 };
 
+/**
+ * Returns trimmed content from HTML for given DOM selector, or null if the element does not exist.
+ *
+ * @param {string} html HTML markup.
+ * @param {string} selector DOM selector to retrieve.
+ *
+ * @return {string?} Trimmed content, if exists.
+ */
+export function getContentFromHTML(html, selector) {
+  const dom = document.implementation.createHTMLDocument();
+  dom.body.innerHTML = html;
+  const textContent = dom.querySelector(selector)?.textContent;
+  return textContent ? textContent.trim() : null;
+}
+
 export class FormStepsWait {
   constructor(form) {
     /** @type {FormStepsWaitElements} */
@@ -56,31 +71,51 @@ export class FormStepsWait {
     this.handleResponse(response);
   }
 
-  handleResponse(response) {
+  /**
+   * @param {Response} response
+   */
+  async handleResponse(response) {
     const { waitStepPath, pollIntervalMs } = this.options;
+    const responseURL = new URL(response.url);
+
     if (response.status >= 500) {
-      this.renderError();
       this.stopSpinner();
-    } else if (response.redirected && new URL(response.url).pathname !== waitStepPath) {
-      window.location.href = response.url;
+
+      const { errorMessage } = this.options;
+      if (errorMessage) {
+        this.renderError(errorMessage);
+      }
+    } else if (response.redirected && responseURL.pathname !== waitStepPath) {
+      let message;
+      if (responseURL.pathname === window.location.pathname) {
+        const body = await response.text();
+        message = getContentFromHTML(body, '.usa-alert.usa-alert--error');
+      }
+
+      if (message) {
+        this.renderError(message);
+        this.stopSpinner();
+      } else {
+        window.location.href = response.url;
+      }
     } else {
       setTimeout(() => this.poll(), pollIntervalMs);
     }
   }
 
-  renderError() {
-    const { errorMessage } = this.options;
-    if (errorMessage) {
-      const errorRoot = document.createElement('div');
-      this.elements.form.appendChild(errorRoot);
+  /**
+   * @param {string} message Error message text.
+   */
+  renderError(message) {
+    const errorRoot = document.createElement('div');
+    this.elements.form.appendChild(errorRoot);
 
-      render(
-        <Alert type="error" className="margin-top-2">
-          {errorMessage}
-        </Alert>,
-        errorRoot,
-      );
-    }
+    render(
+      <Alert type="error" className="margin-top-2">
+        {message}
+      </Alert>,
+      errorRoot,
+    );
   }
 
   /**
