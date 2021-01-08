@@ -71,6 +71,8 @@ class Analytics
   ACCOUNT_DELETE_VISITED = 'Account Delete visited'.freeze
   ACCOUNT_DELETION = 'Account Deletion Requested'.freeze
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'.freeze
+  ACCOUNT_VERIFICATION_SUBMITTED = 'Account verification submitted'
+  ACCOUNT_VERIFICATION_VISITED = 'Account verification visited'
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
   ADD_EMAIL = 'Add Email: Email Submitted'.freeze
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'.freeze

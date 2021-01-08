@@ -15,13 +15,13 @@ class VerifyAccountForm
   end
 
   def submit
-    if valid?
+    result = valid?
+    if result
       activate_profile
-      true
     else
       reset_sensitive_fields
-      false
     end
+    FormResponse.new(success: result, errors: errors.messages)
   end
 
   protected
