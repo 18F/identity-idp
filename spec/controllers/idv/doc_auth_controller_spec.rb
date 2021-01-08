@@ -58,12 +58,24 @@ describe Idv::DocAuthController do
     end
 
     it 'tracks analytics' do
-      result = { step: 'welcome' }
+      result = { step: 'welcome', step_count: 1 }
 
       get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' visited', result
+      )
+    end
+
+    it 'increments the analytics step counts on subsequent submissions' do
+      get :show, params: { step: 'welcome' }
+      get :show, params: { step: 'welcome' }
+
+      expect(@analytics).to have_received(:track_event).ordered.with(
+        Analytics::DOC_AUTH + ' visited', hash_including(step: 'welcome', step_count: 1)
+      )
+      expect(@analytics).to have_received(:track_event).ordered.with(
+        Analytics::DOC_AUTH + ' visited', hash_including(step: 'welcome', step_count: 2)
       )
     end
 
@@ -91,12 +103,29 @@ describe Idv::DocAuthController do
       mock_next_step(:back_image)
       allow_any_instance_of(Flow::BaseFlow).to \
         receive(:flow_session).and_return(pii_from_doc: {})
-      result = { success: true, errors: {}, step: 'ssn' }
+      result = { success: true, errors: {}, step: 'ssn', step_count: 1 }
 
-      put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
+      put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', result
+      )
+    end
+
+    it 'increments the analytics step counts on subsequent submissions' do
+      mock_next_step(:back_image)
+      allow_any_instance_of(Flow::BaseFlow).to \
+        receive(:flow_session).and_return(pii_from_doc: {})
+      result = { success: true, errors: {}, step: 'ssn', step_count: 1 }
+
+      put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '666-66-6666' } }
+      put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
+
+      expect(@analytics).to have_received(:track_event).ordered.with(
+        Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 1),
+      )
+      expect(@analytics).to have_received(:track_event).ordered.with(
+        Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 2),
       )
     end
 
@@ -119,11 +148,16 @@ describe Idv::DocAuthController do
           message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
         },
         step: 'welcome',
+        step_count: 1,
       }
 
       expect(NewRelic::Agent).to receive(:notice_error)
 
-      put :update, params: { step: 'welcome', ial2_consent_given: true, no_camera: true }
+      put :update, params: {
+        step: 'welcome',
+        ial2_consent_given: true,
+        no_camera: true,
+      }
 
       expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
       expect(@analytics).to have_received(:track_event).with(
@@ -327,6 +361,7 @@ describe Idv::DocAuthController do
           success: false,
           remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
           step: 'verify_document_status',
+          step_count: 1,
         }
       )
     end
