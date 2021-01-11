@@ -154,9 +154,6 @@ es:
       piv_cac: Identificación de empleado del gobierno
       piv_cac_info_html: Inserte su tarjeta gubernamental o militar PIV o CAC e ingrese
         su PIN
-      second_phone: Segundo telefono
-      second_phone_info_html: Obtenga códigos de seguridad por mensaje de texto (SMS)
-        o llamada telefónica a un número de teléfono secundario (uno que no sea %{phone})
       secure_label: Seguro
       sms: Mensaje de texto / SMS
       sms_info_html: Obtenga su código de seguridad a través de mensajes de texto

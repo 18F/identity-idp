@@ -153,9 +153,6 @@ fr:
       piv_cac: Numéro d'employé du gouvernement
       piv_cac_info_html: Insérez votre carte PIV ou CAC du gouvernement ou militaire
         et entrez votre code PIN
-      second_phone: Deuxième téléphone
-      second_phone_info_html: Obtenir les codes de sécurité par SMS ou appel téléphonique
-        vers un numéro de téléphone secondaire (autre que %{phone})
       secure_label: A une protection
       sms: SMS
       sms_info_html: Obtenez votre code de sécurité par SMS
