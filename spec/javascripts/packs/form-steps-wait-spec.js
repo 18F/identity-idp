@@ -23,7 +23,13 @@ describe('FormStepsWait', () => {
 
   function createForm({ action, method, options }) {
     document.body.innerHTML = `
-      <form action="${action}" method="${method}" data-form-steps-wait="">
+      <form
+        action="${action}"
+        method="${method}"
+        data-form-steps-wait=""
+        data-alert-target="#alert-target"
+      >
+        <div id="alert-target"></div>
         <input type="hidden" name="foo" value="bar">
       </form>
     `;

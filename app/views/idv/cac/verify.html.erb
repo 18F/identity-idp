@@ -1,3 +1,5 @@
+<div id="form-steps-wait-alert"></div>
+
 <% title t('cac_proofing.titles.cac_proofing') %>
 
 <h5 class="my1 caps bold accent-blue">
@@ -57,6 +59,7 @@
           data: {
             form_steps_wait: '',
             error_message: t("idv.failure.sessions.exception"),
+            alert_target: '#form-steps-wait-alert',
             wait_step_path: idv_cac_step_path(step: :verify_wait),
             poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
           },

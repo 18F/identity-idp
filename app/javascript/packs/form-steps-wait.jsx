@@ -14,6 +14,7 @@ import { loadPolyfills } from '@18f/identity-polyfill';
  * @prop {number} pollIntervalMs Poll interval.
  * @prop {string} waitStepPath URL path to wait step, used in polling.
  * @prop {string=} errorMessage Message to show on unhandled server error.
+ * @prop {string=} alertTarget DOM selector of HTML element to which alert should render.
  */
 
 /** @type {FormStepsWaitOptions} */
@@ -107,11 +108,20 @@ export class FormStepsWait {
    * @param {string} message Error message text.
    */
   renderError(message) {
-    const errorRoot = document.createElement('div');
-    this.elements.form.appendChild(errorRoot);
+    const { alertTarget } = this.options;
+    if (!alertTarget) {
+      return;
+    }
+
+    const errorRoot = document.querySelector(alertTarget);
+    if (!errorRoot) {
+      return;
+    }
+
+    errorRoot.innerHTML = '';
 
     render(
-      <Alert type="error" className="margin-top-2">
+      <Alert type="error" className="margin-bottom-4">
         {message}
       </Alert>,
       errorRoot,
