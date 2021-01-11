@@ -142,7 +142,7 @@ es:
     two_factor_choice_options:
       auth_app: Aplicación de autenticación
       auth_app_info_html: Obtenga códigos de una aplicación en su teléfono, computadora
-        o tableta
+        o tableta.
       backup_code: No tengo ninguno de los anteriores
       backup_code_info_html: Le daremos 10 códigos para usar y guardar en un lugar
         seguro. Puede usar códigos de respaldo como su único método de autenticación.
@@ -150,16 +150,16 @@ es:
       more_secure_label: Más seguridad
       phone: Teléfono
       phone_info_html: Obtenga códigos de seguridad por mensaje de texto (SMS) o llamada
-        telefónica
+        telefónica.
       piv_cac: Identificación de empleado del gobierno
       piv_cac_info_html: Inserte su tarjeta gubernamental o militar PIV o CAC e ingrese
-        su PIN
+        su PIN.
       secure_label: Seguro
       sms: Mensaje de texto / SMS
       sms_info_html: Obtenga su código de seguridad a través de mensajes de texto
-        / SMS
+        / SMS.
       voice: Llamada telefónica
-      voice_info_html: Obtenga su código de seguridad a través de una llamada telefónica
+      voice_info_html: Obtenga su código de seguridad a través de una llamada telefónica.
       webauthn: Llave de seguridad
       webauthn_info_html: Use una llave de seguridad que tenga. Es un dispositivo
         físico que se conecta o que está integrado en su computadora o teléfono (a

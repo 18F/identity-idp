@@ -140,15 +140,15 @@ en:
       less_secure_label: Less secure
       more_secure_label: More Secure
       phone: Phone
-      phone_info_html: Get security codes by text message (SMS) or phone call
+      phone_info_html: Get security codes by text message (SMS) or phone call.
       piv_cac: Government employee ID
       piv_cac_info_html: Insert your government or military PIV or CAC card and enter
-        your PIN
+        your PIN.
       secure_label: Secure
       sms: Text message / SMS
-      sms_info_html: Get your security code via text message / SMS
+      sms_info_html: Get your security code via text message / SMS.
       voice: Phone call
-      voice_info_html: Get your security code via phone call
+      voice_info_html: Get your security code via phone call.
       webauthn: Security key
       webauthn_info_html: Use a security key that you have. It’s a physical device
         that you plug in or that is built in to your computer or phone (it often looks
