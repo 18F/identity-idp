@@ -135,35 +135,83 @@ describe('FormStepsWait', () => {
       context('alert in response', () => {
         const errorMessage = 'An error occurred!';
 
-        beforeEach(() => {
-          sandbox
-            .stub(window, 'fetch')
-            .withArgs(action, sandbox.match({ method }))
-            .resolves({
-              status: 200,
-              url: window.location.href,
-              redirected: true,
-              text: () =>
-                Promise.resolve(
-                  `<!doctype html>
-                  <title>x</title>
-                  <div class="usa-alert usa-alert--error">
-                    <div class="usa-alert__body">
-                      <p class="usa-alert__text">${errorMessage}</p>
-                    </div>
-                  </div>`,
-                ),
-            });
+        context('synchronous resolution', () => {
+          beforeEach(() => {
+            sandbox
+              .stub(window, 'fetch')
+              .withArgs(action, sandbox.match({ method }))
+              .resolves({
+                status: 200,
+                url: window.location.href,
+                redirected: true,
+                text: () =>
+                  Promise.resolve(
+                    `<!doctype html>
+                    <title>x</title>
+                    <div class="usa-alert usa-alert--error">
+                      <div class="usa-alert__body">
+                        <p class="usa-alert__text">${errorMessage}</p>
+                      </div>
+                    </div>`,
+                  ),
+              });
+          });
+
+          it('shows message', async () => {
+            const form = createForm({ action, method });
+            new FormStepsWait(form).bind();
+
+            fireEvent.submit(form);
+
+            const alert = await findByRole(form, 'alert');
+            expect(alert.textContent).to.equal(errorMessage);
+          });
         });
 
-        it('shows message', async () => {
-          const form = createForm({ action, method });
-          new FormStepsWait(form).bind();
+        context('asynchronous resolution', () => {
+          const waitStepPath = '/wait';
 
-          fireEvent.submit(form);
+          beforeEach(() => {
+            sandbox
+              .stub(window, 'fetch')
+              .withArgs(action, sandbox.match({ method }))
+              .resolves({
+                status: 200,
+                redirected: true,
+                url: new URL(waitStepPath, window.location).toString(),
+              })
+              .withArgs(waitStepPath)
+              .resolves({
+                status: 200,
+                redirected: true,
+                url: window.location.href,
+                text: () =>
+                  Promise.resolve(
+                    `<!doctype html>
+                    <title>x</title>
+                    <div class="usa-alert usa-alert--error">
+                      <div class="usa-alert__body">
+                        <p class="usa-alert__text">${errorMessage}</p>
+                      </div>
+                    </div>`,
+                  ),
+              });
+            sandbox.stub(global, 'setTimeout').callsArg(0);
+          });
 
-          const alert = await findByRole(form, 'alert');
-          expect(alert.textContent).to.equal(errorMessage);
+          it('shows message', async () => {
+            const form = createForm({
+              action,
+              method,
+              options: { waitStepPath, pollIntervalMs: 0 },
+            });
+            new FormStepsWait(form).bind();
+
+            fireEvent.submit(form);
+
+            const alert = await findByRole(form, 'alert');
+            expect(alert.textContent).to.equal(errorMessage);
+          });
         });
       });
     });
@@ -207,7 +255,7 @@ describe('FormStepsWait', () => {
         redirected: true,
         url: new URL(waitStepPath, window.location).toString(),
       })
-      .withArgs(waitStepPath, sandbox.match({ method: 'HEAD' }))
+      .withArgs(waitStepPath)
       .resolves({ status: 200, redirected: true, url: redirect });
 
     defineProperty(window, 'location', {
