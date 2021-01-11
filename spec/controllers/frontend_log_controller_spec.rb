@@ -5,8 +5,7 @@ describe FrontendLogController do
     subject(:action) { post :create, params: params }
 
     let(:user) { create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' }) }
-    let(:log_level) { 'info' }
-    let(:params) { { log_level: log_level, payload: { message: 'To be logged...' } } }
+    let(:params) { { event: 'custom event', payload: { message: 'To be logged...' } } }
 
     context 'user is signed in' do
       before do
@@ -22,8 +21,8 @@ describe FrontendLogController do
       end
 
       context 'missing a parameter' do
-        it 'rejects a request without specifying log_level' do
-          params.delete(:log_level)
+        it 'rejects a request without specifying event' do
+          params.delete(:event)
           action
 
           json = JSON.parse(response.body, symbolize_names: true)

@@ -4,17 +4,8 @@ class FrontendLogController < ApplicationController
 
   def create
     if user_fully_authenticated?
-      log_level, payload = log_params
-      case log_level
-      when 'error'
-        Rails.logger.error { payload.to_json }
-      when 'warn'
-        Rails.logger.warn { payload.to_json }
-      when 'debug'
-        Rails.logger.debug { payload.to_json }
-      else
-        Rails.logger.info { payload.to_json }
-      end
+      event, payload = log_params
+      analytics.track_event(event, payload)
 
       render json: { success: true }, status: :ok
     else
@@ -28,6 +19,6 @@ class FrontendLogController < ApplicationController
   private
 
   def log_params
-    params.require([:log_level, :payload])
+    params.require([:event, :payload])
   end
 end
