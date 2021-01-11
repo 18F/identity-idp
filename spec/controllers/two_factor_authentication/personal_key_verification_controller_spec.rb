@@ -34,7 +34,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
     end
 
     it 'redirects to the two_factor_options page if user is IAL2' do
-      profile =  create(:profile, :active, :verified, pii: { ssn: '1234' })
+      profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
       raw_key = PersonalKeyGenerator.new(user).create
       old_key = user.reload.encrypted_recovery_code_digest
@@ -90,7 +90,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
     end
 
     it 'redirects to the two_factor_options page if user is IAL2' do
-      profile =  create(:profile, :active, :verified, pii: { ssn: '1234' })
+      profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
       raw_key = PersonalKeyGenerator.new(user).create
       old_key = user.reload.encrypted_recovery_code_digest
