@@ -66,7 +66,7 @@ feature 'Password recovery via personal key' do
     click_link t('two_factor_authentication.login_options_link_text')
 
     expect(page)
-      .to_not have_selector("label[for='two_factor_options_form_selection_ personal_key']")
+      .to_not have_selector("label[for='two_factor_options_form_selection_personal_key']")
   end
 
   context 'account recovery alternative paths' do
