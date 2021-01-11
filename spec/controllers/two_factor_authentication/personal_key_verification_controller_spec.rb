@@ -22,7 +22,8 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
     end
 
     it 'tracks the page visit' do
-      stub_sign_in_before_2fa
+      user = build(:user, :with_personal_key, password: ControllerHelper::VALID_PASSWORD)
+      stub_sign_in_before_2fa(user)
       stub_analytics
       analytics_hash = { context: 'authentication' }
 
@@ -36,7 +37,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
   describe '#create' do
     context 'when the user enters a valid personal key' do
       it 'tracks the valid authentication event' do
-        sign_in_before_2fa(create(:user, :with_webauthn, :with_phone))
+        sign_in_before_2fa(create(:user, :with_webauthn, :with_phone, :with_personal_key))
 
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
@@ -81,7 +82,8 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       let(:payload) { { personal_key_form: personal_key } }
 
       before do
-        stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+        user = build(:user, :with_personal_key, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        stub_sign_in_before_2fa(user)
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'personal-key' },
@@ -101,7 +103,8 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
     context 'when the user enters an invalid personal key' do
       before do
-        stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+        user = build(:user, :with_personal_key, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        stub_sign_in_before_2fa(user)
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'personal-key' },
