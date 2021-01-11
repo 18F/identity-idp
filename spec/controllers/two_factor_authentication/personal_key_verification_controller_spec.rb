@@ -32,6 +32,18 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
       get :show
     end
+
+    it 'redirects to the two_factor_options page if user is IAL2' do
+      profile =  create(:profile, :active, :verified, pii: { ssn: '1234' })
+      user = profile.user
+      raw_key = PersonalKeyGenerator.new(user).create
+      old_key = user.reload.encrypted_recovery_code_digest
+      stub_sign_in_before_2fa(user)
+      get :show
+
+      expect(response.status).to eq(302)
+      expect(response.location).to eq(two_factor_options_url)
+    end
   end
 
   describe '#create' do
@@ -75,6 +87,18 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
       expect(user.encrypted_recovery_code_digest).to be_present
       expect(user.encrypted_recovery_code_digest).to_not eq old_key
+    end
+
+    it 'redirects to the two_factor_options page if user is IAL2' do
+      profile =  create(:profile, :active, :verified, pii: { ssn: '1234' })
+      user = profile.user
+      raw_key = PersonalKeyGenerator.new(user).create
+      old_key = user.reload.encrypted_recovery_code_digest
+      stub_sign_in_before_2fa(user)
+      post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+      expect(response.status).to eq(302)
+      expect(response.location).to eq(two_factor_options_url)
     end
 
     context 'when the personal key field is empty' do
