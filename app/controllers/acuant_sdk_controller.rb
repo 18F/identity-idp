@@ -1,5 +1,8 @@
 class AcuantSdkController < ApplicationController
+  before_action :skip_session_load
   skip_before_action :verify_authenticity_token
+  skip_before_action :cache_issuer_in_cookie
+  skip_before_action :session_expires_at
 
   ACUANT_SDK_STATIC_FILES = %w[
     AcuantImageProcessingWorker.min.js
