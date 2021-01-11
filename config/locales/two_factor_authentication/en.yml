@@ -144,9 +144,6 @@ en:
       piv_cac: Government employee ID
       piv_cac_info_html: Insert your government or military PIV or CAC card and enter
         your PIN.
-      second_phone: Second phone
-      second_phone_info_html: Get security codes by text message (SMS) or phone call
-        to a secondary phone number (one that is not %{phone})
       secure_label: Secure
       sms: Text message / SMS
       sms_info_html: Get your security code via text message / SMS.
