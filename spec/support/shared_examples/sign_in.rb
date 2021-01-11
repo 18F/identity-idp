@@ -74,9 +74,10 @@ shared_examples 'signing in as IAL2 with personal key' do |sp|
 
     visit_idp_from_sp_with_ial2(sp)
     fill_in_credentials_and_submit(user.email, user.password)
-    expect do
-      choose_another_security_option('personal_key')
-    end.to raise_error(Capybara::ElementNotFound)
+    click_link t('two_factor_authentication.login_options_link_text')
+
+    expect(page)
+      .to_not have_selector("label[for='two_factor_options_form_selection_ personal_key']")
   end
 end
 

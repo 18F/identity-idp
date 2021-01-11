@@ -63,9 +63,10 @@ feature 'Password recovery via personal key' do
 
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)
-    expect do
-      choose_another_security_option('personal_key')
-    end.to raise_error(Capybara::ElementNotFound)
+    click_link t('two_factor_authentication.login_options_link_text')
+
+    expect(page)
+      .to_not have_selector("label[for='two_factor_options_form_selection_ personal_key']")
   end
 
   context 'account recovery alternative paths' do
