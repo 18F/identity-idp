@@ -27,6 +27,11 @@ describe 'requesting acuant SDK assets' do
 
       expect(response.headers['Content-Security-Policy']).to match(/script-src[^;]*'unsafe-eval'/)
     end
+
+    it 'does not include session or cookies' do
+      get '/verify/doc_auth/AcuantImageProcessingWorker.wasm'
+      expect(response.cookies.keys).to_not include('_upaya_session')
+    end
   end
 
   context 'with something that is not a valid Acuant SDK asset' do
