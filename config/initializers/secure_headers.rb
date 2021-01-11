@@ -68,3 +68,23 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   #   ]
   # }
 end
+
+
+# We need this to be called after the SecureHeaders::Railtie adds its own middleware at the top
+Rails.application.configure do |config|
+  require 'manual_secure_headers_override'
+
+  acuant_sdk_static_files = %w[
+    AcuantImageProcessingWorker.min.js
+    AcuantImageProcessingWorker.wasm
+  ].freeze
+
+  config.middleware.insert_after 0, ManualSecureHeadersOverride do |request|
+    if acuant_sdk_static_files.any? { |file| request.path.end_with?(file) }
+      SecureHeaders.append_content_security_policy_directives(
+        request,
+        script_src: ["'unsafe-eval'"]
+      )
+    end
+  end
+end
