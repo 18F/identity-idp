@@ -6,8 +6,10 @@ describe FrontendLogController do
 
     let(:user) { create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' }) }
     let(:params) { { event: 'custom event', payload: { message: 'To be logged...' } } }
+    let(:json) { JSON.parse(response.body, symbolize_names: true) }
 
     context 'user is signed in' do
+
       before do
         sign_in user
       end
@@ -15,8 +17,7 @@ describe FrontendLogController do
       it 'succeeds' do
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(:ok)
         expect(json[:success]).to eq(true)
       end
 
@@ -25,8 +26,8 @@ describe FrontendLogController do
           params.delete(:event)
           action
 
-          json = JSON.parse(response.body, symbolize_names: true)
-          expect(response.status).to eq(400)
+          # json = JSON.parse(response.body, symbolize_names: true)
+          expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
         end
 
@@ -34,8 +35,8 @@ describe FrontendLogController do
           params.delete(:payload)
           action
 
-          json = JSON.parse(response.body, symbolize_names: true)
-          expect(response.status).to eq(400)
+          # json = JSON.parse(response.body, symbolize_names: true)
+          expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
         end
       end
@@ -45,8 +46,8 @@ describe FrontendLogController do
       it 'returns unauthorized' do
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
-        expect(response.status).to eq(401)
+        # json = JSON.parse(response.body, symbolize_names: true)
+        expect(response).to have_http_status(:unauthorized)
         expect(json[:success]).to eq(false)
       end
     end
