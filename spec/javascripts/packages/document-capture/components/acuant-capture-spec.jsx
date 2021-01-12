@@ -271,8 +271,12 @@ describe('document-capture/components/acuant-capture', () => {
 
       const error = await findByText('errors.doc_auth.photo_glare');
       expect(
-        addPageAction.calledWith('documentCapture.acuantWebSDKResult', {
-          result: 'glare',
+        addPageAction.calledWith({
+          key: 'documentCapture.acuantWebSDKResult',
+          label: 'IdV: Acuant web SDK photo analyzed',
+          payload: {
+            result: 'glare',
+          },
         }),
       ).to.be.true();
 
@@ -311,8 +315,12 @@ describe('document-capture/components/acuant-capture', () => {
 
       const error = await findByText('errors.doc_auth.photo_blurry');
       expect(
-        addPageAction.calledWith('documentCapture.acuantWebSDKResult', {
-          result: 'blurry',
+        addPageAction.calledWith({
+          key: 'documentCapture.acuantWebSDKResult',
+          label: 'IdV: Acuant web SDK photo analyzed',
+          payload: {
+            result: 'blurry',
+          },
         }),
       ).to.be.true();
 
@@ -409,8 +417,12 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
       await waitForElementToBeRemoved(error);
       expect(
-        addPageAction.calledWith('documentCapture.acuantWebSDKResult', {
-          result: 'success',
+        addPageAction.calledWith({
+          key: 'documentCapture.acuantWebSDKResult',
+          label: 'IdV: Acuant web SDK photo analyzed',
+          payload: {
+            result: 'success',
+          },
         }),
       ).to.be.true();
     });
