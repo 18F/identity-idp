@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
+  post '/api/logger' => 'frontend_log#create'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
