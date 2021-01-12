@@ -31,7 +31,9 @@ class FrontendLogController < ApplicationController
   end
 
   def valid_event?
-    log_params[:event].is_a?(String) && log_params[:event].present?
+    log_params[:event].is_a?(String) &&
+      log_params[:event].present? &&
+      analytics.allowable_frontend_events.include?(log_params[:event])
   end
 
   def valid_payload?

@@ -5,11 +5,15 @@ describe FrontendLogController do
     subject(:action) { post :create, params: params }
 
     let(:user) { create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' }) }
-    let(:params) { { event: 'custom event', payload: { message: 'To be logged...' } } }
+    let(:params) do
+      {
+        event: Analytics::FRONTEND_DOC_AUTH_ASYNC_UPLOAD,
+        payload: { message: 'To be logged...' },
+      }
+    end
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
 
     context 'user is signed in' do
-
       before do
         sign_in user
       end
@@ -21,12 +25,21 @@ describe FrontendLogController do
         expect(json[:success]).to eq(true)
       end
 
+      context 'unallowed event type' do
+        it 'rejects a request with an event that is not allowed' do
+          params[:event] = 'custom event'
+          action
+
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
+        end
+      end
+
       context 'missing a parameter' do
         it 'rejects a request without specifying event' do
           params.delete(:event)
           action
 
-          # json = JSON.parse(response.body, symbolize_names: true)
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
         end
@@ -35,7 +48,6 @@ describe FrontendLogController do
           params.delete(:payload)
           action
 
-          # json = JSON.parse(response.body, symbolize_names: true)
           expect(response).to have_http_status(:bad_request)
           expect(json[:success]).to eq(false)
         end
@@ -46,7 +58,6 @@ describe FrontendLogController do
       it 'returns unauthorized' do
         action
 
-        # json = JSON.parse(response.body, symbolize_names: true)
         expect(response).to have_http_status(:unauthorized)
         expect(json[:success]).to eq(false)
       end

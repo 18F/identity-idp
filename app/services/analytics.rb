@@ -65,6 +65,13 @@ class Analytics
     }
   end
 
+  def allowable_frontend_events
+    [
+      FRONTEND_DOC_AUTH_ASYNC_UPLOAD,
+      FRONTEND_DOC_AUTH_ACUANT_WEB_SDK_RESULT,
+    ]
+  end
+
   # rubocop:disable Layout/LineLength
   ACCOUNT_RESET = 'Account Reset'.freeze
   ACCOUNT_DELETE_SUBMITTED = 'Account Delete submitted'.freeze
@@ -96,6 +103,8 @@ class Analytics
   FORGET_ALL_BROWSERS_SUBMITTED = 'Forget All Browsers Submitted'.freeze
   FORGET_ALL_BROWSERS_VISITED = 'Forget All Browsers Visited'.freeze
   FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
+  FRONTEND_DOC_AUTH_ACUANT_WEB_SDK_RESULT = 'documentCapture.acuantWebSDKResult'.freeze
+  FRONTEND_DOC_AUTH_ASYNC_UPLOAD = 'documentCapture.asyncUpload'.freeze
   IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended
   IAL2_RECOVERY_REQUEST = 'IAL2 Recovery Request'.freeze
   IAL2_RECOVERY_REQUEST_VISITED = 'IAL2 Recovery Request Visited'.freeze
