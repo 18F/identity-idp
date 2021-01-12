@@ -58,6 +58,11 @@ feature 'cac proofing verify info step' do
   end
 
   context 'javascript enabled', js: true do
+    before do
+      sign_in_and_2fa_user
+      complete_cac_proofing_steps_before_verify_step
+    end
+
     around do |example|
       # Adjust the wait time to give the frontend time to poll for results.
       Capybara.using_wait_time(5) do
@@ -66,41 +71,21 @@ feature 'cac proofing verify info step' do
     end
 
     it 'proceeds to the next page upon confirmation' do
-      click_idv_continue
+      click_continue
 
-      expect(page).to have_current_path(idv_phone_path)
-      expect(page).to have_content(t('doc_auth.forms.doc_success'))
-    end
-
-    context 'resolution failure' do
-      let(:skip_step_completion) { true }
-
-      it 'does not proceed to the next page' do
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_ssn_step
-        fill_out_ssn_form_with_ssn_that_fails_resolution
-        click_idv_continue
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_session_errors_warning_path)
-
-        click_on t('idv.failure.button.warning')
-
-        expect(page).to have_current_path(idv_doc_auth_verify_step)
-      end
+      expect(page).to have_current_path(idv_cac_proofing_success_step)
     end
 
     context 'async timed out' do
       it 'allows resubmitting form' do
-        allow(DocumentCaptureSession).to receive(:find_by).
-          and_return(nil)
+        allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
 
         click_continue
         expect(page).to have_content(t('idv.failure.timeout'))
-        expect(page).to have_current_path(idv_doc_auth_verify_step)
+        expect(page).to have_current_path(idv_cac_proofing_verify_step)
         allow(DocumentCaptureSession).to receive(:find_by).and_call_original
         click_continue
-        expect(page).to have_current_path(idv_phone_path)
+        expect(page).to have_current_path(idv_cac_proofing_success_step)
       end
     end
   end
