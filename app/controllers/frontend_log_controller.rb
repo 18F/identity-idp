@@ -1,7 +1,7 @@
 class FrontendLogController < ApplicationController
-
   respond_to :json
 
+  skip_before_action :verify_authenticity_token
   before_action :check_user_authenticated
   before_action :validate_parameter_types
 
@@ -27,7 +27,7 @@ class FrontendLogController < ApplicationController
   def validate_parameter_types
     return if valid_event? && valid_payload?
 
-    render json: { success: false, error_message: 'incorrect parameter types' },
+    render json: { success: false, error_message: 'invalid parameters' },
            status: :bad_request
   end
 
