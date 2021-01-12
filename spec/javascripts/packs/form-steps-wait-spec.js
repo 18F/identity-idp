@@ -1,19 +1,75 @@
 import { fireEvent, findByRole } from '@testing-library/dom';
 import { useSandbox } from '../support/sinon';
 import useDefineProperty from '../support/define-property';
-import { FormStepsWait, getContentFromHTML } from '../../../app/javascript/packs/form-steps-wait';
+import {
+  FormStepsWait,
+  getDOMFromHTML,
+  isPollingPage,
+  getPageErrorMessage,
+} from '../../../app/javascript/packs/form-steps-wait';
 
-describe('getContentFromHTML', () => {
-  it('returns trimmed content if element exists', () => {
-    const content = getContentFromHTML('<!doctype html><title>x </title>', 'title');
+const POLL_PAGE_MARKUP = '<!doctype html><title>x</title><meta content="1" http-equiv="refresh">';
+const NON_POLL_PAGE_MARKUP = '<!doctype html><title>x</title>';
 
-    expect(content).to.equal('x');
+describe('getDOMFromHTML', () => {
+  it('returns document of given markup', () => {
+    const dom = getDOMFromHTML(NON_POLL_PAGE_MARKUP);
+
+    expect(dom.querySelector('title').textContent).to.equal('x');
+  });
+});
+
+describe('isPollingPage', () => {
+  it('returns true if polling markup exists in page', () => {
+    const dom = getDOMFromHTML(POLL_PAGE_MARKUP);
+    const result = isPollingPage(dom);
+
+    expect(result).to.equal(true);
   });
 
-  it('returns null if element does not exist', () => {
-    const content = getContentFromHTML('<!doctype html><title>x </title>', 'div');
+  it('returns false if polling markup does not exist in page', () => {
+    const dom = getDOMFromHTML(NON_POLL_PAGE_MARKUP);
+    const result = isPollingPage(dom);
 
-    expect(content).to.be.null();
+    expect(result).to.equal(false);
+  });
+});
+
+describe('getPageErrorMessage', () => {
+  it('returns error message if polling markup exists in page', () => {
+    const errorMessage = 'An error occurred!';
+    const dom = getDOMFromHTML(
+      `${NON_POLL_PAGE_MARKUP}
+      <div class="usa-alert usa-alert--error">
+        <div class="usa-alert__body">
+          <p class="usa-alert__text">${errorMessage}</p>
+        </div>
+      </div>`,
+    );
+    const result = getPageErrorMessage(dom);
+
+    expect(result).to.equal(errorMessage);
+  });
+
+  it('returns falsey if markup does not include alert', () => {
+    const dom = getDOMFromHTML(NON_POLL_PAGE_MARKUP);
+    const result = getPageErrorMessage(dom);
+
+    expect(result).to.not.be.ok();
+  });
+
+  it('returns falsey if markup contains non-error alert', () => {
+    const dom = getDOMFromHTML(
+      `${NON_POLL_PAGE_MARKUP}
+      <div class="usa-alert usa-alert--success">
+        <div class="usa-alert__body">
+          <p class="usa-alert__text">Good news, everyone!</p>
+        </div>
+      </div>`,
+    );
+    const result = getPageErrorMessage(dom);
+
+    expect(result).to.not.be.ok();
   });
 });
 
@@ -112,7 +168,7 @@ describe('FormStepsWait', () => {
               status: 200,
               url: redirect,
               redirected: true,
-              text: () => Promise.resolve('<!doctype html><title>x</title>'),
+              text: () => Promise.resolve(NON_POLL_PAGE_MARKUP),
             });
         });
 
@@ -152,8 +208,7 @@ describe('FormStepsWait', () => {
                 redirected: true,
                 text: () =>
                   Promise.resolve(
-                    `<!doctype html>
-                    <title>x</title>
+                    `${NON_POLL_PAGE_MARKUP}
                     <div class="usa-alert usa-alert--error">
                       <div class="usa-alert__body">
                         <p class="usa-alert__text">${errorMessage}</p>
@@ -185,6 +240,7 @@ describe('FormStepsWait', () => {
                 status: 200,
                 redirected: true,
                 url: new URL(waitStepPath, window.location).toString(),
+                text: () => Promise.resolve(POLL_PAGE_MARKUP),
               })
               .withArgs(waitStepPath)
               .resolves({
@@ -193,8 +249,7 @@ describe('FormStepsWait', () => {
                 url: window.location.href,
                 text: () =>
                   Promise.resolve(
-                    `<!doctype html>
-                    <title>x</title>
+                    `${NON_POLL_PAGE_MARKUP}
                     <div class="usa-alert usa-alert--error">
                       <div class="usa-alert__body">
                         <p class="usa-alert__text">${errorMessage}</p>
@@ -232,7 +287,12 @@ describe('FormStepsWait', () => {
     sandbox
       .stub(window, 'fetch')
       .withArgs(action, sandbox.match({ method }))
-      .resolves({ status: 200, redirected: true, url: redirect });
+      .resolves({
+        status: 200,
+        redirected: true,
+        url: redirect,
+        text: () => Promise.resolve(NON_POLL_PAGE_MARKUP),
+      });
     defineProperty(window, 'location', {
       value: {
         set href(url) {
@@ -260,9 +320,15 @@ describe('FormStepsWait', () => {
         status: 200,
         redirected: true,
         url: new URL(waitStepPath, window.location).toString(),
+        text: () => Promise.resolve(POLL_PAGE_MARKUP),
       })
       .withArgs(waitStepPath)
-      .resolves({ status: 200, redirected: true, url: redirect });
+      .resolves({
+        status: 200,
+        redirected: true,
+        url: redirect,
+        text: () => Promise.resolve(NON_POLL_PAGE_MARKUP),
+      });
 
     defineProperty(window, 'location', {
       value: {

@@ -24,18 +24,36 @@ const DEFAULT_OPTIONS = {
 };
 
 /**
- * Returns trimmed content from HTML for given DOM selector, or null if the element does not exist.
+ * Returns a DOM document object for given markup string.
  *
  * @param {string} html HTML markup.
- * @param {string} selector DOM selector to retrieve.
  *
- * @return {string?} Trimmed content, if exists.
+ * @return {Document} DOM document.
  */
-export function getContentFromHTML(html, selector) {
+export function getDOMFromHTML(html) {
   const dom = document.implementation.createHTMLDocument();
   dom.body.innerHTML = html;
-  const textContent = dom.querySelector(selector)?.textContent;
-  return textContent ? textContent.trim() : null;
+  return dom;
+}
+
+/**
+ * @param {Document} dom
+ *
+ * @return {boolean} Whether page polls.
+ */
+export function isPollingPage(dom) {
+  return Boolean(dom.querySelector('meta[http-equiv="refresh"]'));
+}
+
+/**
+ * Returns trimmed page alert contents, if exists.
+ *
+ * @param {Document} dom
+ *
+ * @return {string?=} Page alert, if exists.
+ */
+export function getPageErrorMessage(dom) {
+  return dom.querySelector('.usa-alert.usa-alert--error')?.textContent?.trim();
 }
 
 export class FormStepsWait {
@@ -76,32 +94,36 @@ export class FormStepsWait {
    * @param {Response} response
    */
   async handleResponse(response) {
-    const { waitStepPath, pollIntervalMs } = this.options;
-    const responseURL = new URL(response.url);
-
     if (response.status >= 500) {
-      this.stopSpinner();
-
-      const { errorMessage } = this.options;
-      if (errorMessage) {
-        this.renderError(errorMessage);
-      }
-    } else if (response.redirected && responseURL.pathname !== waitStepPath) {
-      let message;
-      if (responseURL.pathname === window.location.pathname) {
-        const body = await response.text();
-        message = getContentFromHTML(body, '.usa-alert.usa-alert--error');
-      }
-
-      if (message) {
-        this.renderError(message);
-        this.stopSpinner();
-      } else {
-        window.location.href = response.url;
-      }
+      this.handleFailedResponse();
     } else {
-      setTimeout(() => this.poll(), pollIntervalMs);
+      const body = await response.text();
+      const dom = getDOMFromHTML(body);
+      if (isPollingPage(dom)) {
+        this.scheduleNextPollFetch();
+      } else {
+        const message = getPageErrorMessage(dom);
+        if (message) {
+          this.renderError(message);
+          this.stopSpinner();
+        } else {
+          window.location.href = response.url;
+        }
+      }
     }
+  }
+
+  handleFailedResponse() {
+    this.stopSpinner();
+
+    const { errorMessage } = this.options;
+    if (errorMessage) {
+      this.renderError(errorMessage);
+    }
+  }
+
+  scheduleNextPollFetch() {
+    setTimeout(() => this.poll(), this.options.pollIntervalMs);
   }
 
   /**
