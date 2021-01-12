@@ -26,6 +26,28 @@ describe FrontendLogController do
         expect(json[:success]).to eq(true)
       end
 
+      context 'invalid param' do
+        it 'rejects a non-hash payload' do
+          expect(@analytics).not_to receive(:track_event)
+
+          params[:payload] = 'abc'
+          action
+
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
+        end
+
+        it 'rejects a non-string event' do
+          expect(@analytics).not_to receive(:track_event)
+
+          params[:event] = { abc: 'abc' }
+          action
+
+          expect(response).to have_http_status(:bad_request)
+          expect(json[:success]).to eq(false)
+        end
+      end
+
       context 'missing a parameter' do
         it 'rejects a request without specifying event' do
           expect(@analytics).not_to receive(:track_event)
