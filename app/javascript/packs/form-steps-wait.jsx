@@ -1,4 +1,4 @@
-import { render } from 'react-dom';
+import { render, unmountComponentAtNode } from 'react-dom';
 import { Alert } from '@18f/identity-components';
 import { loadPolyfills } from '@18f/identity-polyfill';
 
@@ -82,6 +82,9 @@ export class FormStepsWait {
     const { form } = this.elements;
     const { action, method } = form;
 
+    // Clear error, if present.
+    this.renderError('');
+
     const response = await window.fetch(action, {
       method,
       body: new window.FormData(form),
@@ -140,14 +143,16 @@ export class FormStepsWait {
       return;
     }
 
-    errorRoot.innerHTML = '';
-
-    render(
-      <Alert type="error" className="margin-bottom-4">
-        {message}
-      </Alert>,
-      errorRoot,
-    );
+    if (message) {
+      render(
+        <Alert type="error" className="margin-bottom-4">
+          {message}
+        </Alert>,
+        errorRoot,
+      );
+    } else {
+      unmountComponentAtNode(errorRoot);
+    }
   }
 
   /**

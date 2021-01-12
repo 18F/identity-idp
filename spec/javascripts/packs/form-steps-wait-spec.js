@@ -198,24 +198,29 @@ describe('FormStepsWait', () => {
         const errorMessage = 'An error occurred!';
 
         context('synchronous resolution', () => {
+          const createResponse = (suffix = '') => ({
+            status: 200,
+            url: window.location.href,
+            redirected: true,
+            text: () =>
+              Promise.resolve(
+                `${NON_POLL_PAGE_MARKUP}
+                <div class="usa-alert usa-alert--error">
+                  <div class="usa-alert__body">
+                    <p class="usa-alert__text">${errorMessage}${suffix}</p>
+                  </div>
+                </div>`,
+              ),
+          });
+
           beforeEach(() => {
             sandbox
               .stub(window, 'fetch')
               .withArgs(action, sandbox.match({ method }))
-              .resolves({
-                status: 200,
-                url: window.location.href,
-                redirected: true,
-                text: () =>
-                  Promise.resolve(
-                    `${NON_POLL_PAGE_MARKUP}
-                    <div class="usa-alert usa-alert--error">
-                      <div class="usa-alert__body">
-                        <p class="usa-alert__text">${errorMessage}</p>
-                      </div>
-                    </div>`,
-                  ),
-              });
+              .onFirstCall()
+              .resolves(createResponse())
+              .onSecondCall()
+              .resolves(createResponse(' Again!'));
           });
 
           it('shows message', async () => {
@@ -226,6 +231,21 @@ describe('FormStepsWait', () => {
 
             const alert = await findByRole(form, 'alert');
             expect(alert.textContent).to.equal(errorMessage);
+          });
+
+          it('replaces previous message', async () => {
+            const form = createForm({ action, method });
+            new FormStepsWait(form).bind();
+
+            fireEvent.submit(form);
+
+            let alert = await findByRole(form, 'alert');
+            expect(alert.textContent).to.equal(errorMessage);
+
+            fireEvent.submit(form);
+
+            alert = await findByRole(form, 'alert');
+            expect(alert.textContent).to.equal(`${errorMessage} Again!`);
           });
         });
 
