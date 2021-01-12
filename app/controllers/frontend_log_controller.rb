@@ -6,7 +6,8 @@ class FrontendLogController < ApplicationController
   before_action :validate_parameter_types
 
   def create
-    analytics.track_event(log_params[:event], log_params[:payload].to_h)
+    event = "Frontend: #{log_params[:event]}"
+    analytics.track_event(event, log_params[:payload].to_h)
 
     render json: { success: true }, status: :ok
   end
@@ -32,8 +33,7 @@ class FrontendLogController < ApplicationController
 
   def valid_event?
     log_params[:event].is_a?(String) &&
-      log_params[:event].present? &&
-      analytics.allowable_frontend_events.include?(log_params[:event])
+      log_params[:event].present?
   end
 
   def valid_payload?
