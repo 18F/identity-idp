@@ -138,6 +138,7 @@ feature 'idv phone step' do
   end
 
   it_behaves_like 'async timed out'
+
   context 'javascript enabled', js: true do
     around do |example|
       # Adjust the wait time to give the frontend time to poll for results.
