@@ -13,7 +13,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
 
   describe '#call' do
     it 'calls analytics if timed out from no document capture session' do
-      expect(controller).to receive(:analytics).and_return(fake_analytics).twice
+      expect(controller).to receive(:analytics).and_return(fake_analytics)
       response = subject.call
 
       expect(fake_analytics).to have_logged_event(
@@ -31,7 +31,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
 
       expect(subject).to receive(:verify_document_capture_session).
         and_return(verify_document_capture_session).at_least(:once)
-      expect(controller).to receive(:analytics).and_return(fake_analytics).twice
+      expect(controller).to receive(:analytics).and_return(fake_analytics)
       response = subject.call
 
       expect(fake_analytics).to have_logged_event(
