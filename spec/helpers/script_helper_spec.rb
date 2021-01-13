@@ -3,6 +3,14 @@ require 'rails_helper'
 RSpec.describe ScriptHelper do
   include ScriptHelper
 
+  describe '#javascript_include_tag_without_preload' do
+    it 'avoids modifying headers' do
+      javascript_include_tag_without_preload 'application'
+
+      expect(response.header['Link']).to be_nil
+    end
+  end
+
   describe '#javascript_pack_tag_once' do
     it 'returns nil' do
       output = javascript_pack_tag_once('application')
