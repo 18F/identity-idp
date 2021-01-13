@@ -28,7 +28,7 @@
   <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/merriweather/Latin-Merriweather-Bold.woff2') %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <!--[if IE 8]>
-  <%= javascript_include_tag 'es5-shim.min' %>
+  <%= javascript_include_tag_without_preload 'es5-shim.min' %>
   <![endif]-->
   <%= javascript_include_tag 'application' %>
   <%= javascript_include_tag 'i18n-strings.' + I18n.locale.to_s %>
@@ -43,8 +43,8 @@
   <meta content="#ffffff" name="theme-color" />
 
   <!--[if lt IE 9]>
-  <%= javascript_include_tag 'html5shiv' %>
-  <%= javascript_include_tag 'respond.min' %>
+  <%= javascript_include_tag_without_preload 'html5shiv' %>
+  <%= javascript_include_tag_without_preload 'respond.min' %>
   <![endif]-->
 
   <% if AppConfig.env.newrelic_browser_key.present? && AppConfig.env.newrelic_browser_app_id.present? %>
