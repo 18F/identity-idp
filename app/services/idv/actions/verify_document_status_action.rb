@@ -91,7 +91,6 @@ module Idv
       end
 
       def delete_async
-        document_capture_analytics('deleting verify_document_capture_session_uuid_key')
         flow_session.delete(verify_document_capture_session_uuid_key)
       end
 
@@ -100,13 +99,6 @@ module Idv
           error: message,
           uuid: flow_session[verify_document_capture_session_uuid_key],
         }
-
-        if LoginGov::Hostdata.env == 'dev'
-          data.merge!(
-            flow_session: flow_session.except(:pii_from_doc),
-            flow_session_keys: flow_session.keys,
-          )
-        end
 
         @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC, data)
       end
