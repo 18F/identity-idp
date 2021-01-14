@@ -97,7 +97,10 @@ Rails.application.configure do |config|
     AcuantImageProcessingWorker.wasm
   ].freeze
 
-  config.middleware.insert_before 0, SecureHeaders::RemoveContentSecurityPolicy do |request|
+  config.middleware.insert_before(
+    SecureHeaders::Middleware,
+    SecureHeaders::RemoveContentSecurityPolicy,
+  ) do |request|
     acuant_sdk_static_files.any? { |file| request.path.end_with?(file) }
   end
 end
