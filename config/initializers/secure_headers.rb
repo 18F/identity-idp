@@ -69,11 +69,12 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   # }
 end
 
-# A tiny middleware that calls a block on each request.
-# When 1) the block returns true and 2) the response is a 2XX response,
-# it deletes the Content-Security-Policy header
-# Intended so that we can override SecureHeaders behavior and not set
-# the headers on asset files
+# A tiny middleware that calls a block on each request. When both:
+# 1) the block returns true
+# 2) the response is a 2XX response
+# It deletes the Content-Security-Policy header. This is intended so that we can override
+# SecureHeaders behavior and not set the headers on asset files, because the headers should be set
+# on the document that links to the assets, not the assets themselves.
 class SecureHeaders::RemoveContentSecurityPolicy
   # @yieldparam [Rack::Request] request
   def initialize(app, &block)
