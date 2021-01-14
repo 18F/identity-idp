@@ -15,7 +15,7 @@ describe 'requesting acuant SDK assets' do
 
             expect(response.status).to eq(200)
             expect(response.headers['Content-Type']).to eq('application/javascript')
-            expect(response.headers['Content-Security-Policy']).to be_nil
+            expect(response.headers).to_not have_key('Content-Security-Policy')
             expect(response.cookies.keys).to_not include('_upaya_session')
             expect(response.body).to eq(
               File.read('public/acuant/11.4.1/AcuantImageProcessingWorker.min.js'),
@@ -27,7 +27,7 @@ describe 'requesting acuant SDK assets' do
 
             expect(response.status).to eq(200)
             expect(response.headers['Content-Type']).to eq('application/wasm')
-            expect(response.headers['Content-Security-Policy']).to be_nil
+            expect(response.headers).to_not have_key('Content-Security-Policy')
             expect(response.cookies.keys).to_not include('_upaya_session')
             expect(response.body.length).to eq(
               File.size('public/acuant/11.4.1/AcuantImageProcessingWorker.wasm'),
