@@ -6,7 +6,6 @@ import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
 import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
-import './review-issues-step.scss';
 
 /**
  * @typedef ReviewIssuesStepValue
