@@ -5,7 +5,7 @@ describe 'requesting acuant SDK assets' do
   # - /verify/doc_auth/AcuantImageProcessingWorker.min.js
   # - /en/verify/capture_doc/AcuantImageProcessingWorker.min.js
   [nil, *I18n.available_locales].
-    product(%w[doc_auth capture-doc capture_doc]).
+    product(%w[doc_auth capture_doc]).
     each do |locale, verify_path|
       base_url = "#{locale && "/#{locale}"}/verify/#{verify_path}"
       context "base url #{base_url}" do

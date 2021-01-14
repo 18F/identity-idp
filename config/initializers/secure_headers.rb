@@ -102,7 +102,7 @@ Rails.application.configure do |config|
   # - /verify/doc_auth/AcuantImageProcessingWorker.min.js
   # - /en/verify/capture_doc/AcuantImageProcessingWorker.min.js
   acuant_sdk_static_files = [nil, *available_locales].product(
-                              %w[doc_auth capture-doc capture_doc],
+                              %w[doc_auth capture_doc],
                               %w[
                                 AcuantImageProcessingWorker.min.js
                                 AcuantImageProcessingWorker.wasm
