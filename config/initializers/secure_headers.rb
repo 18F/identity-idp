@@ -95,15 +95,26 @@ end
 
 # We need this to be called after the SecureHeaders::Railtie adds its own middleware at the top
 Rails.application.configure do |config|
-  acuant_sdk_static_files = %w[
-    AcuantImageProcessingWorker.min.js
-    AcuantImageProcessingWorker.wasm
-  ].freeze
+  # I18n is not configured yet at this point
+  available_locales = AppConfig.env.available_locales.try(:split, ' ') || %w[en]
+
+  # example URLs:
+  # - /verify/doc_auth/AcuantImageProcessingWorker.min.js
+  # - /en/verify/capture_doc/AcuantImageProcessingWorker.min.js
+  acuant_sdk_static_files = [nil, *available_locales].product(
+                              %w[doc_auth capture-doc capture_doc],
+                              %w[
+                                AcuantImageProcessingWorker.min.js
+                                AcuantImageProcessingWorker.wasm
+                              ],
+                            ).map do |locale, flow, asset|
+                              File.join('/', *locale, '/verify', flow, asset)
+                            end.to_set.freeze
 
   config.middleware.insert_before(
     SecureHeaders::Middleware,
     SecureHeaders::RemoveContentSecurityPolicy,
   ) do |request|
-    acuant_sdk_static_files.any? { |file| request.path.end_with?(file) }
+    acuant_sdk_static_files.include?(request.path)
   end
 end
