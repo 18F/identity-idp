@@ -21,10 +21,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 305533690ab16a3fd24f19512061691e25e937ff
-  tag: v0.4.2
+  revision: 9febec459b8f46b34ee783feddf454005e8c9c77
+  tag: v0.4.3
   specs:
-    identity-hostdata (0.4.2)
+    identity-hostdata (0.4.3)
       aws-sdk-s3 (~> 1.8)
 
 GIT
@@ -75,10 +75,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: ebc61fc878f9413c32b6b1a0a6c82866f86ad60c
-  tag: v0.1.7
+  revision: 3dd8a3e91c58565aa4188ac1ec7622c2665d04ae
+  tag: v0.1.8
   specs:
-    identity-telephony (0.1.7)
+    identity-telephony (0.1.8)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n

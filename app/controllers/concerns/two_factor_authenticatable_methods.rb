@@ -213,12 +213,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
       Analytics::USER_MARKED_AUTHED,
       authentication_type: authentication_type,
     )
-    GoogleAnalyticsMeasurement.new(
-      category: 'authentication',
-      event_action: 'authenticated',
-      method: authentication_type,
-      client_id: ga_cookie_client_id,
-    ).send_event
   end
 
   def direct_otp_code

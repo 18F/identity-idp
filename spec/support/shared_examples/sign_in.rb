@@ -66,7 +66,7 @@ shared_examples 'signing in as IAL2 with personal key' do |sp|
   before { Timecop.freeze Time.zone.now }
   after { Timecop.return }
 
-  it 'redirects to the SP after acknowledging new personal key', :email do
+  it 'does not present personal key as an MFA option', :email do
     user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
     pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
 
@@ -74,21 +74,10 @@ shared_examples 'signing in as IAL2 with personal key' do |sp|
 
     visit_idp_from_sp_with_ial2(sp)
     fill_in_credentials_and_submit(user.email, user.password)
-    choose_another_security_option('personal_key')
-    enter_personal_key(personal_key: personal_key_for_ial2_user(user, pii))
-    click_submit_default
+    click_link t('two_factor_authentication.login_options_link_text')
 
-    expect(page).to have_current_path(manage_personal_key_path)
-
-    click_acknowledge_personal_key
-
-    expect(current_url).to eq @saml_authn_request if sp == :saml
-
-    if sp == :oidc
-      redirect_uri = URI(current_url)
-
-      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-    end
+    expect(page).
+      to_not have_selector("label[for='two_factor_options_form_selection_ personal_key']")
   end
 end
 

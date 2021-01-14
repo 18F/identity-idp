@@ -29,7 +29,6 @@ module TwoFactorAuthentication
       result = piv_cac_verfication_form.submit
       analytics.track_mfa_submit_event(
         result.to_h.merge(analytics_properties),
-        ga_cookie_client_id,
       )
       if result.success?
         handle_valid_piv_cac

@@ -72,7 +72,7 @@ module TwoFactorAuthentication
         analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
       end
 
-      analytics.track_mfa_submit_event(properties, ga_cookie_client_id)
+      analytics.track_mfa_submit_event(properties)
     end
 
     def analytics_properties

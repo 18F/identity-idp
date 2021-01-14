@@ -99,12 +99,28 @@ describe Idv::CaptureDocController do
 
       it 'tracks analytics' do
         mock_next_step(:capture_complete)
-        result = { step: 'capture_complete' }
+        result = { step: 'capture_complete', step_count: 1 }
 
         get :show, params: { step: 'capture_complete' }
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::CAPTURE_DOC + ' visited', result
+        )
+      end
+
+      it 'increments the analytics step counts on subsequent submissions' do
+        mock_next_step(:capture_complete)
+
+        get :show, params: { step: 'capture_complete' }
+        get :show, params: { step: 'capture_complete' }
+
+        expect(@analytics).to have_received(:track_event).ordered.with(
+          Analytics::CAPTURE_DOC + ' visited',
+          hash_including(step: 'capture_complete', step_count: 1),
+        )
+        expect(@analytics).to have_received(:track_event).ordered.with(
+          Analytics::CAPTURE_DOC + ' visited',
+          hash_including(step: 'capture_complete', step_count: 2),
         )
       end
 

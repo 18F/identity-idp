@@ -97,9 +97,10 @@ describe 'layouts/application.html.erb' do
     end
   end
 
-  context 'user is not authenticated' do
+  context 'user is not authenticated and is not on page with trust' do
     it 'displays the DAP analytics' do
       allow(view).to receive(:current_user).and_return(nil)
+      allow(view).to receive(:page_with_trust?).and_return(false)
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       allow(view).to receive(:decorated_session).and_return(
         DecoratedSession.new(

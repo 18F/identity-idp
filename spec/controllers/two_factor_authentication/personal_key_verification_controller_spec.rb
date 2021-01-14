@@ -1,14 +1,8 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::PersonalKeyVerificationController do
-  let(:ga_client_id) { '123.456' }
-  let(:ga_cookie) { 'GA1.2.123.456' }
   let(:personal_key) { { personal_key: 'foo' } }
-  let(:payload) { { personal_key_form: personal_key, ga_client_id: ga_client_id } }
-
-  before do
-    cookies['_ga'] = ga_cookie
-  end
+  let(:payload) { { personal_key_form: personal_key } }
 
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
@@ -22,7 +16,8 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
     end
 
     it 'tracks the page visit' do
-      stub_sign_in_before_2fa
+      user = build(:user, :with_personal_key, password: ControllerHelper::VALID_PASSWORD)
+      stub_sign_in_before_2fa(user)
       stub_analytics
       analytics_hash = { context: 'authentication' }
 
@@ -31,12 +26,24 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
       get :show
     end
+
+    it 'redirects to the two_factor_options page if user is IAL2' do
+      profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+      user = profile.user
+      raw_key = PersonalKeyGenerator.new(user).create
+      old_key = user.reload.encrypted_recovery_code_digest
+      stub_sign_in_before_2fa(user)
+      get :show
+
+      expect(response.status).to eq(302)
+      expect(response.location).to eq(two_factor_options_url)
+    end
   end
 
   describe '#create' do
     context 'when the user enters a valid personal key' do
       it 'tracks the valid authentication event' do
-        sign_in_before_2fa(create(:user, :with_webauthn, :with_phone))
+        sign_in_before_2fa(create(:user, :with_webauthn, :with_phone, :with_personal_key))
 
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
@@ -50,7 +57,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'personal-key' }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(analytics_hash, ga_client_id)
+          with(analytics_hash)
 
         expect(@analytics).to receive(:track_event).with(
           Analytics::PERSONAL_KEY_ALERT_ABOUT_SIGN_IN,
@@ -76,12 +83,25 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       expect(user.encrypted_recovery_code_digest).to_not eq old_key
     end
 
+    it 'redirects to the two_factor_options page if user is IAL2' do
+      profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+      user = profile.user
+      raw_key = PersonalKeyGenerator.new(user).create
+      old_key = user.reload.encrypted_recovery_code_digest
+      stub_sign_in_before_2fa(user)
+      post :create, params: { personal_key_form: { personal_key: raw_key } }
+
+      expect(response.status).to eq(302)
+      expect(response.location).to eq(two_factor_options_url)
+    end
+
     context 'when the personal key field is empty' do
       let(:personal_key) { { personal_key: '' } }
       let(:payload) { { personal_key_form: personal_key } }
 
       before do
-        stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+        user = build(:user, :with_personal_key, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        stub_sign_in_before_2fa(user)
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'personal-key' },
@@ -101,7 +121,8 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
     context 'when the user enters an invalid personal key' do
       before do
-        stub_sign_in_before_2fa(build(:user, :with_phone, with: { phone: '+1 (703) 555-1212' }))
+        user = build(:user, :with_personal_key, :with_phone, with: { phone: '+1 (703) 555-1212' })
+        stub_sign_in_before_2fa(user)
         form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
           success: false, errors: {}, extra: { multi_factor_auth_method: 'personal-key' },
@@ -135,7 +156,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(properties, ga_client_id)
+          with(properties)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
         post :create, params: payload

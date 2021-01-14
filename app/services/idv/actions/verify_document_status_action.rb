@@ -67,7 +67,7 @@ module Idv
 
       def async_state
         if verify_document_capture_session.nil?
-          failed_to_load_document_capture_analytics
+          document_capture_analytics('failed to load verify_document_capture_session')
 
           return timed_out
         end
@@ -91,13 +91,13 @@ module Idv
       end
 
       def delete_async
-        failed_to_load_document_capture_analytics
+        document_capture_analytics('deleting verify_document_capture_session_uuid_key')
         flow_session.delete(verify_document_capture_session_uuid_key)
       end
 
-      def failed_to_load_document_capture_analytics
+      def document_capture_analytics(message)
         data = {
-          error: 'failed to load verify_document_capture_session',
+          error: message,
           uuid: flow_session[verify_document_capture_session_uuid_key],
         }
 

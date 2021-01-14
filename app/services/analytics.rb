@@ -32,16 +32,9 @@ class Analytics
     Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, sp, event, success)
   end
 
-  def track_mfa_submit_event(attributes, ga_client_id)
+  def track_mfa_submit_event(attributes)
     track_event(MULTI_FACTOR_AUTH, attributes)
     mfa_event_type = (attributes[:success] ? 'success' : 'fail')
-
-    GoogleAnalyticsMeasurement.new(
-      category: 'authentication',
-      event_action: "multi+factor+#{mfa_event_type}",
-      method: attributes[:multi_factor_auth_method],
-      client_id: ga_client_id,
-    ).send_event
   end
 
   attr_reader :user, :request, :sp, :ahoy
@@ -78,6 +71,8 @@ class Analytics
   ACCOUNT_DELETE_VISITED = 'Account Delete visited'.freeze
   ACCOUNT_DELETION = 'Account Deletion Requested'.freeze
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'.freeze
+  ACCOUNT_VERIFICATION_SUBMITTED = 'Account verification submitted'
+  ACCOUNT_VERIFICATION_VISITED = 'Account verification visited'
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
   ADD_EMAIL = 'Add Email: Email Submitted'.freeze
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'.freeze
