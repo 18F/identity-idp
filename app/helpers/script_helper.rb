@@ -1,5 +1,3 @@
-require 'set'
-
 # rubocop:disable Rails/HelperInstanceVariable
 module ScriptHelper
   include Webpacker::Helper
@@ -12,14 +10,18 @@ module ScriptHelper
     tag
   end
 
-  def javascript_pack_tag_once(name)
-    @scripts ||= Set.new
-    @scripts.add(name)
+  def javascript_packs_tag_once(*names, prepend: false)
+    @scripts ||= []
+    if prepend
+      @scripts = names | @scripts
+    else
+      @scripts |= names
+    end
     nil
   end
 
   def render_javascript_pack_once_tags
-    javascript_pack_tag(*@scripts) if @scripts
+    javascript_packs_with_chunks_tag(*@scripts) if @scripts
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable

@@ -37,8 +37,10 @@ module TwoFactorAuthCode
 
     def js
       <<~JS
-        var test = #{decorated_user.lockout_time_remaining} * 1000;
-        window.LoginGov.countdownTimer(document.getElementById('#{COUNTDOWN_ID}'), test);
+        document.addEventListener('DOMContentLoaded', function() {
+          var test = #{decorated_user.lockout_time_remaining} * 1000;
+          window.LoginGov.countdownTimer(document.getElementById('#{COUNTDOWN_ID}'), test);
+        });
       JS
     end
 

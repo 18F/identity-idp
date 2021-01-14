@@ -6,6 +6,10 @@ environment.loaders.delete('moduleSass');
 environment.loaders.delete('moduleCss');
 environment.loaders.delete('css');
 
+// Note: Because chunk splitting is enabled by default as of Webpacker 6+, this line can be removed
+// when upgrading.
+environment.splitChunks();
+
 // Some files under `node_modules` should be compiled by Babel:
 // 1. Yarn workspace package symlinks, by package name starting with `@18f/identity-`.
 // 2. Specific dependencies that don't compile their own code to run safely in legacy browsers.

@@ -59,5 +59,4 @@
 <% end %>
 <%= render 'shared/cancel', link: @presenter.cancel_link %>
 
-<%== javascript_pack_tag 'clipboard' %>
-<%== javascript_pack_tag 'webauthn-authenticate' %>
+<%== javascript_packs_tag_once 'clipboard', 'webauthn-authenticate' %>
