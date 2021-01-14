@@ -119,6 +119,37 @@ feature 'idv phone step' do
     expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
   end
 
+  shared_examples 'async timed out' do
+    it 'allows resubmitting form' do
+      user = user_with_2fa
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step(user)
+
+      allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
+
+      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+      click_idv_continue
+      expect(page).to have_content(t('idv.failure.timeout'))
+      expect(page).to have_current_path(idv_phone_path)
+      allow(DocumentCaptureSession).to receive(:find_by).and_call_original
+      click_idv_continue
+      expect(page).to have_current_path(idv_review_path)
+    end
+  end
+
+  it_behaves_like 'async timed out'
+
+  context 'javascript enabled', js: true do
+    around do |example|
+      # Adjust the wait time to give the frontend time to poll for results.
+      Capybara.using_wait_time(5) do
+        example.run
+      end
+    end
+
+    it_behaves_like 'async timed out'
+  end
+
   context 'cancelling IdV' do
     it_behaves_like 'cancel at idv step', :phone
     it_behaves_like 'cancel at idv step', :phone, :oidc

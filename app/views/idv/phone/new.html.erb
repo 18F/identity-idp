@@ -1,3 +1,11 @@
+<div id="form-steps-wait-alert">
+  <%= render 'shared/alert', {
+    type: 'success',
+    class: 'margin-bottom-4',
+    message: I18n.t('doc_auth.forms.doc_success'),
+  } %>
+</div>
+
 <% title t('idv.titles.phone') %>
 
 <h1 class="h3 my0">
@@ -30,6 +38,8 @@
                        url: idv_phone_path,
                        data: {
                          form_steps_wait: '',
+                         error_message: t("idv.failure.sessions.exception"),
+                         alert_target: '#form-steps-wait-alert',
                          wait_step_path: idv_phone_path,
                          poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
                        },
