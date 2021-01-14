@@ -95,14 +95,14 @@ end
 # We need this to be called after the SecureHeaders::Railtie adds its own middleware at the top
 Rails.application.configure do |config|
   acuant_sdk_static_files = %w[
-    AcuantImageProcessingWorker.min.js
-    AcuantImageProcessingWorker.wasm
+    /acuant/11.4.1/AcuantImageProcessingWorker.min.js
+    /acuant/11.4.1/AcuantImageProcessingWorker.wasm
   ].freeze
 
   config.middleware.insert_before(
     SecureHeaders::Middleware,
     SecureHeaders::RemoveContentSecurityPolicy,
   ) do |request|
-    acuant_sdk_static_files.any? { |file| request.path.end_with?(file) }
+    acuant_sdk_static_files.include?(request.path)
   end
 end
