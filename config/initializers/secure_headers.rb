@@ -70,7 +70,8 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
 end
 
 # A tiny middleware that calls a block on each request.
-# If the block returns true, it deletes the Content-Security-Policy header
+# When 1) the block returns true and 2) the response is a 2XX response,
+# it deletes the Content-Security-Policy header
 # Intended so that we can override SecureHeaders behavior and not set
 # the headers on asset files
 class SecureHeaders::RemoveContentSecurityPolicy
@@ -83,8 +84,9 @@ class SecureHeaders::RemoveContentSecurityPolicy
   def call(env)
     status, headers, body = @app.call(env)
 
-    should_remove = @block.call(Rack::Request.new(env))
-    headers.delete('Content-Security-Policy') if should_remove
+    if (200...300).cover?(status) && @block.call(Rack::Request.new(env))
+      headers.delete('Content-Security-Policy')
+    end
 
     [status, headers, body]
   end
