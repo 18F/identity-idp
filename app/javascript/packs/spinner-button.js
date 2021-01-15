@@ -76,5 +76,5 @@ export class SpinnerButton {
   }
 }
 
-const wrappers = [...document.querySelectorAll('.spinner-button')];
+const wrappers = Array.from(document.querySelectorAll('.spinner-button'));
 wrappers.forEach((wrapper) => new SpinnerButton(wrapper).bind());

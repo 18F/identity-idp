@@ -12,7 +12,7 @@ const PATTERN_TYPES = ['dob', 'personal-key', 'ssn', 'state_id_number', 'zipcode
  */
 function disableFormSubmit(event) {
   const form = /** @type {HTMLFormElement} */ (event.target);
-  [...form.querySelectorAll('button:not([type]),[type="submit"]')].forEach((submit) => {
+  Array.from(form.querySelectorAll('button:not([type]),[type="submit"]')).forEach((submit) => {
     /** @type {HTMLInputElement|HTMLButtonElement} */ (submit).disabled = true;
   });
 }
@@ -61,14 +61,15 @@ function validateInput(input) {
  * @param {HTMLFormElement} form Form to initialize.
  */
 export function initialize(form) {
-  /** @type {HTMLInputElement[]} */ ([...form.querySelectorAll('.field')]).forEach(validateInput);
+  /** @type {HTMLInputElement[]} */
+  const fields = Array.from(form.querySelectorAll('.field'));
+  fields.forEach(validateInput);
   form.addEventListener('submit', disableFormSubmit);
 }
 
 loadPolyfills(['classlist']).then(() => {
-  const forms = /** @type {HTMLFormElement[]} */ ([
-    ...document.querySelectorAll('form[data-validate]'),
-  ]);
+  /** @type {HTMLFormElement[]} */
+  const forms = Array.from(document.querySelectorAll('form[data-validate]'));
 
   forms.forEach(initialize);
 });
