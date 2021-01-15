@@ -101,15 +101,11 @@ Rails.application.configure do |config|
   # example URLs:
   # - /verify/doc_auth/AcuantImageProcessingWorker.min.js
   # - /en/verify/capture_doc/AcuantImageProcessingWorker.min.js
-  acuant_sdk_static_files = [nil, *available_locales].product(
-                              %w[doc_auth capture_doc],
-                              %w[
-                                AcuantImageProcessingWorker.min.js
-                                AcuantImageProcessingWorker.wasm
-                              ],
-                            ).map do |locale, flow, asset|
-                              File.join('/', *locale, '/verify', flow, asset)
-                            end.to_set.freeze
+  acuant_sdk_static_files = [nil, *available_locales].
+                              product(%w[doc_auth capture_doc]).
+                              map do |locale, flow, asset|
+                                File.join('/', *locale, '/verify', flow, 'AcuantImageProcessingWorker.min.js')
+                              end.to_set.freeze
 
   config.middleware.insert_before(
     SecureHeaders::Middleware,
