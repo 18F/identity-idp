@@ -175,6 +175,6 @@ export class FormStepsWait {
 }
 
 loadPolyfills(['fetch', 'custom-event']).then(() => {
-  const forms = [...document.querySelectorAll('[data-form-steps-wait]')];
+  const forms = Array.from(document.querySelectorAll('[data-form-steps-wait]'));
   forms.forEach((form) => new FormStepsWait(form).bind());
 });

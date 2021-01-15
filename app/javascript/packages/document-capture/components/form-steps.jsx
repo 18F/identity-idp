@@ -169,7 +169,7 @@ function FormSteps({
 
     // Don't proceed if field errors have yet to be resolved.
     if (activeErrors.length && activeErrors.length > unknownFieldErrors.length) {
-      setActiveErrors([...activeErrors]);
+      setActiveErrors(Array.from(activeErrors));
       didSubmitWithErrors.current = true;
       return;
     }
