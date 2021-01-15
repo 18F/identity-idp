@@ -97,15 +97,15 @@ end
 Rails.application.configure do |config|
   # I18n is not configured yet at this point
   available_locales = AppConfig.env.available_locales.try(:split, ' ') || %w[en]
-  wasm_name = 'AcuantImageProcessingWorker.wasm'
+  worker_js = 'AcuantImageProcessingWorker.min.js'
 
   # example URLs:
   # - /verify/doc_auth/AcuantImageProcessingWorker.min.js
   # - /en/verify/capture_doc/AcuantImageProcessingWorker.min.js
   acuant_sdk_static_files = [nil, *available_locales].
                               product(%w[doc_auth capture_doc]).
-                              map do |locale, flow, asset|
-                                File.join('/', *locale, '/verify', flow, wasm_name)
+                              map do |locale, flow|
+                                File.join('/', *locale, '/verify', flow, worker_js)
                               end.to_set.freeze
 
   config.middleware.insert_before(
