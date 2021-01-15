@@ -3,7 +3,7 @@ const { merge } = require('webpack-merge')
 
 const sassLoader = environment.loaders.get('sass');
 
-sassLoader.use.map(function(loader) {
+sassLoader.use.map((loader) => {
   if (loader.loader === "css-loader") {
     loader.options = merge(loader.options, { sourceMap: false });
   }
