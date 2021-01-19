@@ -5,7 +5,7 @@ class TotpVerificationForm
   end
 
   def submit
-    cfg = valid_totp_code?
+    cfg = if_valid_totp_code_return_config
     FormResponse.new(
       success: cfg.present?,
       errors: {},
@@ -17,7 +17,7 @@ class TotpVerificationForm
 
   attr_reader :user, :code
 
-  def valid_totp_code?
+  def if_valid_totp_code_return_config
     return unless code.match? pattern_matching_totp_code_format
     Db::AuthAppConfiguration::Authenticate.call(user, code)
   end
