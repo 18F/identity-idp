@@ -40,6 +40,12 @@ $image-path: '~identity-style-guide/dist/assets/img';
 @import '~identity-style-guide/dist/assets/scss/uswds/utilities/rules/all';
 @import '~identity-style-guide/dist/assets/scss/uswds/utilities/rules/package';`;
 
+sassLoader.use.map((loader) => {
+  if (loader.loader === "css-loader") {
+    loader.options.sourceMap = false;
+  }
+});
+
 const sourceMapLoader = {
   test: /\.js$/,
   include: /node_modules/,
