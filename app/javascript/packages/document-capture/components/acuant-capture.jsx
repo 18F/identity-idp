@@ -192,7 +192,11 @@ function AcuantCapture(
                 result = 'success';
               }
 
-              addPageAction('documentCapture.acuantWebSDKResult', { result });
+              addPageAction({
+                key: 'documentCapture.acuantWebSDKResult',
+                label: 'IdV: Acuant web SDK photo analyzed',
+                payload: { result },
+              });
 
               setIsCapturingEnvironment(false);
             }}
