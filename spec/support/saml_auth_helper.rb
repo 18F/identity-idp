@@ -115,6 +115,12 @@ module SamlAuthHelper
     settings
   end
 
+  def sp2_saml_settings_inactive
+    settings = saml_settings.dup
+    settings.issuer = 'http://localhost:3000/inactive_sp'
+    settings
+  end
+
   def sp_not_requesting_signed_saml_response_settings
     settings = saml_settings.dup
     settings.issuer = 'test_saml_sp_not_requesting_signed_response_message'

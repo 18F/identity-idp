@@ -250,6 +250,41 @@ test:
         fr: ""
     allow_prompt_login: true
 
+  'http://localhost:3000/inactive_sp':
+    acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+    sp_initiated_login_url: 'http://localhost:3000/test/saml'
+    block_encryption: 'none'
+    cert: 'saml_test_sp'
+    agency: 'Test Government Agency'
+    agency_id: 1
+    uuid_priority: 10
+    friendly_name: 'Your friendly Government Agency (inactive)'
+    logo: 'generic.svg'
+    return_to_sp_url: 'http://localhost:3000'
+    redirect_uris:
+      - 'x-example-app://idp_return'
+    attribute_bundle:
+      - email
+      - phone
+    allow_prompt_login: true
+    active: false
+
+  'urn:gov:gsa:openidconnect:inactive:sp:test':
+    redirect_uris:
+      - 'gov.gsa.openidconnect.test://result'
+      - 'gov.gsa.openidconnect.test://result/signout'
+    cert: 'saml_test_sp'
+    friendly_name: 'Example iOS App (inactive)'
+    agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
+    logo: 'generic.svg'
+    ial: 2
+    push_notification_url: http://localhost/push_notifications
+    allow_prompt_login: true
+    active: false
+
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
     agency_id: 2

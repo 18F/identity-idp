@@ -27,6 +27,20 @@ describe 'redirect_uri validation' do
     it 'displays error instead of branded landing page' do
       visit_idp_from_inactive_sp
       current_host = URI.parse(page.current_url).host
+      current_path = URI.parse(page.current_url).path
+
+      expect(current_host).to eq 'www.example.com'
+      expect(current_path).to eq '/errors/service_provider_inactive'
+      expect(page).
+        to have_content t('service_providers.errors.inactive.heading',
+          sp_name: 'Example iOS App (inactive)')
+    end
+  end
+
+  context 'when the service_provider is not real' do
+    it 'displays error instead of branded landing page' do
+      visit_idp_from_nonexistant_sp
+      current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
       expect(page).
@@ -67,7 +81,7 @@ describe 'redirect_uri validation' do
     it 'displays error instead of redirecting' do
       sign_in_and_2fa_user
 
-      visit_idp_from_inactive_sp
+      visit_idp_from_nonexistant_sp
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
@@ -99,7 +113,7 @@ describe 'redirect_uri validation' do
       click_submit_default
       click_continue
 
-      visit_idp_from_inactive_sp
+      visit_idp_from_nonexistant_sp
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
@@ -191,8 +205,8 @@ describe 'redirect_uri validation' do
     )
   end
 
-  def visit_idp_from_inactive_sp(state: SecureRandom.hex)
-    client_id = 'inactive'
+  def visit_idp_from_nonexistant_sp(state: SecureRandom.hex)
+    client_id = 'nonexistant:sp'
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
@@ -201,6 +215,22 @@ describe 'redirect_uri validation' do
       acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce,
+    )
+  end
+
+  def visit_idp_from_inactive_sp(state: SecureRandom.hex)
+    client_id = 'urn:gov:gsa:openidconnect:inactive:sp:test'
+    nonce = SecureRandom.hex
+
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid profile',
+      redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
       prompt: 'select_account',
       nonce: nonce,

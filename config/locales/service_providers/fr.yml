@@ -15,3 +15,14 @@ fr:
         sign_up: Veuillez créer un compte login.gov avec la même adresse e-mail que
           vous avez utilisée pour %{sp_name}. <p><a href="https://login.gov/help/">En
           savoir plus.</a>
+    errors:
+      generic_sp_name: Cette agence
+      generic_sp_link: NOT USED
+      inactive:
+        heading: "%{sp_name} n’utilise plus login.gov"
+        instructions: "%{sp_name} n’utilise plus login.gov comme service de connexion à son site
+          Web. Si vous avez déjà créé un compte login.gov, sachez qu’il est toujours actif et qu’il
+          peut être utilisé pour accéder aux autres sites Web gouvernementaux participants."
+        instructions2: Veuillez vous rendre sur le site de l’agence afin de les contacter pour
+          plus d’informations.
+        button_text: Voir mon compte login.gov
