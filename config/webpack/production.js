@@ -5,7 +5,7 @@ const sassLoader = environment.loaders.get('sass');
 
 sassLoader.use.map((loader) => {
   if (loader.loader === "css-loader") {
-    loader.options = merge(loader.options, { sourceMap: false });
+    loader.options.sourceMap = false;
   }
 });
 
