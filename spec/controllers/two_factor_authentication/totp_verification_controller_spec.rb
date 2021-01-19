@@ -11,7 +11,8 @@ describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'redirects to the profile' do
-        expect(Db::AuthAppConfiguration::Authenticate).to receive(:call).and_return(true)
+        cfg = subject.current_user.auth_app_configurations.first
+        expect(Db::AuthAppConfiguration::Authenticate).to receive(:call).and_return(cfg)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
         post :create, params: { code: generate_totp_code(@secret) }
@@ -36,6 +37,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
           success: true,
           errors: {},
           multi_factor_auth_method: 'totp',
+          mfa_id: subject.current_user.auth_app_configurations.first.id,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(attributes)
@@ -82,6 +84,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
           success: false,
           errors: {},
           multi_factor_auth_method: 'totp',
+          mfa_id: nil,
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).

@@ -5,10 +5,11 @@ class TotpVerificationForm
   end
 
   def submit
+    cfg = valid_totp_code?
     FormResponse.new(
-      success: valid_totp_code?,
+      success: cfg.present?,
       errors: {},
-      extra: extra_analytics_attributes,
+      extra: extra_analytics_attributes(cfg&.id),
     )
   end
 
@@ -17,7 +18,7 @@ class TotpVerificationForm
   attr_reader :user, :code
 
   def valid_totp_code?
-    return false unless code.match? pattern_matching_totp_code_format
+    return unless code.match? pattern_matching_totp_code_format
     Db::AuthAppConfiguration::Authenticate.call(user, code)
   end
 
@@ -29,9 +30,10 @@ class TotpVerificationForm
     TwoFactorAuthenticatable::OTP_LENGTH
   end
 
-  def extra_analytics_attributes
+  def extra_analytics_attributes(cfg_id)
     {
       multi_factor_auth_method: 'totp',
+      mfa_id: cfg_id,
     }
   end
 end
