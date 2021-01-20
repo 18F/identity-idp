@@ -8,7 +8,7 @@ module Users
       @sp_link = I18n.t('service_providers.errors.generic_sp_link')
 
       issuer = sp_session[:issuer]
-      unless issuer.blank?
+      if issuer.present?
         service_provider = ServiceProvider.from_issuer(issuer)
         @sp_name = service_provider.friendly_name || @sp_name
         @sp_link = service_provider.return_to_sp_url || @sp_link

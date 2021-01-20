@@ -1,6 +1,16 @@
 ---
 en:
   service_providers:
+    errors:
+      generic_sp_link: the agency's website
+      generic_sp_name: This agency
+      inactive:
+        button_text: View my login.gov account
+        heading: "%{sp_name} no longer uses login.gov"
+        instructions: "%{sp_name} no longer uses login.gov as a sign-in service for
+          their website. If you already created a login.gov account, it is still active
+          and can be used to access other participating government websites."
+        instructions2: Please visit %{sp_link} to contact them for more information.
     help_text:
       default:
         forgot_password: Your old %{sp_name} username and password won’t work. Please
@@ -13,13 +23,3 @@ en:
           more</a>
         sign_up: Please create a login.gov account using the same email address you
           use for %{sp_name} <p><a href="https://login.gov/help/">Learn more</a>
-    errors:
-      generic_sp_name: This agency
-      generic_sp_link: the agency's website
-      inactive:
-        heading: "%{sp_name} no longer uses login.gov"
-        instructions: "%{sp_name} no longer uses login.gov as a sign-in service for their website.
-          If you already created a login.gov account, it is still active and can be used to access
-          other participating government websites."
-        instructions2: Please visit %{sp_link} to contact them for more information.
-        button_text: View my login.gov account

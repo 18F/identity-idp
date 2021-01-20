@@ -1,6 +1,17 @@
 ---
 es:
   service_providers:
+    errors:
+      generic_sp_link: NOT USED
+      generic_sp_name: Esta agencia
+      inactive:
+        button_text: Ver mi cuenta de login.gov
+        heading: "%{sp_name} ya no utiliza login.gov"
+        instructions: "%{sp_name} ya no utiliza login.gov como servicio de acceso
+          a su sitio web. Si ya ha creado una cuenta de login.gov, todavía está activa
+          y se puede usar para acceder a otros sitios web del gobierno participante."
+        instructions2: Por favor, visite la agencia para contactarlos y obtener más
+          información.
     help_text:
       default:
         forgot_password: Si tiene un perfil de %{sp_name} existente, favor de usar
@@ -14,14 +25,3 @@ es:
         sign_up: Por favor crea un login.gov cuenta usando la misma dirección de correo
           electrónico que utiliza para %{sp_name}. <p><a href="https://login.gov/help/">Obtenga
           más información.</a>
-    errors:
-      generic_sp_name: Esta agencia
-      generic_sp_link: NOT USED
-      inactive:
-        heading: "%{sp_name} ya no utiliza login.gov"
-        instructions: "%{sp_name} ya no utiliza login.gov como servicio de acceso a su sitio web.
-        Si ya ha creado una cuenta de login.gov, todavía está activa y se puede usar para acceder
-        a otros sitios web del gobierno participante."
-        instructions2: Por favor, visite la agencia para contactarlos y obtener más información.
-        button_text: Ver mi cuenta de login.gov
-
