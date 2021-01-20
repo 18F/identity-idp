@@ -41,6 +41,8 @@ es:
         text_html: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo
           mañana.
       exceptions:
+        internal_error: Hubo un error interno al procesar su solicitud. Inténtalo
+          de nuevo.
         link: contáctanos
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
       help:
