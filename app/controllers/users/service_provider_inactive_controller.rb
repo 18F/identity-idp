@@ -11,12 +11,9 @@ module Users
         service_provider = ServiceProvider.from_issuer(issuer)
         @sp_name = service_provider.friendly_name || @sp_name
       end
-    end
 
-    def show
       delete_branded_experience
       session[:sp] = {}
-      redirect_to root_url
     end
   end
 end

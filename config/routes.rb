@@ -177,8 +177,6 @@ Rails.application.routes.draw do
 
     get '/errors/service_provider_inactive' => 'users/service_provider_inactive#index',
       as: :sp_inactive_error
-    get '/errors/service_provider_inactive_redirect' => 'users/service_provider_inactive#show',
-      as: :sp_inactive_redirect
 
     get '/events/disavow' => 'event_disavowal#new', as: :event_disavowal
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal
