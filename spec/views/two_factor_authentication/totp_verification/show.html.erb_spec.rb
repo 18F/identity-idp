@@ -52,11 +52,6 @@ describe 'two_factor_authentication/totp_verification/show.html.erb' do
     )
   end
 
-  it 'displays a helpful tooltip to the user' do
-    tooltip = t('tooltips.authentication_app')
-    expect(rendered).to have_xpath("//span[@aria-label=\"#{tooltip}\"]")
-  end
-
   context 'user is reauthenticating' do
     before do
       allow(@presenter).to receive(:reauthn).and_return(true)

@@ -11,7 +11,6 @@
 module Encryption
   class UserAccessKey
     include ::NewRelic::Agent::MethodTracer
-    add_method_tracer :initialize, "Custom/#{name}/build"
 
     attr_reader :cost, :salt, :z1, :z2, :random_r, :masked_ciphertext, :cek
 
@@ -101,5 +100,7 @@ module Encryption
         left_byte ^ right_byte
       end.pack('C*')
     end
+
+    add_method_tracer :initialize, "Custom/#{name}/build"
   end
 end

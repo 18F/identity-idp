@@ -69,6 +69,53 @@ describe IdvController do
         expect(response).to redirect_to account_url
       end
     end
+
+    context 'no SP context' do
+      before do
+        stub_sign_in
+        session[:sp] = {}
+      end
+
+      context 'prod environment' do
+        before do
+          allow(LoginGov::Hostdata).to receive(:env).and_return('prod')
+          allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
+        end
+
+        it 'redirects back to the account page' do
+          get :index
+
+          expect(response).to redirect_to account_url
+        end
+      end
+
+      context 'non-prod environment' do
+        before do
+          allow(LoginGov::Hostdata).to receive(:env).and_return('staging')
+          allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
+        end
+
+        it 'begins the identity proofing process' do
+          get :index
+
+          expect(response).to redirect_to idv_doc_auth_url
+        end
+      end
+
+
+      context 'local development' do
+        before do
+          allow(LoginGov::Hostdata).to receive(:env).and_return(nil)
+          allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(false)
+        end
+
+        it 'begins the identity proofing process' do
+          get :index
+
+          expect(response).to redirect_to idv_doc_auth_url
+        end
+      end
+    end
   end
 
   describe '#activated' do

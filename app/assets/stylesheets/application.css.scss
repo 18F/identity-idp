@@ -4,11 +4,3 @@
 @import 'identity-style-guide/dist/assets/scss/styles';
 @import 'components/all';
 @import 'print';
-
-// This import is temporary and scoped to the new Document Capture screen. The File Input component
-// is part of a USWDS version newer than what's currently shipped with Login Design System. Follow-
-// up work should upgrade to use a newer USWDS, at which time this should be removed altogether.
-#document-capture-form { // scss-lint:disable IdSelector
-  @import 'uswds/dist/scss/elements/form-controls/file-input';
-  @import 'components/file-input';
-}

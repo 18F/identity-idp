@@ -10,7 +10,16 @@ Rails.application.configure do
   config.assets.debug = true
   config.assets.digest = true
   config.assets.raise_runtime_errors = true
-  config.action_view.raise_on_missing_translations = true
+  config.i18n.raise_on_missing_translations = true
+
+  # Raise exceptions for disallowed deprecations.
+  config.active_support.disallowed_deprecation = :raise
+
+  # Tell Active Support which deprecation messages to disallow.
+  config.active_support.disallowed_deprecation_warnings = []
+
+  # Annotate rendered view with file names.
+  config.action_view.annotate_rendered_view_with_filenames = true
 
   config.action_mailer.default_url_options = {
     host: AppConfig.env.domain_name,

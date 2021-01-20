@@ -71,7 +71,7 @@ describe Idv::PhoneController do
       subject.idv_session.idv_phone_step_document_capture_session_uuid = 'abc123'
 
       get :new
-      expect(flash[:info]).to include t('idv.failure.timeout')
+      expect(flash[:error]).to include t('idv.failure.timeout')
       expect(response).to render_template :new
       put :create, params: { idv_phone_form: { phone: good_phone } }
       get :new
@@ -83,7 +83,7 @@ describe Idv::PhoneController do
       # in progress behavior
       document_capture_session = DocumentCaptureSession.create(user_id: user.id,
                                                                requested_at: Time.zone.now)
-      document_capture_session.store_proofing_pii_from_doc({})
+      document_capture_session.create_proofing_session
 
       subject.idv_session.idv_phone_step_document_capture_session_uuid =
         document_capture_session.uuid
@@ -168,10 +168,10 @@ describe Idv::PhoneController do
           expect(response).to redirect_to idv_review_path
 
           expected_applicant = {
-            first_name: 'Some',
-            last_name: 'One',
-            phone: normalized_phone,
-            uuid_prefix: nil,
+            'first_name' => 'Some',
+            'last_name' => 'One',
+            'phone' => normalized_phone,
+            'uuid_prefix' => nil,
           }
 
           expect(subject.idv_session.applicant).to eq expected_applicant

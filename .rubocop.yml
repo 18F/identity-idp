@@ -10,29 +10,18 @@ AllCops:
     - 'bin/**/*'
     - 'db/migrate/*'
     - 'db/schema.rb'
-    - 'lib/rspec/user_flow_formatter.rb'
     - 'lib/tasks/create_test_accounts.rb'
-    - 'lib/user_flow_exporter.rb'
     - 'node_modules/**/*'
     - 'tmp/**/*'
     - 'vendor/**/*'
+    - 'public/**/*'
   TargetRubyVersion: 2.6
-  TargetRailsVersion: 5.2
+  TargetRailsVersion: 6.0
   UseCache: true
+  DisabledByDefault: true
 
 Rails:
   Enabled: true
-
-Metrics/AbcSize:
-  Description: A calculated magnitude based on number of assignments, branches, and
-    conditions.
-  Enabled: false
-  Max: 15
-  Exclude:
-  - spec/**/*
-
-Metrics/CyclomaticComplexity:
-  Enabled: false
 
 Metrics/BlockLength:
   CountComments: false  # count full line comments?
@@ -47,12 +36,6 @@ Metrics/BlockLength:
     - 'config/routes.rb'
     - 'spec/**/*.rb'
 
-Metrics/ClassLength:
-  Description: Avoid classes longer than 100 lines of code.
-  Enabled: false
-  CountComments: false
-  Max: 100
-
 Layout/LineLength:
   Description: Limit lines to 100 characters.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#80-character-limits
@@ -64,16 +47,6 @@ Layout/LineLength:
   - https
   Exclude:
     - 'config/routes.rb'
-
-Metrics/MethodLength:
-  Description: Avoid methods longer than 15 lines of code.
-  StyleGuide: https://github.com/bbatsov/ruby-style-guide#short-methods
-  Enabled: false
-  CountComments: false
-  Max: 15
-  Exclude:
-  - 'db/migrate/*'
-  - spec/**/*
 
 Metrics/ModuleLength:
   CountComments: false
@@ -91,6 +64,9 @@ Naming/VariableName:
     - 'spec/services/pii/nist_encryption_spec.rb'
 
 Rails/FilePath:
+  Enabled: false
+
+Rails/ApplicationMailer:
   Enabled: false
 
 Rails/HttpPositionalArguments:
@@ -150,13 +126,6 @@ Style/AndOr:
   - always
   - conditionals
 
-Style/Documentation:
-  Description: Document classes and non-namespace modules.
-  Enabled: false
-  Exclude:
-    - 'spec/**/*'
-    - 'test/**/*'
-
 Layout/DotPosition:
   Description: Checks the position of the dot in multi-line method calls.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
@@ -164,9 +133,6 @@ Layout/DotPosition:
   SupportedStyles:
   - leading
   - trailing
-
-Style/DoubleNegation:
-  Enabled: false
 
 # Warn on empty else statements
 # empty - warn only on empty else
@@ -186,12 +152,6 @@ Layout/ExtraSpacing:
   AllowForAlignment: true
   # When true, forces the alignment of = in assignments on consecutive lines.
   ForceEqualSignAlignment: false
-
-Style/FrozenStringLiteralComment:
-  Description: >-
-                 Add the frozen_string_literal comment to the top of files
-                 to help transition from Ruby 2.3.0 to Ruby 3.0.
-  Enabled: false
 
 Style/IfUnlessModifier:
   Description: Favor modifier if/unless usage when you have a single-line body.
@@ -250,9 +210,6 @@ Style/StringLiterals:
   - double_quotes
   ConsistentQuotesInMultiline: true
 
-Style/RegexpLiteral:
-  Enabled: false
-
 Style/TrailingCommaInArguments:
   # If `comma`, the cop requires a comma after the last argument, but only for
   # parenthesized method calls where each argument is on its own line.
@@ -289,42 +246,6 @@ Style/TrailingCommaInHashLiteral:
 Naming/MethodParameterName:
   MinNameLength: 2
 
-Style/ExpandPathArguments:
-  Enabled: false
-
-Style/FormatStringToken:
-  Enabled: false
-
-Style/SingleLineBlockParams:
-  Enabled: false
-
-Layout/EmptyLineAfterGuardClause:
-  Enabled: false
-
-Naming/MemoizedInstanceVariableName:
-  Enabled: false
-
-Naming/RescuedExceptionsVariableName:
-  Enabled: false
-
-Style/HashEachMethods:
-  Enabled: false
-
-Style/HashTransformKeys:
-  Enabled: false
-
-Style/HashTransformValues:
-  Enabled: false
-
-Lint/SuppressedException:
-  Enabled: false
-
-Lint/SendWithMixinArgument:
-  Enabled: false
-
-Layout/EmptyLinesAroundAttributeAccessor:
-  Enabled: false
-
 Layout/SpaceAroundMethodCallOperator:
   Enabled: true
 
@@ -337,23 +258,8 @@ Lint/MixedRegexpCaptureTypes:
 Lint/RaiseException:
   Enabled: true
 
-Lint/StructNewOverride:
-  Enabled: false
-
-Style/ExponentialNotation:
-  Enabled: false
-
 Style/RedundantRegexpCharacterClass:
   Enabled: true
-
-Style/RedundantRegexpEscape:
-  Enabled: false
-
-Style/SlicingWithRange:
-  Enabled: false
-
-Rails/ApplicationMailer:
-  Enabled: false
 
 Lint/BinaryOperatorWithIdenticalOperands:
   Enabled: true
@@ -366,9 +272,6 @@ Lint/DuplicateRescueException:
 
 Lint/FloatComparison:
   Enabled: true
-
-Lint/MissingSuper:
-  Enabled: false
 
 Lint/OutOfRangeRegexpRef:
   Enabled: true
@@ -388,9 +291,6 @@ Lint/SelfAssignment:
 Lint/TopLevelReturnWithArgument:
   Enabled: true
 
-Style/GlobalStdStream:
-  Enabled: false
-
 Style/RedundantAssignment:
   Enabled: true
 
@@ -399,42 +299,6 @@ Style/RedundantFetchBlock:
 
 Style/RedundantFileExtensionInRequire:
   Enabled: true
-
-Lint/EmptyConditionalBody:
-  Enabled: false
-
-Lint/UnreachableLoop:
-  Enabled: false
-
-Style/AccessorGrouping:
-  Enabled: false
-
-Style/ArrayCoercion:
-  Enabled: false
-
-Style/BisectedAttrAccessor:
-  Enabled: false
-
-Style/CaseLikeIf:
-  Enabled: false
-
-Style/ExplicitBlockArgument:
-  Enabled: false
-
-Style/HashAsLastArrayItem:
-  Enabled: false
-
-Style/HashLikeCase:
-  Enabled: false
-
-Style/OptionalBooleanParameter:
-  Enabled: false
-
-Style/SingleArgumentDig:
-  Enabled: false
-
-Style/StringConcatenation:
-  Enabled: false
 
 Style/MultilineWhenThen:
   Enabled: true
@@ -448,29 +312,11 @@ Lint/DuplicateRequire:
 Lint/TrailingCommaInAttributeDeclaration:
   Enabled: true
 
-Lint/EmptyFile:
-  Enabled: false
-
-Lint/UselessMethodDefinition:
-  Enabled: false
-
-Style/CombinableLoops:
-  Enabled: false
-
-Style/RedundantSelfAssignment:
-  Enabled: false
-
-Style/SoleNestedConditional:
-  Enabled: false
-
 Lint/UselessTimes:
   Enabled: true
 
 Layout/BeginEndAlignment:
   Enabled: true
-
-Lint/ConstantDefinitionInBlock:
-  Enabled: false
 
 Lint/IdentityComparison:
   Enabled: true
@@ -479,4 +325,13 @@ Bundler/DuplicatedGem:
   Enabled: true
 
 Naming/BinaryOperatorParameterName:
+  Enabled: true
+
+Lint/DuplicateRegexpCharacterClassElement:
+  Enabled: true
+
+Style/ArgumentsForwarding:
+  Enabled: true
+
+Style/NilLambda:
   Enabled: true

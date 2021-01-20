@@ -9,46 +9,27 @@ describe ApplicationHelper do
     end
   end
 
-  describe '#tooltip' do
-    it 'creates a span containing aria label with text and image' do
-      tooltip_text = 'foobar'
-
-      html = helper.tooltip(tooltip_text)
-
-      expect(html).to have_css('.hint--top')
-      expect(html).to have_selector('img')
-      expect(html).to have_xpath("//span[@aria-label='#{tooltip_text}']")
-    end
-  end
-
   describe '#session_with_trust?' do
-    context 'no user present and page is not one with trust' do
+    context 'no user present' do
       before do
         allow(controller).to receive(:current_user).and_return(nil)
       end
 
-      it 'returns false' do
-        expect(helper.session_with_trust?).to eq false
-      end
-
-      context 'current path is email confirmation path' do
-        it 'returns true' do
+      context 'current path is new session path' do
+        it 'returns false' do
           allow(helper).to receive(:current_page?).with(
-            controller: 'sign_up/passwords', action: 'new',
+            controller: 'users/sessions', action: 'new',
           ).and_return(true)
 
-          expect(helper.session_with_trust?).to eq true
+          expect(helper.session_with_trust?).to eq false
         end
       end
 
-      context 'current path is reset password path' do
+      context 'current path is not new session path' do
         it 'returns true' do
           allow(helper).to receive(:current_page?).with(
-            controller: 'sign_up/passwords', action: 'new',
-          ).and_return(true)
-          allow(helper).to receive(:current_page?).with(
-            controller: 'users/reset_passwords', action: 'edit',
-          ).and_return(true)
+            controller: 'users/sessions', action: 'new',
+          ).and_return(false)
 
           expect(helper.session_with_trust?).to eq true
         end

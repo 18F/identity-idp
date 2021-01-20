@@ -19,8 +19,4 @@ module TwoFactorAuthenticatable
     before_action :apply_secure_headers_override, only: %i[show create]
     # rubocop:enable Rails/LexicallyScopedActionFilter
   end
-
-  def self.allowed_otp_drift_seconds
-    ALLOWED_OTP_DRIFT_SECONDS
-  end
 end

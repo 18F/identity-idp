@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 
   post '/api/service_provider' => 'service_provider#update'
   post '/api/verify/images' => 'idv/image_uploads#create'
+  post '/api/logger' => 'frontend_log#create'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
@@ -263,14 +264,6 @@ Rails.application.routes.draw do
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
     delete '/users' => 'users#destroy', as: :destroy_user
-
-    AcuantSdkController::ACUANT_SDK_STATIC_FILES.each do |acuant_sdk_file|
-      constraints version: /\d+\.\d+\.\d+/ do
-        get "/verify/doc_auth(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
-        get "/verify/capture_doc(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
-        get "/verify/capture-doc(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
-      end
-    end
 
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'

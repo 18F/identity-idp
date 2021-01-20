@@ -10,8 +10,6 @@ feature 'doc auth document capture step' do
   let(:liveness_enabled) { 'false' }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
-    allow(AppConfig.env).to receive(:document_capture_step_enabled).
-      and_return(document_capture_step_enabled)
     allow(AppConfig.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(LoginGov::Hostdata::EC2).to receive(:load).
@@ -20,355 +18,303 @@ feature 'doc auth document capture step' do
     complete_doc_auth_steps_before_document_capture_step
   end
 
-  context 'when the step is disabled' do
-    let(:document_capture_step_enabled) { 'false' }
+  context 'when liveness checking is enabled' do
+    let(:liveness_enabled) { 'true' }
 
-    it 'takes the user to the front image step' do
-      expect(current_path).to eq(idv_doc_auth_front_image_step)
+    it 'is on the correct_page and shows the document upload options' do
+      expect(current_path).to eq(idv_doc_auth_document_capture_step)
+      expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
+      expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+    end
+
+    it 'shows the selfie upload option' do
+      expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
+    end
+
+    it 'displays doc capture tips' do
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
+    end
+
+    it 'displays selfie tips' do
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
+    end
+
+    it 'proceeds to the next page with valid info and logs analytics info' do
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
+
+      attach_and_submit_images
+
+      expect(page).to have_current_path(next_step)
+      expect(fake_analytics).to have_logged_event(
+        Analytics::DOC_AUTH + ' submitted',
+        step: 'document_capture',
+        result: 'Passed',
+        billed: true,
+      )
+      expect_costing_for_document
+    end
+
+    it 'does not proceed to the next page with invalid info' do
+      mock_general_doc_auth_client_error(:create_document)
+
+      attach_and_submit_images
+
+      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+    end
+
+    it 'does not proceed to the next page with a successful doc auth but missing information' do
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
+
+      mock_doc_auth_no_name_pii(:post_images)
+      attach_and_submit_images
+
+      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+
+      expect(fake_analytics).to have_logged_event(
+        Analytics::DOC_AUTH + ' submitted',
+        step: 'document_capture',
+        result: 'Passed',
+        billed: true,
+        success: false,
+      )
+    end
+
+    it 'offers in person option on failure' do
+      enable_in_person_proofing
+
+      expect(page).to_not have_link(t('in_person_proofing.opt_in_link'),
+                                    href: idv_in_person_welcome_step)
+
+      mock_general_doc_auth_client_error(:create_document)
+      attach_and_submit_images
+
+      expect(page).to have_link(t('in_person_proofing.opt_in_link'),
+                                href: idv_in_person_welcome_step)
+    end
+
+    it 'throttles calls to acuant and allows retry after the attempt window' do
+      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      max_attempts.times do
+        attach_and_submit_images
+
+        expect(page).to have_current_path(next_step)
+        click_on t('doc_auth.buttons.start_over')
+        complete_doc_auth_steps_before_document_capture_step
+      end
+
+      attach_and_submit_images
+
+      expect(page).to have_current_path(idv_session_errors_throttled_path)
+
+      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_document_capture_step
+        attach_and_submit_images
+
+        expect(page).to have_current_path(next_step)
+      end
+    end
+
+    it 'catches network connection errors on post_front_image' do
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_front_image,
+        response: IdentityDocAuth::Response.new(
+          success: false,
+          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
+        ),
+      )
+
+      attach_and_submit_images
+
+      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+      expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
     end
   end
 
-  context 'when the step is enabled' do
-    let(:document_capture_step_enabled) { 'true' }
+  context 'when liveness checking is not enabled' do
+    let(:liveness_enabled) { 'false' }
 
-    context 'when liveness checking is enabled' do
-      let(:liveness_enabled) { 'true' }
+    it 'is on the correct_page and shows the document upload options' do
+      expect(current_path).to eq(idv_doc_auth_document_capture_step)
+      expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
+      expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
+    end
 
-      it 'is on the correct_page and shows the document upload options' do
-        expect(current_path).to eq(idv_doc_auth_document_capture_step)
-        expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
-        expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      end
+    it 'does not show the selfie upload option' do
+      expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+    end
 
-      it 'shows the selfie upload option' do
-        expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
-      end
+    it 'displays document capture tips' do
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
+      expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
+    end
 
-      it 'displays doc capture tips' do
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-      end
+    it 'does not display selfie tips' do
+      expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
+      expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
+      expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
+    end
 
-      it 'displays selfie tips' do
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
-      end
+    it 'proceeds to the next page with valid info' do
+      attach_and_submit_images
 
-      it 'proceeds to the next page with valid info and logs analytics info' do
-        allow_any_instance_of(ApplicationController).
-          to receive(:analytics).and_return(fake_analytics)
+      expect(page).to have_current_path(next_step)
+      expect_costing_for_document
+    end
 
-        attach_images
-        click_idv_continue
-
-        expect(page).to have_current_path(next_step)
-        expect(fake_analytics).to have_logged_event(
-          Analytics::DOC_AUTH + ' submitted',
-          step: 'document_capture',
-          result: 'Passed',
-          billed: true,
-        )
-        expect_costing_for_document
-      end
-
-      it 'allows the use of a base64 encoded data url representation of the image' do
-        attach_front_image_data_url
-        attach_back_image_data_url
-        attach_selfie_image_data_url
-        click_idv_continue
+    it 'throttles calls to acuant and allows retry after the attempt window' do
+      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      max_attempts.times do
+        attach_and_submit_images
 
         expect(page).to have_current_path(next_step)
-        expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_front_image).to eq(
-          doc_auth_front_image_data_url_data,
-        )
-        expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
-          doc_auth_back_image_data_url_data,
-        )
-        expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to eq(
-          doc_auth_selfie_image_data_url_data,
-        )
+        click_on t('doc_auth.buttons.start_over')
+        complete_doc_auth_steps_before_document_capture_step
       end
 
-      it 'does not proceed to the next page with invalid info' do
-        mock_general_doc_auth_client_error(:create_document)
-        attach_images
-        click_idv_continue
+      attach_and_submit_images
 
-        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+      expect(page).to have_current_path(idv_session_errors_throttled_path)
+
+      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_document_capture_step
+        attach_and_submit_images
+
+        expect(page).to have_current_path(next_step)
       end
+    end
 
-      it 'does not proceed to the next page with a successful doc auth but missing information' do
-        allow_any_instance_of(ApplicationController).
-          to receive(:analytics).and_return(fake_analytics)
-
-        mock_doc_auth_no_name_pii(:post_images)
-        attach_images
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-
-        expect(fake_analytics).to have_logged_event(
-          Analytics::DOC_AUTH + ' submitted',
-          step: 'document_capture',
-          result: 'Passed',
-          billed: true,
+    it 'catches network connection errors on post_front_image' do
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_front_image,
+        response: IdentityDocAuth::Response.new(
           success: false,
-        )
-      end
+          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
+        ),
+      )
 
-      it 'offers in person option on failure' do
-        enable_in_person_proofing
+      attach_and_submit_images
 
-        expect(page).to_not have_link(t('in_person_proofing.opt_in_link'),
-                                      href: idv_in_person_welcome_step)
+      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+      expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+    end
+  end
 
-        mock_general_doc_auth_client_error(:create_document)
-        attach_images
-        click_idv_continue
+  context 'when there is a stored result' do
+    it 'proceeds to the next step if the result was successful' do
+      document_capture_session = user.document_capture_sessions.last
+      response = IdentityDocAuth::Response.new(success: true)
+      document_capture_session.store_result_from_response(response)
+      document_capture_session.save!
 
-        expect(page).to have_link(t('in_person_proofing.opt_in_link'),
-                                  href: idv_in_person_welcome_step)
-      end
+      submit_empty_form
 
-      it 'throttles calls to acuant and allows retry after the attempt window' do
-        allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
-        max_attempts.times do
-          attach_images
-          click_idv_continue
-
-          expect(page).to have_current_path(next_step)
-          click_on t('doc_auth.buttons.start_over')
-          complete_doc_auth_steps_before_document_capture_step
-        end
-
-        attach_images
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_session_errors_throttled_path)
-
-        Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
-          sign_in_and_2fa_user(user)
-          complete_doc_auth_steps_before_document_capture_step
-          attach_images
-          click_idv_continue
-
-          expect(page).to have_current_path(next_step)
-        end
-      end
-
-      it 'catches network connection errors on post_front_image' do
-        IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
-          method: :post_front_image,
-          response: IdentityDocAuth::Response.new(
-            success: false,
-            errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
-          ),
-        )
-
-        attach_images
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
-      end
+      expect(page).to have_current_path(next_step)
     end
 
-    context 'when liveness checking is not enabled' do
-      let(:liveness_enabled) { 'false' }
+    it 'does not proceed to the next step if the result was not successful' do
+      document_capture_session = user.document_capture_sessions.last
+      response = IdentityDocAuth::Response.new(success: false)
+      document_capture_session.store_result_from_response(response)
+      document_capture_session.save!
 
-      it 'is on the correct_page and shows the document upload options' do
-        expect(current_path).to eq(idv_doc_auth_document_capture_step)
-        expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
-        expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      end
+      submit_empty_form
 
-      it 'does not show the selfie upload option' do
-        expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
-      end
-
-      it 'displays document capture tips' do
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_header_text'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text1'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text2'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text3'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_id_text4'))
-        expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_hint'))
-      end
-
-      it 'does not display selfie tips' do
-        expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
-        expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
-        expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
-      end
-
-      it 'proceeds to the next page with valid info' do
-        attach_images(liveness_enabled: false)
-        click_idv_continue
-
-        expect(page).to have_current_path(next_step)
-        expect_costing_for_document
-      end
-
-      it 'allows the use of a base64 encoded data url representation of the image' do
-        attach_front_image_data_url
-        attach_back_image_data_url
-        click_idv_continue
-
-        expect(page).to have_current_path(next_step)
-        expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_front_image).to eq(
-          doc_auth_front_image_data_url_data,
-        )
-        expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_back_image).to eq(
-          doc_auth_back_image_data_url_data,
-        )
-        expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
-      end
-
-      it 'throttles calls to acuant and allows retry after the attempt window' do
-        allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
-        max_attempts.times do
-          attach_images(liveness_enabled: false)
-          click_idv_continue
-
-          expect(page).to have_current_path(next_step)
-          click_on t('doc_auth.buttons.start_over')
-          complete_doc_auth_steps_before_document_capture_step
-        end
-
-        attach_images(liveness_enabled: false)
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_session_errors_throttled_path)
-
-        Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
-          sign_in_and_2fa_user(user)
-          complete_doc_auth_steps_before_document_capture_step
-          attach_images(liveness_enabled: false)
-          click_idv_continue
-
-          expect(page).to have_current_path(next_step)
-        end
-      end
-
-      it 'catches network connection errors on post_front_image' do
-        IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
-          method: :post_front_image,
-          response: IdentityDocAuth::Response.new(
-            success: false,
-            errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
-          ),
-        )
-
-        attach_images(liveness_enabled: false)
-        click_idv_continue
-
-        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
-      end
+      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+      expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
     end
 
-    context 'when there is a stored result' do
-      it 'proceeds to the next step if the result was successful' do
-        document_capture_session = user.document_capture_sessions.last
-        response = IdentityDocAuth::Response.new(success: true)
-        document_capture_session.store_result_from_response(response)
-        document_capture_session.save!
+    it 'does not proceed to the next step if there is no result' do
+      submit_empty_form
 
-        submit_empty_form
-
-        expect(page).to have_current_path(next_step)
-      end
-
-      it 'does not proceed to the next step if the result was not successful' do
-        document_capture_session = user.document_capture_sessions.last
-        response = IdentityDocAuth::Response.new(success: false)
-        document_capture_session.store_result_from_response(response)
-        document_capture_session.save!
-
-        submit_empty_form
-
-        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-        expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
-      end
-
-      it 'does not proceed to the next step if there is no result' do
-        submit_empty_form
-
-        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-      end
-
-      it 'uses the form params if form params are present' do
-        document_capture_session = user.document_capture_sessions.last
-        response = IdentityDocAuth::Response.new(success: false)
-        document_capture_session.store_result_from_response(response)
-        document_capture_session.save!
-
-        attach_images(liveness_enabled: false)
-        click_idv_continue
-
-        expect(page).to have_current_path(next_step)
-      end
+      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
     end
 
-    context 'when using async uploads', :js do
-      before do
-        allow(LambdaJobs::Runner).to receive(:new).
-          with(hash_including(job_class: Idv::Proofer.document_job_class)).
-          and_call_original
-      end
+    it 'uses the form params if form params are present' do
+      document_capture_session = user.document_capture_sessions.last
+      response = IdentityDocAuth::Response.new(success: false)
+      document_capture_session.store_result_from_response(response)
+      document_capture_session.save!
 
-      it 'proceeds to the next page with valid info' do
-        set_up_document_capture_result(
-          uuid: DocumentCaptureSession.last.uuid,
-          idv_result: { success: true, errors: {}, messages: ['message'] },
-          pii: {
-            first_name: Faker::Name.first_name,
-            last_name: Faker::Name.last_name,
-            dob: Time.zone.today.to_s,
-            address1: Faker::Address.street_address,
-            city: Faker::Address.city,
-            state: Faker::Address.state_abbr,
-            zipcode: Faker::Address.zip_code,
-            state_id_type: 'drivers_license',
-            state_id_number: '111',
-            state_id_jurisdiction: 'WI',
+      attach_and_submit_images
+
+      expect(page).to have_current_path(next_step)
+    end
+  end
+
+  context 'when using async uploads', :js do
+    before do
+      allow(LambdaJobs::Runner).to receive(:new).
+        with(hash_including(job_class: Idv::Proofer.document_job_class)).
+        and_call_original
+    end
+
+    it 'proceeds to the next page with valid info' do
+      set_up_document_capture_result(
+        uuid: DocumentCaptureSession.last.uuid,
+        idv_result: {
+          success: true,
+          errors: {},
+          messages: ['message'],
+          pii_from_doc: {
+          first_name: Faker::Name.first_name,
+          last_name: Faker::Name.last_name,
+          dob: Time.zone.today.to_s,
+          address1: Faker::Address.street_address,
+          city: Faker::Address.city,
+          state: Faker::Address.state_abbr,
+          zipcode: Faker::Address.zip_code,
+          state_id_type: 'drivers_license',
+          state_id_number: '111',
+          state_id_jurisdiction: 'WI',
           },
+        },
+      )
+
+      attach_file 'Front of your ID', 'app/assets/images/logo.png'
+      attach_file 'Back of your ID', 'app/assets/images/logo.png'
+
+      form = page.find('#document-capture-form')
+      front_url = form['data-front-image-upload-url']
+      back_url = form['data-back-image-upload-url']
+      click_on 'Submit'
+
+      expect(page).to have_current_path(next_step, wait: 20)
+      expect(LambdaJobs::Runner).to have_received(:new) do |args:, **|
+        original = File.read('app/assets/images/logo.png')
+
+        encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+        encryption_key = Base64.decode64(args[:encryption_key])
+
+        Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`
+
+        page.driver.get front_url
+        expect(page).to have_http_status(200)
+        front_plain = encryption_helper.decrypt(
+          data: page.body, iv: Base64.decode64(args[:front_image_iv]), key: encryption_key,
         )
+        expect(front_plain.b).to eq(original.b)
 
-        attach_images(liveness_enabled: false)
-        form = page.find('#document-capture-form')
-        front_url = form['data-front-image-upload-url']
-        back_url = form['data-back-image-upload-url']
-        click_on 'Submit'
-
-        expect(page).to have_current_path(next_step, wait: 20)
-        expect(LambdaJobs::Runner).to have_received(:new) do |args:, **|
-          original = File.read('app/assets/images/logo.png')
-
-          encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
-          encryption_key = Base64.decode64(args[:encryption_key])
-
-          Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`
-
-          page.driver.get front_url
-          expect(page).to have_http_status(200)
-          front_plain = encryption_helper.decrypt(
-            data: page.body, iv: Base64.decode64(args[:front_image_iv]), key: encryption_key,
-          )
-          expect(front_plain.b).to eq(original.b)
-
-          page.driver.get back_url
-          expect(page).to have_http_status(200)
-          back_plain = encryption_helper.decrypt(
-            data: page.body, iv: Base64.decode64(args[:back_image_iv]), key: encryption_key,
-          )
-          expect(back_plain.b).to eq(original.b)
-        end
+        page.driver.get back_url
+        expect(page).to have_http_status(200)
+        back_plain = encryption_helper.decrypt(
+          data: page.body, iv: Base64.decode64(args[:back_image_iv]), key: encryption_key,
+        )
+        expect(back_plain.b).to eq(original.b)
       end
     end
   end

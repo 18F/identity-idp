@@ -28,11 +28,10 @@
   <%= preload_link_tag font_url('identity-style-guide/dist/assets/fonts/merriweather/Latin-Merriweather-Bold.woff2') %>
   <%= stylesheet_link_tag 'application', media: 'all' %>
   <!--[if IE 8]>
-  <%= javascript_include_tag 'es5-shim.min' %>
+  <%= javascript_include_tag_without_preload 'es5-shim.min' %>
   <![endif]-->
   <%= javascript_include_tag 'application' %>
   <%= javascript_include_tag 'i18n-strings.' + I18n.locale.to_s %>
-  <%= javascript_pack_tag 'application' %>
   <%= csrf_meta_tags %>
 
   <link href="/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180" />
@@ -43,13 +42,9 @@
   <meta content="#ffffff" name="theme-color" />
 
   <!--[if lt IE 9]>
-  <%= javascript_include_tag 'html5shiv' %>
-  <%= javascript_include_tag 'respond.min' %>
+  <%= javascript_include_tag_without_preload 'html5shiv' %>
+  <%= javascript_include_tag_without_preload 'respond.min' %>
   <![endif]-->
-
-  <% if AppConfig.env.google_analytics_key.present? && !page_with_trust? %>
-  <%= render 'shared/google_analytics/page_tracking' %>
-  <% end %>
 
   <% if AppConfig.env.newrelic_browser_key.present? && AppConfig.env.newrelic_browser_app_id.present? %>
   <%= render 'shared/newrelic/browser_instrumentation' %>
@@ -80,6 +75,9 @@
 
   <div id="session-timeout-cntnr"></div>
 
+  <%= javascript_packs_tag_once 'application', prepend: true %>
+  <%= render_javascript_pack_once_tags %>
+
   <% if current_user # Render the JS snipped that collects platform authenticator analytics %>
   <div data-platform-authenticator-enabled="true"></div>
   <%= auto_session_timeout_js %>
@@ -87,7 +85,6 @@
   <%= auto_session_expired_js %>
   <% end %>
 
-  <%= render_javascript_pack_once_tags %>
   <%= render 'shared/dap_analytics' if AppConfig.env.participate_in_dap == 'true' && !session_with_trust? %>
 </body>
 

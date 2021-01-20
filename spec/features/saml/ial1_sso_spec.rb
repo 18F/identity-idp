@@ -22,7 +22,6 @@ feature 'IAL1 Single Sign On' do
           expect(page).to have_content email
           expect(page).to_not have_content t('help_text.requested_attributes.address')
           expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
-          expect(page).to_not have_content t('help_text.requested_attributes.name')
           expect(page).to_not have_content t('help_text.requested_attributes.phone')
           expect(page).
             to_not have_content t('help_text.requested_attributes.social_security_number')

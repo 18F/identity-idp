@@ -50,5 +50,13 @@ module.exports = function (api) {
         },
       ],
     ],
+    // For third-party dependencies compiled using Babel, don't assume module source type. Use
+    // "unambiguous" for best-effort attempt to identify source type by patterns.
+    overrides: [
+      {
+        test: /node_modules\/(?!@18f\/identity-)/,
+        sourceType: 'unambiguous',
+      },
+    ],
   };
 };

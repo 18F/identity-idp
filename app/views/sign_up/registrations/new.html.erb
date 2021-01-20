@@ -2,13 +2,11 @@
 
 <%= render 'shared/sp_alert' %>
 
-<div class='email-invalid-alert usa-alert margin-bottom-2 usa-alert--error hide' hidden='true'>
-  <div class='usa-alert__body'>
-    <p class='usa-alert__text'>
-      <%= t('sign_up.email.invalid_email_alert_head') %>
-    </p>
-  </div>
-</div>
+<%= render 'shared/alert', {
+  type: 'error',
+  class: 'email-invalid-alert margin-bottom-4 display-none',
+  message: t('sign_up.email.invalid_email_alert_head'),
+} %>
 
 <h1 class='h3 my0'><%= t('headings.registrations.enter_email') %></h1>
 
@@ -18,7 +16,7 @@
       url: sign_up_register_path) do |f| %>
     <%= f.input :email, label: t('forms.registration.labels.email'), required: true, input_html: { aria: { invalid: false } } %>
 
-    <span class='email-invalid-alert-inline usa-error-message margin-top-neg-3 margin-bottom-3 hide' role='alert' hidden='true'>
+    <span class='email-invalid-alert-inline usa-error-message margin-top-neg-3 margin-bottom-3 display-none' role='alert'>
       <%= t('sign_up.email.invalid_email_alert_inline') %>
     </span>
 
@@ -57,4 +55,4 @@
                           MarketingSite.privacy_act_statement_url) %>
 </p>
 
-<%= javascript_pack_tag 'email-validation' %>
+<%= javascript_packs_tag_once 'email-validation' %>

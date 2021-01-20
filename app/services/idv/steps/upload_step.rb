@@ -2,15 +2,30 @@ module Idv
   module Steps
     class UploadStep < DocAuthBaseStep
       def call
-        have_mobile = mobile?
         if params[:type] == 'desktop'
-          have_mobile ? mobile_to_desktop : desktop
+          handle_desktop_selection
         else
-          have_mobile ? mobile : mark_step_complete(:email_sent)
+          handle_mobile_selection
         end
       end
 
       private
+
+      def handle_desktop_selection
+        if mobile_device?
+          send_user_to_email_sent_step
+        else
+          bypass_send_link_steps
+        end
+      end
+
+      def handle_mobile_selection
+        if mobile_device?
+          bypass_send_link_steps
+        else
+          send_user_to_send_link_step
+        end
+      end
 
       def identity
         current_user&.identities&.order('created_at DESC')&.first&.decorate
@@ -24,7 +39,7 @@ module Idv
         identity&.friendly_name || 'login.gov'
       end
 
-      def mobile_to_desktop
+      def send_user_to_email_sent_step
         mark_step_complete(:send_link)
         mark_step_complete(:link_sent)
         UserMailer.doc_auth_desktop_link_to_sp(
@@ -32,20 +47,21 @@ module Idv
         ).deliver_later
       end
 
-      def desktop
-        mark_step_complete(:send_link)
-        mark_step_complete(:link_sent)
+      def send_user_to_send_link_step
         mark_step_complete(:email_sent)
-        mark_step_complete(:mobile_front_image)
-        mark_step_complete(:mobile_back_image)
       end
 
-      def mobile
+      def bypass_send_link_steps
         mark_step_complete(:send_link)
         mark_step_complete(:link_sent)
         mark_step_complete(:email_sent)
-        mark_step_complete(:front_image)
-        mark_step_complete(:back_image)
+      end
+
+      def mobile_device?
+        return @mobile_device if defined?(@mobile_device)
+        
+        client = DeviceDetector.new(request.user_agent)
+        @mobile_device = client.device_type != 'desktop'
       end
     end
   end

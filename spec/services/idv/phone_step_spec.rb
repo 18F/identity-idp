@@ -37,7 +37,7 @@ describe Idv::PhoneStep do
 
       subject.submit(phone: good_phone)
 
-      expect(subject.async_state.status).to eq :done
+      expect(subject.async_state).to be_done
       result = subject.async_state_done(subject.async_state)
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(true)
@@ -54,7 +54,7 @@ describe Idv::PhoneStep do
       extra = { vendor: { messages: [], context: context, exception: nil, timed_out: false } }
 
       subject.submit(phone: bad_phone)
-      expect(subject.async_state.status).to eq :done
+      expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
 
       expect(result).to be_kind_of(FormResponse)
@@ -70,7 +70,7 @@ describe Idv::PhoneStep do
       original_step_attempts = idv_session.step_attempts[:phone]
 
       subject.submit(phone: bad_phone)
-      expect(subject.async_state.status).to eq :done
+      expect(subject.async_state.done?).to eq true
       _result = subject.async_state_done(subject.async_state)
 
       expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts + 1)
@@ -96,7 +96,7 @@ describe Idv::PhoneStep do
       user.phone_configurations = [build(:phone_configuration, user: user, phone: good_phone)]
 
       subject.submit(phone: good_phone)
-      expect(subject.async_state.status).to eq :done
+      expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
 
       expect(result.success?).to eq(true)
@@ -106,7 +106,7 @@ describe Idv::PhoneStep do
 
     it 'does not mark the phone as confirmed if it does not match 2FA phone' do
       subject.submit(phone: good_phone)
-      expect(subject.async_state.status).to eq :done
+      expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
 
       expect(result.success?).to eq(true)
@@ -119,7 +119,7 @@ describe Idv::PhoneStep do
     context 'when there are idv attempts remaining' do
       it 'returns :warning' do
         subject.submit(phone: bad_phone)
-        expect(subject.async_state.status).to eq :done
+        expect(subject.async_state.done?).to eq true
         _result = subject.async_state_done(subject.async_state)
 
         expect(subject.failure_reason).to eq(:warning)
@@ -131,7 +131,7 @@ describe Idv::PhoneStep do
         idv_session.step_attempts[:phone] = idv_max_attempts - 1
 
         subject.submit(phone: bad_phone)
-        expect(subject.async_state.status).to eq :done
+        expect(subject.async_state.done?).to eq true
         _result = subject.async_state_done(subject.async_state)
 
         expect(subject.failure_reason).to eq(:fail)
@@ -141,7 +141,7 @@ describe Idv::PhoneStep do
     context 'when the vendor raises a timeout exception' do
       it 'returns :timeout' do
         subject.submit(phone: timeout_phone)
-        expect(subject.async_state.status).to eq :done
+        expect(subject.async_state.done?).to eq true
         _result = subject.async_state_done(subject.async_state)
 
         expect(subject.failure_reason).to eq(:timeout)
@@ -151,7 +151,7 @@ describe Idv::PhoneStep do
     context 'when the vendor raises an exception' do
       it 'returns :jobfail' do
         subject.submit(phone: fail_phone)
-        expect(subject.async_state.status).to eq :done
+        expect(subject.async_state.done?).to eq true
         _result = subject.async_state_done(subject.async_state)
 
         expect(subject.failure_reason).to eq(:jobfail)

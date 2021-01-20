@@ -7,13 +7,10 @@ feature 'doc auth link sent step' do
 
   let(:user) { sign_in_and_2fa_user }
   let(:doc_capture_polling_enabled) { false }
-  let(:document_capture_step_enabled) { false }
 
   before do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).
       and_return(doc_capture_polling_enabled)
-    allow(FeatureManagement).to receive(:document_capture_step_enabled?).
-      and_return(document_capture_step_enabled)
     user
     complete_doc_auth_steps_before_link_sent_step
   end
@@ -44,17 +41,6 @@ feature 'doc auth link sent step' do
     click_idv_continue
 
     expect(page).to have_current_path(idv_doc_auth_link_sent_step)
-  end
-
-  it 'does not proceed to the next page if the document cannot be verified' do
-    mock_doc_captured(user.id)
-
-    mock_general_doc_auth_client_error(:get_results)
-
-    click_idv_continue
-
-    expect(page).to have_current_path(idv_doc_auth_send_link_step)
-    expect(page).to have_content(I18n.t('errors.doc_auth.general_error'))
   end
 
   shared_examples 'with doc capture polling enabled' do
@@ -97,17 +83,6 @@ feature 'doc auth link sent step' do
     end
   end
 
-  context 'with document capture step enabled' do
-    let(:document_capture_step_enabled) { true }
-
-    it_behaves_like 'with doc capture polling enabled'
-    it_behaves_like 'with doc capture polling disabled'
-  end
-
-  context 'with document capture step disabled' do
-    let(:document_capture_step_enabled) { false }
-
-    it_behaves_like 'with doc capture polling enabled'
-    it_behaves_like 'with doc capture polling disabled'
-  end
+  it_behaves_like 'with doc capture polling enabled'
+  it_behaves_like 'with doc capture polling disabled'
 end

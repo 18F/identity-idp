@@ -100,17 +100,12 @@ es:
       review_issues: Revise sus imágenes e inténtelo de nuevo
       selfie: Tómese una foto
       ssn: Por favor ingrese su número de seguro social.
-      take_pic_back: Toma una foto de la parte posterior de tu identificación
-      take_pic_front: Toma una foto del frente de tu identificación
       take_picture: Toma una foto con un teléfono
       text_message: Enviamos un mensaje a su teléfono
       upload: "¿Cómo le gustaría subir su documento de identidad expedido por el estado?"
-      upload_back: Cargue una foto del dorso de su identificación emitida por el estado.
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       upload_from_phone_liveness_enabled: Utilice un celular para agregar su documento
         de identidad y tomarse
-      upload_front: Cargue una foto del frente de su identificación emitida por el
-        estado.
       upload_liveness_enabled: "¿Cómo te gustaría verificar su identidad?"
       verify: Por favor verifica tu información
       welcome: Nosotros necesitamos verificar tu identidad
@@ -149,8 +144,6 @@ es:
         cualquier dispositivo que tenga una cámara, como una tableta o una computadora
         con una cámara web.
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
-      upload_image: Solo utilizamos su ID para verificar su identidad y no guardaremos
-        ninguna imagen. Aceptamos los formatos BMP, PNG, TIFF y JPG.
       upload_liveness_enabled: Recopilaremos información sobre usted leyendo su documento
         de identidad expedido por el estado. Luego, se tomará una foto para confirmar
         que es el propietario del documento de identidad.
@@ -158,6 +151,7 @@ es:
         su identidad.
       use_cac: "¿Tiene un documento de identidad de empleado del gobierno?"
       use_cac_link: Utilice un PIV/CAC en su lugar
+      verifying: Verificando…
       welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
         no alguien que pretende ser usted. Verificar su identidad le permite acceder
         a servicios que manejan información confidencial.
@@ -170,8 +164,6 @@ es:
       consent: Al marcar esta casilla, está permitiendo que login.gov solicite, use,
         conserve y comparta su información personal. Solo lo usaremos para verificar
         su identidad.
-      document_capture_fallback_html: "¿Teniendo problemas? %{link}"
-      document_capture_fallback_link: Haga clic aquí para cargar una imagen.
       document_capture_selfie_consent_action: "<lg-underline>Permita el acceso a la
         cámara</lg-underline> y busque una notificación en su navegador o revise la
         configuración del sistema para confirmar el acceso a la cámara."
@@ -191,11 +183,6 @@ es:
         Siga ese enlace a su navegador para tomar fotografías de la parte delantera
         y trasera de su identificación.
       switch_back: Vuelve a tu computadora para terminar de verificar tu identidad
-      take_pic: 'Para obtener los mejores resultados:'
-      take_pic1: Use un fondo oscuro
-      take_pic2: Tome la foto en una superficie plana
-      take_pic3: No use el flash de su cámara
-      take_pic4: Usa la orientación del paisaje
       text1: junto con su número de seguro social
       text1a: con un teléfono o cámara web
       text2: usando un número de teléfono o dirección de correo
@@ -213,7 +200,6 @@ es:
         la cabeza en la foto
       document_capture_selfie_text2: Tome una foto contra un fondo plano
       document_capture_selfie_text3: No use sombrero o anteojos
-      header_text: Pautas para tomar una foto de su identificación
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'
       review_issues_id_text1: "¿Ha usado un fondo oscuro?"
@@ -226,16 +212,3 @@ es:
       review_issues_selfie_text3: "¿Está la foto contra un fondo liso?"
       review_issues_selfie_text4: "¿Su cara está totalmente visible, no está cubierta
         por un sombrero o por anteojos?"
-      text1: Tómalo en una habitación con mucha luz. La luz solar indirecta es la
-        mejor.
-      text2: Asegúrese de que su identificación no tenga suciedad o códigos de barras
-        dañados.
-      text3: Coloque su identificación en una superficie oscura de color sólido que
-        le permita ver fácilmente todos los bordes de la identificación.
-      text4: Asegúrese de que no haya deslumbramientos, sombras o reflejos en su identificación.
-      text5: Su identificación debe cubrir el 80% de la foto.
-      text6: Asegúrese de que la imagen es nítida y clara. Debe ser fácil leer toda
-        la información.
-      text7: Utilice una cámara de alta resolución. La cámara de un buen teléfono
-        móvil o tableta funcionará.
-      title_html: "<b>¡No tome la foto en una superficie blanca!</b> Ver más..."

@@ -21,15 +21,15 @@ en:
       authenticator:
         confirm_code_html: Enter the code from your authenticator app. If you have
           several accounts set up in your app, enter the code corresponding to %{email}
-          at %{app}.%{tooltip}
+          at %{app}.
         manual_entry: Or enter this code manually into your authentication app
       piv_cac:
         account_not_found:
           paragraph_1_html: "<strong>%{sign_in}</strong> with your email address and
             password. Then add your PIV/CAC to your account."
           paragraph_2_html: "<strong>Don't have a login.gov account?</strong> %{create_account}"
-        add_from_sign_in: <strong>Instructions:</strong> Insert your PIV or CAC on
-          <strong>"ADD PIV/CAC"</strong>. You'll need to <strong>choose a certificate</strong>
+        add_from_sign_in_html: <strong>Instructions:</strong> Insert your PIV or CAC
+          on <strong>"ADD PIV/CAC"</strong>. You'll need to <strong>choose a certificate</strong>
           (the right one likely has your name of it) and <strong>enter your PIN</strong>
           (your PIN was created when you set up your PIV/CAC).
         back_to_sign_in: Go back to sign in

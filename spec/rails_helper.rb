@@ -3,8 +3,6 @@ if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start 'rails' do
     add_filter '/config/'
-    add_filter '/lib/rspec/formatters/user_flow_formatter.rb'
-    add_filter '/lib/user_flow_exporter.rb'
     add_filter '/lib/deploy/migration_statement_timeout.rb'
     add_filter '/lib/tasks/create_test_accounts.rb'
 
@@ -17,6 +15,7 @@ end
 ENV['RAILS_ENV'] = 'test'
 
 require File.expand_path('../../config/environment', __FILE__)
+require 'rails/test_unit/railtie'
 require 'rspec/rails'
 require 'spec_helper'
 require 'email_spec'
@@ -87,12 +86,6 @@ RSpec.configure do |config|
     Telephony::Test::Call.clear_calls
   end
 
-  config.around(:each, user_flow: true) do |example|
-    Capybara.current_driver = :rack_test
-    example.run
-    Capybara.use_default_driver
-  end
-
   config.before(:each) do
     IdentityDocAuth::Mock::DocAuthMockClient.reset!
   end
@@ -101,9 +94,5 @@ RSpec.configure do |config|
     Bullet.enable = true
     example.run
     Bullet.enable = false
-  end
-
-  config.before(:each) do
-    stub_request(:post, 'https://www.google-analytics.com/collect')
   end
 end

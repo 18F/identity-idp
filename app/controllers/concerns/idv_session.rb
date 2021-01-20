@@ -40,4 +40,12 @@ module IdvSession
   def idv_attempter_throttled?
     Throttler::IsThrottled.call(current_user.id, :idv_resolution)
   end
+
+  def sp_context_needed?
+    return if sp_from_sp_session.present?
+    return unless LoginGov::Hostdata.in_datacenter?
+    return if LoginGov::Hostdata.env != AppConfig.env.sp_context_needed_environment
+
+    redirect_to account_url
+  end
 end

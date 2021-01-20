@@ -11,7 +11,7 @@ describe 'accounts/_nav_auth.html.erb' do
 
   context 'user is signed in' do
     before do
-      render partial: 'accounts/nav_auth.html.erb', locals: { enable_mobile_nav: false }
+      render partial: 'accounts/nav_auth', locals: { enable_mobile_nav: false }
     end
 
     it 'contains welcome message' do
@@ -29,7 +29,7 @@ describe 'accounts/_nav_auth.html.erb' do
 
   context 'mobile nav is enabled' do
     before do
-      render partial: 'accounts/nav_auth.html.erb', locals: { enable_mobile_nav: true }
+      render partial: 'accounts/nav_auth', locals: { enable_mobile_nav: true }
     end
 
     it 'contains menu button' do

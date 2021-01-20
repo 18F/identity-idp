@@ -15,7 +15,7 @@ module Flow
 
     def show
       step = current_step
-      analytics.track_event(analytics_visited, step: step) if @analytics_id
+      analytics.track_event(analytics_visited, analytics_properties) if @analytics_id
       Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(step, :view, true)
       register_campaign
       render_step(step, flow.flow_session)
@@ -24,7 +24,9 @@ module Flow
     def update
       step = current_step
       result = flow.handle(step)
-      analytics.track_event(analytics_submitted, result.to_h.merge(step: step)) if @analytics_id
+      if @analytics_id
+        analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
+      end
       register_update_step(step, result)
       if flow.json
         render json: flow.json, status: flow.http_status
@@ -148,6 +150,20 @@ module Flow
 
     def analytics_optional_step
       [@analytics_id, 'optional submitted'].join(' ')
+    end
+
+    def analytics_properties
+      current_step_name = "#{current_step.to_s}_#{action_name}"
+      current_flow_step_counts[current_step_name] ||= 0
+      {
+        step: current_step,
+        step_count: current_flow_step_counts[current_step_name] += 1,
+      }
+    end
+
+    def current_flow_step_counts
+      current_session["#{@name}_flow_step_counts"] ||= {}
+      current_session["#{@name}_flow_step_counts"]
     end
 
     def next_step

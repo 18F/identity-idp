@@ -27,7 +27,8 @@ class UspsConfirmationUploader
   end
 
   def remote_path
-    File.join(env.usps_upload_sftp_directory, 'batch.psv')
+    timestamp = Time.zone.now.strftime('%Y%m%d')
+    File.join(env.usps_upload_sftp_directory, "batch#{timestamp}.psv")
   end
 
   def sftp_config

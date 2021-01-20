@@ -1,4 +1,3 @@
-import 'identity-style-guide/dist/assets/js/main';
 import autoLogout from './auto-logout';
 import countdownTimer from './countdown-timer';
 import msFormatter from './ms-formatter';

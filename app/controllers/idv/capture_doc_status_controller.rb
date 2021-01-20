@@ -5,23 +5,10 @@ module Idv
     respond_to :json
 
     def show
-      result = if FeatureManagement.document_capture_step_enabled?
-                 document_capture_session_poll_render_result
-               else
-                 doc_capture_poll_render_result
-               end
-
-      render result
+      render document_capture_session_poll_render_result
     end
 
     private
-
-    def doc_capture_poll_render_result
-      doc_capture = DocCapture.find_by(user_id: current_user.id)
-      return { plain: 'Unauthorized', status: :unauthorized } if doc_capture.blank?
-      return { plain: 'Pending', status: :accepted } if doc_capture.acuant_token.blank?
-      { plain: 'Complete', status: :ok }
-    end
 
     def document_capture_session_poll_render_result
       session_uuid = flow_session[:document_capture_session_uuid]

@@ -2,16 +2,12 @@ require 'rails_helper'
 
 describe TwoFactorAuthentication::TotpVerificationController do
   describe '#create' do
-    let(:ga_client_id) { '123.456' }
-    let(:ga_cookie) { 'GA1.2.123.456' }
-
     context 'when the user enters a valid TOTP' do
       before do
         sign_in_before_2fa
         @secret = subject.current_user.generate_totp_secret
         user = subject.current_user
         Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
-        cookies['_ga'] = ga_cookie
       end
 
       it 'redirects to the profile' do
@@ -41,13 +37,12 @@ describe TwoFactorAuthentication::TotpVerificationController do
           errors: {},
           multi_factor_auth_method: 'totp',
         }
-        cookies['_ga'] = ga_cookie
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(attributes, ga_client_id)
+          with(attributes)
         expect(@analytics).to receive(:track_event).
           with(Analytics::USER_MARKED_AUTHED, authentication_type: :valid_2fa)
 
-        post :create, params: { code: generate_totp_code(@secret), ga_client_id: ga_client_id }
+        post :create, params: { code: generate_totp_code(@secret) }
       end
     end
 
@@ -90,11 +85,10 @@ describe TwoFactorAuthentication::TotpVerificationController do
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).
-          with(attributes, ga_client_id)
+          with(attributes)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        cookies['_ga'] = ga_cookie
-        post :create, params: { code: '12345', ga_client_id: ga_client_id }
+        post :create, params: { code: '12345' }
       end
     end
 

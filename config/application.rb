@@ -1,5 +1,12 @@
 require_relative 'boot'
-require 'rails/all'
+
+require 'active_record/railtie'
+require 'action_controller/railtie'
+require 'action_view/railtie'
+require 'action_mailer/railtie'
+require 'rails/test_unit/railtie'
+require 'sprockets/railtie'
+
 require_relative '../lib/upaya_log_formatter'
 require_relative '../lib/app_config'
 require_relative '../lib/fingerprinter'
@@ -12,16 +19,18 @@ module Upaya
   class Application < Rails::Application
     AppConfig.setup(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))))
 
-    config.load_defaults '6.0'
+    config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
 
-    # We can enable this once we know we're not rolling back from Rails 6
-    # https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#purpose-in-signed-or-encrypted-cookie-is-now-embedded-within-cookies
-    config.action_dispatch.use_cookies_with_metadata = false
-
     config.active_job.queue_adapter = 'inline'
     config.time_zone = 'UTC'
+
+    # Generate CSRF tokens that are encoded in URL-safe Base64.
+    #
+    # This change is not backwards compatible with earlier Rails versions.
+    # It's best enabled when your entire app is migrated and stable on 6.1.
+    Rails.application.config.action_controller.urlsafe_csrf_tokens = false
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
     config.i18n.available_locales = AppConfig.env.available_locales.try(:split, ' ') || %w[en]

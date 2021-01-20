@@ -53,6 +53,7 @@ const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).Log
 
 const appRoot = /** @type {HTMLDivElement} */ (document.getElementById('document-capture-form'));
 const isMockClient = appRoot.hasAttribute('data-mock-client');
+const logEndpoint = /** @type {string} */ (appRoot.getAttribute('data-log-endpoint'));
 
 /**
  * @return {import(
@@ -94,6 +95,17 @@ const device = {
   isMobile: isCameraCapableMobile(),
 };
 
+/** @type {import('@18f/identity-document-capture/context/analytics').AddPageAction} */
+function addPageAction(action) {
+  /** @type {DocumentCaptureGlobal} */ (window).newrelic?.addPageAction(action.key, action.payload);
+
+  window.fetch(logEndpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ event: action.label, payload: action.payload }),
+  });
+}
+
 loadPolyfills(['fetch', 'crypto']).then(async () => {
   const backgroundUploadURLs = getBackgroundUploadURLs();
   const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
@@ -119,7 +131,7 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
     formData.step = 'verify_document';
   }
 
-  let element = (
+  render(
     <AcuantContextProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
       endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
@@ -139,21 +151,17 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
       >
         <I18nContext.Provider value={i18n.strings}>
           <ServiceProviderContext.Provider value={getServiceProvider()}>
-            <AssetContext.Provider value={assets}>
-              <DeviceContext.Provider value={device}>
-                <DocumentCapture isAsyncForm={isAsyncForm} />
-              </DeviceContext.Provider>
-            </AssetContext.Provider>
+            <AnalyticsContext.Provider value={{ addPageAction }}>
+              <AssetContext.Provider value={assets}>
+                <DeviceContext.Provider value={device}>
+                  <DocumentCapture isAsyncForm={isAsyncForm} />
+                </DeviceContext.Provider>
+              </AssetContext.Provider>
+            </AnalyticsContext.Provider>
           </ServiceProviderContext.Provider>
         </I18nContext.Provider>
       </UploadContextProvider>
-    </AcuantContextProvider>
+    </AcuantContextProvider>,
+    appRoot,
   );
-
-  const { newrelic } = /** @type {DocumentCaptureGlobal} */ (window);
-  if (newrelic) {
-    element = <AnalyticsContext.Provider value={newrelic}>{element}</AnalyticsContext.Provider>;
-  }
-
-  render(element, appRoot);
 });

@@ -1,3 +1,5 @@
+<div id="form-steps-wait-alert"></div>
+
 <% title t('titles.doc_auth.verify') %>
 
 <h1 class='h3 my0'>
@@ -39,14 +41,29 @@
     ) %>
   </div>
   <%= "#{t('doc_auth.forms.ssn')}: #{flow_session[:pii_from_doc][:ssn]}" %>
-  <div class='mt4'>
-    <%= button_to(
-      t('forms.buttons.continue'),
-      url_for,
-      method: :put,
-      class: 'btn btn-primary btn-wide sm-col-6 col-12',
-    ) %>
+  <div class="mt4">
+    <%= render 'shared/spinner-button',
+              action_message: t('doc_auth.info.verifying'),
+              class: 'grid-col-12 tablet:grid-col-6' do %>
+      <%= button_to(
+        t('forms.buttons.continue'),
+        url_for,
+        method: :put,
+        form: {
+          class: 'button_to read-after-submit',
+          data: {
+            form_steps_wait: '',
+            error_message: t("idv.failure.sessions.exception"),
+            alert_target: '#form-steps-wait-alert',
+            wait_step_path: idv_doc_auth_step_path(step: :verify_wait),
+            poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
+          },
+        },
+        class: 'btn btn-primary btn-wide width-full',
+      ) %>
+    <% end %>
   </div>
 </div>
 
+<% javascript_packs_tag_once 'form-steps-wait' %>
 <%= render 'idv/doc_auth/start_over_or_cancel' %>

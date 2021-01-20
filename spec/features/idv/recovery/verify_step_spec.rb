@@ -97,12 +97,13 @@ feature 'recovery verify step' do
 
   context 'timed out' do
     it 'allows resubmitting form' do
+      complete_recovery_steps_before_verify_step
+
       allow_any_instance_of(Idv::Steps::RecoverVerifyWaitStepShow).to receive(:saved_pii).
         and_return(saved_pii.to_json)
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
 
-      complete_recovery_steps_before_verify_step
       click_continue
 
       expect(page).to have_current_path(idv_recovery_verify_step)

@@ -17,16 +17,10 @@ class ServiceProviderSessionDecorator
     sp_aal < 2
   end
 
-  def sp_msg(section, args = {})
-    args = args.merge(sp_name: sp_name)
-    args = args.merge(sp_create_link: sp_create_link)
-    generate_custom_alert(section, args)
-  end
-
-  def generate_custom_alert(section, args)
+  def custom_alert(section)
     language = I18n.locale.to_s
-    help_text = sp.help_text.dig(section, language)
-    help_text % args if help_text
+    alert = sp.help_text.dig(section, language)
+    format(alert, sp_name: sp_name, sp_create_link: sp_create_link) if alert.present?
   end
 
   def sp_logo
@@ -122,7 +116,7 @@ class ServiceProviderSessionDecorator
     sp.failure_to_proof_url.presence || sp_return_url
   end
 
-  def sp_alert?(path)
+  def sp_alert(path)
     sign_in_path =
       I18n.locale == :en ? new_user_session_path : new_user_session_path(locale: I18n.locale)
     sign_up_path =
@@ -132,7 +126,7 @@ class ServiceProviderSessionDecorator
     path_to_section_map = { sign_in_path => 'sign_in',
                             sign_up_path => 'sign_up',
                             forgot_password_path => 'forgot_password' }
-    custom_alert?(path_to_section_map[path])
+    custom_alert(path_to_section_map[path])
   end
 
   def mfa_expiration_interval
@@ -160,11 +154,6 @@ class ServiceProviderSessionDecorator
 
   def sp_ial
     sp.ial || 1
-  end
-
-  def custom_alert?(section)
-    language = I18n.locale.to_s
-    sp.help_text[section]&.dig(language).present?
   end
 
   def request_url

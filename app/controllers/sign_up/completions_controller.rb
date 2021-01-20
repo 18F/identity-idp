@@ -85,12 +85,6 @@ module SignUp
 
     def track_completion_event(last_page)
       analytics.track_event(Analytics::USER_REGISTRATION_COMPLETE, analytics_attributes(last_page))
-      GoogleAnalyticsMeasurement.new(
-        category: 'registration',
-        event_action: 'completion',
-        method: last_page,
-        client_id: ga_cookie_client_id,
-      ).send_event
     end
 
     def pii

@@ -24,7 +24,7 @@ fr:
       authenticator:
         confirm_code_html: Entrez le code à partir de votre application d'authentification.
           Si vous avez plusieurs comptes configurés dans votre application, entrez
-          le code correspondant à %{email} à %{app}.%{tooltip}
+          le code correspondant à %{email} à %{app}.
         manual_entry: Ou entrez ce code manuellement dans votre application d'authentification
       piv_cac:
         account_not_found:
@@ -32,8 +32,8 @@ fr:
             mot de passe. Ajoutez ensuite votre PIV/CAC à votre compte."
           paragraph_2_html: "<strong>Vous n'avez pas de compte login.gov?</strong>
             %{create_account}"
-        add_from_sign_in: '<strong> Instructions: </ strong> insérez votre PIV ou
-          votre CAC dans <strong> "AJOUTER PIV / CAC" </ strong>. Vous devez <strong>
+        add_from_sign_in_html: '<strong> Instructions: </ strong> insérez votre PIV
+          ou votre CAC dans <strong> "AJOUTER PIV / CAC" </ strong>. Vous devez <strong>
           choisir un certificat </ strong> (le bon en a probablement votre nom) et
           <strong> saisir votre code confidentiel </ strong> (votre code confidentiel
           a été créé lors de la configuration de votre PIV / CAC). ).'

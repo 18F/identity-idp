@@ -14,7 +14,6 @@ describe User do
     it { is_expected.to have_many(:phone_configurations) }
     it { is_expected.to have_many(:webauthn_configurations) }
     it { is_expected.to have_one(:doc_auth) }
-    it { is_expected.to have_one(:doc_capture) }
     it { is_expected.to have_one(:proofing_component) }
     it { is_expected.to have_one(:account_recovery_request) }
     it { is_expected.to have_many(:throttles) }
@@ -281,6 +280,14 @@ describe User do
       salt = JSON.parse(user.encrypted_password_digest)['password_salt']
 
       expect(user.authenticatable_salt).to eq(salt)
+    end
+  end
+
+  describe '#generate_totp_secret' do
+    it 'generates a secret 16 characters long' do
+      user = build(:user)
+      secret = user.generate_totp_secret
+      expect(secret.length).to eq 16
     end
   end
 

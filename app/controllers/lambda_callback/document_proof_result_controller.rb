@@ -1,16 +1,24 @@
 module LambdaCallback
   class DocumentProofResultController < AuthTokenController
     def create
-      EncryptedRedisStructStorage.store(
-        ProofingDocumentCaptureSessionResult.new(
-          id: result_id_parameter,
-          pii: document_result_parameter[:pii_from_doc],
-          result: document_result_parameter.except(:pii_from_doc),
-        ),
-        expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
-      )
+      dcs = DocumentCaptureSession.find_by(result_id: result_id_parameter)
 
-      track_exception_in_result(document_result_parameter)
+      if dcs
+        analytics.track_event(
+          Analytics::LAMBDA_RESULT_DOCUMENT_PROOF_RESULT,
+          result: document_result_parameter.except(:pii_from_doc),
+        )
+
+        dcs.store_doc_auth_result(
+          result: document_result_parameter.except(:pii_from_doc),
+          pii: document_result_parameter[:pii_from_doc],
+        )
+
+        track_exception_in_result(document_result_parameter)
+      else
+        NewRelic::Agent.notice_error('DocumentProofResult result_id not found')
+        head :not_found
+      end
     end
 
     private

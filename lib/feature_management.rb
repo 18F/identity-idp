@@ -116,10 +116,6 @@ class FeatureManagement
     AppConfig.env.doc_capture_polling_enabled == 'true'
   end
 
-  def self.document_capture_step_enabled?
-    AppConfig.env.document_capture_step_enabled == 'true'
-  end
-
   def self.document_capture_async_uploads_enabled?
     AppConfig.env.doc_auth_enable_presigned_s3_urls == 'true'
   end

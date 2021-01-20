@@ -5,9 +5,10 @@
   <%= content_for(:meta_refresh) { "#{@meta_refresh}" } %>
 <% end %>
 <% if flow_session[:error_message] %>
-  <p class='alert alert-error mb0'>
-    <%= flow_session[:error_message] %>
-  </p>
+  <%= render 'shared/alert', {
+    type: 'error',
+    message: flow_session[:error_message],
+  } %>
 <% end %>
 <h1 class='h3 my0'><%= t('doc_auth.headings.text_message') %></h1>
 
@@ -40,5 +41,5 @@
 <%= render 'idv/doc_auth/start_over_or_cancel' %>
 
 <% if FeatureManagement.doc_capture_polling_enabled? %>
-  <%= javascript_pack_tag 'doc_capture_polling' %>
+  <%= javascript_packs_tag_once 'doc_capture_polling' %>
 <% end %>

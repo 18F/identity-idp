@@ -7,31 +7,6 @@ module Idv
 
       private
 
-      def image
-        uploaded_image = flow_params[:image]
-        return uploaded_image if uploaded_image.present?
-        DataUrlImage.new(flow_params[:image_data_url])
-      end
-
-      def front_image
-        uploaded_image = flow_params[:front_image]
-        return uploaded_image if uploaded_image.present?
-        DataUrlImage.new(flow_params[:front_image_data_url])
-      end
-
-      def back_image
-        uploaded_image = flow_params[:back_image]
-        return uploaded_image if uploaded_image.present?
-        DataUrlImage.new(flow_params[:back_image_data_url])
-      end
-
-      def selfie_image
-        return nil unless liveness_checking_enabled?
-        uploaded_image = flow_params[:selfie_image]
-        return uploaded_image if uploaded_image.present?
-        DataUrlImage.new(flow_params[:selfie_image_data_url])
-      end
-
       def idv_throttle_params
         [current_user.id, :idv_resolution]
       end
@@ -75,47 +50,6 @@ module Idv
         flow_session[:doc_capture_user_id]
       end
 
-      def post_front_image
-        return throttled_response if throttled_else_increment
-
-        result = DocAuthRouter.client.post_front_image(
-          image: image.read,
-          instance_id: flow_session[:instance_id],
-        )
-        add_cost(:acuant_front_image)
-        result
-      end
-
-      def post_back_image
-        return throttled_response if throttled_else_increment
-
-        result = DocAuthRouter.client.post_back_image(
-          image: image.read,
-          instance_id: flow_session[:instance_id],
-        )
-        add_cost(:acuant_back_image)
-        result
-      end
-
-      def post_images
-        return throttled_response if throttled_else_increment
-
-        result = DocAuthRouter.client.post_images(
-          front_image: front_image.read,
-          back_image: back_image.read,
-          selfie_image: selfie_image&.read,
-          liveness_checking_enabled: liveness_checking_enabled?,
-        )
-        # DP: should these cost recordings happen in the doc_auth_client?
-        add_costs(result)
-        result
-      end
-
-      def throttled
-        redirect_to throttled_url
-        [false, I18n.t('errors.doc_auth.acuant_throttle')]
-      end
-
       def throttled_response
         redirect_to throttled_url
         IdentityDocAuth::Response.new(
@@ -155,22 +89,6 @@ module Idv
         session.fetch(:sp, {})
       end
 
-      def mark_selfie_step_complete_unless_liveness_checking_is_enabled
-        mark_step_complete(:selfie) unless liveness_checking_enabled?
-      end
-
-      def mark_document_capture_or_image_upload_steps_complete
-        if FeatureManagement.document_capture_step_enabled?
-          mark_step_complete(:front_image)
-          mark_step_complete(:back_image)
-          mark_step_complete(:selfie)
-          mark_step_complete(:mobile_front_image)
-          mark_step_complete(:mobile_back_image)
-        else
-          mark_step_complete(:document_capture)
-        end
-      end
-
       def liveness_checking_enabled?
         FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial2_strict])
       end
@@ -194,20 +112,6 @@ module Idv
 
       def no_sp?
         sp_session[:issuer].blank?
-      end
-
-      def mobile?
-        client = DeviceDetector.new(request.user_agent)
-        client.device_type != 'desktop'
-      end
-
-      def log_document_error(get_results_response)
-        # DP: handle multiple clients
-        unless get_results_response.is_a?(IdentityDocAuth::Acuant::Responses::GetResultsResponse)
-          return
-        end
-        Funnel::DocAuth::LogDocumentError.call(user_id,
-                                               get_results_response&.result_code&.name.to_s)
       end
 
       def document_capture_session_uuid_key

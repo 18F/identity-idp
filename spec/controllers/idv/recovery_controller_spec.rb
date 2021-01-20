@@ -84,32 +84,18 @@ describe Idv::RecoveryController do
         mock_session(user.id)
       end
 
-      it 'renders the front_image template' do
-        mock_next_step(:ssn)
-        get :show, params: { step: 'ssn' }
+      it 'renders the document_capture template' do
+        mock_next_step(:document_capture)
+        get :show, params: { step: 'document_capture' }
 
-        expect(response).to render_template :ssn
-      end
-
-      it 'renders the front_image template' do
-        mock_next_step(:front_image)
-        get :show, params: { step: 'front_image' }
-
-        expect(response).to render_template :front_image
-      end
-
-      it 'renders the back_image template' do
-        mock_next_step(:back_image)
-        get :show, params: { step: 'back_image' }
-
-        expect(response).to render_template :back_image
+        expect(response).to render_template :document_capture
       end
 
       it 'redirect to the right step' do
-        mock_next_step(:front_image)
-        get :show, params: { step: 'back_image' }
+        mock_next_step(:document_capture)
+        get :show, params: { step: 'ssn' }
 
-        expect(response).to redirect_to idv_recovery_step_url(:front_image)
+        expect(response).to redirect_to idv_recovery_step_url(:document_capture)
       end
 
       it 'renders a 404 with a non existent step' do
@@ -119,7 +105,7 @@ describe Idv::RecoveryController do
       end
 
       it 'tracks analytics' do
-        result = { step: 'recover' }
+        result = { step: 'recover', step_count: 1 }
 
         get :show, params: { step: 'recover' }
 

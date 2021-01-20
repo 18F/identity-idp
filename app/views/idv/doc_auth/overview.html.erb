@@ -1,5 +1,9 @@
 <% if flow_session[:error_message] %>
-  <div class='alert alert-error'><%= flow_session[:error_message] %></div>
+  <%= render 'shared/alert', {
+    type: 'error',
+    class: 'margin-bottom-4',
+    message: flow_session[:error_message],
+  } %>
 <% end %>
 
 <h1 class='h3 my0'><%= t('recover.overview.heading') %></h1>
@@ -8,7 +12,7 @@
 
 <ul class='list-reset'>
   <li class='pt2 pb1'>
-    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+    <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
       1
     </div>
     <div class='mr1 inline-block'>
@@ -22,7 +26,7 @@
     </div>
   </li>
   <li class='pt2 pb1'>
-    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+    <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
       2
     </div>
     <div class='mr1 inline-block'>
@@ -36,7 +40,7 @@
     </div>
   </li>
   <li class='pt2 pb1'>
-    <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+    <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
       3
     </div>
     <div class='mr1 inline-block'>
@@ -73,5 +77,4 @@
   <%= link_to(t('links.cancel'), idv_cancel_path, class: 'h5') %>
 </div>
 
-<%= javascript_pack_tag('clipboard') %>
-<%= javascript_pack_tag('ial2-consent-button') %>
+<%= javascript_packs_tag_once 'clipboard', 'ial2-consent-button' %>

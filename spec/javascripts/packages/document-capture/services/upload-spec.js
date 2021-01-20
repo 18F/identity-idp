@@ -134,13 +134,17 @@ describe('document-capture/services/upload', () => {
       ),
     );
 
+    let assertOnHashChange;
+
     // `Promise.race` because the `upload` promise should never resolve in case of a redirect.
     await Promise.race([
       new Promise((resolve) => {
-        window.onhashchange = () => {
+        assertOnHashChange = () => {
           expect(window.location.hash).to.equal('#teapot');
           resolve();
         };
+
+        window.addEventListener('hashchange', assertOnHashChange);
       }),
       upload(
         {},
@@ -152,6 +156,8 @@ describe('document-capture/services/upload', () => {
         throw new Error('Unexpected upload resolution during redirect.');
       }),
     ]);
+
+    window.removeEventListener('hashchange', assertOnHashChange);
   });
 
   it('throws unhandled response', async () => {

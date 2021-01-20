@@ -15,16 +15,6 @@ module ApplicationHelper
     end
   end
 
-  def tooltip(text)
-    content_tag(
-      :span, \
-      image_tag(asset_url('tooltip.svg'), width: 16, class: 'px1 img-tooltip'), \
-      class: 'hint--top hint--no-animate', \
-      'aria-label': text, \
-      'tabindex': '0',
-    )
-  end
-
   def sp_session
     session.fetch(:sp, {})
   end
@@ -40,8 +30,8 @@ module ApplicationHelper
   end
 
   def page_with_trust?
-    current_page?(controller: 'sign_up/passwords', action: 'new') ||
-      current_page?(controller: 'users/reset_passwords', action: 'edit')
+    return false if current_page?(controller: 'users/sessions', action: 'new')
+    return true
   end
 
   def ial2_requested?

@@ -6,9 +6,11 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'Send GPO letter',
   interval: 24 * 60 * 60,
   timeout: 300,
-  callback: lambda {
-    UspsConfirmationUploader.new.run unless HolidayService.observed_holiday?(Time.zone.today)
-  },
+  callback: lambda do
+    UspsDailyTestSender.new.run
+
+    UspsConfirmationUploader.new.run unless CalendarService.weekend_or_holiday?(Time.zone.today)
+  end,
 )
 
 # Send account deletion confirmation notifications
@@ -163,4 +165,12 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
   callback: -> { Reports::DeletedUserAccountsReport.new.call },
+)
+
+# Send USPS Report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'USPS report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::UspsReport.new.call },
 )

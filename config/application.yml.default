@@ -21,6 +21,7 @@
 # available to ENV as uppercase keys.
 RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
 
+aal_authn_context_enabled: 'false'
 aamva_cert_enabled: 'true'
 aamva_sp_banlist_issuers: '[]'
 account_reset_token_valid_for_days: '1'
@@ -30,7 +31,7 @@ acuant_maintenance_window_finish: '2020-09-19T05:00:00Z' # 9/19 1am Eastern
 acuant_assure_id_password: ''
 acuant_assure_id_subscription_id: ''
 acuant_assure_id_username: ''
-acuant_attempt_window_in_minutes: '1440'
+acuant_attempt_window_in_minutes: '360'
 acuant_facial_match_license_key: ''
 # These are dummy creds used to initialize the acuant SDK
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
@@ -51,17 +52,15 @@ disallow_ial2_recovery:
 doc_auth_extend_timeout_by_minutes: '40'
 doc_auth_enable_presigned_s3_urls: 'false'
 doc_capture_request_valid_for_minutes: '15'
-document_capture_step_enabled: 'true'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: 'false'
 event_disavowal_expiration_hours: '240'
-google_analytics_key:
-google_analytics_timeout: '5'
+gpo_designated_receiver_pii: '{}'
 ial2_recovery_request_valid_for_minutes: '15'
 identity_pki_disabled: 'true'
 identity_pki_local_dev: 'false'
-idv_attempt_window_in_hours: '24'
+idv_attempt_window_in_hours: '6'
 idv_max_attempts: '3'
 idv_send_link_attempt_window_in_minutes: '10'
 idv_send_link_max_attempts: '5'
@@ -130,15 +129,21 @@ session_check_delay: '30'
 session_check_frequency: '30'
 session_timeout_in_minutes: '15'
 session_timeout_warning_seconds: '150'
+sp_context_needed_environment: 'prod'
 sp_handoff_bounce_max_seconds: '2'
 show_user_attribute_deprecation_warnings: 'false'
 unauthorized_scope_enabled: 'false'
 usps_download_sftp_timeout: '5'
 usps_upload_enabled: 'false'
 usps_upload_sftp_timeout: '5'
-valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true"]'
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true"]'
+usps_ipp_password: ''
+usps_ipp_root_url: ''
+usps_ipp_sponsor_id: ''
+usps_ipp_username: ''
 
 development:
+  aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   aamva_verification_url: https://example.org:12345/verification/url
@@ -227,10 +232,11 @@ development:
   resolution_proof_result_lambda_token: ABC123
   s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
-  saml_endpoint_configs: '[{"suffix":"","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"}]'
+  saml_endpoint_configs: '[{"suffix":"2019","secret_key_passphrase":"trust-but-verify"},{"suffix":"2018","secret_key_passphrase":"asdf1234"},{"suffix":"2020","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: test
   use_dashboard_service_providers: 'true'
@@ -251,6 +257,7 @@ development:
 # includes *.identitysandbox.gov and *.login.gov.
 #
 production:
+  aal_authn_context_enabled: 'false'
   aamva_private_key:
   aamva_public_key:
   aamva_verification_url:
@@ -339,6 +346,7 @@ production:
   scrypt_cost: 10000$8$1$
   secret_key_base:
   session_encryption_key:
+  skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: pinpoint
   use_dashboard_service_providers: 'false'
@@ -356,6 +364,7 @@ production:
   usps_upload_token:
 
 test:
+  aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   aamva_verification_url: https://example.org:12345/verification/url
@@ -395,9 +404,6 @@ test:
   doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'false'
-  # Here to support legacy tests. Once we remove the code for the old steps, we
-  # should remove this config entirely and the tests that assume this is false.
-  document_capture_step_enabled: 'false'
   document_proof_result_lambda_token: test_token_document
   domain_name: www.example.com
   email_deletion_enabled: 'true'

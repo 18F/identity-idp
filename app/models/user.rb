@@ -3,7 +3,6 @@ class User < ApplicationRecord
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
-  add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
 
   devise(
     :database_authenticatable,
@@ -43,7 +42,6 @@ class User < ApplicationRecord
   has_many :auth_app_configurations, dependent: :destroy, inverse_of: :user
   has_one :doc_auth, dependent: :destroy, inverse_of: :user, class_name: 'DocAuthRecord'
   has_many :backup_code_configurations, dependent: :destroy
-  has_one :doc_capture, dependent: :destroy
   has_many :document_capture_sessions, dependent: :destroy
   has_one :account_recovery_request, dependent: :destroy
   has_many :throttles, dependent: :destroy
@@ -131,4 +129,6 @@ class User < ApplicationRecord
   def send_confirmation_instructions
     # no-op
   end
+
+  add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
 end

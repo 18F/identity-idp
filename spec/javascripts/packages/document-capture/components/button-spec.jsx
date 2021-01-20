@@ -80,6 +80,23 @@ describe('document-capture/components/button', () => {
     expect(button.disabled).to.be.true();
   });
 
+  it('renders as visually disabled', () => {
+    const onClick = sinon.spy();
+    const { getByText } = render(
+      <Button isVisuallyDisabled onClick={onClick}>
+        Click me
+      </Button>,
+    );
+
+    const button = getByText('Click me');
+
+    expect(button.classList.contains('btn-disabled'));
+    expect(button.disabled).to.be.false();
+
+    userEvent.click(button);
+    expect(onClick.calledOnce).to.be.true();
+  });
+
   it('renders with custom type', () => {
     const { getByText } = render(<Button type="submit">Click me</Button>);
 

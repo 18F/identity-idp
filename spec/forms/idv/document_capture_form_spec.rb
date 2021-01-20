@@ -60,29 +60,6 @@ describe Idv::DocumentCaptureForm do
           expect(subject.errors).to include(:selfie_image)
         end
       end
-
-      context 'when the form has a front, back, and selfie data_urls' do
-        it 'returns a successful form response' do
-          result = subject.submit(front_image: front_image_data_url,
-                                  back_image: back_image_data_url,
-                                  selfie_image: front_image_data_url)
-
-          expect(result).to be_kind_of(FormResponse)
-          expect(result.success?).to eq(true)
-          expect(result.errors).to be_empty
-        end
-      end
-
-      context 'when the form only has a front and back data_urls' do
-        it 'returns a successful form response' do
-          result = subject.submit(front_image: front_image_data_url,
-                                  back_image: back_image_data_url)
-
-          expect(result).to be_kind_of(FormResponse)
-          expect(result.success?).to eq(false)
-          expect(subject.errors).to include(:selfie_image)
-        end
-      end
     end
 
     context 'when the form has invalid attributes' do

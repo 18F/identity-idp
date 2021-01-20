@@ -2,8 +2,8 @@
 es:
   notices:
     account_reactivation: "¡Estupendo! Tiene su clave personal."
-    backup_codes_configured: Códigos de respaldo configurados con éxito.
-    backup_codes_deleted: Códigos de respaldo eliminados con éxito.
+    backup_codes_configured: Códigos de respaldo fueron agregados a tu cuenta.
+    backup_codes_deleted: Tus códigos de respaldo fueron eliminados de tu cuenta.
     dap_participation: Participamos en el programa analítico del Gobierno de Estados
       Unidos. Vea los datos en analytics.usa.gov (en inglés).
     forgot_password:
@@ -21,9 +21,9 @@ es:
         el %{finish}</b> para algunos de nuestros servicios.
       need_assistance: "¿Necesita ayuda?"
     password_changed: Ha cambiado su contraseña.
-    phone_confirmed: Teléfono confirmado con éxito.
-    piv_cac_configured: Tarjeta PIV/CAC vinculada con éxito.
-    piv_cac_disabled: Tarjeta PIV/CAC desvinculada con éxito.
+    phone_confirmed: Un teléfono fue agregado a tu cuenta.
+    piv_cac_configured: Una tarjeta PIV/CAC fue agregada a tu cuenta.
+    piv_cac_disabled: Tu PIV/CAC fue eliminado de tu cuenta.
     privacy:
       privacy_act_statement: Declaración de la ley de privacidad
       security_and_privacy_practices: Prácticas de seguridad y privacidad
@@ -54,10 +54,10 @@ es:
         message_html: Para su seguridad, terminaremos su sesión en %{time_left_in_session}
           a menos que nos indique lo contrario.
         sign_out: Desconécteme
-    totp_configured: Agregaste una aplicación de autenticación.
-    totp_disabled: Eliminaste tu aplicación de autenticación.
+    totp_configured: Una aplicación de autenticación fue agregada a tu cuenta.
+    totp_disabled: Tu aplicación de autenticación fue eliminada de tu cuenta.
     use_diff_email:
       link: use un email diferente
       text_html: O %{link}
-    webauthn_configured: Ha permitido una clave de seguridad.
-    webauthn_deleted: Has eliminado una clave de seguridad.
+    webauthn_configured: Una llave de seguridad fue agregada a tu cuenta.
+    webauthn_deleted: Tu llave de seguridad fue eliminada de tu cuenta.

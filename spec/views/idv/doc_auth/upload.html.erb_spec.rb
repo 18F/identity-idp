@@ -20,7 +20,7 @@ describe 'idv/doc_auth/upload.html.erb' do
   context 'with liveness enabled' do
     it 'renders liveness content' do
       allow(view).to receive(:liveness_checking_enabled?).and_return(true)
-      render template: 'idv/doc_auth/upload.html.erb'
+      render template: 'idv/doc_auth/upload'
 
       expect(rendered).to have_content(t('doc_auth.headings.upload_liveness_enabled'))
       expect(rendered).to have_content(t('doc_auth.info.upload_liveness_enabled'))
@@ -31,7 +31,7 @@ describe 'idv/doc_auth/upload.html.erb' do
   context 'with liveness disabled' do
     it 'does not render liveness content' do
       allow(view).to receive(:liveness_checking_enabled?).and_return(false)
-      render template: 'idv/doc_auth/upload.html.erb'
+      render template: 'idv/doc_auth/upload'
 
       expect(rendered).to have_content(t('doc_auth.headings.upload'))
       expect(rendered).to have_content(t('doc_auth.info.upload'))
@@ -41,7 +41,7 @@ describe 'idv/doc_auth/upload.html.erb' do
 
   context 'without service provider' do
     it 'does not render fallback support link' do
-      render template: 'idv/doc_auth/upload.html.erb'
+      render template: 'idv/doc_auth/upload'
 
       link_text = t(
         'doc_auth.info.no_other_id_help_bold_html',
@@ -57,7 +57,7 @@ describe 'idv/doc_auth/upload.html.erb' do
     let(:sp_name) { 'Example App' }
 
     it 'renders fallback support link' do
-      render template: 'idv/doc_auth/upload.html.erb'
+      render template: 'idv/doc_auth/upload'
 
       link_text = t(
         'doc_auth.info.no_other_id_help_bold_html',

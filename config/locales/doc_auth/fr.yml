@@ -108,20 +108,14 @@ fr:
       review_issues: Vérifiez vos images et essayez à nouveau
       selfie: Prenez une photo de vous-même
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
-      take_pic_back: Prenez une photo au verso de votre identifiant
-      take_pic_front: Prenez une photo du recto de votre identifiant
       take_picture: Prendre une photo avec un téléphone
       text_message: Nous avons envoyé un message à votre téléphone
       upload: Comment souhaitez-vous télécharger votre carte d'identité délivrée par
         l'État?
-      upload_back: S'il vous plaît télécharger une photo du dos de votre ID émis par
-        l'état.
       upload_from_phone: Prenez une photo avec un téléphone portable pour télécharger
         votre pièce d'identité
       upload_from_phone_liveness_enabled: Utilisez un téléphone portable pour ajouter
         votre pièce d'identité et prendre une photo de vous-même
-      upload_front: Veuillez télécharger une photo du recto de votre identifiant émis
-        par l'État.
       upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify: S'il vous plaît vérifier vos informations
       welcome: Nous devons vérifier votre identité
@@ -163,9 +157,6 @@ fr:
         une caméra Web.
       upload_from_phone: Téléchargez des images directement depuis l'appareil photo
         de votre téléphone
-      upload_image: Nous n'utilisons votre identifiant que pour vérifier votre identité,
-        et nous n'enregistrerons aucune image. Nous acceptons les formats BMP, PNG,
-        TIFF et JPG.
       upload_liveness_enabled: Nous recueillons des informations sur vous en lisant
         votre carte d'identité délivrée par l'État. Ensuite, vous prendrez une photo
         de vous-même pour confirmer que vous êtes bien le propriétaire de la carte
@@ -173,6 +164,7 @@ fr:
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       use_cac: Avez-vous une carte d'identité d'employé du gouvernement?
       use_cac_link: Utilisez plutôt une PIV/CAC
+      verifying: Vérification…
       welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
         et non quelqu'un prétendant être vous. La vérification de votre identité vous
         permet d'accéder à des services traitant des informations sensibles.
@@ -185,8 +177,6 @@ fr:
       consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
         conserver et partager vos informations personnelles. Nous ne l'utiliserons
         que pour vérifier votre identité.
-      document_capture_fallback_html: Avoir des problèmes? %{link}
-      document_capture_fallback_link: Cliquez ici pour télécharger une image
       document_capture_selfie_consent_action: "<lg-underline>Autorisez l'accès à la
         caméra</lg-underline> et recherchez une notification dans votre navigateur
         ou vérifiez les paramètres de votre système pour confirmer l'accès à la caméra."
@@ -208,11 +198,6 @@ fr:
         de votre identifiant.
       switch_back: Revenez sur votre ordinateur pour terminer la vérification de votre
         identité
-      take_pic: 'Pour obtenir les meilleurs résultats:'
-      take_pic1: Utilisez un fond sombre
-      take_pic2: Prenez la photo sur une surface plane
-      take_pic3: N'utilisez pas le flash de votre appareil photo
-      take_pic4: Utilisez l'orientation paysage
       text1: avec votre numéro de sécurité sociale
       text1a: avec votre téléphone ou votre caméra Web
       text2: en utilisant un numéro de téléphone ou une adresse postale
@@ -230,7 +215,6 @@ fr:
         que toute votre tête est visible sur la photo
       document_capture_selfie_text2: Prenez une photo avec un arrière-plan uni
       document_capture_selfie_text3: Ne pas porter de chapeau ou de lunettes
-      header_text: Directives pour prendre une photo de votre identité
       review_issues_id_header_text: 'Examinez les images de votre carte d''identité
         délivrée par l''État:'
       review_issues_id_text1: Avez-vous utilisé un fond sombre?
@@ -244,17 +228,3 @@ fr:
       review_issues_selfie_text3: La photo est-elle sur un fond uni?
       review_issues_selfie_text4: Votre visage est-il entièrement visible, sans être
         couvert par un chapeau ou des lunettes?
-      text1: Prenez-le dans une pièce très éclairée. La lumière solaire indirecte
-        est la meilleure.
-      text2: Assurez-vous que votre identité n’a pas de poussière ni de codes à barres
-        endommagés.
-      text3: Placez votre identifiant sur une surface sombre de couleur unie qui permet
-        de voir facilement tous ses bords.
-      text4: Assurez-vous qu'il n'y a pas d'éblouissement, d'ombres ou de reflets
-        sur votre identité.
-      text5: Votre identifiant doit couvrir 80% de la photo
-      text6: Assurez-vous que la photo est nette et nette. Il devrait être facile
-        de lire toutes les informations.
-      text7: Utilisez une caméra haute résolution. La caméra d'un bon téléphone mobile
-        ou d'une tablette fonctionnera.
-      title_html: "<b>Ne prenez pas la photo sur une surface blanche!</b> Voir plus..."

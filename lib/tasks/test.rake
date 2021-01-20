@@ -4,8 +4,8 @@ namespace :test do
   desc 'Scan test.log for rendered views and show gaps in test coverage'
   task scan_log_for_view_coverage: :environment do
     # match lines like 'Rendered two_factor_authentication/otp_verification/show.html.erb'
-    # Rendered + space + word + [/ + non-whitespace](any number of times).html(.erb|.slim|'')
-    regex_finder = %r{Rendered\s\w*(/\S*)*\.html(\.slim|\.erb|)}
+    # Rendered + space + word + [/ + non-whitespace](any number of times).html(.erb|'')
+    regex_finder = %r{Rendered\s\w*(/\S*)*\.html(\.erb|)}
     results = []
     File.readlines('log/test.log').each do |line|
       results.push(line.match(regex_finder))
@@ -16,8 +16,8 @@ namespace :test do
 
     puts "== #{results.size} rendered (covered) views present in test.log =="
 
-    # Gets all .html, .html.slim, and .html.erb views
-    all_views = Dir.glob('app/views/**/*.{html,html.erb,html.slim}*')
+    # Gets all .html, and .html.erb views
+    all_views = Dir.glob('app/views/**/*.{html,html.erb}*')
     all_views = all_views.map { |v| v.remove('app/views/') }.sort.uniq
     puts "== #{all_views.size} total views in the app =="
 

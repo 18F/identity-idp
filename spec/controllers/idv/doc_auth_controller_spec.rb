@@ -37,32 +37,18 @@ describe Idv::DocAuthController do
   end
 
   describe '#show' do
-    it 'renders the front_image template' do
-      mock_next_step(:ssn)
+    it 'renders the correct template' do
+      mock_next_step(:document_capture)
+      get :show, params: { step: 'document_capture' }
+
+      expect(response).to render_template :document_capture
+    end
+
+    it 'redirects to the right step' do
+      mock_next_step(:document_capture)
       get :show, params: { step: 'ssn' }
 
-      expect(response).to render_template :ssn
-    end
-
-    it 'renders the front_image template' do
-      mock_next_step(:front_image)
-      get :show, params: { step: 'front_image' }
-
-      expect(response).to render_template :front_image
-    end
-
-    it 'renders the back_image template' do
-      mock_next_step(:back_image)
-      get :show, params: { step: 'back_image' }
-
-      expect(response).to render_template :back_image
-    end
-
-    it 'redirect to the right step' do
-      mock_next_step(:front_image)
-      get :show, params: { step: 'back_image' }
-
-      expect(response).to redirect_to idv_doc_auth_step_url(:front_image)
+      expect(response).to redirect_to idv_doc_auth_step_url(:document_capture)
     end
 
     it 'renders a 404 with a non existent step' do
@@ -72,7 +58,7 @@ describe Idv::DocAuthController do
     end
 
     it 'tracks analytics' do
-      result = { step: 'welcome' }
+      result = { step: 'welcome', step_count: 1 }
 
       get :show, params: { step: 'welcome' }
 
@@ -81,23 +67,25 @@ describe Idv::DocAuthController do
       )
     end
 
-    it 'add unsafe-eval to the CSP for capture steps' do
-      capture_steps = %i[
-        front_image
-        back_image
-        mobile_front_image
-        mobile_back_image
-        selfie
-        document_capture
-      ]
-      capture_steps.each do |step|
-        mock_next_step(step)
+    it 'increments the analytics step counts on subsequent submissions' do
+      get :show, params: { step: 'welcome' }
+      get :show, params: { step: 'welcome' }
 
-        get :show, params: { step: step }
+      expect(@analytics).to have_received(:track_event).ordered.with(
+        Analytics::DOC_AUTH + ' visited', hash_including(step: 'welcome', step_count: 1)
+      )
+      expect(@analytics).to have_received(:track_event).ordered.with(
+        Analytics::DOC_AUTH + ' visited', hash_including(step: 'welcome', step_count: 2)
+      )
+    end
 
-        script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
-        expect(script_src).to include("'unsafe-eval'")
-      end
+    it 'add unsafe-eval to the CSP for the doucment capture step' do
+      mock_next_step(:document_capture)
+
+      get :show, params: { step: :document_capture }
+
+      script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
+      expect(script_src).to include("'unsafe-eval'")
     end
 
     it 'does not add unsafe-eval to the CSP for non-capture steps' do
@@ -115,62 +103,66 @@ describe Idv::DocAuthController do
       mock_next_step(:back_image)
       allow_any_instance_of(Flow::BaseFlow).to \
         receive(:flow_session).and_return(pii_from_doc: {})
-      result = { success: true, errors: {}, step: 'ssn' }
+      result = { success: true, errors: {}, step: 'ssn', step_count: 1 }
 
-      put :update, params: { step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
+      put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', result
       )
     end
 
-    describe 'when document capture is enabled' do
-      before(:each) do
-        allow(AppConfig.env).to receive(:document_capture_step_enabled).and_return('true')
-      end
+    it 'increments the analytics step counts on subsequent submissions' do
+      mock_next_step(:back_image)
+      allow_any_instance_of(Flow::BaseFlow).to \
+        receive(:flow_session).and_return(pii_from_doc: {})
+      result = { success: true, errors: {}, step: 'ssn', step_count: 1 }
 
-      it 'progresses from welcome to upload' do
-        put :update, params: { step: 'welcome', ial2_consent_given: true }
+      put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '666-66-6666' } }
+      put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
-        expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
-      end
-
-      it 'skips from welcome to document capture' do
-        put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
-
-        expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
-      end
-
-      it 'redirects from welcome to no camera error' do
-        result = {
-          success: false,
-          errors: {
-            message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
-          },
-          step: 'welcome',
-        }
-
-        expect(NewRelic::Agent).to receive(:notice_error)
-
-        put :update, params: { step: 'welcome', ial2_consent_given: true, no_camera: true }
-
-        expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
-        expect(@analytics).to have_received(:track_event).with(
-          Analytics::DOC_AUTH + ' submitted', result
-        )
-      end
+      expect(@analytics).to have_received(:track_event).ordered.with(
+        Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 1)
+      )
+      expect(@analytics).to have_received(:track_event).ordered.with(
+        Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 2)
+      )
     end
 
-    describe 'when document capture is disabled' do
-      before(:each) do
-        allow(AppConfig.env).to receive(:document_capture_step_enabled).and_return('false')
-      end
+    it 'progresses from welcome to upload' do
+      put :update, params: { step: 'welcome', ial2_consent_given: true }
 
-      it 'progresses from welcome to upload' do
-        put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
+    end
 
-        expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
-      end
+    it 'skips from welcome to document capture' do
+      put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
+    end
+
+    it 'redirects from welcome to no camera error' do
+      result = {
+        success: false,
+        errors: {
+          message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
+        },
+        step: 'welcome',
+        step_count: 1,
+      }
+
+      expect(NewRelic::Agent).to receive(:notice_error)
+
+      put :update, params: {
+        step: 'welcome',
+        ial2_consent_given: true,
+        no_camera: true,
+      }
+
+      expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
+      expect(@analytics).to have_received(:track_event).with(
+        Analytics::DOC_AUTH + ' submitted', result
+      )
     end
   end
 
@@ -278,6 +270,7 @@ describe Idv::DocAuthController do
         success: true,
         errors: {},
         messages: ['message'],
+        pii_from_doc: good_pii,
       }
     end
     let(:bad_pii) do
@@ -294,6 +287,14 @@ describe Idv::DocAuthController do
         state_id_jurisdiction: 'WI',
       }
     end
+    let(:bad_pii_result) do
+      {
+        success: true,
+        errors: {},
+        messages: ['message'],
+        pii_from_doc: bad_pii,
+      }
+    end
     let(:fail_result) do
       {
         pii_from_doc: {},
@@ -307,7 +308,6 @@ describe Idv::DocAuthController do
       set_up_document_capture_result(
         uuid: verify_document_action_session_uuid,
         idv_result: good_result,
-        pii: good_pii,
       )
       put :update, params: { step: 'verify_document_status' }
 
@@ -319,7 +319,6 @@ describe Idv::DocAuthController do
       set_up_document_capture_result(
         uuid: verify_document_action_session_uuid,
         idv_result: nil,
-        pii: {},
       )
       put :update, params: { step: 'verify_document_status' }
 
@@ -331,7 +330,6 @@ describe Idv::DocAuthController do
       set_up_document_capture_result(
         uuid: verify_document_action_session_uuid,
         idv_result: fail_result,
-        pii: {},
       )
       put :update, params: { step: 'verify_document_status' }
 
@@ -346,8 +344,7 @@ describe Idv::DocAuthController do
     it 'returns status of fail with incomplete PII from doc auth' do
       set_up_document_capture_result(
         uuid: verify_document_action_session_uuid,
-        idv_result: good_result,
-        pii: bad_pii,
+        idv_result: bad_pii_result,
       )
       put :update, params: { step: 'verify_document_status' }
 
@@ -364,6 +361,7 @@ describe Idv::DocAuthController do
           success: false,
           remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
           step: 'verify_document_status',
+          step_count: 1,
         }
       )
     end
@@ -381,11 +379,6 @@ describe Idv::DocAuthController do
     DocumentCaptureSession.create(user_id: user.id, result_id: 1, uuid: 'foo')
     allow_any_instance_of(Flow::BaseFlow).to \
       receive(:flow_session).and_return(
-        'Idv::Steps::FrontImageStep' => true,
-        'Idv::Steps::BackImageStep' => true,
-        'Idv::Steps::SelfieStep' => true,
-        'Idv::Steps::MobileFrontImageStep' => true,
-        'Idv::Steps::MobileBackImageStep' => true,
         'document_capture_session_uuid' => 'foo',
         'Idv::Steps::WelcomeStep' => true,
         'Idv::Steps::SendLinkStep' => true,

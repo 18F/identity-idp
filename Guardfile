@@ -40,7 +40,7 @@ guard :rspec, cmd: ENV['GUARD_RSPEC_CMD'] || 'bundle exec rspec' do
   dsl.watch_spec_files_for(ruby.lib_files)
 
   # Rails files
-  rails = dsl.rails(view_extensions: %w[erb haml slim])
+  rails = dsl.rails(view_extensions: %w[erb])
   dsl.watch_spec_files_for(rails.app_files)
   dsl.watch_spec_files_for(rails.views)
 

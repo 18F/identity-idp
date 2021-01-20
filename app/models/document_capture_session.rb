@@ -7,10 +7,6 @@ class DocumentCaptureSession < ApplicationRecord
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
   end
 
-  def load_proofing_result
-    EncryptedRedisStructStorage.load(result_id, type: ProofingDocumentCaptureSessionResult)
-  end
-
   def store_result_from_response(doc_auth_response)
     EncryptedRedisStructStorage.store(
       DocumentCaptureSessionResult.new(
@@ -23,11 +19,43 @@ class DocumentCaptureSession < ApplicationRecord
     save!
   end
 
-  def store_proofing_pii_from_doc(pii_from_doc)
+  def load_doc_auth_async_result
+    EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionAsyncResult)
+  end
+
+  def create_doc_auth_session
     EncryptedRedisStructStorage.store(
-      ProofingDocumentCaptureSessionResult.new(
+      DocumentCaptureSessionAsyncResult.new(
         id: generate_result_id,
-        pii: pii_from_doc,
+        status: DocumentCaptureSessionAsyncResult::IN_PROGRESS,
+      ),
+      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+    )
+    save!
+  end
+
+  def store_doc_auth_result(result:, pii:)
+    EncryptedRedisStructStorage.store(
+      DocumentCaptureSessionAsyncResult.new(
+        id: result_id,
+        pii: pii,
+        result: result,
+        status: DocumentCaptureSessionAsyncResult::DONE,
+      ),
+      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+    )
+    save!
+  end
+
+  def load_proofing_result
+    EncryptedRedisStructStorage.load(result_id, type: ProofingSessionAsyncResult)
+  end
+
+  def create_proofing_session
+    EncryptedRedisStructStorage.store(
+      ProofingSessionAsyncResult.new(
+        id: generate_result_id,
+        status: ProofingSessionAsyncResult::IN_PROGRESS,
         result: nil,
       ),
       expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
@@ -36,14 +64,11 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def store_proofing_result(proofing_result)
-    existing = EncryptedRedisStructStorage.load(result_id,
-                                                type: ProofingDocumentCaptureSessionResult)
-    pii = existing&.pii
     EncryptedRedisStructStorage.store(
-      ProofingDocumentCaptureSessionResult.new(
+      ProofingSessionAsyncResult.new(
         id: result_id,
-        pii: pii,
         result: proofing_result,
+        status: ProofingSessionAsyncResult::DONE,
       ),
       expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
     )

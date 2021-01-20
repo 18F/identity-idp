@@ -31,7 +31,6 @@ module Flow
 
     def handle(step)
       @flow_session[:error_message] = nil
-      @flow_session[:notice] = nil
       handler = steps[step] || actions[step]
       return failure("Unhandled step #{step}") unless handler
       wrap_send(handler)
@@ -72,6 +71,6 @@ module Flow
     end
 
     delegate :flash, :session, :current_user, :params, :request, :poll_with_meta_refresh,
-             to: :@controller
+      :analytics, to: :@controller
   end
 end

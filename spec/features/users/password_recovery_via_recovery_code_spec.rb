@@ -58,27 +58,15 @@ feature 'Password recovery via personal key' do
     expect(current_path).to eq(account_path)
   end
 
-  scenario 'resets password, uses personal key as 2fa', email: true do
+  scenario 'resets password, not allowed to use personal key as 2fa', email: true do
     personal_key = personal_key_from_pii(user, pii)
 
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)
-    choose_another_security_option('personal_key')
-    enter_personal_key(personal_key: personal_key)
-    click_submit_default
+    click_link t('two_factor_authentication.login_options_link_text')
 
-    expect(current_path).to eq manage_personal_key_path
-
-    new_personal_key = scrape_personal_key
-    click_acknowledge_personal_key
-
-    expect(current_path).to eq reactivate_account_path
-
-    reactivate_profile(new_password, new_personal_key)
-
-    expect(page).to_not have_content t('errors.messages.personal_key_incorrect')
-    expect(page).to have_content t('idv.messages.personal_key')
-    expect(page).to have_current_path(account_path)
+    expect(page).
+      to_not have_selector("label[for='two_factor_options_form_selection_personal_key']")
   end
 
   context 'account recovery alternative paths' do

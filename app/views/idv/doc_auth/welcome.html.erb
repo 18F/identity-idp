@@ -2,7 +2,11 @@
 
 <% step = 0 %>
 <% if flow_session[:error_message] %>
-  <div class='alert alert-error'><%= flow_session[:error_message] %></div>
+  <%= render 'shared/alert', {
+    type: 'error',
+    class: 'margin-bottom-4',
+    message: flow_session[:error_message],
+  } %>
 <% end %>
 
 <%= render 'shared/maintenance_window_alert' do %>
@@ -12,7 +16,7 @@
 
   <ul class='list-reset'>
     <li class='pt2 pb1'>
-      <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='mr1 inline-block'>
@@ -27,7 +31,7 @@
     </li>
     <% if liveness_checking_enabled? %>
     <li class='pt2 pb1'>
-      <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='mr1 inline-block'>
@@ -42,7 +46,7 @@
     </li>
     <% end %>
     <li class='pt2 pb1'>
-      <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='mr1 inline-block'>
@@ -56,7 +60,7 @@
       </div>
     </li>
     <li class='pt2 pb1'>
-      <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='mr1 inline-block'>
@@ -70,7 +74,7 @@
       </div>
     </li>
     <li class='pt2 pb1'>
-      <div class='inline-block mr2 mt1 align-top circle circle-number bg-blue white'>
+      <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='mr1 inline-block'>
@@ -113,7 +117,9 @@
   <% end %>
 
 
-  <%= javascript_pack_tag('clipboard') %>
-  <%= javascript_pack_tag('ial2-consent-button') %>
-  <%= javascript_pack_tag('document-capture-welcome') if FeatureManagement.document_capture_step_enabled? %>
+  <%= javascript_packs_tag_once(
+    'clipboard',
+    'ial2-consent-button',
+    'document-capture-welcome',
+  ) %>
 <% end %>

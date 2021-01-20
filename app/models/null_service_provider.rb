@@ -81,6 +81,10 @@ class NullServiceProvider
 
   def encryption_opts; end
 
+  def skip_encryption_allowed
+    false
+  end
+
   def allow_prompt_login
     false
   end

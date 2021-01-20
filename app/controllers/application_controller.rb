@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   end
 
   def append_info_to_payload(payload)
-    payload[:user_id] = analytics_user.uuid
+    payload[:user_id] = analytics_user.uuid unless @skip_session_load
     payload[:user_agent] = request.user_agent
     payload[:ip] = request.remote_ip
     payload[:host] = request.host
@@ -184,16 +184,6 @@ class ApplicationController < ActionController::Base
     sp_session[:ial2] == true
   end
 
-  def ga_cookie_client_id
-    return if ga_cookie.blank?
-    ga_client_id = ga_cookie.match('GA1\.\d\.(\d+\.\d+)')
-    return ga_client_id[1] if ga_client_id
-  end
-
-  def ga_cookie
-    cookies[:_ga]
-  end
-
   def reauthn_param
     params[:reauthn]
   end
@@ -274,6 +264,10 @@ class ApplicationController < ActionController::Base
 
   def skip_session_expiration
     @skip_session_expiration = true
+  end
+
+  def skip_session_load
+    @skip_session_load = true
   end
 
   def set_locale

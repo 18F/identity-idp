@@ -29,6 +29,7 @@
   front_image_upload_url: front_image_upload_url,
   back_image_upload_url: back_image_upload_url,
   selfie_image_upload_url: selfie_image_upload_url,
+  log_endpoint: api_logger_url,
 } %>
 <div class="js-fallback">
   <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
@@ -57,6 +58,12 @@
       <li><%= t('doc_auth.tips.document_capture_id_text4') %></li>
     </ul>
 
+    <%= f.input(
+      :document_capture_session_uuid,
+      as: :hidden,
+      input_html: { value: flow_session[:document_capture_session_uuid] },
+    ) %>
+
     <div class="front-image mt2">
       <p>
         <strong>
@@ -65,7 +72,6 @@
         <%= t('doc_auth.tips.document_capture_hint') %>
       </p>
 
-      <%= f.input :front_image_data_url, as: :hidden %>
       <%= f.input :front_image, label: false, as: :file, required: true, aria: { invalid: false } %>
     </div>
 
@@ -79,7 +85,6 @@
         <%= t('doc_auth.tips.document_capture_hint') %>
       </p>
 
-      <%= f.input :back_image_data_url, as: :hidden %>
       <%= f.input :back_image, label: false, as: :file, required: true, aria: { invalid: false } %>
     </div>
 
@@ -103,7 +108,6 @@
           <%= t('doc_auth.tips.document_capture_hint') %>
         </p>
 
-        <%= f.input :selfie_image_data_url, as: :hidden %>
         <%= f.input :selfie_image, label: false, as: :file, required: true, aria: { invalid: false } %>
       </div>
     <% end %>
@@ -128,5 +132,4 @@
   window.LoginGov = window.LoginGov || {};
   window.LoginGov.assets = <%= raw asset_keys.map { |key| [key, asset_path(key)] }.to_h.to_json %>;
 <% end %>
-<%= javascript_pack_tag 'document-capture' %>
-<%= stylesheet_pack_tag 'document-capture' %>
+<%= javascript_packs_tag_once 'document-capture' %>

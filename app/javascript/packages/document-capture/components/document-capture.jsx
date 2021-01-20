@@ -2,8 +2,8 @@ import { useState, useMemo, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import FormSteps from './form-steps';
 import { UploadFormEntriesError } from '../services/upload';
-import DocumentsStep from './documents-step';
-import SelfieStep from './selfie-step';
+import DocumentsStep, { documentsStepValidator } from './documents-step';
+import SelfieStep, { selfieStepValidator } from './selfie-step';
 import ReviewIssuesStep from './review-issues-step';
 import MobileIntroStep from './mobile-intro-step';
 import DeviceContext from '../context/device';
@@ -99,12 +99,14 @@ function DocumentCapture({ isAsyncForm = false }) {
           name: 'documents',
           title: t('doc_auth.headings.document_capture'),
           form: DocumentsStep,
+          validator: documentsStepValidator,
           footer: DesktopDocumentDisclosure,
         },
         serviceProvider.isLivenessRequired && {
           name: 'selfie',
           title: t('doc_auth.headings.selfie'),
           form: SelfieStep,
+          validator: selfieStepValidator,
         },
       ].filter(Boolean));
 

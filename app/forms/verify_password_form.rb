@@ -42,8 +42,4 @@ class VerifyPasswordForm
   def profile
     @_profile ||= user.decorate.password_reset_profile
   end
-
-  def user_access_key
-    @_uak ||= user.unlock_user_access_key(password)
-  end
 end

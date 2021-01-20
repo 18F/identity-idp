@@ -43,7 +43,9 @@ describe Idv::UspsController do
 
     it 'renders wait page while job is in progress' do
       allow(controller).to receive(:async_state).and_return(
-        ProofingDocumentCaptureSessionResult.in_progress,
+        ProofingSessionAsyncResult.new(
+          status: ProofingSessionAsyncResult::IN_PROGRESS,
+        ),
       )
       get :index
 

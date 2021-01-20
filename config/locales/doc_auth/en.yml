@@ -93,16 +93,12 @@ en:
       review_issues: Check your images and try again
       selfie: Take a photo of yourself
       ssn: Please enter your social security number.
-      take_pic_back: Take a photo of the back of your ID
-      take_pic_front: Take a photo of the front of your ID
       take_picture: Take a photo with a phone
       text_message: We sent a message to your phone
       upload: How would you like to upload your state-issued ID?
-      upload_back: Upload an image of the back of your state-issued ID
       upload_from_phone: Take a photo with a mobile phone to upload your ID
       upload_from_phone_liveness_enabled: Use a mobile phone to add your ID and take
         a photo of yourself
-      upload_front: Upload an image of the front of your state issued ID
       upload_liveness_enabled: How would you like to verify your identity?
       verify: Please verify your information
       welcome: We need to verify your identity
@@ -138,8 +134,6 @@ en:
       upload_from_computer_not_allowed: Sign in to your login.gov account on any device
         that has a camera, like a tablet or computer with a webcam.
       upload_from_phone: Upload pictures directly from your phone camera
-      upload_image: We only use your ID to verify your identity, and we will not save
-        any images.  We accept BMP, PNG, TIFF, and JPG formats.
       upload_liveness_enabled: We'll collect information about you by reading your
         state-issued ID. Then, you'll take a photo of yourself to confirm that you
         are the owner of the ID.
@@ -147,6 +141,7 @@ en:
         identity.
       use_cac: Do you have a government employee ID?
       use_cac_link: Use a PIV/CAC instead
+      verifying: Verifying…
       welcome: We verify your identity to make sure you are you—not someone pretending
         to be you.  Verifying your identity lets you access services that handle sensitive
         information.
@@ -158,8 +153,6 @@ en:
       bullet4: Account recovery
       consent: By checking this box, you are letting login.gov ask for, use, keep,
         and share your personal information. We will only use it to verify your identity.
-      document_capture_fallback_html: Having trouble? %{link}
-      document_capture_fallback_link: Click here to upload an image
       document_capture_selfie_consent_action: "<lg-underline>Allow access to the camera</lg-underline>
         and look for a notification in your browser or check your system settings
         to confirm camera access."
@@ -178,11 +171,6 @@ en:
       send_sms: We'll send a text message to your device with a link.  Follow that
         link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity
-      take_pic: 'For best results:'
-      take_pic1: Use a dark background
-      take_pic2: Take the photo on a flat surface
-      take_pic3: Do not use the flash on your camera
-      take_pic4: Use the landscape orientation
       text1: along with your Social Security Number
       text1a: with your phone or webcam
       text2: using a phone number or mailing address
@@ -200,7 +188,6 @@ en:
         in the photo
       document_capture_selfie_text2: Take a photo against a plain background
       document_capture_selfie_text3: Do not wear a hat or glasses
-      header_text: Guidelines for taking a photo of your ID
       review_issues_id_header_text: 'Review the images of your state-issued ID:'
       review_issues_id_text1: Did you use a dark background?
       review_issues_id_text2: Did you take the photo on a flat surface?
@@ -212,15 +199,3 @@ en:
       review_issues_selfie_text3: Is the photo against a plain background?
       review_issues_selfie_text4: Is your face fully visible, not covered by a hat
         or glasses?
-      text1: Take it in a room with lots of light. Indirect sunlight is best.
-      text2: Make sure your ID doesn't have dirt or damaged barcodes.
-      text3: Place your ID on a dark solid-colored surface that makes it easy to see
-        all edges of the ID.
-      text4: Make sure there are no glares, shadows, or reflections on your ID.
-      text5: Your ID should cover 80% of the photo.
-      text6: Make sure the picture is sharp and clear. It should be easy to read all
-        information.
-      text7: Use a high-resolution camera. A good mobile phone or tablet camera will
-        work.
-      title_html: "<b>Don't take the photo on a white surface!</b> &nbsp;&nbsp; See
-        more tips..."

@@ -44,7 +44,7 @@ shared_examples 'clearing and restarting idv' do
 
     visit account_path
 
-    expect(page).to_not have_content(t('heading.account.profile_info'))
+    expect(page).to_not have_content(t('headings.account.profile_info'))
     expect(page).to_not have_content(t('account.index.address'))
     expect(page).to_not have_content(t('account.index.dob'))
     expect(page).to_not have_content(t('account.index.full_name'))

@@ -13,7 +13,7 @@
   <%= f.error_notification %>
   <%= f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,
               input_html: { aria: { invalid: false, describedby: 'password-description' }, class: 'password-toggle' } %>
-  <%= render 'devise/shared/password_strength' %>
+  <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
   <%= f.button :submit, t('forms.buttons.submit.update'), class: 'mt2 mb3' %>
 <% end %>
 
@@ -21,4 +21,4 @@
 
 <%= render 'shared/cancel', link: account_path %>
 
-<%= javascript_pack_tag 'pw-strength' %>
+<%= javascript_packs_tag_once 'pw-strength' %>

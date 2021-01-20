@@ -1,0 +1,56 @@
+<p class="lead">
+  <%= t('user_mailer.account_reset_granted.intro_html', app: link_to(APP_NAME, AppConfig.env.mailer_domain_name, class: 'gray')) %>
+</p>
+
+<table class="button expanded large">
+  <tbody>
+      <tr>
+        <td>
+          <table>
+            <tbody>
+              <tr>
+                <td class="btn-warn-bkg">
+                  <%= link_to t('user_mailer.account_reset_granted.button'), account_reset_delete_account_url(token: @granted_token),
+                              target: '_blank', class: 'btn-warn' %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+        <td class="half">
+        </td>
+      </tr>
+  </tbody>
+</table>
+
+<p>
+  <%= link_to account_reset_delete_account_url(token: @granted_token),
+              account_reset_delete_account_url(token: @granted_token), target: '_blank' %>
+</p>
+
+<table class="spacer">
+  <tbody>
+    <tr>
+      <td class="s10" height="10px">
+        &nbsp;
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="hr">
+  <tr>
+    <th>
+      &nbsp;
+    </th>
+  </tr>
+</table>
+
+<p>
+  <%= t('user_mailer.email_confirmation_instructions.footer', confirmation_period: '24 hours') %>
+</p>
+<p>
+  <%= t('user_mailer.account_reset_granted.help_html',
+        cancel_account_reset: link_to(t('user_mailer.account_reset_granted.cancel_link_text'),
+                                      account_reset_cancel_url(token: @token))) %>
+</p>

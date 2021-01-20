@@ -79,9 +79,17 @@ RSpec.describe ServiceProviderSeeder do
             ServiceProvider.find_by(issuer: 'urn:gov:login:test-providers:fake-unrestricted-sp'),
           ).to eq(nil)
         end
+
+        it 'sends New Relic an error if the DB has an SP not in the config' do
+          allow(NewRelic::Agent).to receive(:notice_error)
+          create(:service_provider, issuer: 'missing_issuer')
+          run
+
+          expect(NewRelic::Agent).to have_received(:notice_error)
+        end
       end
 
-      context 'in another environment' do
+      context 'in the staging environment' do
         let(:deploy_env) { 'staging' }
 
         it 'only writes configs with restrict_to_deploy_env for that env, or no restrictions' do
@@ -101,6 +109,26 @@ RSpec.describe ServiceProviderSeeder do
               issuer: 'urn:gov:login:test-providers:fake-unrestricted-sp',
             ),
           ).to be_present
+        end
+
+        it 'sends New Relic an error if the DB has an SP not in the config' do
+          allow(NewRelic::Agent).to receive(:notice_error)
+          create(:service_provider, issuer: 'missing_issuer')
+          run
+
+          expect(NewRelic::Agent).to have_received(:notice_error)
+        end
+      end
+
+      context 'in another environment' do
+        let(:deploy_env) { 'int' }
+
+        it 'does not send New Relic an error if the DB has an SP not in the config' do
+          allow(NewRelic::Agent).to receive(:notice_error)
+          create(:service_provider, issuer: 'missing_issuer')
+          run
+
+          expect(NewRelic::Agent).not_to have_received(:notice_error)
         end
       end
 

@@ -1,5 +1,6 @@
 require 'idp/constants'
 
+# rubocop:disable Layout/LineLength
 # Global constants used by the SAML IdP
 module Saml
   module Idp
@@ -13,7 +14,9 @@ module Saml
       IAL2_STRICT_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2?strict=true".freeze
       IALMAX_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/0".freeze
 
+      DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF = 'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo'.freeze
       AAL_AUTHN_CONTEXT_PREFIX = 'http://idmanagement.gov/ns/assurance/aal'.freeze
+      AAL1_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/1".freeze
       AAL2_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/2".freeze
       AAL3_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/3".freeze
       AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/3?hspd12=true".freeze
@@ -37,16 +40,28 @@ module Saml
         IALMAX_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::IAL_MAX,
       }.freeze
 
+      AUTHN_CONTEXT_IAL_TO_CLASSREF = {
+        ::Idp::Constants::IAL1 => IAL1_AUTHN_CONTEXT_CLASSREF,
+        ::Idp::Constants::IAL2 => IAL2_AUTHN_CONTEXT_CLASSREF,
+        ::Idp::Constants::IAL2_STRICT => IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
+        ::Idp::Constants::IAL_MAX => IALMAX_AUTHN_CONTEXT_CLASSREF,
+      }.freeze
+
       AUTHN_CONTEXT_CLASSREF_TO_AAL = {
+        DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::DEFAULT_AAL,
+        AAL1_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL1,
         AAL2_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL2,
         AAL3_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL3,
         AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF => ::Idp::Constants::AAL3,
       }.freeze
 
       AUTHN_CONTEXT_AAL_TO_CLASSREF = {
+        ::Idp::Constants::DEFAULT_AAL => DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+        ::Idp::Constants::AAL1 => AAL1_AUTHN_CONTEXT_CLASSREF,
         ::Idp::Constants::AAL2 => AAL2_AUTHN_CONTEXT_CLASSREF,
         ::Idp::Constants::AAL3 => AAL3_AUTHN_CONTEXT_CLASSREF,
       }.freeze
     end
   end
 end
+# rubocop:enable Layout/LineLength

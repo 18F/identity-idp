@@ -40,6 +40,7 @@
         <div class="px2 py1 mt1 border border-dashed border-navy">
           <div class="inline fs-20p caps monospace" id="qr-code"><%= @code %></div>
           <button class="clipboard ml2 right mt-tiny btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center"
+                  type="button"
                   data-clipboard-text="<%= @code.upcase %>">
             <%= t('links.copy') %>
           </button>
@@ -59,7 +60,7 @@
                 'aria-labelledby': 'totp-label' %>
           </div>
           <div class="col col-6 sm-col-5 px1">
-            <%= submit_tag t('forms.buttons.submit.default'), class: 'col-12 btn btn-primary align-top' %>
+            <%= submit_tag t('forms.buttons.submit.default'), class: 'col-12 btn btn-primary text-top' %>
           </div>
         </div>
         <div class="border border-light-blue rounded-lg px2 py1 mt3">
@@ -73,4 +74,4 @@
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>
-<%= javascript_pack_tag 'clipboard' %>
+<%= javascript_packs_tag_once 'clipboard' %>

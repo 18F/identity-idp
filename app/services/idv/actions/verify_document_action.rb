@@ -29,14 +29,14 @@ module Idv
       end
 
       def enqueue_job
-        document_capture_session = create_document_capture_session(
+        verify_document_capture_session = create_document_capture_session(
           verify_document_capture_session_uuid_key,
         )
-        document_capture_session.requested_at = Time.zone.now
-        document_capture_session.store_proofing_pii_from_doc({}) # generates a result_id
+        verify_document_capture_session.requested_at = Time.zone.now
+        verify_document_capture_session.create_doc_auth_session
 
         callback_url = Rails.application.routes.url_helpers.document_proof_result_url(
-          result_id: document_capture_session.result_id,
+          result_id: verify_document_capture_session.result_id,
         )
 
         LambdaJobs::Runner.new(
@@ -55,14 +55,10 @@ module Idv
           },
         ).run do |doc_auth_result|
           document_result = doc_auth_result.to_h.fetch(:document_result, {})
-
-          EncryptedRedisStructStorage.store(
-            ProofingDocumentCaptureSessionResult.new(
-              id: document_capture_session.result_id,
-              pii: document_result[:pii_from_doc],
-              result: document_result.except(:pii_from_doc),
-            ),
-            expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+          dcs = DocumentCaptureSession.new(result_id: verify_document_capture_session.result_id)
+          dcs.store_doc_auth_result(
+            result: document_result.except(:pii_from_doc),
+            pii: document_result[:pii_from_doc],
           )
 
           nil

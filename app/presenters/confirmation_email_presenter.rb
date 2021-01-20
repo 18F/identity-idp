@@ -1,8 +1,5 @@
 class ConfirmationEmailPresenter
   include ::NewRelic::Agent::MethodTracer
-  add_method_tracer :initialize, "Custom/#{name}/initialize"
-  add_method_tracer :first_sentence, "Custom/#{name}/first_sentence"
-  add_method_tracer :confirmation_period, "Custom/#{name}/confirmation_period"
 
   def initialize(user, view)
     @user = user
@@ -31,11 +28,19 @@ class ConfirmationEmailPresenter
     current_time = Time.zone.now
 
     view.distance_of_time_in_words(
-      current_time, current_time + Devise.confirm_within, true, accumulate_on: :hours
+      current_time,
+      current_time + Devise.confirm_within,
+      true,
+      accumulate_on: :hours,
+      two_words_connector: " #{I18n.t('datetime.dotiw.two_words_connector')} ",
     )
   end
 
   private
 
   attr_reader :user, :view
+
+  add_method_tracer :initialize, "Custom/#{name}/initialize"
+  add_method_tracer :first_sentence, "Custom/#{name}/first_sentence"
+  add_method_tracer :confirmation_period, "Custom/#{name}/confirmation_period"
 end

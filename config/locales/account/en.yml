@@ -96,7 +96,7 @@ en:
       history: History
       learn_more: Learn more about login.gov
       menu: Menu
-      two_factor_authentication: Two-factor authentication
+      two_factor_authentication: Your authentication methods
       your_account: Your Account
     re_verify:
       banner: We've hidden your profile information to protect your privacy.

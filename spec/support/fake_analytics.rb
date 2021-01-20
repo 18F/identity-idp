@@ -10,12 +10,15 @@ class FakeAnalytics
     nil
   end
 
-  def track_mfa_submit_event(_attributes, _ga_client_id)
+  def track_mfa_submit_event(_attributes)
     # no-op
   end
 
-  def grab_ga_client_id
-    '123.456'
+  def allowable_frontend_events
+    [
+      Analytics::FRONTEND_DOC_AUTH_ASYNC_UPLOAD,
+      Analytics::FRONTEND_DOC_AUTH_ACUANT_WEB_SDK_RESULT,
+    ]
   end
 end
 

@@ -32,16 +32,9 @@ class Analytics
     Funnel::DocAuth::RegisterStepFromAnalyticsEvent.call(user.id, sp, event, success)
   end
 
-  def track_mfa_submit_event(attributes, ga_client_id)
+  def track_mfa_submit_event(attributes)
     track_event(MULTI_FACTOR_AUTH, attributes)
     mfa_event_type = (attributes[:success] ? 'success' : 'fail')
-
-    GoogleAnalyticsMeasurement.new(
-      category: 'authentication',
-      event_action: "multi+factor+#{mfa_event_type}",
-      method: attributes[:multi_factor_auth_method],
-      client_id: ga_client_id,
-    ).send_event
   end
 
   attr_reader :user, :request, :sp, :ahoy
@@ -78,6 +71,8 @@ class Analytics
   ACCOUNT_DELETE_VISITED = 'Account Delete visited'.freeze
   ACCOUNT_DELETION = 'Account Deletion Requested'.freeze
   ACCOUNT_RESET_VISIT = 'Account deletion and reset visited'.freeze
+  ACCOUNT_VERIFICATION_SUBMITTED = 'Account verification submitted'
+  ACCOUNT_VERIFICATION_VISITED = 'Account verification visited'
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
   ADD_EMAIL = 'Add Email: Email Submitted'.freeze
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'.freeze
@@ -87,6 +82,7 @@ class Analytics
   CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
   CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
+  DOC_AUTH_ASYNC = 'Doc Auth Async'.freeze
   IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'.freeze
@@ -139,6 +135,9 @@ class Analytics
   IDV_USPS_ADDRESS_VISITED = 'IdV: USPS address visited'.freeze
   IDV_VERIFICATION_ATTEMPT_CANCELLED = 'IdV: verification attempt cancelled'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
+  LAMBDA_RESULT_RESOLUTION_PROOF_RESULT = 'Lambda Resolution Proof Result Received'.freeze
+  LAMBDA_RESULT_ADDRESS_PROOF_RESULT = 'Lambda Address Proof Result Received'.freeze
+  LAMBDA_RESULT_DOCUMENT_PROOF_RESULT = 'Lambda Document Proof Result Received'.freeze
   LOGOUT_INITIATED = 'Logout Initiated'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze

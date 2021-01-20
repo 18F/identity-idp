@@ -1,22 +1,13 @@
 ## Welcome!
 
-We're so glad you're thinking about contributing to an 18F open source project!
-If you're unsure about anything, just ask — or submit the issue or pull request
-anyway. The worst that can happen is you'll be politely asked to change
-something. We love all friendly contributions.
+We’re so glad you’re thinking about contributing to a Technology Transformation Services (TTS) open source project! If you’re unsure about anything, just ask — or submit your issue or pull request anyway. The worst that can happen is we’ll politely ask you to change something. We appreciate all friendly contributions.
 
-We want to ensure a welcoming environment for all of our projects. Our staff
-follow the [18F Code of Conduct][code] and all contributors should do the same.
+TTS is committed to building a safe, welcoming, harassment-free culture for everyone. We expect everyone on the TTS team and everyone within TTS spaces, including contributors to our projects, to follow the [TTS Code of Conduct](https://github.com/18F/code-of-conduct/blob/master/code-of-conduct.md).
 
-We encourage you to read this project's CONTRIBUTING policy (you are here), its
-[LICENSE](LICENSE.md), and its [README](README.md).
+We encourage you to read this project’s CONTRIBUTING policy (you are here), its [LICENSE](LICENSE.md), [README](README.md)
 
-If you have any questions or want to read more, check out the
-[18F Open Source Policy GitHub repository][os-policy], or just
-[shoot us an email](mailto:18f@gsa.gov).
+If you have any questions or want to read more, check out the [18F Open Source Policy GitHub repository]( https://github.com/18f/open-source-policy), or [send us an email](mailto:18f@gsa.gov).
 
-[code]: https://github.com/18F/code-of-conduct/blob/master/code-of-conduct.md
-[os-policy]: https://github.com/18f/open-source-policy
 
 ## Pull request guidelines
 

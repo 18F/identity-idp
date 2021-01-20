@@ -5,6 +5,7 @@ class IdvController < ApplicationController
   before_action :confirm_two_factor_authenticated
   before_action :confirm_idv_needed, only: [:fail]
   before_action :profile_needs_reactivation?, only: [:index]
+  before_action :sp_context_needed?, only: [:index]
 
   def index
     if decorated_session.requested_more_recent_verification?

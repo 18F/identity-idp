@@ -167,8 +167,11 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           await onChange.getCall(0).args[0].foo_image_url;
           expect(addPageAction.calledOnce).to.be.true();
           expect(addPageAction.getCall(0).args).to.deep.equal([
-            'documentCapture.asyncUpload',
-            { success: true, trace_id: null },
+            {
+              key: 'documentCapture.asyncUpload',
+              label: 'IdV: document capture async upload submitted',
+              payload: { success: true, trace_id: null },
+            },
           ]);
         });
       });
@@ -203,8 +206,11 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           await onChange.getCall(0).args[0].foo_image_url.catch(() => {});
           expect(addPageAction.calledOnce).to.be.true();
           expect(addPageAction.getCall(0).args).to.deep.equal([
-            'documentCapture.asyncUpload',
-            { success: false, trace_id: '1-67891233-abcdef012345678912345678' },
+            {
+              key: 'documentCapture.asyncUpload',
+              label: 'IdV: document capture async upload submitted',
+              payload: { success: false, trace_id: '1-67891233-abcdef012345678912345678' },
+            },
           ]);
         });
       });

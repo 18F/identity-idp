@@ -12,6 +12,7 @@ class EventDisavowalController < ApplicationController
         extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(disavowed_event),
       ).to_h,
     )
+    @forbidden_passwords = forbidden_passwords
   end
 
   def create
@@ -20,11 +21,18 @@ class EventDisavowalController < ApplicationController
     if result.success?
       handle_successful_password_reset
     else
+      @forbidden_passwords = forbidden_passwords
       render :new
     end
   end
 
   private
+
+  def forbidden_passwords
+    disavowed_event.user.email_addresses.flat_map do |email_address|
+      ForbiddenPasswords.new(email_address.email).call
+    end
+  end
 
   def password_reset_from_disavowal_form
     @password_reset_from_disavowal_form ||= EventDisavowal::PasswordResetFromDisavowalForm.new(
