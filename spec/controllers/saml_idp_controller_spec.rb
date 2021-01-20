@@ -286,8 +286,6 @@ describe SamlIdpController do
         generate_saml_response(user, sp2_saml_settings_inactive)
 
         expect(controller).to redirect_to sp_inactive_error_url
-
-
       end
     end
 
