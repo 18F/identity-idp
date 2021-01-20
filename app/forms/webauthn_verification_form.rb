@@ -8,6 +8,8 @@ class WebauthnVerificationForm
   validates :client_data_json, presence: true
   validates :signature, presence: true
 
+  attr_accessor :webauthn_configuration
+
   def initialize(user, user_session)
     @user = user
     @challenge = user_session[:webauthn_challenge]
@@ -15,6 +17,7 @@ class WebauthnVerificationForm
     @client_data_json = nil
     @signature = nil
     @credential_id = nil
+    @webauthn_configuration = nil
   end
 
   def submit(protocol, params)
@@ -60,8 +63,9 @@ class WebauthnVerificationForm
   end
 
   def public_key
-    WebauthnConfiguration.
-      where(user_id: user.id, credential_id: @credential_id).take.credential_public_key
+    @webauthn_configuration = WebauthnConfiguration.
+      where(user_id: user.id, credential_id: @credential_id).first
+    @webauthn_configuration.credential_public_key
   end
 
   def extra_analytics_attributes
