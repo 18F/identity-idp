@@ -27,7 +27,7 @@ module OpenidConnect
     private
 
     def check_sp_active
-      return if ServiceProvider.from_issuer(params[:client_id]).active?
+      return if @authorize_form.service_provider.active?
       redirect_to sp_inactive_error_url
     end
 

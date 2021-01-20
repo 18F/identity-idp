@@ -2,7 +2,6 @@
 fr:
   service_providers:
     errors:
-      generic_sp_link: NOT USED
       generic_sp_name: Cette agence
       inactive:
         button_text: Voir mon compte login.gov

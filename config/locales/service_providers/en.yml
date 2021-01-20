@@ -2,7 +2,6 @@
 en:
   service_providers:
     errors:
-      generic_sp_link: the agency's website
       generic_sp_name: This agency
       inactive:
         button_text: View my login.gov account
@@ -10,7 +9,7 @@ en:
         instructions: "%{sp_name} no longer uses login.gov as a sign-in service for
           their website. If you already created a login.gov account, it is still active
           and can be used to access other participating government websites."
-        instructions2: Please visit %{sp_link} to contact them for more information.
+        instructions2: Please visit the agency's website to contact them for more information.
     help_text:
       default:
         forgot_password: Your old %{sp_name} username and password won’t work. Please
