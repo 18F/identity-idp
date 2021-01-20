@@ -11,6 +11,7 @@ class TotpSetupForm
     @code = code
     @name = name
     @name = Time.zone.now.to_s if @name.blank?
+    @auth_app_config = nil
   end
 
   def submit
@@ -29,7 +30,7 @@ class TotpSetupForm
     # The two_factor_authentication gem raises an error if the secret is nil.
     return false if secret.nil?
     new_timestamp = Db::AuthAppConfiguration::Confirm.call(secret, code)
-    Db::AuthAppConfiguration::Create.call(user, secret, new_timestamp, name) if new_timestamp
+    create_auth_app(user, secret, new_timestamp, name) if new_timestamp
     new_timestamp.present?
   end
 
@@ -41,7 +42,12 @@ class TotpSetupForm
     {
       totp_secret_present: secret.present?,
       multi_factor_auth_method: 'totp',
+      mfa_id: @auth_app_config&.id,
     }
+  end
+
+  def create_auth_app(user, secret, new_timestamp, name)
+    @auth_app_config = Db::AuthAppConfiguration::Create.call(user, secret, new_timestamp, name)
   end
 
   def name_is_unique
