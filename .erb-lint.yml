@@ -21,7 +21,7 @@ linters:
           - 'z[1-4]'
           - 'col-(right|[579])'
           - 'sm-col-11?'
-          - '(md|lg)-col(-right|[1-9][0-2]?)?'
+          - '(md|lg)-col(-(right|[1-9][0-2]?))?'
           - '(sm|md|lg)-flex'
           - 'flex-(column|none)'
           - '(items|self|justify|content)-(start|end|center|baseline|stretch)'
