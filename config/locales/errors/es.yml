@@ -108,9 +108,9 @@ es:
       unauthorized_service_provider: Proveedor de servicio no autorizado
       usps_otp_expired: Tu código de confirmación ha caducado. Vuelve a solicitar
         otra carta para recibir un nuevo código.
-      weak_password: Su contraseña no es suficientemente segura. %{feedback}
       voip_check_error: TODO
       voip_phone: TODO
+      weak_password: Su contraseña no es suficientemente segura. %{feedback}
     piv_cac_setup:
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.
     two_factor_auth_setup:
