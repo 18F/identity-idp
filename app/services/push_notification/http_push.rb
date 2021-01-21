@@ -25,6 +25,10 @@ module PushNotification
         end
     end
 
+    def url_options
+      {}
+    end
+
     private
 
     attr_reader :now

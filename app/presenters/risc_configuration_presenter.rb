@@ -19,4 +19,8 @@ class RiscConfigurationPresenter
       ],
     }
   end
+
+  def url_options
+    {}
+  end
 end

@@ -21,6 +21,10 @@ class OpenidConnectUserInfoPresenter
     OpenidConnectAttributeScoper.new(identity.scope).filter(info)
   end
 
+  def url_options
+    {}
+  end
+
   private
 
   def uuid_from_sp_identity(identity)

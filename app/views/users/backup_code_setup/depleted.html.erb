@@ -2,7 +2,7 @@
 <p class="mt-tiny mb3"><%= @presenter.description %></p>
 
 <% if @presenter.other_option_display %>
-  <%= link_to @presenter.other_option_title, @presenter.other_option_path, class: 'btn btn-primary btn-wide' %>
+  <%= link_to @presenter.other_option_title, two_factor_options_path, class: 'btn btn-primary btn-wide' %>
   <br><br>
   <%= @presenter.continue_bttn_prologue %>
 <% end %>

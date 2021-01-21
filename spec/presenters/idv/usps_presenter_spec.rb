@@ -5,7 +5,7 @@ RSpec.describe Idv::UspsPresenter do
   let(:any_mail_sent?) { false }
 
   subject(:decorator) do
-    described_class.new(user)
+    described_class.new(user, {})
   end
 
   describe '#title' do

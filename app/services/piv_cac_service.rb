@@ -27,6 +27,10 @@ module PivCacService
       AppConfig.env.piv_cac_verify_token_url
     end
 
+    def url_options
+      {}
+    end
+
     private
 
     def emails_match_domains?(email_domains, supported_domains)

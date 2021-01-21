@@ -1,6 +1,5 @@
 module TwoFactorAuthCode
   class PivCacAuthenticationPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
-    include Rails.application.routes.url_helpers
     include ActionView::Helpers::TranslationHelper
 
     def header
@@ -52,11 +51,10 @@ module TwoFactorAuthCode
     end
 
     def cancel_link
-      locale = LinkLocaleResolver.locale
       if reauthn
-        account_path(locale: locale)
+        account_path
       else
-        sign_out_path(locale: locale)
+        sign_out_path
       end
     end
 

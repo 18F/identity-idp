@@ -1,6 +1,5 @@
 module TwoFactorAuthentication
   class SelectionPresenter
-    include Rails.application.routes.url_helpers
     include ActionView::Helpers::TranslationHelper
 
     attr_reader :configuration

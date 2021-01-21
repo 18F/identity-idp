@@ -1,9 +1,10 @@
 class ImageUploadResponsePresenter
   include Rails.application.routes.url_helpers
 
-  def initialize(form:, form_response:)
+  def initialize(form:, form_response:, url_options: )
     @form = form
     @form_response = form_response
+    @url_options = url_options
   end
 
   def success?
@@ -38,5 +39,9 @@ class ImageUploadResponsePresenter
     else
       { success: false, errors: errors, remaining_attempts: remaining_attempts }
     end
+  end
+
+  def url_options
+    @url_options
   end
 end

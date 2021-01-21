@@ -9,7 +9,7 @@ module Idv
     before_action :max_attempts_reached, only: [:update]
 
     def index
-      @presenter = UspsPresenter.new(current_user)
+      @presenter = UspsPresenter.new(current_user, url_options)
       current_async_state = async_state
 
       if current_async_state.none?

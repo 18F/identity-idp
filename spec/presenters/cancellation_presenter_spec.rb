@@ -5,7 +5,7 @@ describe CancellationPresenter do
   let(:good_url_with_path) { 'http://example.com/asdf?qwerty=123' }
   let(:bad_url) { 'http://evil.com/asdf/qwerty' }
 
-  subject { described_class.new(referer: referer_header) }
+  subject { described_class.new(referer: referer_header, url_options: {}) }
 
   describe '#go_back_link' do
     let(:sign_up_path) { '/two_factor_options' }
