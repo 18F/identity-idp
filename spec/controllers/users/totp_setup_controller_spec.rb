@@ -97,6 +97,7 @@ describe Users::TotpSetupController, devise: true do
             errors: {},
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
+            auth_app_configuration_id: nil,
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -125,6 +126,7 @@ describe Users::TotpSetupController, devise: true do
             errors: {},
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
+            auth_app_configuration_id: nil,
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -154,6 +156,7 @@ describe Users::TotpSetupController, devise: true do
             errors: {},
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
+            auth_app_configuration_id: nil,
           }
           expect(@analytics).to have_received(:track_event).
             with(Analytics::MULTI_FACTOR_AUTH_SETUP, result)
@@ -180,6 +183,7 @@ describe Users::TotpSetupController, devise: true do
             errors: {},
             totp_secret_present: true,
             multi_factor_auth_method: 'totp',
+            auth_app_configuration_id: nil,
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -206,6 +210,7 @@ describe Users::TotpSetupController, devise: true do
             errors: {},
             totp_secret_present: false,
             multi_factor_auth_method: 'totp',
+            auth_app_configuration_id: nil,
           }
 
           expect(@analytics).to have_received(:track_event).

@@ -42,7 +42,7 @@ class TotpSetupForm
     {
       totp_secret_present: secret.present?,
       multi_factor_auth_method: 'totp',
-      mfa_id: @auth_app_config&.id,
+      auth_app_configuration_id: @auth_app_config&.id,
     }
   end
 

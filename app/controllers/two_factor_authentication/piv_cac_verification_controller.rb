@@ -99,7 +99,7 @@ module TwoFactorAuthentication
       {
         context: context,
         multi_factor_auth_method: 'piv_cac',
-        mfa_id: piv_cac_verfication_form&.piv_cac_configuration&.id,
+        piv_cac_configuration_id: piv_cac_verfication_form&.piv_cac_configuration&.id,
       }
     end
   end

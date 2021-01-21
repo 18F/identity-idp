@@ -90,7 +90,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         attributes = {
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          mfa_id: nil,
+          piv_cac_configuration_id: nil,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -101,7 +101,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
           errors: {},
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          mfa_id: nil,
+          piv_cac_configuration_id: nil,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes)
@@ -171,7 +171,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         attributes = {
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
-          mfa_id: nil,
+          piv_cac_configuration_id: nil,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -183,7 +183,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
           key_id: nil,
-          mfa_id: nil,
+          piv_cac_configuration_id: nil,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(submit_attributes)

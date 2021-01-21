@@ -14,7 +14,7 @@ describe TotpVerificationForm do
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: { multi_factor_auth_method: 'totp',
-                                                   mfa_id: cfg.id }).
+                                                   auth_app_configuration_id: cfg.id }).
           and_return(result)
         expect(form.submit).to eq result
       end
@@ -31,7 +31,7 @@ describe TotpVerificationForm do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: { multi_factor_auth_method: 'totp',
-                                                    mfa_id: nil }).
+                                                    auth_app_configuration_id: nil }).
           and_return(result)
         expect(form.submit).to eq result
       end
@@ -49,7 +49,7 @@ describe TotpVerificationForm do
 
           expect(FormResponse).to receive(:new).
             with(success: false, errors: {}, extra: { multi_factor_auth_method: 'totp',
-                                                      mfa_id: nil }).
+                                                      auth_app_configuration_id: nil }).
             and_return(result)
           expect(form.submit).to eq result
         end

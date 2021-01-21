@@ -13,7 +13,7 @@ describe TotpSetupForm do
         extra = {
           totp_secret_present: true,
           multi_factor_auth_method: 'totp',
-          mfa_id: next_auth_app_id,
+          auth_app_configuration_id: next_auth_app_id,
         }
 
         expect(FormResponse).to receive(:new).
@@ -30,7 +30,7 @@ describe TotpSetupForm do
         extra = {
           totp_secret_present: true,
           multi_factor_auth_method: 'totp',
-          mfa_id: nil,
+          auth_app_configuration_id: nil,
         }
 
         expect(FormResponse).to receive(:new).
@@ -49,7 +49,7 @@ describe TotpSetupForm do
         extra = {
           totp_secret_present: false,
           multi_factor_auth_method: 'totp',
-          mfa_id: nil,
+          auth_app_configuration_id: nil,
         }
 
         expect(FormResponse).to receive(:new).

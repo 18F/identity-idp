@@ -33,7 +33,7 @@ class TotpVerificationForm
   def extra_analytics_attributes(cfg_id)
     {
       multi_factor_auth_method: 'totp',
-      mfa_id: cfg_id,
+      auth_app_configuration_id: cfg_id,
     }
   end
 end

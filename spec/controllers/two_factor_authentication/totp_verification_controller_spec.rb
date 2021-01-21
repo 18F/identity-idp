@@ -37,7 +37,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
           success: true,
           errors: {},
           multi_factor_auth_method: 'totp',
-          mfa_id: subject.current_user.auth_app_configurations.first.id,
+          auth_app_configuration_id: subject.current_user.auth_app_configurations.first.id,
         }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(attributes)
@@ -84,7 +84,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
           success: false,
           errors: {},
           multi_factor_auth_method: 'totp',
-          mfa_id: nil,
+          auth_app_configuration_id: nil,
         }
 
         expect(@analytics).to receive(:track_mfa_submit_event).

@@ -82,7 +82,7 @@ module TwoFactorAuthentication
       {
         context: context,
         multi_factor_auth_method: 'webauthn',
-        mfa_id: form&.webauthn_configuration&.id,
+        webauthn_configuration_id: form&.webauthn_configuration&.id,
       }
     end
 
