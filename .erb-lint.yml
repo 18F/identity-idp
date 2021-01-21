@@ -1,0 +1,35 @@
+EnableDefaultLinters: false
+linters:
+  DeprecatedClasses:
+    enabled: true
+    rule_set:
+      - deprecated:
+          - 'align-(top|middle|bottom|baseline)'
+          - '(left)-align'
+          - 'justify'
+          - 'nowrap'
+          - 'line-height-[3]'
+          - 'list-style-none'
+          - 'table(-cell)?'
+          - 'fit'
+          - 'max-width-[1-4]'
+          - 'mxn[4]'
+          - 'm[trbly]?-auto'
+          - 'pxn[1-4]'
+          - 'p[trblxy]?-auto'
+          - 'fixed'
+          - 'z[1-4]'
+          - 'col-(right|[579])'
+          - 'sm-col-11?'
+          - '(md|lg)-col(-right|[1-9][0-2]?)?'
+          - '(sm|md|lg)-flex'
+          - 'flex-(column|none)'
+          - '(items|self|justify|content)-(start|end|center|baseline|stretch)'
+          - 'order-([0-3]|last)'
+          - 'not-rounded'
+          - 'rounded-(top|right|bottom|left)'
+          - '(md|lg)-hide'
+          - '(xs|md|lg)-show'
+          - 'btn-(small|big|narrow|transparent)'
+          - 'border-(black|gray|white|aqua|orange|fuchsia|purple|maroon|darken-[1-4]|lighten-[1-4])'
+        suggestion: 'Use USWDS classes instead of BassCSS.'
