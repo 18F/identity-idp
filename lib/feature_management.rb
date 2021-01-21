@@ -136,13 +136,12 @@ class FeatureManagement
     !Rails.env.test? && AppConfig.env.log_to_stdout == 'true'
   end
 
-  # Whether or not we should VOIP phone numbers?
+  # Whether or not we should VOIP phone numbers
   def self.voip_block?
     AppConfig.env.voip_block == 'true'
   end
 
-  # Manual allowlist for VOIPs, should only include known VOIPs that we
-  # use for smoke tests
+  # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
   # @return [Set<String>] set of phone numbers normalized to e164
   def self.voip_allowed_phones
     @voip_allowed_phones ||= if (allowed_phones = AppConfig.env.voip_allowed_phones).present?
