@@ -58,14 +58,11 @@ class WebauthnVerificationForm
       signature: Base64.decode64(@signature),
     )
     original_origin = "#{protocol}#{self.class.domain_name}"
+    public_key = @webauthn_configuration = user.webauthn_configurations.
+        find_by!(credential_id: @credential_id)&.credential_public_key
+    return false unless public_key
     assertion_response.valid?(@challenge.pack('c*'), original_origin,
                               public_key: Base64.decode64(public_key), sign_count: 0)
-  end
-
-  def public_key
-    @webauthn_configuration = WebauthnConfiguration.
-      where(user_id: user.id, credential_id: @credential_id).first
-    @webauthn_configuration.credential_public_key
   end
 
   def extra_analytics_attributes
