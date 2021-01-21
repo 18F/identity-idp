@@ -185,6 +185,7 @@ class Analytics
   SP_REVOKE_CONSENT_VISITED = 'SP Revoke Consent: Visited'.freeze
   SP_HANDOFF_BOUNCED_DETECTED = 'SP handoff bounced detected'.freeze
   SP_HANDOFF_BOUNCED_VISIT = 'SP handoff bounced visited'.freeze
+  SP_INACTIVE_VISIT = 'SP inactive visited'.freeze
   BACKUP_CODE_CREATED = 'Backup Code Created'.freeze
   BACKUP_CODE_DELETED = 'Backup Code Delete'.freeze
   BACKUP_CODE_SETUP_VISIT = 'Backup Code Setup Visited'.freeze

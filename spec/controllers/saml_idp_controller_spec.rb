@@ -279,6 +279,16 @@ describe SamlIdpController do
       end
     end
 
+    context 'service provider is inactive' do
+      it 'responds with an error page' do
+        user = create(:user, :signed_up)
+
+        generate_saml_response(user, sp2_saml_settings_inactive)
+
+        expect(controller).to redirect_to sp_inactive_error_url
+      end
+    end
+
     context 'service provider is invalid' do
       it 'responds with an error page' do
         user = create(:user, :signed_up)

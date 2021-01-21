@@ -25,8 +25,10 @@ class SamlRequestValidator
     }
   end
 
+  # This check relies on the fact that problematic SPs are returned as NullServiceProvider objects.
+  # It should be disentangled and SP errors should be validated explicitly.
   def authorized_service_provider
-    return if service_provider.active? # live? instead when dashboard approvals matter.
+    return if service_provider.active? || !service_provider.is_a?(NullServiceProvider)
 
     errors.add(:service_provider, :unauthorized_service_provider)
   end

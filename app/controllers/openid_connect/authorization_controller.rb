@@ -10,6 +10,7 @@ module OpenidConnect
     before_action :validate_authorize_form, only: [:index]
     before_action :sign_out_if_prompt_param_is_login_and_user_is_signed_in, only: [:index]
     before_action :store_request, only: [:index]
+    before_action :check_sp_active, only: [:index]
     before_action :override_csp_with_uris, only: [:index]
     before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :index
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
@@ -24,6 +25,11 @@ module OpenidConnect
     end
 
     private
+
+    def check_sp_active
+      return if @authorize_form.service_provider.active?
+      redirect_to sp_inactive_error_url
+    end
 
     def check_sp_handoff_bounced
       return unless SpHandoffBounce::IsBounced.call(sp_session)

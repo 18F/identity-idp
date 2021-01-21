@@ -15,7 +15,7 @@ class ServiceProvider < ApplicationRecord
         -> { where.not(push_notification_url: nil).where.not(push_notification_url: '') })
 
   def self.from_issuer(issuer)
-    return NullServiceProvider.new(issuer: nil) if issuer.blank?
+    return NullServiceProvider.new(issuer: nil) if issuer.blank? || issuer.include?("\x00")
     find_by(issuer: issuer) || NullServiceProvider.new(issuer: issuer)
   end
 

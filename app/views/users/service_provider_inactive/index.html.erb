@@ -1,0 +1,23 @@
+<% title t('service_providers.errors.inactive.heading', sp_name: @sp_name) %>
+
+<%= image_tag(asset_url('alert/fail-x.svg'), width: 54, alt: '') %>
+
+<h3 class="margin-bottom-1 margin-top-4">
+  <%= t('service_providers.errors.inactive.heading', sp_name: @sp_name) %>
+</h3>
+
+<p>
+  <%= t('service_providers.errors.inactive.instructions', sp_name: @sp_name) %>
+</p>
+
+<p>
+  <%= t('service_providers.errors.inactive.instructions2', sp_link: @sp_link) %>
+</p>
+
+<%=
+  link_to(
+    t('service_providers.errors.inactive.button_text'),
+    root_path,
+    class: 'btn btn-primary margin-top-3'
+  )
+%>
