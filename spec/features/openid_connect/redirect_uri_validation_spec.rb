@@ -39,7 +39,7 @@ describe 'redirect_uri validation' do
 
   context 'when the service_provider is not real' do
     it 'displays error instead of branded landing page' do
-      visit_idp_from_nonexistant_sp
+      visit_idp_from_nonexistent_sp
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
@@ -81,7 +81,7 @@ describe 'redirect_uri validation' do
     it 'displays error instead of redirecting' do
       sign_in_and_2fa_user
 
-      visit_idp_from_nonexistant_sp
+      visit_idp_from_nonexistent_sp
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
@@ -113,7 +113,7 @@ describe 'redirect_uri validation' do
       click_submit_default
       click_continue
 
-      visit_idp_from_nonexistant_sp
+      visit_idp_from_nonexistent_sp
       current_host = URI.parse(page.current_url).host
 
       expect(current_host).to eq 'www.example.com'
@@ -205,8 +205,8 @@ describe 'redirect_uri validation' do
     )
   end
 
-  def visit_idp_from_nonexistant_sp(state: SecureRandom.hex)
-    client_id = 'nonexistant:sp'
+  def visit_idp_from_nonexistent_sp(state: SecureRandom.hex)
+    client_id = 'nonexistent:sp'
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
