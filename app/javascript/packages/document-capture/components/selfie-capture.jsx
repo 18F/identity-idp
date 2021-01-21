@@ -13,6 +13,7 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
 import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
 import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
+import './selfie-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
