@@ -728,7 +728,7 @@ DEPENDENCIES
   faker
   faraday
   foundation_emails
-  gmail
+  gmail (>= 0.7.1)
   guard-rspec
   hiredis
   http_accept_language

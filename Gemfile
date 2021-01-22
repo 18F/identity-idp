@@ -104,7 +104,7 @@ group :test do
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'faker'
-  gem 'gmail'
+  gem 'gmail', '>= 0.7.1'
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
