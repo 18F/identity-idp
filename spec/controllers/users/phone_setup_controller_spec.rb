@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Users::PhoneSetupController do
+  before { allow(FeatureManagement).to receive(:voip_block?).and_return(true) }
+
   describe 'GET index' do
     context 'when signed out' do
       it 'redirects to sign in page' do
@@ -43,6 +45,10 @@ describe Users::PhoneSetupController do
           ],
         },
         otp_delivery_preference: 'sms',
+        area_code: nil,
+        carrier: 'Test Mobile Carrier',
+        country_code: nil,
+        phone_type: :mobile,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -69,6 +75,10 @@ describe Users::PhoneSetupController do
           success: true,
           errors: {},
           otp_delivery_preference: 'voice',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -103,6 +113,10 @@ describe Users::PhoneSetupController do
           success: true,
           errors: {},
           otp_delivery_preference: 'sms',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -136,6 +150,10 @@ describe Users::PhoneSetupController do
           success: true,
           errors: {},
           otp_delivery_preference: 'sms',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
         }
 
         expect(@analytics).to receive(:track_event).

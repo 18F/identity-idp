@@ -141,6 +141,8 @@ usps_ipp_password: ''
 usps_ipp_root_url: ''
 usps_ipp_sponsor_id: ''
 usps_ipp_username: ''
+voip_block: 'false'
+voip_allowed_phones: '[]'
 
 development:
   aal_authn_context_enabled: 'true'

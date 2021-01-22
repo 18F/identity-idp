@@ -74,6 +74,20 @@ describe 'Add a new phone number' do
     expect(user.reload.phone_configurations.count).to eq(1)
   end
 
+  let(:telephony_gem_voip_number) { '+12255551000' }
+
+  scenario 'adding a VOIP phone' do
+    allow(FeatureManagement).to receive(:voip_block?).and_return(true)
+
+    user = create(:user, :signed_up)
+
+    sign_in_and_2fa_user(user)
+    click_on "+ #{t('account.index.phone_add')}"
+    fill_in :new_phone_form_phone, with: telephony_gem_voip_number
+    click_continue
+    expect(page).to have_content(t('errors.messages.voip_phone'))
+  end
+
   context 'when the user does not have a phone' do
     scenario 'cancelling add phone otp confirmation redirect to account' do
       user = create(:user, :with_authentication_app)

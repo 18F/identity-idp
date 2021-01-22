@@ -108,6 +108,10 @@ es:
       unauthorized_service_provider: Proveedor de servicio no autorizado
       usps_otp_expired: Tu código de confirmación ha caducado. Vuelve a solicitar
         otra carta para recibir un nuevo código.
+      voip_check_error: Se ha producido un error al comprobar su teléfono, por favor,
+        inténtelo de nuevo
+      voip_phone: Este número corresponde a un servicio de telefonía basado en la
+        web (VoIP). Por favor, seleccione un número diferente e inténtelo de nuevo.
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
     piv_cac_setup:
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.

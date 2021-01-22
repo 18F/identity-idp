@@ -19,12 +19,16 @@ module TwoFactorAuthentication
           phone: masked_number(configuration.phone),
         )
       else
-        t("two_factor_authentication.#{option_mode}.phone_info_html")
+        voip_note = if FeatureManagement.voip_block?
+          t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip')
+        end
+
+        safe_join([t("two_factor_authentication.#{option_mode}.phone_info_html"), *voip_note], ' ')
       end
     end
 
     def security_level
-      I18n.t('two_factor_authentication.two_factor_choice_options.less_secure_label')
+      t('two_factor_authentication.two_factor_choice_options.less_secure_label')
     end
 
     private
