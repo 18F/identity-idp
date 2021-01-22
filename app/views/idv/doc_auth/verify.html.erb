@@ -53,7 +53,7 @@
           class: 'button_to read-after-submit',
           data: {
             form_steps_wait: '',
-            error_message: t("idv.failure.sessions.exception"),
+            error_message: t('idv.failure.exceptions.internal_error'),
             alert_target: '#form-steps-wait-alert',
             wait_step_path: idv_doc_auth_step_path(step: :verify_wait),
             poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,

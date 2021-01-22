@@ -39,6 +39,8 @@ en:
         link: please contact us
         text_html: If you keep getting these errors, %{link}, or try again tomorrow.
       exceptions:
+        internal_error: There was an internal error processing your request. Please
+          try again.
         link: please contact us
         text_html: Please try again. If you keep getting these errors, %{link}.
       help:
