@@ -137,7 +137,8 @@ module OpenidConnect
     end
 
     def track_events
-      analytics.track_event(Analytics::SP_REDIRECT_INITIATED)
+      ial = sp_session[:ial2] ? 2 : 1
+      analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: ial)
       Db::SpReturnLog::AddReturn.call(request_id, current_user.id)
       increment_monthly_auth_count
       add_sp_cost(:authentication)

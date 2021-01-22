@@ -46,7 +46,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(redirect_params[:state]).to eq(params[:state])
         end
 
-        it 'tracks the event' do
+        it 'tracks IAL1 authentication event' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
@@ -55,7 +55,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  errors: {},
                  unauthorized_scope: true,
                  user_fully_authenticated: true)
-          expect(@analytics).to receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
+          expect(@analytics).to receive(:track_event).
+            with(Analytics::SP_REDIRECT_INITIATED,
+                 ial: 1)
 
           IdentityLinker.new(user, client_id).link_identity(ial: 1)
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
@@ -89,6 +91,27 @@ RSpec.describe OpenidConnect::AuthorizationController do
               action
 
               expect(response).to redirect_to(capture_password_url)
+            end
+
+            it 'tracks IAL2 authentication event' do
+              stub_analytics
+              expect(@analytics).to receive(:track_event).
+                with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+                     success: true,
+                     client_id: client_id,
+                     errors: {},
+                     unauthorized_scope: false,
+                     user_fully_authenticated: true)
+              expect(@analytics).to receive(:track_event).
+                with(Analytics::SP_REDIRECT_INITIATED,
+                     ial: 2)
+
+              IdentityLinker.new(user, client_id).link_identity(ial: 2)
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate verified_at],
+              )
+              allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              action
             end
           end
 
