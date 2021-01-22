@@ -4,7 +4,7 @@ class CancellationPresenter < FailurePresenter
 
   attr_reader :referer
 
-  def initialize(referer:, url_options: )
+  def initialize(referer:, url_options:)
     super(:warning)
     @referer = referer
     @url_options = url_options
