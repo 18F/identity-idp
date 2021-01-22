@@ -80,6 +80,7 @@ module TwoFactorAuthentication
         context: context,
         multi_factor_auth_method: params[:otp_delivery_preference],
         confirmation_for_add_phone: confirmation_for_add_phone?,
+        phone_configuration_id: user_session[:phone_id],
       }
     end
   end

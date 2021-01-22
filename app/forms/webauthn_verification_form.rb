@@ -8,6 +8,8 @@ class WebauthnVerificationForm
   validates :client_data_json, presence: true
   validates :signature, presence: true
 
+  attr_accessor :webauthn_configuration
+
   def initialize(user, user_session)
     @user = user
     @challenge = user_session[:webauthn_challenge]
@@ -15,6 +17,7 @@ class WebauthnVerificationForm
     @client_data_json = nil
     @signature = nil
     @credential_id = nil
+    @webauthn_configuration = nil
   end
 
   def submit(protocol, params)
@@ -55,18 +58,18 @@ class WebauthnVerificationForm
       signature: Base64.decode64(@signature),
     )
     original_origin = "#{protocol}#{self.class.domain_name}"
+    @webauthn_configuration = user.webauthn_configurations.find_by(credential_id: @credential_id)
+    return false unless @webauthn_configuration
+
+    public_key = @webauthn_configuration.credential_public_key
     assertion_response.valid?(@challenge.pack('c*'), original_origin,
                               public_key: Base64.decode64(public_key), sign_count: 0)
-  end
-
-  def public_key
-    WebauthnConfiguration.
-      where(user_id: user.id, credential_id: @credential_id).take.credential_public_key
   end
 
   def extra_analytics_attributes
     {
       multi_factor_auth_method: 'webauthn',
+      webauthn_configuration_id: @webauthn_configuration&.id,
     }
   end
 end

@@ -57,7 +57,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
       it 'tracks a valid submission' do
         allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
         result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
-                   success: true }
+                   success: true, webauthn_configuration_id: WebauthnConfiguration.first.id }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
         expect(@analytics).to receive(:track_event).
@@ -68,7 +68,7 @@ describe TwoFactorAuthentication::WebauthnVerificationController do
 
       it 'tracks an invalid submission' do
         result = { context: 'authentication', errors: {}, multi_factor_auth_method: 'webauthn',
-                   success: false }
+                   success: false, webauthn_configuration_id: WebauthnConfiguration.first.id }
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(result)
 
