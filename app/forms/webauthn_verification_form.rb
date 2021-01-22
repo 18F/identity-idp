@@ -58,7 +58,7 @@ class WebauthnVerificationForm
       signature: Base64.decode64(@signature),
     )
     original_origin = "#{protocol}#{self.class.domain_name}"
-    @webauthn_configuration = user.webauthn_configurations.find_by!(credential_id: @credential_id)
+    @webauthn_configuration = user.webauthn_configurations.find_by(credential_id: @credential_id)
     return false unless @webauthn_configuration
 
     public_key = @webauthn_configuration.credential_public_key
@@ -69,6 +69,7 @@ class WebauthnVerificationForm
   def extra_analytics_attributes
     {
       multi_factor_auth_method: 'webauthn',
+      webauthn_configuration_id: @webauthn_configuration&.id,
     }
   end
 end
