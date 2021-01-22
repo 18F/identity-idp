@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Users::PhoneSetupController do
+  before { allow(FeatureManagement).to receive(:block_voip?).and_return(true) }
+
   describe 'GET index' do
     context 'when signed out' do
       it 'redirects to sign in page' do
