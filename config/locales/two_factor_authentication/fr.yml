@@ -150,7 +150,7 @@ fr:
       more_secure_label: Plus de protection
       phone: Téléphone
       phone_info_html: Obtenir les codes de sécurité par SMS ou appel téléphonique.
-      phone_info_no_voip: Veuillez ne pas utiliser de services téléphoniques basés
+      phone_info_no_voip: Veuillez ne pas utiliser les services téléphoniques basés
         sur le Web (VOIP).
       piv_cac: Numéro d'employé du gouvernement
       piv_cac_info_html: Insérez votre carte PIV ou CAC du gouvernement ou militaire
