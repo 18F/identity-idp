@@ -207,6 +207,14 @@ GEM
       coderay (>= 1.0.0)
       erubi (>= 1.0.0)
       rack (>= 0.9.0)
+    better_html (1.0.15)
+      actionview (>= 4.0)
+      activesupport (>= 4.0)
+      ast (~> 2.0)
+      erubi (~> 1.4)
+      html_tokenizer (~> 0.0.6)
+      parser (>= 2.4)
+      smart_properties
     bindata (2.4.8)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
@@ -282,6 +290,14 @@ GEM
       launchy (~> 2.1)
       mail (~> 2.7)
     equalizer (0.0.11)
+    erb_lint (0.0.37)
+      activesupport
+      better_html (~> 1.0.7)
+      html_tokenizer
+      parser (>= 2.7.1.4)
+      rainbow
+      rubocop
+      smart_properties
     errbase (0.2.0)
     erubi (1.10.0)
     exception_notification (4.4.3)
@@ -334,6 +350,7 @@ GEM
       thor
     highline (2.0.3)
     hiredis (0.6.3)
+    html_tokenizer (0.0.7)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
     httparty (0.18.1)
@@ -613,6 +630,7 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
+    smart_properties (1.15.0)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
@@ -723,6 +741,7 @@ DEPENDENCIES
   devise (~> 4.7.2)
   dotiw (>= 4.0.1)
   email_spec
+  erb_lint (~> 0.0.37)
   exception_notification (>= 4.4.0)
   factory_bot_rails (>= 5.2.0)
   faker
