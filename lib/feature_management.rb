@@ -136,7 +136,7 @@ class FeatureManagement
     !Rails.env.test? && AppConfig.env.log_to_stdout == 'true'
   end
 
-  # Whether or not we should VOIP phone numbers
+  # Whether or not we should block VOIP phone numbers
   def self.voip_block?
     AppConfig.env.voip_block == 'true'
   end
