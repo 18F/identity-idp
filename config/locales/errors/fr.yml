@@ -115,8 +115,10 @@ fr:
       unauthorized_service_provider: Fournisseur de service non autorisé
       usps_otp_expired: Votre code de confirmation a expiré. Veuillez solliciter une
         autre lettre afin d'obtenir un nouveau code.
-      voip_check_error: TODO
-      voip_phone: TODO
+      voip_check_error: Une erreur s'est produite lors de la vérification de votre
+        téléphone, veuillez réessayer
+      voip_phone: Ce numéro est un service téléphonique basé sur le Web (VOIP). Veuillez
+        sélectionner un autre numéro et réessayer
       weak_password: Votre mot de passe n'est pas assez fort. %{feedback}
     piv_cac_setup:
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
