@@ -193,10 +193,11 @@ describe NewPhoneForm do
           expect(FeatureManagement).to receive(:voip_block?).and_return(false)
         end
 
-        it 'allows voip numbers, does not even make a voip check' do
-          expect(Telephony).to_not receive(:phone_info)
+        it 'does a voip check but does not enforce it' do
+          expect(Telephony).to receive(:phone_info).and_call_original
 
           expect(result.success?).to eq(true)
+          expect(result.to_h).to include(phone_type: :voip)
         end
       end
     end

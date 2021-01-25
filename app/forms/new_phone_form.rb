@@ -74,9 +74,11 @@ class NewPhoneForm
   end
 
   def validate_not_voip
-    return if phone.blank? || !FeatureManagement.voip_block?
+    return if phone.blank?
 
     @phone_info = Telephony.phone_info(phone)
+
+    return unless FeatureManagement.voip_block?
 
     if @phone_info.type == :voip &&
        !FeatureManagement.voip_allowed_phones.include?(parsed_phone.e164)
