@@ -25,18 +25,18 @@ describe ServiceProviderMfaPolicy do
       it { expect(policy.aal3_required?).to eq(true) }
     end
 
-    context 'aal2 requested' do
-      let(:aal_level_requested) { 2 }
-      before { service_provider.default_aal = nil }
-
-      it { expect(policy.aal3_required?).to eq(false) }
-    end
-
     context 'no aal level requested, SP default is aal3' do
       let(:aal_level_requested) { nil }
       before { service_provider.default_aal = 3 }
 
       it { expect(policy.aal3_required?).to eq(true) }
+    end
+
+    context 'aal2 requested, no default set' do
+      let(:aal_level_requested) { 2 }
+      before { service_provider.default_aal = nil }
+
+      it { expect(policy.aal3_required?).to eq(false) }
     end
 
     context 'aal2 level requested, SP default is aal3' do

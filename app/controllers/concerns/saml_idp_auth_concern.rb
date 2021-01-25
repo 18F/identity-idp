@@ -71,8 +71,8 @@ module SamlIdpAuthConcern
   end
 
   def default_aal_context
-    if current_service_provider.aal
-      Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[current_service_provider.aal]
+    if current_service_provider.default_aal
+      Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[current_service_provider.default_aal]
     else
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
     end
