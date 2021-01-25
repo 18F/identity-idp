@@ -44,12 +44,13 @@ export const except = (object, ...keys) =>
  * @typedef DocumentCaptureProps
  *
  * @prop {boolean=} isAsyncForm Whether submission should poll for async response.
+ * @prop {()=>void=} onStepChange Callback triggered on step change.
  */
 
 /**
  * @param {DocumentCaptureProps} props
  */
-function DocumentCapture({ isAsyncForm = false }) {
+function DocumentCapture({ isAsyncForm = false, onStepChange }) {
   const [formValues, setFormValues] = useState(/** @type {Record<string,any>?} */ (null));
   const [submissionError, setSubmissionError] = useState(/** @type {Error=} */ (undefined));
   const { t } = useI18n();
@@ -140,6 +141,7 @@ function DocumentCapture({ isAsyncForm = false }) {
         initialValues={submissionError && formValues ? formValues : undefined}
         initialActiveErrors={initialActiveErrors}
         onComplete={submitForm}
+        onStepChange={onStepChange}
         autoFocus={!!submissionError}
       />
     </>
