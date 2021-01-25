@@ -16,6 +16,7 @@ class NullServiceProvider
     block_encryption
     cert
     created_at
+    default_aal
     description
     failure_to_proof_url
     fingerprint

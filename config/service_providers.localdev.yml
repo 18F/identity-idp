@@ -55,7 +55,7 @@ test:
     cert: 'saml_test_sp'
     logo: 'generic.svg'
     ial: 2
-    aal: 3
+    default_aal: 3
     attribute_bundle:
       - first_name
       - last_name
@@ -183,7 +183,7 @@ test:
     friendly_name: 'Test SP'
     assertion_consumer_logout_service_url: ''
     ial: 2
-    aal: 3
+    default_aal: 3
     allow_prompt_login: true
 
   'test_sp_with_default_help_text':

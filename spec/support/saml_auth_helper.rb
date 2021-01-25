@@ -105,6 +105,7 @@ module SamlAuthHelper
 
   def aal3_sp1_saml_settings
     settings = saml_settings.dup
+    settings.authn_context = nil
     settings.issuer = 'https://aal3.serviceprovider.com/auth/saml/metadata'
     settings
   end

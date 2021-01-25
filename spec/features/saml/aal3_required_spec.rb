@@ -15,7 +15,7 @@ describe 'AAL3 authentication required in an SAML context' do
     end
   end
 
-  describe 'SAML ServiceProvider configured to require AAL3 authentication' do
+  describe 'SAML ServiceProvider configured to default to AAL3 authentication' do
     context 'user does not have aal3 auth configured' do
       it 'sends user to set up AAL3 auth' do
         sign_in_and_2fa_user(user_with_2fa)

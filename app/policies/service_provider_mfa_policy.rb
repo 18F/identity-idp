@@ -43,7 +43,9 @@ class ServiceProviderMfaPolicy
   end
 
   def aal3_required?
-    aal3_requested? || service_provider&.aal == 3
+    return aal3_requested? if aal_requested?
+
+    service_provider&.default_aal == 3
   end
 
   def piv_cac_required?
@@ -60,6 +62,10 @@ class ServiceProviderMfaPolicy
 
   def aal3_enabled?
     piv_cac_enabled? || webauthn_enabled?
+  end
+
+  def aal_requested?
+    @aal_level_requested.present?
   end
 
   def aal3_requested?
