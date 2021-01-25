@@ -3,6 +3,7 @@ class NullServiceProvider
   attr_accessor :ial
 
   COLUMNS = %i[
+    aal
     acs_url
     active
     agency

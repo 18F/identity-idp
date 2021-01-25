@@ -85,11 +85,11 @@ feature 'remember device sp expiration' do
     allow(AppConfig.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
 
     ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
-      aal: aal,
+      default_aal: aal,
       ial: ial,
     )
     ServiceProvider.from_issuer('http://localhost:3000').update!(
-      aal: aal,
+      default_aal: aal,
       ial: ial,
     )
   end
