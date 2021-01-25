@@ -30,9 +30,7 @@ class CancellationPresenter < FailurePresenter
     referer_path || two_factor_options_path
   end
 
-  def url_options
-    @url_options
-  end
+  attr_reader :url_options
 
   private
 
