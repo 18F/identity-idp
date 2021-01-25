@@ -149,7 +149,7 @@ class ServiceProviderSessionDecorator
   attr_reader :sp, :view_context, :sp_session, :service_provider_request
 
   def sp_aal
-    sp.aal || 1
+    sp.default_aal || 1
   end
 
   def sp_ial

@@ -3,7 +3,6 @@ class NullServiceProvider
   attr_accessor :ial
 
   COLUMNS = %i[
-    aal
     acs_url
     active
     agency
@@ -16,6 +15,7 @@ class NullServiceProvider
     block_encryption
     cert
     created_at
+    default_aal
     description
     failure_to_proof_url
     fingerprint
