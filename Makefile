@@ -31,7 +31,7 @@ lint:
 	yarn run lint
 
 lint_erb:
-	bundle exec erblint app/views/**/*.erb
+	bundle exec erblint app/views
 
 lintfix:
 	@echo "--- rubocop fix ---"
