@@ -4,8 +4,9 @@ class PivCacAuthenticationLoginPresenter
 
   attr_reader :form
 
-  def initialize(form)
+  def initialize(form, url_options)
     @form = form
+    @url_options = url_options
   end
 
   def piv_cac_capture_text
@@ -26,5 +27,9 @@ class PivCacAuthenticationLoginPresenter
 
   def info
     t('instructions.mfa.piv_cac.sign_in')
+  end
+
+  def url_options
+    @url_options
   end
 end

@@ -35,6 +35,10 @@ module Flow
       {}
     end
 
+    def url_options
+      @flow.controller.url_options
+    end
+
     private
 
     def create_response(form_submit_response, call_response)

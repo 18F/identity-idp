@@ -34,7 +34,7 @@ module Users
 
     def render_prompt
       analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
-      @presenter = PivCacAuthenticationLoginPresenter.new(piv_cac_login_form)
+      @presenter = PivCacAuthenticationLoginPresenter.new(piv_cac_login_form, url_options)
       render :new
     end
 

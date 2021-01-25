@@ -4,7 +4,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   include IdvHelper
 
   let(:user) { build(:user) }
-  let(:controller) { instance_double(Idv::DocAuthController) }
+  let(:controller) { instance_double(Idv::DocAuthController, url_options: {}) }
   let(:session) { { 'idv/doc_auth' => {} } }
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
   let(:fake_analytics) { FakeAnalytics.new }

@@ -30,6 +30,7 @@ module Idv
       presenter = ImageUploadResponsePresenter.new(
         form: image_form,
         form_response: presenter_response(form_response, client_response),
+        url_options: url_options,
       )
 
       render json: presenter, status: presenter.status

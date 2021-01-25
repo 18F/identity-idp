@@ -3,7 +3,9 @@
 # https://github.com/bbatsov/rubocop/blob/master/config/default.yml
 # https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml
 # https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml
-require: rubocop-rails
+require:
+  - rubocop-rails
+  - ./lib/linters/url_options_linter.rb
 
 AllCops:
   Exclude:
@@ -22,6 +24,11 @@ AllCops:
 
 Rails:
   Enabled: true
+
+IdentityIdp/UrlOptionsLinter:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*.rb'
 
 Metrics/BlockLength:
   CountComments: false  # count full line comments?

@@ -4,9 +4,10 @@ class CancellationPresenter < FailurePresenter
 
   attr_reader :referer
 
-  def initialize(referer:)
+  def initialize(referer:, url_options:)
     super(:warning)
     @referer = referer
+    @url_options = url_options
   end
 
   def title
@@ -27,6 +28,10 @@ class CancellationPresenter < FailurePresenter
 
   def go_back_path
     referer_path || two_factor_options_path
+  end
+
+  def url_options
+    @url_options
   end
 
   private

@@ -63,6 +63,10 @@ class SecurityEventForm
     errors.full_messages.join(', ')
   end
 
+  def url_options
+    {}
+  end
+
   private
 
   attr_reader :body, :jwt_payload, :jwt_headers

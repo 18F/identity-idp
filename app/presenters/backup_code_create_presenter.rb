@@ -1,5 +1,4 @@
 class BackupCodeCreatePresenter
-  include Rails.application.routes.url_helpers
   include ActionView::Helpers::TranslationHelper
 
   def title
@@ -16,10 +15,6 @@ class BackupCodeCreatePresenter
 
   def other_option_title
     t('forms.backup_code.are_you_sure_other_option')
-  end
-
-  def other_option_path
-    two_factor_options_path
   end
 
   def continue_bttn_prologue

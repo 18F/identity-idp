@@ -5,7 +5,7 @@ describe ImageUploadResponsePresenter do
 
   let(:form) { Idv::ApiImageUploadForm.new({}, liveness_checking_enabled: false) }
   let(:form_response) { FormResponse.new(success: true, errors: {}, extra: {}) }
-  let(:presenter) { described_class.new(form: form, form_response: form_response) }
+  let(:presenter) { described_class.new(form: form, form_response: form_response, url_options: {}) }
 
   before do
     allow(Throttler::RemainingCount).to receive(:call).and_return(3)

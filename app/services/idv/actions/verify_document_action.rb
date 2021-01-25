@@ -12,6 +12,7 @@ module Idv
         presenter = ImageUploadResponsePresenter.new(
           form: form,
           form_response: response,
+          url_options: url_options,
         )
         status = :accepted if response.success?
         render_json(

@@ -1,5 +1,4 @@
 class PivCacAuthenticationSetupBasePresenter < SetupPresenter
-  include Rails.application.routes.url_helpers
   include ActionView::Helpers::TranslationHelper
 
   attr_reader :form, :user, :fully_authenticated
@@ -12,9 +11,5 @@ class PivCacAuthenticationSetupBasePresenter < SetupPresenter
 
   def piv_cac_capture_text
     t('forms.piv_cac_setup.submit')
-  end
-
-  def piv_cac_service_link
-    submit_new_piv_cac_url
   end
 end
