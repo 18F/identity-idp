@@ -38,6 +38,11 @@
       {
         "selector": "ArrayExpression > SpreadElement",
         "message": "Don't use array spread, issue with IE 11 (use Array.from instead)"
+      },
+      {
+        "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
+        "message": 'Do not assign window.location.href to a string or string template to avoid losing i18n parameters',
+
       }
     ],
     "no-unused-expressions": "off",
