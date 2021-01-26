@@ -2,12 +2,13 @@ const WebAuthn = require('../app/webauthn');
 
 function webauthn() {
   // If webauthn is not supported redirect back to the 2fa options list
-  if (!WebAuthn.isWebAuthnEnabled()) {
-    window.location.href = '/login/two_factor/options';
-  }
-
   const webauthnInProgressContainer = document.getElementById('webauthn-auth-in-progress');
   const webauthnSuccessContainer = document.getElementById('webauthn-auth-successful');
+
+  if (!WebAuthn.isWebAuthnEnabled()) {
+    const href = webauthnInProgressContainer.getAttribute('data-webauthn-not-enabled-url');
+    window.location.href = href;
+  }
 
   WebAuthn.verifyWebauthnDevice({
     userChallenge: document.getElementById('user_challenge').value,

@@ -1,5 +1,5 @@
-export default () => {
+export default (path) => {
   window.onbeforeunload = null;
   window.onunload = null;
-  window.location.href = '/timeout';
+  window.location.href = path;
 };
