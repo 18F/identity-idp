@@ -41,7 +41,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         context: 'authentication',
         multi_factor_auth_method: 'sms',
         confirmation_for_add_phone: false,
-        phone_configuration_id: nil,
+        phone_configuration_id: subject.current_user.default_phone_configuration.id,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -83,7 +83,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
-          phone_configuration_id: nil,
+          phone_configuration_id: subject.current_user.default_phone_configuration.id,
         }
         stub_analytics
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -129,7 +129,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
-          phone_configuration_id: nil,
+          phone_configuration_id: subject.current_user.default_phone_configuration.id,
         }
 
         stub_analytics
@@ -178,7 +178,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
-          phone_configuration_id: nil,
+          phone_configuration_id: subject.current_user.default_phone_configuration.id,
         }
 
         stub_analytics
@@ -364,7 +364,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
-              phone_configuration_id: nil,
+              phone_configuration_id: subject.current_user.default_phone_configuration.id,
             }
 
             expect(@analytics).to have_received(:track_event).
