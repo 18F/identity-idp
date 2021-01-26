@@ -2,7 +2,7 @@ require 'fingerprinter'
 require 'identity_validations'
 
 class ServiceProvider < ApplicationRecord
-  self.ignored_columns = %w[deal_id agency]
+  self.ignored_columns = %w[deal_id agency aal]
 
   belongs_to :agency
 
@@ -50,7 +50,7 @@ class ServiceProvider < ApplicationRecord
   def skip_encryption_allowed
     config = AppConfig.env.skip_encryption_allowed_list
     return false if config.blank?
-    
+
     @allowed_list ||= JSON.parse(config)
     @allowed_list.include? issuer
   end
