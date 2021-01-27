@@ -21,13 +21,16 @@ const updatePlaceholder = (phoneInput) => {
 };
 
 const checkPhoneValidity = () => {
+  /** @type {HTMLInputElement?} */
   const sendCodeButton = document.querySelector(
     '[data-international-phone-form] input[name=commit]',
   );
+  /** @type {HTMLInputElement?} */
   const phoneInput =
     document.querySelector('[data-international-phone-form] .phone') ||
     document.querySelector('[data-international-phone-form] .new-phone');
   updatePlaceholder(phoneInput);
+  /** @type {HTMLInputElement?} */
   const countryCodeInput = document.querySelector(
     '[data-international-phone-form] .international-code',
   );
