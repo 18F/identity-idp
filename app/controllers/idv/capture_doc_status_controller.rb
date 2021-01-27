@@ -11,6 +11,7 @@ module Idv
     private
 
     def document_capture_session_poll_render_result
+      return { plain: 'Unauthorized', status: :unauthorized } unless flow_session
       session_uuid = flow_session[:document_capture_session_uuid]
       document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
       return { plain: 'Unauthorized', status: :unauthorized } unless document_capture_session
