@@ -1,7 +1,7 @@
 var frequency = <%= frequency %> * 1000;
 var warning = <%= warning %> * 1000;
 var start = <%= start %> * 1000;
-var timeoutPath = "<%= timeout_path %>";
+var timeoutPath = <%= timeout_path.to_json %>;
 var warning_info = "<%= j render('session_timeout/warning', locals: { modal: modal }) %>";
 var warningEl = document.getElementById('session-timeout-cntnr');
 warningEl.insertAdjacentHTML('afterbegin', warning_info);
