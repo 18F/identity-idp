@@ -1,7 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe AgencySeeder do
-  subject(:instance) { AgencySeeder.new(rails_env: rails_env, deploy_env: deploy_env) }
+  subject(:instance) do
+    AgencySeeder.new(
+      rails_env: rails_env,
+      deploy_env: deploy_env,
+      yaml_path: 'spec/fixtures',
+    )
+  end
   let(:rails_env) { 'test' }
   let(:deploy_env) { 'int' }
 
@@ -10,6 +16,8 @@ RSpec.describe AgencySeeder do
 
     subject(:run) { instance.run }
 
+    # This implictly validates that the `abbreviation` attribute in the YAML is
+    # ignored
     it 'inserts agencies into the database from agencies.yml' do
       expect { run }.to change(Agency, :count)
     end

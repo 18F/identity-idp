@@ -1,119 +1,176 @@
 test:
   1:
     name: 'DHS'
+    abbreviation: 'DHS'
   2:
     name: 'OPM'
+    abbreviation: 'OPM'
   3:
     name: 'EOP'
+    abbreviation: 'EOP'
   4:
     name: 'RRB'
+    abbreviation: 'RRB'
   5:
     name: 'NGA'
+    abbreviation: 'NGA'
   6:
     name: 'DOT'
+    abbreviation: 'DOT'
   7:
     name: 'USSS'
+    abbreviation: 'USSS'
   8:
     name: 'DOD'
+    abbreviation: 'DOD'
   9:
     name: 'GSA'
+    abbreviation: 'GSA'
   10:
     name: 'DOE'
+    abbreviation: 'DOE'
   11:
     name: 'USDA'
+    abbreviation: 'USDA'
   12:
     name: 'HUD'
+    abbreviation: 'HUD'
   13:
     name: 'SEC'
+    abbreviation: 'SEC'
   14:
     name: 'DOL'
+    abbreviation: 'DOL'
   15:
     name: 'USAID'
+    abbreviation: 'USAID'
   16:
     name: 'DOI'
+    abbreviation: 'DOI'
   17:
     name: 'SBA'
+    abbreviation: 'SBA'
   18:
     name: 'NLRB'
+    abbreviation: 'NLRB'
   19:
     name: 'HHS'
+    abbreviation: 'HHS'
 
 development:
   1:
     name: 'DHS'
+    abbreviation: 'DHS'
   2:
     name: 'OPM'
+    abbreviation: 'OPM'
   3:
     name: 'EOP'
+    abbreviation: 'EOP'
   4:
     name: 'RRB'
+    abbreviation: 'RRB'
   5:
     name: 'NGA'
+    abbreviation: 'NGA'
   6:
     name: 'DOT'
+    abbreviation: 'DOT'
   7:
     name: 'USSS'
+    abbreviation: 'USSS'
   8:
     name: 'DOD'
+    abbreviation: 'DOD'
   9:
     name: 'GSA'
+    abbreviation: 'GSA'
   10:
     name: 'DOE'
+    abbreviation: 'DOE'
   11:
     name: 'USDA'
+    abbreviation: 'USDA'
   12:
     name: 'HUD'
+    abbreviation: 'HUD'
   13:
     name: 'SEC'
+    abbreviation: 'SEC'
   14:
     name: 'DOL'
+    abbreviation: 'DOL'
   15:
     name: 'USAID'
+    abbreviation: 'USAID'
   16:
     name: 'DOI'
+    abbreviation: 'DOI'
   17:
     name: 'SBA'
+    abbreviation: 'SBA'
   18:
     name: 'NLRB'
+    abbreviation: 'NLRB'
   19:
     name: 'HHS'
+    abbreviation: 'HHS'
 
 production:
   1:
     name: 'DHS'
+    abbreviation: 'DHS'
   2:
     name: 'OPM'
+    abbreviation: 'OPM'
   3:
     name: 'EOP'
+    abbreviation: 'EOP'
   4:
     name: 'RRB'
+    abbreviation: 'RRB'
   5:
     name: 'NGA'
+    abbreviation: 'NGA'
   6:
     name: 'DOT'
+    abbreviation: 'DOT'
   7:
     name: 'USSS'
+    abbreviation: 'USSS'
   8:
     name: 'DOD'
+    abbreviation: 'DOD'
   9:
     name: 'GSA'
+    abbreviation: 'GSA'
   10:
     name: 'DOE'
+    abbreviation: 'DOE'
   11:
     name: 'USDA'
+    abbreviation: 'USDA'
   12:
     name: 'HUD'
+    abbreviation: 'HUD'
   13:
     name: 'SEC'
+    abbreviation: 'SEC'
   14:
     name: 'DOL'
+    abbreviation: 'DOL'
   15:
     name: 'USAID'
+    abbreviation: 'USAID'
   16:
     name: 'DOI'
+    abbreviation: 'DOI'
   17:
     name: 'SBA'
+    abbreviation: 'SBA'
   18:
     name: 'NLRB'
+    abbreviation: 'NLRB'
   19:
     name: 'HHS'
+    abbreviation: 'HHS'
