@@ -96,6 +96,8 @@ feature 'recovery verify step' do
   end
 
   context 'timed out' do
+    let(:timeout_exception) { Idv::Steps::RecoverVerifyWaitStepShow::TimeoutError.new }
+
     it 'allows resubmitting form' do
       complete_recovery_steps_before_verify_step
 
@@ -103,6 +105,7 @@ feature 'recovery verify step' do
         and_return(saved_pii.to_json)
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
+      expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
 
       click_continue
 
