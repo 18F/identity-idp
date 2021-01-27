@@ -3,6 +3,8 @@ require 'rails_helper'
 feature 'cac proofing verify info step' do
   include CacProofingHelper
 
+  let(:timeout_exception) { Idv::Steps::Cac::VerifyWaitStepShow::TimeoutError.new }
+
   context 'successful verification' do
     before do
       sign_in_and_2fa_user
@@ -47,6 +49,7 @@ feature 'cac proofing verify info step' do
     it 'allows resubmitting form' do
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
+      expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
       click_continue
 
       expect(page).to have_current_path(idv_cac_proofing_verify_step)
@@ -79,6 +82,7 @@ feature 'cac proofing verify info step' do
     context 'async timed out' do
       it 'allows resubmitting form' do
         allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
+        expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
 
         click_continue
         expect(page).to have_content(t('idv.failure.timeout'))

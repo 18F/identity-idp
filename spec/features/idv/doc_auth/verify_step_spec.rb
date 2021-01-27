@@ -7,6 +7,7 @@ feature 'doc auth verify step' do
 
   let(:skip_step_completion) { false }
   let(:max_attempts) { idv_max_attempts }
+  let(:timeout_exception) { Idv::Steps::VerifyWaitStepShow::TimeoutError.new }
   before do
     unless skip_step_completion
       sign_in_and_2fa_user
@@ -212,6 +213,8 @@ feature 'doc auth verify step' do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
 
+      expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
+
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
 
@@ -261,6 +264,7 @@ feature 'doc auth verify step' do
       it 'allows resubmitting form' do
         allow(DocumentCaptureSession).to receive(:find_by).
           and_return(nil)
+        expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
 
         click_continue
         expect(page).to have_content(t('idv.failure.timeout'))
