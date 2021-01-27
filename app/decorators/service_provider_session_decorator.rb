@@ -45,11 +45,7 @@ class ServiceProviderSessionDecorator
 
   def legacy_logo_url
     logo = sp_logo
-    if RemoteSettingsService.remote?(logo)
-      logo
-    else
-      ActionController::Base.helpers.image_path("sp-logos/#{logo}")
-    end
+    ActionController::Base.helpers.image_path("sp-logos/#{logo}")
   end
 
   def return_to_service_provider_partial

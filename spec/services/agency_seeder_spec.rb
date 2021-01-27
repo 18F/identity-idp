@@ -21,38 +21,12 @@ RSpec.describe AgencySeeder do
       expect(Agency.find_by(id: 3).name).to eq('EOP')
     end
 
-    context 'when an agency already exists in the database' do
-      before do
-        Agency.create(id: 1, name: 'FOO')
-      end
+    it 'updates existing agencies based on the current value of the yml file' do
+      Agency.create(id: 1, name: 'FOO')
 
-      it 'updates the attributes based on the current value of the yml file' do
-        expect(Agency.find_by(id: 1).name).to eq('FOO')
-        run
-        expect(Agency.find_by(id: 1).name).to eq('DHS')
-      end
-    end
-
-    context 'when agencies.yml has a remote setting' do
-      before do
-        location = 'https://raw.githubusercontent.com/18F/identity-idp/master/config/agencies.yml'
-        RemoteSetting.create(
-          name: 'agencies.yml', url: location, contents: "test:\n  1:\n    name: 'CBP'",
-        )
-      end
-
-      it 'updates the attributes based on the current value of the yml file' do
-        Agency.create(id: 1, name: 'FOO')
-        expect(Agency.find_by(id: 1).name).to eq('FOO')
-        run
-        expect(Agency.find_by(id: 1).name).to eq('CBP')
-      end
-
-      it 'insert the attributes based on the contents of the remote setting' do
-        run
-        expect(Agency.find_by(id: 1).name).to eq('CBP')
-        expect(Agency.count).to eq(1)
-      end
+      expect(Agency.find_by(id: 1).name).to eq('FOO')
+      run
+      expect(Agency.find_by(id: 1).name).to eq('DHS')
     end
   end
 end
