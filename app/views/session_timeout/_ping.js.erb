@@ -1,7 +1,7 @@
 var frequency = <%= frequency %> * 1000;
 var warning = <%= warning %> * 1000;
 var start = <%= start %> * 1000;
-var timeoutPath = "<%= j timeout_path %>";
+var timeoutUrl = "<%= j timeout_url %>";
 var warning_info = "<%= j render('session_timeout/warning', locals: { modal: modal }) %>";
 var warningEl = document.getElementById('session-timeout-cntnr');
 warningEl.insertAdjacentHTML('afterbegin', warning_info);
@@ -43,7 +43,7 @@ function success(data) {
       show_warning = time_remaining < warning
 
   if (!data.live) {
-    window.LoginGov.autoLogout(timeoutPath);
+    window.LoginGov.autoLogout(timeoutUrl);
     return;
   }
 
