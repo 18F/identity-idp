@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Idv::UspsController do
   let(:user) { create(:user) }
+  let(:timeout_exception) { Idv::UspsController::TimeoutError.new }
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -50,6 +51,17 @@ describe Idv::UspsController do
       get :index
 
       expect(response).to render_template :wait
+    end
+
+    it 'alerts new relic when there is a timeout' do
+      allow(controller).to receive(:async_state).and_return(
+        ProofingSessionAsyncResult.new(
+          status: ProofingSessionAsyncResult::TIMED_OUT,
+        ),
+      )
+      expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
+
+      get :index
     end
   end
 
