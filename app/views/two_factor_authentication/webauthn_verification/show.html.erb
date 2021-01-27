@@ -17,7 +17,7 @@
   <%= hidden_field_tag :signature, '', id: 'signature' %>
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
 
-  <div id='webauthn-auth-in-progress' data-webauthn-not-enabled-url='<%= login_two_factor_options_path %>'>
+  <%= content_tag :div, id: 'webauthn-auth-in-progress', data: { webauth_not_enabled_url: login_two_factor_options_path } do %>
     <div class="spinner" id="spinner">
       <div class="col-12 center mb2">
         <%= image_tag(asset_url('spinner.gif'),
