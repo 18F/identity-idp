@@ -2,7 +2,7 @@ const WebAuthn = require('../app/webauthn');
 
 function webauthn() {
   if (window.location.href.indexOf('?error=') === -1 && !WebAuthn.isWebAuthnEnabled()) {
-    window.location.href = '/webauthn_setup?error=NotSupportedError';
+    window.location.search = '?error=NotSupportedError';
   }
   const continueButton = document.getElementById('continue-button');
   continueButton.addEventListener('click', () => {
@@ -23,7 +23,7 @@ function webauthn() {
         document.getElementById('webauthn_form').submit();
       })
       .catch(function (err) {
-        window.location.href = `/webauthn_setup?error=${err.name}`;
+        window.location.search = `?error=${err.name}`;
       });
   });
   const input = document.getElementById('nickname');
