@@ -1,6 +1,8 @@
 module Idv
   module Actions
     class VerifyDocumentStatusAction < Idv::Steps::VerifyBaseStep
+      class DocAuthTimeoutError < StandardError; end
+
       def call
         process_async_state(async_state)
       end
@@ -88,6 +90,7 @@ module Idv
 
       def timed_out
         delete_async
+        NewRelic::Agent.notice_error(DocAuthTimeoutError.new)
         DocumentCaptureSessionAsyncResult.timed_out
       end
 

@@ -1,5 +1,7 @@
 module Idv
   class UspsController < ApplicationController
+    class AddressProofingTimeoutError < StandardError; end
+
     include IdvSession
 
     before_action :confirm_two_factor_authenticated
@@ -18,6 +20,7 @@ module Idv
       elsif current_async_state.in_progress?
         render :wait
       elsif current_async_state.timed_out?
+        NewRelic::Agent.notice_error(AddressProofingTimeoutError.new)
         render :index
       elsif current_async_state.done?
         async_state_done(current_async_state)
