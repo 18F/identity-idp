@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
-import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
+import { waitFor } from '@testing-library/dom';
 import { render as baseRender, fireEvent } from '@testing-library/react';
 import httpUpload, {
   UploadFormEntriesError,
