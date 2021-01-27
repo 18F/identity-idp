@@ -33,6 +33,7 @@ fr:
         un certificat.
       state_id_description: Si vous n'avez pas de PIV ou de CAC, vous pouvez utiliser
         un identifiant émis par l'État pour vérifier votre identité.
+      verifying: Vérification…
       welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien
         vous, et non quelqu'un qui se fait passer pour vous. La vérification de votre
         identité vous permet également d'accéder aux services qui traitent les informations

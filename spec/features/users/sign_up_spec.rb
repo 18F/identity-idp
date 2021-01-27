@@ -315,7 +315,7 @@ feature 'Sign Up' do
 
   it 'does not show the remember device option as the default when the SP is AAL2' do
     ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
-      aal: 2,
+      default_aal: 2,
     )
     visit_idp_from_sp_with_ial1(:oidc)
     sign_up_and_set_password

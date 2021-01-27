@@ -175,6 +175,9 @@ Rails.application.routes.draw do
          as: :create_verify_personal_key
     get '/account/two_factor_authentication' => 'accounts/two_factor_authentication#show'
 
+    get '/errors/service_provider_inactive' => 'users/service_provider_inactive#index',
+      as: :sp_inactive_error
+
     get '/events/disavow' => 'event_disavowal#new', as: :event_disavowal
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal
 
@@ -264,14 +267,6 @@ Rails.application.routes.draw do
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
     delete '/users' => 'users#destroy', as: :destroy_user
-
-    AcuantSdkController::ACUANT_SDK_STATIC_FILES.each do |acuant_sdk_file|
-      constraints version: /\d+\.\d+\.\d+/ do
-        get "/verify/doc_auth(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
-        get "/verify/capture_doc(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
-        get "/verify/capture-doc(/:version)/#{acuant_sdk_file}" => 'acuant_sdk#show'
-      end
-    end
 
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'

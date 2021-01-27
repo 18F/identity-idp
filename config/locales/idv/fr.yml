@@ -43,6 +43,8 @@ fr:
         text_html: Si vous continuez à recevoir ces erreurs, %{link} ou réessayez
           demain.
       exceptions:
+        internal_error: Une erreur interne s'est produite lors du traitement de votre
+          demande. Veuillez réessayer.
         link: contactez-nous
         text_html: Veuillez réessayer. Si vous continuez à recevoir ces erreurs, %{link}
       help:

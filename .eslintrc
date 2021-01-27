@@ -34,6 +34,14 @@
       {
         "selector": "NewExpression[callee.name='Event']",
         "message": "Use CustomEvent constructor with polyfill for Internet Explorer"
+      },
+      {
+        "selector": "ArrayExpression > SpreadElement",
+        "message": "Don't use array spread, issue with IE 11 (use Array.from instead)"
+      },
+      {
+        "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
+        "message": "Do not assign window.location.href to a string or string template to avoid losing i18n parameters"
       }
     ],
     "no-unused-expressions": "off",
@@ -67,7 +75,8 @@
     {
       "files": "spec/javascripts/**/*",
       "rules": {
-        "react/jsx-props-no-spreading": "off"
+        "react/jsx-props-no-spreading": "off",
+        "no-restricted-syntax": "off"
       }
     }
   ]

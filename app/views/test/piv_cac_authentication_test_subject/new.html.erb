@@ -10,7 +10,7 @@
 
 <div class="sm-col-9 sm-ml-28p">
   <%= form_tag do %>
-    <%= hidden_field_tag(:referer, @referrer) %>
+    <%= hidden_field_tag(:redirect_uri, @referrer) %>
     <div class="clearfix mxn1">
       <div class="col col-12 px1">
         <legend class="mb1 h4 serif bold">
@@ -100,4 +100,4 @@
 
 <%= render 'shared/cancel', link: @referrer %>
 
-<%= javascript_pack_tag 'clipboard' %>
+<%= javascript_packs_tag_once 'clipboard' %>

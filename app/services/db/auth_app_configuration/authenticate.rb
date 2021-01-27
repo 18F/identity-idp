@@ -10,9 +10,9 @@ module Db
             drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
             after: cfg.totp_timestamp,
           )
-          return true if update_timestamp(cfg, new_timestamp)
+          return cfg if update_timestamp(cfg, new_timestamp)
         end
-        false
+        nil
       end
 
       def self.update_timestamp(cfg, new_timestamp)

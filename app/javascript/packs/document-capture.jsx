@@ -54,6 +54,7 @@ const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).Log
 const appRoot = /** @type {HTMLDivElement} */ (document.getElementById('document-capture-form'));
 const isMockClient = appRoot.hasAttribute('data-mock-client');
 const logEndpoint = /** @type {string} */ (appRoot.getAttribute('data-log-endpoint'));
+const keepAliveEndpoint = /** @type {string} */ (appRoot.getAttribute('data-keep-alive-endpoint'));
 
 /**
  * @return {import(
@@ -109,6 +110,7 @@ function addPageAction(action) {
 loadPolyfills(['fetch', 'crypto']).then(async () => {
   const backgroundUploadURLs = getBackgroundUploadURLs();
   const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
+  const csrf = /** @type {string} */ (getMetaContent('csrf-token'));
 
   const formData = {
     document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
@@ -131,6 +133,9 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
     formData.step = 'verify_document';
   }
 
+  const keepAlive = () =>
+    window.fetch(keepAliveEndpoint, { method: 'POST', headers: { 'X-CSRF-Token': csrf } });
+
   render(
     <AcuantContextProvider
       credentials={getMetaContent('acuant-sdk-initialization-creds')}
@@ -143,7 +148,7 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
           Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined
         }
         method={isAsyncForm ? 'PUT' : 'POST'}
-        csrf={/** @type {string} */ (getMetaContent('csrf-token'))}
+        csrf={csrf}
         isMockClient={isMockClient}
         backgroundUploadURLs={backgroundUploadURLs}
         backgroundUploadEncryptKey={backgroundUploadEncryptKey}
@@ -154,7 +159,7 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
             <AnalyticsContext.Provider value={{ addPageAction }}>
               <AssetContext.Provider value={assets}>
                 <DeviceContext.Provider value={device}>
-                  <DocumentCapture isAsyncForm={isAsyncForm} />
+                  <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
                 </DeviceContext.Provider>
               </AssetContext.Provider>
             </AnalyticsContext.Provider>

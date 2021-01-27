@@ -173,7 +173,27 @@ describe SamlIdpController do
           user.active_profile.verified_at.iso8601,
         )
       end
+
+      it 'tracks IAL2 authentication events' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::SAML_AUTH,
+               success: true,
+               errors: {},
+               nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+               authn_context: ['http://idmanagement.gov/ns/assurance/ial/2'],
+               service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+               idv: false,
+               finish_profile: false)
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::SP_REDIRECT_INITIATED,
+               ial: 2)
+
+        allow(controller).to receive(:identity_needs_verification?).and_return(false)
+        saml_get_auth(sp1_ial2_saml_settings)
+      end
     end
+
 
     context 'with IAL2 and the identity is not already verified' do
       it 'redirects to IdV URL for IAL2 proofer' do
@@ -276,6 +296,16 @@ describe SamlIdpController do
           expect(@analytics).to have_received(:track_event).
             with(Analytics::SAML_AUTH, analytics_hash)
         end
+      end
+    end
+
+    context 'service provider is inactive' do
+      it 'responds with an error page' do
+        user = create(:user, :signed_up)
+
+        generate_saml_response(user, sp2_saml_settings_inactive)
+
+        expect(controller).to redirect_to sp_inactive_error_url
       end
     end
 
@@ -1036,7 +1066,9 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
-        expect(@analytics).to receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::SP_REDIRECT_INITIATED,
+               ial: 1)
 
         generate_saml_response(user)
 
@@ -1063,7 +1095,9 @@ describe SamlIdpController do
         }
 
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
-        expect(@analytics).to receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::SP_REDIRECT_INITIATED,
+               ial: 1)
 
         generate_saml_response(user)
 

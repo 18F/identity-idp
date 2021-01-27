@@ -3,8 +3,9 @@ class Navigation
 
   NavItem = Struct.new(:title, :href, :children)
 
-  def initialize(user:)
+  def initialize(user:, url_options:)
     @user = user
+    @url_options = url_options
   end
 
   def navigation_items
@@ -32,6 +33,10 @@ class Navigation
                   ]),
       NavItem.new(I18n.t('account.navigation.customer_support'), MarketingSite.help_url, []),
     ]
+  end
+
+  def url_options
+    @url_options
   end
 
   def backup_codes_path

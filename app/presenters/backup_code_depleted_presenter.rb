@@ -1,5 +1,4 @@
 class BackupCodeDepletedPresenter
-  include Rails.application.routes.url_helpers
   include ActionView::Helpers::TranslationHelper
 
   def title
@@ -16,10 +15,6 @@ class BackupCodeDepletedPresenter
 
   def other_option_title
     nil
-  end
-
-  def other_option_path
-    two_factor_options_path
   end
 
   def continue_bttn_prologue

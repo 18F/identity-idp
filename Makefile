@@ -21,12 +21,17 @@ docker_setup:
 check: lint test
 
 lint:
+	@echo "--- erb-lint ---"
+	make lint_erb
 	@echo "--- rubocop ---"
 	bundle exec rubocop
 	@echo "--- fasterer ---"
 	bundle exec fasterer
 	@echo "--- eslint ---"
 	yarn run lint
+
+lint_erb:
+	bundle exec erblint app/views
 
 lintfix:
 	@echo "--- rubocop fix ---"

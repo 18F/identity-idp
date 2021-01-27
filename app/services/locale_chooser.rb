@@ -16,6 +16,6 @@ class LocaleChooser
   attr_reader :locale_param, :request
 
   def locale_valid?
-    LocaleValidator.new(locale_param).success?
+    locale_param.present? && I18n.locale_available?(locale_param)
   end
 end

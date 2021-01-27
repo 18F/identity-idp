@@ -13,6 +13,7 @@ describe TotpSetupForm do
         extra = {
           totp_secret_present: true,
           multi_factor_auth_method: 'totp',
+          auth_app_configuration_id: next_auth_app_id,
         }
 
         expect(FormResponse).to receive(:new).
@@ -29,6 +30,7 @@ describe TotpSetupForm do
         extra = {
           totp_secret_present: true,
           multi_factor_auth_method: 'totp',
+          auth_app_configuration_id: nil,
         }
 
         expect(FormResponse).to receive(:new).
@@ -47,6 +49,7 @@ describe TotpSetupForm do
         extra = {
           totp_secret_present: false,
           multi_factor_auth_method: 'totp',
+          auth_app_configuration_id: nil,
         }
 
         expect(FormResponse).to receive(:new).
@@ -55,5 +58,12 @@ describe TotpSetupForm do
         expect(user.auth_app_configurations.any?).to eq false
       end
     end
+  end
+
+  def next_auth_app_id
+    recs = ActiveRecord::Base.connection.execute(
+      "SELECT NEXTVAL(pg_get_serial_sequence('auth_app_configurations', 'id')) AS new_id",
+    )
+    recs[0]['new_id'] + 1
   end
 end

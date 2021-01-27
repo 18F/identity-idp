@@ -5,6 +5,8 @@ class NewPhoneForm
 
   validates :otp_delivery_preference, inclusion: { in: %w[voice sms] }
 
+  validate :validate_not_voip
+
   attr_accessor :phone, :international_code, :otp_delivery_preference,
                 :otp_make_default_number
 
@@ -64,7 +66,30 @@ class NewPhoneForm
   def extra_analytics_attributes
     {
       otp_delivery_preference: otp_delivery_preference,
+      phone_type: @phone_info&.type,
+      carrier: @phone_info&.carrier,
+      country_code: parsed_phone.country,
+      area_code: parsed_phone.area_code,
     }
+  end
+
+  def validate_not_voip
+    return if phone.blank?
+
+    @phone_info = Telephony.phone_info(phone)
+
+    return unless FeatureManagement.voip_block?
+
+    if @phone_info.type == :voip &&
+       !FeatureManagement.voip_allowed_phones.include?(parsed_phone.e164)
+      errors.add(:phone, I18n.t('errors.messages.voip_check_error'))
+    elsif @phone_info.error
+      errors.add(:phone, I18n.t('errors.messages.voip_phone'))
+    end
+  end
+
+  def parsed_phone
+    @parsed_phone ||= Phonelib.parse(phone)
   end
 
   def ingest_submitted_params(params)

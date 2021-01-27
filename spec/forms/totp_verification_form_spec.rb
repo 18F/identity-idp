@@ -4,15 +4,17 @@ describe TotpVerificationForm do
   describe '#submit' do
     context 'when the form is valid' do
       it 'returns FormResponse with success: true' do
-        user = build_stubbed(:user)
+        user = create(:user, :with_authentication_app)
         code = '123456'
         form = TotpVerificationForm.new(user, code)
         result = instance_double(FormResponse)
 
-        allow(Db::AuthAppConfiguration::Authenticate).to receive(:call).and_return(true)
+        cfg = user.auth_app_configurations.first
+        allow(Db::AuthAppConfiguration::Authenticate).to receive(:call).and_return(cfg)
 
         expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: { multi_factor_auth_method: 'totp' }).
+          with(success: true, errors: {}, extra: { multi_factor_auth_method: 'totp',
+                                                   auth_app_configuration_id: cfg.id }).
           and_return(result)
         expect(form.submit).to eq result
       end
@@ -28,7 +30,8 @@ describe TotpVerificationForm do
         allow(user).to receive(:authenticate_totp).and_return(false)
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: { multi_factor_auth_method: 'totp' }).
+          with(success: false, errors: {}, extra: { multi_factor_auth_method: 'totp',
+                                                    auth_app_configuration_id: nil }).
           and_return(result)
         expect(form.submit).to eq result
       end
@@ -45,7 +48,8 @@ describe TotpVerificationForm do
           allow(user).to receive(:authenticate_totp).with(code).and_return(true)
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {}, extra: { multi_factor_auth_method: 'totp' }).
+            with(success: false, errors: {}, extra: { multi_factor_auth_method: 'totp',
+                                                      auth_app_configuration_id: nil }).
             and_return(result)
           expect(form.submit).to eq result
         end

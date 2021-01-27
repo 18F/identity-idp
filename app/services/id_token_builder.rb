@@ -1,6 +1,4 @@
 class IdTokenBuilder
-  include Rails.application.routes.url_helpers
-
   JWT_SIGNING_ALGORITHM = 'RS256'.freeze
   NUM_BYTES_FIRST_128_BITS = 128 / 8
 

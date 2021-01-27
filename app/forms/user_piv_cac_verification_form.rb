@@ -3,7 +3,7 @@ class UserPivCacVerificationForm
   include PivCacFormHelpers
 
   attr_accessor :x509_dn_uuid, :x509_dn, :x509_issuer, :token, :error_type, :nonce, :user, :key_id,
-                :piv_cac_required
+                :piv_cac_required, :piv_cac_configuration
 
   validates :token, presence: true
   validates :nonce, presence: true
@@ -28,7 +28,8 @@ class UserPivCacVerificationForm
   end
 
   def x509_cert_matches
-    if user == Db::PivCacConfiguration::FindUserByX509.call(x509_dn_uuid)
+    piv_cac_configuration = ::PivCacConfiguration.find_by(x509_dn_uuid: x509_dn_uuid)
+    if user == piv_cac_configuration&.user
       true
     else
       self.error_type = 'user.piv_cac_mismatch'
@@ -48,6 +49,7 @@ class UserPivCacVerificationForm
   def extra_analytics_attributes
     {
       multi_factor_auth_method: 'piv_cac',
+      piv_cac_configuration_id: piv_cac_configuration&.id,
     }
   end
 end

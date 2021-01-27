@@ -4,8 +4,9 @@ module Idv
 
     attr_reader :current_user
 
-    def initialize(current_user)
+    def initialize(current_user, url_options)
       @current_user = current_user
+      @url_options = url_options
     end
 
     def title
@@ -32,6 +33,10 @@ module Idv
 
     def usps_mail_bounced?
       current_user.decorate.usps_mail_bounced?
+    end
+
+    def url_options
+      @url_options
     end
 
     private

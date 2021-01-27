@@ -8,6 +8,9 @@
 </p>
 <p class="mt-tiny mb1">
   <%= t('two_factor_authentication.phone_fee_disclosure') %>
+  <% if FeatureManagement.voip_block? %>
+    <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
+  <% end %>
 </p>
 
 <%= validated_form_for(@new_phone_form,
@@ -29,4 +32,4 @@
 <%= render 'shared/cancel', link: account_path %>
 
 <%= stylesheet_link_tag 'intl-tel-input/build/css/intlTelInput' %>
-<%= javascript_pack_tag 'intl-tel-input' %>
+<%= javascript_packs_tag_once 'intl-tel-input' %>

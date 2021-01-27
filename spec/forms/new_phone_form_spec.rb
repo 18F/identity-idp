@@ -11,7 +11,7 @@ describe NewPhoneForm do
       otp_delivery_preference: 'sms',
     }
   end
-  subject { NewPhoneForm.new(user) }
+  subject(:form) { NewPhoneForm.new(user) }
 
   it_behaves_like 'a phone form'
 
@@ -45,7 +45,7 @@ describe NewPhoneForm do
       it 'includes otp preference in the form response extra' do
         result = subject.submit(params)
 
-        expect(result.extra).to eq(
+        expect(result.extra).to include(
           otp_delivery_preference: params[:otp_delivery_preference],
         )
       end
@@ -149,6 +149,57 @@ describe NewPhoneForm do
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(true)
       expect(result.errors).to be_empty
+    end
+
+    context 'voip numbers' do
+      let(:telephony_gem_voip_number) { '+12255552000' }
+
+      subject(:result) do
+        form.submit(params.merge(phone: telephony_gem_voip_number))
+      end
+
+      context 'when voip numbers are blocked' do
+        before do
+          expect(FeatureManagement).to receive(:voip_block?).and_return(true)
+        end
+
+        it 'is invalid' do
+          expect(result.success?).to eq(false)
+          expect(result.errors[:phone]).to eq([I18n.t('errors.messages.voip_check_error')])
+        end
+
+        it 'logs the type and carrier' do
+          expect(result.extra).to include(
+            phone_type: :voip,
+            carrier: 'Test VOIP Carrier',
+          )
+        end
+
+        context 'when the number is on the allowlist' do
+          before do
+            expect(FeatureManagement).to receive(:voip_allowed_phones).
+              and_return([telephony_gem_voip_number])
+          end
+
+          it 'is valid' do
+            expect(result.success?).to eq(true)
+            expect(result.errors).to be_blank
+          end
+        end
+      end
+
+      context 'when voip numbers are allowed' do
+        before do
+          expect(FeatureManagement).to receive(:voip_block?).and_return(false)
+        end
+
+        it 'does a voip check but does not enforce it' do
+          expect(Telephony).to receive(:phone_info).and_call_original
+
+          expect(result.success?).to eq(true)
+          expect(result.to_h).to include(phone_type: :voip)
+        end
+      end
     end
   end
 end

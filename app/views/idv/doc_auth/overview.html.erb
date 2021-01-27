@@ -77,5 +77,4 @@
   <%= link_to(t('links.cancel'), idv_cancel_path, class: 'h5') %>
 </div>
 
-<%= javascript_pack_tag('clipboard') %>
-<%= javascript_pack_tag('ial2-consent-button') %>
+<%= javascript_packs_tag_once 'clipboard', 'ial2-consent-button' %>

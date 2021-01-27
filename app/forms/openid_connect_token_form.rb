@@ -55,6 +55,10 @@ class OpenidConnectTokenForm
     end
   end
 
+  def url_options
+    {}
+  end
+
   private
 
   attr_reader :identity

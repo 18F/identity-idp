@@ -7,6 +7,7 @@ import PromptOnNavigate from './prompt-on-navigate';
 import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
+import useDidUpdateEffect from '../hooks/use-did-update-effect';
 
 /**
  * @typedef FormStepError
@@ -65,6 +66,7 @@ import useForceRender from '../hooks/use-force-render';
  * @prop {FormStepError<Record<string,Error>>[]=} initialActiveErrors Errors to initialize state.
  * @prop {boolean=} autoFocus Whether to automatically focus heading on mount.
  * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
+ * @prop {()=>void=} onStepChange Callback triggered on step change.
  */
 
 /**
@@ -102,6 +104,7 @@ function getFieldActiveErrorFieldElement(errors, fields) {
 function FormSteps({
   steps = [],
   onComplete = () => {},
+  onStepChange = () => {},
   initialValues = {},
   initialActiveErrors = [],
   autoFocus,
@@ -132,6 +135,8 @@ function FormSteps({
       headingRef.current.focus();
     }
   }, []);
+
+  useDidUpdateEffect(onStepChange, [step]);
 
   /**
    * Returns array of form errors for the current set of values.
@@ -169,7 +174,7 @@ function FormSteps({
 
     // Don't proceed if field errors have yet to be resolved.
     if (activeErrors.length && activeErrors.length > unknownFieldErrors.length) {
-      setActiveErrors([...activeErrors]);
+      setActiveErrors(Array.from(activeErrors));
       didSubmitWithErrors.current = true;
       return;
     }

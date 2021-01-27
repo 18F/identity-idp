@@ -30,7 +30,7 @@ module OidcAuthHelper
     oidc_path
   end
 
-  def visit_idp_from_ial1_oidc_sp_requiring_aal3(**args)
+  def visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(**args)
     args[:client_id] ||= OIDC_AAL3_ISSUER
     params = ial1_params args
     oidc_path = openid_connect_authorize_path params

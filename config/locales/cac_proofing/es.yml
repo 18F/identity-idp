@@ -27,6 +27,7 @@ es:
         pedirá su PIN de PIV / CAC y le pedirá que seleccione un certificado.
       state_id_description: Si no tiene un PIV o CAC, pude usar una identificación
         emitida por el estado para verificar su identidad.
+      verifying: Verificando…
       welcome: Verificamos su identidad para asegurarnos de que es usted, no alguien
         que finge ser usted. La verificación de su identidad también le permite acceder
         a los servicios que manejan información de identificación personal.

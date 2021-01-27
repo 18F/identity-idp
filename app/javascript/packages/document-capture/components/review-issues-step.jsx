@@ -6,6 +6,8 @@ import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
 import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
+import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
+import './review-issues-step.scss';
 
 /**
  * @typedef ReviewIssuesStepValue
@@ -126,4 +128,4 @@ function ReviewIssuesStep({
   );
 }
 
-export default ReviewIssuesStep;
+export default withBackgroundEncryptedUpload(ReviewIssuesStep);

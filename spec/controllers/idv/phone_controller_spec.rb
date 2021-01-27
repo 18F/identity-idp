@@ -71,7 +71,7 @@ describe Idv::PhoneController do
       subject.idv_session.idv_phone_step_document_capture_session_uuid = 'abc123'
 
       get :new
-      expect(flash[:info]).to include t('idv.failure.timeout')
+      expect(flash[:error]).to include t('idv.failure.timeout')
       expect(response).to render_template :new
       put :create, params: { idv_phone_form: { phone: good_phone } }
       get :new

@@ -47,6 +47,14 @@ module TwoFactorAuthCode
       ActiveModel::Type::Boolean.new.cast(user_opted_remember_device_cookie)
     end
 
+    def url_options
+      if @view.respond_to?(:url_options)
+        @view.url_options
+      else
+        LinkLocaleResolver.locale_options
+      end
+    end
+
     private
 
     def service_provider_mfa_policy

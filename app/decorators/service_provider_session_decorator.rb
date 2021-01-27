@@ -117,15 +117,9 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_alert(path)
-    sign_in_path =
-      I18n.locale == :en ? new_user_session_path : new_user_session_path(locale: I18n.locale)
-    sign_up_path =
-      I18n.locale == :en ? sign_up_email_path : sign_up_email_path(locale: I18n.locale)
-    forgot_password_path =
-      I18n.locale == :en ? new_user_password_path : new_user_password_path(locale: I18n.locale)
-    path_to_section_map = { sign_in_path => 'sign_in',
-                            sign_up_path => 'sign_up',
-                            forgot_password_path => 'forgot_password' }
+    path_to_section_map = { new_user_session_path => 'sign_in',
+                            sign_up_email_path => 'sign_up',
+                            new_user_password_path => 'forgot_password' }
     custom_alert(path_to_section_map[path])
   end
 
@@ -144,12 +138,20 @@ class ServiceProviderSessionDecorator
     !verified_at || verified_at < authorize_form.verified_within.ago
   end
 
+  def url_options
+    if @view_context.respond_to?(:url_options)
+      @view_context.url_options
+    else
+      LinkLocaleResolver.locale_options
+    end
+  end
+
   private
 
   attr_reader :sp, :view_context, :sp_session, :service_provider_request
 
   def sp_aal
-    sp.aal || 1
+    sp.default_aal || 1
   end
 
   def sp_ial

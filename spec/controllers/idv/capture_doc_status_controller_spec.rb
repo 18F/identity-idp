@@ -26,6 +26,17 @@ describe Idv::CaptureDocStatusController do
       end
     end
 
+    context 'when flow session expires' do
+      let(:flow_session) { nil }
+
+      it 'returns unauthorized' do
+        get :show
+
+        expect(response.status).to eq(401)
+        expect(response.body).to eq('Unauthorized')
+      end
+    end
+
     context 'when session does not exist' do
       let(:flow_session) { {} }
 

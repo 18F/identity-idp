@@ -1,10 +1,17 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
-import { I18nContext, ServiceProviderContext } from '@18f/identity-document-capture';
+import {
+  I18nContext,
+  ServiceProviderContext,
+  UploadContextProvider,
+} from '@18f/identity-document-capture';
 import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
 import { render } from '../../../support/document-capture';
+import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/review-issues-step', () => {
+  const sandbox = useSandbox();
+
   it('renders with front, back, and selfie inputs', () => {
     const { getByLabelText } = render(<ReviewIssuesStep />);
 
@@ -20,6 +27,40 @@ describe('document-capture/components/review-issues-step', () => {
 
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file);
     expect(onChange.getCall(0).args[0]).to.deep.equal({ front: file });
+  });
+
+  it('performs background encrypted uploads', async () => {
+    const onChange = sandbox.spy();
+    sandbox.stub(window, 'fetch').callsFake(() =>
+      Promise.resolve({
+        ok: true,
+        status: 200,
+        headers: new window.Headers(),
+      }),
+    );
+    const key = await window.crypto.subtle.generateKey(
+      {
+        name: 'AES-GCM',
+        length: 256,
+      },
+      true,
+      ['encrypt', 'decrypt'],
+    );
+    const { getByLabelText } = render(
+      <UploadContextProvider
+        backgroundUploadURLs={{ back: 'about:blank#back' }}
+        backgroundUploadEncryptKey={key}
+      >
+        <ReviewIssuesStep onChange={onChange} />)
+      </UploadContextProvider>,
+    );
+
+    const file = new window.File([''], 'upload.png', { type: 'image/png' });
+
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), file);
+    const patch = onChange.getCall(0).args[0];
+    expect(await patch.back_image_url).to.equal('about:blank#back');
+    expect(window.fetch.getCall(0).args[0]).to.equal('about:blank#back');
   });
 
   context('service provider context', () => {

@@ -252,7 +252,7 @@ RSpec.describe ServiceProviderSessionDecorator do
   describe '#mfa_expiration_interval' do
     context 'with an AAL2 sp' do
       before do
-        allow(sp).to receive(:aal).and_return(2)
+        allow(sp).to receive(:default_aal).and_return(2)
       end
 
       it { expect(subject.mfa_expiration_interval).to eq(12.hours) }

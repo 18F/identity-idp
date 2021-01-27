@@ -12,6 +12,7 @@ module Idv
         presenter = ImageUploadResponsePresenter.new(
           form: form,
           form_response: response,
+          url_options: url_options,
         )
         status = :accepted if response.success?
         render_json(
@@ -34,15 +35,6 @@ module Idv
         )
         verify_document_capture_session.requested_at = Time.zone.now
         verify_document_capture_session.create_doc_auth_session
-
-        @flow.analytics.track_event(
-          Analytics::DOC_AUTH_ASYNC,
-          info: 'creating document capture session',
-          id: verify_document_capture_session.id,
-          uuid: verify_document_capture_session.uuid,
-          result_id: verify_document_capture_session.result_id,
-          flow_session_key: flow_session[verify_document_capture_session_uuid_key],
-        )
 
         callback_url = Rails.application.routes.url_helpers.document_proof_result_url(
           result_id: verify_document_capture_session.result_id,

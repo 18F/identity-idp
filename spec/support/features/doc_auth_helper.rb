@@ -129,6 +129,9 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     click_idv_continue
+    # In JavaScript contexts, a spinner is shown while verification is in-progress. The only
+    # reliable measure of completion is that the page eventually navigates away.
+    expect(page).to_not have_current_path(idv_doc_auth_verify_step, wait: 10)
   end
 
   def mock_doc_auth_no_name_pii(method)

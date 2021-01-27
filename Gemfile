@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 6.1.0'
+gem 'rails', '~> 6.1.1'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
@@ -24,7 +24,7 @@ gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.3'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.3'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.8'
+gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.11'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'main'
 gem 'json-jwt', '>= 1.11.0'
 gem 'jwt'
@@ -82,6 +82,7 @@ group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'bootsnap', '~> 1.5.0', require: false
   gem 'bullet', '>= 6.0.2'
+  gem 'erb_lint', '~> 0.0.37', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
   gem 'nokogiri', '~> 1.11.0'
@@ -104,7 +105,7 @@ group :test do
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'faker'
-  gem 'gmail'
+  gem 'gmail', '>= 0.7.1'
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'

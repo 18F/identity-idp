@@ -141,6 +141,7 @@ en:
       more_secure_label: More Secure
       phone: Phone
       phone_info_html: Get security codes by text message (SMS) or phone call.
+      phone_info_no_voip: Please do not use web-based (VOIP) phone services.
       piv_cac: Government employee ID
       piv_cac_info_html: Insert your government or military PIV or CAC card and enter
         your PIN.

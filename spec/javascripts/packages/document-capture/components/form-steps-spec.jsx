@@ -99,6 +99,25 @@ describe('document-capture/components/form-steps', () => {
     expect(getByText('forms.buttons.continue')).to.be.ok();
   });
 
+  it('calls onStepChange callback on step change', () => {
+    const onStepChange = sinon.spy();
+    const { getByText } = render(<FormSteps steps={STEPS} onStepChange={onStepChange} />);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+
+    expect(onStepChange.calledOnce).to.be.true();
+  });
+
+  it('does not call onStepChange if step does not progress due to validation error', () => {
+    const onStepChange = sinon.spy();
+    const { getByText } = render(<FormSteps steps={STEPS} onStepChange={onStepChange} />);
+
+    userEvent.click(getByText('forms.buttons.continue'));
+    userEvent.click(getByText('forms.buttons.continue'));
+
+    expect(onStepChange.callCount).to.equal(1);
+  });
+
   it('renders submit button at last step', async () => {
     const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 

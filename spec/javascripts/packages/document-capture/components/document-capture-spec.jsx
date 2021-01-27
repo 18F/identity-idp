@@ -439,4 +439,53 @@ describe('document-capture/components/document-capture', () => {
       userEvent.click(submitButton);
     });
   });
+
+  it('calls onStepChange callback on step changes', async () => {
+    const uploadError = new UploadFormEntriesError();
+    uploadError.formEntryErrors = [{ field: 'front', message: '' }].map(toFormEntryError);
+    const onStepChange = sinon.spy();
+    const { getByLabelText, getByText, getAllByText, findAllByText, findByRole } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <DocumentCapture onStepChange={onStepChange} />
+      </AcuantContextProvider>,
+      { uploadError },
+    );
+
+    initialize({ isCameraSupported: false });
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
+
+    const continueButton = getByText('forms.buttons.continue');
+    userEvent.click(continueButton);
+    await findAllByText('simple_form.required.text');
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_back'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    userEvent.click(continueButton);
+    expect(onStepChange.callCount).to.equal(1);
+
+    const submitButton = getByText('forms.buttons.submit.default');
+    userEvent.click(submitButton);
+    expect(onStepChange.callCount).to.equal(1);
+    await findAllByText('simple_form.required.text');
+    const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
+    fireEvent.click(selfieInput);
+    await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
+    userEvent.click(submitButton);
+    expect(onStepChange.callCount).to.equal(1);
+
+    await findByRole('alert');
+
+    expect(console).to.have.loggedError(/^Error: Uncaught/);
+    expect(console).to.have.loggedError(
+      /React will try to recreate this component tree from scratch using the error boundary you provided/,
+    );
+
+    expect(onStepChange.callCount).to.equal(1);
+  });
 });

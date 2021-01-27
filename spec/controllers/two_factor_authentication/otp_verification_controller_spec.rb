@@ -41,6 +41,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         context: 'authentication',
         multi_factor_auth_method: 'sms',
         confirmation_for_add_phone: false,
+        phone_configuration_id: subject.current_user.default_phone_configuration.id,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -82,6 +83,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
+          phone_configuration_id: subject.current_user.default_phone_configuration.id,
         }
         stub_analytics
         expect(@analytics).to receive(:track_mfa_submit_event).
@@ -127,6 +129,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
+          phone_configuration_id: subject.current_user.default_phone_configuration.id,
         }
 
         stub_analytics
@@ -175,6 +178,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
+          phone_configuration_id: subject.current_user.default_phone_configuration.id,
         }
 
         stub_analytics
@@ -289,18 +293,20 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'user has an existing phone number' do
         context 'user enters a valid code' do
           before do
+            phone_id = MfaContext.new(subject.current_user).phone_configurations.last.id
+
             properties = {
               success: true,
               errors: {},
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
+              phone_configuration_id: phone_id,
             }
 
             expect(@analytics).to receive(:track_event).
               with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
-            controller.user_session[:phone_id] = \
-              MfaContext.new(subject.current_user).phone_configurations.last.id
+            controller.user_session[:phone_id] = phone_id
             post(
               :create,
               params: {
@@ -358,6 +364,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
+              phone_configuration_id: subject.current_user.default_phone_configuration.id,
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -394,6 +401,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
               confirmation_for_add_phone: false,
+              phone_configuration_id: nil,
             }
 
             expect(@analytics).to have_received(:track_event).

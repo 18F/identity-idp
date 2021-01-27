@@ -6,6 +6,10 @@ environment.loaders.delete('moduleSass');
 environment.loaders.delete('moduleCss');
 environment.loaders.delete('css');
 
+// Note: Because chunk splitting is enabled by default as of Webpacker 6+, this line can be removed
+// when upgrading.
+environment.splitChunks();
+
 // Some files under `node_modules` should be compiled by Babel:
 // 1. Yarn workspace package symlinks, by package name starting with `@18f/identity-`.
 // 2. Specific dependencies that don't compile their own code to run safely in legacy browsers.
@@ -35,6 +39,8 @@ $image-path: '~identity-style-guide/dist/assets/img';
 @import '~identity-style-guide/dist/assets/scss/uswds/utilities/palettes/all';
 @import '~identity-style-guide/dist/assets/scss/uswds/utilities/rules/all';
 @import '~identity-style-guide/dist/assets/scss/uswds/utilities/rules/package';`;
+
+sassLoader.use.find(({ loader }) => loader === 'css-loader').options.sourceMap = false;
 
 const sourceMapLoader = {
   test: /\.js$/,

@@ -29,12 +29,6 @@ describe BackupCodeDepletedPresenter do
     end
   end
 
-  describe '#other_option_path' do
-    it 'is the correct path for two_factor_options' do
-      expect(presenter.other_option_path).to eq two_factor_options_path
-    end
-  end
-
   describe '#continue_bttn_prologue' do
     it 'uses localization' do
       expect(presenter.continue_bttn_prologue).to eq nil

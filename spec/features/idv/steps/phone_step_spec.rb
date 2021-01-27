@@ -15,14 +15,17 @@ feature 'idv phone step' do
       expect(page).to have_current_path(idv_otp_delivery_method_path)
     end
 
-    it 'redirects to the confirmation step when the phone matches the 2fa phone number' do
+    it 'redirects to the confirmation step when the phone matches the 2fa phone number', js: true do
       user = user_with_2fa
       start_idv_from_sp
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
-      click_idv_continue
 
-      expect(page).to have_content(t('idv.titles.session.review'))
+      expect(page).to have_selector('.spinner-button')
+      click_idv_continue
+      expect(page).to have_selector('.spinner-button--spinner-active')
+
+      expect(page).to have_content(t('idv.titles.session.review'), wait: 1)
       expect(page).to have_current_path(idv_review_path)
     end
 
@@ -114,6 +117,37 @@ feature 'idv phone step' do
     # Expect to land on doc auth
     expect(page).to have_content(t('doc_auth.headings.welcome'))
     expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
+  end
+
+  shared_examples 'async timed out' do
+    it 'allows resubmitting form' do
+      user = user_with_2fa
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step(user)
+
+      allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
+
+      fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
+      click_idv_continue
+      expect(page).to have_content(t('idv.failure.timeout'))
+      expect(page).to have_current_path(idv_phone_path)
+      allow(DocumentCaptureSession).to receive(:find_by).and_call_original
+      click_idv_continue
+      expect(page).to have_current_path(idv_review_path)
+    end
+  end
+
+  it_behaves_like 'async timed out'
+
+  context 'javascript enabled', js: true do
+    around do |example|
+      # Adjust the wait time to give the frontend time to poll for results.
+      Capybara.using_wait_time(5) do
+        example.run
+      end
+    end
+
+    it_behaves_like 'async timed out'
   end
 
   context 'cancelling IdV' do

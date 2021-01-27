@@ -82,11 +82,12 @@ module TwoFactorAuthentication
       {
         context: context,
         multi_factor_auth_method: 'webauthn',
+        webauthn_configuration_id: form&.webauthn_configuration&.id,
       }
     end
 
     def form
-      WebauthnVerificationForm.new(current_user, user_session)
+      @form ||= WebauthnVerificationForm.new(current_user, user_session)
     end
   end
 end

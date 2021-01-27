@@ -1,3 +1,11 @@
+<div id="form-steps-wait-alert">
+  <%= render 'shared/alert', {
+    type: 'success',
+    class: 'margin-bottom-4',
+    message: I18n.t('doc_auth.forms.doc_success'),
+  } %>
+</div>
+
 <% title t('idv.titles.phone') %>
 
 <h1 class="h3 my0">
@@ -26,8 +34,21 @@
   <br/>
 </div>
 
-<%= validated_form_for(@idv_form, url: idv_phone_path,
-                       html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f| %>
+<%= validated_form_for(@idv_form,
+                       url: idv_phone_path,
+                       data: {
+                         form_steps_wait: '',
+                         error_message: t('idv.failure.exceptions.internal_error'),
+                         alert_target: '#form-steps-wait-alert',
+                         wait_step_path: idv_phone_path,
+                         poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
+                       },
+                       html: {
+                         autocomplete: 'off',
+                         method: :put,
+                         role: 'form',
+                         class: 'mt2',
+                       }) do |f| %>
  <%= f.label :phone, label: t('idv.form.phone'), class: 'bold' %>
  <%= f.input :phone, required: true, input_html: { aria: { invalid: false }, class: 'sm-col-8' }, label: false,
    wrapper_html: { class: 'mr2' } %>
@@ -36,9 +57,15 @@
     <%= render 'idv/phone/verification_options' %>
   <% end %>
 
-  <%= f.button :submit, t('forms.buttons.continue'), class: 'btn-wide mt3 sm-col-6 col-12' %>
+  <%= render 'shared/spinner-button',
+             action_message: t('doc_auth.info.verifying'),
+             class: 'mt3' do %>
+    <%= f.button :submit, t('forms.buttons.continue'), class: 'btn-wide sm-col-6 col-12' %>
+  <% end %>
 <% end %>
 
 <div class="mt2 pt1 border-top">
   <%= link_to t('links.cancel'), idv_cancel_path, class: 'h5' %>
 </div>
+
+<% javascript_packs_tag_once 'form-steps-wait' %>

@@ -7,10 +7,16 @@ module SamlIdpAuthConcern
     before_action :validate_saml_request, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
     before_action :store_saml_request, only: :auth
+    before_action :check_sp_active, only: :auth
     # rubocop:enable Rails/LexicallyScopedActionFilter
   end
 
   private
+
+  def check_sp_active
+    return if current_service_provider.active?
+    redirect_to sp_inactive_error_url
+  end
 
   def validate_service_provider_and_authn_context
     @saml_request_validator = SamlRequestValidator.new
@@ -71,8 +77,8 @@ module SamlIdpAuthConcern
   end
 
   def default_aal_context
-    if current_service_provider.aal
-      Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[current_service_provider.aal]
+    if current_service_provider.default_aal
+      Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[current_service_provider.default_aal]
     else
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
     end

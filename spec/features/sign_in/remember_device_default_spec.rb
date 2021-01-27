@@ -15,7 +15,7 @@ describe 'Remember device checkbox' do
   context 'when signing in from an SP when the SP is AAL2' do
     before do
       ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
-        aal: 2,
+        default_aal: 2,
       )
     end
 

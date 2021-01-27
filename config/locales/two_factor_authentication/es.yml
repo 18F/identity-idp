@@ -151,6 +151,7 @@ es:
       phone: Teléfono
       phone_info_html: Obtenga códigos de seguridad por mensaje de texto (SMS) o llamada
         telefónica.
+      phone_info_no_voip: No utilice servicios telefónicos basados en web (VOIP).
       piv_cac: Identificación de empleado del gobierno
       piv_cac_info_html: Inserte su tarjeta gubernamental o militar PIV o CAC e ingrese
         su PIN.

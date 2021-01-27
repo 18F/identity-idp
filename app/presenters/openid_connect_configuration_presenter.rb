@@ -12,6 +12,10 @@ class OpenidConnectConfigurationPresenter
     }.merge(url_configuration).merge(crypto_configuration)
   end
 
+  def url_options
+    {}
+  end
+
   private
 
   def url_configuration
