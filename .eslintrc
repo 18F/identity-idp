@@ -41,8 +41,7 @@
       },
       {
         "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
-        "message": 'Do not assign window.location.href to a string or string template to avoid losing i18n parameters',
-
+        "message": "Do not assign window.location.href to a string or string template to avoid losing i18n parameters"
       }
     ],
     "no-unused-expressions": "off",
