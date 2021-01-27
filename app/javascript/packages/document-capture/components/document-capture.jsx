@@ -4,7 +4,7 @@ import FormSteps from './form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep, { documentsStepValidator } from './documents-step';
 import SelfieStep, { selfieStepValidator } from './selfie-step';
-import ReviewIssuesStep from './review-issues-step';
+import ReviewIssuesStep, { reviewIssuesStepValidator } from './review-issues-step';
 import MobileIntroStep from './mobile-intro-step';
 import DeviceContext from '../context/device';
 import ServiceProviderContext from '../context/service-provider';
@@ -87,6 +87,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
           name: 'review',
           title: t('doc_auth.headings.review_issues'),
           form: ReviewIssuesStep,
+          validator: reviewIssuesStepValidator,
           footer: DesktopDocumentDisclosure,
         },
       ]
