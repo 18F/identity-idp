@@ -23,6 +23,7 @@ module SessionTimeoutWarningHelper
       render partial: 'session_timeout/ping',
              formats: [:js],
              locals: {
+               timeout_url: timeout_url,
                warning: warning,
                start: start,
                frequency: frequency,

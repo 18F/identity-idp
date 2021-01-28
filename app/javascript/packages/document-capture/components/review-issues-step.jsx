@@ -23,6 +23,22 @@ import './review-issues-step.scss';
 const DOCUMENT_SIDES = ['front', 'back'];
 
 /**
+ * @param {Partial<ReviewIssuesStepValue>=} value
+ *
+ * @return {boolean} Whether the value is valid for the review issues step.
+ */
+function reviewIssuesStepValidator(value = {}) {
+  const hasDocuments = DOCUMENT_SIDES.every((side) => !!value[side]);
+
+  // Absent availability of service provider context here, this relies on the fact that:
+  // 1) The review step is only shown with an existing, complete set of values.
+  // 2) Clearing an existing value sets it as null, but doesn't remove the key from the object.
+  const hasSelfieIfApplicable = !('selfie' in value) || !!value.selfie;
+
+  return hasDocuments && hasSelfieIfApplicable;
+}
+
+/**
  * @param {import('./form-steps').FormStepComponentProps<ReviewIssuesStepValue>} props Props object.
  */
 function ReviewIssuesStep({
@@ -129,3 +145,5 @@ function ReviewIssuesStep({
 }
 
 export default withBackgroundEncryptedUpload(ReviewIssuesStep);
+
+export { reviewIssuesStepValidator };
