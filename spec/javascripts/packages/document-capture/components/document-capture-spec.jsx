@@ -238,6 +238,7 @@ describe('document-capture/components/document-capture', () => {
     uploadError.formEntryErrors = [
       { field: 'front', message: 'Image has glare' },
       { field: 'back', message: 'Please fill in this field' },
+      { message: 'An unknown error occurred' },
     ].map(toFormEntryError);
     const { getByLabelText, getByText, getAllByText, findAllByText, findAllByRole } = render(
       <AcuantContextProvider sdkSrc="about:blank">
@@ -245,6 +246,7 @@ describe('document-capture/components/document-capture', () => {
       </AcuantContextProvider>,
       {
         uploadError,
+        expectedUploads: 2,
       },
     );
 
@@ -265,7 +267,7 @@ describe('document-capture/components/document-capture', () => {
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(continueButton);
 
-    const submitButton = getByText('forms.buttons.submit.default');
+    let submitButton = getByText('forms.buttons.submit.default');
     userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
@@ -273,9 +275,10 @@ describe('document-capture/components/document-capture', () => {
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
 
-    const notices = await findAllByRole('alert');
-    expect(notices[0].textContent).to.equal('Image has glare');
-    expect(notices[1].textContent).to.equal('Please fill in this field');
+    let notices = await findAllByRole('alert');
+    expect(notices[0].textContent).to.equal('An unknown error occurred');
+    expect(notices[1].textContent).to.equal('Image has glare');
+    expect(notices[2].textContent).to.equal('Please fill in this field');
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -287,6 +290,39 @@ describe('document-capture/components/document-capture', () => {
 
     const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');
     expect(hasValueSelected).to.be.true();
+
+    // Submit button should be disabled until field errors are resolved.
+    submitButton = getByText('forms.buttons.submit.default');
+    expect(submitButton.classList.contains('btn-disabled')).to.be.true();
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_front'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+    userEvent.upload(
+      getByLabelText('doc_auth.headings.document_capture_back'),
+      new window.File([''], 'upload.png', { type: 'image/png' }),
+    );
+
+    // Once fields are changed, their notices should be cleared. If all field-specific errors are
+    // addressed, submit should be enabled once more.
+    notices = await findAllByRole('alert');
+    const errorNotices = notices.filter((notice) => notice.classList.contains('usa-alert--error'));
+    expect(errorNotices).to.have.lengthOf(1);
+    expect(errorNotices[0].textContent).to.equal('An unknown error occurred');
+    expect(submitButton.classList.contains('btn-disabled')).to.be.false();
+
+    // Verify re-submission. It will fail again, but test can at least assure that the interstitial
+    // screen is shown once more.
+    userEvent.click(submitButton);
+    const interstitialHeading = getByText('doc_auth.headings.interstitial');
+    expect(interstitialHeading).to.be.ok();
+
+    await findAllByRole('alert');
+
+    expect(console).to.have.loggedError(/^Error: Uncaught/);
+    expect(console).to.have.loggedError(
+      /React will try to recreate this component tree from scratch using the error boundary you provided/,
+    );
   });
 
   it('redirects from a server error', async () => {

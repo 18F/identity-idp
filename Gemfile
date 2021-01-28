@@ -36,7 +36,7 @@ gem 'newrelic_rpm'
 gem 'pg'
 gem 'phonelib'
 gem 'premailer-rails', '>= 1.11.1'
-gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.7.0'
+gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.7.1'
 gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
@@ -118,5 +118,5 @@ end
 
 group :production do
   gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.3.0'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.5.0'
 end

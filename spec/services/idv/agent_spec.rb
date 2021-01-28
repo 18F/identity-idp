@@ -5,6 +5,7 @@ describe Idv::Agent do
   let(:bad_phone) do
     IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
+
   describe 'instance' do
     let(:applicant) { { foo: 'bar' } }
     let(:trace_id) { SecureRandom.uuid }
@@ -34,6 +35,22 @@ describe Idv::Agent do
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to include({ state_id: 'StateIdMock' })
+        end
+
+        context 'proofing partial date of birth' do
+          before do
+            allow(AppConfig.env).to receive(:proofing_send_partial_dob).and_return('true')
+          end
+
+          it 'passes dob_year_only to the proofing function' do
+            expect(LambdaJobs::Runner).to receive(:new).
+              with(hash_including(args: hash_including(dob_year_only: true))).
+              and_call_original
+
+            agent.proof_resolution(
+              document_capture_session, should_proof_state_id: true, trace_id: trace_id
+            )
+          end
         end
       end
 

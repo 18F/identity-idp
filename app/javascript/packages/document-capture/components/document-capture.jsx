@@ -49,6 +49,7 @@ export const except = (object, ...keys) =>
  * @param {DocumentCaptureProps} props
  */
 function DocumentCapture({ isAsyncForm = false, onStepChange }) {
+  
   const [formValues, setFormValues] = useState(/** @type {Record<string,any>?} */ (null));
   const [submissionError, setSubmissionError] = useState(/** @type {Error=} */ (undefined));
   const { t } = useI18n();
@@ -84,6 +85,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
           name: 'review',
           title: t('doc_auth.headings.review_issues'),
           form: ReviewIssuesStep,
+          validator: reviewIssuesStepValidator,
           footer: DesktopDocumentDisclosure,
         },
       ]
