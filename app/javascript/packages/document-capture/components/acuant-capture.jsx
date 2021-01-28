@@ -218,23 +218,21 @@ function AcuantCapture(
       result = 'success';
     }
 
-    const payload = {
-      fieldName: name,
-      documentType: getDocumentTypeLabel(cardType),
-      width,
-      height,
-      dpi,
-      glare,
-      sharpness,
-      isAssessedAsGlare,
-      isAssessedAsBlurry,
-      result,
-    };
-
     addPageAction({
       key: 'documentCapture.acuantWebSDKResult',
       label: 'IdV: Acuant web SDK photo analyzed',
-      payload,
+      payload: {
+        fieldName: name,
+        documentType: getDocumentTypeLabel(cardType),
+        width,
+        height,
+        dpi,
+        glare,
+        sharpness,
+        isAssessedAsGlare,
+        isAssessedAsBlurry,
+        result,
+      },
     });
 
     setIsCapturingEnvironment(false);
