@@ -5,12 +5,59 @@ import {
   ServiceProviderContext,
   UploadContextProvider,
 } from '@18f/identity-document-capture';
-import ReviewIssuesStep from '@18f/identity-document-capture/components/review-issues-step';
+import ReviewIssuesStep, {
+  reviewIssuesStepValidator,
+} from '@18f/identity-document-capture/components/review-issues-step';
 import { render } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
 
 describe('document-capture/components/review-issues-step', () => {
   const sandbox = useSandbox();
+
+  describe('reviewIssuesStepValidator', () => {
+    it('returns false if given undefined value', () => {
+      const isValid = reviewIssuesStepValidator();
+
+      expect(isValid).to.be.false();
+    });
+
+    it('returns false if either of front or back are absent', () => {
+      for (const key of ['front', 'back']) {
+        const isValid = reviewIssuesStepValidator({ [key]: new window.Blob() });
+
+        expect(isValid).to.be.false();
+      }
+    });
+
+    it('returns true if front and back are given, and selfie is not applicable', () => {
+      const isValid = reviewIssuesStepValidator({
+        front: new window.Blob(),
+        back: new window.Blob(),
+      });
+
+      expect(isValid).to.be.true();
+    });
+
+    it('returns false if selfie is applicable and missing', () => {
+      const isValid = reviewIssuesStepValidator({
+        front: new window.Blob(),
+        back: new window.Blob(),
+        selfie: null,
+      });
+
+      expect(isValid).to.be.false();
+    });
+
+    it('returns true if selfie is applicable and given', () => {
+      const isValid = reviewIssuesStepValidator({
+        front: new window.Blob(),
+        back: new window.Blob(),
+        selfie: new window.Blob(),
+      });
+
+      expect(isValid).to.be.true();
+    });
+  });
 
   it('renders with front, back, and selfie inputs', () => {
     const { getByLabelText } = render(<ReviewIssuesStep />);
