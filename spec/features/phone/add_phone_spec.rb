@@ -78,6 +78,7 @@ describe 'Add a new phone number' do
 
   scenario 'adding a VOIP phone' do
     allow(FeatureManagement).to receive(:voip_block?).and_return(true)
+    allow(FeatureManagement).to receive(:voip_check?).and_return(true)
 
     user = create(:user, :signed_up)
 
