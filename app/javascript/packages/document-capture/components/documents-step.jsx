@@ -3,6 +3,7 @@ import AcuantCapture from './acuant-capture';
 import FormErrorMessage from './form-error-message';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
+import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 
 /**
@@ -35,11 +36,38 @@ function DocumentsStep({
   errors = [],
   registerField = () => undefined,
 }) {
-  const { t } = useI18n();
+  const { t, formatHTML } = useI18n();
   const { isMobile } = useContext(DeviceContext);
+  const serviceProvider = useContext(ServiceProviderContext);
 
   return (
     <>
+      {isMobile && (
+        <>
+          <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
+          <p>
+            {formatHTML(t('doc_auth.info.id_worn_html'), {
+              strong: 'strong',
+            })}
+          </p>
+        </>
+      )}
+      {serviceProvider.name && isMobile && (
+        <p>
+          {formatHTML(
+            t('doc_auth.info.no_other_id_help_bold_html', { sp_name: serviceProvider.name }),
+            {
+              strong: 'strong',
+              a: ({ children }) =>
+                serviceProvider.failureToProofURL ? (
+                  <a href={serviceProvider.failureToProofURL}>{children}</a>
+                ) : (
+                  <>{children}</>
+                ),
+            },
+          )}
+        </p>
+      )}
       <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.document_capture_id_text1')}</li>

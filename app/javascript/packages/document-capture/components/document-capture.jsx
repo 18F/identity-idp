@@ -5,8 +5,6 @@ import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep, { documentsStepValidator } from './documents-step';
 import SelfieStep, { selfieStepValidator } from './selfie-step';
 import ReviewIssuesStep, { reviewIssuesStepValidator } from './review-issues-step';
-import MobileIntroStep from './mobile-intro-step';
-import DeviceContext from '../context/device';
 import ServiceProviderContext from '../context/service-provider';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
@@ -54,7 +52,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
   const [formValues, setFormValues] = useState(/** @type {Record<string,any>?} */ (null));
   const [submissionError, setSubmissionError] = useState(/** @type {Error=} */ (undefined));
   const { t } = useI18n();
-  const { isMobile } = useContext(DeviceContext);
   const serviceProvider = useContext(ServiceProviderContext);
 
   /**
@@ -92,11 +89,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
         },
       ]
     : /** @type {FormStep[]} */ ([
-        isMobile && {
-          name: 'intro',
-          title: t('doc_auth.headings.document_capture'),
-          form: MobileIntroStep,
-        },
         {
           name: 'documents',
           title: t('doc_auth.headings.document_capture'),

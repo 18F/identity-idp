@@ -57,16 +57,6 @@ describe('document-capture/components/document-capture', () => {
   });
 
   context('mobile', () => {
-    it('starts with introductory step', () => {
-      const { getByText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <DocumentCapture />
-        </DeviceContext.Provider>,
-      );
-
-      expect(getByText('doc_auth.info.document_capture_intro_acknowledgment')).to.be.ok();
-    });
-
     it('does not show document step footer', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
