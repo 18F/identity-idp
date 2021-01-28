@@ -45,6 +45,7 @@ function SelfieStep({
       {isMobile || !hasMediaAccess() ? (
         <AcuantCapture
           ref={registerField('selfie', { isRequired: true })}
+          name="selfie"
           capture="user"
           label={t('doc_auth.headings.document_capture_selfie')}
           bannerText={t('doc_auth.headings.photo')}

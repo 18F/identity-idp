@@ -82,6 +82,7 @@ function DocumentsStep({
           <AcuantCapture
             key={side}
             ref={registerField(side, { isRequired: true })}
+            name={side}
             /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
             /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
             label={t(`doc_auth.headings.document_capture_${side}`)}

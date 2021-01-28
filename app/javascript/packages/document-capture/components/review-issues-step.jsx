@@ -89,6 +89,7 @@ function ReviewIssuesStep({
           <AcuantCapture
             key={side}
             ref={registerField(side, { isRequired: true })}
+            name={side}
             /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
             /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
             label={t(`doc_auth.headings.document_capture_${side}`)}
@@ -115,6 +116,7 @@ function ReviewIssuesStep({
           {isMobile || !hasMediaAccess() ? (
             <AcuantCapture
               ref={registerField('selfie', { isRequired: true })}
+              name="selfie"
               capture="user"
               label={t('doc_auth.headings.document_capture_selfie')}
               bannerText={t('doc_auth.headings.photo')}

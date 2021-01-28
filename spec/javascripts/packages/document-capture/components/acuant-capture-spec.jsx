@@ -8,6 +8,21 @@ import DeviceContext from '@18f/identity-document-capture/context/device';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
 import { render, useAcuant } from '../../../support/document-capture';
 
+const ACUANT_CAPTURE_SUCCESS_RESULT = {
+  image: {
+    data: 'data:image/png,',
+    width: 1748,
+    height: 1104,
+  },
+  cardType: 1,
+  dpi: 519,
+  glare: 100,
+  sharpness: 100,
+};
+
+const ACUANT_CAPTURE_GLARE_RESULT = { ...ACUANT_CAPTURE_SUCCESS_RESULT, glare: 38 };
+const ACUANT_CAPTURE_BLURRY_RESULT = { ...ACUANT_CAPTURE_SUCCESS_RESULT, sharpness: 38 };
+
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
 
@@ -158,13 +173,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCaptured();
           await Promise.resolve();
-          callbacks.onCropped({
-            glare: 70,
-            sharpness: 70,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          });
+          callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
         }),
       });
 
@@ -173,9 +182,7 @@ describe('document-capture/components/acuant-capture', () => {
       await new Promise((resolve) => onChange.callsFake(resolve));
 
       expect(onChange.getCall(0).args).to.have.lengthOf(1);
-      expect(onChange.getCall(0).args[0]).to.equal(
-        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-      );
+      expect(onChange.getCall(0).args[0]).to.equal('data:image/png,');
       expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
     });
 
@@ -245,7 +252,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" />
+              <AcuantCapture label="Image" name="image" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -256,13 +263,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCaptured();
           await Promise.resolve();
-          callbacks.onCropped({
-            glare: 38,
-            sharpness: 70,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          });
+          callbacks.onCropped(ACUANT_CAPTURE_GLARE_RESULT);
         }),
       });
 
@@ -270,15 +271,22 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
 
       const error = await findByText('errors.doc_auth.photo_glare');
-      expect(
-        addPageAction.calledWith({
-          key: 'documentCapture.acuantWebSDKResult',
-          label: 'IdV: Acuant web SDK photo analyzed',
-          payload: {
-            result: 'glare',
-          },
-        }),
-      ).to.be.true();
+      expect(addPageAction).to.have.been.calledWith({
+        key: 'documentCapture.acuantWebSDKResult',
+        label: 'IdV: Acuant web SDK photo analyzed',
+        payload: {
+          documentType: 'id',
+          dpi: 519,
+          fieldName: 'image',
+          glare: 38,
+          height: 1104,
+          isAssessedAsBlurry: false,
+          isAssessedAsGlare: true,
+          result: 'glare',
+          sharpness: 100,
+          width: 1748,
+        },
+      });
 
       expect(error).to.be.ok();
     });
@@ -289,7 +297,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" />
+              <AcuantCapture label="Image" name="image" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -300,13 +308,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCaptured();
           await Promise.resolve();
-          callbacks.onCropped({
-            glare: 70,
-            sharpness: 20,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          });
+          callbacks.onCropped(ACUANT_CAPTURE_BLURRY_RESULT);
         }),
       });
 
@@ -314,15 +316,22 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
 
       const error = await findByText('errors.doc_auth.photo_blurry');
-      expect(
-        addPageAction.calledWith({
-          key: 'documentCapture.acuantWebSDKResult',
-          label: 'IdV: Acuant web SDK photo analyzed',
-          payload: {
-            result: 'blurry',
-          },
-        }),
-      ).to.be.true();
+      expect(addPageAction).to.have.been.calledWith({
+        key: 'documentCapture.acuantWebSDKResult',
+        label: 'IdV: Acuant web SDK photo analyzed',
+        payload: {
+          documentType: 'id',
+          dpi: 519,
+          fieldName: 'image',
+          glare: 100,
+          height: 1104,
+          isAssessedAsBlurry: true,
+          isAssessedAsGlare: false,
+          result: 'blurry',
+          sharpness: 38,
+          width: 1748,
+        },
+      });
 
       expect(error).to.be.ok();
     });
@@ -342,13 +351,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCaptured();
           await Promise.resolve();
-          callbacks.onCropped({
-            glare: 70,
-            sharpness: 20,
-            image: {
-              data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-            },
-          });
+          callbacks.onCropped(ACUANT_CAPTURE_BLURRY_RESULT);
         }),
       });
 
@@ -372,7 +375,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" />
+              <AcuantCapture label="Image" name="image" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -386,26 +389,14 @@ describe('document-capture/components/acuant-capture', () => {
             await Promise.resolve();
             callbacks.onCaptured();
             await Promise.resolve();
-            callbacks.onCropped({
-              glare: 70,
-              sharpness: 20,
-              image: {
-                data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-              },
-            });
+            callbacks.onCropped(ACUANT_CAPTURE_BLURRY_RESULT);
           })
           .onSecondCall()
           .callsFake(async (callbacks) => {
             await Promise.resolve();
             callbacks.onCaptured();
             await Promise.resolve();
-            callbacks.onCropped({
-              glare: 70,
-              sharpness: 70,
-              image: {
-                data: 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg"/%3E',
-              },
-            });
+            callbacks.onCropped(ACUANT_CAPTURE_SUCCESS_RESULT);
           }),
       });
 
@@ -416,15 +407,22 @@ describe('document-capture/components/acuant-capture', () => {
 
       fireEvent.click(button);
       await waitForElementToBeRemoved(error);
-      expect(
-        addPageAction.calledWith({
-          key: 'documentCapture.acuantWebSDKResult',
-          label: 'IdV: Acuant web SDK photo analyzed',
-          payload: {
-            result: 'success',
-          },
-        }),
-      ).to.be.true();
+      expect(addPageAction).to.have.been.calledWith({
+        key: 'documentCapture.acuantWebSDKResult',
+        label: 'IdV: Acuant web SDK photo analyzed',
+        payload: {
+          documentType: 'id',
+          dpi: 519,
+          fieldName: 'image',
+          glare: 100,
+          height: 1104,
+          isAssessedAsBlurry: true,
+          isAssessedAsGlare: false,
+          result: 'blurry',
+          sharpness: 38,
+          width: 1748,
+        },
+      });
     });
 
     it('triggers forced upload', () => {

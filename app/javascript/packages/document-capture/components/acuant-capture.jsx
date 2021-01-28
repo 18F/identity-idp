@@ -20,6 +20,8 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
 import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
+/** @typedef {import('./acuant-capture-canvas').AcuantSuccessResponse} AcuantSuccessResponse */
+/** @typedef {import('./acuant-capture-canvas').AcuantDocumentType} AcuantDocumentType */
 
 /**
  * @typedef AcuantPassiveLiveness
@@ -40,6 +42,7 @@ import './acuant-capture.scss';
 /**
  * @typedef AcuantCaptureProps
  *
+ * @prop {string} name A language-agnostic identifier for the field.
  * @prop {string} label Label associated with file input.
  * @prop {string=} bannerText Optional banner text to show in file input.
  * @prop {string|Blob|null|undefined} value Current value.
@@ -66,6 +69,24 @@ const ACCEPTABLE_GLARE_SCORE = 50;
 const ACCEPTABLE_SHARPNESS_SCORE = 50;
 
 /**
+ * Returns a human-readable document label corresponding to the given document type constant.
+ *
+ * @param {AcuantDocumentType} documentType
+ *
+ * @return {string} Human-readable document label.
+ */
+function getDocumentTypeLabel(documentType) {
+  switch (documentType) {
+    case 1:
+      return 'id';
+    case 2:
+      return 'passport';
+    default:
+      return 'none';
+  }
+}
+
+/**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
  * in supported devices.
  *
@@ -73,6 +94,7 @@ const ACCEPTABLE_SHARPNESS_SCORE = 50;
  */
 function AcuantCapture(
   {
+    name,
     label,
     bannerText,
     value,
@@ -175,32 +197,55 @@ function AcuantCapture(
     }
   }
 
+  /**
+   * @param {AcuantSuccessResponse} nextCapture
+   */
+  function onAcuantImageCaptureSuccess(nextCapture) {
+    const { image, cardType, dpi, glare, sharpness } = nextCapture;
+    const isAssessedAsGlare = glare < ACCEPTABLE_GLARE_SCORE;
+    const isAssessedAsBlurry = sharpness < ACCEPTABLE_SHARPNESS_SCORE;
+    const { width, height, data } = image;
+
+    let result;
+    if (isAssessedAsGlare) {
+      setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
+      result = 'glare';
+    } else if (isAssessedAsBlurry) {
+      setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
+      result = 'blurry';
+    } else {
+      onChangeAndResetError(data);
+      result = 'success';
+    }
+
+    const payload = {
+      fieldName: name,
+      documentType: getDocumentTypeLabel(cardType),
+      width,
+      height,
+      dpi,
+      glare,
+      sharpness,
+      isAssessedAsGlare,
+      isAssessedAsBlurry,
+      result,
+    };
+
+    addPageAction({
+      key: 'documentCapture.acuantWebSDKResult',
+      label: 'IdV: Acuant web SDK photo analyzed',
+      payload,
+    });
+
+    setIsCapturingEnvironment(false);
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
         <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
-            onImageCaptureSuccess={(nextCapture) => {
-              let result;
-              if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
-                setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
-                result = 'glare';
-              } else if (nextCapture.sharpness < ACCEPTABLE_SHARPNESS_SCORE) {
-                setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
-                result = 'blurry';
-              } else {
-                onChangeAndResetError(nextCapture.image.data);
-                result = 'success';
-              }
-
-              addPageAction({
-                key: 'documentCapture.acuantWebSDKResult',
-                label: 'IdV: Acuant web SDK photo analyzed',
-                payload: { result },
-              });
-
-              setIsCapturingEnvironment(false);
-            }}
+            onImageCaptureSuccess={onAcuantImageCaptureSuccess}
             onImageCaptureFailure={() => {
               setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
               setIsCapturingEnvironment(false);

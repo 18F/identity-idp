@@ -1,10 +1,12 @@
 import { Crypto } from '@peculiar/webcrypto';
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
+import sinonChai from 'sinon-chai';
 import { createDOM, useCleanDOM } from './support/dom';
 import { chaiConsoleSpy, useConsoleLogSpy } from './support/console';
 
 chai.use(dirtyChai);
+chai.use(sinonChai);
 chai.use(chaiConsoleSpy);
 global.expect = chai.expect;
 
