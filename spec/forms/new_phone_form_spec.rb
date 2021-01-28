@@ -153,15 +153,20 @@ describe NewPhoneForm do
 
     context 'voip numbers' do
       let(:telephony_gem_voip_number) { '+12255552000' }
+      let(:voip_block?) { false }
+      let(:voip_check?) { true }
+
+      before do
+        allow(FeatureManagement).to receive(:voip_block?).and_return(voip_block?)
+        allow(FeatureManagement).to receive(:voip_check?).and_return(voip_check?)
+      end
 
       subject(:result) do
         form.submit(params.merge(phone: telephony_gem_voip_number))
       end
 
       context 'when voip numbers are blocked' do
-        before do
-          expect(FeatureManagement).to receive(:voip_block?).and_return(true)
-        end
+        let(:voip_block?) { true }
 
         it 'is invalid' do
           expect(result.success?).to eq(false)
@@ -186,18 +191,41 @@ describe NewPhoneForm do
             expect(result.errors).to be_blank
           end
         end
+
+        context 'when voip checks are disabled' do
+          let(:voip_check?) { false }
+
+          it 'does not check the phone type' do
+            expect(Telephony).to_not receive(:phone_info)
+
+            result
+          end
+
+          it 'allows voip numbers since it cannot check the type' do
+            expect(result.success?).to eq(true)
+            expect(result.errors).to be_blank
+          end
+        end
       end
 
       context 'when voip numbers are allowed' do
-        before do
-          expect(FeatureManagement).to receive(:voip_block?).and_return(false)
-        end
+        let(:voip_block) { false }
 
         it 'does a voip check but does not enforce it' do
           expect(Telephony).to receive(:phone_info).and_call_original
 
           expect(result.success?).to eq(true)
           expect(result.to_h).to include(phone_type: :voip)
+        end
+      end
+
+      context 'when voip checks are disabled' do
+        let(:voip_check?) { false }
+
+        it 'does not check the phone type' do
+          expect(Telephony).to_not receive(:phone_info)
+
+          result
         end
       end
     end
