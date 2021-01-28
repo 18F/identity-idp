@@ -88,11 +88,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
         },
       ]
     : /** @type {FormStep[]} */ ([
-        // isMobile && {
-        //   name: 'intro',
-        //   title: t('doc_auth.headings.document_capture'),
-        //   form: MobileIntroStep,
-        // },
         {
           name: 'documents',
           title: t('doc_auth.headings.document_capture'),
