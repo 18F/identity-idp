@@ -49,7 +49,6 @@ export const except = (object, ...keys) =>
  * @param {DocumentCaptureProps} props
  */
 function DocumentCapture({ isAsyncForm = false, onStepChange }) {
-  
   const [formValues, setFormValues] = useState(/** @type {Record<string,any>?} */ (null));
   const [submissionError, setSubmissionError] = useState(/** @type {Error=} */ (undefined));
   const { t } = useI18n();
