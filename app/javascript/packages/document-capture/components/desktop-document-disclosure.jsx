@@ -4,7 +4,7 @@ import useI18n from '../hooks/use-i18n';
 
 /**
  * Renders a document usage disclosure for desktop devices only. On mobile devices, an equivalent
- * message is displayed on the introductory step.
+ * message in the introduction.
  *
  * @type {import('react').FC}
  */
