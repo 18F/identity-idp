@@ -74,7 +74,7 @@ class NewPhoneForm
   end
 
   def validate_not_voip
-    return if phone.blank?
+    return if phone.blank? || !FeatureManagement.voip_check?
 
     @phone_info = Telephony.phone_info(phone)
 

@@ -136,6 +136,11 @@ class FeatureManagement
     !Rails.env.test? && AppConfig.env.log_to_stdout == 'true'
   end
 
+  # Whether or not we can call the phone_info endpoint at all
+  def self.voip_check?
+    AppConfig.env.voip_check == 'true'
+  end
+
   # Whether or not we should block VOIP phone numbers
   def self.voip_block?
     AppConfig.env.voip_block == 'true'
