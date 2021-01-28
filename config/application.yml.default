@@ -35,7 +35,7 @@ acuant_attempt_window_in_minutes: '360'
 acuant_facial_match_license_key: ''
 # These are dummy creds used to initialize the acuant SDK
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
-acuant_sdk_initialization_endpoint: 'https://services.assureid.net'
+acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
 allow_piv_cac_required: 'true'
