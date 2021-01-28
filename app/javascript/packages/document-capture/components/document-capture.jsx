@@ -4,7 +4,7 @@ import FormSteps from './form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep, { documentsStepValidator } from './documents-step';
 import SelfieStep, { selfieStepValidator } from './selfie-step';
-import ReviewIssuesStep from './review-issues-step';
+import ReviewIssuesStep, { reviewIssuesStepValidator } from './review-issues-step';
 import ServiceProviderContext from '../context/service-provider';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
