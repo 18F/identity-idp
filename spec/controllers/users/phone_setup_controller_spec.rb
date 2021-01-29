@@ -1,7 +1,10 @@
 require 'rails_helper'
 
 describe Users::PhoneSetupController do
-  before { allow(FeatureManagement).to receive(:voip_block?).and_return(true) }
+  before do
+    allow(FeatureManagement).to receive(:voip_check?).and_return(true)
+    allow(FeatureManagement).to receive(:voip_block?).and_return(true)
+  end
 
   describe 'GET index' do
     context 'when signed out' do
