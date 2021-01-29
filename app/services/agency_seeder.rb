@@ -27,12 +27,8 @@ class AgencySeeder
   attr_reader :rails_env, :deploy_env, :yaml_path
 
   def agencies
-    file = remote_setting || Rails.root.join(yaml_path, 'agencies.yml').read
+    file = Rails.root.join(yaml_path, 'agencies.yml').read
     content = ERB.new(file).result
     YAML.safe_load(content).fetch(rails_env, {})
-  end
-
-  def remote_setting
-    RemoteSetting.find_by(name: 'agencies.yml')&.contents
   end
 end

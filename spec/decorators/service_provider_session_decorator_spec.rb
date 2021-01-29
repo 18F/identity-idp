@@ -166,22 +166,6 @@ RSpec.describe ServiceProviderSessionDecorator do
       end
     end
 
-    context 'service provider has a remote logo' do
-      it 'returns the remote logo' do
-        logo = 'https://raw.githubusercontent.com/18F/identity-idp/master/app/assets/images/sp-logos/generic.svg'
-        sp = build_stubbed(:service_provider, logo: logo)
-
-        subject = ServiceProviderSessionDecorator.new(
-          sp: sp,
-          view_context: view_context,
-          sp_session: {},
-          service_provider_request: ServiceProviderRequestProxy.new,
-        )
-
-        expect(subject.sp_logo_url).to eq(logo)
-      end
-    end
-
     context 'service provider has a poorly configured logo' do
       it 'does not raise an exception' do
         sp = build_stubbed(:service_provider, logo: 'abc')
