@@ -197,19 +197,6 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.index ["user_id"], name: "index_doc_auths_on_user_id"
   end
 
-  create_table "doc_captures", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.string "request_token", null: false
-    t.datetime "requested_at", null: false
-    t.string "acuant_token"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "ial2_strict"
-    t.string "issuer"
-    t.index ["request_token"], name: "index_doc_captures_on_request_token", unique: true
-    t.index ["user_id"], name: "index_doc_captures_on_user_id", unique: true
-  end
-
   create_table "document_capture_sessions", force: :cascade do |t|
     t.string "uuid"
     t.string "result_id"
