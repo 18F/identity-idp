@@ -18,7 +18,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         to receive(:analytics).and_return(fake_analytics)
       response = subject.call
 
-      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_DOCUMENT_TIMEOUT, {})
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH_ASYNC,
         error: 'failed to load verify_document_capture_session',
@@ -39,7 +39,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
         to receive(:analytics).and_return(fake_analytics)
       response = subject.call
 
-      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_DOCUMENT_TIMEOUT, {})
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH_ASYNC,
         error: 'failed to load async result',
