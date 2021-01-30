@@ -12,6 +12,7 @@ module Users
       @verify_account_form = VerifyAccountForm.new(user: current_user)
       return unless FeatureManagement.reveal_usps_code?
       @code = session[:last_usps_confirmation_code]
+      @send_letter_throttled = Throttler::IsThrottled.call(current_user.id, :idv_send_letter)
     end
 
     def create

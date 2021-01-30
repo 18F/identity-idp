@@ -62,6 +62,8 @@ identity_pki_disabled: 'true'
 identity_pki_local_dev: 'false'
 idv_attempt_window_in_hours: '6'
 idv_max_attempts: '3'
+idv_send_letter_window_in_minutes: '7200'
+idv_send_letter_max_attempts: '1'
 idv_send_link_attempt_window_in_minutes: '10'
 idv_send_link_max_attempts: '5'
 in_person_proofing_enabled:

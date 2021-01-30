@@ -16,7 +16,7 @@
   <% end %>
 <% end %>
 
-<% if FeatureManagement.enable_usps_verification? && !@mail_spammed %>
+<% if FeatureManagement.enable_usps_verification? && !@mail_spammed && !@send_letter_throttled %>
   <%= link_to t('idv.messages.usps.resend'), idv_usps_path, class: 'block mb2' %>
 <% end %>
 

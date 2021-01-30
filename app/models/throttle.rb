@@ -9,6 +9,7 @@ class Throttle < ApplicationRecord
     reset_password_email: 4,
     idv_resolution: 5,
     idv_send_link: 6,
+    idv_send_letter: 7,
   }
 
   THROTTLE_CONFIG = {
@@ -35,6 +36,10 @@ class Throttle < ApplicationRecord
     idv_send_link: {
       max_attempts: (AppConfig.env.idv_send_link_max_attempts || 5).to_i,
       attempt_window: (AppConfig.env.idv_send_link_attempt_window_in_minutes || 10).to_i,
+    },
+    idv_send_letter: {
+      max_attempts: (AppConfig.env.idv_send_letter_max_attempts || 1).to_i,
+      attempt_window: (AppConfig.env.idv_send_letter_window_in_minutes || 60*24*5).to_i,
     },
   }.freeze
 
