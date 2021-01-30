@@ -74,12 +74,13 @@ describe IdvController do
       before do
         stub_sign_in
         session[:sp] = {}
+        allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
+        allow(AppConfig.env).to receive(:sp_context_needed_environment).and_return('prod')
       end
 
       context 'prod environment' do
         before do
           allow(LoginGov::Hostdata).to receive(:env).and_return('prod')
-          allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
         end
 
         it 'redirects back to the account page' do
@@ -92,7 +93,6 @@ describe IdvController do
       context 'non-prod environment' do
         before do
           allow(LoginGov::Hostdata).to receive(:env).and_return('staging')
-          allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
         end
 
         it 'begins the identity proofing process' do
