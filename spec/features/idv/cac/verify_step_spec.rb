@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'cac proofing verify info step' do
   include CacProofingHelper
 
-  let(:timeout_exception) { Idv::Steps::Cac::VerifyWaitStepShow::TimeoutError.new }
+  let(:fake_analytics) { FakeAnalytics.new }
 
   context 'successful verification' do
     before do
@@ -49,9 +49,11 @@ feature 'cac proofing verify info step' do
     it 'allows resubmitting form' do
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
-      expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
       click_continue
 
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
       expect(page).to have_current_path(idv_cac_proofing_verify_step)
       expect(page).to have_content t('idv.failure.timeout')
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
@@ -82,9 +84,11 @@ feature 'cac proofing verify info step' do
     context 'async timed out' do
       it 'allows resubmitting form' do
         allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
-        expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
+        allow_any_instance_of(ApplicationController).
+          to receive(:analytics).and_return(FakeAnalytics.new)
 
         click_continue
+        expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
         expect(page).to have_content(t('idv.failure.timeout'))
         expect(page).to have_current_path(idv_cac_proofing_verify_step)
         allow(DocumentCaptureSession).to receive(:find_by).and_call_original

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Idv::UspsController do
   let(:user) { create(:user) }
-  let(:timeout_exception) { Idv::UspsController::TimeoutError.new }
+  let(:fake_analytics) { FakeAnalytics.new }
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -53,15 +53,17 @@ describe Idv::UspsController do
       expect(response).to render_template :wait
     end
 
-    it 'alerts new relic when there is a timeout' do
+    it 'logs an event when there is a timeout' do
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
       allow(controller).to receive(:async_state).and_return(
         ProofingSessionAsyncResult.new(
           status: ProofingSessionAsyncResult::TIMED_OUT,
         ),
       )
-      expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
 
       get :index
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_ADDRESS_TIMEOUT)
     end
   end
 

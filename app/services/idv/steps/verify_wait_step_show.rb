@@ -1,8 +1,6 @@
 module Idv
   module Steps
     class VerifyWaitStepShow < VerifyBaseStep
-      class TimeoutError < StandardError; end
-
       def call
         poll_with_meta_refresh(AppConfig.env.poll_rate_for_verify_in_seconds.to_i)
 
@@ -20,7 +18,7 @@ module Idv
           flash[:error] = I18n.t('idv.failure.timeout')
           delete_async
           mark_step_incomplete(:verify)
-          NewRelic::Agent.notice_error(TimeoutError.new)
+          @flow.analytics.track_event(Analytics::PROOFING_RESOLUTION_TIMEOUT)
         elsif current_async_state.done?
           async_state_done(current_async_state)
         end

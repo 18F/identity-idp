@@ -8,16 +8,17 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   let(:session) { { 'idv/doc_auth' => {} } }
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
   let(:fake_analytics) { FakeAnalytics.new }
-  let(:timeout_exception) { Idv::Actions::VerifyDocumentStatusAction::TimeoutError.new }
 
   subject { described_class.new(flow) }
 
   describe '#call' do
     it 'calls analytics if timed out from no document capture session' do
       expect(controller).to receive(:analytics).and_return(fake_analytics)
-      expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
       response = subject.call
 
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH_ASYNC,
         error: 'failed to load verify_document_capture_session',
@@ -34,9 +35,11 @@ describe Idv::Actions::VerifyDocumentStatusAction do
       expect(subject).to receive(:verify_document_capture_session).
         and_return(verify_document_capture_session).at_least(:once)
       expect(controller).to receive(:analytics).and_return(fake_analytics)
-      expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
       response = subject.call
 
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH_ASYNC,
         error: 'failed to load async result',
