@@ -14,8 +14,6 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   describe '#call' do
     it 'calls analytics if timed out from no document capture session' do
       expect(controller).to receive(:analytics).and_return(fake_analytics)
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
       response = subject.call
 
       expect(fake_analytics).to have_logged_event(Analytics::PROOFING_DOCUMENT_TIMEOUT, {})
