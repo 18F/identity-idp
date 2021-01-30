@@ -110,6 +110,7 @@ feature 'recovery verify step' do
 
       click_continue
 
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
       expect(page).to have_current_path(idv_recovery_verify_step)
       expect(page).to have_content t('idv.failure.timeout')
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
