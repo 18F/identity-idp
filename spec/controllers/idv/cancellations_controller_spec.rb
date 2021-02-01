@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Idv::CancellationsController do
   describe 'before_actions' do
     it 'includes before_actions from IdvSession' do
-      expect(subject).to have_actions(:before, :sp_context_needed?)
+      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
     end
   end
 
