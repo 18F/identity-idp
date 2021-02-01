@@ -89,7 +89,7 @@ feature 'cac proofing verify info step' do
 
         click_continue
 
-        # FIXME: this errors due to some race condition, likely due to polling in the browser
+        # FLAKE: this errors due to some race condition, likely due to polling in the browser
         # expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
 
         expect(page).to have_content(t('idv.failure.timeout'))
