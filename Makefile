@@ -56,7 +56,7 @@ normalize_yaml:
 	find ./config/locales -type f | xargs ./scripts/normalize-yaml config/country_dialing_codes.yml
 
 optimize_svg:
-	find app/assets/images public -name '*.svg' | xargs ./node_modules/.bin/svgo --multipass
+	find app/assets/images public -name '*.svg' | xargs ./node_modules/.bin/svgo --multipass --config '{"plugins":[{"removeAttrs":{"attrs":"data-name"}}]}'
 
 optimize_assets: optimize_svg
 
