@@ -96,6 +96,8 @@ feature 'recovery verify step' do
   end
 
   context 'timed out' do
+    let(:fake_analytics) { FakeAnalytics.new }
+
     it 'allows resubmitting form' do
       complete_recovery_steps_before_verify_step
 
@@ -103,9 +105,12 @@ feature 'recovery verify step' do
         and_return(saved_pii.to_json)
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
 
       click_continue
 
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
       expect(page).to have_current_path(idv_recovery_verify_step)
       expect(page).to have_content t('idv.failure.timeout')
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
