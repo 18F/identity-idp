@@ -55,6 +55,14 @@ normalize_yaml:
 	i18n-tasks normalize
 	find ./config/locales -type f | xargs ./scripts/normalize-yaml config/country_dialing_codes.yml
 
+optimize_svg:
+	find app/assets/images public -name '*.svg' | xargs ./node_modules/.bin/svgo --multipass
+
+optimize_assets: optimize_svg
+
+lint_optimized_assets: optimize_assets
+	git diff --quiet || (echo "Error: Optimize assets using 'make optimize_assets'"; exit 1)
+
 update_country_dialing_codes:
 	bundle exec ./scripts/pinpoint-supported-countries > config/country_dialing_codes.yml
 
