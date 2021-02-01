@@ -4,20 +4,21 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   include IdvHelper
 
   let(:user) { build(:user) }
-  let(:controller) { instance_double(Idv::DocAuthController, url_options: {}) }
+  let(:controller) do
+    instance_double(Idv::DocAuthController, url_options: {}, analytics: analytics)
+  end
   let(:session) { { 'idv/doc_auth' => {} } }
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
-  let(:fake_analytics) { FakeAnalytics.new }
+  let(:analytics) { FakeAnalytics.new }
 
   subject { described_class.new(flow) }
 
   describe '#call' do
     it 'calls analytics if timed out from no document capture session' do
-      expect(controller).to receive(:analytics).and_return(fake_analytics)
       response = subject.call
 
-      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_DOCUMENT_TIMEOUT, {})
-      expect(fake_analytics).to have_logged_event(
+      expect(analytics).to have_logged_event(Analytics::PROOFING_DOCUMENT_TIMEOUT, {})
+      expect(analytics).to have_logged_event(
         Analytics::DOC_AUTH_ASYNC,
         error: 'failed to load verify_document_capture_session',
         uuid: nil,
@@ -32,13 +33,10 @@ describe Idv::Actions::VerifyDocumentStatusAction do
 
       expect(subject).to receive(:verify_document_capture_session).
         and_return(verify_document_capture_session).at_least(:once)
-      expect(controller).to receive(:analytics).and_return(fake_analytics)
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
       response = subject.call
 
-      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_DOCUMENT_TIMEOUT, {})
-      expect(fake_analytics).to have_logged_event(
+      expect(analytics).to have_logged_event(Analytics::PROOFING_DOCUMENT_TIMEOUT, {})
+      expect(analytics).to have_logged_event(
         Analytics::DOC_AUTH_ASYNC,
         error: 'failed to load async result',
         uuid: verify_document_capture_session.uuid,

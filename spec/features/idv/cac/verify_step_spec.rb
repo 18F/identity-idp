@@ -85,7 +85,7 @@ feature 'cac proofing verify info step' do
       it 'allows resubmitting form' do
         allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
         allow_any_instance_of(ApplicationController).
-          to receive(:analytics).and_return(FakeAnalytics.new)
+          to receive(:analytics).and_return(fake_analytics)
 
         click_continue
         expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
