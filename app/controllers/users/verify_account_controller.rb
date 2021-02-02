@@ -10,9 +10,9 @@ module Users
       usps_mail = Idv::UspsMail.new(current_user)
       @mail_spammed = usps_mail.mail_spammed?
       @verify_account_form = VerifyAccountForm.new(user: current_user)
+      @send_letter_throttled = Throttler::IsThrottled.call(current_user.id, :idv_send_letter)
       return unless FeatureManagement.reveal_usps_code?
       @code = session[:last_usps_confirmation_code]
-      @send_letter_throttled = Throttler::IsThrottled.call(current_user.id, :idv_send_letter)
     end
 
     def create

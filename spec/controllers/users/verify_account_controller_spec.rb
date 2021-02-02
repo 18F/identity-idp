@@ -6,10 +6,11 @@ RSpec.describe Users::VerifyAccountController do
   let(:otp) { 'ABC123' }
   let(:submitted_otp) { otp }
   let(:pending_profile) { build(:profile) }
+  let(:current_user) { create(:user, password: ControllerHelper::VALID_PASSWORD) }
 
   before do
     stub_analytics
-    user = stub_sign_in
+    user = stub_sign_in(current_user)
     decorated_user = stub_decorated_user_with_pending_profile(user)
     create(
       :usps_confirmation_code,
@@ -26,12 +27,14 @@ RSpec.describe Users::VerifyAccountController do
     end
 
     context 'user has pending profile' do
-      it 'renders page' do
+      render_views
+      it 'renders page with a link to send a letter' do
         expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_VERIFICATION_VISITED)
 
         action
 
         expect(response).to render_template('users/verify_account/index')
+        expect(response.body).to include(t('idv.messages.usps.resend'))
       end
     end
 
@@ -42,6 +45,20 @@ RSpec.describe Users::VerifyAccountController do
         action
 
         expect(response).to redirect_to(account_url)
+      end
+    end
+
+    context 'user is throttled from sending letters' do
+      render_views
+      before do
+        Throttler::IsThrottledElseIncrement.call(current_user.id, :idv_send_letter)
+      end
+
+      it 'does not contain a link to send a letter' do
+        action
+
+        expect(response).to render_template('users/verify_account/index')
+        expect(response.body).to_not include(t('idv.messages.usps.resend'))
       end
     end
   end
