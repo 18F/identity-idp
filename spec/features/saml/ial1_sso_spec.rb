@@ -32,7 +32,6 @@ feature 'IAL1 Single Sign On' do
         continue_as(email)
 
         expect(current_url).to eq authn_request
-        expect(page.get_rack_session.keys).to include('sp')
       end
     end
 

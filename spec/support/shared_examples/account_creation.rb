@@ -150,7 +150,6 @@ shared_examples 'creating two accounts during the same session' do |sp|
 
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
       end
-      expect(page.get_rack_session.keys).to include('sp')
     end
 
     perform_in_browser(:one) do
@@ -171,7 +170,6 @@ shared_examples 'creating two accounts during the same session' do |sp|
 
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
       end
-      expect(page.get_rack_session.keys).to include('sp')
     end
   end
 end
