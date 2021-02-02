@@ -29,7 +29,7 @@
 
 RSpec::Matchers.define :have_actions do |kind, *names|
   match do |controller|
-    if kind.blank? or names.blank?
+    if kind.blank? || names.blank?
       message = "Must provide kind and an array of names to check for\n"
       message += 'See spec/matchers/have_actions.rb for details'
       raise ArgumentError.new(message)
