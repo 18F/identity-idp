@@ -5,7 +5,7 @@
 
 <footer class='footer bg-light-blue sm-bg-navy'>
   <% if show_language_dropdown %>
-    <div class='sm-hide border-bottom'>
+    <div class='tablet:display-none border-bottom'>
       <div class='container cntnr-wide py1 px2 lg-px0 h5'>
         <div class='i18n-mobile-toggle center'>
           <%= link_to('#', class: 'block text-decoration-none blue fs-13p', 'aria-expanded': 'false') do %>
@@ -15,7 +15,7 @@
         </div>
       </div>
     </div>
-    <div class='i18n-mobile-dropdown sm-hide display-none'>
+    <div class='i18n-mobile-dropdown tablet:display-none display-none'>
       <ul class='list-reset mb0 white center'>
         <%  I18n.available_locales.each do |locale| %>
           <li class='border-bottom'>
@@ -28,15 +28,15 @@
   <div class='container py1 px2 lg-px0 <%= 'sm-py0' if show_language_dropdown %>'>
     <div class='flex flex-center'>
       <div class='flex flex-auto flex-first'>
-        <div class="sm-hide">
-          <%= new_window_link_to 'https://gsa.gov', { class: 'flex flex-center text-decoration-none white h6 mr1 sm-hide',
+        <div class="tablet:display-none">
+          <%= new_window_link_to 'https://gsa.gov', { class: 'flex flex-center text-decoration-none white h6 mr1 tablet:display-none',
                                                       'aria-label': t('shared.footer_lite.gsa') } do %>
             <%= image_tag asset_url('sp-logos/square-gsa-dark.svg'),
               width: 20, alt: '' %>
           <% end %>
         </div>
 
-        <div class="sm-show">
+        <div class="display-none tablet:display-block">
           <%= new_window_link_to 'https://gsa.gov', { class: 'flex flex-center text-decoration-none white h6 mr1 usa-link--alt',
                                                       'aria-label': t('shared.footer_lite.gsa') } do %>
             <%= image_tag asset_url('sp-logos/square-gsa.svg'),
@@ -49,7 +49,7 @@
       </div>
       <div class='flex flex-center'>
         <% if show_language_dropdown %>
-          <ul class='list-reset sm-show mb0'>
+          <ul class='list-reset display-none tablet:display-block mb0'>
             <li class='i18n-desktop-toggle flex my1 mx2 relative'>
               <%= link_to '#', class: 'white text-decoration-none border border-blue rounded-lg px1 py-tiny', 'aria-expanded': 'false' do %>
                 <%= image_tag asset_url('globe-white.svg'), width: 12, class: 'mr1', alt: '',
@@ -70,29 +70,22 @@
           </ul>
         <% end %>
 
-        <div class="sm-hide">
-          <div class="display-flex">
-            <%= new_window_link_to(t('links.help'), MarketingSite.help_url,
-                                  class: 'caps h6 blue text-decoration-none mr2') %>
-            <%= new_window_link_to(t('links.contact'), MarketingSite.contact_url,
-                                  class: 'caps h6 blue text-decoration-none mr2') %>
-            <%= new_window_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                                  class: 'caps h6 blue text-decoration-none mr2') %>
-          </div>
+        <div class="display-flex tablet:display-none">
+          <%= new_window_link_to(t('links.help'), MarketingSite.help_url,
+                                class: 'caps h6 blue text-decoration-none mr2') %>
+          <%= new_window_link_to(t('links.contact'), MarketingSite.contact_url,
+                                class: 'caps h6 blue text-decoration-none mr2') %>
+          <%= new_window_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
+                                class: 'caps h6 blue text-decoration-none mr2') %>
         </div>
 
-        <div class="sm-show">
-          <%# Note: Once BassCSS is removed, absorb this wrapper into the parent and use class
-              `display-none tablet:display-flex`. This is not currently possible because BassCSS's
-              `display-none` applies using `!important`. %>
-          <div class="display-flex">
-            <%= new_window_link_to(t('links.help'), MarketingSite.help_url,
-                                  class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
-            <%= new_window_link_to(t('links.contact'), MarketingSite.contact_url,
-                                  class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
-            <%= new_window_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
-                                  class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
-          </div>
+        <div class="display-none tablet:display-flex">
+          <%= new_window_link_to(t('links.help'), MarketingSite.help_url,
+                                class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
+          <%= new_window_link_to(t('links.contact'), MarketingSite.contact_url,
+                                class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
+          <%= new_window_link_to(t('links.privacy_policy'), MarketingSite.security_and_privacy_practices_url,
+                                class: 'caps h6 white text-decoration-none mr2 usa-link--alt') %>
         </div>
       </div>
     </div>

@@ -5,7 +5,7 @@ module TwoFactorAuthentication
     end
 
     def html_class
-      'hide'
+      'display-none'
     end
 
     # :reek:UtilityFunction

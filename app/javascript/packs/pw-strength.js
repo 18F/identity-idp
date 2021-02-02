@@ -128,7 +128,7 @@ function analyzePw() {
 
   disableSubmit(submit);
 
-  // the pw strength module is hidden by default ("hide" CSS class)
+  // the pw strength module is hidden by default ("display-none" CSS class)
   // (so that javascript disabled browsers won't see it)
   // thus, first step is unhiding it
   pwCntnr.className = '';
