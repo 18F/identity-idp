@@ -28,12 +28,6 @@ describe Idv::CacController do
     stub_sign_in(user)
   end
 
-  describe 'before_actions' do
-    it 'includes before_actions from IdvSession' do
-      expect(controller).to have_actions(:redirect_if_sp_context_needed)
-    end
-  end
-
   describe '#update' do
     it 'sets the uuid in session for the enter info step' do
       controller.user_session['idv/cac'] = flow_session

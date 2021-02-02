@@ -29,6 +29,12 @@
 
 RSpec::Matchers.define :have_actions do |kind, *names|
   match do |controller|
+    if kind.blank? or names.blank?
+      message = "Must provide kind and an array of names to check for\n"
+      message += 'See spec/matchers/have_actions.rb for details'
+      raise ArgumentError.new(message)
+    end
+
     callbacks = controller._process_action_callbacks.select { |callback| callback.kind == kind }
 
     actions = callbacks.each_with_object([]) do |f, result|
