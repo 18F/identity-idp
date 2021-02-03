@@ -64,7 +64,7 @@ class OpenidConnectTokenForm
   attr_reader :identity
 
   def find_identity_with_code
-    return if code.blank?
+    return if code.blank? || code.include?("\x00")
 
     session_expiration = AppConfig.env.session_timeout_in_minutes.to_i.minutes.ago
     @identity = Identity.where(session_uuid: code).
