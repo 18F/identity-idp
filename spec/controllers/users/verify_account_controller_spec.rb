@@ -51,7 +51,9 @@ RSpec.describe Users::VerifyAccountController do
     context 'user is throttled from sending letters' do
       render_views
       before do
-        Throttler::IsThrottledElseIncrement.call(current_user.id, :idv_send_letter)
+        AppConfig.env.idv_send_letter_max_attempts.to_i.times do
+          Throttler::IsThrottledElseIncrement.call(current_user.id, :idv_send_letter)
+        end
       end
 
       it 'does not contain a link to send a letter' do

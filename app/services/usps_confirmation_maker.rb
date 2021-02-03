@@ -20,7 +20,8 @@ class UspsConfirmationMaker
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
 
-    Throttler::IsThrottledElseIncrement.call(profile&.user&.id, :idv_send_letter)
+    user_id = profile&.user&.id
+    Throttler::IsThrottledElseIncrement.call(user_id, :idv_send_letter) if user_id
     update_proofing_cost
   end
 
