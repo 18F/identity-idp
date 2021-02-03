@@ -31,6 +31,7 @@ module Idv
     end
 
     def remaining_attempts
+      return nil unless document_capture_session
       Throttler::RemainingCount.call(document_capture_session.user_id, :idv_acuant)
     end
 
@@ -77,6 +78,7 @@ module Idv
     end
 
     def throttled_else_increment
+      return unless document_capture_session
       @throttled = Throttler::IsThrottledElseIncrement.call(
         document_capture_session.user_id,
         :idv_acuant,
