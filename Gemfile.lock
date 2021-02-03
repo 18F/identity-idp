@@ -49,10 +49,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: 7ce47a0ac8a089a44cca736bfb022183a36324e8
-  tag: v2.7.1
+  revision: 01c75dcdc25792f62ed12018a72516e338768dfb
+  ref: 01c75dcdc25792f62ed12018a72516e338768dfb
   specs:
-    proofer (2.7.1)
+    proofer (2.8.0)
 
 GIT
   remote: https://github.com/18F/identity-validations.git
