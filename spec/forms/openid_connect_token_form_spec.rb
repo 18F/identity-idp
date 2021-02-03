@@ -80,6 +80,15 @@ RSpec.describe OpenidConnectTokenForm do
         end
       end
 
+      context 'the code has a null byte' do
+        let(:code) { "\x00code"}
+
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        end
+      end
+
       context 'code has expired' do
         before { identity.update(updated_at: 1.day.ago) }
 
