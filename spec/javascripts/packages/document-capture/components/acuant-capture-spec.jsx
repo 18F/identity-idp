@@ -283,7 +283,7 @@ describe('document-capture/components/acuant-capture', () => {
       const error = await findByText('errors.doc_auth.photo_glare');
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: image selected',
+        label: 'IdV: image added',
         payload: {
           documentType: 'id',
           mimeType: 'image/jpeg',
@@ -331,7 +331,7 @@ describe('document-capture/components/acuant-capture', () => {
       const error = await findByText('errors.doc_auth.photo_blurry');
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: image selected',
+        label: 'IdV: image added',
         payload: {
           documentType: 'id',
           mimeType: 'image/jpeg',
@@ -425,7 +425,7 @@ describe('document-capture/components/acuant-capture', () => {
       await waitForElementToBeRemoved(error);
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: image selected',
+        label: 'IdV: image added',
         payload: {
           documentType: 'id',
           mimeType: 'image/jpeg',

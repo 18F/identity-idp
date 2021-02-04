@@ -277,7 +277,7 @@ function AcuantCapture(
 
     addPageAction({
       key: 'documentCapture.acuantWebSDKResult',
-      label: `IdV: ${analyticsPrefix} selected`,
+      label: `IdV: ${analyticsPrefix} added`,
       payload: analyticsPayload,
     });
 
