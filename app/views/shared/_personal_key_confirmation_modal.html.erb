@@ -20,7 +20,7 @@
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
         <div class="clearfix mxn2">
-          <div class="col col-12 sm-col-6 px2 mb2 sm-mb0 sm-hide">
+          <div class="col col-12 sm-col-6 px2 mb2 sm-mb0 tablet:display-none">
             <button type="submit" class="col-12 btn btn-primary personal-key-confirm">
               <%= t('forms.buttons.continue') %>
             </button>
@@ -30,7 +30,7 @@
               <%= t('forms.buttons.back') %>
             </button>
           </div>
-          <div class="col col-12 sm-col-6 px2 mb2 sm-mb0 sm-show">
+          <div class="col col-12 sm-col-6 px2 mb2 sm-mb0 display-none tablet:display-block">
             <button type="submit" class="col-12 btn btn-primary personal-key-confirm">
               <%= t('forms.buttons.continue') %>
             </button>

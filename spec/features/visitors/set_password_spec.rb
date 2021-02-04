@@ -28,7 +28,7 @@ feature 'Visitor sets password during signup' do
     create(:user, :unconfirmed)
     confirm_last_user
 
-    expect(page).to have_css('#pw-strength-cntnr.hide')
+    expect(page).to have_css('#pw-strength-cntnr.display-none')
   end
 
   context 'password strength indicator when JS is on', js: true do
@@ -37,8 +37,8 @@ feature 'Visitor sets password during signup' do
       confirm_last_user
     end
 
-    it 'is visible on page (not have "hide" class)' do
-      expect(page).to_not have_css('#pw-strength-cntnr.hide')
+    it 'is visible on page (not have "display-none" class)' do
+      expect(page).to_not have_css('#pw-strength-cntnr.display-none')
     end
 
     it 'updates as password changes' do

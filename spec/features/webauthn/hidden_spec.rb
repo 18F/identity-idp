@@ -22,7 +22,7 @@ describe 'webauthn hide' do
       page.find(
         'label[for=two_factor_options_form_selection_webauthn]',
         visible: :all,
-      )[:class].include?('hide')
+      )[:class].include?('display-none')
     end
   end
 
@@ -50,7 +50,7 @@ describe 'webauthn hide' do
     def webauthn_option_hidden?
       page.find(
         'label[for=two_factor_options_form_selection_webauthn]',
-      ).find(:xpath, '..')[:class].include?('hide')
+      ).find(:xpath, '..')[:class].include?('display-none')
     end
   end
 end
