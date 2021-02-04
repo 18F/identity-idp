@@ -88,6 +88,7 @@ module Idv
 
       def timed_out
         delete_async
+        @flow.analytics.track_event(Analytics::PROOFING_DOCUMENT_TIMEOUT)
         DocumentCaptureSessionAsyncResult.timed_out
       end
 

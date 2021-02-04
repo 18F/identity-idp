@@ -162,6 +162,10 @@ function FormSteps({
   }
 
   const unknownFieldErrors = activeErrors.filter((error) => !fields.current[error.field]?.element);
+  const isValidStep = step.validator?.(values) ?? true;
+  const hasUnresolvedFieldErrors =
+    activeErrors.length && activeErrors.length > unknownFieldErrors.length;
+  const canContinue = isValidStep && !hasUnresolvedFieldErrors;
 
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
@@ -173,7 +177,7 @@ function FormSteps({
     event.preventDefault();
 
     // Don't proceed if field errors have yet to be resolved.
-    if (activeErrors.length && activeErrors.length > unknownFieldErrors.length) {
+    if (hasUnresolvedFieldErrors) {
       setActiveErrors(Array.from(activeErrors));
       didSubmitWithErrors.current = true;
       return;
@@ -202,8 +206,6 @@ function FormSteps({
 
   const { form: Form, footer: Footer, name, title } = step;
   const isLastStep = stepIndex + 1 === steps.length;
-
-  const canContinue = (step.validator?.(values) ?? true) && !activeErrors.length;
 
   return (
     <form ref={formRef} onSubmit={toNextStep}>

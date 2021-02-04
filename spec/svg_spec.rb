@@ -11,7 +11,7 @@ RSpec.describe 'SVG files' do
         doc = Nokogiri::XML(File.read(svg_path))
 
         expect(doc.css('style')).to be_empty.or(
-          have_attributes(text: match(%r{^\s*/\*\s*lint-ignore\s*\*/})),
+          have_attributes(text: match(%r{^\s*/\*\!lint-ignore\*/})),
         )
       end
     end

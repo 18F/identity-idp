@@ -29,29 +29,30 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 94c96472a5948f3dd97bddcb00401f181ccbfd36
-  ref: 94c96472a5948f3dd97bddcb00401f181ccbfd36
+  revision: 9ef27877e2b9aa7edd2e036293e701a6ef7e3c1b
+  ref: 9ef27877e2b9aa7edd2e036293e701a6ef7e3c1b
   specs:
-    identity-idp-functions (0.7.7)
+    identity-idp-functions (0.9.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
       retries (>= 0.0.5)
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: 1bef47ea242d0aa2e7d777370cafaa7556f7874f
-  tag: v2.3.0
+  revision: e9a1650c1771ff85d666e08e38cd3b51062e0d2d
+  tag: v2.5.0
   specs:
-    lexisnexis (2.3.0)
+    lexisnexis (2.5.0)
+      activesupport
       dotenv
       faraday
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: f48ecd14ef602d574119022c0fc15350cbd7baa0
-  tag: v2.7.0
+  revision: 9c73058b6cafd5299266fb9d554ced04ec63b84a
+  ref: v2.8.0
   specs:
-    proofer (2.7.0)
+    proofer (2.8.0)
 
 GIT
   remote: https://github.com/18F/identity-validations.git
@@ -188,7 +189,7 @@ GEM
     aws-sdk-ses (1.36.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-ssm (1.100.0)
+    aws-sdk-ssm (1.103.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.2.2)

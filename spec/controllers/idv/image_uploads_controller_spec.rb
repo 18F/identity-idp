@@ -108,6 +108,32 @@ describe Idv::ImageUploadsController do
       end
     end
 
+    context 'when document capture session is invalid' do
+      it 'returns error status when document_capture_session is not provided' do
+        params.delete(:document_capture_session_uuid)
+        action
+
+        json = JSON.parse(response.body, symbolize_names: true)
+        expect(response.status).to eq(400)
+        expect(json[:success]).to eq(false)
+        expect(json[:errors]).to eq [
+          { field: 'document_capture_session', message: 'Please fill in this field.' },
+        ]
+      end
+
+      it 'returns error status when document_capture_session is invalid' do
+        params[:document_capture_session_uuid] = 'bad uuid'
+        action
+
+        json = JSON.parse(response.body, symbolize_names: true)
+        expect(response.status).to eq(400)
+        expect(json[:success]).to eq(false)
+        expect(json[:errors]).to eq [
+          { field: 'document_capture_session', message: 'Please fill in this field.' },
+        ]
+      end
+    end
+
     context 'throttling' do
       it 'returns remaining_attempts with error' do
         params.delete(:front)

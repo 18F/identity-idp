@@ -1,6 +1,8 @@
 import { loadPolyfills } from '@18f/identity-polyfill';
 import 'intl-tel-input/build/js/utils.js';
 import * as intlTelInput from 'intl-tel-input/build/js/intlTelInput';
+import '../app/phone-internationalization';
+import '../app/phone-validation';
 
 /**
  * @param {HTMLDivElement} iti

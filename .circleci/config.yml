@@ -185,6 +185,7 @@ jobs:
             bundle exec rubocop
             make lint_erb
             make check_asset_strings
+            make lint_optimized_assets
             NODE_ENV=production ./bin/webpack && yarn es5-safe
   build-release-container:
     working_directory: ~/identity-idp

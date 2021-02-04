@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module LambdaJobs
-  GIT_REF = '94c96472a5948f3dd97bddcb00401f181ccbfd36'
+  GIT_REF = '9ef27877e2b9aa7edd2e036293e701a6ef7e3c1b'
 end

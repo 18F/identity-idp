@@ -1,10 +1,13 @@
 const INTERNATIONAL_CODE_REGEX = /^\+(\d+) |^1 /;
 
+// @ts-ignore
 const { I18n } = window.LoginGov;
 
 const selectedInternationCodeOption = () => {
-  const dropdown = document.querySelector('[data-international-phone-form] .international-code');
-  return dropdown.item(dropdown.selectedIndex);
+  const dropdown = /** @type {HTMLSelectElement} */ (document.querySelector(
+    '[data-international-phone-form] .international-code',
+  ));
+  return /** @type {HTMLOptionElement} */ (dropdown.item(dropdown.selectedIndex));
 };
 
 const unsupportedInternationalPhoneOTPDeliveryWarningMessage = () => {
@@ -51,14 +54,14 @@ const updateOTPDeliveryMethods = () => {
     return;
   }
 
-  const phoneLabel = phoneRadio.parentNode.parentNode;
+  const phoneLabel = /** @type {Element} */ (phoneRadio.parentNode).parentNode;
   const deliveryMethodHint = document.querySelector('#otp_delivery_preference_instruction');
 
   const warningMessage = unsupportedInternationalPhoneOTPDeliveryWarningMessage();
   if (warningMessage) {
     disablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, warningMessage);
   } else {
-    enablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint);
+    enablePhoneState(phoneRadio, phoneLabel, deliveryMethodHint);
   }
 };
 
@@ -74,7 +77,9 @@ const updateInternationalCodeInPhone = (phone, newCode) =>
   phone.replace(new RegExp(`^\\+?(\\d+\\s+|${newCode})?`), `+${newCode} `);
 
 const updateInternationalCodeInput = () => {
-  const phoneInput = document.querySelector('[data-international-phone-form] .phone');
+  const phoneInput = /** @type {HTMLInputElement} */ (document.querySelector(
+    '[data-international-phone-form] .phone',
+  ));
   const phone = phoneInput.value;
   const inputInternationalCode = internationalCodeFromPhone(phone);
   const selectedInternationalCode = selectedInternationCodeOption().dataset.countryCode;
