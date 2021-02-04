@@ -2,7 +2,10 @@ import sinon from 'sinon';
 import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
-import AcuantCapture from '@18f/identity-document-capture/components/acuant-capture';
+import AcuantCapture, {
+  ACCEPTABLE_GLARE_SCORE,
+  ACCEPTABLE_SHARPNESS_SCORE,
+} from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
@@ -20,8 +23,15 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
   sharpness: 100,
 };
 
-const ACUANT_CAPTURE_GLARE_RESULT = { ...ACUANT_CAPTURE_SUCCESS_RESULT, glare: 38 };
-const ACUANT_CAPTURE_BLURRY_RESULT = { ...ACUANT_CAPTURE_SUCCESS_RESULT, sharpness: 38 };
+const ACUANT_CAPTURE_GLARE_RESULT = {
+  ...ACUANT_CAPTURE_SUCCESS_RESULT,
+  glare: ACCEPTABLE_GLARE_SCORE - 1,
+};
+
+const ACUANT_CAPTURE_BLURRY_RESULT = {
+  ...ACUANT_CAPTURE_SUCCESS_RESULT,
+  sharpness: ACCEPTABLE_SHARPNESS_SCORE - 1,
+};
 
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
@@ -252,7 +262,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" name="image" />
+              <AcuantCapture label="Image" analyticsPrefix="image" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -273,16 +283,19 @@ describe('document-capture/components/acuant-capture', () => {
       const error = await findByText('errors.doc_auth.photo_glare');
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: Acuant web SDK photo analyzed',
+        label: 'IdV: image selected',
         payload: {
           documentType: 'id',
+          mimeType: 'image/jpeg',
+          source: 'acuant',
           dpi: 519,
-          fieldName: 'image',
-          glare: 38,
+          glare: ACCEPTABLE_GLARE_SCORE - 1,
           height: 1104,
+          sharpnessScoreThreshold: ACCEPTABLE_SHARPNESS_SCORE,
+          glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
           isAssessedAsBlurry: false,
           isAssessedAsGlare: true,
-          result: 'glare',
+          assessment: 'glare',
           sharpness: 100,
           width: 1748,
         },
@@ -297,7 +310,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" name="image" />
+              <AcuantCapture label="Image" analyticsPrefix="image" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -318,17 +331,20 @@ describe('document-capture/components/acuant-capture', () => {
       const error = await findByText('errors.doc_auth.photo_blurry');
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: Acuant web SDK photo analyzed',
+        label: 'IdV: image selected',
         payload: {
           documentType: 'id',
+          mimeType: 'image/jpeg',
+          source: 'acuant',
           dpi: 519,
-          fieldName: 'image',
           glare: 100,
           height: 1104,
+          sharpnessScoreThreshold: ACCEPTABLE_SHARPNESS_SCORE,
+          glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
           isAssessedAsBlurry: true,
           isAssessedAsGlare: false,
-          result: 'blurry',
-          sharpness: 38,
+          assessment: 'blurry',
+          sharpness: ACCEPTABLE_SHARPNESS_SCORE - 1,
           width: 1748,
         },
       });
@@ -375,7 +391,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" name="image" />
+              <AcuantCapture label="Image" analyticsPrefix="image" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -409,17 +425,20 @@ describe('document-capture/components/acuant-capture', () => {
       await waitForElementToBeRemoved(error);
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: Acuant web SDK photo analyzed',
+        label: 'IdV: image selected',
         payload: {
           documentType: 'id',
+          mimeType: 'image/jpeg',
+          source: 'acuant',
           dpi: 519,
-          fieldName: 'image',
           glare: 100,
           height: 1104,
+          sharpnessScoreThreshold: ACCEPTABLE_SHARPNESS_SCORE,
+          glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
           isAssessedAsBlurry: true,
           isAssessedAsGlare: false,
-          result: 'blurry',
-          sharpness: 38,
+          assessment: 'blurry',
+          sharpness: ACCEPTABLE_SHARPNESS_SCORE - 1,
           width: 1748,
         },
       });

@@ -45,7 +45,6 @@ function SelfieStep({
       {isMobile || !hasMediaAccess() ? (
         <AcuantCapture
           ref={registerField('selfie', { isRequired: true })}
-          name="selfie"
           capture="user"
           label={t('doc_auth.headings.document_capture_selfie')}
           bannerText={t('doc_auth.headings.photo')}
@@ -53,6 +52,7 @@ function SelfieStep({
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           allowUpload={false}
           errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
+          analyticsPrefix="selfie"
         />
       ) : (
         <SelfieCapture

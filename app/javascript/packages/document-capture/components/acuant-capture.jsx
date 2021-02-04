@@ -24,6 +24,45 @@ import './acuant-capture.scss';
 /** @typedef {import('./acuant-capture-canvas').AcuantDocumentType} AcuantDocumentType */
 
 /**
+ * @typedef {"id"|"passport"|"none"} AcuantDocumentTypeLabel
+ */
+
+/**
+ * @typedef {"success"|"glare"|"blurry"} AcuantImageAssessment
+ */
+
+/**
+ * @typedef {"acuant"} ImageSource
+ */
+
+/**
+ * @typedef ImageAnalyticsPayload
+ *
+ * @prop {number} width
+ * @prop {number} height
+ * @prop {string?} mimeType Mime type, or null if unknown.
+ * @prop {ImageSource} source Method by which image was added.
+ */
+
+/**
+ * @typedef _AcuantImageAnalyticsPayload
+ *
+ * @prop {AcuantDocumentTypeLabel} documentType
+ * @prop {number} dpi
+ * @prop {number} glare
+ * @prop {number} glareScoreThreshold
+ * @prop {boolean} isAssessedAsGlare
+ * @prop {number} sharpness
+ * @prop {number} sharpnessScoreThreshold
+ * @prop {boolean} isAssessedAsBlurry
+ * @prop {AcuantImageAssessment} assessment
+ */
+
+/**
+ * @typedef {ImageAnalyticsPayload & _AcuantImageAnalyticsPayload} AcuantImageAnalyticsPayload
+ */
+
+/**
  * @typedef AcuantPassiveLiveness
  *
  * @prop {(callback:(nextImageData:string)=>void)=>void} startSelfieCapture Start liveness capture.
@@ -42,7 +81,6 @@ import './acuant-capture.scss';
 /**
  * @typedef AcuantCaptureProps
  *
- * @prop {string} name A language-agnostic identifier for the field.
  * @prop {string} label Label associated with file input.
  * @prop {string=} bannerText Optional banner text to show in file input.
  * @prop {string|Blob|null|undefined} value Current value.
@@ -52,6 +90,7 @@ import './acuant-capture.scss';
  * @prop {string=} className Optional additional class names.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  * @prop {ReactNode=} errorMessage Error to show.
+ * @prop {string} analyticsPrefix Prefix to prepend to user action analytics labels.
  */
 
 /**
@@ -59,21 +98,21 @@ import './acuant-capture.scss';
  *
  * @type {number}
  */
-const ACCEPTABLE_GLARE_SCORE = 50;
+export const ACCEPTABLE_GLARE_SCORE = 50;
 
 /**
  * The minimum sharpness score value to be considered acceptable.
  *
  * @type {number}
  */
-const ACCEPTABLE_SHARPNESS_SCORE = 50;
+export const ACCEPTABLE_SHARPNESS_SCORE = 50;
 
 /**
  * Returns a human-readable document label corresponding to the given document type constant.
  *
  * @param {AcuantDocumentType} documentType
  *
- * @return {string} Human-readable document label.
+ * @return {AcuantDocumentTypeLabel} Human-readable document label.
  */
 function getDocumentTypeLabel(documentType) {
   switch (documentType) {
@@ -94,7 +133,6 @@ function getDocumentTypeLabel(documentType) {
  */
 function AcuantCapture(
   {
-    name,
     label,
     bannerText,
     value,
@@ -103,6 +141,7 @@ function AcuantCapture(
     className,
     allowUpload = true,
     errorMessage,
+    analyticsPrefix,
   },
   ref,
 ) {
@@ -206,33 +245,40 @@ function AcuantCapture(
     const isAssessedAsBlurry = sharpness < ACCEPTABLE_SHARPNESS_SCORE;
     const { width, height, data } = image;
 
-    let result;
+    /** @type {AcuantImageAssessment} */
+    let assessment;
     if (isAssessedAsGlare) {
       setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
-      result = 'glare';
+      assessment = 'glare';
     } else if (isAssessedAsBlurry) {
       setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
-      result = 'blurry';
+      assessment = 'blurry';
     } else {
       onChangeAndResetError(data);
-      result = 'success';
+      assessment = 'success';
     }
+
+    /** @type {AcuantImageAnalyticsPayload} */
+    const analyticsPayload = {
+      width,
+      height,
+      mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
+      source: 'acuant',
+      documentType: getDocumentTypeLabel(cardType),
+      dpi,
+      glare,
+      glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
+      isAssessedAsGlare,
+      sharpness,
+      sharpnessScoreThreshold: ACCEPTABLE_SHARPNESS_SCORE,
+      isAssessedAsBlurry,
+      assessment,
+    };
 
     addPageAction({
       key: 'documentCapture.acuantWebSDKResult',
-      label: 'IdV: Acuant web SDK photo analyzed',
-      payload: {
-        fieldName: name,
-        documentType: getDocumentTypeLabel(cardType),
-        width,
-        height,
-        dpi,
-        glare,
-        sharpness,
-        isAssessedAsGlare,
-        isAssessedAsBlurry,
-        result,
-      },
+      label: `IdV: ${analyticsPrefix} selected`,
+      payload: analyticsPayload,
     });
 
     setIsCapturingEnvironment(false);
