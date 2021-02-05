@@ -135,10 +135,23 @@ describe Idv::DocAuthController do
       expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
     end
 
-    it 'skips from welcome to document capture' do
-      put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+    context 'skipping upload step' do
+      before do
+        user = create(:user, :signed_up)
+        stub_sign_in(user)
+        DocAuthLog.create(user_id: user.id)
+        put :update, params: { step: 'welcome', ial2_consent_given: true, skip_upload: true }
+      end
 
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
+      it 'progresses to document capture' do
+        expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
+      end
+
+      it 'logs funnel events for upload step' do
+        log = DocAuthLog.last
+        expect(log.upload_view_count).to eq 1
+        expect(log.upload_view_at).not_to be_nil
+      end
     end
 
     it 'redirects from welcome to no camera error' do
