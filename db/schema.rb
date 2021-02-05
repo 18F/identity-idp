@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_20_220857) do
+ActiveRecord::Schema.define(version: 2021_01_29_150956) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -407,15 +407,6 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.index ["registered_at"], name: "index_registration_logs_on_registered_at"
     t.index ["submitted_at"], name: "index_registration_logs_on_submitted_at"
     t.index ["user_id"], name: "index_registration_logs_on_user_id", unique: true
-  end
-
-  create_table "remote_settings", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "url", null: false
-    t.text "contents", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_remote_settings_on_name", unique: true
   end
 
   create_table "security_events", force: :cascade do |t|
