@@ -42,7 +42,16 @@
   </div>
   <%= t('doc_auth.forms.ssn') %>
   <div class='sm-col sm-col-8 px0 mt0 mb3'>
-    <input value="<%= flow_session[:pii_from_doc][:ssn] %>" class="block col-12 field password disabled ssn ssn-toggle" aria-label="<%= t('doc_auth.forms.ssn') %>" aria-invalid="false" aria-required="false" readonly maxlength="11" pattern="^\d{3}-?\d{2}-?\d{4}$" size="11" type="password" name="doc_auth[ssn]" id="doc_auth_ssn" />
+    <%= tag.input value: flow_session[:pii_from_doc][:ssn],
+                  class: 'block col-12 field password disabled ssn ssn-toggle',
+                  aria: { label: t('doc_auth.forms.ssn'), invalid: false, required: false },
+                  readonly: true,
+                  maxlenth: 11,
+                  pattern: "^\d{3}-?\d{2}-?\d{4}$",
+                  size: "11",
+                  type: "password",
+                  name: "doc_auth[ssn]",
+                  id: "doc_auth_ssn" %>
   </div>
 
   <div class="mt4">
