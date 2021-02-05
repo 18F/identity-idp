@@ -452,7 +452,6 @@ ActiveRecord::Schema.define(version: 2021_01_29_150956) do
     t.string "redirect_uris", default: [], array: true
     t.integer "agency_id"
     t.text "failure_to_proof_url"
-    t.integer "aal"
     t.integer "ial"
     t.boolean "piv_cac", default: false
     t.boolean "piv_cac_scoped_by_email", default: false
