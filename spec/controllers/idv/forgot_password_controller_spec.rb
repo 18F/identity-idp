@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 describe Idv::ForgotPasswordController do
+  describe 'before_actions' do
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+    end
+  end
+
   describe '#new' do
     it 'tracks the event in analytics when referer is nil' do
       stub_sign_in
