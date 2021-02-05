@@ -43,7 +43,7 @@
   <%= t('doc_auth.forms.ssn') %>
   <div class='sm-col sm-col-8 px0 mt0 mb3'>
     <%= tag.input value: flow_session[:pii_from_doc][:ssn],
-                  class: 'block col-12 field password disabled ssn ssn-toggle',
+                  class: 'block col-12 field password ssn ssn-toggle bg-white',
                   aria: { label: t('doc_auth.forms.ssn'), invalid: false, required: false },
                   readonly: true,
                   maxlenth: 11,

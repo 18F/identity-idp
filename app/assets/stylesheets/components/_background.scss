@@ -3,6 +3,7 @@
 .bg-lighter-blue { background-color: $blue-lighter; }
 .bg-lightest-blue { background-color: $blue-lightest; }
 .bg-lightest-red { background-color: $red-lightest; }
+.bg-white { background-color: $white !important; }
 
 @media #{$breakpoint-sm} {
   .sm-bg-light-blue { background-color: $blue-light; }
