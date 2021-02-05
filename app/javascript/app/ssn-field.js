@@ -55,7 +55,7 @@ function formatSSNFieldAndLimitLength() {
         if (this.value.length > maxLength) {
           this.value = this.value.slice(0, maxLength);
           const isValid = this.checkValidity();
-          input.setAttribute('aria-invaid', !isValid);
+          input.setAttribute('aria-invalid', !isValid);
         }
       }
 
