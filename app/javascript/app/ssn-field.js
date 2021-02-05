@@ -43,7 +43,7 @@ function formatSSNFieldAndLimitLength() {
         const didFormat = input.value !== value;
         if (didFormat) {
           const isValid = input.checkValidity();
-          input.setAttribute('aria-invaid', !isValid);
+          input.setAttribute('aria-invalid', !isValid);
         }
       }
 
