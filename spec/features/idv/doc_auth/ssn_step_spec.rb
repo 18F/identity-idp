@@ -17,15 +17,17 @@ feature 'doc auth ssn step' do
       expect(page).to have_content(t('doc_auth.headings.capture_complete'))
     end
 
-    it 'proceeds to the next page with valid info' do
+    it 'proceeds to the next page with valid info', js: true do
       fill_out_ssn_form_ok
-      click_idv_continue
+      expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('false')
+      click_idv_continue(wait: true)
 
       expect(page).to have_current_path(idv_doc_auth_verify_step)
     end
 
-    it 'does not proceed to the next page with invalid info' do
+    it 'does not proceed to the next page with invalid info', js: true do
       fill_out_ssn_form_fail
+      expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('true')
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
