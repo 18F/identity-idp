@@ -20,6 +20,47 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
 import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
+/** @typedef {import('./acuant-capture-canvas').AcuantSuccessResponse} AcuantSuccessResponse */
+/** @typedef {import('./acuant-capture-canvas').AcuantDocumentType} AcuantDocumentType */
+
+/**
+ * @typedef {"id"|"passport"|"none"} AcuantDocumentTypeLabel
+ */
+
+/**
+ * @typedef {"success"|"glare"|"blurry"} AcuantImageAssessment
+ */
+
+/**
+ * @typedef {"acuant"} ImageSource
+ */
+
+/**
+ * @typedef ImageAnalyticsPayload
+ *
+ * @prop {number} width
+ * @prop {number} height
+ * @prop {string?} mimeType Mime type, or null if unknown.
+ * @prop {ImageSource} source Method by which image was added.
+ */
+
+/**
+ * @typedef _AcuantImageAnalyticsPayload
+ *
+ * @prop {AcuantDocumentTypeLabel} documentType
+ * @prop {number} dpi
+ * @prop {number} glare
+ * @prop {number} glareScoreThreshold
+ * @prop {boolean} isAssessedAsGlare
+ * @prop {number} sharpness
+ * @prop {number} sharpnessScoreThreshold
+ * @prop {boolean} isAssessedAsBlurry
+ * @prop {AcuantImageAssessment} assessment
+ */
+
+/**
+ * @typedef {ImageAnalyticsPayload & _AcuantImageAnalyticsPayload} AcuantImageAnalyticsPayload
+ */
 
 /**
  * @typedef AcuantPassiveLiveness
@@ -49,6 +90,7 @@ import './acuant-capture.scss';
  * @prop {string=} className Optional additional class names.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  * @prop {ReactNode=} errorMessage Error to show.
+ * @prop {string} analyticsPrefix Prefix to prepend to user action analytics labels.
  */
 
 /**
@@ -56,14 +98,32 @@ import './acuant-capture.scss';
  *
  * @type {number}
  */
-const ACCEPTABLE_GLARE_SCORE = 50;
+export const ACCEPTABLE_GLARE_SCORE = 50;
 
 /**
  * The minimum sharpness score value to be considered acceptable.
  *
  * @type {number}
  */
-const ACCEPTABLE_SHARPNESS_SCORE = 50;
+export const ACCEPTABLE_SHARPNESS_SCORE = 50;
+
+/**
+ * Returns a human-readable document label corresponding to the given document type constant.
+ *
+ * @param {AcuantDocumentType} documentType
+ *
+ * @return {AcuantDocumentTypeLabel} Human-readable document label.
+ */
+function getDocumentTypeLabel(documentType) {
+  switch (documentType) {
+    case 1:
+      return 'id';
+    case 2:
+      return 'passport';
+    default:
+      return 'none';
+  }
+}
 
 /**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
@@ -81,6 +141,7 @@ function AcuantCapture(
     className,
     allowUpload = true,
     errorMessage,
+    analyticsPrefix,
   },
   ref,
 ) {
@@ -175,32 +236,60 @@ function AcuantCapture(
     }
   }
 
+  /**
+   * @param {AcuantSuccessResponse} nextCapture
+   */
+  function onAcuantImageCaptureSuccess(nextCapture) {
+    const { image, cardType, dpi, glare, sharpness } = nextCapture;
+    const isAssessedAsGlare = glare < ACCEPTABLE_GLARE_SCORE;
+    const isAssessedAsBlurry = sharpness < ACCEPTABLE_SHARPNESS_SCORE;
+    const { width, height, data } = image;
+
+    /** @type {AcuantImageAssessment} */
+    let assessment;
+    if (isAssessedAsGlare) {
+      setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
+      assessment = 'glare';
+    } else if (isAssessedAsBlurry) {
+      setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
+      assessment = 'blurry';
+    } else {
+      onChangeAndResetError(data);
+      assessment = 'success';
+    }
+
+    /** @type {AcuantImageAnalyticsPayload} */
+    const analyticsPayload = {
+      width,
+      height,
+      mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
+      source: 'acuant',
+      documentType: getDocumentTypeLabel(cardType),
+      dpi,
+      glare,
+      glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
+      isAssessedAsGlare,
+      sharpness,
+      sharpnessScoreThreshold: ACCEPTABLE_SHARPNESS_SCORE,
+      isAssessedAsBlurry,
+      assessment,
+    };
+
+    addPageAction({
+      key: 'documentCapture.acuantWebSDKResult',
+      label: `IdV: ${analyticsPrefix} added`,
+      payload: analyticsPayload,
+    });
+
+    setIsCapturingEnvironment(false);
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
         <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
-            onImageCaptureSuccess={(nextCapture) => {
-              let result;
-              if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
-                setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
-                result = 'glare';
-              } else if (nextCapture.sharpness < ACCEPTABLE_SHARPNESS_SCORE) {
-                setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
-                result = 'blurry';
-              } else {
-                onChangeAndResetError(nextCapture.image.data);
-                result = 'success';
-              }
-
-              addPageAction({
-                key: 'documentCapture.acuantWebSDKResult',
-                label: 'IdV: Acuant web SDK photo analyzed',
-                payload: { result },
-              });
-
-              setIsCapturingEnvironment(false);
-            }}
+            onImageCaptureSuccess={onAcuantImageCaptureSuccess}
             onImageCaptureFailure={() => {
               setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
               setIsCapturingEnvironment(false);
