@@ -42,8 +42,7 @@ function formatSSNFieldAndLimitLength() {
         }
         const didFormat = input.value !== value;
         if (didFormat) {
-          const isValid = input.checkValidity();
-          input.setAttribute('aria-invalid', !isValid);
+          input.checkValidity();
         }
       }
 
@@ -54,8 +53,7 @@ function formatSSNFieldAndLimitLength() {
         const maxLength = 9 + (this.value.match(/-/g) || []).length;
         if (this.value.length > maxLength) {
           this.value = this.value.slice(0, maxLength);
-          const isValid = this.checkValidity();
-          input.setAttribute('aria-invalid', !isValid);
+          this.checkValidity();
         }
       }
 
