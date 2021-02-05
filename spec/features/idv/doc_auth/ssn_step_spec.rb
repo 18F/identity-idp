@@ -20,7 +20,7 @@ feature 'doc auth ssn step' do
     it 'proceeds to the next page with valid info', js: true do
       fill_out_ssn_form_ok
       expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('false')
-      click_idv_continue
+      click_idv_continue(wait: true)
 
       expect(page).to have_current_path(idv_doc_auth_verify_step)
     end
