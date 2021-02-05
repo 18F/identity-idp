@@ -128,7 +128,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   def complete_all_doc_auth_steps(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
-    click_idv_continue
+    click_idv_continue(wait: true)
   end
 
   def mock_doc_auth_no_name_pii(method)

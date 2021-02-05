@@ -29,7 +29,7 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: '(703) 555-5555'
   end
 
-  def click_idv_continue(wait: true)
+  def click_idv_continue(wait: false)
     url = current_path
     click_on t('forms.buttons.continue'), match: :first
     expect(page).to_not have_current_path(url, wait: 10) if wait
