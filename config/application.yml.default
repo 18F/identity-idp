@@ -154,7 +154,7 @@ development:
   account_reset_auth_token: abc123
   acuant_assure_id_url: ''
   acuant_facial_match_url: ''
-  acuant_max_attempts: '20'
+  acuant_max_attempts: '10'
   acuant_passlive_url: ''
   address_proof_result_lambda_token: 123ABC
   attribute_cost: 4000$8$4$
@@ -264,7 +264,7 @@ production:
   account_reset_auth_token:
   acuant_assure_id_url: ''
   acuant_facial_match_url: ''
-  acuant_max_attempts: '20'
+  acuant_max_attempts: '10'
   acuant_passlive_url: ''
   address_proof_result_lambda_token:
   attribute_cost: 4000$8$4$
