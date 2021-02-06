@@ -20,7 +20,7 @@ feature 'doc auth verify step' do
     expect(page).to have_content(t('doc_auth.headings.verify'))
   end
 
-  it 'can toggle viewing the ssn', :js do
+  it 'can toggle viewing the ssn' do
     input_with_ssn_value = "input[value='666-66-1234']"
     expect(page).to have_selector(input_with_ssn_value), visible: false
 
