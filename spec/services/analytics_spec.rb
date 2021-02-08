@@ -19,23 +19,22 @@ describe Analytics do
   end
 
   let(:ahoy) { instance_double(FakeAhoyTracker) }
+  let(:current_user) { build_stubbed(:user, uuid: '123') }
 
-  before { allow(FakeAhoyTracker).to receive(:new).and_return(ahoy) }
+  subject(:analytics) do
+    Analytics.new(
+      user: current_user,
+      request: FakeRequest.new,
+      sp: 'http://localhost:3000',
+      ahoy: ahoy,
+    )
+  end
 
   describe '#track_event' do
     it 'identifies the user and sends the event to the backend' do
-      user = build_stubbed(:user, uuid: '123')
-
-      analytics = Analytics.new(
-        user: user,
-        request: FakeRequest.new,
-        sp: 'http://localhost:3000',
-        ahoy: ahoy,
-      )
-
       analytics_hash = {
         event_properties: {},
-        user_id: user.uuid,
+        user_id: current_user.uuid,
       }
 
       expect(ahoy).to receive(:track).
@@ -47,13 +46,6 @@ describe Analytics do
     it 'tracks the user passed in to the track_event method' do
       current_user = build_stubbed(:user, uuid: '123')
       tracked_user = build_stubbed(:user, uuid: '456')
-
-      analytics = Analytics.new(
-        user: current_user,
-        request: FakeRequest.new,
-        sp: 'http://localhost:3000',
-        ahoy: ahoy,
-      )
 
       analytics_hash = {
         event_properties: {},
