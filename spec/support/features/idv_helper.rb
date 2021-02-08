@@ -29,10 +29,10 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: '(703) 555-5555'
   end
 
-  def click_idv_continue(wait: false)
-    url = current_path
+  def click_idv_continue
     click_on t('forms.buttons.continue'), match: :first
-    expect(page).to_not have_current_path(url, wait: 10) if wait
+    # If button shows spinner when clicked, wait for it to finish.
+    expect(page).to have_no_css('.spinner-button.spinner-button--spinner-active', wait: 10)
   end
 
   def choose_idv_otp_delivery_method_sms
