@@ -27,7 +27,7 @@ module Idv
     end
 
     def update_if_skipping_upload
-      return unless params[:step] == 'upload' && flow_session&.[](:skip_upload_step)
+      return if params[:step] != 'upload' || !flow_session || !flow_session[:skip_upload_step]
       track_step_visited
       update
     end
