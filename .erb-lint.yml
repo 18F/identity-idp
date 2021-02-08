@@ -30,3 +30,6 @@ linters:
           - 'btn-(small|big|narrow|transparent)'
           - 'border-(black|gray|white|aqua|orange|fuchsia|purple|maroon|darken-[1-4]|lighten-[1-4])'
         suggestion: 'Use USWDS classes instead of BassCSS.'
+      - deprecated:
+          - 'js-consent-form'
+        suggestion: 'Rename classes that are known to be hidden by the Hush plugin'
