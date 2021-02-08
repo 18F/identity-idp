@@ -145,10 +145,11 @@ module Flow
 
     def analytics_submitted
       @analytics_id + ' submitted'
+      "#{@analytics_id} submitted: #{current_step_name}"
     end
 
     def analytics_visited
-      @analytics_id + ' visited'
+      "#{@analytics_id} visited: #{current_step_name}"
     end
 
     def analytics_optional_step
@@ -156,12 +157,15 @@ module Flow
     end
 
     def analytics_properties
-      current_step_name = "#{current_step.to_s}_#{action_name}"
       current_flow_step_counts[current_step_name] ||= 0
       {
         step: current_step,
         step_count: current_flow_step_counts[current_step_name] += 1,
       }
+    end
+
+    def current_step_name
+      "#{current_step.to_s}_#{action_name}"
     end
 
     def current_flow_step_counts
