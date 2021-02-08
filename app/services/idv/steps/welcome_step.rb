@@ -19,7 +19,11 @@ module Idv
       private
 
       def skip_to_capture
-        # For funnel integrity, log upload step as visited.
+        # For funnel integrity, log upload step as completed.
+        @flow.analytics.track_event("#{Analytics::DOC_AUTH} visited", step: 'upload', step_count: 1)
+        @flow.analytics.track_event(
+          "#{Analytics::DOC_AUTH} submitted", step: 'upload', step_count: 1, success: true
+        )
         Funnel::DocAuth::RegisterStep.new(user_id, sp_session[:issuer]).call(:upload, :view, true)
 
         # Skips to `document_capture` step.

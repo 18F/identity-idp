@@ -151,10 +151,17 @@ describe Idv::DocAuthController do
         expect(response).to redirect_to idv_doc_auth_step_url(step: :document_capture)
       end
 
-      it 'logs funnel events for upload step' do
+      it 'logs analytics for upload step' do
         log = DocAuthLog.last
         expect(log.upload_view_count).to eq 1
         expect(log.upload_view_at).not_to be_nil
+
+        expect(@analytics).to have_received(:track_event).ordered.with(
+          Analytics::DOC_AUTH + ' visited', step: 'upload', step_count: 1
+        )
+        expect(@analytics).to have_received(:track_event).ordered.with(
+          Analytics::DOC_AUTH + ' submitted', step: 'upload', step_count: 1, success: true
+        )
       end
     end
 
