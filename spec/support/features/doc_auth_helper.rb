@@ -79,6 +79,8 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
     complete_doc_auth_steps_before_upload_step(expect_accessible: expect_accessible)
+    # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
+    return if page.current_path == idv_doc_auth_document_capture_step
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     click_on t('doc_auth.info.upload_computer_link')
   end
