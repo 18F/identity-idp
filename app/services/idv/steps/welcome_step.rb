@@ -19,14 +19,8 @@ module Idv
       private
 
       def skip_to_capture
-        # For funnel integrity, log upload step as visited.
-        Funnel::DocAuth::RegisterStep.new(user_id, sp_session[:issuer]).call(:upload, :view, true)
-
-        # Skips to `document_capture` step.
-        mark_step_complete(:upload)
-        mark_step_complete(:send_link)
-        mark_step_complete(:link_sent)
-        mark_step_complete(:email_sent)
+        # See: Idv::DocAuthController#update_if_skipping_upload
+        flow_session[:skip_upload_step] = true
       end
 
       def no_camera_redirect

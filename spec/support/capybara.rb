@@ -19,12 +19,18 @@ Capybara.javascript_driver = :headless_chrome
 Webdrivers.cache_time = 86_400
 
 Capybara.register_driver(:headless_chrome_mobile) do |app|
+  user_agent_string = 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_2 like Mac OS X) ' \
+                      'AppleWebKit/537.36 (KHTML, like Gecko) ' \
+                      'HeadlessChrome/88.0.4324.150 Safari/537.36'
+
   browser_options = Selenium::WebDriver::Chrome::Options.new
   browser_options.args << '--headless'
   browser_options.args << '--disable-gpu'
   browser_options.args << '--no-sandbox'
   browser_options.args << '--disable-dev-shm-usage'
   browser_options.args << '--window-size=414,736'
+  browser_options.args << "--user-agent='#{user_agent_string}'"
+  browser_options.args << '--use-fake-device-for-media-stream'
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,

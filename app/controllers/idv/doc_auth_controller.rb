@@ -9,6 +9,8 @@ module Idv
     include IdvSession # remove if we retire the non docauth LOA3 flow
     include Flow::FlowStateMachine
 
+    before_action :update_if_skipping_upload
+
     FSM_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
       final_url: :idv_review_url,
@@ -22,6 +24,12 @@ module Idv
 
     def redirect_if_pending_profile
       redirect_to verify_account_url if current_user.decorate.pending_profile_requires_verification?
+    end
+
+    def update_if_skipping_upload
+      return if params[:step] != 'upload' || !flow_session || !flow_session[:skip_upload_step]
+      track_step_visited
+      update
     end
 
     def extend_timeout_using_meta_refresh_for_select_paths
