@@ -1,4 +1,10 @@
 class FakeRequest
+  attr_reader :headers
+
+  def initialize(headers: {})
+    @headers = headers
+  end
+
   def remote_ip
     '127.0.0.1'
   end
@@ -9,10 +15,6 @@ class FakeRequest
 
   def host
     'fake_host'
-  end
-
-  def headers
-    'fake_headers'
   end
 
   def cookies

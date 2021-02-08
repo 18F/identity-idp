@@ -15,16 +15,18 @@ describe Analytics do
       hostname: FakeRequest.new.host,
       pid: Process.pid,
       service_provider: 'http://localhost:3000',
+      trace_id: nil,
     }
   end
 
   let(:ahoy) { instance_double(FakeAhoyTracker) }
   let(:current_user) { build_stubbed(:user, uuid: '123') }
+  let(:request) { FakeRequest.new }
 
   subject(:analytics) do
     Analytics.new(
       user: current_user,
-      request: FakeRequest.new,
+      request: request,
       sp: 'http://localhost:3000',
       ahoy: ahoy,
     )
@@ -56,6 +58,20 @@ describe Analytics do
         with('Trackable Event', analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
+    end
+
+    context 'tracing headers' do
+      let(:amazon_trace_id) { SecureRandom.hex }
+      let(:request) do
+        FakeRequest.new(headers: { 'X-Amzn-Trace-Id' => amazon_trace_id })
+      end
+
+      it 'includes the tracing header as trace_id' do
+        expect(ahoy).to receive(:track).
+          with('Trackable Event', hash_including(trace_id: amazon_trace_id))
+
+        analytics.track_event('Trackable Event')
+      end
     end
 
     it 'uses the DeviceDetector gem to parse the user agent' do

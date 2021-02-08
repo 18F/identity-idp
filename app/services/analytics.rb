@@ -45,6 +45,7 @@ class Analytics
       hostname: request.host,
       pid: Process.pid,
       service_provider: sp,
+      trace_id: request.headers['X-Amzn-Trace-Id'],
     }.merge!(browser_attributes)
   end
 
