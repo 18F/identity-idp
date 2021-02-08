@@ -30,7 +30,10 @@ module IdvHelper
   end
 
   def click_idv_continue
-    click_on t('forms.buttons.continue'), match: :first
+    button = find_button(t('forms.buttons.continue'), match: :first)
+    button.click
+    # If button shows spinner when clicked, wait for it to finish.
+    expect(button).to have_no_ancestor('.spinner-button.spinner-button--spinner-active', wait: 10)
   end
 
   def choose_idv_otp_delivery_method_sms
