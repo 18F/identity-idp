@@ -14,11 +14,8 @@ module Flow
     end
 
     def show
-      step = current_step
-      analytics.track_event(analytics_visited, analytics_properties) if @analytics_id
-      Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(step, :view, true)
-      register_campaign
-      render_step(step, flow.flow_session)
+      track_step_visited
+      render_step(current_step, flow.flow_session)
     end
 
     def update
@@ -44,6 +41,12 @@ module Flow
 
     def current_step
       params[:step]&.underscore
+    end
+
+    def track_step_visited
+      analytics.track_event(analytics_visited, analytics_properties) if @analytics_id
+      Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(current_step, :view, true)
+      register_campaign
     end
 
     def register_campaign

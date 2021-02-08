@@ -29,6 +29,37 @@ feature 'doc auth welcome step' do
     it_behaves_like 'ial2 consent without js'
   end
 
+  context 'skipping upload step', :js, driver: :headless_chrome_mobile do
+    let(:fake_analytics) { FakeAnalytics.new }
+
+    before do
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
+
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_welcome_step
+      find('label', :text => /^By checking this box/).click
+      click_continue
+    end
+
+    it 'progresses to document capture' do
+      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+    end
+
+    it 'logs analytics for upload step' do
+      log = DocAuthLog.last
+      expect(log.upload_view_count).to eq 1
+      expect(log.upload_view_at).not_to be_nil
+
+      expect(fake_analytics).to have_logged_event(
+        Analytics::DOC_AUTH + ' visited', step: 'upload', step_count: 1
+      )
+      expect(fake_analytics).to have_logged_event(
+        Analytics::DOC_AUTH + ' submitted', step: 'upload', step_count: 2, success: true
+      )
+    end
+  end
+
   context 'during the acuant maintenance window' do
     context 'during the acuant maintenance window' do
       let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
