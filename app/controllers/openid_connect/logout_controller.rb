@@ -1,8 +1,5 @@
 module OpenidConnect
   class LogoutController < ApplicationController
-    include SecureHeadersConcern
-
-    before_action :apply_secure_headers_override, only: [:index]
 
     def index
       @logout_form = OpenidConnectLogoutForm.new(params)

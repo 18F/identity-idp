@@ -135,11 +135,6 @@ describe 'OpenID Connect' do
       "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}",
     )
 
-    expect(page.response_headers['Content-Security-Policy']).to include(
-      'form-action \'self\' gov.gsa.openidconnect.test://result '\
-      'gov.gsa.openidconnect.test://result/signout',
-    )
-
     visit account_path
     expect(page).to_not have_content(t('headings.account.login_info'))
     expect(page).to have_content(t('headings.sign_in_without_sp'))
