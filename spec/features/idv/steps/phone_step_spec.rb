@@ -21,11 +21,9 @@ feature 'idv phone step' do
       complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
 
-      expect(page).to have_selector('.spinner-button')
       click_idv_continue
-      expect(page).to have_selector('.spinner-button--spinner-active')
 
-      expect(page).to have_content(t('idv.titles.session.review'), wait: 1)
+      expect(page).to have_content(t('idv.titles.session.review'))
       expect(page).to have_current_path(idv_review_path)
     end
 
