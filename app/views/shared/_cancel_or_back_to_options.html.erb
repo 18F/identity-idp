@@ -1,4 +1,4 @@
-<div class="mt2 pt1 border-top">
+<div class="margin-top-2 padding-top-1 border-top">
   <% if MfaPolicy.new(current_user).two_factor_enabled? %>
     <%= link_to t('links.cancel'), account_path, class: 'h5' %>
   <% else %>

@@ -1,11 +1,11 @@
 <% title t('headings.sp_handoff_bounced', sp_name: @sp_name) %>
-<h1 class='h3 my0'>
+<h1 class='h3 margin-y-0'>
   <%= t('headings.sp_handoff_bounced', sp_name: @sp_name) %>
 </h1>
-<p class='mt2 mb2'>
+<p class='margin-top-2 margin-bottom-2'>
   <%= t('instructions.sp_handoff_bounced', sp_name: @sp_name,
       sp_link: @sp_link.blank? ? @sp_name : link_to(@sp_name, @sp_link)) %>
 </p>
-<div class='mt3'>
+<div class='margin-top-4'>
   <%= link_to t('instructions.mfa.piv_cac.back_to_sign_in'), root_url, class: 'usa-button' %>
 </div>

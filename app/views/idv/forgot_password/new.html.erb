@@ -2,7 +2,7 @@
 
 <%= image_tag(asset_url('alert/forgot.svg'), width: 54) %>
 
-<h1 class="h3 mb1 mt3 my0">
+<h1 class="h3 margin-bottom-1 margin-top-4 margin-y-0">
   <%= t('idv.forgot_password.modal_header') %>
 </h1>
 
@@ -13,11 +13,11 @@
   <li><%= t('idv.forgot_password.warnings.warning_2') %></li>
 </ul>
 
-<div class='mt3'>
+<div class='margin-top-4'>
   <%= link_to t('idv.forgot_password.try_again'), idv_review_path,
     class: 'btn btn-primary sm-col-6 col-12 btn-wide' %>
 </div>
-<div class='mt2'>
+<div class='margin-top-2'>
   <%= button_to t('idv.forgot_password.reset_password'), idv_forgot_password_path,
     method: :post, class: 'btn btn-secondary sm-col-6 col-12 btn-wide' %>
 </div>

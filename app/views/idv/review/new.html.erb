@@ -15,10 +15,10 @@
                        html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
   <%= f.input :password, label: t('idv.form.password'), required: true,
               input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
-  <div class="right-align mtn2 mb4">
+  <div class="right-align margin-top-neg-2 margin-bottom-6">
     <%= t('idv.forgot_password.link_html',
           link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url,
-                        class: 'btn btn-link ml1', form_class: 'inline-block')) %>
+                        class: 'btn btn-link margin-left-1', form_class: 'inline-block')) %>
 
   </div>
   <%= accordion('review-verified-info', t('idv.messages.review.intro')) do %>
@@ -29,6 +29,6 @@
   <%= f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-12' %>
 <% end %>
 
-<div class="mt4 mt2 pt1 border-top">
+<div class="margin-top-6 margin-top-2 padding-top-1 border-top">
   <%= link_to t('links.cancel'), idv_cancel_path, class: 'h5' %>
 </div>

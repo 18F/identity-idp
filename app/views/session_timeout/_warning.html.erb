@@ -1,11 +1,11 @@
 <div id='session-timeout-msg' class='display-none'>
   <%= render layout: '/shared/modal_layout' do %>
-    <div class='p3 sm-p4 cntnr-xxskinny border-box bg-white rounded-xxl modal-timeout'>
-      <h2 class='my2 fs-20p sans-serif regular center'>
+    <div class='padding-4 tablet:padding-6 cntnr-xxskinny border-box bg-white rounded-xxl modal-timeout'>
+      <h2 class='margin-y-2 fs-20p sans-serif regular center'>
         <%= t('headings.session_timeout_warning') %>
       </h2>
-      <hr class='mb3 bw4 rounded' />
-      <div class='mb4'>
+      <hr class='margin-bottom-4 bw4 rounded' />
+      <div class='margin-bottom-6'>
         <p>
           <%= modal.message %>
         </p>
@@ -13,10 +13,10 @@
       <div class='center'>
         <%= button_tag modal.continue,
                        id: 'session-keepalive-btn',
-                       class: 'btn btn-primary col-12 mb2 p2 rounded-lg border-box' %>
+                       class: 'btn btn-primary col-12 margin-bottom-2 padding-2 rounded-lg border-box' %>
         <%= link_to modal.sign_out,
                     destroy_user_session_path,
-                    class: 'btn col-12 p2 rounded-lg border border-blue blue border-box' %>
+                    class: 'btn col-12 padding-2 rounded-lg border border-blue blue border-box' %>
       </div>
     </div>
   <% end %>

@@ -1,6 +1,6 @@
 <% word_count = AppConfig.env.recovery_code_length.to_i %>
 
-<div class='mb3'>
+<div class='margin-bottom-4'>
   <%= f.input attribute_name,
               label: t('simple_form.required.html') + t('forms.two_factor.personal_key'),
               input_html: { autocapitalize: 'none',

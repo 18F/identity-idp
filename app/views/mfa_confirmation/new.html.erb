@@ -1,9 +1,9 @@
 <% title t('titles.passwords.confirm') %>
 
-<h1 class='h3 my0'>
+<h1 class='h3 margin-y-0'>
   <%= t('headings.passwords.confirm') %>
 </h1>
-<p class='mt-tiny mb0'>
+<p class='mt-tiny margin-bottom-0'>
   <%= user_session[:no_factor_message] ||
       t('help_text.change_factor', factor: user_session[:factor_to_change]) %>
 </p>
@@ -11,6 +11,6 @@
                        url: reauthn_user_password_path,
                        html: { autocomplete: 'off', role: 'form', method: 'post' }) do |f| %>
   <%= f.input :password, required: true, input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
-  <%= f.button :submit, t('forms.buttons.continue'), class: 'btn-wide mt2' %>
+  <%= f.button :submit, t('forms.buttons.continue'), class: 'btn-wide margin-top-2' %>
 <% end %>
 <%= render 'shared/cancel', link: account_path %>

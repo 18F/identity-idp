@@ -2,32 +2,32 @@
 
 <% help_link = new_window_link_to t('links.what_is_totp'),
                                   MarketingSite.help_authentication_app_url %>
-<h1 class="h3 my0"><%= t('headings.totp_setup.new') %></h1>
-<p class="mt-tiny mb3"><%= t('forms.totp_setup.totp_intro_html', link: help_link) %></p>
-<%= form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do %>
+<h1 class="h3 margin-y-0"><%= t('headings.totp_setup.new') %></h1>
+<p class="mt-tiny margin-bottom-4"><%= t('forms.totp_setup.totp_intro_html', link: help_link) %></p>
+<%= form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'margin-bottom-1') do %>
   <ul class="list-reset">
-    <li class="py2 border-top">
-      <div class="mb2">
-        <div class="mr1 inline-block circle circle-number bg-blue white">1</div>
+    <li class="padding-y-2 border-top">
+      <div class="margin-bottom-2">
+        <div class="margin-right-1 inline-block circle circle-number bg-blue white">1</div>
         <div class="inline-block bold" id="totp-nickname"><%= t('forms.totp_setup.totp_step_1') %></div>
-        <div class="inline-block ml3"><%= t('forms.totp_setup.totp_step_1a') %></div>
+        <div class="inline-block margin-left-4"><%= t('forms.totp_setup.totp_step_1a') %></div>
       </div>
       <div class="sm-col-9 sm-ml-28p">
-        <div class="clearfix mxn1">
-          <div class="col col-6 sm-col-7 px1">
+        <div class="clearfix margin-x-neg-1">
+          <div class="col col-6 sm-col-7 padding-x-1">
             <%= text_field_tag :name, '', required: true, aria: { invalid: false }, class: 'block col-12 field monospace',
                                 maxlength: 20, 'aria-labelledby': 'totp-nickname' %>
           </div>
         </div>
       </div>
     </li>
-    <li class="py2 border-top">
-      <div class="mr1 inline-block circle circle-number bg-blue white">2</div>
+    <li class="padding-y-2 border-top">
+      <div class="margin-right-1 inline-block circle circle-number bg-blue white">2</div>
       <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_2') %></div>
     </li>
-    <li class="py2 border-top">
-      <div class="mb2">
-        <div class="mr1 inline-block circle circle-number bg-blue white">3</div>
+    <li class="padding-y-2 border-top">
+      <div class="margin-bottom-2">
+        <div class="margin-right-1 inline-block circle circle-number bg-blue white">3</div>
         <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_3') %></div>
       </div>
       <div class="sm-col-9 sm-ml-28p">
@@ -37,9 +37,9 @@
         <div class="center">
           <%= t('instructions.mfa.authenticator.manual_entry') %>
         </div>
-        <div class="px2 py1 mt1 border border-dashed border-navy">
+        <div class="padding-x-2 padding-y-1 margin-top-1 border border-dashed border-navy">
           <div class="inline fs-20p caps monospace" id="qr-code"><%= @code %></div>
-          <button class="clipboard ml2 right mt-tiny btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center"
+          <button class="clipboard margin-left-2 right mt-tiny btn btn-primary padding-0 w-60p bg-light-blue blue h6 regular border-box center"
                   type="button"
                   data-clipboard-text="<%= @code.upcase %>">
             <%= t('links.copy') %>
@@ -47,25 +47,25 @@
         </div>
       </div>
     </li>
-    <li class="py2 border-top">
-      <div class="mb2">
-        <div class="mr1 inline-block circle circle-number bg-blue white">4</div>
+    <li class="padding-y-2 border-top">
+      <div class="margin-bottom-2">
+        <div class="margin-right-1 inline-block circle circle-number bg-blue white">4</div>
         <div class="inline-block bold" id="totp-label"><%= t('forms.totp_setup.totp_step_4') %></div>
       </div>
       <div class="sm-col-9 sm-ml-28p">
-        <div class="clearfix mxn1">
-          <div class="col col-6 sm-col-7 px1">
+        <div class="clearfix margin-x-neg-1">
+          <div class="col col-6 sm-col-7 padding-x-1">
             <%= text_field_tag :code, '', required: true, aria: { invalid: false }, pattern: '[0-9]*', type: 'tel',
                 class: 'block col-12 field monospace mfa', maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
                 'aria-labelledby': 'totp-label' %>
           </div>
-          <div class="col col-6 sm-col-5 px1">
+          <div class="col col-6 sm-col-5 padding-x-1">
             <%= submit_tag t('forms.buttons.submit.default'), class: 'col-12 btn btn-primary text-top' %>
           </div>
         </div>
-        <div class="border border-light-blue rounded-lg px2 py1 mt3">
+        <div class="border border-light-blue rounded-lg padding-x-2 padding-y-1 margin-top-4">
           <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
-          <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?, class: 'my2 ml2 mr1' %>
+          <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?, class: 'margin-y-2 margin-left-2 margin-right-1' %>
           <%= label_tag 'remember_device', t('forms.messages.remember_device'), class: 'blue mt-1p' %>
         </div>
       </div>

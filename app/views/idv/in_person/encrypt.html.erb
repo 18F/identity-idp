@@ -1,6 +1,6 @@
 <% title t('idv.titles.review') %>
 
-<h5 class="my1 caps bold accent-blue">
+<h5 class="margin-y-1 caps bold accent-blue">
   <%= t('in_person_proofing.step', step: 2) %>
 </h5>
 
@@ -21,10 +21,10 @@
                        html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
   <%= f.input :password, label: t('idv.form.password'), required: true,
               input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
-  <div class="right-align mtn2 mb4">
+  <div class="right-align margin-top-neg-2 margin-bottom-6">
                 <%= t('idv.forgot_password.link_html',
                       link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url,
-                              class: 'btn btn-link ml1', form_class: 'inline-block')) %>
+                              class: 'btn btn-link margin-left-1', form_class: 'inline-block')) %>
   </div>
 
   <%= f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-12' %>

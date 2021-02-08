@@ -3,11 +3,11 @@
 
 <%= render 'shared/sp_alert' %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('headings.passwords.forgot') %>
 </h1>
 
-<p class="mt-tiny mb0" id="email-description">
+<p class="mt-tiny margin-bottom-0" id="email-description">
   <%= t('instructions.password.forgot') %>
 </p>
 
@@ -17,9 +17,9 @@
   <%= f.input :email, required: true, input_html: { aria: { invalid: false, describedby: 'email-description' } } %>
   <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
   <%= render 'shared/recaptcha' %>
-  <%= f.button :submit, t('forms.buttons.continue'), class: 'mt2' %>
+  <%= f.button :submit, t('forms.buttons.continue'), class: 'margin-top-2' %>
 <% end %>
 
-<div class="mt2 pt1 border-top">
+<div class="margin-top-2 padding-top-1 border-top">
   <%= link_to t('links.cancel'), decorated_session.cancel_link_url, class: 'h5' %>
 </div>

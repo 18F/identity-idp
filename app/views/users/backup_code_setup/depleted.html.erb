@@ -1,5 +1,5 @@
-<h1 class="h3 my0 mt0"><%= @presenter.title %></h1>
-<p class="mt-tiny mb3"><%= @presenter.description %></p>
+<h1 class="h3 margin-y-0 margin-top-0"><%= @presenter.title %></h1>
+<p class="mt-tiny margin-bottom-4"><%= @presenter.description %></p>
 
 <% if @presenter.other_option_display %>
   <%= link_to @presenter.other_option_title, two_factor_options_path, class: 'btn btn-primary btn-wide' %>
@@ -8,12 +8,12 @@
 <% end %>
 
 <%= form_tag(backup_code_setup_path, method: :patch, role: 'form') do %>
-  <div class="clearfix mxn1">
-    <div class="col col-12 sm-col-8 px1">
+  <div class="clearfix margin-x-neg-1">
+    <div class="col col-12 sm-col-8 padding-x-1">
       <%= button_tag @presenter.continue_bttn_title, type: 'submit', class: @presenter.continue_bttn_class %>
     </div>
   </div>
 <% end %>
 
-<div class="mt2 pt1 border-top"></div>
+<div class="margin-top-2 padding-top-1 border-top"></div>
 <%= javascript_packs_tag_once("webauthn-unhide-signup") %>
