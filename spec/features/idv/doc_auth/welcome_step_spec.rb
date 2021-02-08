@@ -38,7 +38,7 @@ feature 'doc auth welcome step' do
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_welcome_step
-      find('label', :text => /^By checking this box/).click
+      find('label', text: /^By checking this box/).click
       click_continue
     end
 
