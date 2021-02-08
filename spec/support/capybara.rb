@@ -30,6 +30,7 @@ Capybara.register_driver(:headless_chrome_mobile) do |app|
   browser_options.args << '--disable-dev-shm-usage'
   browser_options.args << '--window-size=414,736'
   browser_options.args << "--user-agent='#{user_agent_string}'"
+  browser_options.args << '--use-fake-device-for-media-stream'
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
