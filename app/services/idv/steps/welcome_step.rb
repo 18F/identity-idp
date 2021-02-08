@@ -19,6 +19,7 @@ module Idv
       private
 
       def skip_to_capture
+        # See: Idv::DocAuthController#update_if_skipping_upload
         flow_session[:skip_upload_step] = true
       end
 
