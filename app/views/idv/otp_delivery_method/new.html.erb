@@ -1,19 +1,19 @@
 <% title t('titles.doc_auth.otp_delivery') %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('idv.titles.otp_delivery_method') %>
 </h1>
-<p class="mt1">
+<p class="margin-top-1">
   <%= t('idv.messages.otp_delivery_method.phone_number_html', phone: @idv_phone) %>
 </p>
 
 
 <%= form_tag(idv_otp_delivery_method_url,
-             autocomplete: 'off', role: 'form', class: 'mt3',
+             autocomplete: 'off', role: 'form', class: 'margin-top-4',
              method: :put) do |f| %>
 
-  <fieldset class="mb3 p0 border-none">
-    <label class="btn-border col-12 mb1">
+  <fieldset class="margin-bottom-4 padding-0 border-none">
+    <label class="btn-border col-12 margin-bottom-1">
       <div class="radio">
         <%= radio_button_tag 'otp_delivery_preference', :sms, false, class: :otp_delivery_preference_sms %>
         <span class="indicator mt-tiny"></span>
@@ -25,7 +25,7 @@
         </div>
       </div>
     </label>
-    <label class="btn-border col-12 mb0">
+    <label class="btn-border col-12 margin-bottom-0">
       <div class="radio">
         <%= radio_button_tag 'otp_delivery_preference', :voice, false, class: :otp_delivery_preference_voice %>
         <span class="indicator mt-tiny"></span>
@@ -39,22 +39,22 @@
     </label>
 
     <% if FeatureManagement.enable_usps_verification? %>
-      <div class="mt3">
+      <div class="margin-top-4">
         <%= t('idv.form.no_alternate_phone_html', link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
       </div>
     <% end %>
-    <div class="mt2">
+    <div class="margin-top-2">
         <%= t('instructions.mfa.wrong_number_html', link: link_to(t('forms.two_factor.try_again'), idv_phone_path)) %>
     </div>
 
   </fieldset>
-  <div class="mt3">
+  <div class="margin-top-4">
     <%= submit_tag(t('idv.buttons.send_confirmation_code'), class: 'sm-col-6 col-12 btn btn-primary') %>
   </div>
 <% end %>
 
-<div class="mt3 border-top">
-  <div class="mt1">
+<div class="margin-top-4 border-top">
+  <div class="margin-top-1">
     <%= link_to(t('links.cancel'), idv_cancel_path) %>
   </div>
 </div>

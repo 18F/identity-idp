@@ -1,5 +1,5 @@
-<h1 class="h3 my0"><%= t('headings.personal_key') %></h1>
-<p class="mt-tiny mb4">
+<h1 class="h3 margin-y-0"><%= t('headings.personal_key') %></h1>
+<p class="mt-tiny margin-bottom-6">
   <%= t('instructions.personal_key.info_html',
         accent: content_tag(:strong, t('instructions.personal_key.accent'))) %>
 </p>
@@ -22,11 +22,11 @@
 <br>
 <br>
 <br>
-<div class="sm-col sm-col-2 pr2">
+<div class="sm-col sm-col-2 padding-right-2">
   <%= image_tag(asset_url('alert/icon-lock-alert-important.svg'), alt: '', size: '80') %>
 </div>
 <div class="sm-col sm-col-10">
-  <div class="bold mb0">
+  <div class="bold margin-bottom-0">
     <%= t('instructions.personal_key.email_title') %>
   </div>
   <p><%= t('instructions.personal_key.email_body') %></p>
@@ -37,7 +37,7 @@
 <br>
 <p>
   <%= button_to t('forms.buttons.continue'), update_path,
-                class: 'btn btn-primary btn-wide mb1 personal-key-continue sm-col-6 col-12 mb2',
+                class: 'btn btn-primary btn-wide margin-bottom-1 personal-key-continue sm-col-6 col-12 margin-bottom-2',
                 'data-toggle': 'modal' %>
 </p>
 <%= render 'shared/personal_key_confirmation_modal', code: code, update_path: update_path %>

@@ -1,10 +1,10 @@
 <div id="personal-key-confirm" class="display-none">
   <%= render layout: '/shared/modal_layout' do %>
-    <div class="py5 px2 sm-px5 cntnr-skinny border-box bg-white rounded rounded-lg key-badge">
-      <h3 class="mt0 mb2">
+    <div class="padding-y-8 padding-x-2 tablet:padding-x-8 cntnr-skinny border-box bg-white rounded rounded-lg key-badge">
+      <h3 class="margin-top-0 margin-bottom-2">
         <%= t('forms.personal_key.title') %>
       </h3>
-      <p class="mb3">
+      <p class="margin-bottom-4">
         <%= t('forms.personal_key.instructions') %>
       </p>
 
@@ -19,18 +19,18 @@
         <%= render 'shared/personal_key_input', code: code %>
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
-        <div class="clearfix mxn2">
-          <div class="col col-12 sm-col-6 px2 mb2 sm-mb0 tablet:display-none">
+        <div class="clearfix margin-x-neg-2">
+          <div class="col col-12 sm-col-6 padding-x-2 margin-bottom-2 tablet:margin-bottom-0 tablet:display-none">
             <button type="submit" class="col-12 btn btn-primary personal-key-confirm">
               <%= t('forms.buttons.continue') %>
             </button>
           </div>
-          <div class="col col-12 sm-col-6 px2">
+          <div class="col col-12 sm-col-6 padding-x-2">
             <button class="col-12 btn btn-outline blue rounded-lg" type="button" data-dismiss="personal-key-confirm">
               <%= t('forms.buttons.back') %>
             </button>
           </div>
-          <div class="col col-12 sm-col-6 px2 mb2 sm-mb0 display-none tablet:display-block">
+          <div class="col col-12 sm-col-6 padding-x-2 margin-bottom-2 tablet:margin-bottom-0 display-none tablet:display-block">
             <button type="submit" class="col-12 btn btn-primary personal-key-confirm">
               <%= t('forms.buttons.continue') %>
             </button>

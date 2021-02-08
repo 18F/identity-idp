@@ -1,10 +1,10 @@
 <%= title t('titles.revoke_consent') %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('titles.revoke_consent') %>
 </h1>
 
-<p class="mt3">
+<p class="margin-top-4">
   <%= t('account.revoke_consent.longer_description_html',
         service_provider: content_tag(:b, @service_provider.friendly_name)) %>
 </p>
@@ -13,10 +13,10 @@
       t('forms.buttons.continue'),
       service_provider_revoke_url(@service_provider.id),
       method: 'delete',
-      class: 'btn btn-primary mt3') %>
+      class: 'btn btn-primary margin-top-4') %>
 
-<div class="mt3 border-top">
-  <div class="mt1">
+<div class="margin-top-4 border-top">
+  <div class="margin-top-1">
     <%= link_to(t('links.cancel'), account_url) %>
   </div>
 </div>

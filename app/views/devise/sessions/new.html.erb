@@ -9,7 +9,7 @@
     <%= render decorated_session.registration_heading %>
   </div>
 <% else %>
-  <h1 class='h3 my0'>
+  <h1 class='h3 margin-y-0'>
     <%= decorated_session.new_session_heading %>
   </h1>
 <% end %>
@@ -24,14 +24,14 @@
   <%= f.input :email,
               label: t('account.index.email'),
               required: true,
-              input_html: { class: 'mb4', aria: { invalid: false } } %>
+              input_html: { class: 'margin-bottom-6', aria: { invalid: false } } %>
   <%= f.input :password,
               label: t('account.index.password'),
               required: true,
               input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
   <%= f.input :request_id, as: :hidden, input_html: { value: @request_id } %>
-  <div class='mb3'>
-    <%= submit_tag t('links.next'), class: 'usa-button usa-button--primary grid-col-12 mb2' %>
+  <div class='margin-bottom-4'>
+    <%= submit_tag t('links.next'), class: 'usa-button usa-button--primary grid-col-12 margin-bottom-2' %>
     <%= link_to(
       t('links.create_account'),
       sign_up_email_url(request_id: @request_id),
@@ -40,27 +40,27 @@
   </div>
 <% end %>
 <% if FeatureManagement.allow_piv_cac_login? && @ial && desktop_device? %>
-  <div class='mxn1 my3'>
+  <div class='margin-x-neg-1 margin-y-4'>
     <%= link_to(
       t('account.login.piv_cac'),
       login_piv_cac_url,
-      class: 'px1'
+      class: 'padding-x-1'
     ) %>
   </div>
 <% end %>
 <% if decorated_session.sp_name %>
-  <div class='clearfix pt1 border-top'>
+  <div class='clearfix padding-top-1 border-top'>
     <%= render decorated_session.return_to_service_provider_partial %>
   </div>
 <% else %>
   <div class='border-top'></div>
 <% end %>
 
-<div class='mxn1 my1'>
+<div class='margin-x-neg-1 margin-y-1'>
   <%= link_to(
     t('links.passwords.forgot'),
     new_user_password_url(request_id: @request_id),
-    class: 'px1',
+    class: 'padding-x-1',
   ) %>
 </div>
 
@@ -68,11 +68,11 @@
   <%= render 'sign_up/registrations/required_pii_accordion' %>
 <% end %>
 
-<p class="my1">
+<p class="margin-y-1">
   <%= new_window_link_to(t('notices.privacy.security_and_privacy_practices'),
                          MarketingSite.security_and_privacy_practices_url) %>
 </p>
-<p class="my1">
+<p class="margin-y-1">
   <%= new_window_link_to(t('notices.privacy.privacy_act_statement'),
                          MarketingSite.privacy_act_statement_url) %>
 </p>

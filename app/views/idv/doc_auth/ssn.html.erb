@@ -7,7 +7,7 @@
   <%= t('doc_auth.headings.capture_complete') %>
 <% end %>
 
-<h1 class='h3 my0'>
+<h1 class='h3 margin-y-0'>
   <%= t('doc_auth.headings.ssn') %>
 </h1>
 
@@ -15,10 +15,10 @@
   :doc_auth,
   url: url_for,
   method: :put,
-  html: { autocomplete: 'off', role: 'form', class: 'mt2' }
+  html: { autocomplete: 'off', role: 'form', class: 'margin-top-2' }
 ) do |f| %>
-  <div class='clearfix mxn1'>
-    <div class='sm-col sm-col-8 px1 mt2'>
+  <div class='clearfix margin-x-neg-1'>
+    <div class='sm-col sm-col-8 padding-x-1 margin-top-2'>
       <!-- maxlength set and includes '-' delimiters to work around cleave bug -->
       <%= f.input(
         :ssn,
@@ -34,7 +34,7 @@
 
   <p><%= flow_session[:error_message] %></p>
 
-  <div class='mt0'>
+  <div class='margin-top-0'>
     <button type='submit' class='btn btn-primary btn-wide sm-col-6 col-12'>
       <%= t('forms.buttons.continue') %>
     </button>

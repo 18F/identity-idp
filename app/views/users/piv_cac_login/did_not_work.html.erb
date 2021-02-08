@@ -1,15 +1,15 @@
 <% title t('headings.piv_cac_login.did_not_work') %>
 
-<h1 class='h3 my0'>
+<h1 class='h3 margin-y-0'>
   <%= t('headings.piv_cac_login.did_not_work') %>
 </h1>
 
-<p class='mt2 mb2'>
+<p class='margin-top-2 margin-bottom-2'>
   <%= raw t('instructions.mfa.piv_cac.did_not_work',
             try_again: link_to(I18n.t('instructions.mfa.piv_cac.try_again'), login_piv_cac_url)) %>
 </p>
 
-<div class='mt3'>
+<div class='margin-top-4'>
   <%= link_to t('instructions.mfa.piv_cac.back_to_sign_in'), root_url, class: 'usa-button' %>
 </div>
 

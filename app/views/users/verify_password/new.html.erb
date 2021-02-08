@@ -15,7 +15,7 @@
   <%= f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-12' %>
 <% end %>
 
-<div class='mt4'>
+<div class='margin-top-6'>
   <%=  accordion('review-verified-info', t('idv.messages.review.intro')) do %>
     <%= render 'shared/pii_review', pii: @decrypted_pii, phone: @decrypted_pii[:phone] %>
   <% end %>

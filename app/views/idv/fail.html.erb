@@ -2,12 +2,12 @@
 
 <%= image_tag(asset_url('alert/temp-lock.svg'), width: 54) %>
 
-<h1 class="h3 mb1 mt3 my0"><%= t('idv.titles.hardfail', app: APP_NAME) %></h1>
+<h1 class="h3 margin-bottom-1 margin-top-4 margin-y-0"><%= t('idv.titles.hardfail', app: APP_NAME) %></h1>
 
 <p><%= t('idv.messages.hardfail', hours: AppConfig.env.idv_attempt_window_in_hours) %></p>
 
 <% if decorated_session.sp_name %>
-  <div class='mt2'>
+  <div class='margin-top-2'>
     <%= t('idv.failure.help.get_help_html',
           sp_name: link_to(decorated_session.sp_name, decorated_session.failure_to_proof_url)) %>
   </div>

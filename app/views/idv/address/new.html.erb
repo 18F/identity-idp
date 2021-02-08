@@ -1,27 +1,27 @@
 <% title t('titles.doc_auth.verify') %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('doc_auth.headings.address') %>
 </h1>
 
-<div class="mt3 mb3">
+<div class="margin-top-4 margin-bottom-4">
   <%= validated_form_for(:idv_form, url: idv_address_path, method: 'POST',
-                         html: {autocomplete: 'off', role: 'form', class: 'mt2'}) do |f| %>
+                         html: {autocomplete: 'off', role: 'form', class: 'margin-top-2'}) do |f| %>
 
-    <%= f.input :address1, label: t('idv.form.address1'), wrapper_html: {class: 'mb1'},
+    <%= f.input :address1, label: t('idv.form.address1'), wrapper_html: {class: 'margin-bottom-1'},
                 required: true, maxlength: 255, input_html: { aria: { invalid: false }, value: @pii['address1'] } %>
     <%= f.input :address2, label: t('idv.form.address2'), required: false, maxlength: 255,
                 input_html: { value: @pii['address2'] } %>
     <%= f.input :city, label: t('idv.form.city'), required: true, maxlength: 255,
                 input_html: { aria: { invalid: false }, value: @pii['city'] } %>
 
-    <div class="clearfix mxn1">
-      <div class="sm-col sm-col-8 px1">
+    <div class="clearfix margin-x-neg-1">
+      <div class="sm-col sm-col-8 padding-x-1">
         <%= f.input :state, collection: us_states_territories,
                     label: t('idv.form.state'), required: true,
                     selected: @pii['state'] %>
       </div>
-      <div class="sm-col sm-col-4 px1">
+      <div class="sm-col sm-col-4 padding-x-1">
         <%# using :tel for mobile numeric keypad %>
         <%= f.input :zipcode, as: :tel,
                     label: t('idv.form.zipcode'), required: true,
@@ -29,14 +29,14 @@
                     input_html: { aria: { invalid: false }, class: 'zipcode', value: @pii['zipcode'] } %>
       </div>
     </div>
-    <div class="mt0">
-      <button type="submit" class="btn btn-primary btn-wide mt2 sm-col-6 col-12">
+    <div class="margin-top-0">
+      <button type="submit" class="btn btn-primary btn-wide margin-top-2 sm-col-6 col-12">
         <%= t('forms.buttons.continue') %>
       </button>
     </div>
   <% end %>
 </div>
 
-<div class="mt2 pt1 border-top">
+<div class="margin-top-2 padding-top-1 border-top">
   <%= link_to t('links.cancel'), idv_cancel_path, class: 'h5' %>
 </div>

@@ -8,19 +8,19 @@
 
 <% title t('idv.titles.phone') %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('idv.titles.session.phone') %>
 </h1>
 
-<div class="py1 m0">
+<div class="padding-y-1 margin-0">
   <%= t('idv.messages.phone.description') %>
 </div>
 
-<div class="mt2">
+<div class="margin-top-2">
   <%= t('idv.messages.phone.alert_html') %>
 </div>
 
-<ul class="py1 m0">
+<ul class="padding-y-1 margin-0">
   <% t('idv.messages.phone.rules').each do |msg| %>
     <li>
       <%= msg %>
@@ -28,7 +28,7 @@
   <% end %>
 </ul>
 
-<div class="mt2">
+<div class="margin-top-2">
   <%= t('idv.messages.phone.final_note_html') %>
   <br/>
   <br/>
@@ -47,11 +47,11 @@
                          autocomplete: 'off',
                          method: :put,
                          role: 'form',
-                         class: 'mt2',
+                         class: 'margin-top-2',
                        }) do |f| %>
  <%= f.label :phone, label: t('idv.form.phone'), class: 'bold' %>
  <%= f.input :phone, required: true, input_html: { aria: { invalid: false }, class: 'sm-col-8' }, label: false,
-   wrapper_html: { class: 'mr2' } %>
+   wrapper_html: { class: 'margin-right-2' } %>
 
   <% if FeatureManagement.enable_usps_verification? %>
     <%= render 'idv/phone/verification_options' %>
@@ -59,12 +59,12 @@
 
   <%= render 'shared/spinner-button',
              action_message: t('doc_auth.info.verifying'),
-             class: 'mt3' do %>
+             class: 'margin-top-4' do %>
     <%= f.button :submit, t('forms.buttons.continue'), class: 'btn-wide sm-col-6 col-12' %>
   <% end %>
 <% end %>
 
-<div class="mt2 pt1 border-top">
+<div class="margin-top-2 padding-top-1 border-top">
   <%= link_to t('links.cancel'), idv_cancel_path, class: 'h5' %>
 </div>
 

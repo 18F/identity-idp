@@ -1,11 +1,11 @@
-<ul class="mb3 list-reset border-bottom success-bullets requested-attributes">
+<ul class="margin-bottom-4 list-reset border-bottom success-bullets requested-attributes">
   <% view_model.requested_attributes_sorted.each do |attribute| %>
     <% next if @pii[attribute].blank? %>
     <li class="border-top">
-      <div class="bold ml3">
+      <div class="bold margin-left-4">
         <%= t("help_text.requested_attributes.#{attribute}") %>
       </div>
-      <div class="ml3">
+      <div class="margin-left-4">
         <%= @pii[attribute].to_s %>
       </div>
     </li>

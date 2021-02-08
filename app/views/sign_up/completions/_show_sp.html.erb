@@ -1,12 +1,12 @@
-<p class="sm-mr1 sm-ml1 mt3 mb3">
+<p class="tablet:margin-right-1 tablet:margin-left-1 margin-top-4 margin-bottom-4">
   <%= t('help_text.requested_attributes.intro_html',
       app_name: APP_NAME,
       sp: content_tag(:strong, decorated_session.sp_name)) %>
 </p>
-<div class='sm-ml1 sm-mr1' >
+<div class='tablet:margin-left-1 tablet:margin-right-1' >
   <%= render @view_model.requested_attributes_partial, view_model: @view_model %>
 </div>
-<p class="sm-mr1 sm-ml1 mt3 mb3">
+<p class="tablet:margin-right-1 tablet:margin-left-1 margin-top-4 margin-bottom-4">
   <%= t('help_text.requested_attributes.outro_html',
         app_name: APP_NAME,
         sp: content_tag(:strong, decorated_session.sp_name)) %>

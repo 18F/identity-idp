@@ -1,5 +1,5 @@
 <div>
-  <div class="grid-row mb1 mt0">
+  <div class="grid-row margin-bottom-1 margin-top-0">
     <h2 class="grid-col-fill margin-y-0 padding-right-1">
       <%= t('account.index.webauthn') %>
     </h2>
@@ -14,7 +14,7 @@
 
   <div class="border-bottom border-light-blue">
     <% MfaContext.new(current_user).webauthn_configurations.each do |cfg| %>
-      <div class="grid-row p1 border-top border-left border-right border-light-blue">
+      <div class="grid-row padding-1 border-top border-left border-right border-light-blue">
         <div class="grid-col-8 mobile-lg:grid-col-6 truncate">
           <%= cfg.name %>
         </div>

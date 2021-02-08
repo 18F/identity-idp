@@ -1,10 +1,10 @@
 <% title t('titles.edit_info.password') %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('headings.edit_info.password') %>
 </h1>
 
-<p class="mt-tiny mb0" id="password-description">
+<p class="mt-tiny margin-bottom-0" id="password-description">
   <%= t('instructions.password.info.lead', min_length: Devise.password_length.first) %>
 </p>
 
@@ -14,7 +14,7 @@
   <%= f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,
               input_html: { aria: { invalid: false, describedby: 'password-description' }, class: 'password-toggle' } %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
-  <%= f.button :submit, t('forms.buttons.submit.update'), class: 'mt2 mb3' %>
+  <%= f.button :submit, t('forms.buttons.submit.update'), class: 'margin-top-2 margin-bottom-4' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>

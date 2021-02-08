@@ -1,16 +1,16 @@
 <% title t('account_reset.request.title') %>
 
-<h3 class='my0'><%= t('account_reset.request.title') %></h3>
+<h3 class='margin-y-0'><%= t('account_reset.request.title') %></h3>
 
-<p class='mt-tiny mb0'>
+<p class='mt-tiny margin-bottom-0'>
   <%= t('account_reset.request.info').html_safe %>
 </p>
 <% if current_user&.encrypted_recovery_code_digest&.present? %>
   <br/>
 
-  <h4 class='my0'><%= t('account_reset.request.personal_key') %></h4>
+  <h4 class='margin-y-0'><%= t('account_reset.request.personal_key') %></h4>
 
-  <p class='mt-tiny mb0'>
+  <p class='mt-tiny margin-bottom-0'>
     <%= t('account_reset.request.personal_key_info') %>
   </p>
 
@@ -18,16 +18,16 @@
 
   <%= render 'partials/personal_key/key', code: 'XXXX-XXXX-XXXX-XXXX' %>
 
-  <div class='mb3 right-align'>
+  <div class='margin-bottom-4 right-align'>
     <%= link_to(
       t('users.personal_key.print'),
       '#',
       data: { print: true },
-      class: 'ml2 btn-border display-inline-block ico ico-print text-decoration-none',
+      class: 'margin-left-2 btn-border display-inline-block ico ico-print text-decoration-none',
     ) %>
   </div>
   <hr/>
-  <p class='mt-tiny mb0'>
+  <p class='mt-tiny margin-bottom-0'>
     <%= t(
       'account_reset.request.personal_key_trailer',
       link: link_to(
@@ -39,17 +39,17 @@
 
 <br/>
 
-<h4 class='my0'><%= t('account_reset.request.delete_account') %></h4>
-<p class='mt-tiny mb0'><%= t('account_reset.request.delete_account_info').html_safe %></p>
+<h4 class='margin-y-0'><%= t('account_reset.request.delete_account') %></h4>
+<p class='mt-tiny margin-bottom-0'><%= t('account_reset.request.delete_account_info').html_safe %></p>
 
 <br/>
 
-<h5 class='my2'><%= t('account_reset.request.are_you_sure') %></h5>
+<h5 class='margin-y-2'><%= t('account_reset.request.are_you_sure') %></h5>
 <%= button_to(
   t('account_reset.request.no_cancel'),
   root_url,
   method: :get,
-  class: 'btn btn-primary btn-wide mb1 personal-key-continue',
+  class: 'btn btn-primary btn-wide margin-bottom-1 personal-key-continue',
   'data-toggle': 'modal',
 ) %>
 <%= button_to(

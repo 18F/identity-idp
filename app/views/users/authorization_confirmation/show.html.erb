@@ -7,23 +7,23 @@
     <%= render decorated_session.registration_heading %>
   </div>
 <% else %>
-  <h1 class='h3 my0'>
+  <h1 class='h3 margin-y-0'>
     <%= decorated_session.new_session_heading %>
   </h1>
 <% end %>
 
 <div class='sm-left-align'>
-  <div class='mt3'>
-    <div class='ml1 mb1 bold'>
+  <div class='margin-top-4'>
+    <div class='margin-left-1 margin-bottom-1 bold'>
       <%= t('user_authorization_confirmation.currently_logged_in') %>
     </div>
-    <div class='sm-ml1 sm-mr1' >
-      <ul class='mb3 list-reset border-bottom success-bullets requested-attributes'>
+    <div class='tablet:margin-left-1 tablet:margin-right-1' >
+      <ul class='margin-bottom-4 list-reset border-bottom success-bullets requested-attributes'>
         <li class='border-top'>
           <span class='bold'>
             <%= t("help_text.requested_attributes.email") %>
           </span>
-          <span class='pl2'>
+          <span class='padding-left-2'>
             <%= current_user.email %>
           </span>
         </li>
@@ -31,15 +31,15 @@
     </div>
   </div>
 
-  <div class='mt3 center'>
+  <div class='margin-top-4 center'>
     <%= button_to(t('user_authorization_confirmation.continue'),
                   sign_up_completed_path,
                   class: 'btn btn-primary btn-wide') %>
   </div>
-  <div class='mt3 center'>
+  <div class='margin-top-4 center'>
     <%= t('user_authorization_confirmation.or') %>
   </div>
-  <div class='mt3 center'>
+  <div class='margin-top-4 center'>
     <%= button_to(t('user_authorization_confirmation.sign_in'),
           reset_user_authorization_path,
           class: 'btn btn-primary btn-wide',
