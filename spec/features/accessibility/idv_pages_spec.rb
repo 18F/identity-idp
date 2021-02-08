@@ -53,7 +53,7 @@ feature 'Accessibility on IDV pages', :js do
       sign_in_and_2fa_user
       visit idv_path
       complete_all_doc_auth_steps
-      click_idv_continue(wait: true)
+      click_idv_continue
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
@@ -67,7 +67,7 @@ feature 'Accessibility on IDV pages', :js do
       sign_in_and_2fa_user
       visit idv_path
       complete_all_doc_auth_steps(expect_accessible: true)
-      click_idv_continue(wait: true)
+      click_idv_continue
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
@@ -81,7 +81,7 @@ feature 'Accessibility on IDV pages', :js do
       sign_in_and_2fa_user
       visit idv_path
       complete_all_doc_auth_steps(expect_accessible: true)
-      click_idv_continue(wait: true)
+      click_idv_continue
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
