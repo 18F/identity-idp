@@ -67,7 +67,7 @@ describe Idv::DocAuthController do
       get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).with(
-        Analytics::DOC_AUTH + ' visited', result
+        Analytics::DOC_AUTH + ' visited: welcome_show', result
       )
     end
 
@@ -76,10 +76,12 @@ describe Idv::DocAuthController do
       get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).ordered.with(
-        Analytics::DOC_AUTH + ' visited', hash_including(step: 'welcome', step_count: 1)
+        Analytics::DOC_AUTH + ' visited: welcome_show',
+        hash_including(step: 'welcome', step_count: 1),
       )
       expect(@analytics).to have_received(:track_event).ordered.with(
-        Analytics::DOC_AUTH + ' visited', hash_including(step: 'welcome', step_count: 2)
+        Analytics::DOC_AUTH + ' visited: welcome_show',
+        hash_including(step: 'welcome', step_count: 2),
       )
     end
 
@@ -112,7 +114,7 @@ describe Idv::DocAuthController do
       put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
       expect(@analytics).to have_received(:track_event).with(
-        Analytics::DOC_AUTH + ' submitted', result
+        Analytics::DOC_AUTH + ' submitted: ssn_update', result
       )
     end
 
@@ -126,10 +128,10 @@ describe Idv::DocAuthController do
       put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
       expect(@analytics).to have_received(:track_event).ordered.with(
-        Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 1)
+        Analytics::DOC_AUTH + ' submitted: ssn_update', hash_including(step: 'ssn', step_count: 1)
       )
       expect(@analytics).to have_received(:track_event).ordered.with(
-        Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 2)
+        Analytics::DOC_AUTH + ' submitted: ssn_update', hash_including(step: 'ssn', step_count: 2)
       )
     end
 
@@ -159,7 +161,7 @@ describe Idv::DocAuthController do
 
       expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
       expect(@analytics).to have_received(:track_event).with(
-        Analytics::DOC_AUTH + ' submitted', result
+        Analytics::DOC_AUTH + ' submitted: welcome_update', result
       )
     end
   end
@@ -354,7 +356,7 @@ describe Idv::DocAuthController do
         remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
       }.to_json)
       expect(@analytics).to have_received(:track_event).with(
-        Analytics::DOC_AUTH + ' submitted', {
+        Analytics::DOC_AUTH + ' submitted: verify_document_status_update', {
           errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
           success: false,
           remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,

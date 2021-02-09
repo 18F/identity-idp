@@ -116,7 +116,7 @@ describe Idv::RecoveryController do
         get :show, params: { step: 'recover' }
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::IAL2_RECOVERY + ' visited', result
+          Analytics::IAL2_RECOVERY + ' visited: recover_show', result
         )
       end
     end
