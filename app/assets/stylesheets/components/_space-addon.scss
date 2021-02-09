@@ -1,5 +1,7 @@
 .tablet\:padding-x-10 {
-  @include u-padding-x(10);
+  @include at-media(tablet) {
+    @include u-padding-x(10);
+  }
 }
 
 .margin-top-neg-3 {
