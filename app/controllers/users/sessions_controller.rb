@@ -173,10 +173,6 @@ module Users
       params.fetch(:request_id, '')
     end
 
-    def sp_session_ial
-      sp_session[:ial2] ? 2 : 1
-    end
-
     def redirect_to_2fa_or_pending_reset
       if pending_account_reset_request.present?
         redirect_to account_reset_pending_url

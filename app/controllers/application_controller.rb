@@ -274,15 +274,19 @@ class ApplicationController < ActionController::Base
     I18n.locale = LocaleChooser.new(params[:locale], request).locale
   end
 
+  def sp_session_ial
+    sp_session[:ial2] ? 2 : 1
+  end
+
   def increment_monthly_auth_count
     return unless current_user&.id
     issuer = sp_session[:issuer]
-    return if issuer.blank? || !first_auth_of_session?(issuer)
-    MonthlySpAuthCount.increment(current_user.id, issuer, sp_session[:ial2] ? 2 : 1)
+    return if issuer.blank? || !first_auth_of_session?(issuer, sp_session_ial)
+    MonthlySpAuthCount.increment(current_user.id, issuer, sp_session_ial)
   end
 
-  def first_auth_of_session?(issuer)
-    authenticated_to_sp_token = "auth-counted-#{issuer}"
+  def first_auth_of_session?(issuer, ial)
+    authenticated_to_sp_token = "auth_counted_ial#{ial}_#{issuer}"
     authenticated_to_sp = user_session[authenticated_to_sp_token]
     return if authenticated_to_sp
     user_session[authenticated_to_sp_token] = true
@@ -344,7 +348,7 @@ class ApplicationController < ActionController::Base
   end
 
   def add_sp_cost(token)
-    Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, sp_session[:ial2] ? 2 : 1, token)
+    Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, sp_session_ial, token)
   end
 
   def mobile?
