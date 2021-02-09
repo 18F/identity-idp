@@ -9,6 +9,9 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   connect_src = ["'self'", '*.newrelic.com', '*.nr-data.net', '*.google-analytics.com',
                  'services.assureid.net']
   connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
+  if Rails.env.production?
+    connect_src << URI(AppConfig.env.piv_cac_service_url.gsub('{random}', '*')).host
+  end
   default_csp_config = {
     default_src: ["'self'"],
     child_src: ["'self'", 'www.google.com'], # CSP 2.0 only; replaces frame_src

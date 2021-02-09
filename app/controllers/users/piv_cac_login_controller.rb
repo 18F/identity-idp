@@ -14,10 +14,16 @@ module Users
 
     def redirect_to_piv_cac_service
       create_piv_cac_nonce
-      redirect_to PivCacService.piv_cac_service_link(
-        nonce: piv_cac_nonce,
-        redirect_uri: login_piv_cac_url,
+      url = PivCacService.piv_cac_service_link(
+          nonce: piv_cac_nonce,
+          redirect_uri: login_piv_cac_url,
       )
+      respond_to do |format|
+        format.html { redirect_to url }
+        format.json do
+          render json: { redirect_to: url }.to_json, status: :ok
+        end
+      end
     end
 
     def account_not_found; end
