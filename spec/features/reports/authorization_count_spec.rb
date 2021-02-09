@@ -176,8 +176,6 @@ describe 'OpenID Connect' do
         expect_ial2_count_only(issuer_2)
       end
     end
-
-
   end
 
   def expect_ial1_count_only(issuer)
