@@ -180,14 +180,6 @@ describe 'OpenID Connect' do
 
   end
 
-  # today = Time.zone.today
-  # Db::MonthlySpAuthCount::SpMonthTotalAuthCounts.call(today, client_id, 1)
-  # Time.zone.today
-
-  # sign_in_user(user)
-  # sign_in_and_2fa_user(user)
-  # visit destroy_user_session_path
-
   def expect_ial1_count_only(issuer)
     expect(ial1_monthly_auth_count(issuer)).to eq(1)
     expect(ial2_monthly_auth_count(issuer)).to eq(0)
