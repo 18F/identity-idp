@@ -91,6 +91,14 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   Check out our Makefile commands learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/master/Makefile#L41
 
+##### Showing the Browser
+
+  By default, the acceptance specs use a headless browser for speed. If you want to see the browser, run the specs with `SHOW_BROWSER=true` environment variable:
+
+  ```
+  $ SHOW_BROWSER=true bundle exec rspec spec/features/
+  ```
+
 ##### Running smoke tests
 
   The smoke tests are a series of RSpec tests designed to run against deployed environments. To run them against the local Rails server:

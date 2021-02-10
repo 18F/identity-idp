@@ -6,8 +6,8 @@ require 'selenium/webdriver'
 
 Capybara.register_driver :headless_chrome do |app|
   browser_options = Selenium::WebDriver::Chrome::Options.new
-  browser_options.args << '--headless'
-  browser_options.args << '--disable-gpu'
+  browser_options.args << '--headless' if !ENV['SHOW_BROWSER']
+  browser_options.args << '--disable-gpu' if !ENV['SHOW_BROWSER']
   browser_options.args << '--no-sandbox'
   browser_options.args << '--disable-dev-shm-usage'
 
@@ -24,8 +24,8 @@ Capybara.register_driver(:headless_chrome_mobile) do |app|
                       'HeadlessChrome/88.0.4324.150 Safari/537.36'
 
   browser_options = Selenium::WebDriver::Chrome::Options.new
-  browser_options.args << '--headless'
-  browser_options.args << '--disable-gpu'
+  browser_options.args << '--headless' if !ENV['SHOW_BROWSER']
+  browser_options.args << '--disable-gpu' if !ENV['SHOW_BROWSER']
   browser_options.args << '--no-sandbox'
   browser_options.args << '--disable-dev-shm-usage'
   browser_options.args << '--window-size=414,736'
