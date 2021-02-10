@@ -12,14 +12,13 @@ feature 'idv usps step' do
     expect(page).to have_current_path(idv_review_path)
   end
 
-  it 'allows the user to clear IdV and restart' do
+  it 'allows the user to go back' do
     start_idv_from_sp
     complete_idv_steps_before_usps_step
 
-    click_on t('idv.messages.clear_and_start_over')
+    click_doc_auth_back_link
 
-    expect(page).to have_content(t('doc_auth.headings.welcome'))
-    expect(page).to have_current_path(idv_doc_auth_step_path(step: :welcome))
+    expect(page).to have_current_path(idv_phone_path)
   end
 
   context 'the user has sent a letter but not verified an OTP' do
@@ -35,9 +34,9 @@ feature 'idv usps step' do
       expect(page).to have_current_path(idv_come_back_later_path)
     end
 
-    it 'allows the user to cancel and return to usps otp confirmation' do
+    it 'allows the user to return to usps otp confirmation' do
       complete_idv_and_return_to_usps_step
-      click_link t('links.cancel')
+      click_doc_auth_back_link
 
       expect(page).to have_content(t('forms.verify_profile.title'))
       expect(page).to have_current_path(verify_account_path)
@@ -67,11 +66,5 @@ feature 'idv usps step' do
       expect(profile.active?).to eq false
       expect(profile.deactivation_reason).to eq 'verification_pending'
     end
-  end
-
-  context 'cancelling IdV' do
-    it_behaves_like 'cancel at idv step', :usps
-    it_behaves_like 'cancel at idv step', :usps, :oidc
-    it_behaves_like 'cancel at idv step', :usps, :saml
   end
 end

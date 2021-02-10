@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'idv/usps/index.html.erb' do
-  it 'calls UspsPresenter#title, #button, and #cancel_path' do
+  it 'calls UspsPresenter#title, #button, and #back_path' do
     user = build_stubbed(:user, :signed_up)
     usps_mail_service = Idv::UspsMail.new(user)
 
@@ -12,7 +12,7 @@ describe 'idv/usps/index.html.erb' do
 
     expect(usps_presenter).to receive(:title)
     expect(usps_presenter).to receive(:button)
-    expect(usps_presenter).to receive(:cancel_path)
+    expect(usps_presenter).to receive(:back_path).and_return('/')
     expect(usps_presenter).to receive(:byline)
     expect(usps_presenter).to receive(:usps_mail_bounced?)
 

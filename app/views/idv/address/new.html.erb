@@ -37,6 +37,4 @@
   <% end %>
 </div>
 
-<div class="margin-top-2 padding-top-1 border-top">
-  <%= link_to t('links.cancel'), idv_cancel_path, class: 'h5' %>
-</div>
+<%= render 'idv/doc_auth/back', step: 'verify' %>

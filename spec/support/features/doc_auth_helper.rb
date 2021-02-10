@@ -34,6 +34,10 @@ module DocAuthHelper
     fill_in 'doc_auth_ssn', with: ''
   end
 
+  def click_doc_auth_back_link
+    click_on '‹ ' + t('forms.buttons.back')
+  end
+
   def idv_doc_auth_welcome_step
     idv_doc_auth_step_path(step: :welcome)
   end

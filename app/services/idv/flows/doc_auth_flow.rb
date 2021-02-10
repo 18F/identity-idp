@@ -17,6 +17,7 @@ module Idv
       }.freeze
 
       ACTIONS = {
+        cancel_send_link: Idv::Actions::CancelSendLinkAction,
         reset: Idv::Actions::ResetAction,
         redo_ssn: Idv::Actions::RedoSsnAction,
         verify_document: Idv::Actions::VerifyDocumentAction,

@@ -71,6 +71,7 @@ feature 'doc auth send link step' do
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+      click_doc_auth_back_link
       click_on t('doc_auth.buttons.start_over')
     end
 
