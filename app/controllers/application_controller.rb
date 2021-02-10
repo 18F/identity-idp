@@ -279,6 +279,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_session_ial_1_or_2
+    return 1 if sp_session[:ial].blank?
     sp_session[:ial] > 1 ? 2 : 1
   end
 
