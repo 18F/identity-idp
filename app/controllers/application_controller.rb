@@ -275,7 +275,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_session_ial
-    sp_session[:ial2] ? 2 : 1
+    sp_session[:ial]
   end
 
   def increment_monthly_auth_count
