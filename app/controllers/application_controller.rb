@@ -278,11 +278,15 @@ class ApplicationController < ActionController::Base
     sp_session[:ial]
   end
 
+  def sp_session_ial_1_or_2
+    sp_session[:ial] > 1 ? 2 : 1
+  end
+
   def increment_monthly_auth_count
     return unless current_user&.id
     issuer = sp_session[:issuer]
     return if issuer.blank? || !first_auth_of_session?(issuer, sp_session_ial)
-    MonthlySpAuthCount.increment(current_user.id, issuer, sp_session_ial)
+    MonthlySpAuthCount.increment(current_user.id, issuer, sp_session_ial_1_or_2)
   end
 
   def first_auth_of_session?(issuer, ial)
@@ -348,7 +352,7 @@ class ApplicationController < ActionController::Base
   end
 
   def add_sp_cost(token)
-    Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, sp_session_ial, token)
+    Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, sp_session_ial_1_or_2, token)
   end
 
   def mobile?
