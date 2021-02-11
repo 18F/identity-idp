@@ -12,16 +12,6 @@ describe 'Hybrid Flow' do
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
   end
 
-  def current_session_uuid
-    Capybara.current_session.driver.browser.manage.cookie_named('_upaya_session')[:value]
-  end
-
-  def session(session_uuid)
-    config = Rails.application.config
-    session_store = config.session_store.new({}, config.session_options)
-    session_store.send(:load_session_from_redis, session_uuid) || {}
-  end
-
   it 'proofs and hands off to mobile', js: true do
     user = nil
     sms_link = nil
