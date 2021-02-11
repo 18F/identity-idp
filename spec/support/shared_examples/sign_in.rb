@@ -41,27 +41,6 @@ shared_examples 'signing in as IAL1 with piv/cac' do |sp|
   end
 end
 
-shared_examples 'visiting 2fa when fully authenticated' do |sp|
-  before { Timecop.freeze Time.zone.now }
-  after { Timecop.return }
-
-  it 'redirects to SP after visiting a 2fa screen when fully authenticated', email: true do
-    ial1_sign_in_with_personal_key_goes_to_sp(sp)
-
-    visit login_two_factor_options_path
-
-    click_continue
-    continue_as
-    expect(current_url).to eq @saml_authn_request if sp == :saml
-
-    if sp == :oidc
-      redirect_uri = URI(current_url)
-
-      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-    end
-  end
-end
-
 shared_examples 'signing in as IAL2 with personal key' do |sp|
   before { Timecop.freeze Time.zone.now }
   after { Timecop.return }
