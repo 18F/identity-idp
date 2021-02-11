@@ -5,6 +5,7 @@ module DataRequests
       event_name
       success
       multi_factor_auth_method
+      multi_factor_id
       service_provider
       ip_address
       user_agent
@@ -37,6 +38,19 @@ module DataRequests
       multi_factor_auth_method = data.dig(
         'properties', 'event_properties', 'multi_factor_auth_method'
       )
+
+      mfa_key = case multi_factor_auth_method
+      when 'sms', 'voice'
+        'phone_configuration_id'
+      when 'piv_cac'
+        'piv_cac_configuration_id'
+      when 'webauthn'
+        'webauthn_configuration_id'
+      when 'totp'
+        'auth_app_configuration_id'
+      end
+
+      multi_factor_id = data.dig('properties', 'event_properties', mfa_key)
       service_provider = data.dig('properties', 'service_provider')
       ip_address = data.dig('properties', 'user_ip')
       user_agent = data.dig('properties', 'user_agent')
@@ -46,6 +60,7 @@ module DataRequests
         event_name,
         success,
         multi_factor_auth_method,
+        multi_factor_id,
         service_provider,
         ip_address,
         user_agent
