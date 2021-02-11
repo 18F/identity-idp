@@ -17,7 +17,7 @@ module Idv
       return { plain: 'Unauthorized', status: :unauthorized } unless document_capture_session
 
       result = document_capture_session.load_result ||
-        document_capture_session.load_doc_auth_async_result
+               document_capture_session.load_doc_auth_async_result
 
       return { plain: 'Pending', status: :accepted } if result.blank?
       return { plain: 'Unauthorized', status: :unauthorized } unless result.success?
