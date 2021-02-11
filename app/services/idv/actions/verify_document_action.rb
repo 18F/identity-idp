@@ -55,6 +55,9 @@ module Idv
             trace_id: amzn_trace_id,
           },
         ).run do |doc_auth_result|
+          puts "VERIFY: #{verify_document_capture_session.result_id}"
+
+
           document_result = doc_auth_result.to_h.fetch(:document_result, {})
           dcs = DocumentCaptureSession.new(result_id: verify_document_capture_session.result_id)
           dcs.store_doc_auth_result(

@@ -29,23 +29,26 @@ describe 'Hybrid Flow' do
       impl.call(config)
     end
 
-    perform_in_browser(:one) do
+    perform_in_browser(:desktop) do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_send_link_step
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_idv_continue
 
-      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+      expect(page).to have_content(t('doc_auth.headings.text_message'))
     end
 
     expect(sms_link).to be_present
 
-    perform_in_browser(:two) do
+    perform_in_browser(:mobile) do
       visit sms_link
       attach_and_submit_images
       expect(page).to have_text(t('doc_auth.instructions.switch_back'))
     end
 
-    sleep 100
+    perform_in_browser(:desktop) do
+      sleep 100
+      expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+    end
   end
 end
