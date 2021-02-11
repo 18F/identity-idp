@@ -23,14 +23,16 @@ describe 'Hybrid Flow' do
   end
 
   it 'proofs and hands off to mobile', js: true do
+    user = nil
     sms_link = nil
+
     expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       sms_link = config[:link]
       impl.call(config)
     end
 
     perform_in_browser(:desktop) do
-      sign_in_and_2fa_user
+      user = sign_in_and_2fa_user
       complete_doc_auth_steps_before_send_link_step
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_idv_continue
@@ -47,8 +49,24 @@ describe 'Hybrid Flow' do
     end
 
     perform_in_browser(:desktop) do
-      sleep 100
       expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+
+      fill_out_ssn_form_ok
+      click_idv_continue
+
+      expect(page).to have_content(t('doc_auth.headings.verify'))
+      click_idv_continue
+
+      fill_out_phone_form_mfa_phone(user)
+      click_idv_continue
+
+      fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+      click_idv_continue
+
+      acknowledge_and_confirm_personal_key
+
+      expect(page).to have_current_path(account_path)
+      expect(page).to have_content(t('headings.account.verified_account'))
     end
   end
 end

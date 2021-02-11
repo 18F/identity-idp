@@ -50,6 +50,10 @@ module Idv
         flow_session[:doc_capture_user_id]
       end
 
+      def hybrid_flow_mobile?
+        user_id_from_token.present?
+      end
+
       def throttled_response
         redirect_to throttled_url
         IdentityDocAuth::Response.new(
