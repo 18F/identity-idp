@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe DataRequests::WriteCloudwatchLogs do
   let(:now) { Time.zone.now }
 
-  def result_row(event_properties = {})
+  def build_result_row(event_properties = {})
     DataRequests::FetchCloudwatchLogs::ResultRow.new(
       Time.zone.now,
       {
@@ -17,15 +17,15 @@ RSpec.describe DataRequests::WriteCloudwatchLogs do
           }.merge(event_properties),
           service_provider: 'some:service:provider',
           user_ip: '0.0.0.0',
-          user_agent: 'Chrome'
-        }
-      }.to_json
+          user_agent: 'Chrome',
+        },
+      }.to_json,
     )
   end
 
   let(:cloudwatch_results) do
     [
-      result_row,
+      build_result_row,
     ]
   end
 
@@ -71,11 +71,11 @@ RSpec.describe DataRequests::WriteCloudwatchLogs do
     context 'various multi factor ids' do
       let(:cloudwatch_results) do
         [
-          result_row(multi_factor_auth_method: 'sms', phone_configuration_id: '1111'),
-          result_row(multi_factor_auth_method: 'voice', phone_configuration_id: '2222'),
-          result_row(multi_factor_auth_method: 'piv_cac', piv_cac_configuration_id: '3333'),
-          result_row(multi_factor_auth_method: 'webauthn', webauthn_configuration_id: '4444'),
-          result_row(multi_factor_auth_method: 'totp', auth_app_configuration_id: '5555'),
+          build_result_row(multi_factor_auth_method: 'sms', phone_configuration_id: '1111'),
+          build_result_row(multi_factor_auth_method: 'voice', phone_configuration_id: '2222'),
+          build_result_row(multi_factor_auth_method: 'piv_cac', piv_cac_configuration_id: '3333'),
+          build_result_row(multi_factor_auth_method: 'webauthn', webauthn_configuration_id: '4444'),
+          build_result_row(multi_factor_auth_method: 'totp', auth_app_configuration_id: '5555'),
         ]
       end
 
@@ -85,13 +85,12 @@ RSpec.describe DataRequests::WriteCloudwatchLogs do
         csv = CSV.read(File.join(@output_dir, 'logs.csv'), headers: true)
 
         expect(csv.map { |row| [row['multi_factor_auth_method'], row['multi_factor_id']] }).
-          to eq([
-            %w[sms 1111],
-            %w[voice 2222],
-            %w[piv_cac 3333],
-            %w[webauthn 4444],
-            %w[totp 5555],
-          ])
+          to eq([%w[sms 1111],
+                 %w[voice 2222],
+                 %w[piv_cac 3333],
+                 %w[webauthn 4444],
+                 %w[totp 5555],
+                ])
       end
     end
   end

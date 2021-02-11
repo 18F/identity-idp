@@ -63,7 +63,7 @@ module DataRequests
         multi_factor_id,
         service_provider,
         ip_address,
-        user_agent
+        user_agent,
       ]
     end
   end
