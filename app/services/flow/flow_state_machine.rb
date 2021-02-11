@@ -43,6 +43,14 @@ module Flow
       params[:step]&.underscore
     end
 
+    def current_action
+      params[:action]&.underscore
+    end
+
+    def current_step_action
+      "#{current_step}_#{current_action}"
+    end
+
     def track_step_visited
       analytics.track_event(analytics_visited, analytics_properties) if @analytics_id
       Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(current_step, :view, true)
@@ -159,6 +167,7 @@ module Flow
     def analytics_properties
       current_flow_step_counts[current_step_name] ||= 0
       {
+        step_action: current_step_action,
         step: current_step,
         step_count: current_flow_step_counts[current_step_name] += 1,
       }
