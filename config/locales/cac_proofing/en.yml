@@ -16,7 +16,6 @@ en:
       choose_method: How would you like to verify your identity?
       enter_info: Enter in your information
       present_cac: Present your PIV/CAC card to verify your account
-      success: We've verified your information and PIV/CAC card.
       verify: Verify your information
       welcome: We need to verify your identity
     info:
