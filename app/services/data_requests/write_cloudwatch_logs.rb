@@ -18,23 +18,17 @@ module DataRequests
     end
 
     def call
-      output_file.puts(HEADERS.join(','))
-      cloudwatch_results.each do |row|
-        write_row(row)
+      CSV.open(File.join(output_dir, 'logs.csv'), 'w') do |csv|
+        csv << HEADERS
+        cloudwatch_results.each do |row|
+          csv << build_row(row)
+        end
       end
-      output_file.close
     end
 
     private
 
-    def output_file
-      @output_file ||= begin
-        output_path = File.join(output_dir, 'logs.csv')
-        File.open(output_path, 'w')
-      end
-    end
-
-    def write_row(row)
+    def build_row(row)
       data = JSON.parse(row.message)
 
       timestamp = data.dig('time')
@@ -47,14 +41,15 @@ module DataRequests
       ip_address = data.dig('properties', 'user_ip')
       user_agent = data.dig('properties', 'user_agent')
 
-      output_file.puts(
-        CSV.generate_line(
-          [
-            timestamp, event_name, success, multi_factor_auth_method,
-            service_provider, ip_address, user_agent
-          ],
-        ),
-      )
+      [
+        timestamp,
+        event_name,
+        success,
+        multi_factor_auth_method,
+        service_provider,
+        ip_address,
+        user_agent
+      ]
     end
   end
 end
