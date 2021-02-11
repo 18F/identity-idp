@@ -39,9 +39,7 @@ RSpec.describe DataRequests::WriteCloudwatchLogs do
     it 'writes the logs to output_dir/logs.csv' do
       writer.call
 
-      csv = CSV.read(File.join(@output_dir, 'logs.csv'), headers: true)
-
-      row = csv.first
+      row = CSV.read(File.join(@output_dir, 'logs.csv'), headers: true).first
 
       expect(row['timestamp']).to eq(now.iso8601)
       expect(row['event_name']).to eq('Some Log: Event')
@@ -50,6 +48,18 @@ RSpec.describe DataRequests::WriteCloudwatchLogs do
       expect(row['service_provider']).to eq('some:service:provider')
       expect(row['ip_address']).to eq('0.0.0.0')
       expect(row['user_agent']).to eq('Chrome')
+    end
+
+    context 'missing data' do
+      let(:cloudwatch_results) do
+        [
+          DataRequests::FetchCloudwatchLogs::ResultRow.new(now, {}.to_json),
+        ]
+      end
+
+      it 'does not blow up' do
+        expect { writer.call }.to_not raise_error
+      end
     end
   end
 end
