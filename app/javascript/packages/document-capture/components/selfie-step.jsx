@@ -52,6 +52,7 @@ function SelfieStep({
           onChange={(nextSelfie) => onChange({ selfie: nextSelfie })}
           allowUpload={false}
           errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
+          analyticsPrefix="selfie"
         />
       ) : (
         <SelfieCapture

@@ -31,6 +31,8 @@ module IdvHelper
 
   def click_idv_continue
     click_on t('forms.buttons.continue'), match: :first
+    # If button shows spinner when clicked, wait for it to finish.
+    expect(page).to have_no_css('.spinner-button.spinner-button--spinner-active', wait: 10)
   end
 
   def choose_idv_otp_delivery_method_sms

@@ -112,7 +112,7 @@ feature 'User profile' do
       sign_in_and_2fa_user
       click_link 'Edit', href: manage_password_path
 
-      expect(page).to_not have_css('#pw-strength-cntnr.hide')
+      expect(page).to_not have_css('#pw-strength-cntnr.display-none')
       expect(page).to have_content '...'
 
       fill_in 'update_user_password_form_password', with: 'this is a great sentence'

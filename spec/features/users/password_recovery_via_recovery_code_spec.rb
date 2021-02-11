@@ -44,9 +44,9 @@ feature 'Password recovery via personal key' do
     click_on t('links.account.reactivate.without_key')
     click_on t('forms.buttons.continue')
     complete_all_doc_auth_steps
-    click_continue
+    click_idv_continue
     fill_in 'Password', with: new_password
-    click_continue
+    click_idv_continue
     acknowledge_and_confirm_personal_key
     click_agree_and_continue
 

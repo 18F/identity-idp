@@ -5,16 +5,16 @@
   form_name_tag_voice = form_name + "_otp_delivery_preference_voice"
 %>
 
-<div class="mb3">
-  <fieldset class="m0 p0 border-none">
-    <legend class="mb1 h4 serif bold">
+<div class="margin-bottom-4">
+  <fieldset class="margin-0 padding-0 border-none">
+    <legend class="margin-bottom-1 h4 serif bold">
       <%= t('two_factor_authentication.otp_delivery_preference.title') %>
     </legend>
-    <p class="mt0 mb2" id="otp_delivery_preference_instruction">
+    <p class="margin-top-0 margin-bottom-2" id="otp_delivery_preference_instruction">
       <%= t('two_factor_authentication.otp_delivery_preference.instruction') %>
     </p>
     <label
-      class="btn-border col-12 sm-col-5 sm-mr2 mb2 sm-mb0"
+      class="btn-border col-12 sm-col-5 tablet:margin-right-2 margin-bottom-2 tablet:margin-bottom-0"
       for= <%= form_name_tag_sms %>
     >
       <div class="radio">
@@ -26,7 +26,7 @@
       </div>
     </label>
     <label
-      class="btn-border col-12 sm-col-5 mb0"
+      class="btn-border col-12 sm-col-5 margin-bottom-0"
       for=<%= form_name_tag_voice %>
     >
       <div class="radio">

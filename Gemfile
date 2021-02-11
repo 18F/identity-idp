@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 6.1.1'
+gem 'rails', '~> 6.1.2'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
@@ -118,5 +118,5 @@ end
 
 group :production do
   gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.5.0'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.5.1.pre'
 end

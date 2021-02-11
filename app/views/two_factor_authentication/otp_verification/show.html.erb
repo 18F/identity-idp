@@ -1,6 +1,6 @@
 <% title t('titles.enter_2fa_code') %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= @presenter.header %>
 </h1>
 
@@ -8,12 +8,12 @@
   <%= @presenter.phone_number_message %>
 </p>
 
-<%= form_tag(:login_otp, method: :post, role: 'form', class: 'mt3') do %>
+<%= form_tag(:login_otp, method: :post, role: 'form', class: 'margin-top-4') do %>
   <%= render @presenter.reauthn_hidden_field_partial %>
   <%= label_tag 'code',
                 t('simple_form.required.html') + t('forms.two_factor.code'),
                 class: 'block bold' %>
-  <div class="col-12 sm-col-5 mb2 sm-mb0 sm-mr-20p inline-block">
+  <div class="col-12 sm-col-5 margin-bottom-2 tablet:margin-bottom-0 sm-mr-20p inline-block">
     <%= text_field_tag(:code, '',
                        value: @presenter.code_value,
                        required: true,
@@ -44,7 +44,7 @@
                            id: 'remember_device_preference' %>
       <%= check_box_tag 'remember_device', true,
                         @presenter.remember_device_box_checked?,
-                        class: 'my2 ml2 mr1 margin-left-0' %>
+                        class: 'margin-y-2 margin-left-2 margin-right-1 margin-left-0' %>
       <%= label_tag 'remember_device',
                     t('forms.messages.remember_device'),
                     class: 'blue margin-bottom-0' %>

@@ -4,11 +4,11 @@
   message: @presenter.title,
 } %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= @presenter.heading %>
 </h1>
 
-<p class="mt-tiny mb3">
+<p class="mt-tiny margin-bottom-4">
   <%= @presenter.description %>
 </p>
 
@@ -16,7 +16,7 @@
 
 <% cancel = sign_up_or_idv_no_js_link || link %>
 
-<div class="mt2 pt1 border-top">
+<div class="margin-top-2 padding-top-1 border-top">
   <%= link_to t('forms.piv_cac_setup.choose_different_certificate'),
               setup_piv_cac_url, class: 'h5' %>
   <br/>

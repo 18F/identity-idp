@@ -71,15 +71,18 @@ describe IdvController do
     end
 
     context 'no SP context' do
+      let(:user) { user = build(:user, password: ControllerHelper::VALID_PASSWORD) }
+
       before do
-        stub_sign_in
+        stub_sign_in(user)
         session[:sp] = {}
+        allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
+        allow(AppConfig.env).to receive(:sp_context_needed_environment).and_return('prod')
       end
 
       context 'prod environment' do
         before do
           allow(LoginGov::Hostdata).to receive(:env).and_return('prod')
-          allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
         end
 
         it 'redirects back to the account page' do
@@ -87,12 +90,24 @@ describe IdvController do
 
           expect(response).to redirect_to account_url
         end
+
+        context 'user has an existing profile' do
+          let(:user) do
+            profile = create(:profile)
+            profile.user
+          end
+
+          it 'begins the identity proofing process' do
+            get :index
+
+            expect(response).to redirect_to idv_doc_auth_url
+          end
+        end
       end
 
       context 'non-prod environment' do
         before do
           allow(LoginGov::Hostdata).to receive(:env).and_return('staging')
-          allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
         end
 
         it 'begins the identity proofing process' do

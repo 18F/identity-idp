@@ -1,13 +1,13 @@
 <% title t('account_reset.delete_account.title') %>
 
-<h1 class='h3 my0'>
+<h1 class='h3 margin-y-0'>
   <%= t('account_reset.delete_account.title') %>
 </h1>
-<p class='mt-tiny mb0'>
+<p class='mt-tiny margin-bottom-0'>
   <%= t('account_reset.delete_account.info') %>
 </p>
 <br/>
-<h4 class='my2'>
+<h4 class='margin-y-2'>
   <%= t('account_reset.delete_account.are_you_sure') %>
 </h4>
 
@@ -15,7 +15,7 @@
   t('account_reset.request.no_cancel'),
   root_url,
   method: :get,
-  class: 'btn btn-primary btn-wide mb1 personal-key-continue',
+  class: 'btn btn-primary btn-wide margin-bottom-1 personal-key-continue',
   'data-toggle': 'modal'
 ) %>
 <%= button_to(

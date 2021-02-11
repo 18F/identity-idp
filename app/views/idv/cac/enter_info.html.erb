@@ -1,7 +1,7 @@
 <% title t('titles.doc_auth.enter_info') %>
 
-<h5 class="my1 caps bold accent-blue"><%= t('cac_proofing.step', step: 2) %></h5>
-<h1 class="h3 my0"><%= t('cac_proofing.headings.enter_info') %></h1>
+<h5 class="margin-y-1 caps bold accent-blue"><%= t('cac_proofing.step', step: 2) %></h5>
+<h1 class="h3 margin-y-0"><%= t('cac_proofing.headings.enter_info') %></h1>
 
 <% if flow_session[:error_message] %>
   <%= render 'shared/alert', {
@@ -14,14 +14,14 @@
 <%= validated_form_for(:cac, url: url_for, method: 'PUT',
                        html: { autocomplete: 'off', method: :put, role: 'form' }) do |f| %>
   <% if flow_session[:first_name].nil? && flow_session[:last_name].nil? %>
-  <fieldset class="m0 p0 border-none">
-    <div class="mb3 string required profile_first_name mb1">
+  <fieldset class="padding-0 padding-0 border-none">
+    <div class="margin-bottom-4 string required profile_first_name margin-bottom-1">
       <label class="bold string required" for="profile_first_name"><abbr title="required" class="red display-none">*</abbr>
         <%= t('in_person_proofing.forms.first_name') %>
       </label>
       <input class="block col-12 field string required" required="required" aria-invalid="false" aria-required="true" maxlength="255" size="255" type="text" name="doc_auth[first_name]" id="profile_first_name"/>
     </div>
-    <div class="mb3 string optional profile_last_name">
+    <div class="margin-bottom-4 string optional profile_last_name">
       <label class="bold string optional" for="profile_last_name">
         <%= t('in_person_proofing.forms.last_name') %>
       </label>
@@ -29,21 +29,21 @@
     </div>
   </fieldset>
     <% end %>
-  <fieldset class="ml0 p0 border-none">
-    <div class="clearfix mxn1">
-      <div class="sm-col sm-col-6 px1">
-        <div class="mb3 tel required profile_dob">
+  <fieldset class="margin-left-0 padding-0 border-none">
+    <div class="clearfix margin-x-neg-1">
+      <div class="sm-col sm-col-6 padding-x-1">
+        <div class="margin-bottom-4 tel required profile_dob">
           <label class="bold tel required" for="profile_dob"><abbr title="required" class="red display-none">*</abbr>
             <%= t('in_person_proofing.forms.dob') %>
           </label>
-          <div id="dob-instructs" class="italic mb1">example: 01/17/1964</div>
+          <div id="dob-instructs" class="italic margin-bottom-1">example: 01/17/1964</div>
           <input class="block col-12 field string tel required dob" aria-describedby="dob-instructs" required="required" aria-invalid="false" aria-required="true" pattern="(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])/[0-9]{4}" type="tel" name="doc_auth[dob]" id="profile_dob"/>
         </div>
       </div>
     </div>
-    <div class="clearfix mxn1">
-      <div class="sm-col sm-col-8 px1">
-        <div class="mb3 tel required profile_ssn">
+    <div class="clearfix margin-x-neg-1">
+      <div class="sm-col sm-col-8 padding-x-1">
+        <div class="margin-bottom-4 tel required profile_ssn">
           <label class="bold tel required" for="profile_ssn"><abbr title="required" class="red display-none">*</abbr>
             <%= t('in_person_proofing.forms.ssn') %>
           </label>
@@ -52,28 +52,28 @@
       </div>
     </div>
   </fieldset>
-  <fieldset class="m0 p0 border-none">
-    <div class="mb3 string required profile_address1 mb1">
+  <fieldset class="padding-0 padding-0 border-none">
+    <div class="margin-bottom-4 string required profile_address1 margin-bottom-1">
       <label class="bold string required" for="profile_address1"><abbr title="required" class="red display-none">*</abbr>
         <%= t('in_person_proofing.forms.address1') %>
       </label>
       <input class="block col-12 field string required" required="required" aria-invalid="false" aria-required="true" maxlength="255" size="255" type="text" name="doc_auth[address1]" id="profile_address1"/>
     </div>
-    <div class="mb3 string optional profile_address2">
+    <div class="margin-bottom-4 string optional profile_address2">
       <label class="bold string optional" for="profile_address2">
         <%= t('in_person_proofing.forms.address2') %>
       </label>
       <input class="block col-12 field string optional" maxlength="255" size="255" type="text" name="doc_auth[address2]" id="profile_address2"/>
     </div>
-    <div class="mb3 string required profile_city">
+    <div class="margin-bottom-4 string required profile_city">
       <label class="bold string required" for="profile_city"><abbr title="required" class="red display-none">*</abbr>
         <%= t('in_person_proofing.forms.city') %>
       </label>
       <input class="block col-12 field string required" required="required" aria-invalid="false" aria-required="true" maxlength="255" size="255" type="text" name="doc_auth[city]" id="profile_city"/>
     </div>
-    <div class="clearfix mxn1">
-      <div class="sm-col sm-col-8 px1">
-        <div class="mb3 select required profile_state">
+    <div class="clearfix margin-x-neg-1">
+      <div class="sm-col sm-col-8 padding-x-1">
+        <div class="margin-bottom-4 select required profile_state">
           <label class="bold select required" for="profile_state"><abbr title="required" class="red display-none">*</abbr>
             <%= t('in_person_proofing.forms.state') %>
           </label>
@@ -140,8 +140,8 @@
           <option value="WY">Wyoming</option>
         </select></div>
       </div>
-      <div class="sm-col sm-col-4 px1">
-        <div class="mb3 tel required profile_zipcode">
+      <div class="sm-col sm-col-4 padding-x-1">
+        <div class="margin-bottom-4 tel required profile_zipcode">
           <label class="bold tel required" for="profile_zipcode"><abbr title="required" class="red display-none">*</abbr>
             <%= t('in_person_proofing.forms.zip_code') %>
           </label>
@@ -150,7 +150,7 @@
       </div>
     </div>
   </fieldset>
-  <div class="mt3">
+  <div class="margin-top-4">
     <button class="btn btn-primary btn-wide sm-col-6 col-12" type="submit">Continue</button>
   </div>
 <% end %>

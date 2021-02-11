@@ -1,5 +1,5 @@
 <div>
-  <div class="grid-row mb1 mt0">
+  <div class="grid-row margin-bottom-1 margin-top-0">
     <h2 class="grid-col-fill margin-y-0 padding-right-2">
       <%= t('headings.account.federal_employee_id') %>
     </h2>
@@ -16,7 +16,7 @@
 
   <div class="border-bottom border-light-blue">
     <% MfaContext.new(current_user).piv_cac_configurations.each do |piv_cac_configuration| %>
-      <div class="grid-row p1 border-top border-left border-right border-light-blue">
+      <div class="grid-row padding-1 border-top border-left border-right border-light-blue">
         <div class="grid-col-8">
           <div class="grid-col-12 mobile-lg:grid-col-6">
             <%= piv_cac_configuration.name %>

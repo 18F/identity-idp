@@ -45,6 +45,10 @@ describe Idv::ReviewController do
         :confirm_idv_steps_complete,
       )
     end
+
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+    end
   end
 
   describe '#confirm_idv_steps_complete' do

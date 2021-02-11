@@ -2,10 +2,10 @@
 
 <% title t('titles.doc_auth.verify') %>
 
-<h1 class='h3 my0'>
+<h1 class='h3 margin-y-0'>
   <%= t('doc_auth.headings.verify') %>
 </h1>
-<div class='mt3 mb2'>
+<div class='margin-top-4 margin-bottom-2'>
   <div>
     <%= "#{t('doc_auth.forms.first_name')}: #{flow_session[:pii_from_doc][:first_name]}" %>
   </div>
@@ -40,8 +40,21 @@
       class: 'btn btn-link',
     ) %>
   </div>
-  <%= "#{t('doc_auth.forms.ssn')}: #{flow_session[:pii_from_doc][:ssn]}" %>
-  <div class="mt4">
+  <%= t('doc_auth.forms.ssn') %>
+  <div class='sm-col sm-col-8 padding-x-0 margin-top-0 margin-bottom-4'>
+    <%= tag.input value: flow_session[:pii_from_doc][:ssn],
+                  class: 'block col-12 field password ssn ssn-toggle bg-white',
+                  aria: { label: t('doc_auth.forms.ssn'), invalid: false, required: false },
+                  readonly: true,
+                  maxlength: 11,
+                  pattern: "^\d{3}-?\d{2}-?\d{4}$",
+                  size: "11",
+                  type: "password",
+                  name: "doc_auth[ssn]",
+                  id: "doc_auth_ssn" %>
+  </div>
+
+  <div class="margin-top-6">
     <%= render 'shared/spinner-button',
               action_message: t('doc_auth.info.verifying'),
               class: 'grid-col-12 tablet:grid-col-6' do %>

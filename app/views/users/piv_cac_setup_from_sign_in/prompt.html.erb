@@ -1,26 +1,26 @@
 <% title t('titles.piv_cac_login.add') %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('titles.piv_cac_login.add') %>
 </h1>
 
-<p class="mt2 mb2">
+<p class="margin-top-2 margin-bottom-2">
   <%= t('headings.piv_cac_login.add') %>
 </p>
 
-<p class="mt2 mb2">
+<p class="margin-top-2 margin-bottom-2">
   <%= t('instructions.mfa.piv_cac.add_from_sign_in_html') %>
 </p>
 
-<div class="mt3">
+<div class="margin-top-4">
   <div class="inline-block">
     <%= form_tag(submit_new_piv_cac_url) do %>
       <%= label_tag 'code', t('forms.piv_cac_setup.nickname'), class: 'block bold' %>
       <%= text_field_tag :name, '', required: true, aria: { invalid: false }, id: 'nickname',
                          class: 'block col-12 field monospace', size: 16, maxlength: 20,
                          'aria-labelledby': 'totp-label' %>
-       <div class="mt2">
-        <%= submit_tag t('forms.piv_cac_setup.submit'), class: 'btn btn-primary mr1' %>
+       <div class="margin-top-2">
+        <%= submit_tag t('forms.piv_cac_setup.submit'), class: 'btn btn-primary margin-right-1' %>
         <div class="inline-block">
           <%= link_to t('forms.piv_cac_setup.no_thanks'), new_user_session_url,
                       class: 'btn btn-secondary' %>

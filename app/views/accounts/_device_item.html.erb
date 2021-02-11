@@ -1,12 +1,12 @@
-<div class="p1 clearfix border-top border-left border-right border-light-blue">
-  <div class="clearfix mxn1">
-    <div class="sm-col sm-col-6 px1">
+<div class="padding-1 clearfix border-top border-left border-right border-light-blue">
+  <div class="clearfix margin-x-neg-1">
+    <div class="sm-col sm-col-6 padding-x-1">
       <div class="bold truncate">
         <%= device.nice_name %>
       </div>
       <%= device.last_sign_in_location_and_ip %>
     </div>
-    <div class="sm-col sm-col-6 px1 sm-right-align">
+    <div class="sm-col sm-col-6 padding-x-1 sm-right-align">
       <%= local_time(device.happened_at, t('time.formats.event_timestamp')) %>
       <br />
       <%= link_to t('headings.account.events'), account_events_path(id: device.id) %>

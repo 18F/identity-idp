@@ -10,23 +10,23 @@
     message: flow_session[:error_message],
   } %>
 <% end %>
-<h1 class='h3 my0'><%= t('doc_auth.headings.text_message') %></h1>
+<h1 class='h3 margin-y-0'><%= t('doc_auth.headings.text_message') %></h1>
 
 <br />
 
-<div class='clearfix mxn1'>
-  <div class='sm-col sm-col-3 px1'>
+<div class='clearfix margin-x-neg-1'>
+  <div class='sm-col sm-col-3 padding-x-1'>
     <%= image_tag asset_url('idv/phone.png'), alt: t('image_description.camera_mobile_phone') %>
   </div>
-  <div class='sm-col sm-col-9 px1 h2 mb2 mt0 my0'>
+  <div class='sm-col sm-col-9 padding-x-1 h2 margin-bottom-2 margin-top-0 margin-y-0'>
     <p><%= t('doc_auth.info.link_sent').first %></p>
-    <p id='doc_capture_continue_instructions' class='mb0'>
+    <p id='doc_capture_continue_instructions' class='margin-bottom-0'>
       <%= t('doc_auth.info.link_sent').last %>
     </p>
   </div>
 </div>
 
-<div class='mt2 mb0'>
+<div class='margin-top-2 margin-bottom-0'>
     <%=
       button_to(
         t('forms.buttons.continue'),

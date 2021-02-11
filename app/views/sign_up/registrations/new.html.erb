@@ -8,9 +8,9 @@
   message: t('sign_up.email.invalid_email_alert_head'),
 } %>
 
-<h1 class='h3 my0'><%= t('headings.registrations.enter_email') %></h1>
+<h1 class='h3 margin-y-0'><%= t('headings.registrations.enter_email') %></h1>
 
-<div class='mb4'>
+<div class='margin-bottom-6'>
   <%= validated_form_for(@register_user_email_form,
       html: { autocomplete: 'off', role: 'form' },
       url: sign_up_register_path) do |f| %>
@@ -45,7 +45,7 @@
 
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
 
-<p class='mt2'>
+<p class='margin-top-2'>
    <%= new_window_link_to(t('notices.privacy.security_and_privacy_practices'),
                           MarketingSite.security_and_privacy_practices_url) %>
 </p>

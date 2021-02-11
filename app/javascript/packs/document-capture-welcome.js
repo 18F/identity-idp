@@ -1,6 +1,6 @@
 import { hasCamera, isCameraCapableMobile } from '@18f/identity-device';
 
-const form = document.querySelector('.js-consent-form');
+const form = document.querySelector('.js-consent-continue-form');
 
 if (form && isCameraCapableMobile()) {
   (async () => {

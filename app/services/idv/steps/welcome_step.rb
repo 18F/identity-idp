@@ -19,11 +19,8 @@ module Idv
       private
 
       def skip_to_capture
-        # Skips to `document_capture` step.
-        mark_step_complete(:upload)
-        mark_step_complete(:send_link)
-        mark_step_complete(:link_sent)
-        mark_step_complete(:email_sent)
+        # See: Idv::DocAuthController#update_if_skipping_upload
+        flow_session[:skip_upload_step] = true
       end
 
       def no_camera_redirect

@@ -1,6 +1,6 @@
 <% title t('account.navigation.connected_accounts') %>
 
-<h1 class="mt0">
+<h1 class="margin-top-0">
   <%= t('headings.account.connected_accounts') %>
 </h1>
 
@@ -8,7 +8,7 @@
   <%= t('account.connected_apps.description') %>
 </p>
 
-<div class="mb3 card profile-info-box border-bottom border-light-blue">
+<div class="margin-bottom-4 card profile-info-box border-bottom border-light-blue">
   <div class="border-bottom border-light-blue">
     <% @view_model.connected_apps.each do |identity| %>
       <%= render identity.connected_app_partial, identity: identity %>

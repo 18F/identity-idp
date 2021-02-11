@@ -64,7 +64,7 @@
       <% end %>
     </div>
     <div class="container">
-      <div class="px2 py2 sm-py5 sm-px6 mx-auto sm-mb5 border-box <%= local_assigns[:disable_card].present? ? '' : 'card' %>" role="main">
+      <div class="padding-x-2 padding-y-2 tablet:padding-y-8 tablet:padding-x-10 margin-x-auto tablet:margin-bottom-8 border-box <%= local_assigns[:disable_card].present? ? '' : 'card' %>" role="main">
         <%= render 'shared/flashes' %>
         <%= content_for?(:content) ? yield(:content) : yield %>
       </div>

@@ -9,7 +9,7 @@ describe Users::VerifyPersonalKeyController do
 
   describe 'before actions' do
     it 'only allows 2fa users through' do
-      expect(subject).to have_actions(:confirm_two_factor_authenticated)
+      expect(subject).to have_actions(:before, :confirm_two_factor_authenticated)
     end
   end
 

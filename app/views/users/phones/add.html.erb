@@ -1,12 +1,12 @@
 <%= title t('titles.add_info.phone') %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('headings.add_info.phone') %>
 </h1>
-<p class="mt-tiny mb0">
+<p class="mt-tiny margin-bottom-0">
   <%= t('two_factor_authentication.phone_info_html') %>
 </p>
-<p class="mt-tiny mb1">
+<p class="mt-tiny margin-bottom-1">
   <%= t('two_factor_authentication.phone_fee_disclosure') %>
   <% if FeatureManagement.voip_block? %>
     <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>

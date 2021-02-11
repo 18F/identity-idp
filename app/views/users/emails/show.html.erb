@@ -2,11 +2,11 @@
 
 <%= render 'shared/sp_alert' %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('headings.add_email') %>
 </h1>
 
-<div class="mb4">
+<div class="margin-bottom-6">
   <%= validated_form_for(@add_user_email_form,
           html: { autocomplete: 'off', role: 'form' },
           url: add_email_path) do |f| %>
@@ -18,7 +18,7 @@
 
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
 
-<p class="mt2">
+<p class="margin-top-2">
   <%= new_window_link_to t('notices.privacy.security_and_privacy_practices'),
                          MarketingSite.security_and_privacy_practices_url %>
 </p>
