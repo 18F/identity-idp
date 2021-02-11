@@ -14,7 +14,7 @@ module Idv
     end
 
     def byline
-      if current_user.decorate.usps_mail_bounced?
+      if usps_mail_bounced?
         I18n.t('idv.messages.usps.new_address')
       else
         I18n.t('idv.messages.usps.address_on_file')
