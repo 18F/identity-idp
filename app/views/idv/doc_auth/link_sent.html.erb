@@ -38,7 +38,7 @@
     %>
 </div>
 
-<%= render 'idv/doc_auth/back', action: 'cancel_send_link' %>
+<%= render 'idv/doc_auth/back', action: 'cancel_link_sent' %>
 
 <% if FeatureManagement.doc_capture_polling_enabled? %>
   <%= javascript_packs_tag_once 'doc_capture_polling' %>
