@@ -84,7 +84,7 @@ feature 'PIV/CAC Management' do
       expect(page).to have_content(I18n.t('errors.piv_cac_setup.unique_name'))
     end
 
-    scenario 'displays error for a bad piv/cac and accepts more error info' do
+    scenario 'displays error for piv/cac with no certificate and accepts more error info' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
@@ -94,13 +94,17 @@ feature 'PIV/CAC Management' do
       nonce = piv_cac_nonce_from_form_action
       visit_piv_cac_service(setup_piv_cac_url,
                             nonce: nonce,
-                            error: 'certificate.bad',
+                            error: 'certificate.none',
                             key_id: 'AB:CD:EF')
-      expect(current_path).to eq setup_piv_cac_path
-      expect(page).to have_content(t('headings.piv_cac_setup.certificate.bad'))
+      expect(current_path).to eq setup_piv_cac_error_path
+      expect(page).to have_link(t('instructions.mfa.piv_cac.try_again'), href: setup_piv_cac_url)
+      expect(page).to have_content(
+        t('instructions.mfa.piv_cac.no_certificate_html',
+          try_again: t('instructions.mfa.piv_cac.try_again')),
+      )
     end
 
-    scenario 'displays error for an expired piv/cac and accepts more error info' do
+    scenario 'displays error for expires certificate piv/cac and accepts more error info' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
@@ -112,8 +116,13 @@ feature 'PIV/CAC Management' do
                             nonce: nonce,
                             error: 'certificate.expired',
                             key_id: 'AB:CD:EF')
-      expect(current_path).to eq setup_piv_cac_path
-      expect(page).to have_content(t('headings.piv_cac_setup.certificate.expired'))
+      expect(current_path).to eq setup_piv_cac_error_path
+      expect(page).to have_link(t('instructions.mfa.piv_cac.try_again'), href: setup_piv_cac_url)
+
+      expect(page).to have_content(
+        t('instructions.mfa.piv_cac.did_not_work_html',
+          try_again: t('instructions.mfa.piv_cac.try_again')),
+      )
     end
 
     scenario "doesn't allow unassociation of a piv/cac" do

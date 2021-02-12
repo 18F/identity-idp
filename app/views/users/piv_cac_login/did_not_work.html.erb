@@ -1,12 +1,12 @@
-<% title t('headings.piv_cac_login.did_not_work') %>
+<% title t('headings.piv_cac.did_not_work') %>
 
 <h1 class='h3 margin-y-0'>
-  <%= t('headings.piv_cac_login.did_not_work') %>
+  <%= t('headings.piv_cac.did_not_work') %>
 </h1>
 
 <p class='margin-top-2 margin-bottom-2'>
-  <%= raw t('instructions.mfa.piv_cac.did_not_work',
-            try_again: link_to(I18n.t('instructions.mfa.piv_cac.try_again'), login_piv_cac_url)) %>
+  <%= t('instructions.mfa.piv_cac.did_not_work_html',
+        try_again: link_to(I18n.t('instructions.mfa.piv_cac.try_again'), login_piv_cac_url)) %>
 </p>
 
 <div class='margin-top-4'>

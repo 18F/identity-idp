@@ -1,24 +1,14 @@
 <% title @presenter.title %>
 
-<%= render 'shared/alert', {
-  type: 'error',
-  class: 'margin-bottom-4',
-  message: @presenter.title,
-} %>
-
 <h1 class="h3 margin-y-0">
   <%= @presenter.heading %>
 </h1>
 
-<p class="mt-tiny margin-bottom-4">
+<p class="margin-top-2 margin-bottom-2">
   <%= @presenter.description %>
 </p>
 
 <div class="margin-top-2 padding-top-1 border-top">
-  <p>
-    <%= link_to t('forms.piv_cac_setup.choose_different_certificate'),
-                setup_piv_cac_url %>
-  </p>
   <p>
     <% if MfaPolicy.new(current_user).two_factor_enabled? %>
       <%= link_to t('links.cancel'), account_path %>
