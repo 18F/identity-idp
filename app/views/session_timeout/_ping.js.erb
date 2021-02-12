@@ -5,6 +5,7 @@ var timeoutUrl = "<%= j timeout_url %>";
 var warning_info = "<%= j render('session_timeout/warning', locals: { modal: modal }) %>";
 var warningEl = document.getElementById('session-timeout-cntnr');
 warningEl.insertAdjacentHTML('afterbegin', warning_info);
+var initialTime = new Date();
 
 var modal = new window.LoginGov.Modal({ el: '#session-timeout-msg' });
 var keepaliveEl = document.getElementById('session-keepalive-btn');
@@ -20,13 +21,28 @@ keepaliveEl.addEventListener('click', keepalive, false);
 var pingTimeout;
 var countdownInterval;
 
+function notifyNewRelic(error, actionName) {
+  if (typeof newrelic !== 'object') {
+    return;
+  }
+
+  newrelic.addPageAction('Session Auto Logout', {
+    duration_ms: new Date() - initialTime,
+    action_name: actionName,
+    error: error.message
+  });
+}
+
 function ping() {
   var request = new XMLHttpRequest();
   request.open('GET', '/active', true);
 
   request.onload = function() {
-    if (request.status >= 200 && request.status < 400) {
+    try {
       success(JSON.parse(request.responseText));
+    } catch (error) {
+      notifyNewRelic(error);
+      window.LoginGov.autoLogout(timeoutUrl, 'ping');
     }
   };
 
@@ -72,9 +88,12 @@ function keepalive() {
   request.setRequestHeader('X-CSRF-Token', csrfToken);
 
   request.onload = function() {
-    if (request.status >= 200 && request.status < 400) {
+    try {
       success(JSON.parse(request.responseText));
       modal.hide();
+    } catch (error) {
+      notifyNewRelic(error);
+      window.LoginGov.autoLogout(timeoutUrl, 'keepalive');
     }
   };
 
