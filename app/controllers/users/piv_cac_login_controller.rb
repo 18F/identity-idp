@@ -26,6 +26,14 @@ module Users
 
     def temporary_error; end
 
+    def error
+      @presenter = PivCacErrorPresenter.new(
+        error: params[:error],
+        view: view_context,
+        try_again_url: login_piv_cac_url,
+      )
+    end
+
     private
 
     def two_factor_authentication_method
@@ -89,25 +97,13 @@ module Users
     end
 
     def process_invalid_submission
-      if piv_cac_login_form.valid_token?
-        session[:needs_to_setup_piv_cac_after_sign_in] = true
-        redirect_to login_piv_cac_account_not_found_url
-      else
-        process_token_with_error
-      end
+      session[:needs_to_setup_piv_cac_after_sign_in] = true if piv_cac_login_form.valid_token?
+
+      process_token_with_error
     end
 
     def process_token_with_error
-      redirect_to case piv_cac_login_form.error_type
-                  when 'certificate.timeout'
-                    flash[:error] = t('titles.piv_cac_setup.certificate.timeout')
-                    login_piv_cac_temporary_error_url
-                  when 'certificate.ocsp_error'
-                    flash[:error] = t('titles.piv_cac_setup.certificate.ocsp_error')
-                    login_piv_cac_temporary_error_url
-                  else
-                    login_piv_cac_did_not_work_url
-                  end
+      redirect_to login_piv_cac_error_url(error: piv_cac_login_form.error_type)
     end
 
     def mark_user_session_authenticated(authentication_type)
