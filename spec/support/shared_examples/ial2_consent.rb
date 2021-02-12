@@ -3,7 +3,6 @@ shared_examples 'ial2 consent with js' do
     expect(page).to have_button('Continue')
     click_continue
 
-    expect(page).to have_current_path(idv_doc_auth_welcome_step)
     expect(page).to have_content(t('errors.doc_auth.consent_form'))
   end
 
