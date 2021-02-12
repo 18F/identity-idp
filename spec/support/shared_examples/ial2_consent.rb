@@ -1,11 +1,11 @@
 shared_examples 'ial2 consent with js' do
   it 'does not allow the user to continue without checking the checkbox' do
-    expect(page).to have_button('Continue', disabled: true)
+    expect(page).to have_button('Continue')
   end
 
   it 'allows the user to continue after checking the checkbox' do
     find('span[class="indicator"]').set(true)
-    expect(page).to have_button('Continue', disabled: false)
+    expect(page).to have_button('Continue')
     click_continue
 
     expect_doc_auth_upload_step
