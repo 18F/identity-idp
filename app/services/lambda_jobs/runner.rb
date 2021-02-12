@@ -19,7 +19,7 @@ module LambdaJobs
         )
       else
         Thread.new do
-          sleep AppConfig.env.aws_lambda_proofing_enabled.to_i
+          sleep AppConfig.env.aws_lambda_proofing_local_delay_in_seconds.to_i
 
           job_class.handle(
             event: args,
