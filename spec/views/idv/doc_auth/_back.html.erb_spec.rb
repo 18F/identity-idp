@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 describe 'idv/doc_auth/_back.html.erb' do
-  it 'throws without any assigns' do
-    expect { render 'idv/doc_auth/back' }.to raise_error('must pass one of action, step, or path')
-  end
-
   it 'renders with action' do
     render 'idv/doc_auth/back', action: 'redo_ssn'
 
@@ -20,10 +16,25 @@ describe 'idv/doc_auth/_back.html.erb' do
     expect(rendered).to have_content('‹ ' + t('forms.buttons.back'))
   end
 
-  it 'renders with path' do
-    render 'idv/doc_auth/back', path: '/example'
+  it 'renders with back path' do
+    allow(view).to receive(:go_back_path).and_return('/example')
+
+    render 'idv/doc_auth/back'
 
     expect(rendered).to have_selector('a[href="/example"]')
     expect(rendered).to have_content('‹ ' + t('forms.buttons.back'))
+  end
+
+  it 'renders fallback path' do
+    render 'idv/doc_auth/back', fallback_path: '/example'
+
+    expect(rendered).to have_selector('a[href="/example"]')
+    expect(rendered).to have_content('‹ ' + t('forms.buttons.back'))
+  end
+
+  it 'renders nothing if there is no back path' do
+    render 'idv/doc_auth/back'
+
+    expect(rendered).to be_empty
   end
 end

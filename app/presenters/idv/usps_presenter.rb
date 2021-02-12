@@ -25,7 +25,7 @@ module Idv
       letter_already_sent? ? I18n.t('idv.buttons.mail.resend') : I18n.t('idv.buttons.mail.send')
     end
 
-    def back_path
+    def fallback_back_path
       user_needs_address_otp_verification? ? verify_account_path : idv_phone_path
     end
 

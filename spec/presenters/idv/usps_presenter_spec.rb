@@ -46,17 +46,17 @@ RSpec.describe Idv::UspsPresenter do
     end
   end
 
-  describe '#back_path' do
+  describe '#fallback_back_path' do
     context 'when the user has a pending profile' do
       it 'returns the verify account path' do
         create(:profile, user: user, deactivation_reason: :verification_pending)
-        expect(subject.back_path).to eq('/account/verify')
+        expect(subject.fallback_back_path).to eq('/account/verify')
       end
     end
 
     context 'when the user does not have a pending profile' do
       it 'returns the idv phone path' do
-        expect(subject.back_path).to eq('/verify/phone')
+        expect(subject.fallback_back_path).to eq('/verify/phone')
       end
     end
   end
