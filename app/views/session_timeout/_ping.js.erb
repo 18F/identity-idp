@@ -21,14 +21,15 @@ keepaliveEl.addEventListener('click', keepalive, false);
 var pingTimeout;
 var countdownInterval;
 
-function notifyNewRelic(error, actionName) {
+function notifyNewRelic(request, error, actionName) {
   if (typeof newrelic !== 'object') {
     return;
   }
 
   newrelic.addPageAction('Session Auto Logout', {
-    duration_ms: new Date() - initialTime,
     action_name: actionName,
+    request_status: request.status,
+    time_elapsed_ms: new Date() - initialTime,
     error: error.message
   });
 }
@@ -41,8 +42,7 @@ function ping() {
     try {
       success(JSON.parse(request.responseText));
     } catch (error) {
-      notifyNewRelic(error);
-      window.LoginGov.autoLogout(timeoutUrl, 'ping');
+      notifyNewRelic(request, error, 'ping');
     }
   };
 
@@ -92,8 +92,7 @@ function keepalive() {
       success(JSON.parse(request.responseText));
       modal.hide();
     } catch (error) {
-      notifyNewRelic(error);
-      window.LoginGov.autoLogout(timeoutUrl, 'keepalive');
+      notifyNewRelic(request, error, 'keepalive');
     }
   };
 
