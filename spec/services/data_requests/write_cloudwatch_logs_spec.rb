@@ -50,7 +50,7 @@ RSpec.describe DataRequests::WriteCloudwatchLogs do
       expect(row['event_name']).to eq('Some Log: Event')
       expect(row['success']).to eq('true')
       expect(row['multi_factor_auth_method']).to eq('sms')
-      expect(row['multi_factor_id']).to eq('12345')
+      expect(row['multi_factor_id']).to eq('phone_configuration_id:12345')
       expect(row['service_provider']).to eq('some:service:provider')
       expect(row['ip_address']).to eq('0.0.0.0')
       expect(row['user_agent']).to eq('Chrome')
@@ -85,11 +85,11 @@ RSpec.describe DataRequests::WriteCloudwatchLogs do
         csv = CSV.read(File.join(@output_dir, 'logs.csv'), headers: true)
 
         expect(csv.map { |row| [row['multi_factor_auth_method'], row['multi_factor_id']] }).
-          to eq([%w[sms 1111],
-                 %w[voice 2222],
-                 %w[piv_cac 3333],
-                 %w[webauthn 4444],
-                 %w[totp 5555],
+          to eq([%w[sms phone_configuration_id:1111],
+                 %w[voice phone_configuration_id:2222],
+                 %w[piv_cac piv_cac_configuration_id:3333],
+                 %w[webauthn webauthn_configuration_id:4444],
+                 %w[totp auth_app_configuration_id:5555],
                 ])
       end
     end
