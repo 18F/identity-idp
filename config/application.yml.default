@@ -45,6 +45,8 @@ available_locales: en es fr
 aws_http_timeout: '5'
 aws_logo_bucket:
 aws_kms_multi_region_enabled: 'false'
+aws_lambda_proofing_enabled: 'false'
+aws_lambda_proofing_local_delay_in_seconds: '0'
 cac_proofing_enabled: 'true'
 database_statement_timeout: '2500'
 deleted_user_accounts_report_configs: '[]'
@@ -156,7 +158,7 @@ development:
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
-  address_proof_result_lambda_token: 123ABC
+  address_proof_result_lambda_token: ABC123
   attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost":

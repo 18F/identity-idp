@@ -1,3 +1,5 @@
+require 'faraday'
+
 module LambdaJobs
   class Runner
     attr_reader :job_class, :args
@@ -7,7 +9,7 @@ module LambdaJobs
       @args = args
     end
 
-    def run(&local_callback)
+    def run()
       if LoginGov::Hostdata.in_datacenter? && AppConfig.env.aws_lambda_proofing_enabled == 'true'
         aws_lambda_client.invoke(
           function_name: function_name,
@@ -16,11 +18,21 @@ module LambdaJobs
           payload: args.to_json,
         )
       else
-        job_class.handle(
-          event: args,
-          context: nil,
-          &local_callback
-        )
+        Thread.new do
+          sleep AppConfig.env.aws_lambda_proofing_enabled.to_i
+
+          job_class.handle(
+            event: args,
+            context: nil
+          ) do |result|
+            Faraday.post(
+              args[:callback_url],
+              result.to_json,
+              'X-API-AUTH-TOKEN' => AppConfig.env.resolution_proof_result_lambda_token,
+              'Content-Type' => 'application/json'
+            )
+          end
+        end
       end
     end
 

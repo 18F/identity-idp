@@ -18,11 +18,7 @@ module Idv
           dob_year_only: AppConfig.env.proofing_send_partial_dob == 'true',
           trace_id: trace_id,
         },
-      ).run do |idv_result|
-        document_capture_session.store_proofing_result(idv_result[:resolution_result])
-
-        nil
-      end
+      ).run
     end
 
     def proof_address(document_capture_session, trace_id:)
@@ -33,11 +29,7 @@ module Idv
       LambdaJobs::Runner.new(
         job_class: Idv::Proofer.address_job_class,
         args: { applicant_pii: @applicant, callback_url: callback_url, trace_id: trace_id },
-      ).run do |idv_result|
-        document_capture_session.store_proofing_result(idv_result[:address_result])
-
-        nil
-      end
+      ).run
     end
 
     private
