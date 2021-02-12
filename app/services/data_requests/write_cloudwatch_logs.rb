@@ -50,7 +50,8 @@ module DataRequests
         'auth_app_configuration_id'
       end
 
-      multi_factor_id = data.dig('properties', 'event_properties', mfa_key)
+      row_id = data.dig('properties', 'event_properties', mfa_key)
+      multi_factor_id = multi_factor_id && "#{mfa_key}:#{row_id}"
       service_provider = data.dig('properties', 'service_provider')
       ip_address = data.dig('properties', 'user_ip')
       user_agent = data.dig('properties', 'user_agent')
