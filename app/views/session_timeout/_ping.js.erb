@@ -26,7 +26,7 @@ function notifyNewRelic(request, error, actionName) {
     return;
   }
 
-  newrelic.addPageAction('Session Auto Logout', {
+  newrelic.addPageAction('Session Ping Error', {
     action_name: actionName,
     request_status: request.status,
     time_elapsed_ms: new Date() - initialTime,
