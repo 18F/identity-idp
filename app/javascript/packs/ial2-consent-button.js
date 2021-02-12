@@ -3,7 +3,7 @@ function toggleButton() {
   const checkbox = document.querySelector('input[name="ial2_consent_given"]');
 
   function sync() {
-    continueButton.classList.toggle('btn-disabled');
+    continueButton.classList.toggle('btn-disabled', !checkbox.checked);
   }
 
   sync();
