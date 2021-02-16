@@ -9,30 +9,38 @@ module LambdaJobs
       @args = args
     end
 
-    def run()
-      if LoginGov::Hostdata.in_datacenter? && AppConfig.env.aws_lambda_proofing_enabled == 'true'
-        aws_lambda_client.invoke(
-          function_name: function_name,
-          invocation_type: 'Event',
-          log_type: 'None',
-          payload: args.to_json,
-        )
-      else
-        Thread.new do
-          sleep AppConfig.env.aws_lambda_proofing_local_delay_in_seconds.to_i
+    def run(&local_callback)
+      if AppConfig.env.aws_lambda_proofing_enabled == 'true'
+        if LoginGov::Hostdata.in_datacenter?
+          aws_lambda_client.invoke(
+            function_name: function_name,
+            invocation_type: 'Event',
+            log_type: 'None',
+            payload: args.to_json,
+          )
+        else
+          Thread.new do
+            sleep AppConfig.env.aws_lambda_proofing_local_delay_in_seconds.to_i
 
-          job_class.handle(
-            event: args,
-            context: nil
-          ) do |result|
-            Faraday.post(
-              args[:callback_url],
-              result.to_json,
-              'X-API-AUTH-TOKEN' => AppConfig.env.resolution_proof_result_lambda_token,
-              'Content-Type' => 'application/json'
-            )
+            job_class.handle(
+              event: args,
+              context: nil,
+            ) do |result|
+              Faraday.post(
+                args[:callback_url],
+                result.to_json,
+                'X-API-AUTH-TOKEN' => AppConfig.env.resolution_proof_result_lambda_token,
+                'Content-Type' => 'application/json',
+              )
+            end
           end
         end
+      else
+        job_class.handle(
+          event: args,
+          context: nil,
+          &local_callback
+        )
       end
     end
 
