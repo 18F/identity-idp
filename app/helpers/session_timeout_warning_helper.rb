@@ -1,13 +1,13 @@
 module SessionTimeoutWarningHelper
-  def frequency
+  def session_timeout_frequency
     (AppConfig.env.session_check_frequency || 150).to_i
   end
 
-  def start
+  def session_timeout_start
     (AppConfig.env.session_check_delay || 30).to_i
   end
 
-  def warning
+  def session_timeout_warning
     (AppConfig.env.session_timeout_warning_seconds || 30).to_i
   end
 
@@ -18,35 +18,6 @@ module SessionTimeoutWarningHelper
     )&.html_safe # rubocop:disable Rails/OutputSafety
   end
 
-  def auto_session_timeout_js
-    nonced_javascript_tag do
-      render partial: 'session_timeout/ping',
-             formats: [:js],
-             locals: {
-               timeout_url: timeout_url,
-               warning: warning,
-               start: start,
-               frequency: frequency,
-               modal: modal,
-             }
-    end
-  end
-
-  # rubocop:disable Rails/HelperInstanceVariable
-  def auto_session_expired_js
-    return if @skip_session_expiration
-
-    session_timeout_in = Devise.timeout_in
-    nonced_javascript_tag do
-      render(
-        partial: 'session_timeout/expire_session',
-        formats: [:js],
-        locals: { session_timeout_in: session_timeout_in },
-      )
-    end
-  end
-  # rubocop:enable Rails/HelperInstanceVariable
-
   def time_left_in_session
     distance_of_time_in_words(
       warning,
@@ -55,7 +26,7 @@ module SessionTimeoutWarningHelper
     )
   end
 
-  def modal
+  def session_modal
     if user_fully_authenticated?
       FullySignedInModalPresenter.new(time_left_in_session)
     else
