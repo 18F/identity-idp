@@ -73,8 +73,6 @@
 
   <%= render 'shared/footer_lite' %>
 
-  <div id="session-timeout-cntnr"></div>
-
   <% if current_user # Render the JS snipped that collects platform authenticator analytics %>
     <div data-platform-authenticator-enabled="true"></div>
     <%= render partial: 'session_timeout/ping',

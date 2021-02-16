@@ -30,14 +30,13 @@
 
 const login = /** @type {LoginGovGlobal} */ (window).LoginGov;
 
-const pingConfig = document.getElementById('js-session-ping');
-
-const frequency = parseInt(pingConfig.dataset.frequency, 10) * 1000;
-const warning = parseInt(pingConfig.dataset.warning, 10) * 1000;
-const start = parseInt(pingConfig.dataset.start, 10) * 1000;
-const { timeoutUrl } = pingConfig.dataset;
-const warningInfo = pingConfig.dataset.warningInfoHtml || '';
 const warningEl = document.getElementById('session-timeout-cntnr');
+
+const frequency = parseInt(warningEl.dataset.frequency, 10) * 1000;
+const warning = parseInt(warningEl.dataset.warning, 10) * 1000;
+const start = parseInt(warningEl.dataset.start, 10) * 1000;
+const { timeoutUrl } = warningEl.dataset;
+const warningInfo = warningEl.dataset.warningInfoHtml || '';
 warningEl?.insertAdjacentHTML('afterbegin', warningInfo);
 const initialTime = new Date();
 
