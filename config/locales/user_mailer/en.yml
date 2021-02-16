@@ -29,7 +29,7 @@ en:
     account_reset_request:
       cancel: Don't want to delete your account? Sign in to your login.gov account
         to cancel.
-      header: How to delete your login.gov account
+      header: Your account will be deleted in 24 hours
       intro_html: 'As a security measure, login.gov requires a two-step process to
         delete your account:<br><br> Step One: There is a 24 hour waiting period if
         you have lost access to your authentication methods and need to delete your

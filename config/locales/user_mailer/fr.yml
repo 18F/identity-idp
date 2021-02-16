@@ -31,7 +31,7 @@ fr:
     account_reset_request:
       cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte
         login.gov pour annuler.
-      header: Comment supprimer votre compte login.gov
+      header: Votre compte sera supprimé dans 24 heures
       intro_html: 'Par mesure de sécurité, login.gov nécessite un processus en deux
         étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a une période
         d''attente de 24 heures si vous avez perdu l''accès à vos méthodes d''authentification
