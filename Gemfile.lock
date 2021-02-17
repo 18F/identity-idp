@@ -571,6 +571,8 @@ GEM
       rspec-expectations (~> 3.9)
       rspec-mocks (~> 3.9)
       rspec-support (~> 3.9)
+    rspec-retry (0.6.2)
+      rspec-core (> 3.3)
     rspec-support (3.10.0)
     rubocop (1.4.2)
       parallel (~> 1.10)
@@ -797,6 +799,7 @@ DEPENDENCIES
   rotp (~> 6.1)
   rqrcode
   rspec-rails (~> 4.0)
+  rspec-retry
   rubocop (~> 1.4.0)
   rubocop-rails (>= 2.5.2)
   ruby-progressbar
