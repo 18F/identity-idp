@@ -11,6 +11,9 @@ RSpec.describe 'smoke test: SP initiated sign in' do
 
     it 'redirects back to SP' do
       visit_idp_from_oidc_sp
+
+      expect(page).to have_content('some fake test that will not exist')
+
       sign_in_and_2fa(monitor.config.login_gov_sign_in_email)
 
       click_on 'Agree and continue' if on_consent_screen?

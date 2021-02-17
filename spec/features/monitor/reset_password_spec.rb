@@ -10,6 +10,8 @@ RSpec.describe 'smoke test: password reset' do
     fill_in 'password_reset_email_form_email', with: monitor.config.login_gov_sign_in_email
     click_on 'Continue'
 
+    expect(page).to have_content('some fake test that will not exist')
+
     expect(page).to have_content('Check your email')
 
     reset_link = monitor.check_for_password_reset_link
