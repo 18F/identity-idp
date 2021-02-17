@@ -34,5 +34,3 @@ module SessionTimeoutWarningHelper
     end
   end
 end
-
-ActionView::Base.send :include, SessionTimeoutWarningHelper

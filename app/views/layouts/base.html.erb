@@ -76,13 +76,13 @@
   <% if current_user # Render the JS snipped that collects platform authenticator analytics %>
     <div data-platform-authenticator-enabled="true"></div>
     <%= render partial: 'session_timeout/ping',
-              locals: {
-                timeout_url: timeout_url,
-                warning: session_timeout_warning,
-                start: session_timeout_start,
-                frequency: session_timeout_frequency,
-                modal: session_modal,
-              } %>
+               locals: {
+                 timeout_url: timeout_url,
+                 warning: session_timeout_warning,
+                 start: session_timeout_start,
+                 frequency: session_timeout_frequency,
+                 modal: session_modal,
+               } %>
   <% elsif !@skip_session_expiration %>
     <%= render partial: 'session_timeout/expire_session',
                locals: {
