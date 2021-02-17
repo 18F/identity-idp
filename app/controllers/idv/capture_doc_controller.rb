@@ -1,7 +1,7 @@
 module Idv
   class CaptureDocController < ApplicationController
     before_action :ensure_user_id_in_session
-    before_action :add_unsafe_eval_to_capture_steps
+    before_action :override_document_capture_step_csp
 
     include Flow::FlowStateMachine
 
@@ -25,13 +25,15 @@ module Idv
       process_result(result)
     end
 
-    def add_unsafe_eval_to_capture_steps
+    def override_document_capture_step_csp
       return unless current_step == 'document_capture'
 
-      # required to run wasm until wasm-eval is available
       SecureHeaders.append_content_security_policy_directives(
         request,
+        # required to run wasm until wasm-eval is available
         script_src: ['\'unsafe-eval\''],
+        # required for retrieving image dimensions from uploaded images
+        img_src: ['blob:'],
       )
     end
 

@@ -12,6 +12,12 @@ export function createDOM() {
     resources: new (class extends ResourceLoader {
       // eslint-disable-next-line class-methods-use-this
       fetch(url) {
+        if (url.startsWith('data:')) {
+          const [header, content] = url.split(',');
+          const isBase64 = header.endsWith(';base64');
+          return Promise.resolve(Buffer.from(content, isBase64 ? 'base64' : 'utf-8'));
+        }
+
         return url === 'about:blank'
           ? Promise.resolve(Buffer.from(''))
           : Promise.reject(new Error('Failed to load'));
