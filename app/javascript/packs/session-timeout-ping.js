@@ -32,7 +32,7 @@ const login = /** @type {LoginGovGlobal} */ (window).LoginGov;
 
 const warningEl = document.getElementById('session-timeout-cntnr');
 
-const defaultTime = '60000';
+const defaultTime = '60';
 
 const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 1000;
 const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
