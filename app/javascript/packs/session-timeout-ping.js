@@ -32,11 +32,13 @@ const login = /** @type {LoginGovGlobal} */ (window).LoginGov;
 
 const warningEl = document.getElementById('session-timeout-cntnr');
 
-const frequency = parseInt(warningEl.dataset.frequency, 10) * 1000;
-const warning = parseInt(warningEl.dataset.warning, 10) * 1000;
-const start = parseInt(warningEl.dataset.start, 10) * 1000;
-const { timeoutUrl } = warningEl.dataset;
-const warningInfo = warningEl.dataset.warningInfoHtml || '';
+const defaultTime = '60000';
+
+const frequency = parseInt(warningEl?.dataset.frequency || defaultTime, 10) * 1000;
+const warning = parseInt(warningEl?.dataset.warning || defaultTime, 10) * 1000;
+const start = parseInt(warningEl?.dataset.start || defaultTime, 10) * 1000;
+const timeoutUrl = warningEl?.dataset.timeoutUrl;
+const warningInfo = warningEl?.dataset.warningInfoHtml || '';
 warningEl?.insertAdjacentHTML('afterbegin', warningInfo);
 const initialTime = new Date();
 
