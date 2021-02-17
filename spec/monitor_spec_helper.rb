@@ -44,4 +44,26 @@ RSpec.configure do |config|
   end
 
   config.example_status_persistence_file_path = './tmp/rspec-examples.txt'
+
+  count = 1
+  config.after do |example|
+    next if !example.exception
+
+    spec_name = example.description.strip.tr(' ', '_').dasherize.downcase
+
+    dirname = "tmp/capybara/#{count}-#{spec_name}"
+    FileUtils.mkdir_p(dirname)
+
+    page.driver.browser.save_screenshot(File.join(dirname, 'screenshot.png'))
+    File.open(File.join(dirname, 'page.html'), 'w') { |f| f.puts page.html }
+    File.open(File.join(dirname, 'info.txt'), 'w') do |info|
+      info.puts "example name: #{example.description}"
+      info.puts "example location: #{example.location}"
+      info.puts
+      info.puts "current path: #{page.current_path}"
+      info.puts "exception: #{example.exception.class} #{example.exception.message}"
+    end
+
+    count += 1
+  end
 end
