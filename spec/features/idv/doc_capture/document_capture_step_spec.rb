@@ -24,6 +24,17 @@ feature 'doc capture document capture step' do
     allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
   end
 
+  it 'logs events as the inherited user' do
+    allow(Analytics).to receive(:new).and_return(fake_analytics)
+    expect(Analytics).to receive(:new).with(hash_including(user: user))
+    visit current_path
+
+    expect(fake_analytics).to have_logged_event(
+      Analytics::CAPTURE_DOC + ' visited',
+      step: 'document_capture',
+    )
+  end
+
   context 'when liveness checking is enabled' do
     let(:liveness_enabled) { 'true' }
 
@@ -91,8 +102,8 @@ feature 'doc capture document capture step' do
     end
 
     it 'proceeds to the next page with valid info and logs analytics info' do
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
+      allow(Analytics).to receive(:new).and_return(fake_analytics)
+      expect(Analytics).to receive(:new).with(hash_including(user: user))
 
       attach_and_submit_images
 
