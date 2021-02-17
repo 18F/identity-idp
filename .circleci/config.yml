@@ -28,6 +28,11 @@ executors:
 commands:
   bundle-yarn-install:
     steps:
+      - run:
+          name: Install JSDOM Canvas dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
       - restore_cache:
           keys:
             - v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
@@ -133,11 +138,6 @@ jobs:
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             aws s3 --region us-west-2 rm s3://login-gov-test-coverage/coverage/$CIRCLE_PREVIOUS_BUILD_NUM --recursive
-      - run:
-          name: Install JSDOM Canvas dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:5432 -timeout 1m
