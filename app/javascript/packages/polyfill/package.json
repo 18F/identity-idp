@@ -5,7 +5,6 @@
   "dependencies": {
     "classlist-polyfill": "^1.2.0",
     "custom-event-polyfill": "^1.0.7",
-    "element-closest": "^3.0.2",
     "webcrypto-shim": "^0.1.6",
     "whatwg-fetch": "^3.4.0"
   }
