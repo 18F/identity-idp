@@ -28,11 +28,6 @@ executors:
 commands:
   bundle-yarn-install:
     steps:
-      - run:
-          name: Install JSDOM Canvas dependencies
-          command: |
-            sudo apt-get update
-            sudo apt-get install build-essential libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev
       - restore_cache:
           keys:
             - v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
@@ -46,13 +41,13 @@ commands:
             - vendor/bundle
       - restore_cache:
           keys:
-            - v3-identity-idp-yarn-{{ checksum "yarn.lock" }}
-            - v3-identity-idp-yarn-
+            - v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
+            - v1-identity-idp-yarn-
       - run:
           name: Install Yarn
           command: yarn install --ignore-engines --cache-folder ~/.cache/yarn
       - save_cache:
-          key: v3-identity-idp-yarn-{{ checksum "yarn.lock" }}
+          key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
 
