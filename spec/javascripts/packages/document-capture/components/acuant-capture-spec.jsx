@@ -5,14 +5,11 @@ import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import AcuantCapture, {
   ACCEPTABLE_GLARE_SCORE,
   ACCEPTABLE_SHARPNESS_SCORE,
-  getImageDimensions,
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
 import { render, useAcuant } from '../../../support/document-capture';
-import { getFixtureFile } from '../../../support/file';
-import useDefineProperty from '../../../support/define-property';
 
 const ACUANT_CAPTURE_SUCCESS_RESULT = {
   image: {
@@ -38,42 +35,6 @@ const ACUANT_CAPTURE_BLURRY_RESULT = {
 
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
-  const defineProperty = useDefineProperty();
-
-  let validUpload;
-  before(async () => {
-    validUpload = await getFixtureFile('doc_auth_images/id-back.jpg');
-  });
-
-  describe('getImageDimensions', () => {
-    it('returns null properties if file is not image', async () => {
-      const file = await getFixtureFile('agencies.yml');
-      const dimensions = await getImageDimensions(file);
-
-      expect(dimensions.width).to.be.null();
-      expect(dimensions.height).to.be.null();
-    });
-
-    it('returns null properties if image cannot be loaded', async () => {
-      // Force image loading to error.
-      defineProperty(window.Image.prototype, 'src', {
-        set() {
-          this.onerror();
-        },
-      });
-      const dimensions = await getImageDimensions(validUpload);
-
-      expect(dimensions.width).to.be.null();
-      expect(dimensions.height).to.be.null();
-    });
-
-    it('returns image dimensions', async () => {
-      const dimensions = await getImageDimensions(validUpload);
-
-      expect(dimensions.width).to.be.a('number');
-      expect(dimensions.height).to.be.a('number');
-    });
-  });
 
   context('mobile', () => {
     it('renders with assumed capture button support while acuant is not ready and on mobile', () => {
@@ -254,12 +215,14 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
     });
 
-    it('renders retry button when value and capture supported', async () => {
-      const selfie = await getFixtureFile('doc_auth_images/selfie.jpg');
+    it('renders retry button when value and capture supported', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
-            <AcuantCapture label="Image" value={selfie} />
+            <AcuantCapture
+              label="Image"
+              value={new window.File([], 'image.svg', { type: 'image/svg+xml' })}
+            />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -274,28 +237,23 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('renders upload button when value and capture not supported', () => {
-      const onChange = sinon.spy();
-      const onClick = sinon.spy();
-      const { getByText, getByLabelText } = render(
+      const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
-            <AcuantCapture label="Image" onChange={onChange} />
+            <AcuantCapture
+              label="Image"
+              value={new window.File([], 'image.svg', { type: 'image/svg+xml' })}
+            />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
 
       initialize({ isCameraSupported: false });
 
-      const input = getByLabelText('Image');
+      const button = getByText('doc_auth.buttons.upload_picture');
+      expect(button).to.be.ok();
 
-      // Since file input prompt occurs by button click proxy to input, we must fire upload event
-      // directly at the input. At least ensure that clicking button does "click" input.
-      input.addEventListener('click', onClick);
-      userEvent.click(getByText('doc_auth.buttons.upload_picture'));
-      expect(onClick).to.have.been.calledOnce();
-
-      userEvent.upload(input, validUpload);
-      expect(onChange).to.have.been.calledWith(validUpload);
+      userEvent.click(button);
     });
 
     it('renders error message if capture succeeds but photo glare exceeds threshold', async () => {
@@ -609,12 +567,15 @@ describe('document-capture/components/acuant-capture', () => {
     expect(container.firstChild.classList.contains('my-custom-class')).to.be.true();
   });
 
-  it('clears a selected value', async () => {
-    const image = await getFixtureFile('doc_auth_images/id-front.jpg');
+  it('clears a selected value', () => {
     const onChange = sinon.spy();
     const { getByLabelText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture label="Image" value={image} onChange={onChange} />
+        <AcuantCapture
+          label="Image"
+          value={new window.File([], 'image.svg', { type: 'image/svg+xml' })}
+          onChange={onChange}
+        />
       </AcuantContextProvider>,
     );
 
@@ -683,34 +644,5 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
 
     expect(input.getAttribute('accept')).to.equal('image/jpeg,image/png,image/bmp,image/tiff');
-  });
-
-  it('logs metrics for manual upload', async () => {
-    const addPageAction = sinon.mock();
-    const { getByLabelText } = render(
-      <AnalyticsContext.Provider value={{ addPageAction }}>
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
-            <AcuantCapture label="Image" analyticsPrefix="image" />
-          </AcuantContextProvider>
-        </DeviceContext.Provider>
-      </AnalyticsContext.Provider>,
-    );
-
-    initialize({ isCameraSupported: false });
-
-    const input = getByLabelText('Image');
-    userEvent.upload(input, validUpload);
-
-    await new Promise((resolve) => addPageAction.callsFake(resolve));
-    expect(addPageAction).to.have.been.calledWith({
-      label: 'IdV: image added',
-      payload: {
-        height: 700,
-        mimeType: 'image/jpeg',
-        source: 'upload',
-        width: 1070,
-      },
-    });
   });
 });
