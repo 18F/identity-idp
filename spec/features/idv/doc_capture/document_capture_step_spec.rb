@@ -98,7 +98,7 @@ feature 'doc capture document capture step' do
 
       expect(page).to have_current_path(next_step)
       expect(fake_analytics).to have_logged_event(
-        Analytics::CAPTURE_DOC + ' submitted: document_capture_update',
+        Analytics::CAPTURE_DOC + ' submitted',
         step: 'document_capture',
         result: 'Passed',
         billed: true,

@@ -22,7 +22,10 @@ module Flow
       step = current_step
       result = flow.handle(step)
       if @analytics_id
+        increment_step_name_counts
         analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
+        # keeping the old event names for backward compatibility
+        analytics.track_event(old_analytics_submitted, result.to_h.merge(analytics_properties))
       end
       register_update_step(step, result)
       if flow.json
@@ -43,16 +46,13 @@ module Flow
       params[:step]&.underscore
     end
 
-    def current_action
-      params[:action]&.underscore
-    end
-
-    def current_step_action
-      "#{current_step}_#{current_action}"
-    end
-
     def track_step_visited
-      analytics.track_event(analytics_visited, analytics_properties) if @analytics_id
+      if @analytics_id
+        increment_step_name_counts
+        analytics.track_event(analytics_visited, analytics_properties)
+        # keeping the old event names for backward compatibility
+        analytics.track_event(old_analytics_visited, analytics_properties)
+      end
       Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(current_step, :view, true)
       register_campaign
     end
@@ -152,12 +152,19 @@ module Flow
     end
 
     def analytics_submitted
-      @analytics_id + ' submitted'
-      "#{@analytics_id} submitted: #{current_step_name}"
+      'IdV: ' + "#{@analytics_id} #{current_step} submitted".downcase
     end
 
     def analytics_visited
-      "#{@analytics_id} visited: #{current_step_name}"
+      'IdV: ' + "#{@analytics_id} #{current_step} visited".downcase
+    end
+
+    def old_analytics_submitted
+      @analytics_id + ' submitted'
+    end
+
+    def old_analytics_visited
+      @analytics_id + ' visited'
     end
 
     def analytics_optional_step
@@ -165,11 +172,9 @@ module Flow
     end
 
     def analytics_properties
-      current_flow_step_counts[current_step_name] ||= 0
       {
-        step_action: current_step_action,
         step: current_step,
-        step_count: current_flow_step_counts[current_step_name] += 1,
+        step_count: current_flow_step_counts[current_step_name],
       }
     end
 
@@ -179,7 +184,12 @@ module Flow
 
     def current_flow_step_counts
       current_session["#{@name}_flow_step_counts"] ||= {}
-      current_session["#{@name}_flow_step_counts"]
+    end
+
+    def increment_step_name_counts
+      current_flow_step_counts[current_step_name] ||= 0
+      byebug if current_step_name == 'welcome_show'
+      current_flow_step_counts[current_step_name] += 1
     end
 
     def next_step
