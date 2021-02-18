@@ -1,9 +1,11 @@
 module Idv
   class CaptureDocController < ApplicationController
     before_action :ensure_user_id_in_session
-    before_action :add_unsafe_eval_to_capture_steps
 
     include Flow::FlowStateMachine
+    include Idv::DocumentCaptureConcern
+
+    before_action :override_document_capture_step_csp
 
     FSM_SETTINGS = {
       step_url: :idv_capture_doc_step_url,
@@ -23,16 +25,6 @@ module Idv
 
       analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
-    end
-
-    def add_unsafe_eval_to_capture_steps
-      return unless current_step == 'document_capture'
-
-      # required to run wasm until wasm-eval is available
-      SecureHeaders.append_content_security_policy_directives(
-        request,
-        script_src: ['\'unsafe-eval\''],
-      )
     end
 
     def process_result(result)

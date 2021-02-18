@@ -10,9 +10,9 @@ describe('submit-with-spinner', () => {
       <button type='submit' class='btn btn-primary btn-wide sm-col sm-col-6'>
         Continue
       </button>
-      <div class='pl1 sm-col sm-col-3'>
+      <div class='sm-col sm-col-3'>
       <div class='spinner hidden' id='submit-spinner'>
-        <img height="50" width="50" alt="Loading spinner" src="/assets/wait.gif">
+        <img height="50" width="50" alt="Loading spinner" src="">
       </div>
       <div class='clearfix'></div>
     `;
