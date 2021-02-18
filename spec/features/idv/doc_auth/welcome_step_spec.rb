@@ -57,6 +57,14 @@ feature 'doc auth welcome step' do
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH + ' submitted', step: 'upload', step_count: 2, success: true
       )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: ' + "#{Analytics::DOC_AUTH} upload visited".downcase, step: 'upload', step_count: 1
+      )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: ' + "#{Analytics::DOC_AUTH} upload submitted".downcase,
+        step: 'upload', step_count: 2, success: true
+      )
+
     end
   end
 
