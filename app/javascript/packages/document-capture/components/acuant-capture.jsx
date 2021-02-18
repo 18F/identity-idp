@@ -32,14 +32,14 @@ import './acuant-capture.scss';
  */
 
 /**
- * @typedef {"acuant"|"upload"} ImageSource
+ * @typedef {"acuant"} ImageSource
  */
 
 /**
  * @typedef ImageAnalyticsPayload
  *
- * @prop {number?} width Image width, or null if unknown.
- * @prop {number?} height Image height, or null if unknown.
+ * @prop {number} width
+ * @prop {number} height
  * @prop {string?} mimeType Mime type, or null if unknown.
  * @prop {ImageSource} source Method by which image was added.
  */
@@ -126,27 +126,6 @@ function getDocumentTypeLabel(documentType) {
 }
 
 /**
- * @param {File} file Image file.
- *
- * @return {Promise<{width: number?, height: number?}>}
- */
-export function getImageDimensions(file) {
-  let objectURL;
-  return file.type.indexOf('image/') === 0
-    ? new Promise((resolve) => {
-        objectURL = window.URL.createObjectURL(file);
-        const image = new window.Image();
-        image.onload = () => resolve({ width: image.width, height: image.height });
-        image.onerror = () => resolve({ width: null, height: null });
-        image.src = objectURL;
-      }).then(({ width, height }) => {
-        window.URL.revokeObjectURL(objectURL);
-        return { width, height };
-      })
-    : Promise.resolve({ width: null, height: null });
-}
-
-/**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
  * in supported devices.
  *
@@ -196,32 +175,6 @@ function AcuantCapture(
   function onChangeAndResetError(nextValue) {
     setOwnErrorMessage(null);
     onChange(nextValue);
-  }
-
-  /**
-   * Handler for file input change events.
-   *
-   * @param {File?} nextValue Next value, if set.
-   */
-  function onUpload(nextValue) {
-    if (nextValue) {
-      getImageDimensions(nextValue).then(({ width, height }) => {
-        /** @type {ImageAnalyticsPayload} */
-        const analyticsPayload = {
-          width,
-          height,
-          mimeType: nextValue.type,
-          source: 'upload',
-        };
-
-        addPageAction({
-          label: `IdV: ${analyticsPrefix} added`,
-          payload: analyticsPayload,
-        });
-      });
-    }
-
-    onChangeAndResetError(nextValue);
   }
 
   /**
@@ -356,7 +309,7 @@ function AcuantCapture(
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
         onClick={startCaptureOrTriggerUpload}
-        onChange={onUpload}
+        onChange={onChangeAndResetError}
         onError={() => setOwnErrorMessage(null)}
       />
       <div className="margin-top-2">

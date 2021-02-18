@@ -23,7 +23,7 @@ import usePrevious from '../hooks/use-previous';
  * @prop {Blob|string|null|undefined} value Current value.
  * @prop {ReactNode=} errorMessage Error to show.
  * @prop {(event:ReactMouseEvent)=>void=} onClick Input click handler.
- * @prop {(nextValue:File?)=>void=} onChange Input change handler.
+ * @prop {(nextValue:Blob?)=>void=} onChange Input change handler.
  * @prop {(message:ReactNode)=>void=} onError Callback to trigger if upload error occurs.
  */
 
