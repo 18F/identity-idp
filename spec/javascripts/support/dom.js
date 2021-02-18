@@ -10,9 +10,13 @@ export function createDOM() {
   const dom = new JSDOM('', {
     url: 'http://example.test',
     resources: new (class extends ResourceLoader {
+      /**
+       * @param {string} url
+       * @param {import('jsdom').FetchOptions} options
+       */
       // eslint-disable-next-line class-methods-use-this
-      fetch(url) {
-        if (url.startsWith('data:')) {
+      fetch(url, options) {
+        if (url.startsWith('data:') && options.element instanceof window.HTMLImageElement) {
           const [header, content] = url.split(',');
           const isBase64 = header.endsWith(';base64');
           return Promise.resolve(Buffer.from(content, isBase64 ? 'base64' : 'utf-8'));
