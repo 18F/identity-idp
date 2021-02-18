@@ -20,23 +20,51 @@ feature 'doc capture document capture step' do
     else
       visit_idp_from_oidc_sp_with_ial2
     end
-    complete_doc_capture_steps_before_first_step(user)
     allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
   end
 
-  it 'logs events as the inherited user' do
-    allow(Analytics).to receive(:new).and_return(fake_analytics)
-    expect(Analytics).to receive(:new).with(hash_including(user: user))
-    visit current_path
+  context 'invalid session' do
+    let!(:request_uri) { doc_capture_request_uri(user) }
 
-    expect(fake_analytics).to have_logged_event(
-      Analytics::CAPTURE_DOC + ' visited',
-      step: 'document_capture',
-    )
+    before do
+      Capybara.reset_session!
+      expired_minutes = (AppConfig.env.doc_capture_request_valid_for_minutes.to_i + 1).minutes
+      document_capture_session = user.document_capture_sessions.last
+      document_capture_session.requested_at -= expired_minutes
+      document_capture_session.save!
+    end
+
+    it 'logs events as an anonymous user' do
+      allow(Analytics).to receive(:new).and_return(fake_analytics)
+      expect(Analytics).to receive(:new).with(hash_including(user: instance_of(AnonymousUser)))
+      visit request_uri
+
+      expect(fake_analytics).to have_logged_event(
+        Analytics::CAPTURE_DOC,
+        success: false,
+      )
+    end
+  end
+
+  context 'valid session' do
+    it 'logs events as the inherited user' do
+      allow(Analytics).to receive(:new).and_return(fake_analytics)
+      expect(Analytics).to receive(:new).with(hash_including(user: user))
+      complete_doc_capture_steps_before_first_step(user)
+
+      expect(fake_analytics).to have_logged_event(
+        Analytics::CAPTURE_DOC + ' visited',
+        step: 'document_capture',
+      )
+    end
   end
 
   context 'when liveness checking is enabled' do
     let(:liveness_enabled) { 'true' }
+
+    before do
+      complete_doc_capture_steps_before_first_step(user)
+    end
 
     context 'when the SP does not request strict IAL2' do
       let(:sp_requests_ial2_strict) { false }
@@ -170,6 +198,10 @@ feature 'doc capture document capture step' do
   context 'when liveness checking is not enabled' do
     let(:liveness_enabled) { 'false' }
 
+    before do
+      complete_doc_capture_steps_before_first_step(user)
+    end
+
     it 'is on the correct_page and shows the document upload options' do
       expect(current_path).to eq(idv_capture_doc_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
@@ -246,6 +278,10 @@ feature 'doc capture document capture step' do
   end
 
   context 'when there is a stored result' do
+    before do
+      complete_doc_capture_steps_before_first_step(user)
+    end
+
     it 'proceeds to the next step if the result was successful' do
       document_capture_session = user.document_capture_sessions.last
       response = IdentityDocAuth::Response.new(success: true)
