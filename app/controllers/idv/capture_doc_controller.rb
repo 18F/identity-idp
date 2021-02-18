@@ -5,6 +5,8 @@ module Idv
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
 
+    before_action :override_document_capture_step_csp
+
     FSM_SETTINGS = {
       step_url: :idv_capture_doc_step_url,
       final_url: :root_url,

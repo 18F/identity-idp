@@ -123,9 +123,6 @@ describe Idv::CaptureDocController do
           hash_including(step: 'capture_complete', step_count: 2),
         )
       end
-
-      it_behaves_like 'DocumentCaptureConcern', next_step: :document_capture
-      it_behaves_like 'DocumentCaptureConcern', next_step: :capture_complete
     end
   end
 

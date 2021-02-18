@@ -82,9 +82,6 @@ describe Idv::DocAuthController do
         Analytics::DOC_AUTH + ' visited', hash_including(step: 'welcome', step_count: 2)
       )
     end
-
-    it_behaves_like 'DocumentCaptureConcern', next_step: :document_capture
-    it_behaves_like 'DocumentCaptureConcern', next_step: :ssn
   end
 
   describe '#update' do

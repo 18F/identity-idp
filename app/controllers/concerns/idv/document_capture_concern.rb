@@ -1,11 +1,5 @@
 module Idv
   module DocumentCaptureConcern
-    extend ActiveSupport::Concern
-
-    included do
-      before_action :override_document_capture_step_csp
-    end
-
     def override_document_capture_step_csp
       return if params[:step] != 'document_capture'
 

@@ -9,6 +9,7 @@ module Idv
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
 
+    before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
 
     FSM_SETTINGS = {
