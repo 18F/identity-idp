@@ -213,16 +213,14 @@ jobs:
       MONITOR_ENV: DEV
     steps:
       - jq/install
-      - checkout
-      # TODO: re-enable
-      # - checkout-deployed-sha:
-      #     sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
+      - checkout-deployed-sha:
+          sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
       - bundle-yarn-install
       - run:
           name: "Smoke tests"
           command: |
             bin/smoke_test --remote --no-source-env
-      # - notify-slack-smoke-test-status: TODO: reenable
+      - notify-slack-smoke-test-status
       - store-smoketest-results
   smoketest-int:
     working_directory: ~/identity-idp
@@ -274,7 +272,6 @@ workflows:
   version: 2
   release:
     jobs:
-      - smoketest-dev # TODO: remove
       - build
       - lints
       - build-release-container:

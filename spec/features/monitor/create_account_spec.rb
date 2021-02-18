@@ -14,8 +14,6 @@ RSpec.describe 'smoke test: create account' do
       it 'creates new account with SMS option for 2FA' do
         visit_idp_from_oidc_sp
 
-        expect(page).to have_content('some fake test that will not exist')
-
         click_on 'Create an account'
         create_new_account_with_sms
 
@@ -40,9 +38,6 @@ RSpec.describe 'smoke test: create account' do
 
       it 'creates new IAL2 account with SMS option for 2FA' do
         visit_idp_from_oidc_sp_with_ial2
-
-        expect(page).to have_content('some fake test that will not exist')
-
         verify_identity_with_doc_auth
         expect_user_is_redirected_to_oidc_sp
 
