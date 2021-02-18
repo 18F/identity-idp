@@ -188,7 +188,6 @@ module Flow
 
     def increment_step_name_counts
       current_flow_step_counts[current_step_name] ||= 0
-      byebug if current_step_name == 'welcome_show'
       current_flow_step_counts[current_step_name] += 1
     end
 
