@@ -184,10 +184,11 @@ module Flow
 
     def current_flow_step_counts
       current_session["#{@name}_flow_step_counts"] ||= {}
+      current_session["#{@name}_flow_step_counts"].default = 0
+      current_session["#{@name}_flow_step_counts"]
     end
 
     def increment_step_name_counts
-      current_flow_step_counts[current_step_name] ||= 0
       current_flow_step_counts[current_step_name] += 1
     end
 
