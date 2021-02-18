@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_03_002937) do
+ActiveRecord::Schema.define(version: 2021_02_18_185311) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -240,7 +240,6 @@ ActiveRecord::Schema.define(version: 2021_02_03_002937) do
     t.index ["device_id", "created_at"], name: "index_events_on_device_id_and_created_at"
     t.index ["disavowal_token_fingerprint"], name: "index_events_on_disavowal_token_fingerprint"
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
-    t.index ["user_id"], name: "index_events_on_user_id"
   end
 
   create_table "iaa_gtcs", force: :cascade do |t|
