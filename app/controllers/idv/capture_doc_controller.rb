@@ -1,9 +1,9 @@
 module Idv
   class CaptureDocController < ApplicationController
     before_action :ensure_user_id_in_session
-    before_action :override_document_capture_step_csp
 
     include Flow::FlowStateMachine
+    include Idv::DocumentCaptureConcern
 
     FSM_SETTINGS = {
       step_url: :idv_capture_doc_step_url,
@@ -23,18 +23,6 @@ module Idv
 
       analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
       process_result(result)
-    end
-
-    def override_document_capture_step_csp
-      return unless current_step == 'document_capture'
-
-      SecureHeaders.append_content_security_policy_directives(
-        request,
-        # required to run wasm until wasm-eval is available
-        script_src: ['\'unsafe-eval\''],
-        # required for retrieving image dimensions from uploaded images
-        img_src: ['blob:'],
-      )
     end
 
     def process_result(result)

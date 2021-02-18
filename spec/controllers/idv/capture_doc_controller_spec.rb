@@ -124,27 +124,8 @@ describe Idv::CaptureDocController do
         )
       end
 
-      it 'overrides the CSP for capture steps' do
-        steps = %i[document_capture]
-        steps.each do |step|
-          mock_next_step(step)
-
-          get :show, params: { step: step }
-
-          csp = response.request.headers.env['secure_headers_request_config'].csp
-          expect(csp.script_src).to include("'unsafe-eval'")
-          expect(csp.img_src).to include('blob:')
-        end
-      end
-
-      it 'does not override the CSP for non-capture steps' do
-        mock_next_step(:capture_complete)
-
-        get :show, params: { step: 'capture_complete' }
-
-        secure_header_config = response.request.headers.env['secure_headers_request_config']
-        expect(secure_header_config).to be_nil
-      end
+      it_behaves_like 'DocumentCaptureConcern', next_step: :document_capture
+      it_behaves_like 'DocumentCaptureConcern', next_step: :capture_complete
     end
   end
 

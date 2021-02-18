@@ -83,24 +83,8 @@ describe Idv::DocAuthController do
       )
     end
 
-    it 'overrides CSP for the doucment capture step' do
-      mock_next_step(:document_capture)
-
-      get :show, params: { step: :document_capture }
-
-      csp = response.request.headers.env['secure_headers_request_config'].csp
-      expect(csp.script_src).to include("'unsafe-eval'")
-      expect(csp.img_src).to include('blob:')
-    end
-
-    it 'does not override CSP for non-capture steps' do
-      mock_next_step(:ssn)
-
-      get :show, params: { step: 'ssn' }
-
-      secure_header_config = response.request.headers.env['secure_headers_request_config']
-      expect(secure_header_config).to be_nil
-    end
+    it_behaves_like 'DocumentCaptureConcern', next_step: :document_capture
+    it_behaves_like 'DocumentCaptureConcern', next_step: :ssn
   end
 
   describe '#update' do
