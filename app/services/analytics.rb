@@ -84,7 +84,6 @@ class Analytics
   CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'.freeze
-  IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'.freeze
   EMAIL_LANGUAGE_VISITED = 'Email Language: Visited'.freeze
@@ -136,6 +135,7 @@ class Analytics
   IDV_USPS_ADDRESS_VISITED = 'IdV: USPS address visited'.freeze
   IDV_VERIFICATION_ATTEMPT_CANCELLED = 'IdV: verification attempt cancelled'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
+  IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended
   LAMBDA_RESULT_RESOLUTION_PROOF_RESULT = 'Lambda Resolution Proof Result Received'.freeze
   LAMBDA_RESULT_ADDRESS_PROOF_RESULT = 'Lambda Address Proof Result Received'.freeze
   LAMBDA_RESULT_DOCUMENT_PROOF_RESULT = 'Lambda Document Proof Result Received'.freeze
