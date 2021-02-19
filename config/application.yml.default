@@ -268,7 +268,7 @@ production:
   address_proof_result_lambda_token:
   attribute_cost: 4000$8$4$
   attribute_encryption_key:
-  attribute_encryption_key_queue:
+  attribute_encryption_key_queue: '[]'
   aws_kms_key_id:
   aws_region:
   aws_kms_regions: '["us-west-2"]'
@@ -301,7 +301,7 @@ production:
   exception_recipients: user1@example.com,user2@example.com
   expired_letters_auth_token:
   hmac_fingerprinter_key:
-  hmac_fingerprinter_key_queue:
+  hmac_fingerprinter_key_queue: '[]'
   issuers_with_email_nameid_format: sp1,sp2
   liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '10'
