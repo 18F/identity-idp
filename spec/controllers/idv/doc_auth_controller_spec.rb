@@ -131,6 +131,9 @@ describe Idv::DocAuthController do
       put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
       expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase, result
+      )
+      expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', result
       )
     end
@@ -149,6 +152,14 @@ describe Idv::DocAuthController do
       )
       expect(@analytics).to have_received(:track_event).ordered.with(
         Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 2)
+      )
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase,
+        hash_including(step: 'ssn', step_count: 1)
+      )
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase,
+        hash_including(step: 'ssn', step_count: 2)
       )
     end
 
@@ -177,6 +188,9 @@ describe Idv::DocAuthController do
       }
 
       expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} welcome submitted".downcase, result
+      )
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', result
       )
@@ -372,6 +386,15 @@ describe Idv::DocAuthController do
                    message: I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness') }],
         remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
       }.to_json)
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} verify_document_status submitted".downcase, {
+          errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
+          success: false,
+          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          step: 'verify_document_status',
+          step_count: 1,
+        }
+      )
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', {
           errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
