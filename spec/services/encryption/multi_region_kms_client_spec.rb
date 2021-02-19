@@ -16,7 +16,7 @@ describe Encryption::MultiRegionKmsClient do
   let(:encryption_context) { { 'context' => 'attribute-bundle', 'user_id' => '123-abc-456-def' } }
 
   let(:kms_regions) { %w[us-west-2 us-east-1] }
-  let(:current_aws_region) { 'us-east-1' }
+  let(:current_aws_region) { 'us-west-2' }
 
   let(:regionalized_kms_ciphertext) do
     region_hash = {}
@@ -88,7 +88,7 @@ describe Encryption::MultiRegionKmsClient do
       partially_valid_ciphertext = {
         regions: {
           foo: 'kms1',
-          'us-west-2': 'kms2',
+          'us-west-2': Base64.strict_encode64('kms2'),
         },
       }.to_json
       result = subject.decrypt(partially_valid_ciphertext, encryption_context)
@@ -98,8 +98,8 @@ describe Encryption::MultiRegionKmsClient do
     it 'decrypts in default region where multiple regions present' do
       multi_region_ciphertext = {
         regions: {
-          'us-east-1': Base64.strict_encode64('kms1'),
-          'us-west-2': Base64.strict_encode64('kms2'),
+          'us-west-2': Base64.strict_encode64('kms1'),
+          'us-east-1': Base64.strict_encode64('kms2'),
         },
       }.to_json
       result = subject.decrypt(multi_region_ciphertext, encryption_context)
