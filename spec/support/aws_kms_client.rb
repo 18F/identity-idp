@@ -11,7 +11,7 @@ module AwsKmsClientHelper
   end
 
   # Configs is an array of:
-  # [ { ciphertext:, plaintext:, key_id:, region: }]
+  # [{ ciphertext:, plaintext:, key_id:, region: }]
   def stub_mapped_aws_kms_client(configs)
     encryptor = proc do |context|
       config = configs.find do |c|
