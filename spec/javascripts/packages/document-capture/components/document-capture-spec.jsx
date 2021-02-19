@@ -18,6 +18,7 @@ import DocumentCapture, {
 import { expect } from 'chai';
 import { render, useAcuant, useDocumentCaptureForm } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
+import { getFixture, getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/document-capture', () => {
   const onSubmit = useDocumentCaptureForm();
@@ -29,6 +30,13 @@ describe('document-capture/components/document-capture', () => {
   }
 
   let originalHash;
+  let validUpload;
+  let validSelfieBase64;
+
+  before(async () => {
+    validUpload = await getFixtureFile('doc_auth_images/id-front.jpg');
+    validSelfieBase64 = await getFixture('doc_auth_images/selfie.jpg', 'base64');
+  });
 
   beforeEach(() => {
     originalHash = window.location.hash;
@@ -98,11 +106,11 @@ describe('document-capture/components/document-capture', () => {
         glare: 70,
         sharpness: 70,
         image: {
-          data: 'data:image/png;base64,',
+          data: validSelfieBase64,
         },
       });
     });
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
 
     // Continue is enabled (but grayed out).Attempting to proceed without providing values will
     // trigger error messages.
@@ -118,7 +126,7 @@ describe('document-capture/components/document-capture', () => {
     // Providing values should remove errors progressively.
     fireEvent.change(getByLabelText('doc_auth.headings.document_capture_front'), {
       target: {
-        files: [new window.File([''], 'upload.png', { type: 'image/png' })],
+        files: [validUpload],
       },
     });
     await waitFor(() => expect(getAllByText('simple_form.required.text')).to.have.lengthOf(1));
@@ -179,19 +187,13 @@ describe('document-capture/components/document-capture', () => {
     );
 
     initialize({ isCameraSupported: false });
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
 
     const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_front'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_back'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(continueButton);
 
@@ -251,19 +253,13 @@ describe('document-capture/components/document-capture', () => {
     );
 
     initialize({ isCameraSupported: false });
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
 
     const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_front'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_back'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(continueButton);
 
@@ -294,14 +290,8 @@ describe('document-capture/components/document-capture', () => {
     // Submit button should be disabled until field errors are resolved.
     submitButton = getByText('forms.buttons.submit.default');
     expect(submitButton.classList.contains('btn-disabled')).to.be.true();
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_front'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_back'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
 
     // Once fields are changed, their notices should be cleared. If all field-specific errors are
     // addressed, submit should be enabled once more.
@@ -349,14 +339,8 @@ describe('document-capture/components/document-capture', () => {
       });
 
     initialize({ isCameraSupported: false });
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_front'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_back'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
 
     userEvent.click(getByText('forms.buttons.submit.default'));
     await waitFor(() => window.location.hash === '#teapot');
@@ -423,19 +407,13 @@ describe('document-capture/components/document-capture', () => {
     );
 
     initialize({ isCameraSupported: false });
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
 
     const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_front'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_back'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(continueButton);
 
@@ -478,19 +456,13 @@ describe('document-capture/components/document-capture', () => {
     );
 
     initialize({ isCameraSupported: false });
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, '');
+    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
 
     const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_front'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
-    userEvent.upload(
-      getByLabelText('doc_auth.headings.document_capture_back'),
-      new window.File([''], 'upload.png', { type: 'image/png' }),
-    );
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(continueButton);
     expect(onStepChange.callCount).to.equal(1);
