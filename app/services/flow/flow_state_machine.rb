@@ -179,7 +179,7 @@ module Flow
     end
 
     def current_step_name
-      "#{current_step.to_s}_#{action_name}"
+      "#{current_step}_#{action_name}"
     end
 
     def current_flow_step_counts
