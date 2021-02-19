@@ -86,10 +86,6 @@ class FeatureManagement
       enabled?(session, reset)
   end
 
-  def self.disallow_all_web_crawlers?
-    AppConfig.env.disallow_all_web_crawlers == 'true'
-  end
-
   def self.disallow_ial2_recovery?
     AppConfig.env.disallow_ial2_recovery == 'true'
   end

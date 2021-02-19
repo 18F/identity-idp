@@ -181,7 +181,6 @@ development:
   database_timeout: '5000'
   database_username: ''
   disable_email_sending:
-  disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
   doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'true'
@@ -289,7 +288,6 @@ production:
   database_timeout:
   database_username:
   disable_email_sending: 'false'
-  disallow_all_web_crawlers: 'false'
   disallow_ial2_recovery: 'true'
   doc_auth_vendor: 'acuant'
   doc_capture_polling_enabled: 'true'
@@ -395,7 +393,6 @@ test:
   database_timeout: '5000'
   database_username: ''
   disable_email_sending:
-  disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
   doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'

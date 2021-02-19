@@ -8,14 +8,12 @@
   <meta content="none" name="msapplication-config" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <meta content="telephone=no" name="format-detection" />
+  <meta content="noindex,nofollow" name="robots" />
 
   <% if content_for?(:meta_refresh) %>
   <meta content="<%= yield(:meta_refresh) %>" http-equiv="refresh" />
   <% end %>
 
-  <% if session_with_trust? || FeatureManagement.disallow_all_web_crawlers? %>
-  <meta content="noindex,nofollow" name="robots" />
-  <% end %>
 
   <%= yield(:meta_tags) if content_for?(:meta_tags) %>
 

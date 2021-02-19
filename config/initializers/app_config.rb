@@ -4,7 +4,6 @@ AppConfig.require_keys(%w[
                          async_wait_timeout_seconds
                          attribute_encryption_key
                          database_statement_timeout
-                         disallow_all_web_crawlers
                          database_name
                          database_host
                          database_password
