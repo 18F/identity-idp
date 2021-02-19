@@ -36,7 +36,7 @@
   </p>
 <% end %>
 
-<% if AppConfig.env.cac_proofing_enabled == 'true' && desktop_device? %>
+<% if desktop_device? %>
   <p>
     <strong><%= t('doc_auth.info.use_cac') %></strong>
     <%= link_to(t('doc_auth.info.use_cac_link'), idv_cac_step_path(step: :choose_method)) %>
