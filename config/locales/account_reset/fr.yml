@@ -25,8 +25,9 @@ fr:
       are_you_sure: Êtes-vous sûr de vouloir supprimer votre compte?
       info: La suppression de votre compte devrait être votre dernier recours si vous
         êtes en lock-out de votre compte Vous ne pourrez pas récupérer les informations
-        liées à ton compte. Une fois votre compte supprimé, vous pouvez en créer un
-        nouveau en utilisant la même adresse e-mail.
+        liées à ton compte. Nous informerons les agences auxquelles vous accédez avec
+        login.gov que vous ne plus avoir un compte. Une fois votre compte supprimé,
+        vous pouvez en créer un nouveau en utilisant la même adresse e-mail.
       title: La suppression de votre compte devrait être votre dernier recours
     pending:
       cancel_request: Demande d'annulation
