@@ -130,8 +130,7 @@ module OpenidConnect
     end
 
     def pii_requested_but_locked?
-      FeatureManagement.allow_piv_cac_login? &&
-        sp_session && sp_session_ial > 1 &&
+      sp_session && sp_session_ial > 1 &&
         UserDecorator.new(current_user).identity_verified? &&
         user_session[:decrypted_pii].blank?
     end
