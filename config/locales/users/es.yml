@@ -13,8 +13,8 @@ es:
       bullet_2_loa3: "%{app} borrará su email, contraseña, número de teléfono, nombre,
         dirección, fecha de nacimiento y número de Seguro Social de nuestro sistema."
       bullet_3: Usted no podrá tener acceso seguro a su información usando %{app}
-      bullet_4: Notificaremos a las agencias a las que acceda con login.gov que no
-        ya tengo una cuenta
+      bullet_4: Notificaremos a las agencias a las que acceda con %{app} que no ya
+        tengo una cuenta
       heading: "¿Está seguro que desea eliminar su cuenta?"
       instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
       subheading: Si elimina su cuenta

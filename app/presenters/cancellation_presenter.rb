@@ -23,7 +23,7 @@ class CancellationPresenter < FailurePresenter
       t('users.delete.bullet_1', app: APP_NAME),
       t('users.delete.bullet_2_loa1'),
       t('users.delete.bullet_3', app: APP_NAME),
-      t('users.delete.bullet_4'),
+      t('users.delete.bullet_4', app: APP_NAME),
     ]
   end
 

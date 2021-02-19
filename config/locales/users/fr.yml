@@ -15,8 +15,8 @@ fr:
         et votre numéro de sécurité sociale de notre système."
       bullet_3: Vous ne pourrez pas accéder en toute sécurité à vos informations en
         utilisant %{app}.
-      bullet_4: Nous informerons les agences auxquelles vous accédez avec login.gov
-        que vous ne plus avoir un compte
+      bullet_4: Nous informerons les agences auxquelles vous accédez avec %{app} que
+        vous ne plus avoir un compte
       heading: Êtes-vous sûr de vouloir supprimer votre compte?
       instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez
         supprimer votre compte.
