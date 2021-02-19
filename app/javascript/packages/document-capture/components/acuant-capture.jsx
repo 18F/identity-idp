@@ -130,7 +130,7 @@ function getDocumentTypeLabel(documentType) {
  *
  * @return {Promise<{width: number?, height: number?}>}
  */
-export function getImageDimensions(file) {
+function getImageDimensions(file) {
   let objectURL;
   return file.type.indexOf('image/') === 0
     ? new Promise((resolve) => {

@@ -5,14 +5,12 @@ import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import AcuantCapture, {
   ACCEPTABLE_GLARE_SCORE,
   ACCEPTABLE_SHARPNESS_SCORE,
-  getImageDimensions,
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
 import { render, useAcuant } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
-import useDefineProperty from '../../../support/define-property';
 
 const ACUANT_CAPTURE_SUCCESS_RESULT = {
   image: {
@@ -38,41 +36,10 @@ const ACUANT_CAPTURE_BLURRY_RESULT = {
 
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
-  const defineProperty = useDefineProperty();
 
   let validUpload;
   before(async () => {
     validUpload = await getFixtureFile('doc_auth_images/id-back.jpg');
-  });
-
-  describe('getImageDimensions', () => {
-    it('returns null properties if file is not image', async () => {
-      const file = await getFixtureFile('agencies.yml');
-      const dimensions = await getImageDimensions(file);
-
-      expect(dimensions.width).to.be.null();
-      expect(dimensions.height).to.be.null();
-    });
-
-    it('returns null properties if image cannot be loaded', async () => {
-      // Force image loading to error.
-      defineProperty(window.Image.prototype, 'src', {
-        set() {
-          this.onerror();
-        },
-      });
-      const dimensions = await getImageDimensions(validUpload);
-
-      expect(dimensions.width).to.be.null();
-      expect(dimensions.height).to.be.null();
-    });
-
-    it('returns image dimensions', async () => {
-      const dimensions = await getImageDimensions(validUpload);
-
-      expect(dimensions.width).to.be.a('number');
-      expect(dimensions.height).to.be.a('number');
-    });
   });
 
   context('mobile', () => {
@@ -706,10 +673,10 @@ describe('document-capture/components/acuant-capture', () => {
     expect(addPageAction).to.have.been.calledWith({
       label: 'IdV: image added',
       payload: {
-        height: 700,
+        height: sinon.match.number,
         mimeType: 'image/jpeg',
         source: 'upload',
-        width: 1070,
+        width: sinon.match.number,
       },
     });
   });

@@ -48,7 +48,6 @@
     "@testing-library/user-event": "^12.6.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "canvas": "^2.6.1",
     "chai": "^4.2.0",
     "dirty-chai": "^2.0.1",
     "eslint": "^7.16.0",
