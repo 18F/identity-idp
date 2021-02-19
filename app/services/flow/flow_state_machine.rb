@@ -124,7 +124,15 @@ module Flow
       result = optional_show_step.new(@flow).base_call
 
       if @analytics_id
-        analytics.track_event(analytics_optional_step, result.to_h.merge(step: optional_show_step))
+        analytics.track_event(
+          analytics_optional_step,
+          result.to_h.merge(step: optional_show_step)
+        )
+        # keeping the old event names for backward compatibility
+        analytics.track_event(
+          old_analytics_optional_step,
+          result.to_h.merge(step: optional_show_step)
+        )
       end
 
       if next_step.to_s != step
@@ -159,6 +167,10 @@ module Flow
       'IdV: ' + "#{@analytics_id} #{current_step} visited".downcase
     end
 
+    def analytics_optional_step
+      'IdV: ' + "#{@analytics_id} optional #{current_step} submitted".downcase
+    end
+
     def old_analytics_submitted
       @analytics_id + ' submitted'
     end
@@ -167,7 +179,7 @@ module Flow
       @analytics_id + ' visited'
     end
 
-    def analytics_optional_step
+    def old_analytics_optional_step
       [@analytics_id, 'optional submitted'].join(' ')
     end
 
