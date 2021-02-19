@@ -155,11 +155,11 @@ describe Idv::DocAuthController do
       )
       expect(@analytics).to have_received(:track_event).with(
         'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase,
-        hash_including(step: 'ssn', step_count: 1)
+        hash_including(step: 'ssn', step_count: 1),
       )
       expect(@analytics).to have_received(:track_event).with(
         'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase,
-        hash_including(step: 'ssn', step_count: 2)
+        hash_including(step: 'ssn', step_count: 2),
       )
     end
 
