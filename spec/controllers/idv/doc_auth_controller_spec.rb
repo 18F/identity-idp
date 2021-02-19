@@ -67,7 +67,24 @@ describe Idv::DocAuthController do
       get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} welcome visited".downcase, result
+      )
+      expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' visited', result
+      )
+    end
+
+    it 'tracks analytics for the optional step' do
+      mock_next_step(:verify_wait)
+      result = { errors: {}, step: Idv::Steps::VerifyWaitStepShow, success: true }
+
+      get :show, params: { step: 'verify_wait' }
+
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} optional verify_wait submitted".downcase, result
+      )
+      expect(@analytics).to have_received(:track_event).with(
+        Analytics::DOC_AUTH + ' optional submitted', result
       )
     end
 
