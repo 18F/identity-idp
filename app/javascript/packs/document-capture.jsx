@@ -98,7 +98,10 @@ const device = {
 
 /** @type {import('@18f/identity-document-capture/context/analytics').AddPageAction} */
 function addPageAction(action) {
-  /** @type {DocumentCaptureGlobal} */ (window).newrelic?.addPageAction(action.key, action.payload);
+  const { newrelic } = /** @type {DocumentCaptureGlobal} */ (window);
+  if (action.key && newrelic) {
+    newrelic.addPageAction(action.key, action.payload);
+  }
 
   window.fetch(logEndpoint, {
     method: 'POST',

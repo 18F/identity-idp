@@ -4,11 +4,12 @@ module Idv
     before_action :redirect_if_mail_bounced
     before_action :redirect_if_pending_profile
     before_action :extend_timeout_using_meta_refresh_for_select_paths
-    before_action :add_unsafe_eval_to_capture_steps
 
     include IdvSession # remove if we retire the non docauth LOA3 flow
     include Flow::FlowStateMachine
+    include Idv::DocumentCaptureConcern
 
+    before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
 
     FSM_SETTINGS = {
@@ -48,16 +49,6 @@ module Idv
 
     def flow_session
       user_session['idv/doc_auth']
-    end
-
-    def add_unsafe_eval_to_capture_steps
-      return unless params[:step] == 'document_capture'
-
-      # required to run wasm until wasm-eval is available
-      SecureHeaders.append_content_security_policy_directives(
-        request,
-        script_src: ['\'unsafe-eval\''],
-      )
     end
   end
 end
