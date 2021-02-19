@@ -197,7 +197,6 @@ development:
   issuers_with_email_nameid_format: ''
   liveness_checking_enabled: 'true'
   lockout_period_in_minutes: '10'
-  login_with_piv_cac: 'true'
   logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
   logins_per_ip_track_only_mode: 'false'
@@ -302,7 +301,6 @@ production:
   issuers_with_email_nameid_format: sp1,sp2
   liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '10'
-  login_with_piv_cac: 'false'
   logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
   logins_per_ip_track_only_mode: 'true'
@@ -409,7 +407,6 @@ test:
   lexisnexis_trueid_account_id: 'test_account'
   liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '5'
-  login_with_piv_cac: 'true'
   logins_per_email_and_ip_limit: '2'
   logins_per_ip_limit: '3'
   logins_per_ip_track_only_mode: 'false'

@@ -39,7 +39,7 @@
     ) %>
   </div>
 <% end %>
-<% if FeatureManagement.allow_piv_cac_login? && @ial && desktop_device? %>
+<% if @ial && desktop_device? %>
   <div class='margin-x-neg-1 margin-y-4'>
     <%= link_to(
       t('account.login.piv_cac'),
