@@ -187,7 +187,6 @@ development:
   doc_capture_polling_enabled: 'true'
   document_proof_result_lambda_token: ABC123
   domain_name: localhost:3000
-  email_deletion_enabled: 'true'
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
@@ -295,7 +294,6 @@ production:
   doc_capture_polling_enabled: 'true'
   document_proof_result_lambda_token:
   domain_name: login.gov
-  email_deletion_enabled: 'false'
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
@@ -402,7 +400,6 @@ test:
   doc_capture_polling_enabled: 'false'
   document_proof_result_lambda_token: test_token_document
   domain_name: www.example.com
-  email_deletion_enabled: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
