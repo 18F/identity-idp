@@ -37,15 +37,10 @@ module AwsKmsClientHelper
   end
 
   def stub_aws_kms_client_invalid_ciphertext(ciphered_key = random_str)
-    allow(Figaro.env).to receive(:aws_region).and_return('us-north-by-northwest-1')
-    allow(Figaro.env).to receive(:aws_kms_region_configs).and_return([
-      { region: 'us-north-by-northwest-1', key_id: 'key1' },
-      { region: 'us-south-by-southwest-1', key_id: 'key2' },
-    ].to_json)
-
+    aws_key_id = AppConfig.env.aws_kms_key_id
     Aws.config[:kms] = {
       stub_responses: {
-        encrypt: { ciphertext_blob: ciphered_key, key_id: 'key1' },
+        encrypt: { ciphertext_blob: ciphered_key, key_id: aws_key_id },
         decrypt: 'InvalidCiphertextException',
       },
     }
