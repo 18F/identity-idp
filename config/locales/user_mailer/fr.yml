@@ -21,12 +21,13 @@ fr:
       cancel_link_text: veuillez annuler
       help_html: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset}.
       intro_html: Vous recevez cet e-mail parce que vous avez demandé à supprimer
-        et à réinitialiser votre compte login.gov. <br> <br> Supprimer votre compte
-        devrait être votre dernier recours si vous êtes exclu de votre compte. Vous
-        ne serez pas en mesure de récupérer toute information liée à votre compte.
-        Une fois votre compte supprimé, vous pouvez en créer un nouveau en utilisant
-        la même adresse email.<br><br>Es-tu sûr de toi voulez-vous supprimer votre
-        compte?
+        et à réinitialiser votre compte %{app}. <br> <br> Supprimer votre compte devrait
+        être votre dernier recours si vous êtes exclu de votre compte. Vous ne serez
+        pas en mesure de récupérer toute information liée à votre compte. Nous informerons
+        les agences auxquelles vous accédez avec %{app} que vous ne plus avoir un
+        compte. Une fois votre compte supprimé, vous pouvez en créer un nouveau en
+        utilisant la même adresse email.<br><br>Es-tu sûr de toi voulez-vous supprimer
+        votre compte?
       subject: Supprimer votre compte
     account_reset_request:
       cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte

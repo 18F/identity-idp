@@ -20,9 +20,10 @@ en:
       cancel_link_text: please cancel
       help_html: If you don’t want to delete your account, %{cancel_account_reset}.
       intro_html: You are receiving this email because you requested to delete and
-        reset your login.gov account. <br><br> Deleting your account should be your
-        last resort if you are locked out of your account. You will not be able to
-        recover any information linked to your account. Once your account is deleted,
+        reset your %{app} account. <br><br> Deleting your account should be your last
+        resort if you are locked out of your account. You will not be able to recover
+        any information linked to your account. We will notify the agencies you access
+        with %{app} that you no longer have an account. Once your account is deleted,
         you can create a new one using the same email address. <br><br>Are you sure
         you want to delete your account?
       subject: Delete your account

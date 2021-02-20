@@ -21,11 +21,12 @@ es:
       cancel_link_text: por favor cancele
       help_html: Si no desea eliminar su cuenta, %{cancel_account_reset}.
       intro_html: Recibes este correo electrónico porque solicitaste eliminar y restablecer
-        su cuenta de login.gov<br><br>Eliminar tu cuenta debería ser tu último recurso
+        su cuenta de %{app}<br><br>Eliminar tu cuenta debería ser tu último recurso
         si está bloqueado de su cuenta. No podrás recuperar cualquier información
-        vinculada a su cuenta. Una vez que su cuenta es eliminada, usted puede crear
-        uno nuevo usando la misma dirección de correo electrónico.<br><br>¿Estás seguro
-        de que ¿Desea eliminar su cuenta?
+        vinculada a su cuenta. Notificaremos a las agencias a las que acceda con %{app}
+        que no ya tengo una cuenta. Una vez que su cuenta es eliminada, usted puede
+        crear uno nuevo usando la misma dirección de correo electrónico.<br><br>¿Estás
+        seguro de que ¿Desea eliminar su cuenta?
       subject: Eliminar su cuenta
     account_reset_request:
       cancel: "¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta login.gov
