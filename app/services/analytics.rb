@@ -95,7 +95,6 @@ class Analytics
   EXPIRED_LETTERS = 'Expired Letters'.freeze
   FORGET_ALL_BROWSERS_SUBMITTED = 'Forget All Browsers Submitted'.freeze
   FORGET_ALL_BROWSERS_VISITED = 'Forget All Browsers Visited'.freeze
-  FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
   IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended
   IAL2_RECOVERY_REQUEST = 'IAL2 Recovery Request'.freeze
   IAL2_RECOVERY_REQUEST_VISITED = 'IAL2 Recovery Request Visited'.freeze
