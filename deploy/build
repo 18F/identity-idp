@@ -29,7 +29,7 @@ bundle install --deployment --jobs 4 \
     --binstubs "$bundle_dir/bin" \
     --without 'deploy development doc test'
 
-bundle exec yarn install
+bundle exec yarn install --prod
 
 set +x
 
