@@ -12,10 +12,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: dbde3a5df72f94792da618aca8fcacaca819717b
-  tag: v0.3.4
+  revision: 164a507fd17ecffe4ef2289120d89156358b3a80
+  tag: v0.4.0
   specs:
-    identity-doc-auth (0.3.4)
+    identity-doc-auth (0.4.0)
       activesupport
       faraday
 
