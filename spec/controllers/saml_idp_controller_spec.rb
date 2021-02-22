@@ -50,7 +50,7 @@ describe SamlIdpController do
       get :metadata
     end
 
-    let(:org_name) { '18F' }
+    let(:org_name) { 'login.gov' }
     let(:xmldoc) { SamlResponseDoc.new('controller', 'metadata', response) }
 
     it 'renders XML inline' do
