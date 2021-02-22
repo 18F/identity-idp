@@ -296,6 +296,58 @@ describe SamlIdpController do
           expect(@analytics).to have_received(:track_event).
             with(Analytics::SAML_AUTH, analytics_hash)
         end
+
+        it 'returns the requested AAL level defined by sp' do
+          stub_analytics
+          allow(@analytics).to receive(:track_event)
+
+          user = create(:user, :signed_up)
+          auth_settings = requested_aal2_authn_context_saml_settings
+          IdentityLinker.new(user, auth_settings.issuer).link_identity
+          user.identities.last.update!(verified_attributes: ['email'])
+          generate_saml_response(user, auth_settings)
+
+          expect(response.status).to eq(200)
+
+          analytics_hash = {
+            success: true,
+            errors: {},
+            nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF],
+            service_provider: 'http://localhost:3000',
+            idv: false,
+            finish_profile: false,
+          }
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::SAML_AUTH, analytics_hash)
+        end
+      end
+
+      it 'returns the requested IAL level defined by sp' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        user = create(:user, :signed_up)
+        auth_settings = requested_ial1_authn_context_saml_settings
+        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
+          service_provider: 'http://localhost:3000',
+          idv: false,
+          finish_profile: false,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
       end
     end
 
