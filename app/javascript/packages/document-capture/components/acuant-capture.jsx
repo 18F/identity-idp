@@ -166,7 +166,7 @@ function AcuantCapture(
   },
   ref,
 ) {
-  const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
+  const { isReady, isAcuantLoaded, isError, isCameraSupported } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { addPageAction } = useContext(AnalyticsContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
@@ -235,7 +235,8 @@ function AcuantCapture(
     if (event.target === inputRef.current) {
       const shouldStartEnvironmentCapture =
         hasCapture && capture !== 'user' && !isForceUploading.current;
-      const shouldStartSelfieCapture = capture === 'user' && !isForceUploading.current;
+      const shouldStartSelfieCapture =
+        isAcuantLoaded && capture === 'user' && !isForceUploading.current;
 
       if (!allowUpload || shouldStartSelfieCapture || shouldStartEnvironmentCapture) {
         event.preventDefault();

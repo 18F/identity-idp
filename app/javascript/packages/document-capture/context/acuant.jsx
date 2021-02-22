@@ -1,4 +1,5 @@
-import { createContext, useMemo, useEffect, useState } from 'react';
+import { createContext, useContext, useMemo, useEffect, useState } from 'react';
+import DeviceContext from './device';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -48,6 +49,7 @@ import { createContext, useMemo, useEffect, useState } from 'react';
 
 const AcuantContext = createContext({
   isReady: false,
+  isAcuantLoaded: false,
   isError: false,
   isCameraSupported: /** @type {boolean?} */ (null),
   credentials: /** @type {string?} */ (null),
@@ -63,18 +65,21 @@ function AcuantContextProvider({
   endpoint = null,
   children,
 }) {
-  const [isReady, setIsReady] = useState(false);
+  const { isMobile } = useContext(DeviceContext);
+  const [isReady, setIsReady] = useState(!isMobile);
+  const [isAcuantLoaded, setIsAcuantLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [isCameraSupported, setIsCameraSupported] = useState(/** @type {?boolean} */ (null));
-  const value = useMemo(() => ({ isReady, isError, isCameraSupported, endpoint, credentials }), [
-    isReady,
-    isError,
-    isCameraSupported,
-    endpoint,
-    credentials,
-  ]);
+  const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
+  const value = useMemo(
+    () => ({ isReady, isAcuantLoaded, isError, isCameraSupported, endpoint, credentials }),
+    [isReady, isAcuantLoaded, isError, isCameraSupported, endpoint, credentials],
+  );
 
   useEffect(() => {
+    if (isReady) {
+      return;
+    }
+
     // Acuant SDK expects this global to be assigned at the time the script is
     // loaded, which is why the script element is manually appended to the DOM.
     const originalOnAcuantSdkLoaded = /** @type {AcuantGlobal} */ (window).onAcuantSdkLoaded;
@@ -88,6 +93,7 @@ function AcuantContextProvider({
               /** @type {AcuantGlobal} */ (window).AcuantCamera.isCameraSupported,
             );
             setIsReady(true);
+            setIsAcuantLoaded(true);
           },
           onFail: () => setIsError(true),
         },
