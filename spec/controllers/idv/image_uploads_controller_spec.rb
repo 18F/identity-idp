@@ -222,6 +222,13 @@ describe Idv::ImageUploadsController do
           user_id: user.uuid,
         )
 
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+        )
+
         action
 
         expect_funnel_update_counts(user, 1)

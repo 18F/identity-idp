@@ -5,10 +5,16 @@ module Idv
     respond_to :json
 
     def create
-      form_response = image_form.submit
-      client_response = nil
+      image_form_response = image_form.submit
+      analytics.track_event(
+        Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
+        image_form_response.to_h,
+      )
 
-      if form_response.success?
+      client_response = nil
+      doc_pii_form_response = nil
+
+      if image_form_response.success?
         client_response = doc_auth_client.post_images(
           front_image: image_form.front.read,
           back_image: image_form.back.read,
@@ -20,16 +26,23 @@ module Idv
 
         if client_response.success?
           doc_pii_form_response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
-          form_response = form_response.merge(doc_pii_form_response)
+          analytics.track_event(
+            Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
+            doc_pii_form_response.to_h.merge(user_id: user_uuid),
+          )
           store_pii(client_response) if client_response.success? && doc_pii_form_response.success?
+
+          # merge the doc_pii_form_response for the presenter below
+          image_form_response = image_form_response.merge(doc_pii_form_response)
         end
       end
 
-      analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM, form_response.to_h)
-
       presenter = ImageUploadResponsePresenter.new(
         form: image_form,
-        form_response: presenter_response(form_response, client_response),
+        form_response: presenter_response(
+          image_form_response,
+          client_response,
+        ),
         url_options: url_options,
       )
 
@@ -58,7 +71,7 @@ module Idv
       update_funnel(client_response)
       analytics.track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-        client_response.to_h.merge(user_id: image_form.document_capture_session.user.uuid),
+        client_response.to_h.merge(user_id: user_uuid),
       )
     end
 
@@ -83,6 +96,10 @@ module Idv
     def presenter_response(form_response, client_response)
       return client_response if form_response.success? && client_response.present?
       form_response
+    end
+
+    def user_uuid
+      image_form.document_capture_session.user.uuid
     end
   end
 end
