@@ -31,9 +31,6 @@ module Idv
             doc_pii_form_response.to_h.merge(user_id: user_uuid),
           )
           store_pii(client_response) if client_response.success? && doc_pii_form_response.success?
-
-          # merge the doc_pii_form_response for the presenter below
-          image_form_response = image_form_response.merge(doc_pii_form_response)
         end
       end
 
@@ -42,6 +39,7 @@ module Idv
         form_response: presenter_response(
           image_form_response,
           client_response,
+          doc_pii_form_response,
         ),
         url_options: url_options,
       )
@@ -93,7 +91,12 @@ module Idv
         call(client_response)
     end
 
-    def presenter_response(form_response, client_response)
+    def presenter_response(image_form_response, client_response, doc_pii_form_response)
+      form_response = image_form_response
+      if doc_pii_form_response.present?
+        form_response = image_form_response.merge(doc_pii_form_response)
+      end
+
       return client_response if form_response.success? && client_response.present?
       form_response
     end
