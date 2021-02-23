@@ -20,23 +20,28 @@ fr:
       button: Oui, continuez la suppression
       cancel_link_text: veuillez annuler
       help_html: Si vous ne souhaitez pas supprimer votre compte, %{cancel_account_reset}.
-      intro_html: Vous recevez cet e-mail parce que vous avez demandé à supprimer
-        et à réinitialiser votre compte %{app}. <br> <br> Supprimer votre compte devrait
-        être votre dernier recours si vous êtes exclu de votre compte. Vous ne serez
-        pas en mesure de récupérer toute information liée à votre compte. Nous informerons
-        les agences auxquelles vous accédez avec %{app} que vous ne plus avoir un
-        compte. Une fois votre compte supprimé, vous pouvez en créer un nouveau en
-        utilisant la même adresse email.<br><br>Es-tu sûr de toi voulez-vous supprimer
-        votre compte?
-      subject: Supprimer votre compte
+      intro_html: Votre période d'attente de 24 heures est terminée. Veuillez terminer
+        l'étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes
+        d'authentification, sélectionnez "confirmer la suppression" pour supprimer
+        votre compte %{app}.<br><br> À l'avenir, si vous devez accéder aux sites Web
+        gouvernementaux participants qui utilisent %{app}, vous pouvez créer un nouveau
+        compte %{app} en utilisant la même adresse e-mail après la suppression de
+        votre compte.<br><br>
+      subject: Supprimer votre compte login.gov
     account_reset_request:
       cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte
         login.gov pour annuler.
       header: Votre compte sera supprimé dans 24 heures
-      intro: Pour garantir la qualité et la sécurité, le processus de suppression
-        de compte prend 24 heures. Vous recevrez un e-mail de confirmation une fois
-        ce processus terminé.
-      subject: Supprimer votre compte
+      intro_html: 'Par mesure de sécurité, %{app} nécessite un processus en deux étapes
+        pour supprimer votre compte: <br> <br> Étape 1: Il y a une période d''attente
+        de 24 heures si vous avez perdu l''accès à vos méthodes d''authentification
+        et devez supprimer votre compte. Si vous trouvez vos méthodes d''authentification,
+        vous pouvez vous connecter à votre compte %{app} pour annuler cette demande.
+        <br> <br> Deuxième étape: après votre période d''attente de 24 heures, vous
+        recevrez un e-mail qui vous demandera de confirmer la suppression de votre
+        compte %{app}. Votre compte ne sera pas supprimé tant que vous ne l''aurez
+        pas confirmé.'
+      subject: Comment supprimer votre compte login.gov
     add_email:
       footer: Ce lien expirera dans %{confirmation_period}.
       header: Merci d'avoir ajouté un email. S'il vous plaît cliquez sur le lien ci-dessous
