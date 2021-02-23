@@ -31,6 +31,9 @@ module Idv
             doc_pii_form_response.to_h.merge(user_id: user_uuid),
           )
           store_pii(client_response) if client_response.success? && doc_pii_form_response.success?
+
+          # merge in the image_form_response to pick up the remaining_attempts
+          doc_pii_form_response = image_form_response.merge(doc_pii_form_response)
         end
       end
 
@@ -92,13 +95,15 @@ module Idv
     end
 
     def presenter_response(image_form_response, client_response, doc_pii_form_response)
-      form_response = image_form_response
-      if doc_pii_form_response.present?
-        form_response = image_form_response.merge(doc_pii_form_response)
+      # image form wasn't valid
+      return image_form_response unless image_form_response.success?
+
+      # doc_pii_form exists, but wasn't valid
+      if doc_pii_form_response.present? && !doc_pii_form_response.success?
+        return doc_pii_form_response.presence
       end
 
-      return client_response if form_response.success? && client_response.present?
-      form_response
+      client_response
     end
 
     def user_uuid
