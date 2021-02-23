@@ -12,7 +12,14 @@ RSpec.describe AgencySeeder do
   let(:deploy_env) { 'int' }
 
   describe '#run' do
-    before { Agency.delete_all }
+    before do
+      Agreements::IntegrationUsage.delete_all
+      Agreements::Integration.delete_all
+      Agreements::IaaOrder.delete_all
+      Agreements::IaaGtc.delete_all
+      Agreements::PartnerAccount.delete_all
+      Agency.delete_all
+    end
 
     subject(:run) { instance.run }
 

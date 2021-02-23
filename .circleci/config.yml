@@ -149,6 +149,13 @@ jobs:
             cp config/application.yml.default config/application.yml
             cp config/service_providers.localdev.yml config/service_providers.yml
             cp config/agencies.localdev.yml config/agencies.yml
+            cp config/iaa_gtcs{.localdev,}.yml
+            cp config/iaa_orders{.localdev,}.yml
+            cp config/iaa_statuses{.localdev,}.yml
+            cp config/integration_statuses{.localdev,}.yml
+            cp config/integrations{.localdev,}.yml
+            cp config/partner_account_statuses{.localdev,}.yml
+            cp config/partner_accounts{.localdev,}.yml
             cp -a keys.example keys
             cp -a certs.example certs
             cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
