@@ -30,14 +30,13 @@ en:
       cancel: Don't want to delete your account? Sign in to your login.gov account
         to cancel.
       header: Your account will be deleted in 24 hours
-      intro_html: 'As a security measure, login.gov requires a two-step process to
-        delete your account:<br><br> Step One: There is a 24 hour waiting period if
-        you have lost access to your authentication methods and need to delete your
-        account. If you locate your authentication methods, you can sign in to your
-        login.gov account to cancel this request.<br><br> Step Two: After your 24
-        hour waiting period, you will receive an email that will ask you to confirm
-        the deletion of your login.gov account. Your account will not be deleted until
-        you confirm.'
+      intro_html: 'As a security measure, %{app} requires a two-step process to delete
+        your account:<br><br> Step One: There is a 24 hour waiting period if you have
+        lost access to your authentication methods and need to delete your account.
+        If you locate your authentication methods, you can sign in to your %{app}
+        account to cancel this request.<br><br> Step Two: After your 24 hour waiting
+        period, you will receive an email that will ask you to confirm the deletion
+        of your %{app} account. Your account will not be deleted until you confirm.'
       subject: How to delete your login.gov account
     add_email:
       footer: This link will expire in %{confirmation_period}.
