@@ -608,6 +608,9 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       userEvent.click(getByLabelText('Image'));
+
+      // It would be expected that if AcuantCaptureCanvas was rendered, an error would be thrown at
+      // this point, since it references Acuant globals not loaded.
     });
   });
 
