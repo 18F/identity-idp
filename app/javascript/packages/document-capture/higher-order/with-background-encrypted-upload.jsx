@@ -3,13 +3,13 @@ import UploadContext from '../context/upload';
 import AnalyticsContext from '../context/analytics';
 
 /**
- * Returns a promise resolving to an DataView representation of the given Blob object.
+ * Returns a promise resolving to an ArrayBuffer representation of the given Blob object.
  *
  * @param {Blob} blob Blob object.
  *
  * @return {Promise<ArrayBuffer>}
  */
-export function blobToDataView(blob) {
+export function blobToArrayBuffer(blob) {
   return new Promise((resolve, reject) => {
     const reader = new window.FileReader();
     reader.onload = ({ target }) => {
@@ -31,7 +31,7 @@ export function blobToDataView(blob) {
  */
 export async function encrypt(key, iv, value) {
   const data =
-    typeof value === 'string' ? new TextEncoder().encode(value) : await blobToDataView(value);
+    typeof value === 'string' ? new TextEncoder().encode(value) : await blobToArrayBuffer(value);
 
   return window.crypto.subtle.encrypt(
     /** @type {AesGcmParams} */ ({
