@@ -66,9 +66,13 @@ function AcuantContextProvider({
   children,
 }) {
   const { isMobile } = useContext(DeviceContext);
+  // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
   const [isReady, setIsReady] = useState(!isMobile);
   const [isAcuantLoaded, setIsAcuantLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
+  // If the user is on a mobile device, it can't be known that the camera is supported until after
+  // Acuant SDK loads, so assign a value of `null` as representing this unknown state. Other device
+  // types should treat camera as unsupported, since it's not relevant for Acuant SDK usage.
   const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
   const value = useMemo(
     () => ({ isReady, isAcuantLoaded, isError, isCameraSupported, endpoint, credentials }),
@@ -76,6 +80,7 @@ function AcuantContextProvider({
   );
 
   useEffect(() => {
+    // If state is already ready (via consideration of device type), skip loading Acuant SDK.
     if (isReady) {
       return;
     }
