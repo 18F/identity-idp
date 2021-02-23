@@ -597,6 +597,20 @@ describe('document-capture/components/acuant-capture', () => {
     });
   });
 
+  context('desktop', () => {
+    it('does not render acuant capture canvas for environmental capture', () => {
+      const { getByLabelText } = render(
+        <DeviceContext.Provider value={{ isMobile: false }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      userEvent.click(getByLabelText('Image'));
+    });
+  });
+
   it('optionally disallows upload', () => {
     const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
