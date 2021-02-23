@@ -43,6 +43,10 @@
       {
         "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
         "message": "Do not assign window.location.href to a string or string template to avoid losing i18n parameters"
+      },
+      {
+        "selector": "CallExpression[callee.object.name=/^(it|describe|context)$/][callee.property.name='only']",
+        "message": "Test exclusivity should not be committed"
       }
     ],
     "no-unused-expressions": "off",
