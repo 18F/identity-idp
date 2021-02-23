@@ -236,7 +236,7 @@ describe Idv::ImageUploadsController do
         before do
           IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
             method: :get_results,
-            response: IdentityDocAuth::Response.new({
+            response: IdentityDocAuth::Response.new(
               success: true,
               errors: {},
               extra: { result: 'Passed', billed: true },
@@ -246,7 +246,7 @@ describe Idv::ImageUploadsController do
                 state: state,
                 dob: dob,
               },
-            }),
+            ),
           )
         end
 

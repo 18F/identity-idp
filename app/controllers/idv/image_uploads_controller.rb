@@ -40,9 +40,9 @@ module Idv
       presenter = ImageUploadResponsePresenter.new(
         form: image_form,
         form_response: presenter_response(
-          image_form_response,
-          client_response,
-          doc_pii_form_response,
+          image_form_response: image_form_response,
+          client_response: client_response,
+          doc_pii_form_response: doc_pii_form_response,
         ),
         url_options: url_options,
       )
@@ -94,13 +94,13 @@ module Idv
         call(client_response)
     end
 
-    def presenter_response(image_form_response, client_response, doc_pii_form_response)
+    def presenter_response(image_form_response:, client_response:, doc_pii_form_response:)
       # image form wasn't valid
       return image_form_response unless image_form_response.success?
 
       # doc_pii_form exists, but wasn't valid
       if doc_pii_form_response.present? && !doc_pii_form_response.success?
-        return doc_pii_form_response.presence
+        return doc_pii_form_response
       end
 
       client_response
