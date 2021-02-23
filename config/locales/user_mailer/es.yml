@@ -24,8 +24,8 @@ es:
         2 del proceso.<br><br>Si no ha podido localizar sus métodos de autenticación,
         seleccione "confirmar eliminación" para eliminar su cuenta de %{app}.<br><br>
         En el futuro, si necesita acceder a los sitios web gubernamentales participantes
-        que utilizan %{app}, puede crear una nueva cuenta %{app} con la misma
-        dirección de correo electrónico después de que se elimine su cuenta.<br><br>
+        que utilizan %{app}, puede crear una nueva cuenta %{app} con la misma dirección
+        de correo electrónico después de que se elimine su cuenta.<br><br>
       subject: Elimina tu cuenta login.gov
     account_reset_request:
       cancel: "¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta login.gov

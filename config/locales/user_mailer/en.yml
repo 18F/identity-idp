@@ -21,10 +21,10 @@ en:
       help_html: If you don’t want to delete your account, %{cancel_account_reset}.
       intro_html: Your 24 hour waiting period has ended. Please complete step 2 of
         the process.<br><br> If you’ve been unable to locate your authentication methods,
-        select "confirm deletion" to delete your %{app} account.<br><br> In the
-        future, if you need to access participating government websites who use %{app},
-        you can create a new %{app} account using the same email address after
-        your account is deleted.<br><br>
+        select "confirm deletion" to delete your %{app} account.<br><br> In the future,
+        if you need to access participating government websites who use %{app}, you
+        can create a new %{app} account using the same email address after your account
+        is deleted.<br><br>
       subject: Delete your login.gov account
     account_reset_request:
       cancel: Don't want to delete your account? Sign in to your login.gov account

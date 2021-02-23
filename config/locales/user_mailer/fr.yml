@@ -23,10 +23,10 @@ fr:
       intro_html: Votre période d'attente de 24 heures est terminée. Veuillez terminer
         l'étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes
         d'authentification, sélectionnez "confirmer la suppression" pour supprimer
-        votre compte %{app}.<br><br> À l'avenir, si vous devez accéder aux sites
-        Web gouvernementaux participants qui utilisent %{app}, vous pouvez créer
-        un nouveau compte %{app} en utilisant la même adresse e-mail après la suppression
-        de votre compte.<br><br>
+        votre compte %{app}.<br><br> À l'avenir, si vous devez accéder aux sites Web
+        gouvernementaux participants qui utilisent %{app}, vous pouvez créer un nouveau
+        compte %{app} en utilisant la même adresse e-mail après la suppression de
+        votre compte.<br><br>
       subject: Supprimer votre compte login.gov
     account_reset_request:
       cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte
