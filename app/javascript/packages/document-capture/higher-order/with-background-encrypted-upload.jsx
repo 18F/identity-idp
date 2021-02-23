@@ -7,13 +7,13 @@ import AnalyticsContext from '../context/analytics';
  *
  * @param {Blob} blob Blob object.
  *
- * @return {Promise<DataView>}
+ * @return {Promise<ArrayBuffer>}
  */
 export function blobToDataView(blob) {
   return new Promise((resolve, reject) => {
     const reader = new window.FileReader();
     reader.onload = ({ target }) => {
-      resolve(new DataView(/** @type {ArrayBuffer} */ (target?.result)));
+      resolve(/** @type {ArrayBuffer} */ (target?.result));
     };
     reader.onerror = () => reject(reader.error);
     reader.readAsArrayBuffer(blob);
@@ -37,6 +37,9 @@ export async function encrypt(key, iv, value) {
     /** @type {AesGcmParams} */ ({
       name: 'AES-GCM',
       iv,
+      // Normally, it would not be expected to assign this value, since the property is optional and
+      // the default is 128. However, if not specified, Internet Explorer will throw an error.
+      tagLength: 128,
     }),
     key,
     data,
