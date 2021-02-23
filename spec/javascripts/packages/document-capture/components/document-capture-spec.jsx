@@ -92,9 +92,11 @@ describe('document-capture/components/document-capture', () => {
 
   it('progresses through steps to completion', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <DocumentCapture />
-      </AcuantContextProvider>,
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <DocumentCapture />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
     );
 
     initialize();
@@ -186,9 +188,6 @@ describe('document-capture/components/document-capture', () => {
       },
     );
 
-    initialize({ isCameraSupported: false });
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
-
     const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
@@ -201,7 +200,7 @@ describe('document-capture/components/document-capture', () => {
     userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    fireEvent.click(selfieInput);
+    userEvent.upload(selfieInput, validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
 
@@ -252,9 +251,6 @@ describe('document-capture/components/document-capture', () => {
       },
     );
 
-    initialize({ isCameraSupported: false });
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
-
     const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
@@ -267,7 +263,7 @@ describe('document-capture/components/document-capture', () => {
     userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    fireEvent.click(selfieInput);
+    userEvent.upload(selfieInput, validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
 
@@ -338,7 +334,6 @@ describe('document-capture/components/document-capture', () => {
           }),
       });
 
-    initialize({ isCameraSupported: false });
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
 
@@ -406,9 +401,6 @@ describe('document-capture/components/document-capture', () => {
       </UploadContextProvider>,
     );
 
-    initialize({ isCameraSupported: false });
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
-
     const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
@@ -421,7 +413,7 @@ describe('document-capture/components/document-capture', () => {
     userEvent.click(submitButton);
     await findAllByText('simple_form.required.text');
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    fireEvent.click(selfieInput);
+    userEvent.upload(selfieInput, validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
 
@@ -455,9 +447,6 @@ describe('document-capture/components/document-capture', () => {
       { uploadError },
     );
 
-    initialize({ isCameraSupported: false });
-    window.AcuantPassiveLiveness.startSelfieCapture.callsArgWithAsync(0, validSelfieBase64);
-
     const continueButton = getByText('forms.buttons.continue');
     userEvent.click(continueButton);
     await findAllByText('simple_form.required.text');
@@ -472,7 +461,7 @@ describe('document-capture/components/document-capture', () => {
     expect(onStepChange.callCount).to.equal(1);
     await findAllByText('simple_form.required.text');
     const selfieInput = getByLabelText('doc_auth.headings.document_capture_selfie');
-    fireEvent.click(selfieInput);
+    userEvent.upload(selfieInput, validUpload);
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     userEvent.click(submitButton);
     expect(onStepChange.callCount).to.equal(1);
