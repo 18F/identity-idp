@@ -75,9 +75,9 @@ module Idv
         current_user ? current_user.id : user_id_from_token
       end
 
-      def add_cost(token)
+      def add_cost(token, transaction_id: nil)
         issuer = sp_session[:issuer].to_s
-        Db::SpCost::AddSpCost.call(issuer, 2, token)
+        Db::SpCost::AddSpCost.call(issuer, 2, token, transaction_id: transaction_id)
         Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 

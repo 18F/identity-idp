@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_23_011217) do
+ActiveRecord::Schema.define(version: 2021_02_23_232534) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -168,12 +168,12 @@ ActiveRecord::Schema.define(version: 2021_02_23_011217) do
     t.integer "choose_method_view_count", default: 0
     t.datetime "present_cac_view_at"
     t.integer "present_cac_view_count", default: 0
-    t.integer "present_cac_submit_count", default: 0
-    t.integer "present_cac_error_count", default: 0
     t.datetime "enter_info_view_at"
     t.integer "enter_info_view_count", default: 0
     t.datetime "success_view_at"
     t.integer "success_view_count", default: 0
+    t.integer "present_cac_submit_count", default: 0
+    t.integer "present_cac_error_count", default: 0
     t.datetime "selfie_view_at"
     t.integer "selfie_view_count", default: 0
     t.integer "selfie_submit_count", default: 0
@@ -568,6 +568,7 @@ ActiveRecord::Schema.define(version: 2021_02_23_011217) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "ial"
+    t.string "transaction_id"
     t.index ["created_at"], name: "index_sp_costs_on_created_at"
   end
 
