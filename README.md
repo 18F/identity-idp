@@ -158,7 +158,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
   If you would like to preview the translations on a particular page, use the Language dropdown in the footer of the website. To manually override a locale, add the locale as the first segment of the URL:
   - http://localhost:3000 becomes http://localhost:3000/es
-  - http://localhost:3000/sign_up/enter_email becomes http://localhost:3000/es/sign_up/enter_email  
+  - http://localhost:3000/sign_up/enter_email becomes http://localhost:3000/es/sign_up/enter_email
 
 #### Viewing outbound SMS messages and phone calls
 
@@ -172,6 +172,38 @@ The Geolite2-City database can be downloaded from MaxMind's site at [https://dev
 
 Download the GeoIP2 Binary and save it at `geo_data/GeoLite2-City.mmdb`.
 The app will start using that Geolite2 file for geolocation after restart.
+
+#### Testing on a mobile device or in a virtual machine
+
+By default, the application binds to `localhost`. To tes on a network device or within a virtual machine, you can bind to `0.0.0.0` instead, using the following instructions:
+
+1. Determine your computer's network IP address. On macOS, you can find this in the "Network" system settings, shown under the "Status: Connected" label. This often takes the format of `192.168.1.x` or `10.0.0.x`.
+2. In `config/application.yml`, replace `localhost` in the `domain_name` setting with the IP address discovered in the previous step. Leave the trailing port `:3000` unchanged.
+3. Start the server using the command `SMTP_HOST=192.168.1.x rails s -b 0.0.0.0`, replacing `SMTP_HOST` value with the IP address from the first step.
+  - Note that because this uses the Rails built-in server and bypasses the Foreman process, ancillary services like Mailcatcher and Webpack development server will not be started.
+4. Assuming that your phone or virtual machine computer is connected on the same network, visit the application using the domain name configured in the second step (for example, `http://192.168.1.131:3000`).
+
+#### Testing the application over HTTPS
+
+To browse the application locally over HTTPS, you will need to create a self-signed certificate:
+
+```
+mkdir -p tmp && openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 365 -keyout tmp/localhost.key -out tmp/localhost.crt
+```
+
+This will issue a series of prompts for information about the certificate. You can use test values for these.
+
+Once created, start the server using Rails' built-in server with the newly created certificate:
+
+```
+rails s -b 'ssl://localhost:3000?key=tmp/localhost.key&cert=tmp/localhost.crt'
+```
+
+_(Note: If you plan to test over HTTPS on devices on your network, you should consider using the IP address in place of `localhost` here, as described in the steps of "Testing on a mobile device or in a virtual machine")_
+
+You can now navigate to https://localhost:3000/ .
+
+It's likely that you'll be prompted with a screen with warnings about an unsafe connection. This is normal. Find the option on the screen to bypass the warning. It may be hidden under an "Advanced" toggle button. In Chrome, you may not see an option to bypass this screen. In these situations, type the letters `thisisunsafe` while the screen is active, and you will be redirected automatically.
 
 ### Installing with Docker
 
