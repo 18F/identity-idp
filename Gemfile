@@ -23,7 +23,7 @@ gem 'http_accept_language'
 gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.4.0'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.3'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
-gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
+gem 'identity-idp-functions', '>= 0.11.0', github: '18F/identity-idp-functions', ref: 'e58edba856c9cb38e007b494d4f560c2039675b2'
 gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.11'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'main'
 gem 'json-jwt', '>= 1.11.0'
@@ -118,6 +118,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', branch: 'margolis-transaction-id'
   gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.5.1.pre'
 end

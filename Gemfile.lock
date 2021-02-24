@@ -1,12 +1,13 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: 149b5b480f0319ec39410e497bb4bbffd1652014
-  tag: v3.4.1
+  revision: 864c88bf735670ab3a13fe762eb1c19d7e275529
+  branch: margolis-transaction-id
   specs:
-    aamva (3.4.1)
+    aamva (3.5.0)
       dotenv
       faraday
       hashie
+      proofer (>= 2.7.1)
       retries
       xmldsig
 
@@ -29,10 +30,11 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 8c16776e19b211d15bda7246d99ff95155d60c11
-  ref: 8c16776e19b211d15bda7246d99ff95155d60c11
+  revision: e58edba856c9cb38e007b494d4f560c2039675b2
+  ref: e58edba856c9cb38e007b494d4f560c2039675b2
   specs:
-    identity-idp-functions (0.10.0)
+    identity-idp-functions (0.11.0)
+      aamva (>= 3.5.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
       retries (>= 0.0.5)
@@ -757,7 +759,7 @@ DEPENDENCIES
   i18n-tasks (>= 0.9.31)
   identity-doc-auth!
   identity-hostdata!
-  identity-idp-functions!
+  identity-idp-functions (>= 0.11.0)!
   identity-telephony!
   identity_validations!
   irb
