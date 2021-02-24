@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: 864c88bf735670ab3a13fe762eb1c19d7e275529
-  branch: margolis-transaction-id
+  revision: 90c378604f762ee3099a44d5680d5939806e6928
+  tag: v3.5.0
   specs:
     aamva (3.5.0)
       dotenv
