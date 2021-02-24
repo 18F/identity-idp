@@ -54,8 +54,12 @@ module Idv
       def add_proofing_costs(results)
         vendors = results[:context][:stages]
         vendors.each do |hash|
-          add_cost(:aamva, transaction_id: hash[:transaction_id]) if hash[:state_id]
+          if hash[:state_id]
+            # transaction_id comes from TransactionLocatorId
+            add_cost(:aamva, transaction_id: hash[:transaction_id])
+          end
           if hash[:resolution]
+            # transaction_id comes from ConversationId
             add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
           end
         end
