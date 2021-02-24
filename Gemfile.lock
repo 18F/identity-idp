@@ -30,8 +30,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: e58edba856c9cb38e007b494d4f560c2039675b2
-  ref: e58edba856c9cb38e007b494d4f560c2039675b2
+  revision: eb8aa1657173af64fd9fcad2ab4df2a5741eb51d
+  ref: eb8aa1657173af64fd9fcad2ab4df2a5741eb51d
   specs:
     identity-idp-functions (0.11.0)
       aamva (>= 3.5.0)
@@ -759,7 +759,7 @@ DEPENDENCIES
   i18n-tasks (>= 0.9.31)
   identity-doc-auth!
   identity-hostdata!
-  identity-idp-functions (>= 0.11.0)!
+  identity-idp-functions!
   identity-telephony!
   identity_validations!
   irb
