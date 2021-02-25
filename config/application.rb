@@ -7,7 +7,6 @@ require 'action_mailer/railtie'
 require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 
-require_relative '../lib/upaya_log_formatter'
 require_relative '../lib/app_config'
 require_relative '../lib/fingerprinter'
 
@@ -45,17 +44,6 @@ module Upaya
         mail.display_name = AppConfig.env.email_from_display_name
       end.to_s,
     }
-
-    config.lograge.custom_options = lambda do |event|
-      event.payload[:timestamp] = Time.zone.now.iso8601
-      event.payload[:uuid] = SecureRandom.uuid
-      event.payload[:pid] = Process.pid
-      event.payload[:trace_id] = event.payload[:headers]['X-Amzn-Trace-Id']
-      event.payload.except(:params, :headers, :request, :response)
-    end
-
-    # Use a custom log formatter to get timestamp
-    config.log_formatter = Upaya::UpayaLogFormatter.new
 
     require 'headers_filter'
     config.middleware.insert_before 0, HeadersFilter

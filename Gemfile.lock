@@ -22,10 +22,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 9febec459b8f46b34ee783feddf454005e8c9c77
-  tag: v0.4.3
+  revision: f6852a492e06acbb1f652a5f0fb8fbd6e0022357
+  branch: margolis-railtie-with-logger
   specs:
-    identity-hostdata (0.4.3)
+    identity-hostdata (1.0.0)
       aws-sdk-s3 (~> 1.8)
 
 GIT

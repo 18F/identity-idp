@@ -109,16 +109,26 @@ describe ApplicationController do
   end
 
   describe '#append_info_to_payload' do
+    let(:trace_id) { 'some-trace-id-abcdef' }
     let(:payload) { {} }
+    let(:user) { create(:user) }
 
-    it 'adds user_id, user_agent and ip to the lograge output' do
-      Timecop.freeze(Time.zone.now) do
-        subject.append_info_to_payload(payload)
+    before do
+      allow(controller).to receive(:analytics_user).and_return(user)
 
-        expect(payload.keys).to eq %i[user_id user_agent ip host]
-        expect(payload.values).
-          to eq ['anonymous-uuid', request.user_agent, request.remote_ip, request.host]
-      end
+      request.headers['X-Amzn-Trace-Id'] = trace_id
+    end
+
+    it 'adds user_uuid, user_agent and ip, trace_id to the lograge output' do
+      controller.append_info_to_payload(payload)
+
+      expect(payload).to eq(
+        user_id: user.uuid,
+        user_agent: request.user_agent,
+        ip: request.remote_ip,
+        host: request.host,
+        trace_id: trace_id
+      )
     end
   end
 

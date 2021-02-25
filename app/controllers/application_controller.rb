@@ -40,11 +40,13 @@ class ApplicationController < ActionController::Base
     redirect_on_timeout
   end
 
+  # for lograge
   def append_info_to_payload(payload)
     payload[:user_id] = analytics_user.uuid unless @skip_session_load
     payload[:user_agent] = request.user_agent
     payload[:ip] = request.remote_ip
     payload[:host] = request.host
+    payload[:trace_id] = request.headers['X-Amzn-Trace-Id']
   end
 
   attr_writer :analytics
