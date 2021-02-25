@@ -479,25 +479,6 @@ feature 'Sign in' do
     end
   end
 
-  context 'adds phone number after IAL1 sign in' do
-    it 'redirects to account page and not the SP' do
-      user = create(:user, :signed_up)
-      visit_idp_from_oidc_sp_with_loa1_prompt_login
-      fill_in_credentials_and_submit(user.email, user.password)
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      click_agree_and_continue
-
-      visit account_path
-      click_on "+ #{t('account.index.phone_add')}"
-      fill_in :new_phone_form_phone, with: '415-555-0199'
-      click_continue
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      expect(current_path).to eq account_path
-    end
-  end
-
   context 'invalid request_id' do
     it 'allows the user to sign in and does not try to redirect to any SP' do
       user = create(:user, :signed_up)
