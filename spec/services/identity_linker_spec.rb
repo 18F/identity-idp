@@ -113,9 +113,9 @@ describe IdentityLinker do
         to raise_error(ArgumentError)
     end
 
-    it 'does not link to an identity record if the provider is nil' do
+    it 'fails when given a nil provider' do
       linker = IdentityLinker.new(user, nil)
-      expect(linker.link_identity).to eq(nil)
+      expect { linker.link_identity }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'can link two different clients to the same rails_session_id' do
