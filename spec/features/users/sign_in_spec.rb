@@ -2,12 +2,12 @@ require 'rails_helper'
 
 feature 'Sign in' do
   before(:all) do
-    @original_capyabar_wait = Capybara.default_max_wait_time
+    @original_capyabara_wait = Capybara.default_max_wait_time
     Capybara.default_max_wait_time = 5
   end
 
   after(:all) do
-    Capybara.default_max_wait_time = @original_capyabar_wait
+    Capybara.default_max_wait_time = @original_capyabara_wait
   end
 
   include SessionTimeoutWarningHelper
@@ -479,25 +479,6 @@ feature 'Sign in' do
     end
   end
 
-  context 'adds phone number after IAL1 sign in' do
-    it 'redirects to account page and not the SP' do
-      user = create(:user, :signed_up)
-      visit_idp_from_oidc_sp_with_loa1_prompt_login
-      fill_in_credentials_and_submit(user.email, user.password)
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      click_agree_and_continue
-
-      visit account_path
-      click_on "+ #{t('account.index.phone_add')}"
-      fill_in :new_phone_form_phone, with: '415-555-0199'
-      click_continue
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      expect(current_path).to eq account_path
-    end
-  end
-
   context 'invalid request_id' do
     it 'allows the user to sign in and does not try to redirect to any SP' do
       user = create(:user, :signed_up)
@@ -945,6 +926,28 @@ feature 'Sign in' do
       fill_in_credentials_and_submit(user.email, user.password)
 
       expect(current_path).to eq login_two_factor_piv_cac_path
+    end
+  end
+
+  context 'double clicking on "Agree and Continue"' do
+    it 'should not blow up' do
+      user = create(:user, :signed_up)
+      visit_idp_from_sp_with_ial1(:oidc)
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content(user.email)
+
+      agree_and_continue_button = find_button(t('sign_up.agree_and_continue'))
+      action_url = agree_and_continue_button.find(:xpath, '..')[:action]
+      agree_and_continue_button.click
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+
+      response = page.driver.post(action_url)
+      expect(response).to be_redirect
     end
   end
 
