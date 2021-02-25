@@ -22,8 +22,8 @@ module SamlAuthHelper
     settings.security[:signature_method] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
     settings.double_quote_xml_attribute_values = true
     # IdP setting
-    settings.idp_sso_target_url = "http://#{AppConfig.env.domain_name}/api/saml/auth2019"
-    settings.idp_slo_target_url = "http://#{AppConfig.env.domain_name}/api/saml/logout2019"
+    settings.idp_sso_target_url = "http://#{AppConfig.env.domain_name}/api/saml/auth2021"
+    settings.idp_slo_target_url = "http://#{AppConfig.env.domain_name}/api/saml/logout2021"
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
@@ -57,7 +57,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2019.crt'))
+    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2021.crt'))
   end
 
   def saml_test_sp_cert
@@ -303,7 +303,7 @@ module SamlAuthHelper
   end
 
   def visit_saml_auth_path
-    visit api_saml_auth2019_path(
+    visit api_saml_auth2021_path(
       SAMLRequest: CGI.unescape(saml_request(saml_settings)),
     )
   end
