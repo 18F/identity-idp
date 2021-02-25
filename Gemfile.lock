@@ -41,10 +41,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: dd16ec95e6dba972ab61e90f650e573ab071e83f
-  tag: v2.5.1.pre
+  revision: 415a0e970b6ff1ab3262fb4874164c4dfd156120
+  tag: v2.7.0
   specs:
-    lexisnexis (2.5.1.pre)
+    lexisnexis (2.7.0)
       activesupport
       dotenv
       faraday
