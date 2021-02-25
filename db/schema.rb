@@ -349,6 +349,12 @@ ActiveRecord::Schema.define(version: 2021_02_23_232534) do
     t.index ["job_name", "finish_time"], name: "index_job_runs_on_job_name_and_finish_time"
   end
 
+  create_table "letter_requests_to_usps_ftp_logs", force: :cascade do |t|
+    t.datetime "ftp_at", null: false
+    t.integer "letter_requests_count", null: false
+    t.index ["ftp_at"], name: "index_letter_requests_to_usps_ftp_logs_on_ftp_at"
+  end
+
   create_table "monthly_auth_counts", force: :cascade do |t|
     t.string "issuer", null: false
     t.string "year_month", null: false
