@@ -2,5 +2,6 @@
 es:
   image_description:
     camera_mobile_phone: Cámara parpadeando en un teléfono móvil
+    spinner: Indicador de carga
     totp_qrcode: Código QR para la aplicación de autenticación
     us_flag: Bandera de estados unidos

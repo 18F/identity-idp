@@ -2,11 +2,10 @@ class FakeAnalytics
   attr_reader :events
 
   def initialize
-    @events = Hash.new
+    @events = Hash.new { |hash, key| hash[key] = [] }
   end
 
   def track_event(event, attributes = {})
-    events[event] ||= []
     events[event] << attributes
     nil
   end

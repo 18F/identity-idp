@@ -24,29 +24,17 @@ describe Idv::Agent do
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-          expect(result[:context][:stages]).to_not include(
-            state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
-          )
+          expect(result[:context][:stages]).to_not include({ state_id: 'StateIdMock' })
         end
 
         it 'does proof state_id if resolution succeeds' do
-          agent = Idv::Agent.new(
-            ssn: '444-55-8888',
-            first_name: Faker::Name.first_name,
-            zipcode: '11111',
-            state_id_number: '123456789',
-            state_id_type: 'drivers_license',
-            state_id_jurisdiction: 'MD',
-          )
+          agent = Idv::Agent.new({ ssn: '444-55-8888', first_name: Faker::Name.first_name,
+                                   zipcode: '11111' })
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
           result = document_capture_session.load_proofing_result.result
-          expect(result[:context][:stages]).to include(
-            state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
-          )
+          expect(result[:context][:stages]).to include({ state_id: 'StateIdMock' })
         end
 
         context 'proofing partial date of birth' do
@@ -75,10 +63,7 @@ describe Idv::Agent do
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-          expect(result[:context][:stages]).to_not include(
-            state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
-          )
+          expect(result[:context][:stages]).to_not include({ state_id: 'StateIdMock' })
         end
 
         it 'does not proof state_id if resolution succeeds' do
@@ -88,10 +73,7 @@ describe Idv::Agent do
             document_capture_session, should_proof_state_id: false, trace_id: trace_id
           )
           result = document_capture_session.load_proofing_result.result
-          expect(result[:context][:stages]).to_not include(
-            state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
-          )
+          expect(result[:context][:stages]).to_not include({ state_id: 'StateIdMock' })
         end
       end
 

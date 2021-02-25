@@ -136,18 +136,6 @@ describe ServiceProvider do
     end
   end
 
-  describe 'associations' do
-    subject { service_provider }
-
-    it { is_expected.to belong_to(:agency) }
-    it do
-      is_expected.to have_many(:identities).
-        inverse_of(:service_provider_record).
-        with_foreign_key('service_provider').
-        with_primary_key('issuer')
-    end
-  end
-
   describe '#issuer' do
     it 'returns the constructor value' do
       expect(service_provider.issuer).to eq 'http://localhost:3000'

@@ -255,19 +255,5 @@ describe JobRunner::Runner do
 
       expect(job.callback.call).to eq 'the report test worked'
     end
-
-    it 'runs the Monthly USPS letter requests report' do
-      job = JobRunner::Runner.configurations.find do |c|
-        c.name == 'Monthly USPS letter requests report'
-      end
-      expect(job).to be_instance_of(JobRunner::JobConfiguration)
-      expect(job.interval).to eq 24 * 60 * 60
-
-      service = instance_double(Reports::MonthlyUspsLetterRequestsReport)
-      expect(Reports::MonthlyUspsLetterRequestsReport).to receive(:new).and_return(service)
-      expect(service).to receive(:call).and_return('the report test worked')
-
-      expect(job.callback.call).to eq 'the report test worked'
-    end
   end
 end

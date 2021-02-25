@@ -70,15 +70,16 @@ feature 'doc auth link sent step' do
       visit current_path
     end
 
-    context 'clicks back link' do
+    context 'user cancels flow session' do
       before do
-        click_doc_auth_back_link
+        click_on t('links.cancel')
+        click_on t('forms.buttons.cancel')
 
         visit idv_doc_auth_link_sent_step
       end
 
-      it 'redirects to send link step' do
-        expect(page).to have_current_path(idv_doc_auth_send_link_step)
+      it 'redirects to welcome step' do
+        expect(page).to have_current_path(idv_doc_auth_welcome_step)
       end
     end
 
@@ -89,8 +90,6 @@ feature 'doc auth link sent step' do
       end
       expect(page).to_not have_css 'meta[http-equiv="refresh"]', visible: false
 
-      click_doc_auth_back_link
-      click_doc_auth_back_link
       click_on t('doc_auth.buttons.start_over')
       complete_doc_auth_steps_before_link_sent_step
       expect(page).to have_css 'meta[http-equiv="refresh"]', visible: false

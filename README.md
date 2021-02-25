@@ -113,8 +113,6 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   MONITOR_ENV=INT ./bin/smoke_test --remote
   ```
 
-  For remote smoke tests, we save a screenshot of failed test scenarios to help debugging in `tmp/capybara`, and they are exported to CircleCI as build artifacts as well.
-
 #### Speeding up local development and testing
 
   To automatically run the test that corresponds to the file you are editing,

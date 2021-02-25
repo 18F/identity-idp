@@ -1,5 +1,4 @@
-import { createContext, useContext, useMemo, useEffect, useState } from 'react';
-import DeviceContext from './device';
+import { createContext, useMemo, useEffect, useState } from 'react';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -49,7 +48,6 @@ import DeviceContext from './device';
 
 const AcuantContext = createContext({
   isReady: false,
-  isAcuantLoaded: false,
   isError: false,
   isCameraSupported: /** @type {boolean?} */ (null),
   credentials: /** @type {string?} */ (null),
@@ -65,26 +63,18 @@ function AcuantContextProvider({
   endpoint = null,
   children,
 }) {
-  const { isMobile } = useContext(DeviceContext);
-  // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
-  const [isReady, setIsReady] = useState(!isMobile);
-  const [isAcuantLoaded, setIsAcuantLoaded] = useState(false);
+  const [isReady, setIsReady] = useState(false);
   const [isError, setIsError] = useState(false);
-  // If the user is on a mobile device, it can't be known that the camera is supported until after
-  // Acuant SDK loads, so assign a value of `null` as representing this unknown state. Other device
-  // types should treat camera as unsupported, since it's not relevant for Acuant SDK usage.
-  const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
-  const value = useMemo(
-    () => ({ isReady, isAcuantLoaded, isError, isCameraSupported, endpoint, credentials }),
-    [isReady, isAcuantLoaded, isError, isCameraSupported, endpoint, credentials],
-  );
+  const [isCameraSupported, setIsCameraSupported] = useState(/** @type {?boolean} */ (null));
+  const value = useMemo(() => ({ isReady, isError, isCameraSupported, endpoint, credentials }), [
+    isReady,
+    isError,
+    isCameraSupported,
+    endpoint,
+    credentials,
+  ]);
 
   useEffect(() => {
-    // If state is already ready (via consideration of device type), skip loading Acuant SDK.
-    if (isReady) {
-      return;
-    }
-
     // Acuant SDK expects this global to be assigned at the time the script is
     // loaded, which is why the script element is manually appended to the DOM.
     const originalOnAcuantSdkLoaded = /** @type {AcuantGlobal} */ (window).onAcuantSdkLoaded;
@@ -98,7 +88,6 @@ function AcuantContextProvider({
               /** @type {AcuantGlobal} */ (window).AcuantCamera.isCameraSupported,
             );
             setIsReady(true);
-            setIsAcuantLoaded(true);
           },
           onFail: () => setIsError(true),
         },

@@ -26,7 +26,6 @@ class NullServiceProvider
     iaa_start_date
     ial2_quota
     id
-    identities
     launch_date
     logo
     metadata_url
@@ -70,10 +69,6 @@ class NullServiceProvider
   end
 
   def redirect_uris
-    []
-  end
-
-  def identities
     []
   end
 

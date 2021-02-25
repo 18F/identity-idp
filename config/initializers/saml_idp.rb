@@ -13,8 +13,8 @@ SamlIdp.configure do |config|
   # config.verify_authnrequest_sig = true
 
   # Organization contact information
-  config.organization_name = 'login.gov'
-  config.organization_url = 'https://login.gov'
+  config.organization_name = '18F'
+  config.organization_url = 'http://18f.gsa.gov'
   config.base_saml_location = "#{api_base}/saml"
   config.attribute_service_location = "#{api_base}/saml/attributes"
   config.single_service_post_location = "#{api_base}/saml/auth"

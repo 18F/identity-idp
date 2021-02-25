@@ -8,7 +8,6 @@ class IdentityLinker
   end
 
   def link_identity(**extra_attrs)
-    return unless user && provider.present?
     process_ial(extra_attrs)
     attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)

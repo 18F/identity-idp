@@ -31,10 +31,7 @@ module Idv
       end
 
       def document_capture_session_result
-        @document_capture_session_result ||= (
-          document_capture_session&.load_result ||
-          document_capture_session&.load_doc_auth_async_result
-        )
+        @document_capture_session_result ||= document_capture_session&.load_result
       end
 
       def mark_steps_complete

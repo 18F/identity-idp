@@ -174,11 +174,3 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   timeout: 300,
   callback: -> { Reports::UspsReport.new.call },
 )
-
-# Send Monthly USPS Letter Requests Report to S3
-JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
-  name: 'Monthly USPS letter requests report',
-  interval: 24 * 60 * 60, # 24 hours
-  timeout: 300,
-  callback: -> { Reports::MonthlyUspsLetterRequestsReport.new.call },
-)

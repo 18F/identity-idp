@@ -15,6 +15,7 @@ es:
       choose_method: "¿Cómo le gustaría verificar su identidad?"
       enter_info: Ingrese su información
       present_cac: Presente su tarjeta PIV / CAC para verificar su cuenta
+      success: Hemos verificado su información y su tarjeta PIV / CAC.
       verify: Verifica tu información
       welcome: Nosotros necesitamos verificar tu identidad
     info:

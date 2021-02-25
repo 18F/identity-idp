@@ -360,11 +360,11 @@ feature 'Sign in' do
 
   describe 'session timeout configuration' do
     it 'uses delay and warning settings whose sum is a multiple of 60' do
-      expect((session_timeout_start + session_timeout_warning) % 60).to eq 0
+      expect((start + warning) % 60).to eq 0
     end
 
     it 'uses frequency and warning settings whose sum is a multiple of 60' do
-      expect((session_timeout_frequency + session_timeout_warning) % 60).to eq 0
+      expect((frequency + warning) % 60).to eq 0
     end
   end
 
@@ -476,25 +476,6 @@ feature 'Sign in' do
       expect(page).
         to have_link t('devise.failure.invalid_link_text', href: link_url)
       expect(current_path).to eq root_path
-    end
-  end
-
-  context 'adds phone number after IAL1 sign in' do
-    it 'redirects to account page and not the SP' do
-      user = create(:user, :signed_up)
-      visit_idp_from_oidc_sp_with_loa1_prompt_login
-      fill_in_credentials_and_submit(user.email, user.password)
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      click_agree_and_continue
-
-      visit account_path
-      click_on "+ #{t('account.index.phone_add')}"
-      fill_in :new_phone_form_phone, with: '415-555-0199'
-      click_continue
-      fill_in_code_with_last_phone_otp
-      click_submit_default
-      expect(current_path).to eq account_path
     end
   end
 

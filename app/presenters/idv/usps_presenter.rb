@@ -14,7 +14,7 @@ module Idv
     end
 
     def byline
-      if usps_mail_bounced?
+      if current_user.decorate.usps_mail_bounced?
         I18n.t('idv.messages.usps.new_address')
       else
         I18n.t('idv.messages.usps.address_on_file')
@@ -25,8 +25,10 @@ module Idv
       letter_already_sent? ? I18n.t('idv.buttons.mail.resend') : I18n.t('idv.buttons.mail.send')
     end
 
-    def fallback_back_path
-      user_needs_address_otp_verification? ? verify_account_path : idv_phone_path
+    def cancel_path
+      return verify_account_path if user_needs_address_otp_verification?
+
+      idv_cancel_path
     end
 
     def usps_mail_bounced?

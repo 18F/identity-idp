@@ -3,17 +3,17 @@ import UploadContext from '../context/upload';
 import AnalyticsContext from '../context/analytics';
 
 /**
- * Returns a promise resolving to an ArrayBuffer representation of the given Blob object.
+ * Returns a promise resolving to an DataView representation of the given Blob object.
  *
  * @param {Blob} blob Blob object.
  *
- * @return {Promise<ArrayBuffer>}
+ * @return {Promise<DataView>}
  */
-export function blobToArrayBuffer(blob) {
+export function blobToDataView(blob) {
   return new Promise((resolve, reject) => {
     const reader = new window.FileReader();
     reader.onload = ({ target }) => {
-      resolve(/** @type {ArrayBuffer} */ (target?.result));
+      resolve(new DataView(/** @type {ArrayBuffer} */ (target?.result)));
     };
     reader.onerror = () => reject(reader.error);
     reader.readAsArrayBuffer(blob);
@@ -31,15 +31,12 @@ export function blobToArrayBuffer(blob) {
  */
 export async function encrypt(key, iv, value) {
   const data =
-    typeof value === 'string' ? new TextEncoder().encode(value) : await blobToArrayBuffer(value);
+    typeof value === 'string' ? new TextEncoder().encode(value) : await blobToDataView(value);
 
   return window.crypto.subtle.encrypt(
     /** @type {AesGcmParams} */ ({
       name: 'AES-GCM',
       iv,
-      // Normally, it would not be expected to assign this value, since the property is optional and
-      // the default is 128. However, if not specified, Internet Explorer will throw an error.
-      tagLength: 128,
     }),
     key,
     data,

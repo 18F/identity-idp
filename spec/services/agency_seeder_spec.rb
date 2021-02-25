@@ -16,6 +16,8 @@ RSpec.describe AgencySeeder do
 
     subject(:run) { instance.run }
 
+    # This implictly validates that the `abbreviation` attribute in the YAML is
+    # ignored
     it 'inserts agencies into the database from agencies.yml' do
       expect { run }.to change(Agency, :count)
     end

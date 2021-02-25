@@ -35,7 +35,6 @@ class StoreSpMetadataInSession
   def update_session
     session[:sp] = {
       issuer: sp_request.issuer,
-      ial: ial_context.ial,
       ial2: ial_context.ial2_requested?,
       ial2_strict: ial_context.ial2_strict_requested?,
       ialmax: ial_context.ialmax_requested?,
