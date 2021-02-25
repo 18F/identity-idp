@@ -49,7 +49,7 @@ RSpec.describe UspsConfirmationUploader do
   end
 
   describe '#upload_export' do
-    subject { uploader.send(:upload_export, export) }
+    subject { uploader.send(:upload_export, *export) }
 
     let(:sftp_connection) { instance_double('Net::SFTP::Session') }
     let(:string_io) { StringIO.new(export) }
@@ -75,19 +75,25 @@ RSpec.describe UspsConfirmationUploader do
     subject { uploader.run }
 
     context 'when successful' do
-      it 'uploads the psv created by creates a file, uploads it via SFTP, and deletes it after' do
+      it 'uploads the psv, creates a file, uploads it via SFTP, and deletes and logs it after' do
         expect(uploader).to receive(:generate_export).with(confirmations).and_return(export)
-        expect(uploader).to receive(:upload_export).with(export)
+        expect(uploader).to receive(:upload_export).with(*export)
         expect(uploader).to receive(:clear_confirmations).with(confirmations)
 
         subject
+
+        logs = LetterRequestsToUspsFtpLog.all
+        expect(logs.count).to eq(1)
+        log = logs.first
+        expect(log.ftp_at).to be_present
+        expect(log.letter_requests_count).to eq(1)
       end
     end
 
     context 'when there is an error' do
       it 'notifies NewRelic and does not clear confirmations if SFTP fails' do
         expect(uploader).to receive(:generate_export).with(confirmations).and_return(export)
-        expect(uploader).to receive(:upload_export).with(export).and_raise(StandardError)
+        expect(uploader).to receive(:upload_export).with(*export).and_raise(StandardError)
         expect(uploader).not_to receive(:clear_confirmations)
 
         expect(NewRelic::Agent).to receive(:notice_error)
