@@ -24,4 +24,14 @@ feature 'Monthly usps letter requests report' do
     expect(results_hash['total_letter_requests']).to eq(7)
     expect(results_hash['daily_letter_requests'].count).to eq(2)
   end
+
+  it 'only reports on the current month' do
+    now = Time.zone.now
+    LetterRequestsToUspsFtpLog.create(ftp_at: now - 32.days, letter_requests_count: 3)
+    LetterRequestsToUspsFtpLog.create(ftp_at: now, letter_requests_count: 4)
+
+    results_hash = JSON.parse(Reports::MonthlyUspsLetterRequestsReport.new.call)
+    expect(results_hash['total_letter_requests']).to eq(4)
+    expect(results_hash['daily_letter_requests'].count).to eq(1)
+  end
 end
