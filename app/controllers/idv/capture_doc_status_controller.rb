@@ -16,9 +16,7 @@ module Idv
       document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
       return { plain: 'Unauthorized', status: :unauthorized } unless document_capture_session
 
-      result = document_capture_session.load_result ||
-               document_capture_session.load_doc_auth_async_result
-
+      result = document_capture_session.load_result
       return { plain: 'Pending', status: :accepted } if result.blank?
       return { plain: 'Unauthorized', status: :unauthorized } unless result.success?
       { plain: 'Complete', status: :ok }

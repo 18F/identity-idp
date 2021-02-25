@@ -8,6 +8,7 @@ module Idv
         enter_info: Idv::Steps::Cac::EnterInfoStep,
         verify: Idv::Steps::Cac::VerifyStep,
         verify_wait: Idv::Steps::Cac::VerifyWaitStep,
+        success: Idv::Steps::Cac::SuccessStep,
       }.freeze
 
       OPTIONAL_SHOW_STEPS = {

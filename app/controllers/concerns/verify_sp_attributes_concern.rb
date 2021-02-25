@@ -74,4 +74,8 @@ module VerifySpAttributesConcern
       sp_session[:requested_attributes] - @sp_session_identity.verified_attributes.to_a
     ).empty?
   end
+
+  def sp_session_ial
+    sp_session[:ial2] ? 2 : 1
+  end
 end

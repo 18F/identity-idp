@@ -16,4 +16,7 @@
   <% end %>
 </div>
 
-<%= render 'idv/doc_auth/back', fallback_path: @presenter.fallback_back_path %>
+<div class='margin-top-1 padding-top-1 border-top'>
+  <%= button_to(t('idv.messages.clear_and_start_over'), idv_session_path, method: :delete, class: 'btn btn-link margin-bottom-1') %>
+  <%= link_to(t('links.cancel'), @presenter.cancel_path, class: 'h5') %>
+</div>

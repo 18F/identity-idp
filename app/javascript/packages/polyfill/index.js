@@ -6,16 +6,20 @@
  */
 
 /**
- * @typedef {"fetch"|"classlist"|"crypto"|"custom-event"} SupportedPolyfills
+ * @typedef {"fetch"|"element-closest"|"classlist"|"crypto"|"custom-event"} SupportedPolyfills
  */
 
 /**
- * @type {Record<string,Polyfill>}
+ * @type {Record<SupportedPolyfills,Polyfill>}
  */
 const POLYFILLS = {
   fetch: {
     test: () => 'fetch' in window,
     load: () => import(/* webpackChunkName: "whatwg-fetch" */ 'whatwg-fetch'),
+  },
+  'element-closest': {
+    test: () => !!Element.prototype.closest,
+    load: () => import(/* webpackChunkName: "element-closest" */ 'element-closest'),
   },
   classlist: {
     test: () => 'classList' in Element.prototype,

@@ -50,10 +50,6 @@ module Idv
         flow_session[:doc_capture_user_id]
       end
 
-      def hybrid_flow_mobile?
-        user_id_from_token.present?
-      end
-
       def throttled_response
         redirect_to throttled_url
         IdentityDocAuth::Response.new(
@@ -75,9 +71,9 @@ module Idv
         current_user ? current_user.id : user_id_from_token
       end
 
-      def add_cost(token, transaction_id: nil)
+      def add_cost(token)
         issuer = sp_session[:issuer].to_s
-        Db::SpCost::AddSpCost.call(issuer, 2, token, transaction_id: transaction_id)
+        Db::SpCost::AddSpCost.call(issuer, 2, token)
         Db::ProofingCost::AddUserProofingCost.call(user_id, token)
       end
 

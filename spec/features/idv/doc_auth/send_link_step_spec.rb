@@ -62,17 +62,20 @@ feature 'doc auth send link step' do
 
   it 'throttles sending the link' do
     user = sign_in_and_2fa_user
-    complete_doc_auth_steps_before_send_link_step
     idv_send_link_max_attempts.times do
+      sign_in_and_2fa_user(user)
+      complete_doc_auth_steps_before_send_link_step
       expect(page).to_not have_content I18n.t('errors.doc_auth.send_link_throttle')
 
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_link_sent_step)
-      click_doc_auth_back_link
+      click_on t('doc_auth.buttons.start_over')
     end
 
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_send_link_step
     fill_in :doc_auth_phone, with: '415-555-0199'
     click_idv_continue
     expect(page).to have_current_path(idv_doc_auth_send_link_step)

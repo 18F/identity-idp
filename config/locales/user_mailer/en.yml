@@ -19,25 +19,20 @@ en:
       button: Yes, continue deleting
       cancel_link_text: please cancel
       help_html: If you don’t want to delete your account, %{cancel_account_reset}.
-      intro_html: Your 24 hour waiting period has ended. Please complete step 2 of
-        the process.<br><br> If you’ve been unable to locate your authentication methods,
-        select "confirm deletion" to delete your %{app} account.<br><br> In the future,
-        if you need to access participating government websites who use %{app}, you
-        can create a new %{app} account using the same email address after your account
-        is deleted.<br><br>
-      subject: Delete your login.gov account
+      intro_html: You are receiving this email because you requested to delete and
+        reset your login.gov account. <br><br> Deleting your account should be your
+        last resort if you are locked out of your account. You will not be able to
+        recover any information linked to your account. Once your account is deleted,
+        you can create a new one using the same email address. <br><br>Are you sure
+        you want to delete your account?
+      subject: Delete your account
     account_reset_request:
       cancel: Don't want to delete your account? Sign in to your login.gov account
         to cancel.
       header: Your account will be deleted in 24 hours
-      intro_html: 'As a security measure, %{app} requires a two-step process to delete
-        your account:<br><br> Step One: There is a 24 hour waiting period if you have
-        lost access to your authentication methods and need to delete your account.
-        If you locate your authentication methods, you can sign in to your %{app}
-        account to cancel this request.<br><br> Step Two: After your 24 hour waiting
-        period, you will receive an email that will ask you to confirm the deletion
-        of your %{app} account. Your account will not be deleted until you confirm.'
-      subject: How to delete your login.gov account
+      intro: To ensure quality and security, the account deletion process takes 24
+        hours. You will receive a confirmation email once this process is completed.
+      subject: Delete your account
     add_email:
       footer: This link will expire in %{confirmation_period}.
       header: Thanks for adding an email. Please click the link below or copy and

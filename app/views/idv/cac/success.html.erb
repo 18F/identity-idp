@@ -1,0 +1,22 @@
+<% title t('cac_proofing.titles.cac_proofing') %>
+<h5 class="margin-y-1 caps bold accent-blue">
+  <%= t('cac_proofing.step', step: 2) %>
+</h5>
+
+<%= image_tag(asset_url('state-id-confirm@3x.png'), width: 210) %>
+
+<h1 class="h3 margin-bottom-2 margin-top-4 margin-y-0">
+  <%= t('cac_proofing.headings.success') %>
+</h1>
+
+<br />
+
+<div class="margin-top-6">
+  <%= button_to(t('forms.buttons.continue'), url_for, method: :put,
+                class: 'btn btn-primary btn-wide sm-col-6 col-12') %>
+</div>
+
+<%= validated_form_for('', url: url_for, method: 'PUT',
+                       html: { autocomplete: 'off', role: 'form', class: 'margin-top-2' }) do |f| %>
+<% end %>
+<%= render 'idv/cac/start_over_or_cancel' %>

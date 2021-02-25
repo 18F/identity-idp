@@ -27,10 +27,4 @@ feature 'doc auth verify step' do
     click_idv_continue
     expect(page).to have_current_path(idv_address_path)
   end
-
-  it 'allows the user to click back to return to the verify step' do
-    click_doc_auth_back_link
-
-    expect(page).to have_current_path(idv_doc_auth_verify_step)
-  end
 end

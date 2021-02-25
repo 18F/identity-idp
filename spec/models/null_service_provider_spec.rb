@@ -76,20 +76,12 @@ describe NullServiceProvider do
     end
   end
 
-  describe '#identities' do
-    it 'returns empty array' do
-      expect(subject.identities).to eq([])
-    end
-  end
-
   context 'matching methods on ServiceProvider' do
     it 'has all the methods that ServiceProvider has' do
       sp_methods = ServiceProvider.instance_methods(false)
       ignored_methods = %i[
         autosave_associated_records_for_agency
-        autosave_associated_records_for_identities
         belongs_to_counter_cache_after_update
-        validate_associated_records_for_identities
       ]
       null_sp_methods = NullServiceProvider.instance_methods
 

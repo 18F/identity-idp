@@ -27,10 +27,8 @@ feature 'SP Costing', :email do
     expect_sp_cost_type(1, 2, 'acuant_front_image')
     expect_sp_cost_type(2, 2, 'acuant_back_image')
     expect_sp_cost_type(3, 2, 'acuant_result')
-    expect_sp_cost_type(4, 2, 'lexis_nexis_resolution',
-                        transaction_id: IdentityIdpFunctions::ResolutionMockClient::TRANSACTION_ID)
-    expect_sp_cost_type(5, 2, 'aamva',
-                        transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID)
+    expect_sp_cost_type(4, 2, 'lexis_nexis_resolution')
+    expect_sp_cost_type(5, 2, 'aamva')
     expect_sp_cost_type(6, 2, 'lexis_nexis_address')
     expect_sp_cost_type(7, 2, 'user_added')
     expect_sp_cost_type(8, 2, 'authentication')
@@ -122,13 +120,12 @@ feature 'SP Costing', :email do
     expect_direct_cost_type(0, 'digest')
   end
 
-  def expect_sp_cost_type(sp_cost_index, ial, token, transaction_id: nil)
+  def expect_sp_cost_type(sp_cost_index, ial, token)
     sp_cost = sp_costs(sp_cost_index)
     expect(sp_cost.ial).to eq(ial)
     expect(sp_cost.issuer).to eq(issuer)
     expect(sp_cost.agency_id).to eq(agency_id)
     expect(sp_cost.cost_type).to eq(token)
-    expect(sp_cost.transaction_id).to(eq(transaction_id)) if transaction_id
   end
 
   def expect_direct_cost_type(sp_cost_index, token)

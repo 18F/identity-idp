@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import sinon from 'sinon';
 import { UploadContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import withBackgroundEncryptedUpload, {
-  blobToArrayBuffer,
+  blobToDataView,
   encrypt,
 } from '@18f/identity-document-capture/higher-order/with-background-encrypted-upload';
 import { useSandbox } from '../../../support/sinon';
@@ -33,13 +33,13 @@ function isArrayBufferEqual(a, b) {
 describe('document-capture/higher-order/with-background-encrypted-upload', () => {
   const sandbox = useSandbox();
 
-  describe('blobToArrayBuffer', () => {
+  describe('blobToDataView', () => {
     it('converts blob to data view', async () => {
       const data = new window.File(['Hello world'], 'demo.text', { type: 'text/plain' });
       const expected = new Uint8Array([72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]).buffer;
 
-      const actual = await blobToArrayBuffer(data);
-      expect(isArrayBufferEqual(actual, expected)).to.be.true();
+      const dataView = await blobToDataView(data);
+      expect(isArrayBufferEqual(dataView.buffer, expected)).to.be.true();
     });
 
     it('rejects on filereader error', async () => {
@@ -50,9 +50,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
       });
 
       try {
-        await blobToArrayBuffer(
-          new window.File(['Hello world'], 'demo.text', { type: 'text/plain' }),
-        );
+        await blobToDataView(new window.File(['Hello world'], 'demo.text', { type: 'text/plain' }));
       } catch (actualError) {
         expect(actualError).to.equal(error);
       }

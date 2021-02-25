@@ -22,7 +22,6 @@ describe 'users/delete/show.html.erb' do
     expect(rendered).to have_content(t('users.delete.bullet_1', app: APP_NAME))
     expect(rendered).to have_content(user.decorate.delete_account_bullet_key)
     expect(rendered).to have_content(t('users.delete.bullet_3', app: APP_NAME))
-    expect(rendered).to have_content(t('users.delete.bullet_4', app: APP_NAME))
   end
 
   it 'displays bullets for loa1' do

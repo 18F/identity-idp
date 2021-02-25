@@ -1,22 +1,21 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: dbf3d2e102603530a29cb43308b9aa639efaea1f
-  tag: v3.6.0
+  revision: 149b5b480f0319ec39410e497bb4bbffd1652014
+  tag: v3.4.1
   specs:
-    aamva (3.6.0)
+    aamva (3.4.1)
       dotenv
       faraday
       hashie
-      proofer (>= 2.7.1)
       retries
       xmldsig
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: 164a507fd17ecffe4ef2289120d89156358b3a80
-  tag: v0.4.0
+  revision: 4e1e09d7e5eb673dfbc1e301feacc74859d25d29
+  tag: v0.3.3
   specs:
-    identity-doc-auth (0.4.0)
+    identity-doc-auth (0.3.3)
       activesupport
       faraday
 
@@ -30,11 +29,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: eb8aa1657173af64fd9fcad2ab4df2a5741eb51d
-  ref: eb8aa1657173af64fd9fcad2ab4df2a5741eb51d
+  revision: 8c16776e19b211d15bda7246d99ff95155d60c11
+  ref: 8c16776e19b211d15bda7246d99ff95155d60c11
   specs:
-    identity-idp-functions (0.11.0)
-      aamva (>= 3.5.0)
+    identity-idp-functions (0.10.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
       retries (>= 0.0.5)
@@ -573,8 +571,6 @@ GEM
       rspec-expectations (~> 3.9)
       rspec-mocks (~> 3.9)
       rspec-support (~> 3.9)
-    rspec-retry (0.6.2)
-      rspec-core (> 3.3)
     rspec-support (3.10.0)
     rubocop (1.4.2)
       parallel (~> 1.10)
@@ -801,7 +797,6 @@ DEPENDENCIES
   rotp (~> 6.1)
   rqrcode
   rspec-rails (~> 4.0)
-  rspec-retry
   rubocop (~> 1.4.0)
   rubocop-rails (>= 2.5.2)
   ruby-progressbar

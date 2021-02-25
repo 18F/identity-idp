@@ -18,10 +18,10 @@
   mock_client: (DocAuthRouter.doc_auth_vendor == 'mock').presence,
   document_capture_session_uuid: flow_session[:document_capture_session_uuid],
   endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
-    send(@step_url, step: :verify_document) :
+    idv_doc_auth_step_path(step: :verify_document) :
     api_verify_images_url,
   status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
-    send(@step_url, step: :verify_document_status) :
+    idv_doc_auth_step_path(step: :verify_document_status) :
     nil,
   status_poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
   sp_name: sp_name,
@@ -133,10 +133,7 @@
     <%# ---- Submit ----- %>
 
     <div class='margin-top-6 margin-bottom-6'>
-      <button type="submit" class="btn btn-primary btn-wide sm-col sm-col-6">
-        <%= t('forms.buttons.continue') %>
-      </button>
-      <div class="clearfix"></div>
+      <%= render 'idv/doc_auth/submit_with_spinner' %>
     </div>
   <% end %> <%# end validated_form_for %>
 
