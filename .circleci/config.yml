@@ -105,6 +105,13 @@ commands:
           fail_only: true
           failure_message: ":smokeybear::red_circle: Smoke tests failed in environment: $MONITOR_ENV"
           include_project_field: false
+  store-smoketest-results:
+    steps:
+      - store_test_results:
+          path: tmp/capybara
+      - store_artifacts:
+          path: tmp/capybara
+          destination: capybara
 
 jobs:
   build:
@@ -214,6 +221,7 @@ jobs:
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
+      - store-smoketest-results
   smoketest-int:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -229,6 +237,7 @@ jobs:
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
+      - store-smoketest-results
   smoketest-staging:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -244,6 +253,7 @@ jobs:
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
+      - store-smoketest-results
   smoketest-prod:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -257,7 +267,7 @@ jobs:
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
-
+      - store-smoketest-results
 workflows:
   version: 2
   release:

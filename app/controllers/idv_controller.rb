@@ -61,8 +61,7 @@ class IdvController < ApplicationController
   end
 
   def proof_with_cac?
-    AppConfig.env.cac_proofing_enabled == 'true' &&
-      (Db::EmailAddress::HasGovOrMil.call(current_user) ||
-      current_user.piv_cac_configurations.any?)
+    Db::EmailAddress::HasGovOrMil.call(current_user) ||
+      current_user.piv_cac_configurations.any?
   end
 end

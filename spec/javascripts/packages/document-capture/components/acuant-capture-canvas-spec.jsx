@@ -1,4 +1,4 @@
-import { Provider as AcuantContextProvider } from '@18f/identity-document-capture/context/acuant';
+import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
 import AcuantCaptureCanvas from '@18f/identity-document-capture/components/acuant-capture-canvas';
 import { render, useAcuant } from '../../../support/document-capture';
 
@@ -7,9 +7,11 @@ describe('document-capture/components/acuant-capture-canvas', () => {
 
   it('waits for initialization', () => {
     render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCaptureCanvas />
-      </AcuantContextProvider>,
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCaptureCanvas />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
     );
 
     // At this point, it's assumed `window.AcuantCameraUI.start` has not been called. This can't be
@@ -32,9 +34,11 @@ describe('document-capture/components/acuant-capture-canvas', () => {
 
   it('ends on unmount', () => {
     const { unmount } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCaptureCanvas />
-      </AcuantContextProvider>,
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCaptureCanvas />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
     );
 
     initialize();

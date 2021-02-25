@@ -32,7 +32,7 @@ module OpenidConnect
     end
 
     def check_sp_handoff_bounced
-      return unless SpHandoffBounce::IsBounced.call(sp_session)
+      return unless SpHandoffBounce.is_bounced?(session)
       analytics.track_event(Analytics::SP_HANDOFF_BOUNCED_DETECTED)
       redirect_to bounced_url
       true
@@ -56,7 +56,7 @@ module OpenidConnect
 
     def handle_successful_handoff
       track_events
-      SpHandoffBounce::AddHandoffTimeToSession.call(sp_session)
+      SpHandoffBounce.add_handoff_time_to_session(session)
       redirect_to @authorize_form.success_redirect_uri
       delete_branded_experience
     end
@@ -130,15 +130,13 @@ module OpenidConnect
     end
 
     def pii_requested_but_locked?
-      FeatureManagement.allow_piv_cac_login? &&
-        sp_session && sp_session_ial > 1 &&
+      sp_session && sp_session_ial > 1 &&
         UserDecorator.new(current_user).identity_verified? &&
         user_session[:decrypted_pii].blank?
     end
 
     def track_events
-      ial = sp_session[:ial2] ? 2 : 1
-      analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: ial)
+      analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: sp_session_ial)
       Db::SpReturnLog::AddReturn.call(request_id, current_user.id)
       increment_monthly_auth_count
       add_sp_cost(:authentication)

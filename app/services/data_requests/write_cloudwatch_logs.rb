@@ -5,6 +5,7 @@ module DataRequests
       event_name
       success
       multi_factor_auth_method
+      multi_factor_id
       service_provider
       ip_address
       user_agent
@@ -18,23 +19,17 @@ module DataRequests
     end
 
     def call
-      output_file.puts(HEADERS.join(','))
-      cloudwatch_results.each do |row|
-        write_row(row)
+      CSV.open(File.join(output_dir, 'logs.csv'), 'w') do |csv|
+        csv << HEADERS
+        cloudwatch_results.each do |row|
+          csv << build_row(row)
+        end
       end
-      output_file.close
     end
 
     private
 
-    def output_file
-      @output_file ||= begin
-        output_path = File.join(output_dir, 'logs.csv')
-        File.open(output_path, 'w')
-      end
-    end
-
-    def write_row(row)
+    def build_row(row)
       data = JSON.parse(row.message)
 
       timestamp = data.dig('time')
@@ -43,18 +38,34 @@ module DataRequests
       multi_factor_auth_method = data.dig(
         'properties', 'event_properties', 'multi_factor_auth_method'
       )
+
+      mfa_key = case multi_factor_auth_method
+      when 'sms', 'voice'
+        'phone_configuration_id'
+      when 'piv_cac'
+        'piv_cac_configuration_id'
+      when 'webauthn'
+        'webauthn_configuration_id'
+      when 'totp'
+        'auth_app_configuration_id'
+      end
+
+      row_id = data.dig('properties', 'event_properties', mfa_key)
+      multi_factor_id = row_id && "#{mfa_key}:#{row_id}"
       service_provider = data.dig('properties', 'service_provider')
       ip_address = data.dig('properties', 'user_ip')
       user_agent = data.dig('properties', 'user_agent')
 
-      output_file.puts(
-        CSV.generate_line(
-          [
-            timestamp, event_name, success, multi_factor_auth_method,
-            service_provider, ip_address, user_agent
-          ],
-        ),
-      )
+      [
+        timestamp,
+        event_name,
+        success,
+        multi_factor_auth_method,
+        multi_factor_id,
+        service_provider,
+        ip_address,
+        user_agent,
+      ]
     end
   end
 end

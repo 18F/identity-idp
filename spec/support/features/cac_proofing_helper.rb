@@ -23,10 +23,6 @@ module CacProofingHelper
     idv_cac_step_path(step: :verify_wait)
   end
 
-  def idv_cac_proofing_success_step
-    idv_cac_step_path(step: :success)
-  end
-
   def complete_cac_proofing_steps_before_choose_method_step
     visit idv_cac_proofing_choose_method_step
   end

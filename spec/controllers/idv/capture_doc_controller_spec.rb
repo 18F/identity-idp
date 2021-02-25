@@ -123,27 +123,6 @@ describe Idv::CaptureDocController do
           hash_including(step: 'capture_complete', step_count: 2),
         )
       end
-
-      it 'add unsafe-eval to the CSP for capture steps' do
-        steps = %i[document_capture]
-        steps.each do |step|
-          mock_next_step(step)
-
-          get :show, params: { step: step }
-
-          script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
-          expect(script_src).to include("'unsafe-eval'")
-        end
-      end
-
-      it 'does not add unsafe-eval to the CSP for non-capture steps' do
-        mock_next_step(:capture_complete)
-
-        get :show, params: { step: 'capture_complete' }
-
-        secure_header_config = response.request.headers.env['secure_headers_request_config']
-        expect(secure_header_config).to be_nil
-      end
     end
   end
 

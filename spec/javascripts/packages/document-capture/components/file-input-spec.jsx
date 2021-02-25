@@ -10,8 +10,14 @@ import FileInput, {
 } from '@18f/identity-document-capture/components/file-input';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import { render } from '../../../support/document-capture';
+import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/file-input', () => {
+  let file;
+  before(async () => {
+    file = await getFixtureFile('doc_auth_images/id-front.jpg');
+  });
+
   describe('getAcceptPattern', () => {
     it('returns a pattern for audio matching', () => {
       const accept = 'audio/*';
@@ -141,37 +147,7 @@ describe('document-capture/components/file-input', () => {
 
   it('renders a value preview for a blob', async () => {
     const { container, findByRole, getByLabelText } = render(
-      <FileInput label="File" value={new window.Blob([], { type: 'image/png' })} />,
-    );
-
-    const preview = await findByRole('img', { hidden: true });
-    const input = getByLabelText('File');
-
-    expect(input).to.be.ok();
-    expect(preview.getAttribute('src')).to.match(/^data:image\/png;base64,/);
-    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
-      'doc_auth.forms.change_file',
-    );
-  });
-
-  it('renders a value preview for a file', async () => {
-    const { container, findByRole, getByLabelText } = render(
-      <FileInput label="File" value={new window.File([], 'demo.png', { type: 'image/png' })} />,
-    );
-
-    const preview = await findByRole('img', { hidden: true });
-    const input = getByLabelText('File');
-
-    expect(input).to.be.ok();
-    expect(preview.getAttribute('src')).to.match(/^data:image\/png;base64,/);
-    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
-      'doc_auth.forms.selected_file: demo.png doc_auth.forms.change_file',
-    );
-  });
-
-  it('renders a value preview for a data URL', async () => {
-    const { container, findByRole, getByLabelText } = render(
-      <FileInput label="File" value="data:image/jpeg;base64,8J+Riw==" />,
+      <FileInput label="File" value={new window.Blob([file], { type: 'image/jpeg' })} />,
     );
 
     const preview = await findByRole('img', { hidden: true });
@@ -179,6 +155,39 @@ describe('document-capture/components/file-input', () => {
 
     expect(input).to.be.ok();
     expect(preview.getAttribute('src')).to.match(/^data:image\/jpeg;base64,/);
+    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
+      'doc_auth.forms.change_file',
+    );
+  });
+
+  it('renders a value preview for a file', async () => {
+    const { container, findByRole, getByLabelText } = render(
+      <FileInput label="File" value={file} />,
+    );
+
+    const preview = await findByRole('img', { hidden: true });
+    const input = getByLabelText('File');
+
+    expect(input).to.be.ok();
+    expect(preview.getAttribute('src')).to.match(/^data:image\/jpeg;base64,/);
+    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
+      'doc_auth.forms.selected_file: id-front.jpg doc_auth.forms.change_file',
+    );
+  });
+
+  it('renders a value preview for a data URL', async () => {
+    const { container, findByRole, getByLabelText } = render(
+      <FileInput
+        label="File"
+        value="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
+      />,
+    );
+
+    const preview = await findByRole('img', { hidden: true });
+    const input = getByLabelText('File');
+
+    expect(input).to.be.ok();
+    expect(preview.getAttribute('src')).to.match(/^data:image\/png;base64,/);
     expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
       'doc_auth.forms.change_file',
     );
@@ -201,7 +210,6 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('calls onChange with next value', () => {
-    const file = new window.File([''], 'upload.png', { type: 'image/png' });
     const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
 
@@ -212,21 +220,19 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('allows changing the selected value', () => {
-    const file1 = new window.File([''], 'upload1.png', { type: 'image/png' });
-    const file2 = new window.File([''], 'upload2.png', { type: 'image/png' });
+    const file2 = new window.File([file], 'file2.jpg');
     const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
 
     const input = getByLabelText('File');
-    userEvent.upload(input, file1);
+    userEvent.upload(input, file);
     userEvent.upload(input, file2);
 
-    expect(onChange.getCall(0).args[0]).to.equal(file1);
+    expect(onChange.getCall(0).args[0]).to.equal(file);
     expect(onChange.getCall(1).args[0]).to.equal(file2);
   });
 
   it('allows clearing the selected value', () => {
-    const file = new window.File([''], 'upload1.png', { type: 'image/png' });
     const onChange = sinon.stub();
     const { getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
 
@@ -260,7 +266,7 @@ describe('document-capture/components/file-input', () => {
         <FileInput
           label="File"
           bannerText="File goes here"
-          value={new window.File([], 'demo.png', { type: 'image/png' })}
+          value="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
         />
       </DeviceContext.Provider>,
     );
@@ -289,7 +295,6 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('shows an error state', () => {
-    const file = new window.File([''], 'upload.png', { type: 'image/png' });
     const onChange = sinon.stub();
     const onError = sinon.stub();
     const { getByLabelText, getByText } = render(
@@ -304,7 +309,6 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('allows customization of invalid file type error message', () => {
-    const file = new window.File([''], 'upload.png', { type: 'image/png' });
     const onChange = sinon.stub();
     const onError = sinon.stub();
     const { getByLabelText, getByText } = render(
@@ -325,7 +329,6 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('shows an error from rendering parent', () => {
-    const file = new window.File([''], 'upload.png', { type: 'image/png' });
     const onChange = sinon.stub();
     const onError = sinon.stub();
     const props = { label: 'File', accept: ['text/*'], onChange, onError };
@@ -345,18 +348,17 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('shows an updated state', () => {
-    const file1 = new window.File([''], 'upload.png', { type: 'image/png' });
-    const file2 = new window.File([''], 'upload.png', { type: 'image/png' });
+    const file2 = new window.File([file], 'file2.jpg');
 
     const { getByText, rerender } = render(<FileInput label="File" />);
 
     expect(() => getByText('forms.file_input.file_updated')).to.throw();
 
-    rerender(<FileInput label="File" value={file1} />);
+    rerender(<FileInput label="File" value={file} />);
 
     expect(() => getByText('forms.file_input.file_updated')).to.throw();
 
-    rerender(<FileInput label="File" value={file1} />);
+    rerender(<FileInput label="File" value={file} />);
 
     expect(() => getByText('forms.file_input.file_updated')).to.throw();
 
@@ -370,14 +372,13 @@ describe('document-capture/components/file-input', () => {
   });
 
   it('allows customization of updated file text', () => {
-    const file1 = new window.File([''], 'upload.png', { type: 'image/png' });
-    const file2 = new window.File([''], 'upload.png', { type: 'image/png' });
+    const file2 = new window.File([file], 'file2.jpg');
 
     const { getByText, rerender } = render(<FileInput label="File" fileUpdatedText="Updated" />);
 
     expect(() => getByText('Updated')).to.throw();
 
-    rerender(<FileInput label="File" fileUpdatedText="Updated" value={file1} />);
+    rerender(<FileInput label="File" fileUpdatedText="Updated" value={file} />);
 
     expect(() => getByText('Updated')).to.throw();
 

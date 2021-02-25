@@ -2,7 +2,6 @@ module Idv
   class CacController < ApplicationController
     include PivCacConcern
 
-    before_action :render_404_if_disabled
     before_action :confirm_two_factor_authenticated
     before_action :cac_callback
 
@@ -25,10 +24,6 @@ module Idv
     end
 
     private
-
-    def render_404_if_disabled
-      render_not_found unless AppConfig.env.cac_proofing_enabled == 'true'
-    end
 
     def cac_callback
       return unless request.path == idv_cac_step_path(:present_cac) && params[:token]

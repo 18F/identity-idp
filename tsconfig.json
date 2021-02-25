@@ -18,7 +18,8 @@
     "app/javascript/packs/form-validation.js",
     "app/javascript/packs/intl-tel-input.js",
     "app/javascript/packs/spinner-button.js",
-    "app/javascript/packs/submit-with-spinner.js"
+    "app/javascript/packs/session-expire-session.js",
+    "app/javascript/packs/session-timeout-ping.js"
   ],
   "exclude": ["**/fixtures", "**/*.spec.js"]
 }

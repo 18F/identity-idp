@@ -85,7 +85,7 @@ module Users
     end
 
     def request_ial
-      sp_session ? sp_session_ial : 1
+      sp_session ? sp_session_ial_1_or_2 : 1
     end
 
     def process_invalid_submission

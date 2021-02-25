@@ -75,12 +75,18 @@ RSpec.describe UspsConfirmationUploader do
     subject { uploader.run }
 
     context 'when successful' do
-      it 'uploads the psv created by creates a file, uploads it via SFTP, and deletes it after' do
+      it 'uploads the psv, creates a file, uploads it via SFTP, and deletes and logs it after' do
         expect(uploader).to receive(:generate_export).with(confirmations).and_return(export)
         expect(uploader).to receive(:upload_export).with(export)
         expect(uploader).to receive(:clear_confirmations).with(confirmations)
 
         subject
+
+        logs = LetterRequestsToUspsFtpLog.all
+        expect(logs.count).to eq(1)
+        log = logs.first
+        expect(log.ftp_at).to be_present
+        expect(log.letter_requests_count).to eq(1)
       end
     end
 

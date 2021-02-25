@@ -59,7 +59,7 @@ module Encryption
     def find_available_region(regions)
       regions.each do |region, cipher|
         region_client = @aws_clients[region]
-        return CipherData.new(region_client, cipher) if region_client
+        return CipherData.new(region_client, Base64.strict_decode64(cipher)) if region_client
       end
       raise EncryptionError, 'No supported region found in ciphertext'
     end

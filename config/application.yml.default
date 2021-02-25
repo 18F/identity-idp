@@ -44,8 +44,8 @@ async_wait_timeout_seconds: '60'
 available_locales: en es fr
 aws_http_timeout: '5'
 aws_logo_bucket:
+aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
-cac_proofing_enabled: 'true'
 database_statement_timeout: '2500'
 deleted_user_accounts_report_configs: '[]'
 disallow_ial2_recovery:
@@ -58,7 +58,6 @@ enable_load_testing_mode: 'false'
 event_disavowal_expiration_hours: '240'
 gpo_designated_receiver_pii: '{}'
 ial2_recovery_request_valid_for_minutes: '15'
-identity_pki_disabled: 'true'
 identity_pki_local_dev: 'false'
 idv_attempt_window_in_hours: '6'
 idv_max_attempts: '3'
@@ -164,7 +163,6 @@ development:
     }]'
   aws_kms_key_id: alias/login-dot-gov-development-keymaker
   aws_logo_bucket:
-  aws_region: us-east-1
   aws_kms_regions: '["us-west-2", "us-east-1"]'
   backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
@@ -187,7 +185,6 @@ development:
   doc_capture_polling_enabled: 'true'
   document_proof_result_lambda_token: ABC123
   domain_name: localhost:3000
-  email_deletion_enabled: 'true'
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
@@ -195,10 +192,11 @@ development:
   expired_letters_auth_token: abc123
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
+  identity_pki_disabled: 'false'
+  identity_pki_local_dev: 'true'
   issuers_with_email_nameid_format: ''
   liveness_checking_enabled: 'true'
   lockout_period_in_minutes: '10'
-  login_with_piv_cac: 'true'
   logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
   logins_per_ip_track_only_mode: 'false'
@@ -211,10 +209,8 @@ development:
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
-  participate_in_dap:
+  participate_in_dap: 'false'
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
-  identity_pki_disabled: 'false'
-  identity_pki_local_dev: 'true'
   piv_cac_service_url: https://localhost:8443/
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   piv_cac_verify_token_url: https://localhost:8443/
@@ -269,9 +265,8 @@ production:
   address_proof_result_lambda_token:
   attribute_cost: 4000$8$4$
   attribute_encryption_key:
-  attribute_encryption_key_queue:
+  attribute_encryption_key_queue: '[]'
   aws_kms_key_id:
-  aws_region:
   aws_kms_regions: '["us-west-2"]'
   aws_logo_bucket:
   backup_codes_as_only_2fa:
@@ -295,20 +290,20 @@ production:
   doc_capture_polling_enabled: 'true'
   document_proof_result_lambda_token:
   domain_name: login.gov
-  email_deletion_enabled: 'false'
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
   exception_recipients: user1@example.com,user2@example.com
   expired_letters_auth_token:
   hmac_fingerprinter_key:
-  hmac_fingerprinter_key_queue:
+  hmac_fingerprinter_key_queue: '[]'
+  identity_pki_disabled: 'false'
   issuers_with_email_nameid_format: sp1,sp2
   liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '10'
-  login_with_piv_cac: 'false'
   logins_per_email_and_ip_limit: '5'
-  logins_per_ip_limit: '5'
+  logins_per_ip_limit: '20'
+  logins_per_ip_period: '20'
   logins_per_ip_track_only_mode: 'true'
   logo_upload_enabled: 'false'
   max_mail_events: '4'
@@ -319,7 +314,7 @@ production:
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
-  participate_in_dap: 'false'
+  participate_in_dap: 'true'
   password_pepper:
   piv_cac_service_url:
   piv_cac_verify_token_secret:
@@ -378,7 +373,6 @@ test:
     "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$"
     }]'
   aws_kms_key_id: alias/login-dot-gov-test-keymaker
-  aws_region: us-east-1
   aws_kms_regions: '["us-west-2", "us-east-1"]'
   backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
@@ -402,7 +396,6 @@ test:
   doc_capture_polling_enabled: 'false'
   document_proof_result_lambda_token: test_token_document
   domain_name: www.example.com
-  email_deletion_enabled: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
@@ -410,11 +403,11 @@ test:
   expired_letters_auth_token: abc123
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
+  identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: https://rp1.serviceprovider.com/auth/saml/metadata
   lexisnexis_trueid_account_id: 'test_account'
   liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '5'
-  login_with_piv_cac: 'true'
   logins_per_email_and_ip_limit: '2'
   logins_per_ip_limit: '3'
   logins_per_ip_track_only_mode: 'false'
@@ -429,7 +422,7 @@ test:
   otps_per_ip_limit: '3'
   otps_per_ip_period: '10'
   otps_per_ip_track_only_mode: 'false'
-  participate_in_dap:
+  participate_in_dap: 'false'
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_service_url: https://localhost:8443/
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f

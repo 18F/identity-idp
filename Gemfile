@@ -20,7 +20,7 @@ gem 'faraday'
 gem 'foundation_emails'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.3'
+gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.4.0'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.3'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
@@ -109,6 +109,7 @@ group :test do
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
+  gem 'rspec-retry'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'timecop'
   gem 'webdrivers', '~> 4.0'
@@ -117,6 +118,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.6.0'
   gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.5.1.pre'
 end

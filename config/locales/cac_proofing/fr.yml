@@ -17,7 +17,6 @@ fr:
       choose_method: Comment souhaitez-vous vérifier votre identité?
       enter_info: Entrez vos informations
       present_cac: Presente su tarjeta PIV / CAC para verificar su cuenta
-      success: Nous avons vérifié vos informations et votre carte PIV / CAC.
       verify: Vérifiez vos informations
       welcome: Nous devons vérifier votre identité
     info:
