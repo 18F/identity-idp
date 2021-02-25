@@ -6,7 +6,7 @@ module Reports
 
     def call
       daily_results = transaction_with_timeout do
-        Db::LetterRequestsToUspsFtpLog::LettersSentInRange.call(first_of_this_month, end_of_today)
+        ::LetterRequestsToUspsFtpLog.where(ftp_at: first_of_this_month..end_of_today)
       end
       totals = calculate_totals(daily_results)
       save_report(REPORT_NAME, {total_letter_requests: totals,
