@@ -67,7 +67,24 @@ describe Idv::DocAuthController do
       get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} welcome visited".downcase, result
+      )
+      expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' visited', result
+      )
+    end
+
+    it 'tracks analytics for the optional step' do
+      mock_next_step(:verify_wait)
+      result = { errors: {}, step: Idv::Steps::VerifyWaitStepShow, success: true }
+
+      get :show, params: { step: 'verify_wait' }
+
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} optional verify_wait submitted".downcase, result
+      )
+      expect(@analytics).to have_received(:track_event).with(
+        Analytics::DOC_AUTH + ' optional submitted', result
       )
     end
 
@@ -76,29 +93,13 @@ describe Idv::DocAuthController do
       get :show, params: { step: 'welcome' }
 
       expect(@analytics).to have_received(:track_event).ordered.with(
-        Analytics::DOC_AUTH + ' visited', hash_including(step: 'welcome', step_count: 1)
+        Analytics::DOC_AUTH + ' visited',
+        hash_including(step: 'welcome', step_count: 1),
       )
       expect(@analytics).to have_received(:track_event).ordered.with(
-        Analytics::DOC_AUTH + ' visited', hash_including(step: 'welcome', step_count: 2)
+        Analytics::DOC_AUTH + ' visited',
+        hash_including(step: 'welcome', step_count: 2),
       )
-    end
-
-    it 'add unsafe-eval to the CSP for the doucment capture step' do
-      mock_next_step(:document_capture)
-
-      get :show, params: { step: :document_capture }
-
-      script_src = response.request.headers.env['secure_headers_request_config'].csp.script_src
-      expect(script_src).to include("'unsafe-eval'")
-    end
-
-    it 'does not add unsafe-eval to the CSP for non-capture steps' do
-      mock_next_step(:ssn)
-
-      get :show, params: { step: 'ssn' }
-
-      secure_header_config = response.request.headers.env['secure_headers_request_config']
-      expect(secure_header_config).to be_nil
     end
   end
 
@@ -111,6 +112,9 @@ describe Idv::DocAuthController do
 
       put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase, result
+      )
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', result
       )
@@ -130,6 +134,14 @@ describe Idv::DocAuthController do
       )
       expect(@analytics).to have_received(:track_event).ordered.with(
         Analytics::DOC_AUTH + ' submitted', hash_including(step: 'ssn', step_count: 2)
+      )
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase,
+        hash_including(step: 'ssn', step_count: 1),
+      )
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} ssn submitted".downcase,
+        hash_including(step: 'ssn', step_count: 2),
       )
     end
 
@@ -158,6 +170,9 @@ describe Idv::DocAuthController do
       }
 
       expect(response).to redirect_to idv_doc_auth_errors_no_camera_url
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} welcome submitted".downcase, result
+      )
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', result
       )
@@ -353,6 +368,15 @@ describe Idv::DocAuthController do
                    message: I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness') }],
         remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
       }.to_json)
+      expect(@analytics).to have_received(:track_event).with(
+        'IdV: ' + "#{Analytics::DOC_AUTH} verify_document_status submitted".downcase, {
+          errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
+          success: false,
+          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          step: 'verify_document_status',
+          step_count: 1,
+        }
+      )
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', {
           errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },

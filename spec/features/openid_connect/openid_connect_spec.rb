@@ -89,7 +89,6 @@ describe 'OpenID Connect' do
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
-      expect(page.get_rack_session.keys).to include('sp')
     end
 
     it 'auto-allows and includes redirect_uris in CSP headers after an incorrect OTP' do
@@ -116,7 +115,6 @@ describe 'OpenID Connect' do
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
-      expect(page.get_rack_session.keys).to include('sp')
     end
   end
 
@@ -135,11 +133,6 @@ describe 'OpenID Connect' do
     current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
     expect(current_url_no_port).to include(
       "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}",
-    )
-
-    expect(page.response_headers['Content-Security-Policy']).to include(
-      'form-action \'self\' gov.gsa.openidconnect.test://result '\
-      'gov.gsa.openidconnect.test://result/signout',
     )
 
     visit account_path
@@ -488,7 +481,6 @@ describe 'OpenID Connect' do
         continue_as(email)
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
-        expect(page.get_rack_session.keys).to include('sp')
       end
     end
   end

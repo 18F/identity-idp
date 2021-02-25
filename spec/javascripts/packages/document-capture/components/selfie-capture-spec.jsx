@@ -5,6 +5,7 @@ import { I18nContext } from '@18f/identity-document-capture';
 import SelfieCapture from '@18f/identity-document-capture/components/selfie-capture';
 import { render } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
+import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/selfie-capture', () => {
   // Since DOM globals are stubbed with sandbox, ensure that cleanup is the first task, as otherwise
@@ -25,7 +26,10 @@ describe('document-capture/components/selfie-capture', () => {
   );
 
   const track = { stop: sinon.stub() };
-  const value = new window.File([], 'image.png', { type: 'image/png' });
+  let value;
+  before(async () => {
+    value = await getFixtureFile('doc_auth_images/selfie.jpg');
+  });
 
   let originalMediaDevices;
   let originalMediaStream;

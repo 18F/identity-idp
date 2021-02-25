@@ -1,10 +1,9 @@
 function toggleButton() {
-  const continueButton = document.querySelector('input[value="Continue"]');
+  const continueButton = document.querySelector('button[type="submit"]');
   const checkbox = document.querySelector('input[name="ial2_consent_given"]');
 
   function sync() {
-    continueButton.disabled = !checkbox.checked;
-    continueButton.classList.toggle('btn-disabled', continueButton.disabled);
+    continueButton.classList.toggle('btn-disabled', !checkbox.checked);
   }
 
   sync();

@@ -8,5 +8,6 @@ describe Agency do
     let(:agency) { build_stubbed(:agency) }
 
     it { is_expected.to validate_presence_of(:name) }
+    it { is_expected.to validate_uniqueness_of(:abbreviation).case_insensitive.allow_nil }
   end
 end

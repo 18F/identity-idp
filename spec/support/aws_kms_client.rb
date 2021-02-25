@@ -10,17 +10,28 @@ module AwsKmsClientHelper
     [random_key, ciphered_key]
   end
 
-  def stub_mapped_aws_kms_client(forward = {})
-    reverse = forward.invert
-    aws_key_id = AppConfig.env.aws_kms_key_id
+  # Configs is an array of:
+  # [{ ciphertext:, plaintext:, key_id:, region: }]
+  def stub_mapped_aws_kms_client(configs)
+    encryptor = proc do |context|
+      config = configs.find do |c|
+        c.slice(:key_id, :plaintext) == context.params.slice(:key_id, :plaintext) &&
+          c[:region] == context.client.config.region
+      end
+      { ciphertext_blob: config[:ciphertext], key_id: config[:key_id] }
+    end
+
+    decryptor = proc do |context|
+      config = configs.find do |c|
+        c[:ciphertext] == context.params[:ciphertext_blob]
+      end
+      { plaintext: config[:plaintext], key_id: config[:key_id] }
+    end
+
     Aws.config[:kms] = {
       stub_responses: {
-        encrypt: lambda { |context|
-          { ciphertext_blob: forward[context.params[:plaintext]], key_id: aws_key_id }
-        },
-        decrypt: lambda { |context|
-          { plaintext: reverse[context.params[:ciphertext_blob]], key_id: aws_key_id }
-        },
+        encrypt: encryptor,
+        decrypt: decryptor,
       },
     }
   end

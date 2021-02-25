@@ -111,6 +111,15 @@ test:
     friendly_name: 'Test SP'
     allow_prompt_login: true
 
+  'https://rp3.serviceprovider.com/auth/saml/metadata':
+    acs_url: 'http://example.com/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+    block_encryption: 'aes256-cbc'
+    cert: 'saml_test_sp'
+    ial: 2
+    friendly_name: 'Test SP'
+    allow_prompt_login: true
+
   'http://test.host':
     acs_url: 'http://test.host/test/saml/decode_assertion'
     block_encryption: 'aes256-cbc'
@@ -163,6 +172,18 @@ test:
     allow_prompt_login: true
 
   'urn:gov:gsa:openidconnect:sp:server':
+    agency_id: 2
+    redirect_uris:
+      - 'http://localhost:7654/auth/result'
+      - 'https://example.com'
+      - 'http://www.example.com/test/oidc'
+    cert: 'saml_test_sp'
+    friendly_name: 'Test SP'
+    assertion_consumer_logout_service_url: ''
+    ial: 2
+    allow_prompt_login: true
+
+  'urn:gov:gsa:openidconnect:sp:server_two':
     agency_id: 2
     redirect_uris:
       - 'http://localhost:7654/auth/result'

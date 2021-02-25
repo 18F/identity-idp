@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_03_002937) do
+ActiveRecord::Schema.define(version: 2021_02_23_232534) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2021_02_03_002937) do
   create_table "agencies", force: :cascade do |t|
     t.string "name", null: false
     t.string "abbreviation"
+    t.index ["abbreviation"], name: "index_agencies_on_abbreviation", unique: true
     t.index ["name"], name: "index_agencies_on_name", unique: true
   end
 
@@ -167,12 +168,12 @@ ActiveRecord::Schema.define(version: 2021_02_03_002937) do
     t.integer "choose_method_view_count", default: 0
     t.datetime "present_cac_view_at"
     t.integer "present_cac_view_count", default: 0
-    t.integer "present_cac_submit_count", default: 0
-    t.integer "present_cac_error_count", default: 0
     t.datetime "enter_info_view_at"
     t.integer "enter_info_view_count", default: 0
     t.datetime "success_view_at"
     t.integer "success_view_count", default: 0
+    t.integer "present_cac_submit_count", default: 0
+    t.integer "present_cac_error_count", default: 0
     t.datetime "selfie_view_at"
     t.integer "selfie_view_count", default: 0
     t.integer "selfie_submit_count", default: 0
@@ -240,7 +241,6 @@ ActiveRecord::Schema.define(version: 2021_02_03_002937) do
     t.index ["device_id", "created_at"], name: "index_events_on_device_id_and_created_at"
     t.index ["disavowal_token_fingerprint"], name: "index_events_on_disavowal_token_fingerprint"
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
-    t.index ["user_id"], name: "index_events_on_user_id"
   end
 
   create_table "iaa_gtcs", force: :cascade do |t|
@@ -347,6 +347,12 @@ ActiveRecord::Schema.define(version: 2021_02_03_002937) do
     t.index ["host"], name: "index_job_runs_on_host"
     t.index ["job_name", "created_at"], name: "index_job_runs_on_job_name_and_created_at"
     t.index ["job_name", "finish_time"], name: "index_job_runs_on_job_name_and_finish_time"
+  end
+
+  create_table "letter_requests_to_usps_ftp_logs", force: :cascade do |t|
+    t.datetime "ftp_at", null: false
+    t.integer "letter_requests_count", null: false
+    t.index ["ftp_at"], name: "index_letter_requests_to_usps_ftp_logs_on_ftp_at"
   end
 
   create_table "monthly_auth_counts", force: :cascade do |t|
@@ -568,6 +574,7 @@ ActiveRecord::Schema.define(version: 2021_02_03_002937) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "ial"
+    t.string "transaction_id"
     t.index ["created_at"], name: "index_sp_costs_on_created_at"
   end
 

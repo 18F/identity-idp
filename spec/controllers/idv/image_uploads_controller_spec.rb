@@ -14,6 +14,7 @@ describe Idv::ImageUploadsController do
         document_capture_session_uuid: document_capture_session.uuid,
       }
     end
+    let(:json) { JSON.parse(response.body, symbolize_names: true) }
 
     before do
       Funnel::DocAuth::RegisterStep.new(user.id, '').call('welcome', :view, true)
@@ -25,7 +26,6 @@ describe Idv::ImageUploadsController do
       it 'returns error status when not provided image fields' do
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
         expect(json[:errors]).to eq [
@@ -63,7 +63,6 @@ describe Idv::ImageUploadsController do
       it 'returns an error' do
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(400)
         expect(json[:errors]).to eq [
           { field: 'front', message: I18n.t('doc_auth.errors.not_a_file') },
@@ -76,7 +75,6 @@ describe Idv::ImageUploadsController do
         it 'translates errors using the locale param' do
           action
 
-          json = JSON.parse(response.body, symbolize_names: true)
           expect(response.status).to eq(400)
           expect(json[:errors]).to eq [
             { field: 'front', message: I18n.t('doc_auth.errors.not_a_file', locale: 'es') },
@@ -113,7 +111,6 @@ describe Idv::ImageUploadsController do
         params.delete(:document_capture_session_uuid)
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
         expect(json[:errors]).to eq [
@@ -125,7 +122,6 @@ describe Idv::ImageUploadsController do
         params[:document_capture_session_uuid] = 'bad uuid'
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
         expect(json[:errors]).to eq [
@@ -141,7 +137,6 @@ describe Idv::ImageUploadsController do
 
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(400)
         expect(json).to eq({
                               success: false,
@@ -156,7 +151,6 @@ describe Idv::ImageUploadsController do
 
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(429)
         expect(json).to eq({
                               success: false,
@@ -195,7 +189,6 @@ describe Idv::ImageUploadsController do
       it 'returns a successful response and modifies the session' do
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
         expect(document_capture_session.reload.load_result.success?).to eq(true)
@@ -222,9 +215,151 @@ describe Idv::ImageUploadsController do
           user_id: user.uuid,
         )
 
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+        )
+
         action
 
         expect_funnel_update_counts(user, 1)
+      end
+
+      context 'but doc_pii validation fails' do
+        let(:first_name) { 'FAKEY' }
+        let(:last_name) { 'MCFAKERSON' }
+        let(:state) { 'ND' }
+        let(:dob) { '10/06/1938' }
+
+        before do
+          IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+            method: :get_results,
+            response: IdentityDocAuth::Response.new(
+              success: true,
+              errors: {},
+              extra: { result: 'Passed', billed: true },
+              pii_from_doc: {
+                first_name: first_name,
+                last_name: last_name,
+                state: state,
+                dob: dob,
+              },
+            ),
+          )
+        end
+
+        context 'due to invalid Name' do
+          let(:first_name) { nil }
+
+          it 'tracks name validation errors in analytics' do
+            stub_analytics
+
+            expect(@analytics).to receive(:track_event).with(
+              Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
+              success: true,
+              errors: {},
+              user_id: user.uuid,
+              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+            )
+
+            expect(@analytics).to receive(:track_event).with(
+              Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+              success: true,
+              errors: {},
+              billed: true,
+              exception: nil,
+              result: 'Passed',
+              user_id: user.uuid,
+            )
+
+            expect(@analytics).to receive(:track_event).with(
+              Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
+              success: false,
+              errors: {
+                pii: [I18n.t('doc_auth.errors.lexis_nexis.full_name_check')],
+              },
+              user_id: user.uuid,
+            )
+
+            action
+          end
+        end
+
+        context 'due to invalid State' do
+          let(:state) { 'Maryland' }
+
+          it 'tracks state validation errors in analytics' do
+            stub_analytics
+
+            expect(@analytics).to receive(:track_event).with(
+              Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
+              success: true,
+              errors: {},
+              user_id: user.uuid,
+              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+            )
+
+            expect(@analytics).to receive(:track_event).with(
+              Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+              success: true,
+              errors: {},
+              billed: true,
+              exception: nil,
+              result: 'Passed',
+              user_id: user.uuid,
+            )
+
+            expect(@analytics).to receive(:track_event).with(
+              Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
+              success: false,
+              errors: {
+                pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')],
+              },
+              user_id: user.uuid,
+            )
+
+            action
+          end
+        end
+
+        context 'but doc_pii validation fails due to invalid DOB' do
+          let(:dob) { nil }
+
+          it 'tracks dob validation errors in analytics' do
+            stub_analytics
+
+            expect(@analytics).to receive(:track_event).with(
+              Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
+              success: true,
+              errors: {},
+              user_id: user.uuid,
+              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+            )
+
+            expect(@analytics).to receive(:track_event).with(
+              Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+              success: true,
+              errors: {},
+              billed: true,
+              exception: nil,
+              result: 'Passed',
+              user_id: user.uuid,
+            )
+
+            expect(@analytics).to receive(:track_event).with(
+              Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
+              success: false,
+              errors: {
+                pii: [I18n.t('doc_auth.errors.lexis_nexis.birth_date_checks')],
+              },
+              user_id: user.uuid,
+            )
+
+            action
+          end
+        end
       end
     end
 
@@ -242,7 +377,6 @@ describe Idv::ImageUploadsController do
       it 'returns an error response' do
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
         expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
@@ -285,7 +419,6 @@ describe Idv::ImageUploadsController do
       it 'returns error from yaml file' do
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
         expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
@@ -330,7 +463,6 @@ describe Idv::ImageUploadsController do
       it 'returns error' do
         action
 
-        json = JSON.parse(response.body, symbolize_names: true)
         expect(response.status).to eq(400)
         expect(json[:success]).to eq(false)
         expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
