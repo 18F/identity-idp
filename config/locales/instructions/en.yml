@@ -43,12 +43,12 @@ en:
           You need to verify your identity using a physical device such as a security
           key or government employee ID (PIV or CAC) to access your information.
         did_not_work_html: Please %{try_again}. If this problem continues, contact
-          your agency adminstrator.
+          your agency administrator.
         no_certificate_html: Please make sure your PIV/CAC is connected and %{try_again}.
-          If this problem continues, contact your agency adminstrator.
+          If this problem continues, contact your agency administrator.
         not_auth_cert_html: The certificate you selected is invalid for this account.
           Please %{try_again} with a different certificate. If this problem continues,
-          contact your agency adminstrator.
+          contact your agency administrator.
         sign_in: Make sure <strong>you have a login.gov account</strong> and <strong>you've
           set up PIV/CAC</strong> as a two-factor authentication method.
         step_1: Give it a nickname
