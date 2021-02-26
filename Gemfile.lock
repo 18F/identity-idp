@@ -22,10 +22,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 4eac3ba36b360a03a85ad30339f25636e26a1f77
-  branch: margolis-railtie-with-logger
+  revision: 9febec459b8f46b34ee783feddf454005e8c9c77
+  tag: v0.4.3
   specs:
-    identity-hostdata (1.0.0)
+    identity-hostdata (0.4.3)
       aws-sdk-s3 (~> 1.8)
 
 GIT
@@ -48,6 +48,15 @@ GIT
       activesupport
       dotenv
       faraday
+
+GIT
+  remote: https://github.com/18F/identity-logging.git
+  revision: 63c8ee8067c02331ad4b4e06fbcb6acead6a2da7
+  branch: margolis-logging-setup
+  specs:
+    identity-logging (0.1.0)
+      lograge (>= 0.11.2)
+      rails (>= 6.1)
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
@@ -760,6 +769,7 @@ DEPENDENCIES
   identity-doc-auth!
   identity-hostdata!
   identity-idp-functions!
+  identity-logging!
   identity-telephony!
   identity_validations!
   irb
