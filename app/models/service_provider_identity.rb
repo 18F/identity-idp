@@ -1,4 +1,7 @@
-class Identity < ApplicationRecord
+# Joins Users to ServiceProviders
+class ServiceProviderIdentity < ApplicationRecord
+  self.table_name = :identities
+
   include NonNullUuid
 
   belongs_to :user

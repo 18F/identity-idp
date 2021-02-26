@@ -13,7 +13,7 @@ describe DataRequests::LookupUserByUuid do
 
     context 'when an identity exists with the UUID' do
       it 'returns the user for the identity' do
-        identity = create(:identity)
+        identity = create(:service_provider_identity)
         uuid = identity.uuid
 
         expect(described_class.new(uuid).call).to eq(identity.user)

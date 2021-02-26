@@ -63,7 +63,7 @@ describe SignUpCompletionsShow do
     end
 
     let(:create_identity) do
-      create(:identity, user_id: @user.id)
+      create(:service_provider_identity, user_id: @user.id)
     end
 
     describe '#service_provider_partial' do

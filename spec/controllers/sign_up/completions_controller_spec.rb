@@ -84,7 +84,7 @@ describe SignUp::CompletionsController do
 
     it 'renders show if the user has identities and no active session' do
       user = create(:user)
-      create(:identity, user: user)
+      create(:service_provider_identity, user: user)
       stub_sign_in(user)
       subject.session[:sp] = { issuer: 'awesome sp', ial2: false }
       get :show

@@ -104,7 +104,7 @@ describe UserDecorator do
       sp = create(:service_provider, issuer: 'http://sp.example.com')
       user = create(:user)
       user.identities << create(
-        :identity,
+        :service_provider_identity,
         service_provider: sp.issuer,
         session_uuid: SecureRandom.uuid,
       )

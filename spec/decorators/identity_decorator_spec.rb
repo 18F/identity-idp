@@ -6,7 +6,9 @@ describe IdentityDecorator do
   describe '#return_to_sp_url' do
     let(:user) { create(:user) }
     let(:service_provider) { 'http://localhost:3000' }
-    let(:identity) { create(:identity, :active, user: user, service_provider: service_provider) }
+    let(:identity) do
+      create(:service_provider_identity, :active, user: user, service_provider: service_provider)
+    end
 
     subject { IdentityDecorator.new(identity) }
 

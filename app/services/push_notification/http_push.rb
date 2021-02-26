@@ -74,8 +74,14 @@ module PushNotification
     end
 
     def agency_uuid(service_provider)
-      AgencyIdentity.find_by(user_id: event.user.id, agency_id: service_provider.agency_id)&.uuid ||
-        Identity.find_by(user_id: event.user.id, service_provider: service_provider.issuer)&.uuid
+      AgencyIdentity.find_by(
+        user_id: event.user.id,
+        agency_id: service_provider.agency_id
+      )&.uuid ||
+        ServiceProviderIdentity.find_by(
+          user_id: event.user.id,
+          service_provider: service_provider.issuer,
+        )&.uuid
     end
   end
 end
