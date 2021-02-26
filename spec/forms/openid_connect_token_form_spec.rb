@@ -100,9 +100,9 @@ RSpec.describe OpenidConnectTokenForm do
 
       context 'code is nil' do
         before do
-          # Create an identity with a nil session uuid to make sure the form is not
-          # looking up an identity with a nil code and finding this one
-          create(:identity, session_uuid: nil)
+          # Create a service provider identity with a nil session uuid to make sure the form is not
+          # looking up a service provider identity with a nil code and finding this one
+          create(:service_provider_identity, session_uuid: nil)
         end
 
         let(:code) { nil }

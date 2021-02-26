@@ -15,7 +15,7 @@ describe AccountsController do
       it 'renders the profile and does not redirect out of the app' do
         stub_analytics
         user = create(:user, :signed_up)
-        user.identities << Identity.create(
+        user.identities << ServiceProviderIdentity.create(
           service_provider: 'http://localhost:3000',
           last_authenticated_at: Time.zone.now,
         )

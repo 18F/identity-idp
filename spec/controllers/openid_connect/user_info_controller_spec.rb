@@ -69,7 +69,7 @@ RSpec.describe OpenidConnect::UserInfoController do
     context 'with a valid bearer token' do
       let(:authorization_header) { "Bearer #{access_token}" }
       let(:access_token) { SecureRandom.hex }
-      let(:identity) { build(:identity, user: create(:user)) }
+      let(:identity) { build(:service_provider_identity, user: create(:user)) }
 
       before do
         fake_verifier = instance_double(AccessTokenVerifier,

@@ -59,7 +59,7 @@ module ControllerHelper
   end
 
   def stub_identity(user, params)
-    Identity.new(params.merge(user: user)).save
+    ServiceProviderIdentity.new(params.merge(user: user)).save
   end
 end
 

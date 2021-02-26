@@ -237,7 +237,7 @@ class SecurityEventForm
   end
 
   def identity_from_identity
-    Identity.find_by(
+    ServiceProviderIdentity.find_by(
       uuid: event.dig('subject', 'sub'),
       service_provider: service_provider.issuer,
     )
