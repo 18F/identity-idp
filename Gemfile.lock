@@ -51,7 +51,7 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-logging.git
-  revision: 63c8ee8067c02331ad4b4e06fbcb6acead6a2da7
+  revision: fa57967114838e22291aefef0cb870e8e7652685
   branch: margolis-logging-setup
   specs:
     identity-logging (0.1.0)
