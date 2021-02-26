@@ -188,6 +188,12 @@ By default, the application binds to `localhost`. To test on a network device or
 $ make run-https
 ```
 
+Or, to run on a different host:
+
+```
+$ HOST=0.0.0.0 make run-https
+```
+
 The `run-https` Makefile target will automatically provision a self-signed certificate and start the built-in Rails server.
 
 You can now navigate to https://localhost:3000/ .

@@ -5,6 +5,7 @@
 # bin/ directory.
 
 CONFIG = config/application.yml
+HOST ?= localhost
 PORT ?= 3000
 
 all: check
@@ -62,7 +63,7 @@ run:
 	foreman start -p $(PORT)
 
 run-https: tmp/localhost.key tmp/localhost.crt
-	rails s -b "ssl://0.0.0.0:3000?key=tmp/localhost.key&cert=tmp/localhost.crt"
+	rails s -b "ssl://$(HOST):3000?key=tmp/localhost.key&cert=tmp/localhost.crt"
 
 .PHONY: setup all lint run test check brakeman
 
