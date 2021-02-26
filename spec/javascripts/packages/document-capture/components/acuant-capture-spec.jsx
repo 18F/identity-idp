@@ -10,6 +10,7 @@ import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import I18nContext from '@18f/identity-document-capture/context/i18n';
 import { render, useAcuant } from '../../../support/document-capture';
+import { getFixtureFile } from '../../../support/file';
 
 const ACUANT_CAPTURE_SUCCESS_RESULT = {
   image: {
@@ -35,6 +36,11 @@ const ACUANT_CAPTURE_BLURRY_RESULT = {
 
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
+
+  let validUpload;
+  before(async () => {
+    validUpload = await getFixtureFile('doc_auth_images/id-back.jpg');
+  });
 
   context('mobile', () => {
     it('renders with assumed capture button support while acuant is not ready and on mobile', () => {
@@ -215,14 +221,12 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
     });
 
-    it('renders retry button when value and capture supported', () => {
+    it('renders retry button when value and capture supported', async () => {
+      const selfie = await getFixtureFile('doc_auth_images/selfie.jpg');
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
-            <AcuantCapture
-              label="Image"
-              value={new window.File([], 'image.svg', { type: 'image/svg+xml' })}
-            />
+            <AcuantCapture label="Image" value={selfie} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -237,23 +241,28 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('renders upload button when value and capture not supported', () => {
-      const { getByText } = render(
+      const onChange = sinon.spy();
+      const onClick = sinon.spy();
+      const { getByText, getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
-            <AcuantCapture
-              label="Image"
-              value={new window.File([], 'image.svg', { type: 'image/svg+xml' })}
-            />
+            <AcuantCapture label="Image" onChange={onChange} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
 
       initialize({ isCameraSupported: false });
 
-      const button = getByText('doc_auth.buttons.upload_picture');
-      expect(button).to.be.ok();
+      const input = getByLabelText('Image');
 
-      userEvent.click(button);
+      // Since file input prompt occurs by button click proxy to input, we must fire upload event
+      // directly at the input. At least ensure that clicking button does "click" input.
+      input.addEventListener('click', onClick);
+      userEvent.click(getByText('doc_auth.buttons.upload_picture'));
+      expect(onClick).to.have.been.calledOnce();
+
+      userEvent.upload(input, validUpload);
+      expect(onChange).to.have.been.calledWith(validUpload);
     });
 
     it('renders error message if capture succeeds but photo glare exceeds threshold', async () => {
@@ -496,11 +505,11 @@ describe('document-capture/components/acuant-capture', () => {
         <I18nContext.Provider
           value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
         >
-          <AcuantContextProvider sdkSrc="about:blank">
-            <DeviceContext.Provider value={{ isMobile: true }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank">
               <AcuantCapture label="Image" allowUpload={false} />
-            </DeviceContext.Provider>
-          </AcuantContextProvider>
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
         </I18nContext.Provider>,
       );
 
@@ -517,9 +526,11 @@ describe('document-capture/components/acuant-capture', () => {
 
     it('still captures selfie value when upload disallowed', () => {
       const { getByLabelText } = render(
-        <AcuantContextProvider sdkSrc="about:blank">
-          <AcuantCapture label="Image" capture="user" allowUpload={false} />
-        </AcuantContextProvider>,
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" capture="user" allowUpload={false} />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
       );
 
       initialize();
@@ -531,11 +542,64 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.start.called).to.be.false();
       expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.true();
     });
+
+    it('does not show hint if capture is supported', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      initialize();
+
+      expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
+    });
+
+    it('shows hint if capture is not supported', () => {
+      const { getByText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      initialize({ isSuccess: false });
+
+      const hint = getByText('doc_auth.tips.document_capture_hint');
+
+      expect(hint).to.be.ok();
+    });
+
+    it('captures selfie', async () => {
+      const onChange = sinon.stub();
+      const { getByLabelText } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantCapture label="Image" capture="user" onChange={onChange} />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+
+      initialize({
+        startSelfieCapture: sinon.stub().callsArgWithAsync(0, ''),
+      });
+
+      const button = getByLabelText('Image');
+      const defaultPrevented = !fireEvent.click(button);
+
+      expect(defaultPrevented).to.be.true();
+      expect(window.AcuantCameraUI.start.called).to.be.false();
+      expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.true();
+      await waitFor(() => expect(onChange.calledOnce).to.be.true());
+    });
   });
 
   context('desktop', () => {
-    it('renders without capture button while acuant is not ready and on desktop', () => {
-      const { getByText } = render(
+    it('does not render acuant capture canvas for environmental capture', () => {
+      const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: false }}>
           <AcuantContextProvider sdkSrc="about:blank">
             <AcuantCapture label="Image" />
@@ -543,22 +607,21 @@ describe('document-capture/components/acuant-capture', () => {
         </DeviceContext.Provider>,
       );
 
-      expect(() => getByText('doc_auth.buttons.take_picture')).to.throw();
+      userEvent.click(getByLabelText('Image'));
+
+      // It would be expected that if AcuantCaptureCanvas was rendered, an error would be thrown at
+      // this point, since it references Acuant globals not loaded.
     });
+  });
 
-    it('optionally disallows upload', () => {
-      const { getByText } = render(
-        <AcuantContextProvider sdkSrc="about:blank">
-          <DeviceContext.Provider value={{ isMobile: false }}>
-            <AcuantCapture label="Image" allowUpload={false} />
-          </DeviceContext.Provider>
-        </AcuantContextProvider>,
-      );
+  it('optionally disallows upload', () => {
+    const { getByText } = render(
+      <AcuantContextProvider sdkSrc="about:blank">
+        <AcuantCapture label="Image" allowUpload={false} />
+      </AcuantContextProvider>,
+    );
 
-      expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
-
-      initialize();
-    });
+    expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
   });
 
   it('renders with custom className', () => {
@@ -567,15 +630,12 @@ describe('document-capture/components/acuant-capture', () => {
     expect(container.firstChild.classList.contains('my-custom-class')).to.be.true();
   });
 
-  it('clears a selected value', () => {
+  it('clears a selected value', async () => {
+    const image = await getFixtureFile('doc_auth_images/id-front.jpg');
     const onChange = sinon.spy();
     const { getByLabelText } = render(
       <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture
-          label="Image"
-          value={new window.File([], 'image.svg', { type: 'image/svg+xml' })}
-          onChange={onChange}
-        />
+        <AcuantCapture label="Image" value={image} onChange={onChange} />
       </AcuantContextProvider>,
     );
 
@@ -584,53 +644,6 @@ describe('document-capture/components/acuant-capture', () => {
 
     expect(onChange.getCall(0).args).to.have.lengthOf(1);
     expect(onChange.getCall(0).args).to.deep.equal([null]);
-  });
-
-  it('does not show hint if capture is supported', () => {
-    const { getByText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture label="Image" />
-      </AcuantContextProvider>,
-    );
-
-    initialize();
-
-    expect(() => getByText('doc_auth.tips.document_capture_hint')).to.throw();
-  });
-
-  it('shows hint if capture is not supported', () => {
-    const { getByText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture label="Image" />
-      </AcuantContextProvider>,
-    );
-
-    initialize({ isSuccess: false });
-
-    const hint = getByText('doc_auth.tips.document_capture_hint');
-
-    expect(hint).to.be.ok();
-  });
-
-  it('captures selfie', async () => {
-    const onChange = sinon.stub();
-    const { getByLabelText } = render(
-      <AcuantContextProvider sdkSrc="about:blank">
-        <AcuantCapture label="Image" capture="user" onChange={onChange} />
-      </AcuantContextProvider>,
-    );
-
-    initialize({
-      startSelfieCapture: sinon.stub().callsArgWithAsync(0, ''),
-    });
-
-    const button = getByLabelText('Image');
-    const defaultPrevented = !fireEvent.click(button);
-
-    expect(defaultPrevented).to.be.true();
-    expect(window.AcuantCameraUI.start.called).to.be.false();
-    expect(window.AcuantPassiveLiveness.startSelfieCapture.called).to.be.true();
-    await waitFor(() => expect(onChange.calledOnce).to.be.true());
   });
 
   it('restricts accepted file types', () => {
@@ -644,5 +657,30 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
 
     expect(input.getAttribute('accept')).to.equal('image/jpeg,image/png,image/bmp,image/tiff');
+  });
+
+  it('logs metrics for manual upload', async () => {
+    const addPageAction = sinon.mock();
+    const { getByLabelText } = render(
+      <AnalyticsContext.Provider value={{ addPageAction }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCapture label="Image" analyticsPrefix="image" />
+        </AcuantContextProvider>
+      </AnalyticsContext.Provider>,
+    );
+
+    const input = getByLabelText('Image');
+    userEvent.upload(input, validUpload);
+
+    await new Promise((resolve) => addPageAction.callsFake(resolve));
+    expect(addPageAction).to.have.been.calledWith({
+      label: 'IdV: image added',
+      payload: {
+        height: sinon.match.number,
+        mimeType: 'image/jpeg',
+        source: 'upload',
+        width: sinon.match.number,
+      },
+    });
   });
 });

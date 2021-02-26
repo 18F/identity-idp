@@ -50,7 +50,7 @@ describe SamlIdpController do
       get :metadata
     end
 
-    let(:org_name) { '18F' }
+    let(:org_name) { 'login.gov' }
     let(:xmldoc) { SamlResponseDoc.new('controller', 'metadata', response) }
 
     it 'renders XML inline' do
@@ -381,6 +381,7 @@ describe SamlIdpController do
           issuer: saml_settings.issuer,
           aal_level_requested: aal_level,
           piv_cac_requested: false,
+          ial: 1,
           ial2: false,
           ial2_strict: false,
           ialmax: false,
@@ -404,6 +405,7 @@ describe SamlIdpController do
           issuer: saml_settings.issuer,
           aal_level_requested: aal_level,
           piv_cac_requested: false,
+          ial: 1,
           ial2: false,
           ial2_strict: false,
           ialmax: false,

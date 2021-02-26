@@ -59,6 +59,12 @@ feature 'doc auth document capture step' do
         result: 'Passed',
         billed: true,
       )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
+        step: 'document_capture',
+        result: 'Passed',
+        billed: true,
+      )
       expect_costing_for_document
     end
 
@@ -81,6 +87,13 @@ feature 'doc auth document capture step' do
 
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH + ' submitted',
+        step: 'document_capture',
+        result: 'Passed',
+        billed: true,
+        success: false,
+      )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         result: 'Passed',
         billed: true,

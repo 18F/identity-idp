@@ -130,15 +130,13 @@ module OpenidConnect
     end
 
     def pii_requested_but_locked?
-      FeatureManagement.allow_piv_cac_login? &&
-        sp_session && sp_session_ial > 1 &&
+      sp_session && sp_session_ial > 1 &&
         UserDecorator.new(current_user).identity_verified? &&
         user_session[:decrypted_pii].blank?
     end
 
     def track_events
-      ial = sp_session[:ial2] ? 2 : 1
-      analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: ial)
+      analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: sp_session_ial)
       Db::SpReturnLog::AddReturn.call(request_id, current_user.id)
       increment_monthly_auth_count
       add_sp_cost(:authentication)

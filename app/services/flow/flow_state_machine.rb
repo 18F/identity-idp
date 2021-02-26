@@ -22,7 +22,10 @@ module Flow
       step = current_step
       result = flow.handle(step)
       if @analytics_id
+        increment_step_name_counts
         analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
+        # keeping the old event names for backward compatibility
+        analytics.track_event(old_analytics_submitted, result.to_h.merge(analytics_properties))
       end
       register_update_step(step, result)
       if flow.json
@@ -44,7 +47,12 @@ module Flow
     end
 
     def track_step_visited
-      analytics.track_event(analytics_visited, analytics_properties) if @analytics_id
+      if @analytics_id
+        increment_step_name_counts
+        analytics.track_event(analytics_visited, analytics_properties)
+        # keeping the old event names for backward compatibility
+        analytics.track_event(old_analytics_visited, analytics_properties)
+      end
       Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(current_step, :view, true)
       register_campaign
     end
@@ -116,7 +124,11 @@ module Flow
       result = optional_show_step.new(@flow).base_call
 
       if @analytics_id
-        analytics.track_event(analytics_optional_step, result.to_h.merge(step: optional_show_step))
+        optional_properties = result.to_h.merge(step: optional_show_step)
+
+        analytics.track_event(analytics_optional_step, optional_properties)
+        # keeping the old event names for backward compatibility
+        analytics.track_event(old_analytics_optional_step, optional_properties)
       end
 
       if next_step.to_s != step
@@ -144,29 +156,48 @@ module Flow
     end
 
     def analytics_submitted
-      @analytics_id + ' submitted'
+      'IdV: ' + "#{@analytics_id} #{current_step} submitted".downcase
     end
 
     def analytics_visited
-      @analytics_id + ' visited'
+      'IdV: ' + "#{@analytics_id} #{current_step} visited".downcase
     end
 
     def analytics_optional_step
+      'IdV: ' + "#{@analytics_id} optional #{current_step} submitted".downcase
+    end
+
+    def old_analytics_submitted
+      @analytics_id + ' submitted'
+    end
+
+    def old_analytics_visited
+      @analytics_id + ' visited'
+    end
+
+    def old_analytics_optional_step
       [@analytics_id, 'optional submitted'].join(' ')
     end
 
     def analytics_properties
-      current_step_name = "#{current_step.to_s}_#{action_name}"
-      current_flow_step_counts[current_step_name] ||= 0
       {
         step: current_step,
-        step_count: current_flow_step_counts[current_step_name] += 1,
+        step_count: current_flow_step_counts[current_step_name],
       }
+    end
+
+    def current_step_name
+      "#{current_step}_#{action_name}"
     end
 
     def current_flow_step_counts
       current_session["#{@name}_flow_step_counts"] ||= {}
+      current_session["#{@name}_flow_step_counts"].default = 0
       current_session["#{@name}_flow_step_counts"]
+    end
+
+    def increment_step_name_counts
+      current_flow_step_counts[current_step_name] += 1
     end
 
     def next_step
