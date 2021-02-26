@@ -4,7 +4,7 @@ describe 'Account connected applications' do
   let(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
   let(:identity_with_link) do
     create(
-      :identity,
+      :service_provider_identity,
       :active,
       user: user,
       created_at: Time.zone.now - 80.days,
@@ -13,7 +13,7 @@ describe 'Account connected applications' do
   end
   let(:identity_without_link) do
     create(
-      :identity,
+      :service_provider_identity,
       :active,
       user: user,
       created_at: Time.zone.now - 50.days,

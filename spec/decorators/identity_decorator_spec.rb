@@ -31,7 +31,9 @@ describe IdentityDecorator do
   describe '#failure_to_proof_url' do
     let(:user) { create(:user) }
     let(:service_provider) { 'https://rp1.serviceprovider.com/auth/saml/metadata' }
-    let(:identity) { create(:identity, :active, user: user, service_provider: service_provider) }
+    let(:identity) do
+      create(:service_provider_identity, :active, user: user, service_provider: service_provider)
+    end
 
     subject { IdentityDecorator.new(identity) }
 
