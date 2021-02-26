@@ -19,7 +19,7 @@ module PushNotification
     def deliver
       event.user.
         service_providers.
-        merge(Identity.not_deleted).
+        merge(ServiceProviderIdentity.not_deleted).
         with_push_notification_urls.each do |service_provider|
           deliver_one(service_provider)
         end
