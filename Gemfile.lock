@@ -50,6 +50,15 @@ GIT
       faraday
 
 GIT
+  remote: https://github.com/18F/identity-logging.git
+  revision: 7a341c9784275f44b0b0c3456a00a51fa79f4241
+  tag: v0.1.0
+  specs:
+    identity-logging (0.1.0)
+      lograge (>= 0.11.2)
+      rails (>= 6.1)
+
+GIT
   remote: https://github.com/18F/identity-proofer-gem.git
   revision: 9c73058b6cafd5299266fb9d554ced04ec63b84a
   ref: v2.8.0
@@ -760,6 +769,7 @@ DEPENDENCIES
   identity-doc-auth!
   identity-hostdata!
   identity-idp-functions!
+  identity-logging!
   identity-telephony!
   identity_validations!
   irb

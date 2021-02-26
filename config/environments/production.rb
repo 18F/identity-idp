@@ -42,7 +42,5 @@ Rails.application.configure do
     config.logger = ActiveSupport::Logger.new(STDOUT)
   end
   config.log_level = :info
-  config.lograge.enabled = true
   config.lograge.ignore_actions = ['Users::SessionsController#active']
-  config.lograge.formatter = Lograge::Formatters::Json.new
 end

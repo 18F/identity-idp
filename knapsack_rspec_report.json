@@ -255,7 +255,6 @@
   "spec/features/multiple_emails/reset_password_spec.rb": 1.358119249343872,
   "spec/controllers/idv/capture_doc_status_controller_spec.rb": 0.07886409759521484,
   "spec/services/encryption/uak_password_verifier_spec.rb": 0.15878534317016602,
-  "spec/lib/upaya_log_formatter_spec.rb": 0.0010471343994140625,
   "spec/lib/deploy/activate_spec.rb": 0.0376591682434082,
   "spec/services/active_profile_encryptor_spec.rb": 0.033174753189086914,
   "spec/presenters/two_factor_auth_code/piv_cac_authentication_presenter_spec.rb": 0.007817983627319336,
