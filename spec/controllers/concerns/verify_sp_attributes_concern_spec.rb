@@ -38,7 +38,9 @@ RSpec.describe VerifySpAttributesConcern do
     end
 
     context 'when the last_consented_at is older than a year ago' do
-      let(:sp_session_identity) { build(:service_provider_identity, last_consented_at: 2.years.ago) }
+      let(:sp_session_identity) do
+        build(:service_provider_identity, last_consented_at: 2.years.ago)
+      end
 
       it 'is true' do
         expect(consent_has_expired?).to eq(true)
