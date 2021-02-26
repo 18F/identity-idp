@@ -22,7 +22,7 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: f6852a492e06acbb1f652a5f0fb8fbd6e0022357
+  revision: 4eac3ba36b360a03a85ad30339f25636e26a1f77
   branch: margolis-railtie-with-logger
   specs:
     identity-hostdata (1.0.0)
