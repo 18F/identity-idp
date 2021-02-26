@@ -8,7 +8,7 @@ describe AttributeAsserter do
   let(:user_session) { {} }
   let(:identity) do
     build(
-      :identity,
+      :service_provider_identity,
       service_provider: service_provider.issuer,
       session_uuid: SecureRandom.uuid,
     )

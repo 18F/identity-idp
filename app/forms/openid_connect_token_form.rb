@@ -67,7 +67,7 @@ class OpenidConnectTokenForm
     return if code.blank? || code.include?("\x00")
 
     session_expiration = AppConfig.env.session_timeout_in_minutes.to_i.minutes.ago
-    @identity = Identity.where(session_uuid: code).
+    @identity = ServiceProviderIdentity.where(session_uuid: code).
                 where('updated_at >= ?', session_expiration).
                 order(updated_at: :desc).first
   end

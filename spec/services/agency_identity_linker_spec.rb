@@ -89,11 +89,11 @@ describe AgencyIdentityLinker do
   end
 
   def init_env(user)
-    Identity.where(user_id: user.id).delete_all
+    ServiceProviderIdentity.where(user_id: user.id).delete_all
     AgencyIdentity.where(user_id: user.id).delete_all
   end
 
   def create_identity(user, service_provider, uuid)
-    Identity.create(user_id: user.id, service_provider: service_provider, uuid: uuid)
+    ServiceProviderIdentity.create(user_id: user.id, service_provider: service_provider, uuid: uuid)
   end
 end

@@ -13,8 +13,8 @@
 </p>
 <p>
   <div class="center">
-    <%= button_to t('sign_up.agree_and_continue'),
-                  sign_up_completed_path,
-                  class: 'btn btn-primary btn-wide' %>
+    <%= validated_form_for(:idv_form, url: sign_up_completed_path) do %>
+      <%= submit_tag t('sign_up.agree_and_continue'), class: 'btn btn-primary btn-wide' %>
+    <% end %>
   </div>
 </p>

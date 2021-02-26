@@ -147,11 +147,11 @@ describe Reports::IaaBillingReport do
                            iaa_start_date: iaa_start_date2, iaa_end_date: iaa_end_date2)
     ServiceProvider.create(issuer: issuer3, friendly_name: issuer3, ial: 2, iaa: iaa2,
                            iaa_start_date: iaa_start_date2, iaa_end_date: iaa_end_date2)
-    Identity.create(user_id: 1, service_provider: issuer, uuid: 'a',
+    ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'a',
                     last_ial2_authenticated_at: now - 1.hour)
-    Identity.create(user_id: 2, service_provider: issuer2, uuid: 'b',
+    ServiceProviderIdentity.create(user_id: 2, service_provider: issuer2, uuid: 'b',
                     last_ial2_authenticated_at: last_month)
-    Identity.create(user_id: 3, service_provider: issuer3, uuid: 'c',
+    ServiceProviderIdentity.create(user_id: 3, service_provider: issuer3, uuid: 'c',
                     last_ial2_authenticated_at: now - 1.hour)
     create(:profile, :active, :verified, user_id: 1)
     create(:profile, :active, :verified, user_id: 2)
