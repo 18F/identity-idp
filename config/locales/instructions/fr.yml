@@ -49,14 +49,15 @@ fr:
           plus élevé. Vous devez vérifier votre identité à l'aide d'un dispositif
           physique tel qu'une clé de sécurité ou un badge d'employé du gouvernement
           (PIV ou CAC) pour accéder à vos informations.
-        did_not_work_html: Il peut y avoir un problème avec votre PIV / CAC ou votre
-          code PIN. Si vous pensez que c'est une erreur, %{try_again}.  Si le problème
-          persiste, contactez l'administrateur de votre agence.
-        no_certificate_html: Please make sure your PIV/CAC is connected and %{try_again}.
-          If this problem continues, contact your agency adminstrator.
-        not_auth_cert_html: The certificate you selected is invalid for this account.
-          Please %{try_again} with a different certificate. If this problem continues,
-          contact your agency adminstrator.
+        did_not_work_html: Veuillez %{please_try_again}. Si ce problème persiste,
+          contactez l'administrateur de votre agence.
+        no_certificate_html: Veuillez vous assurer que votre PIV/CAC est connecté
+          et %{try_again}. Si ce problème persiste, contactez l'administrateur de
+          votre agence.
+        not_auth_cert_html: Le certificat que vous avez sélectionné n'est pas valide
+          pour ce compte. Veuillez %{please_try_again} avec un autre certificat. Si
+          ce problème persiste, contactez l'administrateur de votre agence.
+        please_try_again: réessayer
         sign_in: Assurez-vous que <strong>vous disposez d'un compte login.gov</strong>
           et que <strong>vous avez configuré PIV/CAC</strong> en tant que méthode
           d'authentification à deux facteurs.

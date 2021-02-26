@@ -56,9 +56,9 @@ class PivCacErrorPresenter
     when 'certificate.none'
       t('instructions.mfa.piv_cac.no_certificate_html', try_again: try_again_link)
     when 'certificate.not_auth_cert'
-      t('instructions.mfa.piv_cac.not_auth_cert_html', try_again: try_again_link)
+      t('instructions.mfa.piv_cac.not_auth_cert_html', please_try_again: please_try_again_link)
     else
-      t('instructions.mfa.piv_cac.did_not_work_html', try_again: try_again_link)
+      t('instructions.mfa.piv_cac.did_not_work_html', please_try_again: please_try_again_link)
     end
   end
 
@@ -67,6 +67,10 @@ class PivCacErrorPresenter
   end
 
   private
+
+  def please_try_again_link
+    @view.link_to(t('instructions.mfa.piv_cac.please_try_again'), @try_again_url)
+  end
 
   def try_again_link
     @view.link_to(t('instructions.mfa.piv_cac.try_again'), @try_again_url)

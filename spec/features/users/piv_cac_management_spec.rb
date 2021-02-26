@@ -117,11 +117,14 @@ feature 'PIV/CAC Management' do
                             error: 'certificate.expired',
                             key_id: 'AB:CD:EF')
       expect(current_path).to eq setup_piv_cac_error_path
-      expect(page).to have_link(t('instructions.mfa.piv_cac.try_again'), href: setup_piv_cac_url)
+      expect(page).to have_link(
+        t('instructions.mfa.piv_cac.please_try_again'),
+        href: setup_piv_cac_url,
+      )
 
       expect(page).to have_content(
         t('instructions.mfa.piv_cac.did_not_work_html',
-          try_again: t('instructions.mfa.piv_cac.try_again')),
+          please_try_again: t('instructions.mfa.piv_cac.please_try_again')),
       )
     end
 
