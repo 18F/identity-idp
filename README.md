@@ -184,21 +184,11 @@ By default, the application binds to `localhost`. To test on a network device or
 
 #### Testing the application over HTTPS
 
-To browse the application locally over HTTPS, you will need to create a self-signed certificate:
-
 ```
-mkdir -p tmp && openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 365 -keyout tmp/localhost.key -out tmp/localhost.crt
+$ make run-https
 ```
 
-This will issue a series of prompts for information about the certificate. You can use test values for these.
-
-Once created, start the server using Rails' built-in server with the newly created certificate:
-
-```
-rails s -b 'ssl://localhost:3000?key=tmp/localhost.key&cert=tmp/localhost.crt'
-```
-
-_(Note: If you plan to test over HTTPS on devices on your network, you should consider using the IP address in place of `localhost` here, as described in the steps of "Testing on a mobile device or in a virtual machine")_
+The `run-https` Makefile target will automatically provision a self-signed certificate and start the built-in Rails server.
 
 You can now navigate to https://localhost:3000/ .
 

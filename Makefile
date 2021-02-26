@@ -46,8 +46,23 @@ test: $(CONFIG)
 fast_test:
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
+tmp/localhost.key tmp/localhost.crt:
+	mkdir -p tmp
+	openssl req \
+		-newkey rsa:2048 \
+		-x509 \
+		-sha256 \
+		-nodes \
+		-days 365 \
+		-subj "/C=US/ST=District of Columbia/L=Washington/O=GSA/OU=Login.gov/CN=localhost:3000"  \
+		-keyout tmp/localhost.key \
+		-out tmp/localhost.crt
+
 run:
 	foreman start -p $(PORT)
+
+run-https: tmp/localhost.key tmp/localhost.crt
+	rails s -b "ssl://0.0.0.0:3000?key=tmp/localhost.key&cert=tmp/localhost.crt"
 
 .PHONY: setup all lint run test check brakeman
 
