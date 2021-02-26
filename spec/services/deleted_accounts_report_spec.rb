@@ -19,7 +19,7 @@ describe DeletedAccountsReport do
       rows = DeletedAccountsReport.call(service_provider, days_ago)
 
       expect(User.count).to eq(1)
-      expect(Identity.count).to eq(1)
+      expect(ServiceProviderIdentity.count).to eq(1)
       expect(rows.count).to eq(0)
     end
 
@@ -33,7 +33,7 @@ describe DeletedAccountsReport do
       rows = DeletedAccountsReport.call(service_provider, days_ago)
 
       expect(User.count).to eq(0)
-      expect(Identity.count).to eq(1)
+      expect(ServiceProviderIdentity.count).to eq(1)
       expect(rows.count).to eq(1)
     end
 
@@ -47,7 +47,7 @@ describe DeletedAccountsReport do
       rows = DeletedAccountsReport.call(service_provider, days_ago)
 
       expect(User.count).to eq(0)
-      expect(Identity.count).to eq(1)
+      expect(ServiceProviderIdentity.count).to eq(1)
       expect(rows.count).to eq(0)
     end
 
@@ -61,7 +61,7 @@ describe DeletedAccountsReport do
       rows = DeletedAccountsReport.call(service_provider, days_ago)
 
       expect(User.count).to eq(0)
-      expect(Identity.count).to eq(1)
+      expect(ServiceProviderIdentity.count).to eq(1)
       expect(rows.count).to eq(0)
     end
   end
