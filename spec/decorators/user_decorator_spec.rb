@@ -261,7 +261,7 @@ describe UserDecorator do
     let(:decorated_user) { user.decorate }
     let!(:event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
     let!(:identity) do
-      create(:identity, :active, user: user, last_authenticated_at: Time.zone.now - 60.days)
+      create(:service_provider_identity, :active, user: user, last_authenticated_at: Time.zone.now - 60.days)
     end
     let!(:another_event) do
       create(:event, user: user, event_type: :email_changed, created_at: Time.zone.now - 30.days)
@@ -343,8 +343,10 @@ describe UserDecorator do
 
   describe '#connected_apps' do
     let(:user) { create(:user) }
-    let(:app) { create(:identity, service_provider: 'aaa') }
-    let(:deleted_app) { create(:identity, service_provider: 'bbb', deleted_at: 5.days.ago) }
+    let(:app) { create(:service_provider_identity, service_provider: 'aaa') }
+    let(:deleted_app) do
+      create(:service_provider_identity, service_provider: 'bbb', deleted_at: 5.days.ago)
+    end
 
     let(:user_decorator) { user.decorate }
 

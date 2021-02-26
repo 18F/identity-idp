@@ -7,7 +7,7 @@ RSpec.describe AccessTokenVerifier do
   subject(:verifier) { AccessTokenVerifier.new(http_authorization_header) }
   let(:http_authorization_header) { "Bearer #{access_token}" }
 
-  let(:identity) { build(:identity, access_token: SecureRandom.urlsafe_base64) }
+  let(:identity) { build(:service_provider_identity, access_token: SecureRandom.urlsafe_base64) }
 
   describe '#submit' do
     let(:result) { verifier.submit }
