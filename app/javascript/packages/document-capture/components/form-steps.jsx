@@ -27,15 +27,15 @@ import useDidUpdateEffect from '../hooks/use-did-update-effect';
 /**
  * @typedef FormStepComponentProps
  *
- * @prop {(nextValues:Partial<V>)=>void} onChange Values change callback, merged with
- * existing values.
+ * @prop {(nextValues:Partial<V>)=>void} onChange Update values, merging with existing values.
+ * @prop {(field:string, error:Error)=>void} onError Trigger a field error.
  * @prop {Partial<V>} value Current values.
  * @prop {FormStepError<V>[]} errors Current active errors.
  * @prop {(
  *   field:string,
  *   options?:Partial<FormStepRegisterFieldOptions>
- * )=>undefined|import('react').RefCallback<HTMLElement>} registerField Registers field
- * by given name, returning ref assignment function.
+ * )=>undefined|import('react').RefCallback<HTMLElement>} registerField Registers field by given
+ * name, returning ref assignment function.
  *
  * @template V
  */
@@ -231,6 +231,9 @@ function FormSteps({
             prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),
           );
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
+        }}
+        onError={(field, error) => {
+          setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
         }}
         registerField={(field, options = {}) => {
           if (!fields.current[field]) {

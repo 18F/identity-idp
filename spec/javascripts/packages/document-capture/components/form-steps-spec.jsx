@@ -13,7 +13,7 @@ describe('document-capture/components/form-steps', () => {
     {
       name: 'second',
       title: 'Second Title',
-      form: ({ value = {}, errors = [], onChange, registerField }) => (
+      form: ({ value = {}, errors = [], onChange, onError, registerField }) => (
         <>
           <input
             aria-label="Second Input One"
@@ -21,8 +21,12 @@ describe('document-capture/components/form-steps', () => {
             value={value.secondInputOne || ''}
             data-is-error={errors.some(({ field }) => field === 'secondInputOne') || undefined}
             onChange={(event) => {
-              onChange({ changed: true });
-              onChange({ secondInputOne: event.target.value });
+              if (event.target.validationMessage) {
+                onError('secondInputOne', new Error(event.target.validationMessage));
+              } else {
+                onChange({ changed: true });
+                onChange({ secondInputOne: event.target.value });
+              }
             }}
           />
           <input
@@ -364,5 +368,16 @@ describe('document-capture/components/form-steps', () => {
     // The user can submit once all errors have been resolved.
     userEvent.click(getByText('forms.buttons.submit.default'));
     expect(onComplete.calledOnce).to.be.true();
+  });
+
+  it('renders field-emitted errors', () => {
+    const steps = [STEPS[1]];
+
+    const { getByLabelText } = render(<FormSteps steps={steps} />);
+    const inputOne = getByLabelText('Second Input One');
+    inputOne.setCustomValidity('uh oh');
+    userEvent.type(inputOne, 'one');
+
+    expect(inputOne.hasAttribute('data-is-error')).to.be.true();
   });
 });

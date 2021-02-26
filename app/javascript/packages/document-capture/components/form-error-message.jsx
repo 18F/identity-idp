@@ -15,6 +15,11 @@ import useI18n from '../hooks/use-i18n';
 export class RequiredValueMissingError extends Error {}
 
 /**
+ * An error representing a failure to complete encrypted upload of image.
+ */
+export class BackgroundEncryptedUploadError extends Error {}
+
+/**
  * @param {FormErrorMessageProps} props Props object.
  */
 function FormErrorMessage({ error }) {
@@ -26,6 +31,10 @@ function FormErrorMessage({ error }) {
 
   if (error instanceof UploadFormEntryError) {
     return <>{error.message}</>;
+  }
+
+  if (error instanceof BackgroundEncryptedUploadError) {
+    return <>{t('errors.doc_auth.acuant_network_error')}</>;
   }
 
   return null;

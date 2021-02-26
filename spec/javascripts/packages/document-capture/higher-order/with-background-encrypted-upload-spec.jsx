@@ -5,6 +5,7 @@ import withBackgroundEncryptedUpload, {
   blobToArrayBuffer,
   encrypt,
 } from '@18f/identity-document-capture/higher-order/with-background-encrypted-upload';
+import { BackgroundEncryptedUploadError } from '@18f/identity-document-capture/components/form-error-message';
 import { useSandbox } from '../../../support/sinon';
 import { render } from '../../../support/document-capture';
 
@@ -114,6 +115,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
       async function renderWithResponse(response) {
         const addPageAction = sinon.spy();
         const onChange = sinon.spy();
+        const onError = sinon.spy();
         const key = await window.crypto.subtle.generateKey(
           {
             name: 'AES-GCM',
@@ -129,12 +131,12 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
               backgroundUploadURLs={{ foo: 'about:blank' }}
               backgroundUploadEncryptKey={key}
             >
-              <Component onChange={onChange} />)
+              <Component onChange={onChange} onError={onError} />)
             </UploadContextProvider>
           </AnalyticsContext.Provider>,
         );
 
-        return { onChange, addPageAction };
+        return { onChange, onError, addPageAction };
       }
 
       context('success', () => {
@@ -200,6 +202,17 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           await patch.foo_image_url.catch((error) => {
             expect(error.message).to.equal('Failed to upload image');
           });
+        });
+
+        it('calls onError', async () => {
+          const { onChange, onError } = await renderWithResponse(response);
+
+          const patch = onChange.getCall(0).args[0];
+          await patch.foo_image_url;
+          expect(onError).to.have.been.calledOnceWith(
+            'foo',
+            sinon.match.instanceOf(BackgroundEncryptedUploadError),
+          );
         });
 
         it('logs result', async () => {
