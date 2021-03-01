@@ -152,7 +152,6 @@ describe NewPhoneForm do
     end
 
     context 'when the user has already added the number' do
-
       it 'is invalid' do
         phone = PhoneFormatter.format("+1 (954) 525-1262", country_code: 'US')
         params[:phone] = phone
@@ -176,7 +175,6 @@ describe NewPhoneForm do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
         expect(result.errors[:phone]).to eq([I18n.t('errors.messages.phone_duplicate')])
-
       end
     end
 
