@@ -73,9 +73,9 @@ describe SignUpCompletionsShow do
     end
 
     describe '#identities' do
-      it 'returns a users identities decorated' do
+      it 'returns a users identities' do
         identity = create_identity
-        expect(view_model.identities).to eq([identity.decorate])
+        expect(view_model.identities).to eq([identity])
       end
     end
 

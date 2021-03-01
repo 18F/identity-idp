@@ -20,8 +20,12 @@ describe 'Account connected applications' do
       service_provider: 'https://rp2.serviceprovider.com/auth/saml/metadata',
     )
   end
-  let(:identity_with_link_timestamp) { identity_with_link.decorate.created_at_in_words }
-  let(:identity_without_link_timestamp) { identity_without_link.decorate.created_at_in_words }
+  let(:identity_with_link_timestamp) do
+    identity_with_link.created_at.utc.strftime(t('time.formats.event_timestamp'))
+  end
+  let(:identity_without_link_timestamp) do
+    identity_without_link.created_at.utc.strftime(t('time.formats.event_timestamp'))
+  end
 
   before do
     sign_in_and_2fa_user(user)

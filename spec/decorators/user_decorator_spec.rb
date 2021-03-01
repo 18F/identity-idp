@@ -270,9 +270,9 @@ describe UserDecorator do
       create(:event, user: user, event_type: :email_changed, created_at: Time.zone.now - 30.days)
     end
 
-    it 'interleaves identities and events, decorates them, and sorts them in descending order' do
+    it 'interleaves identities and events, decorates events, and sorts them in descending order' do
       expect(decorated_user.recent_events).
-        to eq [another_event.decorate, identity.decorate, event.decorate]
+        to eq [another_event.decorate, identity, event.decorate]
     end
   end
 
@@ -356,7 +356,7 @@ describe UserDecorator do
     before { user.identities << app << deleted_app }
 
     it 'omits deleted apps' do
-      expect(user_decorator.connected_apps).to eq([IdentityDecorator.new(app)])
+      expect(user_decorator.connected_apps).to eq([app])
     end
   end
 end

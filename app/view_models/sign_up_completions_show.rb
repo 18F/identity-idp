@@ -97,7 +97,7 @@ class SignUpCompletionsShow
     if @current_user
       @identities ||= @current_user.identities.order(
         last_authenticated_at: :desc,
-      ).limit(MAX_RECENT_IDENTITIES).map(&:decorate)
+      ).limit(MAX_RECENT_IDENTITIES)
     else
       false
     end
