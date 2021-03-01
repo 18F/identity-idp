@@ -20,7 +20,7 @@ gem 'faraday'
 gem 'foundation_emails'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.4.0'
+gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.4.1'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.3'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
