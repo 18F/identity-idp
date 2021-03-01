@@ -90,12 +90,12 @@ class NewPhoneForm
   end
 
   def validate_not_duplicate
-      current_user_phones = user.phone_configurations.map do |phone_configuration|
-        PhoneFormatter.format(phone_configuration.phone)
-      end
+    current_user_phones = user.phone_configurations.map do |phone_configuration|
+      PhoneFormatter.format(phone_configuration.phone)
+    end
 
-      return unless current_user_phones.include?(phone)
-      errors.add(:phone, I18n.t('errors.messages.phone_duplicate'))
+    return unless current_user_phones.include?(phone)
+    errors.add(:phone, I18n.t('errors.messages.phone_duplicate'))
   end
 
   def parsed_phone
