@@ -7,8 +7,8 @@ class UspsConfirmationUploader
     confirmations = UspsConfirmation.all
     export = generate_export(confirmations)
     upload_export(export)
-    clear_confirmations(confirmations)
     LetterRequestsToUspsFtpLog.create(ftp_at: @now, letter_requests_count: confirmations.count)
+    clear_confirmations(confirmations)
   rescue StandardError => error
     NewRelic::Agent.notice_error(error)
   end
