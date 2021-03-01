@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'login_gov/hostdata/fake_s3_client'
+require 'identity/hostdata/fake_s3_client'
 require Rails.root.join('lib', 'deploy', 'activate.rb')
 
 describe Deploy::Activate do

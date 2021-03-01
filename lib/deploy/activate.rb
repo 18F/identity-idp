@@ -1,6 +1,6 @@
 require 'active_support/core_ext/hash/deep_merge'
 require 'logger'
-require 'login_gov/hostdata'
+require 'identity/hostdata'
 require 'subprocess'
 require 'yaml'
 

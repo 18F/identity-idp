@@ -1,4 +1,4 @@
-require 'login_gov/hostdata'
+require 'identity/hostdata'
 
 module Reports
   class MonthlyUspsLetterRequestsReport < BaseReport

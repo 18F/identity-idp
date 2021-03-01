@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'login_gov/hostdata'
+require 'identity/hostdata'
 
 if Identity::Hostdata.in_datacenter? && Identity::Hostdata.env != 'prod'
   FileUtils.cp('public/ban-robots.txt', 'public/robots.txt')
