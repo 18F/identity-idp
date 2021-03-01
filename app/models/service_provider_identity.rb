@@ -57,7 +57,7 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def happened_at
-    last_authenticated_at.utc
+    last_authenticated_at.in_time_zone('UTC')
   end
 
   def event_partial
