@@ -40,7 +40,27 @@ class ServiceProviderIdentity < ApplicationRecord
     TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
   end
 
-  def decorate
-    IdentityDecorator.new(self)
+  def failure_to_proof_url
+    sp_metadata[:failure_to_proof_url]
+  end
+
+  def return_to_sp_url
+    sp_metadata[:return_to_sp_url]
+  end
+
+  def friendly_name
+    sp_metadata[:friendly_name]
+  end
+
+  def service_provider_id
+    sp.id
+  end
+
+  def happened_at
+    last_authenticated_at.in_time_zone('UTC')
+  end
+
+  def event_partial
+    'accounts/identity_item'
   end
 end

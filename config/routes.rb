@@ -75,9 +75,12 @@ Rails.application.routes.draw do
       post '/sessions/keepalive' => 'users/sessions#keepalive'
 
       get '/login/piv_cac' => 'users/piv_cac_login#new'
+      get '/login/piv_cac_error' => 'users/piv_cac_login#error'
+      # these routes are deprecated
       get '/login/piv_cac_account_not_found' => 'users/piv_cac_login#account_not_found'
       get '/login/piv_cac_did_not_work' => 'users/piv_cac_login#did_not_work'
       get '/login/piv_cac_temporary_error' => 'users/piv_cac_login#temporary_error'
+
       get '/login/present_piv_cac' => 'users/piv_cac_login#redirect_to_piv_cac_service'
       get '/login/password' => 'password_capture#new', as: :capture_password
       post '/login/password' => 'password_capture#create'
@@ -179,6 +182,7 @@ Rails.application.routes.draw do
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
+    get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
     post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac', as: :submit_new_piv_cac
 

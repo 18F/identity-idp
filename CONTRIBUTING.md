@@ -166,7 +166,7 @@ Please follow our [Code Review][review] guidelines.
 [Glen Sanford's thoughts on code reviews][thoughts] are also well worth
 reading.
 
-[review]: https://github.com/18F/development-guide/tree/master/code_review
+[review]: https://engineering.18f.gov/code-review/
 [thoughts]: http://glen.nu/ramblings/oncodereview.php
 
 - Prioritize code reviews for the current sprint above your other work

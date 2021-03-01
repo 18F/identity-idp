@@ -73,14 +73,6 @@ RSpec.describe ServiceProviderIdentity do
     end
   end
 
-  describe '#decorate' do
-    it 'returns a IdentityDecorator' do
-      identity = build(:service_provider_identity)
-
-      expect(identity.decorate).to be_a(IdentityDecorator)
-    end
-  end
-
   let(:service_provider) do
     create(:service_provider)
   end
@@ -135,6 +127,52 @@ RSpec.describe ServiceProviderIdentity do
       ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp')
       expect { ServiceProviderIdentity.create(user_id: user.id, service_provider: 'externalapp2') }.
         to_not raise_error
+    end
+  end
+
+  describe '#return_to_sp_url' do
+    let(:user) { create(:user) }
+    let(:service_provider) { 'http://localhost:3000' }
+    let(:identity) do
+      create(:service_provider_identity, :active, user: user, service_provider: service_provider)
+    end
+
+    context 'for an sp with a return URL' do
+      it 'returns the return url for the sp' do
+        return_to_sp_url = ServiceProvider.from_issuer(service_provider).return_to_sp_url
+        expect(subject.return_to_sp_url).to eq(return_to_sp_url)
+      end
+    end
+
+    context 'for an sp without a return URL' do
+      let(:service_provider) { 'https://rp2.serviceprovider.com/auth/saml/metadata' }
+
+      it 'returns nil' do
+        expect(subject.return_to_sp_url).to eq(nil)
+      end
+    end
+  end
+
+  describe '#failure_to_proof_url' do
+    let(:user) { create(:user) }
+    let(:service_provider) { 'https://rp1.serviceprovider.com/auth/saml/metadata' }
+    let(:identity) do
+      create(:service_provider_identity, :active, user: user, service_provider: service_provider)
+    end
+
+    context 'for an sp with a failure to proof url' do
+      it 'returns the failure_to_proof_url for the sp' do
+        failure_to_proof_url = ServiceProvider.from_issuer(service_provider).failure_to_proof_url
+        expect(subject.failure_to_proof_url).to eq(failure_to_proof_url)
+      end
+    end
+
+    context 'for an sp without a failure to proof URL' do
+      let(:service_provider) { 'http://localhost:3000' }
+
+      it 'returns nil' do
+        expect(subject.failure_to_proof_url).to eq(nil)
+      end
     end
   end
 end
