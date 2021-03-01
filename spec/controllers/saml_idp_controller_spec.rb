@@ -249,7 +249,8 @@ describe SamlIdpController do
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
-          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+          expect(authn_context_class_ref).
+            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
         end
       end
 
@@ -260,7 +261,8 @@ describe SamlIdpController do
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
-          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+          expect(authn_context_class_ref).
+            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
         end
 
         it 'returns AAL2 authn_context when AAL2 is requested' do
