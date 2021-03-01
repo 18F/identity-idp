@@ -39,18 +39,6 @@ class AccountShow
     'accounts/verified_account_badge'
   end
 
-  def edit_action_partial
-    'accounts/actions/edit_action_button'
-  end
-
-  def manage_action_partial
-    'accounts/actions/manage_action_button'
-  end
-
-  def delete_action_partial
-    'accounts/actions/delete_action_button'
-  end
-
   def show_pii_partial?
     decrypted_pii.present? || decorated_user.identity_verified?
   end
@@ -59,7 +47,7 @@ class AccountShow
     if TwoFactorAuthentication::AuthAppPolicy.new(decorated_user.user).enabled?
       disable_totp_partial
     else
-      enable_totp_partial
+      'accounts/actions/enable_totp'
     end
   end
 
@@ -68,25 +56,17 @@ class AccountShow
     'accounts/actions/disable_totp'
   end
 
-  def enable_totp_partial
-    'accounts/actions/enable_totp'
-  end
-
   def piv_cac_partial
     if TwoFactorAuthentication::PivCacPolicy.new(decorated_user.user).enabled?
       disable_piv_cac_partial
     else
-      enable_piv_cac_partial
+      'accounts/actions/enable_piv_cac'
     end
   end
 
   def disable_piv_cac_partial
     return 'shared/null' unless MfaPolicy.new(decorated_user.user).multiple_factors_enabled?
     'accounts/actions/disable_piv_cac'
-  end
-
-  def enable_piv_cac_partial
-    'accounts/actions/enable_piv_cac'
   end
 
   def show_manage_personal_key_partial?
@@ -100,18 +80,10 @@ class AccountShow
 
   def backup_codes_partial
     if TwoFactorAuthentication::BackupCodePolicy.new(decorated_user.user).configured?
-      regenerate_backup_codes_partial
+      'accounts/actions/regenerate_backup_codes'
     else
-      generate_backup_codes_partial
+      'accounts/actions/generate_backup_codes'
     end
-  end
-
-  def regenerate_backup_codes_partial
-    'accounts/actions/regenerate_backup_codes'
-  end
-
-  def generate_backup_codes_partial
-    'accounts/actions/generate_backup_codes'
   end
 
   def backup_codes_generated_at

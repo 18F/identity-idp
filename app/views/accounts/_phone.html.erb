@@ -26,7 +26,7 @@
           <% end %>
         </div>
         <div class="grid-col-3 right-align">
-          <%= render @view_model.manage_action_partial,
+          <%= render 'accounts/actions/manage_action_button',
             path: manage_phone_path(id: phone_configuration.id),
             name: t('account.index.phone') %>
         </div>

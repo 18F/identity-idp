@@ -66,10 +66,6 @@ class SignUpCompletionsShow
     "user-signup-#{requested_ial}.svg"
   end
 
-  def requested_attributes_partial
-    'sign_up/completions/requested_attributes'
-  end
-
   def requested_attributes_sorted
     sorted_attribute_mapping.map do |raw_attribute, display_attribute|
       display_attribute if (requested_attributes & raw_attribute).present?
@@ -79,10 +75,6 @@ class SignUpCompletionsShow
   def sorted_attribute_mapping
     return SORTED_IAL2_ATTRIBUTE_MAPPING if user_verified?
     SORTED_IAL1_ATTRIBUTE_MAPPING
-  end
-
-  def identities_partial
-    'shared/user_identities'
   end
 
   def service_provider_partial

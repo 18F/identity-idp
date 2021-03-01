@@ -28,7 +28,7 @@
         <% if EmailPolicy.new(current_user).can_delete_email?(email) %>
           &nbsp; &nbsp;
           <%= render(
-            @view_model.delete_action_partial,
+            'accounts/actions/delete_action_button'
             path: manage_email_confirm_delete_url(id: email.id),
           ) %>
         <% end %>

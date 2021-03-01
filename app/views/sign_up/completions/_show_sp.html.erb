@@ -4,7 +4,7 @@
       sp: content_tag(:strong, decorated_session.sp_name)) %>
 </p>
 <div class='tablet:margin-left-1 tablet:margin-right-1' >
-  <%= render @view_model.requested_attributes_partial, view_model: @view_model %>
+  <%= render 'sign_up/completions/requested_attributes', view_model: @view_model %>
 </div>
 <p class="tablet:margin-right-1 tablet:margin-left-1 margin-top-4 margin-bottom-4">
   <%= t('help_text.requested_attributes.outro_html',
