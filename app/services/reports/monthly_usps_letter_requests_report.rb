@@ -4,9 +4,13 @@ module Reports
   class MonthlyUspsLetterRequestsReport < BaseReport
     REPORT_NAME = 'monthly-usps-letter-requests-report'.freeze
 
-    def call
+    def call(start_time: nil, end_time: nil)
+      start_time ||= first_of_this_month
+
+      end_time ||= end_of_today
+
       daily_results = transaction_with_timeout do
-        ::LetterRequestsToUspsFtpLog.where(ftp_at: first_of_this_month..end_of_today)
+        ::LetterRequestsToUspsFtpLog.where(ftp_at: start_time..end_time)
       end
       totals = calculate_totals(daily_results)
       save_report(REPORT_NAME, {total_letter_requests: totals,
