@@ -18,7 +18,7 @@ describe FrontendLogController do
 
       it 'succeeds' do
         expect(@analytics).to receive(:track_event).
-          with("Frontend: #{event}", payload)
+          with("Frontend: #{event}", payload.merge(user_id: user.id))
 
         action
 
@@ -81,6 +81,25 @@ describe FrontendLogController do
 
         expect(response).to have_http_status(:unauthorized)
         expect(json[:success]).to eq(false)
+      end
+    end
+
+    context 'anonymous user with session-associated user id' do
+      let(:user_id) { user.id }
+
+      before do
+        session[:doc_capture_user_id] = user_id
+        stub_analytics
+      end
+
+      it 'succeeds' do
+        expect(@analytics).to receive(:track_event).
+          with("Frontend: #{event}", payload.merge(user_id: user_id))
+
+        action
+
+        expect(response).to have_http_status(:ok)
+        expect(json[:success]).to eq(true)
       end
     end
   end
