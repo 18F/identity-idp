@@ -65,7 +65,7 @@ module SamlIdpAuthConcern
       requested_aal_authn_context
     else
       sp_defined_aal_context = saml_request.requested_aal_authn_context
-      return sp_defined_aal_context if sp_defined_aal_context.present?
+      return sp_defined_aal_context if sp_defined_aal_context.presence
       requested_ial_authn_context
     end
   end

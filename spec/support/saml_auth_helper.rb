@@ -304,6 +304,26 @@ module SamlAuthHelper
     saml_get_auth(settings)
   end
 
+  # generates a SAML response and returns a decoded XML document
+  def generate_decoded_saml_response(user, settings = saml_settings)
+    auth_response = generate_saml_response(user, settings)
+    decode_saml_response(auth_response)
+  end
+
+  def decode_saml_response(auth_response)
+    saml_response_encoded = saml_response_encoded(auth_response)
+    saml_response_text = Base64.decode64(saml_response_encoded)
+    REXML::Document.new(saml_response_text)
+  end
+
+  def saml_response_encoded(auth_response)
+    Nokogiri::HTML(auth_response.body).css('#SAMLResponse').first.attributes['value'].to_s
+  end
+
+  def saml_response_authn_context(decoded_saml_response)
+    REXML::XPath.match(decoded_saml_response, '//AuthnContext/AuthnContextClassRef')[0][0]
+  end
+
   def saml_get_auth(settings)
     # GET redirect binding Authn Request
     get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)) }

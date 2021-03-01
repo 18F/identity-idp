@@ -237,117 +237,77 @@ describe SamlIdpController do
       end
     end
 
-    context 'authn_context is missing' do
-      context 'aal_authn_context_enabled is true' do
-        let(:aal_context_enabled) { 'true' }
+    context 'aal_authn_context_enabled is true' do
+      let(:user) { create(:user, :signed_up) }
+      let(:aal_context_enabled) { 'true' }
 
-        it 'defaults to AAL1' do
-          stub_analytics
-          allow(@analytics).to receive(:track_event)
+      context 'authn_context is missing' do
+        let(:auth_settings) { missing_authn_context_saml_settings }
 
-          user = create(:user, :signed_up)
-          auth_settings = missing_authn_context_saml_settings
-          IdentityLinker.new(user, auth_settings.issuer).link_identity
-          user.identities.last.update!(verified_attributes: ['email'])
-          generate_saml_response(user, auth_settings)
+        it 'returns saml response with default AAL in authn context' do
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
-
-          analytics_hash = {
-            success: true,
-            errors: {},
-            nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF],
-            service_provider: 'http://localhost:3000',
-            idv: false,
-            finish_profile: false,
-          }
-
-          expect(@analytics).to have_received(:track_event).
-            with(Analytics::SAML_AUTH, analytics_hash)
+          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
         end
       end
 
-      context 'aal_authn_context_enabled is false' do
-        let(:aal_context_enabled) { 'false' }
-
-        it 'defaults to IAL1' do
-          stub_analytics
-          allow(@analytics).to receive(:track_event)
-
-          user = create(:user, :signed_up)
-          auth_settings = missing_authn_context_saml_settings
-          IdentityLinker.new(user, auth_settings.issuer).link_identity
-          user.identities.last.update!(verified_attributes: ['email'])
-          generate_saml_response(user, auth_settings)
+      context 'authn_context is defined by sp' do
+        it 'returns default AAL authn_context when IAL1 is requested' do
+          auth_settings = requested_ial1_authn_context_saml_settings
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
-
-          analytics_hash = {
-            success: true,
-            errors: {},
-            nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [request_authn_context],
-            service_provider: 'http://localhost:3000',
-            idv: false,
-            finish_profile: false,
-          }
-
-          expect(@analytics).to have_received(:track_event).
-            with(Analytics::SAML_AUTH, analytics_hash)
+          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
         end
 
-        it 'returns the requested AAL level defined by sp' do
-          stub_analytics
-          allow(@analytics).to receive(:track_event)
-
-          user = create(:user, :signed_up)
+        it 'returns AAL2 authn_context when AAL2 is requested' do
           auth_settings = requested_aal2_authn_context_saml_settings
-          IdentityLinker.new(user, auth_settings.issuer).link_identity
-          user.identities.last.update!(verified_attributes: ['email'])
-          generate_saml_response(user, auth_settings)
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
           expect(response.status).to eq(200)
+          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
+        end
+      end
+    end
 
-          analytics_hash = {
-            success: true,
-            errors: {},
-            nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-            authn_context: [Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF],
-            service_provider: 'http://localhost:3000',
-            idv: false,
-            finish_profile: false,
-          }
+    context 'aal_authn_context_enabled is false' do
+      let(:user) { create(:user, :signed_up) }
+      let(:aal_context_enabled) { 'false' }
 
-          expect(@analytics).to have_received(:track_event).
-            with(Analytics::SAML_AUTH, analytics_hash)
+      context 'authn_context is missing' do
+        let(:auth_settings) { missing_authn_context_saml_settings }
+
+        it 'returns saml response with IAL1 in authn context' do
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
         end
       end
 
-      it 'returns the requested IAL level defined by sp' do
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
+      context 'authn_context is defined by sp' do
+        it 'returns IAL1 authn_context when IAL1 is requested' do
+          auth_settings = requested_ial1_authn_context_saml_settings
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
-        user = create(:user, :signed_up)
-        auth_settings = requested_ial1_authn_context_saml_settings
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
-        user.identities.last.update!(verified_attributes: ['email'])
-        generate_saml_response(user, auth_settings)
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
+        end
 
-        expect(response.status).to eq(200)
+        it 'returns AAL2 authn_context when AAL2 is requested' do
+          auth_settings = requested_aal2_authn_context_saml_settings
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
-        analytics_hash = {
-          success: true,
-          errors: {},
-          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF],
-          service_provider: 'http://localhost:3000',
-          idv: false,
-          finish_profile: false,
-        }
-
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
+        end
       end
     end
 
