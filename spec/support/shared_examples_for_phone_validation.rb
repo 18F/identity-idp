@@ -36,17 +36,6 @@ shared_examples 'a phone form' do
         expect(result.success?).to be true
       end
     end
-
-    context 'when phone is same as current user' do
-      it 'is valid' do
-        MfaContext.new(user).phone_configurations.first.phone = '+1 (703) 500-5000'
-        params[:phone] = MfaContext.new(user).phone_configurations.first.phone
-        result = subject.submit(params)
-
-        expect(result).to be_kind_of(FormResponse)
-        expect(result.success?).to be true
-      end
-    end
   end
 
   describe '#submit' do
