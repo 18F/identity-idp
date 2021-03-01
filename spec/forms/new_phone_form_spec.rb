@@ -153,7 +153,7 @@ describe NewPhoneForm do
 
     context 'when the user has already added the number' do
       it 'is invalid' do
-        phone = PhoneFormatter.format("+1 (954) 525-1262", country_code: 'US')
+        phone = PhoneFormatter.format('+1 (954) 525-1262', country_code: 'US')
         params[:phone] = phone
         phone_configuration = create(:phone_configuration, user: user, phone: phone)
 
@@ -165,7 +165,7 @@ describe NewPhoneForm do
       end
 
       it 'is invalid if database phone is not formatted' do
-        raw_phone = "+1 954 5251262"
+        raw_phone = '+1 954 5251262'
         phone = PhoneFormatter.format(raw_phone, country_code: 'US')
         params[:phone] = phone
         phone_configuration = create(:phone_configuration, user: user, phone: raw_phone)
