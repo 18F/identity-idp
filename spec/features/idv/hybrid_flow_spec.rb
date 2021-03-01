@@ -8,7 +8,7 @@ describe 'Hybrid Flow' do
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
     allow(AppConfig.env).to receive(:doc_auth_enable_presigned_s3_urls).and_return('true')
     allow(AppConfig.env).to receive(:document_capture_async_uploads_enabled).and_return('true')
-    allow(LoginGov::Hostdata::EC2).to receive(:load).
+    allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
   end
 

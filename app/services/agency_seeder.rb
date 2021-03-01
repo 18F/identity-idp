@@ -2,7 +2,7 @@
 class AgencySeeder
   def initialize(
     rails_env: Rails.env,
-    deploy_env: LoginGov::Hostdata.env,
+    deploy_env: Identity::Hostdata.env,
     yaml_path: 'config'
   )
     @rails_env = rails_env

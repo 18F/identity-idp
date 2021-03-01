@@ -90,8 +90,8 @@ feature 'Sign in' do
   end
 
   scenario 'user opts to add piv/cac card and has piv cac redirect in CSP' do
-    allow(LoginGov::Hostdata).to receive(:env).and_return('test')
-    allow(LoginGov::Hostdata).to receive(:domain).and_return('example.com')
+    allow(Identity::Hostdata).to receive(:env).and_return('test')
+    allow(Identity::Hostdata).to receive(:domain).and_return('example.com')
 
     perform_steps_to_get_to_add_piv_cac_during_sign_up
 

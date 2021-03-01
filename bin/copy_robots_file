@@ -2,6 +2,6 @@
 
 require 'login_gov/hostdata'
 
-if LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.env != 'prod'
+if Identity::Hostdata.in_datacenter? && Identity::Hostdata.env != 'prod'
   FileUtils.cp('public/ban-robots.txt', 'public/robots.txt')
 end

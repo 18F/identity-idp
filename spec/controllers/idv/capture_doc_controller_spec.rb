@@ -18,7 +18,7 @@ describe Idv::CaptureDocController do
   before do
     stub_analytics
     allow(@analytics).to receive(:track_event)
-    allow(LoginGov::Hostdata::EC2).to receive(:load).
+    allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', domain: 'example.com'))
   end
 

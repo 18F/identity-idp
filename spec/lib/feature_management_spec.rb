@@ -26,7 +26,7 @@ describe 'FeatureManagement', type: :feature do
 
       context 'when the server is in production' do
         before do
-          allow(LoginGov::Hostdata).to receive(:domain).and_return('login.gov')
+          allow(Identity::Hostdata).to receive(:domain).and_return('login.gov')
         end
 
         it 'does not prefill codes' do
@@ -36,7 +36,7 @@ describe 'FeatureManagement', type: :feature do
 
       context 'when the server is in sandbox' do
         before do
-          allow(LoginGov::Hostdata).to receive(:domain).and_return('identitysandbox.gov')
+          allow(Identity::Hostdata).to receive(:domain).and_return('identitysandbox.gov')
         end
 
         it 'prefills codes' do
@@ -142,10 +142,10 @@ describe 'FeatureManagement', type: :feature do
     end
 
     context 'in a deployed environment' do
-      before { expect(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true) }
+      before { expect(Identity::Hostdata).to receive(:in_datacenter?).and_return(true) }
 
       context 'in a non-prod env' do
-        before { expect(LoginGov::Hostdata).to receive(:env).and_return('staging') }
+        before { expect(Identity::Hostdata).to receive(:env).and_return('staging') }
 
         it 'is true' do
           expect(show_demo_banner?).to be_truthy
@@ -153,7 +153,7 @@ describe 'FeatureManagement', type: :feature do
       end
 
       context 'in production' do
-        before { expect(LoginGov::Hostdata).to receive(:env).and_return('prod') }
+        before { expect(Identity::Hostdata).to receive(:env).and_return('prod') }
 
         it 'is false' do
           expect(show_demo_banner?).to be_falsey
@@ -172,10 +172,10 @@ describe 'FeatureManagement', type: :feature do
     end
 
     context 'in a deployed environment' do
-      before { expect(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true) }
+      before { expect(Identity::Hostdata).to receive(:in_datacenter?).and_return(true) }
 
       context 'in the sandbox domain' do
-        before { expect(LoginGov::Hostdata).to receive(:domain).and_return('identitysandbox.gov') }
+        before { expect(Identity::Hostdata).to receive(:domain).and_return('identitysandbox.gov') }
 
         it 'is true' do
           expect(show_no_pii_banner?).to eq(true)
@@ -183,7 +183,7 @@ describe 'FeatureManagement', type: :feature do
       end
 
       context 'in the prod domain' do
-        before { expect(LoginGov::Hostdata).to receive(:domain).and_return('login.gov') }
+        before { expect(Identity::Hostdata).to receive(:domain).and_return('login.gov') }
 
         it 'is false' do
           expect(show_no_pii_banner?).to eq(false)

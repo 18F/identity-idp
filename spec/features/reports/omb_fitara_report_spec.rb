@@ -35,7 +35,7 @@ feature 'OMB Fitara compliance officer runs report' do
     let(:report_name) { 'omb-fitara-report' }
 
     it 'generates paths with date or latest prefix' do
-      expect(LoginGov::Hostdata).to receive(:env).and_return('ci')
+      expect(Identity::Hostdata).to receive(:env).and_return('ci')
 
       Timecop.travel Date.new(2018, 1, 2) do
         expect(Reports::OmbFitaraReport.new.send(:generate_s3_paths, report_name)).

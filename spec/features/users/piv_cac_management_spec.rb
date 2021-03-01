@@ -12,8 +12,8 @@ feature 'PIV/CAC Management' do
     let(:user) { create(:user, :signed_up, :with_phone, with: { phone: '+1 202-555-1212' }) }
 
     scenario 'allows association of a piv/cac with an account' do
-      allow(LoginGov::Hostdata).to receive(:env).and_return('test')
-      allow(LoginGov::Hostdata).to receive(:domain).and_return('example.com')
+      allow(Identity::Hostdata).to receive(:env).and_return('test')
+      allow(Identity::Hostdata).to receive(:domain).and_return('example.com')
 
       stub_piv_cac_service
 

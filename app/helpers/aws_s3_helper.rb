@@ -20,7 +20,7 @@ module AwsS3Helper
   end
 
   def host_env
-    LoginGov::Hostdata.env
+    Identity::Hostdata.env
   end
 
   def aws_account_id
@@ -32,9 +32,9 @@ module AwsS3Helper
   end
 
   def ec2_data
-    LoginGov::Hostdata::EC2.load
+    Identity::Hostdata::EC2.load
   rescue Net::OpenTimeout, Errno::EHOSTDOWN, Errno::EHOSTUNREACH => e
-    raise e if LoginGov::Hostdata.in_datacenter?
+    raise e if Identity::Hostdata.in_datacenter?
 
     OpenStruct.new(account_id: '123456789', region: 'us-west-2')
   end

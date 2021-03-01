@@ -34,7 +34,7 @@ class FeatureManagement
   end
 
   def self.prefill_otp_codes_allowed_in_sandbox?
-    LoginGov::Hostdata.domain == 'identitysandbox.gov' && telephony_test_adapter?
+    Identity::Hostdata.domain == 'identitysandbox.gov' && telephony_test_adapter?
   end
 
   def self.enable_load_testing_mode?
@@ -66,11 +66,11 @@ class FeatureManagement
   end
 
   def self.show_demo_banner?
-    LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.env != 'prod'
+    Identity::Hostdata.in_datacenter? && Identity::Hostdata.env != 'prod'
   end
 
   def self.show_no_pii_banner?
-    LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.domain != 'login.gov'
+    Identity::Hostdata.in_datacenter? && Identity::Hostdata.domain != 'login.gov'
   end
 
   def self.enable_saml_cert_rotation?
