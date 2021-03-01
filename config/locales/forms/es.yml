@@ -90,41 +90,13 @@ es:
     piv_cac_mfa:
       submit: Presentar tarjeta PIV/CAC
     piv_cac_setup:
-      certificate:
-        bad_html: Elija un certificado diferente de su PIV/CAC o póngase en contacto
-          con su administrador para asegurarse de que su certificado esté actualizado.
-        expired_html: Elija un certificado diferente de su PIV/CAC o póngase en contacto
-          con su administrador para asegurarse de que su certificado esté actualizado.
-        invalid_html: Elija un certificado diferente de su PIV/CAC o póngase en contacto
-          con su administrador para asegurarse de que su certificado esté actualizado.
-        none_html: Por favor, póngase en contacto con su administrador para asegurarse
-          de que su certificado esté actualizado.
-        not_auth_cert_html: Por favor, póngase en contacto con su administrador para
-          asegurarse de que su certificado esté actualizado.
-        ocsp_error_html: Estamos teniendo dificultades técnicas. Por favor, inténtelo
-          de nuevo más tarde.
-        revoked_html: Elija un certificado diferente de su PIV/CAC o póngase en contacto
-          con su administrador para asegurarse de que su certificado esté actualizado.
-        timeout_html: Estamos teniendo dificultades técnicas. Por favor, inténtelo
-          de nuevo más tarde.
-        unverified_html: Elija un certificado diferente de su PIV/CAC o póngase en
-          contacto con su administrador para asegurarse de que su certificado esté
-          actualizado.
-      choose_different_certificate: Elija un certificado diferente
       nickname: Apodo PIV/CAC
       no_thanks: No, gracias
-      piv_cac:
-        already_associated_html: Elige un certificado de una PIV/CAC distinta o ponte
-          en contacto con el administrador para confirmar que tu PIV/CAC está al día.
       piv_cac_intro_html: Le pediremos que presente su tarjeta PIV/CAC <strong>cada
         vez que inicie sesión</strong> como parte de la autenticación de dos factores.<br><br>Después
         de hacer clic en "Agregar PIV/CAC", su navegador le solicitará su PIN PIV/CAC
         y le pedirá que seleccione un certificado.
       submit: Agregar tarjeta PIV/CAC
-      token:
-        bad_html: Elige un certificado distinto desde tu PIV/CAC.
-        invalid_html: Elige un certificado distinto desde tu PIV/CAC.
-        missing_html: Elige un método diferente como tu segundo factor.
     registration:
       labels:
         email: Dirección de correo electrónico

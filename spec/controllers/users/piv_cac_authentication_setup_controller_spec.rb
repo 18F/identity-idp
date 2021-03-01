@@ -120,7 +120,7 @@ describe Users::PivCacAuthenticationSetupController do
         context 'when redirected with an error token' do
           it 'renders the error template' do
             get :new, params: { token: bad_token }
-            expect(response).to redirect_to setup_piv_cac_path
+            expect(response).to redirect_to setup_piv_cac_error_path(error: 'certificate.bad')
           end
 
           it 'resets the piv/cac session information' do

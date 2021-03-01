@@ -49,15 +49,6 @@ class UserPivCacSetupForm
     end
   end
 
-  def user_has_no_piv_cac
-    if TwoFactorAuthentication::PivCacPolicy.new(user).enabled?
-      self.error_type = 'user.piv_cac_associated'
-      false
-    else
-      true
-    end
-  end
-
   def extra_analytics_attributes
     {
       multi_factor_auth_method: 'piv_cac',
