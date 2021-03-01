@@ -59,7 +59,7 @@ describe 'Add a new phone number' do
     expect(hidden_select.value).to eq('JP')
   end
 
-  scenario 'adding a phone that is already on the user account does not add another phone config' do
+  scenario 'adding a phone that is already on the user account shows error message' do
     user = create(:user, :signed_up)
     phone = user.phone_configurations.first.phone
 
@@ -67,11 +67,8 @@ describe 'Add a new phone number' do
     click_on "+ #{t('account.index.phone_add')}"
     fill_in :new_phone_form_phone, with: phone
     click_continue
-    fill_in_code_with_last_phone_otp
-    click_submit_default
 
-    expect(page).to have_current_path(account_path)
-    expect(user.reload.phone_configurations.count).to eq(1)
+    expect(page).to have_content(I18n.t('errors.messages.phone_duplicate'))
   end
 
   let(:telephony_gem_voip_number) { '+12255551000' }
