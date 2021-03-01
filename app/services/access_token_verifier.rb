@@ -27,7 +27,7 @@ class AccessTokenVerifier
   end
 
   def load_identity(access_token)
-    identity = Identity.where(access_token: access_token).take
+    identity = ServiceProviderIdentity.where(access_token: access_token).take
 
     if identity && Pii::SessionStore.new(identity.rails_session_id).ttl.positive?
       @identity = identity

@@ -73,8 +73,8 @@ describe User do
       user.uuid = nil
 
       expect { user.save }.
-        to raise_error(ActiveRecord::StatementInvalid,
-                       /null value in column "uuid" violates not-null constraint/)
+        to raise_error(ActiveRecord::NotNullViolation,
+                       /null value in column "uuid".*violates not-null constraint/)
     end
 
     it 'uses a DB index to enforce uniqueness' do
@@ -158,10 +158,10 @@ describe User do
   context 'when identities are present' do
     let(:user) { create(:user, :signed_up) }
     let(:active_identity) do
-      Identity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
+      ServiceProviderIdentity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
     end
     let(:inactive_identity) do
-      Identity.create(service_provider: 'entity_id2', session_uuid: nil)
+      ServiceProviderIdentity.create(service_provider: 'entity_id2', session_uuid: nil)
     end
 
     describe '#active_identities' do
@@ -177,12 +177,12 @@ describe User do
     let(:user) { create(:user, :signed_up) }
 
     before do
-      user.identities << Identity.create(
+      user.identities << ServiceProviderIdentity.create(
         service_provider: 'first',
         last_authenticated_at: Time.zone.now - 1.hour,
         session_uuid: SecureRandom.uuid,
       )
-      user.identities << Identity.create(
+      user.identities << ServiceProviderIdentity.create(
         service_provider: 'last',
         last_authenticated_at: Time.zone.now,
         session_uuid: SecureRandom.uuid,
@@ -211,12 +211,12 @@ describe User do
   describe 'deleting identities' do
     it 'does not delete identities when the user is destroyed preventing uuid reuse' do
       user = create(:user, :signed_up)
-      user.identities << Identity.create(
+      user.identities << ServiceProviderIdentity.create(
         service_provider: 'entity_id', session_uuid: SecureRandom.uuid,
       )
       user_id = user.id
       user.destroy!
-      expect(Identity.where(user_id: user_id).length).to eq 1
+      expect(ServiceProviderIdentity.where(user_id: user_id).length).to eq 1
     end
   end
 

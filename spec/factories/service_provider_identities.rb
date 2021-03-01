@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :identity do
+  factory :service_provider_identity do
     uuid { SecureRandom.uuid }
     service_provider { 'https://serviceprovider.com' }
   end

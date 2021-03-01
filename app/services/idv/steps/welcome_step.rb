@@ -26,8 +26,6 @@ module Idv
       def no_camera_redirect
         redirect_to idv_doc_auth_errors_no_camera_url
         msg = 'Doc Auth error: Javascript could not detect camera on mobile device.'
-
-        NewRelic::Agent.notice_error(StandardError.new(msg))
         failure(msg)
       end
     end

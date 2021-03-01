@@ -1,21 +1,22 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: 149b5b480f0319ec39410e497bb4bbffd1652014
-  tag: v3.4.1
+  revision: dbf3d2e102603530a29cb43308b9aa639efaea1f
+  tag: v3.6.0
   specs:
-    aamva (3.4.1)
+    aamva (3.6.0)
       dotenv
       faraday
       hashie
+      proofer (>= 2.7.1)
       retries
       xmldsig
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: 4e1e09d7e5eb673dfbc1e301feacc74859d25d29
-  tag: v0.3.3
+  revision: 3b2c5997a62d7bf5f6114a55d41180f4bd1ae18e
+  tag: v0.4.1
   specs:
-    identity-doc-auth (0.3.3)
+    identity-doc-auth (0.4.1)
       activesupport
       faraday
 
@@ -29,23 +30,33 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 8c16776e19b211d15bda7246d99ff95155d60c11
-  ref: 8c16776e19b211d15bda7246d99ff95155d60c11
+  revision: eb8aa1657173af64fd9fcad2ab4df2a5741eb51d
+  ref: eb8aa1657173af64fd9fcad2ab4df2a5741eb51d
   specs:
-    identity-idp-functions (0.10.0)
+    identity-idp-functions (0.11.0)
+      aamva (>= 3.5.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
       retries (>= 0.0.5)
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: dd16ec95e6dba972ab61e90f650e573ab071e83f
-  tag: v2.5.1.pre
+  revision: 415a0e970b6ff1ab3262fb4874164c4dfd156120
+  tag: v2.7.0
   specs:
-    lexisnexis (2.5.1.pre)
+    lexisnexis (2.7.0)
       activesupport
       dotenv
       faraday
+
+GIT
+  remote: https://github.com/18F/identity-logging.git
+  revision: 7a341c9784275f44b0b0c3456a00a51fa79f4241
+  tag: v0.1.0
+  specs:
+    identity-logging (0.1.0)
+      lograge (>= 0.11.2)
+      rails (>= 6.1)
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
@@ -758,6 +769,7 @@ DEPENDENCIES
   identity-doc-auth!
   identity-hostdata!
   identity-idp-functions!
+  identity-logging!
   identity-telephony!
   identity_validations!
   irb

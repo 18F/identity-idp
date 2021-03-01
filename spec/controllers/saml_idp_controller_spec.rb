@@ -50,7 +50,7 @@ describe SamlIdpController do
       get :metadata
     end
 
-    let(:org_name) { '18F' }
+    let(:org_name) { 'login.gov' }
     let(:xmldoc) { SamlResponseDoc.new('controller', 'metadata', response) }
 
     it 'renders XML inline' do
@@ -582,7 +582,7 @@ describe SamlIdpController do
 
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
-        head '/api/saml/auth2019?SAMLRequest=bang!'
+        head '/api/saml/auth2021?SAMLRequest=bang!'
 
         expect(response.status).to eq(403)
       end
@@ -738,7 +738,7 @@ describe SamlIdpController do
           element = signature.at('//ds:X509Certificate',
                                  ds: Saml::XML::Namespaces::SIGNATURE)
 
-          crt = File.read(Rails.root.join('certs', 'saml2019.crt'))
+          crt = File.read(Rails.root.join('certs', 'saml2021.crt'))
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 

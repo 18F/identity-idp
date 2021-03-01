@@ -5,6 +5,7 @@
 # bin/ directory.
 
 CONFIG = config/application.yml
+HOST ?= localhost
 PORT ?= 3000
 
 all: check
@@ -46,8 +47,23 @@ test: $(CONFIG)
 fast_test:
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
+tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt:
+	mkdir -p tmp
+	openssl req \
+		-newkey rsa:2048 \
+		-x509 \
+		-sha256 \
+		-nodes \
+		-days 365 \
+		-subj "/C=US/ST=District of Columbia/L=Washington/O=GSA/OU=Login.gov/CN=$(HOST):$(PORT)"  \
+		-keyout tmp/$(HOST)-$(PORT).key \
+		-out tmp/$(HOST)-$(PORT).crt
+
 run:
 	foreman start -p $(PORT)
+
+run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
+	rails s -b "ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt"
 
 .PHONY: setup all lint run test check brakeman
 

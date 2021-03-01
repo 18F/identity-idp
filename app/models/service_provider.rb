@@ -6,6 +6,13 @@ class ServiceProvider < ApplicationRecord
 
   belongs_to :agency
 
+  # rubocop:disable Rails/HasManyOrHasOneDependent
+  has_many :identities, inverse_of: :service_provider_record,
+                        foreign_key: 'service_provider',
+                        primary_key: 'issuer',
+                        class_name: 'ServiceProviderIdentity'
+  # rubocop:enable Rails/HasManyOrHasOneDependent
+
   # Do not define validations in this model.
   # See https://github.com/18F/identity_validations
   include IdentityValidations::ServiceProviderValidation

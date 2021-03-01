@@ -35,23 +35,7 @@ en:
       add: Add your PIV or CAC
       new: Use your PIV/CAC to sign in to your account
     piv_cac_setup:
-      certificate:
-        bad: PIV/CAC certificate error
-        expired: PIV/CAC certificate error
-        invalid: PIV/CAC certificate error
-        none: PIV/CAC certificate error
-        not_auth_cert: PIV/CAC authentication certificate is required
-        ocsp_error: PIV/CAC OCSP certificate error
-        revoked: PIV/CAC certificate error
-        timeout: PIV/CAC certificate timeout error
-        unverified: PIV/CAC certificate error
       new: Use your PIV/CAC card to secure your account
-      piv_cac:
-        already_associated: This card has already been added to an account
-      token:
-        bad: Internal error
-        invalid: PIV/CAC certificate error
-        missing: Internal error
     present_piv_cac: Present your PIV/CAC
     present_webauthn: Connect your hardware security key
     reactivate_account: Reactivate your account

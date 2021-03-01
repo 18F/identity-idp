@@ -15,11 +15,20 @@ module Users
     def new
       if params.key?(:token)
         process_piv_cac_setup
+      # this branch is deprecated, remove it
       elsif flash[:error_type].present?
         render_error
       else
         render_prompt
       end
+    end
+
+    def error
+      @presenter = PivCacErrorPresenter.new(
+        error: params[:error],
+        view: view_context,
+        try_again_url: setup_piv_cac_url,
+      )
     end
 
     def delete
@@ -66,7 +75,12 @@ module Users
     end
 
     def render_error
-      @presenter = PivCacAuthenticationSetupErrorPresenter.new(error: flash[:error_type])
+      @presenter = PivCacErrorPresenter.new(
+        error: flash[:error_type],
+        view: view_context,
+        try_again_url: setup_piv_cac_url,
+      )
+
       render :error
     end
 
@@ -113,8 +127,7 @@ module Users
         render_prompt
       else
         clear_piv_cac_information
-        flash[:error_type] = user_piv_cac_form.error_type
-        redirect_to setup_piv_cac_url
+        redirect_to setup_piv_cac_error_url(error: user_piv_cac_form.error_type)
       end
     end
 

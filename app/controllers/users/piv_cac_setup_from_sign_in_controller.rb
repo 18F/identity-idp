@@ -10,8 +10,6 @@ module Users
     def prompt
       if params.key?(:token)
         process_piv_cac_setup
-      elsif flash[:error_type].present?
-        render_error
       else
         render_prompt
       end
@@ -29,11 +27,6 @@ module Users
     end
 
     private
-
-    def render_error
-      @presenter = PivCacAuthenticationSetupErrorPresenter.new(error: flash[:error_type])
-      render :error
-    end
 
     def render_prompt
       analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
@@ -60,16 +53,7 @@ module Users
     end
 
     def process_invalid_submission
-      redirect_to case user_piv_cac_form.error_type
-                  when 'certificate.timeout'
-                    flash[:error] = t('titles.piv_cac_setup.certificate.timeout')
-                    login_piv_cac_temporary_error_url
-                  when 'certificate.ocsp_error'
-                    flash[:error] = t('titles.piv_cac_setup.certificate.ocsp_error')
-                    login_piv_cac_temporary_error_url
-                  else
-                    login_piv_cac_did_not_work_url
-                  end
+      redirect_to login_piv_cac_error_url(error: user_piv_cac_form.error_type)
     end
 
     def process_valid_submission

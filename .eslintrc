@@ -25,6 +25,7 @@
     "indent": "off",
     "max-classes-per-file": "off",
     "newline-per-chained-call": "off",
+    "no-console": "error",
     "no-empty": ["error", { "allowEmptyCatch": true }],
     "no-param-reassign": ["off", "never"],
     "no-confusing-arrow": "off",
@@ -36,12 +37,12 @@
         "message": "Use CustomEvent constructor with polyfill for Internet Explorer"
       },
       {
-        "selector": "ArrayExpression > SpreadElement",
-        "message": "Don't use array spread, issue with IE 11 (use Array.from instead)"
-      },
-      {
         "selector": "AssignmentExpression[left.property.name='href'][right.type=/(Template)?Literal/]",
         "message": "Do not assign window.location.href to a string or string template to avoid losing i18n parameters"
+      },
+      {
+        "selector": "CallExpression[callee.object.name=/^(it|describe|context)$/][callee.property.name='only'] > MemberExpression",
+        "message": "Test exclusivity should not be committed"
       }
     ],
     "no-unused-expressions": "off",
@@ -75,8 +76,7 @@
     {
       "files": "spec/javascripts/**/*",
       "rules": {
-        "react/jsx-props-no-spreading": "off",
-        "no-restricted-syntax": "off"
+        "react/jsx-props-no-spreading": "off"
       }
     }
   ]

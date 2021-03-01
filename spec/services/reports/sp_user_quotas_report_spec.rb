@@ -20,9 +20,10 @@ describe Reports::SpUserQuotasReport do
 
   def expect_report_to_run_correctly_for_fiscal_start_year_month_day(year, month, day)
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
-    Identity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
-    Identity.create(user_id: 2, service_provider: issuer, uuid: 'foo2')
-    Identity.create(user_id: 3, service_provider: issuer, uuid: 'foo3', verified_at: Time.zone.now)
+    ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
+    ServiceProviderIdentity.create(user_id: 2, service_provider: issuer, uuid: 'foo2')
+    ServiceProviderIdentity.create(user_id: 3, service_provider: issuer, uuid: 'foo3',
+                                   verified_at: Time.zone.now)
     results = [{ issuer: issuer, app_id: app_id, ial2_total: 1, percent_ial2_quota: 0 }].to_json
 
     Timecop.travel Date.new(year, month, day) do

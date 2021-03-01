@@ -5,6 +5,7 @@ import sinonChai from 'sinon-chai';
 import { createDOM, useCleanDOM } from './support/dom';
 import { chaiConsoleSpy, useConsoleLogSpy } from './support/console';
 import { createObjectURLAsDataURL } from './support/file';
+import { useBrowserCompatibleEncrypt } from './support/crypto';
 
 chai.use(dirtyChai);
 chai.use(sinonChai);
@@ -34,3 +35,4 @@ global.self = window;
 
 useCleanDOM();
 useConsoleLogSpy();
+useBrowserCompatibleEncrypt();

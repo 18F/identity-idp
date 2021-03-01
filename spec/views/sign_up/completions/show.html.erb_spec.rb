@@ -103,7 +103,7 @@ describe 'sign_up/completions/show.html.erb' do
         friendly_name: "SP app #{index}",
         agency: create(:agency, name: "Agency #{index}"),
       )
-      create(:identity, service_provider: sp.issuer, user: user)
+      create(:service_provider_identity, service_provider: sp.issuer, user: user)
     end
   end
 end

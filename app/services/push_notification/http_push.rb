@@ -19,7 +19,7 @@ module PushNotification
     def deliver
       event.user.
         service_providers.
-        merge(Identity.not_deleted).
+        merge(ServiceProviderIdentity.not_deleted).
         with_push_notification_urls.each do |service_provider|
           deliver_one(service_provider)
         end
@@ -74,8 +74,14 @@ module PushNotification
     end
 
     def agency_uuid(service_provider)
-      AgencyIdentity.find_by(user_id: event.user.id, agency_id: service_provider.agency_id)&.uuid ||
-        Identity.find_by(user_id: event.user.id, service_provider: service_provider.issuer)&.uuid
+      AgencyIdentity.find_by(
+        user_id: event.user.id,
+        agency_id: service_provider.agency_id,
+      )&.uuid ||
+        ServiceProviderIdentity.find_by(
+          user_id: event.user.id,
+          service_provider: service_provider.issuer,
+        )&.uuid
     end
   end
 end

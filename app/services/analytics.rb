@@ -95,7 +95,6 @@ class Analytics
   EXPIRED_LETTERS = 'Expired Letters'.freeze
   FORGET_ALL_BROWSERS_SUBMITTED = 'Forget All Browsers Submitted'.freeze
   FORGET_ALL_BROWSERS_VISITED = 'Forget All Browsers Visited'.freeze
-  FRONTEND_BROWSER_CAPABILITIES = 'Frontend: Browser capabilities'.freeze
   IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended
   IAL2_RECOVERY_REQUEST = 'IAL2 Recovery Request'.freeze
   IAL2_RECOVERY_REQUEST_VISITED = 'IAL2 Recovery Request Visited'.freeze
@@ -109,6 +108,7 @@ class Analytics
   IDV_COME_BACK_LATER_VISIT = 'IdV: come back later visited'.freeze
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR = 'IdV: doc auth image upload vendor submitted'.freeze
+  IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION = 'IdV: doc auth image upload vendor pii validation'.freeze
   IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'.freeze

@@ -21,7 +21,7 @@ describe 'accounts/connected_accounts/show.html.erb' do
 
   context 'with a connected app that is a NullServiceProvider' do
     before do
-      user.identities << create(:identity, :active, service_provider: 'aaaaa')
+      user.identities << create(:service_provider_identity, :active, service_provider: 'aaaaa')
     end
 
     it 'renders' do

@@ -8,7 +8,7 @@ describe 'Account history' do
   end
   let(:identity_with_link) do
     create(
-      :identity,
+      :service_provider_identity,
       :active,
       user: user,
       last_authenticated_at: Time.zone.now - 80.days,
@@ -20,7 +20,7 @@ describe 'Account history' do
   end
   let(:identity_without_link) do
     create(
-      :identity,
+      :service_provider_identity,
       :active,
       user: user,
       last_authenticated_at: Time.zone.now - 50.days,
@@ -29,9 +29,13 @@ describe 'Account history' do
   end
   let(:account_created_timestamp) { account_created_event.decorate.happened_at_in_words }
   let(:usps_mail_sent_timestamp) { usps_mail_sent_event.decorate.happened_at_in_words }
-  let(:identity_with_link_timestamp) { identity_with_link.decorate.happened_at_in_words }
+  let(:identity_with_link_timestamp) do
+    identity_with_link.happened_at.strftime(t('time.formats.event_timestamp'))
+  end
   let(:usps_mail_sent_again_timestamp) { usps_mail_sent_again_event.decorate.happened_at_in_words }
-  let(:identity_without_link_timestamp) { identity_without_link.decorate.happened_at_in_words }
+  let(:identity_without_link_timestamp) do
+    identity_without_link.happened_at.strftime(t('time.formats.event_timestamp'))
+  end
   let(:new_personal_key_event) do
     create(:event, event_type: :new_personal_key,
                    user: user, created_at: Time.zone.now - 40.days)

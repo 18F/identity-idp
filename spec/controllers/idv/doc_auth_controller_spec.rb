@@ -161,8 +161,6 @@ describe Idv::DocAuthController do
         step_count: 1,
       }
 
-      expect(NewRelic::Agent).to receive(:notice_error)
-
       put :update, params: {
         step: 'welcome',
         ial2_consent_given: true,
