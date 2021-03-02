@@ -142,6 +142,22 @@ RSpec.describe EncryptedRedisStructStorage do
 
         expect(ttl).to be <= 60
       end
+
+      context 'with funky ASCII data inside the struct' do
+        let(:data) do
+          "HTTP Status 401 \xE2\x80\x93 Unauthorized".force_encoding('ASCII-8BIT').freeze
+        end
+
+        it 'converts the data and stores it' do
+          EncryptedRedisStructStorage.store(
+            struct_class.new(id: id, a: { some: { nested: [data] }}),
+          )
+
+          loaded = EncryptedRedisStructStorage.load(id, type: struct_class)
+
+          expect(loaded.a.dig(:some, :nested).first).to eq('HTTP Status 401 – Unauthorized')
+        end
+      end
     end
   end
 
