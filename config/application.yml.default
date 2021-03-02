@@ -43,6 +43,8 @@ asset_host:
 async_wait_timeout_seconds: '60'
 available_locales: en es fr
 aws_http_timeout: '5'
+aws_http_retry_limit: '2'
+aws_http_retry_max_delay: '1'
 aws_logo_bucket:
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
