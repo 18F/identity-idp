@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_23_232534) do
+ActiveRecord::Schema.define(version: 2021_03_02_144414) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -65,17 +65,6 @@ ActiveRecord::Schema.define(version: 2021_02_23_232534) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "created_at"], name: "index_auth_app_configurations_on_user_id_and_created_at", unique: true
     t.index ["user_id", "name"], name: "index_auth_app_configurations_on_user_id_and_name", unique: true
-  end
-
-  create_table "authorizations", force: :cascade do |t|
-    t.string "provider", limit: 255
-    t.string "uid", limit: 255
-    t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "authorized_at"
-    t.index ["provider", "uid"], name: "index_authorizations_on_provider_and_uid"
-    t.index ["user_id"], name: "index_authorizations_on_user_id"
   end
 
   create_table "backup_code_configurations", force: :cascade do |t|
