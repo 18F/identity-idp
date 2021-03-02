@@ -6,7 +6,11 @@ RSpec.describe ServiceProviderSeeder do
   let(:deploy_env) { 'int' }
 
   describe '#run' do
-    before { ServiceProvider.delete_all }
+    before do
+      Agreements::IntegrationUsage.delete_all
+      Agreements::Integration.delete_all
+      ServiceProvider.delete_all
+    end
 
     subject(:run) { instance.run }
 

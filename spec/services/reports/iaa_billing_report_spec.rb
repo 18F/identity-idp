@@ -106,6 +106,8 @@ describe Reports::IaaBillingReport do
   let(:now) { Time.zone.parse('2020-06-15') }
 
   before do
+    Agreements::IntegrationUsage.delete_all
+    Agreements::Integration.delete_all
     ServiceProvider.delete_all
     Timecop.travel now
   end
