@@ -8,6 +8,7 @@ import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
+import useIfStillMounted from '../hooks/use-if-still-mounted';
 
 /**
  * @typedef FormStepError
@@ -118,6 +119,7 @@ function FormSteps({
   const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
+  const ifStillMounted = useIfStillMounted();
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
       getFieldActiveErrorFieldElement(activeErrors, fields.current)?.focus();
@@ -226,15 +228,15 @@ function FormSteps({
         key={name}
         value={values}
         errors={activeErrors}
-        onChange={(nextValuesPatch) => {
+        onChange={ifStillMounted((nextValuesPatch) => {
           setActiveErrors((prevActiveErrors) =>
             prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),
           );
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
-        }}
-        onError={(field, error) => {
+        })}
+        onError={ifStillMounted((field, error) => {
           setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
-        }}
+        })}
         registerField={(field, options = {}) => {
           if (!fields.current[field]) {
             fields.current[field] = {
