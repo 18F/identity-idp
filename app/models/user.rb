@@ -26,7 +26,6 @@ class User < ApplicationRecord
 
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
-  has_many :authorizations, dependent: :destroy
   # rubocop:disable Rails/HasManyOrHasOneDependent
   # identities need to be orphaned to prevent UUID reuse
   has_many :identities, class_name: 'ServiceProviderIdentity'
