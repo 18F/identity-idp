@@ -9,7 +9,7 @@ class FrontendLogController < ApplicationController
 
   def create
     event = "Frontend: #{log_params[:event]}"
-    analytics.track_event(event, log_params[:payload].to_h.merge(user_id: effective_user_id))
+    analytics.track_event(event, log_params[:payload].to_h)
 
     render json: { success: true }, status: :ok
   end
@@ -20,8 +20,12 @@ class FrontendLogController < ApplicationController
     params.permit(:event, payload: {})
   end
 
+  def analytics_user
+    effective_user || super
+  end
+
   def check_user_authenticated
-    return if effective_user_id
+    return if effective_user
 
     render json: { success: false }, status: :unauthorized
   end
