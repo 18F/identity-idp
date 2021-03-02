@@ -30,7 +30,7 @@ function FormErrorMessage({ error }) {
   }
 
   if (error instanceof BackgroundEncryptedUploadError) {
-    return <>{t('errors.doc_auth.acuant_network_error')}</>;
+    return <>{t('errors.doc_auth.upload_error')}</>;
   }
 
   return null;
