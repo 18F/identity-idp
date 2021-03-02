@@ -39,9 +39,9 @@ module EncryptedRedisStructStorage
 
     utf_8_encode_strs = proc do |value|
       if value.is_a?(String)
-        value.force_encoding('UTF-8')
+        value.dup.force_encoding('UTF-8')
       elsif value.is_a?(Array)
-        value.map!(&utf_8_encode_strs)
+        value.map(&utf_8_encode_strs)
       elsif value.is_a?(Hash)
         value.transform_values!(&utf_8_encode_strs)
       else
