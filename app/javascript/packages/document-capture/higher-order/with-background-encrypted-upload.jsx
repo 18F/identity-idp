@@ -67,7 +67,7 @@ const withBackgroundEncryptedUpload = (Component) =>
    */
   ({ onChange, onError, ...props }) => {
     const { backgroundUploadURLs, backgroundUploadEncryptKey } = useContext(UploadContext);
-    const { addPageAction } = useContext(AnalyticsContext);
+    const { addPageAction, noticeError } = useContext(AnalyticsContext);
 
     /**
      * @param {Record<string, string|Blob|null|undefined>} nextValues Next values.
@@ -85,13 +85,30 @@ const withBackgroundEncryptedUpload = (Component) =>
             iv,
             value,
           )
-            .then((encryptedValue) =>
-              window.fetch(url, {
+            .catch((error) => {
+              addPageAction({
+                label: 'IdV: document capture async upload encryption',
+                payload: {
+                  success: false,
+                },
+              });
+              noticeError(error);
+              throw error;
+            })
+            .then((encryptedValue) => {
+              addPageAction({
+                label: 'IdV: document capture async upload encryption',
+                payload: {
+                  success: true,
+                },
+              });
+
+              return window.fetch(url, {
                 method: 'PUT',
                 body: encryptedValue,
                 headers: { 'Content-Type': 'application/octet-stream' },
-              }),
-            )
+              });
+            })
             .then((response) => {
               const traceId = response.headers.get('X-Amzn-Trace-Id');
               addPageAction({
