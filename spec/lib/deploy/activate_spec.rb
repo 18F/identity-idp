@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'login_gov/hostdata/fake_s3_client'
+require 'identity/hostdata/fake_s3_client'
 require Rails.root.join('lib', 'deploy', 'activate.rb')
 
 describe Deploy::Activate do
@@ -7,7 +7,7 @@ describe Deploy::Activate do
   let(:example_application_yaml_path) { Rails.root.join('config', 'application.yml.default') }
 
   around(:each) do |ex|
-    LoginGov::Hostdata.reset!
+    Identity::Hostdata.reset!
 
     Dir.mktmpdir do |dir|
       @root = dir
@@ -16,7 +16,7 @@ describe Deploy::Activate do
   end
 
   let(:logger) { Logger.new('/dev/null') }
-  let(:s3_client) { LoginGov::Hostdata::FakeS3Client.new }
+  let(:s3_client) { Identity::Hostdata::FakeS3Client.new }
   let(:set_up_files!) {}
 
   let(:result_yaml_path) { File.join(root, 'config', 'application.yml') }
@@ -32,7 +32,7 @@ describe Deploy::Activate do
 
   context 'in a deployed production environment' do
     before do
-      allow(LoginGov::Hostdata).to receive(:env).and_return('int')
+      allow(Identity::Hostdata).to receive(:env).and_return('int')
 
       stub_request(:get, 'http://169.254.169.254/2016-09-02/dynamic/instance-identity/document').
         to_return(body: {

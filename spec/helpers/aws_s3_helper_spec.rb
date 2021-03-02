@@ -19,7 +19,7 @@ describe 'AwsS3Helper' do
   end
 
   before do
-    allow(LoginGov::Hostdata::EC2).to receive(:load).
+    allow(Identity::Hostdata::EC2).to receive(:load).
       and_raise(Net::OpenTimeout)
   end
 
@@ -28,7 +28,7 @@ describe 'AwsS3Helper' do
       client_stub = Aws::S3::Client.new(region: region, stub_responses: true)
       client_stub.stub_responses(:list_buckets, { buckets: [{ name: bucket }] })
       resource_stub = Aws::S3::Resource.new(client: client_stub)
-      allow(LoginGov::Hostdata).
+      allow(Identity::Hostdata).
         to receive(:env).and_return(env)
       allow(helper).to receive(:s3_resource).and_return(resource_stub)
     end

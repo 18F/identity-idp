@@ -1,6 +1,6 @@
 require 'active_support/core_ext/hash/deep_merge'
 require 'logger'
-require 'login_gov/hostdata'
+require 'identity/hostdata'
 require 'subprocess'
 require 'yaml'
 
@@ -91,7 +91,7 @@ module Deploy
     end
 
     def download_application_yml_from_s3
-      LoginGov::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
+      Identity::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
         '/%<env>s/idp/v1/application.yml' => env_yaml_path,
       )
     end
@@ -112,7 +112,7 @@ module Deploy
     def download_file(src, dest)
       ec2_region = ec2_data.region
 
-      LoginGov::Hostdata::S3.new(
+      Identity::Hostdata::S3.new(
         bucket: "login-gov.secrets.#{ec2_data.account_id}-#{ec2_region}",
         env: nil,
         region: ec2_region,
@@ -122,7 +122,7 @@ module Deploy
     end
 
     def ec2_data
-      @ec2_data ||= LoginGov::Hostdata::EC2.load
+      @ec2_data ||= Identity::Hostdata::EC2.load
     end
 
     def update_file_permissions(path)

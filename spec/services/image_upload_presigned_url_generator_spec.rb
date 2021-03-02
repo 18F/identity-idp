@@ -30,7 +30,7 @@ RSpec.describe ImageUploadPresignedUrlGenerator do
       let(:doc_auth_enable_presigned_s3_urls) { 'true' }
 
       before do
-        expect(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(in_datacenter)
+        expect(Identity::Hostdata).to receive(:in_datacenter?).and_return(in_datacenter)
       end
 
       context 'when run locally' do

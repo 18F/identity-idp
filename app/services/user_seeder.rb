@@ -10,7 +10,7 @@ class UserSeeder
     validate_csv_headers
     @email_domain = options[:email_domain]
     validate_email_domain
-    @deploy_env = options[:deploy_env] || LoginGov::Hostdata.env
+    @deploy_env = options[:deploy_env] || Identity::Hostdata.env
   rescue Errno::ENOENT
     raise ArgumentError.new("#{csv_file} does not exist")
   end

@@ -5,8 +5,8 @@ EXCEPTION_RECIPIENTS = AppConfig.env.exception_recipients.split(',').freeze
 ExceptionNotification.configure do |config|
   config.add_notifier(
     :email,
-    email_prefix: "[#{LoginGov::Hostdata.domain} EXCEPTION - #{LoginGov::Hostdata.env}] ",
-    sender_address: %("Exception Notifier" <notifier@#{LoginGov::Hostdata.domain}>),
+    email_prefix: "[#{Identity::Hostdata.domain} EXCEPTION - #{Identity::Hostdata.env}] ",
+    sender_address: %("Exception Notifier" <notifier@#{Identity::Hostdata.domain}>),
     exception_recipients: EXCEPTION_RECIPIENTS,
     error_grouping: true,
     sections: %w[request backtrace session],
