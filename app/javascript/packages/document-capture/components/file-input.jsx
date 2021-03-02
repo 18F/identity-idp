@@ -132,6 +132,17 @@ const FileInput = forwardRef((props, ref) => {
         setOwnErrorMessage(nextOwnErrorMessage);
         onError(nextOwnErrorMessage);
       }
+
+      // This is not a controlled component in the sense that the value is reflected onto the input
+      // element. Clear the value being set, so that the browser doesn't suppress a change event
+      // based on what it assumes the current value to be, as it might not be the same as the
+      // component's `value`, especially when the value is modified externally.
+      //
+      // "In React, an <input type="file" /> is always an uncontrolled component because its value
+      // can only be set by a user, and not programmatically."
+      //
+      // See: https://reactjs.org/docs/uncontrolled-components.html#the-file-input-tag
+      event.target.value = '';
     } else {
       onChange(null);
     }
