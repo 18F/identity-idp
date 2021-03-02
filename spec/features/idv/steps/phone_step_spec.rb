@@ -178,7 +178,7 @@ feature 'idv phone step' do
       start_idv_from_sp
       complete_idv_steps_before_phone_step
 
-      2.times do
+      4.times do
         fill_out_phone_form_fail
         click_idv_continue
 

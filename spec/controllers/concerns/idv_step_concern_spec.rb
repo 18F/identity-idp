@@ -167,7 +167,7 @@ describe 'IdvStepConcern' do
     Throttle.create(
       throttle_type: 5,
       user_id: user.id,
-      attempts: 3,
+      attempts: 5,
       attempted_at: attempted_at,
     )
   end
