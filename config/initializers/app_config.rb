@@ -1,6 +1,8 @@
 require Rails.root.join('lib', 'config_validator.rb')
 
 AppConfig.require_keys(%w[
+                         acuant_max_attempts
+                         acuant_attempt_window_in_minutes
                          async_wait_timeout_seconds
                          attribute_encryption_key
                          database_statement_timeout
@@ -15,6 +17,10 @@ AppConfig.require_keys(%w[
                          enable_usps_verification
                          exception_recipients
                          hmac_fingerprinter_key
+                         idv_attempt_window_in_hours
+                         idv_max_attempts
+                         idv_send_link_attempt_window_in_minutes
+                         idv_send_link_max_attempts
                          issuers_with_email_nameid_format
                          logins_per_ip_limit
                          logins_per_ip_period
@@ -37,11 +43,17 @@ AppConfig.require_keys(%w[
                          recovery_code_length
                          recurring_jobs_disabled_names
                          redis_url
+                         reg_confirmed_email_max_attempts
+                         reg_confirmed_email_window_in_minutes
+                         reg_unconfirmed_email_max_attempts
+                         reg_unconfirmed_email_window_in_minutes
                          requests_per_ip_limit
                          requests_per_ip_period
                          requests_per_ip_track_only_mode
                          remember_device_expiration_hours_aal_1
                          remember_device_expiration_hours_aal_2
+                         reset_password_email_max_attempts
+                         reset_password_email_window_in_minutes
                          saml_endpoint_configs
                          s3_report_bucket_prefix
                          s3_reports_enabled
