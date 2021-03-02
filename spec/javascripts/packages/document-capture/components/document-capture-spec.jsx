@@ -532,7 +532,8 @@ describe('document-capture/components/document-capture', () => {
         submit();
         expect(upload).not.to.have.been.called();
         completeUploadAsSuccess();
-        await new Promise((resolve) => upload.callsFake(resolve));
+        await new Promise((resolve) => onSubmit.callsFake(resolve));
+        expect(upload).to.have.been.calledOnce();
       });
     });
 
