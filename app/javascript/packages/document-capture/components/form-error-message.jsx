@@ -1,4 +1,5 @@
 import { UploadFormEntryError } from '../services/upload';
+import { BackgroundEncryptedUploadError } from '../higher-order/with-background-encrypted-upload';
 import useI18n from '../hooks/use-i18n';
 
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -13,11 +14,6 @@ import useI18n from '../hooks/use-i18n';
  * An error representing a state where a required form value is missing.
  */
 export class RequiredValueMissingError extends Error {}
-
-/**
- * An error representing a failure to complete encrypted upload of image.
- */
-export class BackgroundEncryptedUploadError extends Error {}
 
 /**
  * @param {FormErrorMessageProps} props Props object.

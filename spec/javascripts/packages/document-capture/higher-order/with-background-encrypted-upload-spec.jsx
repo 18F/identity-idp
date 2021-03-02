@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import sinon from 'sinon';
 import { UploadContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import withBackgroundEncryptedUpload, {
+  BackgroundEncryptedUploadError,
   blobToArrayBuffer,
   encrypt,
 } from '@18f/identity-document-capture/higher-order/with-background-encrypted-upload';
-import { BackgroundEncryptedUploadError } from '@18f/identity-document-capture/components/form-error-message';
 import { useSandbox } from '../../../support/sinon';
 import { render } from '../../../support/document-capture';
 
@@ -200,7 +200,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           expect(patch.baz).to.equal('quux');
           expect(patch.foo_image_url).to.be.an.instanceOf(Promise);
           await patch.foo_image_url.catch((error) => {
-            expect(error.message).to.equal('Failed to upload image');
+            expect(error).to.be.instanceOf(BackgroundEncryptedUploadError);
           });
         });
 
@@ -208,7 +208,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           const { onChange, onError } = await renderWithResponse(response);
 
           const patch = onChange.getCall(0).args[0];
-          await patch.foo_image_url;
+          await patch.foo_image_url.catch(() => {});
           expect(onError).to.have.been.calledOnceWith(
             'foo',
             sinon.match.instanceOf(BackgroundEncryptedUploadError),

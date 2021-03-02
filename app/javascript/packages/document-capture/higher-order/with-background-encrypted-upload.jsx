@@ -1,12 +1,21 @@
 import { useContext } from 'react';
 import UploadContext from '../context/upload';
 import AnalyticsContext from '../context/analytics';
-import { BackgroundEncryptedUploadError } from '../components/form-error-message';
 
 /**
  * @typedef {import('../components/form-steps').FormStepComponentProps<V>} FormStepComponentProps
  * @template V
  */
+
+/**
+ * An error representing a failure to complete encrypted upload of image.
+ */
+export class BackgroundEncryptedUploadError extends Error {
+  baseField = '';
+
+  /** @type {string[]} */
+  fields = [];
+}
 
 /**
  * Returns a promise resolving to an ArrayBuffer representation of the given Blob object.
@@ -95,14 +104,18 @@ const withBackgroundEncryptedUpload = (Component) =>
               });
 
               if (!response.ok) {
-                throw new Error('Failed to upload image');
+                throw new Error();
               }
 
               return url;
             })
-            .catch((error) => {
-              onError(key, new BackgroundEncryptedUploadError());
-              return error;
+            .catch(() => {
+              onChange({ [key]: null });
+              const error = new BackgroundEncryptedUploadError();
+              error.baseField = key;
+              error.fields = [key, `${key}_image_iv`, `${key}_image_url`];
+              onError(key, error);
+              throw error;
             });
         }
       }
