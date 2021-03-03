@@ -53,17 +53,16 @@ module Deploy
     # of relevant config and assets.
     #
     def setup_idp_config_symlinks
-      # service_providers.yml
-      symlink_verbose(
-        File.join(root, idp_config_checkout_name, 'service_providers.yml'),
-        File.join(root, 'config/service_providers.yml'),
-      )
+      files_to_link =
+        %w[agencies iaa_gtcs iaa_orders iaa_statuses integration_statuses integrations
+           partner_account_statuses partner_accounts service_providers]
 
-      # agencies.yml
-      symlink_verbose(
-        File.join(root, idp_config_checkout_name, 'agencies.yml'),
-        File.join(root, 'config/agencies.yml'),
-      )
+      files_to_link.each do |file|
+        symlink_verbose(
+          File.join(root, idp_config_checkout_name, "#{file}.yml"),
+          File.join(root, "config/#{file}.yml"),
+        )
+      end
 
       # Service provider public keys
       symlink_verbose(
