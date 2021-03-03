@@ -25,6 +25,8 @@ fr:
       capture_failure: L'appareil photo n'a pas pu démarrer, veuillez réessayer.
       consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
+      document_capture_cancelled: Vous avez annulé le téléchargement des photos de
+        votre pièce d'identité sur votre téléphone.
       document_capture_info_html: |-
         <div class="bold">Veuillez vérifier que:</div>
         <ul>
