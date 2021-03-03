@@ -274,6 +274,18 @@ module SamlAuthHelper
     auth_request.create(ial1_with_aal3_saml_settings)
   end
 
+  def requested_aal2_authn_context_saml_settings
+    settings = saml_settings.dup
+    settings.authn_context = Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    settings
+  end
+
+  def requested_ial1_authn_context_saml_settings
+    settings = saml_settings.dup
+    settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    settings
+  end
+
   def missing_authn_context_saml_settings
     settings = saml_settings.dup
     settings.authn_context = nil
@@ -290,6 +302,26 @@ module SamlAuthHelper
     link_user_to_identity(user, link, settings)
     sign_in(user)
     saml_get_auth(settings)
+  end
+
+  # generates a SAML response and returns a decoded XML document
+  def generate_decoded_saml_response(user, settings = saml_settings)
+    auth_response = generate_saml_response(user, settings)
+    decode_saml_response(auth_response)
+  end
+
+  def decode_saml_response(auth_response)
+    saml_response_encoded = saml_response_encoded(auth_response)
+    saml_response_text = Base64.decode64(saml_response_encoded)
+    REXML::Document.new(saml_response_text)
+  end
+
+  def saml_response_encoded(auth_response)
+    Nokogiri::HTML(auth_response.body).css('#SAMLResponse').first.attributes['value'].to_s
+  end
+
+  def saml_response_authn_context(decoded_saml_response)
+    REXML::XPath.match(decoded_saml_response, '//AuthnContext/AuthnContextClassRef')[0][0]
   end
 
   def saml_get_auth(settings)
