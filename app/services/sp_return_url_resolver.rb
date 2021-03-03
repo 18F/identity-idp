@@ -17,8 +17,7 @@ class SpReturnUrlResolver
   end
 
   def failure_to_proof_url
-    return sp.failure_to_proof_url unless sp.failure_to_proof_url.blank?
-    return_to_sp_url
+    sp.failure_to_proof_url.presence || return_to_sp_url
   end
 
   private

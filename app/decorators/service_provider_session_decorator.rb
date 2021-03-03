@@ -12,6 +12,7 @@ class ServiceProviderSessionDecorator
   end
 
   delegate :redirect_uris, to: :sp, prefix: true
+  delegate :failure_to_proof_url, to: :failure_to_proof_url
 
   def remember_device_default
     sp_aal < 2
@@ -93,10 +94,6 @@ class ServiceProviderSessionDecorator
 
   def cancel_link_url
     view_context.new_user_session_url(request_id: sp_session[:request_id])
-  end
-
-  def failure_to_proof_url
-    sp_return_url_resolver.failure_to_proof_url
   end
 
   def sp_alert(path)

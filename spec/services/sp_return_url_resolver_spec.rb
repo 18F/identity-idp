@@ -6,11 +6,11 @@ RSpec.describe SpReturnUrlResolver do
       it 'returns the redirect URI with error params and state' do
         redirect_uri = 'https://sp.gov/result'
         sp = build(
-          :service_provider, redirect_uris: [redirect_uri], return_to_sp_url: 'https://sp.gov',
+          :service_provider, redirect_uris: [redirect_uri], return_to_sp_url: 'https://sp.gov'
         )
         state = '1234abcd'
         sp_request_url = UriService.add_params(
-          'https://example.com/authorize', redirect_uri: redirect_uri, state: state,
+          'https://example.com/authorize', redirect_uri: redirect_uri, state: state
         )
 
         resolver = described_class.new(sp: sp, sp_request_url: sp_request_url)
