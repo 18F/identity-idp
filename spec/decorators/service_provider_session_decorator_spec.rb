@@ -7,7 +7,7 @@ RSpec.describe ServiceProviderSessionDecorator do
       sp: sp,
       view_context: view_context,
       sp_session: {},
-      service_provider_request: ServiceProviderRequestProxy.new,
+      service_provider_request: ServiceProviderRequest.new,
     )
   end
   let(:sp) { build_stubbed(:service_provider) }

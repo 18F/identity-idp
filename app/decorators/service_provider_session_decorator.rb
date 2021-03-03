@@ -49,19 +49,7 @@ class ServiceProviderSessionDecorator
   end
 
   def return_to_service_provider_partial
-    if sp_return_url.present?
-      'devise/sessions/return_to_service_provider'
-    else
-      'shared/null'
-    end
-  end
-
-  def return_to_sp_from_start_page_partial
-    if sp_return_url.present?
-      'sign_up/registrations/return_to_sp_from_start_page'
-    else
-      'shared/null'
-    end
+    'devise/sessions/return_to_service_provider'
   end
 
   def nav_partial
@@ -93,15 +81,14 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_return_url
-    if sp.redirect_uris.present? && valid_oidc_request?
-      UriService.add_params(
-        oidc_redirect_uri,
-        error: 'access_denied',
-        state: request_params[:state],
-      )
-    else
-      sp.return_to_sp_url
-    end
+    @sp_request_url ||= sp_return_url_resolver.return_to_sp_url
+  end
+
+  def sp_return_url_resolver
+    @sp_return_url_resolver ||= SpReturnUrlResolver.new(
+      sp: sp,
+      sp_request_url: request_url,
+    )
   end
 
   def cancel_link_url
@@ -109,7 +96,7 @@ class ServiceProviderSessionDecorator
   end
 
   def failure_to_proof_url
-    sp.failure_to_proof_url.presence || sp_return_url
+    sp_return_url_resolver.failure_to_proof_url
   end
 
   def sp_alert(path)
@@ -158,17 +145,8 @@ class ServiceProviderSessionDecorator
     sp_session[:request_url] || service_provider_request.url
   end
 
-  def valid_oidc_request?
-    return false if request_url.nil?
-    authorize_form.valid?
-  end
-
   def authorize_form
     OpenidConnectAuthorizeForm.new(request_params)
-  end
-
-  def oidc_redirect_uri
-    request_params[:redirect_uri]
   end
 
   def request_params
