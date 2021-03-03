@@ -11,7 +11,9 @@ module OutboundHealthChecker
   end
 
   def outbound_response
-    raise 'missing outbound_connection_check_url' if AppConfig.env.outbound_connection_check_url.blank?
+    if AppConfig.env.outbound_connection_check_url.blank?
+      raise 'missing outbound_connection_check_url'
+    end
 
     response = faraday.get(AppConfig.env.outbound_connection_check_url)
 
