@@ -3,14 +3,20 @@ class UserSeeder
     new(**opts).run
   end
 
-  def initialize(**options)
-    @csv_file = options[:csv_file]
+  # Instantiate a new instance of the service object
+  #
+  # @attr csv_file [String] the location of the CSV file with the dummy user data
+  # @attr email_domain [String] the domain to use for user emails
+  # @attr deploy_env [String] the deploy environment, defaults to
+  #   LoginGov::Hostdata but can be overriden for testing
+  def initialize(csv_file:, email_domain:, deploy_env: Identity::Hostdata.env)
+    @csv_file = csv_file
     file = File.read(csv_file)
     @csv = CSV.parse(file, headers: true)
     validate_csv_headers
-    @email_domain = options[:email_domain]
+    @email_domain = email_domain
     validate_email_domain
-    @deploy_env = options[:deploy_env] || Identity::Hostdata.env
+    @deploy_env = deploy_env
   rescue Errno::ENOENT
     raise ArgumentError.new("#{csv_file} does not exist")
   end
