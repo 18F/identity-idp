@@ -133,8 +133,9 @@ class ServiceProviderSessionDecorator
 
   def sp_return_url_resolver
     @sp_return_url_resolver ||= SpReturnUrlResolver.new(
-      sp: sp,
-      sp_request_url: request_url,
+      service_provider: sp,
+      oidc_state: request_params[:state],
+      oidc_redirect_uri: request_params[:redirect_uri],
     )
   end
 
@@ -147,6 +148,12 @@ class ServiceProviderSessionDecorator
   end
 
   def request_params
-    @request_params ||= UriService.params(request_url)
+    @request_params ||= begin
+      if request_url.present?
+        UriService.params(request_url)
+      else
+        {}
+      end
+    end
   end
 end
