@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_02_144414) do
+ActiveRecord::Schema.define(version: 2021_03_03_033634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -385,10 +385,10 @@ ActiveRecord::Schema.define(version: 2021_03_02_144414) do
     t.string "name", null: false
     t.text "description"
     t.string "requesting_agency", null: false
-    t.integer "crm_id"
     t.date "became_partner"
     t.bigint "agency_id"
     t.bigint "partner_account_status_id"
+    t.bigint "crm_id"
     t.index ["agency_id"], name: "index_partner_accounts_on_agency_id"
     t.index ["name"], name: "index_partner_accounts_on_name", unique: true
     t.index ["partner_account_status_id"], name: "index_partner_accounts_on_partner_account_status_id"
