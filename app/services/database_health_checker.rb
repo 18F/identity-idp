@@ -1,20 +1,12 @@
 module DatabaseHealthChecker
   module_function
 
-  Summary = Struct.new(:healthy, :result) do
-    def as_json(*args)
-      to_h.as_json(*args)
-    end
-
-    alias_method :healthy?, :healthy
-  end
-
-  # @return [Summary]
+  # @return [HealthCheckSummary]
   def check
-    Summary.new(true, simple_query)
+    HealthCheckSummary.new(healthy: true, result: simple_query)
   rescue StandardError => err
     NewRelic::Agent.notice_error(err)
-    Summary.new(false, err.message)
+    HealthCheckSummary.new(healthy: false, result: err.message)
   end
 
   # @api private
