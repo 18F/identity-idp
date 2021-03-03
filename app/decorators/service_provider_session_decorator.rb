@@ -12,7 +12,7 @@ class ServiceProviderSessionDecorator
   end
 
   delegate :redirect_uris, to: :sp, prefix: true
-  delegate :failure_to_proof_url, to: :failure_to_proof_url
+  delegate :failure_to_proof_url, to: :sp_return_url_resolver
 
   def remember_device_default
     sp_aal < 2
@@ -85,13 +85,6 @@ class ServiceProviderSessionDecorator
     @sp_request_url ||= sp_return_url_resolver.return_to_sp_url
   end
 
-  def sp_return_url_resolver
-    @sp_return_url_resolver ||= SpReturnUrlResolver.new(
-      sp: sp,
-      sp_request_url: request_url,
-    )
-  end
-
   def cancel_link_url
     view_context.new_user_session_url(request_id: sp_session[:request_id])
   end
@@ -136,6 +129,13 @@ class ServiceProviderSessionDecorator
 
   def sp_ial
     sp.ial || 1
+  end
+
+  def sp_return_url_resolver
+    @sp_return_url_resolver ||= SpReturnUrlResolver.new(
+      sp: sp,
+      sp_request_url: request_url,
+    )
   end
 
   def request_url
