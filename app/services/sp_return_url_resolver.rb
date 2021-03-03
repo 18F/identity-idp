@@ -1,20 +1,16 @@
 class SpReturnUrlResolver
   attr_reader :service_provider, :oidc_state, :oidc_redirect_uri
 
-  def initialize(service_provider:, oidc_state:, oidc_redirect_uri:)
+  def initialize(service_provider:, oidc_state: nil, oidc_redirect_uri: nil)
     @service_provider = service_provider
     @oidc_state = oidc_state
     @oidc_redirect_uri = oidc_redirect_uri
   end
 
   def return_to_sp_url
-    if oidc_redirect_uri.present?
-      oidc_access_denied_redirect_url
-    elsif service_provider.return_to_sp_url.present?
-      service_provider.return_to_sp_url
-    else
+    oidc_access_denied_redirect_url.presence ||
+      service_provider.return_to_sp_url.presence ||
       inferred_redirect_url
-    end
   end
 
   def failure_to_proof_url
@@ -29,6 +25,7 @@ class SpReturnUrlResolver
   end
 
   def oidc_access_denied_redirect_url
+    return if oidc_redirect_uri.blank? || oidc_state.blank?
     UriService.add_params(
       oidc_redirect_uri,
       error: 'access_denied',

@@ -29,11 +29,7 @@ RSpec.describe SpReturnUrlResolver do
         configured_return_to_sp_url = 'https://sp.gov/return_to_sp'
         sp = build(:service_provider, return_to_sp_url: configured_return_to_sp_url)
 
-        resolver = described_class.new(
-          service_provider: sp,
-          oidc_state: nil,
-          oidc_redirect_uri: nil,
-        )
+        resolver = described_class.new(service_provider: sp)
         return_to_sp_url = resolver.return_to_sp_url
 
         expect(return_to_sp_url).to eq(configured_return_to_sp_url)
@@ -45,11 +41,7 @@ RSpec.describe SpReturnUrlResolver do
         acs_url = 'https://sp.gov/acs_url'
         sp = build(:service_provider, redirect_uris: [], return_to_sp_url: nil, acs_url: acs_url)
 
-        resolver = described_class.new(
-          service_provider: sp,
-          oidc_state: nil,
-          oidc_redirect_uri: nil,
-        )
+        resolver = described_class.new(service_provider: sp)
         return_to_sp_url = resolver.return_to_sp_url
 
         expect(return_to_sp_url).to eq('https://sp.gov/')
@@ -59,11 +51,7 @@ RSpec.describe SpReturnUrlResolver do
         redirect_uri = 'https://sp.gov/resut'
         sp = build(:service_provider, redirect_uris: [redirect_uri], return_to_sp_url: nil)
 
-        resolver = described_class.new(
-          service_provider: sp,
-          oidc_state: nil,
-          oidc_redirect_uri: nil,
-        )
+        resolver = described_class.new(service_provider: sp)
         return_to_sp_url = resolver.return_to_sp_url
 
         expect(return_to_sp_url).to eq('https://sp.gov/')
@@ -81,11 +69,7 @@ RSpec.describe SpReturnUrlResolver do
         failure_to_proof_url: configured_failure_to_proof_url,
       )
 
-      resolver = described_class.new(
-        service_provider: sp,
-        oidc_state: nil,
-        oidc_redirect_uri: nil,
-      )
+      resolver = described_class.new(service_provider: sp)
       failure_to_proof_url = resolver.failure_to_proof_url
 
       expect(failure_to_proof_url).to eq(configured_failure_to_proof_url)
@@ -99,11 +83,7 @@ RSpec.describe SpReturnUrlResolver do
         failure_to_proof_url: nil,
       )
 
-      resolver = described_class.new(
-        service_provider: sp,
-        oidc_state: nil,
-        oidc_redirect_uri: nil,
-      )
+      resolver = described_class.new(service_provider: sp)
       failure_to_proof_url = resolver.failure_to_proof_url
 
       expect(failure_to_proof_url).to eq(configured_return_to_sp_url)
@@ -117,11 +97,7 @@ RSpec.describe SpReturnUrlResolver do
         failure_to_proof_url: '',
       )
 
-      resolver = described_class.new(
-        service_provider: sp,
-        oidc_state: nil,
-        oidc_redirect_uri: nil,
-      )
+      resolver = described_class.new(service_provider: sp)
       failure_to_proof_url = resolver.failure_to_proof_url
 
       expect(failure_to_proof_url).to eq(configured_return_to_sp_url)
