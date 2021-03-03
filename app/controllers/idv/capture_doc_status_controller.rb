@@ -17,6 +17,10 @@ module Idv
       return { plain: 'Unauthorized', status: :unauthorized } unless document_capture_session
       return { plain: 'Cancelled', status: :ok } if document_capture_session.cancelled_at
 
+      render_result
+    end
+
+    def render_result
       result = document_capture_session.load_result ||
                document_capture_session.load_doc_auth_async_result
 
