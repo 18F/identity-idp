@@ -187,10 +187,20 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
         /** @type {Response} */
         const response = {
           ok: false,
-          status: 400,
+          status: 403,
           headers: new window.Headers({
             'X-Amzn-Trace-Id': '1-67891233-abcdef012345678912345678',
           }),
+          text: Promise.resolve(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+              '<Error>' +
+              '<Code>InvalidAccessKeyId</Code>' +
+              '<Message>The AWS Access Key Id you provided does not exist in our records.</Message>' +
+              '<AWSAccessKeyId>...</AWSAccessKeyId>' +
+              '<RequestId>...</RequestId>' +
+              '<HostId>...</HostId>' +
+              '</Error>',
+          ),
         };
 
         it('throws on failed background upload', async () => {
