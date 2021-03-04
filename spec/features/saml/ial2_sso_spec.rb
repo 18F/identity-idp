@@ -21,6 +21,13 @@ feature 'IAL2 Single Sign On' do
     click_link t('idv.buttons.continue_plain')
   end
 
+  def expected_usps_return_to_sp_url
+    URI.join(
+      ServiceProvider.find_by(issuer: ial2_with_bundle_saml_settings.issuer).acs_url,
+      '/',
+    ).to_s
+  end
+
   def mock_usps_mail_bounced
     allow_any_instance_of(UserDecorator).to receive(:usps_mail_bounced?).and_return(true)
   end
@@ -88,8 +95,9 @@ feature 'IAL2 Single Sign On' do
 
           perform_id_verification_with_usps_without_confirming_code(user)
 
-          expect(current_path).to eq account_path
+          expect(current_url).to eq expected_usps_return_to_sp_url
 
+          visit account_path
           click_link(t('account.index.verification.reactivate_button'))
 
           expect(current_path).to eq verify_account_path
@@ -132,7 +140,9 @@ feature 'IAL2 Single Sign On' do
 
           perform_id_verification_with_usps_without_confirming_code(user)
 
-          expect(current_path).to eq account_path
+          expect(current_url).to eq expected_usps_return_to_sp_url
+
+          visit account_path
 
           mock_usps_mail_bounced
           visit account_path
@@ -152,7 +162,9 @@ feature 'IAL2 Single Sign On' do
 
           perform_id_verification_with_usps_without_confirming_code(user)
 
-          expect(current_path).to eq account_path
+          expect(current_url).to eq expected_usps_return_to_sp_url
+
+          visit account_path
 
           mock_usps_mail_bounced
           visit account_path
