@@ -124,7 +124,8 @@ module Flow
       result = optional_show_step.new(@flow).base_call
 
       if @analytics_id
-        optional_properties = result.to_h.merge(step: optional_show_step)
+        optional_show_step_name = optional_show_step.to_s.split('::').last.underscore
+        optional_properties = result.to_h.merge(step: optional_show_step_name)
 
         analytics.track_event(analytics_optional_step, optional_properties)
         # keeping the old event names for backward compatibility
