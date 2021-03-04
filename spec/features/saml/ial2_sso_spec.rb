@@ -117,6 +117,7 @@ feature 'IAL2 Single Sign On' do
           user = create(:user, :signed_up)
 
           perform_id_verification_with_usps_without_confirming_code(user)
+          visit account_path
           sign_out_user
 
           sign_in_live_with_2fa(user)
