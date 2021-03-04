@@ -93,6 +93,8 @@ const withBackgroundEncryptedUpload = (Component) =>
                 },
               });
               noticeError(error);
+
+              // Rethrow error to skip upload and proceed from next `catch` block.
               throw error;
             })
             .then((encryptedValue) => {
