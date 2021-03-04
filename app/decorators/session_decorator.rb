@@ -7,10 +7,6 @@ class SessionDecorator
     'shared/null'
   end
 
-  def return_to_sp_from_start_page_partial
-    'shared/null'
-  end
-
   def nav_partial
     'shared/nav_lite'
   end

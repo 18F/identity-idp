@@ -7,7 +7,9 @@ describe 'redirect_uri validation' do
     it 'uses the return_to_sp_url URL and not the redirect_uri' do
       user = create(:user, :signed_up)
       visit api_saml_auth2021_path(
-        SAMLRequest: CGI.unescape(saml_request(saml_settings)), redirect_uri: 'http://evil.com',
+        SAMLRequest: CGI.unescape(saml_request(saml_settings)),
+        redirect_uri: 'http://evil.com',
+        state: '123abc',
       )
       sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
 
