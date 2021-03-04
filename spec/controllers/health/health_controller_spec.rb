@@ -10,9 +10,9 @@ RSpec.describe Health::HealthController do
       it 'returns a successful JSON response' do
         allow(DatabaseHealthChecker).to receive(:simple_query).and_return('foo')
         allow(AccountResetHealthChecker).to receive(:check).
-          and_return(AccountResetHealthChecker::Summary.new(true, 'foo'))
+          and_return(HealthCheckSummary.new(healthy: true, result: 'foo'))
         allow(JobRunner::HealthCheckerCritical).to receive(:check).
-          and_return(JobRunner::HealthCheckerCritical::Summary.new(true, 'foo'))
+          and_return(HealthCheckSummary.new(healthy: true, result: 'foo'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
@@ -30,9 +30,9 @@ RSpec.describe Health::HealthController do
         allow(DatabaseHealthChecker).to receive(:simple_query).
           and_raise(RuntimeError.new('canceling statement due to statement timeout'))
         allow(AccountResetHealthChecker).to receive(:check).
-          and_return(AccountResetHealthChecker::Summary.new(true, 'foo'))
+          and_return(HealthCheckSummary.new(healthy: true, result: 'foo'))
         allow(JobRunner::HealthCheckerCritical).to receive(:check).
-          and_return(JobRunner::HealthCheckerCritical::Summary.new(true, 'foo'))
+          and_return(HealthCheckSummary.new(healthy: true, result: 'foo'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
@@ -51,9 +51,9 @@ RSpec.describe Health::HealthController do
         allow(DatabaseHealthChecker).to receive(:simple_query).
           and_raise(RuntimeError.new('canceling statement due to statement timeout'))
         allow(AccountResetHealthChecker).to receive(:check).
-          and_return(AccountResetHealthChecker::Summary.new(false, 'foo'))
+          and_return(HealthCheckSummary.new(healthy: false, result: 'foo'))
         allow(JobRunner::HealthCheckerCritical).to receive(:check).
-          and_return(JobRunner::HealthCheckerCritical::Summary.new(false, 'foo'))
+          and_return(HealthCheckSummary.new(healthy: false, result: 'foo'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)
@@ -73,7 +73,7 @@ RSpec.describe Health::HealthController do
 
         allow(DatabaseHealthChecker).to receive(:simple_query).and_return('foo')
         allow(AccountResetHealthChecker).to receive(:check).
-          and_return(AccountResetHealthChecker::Summary.new(true, 'foo'))
+          and_return(HealthCheckSummary.new(healthy: true, result: 'foo'))
 
         get :index
         json = JSON.parse(response.body, symbolize_names: true)

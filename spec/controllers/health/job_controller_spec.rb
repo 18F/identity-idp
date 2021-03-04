@@ -7,7 +7,7 @@ RSpec.describe Health::JobsController do
     context 'when jobs are healthy' do
       it 'returns healthy' do
         allow(JobRunner::HealthChecker).to receive(:check).
-          and_return(JobRunner::HealthChecker::Summary.new(true, { 'foo' => true }))
+          and_return(HealthCheckSummary.new(healthy: true, result: { 'foo' => true }))
 
         action
 
@@ -23,7 +23,7 @@ RSpec.describe Health::JobsController do
     context 'when jobs are unhealthy' do
       before do
         expect(JobRunner::HealthChecker).to receive(:check).
-          and_return(JobRunner::HealthChecker::Summary.new(false, { 'foo' => false }))
+          and_return(HealthCheckSummary.new(healthy: false, result: { 'foo' => false }))
       end
 
       it 'is a 500' do
