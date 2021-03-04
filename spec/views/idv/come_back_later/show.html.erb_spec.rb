@@ -31,18 +31,6 @@ describe 'idv/come_back_later/show.html.erb' do
     end
   end
 
-  context 'with an SP without a return url' do
-    let(:sp_return_url) { nil }
-
-    it 'renders a return to account button' do
-      render
-      expect(rendered).to have_link(
-        t('idv.buttons.continue_plain', sp: sp_name),
-        href: account_path,
-      )
-    end
-  end
-
   context 'without an SP' do
     let(:sp_return_url) { nil }
     let(:sp_name) { nil }

@@ -13,8 +13,10 @@ shared_examples 'idv confirmation step' do |sp|
 
       if sp == :oidc
         expect(current_url).to start_with('http://localhost:7654/auth/result')
-      else
+      elsif sp == :saml
         expect(current_url).to start_with('http://example.com/')
+      else
+        expect(current_url).to eq(account_url)
       end
     end
   end
