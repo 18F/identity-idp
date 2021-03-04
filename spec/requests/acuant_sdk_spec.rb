@@ -17,7 +17,7 @@ describe 'requesting acuant SDK assets' do
           expect(response.status).to eq(200)
           expect(response.headers['Content-Type']).to eq('application/javascript')
           expect(response.body).to eq(
-            File.read('public/acuant/11.4.3/AcuantImageProcessingWorker.min.js'),
+            File.read('public/acuant/11.4.1/AcuantImageProcessingWorker.min.js'),
           )
         end
 
@@ -38,7 +38,7 @@ describe 'requesting acuant SDK assets' do
           expect(response.status).to eq(200)
           expect(response.headers['Content-Type']).to eq('application/wasm')
           expect(response.body.length).to eq(
-            File.size('public/acuant/11.4.3/AcuantImageProcessingWorker.wasm'),
+            File.size('public/acuant/11.4.1/AcuantImageProcessingWorker.wasm'),
           )
         end
 
