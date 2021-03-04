@@ -235,6 +235,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
             payload: { success: false },
           });
           expect(noticeError).to.have.been.calledWith(error);
+          expect(window.fetch).not.to.have.been.called();
         });
 
         it('calls onError', async () => {
