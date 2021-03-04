@@ -76,7 +76,7 @@ describe Idv::DocAuthController do
 
     it 'tracks analytics for the optional step' do
       mock_next_step(:verify_wait)
-      result = { errors: {}, step: Idv::Steps::VerifyWaitStepShow, success: true }
+      result = { errors: {}, step: 'verify_wait_step_show', success: true }
 
       get :show, params: { step: 'verify_wait' }
 
