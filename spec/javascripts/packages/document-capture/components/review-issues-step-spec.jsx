@@ -115,9 +115,8 @@ describe('document-capture/components/review-issues-step', () => {
       const { getByText } = render(
         <I18nContext.Provider
           value={{
-            'doc_auth.info.no_other_id_help_bold_html':
-              'If you do not have another state-issued ID, ' +
-              '<a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>',
+            'doc_auth.info.get_help_at_sp_html':
+              '<strong>Having trouble?</strong> Get help at %{sp_name}',
           }}
         >
           <ServiceProviderContext.Provider
@@ -132,43 +131,9 @@ describe('document-capture/components/review-issues-step', () => {
         </I18nContext.Provider>,
       );
 
-      const help = getByText(
-        (_content, element) =>
-          element.innerHTML ===
-          'If you do not have another state-issued ID, ' +
-            '<a href="https://example.com">get help at Example App.</a>',
-      );
+      const help = getByText('Having trouble?').closest('a');
 
-      expect(help).to.be.ok();
-    });
-
-    it('renders with name', () => {
-      const { getByText } = render(
-        <I18nContext.Provider
-          value={{
-            'doc_auth.info.no_other_id_help_bold_html':
-              'If you do not have another state-issued ID, ' +
-              '<a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>',
-          }}
-        >
-          <ServiceProviderContext.Provider
-            value={{
-              name: 'Example App',
-              failureToProofURL: null,
-              isLivenessRequired: false,
-            }}
-          >
-            <ReviewIssuesStep />
-          </ServiceProviderContext.Provider>
-        </I18nContext.Provider>,
-      );
-
-      const help = getByText(
-        (_content, element) =>
-          element.innerHTML ===
-          'If you do not have another state-issued ID, get help at Example App.',
-      );
-
+      expect(help.href).to.equal('https://example.com/');
       expect(help).to.be.ok();
     });
 
