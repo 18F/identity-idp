@@ -22,6 +22,24 @@ RSpec.describe SpReturnUrlResolver do
         expect(return_to_sp_url_without_params).to eq(redirect_uri)
         expect(return_to_sp_url_params).to eq('state' => state, 'error' => 'access_denied')
       end
+
+      it 'does not return the redirect URI if it is not in the SP redirect uri list' do
+        redirect_uri = 'https://different-sp.gov/result'
+        configured_return_to_sp_url = 'https://sp.gov'
+        sp = build(
+          :service_provider, redirect_uris: [], return_to_sp_url: configured_return_to_sp_url
+        )
+        state = '1234abcd'
+
+        resolver = described_class.new(
+          service_provider: sp,
+          oidc_state: state,
+          oidc_redirect_uri: redirect_uri,
+        )
+        return_to_sp_url = resolver.return_to_sp_url
+
+        expect(return_to_sp_url).to eq(configured_return_to_sp_url)
+      end
     end
 
     context 'for an SP without a redirect URI in the request URL' do

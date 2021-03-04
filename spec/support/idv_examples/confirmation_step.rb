@@ -11,12 +11,10 @@ shared_examples 'idv confirmation step' do |sp|
       expect(page).to have_current_path(idv_come_back_later_path)
       click_on t('forms.buttons.continue')
 
-      # SAML test SP does not have a return URL, so it does not have a link
-      # back to the SP
       if sp == :oidc
         expect(current_url).to start_with('http://localhost:7654/auth/result')
       else
-        expect(page).to have_current_path(account_path)
+        expect(current_url).to start_with('http://example.com/')
       end
     end
   end
