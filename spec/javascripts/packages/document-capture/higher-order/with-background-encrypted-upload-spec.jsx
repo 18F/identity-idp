@@ -178,7 +178,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           expect(addPageAction).to.have.been.calledWith({
             key: 'documentCapture.asyncUpload',
             label: 'IdV: document capture async upload submitted',
-            payload: { success: true, trace_id: null },
+            payload: { success: true, trace_id: null, status_code: 200 },
           });
         });
       });
@@ -261,7 +261,11 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           expect(addPageAction).to.have.been.calledWith({
             key: 'documentCapture.asyncUpload',
             label: 'IdV: document capture async upload submitted',
-            payload: { success: false, trace_id: '1-67891233-abcdef012345678912345678' },
+            payload: {
+              success: false,
+              trace_id: '1-67891233-abcdef012345678912345678',
+              status_code: 403,
+            },
           });
         });
       });

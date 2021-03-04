@@ -119,6 +119,7 @@ const withBackgroundEncryptedUpload = (Component) =>
                 payload: {
                   success: response.ok,
                   trace_id: traceId,
+                  status_code: response.status,
                 },
               });
 
