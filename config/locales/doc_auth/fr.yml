@@ -131,6 +131,8 @@ fr:
         images que vous téléchargez. Nous vérifions uniquement votre identité.
       document_capture_upload_image: Nous n'utilisons votre identifiant que pour vérifier
         votre identité, et nous n'enregistrerons aucune image.
+      get_help_at_sp_html: "<strong>Vous avez des problèmes?</strong> Obtenez de l'aide
+        à %{sp_name}"
       id_worn_html: "<strong>Votre carte d'identité est-elle usée ou endommagée?</strong>
         Utilisez une autre carte d'identité délivrée par l'État si vous en avez une."
       image_updated: Image mise à jour

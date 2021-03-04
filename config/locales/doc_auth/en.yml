@@ -113,6 +113,7 @@ en:
         your identity.
       document_capture_upload_image: We only use your ID to verify your identity,
         and we will not save any images.
+      get_help_at_sp_html: "<strong>Having trouble?</strong> Get help at %{sp_name}"
       id_worn_html: "<strong>Is your ID worn or damaged?</strong> Use another state-issued
         ID if you have one."
       image_updated: Image updated
