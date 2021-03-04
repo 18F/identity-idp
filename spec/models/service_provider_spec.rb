@@ -190,7 +190,7 @@ describe ServiceProvider do
   describe '#skip_encryption_allowed' do
     context 'SP in allowed list' do
       before do
-        allow(AppConfig.env).to receive(:skip_encryption_allowed_list).
+        allow(Identity::Hostdata.settings).to receive(:skip_encryption_allowed_list).
           and_return('["http://localhost:3000"]')
       end
 

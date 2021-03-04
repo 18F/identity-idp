@@ -24,7 +24,7 @@ module Encryption
       end
 
       def aes_encryption_key
-        AppConfig.env.session_encryption_key[0...32]
+        Identity::Hostdata.settings.session_encryption_key[0...32]
       end
 
       add_method_tracer :encrypt, "Custom/#{name}/encrypt"

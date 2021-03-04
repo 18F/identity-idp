@@ -3,7 +3,7 @@
     <h2 class="grid-col-fill margin-y-0 padding-right-2">
       <%= t('headings.account.authentication_apps') %>
     </h2>
-    <% if current_user.auth_app_configurations.count < AppConfig.env.max_auth_apps_per_account.to_i %>
+    <% if current_user.auth_app_configurations.count < Identity::Hostdata.settings.max_auth_apps_per_account.to_i %>
       <div class="grid-col-auto">
         <%= link_to(
           prefix_with_plus(t('account.index.auth_app_add')),

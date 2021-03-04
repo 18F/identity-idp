@@ -1,5 +1,5 @@
 <p class="lead">
-  <%= t('user_mailer.account_does_not_exist.intro_html', app: link_to(APP_NAME, AppConfig.env.mailer_domain_name, class: 'gray')) %>
+  <%= t('user_mailer.account_does_not_exist.intro_html', app: link_to(APP_NAME, Identity::Hostdata.settings.mailer_domain_name, class: 'gray')) %>
 </p>
 
 <table class="button expanded large radius">

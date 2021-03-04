@@ -110,7 +110,7 @@ describe 'layouts/application.html.erb' do
           service_provider_request: nil,
         ).call,
       )
-      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
+      allow(Identity::Hostdata.settings).to receive(:participate_in_dap).and_return('true')
 
       render
 
@@ -120,7 +120,7 @@ describe 'layouts/application.html.erb' do
 
   context 'user is fully authenticated' do
     it 'does not render the DAP analytics' do
-      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
+      allow(Identity::Hostdata.settings).to receive(:participate_in_dap).and_return('true')
 
       render
 
@@ -135,7 +135,7 @@ describe 'layouts/application.html.erb' do
     end
 
     it 'does not render the DAP analytics' do
-      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
+      allow(Identity::Hostdata.settings).to receive(:participate_in_dap).and_return('true')
 
       render
 
@@ -145,8 +145,8 @@ describe 'layouts/application.html.erb' do
 
   context 'when new relic browser key and app id are present' do
     it 'it render the new relic javascript' do
-      allow(AppConfig.env).to receive(:newrelic_browser_key).and_return('foo')
-      allow(AppConfig.env).to receive(:newrelic_browser_app_id).and_return('foo')
+      allow(Identity::Hostdata.settings).to receive(:newrelic_browser_key).and_return('foo')
+      allow(Identity::Hostdata.settings).to receive(:newrelic_browser_app_id).and_return('foo')
 
       render
 
@@ -156,8 +156,8 @@ describe 'layouts/application.html.erb' do
 
   context 'when new relic browser key and app id are not present' do
     it 'it does not render the new relic javascript' do
-      allow(AppConfig.env).to receive(:newrelic_browser_key).and_return('')
-      allow(AppConfig.env).to receive(:newrelic_browser_app_id).and_return('')
+      allow(Identity::Hostdata.settings).to receive(:newrelic_browser_key).and_return('')
+      allow(Identity::Hostdata.settings).to receive(:newrelic_browser_app_id).and_return('')
 
       render
 

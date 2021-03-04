@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
   end
 
   def default_url_options
-    { locale: locale_url_param, host: AppConfig.env.domain_name }
+    { locale: locale_url_param, host: Identity::Hostdata.settings.domain_name }
   end
 
   def sign_out(*args)
@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base
                           else
                             {
                               value: current_sp.issuer,
-                              expires: AppConfig.env.issuer_cookie_expiration,
+                              expires: Identity::Hostdata.settings.issuer_cookie_expiration,
                             }
                           end
   end
@@ -112,7 +112,8 @@ class ApplicationController < ActionController::Base
     return unless params[:timeout]
 
     unless current_user
-      flash[:info] = t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes)
+      flash[:info] = t('notices.session_cleared',
+                       minutes: Identity::Hostdata.settings.session_timeout_in_minutes)
     end
     begin
       redirect_to url_for(permitted_timeout_params)

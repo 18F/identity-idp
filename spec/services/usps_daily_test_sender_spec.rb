@@ -15,7 +15,7 @@ RSpec.describe UspsDailyTestSender do
   end
 
   before do
-    allow(AppConfig.env).to receive(:gpo_designated_receiver_pii).
+    allow(Identity::Hostdata.settings).to receive(:gpo_designated_receiver_pii).
       and_return(designated_receiver_pii.to_json)
   end
 

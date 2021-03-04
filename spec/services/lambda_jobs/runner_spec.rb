@@ -25,7 +25,7 @@ RSpec.describe LambdaJobs::Runner do
   describe '#run' do
     before do
       allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(in_datacenter)
-      allow(AppConfig.env).to receive(:aws_lambda_proofing_enabled).
+      allow(Identity::Hostdata.settings).to receive(:aws_lambda_proofing_enabled).
         and_return(aws_lambda_proofing_enabled)
     end
 

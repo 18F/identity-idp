@@ -10,7 +10,7 @@ Rails.application.configure do
   config.asset_host = proc do |_source, request|
     # we want precompiled assets to have domain-agnostic URLs
     # and request is nil during asset precompilation
-    (AppConfig.env.asset_host || AppConfig.env.domain_name) if request
+    (Identity::Hostdata.settings.asset_host || Identity::Hostdata.settings.domain_name) if request
   end
   config.assets.js_compressor = :uglifier
   config.assets.compile = false
@@ -20,16 +20,18 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.action_mailer.default_url_options = {
-    host: AppConfig.env.domain_name,
+    host: Identity::Hostdata.settings.domain_name,
     protocol: 'https',
   }
-  config.action_mailer.asset_host = AppConfig.env.asset_host || AppConfig.env.mailer_domain_name
+  config.action_mailer.asset_host = Identity::Hostdata.settings.asset_host ||
+                                    Identity::Hostdata.settings.mailer_domain_name
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = if AppConfig.env.disable_email_sending == 'true'
-                                           :test
-                                         else
-                                           :ses
-                                         end
+  config.action_mailer.delivery_method =
+    if Identity::Hostdata.settings.disable_email_sending == 'true'
+      :test
+    else
+      :ses
+    end
 
   routes.default_url_options[:protocol] = :https
 
@@ -37,7 +39,7 @@ Rails.application.configure do
   # creates false positive results.
   config.action_dispatch.ip_spoofing_check = false
 
-  if AppConfig.env.log_to_stdout == 'true'
+  if Identity::Hostdata.settings.log_to_stdout == 'true'
     Rails.logger = Logger.new(STDOUT)
     config.logger = ActiveSupport::Logger.new(STDOUT)
   end

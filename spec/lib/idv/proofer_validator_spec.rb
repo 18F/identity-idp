@@ -4,7 +4,7 @@ describe Idv::ProoferValidator do
   let(:proofer_mock_fallback) { 'false' }
 
   before do
-    allow(AppConfig.env).to receive(:proofer_mock_fallback).
+    allow(Identity::Hostdata.settings).to receive(:proofer_mock_fallback).
       and_return(proofer_mock_fallback)
   end
 

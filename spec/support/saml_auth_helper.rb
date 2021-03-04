@@ -7,7 +7,8 @@ module SamlAuthHelper
 
     # SP settings
     settings.assertion_consumer_service_url = 'http://localhost:3000/test/saml/decode_assertion'
-    settings.assertion_consumer_logout_service_url = 'http://localhost:3000/test/saml/decode_slo_request'
+    settings.assertion_consumer_logout_service_url =
+      'http://localhost:3000/test/saml/decode_slo_request'
     settings.certificate = saml_test_sp_cert
     settings.private_key = saml_test_sp_key
     settings.authn_context = request_authn_context
@@ -22,8 +23,10 @@ module SamlAuthHelper
     settings.security[:signature_method] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
     settings.double_quote_xml_attribute_values = true
     # IdP setting
-    settings.idp_sso_target_url = "http://#{AppConfig.env.domain_name}/api/saml/auth2021"
-    settings.idp_slo_target_url = "http://#{AppConfig.env.domain_name}/api/saml/logout2021"
+    settings.idp_sso_target_url =
+      "http://#{Identity::Hostdata.settings.domain_name}/api/saml/auth2021"
+    settings.idp_slo_target_url =
+      "http://#{Identity::Hostdata.settings.domain_name}/api/saml/logout2021"
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
@@ -31,7 +34,7 @@ module SamlAuthHelper
   end
 
   def request_authn_context
-    if AppConfig.env.aal_authn_context_enabled == 'true'
+    if Identity::Hostdata.settings.aal_authn_context_enabled == 'true'
       Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
     else
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF

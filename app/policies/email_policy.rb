@@ -10,7 +10,7 @@ class EmailPolicy
   end
 
   def can_add_email?
-    user.email_address_count < AppConfig.env.max_emails_per_account.to_i
+    user.email_address_count < Identity::Hostdata.settings.max_emails_per_account.to_i
   end
 
   private

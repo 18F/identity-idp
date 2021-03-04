@@ -15,7 +15,7 @@ module Encryption
     attr_reader :cost, :salt, :z1, :z2, :random_r, :masked_ciphertext, :cek
 
     def initialize(password: nil, salt: nil, cost: nil, scrypt_hash: nil)
-      cost ||= AppConfig.env.scrypt_cost
+      cost ||= Identity::Hostdata.settings.scrypt_cost
       scrypt_password = if scrypt_hash.present?
                           SCrypt::Password.new(scrypt_hash)
                         else

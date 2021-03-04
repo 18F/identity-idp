@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Email confirmation during sign up' do
   scenario 'confirms valid email and sets valid password' do
-    allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
+    allow(Identity::Hostdata.settings).to receive(:participate_in_dap).and_return('true')
     reset_email
     email = 'test@example.com'
     sign_up_with(email)
@@ -67,7 +67,7 @@ feature 'Email confirmation during sign up' do
 
   context 'confirmed user is signed out and tries to confirm again' do
     it 'redirects to sign in page with message that user is already confirmed' do
-      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
+      allow(Identity::Hostdata.settings).to receive(:participate_in_dap).and_return('true')
       sign_up_and_set_password
 
       visit destroy_user_session_url

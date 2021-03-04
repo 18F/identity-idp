@@ -44,7 +44,7 @@ module Encryption
       end
 
       def current_key
-        AppConfig.env.attribute_encryption_key
+        Identity::Hostdata.settings.attribute_encryption_key
       end
 
       def all_keys
@@ -52,7 +52,7 @@ module Encryption
       end
 
       def old_keys
-        JSON.parse(AppConfig.env.attribute_encryption_key_queue)
+        JSON.parse(Identity::Hostdata.settings.attribute_encryption_key_queue)
       end
 
       add_method_tracer :encrypt, "Custom/#{name}/encrypt"

@@ -5,7 +5,7 @@ describe DeleteUserEmailForm do
     let(:push_notifications_enabled) { 'true' }
 
     before do
-      allow(AppConfig.env).to receive(:push_notifications_enabled).
+      allow(Identity::Hostdata.settings).to receive(:push_notifications_enabled).
         and_return(push_notifications_enabled)
     end
 

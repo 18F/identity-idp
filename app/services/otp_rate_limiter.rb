@@ -50,10 +50,10 @@ class OtpRateLimiter
   end
 
   def otp_findtime
-    AppConfig.env.otp_delivery_blocklist_findtime.to_i.minutes
+    Identity::Hostdata.settings.otp_delivery_blocklist_findtime.to_i.minutes
   end
 
   def otp_maxretry_times
-    AppConfig.env.otp_delivery_blocklist_maxretry.to_i
+    Identity::Hostdata.settings.otp_delivery_blocklist_maxretry.to_i
   end
 end

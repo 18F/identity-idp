@@ -5,12 +5,12 @@ feature 'doc auth document capture step' do
   include DocAuthHelper
   include InPersonHelper
 
-  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
+  let(:max_attempts) { Identity::Hostdata.settings.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { 'false' }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
-    allow(AppConfig.env).to receive(:liveness_checking_enabled).
+    allow(Identity::Hostdata.settings).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
@@ -115,7 +115,7 @@ feature 'doc auth document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(Identity::Hostdata.settings).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
 
@@ -128,7 +128,8 @@ feature 'doc auth document capture step' do
 
       expect(page).to have_current_path(idv_session_errors_throttled_path)
 
-      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+      future = Identity::Hostdata.settings.acuant_attempt_window_in_minutes.to_i.minutes.from_now
+      Timecop.travel(future) do
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_document_capture_step
         attach_and_submit_images
@@ -189,7 +190,7 @@ feature 'doc auth document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(Identity::Hostdata.settings).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
 
@@ -202,7 +203,8 @@ feature 'doc auth document capture step' do
 
       expect(page).to have_current_path(idv_session_errors_throttled_path)
 
-      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+      future = Identity::Hostdata.settings.acuant_attempt_window_in_minutes.to_i.minutes.from_now
+      Timecop.travel(future) do
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_document_capture_step
         attach_and_submit_images

@@ -22,10 +22,10 @@ Rails.application.configure do
   config.action_view.annotate_rendered_view_with_filenames = true
 
   config.action_mailer.default_url_options = {
-    host: AppConfig.env.domain_name,
+    host: Identity::Hostdata.settings.domain_name,
     protocol: 'http',
   }
-  config.action_mailer.asset_host = AppConfig.env.mailer_domain_name
+  config.action_mailer.asset_host = Identity::Hostdata.settings.mailer_domain_name
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
 
   config.lograge.ignore_actions = ['Users::SessionsController#active']

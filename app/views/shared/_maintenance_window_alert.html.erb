@@ -1,7 +1,7 @@
 <%
   maintenance_window = MaintenanceWindow.new(
-    start: AppConfig.env.acuant_maintenance_window_start,
-    finish: AppConfig.env.acuant_maintenance_window_finish,
+    start: Identity::Hostdata.settings.acuant_maintenance_window_start,
+    finish: Identity::Hostdata.settings.acuant_maintenance_window_finish,
     now: local_assigns[:now],
   )
 %>

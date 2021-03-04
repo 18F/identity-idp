@@ -5,7 +5,7 @@ feature 'disabling USPS address verification' do
 
   context 'with USPS address verification disabled' do
     before do
-      allow(AppConfig.env).to receive(:enable_usps_verification).and_return('false')
+      allow(Identity::Hostdata.settings).to receive(:enable_usps_verification).and_return('false')
       # Whether USPS is available affects the routes that are available
       # We want path helpers for unavailable routes to raise and fail the tests
       # so we reload the routes here
@@ -13,7 +13,7 @@ feature 'disabling USPS address verification' do
     end
 
     after do
-      allow(AppConfig.env).to receive(:enable_usps_verification).and_call_original
+      allow(Identity::Hostdata.settings).to receive(:enable_usps_verification).and_call_original
       Rails.application.reload_routes!
     end
 

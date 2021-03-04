@@ -5,8 +5,10 @@ describe Throttler::IsThrottled do
   let(:throttle_type) { :idv_acuant }
   let(:subject) { described_class }
   let(:throttle) { Throttle.all.first }
-  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
-  let(:attempt_window_in_minutes) { AppConfig.env.acuant_attempt_window_in_minutes.to_i }
+  let(:max_attempts) { Identity::Hostdata.settings.acuant_max_attempts.to_i }
+  let(:attempt_window_in_minutes) do
+    Identity::Hostdata.settings.acuant_attempt_window_in_minutes.to_i
+  end
 
   it 'returns throttle if throttled' do
     Throttle.create(user_id: user_id,

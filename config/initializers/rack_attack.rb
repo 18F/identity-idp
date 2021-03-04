@@ -26,7 +26,7 @@ module Rack
 
     cache = Readthis::Cache.new(
       expires_in: 2.weeks.to_i,
-      redis: { url: AppConfig.env.redis_throttle_url, driver: :hiredis },
+      redis: { url: Identity::Hostdata.settings.redis_throttle_url, driver: :hiredis },
     )
 
     Rack::Attack.cache.store = cache
@@ -54,19 +54,19 @@ module Rack
     # Throttle all requests by IP
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.remote_ip}"
-    if AppConfig.env.requests_per_ip_track_only_mode == 'true'
+    if Identity::Hostdata.settings.requests_per_ip_track_only_mode == 'true'
       track(
         'req/ip',
-        limit: AppConfig.env.requests_per_ip_limit.to_i,
-        period: AppConfig.env.requests_per_ip_period.to_i,
+        limit: Identity::Hostdata.settings.requests_per_ip_limit.to_i,
+        period: Identity::Hostdata.settings.requests_per_ip_period.to_i,
       ) do |req|
         req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
       end
     else
       throttle(
         'req/ip',
-        limit: AppConfig.env.requests_per_ip_limit.to_i,
-        period: AppConfig.env.requests_per_ip_period.to_i,
+        limit: Identity::Hostdata.settings.requests_per_ip_limit.to_i,
+        period: Identity::Hostdata.settings.requests_per_ip_period.to_i,
       ) do |req|
         req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
       end
@@ -84,19 +84,19 @@ module Rack
     # Throttle sign in attempts by IP address
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.remote_ip}"
-    if AppConfig.env.logins_per_ip_track_only_mode == 'true'
+    if Identity::Hostdata.settings.logins_per_ip_track_only_mode == 'true'
       track(
         'logins/ip',
-        limit: AppConfig.env.logins_per_ip_limit.to_i,
-        period: AppConfig.env.logins_per_ip_period.to_i,
+        limit: Identity::Hostdata.settings.logins_per_ip_limit.to_i,
+        period: Identity::Hostdata.settings.logins_per_ip_period.to_i,
       ) do |req|
         req.remote_ip if req.path == '/' && req.post?
       end
     else
       throttle(
         'logins/ip',
-        limit: AppConfig.env.logins_per_ip_limit.to_i,
-        period: AppConfig.env.logins_per_ip_period.to_i,
+        limit: Identity::Hostdata.settings.logins_per_ip_limit.to_i,
+        period: Identity::Hostdata.settings.logins_per_ip_period.to_i,
       ) do |req|
         req.remote_ip if req.path == '/' && req.post?
       end
@@ -110,19 +110,19 @@ module Rack
     # Throttle SMS and voice transactions by IP address
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:otps/ip:#{req.remote_ip}"
-    if AppConfig.env.otps_per_ip_track_only_mode == 'true'
+    if Identity::Hostdata.settings.otps_per_ip_track_only_mode == 'true'
       track(
         'otps/ip',
-        limit: AppConfig.env.otps_per_ip_limit.to_i,
-        period: AppConfig.env.otps_per_ip_period.to_i,
+        limit: Identity::Hostdata.settings.otps_per_ip_limit.to_i,
+        period: Identity::Hostdata.settings.otps_per_ip_period.to_i,
       ) do |req|
         req.remote_ip if req.path.match?(%r{/otp/send})
       end
     else
       throttle(
         'otps/ip',
-        limit: AppConfig.env.otps_per_ip_limit.to_i,
-        period: AppConfig.env.otps_per_ip_period.to_i,
+        limit: Identity::Hostdata.settings.otps_per_ip_limit.to_i,
+        period: Identity::Hostdata.settings.otps_per_ip_period.to_i,
       ) do |req|
         req.remote_ip if req.path.match?(%r{/otp/send})
       end
@@ -140,9 +140,9 @@ module Rack
         email = user['email'].to_s.downcase.strip
         email_fingerprint = Pii::Fingerprinter.fingerprint(email) if email.present?
         email_and_ip = "#{email_fingerprint}-#{req.remote_ip}"
-        maxretry = AppConfig.env.logins_per_email_and_ip_limit.to_i
-        findtime = AppConfig.env.logins_per_email_and_ip_period.to_i
-        bantime = AppConfig.env.logins_per_email_and_ip_bantime.to_i
+        maxretry = Identity::Hostdata.settings.logins_per_email_and_ip_limit.to_i
+        findtime = Identity::Hostdata.settings.logins_per_email_and_ip_period.to_i
+        bantime = Identity::Hostdata.settings.logins_per_email_and_ip_bantime.to_i
 
         Allow2Ban.filter(email_and_ip, maxretry: maxretry, findtime: findtime, bantime: bantime) do
           # The count for the email and IP combination is incremented if the return value is truthy.

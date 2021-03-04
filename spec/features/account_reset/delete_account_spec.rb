@@ -62,7 +62,7 @@ describe 'Account Reset Request: Delete Account', email: true do
     end
 
     it 'sends push notifications if push_notifications_enabled is true' do
-      allow(AppConfig.env).to receive(:push_notifications_enabled).and_return('true')
+      allow(Identity::Hostdata.settings).to receive(:push_notifications_enabled).and_return('true')
       identity = IdentityLinker.new(user, 'urn:gov:gsa:openidconnect:test').link_identity
       agency_identity = AgencyIdentityLinker.new(identity).link_identity
 

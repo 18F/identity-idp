@@ -1,4 +1,4 @@
-env = AppConfig.env
+env = Identity::Hostdata.settings
 ttl = env.service_provider_request_ttl_hours || ServiceProviderRequestProxy::DEFAULT_TTL_HOURS
 REDIS_POOL = ConnectionPool.new(size: 10) do
   Readthis::Cache.new(

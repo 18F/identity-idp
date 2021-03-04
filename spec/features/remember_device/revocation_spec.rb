@@ -4,7 +4,8 @@ feature 'taking an action that revokes remember device' do
   include NavigationHelper
 
   before do
-    allow(AppConfig.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
+    allow(Identity::Hostdata.settings).to receive(:otp_delivery_blocklist_maxretry).
+      and_return('1000')
   end
 
   context 'phone' do

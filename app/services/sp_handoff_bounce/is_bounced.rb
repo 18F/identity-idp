@@ -5,7 +5,8 @@ module SpHandoffBounce
       return if start_time.blank?
       tz = Time.zone
       start_time = tz.parse(start_time) if start_time.class == String
-      tz.now <= (start_time + AppConfig.env.sp_handoff_bounce_max_seconds.to_i.seconds)
+      duration = Identity::Hostdata.settings.sp_handoff_bounce_max_seconds.to_i.seconds
+      tz.now <= (start_time + duration)
     end
   end
 end

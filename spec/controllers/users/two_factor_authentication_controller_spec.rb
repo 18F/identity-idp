@@ -297,7 +297,7 @@ describe Users::TwoFactorAuthenticationController do
       it 'marks the user as locked out after too many attempts' do
         expect(@user.second_factor_locked_at).to be_nil
 
-        (AppConfig.env.otp_delivery_blocklist_maxretry.to_i + 1).times do
+        (Identity::Hostdata.settings.otp_delivery_blocklist_maxretry.to_i + 1).times do
           get :send_code, params: {
             otp_delivery_selection_form: { otp_delivery_preference: 'sms',
                                            otp_make_default_number: nil },

@@ -31,7 +31,8 @@ describe Encryption::PasswordVerifier do
       allow(SecureRandom).to receive(:hex) { salt }
       allow(SecureRandom).to receive(:hex).once.with(32).and_return(salt)
 
-      scrypt_salt = AppConfig.env.scrypt_cost + OpenSSL::Digest::SHA256.hexdigest(salt)
+      scrypt_salt = Identity::Hostdata.settings.scrypt_cost +
+                    OpenSSL::Digest::SHA256.hexdigest(salt)
       scrypt_password = double(SCrypt::Password, digest: 'scrypted_password')
       encoded_scrypt_password = Base64.strict_encode64('scrypted_password')
 
@@ -51,7 +52,7 @@ describe Encryption::PasswordVerifier do
 
       expect(JSON.parse(result, symbolize_names: true)).to eq(
         password_salt: salt,
-        password_cost: AppConfig.env.scrypt_cost,
+        password_cost: Identity::Hostdata.settings.scrypt_cost,
         encrypted_password: 'kms_ciphertext',
       )
     end

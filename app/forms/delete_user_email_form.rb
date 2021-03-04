@@ -45,7 +45,7 @@ class DeleteUserEmailForm
   end
 
   def notify_subscribers
-    return if AppConfig.env.push_notifications_enabled != 'true'
+    return if Identity::Hostdata.settings.push_notifications_enabled != 'true'
     event = PushNotification::IdentifierRecycledEvent.new(user: user, email: email_address)
     PushNotification::HttpPush.deliver(event)
   end

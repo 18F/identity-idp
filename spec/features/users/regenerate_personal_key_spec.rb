@@ -31,7 +31,7 @@ feature 'View personal key' do
 
     context 'regenerating new code after canceling edit password action' do
       scenario 'displays new code' do
-        allow(AppConfig.env).to receive(:reauthn_window).and_return('0')
+        allow(Identity::Hostdata.settings).to receive(:reauthn_window).and_return('0')
 
         sign_in_and_2fa_user(user)
 

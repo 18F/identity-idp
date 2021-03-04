@@ -13,28 +13,28 @@ class Throttle < ApplicationRecord
 
   THROTTLE_CONFIG = {
     idv_acuant: {
-      max_attempts: AppConfig.env.acuant_max_attempts.to_i,
-      attempt_window: AppConfig.env.acuant_attempt_window_in_minutes.to_i,
+      max_attempts: Identity::Hostdata.settings.acuant_max_attempts.to_i,
+      attempt_window: Identity::Hostdata.settings.acuant_attempt_window_in_minutes.to_i,
     },
     reg_unconfirmed_email: {
-      max_attempts: AppConfig.env.reg_unconfirmed_email_max_attempts.to_i,
-      attempt_window: AppConfig.env.reg_unconfirmed_email_window_in_minutes.to_i,
+      max_attempts: Identity::Hostdata.settings.reg_unconfirmed_email_max_attempts.to_i,
+      attempt_window: Identity::Hostdata.settings.reg_unconfirmed_email_window_in_minutes.to_i,
     },
     reg_confirmed_email: {
-      max_attempts: AppConfig.env.reg_confirmed_email_max_attempts.to_i,
-      attempt_window: AppConfig.env.reg_confirmed_email_window_in_minutes.to_i,
+      max_attempts: Identity::Hostdata.settings.reg_confirmed_email_max_attempts.to_i,
+      attempt_window: Identity::Hostdata.settings.reg_confirmed_email_window_in_minutes.to_i,
     },
     reset_password_email: {
-      max_attempts: AppConfig.env.reset_password_email_max_attempts.to_i,
-      attempt_window: AppConfig.env.reset_password_email_window_in_minutes.to_i,
+      max_attempts: Identity::Hostdata.settings.reset_password_email_max_attempts.to_i,
+      attempt_window: Identity::Hostdata.settings.reset_password_email_window_in_minutes.to_i,
     },
     idv_resolution: {
-      max_attempts: AppConfig.env.idv_max_attempts.to_i,
-      attempt_window: AppConfig.env.idv_attempt_window_in_hours.to_i * 60,
+      max_attempts: Identity::Hostdata.settings.idv_max_attempts.to_i,
+      attempt_window: Identity::Hostdata.settings.idv_attempt_window_in_hours.to_i * 60,
     },
     idv_send_link: {
-      max_attempts: AppConfig.env.idv_send_link_max_attempts.to_i,
-      attempt_window: AppConfig.env.idv_send_link_attempt_window_in_minutes.to_i,
+      max_attempts: Identity::Hostdata.settings.idv_send_link_max_attempts.to_i,
+      attempt_window: Identity::Hostdata.settings.idv_send_link_attempt_window_in_minutes.to_i,
     },
   }.freeze
 

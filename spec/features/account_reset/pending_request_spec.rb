@@ -2,7 +2,8 @@ require 'rails_helper'
 
 feature 'Pending account reset request sign in' do
   it 'gives the option to cancel the request on sign in' do
-    allow(AppConfig.env).to receive(:otp_delivery_blocklist_maxretry).and_return('999')
+    allow(Identity::Hostdata.settings).
+      to receive(:otp_delivery_blocklist_maxretry).and_return('999')
 
     user = create(:user, :signed_up)
     sign_in_user(user)

@@ -46,7 +46,7 @@
   <%= javascript_include_tag_without_preload 'respond.min' %>
   <![endif]-->
 
-  <% if AppConfig.env.newrelic_browser_key.present? && AppConfig.env.newrelic_browser_app_id.present? %>
+  <% if Identity::Hostdata.settings.newrelic_browser_key.present? && Identity::Hostdata.settings.newrelic_browser_app_id.present? %>
   <%= render 'shared/newrelic/browser_instrumentation' %>
   <% end %>
 </head>
@@ -93,7 +93,7 @@
   <%= javascript_packs_tag_once 'application', prepend: true %>
   <%= render_javascript_pack_once_tags %>
 
-  <%= render 'shared/dap_analytics' if AppConfig.env.participate_in_dap == 'true' && !session_with_trust? %>
+  <%= render 'shared/dap_analytics' if Identity::Hostdata.settings.participate_in_dap == 'true' && !session_with_trust? %>
 </body>
 
 </html>

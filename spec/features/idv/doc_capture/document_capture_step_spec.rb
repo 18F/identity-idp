@@ -5,13 +5,13 @@ feature 'doc capture document capture step' do
   include DocAuthHelper
   include DocCaptureHelper
 
-  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
+  let(:max_attempts) { Identity::Hostdata.settings.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { 'false' }
   let(:sp_requests_ial2_strict) { true }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
-    allow(AppConfig.env).to receive(:liveness_checking_enabled).
+    allow(Identity::Hostdata.settings).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
@@ -28,9 +28,9 @@ feature 'doc capture document capture step' do
 
     before do
       Capybara.reset_session!
-      expired_minutes = (AppConfig.env.doc_capture_request_valid_for_minutes.to_i + 1).minutes
+      expired_duration = Identity::Hostdata.settings.doc_capture_request_valid_for_minutes.to_i + 1
       document_capture_session = user.document_capture_sessions.last
-      document_capture_session.requested_at -= expired_minutes
+      document_capture_session.requested_at -= expired_duration.minutes
       document_capture_session.save!
     end
 
@@ -160,7 +160,7 @@ feature 'doc capture document capture step' do
         ),
       )
 
-      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(Identity::Hostdata.settings).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
       end
@@ -171,7 +171,8 @@ feature 'doc capture document capture step' do
 
       IdentityDocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+      future = Identity::Hostdata.settings.acuant_attempt_window_in_minutes.to_i.minutes.from_now
+      Timecop.travel(future) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 
@@ -242,7 +243,7 @@ feature 'doc capture document capture step' do
         ),
       )
 
-      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(Identity::Hostdata.settings).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
       end
@@ -253,7 +254,8 @@ feature 'doc capture document capture step' do
 
       IdentityDocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+      future = Identity::Hostdata.settings.acuant_attempt_window_in_minutes.to_i.minutes.from_now
+      Timecop.travel(future) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 

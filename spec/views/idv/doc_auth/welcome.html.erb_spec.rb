@@ -59,8 +59,10 @@ describe 'idv/doc_auth/welcome.html.erb' do
     let(:finish) { Time.zone.parse('2020-01-01T23:59:59Z') }
 
     before do
-      allow(AppConfig.env).to receive(:acuant_maintenance_window_start).and_return(start.iso8601)
-      allow(AppConfig.env).to receive(:acuant_maintenance_window_finish).and_return(finish.iso8601)
+      allow(Identity::Hostdata.settings).
+        to receive(:acuant_maintenance_window_start).and_return(start.iso8601)
+      allow(Identity::Hostdata.settings).
+        to receive(:acuant_maintenance_window_finish).and_return(finish.iso8601)
     end
 
     around do |ex|

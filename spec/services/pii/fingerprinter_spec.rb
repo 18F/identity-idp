@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Pii::Fingerprinter do
   before do
-    allow(AppConfig.env).to receive(:hmac_fingerprinter_key_queue).and_return(
+    allow(Identity::Hostdata.settings).to receive(:hmac_fingerprinter_key_queue).and_return(
       '["old-key-one", "old-key-two"]',
     )
   end

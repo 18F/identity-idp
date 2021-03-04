@@ -15,7 +15,7 @@ module Idv
           applicant_pii: @applicant,
           callback_url: callback_url,
           should_proof_state_id: should_proof_state_id,
-          dob_year_only: AppConfig.env.proofing_send_partial_dob == 'true',
+          dob_year_only: Identity::Hostdata.settings.proofing_send_partial_dob == 'true',
           trace_id: trace_id,
         },
       ).run do |idv_result|

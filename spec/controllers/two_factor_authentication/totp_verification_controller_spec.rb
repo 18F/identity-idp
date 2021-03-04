@@ -97,7 +97,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
     context 'when the user lockout period expires' do
       before do
-        lockout_period = AppConfig.env.lockout_period_in_minutes.to_i.minutes
+        lockout_period = Identity::Hostdata.settings.lockout_period_in_minutes.to_i.minutes
         user = create(
           :user,
           :signed_up,

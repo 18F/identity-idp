@@ -4,9 +4,11 @@ describe 'throttling requests' do
   before(:all) { Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new }
   before(:each) { Rack::Attack.cache.store.clear }
 
-  let(:requests_per_ip_limit) { AppConfig.env.requests_per_ip_limit.to_i }
-  let(:logins_per_ip_limit) { AppConfig.env.logins_per_ip_limit.to_i }
-  let(:logins_per_email_and_ip_limit) { AppConfig.env.logins_per_email_and_ip_limit.to_i }
+  let(:requests_per_ip_limit) { Identity::Hostdata.settings.requests_per_ip_limit.to_i }
+  let(:logins_per_ip_limit) { Identity::Hostdata.settings.logins_per_ip_limit.to_i }
+  let(:logins_per_email_and_ip_limit) do
+    Identity::Hostdata.settings.logins_per_email_and_ip_limit.to_i
+  end
 
   describe 'safelists' do
     it 'allows all requests from localhost' do
@@ -23,8 +25,8 @@ describe 'throttling requests' do
       throttle_data = request.env['rack.attack.throttle_data']['req/ip']
 
       expect(throttle_data[:count]).to eq(1)
-      expect(throttle_data[:limit]).to eq(AppConfig.env.requests_per_ip_limit.to_i)
-      expect(throttle_data[:period]).to eq(AppConfig.env.requests_per_ip_period.to_i)
+      expect(throttle_data[:limit]).to eq(Identity::Hostdata.settings.requests_per_ip_limit.to_i)
+      expect(throttle_data[:period]).to eq(Identity::Hostdata.settings.requests_per_ip_period.to_i)
     end
 
     context 'when the number of requests is lower than the limit' do
@@ -113,8 +115,9 @@ describe 'throttling requests' do
       throttle_data = request.env['rack.attack.throttle_data']['logins/ip']
 
       expect(throttle_data[:count]).to eq(1)
-      expect(throttle_data[:limit]).to eq(AppConfig.env.logins_per_ip_limit.to_i)
-      expect(throttle_data[:period]).to eq(AppConfig.env.logins_per_ip_period.to_i.seconds)
+      expect(throttle_data[:limit]).to eq(Identity::Hostdata.settings.logins_per_ip_limit.to_i)
+      expect(throttle_data[:period]).
+        to eq(Identity::Hostdata.settings.logins_per_ip_period.to_i.seconds)
     end
 
     context 'when the number of requests is lower than the limit' do
@@ -230,7 +233,7 @@ describe 'throttling requests' do
   end
 
   describe 'otps per ip' do
-    let(:otps_per_ip_limit) { AppConfig.env.otps_per_ip_limit.to_i }
+    let(:otps_per_ip_limit) { Identity::Hostdata.settings.otps_per_ip_limit.to_i }
 
     context 'when the number of requests is under the limit' do
       it 'does not throttle the request' do

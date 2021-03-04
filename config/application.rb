@@ -17,7 +17,11 @@ APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
-    AppConfig.setup(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))))
+    Identity::Hostdata.setup_settings!(
+      configuration: YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))),
+      rails_env: Rails.env,
+      write_to_env: true,
+    )
 
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false
@@ -33,16 +37,17 @@ module Upaya
     Rails.application.config.action_controller.urlsafe_csrf_tokens = false
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
-    config.i18n.available_locales = AppConfig.env.available_locales.try(:split, ' ') || %w[en]
+    config.i18n.available_locales = Identity::Hostdata.settings.available_locales.
+      try(:split, ' ') || %w[en]
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
 
-    routes.default_url_options[:host] = AppConfig.env.domain_name
+    routes.default_url_options[:host] = Identity::Hostdata.settings.domain_name
 
     config.action_mailer.default_options = {
       from: Mail::Address.new.tap do |mail|
-        mail.address = AppConfig.env.email_from
-        mail.display_name = AppConfig.env.email_from_display_name
+        mail.address = Identity::Hostdata.settings.email_from
+        mail.display_name = Identity::Hostdata.settings.email_from_display_name
       end.to_s,
     }
 
@@ -54,7 +59,7 @@ module Upaya
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
-          next if source == AppConfig.env.domain_name
+          next if source == Identity::Hostdata.settings.domain_name
 
           ServiceProvider.pluck(:redirect_uris).flatten.compact.find do |uri|
             split_uri = uri.split('//')
@@ -73,7 +78,7 @@ module Upaya
       end
     end
 
-    if AppConfig.env.enable_rate_limiting == 'true'
+    if Identity::Hostdata.settings.enable_rate_limiting == 'true'
       config.middleware.use Rack::Attack
     else
       # Rack::Attack auto-includes itself as a Railtie, so we need to

@@ -68,7 +68,7 @@ describe MfaConfirmationController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        max_allowed_attempts = AppConfig.env.password_max_attempts.to_i
+        max_allowed_attempts = Identity::Hostdata.settings.password_max_attempts.to_i
         max_allowed_attempts.times do
           post :create, params: { user: { password: 'wrong' } }
         end
@@ -87,7 +87,7 @@ describe MfaConfirmationController do
         stub_sign_in user
         session[:password_attempts] = 0
 
-        max_allowed_attempts = AppConfig.env.password_max_attempts.to_i
+        max_allowed_attempts = Identity::Hostdata.settings.password_max_attempts.to_i
         (max_allowed_attempts - 1).times do
           post :create, params: { user: { password: 'wrong' } }
         end

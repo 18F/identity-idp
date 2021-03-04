@@ -28,7 +28,7 @@ class SessionDecorator
   end
 
   def mfa_expiration_interval
-    AppConfig.env.remember_device_expiration_hours_aal_1.to_i.hours
+    Identity::Hostdata.settings.remember_device_expiration_hours_aal_1.to_i.hours
   end
 
   def failure_to_proof_url; end

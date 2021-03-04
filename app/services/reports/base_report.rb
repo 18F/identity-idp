@@ -22,16 +22,16 @@ module Reports
       Time.zone.now.end_of_day
     end
 
-    def ec2_data
-      @ec2_data ||= Identity::Hostdata::EC2.load
+    def ec2
+      @ec2 ||= Identity::Hostdata::EC2.load
     end
 
     def gen_s3_bucket_name
-      "#{AppConfig.env.s3_report_bucket_prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
+      "#{Identity::Hostdata.settings.s3_report_bucket_prefix}.#{ec2.account_id}-#{ec2.region}"
     end
 
     def report_timeout
-      AppConfig.env.report_timeout.to_i
+      Identity::Hostdata.settings.report_timeout.to_i
     end
 
     def transaction_with_timeout
@@ -44,7 +44,7 @@ module Reports
     end
 
     def save_report(report_name, body)
-      if AppConfig.env.s3_reports_enabled == 'false'
+      if Identity::Hostdata.settings.s3_reports_enabled == 'false'
         logger.info('Not uploading report to S3, s3_reports_enabled is false')
         return body
       end

@@ -2,7 +2,8 @@ require 'rails_helper'
 
 describe 'Remembering a TOTP device' do
   before do
-    allow(AppConfig.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
+    allow(Identity::Hostdata.settings).to receive(:otp_delivery_blocklist_maxretry).
+      and_return('1000')
   end
 
   let(:user) { create(:user, :signed_up, :with_authentication_app) }

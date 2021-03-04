@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe DocAuthRouter do
   describe '.client' do
     before do
-      allow(AppConfig.env).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
+      allow(Identity::Hostdata.settings).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
     end
 
     context 'for acuant' do

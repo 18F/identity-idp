@@ -46,6 +46,6 @@ class UspsConfirmationUploader
   end
 
   def env
-    AppConfig.env
+    Identity::Hostdata.settings
   end
 end

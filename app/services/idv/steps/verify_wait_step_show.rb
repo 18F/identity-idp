@@ -2,7 +2,7 @@ module Idv
   module Steps
     class VerifyWaitStepShow < VerifyBaseStep
       def call
-        poll_with_meta_refresh(AppConfig.env.poll_rate_for_verify_in_seconds.to_i)
+        poll_with_meta_refresh(Identity::Hostdata.settings.poll_rate_for_verify_in_seconds.to_i)
 
         process_async_state(async_state)
       end

@@ -1,4 +1,4 @@
-<% word_count = AppConfig.env.recovery_code_length.to_i %>
+<% word_count = Identity::Hostdata.settings.recovery_code_length.to_i %>
 
 <div class='margin-bottom-4'>
   <%= f.input attribute_name,

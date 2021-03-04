@@ -38,7 +38,7 @@ module LambdaCallback
     end
 
     def config_auth_token
-      AppConfig.env.resolution_proof_result_lambda_token
+      Identity::Hostdata.settings.resolution_proof_result_lambda_token
     end
   end
 end

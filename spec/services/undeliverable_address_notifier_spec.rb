@@ -71,7 +71,7 @@ RSpec.describe UndeliverableAddressNotifier do
 
   def download_folder
     timestamp = Time.zone.now.strftime('%Y%m%d')
-    File.join(AppConfig.env.usps_download_sftp_directory, "batch#{timestamp}.psv")
+    File.join(Identity::Hostdata.settings.usps_download_sftp_directory, "batch#{timestamp}.psv")
   end
 
   def sftp_options
@@ -84,6 +84,6 @@ RSpec.describe UndeliverableAddressNotifier do
   end
 
   def env
-    AppConfig.env
+    Identity::Hostdata.settings
   end
 end

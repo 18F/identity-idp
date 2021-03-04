@@ -41,7 +41,7 @@ module PivCacConcern
     # for the SP and for the PIV/CAC service need appear in the CSP form-action
     # Returns fully formed CSP array w/"'self'" and redirect_uris
     piv_cac_uri = if Rails.env.development?
-                    AppConfig.env.piv_cac_service_url
+                    Identity::Hostdata.settings.piv_cac_service_url
                   else
                     "https://*.pivcac.#{Identity::Hostdata.env}.#{Identity::Hostdata.domain}"
                   end

@@ -1,7 +1,7 @@
 <% title t('titles.doc_auth.verify') %>
 <% content_for :meta_tags do %>
-  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: AppConfig.env.acuant_sdk_initialization_endpoint %>
-  <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: AppConfig.env.acuant_sdk_initialization_creds %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: Identity::Hostdata.settings.acuant_sdk_initialization_endpoint %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: Identity::Hostdata.settings.acuant_sdk_initialization_creds %>
 <% end %>
 <% SecureHeaders.append_content_security_policy_directives(
   request,
@@ -23,7 +23,7 @@
   status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     send(@step_url, step: :verify_document_status) :
     nil,
-  status_poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
+  status_poll_interval_ms: Identity::Hostdata.settings.poll_rate_for_verify_in_seconds.to_i * 1000,
   sp_name: sp_name,
   failure_to_proof_url: failure_to_proof_url,
   front_image_upload_url: front_image_upload_url,

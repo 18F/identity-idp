@@ -16,7 +16,7 @@ module PivCacService
       uri = if FeatureManagement.development_and_identity_pki_disabled?
               URI(test_piv_cac_entry_url)
             else
-              URI(randomize_uri(AppConfig.env.piv_cac_service_url))
+              URI(randomize_uri(Identity::Hostdata.settings.piv_cac_service_url))
             end
       # add the nonce and redirect uri
       uri.query = { nonce: nonce, redirect_uri: redirect_uri }.to_query
@@ -24,7 +24,7 @@ module PivCacService
     end
 
     def piv_cac_verify_token_link
-      AppConfig.env.piv_cac_verify_token_url
+      Identity::Hostdata.settings.piv_cac_verify_token_url
     end
 
     def url_options
@@ -82,7 +82,7 @@ module PivCacService
     end
 
     def authenticate(token)
-      secret = AppConfig.env.piv_cac_verify_token_secret
+      secret = Identity::Hostdata.settings.piv_cac_verify_token_secret
       return '' if secret.blank?
       nonce = SecureRandom.hex(10)
       hmac = Base64.urlsafe_encode64(

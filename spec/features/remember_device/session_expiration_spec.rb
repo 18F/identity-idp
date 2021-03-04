@@ -4,7 +4,8 @@ describe 'signing in with remember device and idling on the sign in page' do
   include SamlAuthHelper
 
   it 'redirects to the OIDC SP even though session is deleted' do
-    allow(AppConfig.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
+    allow(Identity::Hostdata.settings).to receive(:otp_delivery_blocklist_maxretry).
+      and_return('1000')
 
     # We want to simulate a user that has already visited an OIDC SP and that
     # has checked "remember me for 30 days", such that the next URL the app will

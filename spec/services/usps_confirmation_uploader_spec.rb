@@ -23,7 +23,7 @@ RSpec.describe UspsConfirmationUploader do
   end
 
   before do
-    allow(AppConfig.env).to receive(:usps_upload_enabled).and_return('true')
+    allow(Identity::Hostdata.settings).to receive(:usps_upload_enabled).and_return('true')
   end
 
   describe '#generate_export' do
@@ -63,7 +63,7 @@ RSpec.describe UspsConfirmationUploader do
     end
 
     it 'does not upload when USPS upload is disabled' do
-      allow(AppConfig.env).to receive(:usps_upload_enabled).and_return('false')
+      allow(Identity::Hostdata.settings).to receive(:usps_upload_enabled).and_return('false')
 
       expect(Net::SFTP).to_not receive(:start)
 
@@ -116,7 +116,7 @@ RSpec.describe UspsConfirmationUploader do
 
   def upload_folder
     timestamp = Time.zone.now.strftime('%Y%m%d')
-    File.join(AppConfig.env.usps_upload_sftp_directory, "batch#{timestamp}.psv")
+    File.join(Identity::Hostdata.settings.usps_upload_sftp_directory, "batch#{timestamp}.psv")
   end
 
   def write_permission
@@ -124,6 +124,6 @@ RSpec.describe UspsConfirmationUploader do
   end
 
   def env
-    AppConfig.env
+    Identity::Hostdata.settings
   end
 end

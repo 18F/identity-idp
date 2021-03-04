@@ -80,6 +80,6 @@ class EmailConfirmationTokenValidator
   end
 
   def email_valid_for_duration
-    AppConfig.env.add_email_link_valid_for_hours.to_i.hours
+    Identity::Hostdata.settings.add_email_link_valid_for_hours.to_i.hours
   end
 end

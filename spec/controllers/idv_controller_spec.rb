@@ -77,7 +77,8 @@ describe IdvController do
         stub_sign_in(user)
         session[:sp] = {}
         allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
-        allow(AppConfig.env).to receive(:sp_context_needed_environment).and_return('prod')
+        allow(Identity::Hostdata.settings).to receive(:sp_context_needed_environment).
+          and_return('prod')
       end
 
       context 'prod environment' do

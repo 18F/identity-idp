@@ -11,7 +11,7 @@ describe Encryption::ContextlessKmsClient do
     let(:kms_enabled) { true }
 
     before do
-      allow(AppConfig.env).to receive(:password_pepper).and_return(password_pepper)
+      allow(Identity::Hostdata.settings).to receive(:password_pepper).and_return(password_pepper)
 
       encryptor = Encryption::Encryptors::AesEncryptor.new
       allow(encryptor).to receive(:encrypt).
@@ -91,7 +91,7 @@ describe Encryption::ContextlessKmsClient do
     let(:kms_enabled) { true }
 
     before do
-      allow(AppConfig.env).to receive(:password_pepper).and_return(password_pepper)
+      allow(Identity::Hostdata.settings).to receive(:password_pepper).and_return(password_pepper)
 
       encryptor = Encryption::Encryptors::AesEncryptor.new
       allow(encryptor).to receive(:encrypt).
@@ -107,14 +107,14 @@ describe Encryption::ContextlessKmsClient do
           {
             plaintext: long_kms_plaintext[0..long_kms_plaintext_chunksize - 1],
             ciphertext: 'chunk1',
-            key_id: AppConfig.env.aws_kms_key_id,
-            region: AppConfig.env.aws_region,
+            key_id: Identity::Hostdata.settings.aws_kms_key_id,
+            region: Identity::Hostdata.settings.aws_region,
           },
           {
             plaintext: long_kms_plaintext[long_kms_plaintext_chunksize..-1],
             ciphertext: 'chunk2',
-            key_id: AppConfig.env.aws_kms_key_id,
-            region: AppConfig.env.aws_region,
+            key_id: Identity::Hostdata.settings.aws_kms_key_id,
+            region: Identity::Hostdata.settings.aws_region,
           },
         ],
       )

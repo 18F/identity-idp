@@ -231,7 +231,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
     context 'when the user lockout period expires' do
       before do
         sign_in_before_2fa
-        lockout_period = AppConfig.env.lockout_period_in_minutes.to_i.minutes
+        lockout_period = Identity::Hostdata.settings.lockout_period_in_minutes.to_i.minutes
         subject.current_user.update(
           second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
           second_factor_attempts_count: 3,

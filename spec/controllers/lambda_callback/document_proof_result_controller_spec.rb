@@ -18,7 +18,8 @@ describe LambdaCallback::DocumentProofResultController do
 
     context 'with valid API token' do
       before do
-        request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.document_proof_result_lambda_token
+        request.headers['X-API-AUTH-TOKEN'] =
+          Identity::Hostdata.settings.document_proof_result_lambda_token
         document_capture_session.create_doc_auth_session
       end
 
@@ -60,7 +61,8 @@ describe LambdaCallback::DocumentProofResultController do
 
     context 'with invalid result_id' do
       before do
-        request.headers['X-API-AUTH-TOKEN'] = AppConfig.env.document_proof_result_lambda_token
+        request.headers['X-API-AUTH-TOKEN'] =
+          Identity::Hostdata.settings.document_proof_result_lambda_token
       end
 
       it 'returns 404' do

@@ -10,7 +10,7 @@ module RecurringJob
     private
 
     def config_auth_token
-      AppConfig.env.account_reset_auth_token
+      Identity::Hostdata.settings.account_reset_auth_token
     end
   end
 end

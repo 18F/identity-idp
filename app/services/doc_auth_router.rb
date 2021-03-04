@@ -178,28 +178,29 @@ module DocAuthRouter
     when 'acuant'
       AcuantErrorTranslatorProxy.new(
         IdentityDocAuth::Acuant::AcuantClient.new(
-          assure_id_password: AppConfig.env.acuant_assure_id_password,
-          assure_id_subscription_id: AppConfig.env.acuant_assure_id_subscription_id,
-          assure_id_url: AppConfig.env.acuant_assure_id_url,
-          assure_id_username: AppConfig.env.acuant_assure_id_username,
-          facial_match_url: AppConfig.env.acuant_facial_match_url,
-          passlive_url: AppConfig.env.acuant_passlive_url,
-          timeout: AppConfig.env.acuant_timeout,
+          assure_id_password: Identity::Hostdata.settings.acuant_assure_id_password,
+          assure_id_subscription_id: Identity::Hostdata.settings.acuant_assure_id_subscription_id,
+          assure_id_url: Identity::Hostdata.settings.acuant_assure_id_url,
+          assure_id_username: Identity::Hostdata.settings.acuant_assure_id_username,
+          facial_match_url: Identity::Hostdata.settings.acuant_facial_match_url,
+          passlive_url: Identity::Hostdata.settings.acuant_passlive_url,
+          timeout: Identity::Hostdata.settings.acuant_timeout,
           exception_notifier: method(:notify_exception),
         ),
       )
     when 'lexisnexis'
       LexisNexisTranslatorProxy.new(
         IdentityDocAuth::LexisNexis::LexisNexisClient.new(
-          account_id: AppConfig.env.lexisnexis_account_id,
-          base_url: AppConfig.env.lexisnexis_base_url,
-          request_mode: AppConfig.env.lexisnexis_request_mode,
-          trueid_account_id: AppConfig.env.lexisnexis_trueid_account_id,
-          trueid_liveness_workflow: AppConfig.env.lexisnexis_trueid_liveness_workflow,
-          trueid_noliveness_workflow: AppConfig.env.lexisnexis_trueid_noliveness_workflow,
-          trueid_password: AppConfig.env.lexisnexis_trueid_password,
-          trueid_username: AppConfig.env.lexisnexis_trueid_username,
-          timeout: AppConfig.env.lexisnexis_timeout,
+          account_id: Identity::Hostdata.settings.lexisnexis_account_id,
+          base_url: Identity::Hostdata.settings.lexisnexis_base_url,
+          request_mode: Identity::Hostdata.settings.lexisnexis_request_mode,
+          trueid_account_id: Identity::Hostdata.settings.lexisnexis_trueid_account_id,
+          trueid_liveness_workflow: Identity::Hostdata.settings.lexisnexis_trueid_liveness_workflow,
+          trueid_noliveness_workflow:
+            Identity::Hostdata.settings.lexisnexis_trueid_noliveness_workflow,
+          trueid_password: Identity::Hostdata.settings.lexisnexis_trueid_password,
+          trueid_username: Identity::Hostdata.settings.lexisnexis_trueid_username,
+          timeout: Identity::Hostdata.settings.lexisnexis_timeout,
           exception_notifier: method(:notify_exception),
           locale: I18n.locale,
         ),
@@ -220,6 +221,6 @@ module DocAuthRouter
   end
 
   def self.doc_auth_vendor
-    vendor_from_config = AppConfig.env.doc_auth_vendor
+    vendor_from_config = Identity::Hostdata.settings.doc_auth_vendor
   end
 end

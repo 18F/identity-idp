@@ -122,7 +122,7 @@ feature 'doc auth verify step' do
     click_idv_continue
     expect(page).to have_current_path(idv_session_errors_failure_path)
 
-    Timecop.travel(AppConfig.env.idv_attempt_window_in_hours.to_i.hours.from_now) do
+    Timecop.travel(Identity::Hostdata.settings.idv_attempt_window_in_hours.to_i.hours.from_now) do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
       click_idv_continue
@@ -205,7 +205,7 @@ feature 'doc auth verify step' do
         success: true, errors: {}, context: { stages: [] },
       )
 
-      allow(AppConfig.env).to receive(:aamva_sp_banlist_issuers).
+      allow(Identity::Hostdata.settings).to receive(:aamva_sp_banlist_issuers).
         and_return('["urn:gov:gsa:openidconnect:sp:server"]')
 
       visit_idp_from_sp_with_ial1(:oidc)

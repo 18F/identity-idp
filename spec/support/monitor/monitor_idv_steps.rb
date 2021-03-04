@@ -1,6 +1,8 @@
 module MonitorIdvSteps
   def verify_identity_with_doc_auth
-    allow(AppConfig.env).to receive(:doc_auth_vendor).and_return('mock') if monitor.local?
+    if monitor.local?
+      allow(Identity::Hostdata.settings).to receive(:doc_auth_vendor).and_return('mock')
+    end
 
     expect(page).to have_content 'You will also need'
     click_on 'Create an account'

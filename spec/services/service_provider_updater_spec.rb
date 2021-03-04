@@ -73,7 +73,7 @@ describe ServiceProviderUpdater do
 
   describe '#run' do
     before do
-      allow(AppConfig.env).to receive(:dashboard_url).and_return(fake_dashboard_url)
+      allow(Identity::Hostdata.settings).to receive(:dashboard_url).and_return(fake_dashboard_url)
     end
 
     context 'dashboard is available' do

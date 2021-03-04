@@ -13,7 +13,7 @@ describe 'Strong IAL2' do
     end
 
     it 'starts the proofing process if liveness is enabled' do
-      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
+      allow(Identity::Hostdata.settings).to receive(:liveness_checking_enabled).and_return('true')
 
       visit_idp_from_sp_with_ial2(:saml)
       sign_up_and_2fa_ial1_user
@@ -32,7 +32,7 @@ describe 'Strong IAL2' do
     end
 
     it 'upgrades user to IAL2 strict if liveness checking is enabled' do
-      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
+      allow(Identity::Hostdata.settings).to receive(:liveness_checking_enabled).and_return('true')
 
       user ||= create(:profile, :active, :verified,
                       pii: { first_name: 'John', ssn: '111223333' }).user
@@ -56,7 +56,7 @@ describe 'Strong IAL2' do
     end
 
     it 'returns an error if liveness checking is disabled' do
-      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('false')
+      allow(Identity::Hostdata.settings).to receive(:liveness_checking_enabled).and_return('false')
 
       visit_idp_from_sp_with_ial2(:oidc)
 
@@ -67,7 +67,7 @@ describe 'Strong IAL2' do
 
   context 'with SP that sends an IAL2 strict request and a verified profile with no liveness' do
     it 'upgrades user to IAL2 strict if liveness checking is enabled' do
-      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
+      allow(Identity::Hostdata.settings).to receive(:liveness_checking_enabled).and_return('true')
 
       user ||= create(:profile, :active, :verified,
                       pii: { first_name: 'John', ssn: '111223333' }).user
@@ -91,7 +91,7 @@ describe 'Strong IAL2' do
     end
 
     it 'returns an error if liveness checking is disabled' do
-      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('false')
+      allow(Identity::Hostdata.settings).to receive(:liveness_checking_enabled).and_return('false')
 
       visit_idp_from_oidc_sp_with_ial2_strict
 

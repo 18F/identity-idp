@@ -51,7 +51,8 @@ describe Idv::Agent do
 
         context 'proofing partial date of birth' do
           before do
-            allow(AppConfig.env).to receive(:proofing_send_partial_dob).and_return('true')
+            allow(Identity::Hostdata.settings).
+              to receive(:proofing_send_partial_dob).and_return('true')
           end
 
           it 'passes dob_year_only to the proofing function' do

@@ -8,7 +8,7 @@ describe Encryption::Encryptors::SessionEncryptor do
       aes_encryptor = instance_double(Encryption::Encryptors::AesEncryptor)
       kms_client = instance_double(Encryption::KmsClient)
       allow(aes_encryptor).to receive(:encrypt).
-        with(plaintext, AppConfig.env.session_encryption_key[0...32]).
+        with(plaintext, Identity::Hostdata.settings.session_encryption_key[0...32]).
         and_return('aes output')
       allow(kms_client).to receive(:encrypt).
         with('aes output', 'context' => 'session-encryption').

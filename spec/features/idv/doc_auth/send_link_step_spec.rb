@@ -9,9 +9,9 @@ feature 'doc auth send link step' do
     complete_doc_auth_steps_before_send_link_step
   end
 
-  let(:idv_send_link_max_attempts) { AppConfig.env.idv_send_link_max_attempts.to_i }
+  let(:idv_send_link_max_attempts) { Identity::Hostdata.settings.idv_send_link_max_attempts.to_i }
   let(:idv_send_link_attempt_window_in_minutes) do
-    AppConfig.env.idv_send_link_attempt_window_in_minutes.to_i
+    Identity::Hostdata.settings.idv_send_link_attempt_window_in_minutes.to_i
   end
   let(:document_capture_session) { DocumentCaptureSession.create! }
 

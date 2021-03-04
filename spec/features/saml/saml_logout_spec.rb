@@ -73,7 +73,7 @@ feature 'SAML logout' do
         # It should contain an issuer nodeset
         expect(xmldoc.issuer_nodeset.length).to eq(1)
         expect(xmldoc.issuer_nodeset[0].content).to eq(
-          "https://#{AppConfig.env.domain_name}/api/saml",
+          "https://#{Identity::Hostdata.settings.domain_name}/api/saml",
         )
 
         # It should not contain a SHA256 signature nodeset

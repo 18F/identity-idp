@@ -24,7 +24,7 @@ describe Reports::DeletedUserAccountsReport do
            last_authenticated_at: last_authenticated_at)
     user.destroy!
 
-    allow(AppConfig.env).to receive(:deleted_user_accounts_report_configs).and_return(
+    allow(Identity::Hostdata.settings).to receive(:deleted_user_accounts_report_configs).and_return(
       [{ 'name' => name, 'issuers' => [issuer], 'emails' => [email] }].to_json,
     )
     allow(UserMailer).to receive(:deleted_user_accounts_report).and_call_original

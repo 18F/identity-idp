@@ -1,6 +1,6 @@
 <p class="lead">
   <%= t('user_mailer.add_email_associated_with_another_account.intro_html',
-        app: link_to(APP_NAME, AppConfig.env.mailer_domain_name, class: 'gray')) %>
+        app: link_to(APP_NAME, Identity::Hostdata.settings.mailer_domain_name, class: 'gray')) %>
 </p>
 
 <table class="button expanded large radius">
@@ -50,12 +50,12 @@
 
 <p>
   <%= t('user_mailer.add_email_associated_with_another_account.reset_password_html',
-        app: link_to(APP_NAME, AppConfig.env.mailer_domain_name, class: 'gray')) %>
+        app: link_to(APP_NAME, Identity::Hostdata.settings.mailer_domain_name, class: 'gray')) %>
 </p>
 
 <p>
   <%= t('user_mailer.add_email_associated_with_another_account.help_html',
-        app: link_to(APP_NAME, AppConfig.env.mailer_domain_name, class: 'gray'),
+        app: link_to(APP_NAME, Identity::Hostdata.settings.mailer_domain_name, class: 'gray'),
         help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
         contact_link: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url)) %>
 </p>

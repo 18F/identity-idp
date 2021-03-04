@@ -10,7 +10,8 @@ describe SamlIdpController do
     # authorization confirmation page so let's force the system
     # to skip past that page
     allow(controller).to receive(:auth_count).and_return(2)
-    allow(AppConfig.env).to receive(:aal_authn_context_enabled).and_return(aal_context_enabled)
+    allow(Identity::Hostdata.settings).
+      to receive(:aal_authn_context_enabled).and_return(aal_context_enabled)
   end
 
   render_views
@@ -106,7 +107,7 @@ describe SamlIdpController do
 
   describe 'GET /api/saml/auth' do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
-    let(:aal_level) { AppConfig.env.aal_authn_context_enabled == 'true' ? 2 : nil }
+    let(:aal_level) { Identity::Hostdata.settings.aal_authn_context_enabled == 'true' ? 2 : nil }
 
     context 'with IAL2 and the identity is already verified' do
       let(:user) { create(:profile, :active, :verified).user }
@@ -648,7 +649,7 @@ describe SamlIdpController do
       it 'includes an Issuer element inherited from the base URL' do
         expect(issuer.name).to eq('Issuer')
         expect(issuer.namespace.href).to eq(Saml::XML::Namespaces::ASSERTION)
-        expect(issuer.text).to eq("https://#{AppConfig.env.domain_name}/api/saml")
+        expect(issuer.text).to eq("https://#{Identity::Hostdata.settings.domain_name}/api/saml")
       end
 
       it 'includes a Status element with a StatusCode child element' do

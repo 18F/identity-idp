@@ -50,7 +50,7 @@ module Encryption
     def encrypt_raw_kms(plaintext)
       raise ArgumentError, 'kms plaintext exceeds 4096 bytes' if plaintext.bytesize > 4096
       aws_client.encrypt(
-        key_id: AppConfig.env.aws_kms_key_id,
+        key_id: Identity::Hostdata.settings.aws_kms_key_id,
         plaintext: plaintext,
       ).ciphertext_blob
     end
@@ -78,11 +78,11 @@ module Encryption
     end
 
     def encrypt_local(plaintext)
-      encryptor.encrypt(plaintext, AppConfig.env.password_pepper)
+      encryptor.encrypt(plaintext, Identity::Hostdata.settings.password_pepper)
     end
 
     def decrypt_local(ciphertext)
-      encryptor.decrypt(ciphertext, AppConfig.env.password_pepper)
+      encryptor.decrypt(ciphertext, Identity::Hostdata.settings.password_pepper)
     end
 
     def aws_client

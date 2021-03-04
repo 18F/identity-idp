@@ -25,7 +25,7 @@ class UspsDailyTestSender
   # @return [Hash]
   def designated_receiver_pii
     @designated_receiver_pii ||= JSON.parse(
-      AppConfig.env.gpo_designated_receiver_pii,
+      Identity::Hostdata.settings.gpo_designated_receiver_pii,
       symbolize_names: true,
     )
   end

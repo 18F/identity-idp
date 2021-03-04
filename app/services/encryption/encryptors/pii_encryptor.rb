@@ -41,7 +41,7 @@ module Encryption
 
       def encrypt(plaintext, user_uuid: nil)
         salt = SecureRandom.hex(32)
-        cost = AppConfig.env.scrypt_cost
+        cost = Identity::Hostdata.settings.scrypt_cost
         aes_encryption_key = scrypt_password_digest(salt: salt, cost: cost)
         aes_encrypted_ciphertext = aes_cipher.encrypt(plaintext, aes_encryption_key)
         kms_encrypted_ciphertext = kms_client.encrypt(

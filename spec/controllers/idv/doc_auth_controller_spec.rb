@@ -232,7 +232,7 @@ describe Idv::DocAuthController do
 
     context 'with selfie checking enabled' do
       before do
-        allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
+        allow(Identity::Hostdata.settings).to receive(:liveness_checking_enabled).and_return('true')
       end
 
       it 'successfully submits the images' do
@@ -348,7 +348,7 @@ describe Idv::DocAuthController do
       expect(response.body).to eq({
         success: false,
         errors: [{ field: 'front', message: 'Wrong document' }],
-        remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+        remaining_attempts: Identity::Hostdata.settings.acuant_max_attempts.to_i,
       }.to_json)
     end
 
@@ -364,13 +364,13 @@ describe Idv::DocAuthController do
         success: false,
         errors: [{ field: 'pii',
                    message: I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness') }],
-        remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+        remaining_attempts: Identity::Hostdata.settings.acuant_max_attempts.to_i,
       }.to_json)
       expect(@analytics).to have_received(:track_event).with(
         'IdV: ' + "#{Analytics::DOC_AUTH} verify_document_status submitted".downcase, {
           errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
           success: false,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          remaining_attempts: Identity::Hostdata.settings.acuant_max_attempts.to_i,
           step: 'verify_document_status',
           step_count: 1,
         }
@@ -379,7 +379,7 @@ describe Idv::DocAuthController do
         Analytics::DOC_AUTH + ' submitted', {
           errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
           success: false,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          remaining_attempts: Identity::Hostdata.settings.acuant_max_attempts.to_i,
           step: 'verify_document_status',
           step_count: 1,
         }

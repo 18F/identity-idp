@@ -15,7 +15,7 @@ module GoBackHelper
   end
 
   def app_host
-    AppConfig.env.domain_name.split(':')[0]
+    Identity::Hostdata.settings.domain_name.split(':')[0]
   end
 end
 

@@ -36,7 +36,7 @@ module Encryption
 
     def digest(password:, user_uuid:)
       salt = SecureRandom.hex(32)
-      cost = AppConfig.env.scrypt_cost
+      cost = Identity::Hostdata.settings.scrypt_cost
       encrypted_password = encrypt_password(
         password: password, user_uuid: user_uuid, salt: salt, cost: cost,
       )

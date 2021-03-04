@@ -35,7 +35,7 @@ module Idv
 
     def extend_timeout_using_meta_refresh_for_select_paths
       return unless request.path == idv_doc_auth_step_path(step: :link_sent) && flow_session
-      max_10min_refreshes = AppConfig.env.doc_auth_extend_timeout_by_minutes.to_i / 10
+      max_10min_refreshes = Identity::Hostdata.settings.doc_auth_extend_timeout_by_minutes.to_i / 10
       return if max_10min_refreshes <= 0
       meta_refresh_count = flow_session[:meta_refresh_count].to_i
       return if meta_refresh_count >= max_10min_refreshes

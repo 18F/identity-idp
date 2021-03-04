@@ -33,11 +33,11 @@ describe 'shared/_nav_branded.html.erb' do
       )
     end
     let(:bucket) { 'bucket_id' }
-    let(:region) { AppConfig.env.aws_region }
+    let(:region) { Identity::Hostdata.settings.aws_region }
     let(:img_url) { "https://s3.#{region}.amazonaws.com/#{bucket}/key-to-logo" }
 
     before do
-      allow(AppConfig.env).to receive(:aws_logo_bucket).and_return(bucket)
+      allow(Identity::Hostdata.settings).to receive(:aws_logo_bucket).and_return(bucket)
       allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
       decorated_session = ServiceProviderSessionDecorator.new(
         sp: sp_with_s3_logo,

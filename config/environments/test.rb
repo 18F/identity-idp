@@ -15,8 +15,8 @@ Rails.application.configure do
   config.i18n.raise_on_missing_translations = true
 
   config.action_mailer.delivery_method = :test
-  config.action_mailer.default_url_options = { host: AppConfig.env.domain_name }
-  config.action_mailer.asset_host = AppConfig.env.mailer_domain_name
+  config.action_mailer.default_url_options = { host: Identity::Hostdata.settings.domain_name }
+  config.action_mailer.asset_host = Identity::Hostdata.settings.mailer_domain_name
 
   config.assets.debug = false
 

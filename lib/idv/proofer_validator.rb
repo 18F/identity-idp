@@ -13,7 +13,7 @@ module Idv
     end
 
     def self.mock_fallback_enabled?
-      AppConfig.env.proofer_mock_fallback == 'true'
+      Identity::Hostdata.settings.proofer_mock_fallback == 'true'
     end
   end
 end

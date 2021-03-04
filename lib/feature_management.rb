@@ -6,11 +6,12 @@ class FeatureManagement
   ].freeze
 
   def self.telephony_test_adapter?
-    AppConfig.env.telephony_adapter.blank? || AppConfig.env.telephony_adapter == 'test'
+    Identity::Hostdata.settings.telephony_adapter.blank? ||
+      Identity::Hostdata.settings.telephony_adapter == 'test'
   end
 
   def self.identity_pki_disabled?
-    env = AppConfig.env
+    env = Identity::Hostdata.settings
     env.identity_pki_disabled == 'true' ||
       !env.piv_cac_service_url ||
       !env.piv_cac_verify_token_url
@@ -38,23 +39,23 @@ class FeatureManagement
   end
 
   def self.enable_load_testing_mode?
-    AppConfig.env.enable_load_testing_mode == 'true'
+    Identity::Hostdata.settings.enable_load_testing_mode == 'true'
   end
 
   def self.use_kms?
-    AppConfig.env.use_kms == 'true'
+    Identity::Hostdata.settings.use_kms == 'true'
   end
 
   def self.kms_multi_region_enabled?
-    AppConfig.env.aws_kms_multi_region_enabled == 'true'
+    Identity::Hostdata.settings.aws_kms_multi_region_enabled == 'true'
   end
 
   def self.use_dashboard_service_providers?
-    AppConfig.env.use_dashboard_service_providers == 'true'
+    Identity::Hostdata.settings.use_dashboard_service_providers == 'true'
   end
 
   def self.enable_usps_verification?
-    AppConfig.env.enable_usps_verification == 'true'
+    Identity::Hostdata.settings.enable_usps_verification == 'true'
   end
 
   def self.reveal_usps_code?
@@ -62,7 +63,7 @@ class FeatureManagement
   end
 
   def self.current_env_allowed_to_see_usps_code?
-    ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED.include?(AppConfig.env.domain_name)
+    ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED.include?(Identity::Hostdata.settings.domain_name)
   end
 
   def self.show_demo_banner?
@@ -74,81 +75,83 @@ class FeatureManagement
   end
 
   def self.enable_saml_cert_rotation?
-    AppConfig.env.saml_secret_rotation_enabled == 'true'
+    Identity::Hostdata.settings.saml_secret_rotation_enabled == 'true'
   end
 
   def self.recaptcha_enabled?(session, reset)
-    AbTest.new(:ab_test_recaptcha_enabled, AppConfig.env.recaptcha_enabled_percent).
+    AbTest.new(:ab_test_recaptcha_enabled, Identity::Hostdata.settings.recaptcha_enabled_percent).
       enabled?(session, reset)
   end
 
   def self.disallow_all_web_crawlers?
-    AppConfig.env.disallow_all_web_crawlers == 'true'
+    Identity::Hostdata.settings.disallow_all_web_crawlers == 'true'
   end
 
   def self.disallow_ial2_recovery?
-    AppConfig.env.disallow_ial2_recovery == 'true'
+    Identity::Hostdata.settings.disallow_ial2_recovery == 'true'
   end
 
   def self.backup_codes_as_only_2fa?
-    AppConfig.env.backup_codes_as_only_2fa == 'true'
+    Identity::Hostdata.settings.backup_codes_as_only_2fa == 'true'
   end
 
   def self.in_person_proofing_enabled?
-    AppConfig.env.in_person_proofing_enabled == 'true'
+    Identity::Hostdata.settings.in_person_proofing_enabled == 'true'
   end
 
   def self.usps_upload_enabled?
-    AppConfig.env.usps_upload_enabled == 'true'
+    Identity::Hostdata.settings.usps_upload_enabled == 'true'
   end
 
   def self.identity_pki_local_dev?
     # This option should only be used in the development environment
     # it controls if we hop over to identity-pki on a developers local machins
-    Rails.env.development? && AppConfig.env.identity_pki_local_dev == 'true'
+    Rails.env.development? && Identity::Hostdata.settings.identity_pki_local_dev == 'true'
   end
 
   def self.doc_capture_polling_enabled?
-    AppConfig.env.doc_capture_polling_enabled == 'true'
+    Identity::Hostdata.settings.doc_capture_polling_enabled == 'true'
   end
 
   def self.document_capture_async_uploads_enabled?
-    AppConfig.env.doc_auth_enable_presigned_s3_urls == 'true'
+    Identity::Hostdata.settings.doc_auth_enable_presigned_s3_urls == 'true'
   end
 
   def self.hide_phone_mfa_signup?
-    AppConfig.env.hide_phone_mfa_signup == 'true'
+    Identity::Hostdata.settings.hide_phone_mfa_signup == 'true'
   end
 
   def self.liveness_checking_enabled?
-    AppConfig.env.liveness_checking_enabled == 'true'
+    Identity::Hostdata.settings.liveness_checking_enabled == 'true'
   end
 
   def self.logo_upload_enabled?
-    AppConfig.env.logo_upload_enabled == 'true'
+    Identity::Hostdata.settings.logo_upload_enabled == 'true'
   end
 
   def self.log_to_stdout?
-    !Rails.env.test? && AppConfig.env.log_to_stdout == 'true'
+    !Rails.env.test? && Identity::Hostdata.settings.log_to_stdout == 'true'
   end
 
   # Whether or not we can call the phone_info endpoint at all
   def self.voip_check?
-    AppConfig.env.voip_check == 'true'
+    Identity::Hostdata.settings.voip_check == 'true'
   end
 
   # Whether or not we should block VOIP phone numbers
   def self.voip_block?
-    AppConfig.env.voip_block == 'true'
+    Identity::Hostdata.settings.voip_block == 'true'
   end
 
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
   # @return [Set<String>] set of phone numbers normalized to e164
   def self.voip_allowed_phones
-    @voip_allowed_phones ||= if (allowed_phones = AppConfig.env.voip_allowed_phones).present?
-      JSON.parse(allowed_phones).map { |p| Phonelib.parse(p).e164 }.to_set
-    else
-      Set.new
+    @voip_allowed_phones ||= begin
+      if (allowed_phones = Identity::Hostdata.settings.voip_allowed_phones).present?
+        JSON.parse(allowed_phones).map { |p| Phonelib.parse(p).e164 }.to_set
+      else
+        Set.new
+      end
     end
   end
 end

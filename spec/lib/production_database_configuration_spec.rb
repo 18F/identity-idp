@@ -9,19 +9,19 @@ describe ProductionDatabaseConfiguration do
   let(:database_host) { 'read_write_host' }
 
   before do
-    allow(AppConfig.env).to receive(:database_username).and_return(database_username)
-    allow(AppConfig.env).to receive(:database_password).and_return(database_password)
-    allow(AppConfig.env).to receive(:database_readonly_username).and_return(
+    allow(Identity::Hostdata.settings).to receive(:database_username).and_return(database_username)
+    allow(Identity::Hostdata.settings).to receive(:database_password).and_return(database_password)
+    allow(Identity::Hostdata.settings).to receive(:database_readonly_username).and_return(
       database_readonly_username,
     )
-    allow(AppConfig.env).to receive(:database_readonly_password).and_return(
+    allow(Identity::Hostdata.settings).to receive(:database_readonly_password).and_return(
       database_readonly_password,
     )
     allow(ProductionDatabaseConfiguration).to receive(:warn)
-    allow(AppConfig.env).to receive(:database_read_replica_host).and_return(
+    allow(Identity::Hostdata.settings).to receive(:database_read_replica_host).and_return(
       database_read_replica_host,
     )
-    allow(AppConfig.env).to receive(:database_host).and_return(database_host)
+    allow(Identity::Hostdata.settings).to receive(:database_host).and_return(database_host)
   end
 
   describe '.username' do
@@ -35,13 +35,13 @@ describe ProductionDatabaseConfiguration do
 
     context 'when the app is running in a console without readonly user credentials' do
       it 'returns the read/write username' do
-        allow(AppConfig.env).to receive(:database_readonly_username).and_return(nil)
-        allow(AppConfig.env).to receive(:database_readonly_password).and_return(nil)
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_username).and_return(nil)
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_password).and_return(nil)
 
         expect(ProductionDatabaseConfiguration.username).to eq(database_username)
 
-        allow(AppConfig.env).to receive(:database_readonly_username).and_return('')
-        allow(AppConfig.env).to receive(:database_readonly_password).and_return('')
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_username).and_return('')
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_password).and_return('')
 
         expect(ProductionDatabaseConfiguration.username).to eq(database_username)
       end
@@ -76,13 +76,13 @@ describe ProductionDatabaseConfiguration do
 
     context 'when the app is running in a console without readonly user credentials' do
       it 'returns the read/write host' do
-        allow(AppConfig.env).to receive(:database_readonly_username).and_return(nil)
-        allow(AppConfig.env).to receive(:database_readonly_password).and_return(nil)
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_username).and_return(nil)
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_password).and_return(nil)
 
         expect(ProductionDatabaseConfiguration.host).to eq(database_host)
 
-        allow(AppConfig.env).to receive(:database_readonly_username).and_return('')
-        allow(AppConfig.env).to receive(:database_readonly_password).and_return('')
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_username).and_return('')
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_password).and_return('')
 
         expect(ProductionDatabaseConfiguration.host).to eq(database_host)
       end
@@ -117,13 +117,13 @@ describe ProductionDatabaseConfiguration do
 
     context 'when the app is running in a console without readonly user credentials' do
       it 'returns the read/write username' do
-        allow(AppConfig.env).to receive(:database_readonly_username).and_return(nil)
-        allow(AppConfig.env).to receive(:database_readonly_password).and_return(nil)
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_username).and_return(nil)
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_password).and_return(nil)
 
         expect(ProductionDatabaseConfiguration.password).to eq(database_password)
 
-        allow(AppConfig.env).to receive(:database_readonly_username).and_return('')
-        allow(AppConfig.env).to receive(:database_readonly_password).and_return('')
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_username).and_return('')
+        allow(Identity::Hostdata.settings).to receive(:database_readonly_password).and_return('')
 
         expect(ProductionDatabaseConfiguration.password).to eq(database_password)
       end
@@ -152,17 +152,17 @@ describe ProductionDatabaseConfiguration do
       before { stub_role_config('idp') }
 
       it 'returns the idp pool size' do
-        allow(AppConfig.env).to receive(:database_pool_idp).and_return(7)
+        allow(Identity::Hostdata.settings).to receive(:database_pool_idp).and_return(7)
 
         expect(ProductionDatabaseConfiguration.pool).to eq(7)
       end
 
       it 'defaults to 5' do
-        allow(AppConfig.env).to receive(:database_pool_idp).and_return(nil)
+        allow(Identity::Hostdata.settings).to receive(:database_pool_idp).and_return(nil)
 
         expect(ProductionDatabaseConfiguration.pool).to eq(5)
 
-        allow(AppConfig.env).to receive(:database_pool_idp).and_return('')
+        allow(Identity::Hostdata.settings).to receive(:database_pool_idp).and_return('')
 
         expect(ProductionDatabaseConfiguration.pool).to eq(5)
       end

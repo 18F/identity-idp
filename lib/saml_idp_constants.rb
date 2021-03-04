@@ -21,14 +21,14 @@ module Saml
       AAL3_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/3".freeze
       AAL3_HSPD12_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/3?hspd12=true".freeze
 
-      ISSUERS_WITH_EMAIL_NAMEID_FORMAT = AppConfig.env.issuers_with_email_nameid_format.split(',').
+      ISSUERS_WITH_EMAIL_NAMEID_FORMAT = Identity::Hostdata.settings.issuers_with_email_nameid_format.split(',').
                                          freeze
       NAME_ID_FORMAT_PERSISTENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'.freeze
       NAME_ID_FORMAT_EMAIL = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'.freeze
 
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='.freeze
 
-      VALID_AUTHN_CONTEXTS = JSON.parse(AppConfig.env.valid_authn_contexts).freeze
+      VALID_AUTHN_CONTEXTS = JSON.parse(Identity::Hostdata.settings.valid_authn_contexts).freeze
       IAL2_AUTHN_CONTEXTS = [IAL2_AUTHN_CONTEXT_CLASSREF, LOA3_AUTHN_CONTEXT_CLASSREF].freeze
 
       AUTHN_CONTEXT_CLASSREF_TO_IAL = {

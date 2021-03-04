@@ -39,7 +39,8 @@ describe 'OpenID Connect' do
 
     it 'succeeds in forcing login with prompt login and prior session' do
       user = oidc_end_client_secret_jwt(prompt: 'login')
-      Timecop.travel((AppConfig.env.sp_handoff_bounce_max_seconds.to_i + 1).seconds.from_now) do
+      future = (Identity::Hostdata.settings.sp_handoff_bounce_max_seconds.to_i + 1).seconds.from_now
+      Timecop.travel(future) do
         oidc_end_client_secret_jwt(prompt: 'login', user: user)
       end
     end

@@ -1,7 +1,7 @@
 module Pii
   class Fingerprinter
     def self.current_key
-      AppConfig.env.hmac_fingerprinter_key
+      Identity::Hostdata.settings.hmac_fingerprinter_key
     end
 
     def self.fingerprint(text, key = current_key)

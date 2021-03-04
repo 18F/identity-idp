@@ -4,7 +4,8 @@ feature 'SAML Authorization Confirmation' do
   include SamlAuthHelper
 
   before do
-    allow(AppConfig.env).to receive(:otp_delivery_blocklist_maxretry).and_return('9999')
+    allow(Identity::Hostdata.settings).to receive(:otp_delivery_blocklist_maxretry).
+      and_return('9999')
   end
 
   context 'authenticated user signs in to new sp' do

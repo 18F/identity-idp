@@ -107,7 +107,7 @@ feature 'adding email address' do
   end
 
   it 'does not show add email button when max emails is reached' do
-    allow(AppConfig.env).to receive(:max_emails_per_account).and_return('1')
+    allow(Identity::Hostdata.settings).to receive(:max_emails_per_account).and_return('1')
     user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
 
@@ -116,7 +116,7 @@ feature 'adding email address' do
   end
 
   it 'does not allow the user to add an email when max emails is reached' do
-    allow(AppConfig.env).to receive(:max_emails_per_account).and_return('1')
+    allow(Identity::Hostdata.settings).to receive(:max_emails_per_account).and_return('1')
     user = create(:user, :signed_up)
     sign_in_and_2fa_user(user)
 

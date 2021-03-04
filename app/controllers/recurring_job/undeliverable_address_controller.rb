@@ -8,7 +8,7 @@ module RecurringJob
     private
 
     def config_auth_token
-      AppConfig.env.usps_download_token
+      Identity::Hostdata.settings.usps_download_token
     end
   end
 end

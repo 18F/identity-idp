@@ -38,15 +38,15 @@ describe UspsConfirmationExporter do
 
   describe '#run' do
     before do
-      allow(AppConfig.env).to receive(:usps_confirmation_max_days).and_return(10)
+      allow(Identity::Hostdata.settings).to receive(:usps_confirmation_max_days).and_return(10)
       allow(subject).to receive(:current_date).and_return(Time.zone.local(2018, 7, 6))
     end
 
     it 'creates psv string' do
       result = <<~HEREDOC
         01|2\r
-        02|John Johnson|123 Sesame St|""|Anytown|WA|98021|ZYX987|July 6, 2018|July 16, 2018|#{service_provider.friendly_name}|https://#{AppConfig.env.domain_name}\r
-        02|Söme Öne|123 Añy St|Sté 123|Sömewhere|KS|66666-1234|ABC123|July 6, 2018|July 16, 2018|Null ServiceProvider|https://#{AppConfig.env.domain_name}\r
+        02|John Johnson|123 Sesame St|""|Anytown|WA|98021|ZYX987|July 6, 2018|July 16, 2018|#{service_provider.friendly_name}|https://#{Identity::Hostdata.settings.domain_name}\r
+        02|Söme Öne|123 Añy St|Sté 123|Sömewhere|KS|66666-1234|ABC123|July 6, 2018|July 16, 2018|Null ServiceProvider|https://#{Identity::Hostdata.settings.domain_name}\r
       HEREDOC
 
       psv_contents = subject.run
