@@ -6,7 +6,7 @@ RSpec.describe Health::OutboundController do
 
     context 'when the outbound connections are healthy' do
       before do
-        stub_request(:get, AppConfig.env.outbound_connection_check_url).
+        stub_request(:head, AppConfig.env.outbound_connection_check_url).
           to_return(status: 200)
       end
 
@@ -28,7 +28,7 @@ RSpec.describe Health::OutboundController do
 
     context 'when the outbound connections are uhealthy' do
       before do
-        stub_request(:get, AppConfig.env.outbound_connection_check_url).to_timeout
+        stub_request(:head, AppConfig.env.outbound_connection_check_url).to_timeout
       end
 
       it 'is a 500' do

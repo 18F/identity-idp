@@ -17,7 +17,7 @@ RSpec.describe OutboundHealthChecker do
 
     context 'successful connection to endpoint' do
       before do
-        stub_request(:get, AppConfig.env.outbound_connection_check_url).
+        stub_request(:head, AppConfig.env.outbound_connection_check_url).
           to_return(status: status)
       end
 
@@ -77,7 +77,7 @@ RSpec.describe OutboundHealthChecker do
 
     context 'timeout from endpoint' do
       before do
-        stub_request(:get, AppConfig.env.outbound_connection_check_url).to_timeout
+        stub_request(:head, AppConfig.env.outbound_connection_check_url).to_timeout
       end
 
       it 'is not healthy' do
