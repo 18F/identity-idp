@@ -208,18 +208,14 @@ describe IdvController do
       context 'when there is an SP in the session' do
         render_views
 
-        let(:service_provider) do
-          create(:service_provider, failure_to_proof_url: 'https://foo.bar')
-        end
-
         before do
-          session[:sp] = { issuer: service_provider.issuer }
+          session[:sp] = { issuer: create(:service_provider).issuer }
         end
 
-        it "includes a link back to the SP's failure to proof URL" do
+        it 'includes a link back to the failure to proof URL' do
           get :fail
 
-          expect(response.body).to include('https://foo.bar')
+          expect(response.body).to include(return_to_sp_failure_to_proof_path)
         end
       end
     end

@@ -265,6 +265,9 @@ Rails.application.routes.draw do
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy'
 
+    get '/return_to_sp/cancel' => 'return_to_sp#cancel'
+    get '/return_to_sp/failure_to_proof' => 'return_to_sp#failure_to_proof'
+
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
     delete '/users' => 'users#destroy', as: :destroy_user

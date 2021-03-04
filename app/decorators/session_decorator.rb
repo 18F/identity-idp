@@ -31,8 +31,6 @@ class SessionDecorator
     AppConfig.env.remember_device_expiration_hours_aal_1.to_i.hours
   end
 
-  def failure_to_proof_url; end
-
   def remember_device_default
     true
   end
@@ -44,8 +42,6 @@ class SessionDecorator
   def sp_logo_url; end
 
   def sp_redirect_uris; end
-
-  def sp_return_url; end
 
   def requested_attributes; end
 

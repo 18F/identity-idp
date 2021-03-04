@@ -17,7 +17,7 @@ feature 'saml api' do
 
     it 'returns the user to the acs url after authentication' do
       expect(page).
-        to have_link t('links.back_to_sp', sp: sp.friendly_name), href: sp.return_to_sp_url
+        to have_link t('links.back_to_sp', sp: sp.friendly_name), href: return_to_sp_cancel_path
 
       sign_in_via_branded_page(user)
       click_agree_and_continue
@@ -36,7 +36,7 @@ feature 'saml api' do
 
     it 'returns the user to the account page after authentication' do
       expect(page).
-        to have_link t('links.back_to_sp', sp: sp.friendly_name), href: sp.return_to_sp_url
+        to have_link t('links.back_to_sp', sp: sp.friendly_name), href: return_to_sp_cancel_path
 
       sign_in_via_branded_page(user)
       click_agree_and_continue
