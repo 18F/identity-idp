@@ -6,6 +6,7 @@ module Idv
         return unless dcs
         dcs.cancelled_at = Time.zone.now
         dcs.save!
+        redirect_to idv_cancel_url
       end
     end
   end
