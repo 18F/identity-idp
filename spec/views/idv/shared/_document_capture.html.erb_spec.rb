@@ -5,7 +5,7 @@ describe 'idv/shared/_document_capture.html.erb' do
 
   let(:flow_session) { {} }
   let(:sp_name) { nil }
-  let(:failure_to_proof_url) { 'https://example.com' }
+  let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
   let(:front_image_upload_url) { nil }
   let(:back_image_upload_url) { nil }
   let(:selfie_image_upload_url) { nil }

@@ -449,15 +449,13 @@ describe 'OpenID Connect' do
       email = 'test@test.com'
 
       perform_in_browser(:one) do
-        state = SecureRandom.hex
-
         visit openid_connect_authorize_path(
           client_id: client_id,
           response_type: 'code',
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           scope: 'openid email',
           redirect_uri: 'gov.gsa.openidconnect.test://result',
-          state: state,
+          state: SecureRandom.hex,
           nonce: SecureRandom.hex,
           prompt: 'select_account',
           code_challenge: Digest::SHA256.base64digest(SecureRandom.hex),
@@ -471,11 +469,8 @@ describe 'OpenID Connect' do
 
         expect(page).to have_content(sp_content)
 
-        cancel_callback_url =
-          "gov.gsa.openidconnect.test://result?error=access_denied&state=#{state}"
-
         expect(page).to have_link(
-          t('links.back_to_sp', sp: 'Example iOS App'), href: cancel_callback_url
+          t('links.back_to_sp', sp: 'Example iOS App'), href: return_to_sp_cancel_path
         )
 
         sign_up_user_from_sp_without_confirming_email(email)
@@ -529,14 +524,10 @@ describe 'OpenID Connect' do
 
   context 'going back to the SP' do
     it 'links back to the SP from the sign in page' do
-      state = SecureRandom.hex
-
-      visit_idp_from_ial1_oidc_sp(prompt: 'select_account', state: state)
-
-      cancel_callback_url = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
+      visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
 
       expect(page).to have_link(
-        "‹ #{t('links.back_to_sp', sp: 'Test SP')}", href: cancel_callback_url
+        "‹ #{t('links.back_to_sp', sp: 'Test SP')}", href: return_to_sp_cancel_path
       )
     end
   end

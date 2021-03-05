@@ -14,7 +14,7 @@ describe 'redirect_uri validation' do
       sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
 
       expect(page).
-        to have_link t('links.back_to_sp', sp: sp.friendly_name), href: sp.return_to_sp_url
+        to have_link t('links.back_to_sp', sp: sp.friendly_name), href: return_to_sp_cancel_path
 
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp

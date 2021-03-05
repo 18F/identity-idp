@@ -71,10 +71,8 @@ feature 'IAL1 Single Sign On' do
 
       visit saml_authn_request
 
-      cancel_callback_url = 'http://localhost:3000'
-
       expect(page).to have_link(
-        t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: cancel_callback_url
+        t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: return_to_sp_cancel_path
       )
     end
 

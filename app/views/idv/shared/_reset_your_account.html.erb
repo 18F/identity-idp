@@ -2,7 +2,7 @@
   <div class="margin-bottom-2 margin-top-2">
     <div class="right">
       <%= link_to image_tag(asset_url('carat-right.svg'), size: '10'),
-        decorated_session.failure_to_proof_url, class: 'bold block btn-link text-decoration-none' %>
+        return_to_sp_failure_to_proof_path, class: 'bold block btn-link text-decoration-none' %>
     </div>
     <%= link_to t('two_factor_authentication.account_reset.reset_your_account'),
       account_reset_request_path %>
