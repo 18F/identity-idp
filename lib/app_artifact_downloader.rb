@@ -8,23 +8,43 @@ class AppArtifactDownloader
     'saml2021.key.enc',
   ].freeze
 
-  attr_reader :artifacts, :destination
+  attr_reader :artifacts, :destination, :local_artifacts_source
 
-  def initialize(artifacts: ARTIFACTS_TO_DOWNLOAD, destination: 'tmp/artifacts')
+  def initialize(
+    artifacts: ARTIFACTS_TO_DOWNLOAD,
+    destination: 'tmp/artifacts',
+    local_artifacts_source: 'artifacts'
+  )
     @artifacts = artifacts
     @destination = destination
+    @local_artifacts_source = local_artifacts_source
   end
 
   def download
-    return unless Identity::Hostdata.in_datacenter?
-
-    create_artifacts_folder(destination)
-    artifacts.each { |name| download_artifact(name, destination) }
+    # TODO: Helpful error message if something is missing
+    create_artifacts_folder
+    if Identity::Hostdata.in_datacenter?
+      download_all_from_s3
+    else
+      copy_all_from_filesystem
+    end
   end
 
   private
 
-  def download_artifact(name, destination)
+  def copy_all_from_filesystem
+    artifacts.each do |name|
+      artifact_source = Rails.root.join(local_artifacts_source, name)
+      artifact_destination = Rails.root.join(destination, name)
+      FileUtils.copy(artifact_source, artifact_destination)
+    end
+  end
+
+  def download_all_from_s3
+    artifacts.each { |name| download_artifact_from_s3(name) }
+  end
+
+  def download_artifact_from_s3(name)
     bucket_name = "login-gov.secrets.#{aws_account_id}-#{AppConfig.env.aws_region}"
     s3_key = "#{Identity::Hostdata.env}/#{name}"
     destination_filepath = Rails.root.join(destination, name)
@@ -35,7 +55,7 @@ class AppArtifactDownloader
     )
   end
 
-  def create_artifacts_folder(destination)
+  def create_artifacts_folder
     FileUtils.mkdir_p(Rails.root.join(destination))
   end
 

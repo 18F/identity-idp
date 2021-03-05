@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AppArtifactDownloader do
-  let(:artifacts_list) { ['test-1', 'test-2', 'test-3'] }
+  let(:artifacts_list) { ['test-1.txt', 'test-2.txt', 'test-3.txt'] }
   let(:artifacts_destination) { 'tmp/artifacts-test' }
   let(:artifacts_destination_absolute) { Rails.root.join(artifacts_destination) }
 
@@ -9,6 +9,7 @@ RSpec.describe AppArtifactDownloader do
     described_class.new(
       artifacts: artifacts_list,
       destination: artifacts_destination,
+      local_artifacts_source: 'spec/fixtures/artifacts',
     )
   end
 
@@ -26,13 +27,22 @@ RSpec.describe AppArtifactDownloader do
         allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(false)
       end
 
-      it 'is a noop' do
+      it 'is copies files from the local artifacts source' do
         expect(Aws::S3::Client).to_not receive(:new)
         expect(Aws::STS::Client).to_not receive(:new)
 
         downloader.download
 
-        expect(File.directory?(artifacts_destination_absolute)).to eq(false)
+        expect(File.directory?(artifacts_destination_absolute)).to eq(true)
+        expect(
+          File.read(artifacts_destination_absolute.join('test-1.txt')),
+        ).to start_with('local-test-1')
+        expect(
+          File.read(artifacts_destination_absolute.join('test-2.txt')),
+        ).to start_with('local-test-2')
+        expect(
+          File.read(artifacts_destination_absolute.join('test-3.txt')),
+        ).to start_with('local-test-3')
       end
     end
 
@@ -63,20 +73,20 @@ RSpec.describe AppArtifactDownloader do
 
         expect(File.directory?(artifacts_destination_absolute)).to eq(true)
 
-        expect(File.read(artifacts_destination_absolute.join('test-1'))).to eq('test-1-body')
-        expect(File.read(artifacts_destination_absolute.join('test-2'))).to eq('test-2-body')
-        expect(File.read(artifacts_destination_absolute.join('test-3'))).to eq('test-3-body')
+        expect(File.read(artifacts_destination_absolute.join('test-1.txt'))).to eq('test-1-body')
+        expect(File.read(artifacts_destination_absolute.join('test-2.txt'))).to eq('test-2-body')
+        expect(File.read(artifacts_destination_absolute.join('test-3.txt'))).to eq('test-3-body')
 
         expected_bucket_name = 'login-gov.secrets.1234-us-west-2'
         s3_requests = s3_client_stub.api_requests
         expect(s3_requests[0][:params]).to eq(
-          bucket: expected_bucket_name, key: 'fancy-test-env/test-1',
+          bucket: expected_bucket_name, key: 'fancy-test-env/test-1.txt',
         )
         expect(s3_requests[1][:params]).to eq(
-          bucket: expected_bucket_name, key: 'fancy-test-env/test-2',
+          bucket: expected_bucket_name, key: 'fancy-test-env/test-2.txt',
         )
         expect(s3_requests[2][:params]).to eq(
-          bucket: expected_bucket_name, key: 'fancy-test-env/test-3',
+          bucket: expected_bucket_name, key: 'fancy-test-env/test-3.txt',
         )
       end
 
