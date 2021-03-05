@@ -37,7 +37,6 @@ class ReturnToSpController < ApplicationController
     sp_session[:request_url] || service_provider_request.url
   end
 
-
   def validate_sp_exists
     redirect_to account_url if current_sp.nil?
   end
