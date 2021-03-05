@@ -1,12 +1,12 @@
 <% title t('account.navigation.history') %>
 
-<h1 class="mt0">
+<h1 class="margin-top-0">
   <%= t('account.navigation.history') %>
 </h1>
 
-<div class="mb3 card profile-info-box">
-  <div class="mt0 border-bottom border-light-blue">
-    <h2 class="mt0 mb2">
+<div class="margin-bottom-4 card profile-info-box">
+  <div class="margin-top-0 border-bottom border-light-blue">
+    <h2 class="margin-top-0 margin-bottom-2">
       <%= t('headings.account.devices') %>
     </h2>
     <% @view_model.recent_devices.each do |device| %>
@@ -16,8 +16,8 @@
 </div>
 
 <div class="card profile-info-box">
-  <div class="mt0 border-bottom border-light-blue">
-    <h2 class="mt0 mb2">
+  <div class="margin-top-0 border-bottom border-light-blue">
+    <h2 class="margin-top-0 margin-bottom-2">
       <%= t('headings.account.activity') %>
     </h2>
     <% @view_model.recent_events.each do |event| %>

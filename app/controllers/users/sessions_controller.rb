@@ -21,7 +21,7 @@ module Users
       )
 
       @request_id = request_id_if_valid
-      @ial = sp_session ? sp_session_ial : 1
+      @ial = sp_session ? sp_session_ial_1_or_2 : 1
       session[:ial2_with_no_sp_campaign] = campaign if sp_session.blank? && params[:ial] == '2'
       super
     end
@@ -171,10 +171,6 @@ module Users
 
     def request_id
       params.fetch(:request_id, '')
-    end
-
-    def sp_session_ial
-      sp_session[:ial2] ? 2 : 1
     end
 
     def redirect_to_2fa_or_pending_reset

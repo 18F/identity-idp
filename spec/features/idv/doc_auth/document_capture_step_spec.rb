@@ -12,7 +12,7 @@ feature 'doc auth document capture step' do
   before do
     allow(AppConfig.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
-    allow(LoginGov::Hostdata::EC2).to receive(:load).
+    allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
@@ -59,6 +59,12 @@ feature 'doc auth document capture step' do
         result: 'Passed',
         billed: true,
       )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
+        step: 'document_capture',
+        result: 'Passed',
+        billed: true,
+      )
       expect_costing_for_document
     end
 
@@ -81,6 +87,13 @@ feature 'doc auth document capture step' do
 
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH + ' submitted',
+        step: 'document_capture',
+        result: 'Passed',
+        billed: true,
+        success: false,
+      )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         result: 'Passed',
         billed: true,

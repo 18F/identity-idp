@@ -5,7 +5,6 @@ class IdvController < ApplicationController
   before_action :confirm_two_factor_authenticated
   before_action :confirm_idv_needed, only: [:fail]
   before_action :profile_needs_reactivation?, only: [:index]
-  before_action :sp_context_needed?, only: [:index]
 
   def index
     if decorated_session.requested_more_recent_verification?
@@ -62,8 +61,7 @@ class IdvController < ApplicationController
   end
 
   def proof_with_cac?
-    AppConfig.env.cac_proofing_enabled == 'true' &&
-      (Db::EmailAddress::HasGovOrMil.call(current_user) ||
-      current_user.piv_cac_configurations.any?)
+    Db::EmailAddress::HasGovOrMil.call(current_user) ||
+      current_user.piv_cac_configurations.any?
   end
 end

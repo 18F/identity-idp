@@ -18,6 +18,7 @@ module Idv
           elsif current_async_state.timed_out?
             flash[:error] = I18n.t('idv.failure.timeout')
             delete_async
+            @flow.analytics.track_event(Analytics::PROOFING_RESOLUTION_TIMEOUT)
             mark_step_incomplete(:verify)
           elsif current_async_state.done?
             async_state_done(current_async_state)

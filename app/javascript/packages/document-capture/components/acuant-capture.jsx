@@ -20,6 +20,47 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
 import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
+/** @typedef {import('./acuant-capture-canvas').AcuantSuccessResponse} AcuantSuccessResponse */
+/** @typedef {import('./acuant-capture-canvas').AcuantDocumentType} AcuantDocumentType */
+
+/**
+ * @typedef {"id"|"passport"|"none"} AcuantDocumentTypeLabel
+ */
+
+/**
+ * @typedef {"success"|"glare"|"blurry"} AcuantImageAssessment
+ */
+
+/**
+ * @typedef {"acuant"|"upload"} ImageSource
+ */
+
+/**
+ * @typedef ImageAnalyticsPayload
+ *
+ * @prop {number?} width Image width, or null if unknown.
+ * @prop {number?} height Image height, or null if unknown.
+ * @prop {string?} mimeType Mime type, or null if unknown.
+ * @prop {ImageSource} source Method by which image was added.
+ */
+
+/**
+ * @typedef _AcuantImageAnalyticsPayload
+ *
+ * @prop {AcuantDocumentTypeLabel} documentType
+ * @prop {number} dpi
+ * @prop {number} glare
+ * @prop {number} glareScoreThreshold
+ * @prop {boolean} isAssessedAsGlare
+ * @prop {number} sharpness
+ * @prop {number} sharpnessScoreThreshold
+ * @prop {boolean} isAssessedAsBlurry
+ * @prop {AcuantImageAssessment} assessment
+ */
+
+/**
+ * @typedef {ImageAnalyticsPayload & _AcuantImageAnalyticsPayload} AcuantImageAnalyticsPayload
+ */
 
 /**
  * @typedef AcuantPassiveLiveness
@@ -49,6 +90,7 @@ import './acuant-capture.scss';
  * @prop {string=} className Optional additional class names.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  * @prop {ReactNode=} errorMessage Error to show.
+ * @prop {string} analyticsPrefix Prefix to prepend to user action analytics labels.
  */
 
 /**
@@ -56,14 +98,53 @@ import './acuant-capture.scss';
  *
  * @type {number}
  */
-const ACCEPTABLE_GLARE_SCORE = 50;
+export const ACCEPTABLE_GLARE_SCORE = 50;
 
 /**
  * The minimum sharpness score value to be considered acceptable.
  *
  * @type {number}
  */
-const ACCEPTABLE_SHARPNESS_SCORE = 50;
+export const ACCEPTABLE_SHARPNESS_SCORE = 50;
+
+/**
+ * Returns a human-readable document label corresponding to the given document type constant.
+ *
+ * @param {AcuantDocumentType} documentType
+ *
+ * @return {AcuantDocumentTypeLabel} Human-readable document label.
+ */
+function getDocumentTypeLabel(documentType) {
+  switch (documentType) {
+    case 1:
+      return 'id';
+    case 2:
+      return 'passport';
+    default:
+      return 'none';
+  }
+}
+
+/**
+ * @param {File} file Image file.
+ *
+ * @return {Promise<{width: number?, height: number?}>}
+ */
+function getImageDimensions(file) {
+  let objectURL;
+  return file.type.indexOf('image/') === 0
+    ? new Promise((resolve) => {
+        objectURL = window.URL.createObjectURL(file);
+        const image = new window.Image();
+        image.onload = () => resolve({ width: image.width, height: image.height });
+        image.onerror = () => resolve({ width: null, height: null });
+        image.src = objectURL;
+      }).then(({ width, height }) => {
+        window.URL.revokeObjectURL(objectURL);
+        return { width, height };
+      })
+    : Promise.resolve({ width: null, height: null });
+}
 
 /**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
@@ -81,10 +162,11 @@ function AcuantCapture(
     className,
     allowUpload = true,
     errorMessage,
+    analyticsPrefix,
   },
   ref,
 ) {
-  const { isReady, isError, isCameraSupported } = useContext(AcuantContext);
+  const { isReady, isAcuantLoaded, isError, isCameraSupported } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { addPageAction } = useContext(AnalyticsContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
@@ -117,6 +199,32 @@ function AcuantCapture(
   }
 
   /**
+   * Handler for file input change events.
+   *
+   * @param {File?} nextValue Next value, if set.
+   */
+  function onUpload(nextValue) {
+    if (nextValue) {
+      getImageDimensions(nextValue).then(({ width, height }) => {
+        /** @type {ImageAnalyticsPayload} */
+        const analyticsPayload = {
+          width,
+          height,
+          mimeType: nextValue.type,
+          source: 'upload',
+        };
+
+        addPageAction({
+          label: `IdV: ${analyticsPrefix} added`,
+          payload: analyticsPayload,
+        });
+      });
+    }
+
+    onChangeAndResetError(nextValue);
+  }
+
+  /**
    * Responds to a click by starting capture if supported in the environment, or triggering the
    * default file picker prompt. The click event may originate from the file input itself, or
    * another element which aims to trigger the prompt of the file input.
@@ -127,7 +235,8 @@ function AcuantCapture(
     if (event.target === inputRef.current) {
       const shouldStartEnvironmentCapture =
         hasCapture && capture !== 'user' && !isForceUploading.current;
-      const shouldStartSelfieCapture = capture === 'user' && !isForceUploading.current;
+      const shouldStartSelfieCapture =
+        isAcuantLoaded && capture === 'user' && !isForceUploading.current;
 
       if (!allowUpload || shouldStartSelfieCapture || shouldStartEnvironmentCapture) {
         event.preventDefault();
@@ -175,32 +284,60 @@ function AcuantCapture(
     }
   }
 
+  /**
+   * @param {AcuantSuccessResponse} nextCapture
+   */
+  function onAcuantImageCaptureSuccess(nextCapture) {
+    const { image, cardType, dpi, glare, sharpness } = nextCapture;
+    const isAssessedAsGlare = glare < ACCEPTABLE_GLARE_SCORE;
+    const isAssessedAsBlurry = sharpness < ACCEPTABLE_SHARPNESS_SCORE;
+    const { width, height, data } = image;
+
+    /** @type {AcuantImageAssessment} */
+    let assessment;
+    if (isAssessedAsGlare) {
+      setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
+      assessment = 'glare';
+    } else if (isAssessedAsBlurry) {
+      setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
+      assessment = 'blurry';
+    } else {
+      onChangeAndResetError(data);
+      assessment = 'success';
+    }
+
+    /** @type {AcuantImageAnalyticsPayload} */
+    const analyticsPayload = {
+      width,
+      height,
+      mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
+      source: 'acuant',
+      documentType: getDocumentTypeLabel(cardType),
+      dpi,
+      glare,
+      glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
+      isAssessedAsGlare,
+      sharpness,
+      sharpnessScoreThreshold: ACCEPTABLE_SHARPNESS_SCORE,
+      isAssessedAsBlurry,
+      assessment,
+    };
+
+    addPageAction({
+      key: 'documentCapture.acuantWebSDKResult',
+      label: `IdV: ${analyticsPrefix} added`,
+      payload: analyticsPayload,
+    });
+
+    setIsCapturingEnvironment(false);
+  }
+
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
         <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
-            onImageCaptureSuccess={(nextCapture) => {
-              let result;
-              if (nextCapture.glare < ACCEPTABLE_GLARE_SCORE) {
-                setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
-                result = 'glare';
-              } else if (nextCapture.sharpness < ACCEPTABLE_SHARPNESS_SCORE) {
-                setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
-                result = 'blurry';
-              } else {
-                onChangeAndResetError(nextCapture.image.data);
-                result = 'success';
-              }
-
-              addPageAction({
-                key: 'documentCapture.acuantWebSDKResult',
-                label: 'IdV: Acuant web SDK photo analyzed',
-                payload: { result },
-              });
-
-              setIsCapturingEnvironment(false);
-            }}
+            onImageCaptureSuccess={onAcuantImageCaptureSuccess}
             onImageCaptureFailure={() => {
               setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
               setIsCapturingEnvironment(false);
@@ -220,7 +357,7 @@ function AcuantCapture(
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
         onClick={startCaptureOrTriggerUpload}
-        onChange={onChangeAndResetError}
+        onChange={onUpload}
         onError={() => setOwnErrorMessage(null)}
       />
       <div className="margin-top-2">

@@ -2,7 +2,7 @@
 class AgencySeeder
   def initialize(
     rails_env: Rails.env,
-    deploy_env: LoginGov::Hostdata.env,
+    deploy_env: Identity::Hostdata.env,
     yaml_path: 'config'
   )
     @rails_env = rails_env
@@ -13,7 +13,6 @@ class AgencySeeder
   def run
     agencies.each do |agency_id, config|
       agency = Agency.find_by(id: agency_id)
-      config.delete('abbreviation')
       if agency
         agency.update!(config)
       else

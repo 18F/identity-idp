@@ -8,9 +8,7 @@ describe ReactivateAccountController do
 
   describe 'before_actions' do
     it 'requires the user to be logged in' do
-      expect(subject).to have_actions(
-        :confirm_two_factor_authenticated,
-      )
+      expect(subject).to have_actions(:before, :confirm_two_factor_authenticated)
     end
   end
 

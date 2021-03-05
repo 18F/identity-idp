@@ -13,7 +13,7 @@ RSpec.describe LambdaJobs::Runner do
   let(:git_ref) { '1234567890abcdefghijklmnop' }
   before do
     stub_const('LambdaJobs::GIT_REF', git_ref)
-    allow(LoginGov::Hostdata).to receive(:env).and_return(env)
+    allow(Identity::Hostdata).to receive(:env).and_return(env)
   end
 
   describe '#function_name' do
@@ -24,7 +24,7 @@ RSpec.describe LambdaJobs::Runner do
 
   describe '#run' do
     before do
-      allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(in_datacenter)
+      allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(in_datacenter)
       allow(AppConfig.env).to receive(:aws_lambda_proofing_enabled).
         and_return(aws_lambda_proofing_enabled)
     end

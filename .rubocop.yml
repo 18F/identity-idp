@@ -196,6 +196,9 @@ Layout/MultilineOperationIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Style/HashSyntax:
+  EnforcedStyle: 'ruby19'
+
 Style/PercentLiteralDelimiters:
   # Specify the default preferred delimiter for all types with the 'default' key
   # Override individual delimiters (even with default specified) by specifying

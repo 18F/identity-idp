@@ -22,8 +22,8 @@ module SamlAuthHelper
     settings.security[:signature_method] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
     settings.double_quote_xml_attribute_values = true
     # IdP setting
-    settings.idp_sso_target_url = "http://#{AppConfig.env.domain_name}/api/saml/auth2019"
-    settings.idp_slo_target_url = "http://#{AppConfig.env.domain_name}/api/saml/logout2019"
+    settings.idp_sso_target_url = "http://#{AppConfig.env.domain_name}/api/saml/auth2021"
+    settings.idp_slo_target_url = "http://#{AppConfig.env.domain_name}/api/saml/logout2021"
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
@@ -57,7 +57,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2019.crt'))
+    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2021.crt'))
   end
 
   def saml_test_sp_cert
@@ -274,6 +274,18 @@ module SamlAuthHelper
     auth_request.create(ial1_with_aal3_saml_settings)
   end
 
+  def requested_aal2_authn_context_saml_settings
+    settings = saml_settings.dup
+    settings.authn_context = Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    settings
+  end
+
+  def requested_ial1_authn_context_saml_settings
+    settings = saml_settings.dup
+    settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    settings
+  end
+
   def missing_authn_context_saml_settings
     settings = saml_settings.dup
     settings.authn_context = nil
@@ -292,6 +304,26 @@ module SamlAuthHelper
     saml_get_auth(settings)
   end
 
+  # generates a SAML response and returns a decoded XML document
+  def generate_decoded_saml_response(user, settings = saml_settings)
+    auth_response = generate_saml_response(user, settings)
+    decode_saml_response(auth_response)
+  end
+
+  def decode_saml_response(auth_response)
+    saml_response_encoded = saml_response_encoded(auth_response)
+    saml_response_text = Base64.decode64(saml_response_encoded)
+    REXML::Document.new(saml_response_text)
+  end
+
+  def saml_response_encoded(auth_response)
+    Nokogiri::HTML(auth_response.body).css('#SAMLResponse').first.attributes['value'].to_s
+  end
+
+  def saml_response_authn_context(decoded_saml_response)
+    REXML::XPath.match(decoded_saml_response, '//AuthnContext/AuthnContextClassRef')[0][0]
+  end
+
   def saml_get_auth(settings)
     # GET redirect binding Authn Request
     get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)) }
@@ -303,9 +335,29 @@ module SamlAuthHelper
   end
 
   def visit_saml_auth_path
-    visit api_saml_auth2019_path(
+    visit api_saml_auth2021_path(
       SAMLRequest: CGI.unescape(saml_request(saml_settings)),
     )
+  end
+
+  def visit_idp_from_ial2_saml_sp(**args)
+    settings = ial2_with_bundle_saml_settings
+    settings.security[:embed_sign] = false
+    settings.issuer = args[:issuer] if args[:issuer]
+    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
+    saml_authn_request = auth_request.create(settings)
+    visit saml_authn_request
+    saml_authn_request
+  end
+
+  def visit_idp_from_ial1_saml_sp(**args)
+    settings = ial1_with_verified_at_saml_settings
+    settings.security[:embed_sign] = false
+    settings.issuer = args[:issuer] if args[:issuer]
+    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
+    saml_authn_request = auth_request.create(settings)
+    visit saml_authn_request
+    saml_authn_request
   end
 
   private

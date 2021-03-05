@@ -12,12 +12,17 @@ RSpec.describe AgencySeeder do
   let(:deploy_env) { 'int' }
 
   describe '#run' do
-    before { Agency.delete_all }
+    before do
+      Agreements::IntegrationUsage.delete_all
+      Agreements::Integration.delete_all
+      Agreements::IaaOrder.delete_all
+      Agreements::IaaGtc.delete_all
+      Agreements::PartnerAccount.delete_all
+      Agency.delete_all
+    end
 
     subject(:run) { instance.run }
 
-    # This implictly validates that the `abbreviation` attribute in the YAML is
-    # ignored
     it 'inserts agencies into the database from agencies.yml' do
       expect { run }.to change(Agency, :count)
     end

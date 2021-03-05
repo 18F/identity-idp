@@ -1,6 +1,6 @@
 <% title t('titles.doc_auth.verify') %>
 
-<h1 class='h3 mt0 mb1'>
+<h1 class='h3 margin-top-0 margin-bottom-1'>
   <% if liveness_checking_enabled? %>
     <%= t('doc_auth.headings.upload_liveness_enabled') %>
   <% else %>
@@ -30,13 +30,13 @@
   <p>
     <%= t(
       'doc_auth.info.no_other_id_help_bold_html',
-      failure_to_proof_url: decorated_session.failure_to_proof_url,
+      failure_to_proof_url: return_to_sp_failure_to_proof_path,
       sp_name: decorated_session.sp_name,
     ) %>
   </p>
 <% end %>
 
-<% if AppConfig.env.cac_proofing_enabled == 'true' && desktop_device? %>
+<% if desktop_device? %>
   <p>
     <strong><%= t('doc_auth.info.use_cac') %></strong>
     <%= link_to(t('doc_auth.info.use_cac_link'), idv_cac_step_path(step: :choose_method)) %>
@@ -71,7 +71,7 @@
       :doc_auth,
       url: url_for(type: :mobile),
       method: 'PUT',
-      html: { autocomplete: 'off', role: 'form', class: 'mt2' },
+      html: { autocomplete: 'off', role: 'form', class: 'margin-top-2' },
     ) do %>
       <button type='submit' class='btn btn-primary margin-top-05'>
         <%= t('doc_auth.buttons.use_phone') %>

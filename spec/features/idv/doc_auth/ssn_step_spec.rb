@@ -17,15 +17,17 @@ feature 'doc auth ssn step' do
       expect(page).to have_content(t('doc_auth.headings.capture_complete'))
     end
 
-    it 'proceeds to the next page with valid info' do
+    it 'proceeds to the next page with valid info', js: true do
       fill_out_ssn_form_ok
+      expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('false')
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_verify_step)
     end
 
-    it 'does not proceed to the next page with invalid info' do
+    it 'does not proceed to the next page with invalid info', js: true do
       fill_out_ssn_form_fail
+      expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('true')
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
@@ -34,7 +36,7 @@ feature 'doc auth ssn step' do
 
   context 'doc capture hand-off' do
     before do
-      allow(LoginGov::Hostdata::EC2).to receive(:load).
+      allow(Identity::Hostdata::EC2).to receive(:load).
         and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
       in_doc_capture_session { complete_doc_capture_steps_before_capture_complete_step }
       click_on t('forms.buttons.continue')

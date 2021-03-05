@@ -64,7 +64,8 @@ module SamlIdpAuthConcern
     if AppConfig.env.aal_authn_context_enabled == 'true'
       requested_aal_authn_context
     else
-      requested_ial_authn_context
+      sp_defined_aal_context = saml_request.requested_aal_authn_context
+      sp_defined_aal_context.presence || requested_ial_authn_context
     end
   end
 

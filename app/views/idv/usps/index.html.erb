@@ -1,6 +1,6 @@
-<div class="mtn2">
+<div class="margin-top-neg-2">
   <%= image_tag asset_url('check-email.svg'), alt: '', width: 24, class: 'left-0 right-0 ico-heading' %>
-  <h1 class="mt2 ml1 h3 ico-heading"><%= @presenter.title %></h1>
+  <h1 class="margin-top-2 margin-left-1 h3 ico-heading"><%= @presenter.title %></h1>
 </div>
 
 <p>
@@ -8,7 +8,7 @@
   <strong><%= t('idv.messages.usps.success') %></strong>
 </p>
 
-<div class="mt4 mb3">
+<div class="margin-top-6 margin-bottom-4">
   <% if @presenter.usps_mail_bounced? %>
     <%= render 'idv/usps/new_address', presenter: @presenter %>
   <% else %>
@@ -16,7 +16,4 @@
   <% end %>
 </div>
 
-<div class='mt1 pt1 border-top'>
-  <%= button_to(t('idv.messages.clear_and_start_over'), idv_session_path, method: :delete, class: 'btn btn-link mb1') %>
-  <%= link_to(t('links.cancel'), @presenter.cancel_path, class: 'h5') %>
-</div>
+<%= render 'idv/doc_auth/back', fallback_path: @presenter.fallback_back_path %>

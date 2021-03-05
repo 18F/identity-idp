@@ -1,6 +1,6 @@
 require 'active_support/core_ext/hash/deep_merge'
 require 'logger'
-require 'login_gov/hostdata'
+require 'identity/hostdata'
 require 'subprocess'
 require 'yaml'
 
@@ -53,17 +53,16 @@ module Deploy
     # of relevant config and assets.
     #
     def setup_idp_config_symlinks
-      # service_providers.yml
-      symlink_verbose(
-        File.join(root, idp_config_checkout_name, 'service_providers.yml'),
-        File.join(root, 'config/service_providers.yml'),
-      )
+      files_to_link =
+        %w[agencies iaa_gtcs iaa_orders iaa_statuses integration_statuses integrations
+           partner_account_statuses partner_accounts service_providers]
 
-      # agencies.yml
-      symlink_verbose(
-        File.join(root, idp_config_checkout_name, 'agencies.yml'),
-        File.join(root, 'config/agencies.yml'),
-      )
+      files_to_link.each do |file|
+        symlink_verbose(
+          File.join(root, idp_config_checkout_name, "#{file}.yml"),
+          File.join(root, "config/#{file}.yml"),
+        )
+      end
 
       # Service provider public keys
       symlink_verbose(
@@ -91,7 +90,7 @@ module Deploy
     end
 
     def download_application_yml_from_s3
-      LoginGov::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
+      Identity::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
         '/%<env>s/idp/v1/application.yml' => env_yaml_path,
       )
     end
@@ -112,7 +111,7 @@ module Deploy
     def download_file(src, dest)
       ec2_region = ec2_data.region
 
-      LoginGov::Hostdata::S3.new(
+      Identity::Hostdata::S3.new(
         bucket: "login-gov.secrets.#{ec2_data.account_id}-#{ec2_region}",
         env: nil,
         region: ec2_region,
@@ -122,7 +121,7 @@ module Deploy
     end
 
     def ec2_data
-      @ec2_data ||= LoginGov::Hostdata::EC2.load
+      @ec2_data ||= Identity::Hostdata::EC2.load
     end
 
     def update_file_permissions(path)

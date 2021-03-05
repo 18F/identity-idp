@@ -62,8 +62,7 @@ const keepAliveEndpoint = /** @type {string} */ (appRoot.getAttribute('data-keep
  * ).ServiceProviderContext}
  */
 function getServiceProvider() {
-  const name = appRoot.getAttribute('data-sp-name');
-  const failureToProofURL = appRoot.getAttribute('data-failure-to-proof-url');
+  const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
   const isLivenessRequired = appRoot.hasAttribute('data-liveness-required');
 
   return { name, failureToProofURL, isLivenessRequired };
@@ -98,7 +97,10 @@ const device = {
 
 /** @type {import('@18f/identity-document-capture/context/analytics').AddPageAction} */
 function addPageAction(action) {
-  /** @type {DocumentCaptureGlobal} */ (window).newrelic?.addPageAction(action.key, action.payload);
+  const { newrelic } = /** @type {DocumentCaptureGlobal} */ (window);
+  if (action.key && newrelic) {
+    newrelic.addPageAction(action.key, action.payload);
+  }
 
   window.fetch(logEndpoint, {
     method: 'POST',
@@ -137,36 +139,36 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
     window.fetch(keepAliveEndpoint, { method: 'POST', headers: { 'X-CSRF-Token': csrf } });
 
   render(
-    <AcuantContextProvider
-      credentials={getMetaContent('acuant-sdk-initialization-creds')}
-      endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
-    >
-      <UploadContextProvider
-        endpoint={/** @type {string} */ (appRoot.getAttribute('data-endpoint'))}
-        statusEndpoint={/** @type {string} */ (appRoot.getAttribute('data-status-endpoint'))}
-        statusPollInterval={
-          Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined
-        }
-        method={isAsyncForm ? 'PUT' : 'POST'}
-        csrf={csrf}
-        isMockClient={isMockClient}
-        backgroundUploadURLs={backgroundUploadURLs}
-        backgroundUploadEncryptKey={backgroundUploadEncryptKey}
-        formData={formData}
+    <DeviceContext.Provider value={device}>
+      <AcuantContextProvider
+        credentials={getMetaContent('acuant-sdk-initialization-creds')}
+        endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
       >
-        <I18nContext.Provider value={i18n.strings}>
-          <ServiceProviderContext.Provider value={getServiceProvider()}>
-            <AnalyticsContext.Provider value={{ addPageAction }}>
-              <AssetContext.Provider value={assets}>
-                <DeviceContext.Provider value={device}>
+        <UploadContextProvider
+          endpoint={/** @type {string} */ (appRoot.getAttribute('data-endpoint'))}
+          statusEndpoint={/** @type {string} */ (appRoot.getAttribute('data-status-endpoint'))}
+          statusPollInterval={
+            Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined
+          }
+          method={isAsyncForm ? 'PUT' : 'POST'}
+          csrf={csrf}
+          isMockClient={isMockClient}
+          backgroundUploadURLs={backgroundUploadURLs}
+          backgroundUploadEncryptKey={backgroundUploadEncryptKey}
+          formData={formData}
+        >
+          <I18nContext.Provider value={i18n.strings}>
+            <ServiceProviderContext.Provider value={getServiceProvider()}>
+              <AnalyticsContext.Provider value={{ addPageAction }}>
+                <AssetContext.Provider value={assets}>
                   <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
-                </DeviceContext.Provider>
-              </AssetContext.Provider>
-            </AnalyticsContext.Provider>
-          </ServiceProviderContext.Provider>
-        </I18nContext.Provider>
-      </UploadContextProvider>
-    </AcuantContextProvider>,
+                </AssetContext.Provider>
+              </AnalyticsContext.Provider>
+            </ServiceProviderContext.Provider>
+          </I18nContext.Provider>
+        </UploadContextProvider>
+      </AcuantContextProvider>
+    </DeviceContext.Provider>,
     appRoot,
   );
 });

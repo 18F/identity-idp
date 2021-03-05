@@ -1,0 +1,33 @@
+development:
+  LGCBPFY190002:
+    mod_number: 0
+    start_date: "2017-02-15"
+    end_date: "2022-02-14"
+    estimated_amount: 2_741_892
+    iaa_status: active
+    partner_account: DHS-CBP
+
+  LGTTSFY190003:
+    mod_number: 1
+    start_date: "2018-04-08"
+    end_date: "2023-04-31"
+    estimated_amount: 1_759_839
+    iaa_status: active
+    partner_account: GSA-FAS-TTS
+
+test:
+  LGCBPFY190002:
+    mod_number: 0
+    start_date: "2017-02-15"
+    end_date: "2022-02-14"
+    estimated_amount: 2_741_892
+    iaa_status: active
+    partner_account: DHS-CBP
+
+  LGTTSFY190003:
+    mod_number: 1
+    start_date: "2018-04-08"
+    end_date: "2023-04-31"
+    estimated_amount: 1_759_839
+    iaa_status: active
+    partner_account: GSA-FAS-TTS

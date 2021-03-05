@@ -72,13 +72,13 @@ describe Users::DeleteController do
 
     it 'does not delete identities to prevent uuid reuse' do
       user = stub_signed_in_user
-      user.identities << Identity.create(
+      user.identities << ServiceProviderIdentity.create(
         service_provider: 'foo',
         last_authenticated_at: Time.zone.now,
       )
-      expect(Identity.where(user_id: user.id).length).to eq(1)
+      expect(ServiceProviderIdentity.where(user_id: user.id).length).to eq(1)
       delete
-      expect(Identity.where(user_id: user.id).length).to eq(1)
+      expect(ServiceProviderIdentity.where(user_id: user.id).length).to eq(1)
     end
 
     it 'deletes profile information for ial2' do

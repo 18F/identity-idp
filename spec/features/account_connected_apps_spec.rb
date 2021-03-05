@@ -4,7 +4,7 @@ describe 'Account connected applications' do
   let(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
   let(:identity_with_link) do
     create(
-      :identity,
+      :service_provider_identity,
       :active,
       user: user,
       created_at: Time.zone.now - 80.days,
@@ -13,15 +13,19 @@ describe 'Account connected applications' do
   end
   let(:identity_without_link) do
     create(
-      :identity,
+      :service_provider_identity,
       :active,
       user: user,
       created_at: Time.zone.now - 50.days,
       service_provider: 'https://rp2.serviceprovider.com/auth/saml/metadata',
     )
   end
-  let(:identity_with_link_timestamp) { identity_with_link.decorate.created_at_in_words }
-  let(:identity_without_link_timestamp) { identity_without_link.decorate.created_at_in_words }
+  let(:identity_with_link_timestamp) do
+    identity_with_link.created_at.utc.strftime(t('time.formats.event_timestamp'))
+  end
+  let(:identity_without_link_timestamp) do
+    identity_without_link.created_at.utc.strftime(t('time.formats.event_timestamp'))
+  end
 
   before do
     sign_in_and_2fa_user(user)
@@ -62,7 +66,7 @@ describe 'Account connected applications' do
 
     visit account_connected_accounts_path
     within(find('.profile-info-box')) do
-      within(find('.mxn1', text: identity_to_revoke.sp.friendly_name)) do
+      within(find('.margin-x-neg-1', text: identity_to_revoke.sp.friendly_name)) do
         click_link(t('account.revoke_consent.link_title'))
       end
     end
@@ -72,7 +76,9 @@ describe 'Account connected applications' do
 
     # Accounts page should no longer list this app in the applications section
     within(find('.profile-info-box')) do
-      expect(has_selector?('.mxn1', text: identity_to_revoke.sp.friendly_name)).to eq(false)
+      expect(
+        has_selector?('.margin-x-neg-1', text: identity_to_revoke.sp.friendly_name),
+      ).to eq(false)
     end
   end
 

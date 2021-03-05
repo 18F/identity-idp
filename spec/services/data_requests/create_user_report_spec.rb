@@ -17,7 +17,7 @@ describe DataRequests::CreateUserReport do
   context 'with a requesting SP issuer provided' do
     it 'includes the UUID for a SP if one exists' do
       user = create(:user)
-      identity = create(:identity, user: user, service_provider: 'test123')
+      identity = create(:service_provider_identity, user: user, service_provider: 'test123')
 
       result = described_class.new(user, 'test123').call
 

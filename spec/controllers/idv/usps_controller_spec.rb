@@ -12,6 +12,10 @@ describe Idv::UspsController do
         :confirm_mail_not_spammed,
       )
     end
+
+    it 'includes before_actions from IdvSession' do
+      expect(subject).to have_actions(:before, :redirect_if_sp_context_needed)
+    end
   end
 
   describe '#index' do
@@ -50,6 +54,19 @@ describe Idv::UspsController do
       get :index
 
       expect(response).to render_template :wait
+    end
+
+    it 'logs an event when there is a timeout' do
+      stub_analytics
+
+      allow(controller).to receive(:async_state).and_return(
+        ProofingSessionAsyncResult.new(
+          status: ProofingSessionAsyncResult::TIMED_OUT,
+        ),
+      )
+
+      get :index
+      expect(@analytics).to have_logged_event(Analytics::PROOFING_ADDRESS_TIMEOUT, {})
     end
   end
 

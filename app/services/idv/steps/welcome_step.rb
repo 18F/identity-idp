@@ -19,18 +19,13 @@ module Idv
       private
 
       def skip_to_capture
-        # Skips to `document_capture` step.
-        mark_step_complete(:upload)
-        mark_step_complete(:send_link)
-        mark_step_complete(:link_sent)
-        mark_step_complete(:email_sent)
+        # See: Idv::DocAuthController#update_if_skipping_upload
+        flow_session[:skip_upload_step] = true
       end
 
       def no_camera_redirect
         redirect_to idv_doc_auth_errors_no_camera_url
         msg = 'Doc Auth error: Javascript could not detect camera on mobile device.'
-
-        NewRelic::Agent.notice_error(StandardError.new(msg))
         failure(msg)
       end
     end

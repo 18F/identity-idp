@@ -1,4 +1,4 @@
-require 'login_gov/hostdata'
+require 'identity/hostdata'
 
 module Reports
   class BaseReport
@@ -23,7 +23,7 @@ module Reports
     end
 
     def ec2_data
-      @ec2_data ||= LoginGov::Hostdata::EC2.load
+      @ec2_data ||= Identity::Hostdata::EC2.load
     end
 
     def gen_s3_bucket_name
@@ -59,7 +59,7 @@ module Reports
     end
 
     def generate_s3_paths(name)
-      host_data_env = LoginGov::Hostdata.env
+      host_data_env = Identity::Hostdata.env
       latest = "#{host_data_env}/#{name}/latest.#{name}.json"
       now = Time.zone.now
       [latest, "#{host_data_env}/#{name}/#{now.year}/#{now.strftime('%F')}.#{name}.json"]

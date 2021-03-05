@@ -7,6 +7,7 @@ feature 'doc auth verify step' do
 
   let(:skip_step_completion) { false }
   let(:max_attempts) { idv_max_attempts }
+  let(:fake_analytics) { FakeAnalytics.new }
   before do
     unless skip_step_completion
       sign_in_and_2fa_user
@@ -17,6 +18,17 @@ feature 'doc auth verify step' do
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_doc_auth_verify_step)
     expect(page).to have_content(t('doc_auth.headings.verify'))
+  end
+
+  it 'can toggle viewing the ssn' do
+    input_with_ssn_value = "input[value='666-66-1234']"
+    expect(page).to have_selector(input_with_ssn_value), visible: false
+
+    find('input.ssn-toggle').click
+    expect(page).to have_selector(input_with_ssn_value), visible: true
+
+    find('input.ssn-toggle').click
+    expect(page).to have_selector(input_with_ssn_value), visible: false
   end
 
   it 'proceeds to the next page upon confirmation' do
@@ -212,10 +224,15 @@ feature 'doc auth verify step' do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
 
+      allow_any_instance_of(ApplicationController).
+          to receive(:analytics).and_return(fake_analytics)
+
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
 
       click_continue
+      # FLAKE: this errors due to some race condition, likely due to polling in the browser
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
       expect(page).to have_content(t('idv.failure.timeout'))
       expect(page).to have_current_path(idv_doc_auth_verify_step)
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
@@ -261,8 +278,12 @@ feature 'doc auth verify step' do
       it 'allows resubmitting form' do
         allow(DocumentCaptureSession).to receive(:find_by).
           and_return(nil)
+        allow_any_instance_of(ApplicationController).
+          to receive(:analytics).and_return(fake_analytics)
 
         click_continue
+        # FLAKE: this errors due to some race condition, likely due to polling in the browser
+        # expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
         expect(page).to have_content(t('idv.failure.timeout'))
         expect(page).to have_current_path(idv_doc_auth_verify_step)
         allow(DocumentCaptureSession).to receive(:find_by).and_call_original

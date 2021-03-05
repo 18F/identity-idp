@@ -1,18 +1,10 @@
 module AccountResetHealthChecker
   module_function
 
-  Summary = Struct.new(:healthy, :result) do
-    def as_json(*args)
-      to_h.as_json(*args)
-    end
-
-    alias_method :healthy?, :healthy
-  end
-
-  # @return [Summary]
+  # @return [HealthCheckSummary]
   def check
     rec = find_request_not_serviced_within_26_hours
-    Summary.new(rec.nil?, rec)
+    HealthCheckSummary.new(healthy: rec.nil?, result: rec)
   end
 
   # @api private

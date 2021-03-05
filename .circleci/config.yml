@@ -105,6 +105,13 @@ commands:
           fail_only: true
           failure_message: ":smokeybear::red_circle: Smoke tests failed in environment: $MONITOR_ENV"
           include_project_field: false
+  store-smoketest-results:
+    steps:
+      - store_test_results:
+          path: tmp/capybara
+      - store_artifacts:
+          path: tmp/capybara
+          destination: capybara
 
 jobs:
   build:
@@ -142,6 +149,13 @@ jobs:
             cp config/application.yml.default config/application.yml
             cp config/service_providers.localdev.yml config/service_providers.yml
             cp config/agencies.localdev.yml config/agencies.yml
+            cp config/iaa_gtcs{.localdev,}.yml
+            cp config/iaa_orders{.localdev,}.yml
+            cp config/iaa_statuses{.localdev,}.yml
+            cp config/integration_statuses{.localdev,}.yml
+            cp config/integrations{.localdev,}.yml
+            cp config/partner_account_statuses{.localdev,}.yml
+            cp config/partner_accounts{.localdev,}.yml
             cp -a keys.example keys
             cp -a certs.example certs
             cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
@@ -185,6 +199,7 @@ jobs:
             bundle exec rubocop
             make lint_erb
             make check_asset_strings
+            make lint_optimized_assets
             NODE_ENV=production ./bin/webpack && yarn es5-safe
   build-release-container:
     working_directory: ~/identity-idp
@@ -213,6 +228,7 @@ jobs:
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
+      - store-smoketest-results
   smoketest-int:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -228,6 +244,7 @@ jobs:
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
+      - store-smoketest-results
   smoketest-staging:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -243,6 +260,7 @@ jobs:
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
+      - store-smoketest-results
   smoketest-prod:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -256,7 +274,7 @@ jobs:
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
-
+      - store-smoketest-results
 workflows:
   version: 2
   release:

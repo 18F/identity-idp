@@ -61,9 +61,13 @@ module Idv
 
       def verify_document_capture_session
         return @verify_document_capture_session if defined?(@verify_document_capture_session)
-        @verify_document_capture_session = DocumentCaptureSession.find_by(
-          uuid: flow_session[verify_document_capture_session_uuid_key],
-        )
+        @verify_document_capture_session = if hybrid_flow_mobile?
+          document_capture_session
+        else
+          DocumentCaptureSession.find_by(
+            uuid: flow_session[verify_document_capture_session_uuid_key],
+          )
+        end
       end
 
       def async_state
@@ -88,6 +92,7 @@ module Idv
 
       def timed_out
         delete_async
+        @flow.analytics.track_event(Analytics::PROOFING_DOCUMENT_TIMEOUT)
         DocumentCaptureSessionAsyncResult.timed_out
       end
 

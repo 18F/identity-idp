@@ -1,34 +1,15 @@
-<%= render 'shared/alert', {
-  type: 'error',
-  class: 'margin-bottom-4',
-  message: @presenter.title,
-} %>
+<% title @presenter.title %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= @presenter.heading %>
 </h1>
 
-<p class="mt-tiny mb3">
+<p class="margin-top-2 margin-bottom-2">
   <%= @presenter.description %>
 </p>
 
-<% link = account_path %>
-
-<% cancel = sign_up_or_idv_no_js_link || link %>
-
-<div class="mt2 pt1 border-top">
-  <%= link_to t('forms.piv_cac_setup.choose_different_certificate'),
-              setup_piv_cac_url, class: 'h5' %>
-  <br/>
-  <% if user_signing_up? || user_verifying_identity? %>
-    <% method = user_signing_up? ? :delete : :get %>
-
-    <%= button_to cancel_link_text, cancel, method: method,
-                  class: 'btn btn-link', id: 'auth-flow-cancel' %>
-    <%= render 'shared/cancel_action_modal',
-               idv: user_verifying_identity?,
-               user_signing_up: user_signing_up? %>
-  <% else %>
-    <%= link_to cancel_link_text, cancel, class: 'h5' %>
-  <% end %>
+<div class="margin-top-4">
+  <%= link_to t('instructions.mfa.piv_cac.back_to_sign_in'), root_url, class: 'usa-button' %>
 </div>
+
+<%= render 'shared/cancel', link: new_user_session_url %>

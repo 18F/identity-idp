@@ -2,12 +2,12 @@ require 'rails_helper'
 
 feature 'Sign in' do
   before(:all) do
-    @original_capyabar_wait = Capybara.default_max_wait_time
+    @original_capyabara_wait = Capybara.default_max_wait_time
     Capybara.default_max_wait_time = 5
   end
 
   after(:all) do
-    Capybara.default_max_wait_time = @original_capyabar_wait
+    Capybara.default_max_wait_time = @original_capyabara_wait
   end
 
   include SessionTimeoutWarningHelper
@@ -86,12 +86,12 @@ feature 'Sign in' do
                           error: 'certificate.bad',
                           subject: 'SomeIgnoredSubject')
 
-    expect(current_path).to eq login_piv_cac_did_not_work_path
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'certificate.bad'))
   end
 
   scenario 'user opts to add piv/cac card and has piv cac redirect in CSP' do
-    allow(LoginGov::Hostdata).to receive(:env).and_return('test')
-    allow(LoginGov::Hostdata).to receive(:domain).and_return('example.com')
+    allow(Identity::Hostdata).to receive(:env).and_return('test')
+    allow(Identity::Hostdata).to receive(:domain).and_return('example.com')
 
     perform_steps_to_get_to_add_piv_cac_during_sign_up
 
@@ -132,7 +132,7 @@ feature 'Sign in' do
                           uuid: SecureRandom.uuid,
                           subject: 'SomeIgnoredSubject')
 
-    expect(current_path).to eq login_piv_cac_account_not_found_path
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'user.not_found'))
     visit sign_up_email_path
     email = 'foo@bar.com'
     submit_form_with_valid_email(email)
@@ -148,24 +148,23 @@ feature 'Sign in' do
     click_agree_and_continue
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
-  scenario 'user cannot sign in with certificate timeout error' do
-    signin_with_piv_error('certificate.timeout')
 
-    expect(current_path).to eq login_piv_cac_temporary_error_path
-    expect(page).to have_content t('headings.piv_cac_login.temporary_error')
+  scenario 'user cannot sign in with certificate none error' do
+    signin_with_piv_error('certificate.none')
+
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'certificate.none'))
   end
 
-  scenario 'user cannot sign in with certificate ocsp error' do
-    signin_with_piv_error('certificate.ocsp_error')
+  scenario 'user cannot sign in with certificate not auth cert error' do
+    signin_with_piv_error('certificate.not_auth_cert')
 
-    expect(current_path).to eq login_piv_cac_temporary_error_path
-    expect(page).to have_content t('headings.piv_cac_login.temporary_error')
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'certificate.not_auth_cert'))
   end
 
   scenario 'user cannot sign in with an unregistered piv/cac card' do
     signin_with_bad_piv
 
-    expect(current_path).to eq login_piv_cac_did_not_work_path
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'token.bad'))
   end
 
   it 'does not throw an exception if the email contains invalid bytes' do
@@ -360,11 +359,11 @@ feature 'Sign in' do
 
   describe 'session timeout configuration' do
     it 'uses delay and warning settings whose sum is a multiple of 60' do
-      expect((start + warning) % 60).to eq 0
+      expect((session_timeout_start + session_timeout_warning) % 60).to eq 0
     end
 
     it 'uses frequency and warning settings whose sum is a multiple of 60' do
-      expect((frequency + warning) % 60).to eq 0
+      expect((session_timeout_frequency + session_timeout_warning) % 60).to eq 0
     end
   end
 
@@ -929,6 +928,28 @@ feature 'Sign in' do
     end
   end
 
+  context 'double clicking on "Agree and Continue"' do
+    it 'should not blow up' do
+      user = create(:user, :signed_up)
+      visit_idp_from_sp_with_ial1(:oidc)
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(current_path).to eq sign_up_completed_path
+      expect(page).to have_content(user.email)
+
+      agree_and_continue_button = find_button(t('sign_up.agree_and_continue'))
+      action_url = agree_and_continue_button.find(:xpath, '..')[:action]
+      agree_and_continue_button.click
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+
+      response = page.driver.post(action_url)
+      expect(response).to be_redirect
+    end
+  end
+
   def perform_steps_to_get_to_add_piv_cac_during_sign_up
     user = create(:user, :signed_up, :with_phone)
     visit_idp_from_sp_with_ial1(:oidc)
@@ -943,7 +964,7 @@ feature 'Sign in' do
                           uuid: SecureRandom.uuid,
                           subject: 'SomeIgnoredSubject')
 
-    expect(current_path).to eq login_piv_cac_account_not_found_path
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'user.not_found'))
     visit new_user_session_path
     fill_in_credentials_and_submit(user.email, user.password)
     fill_in_code_with_last_phone_otp

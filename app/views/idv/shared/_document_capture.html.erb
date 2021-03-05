@@ -18,10 +18,10 @@
   mock_client: (DocAuthRouter.doc_auth_vendor == 'mock').presence,
   document_capture_session_uuid: flow_session[:document_capture_session_uuid],
   endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
-    idv_doc_auth_step_path(step: :verify_document) :
+    send(@step_url, step: :verify_document) :
     api_verify_images_url,
   status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
-    idv_doc_auth_step_path(step: :verify_document_status) :
+    send(@step_url, step: :verify_document_status) :
     nil,
   status_poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
   sp_name: sp_name,
@@ -35,7 +35,7 @@
 <div class="js-fallback">
   <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
-  <h1 class="h3 my0">
+  <h1 class="h3 margin-y-0">
     <% if liveness_checking_enabled? %>
       <%= t('doc_auth.headings.document_capture_heading_with_selfie_html') %>
     <% else %>
@@ -47,7 +47,7 @@
     :doc_auth,
     url: url_for,
     method: 'PUT',
-    html: { autocomplete: 'off', role: 'form', class: 'mt2 js-document-capture-form' }
+    html: { autocomplete: 'off', role: 'form', class: 'margin-top-2 js-document-capture-form' }
   ) do |f| %>
     <%# ---- Front Image ----- %>
 
@@ -61,13 +61,13 @@
       <p>
         <%= t(
                 'doc_auth.info.no_other_id_help_bold_html',
-                failure_to_proof_url: decorated_session.failure_to_proof_url,
+                failure_to_proof_url: failure_to_proof_url,
                 sp_name: sp_name,
             ) %>
       </p>
     <% end %>
 
-    <p class="mt2 mb0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
+    <p class="margin-top-2 margin-bottom-0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
 
     <ul>
       <li><%= t('doc_auth.tips.document_capture_id_text1') %></li>
@@ -82,7 +82,7 @@
       input_html: { value: flow_session[:document_capture_session_uuid] },
     ) %>
 
-    <div class="front-image mt2">
+    <div class="front-image margin-top-2">
       <p>
         <strong>
           <%= t('doc_auth.headings.document_capture_front') %><br/>
@@ -95,7 +95,7 @@
 
     <%# ---- Back Image ----- %>
 
-    <div class="back-image mt3">
+    <div class="back-image margin-top-4">
       <p>
         <strong>
           <%= t('doc_auth.headings.document_capture_back') %><br/>
@@ -108,18 +108,18 @@
 
     <%# ---- Selfie ----- %>
     <% if liveness_checking_enabled? %>
-      <hr class="mt3 mb3"/>
+      <hr class="margin-top-4 margin-bottom-4"/>
       <div class="selfie">
         <p><%= t('doc_auth.instructions.document_capture_selfie_instructions') %></p>
 
-        <p class="mt2 mb0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
+        <p class="margin-top-2 margin-bottom-0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
         <ul>
           <li><%= t('doc_auth.tips.document_capture_selfie_text1') %></li>
           <li><%= t('doc_auth.tips.document_capture_selfie_text2') %></li>
           <li><%= t('doc_auth.tips.document_capture_selfie_text3') %></li>
         </ul>
 
-        <p class='mt3'>
+        <p class='margin-top-4'>
           <strong>
             <%= t('doc_auth.headings.document_capture_selfie') %><br/>
           </strong>
@@ -132,12 +132,15 @@
 
     <%# ---- Submit ----- %>
 
-    <div class='mt4 mb4'>
-      <%= render 'idv/doc_auth/submit_with_spinner' %>
+    <div class='margin-top-6 margin-bottom-6'>
+      <button type="submit" class="btn btn-primary btn-wide sm-col sm-col-6">
+        <%= t('forms.buttons.continue') %>
+      </button>
+      <div class="clearfix"></div>
     </div>
   <% end %> <%# end validated_form_for %>
 
-  <p class='mt3 mb0'><%= t('doc_auth.info.document_capture_upload_image') %></p>
+  <p class='margin-top-4 margin-bottom-0'><%= t('doc_auth.info.document_capture_upload_image') %></p>
 </div>
 <%= render 'idv/doc_auth/start_over_or_cancel' %>
 <%= nonced_javascript_tag do %>

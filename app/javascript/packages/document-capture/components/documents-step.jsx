@@ -1,4 +1,5 @@
 import { useContext } from 'react';
+import BlockLink from './block-link';
 import AcuantCapture from './acuant-capture';
 import FormErrorMessage from './form-error-message';
 import useI18n from '../hooks/use-i18n';
@@ -52,22 +53,6 @@ function DocumentsStep({
           </p>
         </>
       )}
-      {serviceProvider.name && isMobile && (
-        <p>
-          {formatHTML(
-            t('doc_auth.info.no_other_id_help_bold_html', { sp_name: serviceProvider.name }),
-            {
-              strong: 'strong',
-              a: ({ children }) =>
-                serviceProvider.failureToProofURL ? (
-                  <a href={serviceProvider.failureToProofURL}>{children}</a>
-                ) : (
-                  <>{children}</>
-                ),
-            },
-          )}
-        </p>
-      )}
       <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.document_capture_id_text1')}</li>
@@ -75,6 +60,13 @@ function DocumentsStep({
         <li>{t('doc_auth.tips.document_capture_id_text3')}</li>
         {!isMobile && <li>{t('doc_auth.tips.document_capture_id_text4')}</li>}
       </ul>
+      {serviceProvider.name && (
+        <BlockLink url={serviceProvider.failureToProofURL}>
+          {formatHTML(t('doc_auth.info.get_help_at_sp_html', { sp_name: serviceProvider.name }), {
+            strong: 'strong',
+          })}
+        </BlockLink>
+      )}
       {DOCUMENT_SIDES.map((side) => {
         const error = errors.find(({ field }) => field === side)?.error;
 
@@ -91,6 +83,7 @@ function DocumentsStep({
             value={value[side]}
             onChange={(nextValue) => onChange({ [side]: nextValue })}
             errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
+            analyticsPrefix={`${side} image`}
           />
         );
       })}

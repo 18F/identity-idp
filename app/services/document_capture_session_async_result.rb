@@ -22,6 +22,8 @@ DocumentCaptureSessionAsyncResult = Struct.new(:id, :status, :result, :pii, keyw
     status == DocumentCaptureSessionAsyncResult::DONE
   end
 
+  alias_method :success?, :done?
+
   def in_progress?
     status == DocumentCaptureSessionAsyncResult::IN_PROGRESS
   end

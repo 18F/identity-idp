@@ -37,6 +37,20 @@ module EncryptedRedisStructStorage
     payload = struct.as_json
     payload.delete('id')
 
+    utf_8_encode_strs = proc do |value|
+      if value.is_a?(String)
+        value.dup.force_encoding('UTF-8')
+      elsif value.is_a?(Array)
+        value.map(&utf_8_encode_strs)
+      elsif value.is_a?(Hash)
+        value.transform_values!(&utf_8_encode_strs)
+      else
+        value
+      end
+    end
+
+    payload.transform_values!(&utf_8_encode_strs)
+
     REDIS_POOL.with do |client|
       client.write(
         key(struct.id, type: struct.class),

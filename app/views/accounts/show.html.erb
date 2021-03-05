@@ -11,11 +11,11 @@
 
 <h2><%= t('account.index.email_preferences') %></h2>
 
-<div class="mb3 card profile-info-box">
+<div class="margin-bottom-4 card profile-info-box">
   <%= render 'emails' %>
 
   <h3 class="h2"><%= t('i18n.language') %></h3>
-  <div class="grid-row p1 border border-light-blue">
+  <div class="grid-row padding-1 border border-light-blue">
     <div class="grid-col-8">
       <%= @view_model.decorated_user.email_language_preference_description %>
     </div>
@@ -25,11 +25,11 @@
   </div>
 </div>
 
-<div class="mb3 card profile-info-box">
-  <h2 class="mb1 mt0">
+<div class="margin-bottom-4 card profile-info-box">
+  <h2 class="margin-bottom-1 margin-top-0">
     <%= t('account.index.password') %>
   </h2>
-  <div class="grid-row p1 border border-light-blue">
+  <div class="grid-row padding-1 border border-light-blue">
     <div class="grid-col-8">
       ************
     </div>
@@ -39,7 +39,7 @@
   </div>
 </div>
 
-<div class="mb3 card profile-info-box">
+<div class="margin-bottom-4 card profile-info-box">
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).visible? %>
     <%= render 'phone' %>
   <% end %>

@@ -1,5 +1,5 @@
 <div>
-  <div class="grid-row mb1 mt0">
+  <div class="grid-row margin-bottom-1 margin-top-0">
     <h2 class="grid-col-fill margin-y-0 padding-right-2">
       <%= t('headings.account.authentication_apps') %>
     </h2>
@@ -16,7 +16,7 @@
 
   <div class="border-bottom border-light-blue">
     <% MfaContext.new(current_user).auth_app_configurations.each do |auth_app_configuration| %>
-      <div class="p1 grid-row border-top border-left border-right border-light-blue">
+      <div class="padding-1 grid-row border-top border-left border-right border-light-blue">
         <div class="grid-col-8">
           <div class="grid-col-12 mobile-lg:grid-col-6">
             <%= auth_app_configuration.name %>

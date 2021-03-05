@@ -1,58 +1,69 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: 149b5b480f0319ec39410e497bb4bbffd1652014
-  tag: v3.4.1
+  revision: dbf3d2e102603530a29cb43308b9aa639efaea1f
+  tag: v3.6.0
   specs:
-    aamva (3.4.1)
+    aamva (3.6.0)
       dotenv
       faraday
       hashie
+      proofer (>= 2.7.1)
       retries
       xmldsig
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: 4e1e09d7e5eb673dfbc1e301feacc74859d25d29
-  tag: v0.3.3
+  revision: 3b2c5997a62d7bf5f6114a55d41180f4bd1ae18e
+  tag: v0.4.1
   specs:
-    identity-doc-auth (0.3.3)
+    identity-doc-auth (0.4.1)
       activesupport
       faraday
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 9febec459b8f46b34ee783feddf454005e8c9c77
-  tag: v0.4.3
+  revision: 0f8d4626709d6031acdfe0b024faefede928f8aa
+  tag: v1.0.1
   specs:
-    identity-hostdata (0.4.3)
+    identity-hostdata (1.0.1)
       aws-sdk-s3 (~> 1.8)
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 696ca97e41efc76c2e0dcb7b0ed188a65406babb
-  ref: 696ca97e41efc76c2e0dcb7b0ed188a65406babb
+  revision: 849ead99e7bfc7ad510eea2dd3a8d295447db153
+  ref: 849ead99e7bfc7ad510eea2dd3a8d295447db153
   specs:
-    identity-idp-functions (0.8.0)
+    identity-idp-functions (0.12.0)
+      aamva (>= 3.5.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
       retries (>= 0.0.5)
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: e9a1650c1771ff85d666e08e38cd3b51062e0d2d
-  tag: v2.5.0
+  revision: 415a0e970b6ff1ab3262fb4874164c4dfd156120
+  tag: v2.7.0
   specs:
-    lexisnexis (2.5.0)
+    lexisnexis (2.7.0)
       activesupport
       dotenv
       faraday
 
 GIT
-  remote: https://github.com/18F/identity-proofer-gem.git
-  revision: 7ce47a0ac8a089a44cca736bfb022183a36324e8
-  tag: v2.7.1
+  remote: https://github.com/18F/identity-logging.git
+  revision: 7a341c9784275f44b0b0c3456a00a51fa79f4241
+  tag: v0.1.0
   specs:
-    proofer (2.7.1)
+    identity-logging (0.1.0)
+      lograge (>= 0.11.2)
+      rails (>= 6.1)
+
+GIT
+  remote: https://github.com/18F/identity-proofer-gem.git
+  revision: 9c73058b6cafd5299266fb9d554ced04ec63b84a
+  ref: v2.8.0
+  specs:
+    proofer (2.8.0)
 
 GIT
   remote: https://github.com/18F/identity-validations.git
@@ -76,10 +87,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 8e56cce97f706679709a0007fd2904723f1f3cbc
-  tag: v0.1.11
+  revision: ee4ad50a3275ef7ff3f4855f99117115c5960915
+  tag: v0.1.12
   specs:
-    identity-telephony (0.1.11)
+    identity-telephony (0.1.12)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
@@ -87,60 +98,60 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    actioncable (6.1.1)
-      actionpack (= 6.1.1)
-      activesupport (= 6.1.1)
+    actioncable (6.1.2.1)
+      actionpack (= 6.1.2.1)
+      activesupport (= 6.1.2.1)
       nio4r (~> 2.0)
       websocket-driver (>= 0.6.1)
-    actionmailbox (6.1.1)
-      actionpack (= 6.1.1)
-      activejob (= 6.1.1)
-      activerecord (= 6.1.1)
-      activestorage (= 6.1.1)
-      activesupport (= 6.1.1)
+    actionmailbox (6.1.2.1)
+      actionpack (= 6.1.2.1)
+      activejob (= 6.1.2.1)
+      activerecord (= 6.1.2.1)
+      activestorage (= 6.1.2.1)
+      activesupport (= 6.1.2.1)
       mail (>= 2.7.1)
-    actionmailer (6.1.1)
-      actionpack (= 6.1.1)
-      actionview (= 6.1.1)
-      activejob (= 6.1.1)
-      activesupport (= 6.1.1)
+    actionmailer (6.1.2.1)
+      actionpack (= 6.1.2.1)
+      actionview (= 6.1.2.1)
+      activejob (= 6.1.2.1)
+      activesupport (= 6.1.2.1)
       mail (~> 2.5, >= 2.5.4)
       rails-dom-testing (~> 2.0)
-    actionpack (6.1.1)
-      actionview (= 6.1.1)
-      activesupport (= 6.1.1)
+    actionpack (6.1.2.1)
+      actionview (= 6.1.2.1)
+      activesupport (= 6.1.2.1)
       rack (~> 2.0, >= 2.0.9)
       rack-test (>= 0.6.3)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.0, >= 1.2.0)
-    actiontext (6.1.1)
-      actionpack (= 6.1.1)
-      activerecord (= 6.1.1)
-      activestorage (= 6.1.1)
-      activesupport (= 6.1.1)
+    actiontext (6.1.2.1)
+      actionpack (= 6.1.2.1)
+      activerecord (= 6.1.2.1)
+      activestorage (= 6.1.2.1)
+      activesupport (= 6.1.2.1)
       nokogiri (>= 1.8.5)
-    actionview (6.1.1)
-      activesupport (= 6.1.1)
+    actionview (6.1.2.1)
+      activesupport (= 6.1.2.1)
       builder (~> 3.1)
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    activejob (6.1.1)
-      activesupport (= 6.1.1)
+    activejob (6.1.2.1)
+      activesupport (= 6.1.2.1)
       globalid (>= 0.3.6)
-    activemodel (6.1.1)
-      activesupport (= 6.1.1)
-    activerecord (6.1.1)
-      activemodel (= 6.1.1)
-      activesupport (= 6.1.1)
-    activestorage (6.1.1)
-      actionpack (= 6.1.1)
-      activejob (= 6.1.1)
-      activerecord (= 6.1.1)
-      activesupport (= 6.1.1)
+    activemodel (6.1.2.1)
+      activesupport (= 6.1.2.1)
+    activerecord (6.1.2.1)
+      activemodel (= 6.1.2.1)
+      activesupport (= 6.1.2.1)
+    activestorage (6.1.2.1)
+      actionpack (= 6.1.2.1)
+      activejob (= 6.1.2.1)
+      activerecord (= 6.1.2.1)
+      activesupport (= 6.1.2.1)
       marcel (~> 0.3.1)
       mimemagic (~> 0.3.2)
-    activesupport (6.1.1)
+    activesupport (6.1.2.1)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
@@ -250,7 +261,7 @@ GEM
     coderay (1.1.3)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-    concurrent-ruby (1.1.7)
+    concurrent-ruby (1.1.8)
     connection_pool (2.2.3)
     cose (1.2.0)
       cbor (~> 0.5.9)
@@ -357,7 +368,7 @@ GEM
     httparty (0.18.1)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
-    i18n (1.8.7)
+    i18n (1.8.8)
       concurrent-ruby (~> 1.0)
     i18n-tasks (0.9.33)
       activesupport (>= 4.0.2)
@@ -393,7 +404,7 @@ GEM
       activesupport (>= 4)
       railties (>= 4)
       request_store (~> 1.0)
-    loofah (2.8.0)
+    loofah (2.9.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     lumberjack (1.2.8)
@@ -422,7 +433,7 @@ GEM
       net-ssh (>= 2.6.5)
     net-ssh (5.2.0)
     newrelic_rpm (6.14.0)
-    nio4r (2.5.4)
+    nio4r (2.5.5)
     nokogiri (1.11.1)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
@@ -483,20 +494,20 @@ GEM
     rack_session_access (0.2.0)
       builder (>= 2.0.0)
       rack (>= 1.0.0)
-    rails (6.1.1)
-      actioncable (= 6.1.1)
-      actionmailbox (= 6.1.1)
-      actionmailer (= 6.1.1)
-      actionpack (= 6.1.1)
-      actiontext (= 6.1.1)
-      actionview (= 6.1.1)
-      activejob (= 6.1.1)
-      activemodel (= 6.1.1)
-      activerecord (= 6.1.1)
-      activestorage (= 6.1.1)
-      activesupport (= 6.1.1)
+    rails (6.1.2.1)
+      actioncable (= 6.1.2.1)
+      actionmailbox (= 6.1.2.1)
+      actionmailer (= 6.1.2.1)
+      actionpack (= 6.1.2.1)
+      actiontext (= 6.1.2.1)
+      actionview (= 6.1.2.1)
+      activejob (= 6.1.2.1)
+      activemodel (= 6.1.2.1)
+      activerecord (= 6.1.2.1)
+      activestorage (= 6.1.2.1)
+      activesupport (= 6.1.2.1)
       bundler (>= 1.15.0)
-      railties (= 6.1.1)
+      railties (= 6.1.2.1)
       sprockets-rails (>= 2.0.0)
     rails-controller-testing (1.0.5)
       actionpack (>= 5.0.1.rc1)
@@ -515,9 +526,9 @@ GEM
     rails-i18n (6.0.0)
       i18n (>= 0.7, < 2)
       railties (>= 6.0.0, < 7)
-    railties (6.1.1)
-      actionpack (= 6.1.1)
-      activesupport (= 6.1.1)
+    railties (6.1.2.1)
+      actionpack (= 6.1.2.1)
+      activesupport (= 6.1.2.1)
       method_source
       rake (>= 0.8.7)
       thor (~> 1.0)
@@ -571,6 +582,8 @@ GEM
       rspec-expectations (~> 3.9)
       rspec-mocks (~> 3.9)
       rspec-support (~> 3.9)
+    rspec-retry (0.6.2)
+      rspec-core (> 3.3)
     rspec-support (3.10.0)
     rubocop (1.4.2)
       parallel (~> 1.10)
@@ -646,7 +659,7 @@ GEM
     systemu (2.6.5)
     terminal-table (2.0.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
-    thor (1.0.1)
+    thor (1.1.0)
     thread_safe (0.3.6)
     tilt (2.0.10)
     timecop (0.9.2)
@@ -756,6 +769,7 @@ DEPENDENCIES
   identity-doc-auth!
   identity-hostdata!
   identity-idp-functions!
+  identity-logging!
   identity-telephony!
   identity_validations!
   irb
@@ -787,7 +801,7 @@ DEPENDENCIES
   rack-test (>= 1.1.0)
   rack-timeout
   rack_session_access (>= 0.2.0)
-  rails (~> 6.1.1)
+  rails (~> 6.1.2)
   rails-controller-testing (>= 1.0.4)
   rails-erd (>= 1.6.0)
   raise-if-root
@@ -797,6 +811,7 @@ DEPENDENCIES
   rotp (~> 6.1)
   rqrcode
   rspec-rails (~> 4.0)
+  rspec-retry
   rubocop (~> 1.4.0)
   rubocop-rails (>= 2.5.2)
   ruby-progressbar

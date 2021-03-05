@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_20_220857) do
+ActiveRecord::Schema.define(version: 2021_03_03_033634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,6 +43,8 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
 
   create_table "agencies", force: :cascade do |t|
     t.string "name", null: false
+    t.string "abbreviation"
+    t.index ["abbreviation"], name: "index_agencies_on_abbreviation", unique: true
     t.index ["name"], name: "index_agencies_on_name", unique: true
   end
 
@@ -63,17 +65,6 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.datetime "updated_at", null: false
     t.index ["user_id", "created_at"], name: "index_auth_app_configurations_on_user_id_and_created_at", unique: true
     t.index ["user_id", "name"], name: "index_auth_app_configurations_on_user_id_and_name", unique: true
-  end
-
-  create_table "authorizations", force: :cascade do |t|
-    t.string "provider", limit: 255
-    t.string "uid", limit: 255
-    t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "authorized_at"
-    t.index ["provider", "uid"], name: "index_authorizations_on_provider_and_uid"
-    t.index ["user_id"], name: "index_authorizations_on_user_id"
   end
 
   create_table "backup_code_configurations", force: :cascade do |t|
@@ -166,12 +157,12 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.integer "choose_method_view_count", default: 0
     t.datetime "present_cac_view_at"
     t.integer "present_cac_view_count", default: 0
-    t.integer "present_cac_submit_count", default: 0
-    t.integer "present_cac_error_count", default: 0
     t.datetime "enter_info_view_at"
     t.integer "enter_info_view_count", default: 0
     t.datetime "success_view_at"
     t.integer "success_view_count", default: 0
+    t.integer "present_cac_submit_count", default: 0
+    t.integer "present_cac_error_count", default: 0
     t.datetime "selfie_view_at"
     t.integer "selfie_view_count", default: 0
     t.integer "selfie_submit_count", default: 0
@@ -239,7 +230,41 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.index ["device_id", "created_at"], name: "index_events_on_device_id_and_created_at"
     t.index ["disavowal_token_fingerprint"], name: "index_events_on_disavowal_token_fingerprint"
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
-    t.index ["user_id"], name: "index_events_on_user_id"
+  end
+
+  create_table "iaa_gtcs", force: :cascade do |t|
+    t.string "gtc_number", null: false
+    t.integer "mod_number", default: 0, null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.decimal "estimated_amount", precision: 12, scale: 2
+    t.bigint "partner_account_id"
+    t.bigint "iaa_status_id"
+    t.index ["gtc_number"], name: "index_iaa_gtcs_on_gtc_number", unique: true
+    t.index ["iaa_status_id"], name: "index_iaa_gtcs_on_iaa_status_id"
+    t.index ["partner_account_id"], name: "index_iaa_gtcs_on_partner_account_id"
+  end
+
+  create_table "iaa_orders", force: :cascade do |t|
+    t.integer "order_number", null: false
+    t.integer "mod_number", default: 0, null: false
+    t.date "start_date"
+    t.date "end_date"
+    t.decimal "estimated_amount", precision: 12, scale: 2
+    t.integer "pricing_model", default: 2, null: false
+    t.bigint "iaa_gtc_id"
+    t.bigint "iaa_status_id"
+    t.index ["iaa_gtc_id", "order_number"], name: "index_iaa_orders_on_iaa_gtc_id_and_order_number", unique: true
+    t.index ["iaa_gtc_id"], name: "index_iaa_orders_on_iaa_gtc_id"
+    t.index ["iaa_status_id"], name: "index_iaa_orders_on_iaa_status_id"
+  end
+
+  create_table "iaa_statuses", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "order", null: false
+    t.string "partner_name"
+    t.index ["name"], name: "index_iaa_statuses_on_name", unique: true
+    t.index ["order"], name: "index_iaa_statuses_on_order", unique: true
   end
 
   create_table "identities", force: :cascade do |t|
@@ -268,6 +293,36 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.index ["uuid"], name: "index_identities_on_uuid", unique: true
   end
 
+  create_table "integration_statuses", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "order", null: false
+    t.string "partner_name"
+    t.index ["name"], name: "index_integration_statuses_on_name", unique: true
+    t.index ["order"], name: "index_integration_statuses_on_order", unique: true
+  end
+
+  create_table "integration_usages", force: :cascade do |t|
+    t.bigint "iaa_order_id"
+    t.bigint "integration_id"
+    t.index ["iaa_order_id", "integration_id"], name: "index_integration_usages_on_iaa_order_id_and_integration_id", unique: true
+    t.index ["iaa_order_id"], name: "index_integration_usages_on_iaa_order_id"
+    t.index ["integration_id"], name: "index_integration_usages_on_integration_id"
+  end
+
+  create_table "integrations", force: :cascade do |t|
+    t.string "issuer", null: false
+    t.string "name", null: false
+    t.integer "dashboard_identifier"
+    t.bigint "partner_account_id"
+    t.bigint "integration_status_id"
+    t.bigint "service_provider_id"
+    t.index ["dashboard_identifier"], name: "index_integrations_on_dashboard_identifier", unique: true
+    t.index ["integration_status_id"], name: "index_integrations_on_integration_status_id"
+    t.index ["issuer"], name: "index_integrations_on_issuer", unique: true
+    t.index ["partner_account_id"], name: "index_integrations_on_partner_account_id"
+    t.index ["service_provider_id"], name: "index_integrations_on_service_provider_id"
+  end
+
   create_table "job_runs", force: :cascade do |t|
     t.string "host", null: false
     t.string "pid", null: false
@@ -281,6 +336,12 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.index ["host"], name: "index_job_runs_on_host"
     t.index ["job_name", "created_at"], name: "index_job_runs_on_job_name_and_created_at"
     t.index ["job_name", "finish_time"], name: "index_job_runs_on_job_name_and_finish_time"
+  end
+
+  create_table "letter_requests_to_usps_ftp_logs", force: :cascade do |t|
+    t.datetime "ftp_at", null: false
+    t.integer "letter_requests_count", null: false
+    t.index ["ftp_at"], name: "index_letter_requests_to_usps_ftp_logs_on_ftp_at"
   end
 
   create_table "monthly_auth_counts", force: :cascade do |t|
@@ -310,6 +371,28 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.boolean "phone_confirmed", default: false
     t.index ["phone_fingerprint", "phone_confirmed"], name: "index_on_phone_and_confirmed", unique: true
     t.index ["updated_at"], name: "index_otp_requests_trackers_on_updated_at"
+  end
+
+  create_table "partner_account_statuses", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "order", null: false
+    t.string "partner_name"
+    t.index ["name"], name: "index_partner_account_statuses_on_name", unique: true
+    t.index ["order"], name: "index_partner_account_statuses_on_order", unique: true
+  end
+
+  create_table "partner_accounts", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "requesting_agency", null: false
+    t.date "became_partner"
+    t.bigint "agency_id"
+    t.bigint "partner_account_status_id"
+    t.bigint "crm_id"
+    t.index ["agency_id"], name: "index_partner_accounts_on_agency_id"
+    t.index ["name"], name: "index_partner_accounts_on_name", unique: true
+    t.index ["partner_account_status_id"], name: "index_partner_accounts_on_partner_account_status_id"
+    t.index ["requesting_agency"], name: "index_partner_accounts_on_requesting_agency", unique: true
   end
 
   create_table "phone_configurations", force: :cascade do |t|
@@ -409,15 +492,6 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.index ["user_id"], name: "index_registration_logs_on_user_id", unique: true
   end
 
-  create_table "remote_settings", force: :cascade do |t|
-    t.string "name", null: false
-    t.string "url", null: false
-    t.text "contents", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_remote_settings_on_name", unique: true
-  end
-
   create_table "security_events", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "event_type", null: false
@@ -461,7 +535,6 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.string "redirect_uris", default: [], array: true
     t.integer "agency_id"
     t.text "failure_to_proof_url"
-    t.integer "aal"
     t.integer "ial"
     t.boolean "piv_cac", default: false
     t.boolean "piv_cac_scoped_by_email", default: false
@@ -490,6 +563,7 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "ial"
+    t.string "transaction_id"
     t.index ["created_at"], name: "index_sp_costs_on_created_at"
   end
 
@@ -590,4 +664,15 @@ ActiveRecord::Schema.define(version: 2021_01_20_220857) do
   end
 
   add_foreign_key "document_capture_sessions", "users"
+  add_foreign_key "iaa_gtcs", "iaa_statuses"
+  add_foreign_key "iaa_gtcs", "partner_accounts"
+  add_foreign_key "iaa_orders", "iaa_gtcs"
+  add_foreign_key "iaa_orders", "iaa_statuses"
+  add_foreign_key "integration_usages", "iaa_orders"
+  add_foreign_key "integration_usages", "integrations"
+  add_foreign_key "integrations", "integration_statuses"
+  add_foreign_key "integrations", "partner_accounts"
+  add_foreign_key "integrations", "service_providers"
+  add_foreign_key "partner_accounts", "agencies"
+  add_foreign_key "partner_accounts", "partner_account_statuses"
 end

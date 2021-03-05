@@ -11,12 +11,12 @@ shared_examples 'idv confirmation step' do |sp|
       expect(page).to have_current_path(idv_come_back_later_path)
       click_on t('forms.buttons.continue')
 
-      # SAML test SP does not have a return URL, so it does not have a link
-      # back to the SP
       if sp == :oidc
         expect(current_url).to start_with('http://localhost:7654/auth/result')
+      elsif sp == :saml
+        expect(current_url).to start_with('http://example.com/')
       else
-        expect(page).to have_current_path(account_path)
+        expect(current_url).to eq(account_url)
       end
     end
   end
@@ -37,7 +37,7 @@ shared_examples 'idv confirmation step' do |sp|
       if sp == :oidc
         expect(current_url).to start_with('http://localhost:7654/auth/result')
       else
-        expect(current_path).to eq(api_saml_auth2019_path)
+        expect(current_path).to eq(api_saml_auth2021_path)
       end
     end
 

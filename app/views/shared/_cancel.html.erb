@@ -1,7 +1,7 @@
-<div class='mt2 pt1 border-top'>
+<div class='margin-top-2 padding-top-1 border-top'>
   <% if user_signing_up? %>
     <%= link_to cancel_link_text, sign_up_cancel_path, method: :get, class: 'btn btn-link' %>
   <% else %>
-    <%= link_to cancel_link_text, link || decorated_session&.sp_return_url || profile_path %>
+    <%= link_to cancel_link_text, link || return_to_sp_cancel_path %>
   <% end %>
 </div>

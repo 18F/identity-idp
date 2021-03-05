@@ -1,6 +1,6 @@
 <% title t('titles.visitors.index') %>
 
-<h1 class='h3 my0'>
+<h1 class='h3 margin-y-0'>
   <%= t('headings.passwords.confirm') %>
 </h1>
 
@@ -12,12 +12,12 @@
   <%= f.input :password, label: t('account.index.password'), required: true,
               input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
   <div>
-    <%= f.button :submit, t('forms.buttons.submit.default'), class: 'sm-col-6 col-12 btn-wide mb3' %>
+    <%= f.button :submit, t('forms.buttons.submit.default'), class: 'sm-col-6 col-12 btn-wide margin-bottom-4' %>
   </div>
 <% end %>
 
-<div class='clearfix pt1 border-top'>
-  <div class='sm-col-right mxn1'>
-    <%= link_to t('links.passwords.forgot'), new_user_password_url, class: 'px1' %>
+<div class='clearfix padding-top-1 border-top'>
+  <div class='sm-col-right margin-x-neg-1'>
+    <%= link_to t('links.passwords.forgot'), new_user_password_url, class: 'padding-x-1' %>
   </div>
 </div>

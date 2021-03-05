@@ -67,13 +67,13 @@ describe 'redirect_uri validation' do
       visit new_user_session_path(request_id: '123', redirect_uri: 'evil.com')
       sp_redirect_uri = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
-      expect(page).
-        to have_link(t('links.back_to_sp', sp: 'Test SP'), href: sp_redirect_uri)
+      click_on t('links.back_to_sp', sp: 'Test SP')
+      expect(current_url).to eq(sp_redirect_uri)
 
       visit new_user_session_path(request_id: '123', redirect_uri: 'evil.com')
 
-      expect(page).
-        to have_link(t('links.back_to_sp', sp: 'Test SP'), href: sp_redirect_uri)
+      click_on t('links.back_to_sp', sp: 'Test SP')
+      expect(current_url).to eq(sp_redirect_uri)
     end
   end
 

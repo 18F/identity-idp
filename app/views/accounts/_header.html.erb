@@ -1,19 +1,19 @@
-<div class="clearfix pt2 pb3 sm-py0 mb3 bg-lightest-blue sm-bg-none">
+<div class="clearfix padding-top-2 padding-bottom-4 tablet:padding-y-0 margin-bottom-4 bg-lightest-blue sm-bg-none">
   <div class="sm-col sm-col-4">
-    <h1 class="h3 m0 center sm-left-align">
-      <span class="regular sans-serif sm-hide">
+    <h1 class="h3 margin-0 center sm-left-align">
+      <span class="regular sans-serif tablet:display-none">
         <%= t('account.welcome') %>,
         <span class="bold">
           <%= view_model.header_personalization %>
         </span>
       </span>
-      <span class="sm-show">
+      <span class="display-none tablet:display-inline">
         <%= t('headings.account.login_info') %>
       </span>
     </h1>
   </div>
   <%= render 'accounts/badges' %>
 </div>
-<div class="px2 pb1 bold h3 sm-hide serif">
+<div class="padding-x-2 padding-bottom-1 bold h3 tablet:display-none serif">
   <%= t('headings.account.login_info') %>
 </div>

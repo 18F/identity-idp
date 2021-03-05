@@ -1,8 +1,8 @@
-<div class='sm-col py1 sm-p0'>
+<div class='sm-col padding-y-1 tablet:padding-0'>
   <%= link_to(
     "‹ #{t('links.back_to_sp',
     sp: decorated_session.sp_name)}",
-    decorated_session.sp_return_url,
+    return_to_sp_cancel_path,
     class: 'inline-block text-bottom',
   ) %>
 </div>

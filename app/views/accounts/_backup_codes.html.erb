@@ -1,4 +1,4 @@
-<div class="grid-row mb1 mt0">
+<div class="grid-row margin-bottom-1 margin-top-0">
   <h2 class="grid-col-fill margin-y-0 padding-right-2">
     <%= t('forms.backup_code.title') %>
   </h2>
@@ -6,7 +6,7 @@
     <%= render @view_model.backup_codes_partial %>
   </div>
 </div>
-<div class="grid-row p1 border border-light-blue">
+<div class="grid-row padding-1 border border-light-blue">
   <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
     <div class="grid-col-9">
       <%= t 'account.index.backup_codes_exist' %>

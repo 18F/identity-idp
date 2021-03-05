@@ -16,10 +16,6 @@ class FeatureManagement
       !env.piv_cac_verify_token_url
   end
 
-  def self.allow_piv_cac_login?
-    AppConfig.env.login_with_piv_cac == 'true'
-  end
-
   def self.development_and_identity_pki_disabled?
     # This controls if we try to hop over to identity-pki or just throw up
     # a screen asking for a Subject or one of a list of error conditions.
@@ -38,7 +34,7 @@ class FeatureManagement
   end
 
   def self.prefill_otp_codes_allowed_in_sandbox?
-    LoginGov::Hostdata.domain == 'identitysandbox.gov' && telephony_test_adapter?
+    Identity::Hostdata.domain == 'identitysandbox.gov' && telephony_test_adapter?
   end
 
   def self.enable_load_testing_mode?
@@ -70,11 +66,11 @@ class FeatureManagement
   end
 
   def self.show_demo_banner?
-    LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.env != 'prod'
+    Identity::Hostdata.in_datacenter? && Identity::Hostdata.env != 'prod'
   end
 
   def self.show_no_pii_banner?
-    LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.domain != 'login.gov'
+    Identity::Hostdata.in_datacenter? && Identity::Hostdata.domain != 'login.gov'
   end
 
   def self.enable_saml_cert_rotation?

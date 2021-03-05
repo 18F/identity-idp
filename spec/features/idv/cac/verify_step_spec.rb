@@ -3,6 +3,8 @@ require 'rails_helper'
 feature 'cac proofing verify info step' do
   include CacProofingHelper
 
+  let(:fake_analytics) { FakeAnalytics.new }
+
   context 'successful verification' do
     before do
       sign_in_and_2fa_user
@@ -13,7 +15,7 @@ feature 'cac proofing verify info step' do
       expect(page).to have_current_path(idv_cac_proofing_verify_step)
       click_continue
 
-      expect(page).to have_current_path(idv_cac_proofing_success_step)
+      expect(page).to have_current_path(idv_phone_path)
 
       expect(SpCost.count).to eq(1)
       sp_cost = SpCost.first
@@ -47,13 +49,16 @@ feature 'cac proofing verify info step' do
     it 'allows resubmitting form' do
       allow(DocumentCaptureSession).to receive(:find_by).
         and_return(nil)
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
       click_continue
 
+      expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
       expect(page).to have_current_path(idv_cac_proofing_verify_step)
       expect(page).to have_content t('idv.failure.timeout')
       allow(DocumentCaptureSession).to receive(:find_by).and_call_original
       click_continue
-      expect(page).to have_current_path(idv_cac_proofing_success_step)
+      expect(page).to have_current_path(idv_phone_path)
     end
   end
 
@@ -73,19 +78,25 @@ feature 'cac proofing verify info step' do
     it 'proceeds to the next page upon confirmation' do
       click_continue
 
-      expect(page).to have_current_path(idv_cac_proofing_success_step)
+      expect(page).to have_current_path(idv_phone_path)
     end
 
     context 'async timed out' do
       it 'allows resubmitting form' do
         allow(DocumentCaptureSession).to receive(:find_by).and_return(nil)
+        allow_any_instance_of(ApplicationController).
+          to receive(:analytics).and_return(fake_analytics)
 
         click_continue
+
+        # FLAKE: this errors due to some race condition, likely due to polling in the browser
+        # expect(fake_analytics).to have_logged_event(Analytics::PROOFING_RESOLUTION_TIMEOUT, {})
+
         expect(page).to have_content(t('idv.failure.timeout'))
         expect(page).to have_current_path(idv_cac_proofing_verify_step)
         allow(DocumentCaptureSession).to receive(:find_by).and_call_original
         click_continue
-        expect(page).to have_current_path(idv_cac_proofing_success_step)
+        expect(page).to have_current_path(idv_phone_path)
       end
     end
   end

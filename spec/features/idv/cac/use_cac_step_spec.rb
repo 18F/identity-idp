@@ -8,7 +8,7 @@ feature 'use cac step' do
     strip_tags(t('doc_auth.info.use_cac', link: t('doc_auth.info.use_cac_link')))
   end
 
-  it 'shows cac proofing option if cac proofing is enabled' do
+  it 'shows cac proofing option if cac proofing on desktop' do
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_upload_step
 
@@ -16,15 +16,6 @@ feature 'use cac step' do
 
     click_link t('doc_auth.info.use_cac_link')
     expect(page).to have_current_path(idv_cac_proofing_choose_method_step)
-  end
-
-  it 'does not show cac proofing option if cac proofing is disabled' do
-    allow(AppConfig.env).to receive(:cac_proofing_enabled).and_return('false')
-
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_upload_step
-
-    expect(page).to_not have_content use_cac_content
   end
 
   it 'does not show cac proofing option on mobile' do

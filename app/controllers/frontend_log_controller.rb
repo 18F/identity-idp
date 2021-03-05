@@ -1,4 +1,6 @@
 class FrontendLogController < ApplicationController
+  include EffectiveUser
+
   respond_to :json
 
   skip_before_action :verify_authenticity_token
@@ -18,8 +20,12 @@ class FrontendLogController < ApplicationController
     params.permit(:event, payload: {})
   end
 
+  def analytics_user
+    effective_user || super
+  end
+
   def check_user_authenticated
-    return if user_fully_authenticated?
+    return if effective_user
 
     render json: { success: false }, status: :unauthorized
   end

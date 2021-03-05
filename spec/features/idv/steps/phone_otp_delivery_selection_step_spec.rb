@@ -46,6 +46,19 @@ feature 'IdV phone OTP delivery method selection' do
     end
   end
 
+  context 'the user opts to verify by mail instead' do
+    it 'can return back to the OTP selection screen' do
+      start_idv_from_sp
+      complete_idv_steps_before_phone_otp_delivery_selection_step
+      click_on t('idv.form.activate_by_mail')
+
+      expect(page).to have_content(t('idv.titles.mail.verify'))
+
+      click_doc_auth_back_link
+      expect(current_path).to eq(idv_otp_delivery_method_path)
+    end
+  end
+
   context 'with a non-US number' do
     let(:bahamas_phone) { '+12423270143' }
 

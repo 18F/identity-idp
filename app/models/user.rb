@@ -26,9 +26,9 @@ class User < ApplicationRecord
 
   enum otp_delivery_preference: { sms: 0, voice: 1 }
 
-  has_many :authorizations, dependent: :destroy
   # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :identities # identities need to be orphaned to prevent UUID reuse
+  # identities need to be orphaned to prevent UUID reuse
+  has_many :identities, class_name: 'ServiceProviderIdentity'
   has_many :events # we are retaining events after delete
   has_many :devices # we are retaining devices after delete
   # rubocop:enable Rails/HasManyOrHasOneDependent

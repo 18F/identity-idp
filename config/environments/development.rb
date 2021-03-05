@@ -28,9 +28,7 @@ Rails.application.configure do
   config.action_mailer.asset_host = AppConfig.env.mailer_domain_name
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
 
-  config.lograge.enabled = true
   config.lograge.ignore_actions = ['Users::SessionsController#active']
-  config.lograge.formatter = Lograge::Formatters::Json.new
 
   if Rails.root.join('tmp', 'caching-dev.txt').exist?
     config.action_controller.perform_caching = true
@@ -45,9 +43,6 @@ Rails.application.configure do
 
     config.cache_store = :null_store
   end
-
-  # Override log formatter
-  config.log_formatter = Upaya::DevelopmentUpayaLogFormatter.new
 
   # Bullet gem config
   config.after_initialize do

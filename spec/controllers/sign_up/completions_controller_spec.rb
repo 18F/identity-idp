@@ -84,7 +84,7 @@ describe SignUp::CompletionsController do
 
     it 'renders show if the user has identities and no active session' do
       user = create(:user)
-      create(:identity, user: user)
+      create(:service_provider_identity, user: user)
       stub_sign_in(user)
       subject.session[:sp] = { issuer: 'awesome sp', ial2: false }
       get :show
@@ -126,7 +126,7 @@ describe SignUp::CompletionsController do
       it 'updates verified attributes' do
         stub_sign_in
         subject.session[:sp] = {
-          ial2: false,
+          ial: 1,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
         }
@@ -166,7 +166,7 @@ describe SignUp::CompletionsController do
         user = create(:user, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
         subject.session[:sp] = {
-          ial2: true,
+          ial: 2,
           request_url: 'http://example.com',
           requested_attributes: %w[email first_name verified_at],
         }

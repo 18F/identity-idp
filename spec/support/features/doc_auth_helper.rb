@@ -34,6 +34,10 @@ module DocAuthHelper
     fill_in 'doc_auth_ssn', with: ''
   end
 
+  def click_doc_auth_back_link
+    click_on '‹ ' + t('forms.buttons.back')
+  end
+
   def idv_doc_auth_welcome_step
     idv_doc_auth_step_path(step: :welcome)
   end
@@ -79,6 +83,8 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
     complete_doc_auth_steps_before_upload_step(expect_accessible: expect_accessible)
+    # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
+    return if page.current_path == idv_doc_auth_document_capture_step
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     click_on t('doc_auth.info.upload_computer_link')
   end
@@ -129,9 +135,15 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
     click_idv_continue
-    # In JavaScript contexts, a spinner is shown while verification is in-progress. The only
-    # reliable measure of completion is that the page eventually navigates away.
-    expect(page).to_not have_current_path(idv_doc_auth_verify_step, wait: 10)
+  end
+
+  def complete_proofing_steps
+    complete_all_doc_auth_steps
+    click_continue
+    fill_in 'Password', with: RequestHelper::VALID_PASSWORD
+    click_continue
+    click_acknowledge_personal_key
+    click_agree_and_continue
   end
 
   def mock_doc_auth_no_name_pii(method)

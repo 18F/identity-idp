@@ -1,47 +1,47 @@
 <% title @presenter.title %>
 
-<h1 class='h3 my0'><%= t('titles.piv_cac_login.add') %></h1>
-<p class='mt-tiny mb3'><%= t('headings.piv_cac_login.add') %></p>
+<h1 class='h3 margin-y-0'><%= t('titles.piv_cac_login.add') %></h1>
+<p class='mt-tiny margin-bottom-4'><%= t('headings.piv_cac_login.add') %></p>
 
 <%= form_tag(submit_new_piv_cac_url) do %>
 <ul class='list-reset'>
-  <li class='pt0 pb1'>
-    <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
+  <li class='padding-top-0 padding-bottom-1'>
+    <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
       1
     </div>
-    <label class="h1 mr1 inline-block margin-bottom-1 bold" for="nickname">
+    <label class="h1 margin-right-1 inline-block margin-bottom-1 bold" for="nickname">
       <%= t('instructions.mfa.piv_cac.step_1') %>
     </label>
-    <div class='ml4 mb1'>
+    <div class='margin-left-6 margin-bottom-1'>
       <%= t('instructions.mfa.piv_cac.step_1_info') %>
     </div>
-    <div class='ml4 mb3'>
+    <div class='margin-left-6 margin-bottom-4'>
       <input type="text" name="name" id="nickname" value="" required="required" aria-invalid="false" class="block col-12 field monospace" size="16" maxlength="20" />
     </div>
     <hr>
   </li>
-  <li class='pt1 pb1'>
-    <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
+  <li class='padding-top-1 padding-bottom-1'>
+    <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
       2
     </div>
-    <div class='mr1 inline-block mb2'>
+    <div class='margin-right-1 inline-block margin-bottom-2'>
       <div class='h1 inline-block bold'>
         <%= t('instructions.mfa.piv_cac.step_2') %>
       </div>
     </div>
     <hr>
   </li>
-  <li class='pt1 pb1'>
-    <div class='inline-block mr2 mt1 text-top circle circle-number bg-blue white'>
+  <li class='padding-top-1 padding-bottom-1'>
+    <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
       3
     </div>
-    <div class='mr1 inline-block'>
+    <div class='margin-right-1 inline-block'>
       <div class='h1 inline-block bold'>
         <%= t('instructions.mfa.piv_cac.step_3') %>
       </div>
     </div>
-    <div class='ml4 mb1'>
-      <div class="mb3">
+    <div class='margin-left-6 margin-bottom-1'>
+      <div class="margin-bottom-4">
         <%= t('instructions.mfa.piv_cac.step_3_info_html') %>
       </div>
       <input type="submit" name="commit" value="<%= t('forms.piv_cac_setup.submit') %>" class="btn btn-primary" data-disable-with="Add PIV/CAC card" />

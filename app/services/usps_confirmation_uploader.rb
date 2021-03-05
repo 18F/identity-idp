@@ -1,8 +1,13 @@
 class UspsConfirmationUploader
+  def initialize
+    @now = Time.zone.now
+  end
+
   def run
-    confirmations = UspsConfirmation.all
+    confirmations = UspsConfirmation.all.to_a
     export = generate_export(confirmations)
     upload_export(export)
+    LetterRequestsToUspsFtpLog.create(ftp_at: @now, letter_requests_count: confirmations.count)
     clear_confirmations(confirmations)
   rescue StandardError => error
     NewRelic::Agent.notice_error(error)
@@ -27,7 +32,7 @@ class UspsConfirmationUploader
   end
 
   def remote_path
-    timestamp = Time.zone.now.strftime('%Y%m%d')
+    timestamp = @now.strftime('%Y%m%d')
     File.join(env.usps_upload_sftp_directory, "batch#{timestamp}.psv")
   end
 

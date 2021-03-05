@@ -1,5 +1,5 @@
 <% title t('titles.edit_info.phone') %>
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('headings.edit_info.phone') %>
 </h1>
 
@@ -7,7 +7,7 @@
                        html: {autocomplete: 'off', method: :put, role: 'form'},
                        url: manage_phone_path(id: @phone_configuration.id)) do |f| %>
 
-  <div class="mb1 h4">
+  <div class="margin-bottom-1 h4">
     <%= t('two_factor_authentication.phone_label') %>:&nbsp;
     <strong><%= @edit_phone_form.masked_number %></strong>
   </div><br/>

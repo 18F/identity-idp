@@ -76,6 +76,7 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
           videoRef.current.srcObject = stream;
           videoRef.current.play();
           setIsCapturing(true);
+          setIsAccessRejected(false);
         }),
       )
       .catch(

@@ -47,7 +47,7 @@ module VerifySpAttributesConcern
     return false if sp_session_identity.deleted_at.present?
     last_estimated_consent = sp_session_identity.last_consented_at || sp_session_identity.created_at
     !last_estimated_consent ||
-      last_estimated_consent < Identity::CONSENT_EXPIRATION.ago ||
+      last_estimated_consent < ServiceProviderIdentity::CONSENT_EXPIRATION.ago ||
       verified_after_consent?(last_estimated_consent)
   end
 
@@ -73,9 +73,5 @@ module VerifySpAttributesConcern
     @sp_session_identity && (
       sp_session[:requested_attributes] - @sp_session_identity.verified_attributes.to_a
     ).empty?
-  end
-
-  def sp_session_ial
-    sp_session[:ial2] ? 2 : 1
   end
 end

@@ -3,6 +3,7 @@ import { hasMediaAccess } from '@18f/identity-device';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
+import BlockLink from './block-link';
 import SelfieCapture from './selfie-capture';
 import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
@@ -59,22 +60,6 @@ function ReviewIssuesStep({
           strong: 'strong',
         })}
       </p>
-      {serviceProvider.name && (
-        <p>
-          {formatHTML(
-            t('doc_auth.info.no_other_id_help_bold_html', { sp_name: serviceProvider.name }),
-            {
-              strong: ({ children }) => <>{children}</>,
-              a: ({ children }) =>
-                serviceProvider.failureToProofURL ? (
-                  <a href={serviceProvider.failureToProofURL}>{children}</a>
-                ) : (
-                  <>{children}</>
-                ),
-            },
-          )}
-        </p>
-      )}
       <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
@@ -99,6 +84,7 @@ function ReviewIssuesStep({
             onChange={(nextValue) => onChange({ [side]: nextValue })}
             className="document-capture-review-issues-step__input"
             errorMessage={sideError ? <FormErrorMessage error={sideError} /> : undefined}
+            analyticsPrefix={`${side} image`}
           />
         );
       })}
@@ -123,6 +109,7 @@ function ReviewIssuesStep({
               allowUpload={false}
               className="document-capture-review-issues-step__input"
               errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
+              analyticsPrefix="selfie"
             />
           ) : (
             <SelfieCapture
@@ -139,6 +126,13 @@ function ReviewIssuesStep({
             />
           )}
         </>
+      )}
+      {serviceProvider.name && (
+        <BlockLink url={serviceProvider.failureToProofURL}>
+          {formatHTML(t('doc_auth.info.get_help_at_sp_html', { sp_name: serviceProvider.name }), {
+            strong: 'strong',
+          })}
+        </BlockLink>
       )}
     </>
   );

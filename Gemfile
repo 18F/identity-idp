@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 6.1.1'
+gem 'rails', '~> 6.1.2'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
@@ -20,11 +20,12 @@ gem 'faraday'
 gem 'foundation_emails'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.3.3'
-gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v0.4.3'
+gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.4.1'
+gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v1.0.1'
+gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.11'
+gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.12'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'main'
 gem 'json-jwt', '>= 1.11.0'
 gem 'jwt'
@@ -36,7 +37,7 @@ gem 'newrelic_rpm'
 gem 'pg'
 gem 'phonelib'
 gem 'premailer-rails', '>= 1.11.1'
-gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.7.1'
+gem 'proofer', github: '18F/identity-proofer-gem', ref: 'v2.8.0'
 gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
@@ -109,6 +110,7 @@ group :test do
   gem 'rack_session_access', '>= 0.2.0'
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
+  gem 'rspec-retry'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'timecop'
   gem 'webdrivers', '~> 4.0'
@@ -117,6 +119,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.4.1'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.5.0'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.6.0'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.7.0'
 end

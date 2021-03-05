@@ -43,7 +43,7 @@ module PivCacConcern
     piv_cac_uri = if Rails.env.development?
                     AppConfig.env.piv_cac_service_url
                   else
-                    "https://*.pivcac.#{LoginGov::Hostdata.env}.#{LoginGov::Hostdata.domain}"
+                    "https://*.pivcac.#{Identity::Hostdata.env}.#{Identity::Hostdata.domain}"
                   end
     [piv_cac_uri] + csp_uris
   end

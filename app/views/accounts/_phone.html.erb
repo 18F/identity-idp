@@ -1,5 +1,5 @@
 <div>
-  <div class="grid-row mb1 mt0">
+  <div class="grid-row margin-bottom-1 margin-top-0">
     <h2 class="grid-col-fill margin-y-0 padding-right-2">
       <%= t('account.index.phone') %>
     </h2>
@@ -16,7 +16,7 @@
 
   <div class="border-bottom border-light-blue">
     <% MfaContext.new(current_user).phone_configurations.each do |phone_configuration| %>
-      <div class="grid-row p1 border-top border-left border-right border-light-blue">
+      <div class="grid-row padding-1 border-top border-left border-right border-light-blue">
         <div class="grid-col-5">
           <%= phone_configuration.phone %>
         </div>

@@ -1,27 +1,27 @@
 <% title t('titles.verify_profile') %>
 
-<h1 class="h3 my0">
+<h1 class="h3 margin-y-0">
   <%= t('forms.verify_profile.title') %>
 </h1>
-<p class="mt-tiny mb0">
+<p class="mt-tiny margin-bottom-0">
   <%= t('forms.verify_profile.instructions') %>
 </p>
 <%= validated_form_for(@verify_account_form, url: verify_account_path,
                      html: { autocomplete: 'off', method: :post, role: 'form' }) do |f| %>
   <%= f.error :base %>
   <%= f.input :otp, required: true, input_html: { aria: { invalid: false } },
-    label: t('forms.verify_profile.name'), wrapper_html: { class: 'mb3' }, wrapper: :inline_form do %>
+    label: t('forms.verify_profile.name'), wrapper_html: { class: 'margin-bottom-4' }, wrapper: :inline_form do %>
     <%= f.input_field :otp, as: :inline, autofocus: true, type: 'text', maxlength: '10', value: @code %>
     <%= f.button :submit, t('forms.verify_profile.submit') %>
   <% end %>
 <% end %>
 
 <% if FeatureManagement.enable_usps_verification? && !@mail_spammed %>
-  <%= link_to t('idv.messages.usps.resend'), idv_usps_path, class: 'block mb2' %>
+  <%= link_to t('idv.messages.usps.resend'), idv_usps_path, class: 'block margin-bottom-2' %>
 <% end %>
 
 <%= button_to t('idv.messages.clear_and_start_over'), idv_session_path, method: :delete, class: 'btn btn-link' %>
 
-<div class="mt2 pt1 border-top">
+<div class="margin-top-2 padding-top-1 border-top">
   <%= link_to t('idv.buttons.cancel'), account_path %>
 </div>

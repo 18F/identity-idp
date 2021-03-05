@@ -141,7 +141,7 @@ class UserDecorator
   end
 
   def identity_events
-    user.identities.order('last_authenticated_at DESC').map(&:decorate)
+    user.identities.order('last_authenticated_at DESC')
   end
 
   def recent_devices
@@ -153,7 +153,7 @@ class UserDecorator
   end
 
   def connected_apps
-    user.identities.not_deleted.order('created_at DESC').map(&:decorate)
+    user.identities.not_deleted.order('created_at DESC')
   end
 
   def verified_account_partial
