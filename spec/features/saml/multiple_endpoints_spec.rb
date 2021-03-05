@@ -19,7 +19,7 @@ describe 'multiple saml endpoints' do
   end
 
   let(:endpoint_cert) do
-    file = File.read(Rails.root.join('certs.example', "saml#{endpoint_suffix}.crt"))
+    file = File.read(Rails.root.join('tmp', 'artifacts', "saml#{endpoint_suffix}.crt"))
     OpenSSL::X509::Certificate.new(file)
   end
 
