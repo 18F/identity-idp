@@ -104,7 +104,7 @@ describe Idv::CaptureDocController do
         get :show, params: { step: 'capture_complete' }
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::CAPTURE_DOC + ' visited', result
+          Analytics::DOC_AUTH + ' visited', result
         )
       end
 
@@ -115,11 +115,11 @@ describe Idv::CaptureDocController do
         get :show, params: { step: 'capture_complete' }
 
         expect(@analytics).to have_received(:track_event).ordered.with(
-          Analytics::CAPTURE_DOC + ' visited',
+          Analytics::DOC_AUTH + ' visited',
           hash_including(step: 'capture_complete', step_count: 1),
         )
         expect(@analytics).to have_received(:track_event).ordered.with(
-          Analytics::CAPTURE_DOC + ' visited',
+          Analytics::DOC_AUTH + ' visited',
           hash_including(step: 'capture_complete', step_count: 2),
         )
       end
