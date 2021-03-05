@@ -34,7 +34,7 @@ class ReturnToSpController < ApplicationController
   end
 
   def sp_request_url
-    sp_session[:request_url] || service_provider_request.url
+    sp_session[:request_url] || service_provider_request&.url
   end
 
   def validate_sp_exists
