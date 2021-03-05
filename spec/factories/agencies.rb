@@ -13,5 +13,12 @@ FactoryBot.define do
              industry: Faker::Company.industry,
              tag: SecureRandom.hex)
     end
+    abbreviation do
+      name.
+        split(' ').
+        map { |w| w.chars.first.upcase }.
+        select { |c| /\w/.match?(c) }.
+        join
+    end
   end
 end

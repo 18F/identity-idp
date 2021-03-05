@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_03_033634) do
+ActiveRecord::Schema.define(version: 2021_03_03_182041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 2021_03_03_033634) do
 
   create_table "agencies", force: :cascade do |t|
     t.string "name", null: false
-    t.string "abbreviation"
+    t.string "abbreviation", null: false
     t.index ["abbreviation"], name: "index_agencies_on_abbreviation", unique: true
     t.index ["name"], name: "index_agencies_on_name", unique: true
   end
