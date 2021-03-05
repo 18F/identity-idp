@@ -7,8 +7,8 @@ require 'action_mailer/railtie'
 require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 require 'identity/logging/railtie'
+require 'identity/hostdata'
 
-require_relative '../lib/app_config'
 require_relative '../lib/fingerprinter'
 
 Bundler.require(*Rails.groups)
