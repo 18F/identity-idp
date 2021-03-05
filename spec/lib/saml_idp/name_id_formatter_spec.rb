@@ -7,7 +7,27 @@ module SamlIdp
       let(:list) { { email_address: ->() { "foo@example.com" } } }
 
       it "has a valid all" do
-        expect(subject.all).to eq(["urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress"])
+        expect(subject.all).to eq(["urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"])
+      end
+    end
+
+    describe "with options that require different version numbers" do
+      let(:list) do
+        %i[unspecified email_address x509_subject_name windows_domain_qualified_name
+           kerberos entity persistent transient]
+      end
+
+      it "has a valid all" do
+        expect(subject.all).to match_array([
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:X509SubjectName",
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:WindowsDomainQualifiedName",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:kerberos",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:entity",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
+          "urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
+        ])
       end
     end
 
@@ -32,7 +52,7 @@ module SamlIdp
 
       it "has a valid all" do
         expect(subject.all).to eq([
-          "urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress",
+          "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress",
           "urn:oasis:names:tc:SAML:2.0:nameid-format:undefined",
         ])
       end

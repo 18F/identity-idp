@@ -13,14 +13,18 @@ module SamlIdp
         one_one.map { |key_val| build("1.1", key_val)[:name] } +
         two_zero.map { |key_val| build("2.0", key_val)[:name] }
       else
-        list.map { |key_val| build("2.0", key_val)[:name] }
+        list.map do |key_val|
+          format_symbol = Array(key_val).first
+          version = one_one_nameid_format?(format_symbol) ? '1.1' : '2.0'
+          build(version, key_val)[:name]
+        end
       end
     end
 
     def chosen
       return default_name_getter_hash unless list.key?(symbolized_name_id_format)
 
-      version = one_one_nameid_format? ? '1.1' : '2.0'
+      version = one_one_nameid_format?(symbolized_name_id_format) ? '1.1' : '2.0'
       requested = list.find { |k, _| k == symbolized_name_id_format }
 
       build(version, requested)
@@ -37,7 +41,7 @@ module SamlIdp
       @symbolized_name_id_format ||= sp_name_id_format.split(':').last.underscore.to_sym
     end
 
-    def one_one_nameid_format?
+    def one_one_nameid_format?(format)
       one_one_nameid_formats = %i[
         email_address
         unspecified
@@ -45,7 +49,7 @@ module SamlIdp
         x509_subject_name
       ]
 
-      one_one_nameid_formats.include?(symbolized_name_id_format)
+      one_one_nameid_formats.include?(format)
     end
 
     def build(version, key_val)
