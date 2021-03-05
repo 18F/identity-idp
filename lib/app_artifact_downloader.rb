@@ -21,7 +21,6 @@ class AppArtifactDownloader
   end
 
   def download
-    # TODO: Helpful error message if something is missing
     create_artifacts_folder
     if Identity::Hostdata.in_datacenter?
       download_all_from_s3

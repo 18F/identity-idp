@@ -52,12 +52,12 @@ module SamlAuthHelper
 
   def saml_test_sp_key
     @private_key ||= OpenSSL::PKey::RSA.new(
-      File.read(Rails.root + 'keys/saml_test_sp.key'),
+      File.read(Rails.root + 'tmp/artifacts/saml_test_sp.key'),
     ).to_pem
   end
 
   def saml_test_idp_cert
-    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2021.crt'))
+    @saml_test_idp_cert ||= File.read(Rails.root.join('tmp', 'artifacts', 'saml2021.crt'))
   end
 
   def saml_test_sp_cert
