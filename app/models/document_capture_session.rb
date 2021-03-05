@@ -51,10 +51,11 @@ class DocumentCaptureSession < ApplicationRecord
     EncryptedRedisStructStorage.load(result_id, type: ProofingSessionAsyncResult)
   end
 
-  def create_proofing_session
+  def create_proofing_session(arguments)
     EncryptedRedisStructStorage.store(
       ProofingSessionAsyncResult.new(
         id: generate_result_id,
+        arguments: arguments,
         status: ProofingSessionAsyncResult::IN_PROGRESS,
         result: nil,
       ),

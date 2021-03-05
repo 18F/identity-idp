@@ -142,6 +142,11 @@ class FeatureManagement
     AppConfig.env.voip_block == 'true'
   end
 
+  def self.use_ruby_workers?
+    return true
+    AppConfig.env.ruby_workers == 'true'
+  end
+
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
   # @return [Set<String>] set of phone numbers normalized to e164
   def self.voip_allowed_phones
