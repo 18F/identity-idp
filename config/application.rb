@@ -19,6 +19,8 @@ module Upaya
   class Application < Rails::Application
     AppConfig.setup(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))))
 
+    AppConfig.load_keys(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))), AppConfig.required_sandbox_keys)
+
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
