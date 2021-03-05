@@ -739,6 +739,7 @@ DEPENDENCIES
   aws-sdk-cloudwatchlogs
   aws-sdk-kms (~> 1.4)
   aws-sdk-lambda
+  aws-sdk-s3
   aws-sdk-ses (~> 1.6)
   axe-matchers (~> 2.6.0)
   base32-crockford
