@@ -81,6 +81,7 @@ saml_*.key
 /kitchen/nodes/*.json
 /kitchen/data_bags/config/*.yml
 /kitchen/data_bags/config/databag_secrets.json
+/public/assets
 /public/packs
 /public/packs-test
 **/node_modules
