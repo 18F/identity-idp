@@ -119,6 +119,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.6.0'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v4.0.0'
   gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.8.0'
 end

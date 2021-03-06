@@ -2,11 +2,12 @@ require 'rails_helper'
 
 RSpec.describe LambdaJobs::Runner do
   subject(:runner) do
-    LambdaJobs::Runner.new(args: args, job_class: job_class)
+    LambdaJobs::Runner.new(args: args, job_class: job_class, in_process_config: in_process_config)
   end
 
   let(:args) { { foo: 'bar' } }
   let(:job_class) { double('JobClass', name: 'SomeModule::OtherModule::JobClass') }
+  let(:in_process_config) { { key: 'secret' } }
   let(:aws_lambda_proofing_enabled) { 'true' }
 
   let(:env) { 'dev' }
@@ -40,7 +41,7 @@ RSpec.describe LambdaJobs::Runner do
           expect(runner).to receive(:aws_lambda_client).and_return(aws_lambda_client)
         end
 
-        it 'involves a lambda in AWS' do
+        it 'involves a lambda in AWS, without sending in_process_config' do
           expect(aws_lambda_client).to receive(:invoke).with(
             function_name: 'dev-idp-functions-JobClassFunction:1234567890',
             invocation_type: 'Event',
@@ -57,7 +58,7 @@ RSpec.describe LambdaJobs::Runner do
 
         it 'calls JobClass.handle' do
           expect(job_class).to receive(:handle).with(
-            event: args,
+            event: args.merge(in_process_config),
             context: nil,
           )
 
@@ -69,9 +70,9 @@ RSpec.describe LambdaJobs::Runner do
     context 'when run locally' do
       let(:in_datacenter) { false }
 
-      it 'calls JobClass.handle' do
+      it 'calls JobClass.handle, merging in including in_process_config' do
         expect(job_class).to receive(:handle).with(
-          event: args,
+          event: args.merge(in_process_config),
           context: nil,
         )
 
@@ -83,7 +84,7 @@ RSpec.describe LambdaJobs::Runner do
           result = Object.new
 
           expect(job_class).to receive(:handle).with(
-            event: args,
+            event: args.merge(in_process_config),
             context: nil,
           ).and_yield(result)
 
