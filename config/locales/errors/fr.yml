@@ -66,6 +66,7 @@ fr:
       send_link_throttle: Vous avez essayé plusieurs fois, essayez à nouveau dans
         10 minutes. Vous pouvez également cliquer sur recommencer et choisir d'utiliser
         votre ordinateur.
+      upload_error: Désolé, quelque chose a mal tourné de notre côté. Veuillez réessayer.
     file_input:
       invalid_type: Ce type de fichier n'est pas accepté, veuillez réessayer.
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer

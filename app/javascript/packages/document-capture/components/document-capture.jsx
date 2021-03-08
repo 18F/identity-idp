@@ -11,6 +11,7 @@ import SubmissionStatus from './submission-status';
 import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import useI18n from '../hooks/use-i18n';
 import { RetrySubmissionError } from './submission-complete';
+import { BackgroundEncryptedUploadError } from '../higher-order/with-background-encrypted-upload';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import PromptOnNavigate from './prompt-on-navigate';
@@ -75,6 +76,17 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
       field: error.field,
       error,
     }));
+  } else if (submissionError instanceof BackgroundEncryptedUploadError) {
+    initialActiveErrors = [{ field: submissionError.baseField, error: submissionError }];
+  }
+
+  let initialValues;
+  if (submissionError && formValues) {
+    initialValues = formValues;
+
+    if (submissionError instanceof BackgroundEncryptedUploadError) {
+      initialValues = except(initialValues, ...submissionError.fields);
+    }
   }
 
   /** @type {FormStep[]} */
@@ -131,7 +143,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
       )}
       <FormSteps
         steps={steps}
-        initialValues={submissionError && formValues ? formValues : undefined}
+        initialValues={initialValues}
         initialActiveErrors={initialActiveErrors}
         onComplete={submitForm}
         onStepChange={onStepChange}

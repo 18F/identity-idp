@@ -64,6 +64,8 @@ es:
         Intente tomar una nueva foto.
       send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en 10 minutos.
         También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
+      upload_error: Lo siento, algo salió mal por nuestra parte. Por favor, inténtelo
+        de nuevo.
     file_input:
       invalid_type: Este tipo de archivo no es aceptado, inténtalo de nuevo.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
