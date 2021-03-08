@@ -57,7 +57,6 @@ module Idv
       document_capture_session = DocumentCaptureSession.create(user_id: idv_session.current_user.id,
                                                                requested_at: Time.zone.now)
 
-      document_capture_session.create_proofing_session
       idv_session.idv_phone_step_document_capture_session_uuid = document_capture_session.uuid
 
       run_job(document_capture_session)
