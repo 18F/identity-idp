@@ -1,8 +1,12 @@
 module Idv
   module Proofer
     class << self
+      def mock_fallback_enabled?
+        AppConfig.env.proofer_mock_fallback == 'true'
+      end
+
       def resolution_job_class
-        if Idv::ProoferValidator.mock_fallback_enabled?
+        if mock_fallback_enabled?
           IdentityIdpFunctions::ProofResolutionMock
         else
           IdentityIdpFunctions::ProofResolution
@@ -10,7 +14,7 @@ module Idv
       end
 
       def address_job_class
-        if Idv::ProoferValidator.mock_fallback_enabled?
+        if mock_fallback_enabled?
           IdentityIdpFunctions::ProofAddressMock
         else
           IdentityIdpFunctions::ProofAddress
@@ -18,7 +22,7 @@ module Idv
       end
 
       def document_job_class
-        if Idv::ProoferValidator.mock_fallback_enabled?
+        if mock_fallback_enabled?
           IdentityIdpFunctions::ProofDocumentMock
         else
           IdentityIdpFunctions::ProofDocument
