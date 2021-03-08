@@ -1,3 +1,5 @@
+require 'rack/timeout/base'
+
 module Rack
   class Timeout
     @excludes = [
