@@ -33,7 +33,15 @@ describe Idv::PhoneStep do
   describe '#submit' do
     it 'succeeds with good params' do
       context = { stages: [{ address: 'AddressMock' }] }
-      extra = { vendor: { messages: [], context: context, exception: nil, timed_out: false } }
+      extra = {
+        vendor: {
+          messages: [],
+          context: context,
+          exception: nil,
+          timed_out: false,
+          transaction_id: 'address-mock-transaction-id-123',
+        },
+      }
 
       subject.submit(phone: good_phone)
 
@@ -51,7 +59,15 @@ describe Idv::PhoneStep do
 
     it 'fails with bad params' do
       context = { stages: [{ address: 'AddressMock' }] }
-      extra = { vendor: { messages: [], context: context, exception: nil, timed_out: false } }
+      extra = {
+        vendor: {
+          messages: [],
+          context: context,
+          exception: nil,
+          timed_out: false,
+          transaction_id: 'address-mock-transaction-id-123',
+        },
+      }
 
       subject.submit(phone: bad_phone)
       expect(subject.async_state.done?).to eq true
