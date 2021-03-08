@@ -30,8 +30,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 463d6811f933dc9af8a950e798cf926b9236b39b
-  branch: margolis-explicit-lexisnexis-config
+  revision: 051a8c3dca143b215838176a07b1f0545ffec0a2
+  ref: 051a8c3dca143b215838176a07b1f0545ffec0a2
   specs:
     identity-idp-functions (0.15.0)
       aamva (>= 4.0.0)
