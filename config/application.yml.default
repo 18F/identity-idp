@@ -15,12 +15,6 @@
 # Make sure any new entries you add are enclosed in single quotes.
 # AppConfig requires all values to be explicit strings.
 
-# How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
-# Note that the key name must be capitalized because the gem looks for
-# ENV['RACK_TIMEOUT_SERVICE_TIMEOUT'], and AppConfig does not automatically make lowercase keys
-# available to ENV as uppercase keys.
-RACK_TIMEOUT_SERVICE_TIMEOUT: '15'
-
 aal_authn_context_enabled: 'false'
 aamva_cert_enabled: 'true'
 aamva_sp_banlist_issuers: '[]'
@@ -116,6 +110,7 @@ poll_rate_for_verify_in_seconds: '3'
 proofer_mock_fallback: 'true'
 proofing_send_partial_dob: 'false'
 push_notifications_enabled:
+rack_timeout_service_timeout_seconds: '15'
 reauthn_window: '120'
 recaptcha_enabled_percent: '0'
 recaptcha_secret_key: key2

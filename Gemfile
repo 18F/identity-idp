@@ -41,7 +41,7 @@ gem 'proofer', github: '18F/identity-proofer-gem', ref: 'v2.8.0'
 gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
-gem 'rack-timeout'
+gem 'rack-timeout', require: false
 gem 'raise-if-root'
 gem 'readthis'
 gem 'recaptcha', require: 'recaptcha/rails'
