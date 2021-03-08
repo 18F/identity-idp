@@ -2,7 +2,7 @@ development:
   monitor_mode: false
 production:
   agent_enabled: true
-  app_name: <%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>
+  app_name: <%= Identity::Hostdata.env %>.<%= Identity::Hostdata.domain %>
   audit_log:
     enabled: false
   browser_monitoring:

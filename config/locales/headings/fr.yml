@@ -35,34 +35,32 @@ fr:
       confirm: Confirmez votre mot de passe actuel pour continuer
       forgot: Vous avez oublié votre mot de passe?
     personal_key: Enregistrez votre clé personnelle
+    piv_cac:
+      certificate:
+        bad: Le certificat PIV/CAC que vous avez sélectionné n'est pas valide.
+        expired: Le certificat PIV/CAC que vous avez sélectionné a expiré.
+        invalid: Le certificat PIV/CAC que vous avez sélectionné n'est pas valide.
+        none: Nous ne pouvons pas détecter un certificat sur votre carte PIV/CAC.
+        not_auth_cert: Veuillez choisir un autre certificat de votre carte PIV/CAC.
+        revoked: Le certificat PIV/CAC que vous avez sélectionné a été retiré de votre
+          carte.
+        unverified: Le certificat PIV/CAC que vous avez sélectionné n'est pas valide.
+      did_not_work: Votre PIV / CAC n'a pas fonctionné
+      token:
+        bad: Erreur interne.
+        invalid: Le certificat PIV/CAC sélectionné n'est pas valide.
+        missing: Erreur interne.
     piv_cac_login:
       account_not_found: Votre PIV / CAC n'est pas connecté à un compte
       add: Configurez votre PIV ou votre CAC en tant que méthode d'authentification
         à deux facteurs pour pouvoir l'utiliser pour vous connecter.
-      did_not_work: Votre PIV / CAC n'a pas fonctionné
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte
       success: Vous avez correctement configuré PIV/CAC en tant que méthode d’authentification.
       temporary_error: Nous rencontrons des difficultés techniques avec votre PIV/CAC
     piv_cac_setup:
-      certificate:
-        bad: Le certificat que vous avez sélectionné n'est pas valide.
-        expired: Le certificat que vous avez sélectionné a expiré.
-        invalid: Le certificat que vous avez sélectionné n'est pas valide.
-        none: Nous ne pouvons pas détecter un certificat sur votre carte PIV/CAC.
-        not_auth_cert: Veuillez choisir un autre certificat de votre carte PIV/CAC.
-        ocsp_error: Nous avons des difficultés techniques. Veuillez réessayer plus
-          tard.
-        revoked: Le certificat que vous avez sélectionné a été retiré de votre carte.
-        timeout: Nous avons des difficultés techniques. Veuillez réessayer plus tard.
-        unverified: Le certificat que vous avez sélectionné n'est pas valide.
+      already_associated: La carte PIV/CAC que vous avez présentée est associée à
+        un autre utilisateur.
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
-      piv_cac:
-        already_associated: La carte PIV/CAC que vous avez présentée est associée
-          à un autre utilisateur.
-      token:
-        bad: Erreur interne.
-        invalid: Le certificat sélectionné n'est pas valide.
-        missing: Erreur interne.
     registrations:
       enter_email: Entrez votre adresse email
     session_timeout_warning: Vous avez besoin de plus de temps?

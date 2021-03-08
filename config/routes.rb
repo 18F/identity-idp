@@ -3,12 +3,12 @@ Rails.application.routes.draw do
   get '/api/health' => 'health/health#index'
   get '/api/health/database' => 'health/database#index'
   get '/api/health/jobs' => 'health/jobs#index'
+  get '/api/health/outbound' => 'health/outbound#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
-  post '/analytics' => 'analytics#create'
 
   # SAML secret rotation paths
   SamlEndpoint.suffixes.each do |suffix|
@@ -76,9 +76,12 @@ Rails.application.routes.draw do
       post '/sessions/keepalive' => 'users/sessions#keepalive'
 
       get '/login/piv_cac' => 'users/piv_cac_login#new'
+      get '/login/piv_cac_error' => 'users/piv_cac_login#error'
+      # these routes are deprecated
       get '/login/piv_cac_account_not_found' => 'users/piv_cac_login#account_not_found'
       get '/login/piv_cac_did_not_work' => 'users/piv_cac_login#did_not_work'
       get '/login/piv_cac_temporary_error' => 'users/piv_cac_login#temporary_error'
+
       get '/login/present_piv_cac' => 'users/piv_cac_login#redirect_to_piv_cac_service'
       get '/login/password' => 'password_capture#new', as: :capture_password
       post '/login/password' => 'password_capture#create'
@@ -180,6 +183,7 @@ Rails.application.routes.draw do
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
+    get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
     post '/present_piv_cac' => 'users/piv_cac_authentication_setup#submit_new_piv_cac', as: :submit_new_piv_cac
 
@@ -261,6 +265,9 @@ Rails.application.routes.draw do
     put '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#update', as: :reset_user_authorization
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
     delete '/sign_up/cancel' => 'sign_up/cancellations#destroy'
+
+    get '/return_to_sp/cancel' => 'return_to_sp#cancel'
+    get '/return_to_sp/failure_to_proof' => 'return_to_sp#failure_to_proof'
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 

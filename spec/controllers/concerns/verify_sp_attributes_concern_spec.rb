@@ -6,7 +6,7 @@ RSpec.describe VerifySpAttributesConcern do
   end
 
   describe '#consent_has_expired?' do
-    let(:sp_session_identity) { build(:identity, user: user) }
+    let(:sp_session_identity) { build(:service_provider_identity, user: user) }
     let(:user) { build(:user) }
 
     before do
@@ -30,7 +30,7 @@ RSpec.describe VerifySpAttributesConcern do
     end
 
     context 'when last_consented_at within one year' do
-      let(:sp_session_identity) { build(:identity, last_consented_at: 5.days.ago) }
+      let(:sp_session_identity) { build(:service_provider_identity, last_consented_at: 5.days.ago) }
 
       it 'is false' do
         expect(consent_has_expired?).to eq(false)
@@ -38,7 +38,9 @@ RSpec.describe VerifySpAttributesConcern do
     end
 
     context 'when the last_consented_at is older than a year ago' do
-      let(:sp_session_identity) { build(:identity, last_consented_at: 2.years.ago) }
+      let(:sp_session_identity) do
+        build(:service_provider_identity, last_consented_at: 2.years.ago)
+      end
 
       it 'is true' do
         expect(consent_has_expired?).to eq(true)
@@ -47,7 +49,7 @@ RSpec.describe VerifySpAttributesConcern do
 
     context 'when last_consented_at is nil but created_at is within a year' do
       let(:sp_session_identity) do
-        build(:identity, last_consented_at: nil, created_at: 4.days.ago)
+        build(:service_provider_identity, last_consented_at: nil, created_at: 4.days.ago)
       end
 
       it 'is false' do
@@ -57,7 +59,7 @@ RSpec.describe VerifySpAttributesConcern do
 
     context 'when last_consented_at is nil and created_at is older than a year' do
       let(:sp_session_identity) do
-        build(:identity, last_consented_at: nil, created_at: 4.years.ago)
+        build(:service_provider_identity, last_consented_at: nil, created_at: 4.years.ago)
       end
 
       it 'is true' do
@@ -67,7 +69,7 @@ RSpec.describe VerifySpAttributesConcern do
 
     context 'when the identity has been soft-deleted (consent has been revoked)' do
       let(:sp_session_identity) do
-        build(:identity,
+        build(:service_provider_identity,
               deleted_at: 1.day.ago,
               last_consented_at: 2.years.ago)
       end
@@ -79,7 +81,7 @@ RSpec.describe VerifySpAttributesConcern do
 
     context 'when there is an active profile' do
       let(:sp_session_identity) do
-        create(:identity, last_consented_at: 15.days.ago, user: user)
+        create(:service_provider_identity, last_consented_at: 15.days.ago, user: user)
       end
 
       before do
@@ -103,7 +105,7 @@ RSpec.describe VerifySpAttributesConcern do
   end
 
   describe '#consent_was_revoked?' do
-    let(:sp_session_identity) { build(:identity) }
+    let(:sp_session_identity) { build(:service_provider_identity) }
 
     before do
       allow(controller).to receive(:sp_session_identity).and_return(sp_session_identity)
@@ -125,7 +127,7 @@ RSpec.describe VerifySpAttributesConcern do
     end
 
     context 'when the sp_session_identity exists and has been deleted' do
-      let(:sp_session_identity) { build(:identity, deleted_at: 2.days.ago) }
+      let(:sp_session_identity) { build(:service_provider_identity, deleted_at: 2.days.ago) }
 
       it 'is false' do
         expect(consent_was_revoked?).to eq(true)

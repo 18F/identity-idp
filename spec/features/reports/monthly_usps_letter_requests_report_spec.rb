@@ -20,7 +20,12 @@ feature 'Monthly usps letter requests report' do
     LetterRequestsToUspsFtpLog.create(ftp_at: now.yesterday, letter_requests_count: 3)
     LetterRequestsToUspsFtpLog.create(ftp_at: now, letter_requests_count: 4)
 
-    results_hash = JSON.parse(Reports::MonthlyUspsLetterRequestsReport.new.call)
+    results_hash = JSON.parse(
+      Reports::MonthlyUspsLetterRequestsReport.new.call(
+        start_time: now.yesterday,
+        end_time: now.tomorrow,
+      ),
+    )
     expect(results_hash['total_letter_requests']).to eq(7)
     expect(results_hash['daily_letter_requests'].count).to eq(2)
   end

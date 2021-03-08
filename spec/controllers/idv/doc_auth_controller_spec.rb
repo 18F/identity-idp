@@ -20,7 +20,7 @@ describe Idv::DocAuthController do
     stub_sign_in unless example.metadata[:skip_sign_in]
     stub_analytics
     allow(@analytics).to receive(:track_event)
-    allow(LoginGov::Hostdata::EC2).to receive(:load).
+    allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', domain: 'example.com'))
   end
 
@@ -76,7 +76,7 @@ describe Idv::DocAuthController do
 
     it 'tracks analytics for the optional step' do
       mock_next_step(:verify_wait)
-      result = { errors: {}, step: Idv::Steps::VerifyWaitStepShow, success: true }
+      result = { errors: {}, step: 'verify_wait_step_show', success: true }
 
       get :show, params: { step: 'verify_wait' }
 
@@ -160,8 +160,6 @@ describe Idv::DocAuthController do
         step: 'welcome',
         step_count: 1,
       }
-
-      expect(NewRelic::Agent).to receive(:notice_error)
 
       put :update, params: {
         step: 'welcome',

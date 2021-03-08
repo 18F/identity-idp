@@ -18,7 +18,7 @@ describe Idv::CaptureDocController do
   before do
     stub_analytics
     allow(@analytics).to receive(:track_event)
-    allow(LoginGov::Hostdata::EC2).to receive(:load).
+    allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', domain: 'example.com'))
   end
 
@@ -104,7 +104,7 @@ describe Idv::CaptureDocController do
         get :show, params: { step: 'capture_complete' }
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::CAPTURE_DOC + ' visited', result
+          Analytics::DOC_AUTH + ' visited', result
         )
       end
 
@@ -115,11 +115,11 @@ describe Idv::CaptureDocController do
         get :show, params: { step: 'capture_complete' }
 
         expect(@analytics).to have_received(:track_event).ordered.with(
-          Analytics::CAPTURE_DOC + ' visited',
+          Analytics::DOC_AUTH + ' visited',
           hash_including(step: 'capture_complete', step_count: 1),
         )
         expect(@analytics).to have_received(:track_event).ordered.with(
-          Analytics::CAPTURE_DOC + ' visited',
+          Analytics::DOC_AUTH + ' visited',
           hash_including(step: 'capture_complete', step_count: 2),
         )
       end

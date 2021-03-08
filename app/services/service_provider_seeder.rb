@@ -2,7 +2,7 @@
 class ServiceProviderSeeder
   class ExtraServiceProviderError < StandardError; end
 
-  def initialize(rails_env: Rails.env, deploy_env: LoginGov::Hostdata.env)
+  def initialize(rails_env: Rails.env, deploy_env: Identity::Hostdata.env)
     @rails_env = rails_env
     @deploy_env = deploy_env
   end

@@ -138,6 +138,13 @@ class SamlResponseDoc
     metadata_nodeset[0]
   end
 
+  def metadata_name_id_format(name)
+    metadata.xpath(
+      "./ds:IDPSSODescriptor/ds:NameIDFormat[contains(text(), '#{name}')]",
+      ds: Saml::XML::Namespaces::METADATA,
+    ).first.content
+  end
+
   def signature_nodeset
     send(@assertion_type).xpath('./ds:Signature', ds: Saml::XML::Namespaces::SIGNATURE)
   end

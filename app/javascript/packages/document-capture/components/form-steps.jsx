@@ -250,7 +250,12 @@ function FormSteps({
           return fields.current[field].refCallback;
         }}
       />
-      <Button type="submit" isPrimary className="margin-y-5" isVisuallyDisabled={!canContinue}>
+      <Button
+        type="submit"
+        isPrimary
+        className="display-block margin-y-5"
+        isVisuallyDisabled={!canContinue}
+      >
         {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
       </Button>
       {Footer && <Footer />}

@@ -117,21 +117,22 @@ module Flow
       render template: "#{@view || @name}/#{step}", locals: local_params
     end
 
-    def call_optional_show_step(step)
+    def call_optional_show_step(optional_step)
       return unless @flow.class.const_defined?('OPTIONAL_SHOW_STEPS')
-      optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[step]
+      optional_show_step = @flow.class::OPTIONAL_SHOW_STEPS.with_indifferent_access[optional_step]
       return unless optional_show_step
       result = optional_show_step.new(@flow).base_call
 
       if @analytics_id
-        optional_properties = result.to_h.merge(step: optional_show_step)
+        optional_show_step_name = optional_show_step.to_s.demodulize.underscore
+        optional_properties = result.to_h.merge(step: optional_show_step_name)
 
         analytics.track_event(analytics_optional_step, optional_properties)
         # keeping the old event names for backward compatibility
         analytics.track_event(old_analytics_optional_step, optional_properties)
       end
 
-      if next_step.to_s != step
+      if next_step.to_s != optional_step
         if next_step_is_url
           redirect_to next_step
         else

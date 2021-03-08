@@ -25,14 +25,16 @@ es:
           a %{email} en %{app}.
         manual_entry: O ingrese este código manualmente en su aplicación de autenticación
       piv_cac:
-        account_not_found:
-          paragraph_1_html: "<strong>%{sign_in}</strong> con su dirección de correo
-            electrónico y contraseña. Luego agregue su PIV/CAC a su cuenta."
-          paragraph_2_html: "<strong>¿No tiene una cuenta login.gov?</strong> %{create_account}"
+        account_not_found_html: "<p><strong>%{sign_in}</strong> con su dirección de
+          correo electrónico y contraseña. Luego agregue su PIV/CAC a su cuenta.</p>
+          <p><strong>¿No tiene una cuenta login.gov?</strong> %{create_account}</p>"
         add_from_sign_in_html: '<strong> Instrucciones: </strong> inserte su PIV o
           CAC en <strong> "AGREGAR PIV / CAC" </strong>. Tendrá que <strong> elegir
           un certificado </strong> (el correcto probablemente tenga su nombre) e <strong>
           ingrese su PIN </strong> (su PIN se creó cuando configuró su PIV / CAC )'
+        already_associated_html: Elige un certificado de una PIV/CAC distinta o ponte
+          en contacto con el administrador para confirmar que tu PIV/CAC está al día.
+          Si cree que se trata de un error, %{try_again}.
         back_to_sign_in: Regrese para iniciar sesión
         confirm_piv_cac_html: Presenta la PIV/CAC que asociaste con tu cuenta.
         confirm_piv_cac_only_html: Esta aplicación requiere un mayor nivel de seguridad.
@@ -42,9 +44,14 @@ es:
           Debe verificar su identidad con un dispositivo físico, como una llave de
           seguridad o una identificación de empleado del Gobierno (PIV o CAC) para
           acceder a su información.
-        did_not_work: Puede haber un problema con su PIV / CAC o PIN. Si cree que
-          esto es un error, %{try_again}.  Si este problema continúa, comuníquese
-          con el administrador de su agencia.
+        did_not_work_html: "%{please_try_again}. Comuníquese con el encargado de su
+          organismo si persiste este problema."
+        no_certificate_html: Asegúrese de su PIV/CAC esté conectada e %{try_again}.
+          Comuníquese con el encargado de su organismo si persiste este problema.
+        not_auth_cert_html: El certificado que seleccionó no es válido para esta cuenta.
+          %{please_try_again} con un certificado diferente. Comuníquese con el encargado
+          de su organismo si persiste este problema.
+        please_try_again: Vuelva a intentarlo
         sign_in: Asegúrese de que <strong>tenga una cuenta login.gov</strong> y <strong>haya
           configurado PIV/CAC</strong> como método de autenticación de dos factores.
         step_1: Darle un apodo
@@ -56,7 +63,7 @@ es:
           (su PIN se creó cuando configuró su PIV/CAC)
         temporary_error: Vuelve a intentarlo más tarde o inicia sesión con tu correo
           electrónico y contraseña.
-        try_again: inténtalo de nuevo
+        try_again: inténtelo de nuevo
       sms:
         confirm_code_html: "¿Necesita otro código? %{resend_code_link}. Puede estar
           sujeto a cargos de mensajería y datos."

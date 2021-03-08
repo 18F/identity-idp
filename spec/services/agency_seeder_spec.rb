@@ -12,7 +12,14 @@ RSpec.describe AgencySeeder do
   let(:deploy_env) { 'int' }
 
   describe '#run' do
-    before { Agency.delete_all }
+    before do
+      Agreements::IntegrationUsage.delete_all
+      Agreements::Integration.delete_all
+      Agreements::IaaOrder.delete_all
+      Agreements::IaaGtc.delete_all
+      Agreements::PartnerAccount.delete_all
+      Agency.delete_all
+    end
 
     subject(:run) { instance.run }
 
@@ -28,7 +35,7 @@ RSpec.describe AgencySeeder do
     end
 
     it 'updates existing agencies based on the current value of the yml file' do
-      Agency.create(id: 1, name: 'FOO')
+      create(:agency, id: 1, name: 'FOO')
 
       expect(Agency.find_by(id: 1).name).to eq('FOO')
       run

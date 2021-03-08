@@ -9,7 +9,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   let(:service_provider) { create(:service_provider, ial: service_provider_ial) }
   let(:profile) { build(:profile, :active, :verified) }
   let(:identity) do
-    build(:identity,
+    build(:service_provider_identity,
           rails_session_id: rails_session_id,
           user: create(:user, profiles: [profile]),
           service_provider: service_provider.issuer,
@@ -45,7 +45,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
       context 'when the identity has piv/cac associated' do
         let(:identity) do
-          build(:identity,
+          build(:service_provider_identity,
                 rails_session_id: rails_session_id,
                 user: create(:user, :with_piv_or_cac),
                 scope: scope)

@@ -13,27 +13,27 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: 164a507fd17ecffe4ef2289120d89156358b3a80
-  tag: v0.4.0
+  revision: 3b2c5997a62d7bf5f6114a55d41180f4bd1ae18e
+  tag: v0.4.1
   specs:
-    identity-doc-auth (0.4.0)
+    identity-doc-auth (0.4.1)
       activesupport
       faraday
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 9febec459b8f46b34ee783feddf454005e8c9c77
-  tag: v0.4.3
+  revision: 0f8d4626709d6031acdfe0b024faefede928f8aa
+  tag: v1.0.1
   specs:
-    identity-hostdata (0.4.3)
+    identity-hostdata (1.0.1)
       aws-sdk-s3 (~> 1.8)
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: eb8aa1657173af64fd9fcad2ab4df2a5741eb51d
-  ref: eb8aa1657173af64fd9fcad2ab4df2a5741eb51d
+  revision: 849ead99e7bfc7ad510eea2dd3a8d295447db153
+  ref: 849ead99e7bfc7ad510eea2dd3a8d295447db153
   specs:
-    identity-idp-functions (0.11.0)
+    identity-idp-functions (0.12.0)
       aamva (>= 3.5.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
@@ -41,13 +41,22 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: dd16ec95e6dba972ab61e90f650e573ab071e83f
-  tag: v2.5.1.pre
+  revision: 415a0e970b6ff1ab3262fb4874164c4dfd156120
+  tag: v2.7.0
   specs:
-    lexisnexis (2.5.1.pre)
+    lexisnexis (2.7.0)
       activesupport
       dotenv
       faraday
+
+GIT
+  remote: https://github.com/18F/identity-logging.git
+  revision: 7a341c9784275f44b0b0c3456a00a51fa79f4241
+  tag: v0.1.0
+  specs:
+    identity-logging (0.1.0)
+      lograge (>= 0.11.2)
+      rails (>= 6.1)
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
@@ -65,10 +74,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 19c0c7ec6f4e7b0dd90e2cfb2d3da1225018f2b4
-  tag: 0.11.0.18f
+  revision: fd3861ebf9fd36d1092c73ffaca1e743950407ee
+  tag: 0.12.0.18f
   specs:
-    saml_idp (0.11.0.pre.18f)
+    saml_idp (0.12.0.pre.18f)
       activesupport
       builder
       httparty
@@ -78,10 +87,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 8e56cce97f706679709a0007fd2904723f1f3cbc
-  tag: v0.1.11
+  revision: ee4ad50a3275ef7ff3f4855f99117115c5960915
+  tag: v0.1.12
   specs:
-    identity-telephony (0.1.11)
+    identity-telephony (0.1.12)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
@@ -410,7 +419,7 @@ GEM
     method_source (1.0.0)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2020.1104)
+    mime-types-data (3.2021.0225)
     mimemagic (0.3.5)
     mini_histogram (0.3.1)
     mini_mime (1.0.2)
@@ -760,6 +769,7 @@ DEPENDENCIES
   identity-doc-auth!
   identity-hostdata!
   identity-idp-functions!
+  identity-logging!
   identity-telephony!
   identity_validations!
   irb

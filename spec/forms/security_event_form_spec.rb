@@ -301,7 +301,7 @@ RSpec.describe SecurityEventForm do
       end
 
       context 'with a uuid for a different identity' do
-        let(:subject_sub) { create(:identity).uuid }
+        let(:subject_sub) { create(:service_provider_identity).uuid }
         it 'is invalid' do
           expect(valid?).to eq(false)
           expect(form.error_code).to eq('setData')

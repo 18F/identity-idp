@@ -64,8 +64,7 @@ describe 'partners rake tasks' do
       end
 
       it 'works with valid input' do
-        expect { Rake::Task[task].invoke }.to \
-          output("2 users created\nComplete!\n").to_stdout
+        expect { Rake::Task[task].invoke }.not_to raise_error(SystemExit)
 
         # clean up
         output_file = ENV['CSV_FILE'].gsub('.csv', '-updated.csv')
@@ -81,6 +80,116 @@ describe 'partners rake tasks' do
       it 'exits with errors' do
         allow($stdout).to receive(:puts) # suppress output
         allow(UserSeeder).to receive(:run).and_raise(ArgumentError.new('foo'))
+
+        expect { Rake::Task[task].invoke }.to raise_error(SystemExit)
+      end
+    end
+  end
+
+  describe 'partners:get_agency_uuids' do
+    let(:task) { 'partners:get_agency_uuids' }
+    let!(:prev_email_file) { ENV['EMAIL_FILE'] }
+    let!(:prev_sp_file) { ENV['SP_FILE'] }
+    let!(:prev_output) { ENV['OUTPUT'] }
+
+    around do |ex|
+      ex.run
+    rescue SystemExit
+    end
+
+    after do
+      ENV['EMAIL_FILE'] = prev_email_file
+      ENV['SP_FILE'] = prev_sp_file
+      ENV['OUTPUT'] = prev_output
+      Rake.application[task].reenable
+    end
+
+    context 'with missing EMAIL_FILE' do
+      before do
+        ENV.delete('EMAIL_FILE')
+        ENV['SP_FILE'] = 'spec/fixtures/valid_uuid_report_sps.txt'
+        ENV['OUTPUT'] = 'tmp/uuids.csv'
+      end
+
+      it 'displays an error message' do
+        expect { Rake::Task[task].invoke }.to \
+          output("You must define the environment variables EMAIL_FILE, SP_FILE, and OUTPUT\n").
+          to_stdout
+      end
+
+      it 'exits' do
+        allow($stdout).to receive(:puts) # suppress output
+        expect { Rake::Task[task].invoke }.to raise_error(SystemExit)
+      end
+    end
+
+    context 'with missing SP_FILE' do
+      before do
+        ENV['EMAIL_FILE'] = 'spec/fixtures/valid_uuid_report_emails.txt'
+        ENV.delete('SP_FILE')
+        ENV['OUTPUT'] = 'tmp/uuids.csv'
+      end
+
+      it 'displays an error message' do
+        expect { Rake::Task[task].invoke }.to \
+          output("You must define the environment variables EMAIL_FILE, SP_FILE, and OUTPUT\n").
+          to_stdout
+      end
+
+      it 'exits' do
+        allow($stdout).to receive(:puts) # suppress output
+        expect { Rake::Task[task].invoke }.to raise_error(SystemExit)
+      end
+    end
+
+    context 'with missing OUTPUT' do
+      before do
+        ENV['EMAIL_FILE'] = 'spec/fixtures/valid_uuid_report_emails.txt'
+        ENV['SP_FILE'] = 'spec/fixtures/valid_uuid_report_sps.txt'
+        ENV.delete('OUTPUT')
+      end
+
+      it 'displays an error message' do
+        expect { Rake::Task[task].invoke }.to \
+          output("You must define the environment variables EMAIL_FILE, SP_FILE, and OUTPUT\n").
+          to_stdout
+      end
+
+      it 'exits' do
+        allow($stdout).to receive(:puts) # suppress output
+        expect { Rake::Task[task].invoke }.to raise_error(SystemExit)
+      end
+    end
+
+    context 'with all ENV variables' do
+      before do
+        ENV['EMAIL_FILE'] = 'spec/fixtures/valid_uuid_report_emails.txt'
+        ENV['SP_FILE'] = 'spec/fixtures/valid_uuid_report_sps.txt'
+        ENV['OUTPUT'] = 'tmp/uuid_report.csv'
+
+        # create data to pass SP validations
+        agency = create(:agency)
+        File.readlines(ENV['SP_FILE'], chomp: true).each do |i|
+          create(:service_provider, agency: agency, issuer: i)
+        end
+      end
+
+      it 'works with valid input' do
+        expect { Rake::Task[task].invoke }.not_to raise_error(SystemExit)
+
+        # clean up
+        File.delete(ENV['OUTPUT'])
+      end
+
+      it 'displays a helpful error message with errors' do
+        allow(UuidReporter).to receive(:run).and_raise(ArgumentError.new('foo'))
+
+        expect { Rake::Task[task].invoke }.to output("ERROR: foo\n").to_stdout
+      end
+
+      it 'exits with errors' do
+        allow($stdout).to receive(:puts) # suppress output
+        allow(UuidReporter).to receive(:run).and_raise(ArgumentError.new('foo'))
 
         expect { Rake::Task[task].invoke }.to raise_error(SystemExit)
       end

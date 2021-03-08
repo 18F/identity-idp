@@ -28,7 +28,7 @@ describe IdvController do
         :profile,
         user: user,
       )
-      Throttle.create(throttle_type: 5, user_id: user.id, attempts: 3, attempted_at: Time.zone.now)
+      Throttle.create(throttle_type: 5, user_id: user.id, attempts: 5, attempted_at: Time.zone.now)
 
       stub_sign_in(profile.user)
 
@@ -76,13 +76,13 @@ describe IdvController do
       before do
         stub_sign_in(user)
         session[:sp] = {}
-        allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
+        allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
         allow(AppConfig.env).to receive(:sp_context_needed_environment).and_return('prod')
       end
 
       context 'prod environment' do
         before do
-          allow(LoginGov::Hostdata).to receive(:env).and_return('prod')
+          allow(Identity::Hostdata).to receive(:env).and_return('prod')
         end
 
         it 'redirects back to the account page' do
@@ -107,7 +107,7 @@ describe IdvController do
 
       context 'non-prod environment' do
         before do
-          allow(LoginGov::Hostdata).to receive(:env).and_return('staging')
+          allow(Identity::Hostdata).to receive(:env).and_return('staging')
         end
 
         it 'begins the identity proofing process' do
@@ -120,8 +120,8 @@ describe IdvController do
 
       context 'local development' do
         before do
-          allow(LoginGov::Hostdata).to receive(:env).and_return(nil)
-          allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(false)
+          allow(Identity::Hostdata).to receive(:env).and_return(nil)
+          allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(false)
         end
 
         it 'begins the identity proofing process' do
@@ -192,7 +192,7 @@ describe IdvController do
         Throttle.create(
           throttle_type: 5,
           user_id: user.id,
-          attempts: 3,
+          attempts: 5,
           attempted_at: Time.zone.now,
         )
 
@@ -208,18 +208,14 @@ describe IdvController do
       context 'when there is an SP in the session' do
         render_views
 
-        let(:service_provider) do
-          create(:service_provider, failure_to_proof_url: 'https://foo.bar')
-        end
-
         before do
-          session[:sp] = { issuer: service_provider.issuer }
+          session[:sp] = { issuer: create(:service_provider).issuer }
         end
 
-        it "includes a link back to the SP's failure to proof URL" do
+        it 'includes a link back to the failure to proof URL' do
           get :fail
 
-          expect(response.body).to include('https://foo.bar')
+          expect(response.body).to include(return_to_sp_failure_to_proof_path)
         end
       end
     end

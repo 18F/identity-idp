@@ -81,7 +81,6 @@ class Analytics
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'.freeze
   AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'.freeze
   CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
-  CAPTURE_DOC = 'Capture Doc'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
@@ -184,6 +183,8 @@ class Analytics
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'.freeze
+  RETURN_TO_SP_CANCEL = 'Return to SP: Cancelled'.freeze
+  RETURN_TO_SP_FAILURE_TO_PROOF = 'Return to SP: Failed to proof'.freeze
   SECURITY_EVENT_RECEIVED = 'RISC: Security event received'.freeze
   SP_REVOKE_CONSENT_REVOKED = 'SP Revoke Consent: Revoked'.freeze
   SP_REVOKE_CONSENT_VISITED = 'SP Revoke Consent: Visited'.freeze

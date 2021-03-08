@@ -86,12 +86,12 @@ feature 'Sign in' do
                           error: 'certificate.bad',
                           subject: 'SomeIgnoredSubject')
 
-    expect(current_path).to eq login_piv_cac_did_not_work_path
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'certificate.bad'))
   end
 
   scenario 'user opts to add piv/cac card and has piv cac redirect in CSP' do
-    allow(LoginGov::Hostdata).to receive(:env).and_return('test')
-    allow(LoginGov::Hostdata).to receive(:domain).and_return('example.com')
+    allow(Identity::Hostdata).to receive(:env).and_return('test')
+    allow(Identity::Hostdata).to receive(:domain).and_return('example.com')
 
     perform_steps_to_get_to_add_piv_cac_during_sign_up
 
@@ -132,7 +132,7 @@ feature 'Sign in' do
                           uuid: SecureRandom.uuid,
                           subject: 'SomeIgnoredSubject')
 
-    expect(current_path).to eq login_piv_cac_account_not_found_path
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'user.not_found'))
     visit sign_up_email_path
     email = 'foo@bar.com'
     submit_form_with_valid_email(email)
@@ -148,24 +148,23 @@ feature 'Sign in' do
     click_agree_and_continue
     expect(current_url).to start_with('http://localhost:7654/auth/result')
   end
-  scenario 'user cannot sign in with certificate timeout error' do
-    signin_with_piv_error('certificate.timeout')
 
-    expect(current_path).to eq login_piv_cac_temporary_error_path
-    expect(page).to have_content t('headings.piv_cac_login.temporary_error')
+  scenario 'user cannot sign in with certificate none error' do
+    signin_with_piv_error('certificate.none')
+
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'certificate.none'))
   end
 
-  scenario 'user cannot sign in with certificate ocsp error' do
-    signin_with_piv_error('certificate.ocsp_error')
+  scenario 'user cannot sign in with certificate not auth cert error' do
+    signin_with_piv_error('certificate.not_auth_cert')
 
-    expect(current_path).to eq login_piv_cac_temporary_error_path
-    expect(page).to have_content t('headings.piv_cac_login.temporary_error')
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'certificate.not_auth_cert'))
   end
 
   scenario 'user cannot sign in with an unregistered piv/cac card' do
     signin_with_bad_piv
 
-    expect(current_path).to eq login_piv_cac_did_not_work_path
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'token.bad'))
   end
 
   it 'does not throw an exception if the email contains invalid bytes' do
@@ -965,7 +964,7 @@ feature 'Sign in' do
                           uuid: SecureRandom.uuid,
                           subject: 'SomeIgnoredSubject')
 
-    expect(current_path).to eq login_piv_cac_account_not_found_path
+    expect(page).to have_current_path(login_piv_cac_error_path(error: 'user.not_found'))
     visit new_user_session_path
     fill_in_credentials_and_submit(user.email, user.password)
     fill_in_code_with_last_phone_otp

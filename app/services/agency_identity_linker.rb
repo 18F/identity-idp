@@ -16,7 +16,7 @@ class AgencyIdentityLinker
                else
                  { uuid: uuid, service_provider: service_provider }
                end
-    Identity.where(criteria).take
+    ServiceProviderIdentity.where(criteria).take
   end
 
   private

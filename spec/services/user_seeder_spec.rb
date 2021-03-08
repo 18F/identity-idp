@@ -44,9 +44,9 @@ RSpec.describe UserSeeder do
         raise_error(StandardError, /This cannot be run in staging or production/)
     end
 
-    it 'defaults to the value in LoginGov::Hostdata.env' do
+    it 'defaults to the value in Identity::Hostdata.env' do
       opts = { csv_file: valid_fixture, email_domain: 'foo.com' }
-      allow(LoginGov::Hostdata).to receive(:env).and_return('prod')
+      allow(Identity::Hostdata).to receive(:env).and_return('prod')
 
       expect { described_class.run(**opts) }.to \
         raise_error(StandardError, /This cannot be run in staging or production/)

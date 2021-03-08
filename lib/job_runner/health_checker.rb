@@ -2,14 +2,6 @@
 
 module JobRunner
   class HealthChecker
-    Summary = Struct.new(:healthy, :result) do
-      def as_json(*args)
-        to_h.as_json(*args)
-      end
-
-      alias_method :healthy?, :healthy
-    end
-
     class << self
       def check
         jobs = Runner.configurations.select do |job_configuration|
@@ -20,7 +12,7 @@ module JobRunner
           [job_configuration.name, successful_recent_job_run?(job_configuration)]
         end.to_h
         healthy = !result.value?(false)
-        Summary.new(healthy, result)
+        HealthCheckSummary.new(healthy: healthy, result: result)
       end
 
       private

@@ -8,7 +8,7 @@ module LambdaJobs
     end
 
     def run(&local_callback)
-      if LoginGov::Hostdata.in_datacenter? && AppConfig.env.aws_lambda_proofing_enabled == 'true'
+      if Identity::Hostdata.in_datacenter? && AppConfig.env.aws_lambda_proofing_enabled == 'true'
         aws_lambda_client.invoke(
           function_name: function_name,
           invocation_type: 'Event',
@@ -30,7 +30,7 @@ module LambdaJobs
 
     # Due to length limits, we can only use the first 10 characters of a git SHA
     def function_name
-      "#{LoginGov::Hostdata.env}-idp-functions-#{job_name}Function:#{LambdaJobs::GIT_REF[0...10]}"
+      "#{Identity::Hostdata.env}-idp-functions-#{job_name}Function:#{LambdaJobs::GIT_REF[0...10]}"
     end
 
     # @example

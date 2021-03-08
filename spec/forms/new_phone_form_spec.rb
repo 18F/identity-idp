@@ -151,6 +151,33 @@ describe NewPhoneForm do
       expect(result.errors).to be_empty
     end
 
+    context 'when the user has already added the number' do
+      it 'is invalid' do
+        phone = PhoneFormatter.format('+1 (954) 525-1262', country_code: 'US')
+        params[:phone] = phone
+        phone_configuration = create(:phone_configuration, user: user, phone: phone)
+
+        result = subject.submit(params)
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:phone]).to eq([I18n.t('errors.messages.phone_duplicate')])
+      end
+
+      it 'is invalid if database phone is not formatted' do
+        raw_phone = '+1 954 5251262'
+        phone = PhoneFormatter.format(raw_phone, country_code: 'US')
+        params[:phone] = phone
+        phone_configuration = create(:phone_configuration, user: user, phone: raw_phone)
+
+        result = subject.submit(params)
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:phone]).to eq([I18n.t('errors.messages.phone_duplicate')])
+      end
+    end
+
     context 'voip numbers' do
       let(:telephony_gem_voip_number) { '+12255552000' }
       let(:voip_block?) { false }

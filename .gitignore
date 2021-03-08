@@ -39,6 +39,13 @@ Vagrantfile
 /config/aws.yml
 /config/service_providers.yml
 /config/agencies.yml
+/config/iaa_gtcs.yml
+/config/iaa_orders.yml
+/config/iaa_statuses.yml
+/config/integration_statuses.yml
+/config/integrations.yml
+/config/partner_account_statuses.yml
+/config/partner_accounts.yml
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv
@@ -74,6 +81,7 @@ saml_*.key
 /kitchen/nodes/*.json
 /kitchen/data_bags/config/*.yml
 /kitchen/data_bags/config/databag_secrets.json
+/public/assets
 /public/packs
 /public/packs-test
 **/node_modules

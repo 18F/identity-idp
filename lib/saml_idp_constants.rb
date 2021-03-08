@@ -24,7 +24,7 @@ module Saml
       ISSUERS_WITH_EMAIL_NAMEID_FORMAT = AppConfig.env.issuers_with_email_nameid_format.split(',').
                                          freeze
       NAME_ID_FORMAT_PERSISTENT = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'.freeze
-      NAME_ID_FORMAT_EMAIL = 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress'.freeze
+      NAME_ID_FORMAT_EMAIL = 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'.freeze
 
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='.freeze
 

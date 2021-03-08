@@ -120,6 +120,8 @@ es:
         que subes. Solo verificamos su identidad.
       document_capture_upload_image: Solo utilizamos su ID para verificar su identidad
         y no guardaremos ninguna imagen.
+      get_help_at_sp_html: "<strong>¿Tienes algún problema?</strong> Obtén ayuda en
+        %{sp_name}"
       id_worn_html: "<strong>¿Su documento de identidad está desgastado o dañado?</strong>
         Utilice otro documento de identidad expedido por el estado, si lo tiene."
       image_updated: Imagen actualizada

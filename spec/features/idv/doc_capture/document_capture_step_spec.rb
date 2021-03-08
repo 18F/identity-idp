@@ -13,7 +13,7 @@ feature 'doc capture document capture step' do
   before do
     allow(AppConfig.env).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
-    allow(LoginGov::Hostdata::EC2).to receive(:load).
+    allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     if sp_requests_ial2_strict
       visit_idp_from_oidc_sp_with_ial2_strict
@@ -40,7 +40,7 @@ feature 'doc capture document capture step' do
       visit request_uri
 
       expect(fake_analytics).to have_logged_event(
-        Analytics::CAPTURE_DOC,
+        Analytics::DOC_AUTH,
         success: false,
       )
     end
@@ -53,7 +53,7 @@ feature 'doc capture document capture step' do
       complete_doc_capture_steps_before_first_step(user)
 
       expect(fake_analytics).to have_logged_event(
-        Analytics::CAPTURE_DOC + ' visited',
+        Analytics::DOC_AUTH + ' visited',
         step: 'document_capture',
       )
     end
@@ -137,7 +137,7 @@ feature 'doc capture document capture step' do
 
       expect(page).to have_current_path(next_step)
       expect(fake_analytics).to have_logged_event(
-        Analytics::CAPTURE_DOC + ' submitted',
+        Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
         result: 'Passed',
         billed: true,

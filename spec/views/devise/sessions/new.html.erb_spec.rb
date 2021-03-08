@@ -70,7 +70,7 @@ describe 'devise/sessions/new.html.erb' do
         sp: sp,
         view_context: view_context,
         sp_session: {},
-        service_provider_request: ServiceProviderRequestProxy.new,
+        service_provider_request: ServiceProviderRequest.new,
       ).call
       allow(view).to receive(:decorated_session).and_return(@decorated_session)
       allow(view_context).to receive(:sign_up_email_path).
@@ -92,7 +92,7 @@ describe 'devise/sessions/new.html.erb' do
       render
 
       expect(rendered).to have_link(
-        t('links.back_to_sp', sp: 'Awesome Application!'), href: @decorated_session.sp_return_url
+        t('links.back_to_sp', sp: 'Awesome Application!'), href: return_to_sp_cancel_path
       )
     end
 

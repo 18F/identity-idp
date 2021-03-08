@@ -32,6 +32,15 @@ Dir.chdir APP_ROOT do
   puts "== Linking agencies.yml =="
   run "test -r config/agencies.yml || ln -sv agencies.localdev.yml config/agencies.yml"
 
+  puts "== Linking Agreements YAML files =="
+  run "test -r config/iaa_gtcs.yml || ln -sv iaa_gtcs.localdev.yml config/iaa_gtcs.yml"
+  run "test -r config/iaa_orders.yml || ln -sv iaa_orders.localdev.yml config/iaa_orders.yml"
+  run "test -r config/iaa_statuses.yml || ln -sv iaa_statuses.localdev.yml config/iaa_statuses.yml"
+  run "test -r config/integration_statuses.yml || ln -sv integration_statuses.localdev.yml config/integration_statuses.yml"
+  run "test -r config/integrations.yml || ln -sv integrations.localdev.yml config/integrations.yml"
+  run "test -r config/partner_account_statuses.yml || ln -sv partner_account_statuses.localdev.yml config/partner_account_statuses.yml"
+  run "test -r config/partner_accounts.yml || ln -sv partner_accounts.localdev.yml config/partner_accounts.yml"
+
   puts "== Copying logstash.conf =="
   run "cat logstash.conf.example | sed 's/path_to_repo/#{APP_ROOT.to_s.gsub('/', '\/')}/g' > logstash.conf"
 

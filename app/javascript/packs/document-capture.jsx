@@ -62,8 +62,7 @@ const keepAliveEndpoint = /** @type {string} */ (appRoot.getAttribute('data-keep
  * ).ServiceProviderContext}
  */
 function getServiceProvider() {
-  const name = appRoot.getAttribute('data-sp-name');
-  const failureToProofURL = appRoot.getAttribute('data-failure-to-proof-url');
+  const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
   const isLivenessRequired = appRoot.hasAttribute('data-liveness-required');
 
   return { name, failureToProofURL, isLivenessRequired };

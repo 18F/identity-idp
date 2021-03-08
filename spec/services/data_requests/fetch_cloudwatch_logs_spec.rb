@@ -55,7 +55,7 @@ describe DataRequests::FetchCloudwatchLogs do
   end
 
   it 'fails if run in a deployed environment' do
-    allow(LoginGov::Hostdata).to receive(:in_datacenter?).and_return(true)
+    allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
 
     expect do
       described_class.new('fake-uuid', []).call
