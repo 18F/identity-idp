@@ -22,3 +22,6 @@ StrongMigrations.add_check do |method, (table, column, type, _options)|
     """
   end
 end
+
+# So we can run db:migrate during CI to verify migrations
+StrongMigrations.start_after = 20190126105161
