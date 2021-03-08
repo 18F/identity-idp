@@ -139,13 +139,10 @@ class SamlResponseDoc
   end
 
   def metadata_name_id_format(name)
-    name_id_format_regex = /^urn:oasis:names:tc:SAML:\d\.\d:nameid-format:#{name}$/
     metadata.xpath(
-      './ds:IDPSSODescriptor/ds:NameIDFormat',
+      "./ds:IDPSSODescriptor/ds:NameIDFormat[contains(text(), '#{name}')]",
       ds: Saml::XML::Namespaces::METADATA,
-    ).
-    map { |f| f.children[0].content }.
-    find { |f| f.match(name_id_format_regex) }
+    ).first.content
   end
 
   def signature_nodeset
