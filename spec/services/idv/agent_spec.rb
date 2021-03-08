@@ -110,6 +110,20 @@ describe Idv::Agent do
           timed_out: true,
         )
       end
+
+      it 'passes the right lexisnexis configs' do
+        expect(LambdaJobs::Runner).to receive(:new).and_wrap_original do |impl, args|
+          lexisnexis_config = args.dig(:in_process_config, :lexisnexis_config)
+          expect(lexisnexis_config).to include(:instant_verify_workflow)
+          expect(lexisnexis_config).to_not include(:phone_finder_workflow)
+
+          impl.call(args)
+        end
+
+        agent.proof_resolution(
+          document_capture_session, should_proof_state_id: true, trace_id: trace_id
+        )
+      end
     end
 
     describe '#proof_address' do
@@ -129,6 +143,18 @@ describe Idv::Agent do
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq false
+      end
+
+      it 'passes the right lexisnexis configs' do
+        expect(LambdaJobs::Runner).to receive(:new).and_wrap_original do |impl, args|
+          lexisnexis_config = args.dig(:in_process_config, :lexisnexis_config)
+          expect(lexisnexis_config).to_not include(:instant_verify_workflow)
+          expect(lexisnexis_config).to include(:phone_finder_workflow)
+
+          impl.call(args)
+        end
+
+        agent.proof_address(document_capture_session, trace_id: trace_id)
       end
     end
   end

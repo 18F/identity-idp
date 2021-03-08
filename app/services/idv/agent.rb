@@ -21,6 +21,15 @@ module Idv
             verification_request_timeout: AppConfig.env.aamva_verification_request_timeout,
             verification_url: AppConfig.env.aamva_verification_url,
           },
+          lexisnexis_config: {
+            instant_verify_workflow: AppConfig.env.lexisnexis_instant_verify_workflow,
+            account_id: AppConfig.env.lexisnexis_account_id,
+            base_url: AppConfig.env.lexisnexis_base_url,
+            username: AppConfig.env.lexisnexis_username,
+            password: AppConfig.env.lexisnexis_password,
+            request_mode: AppConfig.env.lexisnexis_request_mode,
+            request_timeout: AppConfig.env.lexisnexis_timeout,
+          },
         },
         args: {
           applicant_pii: @applicant,
@@ -44,6 +53,17 @@ module Idv
       LambdaJobs::Runner.new(
         job_class: Idv::Proofer.address_job_class,
         args: { applicant_pii: @applicant, callback_url: callback_url, trace_id: trace_id },
+        in_process_config: {
+          lexisnexis_config: {
+            phone_finder_workflow: AppConfig.env.lexisnexis_phone_finder_workflow,
+            account_id: AppConfig.env.lexisnexis_account_id,
+            base_url: AppConfig.env.lexisnexis_base_url,
+            username: AppConfig.env.lexisnexis_username,
+            password: AppConfig.env.lexisnexis_password,
+            request_mode: AppConfig.env.lexisnexis_request_mode,
+            request_timeout: AppConfig.env.lexisnexis_timeout,
+          },
+        },
       ).run do |idv_result|
         document_capture_session.store_proofing_result(idv_result[:address_result])
 
