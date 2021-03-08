@@ -1,10 +1,11 @@
 module LambdaJobs
   class Runner
-    attr_reader :job_class, :args
+    attr_reader :job_class, :args, :in_process_config
 
-    def initialize(job_class:, args:)
+    def initialize(job_class:, args:, in_process_config: {})
       @job_class = job_class
       @args = args
+      @in_process_config = in_process_config
     end
 
     def run(&local_callback)
@@ -17,7 +18,7 @@ module LambdaJobs
         )
       else
         job_class.handle(
-          event: args,
+          event: args.merge(in_process_config),
           context: nil,
           &local_callback
         )
