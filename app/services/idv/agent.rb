@@ -63,7 +63,7 @@ module Idv
             request_mode: AppConfig.env.lexisnexis_request_mode,
             request_timeout: AppConfig.env.lexisnexis_timeout,
           },
-        }
+        },
       ).run do |idv_result|
         document_capture_session.store_proofing_result(idv_result[:address_result])
 
