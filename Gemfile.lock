@@ -30,10 +30,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 849ead99e7bfc7ad510eea2dd3a8d295447db153
-  ref: 849ead99e7bfc7ad510eea2dd3a8d295447db153
+  revision: d2d0b4faafdd0bca20c3ebee5aa373499d1d2d1e
+  ref: d2d0b4faafdd0bca20c3ebee5aa373499d1d2d1e
   specs:
-    identity-idp-functions (0.12.0)
+    identity-idp-functions (0.13.0)
       aamva (>= 3.5.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
@@ -41,10 +41,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: 415a0e970b6ff1ab3262fb4874164c4dfd156120
-  tag: v2.7.0
+  revision: f67a52d691a773db03bf5dc054f82a1427bb8433
+  tag: v2.8.0
   specs:
-    lexisnexis (2.7.0)
+    lexisnexis (2.8.0)
       activesupport
       dotenv
       faraday
