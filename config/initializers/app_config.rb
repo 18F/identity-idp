@@ -38,7 +38,7 @@ AppConfig.require_keys(%w[
                          otp_valid_for
                          password_max_attempts
                          password_pepper
-                         RACK_TIMEOUT_SERVICE_TIMEOUT
+                         rack_timeout_service_timeout_seconds
                          reauthn_window
                          recovery_code_length
                          recurring_jobs_disabled_names

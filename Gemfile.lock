@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: dbf3d2e102603530a29cb43308b9aa639efaea1f
-  tag: v3.6.0
+  revision: bdb925440c64138acd54a1658e5cc92323734a77
+  tag: v4.0.0
   specs:
-    aamva (3.6.0)
+    aamva (4.0.0)
       dotenv
       faraday
       hashie
@@ -22,31 +22,31 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 0f8d4626709d6031acdfe0b024faefede928f8aa
-  tag: v1.0.1
+  revision: 8fa7ceeb9c5f8a5f3c4ceadba2c86a8a4f780f1f
+  tag: v2.0.0
   specs:
-    identity-hostdata (1.0.1)
+    identity-hostdata (2.0.0)
       aws-sdk-s3 (~> 1.8)
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 849ead99e7bfc7ad510eea2dd3a8d295447db153
-  ref: 849ead99e7bfc7ad510eea2dd3a8d295447db153
+  revision: 051a8c3dca143b215838176a07b1f0545ffec0a2
+  ref: 051a8c3dca143b215838176a07b1f0545ffec0a2
   specs:
-    identity-idp-functions (0.12.0)
-      aamva (>= 3.5.0)
+    identity-idp-functions (0.15.0)
+      aamva (>= 4.0.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
+      lexisnexis (>= 3.0.0)
       retries (>= 0.0.5)
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: 415a0e970b6ff1ab3262fb4874164c4dfd156120
-  tag: v2.7.0
+  revision: aa91ae06cb0ad0a810074eec5c7eba2762946d9b
+  tag: v3.0.0
   specs:
-    lexisnexis (2.7.0)
+    lexisnexis (3.0.0)
       activesupport
-      dotenv
       faraday
 
 GIT
@@ -74,10 +74,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 19c0c7ec6f4e7b0dd90e2cfb2d3da1225018f2b4
-  tag: 0.11.0.18f
+  revision: fd3861ebf9fd36d1092c73ffaca1e743950407ee
+  tag: 0.12.0.18f
   specs:
-    saml_idp (0.11.0.pre.18f)
+    saml_idp (0.12.0.pre.18f)
       activesupport
       builder
       httparty
@@ -419,7 +419,7 @@ GEM
     method_source (1.0.0)
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2020.1104)
+    mime-types-data (3.2021.0225)
     mimemagic (0.3.5)
     mini_histogram (0.3.1)
     mini_mime (1.0.2)

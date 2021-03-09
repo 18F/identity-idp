@@ -11,7 +11,7 @@ module Idv
       step_url: :idv_capture_doc_step_url,
       final_url: :root_url,
       flow: Idv::Flows::CaptureDocFlow,
-      analytics_id: Analytics::CAPTURE_DOC,
+      analytics_id: Analytics::DOC_AUTH,
     }.freeze
 
     private

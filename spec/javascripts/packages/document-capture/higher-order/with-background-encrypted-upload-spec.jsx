@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import sinon from 'sinon';
 import { UploadContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import withBackgroundEncryptedUpload, {
+  BackgroundEncryptedUploadError,
   blobToArrayBuffer,
   encrypt,
 } from '@18f/identity-document-capture/higher-order/with-background-encrypted-upload';
@@ -113,7 +114,9 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
     describe('upload', () => {
       async function renderWithResponse(response) {
         const addPageAction = sinon.spy();
+        const noticeError = sinon.spy();
         const onChange = sinon.spy();
+        const onError = sinon.spy();
         const key = await window.crypto.subtle.generateKey(
           {
             name: 'AES-GCM',
@@ -124,17 +127,17 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
         );
         sandbox.stub(window, 'fetch').callsFake(() => Promise.resolve(response));
         render(
-          <AnalyticsContext.Provider value={{ addPageAction }}>
+          <AnalyticsContext.Provider value={{ addPageAction, noticeError }}>
             <UploadContextProvider
               backgroundUploadURLs={{ foo: 'about:blank' }}
               backgroundUploadEncryptKey={key}
             >
-              <Component onChange={onChange} />)
+              <Component onChange={onChange} onError={onError} />)
             </UploadContextProvider>
           </AnalyticsContext.Provider>,
         );
 
-        return { onChange, addPageAction };
+        return { onChange, onError, addPageAction, noticeError };
       }
 
       context('success', () => {
@@ -167,14 +170,16 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           const { onChange, addPageAction } = await renderWithResponse(response);
 
           await onChange.getCall(0).args[0].foo_image_url;
-          expect(addPageAction.calledOnce).to.be.true();
-          expect(addPageAction.getCall(0).args).to.deep.equal([
-            {
-              key: 'documentCapture.asyncUpload',
-              label: 'IdV: document capture async upload submitted',
-              payload: { success: true, trace_id: null },
-            },
-          ]);
+          expect(addPageAction).to.have.been.calledTwice();
+          expect(addPageAction).to.have.been.calledWith({
+            label: 'IdV: document capture async upload encryption',
+            payload: { success: true },
+          });
+          expect(addPageAction).to.have.been.calledWith({
+            key: 'documentCapture.asyncUpload',
+            label: 'IdV: document capture async upload submitted',
+            payload: { success: true, trace_id: null, status_code: 200 },
+          });
         });
       });
 
@@ -182,10 +187,20 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
         /** @type {Response} */
         const response = {
           ok: false,
-          status: 400,
+          status: 403,
           headers: new window.Headers({
             'X-Amzn-Trace-Id': '1-67891233-abcdef012345678912345678',
           }),
+          text: Promise.resolve(
+            '<?xml version="1.0" encoding="UTF-8"?>\n' +
+              '<Error>' +
+              '<Code>InvalidAccessKeyId</Code>' +
+              '<Message>The AWS Access Key Id you provided does not exist in our records.</Message>' +
+              '<AWSAccessKeyId>...</AWSAccessKeyId>' +
+              '<RequestId>...</RequestId>' +
+              '<HostId>...</HostId>' +
+              '</Error>',
+          ),
         };
 
         it('throws on failed background upload', async () => {
@@ -198,22 +213,60 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           expect(patch.baz).to.equal('quux');
           expect(patch.foo_image_url).to.be.an.instanceOf(Promise);
           await patch.foo_image_url.catch((error) => {
-            expect(error.message).to.equal('Failed to upload image');
+            expect(error).to.be.instanceOf(BackgroundEncryptedUploadError);
           });
+        });
+
+        it('logs and throws on failed encryption', async () => {
+          const error = new Error();
+          window.crypto.subtle.encrypt.throws(error);
+          const { onChange, onError, addPageAction, noticeError } = await renderWithResponse(
+            response,
+          );
+
+          const patch = onChange.getCall(0).args[0];
+          await patch.foo_image_url.catch(() => {});
+          expect(onError).to.have.been.calledOnceWith(
+            'foo',
+            sinon.match.instanceOf(BackgroundEncryptedUploadError),
+          );
+          expect(addPageAction).to.have.been.calledWith({
+            label: 'IdV: document capture async upload encryption',
+            payload: { success: false },
+          });
+          expect(noticeError).to.have.been.calledWith(error);
+          expect(window.fetch).not.to.have.been.called();
+        });
+
+        it('calls onError', async () => {
+          const { onChange, onError } = await renderWithResponse(response);
+
+          const patch = onChange.getCall(0).args[0];
+          await patch.foo_image_url.catch(() => {});
+          expect(onError).to.have.been.calledOnceWith(
+            'foo',
+            sinon.match.instanceOf(BackgroundEncryptedUploadError),
+          );
         });
 
         it('logs result', async () => {
           const { onChange, addPageAction } = await renderWithResponse(response);
 
           await onChange.getCall(0).args[0].foo_image_url.catch(() => {});
-          expect(addPageAction.calledOnce).to.be.true();
-          expect(addPageAction.getCall(0).args).to.deep.equal([
-            {
-              key: 'documentCapture.asyncUpload',
-              label: 'IdV: document capture async upload submitted',
-              payload: { success: false, trace_id: '1-67891233-abcdef012345678912345678' },
+          expect(addPageAction).to.have.been.calledTwice();
+          expect(addPageAction).to.have.been.calledWith({
+            label: 'IdV: document capture async upload encryption',
+            payload: { success: true },
+          });
+          expect(addPageAction).to.have.been.calledWith({
+            key: 'documentCapture.asyncUpload',
+            label: 'IdV: document capture async upload submitted',
+            payload: {
+              success: false,
+              trace_id: '1-67891233-abcdef012345678912345678',
+              status_code: 403,
             },
-          ]);
+          });
         });
       });
     });

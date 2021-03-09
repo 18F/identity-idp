@@ -175,6 +175,19 @@ describe('document-capture/components/file-input', () => {
     );
   });
 
+  it('always emits a change event, regardless what the browser assumes is the current value', () => {
+    const onChange = sinon.spy();
+    const { rerender, getByLabelText } = render(<FileInput label="File" onChange={onChange} />);
+
+    const input = getByLabelText('File');
+    userEvent.upload(input, file);
+
+    rerender(<FileInput label="File" value={null} onChange={onChange} />);
+    userEvent.upload(input, file);
+
+    expect(onChange).to.have.been.calledTwice();
+  });
+
   it('renders a value preview for a data URL', async () => {
     const { container, findByRole, getByLabelText } = render(
       <FileInput

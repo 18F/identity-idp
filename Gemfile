@@ -22,7 +22,7 @@ gem 'foundation_emails'
 gem 'hiredis'
 gem 'http_accept_language'
 gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.4.1'
-gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v1.0.1'
+gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v2.0.0'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
@@ -42,7 +42,7 @@ gem 'proofer', github: '18F/identity-proofer-gem', ref: 'v2.8.0'
 gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
-gem 'rack-timeout'
+gem 'rack-timeout', require: false
 gem 'raise-if-root'
 gem 'readthis'
 gem 'recaptcha', require: 'recaptcha/rails'
@@ -52,7 +52,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.11.0.18f'
+gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.12.0.18f'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.3'
@@ -120,6 +120,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.6.0'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.7.0'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v4.0.0'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.0.0'
 end

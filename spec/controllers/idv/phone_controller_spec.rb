@@ -215,7 +215,13 @@ describe Idv::PhoneController do
         result = {
           success: true,
           errors: {},
-          vendor: { messages: [], context: context, exception: nil, timed_out: false },
+          vendor: {
+            messages: [],
+            context: context,
+            exception: nil,
+            timed_out: false,
+            transaction_id: 'address-mock-transaction-id-123',
+          },
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(
@@ -259,7 +265,13 @@ describe Idv::PhoneController do
           errors: {
             phone: ['The phone number could not be verified.'],
           },
-          vendor: { messages: [], context: context, exception: nil, timed_out: false },
+          vendor: {
+            messages: [],
+            context: context,
+            exception: nil,
+            timed_out: false,
+            transaction_id: 'address-mock-transaction-id-123',
+          },
         }
 
         expect(@analytics).to receive(:track_event).ordered.with(

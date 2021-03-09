@@ -23,10 +23,13 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = {
     host: AppConfig.env.domain_name,
-    protocol: 'http',
+    protocol: ENV['HTTPS'] == 'on' ? 'https' : 'http',
   }
   config.action_mailer.asset_host = AppConfig.env.mailer_domain_name
+  config.action_mailer.raise_delivery_errors = false
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
+
+  routes.default_url_options[:protocol] = 'https' if ENV['HTTPS'] == 'on'
 
   config.lograge.ignore_actions = ['Users::SessionsController#active']
 

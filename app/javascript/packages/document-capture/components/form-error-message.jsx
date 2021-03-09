@@ -1,4 +1,5 @@
 import { UploadFormEntryError } from '../services/upload';
+import { BackgroundEncryptedUploadError } from '../higher-order/with-background-encrypted-upload';
 import useI18n from '../hooks/use-i18n';
 
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -26,6 +27,10 @@ function FormErrorMessage({ error }) {
 
   if (error instanceof UploadFormEntryError) {
     return <>{error.message}</>;
+  }
+
+  if (error instanceof BackgroundEncryptedUploadError) {
+    return <>{t('errors.doc_auth.upload_error')}</>;
   }
 
   return null;

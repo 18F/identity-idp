@@ -9,18 +9,9 @@ class ValidateAddNullConstraintToAgenciesAbbreviation < ActiveRecord::Migration[
 
       # following guidance from strong_migration
       execute 'ALTER TABLE "agencies" VALIDATE CONSTRAINT "agencies_abbreviation_null"'
-
-      change_column_null :agencies, :abbreviation, false
-
-      execute 'ALTER TABLE "agencies" DROP CONSTRAINT "agencies_abbreviation_null"'
     end
   end
 
   def down
-    safety_assured do
-      execute 'ALTER TABLE "agencies" ADD CONSTRAINT "agencies_abbreviation_null" CHECK ("abbreviation" IS NOT NULL) NOT VALID'
-
-      change_column_null :agencies, :abbreviation, true
-    end
   end
 end

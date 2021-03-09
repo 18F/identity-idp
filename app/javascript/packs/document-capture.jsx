@@ -16,6 +16,7 @@ import { isCameraCapableMobile } from '@18f/identity-device';
  * @typedef NewRelicAgent
  *
  * @prop {(name:string,attributes:object)=>void} addPageAction Log page action to New Relic.
+ * @prop {(error:Error)=>void} noticeError Log an error without affecting application behavior.
  */
 
 /**
@@ -109,6 +110,10 @@ function addPageAction(action) {
   });
 }
 
+/** @type {import('@18f/identity-document-capture/context/analytics').NoticeError} */
+const noticeError = (error) =>
+  /** @type {DocumentCaptureGlobal} */ (window).newrelic?.noticeError(error);
+
 loadPolyfills(['fetch', 'crypto']).then(async () => {
   const backgroundUploadURLs = getBackgroundUploadURLs();
   const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
@@ -159,7 +164,7 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
         >
           <I18nContext.Provider value={i18n.strings}>
             <ServiceProviderContext.Provider value={getServiceProvider()}>
-              <AnalyticsContext.Provider value={{ addPageAction }}>
+              <AnalyticsContext.Provider value={{ addPageAction, noticeError }}>
                 <AssetContext.Provider value={assets}>
                   <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
                 </AssetContext.Provider>

@@ -8,6 +8,7 @@ import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
+import useIfStillMounted from '../hooks/use-if-still-mounted';
 
 /**
  * @typedef FormStepError
@@ -27,15 +28,15 @@ import useDidUpdateEffect from '../hooks/use-did-update-effect';
 /**
  * @typedef FormStepComponentProps
  *
- * @prop {(nextValues:Partial<V>)=>void} onChange Values change callback, merged with
- * existing values.
+ * @prop {(nextValues:Partial<V>)=>void} onChange Update values, merging with existing values.
+ * @prop {(field:string, error:Error)=>void} onError Trigger a field error.
  * @prop {Partial<V>} value Current values.
  * @prop {FormStepError<V>[]} errors Current active errors.
  * @prop {(
  *   field:string,
  *   options?:Partial<FormStepRegisterFieldOptions>
- * )=>undefined|import('react').RefCallback<HTMLElement>} registerField Registers field
- * by given name, returning ref assignment function.
+ * )=>undefined|import('react').RefCallback<HTMLElement>} registerField Registers field by given
+ * name, returning ref assignment function.
  *
  * @template V
  */
@@ -118,6 +119,7 @@ function FormSteps({
   const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
+  const ifStillMounted = useIfStillMounted();
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
       getFieldActiveErrorFieldElement(activeErrors, fields.current)?.focus();
@@ -226,12 +228,15 @@ function FormSteps({
         key={name}
         value={values}
         errors={activeErrors}
-        onChange={(nextValuesPatch) => {
+        onChange={ifStillMounted((nextValuesPatch) => {
           setActiveErrors((prevActiveErrors) =>
             prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),
           );
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
-        }}
+        })}
+        onError={ifStillMounted((field, error) => {
+          setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
+        })}
         registerField={(field, options = {}) => {
           if (!fields.current[field]) {
             fields.current[field] = {

@@ -43,9 +43,10 @@ ActiveRecord::Schema.define(version: 2021_03_03_182041) do
 
   create_table "agencies", force: :cascade do |t|
     t.string "name", null: false
-    t.string "abbreviation", null: false
+    t.string "abbreviation"
     t.index ["abbreviation"], name: "index_agencies_on_abbreviation", unique: true
     t.index ["name"], name: "index_agencies_on_name", unique: true
+    t.check_constraint "abbreviation IS NOT NULL", name: "agencies_abbreviation_null"
   end
 
   create_table "agency_identities", force: :cascade do |t|

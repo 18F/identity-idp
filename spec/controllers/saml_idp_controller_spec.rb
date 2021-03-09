@@ -61,6 +61,12 @@ describe SamlIdpController do
       expect(xmldoc.metadata_nodeset.length).to eq(1)
     end
 
+    it 'contains the correct NameID formats' do
+      # matching the spec, section 8.3
+      expect(name_id_version(xmldoc.metadata_name_id_format('emailAddress'))).to eq('1.1')
+      expect(name_id_version(xmldoc.metadata_name_id_format('persistent'))).to eq('2.0')
+    end
+
     it 'contains a signature nodeset' do
       expect(xmldoc.signature_nodeset.length).to eq(1)
     end
@@ -101,6 +107,11 @@ describe SamlIdpController do
 
     it 'disables caching' do
       expect(response.headers['Pragma']).to eq 'no-cache'
+    end
+
+    def name_id_version(format_urn)
+      m = /^urn:oasis:names:tc:SAML:(?<version>\d\.\d):nameid-format:\w+$/.match(format_urn)
+      m[:version]
     end
   end
 
@@ -495,7 +506,7 @@ describe SamlIdpController do
 
           it 'has a format attribute defining the NameID to be email' do
             expect(name_id.attributes['Format'].value).
-              to eq('urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress')
+              to eq(Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL)
           end
 
           it 'has NameID value of the email address of the user making the AuthN Request' do
