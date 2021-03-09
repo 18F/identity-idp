@@ -97,6 +97,7 @@ otps_per_ip_track_only_mode: 'true'
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 password_max_attempts: '3'
 personal_key_retired: 'true'
+phone_format_e164_opt_out_list: '[]'
 pii_lock_timeout_in_minutes: '30'
 pinpoint_sms_application_id:
 pinpoint_sms_credential_role_arn:
