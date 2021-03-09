@@ -2,15 +2,15 @@ class AppArtifacts
   class MissingArtifactError < StandardError; end
 
   class << self
-    attr_reader :config
+    attr_reader :store
   end
 
   def self.setup(&block)
-    @config = Config.new.build(&block)
+    @store = Store.new.build(&block)
   end
 
   # Intermediate class used to build a Struct for config via DSL
-  class Config
+  class Store
     attr_reader :artifacts
 
     # @yieldparam [Store] store
