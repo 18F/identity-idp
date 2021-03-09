@@ -1,4 +1,4 @@
-require_relative '../../lib/app_artifacts'
+require 'app_artifacts'
 
 AppArtifacts.setup do |store|
   store.add_artifact(:saml_2019_cert, '/%<env>s/saml2019.crt')
