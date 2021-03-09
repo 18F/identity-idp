@@ -40,7 +40,8 @@ describe AppArtifacts::Store do
       it 'reads the artifact from the example folder' do
         store.add_artifact('test_artifact', '/%<env>s/saml2021.crt')
 
-        contents = File.read(Rails.root.join('config', 'artifacts.example', 'local', 'saml2021.crt'))
+        file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2021.crt')
+        contents = File.read(file_path)
         expect(store.test_artifact).to eq(contents)
         expect(store['test_artifact']).to eq(contents)
       end
