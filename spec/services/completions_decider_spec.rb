@@ -91,5 +91,16 @@ describe CompletionsDecider do
         expect(decider.go_back_to_mobile_app?).to eq false
       end
     end
+
+    context 'request url is nil' do
+      it 'returns false' do
+        decider = CompletionsDecider.new(
+          user_agent: mobile_user_agent,
+          request_url: nil,
+        )
+
+        expect(decider.go_back_to_mobile_app?).to eq false
+      end
+    end
   end
 end
