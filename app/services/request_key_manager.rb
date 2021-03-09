@@ -6,10 +6,10 @@ class RequestKeyManager
   private_class_method :read_key_file
 
   cattr_accessor :public_key do
-    read_key_file('oidc.pub')
+    OpenSSL::PKey::RSA.new(AppArtifacts.store.oidc_public_key)
   end
 
   cattr_accessor :private_key do
-    read_key_file('oidc.key')
+    OpenSSL::PKey::RSA.new(AppArtifacts.store.oidc_private_key)
   end
 end
