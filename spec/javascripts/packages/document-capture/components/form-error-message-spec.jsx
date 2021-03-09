@@ -1,10 +1,22 @@
 import FormErrorMessage, {
   RequiredValueMissingError,
+  intersperse,
 } from '@18f/identity-document-capture/components/form-error-message';
 import { UploadFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/form-error-message', () => {
+  describe('intersperse', () => {
+    it('returns an interspersed array', () => {
+      const original = ['a', 'b', 'c'];
+      const result = intersperse(original, true);
+
+      const expected = ['a', true, 'b', true, 'c'];
+      expect(expected).to.not.equal(original);
+      expect(result).to.deep.equal(expected);
+    });
+  });
+
   it('returns formatted RequiredValueMissingError', () => {
     const { getByText } = render(<FormErrorMessage error={new RequiredValueMissingError()} />);
 
