@@ -5,38 +5,34 @@ class AppArtifacts
     attr_reader :store
   end
 
-  def self.setup
-    @store ||= Store.new
-    yield store if block_given?
+  def self.setup(&block)
+    @store = Store.new.build(&block)
   end
 
+  # Intermediate class used to build a Struct for config via DSL
   class Store
     attr_reader :artifacts
 
-    delegate :[], to: :artifacts
-
-    def initialize
+    # @yieldparam [Store] store
+    # @return [Struct] an instance of a struct, the propertes are defined by the block
+    def build(&block)
       @artifacts = {}
+
+      yield self
+
+      Struct.new(*@artifacts.keys, keyword_init: true).new(**@artifacts)
     end
 
+    # @param [Symbol] name
+    # @param [String] path
     def add_artifact(name, path)
       value = read_artifact(path)
       raise MissingArtifactError.new("missing artifact: #{path}") if value.nil?
-      artifacts[name.to_s] = value
+      @artifacts[name] = value
+      nil
     end
 
     private
-
-    def method_missing(method_name, *_args)
-      key = method_name.to_s
-      return super unless artifacts.key?(key)
-      artifacts[key]
-    end
-
-    def respond_to_missing?(method_name, _include_private = nil)
-      return super unless artifacts.key?(method_name.to_s)
-      true
-    end
 
     def read_artifact(path)
       if Identity::Hostdata.in_datacenter?
