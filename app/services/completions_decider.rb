@@ -5,7 +5,7 @@ class CompletionsDecider
   end
 
   def go_back_to_mobile_app?
-    return false if redirect_uri.blank?
+    return false if request_url.blank? || redirect_uri.blank?
     desktop_and_app_redirect_uri?
   end
 
