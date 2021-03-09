@@ -11,6 +11,19 @@ import useI18n from '../hooks/use-i18n';
  */
 
 /**
+ * Given an array, returns a copy of the array with joiner entry inserted between each item.
+ *
+ * @template I
+ * @template J
+ *
+ * @param {Array<I>} arr Original array.
+ * @param {J} joiner Joiner item to insert.
+ *
+ * @return {Array<I|J>} Interspersed array.
+ */
+export const intersperse = (arr, joiner) => arr.flatMap((item) => [item, joiner]).slice(0, -1);
+
+/**
  * An error representing a state where a required form value is missing.
  */
 export class RequiredValueMissingError extends Error {}
@@ -30,7 +43,12 @@ function FormErrorMessage({ error }) {
   }
 
   if (error instanceof BackgroundEncryptedUploadError) {
-    return <>{t('errors.doc_auth.upload_error')}</>;
+    return (
+      <>
+        {t('errors.doc_auth.upload_error')}{' '}
+        {intersperse(t('errors.messages.try_again').split(' '), <>&nbsp;</>)}
+      </>
+    );
   }
 
   return null;

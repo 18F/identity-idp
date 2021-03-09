@@ -58,6 +58,7 @@
 - errors.doc_auth.photo_glare
 - errors.doc_auth.upload_error
 - errors.file_input.invalid_type
+- errors.messages.try_again
 - forms.buttons.continue
 - forms.buttons.submit.default
 - forms.file_input.file_updated
