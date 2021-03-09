@@ -74,6 +74,8 @@ class AttributeAsserter
       getter = ascii? ? attribute_getter_function_ascii(attr) : attribute_getter_function(attr)
       if attr == :phone && !phone_format_opt_out.include?(service_provider.issuer)
         getter = wrap_with_phone_formatter(getter)
+      elsif attr == :zipcode
+        getter = wrap_with_zipcode_formatter(getter)
       end
       attrs[attr] = { getter: getter }
     end
@@ -89,6 +91,12 @@ class AttributeAsserter
       else
         result
       end
+    end
+  end
+
+  def wrap_with_zipcode_formatter(getter)
+    proc do |principal|
+      getter.call(principal)&.slice(0, 5)
     end
   end
 

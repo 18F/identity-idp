@@ -75,15 +75,19 @@ class OpenidConnectUserInfoPresenter
       street_address: street_address,
       locality: stringify_attr(ial2_data.city),
       region: stringify_attr(ial2_data.state),
-      postal_code: stringify_attr(ial2_data.zipcode),
+      postal_code: postal_code,
     }
   end
 
   def formatted_address
     [
       street_address,
-      "#{ial2_data.city}, #{ial2_data.state} #{ial2_data.zipcode}",
+      "#{ial2_data.city}, #{ial2_data.state} #{postal_code}",
     ].compact.join("\n")
+  end
+
+  def postal_code
+    stringify_attr(ial2_data.zipcode)&.slice(0, 5)
   end
 
   def street_address

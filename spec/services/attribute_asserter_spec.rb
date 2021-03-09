@@ -52,6 +52,7 @@ describe AttributeAsserter do
     Pii::Attributes.new_from_hash(
       first_name: 'Jåné',
       phone: '1 (888) 867-5309',
+      zipcode: '12345-1234',
     )
   end
   let(:phone_format_e164_opt_out_list) { '[]' }
@@ -105,6 +106,19 @@ describe AttributeAsserter do
         it 'gets UUID (MBUN) from Service Provider' do
           uuid_getter = user.asserted_attributes[:uuid][:getter]
           expect(uuid_getter.call(user)).to eq user.last_identity.uuid
+        end
+      end
+
+      context 'custom bundle includes zipcode' do
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w[zipcode])
+          subject.build
+        end
+
+        it 'formats zipcode as 5 digits' do
+          expect(user.asserted_attributes[:zipcode][:getter].call(user)).to eq '12345'
         end
       end
 
