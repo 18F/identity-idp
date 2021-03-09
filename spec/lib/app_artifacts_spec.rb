@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe AppArtifacts::Store do
-  subject(:store) { AppArtifacts::Store.new }
+describe AppArtifacts::Config do
+  subject(:instance) { AppArtifacts::Config.new }
 
   describe '#add_artifact' do
     context 'when in a deployed environment' do
@@ -17,10 +17,12 @@ describe AppArtifacts::Store do
           '/%<env>s/test_artifact',
         ).and_return('test artifact')
 
-        store.add_artifact('test_artifact', '/%<env>s/test_artifact')
+        config = instance.build do |config|
+          config.add_artifact(:test_artifact, '/%<env>s/test_artifact')
+        end
 
-        expect(store.test_artifact).to eq('test artifact')
-        expect(store['test_artifact']).to eq('test artifact')
+        expect(config.test_artifact).to eq('test artifact')
+        expect(config['test_artifact']).to eq('test artifact')
       end
 
       it 'raises an error if an artifact is missing' do
@@ -29,7 +31,9 @@ describe AppArtifacts::Store do
         ).and_return(nil)
 
         expect do
-          store.add_artifact('test_artifact', '/%<env>s/test_artifact')
+          instance.build do |config|
+            config.add_artifact(:test_artifact, '/%<env>s/test_artifact')
+          end
         end.to raise_error(
           AppArtifacts::MissingArtifactError, 'missing artifact: /%<env>s/test_artifact'
         )
@@ -38,17 +42,21 @@ describe AppArtifacts::Store do
 
     context 'when running locally' do
       it 'reads the artifact from the example folder' do
-        store.add_artifact('test_artifact', '/%<env>s/saml2021.crt')
+        config = instance.build do |config|
+          config.add_artifact(:test_artifact, '/%<env>s/saml2021.crt')
+        end
 
         file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2021.crt')
         contents = File.read(file_path)
-        expect(store.test_artifact).to eq(contents)
-        expect(store['test_artifact']).to eq(contents)
+        expect(config.test_artifact).to eq(contents)
+        expect(config['test_artifact']).to eq(contents)
       end
 
       it 'raises an error if an artifact is missing' do
         expect do
-          store.add_artifact('test_artifact', '/%<env>s/dne.txt')
+          instance.build do |config|
+            config.add_artifact(:test_artifact, '/%<env>s/dne.txt')
+          end
         end.to raise_error(
           AppArtifacts::MissingArtifactError, 'missing artifact: /%<env>s/dne.txt'
         )
@@ -57,11 +65,13 @@ describe AppArtifacts::Store do
   end
 
   describe '#method_missing' do
-    it 'runs methods based on the stored artifact keys' do
-      store.add_artifact('test_artifact', '/%<env>s/saml2021.crt')
+    it 'runs methods based on the configd artifact keys' do
+      config = instance.build do |config|
+        config.add_artifact(:test_artifact, '/%<env>s/saml2021.crt')
+      end
 
-      expect { store.test_artifact }.to_not raise_error
-      expect { store.test_dne }.to raise_error(NoMethodError)
+      expect { config.test_artifact }.to_not raise_error
+      expect { config.test_dne }.to raise_error(NoMethodError)
     end
   end
 end
