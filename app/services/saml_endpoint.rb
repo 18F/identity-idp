@@ -14,8 +14,12 @@ class SamlEndpoint
   end
 
   def secret_key
-    key_contents = AppArtifacts.store.dig("saml_#{suffix}_key")
-    raise "No SAML private key for suffix #{suffix}" if key_contents.blank?
+    key_contents = begin
+      AppArtifacts.store["saml_#{suffix}_key"]
+    rescue NameError
+      raise "No SAML private key for suffix #{suffix}" if key_contents.blank?
+    end
+
     OpenSSL::PKey::RSA.new(
       key_contents,
       endpoint_config[:secret_key_passphrase],
@@ -23,11 +27,9 @@ class SamlEndpoint
   end
 
   def x509_certificate
-    @x509_certification ||= begin
-      cert_contents = AppArtifacts.store.dig("saml_#{suffix}_cert")
-      raise "No SAML certificate for suffix #{suffix}" if cert_contents.blank?
-      cert_contents
-    end
+    AppArtifacts.store["saml_#{suffix}_cert"]
+  rescue NameError
+    raise "No SAML certificate for suffix #{suffix}" if cert_contents.blank?
   end
 
   def saml_metadata
