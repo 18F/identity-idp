@@ -30,7 +30,13 @@ function FormErrorMessage({ error }) {
   }
 
   if (error instanceof BackgroundEncryptedUploadError) {
-    return <>{t('errors.doc_auth.upload_error')}</>;
+    return (
+      <>
+        {t('errors.doc_auth.upload_error')}
+        <br />
+        {t('errors.messages.try_again')}
+      </>
+    );
   }
 
   return null;

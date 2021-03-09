@@ -64,8 +64,7 @@ es:
         Intente tomar una nueva foto.
       send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en 10 minutos.
         También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
-      upload_error: Lo siento, algo salió mal por nuestra parte. Por favor, inténtelo
-        de nuevo.
+      upload_error: Lo siento, algo salió mal por nuestra parte.
     file_input:
       invalid_type: Este tipo de archivo no es aceptado, inténtalo de nuevo.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
@@ -105,6 +104,7 @@ es:
         la opción de llamada telefónica a continuación o use su clave personal.
       pwned_password: La contraseña que ingresaste no es segura. Está en una lista
         de contraseñas conocidas expuestas en violaciones de datos.
+      try_again: Por favor, inténtelo de nuevo.
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_nameid_format: Formato de ID de nombre no autorizado
       unauthorized_service_provider: Proveedor de servicio no autorizado

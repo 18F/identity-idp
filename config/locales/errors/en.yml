@@ -63,7 +63,7 @@ en:
         Try taking a new picture.
       send_link_throttle: You tried too many times, please try again in 10 minutes.
         You can also click on Start Over and choose to use your computer instead.
-      upload_error: Sorry, something went wrong on our end. Please try again.
+      upload_error: Sorry, something went wrong on our end.
     file_input:
       invalid_type: This file type is not accepted, please try again.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
@@ -102,6 +102,7 @@ en:
         the phone call option below, or use your personal key.
       pwned_password: The password you entered is not safe. It's in a list of known
         passwords exposed in data breaches.
+      try_again: Please try again.
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_nameid_format: Unauthorized nameID format
       unauthorized_service_provider: Unauthorized Service Provider

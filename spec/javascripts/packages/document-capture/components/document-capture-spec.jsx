@@ -547,7 +547,9 @@ describe('document-capture/components/document-capture', () => {
         const alerts = await findAllByRole('alert');
         expect(alerts).to.have.lengthOf(2);
         expect(alerts[0].textContent).to.equal('errors.doc_auth.acuant_network_error');
-        expect(alerts[1].textContent).to.equal('errors.doc_auth.upload_error');
+        expect(alerts[1].innerHTML).to.equal(
+          'errors.doc_auth.upload_error<br>errors.messages.try_again',
+        );
 
         const input = await getByLabelText('doc_auth.headings.document_capture_front');
         expect(input.closest('.usa-file-input--has-value')).to.be.null();
