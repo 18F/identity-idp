@@ -57,7 +57,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    @saml_test_idp_cert ||= File.read(Rails.root.join('certs', 'saml2021.crt'))
+    AppArtifacts.store.saml_2021_cert
   end
 
   def saml_test_sp_cert
