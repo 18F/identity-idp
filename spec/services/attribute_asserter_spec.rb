@@ -48,7 +48,12 @@ describe AttributeAsserter do
   let(:ial1_aal3_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial1_aal3_authn_request)
   end
-  let(:decrypted_pii) { Pii::Attributes.new_from_hash(first_name: 'Jåné') }
+  let(:decrypted_pii) do
+    Pii::Attributes.new_from_hash(
+      first_name: 'Jåné',
+      phone: '1 (888) 867-5309',
+    )
+  end
 
   describe '#build' do
     context 'verified user and IAL2 request' do
@@ -78,6 +83,10 @@ describe AttributeAsserter do
 
         it 'creates getter function' do
           expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jåné'
+        end
+
+        it 'formats the phone number as e164' do
+          expect(user.asserted_attributes[:phone][:getter].call(user)).to eq '+18888675309'
         end
 
         it 'gets UUID (MBUN) from Service Provider' do

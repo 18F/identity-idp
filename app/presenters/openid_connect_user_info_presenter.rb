@@ -36,7 +36,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_attributes
-    phone = stringify_attr(ial2_data.phone)
+    phone = Phonelib.parse(ial2_data.phone).e164 if ial2_data.phone.present?
 
     {
       given_name: stringify_attr(ial2_data.first_name),

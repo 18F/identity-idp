@@ -70,9 +70,22 @@ class AttributeAsserter
     bundle.each do |attr|
       next unless VALID_ATTRIBUTES.include? attr
       getter = ascii? ? attribute_getter_function_ascii(attr) : attribute_getter_function(attr)
+      getter = wrap_with_phone_formatter(getter) if attr == :phone
       attrs[attr] = { getter: getter }
     end
     add_verified_at(attrs)
+  end
+
+  def wrap_with_phone_formatter(getter)
+    proc do |principal|
+      result = getter.call(principal)
+
+      if result.present?
+        Phonelib.parse(result).e164
+      else
+        result
+      end
+    end
   end
 
   def add_verified_at(attrs)
