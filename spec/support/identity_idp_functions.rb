@@ -1,9 +1,6 @@
 require 'identity-idp-functions'
-require 'identity-idp-functions/proof_address'
 require 'identity-idp-functions/proof_address_mock'
-require 'identity-idp-functions/proof_document'
 require 'identity-idp-functions/proof_document_mock'
-require 'identity-idp-functions/proof_resolution'
 require 'identity-idp-functions/proof_resolution_mock'
 
 module IdentityIdpFunctions
