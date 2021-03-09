@@ -90,8 +90,9 @@ module Deploy
     end
 
     def download_application_yml_from_s3
-      Identity::Hostdata.s3(logger: logger, s3_client: s3_client).download_configs(
-        '/%<env>s/idp/v1/application.yml' => env_yaml_path,
+      app_secrets_s3.download_file(
+        s3_path: '/%<env>s/idp/v1/application.yml',
+        local_path: env_yaml_path,
       )
     end
 
@@ -109,15 +110,18 @@ module Deploy
     end
 
     def download_file(src, dest)
-      ec2_region = ec2_data.region
+      secrets_s3.download_file(
+        s3_path: src,
+        local_path: dest,
+      )
+    end
 
-      Identity::Hostdata::S3.new(
-        bucket: "login-gov.secrets.#{ec2_data.account_id}-#{ec2_region}",
-        env: nil,
-        region: ec2_region,
-        logger: logger,
-        s3_client: s3_client,
-      ).download_configs(src => dest)
+    def app_secrets_s3
+      @app_secrets_s3 ||= Identity::Hostdata.app_secrets_s3(s3_client: s3_client, logger: logger)
+    end
+
+    def secrets_s3
+      @secrets_s3 ||= Identity::Hostdata.secrets_s3(s3_client: s3_client, logger: logger)
     end
 
     def ec2_data
