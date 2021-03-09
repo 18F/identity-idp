@@ -36,8 +36,6 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_attributes
-    phone = stringify_attr(ial2_data.phone)
-
     {
       given_name: stringify_attr(ial2_data.first_name),
       family_name: stringify_attr(ial2_data.last_name),
@@ -55,6 +53,18 @@ class OpenidConnectUserInfoPresenter
       x509_issuer: stringify_attr(x509_data.issuer),
       x509_presented: x509_data.presented,
     }
+  end
+
+  def phone
+    return if ial2_data.phone.blank?
+
+    opt_out_list = JSON.parse(AppConfig.env.phone_format_e164_opt_out_list || '[]')
+
+    if opt_out_list.include?(identity.service_provider)
+      ial2_data.phone
+    else
+      Phonelib.parse(ial2_data.phone).e164
+    end
   end
 
   def address

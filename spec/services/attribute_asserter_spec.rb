@@ -48,7 +48,17 @@ describe AttributeAsserter do
   let(:ial1_aal3_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_ial1_aal3_authn_request)
   end
-  let(:decrypted_pii) { Pii::Attributes.new_from_hash(first_name: 'Jåné') }
+  let(:decrypted_pii) do
+    Pii::Attributes.new_from_hash(
+      first_name: 'Jåné',
+      phone: '1 (888) 867-5309',
+    )
+  end
+  let(:phone_format_e164_opt_out_list) { '[]' }
+  before do
+    allow(AppConfig.env).to receive(:phone_format_e164_opt_out_list).
+      and_return(phone_format_e164_opt_out_list)
+  end
 
   describe '#build' do
     context 'verified user and IAL2 request' do
@@ -78,6 +88,18 @@ describe AttributeAsserter do
 
         it 'creates getter function' do
           expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jåné'
+        end
+
+        it 'formats the phone number as e164' do
+          expect(user.asserted_attributes[:phone][:getter].call(user)).to eq '+18888675309'
+        end
+
+        context 'when the service provider is in the e164 opt-out list' do
+          let(:phone_format_e164_opt_out_list) { [service_provider.issuer].to_json }
+
+          it 'leaves the phone format as-is' do
+            expect(user.asserted_attributes[:phone][:getter].call(user)).to eq '1 (888) 867-5309'
+          end
         end
 
         it 'gets UUID (MBUN) from Service Provider' do
