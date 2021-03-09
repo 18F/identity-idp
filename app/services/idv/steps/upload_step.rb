@@ -28,7 +28,7 @@ module Idv
       end
 
       def identity
-        current_user&.identities&.order('created_at DESC')&.first&.decorate
+        current_user&.identities&.order('created_at DESC')&.first
       end
 
       def link
