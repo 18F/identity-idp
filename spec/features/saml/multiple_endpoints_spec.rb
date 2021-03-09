@@ -19,8 +19,7 @@ describe 'multiple saml endpoints' do
   end
 
   let(:endpoint_cert) do
-    file = File.read(Rails.root.join('tmp', 'artifacts', "saml#{endpoint_suffix}.crt"))
-    OpenSSL::X509::Certificate.new(file)
+    OpenSSL::X509::Certificate.new(AppArtifacts.store["saml_#{endpoint_suffix}_cert"])
   end
 
   let(:endpoint_authn_request) { auth_request.create(endpoint_saml_settings) }

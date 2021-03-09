@@ -14,22 +14,19 @@ class SamlEndpoint
   end
 
   def secret_key
-    filepath = Rails.root.join('tmp', 'artifacts', "saml#{suffix}.key.enc")
-    raise "No private key at path #{filepath}" unless File.exist?(filepath)
+    key_contents = AppArtifacts.store["saml_#{suffix}_key"]
+    raise "No SAML private key for suffix #{suffix}" if key_contents.blank?
     OpenSSL::PKey::RSA.new(
-      File.read(filepath),
+      key_contents,
       endpoint_config[:secret_key_passphrase],
     )
   end
 
   def x509_certificate
     @x509_certification ||= begin
-      filepath = Rails.root.join(
-        'tmp',
-        'artifacts',
-        "saml#{suffix}.crt",
-      )
-      File.read(filepath)
+      cert_contents = AppArtifacts.store["saml_#{suffix}_cert"]
+      raise "No SAML certificate for suffix #{suffix}" if cert_contents.blank?
+      cert_contents
     end
   end
 

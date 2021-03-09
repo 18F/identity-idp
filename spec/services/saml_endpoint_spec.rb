@@ -36,7 +36,7 @@ describe SamlEndpoint do
         subject.secret_key.to_pem,
       ).to eq(
         OpenSSL::PKey::RSA.new(
-          File.read('tmp/artifacts/saml2021.key.enc'),
+          AppArtifacts.store.saml_2021_key,
           'trust-but-verify',
         ).to_pem,
       )
@@ -55,7 +55,7 @@ describe SamlEndpoint do
 
       it 'raises an error' do
         expect { subject.secret_key }.to raise_error(
-          "No private key at path #{Rails.root.join('tmp', 'artifacts', 'saml_dne.key.enc')}",
+          'No SAML private key for suffix _dne',
         )
       end
     end
@@ -66,7 +66,7 @@ describe SamlEndpoint do
       expect(
         subject.x509_certificate,
       ).to eq(
-        File.read('tmp/artifacts/saml2021.crt'),
+        AppArtifacts.store.saml_2021_cert,
       )
     end
   end
