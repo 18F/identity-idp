@@ -96,7 +96,7 @@ class AttributeAsserter
 
   def wrap_with_zipcode_formatter(getter)
     proc do |principal|
-      getter.call(principal)&.slice(0, 5)
+      getter.call(principal)&.strip&.slice(0, 5)
     end
   end
 

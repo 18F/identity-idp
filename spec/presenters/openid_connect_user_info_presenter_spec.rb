@@ -93,7 +93,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           address2: 'Apt 456',
           city: 'Washington',
           state: 'DC',
-          zipcode: '12345-1234',
+          zipcode: '  12345-1234',
           phone: '1 (703) 555-5555',
           ssn: '666661234',
         }

@@ -87,7 +87,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def postal_code
-    stringify_attr(ial2_data.zipcode)&.slice(0, 5)
+    stringify_attr(ial2_data.zipcode)&.strip&.slice(0, 5)
   end
 
   def street_address

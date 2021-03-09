@@ -52,7 +52,7 @@ describe AttributeAsserter do
     Pii::Attributes.new_from_hash(
       first_name: 'Jåné',
       phone: '1 (888) 867-5309',
-      zipcode: '12345-1234',
+      zipcode: '  12345-1234',
     )
   end
   let(:phone_format_e164_opt_out_list) { '[]' }
