@@ -24,12 +24,21 @@ module Deploy
       clone_idp_config
       setup_idp_config_symlinks
 
-      download_application_yml_from_s3
+      app_secrets_s3.download_file(
+        s3_path: '/%<env>s/idp/v1/application.yml',
+        local_path: env_yaml_path,
+      )
       deep_merge_s3_data_with_example_application_yml
       set_proper_file_permissions_for_application_yml
 
-      download_from_s3_and_update_permissions('/common/GeoIP2-City.mmdb', geolocation_db_path)
-      download_from_s3_and_update_permissions('/common/pwned-passwords.txt', pwned_passwords_path)
+      secrets_s3.download_file(
+        s3_path: '/common/GeoIP2-City.mmdb',
+        local_path: geolocation_db_path,
+      )
+      secrets_s3.download_file(
+        s3_path: '/common/pwned-passwords.txt',
+        local_path: pwned_passwords_path,
+      )
     end
 
     private
@@ -89,13 +98,6 @@ module Deploy
       File.symlink(dest, link)
     end
 
-    def download_application_yml_from_s3
-      app_secrets_s3.download_file(
-        s3_path: '/%<env>s/idp/v1/application.yml',
-        local_path: env_yaml_path,
-      )
-    end
-
     def deep_merge_s3_data_with_example_application_yml
       File.open(result_yaml_path, 'w') { |file| file.puts YAML.dump(application_config) }
     end
@@ -107,13 +109,6 @@ module Deploy
     def download_from_s3_and_update_permissions(src, dest)
       download_file(src, dest)
       update_file_permissions(dest)
-    end
-
-    def download_file(src, dest)
-      secrets_s3.download_file(
-        s3_path: src,
-        local_path: dest,
-      )
     end
 
     def app_secrets_s3
