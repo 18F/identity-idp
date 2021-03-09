@@ -17,12 +17,12 @@ describe AppArtifacts::Store do
           '/%<env>s/test_artifact',
         ).and_return('test artifact')
 
-        config = instance.build do |store|
+        store = instance.build do |store|
           store.add_artifact(:test_artifact, '/%<env>s/test_artifact')
         end
 
-        expect(config.test_artifact).to eq('test artifact')
-        expect(config['test_artifact']).to eq('test artifact')
+        expect(store.test_artifact).to eq('test artifact')
+        expect(store['test_artifact']).to eq('test artifact')
       end
 
       it 'raises an error if an artifact is missing' do
@@ -42,14 +42,14 @@ describe AppArtifacts::Store do
 
     context 'when running locally' do
       it 'reads the artifact from the example folder' do
-        config = instance.build do |store|
+        store = instance.build do |store|
           store.add_artifact(:test_artifact, '/%<env>s/saml2021.crt')
         end
 
         file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2021.crt')
         contents = File.read(file_path)
-        expect(config.test_artifact).to eq(contents)
-        expect(config['test_artifact']).to eq(contents)
+        expect(store.test_artifact).to eq(contents)
+        expect(store['test_artifact']).to eq(contents)
       end
 
       it 'raises an error if an artifact is missing' do
@@ -66,12 +66,12 @@ describe AppArtifacts::Store do
 
   describe '#method_missing' do
     it 'runs methods based on the configd artifact keys' do
-      config = instance.build do |store|
+      store = instance.build do |store|
         store.add_artifact(:test_artifact, '/%<env>s/saml2021.crt')
       end
 
-      expect { config.test_artifact }.to_not raise_error
-      expect { config.test_dne }.to raise_error(NoMethodError)
+      expect { store.test_artifact }.to_not raise_error
+      expect { store.test_dne }.to raise_error(NoMethodError)
     end
   end
 end
