@@ -13,10 +13,13 @@ import useI18n from '../hooks/use-i18n';
 /**
  * Given an array, returns a copy of the array with joiner entry inserted between each item.
  *
- * @param {array} arr Original array.
- * @param {any} joiner Joiner item to insert.
+ * @template I
+ * @template J
  *
- * @return {array} Interspersed array.
+ * @param {Array<I>} arr Original array.
+ * @param {J} joiner Joiner item to insert.
+ *
+ * @return {Array<I|J>} Interspersed array.
  */
 export const intersperse = (arr, joiner) => arr.flatMap((item) => [item, joiner]).slice(0, -1);
 
