@@ -62,6 +62,19 @@ describe AppArtifacts::Store do
         )
       end
     end
+
+    it 'allows a block to be used to transform values' do
+      store = instance.build do |store|
+        store.add_artifact(:test_artifact, '/%<env>s/saml2021.crt') do |cert|
+          OpenSSL::X509::Certificate.new(cert)
+        end
+      end
+
+      file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2021.crt')
+      contents = File.read(file_path)
+      expect(store.test_artifact).to be_a(OpenSSL::X509::Certificate)
+      expect(store.test_artifact.to_pem).to eq(contents)
+    end
   end
 
   describe '#method_missing' do
