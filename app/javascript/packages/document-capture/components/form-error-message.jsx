@@ -11,17 +11,12 @@ import useI18n from '../hooks/use-i18n';
  */
 
 /**
- * Given an array, returns a copy of the array with joiner entry inserted between each item.
+ * Non-breaking space (`&nbsp;`) represented as unicode escape sequence, which React will more
+ * happily tolerate than an HTML entity.
  *
- * @template I
- * @template J
- *
- * @param {Array<I>} arr Original array.
- * @param {J} joiner Joiner item to insert.
- *
- * @return {Array<I|J>} Interspersed array.
+ * @type {string}
  */
-export const intersperse = (arr, joiner) => arr.flatMap((item) => [item, joiner]).slice(0, -1);
+const NBSP_UNICODE = '\u00A0';
 
 /**
  * An error representing a state where a required form value is missing.
@@ -46,7 +41,7 @@ function FormErrorMessage({ error }) {
     return (
       <>
         {t('errors.doc_auth.upload_error')}{' '}
-        {intersperse(t('errors.messages.try_again').split(' '), <>&nbsp;</>)}
+        {t('errors.messages.try_again').split(' ').join(NBSP_UNICODE)}
       </>
     );
   }
