@@ -69,10 +69,10 @@ describe PhoneNumberCapabilities do
       expect(locality).to eq('Bermuda')
     end
 
-    context 'phonelib returns nil' do
-      it 'returns nil' do
+    context 'phonelib returns default country' do
+      it 'returns the default country' do
         locality = PhoneNumberCapabilities.new('703-555-1212').unsupported_location
-        expect(locality).to be_nil
+        expect(locality).to eq('United States')
       end
     end
   end

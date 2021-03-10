@@ -38,7 +38,6 @@ class PhoneNumberCapabilities
   end
 
   def parsed_phone
-    blank_default_country = '' # override Phonelib.default_country so it doesn't default to US
-    Phonelib.parse(phone, blank_default_country)
+    Phonelib.parse(phone)
   end
 end
