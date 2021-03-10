@@ -16,4 +16,19 @@ feature 'doc auth cancel doc capture action' do
 
     expect(page).to have_current_path(root_path)
   end
+
+  it 'allows the user to restart the hybrid session and cancel again' do
+    expect(page).to have_current_path(idv_capture_doc_document_capture_step)
+
+    click_on t('links.cancel')
+
+    expect(page).to have_current_path(root_path)
+
+    visit idv_capture_doc_document_capture_step
+    expect(page).to have_current_path(idv_capture_doc_document_capture_step)
+
+    click_on t('links.cancel')
+
+    expect(page).to have_current_path(root_path)
+  end
 end
