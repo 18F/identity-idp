@@ -94,7 +94,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           city: 'Washington',
           state: 'DC',
           zipcode: '  12345-1234',
-          phone: '1 (703) 555-5555',
+          phone: '(703) 555-5555',
           ssn: '666661234',
         }
       end
@@ -136,7 +136,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             let(:phone_format_e164_opt_out_list) { [service_provider.issuer].to_json }
 
             it 'leaves the phone format as-is' do
-              expect(user_info[:phone]).to eq('1 (703) 555-5555')
+              expect(user_info[:phone]).to eq('(703) 555-5555')
             end
           end
         end
