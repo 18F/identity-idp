@@ -1,6 +1,0 @@
-{
-  "LivenessResult": null,
-  "Error": "Face is too small. Move the camera closer to the face and retake the picture.",
-  "ErrorCode": "FaceTooSmall",
-  "TransactionId": "d506bbcb-82cb-4e52-a489-f9a29a88184b"
-}

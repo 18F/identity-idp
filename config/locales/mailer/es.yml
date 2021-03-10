@@ -1,9 +1,0 @@
----
-es:
-  mailer:
-    about: Sobre %{app}
-    email_reuse_notice:
-      subject: Este email ya está asociado a una cuenta.
-    help: Si necesita ayuda, visite %{link}
-    no_reply: Por favor, no responda a este mensaje.
-    privacy_policy: Póliza de privacidad

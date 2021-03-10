@@ -1,9 +1,0 @@
-<% title t('titles.doc_auth.verify') %>
-
-<%= image_tag(asset_url('state-id-confirm@3x.png'), width: 210) %>
-
-<h1 class='h3 margin-bottom-2 margin-top-4 margin-y-0'>
-  <%= t('doc_auth.instructions.email_sent', email: current_user.email) %>
-</h1>
-
-<%= render 'idv/doc_auth/start_over_or_cancel' %>

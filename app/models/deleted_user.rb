@@ -1,2 +1,0 @@
-class DeletedUser < ApplicationRecord
-end

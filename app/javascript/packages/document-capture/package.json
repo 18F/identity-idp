@@ -1,9 +1,0 @@
-{
-  "name": "@18f/identity-document-capture",
-  "private": true,
-  "version": "1.0.0",
-  "dependencies": {
-    "focus-trap": "^6.2.3",
-    "react": "^17.0.1"
-  }
-}
