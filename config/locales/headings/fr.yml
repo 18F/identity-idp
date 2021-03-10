@@ -56,7 +56,6 @@ fr:
         à deux facteurs pour pouvoir l'utiliser pour vous connecter.
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte
       success: Vous avez correctement configuré PIV/CAC en tant que méthode d’authentification.
-      temporary_error: Nous rencontrons des difficultés techniques avec votre PIV/CAC
     piv_cac_setup:
       already_associated: La carte PIV/CAC que vous avez présentée est associée à
         un autre utilisateur.
