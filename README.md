@@ -4,7 +4,7 @@ Login.gov Identity Provider (IdP)
 [![Build Status](https://circleci.com/gh/18F/identity-idp.svg?style=svg)](https://circleci.com/gh/18F/identity-idp)
 [![Code Climate](https://api.codeclimate.com/v1/badges/e78d453f7cbcac64a664/maintainability)](https://codeclimate.com/github/18F/identity-idp/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/e78d453f7cbcac64a664/test_coverage)](https://codeclimate.com/github/18F/identity-idp/test_coverage)
-[![security](https://hakiri.io/github/18F/identity-idp/master.svg)](https://hakiri.io/github/18F/identity-idp/master)
+[![security](https://hakiri.io/github/18F/identity-idp/main.svg)](https://hakiri.io/github/18F/identity-idp/main)
 
 Login.gov is the public's one account for government. Use one account and password for secure, private access to participating government agencies.
 
@@ -59,7 +59,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   ```
 
   This command copies sample configuration files, installs required gems
-  and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/master/Makefile
+  and sets up the database. Check out our Makefile commands to learn more about what this command does: https://github.com/18F/identity-idp/blob/main/Makefile
 
 5. Now that you have you have everything installed, you can run the following command to start your local server:
 
@@ -89,7 +89,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
   $ make fast_test
   ```
 
-  Check out our Makefile commands learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/master/Makefile#L41
+  Check out our Makefile commands learn more about how you can customize this command to run specific tests using rspec: https://github.com/18F/identity-idp/blob/main/Makefile#L41
 
 ##### Showing the Browser
 
