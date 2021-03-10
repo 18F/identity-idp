@@ -2,10 +2,7 @@ module Idv
   module Steps
     class LinkSentStep < DocAuthBaseStep
       def call
-        if document_capture_session&.cancelled_at
-          mark_step_incomplete(:send_link)
-          return render_document_capture_cancelled
-        end
+        return render_document_capture_cancelled if document_capture_session&.cancelled_at
         return render_step_incomplete_error unless take_photo_with_phone_successful?
 
         # The doc capture flow will have fetched the results already. We need
