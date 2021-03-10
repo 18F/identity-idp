@@ -36,7 +36,7 @@ RSpec.describe PushNotification::HttpPush do
 
           payload, headers = JWT.decode(
             request.body,
-            RequestKeyManager.public_key,
+            AppArtifacts.store.oidc_public_key,
             true,
             algorithm: 'RS256',
           )
@@ -63,7 +63,7 @@ RSpec.describe PushNotification::HttpPush do
           with do |request|
             payload, _headers = JWT.decode(
               request.body,
-              RequestKeyManager.public_key,
+              AppArtifacts.store.oidc_public_key,
               true,
               algorithm: 'RS256',
             )

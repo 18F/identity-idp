@@ -12,7 +12,7 @@ class IdTokenBuilder
   end
 
   def id_token
-    JWT.encode(jwt_payload, RequestKeyManager.private_key, 'RS256')
+    JWT.encode(jwt_payload, AppArtifacts.store.oidc_private_key, 'RS256')
   end
 
   private
