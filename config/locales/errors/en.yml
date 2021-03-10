@@ -25,6 +25,8 @@ en:
       capture_failure: Camera failed to start, please try again.
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
+      document_capture_cancelled: You have cancelled uploading photos of your ID on
+        your phone.
       document_capture_info_html: |-
         <div class="bold">Please check that:</div>
         <ul>

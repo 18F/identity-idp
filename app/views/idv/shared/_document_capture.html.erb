@@ -142,7 +142,17 @@
 
   <p class='margin-top-4 margin-bottom-0'><%= t('doc_auth.info.document_capture_upload_image') %></p>
 </div>
-<%= render 'idv/doc_auth/start_over_or_cancel' %>
+
+<%= render 'idv/doc_auth/start_over' %>
+<% if session['idv/capture_doc'] %>
+  <div class='margin-top-2 padding-top-1 border-top'>
+    <%= button_to(cancel_link_text, idv_capture_doc_step_url(step: :cancel), method: :put,
+                  class: 'btn btn-link') %>
+  </div>
+<% else %>
+  <%= render 'shared/cancel', link: idv_cancel_path %>
+<% end %>
+
 <%= nonced_javascript_tag do %>
   <% asset_keys = [
     'close-white-alt.svg',

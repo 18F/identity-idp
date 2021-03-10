@@ -25,6 +25,8 @@ es:
       capture_failure: La cámara no se pudo iniciar. Vuelve a intentarlo.
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
         y luego haga clic en continuar.
+      document_capture_cancelled: Ha cancelado la carga de fotos de su identificación
+        en su teléfono.
       document_capture_info_html: |-
         <div class="bold">Por favor verifique que:</div>
         <ul>

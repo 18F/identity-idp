@@ -48,6 +48,20 @@ describe Idv::CaptureDocStatusController do
       end
     end
 
+    context 'when the user cancelled document capture on their phone' do
+      before do
+        document_capture_session.cancelled_at = Time.zone.now
+        document_capture_session.save!
+      end
+
+      it 'returns cancelled' do
+        get :show
+
+        expect(response.status).to eq(200)
+        expect(response.body).to eq('Cancelled')
+      end
+    end
+
     context 'when result is pending' do
       it 'returns pending result' do
         get :show
