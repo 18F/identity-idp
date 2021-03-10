@@ -10,13 +10,6 @@ const selectedInternationCodeOption = () => {
   return /** @type {HTMLOptionElement} */ (dropdown.item(dropdown.selectedIndex));
 };
 
-const unsupportedInternationalPhoneOTPDeliveryWarningMessage = () => {
-  const selectedOption = selectedInternationCodeOption();
-  if (selectedOption.dataset.smsOnly === 'true') {
-  }
-  return null;
-};
-
 const setRadioEnabled = (radio, isEnabled) => {
   radio.disabled = !isEnabled;
 
@@ -27,7 +20,7 @@ const setRadioEnabled = (radio, isEnabled) => {
   } else {
     label.classList.add('btn-disabled');
   }
-}
+};
 
 const updateOTPDeliveryMethods = () => {
   const phoneRadio = document.querySelector(
@@ -41,9 +34,9 @@ const updateOTPDeliveryMethods = () => {
     return;
   }
 
-  const deliveryMethodHint = /** @type {HTMLElement} */ (
-    document.querySelector('#otp_delivery_preference_instruction')
-  );
+  const deliveryMethodHint = /** @type {HTMLElement} */ (document.querySelector(
+    '#otp_delivery_preference_instruction',
+  ));
   const selectedOption = selectedInternationCodeOption();
 
   const supportsSms = selectedOption.dataset.supportsSms === 'true';
