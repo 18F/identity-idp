@@ -1,7 +1,6 @@
 require 'app_artifacts'
 
 AppArtifacts.setup do |store|
-  # SAML keys and certs
   store.add_artifact(:saml_2019_cert, '/%<env>s/saml2019.crt')
   store.add_artifact(:saml_2019_key, '/%<env>s/saml2019.key.enc')
   store.add_artifact(:saml_2020_cert, '/%<env>s/saml2020.crt')
@@ -9,7 +8,6 @@ AppArtifacts.setup do |store|
   store.add_artifact(:saml_2021_cert, '/%<env>s/saml2021.crt')
   store.add_artifact(:saml_2021_key, '/%<env>s/saml2021.key.enc')
 
-  # OIDC keys
   store.add_artifact(:oidc_private_key, '/%<env>s/oidc.key')
   store.add_artifact(:oidc_public_key, '/%<env>s/oidc.pub')
 end
