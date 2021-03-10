@@ -3,6 +3,7 @@ development:
 production:
   agent_enabled: true
   app_name: <%= Identity::Hostdata.env %>.<%= Identity::Hostdata.domain %>
+  host: 'gov-collector.newrelic.com'
   audit_log:
     enabled: false
   browser_monitoring:
@@ -10,8 +11,8 @@ production:
   capture_params:
   developer_mode:
   error_collector:
-    capture_source: true
     enabled: true
+    capture_source: true
     ignore_errors: "ActionController::RoutingError,ActionController::BadRequest"
   license_key: <%= AppConfig.env.newrelic_license_key %>
   log_level: info
