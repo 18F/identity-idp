@@ -53,6 +53,9 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(true);
   }
 
+  /**
+   * @param {{ isCancelled: boolean }} params
+   */
   async onComplete({ isCancelled }) {
     const event = `IdV: Link sent capture doc polling ${isCancelled ? 'cancelled' : 'complete'}`;
     await this.trackEvent(event);
