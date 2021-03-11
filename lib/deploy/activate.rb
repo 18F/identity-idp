@@ -74,6 +74,7 @@ module Deploy
       end
 
       # Service provider public keys
+      FileUtils.mkdir_p(File.join(root, 'certs'))
       symlink_verbose(
         File.join(root, idp_config_checkout_name, 'certs/sp'),
         File.join(root, 'certs/sp'),
