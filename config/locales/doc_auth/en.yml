@@ -22,6 +22,7 @@ en:
           taking a new picture.
         birth_date_checks: We couldn’t read the birth date on your ID. Try taking
           new pictures.
+        birth_date_min_age: Your birth date does not meet the minimum age requirement.
         control_number_check: We couldn't read the reference number on the back of
           your ID. Try taking a new picture.
         doc_crosscheck: We couldn’t recognize your ID. It may be worn or damaged,
