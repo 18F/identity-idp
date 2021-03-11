@@ -1,3 +1,5 @@
+require 'aws-xray-sdk'
+
 pattern =
   ':client_class :http_response_status_code :time :retries :operation [:error_class :error_message]'
 log_formatter = Aws::Log::Formatter.new(pattern)
@@ -11,3 +13,11 @@ Aws.config.update(
   logger: ActiveSupport::Logger.new(Rails.root.join('log', 'production.log')),
   log_formatter: log_formatter,
 )
+
+
+config = {
+  name: 'mhenke-idp',
+  patch: %I[net_http aws_sdk]
+}
+
+XRay.recorder.configure(config)
