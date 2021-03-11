@@ -45,7 +45,7 @@ module Idv
     end
 
     def dob_meets_min_age?
-      age(dob) >= AppConfig.env.idv_min_age.to_i
+      age(dob) >= AppConfig.env.idv_min_age_years.to_i
     end
 
     def state_valid?
