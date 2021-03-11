@@ -266,7 +266,7 @@ describe Idv::DocAuthController do
       {
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name,
-        dob: Time.zone.today.to_s,
+        dob: (Time.zone.today - (AppConfig.env.idv_min_age.to_i + 1).years).to_s,
         address1: Faker::Address.street_address,
         city: Faker::Address.city,
         state: Faker::Address.state_abbr,
