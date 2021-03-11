@@ -1,4 +1,4 @@
-import { trackEvent } from '@18f/identity-analytics';
+import { trackEvent as defaultTrackEvent } from '@18f/identity-analytics';
 
 export const DOC_CAPTURE_TIMEOUT = 1000 * 60 * 25; // 25 minutes
 export const DOC_CAPTURE_POLL_INTERVAL = 5000;
@@ -15,21 +15,29 @@ export const POLL_ENDPOINT = '/verify/doc_auth/link_sent/poll';
  */
 
 /**
+ * @typedef DocumentCapturePollingOptions
+ *
+ * @prop {DocumentCapturePollingElements} elements
+ * @prop {typeof defaultTrackEvent=} trackEvent
+ */
+
+/**
  * Manages polling requests for document capture hybrid flow.
  */
 export class DocumentCapturePolling {
   pollAttempts = 0;
 
   /**
-   * @param {DocumentCapturePollingElements} elements
+   * @param {DocumentCapturePollingOptions} options
    */
-  constructor(elements) {
+  constructor({ elements, trackEvent = defaultTrackEvent }) {
     this.elements = elements;
+    this.trackEvent = trackEvent;
   }
 
   bind() {
     this.toggleFormVisible(false);
-    trackEvent('IdV: Link sent capture doc polling started');
+    this.trackEvent('IdV: Link sent capture doc polling started');
     this.schedulePoll();
   }
 
@@ -45,8 +53,9 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(true);
   }
 
-  async onComplete() {
-    await trackEvent('IdV: Link sent capture doc polling complete');
+  async onComplete({ isCancelled }) {
+    const event = `IdV: Link sent capture doc polling ${isCancelled ? 'cancelled' : 'complete'}`;
+    await this.trackEvent(event);
     this.elements.form.submit();
   }
 
@@ -64,7 +73,8 @@ export class DocumentCapturePolling {
 
     switch (response.status) {
       case 200:
-        this.onComplete();
+      case 410:
+        this.onComplete({ isCancelled: response.status === 410 });
         break;
 
       default:

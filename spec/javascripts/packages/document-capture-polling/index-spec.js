@@ -5,11 +5,13 @@ import {
   DOC_CAPTURE_POLL_INTERVAL,
   POLL_ENDPOINT,
 } from '@18f/identity-document-capture-polling';
-import { LOGGER_ENDPOINT } from '@18f/identity-analytics';
 import { useSandbox } from '../../support/sinon';
 
 describe('DocumentCapturePolling', () => {
   const sandbox = useSandbox({ useFakeTimers: true });
+  const trackEvent = sandbox.spy();
+
+  let subject;
 
   /**
    * Returns a promise which resolves once promises have been flushed. By spec, a promise will
@@ -26,59 +28,67 @@ describe('DocumentCapturePolling', () => {
       <p id="doc_capture_continue_instructions">Instructions</p>
       <form class="doc_capture_continue_button_form"><button>Submit</button></form>
     `;
+
+    subject = new DocumentCapturePolling({
+      elements: {
+        form: /** @type {HTMLFormElement} */ (document.querySelector(
+          '.doc_capture_continue_button_form',
+        )),
+        instructions: /** @type {HTMLParagraphElement} */ (document.querySelector(
+          '#doc_capture_continue_instructions',
+        )),
+      },
+      trackEvent,
+    });
+    subject.bind();
   });
 
-  const getInstance = () =>
-    new DocumentCapturePolling({
-      form: /** @type {HTMLFormElement} */ (document.querySelector(
-        '.doc_capture_continue_button_form',
-      )),
-      instructions: /** @type {HTMLParagraphElement} */ (document.querySelector(
-        '#doc_capture_continue_instructions',
-      )),
-    });
-
   it('hides form and instructions', () => {
-    getInstance().bind();
     expect(screen.getByText('Instructions').closest('.display-none')).to.be.ok();
     expect(screen.getByText('Submit').closest('.display-none')).to.be.ok();
   });
 
   it('polls', async () => {
     sandbox.stub(window, 'fetch').withArgs(POLL_ENDPOINT).resolves({ status: 202 });
-    getInstance().bind();
+
+    sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
+    expect(window.fetch).to.have.been.calledOnce();
 
     await flushPromises();
-    expect(window.fetch).to.have.been.calledOnceWith(LOGGER_ENDPOINT);
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
     expect(window.fetch).to.have.been.calledTwice();
-    expect(window.fetch.getCall(1).args[0]).to.equal(POLL_ENDPOINT);
 
-    await flushPromises();
-
-    sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
-    expect(window.fetch).to.have.been.calledThrice();
-    expect(window.fetch.getCall(2).args[0]).to.equal(POLL_ENDPOINT);
+    expect(trackEvent).to.have.been.calledOnceWith('IdV: Link sent capture doc polling started');
   });
 
   it('submits when done', async () => {
-    const instance = getInstance();
-    sandbox.stub(instance.elements.form, 'submit');
-    sandbox.stub(window, 'fetch');
-    window.fetch.withArgs(POLL_ENDPOINT).resolves({ status: 200 });
-    window.fetch.withArgs(LOGGER_ENDPOINT).resolves({ status: 200 });
-    instance.bind();
+    sandbox.stub(subject.elements.form, 'submit');
+    sandbox.stub(window, 'fetch').withArgs(POLL_ENDPOINT).resolves({ status: 200 });
+    subject.bind();
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
     await flushPromises();
 
-    expect(instance.elements.form.submit).to.have.been.called();
+    expect(subject.elements.form.submit).to.have.been.called();
+    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
+    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete');
+  });
+
+  it('submits when cancelled', async () => {
+    sandbox.stub(subject.elements.form, 'submit');
+    sandbox.stub(window, 'fetch').withArgs(POLL_ENDPOINT).resolves({ status: 410 });
+
+    sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
+    await flushPromises();
+
+    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
+    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling cancelled');
+    expect(subject.elements.form.submit).to.have.been.called();
   });
 
   it('polls until max, then showing instructions to submit', async () => {
     sandbox.stub(window, 'fetch').withArgs(POLL_ENDPOINT).resolves({ status: 202 });
-    getInstance().bind();
 
     for (let i = MAX_DOC_CAPTURE_POLL_ATTEMPTS; i; i--) {
       sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
