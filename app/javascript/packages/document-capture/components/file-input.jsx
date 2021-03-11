@@ -1,4 +1,12 @@
-import { useContext, useState, useMemo, forwardRef } from 'react';
+import {
+  useContext,
+  useState,
+  useMemo,
+  useEffect,
+  forwardRef,
+  useRef,
+  useImperativeHandle,
+} from 'react';
 import FileImage from './file-image';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
@@ -103,6 +111,8 @@ const FileInput = forwardRef((props, ref) => {
     onChange = () => {},
     onError = () => {},
   } = props;
+  const isResettingValue = useRef(false);
+  const inputRef = useRef(/** @type {HTMLInputElement?} */ (null));
   const { t, formatHTML } = useI18n();
   const instanceId = useInstanceId();
   const { isMobile } = useContext(DeviceContext);
@@ -113,6 +123,22 @@ const FileInput = forwardRef((props, ref) => {
   ]);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {string?} */ (null));
   useMemo(() => setOwnErrorMessage(null), [value]);
+  useImperativeHandle(ref, () => inputRef.current);
+  useEffect(() => {
+    // This is not a controlled component in the sense that the value is reflected onto the input
+    // element. Clear any DOM value that happens to be set, so that the browser doesn't suppress a
+    // change event based on what it assumes the current value to be.
+    //
+    // "In React, an <input type="file" /> is always an uncontrolled component because its value can
+    // only be set by a user, and not programmatically."
+    //
+    // See: https://reactjs.org/docs/uncontrolled-components.html#the-file-input-tag
+    if (inputRef.current && inputRef.current.files?.length) {
+      isResettingValue.current = true;
+      inputRef.current.value = '';
+      isResettingValue.current = false;
+    }
+  }, [value]);
   const inputId = `file-input-${instanceId}`;
   const hintId = `${inputId}-hint`;
 
@@ -123,6 +149,18 @@ const FileInput = forwardRef((props, ref) => {
    * @param {import('react').ChangeEvent<HTMLInputElement>} event Change event.
    */
   function onChangeIfValid(event) {
+    // It should not be expected to need to consider the value reset, since the HTML specification
+    // dictates that programmatic updates to values are excluded from event emissions. Alas, IE11
+    // _does_ emit a change event when assigning or resetting the value of a file input.
+    //
+    // "These events are not fired in response to changes made to the values of form controls by
+    // scripts."
+    //
+    // See: https://html.spec.whatwg.org/multipage/input.html
+    if (isResettingValue.current) {
+      return;
+    }
+
     const file = /** @type {FileList} */ (event.target.files)[0];
     if (file) {
       if (isValidForAccepts(file.type, accept)) {
@@ -232,7 +270,7 @@ const FileInput = forwardRef((props, ref) => {
           )}
           <div className="usa-file-input__box" />
           <input
-            ref={ref}
+            ref={inputRef}
             id={inputId}
             className="usa-file-input__input"
             type="file"

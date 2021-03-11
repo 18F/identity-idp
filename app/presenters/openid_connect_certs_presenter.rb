@@ -8,6 +8,6 @@ class OpenidConnectCertsPresenter
   private
 
   def keys
-    [RequestKeyManager.public_key]
+    [AppArtifacts.store.oidc_public_key]
   end
 end

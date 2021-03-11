@@ -105,7 +105,7 @@ RSpec.describe OpenidConnectLogoutForm do
 
       context 'with a payload that does not correspond to an identity' do
         let(:id_token_hint) do
-          JWT.encode({ sub: '123', aud: '456' }, RequestKeyManager.private_key, 'RS256')
+          JWT.encode({ sub: '123', aud: '456' }, AppArtifacts.store.oidc_private_key, 'RS256')
         end
 
         it 'is not valid' do

@@ -36,8 +36,6 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_attributes
-    phone = stringify_attr(ial2_data.phone)
-
     {
       given_name: stringify_attr(ial2_data.first_name),
       family_name: stringify_attr(ial2_data.last_name),
@@ -57,6 +55,18 @@ class OpenidConnectUserInfoPresenter
     }
   end
 
+  def phone
+    return if ial2_data.phone.blank?
+
+    opt_out_list = JSON.parse(AppConfig.env.phone_format_e164_opt_out_list || '[]')
+
+    if opt_out_list.include?(identity.service_provider)
+      ial2_data.phone
+    else
+      Phonelib.parse(ial2_data.phone).e164
+    end
+  end
+
   def address
     return nil if ial2_data.address1.blank?
 
@@ -65,15 +75,19 @@ class OpenidConnectUserInfoPresenter
       street_address: street_address,
       locality: stringify_attr(ial2_data.city),
       region: stringify_attr(ial2_data.state),
-      postal_code: stringify_attr(ial2_data.zipcode),
+      postal_code: postal_code,
     }
   end
 
   def formatted_address
     [
       street_address,
-      "#{ial2_data.city}, #{ial2_data.state} #{ial2_data.zipcode}",
+      "#{ial2_data.city}, #{ial2_data.state} #{postal_code}",
     ].compact.join("\n")
+  end
+
+  def postal_code
+    stringify_attr(ial2_data.zipcode)&.strip&.slice(0, 5)
   end
 
   def street_address

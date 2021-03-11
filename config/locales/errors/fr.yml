@@ -25,6 +25,8 @@ fr:
       capture_failure: L'appareil photo n'a pas pu démarrer, veuillez réessayer.
       consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
+      document_capture_cancelled: Vous avez annulé le téléchargement des photos de
+        votre pièce d'identité sur votre téléphone.
       document_capture_info_html: |-
         <div class="bold">Veuillez vérifier que:</div>
         <ul>
@@ -66,6 +68,7 @@ fr:
       send_link_throttle: Vous avez essayé plusieurs fois, essayez à nouveau dans
         10 minutes. Vous pouvez également cliquer sur recommencer et choisir d'utiliser
         votre ordinateur.
+      upload_error: Désolé, quelque chose a mal tourné de notre côté.
     file_input:
       invalid_type: Ce type de fichier n'est pas accepté, veuillez réessayer.
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
@@ -110,6 +113,7 @@ fr:
         ou utilisez votre clé personnelle.
       pwned_password: Le mot de passe que vous avez entré n'est pas sécurisé. C'est
         dans une liste de mots de passe connus exposés dans les violations de données.
+      try_again: Veuillez réessayer.
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_nameid_format: Format non autorisé du nom d'identification
       unauthorized_service_provider: Fournisseur de service non autorisé

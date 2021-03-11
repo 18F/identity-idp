@@ -200,7 +200,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
     expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(xmldoc.uuid)
     expect(current_url).to eq @saml_authn_request
-    expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
+    expect(xmldoc.phone_number.children.children.to_s).to eq(Phonelib.parse(profile_phone).e164)
   end
 
   def client_private_key

@@ -67,12 +67,37 @@ class AttributeAsserter
   end
 
   def add_bundle(attrs)
+    phone_format_opt_out = JSON.parse(AppConfig.env.phone_format_e164_opt_out_list || '[]')
+
     bundle.each do |attr|
       next unless VALID_ATTRIBUTES.include? attr
       getter = ascii? ? attribute_getter_function_ascii(attr) : attribute_getter_function(attr)
+      if attr == :phone && !phone_format_opt_out.include?(service_provider.issuer)
+        getter = wrap_with_phone_formatter(getter)
+      elsif attr == :zipcode
+        getter = wrap_with_zipcode_formatter(getter)
+      end
       attrs[attr] = { getter: getter }
     end
     add_verified_at(attrs)
+  end
+
+  def wrap_with_phone_formatter(getter)
+    proc do |principal|
+      result = getter.call(principal)
+
+      if result.present?
+        Phonelib.parse(result).e164
+      else
+        result
+      end
+    end
+  end
+
+  def wrap_with_zipcode_formatter(getter)
+    proc do |principal|
+      getter.call(principal)&.strip&.slice(0, 5)
+    end
   end
 
   def add_verified_at(attrs)

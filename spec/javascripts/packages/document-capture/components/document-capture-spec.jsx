@@ -475,4 +475,93 @@ describe('document-capture/components/document-capture', () => {
 
     expect(onStepChange.callCount).to.equal(1);
   });
+
+  describe('pending promise values', () => {
+    let completeUploadAsSuccess;
+    let completeUploadAsFailure;
+    let renderResult;
+    let upload;
+    let submit;
+
+    beforeEach(async () => {
+      sandbox.stub(window, 'fetch');
+      window.fetch.withArgs('about:blank#front').returns(
+        new Promise((resolve, reject) => {
+          completeUploadAsSuccess = () => resolve({ ok: true, headers: new window.Headers() });
+          completeUploadAsFailure = () => reject(new Error());
+        }),
+      );
+      window.fetch
+        .withArgs('about:blank#back')
+        .resolves({ ok: true, headers: new window.Headers() });
+      upload = sinon.stub().resolves({ success: true, isPending: false });
+      const key = await window.crypto.subtle.generateKey(
+        {
+          name: 'AES-GCM',
+          length: 256,
+        },
+        true,
+        ['encrypt', 'decrypt'],
+      );
+      renderResult = render(
+        <UploadContextProvider
+          endpoint="about:blank#upload"
+          backgroundUploadURLs={{
+            front: 'about:blank#front',
+            back: 'about:blank#back',
+          }}
+          backgroundUploadEncryptKey={key}
+          upload={upload}
+        >
+          <ServiceProviderContext.Provider value={{ isLivenessRequired: false }}>
+            <AcuantContextProvider sdkSrc="about:blank">
+              <DocumentCapture />
+            </AcuantContextProvider>
+          </ServiceProviderContext.Provider>
+        </UploadContextProvider>,
+      );
+      const { getByLabelText, getByText } = renderResult;
+
+      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
+      userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+      submit = () => userEvent.click(getByText('forms.buttons.submit.default'));
+    });
+
+    context('success', () => {
+      it('calls to upload once pending values resolve', async () => {
+        submit();
+        expect(upload).not.to.have.been.called();
+        completeUploadAsSuccess();
+        await new Promise((resolve) => onSubmit.callsFake(resolve));
+        expect(upload).to.have.been.calledOnce();
+      });
+    });
+
+    context('failure', () => {
+      it('shows an error screen once pending values reject', async () => {
+        submit();
+        expect(upload).not.to.have.been.called();
+        completeUploadAsFailure();
+        const { findAllByRole, getByLabelText } = renderResult;
+
+        const alerts = await findAllByRole('alert');
+        expect(alerts).to.have.lengthOf(2);
+        expect(alerts[0].textContent).to.equal('errors.doc_auth.acuant_network_error');
+        expect(alerts[1].textContent).to.equal(
+          'errors.doc_auth.upload_error errors.messages.try_again',
+        );
+
+        const input = await getByLabelText('doc_auth.headings.document_capture_front');
+        expect(input.closest('.usa-file-input--has-value')).to.be.null();
+
+        expect(console).to.have.loggedError(/PromiseRejectionHandledWarning/);
+        expect(console).to.have.loggedError(/^Error: Uncaught/);
+        expect(console).to.have.loggedError(
+          /React will try to recreate this component tree from scratch using the error boundary you provided/,
+        );
+
+        expect(upload).not.to.have.been.called();
+      });
+    });
+  });
 });

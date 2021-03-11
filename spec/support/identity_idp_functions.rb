@@ -1,4 +1,7 @@
 require 'identity-idp-functions'
+require 'identity-idp-functions/proof_address_mock'
+require 'identity-idp-functions/proof_document_mock'
+require 'identity-idp-functions/proof_resolution_mock'
 
 module IdentityIdpFunctions
   module LoggingHelper

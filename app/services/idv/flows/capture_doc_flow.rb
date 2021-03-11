@@ -10,6 +10,7 @@ module Idv
         reset: Idv::Actions::ResetAction,
         verify_document: Idv::Actions::VerifyDocumentAction,
         verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
+        cancel: Idv::Actions::CancelCaptureDocAction,
       }.freeze
 
       def initialize(controller, session, _name)

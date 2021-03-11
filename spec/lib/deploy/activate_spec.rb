@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'identity/hostdata/fake_s3_client'
 require Rails.root.join('lib', 'deploy', 'activate.rb')
 
 describe Deploy::Activate do
@@ -16,11 +15,14 @@ describe Deploy::Activate do
   end
 
   let(:logger) { Logger.new('/dev/null') }
-  let(:s3_client) { Identity::Hostdata::FakeS3Client.new }
+  let(:s3_client) { Aws::S3::Client.new(stub_responses: true) }
   let(:set_up_files!) {}
 
   let(:result_yaml_path) { File.join(root, 'config', 'application.yml') }
   let(:env_yaml_path) { File.join(root, 'config', 'application_s3_env.yml') }
+  let(:geolite_path) { File.join(root, 'geo_data', 'GeoLite2-City.mmdb') }
+  let(:pwned_passwords_path) { File.join(root, 'pwned_passwords', 'pwned_passwords.txt') }
+
   let(:subject) do
     Deploy::Activate.new(
       logger: logger,
@@ -40,11 +42,13 @@ describe Deploy::Activate do
           'accountId' => '12345',
         }.to_json)
 
-      s3_client.put_object(
-        bucket: 'login-gov.app-secrets.12345-us-west-1',
-        key: '/int/idp/v1/application.yml',
-        body: application_yml,
+      s3_client.stub_responses(
+        :get_object,
+        { body: application_yml },
+        { body: geolite_content },
+        { body: pwned_passwords_content },
       )
+      allow(s3_client).to receive(:get_object).and_call_original
 
       # for now, stub cloning identity-idp-config
       allow(subject).to receive(:clone_idp_config)
@@ -57,11 +61,19 @@ describe Deploy::Activate do
           usps_confirmation_max_days: '5'
       YAML
     end
+    let(:geolite_content) { 'geolite test' }
+    let(:pwned_passwords_content ) { 'pwned passwords test' }
 
     it 'downloads configs from s3' do
       subject.run
 
+      expect(s3_client).to have_received(:get_object).with(
+        bucket: 'login-gov.app-secrets.12345-us-west-1',
+        key: 'int/idp/v1/application.yml',
+      )
+
       expect(File.exist?(result_yaml_path)).to eq(true)
+      expect(File.read(result_yaml_path)).to include("usps_confirmation_max_days: '5'")
     end
 
     it 'merges the application.yml from s3 over the application.yml.default' do
@@ -85,6 +97,22 @@ describe Deploy::Activate do
 
       application_env_yml = File.new(env_yaml_path)
       expect(application_env_yml.stat.mode.to_s(8)).to eq('100640')
+    end
+
+    it 'downloads the pwned passwords and geolite files from s3' do
+      subject.run
+
+      expect(s3_client).to have_received(:get_object).with(
+        bucket: 'login-gov.secrets.12345-us-west-1',
+        key: 'common/GeoIP2-City.mmdb',
+      )
+      expect(s3_client).to have_received(:get_object).with(
+        bucket: 'login-gov.secrets.12345-us-west-1',
+        key: 'common/pwned-passwords.txt',
+      )
+
+      expect(File.read(geolite_path)).to eq(geolite_content)
+      expect(File.read(pwned_passwords_path)).to eq(pwned_passwords_content)
     end
 
     it 'uses a default logger with a progname' do

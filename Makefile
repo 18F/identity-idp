@@ -63,7 +63,7 @@ run:
 	foreman start -p $(PORT)
 
 run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
-	rails s -b "ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt"
+	HTTPS=on rails s -b "ssl://$(HOST):$(PORT)?key=tmp/$(HOST)-$(PORT).key&cert=tmp/$(HOST)-$(PORT).crt"
 
 .PHONY: setup all lint run test check brakeman
 

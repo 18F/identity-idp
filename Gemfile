@@ -21,7 +21,7 @@ gem 'foundation_emails'
 gem 'hiredis'
 gem 'http_accept_language'
 gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.4.1'
-gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v1.0.1'
+gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v2.0.0'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
 gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
@@ -119,6 +119,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v3.6.0'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v2.7.0'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v4.0.0'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.0.0'
 end
