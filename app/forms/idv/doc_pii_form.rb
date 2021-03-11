@@ -45,7 +45,11 @@ module Idv
     end
 
     def dob_meets_min_age?
-      age(dob) >= AppConfig.env.idv_min_age_years.to_i
+      dob_date = Date.parse(dob)
+      today = Time.zone.today
+      age = today.year - dob_date.year - ((today.month > dob_date.month ||
+        (today.month == dob_date.month && today.day >= dob_date.day)) ? 0 : 1)
+      age >= AppConfig.env.idv_min_age_years.to_i
     end
 
     def state_valid?
@@ -70,13 +74,6 @@ module Idv
 
     def dob_min_age_error
       I18n.t('doc_auth.errors.lexis_nexis.birth_date_min_age')
-    end
-
-    def age(dob_str)
-      dob = Date.parse(dob_str)
-      now = Time.zone.today
-      now.year - dob.year -
-        ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
     end
   end
 end
