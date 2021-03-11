@@ -22,8 +22,7 @@ es:
           documento de identidad. Intente tomar una nueva foto.
         birth_date_checks: No pudimos leer la fecha de nacimiento en su documento
           de identidad. Intente tomar nuevas fotografías.
-        birth_date_min_age: Tu fecha de nacimiento no cumple con el requisito de edad
-          mínima.
+        birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
         control_number_check: No pudimos leer el número de referencia en el reverso
           de su documento de identidad. Intente tomar una nueva foto.
         doc_crosscheck: No pudimos reconocer su documento de identidad. Puede estar

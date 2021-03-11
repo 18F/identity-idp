@@ -23,8 +23,7 @@ fr:
           carte d'identité. Essayez de prendre une nouvelle photo.
         birth_date_checks: Nous n'avons pas pu lire la date de naissance sur votre
           pièce d'identité. Essayez de prendre de nouvelles photos.
-        birth_date_min_age: Votre date de naissance ne répond pas à l'exigence d'âge
-          minimum.
+        birth_date_min_age: Votre anniversaire ne correspond pas à l'âge minimum requis.
         control_number_check: Nous n'avons pas pu lire le numéro de référence au verso
           de votre carte d'identité. Essayez de prendre une nouvelle photo.
         doc_crosscheck: Nous n'avons pas pu reconnaître votre pièce d'identité. Il
