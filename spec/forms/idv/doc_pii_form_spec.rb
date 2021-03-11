@@ -3,16 +3,17 @@ require 'rails_helper'
 describe Idv::DocPiiForm do
   let(:user) { create(:user) }
   let(:subject) { Idv::DocPiiForm }
+  let(:valid_dob) { (Time.zone.today - (AppConfig.env.idv_min_age.to_i + 1).years).to_s }
   let(:good_pii) do
     {
       first_name: Faker::Name.first_name,
       last_name: Faker::Name.last_name,
-      dob: Time.zone.today.to_s,
+      dob: valid_dob,
       state: Faker::Address.state_abbr,
     }
   end
   let(:name_errors_pii) do
-    { first_name: nil, last_name: nil, dob: Time.zone.today.to_s,
+    { first_name: nil, last_name: nil, dob: valid_dob,
       state: Faker::Address.state_abbr }
   end
   let(:name_and_dob_errors_pii) do
