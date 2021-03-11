@@ -1,3 +1,5 @@
+import { trackEvent } from '@18f/identity-analytics';
+
 export const DOC_CAPTURE_TIMEOUT = 1000 * 60 * 25; // 25 minutes
 export const DOC_CAPTURE_POLL_INTERVAL = 5000;
 export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
@@ -27,6 +29,7 @@ export class DocumentCapturePolling {
 
   bind() {
     this.toggleFormVisible(false);
+    trackEvent('IdV: Link sent capture doc polling started');
     this.schedulePoll();
   }
 
@@ -42,7 +45,8 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(true);
   }
 
-  onComplete() {
+  async onComplete() {
+    await trackEvent('IdV: Link sent capture doc polling complete');
     this.elements.form.submit();
   }
 

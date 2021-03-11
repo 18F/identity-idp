@@ -1,6 +1,6 @@
 import { loadPolyfills } from '@18f/identity-polyfill';
 
-const LOGGER_ENDPOINT = '/api/logger';
+export const LOGGER_ENDPOINT = '/api/logger';
 
 /**
  * Logs an event.
