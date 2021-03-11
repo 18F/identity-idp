@@ -98,7 +98,8 @@ module FormHelper
 
   def international_phone_codes_data(code_data)
     {
-      sms_only: code_data['sms_only'],
+      supports_sms: code_data['supports_sms'],
+      supports_voice: code_data['supports_voice'],
       country_code: code_data['country_code'],
       country_name: code_data['name'],
     }

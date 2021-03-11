@@ -10,58 +10,46 @@ const selectedInternationCodeOption = () => {
   return /** @type {HTMLOptionElement} */ (dropdown.item(dropdown.selectedIndex));
 };
 
-const unsupportedInternationalPhoneOTPDeliveryWarningMessage = () => {
-  const selectedOption = selectedInternationCodeOption();
-  if (selectedOption.dataset.smsOnly === 'true') {
-    const messageTemplate = I18n.t(
-      'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-    );
-    return messageTemplate.replace('%{location}', selectedOption.dataset.countryName);
-  }
-  return null;
-};
+const setRadioEnabled = (radio, isEnabled) => {
+  radio.disabled = !isEnabled;
 
-const disablePhoneState = (
-  phoneRadio,
-  phoneLabel,
-  smsRadio,
-  deliveryMethodHint,
-  warningMessage,
-) => {
-  phoneRadio.disabled = true;
-  phoneLabel.classList.add('btn-disabled');
-  smsRadio.click();
-  deliveryMethodHint.innerText = warningMessage;
-};
+  const label = /** @type {Element} */ radio.parentNode.parentNode;
 
-const enablePhoneState = (phoneRadio, phoneLabel, deliveryMethodHint) => {
-  phoneRadio.disabled = false;
-  phoneLabel.classList.remove('btn-disabled');
-  deliveryMethodHint.innerText = I18n.t(
-    'two_factor_authentication.otp_delivery_preference.instruction',
-  );
+  label.classList.toggle('btn-disabled', !isEnabled);
 };
 
 const updateOTPDeliveryMethods = () => {
   const phoneRadio = document.querySelector(
     '[data-international-phone-form] .otp_delivery_preference_voice',
   );
-  const smsRadio = document.querySelector(
+  const smsRadio = /** @type {HTMLElement} */ (document.querySelector(
     '[data-international-phone-form] .otp_delivery_preference_sms',
-  );
+  ));
 
   if (!(phoneRadio && smsRadio)) {
     return;
   }
 
-  const phoneLabel = /** @type {Element} */ (phoneRadio.parentNode).parentNode;
-  const deliveryMethodHint = document.querySelector('#otp_delivery_preference_instruction');
+  const deliveryMethodHint = /** @type {HTMLElement} */ (document.querySelector(
+    '#otp_delivery_preference_instruction',
+  ));
+  const selectedOption = selectedInternationCodeOption();
 
-  const warningMessage = unsupportedInternationalPhoneOTPDeliveryWarningMessage();
-  if (warningMessage) {
-    disablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, warningMessage);
+  const supportsSms = selectedOption.dataset.supportsSms === 'true';
+  const supportsVoice = selectedOption.dataset.supportsVoice === 'true';
+
+  setRadioEnabled(smsRadio, supportsSms);
+  setRadioEnabled(phoneRadio, supportsVoice);
+
+  if (supportsVoice) {
+    deliveryMethodHint.innerText = I18n.t(
+      'two_factor_authentication.otp_delivery_preference.instruction',
+    );
   } else {
-    enablePhoneState(phoneRadio, phoneLabel, deliveryMethodHint);
+    smsRadio.click();
+    deliveryMethodHint.innerText = I18n.t(
+      'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+    ).replace('%{location}', selectedOption.dataset.countryName);
   }
 };
 

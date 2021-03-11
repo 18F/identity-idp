@@ -86,6 +86,25 @@ describe 'Add a new phone number' do
     expect(page).to have_content(t('errors.messages.voip_phone'))
   end
 
+  scenario 'adding a phone in a different country', js: true do
+    user = create(:user, :signed_up)
+
+    sign_in_and_2fa_user(user)
+    click_on "+ #{t('account.index.phone_add')}"
+
+    expect(page.find('label', text: 'Text message (SMS)')[:class]).to_not include('btn-disabled')
+    expect(page.find('label', text: 'Phone call')[:class]).to_not include('btn-disabled')
+
+    page.find('div[aria-label="Country code"]').click
+    within(page.find('.iti__flag-container')) do
+      find('span', text: 'Australia').click # a country where SMS is disabled currently
+    end
+
+    expect(page.find('label', text: 'Text message (SMS)')[:class]).to_not include('btn-disabled')
+    expect(page.find('label', text: 'Phone call')[:class]).to include('btn-disabled')
+    expect(page.find('#otp_delivery_preference_instruction')).to have_content('Australia')
+  end
+
   context 'when the user does not have a phone' do
     scenario 'cancelling add phone otp confirmation redirect to account' do
       user = create(:user, :with_authentication_app)
