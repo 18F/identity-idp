@@ -13,6 +13,12 @@ module Agreements
         )
         record.assign_attributes(config)
         record.save!
+      rescue ActiveRecord::RecordNotFound => e
+        message = "#{e.message} - #{filename}: #{key}"
+        raise ActiveRecord::RecordNotFound.new(message)
+      rescue ActiveRecord::RecordInvalid => e
+        e.record.errors.add(:base, "Record invalid - #{filename}: #{key}")
+        raise ActiveRecord::RecordInvalid.new(e.record)
       end
       after_seed
     end

@@ -6,10 +6,10 @@ RSpec.describe Agreements::IntegrationSeeder do
 
     before { create(:service_provider, issuer: 'new_issuer') }
 
-    it 'creates new records if none exits' do
+    it 'creates new records if none exist' do
       expect { seeder.run }.to change { Agreements::Integration.count }.by(1)
     end
-    it 'updates a record if one exist' do
+    it 'updates a record if one exists' do
       integration = create(:integration, issuer: 'new_issuer', name: 'Old Name')
 
       expect { seeder.run }.to \
