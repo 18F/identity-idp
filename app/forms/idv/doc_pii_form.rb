@@ -27,7 +27,7 @@ module Idv
         errors.add(:pii, generic_error)
       elsif !name_valid?
         errors.add(:pii, name_error)
-      elsif !dob.present?
+      elsif dob.blank?
         errors.add(:pii, dob_error)
       elsif !dob_meets_min_age?
         errors.add(:pii, dob_min_age_error)
@@ -74,7 +74,7 @@ module Idv
 
     def age(dob_str)
       dob = Date.parse(dob_str)
-      now = Date.today
+      now = Time.zone.today
       now.year - dob.year -
         ((now.month > dob.month || (now.month == dob.month && now.day >= dob.day)) ? 0 : 1)
     end
