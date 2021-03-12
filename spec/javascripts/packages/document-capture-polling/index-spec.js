@@ -72,7 +72,9 @@ describe('DocumentCapturePolling', () => {
 
     expect(subject.elements.form.submit).to.have.been.called();
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete');
+    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
+      isCancelled: false,
+    });
   });
 
   it('submits when cancelled', async () => {
@@ -83,7 +85,9 @@ describe('DocumentCapturePolling', () => {
     await flushPromises();
 
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
-    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling cancelled');
+    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
+      isCancelled: true,
+    });
     expect(subject.elements.form.submit).to.have.been.called();
   });
 

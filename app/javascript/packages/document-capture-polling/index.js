@@ -57,8 +57,7 @@ export class DocumentCapturePolling {
    * @param {{ isCancelled: boolean }} params
    */
   async onComplete({ isCancelled }) {
-    const event = `IdV: Link sent capture doc polling ${isCancelled ? 'cancelled' : 'complete'}`;
-    await this.trackEvent(event);
+    await this.trackEvent('IdV: Link sent capture doc polling complete', { isCancelled });
     this.elements.form.submit();
   }
 
