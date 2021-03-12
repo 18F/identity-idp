@@ -213,7 +213,6 @@ class ApplicationController < ActionController::Base
   end
 
   def confirm_two_factor_authenticated(id = nil)
-    return total_session_duration_timeout if session_total_duration_expired?
     return prompt_to_sign_in_with_request_id(id) if user_needs_new_session_with_request_id?(id)
     authenticate_user!(force: true)
     return prompt_to_setup_mfa unless two_factor_enabled?
