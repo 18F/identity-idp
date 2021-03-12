@@ -9,7 +9,7 @@ module Geocoder
   end
 end
 
-GEO_DATA_FILEPATH = Rails.root.join('geo_data', 'GeoLite2-City.mmdb').freeze
+GEO_DATA_FILEPATH = Rails.root.join(AppConfig.env.geo_data_file_path).freeze
 
 if !Rails.env.production? && !File.exist?(GEO_DATA_FILEPATH)
   Geocoder.configure(ip_lookup: :test)
