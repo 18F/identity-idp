@@ -14,14 +14,16 @@ describe('DocumentCapturePolling', () => {
   let subject;
 
   /**
-   * Returns a promise which resolves once promises have been flushed. By spec, a promise will
-   * never synchronously resolve, which conflicts with an is currently not supported by Sinon clock.
+   * Returns a promise which resolves once promises have been flushed. By spec, a promise will not
+   * synchronously resolve, which conflicts with and is currently not supported by fake timers.
    *
    * @see https://github.com/sinonjs/fake-timers/issues/114
+   * @see https://tc39.es/ecma262/#await
    *
    * @return {Promise<void>}
    */
-  const flushPromises = () => process._tickCallback(); // eslint-disable-line no-underscore-dangle
+  // eslint-disable-next-line no-underscore-dangle, no-void
+  const flushPromises = () => Promise.resolve(void process._tickCallback());
 
   beforeEach(() => {
     document.body.innerHTML = `
