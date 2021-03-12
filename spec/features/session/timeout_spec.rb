@@ -31,6 +31,11 @@ feature 'Session Timeout' do
   end
 
   context 'when total session duration expires' do
+    let(:fake_analytics) { FakeAnalytics.new }
+    before do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    end
+
     it 'signs out the user and displays the timeout message' do
       sign_in_and_2fa_user
 
@@ -40,6 +45,7 @@ feature 'Session Timeout' do
 
         expect(page).to have_current_path(root_path)
         expect(page).to have_content(t('devise.failure.timeout'))
+        expect(fake_analytics).to have_logged_event(Analytics::SESSION_TOTAL_DURATION_TIMEOUT, {})
       end
     end
   end
