@@ -222,8 +222,13 @@ class ApplicationController < ActionController::Base
                                   user_needs_sp_auth_method_setup?
     return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
                                                user_needs_sp_auth_method_verification?
-    ensure_user_session_has_created_at
+    enforce_total_session_duration_timeout
     true
+  end
+
+  def enforce_total_session_duration_timeout
+    return total_session_duration_timeout if session_total_duration_expired?
+    ensure_user_session_has_created_at
   end
 
   def total_session_duration_timeout
