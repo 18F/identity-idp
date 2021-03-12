@@ -40,10 +40,8 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(false);
     this.trackEvent('IdV: Link sent capture doc polling started');
     this.schedulePoll();
-    DocumentCapturePolling.bindPromptOnNavigate(true);
-    this.elements.backLink.addEventListener('click', () =>
-      DocumentCapturePolling.bindPromptOnNavigate(false),
-    );
+    this.bindPromptOnNavigate(true);
+    this.elements.backLink.addEventListener('click', () => this.bindPromptOnNavigate(false));
   }
 
   /**
@@ -56,7 +54,7 @@ export class DocumentCapturePolling {
   /**
    * @param {boolean} shouldPrompt Whether to bind or unbind page unload behavior.
    */
-  static bindPromptOnNavigate(shouldPrompt) {
+  bindPromptOnNavigate(shouldPrompt) {
     window.onbeforeunload = shouldPrompt
       ? (event) => {
           event.preventDefault();
@@ -74,7 +72,7 @@ export class DocumentCapturePolling {
    */
   async onComplete({ isCancelled }) {
     await this.trackEvent('IdV: Link sent capture doc polling complete', { isCancelled });
-    DocumentCapturePolling.bindPromptOnNavigate(false);
+    this.bindPromptOnNavigate(false);
     this.elements.form.submit();
   }
 
