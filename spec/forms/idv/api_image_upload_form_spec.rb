@@ -10,6 +10,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         document_capture_session_uuid: document_capture_session_uuid,
       },
       liveness_checking_enabled: liveness_checking_enabled?,
+      issuer: 'test_issuer',
     )
   end
 
@@ -82,9 +83,13 @@ RSpec.describe Idv::ApiImageUploadForm do
   end
 
   describe '#submit' do
-    it 'includes remaining_attempts' do
-      response = form.submit
-      expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+    context 'form is missing a required param' do
+      let(:front_image) { nil }
+
+      it 'includes remaining_attempts' do
+        response = form.submit
+        expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+      end
     end
   end
 end
