@@ -17,7 +17,8 @@ Aws.config.update(
 
 config = {
   name: 'mhenke-idp',
-  patch: %I[net_http aws_sdk]
+  patch: %I[net_http aws_sdk],
+  context_missing: 'LOG_ERROR',
 }
 
 XRay.recorder.configure(config)
