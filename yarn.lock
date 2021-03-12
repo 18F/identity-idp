@@ -4834,13 +4834,12 @@ icss-utils@^4.0.0, icss-utils@^4.1.1:
   dependencies:
     postcss "^7.0.14"
 
-identity-style-guide@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-3.0.0.tgz#9f0d1331b3200dad63073c928dd195c1c50c9378"
-  integrity sha512-PFoNrTStU7uOFMXi8qEC1Yx+Vq4IZMxpK5+5mFRU5Ef6e/9S0U9wKaVzCv4+jK7Z4yUPlsMe8Xd/K9XWjnm6fQ==
+identity-style-guide@^5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-5.0.1.tgz#ada95337b503ed8ef46091696ba8a44a6061f0ac"
+  integrity sha512-eailVodxMJCw51dFFUXOwqNvvKgCHnZt6xXYn+9Cizx2YrbzFcOkGu/OIiOGes/jBINnq4upxyUZStkv9IhVFw==
   dependencies:
     uswds "^2.9.0"
-    zxcvbn "^4.4.2"
 
 ieee754@^1.1.4:
   version "1.1.13"
