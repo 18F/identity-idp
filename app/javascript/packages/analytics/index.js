@@ -1,5 +1,3 @@
-import { loadPolyfills } from '@18f/identity-polyfill';
-
 const LOGGER_ENDPOINT = '/api/logger';
 
 /**
@@ -10,8 +8,7 @@ const LOGGER_ENDPOINT = '/api/logger';
  *
  * @return {Promise<Response>}
  */
-export async function trackEvent(event, payload) {
-  await loadPolyfills(['fetch']);
+export function trackEvent(event, payload) {
   return window.fetch(LOGGER_ENDPOINT, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
