@@ -1,3 +1,4 @@
+import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/dom';
 import {
   DocumentCapturePolling,
@@ -26,18 +27,18 @@ describe('DocumentCapturePolling', () => {
 
   beforeEach(() => {
     document.body.innerHTML = `
-      <p id="doc_capture_continue_instructions">Instructions</p>
+      <a href="#" class="doc_capture_back_link">Back</a>
       <form class="doc_capture_continue_button_form"><button>Submit</button></form>
     `;
 
     subject = new DocumentCapturePolling({
       statusEndpoint: '/status',
       elements: {
+        backLink: /** @type {HTMLAnchorElement} */ (document.querySelector(
+          '.doc_capture_back_link',
+        )),
         form: /** @type {HTMLFormElement} */ (document.querySelector(
           '.doc_capture_continue_button_form',
-        )),
-        instructions: /** @type {HTMLParagraphElement} */ (document.querySelector(
-          '#doc_capture_continue_instructions',
         )),
       },
       trackEvent,
@@ -92,7 +93,7 @@ describe('DocumentCapturePolling', () => {
     expect(subject.elements.form.submit).to.have.been.called();
   });
 
-  it('polls until max, then showing instructions to submit', async () => {
+  it('polls until max, then showing form to submit', async () => {
     sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 202 });
 
     for (let i = MAX_DOC_CAPTURE_POLL_ATTEMPTS; i; i--) {
@@ -101,7 +102,37 @@ describe('DocumentCapturePolling', () => {
       await flushPromises();
     }
 
-    expect(screen.getByText('Instructions').closest('.display-none')).to.not.be.ok();
     expect(screen.getByText('Submit').closest('.display-none')).to.not.be.ok();
+  });
+
+  describe('prompts', () => {
+    let event;
+    beforeEach(() => {
+      event = new window.CustomEvent('beforeunload', { cancelable: true });
+    });
+
+    it('prompts while polling', () => {
+      window.dispatchEvent(event);
+
+      expect(event.defaultPrevented).to.be.true();
+    });
+
+    it('does not prompt by navigating away via back link', () => {
+      userEvent.click(screen.getByText('Back'));
+      window.dispatchEvent(event);
+
+      expect(event.defaultPrevented).to.be.false();
+    });
+
+    it('does not prompt by navigating away via form submission', async () => {
+      sandbox.stub(subject.elements.form, 'submit');
+      sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 200 });
+      subject.bind();
+      sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
+      await flushPromises();
+      window.dispatchEvent(event);
+
+      expect(event.defaultPrevented).to.be.false();
+    });
   });
 });
