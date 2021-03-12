@@ -1,17 +1,20 @@
-const LOGGER_ENDPOINT = '/api/logger';
+import { getPageData } from '@18f/identity-page-data';
 
 /**
  * Logs an event.
  *
  * @param {string} event Event name.
- * @param {object=} payload Payload object.
+ * @param {Record<string,any>=} payload Payload object.
  *
- * @return {Promise<Response>}
+ * @return {Promise<void>}
  */
-export function trackEvent(event, payload) {
-  return window.fetch(LOGGER_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ event, payload }),
-  });
+export async function trackEvent(event, payload = {}) {
+  const endpoint = getPageData('analyticsEndpoint');
+  if (endpoint) {
+    await window.fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event, payload }),
+    });
+  }
 }
