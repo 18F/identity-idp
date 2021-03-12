@@ -19,15 +19,13 @@ module Upaya
   class Application < Rails::Application
     AppConfig.setup(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))))
 
-    yaml = YAML.safe_load(File.read(Rails.root.join('config', 'application.yml')))
-    root_yaml = yaml.except(['development', 'production', 'test'])
-    environment_yaml = yaml[Rails.env]
-    merged_yaml = root_yaml.merge(environment_yaml)
-    merged_yaml.symbolize_keys!
+    # yaml = YAML.safe_load(File.read(Rails.root.join('config', 'application.yml')))
+    # root_yaml = yaml.except(['development', 'production', 'test'])
+    # environment_yaml = yaml[Rails.env]
+    # merged_yaml = root_yaml.merge(environment_yaml)
+    # merged_yaml.symbolize_keys!
 
-    IdentityConfig.build_settings(merged_yaml)
-
-    # AppConfig.load_keys(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))), AppConfig.required_sandbox_keys)
+    # IdentityConfig.build_settings(merged_yaml)
 
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false
