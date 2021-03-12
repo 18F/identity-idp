@@ -226,11 +226,11 @@ class ApplicationController < ActionController::Base
   end
 
   def enforce_total_session_duration_timeout
-    return total_session_duration_timeout if session_total_duration_expired?
+    return sign_out_with_timeout_error if session_total_duration_expired?
     ensure_user_session_has_created_at
   end
 
-  def total_session_duration_timeout
+  def sign_out_with_timeout_error
     sign_out
     flash[:info] = t('devise.failure.timeout')
     redirect_to root_url
