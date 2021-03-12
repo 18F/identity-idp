@@ -43,6 +43,11 @@ module Agreements
         integrations.each do |issuer|
           integration = Integration.find_by!(issuer: issuer)
           IntegrationUsage.find_or_create_by!(iaa_order: order, integration: integration)
+        rescue ActiveRecord::RecordNotFound => e
+          gtc = order.iaa_gtc.gtc_number
+          message =
+            "#{e.message} - #{filename}: #{gtc}-#{order.order_number} #{issuer}"
+          raise ActiveRecord::RecordNotFound.new(message)
         end
       end
     end
