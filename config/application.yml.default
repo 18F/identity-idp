@@ -52,6 +52,7 @@ email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: 'false'
 event_disavowal_expiration_hours: '240'
+geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 gpo_designated_receiver_pii: '{}'
 ial2_recovery_request_valid_for_minutes: '15'
 identity_pki_local_dev: 'false'
@@ -112,6 +113,7 @@ poll_rate_for_verify_in_seconds: '3'
 proofer_mock_fallback: 'true'
 proofing_send_partial_dob: 'false'
 push_notifications_enabled:
+pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_timeout_service_timeout_seconds: '15'
 reauthn_window: '120'
 recaptcha_enabled_percent: '0'

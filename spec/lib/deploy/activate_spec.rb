@@ -115,6 +115,13 @@ describe Deploy::Activate do
       expect(File.read(pwned_passwords_path)).to eq(pwned_passwords_content)
     end
 
+    it 'does not re-downlaod passowrds and configs if they already exist' do
+      FileUtils.mkdir_p(File.dirname(geolite_path))
+      File.write(geolite_path, 'existing geolite tests')
+
+      expect { subject.run }.to_not(change { File.read(geolite_path) })
+    end
+
     it 'uses a default logger with a progname' do
       subject = Deploy::Activate.new(s3_client: s3_client)
 
