@@ -20,13 +20,16 @@
   </div>
   <div class='sm-col sm-col-9 padding-x-1 h2 margin-bottom-2 margin-top-0 margin-y-0'>
     <p><%= t('doc_auth.info.link_sent').first %></p>
-    <p id='doc_capture_continue_instructions' class='margin-bottom-0'>
-      <%= t('doc_auth.info.link_sent').last %>
-    </p>
+    <% if !is_cancelled %>
+      <p id="doc_capture_continue_instructions" class="margin-bottom-0">
+        <%= t('doc_auth.info.link_sent').last %>
+      </p>
+    <% end %>
   </div>
 </div>
 
-<div class='margin-top-2 margin-bottom-0'>
+<% if !is_cancelled %>
+  <div class="margin-top-2 margin-bottom-0">
     <%=
       button_to(
         t('forms.buttons.continue'),
@@ -36,10 +39,12 @@
         form_class: 'doc_capture_continue_button_form'
       )
     %>
-</div>
+  </div>
+
+  <% if FeatureManagement.doc_capture_polling_enabled? %>
+    <%= content_tag 'script', '', data: { doc_capture_status_endpoint: idv_capture_doc_status_url } %>
+    <%= javascript_packs_tag_once 'doc-capture-polling' %>
+  <% end %>
+<% end %>
 
 <%= render 'idv/doc_auth/back', action: 'cancel_link_sent' %>
-
-<% if FeatureManagement.doc_capture_polling_enabled? %>
-  <%= javascript_packs_tag_once 'doc_capture_polling' %>
-<% end %>

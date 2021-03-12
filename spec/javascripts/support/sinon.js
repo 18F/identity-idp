@@ -19,6 +19,7 @@ export function useSandbox(config) {
   });
 
   afterEach(() => {
+    sandbox.reset();
     sandbox.restore();
 
     if (useFakeTimers) {

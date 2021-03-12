@@ -10,6 +10,10 @@ module Idv
         handle_document_verification_success(document_capture_session_result)
       end
 
+      def extra_view_variables
+        { is_cancelled: !!document_capture_session&.cancelled_at }
+      end
+
       private
 
       def handle_document_verification_success(get_results_response)

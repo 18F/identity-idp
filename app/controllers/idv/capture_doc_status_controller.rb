@@ -15,7 +15,7 @@ module Idv
       session_uuid = flow_session[:document_capture_session_uuid]
       document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
       return { plain: 'Unauthorized', status: :unauthorized } unless document_capture_session
-      return { plain: 'Cancelled', status: :ok } if document_capture_session.cancelled_at
+      return { plain: 'Cancelled', status: :gone } if document_capture_session.cancelled_at
 
       render_result(document_capture_session)
     end

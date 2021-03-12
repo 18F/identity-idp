@@ -11,6 +11,7 @@ import {
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
+import { trackEvent } from '@18f/identity-analytics';
 
 /**
  * @typedef NewRelicAgent
@@ -54,7 +55,6 @@ const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).Log
 
 const appRoot = /** @type {HTMLDivElement} */ (document.getElementById('document-capture-form'));
 const isMockClient = appRoot.hasAttribute('data-mock-client');
-const logEndpoint = /** @type {string} */ (appRoot.getAttribute('data-log-endpoint'));
 const keepAliveEndpoint = /** @type {string} */ (appRoot.getAttribute('data-keep-alive-endpoint'));
 
 /**
@@ -103,11 +103,7 @@ function addPageAction(action) {
     newrelic.addPageAction(action.key, action.payload);
   }
 
-  window.fetch(logEndpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ event: action.label, payload: action.payload }),
-  });
+  trackEvent(action.label, action.payload);
 }
 
 /** @type {import('@18f/identity-document-capture/context/analytics').NoticeError} */

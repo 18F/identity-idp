@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe FrontendLogController do
   describe '#create' do
-    subject(:action) { post :create, params: params }
+    subject(:action) { post :create, params: params, as: :json }
 
     let(:fake_analytics) { FakeAnalytics.new }
     let(:user) { create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' }) }
@@ -25,6 +25,20 @@ describe FrontendLogController do
 
         expect(response).to have_http_status(:ok)
         expect(json[:success]).to eq(true)
+      end
+
+      context 'empty payload' do
+        let(:payload) { {} }
+
+        it 'succeeds' do
+          expect(fake_analytics).to receive(:track_event).
+            with("Frontend: #{event}", payload)
+
+          action
+
+          expect(response).to have_http_status(:ok)
+          expect(json[:success]).to eq(true)
+        end
       end
 
       context 'invalid param' do

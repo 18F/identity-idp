@@ -57,7 +57,7 @@ describe Idv::CaptureDocStatusController do
       it 'returns cancelled' do
         get :show
 
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(410)
         expect(response.body).to eq('Cancelled')
       end
     end
