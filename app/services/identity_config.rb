@@ -83,6 +83,7 @@ class IdentityConfig
     config.add(:aws_http_timeout, type: :integer)
     config.add(:aws_kms_key_id)
     config.add(:aws_kms_multi_region_enabled, type: :boolean)
+    # TODO: Mitchell
     # config.add(:aws_kms_regions
     # config.add(:aws_logo_bucket
     # config.add(:aws_region
@@ -148,6 +149,8 @@ class IdentityConfig
     # config.add(:lexisnexis_trueid_account_id
     # config.add(:lexisnexis_trueid_liveness_workflow
     # config.add(:lexisnexis_trueid_noliveness_workflow
+    #
+    # TODO: Hooper
     # config.add(:lexisnexis_trueid_password
     # config.add(:lexisnexis_trueid_username
     # config.add(:lexisnexis_username
@@ -211,6 +214,7 @@ class IdentityConfig
     # config.add(:recovery_code_length
     # config.add(:recurring_jobs_disabled_names
     # config.add(:redis_throttle_url
+    # TODO: Zach
     # config.add(:redis_url
     # config.add(:reg_confirmed_email_max_attempts
     # config.add(:reg_confirmed_email_window_in_minutes
