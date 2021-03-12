@@ -237,9 +237,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_user_session_has_created_at
-    return unless user_session
-    session_created_at = user_session[:created_at]
-    return if session_created_at.present?
+    return if user_session.nil? || user_session[:created_at].present?
     user_session[:created_at] = Time.zone.now
   end
 
