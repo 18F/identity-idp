@@ -213,6 +213,7 @@ class ApplicationController < ActionController::Base
   end
 
   def confirm_two_factor_authenticated(id = nil)
+    return total_session_duration_timeout if session_total_duration_expired?
     return prompt_to_sign_in_with_request_id(id) if user_needs_new_session_with_request_id?(id)
     authenticate_user!(force: true)
     return prompt_to_setup_mfa unless two_factor_enabled?
@@ -221,7 +222,28 @@ class ApplicationController < ActionController::Base
                                   user_needs_sp_auth_method_setup?
     return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
                                                user_needs_sp_auth_method_verification?
+    ensure_user_session_has_created_at
     true
+  end
+
+  def total_session_duration_timeout
+    sign_out
+    flash[:info] = t('devise.failure.timeout')
+    redirect_to root_url
+  end
+
+  def ensure_user_session_has_created_at
+    session_created_at = user_session[:created_at]
+    return if session_created_at.present?
+    user_session[:created_at] = Time.zone.now
+  end
+
+  def session_total_duration_expired?
+    session_created_at = user_session[:created_at]
+    return if session_created_at.blank?
+    session_created_at = Time.zone.parse(session_created_at)
+    timeout_in_minutes = AppConfig.env.session_total_duration_timeout_in_minutes.to_i.minutes
+    (session_created_at + timeout_in_minutes) < Time.zone.now
   end
 
   def prompt_to_sign_in_with_request_id(request_id)
