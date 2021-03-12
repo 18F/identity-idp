@@ -3,7 +3,6 @@ import {
   DocumentCapturePolling,
   MAX_DOC_CAPTURE_POLL_ATTEMPTS,
   DOC_CAPTURE_POLL_INTERVAL,
-  POLL_ENDPOINT,
 } from '@18f/identity-document-capture-polling';
 import { useSandbox } from '../../support/sinon';
 
@@ -32,6 +31,7 @@ describe('DocumentCapturePolling', () => {
     `;
 
     subject = new DocumentCapturePolling({
+      statusEndpoint: '/status',
       elements: {
         form: /** @type {HTMLFormElement} */ (document.querySelector(
           '.doc_capture_continue_button_form',
@@ -51,7 +51,7 @@ describe('DocumentCapturePolling', () => {
   });
 
   it('polls', async () => {
-    sandbox.stub(window, 'fetch').withArgs(POLL_ENDPOINT).resolves({ status: 202 });
+    sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 202 });
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
     expect(window.fetch).to.have.been.calledOnce();
@@ -66,7 +66,7 @@ describe('DocumentCapturePolling', () => {
 
   it('submits when done', async () => {
     sandbox.stub(subject.elements.form, 'submit');
-    sandbox.stub(window, 'fetch').withArgs(POLL_ENDPOINT).resolves({ status: 200 });
+    sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 200 });
     subject.bind();
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
@@ -81,7 +81,7 @@ describe('DocumentCapturePolling', () => {
 
   it('submits when cancelled', async () => {
     sandbox.stub(subject.elements.form, 'submit');
-    sandbox.stub(window, 'fetch').withArgs(POLL_ENDPOINT).resolves({ status: 410 });
+    sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 410 });
 
     sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
     await flushPromises();
@@ -94,7 +94,7 @@ describe('DocumentCapturePolling', () => {
   });
 
   it('polls until max, then showing instructions to submit', async () => {
-    sandbox.stub(window, 'fetch').withArgs(POLL_ENDPOINT).resolves({ status: 202 });
+    sandbox.stub(window, 'fetch').withArgs('/status').resolves({ status: 202 });
 
     for (let i = MAX_DOC_CAPTURE_POLL_ATTEMPTS; i; i--) {
       sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);

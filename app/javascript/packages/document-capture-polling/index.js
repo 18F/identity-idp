@@ -5,7 +5,6 @@ export const DOC_CAPTURE_POLL_INTERVAL = 5000;
 export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
   DOC_CAPTURE_TIMEOUT / DOC_CAPTURE_POLL_INTERVAL,
 );
-export const POLL_ENDPOINT = '/verify/doc_auth/link_sent/poll';
 
 /**
  * @typedef DocumentCapturePollingElements
@@ -17,6 +16,7 @@ export const POLL_ENDPOINT = '/verify/doc_auth/link_sent/poll';
 /**
  * @typedef DocumentCapturePollingOptions
  *
+ * @prop {string} statusEndpoint
  * @prop {DocumentCapturePollingElements} elements
  * @prop {typeof defaultTrackEvent=} trackEvent
  */
@@ -30,8 +30,9 @@ export class DocumentCapturePolling {
   /**
    * @param {DocumentCapturePollingOptions} options
    */
-  constructor({ elements, trackEvent = defaultTrackEvent }) {
+  constructor({ elements, statusEndpoint, trackEvent = defaultTrackEvent }) {
     this.elements = elements;
+    this.statusEndpoint = statusEndpoint;
     this.trackEvent = trackEvent;
   }
 
@@ -71,7 +72,7 @@ export class DocumentCapturePolling {
   }
 
   async poll() {
-    const response = await window.fetch(POLL_ENDPOINT);
+    const response = await window.fetch(this.statusEndpoint);
 
     switch (response.status) {
       case 200:
