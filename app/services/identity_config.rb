@@ -151,69 +151,68 @@ class IdentityConfig
     # config.add(:lexisnexis_trueid_noliveness_workflow
     #
     # TODO: Hooper
-    # config.add(:lexisnexis_trueid_password
-    # config.add(:lexisnexis_trueid_username
-    # config.add(:lexisnexis_username
-    # config.add(:liveness_checking_enabled
-    # config.add(:lockout_period_in_minutes
-    # config.add(:log_to_stdout
-    # config.add(:login_with_piv_cac
-    # config.add(:logins_per_email_and_ip_bantime
-    # config.add(:logins_per_email_and_ip_limit
-    # config.add(:logins_per_email_and_ip_period
-    # config.add(:logins_per_ip_limit
-    # config.add(:logins_per_ip_period
-    # config.add(:logins_per_ip_track_only_mode
-    # config.add(:logo_upload_enabled
-    # config.add(:mailer_domain_name
-    # config.add(:max_auth_apps_per_account
-    # config.add(:max_emails_per_account
-    # config.add(:max_mail_events
-    # config.add(:max_mail_events_window_in_days
-    # config.add(:max_piv_cac_per_account
-    # config.add(:min_password_score
-    # config.add(:mx_timeout
-    # config.add(:newrelic_browser_app_id
-    # config.add(:newrelic_browser_key
-    # config.add(:newrelic_license_key
-    # config.add(:no_sp_campaigns_whitelist
-    # config.add(:nonessential_email_banlist
-    # config.add(:otp_delivery_blocklist_findtime
-    # config.add(:otp_delivery_blocklist_maxretry
-    # config.add(:otp_valid_for
-    # config.add(:otps_per_ip_limit
-    # config.add(:otps_per_ip_period
-    # config.add(:otps_per_ip_track_only_mode
-    # config.add(:outbound_connection_check_url
-    # config.add(:participate_in_dap
-    # config.add(:password_max_attempts
-    # config.add(:password_pepper
-    # config.add(:personal_key_retired
-    # config.add(:pii_lock_timeout_in_minutes
-    # config.add(:pinpoint_sms_application_id
-    # config.add(:pinpoint_sms_credential_role_arn
-    # config.add(:pinpoint_sms_longcode_pool
-    # config.add(:pinpoint_sms_region
-    # config.add(:pinpoint_sms_shortcode
-    # config.add(:pinpoint_voice_credential_role_arn
-    # config.add(:pinpoint_voice_longcode_pool
-    # config.add(:pinpoint_voice_region
-    # config.add(:piv_cac_service_url
-    # config.add(:piv_cac_verify_token_secret
-    # config.add(:piv_cac_verify_token_url
-    # config.add(:poll_rate_for_verify_in_seconds
-    # config.add(:production
-    # config.add(:proofer_mock_fallback
-    # config.add(:push_notifications_enabled
-    # config.add(:rack_mini_profiler
-    # config.add(:rack_timeout_service_timeout_seconds
-    # config.add(:reauthn_window
-    # config.add(:recaptcha_enabled_percent
-    # config.add(:recaptcha_secret_key
-    # config.add(:recaptcha_site_key
-    # config.add(:recovery_code_length
-    # config.add(:recurring_jobs_disabled_names
-    # config.add(:redis_throttle_url
+    config.add(:lexisnexis_trueid_password)
+    config.add(:lexisnexis_trueid_username)
+    config.add(:lexisnexis_username)
+    config.add(:liveness_checking_enabled, type: :boolean)
+    config.add(:lockout_period_in_minutes, type: :integer)
+    config.add(:log_to_stdout, type: :boolean)
+    config.add(:logins_per_email_and_ip_bantime, type: :integer)
+    config.add(:logins_per_email_and_ip_limit, type: :integer)
+    config.add(:logins_per_email_and_ip_period, type: :integer)
+    config.add(:logins_per_ip_limit, type: :integer)
+    config.add(:logins_per_ip_period, type: :integer)
+    config.add(:logins_per_ip_track_only_mode, type: :boolean)
+    config.add(:logo_upload_enabled, type: :boolean)
+    config.add(:mailer_domain_name, type: :uri)
+    config.add(:max_auth_apps_per_account, type: :integer)
+    config.add(:max_emails_per_account, type: :integer)
+    config.add(:max_mail_events, type: :integer)
+    config.add(:max_mail_events_window_in_days, type: :integer)
+    config.add(:max_piv_cac_per_account, type: :integer)
+    config.add(:min_password_score, type: :integer)
+    config.add(:mx_timeout, type: :integer)
+    config.add(:newrelic_browser_app_id)
+    config.add(:newrelic_browser_key)
+    config.add(:newrelic_license_key)
+    config.add(:no_sp_campaigns_whitelist, type: :json)
+    config.add(:nonessential_email_banlist, type: :json)
+    config.add(:otp_delivery_blocklist_findtime, type: :integer)
+    config.add(:otp_delivery_blocklist_maxretry, type: :integer)
+    config.add(:otp_valid_for, type: :integer)
+    config.add(:otps_per_ip_limit, type: :integer)
+    config.add(:otps_per_ip_period, type: :integer)
+    config.add(:otps_per_ip_track_only_mode, type: :boolean)
+    config.add(:outbound_connection_check_url, type: :uri)
+    config.add(:participate_in_dap, type: :boolean)
+    config.add(:password_max_attempts, type: :integer)
+    config.add(:password_pepper)
+    config.add(:personal_key_retired, type: :boolean)
+    config.add(:pii_lock_timeout_in_minutes, type: :integer)
+    config.add(:pinpoint_sms_application_id)
+    config.add(:pinpoint_sms_credential_role_arn)
+    config.add(:pinpoint_sms_longcode_pool, type: :json)
+    config.add(:pinpoint_sms_region)
+    config.add(:pinpoint_sms_shortcode)
+    config.add(:pinpoint_voice_credential_role_arn)
+    config.add(:pinpoint_voice_longcode_pool)
+    config.add(:pinpoint_voice_region)
+    config.add(:piv_cac_service_url, type: :uri)
+    config.add(:piv_cac_verify_token_secret)
+    config.add(:piv_cac_verify_token_url, type: :uri)
+    config.add(:poll_rate_for_verify_in_seconds, type: :integer)
+    config.add(:proofer_mock_fallback, type: :boolean)
+    config.add(:push_notifications_enabled, type: :boolean)
+    # TODO: This is a boolean, but currently values are 'on' and 'off'
+    config.add(:rack_mini_profiler, type: :string)
+    config.add(:rack_timeout_service_timeout_seconds
+    config.add(:reauthn_window, type: :integer)
+    config.add(:recaptcha_enabled_percent, type: :integer)
+    config.add(:recaptcha_secret_key)
+    config.add(:recaptcha_site_key)
+    config.add(:recovery_code_length, type: :integer)
+    config.add(:recurring_jobs_disabled_names, type: :json)
+    config.add(:redis_throttle_url, type: :uris)
     # TODO: Zach
     # config.add(:redis_url
     # config.add(:reg_confirmed_email_max_attempts
