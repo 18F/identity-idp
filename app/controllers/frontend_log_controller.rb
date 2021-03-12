@@ -43,7 +43,6 @@ class FrontendLogController < ApplicationController
   end
 
   def valid_payload?
-    payload = log_params[:payload].to_h
-    payload.is_a?(Hash) && payload.present?
+    !log_params[:payload].nil?
   end
 end
