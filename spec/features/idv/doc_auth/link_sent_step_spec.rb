@@ -43,6 +43,24 @@ feature 'doc auth link sent step' do
     expect(page).to have_current_path(idv_doc_auth_link_sent_step)
   end
 
+  context 'cancelled' do
+    before do
+      document_capture_session = user.document_capture_sessions.last
+      document_capture_session.cancelled_at = Time.zone.now
+      document_capture_session.save!
+      visit current_path
+    end
+
+    it 'does not poll' do
+      expect(page).to_not have_css('script[src*="doc-capture-polling"]')
+    end
+
+    it 'does not show continue button or instruction text' do
+      expect(page).to_not have_button(t('forms.buttons.continue'), visible: :all)
+      expect(page).to_not have_content(:all, t('doc_auth.info.link_sent').last)
+    end
+  end
+
   shared_examples 'with doc capture polling enabled' do
     metadata[:js] = true
     let(:doc_capture_polling_enabled) { true }
