@@ -27,6 +27,10 @@ module Users
       )
 
       if throttled
+        analytics.track_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :verify_personal_key,
+        )
         render :throttled
       else
         result = personal_key_form.submit

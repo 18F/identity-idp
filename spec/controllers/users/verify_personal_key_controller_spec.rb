@@ -109,6 +109,10 @@ describe Users::VerifyPersonalKeyController do
           Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED,
           { errors: { personal_key: ['bad_key'] }, success: false },
         ).once
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :verify_personal_key,
+        ).once
 
         post :create, params: { personal_key: bad_key }
         post :create, params: { personal_key: bad_key }

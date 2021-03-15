@@ -12,9 +12,10 @@ module Idv
 
     validate :throttle_if_rate_limited
 
-    def initialize(params, liveness_checking_enabled:)
+    def initialize(params, liveness_checking_enabled:, analytics:)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
+      @analytics = analytics
     end
 
     def submit
@@ -78,6 +79,10 @@ module Idv
 
     def throttle_if_rate_limited
       return unless @throttled
+      @analytics.track_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :idv_acuant,
+      )
       errors.add(:limit, t('errors.doc_auth.acuant_throttle'))
     end
 

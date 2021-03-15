@@ -14,6 +14,7 @@ feature 'doc auth send link step' do
     AppConfig.env.idv_send_link_attempt_window_in_minutes.to_i
   end
   let(:document_capture_session) { DocumentCaptureSession.create! }
+  let(:fake_analytics) { FakeAnalytics.new }
 
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_doc_auth_send_link_step)
@@ -61,6 +62,7 @@ feature 'doc auth send link step' do
   end
 
   it 'throttles sending the link' do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     user = sign_in_and_2fa_user
     complete_doc_auth_steps_before_send_link_step
     idv_send_link_max_attempts.times do
@@ -77,6 +79,10 @@ feature 'doc auth send link step' do
     click_idv_continue
     expect(page).to have_current_path(idv_doc_auth_send_link_step)
     expect(page).to have_content I18n.t('errors.doc_auth.send_link_throttle')
+    expect(fake_analytics).to have_logged_event(
+      Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+      throttle_type: :idv_send_link,
+    )
 
     Timecop.travel(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
       fill_in :doc_auth_phone, with: '415-555-0199'

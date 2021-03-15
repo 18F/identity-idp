@@ -159,7 +159,13 @@ module Idv
     end
 
     def max_attempts_reached
-      flash_error if idv_attempter_throttled?
+      if idv_attempter_throttled?
+        analytics.track_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :idv_resolution,
+        )
+        flash_error
+      end
     end
 
     def error_message

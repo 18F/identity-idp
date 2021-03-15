@@ -28,6 +28,10 @@ module Users
       )
 
       if throttled
+        analytics.track_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :verify_gpo_key,
+        )
         render :throttled
       else
         result = @verify_account_form.submit

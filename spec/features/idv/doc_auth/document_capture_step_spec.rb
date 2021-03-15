@@ -115,6 +115,7 @@ feature 'doc auth document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
@@ -127,6 +128,10 @@ feature 'doc auth document capture step' do
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_session_errors_throttled_path)
+      expect(fake_analytics).to have_logged_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :idv_acuant,
+      )
 
       Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
         sign_in_and_2fa_user(user)
@@ -189,6 +194,7 @@ feature 'doc auth document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
@@ -201,6 +207,10 @@ feature 'doc auth document capture step' do
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_session_errors_throttled_path)
+      expect(fake_analytics).to have_logged_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :idv_acuant,
+      )
 
       Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
         sign_in_and_2fa_user(user)

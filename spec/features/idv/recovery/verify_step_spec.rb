@@ -12,6 +12,7 @@ feature 'recovery verify step' do
     IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(ssn: good_ssn)
   end
   let(:max_attempts) { idv_max_attempts }
+  let(:fake_analytics) { FakeAnalytics.new }
   before do
     profile
     sign_in_before_2fa(user)
@@ -55,6 +56,7 @@ feature 'recovery verify step' do
   end
 
   it 'throttles resolution' do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     complete_recovery_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
     click_idv_continue
@@ -65,9 +67,14 @@ feature 'recovery verify step' do
     end
     click_idv_continue
     expect(page).to have_current_path(idv_session_errors_recovery_failure_path)
+    expect(fake_analytics).to have_logged_event(
+      Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+      throttle_type: :idv_resolution,
+    )
   end
 
   it 'throttles dup ssn and allows account reset on the error page' do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     complete_recovery_steps_before_ssn_step
     fill_out_ssn_form_with_duplicate_ssn
     click_idv_continue
@@ -78,6 +85,10 @@ feature 'recovery verify step' do
     end
     click_idv_continue
     expect(page).to have_current_path(idv_session_errors_recovery_failure_path)
+    expect(fake_analytics).to have_logged_event(
+      Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+      throttle_type: :idv_resolution,
+    )
 
     click_on t('two_factor_authentication.account_reset.reset_your_account')
     expect(page).to have_current_path(account_reset_request_path)

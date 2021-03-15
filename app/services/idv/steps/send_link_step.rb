@@ -2,12 +2,20 @@ module Idv
   module Steps
     class SendLinkStep < DocAuthBaseStep
       def call
-        return failure(I18n.t('errors.doc_auth.send_link_throttle')) if throttled_else_increment
+        return throttled_failure if throttled_else_increment
         telephony_result = send_link
         return failure(telephony_result.error.friendly_message) unless telephony_result.success?
       end
 
       private
+
+      def throttled_failure
+        @flow.analytics.track_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :idv_send_link,
+        )
+        failure(I18n.t('errors.doc_auth.send_link_throttle'))
+      end
 
       def send_link
         session_uuid = flow_session[:document_capture_session_uuid]
