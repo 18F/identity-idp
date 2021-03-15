@@ -12,67 +12,6 @@ describe 'IdvStepConcern' do
     end
   end
 
-  describe '#confirm_idv_attempts_allowed' do
-    controller Idv::StepController do
-      before_action :confirm_idv_attempts_allowed
-
-      def show
-        render plain: 'Hello'
-      end
-
-      def failure_url(_arg)
-        'foobar'
-      end
-    end
-
-    before(:each) do
-      stub_sign_in(user)
-      routes.draw do
-        get 'show' => 'idv/step#show'
-      end
-    end
-
-    context 'user has exceeded IdV max attempts in a single session' do
-      before do
-        create_maxed_throttle
-        allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-        get :show
-      end
-
-      it 'redirects to hardfail page' do
-        expect(response).to redirect_to 'foobar'
-      end
-    end
-
-    context 'user has exceeded IdV max attempts in a single period' do
-      before do
-        allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-        create_maxed_throttle
-        get :show
-      end
-
-      it 'redirects to hardfail page' do
-        expect(response).to redirect_to 'foobar'
-      end
-    end
-
-    context 'user attempts IdV after window has passed' do
-      before do
-        allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-        create_maxed_throttle(Time.zone.now - 25.hours)
-        get :show
-      end
-
-      it 'allows request to proceed' do
-        expect(response.body).to eq 'Hello'
-      end
-
-      it 'resets user attempt count' do
-        expect(user.idv_attempts).to eq 0
-      end
-    end
-  end
-
   describe '#confirm_idv_session_started' do
     controller Idv::StepController do
       before_action :confirm_idv_session_started
@@ -90,10 +29,6 @@ describe 'IdvStepConcern' do
     end
 
     context 'user has not started IdV session' do
-      before do
-        allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
-      end
-
       it 'redirects to idv doc auth url' do
         get :show
 
@@ -135,7 +70,6 @@ describe 'IdvStepConcern' do
       before do
         allow(user).to receive(:active_profile).and_return(Profile.new)
         allow(subject).to receive(:current_user).and_return(user)
-        allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
       end
 
@@ -149,7 +83,6 @@ describe 'IdvStepConcern' do
     context 'user does not have active profile' do
       before do
         allow(subject).to receive(:current_user).and_return(user)
-        allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
       end
 

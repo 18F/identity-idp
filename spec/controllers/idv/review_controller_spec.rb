@@ -67,7 +67,6 @@ describe Idv::ReviewController do
       end
       idv_session.applicant = user_attrs
       allow(subject).to receive(:idv_session).and_return(idv_session)
-      allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     end
 
     context 'user has missed address step' do
@@ -154,7 +153,6 @@ describe Idv::ReviewController do
         post 'show' => 'idv/review#show'
       end
       allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
-      allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
       idv_session.applicant = user_attrs.merge(phone_confirmed_at: Time.zone.now)
       allow(subject).to receive(:idv_session).and_return(idv_session)
     end
@@ -190,7 +188,6 @@ describe Idv::ReviewController do
     before do
       stub_sign_in(user)
       allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-      allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     end
 
     context 'user has completed all steps' do
@@ -265,7 +262,6 @@ describe Idv::ReviewController do
     before do
       stub_sign_in(user)
       allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-      allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     end
 
     context 'user fails to supply correct password' do
