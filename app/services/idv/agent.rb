@@ -15,7 +15,7 @@ module Idv
           { applicant_pii: @applicant }.to_json,
         )
 
-        ResolutionProofingJob.perform_now(
+        ResolutionProofingJob.perform_later(
           encrypted_arguments: encrypted_arguments,
           callback_url: callback_url,
           should_proof_state_id: should_proof_state_id,
@@ -71,7 +71,7 @@ module Idv
         encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
           { applicant_pii: @applicant }.to_json,
         )
-        AddressProofingJob.perform_now(
+        AddressProofingJob.perform_later(
           encrypted_arguments: encrypted_arguments,
           callback_url: callback_url,
           result_id: document_capture_session.result_id,
@@ -80,26 +80,6 @@ module Idv
       else
         LambdaJobs::Runner.new(
           job_class: Idv::Proofer.address_job_class,
-          in_process_config: {
-            aamva_config: {
-              auth_request_timeout: AppConfig.env.aamva_auth_request_timeout,
-              auth_url: AppConfig.env.aamva_auth_url,
-              cert_enabled: AppConfig.env.aamva_cert_enabled,
-              private_key: AppConfig.env.aamva_private_key,
-              public_key: AppConfig.env.aamva_public_key,
-              verification_request_timeout: AppConfig.env.aamva_verification_request_timeout,
-              verification_url: AppConfig.env.aamva_verification_url,
-            },
-            lexisnexis_config: {
-              instant_verify_workflow: AppConfig.env.lexisnexis_instant_verify_workflow,
-              account_id: AppConfig.env.lexisnexis_account_id,
-              base_url: AppConfig.env.lexisnexis_base_url,
-              username: AppConfig.env.lexisnexis_username,
-              password: AppConfig.env.lexisnexis_password,
-              request_mode: AppConfig.env.lexisnexis_request_mode,
-              request_timeout: AppConfig.env.lexisnexis_timeout,
-            },
-          },
           args: { applicant_pii: @applicant, callback_url: callback_url, trace_id: trace_id },
           in_process_config: {
             lexisnexis_config: {
@@ -130,7 +110,7 @@ module Idv
           @applicant.to_json,
         )
 
-        DocumentProofingJob.perform_now(
+        DocumentProofingJob.perform_later(
           encrypted_arguments: encrypted_arguments,
           liveness_checking_enabled: liveness_checking_enabled,
           result_id: document_capture_session.result_id,

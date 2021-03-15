@@ -4,7 +4,9 @@ class DocumentProofingJob < ApplicationJob
   def perform(args)
     result_id = args[:result_id]
     encrypted_arguments_ciphertext = args[:encrypted_arguments]
-    decrypted_args = JSON.parse(Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments_ciphertext))
+    decrypted_args = JSON.parse(
+      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments_ciphertext),
+    )
 
     Idv::Proofer.document_job_class.handle(
       event: {

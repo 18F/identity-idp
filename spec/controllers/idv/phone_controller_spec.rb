@@ -80,6 +80,7 @@ describe Idv::PhoneController do
       expect(flash[:error]).to include t('idv.failure.timeout')
       expect(response).to render_template :new
       put :create, params: { idv_phone_form: { phone: good_phone } }
+      expect_address_proofing_job
       get :new
       expect(response).to redirect_to idv_review_path
     end
@@ -168,6 +169,7 @@ describe Idv::PhoneController do
           stub_verify_steps_one_and_two(user)
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
+          expect_address_proofing_job
 
           expect(response).to redirect_to idv_phone_path
           get :new
@@ -194,6 +196,7 @@ describe Idv::PhoneController do
           stub_verify_steps_one_and_two(user)
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
+          expect_address_proofing_job
 
           expect(response).to redirect_to idv_phone_path
           get :new
@@ -232,6 +235,7 @@ describe Idv::PhoneController do
         )
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
+        expect_address_proofing_job
         expect(response).to redirect_to idv_phone_path
         get :new
       end
@@ -243,6 +247,7 @@ describe Idv::PhoneController do
         stub_verify_steps_one_and_two(user)
 
         put :create, params: { idv_phone_form: { phone: bad_phone } }
+        expect_address_proofing_job
 
         expect(response).to redirect_to idv_phone_path
         get :new
@@ -279,6 +284,7 @@ describe Idv::PhoneController do
         )
 
         put :create, params: { idv_phone_form: { phone: bad_phone } }
+        expect_address_proofing_job
 
         expect(@analytics).to receive(:track_event).ordered.with(
           Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result

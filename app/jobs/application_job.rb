@@ -1,4 +1,5 @@
 class ApplicationJob < ActiveJob::Base
+  self.log_arguments = false
   # Automatically retry jobs that encountered a deadlock
   # retry_on ActiveRecord::Deadlocked
 
