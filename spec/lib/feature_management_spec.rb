@@ -72,7 +72,7 @@ describe 'FeatureManagement', type: :feature do
   describe '#use_kms?' do
     context 'when enabled' do
       before do
-        allow(AppConfig.env).to receive(:use_kms).and_return('true')
+        allow(AppConfig.env).to receive(:use_kms).and_return(true)
       end
 
       it 'enables the feature' do
@@ -84,7 +84,7 @@ describe 'FeatureManagement', type: :feature do
   describe '#use_dashboard_service_providers?' do
     context 'when enabled' do
       before do
-        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return('true')
+        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return(true)
       end
 
       it 'enables the feature' do
@@ -94,7 +94,7 @@ describe 'FeatureManagement', type: :feature do
 
     context 'when disabled' do
       before do
-        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return('false')
+        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return(false)
       end
 
       it 'disables the feature' do

@@ -10,7 +10,7 @@ class SamlEndpoint
   end
 
   def self.endpoint_configs
-    @endpoint_configs ||= JSON.parse(AppConfig.env.saml_endpoint_configs, symbolize_names: true)
+    @endpoint_configs ||= AppConfig.env.saml_endpoint_configs
   end
 
   def secret_key

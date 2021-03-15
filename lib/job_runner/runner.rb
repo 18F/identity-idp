@@ -24,8 +24,9 @@ module JobRunner
 
     # Load the disabled job list from config. Provides a way to disable jobs
     # without changing code.
+    # @return [Array<String>]
     def self.disabled_jobs
-      @disabled_jobs ||= JSON.parse(AppConfig.env.recurring_jobs_disabled_names)
+      @disabled_jobs ||= AppConfig.env.recurring_jobs_disabled_names
     end
 
     # Add a new job configuration to the list of jobs to run. This is the

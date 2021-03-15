@@ -42,7 +42,7 @@ class FeatureManagement
   end
 
   def self.use_kms?
-    AppConfig.env.use_kms == 'true'
+    !!AppConfig.env.use_kms
   end
 
   def self.kms_multi_region_enabled?
@@ -50,7 +50,7 @@ class FeatureManagement
   end
 
   def self.use_dashboard_service_providers?
-    AppConfig.env.use_dashboard_service_providers == 'true'
+    !!AppConfig.env.use_dashboard_service_providers
   end
 
   def self.enable_usps_verification?
@@ -74,7 +74,7 @@ class FeatureManagement
   end
 
   def self.enable_saml_cert_rotation?
-    AppConfig.env.saml_secret_rotation_enabled == 'true'
+    !!AppConfig.env.saml_secret_rotation_enabled
   end
 
   def self.recaptcha_enabled?(session, reset)
@@ -99,7 +99,7 @@ class FeatureManagement
   end
 
   def self.usps_upload_enabled?
-    AppConfig.env.usps_upload_enabled == 'true'
+    !!AppConfig.env.usps_upload_enabled
   end
 
   def self.identity_pki_local_dev?

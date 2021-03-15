@@ -193,7 +193,7 @@ feature 'saml api' do
 
     context 'use_dashboard_service_providers true' do
       before do
-        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return('true')
+        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return(true)
         allow(AppConfig.env).to receive(:dashboard_url).and_return(fake_dashboard_url)
         stub_request(:get, fake_dashboard_url).to_return(
           status: 200,
