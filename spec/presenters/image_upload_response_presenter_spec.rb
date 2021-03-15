@@ -3,7 +3,7 @@ require 'rails_helper'
 describe ImageUploadResponsePresenter do
   include Rails.application.routes.url_helpers
 
-  let(:form) { Idv::ApiImageUploadForm.new({}, liveness_checking_enabled: false) }
+  let(:form) { Idv::ApiImageUploadForm.new({}, liveness_checking_enabled: false, issuer: 'test') }
   let(:form_response) { FormResponse.new(success: true, errors: {}, extra: {}) }
   let(:presenter) { described_class.new(form: form, form_response: form_response, url_options: {}) }
 
