@@ -97,6 +97,7 @@ class Analytics
   IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended
   IAL2_RECOVERY_REQUEST = 'IAL2 Recovery Request'.freeze
   IAL2_RECOVERY_REQUEST_VISITED = 'IAL2 Recovery Request Visited'.freeze
+  IAL2_RECOVERY_REQUEST_RATE_LIMIT_TRIGGERED = 'IAL2 Recovery Request Rate Limited'.freeze
   IDV_ADDRESS_VISIT = 'IdV: address visited'.freeze
   IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
@@ -104,7 +105,9 @@ class Analytics
   IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'.freeze
   IDV_CANCELLATION = 'IdV: cancellation visited'.freeze
   IDV_CANCELLATION_CONFIRMED = 'IdV: cancellation confirmed'.freeze
+  IDV_CAPTURE_DOC_LINK_SENT_RATE_LIMIT_TRIGGERED = 'IdV: capture doc link sent rate limited'.freeze
   IDV_COME_BACK_LATER_VISIT = 'IdV: come back later visited'.freeze
+  IDV_DOC_AUTH_RATE_LIMIT_TRIGGERED = 'IdV: doc auth rate limited'.freeze
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR = 'IdV: doc auth image upload vendor submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION = 'IdV: doc auth image upload vendor pii validation'.freeze
@@ -131,6 +134,7 @@ class Analytics
   IDV_USPS_ADDRESS_LETTER_REQUESTED = 'IdV: USPS address letter requested'.freeze
   IDV_USPS_ADDRESS_SUBMITTED = 'IdV: USPS address submitted'.freeze
   IDV_USPS_ADDRESS_VISITED = 'IdV: USPS address visited'.freeze
+  IDV_USPS_ADDRESS_RATE_LIMIT_TRIGGERED = 'IdV: USPS address rate limited'.freeze
   IDV_VERIFICATION_ATTEMPT_CANCELLED = 'IdV: verification attempt cancelled'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended

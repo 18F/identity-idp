@@ -153,6 +153,7 @@ module Idv
 
     def throttle_if_rate_limited
       return unless @throttled
+      track_event(Analytics::IDV_DOC_AUTH_RATE_LIMIT_TRIGGERED)
       errors.add(:limit, t('errors.doc_auth.acuant_throttle'))
     end
 

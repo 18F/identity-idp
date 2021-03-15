@@ -59,6 +59,7 @@ module Idv
       def idv_failure(result)
         attempter_increment if result.extra.dig(:proofing_results, :exception).blank?
         if attempter_throttled?
+          @flow.analytics.track_event(Analytics::IAL2_RECOVERY_REQUEST_RATE_LIMIT_TRIGGERED)
           redirect_to idv_session_errors_recovery_failure_url
         elsif result.extra.dig(:proofing_results, :exception).present?
           redirect_to idv_session_errors_recovery_exception_url
