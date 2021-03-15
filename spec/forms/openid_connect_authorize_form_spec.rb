@@ -221,8 +221,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'when scope is unauthorized and we do not block unauthorized scopes' do
       let(:scope) { 'email profile' }
       it 'does not have errors' do
-        allow(AppConfig.env).to receive(:unauthorized_scope_enabled).and_return(false
-          )
+        allow(AppConfig.env).to receive(:unauthorized_scope_enabled).and_return(false)
         expect(valid?).to eq(true)
       end
     end
