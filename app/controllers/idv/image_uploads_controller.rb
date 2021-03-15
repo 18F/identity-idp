@@ -8,7 +8,6 @@ module Idv
       image_upload_form_response = image_upload_form.submit
 
       presenter = ImageUploadResponsePresenter.new(
-        form: image_upload_form,
         form_response: image_upload_form_response,
         url_options: url_options,
       )

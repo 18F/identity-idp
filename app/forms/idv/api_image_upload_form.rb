@@ -31,6 +31,8 @@ module Idv
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
+        else
+          client_response = client_response.merge(form_response)
         end
       end
 
@@ -39,11 +41,6 @@ module Idv
         client_response: client_response,
         doc_pii_response: doc_pii_response,
       )
-    end
-
-    def remaining_attempts
-      return nil unless document_capture_session
-      Throttler::RemainingCount.call(document_capture_session.user_id, :idv_acuant)
     end
 
     private
@@ -59,7 +56,7 @@ module Idv
     end
 
     def validate_form
-      response = FormResponse.new(
+      response = Idv::DocAuthFormResponse.new(
         success: valid?,
         errors: errors.messages,
         extra: {
@@ -99,6 +96,11 @@ module Idv
 
       # merge in the image_form_response to pick up the remaining_attempts
       response.merge(form_response)
+    end
+
+    def remaining_attempts
+      return nil unless document_capture_session
+      Throttler::RemainingCount.call(document_capture_session.user_id, :idv_acuant)
     end
 
     def determine_response(form_response:, client_response:, doc_pii_response:)

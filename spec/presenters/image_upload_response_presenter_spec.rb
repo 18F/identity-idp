@@ -3,16 +3,10 @@ require 'rails_helper'
 describe ImageUploadResponsePresenter do
   include Rails.application.routes.url_helpers
 
-  let(:form) { Idv::ApiImageUploadForm.new({}, liveness_checking_enabled: false, issuer: 'test') }
-  let(:form_response) { FormResponse.new(success: true, errors: {}, extra: {}) }
-  let(:presenter) { described_class.new(form: form, form_response: form_response, url_options: {}) }
-
-  before do
-    allow(Throttler::RemainingCount).to receive(:call).and_return(3)
-    allow(DocumentCaptureSession).to receive(:find_by).and_return(
-      DocumentCaptureSession.create!(requested_at: Time.zone.now),
-    )
+  let(:form_response) do
+    FormResponse.new(success: true, errors: {}, extra: { remaining_attempts: 3 })
   end
+  let(:presenter) { described_class.new(form_response: form_response, url_options: {}) }
 
   describe '#success?' do
     context 'failure' do
@@ -135,7 +129,7 @@ describe ImageUploadResponsePresenter do
           errors: {
             front: t('doc_auth.errors.not_a_file'),
           },
-          extra: {},
+          extra: { remaining_attempts: 3 },
         )
       end
 
