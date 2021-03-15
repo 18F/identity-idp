@@ -27,18 +27,16 @@ describe('DocumentCapturePolling', () => {
 
   beforeEach(() => {
     document.body.innerHTML = `
-      <a href="#" class="doc_capture_back_link">Back</a>
-      <form class="doc_capture_continue_button_form"><button>Submit</button></form>
+      <a href="#" class="link-sent-back-link">Back</a>
+      <form class="link-sent-continue-button-form"><button>Submit</button></form>
     `;
 
     subject = new DocumentCapturePolling({
       statusEndpoint: '/status',
       elements: {
-        backLink: /** @type {HTMLAnchorElement} */ (document.querySelector(
-          '.doc_capture_back_link',
-        )),
+        backLink: /** @type {HTMLAnchorElement} */ (document.querySelector('.link-sent-back-link')),
         form: /** @type {HTMLFormElement} */ (document.querySelector(
-          '.doc_capture_continue_button_form',
+          '.link-sent-continue-button-form',
         )),
       },
       trackEvent,
