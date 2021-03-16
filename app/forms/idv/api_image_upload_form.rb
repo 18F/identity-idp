@@ -147,9 +147,6 @@ module Idv
     end
 
     def self.human_attribute_name(attr, options = {})
-      # i18n-tasks-use t('doc_auth.headings.document_capture_front')
-      # i18n-tasks-use t('doc_auth.headings.document_capture_back')
-      # i18n-tasks-use t('doc_auth.headings.document_capture_selfie')
       I18n.t("doc_auth.headings.document_capture_#{attr}", options)
     end
 
