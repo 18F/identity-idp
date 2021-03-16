@@ -1,10 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: bdb925440c64138acd54a1658e5cc92323734a77
-  tag: v4.0.0
+  revision: c7141277eabf96b011771e6ce5a1169b874cc905
+  tag: v4.1.0
   specs:
-    aamva (4.0.0)
-      dotenv
+    aamva (4.1.0)
       faraday
       hashie
       proofer (>= 2.7.1)
@@ -292,7 +291,6 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.4.4)
     docile (1.1.5)
-    dotenv (2.7.6)
     dotiw (5.1.0)
       activesupport
       i18n
