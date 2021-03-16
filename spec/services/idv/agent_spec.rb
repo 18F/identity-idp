@@ -2,6 +2,8 @@ require 'rails_helper'
 require 'ostruct'
 
 describe Idv::Agent do
+  include IdvHelper
+
   let(:bad_phone) do
     IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
@@ -22,6 +24,8 @@ describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
+
+          expect_resolution_proofing_job
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include(
@@ -42,6 +46,7 @@ describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
+          expect_resolution_proofing_job
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to include(
             state_id: 'StateIdMock',
@@ -55,12 +60,12 @@ describe Idv::Agent do
           end
 
           it 'passes dob_year_only to the proofing function' do
-            expect(LambdaJobs::Runner).to receive(:new).
-              with(hash_including(args: hash_including(dob_year_only: true))).
-              and_call_original
-
             agent.proof_resolution(
               document_capture_session, should_proof_state_id: true, trace_id: trace_id
+            )
+
+            expect(ResolutionProofingJob).to(
+              have_been_enqueued.with(hash_including(dob_year_only: true)),
             )
           end
         end
@@ -73,6 +78,7 @@ describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
+          expect_resolution_proofing_job
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include(
@@ -87,6 +93,8 @@ describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: false, trace_id: trace_id
           )
+
+          expect_resolution_proofing_job
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to_not include(
             state_id: 'StateIdMock',
@@ -102,26 +110,13 @@ describe Idv::Agent do
         agent.proof_resolution(
           document_capture_session, should_proof_state_id: true, trace_id: trace_id
         )
+        expect_resolution_proofing_job
         result = document_capture_session.load_proofing_result.result
 
         expect(result[:exception]).to start_with('#<Proofer::TimeoutError: ')
         expect(result).to include(
           success: false,
           timed_out: true,
-        )
-      end
-
-      it 'passes the right lexisnexis configs' do
-        expect(LambdaJobs::Runner).to receive(:new).and_wrap_original do |impl, args|
-          lexisnexis_config = args.dig(:in_process_config, :lexisnexis_config)
-          expect(lexisnexis_config).to include(:instant_verify_workflow)
-          expect(lexisnexis_config).to_not include(:phone_finder_workflow)
-
-          impl.call(args)
-        end
-
-        agent.proof_resolution(
-          document_capture_session, should_proof_state_id: true, trace_id: trace_id
         )
       end
     end
@@ -132,6 +127,7 @@ describe Idv::Agent do
       it 'proofs addresses successfully with valid information' do
         agent = Idv::Agent.new({ phone: Faker::PhoneNumber.cell_phone })
         agent.proof_address(document_capture_session, trace_id: trace_id)
+        expect_address_proofing_job
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq true
@@ -140,21 +136,10 @@ describe Idv::Agent do
       it 'fails to proof addresses with invalid information' do
         agent = Idv::Agent.new(phone: bad_phone)
         agent.proof_address(document_capture_session, trace_id: trace_id)
+        expect_address_proofing_job
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq false
-      end
-
-      it 'passes the right lexisnexis configs' do
-        expect(LambdaJobs::Runner).to receive(:new).and_wrap_original do |impl, args|
-          lexisnexis_config = args.dig(:in_process_config, :lexisnexis_config)
-          expect(lexisnexis_config).to_not include(:instant_verify_workflow)
-          expect(lexisnexis_config).to include(:phone_finder_workflow)
-
-          impl.call(args)
-        end
-
-        agent.proof_address(document_capture_session, trace_id: trace_id)
       end
     end
   end
