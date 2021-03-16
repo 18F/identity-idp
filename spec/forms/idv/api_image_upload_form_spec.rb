@@ -11,7 +11,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       },
       liveness_checking_enabled: liveness_checking_enabled?,
       issuer: 'test_issuer',
-      analytics: FakeAnalytics.new
+      analytics: FakeAnalytics.new,
     )
   end
 
@@ -99,7 +99,9 @@ RSpec.describe Idv::ApiImageUploadForm do
     end
 
     context 'posting images to client fails' do
-      let(:failed_response) { IdentityDocAuth::Response.new(success: false, errors: { front: 'glare' }) }
+      let(:failed_response) do
+        IdentityDocAuth::Response.new(success: false, errors: { front: 'glare' })
+      end
       before do
         allow(subject).to receive(:post_images_to_client).and_return(failed_response)
       end
