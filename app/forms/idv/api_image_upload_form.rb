@@ -108,9 +108,7 @@ module Idv
       return form_response unless form_response.success?
 
       # doc_pii validation failed
-      if doc_pii_response.present? && !doc_pii_response.success?
-        return doc_pii_response
-      end
+      return doc_pii_response if (doc_pii_response.present? && !doc_pii_response.success?)
 
       client_response
     end
