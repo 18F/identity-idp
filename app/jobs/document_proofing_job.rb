@@ -5,17 +5,18 @@ class DocumentProofingJob < ApplicationJob
               liveness_checking_enabled:)
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
+      symbolize_names: true,
     )
 
     Idv::Proofer.document_job_class.handle(
       event: {
-        encryption_key: decrypted_args['encryption_key'],
-        front_image_iv: decrypted_args['front_image_iv'],
-        back_image_iv: decrypted_args['back_image_iv'],
-        selfie_image_iv: decrypted_args['selfie_image_iv'],
-        front_image_url: decrypted_args['front_image_url'],
-        back_image_url: decrypted_args['back_image_url'],
-        selfie_image_url: decrypted_args['selfie_image_url'],
+        encryption_key: decrypted_args[:encryption_key:=],
+        front_image_iv: decrypted_args[:front_image_iv],
+        back_image_iv: decrypted_args[:back_image_iv],
+        selfie_image_iv: decrypted_args[:selfie_image_iv],
+        front_image_url: decrypted_args[:front_image_url],
+        back_image_url: decrypted_args[:back_image_url],
+        selfie_image_url: decrypted_args[:selfie_image_url],
         callback_url: callback_url,
         liveness_checking_enabled: liveness_checking_enabled,
         trace_id: trace_id,
