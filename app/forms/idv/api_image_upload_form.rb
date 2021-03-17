@@ -21,7 +21,7 @@ module Idv
 
     def submit
       throttled_else_increment
-      @form_response = validate_form
+      form_response = validate_form
 
       client_response = nil
       doc_pii_response = nil
@@ -29,11 +29,7 @@ module Idv
       if form_response.success?
         client_response = post_images_to_client
 
-        if client_response.success?
-          doc_pii_response = validate_pii_from_doc(client_response)
-        else
-          client_response = client_response.merge(form_response)
-        end
+        doc_pii_response = validate_pii_from_doc(client_response) if client_response.success?
       end
 
       return determine_response(
@@ -80,6 +76,7 @@ module Idv
         selfie_image: selfie&.read,
         liveness_checking_enabled: liveness_checking_enabled?,
       )
+      response = response.merge(remaining_attempts_response)
 
       update_analytics(response)
 
@@ -88,14 +85,27 @@ module Idv
 
     def validate_pii_from_doc(client_response)
       response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
+      response = response.merge(remaining_attempts_response)
+
       track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
-        response.to_h.merge(user_id: user_uuid),
+        response.to_h,
       )
       store_pii(client_response) if client_response.success? && response.success?
 
-      # merge in the image_form_response to pick up the remaining_attempts
-      response.merge(form_response)
+      response
+    end
+
+    # A successful response providing remaining attempts and user_id to merge into other responses
+    def remaining_attempts_response
+      @remaining_attempts_response ||= Idv::DocAuthFormResponse.new(
+        success: true,
+        errors: nil,
+        extra: {
+          remaining_attempts: remaining_attempts,
+          user_id: user_uuid,
+        },
+      )
     end
 
     def remaining_attempts
@@ -186,7 +196,7 @@ module Idv
       update_funnel(client_response)
       track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-        client_response.to_h.merge(user_id: user_uuid),
+        client_response.to_h,
       )
     end
 
