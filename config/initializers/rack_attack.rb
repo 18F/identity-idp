@@ -54,7 +54,7 @@ module Rack
     # Throttle all requests by IP
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.remote_ip}"
-    if AppConfig.env.requests_per_ip_track_only_mode == 'true'
+    if AppConfig.env.requests_per_ip_track_only_mode
       track(
         'req/ip',
         limit: AppConfig.env.requests_per_ip_limit.to_i,

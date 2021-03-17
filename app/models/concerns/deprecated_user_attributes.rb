@@ -6,7 +6,7 @@ module DeprecatedUserAttributes
   ].freeze
 
   def []=(attribute, value)
-    if show_user_attribute_deprecation_warnings && DEPRECATED_ATTRIBUTES.include?(attribute)
+    if show_user_attribute_deprecation_warnings? && DEPRECATED_ATTRIBUTES.include?(attribute)
       warning = "Setting #{attribute} on User is deprecated. Use EmailAddress instead."
       warn warning
     end
@@ -14,7 +14,7 @@ module DeprecatedUserAttributes
   end
 
   def [](attribute)
-    if show_user_attribute_deprecation_warnings && DEPRECATED_ATTRIBUTES.include?(attribute)
+    if show_user_attribute_deprecation_warnings? && DEPRECATED_ATTRIBUTES.include?(attribute)
       warning = "Reading #{attribute} on User is deprecated. Use EmailAddress instead."
       warn warning
     end
@@ -23,7 +23,7 @@ module DeprecatedUserAttributes
 
   private
 
-  def show_user_attribute_deprecation_warnings
-    AppConfig.env.show_user_attribute_deprecation_warnings == 'true'
+  def show_user_attribute_deprecation_warnings?
+    !!AppConfig.env.show_user_attribute_deprecation_warnings
   end
 end
