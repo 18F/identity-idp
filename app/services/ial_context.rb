@@ -23,7 +23,7 @@ class IalContext
   end
 
   def ial2_or_greater?
-    ial2_requested? || ial2_strict_requested?
+    ial2_requested? || ial2_strict_requested? || ial2_service_provider?
   end
 
   def ial2_strict_requested?
