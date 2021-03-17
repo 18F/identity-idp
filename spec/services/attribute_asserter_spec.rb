@@ -14,7 +14,7 @@ describe AttributeAsserter do
     )
   end
   let(:name_id_format) { Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT }
-  let(:service_provider_ial) { 2 }
+  let(:service_provider_ial) { 1 }
   let(:service_provider_aal) { nil }
   let(:service_provider) do
     instance_double(

@@ -14,6 +14,10 @@ class IalContext
     service_provider.ial.to_i >= ::Idp::Constants::IAL2
   end
 
+  def default_to_ial2?
+    ial.nil? && ial2_service_provider?
+  end
+
   def ialmax_requested?
     ial&.zero?
   end
@@ -23,7 +27,7 @@ class IalContext
   end
 
   def ial2_or_greater?
-    ial2_requested? || ial2_strict_requested? || ial2_service_provider?
+    ial2_requested? || ial2_strict_requested? || default_to_ial2?
   end
 
   def ial2_strict_requested?
