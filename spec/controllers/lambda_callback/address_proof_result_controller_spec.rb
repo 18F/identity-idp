@@ -15,7 +15,6 @@ describe LambdaCallback::AddressProofResultController do
       it 'accepts and stores successful address proofing results' do
         applicant = { phone: Faker::PhoneNumber.cell_phone }
         Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: trace_id)
-        expect_address_proofing_job
         proofer_result = document_capture_session.load_proofing_result[:result]
 
         post :create, params: { result_id: document_capture_session.result_id,
@@ -31,7 +30,6 @@ describe LambdaCallback::AddressProofResultController do
         }
 
         Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: trace_id)
-        expect_address_proofing_job
         proofer_result = document_capture_session.load_proofing_result[:result]
 
         post :create, params: { result_id: document_capture_session.result_id,
@@ -54,7 +52,6 @@ describe LambdaCallback::AddressProofResultController do
 
         document_capture_session.create_proofing_session
         Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: trace_id)
-        expect_address_proofing_job
         proofer_result = document_capture_session.load_proofing_result[:result]
 
         post :create, params: { result_id: document_capture_session.result_id,

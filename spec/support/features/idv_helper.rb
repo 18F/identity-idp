@@ -128,19 +128,4 @@ module IdvHelper
     @saml_authn_request = auth_request.create(settings)
     visit @saml_authn_request
   end
-
-  def expect_address_proofing_job
-    # expect(AddressProofingJob).to have_been_enqueued.exactly(:once)
-    # perform_enqueued_jobs
-  end
-
-  def expect_resolution_proofing_job
-    # expect(ResolutionProofingJob).to have_been_enqueued.exactly(:once)
-    # perform_enqueued_jobs
-  end
-
-  def expect_document_proofing_job
-    # expect(DocumentProofingJob).to have_been_enqueued.exactly(:once)
-    # perform_enqueued_jobs
-  end
 end

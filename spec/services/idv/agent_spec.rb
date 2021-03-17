@@ -25,7 +25,6 @@ describe Idv::Agent do
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
 
-          expect_resolution_proofing_job
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include(
@@ -46,7 +45,6 @@ describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
-          expect_resolution_proofing_job
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to include(
             state_id: 'StateIdMock',
@@ -57,15 +55,17 @@ describe Idv::Agent do
         context 'proofing partial date of birth' do
           before do
             allow(AppConfig.env).to receive(:proofing_send_partial_dob).and_return('true')
+            allow(AppConfig.env).to receive(:ruby_workers_enabled).
+              and_return('false')
           end
 
           it 'passes dob_year_only to the proofing function' do
+            expect(LambdaJobs::Runner).to receive(:new).
+              with(hash_including(args: hash_including(dob_year_only: true))).
+              and_call_original
+
             agent.proof_resolution(
               document_capture_session, should_proof_state_id: true, trace_id: trace_id
-            )
-
-            expect(ResolutionProofingJob).to(
-              have_been_enqueued.with(hash_including(dob_year_only: true)),
             )
           end
         end
@@ -78,7 +78,6 @@ describe Idv::Agent do
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
-          expect_resolution_proofing_job
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include(
@@ -94,7 +93,6 @@ describe Idv::Agent do
             document_capture_session, should_proof_state_id: false, trace_id: trace_id
           )
 
-          expect_resolution_proofing_job
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to_not include(
             state_id: 'StateIdMock',
@@ -110,7 +108,6 @@ describe Idv::Agent do
         agent.proof_resolution(
           document_capture_session, should_proof_state_id: true, trace_id: trace_id
         )
-        expect_resolution_proofing_job
         result = document_capture_session.load_proofing_result.result
 
         expect(result[:exception]).to start_with('#<Proofer::TimeoutError: ')
@@ -127,7 +124,6 @@ describe Idv::Agent do
       it 'proofs addresses successfully with valid information' do
         agent = Idv::Agent.new({ phone: Faker::PhoneNumber.cell_phone })
         agent.proof_address(document_capture_session, trace_id: trace_id)
-        expect_address_proofing_job
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq true
@@ -136,7 +132,6 @@ describe Idv::Agent do
       it 'fails to proof addresses with invalid information' do
         agent = Idv::Agent.new(phone: bad_phone)
         agent.proof_address(document_capture_session, trace_id: trace_id)
-        expect_address_proofing_job
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq false

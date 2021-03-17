@@ -274,6 +274,8 @@ feature 'doc auth document capture step' do
       allow(LambdaJobs::Runner).to receive(:new).
         with(hash_including(job_class: Idv::Proofer.document_job_class)).
         and_call_original
+      allow(AppConfig.env).to receive(:ruby_workers_enabled).
+        and_return('false')
     end
 
     it 'proceeds to the next page with valid info' do

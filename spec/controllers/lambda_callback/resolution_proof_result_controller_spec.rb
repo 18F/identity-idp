@@ -22,7 +22,6 @@ describe LambdaCallback::ResolutionProofResultController do
           trace_id: trace_id,
         )
 
-        expect_resolution_proofing_job
         proofer_result = document_capture_session.load_proofing_result[:result]
 
         post :create, params: { result_id: document_capture_session.result_id,
@@ -40,7 +39,6 @@ describe LambdaCallback::ResolutionProofResultController do
           should_proof_state_id: false,
           trace_id: trace_id,
         )
-        expect_resolution_proofing_job
         proofer_result = document_capture_session.load_proofing_result[:result]
 
         post :create, params: { result_id: document_capture_session.result_id,
@@ -65,7 +63,6 @@ describe LambdaCallback::ResolutionProofResultController do
           should_proof_state_id: false,
           trace_id: trace_id,
         )
-        expect_resolution_proofing_job
         proofer_result = document_capture_session.load_proofing_result[:result]
 
         post :create, params: { result_id: document_capture_session.result_id,
