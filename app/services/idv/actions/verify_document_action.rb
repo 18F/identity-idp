@@ -58,9 +58,9 @@ module Idv
 
       def image_params
         params.permit([
-                        :encryption_key, :front_image_iv, :back_image_iv, :selfie_image_iv,
-            :front_image_url, :back_image_url, :selfie_image_url
-                      ])
+          :encryption_key, :front_image_iv, :back_image_iv, :selfie_image_iv,
+          :front_image_url, :back_image_url, :selfie_image_url
+        ])
       end
     end
   end
