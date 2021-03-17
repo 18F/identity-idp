@@ -23,7 +23,7 @@ RSpec.describe GpoConfirmationUploader do
   end
 
   before do
-    allow(AppConfig.env).to receive(:usps_upload_enabled).and_return('true')
+    allow(AppConfig.env).to receive(:usps_upload_enabled).and_return(true)
   end
 
   describe '#generate_export' do
@@ -62,8 +62,8 @@ RSpec.describe GpoConfirmationUploader do
       subject
     end
 
-    it 'does not upload when GPO upload is disabled' do
-      allow(AppConfig.env).to receive(:usps_upload_enabled).and_return('false')
+    it 'does not upload when USPS upload is disabled' do
+      allow(AppConfig.env).to receive(:usps_upload_enabled).and_return(false)
 
       expect(Net::SFTP).to_not receive(:start)
 

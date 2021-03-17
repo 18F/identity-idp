@@ -4,18 +4,18 @@ class IdentityConfig
   end
 
   CONVERTERS = {
-    uri: -> (value) { URI(value) if value.present? },
-    string: -> (value) { value },
-    comma_separated_string_list: -> (value) do
+    uri: proc { |value| URI(value) if value.present? },
+    string: proc { |value| value.to_s },
+    comma_separated_string_list: proc do
       value.split(',')
     end,
-    integer: -> (value) do
+    integer: proc do |value|
       Integer(value)
     end,
-    json: -> (value) do
-      JSON.parse(value)
+    json: proc do |value, options: {}|
+      JSON.parse(value, symbolize_names: options[:symbolize_names])
     end,
-    boolean: -> (value) do
+    boolean: proc do |value|
       case value
       when 'true'
         true
@@ -33,10 +33,10 @@ class IdentityConfig
   end
 
   # Dependency injection is required
-  def add(key, type: :string, is_sensitive: false)
+  def add(key, type: :string, is_sensitive: false, options: {})
     value = @read_env[key]
     raise "#{key} is required but is not present" if value.nil?
-    converted_value = CONVERTERS.fetch(type).call(value)
+    converted_value = CONVERTERS.fetch(type).call(value, options)
     raise "#{key} is required but is not present" if converted_value.nil?
 
     @written_env[key] = converted_value
@@ -214,64 +214,59 @@ class IdentityConfig
     config.add(:recurring_jobs_disabled_names, type: :json)
     config.add(:redis_throttle_url, type: :uris)
     # TODO: Zach
-    # config.add(:redis_url
-    # config.add(:reg_confirmed_email_max_attempts
-    # config.add(:reg_confirmed_email_window_in_minutes
-    # config.add(:reg_unconfirmed_email_max_attempts
-    # config.add(:reg_unconfirmed_email_window_in_minutes
-    # config.add(:remember_device_expiration_hours_aal_1
-    # config.add(:remember_device_expiration_hours_aal_2
-    # config.add(:remote_settings_certs_dir
-    # config.add(:remote_settings_config_dir
-    # config.add(:remote_settings_logos_dir
-    # config.add(:remote_settings_whitelist
-    # config.add(:report_timeout
-    # config.add(:requests_per_ip_limit
-    # config.add(:requests_per_ip_period
-    # config.add(:requests_per_ip_track_only_mode
-    # config.add(:reset_password_email_max_attempts
-    # config.add(:reset_password_email_window_in_minutes
-    # config.add(:resolution_proof_result_lambda_token
-    # config.add(:s3_report_bucket_prefix
-    # config.add(:s3_reports_enabled
-    # config.add(:saml_endpoint_configs
-    # config.add(:saml_secret_rotation_enabled
-    # config.add(:scrypt_cost
-    # config.add(:secret_key_base
-    # config.add(:service_provider_request_ttl_hours
-    # config.add(:session_check_delay
-    # config.add(:session_check_frequency
-    # config.add(:session_encryption_key
-    # config.add(:session_timeout_in_minutes
-    # config.add(:session_timeout_warning_seconds
-    # config.add(:show_user_attribute_deprecation_warnings
-    # config.add(:skip_encryption_allowed_list
-    # config.add(:sp_context_needed_environment
-    # config.add(:sp_handoff_bounce_max_seconds
-    # config.add(:sps_over_quota_limit_notify_email_list
-    # config.add(:telephony_adapter
-    # config.add(:test
-    # config.add(:unauthorized_scope_enabled
-    # config.add(:use_dashboard_service_providers
-    # config.add(:use_kms
-    # config.add(:usps_confirmation_max_days
-    # config.add(:usps_download_sftp_directory
-    # config.add(:usps_download_sftp_host
-    # config.add(:usps_download_sftp_password
-    # config.add(:usps_download_sftp_timeout
-    # config.add(:usps_download_sftp_username
-    # config.add(:usps_download_token
-    # config.add(:usps_ipp_password
-    # config.add(:usps_ipp_root_url
-    # config.add(:usps_ipp_sponsor_id
-    # config.add(:usps_ipp_username
-    # config.add(:usps_upload_enabled
-    # config.add(:usps_upload_sftp_directory
-    # config.add(:usps_upload_sftp_host
-    # config.add(:usps_upload_sftp_password
-    # config.add(:usps_upload_sftp_timeout
-    # config.add(:usps_upload_sftp_username
-    # config.add(:usps_upload_token
+    config.add(:redis_url, type: :uri)
+    config.add(:reg_confirmed_email_max_attempts, type: :integer)
+    config.add(:reg_confirmed_email_window_in_minutes, type: :integer)
+    config.add(:reg_unconfirmed_email_max_attempts, type: :integer)
+    config.add(:reg_unconfirmed_email_window_in_minutes, type: :integer)
+    config.add(:remember_device_expiration_hours_aal_1, type: :integer)
+    config.add(:remember_device_expiration_hours_aal_2, type: :integer)
+    config.add(:report_timeout, type: :integer) # not set anywhere, needs to be nillable
+    config.add(:requests_per_ip_limit, type: :integer)
+    config.add(:requests_per_ip_period, type: :integer)
+    config.add(:requests_per_ip_track_only_mode, type: :boolean)
+    config.add(:reset_password_email_max_attempts, type: :integer)
+    config.add(:reset_password_email_window_in_minutes, type: :integer)
+    config.add(:resolution_proof_result_lambda_token)
+    config.add(:s3_report_bucket_prefix)
+    config.add(:s3_reports_enabled, type: :boolean)
+    config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
+    config.add(:saml_secret_rotation_enabled, type: :boolean)
+    config.add(:scrypt_cost)
+    config.add(:secret_key_base)
+    config.add(:service_provider_request_ttl_hours, type: :integer)
+    config.add(:session_check_delay, type: :integer)
+    config.add(:session_check_frequency, type: :integer)
+    config.add(:session_encryption_key, type: :integer)
+    config.add(:session_timeout_in_minutes, type: :integer)
+    config.add(:session_timeout_warning_seconds, type: :integer)
+    config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
+    config.add(:skip_encryption_allowed_list, type: :json)
+    config.add(:sp_context_needed_environment)
+    config.add(:sp_handoff_bounce_max_seconds, type: :integer)
+    config.add(:sps_over_quota_limit_notify_email_list, type: :json)
+    config.add(:telephony_adapter)
+    config.add(:unauthorized_scope_enabled, type: :boolean)
+    config.add(:use_dashboard_service_providers, type: :boolean)
+    config.add(:use_kms, type: :boolean)
+    config.add(:usps_confirmation_max_days, type: :integer)
+    config.add(:usps_download_sftp_directory)
+    config.add(:usps_download_sftp_host)
+    config.add(:usps_download_sftp_password)
+    config.add(:usps_download_sftp_timeout, type: :integer)
+    config.add(:usps_download_sftp_username)
+    config.add(:usps_download_token
+    config.add(:usps_ipp_password)
+    config.add(:usps_ipp_root_url, type: :uri)
+    config.add(:usps_ipp_sponsor_id)
+    config.add(:usps_ipp_username)
+    config.add(:usps_upload_enabled, type: :boolean)
+    config.add(:usps_upload_sftp_directory)
+    config.add(:usps_upload_sftp_host)
+    config.add(:usps_upload_sftp_password)
+    config.add(:usps_upload_sftp_timeout, type: :integer)
+    config.add(:usps_upload_sftp_username)
+    config.add(:usps_upload_token)
     final_env = config.add(:valid_authn_contexts, type: :json)
 
     @store = Struct.new('IdentityConfig', *final_env.keys, keyword_init: true).new(**final_env)
