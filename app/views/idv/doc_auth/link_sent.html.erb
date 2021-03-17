@@ -7,6 +7,7 @@
 <% if flow_session[:error_message] %>
   <%= render 'shared/alert', {
     type: 'error',
+    class: 'margin-bottom-4',
     message: flow_session[:error_message],
   } %>
 <% end %>
@@ -31,7 +32,7 @@
 </div>
 
 <% if !is_cancelled %>
-  <div class="margin-top-2 margin-bottom-0">
+  <div class="margin-top-4 margin-bottom-0">
     <%=
       button_to(
         t('forms.buttons.continue'),
