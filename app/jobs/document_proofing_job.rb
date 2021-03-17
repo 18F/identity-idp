@@ -10,7 +10,7 @@ class DocumentProofingJob < ApplicationJob
 
     Idv::Proofer.document_job_class.handle(
       event: {
-        encryption_key: decrypted_args[:encryption_key:=],
+        encryption_key: decrypted_args[:encryption_key],
         front_image_iv: decrypted_args[:front_image_iv],
         back_image_iv: decrypted_args[:back_image_iv],
         selfie_image_iv: decrypted_args[:selfie_image_iv],

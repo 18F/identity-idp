@@ -5,11 +5,12 @@ class ResolutionProofingJob < ApplicationJob
               dob_year_only:)
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
+      symbolize_names: true,
     )
 
     Idv::Proofer.resolution_job_class.handle(
       event: {
-        applicant_pii: decrypted_args['applicant_pii'],
+        applicant_pii: decrypted_args[:applicant_pii],
         callback_url: callback_url,
         should_proof_state_id: should_proof_state_id,
         dob_year_only: dob_year_only,
