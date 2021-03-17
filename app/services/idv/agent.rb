@@ -10,7 +10,7 @@ module Idv
         document_capture_session.result_id,
       )
 
-      if FeatureManagement.use_ruby_workers?
+      if FeatureManagement.ruby_workers_enabled?
         encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
           { applicant_pii: @applicant }.to_json,
         )
@@ -67,7 +67,7 @@ module Idv
         document_capture_session.result_id,
       )
 
-      if FeatureManagement.use_ruby_workers?
+      if FeatureManagement.ruby_workers_enabled?
         encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
           { applicant_pii: @applicant }.to_json,
         )
@@ -105,7 +105,7 @@ module Idv
         result_id: document_capture_session.result_id,
       )
 
-      if FeatureManagement.use_ruby_workers?
+      if FeatureManagement.ruby_workers_enabled?
         encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
           @applicant.to_json,
         )
