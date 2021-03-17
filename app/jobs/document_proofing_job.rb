@@ -1,11 +1,10 @@
 class DocumentProofingJob < ApplicationJob
   queue_as :default
 
-  def perform(args)
-    result_id = args[:result_id]
-    encrypted_arguments_ciphertext = args[:encrypted_arguments]
+  def perform(result_id:, encrypted_arguments:, callback_url:, trace_id:,
+              liveness_checking_enabled:)
     decrypted_args = JSON.parse(
-      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments_ciphertext),
+      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
     )
 
     Idv::Proofer.document_job_class.handle(
@@ -17,9 +16,9 @@ class DocumentProofingJob < ApplicationJob
         front_image_url: decrypted_args['front_image_url'],
         back_image_url: decrypted_args['back_image_url'],
         selfie_image_url: decrypted_args['selfie_image_url'],
-        callback_url: args[:callback_url],
-        liveness_checking_enabled: args[:liveness_checking_enabled],
-        trace_id: args[:amzn_trace_id],
+        callback_url: callback_url,
+        liveness_checking_enabled: liveness_checking_enabled,
+        trace_id: trace_id,
       },
       context: nil,
     ) do |result|

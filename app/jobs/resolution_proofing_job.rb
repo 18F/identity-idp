@@ -1,20 +1,19 @@
 class ResolutionProofingJob < ApplicationJob
   queue_as :default
 
-  def perform(args)
-    result_id = args[:result_id]
-    encrypted_arguments_ciphertext = args[:encrypted_arguments]
+  def perform(result_id:, encrypted_arguments:, callback_url:, trace_id:, should_proof_state_id:,
+              dob_year_only:)
     decrypted_args = JSON.parse(
-      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments_ciphertext),
+      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
     )
 
     Idv::Proofer.resolution_job_class.handle(
       event: {
         applicant_pii: decrypted_args['applicant_pii'],
-        callback_url: args[:callback_url],
-        should_proof_state_id: args[:should_proof_state_id],
-        dob_year_only: args[:dob_year_only],
-        trace_id: args[:trace_id],
+        callback_url: callback_url,
+        should_proof_state_id: should_proof_state_id,
+        dob_year_only: dob_year_only,
+        trace_id: trace_id,
         aamva_config: {
           auth_request_timeout: AppConfig.env.aamva_auth_request_timeout,
           auth_url: AppConfig.env.aamva_auth_url,

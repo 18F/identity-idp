@@ -1,18 +1,16 @@
 class AddressProofingJob < ApplicationJob
   queue_as :default
 
-  def perform(args)
-    result_id = args[:result_id]
-    encrypted_arguments_ciphertext = args[:encrypted_arguments]
+  def perform(result_id:, encrypted_arguments:, callback_url:, trace_id:)
     decrypted_args = JSON.parse(
-      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments_ciphertext),
+      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
     )
 
     Idv::Proofer.address_job_class.handle(
       event: {
         applicant_pii: decrypted_args['applicant_pii'],
-        callback_url: args[:callback_url],
-        trace_id: args[:trace_id],
+        callback_url: :callback_url,
+        trace_id: :trace_id,
         lexisnexis_config: {
           phone_finder_workflow: AppConfig.env.lexisnexis_phone_finder_workflow,
           account_id: AppConfig.env.lexisnexis_account_id,
