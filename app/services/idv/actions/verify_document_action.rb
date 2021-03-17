@@ -40,12 +40,12 @@ module Idv
         verify_document_capture_session.requested_at = Time.zone.now
         verify_document_capture_session.create_doc_auth_session
 
-        applicant = image_params.to_h.slice(
+        document_attributes = image_params.to_h.slice(
           'encryption_key', 'front_image_iv', 'back_image_iv', 'selfie_image_iv', 'front_image_url',
           'back_image_url', 'selfie_image_url'
         )
 
-        Idv::Agent.new(applicant).proof_document(
+        Idv::Agent.new(document_attributes).proof_document(
           verify_document_capture_session,
           liveness_checking_enabled: liveness_checking_enabled?,
           trace_id: amzn_trace_id,
