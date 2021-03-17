@@ -45,8 +45,7 @@ describe('DocumentCapturePolling', () => {
     subject.bind();
   });
 
-  it('hides form and instructions', () => {
-    expect(screen.getByText('Instructions').closest('.display-none')).to.be.ok();
+  it('hides form', () => {
     expect(screen.getByText('Submit').closest('.display-none')).to.be.ok();
   });
 

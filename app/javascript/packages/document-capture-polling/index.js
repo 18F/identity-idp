@@ -10,7 +10,6 @@ export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
  * @typedef DocumentCapturePollingElements
  *
  * @prop {HTMLFormElement} form
- * @prop {HTMLParagraphElement} instructions
  */
 
 /**
@@ -47,7 +46,6 @@ export class DocumentCapturePolling {
    */
   toggleFormVisible(isVisible) {
     this.elements.form.classList.toggle('display-none', !isVisible);
-    this.elements.instructions.classList.toggle('display-none', !isVisible);
   }
 
   onMaxPollAttempts() {
