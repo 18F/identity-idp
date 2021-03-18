@@ -9,9 +9,6 @@ loadPolyfills(['fetch', 'classlist']).then(() => {
       form: /** @type {HTMLFormElement} */ (document.querySelector(
         '.doc_capture_continue_button_form',
       )),
-      instructions: /** @type {HTMLParagraphElement} */ (document.querySelector(
-        '#doc_capture_continue_instructions',
-      )),
     },
   }).bind();
 });
