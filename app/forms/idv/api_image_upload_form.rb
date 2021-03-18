@@ -48,6 +48,7 @@ module Idv
       @throttled = Throttler::IsThrottledElseIncrement.call(
         document_capture_session.user_id,
         :idv_acuant,
+        analytics: @analytics,
       )
     end
 
@@ -153,7 +154,6 @@ module Idv
 
     def throttle_if_rate_limited
       return unless @throttled
-      track_event(Analytics::THROTTLER_RATE_LIMIT_TRIGGERED, throttle_type: :idv_acuant)
       errors.add(:limit, t('errors.doc_auth.acuant_throttle'))
     end
 
