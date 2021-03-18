@@ -55,7 +55,7 @@ module Idv
       end
 
       def throttled_response
-        analytics.track_event(Analytics::IDV_DOC_AUTH_RATE_LIMIT_TRIGGERED)
+        analytics.track_event(Analytics::THROTTLER_RATE_LIMIT_TRIGGERED, throttle_type: :idv_acuant)
         redirect_to throttled_url
         IdentityDocAuth::Response.new(
           success: false,

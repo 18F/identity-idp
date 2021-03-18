@@ -160,7 +160,10 @@ module Idv
 
     def max_attempts_reached
       if idv_attempter_throttled?
-        analytics.track_event(Analytics::IDV_USPS_ADDRESS_RATE_LIMIT_TRIGGERED)
+        analytics.track_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :idv_resolution,
+        )
         flash_error
       end
     end

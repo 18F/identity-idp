@@ -10,7 +10,10 @@ module Idv
       private
 
       def throttled_failure
-        analytics.track_event(Analytics::IDV_CAPTURE_DOC_LINK_SENT_RATE_LIMIT_TRIGGERED)
+        analytics.track_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :idv_send_link,
+        )
         failure(I18n.t('errors.doc_auth.send_link_throttle'))
       end
 
