@@ -55,10 +55,7 @@ module Idv
       response = Idv::DocAuthFormResponse.new(
         success: valid?,
         errors: errors.messages,
-        extra: {
-          remaining_attempts: remaining_attempts,
-          user_id: user_uuid,
-        },
+        extra: extra_attributes,
       )
 
       track_event(
@@ -76,7 +73,7 @@ module Idv
         selfie_image: selfie&.read,
         liveness_checking_enabled: liveness_checking_enabled?,
       )
-      response = response.merge(remaining_attempts_response)
+      response = response.merge(extra_attributes_response)
 
       update_analytics(response)
 
@@ -85,7 +82,7 @@ module Idv
 
     def validate_pii_from_doc(client_response)
       response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
-      response = response.merge(remaining_attempts_response)
+      response = response.merge(extra_attributes_response)
 
       track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
@@ -96,16 +93,19 @@ module Idv
       response
     end
 
-    # A successful response providing remaining attempts and user_id to merge into other responses
-    def remaining_attempts_response
-      @remaining_attempts_response ||= Idv::DocAuthFormResponse.new(
+    def extra_attributes_response
+      @extra_attributes_response ||= Idv::DocAuthFormResponse.new(
         success: true,
-        errors: nil,
-        extra: {
-          remaining_attempts: remaining_attempts,
-          user_id: user_uuid,
-        },
+        errors: {},
+        extra: extra_attributes,
       )
+    end
+
+    def extra_attributes
+      @extra_attributes ||= {
+        remaining_attempts: remaining_attempts,
+        user_id: user_uuid,
+      }
     end
 
     def remaining_attempts
