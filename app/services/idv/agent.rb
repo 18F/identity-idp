@@ -107,7 +107,7 @@ module Idv
 
       if FeatureManagement.ruby_workers_enabled?
         encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
-          @applicant.to_json,
+          { document_arguments: @applicant }.to_json,
         )
 
         DocumentProofingJob.perform_later(

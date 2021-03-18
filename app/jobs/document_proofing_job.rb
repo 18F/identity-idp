@@ -6,7 +6,7 @@ class DocumentProofingJob < ApplicationJob
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,
-    )
+    )[:document_arguments]
 
     Idv::Proofer.document_job_class.handle(
       event: {
