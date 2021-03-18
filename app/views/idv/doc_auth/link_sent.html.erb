@@ -39,7 +39,7 @@
         url_for,
         method: :put,
         class: 'btn btn-primary btn-wide sm-col-6 col-12',
-        form_class: 'doc_capture_continue_button_form'
+        form_class: 'link-sent-continue-button-form'
       )
     %>
   </div>
@@ -50,4 +50,4 @@
   <% end %>
 <% end %>
 
-<%= render 'idv/doc_auth/back', action: 'cancel_link_sent' %>
+<%= render 'idv/doc_auth/back', action: 'cancel_link_sent', class: 'link-sent-back-link' %>

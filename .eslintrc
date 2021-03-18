@@ -13,6 +13,7 @@
   },
   "rules": {
     "@babel/no-unused-expressions": "error",
+    "class-methods-use-this": "off",
     "consistent-return": "off",
     "curly": ["error", "all"],
     "prettier/prettier": "error",

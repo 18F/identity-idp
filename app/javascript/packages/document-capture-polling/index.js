@@ -10,6 +10,7 @@ export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
  * @typedef DocumentCapturePollingElements
  *
  * @prop {HTMLFormElement} form
+ * @prop {HTMLAnchorElement} backLink
  */
 
 /**
@@ -39,6 +40,8 @@ export class DocumentCapturePolling {
     this.toggleFormVisible(false);
     this.trackEvent('IdV: Link sent capture doc polling started');
     this.schedulePoll();
+    this.bindPromptOnNavigate(true);
+    this.elements.backLink.addEventListener('click', () => this.bindPromptOnNavigate(false));
   }
 
   /**
@@ -46,6 +49,18 @@ export class DocumentCapturePolling {
    */
   toggleFormVisible(isVisible) {
     this.elements.form.classList.toggle('display-none', !isVisible);
+  }
+
+  /**
+   * @param {boolean} shouldPrompt Whether to bind or unbind page unload behavior.
+   */
+  bindPromptOnNavigate(shouldPrompt) {
+    window.onbeforeunload = shouldPrompt
+      ? (event) => {
+          event.preventDefault();
+          event.returnValue = '';
+        }
+      : null;
   }
 
   onMaxPollAttempts() {
@@ -57,6 +72,7 @@ export class DocumentCapturePolling {
    */
   async onComplete({ isCancelled }) {
     await this.trackEvent('IdV: Link sent capture doc polling complete', { isCancelled });
+    this.bindPromptOnNavigate(false);
     this.elements.form.submit();
   }
 

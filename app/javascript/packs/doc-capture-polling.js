@@ -6,8 +6,9 @@ loadPolyfills(['fetch', 'classlist']).then(() => {
   new DocumentCapturePolling({
     statusEndpoint: /** @type {string} */ (getPageData('docCaptureStatusEndpoint')),
     elements: {
+      backLink: /** @type {HTMLAnchorElement} */ (document.querySelector('.link-sent-back-link')),
       form: /** @type {HTMLFormElement} */ (document.querySelector(
-        '.doc_capture_continue_button_form',
+        '.link-sent-continue-button-form',
       )),
     },
   }).bind();
