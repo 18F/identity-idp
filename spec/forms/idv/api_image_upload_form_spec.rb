@@ -100,7 +100,11 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'posting images to client fails' do
       let(:failed_response) do
-        IdentityDocAuth::Response.new(success: false, errors: { front: 'glare' })
+        IdentityDocAuth::Response.new(
+          success: false,
+          errors: { front: 'glare' },
+          extra: { remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1 },
+        )
       end
       before do
         allow(subject).to receive(:post_images_to_client).and_return(failed_response)
