@@ -23,6 +23,7 @@ fr:
           carte d'identité. Essayez de prendre une nouvelle photo.
         birth_date_checks: Nous n'avons pas pu lire la date de naissance sur votre
           pièce d'identité. Essayez de prendre de nouvelles photos.
+        birth_date_min_age: Votre anniversaire ne correspond pas à l'âge minimum requis.
         control_number_check: Nous n'avons pas pu lire le numéro de référence au verso
           de votre carte d'identité. Essayez de prendre une nouvelle photo.
         doc_crosscheck: Nous n'avons pas pu reconnaître votre pièce d'identité. Il
@@ -139,10 +140,13 @@ fr:
       interstitial_eta: Cette opération peut prendre jusqu'à une minute. Nous chargerons
         automatiquement l'étape suivante lorsqu'elle sera terminée.
       interstitial_thanks: Merci de votre patience!
-      link_sent:
-      - Veuillez vérifier votre téléphone et suivre les instructions pour prendre
-        une photo de votre identité émise par l'État.
-      - Lorsque vous avez terminé, cliquez ici pour continuer à vérifier votre identité.
+      keep_window_open: Ne fermez pas cette fenêtre.
+      link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
+        prendre une photo de votre identité émise par l'État.
+      link_sent_complete_js: L'étape suivante se chargera automatiquement une fois
+        que vous aurez confirmé votre identifiant à l'aide de votre téléphone.
+      link_sent_complete_nojs: Quand vous aurez fini, cliquez sur « Continuer » ici
+        pour terminer la vérification de votre identité.
       no_other_id_help_bold_html: "<strong>Si vous n'avez pas de carte d'identité
         délivrée par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
         à l'adresse %{sp_name}.</a>"

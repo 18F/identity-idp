@@ -40,7 +40,6 @@ module ControllerHelper
     idv_session.applicant = { first_name: 'Some', last_name: 'One' }.with_indifferent_access
     idv_session.profile_confirmation = true
     allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-    allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     allow(subject).to receive(:idv_session).and_return(idv_session)
     allow(subject).to receive(:user_session).and_return(user_session)
   end

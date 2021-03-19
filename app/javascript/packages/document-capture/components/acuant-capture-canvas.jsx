@@ -84,7 +84,7 @@ import useI18n from '../hooks/use-i18n';
  * @prop {number} sharpness Detected image sharpness.
  * @prop {number} dpi Detected image resolution.
  *
- * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.1/SimpleHTMLApp#acuantcameraui
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.3/SimpleHTMLApp#acuantcamera
  */
 
 /**

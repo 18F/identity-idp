@@ -108,7 +108,6 @@ class Analytics
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR = 'IdV: doc auth image upload vendor submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION = 'IdV: doc auth image upload vendor pii validation'.freeze
-  IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'.freeze
   IDV_FORGOT_PASSWORD_CONFIRMED = 'IdV: forgot password confirmed'.freeze
@@ -198,6 +197,7 @@ class Analytics
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SESSION_KEPT_ALIVE = 'Session Kept Alive'.freeze
+  SESSION_TOTAL_DURATION_TIMEOUT = 'User Maximum Session Length Exceeded'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
   SP_REDIRECT_INITIATED = 'SP redirect initiated'.freeze
   TELEPHONY_OTP_SENT = 'Telephony: OTP sent'.freeze

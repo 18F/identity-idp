@@ -25,7 +25,6 @@ module Idv
         end
 
         presenter = ImageUploadResponsePresenter.new(
-          form: form,
           form_response: form_response,
           url_options: url_options,
         )

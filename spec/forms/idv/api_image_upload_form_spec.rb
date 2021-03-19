@@ -10,6 +10,8 @@ RSpec.describe Idv::ApiImageUploadForm do
         document_capture_session_uuid: document_capture_session_uuid,
       },
       liveness_checking_enabled: liveness_checking_enabled?,
+      issuer: 'test_issuer',
+      analytics: FakeAnalytics.new,
     )
   end
 
@@ -82,9 +84,64 @@ RSpec.describe Idv::ApiImageUploadForm do
   end
 
   describe '#submit' do
-    it 'includes remaining_attempts' do
-      response = form.submit
-      expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+    context 'form is missing a required param' do
+      let(:front_image) { nil }
+
+      it 'is not successful' do
+        response = form.submit
+        expect(response.success?).to eq(false)
+      end
+
+      it 'includes remaining_attempts' do
+        response = form.submit
+        expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+      end
+    end
+
+    context 'posting images to client fails' do
+      let(:failed_response) do
+        IdentityDocAuth::Response.new(success: false, errors: { front: 'glare' })
+      end
+      before do
+        allow(subject).to receive(:post_images_to_client).and_return(failed_response)
+      end
+
+      it 'is not successful' do
+        response = form.submit
+        expect(response.success?).to eq(false)
+      end
+
+      it 'includes remaining_attempts' do
+        response = form.submit
+        expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+      end
+
+      it 'includes client response errors' do
+        response = form.submit
+        expect(response.errors[:front]).to eq('glare')
+      end
+    end
+
+    context 'PII validation from client response fails' do
+      let(:failed_response) { FormResponse.new(success: false, errors: { doc_pii: 'bad' }) }
+      before do
+        allow_any_instance_of(Idv::DocPiiForm).to receive(:submit).and_return(failed_response)
+      end
+
+      it 'is not successful' do
+        response = form.submit
+        expect(response.success?).to eq(false)
+      end
+
+      it 'includes remaining_attempts' do
+        response = form.submit
+        expect(response.extra[:remaining_attempts]).to be_a_kind_of(Numeric)
+      end
+
+      it 'includes doc_pii errors' do
+        response = form.submit
+        expect(response.errors[:doc_pii]).to eq('bad')
+      end
     end
   end
 end

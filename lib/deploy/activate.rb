@@ -31,11 +31,11 @@ module Deploy
       deep_merge_s3_data_with_example_application_yml
       set_proper_file_permissions_for_application_yml
 
-      secrets_s3.download_file(
+      download_from_secrets_s3_unless_exists(
         s3_path: '/common/GeoIP2-City.mmdb',
         local_path: geolocation_db_path,
       )
-      secrets_s3.download_file(
+      download_from_secrets_s3_unless_exists(
         s3_path: '/common/pwned-passwords.txt',
         local_path: pwned_passwords_path,
       )
@@ -74,6 +74,7 @@ module Deploy
       end
 
       # Service provider public keys
+      FileUtils.mkdir_p(File.join(root, 'certs'))
       symlink_verbose(
         File.join(root, idp_config_checkout_name, 'certs/sp'),
         File.join(root, 'certs/sp'),
@@ -109,6 +110,14 @@ module Deploy
     def download_from_s3_and_update_permissions(src, dest)
       download_file(src, dest)
       update_file_permissions(dest)
+    end
+
+    def download_from_secrets_s3_unless_exists(s3_path:, local_path:)
+      return if File.exist?(local_path)
+      secrets_s3.download_file(
+        s3_path: s3_path,
+        local_path: local_path,
+      )
     end
 
     def app_secrets_s3

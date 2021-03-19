@@ -22,6 +22,7 @@ en:
           taking a new picture.
         birth_date_checks: We couldn’t read the birth date on your ID. Try taking
           new pictures.
+        birth_date_min_age: Your birthday does not meet the minimum age requirement.
         control_number_check: We couldn't read the reference number on the back of
           your ID. Try taking a new picture.
         doc_crosscheck: We couldn’t recognize your ID. It may be worn or damaged,
@@ -120,10 +121,13 @@ en:
       interstitial_eta: This might take up to a minute. We’ll load the next step automatically
         when it’s done.
       interstitial_thanks: Thanks for your patience!
-      link_sent:
-      - Please check your phone and follow instructions to take a photo of your state
-        issued ID.
-      - When you are done click continue here to finish verifying your identity.
+      keep_window_open: Do not close this window.
+      link_sent: Please check your phone and follow instructions to take a photo of
+        your state issued ID.
+      link_sent_complete_js: The next step will load automatically once you verify
+        your ID using your phone.
+      link_sent_complete_nojs: When you are done, click Continue here to finish verifying
+        your identity.
       no_other_id_help_bold_html: "<strong>If you do not have a state-issued ID</strong>,
         <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
       tag: Recommended

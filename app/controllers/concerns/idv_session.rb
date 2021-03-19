@@ -9,12 +9,6 @@ module IdvSession
     redirect_to idv_doc_auth_url if idv_session.applicant.blank?
   end
 
-  def confirm_idv_attempts_allowed
-    return unless idv_attempter_throttled?
-    analytics.track_event(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, request_path: request.path)
-    redirect_to failure_url(:fail)
-  end
-
   def confirm_idv_needed
     if current_user.active_profile.blank? ||
        decorated_session.requested_more_recent_verification? || liveness_upgrade_required?
