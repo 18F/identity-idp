@@ -147,9 +147,7 @@ fr:
       no_other_id_help_bold_html: "<strong>Si vous n'avez pas de carte d'identité
         délivrée par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
         à l'adresse %{sp_name}.</a>"
-      privacy: Login.gov is a secure, government website that adheres to the highest
-        standards in data protection. We do not store your data - we only use it to
-        verify your identity.
+      privacy: login.gov
       tag: Recommandation
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
@@ -179,7 +177,6 @@ fr:
       bullet1a: Prenez une photo de vous-même
       bullet2: Confirmez votre adresse
       bullet3: Sécurise ton compte
-      bullet4: Récupération du compte
       consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
         conserver et partager vos informations personnelles. Nous ne l'utiliserons
         que pour vérifier votre identité.
@@ -199,7 +196,7 @@ fr:
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
         et suivez les instructions pour vérifier votre identité.
       learn_more: Apprendre encore plus
-      privacy: Our privacy and security standards
+      privacy: login.gov
       send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
         ce lien vers votre navigateur pour prendre des photos du recto et du verso
         de votre identifiant.
@@ -209,7 +206,6 @@ fr:
       text1a: avec votre téléphone ou votre caméra Web
       text2: en utilisant un numéro de téléphone ou une adresse postale
       text3: en ressaisissant votre mot de passe login.gov
-      text4: assurez-vous d'avoir toujours accès
       welcome: 'Ce que vous devez faire:'
     tips:
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'

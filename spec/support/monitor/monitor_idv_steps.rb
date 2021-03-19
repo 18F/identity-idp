@@ -6,7 +6,9 @@ module MonitorIdvSteps
     click_on 'Create an account'
     create_new_account_with_sms
     expect(page).to have_current_path('/verify/doc_auth/welcome')
+    click_on 'Continue'
 
+    expect(page).to have_current_path('/verify/doc_auth/agreement')
     check 'ial2_consent_given', visible: :all, allow_label_click: true
     expect(page).to have_button('Continue', disabled: :all)
 
