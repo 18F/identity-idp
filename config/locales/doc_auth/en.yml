@@ -93,6 +93,7 @@ en:
       lets_go: Let's get started
       photo: Photo
       review_issues: Check your images and try again
+      secure_account: Secure your account
       selfie: Take a photo of yourself
       ssn: Please enter your social security number.
       take_picture: Take a photo with a phone
@@ -103,6 +104,7 @@ en:
         a photo of yourself
       upload_liveness_enabled: How would you like to verify your identity?
       verify: Please verify your information
+      verify_identity: Verify your identity
       welcome: Verify your identity to securely access government services
     info:
       camera_required: Your mobile phone must have a camera and a web browser

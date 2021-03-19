@@ -108,6 +108,7 @@ fr:
       lets_go: Commençons
       photo: Photo
       review_issues: Vérifiez vos images et essayez à nouveau
+      secure_account: Sécurise ton compte
       selfie: Prenez une photo de vous-même
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_picture: Prendre une photo avec un téléphone
@@ -120,6 +121,7 @@ fr:
         votre pièce d'identité et prendre une photo de vous-même
       upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify: S'il vous plaît vérifier vos informations
+      verify_identity: Vérifiez Votre Identité
       welcome: Vérifiez votre identité pour accéder en toute sécurité aux services
         gouvernementaux
     info:

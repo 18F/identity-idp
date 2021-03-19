@@ -100,6 +100,7 @@ es:
       lets_go: Empecemos
       photo: Foto
       review_issues: Revise sus imágenes e inténtelo de nuevo
+      secure_account: Asegure su cuenta
       selfie: Tómese una foto
       ssn: Por favor ingrese su número de seguro social.
       take_picture: Toma una foto con un teléfono
@@ -110,6 +111,7 @@ es:
         de identidad y tomarse
       upload_liveness_enabled: "¿Cómo te gustaría verificar su identidad?"
       verify: Por favor verifica tu información
+      verify_identity: Verifica tu identidad
       welcome: Verifique su identidad para acceder de forma segura a los servicios
         gubernamentales
     info:
