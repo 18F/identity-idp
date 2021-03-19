@@ -119,7 +119,8 @@ fr:
         votre pièce d'identité et prendre une photo de vous-même
       upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify: S'il vous plaît vérifier vos informations
-      welcome: Nous devons vérifier votre identité
+      welcome: Vérifiez votre identité pour accéder en toute sécurité aux services
+        gouvernementaux
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur
         Web
@@ -147,7 +148,10 @@ fr:
       no_other_id_help_bold_html: "<strong>Si vous n'avez pas de carte d'identité
         délivrée par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
         à l'adresse %{sp_name}.</a>"
-      privacy: login.gov
+      privacy: Login.gov est un site Web gouvernemental sécurisé qui adhère aux normes
+        les plus élevées en matière de protection des données. Nous n'utilisons vos
+        données que pour vérifier votre identité. En savoir plus sur nos mesures de
+        confidentialité et de sécurité.
       tag: Recommandation
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
@@ -196,7 +200,7 @@ fr:
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
         et suivez les instructions pour vérifier votre identité.
       learn_more: Apprendre encore plus
-      privacy: login.gov
+      privacy: Nuestros estándares de privacidad y seguridad
       send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
         ce lien vers votre navigateur pour prendre des photos du recto et du verso
         de votre identifiant.
@@ -206,7 +210,7 @@ fr:
       text1a: avec votre téléphone ou votre caméra Web
       text2: en utilisant un numéro de téléphone ou une adresse postale
       text3: en ressaisissant votre mot de passe login.gov
-      welcome: 'Ce que vous devez faire:'
+      welcome: 'Pour vérifier votre identité, vous aurez besoin:'
     tips:
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
       document_capture_hint: Doit être un JPG, BMP, PNG ou TIFF

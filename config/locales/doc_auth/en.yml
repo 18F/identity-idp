@@ -102,7 +102,7 @@ en:
         a photo of yourself
       upload_liveness_enabled: How would you like to verify your identity?
       verify: Please verify your information
-      welcome: Verify your identity to securely access government services.
+      welcome: Verify your identity to securely access government services
     info:
       camera_required: Your mobile phone must have a camera and a web browser
       capture_status_capturing: Capturing
@@ -179,7 +179,7 @@ en:
       text1a: with your phone or webcam
       text2: ''
       text3: by re-entering your login.gov password
-      welcome: 'To verify your identity and secure your account you''ll need:'
+      welcome: 'To verify your identity, you will need:'
     tips:
       document_capture_header_text: 'For best results:'
       document_capture_hint: Must be a JPG, BMP, PNG, or TIFF
