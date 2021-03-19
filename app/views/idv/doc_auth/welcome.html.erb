@@ -46,30 +46,34 @@
       </li>
     <% end %>
     <li class='padding-top-2 padding-bottom-1'>
-      <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
-        <%= step += 1 %>
-      </div>
-      <div class='margin-right-1 inline-block'>
-        <div class='h1 inline-block bold'>
-          <%= t('doc_auth.instructions.bullet2') %>
+      <div class="grid-row">
+        <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
+          <%= step += 1 %>
         </div>
-        <br/>
-        <div>
-          <%= t('doc_auth.instructions.text2')  %>
+        <div class='grid-col-10'>
+          <div class='h1 inline-block bold'>
+            <%= t('doc_auth.instructions.bullet2') %>
+          </div>
+          <br/>
+          <div>
+            <%= t('doc_auth.instructions.text2')  %>
+          </div>
         </div>
       </div>
     </li>
     <li class='padding-top-2 padding-bottom-1'>
-      <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
-        <%= step += 1 %>
-      </div>
-      <div class='margin-right-1 inline-block'>
-        <div class='h1 inline-block bold'>
-          <%= t('doc_auth.instructions.bullet3') %>
+      <div class="grid-row">
+        <div class='grid-col-2 margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
+          <%= step += 1 %>
         </div>
-        <br/>
-        <div>
-          <%= t('doc_auth.instructions.text3') %>
+        <div class='grid-col-10'>
+          <div class='h1 inline-block bold'>
+            <%= t('doc_auth.instructions.bullet3') %>
+          </div>
+          <br/>
+          <div>
+            <%= t('doc_auth.instructions.text3') %>
+          </div>
         </div>
       </div>
     </li>
