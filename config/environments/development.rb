@@ -7,10 +7,8 @@ Rails.application.configure do
   config.consider_all_requests_local = true
   config.active_support.deprecation = :log
   config.active_record.migration_error = :page_load
-  config.assets.debug = false
+  config.assets.debug = true
   config.assets.digest = true
-  config.assets.check_precompiled_asset = false
-  # config.assets.precompile += %w( application.js es5-shim.min.js identity-style-guide/dist/assets/fonts/source-sans-pro/sourcesanspro-regular-webfont.woff2 identity-style-guide/dist/assets/fonts/source-sans-pro/sourcesanspro-bold-webfont.woff2 identity-style-guide/dist/assets/fonts/merriweather/Latin-Merriweather-Bold.woff2 application.css )
   config.assets.raise_runtime_errors = true
   config.i18n.raise_on_missing_translations = true
 
