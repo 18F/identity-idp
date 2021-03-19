@@ -2,18 +2,9 @@ module Idv
   module Steps
     class WelcomeStep < DocAuthBaseStep
       def call
-        create_document_capture_session(document_capture_session_uuid_key)
-      end
-
-      def form_submit
         return no_camera_redirect if params[:no_camera]
-        skip_to_capture if params[:skip_upload]
-
-        Idv::ConsentForm.new.submit(consent_form_params)
-      end
-
-      def consent_form_params
-        params.permit(:ial2_consent_given)
+        return skip_to_capture if params[:skip_upload]
+        create_document_capture_session(document_capture_session_uuid_key)
       end
 
       private

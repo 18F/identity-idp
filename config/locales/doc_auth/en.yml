@@ -102,7 +102,7 @@ en:
         a photo of yourself
       upload_liveness_enabled: How would you like to verify your identity?
       verify: Please verify your information
-      welcome: We need to verify your identity
+      welcome: Verify your identity to securely access government services.
     info:
       camera_required: Your mobile phone must have a camera and a web browser
       capture_status_capturing: Capturing
@@ -127,6 +127,9 @@ en:
       - When you are done click continue here to finish verifying your identity.
       no_other_id_help_bold_html: "<strong>If you do not have a state-issued ID</strong>,
         <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
+      privacy: Login.gov is a secure, government website that adheres to the highest
+        standards in data protection. We do not store your data - we only use it to
+        verify your identity.
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
@@ -144,14 +147,13 @@ en:
       use_cac: Do you have a government employee ID?
       use_cac_link: Use a PIV/CAC instead
       verifying: Verifying…
-      welcome: We verify your identity to make sure you are you—not someone pretending
-        to be you.  Verifying your identity lets you access services that handle sensitive
-        information.
+      welcome: The agency you are trying to access needs to make sure you are you
+        - not someone pretending to be you.
     instructions:
-      bullet1: Upload your ID
-      bullet1a: Take a photo of yourself
-      bullet2: Confirm your address
-      bullet3: Secure your account
+      bullet1: Your State-Issued ID
+      bullet1a: A phone or computer
+      bullet2: Social Security Number
+      bullet3: A phone number on a phone plan that is in your name
       bullet4: Account recovery
       consent: By checking this box, you are letting login.gov ask for, use, keep,
         and share your personal information. We will only use it to verify your identity.
@@ -170,15 +172,16 @@ en:
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
       learn_more: Learn more
+      privacy: Our privacy and security standards
       send_sms: We'll send a text message to your device with a link.  Follow that
         link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity
       text1: along with your Social Security Number
       text1a: with your phone or webcam
-      text2: using a phone number or mailing address
+      text2: ''
       text3: by re-entering your login.gov password
       text4: make sure you always have access
-      welcome: 'What you''ll need to do:'
+      welcome: 'To verify your identity and secure your account you''ll need:'
     tips:
       document_capture_header_text: 'For best results:'
       document_capture_hint: Must be a JPG, BMP, PNG, or TIFF
