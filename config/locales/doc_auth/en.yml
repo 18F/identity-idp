@@ -137,6 +137,9 @@ en:
       privacy: Login.gov is a secure, government website that adheres to the highest
         standards in data protection. We do not store your data - we only use it to
         verify your identity.
+      secure_account: After you verify, we'll ask you to encrypt your account. Encryption
+        means your data is protected and only you, the account holder, will be able
+        to access or change your information.
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
