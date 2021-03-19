@@ -213,10 +213,12 @@ fr:
         de votre identifiant.
       switch_back: Revenez sur votre ordinateur pour terminer la vérification de votre
         identité
-      text1: avec votre numéro de sécurité sociale
+      text1: ''
       text1a: avec votre téléphone ou votre caméra Web
-      text2: en utilisant un numéro de téléphone ou une adresse postale
-      text3: en ressaisissant votre mot de passe login.gov
+      text2: Vous n'aurez pas besoin de la carte avec vous.
+      text3: Vous n'avez pas besoin d'être le titulaire principal du compte. Si vous
+        ne disposez pas d'un numéro de téléphone éligible, nous pouvons vous envoyer
+        le code de vérification par courrier dans un délai d'environ 3 à 7 jours ouvrables.
       welcome: 'Pour vérifier votre identité, vous aurez besoin:'
     tips:
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'

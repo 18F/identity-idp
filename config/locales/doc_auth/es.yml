@@ -197,10 +197,12 @@ es:
         Siga ese enlace a su navegador para tomar fotografías de la parte delantera
         y trasera de su identificación.
       switch_back: Vuelve a tu computadora para terminar de verificar tu identidad
-      text1: junto con su número de seguro social
+      text1: ''
       text1a: con un teléfono o cámara web
-      text2: usando un número de teléfono o dirección de correo
-      text3: volviendo a ingresar su contraseña de login.gov
+      text2: No necesitará la tarjeta con usted.
+      text3: No es necesario que sea el titular principal de la cuenta. Si no tiene
+        un número de teléfono que califique, podemos enviarle el código de verificación
+        por correo en aproximadamente 3-7 días hábiles.
       welcome: 'Para verificar su identidad, necesitará:'
     tips:
       document_capture_header_text: 'Para obtener los mejores resultados:'

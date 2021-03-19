@@ -182,10 +182,12 @@ en:
       send_sms: We'll send a text message to your device with a link.  Follow that
         link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity
-      text1: along with your Social Security Number
+      text1: ''
       text1a: with your phone or webcam
-      text2: ''
-      text3: by re-entering your login.gov password
+      text2: You will not need the card with you.
+      text3: You do not need to be the primary account holder. If you do not have
+        a phone number that qualifies, we can send you the verification code by mail
+        in approximately 3-7 business days.
       welcome: 'To verify your identity, you will need:'
     tips:
       document_capture_header_text: 'For best results:'
