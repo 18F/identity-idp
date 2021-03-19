@@ -143,7 +143,7 @@ fr:
         automatiquement l'étape suivante lorsqu'elle sera terminée.
       interstitial_thanks: Merci de votre patience!
       keep_window_open: Ne fermez pas cette fenêtre.
-      lets_go: 'La vérification d''identité se déroule en deux parties'
+      lets_go: La vérification d'identité se déroule en deux parties
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
         prendre une photo de votre identité émise par l'État.
       link_sent_complete_js: L'étape suivante se chargera automatiquement une fois
