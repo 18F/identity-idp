@@ -142,11 +142,14 @@ fr:
       interstitial_eta: Cette opération peut prendre jusqu'à une minute. Nous chargerons
         automatiquement l'étape suivante lorsqu'elle sera terminée.
       interstitial_thanks: Merci de votre patience!
+      keep_window_open: Ne fermez pas cette fenêtre.
       lets_go: 'La vérification d''identité se déroule en deux parties'
-      link_sent:
-      - Veuillez vérifier votre téléphone et suivre les instructions pour prendre
-        une photo de votre identité émise par l'État.
-      - Lorsque vous avez terminé, cliquez ici pour continuer à vérifier votre identité.
+      link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
+        prendre une photo de votre identité émise par l'État.
+      link_sent_complete_js: L'étape suivante se chargera automatiquement une fois
+        que vous aurez confirmé votre identifiant à l'aide de votre téléphone.
+      link_sent_complete_nojs: Quand vous aurez fini, cliquez sur « Continuer » ici
+        pour terminer la vérification de votre identité.
       no_other_id_help_bold_html: "<strong>Si vous n'avez pas de carte d'identité
         délivrée par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
         à l'adresse %{sp_name}.</a>"

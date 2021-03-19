@@ -122,11 +122,14 @@ en:
       interstitial_eta: This might take up to a minute. We’ll load the next step automatically
         when it’s done.
       interstitial_thanks: Thanks for your patience!
+      keep_window_open: Do not close this window.
       lets_go: 'Identity verification happens in two parts:'
-      link_sent:
-      - Please check your phone and follow instructions to take a photo of your state
-        issued ID.
-      - When you are done click continue here to finish verifying your identity.
+      link_sent: Please check your phone and follow instructions to take a photo of
+        your state issued ID.
+      link_sent_complete_js: The next step will load automatically once you verify
+        your ID using your phone.
+      link_sent_complete_nojs: When you are done, click Continue here to finish verifying
+        your identity.
       no_other_id_help_bold_html: "<strong>If you do not have a state-issued ID</strong>,
         <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
       privacy: Login.gov is a secure, government website that adheres to the highest
