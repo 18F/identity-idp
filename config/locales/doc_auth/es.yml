@@ -143,7 +143,9 @@ es:
         la verificación de tu identidad.
       no_other_id_help_bold_html: "<strong>Si no tiene un documento de identidad expedido
         por el estado</strong>, <a href=%{failure_to_proof_url}>obtenga ayuda en %{sp_name}.</a>"
-      privacy: Login.gov
+      privacy_html: Login.gov es un sitio web gubernamental seguro que se adhiere
+        a los más altos estándares en protección de datos. Solo usamos sus datos para
+        verificar su identidad. %{link} sobre nuestras medidas de privacidad y seguridad.
       secure_account: Después de la verificación, le pediremos que encripte su cuenta.
         El cifrado significa que sus datos están protegidos y solo usted, el titular
         de la cuenta, podrá acceder o cambiar su información.

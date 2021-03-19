@@ -155,10 +155,10 @@ fr:
       no_other_id_help_bold_html: "<strong>Si vous n'avez pas de carte d'identité
         délivrée par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
         à l'adresse %{sp_name}.</a>"
-      privacy: Login.gov est un site Web gouvernemental sécurisé qui adhère aux normes
-        les plus élevées en matière de protection des données. Nous n'utilisons vos
-        données que pour vérifier votre identité. En savoir plus sur nos mesures de
-        confidentialité et de sécurité.
+      privacy_html: Login.gov est un site Web gouvernemental sécurisé qui adhère aux
+        normes les plus élevées en matière de protection des données. Nous n'utilisons
+        vos données que pour vérifier votre identité. %{link} sur nos mesures de confidentialité
+        et de sécurité.
       secure_account: Une fois la vérification effectuée, nous vous demanderons de
         chiffrer votre compte. Le cryptage signifie que vos données sont protégées
         et que vous seul, le titulaire du compte, pourrez accéder à vos informations

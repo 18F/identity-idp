@@ -76,7 +76,8 @@
   </ul>
 
   <h2 class='margin-bottom-0'><%= t('doc_auth.instructions.privacy') %></h2>
-  <p><%= t('doc_auth.info.privacy') %></p>
+  <p><%== t('doc_auth.info.privacy_html', link: new_window_link_to(t('doc_auth.instructions.learn_more'),
+            'https://login.gov/policy/')) %></p>
 
   <%= validated_form_for :doc_auth,
                          url: url_for,
