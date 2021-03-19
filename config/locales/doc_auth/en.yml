@@ -122,6 +122,7 @@ en:
       interstitial_eta: This might take up to a minute. We’ll load the next step automatically
         when it’s done.
       interstitial_thanks: Thanks for your patience!
+      lets_go: 'Identity verification happens in two parts:'
       link_sent:
       - Please check your phone and follow instructions to take a photo of your state
         issued ID.

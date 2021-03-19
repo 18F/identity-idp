@@ -131,6 +131,7 @@ es:
       interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente
         paso automáticamente cuando esté terminado.
       interstitial_thanks: "¡Gracias por su paciencia!"
+      lets_go: 'La verificación de identidad ocurre en dos partes:'
       link_sent:
       - Verifique su teléfono y siga las instrucciones para tomar una fotografía de
         la identificación emitida por su estado.
