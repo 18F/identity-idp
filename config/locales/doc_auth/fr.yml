@@ -185,9 +185,10 @@ fr:
         permet d'accéder à des services traitant des informations sensibles.
     instructions:
       bullet1: Téléchargez votre identifiant
-      bullet1a: Prenez une photo de vous-même
-      bullet2: Confirmez votre adresse
-      bullet3: Sécurise ton compte
+      bullet1a: Un appareil avec une caméra
+      bullet2: Votre numéro de sécurité sociale
+      bullet3: Un numéro de téléphone sur un forfait téléphonique associé à votre
+        nom
       consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
         conserver et partager vos informations personnelles. Nous ne l'utiliserons
         que pour vérifier votre identité.
@@ -214,7 +215,7 @@ fr:
       switch_back: Revenez sur votre ordinateur pour terminer la vérification de votre
         identité
       text1: ''
-      text1a: avec votre téléphone ou votre caméra Web
+      text1a: comme un téléphone ou un ordinateur.
       text2: Vous n'aurez pas besoin de la carte avec vous.
       text3: Vous n'avez pas besoin d'être le titulaire principal du compte. Si vous
         ne disposez pas d'un numéro de téléphone éligible, nous pouvons vous envoyer

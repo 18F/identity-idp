@@ -168,9 +168,9 @@ es:
         a servicios que manejan información confidencial.
     instructions:
       bullet1: Sube tu ID
-      bullet1a: Tómese una foto
-      bullet2: Confirma tu direccion
-      bullet3: Asegure su cuenta
+      bullet1a: Un dispositivo con cámara
+      bullet2: Tu número de seguro social
+      bullet3: Un número de teléfono en un plan telefónico asociado con su nombre
       consent: Al marcar esta casilla, está permitiendo que login.gov solicite, use,
         conserve y comparta su información personal. Solo lo usaremos para verificar
         su identidad.
@@ -198,7 +198,7 @@ es:
         y trasera de su identificación.
       switch_back: Vuelve a tu computadora para terminar de verificar tu identidad
       text1: ''
-      text1a: con un teléfono o cámara web
+      text1a: como un teléfono o una computadora.
       text2: No necesitará la tarjeta con usted.
       text3: No es necesario que sea el titular principal de la cuenta. Si no tiene
         un número de teléfono que califique, podemos enviarle el código de verificación

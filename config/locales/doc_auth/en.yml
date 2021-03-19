@@ -157,10 +157,10 @@ en:
       welcome: The agency you are trying to access needs to make sure you are you
         - not someone pretending to be you.
     instructions:
-      bullet1: Your State-Issued ID
-      bullet1a: A phone or computer
-      bullet2: Social Security Number
-      bullet3: A phone number on a phone plan that is in your name
+      bullet1: Your State-issued ID
+      bullet1a: A device with a camera
+      bullet2: Your Social Security number
+      bullet3: A phone number on a phone plan associated with your name
       consent: By checking this box, you are letting login.gov ask for, use, keep,
         and share your personal information. We will only use it to verify your identity.
       document_capture_selfie_consent_action: "<lg-underline>Allow access to the camera</lg-underline>
@@ -183,7 +183,7 @@ en:
         link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity
       text1: ''
-      text1a: with your phone or webcam
+      text1a: such as a phone or computer.
       text2: You will not need the card with you.
       text3: You do not need to be the primary account holder. If you do not have
         a phone number that qualifies, we can send you the verification code by mail
