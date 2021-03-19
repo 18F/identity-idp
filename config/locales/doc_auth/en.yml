@@ -153,6 +153,9 @@ en:
         identity.
       use_cac: Do you have a government employee ID?
       use_cac_link: Use a PIV/CAC instead
+      verify_identity: We'll ask for your personal information. We'll use, keep and
+        share some of your personal information to verify your identity against public
+        records.
       verifying: Verifying…
       welcome: The agency you are trying to access needs to make sure you are you
         - not someone pretending to be you.
