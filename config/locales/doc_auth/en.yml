@@ -160,8 +160,8 @@ en:
         share some of your personal information to verify your identity against public
         records.
       verifying: Verifying…
-      welcome: The agency you are trying to access needs to make sure you are you
-        - not someone pretending to be you.
+      welcome_html: The agency that you are trying to access needs to make sure you
+        are you &#8212; not someone pretending to be you.
     instructions:
       bullet1: Your State-issued ID
       bullet1a: A device with a camera

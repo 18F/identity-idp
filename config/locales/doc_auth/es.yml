@@ -171,9 +171,8 @@ es:
         y compartiremos parte de su información personal para verificar su identidad
         con los registros públicos.
       verifying: Verificando…
-      welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
-        no alguien que pretende ser usted. Verificar su identidad le permite acceder
-        a servicios que manejan información confidencial.
+      welcome_html: La agencia a la que está intentando acceder debe asegurarse de
+        que usted sea &#8212; no alguien que finja ser tú.
     instructions:
       bullet1: Sube tu ID
       bullet1a: Un dispositivo con cámara

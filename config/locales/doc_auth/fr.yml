@@ -187,9 +187,8 @@ fr:
         conserverons et partagerons certaines de vos informations personnelles pour
         vérifier votre identité par rapport aux archives publiques.
       verifying: Vérification…
-      welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
-        et non quelqu'un prétendant être vous. La vérification de votre identité vous
-        permet d'accéder à des services traitant des informations sensibles.
+      welcome_html: L'agence à laquelle vous essayez d'accéder doit s'assurer que
+        vous êtes bien vous &#8212; pas quelqu'un qui prétend être vous.
     instructions:
       bullet1: Téléchargez votre identifiant
       bullet1a: Un appareil avec une caméra
