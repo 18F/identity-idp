@@ -141,6 +141,8 @@ usps_download_sftp_timeout: '5'
 usps_upload_enabled: 'false'
 usps_upload_sftp_timeout: '5'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3", "http://idmanagement.gov/ns/assurance/ial/1", "http://idmanagement.gov/ns/assurance/ial/2", "http://idmanagement.gov/ns/assurance/ial/0", "http://idmanagement.gov/ns/assurance/ial/2?strict=true", "urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo", "http://idmanagement.gov/ns/assurance/aal/2", "http://idmanagement.gov/ns/assurance/aal/3", "http://idmanagement.gov/ns/assurance/aal/3?hspd12=true"]'
+verify_personal_key_attempt_window_in_minutes: '15'
+verify_personal_key_max_attempts: '5'
 usps_ipp_password: ''
 usps_ipp_root_url: ''
 usps_ipp_sponsor_id: ''
@@ -452,6 +454,8 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   sps_over_quota_limit_notify_email_list: '["test1@test.com"]'
   telephony_adapter: test
+  verify_personal_key_attempt_window_in_minutes: '3'
+  verify_personal_key_max_attempts: '1'
   use_dashboard_service_providers: 'false'
   use_kms: 'false'
   usps_confirmation_max_days: '10'

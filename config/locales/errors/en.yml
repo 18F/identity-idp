@@ -118,6 +118,8 @@ en:
       unique_name: That name is already taken. Please choose a different name.
     two_factor_auth_setup:
       must_select_option: Select an authentication method.
+    verify_personal_key:
+      throttled: You tried too many times, please try again in 10 minutes.
     webauthn_setup:
       already_registered: Security key already registered. Please try a different
         security key.
