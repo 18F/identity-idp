@@ -41,10 +41,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: d6e73358ab899e8740e0008aff0e03e26bd4eb56
-  tag: v3.1.0
+  revision: 0e22ac2518a724b63a928feb68197b203ea47660
+  tag: v3.1.1
   specs:
-    lexisnexis (3.1.0)
+    lexisnexis (3.1.1)
       activesupport
       faraday
 
