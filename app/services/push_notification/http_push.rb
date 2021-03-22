@@ -47,7 +47,7 @@ module PushNotification
         message_body: {
           push_notification_url: service_provider.push_notification_url,
           jwt: jwt(service_provider),
-        }.to_json
+        }.to_json,
       )
     end
 
