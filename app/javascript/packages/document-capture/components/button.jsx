@@ -5,17 +5,15 @@
 /**
  * @typedef ButtonProps
  *
- * @prop {ButtonType=}              type        Button type, defaulting to "button".
- * @prop {(ReactMouseEvent)=>void=} onClick     Click handler.
- * @prop {ReactNode=}               children    Element children.
- * @prop {boolean=}                 isPrimary   Whether button should be styled as primary button.
- * @prop {boolean=}                 isSecondary Whether button should be styled as secondary button.
- * @prop {boolean=}                 isDisabled  Whether button is disabled.
- * @prop {boolean=}                 isUnstyled  Whether button should be unstyled, visually as a
- *                                              link.
- * @prop {boolean=}                 isVisuallyDisabled Whether button should appear disabled (but
- *                                                     remain clickable).
- * @prop {string=}                  className   Optional additional class names.
+ * @prop {ButtonType=} type Button type, defaulting to "button".
+ * @prop {(ReactMouseEvent)=>void=} onClick Click handler.
+ * @prop {ReactNode=} children Element children.
+ * @prop {boolean=} isWide Whether button should be styled as primary button.
+ * @prop {boolean=} isSecondary Whether button should be styled as secondary button.
+ * @prop {boolean=} isDisabled Whether button is disabled.
+ * @prop {boolean=} isUnstyled Whether button should be unstyled, visually as a link.
+ * @prop {boolean=} isVisuallyDisabled Whether button should appear disabled (but remain clickable).
+ * @prop {string=} className Optional additional class names.
  */
 
 /**
@@ -25,7 +23,7 @@ function Button({
   type = 'button',
   onClick,
   children,
-  isPrimary,
+  isWide,
   isSecondary,
   isDisabled,
   isUnstyled,
@@ -34,7 +32,8 @@ function Button({
 }) {
   const classes = [
     'btn',
-    isPrimary && 'btn-primary btn-wide',
+    isWide && 'btn-wide',
+    !isSecondary && !isUnstyled && 'btn-primary',
     isSecondary && 'btn-secondary',
     isUnstyled && 'btn-link',
     isVisuallyDisabled && 'btn-disabled',

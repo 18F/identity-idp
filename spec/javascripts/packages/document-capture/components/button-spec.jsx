@@ -13,7 +13,7 @@ describe('document-capture/components/button', () => {
     expect(button.nodeName).to.equal('BUTTON');
     expect(button.type).to.equal('button');
     expect(button.classList.contains('btn')).to.be.true();
-    expect(button.classList.contains('btn-primary')).to.be.false();
+    expect(button.classList.contains('btn-primary')).to.be.true();
     expect(button.classList.contains('btn-secondary')).to.be.false();
     expect(button.classList.contains('btn-wide')).to.be.false();
     expect(button.classList.contains('btn-link')).to.be.false();
@@ -32,8 +32,8 @@ describe('document-capture/components/button', () => {
     expect(onClick.getCall(0).args[0]).to.equal('click');
   });
 
-  it('renders as primary', () => {
-    const { getByText } = render(<Button isPrimary>Click me</Button>);
+  it('renders as wide', () => {
+    const { getByText } = render(<Button isWide>Click me</Button>);
 
     const button = getByText('Click me');
 
