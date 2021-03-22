@@ -17,6 +17,7 @@ describe Deploy::Activate do
   let(:logger) { Logger.new('/dev/null') }
   let(:s3_client) { Aws::S3::Client.new(stub_responses: true) }
   let(:set_up_files!) {}
+  let(:instance_role) { 'idp' }
 
   let(:result_yaml_path) { File.join(root, 'config', 'application.yml') }
   let(:env_yaml_path) { File.join(root, 'config', 'application_s3_env.yml') }
@@ -35,6 +36,7 @@ describe Deploy::Activate do
   context 'in a deployed production environment' do
     before do
       allow(Identity::Hostdata).to receive(:env).and_return('int')
+      allow(Identity::Hostdata).to receive(:instance_role).and_return(instance_role)
 
       stub_request(:get, 'http://169.254.169.254/2016-09-02/dynamic/instance-identity/document').
         to_return(body: {
@@ -42,17 +44,29 @@ describe Deploy::Activate do
           'accountId' => '12345',
         }.to_json)
 
-      s3_client.stub_responses(
-        :get_object,
-        { body: application_yml },
-        { body: geolite_content },
-        { body: pwned_passwords_content },
+      s3_client.stub_responses(:get_object, proc do |context|
+          key = context.params[:key]
+          body = s3_contents[key]
+          if body.present?
+            { body: body }
+          else
+            raise Aws::S3::Errors::NoSuchKey.new(nil, nil)
+          end
+        end
       )
       allow(s3_client).to receive(:get_object).and_call_original
 
       # for now, stub cloning identity-idp-config
       allow(subject).to receive(:clone_idp_config)
       allow(subject).to receive(:setup_idp_config_symlinks)
+    end
+
+    let(:s3_contents) do
+      {
+        'int/idp/v1/application.yml' => application_yml,
+        'common/GeoIP2-City.mmdb' => geolite_content,
+        'common/pwned-passwords.txt' => pwned_passwords_content,
+      }
     end
 
     let(:application_yml) do
@@ -87,6 +101,74 @@ describe Deploy::Activate do
       expect(combined_application_yml['production']['usps_confirmation_max_days']).to eq('5')
       # production key from application.yml.example, not overwritten
       expect(combined_application_yml['production']['lockout_period_in_minutes']).to eq('10')
+    end
+
+    context 'on a web instance' do
+      let(:instance_role) { 'idp' }
+
+      context 'when web.yml exists in s3' do
+        before do
+          s3_contents['int/idp/v1/web.yml'] = <<~YAML
+            web_yaml_value: 'true'
+          YAML
+        end
+
+        it 'merges web.yml into application.yml' do
+          subject.run
+
+          expect(File.exist?("#{root}/config/web.yml")).to eq(true)
+
+          combined_application_yml = YAML.load_file(result_yaml_path)
+          expect(combined_application_yml['web_yaml_value']).to eq('true')
+        end
+      end
+
+      context 'when web.yml does not exist in s3' do
+        it 'warns and leaves application.yml as-is' do
+          expect(logger).to receive(:warn).with(/web.yml/)
+
+          expect { subject.run }.to_not raise_error
+
+          expect(File.exist?("#{root}/config/web.yml")).to eq(false)
+
+          combined_application_yml = YAML.load_file(result_yaml_path)
+          expect(combined_application_yml).to_not have_key('web_yaml_value')
+        end
+      end
+    end
+
+    context 'on a worker instance' do
+      let(:instance_role) { 'worker' }
+
+      context 'when worker.yml exists in s3' do
+        before do
+          s3_contents['int/idp/v1/worker.yml'] = <<~YAML
+            worker_yaml_value: 'true'
+          YAML
+        end
+
+        it 'merges worker.yml into application.yml' do
+          subject.run
+
+          expect(File.exist?("#{root}/config/worker.yml")).to eq(true)
+
+          combined_application_yml = YAML.load_file(result_yaml_path)
+          expect(combined_application_yml['worker_yaml_value']).to eq('true')
+        end
+      end
+
+      context 'when worker.yml does not exist in s3' do
+        it 'warns and leaves application.yml as-is' do
+          expect(logger).to receive(:warn).with(/worker.yml/)
+
+          expect { subject.run }.to_not raise_error
+
+          expect(File.exist?("#{root}/config/worker.yml")).to eq(false)
+
+          combined_application_yml = YAML.load_file(result_yaml_path)
+          expect(combined_application_yml).to_not have_key('worker_yaml_value')
+        end
+      end
     end
 
     it 'sets the correct permissions on the YAML files' do
