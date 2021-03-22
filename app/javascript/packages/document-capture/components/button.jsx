@@ -9,7 +9,7 @@
  * @prop {(ReactMouseEvent)=>void=} onClick Click handler.
  * @prop {ReactNode=} children Element children.
  * @prop {boolean=} isWide Whether button should be styled as primary button.
- * @prop {boolean=} isSecondary Whether button should be styled as secondary button.
+ * @prop {boolean=} isOutline Whether button should be styled as secondary button.
  * @prop {boolean=} isDisabled Whether button is disabled.
  * @prop {boolean=} isUnstyled Whether button should be unstyled, visually as a link.
  * @prop {boolean=} isVisuallyDisabled Whether button should appear disabled (but remain clickable).
@@ -24,7 +24,7 @@ function Button({
   onClick,
   children,
   isWide,
-  isSecondary,
+  isOutline,
   isDisabled,
   isUnstyled,
   isVisuallyDisabled,
@@ -33,8 +33,8 @@ function Button({
   const classes = [
     'btn',
     isWide && 'btn-wide',
-    !isSecondary && !isUnstyled && 'btn-primary',
-    isSecondary && 'btn-secondary',
+    !isOutline && !isUnstyled && 'btn-primary',
+    isOutline && 'btn-secondary',
     isUnstyled && 'btn-link',
     isVisuallyDisabled && 'btn-disabled',
     className,

@@ -43,8 +43,8 @@ describe('document-capture/components/button', () => {
     expect(button.classList.contains('btn-link')).to.be.false();
   });
 
-  it('renders as secondary', () => {
-    const { getByText } = render(<Button isSecondary>Click me</Button>);
+  it('renders as outline', () => {
+    const { getByText } = render(<Button isOutline>Click me</Button>);
 
     const button = getByText('Click me');
 
