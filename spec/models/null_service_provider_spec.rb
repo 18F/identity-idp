@@ -70,6 +70,7 @@ describe NullServiceProvider do
       ignored_methods = %i[
         autosave_associated_records_for_agency
         autosave_associated_records_for_identities
+        autosave_associated_records_for_integration
         belongs_to_counter_cache_after_update
         validate_associated_records_for_identities
       ]

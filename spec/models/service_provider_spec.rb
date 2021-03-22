@@ -146,6 +146,7 @@ describe ServiceProvider do
         with_foreign_key('service_provider').
         with_primary_key('issuer')
     end
+    it { is_expected.to have_one(:integration) }
   end
 
   describe '#issuer' do

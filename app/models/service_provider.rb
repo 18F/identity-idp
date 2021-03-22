@@ -11,6 +11,7 @@ class ServiceProvider < ApplicationRecord
                         foreign_key: 'service_provider',
                         primary_key: 'issuer',
                         class_name: 'ServiceProviderIdentity'
+  has_one :integration, class_name: 'Agreements::Integration'
   # rubocop:enable Rails/HasManyOrHasOneDependent
 
   # Do not define validations in this model.
