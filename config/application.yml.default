@@ -125,6 +125,7 @@ remember_device_expiration_hours_aal_1: '720'
 remember_device_expiration_hours_aal_2: '12'
 report_timeout:
 requests_per_ip_track_only_mode: 'false'
+risc_notifications_sqs_enabled: 'false'
 saml_secret_rotation_enabled:
 service_provider_request_ttl_hours: '24'
 session_check_delay: '30'

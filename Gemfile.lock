@@ -199,6 +199,9 @@ GEM
     aws-sdk-ses (1.36.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-sqs (1.35.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-ssm (1.103.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
@@ -738,6 +741,7 @@ DEPENDENCIES
   aws-sdk-kms (~> 1.4)
   aws-sdk-lambda
   aws-sdk-ses (~> 1.6)
+  aws-sdk-sqs
   axe-matchers (~> 2.6.0)
   base32-crockford
   better_errors (>= 2.5.1)

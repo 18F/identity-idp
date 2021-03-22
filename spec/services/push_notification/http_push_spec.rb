@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe PushNotification::HttpPush do
   include Rails.application.routes.url_helpers
@@ -22,20 +22,73 @@ RSpec.describe PushNotification::HttpPush do
     )
   end
   let(:now) { Time.zone.now }
+  let(:risc_notifications_sqs_enabled) { 'false' }
+  let(:sqs_client) { Aws::SQS::Client.new(stub_responses: true) }
+  let(:sqs_queue_url) { 'https://some-queue-url.example.com/example' }
 
   subject(:http_push) { PushNotification::HttpPush.new(event, now: now) }
+
+  before do
+    allow(AppConfig.env).to receive(:risc_notifications_sqs_enabled).
+      and_return(risc_notifications_sqs_enabled)
+    allow(Identity::Hostdata).to receive(:env).and_return('dev')
+
+    allow(http_push).to receive(:sqs_client).and_return(sqs_client)
+
+    sqs_client.stub_responses(
+      :get_queue_url,
+      { queue_url: sqs_queue_url },
+    )
+  end
 
   describe '#deliver' do
     subject(:deliver) { http_push.deliver }
 
-    it 'makes an HTTP post to service providers with a push_notification_url' do
-      stub_request(:post, sp_with_push_url.push_notification_url).
-        with do |request|
-          expect(request.headers['Content-Type']).to eq('application/secevent+jwt')
-          expect(request.headers['Accept']).to eq('application/json')
+    context 'when the SQS queue is disabled' do
+      let(:risc_notifications_sqs_enabled) { 'false' }
+
+      it 'makes an HTTP post to service providers with a push_notification_url' do
+        stub_request(:post, sp_with_push_url.push_notification_url).
+          with do |request|
+            expect(request.headers['Content-Type']).to eq('application/secevent+jwt')
+            expect(request.headers['Accept']).to eq('application/json')
+
+            payload, headers = JWT.decode(
+              request.body,
+              AppArtifacts.store.oidc_public_key,
+              true,
+              algorithm: 'RS256',
+            )
+
+            expect(headers['typ']).to eq('secevent+jwt')
+
+            expect(payload['iss']).to eq(root_url)
+            expect(payload['iat']).to eq(now.to_i)
+            expect(payload['exp']).to eq((now + 12.hours).to_i)
+            expect(payload['aud']).to eq(sp_with_push_url.push_notification_url)
+            expect(payload['events']).to eq(event.event_type => event.payload.as_json)
+          end
+
+        deliver
+      end
+    end
+
+    context 'when the SQS queue is enabled' do
+      let(:risc_notifications_sqs_enabled) { 'true' }
+
+      it 'posts to the SQS queue' do
+        expect(sqs_client).to receive(:get_queue_url).
+          with(queue_name: 'dev-risc-notifications').
+          and_call_original
+
+        expect(sqs_client).to receive(:send_message) do |queue_url:, message_body:|
+          expect(queue_url).to eq(sqs_queue_url)
+
+          message = JSON.parse(message_body, symbolize_names: true)
+          expect(message[:push_notification_url]).to eq(sp_with_push_url.push_notification_url)
 
           payload, headers = JWT.decode(
-            request.body,
+            message[:jwt],
             AppArtifacts.store.oidc_public_key,
             true,
             algorithm: 'RS256',
@@ -50,7 +103,8 @@ RSpec.describe PushNotification::HttpPush do
           expect(payload['events']).to eq(event.event_type => event.payload.as_json)
         end
 
-      deliver
+        deliver
+      end
     end
 
     context 'with an event that sends agency-specific iss_sub' do
@@ -58,11 +112,35 @@ RSpec.describe PushNotification::HttpPush do
 
       let(:agency_uuid) { AgencyIdentityLinker.new(sp_with_push_url_identity).link_identity.uuid }
 
-      it 'sends the agency-specific uuid' do
-        stub_request(:post, sp_with_push_url.push_notification_url).
-          with do |request|
+      context 'when the SQS queue is disabled' do
+        let(:risc_notifications_sqs_enabled) { 'false' }
+
+        it 'sends the agency-specific uuid' do
+          stub_request(:post, sp_with_push_url.push_notification_url).
+            with do |request|
+              payload, _headers = JWT.decode(
+                request.body,
+                AppArtifacts.store.oidc_public_key,
+                true,
+                algorithm: 'RS256',
+              )
+
+              expect(payload['events'][event.event_type]['subject']['sub']).to eq(agency_uuid)
+            end
+
+          deliver
+        end
+      end
+
+      context 'when the SQS queue is enabled' do
+        let(:risc_notifications_sqs_enabled) { 'true' }
+
+        it 'sends the agency-specific uuid' do
+          expect(sqs_client).to receive(:send_message) do |queue_url:, message_body:|
+            message = JSON.parse(message_body, symbolize_names: true)
+
             payload, _headers = JWT.decode(
-              request.body,
+              message[:jwt],
               AppArtifacts.store.oidc_public_key,
               true,
               algorithm: 'RS256',
@@ -71,7 +149,8 @@ RSpec.describe PushNotification::HttpPush do
             expect(payload['events'][event.event_type]['subject']['sub']).to eq(agency_uuid)
           end
 
-        deliver
+          deliver
+        end
       end
     end
 
@@ -119,10 +198,24 @@ RSpec.describe PushNotification::HttpPush do
         RevokeServiceProviderConsent.new(identity).call
       end
 
-      it 'does not notify that SP' do
-        deliver
+      context 'when the SQS queue is disabled' do
+        let(:risc_notifications_sqs_enabled) { 'false' }
 
-        expect(WebMock).not_to have_requested(:get, sp_with_push_url.push_notification_url)
+        it 'does not notify that SP' do
+          deliver
+
+          expect(WebMock).not_to have_requested(:get, sp_with_push_url.push_notification_url)
+        end
+      end
+
+      context 'when the SQS queue is enabled' do
+        let(:risc_notifications_sqs_enabled) { 'true' }
+
+        it 'does not notify that SP' do
+          expect(sqs_client).to_not receive(:send_message)
+
+          deliver
+        end
       end
     end
   end
