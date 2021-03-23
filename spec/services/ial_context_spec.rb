@@ -55,6 +55,56 @@ RSpec.describe IalContext do
     end
   end
 
+  describe '#default_to_ial2?' do
+    context 'when the service provider is ial1 and ial1 is requested' do
+      let(:sp_ial) { Idp::Constants::IAL1 }
+      let(:ial) { Idp::Constants::IAL1 }
+      it { expect(ial_context.default_to_ial2?).to eq(false) }
+    end
+
+    context 'when the service provider is ial1 and ial is not requested' do
+      let(:sp_ial) { Idp::Constants::IAL1 }
+      let(:ial) { nil }
+      it { expect(ial_context.default_to_ial2?).to eq(false) }
+    end
+
+    context 'when the service provider is ial2 and ial2 is requested' do
+      let(:sp_ial) { Idp::Constants::IAL2 }
+      let(:ial) { Idp::Constants::IAL2 }
+      it { expect(ial_context.default_to_ial2?).to eq(false) }
+    end
+
+    context 'when the service provider is ial2 and ial is not requested' do
+      let(:sp_ial) { Idp::Constants::IAL2 }
+      let(:ial) { nil }
+      it { expect(ial_context.default_to_ial2?).to eq(true) }
+    end
+
+    context 'when the service provider is ial2 and ial1 is requested' do
+      let(:sp_ial) { Idp::Constants::IAL2 }
+      let(:ial) { Idp::Constants::IAL1 }
+      it { expect(ial_context.default_to_ial2?).to eq(false) }
+    end
+
+    context 'when the service provider is ial2 strict and ial1 is requested' do
+      let(:sp_ial) { Idp::Constants::IAL2_STRICT }
+      let(:ial) { Idp::Constants::IAL1 }
+      it { expect(ial_context.default_to_ial2?).to eq(false) }
+    end
+
+    context 'when the service provider is ial2 strict and ial2 is requested' do
+      let(:sp_ial) { Idp::Constants::IAL2_STRICT }
+      let(:ial) { Idp::Constants::IAL2 }
+      it { expect(ial_context.default_to_ial2?).to eq(false) }
+    end
+
+    context 'when the service provider is ial2 strict and ial2 is requested' do
+      let(:sp_ial) { Idp::Constants::IAL2_STRICT }
+      let(:ial) { nil }
+      it { expect(ial_context.default_to_ial2?).to eq(true) }
+    end
+  end
+
   describe '#ialmax_requested?' do
     context 'when ialmax is requested' do
       let(:ial) { Idp::Constants::IAL_MAX }

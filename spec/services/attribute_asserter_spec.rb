@@ -327,31 +327,6 @@ describe AttributeAsserter do
         end
       end
 
-      context 'service provider specifies attribute bundle' do
-        before do
-          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w[email first_name last_name ssn phone])
-          subject.build
-        end
-
-        context 'the service provider is ial1' do
-          let(:service_provider_ial) { 1 }
-
-          it 'only includes uuid, email, aal, and ial (no ial2 attributes)' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
-          end
-        end
-
-        context 'the service provider is ial2' do
-          let(:service_provider_ial) { 2 }
-
-          it 'includes ial2 attributes specified in sp bundle' do
-            expect(user.asserted_attributes.keys).
-              to eq %i[uuid email first_name last_name ssn phone verified_at aal ial]
-          end
-        end
-      end
-
       context 'custom bundle has invalid attribute name' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
