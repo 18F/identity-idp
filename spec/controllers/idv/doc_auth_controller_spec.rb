@@ -185,6 +185,7 @@ describe Idv::DocAuthController do
     let(:front_image_iv) { SecureRandom.random_bytes(12) }
     let(:back_image_iv) { SecureRandom.random_bytes(12) }
     let(:selfie_image_iv) { SecureRandom.random_bytes(12) }
+      encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
 
     before do
       mock_document_capture_step

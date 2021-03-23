@@ -17,7 +17,6 @@ module Idv
         )
 
         document_capture_session.requested_at = Time.zone.now
-        document_capture_session.create_proofing_session
 
         idv_agent.proof_resolution(
           document_capture_session,

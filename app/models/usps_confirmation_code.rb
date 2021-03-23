@@ -29,7 +29,7 @@ class UspsConfirmationCode < ApplicationRecord
 
   def self.send_email(user)
     user.confirmed_email_addresses.each do |email_address|
-      UserMailer.undeliverable_address(user, email_address).deliver_later
+      UserMailer.undeliverable_address(user, email_address).deliver_now
     end
   end
 end

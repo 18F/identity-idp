@@ -1,4 +1,6 @@
 module IdvHelper
+  include ActiveJob::TestHelper
+
   def self.included(base)
     base.class_eval { include JavascriptDriverHelper }
   end
