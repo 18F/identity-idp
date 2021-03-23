@@ -14,7 +14,7 @@ module Idv
     end
 
     def submit
-      FormResponse.new(
+      Idv::DocAuthFormResponse.new(
         success: valid?,
         errors: errors.messages,
       )

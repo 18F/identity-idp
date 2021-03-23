@@ -7,16 +7,12 @@ module Idv
 
       private
 
-      def idv_throttle_params
-        [current_user.id, :idv_resolution]
-      end
-
       def attempter_increment
-        Throttler::Increment.call(*idv_throttle_params)
+        Throttler::Increment.call(current_user.id, :idv_resolution, analytics: @flow.analytics)
       end
 
       def attempter_throttled?
-        Throttler::IsThrottled.call(*idv_throttle_params)
+        Throttler::IsThrottled.call(current_user.id, :idv_resolution)
       end
 
       def idv_failure(result)
@@ -68,7 +64,7 @@ module Idv
       end
 
       def throttled_else_increment
-        Throttler::IsThrottledElseIncrement.call(user_id, :idv_acuant)
+        Throttler::IsThrottledElseIncrement.call(user_id, :idv_acuant, analytics: @flow.analytics)
       end
 
       def user_id

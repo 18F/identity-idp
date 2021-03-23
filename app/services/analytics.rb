@@ -197,9 +197,11 @@ class Analytics
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SESSION_KEPT_ALIVE = 'Session Kept Alive'.freeze
+  SESSION_TOTAL_DURATION_TIMEOUT = 'User Maximum Session Length Exceeded'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
   SP_REDIRECT_INITIATED = 'SP redirect initiated'.freeze
   TELEPHONY_OTP_SENT = 'Telephony: OTP sent'.freeze
+  THROTTLER_RATE_LIMIT_TRIGGERED = 'Throttler Rate Limit Triggered'.freeze
   TOTP_SETUP_VISIT = 'TOTP Setup Visited'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
   OTP_PHONE_VALIDATION_FAILED = 'Twilio Phone Validation Failed'.freeze

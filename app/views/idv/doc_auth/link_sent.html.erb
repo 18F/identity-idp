@@ -7,6 +7,7 @@
 <% if flow_session[:error_message] %>
   <%= render 'shared/alert', {
     type: 'error',
+    class: 'margin-bottom-4',
     message: flow_session[:error_message],
   } %>
 <% end %>
@@ -19,24 +20,26 @@
     <%= image_tag asset_url('idv/phone.png'), alt: t('image_description.camera_mobile_phone') %>
   </div>
   <div class='sm-col sm-col-9 padding-x-1 h2 margin-bottom-2 margin-top-0 margin-y-0'>
-    <p><%= t('doc_auth.info.link_sent').first %></p>
+    <p><%= t('doc_auth.info.link_sent') %></p>
     <% if !is_cancelled %>
-      <p id="doc_capture_continue_instructions" class="margin-bottom-0">
-        <%= t('doc_auth.info.link_sent').last %>
-      </p>
+      <%= render 'shared/alert', type: 'warning' do %>
+        <strong class="display-block"><%= t('doc_auth.info.keep_window_open') %></strong>
+        <span class="no-js"><%= t('doc_auth.info.link_sent_complete_nojs') %></span>
+        <span class="js"><%= t('doc_auth.info.link_sent_complete_js') %></span>
+      <% end %>
     <% end %>
   </div>
 </div>
 
 <% if !is_cancelled %>
-  <div class="margin-top-2 margin-bottom-0">
+  <div class="margin-top-4 margin-bottom-0">
     <%=
       button_to(
         t('forms.buttons.continue'),
         url_for,
         method: :put,
         class: 'btn btn-primary btn-wide sm-col-6 col-12',
-        form_class: 'doc_capture_continue_button_form'
+        form_class: 'link-sent-continue-button-form'
       )
     %>
   </div>
@@ -47,4 +50,4 @@
   <% end %>
 <% end %>
 
-<%= render 'idv/doc_auth/back', action: 'cancel_link_sent' %>
+<%= render 'idv/doc_auth/back', action: 'cancel_link_sent', class: 'link-sent-back-link' %>

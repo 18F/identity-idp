@@ -11,6 +11,7 @@ gem 'autoprefixer-rails', '~> 10.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-lambda'
 gem 'aws-sdk-ses', '~> 1.6'
+gem 'aws-sdk-sqs'
 gem 'base32-crockford'
 gem 'daemons', '~> 1.3'
 gem 'delayed_job_active_record', '~> 4.1'
@@ -122,5 +123,5 @@ end
 
 group :production do
   gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v4.1.0'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.1.0'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.1.1'
 end

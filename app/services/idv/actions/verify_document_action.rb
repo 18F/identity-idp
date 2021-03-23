@@ -10,7 +10,6 @@ module Idv
       def form_submit
         response = form.submit
         presenter = ImageUploadResponsePresenter.new(
-          form: form,
           form_response: response,
           url_options: url_options,
         )
@@ -26,6 +25,7 @@ module Idv
         @form ||= Idv::ApiDocumentVerificationForm.new(
           params,
           liveness_checking_enabled: liveness_checking_enabled?,
+          analytics: @flow.analytics,
         )
       end
 

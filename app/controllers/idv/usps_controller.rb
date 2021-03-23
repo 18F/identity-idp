@@ -136,16 +136,12 @@ module Idv
       FormResponse.new(success: success, errors: result[:errors])
     end
 
-    def idv_throttle_params
-      [idv_session.current_user.id, :idv_resolution]
-    end
-
     def idv_attempter_increment
-      Throttler::Increment.call(*idv_throttle_params)
+      Throttler::Increment.call(idv_session.current_user.id, :idv_resolution, analytics: analytics)
     end
 
     def idv_attempter_throttled?
-      Throttler::IsThrottled.call(*idv_throttle_params)
+      Throttler::IsThrottled.call(idv_session.current_user.id, :idv_resolution)
     end
 
     def throttle_failure

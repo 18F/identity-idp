@@ -29,10 +29,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 051a8c3dca143b215838176a07b1f0545ffec0a2
-  ref: 051a8c3dca143b215838176a07b1f0545ffec0a2
+  revision: ac784c4f1e32647edb7aa02e076d0df3313ca59f
+  ref: ac784c4f1e32647edb7aa02e076d0df3313ca59f
   specs:
-    identity-idp-functions (0.15.0)
+    identity-idp-functions (0.15.1)
       aamva (>= 4.0.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
@@ -41,10 +41,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: d6e73358ab899e8740e0008aff0e03e26bd4eb56
-  tag: v3.1.0
+  revision: 0e22ac2518a724b63a928feb68197b203ea47660
+  tag: v3.1.1
   specs:
-    lexisnexis (3.1.0)
+    lexisnexis (3.1.1)
       activesupport
       faraday
 
@@ -197,6 +197,9 @@ GEM
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.1)
     aws-sdk-ses (1.36.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-sqs (1.35.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-ssm (1.103.0)
@@ -744,6 +747,7 @@ DEPENDENCIES
   aws-sdk-kms (~> 1.4)
   aws-sdk-lambda
   aws-sdk-ses (~> 1.6)
+  aws-sdk-sqs
   axe-matchers (~> 2.6.0)
   base32-crockford
   better_errors (>= 2.5.1)
