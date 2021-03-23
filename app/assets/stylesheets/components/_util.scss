@@ -23,15 +23,15 @@
   margin: 0 auto;
 }
 
-.js-fallback {
+// scss-lint:disable QualifyingElement
+html.no-js .js {
   display: none;
 }
 
-.no-js {
-  .js-fallback {
-    display: block;
-  }
+html.js .no-js {
+  display: none;
 }
+// scss-lint:enable QualifyingElement
 
 .scale-down {
   // trigger anti-aliasing in chrome
