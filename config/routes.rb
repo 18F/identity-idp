@@ -326,10 +326,6 @@ Rails.application.routes.draw do
       get '/in_person' => 'in_person#index'
       get '/in_person/:step' => 'in_person#show', as: :in_person_step
       put '/in_person/:step' => 'in_person#update'
-      get '/cac' => 'cac#index'
-      get '/cac/pki_redirect' => 'cac#redirect_to_piv_cac_service'
-      get '/cac/:step' => 'cac#show', as: :cac_step
-      put '/cac/:step' => 'cac#update'
     end
 
     get '/account/verify' => 'users/verify_account#index', as: :verify_account
