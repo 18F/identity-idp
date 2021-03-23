@@ -130,6 +130,8 @@ fr:
       must_select_option: Sélectionnez une méthode d'authentification.
     verify_personal_key:
       throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans 15 minutes.
+    verify_profile:
+      throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans 10 minutes.
     webauthn_setup:
       already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
         de sécurité différente.

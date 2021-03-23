@@ -10,6 +10,7 @@ class Throttle < ApplicationRecord
     idv_resolution: 5,
     idv_send_link: 6,
     verify_personal_key: 7,
+    verify_gpo_key: 8,
   }
 
   THROTTLE_CONFIG = {
@@ -40,6 +41,10 @@ class Throttle < ApplicationRecord
     verify_personal_key: {
       max_attempts: AppConfig.env.verify_personal_key_max_attempts.to_i,
       attempt_window: AppConfig.env.verify_personal_key_attempt_window_in_minutes.to_i,
+    },
+    verify_gpo_key: {
+      max_attempts: AppConfig.env.verify_gpo_key_max_attempts.to_i,
+      attempt_window: AppConfig.env.verify_gpo_key_attempt_window_in_minutes.to_i,
     },
   }.freeze
 
