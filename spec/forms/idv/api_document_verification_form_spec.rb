@@ -14,6 +14,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
         document_capture_session_uuid: document_capture_session_uuid,
       },
       liveness_checking_enabled: liveness_checking_enabled?,
+      analytics: FakeAnalytics.new,
     )
   end
 
