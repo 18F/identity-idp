@@ -25,7 +25,6 @@ module Idv
         @form ||= Idv::ApiDocumentVerificationForm.new(
           params,
           liveness_checking_enabled: liveness_checking_enabled?,
-          analytics: @flow.analytics,
         )
       end
 

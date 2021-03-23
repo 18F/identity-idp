@@ -1,13 +1,9 @@
 module Throttler
   class IsThrottledElseIncrement
-    def self.call(user_id, throttle_type, analytics: nil)
+    def self.call(user_id, throttle_type)
       throttle = FindOrCreate.call(user_id, throttle_type)
       return throttle if throttle.throttled?
-      Update.call(
-        throttle: throttle,
-        attributes: { attempts: throttle.attempts + 1, attempted_at: Time.zone.now },
-        analytics: analytics,
-      )
+      throttle.update(attempts: throttle.attempts + 1, attempted_at: Time.zone.now)
       false
     end
   end
