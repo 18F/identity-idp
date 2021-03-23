@@ -81,7 +81,7 @@
 
   <h2><%= t('doc_auth.instructions.privacy') %></h2>
   <p><%== t('doc_auth.info.privacy_html', link: new_window_link_to(t('doc_auth.instructions.learn_more'),
-            'https://login.gov/policy/')) %></p>
+            MarketingSite.security_and_privacy_practices_url)) %></p>
 
   <%= validated_form_for :doc_auth,
                          url: url_for,
