@@ -10,36 +10,36 @@
 <% end %>
 
 <%= render 'shared/maintenance_window_alert' do %>
-  <h1><%= t('doc_auth.headings.welcome') %></h1>
+  <h1 class="h3"><%= t('doc_auth.headings.welcome') %></h1>
   <p class='mt-tiny margin-bottom-0'><%= t('doc_auth.info.welcome_html') %></p>
   <h2 class='margin-bottom-0'><%= t('doc_auth.instructions.welcome') %></h2>
 
   <ul class='list-reset'>
     <li class='padding-top-2 padding-bottom-1'>
-      <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
+      <div class='inline-block margin-right-2 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='margin-right-1 inline-block'>
-        <div class='h1 inline-block bold'>
+        <div class='h2 inline-block bold'>
           <%= t('doc_auth.instructions.bullet1') %>
         </div>
         <br/>
-        <div>
+        <div class="margin-top-1">
           <%= t('doc_auth.instructions.text1') %>
         </div>
       </div>
     </li>
     <% if liveness_checking_enabled? %>
       <li class='padding-top-2 padding-bottom-1'>
-        <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
+        <div class='inline-block margin-right-2 text-top circle circle-number bg-blue white'>
           <%= step += 1 %>
         </div>
         <div class='margin-right-1 inline-block'>
-          <div class='h1 inline-block bold'>
+          <div class='h2 inline-block bold'>
             <%= t('doc_auth.instructions.bullet1a') %>
           </div>
           <br/>
-          <div>
+          <div class="margin-top-1">
             <%= t('doc_auth.instructions.text1a') %>
           </div>
         </div>
@@ -47,15 +47,15 @@
     <% end %>
     <li class='padding-top-2 padding-bottom-1'>
       <div class="grid-row">
-        <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
+        <div class='inline-block margin-right-2 text-top circle circle-number bg-blue white'>
           <%= step += 1 %>
         </div>
         <div class='grid-col-10'>
-          <div class='h1 inline-block bold'>
+          <div class='h2 inline-block bold'>
             <%= t('doc_auth.instructions.bullet2') %>
           </div>
           <br/>
-          <div>
+          <div class="margin-top-1">
             <%= t('doc_auth.instructions.text2')  %>
           </div>
         </div>
@@ -63,15 +63,15 @@
     </li>
     <li class='padding-top-2 padding-bottom-1'>
       <div class="grid-row">
-        <div class='grid-col-2 margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
+        <div class='grid-col-2 margin-right-2 text-top circle circle-number bg-blue white'>
           <%= step += 1 %>
         </div>
         <div class='grid-col-10'>
-          <div class='h1 inline-block bold'>
+          <div class='h2 inline-block bold'>
             <%= t('doc_auth.instructions.bullet3') %>
           </div>
           <br/>
-          <div>
+          <div class="margin-top-1">
             <%= t('doc_auth.instructions.text3') %>
           </div>
         </div>
