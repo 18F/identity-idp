@@ -363,7 +363,7 @@ function AcuantCapture(
       <div className="margin-top-2">
         {isMobile && (
           <Button
-            isSecondary={!value}
+            isOutline={!value}
             isUnstyled={!!value}
             onClick={startCaptureOrTriggerUpload}
             className={value ? 'margin-right-1' : 'margin-right-2'}
