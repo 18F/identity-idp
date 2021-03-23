@@ -119,7 +119,7 @@ en:
     two_factor_auth_setup:
       must_select_option: Select an authentication method.
     verify_personal_key:
-      throttled: You tried too many times, please try again in 10 minutes.
+      throttled: You tried too many times, please try again in 15 minutes.
     webauthn_setup:
       already_registered: Security key already registered. Please try a different
         security key.

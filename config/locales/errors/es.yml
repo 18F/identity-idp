@@ -121,6 +121,8 @@ es:
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.
     two_factor_auth_setup:
       must_select_option: Seleccione un método de autenticación.
+    verify_personal_key:
+      throttled: Lo intentaste muchas veces, vuelve a intentarlo en 15 minutos.
     webauthn_setup:
       already_registered: Clave de seguridad ya registrada. Por favor, intente una
         clave de seguridad diferente.
