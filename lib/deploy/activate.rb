@@ -162,7 +162,7 @@ module Deploy
       config = YAML.load_file(example_application_yaml_path).
         deep_merge(YAML.load_file(env_yaml_path))
 
-      if File.exist?(web_or_worker_yaml_path)
+      if web_or_worker_yml && File.exist?(web_or_worker_yaml_path)
         config.deep_merge(YAML.load_file(web_or_worker_yaml_path))
       else
         config
