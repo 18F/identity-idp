@@ -22,7 +22,7 @@ module AccountReset
       current_user.confirmed_email_addresses.each do |email_address|
         UserMailer.confirm_email_and_reverify(current_user,
                                               email_address,
-                                              current_user.account_recovery_request).deliver_later
+                                              current_user.account_recovery_request).deliver_now
       end
     end
 

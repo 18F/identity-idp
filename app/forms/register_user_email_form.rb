@@ -128,7 +128,7 @@ class RegisterUserEmailForm
 
   def send_sign_up_confirmed_email
     @throttled = Throttler::IsThrottledElseIncrement.call(existing_user.id, :reg_confirmed_email)
-    UserMailer.signup_with_your_email(existing_user, email).deliver_later unless @throttled
+    UserMailer.signup_with_your_email(existing_user, email).deliver_now unless @throttled
   end
 
   def user_unconfirmed?

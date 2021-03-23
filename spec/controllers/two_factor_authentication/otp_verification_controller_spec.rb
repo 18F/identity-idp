@@ -281,7 +281,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
-        @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
+        @mailer = instance_double(ActionMailer::MessageDelivery, deliver_now: true)
         subject.current_user.email_addresses.each do |email_address|
           allow(UserMailer).to receive(:phone_added).
             with(subject.current_user, email_address, disavowal_token: instance_of(String)).
@@ -328,7 +328,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               expect(UserMailer).to have_received(:phone_added).
                 with(subject.current_user, email_address, disavowal_token: instance_of(String))
             end
-            expect(@mailer).to have_received(:deliver_later)
+            expect(@mailer).to have_received(:deliver_now)
           end
         end
 

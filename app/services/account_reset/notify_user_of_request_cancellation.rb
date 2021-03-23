@@ -15,7 +15,7 @@ module AccountReset
 
     def notify_user_via_email_of_account_reset_cancellation
       user.confirmed_email_addresses.each do |email_address|
-        UserMailer.account_reset_cancel(user, email_address).deliver_later
+        UserMailer.account_reset_cancel(user, email_address).deliver_now
       end
     end
 
