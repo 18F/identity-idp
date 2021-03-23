@@ -35,7 +35,6 @@ en:
       confirm: Are you sure you want to regenerate your backup codes?
     buttons:
       back: Back
-      cac: Present PIV/CAC card
       cancel: Yes, cancel
       confirm: Confirm
       continue: Continue
