@@ -10,22 +10,37 @@ module Users
       usps_mail = Idv::UspsMail.new(current_user)
       @mail_spammed = usps_mail.mail_spammed?
       @verify_account_form = VerifyAccountForm.new(user: current_user)
-      return unless FeatureManagement.reveal_usps_code?
-      @code = session[:last_usps_confirmation_code]
+      @code = session[:last_usps_confirmation_code] if FeatureManagement.reveal_usps_code?
+
+      if Throttler::IsThrottled.call(current_user.id, :verify_gpo_key)
+        render :throttled
+      else
+        render :index
+      end
     end
 
     def create
       @verify_account_form = build_verify_account_form
 
-      result = @verify_account_form.submit
-      analytics.track_event(Analytics::ACCOUNT_VERIFICATION_SUBMITTED, result.to_h)
+      throttled = Throttler::IsThrottledElseIncrement.call(
+        current_user.id,
+        :verify_gpo_key,
+        analytics: analytics,
+      )
 
-      if result.success?
-        create_user_event(:account_verified)
-        flash[:success] = t('account.index.verification.success')
-        redirect_to sign_up_completed_url
+      if throttled
+        render :throttled
       else
-        render :index
+        result = @verify_account_form.submit
+        analytics.track_event(Analytics::ACCOUNT_VERIFICATION_SUBMITTED, result.to_h)
+
+        if result.success?
+          create_user_event(:account_verified)
+          flash[:success] = t('account.index.verification.success')
+          redirect_to sign_up_completed_url
+        else
+          render :index
+        end
       end
     end
 
