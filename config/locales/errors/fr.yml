@@ -128,6 +128,8 @@ fr:
       unique_name: Ce nom est déjà pris. Veuillez choisir un autre nom.
     two_factor_auth_setup:
       must_select_option: Sélectionnez une méthode d'authentification.
+    verify_personal_key:
+      throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans 15 minutes.
     webauthn_setup:
       already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
         de sécurité différente.

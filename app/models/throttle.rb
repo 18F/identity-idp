@@ -9,6 +9,7 @@ class Throttle < ApplicationRecord
     reset_password_email: 4,
     idv_resolution: 5,
     idv_send_link: 6,
+    verify_personal_key: 7,
   }
 
   THROTTLE_CONFIG = {
@@ -35,6 +36,10 @@ class Throttle < ApplicationRecord
     idv_send_link: {
       max_attempts: AppConfig.env.idv_send_link_max_attempts.to_i,
       attempt_window: AppConfig.env.idv_send_link_attempt_window_in_minutes.to_i,
+    },
+    verify_personal_key: {
+      max_attempts: AppConfig.env.verify_personal_key_max_attempts.to_i,
+      attempt_window: AppConfig.env.verify_personal_key_attempt_window_in_minutes.to_i,
     },
   }.freeze
 

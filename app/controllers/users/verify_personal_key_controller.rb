@@ -12,15 +12,32 @@ module Users
         user: current_user,
         personal_key: '',
       )
+
+      if Throttler::IsThrottled.call(current_user.id, :verify_personal_key)
+        render :throttled
+      else
+        render :new
+      end
     end
 
     def create
-      result = personal_key_form.submit
-      analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED, result.to_h)
-      if result.success?
-        handle_success(result)
+      throttled = Throttler::IsThrottledElseIncrement.call(
+        current_user.id,
+        :verify_personal_key,
+        analytics: analytics,
+      )
+
+      if throttled
+        render :throttled
       else
-        handle_failure(result)
+        result = personal_key_form.submit
+
+        analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED, result.to_h)
+        if result.success?
+          handle_success(result)
+        else
+          handle_failure(result)
+        end
       end
     end
 

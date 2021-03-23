@@ -68,5 +68,6 @@ en:
     totp_setup:
       new: Add an authentication app
     verify_email: Check your email
+    verify_personal_key: Verify your personal key
     webauthn_setup:
       new: Add your security key
