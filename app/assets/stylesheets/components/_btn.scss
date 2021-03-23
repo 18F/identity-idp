@@ -111,3 +111,11 @@
     text-decoration: none;
   }
 }
+
+.usa-button.usa-button--unstyled:hover,
+.usa-button.usa-button--hover.usa-button--unstyled {
+  // Temporary: Links in the IdP do not currently conform to the design system and instead retain
+  // their color while hovered. Part of the work of LG-3877 should be to remove these styles, and
+  // instead allow both unstyled buttons and links inherit the default design system hover color.
+  color: $link-color;
+}
