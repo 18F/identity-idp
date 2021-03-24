@@ -23,7 +23,7 @@ gem 'faraday'
 gem 'foundation_emails'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.4.1'
+gem 'identity-doc-auth', github: '18F/identity-doc-auth', branch: 'margolis-redacted-struct'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v2.0.0'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
 require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
@@ -48,6 +48,7 @@ gem 'rack-timeout', require: false
 gem 'raise-if-root'
 gem 'readthis'
 gem 'recaptcha', require: 'recaptcha/rails'
+gem 'redacted_struct'
 gem 'redis-session-store', '>= 0.11.3'
 gem 'rotp', '~> 6.1'
 gem 'rqrcode'
@@ -122,6 +123,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v4.1.0'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.1.1'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', branch: 'margolis-redacted-struct'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'margolis-redacted-gem'
 end

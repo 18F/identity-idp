@@ -20,7 +20,7 @@ class AppArtifacts
 
       yield self
 
-      Struct.new(*@artifacts.keys, keyword_init: true).new(**@artifacts)
+      RedactedStruct.new(*@artifacts.keys, keyword_init: true).new(**@artifacts)
     end
 
     # @param [Symbol] name
