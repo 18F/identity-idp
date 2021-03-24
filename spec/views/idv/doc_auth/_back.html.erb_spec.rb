@@ -29,9 +29,7 @@ describe 'idv/doc_auth/_back.html.erb' do
     it 'renders' do
       expect(subject).to have_selector("form[action='#{idv_doc_auth_step_path(step: 'redo_ssn')}']")
       expect(subject).to have_selector('input[name="_method"][value="put"]', visible: false)
-      expect(subject).to have_selector(
-        ".btn[type='submit'][value='#{'‹ ' + t('forms.buttons.back')}']",
-      )
+      expect(subject).to have_selector("[type='submit'][value='#{'‹ ' + t('forms.buttons.back')}']")
     end
 
     it_behaves_like 'back link with class'
