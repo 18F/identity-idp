@@ -128,3 +128,13 @@
   // instead allow both unstyled buttons and links inherit the default design system hover color.
   color: $link-color;
 }
+
+.usa-button--unstyled {
+  &:hover,
+  &:active {
+    // Temporary: These styles should be ported upstream to the design system, optionally as part of
+    // future reconciliation effort with uswds/uswds#4077.
+    -moz-osx-font-smoothing: inherit;
+    -webkit-font-smoothing: inherit;
+  }
+}
