@@ -3,7 +3,7 @@ module Encryption
     class PiiEncryptor
       include ::NewRelic::Agent::MethodTracer
 
-      Ciphertext = RedactedStruct.new(:encrypted_data, :salt, :cost) do
+      Ciphertext = RedactedStruct.new(:encrypted_data, :salt, :cost, allowed_members: [:cost]) do
         include Encodable
         class << self
           include Encodable
