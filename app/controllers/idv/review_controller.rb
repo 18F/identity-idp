@@ -47,13 +47,14 @@ module Idv
       analytics.track_event(Analytics::IDV_REVIEW_COMPLETE)
 
       return unless FeatureManagement.reveal_usps_code?
-      session[:last_usps_confirmation_code] = idv_session.usps_otp
+      session[:last_gpo_confirmation_code] = idv_session.usps_otp
     end
 
     private
 
     def flash_message_content
-      if idv_session.address_verification_mechanism == 'usps'
+      # TODO: remove usps after deploy
+      if %w[gpo usps].include?(idv_session.address_verification_mechanism)
         t('idv.messages.mail_sent')
       else
         phone_of_record_msg = ActionController::Base.helpers.content_tag(

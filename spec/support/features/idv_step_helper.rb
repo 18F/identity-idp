@@ -21,7 +21,7 @@ module IdvStepHelper
     complete_all_doc_auth_steps
   end
 
-  def complete_idv_steps_before_usps_step(user = user_with_2fa)
+  def complete_idv_steps_before_gpo_step(user = user_with_2fa)
     complete_idv_steps_before_phone_step(user)
     click_on t('idv.form.activate_by_mail')
   end
@@ -56,7 +56,7 @@ module IdvStepHelper
   # rubocop:enable Layout/LineLength
 
   def complete_idv_steps_with_usps_before_review_step(user = user_with_2fa)
-    complete_idv_steps_before_usps_step(user)
+    complete_idv_steps_before_gpo_step(user)
     click_on t('idv.buttons.mail.send')
   end
 

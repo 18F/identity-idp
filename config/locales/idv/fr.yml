@@ -116,6 +116,13 @@ fr:
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le
         moment.
       confirm: Vous avez crypté vos données vérifiées
+      gpo:
+        address_on_file: Nous posterons une lettre à l'adresse vérifiée dans nos dossiers.
+          Celle-ci contient un code de confirmation.
+        new_address: Nous vous enverrons une lettre avec un code de confirmation à
+          l'adresse que vous spécifiez.
+        resend: Envoyez-moi une autre lettre
+        success: Elle devrait arriver dans 5 à 10 jours ouvrables.
       hardfail: Nous ne pouvons pas vous connecter pour le moment, mais vous pouvez
         retenter d'effectuer la vérification de votre identité dans %{hours} heures.
       mail_sent: Votre lettre est en route
@@ -154,13 +161,6 @@ fr:
           informations personnelles
         review_message: Lorsque vous entrez à nouveau votre mot de passe, login.gov
           crypte vos données pour vous assurer que personne ne peut y accéder.
-      usps:
-        address_on_file: Nous posterons une lettre à l'adresse vérifiée dans nos dossiers.
-          Celle-ci contient un code de confirmation.
-        new_address: Nous vous enverrons une lettre avec un code de confirmation à
-          l'adresse que vous spécifiez.
-        resend: Envoyez-moi une autre lettre
-        success: Elle devrait arriver dans 5 à 10 jours ouvrables.
     review:
       dob: Date de naissance
       full_name: Nom complet

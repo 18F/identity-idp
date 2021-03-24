@@ -11,6 +11,7 @@ en:
     eastern_timestamp: "%{timestamp} (Eastern)"
     email_changed: Email address changed
     email_deleted: Email address deleted
+    gpo_mail_sent: Letter sent
     new_personal_key: Personal key changed
     password_changed: Password changed
     password_invalidated: Password reset by %{app_name}
@@ -23,6 +24,5 @@ en:
     piv_cac_enabled: PIV/CAC card associated
     sign_in_after_2fa: Signed in with second factor
     sign_in_before_2fa: Signed in with password
-    usps_mail_sent: Letter sent
     webauthn_key_added: Hardware security key added
     webauthn_key_removed: Hardware security key removed
