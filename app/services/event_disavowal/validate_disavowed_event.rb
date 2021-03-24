@@ -37,7 +37,7 @@ module EventDisavowal
 
     def event_disavowment_is_not_expired
       return if event.nil?
-      disavowal_expiration = AppConfig.env.event_disavowal_expiration_hours.to_i.hours.ago
+      disavowal_expiration = AppConfig.env.event_disavowal_expiration_hours.hours.ago
       return if event.created_at > disavowal_expiration
       errors.add(:event, I18n.t('event_disavowals.errors.event_disavowal_expired'))
     end

@@ -196,7 +196,7 @@ describe 'FeatureManagement', type: :feature do
     describe '#identity_pki_disabled?' do
       context 'when enabled' do
         before(:each) do
-          allow(AppConfig.env).to receive(:identity_pki_disabled) { 'true' }
+          allow(AppConfig.env).to receive(:identity_pki_disabled) { true }
         end
 
         it 'has the feature disabled' do
@@ -206,7 +206,7 @@ describe 'FeatureManagement', type: :feature do
 
       context 'when disabled' do
         before(:each) do
-          allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
+          allow(AppConfig.env).to receive(:identity_pki_disabled) { false }
         end
 
         it 'has the feature disabled' do
@@ -223,14 +223,14 @@ describe 'FeatureManagement', type: :feature do
 
         context 'identity_pki disabled' do
           it 'returns true' do
-            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'true' }
+            allow(AppConfig.env).to receive(:identity_pki_disabled) { true }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_truthy
           end
         end
 
         context 'identity_pki not disabled' do
           it 'returns false' do
-            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
+            allow(AppConfig.env).to receive(:identity_pki_disabled) { false }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
@@ -244,14 +244,14 @@ describe 'FeatureManagement', type: :feature do
 
         context 'identity_pki disabled' do
           it 'returns false' do
-            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'true' }
+            allow(AppConfig.env).to receive(:identity_pki_disabled) { true }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
 
         context 'identity_pki not disabled' do
           it 'returns false' do
-            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
+            allow(AppConfig.env).to receive(:identity_pki_disabled) { false }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
@@ -329,13 +329,13 @@ describe 'FeatureManagement', type: :feature do
 
   describe '#disallow_all_web_crawlers?' do
     it 'returns true when AppConfig setting is true' do
-      allow(AppConfig.env).to receive(:disallow_all_web_crawlers) { 'true' }
+      allow(AppConfig.env).to receive(:disallow_all_web_crawlers) { true }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(true)
     end
 
     it 'returns false when AppConfig setting is false' do
-      allow(AppConfig.env).to receive(:disallow_all_web_crawlers) { 'false' }
+      allow(AppConfig.env).to receive(:disallow_all_web_crawlers) { false }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
     end
@@ -343,13 +343,13 @@ describe 'FeatureManagement', type: :feature do
 
   describe '#disallow_ial2_recovery?' do
     it 'returns true when AppConfig setting is true' do
-      allow(AppConfig.env).to receive(:disallow_ial2_recovery) { 'true' }
+      allow(AppConfig.env).to receive(:disallow_ial2_recovery) { true }
 
       expect(FeatureManagement.disallow_ial2_recovery?).to eq(true)
     end
 
     it 'returns false when AppConfig setting is false' do
-      allow(AppConfig.env).to receive(:disallow_ial2_recovery) { 'false' }
+      allow(AppConfig.env).to receive(:disallow_ial2_recovery) { false }
 
       expect(FeatureManagement.disallow_ial2_recovery?).to eq(false)
     end
@@ -362,13 +362,13 @@ describe 'FeatureManagement', type: :feature do
       end
 
       it 'returns true when AppConfig setting is true' do
-        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'true' }
+        allow(AppConfig.env).to receive(:identity_pki_local_dev) { true }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(true)
       end
 
       it 'returns false when AppConfig setting is false' do
-        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'false' }
+        allow(AppConfig.env).to receive(:identity_pki_local_dev) { false }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
@@ -380,13 +380,13 @@ describe 'FeatureManagement', type: :feature do
       end
 
       it 'returns false when AppConfig setting is true' do
-        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'true' }
+        allow(AppConfig.env).to receive(:identity_pki_local_dev) { true }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
 
       it 'returns false when AppConfig setting is false' do
-        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'false' }
+        allow(AppConfig.env).to receive(:identity_pki_local_dev) { false }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
@@ -395,13 +395,13 @@ describe 'FeatureManagement', type: :feature do
 
   describe '#document_capture_async_uploads_enabled?' do
     it 'returns true when AppConfig presigned S3 URL setting is true' do
-      allow(AppConfig.env).to receive(:doc_auth_enable_presigned_s3_urls) { 'true' }
+      allow(AppConfig.env).to receive(:doc_auth_enable_presigned_s3_urls) { true }
 
       expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(true)
     end
 
     it 'returns false when AppConfig presigned S3 URL setting is false' do
-      allow(AppConfig.env).to receive(:doc_auth_enable_presigned_s3_urls) { 'false' }
+      allow(AppConfig.env).to receive(:doc_auth_enable_presigned_s3_urls) { false }
 
       expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(false)
     end

@@ -5,7 +5,7 @@ class AccountRecoveryRequest < ApplicationRecord
   validates :requested_at, presence: true
 
   def expired?
-    (requested_at + AppConfig.env.ial2_recovery_request_valid_for_minutes.to_i.minutes) <
+    (requested_at + AppConfig.env.ial2_recovery_request_valid_for_minutes.minutes) <
       Time.zone.now
   end
 end

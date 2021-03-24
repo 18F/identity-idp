@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Email sign up' do
   scenario 'Load testing feature is on' do
-    allow(AppConfig.env).to receive(:enable_load_testing_mode).and_return('true')
+    allow(AppConfig.env).to receive(:enable_load_testing_mode).and_return(true)
     email = 'test@example.com'
 
     sign_up_with(email)

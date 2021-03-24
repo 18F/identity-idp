@@ -31,12 +31,12 @@ class Throttle < ApplicationRecord
       attempt_window: AppConfig.env.reset_password_email_window_in_minutes.to_i,
     },
     idv_resolution: {
-      max_attempts: AppConfig.env.idv_max_attempts.to_i,
-      attempt_window: AppConfig.env.idv_attempt_window_in_hours.to_i * 60,
+      max_attempts: AppConfig.env.idv_max_attempts,
+      attempt_window: AppConfig.env.idv_attempt_window_in_hours * 60,
     },
     idv_send_link: {
-      max_attempts: AppConfig.env.idv_send_link_max_attempts.to_i,
-      attempt_window: AppConfig.env.idv_send_link_attempt_window_in_minutes.to_i,
+      max_attempts: AppConfig.env.idv_send_link_max_attempts,
+      attempt_window: AppConfig.env.idv_send_link_attempt_window_in_minutes,
     },
     verify_personal_key: {
       max_attempts: AppConfig.env.verify_personal_key_max_attempts.to_i,

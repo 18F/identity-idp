@@ -28,7 +28,7 @@ feature 'doc capture document capture step' do
 
     before do
       Capybara.reset_session!
-      expired_minutes = (AppConfig.env.doc_capture_request_valid_for_minutes.to_i + 1).minutes
+      expired_minutes = (AppConfig.env.doc_capture_request_valid_for_minutes + 1).minutes
       document_capture_session = user.document_capture_sessions.last
       document_capture_session.requested_at -= expired_minutes
       document_capture_session.save!

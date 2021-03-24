@@ -3,7 +3,7 @@ module KeyRotationHelper
     env = AppConfig.env
     old_hmac_key = env.hmac_fingerprinter_key
     allow(env).to receive(:hmac_fingerprinter_key_queue).and_return(
-      "[\"#{old_hmac_key}\"]",
+      ["#{old_hmac_key}"],
     )
     allow(env).to receive(:hmac_fingerprinter_key).and_return('4' * 32)
   end

@@ -4,9 +4,9 @@ class IdentityConfig
   end
 
   CONVERTERS = {
-    uri: proc { |value| URI(value) if value.present? },
+    uri: proc { |value| URI(value) },
     string: proc { |value| value.to_s },
-    comma_separated_string_list: proc do
+    comma_separated_string_list: proc do |value|
       value.split(',')
     end,
     integer: proc do |value|
@@ -36,7 +36,7 @@ class IdentityConfig
   def add(key, type: :string, is_sensitive: false, options: {})
     value = @read_env[key]
     raise "#{key} is required but is not present" if value.nil?
-    converted_value = CONVERTERS.fetch(type).call(value, options)
+    converted_value = CONVERTERS.fetch(type).call(value, options: options)
     raise "#{key} is required but is not present" if converted_value.nil?
 
     @written_env[key] = converted_value
@@ -45,6 +45,7 @@ class IdentityConfig
 
   def self.build_settings(config_map)
     config = IdentityConfig.new(config_map)
+    binding.pry
 
     config.add(:aal_authn_context_enabled, type: :boolean)
     config.add(:aamva_cert_enabled, type: :boolean)
@@ -77,78 +78,77 @@ class IdentityConfig
     config.add(:attribute_cost)
     config.add(:attribute_encryption_key)
     config.add(:attribute_encryption_key_queue, type: :json)
-    # TODO: convert this
-    config.add(:available_locales, type: :comma_separated_list)
-
+    config.add(:available_locales, type: :comma_separated_string_list)
     config.add(:aws_http_timeout, type: :integer)
+    config.add(:aws_http_retry_limit, type: :integer)
+    config.add(:aws_http_retry_max_delay, type: :integer)
     config.add(:aws_kms_key_id)
     config.add(:aws_kms_multi_region_enabled, type: :boolean)
     # TODO: Mitchell
-    # config.add(:aws_kms_regions
-    # config.add(:aws_logo_bucket
-    # config.add(:aws_region
-    # config.add(:backup_codes_as_only_2fa
-    # config.add(:basic_auth_password
-    # config.add(:basic_auth_user_name
-    # config.add(:cac_proofing_enabled
-    # config.add(:dashboard_api_token
-    # config.add(:dashboard_url
-    # config.add(:database_host
-    # config.add(:database_name
-    # config.add(:database_password
-    # config.add(:database_pool_idp
-    # config.add(:database_read_replica_host
-    # config.add(:database_readonly_password
-    # config.add(:database_readonly_username
-    # config.add(:database_statement_timeout
-    # config.add(:database_timeout
-    # config.add(:database_username
-    # config.add(:deleted_user_accounts_report_configs
-    # config.add(:development
-    # config.add(:disable_email_sending
-    # config.add(:disallow_all_web_crawlers
-    # config.add(:disallow_ial2_recovery
-    # config.add(:doc_auth_enable_presigned_s3_urls
-    # config.add(:doc_auth_extend_timeout_by_minutes
-    # config.add(:doc_auth_vendor
-    # config.add(:doc_capture_polling_enabled
-    # config.add(:doc_capture_request_valid_for_minutes
-    # config.add(:document_proof_result_lambda_token
-    # config.add(:domain_name
-    # config.add(:email_deletion_enabled
-    # config.add(:email_from
-    # config.add(:email_from_display_name
-    # config.add(:enable_load_testing_mode
-    # config.add(:enable_rate_limiting
-    # config.add(:enable_test_routes
-    # config.add(:enable_usps_verification
-    # config.add(:event_disavowal_expiration_hours
-    # config.add(:exception_recipients
-    # config.add(:expired_letters_auth_token
-    # config.add(:google_analytics_key
-    # config.add(:google_analytics_timeout
-    # config.add(:hmac_fingerprinter_key
-    # config.add(:hmac_fingerprinter_key_queue
-    # config.add(:ial2_recovery_request_valid_for_minutes
-    # config.add(:identity_pki_disabled
-    # config.add(:identity_pki_local_dev
-    # config.add(:idv_attempt_window_in_hours
-    # config.add(:idv_max_attempts
-    # config.add(:idv_send_link_attempt_window_in_minutes
-    # config.add(:idv_send_link_max_attempts
-    # config.add(:in_person_proofing_enabled
-    # config.add(:issuers_with_email_nameid_format
-    # config.add(:job_run_healthchecks_enabled
-    # config.add(:lexisnexis_account_id
-    # config.add(:lexisnexis_base_url
-    # config.add(:lexisnexis_instant_verify_workflow
-    # config.add(:lexisnexis_password
-    # config.add(:lexisnexis_phone_finder_workflow
-    # config.add(:lexisnexis_request_mode
-    # config.add(:lexisnexis_timeout
-    # config.add(:lexisnexis_trueid_account_id
-    # config.add(:lexisnexis_trueid_liveness_workflow
-    # config.add(:lexisnexis_trueid_noliveness_workflow
+    config.add(:aws_kms_regions, type: :json)
+    config.add(:aws_logo_bucket)
+    config.add(:aws_region)
+    config.add(:backup_codes_as_only_2fa, type: :boolean)
+    config.add(:basic_auth_password)
+    config.add(:basic_auth_user_name)
+    # TODO: remove? does not appear to be used
+    config.add(:cac_proofing_enabled, type: :boolean)
+    config.add(:dashboard_api_token)
+    config.add(:dashboard_url)
+    config.add(:database_host)
+    config.add(:database_name)
+    config.add(:database_password)
+    config.add(:database_pool_idp, type: :integer)
+    config.add(:database_read_replica_host)
+    config.add(:database_readonly_password)
+    config.add(:database_readonly_username)
+    config.add(:database_statement_timeout, type: :integer)
+    config.add(:database_timeout, type: :integer)
+    config.add(:database_username)
+    config.add(:deleted_user_accounts_report_configs, type: :json)
+    config.add(:disable_email_sending, type: :boolean)
+    config.add(:disallow_all_web_crawlers, type: :boolean)
+    config.add(:disallow_ial2_recovery, type: :boolean)
+    config.add(:doc_auth_enable_presigned_s3_urls, type: :boolean)
+    config.add(:doc_auth_extend_timeout_by_minutes, type: :integer)
+    config.add(:doc_auth_vendor)
+    config.add(:doc_capture_polling_enabled, type: :boolean)
+    config.add(:doc_capture_request_valid_for_minutes, type: :integer)
+    config.add(:document_proof_result_lambda_token)
+    config.add(:domain_name)
+    # TODO: remove? does not appear to be used
+    config.add(:email_deletion_enabled, type: :boolean)
+    config.add(:email_from)
+    config.add(:email_from_display_name)
+    config.add(:enable_load_testing_mode, type: :boolean)
+    config.add(:enable_rate_limiting, type: :boolean)
+    config.add(:enable_test_routes, type: :boolean)
+    config.add(:enable_usps_verification, type: :boolean)
+    config.add(:event_disavowal_expiration_hours, type: :integer)
+    config.add(:exception_recipients, type: :comma_separated_string_list)
+    config.add(:expired_letters_auth_token)
+    config.add(:hmac_fingerprinter_key)
+    config.add(:hmac_fingerprinter_key_queue, type: :json)
+    config.add(:ial2_recovery_request_valid_for_minutes, type: :integer)
+    config.add(:identity_pki_disabled, type: :boolean)
+    config.add(:identity_pki_local_dev, type: :boolean)
+    config.add(:idv_attempt_window_in_hours, type: :integer)
+    config.add(:idv_max_attempts, type: :integer)
+    config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
+    config.add(:idv_send_link_max_attempts, type: :integer)
+    config.add(:in_person_proofing_enabled, type: :boolean)
+    config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
+    config.add(:job_run_healthchecks_enabled, type: :boolean)
+    config.add(:lexisnexis_account_id)
+    config.add(:lexisnexis_base_url)
+    config.add(:lexisnexis_instant_verify_workflow)
+    config.add(:lexisnexis_password)
+    config.add(:lexisnexis_phone_finder_workflow)
+    config.add(:lexisnexis_request_mode)
+    config.add(:lexisnexis_timeout, type: :integer)
+    config.add(:lexisnexis_trueid_account_id)
+    config.add(:lexisnexis_trueid_liveness_workflow)
+    config.add(:lexisnexis_trueid_noliveness_workflow)
     #
     # TODO: Hooper
     config.add(:lexisnexis_trueid_password)
@@ -205,14 +205,14 @@ class IdentityConfig
     config.add(:push_notifications_enabled, type: :boolean)
     # TODO: This is a boolean, but currently values are 'on' and 'off'
     config.add(:rack_mini_profiler, type: :string)
-    config.add(:rack_timeout_service_timeout_seconds
+    config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:reauthn_window, type: :integer)
     config.add(:recaptcha_enabled_percent, type: :integer)
     config.add(:recaptcha_secret_key)
     config.add(:recaptcha_site_key)
     config.add(:recovery_code_length, type: :integer)
     config.add(:recurring_jobs_disabled_names, type: :json)
-    config.add(:redis_throttle_url, type: :uris)
+    config.add(:redis_throttle_url, type: :uri)
     # TODO: Zach
     config.add(:redis_url, type: :uri)
     config.add(:reg_confirmed_email_max_attempts, type: :integer)
@@ -221,7 +221,7 @@ class IdentityConfig
     config.add(:reg_unconfirmed_email_window_in_minutes, type: :integer)
     config.add(:remember_device_expiration_hours_aal_1, type: :integer)
     config.add(:remember_device_expiration_hours_aal_2, type: :integer)
-    config.add(:report_timeout, type: :integer) # not set anywhere, needs to be nillable
+    # config.add(:report_timeout, type: :integer) # not set anywhere, needs to be nillable
     config.add(:requests_per_ip_limit, type: :integer)
     config.add(:requests_per_ip_period, type: :integer)
     config.add(:requests_per_ip_track_only_mode, type: :boolean)
@@ -237,7 +237,7 @@ class IdentityConfig
     config.add(:service_provider_request_ttl_hours, type: :integer)
     config.add(:session_check_delay, type: :integer)
     config.add(:session_check_frequency, type: :integer)
-    config.add(:session_encryption_key, type: :integer)
+    config.add(:session_encryption_key)
     config.add(:session_timeout_in_minutes, type: :integer)
     config.add(:session_timeout_warning_seconds, type: :integer)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
@@ -255,7 +255,7 @@ class IdentityConfig
     config.add(:usps_download_sftp_password)
     config.add(:usps_download_sftp_timeout, type: :integer)
     config.add(:usps_download_sftp_username)
-    config.add(:usps_download_token
+    config.add(:usps_download_token)
     config.add(:usps_ipp_password)
     config.add(:usps_ipp_root_url, type: :uri)
     config.add(:usps_ipp_sponsor_id)
