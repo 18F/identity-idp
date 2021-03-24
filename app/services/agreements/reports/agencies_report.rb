@@ -2,6 +2,7 @@ module Agreements
   module Reports
     class AgenciesReport < BaseReport
       REPORT_NAME = 'agencies'
+      ENDPOINT_PATH = ''
 
       def call(status = 'active')
         agencies = transaction_with_timeout do
@@ -14,7 +15,7 @@ module Agreements
             distinct
         end
 
-        save_report(REPORT_NAME, agencies.to_json(except: :id))
+        save_report(REPORT_NAME, agencies.to_json(except: :id), ENDPOINT_PATH)
       end
     end
   end
