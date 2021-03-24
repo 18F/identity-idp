@@ -11,7 +11,7 @@ class FeatureManagement
 
   def self.identity_pki_disabled?
     env = AppConfig.env
-    env.identity_pki_disabled == 'true' ||
+    !!env.identity_pki_disabled  ||
       !env.piv_cac_service_url ||
       !env.piv_cac_verify_token_url
   end
@@ -38,7 +38,7 @@ class FeatureManagement
   end
 
   def self.enable_load_testing_mode?
-    AppConfig.env.enable_load_testing_mode == 'true'
+    !!AppConfig.env.enable_load_testing_mode
   end
 
   def self.use_kms?
@@ -54,7 +54,7 @@ class FeatureManagement
   end
 
   def self.enable_usps_verification?
-    AppConfig.env.enable_usps_verification == 'true'
+    !!AppConfig.env.enable_usps_verification
   end
 
   def self.reveal_usps_code?
@@ -83,19 +83,19 @@ class FeatureManagement
   end
 
   def self.disallow_all_web_crawlers?
-    AppConfig.env.disallow_all_web_crawlers == 'true'
+    !!AppConfig.env.disallow_all_web_crawlers
   end
 
   def self.disallow_ial2_recovery?
-    AppConfig.env.disallow_ial2_recovery == 'true'
+    !!AppConfig.env.disallow_ial2_recovery
   end
 
   def self.backup_codes_as_only_2fa?
-    AppConfig.env.backup_codes_as_only_2fa == 'true'
+    !!AppConfig.env.backup_codes_as_only_2fa
   end
 
   def self.in_person_proofing_enabled?
-    AppConfig.env.in_person_proofing_enabled == 'true'
+    !!AppConfig.env.in_person_proofing_enabled
   end
 
   def self.usps_upload_enabled?
@@ -105,15 +105,15 @@ class FeatureManagement
   def self.identity_pki_local_dev?
     # This option should only be used in the development environment
     # it controls if we hop over to identity-pki on a developers local machins
-    Rails.env.development? && AppConfig.env.identity_pki_local_dev == 'true'
+    Rails.env.development? && !!AppConfig.env.identity_pki_local_dev
   end
 
   def self.doc_capture_polling_enabled?
-    AppConfig.env.doc_capture_polling_enabled == 'true'
+    !!AppConfig.env.doc_capture_polling_enabled
   end
 
   def self.document_capture_async_uploads_enabled?
-    AppConfig.env.doc_auth_enable_presigned_s3_urls == 'true'
+    !!AppConfig.env.doc_auth_enable_presigned_s3_urls
   end
 
   def self.hide_phone_mfa_signup?

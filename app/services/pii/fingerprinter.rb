@@ -18,7 +18,9 @@ module Pii
     end
 
     def self.verify_queue(text, fingerprint)
-      KeyRotator::Utils.old_keys(:hmac_fingerprinter_key_queue).each do |key|
+      old_keys = AppConfig.env.hmac_fingerprinter_key_queue
+
+      old_keys.each do |key|
         return true if ActiveSupport::SecurityUtils.secure_compare(
           fingerprint, fingerprint(text, key)
         )

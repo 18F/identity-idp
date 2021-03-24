@@ -33,17 +33,18 @@ acuant_sdk_initialization_endpoint: 'https://services.assureid.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
 allow_piv_cac_required: 'true'
-asset_host:
+asset_host: ''
 async_wait_timeout_seconds: '60'
-available_locales: en es fr
+available_locales: en,es,fr
 aws_http_timeout: '5'
 aws_http_retry_limit: '2'
 aws_http_retry_max_delay: '1'
-aws_logo_bucket:
+aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
 database_statement_timeout: '2500'
 deleted_user_accounts_report_configs: '[]'
+disable_email_sending: 'false'
 disallow_ial2_recovery:
 doc_auth_extend_timeout_by_minutes: '40'
 doc_auth_enable_presigned_s3_urls: 'false'
@@ -60,7 +61,7 @@ idv_max_attempts: '5'
 idv_min_age_years: '13'
 idv_send_link_attempt_window_in_minutes: '10'
 idv_send_link_max_attempts: '5'
-in_person_proofing_enabled:
+in_person_proofing_enabled: 'false'
 job_run_healthchecks_enabled: 'true'
 # LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
@@ -96,22 +97,23 @@ otps_per_ip_limit: '25'
 otps_per_ip_period: '300'
 otps_per_ip_track_only_mode: 'true'
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
+participate_in_dap: 'false'
 password_max_attempts: '3'
 personal_key_retired: 'true'
 phone_format_e164_opt_out_list: '[]'
 pii_lock_timeout_in_minutes: '30'
-pinpoint_sms_application_id:
+pinpoint_sms_application_id: ''
 pinpoint_sms_credential_role_arn:
-pinpoint_sms_longcode_pool:
-pinpoint_sms_region:
-pinpoint_sms_shortcode:
-pinpoint_voice_credential_role_arn:
-pinpoint_voice_longcode_pool:
-pinpoint_voice_region:
+pinpoint_sms_longcode_pool: '[]'
+pinpoint_sms_region: ''
+pinpoint_sms_shortcode: ''
+pinpoint_voice_credential_role_arn: ''
+pinpoint_voice_longcode_pool: '[]'
+pinpoint_voice_region: ''
 poll_rate_for_verify_in_seconds: '3'
 proofer_mock_fallback: 'true'
 proofing_send_partial_dob: 'false'
-push_notifications_enabled:
+push_notifications_enabled: 'false'
 rack_timeout_service_timeout_seconds: '15'
 reauthn_window: '120'
 recaptcha_enabled_percent: '0'
@@ -123,7 +125,8 @@ remember_device_expiration_hours_aal_1: '720'
 remember_device_expiration_hours_aal_2: '12'
 report_timeout:
 requests_per_ip_track_only_mode: 'false'
-saml_secret_rotation_enabled:
+s3_report_bucket_prefix: ''
+saml_secret_rotation_enabled: 'false'
 service_provider_request_ttl_hours: '24'
 session_check_delay: '30'
 session_check_frequency: '30'
@@ -151,7 +154,7 @@ development:
   aamva_public_key: 123abc
   aamva_verification_url: https://example.org:12345/verification/url
   account_reset_auth_token: abc123
-  acuant_assure_id_url: ''
+  acuant_assure_id_url: 'https://example.com'
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
@@ -162,7 +165,6 @@ development:
     "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$"
     }]'
   aws_kms_key_id: alias/login-dot-gov-development-keymaker
-  aws_logo_bucket:
   aws_kms_regions: '["us-west-2", "us-east-1"]'
   backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
@@ -178,7 +180,6 @@ development:
   database_readonly_username: ''
   database_timeout: '5000'
   database_username: ''
-  disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
   doc_auth_vendor: 'mock'
@@ -209,7 +210,6 @@ development:
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
-  participate_in_dap: 'false'
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_service_url: https://localhost:8443/
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
@@ -226,7 +226,6 @@ development:
   reset_password_email_max_attempts: '20'
   reset_password_email_window_in_minutes: '60'
   resolution_proof_result_lambda_token: ABC123
-  s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
@@ -258,7 +257,7 @@ production:
   aamva_public_key:
   aamva_verification_url:
   account_reset_auth_token:
-  acuant_assure_id_url: ''
+  acuant_assure_id_url: 'https://example.com'
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
@@ -268,7 +267,6 @@ production:
   attribute_encryption_key_queue: '[]'
   aws_kms_key_id:
   aws_kms_regions: '["us-west-2"]'
-  aws_logo_bucket:
   backup_codes_as_only_2fa:
   basic_auth_password:
   basic_auth_user_name:
@@ -283,7 +281,6 @@ production:
   database_readonly_username:
   database_timeout:
   database_username:
-  disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
   disallow_ial2_recovery: 'true'
   doc_auth_vendor: 'acuant'
@@ -388,7 +385,6 @@ test:
   database_readonly_username: ''
   database_timeout: '5000'
   database_username: ''
-  disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
   doc_auth_enable_presigned_s3_urls: 'true'
@@ -422,7 +418,6 @@ test:
   otps_per_ip_limit: '3'
   otps_per_ip_period: '10'
   otps_per_ip_track_only_mode: 'false'
-  participate_in_dap: 'false'
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_service_url: https://localhost:8443/
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
@@ -440,7 +435,6 @@ test:
   reset_password_email_max_attempts: '5'
   reset_password_email_window_in_minutes: '80'
   resolution_proof_result_lambda_token: test_token_resolution
-  s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 800$8$1$

@@ -45,7 +45,7 @@ Telephony.config do |c|
   else
     c.pinpoint.add_voice_config do |voice|
       voice.region = AppConfig.env.pinpoint_voice_region
-      voice.longcode_pool = JSON.parse(AppConfig.env.pinpoint_voice_longcode_pool || '[]')
+      voice.longcode_pool = JSON.parse(AppConfig.env.pinpoint_voice_longcode_pool)
       voice.credential_role_arn = AppConfig.env.pinpoint_voice_credential_role_arn
       if AppConfig.env.pinpoint_voice_credential_role_arn.present?
         voice.credential_role_session_name = Socket.gethostname

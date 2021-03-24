@@ -28,7 +28,7 @@ module InPersonHelper
   end
 
   def enable_in_person_proofing
-    allow(AppConfig.env).to receive(:in_person_proofing_enabled).and_return('true')
+    allow(AppConfig.env).to receive(:in_person_proofing_enabled).and_return(true)
   end
 
   def complete_in_person_steps_before_welcome_step

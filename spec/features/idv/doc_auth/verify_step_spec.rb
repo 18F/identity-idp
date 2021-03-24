@@ -122,7 +122,7 @@ feature 'doc auth verify step' do
     click_idv_continue
     expect(page).to have_current_path(idv_session_errors_failure_path)
 
-    Timecop.travel(AppConfig.env.idv_attempt_window_in_hours.to_i.hours.from_now) do
+    Timecop.travel(AppConfig.env.idv_attempt_window_in_hours.hours.from_now) do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
       click_idv_continue

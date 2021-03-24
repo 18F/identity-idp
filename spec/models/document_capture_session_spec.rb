@@ -46,7 +46,7 @@ describe DocumentCaptureSession do
 
   describe '#expired?' do
     before do
-      allow(AppConfig.env).to receive(:doc_capture_request_valid_for_minutes).and_return('15')
+      allow(AppConfig.env).to receive(:doc_capture_request_valid_for_minutes).and_return(15)
     end
 
     context 'requested_at is nil' do
