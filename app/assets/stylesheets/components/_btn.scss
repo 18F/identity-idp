@@ -112,6 +112,15 @@
   }
 }
 
+.usa-button.usa-button--unstyled:visited {
+  // Temporary: Links in the IdP do not currently conform to the design system and instead retain
+  // their color even if visited. Part of the work of LG-3877 should be to remove these styles, and
+  // instead allow both unstyled buttons and links inherit the default design system visited color.
+  // Alternatively, consider removing unstyled button classes from links, since the intention of an
+  // unstyled button is to take the visual appearance of a link.
+  color: $link-color;
+}
+
 .usa-button.usa-button--unstyled:hover,
 .usa-button.usa-button--hover.usa-button--unstyled {
   // Temporary: Links in the IdP do not currently conform to the design system and instead retain
