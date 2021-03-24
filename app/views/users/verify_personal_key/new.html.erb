@@ -20,7 +20,7 @@
 <div class="margin-top-2">
   <%= t('forms.personal_key.alternative') %>
   <%= button_to(t('links.reverify'), reactivate_account_path, method: :put,
-                class: 'btn btn-link margin-left-1', form_class: 'inline-block') %>
+                class: 'usa-button usa-button--unstyled margin-left-1', form_class: 'inline-block') %>
 </div>
 
 <%= render 'shared/cancel', link: account_path %>

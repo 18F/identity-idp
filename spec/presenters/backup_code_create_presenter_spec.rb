@@ -44,7 +44,7 @@ describe BackupCodeCreatePresenter do
 
   describe '#continue_bttn_class' do
     it 'displays as a link to continue' do
-      expect(presenter.continue_bttn_class).to eq 'btn btn-link'
+      expect(presenter.continue_bttn_class).to eq 'usa-button usa-button--unstyled'
     end
   end
 end
