@@ -55,7 +55,6 @@ es:
         para que pueda usarlo para iniciar sesión.
       new: Use su PIV / CAC para iniciar sesión en su cuenta
       success: Configuró correctamente PIV/CAC como método de autenticación.
-      temporary_error: Estamos teniendo dificultades técnicas para usar su PIV/CAC
     piv_cac_setup:
       already_associated: La PIV/CAC que has presentado está asociada a otro usuario.
       new: Use su tarjeta PIV/CAC para asegurar su cuenta

@@ -55,7 +55,6 @@ en:
         use it to sign in.
       new: Sign in with your PIV or CAC
       success: You successfully set up PIV/CAC as an authentication method.
-      temporary_error: We're having technical difficulties using your PIV/CAC
     piv_cac_setup:
       already_associated: The PIV/CAC you presented is associated with another user.
       new: Use your PIV/CAC card to secure your account

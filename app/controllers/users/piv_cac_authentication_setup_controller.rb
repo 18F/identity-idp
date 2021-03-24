@@ -15,9 +15,6 @@ module Users
     def new
       if params.key?(:token)
         process_piv_cac_setup
-      # this branch is deprecated, remove it
-      elsif flash[:error_type].present?
-        render_error
       else
         render_prompt
       end
@@ -72,16 +69,6 @@ module Users
         nonce: piv_cac_nonce,
         redirect_uri: setup_piv_cac_url,
       )
-    end
-
-    def render_error
-      @presenter = PivCacErrorPresenter.new(
-        error: flash[:error_type],
-        view: view_context,
-        try_again_url: setup_piv_cac_url,
-      )
-
-      render :error
     end
 
     def process_piv_cac_setup
