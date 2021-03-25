@@ -169,7 +169,7 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
 
 # Send GPO Report to S3
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
-  name: 'USPS report',
+  name: 'GPO report',
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
   callback: -> { Reports::GpoReport.new.call },
@@ -177,7 +177,7 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
 
 # Send Monthly GPO Letter Requests Report to S3
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
-  name: 'Monthly USPS letter requests report',
+  name: 'Monthly GPO letter requests report',
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
   callback: -> { Reports::MonthlygpoLetterRequestsReport.new.call },
