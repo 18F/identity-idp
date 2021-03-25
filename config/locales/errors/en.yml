@@ -108,7 +108,7 @@ en:
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_nameid_format: Unauthorized nameID format
       unauthorized_service_provider: Unauthorized Service Provider
-      usps_otp_expired: Your confirmation code has expired. Please request another
+      gpo_otp_expired: Your confirmation code has expired. Please request another
         letter for a new code.
       voip_check_error: There was an error checking your phone, please try again
       voip_phone: This number is a web-based (VOIP) phone service. Please select a

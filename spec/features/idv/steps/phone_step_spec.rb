@@ -173,7 +173,7 @@ feature 'idv phone step' do
     end
 
     it 'does not render the link to proof by mail if proofing by mail is disabled' do
-      allow(FeatureManagement).to receive(:enable_usps_verification?).and_return(false)
+      allow(FeatureManagement).to receive(:enable_gpo_verification?).and_return(false)
 
       start_idv_from_sp
       complete_idv_steps_before_phone_step

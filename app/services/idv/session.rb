@@ -22,7 +22,7 @@ module Idv
       step_attempts
     ].freeze
 
-    attr_reader :current_user, :usps_otp, :issuer
+    attr_reader :current_user, :gpo_otp, :issuer
 
     def initialize(user_session:, current_user:, issuer:)
       @user_session = user_session
@@ -91,7 +91,7 @@ module Idv
 
     def complete_session
       complete_profile if phone_confirmed?
-      create_usps_entry if %w[usps gpo].include?(address_verification_mechanism)
+      create_gpo_entry if %w[usps gpo].include?(address_verification_mechanism)
     end
 
     def complete_profile
@@ -99,13 +99,13 @@ module Idv
       move_pii_to_user_session
     end
 
-    def create_usps_entry
+    def create_gpo_entry
       move_pii_to_user_session
       self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii]) if pii.is_a?(String)
-      confirmation_maker = UspsConfirmationMaker.new(pii: pii, issuer: issuer, profile: profile)
+      confirmation_maker = GpoConfirmationMaker.new(pii: pii, issuer: issuer, profile: profile)
       confirmation_maker.perform
 
-      @usps_otp = confirmation_maker.otp
+      @gpo_otp = confirmation_maker.otp
     end
 
     def alive?

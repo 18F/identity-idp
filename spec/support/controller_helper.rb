@@ -53,8 +53,8 @@ module ControllerHelper
     decorated_user
   end
 
-  def stub_usps_mail_bounced(decorated_user)
-    allow(decorated_user).to receive(:usps_mail_bounced?).and_return(true)
+  def stub_gpo_mail_bounced(decorated_user)
+    allow(decorated_user).to receive(:gpo_mail_bounced?).and_return(true)
   end
 
   def stub_identity(user, params)

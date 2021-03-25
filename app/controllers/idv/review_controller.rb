@@ -31,9 +31,9 @@ module Idv
       @applicant = idv_session.applicant
       analytics.track_event(Analytics::IDV_REVIEW_VISIT)
 
-      usps_mail_service = Idv::UspsMail.new(current_user)
+      gpo_mail_service = Idv::GpoMail.new(current_user)
       flash_now = flash.now
-      if usps_mail_service.mail_spammed?
+      if gpo_mail_service.mail_spammed?
         flash_now[:error] = t('idv.errors.mail_limit_reached')
       else
         flash_now[:success] = flash_message_content
@@ -46,8 +46,8 @@ module Idv
       redirect_to idv_confirmations_url
       analytics.track_event(Analytics::IDV_REVIEW_COMPLETE)
 
-      return unless FeatureManagement.reveal_usps_code?
-      session[:last_gpo_confirmation_code] = idv_session.usps_otp
+      return unless FeatureManagement.reveal_gpo_code?
+      session[:last_gpo_confirmation_code] = idv_session.gpo_otp
     end
 
     private

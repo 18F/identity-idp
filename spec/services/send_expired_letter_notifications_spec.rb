@@ -7,9 +7,9 @@ describe SendExpiredLetterNotifications do
   describe '#call' do
     context 'after the letters expire' do
       it 'does not send notifications when the notifications were already sent' do
-        usps_confirmation_code = create_ucc_for(profile)
-        usps_confirmation_code.letter_expired_sent_at = Time.zone.now
-        usps_confirmation_code.save
+        gpo_confirmation_code = create_ucc_for(profile)
+        gpo_confirmation_code.letter_expired_sent_at = Time.zone.now
+        gpo_confirmation_code.save
 
         after_the_letters_expire do
           SendExpiredLetterNotifications.new.call
@@ -19,9 +19,9 @@ describe SendExpiredLetterNotifications do
       end
 
       it 'does not send notifications when the letters bounced' do
-        usps_confirmation_code = create_ucc_for(profile)
-        usps_confirmation_code.bounced_at = Time.zone.now
-        usps_confirmation_code.save
+        gpo_confirmation_code = create_ucc_for(profile)
+        gpo_confirmation_code.bounced_at = Time.zone.now
+        gpo_confirmation_code.save
 
         after_the_letters_expire do
           notifications_sent = SendExpiredLetterNotifications.new.call
@@ -51,7 +51,7 @@ describe SendExpiredLetterNotifications do
   end
 
   def create_ucc_for(profile)
-    UspsConfirmationCode.create(
+    GpoConfirmationCode.create(
       profile: profile,
       otp_fingerprint: 'foo',
     )

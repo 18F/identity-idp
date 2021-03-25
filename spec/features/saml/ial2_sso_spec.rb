@@ -29,7 +29,7 @@ feature 'IAL2 Single Sign On' do
   end
 
   def mock_gpo_mail_bounced
-    allow_any_instance_of(UserDecorator).to receive(:usps_mail_bounced?).and_return(true)
+    allow_any_instance_of(UserDecorator).to receive(:gpo_mail_bounced?).and_return(true)
   end
 
   def update_mailing_address
@@ -100,7 +100,7 @@ feature 'IAL2 Single Sign On' do
 
           expect(current_path).to eq verify_account_path
 
-          click_link(t('idv.messages.usps.resend'))
+          click_link(t('idv.messages.gpo.resend'))
 
           expect(user.events.account_verified.size).to be(0)
           expect(current_path).to eq(idv_gpo_path)
@@ -122,7 +122,7 @@ feature 'IAL2 Single Sign On' do
 
           expect(current_path).to eq verify_account_path
 
-          click_link(t('idv.messages.usps.resend'))
+          click_link(t('idv.messages.gpo.resend'))
 
           expect(user.events.account_verified.size).to be(0)
           expect(current_path).to eq(idv_gpo_path)

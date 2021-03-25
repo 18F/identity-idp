@@ -2,10 +2,10 @@
 class GpoDailyTestSender
   def run
     if valid_designated_receiver_pii?
-      UspsConfirmationMaker.new(
+      GpoConfirmationMaker.new(
         pii: designated_receiver_pii,
         issuer: nil,
-        profile_id: -1, # profile_id can't be null on UspsConfirmationCode
+        profile_id: -1, # profile_id can't be null on GpoConfirmationCode
         otp: otp_from_date,
       ).perform
     else

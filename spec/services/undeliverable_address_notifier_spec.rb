@@ -10,9 +10,9 @@ RSpec.describe UndeliverableAddressNotifier do
       pii: { ssn: '123-45-6789', dob: '1970-01-01' },
     )
   end
-  let(:usps_confirmation_code) do
+  let(:gpo_confirmation_code) do
     create(
-      :usps_confirmation_code,
+      :gpo_confirmation_code,
       profile: profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
@@ -24,7 +24,7 @@ RSpec.describe UndeliverableAddressNotifier do
     notifications_sent = subject.call
 
     expect(notifications_sent).to eq(1)
-    expect(UspsConfirmationCode.first.bounced_at).to be_present
+    expect(GpoConfirmationCode.first.bounced_at).to be_present
   end
 
   it 'does not send out notifications to the same user twice after processing twice' do
@@ -59,7 +59,7 @@ RSpec.describe UndeliverableAddressNotifier do
   end
 
   def mock_data
-    usps_confirmation_code
+    gpo_confirmation_code
     user
     temp_file = Tempfile.new('foo')
     File.open(temp_file.path, 'w') do |file|

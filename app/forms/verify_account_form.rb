@@ -33,13 +33,13 @@ class VerifyAccountForm
   def usps_confirmation_code
     return if otp.blank? || pending_profile.blank?
 
-    pending_profile.usps_confirmation_codes.first_with_otp(otp)
+    pending_profile.gpo_confirmation_codes.first_with_otp(otp)
   end
 
   def validate_otp_not_expired
     return unless usps_confirmation_code.present? && usps_confirmation_code.expired?
 
-    errors.add :otp, :usps_otp_expired
+    errors.add :otp, :gpo_otp_expired
   end
 
   def validate_pending_profile

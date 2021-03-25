@@ -5,7 +5,7 @@ module Funnel
         Analytics::IDV_PHONE_RECORD_VISIT => :verify_phone,
         Analytics::IDV_REVIEW_VISIT => :encrypt,
         Analytics::IDV_FINAL => :verified,
-        Analytics::IDV_USPS_ADDRESS_VISITED => :usps_address,
+        Analytics::IDV_GPO_ADDRESS_VISITED => :usps_address,
       }.freeze
 
       def self.call(user_id, issuer, event, result)

@@ -2,12 +2,11 @@ require 'rails_helper'
 
 describe 'GPO verification routes' do
   GET_ROUTES = %w[
-    account/verify
     verify/usps
   ].freeze
 
   CREATE_ROUTES = %w[
-    account/verify
+    verify/usps
   ].freeze
 
   PUT_ROUTES = %w[
@@ -15,12 +14,13 @@ describe 'GPO verification routes' do
   ].freeze
 
   before do
-    allow(AppConfig.env).to receive(:enable_gpo_verification).and_return(enable_gpo_verification)
+    allow(FeatureManagement).to receive(:enable_gpo_verification?).
+      and_return(enable_gpo_verification)
     Rails.application.reload_routes!
   end
 
-  context 'when FeatureManagement.enable_gpo_verification? is false' do
-    let(:enable_gpo_verification) { 'false' }
+  context 'when enable_gpo_verification is false' do
+    let(:enable_gpo_verification) { false }
 
     after(:all) do
       Rails.application.reload_routes!
@@ -44,13 +44,8 @@ describe 'GPO verification routes' do
     end
   end
 
-  context 'when FeatureManagement.enable_gpo_verification? is true' do
-    let(:enable_gpo_verification) { 'true' }
-
-    before do
-      allow(AppConfig.env).to receive(:enable_gpo_verification).and_return('true')
-      Rails.application.reload_routes!
-    end
+  context 'when enable_gpo_verification is true' do
+    let(:enable_gpo_verification) { true }
 
     after(:all) do
       Rails.application.reload_routes!

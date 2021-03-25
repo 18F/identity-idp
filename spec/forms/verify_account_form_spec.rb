@@ -82,7 +82,7 @@ describe VerifyAccountForm do
       it 'is invalid' do
         result = subject.submit
         expect(result.success?).to eq(false)
-        expect(subject.errors[:otp]).to eq [t('errors.messages.usps_otp_expired')]
+        expect(subject.errors[:otp]).to eq [t('errors.messages.gpo_otp_expired')]
       end
     end
   end

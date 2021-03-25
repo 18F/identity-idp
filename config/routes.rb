@@ -332,7 +332,7 @@ Rails.application.routes.draw do
     post '/account/verify' => 'users/verify_account#create'
     if FeatureManagement.enable_gpo_verification?
       scope '/verify', module: 'idv', as: 'idv' do
-        get '/usps' => 'gpo#index'
+        get '/usps' => 'gpo#index', as: :gpo
         put '/usps' => 'gpo#create'
         post '/usps' => 'gpo#update'
       end

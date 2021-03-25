@@ -7,9 +7,9 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   interval: 24 * 60 * 60,
   timeout: 300,
   callback: lambda do
-    UspsDailyTestSender.new.run
+    GpoDailyTestSender.new.run
 
-    UspsConfirmationUploader.new.run unless CalendarService.weekend_or_holiday?(Time.zone.today)
+    GpoConfirmationUploader.new.run unless CalendarService.weekend_or_holiday?(Time.zone.today)
   end,
 )
 
@@ -167,18 +167,18 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   callback: -> { Reports::DeletedUserAccountsReport.new.call },
 )
 
-# Send USPS Report to S3
+# Send GPO Report to S3
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'USPS report',
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
-  callback: -> { Reports::UspsReport.new.call },
+  callback: -> { Reports::GpoReport.new.call },
 )
 
-# Send Monthly USPS Letter Requests Report to S3
+# Send Monthly GPO Letter Requests Report to S3
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'Monthly USPS letter requests report',
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
-  callback: -> { Reports::MonthlyUspsLetterRequestsReport.new.call },
+  callback: -> { Reports::MonthlygpoLetterRequestsReport.new.call },
 )

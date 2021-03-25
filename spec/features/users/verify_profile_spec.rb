@@ -12,10 +12,10 @@ feature 'verify profile with OTP' do
       user: user,
     )
     otp_fingerprint = Pii::Fingerprinter.fingerprint(otp)
-    create(:usps_confirmation_code, profile: profile, otp_fingerprint: otp_fingerprint)
+    create(:gpo_confirmation_code, profile: profile, otp_fingerprint: otp_fingerprint)
   end
 
-  context 'USPS letter' do
+  context 'GPO letter' do
     scenario 'valid OTP' do
       sign_in_live_with_2fa(user)
       fill_in t('forms.verify_profile.name'), with: otp
@@ -26,13 +26,13 @@ feature 'verify profile with OTP' do
     end
 
     scenario 'OTP has expired' do
-      UspsConfirmationCode.first.update(code_sent_at: 11.days.ago)
+      GpoConfirmationCode.first.update(code_sent_at: 11.days.ago)
 
       sign_in_live_with_2fa(user)
       fill_in t('forms.verify_profile.name'), with: otp
       click_button t('forms.verify_profile.submit')
 
-      expect(page).to have_content t('errors.messages.usps_otp_expired')
+      expect(page).to have_content t('errors.messages.gpo_otp_expired')
       expect(current_path).to eq verify_account_path
     end
 

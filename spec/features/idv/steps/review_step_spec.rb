@@ -52,24 +52,24 @@ feature 'idv review step' do
       profile = user.profiles.first
 
       expect(profile.active?).to eq true
-      expect(UspsConfirmation.count).to eq(0)
+      expect(GpoConfirmation.count).to eq(0)
     end
   end
 
-  context 'choosing to confirm address with usps' do
+  context 'choosing to confirm address with gpo' do
     let(:user) { user_with_2fa }
     let(:sp) { :oidc }
 
     before do
       start_idv_from_sp(sp)
-      complete_idv_steps_with_usps_before_review_step(user)
+      complete_idv_steps_with_gpo_before_review_step(user)
     end
 
     it 'sends a letter and creates an unverified profile' do
       fill_in 'Password', with: user_password
 
       expect { click_continue }.
-        to change { UspsConfirmation.count }.from(0).to(1)
+        to change { GpoConfirmation.count }.from(0).to(1)
 
       expect(user.events.account_verified.size).to be(0)
       expect(user.profiles.count).to eq 1
@@ -84,13 +84,13 @@ feature 'idv review step' do
         fill_in 'Password', with: user_password
         click_continue
 
-        usps_confirmation_entry = UspsConfirmation.last.entry
+        gpo_confirmation_entry = GpoConfirmation.last.entry
 
         if sp == :saml
-          expect(usps_confirmation_entry[:issuer]).
+          expect(gpo_confirmation_entry[:issuer]).
             to eq('https://rp1.serviceprovider.com/auth/saml/metadata')
         else
-          expect(usps_confirmation_entry[:issuer]).
+          expect(gpo_confirmation_entry[:issuer]).
             to eq('urn:gov:gsa:openidconnect:sp:server')
         end
       end
@@ -103,9 +103,9 @@ feature 'idv review step' do
         fill_in 'Password', with: user_password
         click_continue
 
-        usps_confirmation_entry = UspsConfirmation.last.entry
+        gpo_confirmation_entry = GpoConfirmation.last.entry
 
-        expect(usps_confirmation_entry[:issuer]).to eq(nil)
+        expect(gpo_confirmation_entry[:issuer]).to eq(nil)
       end
     end
   end
