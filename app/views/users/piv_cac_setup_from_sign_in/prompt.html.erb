@@ -20,10 +20,10 @@
                          class: 'block col-12 field monospace', size: 16, maxlength: 20,
                          'aria-labelledby': 'totp-label' %>
        <div class="margin-top-2">
-        <%= submit_tag t('forms.piv_cac_setup.submit'), class: 'btn btn-primary margin-right-1' %>
+        <%= submit_tag t('forms.piv_cac_setup.submit'), class: 'usa-button margin-right-1' %>
         <div class="inline-block">
           <%= link_to t('forms.piv_cac_setup.no_thanks'), new_user_session_url,
-                      class: 'btn btn-secondary' %>
+                      class: 'usa-button usa-button--outline' %>
         </div>
        </div>
     <% end %>

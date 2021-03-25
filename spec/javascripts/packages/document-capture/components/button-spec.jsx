@@ -12,11 +12,10 @@ describe('document-capture/components/button', () => {
 
     expect(button.nodeName).to.equal('BUTTON');
     expect(button.type).to.equal('button');
-    expect(button.classList.contains('btn')).to.be.true();
-    expect(button.classList.contains('btn-primary')).to.be.true();
-    expect(button.classList.contains('btn-secondary')).to.be.false();
-    expect(button.classList.contains('btn-wide')).to.be.false();
-    expect(button.classList.contains('btn-link')).to.be.false();
+    expect(button.classList.contains('usa-button')).to.be.true();
+    expect(button.classList.contains('usa-button--wide')).to.be.false();
+    expect(button.classList.contains('usa-button--outline')).to.be.false();
+    expect(button.classList.contains('usa-button--unstyled')).to.be.false();
   });
 
   it('calls click callback with the event argument', () => {
@@ -37,10 +36,9 @@ describe('document-capture/components/button', () => {
 
     const button = getByText('Click me');
 
-    expect(button.classList.contains('btn-primary')).to.be.true();
-    expect(button.classList.contains('btn-secondary')).to.be.false();
-    expect(button.classList.contains('btn-wide')).to.be.true();
-    expect(button.classList.contains('btn-link')).to.be.false();
+    expect(button.classList.contains('usa-button--wide')).to.be.true();
+    expect(button.classList.contains('usa-button--outline')).to.be.false();
+    expect(button.classList.contains('usa-button--unstyled')).to.be.false();
   });
 
   it('renders as outline', () => {
@@ -48,10 +46,10 @@ describe('document-capture/components/button', () => {
 
     const button = getByText('Click me');
 
-    expect(button.classList.contains('btn-primary')).to.be.false();
-    expect(button.classList.contains('btn-secondary')).to.be.true();
-    expect(button.classList.contains('btn-wide')).to.be.false();
-    expect(button.classList.contains('btn-link')).to.be.false();
+    expect(button.classList.contains('usa-button--wide')).to.be.false();
+    expect(button.classList.contains('usa-button--outline')).to.be.true();
+    expect(button.classList.contains('usa-button usa-button--wide')).to.be.false();
+    expect(button.classList.contains('usa-button--unstyled')).to.be.false();
   });
 
   it('renders as unstyled', () => {
@@ -59,10 +57,9 @@ describe('document-capture/components/button', () => {
 
     const button = getByText('Click me');
 
-    expect(button.classList.contains('btn-primary')).to.be.false();
-    expect(button.classList.contains('btn-secondary')).to.be.false();
-    expect(button.classList.contains('btn-wide')).to.be.false();
-    expect(button.classList.contains('btn-link')).to.be.true();
+    expect(button.classList.contains('usa-button--wide')).to.be.false();
+    expect(button.classList.contains('usa-button--outline')).to.be.false();
+    expect(button.classList.contains('usa-button--unstyled')).to.be.true();
   });
 
   it('renders as disabled', () => {
@@ -90,7 +87,7 @@ describe('document-capture/components/button', () => {
 
     const button = getByText('Click me');
 
-    expect(button.classList.contains('btn-disabled'));
+    expect(button.classList.contains('usa-button--disabled'));
     expect(button.disabled).to.be.false();
 
     userEvent.click(button);

@@ -38,12 +38,12 @@
 <div class="block-center center col-10">
   <div class="col-12 margin-bottom-2">
     <%= link_to t('links.account.reactivate.with_key'), verify_personal_key_path,
-                class: 'btn btn-primary block' %>
+                class: 'usa-button block' %>
   </div>
 
   <%= form_tag reactivate_account_path, method: :put, class: 'col-12' do %>
     <%= button_tag t('links.account.reactivate.without_key'), type: 'submit',
-      class: 'btn btn-secondary block col-12', id: 'no-key-reactivate' %>
+      class: 'usa-button usa-button--outline usa-button--full-width', id: 'no-key-reactivate' %>
   <% end %>
 </div>
 

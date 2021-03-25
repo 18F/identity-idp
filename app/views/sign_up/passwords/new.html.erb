@@ -18,7 +18,7 @@
   <%= hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token' %>
   <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>
   <div>
-    <%= f.button :submit, t('forms.buttons.continue'), class: 'sm-col-6 col-12 btn-wide margin-bottom-4' %>
+    <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--wide margin-bottom-4' %>
   </div>
 <% end %>
 

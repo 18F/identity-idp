@@ -6,9 +6,6 @@
 @import 'basscss-sass/color-base';
 @import 'basscss-sass/color-forms';
 @import 'basscss-sass/color-tables';
-@import 'basscss/_btn'; // scss-lint:disable ImportPath
-@import 'basscss-sass/btn-primary';
-@import 'basscss-sass/btn-outline';
 @import 'basscss-sass/type-scale';
 @import 'basscss-sass/utility-typography';
 @import 'basscss-sass/utility-layout';
@@ -21,7 +18,6 @@
 @import 'basscss-sass/background-colors';
 @import 'basscss-sass/background-images';
 @import 'basscss-sass/border-colors';
-@import 'basscss-sass/btn-sizes';
 @import 'basscss-sass/color-forms-dark';
 @import 'basscss-sass/color-input-range';
 @import 'basscss-sass/color-progress';

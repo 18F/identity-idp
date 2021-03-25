@@ -83,7 +83,7 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       const button = await findByText('doc_auth.buttons.upload_picture');
-      expect(button.classList.contains('btn-secondary')).to.be.true();
+      expect(button.classList.contains('usa-button--outline')).to.be.true();
       expect(console).to.have.loggedError(/^Error: Could not load script:/);
       userEvent.click(button);
     });
@@ -100,7 +100,7 @@ describe('document-capture/components/acuant-capture', () => {
       initialize({ isSuccess: false });
 
       const button = await findByText('doc_auth.buttons.upload_picture');
-      expect(button.classList.contains('btn-secondary')).to.be.true();
+      expect(button.classList.contains('usa-button--outline')).to.be.true();
     });
 
     it('renders a button when successfully loaded', () => {

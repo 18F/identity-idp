@@ -24,11 +24,11 @@
                   input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
       <%= f.button :submit,
                    t('users.delete.actions.delete'),
-                   class: 'btn btn-primary col-12 margin-bottom-2 padding-2 rounded-lg' %>
+                   class: 'usa-button--big usa-button--full-width margin-bottom-2' %>
     <% end %>
 
     <%= link_to t('users.delete.actions.cancel'), account_path,
                 role: 'button',
-                class: 'center btn col-12 padding-2 rounded-lg border border-blue blue border-box' %>
+                class: 'usa-button usa-button--big usa-button--full-width usa-button--outline' %>
   </div>
 </div>

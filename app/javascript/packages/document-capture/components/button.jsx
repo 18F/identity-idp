@@ -31,12 +31,11 @@ function Button({
   className,
 }) {
   const classes = [
-    'btn',
-    isWide && 'btn-wide',
-    !isOutline && !isUnstyled && 'btn-primary',
-    isOutline && 'btn-secondary',
-    isUnstyled && 'btn-link',
-    isVisuallyDisabled && 'btn-disabled',
+    'usa-button',
+    isWide && 'usa-button--wide',
+    isOutline && 'usa-button--outline',
+    isUnstyled && 'usa-button--unstyled',
+    isVisuallyDisabled && 'usa-button--disabled',
     className,
   ]
     .filter(Boolean)
