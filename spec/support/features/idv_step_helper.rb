@@ -60,8 +60,8 @@ module IdvStepHelper
     click_on t('idv.buttons.mail.send')
   end
 
-  def complete_idv_steps_with_usps_before_confirmation_step(user = user_with_2fa)
-    complete_idv_steps_with_usps_before_review_step(user)
+  def complete_idv_steps_with_gpo_before_confirmation_step(user = user_with_2fa)
+    complete_idv_steps_with_gpo_before_review_step(user)
     password = user.password || user_password
     fill_in 'Password', with: password
     click_continue
