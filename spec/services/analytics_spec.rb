@@ -45,13 +45,13 @@ describe Analytics do
       analytics.track_event('Trackable Event')
     end
 
-    it 'tracks the user passed in to the track_event method' do
+    it 'does not track the user passed in to the track_event method' do
       current_user = build_stubbed(:user, uuid: '123')
       tracked_user = build_stubbed(:user, uuid: '456')
 
       analytics_hash = {
         event_properties: {},
-        user_id: tracked_user.uuid,
+        user_id: current_user.uuid,
       }
 
       expect(ahoy).to receive(:track).
