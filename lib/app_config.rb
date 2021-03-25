@@ -6,7 +6,11 @@ class AppConfig
   end
 
   def self.setup(path, env = Rails.env)
-    @env ||= Environment.new(path, env)
+    @env = Environment.new(path, env)
+  end
+
+  def self.setup_new(hash)
+    @env = hash
   end
 
   def self.require_keys(keys)
