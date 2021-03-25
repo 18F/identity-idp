@@ -118,14 +118,3 @@
     border-color: $yellow;
   }
 }
-
-.modal-fail {
-  &::before {
-    background-image: url(image-path('alert/fail-lg.svg'));
-  }
-
-  hr,
-  .btn {
-    border-color: $pink;
-  }
-}
