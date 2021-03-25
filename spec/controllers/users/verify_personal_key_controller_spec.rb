@@ -35,6 +35,13 @@ describe Users::VerifyPersonalKeyController do
 
         expect(subject.flash[:info]).to eq(t('notices.account_reactivation'))
       end
+
+      it 'shows throttled page after being throttled' do
+        allow(Throttler::IsThrottled).to receive(:call).once.and_return(true)
+        get :new
+
+        expect(response).to render_template(:throttled)
+      end
     end
   end
 
@@ -84,6 +91,29 @@ describe Users::VerifyPersonalKeyController do
 
       it 'renders the new template' do
         expect(response).to render_template(:new)
+      end
+    end
+
+    context 'with throttle reached' do
+      let(:bad_key) { 'baaad' }
+      before do
+        allow(VerifyPersonalKeyForm).to receive(:new).
+          with(user: subject.current_user, personal_key: bad_key).
+          and_return(form)
+        allow(form).to receive(:submit).and_return(response_bad)
+      end
+
+      it 'renders throttled page' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED,
+          { errors: { personal_key: ['bad_key'] }, success: false },
+        ).once
+
+        post :create, params: { personal_key: bad_key }
+        post :create, params: { personal_key: bad_key }
+
+        expect(response).to render_template(:throttled)
       end
     end
   end

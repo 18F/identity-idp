@@ -59,8 +59,6 @@ en:
         step_3_info_html: You'll need to <strong>choose a certificate</strong> (the
           right one likely has your name in it) and <strong>enter your PIN</strong>
           (your PIN was created when you set up your PIV/CAC).
-        temporary_error: Please try again later or sign in with your email and password
-          instead.
         try_again: try again
       sms:
         confirm_code_html: Need another code? %{resend_code_link}. Message rates may

@@ -28,6 +28,7 @@ module Deploy
         s3_path: '/%<env>s/idp/v1/application.yml',
         local_path: env_yaml_path,
       )
+      download_web_or_worker_yml_if_exists
       deep_merge_s3_data_with_example_application_yml
       set_proper_file_permissions_for_application_yml
 
@@ -103,6 +104,17 @@ module Deploy
       File.open(result_yaml_path, 'w') { |file| file.puts YAML.dump(application_config) }
     end
 
+    def download_web_or_worker_yml_if_exists
+      return unless web_or_worker_yml
+
+      app_secrets_s3.download_file(
+        s3_path: "/%<env>s/idp/v1/#{web_or_worker_yml}",
+        local_path: web_or_worker_yaml_path,
+      )
+    rescue Aws::S3::Errors::NoSuchKey => err
+      logger.warn("did not load #{web_or_worker_yml}, continuing")
+    end
+
     def set_proper_file_permissions_for_application_yml
       FileUtils.chmod(0o640, [env_yaml_path, result_yaml_path])
     end
@@ -147,7 +159,14 @@ module Deploy
     end
 
     def application_config
-      YAML.load_file(example_application_yaml_path).deep_merge(YAML.load_file(env_yaml_path))
+      config = YAML.load_file(example_application_yaml_path).
+        deep_merge(YAML.load_file(env_yaml_path))
+
+      if web_or_worker_yml && File.exist?(web_or_worker_yaml_path)
+        config.deep_merge(YAML.load_file(web_or_worker_yaml_path))
+      else
+        config
+      end
     end
 
     def example_application_yaml_path
@@ -168,6 +187,20 @@ module Deploy
 
     def pwned_passwords_path
       File.join(root, 'pwned_passwords/pwned_passwords.txt')
+    end
+
+    def web_or_worker_yaml_path
+      File.join(root, "config/#{web_or_worker_yml}")
+    end
+
+    # @return [String, nil]
+    def web_or_worker_yml
+      case Identity::Hostdata.instance_role
+      when 'idp'
+        'web.yml'
+      when 'worker'
+        'worker.yml'
+      end
     end
   end
 end

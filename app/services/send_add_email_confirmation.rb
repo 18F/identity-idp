@@ -49,7 +49,7 @@ class SendAddEmailConfirmation
   def send_email_associated_with_another_account_email
     UserMailer.add_email_associated_with_another_account(
       email_address.email,
-    ).deliver_later
+    ).deliver_now
   end
 
   def send_confirmation_email
@@ -57,6 +57,6 @@ class SendAddEmailConfirmation
       user,
       email_address.email,
       confirmation_token,
-    ).deliver_later
+    ).deliver_now
   end
 end

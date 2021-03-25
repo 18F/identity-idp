@@ -22,7 +22,7 @@
   <hr/>
   <div class="right">
     <%= button_to(t('in_person_proofing.buttons.change_address'),
-                  idv_cac_step_path(step: :redo_enter_info), method: :put, class: 'btn btn-link') %>
+                  idv_cac_step_path(step: :redo_enter_info), method: :put, class: 'usa-button usa-button--unstyled') %>
   </div>
   <div>
     <%= "#{t('in_person_proofing.forms.address1')}: #{flow_session[:pii_from_doc][:address1]}" %>
@@ -39,7 +39,7 @@
   <hr/>
   <div class="right">
     <%= button_to(t('in_person_proofing.buttons.change_ssn'),
-                  idv_cac_step_path(step: :redo_enter_info), method: :put, class: 'btn btn-link') %>
+                  idv_cac_step_path(step: :redo_enter_info), method: :put, class: 'usa-button usa-button--unstyled') %>
   </div>
   <div>
     <%= "#{t('in_person_proofing.forms.dob')}: #{flow_session[:pii_from_doc][:dob]}" %>

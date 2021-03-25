@@ -1,107 +1,86 @@
 <% title t('titles.doc_auth.verify') %>
 
 <% step = 0 %>
-<% if flow_session[:error_message] %>
-  <%= render 'shared/alert', {
-    type: 'error',
-    class: 'margin-bottom-4',
-    message: flow_session[:error_message],
-  } %>
-<% end %>
 
 <%= render 'shared/maintenance_window_alert' do %>
-  <h1 class='h3 margin-y-0'><%= t('doc_auth.headings.welcome') %></h1>
-  <p class='mt-tiny margin-bottom-4'><%= t('doc_auth.info.welcome') %></p>
-  <h1 class='h3 margin-bottom-2'><%= t('doc_auth.instructions.welcome') %></h1>
+  <h1 class="h3"><%= t('doc_auth.headings.welcome') %></h1>
+  <p class='mt-tiny margin-bottom-0'><%= t('doc_auth.info.welcome_html') %></p>
+  <h2 class='margin-bottom-0'><%= t('doc_auth.instructions.welcome') %></h2>
 
   <ul class='list-reset'>
     <li class='padding-top-2 padding-bottom-1'>
-      <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
+      <div class='inline-block margin-right-2 text-top circle circle-number bg-blue white'>
         <%= step += 1 %>
       </div>
       <div class='margin-right-1 inline-block'>
-        <div class='h1 inline-block bold'>
+        <div class='h2 inline-block bold'>
           <%= t('doc_auth.instructions.bullet1') %>
         </div>
         <br/>
-        <div>
+        <div class="margin-top-1">
           <%= t('doc_auth.instructions.text1') %>
         </div>
       </div>
     </li>
     <% if liveness_checking_enabled? %>
-    <li class='padding-top-2 padding-bottom-1'>
-      <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
-        <%= step += 1 %>
-      </div>
-      <div class='margin-right-1 inline-block'>
-        <div class='h1 inline-block bold'>
-          <%= t('doc_auth.instructions.bullet1a') %>
+      <li class='padding-top-2 padding-bottom-1'>
+        <div class='inline-block margin-right-2 text-top circle circle-number bg-blue white'>
+          <%= step += 1 %>
         </div>
-        <br/>
-        <div>
-          <%= t('doc_auth.instructions.text1a') %>
+        <div class='margin-right-1 inline-block'>
+          <div class='h2 inline-block bold'>
+            <%= t('doc_auth.instructions.bullet1a') %>
+          </div>
+          <br/>
+          <div class="margin-top-1">
+            <%= t('doc_auth.instructions.text1a') %>
+          </div>
         </div>
-      </div>
-    </li>
+      </li>
     <% end %>
     <li class='padding-top-2 padding-bottom-1'>
-      <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
-        <%= step += 1 %>
-      </div>
-      <div class='margin-right-1 inline-block'>
-        <div class='h1 inline-block bold'>
-          <%= t('doc_auth.instructions.bullet2') %>
+      <div class="grid-row">
+        <div class='inline-block margin-right-2 text-top circle circle-number bg-blue white'>
+          <%= step += 1 %>
         </div>
-        <br/>
-        <div>
-          <%= t('doc_auth.instructions.text2') %>
-        </div>
-      </div>
-    </li>
-    <li class='padding-top-2 padding-bottom-1'>
-      <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
-        <%= step += 1 %>
-      </div>
-      <div class='margin-right-1 inline-block'>
-        <div class='h1 inline-block bold'>
-          <%= t('doc_auth.instructions.bullet3') %>
-        </div>
-        <br/>
-        <div>
-          <%= t('doc_auth.instructions.text3') %>
+        <div class='grid-col-10'>
+          <div class='h2 inline-block bold'>
+            <%= t('doc_auth.instructions.bullet2') %>
+          </div>
+          <br/>
+          <div class="margin-top-1">
+            <%= t('doc_auth.instructions.text2')  %>
+          </div>
         </div>
       </div>
     </li>
     <li class='padding-top-2 padding-bottom-1'>
-      <div class='inline-block margin-right-2 margin-top-1 text-top circle circle-number bg-blue white'>
-        <%= step += 1 %>
-      </div>
-      <div class='margin-right-1 inline-block'>
-        <div class='h1 inline-block bold'>
-          <%= t('doc_auth.instructions.bullet4') %>
+      <div class="grid-row">
+        <div class='grid-col-2 margin-right-2 text-top circle circle-number bg-blue white'>
+          <%= step += 1 %>
         </div>
-        <br/>
-        <div>
-          <%= t('doc_auth.instructions.text4') %>
+        <div class='grid-col-10'>
+          <div class='h2 inline-block bold'>
+            <%= t('doc_auth.instructions.bullet3') %>
+          </div>
+          <br/>
+          <div class="margin-top-1">
+            <%= t('doc_auth.instructions.text3') %>
+          </div>
         </div>
       </div>
     </li>
   </ul>
+
+  <h2><%= t('doc_auth.instructions.privacy') %></h2>
+  <p><%== t('doc_auth.info.privacy_html', link: new_window_link_to(t('doc_auth.instructions.learn_more'),
+            MarketingSite.security_and_privacy_practices_url)) %></p>
 
   <%= validated_form_for :doc_auth,
                          url: url_for,
                          method: 'put',
                          html: { autocomplete: 'off', role: 'form', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
     <br/>
-    <label class="margin-top-neg-1 margin-bottom-4" for="ial2_consent_given">
-      <div class="checkbox">
-        <%= check_box_tag :ial2_consent_given, true, false %>
-        <span class="indicator"></span>
-        <%= t('doc_auth.instructions.consent') %>
-        <%= new_window_link_to t('doc_auth.instructions.learn_more'), 'https://login.gov/policy/' %>
-      </div>
-    </label>
     <%= f.button :button, t('doc_auth.buttons.continue'), type: :submit,
                  class: 'btn btn-primary btn-wide sm-col-6 col-6' %>
   <% end %>
@@ -117,10 +96,6 @@
     </div>
   <% end %>
 
-
-  <%= javascript_packs_tag_once(
-    'clipboard',
-    'ial2-consent-button',
-    'document-capture-welcome',
-  ) %>
 <% end %>
+
+<%= javascript_packs_tag_once('document-capture-welcome') %>
