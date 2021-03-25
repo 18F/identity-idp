@@ -12,6 +12,7 @@ require_relative '../lib/app_config_reader'
 require_relative '../lib/app_config'
 require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
+require_relative '../lib/identity_job_log_subscriber'
 
 Bundler.require(*Rails.groups)
 

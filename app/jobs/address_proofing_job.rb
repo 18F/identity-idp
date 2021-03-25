@@ -10,8 +10,8 @@ class AddressProofingJob < ApplicationJob
     Idv::Proofer.address_job_class.handle(
       event: {
         applicant_pii: decrypted_args[:applicant_pii],
-        callback_url: :callback_url,
-        trace_id: :trace_id,
+        callback_url: callback_url,
+        trace_id: trace_id,
         lexisnexis_config: {
           phone_finder_workflow: AppConfig.env.lexisnexis_phone_finder_workflow,
           account_id: AppConfig.env.lexisnexis_account_id,
