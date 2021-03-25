@@ -88,6 +88,11 @@ RSpec.configure do |config|
 
   config.before(:each) do
     IdentityDocAuth::Mock::DocAuthMockClient.reset!
+    original_queue_adapter = ActiveJob::Base.queue_adapter
+    descendants = ActiveJob::Base.descendants + [ActiveJob::Base]
+
+    ActiveJob::Base.queue_adapter = :inline
+    descendants.each(&:disable_test_adapter)
   end
 
   config.around(:each, type: :feature) do |example|

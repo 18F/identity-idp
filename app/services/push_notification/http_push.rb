@@ -34,6 +34,24 @@ module PushNotification
     attr_reader :now
 
     def deliver_one(service_provider)
+      if AppConfig.env.risc_notifications_sqs_enabled == 'true'
+        deliver_sqs(service_provider)
+      else
+        deliver_direct(service_provider)
+      end
+    end
+
+    def deliver_sqs(service_provider)
+      sqs_client.send_message(
+        queue_url: sqs_queue_url,
+        message_body: {
+          push_notification_url: service_provider.push_notification_url,
+          jwt: jwt(service_provider),
+        }.to_json,
+      )
+    end
+
+    def deliver_direct(service_provider)
       response = faraday.post(
         service_provider.push_notification_url,
         jwt(service_provider),
@@ -82,6 +100,19 @@ module PushNotification
           user_id: event.user.id,
           service_provider: service_provider.issuer,
         )&.uuid
+    end
+
+    def sqs_client
+      @sqs_client ||= Aws::SQS::Client.new(
+        region: Identity::Hostdata::EC2.load.region,
+      )
+    end
+
+    def sqs_queue_url
+      @sqs_queue_url ||=
+        sqs_client.get_queue_url(
+          queue_name: "#{Identity::Hostdata.env}-risc-notifications",
+        ).queue_url
     end
   end
 end

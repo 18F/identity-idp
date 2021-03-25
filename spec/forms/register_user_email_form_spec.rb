@@ -13,7 +13,7 @@ describe RegisterUserEmailForm do
         mailer = instance_double(ActionMailer::MessageDelivery)
         allow(UserMailer).to receive(:signup_with_your_email).
           with(existing_user, existing_user.email).and_return(mailer)
-        allow(mailer).to receive(:deliver_later)
+        allow(mailer).to receive(:deliver_now)
 
         extra = {
           email_already_exists: true,
@@ -28,7 +28,7 @@ describe RegisterUserEmailForm do
           with(success: true, errors: {}, extra: extra).and_return(result)
         expect(subject.submit(email: 'TAKEN@gmail.com')).to eq result
         expect(subject.email).to eq 'taken@gmail.com'
-        expect(mailer).to have_received(:deliver_later)
+        expect(mailer).to have_received(:deliver_now)
       end
     end
 

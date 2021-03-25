@@ -88,7 +88,7 @@ class User < ApplicationRecord
 
   # To send emails asynchronously via ActiveJob.
   def send_devise_notification(notification, *args)
-    devise_mailer.send(notification, self, *args).deliver_later
+    devise_mailer.send(notification, self, *args).deliver_now
   end
 
   def decorate

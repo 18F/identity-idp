@@ -9,7 +9,8 @@ RSpec.describe Users::VerifyAccountController do
 
   before do
     stub_analytics
-    user = stub_sign_in
+    user = create(:user)
+    stub_sign_in(user)
     decorated_user = stub_decorated_user_with_pending_profile(user)
     create(
       :usps_confirmation_code,
@@ -32,6 +33,14 @@ RSpec.describe Users::VerifyAccountController do
         action
 
         expect(response).to render_template('users/verify_account/index')
+      end
+
+      it 'shows throttled page is user is throttled' do
+        allow(Throttler::IsThrottled).to receive(:call).once.and_return(true)
+
+        action
+
+        expect(response).to render_template(:throttled)
       end
     end
 
@@ -85,6 +94,32 @@ RSpec.describe Users::VerifyAccountController do
         action
 
         expect(response).to render_template('users/verify_account/index')
+      end
+    end
+
+    context 'with throttle reached' do
+      let(:submitted_otp) { 'a-wrong-otp' }
+
+      it 'renders the index page to show errors' do
+        max_attempts = AppConfig.env.verify_gpo_key_max_attempts.to_i
+
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
+          success: false, errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
+        ).exactly(max_attempts).times
+
+        (max_attempts + 1).times do |i|
+          post(
+            :create,
+            params: {
+              verify_account_form: {
+                otp: submitted_otp,
+              },
+            },
+          )
+        end
+
+        expect(response).to render_template('users/verify_account/throttled')
       end
     end
   end

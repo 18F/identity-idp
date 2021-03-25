@@ -3,7 +3,7 @@ module UserAlerts
     def self.call(user, disavowal_token)
       user.confirmed_email_addresses.each do |email_address|
         UserMailer.password_changed(user, email_address, disavowal_token: disavowal_token).
-          deliver_later
+          deliver_now
       end
     end
   end

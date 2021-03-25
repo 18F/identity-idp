@@ -69,8 +69,6 @@ fr:
           de droite contient probablement votre nom) et <strong> entrer votre code
           PIN </strong> (votre code PIN a été créé lors de la configuration de votre
           PIV / CAC ).
-        temporary_error: Veuillez réessayer ultérieurement ou connectez-vous avec
-          votre adresse électronique et votre mot de passe.
         try_again: réessayer
       sms:
         confirm_code_html: Vous avez besoin d'un autre code? %{resend_code_link}.

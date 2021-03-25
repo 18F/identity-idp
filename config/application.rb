@@ -23,7 +23,7 @@ module Upaya
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
 
-    config.active_job.queue_adapter = 'inline'
+    config.active_job.queue_adapter = :inline
     config.time_zone = 'UTC'
 
     # Generate CSRF tokens that are encoded in URL-safe Base64.

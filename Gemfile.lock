@@ -29,10 +29,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
-  revision: 051a8c3dca143b215838176a07b1f0545ffec0a2
-  ref: 051a8c3dca143b215838176a07b1f0545ffec0a2
+  revision: d9241bdfea85a76c170e456a89ec6601549f4c4a
+  ref: d9241bdfea85a76c170e456a89ec6601549f4c4a
   specs:
-    identity-idp-functions (0.15.0)
+    identity-idp-functions (0.15.2)
       aamva (>= 4.0.0)
       aws-sdk-s3 (>= 1.73)
       aws-sdk-ssm (>= 1.55)
@@ -41,10 +41,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: d6e73358ab899e8740e0008aff0e03e26bd4eb56
-  tag: v3.1.0
+  revision: 0e22ac2518a724b63a928feb68197b203ea47660
+  tag: v3.1.1
   specs:
-    lexisnexis (3.1.0)
+    lexisnexis (3.1.1)
       activesupport
       faraday
 
@@ -93,6 +93,13 @@ GIT
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
+
+GIT
+  remote: https://github.com/mimemagicrb/mimemagic.git
+  revision: 40dd02bb6b442535f97c35326c0383bc67146ac4
+  ref: 40dd02bb6b442535f97c35326c0383bc67
+  specs:
+    mimemagic (0.3.5)
 
 GEM
   remote: https://rubygems.org/
@@ -199,6 +206,9 @@ GEM
     aws-sdk-ses (1.36.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
+    aws-sdk-sqs (1.35.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-ssm (1.103.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
@@ -269,7 +279,13 @@ GEM
     crass (1.0.6)
     css_parser (1.7.1)
       addressable
+    daemons (1.3.1)
     debug_inspector (0.0.3)
+    delayed_job (4.1.9)
+      activesupport (>= 3.0, < 6.2)
+    delayed_job_active_record (4.1.5)
+      activerecord (>= 3.0, < 6.2)
+      delayed_job (>= 3.0, < 5)
     derailed_benchmarks (1.8.1)
       benchmark-ips (~> 2)
       get_process_mem (~> 0)
@@ -418,7 +434,6 @@ GEM
     mime-types (3.3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0225)
-    mimemagic (0.3.5)
     mini_histogram (0.3.1)
     mini_mime (1.0.2)
     mini_portile2 (2.5.0)
@@ -432,7 +447,7 @@ GEM
     net-ssh (5.2.0)
     newrelic_rpm (6.14.0)
     nio4r (2.5.5)
-    nokogiri (1.11.1)
+    nokogiri (1.11.2)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     notiffany (0.1.3)
@@ -738,6 +753,7 @@ DEPENDENCIES
   aws-sdk-kms (~> 1.4)
   aws-sdk-lambda
   aws-sdk-ses (~> 1.6)
+  aws-sdk-sqs
   axe-matchers (~> 2.6.0)
   base32-crockford
   better_errors (>= 2.5.1)
@@ -748,6 +764,8 @@ DEPENDENCIES
   capybara-screenshot (>= 1.0.23)
   capybara-selenium (>= 0.0.6)
   codeclimate-test-reporter
+  daemons (~> 1.3)
+  delayed_job_active_record (~> 4.1)
   derailed_benchmarks (~> 1.8)
   device_detector
   devise (~> 4.7.2)
@@ -778,6 +796,7 @@ DEPENDENCIES
   local_time
   lograge (>= 0.11.2)
   maxminddb
+  mimemagic (= 0.3.5)!
   net-sftp
   newrelic_rpm
   nokogiri (~> 1.11.0)

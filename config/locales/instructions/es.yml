@@ -61,8 +61,6 @@ es:
         step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (el
           correcto probablemente tenga su nombre) e <strong> ingrese su PIN </strong>
           (su PIN se creó cuando configuró su PIV/CAC)
-        temporary_error: Vuelve a intentarlo más tarde o inicia sesión con tu correo
-          electrónico y contraseña.
         try_again: inténtelo de nuevo
       sms:
         confirm_code_html: "¿Necesita otro código? %{resend_code_link}. Puede estar

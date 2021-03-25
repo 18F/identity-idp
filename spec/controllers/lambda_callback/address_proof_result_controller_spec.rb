@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe LambdaCallback::AddressProofResultController do
+  include IdvHelper
+
   describe '#create' do
     let(:document_capture_session) { DocumentCaptureSession.new(user: create(:user)) }
     let(:trace_id) { SecureRandom.uuid }
@@ -12,7 +14,6 @@ describe LambdaCallback::AddressProofResultController do
 
       it 'accepts and stores successful address proofing results' do
         applicant = { phone: Faker::PhoneNumber.cell_phone }
-        document_capture_session.create_proofing_session
         Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: trace_id)
         proofer_result = document_capture_session.load_proofing_result[:result]
 
@@ -28,7 +29,6 @@ describe LambdaCallback::AddressProofResultController do
           phone: IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
         }
 
-        document_capture_session.create_proofing_session
         Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: trace_id)
         proofer_result = document_capture_session.load_proofing_result[:result]
 
