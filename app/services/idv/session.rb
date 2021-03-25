@@ -1,6 +1,6 @@
 module Idv
   class Session
-    # TODO: remove _usps_ attributes after next deploy
+    # NOTE: remove _usps_ attributes after next deploy
     VALID_SESSION_ATTRIBUTES = %i[
       address_verification_mechanism
       applicant

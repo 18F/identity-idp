@@ -53,7 +53,7 @@ module Idv
     private
 
     def flash_message_content
-      # TODO: remove usps after deploy
+      # NOTE: remove usps after next deploy
       if %w[gpo usps].include?(idv_session.address_verification_mechanism)
         t('idv.messages.mail_sent')
       else
