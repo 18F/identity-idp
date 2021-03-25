@@ -25,7 +25,6 @@ module Users
       throttled = Throttler::IsThrottledElseIncrement.call(
         current_user.id,
         :verify_gpo_key,
-        analytics: analytics,
       )
 
       if throttled

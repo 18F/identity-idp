@@ -43,11 +43,7 @@ module Idv
       end
 
       def throttled_else_increment
-        Throttler::IsThrottledElseIncrement.call(
-          user_id,
-          :idv_send_link,
-          analytics: @flow.analytics,
-        )
+        Throttler::IsThrottledElseIncrement.call(user_id, :idv_send_link)
       end
     end
   end

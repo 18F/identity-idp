@@ -80,7 +80,6 @@ class Analytics
   ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'.freeze
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'.freeze
   AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'.freeze
-  CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
@@ -201,7 +200,6 @@ class Analytics
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
   SP_REDIRECT_INITIATED = 'SP redirect initiated'.freeze
   TELEPHONY_OTP_SENT = 'Telephony: OTP sent'.freeze
-  THROTTLER_RATE_LIMIT_TRIGGERED = 'Throttler Rate Limit Triggered'.freeze
   TOTP_SETUP_VISIT = 'TOTP Setup Visited'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
   OTP_PHONE_VALIDATION_FAILED = 'Twilio Phone Validation Failed'.freeze

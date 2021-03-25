@@ -1,7 +1,7 @@
 module Db
   module DocAuthLog
     module DropOffRatesHelper
-      STEPS = %w[welcome capture_document ssn verify_info phone
+      STEPS = %w[welcome agreement capture_document ssn verify_info phone
                  encrypt personal_key verified].freeze
 
       private
@@ -26,7 +26,7 @@ module Db
 
       def select_counts_from_doc_auth_logs
         <<~SQL
-          select count(welcome_view_at) as welcome, count(upload_view_at) as upload_option,
+          select count(welcome_view_at) as welcome, count(agreement_view_at) as agreement, count(upload_view_at) as upload_option,
           count(COALESCE(back_image_view_at,mobile_back_image_view_at,capture_mobile_back_image_view_at,present_cac_view_at)) as capture_document,
           count(COALESCE(ssn_view_at,enter_info_view_at)) as ssn,
           count(verify_view_at) as verify_info,

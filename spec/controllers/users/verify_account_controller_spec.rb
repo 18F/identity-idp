@@ -108,11 +108,6 @@ RSpec.describe Users::VerifyAccountController do
           success: false, errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
         ).exactly(max_attempts).times
 
-        expect(@analytics).to receive(:track_event).with(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-          throttle_type: 'verify_gpo_key',
-        ).once
-
         (max_attempts + 1).times do |i|
           post(
             :create,
