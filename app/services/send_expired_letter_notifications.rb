@@ -17,7 +17,7 @@ class SendExpiredLetterNotifications
     user = usps_confirmation_code.profile.user
     mark_sent(usps_confirmation_code)
     user.confirmed_email_addresses.each do |email_address|
-      UserMailer.letter_expired(user, email_address.email).deliver_later
+      UserMailer.letter_expired(user, email_address.email).deliver_now
     end
   end
 

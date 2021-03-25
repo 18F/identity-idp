@@ -26,6 +26,6 @@ class BackupCodeCreatePresenter
   end
 
   def continue_bttn_class
-    'btn btn-link'
+    'usa-button usa-button--unstyled'
   end
 end
