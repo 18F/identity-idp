@@ -181,8 +181,6 @@ fr:
         de vous-même pour confirmer que vous êtes bien le propriétaire de la carte
         d'identité.
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
-      use_cac: Avez-vous une carte d'identité d'employé du gouvernement?
-      use_cac_link: Utilisez plutôt une PIV/CAC
       verify_identity: Nous vous demanderons vos renseignements personnels. Nous utiliserons,
         conserverons et partagerons certains de vos renseignements personnels pour
         vérifier votre identité par rapport aux registres publics.

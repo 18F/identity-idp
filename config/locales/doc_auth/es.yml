@@ -166,8 +166,6 @@ es:
         que es el propietario del documento de identidad.
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos
         su identidad.
-      use_cac: "¿Tiene un documento de identidad de empleado del gobierno?"
-      use_cac_link: Utilice un PIV/CAC en su lugar
       verify_identity: Le pediremos su información personal. Utilizaremos, conservaremos
         y compartiremos algunos de sus datos personales para verificar su identidad
         con los registros públicos.
