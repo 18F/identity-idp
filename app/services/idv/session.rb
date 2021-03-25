@@ -31,14 +31,22 @@ module Idv
       set_idv_session
     end
 
-    def idv_gpo_document_capture_session_uuid
-      session[:idv_gpo_document_capture_session_uuid] ||
-        session[:idv_usps_document_capture_session_uuid]
+    def idv_gpo_document_capture_session_uuid(value = nil)
+      if value
+        session[:idv_gpo_document_capture_session_uuid] = value
+      else
+        session[:idv_gpo_document_capture_session_uuid] ||
+          session[:idv_usps_document_capture_session_uuid]
+      end
     end
 
-    def previous_gpo_step_params
-      session[:previous_gpo_step_params] ||
-        session[:previous_usps_step_params]
+    def previous_gpo_step_params(value = nil)
+      if value
+        session[:previous_gpo_step_params] = value
+      else
+        session[:previous_gpo_step_params] ||
+          session[:previous_usps_step_params]
+      end
     end
 
     def method_missing(method_sym, *arguments, &block)

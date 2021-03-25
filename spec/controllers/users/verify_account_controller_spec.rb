@@ -13,7 +13,7 @@ RSpec.describe Users::VerifyAccountController do
     stub_sign_in(user)
     decorated_user = stub_decorated_user_with_pending_profile(user)
     create(
-      :usps_confirmation_code,
+      :gpo_confirmation_code,
       profile: pending_profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )

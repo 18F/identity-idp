@@ -15,7 +15,7 @@ describe VerifyAccountForm do
     next if pending_profile.blank?
 
     create(
-      :usps_confirmation_code,
+      :gpo_confirmation_code,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
       code_sent_at: code_sent_at,
       profile: pending_profile,

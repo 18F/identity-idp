@@ -120,8 +120,14 @@ describe Idv::Session do
       end
     end
 
-    it 'returns true if the user has selected usps address verification' do
+    it 'returns true if the user has selected usps address verification (legacy value)' do
       subject.address_verification_mechanism = 'usps'
+
+      expect(subject.address_mechanism_chosen?).to eq(true)
+    end
+
+    it 'returns true if the user has selected usps address verification' do
+      subject.address_verification_mechanism = 'gpo'
 
       expect(subject.address_mechanism_chosen?).to eq(true)
     end
