@@ -40,7 +40,6 @@ es:
         seguridad?"
     buttons:
       back: Atrás
-      cac: Presentar tarjeta PIV/CAC
       cancel: Sí, cancelar
       confirm: Confirmar
       continue: Continuar

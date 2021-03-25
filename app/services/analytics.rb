@@ -80,7 +80,6 @@ class Analytics
   ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'.freeze
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'.freeze
   AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'.freeze
-  CAC_PROOFING = 'CAC Proofing'.freeze # visited or submitted is appended
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze

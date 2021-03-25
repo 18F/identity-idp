@@ -10,10 +10,7 @@ en:
       new: Resend confirmation instructions for your account
       show: Choose a password
     doc_auth:
-      choose_method: Choose how to verify
-      enter_info: Enter your information
       otp_delivery: Get code
-      piv_cac: Verify with PIV/CAC
       verify: Verify identity
     edit_info:
       email_language: Edit email language preference
