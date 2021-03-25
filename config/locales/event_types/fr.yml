@@ -11,6 +11,7 @@ fr:
     eastern_timestamp: "%{timestamp} (est)"
     email_changed: Adresse courriel modifiée
     email_deleted: Adresse e-mail supprimée
+    gpo_mail_sent: Lettre envoyée
     new_personal_key: Clé personnelle modifié
     password_changed: Mot de passe modifié
     password_invalidated: Réinitialisation du mot de passe par %{app_name}
@@ -23,6 +24,5 @@ fr:
     piv_cac_enabled: Carte PIV/CAC associée
     sign_in_after_2fa: Signé avec deuxième facteur
     sign_in_before_2fa: Connecté avec mot de passe
-    usps_mail_sent: Lettre envoyée
     webauthn_key_added: Clé de sécurité ajoutée
     webauthn_key_removed: Clé de sécurité retirée

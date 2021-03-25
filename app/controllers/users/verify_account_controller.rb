@@ -7,10 +7,10 @@ module Users
 
     def index
       analytics.track_event(Analytics::ACCOUNT_VERIFICATION_VISITED)
-      usps_mail = Idv::UspsMail.new(current_user)
-      @mail_spammed = usps_mail.mail_spammed?
+      gpo_mail = Idv::GpoMail.new(current_user)
+      @mail_spammed = gpo_mail.mail_spammed?
       @verify_account_form = VerifyAccountForm.new(user: current_user)
-      @code = session[:last_usps_confirmation_code] if FeatureManagement.reveal_usps_code?
+      @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
 
       if Throttler::IsThrottled.call(current_user.id, :verify_gpo_key)
         render :throttled

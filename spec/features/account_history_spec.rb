@@ -3,8 +3,8 @@ require 'rails_helper'
 describe 'Account history' do
   let(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
   let(:account_created_event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
-  let(:usps_mail_sent_event) do
-    create(:event, user: user, event_type: :usps_mail_sent, created_at: Time.zone.now - 90.days)
+  let(:gpo_mail_sent_event) do
+    create(:event, user: user, event_type: :gpo_mail_sent, created_at: Time.zone.now - 90.days)
   end
   let(:identity_with_link) do
     create(
@@ -15,8 +15,8 @@ describe 'Account history' do
       service_provider: 'http://localhost:3000',
     )
   end
-  let(:usps_mail_sent_again_event) do
-    create(:event, user: user, event_type: :usps_mail_sent, created_at: Time.zone.now - 60.days)
+  let(:gpo_mail_sent_again_event) do
+    create(:event, user: user, event_type: :gpo_mail_sent, created_at: Time.zone.now - 60.days)
   end
   let(:identity_without_link) do
     create(
@@ -28,11 +28,11 @@ describe 'Account history' do
     )
   end
   let(:account_created_timestamp) { account_created_event.decorate.happened_at_in_words }
-  let(:usps_mail_sent_timestamp) { usps_mail_sent_event.decorate.happened_at_in_words }
+  let(:gpo_mail_sent_timestamp) { gpo_mail_sent_event.decorate.happened_at_in_words }
   let(:identity_with_link_timestamp) do
     identity_with_link.happened_at.strftime(t('time.formats.event_timestamp'))
   end
-  let(:usps_mail_sent_again_timestamp) { usps_mail_sent_again_event.decorate.happened_at_in_words }
+  let(:gpo_mail_sent_again_timestamp) { gpo_mail_sent_again_event.decorate.happened_at_in_words }
   let(:identity_without_link_timestamp) do
     identity_without_link.happened_at.strftime(t('time.formats.event_timestamp'))
   end
@@ -54,8 +54,8 @@ describe 'Account history' do
   scenario 'viewing account history' do
     events = [
       account_created_event,
-      usps_mail_sent_event,
-      usps_mail_sent_again_event,
+      gpo_mail_sent_event,
+      gpo_mail_sent_again_event,
       new_personal_key_event,
       password_changed_event,
     ]
@@ -80,16 +80,16 @@ describe 'Account history' do
       identity_with_link.display_name, href: 'http://localhost:3000'
     )
 
-    expect(identity_without_link_timestamp).to appear_before(usps_mail_sent_again_timestamp)
-    expect(usps_mail_sent_again_timestamp).to appear_before(identity_with_link_timestamp)
-    expect(identity_with_link_timestamp).to appear_before(usps_mail_sent_timestamp)
-    expect(usps_mail_sent_timestamp).to appear_before(account_created_timestamp)
+    expect(identity_without_link_timestamp).to appear_before(gpo_mail_sent_again_timestamp)
+    expect(gpo_mail_sent_again_timestamp).to appear_before(identity_with_link_timestamp)
+    expect(identity_with_link_timestamp).to appear_before(gpo_mail_sent_timestamp)
+    expect(gpo_mail_sent_timestamp).to appear_before(account_created_timestamp)
   end
 
   def build_account_history
     account_created_event
-    usps_mail_sent_event
-    usps_mail_sent_again_event
+    gpo_mail_sent_event
+    gpo_mail_sent_again_event
     identity_with_link
     identity_without_link
     new_personal_key_event

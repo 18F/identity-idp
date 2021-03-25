@@ -19,10 +19,10 @@ class AccountShow
 
   def pending_profile_partial
     if decorated_user.pending_profile_requires_verification?
-      if decorated_user.usps_mail_bounced?
-        'accounts/pending_profile_bounced_usps'
+      if decorated_user.gpo_mail_bounced?
+        'accounts/pending_profile_bounced_gpo'
       else
-        'accounts/pending_profile_usps'
+        'accounts/pending_profile_gpo'
       end
     else
       'shared/null'

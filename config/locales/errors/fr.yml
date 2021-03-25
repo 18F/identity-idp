@@ -88,6 +88,8 @@ fr:
         un autre.
       expired: est expiré, veuillez en demander un nouveau
       format_mismatch: Veuillez vous assurer de respecter le format requis.
+      gpo_otp_expired: Votre code de confirmation a expiré. Veuillez solliciter une
+        autre lettre afin d'obtenir un nouveau code.
       improbable_phone: Numéro de téléphone non valide. Veillez à saisir un numéro
         de téléphone valide.
       invalid_calling_area: Les appels vers ce numéro de téléphone ne sont pas pris
@@ -117,8 +119,6 @@ fr:
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_nameid_format: Format non autorisé du nom d'identification
       unauthorized_service_provider: Fournisseur de service non autorisé
-      usps_otp_expired: Votre code de confirmation a expiré. Veuillez solliciter une
-        autre lettre afin d'obtenir un nouveau code.
       voip_check_error: Il y a eu une erreur lors de la vérification de votre téléphone,
         veuillez réessayer
       voip_phone: Ce numéro est un service téléphonique basé sur le Web (Voix sur

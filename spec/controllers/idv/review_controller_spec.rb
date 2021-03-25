@@ -101,7 +101,7 @@ describe Idv::ReviewController do
 
     context 'user is verifying by mail' do
       before do
-        allow(idv_session).to receive(:address_verification_mechanism).and_return('usps')
+        allow(idv_session).to receive(:address_verification_mechanism).and_return('gpo')
       end
 
       it 'does not redirect' do
@@ -213,7 +213,7 @@ describe Idv::ReviewController do
 
     context 'user chooses address verification' do
       before do
-        idv_session.address_verification_mechanism = 'usps'
+        idv_session.address_verification_mechanism = 'gpo'
       end
 
       it 'displays a helpful flash message to the user' do
@@ -227,10 +227,10 @@ describe Idv::ReviewController do
 
     context 'user has not requested too much mail' do
       before do
-        idv_session.address_verification_mechanism = 'usps'
-        usps_mail_service = instance_double(Idv::UspsMail)
-        allow(Idv::UspsMail).to receive(:new).with(user).and_return(usps_mail_service)
-        allow(usps_mail_service).to receive(:mail_spammed?).and_return(false)
+        idv_session.address_verification_mechanism = 'gpo'
+        gpo_mail_service = instance_double(Idv::GpoMail)
+        allow(Idv::GpoMail).to receive(:new).with(user).and_return(gpo_mail_service)
+        allow(gpo_mail_service).to receive(:mail_spammed?).and_return(false)
       end
 
       it 'displays a success message' do
@@ -243,10 +243,10 @@ describe Idv::ReviewController do
 
     context 'user has requested too much mail' do
       before do
-        idv_session.address_verification_mechanism = 'usps'
-        usps_mail_service = instance_double(Idv::UspsMail)
-        allow(Idv::UspsMail).to receive(:new).with(user).and_return(usps_mail_service)
-        allow(usps_mail_service).to receive(:mail_spammed?).and_return(true)
+        idv_session.address_verification_mechanism = 'gpo'
+        gpo_mail_service = instance_double(Idv::GpoMail)
+        allow(Idv::GpoMail).to receive(:new).with(user).and_return(gpo_mail_service)
+        allow(gpo_mail_service).to receive(:mail_spammed?).and_return(true)
       end
 
       it 'displays a helpful error message' do
@@ -342,9 +342,9 @@ describe Idv::ReviewController do
         end
       end
 
-      context 'user picked USPS confirmation' do
+      context 'user picked GPO confirmation' do
         before do
-          idv_session.address_verification_mechanism = 'usps'
+          idv_session.address_verification_mechanism = 'gpo'
         end
 
         it 'leaves profile deactivated' do

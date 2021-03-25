@@ -103,13 +103,13 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
-  describe '#reveal_usps_code?' do
+  describe '#reveal_gpo_code?' do
     context 'server domain name is dev, qa, or int' do
       it 'returns true' do
         %w[idp.dev.login.gov idp.int.login.gov idp.qa.login.gov].each do |domain|
           allow(AppConfig.env).to receive(:domain_name).and_return(domain)
 
-          expect(FeatureManagement.reveal_usps_code?).to eq(true)
+          expect(FeatureManagement.reveal_gpo_code?).to eq(true)
         end
       end
     end
@@ -118,7 +118,7 @@ describe 'FeatureManagement', type: :feature do
       it 'returns true' do
         allow(Rails.env).to receive(:development?).and_return(true)
 
-        expect(FeatureManagement.reveal_usps_code?).to eq(true)
+        expect(FeatureManagement.reveal_gpo_code?).to eq(true)
       end
     end
 
@@ -127,7 +127,7 @@ describe 'FeatureManagement', type: :feature do
         allow(Rails.env).to receive(:development?).and_return(false)
         allow(AppConfig.env).to receive(:domain_name).and_return('foo.login.gov')
 
-        expect(FeatureManagement.reveal_usps_code?).to eq(false)
+        expect(FeatureManagement.reveal_gpo_code?).to eq(false)
       end
     end
   end

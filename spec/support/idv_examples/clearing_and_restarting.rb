@@ -14,7 +14,7 @@ shared_examples 'clearing and restarting idv' do
     expect(user.reload.decorate.identity_verified?).to eq(true)
   end
 
-  it 'allows the user to retry verification with usps' do
+  it 'allows the user to retry verification with gpo' do
     click_on t('idv.messages.clear_and_start_over')
 
     expect(user.reload.decorate.pending_profile?).to eq(false)
@@ -30,13 +30,13 @@ shared_examples 'clearing and restarting idv' do
     click_idv_continue
     click_acknowledge_personal_key
 
-    usps_confirmation = UspsConfirmation.order(created_at: :desc).first
+    gpo_confirmation = GpoConfirmation.order(created_at: :desc).first
 
     expect(page).to have_content(t('idv.messages.come_back_later', app: APP_NAME))
     expect(page).to have_current_path(idv_come_back_later_path)
     expect(user.reload.decorate.identity_verified?).to eq(false)
     expect(user.decorate.pending_profile?).to eq(true)
-    expect(usps_confirmation.entry[:address1]).to eq('1 FAKE RD')
+    expect(gpo_confirmation.entry[:address1]).to eq('1 FAKE RD')
   end
 
   it 'deletes decrypted PII from the session and does not display it on the account page' do

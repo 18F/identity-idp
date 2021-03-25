@@ -24,7 +24,7 @@ describe Idv::OtpDeliveryMethodController do
   describe '#new' do
     context 'user has not selected phone verification method' do
       before do
-        subject.idv_session.address_verification_mechanism = 'usps'
+        subject.idv_session.address_verification_mechanism = 'gpo'
       end
 
       it 'redirects to the review controller' do
@@ -78,7 +78,7 @@ describe Idv::OtpDeliveryMethodController do
 
     context 'user has not selected phone verification method' do
       before do
-        subject.idv_session.address_verification_mechanism = 'usps'
+        subject.idv_session.address_verification_mechanism = 'gpo'
       end
 
       it 'redirects to the review controller' do

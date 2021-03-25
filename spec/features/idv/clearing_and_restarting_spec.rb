@@ -5,10 +5,10 @@ describe 'clearing IdV and restarting' do
 
   let(:user) { user_with_2fa }
 
-  context 'during USPS otp verification' do
+  context 'during GPO otp verification' do
     before do
       start_idv_from_sp
-      complete_idv_steps_with_usps_before_confirmation_step(user)
+      complete_idv_steps_with_gpo_before_confirmation_step(user)
       click_acknowledge_personal_key
     end
 

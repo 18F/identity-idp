@@ -16,10 +16,10 @@
 
 <hr>
 
-<% if FeatureManagement.enable_usps_verification? %>
+<% if FeatureManagement.enable_gpo_verification? %>
   <p>
     <%= t('idv.form.no_alternate_phone_html',
-      link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
+      link: link_to(t('idv.form.activate_by_mail'), idv_gpo_path)) %>
   </p>
 <% end %>
 

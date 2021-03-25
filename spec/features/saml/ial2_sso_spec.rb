@@ -5,7 +5,7 @@ feature 'IAL2 Single Sign On' do
   include IdvStepHelper
   include DocAuthHelper
 
-  def perform_id_verification_with_usps_without_confirming_code(user)
+  def perform_id_verification_with_gpo_without_confirming_code(user)
     saml_authn_request = auth_request.create(ial2_with_bundle_saml_settings)
     visit saml_authn_request
     fill_in_credentials_and_submit(user.email, user.password)
@@ -21,15 +21,15 @@ feature 'IAL2 Single Sign On' do
     click_link t('idv.buttons.continue_plain')
   end
 
-  def expected_usps_return_to_sp_url
+  def expected_gpo_return_to_sp_url
     URI.join(
       ServiceProvider.find_by(issuer: ial2_with_bundle_saml_settings.issuer).acs_url,
       '/',
     ).to_s
   end
 
-  def mock_usps_mail_bounced
-    allow_any_instance_of(UserDecorator).to receive(:usps_mail_bounced?).and_return(true)
+  def mock_gpo_mail_bounced
+    allow_any_instance_of(UserDecorator).to receive(:gpo_mail_bounced?).and_return(true)
   end
 
   def update_mailing_address
@@ -91,30 +91,30 @@ feature 'IAL2 Single Sign On' do
         it 'without signing out' do
           user = create(:user, :signed_up)
 
-          perform_id_verification_with_usps_without_confirming_code(user)
+          perform_id_verification_with_gpo_without_confirming_code(user)
 
-          expect(current_url).to eq expected_usps_return_to_sp_url
+          expect(current_url).to eq expected_gpo_return_to_sp_url
 
           visit account_path
           click_link(t('account.index.verification.reactivate_button'))
 
           expect(current_path).to eq verify_account_path
 
-          click_link(t('idv.messages.usps.resend'))
+          click_link(t('idv.messages.gpo.resend'))
 
           expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(idv_usps_path)
+          expect(current_path).to eq(idv_gpo_path)
 
           click_button(t('idv.buttons.mail.resend'))
 
-          expect(user.events.usps_mail_sent.size).to eq 2
+          expect(user.events.gpo_mail_sent.size).to eq 2
           expect(current_path).to eq(idv_come_back_later_path)
         end
 
         it 'after signing out' do
           user = create(:user, :signed_up)
 
-          perform_id_verification_with_usps_without_confirming_code(user)
+          perform_id_verification_with_gpo_without_confirming_code(user)
           visit account_path
           sign_out_user
 
@@ -122,10 +122,10 @@ feature 'IAL2 Single Sign On' do
 
           expect(current_path).to eq verify_account_path
 
-          click_link(t('idv.messages.usps.resend'))
+          click_link(t('idv.messages.gpo.resend'))
 
           expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(idv_usps_path)
+          expect(current_path).to eq(idv_gpo_path)
 
           click_button(t('idv.buttons.mail.resend'))
 
@@ -137,17 +137,17 @@ feature 'IAL2 Single Sign On' do
         it 'allows the user to update the address' do
           user = create(:user, :signed_up)
 
-          perform_id_verification_with_usps_without_confirming_code(user)
+          perform_id_verification_with_gpo_without_confirming_code(user)
 
-          expect(current_url).to eq expected_usps_return_to_sp_url
+          expect(current_url).to eq expected_gpo_return_to_sp_url
 
           visit account_path
 
-          mock_usps_mail_bounced
+          mock_gpo_mail_bounced
           visit account_path
           click_link(t('account.index.verification.update_address'))
 
-          expect(current_path).to eq idv_usps_path
+          expect(current_path).to eq idv_gpo_path
 
           fill_out_address_form_fail
           click_on t('idv.buttons.mail.resend')
@@ -159,25 +159,25 @@ feature 'IAL2 Single Sign On' do
         it 'throttles resolution' do
           user = create(:user, :signed_up)
 
-          perform_id_verification_with_usps_without_confirming_code(user)
+          perform_id_verification_with_gpo_without_confirming_code(user)
 
-          expect(current_url).to eq expected_usps_return_to_sp_url
+          expect(current_url).to eq expected_gpo_return_to_sp_url
 
           visit account_path
 
-          mock_usps_mail_bounced
+          mock_gpo_mail_bounced
           visit account_path
           click_link(t('account.index.verification.update_address'))
 
-          expect(current_path).to eq idv_usps_path
+          expect(current_path).to eq idv_gpo_path
           fill_out_address_form_resolution_fail
           click_on t('idv.buttons.mail.resend')
-          expect(current_path).to eq idv_usps_path
+          expect(current_path).to eq idv_gpo_path
           expect(page).to have_content(t('idv.failure.sessions.heading'))
 
           fill_out_address_form_resolution_fail
           click_on t('idv.buttons.mail.resend')
-          expect(current_path).to eq idv_usps_path
+          expect(current_path).to eq idv_gpo_path
           expect(page).to have_content(strip_tags(t('idv.failure.sessions.heading')))
         end
       end

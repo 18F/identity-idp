@@ -13,7 +13,7 @@ class Event < ApplicationRecord
     authenticator_enabled: 6,
     authenticator_disabled: 7,
     account_verified: 8,
-    usps_mail_sent: 9,
+    gpo_mail_sent: 9,
     piv_cac_enabled: 10,
     piv_cac_disabled: 11,
     new_personal_key: 12,
