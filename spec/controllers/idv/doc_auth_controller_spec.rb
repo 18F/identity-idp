@@ -145,6 +145,12 @@ describe Idv::DocAuthController do
       )
     end
 
+    it 'progresses from welcome to upload' do
+      put :update, params: { step: 'welcome', ial2_consent_given: true }
+
+      expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
+    end
+
     it 'redirects from welcome to no camera error' do
       result = {
         success: false,

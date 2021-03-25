@@ -2,7 +2,6 @@ module Funnel
   module DocAuth
     class RegisterStep
       TOKEN_WHITELIST = %i[
-        agreement
         welcome
         upload
         send_link

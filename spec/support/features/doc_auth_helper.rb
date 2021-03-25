@@ -42,10 +42,6 @@ module DocAuthHelper
     idv_doc_auth_step_path(step: :welcome)
   end
 
-  def idv_doc_auth_agreement_step
-    idv_doc_auth_step_path(step: :agreement)
-  end
-
   def idv_doc_auth_upload_step
     idv_doc_auth_step_path(step: :upload)
   end
@@ -79,14 +75,8 @@ module DocAuthHelper
     expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
   end
 
-  def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
-    complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
-    click_on t('doc_auth.buttons.continue')
-  end
-
   def complete_doc_auth_steps_before_upload_step(expect_accessible: false)
     complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
-    click_on t('doc_auth.buttons.continue')
     find('label', text: t('doc_auth.instructions.consent')).click
     click_on t('doc_auth.buttons.continue')
   end

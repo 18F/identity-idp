@@ -105,10 +105,8 @@ fr:
       document_capture_selfie: Votre photo
       front: Recto
       interstitial: Nous traitons vos images
-      lets_go: Commençons
       photo: Photo
       review_issues: Vérifiez vos images et essayez à nouveau
-      secure_account: Sécuriser votre compte
       selfie: Prenez une photo de vous-même
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_picture: Prendre une photo avec un téléphone
@@ -121,9 +119,7 @@ fr:
         votre pièce d'identité et prendre une photo de vous-même
       upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify: S'il vous plaît vérifier vos informations
-      verify_identity: Vérifier votre identité
-      welcome: Vérifiez votre identité pour accéder en toute sécurité aux services
-        gouvernementaux
+      welcome: Nous devons vérifier votre identité
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur
         Web
@@ -145,7 +141,6 @@ fr:
         automatiquement l'étape suivante lorsqu'elle sera terminée.
       interstitial_thanks: Merci de votre patience!
       keep_window_open: Ne fermez pas cette fenêtre.
-      lets_go: La vérification de l'identité se fait en deux temps
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
         prendre une photo de votre identité émise par l'État.
       link_sent_complete_js: L'étape suivante se chargera automatiquement une fois
@@ -155,14 +150,6 @@ fr:
       no_other_id_help_bold_html: "<strong>Si vous n'avez pas de carte d'identité
         délivrée par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
         à l'adresse %{sp_name}.</a>"
-      privacy_html: Login.gov est un site gouvernemental sécurisé qui respecte les
-        normes les plus strictes en matière de protection des données. Nous n'utilisons
-        vos données uniquement pour vérifier votre identité. %{link} sur nos mesures
-        de confidentialité et de sécurité.
-      secure_account: Après avoir vérifié votre identité, nous vous demanderons de
-        crypter votre compte. Le cryptage garantit la protection de vos données et
-        seul vous, le titulaire du compte, pourrez accéder à vos informations ou les
-        modifier.
       tag: Recommandation
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
@@ -183,19 +170,18 @@ fr:
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
       use_cac: Avez-vous une carte d'identité d'employé du gouvernement?
       use_cac_link: Utilisez plutôt une PIV/CAC
-      verify_identity: Nous vous demanderons vos renseignements personnels. Nous utiliserons,
-        conserverons et partagerons certains de vos renseignements personnels pour
-        vérifier votre identité par rapport aux registres publics.
       verifying: Vérification…
-      welcome_html: L'agence à laquelle vous essayez d'accéder doit s'assurer qu'il
-        s'agit bien de vous, et non de quelqu'un qui se fait passer pour vous.
+      welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
+        et non quelqu'un prétendant être vous. La vérification de votre identité vous
+        permet d'accéder à des services traitant des informations sensibles.
     instructions:
-      bullet1: Votre carte d'identité émise par l'État
-      bullet1a: Un appareil équipé d'une caméra
-      bullet2: Votre numéro de sécurité sociale
-      bullet3: Un numéro de téléphone associé à un forfait téléphonique à votre nom
+      bullet1: Téléchargez votre identifiant
+      bullet1a: Prenez une photo de vous-même
+      bullet2: Confirmez votre adresse
+      bullet3: Sécurise ton compte
+      bullet4: Récupération du compte
       consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
-        conserver et partager vos renseignements personnels. Nous ne les utiliserons
+        conserver et partager vos informations personnelles. Nous ne l'utiliserons
         que pour vérifier votre identité.
       document_capture_selfie_consent_action: "<lg-underline>Autorisez l'accès à la
         caméra</lg-underline> et recherchez une notification dans votre navigateur
@@ -212,21 +198,18 @@ fr:
         Nous le comparerons à l'image au recto de votre pièce d'identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
         et suivez les instructions pour vérifier votre identité.
-      learn_more: En savoir plus
-      privacy: Nos normes de confidentialité et de sécurité
+      learn_more: Apprendre encore plus
       send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
         ce lien vers votre navigateur pour prendre des photos du recto et du verso
         de votre identifiant.
       switch_back: Revenez sur votre ordinateur pour terminer la vérification de votre
         identité
-      text1: ''
-      text1a: tel qu'un téléphone ou un ordinateur
-      text2: Vous n'aurez pas besoin de la carte avec vous.
-      text3: Il n'est pas nécessaire que vous soyez le titulaire principal de la ligne.
-        Si votre numéro de téléphone ne remplit pas les conditions requises, nous
-        pouvons vous envoyer le code de vérification par courrier dans un délai de
-        3 à 7 jours ouvrables.
-      welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
+      text1: avec votre numéro de sécurité sociale
+      text1a: avec votre téléphone ou votre caméra Web
+      text2: en utilisant un numéro de téléphone ou une adresse postale
+      text3: en ressaisissant votre mot de passe login.gov
+      text4: assurez-vous d'avoir toujours accès
+      welcome: 'Ce que vous devez faire:'
     tips:
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
       document_capture_hint: Doit être un JPG, BMP, PNG ou TIFF

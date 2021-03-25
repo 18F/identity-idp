@@ -7,6 +7,28 @@ feature 'doc auth welcome step' do
     expect(page).to have_current_path(idv_doc_auth_upload_step)
   end
 
+  context 'button is disabled when JS is enabled', :js do
+    before do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_welcome_step
+    end
+
+    it_behaves_like 'ial2 consent with js'
+  end
+
+  context 'button is clickable when JS is disabled' do
+    before do
+      sign_in_and_2fa_user
+      complete_doc_auth_steps_before_welcome_step
+    end
+
+    def expect_doc_auth_first_step
+      expect(page).to have_current_path(idv_doc_auth_welcome_step)
+    end
+
+    it_behaves_like 'ial2 consent without js'
+  end
+
   context 'skipping upload step', :js, driver: :headless_chrome_mobile do
     let(:fake_analytics) { FakeAnalytics.new }
 
@@ -16,11 +38,33 @@ feature 'doc auth welcome step' do
 
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_welcome_step
+      find('label', text: /^By checking this box/).click
       click_continue
     end
 
-    it 'progresses to the agreement screen' do
-      expect(page).to have_current_path(idv_doc_auth_agreement_step)
+    it 'progresses to document capture' do
+      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+    end
+
+    it 'logs analytics for upload step' do
+      log = DocAuthLog.last
+      expect(log.upload_view_count).to eq 1
+      expect(log.upload_view_at).not_to be_nil
+
+      expect(fake_analytics).to have_logged_event(
+        Analytics::DOC_AUTH + ' visited', step: 'upload', step_count: 1
+      )
+      expect(fake_analytics).to have_logged_event(
+        Analytics::DOC_AUTH + ' submitted', step: 'upload', step_count: 2, success: true
+      )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: ' + "#{Analytics::DOC_AUTH} upload visited".downcase, step: 'upload', step_count: 1
+      )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: ' + "#{Analytics::DOC_AUTH} upload submitted".downcase,
+        step: 'upload', step_count: 2, success: true,
+      )
+
     end
   end
 
