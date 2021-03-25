@@ -48,7 +48,6 @@ module Idv
       @throttled = Throttler::IsThrottledElseIncrement.call(
         document_capture_session.user_id,
         :idv_acuant,
-        analytics: @analytics,
       )
     end
 

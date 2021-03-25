@@ -12,10 +12,9 @@ module Idv
 
     validate :throttle_if_rate_limited
 
-    def initialize(params, liveness_checking_enabled:, analytics:)
+    def initialize(params, liveness_checking_enabled:)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
-      @analytics = analytics
     end
 
     def submit
@@ -87,7 +86,6 @@ module Idv
       @throttled = Throttler::IsThrottledElseIncrement.call(
         document_capture_session.user_id,
         :idv_acuant,
-        analytics: @analytics,
       )
     end
 
