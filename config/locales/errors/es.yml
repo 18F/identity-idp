@@ -83,6 +83,8 @@ es:
         en "Reenviar instrucciones de confirmación" para obtener otro.
       expired: ha caducado, por favor solicite uno nuevo
       format_mismatch: Por favor, use el formato solicitado.
+      gpo_otp_expired: Tu código de confirmación ha caducado. Vuelve a solicitar otra
+        carta para recibir un nuevo código.
       improbable_phone: Número de teléfono no válido. Asegúrate de introducir un número
         de teléfono válido.
       invalid_calling_area: No se admiten llamadas a ese número de teléfono. Intenta
@@ -110,8 +112,6 @@ es:
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_nameid_format: Formato de ID de nombre no autorizado
       unauthorized_service_provider: Proveedor de servicio no autorizado
-      gpo_otp_expired: Tu código de confirmación ha caducado. Vuelve a solicitar
-        otra carta para recibir un nuevo código.
       voip_check_error: Se ha producido un error al comprobar su teléfono, por favor,
         inténtelo de nuevo
       voip_phone: Este número corresponde a un servicio de telefonía basado en la

@@ -82,6 +82,8 @@ en:
         confirmation instructions" to get another one.
       expired: has expired, please request a new one
       format_mismatch: Please match the requested format.
+      gpo_otp_expired: Your confirmation code has expired. Please request another
+        letter for a new code.
       improbable_phone: Invalid phone number. Please make sure you enter a valid phone
         number.
       invalid_calling_area: Calls to that phone number are not supported. Please try
@@ -108,8 +110,6 @@ en:
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_nameid_format: Unauthorized nameID format
       unauthorized_service_provider: Unauthorized Service Provider
-      gpo_otp_expired: Your confirmation code has expired. Please request another
-        letter for a new code.
       voip_check_error: There was an error checking your phone, please try again
       voip_phone: This number is a web-based (VOIP) phone service. Please select a
         different number and try again
