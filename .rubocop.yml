@@ -36,6 +36,7 @@ Metrics/BlockLength:
   Max: 25
   ExcludedMethods:
     - 'Struct.new'
+    - 'RedactedStruct.new'
   Exclude:
     - 'Rakefile'
     - '**/*.rake'

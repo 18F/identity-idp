@@ -2,7 +2,7 @@ module Encryption
   class PasswordVerifier
     include ::NewRelic::Agent::MethodTracer
 
-    PasswordDigest = Struct.new(
+    PasswordDigest = RedactedStruct.new(
       :encrypted_password,
       :encryption_key,
       :password_salt,

@@ -1,4 +1,4 @@
-RequestPasswordReset = Struct.new(:email, :request_id) do
+RequestPasswordReset = RedactedStruct.new(:email, :request_id, allowed_members: [:request_id]) do
   def perform
     if user_should_receive_registration_email?
       form = RegisterUserEmailForm.new(password_reset_requested: true)

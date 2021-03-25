@@ -1,23 +1,25 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: c7141277eabf96b011771e6ce5a1169b874cc905
-  tag: v4.1.0
+  revision: da308c1568d7f8f3d8aa41d0e2c0b42ad47dfccd
+  tag: v4.2.0
   specs:
-    aamva (4.1.0)
+    aamva (4.2.0)
       faraday
       hashie
       proofer (>= 2.7.1)
+      redacted_struct (>= 1.0.0)
       retries
       xmldsig
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: 3b2c5997a62d7bf5f6114a55d41180f4bd1ae18e
-  tag: v0.4.1
+  revision: 6e1c9aa766c51fd34064fb91f1289b7edb5735d1
+  branch: v0.5.0
   specs:
-    identity-doc-auth (0.4.1)
+    identity-doc-auth (0.5.0)
       activesupport
       faraday
+      redacted_struct (>= 1.0.0)
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
@@ -41,12 +43,14 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: 0e22ac2518a724b63a928feb68197b203ea47660
-  tag: v3.1.1
+  revision: 005bd6a56ab6101ecb3b5b47d2648ed38b13ffa6
+  tag: v3.2.0
   specs:
-    lexisnexis (3.1.1)
+    lexisnexis (3.2.0)
       activesupport
       faraday
+      proofer
+      redacted_struct (>= 1.0.0)
 
 GIT
   remote: https://github.com/18F/identity-logging.git
@@ -556,6 +560,7 @@ GEM
       redis (>= 3.0, < 5.0)
     recaptcha (5.2.1)
       json
+    redacted_struct (1.1.0)
     redis (4.2.5)
     redis-session-store (0.11.3)
       actionpack (>= 3, < 7)
@@ -824,6 +829,7 @@ DEPENDENCIES
   raise-if-root
   readthis
   recaptcha
+  redacted_struct
   redis-session-store (>= 0.11.3)
   rotp (~> 6.1)
   rqrcode

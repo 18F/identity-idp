@@ -54,7 +54,11 @@ module Encryption
                             encryption_context: encryption_context).ciphertext_blob
     end
 
-    CipherData = Struct.new(:region_client, :resolved_ciphertext)
+    CipherData = RedactedStruct.new(
+      :region_client,
+      :resolved_ciphertext,
+      allowed_members: [:region_client],
+    )
 
     def find_available_region(regions)
       regions.each do |region, cipher|

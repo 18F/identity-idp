@@ -1,6 +1,6 @@
 module Encryption
   class UakPasswordVerifier
-    PasswordDigest = Struct.new(
+    PasswordDigest = RedactedStruct.new(
       :encrypted_password,
       :encryption_key,
       :password_salt,

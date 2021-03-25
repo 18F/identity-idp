@@ -144,16 +144,16 @@ class AccountShow
 
   private
 
-  PiiAccessor = Struct.new(:obfuscated,
-                           :full_name,
-                           :address1,
-                           :address2,
-                           :city,
-                           :state,
-                           :zipcode,
-                           :dob,
-                           :phone,
-                           keyword_init: true)
+  PiiAccessor = RedactedStruct.new(:obfuscated,
+                                   :full_name,
+                                   :address1,
+                                   :address2,
+                                   :city,
+                                   :state,
+                                   :zipcode,
+                                   :dob,
+                                   :phone,
+                                   keyword_init: true)
 
   def obfuscated_pii_accessor
     PiiAccessor.new(

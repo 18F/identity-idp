@@ -1,7 +1,14 @@
 # frozen_string_literal: true
 
 # Used in async document capture flow by LambdaJobs::Runner/Idv::Proofer.document_job_class
-DocumentCaptureSessionAsyncResult = Struct.new(:id, :status, :result, :pii, keyword_init: true) do
+DocumentCaptureSessionAsyncResult = RedactedStruct.new(
+  :id,
+  :status,
+  :result,
+  :pii,
+  keyword_init: true,
+  allowed_members: [:id, :status, :result],
+) do
   self::IN_PROGRESS = 'in_progress'
   self::DONE = 'done'
   self::TIMED_OUT = 'timed_out'
