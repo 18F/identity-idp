@@ -2,7 +2,7 @@ shared_examples 'idv confirmation step' do |sp|
   context 'after choosing to verify by letter' do
     before do
       start_idv_from_sp(sp)
-      complete_idv_steps_with_usps_before_confirmation_step
+      complete_idv_steps_with_gpo_before_confirmation_step
     end
 
     it 'redirects to the come back later url then to the sp or account' do

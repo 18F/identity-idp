@@ -5,7 +5,7 @@ feature 'disabling GPO address verification' do
 
   context 'with GPO address verification disabled' do
     before do
-      allow(AppConfig.env).to receive(:enable_usps_verification).and_return('false')
+      allow(FeatureManagement).to receive(:enable_gpo_verification?).and_return(false)
       # Whether GPO is available affects the routes that are available
       # We want path helpers for unavailable routes to raise and fail the tests
       # so we reload the routes here
@@ -13,7 +13,7 @@ feature 'disabling GPO address verification' do
     end
 
     after do
-      allow(AppConfig.env).to receive(:enable_usps_verification).and_call_original
+      allow(FeatureManagement).to receive(:enable_gpo_verification?).and_call_original
       Rails.application.reload_routes!
     end
 

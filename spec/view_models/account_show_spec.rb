@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe AccountShow do
   describe '#pending_profile_partial' do
-    context 'user needs profile usps verification' do
+    context 'user needs profile gpo verification' do
       it 'returns the accounts/pending_profile_gpo partial' do
         user = User.new.decorate
         allow(user).to receive(:pending_profile_requires_verification?).and_return(true)

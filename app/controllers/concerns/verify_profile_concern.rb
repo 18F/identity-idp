@@ -12,7 +12,7 @@ module VerifyProfileConcern
   def account_or_verify_profile_route
     return 'idv' if session[:ial2_with_no_sp_campaign] && current_user.active_profile.blank?
     return 'account' unless profile_needs_verification?
-    return 'idv_usps' if gpo_mail_bounced?
+    return 'idv_gpo' if gpo_mail_bounced?
     'verify_account'
   end
 

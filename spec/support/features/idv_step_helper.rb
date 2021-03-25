@@ -55,7 +55,7 @@ module IdvStepHelper
   alias complete_idv_steps_before_confirmation_step complete_idv_steps_with_phone_before_confirmation_step
   # rubocop:enable Layout/LineLength
 
-  def complete_idv_steps_with_usps_before_review_step(user = user_with_2fa)
+  def complete_idv_steps_with_gpo_before_review_step(user = user_with_2fa)
     complete_idv_steps_before_gpo_step(user)
     click_on t('idv.buttons.mail.send')
   end
