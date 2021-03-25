@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/18F/identity-aamva-api-client-gem.git
-  revision: 698e6f07728af0cc1de6a7b5785432259c95712d
-  branch: margolis-redacted-struct
+  revision: da308c1568d7f8f3d8aa41d0e2c0b42ad47dfccd
+  tag: v4.2.0
   specs:
     aamva (4.2.0)
       faraday
@@ -13,8 +13,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: c63f68f24e18918d9e3af029b6c3ec6935cee127
-  branch: margolis-redacted-struct
+  revision: 6e1c9aa766c51fd34064fb91f1289b7edb5735d1
+  branch: v0.5.0
   specs:
     identity-doc-auth (0.5.0)
       activesupport
@@ -43,8 +43,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: 47c4ae8f0d4c3e3aad6218ef07a6bf0ebbe8747a
-  tag: margolis-redacted-gem
+  revision: 005bd6a56ab6101ecb3b5b47d2648ed38b13ffa6
+  tag: v3.2.0
   specs:
     lexisnexis (3.2.0)
       activesupport
