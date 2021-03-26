@@ -6,16 +6,16 @@ module Agreements
 
       def call
         partner_accounts = transaction_with_timeout do
-          PartnerAccount
-            .includes(:agency, :partner_account_status)
-            .group_by { |pa| pa.agency.abbreviation }
+          PartnerAccount.
+            includes(:agency, :partner_account_status).
+            group_by { |pa| pa.agency.abbreviation }
         end
 
         partner_accounts.each do |agency_abbr, accounts|
           save_report(
             REPORT_NAME,
             PartnerAccountBlueprint.render(accounts),
-            "#{ENDPOINT_PATH}#{agency_abbr}/"
+            "#{ENDPOINT_PATH}#{agency_abbr}/",
           )
         end
       end
