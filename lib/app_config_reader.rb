@@ -18,7 +18,7 @@ class AppConfigReader
       read_role_configuration,
     )
 
-    if write_copy_to
+    if write_copy_to && !File.exists?(write_copy_to)
       FileUtils.mkdir_p(File.dirname(write_copy_to))
       File.write(write_copy_to, configuration.to_yaml)
       FileUtils.chmod(0o640, write_copy_to)
