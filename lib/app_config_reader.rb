@@ -4,19 +4,27 @@ class AppConfigReader
   def initialize(
     root_path: Rails.root,
     s3_client: nil,
-    logger: Logger.new(STDOUT)
+    logger: Logger.new(STDOUT),
   )
     @root_path = root_path
     @logger = logger
     @s3_client = s3_client
   end
 
-  def read_configuration
-    read_default_configuration.deep_merge(
+  def read_configuration(write_copy_to: nil)
+    configuration = read_default_configuration.deep_merge(
       read_override_configuration,
     ).deep_merge(
       read_role_configuration,
     )
+
+    if write_copy_to
+      FileUtils.mkdir_p(File.dirname(write_copy_to))
+      File.write(write_copy_to, configuration.to_yaml)
+      FileUtils.chmod(0o640, write_copy_to)
+    end
+
+    configuration
   end
 
   private
