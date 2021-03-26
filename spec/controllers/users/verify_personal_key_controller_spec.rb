@@ -43,6 +43,29 @@ describe Users::VerifyPersonalKeyController do
         expect(response).to render_template(:throttled)
       end
     end
+
+    context 'with throttle reached' do
+      let(:profiles) { [create(:profile, deactivation_reason: :password_reset)] }
+
+      before do
+        allow(Throttler::IsThrottled).to receive(:call).once.and_return(true)
+      end
+
+      it 'renders throttled page' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::PERSONAL_KEY_REACTIVATION_VISITED,
+        ).once
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :verify_personal_key,
+        ).once
+
+        get :new
+
+        expect(response).to render_template(:throttled)
+      end
+    end
   end
 
   describe '#create' do
@@ -114,8 +137,8 @@ describe Users::VerifyPersonalKeyController do
           throttle_type: :verify_personal_key,
         ).once
 
-        post :create, params: { personal_key: bad_key }
-        post :create, params: { personal_key: bad_key }
+        max_attempts, = Throttle.config_values(:verify_personal_key)
+        (max_attempts + 1).times { post :create, params: { personal_key: bad_key } }
 
         expect(response).to render_template(:throttled)
       end

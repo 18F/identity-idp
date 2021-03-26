@@ -53,6 +53,27 @@ RSpec.describe Users::VerifyAccountController do
         expect(response).to redirect_to(account_url)
       end
     end
+
+    context 'with throttle reached' do
+      before do
+        allow(Throttler::IsThrottled).to receive(:call).once.and_return(true)
+      end
+
+      it 'renders throttled page' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::ACCOUNT_VERIFICATION_VISITED,
+        ).once
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :verify_gpo_key,
+        ).once
+
+        action
+
+        expect(response).to render_template(:throttled)
+      end
+    end
   end
 
   describe '#create' do

@@ -14,7 +14,7 @@ module Users
       )
 
       if Throttler::IsThrottled.call(current_user.id, :verify_personal_key)
-        render :throttled
+        render_throttled
       else
         render :new
       end
@@ -27,11 +27,7 @@ module Users
       )
 
       if throttled
-        analytics.track_event(
-          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-          throttle_type: :verify_personal_key,
-        )
-        render :throttled
+        render_throttled
       else
         result = personal_key_form.submit
 
@@ -45,6 +41,15 @@ module Users
     end
 
     private
+
+    def render_throttled
+      analytics.track_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :verify_personal_key,
+      )
+
+      render :throttled
+    end
 
     def init_account_reactivation
       return if reactivate_account_session.started?
