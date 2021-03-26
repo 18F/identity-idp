@@ -65,7 +65,7 @@ module Users
     end
 
     def handle_failure(result)
-      flash.now[:error] = result.errors[:personal_key].last
+      flash[:error] = result.errors[:personal_key].last
       redirect_to verify_personal_key_url
     end
 

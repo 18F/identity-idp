@@ -38,6 +38,7 @@ module Users
           flash[:success] = t('account.index.verification.success')
           redirect_to sign_up_completed_url
         else
+          flash[:error] = @verify_account_form.errors.first.message
           redirect_to verify_account_url
         end
       end
