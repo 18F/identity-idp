@@ -101,14 +101,8 @@ password_max_attempts: '3'
 personal_key_retired: 'true'
 phone_format_e164_opt_out_list: '[]'
 pii_lock_timeout_in_minutes: '30'
-pinpoint_sms_application_id:
-pinpoint_sms_credential_role_arn:
-pinpoint_sms_longcode_pool:
-pinpoint_sms_region:
-pinpoint_sms_shortcode:
-pinpoint_voice_credential_role_arn:
-pinpoint_voice_longcode_pool:
-pinpoint_voice_region:
+pinpoint_sms_configs: '[]'
+pinpoint_voice_configs: '[]'
 poll_rate_for_verify_in_seconds: '3'
 proofer_mock_fallback: 'true'
 proofing_send_partial_dob: 'false'
