@@ -41,7 +41,6 @@ en:
       delete: Delete
       disable: Delete
       edit: Edit
-      enable: Add
       manage: Manage
       resend_confirmation: Resend confirmation instructions
       send_security_code: Send code

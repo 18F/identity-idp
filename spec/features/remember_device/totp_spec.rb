@@ -48,7 +48,7 @@ describe 'Remembering a TOTP device' do
       page.find('.remove-auth-app').click # Delete
       click_on t('account.index.totp_confirm_delete')
       Timecop.travel 5.seconds.from_now # Travel past the revoked at date from disabling the device
-      click_link "+ #{t('forms.buttons.enable')}", href: authenticator_setup_url
+      click_link "+ #{t('account.index.auth_app_add')}", href: authenticator_setup_url
       fill_in :code, with: totp_secret_from_page
       check :remember_device
       click_submit_default
