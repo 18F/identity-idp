@@ -11,26 +11,16 @@ module Deploy
     def initialize(
       logger: default_logger,
       s3_client: nil,
-      root: nil,
-      example_application_yaml_path: nil
+      root: nil
     )
       @logger = logger
       @s3_client = s3_client
       @root = root
-      @example_application_yaml_path = example_application_yaml_path
     end
 
     def run
       clone_idp_config
       setup_idp_config_symlinks
-
-      app_secrets_s3.download_file(
-        s3_path: '/%<env>s/idp/v1/application.yml',
-        local_path: env_yaml_path,
-      )
-      download_web_or_worker_yml_if_exists
-      deep_merge_s3_data_with_example_application_yml
-      set_proper_file_permissions_for_application_yml
 
       download_from_secrets_s3_unless_exists(
         s3_path: '/common/GeoIP2-City.mmdb',
@@ -100,30 +90,6 @@ module Deploy
       File.symlink(dest, link)
     end
 
-    def deep_merge_s3_data_with_example_application_yml
-      File.open(result_yaml_path, 'w') { |file| file.puts YAML.dump(application_config) }
-    end
-
-    def download_web_or_worker_yml_if_exists
-      return unless web_or_worker_yml
-
-      app_secrets_s3.download_file(
-        s3_path: "/%<env>s/idp/v1/#{web_or_worker_yml}",
-        local_path: web_or_worker_yaml_path,
-      )
-    rescue Aws::S3::Errors::NoSuchKey => err
-      logger.warn("did not load #{web_or_worker_yml}, continuing")
-    end
-
-    def set_proper_file_permissions_for_application_yml
-      FileUtils.chmod(0o640, [env_yaml_path, result_yaml_path])
-    end
-
-    def download_from_s3_and_update_permissions(src, dest)
-      download_file(src, dest)
-      update_file_permissions(dest)
-    end
-
     def download_from_secrets_s3_unless_exists(s3_path:, local_path:)
       return if File.exist?(local_path)
       secrets_s3.download_file(
@@ -132,20 +98,12 @@ module Deploy
       )
     end
 
-    def app_secrets_s3
-      @app_secrets_s3 ||= Identity::Hostdata.app_secrets_s3(s3_client: s3_client, logger: logger)
-    end
-
     def secrets_s3
       @secrets_s3 ||= Identity::Hostdata.secrets_s3(s3_client: s3_client, logger: logger)
     end
 
     def ec2_data
       @ec2_data ||= Identity::Hostdata::EC2.load
-    end
-
-    def update_file_permissions(path)
-      FileUtils.chmod(0o644, path)
     end
 
     def default_logger
@@ -158,49 +116,12 @@ module Deploy
       @root || File.expand_path('../../../', __FILE__)
     end
 
-    def application_config
-      config = YAML.load_file(example_application_yaml_path).
-        deep_merge(YAML.load_file(env_yaml_path))
-
-      if web_or_worker_yml && File.exist?(web_or_worker_yaml_path)
-        config.deep_merge(YAML.load_file(web_or_worker_yaml_path))
-      else
-        config
-      end
-    end
-
-    def example_application_yaml_path
-      @example_application_yaml_path || File.join(root, 'config/application.yml.default')
-    end
-
-    def env_yaml_path
-      File.join(root, 'config/application_s3_env.yml')
-    end
-
-    def result_yaml_path
-      File.join(root, 'config/application.yml')
-    end
-
     def geolocation_db_path
       File.join(root, 'geo_data/GeoLite2-City.mmdb')
     end
 
     def pwned_passwords_path
       File.join(root, 'pwned_passwords/pwned_passwords.txt')
-    end
-
-    def web_or_worker_yaml_path
-      File.join(root, "config/#{web_or_worker_yml}")
-    end
-
-    # @return [String, nil]
-    def web_or_worker_yml
-      case Identity::Hostdata.instance_role
-      when 'idp'
-        'web.yml'
-      when 'worker'
-        'worker.yml'
-      end
     end
   end
 end

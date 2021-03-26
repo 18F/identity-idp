@@ -3,7 +3,6 @@ require Rails.root.join('lib', 'deploy', 'activate.rb')
 
 describe Deploy::Activate do
   let(:root) { @root }
-  let(:example_application_yaml_path) { Rails.root.join('config', 'application.yml.default') }
 
   around(:each) do |ex|
     Identity::Hostdata.reset!
@@ -29,7 +28,6 @@ describe Deploy::Activate do
       logger: logger,
       s3_client: s3_client,
       root: root,
-      example_application_yaml_path: example_application_yaml_path,
     )
   end
 
