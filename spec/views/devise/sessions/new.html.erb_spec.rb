@@ -18,6 +18,12 @@ describe 'devise/sessions/new.html.erb' do
     expect(rendered).to match(/<form[^>]*autocomplete="off"/)
   end
 
+  it 'sets input autocorrect to off' do
+    render
+
+    expect(rendered).to have_xpath("//input[@autocorrect='off']")
+  end
+
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('titles.visitors.index'))
 

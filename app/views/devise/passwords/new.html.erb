@@ -14,7 +14,10 @@
 <%= validated_form_for(@password_reset_email_form,
                        url: user_password_path,
                        html: { autocomplete: 'off', method: :post, role: 'form' }) do |f| %>
-  <%= f.input :email, required: true, input_html: { aria: { invalid: false, describedby: 'email-description' } } %>
+  <%= f.input :email,
+              required: true,
+              input_html: { autocorrect: 'off',
+                            aria: { invalid: false, describedby: 'email-description' } } %>
   <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
   <%= render 'shared/recaptcha' %>
   <%= f.button :submit, t('forms.buttons.continue'), class: 'margin-top-2' %>
