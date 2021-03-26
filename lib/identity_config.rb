@@ -44,6 +44,19 @@ class IdentityConfig
 
   def self.build_store(config_map)
     config = IdentityConfig.new(config_map)
-    @store = Struct.new('IdentityConfig', *config.keys, keyword_init: true).new(**config)
+    config.add(:aamva_sp_banlist_issuers, type: :json)
+    config.add(:attribute_encryption_key_queue, type: :json)
+    config.add(:aws_kms_regions, type: :json)
+    config.add(:deleted_user_accounts_report_configs, type: :json)
+    config.add(:hmac_fingerprinter_key_queue, type: :json)
+    config.add(:no_sp_campaigns_whitelist, type: :json)
+    config.add(:nonessential_email_banlist, type: :json)
+    config.add(:recurring_jobs_disabled_names, type: :json)
+    config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
+    config.add(:skip_encryption_allowed_list, type: :json)
+    config.add(:sps_over_quota_limit_notify_email_list, type: :json)
+    final_env = config.add(:valid_authn_contexts, type: :json)
+
+    @store = Struct.new('IdentityConfig', *final_env.keys, keyword_init: true).new(**final_env)
   end
 end

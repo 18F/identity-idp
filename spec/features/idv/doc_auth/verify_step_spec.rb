@@ -199,7 +199,7 @@ feature 'doc auth verify step' do
         success: true, errors: {}, context: { stages: [] },
       )
 
-      allow(AppConfig.env).to receive(:aamva_sp_banlist_issuers).
+      allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
         and_return('["urn:gov:gsa:openidconnect:sp:server"]')
 
       visit_idp_from_sp_with_ial1(:oidc)
