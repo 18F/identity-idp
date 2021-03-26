@@ -55,6 +55,6 @@ class AppConfigReader
   end
 
   def app_secrets_s3
-    @app_secrets_s3 ||= Identity::Hostdata.app_secrets_s3(s3_client: s3_client, logger: logger)
+    @app_secrets_s3 ||= Identity::Hostdata.app_secrets_s3
   end
 end
