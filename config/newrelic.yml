@@ -13,7 +13,7 @@ production:
   error_collector:
     enabled: true
     capture_source: true
-    ignore_errors: "ActionController::RoutingError,ActionController::BadRequest"
+    ignore_errors: "ActionController::RoutingError,ActionController::BadRequest,ActionDispatch::Http::MimeNegotiation::InvalidType"
   license_key: <%= AppConfig.env.newrelic_license_key %>
   log_level: info
   monitor_mode: true
