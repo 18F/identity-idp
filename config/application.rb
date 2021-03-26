@@ -8,6 +8,7 @@ require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 require 'identity/logging/railtie'
 
+require_relative '../lib/app_config_reader'
 require_relative '../lib/app_config'
 require_relative '../lib/fingerprinter'
 
@@ -17,7 +18,11 @@ APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
-    AppConfig.setup(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))))
+    configuration = AppConfigReader.new.read_configuration(
+      write_copy_to: Rails.root.join('tmp', 'application.yml'),
+    )
+
+    AppConfig.setup(configuration)
 
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false

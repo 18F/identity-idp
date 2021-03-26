@@ -5,8 +5,8 @@ class AppConfig
     attr_reader :env
   end
 
-  def self.setup(path, env = Rails.env)
-    @env ||= Environment.new(path, env)
+  def self.setup(configuration, env = Rails.env)
+    @env ||= Environment.new(configuration, env)
   end
 
   def self.require_keys(keys)
