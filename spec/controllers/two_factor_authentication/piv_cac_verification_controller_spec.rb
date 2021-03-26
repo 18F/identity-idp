@@ -179,7 +179,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
         submit_attributes = {
           success: false,
-          errors: {},
+          errors: { type: 'user.piv_cac_mismatch' },
           context: 'authentication',
           multi_factor_auth_method: 'piv_cac',
           key_id: nil,
