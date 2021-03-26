@@ -4,7 +4,7 @@ class AppConfigReader
   def initialize(
     root_path: Rails.root,
     s3_client: nil,
-    logger: Logger.new(STDOUT),
+    logger: Logger.new(STDOUT)
   )
     @root_path = root_path
     @logger = logger
