@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/passwords/new.html.erb' do
+describe 'sign_up/registrations/new.html.erb' do
   let(:sp) do
     build_stubbed(
       :service_provider,
@@ -9,14 +9,15 @@ describe 'devise/passwords/new.html.erb' do
     )
   end
   before do
-    @password_reset_email_form = PasswordResetEmailForm.new('')
+    allow(view).to receive(:current_user).and_return(nil)
+    @register_user_email_form = RegisterUserEmailForm.new()
     view_context = ActionController::Base.new.view_context
     allow(view_context).to receive(:new_user_session_url).
       and_return('https://www.example.com/')
     allow(view_context).to receive(:sign_up_email_path).
       and_return('/sign_up/enter_email')
-    allow_any_instance_of(ActionController::TestRequest).to receive(:path).
-      and_return('/users/password/new')
+    allow_any_instance_of(ActionView::Base).to receive(:request_id).
+      and_return(nil)
 
     @decorated_session = DecoratedSession.new(
       sp: sp,
@@ -28,7 +29,7 @@ describe 'devise/passwords/new.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('titles.passwords.forgot'))
+    expect(view).to receive(:title).with(t('titles.registrations.new'))
 
     render
   end
@@ -36,7 +37,7 @@ describe 'devise/passwords/new.html.erb' do
   it 'has a localized header' do
     render
 
-    expect(rendered).to have_selector('h1', text: t('headings.passwords.forgot'))
+    expect(rendered).to have_selector('h1', text: t('headings.registrations.enter_email'))
   end
 
   it 'sets form autocomplete to off' do
@@ -57,31 +58,6 @@ describe 'devise/passwords/new.html.erb' do
     expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_url)
   end
 
-  it 'has sp alert for certain service providers' do
-    render
-
-    expect(rendered).to have_selector(
-      '.usa-alert',
-      text: 'custom forgot password help text for Awesome Application!',
-    )
-  end
-
-  context 'service provider does not have custom help text' do
-    let(:sp) do
-      build_stubbed(
-        :service_provider_without_help_text,
-        friendly_name: 'Awesome Application!',
-        return_to_sp_url: 'www.awesomeness.com',
-      )
-    end
-
-    it 'does not have an sp alert for service providers without alert messages' do
-      render
-
-      expect(rendered).to_not have_selector('.usa-alert')
-    end
-  end
-
   it 'does not render a recaptcha with recaptcha disabled' do
     allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(false)
     render
@@ -94,5 +70,22 @@ describe 'devise/passwords/new.html.erb' do
     render
 
     expect(rendered).to have_selector('#recaptcha')
+  end
+
+  it 'includes a link to security / privacy page and privacy statement act' do
+    render
+
+    expect(rendered).
+      to have_link(t('notices.privacy.security_and_privacy_practices'),
+                   href: MarketingSite.security_and_privacy_practices_url)
+    expect(rendered).
+      to have_selector("a[href='#{MarketingSite.security_and_privacy_practices_url}']\
+[target='_blank'][rel='noopener noreferrer']")
+
+    expect(rendered).
+      to have_link(t('notices.privacy.privacy_act_statement'),
+                   href: MarketingSite.privacy_act_statement_url)
+    expect(rendered).to have_selector("a[href='#{MarketingSite.privacy_act_statement_url}']\
+[target='_blank'][rel='noopener noreferrer']")
   end
 end
