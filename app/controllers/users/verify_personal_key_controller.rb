@@ -66,7 +66,7 @@ module Users
 
     def handle_failure(result)
       flash.now[:error] = result.errors[:personal_key].last
-      render :new
+      redirect_to verify_personal_key_url
     end
 
     def personal_key_form

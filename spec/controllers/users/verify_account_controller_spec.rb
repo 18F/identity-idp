@@ -106,7 +106,7 @@ RSpec.describe Users::VerifyAccountController do
     context 'with an invalid form' do
       let(:submitted_otp) { 'the-wrong-otp' }
 
-      it 'renders the index page to show errors' do
+      it 'redirects to the index page to show errors' do
         expect(@analytics).to receive(:track_event).with(
           Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
           success: false, errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
@@ -114,7 +114,7 @@ RSpec.describe Users::VerifyAccountController do
 
         action
 
-        expect(response).to render_template('users/verify_account/index')
+        expect(response).to redirect_to(verify_account_url)
       end
     end
 

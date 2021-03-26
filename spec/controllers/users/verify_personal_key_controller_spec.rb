@@ -112,8 +112,8 @@ describe Users::VerifyPersonalKeyController do
         expect(flash[:error]).to eq(error_text)
       end
 
-      it 'renders the new template' do
-        expect(response).to render_template(:new)
+      it 'redirects to form' do
+        expect(response).to redirect_to(verify_personal_key_url)
       end
     end
 

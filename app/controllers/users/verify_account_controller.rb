@@ -38,7 +38,7 @@ module Users
           flash[:success] = t('account.index.verification.success')
           redirect_to sign_up_completed_url
         else
-          render :index
+          redirect_to verify_account_url
         end
       end
     end
