@@ -2,9 +2,13 @@ class AppConfigReader
   attr_accessor :root_path
 
   def initialize(
-    root_path: Rails.root
+    root_path: Rails.root,
+    s3_client: nil,
+    logger: Logger.new(STDOUT)
   )
     @root_path = root_path
+    @logger = logger
+    @s3_client = s3_client
   end
 
   def read_configuration
@@ -55,6 +59,6 @@ class AppConfigReader
   end
 
   def app_secrets_s3
-    @app_secrets_s3 ||= Identity::Hostdata.app_secrets_s3
+    @app_secrets_s3 ||= Identity::Hostdata.app_secrets_s3(logger: @logger, s3_client: @s3_client)
   end
 end
