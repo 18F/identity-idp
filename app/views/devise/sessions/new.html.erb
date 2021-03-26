@@ -24,7 +24,9 @@
   <%= f.input :email,
               label: t('account.index.email'),
               required: true,
-              input_html: { class: 'margin-bottom-6', aria: { invalid: false } } %>
+              input_html: { class: 'margin-bottom-6',
+                            autocorrect: 'off',
+                            aria: { invalid: false } } %>
   <%= f.input :password,
               label: t('account.index.password'),
               required: true,
