@@ -21,6 +21,7 @@ module Upaya
     configuration = AppConfigReader.new.read_configuration
 
     # Write a copy of the current config for inspection on the instance
+    FileUtils.mkdir_p(Rails.root.join('tmp'))
     File.write(Rails.root.join('tmp', 'application.yml'), configuration.to_yaml)
     FileUtils.chmod(0o640, Rails.root.join('tmp', 'application.yml'))
 
