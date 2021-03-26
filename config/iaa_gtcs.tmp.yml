@@ -1,0 +1,16 @@
+production:
+  LGDHSFOOFY190002:
+    mod_number: 1
+    start_date: "2018-02-05"
+    end_date: "2023-02-04"
+    estimated_amount: 2_121_412
+    iaa_status: active
+    partner_account: DHS-FOO
+
+  LGDODBARFY200002:
+    mod_number: 0
+    start_date: "2019-05-24"
+    end_date: "2024-05-23"
+    estimated_amount: 3_141_231
+    iaa_status: active
+    partner_account: DOD-BAR

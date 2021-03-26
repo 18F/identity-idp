@@ -1,0 +1,30 @@
+production:
+  "LGDHSFOOFY190002 Order 4":
+    iaa_gtc: LGDHSFOOFY190002
+    order_number: 4
+    mod_number: 0
+    start_date: "2021-02-05"
+    end_date: "2022-02-04"
+    estimated_amount: 350_000
+    pricing_model: 3
+    iaa_status: active
+    approved_apps:
+      - "Friendly Government Agency"
+      - "Dashboard"
+    integrations:
+      - "service:provider:one"
+      - "service:provider:three"
+
+  "LGDODBARFY200002 Order 2":
+    iaa_gtc: LGDODBARFY200002
+    order_number: 2
+    mod_number: 1
+    start_date: "2020-05-24"
+    end_date: "2021-05-23"
+    estimated_amount: 523_231
+    pricing_model: 3
+    iaa_status: active
+    approved_apps:
+      - "Test SP"
+    integrations:
+      - "service:provider:two"

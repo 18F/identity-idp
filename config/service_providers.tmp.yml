@@ -1,0 +1,51 @@
+production:
+  'service:provider:one':
+    acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+    sp_initiated_login_url: 'http://localhost:3000/test/saml'
+    block_encryption: 'none'
+    cert: 'saml_test_sp'
+    agency: 'Department of Homeland Security'
+    agency_id: 1
+    uuid_priority: 10
+    friendly_name: 'Your friendly Government Agency'
+    logo: 'generic.svg'
+    return_to_sp_url: 'http://localhost:3000'
+    redirect_uris:
+      - 'x-example-app://idp_return'
+    attribute_bundle:
+      - email
+      - phone
+
+  'service:provider:two':
+    agency_id: 8
+    agency: 'Department of Defense'
+    acs_url: 'http://example.com/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+    block_encryption: 'aes256-cbc'
+    sp_initiated_login_url: 'https://example.com/auth/saml/login'
+    failure_to_proof_url: 'https://example.com/'
+    friendly_name: 'Test SP'
+    cert: 'saml_test_sp'
+    protocol: 'saml'
+    logo: 'generic.svg'
+    ial: 2
+    attribute_bundle:
+      - first_name
+      - last_name
+      - ssn
+      - zipcode
+
+  'service:provider:three':
+    friendly_name: 'Dashboard'
+    agency: 'Department of Homeland Security'
+    agency_id: 1
+    uuid_priority: 30
+    logo: '18f.svg'
+    cert: 'identity_dashboard_cert'
+    protocol: 'oidc'
+    return_to_sp_url: 'https://example.com/'
+    redirect_uris:
+      - 'https://example.com/auth/logindotgov/callback'
+      - 'https://example.com/users/result'
+      - 'https://example.com'

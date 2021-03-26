@@ -1,0 +1,31 @@
+production:
+  20:
+    name: Library of Congress
+    abbreviation: LOC
+  23:
+    name: Judicial Branch
+    abbreviation: Judicial
+  11:
+    name: Department of Agriculture
+    abbreviation: USDA
+  24:
+    name: Department of Commerce
+    abbreviation: DOC
+  8:
+    name: Department of Defense
+    abbreviation: DOD
+  25:
+    name: Department of Education
+    abbreviation: ED
+  10:
+    name: Department of Energy
+    abbreviation: DOE
+  26:
+    name: Department of Justice
+    abbreviation: DOJ
+  19:
+    name: Department of Health and Human Services
+    abbreviation: HHS
+  1:
+    name: Department of Homeland Security
+    abbreviation: DHS

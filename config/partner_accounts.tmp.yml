@@ -1,0 +1,18 @@
+production:
+  DHS-FOO:
+    name: "Federal Office of Operations"
+    agency: DHS
+    partner_account_status: active
+    crm_id: 12345
+    became_partner: "2018-02-05"
+    contacts:
+      - "hello@dhs.gov"
+
+  DOD-BAR:
+    name: "Bureau of Awesome Research"
+    agency: DOD
+    partner_account_status: active
+    crm_id: 23456
+    became_partner: "2019-05-24"
+    contacts:
+      - "person@dod.mil"

@@ -61,7 +61,8 @@ module Deploy
 
       files_to_link.each do |file|
         symlink_verbose(
-          File.join(root, idp_config_checkout_name, "#{file}.yml"),
+          # File.join(root, idp_config_checkout_name, "#{file}.yml"),
+          File.join(root, "config/#{file}.tmp.yml"),
           File.join(root, "config/#{file}.yml"),
         )
       end

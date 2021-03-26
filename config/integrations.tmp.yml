@@ -1,0 +1,24 @@
+production:
+  "service:provider:one":
+    partner_account: DHS-FOO
+    name: "Your friendly Government Agency"
+    dashboard_identifier: 123
+    integration_status: "integration live"
+    contacts:
+      - "contact1@dhs.gov"
+
+  "service:provider:three":
+    partner_account: DHS-FOO
+    name: "Dashboard"
+    dashboard_identifier: 142
+    integration_status: "integration live"
+    contacts:
+      - "contact2@dhs.gov"
+
+  "service:provider:two":
+    partner_account: DOD-BAR
+    name: "Test SP"
+    dashboard_identifier: 612
+    integration_status: "integration live"
+    contacts:
+      - "developer@dod.mil"

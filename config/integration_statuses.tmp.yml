@@ -1,0 +1,9 @@
+production:
+  step1:
+    order: 0
+    partner_name: pending
+  step2:
+    order: 100
+    partner_name: pending
+  "integration live":
+    order: 200
