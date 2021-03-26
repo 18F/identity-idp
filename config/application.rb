@@ -19,6 +19,11 @@ APP_NAME = 'login.gov'.freeze
 module Upaya
   class Application < Rails::Application
     configuration = AppConfigReader.new.read_configuration
+
+    # Write a copy of the current config for inspection on the instance
+    File.write(Rails.root.join('tmp', 'application.yml'), configuration)
+    FileUtils.chmod(0o640, Rails.root.join('tmp', 'application.yml'))
+
     AppConfig.setup(configuration)
 
     config.load_defaults '6.1'
