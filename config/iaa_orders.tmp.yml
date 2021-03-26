@@ -1,4 +1,20 @@
 production:
+  "LGDHSFOOFY190002 Order 3":
+    iaa_gtc: LGDHSFOOFY190002
+    order_number: 3
+    mod_number: 1
+    start_date: "2020-02-05"
+    end_date: "2021-02-04"
+    estimated_amount: 247_823.25
+    pricing_model: 3
+    iaa_status: expired
+    approved_apps:
+      - "Friendly Government Agency"
+      - "Dashboard"
+    integrations:
+      - "service:provider:one"
+      - "service:provider:three"
+
   "LGDHSFOOFY190002 Order 4":
     iaa_gtc: LGDHSFOOFY190002
     order_number: 4

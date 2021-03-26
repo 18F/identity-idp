@@ -7,3 +7,5 @@ production:
     partner_name: pending
   active:
     order: 200
+  expired:
+    order: 300

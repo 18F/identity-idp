@@ -193,8 +193,16 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
 
 # Send Daily Partner Accounts report to S3
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
-  name: 'Daily Partner Accounts report',
+  name: 'Daily Agency Partner Accounts report',
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
-  callback: -> { Agreements::Reports::PartnerAccountsReport.new.call },
+  callback: -> { Agreements::Reports::AgencyPartnerAccountsReport.new.call },
+)
+
+# Send Daily Agreements report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'Daily Agency Agreements report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Agreements::Reports::AgencyAgreementsReport.new.call },
 )

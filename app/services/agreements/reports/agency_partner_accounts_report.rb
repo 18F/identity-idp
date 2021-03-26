@@ -1,6 +1,6 @@
 module Agreements
   module Reports
-    class PartnerAccountsReport < BaseReport
+    class AgencyPartnerAccountsReport < BaseReport
       REPORT_NAME = 'partner_accounts'
       ENDPOINT_PATH = 'agencies/'
 
