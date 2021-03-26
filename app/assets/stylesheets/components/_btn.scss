@@ -96,18 +96,23 @@
   cursor: not-allowed;
 }
 
-.btn-account-action {
+.account-action-button {
+  @include u-radius('lg');
+  background-color: color('primary-lighter');
   border: 0;
   color: $blue;
+  display: inline-block;
   font-size: .8125rem;
   font-weight: normal;
+  line-height: 1.375rem;
   margin-bottom: -3px;
   margin-top: -3px;
   padding: .5rem;
   padding-bottom: .125rem;
   padding-top: .125rem;
 
-  a {
+  &,
+  &:hover {
     text-decoration: none;
   }
 }
