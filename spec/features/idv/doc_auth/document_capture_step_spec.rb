@@ -271,11 +271,8 @@ feature 'doc auth document capture step' do
 
   context 'when using async uploads', :js do
     before do
-      allow(LambdaJobs::Runner).to receive(:new).
-        with(hash_including(job_class: Idv::Proofer.document_job_class)).
+      allow(DocumentProofingJob).to receive(:perform_later).
         and_call_original
-      allow(AppConfig.env).to receive(:ruby_workers_enabled).
-        and_return('false')
     end
 
     it 'proceeds to the next page with valid info' do
@@ -309,7 +306,12 @@ feature 'doc auth document capture step' do
       click_on 'Submit'
 
       expect(page).to have_current_path(next_step, wait: 20)
-      expect(LambdaJobs::Runner).to have_received(:new) do |args:, **|
+      expect(DocumentProofingJob).to have_received(:perform_later) do |encrypted_arguments:, **|
+        args = JSON.parse(
+          Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
+          symbolize_names: true,
+        )[:document_arguments]
+
         original = File.read('app/assets/images/logo.png')
 
         encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
