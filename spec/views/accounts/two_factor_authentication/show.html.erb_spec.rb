@@ -18,7 +18,7 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
     it 'contains link to enable TOTP' do
       render
 
-      expect(rendered).to have_link(t('forms.buttons.enable'), href: authenticator_setup_url)
+      expect(rendered).to have_link(t('account.index.auth_app_add'), href: authenticator_setup_url)
       expect(rendered).not_to have_xpath("//input[@value='Disable']")
     end
   end
@@ -38,7 +38,10 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
       render
 
       expect(rendered).to have_link(t('forms.buttons.disable', href: auth_app_delete_path))
-      expect(rendered).not_to have_link(t('forms.buttons.enable'), href: authenticator_start_path)
+      expect(rendered).not_to have_link(
+        t('account.index.auth_app_add'),
+        href: authenticator_start_path,
+      )
     end
   end
 

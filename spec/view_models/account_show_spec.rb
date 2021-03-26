@@ -27,43 +27,6 @@ describe AccountShow do
     end
   end
 
-  describe '#totp_partial' do
-    context 'user has enabled an authenticator app' do
-      it 'returns the disable_totp partial' do
-        user = User.new
-        allow_any_instance_of(
-          TwoFactorAuthentication::AuthAppPolicy,
-        ).to receive(:enabled?).and_return(true)
-        allow_any_instance_of(
-          MfaPolicy,
-        ).to receive(:multiple_factors_enabled?).and_return(true)
-
-        profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
-          locked_for_session: false
-        )
-
-        expect(profile_index.totp_partial).to eq 'accounts/actions/disable_totp'
-      end
-    end
-
-    context 'user does not have an authenticator app enabled' do
-      it 'returns the enable_totp partial' do
-        user = User.new
-        allow_any_instance_of(
-          TwoFactorAuthentication::AuthAppPolicy,
-        ).to receive(:enabled?).and_return(false)
-
-        profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user.decorate,
-          locked_for_session: false
-        )
-
-        expect(profile_index.totp_partial).to eq 'accounts/actions/enable_totp'
-      end
-    end
-  end
-
   describe '#header_personalization' do
     context 'AccountShow instance has decrypted_pii' do
       it "returns the user's first name" do

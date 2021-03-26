@@ -23,7 +23,7 @@
           </div>
         </div>
         <div class="grid-col-4 right-align">
-          <%= render @view_model.totp_partial, id: auth_app_configuration.id %>
+          <%= render 'accounts/actions/disable_totp', id: auth_app_configuration.id %>
         </div>
       </div>
     <% end %>

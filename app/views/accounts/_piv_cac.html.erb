@@ -23,7 +23,7 @@
           </div>
         </div>
         <div class="grid-col-4 right-align">
-          <%= render @view_model.piv_cac_partial, id: piv_cac_configuration.id %>
+          <%= render 'accounts/actions/disable_piv_cac', id: piv_cac_configuration.id %>
         </div>
       </div>
     <% end %>
