@@ -132,7 +132,6 @@ class Analytics
   IDV_GPO_ADDRESS_VISITED = 'IdV: USPS address visited'.freeze
   IDV_VERIFICATION_ATTEMPT_CANCELLED = 'IdV: verification attempt cancelled'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
-  IN_PERSON_PROOFING = 'In Person Proofing'.freeze # visited or submitted is appended
   LAMBDA_RESULT_RESOLUTION_PROOF_RESULT = 'Lambda Resolution Proof Result Received'.freeze
   LAMBDA_RESULT_ADDRESS_PROOF_RESULT = 'Lambda Address Proof Result Received'.freeze
   LAMBDA_RESULT_DOCUMENT_PROOF_RESULT = 'Lambda Document Proof Result Received'.freeze

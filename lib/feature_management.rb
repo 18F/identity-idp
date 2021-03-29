@@ -95,10 +95,6 @@ class FeatureManagement
     AppConfig.env.backup_codes_as_only_2fa == 'true'
   end
 
-  def self.in_person_proofing_enabled?
-    AppConfig.env.in_person_proofing_enabled == 'true'
-  end
-
   def self.gpo_upload_enabled?
     # leaving the usps name for backwards compatibility
     AppConfig.env.usps_upload_enabled == 'true'
