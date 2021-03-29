@@ -15,6 +15,7 @@ class NullServiceProvider
     attribute_bundle
     block_encryption
     cert
+    certs
     created_at
     default_aal
     description

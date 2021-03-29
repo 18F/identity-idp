@@ -2,7 +2,7 @@ require 'fingerprinter'
 require 'identity_validations'
 
 class ServiceProvider < ApplicationRecord
-  self.ignored_columns = %w[deal_id agency aal]
+  self.ignored_columns = %w[deal_id agency aal fingerprint]
 
   belongs_to :agency
 
@@ -27,7 +27,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def metadata
-    attributes.symbolize_keys.merge(fingerprint: fingerprint)
+    attributes.symbolize_keys
   end
 
   # @return [Array<OpenSSL::X509::Certificate>]

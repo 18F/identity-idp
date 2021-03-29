@@ -87,7 +87,7 @@ class SecurityEventForm
   end
 
   def check_public_key_error(public_key)
-    return false if public_key.present?
+    return false if service_provider&.ssl_certs.present?
 
     errors.add(:jwt, t('risc.security_event.errors.no_public_key'))
     @error_code = ErrorCodes::JWS
@@ -95,17 +95,29 @@ class SecurityEventForm
   end
 
   def validate_jwt
-    public_key = service_provider&.ssl_cert&.public_key
     return if check_jwt_parse_error
-    return if check_public_key_error(public_key)
 
-    JWT.decode(body, public_key, true, algorithm: 'RS256', leeway: Float::INFINITY)
-  rescue JWT::IncorrectAlgorithm
-    @error_code = ErrorCodes::JWT_CRYPTO
-    errors.add(:jwt, t('risc.security_event.errors.alg_unsupported', expected_alg: 'RS256'))
-  rescue JWT::VerificationError => err
-    @error_code = ErrorCodes::JWS
-    errors.add(:jwt, err.message)
+    error_code = nil
+    error_message = nil
+
+    matching_public_key = service_provider&.ssl_certs&.find do |ssl_cert|
+      error_code = nil
+      error_message = nil
+      JWT.decode(body, ssl_cert.public_key, true, algorithm: 'RS256', leeway: Float::INFINITY)
+    rescue JWT::IncorrectAlgorithm
+      error_code = ErrorCodes::JWT_CRYPTO
+      error_message = t('risc.security_event.errors.alg_unsupported', expected_alg: 'RS256')
+    rescue JWT::VerificationError => err
+      error_code = ErrorCodes::JWS
+      error_message = err.message
+    rescue JWT::DecodeError
+      next
+    end
+
+    @error_code = error_code if error_code
+    errors.add(:jwt, error_message) if error_message
+
+    return if check_public_key_error(matching_public_key)
   end
 
   def validate_jti

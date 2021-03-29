@@ -165,12 +165,19 @@ module SamlIdpAuthConcern
     return @matching_cert if defined?(@matching_cert)
 
     @matching_cert = current_service_provider.ssl_certs.find do |ssl_cert|
+      fingerprint = Fingerprinter.fingerprint_cert(ssl_cert)
+
       saml_request = SamlIdp::Request.from_deflated_request(
         params[:SAMLRequest],
         get_params: params,
         cert: ssl_cert,
-        fingerprint: Fingerprinter.fingerprint_cert(ssl_cert),
-      ).valid_signature?
+        fingerprint: fingerprint,
+      )
+      if saml_request&.service_provider
+        # Plumb the fingerprint through to the internal service_provider representation
+        saml_request.service_provider.fingerprint = fingerprint
+        saml_request.valid_signature?
+      end
     end
   end
 
@@ -179,10 +186,13 @@ module SamlIdpAuthConcern
     if query_params[:skip_encryption].present? && current_service_provider.skip_encryption_allowed
       nil
     elsif current_service_provider.encrypt_responses?
+      cert = matching_cert || current_service_provider.certs.first
+
       {
-        cert: matching_cert || current_service_provider.certs.first,
+        cert: cert,
         block_encryption: current_service_provider.block_encryption,
         key_transport: 'rsa-oaep-mgf1p',
+        fingerprint: Fingerprinter.fingerprint_cert(cert),
       }
     end
   end
@@ -200,7 +210,7 @@ module SamlIdpAuthConcern
   end
 
   def current_issuer
-    @_issuer ||= saml_request.service_provider.identifier
+    @_issuer ||= saml_request.service_provider&.identifier
   end
 
   def request_url

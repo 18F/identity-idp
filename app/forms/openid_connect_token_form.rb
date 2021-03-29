@@ -124,7 +124,8 @@ class OpenidConnectTokenForm
       validate_aud_claim(payload)
       validate_iat(payload)
     else
-      errors.add(:client_assertion, err&.message || 'signature did not match')
+      errors.add(:client_assertion,
+                 err&.message || t('openid_connect.token.errors.invalid_signature'))
     end
   end
 
