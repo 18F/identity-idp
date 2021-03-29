@@ -13,7 +13,7 @@ import AnalyticsContext from './analytics';
 /**
  * @typedef {1|2|400|401|403} AcuantInitializeCode Acuant initialization callback code.
  *
- * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.4/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1327-1353
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.4/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1327-L1353
  */
 
 /**
