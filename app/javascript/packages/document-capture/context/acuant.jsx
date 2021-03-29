@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo, useEffect, useState } from 'react';
 import DeviceContext from './device';
+import AnalyticsContext from './analytics';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -10,14 +11,24 @@ import DeviceContext from './device';
  */
 
 /**
- * @typedef AcuantCallbackOptions
+ * @typedef {1|2|400|401|403} AcuantInitializeCode Acuant initialization callback code.
  *
- * @prop {()=>void} onSuccess Success callback.
- * @prop {()=>void} onFail    Failure callback.
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/blob/11.4.4/SimpleHTMLApp/webSdk/dist/AcuantJavascriptWebSdk.js#L1327-1353
  */
 
 /**
- * @typedef {(credentials:string?,endpoint:string?,AcuantCallbackOptions)=>void} AcuantInitialize
+ * @typedef AcuantCallbackOptions
+ *
+ * @prop {()=>void} onSuccess Success callback.
+ * @prop {(code: AcuantInitializeCode, description: string)=>void} onFail Failure callback.
+ */
+
+/**
+ * @typedef {(
+ *   credentials: string?,
+ *   endpoint: string?,
+ *   callback: AcuantCallbackOptions,
+ * )=>void} AcuantInitialize
  */
 
 /**
@@ -66,6 +77,7 @@ function AcuantContextProvider({
   children,
 }) {
   const { isMobile } = useContext(DeviceContext);
+  const { addPageAction } = useContext(AnalyticsContext);
   // Only mobile devices should load the Acuant SDK. Consider immediately ready otherwise.
   const [isReady, setIsReady] = useState(!isMobile);
   const [isAcuantLoaded, setIsAcuantLoaded] = useState(false);
@@ -94,13 +106,29 @@ function AcuantContextProvider({
         endpoint,
         {
           onSuccess: () => {
+            addPageAction({
+              label: 'IdV: Acuant SDK loaded',
+              payload: { success: true },
+            });
+
             setIsCameraSupported(
               /** @type {AcuantGlobal} */ (window).AcuantCamera.isCameraSupported,
             );
             setIsReady(true);
             setIsAcuantLoaded(true);
           },
-          onFail: () => setIsError(true),
+          onFail(code, description) {
+            addPageAction({
+              label: 'IdV: Acuant SDK loaded',
+              payload: {
+                success: false,
+                code,
+                description,
+              },
+            });
+
+            setIsError(true);
+          },
         },
       );
     };
