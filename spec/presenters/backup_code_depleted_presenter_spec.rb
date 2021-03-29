@@ -43,7 +43,7 @@ describe BackupCodeDepletedPresenter do
 
   describe '#continue_bttn_class' do
     it 'displays button to continue' do
-      expect(presenter.continue_bttn_class).to eq 'usa-button usa-button--wide'
+      expect(presenter.continue_bttn_class).to eq 'usa-button usa-button--big usa-button--wide'
     end
   end
 end

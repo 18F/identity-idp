@@ -26,6 +26,6 @@ class BackupCodeDepletedPresenter
   end
 
   def continue_bttn_class
-    'usa-button usa-button--wide'
+    'usa-button usa-button--big usa-button--wide'
   end
 end

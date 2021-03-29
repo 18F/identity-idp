@@ -17,11 +17,11 @@
     <% if decorated_session.sp_name.present? %>
       <%= link_to(t('idv.buttons.continue_plain'),
                   return_to_sp_cancel_path,
-                  class: 'usa-button usa-button--wide') %>
+                  class: 'usa-button usa-button--big usa-button--wide') %>
     <% else %>
       <%= link_to(t('idv.buttons.continue_plain'),
                   account_path,
-                  class: 'usa-button usa-button--wide') %>
+                  class: 'usa-button usa-button--big usa-button--wide') %>
     <% end %>
   </div>
 </div>
