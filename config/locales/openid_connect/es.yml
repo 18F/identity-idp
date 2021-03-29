@@ -30,7 +30,8 @@ es:
         invalid_code_verifier: code_verifier no coincide con code_challenge
         invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o entero
           que represente un tiempo en el pasado
-        invalid_signature: No se pudo validar la aserción contra ninguna clave pública registrada
+        invalid_signature: No se pudo validar la aserción contra ninguna clave pública
+          registrada
     user_info:
       errors:
         malformed_authorization: Título de autorización mal formado

@@ -30,7 +30,8 @@ en:
         invalid_code_verifier: code_verifier did not match code_challenge
         invalid_iat: iat must be an integer or floating point Unix timestamp representing
           a time in the past
-        invalid_signature: Could not validate assertion against any registered public keys
+        invalid_signature: Could not validate assertion against any registered public
+          keys
     user_info:
       errors:
         malformed_authorization: Malformed Authorization header
