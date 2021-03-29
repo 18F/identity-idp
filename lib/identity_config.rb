@@ -57,6 +57,7 @@ class IdentityConfig
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
     final_env = config.add(:valid_authn_contexts, type: :json)
 
-    @store = Struct.new('IdentityConfig', *final_env.keys, keyword_init: true).new(**final_env)
+    @store = RedactedStruct.new('IdentityConfig', *final_env.keys, keyword_init: true).
+      new(**final_env)
   end
 end
