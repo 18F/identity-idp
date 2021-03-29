@@ -13,6 +13,7 @@ describe('document-capture/components/button', () => {
     expect(button.nodeName).to.equal('BUTTON');
     expect(button.type).to.equal('button');
     expect(button.classList.contains('usa-button')).to.be.true();
+    expect(button.classList.contains('usa-button--big')).to.be.false();
     expect(button.classList.contains('usa-button--wide')).to.be.false();
     expect(button.classList.contains('usa-button--outline')).to.be.false();
     expect(button.classList.contains('usa-button--unstyled')).to.be.false();
@@ -29,6 +30,14 @@ describe('document-capture/components/button', () => {
 
     expect(onClick.calledOnce).to.be.true();
     expect(onClick.getCall(0).args[0]).to.equal('click');
+  });
+
+  it('renders as big', () => {
+    const { getByText } = render(<Button isBig>Click me</Button>);
+
+    const button = getByText('Click me');
+
+    expect(button.classList.contains('usa-button--big')).to.be.true();
   });
 
   it('renders as wide', () => {

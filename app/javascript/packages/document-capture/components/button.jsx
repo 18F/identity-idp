@@ -8,6 +8,7 @@
  * @prop {ButtonType=} type Button type, defaulting to "button".
  * @prop {(ReactMouseEvent)=>void=} onClick Click handler.
  * @prop {ReactNode=} children Element children.
+ * @prop {boolean=} isBig Whether button should be styled as big button.
  * @prop {boolean=} isWide Whether button should be styled as primary button.
  * @prop {boolean=} isOutline Whether button should be styled as secondary button.
  * @prop {boolean=} isDisabled Whether button is disabled.
@@ -23,6 +24,7 @@ function Button({
   type = 'button',
   onClick,
   children,
+  isBig,
   isWide,
   isOutline,
   isDisabled,
@@ -32,6 +34,7 @@ function Button({
 }) {
   const classes = [
     'usa-button',
+    isBig && 'usa-button--big',
     isWide && 'usa-button--wide',
     isOutline && 'usa-button--outline',
     isUnstyled && 'usa-button--unstyled',
