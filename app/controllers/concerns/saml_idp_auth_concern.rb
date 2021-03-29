@@ -171,7 +171,6 @@ module SamlIdpAuthConcern
         params[:SAMLRequest],
         get_params: params,
         cert: ssl_cert,
-        fingerprint: fingerprint,
       )
       if saml_request&.service_provider
         # Plumb the fingerprint through to the internal service_provider representation
@@ -186,13 +185,10 @@ module SamlIdpAuthConcern
     if query_params[:skip_encryption].present? && current_service_provider.skip_encryption_allowed
       nil
     elsif current_service_provider.encrypt_responses?
-      cert = matching_cert || current_service_provider.certs.first
-
       {
-        cert: cert,
+        cert: matching_cert || current_service_provider.certs.first,
         block_encryption: current_service_provider.block_encryption,
         key_transport: 'rsa-oaep-mgf1p',
-        fingerprint: Fingerprinter.fingerprint_cert(cert),
       }
     end
   end
