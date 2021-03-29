@@ -30,9 +30,9 @@ class ServiceProvider < ApplicationRecord
     attributes.symbolize_keys.merge(fingerprint: fingerprint)
   end
 
-  def ssl_cert
-    @ssl_cert ||= begin
-      return if cert.blank?
+  # @return [Array<OpenSSL::X509::Certificate>]
+  def ssl_certs
+    (certs.presence || Array(cert)).map do |cert|
       OpenSSL::X509::Certificate.new(load_cert(cert))
     end
   end
@@ -43,15 +43,6 @@ class ServiceProvider < ApplicationRecord
 
   def encrypt_responses?
     block_encryption != 'none'
-  end
-
-  def encryption_opts
-    return nil unless encrypt_responses?
-    {
-      cert: ssl_cert,
-      block_encryption: block_encryption,
-      key_transport: 'rsa-oaep-mgf1p',
-    }
   end
 
   def skip_encryption_allowed

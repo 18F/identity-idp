@@ -161,12 +161,28 @@ module SamlIdpAuthConcern
     )
   end
 
+  def matching_cert
+    return @matching_cert if defined?(@matching_cert)
+
+    @matching_cert = current_service_provider.ssl_certs.find do |ssl_cert|
+      saml_request = SamlIdp::Request.from_deflated_request(
+        params[:SAMLRequest],
+        get_params: params,
+        cert: ssl_cert,
+      ).valid_signature?
+    end
+  end
+
   def encryption_opts
     query_params = UriService.params(request.original_url)
     if query_params[:skip_encryption].present? && current_service_provider.skip_encryption_allowed
       nil
-    else
-      current_service_provider.encryption_opts
+    elsif current_service_provider.encrypt_responses?
+      {
+        cert: matching_cert,
+        block_encryption: current_service_provider.block_encryption,
+        key_transport: 'rsa-oaep-mgf1p',
+      }
     end
   end
 
