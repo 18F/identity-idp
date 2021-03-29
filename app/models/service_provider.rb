@@ -37,10 +37,6 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
-  def fingerprint
-    @_fingerprint ||= super || Fingerprinter.fingerprint_cert(ssl_cert)
-  end
-
   def encrypt_responses?
     block_encryption != 'none'
   end

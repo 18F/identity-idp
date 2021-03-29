@@ -169,6 +169,7 @@ module SamlIdpAuthConcern
         params[:SAMLRequest],
         get_params: params,
         cert: ssl_cert,
+        fingerprint: Fingerprinter.fingerprint_cert(ssl_cert),
       ).valid_signature?
     end
   end
