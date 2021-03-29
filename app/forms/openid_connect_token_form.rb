@@ -112,6 +112,7 @@ class OpenidConnectTokenForm
     payload, _headers, err = nil
 
     matching_cert = service_provider.ssl_certs.find do |ssl_cert|
+      err = nil
       payload, _headers = JWT.decode(client_assertion, ssl_cert.public_key, true,
                                      algorithm: 'RS256', iss: client_id,
                                      verify_iss: true, sub: client_id,
