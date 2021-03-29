@@ -180,7 +180,7 @@ module SamlIdpAuthConcern
       nil
     elsif current_service_provider.encrypt_responses?
       {
-        cert: matching_cert,
+        cert: matching_cert || current_service_provider.certs.first,
         block_encryption: current_service_provider.block_encryption,
         key_transport: 'rsa-oaep-mgf1p',
       }
