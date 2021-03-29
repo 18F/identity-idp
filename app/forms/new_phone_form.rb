@@ -71,7 +71,9 @@ class NewPhoneForm
       carrier: @phone_info&.carrier,
       country_code: parsed_phone.country,
       area_code: parsed_phone.area_code,
-    }
+    }.tap do |extra|
+      extra[:redacted_phone] = @redacted_phone if @redacted_phone
+    end
   end
 
   def validate_not_voip
@@ -87,6 +89,9 @@ class NewPhoneForm
     elsif @phone_info.error
       errors.add(:phone, I18n.t('errors.messages.voip_phone'))
     end
+  rescue Aws::Pinpoint::Errors::BadRequestException
+    errors.add(:phone, :improbable_phone)
+    @redacted_phone = redact(phone)
   end
 
   def validate_not_duplicate
@@ -110,5 +115,9 @@ class NewPhoneForm
 
     self.otp_delivery_preference = delivery_prefs if delivery_prefs
     self.otp_make_default_number = true if default_prefs
+  end
+
+  def redact(phone)
+    phone.gsub(/[a-z]/i, 'X').gsub(/\d/i, '#')
   end
 end
