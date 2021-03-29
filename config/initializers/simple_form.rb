@@ -2,7 +2,7 @@
 SimpleForm.setup do |config|
   require Rails.root.join('lib', 'extensions', 'simple_form', 'error_notification')
 
-  config.button_class = 'usa-button usa-button--big'
+  config.button_class = 'usa-button'
   config.boolean_label_class = nil
   config.default_form_class = 'margin-top-4 tablet:margin-top-4'
   config.wrapper_mappings = { inline: :append }
