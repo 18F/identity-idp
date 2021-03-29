@@ -323,9 +323,6 @@ Rails.application.routes.draw do
         get '/recovery/:step' => 'recovery#show', as: :recovery_step
         put '/recovery/:step' => 'recovery#update'
       end
-      get '/in_person' => 'in_person#index'
-      get '/in_person/:step' => 'in_person#show', as: :in_person_step
-      put '/in_person/:step' => 'in_person#update'
     end
 
     get '/account/verify' => 'users/verify_account#index', as: :verify_account

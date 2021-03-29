@@ -3,7 +3,6 @@ require 'rails_helper'
 feature 'doc auth document capture step' do
   include IdvStepHelper
   include DocAuthHelper
-  include InPersonHelper
 
   let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
@@ -99,19 +98,6 @@ feature 'doc auth document capture step' do
         billed: true,
         success: false,
       )
-    end
-
-    it 'offers in person option on failure' do
-      enable_in_person_proofing
-
-      expect(page).to_not have_link(t('in_person_proofing.opt_in_link'),
-                                    href: idv_in_person_welcome_step)
-
-      mock_general_doc_auth_client_error(:create_document)
-      attach_and_submit_images
-
-      expect(page).to have_link(t('in_person_proofing.opt_in_link'),
-                                href: idv_in_person_welcome_step)
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
