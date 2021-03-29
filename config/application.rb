@@ -37,7 +37,11 @@ module Upaya
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
 
-    config.active_job.queue_adapter = :inline
+    if AppConfig.env.ruby_workers_enabled == 'true'
+      config.active_job.queue_adapter = :delayed_job
+    else
+      config.active_job.queue_adapter = :inline
+    end
     config.time_zone = 'UTC'
 
     # Generate CSRF tokens that are encoded in URL-safe Base64.
