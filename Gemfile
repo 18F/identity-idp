@@ -26,8 +26,7 @@ gem 'http_accept_language'
 gem 'identity-doc-auth', github: '18F/identity-doc-auth', branch: 'v0.5.0'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v2.0.0'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
-require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
-gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
+gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref:'d9241bdfea85a76c170e456a89'
 gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.12'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'main'
 gem 'json-jwt', '>= 1.11.0'

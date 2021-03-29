@@ -32,7 +32,7 @@ GIT
 GIT
   remote: https://github.com/18F/identity-idp-functions.git
   revision: d9241bdfea85a76c170e456a89ec6601549f4c4a
-  ref: d9241bdfea85a76c170e456a89ec6601549f4c4a
+  ref: d9241bdfea85a76c170e456a89
   specs:
     identity-idp-functions (0.15.2)
       aamva (>= 4.0.0)
