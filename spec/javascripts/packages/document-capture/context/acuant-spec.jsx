@@ -1,6 +1,7 @@
+import sinon from 'sinon';
 import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
-import { DeviceContext } from '@18f/identity-document-capture';
+import { DeviceContext, AnalyticsContext } from '@18f/identity-document-capture';
 import AcuantContext, {
   Provider as AcuantContextProvider,
 } from '@18f/identity-document-capture/context/acuant';
@@ -92,28 +93,93 @@ describe('document-capture/context/acuant', () => {
       });
     });
 
-    it('provides ready context when successfully loaded', () => {
-      const { result } = renderHook(() => useContext(AcuantContext), {
-        wrapper: ({ children }) => (
-          <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">{children}</AcuantContextProvider>
-          </DeviceContext.Provider>
-        ),
+    context('successful initialization', () => {
+      let result;
+      let addPageAction;
+
+      beforeEach(() => {
+        addPageAction = sinon.spy();
+        ({ result } = renderHook(() => useContext(AcuantContext), {
+          wrapper: ({ children }) => (
+            <AnalyticsContext.Provider value={{ addPageAction }}>
+              <DeviceContext.Provider value={{ isMobile: true }}>
+                <AcuantContextProvider sdkSrc="about:blank">{children}</AcuantContextProvider>
+              </DeviceContext.Provider>
+            </AnalyticsContext.Provider>
+          ),
+        }));
+
+        window.AcuantJavascriptWebSdk = {
+          initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
+        };
+        window.AcuantCamera = { isCameraSupported: true };
+        window.onAcuantSdkLoaded();
       });
 
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
-      };
-      window.AcuantCamera = { isCameraSupported: true };
-      window.onAcuantSdkLoaded();
+      it('provides ready context', () => {
+        expect(result.current).to.eql({
+          isReady: true,
+          isAcuantLoaded: true,
+          isError: false,
+          isCameraSupported: true,
+          credentials: null,
+          endpoint: null,
+        });
+      });
 
-      expect(result.current).to.eql({
-        isReady: true,
-        isAcuantLoaded: true,
-        isError: false,
-        isCameraSupported: true,
-        credentials: null,
-        endpoint: null,
+      it('logs', () => {
+        expect(addPageAction).to.have.been.calledWith({
+          label: 'IdV: Acuant SDK loaded',
+          payload: {
+            success: true,
+          },
+        });
+      });
+    });
+
+    context('failed initialization', () => {
+      let result;
+      let addPageAction;
+
+      beforeEach(() => {
+        addPageAction = sinon.spy();
+        ({ result } = renderHook(() => useContext(AcuantContext), {
+          wrapper: ({ children }) => (
+            <AnalyticsContext.Provider value={{ addPageAction }}>
+              <DeviceContext.Provider value={{ isMobile: true }}>
+                <AcuantContextProvider sdkSrc="about:blank">{children}</AcuantContextProvider>
+              </DeviceContext.Provider>
+            </AnalyticsContext.Provider>
+          ),
+        }));
+
+        window.AcuantJavascriptWebSdk = {
+          initialize: (_credentials, _endpoint, { onFail }) =>
+            onFail(401, 'Server returned a 401 (missing credentials).'),
+        };
+        window.onAcuantSdkLoaded();
+      });
+
+      it('provides error context', () => {
+        expect(result.current).to.eql({
+          isReady: false,
+          isAcuantLoaded: false,
+          isError: true,
+          isCameraSupported: null,
+          credentials: null,
+          endpoint: null,
+        });
+      });
+
+      it('logs', () => {
+        expect(addPageAction).to.have.been.calledWith({
+          label: 'IdV: Acuant SDK loaded',
+          payload: {
+            success: false,
+            code: sinon.match.number,
+            description: sinon.match.string,
+          },
+        });
       });
     });
 
@@ -133,30 +199,6 @@ describe('document-capture/context/acuant', () => {
       window.onAcuantSdkLoaded();
 
       expect(result.current.isCameraSupported).to.be.true();
-    });
-
-    it('provides error context when failed to loaded', () => {
-      const { result } = renderHook(() => useContext(AcuantContext), {
-        wrapper: ({ children }) => (
-          <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">{children}</AcuantContextProvider>
-          </DeviceContext.Provider>
-        ),
-      });
-
-      window.AcuantJavascriptWebSdk = {
-        initialize: (_credentials, _endpoint, { onFail }) => onFail(),
-      };
-      window.onAcuantSdkLoaded();
-
-      expect(result.current).to.eql({
-        isReady: false,
-        isAcuantLoaded: false,
-        isError: true,
-        isCameraSupported: null,
-        credentials: null,
-        endpoint: null,
-      });
     });
 
     it('cleans up after itself on unmount', () => {

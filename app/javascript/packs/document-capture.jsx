@@ -141,34 +141,34 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
 
   render(
     <DeviceContext.Provider value={device}>
-      <AcuantContextProvider
-        credentials={getMetaContent('acuant-sdk-initialization-creds')}
-        endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
-      >
-        <UploadContextProvider
-          endpoint={/** @type {string} */ (appRoot.getAttribute('data-endpoint'))}
-          statusEndpoint={/** @type {string} */ (appRoot.getAttribute('data-status-endpoint'))}
-          statusPollInterval={
-            Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined
-          }
-          method={isAsyncForm ? 'PUT' : 'POST'}
-          csrf={csrf}
-          isMockClient={isMockClient}
-          backgroundUploadURLs={backgroundUploadURLs}
-          backgroundUploadEncryptKey={backgroundUploadEncryptKey}
-          formData={formData}
+      <AnalyticsContext.Provider value={{ addPageAction, noticeError }}>
+        <AcuantContextProvider
+          credentials={getMetaContent('acuant-sdk-initialization-creds')}
+          endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
         >
-          <I18nContext.Provider value={i18n.strings}>
-            <ServiceProviderContext.Provider value={getServiceProvider()}>
-              <AnalyticsContext.Provider value={{ addPageAction, noticeError }}>
+          <UploadContextProvider
+            endpoint={/** @type {string} */ (appRoot.getAttribute('data-endpoint'))}
+            statusEndpoint={/** @type {string} */ (appRoot.getAttribute('data-status-endpoint'))}
+            statusPollInterval={
+              Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined
+            }
+            method={isAsyncForm ? 'PUT' : 'POST'}
+            csrf={csrf}
+            isMockClient={isMockClient}
+            backgroundUploadURLs={backgroundUploadURLs}
+            backgroundUploadEncryptKey={backgroundUploadEncryptKey}
+            formData={formData}
+          >
+            <I18nContext.Provider value={i18n.strings}>
+              <ServiceProviderContext.Provider value={getServiceProvider()}>
                 <AssetContext.Provider value={assets}>
                   <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
                 </AssetContext.Provider>
-              </AnalyticsContext.Provider>
-            </ServiceProviderContext.Provider>
-          </I18nContext.Provider>
-        </UploadContextProvider>
-      </AcuantContextProvider>
+              </ServiceProviderContext.Provider>
+            </I18nContext.Provider>
+          </UploadContextProvider>
+        </AcuantContextProvider>
+      </AnalyticsContext.Provider>
     </DeviceContext.Provider>,
     appRoot,
   );
