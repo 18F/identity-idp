@@ -34,12 +34,12 @@
         <div class="center">
           <%= image_tag @qrcode, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
         </div>
-        <div class="center">
-          <%= t('instructions.mfa.authenticator.manual_entry') %>
-        </div>
-        <div class="padding-x-2 padding-y-1 margin-top-1 border border-dashed border-navy">
-          <div class="inline fs-20p caps monospace" id="qr-code"><%= @code %></div>
-          <button class="clipboard margin-left-2 right mt-tiny btn btn-primary padding-0 w-60p bg-light-blue blue h6 regular border-box center"
+        <%= t('instructions.mfa.authenticator.manual_entry') %>
+        <div class="grid-row margin-top-2 flex-align-center">
+          <code class="grid-col-fill font-family-mono padding-y-2 padding-x-1 border-base-lighter border-1px" id="qr-code">
+            <%= @code %>
+          </code>
+          <button class="clipboard margin-right-0 margin-top-2 tablet:margin-top-0 tablet:margin-left-2 usa-button usa-button--outline ico ico-copy"
                   type="button"
                   data-clipboard-text="<%= @code.upcase %>">
             <%= t('links.copy') %>
@@ -59,18 +59,16 @@
                 class: 'block col-12 field monospace mfa', maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
                 'aria-labelledby': 'totp-label' %>
           </div>
-          <div class="col col-6 sm-col-5 padding-x-1">
-            <%= submit_tag t('forms.buttons.submit.default'), class: 'col-12 btn btn-primary text-top' %>
-          </div>
-        </div>
-        <div class="border border-light-blue rounded-lg padding-x-2 padding-y-1 margin-top-4">
-          <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
-          <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?, class: 'margin-y-2 margin-left-2 margin-right-1' %>
-          <%= label_tag 'remember_device', t('forms.messages.remember_device'), class: 'blue mt-1p' %>
         </div>
       </div>
     </li>
   </ul>
+  <%= submit_tag t('forms.buttons.submit.default'), class: 'usa-button usa-button--big usa-button--wide' %>
+  <div class="margin-y-4 display-flex flex-align-center">
+    <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
+    <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked? %>
+    <%= label_tag 'remember_device', t('forms.messages.remember_device'), class: 'text-primary margin-0 margin-left-1' %>
+  </div>
 <% end %>
 
 <%= render 'shared/cancel_or_back_to_options' %>
