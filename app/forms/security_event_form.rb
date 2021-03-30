@@ -107,11 +107,11 @@ class SecurityEventForm
     rescue JWT::IncorrectAlgorithm
       error_code = ErrorCodes::JWT_CRYPTO
       error_message = t('risc.security_event.errors.alg_unsupported', expected_alg: 'RS256')
+      nil
     rescue JWT::VerificationError => err
       error_code = ErrorCodes::JWS
       error_message = err.message
-    rescue JWT::DecodeError
-      next
+      nil
     end
 
     @error_code = error_code if error_code
