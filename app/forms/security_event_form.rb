@@ -114,10 +114,12 @@ class SecurityEventForm
       nil
     end
 
-    @error_code = error_code if error_code
-    errors.add(:jwt, error_message) if error_message
-
-    check_public_key_error(matching_public_key)
+    if error_code && error_message
+      @error_code = error_code
+      errors.add(:jwt, error_message)
+    else
+      check_public_key_error(matching_public_key)
+    end
   end
 
   def validate_jti
