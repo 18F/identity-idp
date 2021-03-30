@@ -1,22 +1,27 @@
 .ico {
-  background-position: 1rem center;
-  background-repeat: no-repeat;
-  background-size: 1rem;
-  padding-left: 2.6rem;
+  &::before {
+    background-repeat: no-repeat;
+    background-size: 1rem;
+    content: '';
+    display: inline-block;
+    height: 1rem;
+    margin: -.125rem .5rem -.125rem 0;
+    width: 1rem;
+  }
 
-  &-copy {
+  &.ico-copy::before {
     background-image: url(image-path('ico-copy.svg'));
   }
 
-  &-download {
+  &.ico-download::before {
     background-image: url(image-path('ico-download.svg'));
   }
 
-  &-refresh {
+  &.ico-refresh::before {
     background-image: url(image-path('ico-refresh.svg'));
   }
 
-  &-print {
+  &.ico-print::before {
     background-image: url(image-path('ico-print.svg'));
   }
 }
