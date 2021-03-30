@@ -15,6 +15,7 @@ class NullServiceProvider
     attribute_bundle
     block_encryption
     cert
+    certs
     created_at
     default_aal
     description
@@ -40,7 +41,6 @@ class NullServiceProvider
     signature
     signed_response_message_requested
     sp_initiated_login_url
-    ssl_cert
     updated_at
   ].freeze
 
@@ -85,13 +85,15 @@ class NullServiceProvider
     false
   end
 
-  def encryption_opts; end
-
   def skip_encryption_allowed
     false
   end
 
   def allow_prompt_login
     false
+  end
+
+  def ssl_certs
+    []
   end
 end

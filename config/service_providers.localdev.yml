@@ -4,7 +4,9 @@ test:
     assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
     sp_initiated_login_url: 'http://localhost:3000/test/saml'
     block_encryption: 'none'
-    cert: 'saml_test_sp'
+    certs:
+      - 'saml_test_sp'
+      - 'saml_test_sp2'
     agency: 'Test Government Agency'
     agency_id: 1
     uuid_priority: 10

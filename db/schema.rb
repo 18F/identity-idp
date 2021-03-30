@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_16_082419) do
+ActiveRecord::Schema.define(version: 2021_03_29_162528) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -572,6 +572,7 @@ ActiveRecord::Schema.define(version: 2021_03_16_082419) do
     t.date "iaa_end_date"
     t.string "app_id"
     t.integer "default_aal"
+    t.string "certs", array: true
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

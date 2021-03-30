@@ -390,6 +390,43 @@ describe SamlIdpController do
       end
     end
 
+    context 'service provider has multiple certs' do
+      let(:service_provider) do
+        create(:service_provider,
+               cert: nil, # override singular cert
+               certs: ['saml_test_sp2', 'saml_test_sp'],
+               active: true)
+      end
+
+      let(:first_cert_settings) do
+        saml_settings.tap do |settings|
+          settings.issuer = service_provider.issuer
+        end
+      end
+
+      let(:second_cert_settings) do
+        saml_settings.tap do |settings|
+          settings.issuer = service_provider.issuer
+          settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
+          settings.private_key = OpenSSL::PKey::RSA.new(
+            File.read(Rails.root + 'keys/saml_test_sp2.key'),
+          ).to_pem
+        end
+      end
+
+      it 'encrypts the response to the right key' do
+        user = create(:user, :signed_up)
+        generate_saml_response(user, second_cert_settings)
+
+        expect(response).to_not be_redirect
+
+        expect { xmldoc.saml_response(first_cert_settings) }.to raise_error
+
+        response = xmldoc.saml_response(second_cert_settings)
+        expect(response.decrypted_document).to be
+      end
+    end
+
     context 'POST to auth correctly stores SP in session' do
       before do
         @user = create(:user, :signed_up)
