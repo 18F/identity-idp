@@ -87,7 +87,7 @@ class SecurityEventForm
   end
 
   def check_public_key_error(public_key)
-    return false if service_provider&.ssl_certs.present?
+    return false if public_key.present?
 
     errors.add(:jwt, t('risc.security_event.errors.no_public_key'))
     @error_code = ErrorCodes::JWS
@@ -117,7 +117,7 @@ class SecurityEventForm
     @error_code = error_code if error_code
     errors.add(:jwt, error_message) if error_message
 
-    return if check_public_key_error(matching_public_key)
+    check_public_key_error(matching_public_key)
   end
 
   def validate_jti
