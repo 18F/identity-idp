@@ -180,5 +180,5 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'Monthly GPO letter requests report',
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
-  callback: -> { Reports::MonthlygpoLetterRequestsReport.new.call },
+  callback: -> { Reports::MonthlyGpoLetterRequestsReport.new.call },
 )
