@@ -178,7 +178,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" analyticsPrefix="image" />
+              <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -195,7 +195,7 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(addPageAction).to.have.been.calledWith({
-        label: 'IdV: image capture failed',
+        label: 'IdV: test image capture failed',
         payload: { error: 'User or system denied camera access' },
       });
     });
@@ -297,7 +297,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" analyticsPrefix="image" />
+              <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -318,7 +318,7 @@ describe('document-capture/components/acuant-capture', () => {
       const error = await findByText('errors.doc_auth.photo_glare');
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: image added',
+        label: 'IdV: test image added',
         payload: {
           documentType: 'id',
           mimeType: 'image/jpeg',
@@ -345,7 +345,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" analyticsPrefix="image" />
+              <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -366,7 +366,7 @@ describe('document-capture/components/acuant-capture', () => {
       const error = await findByText('errors.doc_auth.photo_blurry');
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: image added',
+        label: 'IdV: test image added',
         payload: {
           documentType: 'id',
           mimeType: 'image/jpeg',
@@ -426,7 +426,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" analyticsPrefix="image" />
+              <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -460,7 +460,7 @@ describe('document-capture/components/acuant-capture', () => {
       await waitForElementToBeRemoved(error);
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: image added',
+        label: 'IdV: test image added',
         payload: {
           documentType: 'id',
           mimeType: 'image/jpeg',
@@ -690,7 +690,7 @@ describe('document-capture/components/acuant-capture', () => {
     const { getByLabelText } = render(
       <AnalyticsContext.Provider value={{ addPageAction }}>
         <AcuantContextProvider sdkSrc="about:blank">
-          <AcuantCapture label="Image" analyticsPrefix="image" />
+          <AcuantCapture label="Image" name="test" />
         </AcuantContextProvider>
       </AnalyticsContext.Provider>,
     );
@@ -700,7 +700,7 @@ describe('document-capture/components/acuant-capture', () => {
 
     await new Promise((resolve) => addPageAction.callsFake(resolve));
     expect(addPageAction).to.have.been.calledWith({
-      label: 'IdV: image added',
+      label: 'IdV: test image added',
       payload: {
         height: sinon.match.number,
         mimeType: 'image/jpeg',

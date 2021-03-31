@@ -90,7 +90,7 @@ import './acuant-capture.scss';
  * @prop {string=} className Optional additional class names.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  * @prop {ReactNode=} errorMessage Error to show.
- * @prop {string} analyticsPrefix Prefix to prepend to user action analytics labels.
+ * @prop {string} name Prefix to prepend to user action analytics labels.
  */
 
 /**
@@ -188,7 +188,7 @@ function AcuantCapture(
     className,
     allowUpload = true,
     errorMessage,
-    analyticsPrefix,
+    name,
   },
   ref,
 ) {
@@ -241,7 +241,7 @@ function AcuantCapture(
         };
 
         addPageAction({
-          label: `IdV: ${analyticsPrefix} added`,
+          label: `IdV: ${name} image added`,
           payload: analyticsPayload,
         });
       });
@@ -351,7 +351,7 @@ function AcuantCapture(
 
     addPageAction({
       key: 'documentCapture.acuantWebSDKResult',
-      label: `IdV: ${analyticsPrefix} added`,
+      label: `IdV: ${name} image added`,
       payload: analyticsPayload,
     });
 
@@ -368,7 +368,7 @@ function AcuantCapture(
               setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
               setIsCapturingEnvironment(false);
               addPageAction({
-                label: `IdV: ${analyticsPrefix} capture failed`,
+                label: `IdV: ${name} image capture failed`,
                 payload: { error: getNormalizedAcuantCaptureFailureMessage(error) },
               });
             }}
