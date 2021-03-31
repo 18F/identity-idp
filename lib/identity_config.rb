@@ -17,9 +17,9 @@ class IdentityConfig
     end,
     boolean: proc do |value|
       case value
-      when 'true'
+      when 'true', true
         true
-      when 'false'
+      when 'false', false
         false
       else
         raise 'invalid boolean value'
