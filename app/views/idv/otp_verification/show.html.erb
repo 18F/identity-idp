@@ -28,10 +28,11 @@
   </div>
 <% end %>
 
-<%= button_to(t('links.two_factor_authentication.get_another_code'), idv_resend_otp_path,
+<%= button_to idv_resend_otp_path,
               method: :post,
-              class: 'usa-button usa-button--outline ico ico-refresh',
-              form_class: 'inline-block') %>
+              class: 'usa-button usa-button--outline ico ico-refresh' do %>
+  <%= t('links.two_factor_authentication.get_another_code') %>
+<% end %>
 
 <p class="margin-top-6">
   <%= @presenter.update_phone_link %>
