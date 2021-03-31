@@ -131,7 +131,7 @@ function getDocumentTypeLabel(documentType) {
  * @return {string}
  */
 export function getNormalizedAcuantCaptureFailureMessage(error) {
-  if (error instanceof window.MediaStreamError) {
+  if (error instanceof Error) {
     return 'User or system denied camera access';
   }
 

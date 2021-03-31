@@ -49,7 +49,7 @@ describe('document-capture/components/acuant-capture', () => {
       'Camera not supported',
       'already started',
       'Missing HTML elements',
-      new window.MediaStreamError(),
+      /** @type {MediaStreamError} */ (new Error()),
       'nonsense',
     ].forEach((error) => {
       it('returns a string', () => {
@@ -184,7 +184,7 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, new window.MediaStreamError()),
+        start: sinon.stub().callsArgWithAsync(1, new Error()),
       });
 
       const button = getByLabelText('Image');
