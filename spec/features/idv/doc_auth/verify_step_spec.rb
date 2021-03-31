@@ -109,6 +109,7 @@ feature 'doc auth verify step' do
     expect(fake_analytics).to have_logged_event(
       Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
       throttle_type: :idv_resolution,
+      step_name: Idv::Steps::VerifyWaitStepShow,
     )
 
     Timecop.travel(AppConfig.env.idv_attempt_window_in_hours.to_i.hours.from_now) do
@@ -136,6 +137,7 @@ feature 'doc auth verify step' do
     expect(fake_analytics).to have_logged_event(
       Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
       throttle_type: :idv_resolution,
+      step_name: Idv::Steps::VerifyWaitStepShow,
     )
   end
 
