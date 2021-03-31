@@ -49,6 +49,7 @@ import './acuant-capture.scss';
  *
  * @prop {AcuantDocumentTypeLabel} documentType
  * @prop {number} dpi
+ * @prop {number} moire
  * @prop {number} glare
  * @prop {number} glareScoreThreshold
  * @prop {boolean} isAssessedAsGlare
@@ -288,7 +289,7 @@ function AcuantCapture(
    * @param {AcuantSuccessResponse} nextCapture
    */
   function onAcuantImageCaptureSuccess(nextCapture) {
-    const { image, cardType, dpi, glare, sharpness } = nextCapture;
+    const { image, cardType, dpi, moire, glare, sharpness } = nextCapture;
     const isAssessedAsGlare = glare < ACCEPTABLE_GLARE_SCORE;
     const isAssessedAsBlurry = sharpness < ACCEPTABLE_SHARPNESS_SCORE;
     const { width, height, data } = image;
@@ -314,6 +315,7 @@ function AcuantCapture(
       source: 'acuant',
       documentType: getDocumentTypeLabel(cardType),
       dpi,
+      moire,
       glare,
       glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
       isAssessedAsGlare,
