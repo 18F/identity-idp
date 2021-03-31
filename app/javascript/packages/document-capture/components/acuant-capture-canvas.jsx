@@ -30,6 +30,16 @@ import useI18n from '../hooks/use-i18n';
  */
 
 /**
+ * @typedef {(
+ *   | null                    // Cropping failure.
+ *   | 'Camera not supported'  // Camera not supported. (SDK v11.4.3, L74, L798)
+ *   | 'already started'       // Capture already started. (SDK v11.4.3, L565, L580)
+ *   | 'Missing HTML elements' // Required page elements are not available. (SDK v11.4.3, L568)
+ *   | MediaStreamError        // User or system denied camera access. (SDK v11.4.3, L544)
+ * )} AcuantCaptureFailureError
+ */
+
+/**
  * @typedef AcuantCameraUICallbacks
  *
  * @prop {(response: AcuantCaptureImage)=>void} onCaptured Document captured callback.
@@ -92,7 +102,7 @@ import useI18n from '../hooks/use-i18n';
  */
 
 /**
- * @typedef {(error?:Error)=>void} AcuantFailureCallback
+ * @typedef {(error:AcuantCaptureFailureError)=>void} AcuantFailureCallback
  */
 
 /**
@@ -122,7 +132,7 @@ function AcuantCaptureCanvas({
             if (response) {
               onImageCaptureSuccess(response);
             } else {
-              onImageCaptureFailure();
+              onImageCaptureFailure(response);
             }
           },
         },

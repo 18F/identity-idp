@@ -26,6 +26,7 @@ Object.defineProperty(global.window.Image.prototype, 'src', {
     this.onload();
   },
 });
+global.window.MediaStreamError = class extends Error {}; // https://github.com/jsdom/jsdom/issues/2654
 global.navigator = window.navigator;
 global.document = window.document;
 global.Document = window.Document;

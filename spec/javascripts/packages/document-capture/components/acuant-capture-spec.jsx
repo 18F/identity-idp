@@ -5,6 +5,7 @@ import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import AcuantCapture, {
   ACCEPTABLE_GLARE_SCORE,
   ACCEPTABLE_SHARPNESS_SCORE,
+  getNormalizedAcuantCaptureFailureMessage,
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import DeviceContext from '@18f/identity-document-capture/context/device';
@@ -40,6 +41,23 @@ describe('document-capture/components/acuant-capture', () => {
   let validUpload;
   before(async () => {
     validUpload = await getFixtureFile('doc_auth_images/id-back.jpg');
+  });
+
+  describe('getNormalizedAcuantCaptureFailureMessage', () => {
+    [
+      null,
+      'Camera not supported',
+      'already started',
+      'Missing HTML elements',
+      new window.MediaStreamError(),
+      'nonsense',
+    ].forEach((error) => {
+      it('returns a string', () => {
+        const message = getNormalizedAcuantCaptureFailureMessage(error);
+
+        expect(message).to.be.a('string');
+      });
+    });
   });
 
   context('mobile', () => {
@@ -154,24 +172,31 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('shows error if capture fails', async () => {
+      const addPageAction = sinon.spy();
       const { container, getByLabelText, findByText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
-            <AcuantCapture label="Image" />
-          </AcuantContextProvider>
-        </DeviceContext.Provider>,
+        <AnalyticsContext.Provider value={{ addPageAction }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank">
+              <AcuantCapture label="Image" analyticsPrefix="image" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, new Error()),
+        start: sinon.stub().callsArgWithAsync(1, new window.MediaStreamError()),
       });
 
       const button = getByLabelText('Image');
       fireEvent.click(button);
 
       await findByText('errors.doc_auth.capture_failure');
-      expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
+      expect(addPageAction).to.have.been.calledWith({
+        label: 'IdV: image capture failed',
+        payload: { error: 'User or system denied camera access' },
+      });
     });
 
     it('calls onChange with the captured image on successful capture', async () => {

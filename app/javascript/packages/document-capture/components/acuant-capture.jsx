@@ -126,6 +126,32 @@ function getDocumentTypeLabel(documentType) {
 }
 
 /**
+ * @param {import('./acuant-capture-canvas').AcuantCaptureFailureError} error
+ *
+ * @return {string}
+ */
+export function getNormalizedAcuantCaptureFailureMessage(error) {
+  if (error instanceof window.MediaStreamError) {
+    return 'User or system denied camera access';
+  }
+
+  if (!error) {
+    return 'Cropping failure';
+  }
+
+  switch (error) {
+    case 'Camera not supported':
+      return 'Camera not supported';
+    case 'Missing HTML elements':
+      return 'Required page elements are not available';
+    case 'already started':
+      return 'Capture already started';
+    default:
+      return 'Unknown error';
+  }
+}
+
+/**
  * @param {File} file Image file.
  *
  * @return {Promise<{width: number?, height: number?}>}
@@ -338,9 +364,13 @@ function AcuantCapture(
         <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
-            onImageCaptureFailure={() => {
+            onImageCaptureFailure={(error) => {
               setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
               setIsCapturingEnvironment(false);
+              addPageAction({
+                label: `IdV: ${analyticsPrefix} capture failed`,
+                payload: { error: getNormalizedAcuantCaptureFailureMessage(error) },
+              });
             }}
           />
         </FullScreen>
