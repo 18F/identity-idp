@@ -11,8 +11,7 @@
 <%= form_tag(:idv_otp_verification, method: :put, role: 'form', class: 'margin-top-4') do %>
   <div class="grid-row margin-bottom-5">
     <div class="grid-col-12 tablet:grid-col-6">
-      <%= label_tag 'code', t('simple_form.required.html') + t('forms.two_factor.code'),
-                    class: 'block bold' %>
+      <%= label_tag 'code', t('forms.two_factor.code'), class: 'block bold' %>
       <%= text_field_tag :code, '',
                          value: @code,
                          required: true,
