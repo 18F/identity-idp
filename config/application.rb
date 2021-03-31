@@ -10,6 +10,7 @@ require 'identity/logging/railtie'
 
 require_relative '../lib/app_config_reader'
 require_relative '../lib/app_config'
+require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
 
 Bundler.require(*Rails.groups)
@@ -23,6 +24,13 @@ module Upaya
     )
 
     AppConfig.setup(configuration)
+
+    root_config = configuration.except(['development', 'production', 'test'])
+    environment_config = root_config[Rails.env]
+    merged_config = root_config.merge(environment_config)
+    merged_config.symbolize_keys!
+
+    IdentityConfig.build_store(merged_config)
 
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false

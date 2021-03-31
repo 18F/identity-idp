@@ -2,8 +2,8 @@ module KeyRotationHelper
   def rotate_hmac_key
     env = AppConfig.env
     old_hmac_key = env.hmac_fingerprinter_key
-    allow(env).to receive(:hmac_fingerprinter_key_queue).and_return(
-      "[\"#{old_hmac_key}\"]",
+    allow(IdentityConfig.store).to receive(:hmac_fingerprinter_key_queue).and_return(
+      ["#{old_hmac_key}"],
     )
     allow(env).to receive(:hmac_fingerprinter_key).and_return('4' * 32)
   end
@@ -16,11 +16,11 @@ module KeyRotationHelper
     allow(AppConfig.env).to receive(:attribute_encryption_key).and_return(new_key)
     allow(AppConfig.env).to receive(:attribute_cost).and_return(new_cost)
 
-    current_queue = JSON.parse(AppConfig.env.attribute_encryption_key_queue)
-    current_queue = [{ key: old_key, cost: old_cost }] + current_queue
+    current_queue = IdentityConfig.store.attribute_encryption_key_queue
+    current_queue = [{ 'key' => old_key, 'cost' => old_cost }] + current_queue
 
-    allow(AppConfig.env).to receive(:attribute_encryption_key_queue).
-      and_return(current_queue.to_json)
+    allow(IdentityConfig.store).to receive(:attribute_encryption_key_queue).
+      and_return(current_queue)
   end
 
   def rotate_all_keys
@@ -31,7 +31,7 @@ module KeyRotationHelper
   def rotate_attribute_encryption_key_with_invalid_queue
     env = AppConfig.env
     allow(env).to receive(:attribute_encryption_key_queue).and_return(
-      [{ key: 'key-that-was-never-used-in-the-past', cost: '4000$8$2$' }].to_json,
+      [{ key: 'key-that-was-never-used-in-the-past', cost: '4000$8$2$' }],
     )
     allow(env).to receive(:attribute_encryption_key).and_return('4' * 32)
   end

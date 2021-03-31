@@ -4,7 +4,7 @@ module Encryption
     def initialize
       @aws_clients = {}
       # Instantiate an array of aws clients based on the provided regions in the environment
-      JSON.parse(AppConfig.env.aws_kms_regions).each do |region|
+      IdentityConfig.store.aws_kms_regions.each do |region|
         @aws_clients[region] = Aws::KMS::Client.new(
           instance_profile_credentials_timeout: 1, # defaults to 1 second
           instance_profile_credentials_retries: 5, # defaults to 0 retries

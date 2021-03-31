@@ -186,8 +186,8 @@ describe ServiceProvider do
   describe '#skip_encryption_allowed' do
     context 'SP in allowed list' do
       before do
-        allow(AppConfig.env).to receive(:skip_encryption_allowed_list).
-          and_return('["http://localhost:3000"]')
+        allow(IdentityConfig.store).to receive(:skip_encryption_allowed_list).
+          and_return(['http://localhost:3000'])
       end
 
       it 'allows the SP to optionally skip encrypting the SAML response' do

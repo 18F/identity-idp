@@ -28,7 +28,7 @@ module Saml
 
       REQUESTED_ATTRIBUTES_CLASSREF = 'http://idmanagement.gov/ns/requested_attributes?ReqAttr='.freeze
 
-      VALID_AUTHN_CONTEXTS = JSON.parse(AppConfig.env.valid_authn_contexts).freeze
+      VALID_AUTHN_CONTEXTS = IdentityConfig.store.valid_authn_contexts
       IAL2_AUTHN_CONTEXTS = [IAL2_AUTHN_CONTEXT_CLASSREF, LOA3_AUTHN_CONTEXT_CLASSREF].freeze
 
       AUTHN_CONTEXT_CLASSREF_TO_IAL = {
