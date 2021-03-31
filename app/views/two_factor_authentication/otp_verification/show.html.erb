@@ -10,33 +10,32 @@
 
 <%= form_tag(:login_otp, method: :post, role: 'form', class: 'margin-top-4') do %>
   <%= render @presenter.reauthn_hidden_field_partial %>
-  <%= label_tag 'code',
-                t('simple_form.required.html') + t('forms.two_factor.code'),
-                class: 'block bold' %>
-  <div class="col-12 sm-col-5 margin-bottom-2 tablet:margin-bottom-0 sm-mr-20p inline-block">
-    <%= text_field_tag(:code, '',
-                       value: @presenter.code_value,
-                       required: true,
-                       autofocus: true,
-                       pattern: '[0-9]*',
-                       class: 'col-12 field monospace mfa',
-                       aria: { invalid: false, describedby: 'code-instructs' },
-                       maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
-                       autocomplete: 'one-time-code', type: 'tel') %>
+  <div class="grid-row margin-bottom-5">
+    <div class="grid-col-12 tablet:grid-col-6">
+      <%= label_tag 'code', t('forms.two_factor.code'), class: 'block bold' %>
+      <%= text_field_tag :code, '',
+                         value: @presenter.code_value,
+                         required: true,
+                         autofocus: true,
+                         pattern: '[0-9]*',
+                         class: 'field monospace mfa usa-input margin-bottom-5',
+                         aria: { invalid: false, describedby: 'code-instructs' },
+                         maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+                         autocomplete: 'one-time-code',
+                         type: 'tel' %>
+      <%= submit_tag t('forms.buttons.submit.default'),
+                     class: 'usa-button usa-button--big usa-button--full-width' %>
+    </div>
   </div>
   <%= hidden_field_tag 'otp_make_default_number',
                        @presenter.otp_make_default_number %>
-  <%= submit_tag t('forms.buttons.submit.default'),
-                 class: 'btn btn-primary text-top sm-col-6 col-12' %>
-
-  <br/><br/>
   <div class="flex flex-row flex-align-center flex-wrap">
     <%= link_to(t('links.two_factor_authentication.get_another_code'),
                 otp_send_path(otp_delivery_selection_form: {
                   otp_delivery_preference: @presenter.otp_delivery_preference,
                   resend: true
                 }),
-                class: 'usa-button usa-button--unstyled btn-border ico ico-refresh text-decoration-none flex-no-shrink margin-right-205',
+                class: 'usa-button usa-button--outline ico ico-refresh flex-no-shrink margin-right-205',
                 form_class: 'inline-block') %>
 
     <span class="text-no-wrap flex-no-shrink flex flex-row flex-align-center">
