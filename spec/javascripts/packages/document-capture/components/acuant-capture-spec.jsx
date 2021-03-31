@@ -46,6 +46,7 @@ describe('document-capture/components/acuant-capture', () => {
   describe('getNormalizedAcuantCaptureFailureMessage', () => {
     [
       null,
+      undefined,
       'Camera not supported',
       'already started',
       'Missing HTML elements',

@@ -31,7 +31,8 @@ import useI18n from '../hooks/use-i18n';
 
 /**
  * @typedef {(
- *   | null                    // Cropping failure.
+ *   | null                    // Cropping failure. (SDK v11.4.3, L753)
+ *   | undefined               // Cropping failure. (SDK v11.4.3, L960)
  *   | 'Camera not supported'  // Camera not supported. (SDK v11.4.3, L74, L798)
  *   | 'already started'       // Capture already started. (SDK v11.4.3, L565, L580)
  *   | 'Missing HTML elements' // Required page elements are not available. (SDK v11.4.3, L568)
