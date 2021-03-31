@@ -15,10 +15,10 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
       error(json.to_json)
     elsif event.payload[:aborted]
+      json[:halted] = true
+
       info(json.to_json)
     else
-      json[:job_id] = job.job_id
-
       info(json.to_json)
     end
   end
@@ -40,7 +40,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       info(json.to_json)
     else
       json[:scheduled_at] = scheduled_at(event)
-      json[:job_id] = job.job_id
 
       info(json.to_json)
     end
@@ -50,7 +49,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     job = event.payload[:job]
 
     json = default_attributes(event, job).merge(
-      job_id: job.job_id,
       enqueued_at: job.enqueued_at,
       queued_duration_ms: queued_duration(job),
     )
@@ -63,7 +61,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     ex = event.payload[:exception_object]
 
     json = default_attributes(event, job).merge(
-      job_id: job.job_id,
       enqueued_at: job.enqueued_at,
       queued_duration_ms: queued_duration(job),
     )
@@ -90,7 +87,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     wait_seconds = event.payload[:wait]
 
     json = {
-      job_id: job.job_id,
       wait_ms: wait.to_i.in_milliseconds,
     }
 
@@ -104,7 +100,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     ex = event.payload[:error]
 
     json = default_attributes(event, job).merge(
-      job_id: job.job_id,
       exception_class: ex.class,
       attempts: job.executions,
     )
@@ -117,7 +112,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     ex = event.payload[:error]
 
     json = default_attributes(event, job).merge(
-      job_id: job.job_id,
       exception_class: job.class,
     )
 
@@ -133,6 +127,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       job_class: job.class.name,
       trace_id: trace_id(job),
       queue_name: queue_name(event),
+      job_id: job.job_id,
     }
   end
 
