@@ -163,6 +163,7 @@ module Idv
         analytics.track_event(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
           throttle_type: :idv_resolution,
+          step_name: :gpo,
         )
         flash_error
       end

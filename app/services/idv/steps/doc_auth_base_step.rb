@@ -25,6 +25,7 @@ module Idv
           @flow.analytics.track_event(
             Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
             throttle_type: :idv_resolution,
+            step_name: self.class,
           )
           redirect_to idv_session_errors_failure_url
         elsif result.extra.dig(:proofing_results, :exception).present?
