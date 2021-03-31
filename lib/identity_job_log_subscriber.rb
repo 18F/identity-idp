@@ -7,13 +7,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     ex = event.payload[:exception_object]
 
 
-    json = {
-      name: event.name,
-      job_class: job.class.name,
-      queue_name: queue_name(event),
-      duration_ms: event.duration,
-      trace_id: trace_id(job),
-    }
+    json = default_attributes(event, job)
 
     if ex
       json[:exception_class] = ex.class
@@ -39,13 +33,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     job = event.payload[:job]
     ex = event.payload[:exception_object]
 
-    json = {
-      name: event.name,
-      job_class: job.class.name,
-      queue_name: queue_name(event),
-      duration_ms: event.duration,
-      trace_id: trace_id(job),
-    }
+    json = default_attributes(event, job)
 
     if ex
       json[:exception_class] = ex.class
@@ -74,11 +62,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     job = event.payload[:job]
 
     json = {
-      name: event.name,
-      job_class: job.class.name,
-      queue_name: queue_name(event),
-      duration_ms: event.duration,
-      trace_id: trace_id(job),
       job_id: job.job_id,
       enqueued_at: job.enqueued_at,
       queued_duration_ms: queued_duration(job),
@@ -93,16 +76,11 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     job = event.payload[:job]
     ex = event.payload[:exception_object]
 
-    json = {
-      name: event.name,
-      job_class: job.class.name,
-      queue_name: queue_name(event),
-      duration_ms: event.duration,
-      trace_id: trace_id(job),
+    json = default_attributes(event, job).merge(
       job_id: job.job_id,
       enqueued_at: job.enqueued_at,
       queued_duration_ms: queued_duration(job),
-    }
+    )
 
     if ex
       # NewRelic?
@@ -132,11 +110,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     wait_seconds = event.payload[:wait]
 
     json = {
-      name: event.name,
-      job_class: job.class.name,
-      queue_name: queue_name(event),
-      duration_ms: event.duration,
-      trace_id: trace_id(job),
       job_id: job.job_id,
       wait_ms: wait.to_i.in_milliseconds
     }
@@ -153,16 +126,11 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     job = event.payload[:job]
     ex = event.payload[:error]
 
-    json = {
-      name: event.name,
-      job_class: job.class.name,
-      queue_name: queue_name(event),
-      duration_ms: event.duration,
-      trace_id: trace_id(job),
+    json = default_attributes(event, job).merge(
       job_id: job.job_id,
       exception_class: ex.class,
-      attempts: job.executions
-    }
+      attempts: job.executions,
+    )
 
     error do
       json.to_json
@@ -173,15 +141,11 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     job = event.payload[:job]
     ex = event.payload[:error]
 
-    json = {
-      name: event.name,
-      job_class: job.class.name,
-      queue_name: queue_name(event),
+    json = default_attributes(event, job).merge(
       duration_ms: event.duration,
-      trace_id: trace_id(job),
       job_id: job.job_id,
       exception_class: job.class,
-    }
+    )
 
     error do
       json.to_json
@@ -189,6 +153,16 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   private
+  def default_attributes(event, job)
+    {
+      timestamp: Time.zone.now,
+      name: event.name,
+      job_class: job.class.name,
+      trace_id: trace_id(job),
+      queue_name: queue_name(event),
+    }
+  end
+
   def queue_name(event)
     event.payload[:adapter].class.name.demodulize.remove("Adapter") + "(#{event.payload[:job].queue_name})"
   end
