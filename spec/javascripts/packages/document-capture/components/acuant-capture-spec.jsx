@@ -195,8 +195,8 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(addPageAction).to.have.been.calledWith({
-        label: 'IdV: test image capture failed',
-        payload: { error: 'User or system denied camera access' },
+        label: 'IdV: Image capture failed',
+        payload: { field: 'test', error: 'User or system denied camera access' },
       });
     });
 

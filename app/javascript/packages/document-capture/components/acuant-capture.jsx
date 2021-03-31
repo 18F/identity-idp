@@ -368,8 +368,8 @@ function AcuantCapture(
               setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
               setIsCapturingEnvironment(false);
               addPageAction({
-                label: `IdV: ${name} image capture failed`,
-                payload: { error: getNormalizedAcuantCaptureFailureMessage(error) },
+                label: 'IdV: Image capture failed',
+                payload: { field: name, error: getNormalizedAcuantCaptureFailureMessage(error) },
               });
             }}
           />
