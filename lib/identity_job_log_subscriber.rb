@@ -91,12 +91,10 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
     json = {
       job_id: job.job_id,
-      wait_ms: wait.to_i.in_milliseconds
+      wait_ms: wait.to_i.in_milliseconds,
     }
 
-    if ex
-      json[:exception_class] = ex.class
-    end
+    json[:exception_class] = ex.class if ex
 
     info(json.to_json)
   end
@@ -139,16 +137,17 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   def queue_name(event)
-    event.payload[:adapter].class.name.demodulize.remove("Adapter") + "(#{event.payload[:job].queue_name})"
+    event.payload[:adapter].class.name.demodulize.remove('Adapter') +
+      "(#{event.payload[:job].queue_name})"
   end
 
   def queued_duration(job)
     return if job.enqueued_at.blank?
-    (Time.zone.now - Time.parse(job.enqueued_at)).in_milliseconds
+    (Time.zone.now - Time.zone.parse(job.enqueued_at)).in_milliseconds
   end
 
   def scheduled_at(event)
-    Time.at(event.payload[:job].scheduled_at).utc
+    Time.zone.at(event.payload[:job].scheduled_at).utc
   end
 
   def logger
