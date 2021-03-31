@@ -82,6 +82,8 @@ import useI18n from '../hooks/use-i18n';
  * @prop {AcuantDocumentType} cardType Document type.
  * @prop {number} glare Detected image glare.
  * @prop {number} sharpness Detected image sharpness.
+ * @prop {number} moire Detected image moiré.
+ * @prop {number} moireraw Detected image raw moiré.
  * @prop {number} dpi Detected image resolution.
  *
  * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.3/SimpleHTMLApp#acuantcamera
