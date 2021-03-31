@@ -29,7 +29,7 @@ RSpec.describe DocumentProofingJob, type: :job do
       { document_arguments: document_arguments }.to_json,
     )
 
-    DocumentProofingJob.perform_now(
+    DocumentProofingJob.perform_later(
       result_id: document_capture_session.result_id,
       liveness_checking_enabled: false, encrypted_arguments: encrypted_arguments,
       callback_url: nil, trace_id: nil

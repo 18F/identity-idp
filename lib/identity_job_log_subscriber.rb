@@ -13,19 +13,13 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       json[:exception_class] = ex.class
       json[:exception_message] = ex.message
 
-      error do
-        json.to_json
-      end
+      error(json.to_json)
     elsif event.payload[:aborted]
-      info do
-        json.to_json
-      end
+      info(json.to_json)
     else
       json[:job_id] = job.job_id
 
-      info do
-        json.to_json
-      end
+      info(json.to_json)
     end
   end
 
@@ -39,37 +33,29 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       json[:exception_class] = ex.class
       json[:exception_message] = ex.message
 
-      error do
-        json.to_json
-      end
+      error(json.to_json)
     elsif event.payload[:aborted]
       json[:halted] = true
 
-      info do
-        json.to_json
-      end
+      info(json.to_json)
     else
       json[:scheduled_at] = scheduled_at(event)
       json[:job_id] = job.job_id
 
-      info do
-        json.to_json
-      end
+      info(json.to_json)
     end
   end
 
   def perform_start(event)
     job = event.payload[:job]
 
-    json = {
+    json = default_attributes(event, job).merge(
       job_id: job.job_id,
       enqueued_at: job.enqueued_at,
       queued_duration_ms: queued_duration(job),
-    }
+    )
 
-    info do
-      json.to_json
-    end
+    info(json.to_json)
   end
 
   def perform(event)
@@ -88,19 +74,13 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       json[:exception_message] = ex.message
       json[:exception_backtrace] = Array(ex.backtrace).join("\n")
 
-      error do
-        json.to_json
-      end
+      error(json.to_json)
     elsif event.payload[:aborted]
       json[:halted] = true
 
-      error do
-        json.to_json
-      end
+      error(json.to_json)
     else
-      info do
-        json.to_json
-      end
+      info(json.to_json)
     end
   end
 
@@ -117,9 +97,8 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     if ex
       json[:exception_class] = ex.class
     end
-    info do
-      json.to_json
-    end
+
+    info(json.to_json)
   end
 
   def retry_stopped(event)
@@ -132,9 +111,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       attempts: job.executions,
     )
 
-    error do
-      json.to_json
-    end
+    error(json.to_json)
   end
 
   def discard(event)
@@ -142,19 +119,17 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     ex = event.payload[:error]
 
     json = default_attributes(event, job).merge(
-      duration_ms: event.duration,
       job_id: job.job_id,
       exception_class: job.class,
     )
 
-    error do
-      json.to_json
-    end
+    error(json.to_json)
   end
 
   private
   def default_attributes(event, job)
     {
+      duration_ms: event.duration,
       timestamp: Time.zone.now,
       name: event.name,
       job_class: job.class.name,
@@ -177,7 +152,11 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   def logger
-    ActiveSupport::Logger.new(Rails.root.join('log', "#{Rails.env}.log"))
+    if Rails.env.test?
+      Rails.logger
+    else
+      ActiveSupport::Logger.new(Rails.root.join('log', "#{Rails.env}.log"))
+    end
   end
 
   def trace_id(job)

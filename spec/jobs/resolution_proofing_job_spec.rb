@@ -17,7 +17,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
     )
 
-    ResolutionProofingJob.perform_now(
+    ResolutionProofingJob.perform_later(
       result_id: document_capture_session.result_id, should_proof_state_id: false,
       dob_year_only: false, encrypted_arguments: encrypted_arguments,
       callback_url: nil, trace_id: nil
