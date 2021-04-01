@@ -13,7 +13,7 @@ class BackupCodeBenchmarker
   def initialize(
     cost: '10000$8$1$',
     batch_size: 1000,
-    num_rows: 100_000, # number of BackupCodeCon
+    num_rows: 100_000, # number of rows to test backfilling
     num_per_user: BackupCodeGenerator::NUMBER_OF_CODES, # defaults to 10
     logger: Logger.new(STDOUT)
   )
