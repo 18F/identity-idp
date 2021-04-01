@@ -25,7 +25,7 @@ describe ServiceProviderUpdater do
       acs_url: 'http://sp.example.org/saml/login',
       assertion_consumer_logout_service_url: 'http://sp.example.org/saml/logout',
       block_encryption: 'aes256-cbc',
-      cert: saml_test_sp_cert,
+      certs: [saml_test_sp_cert],
       active: true,
       native: true,
       approved: true,
@@ -48,7 +48,7 @@ describe ServiceProviderUpdater do
       acs_url: 'http://oldsp.example.org/saml/login',
       assertion_consumer_logout_service_url: 'http://oldsp.example.org/saml/logout',
       block_encryption: 'aes256-cbc',
-      cert: saml_test_sp_cert,
+      certs: [saml_test_sp_cert],
       active: false,
     }
   end
@@ -201,7 +201,7 @@ describe ServiceProviderUpdater do
             acs_url: 'http://sp.example.org/saml/login',
             assertion_consumer_logout_service_url: 'http://sp.example.org/saml/logout',
             block_encryption: 'aes256-cbc',
-            cert: saml_test_sp_cert,
+            cert: [saml_test_sp_cert],
             active: true,
             native: false,
             approved: true,

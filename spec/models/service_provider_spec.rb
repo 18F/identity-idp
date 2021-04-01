@@ -72,19 +72,19 @@ describe ServiceProvider do
     end
 
     it 'accepts a blank certificate' do
-      sp = build(:service_provider, redirect_uris: [], cert: '')
+      sp = build(:service_provider, redirect_uris: [], certs: [''])
 
       expect(sp).to be_valid
     end
 
     it 'fails if certificate is present but not x509' do
-      sp = build(:service_provider, redirect_uris: [], cert: 'saml_test_invalid_sp')
+      sp = build(:service_provider, redirect_uris: [], certs: ['saml_test_invalid_sp'])
 
       expect(sp).to_not be_valid
     end
 
     it 'accepts a valid x509 certificate' do
-      sp = build(:service_provider, redirect_uris: [], cert: 'saml_test_sp')
+      sp = build(:service_provider, redirect_uris: [], certs: ['saml_test_sp'])
 
       expect(sp).to be_valid
     end

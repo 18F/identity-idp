@@ -4,7 +4,8 @@ test:
     assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
     sp_initiated_login_url: 'http://localhost:3000/test/saml'
     block_encryption: 'none'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     agency: 'Test Government Agency'
     agency_id: 1
     uuid_priority: 10
@@ -30,7 +31,8 @@ test:
       - 'http://example.com/auth/result'
       - 'http://example.com/logout'
     friendly_name: 'Test SP'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     logo: 'generic.svg'
     ial: 2
     attribute_bundle:
@@ -52,7 +54,8 @@ test:
       - 'http://example.com/auth/result'
       - 'http://example.com/logout'
     friendly_name: 'Test SP'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     logo: 'generic.svg'
     ial: 2
     aal: 3
@@ -74,7 +77,8 @@ test:
       - 'http://example.com/auth/result'
       - 'http://example.com/logout'
     friendly_name: 'Test SP requesting signed response message'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     logo: 'generic.svg'
     ial: 1
     attribute_bundle:
@@ -94,7 +98,8 @@ test:
       - 'http://example.com/auth/result'
       - 'http://example.com/logout'
     friendly_name: 'Test SP requesting signed response message'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     logo: 'generic.svg'
     ial: 1
     attribute_bundle:
@@ -107,7 +112,8 @@ test:
     acs_url: 'http://example.com/test/saml/decode_assertion'
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
     block_encryption: 'aes256-cbc'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     friendly_name: 'Test SP'
     allow_prompt_login: true
 
@@ -127,7 +133,8 @@ test:
     redirect_uris:
       - 'gov.gsa.openidconnect.test://result'
       - 'gov.gsa.openidconnect.test://result/signout'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     friendly_name: 'Example iOS App'
     agency: '18F'
     agency_id: 1
@@ -141,7 +148,8 @@ test:
     redirect_uris:
       - 'gov.gsa.openidconnect.test://result'
       - 'gov.gsa.openidconnect.test://result/signout'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     friendly_name: 'Example app that disallows prompt=login'
     agency: '18F'
     agency_id: 1
@@ -154,7 +162,8 @@ test:
     redirect_uris:
       - 'gov.gsa.openidconnect.test://result'
       - 'gov.gsa.openidconnect.test://result/logout'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     friendly_name: 'Example iOS App'
     agency: '18F'
     agency_id: 1
@@ -168,7 +177,8 @@ test:
       - 'http://localhost:7654/auth/result'
       - 'https://example.com'
       - 'http://www.example.com/test/oidc'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     friendly_name: 'Test SP'
     assertion_consumer_logout_service_url: ''
     ial: 2
@@ -179,7 +189,8 @@ test:
     redirect_uris:
       - 'http://localhost:7654/auth/result'
       - 'https://example.com'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     friendly_name: 'Test SP'
     assertion_consumer_logout_service_url: ''
     ial: 2
@@ -188,7 +199,8 @@ test:
 
   'test_sp_with_default_help_text':
     agency_id: 2
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     friendly_name: 'Test SP with default help text'
     ial: 2
     help_text:
@@ -232,7 +244,8 @@ test:
 
   'test_sp_with_custom_help_text':
     agency_id: 2
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     friendly_name: 'Test SP with custom help text'
     ial: 2
     help_text:
@@ -258,7 +271,8 @@ development:
     assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
     block_encryption: 'aes256-cbc'
     sp_initiated_login_url: 'http://localhost:3000/test/saml'
-    cert: 'saml_test_sp'
+    certs:
+     - 'saml_test_sp'
     fingerprint: '08:79:F5:B1:B8:CC:EC:8F:5C:2A:58:03:30:14:C9:E6:F1:67:78:F1:97:E8:3A:88:EB:8E:70:92:25:D2:2F:32'
     logo: 'generic.svg'
     agency: 'GSA'
@@ -270,7 +284,8 @@ development:
     sp_initiated_login_url: 'http://localhost:4567/test/saml'
     assertion_consumer_logout_service_url: 'http://localhost:4567/slo_logout'
     block_encryption: 'aes256-cbc'
-    cert: 'sp_sinatra_demo'
+    certs:
+     - 'sp_sinatra_demo'
     ial: 2
     attribute_bundle:
       - email
@@ -280,7 +295,8 @@ development:
     assertion_consumer_logout_service_url: 'http://localhost:3000/auth/saml/logout'
     sp_initiated_login_url: 'http://localhost:3000/admin/sign_in'
     block_encryption: 'aes256-cbc'
-    cert: 'sp_micropurchase'
+    certs:
+     - 'sp_micropurchase'
     agency: 'TTS Acquisition'
     logo: '18f.svg'
     friendly_name: 'Micro-purchase Dev'
@@ -293,7 +309,8 @@ development:
     assertion_consumer_logout_service_url: 'http://localhost:3003/auth/saml/logout'
     sp_initiated_login_url: 'http://localhost:3003/login'
     block_encryption: 'aes256-cbc'
-    cert: 'sp_rails_demo'
+    certs:
+     - 'sp_rails_demo'
     agency: '18F'
     agency_id: 1
     uuid_priority: 10
@@ -310,7 +327,8 @@ development:
     agency_id: 2
     uuid_priority: 30
     logo: '18f.svg'
-    cert: 'identity_dashboard_cert'
+    certs:
+     - 'identity_dashboard_cert'
     return_to_sp_url: 'http://localhost:3001'
     redirect_uris:
       - 'http://localhost:3001/auth/logindotgov/callback'
@@ -333,12 +351,14 @@ development:
       - 'http://localhost:9292/'
       - 'http://localhost:9292/auth/result'
       - 'http://localhost:9292/logout'
-    cert: 'sp_sinatra_demo'
+    certs:
+     - 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
   'urn:gov:gsa:openidconnect:sp:expressjs':
     agency: 'GSA'
-    cert: 'sp_expressjs_demo'
+    certs:
+     - 'sp_expressjs_demo'
     friendly_name: 'Example OIDC Client (Express.js)'
     logo: '18f.svg'
     redirect_uris:
@@ -347,7 +367,8 @@ development:
 
   'urn:gov:gsa:openidconnect:sp:gin':
     agency: 'GSA'
-    cert: 'sp_gin_demo'
+    certs:
+     - 'sp_gin_demo'
     friendly_name: 'Example OIDC Client (Gin)'
     logo: '18f.svg'
     redirect_uris:
@@ -356,7 +377,8 @@ development:
 
   'urn:gov:gsa:openidconnect:sp:phoenix':
     agency: 'GSA'
-    cert: 'sp_phoenix_demo'
+    certs:
+     - 'sp_phoenix_demo'
     friendly_name: 'Example OIDC Client (Phoenix)'
     logo: '18f.svg'
     redirect_uris:
@@ -366,7 +388,8 @@ development:
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:gsa:oyk_sml':
     agency: 'GSA'
     friendly_name: 'Ruby client test app'
-    cert: 'ruby_client'
+    certs:
+     - 'ruby_client'
     logo: '18f.sv'
     redirect_uris:
       - 'http://localhost:4567/'

@@ -199,7 +199,7 @@ RSpec.describe SecurityEventForm do
       end
 
       context 'when the issuer does not have a public key registered' do
-        before { service_provider.update(cert: nil) }
+        before { service_provider.update(certs: []) }
 
         it 'is invalid' do
           expect(valid?).to eq(false)

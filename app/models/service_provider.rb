@@ -2,7 +2,7 @@ require 'fingerprinter'
 require 'identity_validations'
 
 class ServiceProvider < ApplicationRecord
-  self.ignored_columns = %w[deal_id agency aal fingerprint]
+  self.ignored_columns = %w[deal_id agency aal fingerprint cert]
 
   belongs_to :agency
 
@@ -32,7 +32,7 @@ class ServiceProvider < ApplicationRecord
 
   # @return [Array<OpenSSL::X509::Certificate>]
   def ssl_certs
-    @ssl_certs ||= (certs.presence || Array(cert)).map do |cert|
+    @ssl_certs ||= Array(certs).map do |cert|
       OpenSSL::X509::Certificate.new(load_cert(cert))
     end
   end
