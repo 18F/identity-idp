@@ -1,3 +1,5 @@
+# This is for benchmarking backup code conversion to salted hashes
+# DO NOT RUN IT IN PRODUCTION
 class BackupCodeBenchmarker
   # attribute_cost: "4000$8$4$"
   # scrypt_cost: "10000$8$1$"
@@ -9,7 +11,7 @@ class BackupCodeBenchmarker
   attr_reader :logger
 
   def initialize(
-    cost: "10000$8$1$",
+    cost: '10000$8$1$',
     batch_size: 1000,
     num_rows: 100_000, # number of BackupCodeCon
     num_per_user: BackupCodeGenerator::NUMBER_OF_CODES, # defaults to 10
@@ -38,7 +40,7 @@ class BackupCodeBenchmarker
       end
     end
 
-    logger.info "done creating backup codes"
+    logger.info 'done creating backup codes'
   end
 
   def run
