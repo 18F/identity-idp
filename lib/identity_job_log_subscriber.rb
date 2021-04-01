@@ -149,7 +149,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     if Rails.env.test?
       Rails.logger
     else
-      ActiveSupport::Logger.new(Rails.root.join('log', "#{Rails.env}.log"))
+      ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
     end
   end
 
