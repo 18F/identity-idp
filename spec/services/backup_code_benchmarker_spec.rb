@@ -40,8 +40,6 @@ RSpec.describe BackupCodeBenchmarker do
     end
 
     it 'sets scrypted value' do
-      BackupCodeConfiguration.delete_all
-
       benchmarker.run
 
       expect(BackupCodeConfiguration.count).to eq(num_rows)
