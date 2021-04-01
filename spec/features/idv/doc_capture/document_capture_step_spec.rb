@@ -131,6 +131,7 @@ feature 'doc capture document capture step' do
 
     it 'proceeds to the next page with valid info and logs analytics info' do
       allow(Analytics).to receive(:new).and_return(fake_analytics)
+      expect(Analytics).to receive(:new).with(hash_including(user: AnonymousUser))
 
       attach_and_submit_images
 
