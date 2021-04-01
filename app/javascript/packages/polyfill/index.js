@@ -6,11 +6,11 @@
  */
 
 /**
- * @typedef {"fetch"|"classlist"|"crypto"|"custom-event"} SupportedPolyfills
+ * @typedef {"fetch"|"classlist"|"crypto"|"custom-event"|"url"} SupportedPolyfills
  */
 
 /**
- * @type {Record<string,Polyfill>}
+ * @type {Record<SupportedPolyfills,Polyfill>}
  */
 const POLYFILLS = {
   fetch: {
@@ -36,6 +36,24 @@ const POLYFILLS = {
       }
     },
     load: () => import(/* webpackChunkName: "custom-event-polyfill" */ 'custom-event-polyfill'),
+  },
+  url: {
+    test() {
+      try {
+        // eslint-disable-next-line no-new
+        new URL('http://example.com');
+        // eslint-disable-next-line no-new
+        new URLSearchParams();
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    async load() {
+      const { URL, URLSearchParams } = await import('whatwg-url');
+      window.URL = URL;
+      window.URLSearchParams = URLSearchParams;
+    },
   },
 };
 
