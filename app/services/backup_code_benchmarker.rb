@@ -24,10 +24,19 @@ class BackupCodeBenchmarker
     @logger = logger
   end
 
+  def run
+    raise 'do not run in prod' if Identity::Hostdata.env == 'prod'
+
+    silence_active_record_logger do
+      prepare!
+      convert!
+    end
+  end
+
   def prepare!
     return if BackupCodeConfiguration.count >= num_rows
 
-    user = User.first!
+    user_id = User.first&.id || 1
     num_to_create = num_rows - BackupCodeConfiguration.count
 
     logger.info "creating #{num_to_create} backup code configurations"
@@ -36,20 +45,11 @@ class BackupCodeBenchmarker
       slice.each do
         code = SecureRandom.hex(6) # @see BackupCodeGenerator#backup_code
 
-        user.backup_code_configurations.create!(code: code)
+        BackupCodeConfiguration.create(user_id: user_id, code: code)
       end
     end
 
     logger.info 'done creating backup codes'
-  end
-
-  def run
-    raise 'whoah buddy' if Identity::Hostdata.env == 'prod'
-
-    silence_active_record_logger do
-      prepare!
-      convert!
-    end
   end
 
   def convert!
