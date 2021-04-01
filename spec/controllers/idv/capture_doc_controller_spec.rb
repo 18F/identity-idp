@@ -99,7 +99,7 @@ describe Idv::CaptureDocController do
 
       it 'tracks analytics' do
         mock_next_step(:capture_complete)
-        result = { step: 'capture_complete', step_count: 1 }
+        result = { step: 'capture_complete', step_count: 1, user_id: user.uuid }
 
         get :show, params: { step: 'capture_complete' }
 
