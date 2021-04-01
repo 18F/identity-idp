@@ -67,7 +67,7 @@ module Flow
     end
 
     def uuid_of_actual_user_if_user_is_anonymous
-      return unless current_user && user_id_from_token
+      return if current_user || user_id_from_token.blank?
       User.where(id: user_id_from_token).first&.uuid
     end
 
@@ -138,6 +138,7 @@ module Flow
         optional_properties = result.to_h.merge(step: optional_show_step_name).
           merge(analytics_user_override_hash)
 
+        puts "optional_properties=#{optional_properties.inspect}"
         analytics.track_event(analytics_optional_step, optional_properties)
         # keeping the old event names for backward compatibility
         analytics.track_event(old_analytics_optional_step, optional_properties)
