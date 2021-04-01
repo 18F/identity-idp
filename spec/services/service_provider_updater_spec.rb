@@ -228,7 +228,7 @@ describe ServiceProviderUpdater do
             agency_id: agency_1.id,
             redirect_uris: openid_connect_redirect_uris,
             active: true,
-            cert: 'aaaa'
+            cert: 'aaaa',
           },
         ]
       end
