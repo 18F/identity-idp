@@ -15,7 +15,7 @@ const setRadioEnabled = (radio, isEnabled) => {
 
   const label = /** @type {Element} */ radio.parentNode.parentNode;
 
-  label.classList.toggle('btn-disabled', !isEnabled);
+  label.classList.toggle('usa-button--disabled', !isEnabled);
 };
 
 const updateOTPDeliveryMethods = () => {

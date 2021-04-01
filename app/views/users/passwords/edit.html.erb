@@ -14,7 +14,7 @@
   <%= f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,
               input_html: { aria: { invalid: false, describedby: 'password-description' }, class: 'password-toggle' } %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>
-  <%= f.button :submit, t('forms.buttons.submit.update'), class: 'margin-top-2 margin-bottom-4' %>
+  <%= f.button :submit, t('forms.buttons.submit.update'), class: 'usa-button--big margin-top-2 margin-bottom-4' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>

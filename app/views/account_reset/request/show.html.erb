@@ -23,7 +23,7 @@
       t('users.personal_key.print'),
       '#',
       data: { print: true },
-      class: 'margin-left-2 btn-border display-inline-block ico ico-print text-decoration-none',
+      class: 'usa-button usa-button--outline margin-left-2 display-inline-block ico ico-print',
     ) %>
   </div>
   <hr/>
@@ -49,7 +49,7 @@
   t('account_reset.request.no_cancel'),
   root_url,
   method: :get,
-  class: 'btn btn-primary btn-wide margin-bottom-1 personal-key-continue',
+  class: 'usa-button usa-button--big usa-button--wide margin-bottom-1 personal-key-continue',
   'data-toggle': 'modal',
 ) %>
 <%= button_to(
