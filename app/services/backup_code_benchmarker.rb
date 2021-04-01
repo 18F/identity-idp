@@ -86,13 +86,11 @@ class BackupCodeBenchmarker
     end
   end
 
-  # Open Question: do we need Base64? This is going directly to a column, not to a JSON blob
   # @see PasswordVerifier#scrypt_password_digest
   def scrypt_password_digest(password:, salt:, cost:)
     scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(salt)
     scrypted = SCrypt::Engine.hash_secret password, scrypt_salt, 32
     scrypt_password_digest = SCrypt::Password.new(scrypted).digest
-    # Base64.strict_encode64(scrypt_password_digest)
   end
 
   # @yield a block to run with a silenced AR logger
