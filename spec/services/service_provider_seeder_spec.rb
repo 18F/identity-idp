@@ -150,7 +150,7 @@ RSpec.describe ServiceProviderSeeder do
               acs_url: 'http://example.com/test/saml/decode_assertion',
               assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request',
               block_encryption: 'aes256-cbc',
-              cert: ['saml_test_sp'],
+              certs: ['saml_test_sp'],
               redirect_uris: [''],
             },
           }
