@@ -70,7 +70,7 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-validations.git
-  revision: 22a5b986003f682e97ac6b3071c9cc5a7b0295bb
+  revision: 28f750b3782abe3568860f2cddabb0321a5ca16a
   branch: margolis-support-multiple-certs
   specs:
     identity_validations (0.4.0)
