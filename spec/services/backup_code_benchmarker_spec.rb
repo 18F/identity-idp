@@ -8,7 +8,7 @@ RSpec.describe BackupCodeBenchmarker do
   let(:user) { build(:user) }
   subject(:benchmarker) do
     BackupCodeBenchmarker.new(
-      cost: '4000$8$4$',
+      cost: '10$8$4$',
       logger: logger,
       num_rows: num_rows,
       num_per_user: num_per_user,
