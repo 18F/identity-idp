@@ -70,10 +70,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-validations.git
-  revision: 26253af02f472d3023062efd5c7a3920b0db5f9c
-  branch: main
+  revision: 22a5b986003f682e97ac6b3071c9cc5a7b0295bb
+  branch: margolis-support-multiple-certs
   specs:
-    identity_validations (0.3.2)
+    identity_validations (0.4.0)
 
 GIT
   remote: https://github.com/18F/saml_idp.git
