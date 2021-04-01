@@ -23,7 +23,8 @@ module Idv
 
       result = CaptureDoc::ValidateDocumentCaptureSession.new(document_capture_session_uuid).call
 
-      analytics.track_event(FSM_SETTINGS[:analytics_id], result.to_h)
+      analytics_hash = result.to_h.merge(user_id: analytics_user_id)
+      analytics.track_event(FSM_SETTINGS[:analytics_id], analytics_hash)
       process_result(result)
     end
 
@@ -53,8 +54,9 @@ module Idv
       params['document-capture-session']
     end
 
-    def analytics_user
-      user_id_from_token ? User.find(user_id_from_token) : super
+    def analytics_user_id
+      return unless user_id_from_token
+      User.find(user_id_from_token)&.uuid
     end
   end
 end

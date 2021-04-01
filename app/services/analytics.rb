@@ -9,7 +9,7 @@ class Analytics
   def track_event(event, attributes = {})
     analytics_hash = {
       event_properties: attributes.except(:user_id),
-      user_id: user.uuid,
+      user_id: attributes[:user_id] || user.uuid,
     }
     analytics_hash.merge!(request_attributes)
 
