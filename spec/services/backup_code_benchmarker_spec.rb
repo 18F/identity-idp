@@ -52,7 +52,7 @@ RSpec.describe BackupCodeBenchmarker do
             password: cfg.code,
             salt: cfg.code_salt,
             cost: cfg.code_cost,
-          )
+          ),
         )
       end
     end
