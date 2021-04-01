@@ -5,6 +5,7 @@ RSpec.describe BackupCodeBenchmarker do
 
   let(:num_rows) { 4 }
   let(:num_per_user) { 2 }
+  let(:user) { build(:user) }
   subject(:benchmarker) do
     BackupCodeBenchmarker.new(
       cost: '4000$8$4$',
@@ -28,7 +29,6 @@ RSpec.describe BackupCodeBenchmarker do
 
     context 'when enough backup code configurations already exist' do
       let(:num_rows) { 2 }
-      let(:user) { build(:user) }
 
       before do
         num_rows.times { create(:backup_code_configuration, user: user) }
@@ -55,6 +55,13 @@ RSpec.describe BackupCodeBenchmarker do
           ),
         )
       end
+    end
+
+    it 'does not update beyond num_rows' do
+      (num_rows + 1).times { create(:backup_code_configuration, user: user) }
+
+      expect { benchmarker.run }.
+        to_not(change { BackupCodeConfiguration.last.salted_code_fingerprint })
     end
   end
 end

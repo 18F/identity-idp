@@ -54,7 +54,7 @@ class BackupCodeBenchmarker
 
   def convert!
     Benchmark.realtime do
-      BackupCodeConfiguration.find_in_batches(batch_size: batch_size) do |batch|
+      BackupCodeConfiguration.limit(num_rows).find_in_batches(batch_size: batch_size) do |batch|
         Benchmark.realtime do
           batch.each_slice(num_per_user) do |slice|
             Benchmark.realtime do
