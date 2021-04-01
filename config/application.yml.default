@@ -119,7 +119,7 @@ remember_device_expiration_hours_aal_2: '12'
 report_timeout:
 requests_per_ip_track_only_mode: 'false'
 risc_notifications_sqs_enabled: 'false'
-ruby_workers_enabled: 'false'
+ruby_workers_enabled: 'true'
 saml_secret_rotation_enabled:
 service_provider_request_ttl_hours: '24'
 session_check_delay: '30'
@@ -333,6 +333,7 @@ production:
   reset_password_email_max_attempts: '20'
   reset_password_email_window_in_minutes: '60'
   resolution_proof_result_lambda_token:
+  ruby_workers_enabled: 'false'
   s3_report_bucket_prefix: login-gov.reports
   s3_reports_enabled: 'true'
   saml_endpoint_configs:
@@ -442,7 +443,6 @@ test:
   reset_password_email_max_attempts: '5'
   reset_password_email_window_in_minutes: '80'
   resolution_proof_result_lambda_token: test_token_resolution
-  ruby_workers_enabled: 'true'
   s3_report_bucket_prefix:
   s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
