@@ -57,7 +57,11 @@ class BackupCodeBenchmarker
       BackupCodeConfiguration.find_in_batches(batch_size: batch_size) do |batch|
         Benchmark.realtime do
           batch.each_slice(num_per_user) do |slice|
-            convert_codes!(slice)
+            Benchmark.realtime do
+              convert_codes!(slice)
+            end.tap do |duration|
+              logger.info "duration=#{duration} batch_size=#{slice.size}"
+            end
           end
         end.tap do |duration|
           logger.info "duration=#{duration} batch_size=#{batch.size}"
