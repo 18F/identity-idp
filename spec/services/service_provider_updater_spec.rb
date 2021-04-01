@@ -201,7 +201,7 @@ describe ServiceProviderUpdater do
             acs_url: 'http://sp.example.org/saml/login',
             assertion_consumer_logout_service_url: 'http://sp.example.org/saml/logout',
             block_encryption: 'aes256-cbc',
-            cert: [saml_test_sp_cert],
+            certs: [saml_test_sp_cert],
             active: true,
             native: false,
             approved: true,
@@ -219,6 +219,28 @@ describe ServiceProviderUpdater do
       end
     end
 
+    context 'dashboard has the old singular cert attribute' do
+      let(:dashboard_service_providers) do
+        [
+          {
+            issuer: 'aaaaaa',
+            friendly_name: 'a service provider',
+            agency_id: agency_1.id,
+            redirect_uris: openid_connect_redirect_uris,
+            active: true,
+            cert: 'aaaa'
+          },
+        ]
+      end
+
+      it 'ignores the old column' do
+        stub_request(:get, fake_dashboard_url).to_return(
+          status: 200,
+          body: dashboard_service_providers.to_json,
+        )
+        expect { subject.run }.to_not raise_error
+      end
+    end
     context 'GET request to dashboard raises an error' do
       it 'logs error and does not affect registry' do
         allow(Rails.logger).to receive(:error)
