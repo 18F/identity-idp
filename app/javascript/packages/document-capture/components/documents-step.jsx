@@ -61,7 +61,7 @@ function DocumentsStep({
         {!isMobile && <li>{t('doc_auth.tips.document_capture_id_text4')}</li>}
       </ul>
       {serviceProvider.name && (
-        <BlockLink url={serviceProvider.failureToProofURL}>
+        <BlockLink url={serviceProvider.getFailureToProofURL('documents_having_trouble')}>
           {formatHTML(t('doc_auth.info.get_help_at_sp_html', { sp_name: serviceProvider.name }), {
             strong: 'strong',
           })}

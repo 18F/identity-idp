@@ -7,7 +7,7 @@ import httpUpload, {
   toFormEntryError,
 } from '@18f/identity-document-capture/services/upload';
 import {
-  ServiceProviderContext,
+  ServiceProviderContextProvider,
   UploadContextProvider,
   AcuantContextProvider,
   DeviceContext,
@@ -314,11 +314,11 @@ describe('document-capture/components/document-capture', () => {
   it('redirects from a server error', async () => {
     const { getByLabelText, getByText } = render(
       <UploadContextProvider upload={httpUpload} endpoint="/upload">
-        <ServiceProviderContext.Provider value={{ isLivenessRequired: false }}>
+        <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
           <AcuantContextProvider sdkSrc="about:blank">
             <DocumentCapture />
           </AcuantContextProvider>
-        </ServiceProviderContext.Provider>
+        </ServiceProviderContextProvider>
       </UploadContextProvider>,
     );
 
@@ -513,11 +513,11 @@ describe('document-capture/components/document-capture', () => {
           backgroundUploadEncryptKey={key}
           upload={upload}
         >
-          <ServiceProviderContext.Provider value={{ isLivenessRequired: false }}>
+          <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
             <AcuantContextProvider sdkSrc="about:blank">
               <DocumentCapture />
             </AcuantContextProvider>
-          </ServiceProviderContext.Provider>
+          </ServiceProviderContextProvider>
         </UploadContextProvider>,
       );
       const { getByLabelText, getByText } = renderResult;

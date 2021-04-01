@@ -4,5 +4,5 @@ export { default as I18nContext } from './context/i18n';
 export { default as DeviceContext } from './context/device';
 export { Provider as AcuantContextProvider } from './context/acuant';
 export { Provider as UploadContextProvider } from './context/upload';
-export { default as ServiceProviderContext } from './context/service-provider';
+export { Provider as ServiceProviderContextProvider } from './context/service-provider';
 export { default as AnalyticsContext } from './context/analytics';
