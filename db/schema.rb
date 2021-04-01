@@ -75,9 +75,9 @@ ActiveRecord::Schema.define(version: 2021_04_01_192727) do
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "salted_code_fingerprint", limit: 255
-    t.string "code_salt", limit: 255
-    t.string "code_cost", limit: 20
+    t.string "salted_code_fingerprint"
+    t.string "code_salt"
+    t.string "code_cost"
     t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
     t.index ["user_id", "created_at"], name: "index_backup_code_configurations_on_user_id_and_created_at"
   end
