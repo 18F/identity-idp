@@ -68,7 +68,8 @@ class IdentityConfig
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
-    final_env = config.add(:valid_authn_contexts, type: :json)
+    config.add(:valid_authn_contexts, type: :json)
+    final_env = config.add(:usps_ipp_root_url)
 
     @store = RedactedStruct.new('IdentityConfig', *final_env.keys, keyword_init: true).
       new(**final_env)
