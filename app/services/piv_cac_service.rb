@@ -24,7 +24,7 @@ module PivCacService
     end
 
     def piv_cac_verify_token_link
-      AppConfig.env.piv_cac_verify_token_url
+      IdentityConfig.store.piv_cac_verify_token_url
     end
 
     def url_options

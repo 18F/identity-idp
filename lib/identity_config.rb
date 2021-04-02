@@ -61,6 +61,7 @@ class IdentityConfig
     config.add(:nonessential_email_banlist, type: :json)
     config.add(:outbound_connection_check_url)
     config.add(:piv_cac_service_url)
+    config.add(:piv_cac_verify_token_url)
     config.add(:recurring_jobs_disabled_names, type: :json)
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
     config.add(:skip_encryption_allowed_list, type: :json)
