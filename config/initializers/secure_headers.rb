@@ -96,7 +96,7 @@ end
 # We need this to be called after the SecureHeaders::Railtie adds its own middleware at the top
 Rails.application.configure do |config|
   # I18n is not configured yet at this point
-  available_locales = AppConfig.env.available_locales.try(:split, ' ') || %w[en]
+  available_locales = %w[en es fr]
   worker_js = 'AcuantImageProcessingWorker.min.js'
 
   # example URLs:
