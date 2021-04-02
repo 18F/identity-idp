@@ -46,6 +46,7 @@ class IdentityConfig
     config = IdentityConfig.new(config_map)
     config.add(:aamva_sp_banlist_issuers, type: :json)
     config.add(:aamva_verification_url)
+    config.add(:acuant_assure_id_url)
     config.add(:attribute_encryption_key_queue, type: :json)
     config.add(:aws_kms_regions, type: :json)
     config.add(:deleted_user_accounts_report_configs, type: :json)

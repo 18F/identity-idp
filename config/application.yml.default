@@ -25,6 +25,7 @@ acuant_maintenance_window_start: '2020-09-19T03:00:00Z' # 9/18 11pm Eastern
 acuant_maintenance_window_finish: '2020-09-19T05:00:00Z' # 9/19 1am Eastern
 acuant_assure_id_password: ''
 acuant_assure_id_subscription_id: ''
+acuant_assure_id_url: ''
 acuant_assure_id_username: ''
 acuant_attempt_window_in_minutes: '360'
 acuant_facial_match_license_key: ''
@@ -153,7 +154,6 @@ development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_reset_auth_token: abc123
-  acuant_assure_id_url: ''
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
@@ -259,7 +259,6 @@ production:
   aamva_public_key:
   aamva_verification_url:
   account_reset_auth_token:
-  acuant_assure_id_url: ''
   acuant_facial_match_url: ''
   acuant_max_attempts: '20'
   acuant_passlive_url: ''
