@@ -30,6 +30,7 @@ acuant_assure_id_username: ''
 acuant_attempt_window_in_minutes: '360'
 acuant_facial_match_license_key: ''
 acuant_facial_match_url: ''
+acuant_passlive_url: ''
 # These are dummy creds used to initialize the acuant SDK
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
@@ -156,7 +157,6 @@ development:
   aamva_public_key: 123abc
   account_reset_auth_token: abc123
   acuant_max_attempts: '20'
-  acuant_passlive_url: ''
   address_proof_result_lambda_token: 123ABC
   attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -260,7 +260,6 @@ production:
   aamva_verification_url:
   account_reset_auth_token:
   acuant_max_attempts: '20'
-  acuant_passlive_url: ''
   address_proof_result_lambda_token:
   attribute_cost: 4000$8$4$
   attribute_encryption_key:
