@@ -84,7 +84,7 @@ function ReviewIssuesStep({
             onChange={(nextValue) => onChange({ [side]: nextValue })}
             className="document-capture-review-issues-step__input"
             errorMessage={sideError ? <FormErrorMessage error={sideError} /> : undefined}
-            analyticsPrefix={`${side} image`}
+            name={side}
           />
         );
       })}
@@ -109,7 +109,7 @@ function ReviewIssuesStep({
               allowUpload={false}
               className="document-capture-review-issues-step__input"
               errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
-              analyticsPrefix="selfie"
+              name="selfie"
             />
           ) : (
             <SelfieCapture
