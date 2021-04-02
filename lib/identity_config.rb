@@ -48,6 +48,7 @@ class IdentityConfig
     config.add(:attribute_encryption_key_queue, type: :json)
     config.add(:aws_kms_regions, type: :json)
     config.add(:deleted_user_accounts_report_configs, type: :json)
+    config.add(:exception_recipients, type: :comma_separated_string_list)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:no_sp_campaigns_whitelist, type: :json)
     config.add(:nonessential_email_banlist, type: :json)
