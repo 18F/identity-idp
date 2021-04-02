@@ -88,10 +88,10 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     end
 
     it 'finds codes via code_fingerprint' do
-      codes = BackupCodeGenerator.new(user).create
+      codes = BackupCodeGenerator.new(user, skip_legacy_encryption: false).create
       first_code = codes.first
 
-      # overwrite the code_fingerprint with a wrong value so queries use the other column
+      # overwrite with a wrong value so queries use the other column
       BackupCodeConfiguration.all.each_with_index do |code, index|
         code.update!(salted_code_fingerprint: index)
       end
@@ -104,7 +104,7 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       codes = BackupCodeGenerator.new(user).create
       first_code = codes.first
 
-      # overwrite the code_fingerprint with a wrong value so queries use the other column
+      # overwrite with a wrong value so queries use the other column
       BackupCodeConfiguration.all.each_with_index do |code, index|
         code.update!(code_fingerprint: index)
       end

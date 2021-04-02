@@ -5,10 +5,15 @@ class BackupCodeGenerator
 
   NUMBER_OF_CODES = 10
 
-  def initialize(user, length: 3, split: 4)
+  def initialize(user, length: 3, split: 4, skip_legacy_encryption: true)
     @length = length
     @split = split
     @user = user
+    @skip_legacy_encryption = skip_legacy_encryption
+  end
+
+  def skip_legacy_encryption?
+    @skip_legacy_encryption
   end
 
   # @return [Array<String>]
@@ -59,7 +64,7 @@ class BackupCodeGenerator
     @user.backup_code_configurations.create!(
       code_salt: salt,
       code_cost: cost,
-      skip_symmetrically_encrypted: true,
+      skip_legacy_encryption: skip_legacy_encryption?,
       code: code,
     )
   end
