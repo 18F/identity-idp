@@ -10,6 +10,12 @@
 
 <p class="mt-tiny"><%== @presenter.intro %></p>
 
+<div class="usa-alert usa-alert--info" >
+  <div class="usa-alert__body">
+    <p class="usa-alert__text"><%=t('two_factor_authentication.lockout_information')%></p>
+  </div>
+</div>
+
 <%= validated_form_for @two_factor_options_form,
                        html: { autocomplete: 'off', role: 'form' },
                        method: :patch,

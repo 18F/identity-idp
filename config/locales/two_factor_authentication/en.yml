@@ -29,7 +29,7 @@ en:
       phone: Phone
       piv_cac: PIV/CAC
       webauthn: Security key
-    header_text: Enter your security code 
+    header_text: Enter your security code
     important_alert_icon: important alert icon
     invalid_backup_code: That backup code is invalid.
     invalid_otp: That security code is invalid. You can try entering it again or request
@@ -38,6 +38,8 @@ en:
     invalid_piv_cac: That PIV/CAC didn’t work. Make sure it’s the right PIV/CAC for
       this account. If it is, there may be a problem with your PIV/CAC, PIN, or something
       went wrong on our end. Try again or choose another authentication method.
+    lockout_information: Keep this informations safe. You will be locked out and have
+      to create a new account if you lose your authentication method.
     login_intro: You set these up when you created your account
     login_options:
       auth_app: Authentication app
@@ -63,7 +65,6 @@ en:
       webauthn_info_html: Use your security key to access your account.
     login_options_link_text: Choose another authentication method
     login_options_title: Select your authentication method
-    lockout_information: Keep this informations safe. You will be locked out and have to create a new account if you lose your authentication method.
     max_backup_code_login_attempts_reached: For your security, your account is temporarily
       locked because you have entered the backup code incorrectly too many times.
     max_generic_login_attempts_reached: For your security, your account is temporarily

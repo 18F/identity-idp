@@ -39,6 +39,8 @@ es:
     invalid_piv_cac: Ese PIV/CAC no funcionó. Asegúrese de que sea el PIV/CAC correcto
       para esta cuenta. Si es así, puede haber un problema con su PIV/CAC, PIN o algo
       salió mal de nuestra parte. Intente nuevamente o elija otro método de autenticación.
+    lockout_information: Mantenga esta información de forma segura. En caso de perder
+      el método de autenticación, la cuenta se bloqueará y tendrá que crear una nueva.
     login_intro: Usted configuró esto cuando creó su cuenta
     login_options:
       auth_app: Aplicación de autenticación
@@ -68,7 +70,6 @@ es:
       webauthn_info_html: Use su llave de seguridad para acceder a su cuenta.
     login_options_link_text: Elige otra opción de seguridad
     login_options_title: Seleccione su opción de seguridad
-    lockout_information: Mantenga esta información de forma segura. En caso de perder el método de autenticación, la cuenta se bloqueará y tendrá que crear una nueva.
     max_backup_code_login_attempts_reached: Para su seguridad, su cuenta está bloqueada
       temporalmente porque ha ingresado el código de respaldo incorrectamente muchas
       veces.
