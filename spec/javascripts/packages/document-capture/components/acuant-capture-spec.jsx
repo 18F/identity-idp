@@ -47,9 +47,10 @@ describe('document-capture/components/acuant-capture', () => {
     [
       null,
       undefined,
-      'Camera not supported',
+      'Camera not supported.',
+      'already started.',
       'already started',
-      'Missing HTML elements',
+      'Missing HTML elements.',
       /** @type {MediaStreamError} */ (new Error()),
       'nonsense',
     ].forEach((error) => {

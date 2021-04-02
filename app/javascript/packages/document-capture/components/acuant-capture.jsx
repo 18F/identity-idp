@@ -140,10 +140,11 @@ export function getNormalizedAcuantCaptureFailureMessage(error) {
   }
 
   switch (error) {
-    case 'Camera not supported':
+    case 'Camera not supported.':
       return 'Camera not supported';
-    case 'Missing HTML elements':
+    case 'Missing HTML elements.':
       return 'Required page elements are not available';
+    case 'already started.':
     case 'already started':
       return 'Capture already started';
     default:
