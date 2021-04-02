@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'pathname'
+require 'yaml'
 
 # path to your application root.
 APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
@@ -24,8 +25,7 @@ Dir.chdir APP_ROOT do
   ]
 
   puts '== Setting up config overrides =='
-  require 'yaml'
-  default_application_yml = { development: { config_key: nil } }
+  default_application_yml = { 'development' => { 'config_key' => nil } }
   File.write('config/application.yml', default_application_yml.to_yaml) unless File.exists?('config/application.yml')
 
   puts "== Linking service_providers.yml =="
