@@ -24,7 +24,9 @@ Dir.chdir APP_ROOT do
   ]
 
   puts '== Setting up config overrides =='
-  File.write('config/application.yml', "development:\n  config_key:") unless File.exists?('config/application.yml')
+  require 'yaml'
+  default_application_yml = { development: { config_key: nil } }
+  File.write('config/application.yml', default_application_yml.to_yaml) unless File.exists?('config/application.yml')
 
   puts "== Linking service_providers.yml =="
   run "test -r config/service_providers.yml || ln -sv service_providers.localdev.yml config/service_providers.yml"
