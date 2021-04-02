@@ -70,10 +70,10 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     end
   end
 
-  describe 'find_with_code' do
+  describe '.find_with_code' do
+    let(:user) { create(:user) }
+
     it 'returns the code' do
-      user = User.new
-      user.save
       codes = BackupCodeGenerator.new(user).create
       first_code = codes.first
 
@@ -82,13 +82,43 @@ RSpec.describe BackupCodeConfiguration, type: :model do
     end
 
     it 'does not return the code with a wrong user id' do
-      user = User.new
-      user.save
       codes = BackupCodeGenerator.new(user).create
       first_code = codes.first
 
       backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: 1234)
       expect(backup_code).to be_nil
+    end
+
+    it 'finds codes via salted_code_fingerprint' do
+      codes = BackupCodeGenerator.new(user).create
+      first_code = codes.first
+
+      # overwrite the code_fingerprint with a wrong value so queries use the other column
+      BackupCodeConfiguration.all.each_with_index do |code, index|
+        code.update!(code_fingerprint: index)
+      end
+
+      backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)
+      expect(backup_code).to be
+    end
+
+    it 'finds codes if they have different salts and costs from each other' do
+      user.backup_code_configurations.create!(
+        code_cost: '10$8$4$',
+        code_salt: 'abcdefg',
+        code: '1234'
+      )
+
+      user.backup_code_configurations.create!(
+        code_cost: '100$8$4$',
+        code_salt: 'hijklmno',
+        code: '5678'
+      )
+
+      expect(BackupCodeConfiguration.find_with_code(code: '1234', user_id: user.id)).to be
+      expect(BackupCodeConfiguration.find_with_code(code: '5678', user_id: user.id)).to be
+
+      expect(BackupCodeConfiguration.find_with_code(code: '9999', user_id: user.id)).to_not be
     end
   end
 

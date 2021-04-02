@@ -33,9 +33,9 @@ class BackupCodeGenerator
     @user.backup_code_configurations.destroy_all
   end
 
-  def save(codes)
+  def save(codes, salt: SecureRandom.hex(32))
     delete_existing_codes
-    codes.each { |code| save_code(code) }
+    codes.each { |code| save_code(code: code, salt: salt) }
   end
 
   private
@@ -52,8 +52,12 @@ class BackupCodeGenerator
     code && code.used_at.nil?
   end
 
-  def save_code(code)
-    @user.backup_code_configurations.create!(code: code)
+  def save_code(code:, salt:)
+    @user.backup_code_configurations.create!(
+      code_salt: salt,
+      code_cost: cost,
+      code: code,
+    )
   end
 
   def normalize(plaintext_code)
@@ -66,5 +70,9 @@ class BackupCodeGenerator
 
   def result
     @result ||= []
+  end
+
+  def cost
+    AppConfig.env.attribute_cost
   end
 end

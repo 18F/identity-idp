@@ -17,5 +17,10 @@ module BackupCodeEncryptedAttributeOverrides
   def code=(code)
     set_encrypted_attribute(name: :code, value: code)
     self.code_fingerprint = code.present? ? encrypted_attributes[:code].fingerprint : ''
+    self.salted_code_fingerprint = BackupCodeConfiguration.scrypt_password_digest(
+      password: code,
+      salt: code_salt,
+      cost: code_cost,
+    ) if code.present? && code_cost.present? && code_salt.present?
   end
 end
