@@ -396,6 +396,7 @@ function AcuantCapture(
       <div className="margin-top-2">
         {isMobile && (
           <Button
+            isFlexibleWidth
             isOutline={!value}
             isUnstyled={!!value}
             onClick={startCaptureOrTriggerUpload}
