@@ -62,7 +62,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
     json = default_attributes(event, job).merge(
       enqueued_at: job.enqueued_at,
-      queued_duration_ms: queued_duration(job),
     )
 
     if ex
@@ -149,7 +148,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     if Rails.env.test?
       Rails.logger
     else
-      ActiveSupport::Logger.new(Rails.root.join('log', "#{Rails.env}.log"))
+      ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
     end
   end
 
