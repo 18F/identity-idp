@@ -4,7 +4,6 @@ class IdentityConfig
   end
 
   CONVERTERS = {
-    uri: proc { |value| URI(value) },
     string: proc { |value| value.to_s },
     comma_separated_string_list: proc do |value|
       value.split(',')
