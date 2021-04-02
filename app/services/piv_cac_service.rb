@@ -16,7 +16,7 @@ module PivCacService
       uri = if FeatureManagement.development_and_identity_pki_disabled?
               URI(test_piv_cac_entry_url)
             else
-              URI(randomize_uri(AppConfig.env.piv_cac_service_url))
+              URI(randomize_uri(IdentityConfig.store.piv_cac_service_url))
             end
       # add the nonce and redirect uri
       uri.query = { nonce: nonce, redirect_uri: redirect_uri }.to_query

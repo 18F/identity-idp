@@ -70,7 +70,7 @@ describe PivCacService do
         describe 'when configured with a user-facing endpoint' do
           before(:each) do
             allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
-            allow(AppConfig.env).to receive(:piv_cac_service_url) { base_url }
+            allow(IdentityConfig.store).to receive(:piv_cac_service_url) { base_url }
           end
 
           let(:nonce) { 'once' }
