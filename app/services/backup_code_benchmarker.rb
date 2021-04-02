@@ -90,7 +90,7 @@ class BackupCodeBenchmarker
           password: code,
           salt: salt,
           cost: cost,
-        )
+        ),
       )
     end
   end

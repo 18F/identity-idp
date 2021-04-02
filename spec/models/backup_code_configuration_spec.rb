@@ -104,13 +104,13 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       user.backup_code_configurations.create!(
         code_cost: '10$8$4$',
         code_salt: 'abcdefg',
-        code: '1234'
+        code: '1234',
       )
 
       user.backup_code_configurations.create!(
         code_cost: '100$8$4$',
         code_salt: 'hijklmno',
-        code: '5678'
+        code: '5678',
       )
 
       expect(BackupCodeConfiguration.find_with_code(code: '1234', user_id: user.id)).to be

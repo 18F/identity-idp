@@ -52,9 +52,9 @@ class BackupCodeConfiguration < ApplicationRecord
       end
 
       where(
-        code_fingerprint: code_fingerprint
+        code_fingerprint: code_fingerprint,
       ).or(
-        where(salted_code_fingerprint: salted_fingerprints)
+        where(salted_code_fingerprint: salted_fingerprints),
       ).find_by(user_id: user_id)
     end
 
