@@ -43,7 +43,7 @@ class BackupCodeConfiguration < ApplicationRecord
       user_salt_costs = select(:code_salt, :code_cost).
         distinct.
         where(user_id: user_id).
-        where.not(code_salt: nil).
+        where.not(code_salt: nil, code_cost: nil).
         limit(BackupCodeGenerator::NUMBER_OF_CODES * 2).
         pluck(:code_salt, :code_cost)
 
