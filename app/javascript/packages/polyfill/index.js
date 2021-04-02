@@ -49,11 +49,10 @@ const POLYFILLS = {
         return false;
       }
     },
-    async load() {
-      const { URL, URLSearchParams } = await import('whatwg-url');
-      window.URL = URL;
-      window.URLSearchParams = URLSearchParams;
-    },
+    load: () =>
+      import(
+        /* webpackChunkName: "polyfill-library-url" */ 'polyfill-library/polyfills/__dist/URL/min'
+      ),
   },
 };
 

@@ -15,9 +15,9 @@ environment.splitChunks();
 // 2. Specific dependencies that don't compile their own code to run safely in legacy browsers.
 const babelLoader = environment.loaders.get('babel');
 babelLoader.include.push(
-  /node_modules\/(@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset|whatwg-url)/,
+  /node_modules\/(@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/,
 );
-babelLoader.exclude = /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset|whatwg-url)/;
+babelLoader.exclude = /node_modules\/(?!@18f\/identity-|identity-style-guide|uswds|receptor|elem-dataset)/;
 
 const sassLoader = environment.loaders.get('sass');
 // Prepend minimum required design system variables, mixins, and functions to make available to all
