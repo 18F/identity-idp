@@ -51,7 +51,7 @@ module Upaya
     Rails.application.config.action_controller.urlsafe_csrf_tokens = false
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
-    config.i18n.available_locales = AppConfig.env.available_locales.try(:split, ' ') || %w[en]
+    config.i18n.available_locales = %w[en es fr]
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
 
