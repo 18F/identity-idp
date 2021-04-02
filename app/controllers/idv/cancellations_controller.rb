@@ -16,6 +16,7 @@ module Idv
       analytics.track_event(Analytics::IDV_CANCELLATION_CONFIRMED)
       idv_session = user_session[:idv]
       idv_session&.clear
+      @return_to_sp_params = params.permit(:flow, :step, :location).to_h.symbolize_keys
       reset_doc_auth
     end
 

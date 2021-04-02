@@ -18,7 +18,7 @@
 <% if decorated_session.sp_name %>
   <div class='margin-top-2'>
     <%= link_to "‹ #{t('links.back_to_sp', sp: decorated_session.sp_name)}",
-      return_to_sp_failure_to_proof_path %>
+                return_to_sp_failure_to_proof_path(@return_to_sp_params) %>
   </div>
 <% else %>
   <div class='margin-top-2'>
