@@ -87,6 +87,19 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       expect(BackupCodeConfiguration.find_with_code(code: first_code, user_id: 1234)).to be_nil
     end
 
+    it 'finds codes via code_fingerprint' do
+      codes = BackupCodeGenerator.new(user).create
+      first_code = codes.first
+
+      # overwrite the code_fingerprint with a wrong value so queries use the other column
+      BackupCodeConfiguration.all.each_with_index do |code, index|
+        code.update!(salted_code_fingerprint: index)
+      end
+
+      backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)
+      expect(backup_code).to be
+    end
+
     it 'finds codes via salted_code_fingerprint' do
       codes = BackupCodeGenerator.new(user).create
       first_code = codes.first
