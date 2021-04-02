@@ -34,6 +34,9 @@ lint:
 lint_erb:
 	bundle exec erblint app/views
 
+lint_yarn_lockfile:
+	(git diff --name-only | grep yarn.lock) && (echo "Error: Sync Yarn lockfile using 'yarn install'"; exit 1)
+
 lintfix:
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -R -a
@@ -79,7 +82,7 @@ optimize_svg:
 optimize_assets: optimize_svg
 
 lint_optimized_assets: optimize_assets
-	git diff --quiet || (echo "Error: Optimize assets using 'make optimize_assets'"; exit 1)
+	(git diff --name-only | grep "\.svg$") && (echo "Error: Optimize assets using 'make optimize_assets'"; exit 1)
 
 update_country_dialing_codes:
 	bundle exec ./scripts/pinpoint-supported-countries > config/country_dialing_codes.yml
