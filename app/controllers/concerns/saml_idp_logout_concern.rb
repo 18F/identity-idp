@@ -22,14 +22,10 @@ module SamlIdpLogoutConcern
   end
 
   def logout_response
-    response = encode_response(
+    encode_response(
       current_user,
       signature: saml_response_signature_options,
     )
-    # rubocop:disable Layout/LineLength
-    Rails.logger.info "#{'~' * 10} Response #{'~' * 10}\n#{response}\n#{'~' * 10} Done with response #{'~' * 10}"
-    # rubocop:enable Layout/LineLength
-    response
   end
 
   def track_logout_event
