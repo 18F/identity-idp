@@ -82,7 +82,7 @@ optimize_svg:
 optimize_assets: optimize_svg
 
 lint_optimized_assets: optimize_assets
-	(! git diff --name-only | grep "\.svg$") || (echo "Error: Optimize assets using 'make optimize_assets'"; exit 1)
+	(! git diff --name-only | grep "\.svg$$") || (echo "Error: Optimize assets using 'make optimize_assets'"; exit 1)
 
 update_country_dialing_codes:
 	bundle exec ./scripts/pinpoint-supported-countries > config/country_dialing_codes.yml
