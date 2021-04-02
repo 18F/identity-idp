@@ -3,12 +3,7 @@
 <%= button_to(
     t('forms.buttons.continue'),
     account_reset_pending_cancel_path,
-    class: 'usa-button usa-button--big margin-right-6',
-    form_class: 'display-inline',
+    class: 'usa-button usa-button--wide usa-button--big margin-bottom-2',
 ) %>
 
-<%= link_to(
-  t('links.go_back'),
-  account_reset_pending_path,
-  class: '',
-) %>
+<%= link_to(t('links.go_back'), account_reset_pending_path) %>
