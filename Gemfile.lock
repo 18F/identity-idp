@@ -98,13 +98,6 @@ GIT
       aws-sdk-pinpointsmsvoice
       i18n
 
-GIT
-  remote: https://github.com/mimemagicrb/mimemagic.git
-  revision: 40dd02bb6b442535f97c35326c0383bc67146ac4
-  ref: 40dd02bb6b442535f97c35326c0383bc67
-  specs:
-    mimemagic (0.3.5)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -800,7 +793,6 @@ DEPENDENCIES
   local_time
   lograge (>= 0.11.2)
   maxminddb
-  mimemagic (= 0.3.5)!
   net-sftp
   newrelic_rpm
   nokogiri (~> 1.11.0)
