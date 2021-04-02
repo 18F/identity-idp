@@ -1,3 +1,5 @@
+import isSafe from './is-safe';
+
 /**
  * @typedef Polyfill
  *
@@ -26,29 +28,11 @@ const POLYFILLS = {
     load: () => import(/* webpackChunkName: "webcrypto-shim" */ 'webcrypto-shim'),
   },
   'custom-event': {
-    test() {
-      try {
-        // eslint-disable-next-line no-new
-        new window.CustomEvent('test');
-        return true;
-      } catch {
-        return false;
-      }
-    },
+    test: () => isSafe(() => new window.CustomEvent('test')),
     load: () => import(/* webpackChunkName: "custom-event-polyfill" */ 'custom-event-polyfill'),
   },
   url: {
-    test() {
-      try {
-        // eslint-disable-next-line no-new
-        new URL('http://example.com');
-        // eslint-disable-next-line no-new
-        new URLSearchParams();
-        return true;
-      } catch {
-        return false;
-      }
-    },
+    test: () => isSafe(() => new URL('http://example.com')) && isSafe(() => new URLSearchParams()),
     load: () =>
       import(
         /* webpackChunkName: "polyfill-library-url" */ 'polyfill-library/polyfills/__dist/URL/min'
