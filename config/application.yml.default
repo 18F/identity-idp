@@ -119,6 +119,7 @@ recaptcha_enabled_percent: '0'
 recaptcha_secret_key: key2
 recaptcha_site_key: key1
 recovery_code_length: '4'
+redis_throttle_url: redis://localhost:6379/1
 reg_confirmed_email_window_in_minutes: '60'
 remember_device_expiration_hours_aal_1: '720'
 remember_device_expiration_hours_aal_2: '12'
@@ -217,7 +218,6 @@ development:
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   rack_mini_profiler: 'off'
   recurring_jobs_disabled_names: "[]"
-  redis_throttle_url: redis://localhost:6379/1
   redis_url: redis://localhost:6379/0
   reg_confirmed_email_max_attempts: '20'
   reg_unconfirmed_email_max_attempts: '20'
@@ -425,7 +425,6 @@ test:
   poll_rate_for_verify_in_seconds: '1'
   rack_mini_profiler:
   recurring_jobs_disabled_names: '["disabled job"]'
-  redis_throttle_url: redis://localhost:6379/1
   redis_url: redis://localhost:6379/0
   reg_confirmed_email_max_attempts: '3'
   reg_unconfirmed_email_max_attempts: '4'
