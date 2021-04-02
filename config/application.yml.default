@@ -35,7 +35,6 @@ add_email_link_valid_for_hours: '24'
 allow_piv_cac_required: 'true'
 asset_host:
 async_wait_timeout_seconds: '60'
-available_locales: en es fr
 aws_http_timeout: '5'
 aws_http_retry_limit: '2'
 aws_http_retry_max_delay: '1'
@@ -52,6 +51,7 @@ email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: 'false'
 event_disavowal_expiration_hours: '240'
+exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 gpo_designated_receiver_pii: '{}'
 ial2_recovery_request_valid_for_minutes: '15'
@@ -190,7 +190,6 @@ development:
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
-  exception_recipients: test1@test.com
   expired_letters_auth_token: abc123
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
@@ -295,7 +294,6 @@ production:
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
-  exception_recipients: user1@example.com,user2@example.com
   expired_letters_auth_token:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'

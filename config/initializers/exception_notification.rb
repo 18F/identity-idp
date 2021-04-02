@@ -1,6 +1,6 @@
 require 'exception_notification/rails'
 
-EXCEPTION_RECIPIENTS = AppConfig.env.exception_recipients.split(',').freeze
+EXCEPTION_RECIPIENTS = IdentityConfig.store.exception_recipients
 
 ExceptionNotification.configure do |config|
   config.add_notifier(
