@@ -5,7 +5,7 @@
   "dependencies": {
     "classlist-polyfill": "^1.2.0",
     "custom-event-polyfill": "^1.0.7",
-    "polyfill-library": "^3.104.0",
+    "js-polyfills": "^0.1.43",
     "webcrypto-shim": "^0.1.6",
     "whatwg-fetch": "^3.4.0"
   }

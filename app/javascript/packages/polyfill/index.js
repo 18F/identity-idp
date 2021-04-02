@@ -33,10 +33,7 @@ const POLYFILLS = {
   },
   url: {
     test: () => isSafe(() => new URL('http://example.com')) && isSafe(() => new URLSearchParams()),
-    load: () =>
-      import(
-        /* webpackChunkName: "polyfill-library-url" */ 'polyfill-library/polyfills/__dist/URL/min'
-      ),
+    load: () => import(/* webpackChunkName: "js-polyfills-url" */ 'js-polyfills/url'),
   },
 };
 
