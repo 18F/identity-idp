@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 6.1.2'
+gem 'rails', '~> 6.1.3'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
@@ -34,7 +34,6 @@ gem 'jwt'
 gem 'local_time'
 gem 'lograge', '>= 0.11.2'
 gem 'maxminddb'
-gem 'mimemagic', '0.3.5', github: 'mimemagicrb/mimemagic', ref: '40dd02bb6b442535f97c35326c0383bc67'
 gem 'net-sftp'
 gem 'newrelic_rpm'
 gem 'pg'
