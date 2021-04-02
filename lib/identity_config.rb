@@ -64,6 +64,7 @@ class IdentityConfig
     config.add(:piv_cac_verify_token_url)
     config.add(:recurring_jobs_disabled_names, type: :json)
     config.add(:redis_throttle_url)
+    config.add(:redis_url)
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
