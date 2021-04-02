@@ -32,13 +32,17 @@ const ServiceProviderContext = createContext(
  * @param {ServiceProviderContextProviderProps} props
  */
 function ServiceProviderContextProvider({ value, children }) {
-  function getFailureToProofURL(location) {
-    const url = new URL(value.failureToProofURL);
-    url.searchParams.set('location', location);
-    return url.toString();
-  }
-
-  const mergedValue = useMemo(() => ({ ...value, getFailureToProofURL }), [value]);
+  const mergedValue = useMemo(
+    () => ({
+      ...value,
+      getFailureToProofURL(location) {
+        const url = new URL(value.failureToProofURL);
+        url.searchParams.set('location', location);
+        return url.toString();
+      },
+    }),
+    [value],
+  );
 
   return (
     <ServiceProviderContext.Provider value={mergedValue}>
