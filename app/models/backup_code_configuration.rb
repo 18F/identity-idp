@@ -7,6 +7,9 @@ class BackupCodeConfiguration < ApplicationRecord
 
   belongs_to :user
 
+  attr_accessor :skip_symmetrically_encrypted
+  alias_method :skip_symmetrically_encrypted?, :skip_symmetrically_encrypted
+
   def self.unused
     where(used_at: nil)
   end

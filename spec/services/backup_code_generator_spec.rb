@@ -5,7 +5,7 @@ RSpec.describe describe BackupCodeGenerator do
 
   subject(:generator) { BackupCodeGenerator.new(user) }
 
-  it 'should generate backup codes ans be able to verify them' do
+  it 'should generate backup codes and be able to verify them' do
     codes = generator.create
 
     codes.each do |code|
@@ -18,6 +18,15 @@ RSpec.describe describe BackupCodeGenerator do
 
     success = generator.verify 'This is a string which will never result from code generation'
     expect(success).to be_falsy
+  end
+
+  it 'does not write the symmetrically encrypted column anymore' do
+    codes = generator.create
+
+    user.backup_code_configurations.each do |code_config|
+      expect(code_config.encrypted_code).to be_blank
+      expect(code_config.code).to be_blank
+    end
   end
 
   it 'creates codes with the same salt for that batch' do

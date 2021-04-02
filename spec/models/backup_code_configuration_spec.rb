@@ -77,16 +77,14 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       codes = BackupCodeGenerator.new(user).create
       first_code = codes.first
 
-      backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)
-      expect(backup_code.code).to eq first_code
+      expect(BackupCodeConfiguration.find_with_code(code: first_code, user_id: user.id)).to be
     end
 
     it 'does not return the code with a wrong user id' do
       codes = BackupCodeGenerator.new(user).create
       first_code = codes.first
 
-      backup_code = BackupCodeConfiguration.find_with_code(code: first_code, user_id: 1234)
-      expect(backup_code).to be_nil
+      expect(BackupCodeConfiguration.find_with_code(code: first_code, user_id: 1234)).to be_nil
     end
 
     it 'finds codes via salted_code_fingerprint' do

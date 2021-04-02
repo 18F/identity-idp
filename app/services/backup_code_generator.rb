@@ -11,16 +11,19 @@ class BackupCodeGenerator
     @user = user
   end
 
+  # @return [Array<String>]
   def generate
     delete_existing_codes
     generate_new_codes
   end
 
+  # @return [Array<String>]
   def create
     @user.save
     save(generate)
   end
 
+  # @return [Boolean]
   def verify(plaintext_code)
     backup_code = normalize(plaintext_code)
     code = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
@@ -56,6 +59,7 @@ class BackupCodeGenerator
     @user.backup_code_configurations.create!(
       code_salt: salt,
       code_cost: cost,
+      skip_symmetrically_encrypted: true,
       code: code,
     )
   end

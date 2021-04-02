@@ -22,5 +22,6 @@ module BackupCodeEncryptedAttributeOverrides
       salt: code_salt,
       cost: code_cost,
     ) if code.present? && code_cost.present? && code_salt.present?
+    self.encrypted_code = '' if skip_symmetrically_encrypted?
   end
 end
