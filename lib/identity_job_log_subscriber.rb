@@ -62,7 +62,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
     json = default_attributes(event, job).merge(
       enqueued_at: job.enqueued_at,
-      queued_duration_ms: queued_duration(job),
     )
 
     if ex
