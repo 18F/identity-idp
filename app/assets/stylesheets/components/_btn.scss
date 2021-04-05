@@ -63,6 +63,7 @@
   // Temporary: To be backported to design system. Unstyled buttons should inherit the appearance
   // of a link.
   display: inline;
+  width: auto;
 
   &:hover,
   &:active {
