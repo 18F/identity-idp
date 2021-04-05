@@ -2,7 +2,6 @@
 es:
   forms:
     backup_code:
-      are_you_sure_continue: Continuar
       are_you_sure_continue_prologue: Si no tienes acceso a ningún otro método de
         autenticación,
       are_you_sure_desc: "<br> <b> Los códigos de respaldo no son muy seguros </b>
