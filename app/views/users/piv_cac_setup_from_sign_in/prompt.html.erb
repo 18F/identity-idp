@@ -20,12 +20,13 @@
                          class: 'block col-12 field monospace', size: 16, maxlength: 20,
                          'aria-labelledby': 'totp-label' %>
        <div class="margin-top-2">
-        <%= submit_tag t('forms.piv_cac_setup.submit'), class: 'usa-button usa-button--big margin-right-1' %>
-        <div class="inline-block">
-          <%= link_to t('forms.piv_cac_setup.no_thanks'), new_user_session_url,
-                      class: 'usa-button usa-button--big usa-button--outline' %>
-        </div>
-       </div>
+        <%= submit_tag t('forms.piv_cac_setup.submit'), class: 'usa-button usa-button--wide usa-button--big' %>
+      </div>
+      <div class="margin-top-2">
+        <%= link_to t('forms.piv_cac_setup.no_thanks'),
+                    new_user_session_url,
+                    class: 'usa-button usa-button--wide usa-button--big usa-button--outline' %>
+      </div>
     <% end %>
   </div>
 </div>
