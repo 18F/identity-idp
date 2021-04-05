@@ -123,7 +123,7 @@ es:
       que inicies sesión</strong>.
     phone_voice_label: Número de teléfono
     piv_cac_fallback:
-      question: "¿No tiene su tarjeta PIV/CAC disponible?"
+      question: "¿No tienes su PIV o CAC disponibles?"
     piv_cac_header_text: Presenta tu PIV/CAC
     piv_cac_webauthn_available: Utilice su llave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
@@ -175,7 +175,7 @@ es:
     webauthn_fallback:
       question: "¿No dispone de su llave de seguridad?"
     webauthn_header_text: Conecte su llave de seguridad
-    webauthn_piv_available: Utilice su identificación de empleado del Gobierno
+    webauthn_piv_available: Utilice su PIV o CAC
     webauthn_verified:
       header: Llave de seguridad verificada
       info: Hemos verificado su llave de seguridad. Haga clic en continuar para iniciar
