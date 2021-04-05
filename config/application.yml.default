@@ -257,7 +257,6 @@ production:
   aal_authn_context_enabled: 'false'
   aamva_private_key:
   aamva_public_key:
-  aamva_verification_url:
   account_reset_auth_token:
   acuant_max_attempts: '20'
   address_proof_result_lambda_token:
@@ -313,9 +312,7 @@ production:
   otp_delivery_blocklist_maxretry: '10'
   participate_in_dap: 'true'
   password_pepper:
-  piv_cac_service_url:
   piv_cac_verify_token_secret:
-  piv_cac_verify_token_url:
   rack_mini_profiler:
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
