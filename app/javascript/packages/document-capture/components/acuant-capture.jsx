@@ -416,7 +416,7 @@ function AcuantCapture(
             'lg-take-photo': () => null,
             'lg-upload': ({ children }) => (
               <span className="padding-left-1">
-                <Button isUnstyled onClick={forceUpload} className="width-auto">
+                <Button isUnstyled onClick={forceUpload}>
                   {children}
                 </Button>
               </span>
