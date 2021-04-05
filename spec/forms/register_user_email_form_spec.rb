@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 describe RegisterUserEmailForm do
-  subject { RegisterUserEmailForm.new }
+  let(:analytics) { FakeAnalytics.new }
+  subject { RegisterUserEmailForm.new(analytics: analytics) }
 
   it_behaves_like 'email validation'
 
@@ -99,7 +100,7 @@ describe RegisterUserEmailForm do
         result = instance_double(FormResponse)
         allow(FormResponse).to receive(:new).and_return(result)
         captcha_results = mock_captcha(enabled: true, present: true, valid: true)
-        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results)
+        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results, analytics: analytics)
         submit_form = form.submit(email: 'not_taken@gmail.com')
         extra = {
           email_already_exists: false,
@@ -118,7 +119,7 @@ describe RegisterUserEmailForm do
 
       it 'saves the user email_language for a valid form' do
         captcha_results = mock_captcha(enabled: true, present: true, valid: true)
-        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results)
+        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results, analytics: analytics)
 
         response = form.submit(email: 'not_taken@gmail.com', email_language: 'fr')
         expect(response).to be_success
@@ -128,7 +129,7 @@ describe RegisterUserEmailForm do
 
       it 'does not save the user email_language for an invalid form' do
         captcha_results = mock_captcha(enabled: true, present: true, valid: false)
-        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results)
+        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results, analytics: analytics)
 
         response = form.submit(email: 'not_taken@gmail.com', email_language: 'fr')
         expect(response).to_not be_success
@@ -140,7 +141,7 @@ describe RegisterUserEmailForm do
         result = instance_double(FormResponse)
         allow(FormResponse).to receive(:new).and_return(result)
         captcha_results = mock_captcha(enabled: true, present: true, valid: false)
-        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results)
+        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results, analytics: analytics)
         submit_form = form.submit(email: 'not_taken@gmail.com')
         extra = {
           email_already_exists: false,

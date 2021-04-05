@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe RequestPasswordReset do
+  let(:analytics) { FakeAnalytics.new }
+
   describe '#perform' do
     context 'when the user is not found' do
       it 'sends the account registration email' do
@@ -18,7 +20,7 @@ describe RequestPasswordReset do
           send_sign_up_email_confirmation,
         )
 
-        RequestPasswordReset.new(email).perform
+        RequestPasswordReset.new(email: email).perform
         user = User.find_with_email(email)
         expect(user).to be_present
         expect(RegistrationLog.first.user_id).to eq(user.id)
@@ -41,7 +43,7 @@ describe RequestPasswordReset do
           with(user, email, token: 'asdf1234').
           and_return(mail)
 
-        RequestPasswordReset.new(email).perform
+        RequestPasswordReset.new(email: email).perform
       end
     end
 
@@ -61,7 +63,7 @@ describe RequestPasswordReset do
           with(user, email, token: 'asdf1234').
           and_return(mail)
 
-        RequestPasswordReset.new(email).perform
+        RequestPasswordReset.new(email: email).perform
       end
     end
 
@@ -83,7 +85,7 @@ describe RequestPasswordReset do
           send_sign_up_email_confirmation,
         )
 
-        RequestPasswordReset.new(unconfirmed_email_address.email).perform
+        RequestPasswordReset.new(email: unconfirmed_email_address.email).perform
       end
     end
 
@@ -103,7 +105,7 @@ describe RequestPasswordReset do
       end
 
       it 'always finds the user with the confirmed email address' do
-        form = RequestPasswordReset.new(email)
+        form = RequestPasswordReset.new(email: email)
         form.perform
 
         expect(form.send(:user)).to eq(@user_confirmed)
