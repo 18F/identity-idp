@@ -13,7 +13,7 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
-      lexis_nexis:
+      alerts:
         barcode_content_check: Nous n'avons pas pu lire le code-barres au verso de
           votre carte d'identité. Cela pourrait être dû à un problème avec le code-barres,
           ou le code-barres est d'un type nouveau que nous ne reconnaissons pas encore.
@@ -23,7 +23,6 @@ fr:
           carte d'identité. Essayez de prendre une nouvelle photo.
         birth_date_checks: Nous n'avons pas pu lire la date de naissance sur votre
           pièce d'identité. Essayez de prendre de nouvelles photos.
-        birth_date_min_age: Votre anniversaire ne correspond pas à l'âge minimum requis.
         control_number_check: Nous n'avons pas pu lire le numéro de référence au verso
           de votre carte d'identité. Essayez de prendre une nouvelle photo.
         doc_crosscheck: Nous n'avons pas pu reconnaître votre pièce d'identité. Il
@@ -50,12 +49,6 @@ fr:
           de nouvelles photos.
         issue_date_checks: Nous n'avons pas pu lire la date d'émission sur votre pièce
           d'identité. Essayez de prendre de nouvelles photos.
-        multiple_back_id_failures: Nous n'avons pas pu vérifier le verso de votre
-          pièce d'identité. Essayez de prendre une nouvelle photo.
-        multiple_front_id_failures: Nous n'avons pas pu vérifier le recto de votre
-          pièce d'identité. Essayez de prendre une nouvelle photo.
-        network_error: Nous avons des difficultés techniques de notre côté. Veuillez
-          essayer de soumettre à nouveau vos images plus tard.
         ref_control_number_check: Nous n'avons pas pu lire le code-barres du numéro
           de contrôle. Essayez de prendre de nouvelles photos.
         selfie_failure: Nous n'avons pas pu associer votre photo à votre pièce d'identité.
@@ -69,6 +62,34 @@ fr:
           fort.
         visible_photo_check: Nous n'avons pas pu vérifier la photo sur votre pièce
           d'identité. Essayez de prendre de nouvelles photos.
+      sharpness:
+        top_msg: Nous n'avons pas pu lire votre pièce d'identité. Votre photo est peut-être trop floue ou trop sombre. Essayez de prendre une nouvelle photo dans un endroit lumineux.
+        top_msg_plural: Nous n'avons pas pu lire votre pièce d'identité. Vos photos sont peut-être trop floues ou trop sombres. Essayez de prendre de nouvelles photos dans un endroit lumineux.
+      dpi:
+        top_msg: Nous n'avons pas pu lire votre pièce d'identité. La taille de votre
+          image est peut-être trop petite ou il se peut que votre pièce d'identité
+          soit trop petite ou floue sur la photo. Assurez-vous que la taille de votre
+          pièce d'identité est grande et qu'elle est située dans le cadre de l'image
+          puis essayez de prendre une nouvelle photo.
+        top_msg_plural: Nous n'avons pas pu lire votre pièce d'identité. La taille
+          de vos images est peut-être trop petite ou il se peut que votre pièce d'identité
+          soit trop petite ou floue sur les photos. Assurez-vous que la taille de
+          votre pièce d'identité est grande et qu'elle est située dans le cadre de
+          l'image puis essayez de prendre des nouvelles photos.
+      general:
+        liveness: Nous n'avons pas pu vérifier votre pièce d'identité et votre photo.
+          Essayez de prendre de nouvelles photos.
+        multiple_back_id_failures: Nous n'avons pas pu vérifier le verso de votre
+          pièce d'identité. Essayez de prendre une nouvelle photo.
+        multiple_front_id_failures: Nous n'avons pas pu vérifier le recto de votre
+          pièce d'identité. Essayez de prendre une nouvelle photo.
+        network_error: Nous avons des difficultés techniques de notre côté. Veuillez
+          essayer de soumettre à nouveau vos images plus tard.
+        no_liveness: Nous n'avons pas pu vérifier votre pièce d'identité. Essayez
+          de prendre de nouvelles photos.
+      glare:
+        top_msg: Nous n'avons pas pu lire votre pièce d'identité. Votre photo peut avoir des reflets. Assurez-vous que le flash de votre appareil photo est désactivé puis essayez de prendre une nouvelle photo.
+        top_msg_plural: Nous n'avons pas pu lire votre pièce d'identité. Vos photos peuvent avoir des reflets. Assurez-vous que le flash de votre appareil photo est désactivé puis essayez de prendre de nouvelles photos.
       no_camera:
         explanation: Nous recueillons des informations vous concernant en lisant votre
           carte d'identité délivrée par l'État. Ensuite, vous prendrez une photo de
@@ -77,6 +98,8 @@ fr:
         heading: Vous avez besoin d'une caméra pour vérifier votre identité
         title: Appareil photo nécessaire
       not_a_file: La sélection n'était pas un fichier valide.
+      pii:
+        birth_date_min_age: Votre anniversaire ne correspond pas à l'âge minimum requis.
     forms:
       address1: Adresse
       change_file: Changer de fichier

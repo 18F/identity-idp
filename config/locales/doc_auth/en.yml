@@ -13,7 +13,7 @@ en:
       upload_picture: Upload photo
       use_phone: Use your phone
     errors:
-      lexis_nexis:
+      alerts:
         barcode_content_check: We couldn't read the barcode on the back of your ID.
           It could be because of a problem with the barcode, or the barcode is a new
           type that we don't recognize yet. Use another state-issued ID if you have
@@ -22,7 +22,6 @@ en:
           taking a new picture.
         birth_date_checks: We couldn’t read the birth date on your ID. Try taking
           new pictures.
-        birth_date_min_age: Your birthday does not meet the minimum age requirement.
         control_number_check: We couldn't read the reference number on the back of
           your ID. Try taking a new picture.
         doc_crosscheck: We couldn’t recognize your ID. It may be worn or damaged,
@@ -33,21 +32,12 @@ en:
           date on your ID. If your ID is not expired, try taking new pictures.
         full_name_check: We couldn't read the full name on your ID. Try taking new
           pictures.
-        general_error_liveness: We couldn't verify your ID and photo of yourself.
-          Try taking new pictures.
-        general_error_no_liveness: We couldn't verify your ID. Try taking new pictures.
         id_not_recognized: We couldn’t recognize your ID. It may be worn, damaged,
           or a type of ID that we don’t recognize. Try taking new pictures.
         id_not_verified: We couldn't verify your ID. It might have moved when you
           took the picture. Try taking new pictures.
         issue_date_checks: We couldn't read the issue date on your ID. Try taking
           new pictures.
-        multiple_back_id_failures: We couldn't verify the back of your ID. Try taking
-          a new picture.
-        multiple_front_id_failures: We couldn't verify the front of your ID. Try taking
-          a new picture.
-        network_error: We are having technical difficulties on our end. Please try
-          to submit your images again later.
         ref_control_number_check: We couldn't read the control number barcode. Try
           taking new pictures.
         selfie_failure: We couldn't match the photo of you to your ID. Try taking
@@ -58,12 +48,37 @@ en:
           in brighter lighting.
         visible_photo_check: We couldn't verify the photo on your ID. Try taking new
           pictures.
+      sharpness:
+        top_msg: We couldn't read your ID. Your photo may be too blurry or dark. Try taking a new picture in a bright area.
+        top_msg_plural: We couldn't read your ID. Your photos may be too blurry or dark. Try taking new pictures in a bright area.
+      dpi:
+        top_msg: We couldn't read your ID. Your image size may be too small, or your
+          ID is too small or blurry in the photo. Make sure your ID is large within
+          the image frame and try taking a new picture.
+        top_msg_plural: We couldn't read your ID. Your image sizes may be too small,
+          or your ID is too small or blurry in the photos. Make sure your ID is large
+          within the image frame and try taking new pictures.
+      general:
+        liveness: We couldn't verify your ID and photo of yourself. Try taking new
+          pictures.
+        multiple_back_id_failures: We couldn't verify the back of your ID. Try taking
+          a new picture.
+        multiple_front_id_failures: We couldn't verify the front of your ID. Try taking
+          a new picture.
+        network_error: We are having technical difficulties on our end. Please try
+          to submit your images again later.
+        no_liveness: We couldn't verify your ID. Try taking new pictures.
+      glare:
+        top_msg: We couldn't read your ID. Your photo may have glare. Make sure that the flash on your camera is off and try taking a new picture.
+        top_msg_plural: We couldn't read your ID. Your photos may have glare. Make sure that the flash on your camera is off and try taking new pictures.
       no_camera:
         explanation: To continue, sign in to your login.gov account on any device
           that has a camera, like a mobile phone, tablet or computer with a webcam.
         heading: You need a camera to verify your identity
         title: Camera needed
       not_a_file: The selection was not a valid file.
+      pii:
+        birth_date_min_age: Your birthday does not meet the minimum age requirement.
     forms:
       address1: Address
       change_file: Change file
