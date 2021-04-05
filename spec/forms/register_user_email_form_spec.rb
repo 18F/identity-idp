@@ -31,6 +31,19 @@ describe RegisterUserEmailForm do
         expect(subject.email).to eq 'taken@gmail.com'
         expect(mailer).to have_received(:deliver_now)
       end
+
+      it 'creates throttle events after reaching throttle limit' do
+        existing_user = create(:user, :signed_up, email: 'taken@example.com')
+
+        (AppConfig.env.reg_confirmed_email_max_attempts.to_i + 1).times do
+          subject.submit(email: 'TAKEN@example.com')
+        end
+
+        expect(analytics).to have_logged_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :reg_confirmed_email,
+        )
+      end
     end
 
     context 'when email is already taken and existing user is unconfirmed' do
@@ -56,6 +69,18 @@ describe RegisterUserEmailForm do
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
         expect(subject.submit(email: user.email)).to eq result
+      end
+
+      it 'creates throttle events after reaching throttle limit' do
+        user = create(:user, email: 'test@example.com', confirmed_at: nil, uuid: '123')
+        (AppConfig.env.reg_unconfirmed_email_max_attempts.to_i + 1).times do
+          subject.submit(email: 'test@example.com')
+        end
+
+        expect(analytics).to have_logged_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :reg_unconfirmed_email,
+        )
       end
     end
 
