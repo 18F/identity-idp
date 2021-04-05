@@ -328,7 +328,7 @@ production:
   ruby_workers_enabled: 'false'
   s3_report_bucket_prefix: login-gov.reports
   s3_reports_enabled: 'true'
-  saml_endpoint_configs:
+  saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
   secret_key_base:
   session_encryption_key:
