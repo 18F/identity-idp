@@ -8,16 +8,22 @@ import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 
 /**
+ * @typedef {'front'|'back'} DocumentSide
+ */
+
+/**
  * @typedef DocumentsStepValue
  *
  * @prop {Blob|string|null|undefined} front Front image value.
  * @prop {Blob|string|null|undefined} back Back image value.
+ * @prop {string=} front_metadata Front image metadata.
+ * @prop {string=} back_metadata Back image metadata.
  */
 
 /**
  * Sides of document to present as file input.
  *
- * @type {Array<keyof DocumentsStepValue>}
+ * @type {DocumentSide[]}
  */
 const DOCUMENT_SIDES = ['front', 'back'];
 
@@ -81,7 +87,12 @@ function DocumentsStep({
             /* i18n-tasks-use t('doc_auth.headings.front') */
             bannerText={t(`doc_auth.headings.${side}`)}
             value={value[side]}
-            onChange={(nextValue) => onChange({ [side]: nextValue })}
+            onChange={(nextValue, metadata) =>
+              onChange({
+                [side]: nextValue,
+                [`${side}_metadata`]: JSON.stringify(metadata),
+              })
+            }
             errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
             name={side}
           />

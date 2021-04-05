@@ -334,8 +334,11 @@ describe('document-capture/components/document-capture', () => {
           }),
       });
 
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
+    const backImage = getByLabelText('doc_auth.headings.document_capture_back');
+    userEvent.upload(frontImage, validUpload);
+    userEvent.upload(backImage, validUpload);
+    await waitFor(() => frontImage.src && backImage.src);
 
     userEvent.click(getByText('forms.buttons.submit.default'));
     await waitFor(() => window.location.hash === '#teapot');
@@ -358,8 +361,10 @@ describe('document-capture/components/document-capture', () => {
           expect(payload).to.have.keys([
             'front_image_iv',
             'front_image_url',
+            'front_metadata',
             'back_image_iv',
             'back_image_url',
+            'back_metadata',
             'selfie_image_iv',
             'selfie_image_url',
           ]);

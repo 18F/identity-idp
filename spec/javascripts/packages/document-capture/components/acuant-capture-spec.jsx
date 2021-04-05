@@ -226,9 +226,26 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
       await new Promise((resolve) => onChange.callsFake(resolve));
 
-      expect(onChange.getCall(0).args).to.have.lengthOf(1);
-      expect(onChange.getCall(0).args[0]).to.equal('data:image/png,');
-      expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+      expect(onChange).to.have.been.calledWith(
+        'data:image/png,',
+        sinon.match({
+          assessment: 'success',
+          documentType: 'id',
+          dpi: sinon.match.number,
+          glare: sinon.match.number,
+          glareScoreThreshold: sinon.match.number,
+          height: sinon.match.number,
+          isAssessedAsBlurry: false,
+          isAssessedAsGlare: false,
+          mimeType: 'image/jpeg',
+          moire: sinon.match.number,
+          sharpness: sinon.match.number,
+          sharpnessScoreThreshold: sinon.match.number,
+          source: 'acuant',
+          width: sinon.match.number,
+        }),
+      );
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
     });
 
     it('ends the capture when the component unmounts', () => {
@@ -269,8 +286,8 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
     });
 
-    it('renders upload button when value and capture not supported', () => {
-      const onChange = sinon.spy();
+    it('renders upload button when value and capture not supported', async () => {
+      const onChange = sinon.stub();
       const onClick = sinon.spy();
       const { getByText, getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
@@ -291,7 +308,16 @@ describe('document-capture/components/acuant-capture', () => {
       expect(onClick).to.have.been.calledOnce();
 
       userEvent.upload(input, validUpload);
-      expect(onChange).to.have.been.calledWith(validUpload);
+      await new Promise((resolve) => onChange.callsFake(resolve));
+      expect(onChange).to.have.been.calledWith(
+        validUpload,
+        sinon.match({
+          height: sinon.match.number,
+          mimeType: 'image/jpeg',
+          source: 'upload',
+          width: sinon.match.number,
+        }),
+      );
     });
 
     it('renders error message if capture succeeds but photo glare exceeds threshold', async () => {
@@ -674,8 +700,7 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     fireEvent.change(input, { target: { files: [] } });
 
-    expect(onChange.getCall(0).args).to.have.lengthOf(1);
-    expect(onChange.getCall(0).args).to.deep.equal([null]);
+    expect(onChange).to.have.been.calledWith(null, undefined);
   });
 
   it('restricts accepted file types', () => {
