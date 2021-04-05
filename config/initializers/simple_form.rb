@@ -28,19 +28,6 @@ SimpleForm.setup do |config|
     b.use :error, wrap_with: { tag: 'div', class: 'mt-tiny h6 red error-message' }
   end
 
-  config.wrappers :inline_form, tag: 'div' do |b|
-    b.use :label, class: 'bold block'
-    b.wrapper tag: 'div', class: 'col-12 clearfix' do |ba|
-      ba.use :input
-    end
-
-    b.wrapper tag: 'div' do |bb|
-      bb.use :error, wrap_with: { tag: 'span', class: 'mt-tiny h6 red error-message' }
-    end
-
-    b.optional :maxlength
-  end
-
   config.default_wrapper = :vertical_form
 end
 # rubocop:enable Metrics/BlockLength
