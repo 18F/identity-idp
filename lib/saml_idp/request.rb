@@ -26,9 +26,9 @@ module SamlIdp
       new(inflated, options)
     end
 
-    def self.log(msg)
+    def self.log(msg, level: :debug)
       if Rails && Rails.logger
-        Rails.logger.info msg
+        Rails.logger.send(level, msg)
       else
         puts msg
       end

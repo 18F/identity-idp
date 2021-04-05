@@ -44,7 +44,7 @@ module SamlIdp
       end
 
       def validate(idp_cert_fingerprint, soft = true, options = {})
-        Rails.logger.info 'Validate the fingerprint'
+        log 'Validate the fingerprint'
         base64_cert = find_base64_cert(options)
         cert_text   = Base64.decode64(base64_cert)
         cert        = OpenSSL::X509::Certificate.new(cert_text)
@@ -127,7 +127,7 @@ module SamlIdp
           relay_state: params[:RelayState],
           sig_alg: params[:SigAlg]
         )
-log '***** validate_doc_params_signature: verify_signature:'
+        log '***** validate_doc_params_signature: verify_signature:'
         verify_signature(base64_cert, params[:SigAlg], Base64.decode64(params[:Signature]), canon_string, soft)
       end
 
@@ -178,7 +178,7 @@ log '***** validate_doc_params_signature: verify_signature:'
         signature               = Base64.decode64(base64_signature)
         sig_alg                 = REXML::XPath.first(signed_info_element, "//ds:SignatureMethod", sig_namespace_hash)
 
-log '***** validate_doc_embedded_signature: verify_signature:'
+        log '***** validate_doc_embedded_signature: verify_signature:'
         verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
       end
 
@@ -245,9 +245,9 @@ log '***** validate_doc_embedded_signature: verify_signature:'
         end
       end
 
-      def log(msg)
+      def log(msg, level: :debug)
         if Rails && Rails.logger
-          Rails.logger.info msg
+          Rails.logger.send(level, msg)
         else
           puts msg
         end
