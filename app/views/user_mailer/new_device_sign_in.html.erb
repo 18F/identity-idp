@@ -24,7 +24,7 @@
 
 <p>
   <%= t('user_mailer.new_device_sign_in.help_html',
-        app: link_to(APP_NAME, AppConfig.env.mailer_domain_name, class: 'gray'),
+        app: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'),
         disavowal_link: link_to(t('.disavowal_link'),
           event_disavowal_url(disavowal_token: @disavowal_token)),
         help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),

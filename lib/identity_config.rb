@@ -4,7 +4,6 @@ class IdentityConfig
   end
 
   CONVERTERS = {
-    uri: proc { |value| URI(value) },
     string: proc { |value| value.to_s },
     comma_separated_string_list: proc do |value|
       value.split(',')
@@ -45,6 +44,11 @@ class IdentityConfig
   def self.build_store(config_map)
     config = IdentityConfig.new(config_map)
     config.add(:aamva_sp_banlist_issuers, type: :json)
+    config.add(:aamva_verification_url)
+    config.add(:acuant_assure_id_url)
+    config.add(:acuant_facial_match_url)
+    config.add(:acuant_passlive_url)
+    config.add(:acuant_sdk_initialization_endpoint)
     config.add(:attribute_encryption_key_queue, type: :json)
     config.add(:aws_kms_regions, type: :json)
     config.add(:deleted_user_accounts_report_configs, type: :json)
@@ -52,12 +56,19 @@ class IdentityConfig
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
     config.add(:no_sp_campaigns_whitelist, type: :json)
+    config.add(:mailer_domain_name)
     config.add(:nonessential_email_banlist, type: :json)
+    config.add(:outbound_connection_check_url)
+    config.add(:piv_cac_service_url)
+    config.add(:piv_cac_verify_token_url)
     config.add(:recurring_jobs_disabled_names, type: :json)
+    config.add(:redis_throttle_url)
+    config.add(:redis_url)
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
-    final_env = config.add(:valid_authn_contexts, type: :json)
+    config.add(:valid_authn_contexts, type: :json)
+    final_env = config.add(:usps_ipp_root_url)
 
     @store = RedactedStruct.new('IdentityConfig', *final_env.keys, keyword_init: true).
       new(**final_env)

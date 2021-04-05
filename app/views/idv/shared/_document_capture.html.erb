@@ -1,6 +1,6 @@
 <% title t('titles.doc_auth.verify') %>
 <% content_for :meta_tags do %>
-  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: AppConfig.env.acuant_sdk_initialization_endpoint %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: IdentityConfig.store.acuant_sdk_initialization_endpoint %>
   <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: AppConfig.env.acuant_sdk_initialization_creds %>
 <% end %>
 <% SecureHeaders.append_content_security_policy_directives(

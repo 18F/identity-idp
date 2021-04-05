@@ -180,10 +180,10 @@ module DocAuthRouter
         IdentityDocAuth::Acuant::AcuantClient.new(
           assure_id_password: AppConfig.env.acuant_assure_id_password,
           assure_id_subscription_id: AppConfig.env.acuant_assure_id_subscription_id,
-          assure_id_url: AppConfig.env.acuant_assure_id_url,
+          assure_id_url: IdentityConfig.store.acuant_assure_id_url,
           assure_id_username: AppConfig.env.acuant_assure_id_username,
-          facial_match_url: AppConfig.env.acuant_facial_match_url,
-          passlive_url: AppConfig.env.acuant_passlive_url,
+          facial_match_url: IdentityConfig.store.acuant_facial_match_url,
+          passlive_url: IdentityConfig.store.acuant_passlive_url,
           timeout: AppConfig.env.acuant_timeout,
           exception_notifier: method(:notify_exception),
         ),

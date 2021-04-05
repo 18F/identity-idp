@@ -23,7 +23,8 @@ Rails.application.configure do
     host: AppConfig.env.domain_name,
     protocol: 'https',
   }
-  config.action_mailer.asset_host = AppConfig.env.asset_host || AppConfig.env.mailer_domain_name
+  config.action_mailer.asset_host = AppConfig.env.asset_host ||
+                                    IdentityConfig.store.mailer_domain_name
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = if AppConfig.env.disable_email_sending == 'true'
                                            :test

@@ -22,7 +22,7 @@ class ResolutionProofingJob < ApplicationJob
           private_key: AppConfig.env.aamva_private_key,
           public_key: AppConfig.env.aamva_public_key,
           verification_request_timeout: AppConfig.env.aamva_verification_request_timeout,
-          verification_url: AppConfig.env.aamva_verification_url,
+          verification_url: IdentityConfig.store.aamva_verification_url,
         },
         lexisnexis_config: {
           instant_verify_workflow: AppConfig.env.lexisnexis_instant_verify_workflow,

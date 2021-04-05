@@ -18,15 +18,19 @@
 aal_authn_context_enabled: 'false'
 aamva_cert_enabled: 'true'
 aamva_sp_banlist_issuers: '[]'
+aamva_verification_url: https://example.org:12345/verification/url
 account_reset_token_valid_for_days: '1'
 account_reset_wait_period_days: '1'
 acuant_maintenance_window_start: '2020-09-19T03:00:00Z' # 9/18 11pm Eastern
 acuant_maintenance_window_finish: '2020-09-19T05:00:00Z' # 9/19 1am Eastern
 acuant_assure_id_password: ''
 acuant_assure_id_subscription_id: ''
+acuant_assure_id_url: ''
 acuant_assure_id_username: ''
 acuant_attempt_window_in_minutes: '360'
 acuant_facial_match_license_key: ''
+acuant_facial_match_url: ''
+acuant_passlive_url: ''
 # These are dummy creds used to initialize the acuant SDK
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
@@ -102,6 +106,8 @@ phone_format_e164_opt_out_list: '[]'
 pii_lock_timeout_in_minutes: '30'
 pinpoint_sms_configs: '[]'
 pinpoint_voice_configs: '[]'
+piv_cac_service_url: https://localhost:8443/
+piv_cac_verify_token_url: https://localhost:8443/
 poll_rate_for_verify_in_seconds: '3'
 proofer_mock_fallback: 'true'
 proofing_send_partial_dob: 'false'
@@ -113,6 +119,8 @@ recaptcha_enabled_percent: '0'
 recaptcha_secret_key: key2
 recaptcha_site_key: key1
 recovery_code_length: '4'
+redis_throttle_url: redis://localhost:6379/1
+redis_url: redis://localhost:6379/0
 reg_confirmed_email_window_in_minutes: '60'
 remember_device_expiration_hours_aal_1: '720'
 remember_device_expiration_hours_aal_2: '12'
@@ -151,12 +159,8 @@ development:
   aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
-  aamva_verification_url: https://example.org:12345/verification/url
   account_reset_auth_token: abc123
-  acuant_assure_id_url: ''
-  acuant_facial_match_url: ''
   acuant_max_attempts: '20'
-  acuant_passlive_url: ''
   address_proof_result_lambda_token: 123ABC
   attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -212,13 +216,9 @@ development:
   otp_delivery_blocklist_maxretry: '10'
   participate_in_dap: 'false'
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
-  piv_cac_service_url: https://localhost:8443/
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
-  piv_cac_verify_token_url: https://localhost:8443/
   rack_mini_profiler: 'off'
   recurring_jobs_disabled_names: "[]"
-  redis_throttle_url: redis://localhost:6379/1
-  redis_url: redis://localhost:6379/0
   reg_confirmed_email_max_attempts: '20'
   reg_unconfirmed_email_max_attempts: '20'
   reg_unconfirmed_email_window_in_minutes: '60'
@@ -259,10 +259,7 @@ production:
   aamva_public_key:
   aamva_verification_url:
   account_reset_auth_token:
-  acuant_assure_id_url: ''
-  acuant_facial_match_url: ''
   acuant_max_attempts: '20'
-  acuant_passlive_url: ''
   address_proof_result_lambda_token:
   attribute_cost: 4000$8$4$
   attribute_encryption_key:
@@ -359,7 +356,6 @@ test:
   aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
-  aamva_verification_url: https://example.org:12345/verification/url
   account_reset_auth_token: test
   acuant_maintenance_window_start: ''
   acuant_maintenance_window_finish: ''
@@ -425,14 +421,10 @@ test:
   otps_per_ip_track_only_mode: 'false'
   participate_in_dap: 'false'
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
-  piv_cac_service_url: https://localhost:8443/
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
-  piv_cac_verify_token_url: https://localhost:8443/
   poll_rate_for_verify_in_seconds: '1'
   rack_mini_profiler:
   recurring_jobs_disabled_names: '["disabled job"]'
-  redis_throttle_url: redis://localhost:6379/1
-  redis_url: redis://localhost:6379/0
   reg_confirmed_email_max_attempts: '3'
   reg_unconfirmed_email_max_attempts: '4'
   reg_unconfirmed_email_window_in_minutes: '70'
