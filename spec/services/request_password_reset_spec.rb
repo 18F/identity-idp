@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe RequestPasswordReset do
-  let(:analytics) { FakeAnalytics.new }
-
   describe '#perform' do
     context 'when the user is not found' do
       it 'sends the account registration email' do
@@ -109,6 +107,29 @@ describe RequestPasswordReset do
         form.perform
 
         expect(form.send(:user)).to eq(@user_confirmed)
+      end
+    end
+
+    context 'when the user requests password resets above the allowable threshold' do
+      it 'throttles the email sending and logs a throttle event' do
+        user = create(:user)
+        email_address = user.email_addresses.first
+        email = email_address.email
+        max_attempts = AppConfig.env.reset_password_email_max_attempts.to_i
+
+        allow(EmailAddress).to receive(:find_with_email).with(email).and_return(email_address)
+        expect(user).to receive(:set_reset_password_token).and_return('asdf1234').
+          exactly(max_attempts).times
+
+        analytics = FakeAnalytics.new
+        (max_attempts + 1).times do
+          RequestPasswordReset.new(email: email, analytics: analytics).perform
+        end
+
+        expect(analytics).to have_logged_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :reset_password_email,
+        )
       end
     end
   end
