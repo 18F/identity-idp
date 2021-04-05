@@ -35,16 +35,4 @@ describe BackupCodeCreatePresenter do
         to eq t('forms.backup_code.are_you_sure_continue_prologue')
     end
   end
-
-  describe '#continue_bttn_title' do
-    it 'uses localization' do
-      expect(presenter.continue_bttn_title).to eq t('forms.backup_code.are_you_sure_continue')
-    end
-  end
-
-  describe '#continue_bttn_class' do
-    it 'displays as a link to continue' do
-      expect(presenter.continue_bttn_class).to eq 'usa-button usa-button--unstyled'
-    end
-  end
 end

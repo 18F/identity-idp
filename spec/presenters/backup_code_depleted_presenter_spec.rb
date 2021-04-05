@@ -34,16 +34,4 @@ describe BackupCodeDepletedPresenter do
       expect(presenter.continue_bttn_prologue).to eq nil
     end
   end
-
-  describe '#continue_bttn_title' do
-    it 'uses localization' do
-      expect(presenter.continue_bttn_title).to eq t('forms.buttons.continue')
-    end
-  end
-
-  describe '#continue_bttn_class' do
-    it 'displays button to continue' do
-      expect(presenter.continue_bttn_class).to eq 'usa-button usa-button--big usa-button--wide'
-    end
-  end
 end
