@@ -63,6 +63,7 @@ class IdentityConfig
     config.add(:enable_load_testing_mode, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
+    config.add(:enable_usps_verification, type: :boolean)
     config.add(:exception_recipients, type: :comma_separated_string_list)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)

@@ -55,7 +55,7 @@ class FeatureManagement
 
   def self.enable_gpo_verification?
     # leaving the usps name for backwards compatibility
-    AppConfig.env.enable_usps_verification == 'true'
+    IdentityConfig.store.enable_usps_verification
   end
 
   def self.reveal_gpo_code?

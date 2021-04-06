@@ -58,6 +58,7 @@ email_from_display_name: Login.gov
 enable_load_testing_mode: 'false'
 enable_rate_limiting: 'true'
 enable_test_routes: 'true'
+enable_usps_verification: 'true'
 event_disavowal_expiration_hours: '240'
 exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
@@ -191,7 +192,6 @@ development:
   document_proof_result_lambda_token: ABC123
   domain_name: localhost:3000
   enable_rate_limiting: 'false'
-  enable_usps_verification: 'true'
   expired_letters_auth_token: abc123
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
@@ -381,7 +381,6 @@ test:
   doc_capture_polling_enabled: 'false'
   document_proof_result_lambda_token: test_token_document
   domain_name: www.example.com
-  enable_usps_verification: 'true'
   exception_recipients: test1@test.com
   expired_letters_auth_token: abc123
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
