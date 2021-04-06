@@ -49,7 +49,7 @@ class FeatureManagement
   end
 
   def self.use_dashboard_service_providers?
-    AppConfig.env.use_dashboard_service_providers == 'true'
+    IdentityConfig.store.use_dashboard_service_providers
   end
 
   def self.enable_gpo_verification?

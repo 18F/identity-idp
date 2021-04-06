@@ -97,6 +97,7 @@ class IdentityConfig
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
     config.add(:unauthorized_scope_enabled, type: :boolean)
+    config.add(:use_dashboard_service_providers, type: :boolean)
     config.add(:valid_authn_contexts, type: :json)
     final_env = config.add(:usps_ipp_root_url)
 
