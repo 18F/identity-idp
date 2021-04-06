@@ -44,6 +44,7 @@ class IdentityConfig
   def self.build_store(config_map)
     config = IdentityConfig.new(config_map)
     config.add(:aal_authn_context_enabled, type: :boolean)
+    config.add(:aamva_cert_enabled, type: :boolean)
     config.add(:aamva_sp_banlist_issuers, type: :json)
     config.add(:aamva_verification_url)
     config.add(:acuant_assure_id_url)
