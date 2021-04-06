@@ -5,9 +5,9 @@ RSpec.describe Idv::ApiImageUploadForm do
     Idv::ApiImageUploadForm.new(
       ActionController::Parameters.new(
         front: front_image,
-        front_metadata: front_image_metadata,
+        front_image_metadata: front_image_metadata,
         back: back_image,
-        back_metadata: back_image_metadata,
+        back_image_metadata: back_image_metadata,
         selfie: selfie_image,
         document_capture_session_uuid: document_capture_session_uuid,
       ),
@@ -106,8 +106,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           billed: true,
           remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
           user_id: nil,
-          front_metadata: JSON.parse(front_image_metadata, symbolize_names: true),
-          back_metadata: JSON.parse(back_image_metadata, symbolize_names: true),
+          front_image_metadata: JSON.parse(front_image_metadata, symbolize_names: true),
+          back_image_metadata: JSON.parse(back_image_metadata, symbolize_names: true),
         )
       end
     end
@@ -127,7 +127,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           billed: true,
           remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
           user_id: nil,
-          front_metadata: JSON.parse(front_image_metadata, symbolize_names: true),
+          front_image_metadata: JSON.parse(front_image_metadata, symbolize_names: true),
         )
       end
     end

@@ -202,7 +202,7 @@ module Idv
     end
 
     def image_metadata
-      params.permit(:front_metadata, :back_metadata).
+      params.permit(:front_image_metadata, :back_image_metadata).
         to_h.
         transform_values do |str|
           JSON.parse(str, symbolize_names: true)

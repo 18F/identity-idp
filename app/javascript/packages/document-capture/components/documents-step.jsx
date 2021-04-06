@@ -16,8 +16,8 @@ import withBackgroundEncryptedUpload from '../higher-order/with-background-encry
  *
  * @prop {Blob|string|null|undefined} front Front image value.
  * @prop {Blob|string|null|undefined} back Back image value.
- * @prop {string=} front_metadata Front image metadata.
- * @prop {string=} back_metadata Back image metadata.
+ * @prop {string=} front_image_metadata Front image metadata.
+ * @prop {string=} back_image_metadata Back image metadata.
  */
 
 /**
@@ -90,7 +90,7 @@ function DocumentsStep({
             onChange={(nextValue, metadata) =>
               onChange({
                 [side]: nextValue,
-                [`${side}_metadata`]: JSON.stringify(metadata),
+                [`${side}_image_metadata`]: JSON.stringify(metadata),
               })
             }
             errorMessage={error ? <FormErrorMessage error={error} /> : undefined}

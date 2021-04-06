@@ -20,8 +20,8 @@ import './review-issues-step.scss';
  * @prop {Blob|string|null|undefined} front Front image value.
  * @prop {Blob|string|null|undefined} back Back image value.
  * @prop {Blob|string|null|undefined} selfie Back image value.
- * @prop {string=} front_metadata Front image metadata.
- * @prop {string=} back_metadata Back image metadata.
+ * @prop {string=} front_image_metadata Front image metadata.
+ * @prop {string=} back_image_metadata Back image metadata.
  */
 
 /**
@@ -90,7 +90,7 @@ function ReviewIssuesStep({
             bannerText={t(`doc_auth.headings.${side}`)}
             value={value[side]}
             onChange={(nextValue, metadata) =>
-              onChange({ [side]: nextValue, [`${side}_metadata`]: JSON.stringify(metadata) })
+              onChange({ [side]: nextValue, [`${side}_image_metadata`]: JSON.stringify(metadata) })
             }
             className="document-capture-review-issues-step__input"
             errorMessage={sideError ? <FormErrorMessage error={sideError} /> : undefined}

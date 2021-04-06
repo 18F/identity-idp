@@ -361,10 +361,10 @@ describe('document-capture/components/document-capture', () => {
           expect(payload).to.have.keys([
             'front_image_iv',
             'front_image_url',
-            'front_metadata',
+            'front_image_metadata',
             'back_image_iv',
             'back_image_url',
-            'back_metadata',
+            'back_image_metadata',
             'selfie_image_iv',
             'selfie_image_url',
           ]);

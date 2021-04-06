@@ -25,7 +25,7 @@ describe('document-capture/components/documents-step', () => {
     await new Promise((resolve) => onChange.callsFake(resolve));
     expect(onChange).to.have.been.calledWith({
       front: file,
-      front_metadata: sinon.match(/^\{.+\}$/),
+      front_image_metadata: sinon.match(/^\{.+\}$/),
     });
   });
 
