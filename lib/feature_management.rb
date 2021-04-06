@@ -88,7 +88,7 @@ class FeatureManagement
   end
 
   def self.disallow_ial2_recovery?
-    AppConfig.env.disallow_ial2_recovery == 'true'
+    IdentityConfig.store.disallow_ial2_recovery
   end
 
   def self.gpo_upload_enabled?
