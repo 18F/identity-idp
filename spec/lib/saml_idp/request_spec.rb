@@ -2,6 +2,7 @@ require 'spec_helper'
 module SamlIdp
   describe Request do
     let(:aal) { 'http://idmanagement.gov/ns/assurance/aal/3' }
+    let(:default_aal) { 'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo' }
     let(:ial) { 'http://idmanagement.gov/ns/assurance/ial/2' }
     let(:password) { 'urn:oasis:names:tc:SAML:2.0:ac:classes:Password' }
     let(:authn_context_classref) { build_authn_context_classref(password) }
@@ -130,6 +131,14 @@ module SamlIdp
 
         it "should return nil" do
           expect(subject.requested_aal_authn_context).to be_nil
+        end
+      end
+
+      context "context requested is default aal" do
+        let(:authn_context_classref) { build_authn_context_classref(default_aal) }
+
+        it "should return the aal uri" do
+          expect(subject.requested_aal_authn_context).to eq(default_aal)
         end
       end
 
