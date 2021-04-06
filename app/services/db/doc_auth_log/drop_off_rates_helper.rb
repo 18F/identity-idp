@@ -77,7 +77,6 @@ module Db
       def generate_report
         initialize_results
         rates = drop_offs_in_range
-        puts "rates=#{rates.inspect}"
         verified_profiles = verified_profiles_in_range
         rates['verified'] = verified_profiles[0]['count']
         results << format("%20s %6s %3s %3s\n", 'step', 'users', '%users', 'dropoff')
