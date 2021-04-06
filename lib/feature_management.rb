@@ -46,7 +46,7 @@ class FeatureManagement
   end
 
   def self.kms_multi_region_enabled?
-    AppConfig.env.aws_kms_multi_region_enabled == 'true'
+    IdentityConfig.store.aws_kms_multi_region_enabled
   end
 
   def self.use_dashboard_service_providers?

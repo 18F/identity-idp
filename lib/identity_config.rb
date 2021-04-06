@@ -52,6 +52,7 @@ class IdentityConfig
     config.add(:acuant_passlive_url)
     config.add(:acuant_sdk_initialization_endpoint)
     config.add(:attribute_encryption_key_queue, type: :json)
+    config.add(:aws_kms_multi_region_enabled, type: :boolean)
     config.add(:aws_kms_regions, type: :json)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:exception_recipients, type: :comma_separated_string_list)
