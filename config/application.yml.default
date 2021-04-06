@@ -159,6 +159,7 @@ verify_gpo_key_max_attempts: '3'
 verify_personal_key_attempt_window_in_minutes: '15'
 verify_personal_key_max_attempts: '5'
 use_dashboard_service_providers: 'false'
+use_kms: 'false'
 usps_ipp_password: ''
 usps_ipp_root_url: ''
 usps_ipp_sponsor_id: ''
@@ -237,7 +238,6 @@ development:
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: test
   use_dashboard_service_providers: 'true'
-  use_kms: 'false'
   usps_confirmation_max_days: '10'
   usps_download_sftp_directory: "/undeliverable"
   usps_download_sftp_host: localhost
@@ -423,7 +423,6 @@ test:
   verify_gpo_key_max_attempts: '2'
   verify_personal_key_attempt_window_in_minutes: '3'
   verify_personal_key_max_attempts: '1'
-  use_kms: 'false'
   usps_confirmation_max_days: '10'
   usps_download_sftp_directory: "/undeliverable"
   usps_download_sftp_host:

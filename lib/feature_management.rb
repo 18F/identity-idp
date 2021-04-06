@@ -41,7 +41,7 @@ class FeatureManagement
   end
 
   def self.use_kms?
-    AppConfig.env.use_kms == 'true'
+    IdentityConfig.store.use_kms
   end
 
   def self.kms_multi_region_enabled?

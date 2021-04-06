@@ -72,7 +72,7 @@ describe 'FeatureManagement', type: :feature do
   describe '#use_kms?' do
     context 'when enabled' do
       before do
-        allow(AppConfig.env).to receive(:use_kms).and_return('true')
+        allow(IdentityConfig.store).to receive(:use_kms).and_return(true)
       end
 
       it 'enables the feature' do
