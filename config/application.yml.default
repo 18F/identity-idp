@@ -46,6 +46,7 @@ aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
 database_statement_timeout: '2500'
 deleted_user_accounts_report_configs: '[]'
+disable_email_sending: 'true'
 disallow_ial2_recovery:
 doc_auth_extend_timeout_by_minutes: '40'
 doc_auth_enable_presigned_s3_urls: 'false'
@@ -182,7 +183,6 @@ development:
   database_readonly_username: ''
   database_timeout: '5000'
   database_username: ''
-  disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
   doc_auth_vendor: 'mock'
@@ -378,7 +378,6 @@ test:
   database_readonly_username: ''
   database_timeout: '5000'
   database_username: ''
-  disable_email_sending:
   disallow_all_web_crawlers: 'true'
   disallow_ial2_recovery: 'false'
   doc_auth_enable_presigned_s3_urls: 'true'

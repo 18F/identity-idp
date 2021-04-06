@@ -26,7 +26,7 @@ Rails.application.configure do
   config.action_mailer.asset_host = AppConfig.env.asset_host ||
                                     IdentityConfig.store.mailer_domain_name
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = if AppConfig.env.disable_email_sending == 'true'
+  config.action_mailer.delivery_method = if IdentityConfig.store.disable_email_sending
                                            :test
                                          else
                                            :ses

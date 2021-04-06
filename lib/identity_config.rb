@@ -55,6 +55,7 @@ class IdentityConfig
     config.add(:aws_kms_multi_region_enabled, type: :boolean)
     config.add(:aws_kms_regions, type: :json)
     config.add(:deleted_user_accounts_report_configs, type: :json)
+    config.add(:disable_email_sending, type: :boolean)
     config.add(:exception_recipients, type: :comma_separated_string_list)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
