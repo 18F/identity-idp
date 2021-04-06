@@ -36,7 +36,6 @@ acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
-allow_piv_cac_required: 'true'
 asset_host:
 async_wait_timeout_seconds: '60'
 aws_http_timeout: '5'
