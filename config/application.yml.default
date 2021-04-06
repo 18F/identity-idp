@@ -56,6 +56,7 @@ doc_capture_request_valid_for_minutes: '15'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: 'false'
+enable_rate_limiting: 'true'
 event_disavowal_expiration_hours: '240'
 exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
@@ -282,7 +283,6 @@ production:
   doc_auth_vendor: 'acuant'
   document_proof_result_lambda_token:
   domain_name: login.gov
-  enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
   expired_letters_auth_token:
@@ -381,7 +381,6 @@ test:
   doc_capture_polling_enabled: 'false'
   document_proof_result_lambda_token: test_token_document
   domain_name: www.example.com
-  enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
   exception_recipients: test1@test.com

@@ -91,7 +91,7 @@ module Upaya
       end
     end
 
-    if AppConfig.env.enable_rate_limiting == 'true'
+    if IdentityConfig.store.enable_rate_limiting
       config.middleware.use Rack::Attack
     else
       # Rack::Attack auto-includes itself as a Railtie, so we need to
