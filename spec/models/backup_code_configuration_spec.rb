@@ -148,7 +148,7 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       expect(save_and_find(save: 'abcd-0000-i1i1', find: 'ABCD-oOoO-1111')).to be
     end
 
-    it 'finds codes if they were generated the old way' do
+    it 'finds codes if they were generated the old way (with SecureRandom.hex)' do
       code = SecureRandom.hex(3 * 4 / 2)
 
       expect(save_and_find(fingerprint: Pii::Fingerprinter.fingerprint(code), find: code)).to be
