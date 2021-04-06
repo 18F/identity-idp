@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include VerifyProfileConcern
   include LocaleHelper
   include VerifySpAttributesConcern
+  include EffectiveUser
 
   FLASH_KEYS = %w[error info success warning other].freeze
   FLASH_KEY_MAP = { 'notice' => 'info', 'alert' => 'error' }.freeze
@@ -53,7 +54,7 @@ class ApplicationController < ActionController::Base
   end
 
   def analytics_user
-    warden.user || AnonymousUser.new
+    effective_user || AnonymousUser.new
   end
 
   def user_event_creator

@@ -1,6 +1,4 @@
 class FrontendLogController < ApplicationController
-  include EffectiveUser
-
   respond_to :json
 
   skip_before_action :verify_authenticity_token
@@ -9,8 +7,7 @@ class FrontendLogController < ApplicationController
 
   def create
     event = "Frontend: #{log_params[:event]}"
-    analytics_hash = log_params[:payload].to_h.merge(user_id: effective_user&.uuid)
-    analytics.track_event(event, analytics_hash)
+    analytics.track_event(event, log_params[:payload].to_h)
 
     render json: { success: true }, status: :ok
   end
@@ -19,6 +16,10 @@ class FrontendLogController < ApplicationController
 
   def log_params
     params.permit(:event, payload: {})
+  end
+
+  def analytics_user
+    effective_user || super
   end
 
   def check_user_authenticated

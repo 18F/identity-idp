@@ -61,16 +61,6 @@ module Flow
       Funnel::DocAuth::RegisterCampaign.call(user_id, session[:ial2_with_no_sp_campaign])
     end
 
-    def analytics_user_override_hash
-      uuid = uuid_of_actual_user_if_user_is_anonymous
-      uuid ? {user_id: uuid} : {}
-    end
-
-    def uuid_of_actual_user_if_user_is_anonymous
-      return if current_user || user_id_from_token.blank?
-      User.where(id: user_id_from_token).first&.uuid
-    end
-
     def user_id
       current_user ? current_user.id : user_id_from_token
     end
@@ -135,8 +125,7 @@ module Flow
 
       if @analytics_id
         optional_show_step_name = optional_show_step.to_s.demodulize.underscore
-        optional_properties = result.to_h.merge(step: optional_show_step_name).
-          merge(analytics_user_override_hash)
+        optional_properties = result.to_h.merge(step: optional_show_step_name)
 
         analytics.track_event(analytics_optional_step, optional_properties)
         # keeping the old event names for backward compatibility
@@ -195,7 +184,7 @@ module Flow
       {
         step: current_step,
         step_count: current_flow_step_counts[current_step_name],
-      }.merge(analytics_user_override_hash)
+      }
     end
 
     def current_step_name

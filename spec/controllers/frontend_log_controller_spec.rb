@@ -7,7 +7,7 @@ describe FrontendLogController do
     let(:fake_analytics) { FakeAnalytics.new }
     let(:user) { create(:user, :with_phone, with: { phone: '+1 (202) 555-1212' }) }
     let(:event) { 'Custom Event' }
-    let(:payload) { { message: 'To be logged...', user_id: user.uuid } }
+    let(:payload) { { message: 'To be logged...' } }
     let(:params) { { event: event, payload: payload } }
     let(:json) { JSON.parse(response.body, symbolize_names: true) }
 
@@ -28,7 +28,7 @@ describe FrontendLogController do
       end
 
       context 'empty payload' do
-        let(:payload) { {user_id: user.uuid} }
+        let(:payload) { {} }
 
         it 'succeeds' do
           expect(fake_analytics).to receive(:track_event).
@@ -105,6 +105,7 @@ describe FrontendLogController do
       before do
         session[:doc_capture_user_id] = user_id
         allow(Analytics).to receive(:new).and_return(fake_analytics)
+        expect(Analytics).to receive(:new).with(hash_including(user: user))
       end
 
       it 'succeeds' do
