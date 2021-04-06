@@ -114,7 +114,7 @@ class FeatureManagement
   end
 
   def self.liveness_checking_enabled?
-    AppConfig.env.liveness_checking_enabled == 'true'
+    IdentityConfig.store.liveness_checking_enabled
   end
 
   def self.logo_upload_enabled?
