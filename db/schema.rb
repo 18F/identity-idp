@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_01_192727) do
+ActiveRecord::Schema.define(version: 2021_04_06_170306) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 2021_04_01_192727) do
     t.string "code_cost"
     t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
     t.index ["user_id", "created_at"], name: "index_backup_code_configurations_on_user_id_and_created_at"
+    t.index ["user_id", "salted_code_fingerprint"], name: "index_backup_codes_on_user_id_and_salted_code_fingerprint"
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
