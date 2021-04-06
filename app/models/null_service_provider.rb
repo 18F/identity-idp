@@ -20,7 +20,6 @@ class NullServiceProvider
     default_aal
     description
     failure_to_proof_url
-    fingerprint
     help_text
     iaa
     iaa_end_date
