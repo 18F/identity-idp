@@ -38,7 +38,7 @@ Rails.application.configure do
   # creates false positive results.
   config.action_dispatch.ip_spoofing_check = false
 
-  if AppConfig.env.log_to_stdout == 'true'
+  if IdentityConfig.store.log_to_stdout
     Rails.logger = Logger.new(STDOUT)
     config.logger = ActiveSupport::Logger.new(STDOUT)
   end

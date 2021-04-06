@@ -412,13 +412,13 @@ describe 'FeatureManagement', type: :feature do
       before { allow(Rails.env).to receive(:test?).and_return(false) }
 
       it 'returns true when enabled' do
-        allow(AppConfig.env).to receive(:log_to_stdout).and_return('true')
+        allow(IdentityConfig.store).to receive(:log_to_stdout).and_return(true)
 
         expect(FeatureManagement.log_to_stdout?).to eq(true)
       end
 
       it 'returns false when disabled' do
-        allow(AppConfig.env).to receive(:log_to_stdout).and_return('true')
+        allow(IdentityConfig.store).to receive(:log_to_stdout).and_return(true)
 
         expect(FeatureManagement.log_to_stdout?).to eq(true)
       end
@@ -426,10 +426,10 @@ describe 'FeatureManagement', type: :feature do
 
     context 'in the test environment' do
       it 'always returns true' do
-        allow(AppConfig.env).to receive(:log_to_stdout).and_return('true')
+        allow(IdentityConfig.store).to receive(:log_to_stdout).and_return(true)
         expect(FeatureManagement.log_to_stdout?).to eq(false)
 
-        allow(AppConfig.env).to receive(:log_to_stdout).and_return('false')
+        allow(IdentityConfig.store).to receive(:log_to_stdout).and_return(false)
         expect(FeatureManagement.log_to_stdout?).to eq(false)
       end
     end

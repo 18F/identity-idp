@@ -122,7 +122,7 @@ class FeatureManagement
   end
 
   def self.log_to_stdout?
-    !Rails.env.test? && AppConfig.env.log_to_stdout == 'true'
+    !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
   # Whether or not we can call the phone_info endpoint at all

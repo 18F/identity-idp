@@ -71,6 +71,7 @@ class IdentityConfig
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
     config.add(:job_run_healthchecks_enabled, type: :boolean)
     config.add(:liveness_checking_enabled, type: :boolean)
+    config.add(:log_to_stdout, type: :boolean)
     config.add(:no_sp_campaigns_whitelist, type: :json)
     config.add(:mailer_domain_name)
     config.add(:nonessential_email_banlist, type: :json)
