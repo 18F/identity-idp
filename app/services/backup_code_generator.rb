@@ -41,6 +41,7 @@ class BackupCodeGenerator
     @user.backup_code_configurations.destroy_all
   end
 
+  # @return [Array<String>]
   def save(codes, salt: SecureRandom.hex(32))
     delete_existing_codes
     codes.each { |code| save_code(code: code, salt: salt) }

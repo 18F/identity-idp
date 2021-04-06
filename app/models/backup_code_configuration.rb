@@ -38,7 +38,6 @@ class BackupCodeConfiguration < ApplicationRecord
     def find_with_code(code:, user_id:)
       return if code.blank?
       code = code.downcase.strip
-      code_fingerprint = create_fingerprint(code)
 
       user_salt_costs = select(:code_salt, :code_cost).
         distinct.
@@ -51,7 +50,7 @@ class BackupCodeConfiguration < ApplicationRecord
       end
 
       where(
-        code_fingerprint: code_fingerprint,
+        code_fingerprint: create_fingerprint(code),
       ).or(
         where(salted_code_fingerprint: salted_fingerprints),
       ).find_by(user_id: user_id)
