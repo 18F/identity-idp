@@ -67,6 +67,7 @@ class IdentityConfig
     config.add(:exception_recipients, type: :comma_separated_string_list)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:identity_pki_disabled, type: :boolean)
+    config.add(:identity_pki_local_dev, type: :boolean)
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
     config.add(:no_sp_campaigns_whitelist, type: :json)
     config.add(:mailer_domain_name)

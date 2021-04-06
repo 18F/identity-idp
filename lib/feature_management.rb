@@ -98,7 +98,7 @@ class FeatureManagement
   def self.identity_pki_local_dev?
     # This option should only be used in the development environment
     # it controls if we hop over to identity-pki on a developers local machins
-    Rails.env.development? && AppConfig.env.identity_pki_local_dev == 'true'
+    Rails.env.development? && IdentityConfig.store.identity_pki_local_dev
   end
 
   def self.doc_capture_polling_enabled?

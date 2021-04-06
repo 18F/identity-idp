@@ -109,7 +109,7 @@ describe PivCacService do
 
       describe 'when configured to contact piv_cac service for local development' do
         before(:each) do
-          allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'true' }
+          allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { true }
           allow(IdentityConfig.store).to receive(:identity_pki_disabled) { false }
           allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url) do
             'http://localhost:8443/'

@@ -362,13 +362,13 @@ describe 'FeatureManagement', type: :feature do
       end
 
       it 'returns true when AppConfig setting is true' do
-        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'true' }
+        allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { true }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(true)
       end
 
       it 'returns false when AppConfig setting is false' do
-        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'false' }
+        allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { false }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
@@ -380,13 +380,13 @@ describe 'FeatureManagement', type: :feature do
       end
 
       it 'returns false when AppConfig setting is true' do
-        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'true' }
+        allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { true }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
 
       it 'returns false when AppConfig setting is false' do
-        allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'false' }
+        allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { false }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
