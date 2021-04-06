@@ -83,6 +83,7 @@ class IdentityConfig
     config.add(:personal_key_retired, type: :boolean)
     config.add(:piv_cac_service_url)
     config.add(:piv_cac_verify_token_url)
+    config.add(:proofer_mock_fallback, type: :boolean)
     config.add(:recurring_jobs_disabled_names, type: :json)
     config.add(:redis_throttle_url)
     config.add(:redis_url)
