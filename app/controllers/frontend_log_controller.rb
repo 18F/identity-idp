@@ -18,10 +18,6 @@ class FrontendLogController < ApplicationController
     params.permit(:event, payload: {})
   end
 
-  def analytics_user
-    effective_user || super
-  end
-
   def check_user_authenticated
     return if effective_user
 
