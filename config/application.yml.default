@@ -73,6 +73,7 @@ idv_send_link_attempt_window_in_minutes: '10'
 idv_send_link_max_attempts: '5'
 job_run_healthchecks_enabled: 'true'
 liveness_checking_enabled: 'false'
+logins_per_ip_track_only_mode: 'false'
 # LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
 lexisnexis_timeout: '45'
@@ -203,7 +204,6 @@ development:
   lockout_period_in_minutes: '10'
   logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
-  logins_per_ip_track_only_mode: 'false'
   logo_upload_enabled: 'true'
   max_mail_events: '4'
   newrelic_browser_app_id: ''
@@ -390,7 +390,6 @@ test:
   lockout_period_in_minutes: '5'
   logins_per_email_and_ip_limit: '2'
   logins_per_ip_limit: '3'
-  logins_per_ip_track_only_mode: 'false'
   max_mail_events: '2'
   newrelic_browser_app_id:
   newrelic_browser_key:

@@ -72,6 +72,7 @@ class IdentityConfig
     config.add(:job_run_healthchecks_enabled, type: :boolean)
     config.add(:liveness_checking_enabled, type: :boolean)
     config.add(:log_to_stdout, type: :boolean)
+    config.add(:logins_per_ip_track_only_mode, type: :boolean)
     config.add(:no_sp_campaigns_whitelist, type: :json)
     config.add(:mailer_domain_name)
     config.add(:nonessential_email_banlist, type: :json)

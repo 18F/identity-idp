@@ -84,7 +84,7 @@ module Rack
     # Throttle sign in attempts by IP address
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.remote_ip}"
-    if AppConfig.env.logins_per_ip_track_only_mode == 'true'
+    if IdentityConfig.store.logins_per_ip_track_only_mode
       track(
         'logins/ip',
         limit: AppConfig.env.logins_per_ip_limit.to_i,
