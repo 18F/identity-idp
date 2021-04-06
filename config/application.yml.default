@@ -138,6 +138,7 @@ report_timeout:
 requests_per_ip_track_only_mode: 'false'
 risc_notifications_sqs_enabled: 'false'
 ruby_workers_enabled: 'true'
+s3_reports_enabled: 'false'
 saml_secret_rotation_enabled:
 service_provider_request_ttl_hours: '24'
 session_check_delay: '30'
@@ -227,7 +228,6 @@ development:
   reset_password_email_window_in_minutes: '60'
   resolution_proof_result_lambda_token: ABC123
   s3_report_bucket_prefix:
-  s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
@@ -412,7 +412,6 @@ test:
   reset_password_email_window_in_minutes: '80'
   resolution_proof_result_lambda_token: test_token_resolution
   s3_report_bucket_prefix:
-  s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base

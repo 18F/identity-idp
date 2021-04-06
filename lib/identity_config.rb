@@ -90,6 +90,7 @@ class IdentityConfig
     config.add(:redis_throttle_url)
     config.add(:redis_url)
     config.add(:requests_per_ip_track_only_mode, type: :boolean)
+    config.add(:s3_reports_enabled, type: :boolean)
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
