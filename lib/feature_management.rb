@@ -118,7 +118,7 @@ class FeatureManagement
   end
 
   def self.logo_upload_enabled?
-    AppConfig.env.logo_upload_enabled == 'true'
+    IdentityConfig.store.logo_upload_enabled
   end
 
   def self.log_to_stdout?

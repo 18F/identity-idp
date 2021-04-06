@@ -295,7 +295,6 @@ production:
   logins_per_ip_limit: '20'
   logins_per_ip_period: '20'
   logins_per_ip_track_only_mode: 'true'
-  logo_upload_enabled: 'false'
   max_mail_events: '4'
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
