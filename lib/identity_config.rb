@@ -79,6 +79,7 @@ class IdentityConfig
     config.add(:mailer_domain_name)
     config.add(:nonessential_email_banlist, type: :json)
     config.add(:outbound_connection_check_url)
+    config.add(:participate_in_dap, type: :boolean)
     config.add(:piv_cac_service_url)
     config.add(:piv_cac_verify_token_url)
     config.add(:recurring_jobs_disabled_names, type: :json)

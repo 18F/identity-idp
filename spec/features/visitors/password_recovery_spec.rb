@@ -6,7 +6,7 @@ feature 'Password Recovery' do
 
   context 'user enters valid email in forgot password form', email: true do
     it 'redirects to forgot_password path and sends an email to the user' do
-      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
+      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
       user = create(:user, :signed_up)
 
       visit root_path
