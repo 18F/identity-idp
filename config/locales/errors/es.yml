@@ -22,7 +22,8 @@ es:
         Por favor, inténtelo de nuevo más tarde.
       acuant_throttle: Para evitar abusos, limitamos el número de veces que puede
         intentar validar un documento. Por favor, inténtelo de nuevo más tarde.
-      capture_failure: La cámara no se pudo iniciar. Vuelve a intentarlo.
+      capture_failure: No se ha podido encender la cámara, por favor, inténtelo de
+        nuevo.
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
         y luego haga clic en continuar.
       document_capture_cancelled: Ha cancelado la carga de fotos de su identificación
@@ -53,8 +54,8 @@ es:
       general_error: No pudimos leer ni verificar su identificación. Intenta tomar
         y subir nuevas imágenes de la parte delantera y trasera de tu ID. Asegúrese
         de que todo se pueda leer fácilmente, incluido el código de barras.
-      invalid_file_input_type: No se acepta este tipo de archivo, elija un archivo
-        JPG, PNG, BMP o TIFF.
+      invalid_file_input_type: Ese formato no es admitido, por favor elija un archivo
+        JPG, PNG, BMP, o TIFF.
       phone_step_incomplete: Debe ir a su teléfono y cargar fotos de su identificación
         antes de continuar. Te enviamos un enlace con instrucciones.
       photo_blurry: La imagen está borrosa, inténtelo de nuevo.
@@ -68,7 +69,7 @@ es:
         También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
       upload_error: Lo siento, algo salió mal por nuestra parte.
     file_input:
-      invalid_type: Este tipo de archivo no es aceptado, inténtalo de nuevo.
+      invalid_type: No se acepta este tipo de archivo, por favor, vuelva a intentarlo.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.
