@@ -83,6 +83,6 @@ class BackupCodeGenerator
   end
 
   def cost
-    AppConfig.env.attribute_cost
+    AppConfig.env.backup_code_cost
   end
 end
