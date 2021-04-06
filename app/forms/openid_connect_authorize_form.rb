@@ -140,7 +140,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_unauthorized_scope
-    return unless @unauthorized_scope && AppConfig.env.unauthorized_scope_enabled == 'true'
+    return unless @unauthorized_scope && IdentityConfig.store.unauthorized_scope_enabled
     errors.add(:scope, t('openid_connect.authorization.errors.unauthorized_scope'))
   end
 
