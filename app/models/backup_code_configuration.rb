@@ -43,7 +43,7 @@ class BackupCodeConfiguration < ApplicationRecord
       if decoded
         Base32::Crockford.encode(
           decoded,
-          length: code.length
+          length: code.length,
         ).downcase
       else
         # strings that are invalid Crockford encodings but may still be valid

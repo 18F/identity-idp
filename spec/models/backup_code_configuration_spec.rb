@@ -132,7 +132,7 @@ RSpec.describe BackupCodeConfiguration, type: :model do
       expect(BackupCodeConfiguration.find_with_code(code: '9999', user_id: user.id)).to_not be
     end
 
-    def save_and_find(save: 'just-some-not-null-value', fingerprint: nil, find:)
+    def save_and_find(find:, save: 'just-some-not-null-value', fingerprint: nil)
       user.backup_code_configurations.build(
         code_cost: '10$8$4$',
         code_salt: 'abcdefg',
