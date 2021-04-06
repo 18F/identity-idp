@@ -13,10 +13,11 @@ class RegisterUserEmailForm
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(recaptcha_results: [true, {}], password_reset_requested: false)
+  def initialize(analytics:, recaptcha_results: [true, {}], password_reset_requested: false)
     @allow, @recaptcha_h = recaptcha_results
     @throttled = false
     @password_reset_requested = password_reset_requested
+    @analytics = analytics
   end
 
   def user
@@ -123,12 +124,28 @@ class RegisterUserEmailForm
 
   def send_sign_up_unconfirmed_email(request_id)
     @throttled = Throttler::IsThrottledElseIncrement.call(existing_user.id, :reg_unconfirmed_email)
-    SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id) unless @throttled
+
+    if @throttled
+      @analytics.track_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :reg_unconfirmed_email,
+      )
+    else
+      SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id)
+    end
   end
 
   def send_sign_up_confirmed_email
     @throttled = Throttler::IsThrottledElseIncrement.call(existing_user.id, :reg_confirmed_email)
-    UserMailer.signup_with_your_email(existing_user, email).deliver_now unless @throttled
+
+    if @throttled
+      @analytics.track_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :reg_confirmed_email,
+      )
+    else
+      UserMailer.signup_with_your_email(existing_user, email).deliver_now
+    end
   end
 
   def user_unconfirmed?
