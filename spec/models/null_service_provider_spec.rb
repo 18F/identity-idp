@@ -28,12 +28,6 @@ describe NullServiceProvider do
     end
   end
 
-  describe '#fingerprint' do
-    it 'returns nil' do
-      expect(subject.fingerprint).to be_nil
-    end
-  end
-
   describe '#logo' do
     it 'returns nil' do
       expect(subject.logo).to be_nil
