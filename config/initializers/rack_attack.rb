@@ -110,7 +110,7 @@ module Rack
     # Throttle SMS and voice transactions by IP address
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:otps/ip:#{req.remote_ip}"
-    if AppConfig.env.otps_per_ip_track_only_mode == 'true'
+    if IdentityConfig.store.otps_per_ip_track_only_mode
       track(
         'otps/ip',
         limit: AppConfig.env.otps_per_ip_limit.to_i,

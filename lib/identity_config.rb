@@ -75,6 +75,7 @@ class IdentityConfig
     config.add(:logins_per_ip_track_only_mode, type: :boolean)
     config.add(:logo_upload_enabled, type: :boolean)
     config.add(:no_sp_campaigns_whitelist, type: :json)
+    config.add(:otps_per_ip_track_only_mode, type: :boolean)
     config.add(:mailer_domain_name)
     config.add(:nonessential_email_banlist, type: :json)
     config.add(:outbound_connection_check_url)
