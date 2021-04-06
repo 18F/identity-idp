@@ -99,6 +99,7 @@ class IdentityConfig
     config.add(:unauthorized_scope_enabled, type: :boolean)
     config.add(:use_dashboard_service_providers, type: :boolean)
     config.add(:use_kms, type: :boolean)
+    config.add(:usps_upload_enabled, type: :boolean)
     config.add(:valid_authn_contexts, type: :json)
     final_env = config.add(:usps_ipp_root_url)
 

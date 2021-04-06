@@ -92,7 +92,7 @@ class FeatureManagement
 
   def self.gpo_upload_enabled?
     # leaving the usps name for backwards compatibility
-    AppConfig.env.usps_upload_enabled == 'true'
+    IdentityConfig.store.usps_upload_enabled
   end
 
   def self.identity_pki_local_dev?
