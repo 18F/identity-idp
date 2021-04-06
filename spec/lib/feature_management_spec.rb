@@ -196,7 +196,7 @@ describe 'FeatureManagement', type: :feature do
     describe '#identity_pki_disabled?' do
       context 'when enabled' do
         before(:each) do
-          allow(AppConfig.env).to receive(:identity_pki_disabled) { 'true' }
+          allow(IdentityConfig.store).to receive(:identity_pki_disabled) { true }
         end
 
         it 'has the feature disabled' do
@@ -206,7 +206,7 @@ describe 'FeatureManagement', type: :feature do
 
       context 'when disabled' do
         before(:each) do
-          allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
+          allow(IdentityConfig.store).to receive(:identity_pki_disabled) { false }
         end
 
         it 'has the feature disabled' do
@@ -223,14 +223,14 @@ describe 'FeatureManagement', type: :feature do
 
         context 'identity_pki disabled' do
           it 'returns true' do
-            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'true' }
+            allow(IdentityConfig.store).to receive(:identity_pki_disabled) { true }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_truthy
           end
         end
 
         context 'identity_pki not disabled' do
           it 'returns false' do
-            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
+            allow(IdentityConfig.store).to receive(:identity_pki_disabled) { false }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
@@ -244,14 +244,14 @@ describe 'FeatureManagement', type: :feature do
 
         context 'identity_pki disabled' do
           it 'returns false' do
-            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'true' }
+            allow(IdentityConfig.store).to receive(:identity_pki_disabled) { true }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end
 
         context 'identity_pki not disabled' do
           it 'returns false' do
-            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
+            allow(IdentityConfig.store).to receive(:identity_pki_disabled) { false }
             expect(FeatureManagement.development_and_identity_pki_disabled?).to be_falsey
           end
         end

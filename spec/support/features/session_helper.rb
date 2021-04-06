@@ -561,7 +561,7 @@ module Features
     end
 
     def stub_piv_cac_service
-      allow(AppConfig.env).to receive(:identity_pki_disabled).and_return('false')
+      allow(IdentityConfig.store).to receive(:identity_pki_disabled).and_return(false)
       allow(IdentityConfig.store).to receive(:piv_cac_service_url).
         and_return('http://piv.example.com/')
       allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url).and_return('http://piv.example.com/')

@@ -10,8 +10,7 @@ class FeatureManagement
   end
 
   def self.identity_pki_disabled?
-    env = AppConfig.env
-    env.identity_pki_disabled == 'true' ||
+    IdentityConfig.store.identity_pki_disabled ||
       !IdentityConfig.store.piv_cac_service_url ||
       !IdentityConfig.store.piv_cac_verify_token_url
   end

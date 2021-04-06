@@ -47,7 +47,7 @@ describe PivCacService do
 
     context 'with piv/cac service disabled' do
       before(:each) do
-        allow(AppConfig.env).to receive(:identity_pki_disabled) { 'true' }
+        allow(IdentityConfig.store).to receive(:identity_pki_disabled) { true }
       end
 
       it 'returns an error' do
@@ -69,7 +69,7 @@ describe PivCacService do
 
         describe 'when configured with a user-facing endpoint' do
           before(:each) do
-            allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
+            allow(IdentityConfig.store).to receive(:identity_pki_disabled) { false }
             allow(IdentityConfig.store).to receive(:piv_cac_service_url) { base_url }
           end
 
@@ -110,7 +110,7 @@ describe PivCacService do
       describe 'when configured to contact piv_cac service for local development' do
         before(:each) do
           allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'true' }
-          allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
+          allow(IdentityConfig.store).to receive(:identity_pki_disabled) { false }
           allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url) do
             'http://localhost:8443/'
           end
@@ -152,7 +152,7 @@ describe PivCacService do
 
       describe 'when configured to contact remote service' do
         before(:each) do
-          allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
+          allow(IdentityConfig.store).to receive(:identity_pki_disabled) { false }
           allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url) do
             'http://localhost:8443/'
           end
@@ -194,7 +194,7 @@ describe PivCacService do
 
       describe 'with bad json' do
         before(:each) do
-          allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
+          allow(IdentityConfig.store).to receive(:identity_pki_disabled) { false }
           allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url) do
             'http://localhost:8443/'
           end

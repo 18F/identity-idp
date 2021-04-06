@@ -64,6 +64,7 @@ exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 gpo_designated_receiver_pii: '{}'
 ial2_recovery_request_valid_for_minutes: '15'
+identity_pki_disabled: 'false'
 identity_pki_local_dev: 'false'
 idv_attempt_window_in_hours: '6'
 idv_max_attempts: '5'
@@ -195,7 +196,6 @@ development:
   expired_letters_auth_token: abc123
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
-  identity_pki_disabled: 'false'
   identity_pki_local_dev: 'true'
   issuers_with_email_nameid_format: ''
   liveness_checking_enabled: 'true'
@@ -288,7 +288,6 @@ production:
   expired_letters_auth_token:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
-  identity_pki_disabled: 'false'
   issuers_with_email_nameid_format: sp1,sp2
   liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '10'
