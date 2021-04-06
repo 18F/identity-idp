@@ -395,13 +395,13 @@ describe 'FeatureManagement', type: :feature do
 
   describe '#document_capture_async_uploads_enabled?' do
     it 'returns true when AppConfig presigned S3 URL setting is true' do
-      allow(AppConfig.env).to receive(:doc_auth_enable_presigned_s3_urls) { 'true' }
+      allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls) { true }
 
       expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(true)
     end
 
     it 'returns false when AppConfig presigned S3 URL setting is false' do
-      allow(AppConfig.env).to receive(:doc_auth_enable_presigned_s3_urls) { 'false' }
+      allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls) { false }
 
       expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(false)
     end

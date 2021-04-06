@@ -107,7 +107,7 @@ class FeatureManagement
   end
 
   def self.document_capture_async_uploads_enabled?
-    AppConfig.env.doc_auth_enable_presigned_s3_urls == 'true'
+    IdentityConfig.store.doc_auth_enable_presigned_s3_urls
   end
 
   def self.hide_phone_mfa_signup?

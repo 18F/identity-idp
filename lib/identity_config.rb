@@ -58,6 +58,7 @@ class IdentityConfig
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)
     config.add(:disallow_ial2_recovery, type: :boolean)
+    config.add(:doc_auth_enable_presigned_s3_urls, type: :boolean)
     config.add(:exception_recipients, type: :comma_separated_string_list)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
