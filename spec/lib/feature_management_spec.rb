@@ -329,13 +329,13 @@ describe 'FeatureManagement', type: :feature do
 
   describe '#disallow_all_web_crawlers?' do
     it 'returns true when AppConfig setting is true' do
-      allow(AppConfig.env).to receive(:disallow_all_web_crawlers) { 'true' }
+      allow(IdentityConfig.store).to receive(:disallow_all_web_crawlers) { true }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(true)
     end
 
     it 'returns false when AppConfig setting is false' do
-      allow(AppConfig.env).to receive(:disallow_all_web_crawlers) { 'false' }
+      allow(IdentityConfig.store).to receive(:disallow_all_web_crawlers) { false }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
     end

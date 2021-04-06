@@ -84,7 +84,7 @@ class FeatureManagement
   end
 
   def self.disallow_all_web_crawlers?
-    AppConfig.env.disallow_all_web_crawlers == 'true'
+    IdentityConfig.store.disallow_all_web_crawlers
   end
 
   def self.disallow_ial2_recovery?
