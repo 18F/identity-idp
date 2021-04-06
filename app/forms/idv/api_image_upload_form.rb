@@ -205,7 +205,7 @@ module Idv
       params.permit(:front_metadata, :back_metadata).
         to_h.
         transform_values do |str|
-          JSON.parse(str)
+          JSON.parse(str, symbolize_names: true)
         rescue JSON::ParserError
           nil
         end.

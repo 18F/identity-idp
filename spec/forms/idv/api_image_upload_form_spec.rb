@@ -106,8 +106,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           billed: true,
           remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
           user_id: nil,
-          front_metadata: JSON.parse(front_image_metadata),
-          back_metadata: JSON.parse(back_image_metadata),
+          front_metadata: JSON.parse(front_image_metadata, symbolize_names: true),
+          back_metadata: JSON.parse(back_image_metadata, symbolize_names: true),
         )
       end
     end
@@ -127,7 +127,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           billed: true,
           remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
           user_id: nil,
-          front_metadata: JSON.parse(front_image_metadata),
+          front_metadata: JSON.parse(front_image_metadata, symbolize_names: true),
         )
       end
     end
