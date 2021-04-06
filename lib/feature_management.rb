@@ -38,7 +38,7 @@ class FeatureManagement
   end
 
   def self.enable_load_testing_mode?
-    AppConfig.env.enable_load_testing_mode == 'true'
+    IdentityConfig.store.enable_load_testing_mode
   end
 
   def self.use_kms?

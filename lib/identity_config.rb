@@ -60,6 +60,7 @@ class IdentityConfig
     config.add(:disallow_ial2_recovery, type: :boolean)
     config.add(:doc_auth_enable_presigned_s3_urls, type: :boolean)
     config.add(:doc_capture_polling_enabled, type: :boolean)
+    config.add(:enable_load_testing_mode, type: :boolean)
     config.add(:exception_recipients, type: :comma_separated_string_list)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
