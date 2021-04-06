@@ -1,8 +1,8 @@
 module Db
   module DocAuthLog
     module DropOffRatesHelper
-      STEPS = %w[welcome agreement capture_document cap_doc_submit ssn verify_info verify_submit phone
-                 encrypt personal_key verified].freeze
+      STEPS = %w[welcome agreement capture_document cap_doc_submit ssn verify_info
+                 verify_submit phone encrypt personal_key verified].freeze
 
       private
 
