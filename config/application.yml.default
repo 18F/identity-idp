@@ -50,6 +50,7 @@ disable_email_sending: 'true'
 disallow_all_web_crawlers: 'true'
 disallow_ial2_recovery: 'false'
 doc_auth_extend_timeout_by_minutes: '40'
+doc_capture_polling_enabled: 'true'
 doc_auth_enable_presigned_s3_urls: 'false'
 doc_capture_request_valid_for_minutes: '15'
 email_from: no-reply@login.gov
@@ -185,7 +186,6 @@ development:
   database_timeout: '5000'
   database_username: ''
   doc_auth_vendor: 'mock'
-  doc_capture_polling_enabled: 'true'
   document_proof_result_lambda_token: ABC123
   domain_name: localhost:3000
   enable_rate_limiting: 'false'
@@ -280,7 +280,6 @@ production:
   disallow_all_web_crawlers: 'false'
   disallow_ial2_recovery: 'true'
   doc_auth_vendor: 'acuant'
-  doc_capture_polling_enabled: 'true'
   document_proof_result_lambda_token:
   domain_name: login.gov
   enable_rate_limiting: 'true'

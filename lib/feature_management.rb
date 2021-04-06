@@ -103,7 +103,7 @@ class FeatureManagement
   end
 
   def self.doc_capture_polling_enabled?
-    AppConfig.env.doc_capture_polling_enabled == 'true'
+    IdentityConfig.store.doc_capture_polling_enabled
   end
 
   def self.document_capture_async_uploads_enabled?
