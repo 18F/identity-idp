@@ -74,7 +74,7 @@ class FeatureManagement
   end
 
   def self.enable_saml_cert_rotation?
-    AppConfig.env.saml_secret_rotation_enabled == 'true'
+    IdentityConfig.store.saml_secret_rotation_enabled
   end
 
   def self.recaptcha_enabled?(session, reset)

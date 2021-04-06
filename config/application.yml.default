@@ -139,7 +139,7 @@ requests_per_ip_track_only_mode: 'false'
 risc_notifications_sqs_enabled: 'false'
 ruby_workers_enabled: 'true'
 s3_reports_enabled: 'false'
-saml_secret_rotation_enabled:
+saml_secret_rotation_enabled: 'false'
 service_provider_request_ttl_hours: '24'
 session_check_delay: '30'
 session_check_frequency: '30'
