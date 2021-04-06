@@ -91,10 +91,6 @@ class FeatureManagement
     AppConfig.env.disallow_ial2_recovery == 'true'
   end
 
-  def self.backup_codes_as_only_2fa?
-    AppConfig.env.backup_codes_as_only_2fa == 'true'
-  end
-
   def self.gpo_upload_enabled?
     # leaving the usps name for backwards compatibility
     AppConfig.env.usps_upload_enabled == 'true'
