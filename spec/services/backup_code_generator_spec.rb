@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe describe BackupCodeGenerator do
+RSpec.describe BackupCodeGenerator do
   let(:user) { create(:user) }
 
   subject(:generator) { BackupCodeGenerator.new(user) }
@@ -10,6 +10,17 @@ RSpec.describe describe BackupCodeGenerator do
 
     codes.each do |code|
       expect(generator.verify(code)).to eq(true)
+    end
+  end
+
+  it 'generates 12-letter/digit codes via base32 crockford' do
+    expect(Base32::Crockford).to receive(:encode).
+      and_call_original.at_least(BackupCodeGenerator::NUMBER_OF_CODES).times
+
+    codes = generator.create
+
+    codes.each do |code|
+      expect(code).to match(/\A[a-z0-9]{12}\Z/i)
     end
   end
 

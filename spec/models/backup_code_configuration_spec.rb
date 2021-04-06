@@ -131,6 +131,28 @@ RSpec.describe BackupCodeConfiguration, type: :model do
 
       expect(BackupCodeConfiguration.find_with_code(code: '9999', user_id: user.id)).to_not be
     end
+
+    def save_and_find(save: 'just-some-not-null-value', fingerprint: nil, find:)
+      user.backup_code_configurations.build(
+        code_cost: '10$8$4$',
+        code_salt: 'abcdefg',
+        code: save,
+      ).tap do |config|
+        config.code_fingerprint = fingerprint if fingerprint
+      end.save!
+
+      BackupCodeConfiguration.find_with_code(code: find, user_id: user.id)
+    end
+
+    it 'base32 crockford normalizes codes when searching' do
+      expect(save_and_find(save: 'abcd-0000-i1i1', find: 'ABCD-oOoO-1111')).to be
+    end
+
+    it 'finds codes if they were generated the old way' do
+      code = SecureRandom.hex(3 * 4 / 2)
+
+      expect(save_and_find(fingerprint: Pii::Fingerprinter.fingerprint(code), find: code)).to be
+    end
   end
 
   describe 'self.selection_presenters(set)' do
