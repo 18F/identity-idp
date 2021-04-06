@@ -31,7 +31,7 @@ module SamlAuthHelper
   end
 
   def request_authn_context
-    if AppConfig.env.aal_authn_context_enabled == 'true'
+    if IdentityConfig.store.aal_authn_context_enabled
       Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
     else
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF

@@ -61,7 +61,7 @@ module SamlIdpAuthConcern
   end
 
   def requested_authn_context
-    if AppConfig.env.aal_authn_context_enabled == 'true'
+    if IdentityConfig.store.aal_authn_context_enabled
       requested_aal_authn_context
     else
       sp_defined_aal_context = saml_request.requested_aal_authn_context
@@ -70,7 +70,7 @@ module SamlIdpAuthConcern
   end
 
   def default_authn_context
-    if AppConfig.env.aal_authn_context_enabled == 'true'
+    if IdentityConfig.store.aal_authn_context_enabled
       default_aal_context
     else
       default_ial_context
