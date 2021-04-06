@@ -1,6 +1,4 @@
 class FrontendLogController < ApplicationController
-  include EffectiveUser
-
   respond_to :json
 
   skip_before_action :verify_authenticity_token
@@ -18,10 +16,6 @@ class FrontendLogController < ApplicationController
 
   def log_params
     params.permit(:event, payload: {})
-  end
-
-  def analytics_user
-    effective_user || super
   end
 
   def check_user_authenticated
