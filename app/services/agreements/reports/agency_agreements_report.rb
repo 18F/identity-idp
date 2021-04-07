@@ -11,7 +11,11 @@ module Agreements
             group_by { |gtc| gtc.partner_account.agency.abbreviation }.
             transform_values do |gtcs|
               gtcs.map do |gtc|
-                gtc.iaa_orders.map { |order| Iaa.new(gtc: gtc, order: order) }
+                gtc.iaa_orders.map do |order|
+                  auths = IaaAuthsQuery.call(order: order)
+                  ial2_users = IaaIal2UsersQuery.call(order: order)
+                  Iaa.new(gtc: gtc, order: order, auths: auths, ial2_users: ial2_users)
+                end
               end.flatten
             end
         end

@@ -147,6 +147,12 @@ describe ServiceProvider do
         with_primary_key('issuer')
     end
     it { is_expected.to have_one(:integration) }
+    it do
+      is_expected.to have_many(:sp_return_logs).
+        inverse_of(:service_provider).
+        with_foreign_key(:issuer).
+        with_primary_key(:issuer)
+    end
   end
 
   describe '#issuer' do

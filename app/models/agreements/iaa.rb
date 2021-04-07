@@ -3,7 +3,10 @@ module Agreements
   class Iaa
     include ActiveModel::Model
 
-    attr_accessor :gtc, :order
+    attr_accessor :gtc, :order, :auths, :ial2_users
+
+    delegate :gtc_number, to: :gtc
+    delegate :order_number, to: :order
 
     def iaa_number
       "#{gtc.gtc_number}-#{'%04d' % order.order_number}-#{'%04d' % order.mod_number}"
@@ -13,16 +16,8 @@ module Agreements
       gtc.partner_account.requesting_agency
     end
 
-    def gtc_number
-      gtc.gtc_number
-    end
-
     def gtc_status
       gtc.partner_status
-    end
-
-    def order_number
-      order.order_number
     end
 
     def order_status
