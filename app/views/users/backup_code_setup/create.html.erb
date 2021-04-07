@@ -17,24 +17,17 @@
 <div class="margin-bottom-6">
   <table>
     <tr>
-      <td class="padding-0">
-        <code class="bold h2">
-          <% @codes[0..@codes.length / 2 - 1].each do |code| %>
-            <%= code.upcase.insert(8, '-').insert(4, '-') %>
+      <% [ @codes.first(@codes.length / 2), @codes.last(@codes.length / 2)].each do |section| %>
+        <td class="padding-0">
+          <% section.each do |code| %>
+            <code class="bold h2">
+              <%= RandomPhrase.format(code, separator: '-') %>
+            </code>
             <br/>
             <br/>
           <% end %>
-        </code>
-      </td>
-      <td>
-        <code class="bold h2">
-          <% @codes[@codes.length / 2..-1].each do |code| %>
-            <%= code.upcase.insert(8, '-').insert(4, '-') %>
-            <br/>
-            <br/>
-          <% end %>
-        </code>
-      </td>
+        </td>
+      <% end %>
     </tr>
   </table>
   <div class="margin-top-0">

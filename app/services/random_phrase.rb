@@ -1,15 +1,39 @@
+# Helper for generating and normalizing random strings, that can be formatted as groups of 4 letters
 class RandomPhrase
-  attr_reader :words
+  attr_reader :words, :separator
 
   WORD_LENGTH = 4
 
-  def initialize(num_words:, word_length: WORD_LENGTH)
+  def initialize(num_words:, word_length: WORD_LENGTH, separator: ' ')
     @word_length = word_length
     @words = build_words(num_words)
+    @separator = separator
   end
 
   def to_s
-    @words.join(' ')
+    @words.join(separator)
+  end
+
+  def self.format(str, separator: ' ')
+    normalize(str).
+      chars.each_slice(WORD_LENGTH).map(&:join).join(separator).
+      upcase
+  end
+
+  def self.normalize(str, num_words: nil)
+    str = str.gsub(/\W/, '').tr('-', '').downcase.strip
+
+    decoded = Base32::Crockford.decode(str)
+
+    if decoded
+      Base32::Crockford.encode(
+        decoded,
+        length: num_words ? (num_words * WORD_LENGTH) : str.length,
+      ).downcase
+    else
+      # strings that are invalid Crockford encodings but may still be valid
+      str
+    end
   end
 
   private
