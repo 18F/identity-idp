@@ -1,4 +1,6 @@
 class BackupCodeConfiguration < ApplicationRecord
+  NUM_WORDS = 3
+
   include EncryptableAttribute
 
   encrypted_attribute_without_setter(name: :code)
@@ -35,25 +37,9 @@ class BackupCodeConfiguration < ApplicationRecord
   end
 
   class << self
-    def normalize(code)
-      code = code.tr('-', '').strip.downcase
-
-      decoded = Base32::Crockford.decode(code)
-
-      if decoded
-        Base32::Crockford.encode(
-          decoded,
-          length: code.length,
-        ).downcase
-      else
-        # strings that are invalid Crockford encodings but may still be valid
-        code
-      end
-    end
-
     def find_with_code(code:, user_id:)
       return if code.blank?
-      code = normalize(code)
+      code = RandomPhrase.normalize(code)
 
       user_salt_costs = select(:code_salt, :code_cost).
         distinct.

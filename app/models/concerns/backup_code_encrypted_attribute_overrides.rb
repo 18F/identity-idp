@@ -15,7 +15,7 @@ module BackupCodeEncryptedAttributeOverrides
 
   # Override usual setter method in order to also set fingerprint
   def code=(code)
-    code = BackupCodeConfiguration.normalize(code)
+    code = RandomPhrase.normalize(code)
 
     self.salted_code_fingerprint = BackupCodeConfiguration.scrypt_password_digest(
       password: code,

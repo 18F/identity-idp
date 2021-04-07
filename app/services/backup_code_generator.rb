@@ -1,13 +1,12 @@
 require 'digest'
 
 class BackupCodeGenerator
-  attr_reader :length
+  attr_reader :num_words
 
   NUMBER_OF_CODES = 10
 
-  def initialize(user, length: 3, split: 4, skip_legacy_encryption: true)
-    @length = length
-    @split = split
+  def initialize(user, num_words: BackupCodeConfiguration::NUM_WORDS, skip_legacy_encryption: true)
+    @num_words = num_words
     @user = user
     @skip_legacy_encryption = skip_legacy_encryption
   end
@@ -30,7 +29,7 @@ class BackupCodeGenerator
 
   # @return [Boolean]
   def verify(plaintext_code)
-    backup_code = normalize(plaintext_code)
+    backup_code = RandomPhrase.normalize(plaintext_code)
     code = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
     return unless code_usable?(code)
     code.update!(used_at: Time.zone.now)
@@ -70,17 +69,8 @@ class BackupCodeGenerator
     )
   end
 
-  def normalize(plaintext_code)
-    plaintext_code.gsub(/\W/, '').delete('-').downcase.strip
-  end
-
   def backup_code
-    str_size = @split * @length
-
-    # 5 bits per character means we must multiply what we want by 5
-    # :length adds zero padding in case it's a smaller number
-    random_bytes = SecureRandom.random_number(2**(str_size * 5))
-    Base32::Crockford.encode(random_bytes, length: str_size)
+    RandomPhrase.new(num_words: num_words, separator: nil).to_s
   end
 
   def result
