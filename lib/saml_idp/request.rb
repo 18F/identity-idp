@@ -4,7 +4,7 @@ module SamlIdp
   class Request
     IAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/ial}.freeze
     LOA_PREFIX = %r{^http://idmanagement.gov/ns/assurance/loa}.freeze
-    AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal}.freeze
+    AAL_PREFIX = %r{^http://idmanagement.gov/ns/assurance/aal|urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo}.freeze
 
     def self.from_deflated_request(raw, options = {})
       if raw
