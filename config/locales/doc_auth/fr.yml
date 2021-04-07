@@ -36,10 +36,6 @@ fr:
           pas expirée, essayez de prendre de nouvelles photos.
         full_name_check: Nous n'avons pas pu lire le nom complet sur votre pièce d'identité.
           Essayez de prendre de nouvelles photos.
-        general_error_liveness: Nous n'avons pas pu vérifier votre pièce d'identité
-          et votre photo. Essayez de prendre de nouvelles photos.
-        general_error_no_liveness: Nous n'avons pas pu vérifier votre pièce d'identité.
-          Essayez de prendre de nouvelles photos.
         id_not_recognized: Nous n'avons pas pu reconnaître votre pièce d'identité.
           Elle est peut-être usée ou endommagée, ou bien il s'agit d'un type de carte
           d'identité que nous ne reconnaissons pas. Essayez de prendre de nouvelles
