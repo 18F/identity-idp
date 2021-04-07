@@ -24,6 +24,7 @@ module ProfanityDetector
 
     (min_profanity_length..[str.length, max_profanity_length].min).each do |size|
       profane_words = @profanity_by_length[size]
+      next if profane_words.empty?
 
       str_chars.each_cons(size) do |letters|
         return true if profane_words.include?(letters.join)
