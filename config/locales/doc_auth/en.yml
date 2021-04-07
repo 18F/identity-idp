@@ -48,9 +48,6 @@ en:
           in brighter lighting.
         visible_photo_check: We couldn't verify the photo on your ID. Try taking new
           pictures.
-      sharpness:
-        top_msg: We couldn't read your ID. Your photo may be too blurry or dark. Try taking a new picture in a bright area.
-        top_msg_plural: We couldn't read your ID. Your photos may be too blurry or dark. Try taking new pictures in a bright area.
       dpi:
         top_msg: We couldn't read your ID. Your image size may be too small, or your
           ID is too small or blurry in the photo. Make sure your ID is large within
@@ -69,8 +66,10 @@ en:
           to submit your images again later.
         no_liveness: We couldn't verify your ID. Try taking new pictures.
       glare:
-        top_msg: We couldn't read your ID. Your photo may have glare. Make sure that the flash on your camera is off and try taking a new picture.
-        top_msg_plural: We couldn't read your ID. Your photos may have glare. Make sure that the flash on your camera is off and try taking new pictures.
+        top_msg: We couldn't read your ID. Your photo may have glare. Make sure that
+          the flash on your camera is off and try taking a new picture.
+        top_msg_plural: We couldn't read your ID. Your photos may have glare. Make
+          sure that the flash on your camera is off and try taking new pictures.
       no_camera:
         explanation: To continue, sign in to your login.gov account on any device
           that has a camera, like a mobile phone, tablet or computer with a webcam.
@@ -79,6 +78,11 @@ en:
       not_a_file: The selection was not a valid file.
       pii:
         birth_date_min_age: Your birthday does not meet the minimum age requirement.
+      sharpness:
+        top_msg: We couldn't read your ID. Your photo may be too blurry or dark. Try
+          taking a new picture in a bright area.
+        top_msg_plural: We couldn't read your ID. Your photos may be too blurry or
+          dark. Try taking new pictures in a bright area.
     forms:
       address1: Address
       change_file: Change file

@@ -53,9 +53,6 @@ es:
           tomar nuevas fotografías con una luz más brillante.
         visible_photo_check: No pudimos verificar la foto de su identificación. Intente
           tomar nuevas fotografías.
-      sharpness:
-        top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado borrosa u oscura. Intente tomar una nueva foto en un área iluminada.
-        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un área iluminada.
       dpi:
         top_msg: No pudimos leer su identificación. Es posible que el tamaño de su
           imagen sea demasiado chico, que su identificación sea demasiado pequeña
@@ -78,8 +75,12 @@ es:
         no_liveness: No pudimos verificar su documento de identidad. Intente tomar
           nuevas fotografías.
       glare:
-        top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos. Asegúrese de que el flash de su cámara esté desactivado e intente tomar una nueva foto.
-        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos tengan reflejos. Asegúrese de que el flash de su cámara esté desactivado e intente tomar nuevas fotos.
+        top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos.
+          Asegúrese de que el flash de su cámara esté desactivado e intente tomar
+          una nueva foto.
+        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
+          tengan reflejos. Asegúrese de que el flash de su cámara esté desactivado
+          e intente tomar nuevas fotos.
       no_camera:
         explanation: Recopilaremos información sobre usted leyendo su documento de
           identidad expedido por el estado. Luego, se tomará una foto para confirmar
@@ -89,6 +90,12 @@ es:
       not_a_file: La selección no era un archivo válido.
       pii:
         birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
+      sharpness:
+        top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado
+          borrosa u oscura. Intente tomar una nueva foto en un área iluminada.
+        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
+          estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un área
+          iluminada.
     forms:
       address1: Dirección
       change_file: Cambiar archivo

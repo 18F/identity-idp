@@ -62,9 +62,6 @@ fr:
           fort.
         visible_photo_check: Nous n'avons pas pu vérifier la photo sur votre pièce
           d'identité. Essayez de prendre de nouvelles photos.
-      sharpness:
-        top_msg: Nous n'avons pas pu lire votre pièce d'identité. Votre photo est peut-être trop floue ou trop sombre. Essayez de prendre une nouvelle photo dans un endroit lumineux.
-        top_msg_plural: Nous n'avons pas pu lire votre pièce d'identité. Vos photos sont peut-être trop floues ou trop sombres. Essayez de prendre de nouvelles photos dans un endroit lumineux.
       dpi:
         top_msg: Nous n'avons pas pu lire votre pièce d'identité. La taille de votre
           image est peut-être trop petite ou il se peut que votre pièce d'identité
@@ -88,8 +85,12 @@ fr:
         no_liveness: Nous n'avons pas pu vérifier votre pièce d'identité. Essayez
           de prendre de nouvelles photos.
       glare:
-        top_msg: Nous n'avons pas pu lire votre pièce d'identité. Votre photo peut avoir des reflets. Assurez-vous que le flash de votre appareil photo est désactivé puis essayez de prendre une nouvelle photo.
-        top_msg_plural: Nous n'avons pas pu lire votre pièce d'identité. Vos photos peuvent avoir des reflets. Assurez-vous que le flash de votre appareil photo est désactivé puis essayez de prendre de nouvelles photos.
+        top_msg: Nous n'avons pas pu lire votre pièce d'identité. Votre photo peut
+          avoir des reflets. Assurez-vous que le flash de votre appareil photo est
+          désactivé puis essayez de prendre une nouvelle photo.
+        top_msg_plural: Nous n'avons pas pu lire votre pièce d'identité. Vos photos
+          peuvent avoir des reflets. Assurez-vous que le flash de votre appareil photo
+          est désactivé puis essayez de prendre de nouvelles photos.
       no_camera:
         explanation: Nous recueillons des informations vous concernant en lisant votre
           carte d'identité délivrée par l'État. Ensuite, vous prendrez une photo de
@@ -100,6 +101,13 @@ fr:
       not_a_file: La sélection n'était pas un fichier valide.
       pii:
         birth_date_min_age: Votre anniversaire ne correspond pas à l'âge minimum requis.
+      sharpness:
+        top_msg: Nous n'avons pas pu lire votre pièce d'identité. Votre photo est
+          peut-être trop floue ou trop sombre. Essayez de prendre une nouvelle photo
+          dans un endroit lumineux.
+        top_msg_plural: Nous n'avons pas pu lire votre pièce d'identité. Vos photos
+          sont peut-être trop floues ou trop sombres. Essayez de prendre de nouvelles
+          photos dans un endroit lumineux.
     forms:
       address1: Adresse
       change_file: Changer de fichier
