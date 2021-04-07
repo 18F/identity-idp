@@ -47,6 +47,7 @@ class IdentityConfig
     config.add(:aamva_cert_enabled, type: :boolean)
     config.add(:aamva_sp_banlist_issuers, type: :json)
     config.add(:aamva_verification_url)
+    config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:acuant_assure_id_url)
     config.add(:acuant_facial_match_url)
     config.add(:acuant_passlive_url)
