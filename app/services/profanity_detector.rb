@@ -20,11 +20,13 @@ module ProfanityDetector
   def profane?(str)
     preprocess_if_needed!
 
-    str_chars = str.gsub(/\W/, '').chars
+    str_chars = str.gsub(/\W/, '').downcase.chars
 
     (min_profanity_length..[str.length, max_profanity_length].min).each do |size|
+      profane_words = @profanity_by_length[size]
+
       str_chars.each_cons(size) do |letters|
-        return true if @profanity_by_length[letters.size].include?(letters.join.downcase)
+        return true if profane_words.include?(letters.join)
       end
     end
 
