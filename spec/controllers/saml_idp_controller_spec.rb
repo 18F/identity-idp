@@ -266,6 +266,16 @@ describe SamlIdpController do
       end
 
       context 'authn_context is defined by sp' do
+        it 'returns default AAL authn_context when default AAL and IAL1 is requested' do
+          auth_settings = requested_default_aal_authn_context_saml_settings
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).
+            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+        end
+
         it 'returns default AAL authn_context when IAL1 is requested' do
           auth_settings = requested_ial1_authn_context_saml_settings
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
@@ -304,6 +314,16 @@ describe SamlIdpController do
       end
 
       context 'authn_context is defined by sp' do
+        it 'returns default AAL authn_context when default AAL is requested' do
+          auth_settings = requested_default_aal_authn_context_saml_settings
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).
+            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+        end
+
         it 'returns IAL1 authn_context when IAL1 is requested' do
           auth_settings = requested_ial1_authn_context_saml_settings
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
