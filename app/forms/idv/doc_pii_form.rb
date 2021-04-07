@@ -61,19 +61,19 @@ module Idv
     end
 
     def generic_error
-      I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')
+      I18n.t('doc_auth.errors.general.no_liveness')
     end
 
     def name_error
-      I18n.t('doc_auth.errors.lexis_nexis.full_name_check')
+      I18n.t('doc_auth.errors.alerts.full_name_check')
     end
 
     def dob_error
-      I18n.t('doc_auth.errors.lexis_nexis.birth_date_checks')
+      I18n.t('doc_auth.errors.alerts.birth_date_checks')
     end
 
     def dob_min_age_error
-      I18n.t('doc_auth.errors.lexis_nexis.birth_date_min_age')
+      I18n.t('doc_auth.errors.pii.birth_date_min_age')
     end
   end
 end

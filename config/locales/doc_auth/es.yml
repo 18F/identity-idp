@@ -13,7 +13,7 @@ es:
       upload_picture: Subir foto
       use_phone: Usa tu telefono
     errors:
-      lexis_nexis:
+      alerts:
         barcode_content_check: No pudimos leer el código de barras en el reverso de
           su documento de identidad. Puede ser debido a un problema con el código
           de barras, o bien el código de barras es un nuevo tipo que aún no reconocemos.
@@ -22,7 +22,6 @@ es:
           documento de identidad. Intente tomar una nueva foto.
         birth_date_checks: No pudimos leer la fecha de nacimiento en su documento
           de identidad. Intente tomar nuevas fotografías.
-        birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
         control_number_check: No pudimos leer el número de referencia en el reverso
           de su documento de identidad. Intente tomar una nueva foto.
         doc_crosscheck: No pudimos reconocer su documento de identidad. Puede estar
@@ -35,10 +34,6 @@ es:
           ha caducado, intente tomar nuevas fotografías.
         full_name_check: No pudimos leer el nombre completo en su documento de identidad.
           Intente tomar nuevas fotos.
-        general_error_liveness: No pudimos verificar su documento de identidad y su
-          foto. Intente tomar nuevas fotografías.
-        general_error_no_liveness: No pudimos verificar su documento de identidad.
-          Intente tomar nuevas fotografías.
         id_not_recognized: No pudimos reconocer su documento de identidad. Puede estar
           desgastado o dañado, o ser un tipo de documento de identidad que no reconocemos.
           Intente tomar nuevas fotografías.
@@ -46,12 +41,6 @@ es:
           se haya movido cuando tomó la foto. Intente tomar nuevas fotos.
         issue_date_checks: No pudimos leer la fecha de emisión en su documento de
           identidad. Intente tomar nuevas fotos.
-        multiple_back_id_failures: No pudimos verificar la parte trasera de su documento
-          de identidad. Intente tomar una nueva foto.
-        multiple_front_id_failures: No pudimos verificar la parte delantera de su
-          documento de identidad. Intente tomar una nueva foto.
-        network_error: Estamos teniendo problemas técnicos por nuestra parte. Intente
-          enviar sus imágenes de nuevo más tarde.
         ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
         selfie_failure: No pudimos hacer coincidir su foto con su documento de identidad.
@@ -64,6 +53,34 @@ es:
           tomar nuevas fotografías con una luz más brillante.
         visible_photo_check: No pudimos verificar la foto de su identificación. Intente
           tomar nuevas fotografías.
+      dpi:
+        top_msg: No pudimos leer su identificación. Es posible que el tamaño de su
+          imagen sea demasiado chico, que su identificación sea demasiado pequeña
+          o que la foto esté borrosa. Asegúrese de que su identificación ocupe un
+          gran espacio dentro del marco de la imagen e intente tomar una nueva foto.
+        top_msg_plural: No pudimos leer su identificación. Es posible que los tamaños
+          de sus imágenes sean demasiado chicos, que su identificación sea demasiado
+          pequeña o que las fotos estén borrosas. Asegúrese de que su identificación
+          ocupe un gran espacio dentro del marco de la imagen e intente tomar nuevas
+          fotos.
+      general:
+        liveness: No pudimos verificar su documento de identidad y su foto. Intente
+          tomar nuevas fotografías.
+        multiple_back_id_failures: No pudimos verificar la parte trasera de su documento
+          de identidad. Intente tomar una nueva foto.
+        multiple_front_id_failures: No pudimos verificar la parte delantera de su
+          documento de identidad. Intente tomar una nueva foto.
+        network_error: Estamos teniendo problemas técnicos por nuestra parte. Intente
+          enviar sus imágenes de nuevo más tarde.
+        no_liveness: No pudimos verificar su documento de identidad. Intente tomar
+          nuevas fotografías.
+      glare:
+        top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos.
+          Asegúrese de que el flash de su cámara esté desactivado e intente tomar
+          una nueva foto.
+        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
+          tengan reflejos. Asegúrese de que el flash de su cámara esté desactivado
+          e intente tomar nuevas fotos.
       no_camera:
         explanation: Recopilaremos información sobre usted leyendo su documento de
           identidad expedido por el estado. Luego, se tomará una foto para confirmar
@@ -71,6 +88,14 @@ es:
         heading: Necesita una cámara para verificar su identidad
         title: Necesita cámara
       not_a_file: La selección no era un archivo válido.
+      pii:
+        birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
+      sharpness:
+        top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado
+          borrosa u oscura. Intente tomar una nueva foto en un área iluminada.
+        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
+          estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un área
+          iluminada.
     forms:
       address1: Dirección
       change_file: Cambiar archivo
