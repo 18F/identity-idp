@@ -7,7 +7,6 @@ describe 'idv/shared/_document_capture.html.erb' do
   let(:sp_name) { nil }
   let(:flow_path) { 'standard' }
   let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
-  let(:cancel_url) { idv_cancel_url }
   let(:front_image_upload_url) { nil }
   let(:back_image_upload_url) { nil }
   let(:selfie_image_upload_url) { nil }
@@ -27,7 +26,6 @@ describe 'idv/shared/_document_capture.html.erb' do
       sp_name: sp_name,
       flow_path: flow_path,
       failure_to_proof_url: failure_to_proof_url,
-      cancel_url: cancel_url,
       front_image_upload_url: front_image_upload_url,
       back_image_upload_url: back_image_upload_url,
       selfie_image_upload_url: selfie_image_upload_url,

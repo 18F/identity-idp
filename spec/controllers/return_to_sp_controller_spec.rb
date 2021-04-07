@@ -78,20 +78,6 @@ describe ReturnToSpController do
         )
       end
     end
-
-    context 'with flow, step, or location parameters' do
-      it 'logs with extra analytics properties' do
-        get 'cancel', params: { flow: 'example', step: 'first', location: 'bottom' }
-
-        expect(@analytics).to have_received(:track_event).with(
-          Analytics::RETURN_TO_SP_CANCEL,
-          redirect_url: a_kind_of(String),
-          flow: 'example',
-          step: 'first',
-          location: 'bottom',
-        )
-      end
-    end
   end
 
   describe '#failure_to_proof' do

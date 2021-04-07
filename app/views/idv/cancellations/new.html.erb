@@ -19,11 +19,8 @@
 </ul>
 
 <div class='margin-top-4'>
-  <%= button_to t('forms.buttons.cancel'),
-                idv_cancel_path,
-                params: params.permit(:flow, :step, :location),
-                method: :delete,
-                class: 'usa-button usa-button--big usa-button--wide' %>
+  <%= button_to t('forms.buttons.cancel'), idv_cancel_path,
+    method: :delete, class: 'usa-button usa-button--big usa-button--wide' %>
 </div>
 
 <div class='margin-top-2'>
