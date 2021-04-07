@@ -202,6 +202,9 @@ module DocAuthRouter
           passlive_url: IdentityConfig.store.acuant_passlive_url,
           timeout: AppConfig.env.acuant_timeout,
           exception_notifier: method(:notify_exception),
+          dpi_threshold: AppConfig.env.doc_auth_error_dpi_threshold,
+          sharpness_threshold: AppConfig.env.doc_auth_error_sharpness_threshold,
+          glare_threshold: AppConfig.env.doc_auth_error_glare_threshold,
         ),
       )
     when 'lexisnexis'
