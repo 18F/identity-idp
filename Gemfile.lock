@@ -471,6 +471,7 @@ GEM
     premailer-rails (1.11.1)
       actionmailer (>= 3)
       premailer (~> 1.7, >= 1.7.9)
+    profanity_filter (0.1.1)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -801,6 +802,7 @@ DEPENDENCIES
   pg
   phonelib
   premailer-rails (>= 1.11.1)
+  profanity_filter
   proofer!
   pry-byebug
   pry-doc
