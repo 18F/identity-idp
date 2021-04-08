@@ -36,14 +36,14 @@ current_step_index = steps.index { |step| step[:slug] == local_assigns[:step] }
     'shared/step_indicator',
     class: 'mobile-lg:margin-x-neg-6 mobile-lg:margin-top-neg-4 margin-bottom-5'
   ) do %>
-    <% steps.each_index do |index| %>
+    <% steps.each_with_index do |inner_step, index| %>
       <%= render(
         'shared/step_indicator_step',
-        current: step === steps[index][:slug],
+        current: step == inner_step[:slug],
         complete: current_step_index > index,
-        subtitle: steps[index][:subtitle],
-        pending: steps[index][:pending],
-      ) { steps[index][:title] } %>
+        subtitle: inner_step[:subtitle],
+        pending: inner_step[:pending],
+      ) { inner_step[:title] } %>
     <% end %>
   <% end %>
 <% end %>
