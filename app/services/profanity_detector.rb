@@ -20,15 +20,12 @@ module ProfanityDetector
   def profane?(str)
     preprocess_if_needed!
 
-    str_chars = str.gsub(/\W/, '').downcase.chars
+    str_no_whitespace = str.gsub(/\W/, '').downcase
 
-    (min_profanity_length..[str_chars.length, max_profanity_length].min).each do |size|
-      profane_words = @profanity_by_length[size]
-      next if profane_words.empty?
-
-      str_chars.each_cons(size) do |letters|
-        return true if profane_words.include?(letters.join)
-      end
+    (min_profanity_length..[str_no_whitespace.length, max_profanity_length].min).each do |size|
+      profane_regex = @regex_by_length[size]
+      next if profane_regex.nil?
+      return true if profane_regex.match?(str_no_whitespace)
     end
 
     false
@@ -43,13 +40,21 @@ module ProfanityDetector
     return if @preprocessed
 
     # Map of {Integer => Set<string>}
-    @profanity_by_length = Hash.new { |h, k| h[k] = Set.new }
+    profanity_by_length = Hash.new { |h, k| h[k] = Set.new }
 
     ProfanityFilter::Base.dictionary.keys.each do |word|
-      @profanity_by_length[word.size] << word.downcase
+      profanity_by_length[word.size] << word.downcase
     end
 
-    @min_profanity_length, @max_profanity_length = @profanity_by_length.keys.minmax
+    # Map of {Integer => Regexp}
+    @regex_by_length = Hash.new
+
+    profanity_by_length.each do |k, v|
+      escaped = v.to_a.map { |x| Regexp.escape(x) }
+      @regex_by_length[k] = Regexp.new("(#{escaped.join('|')})")
+    end
+
+    @min_profanity_length, @max_profanity_length = profanity_by_length.keys.minmax
 
     @preprocessed = true
   end
