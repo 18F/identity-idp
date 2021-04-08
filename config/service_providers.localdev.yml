@@ -317,6 +317,7 @@ development:
     block_encryption: 'aes256-cbc'
     sp_initiated_login_url: 'http://localhost:3000/test/saml'
     cert: 'saml_test_sp'
+    fingerprint: '08:79:F5:B1:B8:CC:EC:8F:5C:2A:58:03:30:14:C9:E6:F1:67:78:F1:97:E8:3A:88:EB:8E:70:92:25:D2:2F:32'
     logo: 'generic.svg'
     agency: 'GSA'
     friendly_name: 'Awesome test SP'
