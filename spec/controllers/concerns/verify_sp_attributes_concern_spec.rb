@@ -134,4 +134,73 @@ RSpec.describe VerifySpAttributesConcern do
       end
     end
   end
+
+  describe '#needs_completions_screen?' do
+    let(:sp_session_identity) do
+      build(:service_provider_identity,
+            user: user,
+            verified_attributes: verified_attributes)
+    end
+    let(:sp_session) { {} }
+    let(:user) { build(:user) }
+    let(:verified_attributes) { nil }
+
+    subject(:needs_completions_screen?) { controller.needs_completions_screen? }
+
+    before do
+      allow(controller).to receive(:sp_session).and_return(sp_session)
+      allow(controller).to receive(:current_user).and_return(user)
+    end
+
+    context 'with an issuer' do
+      let(:issuer) { sp_session_identity.service_provider }
+      let(:requested_attributes) { nil }
+      let(:sp_session) do
+        {
+          issuer: issuer,
+          requested_attributes: requested_attributes,
+        }
+      end
+
+      context 'when the sp_session_identity has not been saved' do
+        it 'is true' do
+          expect(needs_completions_screen?).to be_truthy
+        end
+      end
+
+      context 'when the sp_session_identity has been saved' do
+        before { sp_session_identity.save! }
+
+        context 'when requested attributes are nil' do
+          let(:requested_attributes) { nil }
+          it 'is false' do
+            expect(needs_completions_screen?).to be_falsy
+          end
+        end
+
+        context 'when requested attributes exist and are not verified' do
+          let(:requested_attributes) { ['first_name'] }
+          let(:verified_attributes) { nil }
+          it 'is true' do
+            expect(needs_completions_screen?).to be_truthy
+          end
+        end
+
+        context 'when requested attributes are verified' do
+          let(:requested_attributes) { ['first_name'] }
+          let(:verified_attributes) { ['first_name'] }
+
+          it 'is false' do
+            expect(needs_completions_screen?).to be_falsy
+          end
+        end
+      end
+    end
+
+    context 'without an issuer' do
+      it 'is false' do
+        expect(needs_completions_screen?).to be_falsy
+      end
+    end
+  end
 end
