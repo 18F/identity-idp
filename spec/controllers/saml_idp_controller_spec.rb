@@ -52,6 +52,12 @@ describe SamlIdpController do
              active: true)
     end
 
+    let(:right_cert_settings) do
+      sp1_saml_settings.tap do |settings|
+        settings.issuer = service_provider.issuer
+      end
+    end
+
     let(:wrong_cert_settings) do
       sp1_saml_settings.tap do |settings|
         settings.issuer = service_provider.issuer
@@ -62,11 +68,18 @@ describe SamlIdpController do
       end
     end
 
-    it 'rejects requests from a wrong cert' do
-      request_url = OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings)
-      saml_request = UriService.params(request_url)[:SAMLRequest]
+    it 'accepts requests from a correct cert' do
+      delete :logout, params: UriService.params(
+        OneLogin::RubySaml::Logoutrequest.new.create(right_cert_settings),
+      )
 
-      delete :logout, params: { SAMLRequest: saml_request }
+      expect(response).to be_ok
+    end
+
+    it 'rejects requests from a wrong cert' do
+      delete :logout, params: UriService.params(
+        OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
+      )
 
       expect(response).to be_bad_request
     end
