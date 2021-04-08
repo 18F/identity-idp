@@ -34,6 +34,12 @@ describe NullServiceProvider do
     end
   end
 
+  describe '#ssl_cert' do
+    it 'returns nil' do
+      expect(subject.ssl_cert).to be_nil
+    end
+  end
+
   describe '#logo' do
     it 'returns nil' do
       expect(subject.logo).to be_nil

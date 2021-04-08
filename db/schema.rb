@@ -575,7 +575,6 @@ ActiveRecord::Schema.define(version: 2021_04_01_192727) do
     t.date "iaa_end_date"
     t.string "app_id"
     t.integer "default_aal"
-    t.string "certs", array: true
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
