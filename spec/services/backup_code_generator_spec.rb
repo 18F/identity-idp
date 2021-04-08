@@ -63,4 +63,16 @@ RSpec.describe BackupCodeGenerator do
 
     expect(user1_salt).to_not eq(user2_salt)
   end
+
+  it 'filters out profanity' do
+    profane = Base32::Crockford.decode('FART')
+    not_profane = Base32::Crockford.decode('ABCD')
+
+    expect(SecureRandom).to receive(:random_number).
+      and_return(profane, not_profane)
+
+    code = generator.send(:backup_code)
+
+    expect(code).to eq('00000000ABCD')
+  end
 end
