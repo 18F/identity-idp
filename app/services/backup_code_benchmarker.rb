@@ -39,6 +39,8 @@ class BackupCodeBenchmarker
     user_id = User.first&.id || 1
     num_to_create = num_rows - BackupCodeConfiguration.count
 
+    generator = BackupCodeGenerator.new(nil)
+
     logger.info "creating #{num_to_create} backup code configurations"
 
     num_to_create.times.each_slice(batch_size) do |slice|
@@ -46,7 +48,7 @@ class BackupCodeBenchmarker
         user_id += 1
 
         user_slice.each do
-          code = SecureRandom.hex(6) # @see BackupCodeGenerator#backup_code
+          code = generator.send(:backup_code)
 
           BackupCodeConfiguration.create(user_id: user_id, code: code)
         end
