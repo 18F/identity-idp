@@ -5,7 +5,11 @@ class BackupCodeGenerator
 
   NUMBER_OF_CODES = 10
 
-  def initialize(user, num_words: BackupCodeConfiguration::NUM_WORDS, skip_legacy_encryption: true)
+  def initialize(
+    user,
+    num_words: BackupCodeConfiguration::NUM_WORDS,
+    skip_legacy_encryption: IdentityConfig.store.backup_code_skip_symmetric_encryption
+  )
     @num_words = num_words
     @user = user
     @skip_legacy_encryption = skip_legacy_encryption
