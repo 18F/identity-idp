@@ -16,3 +16,12 @@ production:
     became_partner: "2019-05-24"
     contacts:
       - "person@dod.mil"
+
+  GSA-TTS:
+    name: "Technology Transformation Services"
+    agency: GSA
+    partner_account_status: active
+    crm_id: 51213
+    became_partner: "2021-04-06"
+    contacts:
+      - "oren.kanner@gsa.gov"

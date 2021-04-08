@@ -29,3 +29,6 @@ production:
   1:
     name: Department of Homeland Security
     abbreviation: DHS
+  2:
+    name: General Services Administration
+    abbreviation: GSA

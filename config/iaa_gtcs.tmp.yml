@@ -14,3 +14,11 @@ production:
     estimated_amount: 3_141_231
     iaa_status: active
     partner_account: DOD-BAR
+
+  LGGSATTSFY210001:
+    mod_number: 0
+    start_date: "2021-04-07"
+    end_date: "2026-04-06"
+    estimated_amount: 1_000_000
+    iaa_status: active
+    partner_account: GSA-TTS

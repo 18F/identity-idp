@@ -44,3 +44,18 @@ production:
       - "Test SP"
     integrations:
       - "service:provider:two"
+
+  "LGGSATTSFY210001 Order 1":
+    iaa_gtc: LGGSATTSFY210001
+    order_number: 1
+    mod_number: 0
+    start_date: "2021-04-07"
+    end_date: "2022-04-06"
+    estimated_amount: 200_000
+    pricing_model: 3
+    iaa_status: active
+    approved_apps:
+      - "Dashboard"
+    integrations:
+      - "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard"
+

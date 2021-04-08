@@ -22,3 +22,10 @@ production:
     integration_status: "integration live"
     contacts:
       - "developer@dod.mil"
+
+  "urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard":
+    partner_account: GSA-TTS
+    name: "Dashboard"
+    integration_status: "integration live"
+    contacts:
+      - "oren.kanner@gsa.gov"
