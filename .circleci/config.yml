@@ -159,8 +159,7 @@ jobs:
             cp -a keys.example keys
             cp -a certs.example certs
             cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-            bundle exec rake db:create db:migrate --trace
-            bundle exec rake db:seed
+            bundle exec rake db:create db:migrate db:seed --trace
             bundle exec rake assets:precompile
       - run:
           name: Run Tests
