@@ -1,0 +1,49 @@
+<%#
+locals:
+* step: Current step.
+* verify_pending: Whether user is awaiting verification by mail. Defaults to `false`.
+%>
+<%
+steps = [
+  {
+    slug: :getting_started,
+    title: t('idv.step_indicator.getting_started'),
+  },
+  {
+    slug: :verify_id,
+    title: t('idv.step_indicator.verify_id'),
+  },
+  {
+    slug: :verify_info,
+    title: t('idv.step_indicator.verify_info'),
+  },
+  {
+    slug: :verify_phone_or_address,
+    title: t('idv.step_indicator.verify_phone_or_address'),
+    subtitle: t('idv.step_indicator.pending_confirmation'),
+    pending: local_assigns[:verify_pending],
+  },
+  {
+    slug: :secure_account,
+    title: t('idv.step_indicator.secure_account'),
+  },
+].freeze
+current_step_index = steps.index { |step| step[:slug] == local_assigns[:step] }
+%>
+
+<% if IdentityConfig.store.ial2_step_indicator_enabled %>
+  <%= render(
+    'shared/step_indicator',
+    class: 'mobile-lg:margin-x-neg-6 mobile-lg:margin-top-neg-4 margin-bottom-5'
+  ) do %>
+    <% steps.each_index do |index| %>
+      <%= render(
+        'shared/step_indicator_step',
+        current: step === steps[index][:slug],
+        complete: current_step_index > index,
+        subtitle: steps[index][:subtitle],
+        pending: steps[index][:pending],
+      ) { steps[index][:title] } %>
+    <% end %>
+  <% end %>
+<% end %>

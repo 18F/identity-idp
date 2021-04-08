@@ -1,0 +1,19 @@
+<%#
+yields: Step title (required).
+locals:
+* current: Whether the step is the current step. Defaults to `false`.
+* complete: Whether the step is a completed step. Defaults to `false`.
+* subtitle: Optional step subtitle text.
+* pending: Whether the step should be shown in a pending state.
+%>
+<%
+title = yield.presence or raise "no block content given"
+classes = ['step-indicator__step']
+classes << 'step-indicator__step--current' if local_assigns[:current]
+classes << 'step-indicator__step--complete' if local_assigns[:complete]
+classes << 'step-indicator__step--pending' if local_assigns[:pending]
+%>
+
+<%= tag.div class: classes do %>
+  <%= title %>
+<% end %>

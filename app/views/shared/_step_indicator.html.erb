@@ -1,0 +1,14 @@
+<%#
+yields: Steps markup.
+locals:
+* class: Extra CSS classes to apply to wrapper.
+%>
+<%
+classes = ['step-indicator']
+classes << local_assigns[:class] if local_assigns[:class]
+%>
+
+<%= tag.div class: classes do %>
+  <%= yield %>
+<% end %>
+<% javascript_packs_tag_once 'step-indicator' %>
