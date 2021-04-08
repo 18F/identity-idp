@@ -2,7 +2,7 @@ module Idv
   module Proofer
     class << self
       def mock_fallback_enabled?
-        AppConfig.env.proofer_mock_fallback == 'true'
+        IdentityConfig.store.proofer_mock_fallback
       end
 
       def resolution_job_class

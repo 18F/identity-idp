@@ -227,7 +227,7 @@ describe Idv::DocAuthController do
 
     context 'with selfie checking enabled' do
       before do
-        allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
+        allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
       end
 
       it 'successfully submits the images' do

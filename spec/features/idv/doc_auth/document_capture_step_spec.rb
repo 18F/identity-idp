@@ -6,10 +6,10 @@ feature 'doc auth document capture step' do
 
   let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
   let(:user) { user_with_2fa }
-  let(:liveness_enabled) { 'false' }
+  let(:liveness_enabled) { false }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
-    allow(AppConfig.env).to receive(:liveness_checking_enabled).
+    allow(IdentityConfig.store).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
@@ -18,7 +18,7 @@ feature 'doc auth document capture step' do
   end
 
   context 'when liveness checking is enabled' do
-    let(:liveness_enabled) { 'true' }
+    let(:liveness_enabled) { true }
 
     it 'is on the correct_page and shows the document upload options' do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)
@@ -145,7 +145,7 @@ feature 'doc auth document capture step' do
   end
 
   context 'when liveness checking is not enabled' do
-    let(:liveness_enabled) { 'false' }
+    let(:liveness_enabled) { false }
 
     it 'is on the correct_page and shows the document upload options' do
       expect(current_path).to eq(idv_doc_auth_document_capture_step)

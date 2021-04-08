@@ -326,8 +326,6 @@ feature 'Sign Up' do
   end
 
   it 'forces user to setup a PIV/CAC and offers no other option or fallback question' do
-    allow(AppConfig.env).to receive(:allow_piv_cac_required).and_return('true')
-
     visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac
     sign_up_and_set_password
 

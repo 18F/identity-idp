@@ -18,7 +18,7 @@ class ResolutionProofingJob < ApplicationJob
         aamva_config: {
           auth_request_timeout: AppConfig.env.aamva_auth_request_timeout,
           auth_url: AppConfig.env.aamva_auth_url,
-          cert_enabled: AppConfig.env.aamva_cert_enabled,
+          cert_enabled: IdentityConfig.store.aamva_cert_enabled,
           private_key: AppConfig.env.aamva_private_key,
           public_key: AppConfig.env.aamva_public_key,
           verification_request_timeout: AppConfig.env.aamva_verification_request_timeout,

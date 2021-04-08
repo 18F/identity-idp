@@ -42,7 +42,7 @@ module Users
     end
 
     def send_push_notifications
-      return if AppConfig.env.push_notifications_enabled != 'true'
+      return unless IdentityConfig.store.push_notifications_enabled
       event = PushNotification::AccountPurgedEvent.new(user: current_user)
       PushNotification::HttpPush.deliver(event)
     end

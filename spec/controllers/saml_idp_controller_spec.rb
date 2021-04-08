@@ -3,14 +3,15 @@ require 'rails_helper'
 describe SamlIdpController do
   include SamlAuthHelper
 
-  let(:aal_context_enabled) { 'false' }
+  let(:aal_context_enabled) { false }
 
   before do
     # All the tests here were written prior to the interstitial
     # authorization confirmation page so let's force the system
     # to skip past that page
     allow(controller).to receive(:auth_count).and_return(2)
-    allow(AppConfig.env).to receive(:aal_authn_context_enabled).and_return(aal_context_enabled)
+    allow(IdentityConfig.store).to receive(:aal_authn_context_enabled).
+      and_return(aal_context_enabled)
   end
 
   render_views
@@ -117,7 +118,7 @@ describe SamlIdpController do
 
   describe 'GET /api/saml/auth' do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
-    let(:aal_level) { AppConfig.env.aal_authn_context_enabled == 'true' ? 2 : nil }
+    let(:aal_level) { IdentityConfig.store.aal_authn_context_enabled ? 2 : nil }
 
     context 'with IAL2 and the identity is already verified' do
       let(:user) { create(:profile, :active, :verified).user }
@@ -250,7 +251,7 @@ describe SamlIdpController do
 
     context 'aal_authn_context_enabled is true' do
       let(:user) { create(:user, :signed_up) }
-      let(:aal_context_enabled) { 'true' }
+      let(:aal_context_enabled) { true }
 
       context 'authn_context is missing' do
         let(:auth_settings) { missing_authn_context_saml_settings }
@@ -299,7 +300,7 @@ describe SamlIdpController do
 
     context 'aal_authn_context_enabled is false' do
       let(:user) { create(:user, :signed_up) }
-      let(:aal_context_enabled) { 'false' }
+      let(:aal_context_enabled) { false }
 
       context 'authn_context is missing' do
         let(:auth_settings) { missing_authn_context_saml_settings }
@@ -992,7 +993,7 @@ describe SamlIdpController do
           end
 
           context 'with AAL authn context enabled' do
-            let(:aal_context_enabled) { 'true' }
+            let(:aal_context_enabled) { true }
 
             it 'has contents set to AAL2' do
               expect(subject.content).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
@@ -1000,7 +1001,7 @@ describe SamlIdpController do
           end
 
           context 'without AAL authn context enabled' do
-            let(:aal_context_enabled) { 'false' }
+            let(:aal_context_enabled) { false }
 
             it 'has contents set to IAL1' do
               expect(subject.content).to eq Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF

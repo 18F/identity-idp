@@ -41,7 +41,7 @@ feature 'User profile' do
     end
 
     it 'deletes the account and pushes notifications if push_notifications_enabled is true' do
-      allow(AppConfig.env).to receive(:push_notifications_enabled).and_return('true')
+      allow(IdentityConfig.store).to receive(:push_notifications_enabled).and_return(true)
 
       user = sign_in_and_2fa_user
       identity = IdentityLinker.new(user, 'urn:gov:gsa:openidconnect:test').link_identity

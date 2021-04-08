@@ -36,7 +36,6 @@ acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
-allow_piv_cac_required: 'true'
 asset_host:
 async_wait_timeout_seconds: '60'
 aws_http_timeout: '5'
@@ -47,18 +46,25 @@ aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
 database_statement_timeout: '2500'
 deleted_user_accounts_report_configs: '[]'
-disallow_ial2_recovery:
+disable_email_sending: 'true'
+disallow_all_web_crawlers: 'true'
+disallow_ial2_recovery: 'false'
 doc_auth_extend_timeout_by_minutes: '40'
+doc_capture_polling_enabled: 'true'
 doc_auth_enable_presigned_s3_urls: 'false'
 doc_capture_request_valid_for_minutes: '15'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: 'false'
+enable_rate_limiting: 'true'
+enable_test_routes: 'true'
+enable_usps_verification: 'true'
 event_disavowal_expiration_hours: '240'
 exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 gpo_designated_receiver_pii: '{}'
 ial2_recovery_request_valid_for_minutes: '15'
+identity_pki_disabled: 'false'
 identity_pki_local_dev: 'false'
 idv_attempt_window_in_hours: '6'
 idv_max_attempts: '5'
@@ -66,6 +72,8 @@ idv_min_age_years: '13'
 idv_send_link_attempt_window_in_minutes: '10'
 idv_send_link_max_attempts: '5'
 job_run_healthchecks_enabled: 'true'
+liveness_checking_enabled: 'false'
+logins_per_ip_track_only_mode: 'false'
 # LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
 lexisnexis_timeout: '45'
@@ -100,6 +108,7 @@ otps_per_ip_limit: '25'
 otps_per_ip_period: '300'
 otps_per_ip_track_only_mode: 'true'
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
+participate_in_dap: 'false'
 password_max_attempts: '3'
 personal_key_retired: 'true'
 phone_format_e164_opt_out_list: '[]'
@@ -111,8 +120,9 @@ piv_cac_verify_token_url: https://localhost:8443/
 poll_rate_for_verify_in_seconds: '3'
 proofer_mock_fallback: 'true'
 proofing_send_partial_dob: 'false'
-push_notifications_enabled:
+push_notifications_enabled: 'false'
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
+rack_mini_profiler: 'false'
 rack_timeout_service_timeout_seconds: '15'
 reauthn_window: '120'
 recaptcha_enabled_percent: '0'
@@ -128,7 +138,8 @@ report_timeout:
 requests_per_ip_track_only_mode: 'false'
 risc_notifications_sqs_enabled: 'false'
 ruby_workers_enabled: 'true'
-saml_secret_rotation_enabled:
+s3_reports_enabled: 'false'
+saml_secret_rotation_enabled: 'false'
 service_provider_request_ttl_hours: '24'
 session_check_delay: '30'
 session_check_frequency: '30'
@@ -147,6 +158,8 @@ verify_gpo_key_attempt_window_in_minutes: '10'
 verify_gpo_key_max_attempts: '3'
 verify_personal_key_attempt_window_in_minutes: '15'
 verify_personal_key_max_attempts: '5'
+use_dashboard_service_providers: 'false'
+use_kms: 'false'
 usps_ipp_password: ''
 usps_ipp_root_url: ''
 usps_ipp_sponsor_id: ''
@@ -170,7 +183,6 @@ development:
   aws_kms_key_id: alias/login-dot-gov-development-keymaker
   aws_logo_bucket:
   aws_kms_regions: '["us-west-2", "us-east-1"]'
-  backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
   basic_auth_user_name: user
   dashboard_api_token: test_token
@@ -184,27 +196,19 @@ development:
   database_readonly_username: ''
   database_timeout: '5000'
   database_username: ''
-  disable_email_sending:
-  disallow_all_web_crawlers: 'true'
-  disallow_ial2_recovery: 'false'
   doc_auth_vendor: 'mock'
-  doc_capture_polling_enabled: 'true'
   document_proof_result_lambda_token: ABC123
   domain_name: localhost:3000
   enable_rate_limiting: 'false'
-  enable_test_routes: 'true'
-  enable_usps_verification: 'true'
   expired_letters_auth_token: abc123
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
-  identity_pki_disabled: 'false'
   identity_pki_local_dev: 'true'
   issuers_with_email_nameid_format: ''
   liveness_checking_enabled: 'true'
   lockout_period_in_minutes: '10'
   logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
-  logins_per_ip_track_only_mode: 'false'
   logo_upload_enabled: 'true'
   max_mail_events: '4'
   newrelic_browser_app_id: ''
@@ -214,10 +218,8 @@ development:
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
-  participate_in_dap: 'false'
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
-  rack_mini_profiler: 'off'
   recurring_jobs_disabled_names: "[]"
   reg_confirmed_email_max_attempts: '20'
   reg_unconfirmed_email_max_attempts: '20'
@@ -228,7 +230,6 @@ development:
   reset_password_email_window_in_minutes: '60'
   resolution_proof_result_lambda_token: ABC123
   s3_report_bucket_prefix:
-  s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
@@ -237,7 +238,6 @@ development:
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: test
   use_dashboard_service_providers: 'true'
-  use_kms: 'false'
   usps_confirmation_max_days: '10'
   usps_download_sftp_directory: "/undeliverable"
   usps_download_sftp_host: localhost
@@ -266,7 +266,6 @@ production:
   aws_kms_key_id:
   aws_kms_regions: '["us-west-2"]'
   aws_logo_bucket:
-  backup_codes_as_only_2fa:
   basic_auth_password:
   basic_auth_user_name:
   dashboard_api_token:
@@ -284,24 +283,19 @@ production:
   disallow_all_web_crawlers: 'false'
   disallow_ial2_recovery: 'true'
   doc_auth_vendor: 'acuant'
-  doc_capture_polling_enabled: 'true'
   document_proof_result_lambda_token:
   domain_name: login.gov
-  enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
   expired_letters_auth_token:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
-  identity_pki_disabled: 'false'
   issuers_with_email_nameid_format: sp1,sp2
-  liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '10'
   logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '20'
   logins_per_ip_track_only_mode: 'true'
-  logo_upload_enabled: 'false'
   max_mail_events: '4'
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
@@ -313,7 +307,6 @@ production:
   participate_in_dap: 'true'
   password_pepper:
   piv_cac_verify_token_secret:
-  rack_mini_profiler:
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
@@ -335,7 +328,6 @@ production:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: pinpoint
-  use_dashboard_service_providers: 'false'
   use_kms: 'true'
   usps_confirmation_max_days: '30'
   usps_download_sftp_directory:
@@ -368,7 +360,6 @@ test:
     }]'
   aws_kms_key_id: alias/login-dot-gov-test-keymaker
   aws_kms_regions: '["us-west-2", "us-east-1"]'
-  backup_codes_as_only_2fa: 'true'
   basic_auth_password: secret
   basic_auth_user_name: user
   dashboard_api_token: 123ABC
@@ -382,17 +373,11 @@ test:
   database_readonly_username: ''
   database_timeout: '5000'
   database_username: ''
-  disable_email_sending:
-  disallow_all_web_crawlers: 'true'
-  disallow_ial2_recovery: 'false'
   doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'false'
   document_proof_result_lambda_token: test_token_document
   domain_name: www.example.com
-  enable_rate_limiting: 'true'
-  enable_test_routes: 'true'
-  enable_usps_verification: 'true'
   exception_recipients: test1@test.com
   expired_letters_auth_token: abc123
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -400,11 +385,9 @@ test:
   identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: https://rp1.serviceprovider.com/auth/saml/metadata
   lexisnexis_trueid_account_id: 'test_account'
-  liveness_checking_enabled: 'false'
   lockout_period_in_minutes: '5'
   logins_per_email_and_ip_limit: '2'
   logins_per_ip_limit: '3'
-  logins_per_ip_track_only_mode: 'false'
   max_mail_events: '2'
   newrelic_browser_app_id:
   newrelic_browser_key:
@@ -416,11 +399,9 @@ test:
   otps_per_ip_limit: '3'
   otps_per_ip_period: '10'
   otps_per_ip_track_only_mode: 'false'
-  participate_in_dap: 'false'
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
   poll_rate_for_verify_in_seconds: '1'
-  rack_mini_profiler:
   recurring_jobs_disabled_names: '["disabled job"]'
   reg_confirmed_email_max_attempts: '3'
   reg_unconfirmed_email_max_attempts: '4'
@@ -431,7 +412,6 @@ test:
   reset_password_email_window_in_minutes: '80'
   resolution_proof_result_lambda_token: test_token_resolution
   s3_report_bucket_prefix:
-  s3_reports_enabled: 'false'
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
@@ -443,8 +423,6 @@ test:
   verify_gpo_key_max_attempts: '2'
   verify_personal_key_attempt_window_in_minutes: '3'
   verify_personal_key_max_attempts: '1'
-  use_dashboard_service_providers: 'false'
-  use_kms: 'false'
   usps_confirmation_max_days: '10'
   usps_download_sftp_directory: "/undeliverable"
   usps_download_sftp_host:
