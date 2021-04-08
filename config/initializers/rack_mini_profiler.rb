@@ -1,4 +1,4 @@
-if Rails.env.development? && AppConfig.env.rack_mini_profiler == 'on'
+if Rails.env.development? && IdentityConfig.store.rack_mini_profiler
   require 'rack-mini-profiler'
 
   Rack::MiniProfilerRails.initialize!(Rails.application)

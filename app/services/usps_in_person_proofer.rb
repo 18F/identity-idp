@@ -180,7 +180,7 @@ class UspsInPersonProofer
   end
 
   def root_url
-    AppConfig.env.usps_ipp_root_url
+    IdentityConfig.store.usps_ipp_root_url
   end
 
   def sponsor_id

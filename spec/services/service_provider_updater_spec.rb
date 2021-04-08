@@ -13,6 +13,7 @@ describe ServiceProviderUpdater do
   let(:agency_2) { create(:agency) }
   let(:agency_3) { create(:agency) }
 
+  # rubocop:disable Style/TrailingCommaInHashLiteral
   let(:friendly_sp) do
     {
       id: 'big number',
@@ -29,14 +30,12 @@ describe ServiceProviderUpdater do
       active: true,
       native: true,
       approved: true,
-      help_text: {
-        sign_in: { en: '<b>A new different sign-in help text</b>' },
-        sign_up: { en: '<b>A new different help text</b>' },
-        forgot_password: { en: '<b>A new different forgot password help text</b>' },
-      },
+      help_text: { 'sign_in': { en: '<b>A new different sign-in help text</b>' },
+                   'sign_up': { en: '<b>A new different help text</b>' },
+                   'forgot_password': { en: '<b>A new different forgot password help text</b>' }, }
     }
   end
-
+  # rubocop:enable Style/TrailingCommaInHashLiteral
   let(:old_sp) do
     {
       id: 'small number',
@@ -68,10 +67,6 @@ describe ServiceProviderUpdater do
       agency_id: agency_1.id,
       redirect_uris: openid_connect_redirect_uris,
       active: true,
-      certs: [
-        saml_test_sp_cert,
-        File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt')),
-      ],
     }
   end
   let(:dashboard_service_providers) { [friendly_sp, old_sp, nasty_sp, openid_connect_sp] }
@@ -100,7 +95,7 @@ describe ServiceProviderUpdater do
         sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
 
         expect(sp.agency).to eq agency_1
-        expect(sp.ssl_certs.first).to be_a OpenSSL::X509::Certificate
+        expect(sp.ssl_cert).to be_a OpenSSL::X509::Certificate
         expect(sp.active?).to eq true
         expect(sp.id).to_not eq 0
         expect(sp.updated_at).to_not eq friendly_sp[:updated_at]
@@ -124,7 +119,7 @@ describe ServiceProviderUpdater do
         sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
 
         expect(sp.agency).to eq agency_1
-        expect(sp.ssl_certs.first).to be_a OpenSSL::X509::Certificate
+        expect(sp.ssl_cert).to be_a OpenSSL::X509::Certificate
         expect(sp.active?).to eq true
         expect(sp.id).to eq old_id
         expect(sp.updated_at).to_not eq friendly_sp[:updated_at]
@@ -164,11 +159,6 @@ describe ServiceProviderUpdater do
         sp = ServiceProvider.from_issuer(openid_connect_issuer)
 
         expect(sp.redirect_uris).to eq(openid_connect_redirect_uris)
-      end
-
-      it 'updates certs (plural)' do
-        expect { subject.run }.
-          to(change { ServiceProvider.from_issuer(openid_connect_issuer).ssl_certs.size }.to(2))
       end
     end
 

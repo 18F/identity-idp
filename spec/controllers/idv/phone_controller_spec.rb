@@ -72,11 +72,15 @@ describe Idv::PhoneController do
     end
 
     it 'shows phone form if async process times out and allows successful resubmission' do
+      stub_analytics
+      allow(@analytics).to receive(:track_event)
+
       # setting the document capture session to a nonexistent uuid will trigger async
       # timed_out behavior
       subject.idv_session.idv_phone_step_document_capture_session_uuid = 'abc123'
 
       get :new
+      expect(@analytics).to have_received(:track_event).with(Analytics::PROOFING_ADDRESS_TIMEOUT)
       expect(flash[:error]).to include t('idv.failure.timeout')
       expect(response).to render_template :new
       put :create, params: { idv_phone_form: { phone: good_phone } }

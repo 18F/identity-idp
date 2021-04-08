@@ -281,7 +281,7 @@ describe Idv::ImageUploadsController do
               Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
               success: false,
               errors: {
-                pii: [I18n.t('doc_auth.errors.lexis_nexis.full_name_check')],
+                pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               user_id: user.uuid,
               remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
@@ -320,7 +320,7 @@ describe Idv::ImageUploadsController do
               Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
               success: false,
               errors: {
-                pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')],
+                pii: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               user_id: user.uuid,
               remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
@@ -359,7 +359,7 @@ describe Idv::ImageUploadsController do
               Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
               success: false,
               errors: {
-                pii: [I18n.t('doc_auth.errors.lexis_nexis.birth_date_checks')],
+                pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               user_id: user.uuid,
               remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
@@ -479,7 +479,7 @@ describe Idv::ImageUploadsController do
         expect(json[:errors]).to eq [
           {
             field: 'pii',
-            message: I18n.t('doc_auth.errors.lexis_nexis.birth_date_checks'),
+            message: I18n.t('doc_auth.errors.alerts.birth_date_checks'),
           },
         ]
       end

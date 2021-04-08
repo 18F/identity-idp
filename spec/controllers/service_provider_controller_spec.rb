@@ -26,7 +26,7 @@ describe ServiceProviderController do
       before do
         correct_token = '123ABC'
         headers(correct_token)
-        allow(AppConfig.env).to receive(:use_dashboard_service_providers).and_return('true')
+        allow(IdentityConfig.store).to receive(:use_dashboard_service_providers).and_return(true)
         allow_any_instance_of(ServiceProviderUpdater).to receive(:dashboard_service_providers).
           and_return(dashboard_service_providers)
       end
@@ -47,7 +47,7 @@ describe ServiceProviderController do
         sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
 
         expect(sp.metadata[:agency]).to eq dashboard_service_providers.first[:agency]
-        expect(sp.ssl_certs.first).to be_a OpenSSL::X509::Certificate
+        expect(sp.ssl_cert).to be_a OpenSSL::X509::Certificate
         expect(sp.active?).to eq true
       end
 

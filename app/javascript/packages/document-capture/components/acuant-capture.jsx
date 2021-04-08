@@ -396,6 +396,7 @@ function AcuantCapture(
       <div className="margin-top-2">
         {isMobile && (
           <Button
+            isFlexibleWidth
             isOutline={!value}
             isUnstyled={!!value}
             onClick={startCaptureOrTriggerUpload}
@@ -414,9 +415,11 @@ function AcuantCapture(
           formatHTML(t('doc_auth.buttons.take_or_upload_picture'), {
             'lg-take-photo': () => null,
             'lg-upload': ({ children }) => (
-              <Button isUnstyled onClick={forceUpload} className="margin-left-1">
-                {children}
-              </Button>
+              <span className="padding-left-1">
+                <Button isUnstyled onClick={forceUpload}>
+                  {children}
+                </Button>
+              </span>
             ),
           })}
       </div>

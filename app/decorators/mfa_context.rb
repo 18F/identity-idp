@@ -93,7 +93,7 @@ class MfaContext
   private
 
   def personal_key_method_count
-    return 0 if AppConfig.env.personal_key_retired == 'true'
+    return 0 if IdentityConfig.store.personal_key_retired
     (personal_key_configuration.mfa_enabled? ? 1 : 0)
   end
 

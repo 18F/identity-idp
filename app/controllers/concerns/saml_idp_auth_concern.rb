@@ -61,7 +61,7 @@ module SamlIdpAuthConcern
   end
 
   def requested_authn_context
-    if AppConfig.env.aal_authn_context_enabled == 'true'
+    if IdentityConfig.store.aal_authn_context_enabled
       requested_aal_authn_context
     else
       sp_defined_aal_context = saml_request.requested_aal_authn_context
@@ -70,7 +70,7 @@ module SamlIdpAuthConcern
   end
 
   def default_authn_context
-    if AppConfig.env.aal_authn_context_enabled == 'true'
+    if IdentityConfig.store.aal_authn_context_enabled
       default_aal_context
     else
       default_ial_context
@@ -161,35 +161,12 @@ module SamlIdpAuthConcern
     )
   end
 
-  def matching_cert
-    return @matching_cert if defined?(@matching_cert)
-
-    @matching_cert = current_service_provider.ssl_certs.find do |ssl_cert|
-      fingerprint = Fingerprinter.fingerprint_cert(ssl_cert)
-
-      saml_request = SamlIdp::Request.from_deflated_request(
-        params[:SAMLRequest],
-        get_params: params,
-        cert: ssl_cert,
-      )
-      if saml_request&.service_provider
-        # Plumb the fingerprint through to the internal service_provider representation
-        saml_request.service_provider.fingerprint = fingerprint
-        saml_request.valid_signature?
-      end
-    end
-  end
-
   def encryption_opts
     query_params = UriService.params(request.original_url)
     if query_params[:skip_encryption].present? && current_service_provider.skip_encryption_allowed
       nil
-    elsif current_service_provider.encrypt_responses?
-      {
-        cert: matching_cert || current_service_provider.certs.first,
-        block_encryption: current_service_provider.block_encryption,
-        key_transport: 'rsa-oaep-mgf1p',
-      }
+    else
+      current_service_provider.encryption_opts
     end
   end
 
@@ -206,7 +183,7 @@ module SamlIdpAuthConcern
   end
 
   def current_issuer
-    @_issuer ||= saml_request.service_provider&.identifier
+    @_issuer ||= saml_request.service_provider.identifier
   end
 
   def request_url

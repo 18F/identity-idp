@@ -20,12 +20,4 @@ class BackupCodeCreatePresenter
   def continue_bttn_prologue
     t('forms.backup_code.are_you_sure_continue_prologue')
   end
-
-  def continue_bttn_title
-    t('forms.backup_code.are_you_sure_continue')
-  end
-
-  def continue_bttn_class
-    'usa-button usa-button--unstyled'
-  end
 end

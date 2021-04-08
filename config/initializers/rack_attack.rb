@@ -26,7 +26,7 @@ module Rack
 
     cache = Readthis::Cache.new(
       expires_in: 2.weeks.to_i,
-      redis: { url: AppConfig.env.redis_throttle_url, driver: :hiredis },
+      redis: { url: IdentityConfig.store.redis_throttle_url, driver: :hiredis },
     )
 
     Rack::Attack.cache.store = cache
@@ -54,7 +54,7 @@ module Rack
     # Throttle all requests by IP
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:req/ip:#{req.remote_ip}"
-    if AppConfig.env.requests_per_ip_track_only_mode == 'true'
+    if IdentityConfig.store.requests_per_ip_track_only_mode
       track(
         'req/ip',
         limit: AppConfig.env.requests_per_ip_limit.to_i,
@@ -84,7 +84,7 @@ module Rack
     # Throttle sign in attempts by IP address
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:logins/ip:#{req.remote_ip}"
-    if AppConfig.env.logins_per_ip_track_only_mode == 'true'
+    if IdentityConfig.store.logins_per_ip_track_only_mode
       track(
         'logins/ip',
         limit: AppConfig.env.logins_per_ip_limit.to_i,
@@ -110,7 +110,7 @@ module Rack
     # Throttle SMS and voice transactions by IP address
     #
     # Key: "rack::attack:#{Time.now.to_i/:period}:otps/ip:#{req.remote_ip}"
-    if AppConfig.env.otps_per_ip_track_only_mode == 'true'
+    if IdentityConfig.store.otps_per_ip_track_only_mode
       track(
         'otps/ip',
         limit: AppConfig.env.otps_per_ip_limit.to_i,

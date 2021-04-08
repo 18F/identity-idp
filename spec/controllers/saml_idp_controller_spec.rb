@@ -3,14 +3,15 @@ require 'rails_helper'
 describe SamlIdpController do
   include SamlAuthHelper
 
-  let(:aal_context_enabled) { 'false' }
+  let(:aal_context_enabled) { false }
 
   before do
     # All the tests here were written prior to the interstitial
     # authorization confirmation page so let's force the system
     # to skip past that page
     allow(controller).to receive(:auth_count).and_return(2)
-    allow(AppConfig.env).to receive(:aal_authn_context_enabled).and_return(aal_context_enabled)
+    allow(IdentityConfig.store).to receive(:aal_authn_context_enabled).
+      and_return(aal_context_enabled)
   end
 
   render_views
@@ -117,7 +118,7 @@ describe SamlIdpController do
 
   describe 'GET /api/saml/auth' do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
-    let(:aal_level) { AppConfig.env.aal_authn_context_enabled == 'true' ? 2 : nil }
+    let(:aal_level) { IdentityConfig.store.aal_authn_context_enabled ? 2 : nil }
 
     context 'with IAL2 and the identity is already verified' do
       let(:user) { create(:profile, :active, :verified).user }
@@ -250,7 +251,7 @@ describe SamlIdpController do
 
     context 'aal_authn_context_enabled is true' do
       let(:user) { create(:user, :signed_up) }
-      let(:aal_context_enabled) { 'true' }
+      let(:aal_context_enabled) { true }
 
       context 'authn_context is missing' do
         let(:auth_settings) { missing_authn_context_saml_settings }
@@ -266,6 +267,16 @@ describe SamlIdpController do
       end
 
       context 'authn_context is defined by sp' do
+        it 'returns default AAL authn_context when default AAL and IAL1 is requested' do
+          auth_settings = requested_default_aal_authn_context_saml_settings
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).
+            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+        end
+
         it 'returns default AAL authn_context when IAL1 is requested' do
           auth_settings = requested_ial1_authn_context_saml_settings
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
@@ -289,7 +300,7 @@ describe SamlIdpController do
 
     context 'aal_authn_context_enabled is false' do
       let(:user) { create(:user, :signed_up) }
-      let(:aal_context_enabled) { 'false' }
+      let(:aal_context_enabled) { false }
 
       context 'authn_context is missing' do
         let(:auth_settings) { missing_authn_context_saml_settings }
@@ -304,6 +315,16 @@ describe SamlIdpController do
       end
 
       context 'authn_context is defined by sp' do
+        it 'returns default AAL authn_context when default AAL is requested' do
+          auth_settings = requested_default_aal_authn_context_saml_settings
+          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
+          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
+
+          expect(response.status).to eq(200)
+          expect(authn_context_class_ref).
+            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
+        end
+
         it 'returns IAL1 authn_context when IAL1 is requested' do
           auth_settings = requested_ial1_authn_context_saml_settings
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
@@ -387,43 +408,6 @@ describe SamlIdpController do
 
         expect(@analytics).to have_received(:track_event).
           with(Analytics::SAML_AUTH, analytics_hash)
-      end
-    end
-
-    context 'service provider has multiple certs' do
-      let(:service_provider) do
-        create(:service_provider,
-               cert: nil, # override singular cert
-               certs: ['saml_test_sp2', 'saml_test_sp'],
-               active: true)
-      end
-
-      let(:first_cert_settings) do
-        saml_settings.tap do |settings|
-          settings.issuer = service_provider.issuer
-        end
-      end
-
-      let(:second_cert_settings) do
-        saml_settings.tap do |settings|
-          settings.issuer = service_provider.issuer
-          settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
-          settings.private_key = OpenSSL::PKey::RSA.new(
-            File.read(Rails.root + 'keys/saml_test_sp2.key'),
-          ).to_pem
-        end
-      end
-
-      it 'encrypts the response to the right key' do
-        user = create(:user, :signed_up)
-        generate_saml_response(user, second_cert_settings)
-
-        expect(response).to_not be_redirect
-
-        expect { xmldoc.saml_response(first_cert_settings) }.to raise_error
-
-        response = xmldoc.saml_response(second_cert_settings)
-        expect(response.decrypted_document).to be
       end
     end
 
@@ -1009,7 +993,7 @@ describe SamlIdpController do
           end
 
           context 'with AAL authn context enabled' do
-            let(:aal_context_enabled) { 'true' }
+            let(:aal_context_enabled) { true }
 
             it 'has contents set to AAL2' do
               expect(subject.content).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
@@ -1017,7 +1001,7 @@ describe SamlIdpController do
           end
 
           context 'without AAL authn context enabled' do
-            let(:aal_context_enabled) { 'false' }
+            let(:aal_context_enabled) { false }
 
             it 'has contents set to IAL1' do
               expect(subject.content).to eq Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF

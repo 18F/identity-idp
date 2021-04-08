@@ -31,7 +31,7 @@ module SamlAuthHelper
   end
 
   def request_authn_context
-    if AppConfig.env.aal_authn_context_enabled == 'true'
+    if IdentityConfig.store.aal_authn_context_enabled
       Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
     else
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
@@ -283,6 +283,12 @@ module SamlAuthHelper
   def requested_ial1_authn_context_saml_settings
     settings = saml_settings.dup
     settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    settings
+  end
+
+  def requested_default_aal_authn_context_saml_settings
+    settings = saml_settings.dup
+    settings.authn_context = Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
     settings
   end
 

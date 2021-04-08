@@ -26,8 +26,7 @@ module Features
     def select_2fa_option(option, **find_options)
       find("label[for='two_factor_options_form_selection_#{option}']", **find_options).click
       click_on t('forms.buttons.continue')
-      click_button t('forms.backup_code.are_you_sure_continue') if
-        page.has_button?(t('forms.backup_code.are_you_sure_continue'))
+      click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
     end
 
     def select_phone_delivery_option(delivery_option)
@@ -562,9 +561,10 @@ module Features
     end
 
     def stub_piv_cac_service
-      allow(AppConfig.env).to receive(:identity_pki_disabled).and_return('false')
-      allow(AppConfig.env).to receive(:piv_cac_service_url).and_return('http://piv.example.com/')
-      allow(AppConfig.env).to receive(:piv_cac_verify_token_url).and_return('http://piv.example.com/')
+      allow(IdentityConfig.store).to receive(:identity_pki_disabled).and_return(false)
+      allow(IdentityConfig.store).to receive(:piv_cac_service_url).
+        and_return('http://piv.example.com/')
+      allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url).and_return('http://piv.example.com/')
       stub_request(:post, 'piv.example.com').to_return do |request|
         {
           status: 200,

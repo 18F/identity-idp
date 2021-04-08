@@ -10,10 +10,9 @@ class FeatureManagement
   end
 
   def self.identity_pki_disabled?
-    env = AppConfig.env
-    env.identity_pki_disabled == 'true' ||
-      !env.piv_cac_service_url ||
-      !env.piv_cac_verify_token_url
+    IdentityConfig.store.identity_pki_disabled ||
+      !IdentityConfig.store.piv_cac_service_url ||
+      !IdentityConfig.store.piv_cac_verify_token_url
   end
 
   def self.development_and_identity_pki_disabled?
@@ -38,24 +37,24 @@ class FeatureManagement
   end
 
   def self.enable_load_testing_mode?
-    AppConfig.env.enable_load_testing_mode == 'true'
+    IdentityConfig.store.enable_load_testing_mode
   end
 
   def self.use_kms?
-    AppConfig.env.use_kms == 'true'
+    IdentityConfig.store.use_kms
   end
 
   def self.kms_multi_region_enabled?
-    AppConfig.env.aws_kms_multi_region_enabled == 'true'
+    IdentityConfig.store.aws_kms_multi_region_enabled
   end
 
   def self.use_dashboard_service_providers?
-    AppConfig.env.use_dashboard_service_providers == 'true'
+    IdentityConfig.store.use_dashboard_service_providers
   end
 
   def self.enable_gpo_verification?
     # leaving the usps name for backwards compatibility
-    AppConfig.env.enable_usps_verification == 'true'
+    IdentityConfig.store.enable_usps_verification
   end
 
   def self.reveal_gpo_code?
@@ -75,7 +74,7 @@ class FeatureManagement
   end
 
   def self.enable_saml_cert_rotation?
-    AppConfig.env.saml_secret_rotation_enabled == 'true'
+    IdentityConfig.store.saml_secret_rotation_enabled
   end
 
   def self.recaptcha_enabled?(session, reset)
@@ -84,34 +83,30 @@ class FeatureManagement
   end
 
   def self.disallow_all_web_crawlers?
-    AppConfig.env.disallow_all_web_crawlers == 'true'
+    IdentityConfig.store.disallow_all_web_crawlers
   end
 
   def self.disallow_ial2_recovery?
-    AppConfig.env.disallow_ial2_recovery == 'true'
-  end
-
-  def self.backup_codes_as_only_2fa?
-    AppConfig.env.backup_codes_as_only_2fa == 'true'
+    IdentityConfig.store.disallow_ial2_recovery
   end
 
   def self.gpo_upload_enabled?
     # leaving the usps name for backwards compatibility
-    AppConfig.env.usps_upload_enabled == 'true'
+    IdentityConfig.store.usps_upload_enabled
   end
 
   def self.identity_pki_local_dev?
     # This option should only be used in the development environment
     # it controls if we hop over to identity-pki on a developers local machins
-    Rails.env.development? && AppConfig.env.identity_pki_local_dev == 'true'
+    Rails.env.development? && IdentityConfig.store.identity_pki_local_dev
   end
 
   def self.doc_capture_polling_enabled?
-    AppConfig.env.doc_capture_polling_enabled == 'true'
+    IdentityConfig.store.doc_capture_polling_enabled
   end
 
   def self.document_capture_async_uploads_enabled?
-    AppConfig.env.doc_auth_enable_presigned_s3_urls == 'true'
+    IdentityConfig.store.doc_auth_enable_presigned_s3_urls
   end
 
   def self.hide_phone_mfa_signup?
@@ -119,15 +114,15 @@ class FeatureManagement
   end
 
   def self.liveness_checking_enabled?
-    AppConfig.env.liveness_checking_enabled == 'true'
+    IdentityConfig.store.liveness_checking_enabled
   end
 
   def self.logo_upload_enabled?
-    AppConfig.env.logo_upload_enabled == 'true'
+    IdentityConfig.store.logo_upload_enabled
   end
 
   def self.log_to_stdout?
-    !Rails.env.test? && AppConfig.env.log_to_stdout == 'true'
+    !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
   # Whether or not we can call the phone_info endpoint at all
