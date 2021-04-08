@@ -22,7 +22,7 @@ module ProfanityDetector
 
     str_chars = str.gsub(/\W/, '').downcase.chars
 
-    (min_profanity_length..[str.length, max_profanity_length].min).each do |size|
+    (min_profanity_length..[str_chars.length, max_profanity_length].min).each do |size|
       profane_words = @profanity_by_length[size]
       next if profane_words.empty?
 
