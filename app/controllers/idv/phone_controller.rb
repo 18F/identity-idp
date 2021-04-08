@@ -17,6 +17,7 @@ module Idv
       elsif async_state.in_progress?
         render :wait
       elsif async_state.timed_out?
+        analytics.track_event(Analytics::PROOFING_ADDRESS_TIMEOUT)
         flash.now[:error] = I18n.t('idv.failure.timeout')
         render :new
       elsif async_state.done?
