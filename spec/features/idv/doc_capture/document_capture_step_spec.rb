@@ -152,6 +152,7 @@ feature 'doc capture document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
@@ -168,6 +169,10 @@ feature 'doc capture document capture step' do
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_session_errors_throttled_path)
+      expect(fake_analytics).to have_logged_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :idv_acuant,
+      )
 
       IdentityDocAuth::Mock::DocAuthMockClient.reset!
 
@@ -234,6 +239,7 @@ feature 'doc capture document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
+      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
@@ -250,6 +256,10 @@ feature 'doc capture document capture step' do
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_session_errors_throttled_path)
+      expect(fake_analytics).to have_logged_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :idv_acuant,
+      )
 
       IdentityDocAuth::Mock::DocAuthMockClient.reset!
 

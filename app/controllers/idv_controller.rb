@@ -12,6 +12,10 @@ class IdvController < ApplicationController
     elsif active_profile? && !liveness_upgrade_required?
       redirect_to idv_activated_url
     elsif idv_attempter_throttled?
+      analytics.track_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :idv_resolution,
+      )
       redirect_to idv_fail_url
     elsif sp_over_quota_limit?
       flash[:error] = t('errors.doc_auth.quota_reached')
@@ -39,11 +43,7 @@ class IdvController < ApplicationController
 
   def verify_identity
     analytics.track_event(Analytics::IDV_INTRO_VISIT)
-    if proof_with_cac?
-      redirect_to idv_cac_url
-    else
-      redirect_to idv_doc_auth_url
-    end
+    redirect_to idv_doc_auth_url
   end
 
   def profile_needs_reactivation?
@@ -58,10 +58,5 @@ class IdvController < ApplicationController
 
   def active_profile?
     current_user.active_profile.present?
-  end
-
-  def proof_with_cac?
-    Db::EmailAddress::HasGovOrMil.call(current_user) ||
-      current_user.piv_cac_configurations.any?
   end
 end

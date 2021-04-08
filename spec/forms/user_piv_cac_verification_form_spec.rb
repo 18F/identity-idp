@@ -29,7 +29,7 @@ describe UserPivCacVerificationForm do
           result = instance_double(FormResponse)
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {},
+            with(success: false, errors: { type: 'user.no_piv_cac_associated' },
                  extra: { multi_factor_auth_method: 'piv_cac',
                           piv_cac_configuration_id: nil,
                           key_id: nil }).and_return(result)
@@ -45,7 +45,7 @@ describe UserPivCacVerificationForm do
           result = instance_double(FormResponse)
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {},
+            with(success: false, errors: { type: 'user.piv_cac_mismatch'},
                  extra: { multi_factor_auth_method: 'piv_cac',
                           piv_cac_configuration_id: nil,
                           key_id: nil }).and_return(result)
@@ -77,7 +77,7 @@ describe UserPivCacVerificationForm do
             result = instance_double(FormResponse)
 
             expect(FormResponse).to receive(:new).
-              with(success: false, errors: {},
+              with(success: false, errors: { type: 'token.invalid' },
                    extra: { multi_factor_auth_method: 'piv_cac',
                             piv_cac_configuration_id: nil,
                             key_id: nil }).and_return(result)
@@ -99,7 +99,7 @@ describe UserPivCacVerificationForm do
         result = instance_double(FormResponse)
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {},
+          with(success: false, errors: { type: 'token.bad' },
                extra: { multi_factor_auth_method: 'piv_cac',
                         piv_cac_configuration_id: nil,
                         key_id: nil }).and_return(result)

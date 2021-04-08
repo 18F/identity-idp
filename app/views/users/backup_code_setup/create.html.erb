@@ -40,23 +40,19 @@
   <div class="margin-top-0">
     <% if desktop_device? %>
       <%= link_to t('forms.backup_code.download'), backup_code_download_path,
-                  class: 'text-decoration-none ico btn-border ico-download' %>
+                  class: 'usa-button usa-button--outline ico ico-download' %>
     <% end %>
     <%= link_to t('forms.backup_code.print'), '#',
                 data: { print: true },
-                class: 'ico ico-print btn-border margin-left-2 text-decoration-none' -%>
+                class: 'usa-button usa-button--outline margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2 ico ico-print' -%>
     <%= link_to t('links.copy'), '#',
-                class: 'text-decoration-none margin-left-2 clipboard btn-border ico ico-copy',
+                class: 'usa-button usa-button--outline margin-top-2 mobile-lg:margin-top-0 mobile-lg:margin-left-2 clipboard ico ico-copy',
                 data: { "clipboard-text": @codes.join(' ') } -%>
   </div>
 </div>
 
 <%= form_tag(backup_code_continue_path, method: :patch, role: 'form') do %>
-  <div class="clearfix margin-x-neg-1">
-    <div class="col col-6 sm-col-5 padding-x-1">
-      <%= button_tag t('forms.buttons.continue'), type: 'submit', class: 'btn btn-primary btn-wide' %>
-    </div>
-  </div>
+  <%= button_tag t('forms.buttons.continue'), type: 'submit', class: 'usa-button usa-button--big usa-button--wide' %>
 <% end %>
 
 <%= javascript_packs_tag_once 'clipboard' %>

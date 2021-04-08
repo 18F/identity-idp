@@ -36,13 +36,6 @@
   </p>
 <% end %>
 
-<% if desktop_device? %>
-  <p>
-    <strong><%= t('doc_auth.info.use_cac') %></strong>
-    <%= link_to(t('doc_auth.info.use_cac_link'), idv_cac_step_path(step: :choose_method)) %>
-  </p>
-<% end %>
-
 <hr class="margin-y-4" />
 
 <div class='clearfix'>
@@ -73,7 +66,7 @@
       method: 'PUT',
       html: { autocomplete: 'off', role: 'form', class: 'margin-top-2' },
     ) do %>
-      <button type='submit' class='btn btn-primary margin-top-05'>
+      <button type="submit" class="usa-button usa-button--big margin-top-05">
         <%= t('doc_auth.buttons.use_phone') %>
       </button>
     <% end %>

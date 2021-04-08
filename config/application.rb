@@ -8,8 +8,11 @@ require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 require 'identity/logging/railtie'
 
+require_relative '../lib/app_config_reader'
 require_relative '../lib/app_config'
+require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
+require_relative '../lib/identity_job_log_subscriber'
 
 Bundler.require(*Rails.groups)
 
@@ -17,13 +20,28 @@ APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
-    AppConfig.setup(YAML.safe_load(File.read(Rails.root.join('config', 'application.yml'))))
+    configuration = AppConfigReader.new.read_configuration(
+      write_copy_to: Rails.root.join('tmp', 'application.yml'),
+    )
+
+    AppConfig.setup(configuration)
+
+    root_config = configuration.except(['development', 'production', 'test'])
+    environment_config = root_config[Rails.env]
+    merged_config = root_config.merge(environment_config)
+    merged_config.symbolize_keys!
+
+    IdentityConfig.build_store(merged_config)
 
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
 
-    config.active_job.queue_adapter = :inline
+    if AppConfig.env.ruby_workers_enabled == 'true'
+      config.active_job.queue_adapter = :delayed_job
+    else
+      config.active_job.queue_adapter = :inline
+    end
     config.time_zone = 'UTC'
 
     # Generate CSRF tokens that are encoded in URL-safe Base64.
@@ -33,7 +51,7 @@ module Upaya
     Rails.application.config.action_controller.urlsafe_csrf_tokens = false
 
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
-    config.i18n.available_locales = AppConfig.env.available_locales.try(:split, ' ') || %w[en]
+    config.i18n.available_locales = %w[en es fr]
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
 

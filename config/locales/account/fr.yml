@@ -45,7 +45,6 @@ fr:
       phone: Numéro de téléphone
       phone_add: Ajouter un téléphone
       piv_cac_add: Ajouter un identifiant
-      piv_cac_card: Cartes PIV/CAC
       piv_cac_confirm_delete: Oui, retirer la carte
       piv_cac_disabled: désactivée
       piv_cac_enabled: activée

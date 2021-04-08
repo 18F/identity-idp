@@ -7,8 +7,8 @@ describe JobRunner::Runner do
       expect(job).to be_instance_of(JobRunner::JobConfiguration)
       expect(job.interval).to eq 24 * 60 * 60
 
-      stub = instance_double(UspsConfirmationUploader)
-      expect(UspsConfirmationUploader).to receive(:new).and_return(stub)
+      stub = instance_double(GpoConfirmationUploader)
+      expect(GpoConfirmationUploader).to receive(:new).and_return(stub)
       expect(stub).to receive(:run).and_return('the GPO test worked')
 
       result = CalendarService.weekend_or_holiday?(Time.zone.today) ? nil : 'the GPO test worked'
@@ -244,7 +244,7 @@ describe JobRunner::Runner do
       expect(job.callback.call).to eq 'the report test worked'
     end
 
-    it 'runs the USPS report' do
+    it 'runs the GPO report' do
       job = JobRunner::Runner.configurations.find { |c| c.name == 'USPS report' }
       expect(job).to be_instance_of(JobRunner::JobConfiguration)
       expect(job.interval).to eq 24 * 60 * 60
@@ -256,15 +256,15 @@ describe JobRunner::Runner do
       expect(job.callback.call).to eq 'the report test worked'
     end
 
-    it 'runs the Monthly USPS letter requests report' do
+    it 'runs the Monthly GPO letter requests report' do
       job = JobRunner::Runner.configurations.find do |c|
-        c.name == 'Monthly USPS letter requests report'
+        c.name == 'Monthly GPO letter requests report'
       end
       expect(job).to be_instance_of(JobRunner::JobConfiguration)
       expect(job.interval).to eq 24 * 60 * 60
 
-      service = instance_double(Reports::MonthlyUspsLetterRequestsReport)
-      expect(Reports::MonthlyUspsLetterRequestsReport).to receive(:new).and_return(service)
+      service = instance_double(Reports::MonthlyGpoLetterRequestsReport)
+      expect(Reports::MonthlyGpoLetterRequestsReport).to receive(:new).and_return(service)
       expect(service).to receive(:call).and_return('the report test worked')
 
       expect(job.callback.call).to eq 'the report test worked'

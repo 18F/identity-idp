@@ -47,7 +47,7 @@ describe ServiceProviderController do
         sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
 
         expect(sp.metadata[:agency]).to eq dashboard_service_providers.first[:agency]
-        expect(sp.ssl_cert).to be_a OpenSSL::X509::Certificate
+        expect(sp.ssl_certs.first).to be_a OpenSSL::X509::Certificate
         expect(sp.active?).to eq true
       end
 

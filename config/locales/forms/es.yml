@@ -2,7 +2,6 @@
 es:
   forms:
     backup_code:
-      are_you_sure_continue: Continuar
       are_you_sure_continue_prologue: Si no tienes acceso a ningún otro método de
         autenticación,
       are_you_sure_desc: "<br> <b> Los códigos de respaldo no son muy seguros </b>
@@ -40,14 +39,12 @@ es:
         seguridad?"
     buttons:
       back: Atrás
-      cac: Presentar tarjeta PIV/CAC
       cancel: Sí, cancelar
       confirm: Confirmar
       continue: Continuar
       delete: Borrar
       disable: Borrar
       edit: Editar
-      enable: Permitir
       manage: Administrar
       resend_confirmation: Reenviar instrucciones de confirmación
       send_security_code: Enviar código

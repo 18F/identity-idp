@@ -59,7 +59,6 @@ plugins:
       - FIXME
       - HACK
       - BUG
-      - XXX
   pep8:
     enabled: true
   reek:

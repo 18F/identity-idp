@@ -7,7 +7,7 @@ RSpec.describe AddressProofingJob, type: :job do
       { applicant_pii: { phone: Faker::PhoneNumber.cell_phone } }.to_json,
     )
 
-    AddressProofingJob.perform_now(
+    AddressProofingJob.perform_later(
       result_id: document_capture_session.result_id,
       encrypted_arguments: encrypted_arguments, callback_url: nil, trace_id: nil
     )

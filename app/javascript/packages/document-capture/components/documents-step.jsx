@@ -83,7 +83,7 @@ function DocumentsStep({
             value={value[side]}
             onChange={(nextValue) => onChange({ [side]: nextValue })}
             errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
-            analyticsPrefix={`${side} image`}
+            name={side}
           />
         );
       })}

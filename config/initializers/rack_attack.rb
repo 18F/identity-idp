@@ -26,7 +26,7 @@ module Rack
 
     cache = Readthis::Cache.new(
       expires_in: 2.weeks.to_i,
-      redis: { url: AppConfig.env.redis_throttle_url, driver: :hiredis },
+      redis: { url: IdentityConfig.store.redis_throttle_url, driver: :hiredis },
     )
 
     Rack::Attack.cache.store = cache

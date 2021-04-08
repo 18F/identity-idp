@@ -40,6 +40,8 @@ fr:
       PIV/CAC pour ce compte. Si c'est le cas, votre PIV/CAC, votre NIP ou un problème
       survenu de notre côté pourrait bien poser problème. Réessayez ou choisissez
       une autre méthode d'authentification.
+    lockout_information: Conservez ces informations en toute sécurité. Vous serez
+      bloqué et devrez créer un nouveau compte si vous perdez votre méthode d'authentification.
     login_intro: Vous les avez configurés lorsque vous avez crée votre compte
     login_options:
       auth_app: Application d'authentification
@@ -120,7 +122,7 @@ fr:
       fois que vous vous connectez</strong>.
     phone_voice_label: Numéro de téléphone
     piv_cac_fallback:
-      question: Vous n'avez pas accès à votre carte PIV/CAC?
+      question: Votre PIV ou CAC n'est pas disponible?
     piv_cac_header_text: Veuillez présenter votre carte PIV/CAC
     piv_cac_webauthn_available: Utilisez votre clé de sécurité
     please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
@@ -172,7 +174,7 @@ fr:
     webauthn_fallback:
       question: Vous n'avez pas votre clé de sécurité avec vous?
     webauthn_header_text: Connectez votre clé de sécurité
-    webauthn_piv_available: Utilisez votre badge d'employé du gouvernement.
+    webauthn_piv_available: Utilisez votre PIV ou CAC
     webauthn_verified:
       header: Clé de sécurité vérifiée
       info: Nous avons vérifié votre clé de sécurité. Cliquez sur Continuer pour vous

@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.6.5'
 
-gem 'rails', '~> 6.1.2'
+gem 'rails', '~> 6.1.3'
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
@@ -23,11 +23,10 @@ gem 'faraday'
 gem 'foundation_emails'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.4.1'
+gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.5.1'
 gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v2.0.0'
 gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
-require File.join(__dir__, 'lib', 'lambda_jobs', 'git_ref.rb')
-gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref: LambdaJobs::GIT_REF
+gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref:'d9241bdfea85a76c170e456a89'
 gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.12'
 gem 'identity_validations', github: '18F/identity-validations', branch: 'main'
 gem 'json-jwt', '>= 1.11.0'
@@ -35,7 +34,6 @@ gem 'jwt'
 gem 'local_time'
 gem 'lograge', '>= 0.11.2'
 gem 'maxminddb'
-gem 'mimemagic', '0.3.5', github: 'mimemagicrb/mimemagic', ref: '40dd02bb6b442535f97c35326c0383bc67'
 gem 'net-sftp'
 gem 'newrelic_rpm'
 gem 'pg'
@@ -49,13 +47,14 @@ gem 'rack-timeout', require: false
 gem 'raise-if-root'
 gem 'readthis'
 gem 'recaptcha', require: 'recaptcha/rails'
+gem 'redacted_struct'
 gem 'redis-session-store', '>= 0.11.3'
 gem 'rotp', '~> 6.1'
 gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.12.0.18f'
+gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: '0.12.2.18f'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.3'
@@ -123,6 +122,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v4.1.0'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.1.1'
+  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v4.2.0'
+  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0'
 end

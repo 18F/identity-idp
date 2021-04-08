@@ -30,6 +30,18 @@ import useI18n from '../hooks/use-i18n';
  */
 
 /**
+ * @typedef {(
+ *   | null                     // Cropping failure (SDK v11.4.3, L753)
+ *   | undefined                // Cropping failure (SDK v11.4.3, L960)
+ *   | 'Camera not supported.'  // Camera not supported (SDK v11.4.3, L74, L798)
+ *   | 'already started.'       // Capture already started (SDK v11.4.3, L565)
+ *   | 'already started'        // Capture already started (SDK v11.4.3, L580)
+ *   | 'Missing HTML elements.' // Required page elements are not available (SDK v11.4.3, L568)
+ *   | MediaStreamError         // User or system denied camera access (SDK v11.4.3, L544)
+ * )} AcuantCaptureFailureError
+ */
+
+/**
  * @typedef AcuantCameraUICallbacks
  *
  * @prop {(response: AcuantCaptureImage)=>void} onCaptured Document captured callback.
@@ -82,6 +94,8 @@ import useI18n from '../hooks/use-i18n';
  * @prop {AcuantDocumentType} cardType Document type.
  * @prop {number} glare Detected image glare.
  * @prop {number} sharpness Detected image sharpness.
+ * @prop {number} moire Detected image moiré.
+ * @prop {number} moireraw Detected image raw moiré.
  * @prop {number} dpi Detected image resolution.
  *
  * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.3/SimpleHTMLApp#acuantcamera
@@ -92,7 +106,7 @@ import useI18n from '../hooks/use-i18n';
  */
 
 /**
- * @typedef {(error?:Error)=>void} AcuantFailureCallback
+ * @typedef {(error:AcuantCaptureFailureError)=>void} AcuantFailureCallback
  */
 
 /**
@@ -122,7 +136,7 @@ function AcuantCaptureCanvas({
             if (response) {
               onImageCaptureSuccess(response);
             } else {
-              onImageCaptureFailure();
+              onImageCaptureFailure(response);
             }
           },
         },

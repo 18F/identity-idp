@@ -145,12 +145,6 @@ describe Idv::DocAuthController do
       )
     end
 
-    it 'progresses from welcome to upload' do
-      put :update, params: { step: 'welcome', ial2_consent_given: true }
-
-      expect(response).to redirect_to idv_doc_auth_step_url(step: :upload)
-    end
-
     it 'redirects from welcome to no camera error' do
       result = {
         success: false,
@@ -364,12 +358,12 @@ describe Idv::DocAuthController do
       expect(response.body).to eq({
         success: false,
         errors: [{ field: 'pii',
-                   message: I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness') }],
+                   message: I18n.t('doc_auth.errors.general.no_liveness') }],
         remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
       }.to_json)
       expect(@analytics).to have_received(:track_event).with(
         'IdV: ' + "#{Analytics::DOC_AUTH} verify_document_status submitted".downcase, {
-          errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
+          errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           success: false,
           remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
           step: 'verify_document_status',
@@ -378,7 +372,7 @@ describe Idv::DocAuthController do
       )
       expect(@analytics).to have_received(:track_event).with(
         Analytics::DOC_AUTH + ' submitted', {
-          errors: { pii: [I18n.t('doc_auth.errors.lexis_nexis.general_error_no_liveness')] },
+          errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           success: false,
           remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
           step: 'verify_document_status',

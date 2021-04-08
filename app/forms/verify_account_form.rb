@@ -30,16 +30,16 @@ class VerifyAccountForm
     @_pending_profile ||= user.decorate.pending_profile
   end
 
-  def usps_confirmation_code
+  def gpo_confirmation_code
     return if otp.blank? || pending_profile.blank?
 
-    pending_profile.usps_confirmation_codes.first_with_otp(otp)
+    pending_profile.gpo_confirmation_codes.first_with_otp(otp)
   end
 
   def validate_otp_not_expired
-    return unless usps_confirmation_code.present? && usps_confirmation_code.expired?
+    return unless gpo_confirmation_code.present? && gpo_confirmation_code.expired?
 
-    errors.add :otp, :usps_otp_expired
+    errors.add :otp, :gpo_otp_expired
   end
 
   def validate_pending_profile
@@ -52,7 +52,7 @@ class VerifyAccountForm
   end
 
   def valid_otp?
-    otp.present? && usps_confirmation_code.present?
+    otp.present? && gpo_confirmation_code.present?
   end
 
   def reset_sensitive_fields

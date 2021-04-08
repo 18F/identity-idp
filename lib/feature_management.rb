@@ -1,5 +1,5 @@
 class FeatureManagement
-  ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED = %w[
+  ENVS_WHERE_PREFILLING_GPO_CODE_ALLOWED = %w[
     idp.dev.login.gov idp.int.login.gov idp.qa.login.gov idp.pt.login.gov
     idp.dev.identitysandbox.gov idp.qa.identitysandbox.gov idp.int.identitysandbox.gov
     idp.pt.identitysandbox.gov
@@ -12,8 +12,8 @@ class FeatureManagement
   def self.identity_pki_disabled?
     env = AppConfig.env
     env.identity_pki_disabled == 'true' ||
-      !env.piv_cac_service_url ||
-      !env.piv_cac_verify_token_url
+      !IdentityConfig.store.piv_cac_service_url ||
+      !IdentityConfig.store.piv_cac_verify_token_url
   end
 
   def self.development_and_identity_pki_disabled?
@@ -53,16 +53,17 @@ class FeatureManagement
     AppConfig.env.use_dashboard_service_providers == 'true'
   end
 
-  def self.enable_usps_verification?
+  def self.enable_gpo_verification?
+    # leaving the usps name for backwards compatibility
     AppConfig.env.enable_usps_verification == 'true'
   end
 
-  def self.reveal_usps_code?
-    Rails.env.development? || current_env_allowed_to_see_usps_code?
+  def self.reveal_gpo_code?
+    Rails.env.development? || current_env_allowed_to_see_gpo_code?
   end
 
-  def self.current_env_allowed_to_see_usps_code?
-    ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED.include?(AppConfig.env.domain_name)
+  def self.current_env_allowed_to_see_gpo_code?
+    ENVS_WHERE_PREFILLING_GPO_CODE_ALLOWED.include?(AppConfig.env.domain_name)
   end
 
   def self.show_demo_banner?
@@ -94,11 +95,8 @@ class FeatureManagement
     AppConfig.env.backup_codes_as_only_2fa == 'true'
   end
 
-  def self.in_person_proofing_enabled?
-    AppConfig.env.in_person_proofing_enabled == 'true'
-  end
-
-  def self.usps_upload_enabled?
+  def self.gpo_upload_enabled?
+    # leaving the usps name for backwards compatibility
     AppConfig.env.usps_upload_enabled == 'true'
   end
 

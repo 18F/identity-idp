@@ -18,7 +18,7 @@ describe Profile do
   end
 
   it { is_expected.to belong_to(:user) }
-  it { is_expected.to have_many(:usps_confirmation_codes).dependent(:destroy) }
+  it { is_expected.to have_many(:gpo_confirmation_codes).dependent(:destroy) }
 
   describe '#encrypt_pii' do
     subject(:encrypt_pii) { profile.encrypt_pii(pii, user.password) }

@@ -51,24 +51,6 @@ describe Idv::Agent do
             transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
           )
         end
-
-        context 'proofing partial date of birth' do
-          before do
-            allow(AppConfig.env).to receive(:proofing_send_partial_dob).and_return('true')
-            allow(AppConfig.env).to receive(:ruby_workers_enabled).
-              and_return('false')
-          end
-
-          it 'passes dob_year_only to the proofing function' do
-            expect(LambdaJobs::Runner).to receive(:new).
-              with(hash_including(args: hash_including(dob_year_only: true))).
-              and_call_original
-
-            agent.proof_resolution(
-              document_capture_session, should_proof_state_id: true, trace_id: trace_id
-            )
-          end
-        end
       end
 
       context 'proofing state_id disabled' do

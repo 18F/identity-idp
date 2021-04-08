@@ -8,10 +8,10 @@
 
 <hr>
 
-<% if FeatureManagement.enable_usps_verification? %>
+<% if FeatureManagement.enable_gpo_verification? %>
   <p>
     <%= t('idv.form.no_alternate_phone_html',
-      link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
+      link: link_to(t('idv.form.activate_by_mail'), idv_gpo_path)) %>
   </p>
 <% end %>
 
@@ -22,5 +22,3 @@
 <div class='margin-top-4'>
   <%= link_to t("idv.failure.button.warning"), idv_phone_path %>
 </div>
-
-<%= render 'idv/doc_auth/in_person_proofing_option' %>

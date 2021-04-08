@@ -109,14 +109,25 @@ class OpenidConnectTokenForm
   def validate_client_assertion
     return if identity.blank?
 
-    payload, _headers = JWT.decode(client_assertion, service_provider.ssl_cert.public_key, true,
-                                   algorithm: 'RS256', iss: client_id,
-                                   verify_iss: true, sub: client_id,
-                                   verify_sub: true)
-    validate_aud_claim(payload)
-    validate_iat(payload)
-  rescue JWT::DecodeError => err
-    errors.add(:client_assertion, err.message)
+    payload, _headers, err = nil
+
+    matching_cert = service_provider.ssl_certs.find do |ssl_cert|
+      err = nil
+      payload, _headers = JWT.decode(client_assertion, ssl_cert.public_key, true,
+                                     algorithm: 'RS256', iss: client_id,
+                                     verify_iss: true, sub: client_id,
+                                     verify_sub: true)
+    rescue JWT::DecodeError => err
+      next
+    end
+
+    if matching_cert && payload
+      validate_aud_claim(payload)
+      validate_iat(payload)
+    else
+      errors.add(:client_assertion,
+                 err&.message || t('openid_connect.token.errors.invalid_signature'))
+    end
   end
 
   def validate_aud_claim(payload)

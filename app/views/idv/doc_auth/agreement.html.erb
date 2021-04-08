@@ -1,0 +1,51 @@
+<% title t('titles.doc_auth.verify') %>
+
+<% if flow_session[:error_message] %>
+  <%= render 'shared/alert', {
+    type: 'error',
+    class: 'margin-bottom-4',
+    message: flow_session[:error_message],
+  } %>
+<% end %>
+
+<h1 class="h3"><%= t('doc_auth.headings.lets_go') %></h1>
+<p><%= t('doc_auth.info.lets_go') %></p>
+<h2><%= t('doc_auth.headings.verify_identity') %></h2>
+<p><%= t('doc_auth.info.verify_identity') %></p>
+<h2><%= t('doc_auth.headings.secure_account') %></h2>
+<p><%= t('doc_auth.info.secure_account') %></p>
+
+<%= validated_form_for :doc_auth,
+                       url: url_for,
+                       method: 'put',
+                       html: { autocomplete: 'off', role: 'form', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
+  <br/>
+  <label class="margin-top-neg-1 margin-bottom-4" for="ial2_consent_given">
+    <div class="checkbox">
+      <%= check_box_tag :ial2_consent_given, true, false %>
+      <span class="indicator"></span>
+      <%= t('doc_auth.instructions.consent') %>
+      <%= new_window_link_to t('doc_auth.instructions.learn_more'), 'https://login.gov/policy/' %>
+    </div>
+  </label>
+  <%= f.button :button, t('doc_auth.buttons.continue'), type: :submit,
+               class: 'usa-button--big usa-button--wide' %>
+<% end %>
+
+<br/>
+
+
+<% if user_fully_authenticated? %>
+  <%= render 'shared/cancel', link: idv_cancel_path %>
+<% else %>
+  <div class='margin-top-2 padding-top-1 border-top'>
+    <%= link_to(t('two_factor_authentication.choose_another_option'), two_factor_options_path) %>
+  </div>
+<% end %>
+
+
+<%= javascript_packs_tag_once(
+  'clipboard',
+  'ial2-consent-button',
+  'document-capture-welcome',
+) %>

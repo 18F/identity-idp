@@ -13,7 +13,7 @@ es:
       upload_picture: Subir foto
       use_phone: Usa tu telefono
     errors:
-      lexis_nexis:
+      alerts:
         barcode_content_check: No pudimos leer el código de barras en el reverso de
           su documento de identidad. Puede ser debido a un problema con el código
           de barras, o bien el código de barras es un nuevo tipo que aún no reconocemos.
@@ -22,7 +22,6 @@ es:
           documento de identidad. Intente tomar una nueva foto.
         birth_date_checks: No pudimos leer la fecha de nacimiento en su documento
           de identidad. Intente tomar nuevas fotografías.
-        birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
         control_number_check: No pudimos leer el número de referencia en el reverso
           de su documento de identidad. Intente tomar una nueva foto.
         doc_crosscheck: No pudimos reconocer su documento de identidad. Puede estar
@@ -35,10 +34,6 @@ es:
           ha caducado, intente tomar nuevas fotografías.
         full_name_check: No pudimos leer el nombre completo en su documento de identidad.
           Intente tomar nuevas fotos.
-        general_error_liveness: No pudimos verificar su documento de identidad y su
-          foto. Intente tomar nuevas fotografías.
-        general_error_no_liveness: No pudimos verificar su documento de identidad.
-          Intente tomar nuevas fotografías.
         id_not_recognized: No pudimos reconocer su documento de identidad. Puede estar
           desgastado o dañado, o ser un tipo de documento de identidad que no reconocemos.
           Intente tomar nuevas fotografías.
@@ -46,12 +41,6 @@ es:
           se haya movido cuando tomó la foto. Intente tomar nuevas fotos.
         issue_date_checks: No pudimos leer la fecha de emisión en su documento de
           identidad. Intente tomar nuevas fotos.
-        multiple_back_id_failures: No pudimos verificar la parte trasera de su documento
-          de identidad. Intente tomar una nueva foto.
-        multiple_front_id_failures: No pudimos verificar la parte delantera de su
-          documento de identidad. Intente tomar una nueva foto.
-        network_error: Estamos teniendo problemas técnicos por nuestra parte. Intente
-          enviar sus imágenes de nuevo más tarde.
         ref_control_number_check: No pudimos leer el código de barras del número de
           control. Intente tomar nuevas fotografías.
         selfie_failure: No pudimos hacer coincidir su foto con su documento de identidad.
@@ -64,6 +53,34 @@ es:
           tomar nuevas fotografías con una luz más brillante.
         visible_photo_check: No pudimos verificar la foto de su identificación. Intente
           tomar nuevas fotografías.
+      dpi:
+        top_msg: No pudimos leer su identificación. Es posible que el tamaño de su
+          imagen sea demasiado chico, que su identificación sea demasiado pequeña
+          o que la foto esté borrosa. Asegúrese de que su identificación ocupe un
+          gran espacio dentro del marco de la imagen e intente tomar una nueva foto.
+        top_msg_plural: No pudimos leer su identificación. Es posible que los tamaños
+          de sus imágenes sean demasiado chicos, que su identificación sea demasiado
+          pequeña o que las fotos estén borrosas. Asegúrese de que su identificación
+          ocupe un gran espacio dentro del marco de la imagen e intente tomar nuevas
+          fotos.
+      general:
+        liveness: No pudimos verificar su documento de identidad y su foto. Intente
+          tomar nuevas fotografías.
+        multiple_back_id_failures: No pudimos verificar la parte trasera de su documento
+          de identidad. Intente tomar una nueva foto.
+        multiple_front_id_failures: No pudimos verificar la parte delantera de su
+          documento de identidad. Intente tomar una nueva foto.
+        network_error: Estamos teniendo problemas técnicos por nuestra parte. Intente
+          enviar sus imágenes de nuevo más tarde.
+        no_liveness: No pudimos verificar su documento de identidad. Intente tomar
+          nuevas fotografías.
+      glare:
+        top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos.
+          Asegúrese de que el flash de su cámara esté desactivado e intente tomar
+          una nueva foto.
+        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
+          tengan reflejos. Asegúrese de que el flash de su cámara esté desactivado
+          e intente tomar nuevas fotos.
       no_camera:
         explanation: Recopilaremos información sobre usted leyendo su documento de
           identidad expedido por el estado. Luego, se tomará una foto para confirmar
@@ -71,6 +88,14 @@ es:
         heading: Necesita una cámara para verificar su identidad
         title: Necesita cámara
       not_a_file: La selección no era un archivo válido.
+      pii:
+        birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
+      sharpness:
+        top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado
+          borrosa u oscura. Intente tomar una nueva foto en un área iluminada.
+        top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
+          estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un área
+          iluminada.
     forms:
       address1: Dirección
       change_file: Cambiar archivo
@@ -97,8 +122,10 @@ es:
       document_capture_selfie: Su foto
       front: Parte Delantera
       interstitial: Estamos procesando sus imágenes
+      lets_go: Comencemos
       photo: Foto
       review_issues: Revise sus imágenes e inténtelo de nuevo
+      secure_account: Asegure su cuenta
       selfie: Tómese una foto
       ssn: Por favor ingrese su número de seguro social.
       take_picture: Toma una foto con un teléfono
@@ -109,7 +136,9 @@ es:
         de identidad y tomarse
       upload_liveness_enabled: "¿Cómo te gustaría verificar su identidad?"
       verify: Por favor verifica tu información
-      welcome: Nosotros necesitamos verificar tu identidad
+      verify_identity: Verifique su identidad
+      welcome: Verifique su identidad para acceder de forma segura a los servicios
+        gubernamentales
     info:
       camera_required: Su teléfono móvil debe tener una cámara y un navegador web
       capture_status_capturing: Capturando
@@ -130,6 +159,7 @@ es:
         paso automáticamente cuando esté terminado.
       interstitial_thanks: "¡Gracias por su paciencia!"
       keep_window_open: No cierres esta ventana.
+      lets_go: 'La verificación de la identidad se realiza en dos partes:'
       link_sent: Verifique su teléfono y siga las instrucciones para tomar una fotografía
         de la identificación emitida por su estado.
       link_sent_complete_js: El siguiente paso se cargará automáticamente una vez
@@ -138,6 +168,13 @@ es:
         la verificación de tu identidad.
       no_other_id_help_bold_html: "<strong>Si no tiene un documento de identidad expedido
         por el estado</strong>, <a href=%{failure_to_proof_url}>obtenga ayuda en %{sp_name}.</a>"
+      privacy_html: Login.gov es un sitio web gubernamental seguro que cumple con
+        las normas más estrictas de protección de datos. Solo utilizamos sus datos
+        para verificar su identidad. %{link} sobre nuestras medidas de privacidad
+        y seguridad.
+      secure_account: Una vez que haya verificado su identidad, le pediremos que cifre
+        su cuenta. Con el cifrado, sus datos quedan protegidos, por lo que solo usted,
+        el titular de la cuenta, puede acceder a su información o modificarla.
       tag: Recomendado
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su identificación.
         Solo usamos las imágenes para verificar su identidad.
@@ -154,20 +191,19 @@ es:
         que es el propietario del documento de identidad.
       upload_no_image_storage: No almacenamos imágenes que cargue. Solo verificamos
         su identidad.
-      use_cac: "¿Tiene un documento de identidad de empleado del gobierno?"
-      use_cac_link: Utilice un PIV/CAC en su lugar
+      verify_identity: Le pediremos su información personal. Utilizaremos, conservaremos
+        y compartiremos algunos de sus datos personales para verificar su identidad
+        con los registros públicos.
       verifying: Verificando…
-      welcome: Verificamos su identidad para asegurarnos de que usted es usted, y
-        no alguien que pretende ser usted. Verificar su identidad le permite acceder
-        a servicios que manejan información confidencial.
+      welcome_html: La agencia a la que está intentando acceder debe asegurarse de
+        que usted sea quien dice ser, y no alguien que se hace pasar por usted.
     instructions:
-      bullet1: Sube tu ID
-      bullet1a: Tómese una foto
-      bullet2: Confirma tu direccion
-      bullet3: Asegure su cuenta
-      bullet4: Recuperación de cuenta
-      consent: Al marcar esta casilla, está permitiendo que login.gov solicite, use,
-        conserve y comparta su información personal. Solo lo usaremos para verificar
+      bullet1: Su documento de identidad emitido por el estado.
+      bullet1a: Un dispositivo con cámara
+      bullet2: Su Número de Seguridad Social.
+      bullet3: Un número de teléfono con un plan tarifario vinculado a su nombre.
+      consent: Al marcar esta casilla, usted permite que login.gov solicite, utilice,
+        conserve y comparta su información personal. Solo la utilizaremos para verificar
         su identidad.
       document_capture_selfie_consent_action: "<lg-underline>Permita el acceso a la
         cámara</lg-underline> y busque una notificación en su navegador o revise la
@@ -183,17 +219,19 @@ es:
         con la imagen en el frente de su identificación.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su
         escritorio y siga las instrucciones para verificar su identidad.
-      learn_more: Aprende más
+      learn_more: Obtenga más información
+      privacy: Nuestras normas de privacidad y seguridad
       send_sms: Le enviaremos un mensaje de texto a su dispositivo con un enlace.
         Siga ese enlace a su navegador para tomar fotografías de la parte delantera
         y trasera de su identificación.
       switch_back: Vuelve a tu computadora para terminar de verificar tu identidad
-      text1: junto con su número de seguro social
-      text1a: con un teléfono o cámara web
-      text2: usando un número de teléfono o dirección de correo
-      text3: volviendo a ingresar su contraseña de login.gov
-      text4: asegúrate de tener siempre acceso
-      welcome: 'Lo que necesitarás hacer:'
+      text1: ''
+      text1a: como un teléfono o una computadora.
+      text2: No es necesario disponer de la credencial.
+      text3: No es necesario que sea el titular principal de la cuenta. Si no tiene
+        un número de teléfono que cumpla con este requisito, podemos enviarle el código
+        de verificación por correo en un plazo aproximado de 3 a 7 días laborables.
+      welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
     tips:
       document_capture_header_text: 'Para obtener los mejores resultados:'
       document_capture_hint: Debe ser un JPG, BMP, PNG o TIFF

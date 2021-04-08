@@ -11,13 +11,13 @@ module OutboundHealthChecker
   end
 
   def outbound_response
-    if AppConfig.env.outbound_connection_check_url.blank?
+    if IdentityConfig.store.outbound_connection_check_url.blank?
       raise 'missing outbound_connection_check_url'
     end
 
-    response = faraday.head(AppConfig.env.outbound_connection_check_url)
+    response = faraday.head(IdentityConfig.store.outbound_connection_check_url)
 
-    { url: AppConfig.env.outbound_connection_check_url, status: response.status }
+    { url: IdentityConfig.store.outbound_connection_check_url, status: response.status }
   end
 
   # @api private

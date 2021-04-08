@@ -1,82 +1,3 @@
-@media #{$breakpoint-sm} {
-  .btn {
-    font-size: $button-font-size-sm;
-  }
-}
-
-.btn {
-  white-space: normal;
-
-  &.no-grow {
-    width: unset;
-  }
-}
-
-%btn-basic {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  color: $blue;
-  font-size: $base-font-size;
-  font-weight: normal;
-  line-height: $line-height;
-  outline: none;
-  padding: 0;
-}
-
-.btn-primary {
-  border-radius: $border-radius-lg;
-
-  &:disabled {
-    opacity: .6;
-  }
-}
-
-.btn-secondary {
-  border: 1px solid $blue;
-  border-radius: $border-radius-lg;
-  color: $blue;
-
-  &:hover {
-    background-color: $blue-lightest;
-  }
-}
-
-.btn-danger {
-  background-color: $red;
-  border: 1px solid $red;
-  border-radius: $border-radius-lg;
-  color: $white;
-
-  &:hover {
-    background-color: $red;
-  }
-}
-
-.btn-wide {
-  box-sizing: border-box;
-  min-width: 220px;
-  text-align: center;
-}
-
-.btn-transparent {
-  @extend %btn-basic;
-  cursor: pointer;
-}
-
-.btn-link {
-  @extend %btn-basic;
-  text-decoration: underline;
-  vertical-align: baseline;
-
-  &:active,
-  &:focus,
-  &:hover {
-    box-shadow: none;
-    text-decoration: underline;
-  }
-}
-
 .btn-border {
   border-color: $border-color;
   border-radius: $border-radius-lg;
@@ -90,26 +11,35 @@
   }
 }
 
-.btn-disabled {
-  background-color: $gray-light;
-  color: $gray-dark;
-  cursor: not-allowed;
-}
-
-.btn-account-action {
+.account-action-button {
+  @include u-radius('lg');
+  background-color: color('primary-lighter');
   border: 0;
   color: $blue;
+  display: inline-block;
   font-size: .8125rem;
   font-weight: normal;
+  line-height: 1.375rem;
   margin-bottom: -3px;
   margin-top: -3px;
   padding: .5rem;
   padding-bottom: .125rem;
   padding-top: .125rem;
+  text-decoration: none;
+  vertical-align: middle;
+  white-space: normal;
 
-  a {
+  &,
+  &:hover {
     text-decoration: none;
   }
+}
+
+.usa-button:not([class*='margin-']) {
+  // Temporary: To be backported to design system. Margins should be applied at the button element,
+  // or at the very least (a) we don't want the margins to offset full-width buttons on mobile, and
+  // (b) the default margin would not be large enough on its own.
+  margin-right: 0;
 }
 
 .usa-button.usa-button--unstyled:visited {
@@ -130,6 +60,23 @@
 }
 
 .usa-button--unstyled {
+  // Temporary: To be backported to design system. Unstyled buttons should inherit the appearance
+  // of a link.
+  display: inline;
+  width: auto;
+
+  // Temporary: To be backported to design system. Unstyled buttons should not ever show the default
+  // opaque disabled background color. Typically a button would not be both disabled and active, but
+  // it is possible in some browsers when e.g. disabling a button in response to its own click.
+  &.usa-button:disabled:hover,
+  &.usa-button:disabled.usa-button--hover,
+  &.usa-button:disabled:active,
+  &.usa-button:disabled.usa-button--active,
+  &.usa-button:disabled:focus,
+  &.usa-button:disabled.usa-focus {
+    background-color: transparent;
+  }
+
   &:hover,
   &:active {
     // Temporary: These styles should be ported upstream to the design system, optionally as part of
@@ -137,4 +84,12 @@
     -moz-osx-font-smoothing: inherit;
     -webkit-font-smoothing: inherit;
   }
+}
+
+.usa-button--disabled {
+  // There exist some disabled buttons which we expect to only take the visual appearance of a
+  // disabled button, but still allow interactions (e.g. IAL2 Agreement and Document Capture steps).
+  //
+  // See: https://github.com/uswds/uswds/issues/4122
+  pointer-events: all;
 }

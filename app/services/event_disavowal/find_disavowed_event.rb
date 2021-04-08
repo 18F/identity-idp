@@ -17,7 +17,7 @@ module EventDisavowal
     private
 
     def disavowal_token_fingerprints
-      old_keys = KeyRotator::Utils.old_keys(:hmac_fingerprinter_key_queue)
+      old_keys = IdentityConfig.store.hmac_fingerprinter_key_queue
       previous_key_fingerprints = old_keys.map do |key|
         Pii::Fingerprinter.fingerprint(disavowal_token, key)
       end

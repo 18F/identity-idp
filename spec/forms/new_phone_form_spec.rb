@@ -178,6 +178,35 @@ describe NewPhoneForm do
       end
     end
 
+    context 'vendor reports phone number is invalid' do
+      let(:phone) { '+44 113 496 0000' }
+
+      subject(:result) do
+        form.submit(params.merge(phone: phone))
+      end
+
+      before do
+        allow(FeatureManagement).to receive(:voip_check?).and_return(true)
+
+        expect(Telephony).to receive(:phone_info).with(phone).
+          and_raise(Aws::Pinpoint::Errors::BadRequestException.new(nil, nil))
+      end
+
+      it 'is invalid and does not raise' do
+        expect { result }.to_not raise_error
+
+        expect(result.success?).to eq(false)
+        expect(result.errors[:phone]).to be_present
+      end
+
+      it 'includes redacted information for the error log' do
+        expect(result.to_h).to include(
+          redacted_phone: '+## ### ### ####',
+          country_code: 'GB',
+        )
+      end
+    end
+
     context 'voip numbers' do
       let(:telephony_gem_voip_number) { '+12255552000' }
       let(:voip_block?) { false }
@@ -255,6 +284,12 @@ describe NewPhoneForm do
           result
         end
       end
+    end
+  end
+
+  describe '#redact' do
+    it 'leaves in punctuation and spaces, but removes letters and numbers' do
+      expect(form.send(:redact, '+11 (555) DEF-1234')).to eq('+## (###) XXX-####')
     end
   end
 end

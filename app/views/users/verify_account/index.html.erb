@@ -8,16 +8,28 @@
 </p>
 <%= validated_form_for(@verify_account_form, url: verify_account_path,
                      html: { autocomplete: 'off', method: :post, role: 'form' }) do |f| %>
-  <%= f.error :base %>
-  <%= f.input :otp, required: true, input_html: { aria: { invalid: false } },
-    label: t('forms.verify_profile.name'), wrapper_html: { class: 'margin-bottom-4' }, wrapper: :inline_form do %>
-    <%= f.input_field :otp, as: :inline, autofocus: true, type: 'text', maxlength: '10', value: @code %>
-    <%= f.button :submit, t('forms.verify_profile.submit') %>
-  <% end %>
+  <div class="grid-row margin-bottom-5">
+    <div class="grid-col-12 tablet:grid-col-6">
+      <%= f.input :otp,
+                  type: 'text',
+                  maxlength: 10,
+                  required: true,
+                  autofocus: true,
+                  input_html: {
+                    aria: { invalid: false },
+                    value: @code,
+                  },
+                  label: t('forms.verify_profile.name'),
+                  class: 'margin-bottom-5' %>
+      <%= f.button :submit,
+                   t('forms.verify_profile.submit'),
+                   class: 'usa-button--big usa-button--full-width' %>
+    </div>
+  </div>
 <% end %>
 
-<% if FeatureManagement.enable_usps_verification? && !@mail_spammed %>
-  <%= link_to t('idv.messages.usps.resend'), idv_usps_path, class: 'block margin-bottom-2' %>
+<% if FeatureManagement.enable_gpo_verification? && !@mail_spammed %>
+  <%= link_to t('idv.messages.gpo.resend'), idv_gpo_path, class: 'block margin-bottom-2' %>
 <% end %>
 
 <%= button_to t('idv.messages.clear_and_start_over'), idv_session_path, method: :delete, class: 'usa-button usa-button--unstyled' %>

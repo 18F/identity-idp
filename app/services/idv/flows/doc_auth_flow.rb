@@ -3,6 +3,7 @@ module Idv
     class DocAuthFlow < Flow::BaseFlow
       STEPS = {
         welcome: Idv::Steps::WelcomeStep,
+        agreement: Idv::Steps::AgreementStep,
         upload: Idv::Steps::UploadStep,
         send_link: Idv::Steps::SendLinkStep,
         link_sent: Idv::Steps::LinkSentStep,

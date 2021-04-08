@@ -70,7 +70,7 @@ describe PivCacService do
         describe 'when configured with a user-facing endpoint' do
           before(:each) do
             allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
-            allow(AppConfig.env).to receive(:piv_cac_service_url) { base_url }
+            allow(IdentityConfig.store).to receive(:piv_cac_service_url) { base_url }
           end
 
           let(:nonce) { 'once' }
@@ -111,7 +111,9 @@ describe PivCacService do
         before(:each) do
           allow(AppConfig.env).to receive(:identity_pki_local_dev) { 'true' }
           allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
-          allow(AppConfig.env).to receive(:piv_cac_verify_token_url) { 'http://localhost:8443/' }
+          allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url) do
+            'http://localhost:8443/'
+          end
         end
 
         let!(:request) do
@@ -151,7 +153,9 @@ describe PivCacService do
       describe 'when configured to contact remote service' do
         before(:each) do
           allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
-          allow(AppConfig.env).to receive(:piv_cac_verify_token_url) { 'http://localhost:8443/' }
+          allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url) do
+            'http://localhost:8443/'
+          end
         end
 
         let!(:request) do
@@ -191,7 +195,9 @@ describe PivCacService do
       describe 'with bad json' do
         before(:each) do
           allow(AppConfig.env).to receive(:identity_pki_disabled) { 'false' }
-          allow(AppConfig.env).to receive(:piv_cac_verify_token_url) { 'http://localhost:8443/' }
+          allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url) do
+            'http://localhost:8443/'
+          end
         end
 
         let!(:request) do

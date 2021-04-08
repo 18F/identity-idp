@@ -106,6 +106,13 @@ en:
         for now.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
+      gpo:
+        address_on_file: We will mail a letter with a confirmation code to your verified
+          address on file.
+        new_address: We will mail a letter with a confirmation code to the address
+          you specify.
+        resend: Send me another letter
+        success: It should arrive in 5 to 10 business days.
       hardfail: We can't log you in right now, but you can try verifying your identity
         again in %{hours} hours.
       mail_sent: Your letter is on its way
@@ -138,13 +145,6 @@ en:
         read_more_encrypt: Read more about how login.gov protects your personal information
         review_message: When you re-enter your password, login.gov will protect the
           information you've given us, so that only you can access it
-      usps:
-        address_on_file: We will mail a letter with a confirmation code to your verified
-          address on file.
-        new_address: We will mail a letter with a confirmation code to the address
-          you specify.
-        resend: Send me another letter
-        success: It should arrive in 5 to 10 business days.
     review:
       dob: Date of birth
       full_name: Full name

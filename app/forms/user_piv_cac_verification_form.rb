@@ -11,10 +11,11 @@ class UserPivCacVerificationForm
 
   def submit
     success = valid? && valid_submission?
+    errors = error_type ? { type: error_type } : {}
 
     FormResponse.new(
       success: success,
-      errors: {},
+      errors: errors,
       extra: extra_analytics_attributes.merge(error_type ? { key_id: key_id } : {}),
     )
   end

@@ -13,7 +13,7 @@ options = {
     ttl: AppConfig.env.session_timeout_in_minutes.to_i.minutes,
 
     key_prefix: "#{AppConfig.env.domain_name}:session:",
-    url: AppConfig.env.redis_url,
+    url: IdentityConfig.store.redis_url,
   },
   on_session_load_error: SessionEncryptorErrorHandler,
   serializer: SessionEncryptor.new,

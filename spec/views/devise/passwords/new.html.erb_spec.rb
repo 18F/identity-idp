@@ -45,6 +45,12 @@ describe 'devise/passwords/new.html.erb' do
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
   end
 
+  it 'sets input autocorrect to off' do
+    render
+
+    expect(rendered).to have_xpath("//input[@autocorrect='off']")
+  end
+
   it 'has a cancel link that points to the decorated_session cancel_link_url' do
     render
 

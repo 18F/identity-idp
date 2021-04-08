@@ -15,7 +15,7 @@ describe VerifyAccountForm do
     next if pending_profile.blank?
 
     create(
-      :usps_confirmation_code,
+      :gpo_confirmation_code,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
       code_sent_at: code_sent_at,
       profile: pending_profile,
@@ -82,7 +82,7 @@ describe VerifyAccountForm do
       it 'is invalid' do
         result = subject.submit
         expect(result.success?).to eq(false)
-        expect(subject.errors[:otp]).to eq [t('errors.messages.usps_otp_expired')]
+        expect(subject.errors[:otp]).to eq [t('errors.messages.gpo_otp_expired')]
       end
     end
   end

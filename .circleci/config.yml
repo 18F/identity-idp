@@ -159,7 +159,8 @@ jobs:
             cp -a keys.example keys
             cp -a certs.example certs
             cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
-            bundle exec rake db:create db:migrate db:seed --trace
+            bundle exec rake db:create db:migrate --trace
+            bundle exec rake db:seed
             bundle exec rake assets:precompile
       - run:
           name: Run Tests
@@ -194,6 +195,7 @@ jobs:
       - run:
           name: Run Lints
           command: |
+            make lint_yarn_lockfile
             yarn run lint
             yarn run typecheck
             bundle exec rubocop

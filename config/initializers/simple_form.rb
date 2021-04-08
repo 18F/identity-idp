@@ -2,7 +2,7 @@
 SimpleForm.setup do |config|
   require Rails.root.join('lib', 'extensions', 'simple_form', 'error_notification')
 
-  config.button_class = 'btn btn-primary'
+  config.button_class = 'usa-button'
   config.boolean_label_class = nil
   config.default_form_class = 'margin-top-4 tablet:margin-top-4'
   config.wrapper_mappings = { inline: :append }
@@ -26,19 +26,6 @@ SimpleForm.setup do |config|
     b.use :hint,  wrap_with: { tag: 'div', class: 'italic' }
     b.use :input, class: 'block col-12 field'
     b.use :error, wrap_with: { tag: 'div', class: 'mt-tiny h6 red error-message' }
-  end
-
-  config.wrappers :inline_form, tag: 'div' do |b|
-    b.use :label, class: 'bold block'
-    b.wrapper tag: 'div', class: 'col-12 clearfix' do |ba|
-      ba.use :input
-    end
-
-    b.wrapper tag: 'div' do |bb|
-      bb.use :error, wrap_with: { tag: 'span', class: 'mt-tiny h6 red error-message' }
-    end
-
-    b.optional :maxlength
   end
 
   config.default_wrapper = :vertical_form

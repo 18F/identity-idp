@@ -53,14 +53,14 @@
  <%= f.input :phone, required: true, input_html: { aria: { invalid: false }, class: 'sm-col-8' }, label: false,
    wrapper_html: { class: 'margin-right-2' } %>
 
-  <% if FeatureManagement.enable_usps_verification? %>
+  <% if FeatureManagement.enable_gpo_verification? %>
     <%= render 'idv/phone/verification_options' %>
   <% end %>
 
   <%= render 'shared/spinner-button',
              action_message: t('doc_auth.info.verifying'),
              class: 'margin-top-4' do %>
-    <%= f.button :submit, t('forms.buttons.continue'), class: 'btn-wide sm-col-6 col-12' %>
+    <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide' %>
   <% end %>
 <% end %>
 

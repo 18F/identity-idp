@@ -3,7 +3,6 @@ require 'rails_helper'
 feature 'doc auth verify step' do
   include IdvStepHelper
   include DocAuthHelper
-  include InPersonHelper
 
   let(:skip_step_completion) { false }
   let(:max_attempts) { idv_max_attempts }
@@ -91,25 +90,11 @@ feature 'doc auth verify step' do
     click_idv_continue
     click_idv_continue
 
-    enable_in_person_proofing
     expect(page).to have_current_path(idv_session_errors_warning_path)
-    expect(page).to_not have_link(t('in_person_proofing.opt_in_link'),
-                                  href: idv_in_person_welcome_step)
-  end
-
-  it 'has a link to proof in person' do
-    enable_in_person_proofing
-    sign_in_and_2fa_user
-    complete_doc_auth_steps_before_ssn_step
-    fill_out_ssn_form_with_duplicate_ssn
-    click_idv_continue
-    click_idv_continue
-
-    expect(page).to have_link(t('in_person_proofing.opt_in_link'),
-                              href: idv_in_person_welcome_step)
   end
 
   it 'throttles resolution and continues when it expires' do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_ssn_that_fails_resolution
@@ -121,6 +106,11 @@ feature 'doc auth verify step' do
     end
     click_idv_continue
     expect(page).to have_current_path(idv_session_errors_failure_path)
+    expect(fake_analytics).to have_logged_event(
+      Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+      throttle_type: :idv_resolution,
+      step_name: Idv::Steps::VerifyWaitStepShow,
+    )
 
     Timecop.travel(AppConfig.env.idv_attempt_window_in_hours.to_i.hours.from_now) do
       sign_in_and_2fa_user
@@ -132,6 +122,7 @@ feature 'doc auth verify step' do
   end
 
   it 'throttles dup ssn' do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     sign_in_and_2fa_user
     complete_doc_auth_steps_before_ssn_step
     fill_out_ssn_form_with_duplicate_ssn
@@ -143,6 +134,11 @@ feature 'doc auth verify step' do
     end
     click_idv_continue
     expect(page).to have_current_path(idv_session_errors_failure_path)
+    expect(fake_analytics).to have_logged_event(
+      Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+      throttle_type: :idv_resolution,
+      step_name: Idv::Steps::VerifyWaitStepShow,
+    )
   end
 
   context 'when the user lives in an AAMVA supported state' do
@@ -205,7 +201,7 @@ feature 'doc auth verify step' do
         success: true, errors: {}, context: { stages: [] },
       )
 
-      allow(AppConfig.env).to receive(:aamva_sp_banlist_issuers).
+      allow(IdentityConfig.store).to receive(:aamva_sp_banlist_issuers).
         and_return('["urn:gov:gsa:openidconnect:sp:server"]')
 
       visit_idp_from_sp_with_ial1(:oidc)

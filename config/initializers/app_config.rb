@@ -62,7 +62,6 @@ AppConfig.require_keys(%w[
                          session_encryption_key
                          session_timeout_in_minutes
                          use_kms
-                         valid_authn_contexts
                        ])
 
 ConfigValidator.new.validate(AppConfig.env.config)

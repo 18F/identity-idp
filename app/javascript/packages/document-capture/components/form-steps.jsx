@@ -257,6 +257,7 @@ function FormSteps({
       />
       <Button
         type="submit"
+        isBig
         isWide
         className="display-block margin-y-5"
         isVisuallyDisabled={!canContinue}

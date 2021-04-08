@@ -20,7 +20,7 @@ module Idv
 
     def reset_password(email, request_id)
       sign_out
-      RequestPasswordReset.new(email, request_id).perform
+      RequestPasswordReset.new(email: email, request_id: request_id, analytics: analytics).perform
       # The user/email is always found so...
       session[:email] = email
       redirect_to forgot_password_url(request_id: request_id)

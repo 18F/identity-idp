@@ -20,7 +20,7 @@ module Idv
     }.freeze
 
     def redirect_if_mail_bounced
-      redirect_to idv_usps_url if current_user.decorate.usps_mail_bounced?
+      redirect_to idv_gpo_url if current_user.decorate.gpo_mail_bounced?
     end
 
     def redirect_if_pending_profile

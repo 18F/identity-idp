@@ -140,6 +140,17 @@ describe SignUp::CompletionsController do
           patch :update
         end
       end
+
+      it 'redirects to account page if the session request_url is removed' do
+        stub_sign_in
+        subject.session[:sp] = {
+          ial2: false,
+          issuer: 'foo',
+        }
+
+        patch :update
+        expect(response).to redirect_to account_path
+      end
     end
 
     context 'IAL2' do

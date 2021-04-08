@@ -2,7 +2,7 @@ class Profile < ApplicationRecord
   self.ignored_columns = %w[phone_confirmed]
 
   belongs_to :user
-  has_many :usps_confirmation_codes, dependent: :destroy
+  has_many :gpo_confirmation_codes, dependent: :destroy
 
   validates :active, uniqueness: { scope: :user_id, if: :active? }
 
@@ -14,7 +14,6 @@ class Profile < ApplicationRecord
     encryption_error: 2,
     verification_pending: 3,
     verification_cancelled: 4,
-    in_person_pending: 5,
   }
 
   attr_reader :personal_key

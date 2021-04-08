@@ -19,10 +19,10 @@ class AccountShow
 
   def pending_profile_partial
     if decorated_user.pending_profile_requires_verification?
-      if decorated_user.usps_mail_bounced?
-        'accounts/pending_profile_bounced_usps'
+      if decorated_user.gpo_mail_bounced?
+        'accounts/pending_profile_bounced_gpo'
       else
-        'accounts/pending_profile_usps'
+        'accounts/pending_profile_gpo'
       end
     else
       'shared/null'
@@ -53,40 +53,6 @@ class AccountShow
 
   def show_pii_partial?
     decrypted_pii.present? || decorated_user.identity_verified?
-  end
-
-  def totp_partial
-    if TwoFactorAuthentication::AuthAppPolicy.new(decorated_user.user).enabled?
-      disable_totp_partial
-    else
-      enable_totp_partial
-    end
-  end
-
-  def disable_totp_partial
-    return 'shared/null' unless MfaPolicy.new(decorated_user.user).multiple_factors_enabled?
-    'accounts/actions/disable_totp'
-  end
-
-  def enable_totp_partial
-    'accounts/actions/enable_totp'
-  end
-
-  def piv_cac_partial
-    if TwoFactorAuthentication::PivCacPolicy.new(decorated_user.user).enabled?
-      disable_piv_cac_partial
-    else
-      enable_piv_cac_partial
-    end
-  end
-
-  def disable_piv_cac_partial
-    return 'shared/null' unless MfaPolicy.new(decorated_user.user).multiple_factors_enabled?
-    'accounts/actions/disable_piv_cac'
-  end
-
-  def enable_piv_cac_partial
-    'accounts/actions/enable_piv_cac'
   end
 
   def show_manage_personal_key_partial?
@@ -144,16 +110,16 @@ class AccountShow
 
   private
 
-  PiiAccessor = Struct.new(:obfuscated,
-                           :full_name,
-                           :address1,
-                           :address2,
-                           :city,
-                           :state,
-                           :zipcode,
-                           :dob,
-                           :phone,
-                           keyword_init: true)
+  PiiAccessor = RedactedStruct.new(:obfuscated,
+                                   :full_name,
+                                   :address1,
+                                   :address2,
+                                   :city,
+                                   :state,
+                                   :zipcode,
+                                   :dob,
+                                   :phone,
+                                   keyword_init: true)
 
   def obfuscated_pii_accessor
     PiiAccessor.new(

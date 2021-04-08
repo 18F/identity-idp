@@ -22,6 +22,11 @@ module Idv
       def idv_failure(result)
         attempter_increment if result.extra.dig(:proofing_results, :exception).blank?
         if attempter_throttled?
+          @flow.analytics.track_event(
+            Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+            throttle_type: :idv_resolution,
+            step_name: self.class,
+          )
           redirect_to idv_session_errors_failure_url
         elsif result.extra.dig(:proofing_results, :exception).present?
           redirect_to idv_session_errors_exception_url
@@ -55,6 +60,10 @@ module Idv
       end
 
       def throttled_response
+        @flow.analytics.track_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :idv_acuant,
+        )
         redirect_to throttled_url
         IdentityDocAuth::Response.new(
           success: false,

@@ -113,19 +113,7 @@
     background-image: url(image-path('alert/warning-lg.svg'));
   }
 
-  .btn-wide,
   hr {
     border-color: $yellow;
-  }
-}
-
-.modal-fail {
-  &::before {
-    background-image: url(image-path('alert/fail-lg.svg'));
-  }
-
-  hr,
-  .btn {
-    border-color: $pink;
   }
 }

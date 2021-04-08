@@ -7,13 +7,13 @@ module Users
 
     def index
       analytics.track_event(Analytics::ACCOUNT_VERIFICATION_VISITED)
-      usps_mail = Idv::UspsMail.new(current_user)
-      @mail_spammed = usps_mail.mail_spammed?
+      gpo_mail = Idv::GpoMail.new(current_user)
+      @mail_spammed = gpo_mail.mail_spammed?
       @verify_account_form = VerifyAccountForm.new(user: current_user)
-      @code = session[:last_usps_confirmation_code] if FeatureManagement.reveal_usps_code?
+      @code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
 
       if Throttler::IsThrottled.call(current_user.id, :verify_gpo_key)
-        render :throttled
+        render_throttled
       else
         render :index
       end
@@ -28,7 +28,7 @@ module Users
       )
 
       if throttled
-        render :throttled
+        render_throttled
       else
         result = @verify_account_form.submit
         analytics.track_event(Analytics::ACCOUNT_VERIFICATION_SUBMITTED, result.to_h)
@@ -38,12 +38,22 @@ module Users
           flash[:success] = t('account.index.verification.success')
           redirect_to sign_up_completed_url
         else
-          render :index
+          flash[:error] = @verify_account_form.errors.first.message
+          redirect_to verify_account_url
         end
       end
     end
 
     private
+
+    def render_throttled
+      analytics.track_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :verify_gpo_key,
+      )
+
+      render :throttled
+    end
 
     def build_verify_account_form
       VerifyAccountForm.new(

@@ -19,7 +19,9 @@
 }
 
 .spinner-button {
-  display: inline-block;
+  @include at-media('mobile-lg') {
+    display: inline-block;
+  }
 }
 
 .spinner-button--spinner-active {

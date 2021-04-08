@@ -17,8 +17,7 @@
               input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
   <div class="right-align margin-top-neg-2 margin-bottom-6">
     <%= t('idv.forgot_password.link_html',
-          link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url,
-                        class: 'usa-button usa-button--unstyled margin-left-1', form_class: 'inline-block')) %>
+          link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1')) %>
 
   </div>
   <%= accordion('review-verified-info', t('idv.messages.review.intro')) do %>
@@ -26,7 +25,7 @@
                phone: PhoneFormatter.format(@applicant[:phone]) %>
   <% end %>
 
-  <%= f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide sm-col-6 col-12' %>
+  <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide' %>
 <% end %>
 
 <div class="margin-top-6 margin-top-2 padding-top-1 border-top">

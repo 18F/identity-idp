@@ -3,7 +3,7 @@ module Pii
     :otp, # https://github.com/18F/identity-idp/pull/1661
   ].freeze
 
-  Attributes = Struct.new(
+  Attributes = RedactedStruct.new(
     :first_name, :middle_name, :last_name,
     :address1, :address2, :city, :state, :zipcode,
     :ssn, :dob, :phone,

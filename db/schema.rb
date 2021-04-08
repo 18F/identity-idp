@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_15_144559) do
+ActiveRecord::Schema.define(version: 2021_04_01_192727) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,6 +75,9 @@ ActiveRecord::Schema.define(version: 2021_03_15_144559) do
     t.datetime "used_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "salted_code_fingerprint"
+    t.string "code_salt"
+    t.string "code_cost"
     t.index ["user_id", "code_fingerprint"], name: "index_bcc_on_user_id_code_fingerprint", unique: true
     t.index ["user_id", "created_at"], name: "index_backup_code_configurations_on_user_id_and_created_at"
   end
@@ -189,6 +192,8 @@ ActiveRecord::Schema.define(version: 2021_03_15_144559) do
     t.integer "document_capture_view_count", default: 0
     t.integer "document_capture_submit_count", default: 0
     t.integer "document_capture_error_count", default: 0
+    t.datetime "agreement_view_at"
+    t.integer "agreement_view_count", default: 0
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
@@ -570,6 +575,7 @@ ActiveRecord::Schema.define(version: 2021_03_15_144559) do
     t.date "iaa_end_date"
     t.string "app_id"
     t.integer "default_aal"
+    t.string "certs", array: true
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

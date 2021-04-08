@@ -14,6 +14,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
         document_capture_session_uuid: document_capture_session_uuid,
       },
       liveness_checking_enabled: liveness_checking_enabled?,
+      analytics: analytics,
     )
   end
 
@@ -26,6 +27,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
   let(:selfie_image_iv) { 'selfie-iv' }
   let!(:document_capture_session) { DocumentCaptureSession.create! }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
+  let(:analytics) { FakeAnalytics.new }
   let(:liveness_checking_enabled?) { true }
 
   describe '#valid?' do
@@ -119,6 +121,10 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
         expect(form.valid?).to eq(false)
         expect(form.errors.attribute_names).to eq([:limit])
         expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.acuant_throttle')])
+        expect(analytics).to have_logged_event(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :idv_acuant,
+        )
       end
     end
   end

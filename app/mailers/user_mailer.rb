@@ -215,7 +215,7 @@ class UserMailer < ActionMailer::Base
   private
 
   def email_should_receive_nonessential_notifications?(email)
-    banlist = JSON.parse(AppConfig.env.nonessential_email_banlist || '[]')
+    banlist = IdentityConfig.store.nonessential_email_banlist
     return true if banlist.empty?
     modified_email = email.gsub(/\+[^@]+@/, '@')
     !banlist.include?(modified_email)

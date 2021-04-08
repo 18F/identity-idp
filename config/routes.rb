@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     post '/api/account_reset/send_notifications' => 'send_account_reset_notifications#create'
     post '/api/expired_letters' => 'expired_letters#create'
     post '/api/usps_download' => 'undeliverable_address#create'
-    post '/api/usps_upload' => 'usps_upload#create'
+    post '/api/usps_upload' => 'gpo_upload#create'
   end
 
   scope module: :lambda_callback do
@@ -323,22 +323,15 @@ Rails.application.routes.draw do
         get '/recovery/:step' => 'recovery#show', as: :recovery_step
         put '/recovery/:step' => 'recovery#update'
       end
-      get '/in_person' => 'in_person#index'
-      get '/in_person/:step' => 'in_person#show', as: :in_person_step
-      put '/in_person/:step' => 'in_person#update'
-      get '/cac' => 'cac#index'
-      get '/cac/pki_redirect' => 'cac#redirect_to_piv_cac_service'
-      get '/cac/:step' => 'cac#show', as: :cac_step
-      put '/cac/:step' => 'cac#update'
     end
 
     get '/account/verify' => 'users/verify_account#index', as: :verify_account
     post '/account/verify' => 'users/verify_account#create'
-    if FeatureManagement.enable_usps_verification?
+    if FeatureManagement.enable_gpo_verification?
       scope '/verify', module: 'idv', as: 'idv' do
-        get '/usps' => 'usps#index'
-        put '/usps' => 'usps#create'
-        post '/usps' => 'usps#update'
+        get '/usps' => 'gpo#index', as: :gpo
+        put '/usps' => 'gpo#create'
+        post '/usps' => 'gpo#update'
       end
     end
 

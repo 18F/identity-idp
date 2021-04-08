@@ -20,7 +20,14 @@ module IdvStepConcern
   end
 
   def confirm_step_allowed
-    redirect_to_fail_url if step_attempts_exceeded?
+    if step_attempts_exceeded?
+      analytics.track_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :idv_resolution,
+        step_name: step_name,
+      )
+      redirect_to_fail_url
+    end
   end
 
   def redirect_to_fail_url

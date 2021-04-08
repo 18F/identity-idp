@@ -13,7 +13,7 @@ fr:
       upload_picture: Télécharger une photo
       use_phone: Utilisez votre téléphone
     errors:
-      lexis_nexis:
+      alerts:
         barcode_content_check: Nous n'avons pas pu lire le code-barres au verso de
           votre carte d'identité. Cela pourrait être dû à un problème avec le code-barres,
           ou le code-barres est d'un type nouveau que nous ne reconnaissons pas encore.
@@ -23,7 +23,6 @@ fr:
           carte d'identité. Essayez de prendre une nouvelle photo.
         birth_date_checks: Nous n'avons pas pu lire la date de naissance sur votre
           pièce d'identité. Essayez de prendre de nouvelles photos.
-        birth_date_min_age: Votre anniversaire ne correspond pas à l'âge minimum requis.
         control_number_check: Nous n'avons pas pu lire le numéro de référence au verso
           de votre carte d'identité. Essayez de prendre une nouvelle photo.
         doc_crosscheck: Nous n'avons pas pu reconnaître votre pièce d'identité. Il
@@ -37,10 +36,6 @@ fr:
           pas expirée, essayez de prendre de nouvelles photos.
         full_name_check: Nous n'avons pas pu lire le nom complet sur votre pièce d'identité.
           Essayez de prendre de nouvelles photos.
-        general_error_liveness: Nous n'avons pas pu vérifier votre pièce d'identité
-          et votre photo. Essayez de prendre de nouvelles photos.
-        general_error_no_liveness: Nous n'avons pas pu vérifier votre pièce d'identité.
-          Essayez de prendre de nouvelles photos.
         id_not_recognized: Nous n'avons pas pu reconnaître votre pièce d'identité.
           Elle est peut-être usée ou endommagée, ou bien il s'agit d'un type de carte
           d'identité que nous ne reconnaissons pas. Essayez de prendre de nouvelles
@@ -50,12 +45,6 @@ fr:
           de nouvelles photos.
         issue_date_checks: Nous n'avons pas pu lire la date d'émission sur votre pièce
           d'identité. Essayez de prendre de nouvelles photos.
-        multiple_back_id_failures: Nous n'avons pas pu vérifier le verso de votre
-          pièce d'identité. Essayez de prendre une nouvelle photo.
-        multiple_front_id_failures: Nous n'avons pas pu vérifier le recto de votre
-          pièce d'identité. Essayez de prendre une nouvelle photo.
-        network_error: Nous avons des difficultés techniques de notre côté. Veuillez
-          essayer de soumettre à nouveau vos images plus tard.
         ref_control_number_check: Nous n'avons pas pu lire le code-barres du numéro
           de contrôle. Essayez de prendre de nouvelles photos.
         selfie_failure: Nous n'avons pas pu associer votre photo à votre pièce d'identité.
@@ -69,6 +58,35 @@ fr:
           fort.
         visible_photo_check: Nous n'avons pas pu vérifier la photo sur votre pièce
           d'identité. Essayez de prendre de nouvelles photos.
+      dpi:
+        top_msg: Nous n'avons pas pu lire votre pièce d'identité. La taille de votre
+          image est peut-être trop petite ou il se peut que votre pièce d'identité
+          soit trop petite ou floue sur la photo. Assurez-vous que la taille de votre
+          pièce d'identité est grande et qu'elle est située dans le cadre de l'image
+          puis essayez de prendre une nouvelle photo.
+        top_msg_plural: Nous n'avons pas pu lire votre pièce d'identité. La taille
+          de vos images est peut-être trop petite ou il se peut que votre pièce d'identité
+          soit trop petite ou floue sur les photos. Assurez-vous que la taille de
+          votre pièce d'identité est grande et qu'elle est située dans le cadre de
+          l'image puis essayez de prendre des nouvelles photos.
+      general:
+        liveness: Nous n'avons pas pu vérifier votre pièce d'identité et votre photo.
+          Essayez de prendre de nouvelles photos.
+        multiple_back_id_failures: Nous n'avons pas pu vérifier le verso de votre
+          pièce d'identité. Essayez de prendre une nouvelle photo.
+        multiple_front_id_failures: Nous n'avons pas pu vérifier le recto de votre
+          pièce d'identité. Essayez de prendre une nouvelle photo.
+        network_error: Nous avons des difficultés techniques de notre côté. Veuillez
+          essayer de soumettre à nouveau vos images plus tard.
+        no_liveness: Nous n'avons pas pu vérifier votre pièce d'identité. Essayez
+          de prendre de nouvelles photos.
+      glare:
+        top_msg: Nous n'avons pas pu lire votre pièce d'identité. Votre photo peut
+          avoir des reflets. Assurez-vous que le flash de votre appareil photo est
+          désactivé puis essayez de prendre une nouvelle photo.
+        top_msg_plural: Nous n'avons pas pu lire votre pièce d'identité. Vos photos
+          peuvent avoir des reflets. Assurez-vous que le flash de votre appareil photo
+          est désactivé puis essayez de prendre de nouvelles photos.
       no_camera:
         explanation: Nous recueillons des informations vous concernant en lisant votre
           carte d'identité délivrée par l'État. Ensuite, vous prendrez une photo de
@@ -77,6 +95,15 @@ fr:
         heading: Vous avez besoin d'une caméra pour vérifier votre identité
         title: Appareil photo nécessaire
       not_a_file: La sélection n'était pas un fichier valide.
+      pii:
+        birth_date_min_age: Votre anniversaire ne correspond pas à l'âge minimum requis.
+      sharpness:
+        top_msg: Nous n'avons pas pu lire votre pièce d'identité. Votre photo est
+          peut-être trop floue ou trop sombre. Essayez de prendre une nouvelle photo
+          dans un endroit lumineux.
+        top_msg_plural: Nous n'avons pas pu lire votre pièce d'identité. Vos photos
+          sont peut-être trop floues ou trop sombres. Essayez de prendre de nouvelles
+          photos dans un endroit lumineux.
     forms:
       address1: Adresse
       change_file: Changer de fichier
@@ -105,8 +132,10 @@ fr:
       document_capture_selfie: Votre photo
       front: Recto
       interstitial: Nous traitons vos images
+      lets_go: Commençons
       photo: Photo
       review_issues: Vérifiez vos images et essayez à nouveau
+      secure_account: Sécuriser votre compte
       selfie: Prenez une photo de vous-même
       ssn: S'il vous plaît entrez votre numéro de sécurité sociale.
       take_picture: Prendre une photo avec un téléphone
@@ -119,7 +148,9 @@ fr:
         votre pièce d'identité et prendre une photo de vous-même
       upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
       verify: S'il vous plaît vérifier vos informations
-      welcome: Nous devons vérifier votre identité
+      verify_identity: Vérifier votre identité
+      welcome: Vérifiez votre identité pour accéder en toute sécurité aux services
+        gouvernementaux
     info:
       camera_required: Votre téléphone portable doit avoir une caméra et un navigateur
         Web
@@ -141,6 +172,7 @@ fr:
         automatiquement l'étape suivante lorsqu'elle sera terminée.
       interstitial_thanks: Merci de votre patience!
       keep_window_open: Ne fermez pas cette fenêtre.
+      lets_go: La vérification de l'identité se fait en deux temps
       link_sent: Veuillez vérifier votre téléphone et suivre les instructions pour
         prendre une photo de votre identité émise par l'État.
       link_sent_complete_js: L'étape suivante se chargera automatiquement une fois
@@ -150,6 +182,14 @@ fr:
       no_other_id_help_bold_html: "<strong>Si vous n'avez pas de carte d'identité
         délivrée par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
         à l'adresse %{sp_name}.</a>"
+      privacy_html: Login.gov est un site gouvernemental sécurisé qui respecte les
+        normes les plus strictes en matière de protection des données. Nous n'utilisons
+        vos données uniquement pour vérifier votre identité. %{link} sur nos mesures
+        de confidentialité et de sécurité.
+      secure_account: Après avoir vérifié votre identité, nous vous demanderons de
+        crypter votre compte. Le cryptage garantit la protection de vos données et
+        seul vous, le titulaire du compte, pourrez accéder à vos informations ou les
+        modifier.
       tag: Recommandation
       take_picture: Utilisez l'appareil photo sur votre téléphone portable et téléchargez
         des images de votre identifiant. Nous utilisons uniquement les images pour
@@ -168,20 +208,19 @@ fr:
         de vous-même pour confirmer que vous êtes bien le propriétaire de la carte
         d'identité.
       upload_no_image_storage: Nous ne stockons pas les images que vous téléchargez.
-      use_cac: Avez-vous une carte d'identité d'employé du gouvernement?
-      use_cac_link: Utilisez plutôt une PIV/CAC
+      verify_identity: Nous vous demanderons vos renseignements personnels. Nous utiliserons,
+        conserverons et partagerons certains de vos renseignements personnels pour
+        vérifier votre identité par rapport aux registres publics.
       verifying: Vérification…
-      welcome: Nous vérifions votre identité pour nous assurer que vous êtes bien,
-        et non quelqu'un prétendant être vous. La vérification de votre identité vous
-        permet d'accéder à des services traitant des informations sensibles.
+      welcome_html: L'agence à laquelle vous essayez d'accéder doit s'assurer qu'il
+        s'agit bien de vous, et non de quelqu'un qui se fait passer pour vous.
     instructions:
-      bullet1: Téléchargez votre identifiant
-      bullet1a: Prenez une photo de vous-même
-      bullet2: Confirmez votre adresse
-      bullet3: Sécurise ton compte
-      bullet4: Récupération du compte
+      bullet1: Votre carte d'identité émise par l'État
+      bullet1a: Un appareil équipé d'une caméra
+      bullet2: Votre numéro de sécurité sociale
+      bullet3: Un numéro de téléphone associé à un forfait téléphonique à votre nom
       consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
-        conserver et partager vos informations personnelles. Nous ne l'utiliserons
+        conserver et partager vos renseignements personnels. Nous ne les utiliserons
         que pour vérifier votre identité.
       document_capture_selfie_consent_action: "<lg-underline>Autorisez l'accès à la
         caméra</lg-underline> et recherchez une notification dans votre navigateur
@@ -198,18 +237,21 @@ fr:
         Nous le comparerons à l'image au recto de votre pièce d'identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau
         et suivez les instructions pour vérifier votre identité.
-      learn_more: Apprendre encore plus
+      learn_more: En savoir plus
+      privacy: Nos normes de confidentialité et de sécurité
       send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
         ce lien vers votre navigateur pour prendre des photos du recto et du verso
         de votre identifiant.
       switch_back: Revenez sur votre ordinateur pour terminer la vérification de votre
         identité
-      text1: avec votre numéro de sécurité sociale
-      text1a: avec votre téléphone ou votre caméra Web
-      text2: en utilisant un numéro de téléphone ou une adresse postale
-      text3: en ressaisissant votre mot de passe login.gov
-      text4: assurez-vous d'avoir toujours accès
-      welcome: 'Ce que vous devez faire:'
+      text1: ''
+      text1a: tel qu'un téléphone ou un ordinateur
+      text2: Vous n'aurez pas besoin de la carte avec vous.
+      text3: Il n'est pas nécessaire que vous soyez le titulaire principal de la ligne.
+        Si votre numéro de téléphone ne remplit pas les conditions requises, nous
+        pouvons vous envoyer le code de vérification par courrier dans un délai de
+        3 à 7 jours ouvrables.
+      welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
     tips:
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
       document_capture_hint: Doit être un JPG, BMP, PNG ou TIFF

@@ -8,7 +8,7 @@
         <%= link_to(
           prefix_with_plus(t('account.index.auth_app_add')),
           authenticator_setup_url,
-          class: 'btn btn-account-action rounded-lg bg-light-blue',
+          class: 'account-action-button',
         ) %>
       </div>
     <% end %>
@@ -23,7 +23,7 @@
           </div>
         </div>
         <div class="grid-col-4 right-align">
-          <%= render @view_model.totp_partial, id: auth_app_configuration.id %>
+          <%= render 'accounts/actions/disable_totp', id: auth_app_configuration.id %>
         </div>
       </div>
     <% end %>

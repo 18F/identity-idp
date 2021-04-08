@@ -117,7 +117,7 @@ describe('document-capture/components/document-capture', () => {
     // Continue is enabled (but grayed out).Attempting to proceed without providing values will
     // trigger error messages.
     let continueButton = getByText('forms.buttons.continue');
-    expect(continueButton.classList.contains('btn-disabled')).to.be.true();
+    expect(continueButton.classList.contains('usa-button--disabled')).to.be.true();
     userEvent.click(continueButton);
     let errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(2);
@@ -142,12 +142,12 @@ describe('document-capture/components/document-capture', () => {
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
     continueButton = getByText('forms.buttons.continue');
     expect(isFormValid(continueButton.closest('form'))).to.be.true();
-    expect(continueButton.classList.contains('btn-disabled')).to.be.false();
+    expect(continueButton.classList.contains('usa-button--disabled')).to.be.false();
     userEvent.click(continueButton);
 
     // Trigger validation by attempting to submit, button is grayed out
     const submitButton = getByText('forms.buttons.submit.default');
-    expect(submitButton.classList.contains('btn-disabled')).to.be.true();
+    expect(submitButton.classList.contains('usa-button--disabled')).to.be.true();
 
     userEvent.click(continueButton);
     errors = await findAllByText('simple_form.required.text');
@@ -162,7 +162,7 @@ describe('document-capture/components/document-capture', () => {
 
     // Continue only once all errors have been removed, button no longer grayed out
     await waitFor(() => expect(() => getAllByText('simple_form.required.text')).to.throw());
-    expect(submitButton.classList.contains('btn-disabled')).to.be.false();
+    expect(submitButton.classList.contains('usa-button--disabled')).to.be.false();
     expect(isFormValid(submitButton.closest('form'))).to.be.true();
 
     await new Promise((resolve) => {
@@ -285,7 +285,7 @@ describe('document-capture/components/document-capture', () => {
 
     // Submit button should be disabled until field errors are resolved.
     submitButton = getByText('forms.buttons.submit.default');
-    expect(submitButton.classList.contains('btn-disabled')).to.be.true();
+    expect(submitButton.classList.contains('usa-button--disabled')).to.be.true();
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
 
@@ -295,7 +295,7 @@ describe('document-capture/components/document-capture', () => {
     const errorNotices = notices.filter((notice) => notice.classList.contains('usa-alert--error'));
     expect(errorNotices).to.have.lengthOf(1);
     expect(errorNotices[0].textContent).to.equal('An unknown error occurred');
-    expect(submitButton.classList.contains('btn-disabled')).to.be.false();
+    expect(submitButton.classList.contains('usa-button--disabled')).to.be.false();
 
     // Verify re-submission. It will fail again, but test can at least assure that the interstitial
     // screen is shown once more.

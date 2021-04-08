@@ -2,7 +2,6 @@ Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
   config.webpacker.check_yarn_integrity = true
 
-  config.active_job.queue_adapter = :delayed_job
   config.cache_classes = false
   config.eager_load = false
   config.consider_all_requests_local = true
@@ -26,7 +25,7 @@ Rails.application.configure do
     host: AppConfig.env.domain_name,
     protocol: ENV['HTTPS'] == 'on' ? 'https' : 'http',
   }
-  config.action_mailer.asset_host = AppConfig.env.mailer_domain_name
+  config.action_mailer.asset_host = IdentityConfig.store.mailer_domain_name
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
 

@@ -13,10 +13,10 @@
       <div class='center'>
         <%= button_tag modal.continue,
                        id: 'session-keepalive-btn',
-                       class: 'btn btn-primary col-12 margin-bottom-2 padding-2 rounded-lg border-box' %>
+                       class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2' %>
         <%= link_to modal.sign_out,
                     destroy_user_session_path,
-                    class: 'btn col-12 padding-2 rounded-lg border border-blue blue border-box' %>
+                    class: 'usa-button usa-button--big usa-button--full-width usa-button--outline' %>
       </div>
     </div>
   <% end %>

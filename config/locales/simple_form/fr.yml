@@ -5,7 +5,7 @@ fr:
       default_message: 'Veuillez examiner les problèmes ci-dessous :'
     'no': Non
     required:
-      html: <abbr title="required" class="red display-none">*</abbr>
-      mark: "*"
+      html: ''
+      mark: ''
       text: Ce champ est requis
     'yes': Oui

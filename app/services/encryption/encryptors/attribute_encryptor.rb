@@ -52,7 +52,7 @@ module Encryption
       end
 
       def old_keys
-        JSON.parse(AppConfig.env.attribute_encryption_key_queue)
+        IdentityConfig.store.attribute_encryption_key_queue
       end
 
       add_method_tracer :encrypt, "Custom/#{name}/encrypt"

@@ -1,7 +1,8 @@
-RequestPasswordReset = Struct.new(:email, :request_id) do
+RequestPasswordReset = RedactedStruct.new(:email, :request_id, :analytics, keyword_init: true,
+                                          allowed_members: [:request_id]) do
   def perform
     if user_should_receive_registration_email?
-      form = RegisterUserEmailForm.new(password_reset_requested: true)
+      form = RegisterUserEmailForm.new(password_reset_requested: true, analytics: analytics)
       result = form.submit({ email: email }, instructions)
       [form.user, result]
     else
@@ -14,9 +15,15 @@ RequestPasswordReset = Struct.new(:email, :request_id) do
 
   def send_reset_password_instructions
     throttled = Throttler::IsThrottledElseIncrement.call(user.id, :reset_password_email)
-    return if throttled
-    token = user.set_reset_password_token
-    UserMailer.reset_password_instructions(user, email, token: token).deliver_now
+    if throttled
+      analytics.track_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :reset_password_email,
+      )
+    else
+      token = user.set_reset_password_token
+      UserMailer.reset_password_instructions(user, email, token: token).deliver_now
+    end
   end
 
   def instructions

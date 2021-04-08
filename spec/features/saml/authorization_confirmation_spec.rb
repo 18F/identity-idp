@@ -69,5 +69,12 @@ feature 'SAML Authorization Confirmation' do
 
       expect(current_path).to eq(new_user_session_path)
     end
+
+    it 'redirects to the account page with no sp in session' do
+      sign_in_user(user1)
+      visit user_authorization_confirmation_path
+
+      expect(current_path).to eq(account_path)
+    end
   end
 end

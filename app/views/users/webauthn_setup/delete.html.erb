@@ -13,8 +13,8 @@
 <%= button_to(t('account.index.webauthn_confirm_delete'),
               webauthn_setup_path(id: params[:id]),
               method: :delete,
-              class: 'btn btn-primary col-6 margin-bottom-2 padding-2 rounded') %>
+              class: 'usa-button usa-button--big usa-button--wide margin-bottom-2') %>
 
 <%= link_to t('links.cancel'),
     account_two_factor_authentication_path,
-    class: 'btn col-6 padding-2 rounded-lg border border-blue blue border-box center' %>
+    class: 'usa-button usa-button--big usa-button--wide usa-button--outline' %>

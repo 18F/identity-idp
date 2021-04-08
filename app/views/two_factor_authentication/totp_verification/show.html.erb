@@ -6,7 +6,7 @@
 
 <%= form_tag(:login_two_factor_authenticator, method: :post, role: 'form', class: 'margin-top-4 tablet:margin-top-6') do %>
   <%= render @presenter.reauthn_hidden_field_partial %>
-  <%= label_tag 'code', t('simple_form.required.html') + t('forms.two_factor.code'), class: 'block bold' %>
+  <%= label_tag 'code', t('forms.two_factor.code'), class: 'block bold' %>
   <div class="col-12 sm-col-5 margin-bottom-1 tablet:margin-bottom-0 sm-mr-20p inline-block">
     <%= text_field_tag :code, '',
                        value: @code,
@@ -27,7 +27,7 @@
                   t('forms.messages.remember_device'),
                   class: 'blue margin-right-2' %>
   </div>
-  <%= submit_tag 'Submit', class: 'btn btn-primary text-top' %>
+  <%= submit_tag 'Submit', class: 'usa-button usa-button--wide usa-button--big' %>
 <% end %>
 
 <%= render 'shared/fallback_links', presenter: @presenter %>

@@ -13,7 +13,7 @@ RSpec.describe Users::VerifyAccountController do
     stub_sign_in(user)
     decorated_user = stub_decorated_user_with_pending_profile(user)
     create(
-      :usps_confirmation_code,
+      :gpo_confirmation_code,
       profile: pending_profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
     )
@@ -53,6 +53,27 @@ RSpec.describe Users::VerifyAccountController do
         expect(response).to redirect_to(account_url)
       end
     end
+
+    context 'with throttle reached' do
+      before do
+        allow(Throttler::IsThrottled).to receive(:call).once.and_return(true)
+      end
+
+      it 'renders throttled page' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::ACCOUNT_VERIFICATION_VISITED,
+        ).once
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :verify_gpo_key,
+        ).once
+
+        action
+
+        expect(response).to render_template(:throttled)
+      end
+    end
   end
 
   describe '#create' do
@@ -85,7 +106,7 @@ RSpec.describe Users::VerifyAccountController do
     context 'with an invalid form' do
       let(:submitted_otp) { 'the-wrong-otp' }
 
-      it 'renders the index page to show errors' do
+      it 'redirects to the index page to show errors' do
         expect(@analytics).to receive(:track_event).with(
           Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
           success: false, errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
@@ -93,7 +114,7 @@ RSpec.describe Users::VerifyAccountController do
 
         action
 
-        expect(response).to render_template('users/verify_account/index')
+        expect(response).to redirect_to(verify_account_url)
       end
     end
 
@@ -107,6 +128,11 @@ RSpec.describe Users::VerifyAccountController do
           Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
           success: false, errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
         ).exactly(max_attempts).times
+
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+          throttle_type: :verify_gpo_key,
+        ).once
 
         (max_attempts + 1).times do |i|
           post(

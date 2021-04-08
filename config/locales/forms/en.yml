@@ -2,7 +2,6 @@
 en:
   forms:
     backup_code:
-      are_you_sure_continue: Continue
       are_you_sure_continue_prologue: If you don’t have access to any other authentication
         method,
       are_you_sure_desc: "<br><b>Backup codes are not very safe</b> because they can
@@ -35,14 +34,12 @@ en:
       confirm: Are you sure you want to regenerate your backup codes?
     buttons:
       back: Back
-      cac: Present PIV/CAC card
       cancel: Yes, cancel
       confirm: Confirm
       continue: Continue
       delete: Delete
       disable: Delete
       edit: Edit
-      enable: Add
       manage: Manage
       resend_confirmation: Resend confirmation instructions
       send_security_code: Send code

@@ -1,5 +1,5 @@
 class UndeliverableAddressNotifier
-  TEMP_FILE_BASENAME = 'usps_bounced'.freeze
+  TEMP_FILE_BASENAME = 'gpo_bounced'.freeze
 
   def call
     temp_file = download_file
@@ -36,8 +36,7 @@ class UndeliverableAddressNotifier
   end
 
   def process_code(otp)
-    usps_confirmation_code = usps_confirmation_code(otp)
-    usps_confirmation_code&.safe_update_bounced_at_and_send_notification
+    gpo_confirmation_code(otp)&.safe_update_bounced_at_and_send_notification
   end
 
   def sftp_config
@@ -53,7 +52,7 @@ class UndeliverableAddressNotifier
     AppConfig.env
   end
 
-  def usps_confirmation_code(otp)
-    @ucc ||= UspsConfirmationCode.find_by(otp_fingerprint: Pii::Fingerprinter.fingerprint(otp))
+  def gpo_confirmation_code(otp)
+    @ucc ||= GpoConfirmationCode.find_by(otp_fingerprint: Pii::Fingerprinter.fingerprint(otp))
   end
 end

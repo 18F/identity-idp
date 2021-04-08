@@ -44,7 +44,6 @@ en:
       phone: Phone numbers
       phone_add: Add phone
       piv_cac_add: Add ID
-      piv_cac_card: PIV/CAC Cards
       piv_cac_confirm_delete: Yes, remove card
       piv_cac_disabled: not enabled
       piv_cac_enabled: enabled

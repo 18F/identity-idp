@@ -199,9 +199,9 @@ describe Idv::ConfirmationsController do
       end
     end
 
-    context 'user selected usps verification' do
+    context 'user selected gpo verification' do
       before do
-        subject.idv_session.address_verification_mechanism = 'usps'
+        subject.idv_session.address_verification_mechanism = 'gpo'
         subject.idv_session.complete_session
       end
 

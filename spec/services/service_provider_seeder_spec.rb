@@ -18,6 +18,13 @@ RSpec.describe ServiceProviderSeeder do
       expect { run }.to change(ServiceProvider, :count)
     end
 
+    it 'updates the plural certs column' do
+      run
+
+      sp = ServiceProvider.from_issuer('http://localhost:3000')
+      expect(sp.certs).to eq(['saml_test_sp', 'saml_test_sp2'])
+    end
+
     context 'with other existing service providers in the database' do
       let!(:existing_provider) { create(:service_provider) }
 

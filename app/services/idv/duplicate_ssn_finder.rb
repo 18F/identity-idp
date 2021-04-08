@@ -15,7 +15,7 @@ module Idv
 
     def ssn_signatures
       current_signature = ssn_signature(Pii::Fingerprinter.current_key)
-      old_signatures = KeyRotator::Utils.old_keys(:hmac_fingerprinter_key_queue).map do |key|
+      old_signatures = IdentityConfig.store.hmac_fingerprinter_key_queue.map do |key|
         ssn_signature(key)
       end
       [current_signature] + old_signatures

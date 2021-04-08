@@ -38,9 +38,9 @@
       </div>
     </label>
 
-    <% if FeatureManagement.enable_usps_verification? %>
+    <% if FeatureManagement.enable_gpo_verification? %>
       <div class="margin-top-4">
-        <%= t('idv.form.no_alternate_phone_html', link: link_to(t('idv.form.activate_by_mail'), idv_usps_path)) %>
+        <%= t('idv.form.no_alternate_phone_html', link: link_to(t('idv.form.activate_by_mail'), idv_gpo_path)) %>
       </div>
     <% end %>
     <div class="margin-top-2">
@@ -49,7 +49,7 @@
 
   </fieldset>
   <div class="margin-top-4">
-    <%= submit_tag(t('idv.buttons.send_confirmation_code'), class: 'sm-col-6 col-12 btn btn-primary') %>
+    <%= submit_tag(t('idv.buttons.send_confirmation_code'), class: 'sm-col-6 col-12 usa-button usa-button--big') %>
   </div>
 <% end %>
 
