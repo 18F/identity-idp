@@ -27,7 +27,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def metadata
-    attributes.symbolize_keys
+    attributes.symbolize_keys.merge(certs: ssl_certs)
   end
 
   # @return [Array<OpenSSL::X509::Certificate>]

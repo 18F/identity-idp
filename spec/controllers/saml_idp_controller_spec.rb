@@ -69,9 +69,40 @@ describe SamlIdpController do
     end
 
     it 'accepts requests from a correct cert' do
-      delete :logout, params: UriService.params(
+      saml_request = UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(right_cert_settings),
-      )
+      )[:SAMLRequest]
+
+      payload = {
+        SAMLRequest: saml_request,
+        RelayState: 'aaa',
+        SigAlg: 'SHA256',
+      }
+      canon_string = payload.to_query
+
+      private_sp_key = OpenSSL::PKey::RSA.new(right_cert_settings.private_key)
+      signature = Base64.encode64(private_sp_key.sign(OpenSSL::Digest::SHA256.new, canon_string))
+
+      certificate = OpenSSL::X509::Certificate.new(right_cert_settings.certificate)
+
+      puts "OUTSIDE GEM CANON"
+      puts canon_string
+      puts "----"
+      puts signature
+      puts "----"
+      puts certificate.serial
+      puts "----"
+
+      # This is the same verification process we expect the SAML gem will run
+      expect(
+        certificate.public_key.verify(
+          OpenSSL::Digest::SHA256.new,
+          Base64.decode64(signature),
+          canon_string,
+        ),
+      ).to eq(true)
+
+      delete :logout, params: payload.merge(Signature: signature)
 
       expect(response).to be_ok
     end

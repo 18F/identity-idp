@@ -164,22 +164,24 @@ module SamlIdpAuthConcern
   def matching_cert
     return @matching_cert if defined?(@matching_cert)
 
-    matching_cert = current_service_provider.ssl_certs.find do |ssl_cert|
-      fingerprint = Fingerprinter.fingerprint_cert(ssl_cert)
+    @matching_cert = current_service_provider.ssl_certs.last
 
-      saml_request = SamlIdp::Request.from_deflated_request(
-        params[:SAMLRequest],
-        get_params: params,
-        cert: ssl_cert,
-      )
-      if saml_request&.service_provider
-        # Plumb the fingerprint through to the internal service_provider representation
-        saml_request.service_provider.fingerprint = fingerprint
-        saml_request.valid_signature?
-      end
-    end
+    # matching_cert = current_service_provider.ssl_certs.find do |ssl_cert|
+    #   fingerprint = Fingerprinter.fingerprint_cert(ssl_cert)
 
-    @matching_cert = matching_cert || current_service_provider.ssl_certs.first
+    #   saml_request = SamlIdp::Request.from_deflated_request(
+    #     params[:SAMLRequest],
+    #     get_params: params,
+    #     cert: ssl_cert,
+    #   )
+    #   if saml_request&.service_provider
+    #     # Plumb the fingerprint through to the internal service_provider representation
+    #     saml_request.service_provider.fingerprint = fingerprint
+    #     saml_request.valid_signature?
+    #   end
+    # end
+
+    # @matching_cert = matching_cert || current_service_provider.ssl_certs.first
   end
 
   def encryption_opts
