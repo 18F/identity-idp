@@ -36,8 +36,9 @@ class SamlIdpController < ApplicationController
 
     # Plumb the fingerprint through to the internal service_provider representation
     if saml_request&.service_provider
-      saml_request.service_provider.fingerprint =
-         Fingerprinter.fingerprint_cert(matching_cert || current_service_provider.ssl_certs.first)
+      saml_request.service_provider.fingerprint = matching_cert ?
+        Fingerprinter.fingerprint_cert(matching_cert) :
+        'some-non-nil-value'
     end
 
     track_logout_event
@@ -61,6 +62,12 @@ class SamlIdpController < ApplicationController
     return false unless saml_request
     decode_request(saml_request)
     valid_saml_request?
+  end
+
+  def valid_saml_request?
+    super
+  rescue OpenSSL::X509::CertificateError
+    false
   end
 
   def saml_metadata

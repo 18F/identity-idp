@@ -69,6 +69,35 @@ describe SamlIdpController do
 
       expect(response).to be_bad_request
     end
+
+    it 'handles bad issuer' do
+      settings = sp1_saml_settings.dup
+      settings.issuer = 'BAD ISSUER'
+
+      request_url = OneLogin::RubySaml::Logoutrequest.new.create(settings)
+      saml_request = UriService.params(request_url)[:SAMLRequest]
+
+      delete :logout, params: { SAMLRequest: saml_request }
+
+      expect(response.code).to_not eq(500)
+      expect(response).to be_bad_request
+    end
+
+    it 'handles not enough cert data error' do
+      settings = sp1_saml_settings.dup
+      settings.issuer = 'BAD ISSUER'
+
+      allow_any_instance_of(SamlIdp::XMLSecurity::SignedDocument).to receive(:validate).
+        and_raise(OpenSSL::X509::CertificateError.new('not enough cert data'))
+
+      request_url = OneLogin::RubySaml::Logoutrequest.new.create(settings)
+      saml_request = UriService.params(request_url)[:SAMLRequest]
+
+      delete :logout, params: { SAMLRequest: saml_request }
+
+      expect(response.code).to_not eq(500)
+      expect(response).to be_bad_request
+    end
   end
 
   describe '/api/saml/metadata' do
