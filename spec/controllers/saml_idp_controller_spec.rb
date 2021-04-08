@@ -43,32 +43,6 @@ describe SamlIdpController do
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end
-
-    let(:service_provider) do
-      create(:service_provider,
-             cert: nil, # override singular cert
-             certs: ['saml_test_sp'],
-             active: true)
-    end
-
-    let(:wrong_cert_settings) do
-      sp1_saml_settings.tap do |settings|
-        settings.issuer = service_provider.issuer
-        settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
-        settings.private_key = OpenSSL::PKey::RSA.new(
-          File.read(Rails.root + 'keys/saml_test_sp2.key'),
-        ).to_pem
-      end
-    end
-
-    it 'rejects requests from a wrong cert' do
-      request_url = OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings)
-      saml_request = UriService.params(request_url)[:SAMLRequest]
-
-      delete :logout, params: { SAMLRequest: saml_request }
-
-      expect(response).to be_bad_request
-    end
   end
 
   describe '/api/saml/metadata' do

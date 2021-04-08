@@ -1,6 +1,4 @@
 class FakeSamlLogoutRequest
-  attr_accessor :fingerprint
-
   def service_provider
     self
   end
