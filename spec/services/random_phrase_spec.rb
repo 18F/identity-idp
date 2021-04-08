@@ -1,11 +1,17 @@
 require 'rails_helper'
 
 describe RandomPhrase do
-  describe '#words' do
-    it 'returns array of length specified in new' do
-      phrase = RandomPhrase.new(num_words: 5)
+  describe '#initialize' do
+    it 'checks for profanity and regenerates a random number when it finds' do
+      profane = Base32::Crockford.decode('FART')
+      not_profane = Base32::Crockford.decode('ABCD')
 
-      expect(phrase.words.length).to eq 5
+      expect(SecureRandom).to receive(:random_number).
+        and_return(profane, not_profane)
+
+      phrase = RandomPhrase.new(num_words: 1)
+
+      expect(phrase.words).to eq(['ABCD'])
     end
   end
 
