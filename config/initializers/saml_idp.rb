@@ -36,6 +36,8 @@ SamlIdp.configure do |config|
 
   # Find ServiceProvider metadata_url and fingerprint based on our settings
   config.service_provider.finder = lambda do |issuer_or_entity_id|
-    ServiceProvider.from_issuer(issuer_or_entity_id).metadata
+    ServiceProvider.from_issuer(issuer_or_entity_id).metadata.merge(
+      fingerprint: 'some-not-nil-value-so-saml_idp-does-not-blow-up',
+    )
   end
 end

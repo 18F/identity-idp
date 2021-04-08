@@ -164,7 +164,7 @@ module SamlIdpAuthConcern
   def matching_cert
     return @matching_cert if defined?(@matching_cert)
 
-    @matching_cert = current_service_provider.ssl_certs.find do |ssl_cert|
+    matching_cert = current_service_provider.ssl_certs.find do |ssl_cert|
       fingerprint = Fingerprinter.fingerprint_cert(ssl_cert)
 
       saml_request = SamlIdp::Request.from_deflated_request(
@@ -178,6 +178,8 @@ module SamlIdpAuthConcern
         saml_request.valid_signature?
       end
     end
+
+    @matching_cert = matching_cert || current_service_provider.ssl_certs.first
   end
 
   def encryption_opts
@@ -186,7 +188,7 @@ module SamlIdpAuthConcern
       nil
     elsif current_service_provider.encrypt_responses?
       {
-        cert: matching_cert || current_service_provider.certs.first,
+        cert: matching_cert,
         block_encryption: current_service_provider.block_encryption,
         key_transport: 'rsa-oaep-mgf1p',
       }
