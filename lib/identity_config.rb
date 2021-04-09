@@ -110,6 +110,7 @@ class IdentityConfig
     config.add(:max_mail_events_window_in_days, type: :integer)
     config.add(:max_piv_cac_per_account, type: :integer)
     config.add(:min_password_score, type: :integer)
+    config.add(:mx_timeout, type: :integer)
     config.add(:no_sp_campaigns_whitelist, type: :json)
     config.add(:otps_per_ip_track_only_mode, type: :boolean)
     config.add(:nonessential_email_banlist, type: :json)
