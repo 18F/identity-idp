@@ -56,6 +56,8 @@ $step-indicator-pending-color: #a8b6c6;
 
   @include at-media('tablet') {
     overflow: visible;
+    padding-left: 0;
+    padding-right: 0;
     padding-top: 0;
   }
 
