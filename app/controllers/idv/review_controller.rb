@@ -53,8 +53,7 @@ module Idv
     private
 
     def flash_message_content
-      # NOTE: remove usps after next deploy
-      if %w[gpo usps].include?(idv_session.address_verification_mechanism)
+      if idv_session.address_verification_mechanism == 'gpo'
         t('idv.messages.mail_sent')
       else
         phone_of_record_msg = ActionController::Base.helpers.content_tag(

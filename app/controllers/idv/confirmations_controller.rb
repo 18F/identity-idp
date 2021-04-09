@@ -27,7 +27,7 @@ module Idv
     def next_step
       if session[:sp] && !pending_profile?
         sign_up_completed_url
-      elsif pending_profile? && %w[gpo usps].include?(idv_session.address_verification_mechanism)
+      elsif pending_profile? && idv_session.address_verification_mechanism == 'gpo'
         idv_come_back_later_url
       else
         after_sign_in_path_for(current_user)
