@@ -6,7 +6,7 @@ describe 'throttling requests' do
 
   let(:requests_per_ip_limit) { AppConfig.env.requests_per_ip_limit.to_i }
   let(:logins_per_ip_limit) { AppConfig.env.logins_per_ip_limit.to_i }
-  let(:logins_per_email_and_ip_limit) { AppConfig.env.logins_per_email_and_ip_limit.to_i }
+  let(:logins_per_email_and_ip_limit) { IdentityConfig.store.logins_per_email_and_ip_limit }
 
   describe 'safelists' do
     it 'allows all requests from localhost' do

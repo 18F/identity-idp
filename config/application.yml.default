@@ -99,6 +99,7 @@ lexisnexis_trueid_noliveness_workflow: customers.gsa.instant.verify.workflow
 lockout_period_in_minutes: '10'
 log_to_stdout: 'false'
 logins_per_email_and_ip_bantime: '60'
+logins_per_email_and_ip_limit: '5'
 logins_per_email_and_ip_period: '60'
 logins_per_ip_period: '60'
 logo_upload_enabled: 'false'
@@ -209,7 +210,6 @@ development:
   identity_pki_local_dev: 'true'
   issuers_with_email_nameid_format: ''
   liveness_checking_enabled: 'true'
-  logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
   logo_upload_enabled: 'true'
   max_mail_events: '4'
@@ -290,7 +290,6 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   issuers_with_email_nameid_format: sp1,sp2
-  logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '20'
   logins_per_ip_track_only_mode: 'true'

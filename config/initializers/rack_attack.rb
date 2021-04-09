@@ -140,7 +140,7 @@ module Rack
         email = user['email'].to_s.downcase.strip
         email_fingerprint = Pii::Fingerprinter.fingerprint(email) if email.present?
         email_and_ip = "#{email_fingerprint}-#{req.remote_ip}"
-        maxretry = AppConfig.env.logins_per_email_and_ip_limit.to_i
+        maxretry = IdentityConfig.store.logins_per_email_and_ip_limit
         findtime = AppConfig.env.logins_per_email_and_ip_period.to_i
         bantime = IdentityConfig.store.logins_per_email_and_ip_bantime
 
