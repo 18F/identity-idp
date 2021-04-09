@@ -13,7 +13,7 @@ gem 'rails', '~> 6.1.3'
 @proofer_gem ||= { github: '18F/identity-proofer-gem', ref: 'v2.8.0' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.1.12' }
 @validations_gem ||= { github: '18F/identity-validations', branch: 'main' }
-@saml_gem ||= { github: '18F/saml_idp', tag: '0.12.2.18f' }
+@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.13.0-18f' }
 
 gem 'identity-doc-auth', @doc_auth_gem
 gem 'identity-hostdata', @hostdata_gem

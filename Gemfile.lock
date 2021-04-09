@@ -77,10 +77,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: fd7c822cc3c12d218766f2c65fdca74a461de9da
-  tag: 0.12.2.18f
+  revision: b48dbd2bedac1e61e38361e58270d546c9886243
+  tag: v0.13.0-18f
   specs:
-    saml_idp (0.12.2.pre.18f)
+    saml_idp (0.13.0.pre.18f)
       activesupport
       builder
       httparty
