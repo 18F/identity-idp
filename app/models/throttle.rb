@@ -36,7 +36,7 @@ class Throttle < ApplicationRecord
     },
     idv_send_link: {
       max_attempts: AppConfig.env.idv_send_link_max_attempts.to_i,
-      attempt_window: AppConfig.env.idv_send_link_attempt_window_in_minutes.to_i,
+      attempt_window: IdentityConfig.store.idv_send_link_attempt_window_in_minutes,
     },
     verify_personal_key: {
       max_attempts: AppConfig.env.verify_personal_key_max_attempts.to_i,
