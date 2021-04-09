@@ -8,6 +8,8 @@ module Db
                               uuid: user.uuid,
                               user_created_at: user.created_at,
                               deleted_at: Time.zone.now)
+      rescue ActiveRecord::RecordNotUnique
+        ::DeletedUser.where(user_id: user_id)&.first
       end
     end
   end
