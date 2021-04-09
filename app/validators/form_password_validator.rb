@@ -36,7 +36,7 @@ module FormPasswordValidator
   end
 
   def min_password_score
-    AppConfig.env.min_password_score.to_i
+    IdentityConfig.store.min_password_score
   end
 
   def i18n_variables
