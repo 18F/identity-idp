@@ -73,6 +73,7 @@ class IdentityConfig
     config.add(:disallow_all_web_crawlers, type: :boolean)
     config.add(:disallow_ial2_recovery, type: :boolean)
     config.add(:doc_auth_enable_presigned_s3_urls, type: :boolean)
+    config.add(:doc_auth_extend_timeout_by_minutes, type: :integer)
     config.add(:doc_capture_polling_enabled, type: :boolean)
     config.add(:enable_load_testing_mode, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
