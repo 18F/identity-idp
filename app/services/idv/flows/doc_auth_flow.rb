@@ -35,7 +35,7 @@ module Idv
           slug: :secure_account,
           title: 'idv.step_indicator.secure_account',
         },
-      ]
+      ].freeze
 
       OPTIONAL_SHOW_STEPS = {
         verify_wait: Idv::Steps::VerifyWaitStepShow,
