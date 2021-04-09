@@ -105,6 +105,7 @@ class IdentityConfig
     config.add(:logo_upload_enabled, type: :boolean)
     config.add(:mailer_domain_name)
     config.add(:max_auth_apps_per_account, type: :integer)
+    config.add(:max_emails_per_account, type: :integer)
     config.add(:no_sp_campaigns_whitelist, type: :json)
     config.add(:otps_per_ip_track_only_mode, type: :boolean)
     config.add(:nonessential_email_banlist, type: :json)
