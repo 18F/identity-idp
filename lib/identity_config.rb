@@ -89,6 +89,7 @@ class IdentityConfig
     config.add(:idv_attempt_window_in_hours, type: :integer)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
+    config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
     config.add(:job_run_healthchecks_enabled, type: :boolean)
     config.add(:liveness_checking_enabled, type: :boolean)
