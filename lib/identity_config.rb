@@ -55,6 +55,7 @@ class IdentityConfig
     config.add(:acuant_max_attempts, type: :integer)
     config.add(:acuant_passlive_url)
     config.add(:acuant_sdk_initialization_endpoint)
+    config.add(:acuant_timeout, type: :integer)
     config.add(:attribute_encryption_key_queue, type: :json)
     config.add(:aws_kms_multi_region_enabled, type: :boolean)
     config.add(:aws_kms_regions, type: :json)

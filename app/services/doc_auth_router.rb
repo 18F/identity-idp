@@ -200,7 +200,7 @@ module DocAuthRouter
           assure_id_username: AppConfig.env.acuant_assure_id_username,
           facial_match_url: IdentityConfig.store.acuant_facial_match_url,
           passlive_url: IdentityConfig.store.acuant_passlive_url,
-          timeout: AppConfig.env.acuant_timeout,
+          timeout: IdentityConfig.store.acuant_timeout,
           exception_notifier: method(:notify_exception),
           dpi_threshold: AppConfig.env.doc_auth_error_dpi_threshold,
           sharpness_threshold: AppConfig.env.doc_auth_error_sharpness_threshold,
