@@ -168,7 +168,7 @@ fr:
       ssn: Numéro de sécurité sociale (SSN)
     step_indicator:
       getting_started: Getting started
-      pending_confirmation: Pending confirmation
+      pending: Pending
       secure_account: Secure your account
       verify_id: Verify your ID
       verify_info: Verify your personal details
