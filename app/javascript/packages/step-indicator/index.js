@@ -2,12 +2,15 @@ const SMALL_VIEWPORT_MEDIA_QUERY = '(max-width: 639px)';
 
 class StepIndicator {
   /**
-   * @param {HTMLDivElement} wrapper
+   * @param {HTMLElement} wrapper
    */
   constructor(wrapper) {
     this.elements = {
       wrapper,
-      scroller: /** @type {HTMLDivElement} */ (wrapper.querySelector('.step-indicator__scroller')),
+      scroller: /** @type {HTMLElement} */ (wrapper.querySelector('.step-indicator__scroller')),
+      currentStep: /** @type {HTMLElement?} */ (wrapper.querySelector(
+        '.step-indicator__step--current',
+      )),
     };
   }
 
@@ -29,11 +32,10 @@ class StepIndicator {
   }
 
   setScrollOffset() {
-    const { scroller } = this.elements;
-    const currentStepIndex = Array.from(scroller.children).findIndex((step) =>
-      step.classList.contains('step-indicator__step--current'),
-    );
-    scroller.scrollLeft = Math.max((scroller.clientWidth / 3) * (currentStepIndex - 1), 0);
+    const { currentStep } = this.elements;
+    if (currentStep) {
+      currentStep.scrollIntoView({ inline: 'center' });
+    }
   }
 
   toggleWrapperFocusable() {
