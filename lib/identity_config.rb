@@ -94,6 +94,7 @@ class IdentityConfig
     config.add(:job_run_healthchecks_enabled, type: :boolean)
     config.add(:lexisnexis_timeout, type: :integer)
     config.add(:liveness_checking_enabled, type: :boolean)
+    config.add(:lockout_period_in_minutes, type: :integer)
     config.add(:log_to_stdout, type: :boolean)
     config.add(:logins_per_ip_track_only_mode, type: :boolean)
     config.add(:logo_upload_enabled, type: :boolean)
