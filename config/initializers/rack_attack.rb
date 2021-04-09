@@ -88,7 +88,7 @@ module Rack
       track(
         'logins/ip',
         limit: IdentityConfig.store.logins_per_ip_limit,
-        period: AppConfig.env.logins_per_ip_period.to_i,
+        period: IdentityConfig.store.logins_per_ip_period,
       ) do |req|
         req.remote_ip if req.path == '/' && req.post?
       end
@@ -96,7 +96,7 @@ module Rack
       throttle(
         'logins/ip',
         limit: IdentityConfig.store.logins_per_ip_limit,
-        period: AppConfig.env.logins_per_ip_period.to_i,
+        period: IdentityConfig.store.logins_per_ip_period,
       ) do |req|
         req.remote_ip if req.path == '/' && req.post?
       end
