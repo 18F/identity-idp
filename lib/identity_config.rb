@@ -86,6 +86,7 @@ class IdentityConfig
     config.add(:ial2_recovery_request_valid_for_minutes, type: :integer)
     config.add(:identity_pki_disabled, type: :boolean)
     config.add(:identity_pki_local_dev, type: :boolean)
+    config.add(:idv_attempt_window_in_hours, type: :integer)
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
     config.add(:job_run_healthchecks_enabled, type: :boolean)
     config.add(:liveness_checking_enabled, type: :boolean)
