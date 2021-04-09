@@ -165,8 +165,14 @@ module SamlIdpAuthConcern
     query_params = UriService.params(request.original_url)
     if query_params[:skip_encryption].present? && current_service_provider.skip_encryption_allowed
       nil
-    else
-      current_service_provider.encryption_opts
+    elsif current_service_provider.encrypt_responses?
+      cert = saml_request.service_provider.matching_cert || current_service_provider.ssl_certs.first
+
+      {
+        cert: cert,
+        block_encryption: current_service_provider.block_encryption,
+        key_transport: 'rsa-oaep-mgf1p',
+      }
     end
   end
 
@@ -183,7 +189,7 @@ module SamlIdpAuthConcern
   end
 
   def current_issuer
-    @_issuer ||= saml_request.service_provider.identifier
+    @_issuer ||= saml_request.service_provider&.identifier
   end
 
   def request_url

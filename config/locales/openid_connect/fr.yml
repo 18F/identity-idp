@@ -31,6 +31,8 @@ fr:
         invalid_code_verifier: code_verifier ne correspondait pas à code_challenge
         invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante
           représentant une heure dans le passé
+        invalid_signature: Impossible de valider l'assertion contre les clés publiques
+          enregistrées
     user_info:
       errors:
         malformed_authorization: Forme de l'en-tête d'autorisation non valide

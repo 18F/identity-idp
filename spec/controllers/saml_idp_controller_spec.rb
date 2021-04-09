@@ -44,6 +44,70 @@ describe SamlIdpController do
 
       delete :logout, params: { SAMLRequest: 'foo' }
     end
+
+    let(:service_provider) do
+      create(:service_provider,
+             cert: nil, # override singular cert
+             certs: ['sp_sinatra_demo', 'saml_test_sp'],
+             active: true,
+             assertion_consumer_logout_service_url: 'https://example.com')
+    end
+
+    let(:right_cert_settings) do
+      sp1_saml_settings.tap do |settings|
+        settings.issuer = service_provider.issuer
+        settings.assertion_consumer_logout_service_url = 'https://example.com'
+      end
+    end
+
+    let(:wrong_cert_settings) do
+      sp1_saml_settings.tap do |settings|
+        settings.issuer = service_provider.issuer
+        settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
+        settings.private_key = OpenSSL::PKey::RSA.new(
+          File.read(Rails.root + 'keys/saml_test_sp2.key'),
+        ).to_pem
+      end
+    end
+
+    it 'accepts requests from a correct cert' do
+      saml_request = UriService.params(
+        OneLogin::RubySaml::Logoutrequest.new.create(right_cert_settings),
+      )[:SAMLRequest]
+
+      payload = [
+        ['SAMLRequest', saml_request],
+        ['RelayState', 'aaa'],
+        ['SigAlg', 'SHA256'],
+      ]
+      canon_string = payload.map { |k, v| "#{k}=#{CGI.escape(v)}" }.join('&')
+
+      private_sp_key = OpenSSL::PKey::RSA.new(right_cert_settings.private_key)
+      signature = private_sp_key.sign(OpenSSL::Digest.new('SHA256'), canon_string)
+
+      certificate = OpenSSL::X509::Certificate.new(right_cert_settings.certificate)
+
+      # This is the same verification process we expect the SAML gem will run
+      expect(
+        certificate.public_key.verify(
+          OpenSSL::Digest.new('SHA256'),
+          signature,
+          canon_string,
+        ),
+      ).to eq(true)
+
+      delete :logout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+
+      expect(response).to be_ok
+    end
+
+    it 'rejects requests from a wrong cert' do
+      delete :logout, params: UriService.params(
+        OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
+      )
+
+      expect(response).to be_bad_request
+    end
   end
 
   describe '/api/saml/metadata' do
@@ -408,6 +472,43 @@ describe SamlIdpController do
 
         expect(@analytics).to have_received(:track_event).
           with(Analytics::SAML_AUTH, analytics_hash)
+      end
+    end
+
+    context 'service provider has multiple certs' do
+      let(:service_provider) do
+        create(:service_provider,
+               cert: nil, # override singular cert
+               certs: ['saml_test_sp2', 'saml_test_sp'],
+               active: true)
+      end
+
+      let(:first_cert_settings) do
+        saml_settings.tap do |settings|
+          settings.issuer = service_provider.issuer
+        end
+      end
+
+      let(:second_cert_settings) do
+        saml_settings.tap do |settings|
+          settings.issuer = service_provider.issuer
+          settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
+          settings.private_key = OpenSSL::PKey::RSA.new(
+            File.read(Rails.root + 'keys/saml_test_sp2.key'),
+          ).to_pem
+        end
+      end
+
+      it 'encrypts the response to the right key' do
+        user = create(:user, :signed_up)
+        generate_saml_response(user, second_cert_settings)
+
+        expect(response).to_not be_redirect
+
+        expect { xmldoc.saml_response(first_cert_settings) }.to raise_error
+
+        response = xmldoc.saml_response(second_cert_settings)
+        expect(response.decrypted_document).to be
       end
     end
 
