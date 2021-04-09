@@ -80,6 +80,7 @@ class IdentityConfig
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
     config.add(:enable_usps_verification, type: :boolean)
+    config.add(:event_disavowal_expiration_hours, type: :integer)
     config.add(:exception_recipients, type: :comma_separated_string_list)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:identity_pki_disabled, type: :boolean)
