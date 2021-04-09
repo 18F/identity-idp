@@ -218,7 +218,7 @@ module DocAuthRouter
           trueid_noliveness_workflow: AppConfig.env.lexisnexis_trueid_noliveness_workflow,
           trueid_password: AppConfig.env.lexisnexis_trueid_password,
           trueid_username: AppConfig.env.lexisnexis_trueid_username,
-          timeout: AppConfig.env.lexisnexis_timeout,
+          timeout: IdentityConfig.store.lexisnexis_timeout,
           exception_notifier: method(:notify_exception),
           locale: I18n.locale,
         ),

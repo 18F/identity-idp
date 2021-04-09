@@ -31,7 +31,7 @@ class ResolutionProofingJob < ApplicationJob
           username: AppConfig.env.lexisnexis_username,
           password: AppConfig.env.lexisnexis_password,
           request_mode: AppConfig.env.lexisnexis_request_mode,
-          request_timeout: AppConfig.env.lexisnexis_timeout,
+          request_timeout: IdentityConfig.store.lexisnexis_timeout,
         },
       },
       context: nil,
