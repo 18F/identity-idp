@@ -14,7 +14,7 @@ classes << 'step-indicator__step--complete' if local_assigns[:complete]
 classes << 'step-indicator__step--pending' if local_assigns[:pending]
 %>
 
-<%= tag.div class: classes do %>
+<%= tag.div class: classes, aria: { current: local_assigns[:current] ? 'step' : nil } do %>
   <span class="step-indicator__step-title">
     <%= title %>
   </span>
