@@ -49,12 +49,14 @@ describe SamlIdpController do
       create(:service_provider,
              cert: nil, # override singular cert
              certs: ['saml_test_sp'],
-             active: true)
+             active: true,
+             assertion_consumer_logout_service_url: 'https://example.com')
     end
 
     let(:right_cert_settings) do
       sp1_saml_settings.tap do |settings|
         settings.issuer = service_provider.issuer
+        settings.assertion_consumer_logout_service_url = 'https://example.com'
       end
     end
 
@@ -73,36 +75,28 @@ describe SamlIdpController do
         OneLogin::RubySaml::Logoutrequest.new.create(right_cert_settings),
       )[:SAMLRequest]
 
-      payload = {
-        SAMLRequest: saml_request,
-        RelayState: 'aaa',
-        SigAlg: 'SHA256',
-      }
-      canon_string = payload.to_query
+      payload = [
+        ['SAMLRequest', saml_request],
+        ['RelayState', 'aaa'],
+        ['SigAlg', 'SHA256'],
+      ]
+      canon_string = payload.map { |k, v| "#{k}=#{CGI.escape(v)}" }.join('&')
 
       private_sp_key = OpenSSL::PKey::RSA.new(right_cert_settings.private_key)
-      signature = Base64.encode64(private_sp_key.sign(OpenSSL::Digest::SHA256.new, canon_string))
+      signature = private_sp_key.sign(OpenSSL::Digest::SHA256.new, canon_string)
 
       certificate = OpenSSL::X509::Certificate.new(right_cert_settings.certificate)
-
-      puts "OUTSIDE GEM CANON"
-      puts canon_string
-      puts "----"
-      puts signature
-      puts "----"
-      puts certificate.serial
-      puts "----"
 
       # This is the same verification process we expect the SAML gem will run
       expect(
         certificate.public_key.verify(
           OpenSSL::Digest::SHA256.new,
-          Base64.decode64(signature),
+          signature,
           canon_string,
         ),
       ).to eq(true)
 
-      delete :logout, params: payload.merge(Signature: signature)
+      delete :logout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
 
       expect(response).to be_ok
     end
