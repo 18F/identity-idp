@@ -57,6 +57,7 @@ class IdentityConfig
     config.add(:acuant_sdk_initialization_endpoint)
     config.add(:acuant_timeout, type: :integer)
     config.add(:add_email_link_valid_for_hours, type: :integer)
+    config.add(:async_wait_timeout_seconds, type: :integer)
     config.add(:attribute_encryption_key_queue, type: :json)
     config.add(:aws_kms_multi_region_enabled, type: :boolean)
     config.add(:aws_kms_regions, type: :json)
