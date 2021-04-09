@@ -23,6 +23,8 @@ end
 %>
 
 <%= tag.div class: classes do %>
-  <%= content %>
+  <div class="step-indicator__scroller">
+    <%= content %>
+  </div>
 <% end %>
 <% javascript_packs_tag_once 'step-indicator' %>
