@@ -99,6 +99,7 @@ class IdentityConfig
     config.add(:logins_per_email_and_ip_bantime, type: :integer)
     config.add(:logins_per_email_and_ip_limit, type: :integer)
     config.add(:logins_per_email_and_ip_period, type: :integer)
+    config.add(:logins_per_ip_limit, type: :integer)
     config.add(:logins_per_ip_track_only_mode, type: :boolean)
     config.add(:logo_upload_enabled, type: :boolean)
     config.add(:no_sp_campaigns_whitelist, type: :json)
