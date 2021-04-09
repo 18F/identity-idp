@@ -59,7 +59,7 @@ module Idv
       steps.map do |step|
         step = step.merge(
           subtitle: 'idv.step_indicator.pending',
-          pending: true
+          pending: true,
         ) if step[:slug] == :verify_phone_or_address
 
         step
