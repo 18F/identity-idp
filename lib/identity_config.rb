@@ -50,6 +50,7 @@ class IdentityConfig
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:acuant_assure_id_url)
+    config.add(:acuant_attempt_window_in_minutes, type: :integer)
     config.add(:acuant_facial_match_url)
     config.add(:acuant_passlive_url)
     config.add(:acuant_sdk_initialization_endpoint)

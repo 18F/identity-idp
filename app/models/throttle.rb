@@ -16,7 +16,7 @@ class Throttle < ApplicationRecord
   THROTTLE_CONFIG = {
     idv_acuant: {
       max_attempts: AppConfig.env.acuant_max_attempts.to_i,
-      attempt_window: AppConfig.env.acuant_attempt_window_in_minutes.to_i,
+      attempt_window: IdentityConfig.store.acuant_attempt_window_in_minutes,
     },
     reg_unconfirmed_email: {
       max_attempts: AppConfig.env.reg_unconfirmed_email_max_attempts.to_i,
