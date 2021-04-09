@@ -83,6 +83,7 @@ class IdentityConfig
     config.add(:event_disavowal_expiration_hours, type: :integer)
     config.add(:exception_recipients, type: :comma_separated_string_list)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
+    config.add(:ial2_recovery_request_valid_for_minutes, type: :integer)
     config.add(:identity_pki_disabled, type: :boolean)
     config.add(:identity_pki_local_dev, type: :boolean)
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
