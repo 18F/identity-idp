@@ -1,7 +1,9 @@
-<%= render 'idv/shared/step_indicator', {
-  steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
-  current_step: :verify_phone_or_address
-} %>
+<% content_for(:pre_flash_content) do %>
+  <%= render 'idv/shared/step_indicator', {
+    steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+    current_step: :verify_phone_or_address
+  } %>
+<% end %>
 
 <div id="form-steps-wait-alert">
   <%= render 'shared/alert', {

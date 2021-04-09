@@ -1,7 +1,9 @@
-<%= render 'idv/shared/step_indicator', {
-  steps: @step_indicator_steps,
-  current_step: :secure_account,
-} %>
+<% content_for(:pre_flash_content) do %>
+  <%= render 'idv/shared/step_indicator', {
+    steps: @step_indicator_steps,
+    current_step: :secure_account,
+  } %>
+<% end %>
 
 <% title t('idv.titles.review') %>
 
