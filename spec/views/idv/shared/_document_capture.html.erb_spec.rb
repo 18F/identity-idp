@@ -5,6 +5,7 @@ describe 'idv/shared/_document_capture.html.erb' do
 
   let(:flow_session) { {} }
   let(:sp_name) { nil }
+  let(:flow_path) { 'standard' }
   let(:failure_to_proof_url) { return_to_sp_failure_to_proof_path }
   let(:front_image_upload_url) { nil }
   let(:back_image_upload_url) { nil }
@@ -23,6 +24,7 @@ describe 'idv/shared/_document_capture.html.erb' do
     render partial: 'idv/shared/document_capture', locals: {
       flow_session: flow_session,
       sp_name: sp_name,
+      flow_path: flow_path,
       failure_to_proof_url: failure_to_proof_url,
       front_image_upload_url: front_image_upload_url,
       back_image_upload_url: back_image_upload_url,

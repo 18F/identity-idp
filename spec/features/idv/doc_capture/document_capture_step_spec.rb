@@ -41,7 +41,6 @@ feature 'doc capture document capture step' do
 
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH,
-        flow_path: 'hybrid',
         success: false,
       )
     end

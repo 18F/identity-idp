@@ -111,7 +111,7 @@ describe Idv::RecoveryController do
       end
 
       it 'tracks analytics' do
-        result = { step: 'recover', step_count: 1 }
+        result = { step: 'recover', flow_path: 'standard', step_count: 1 }
 
         get :show, params: { step: 'recover' }
 
