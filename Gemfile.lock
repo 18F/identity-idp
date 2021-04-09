@@ -77,10 +77,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: fd7c822cc3c12d218766f2c65fdca74a461de9da
-  tag: 0.12.2.18f
+  revision: 027a926cc6210711d30b2f08a0bd02ea07fe3ca1
+  branch: margolis-multiple-certs
   specs:
-    saml_idp (0.12.2.pre.18f)
+    saml_idp (0.13.0.pre.18f)
       activesupport
       builder
       httparty
