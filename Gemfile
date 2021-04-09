@@ -5,6 +5,25 @@ ruby '~> 2.6.5'
 
 gem 'rails', '~> 6.1.3'
 
+# Variables can be overridden for local dev in Gemfile-dev
+@doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.5.1' }
+@hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v2.0.0' }
+@idp_functions_gem ||= { github: '18F/identity-idp-functions', ref:'d9241bdfea85a76c170e456a89' }
+@logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
+@proofer_gem ||= { github: '18F/identity-proofer-gem', ref: 'v2.8.0' }
+@telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.1.12' }
+@validations_gem ||= { github: '18F/identity-validations', branch: 'main' }
+@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.13.0-18f' }
+
+gem 'identity-doc-auth', @doc_auth_gem
+gem 'identity-hostdata', @hostdata_gem
+gem 'identity-idp-functions', @idp_functions_gem
+gem 'identity-logging', @logging_gem
+gem 'proofer', @proofer_gem
+gem 'identity-telephony', @telephony_gem
+gem 'identity_validations', @validations_gem
+gem 'saml_idp', @saml_gem
+
 gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
 gem 'autoprefixer-rails', '~> 10.0'
@@ -23,12 +42,6 @@ gem 'faraday'
 gem 'foundation_emails'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'identity-doc-auth', github: '18F/identity-doc-auth', tag: 'v0.5.1'
-gem 'identity-hostdata', github: '18F/identity-hostdata', tag: 'v2.0.0'
-gem 'identity-logging', github: '18F/identity-logging', tag: 'v0.1.0'
-gem 'identity-idp-functions', github: '18F/identity-idp-functions', ref:'d9241bdfea85a76c170e456a89'
-gem 'identity-telephony', github: '18f/identity-telephony', tag: 'v0.1.12'
-gem 'identity_validations', github: '18F/identity-validations', branch: 'main'
 gem 'json-jwt', '>= 1.11.0'
 gem 'jwt'
 gem 'local_time'
@@ -40,7 +53,6 @@ gem 'pg'
 gem 'phonelib'
 gem 'premailer-rails', '>= 1.11.1'
 gem 'profanity_filter'
-gem 'proofer', github: '18F/identity-proofer-gem', ref: 'v2.8.0'
 gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
@@ -55,7 +67,6 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: 'v0.13.0-18f'
 gem 'sassc-rails', '~> 2.1.2'
 gem 'scrypt'
 gem 'secure_headers', '~> 6.3'
@@ -123,6 +134,9 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', github: '18F/identity-aamva-api-client-gem', tag: 'v4.2.0'
-  gem 'lexisnexis', github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0'
+  @aamva_api_gem ||= { github: '18F/identity-aamva-api-client-gem', tag: 'v4.2.0' }
+  @lexisnexis_api_gem ||= { github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0' }
+
+  gem 'aamva', @aamva_api_gem
+  gem 'lexisnexis', @lexisnexis_api_gem
 end

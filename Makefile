@@ -92,3 +92,9 @@ check_asset_strings:
 
 generate_deploy_checklist:
 	ruby lib/release_management/generate_deploy_checklist.rb
+
+local_gems_bundle:
+	BUNDLE_GEMFILE=Gemfile-dev bundle install
+
+local_gems_run: local_gems_bundle
+	BUNDLE_GEMFILE=Gemfile-dev make run
