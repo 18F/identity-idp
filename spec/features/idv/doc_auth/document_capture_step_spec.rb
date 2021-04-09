@@ -55,12 +55,14 @@ feature 'doc auth document capture step' do
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
+        flow_path: 'standard',
         result: 'Passed',
         billed: true,
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
+        flow_path: 'standard',
         result: 'Passed',
         billed: true,
       )
@@ -87,6 +89,7 @@ feature 'doc auth document capture step' do
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
+        flow_path: 'standard',
         result: 'Passed',
         billed: true,
         success: false,
@@ -94,6 +97,7 @@ feature 'doc auth document capture step' do
       expect(fake_analytics).to have_logged_event(
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
+        flow_path: 'standard',
         result: 'Passed',
         billed: true,
         success: false,

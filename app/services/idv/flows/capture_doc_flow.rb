@@ -16,6 +16,10 @@ module Idv
       def initialize(controller, session, _name)
         super(controller, STEPS, ACTIONS, session)
       end
+
+      def flow_path
+        'hybrid'
+      end
     end
   end
 end

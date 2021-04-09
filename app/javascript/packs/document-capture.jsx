@@ -98,12 +98,15 @@ const device = {
 
 /** @type {import('@18f/identity-document-capture/context/analytics').AddPageAction} */
 function addPageAction(action) {
+  const { flowPath } = appRoot.dataset;
+  const payload = { ...action.payload, flow_path: flowPath };
+
   const { newrelic } = /** @type {DocumentCaptureGlobal} */ (window);
   if (action.key && newrelic) {
-    newrelic.addPageAction(action.key, action.payload);
+    newrelic.addPageAction(action.key, payload);
   }
 
-  trackEvent(action.label, action.payload);
+  trackEvent(action.label, payload);
 }
 
 /** @type {import('@18f/identity-document-capture/context/analytics').NoticeError} */

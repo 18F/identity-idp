@@ -182,6 +182,7 @@ module Flow
 
     def analytics_properties
       {
+        flow_path: @flow.flow_path,
         step: current_step,
         step_count: current_flow_step_counts[current_step_name],
       }
