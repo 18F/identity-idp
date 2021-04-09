@@ -83,14 +83,14 @@ describe SamlIdpController do
       canon_string = payload.map { |k, v| "#{k}=#{CGI.escape(v)}" }.join('&')
 
       private_sp_key = OpenSSL::PKey::RSA.new(right_cert_settings.private_key)
-      signature = private_sp_key.sign(OpenSSL::Digest::SHA256.new, canon_string)
+      signature = private_sp_key.sign(OpenSSL::Digest.new('SHA256'), canon_string)
 
       certificate = OpenSSL::X509::Certificate.new(right_cert_settings.certificate)
 
       # This is the same verification process we expect the SAML gem will run
       expect(
         certificate.public_key.verify(
-          OpenSSL::Digest::SHA256.new,
+          OpenSSL::Digest.new('SHA256'),
           signature,
           canon_string,
         ),
