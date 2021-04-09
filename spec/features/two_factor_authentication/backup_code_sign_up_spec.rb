@@ -32,15 +32,17 @@ feature 'sign up with backup code' do
   end
 
   it 'works for each code and refreshes the codes on the last one' do
-    user = create(:user, :signed_up, :with_authentication_app, :with_backup_code)
+    user = create(:user, :signed_up, :with_authentication_app)
+
+    codes = BackupCodeGenerator.new(user).create
+
     BackupCodeGenerator::NUMBER_OF_CODES.times do |index|
       signin(user.email, user.password)
       visit login_two_factor_options_path
       expect(page).to \
         have_content t('two_factor_authentication.login_options.backup_code_info_html')
-      code = user.backup_code_configurations[index].code
       visit login_two_factor_backup_code_path
-      fill_in :backup_code_verification_form_backup_code, with: code
+      fill_in :backup_code_verification_form_backup_code, with: codes[index]
       click_on 'Submit'
       if index == BackupCodeGenerator::NUMBER_OF_CODES - 1
         expect(current_path).to eq backup_code_depleted_path

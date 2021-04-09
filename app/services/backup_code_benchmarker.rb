@@ -39,13 +39,19 @@ class BackupCodeBenchmarker
     user_id = User.first&.id || 1
     num_to_create = num_rows - BackupCodeConfiguration.count
 
+    generator = BackupCodeGenerator.new(nil)
+
     logger.info "creating #{num_to_create} backup code configurations"
 
     num_to_create.times.each_slice(batch_size) do |slice|
-      slice.each do
-        code = SecureRandom.hex(6) # @see BackupCodeGenerator#backup_code
+      slice.each_slice(num_per_user) do |user_slice|
+        user_id += 1
 
-        BackupCodeConfiguration.create(user_id: user_id, code: code)
+        user_slice.each do
+          code = generator.send(:backup_code)
+
+          BackupCodeConfiguration.create(user_id: user_id, code: code)
+        end
       end
     end
 
@@ -79,14 +85,15 @@ class BackupCodeBenchmarker
     backup_code_configurations.each do |backup_code_configuration|
       code = backup_code_configuration.code
 
-      backup_code_configuration.code_cost = cost
-      backup_code_configuration.code_salt = salt
-      backup_code_configuration.salted_code_fingerprint = scrypt_password_digest(
-        password: code,
-        salt: salt,
-        cost: cost,
+      backup_code_configuration.update(
+        code_cost: cost,
+        code_salt: salt,
+        salted_code_fingerprint: BackupCodeConfiguration.scrypt_password_digest(
+          password: code,
+          salt: salt,
+          cost: cost,
+        ),
       )
-      backup_code_configuration.save!
     end
   end
 

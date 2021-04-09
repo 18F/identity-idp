@@ -15,7 +15,6 @@ feature 'idv confirmation step' do
 
       visit idv_path
 
-      allow(RandomPhrase).to receive(:to_s).and_return(personal_key)
       complete_idv_steps_before_confirmation_step(@user)
     end
 
