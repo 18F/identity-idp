@@ -1,5 +1,4 @@
 <%#
-yields: Steps markup.
 locals:
 * class: Extra CSS classes to apply to wrapper.
 * steps: Hash of step key to step partial data.
@@ -8,24 +7,19 @@ locals:
 <%
 classes = ['step-indicator']
 classes << local_assigns[:class] if local_assigns[:class]
-block_content = yield
+current_step_index = steps.index { |step| step[:slug] == local_assigns[:current_step] }
 %>
 
 <%= tag.div class: classes do %>
   <div class="step-indicator__scroller">
-    <% if block_content.present? %>
-      <%= block_content %>
-    <% else %>
-      <% current_step_index = steps.index { |step| step[:slug] == local_assigns[:current_step] } %>
-      <% steps.each_with_index do |step, index| %>
-        <%= render(
-          'shared/step_indicator_step',
-          current: current_step == step[:slug],
-          complete: current_step_index > index,
-          subtitle: t(step[:subtitle]),
-          pending: step[:pending],
-        ) { t(step[:title]) } %>
-      <% end %>
+    <% steps.each_with_index do |step, index| %>
+      <%= render(
+        'shared/step_indicator_step',
+        current: current_step == step[:slug],
+        complete: current_step_index > index,
+        subtitle: t(step[:subtitle]),
+        pending: step[:pending],
+      ) { t(step[:title]) } %>
     <% end %>
   </div>
 <% end %>
