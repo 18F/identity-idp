@@ -6,8 +6,7 @@ module SamlIdp
   class ServiceProvider
     include Attributeable
     attribute :identifier
-    attribute :cert
-    attribute :fingerprint
+    attribute :certs
     attribute :metadata_url
     attribute :validate_signature
     attribute :acs_url
@@ -15,16 +14,28 @@ module SamlIdp
 
     delegate :config, to: :SamlIdp
 
+    attr_reader :matching_cert
+
     def valid?
       attributes.present?
     end
 
     def valid_signature?(doc, require_signature = false, options = {})
       if require_signature || should_validate_signature?
-        doc.valid_signature?(fingerprint, options.merge(cert: cert))
+        Array(certs).any? do |cert|
+          if doc.valid_signature?(fingerprint_cert(cert), options.merge(cert: cert))
+            @matching_cert = cert
+            true
+          end
+        end
       else
         true
       end
+    end
+
+    # @param [OpenSSL::X509::Certificate] ssl_cert
+    def fingerprint_cert(ssl_cert)
+      OpenSSL::Digest::SHA256.new(ssl_cert.to_der).hexdigest
     end
 
     def should_validate_signature?

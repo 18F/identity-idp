@@ -26,9 +26,10 @@ describe SamlIdp::Controller do
       SamlIdp.configure do |config|
         config.service_provider.finder = lambda do |_|
           {
-            cert: SamlIdp::Default::X509_CERTIFICATE,
+            certs: [
+              OpenSSL::X509::Certificate.new(Base64.decode64(SamlIdp::Default::X509_CERTIFICATE))
+            ],
             private_key: SamlIdp::Default::SECRET_KEY,
-            fingerprint: SamlIdp::Default::FINGERPRINT,
             assertion_consumer_logout_service_url: 'http://foo.example.com/sp-initiated/slo'
           }
         end
