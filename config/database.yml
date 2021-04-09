@@ -21,7 +21,7 @@ defaults: &defaults
   checkout_timeout: 5
   reaping_frequency: 10
   variables:
-    statement_timeout: <%= AppConfig.env.database_statement_timeout.to_i %>
+    statement_timeout: <%= IdentityConfig.store.database_statement_timeout %>
 
 development:
   <<: *defaults
