@@ -5,7 +5,7 @@ describe Throttler::IsThrottled do
   let(:throttle_type) { :idv_acuant }
   let(:subject) { described_class }
   let(:throttle) { Throttle.all.first }
-  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
+  let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
   let(:attempt_window_in_minutes) { IdentityConfig.store.acuant_attempt_window_in_minutes }
 
   it 'returns throttle if throttled' do

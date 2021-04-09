@@ -43,7 +43,7 @@ describe Idv::ImageUploadsController do
             front: ['Please fill in this field.'],
           },
           user_id: user.uuid,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -92,7 +92,7 @@ describe Idv::ImageUploadsController do
             front: [I18n.t('doc_auth.errors.not_a_file')],
           },
           user_id: user.uuid,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -202,7 +202,7 @@ describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -213,7 +213,7 @@ describe Idv::ImageUploadsController do
           exception: nil,
           result: 'Passed',
           user_id: user.uuid,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -221,7 +221,7 @@ describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
         )
 
         action
@@ -263,7 +263,7 @@ describe Idv::ImageUploadsController do
               success: true,
               errors: {},
               user_id: user.uuid,
-              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+              remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -274,7 +274,7 @@ describe Idv::ImageUploadsController do
               exception: nil,
               result: 'Passed',
               user_id: user.uuid,
-              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+              remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -284,7 +284,7 @@ describe Idv::ImageUploadsController do
                 pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               user_id: user.uuid,
-              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+              remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
 
             action
@@ -302,7 +302,7 @@ describe Idv::ImageUploadsController do
               success: true,
               errors: {},
               user_id: user.uuid,
-              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+              remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -313,7 +313,7 @@ describe Idv::ImageUploadsController do
               exception: nil,
               result: 'Passed',
               user_id: user.uuid,
-              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+              remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -323,7 +323,7 @@ describe Idv::ImageUploadsController do
                 pii: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               user_id: user.uuid,
-              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+              remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
 
             action
@@ -341,7 +341,7 @@ describe Idv::ImageUploadsController do
               success: true,
               errors: {},
               user_id: user.uuid,
-              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+              remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -352,7 +352,7 @@ describe Idv::ImageUploadsController do
               exception: nil,
               result: 'Passed',
               user_id: user.uuid,
-              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+              remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -362,7 +362,7 @@ describe Idv::ImageUploadsController do
                 pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               user_id: user.uuid,
-              remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+              remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
 
             action
@@ -402,7 +402,7 @@ describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -412,7 +412,7 @@ describe Idv::ImageUploadsController do
             front: ['Too blurry', 'Wrong document'],
           },
           user_id: user.uuid,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
           exception: nil,
         )
 
@@ -445,7 +445,7 @@ describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -458,7 +458,7 @@ describe Idv::ImageUploadsController do
           result: 'Caution',
           exception: nil,
           user_id: user.uuid,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
         )
 
         action

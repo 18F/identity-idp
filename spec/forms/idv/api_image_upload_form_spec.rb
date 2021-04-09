@@ -103,7 +103,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         IdentityDocAuth::Response.new(
           success: false,
           errors: { front: 'glare' },
-          extra: { remaining_attempts: AppConfig.env.acuant_max_attempts.to_i - 1 },
+          extra: { remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1 },
         )
       end
       before do

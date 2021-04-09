@@ -52,6 +52,7 @@ class IdentityConfig
     config.add(:acuant_assure_id_url)
     config.add(:acuant_attempt_window_in_minutes, type: :integer)
     config.add(:acuant_facial_match_url)
+    config.add(:acuant_max_attempts, type: :integer)
     config.add(:acuant_passlive_url)
     config.add(:acuant_sdk_initialization_endpoint)
     config.add(:attribute_encryption_key_queue, type: :json)

@@ -4,7 +4,7 @@ feature 'doc auth document capture step' do
   include IdvStepHelper
   include DocAuthHelper
 
-  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
+  let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { false }
   let(:fake_analytics) { FakeAnalytics.new }
@@ -102,7 +102,7 @@ feature 'doc auth document capture step' do
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
 
@@ -181,7 +181,7 @@ feature 'doc auth document capture step' do
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
-      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
 
