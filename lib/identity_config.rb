@@ -59,6 +59,7 @@ class IdentityConfig
     config.add(:add_email_link_valid_for_hours, type: :integer)
     config.add(:async_wait_timeout_seconds, type: :integer)
     config.add(:attribute_encryption_key_queue, type: :json)
+    config.add(:aws_http_retry_limit, type: :integer)
     config.add(:aws_http_timeout, type: :integer)
     config.add(:aws_kms_multi_region_enabled, type: :boolean)
     config.add(:aws_kms_regions, type: :json)
