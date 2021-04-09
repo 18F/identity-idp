@@ -6,12 +6,14 @@ module ProfanityDetector
   # Calls a block until the result does not contain profanity
   # @yield block that generates a random value
   # @yieldreturn [String] string to check for profanity
-  def without_profanity
-    loop do
+  def without_profanity(limit: 1_000)
+    limit.times do
       word = yield
 
       return word unless profane?(word)
     end
+
+    raise 'random generator limit'
   end
 
   # Returns true if the string contains profanity inside it
