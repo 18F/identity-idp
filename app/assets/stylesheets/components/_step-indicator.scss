@@ -134,6 +134,10 @@ $step-indicator-pending-color: #a8b6c6;
   background-color: $step-indicator-complete-color;
 }
 
+.step-indicator__step--current .step-indicator__step-title {
+  font-weight: bold;
+}
+
 .step-indicator__step-subtitle {
   display: none;
   font-style: italic;

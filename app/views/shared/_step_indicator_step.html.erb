@@ -15,7 +15,9 @@ classes << 'step-indicator__step--pending' if local_assigns[:pending]
 %>
 
 <%= tag.div class: classes do %>
-  <%= title %>
+  <span class="step-indicator__step-title">
+    <%= title %>
+  </span>
   <span class="step-indicator__step-subtitle">
     <%= subtitle if local_assigns[:subtitle] %>
   </span>
