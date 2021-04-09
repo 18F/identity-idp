@@ -1,0 +1,11 @@
+<%
+content = ''.html_safe
+content += render(
+  'idv/shared/step_indicator',
+  steps: step_indicator[:steps],
+  current_step: step_indicator[:current_step],
+) if local_assigns[:step_indicator]
+content += render(template: step_template, locals: local_assigns)
+content_for(:content) { content }
+%>
+<%= render template: 'layouts/base' %>

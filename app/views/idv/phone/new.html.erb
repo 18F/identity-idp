@@ -1,3 +1,8 @@
+<%= render 'idv/shared/step_indicator', {
+  steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+  current_step: :verify_phone_or_address
+} %>
+
 <div id="form-steps-wait-alert">
   <%= render 'shared/alert', {
     type: 'success',

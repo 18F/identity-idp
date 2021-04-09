@@ -29,6 +29,7 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
+      @step_indicator_steps = step_indicator_steps
       analytics.track_event(Analytics::IDV_REVIEW_VISIT)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
@@ -51,6 +52,19 @@ module Idv
     end
 
     private
+
+    def step_indicator_steps
+      steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
+      return steps if idv_session.address_verification_mechanism != 'gpo'
+      steps.map do |step|
+        step.merge!(
+          subtitle: 'idv.step_indicator.pending_confirmation',
+          pending: true
+        ) if step[:slug] == :verify_phone_or_address
+
+        step
+      end
+    end
 
     def flash_message_content
       if idv_session.address_verification_mechanism == 'gpo'

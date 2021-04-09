@@ -13,6 +13,30 @@ module Idv
         verify: Idv::Steps::VerifyStep,
         verify_wait: Idv::Steps::VerifyWaitStep,
       }.freeze
+
+      STEP_INDICATOR_STEPS = [
+        {
+          slug: :getting_started,
+          title: 'idv.step_indicator.getting_started',
+        },
+        {
+          slug: :verify_id,
+          title: 'idv.step_indicator.verify_id',
+        },
+        {
+          slug: :verify_info,
+          title: 'idv.step_indicator.verify_info',
+        },
+        {
+          slug: :verify_phone_or_address,
+          title: 'idv.step_indicator.verify_phone_or_address',
+        },
+        {
+          slug: :secure_account,
+          title: 'idv.step_indicator.secure_account',
+        },
+      ]
+
       OPTIONAL_SHOW_STEPS = {
         verify_wait: Idv::Steps::VerifyWaitStepShow,
       }.freeze

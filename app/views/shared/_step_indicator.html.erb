@@ -2,13 +2,27 @@
 yields: Steps markup.
 locals:
 * class: Extra CSS classes to apply to wrapper.
+* steps: Hash of step key to step partial data.
+* current_step: Current step.
 %>
 <%
 classes = ['step-indicator']
 classes << local_assigns[:class] if local_assigns[:class]
+content = yield.presence || begin
+  current_step_index = steps.index { |step| step[:slug] == local_assigns[:current_step] }
+  steps.each_with_index.reduce(''.html_safe) do |result, (step, index)|
+    result += render(
+      'shared/step_indicator_step',
+      current: current_step == step[:slug],
+      complete: current_step_index > index,
+      subtitle: t(step[:subtitle]),
+      pending: step[:pending],
+    ) { t(step[:title]) }
+  end
+end
 %>
 
 <%= tag.div class: classes do %>
-  <%= yield %>
+  <%= content %>
 <% end %>
 <% javascript_packs_tag_once 'step-indicator' %>

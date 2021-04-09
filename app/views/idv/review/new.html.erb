@@ -1,3 +1,8 @@
+<%= render 'idv/shared/step_indicator', {
+  steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+  current_step: :secure_account,
+} %>
+
 <% title t('idv.titles.review') %>
 
 <h1 class="h3">

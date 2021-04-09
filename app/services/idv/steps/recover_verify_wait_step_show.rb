@@ -1,6 +1,8 @@
 module Idv
   module Steps
     class RecoverVerifyWaitStepShow < VerifyBaseStep
+      STEP_INDICATOR_STEP = :verify_info
+
       def call
         poll_with_meta_refresh(AppConfig.env.poll_rate_for_verify_in_seconds.to_i)
 
