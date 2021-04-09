@@ -8,23 +8,25 @@ locals:
 <%
 classes = ['step-indicator']
 classes << local_assigns[:class] if local_assigns[:class]
-content = yield.presence || begin
-  current_step_index = steps.index { |step| step[:slug] == local_assigns[:current_step] }
-  steps.each_with_index.reduce(''.html_safe) do |result, (step, index)|
-    result += render(
-      'shared/step_indicator_step',
-      current: current_step == step[:slug],
-      complete: current_step_index > index,
-      subtitle: t(step[:subtitle]),
-      pending: step[:pending],
-    ) { t(step[:title]) }
-  end
-end
+block_content = yield
 %>
 
 <%= tag.div class: classes do %>
   <div class="step-indicator__scroller">
-    <%= content %>
+    <% if block_content.present? %>
+      <%= block_content %>
+    <% else %>
+      <% current_step_index = steps.index { |step| step[:slug] == local_assigns[:current_step] } %>
+      <% steps.each_with_index do |step, index| %>
+        <%= render(
+          'shared/step_indicator_step',
+          current: current_step == step[:slug],
+          complete: current_step_index > index,
+          subtitle: t(step[:subtitle]),
+          pending: step[:pending],
+        ) { t(step[:title]) } %>
+      <% end %>
+    <% end %>
   </div>
 <% end %>
 <% javascript_packs_tag_once 'step-indicator' %>
