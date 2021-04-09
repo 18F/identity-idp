@@ -49,6 +49,7 @@ backup_code_cost: '2000$8$1$'
 backup_code_skip_symmetric_encryption: 'false'
 database_pool_idp: '5'
 database_statement_timeout: '2500'
+database_timeout: '5000'
 deleted_user_accounts_report_configs: '[]'
 disable_email_sending: 'true'
 disallow_all_web_crawlers: 'true'
@@ -196,7 +197,6 @@ development:
   database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
-  database_timeout: '5000'
   database_username: ''
   doc_auth_vendor: 'mock'
   document_proof_result_lambda_token: ABC123
@@ -277,7 +277,6 @@ production:
   database_read_replica_host: ''
   database_readonly_password:
   database_readonly_username:
-  database_timeout:
   database_username:
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
@@ -370,7 +369,6 @@ test:
   database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
-  database_timeout: '5000'
   database_username: ''
   doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'

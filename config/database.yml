@@ -12,7 +12,7 @@ defaults: &defaults
   pool: 5
   <<: *postgresql
   # timeout settings
-  timeout: <%= AppConfig.env.database_timeout.to_i %>
+  timeout: <%= IdentityConfig.store.database_timeout %>
   reconnect: true
   connect_timeout: 2
   keepalives_idle: 10

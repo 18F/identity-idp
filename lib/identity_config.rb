@@ -67,6 +67,7 @@ class IdentityConfig
     config.add(:backup_code_skip_symmetric_encryption, type: :boolean)
     config.add(:database_pool_idp, type: :integer)
     config.add(:database_statement_timeout, type: :integer)
+    config.add(:database_timeout, type: :integer)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)
