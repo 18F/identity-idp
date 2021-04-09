@@ -77,8 +77,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 027a926cc6210711d30b2f08a0bd02ea07fe3ca1
-  branch: margolis-multiple-certs
+  revision: b48dbd2bedac1e61e38361e58270d546c9886243
+  tag: v0.13.0-18f
   specs:
     saml_idp (0.13.0.pre.18f)
       activesupport
