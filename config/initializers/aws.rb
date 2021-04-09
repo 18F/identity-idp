@@ -7,7 +7,7 @@ Aws.config.update(
   http_open_timeout: IdentityConfig.store.aws_http_timeout.to_f,
   http_read_timeout: IdentityConfig.store.aws_http_timeout.to_f,
   retry_limit: IdentityConfig.store.aws_http_retry_limit,
-  retry_max_delay: AppConfig.env.aws_http_retry_max_delay.to_i,
+  retry_max_delay: IdentityConfig.store.aws_http_retry_max_delay,
   logger: ActiveSupport::Logger.new(Rails.root.join('log', 'production.log')),
   log_formatter: log_formatter,
 )
