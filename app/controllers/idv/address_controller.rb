@@ -22,7 +22,7 @@ module Idv
     private
 
     def confirm_pii_from_doc
-      @pii = user_session.dig('idv/doc_auth','pii_from_doc')
+      @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
       return if @pii.present?
       redirect_to idv_doc_auth_url
     end
