@@ -81,7 +81,7 @@ module Flow
       klass = self.class
       flow = klass::FSM_SETTINGS[:flow]
       @name = klass.name.underscore.gsub('_controller', '')
-      @namespace = klass.module_parent.name.underscore
+      @namespace = flow.name.split('::').first.underscore
       @step_url = klass::FSM_SETTINGS[:step_url]
       @final_url = klass::FSM_SETTINGS[:final_url]
       @analytics_id = klass::FSM_SETTINGS[:analytics_id]
