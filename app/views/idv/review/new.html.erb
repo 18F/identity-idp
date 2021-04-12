@@ -1,7 +1,9 @@
 <% content_for(:pre_flash_content) do %>
-  <%= render 'idv/shared/step_indicator', {
+  <%= render 'shared/step_indicator', {
     steps: @step_indicator_steps,
     current_step: :secure_account,
+    locale_scope: 'idv',
+    class: 'margin-x-neg-2 margin-top-neg-2 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
   } %>
 <% end %>
 

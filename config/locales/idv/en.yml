@@ -150,13 +150,6 @@ en:
       full_name: Full name
       mailing_address: Mailing address
       ssn: Social Security Number (SSN)
-    step_indicator:
-      getting_started: Getting started
-      pending: Pending
-      secure_account: Secure your account
-      verify_id: Verify your ID
-      verify_info: Verify your personal details
-      verify_phone_or_address: Verify phone or address
     titles:
       activated: Your identity has already been verified
       cancel: We cannot verify your identity

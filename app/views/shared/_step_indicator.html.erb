@@ -1,25 +1,33 @@
 <%#
 locals:
 * class: Extra CSS classes to apply to wrapper.
-* steps: Hash of step key to step partial data.
+* steps: Array of step partial data or step names.
+* locale_scope: Scope under which to find title translations for steps given as names.
 * current_step: Current step.
 %>
 <%
 classes = ['step-indicator']
 classes << local_assigns[:class] if local_assigns[:class]
-current_step_index = steps.index { |step| step[:slug] == local_assigns[:current_step] }
+normalized_steps = steps.map do |step|
+  step = { name: step } if step.is_a? Symbol
+  step = {
+    title: t(step[:name], scope: [:step_indicator, locale_scope]),
+  }.merge(step) if local_assigns[:locale_scope]
+  step
+end
+current_step_index = normalized_steps.index { |step| step[:name] == local_assigns[:current_step] }
 %>
 
 <%= tag.div class: classes do %>
   <div class="step-indicator__scroller">
-    <% steps.each_with_index do |step, index| %>
+    <% normalized_steps.each_with_index do |step, index| %>
       <%= render(
         'shared/step_indicator_step',
-        current: current_step == step[:slug],
+        current: current_step == step[:name],
         complete: current_step_index > index,
-        subtitle: t(step[:subtitle]),
+        subtitle: step[:subtitle],
         pending: step[:pending],
-      ) { t(step[:title]) } %>
+      ) { step[:title] } %>
     <% end %>
   </div>
 <% end %>

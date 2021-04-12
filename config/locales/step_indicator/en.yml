@@ -1,0 +1,10 @@
+---
+en:
+  step_indicator:
+    idv:
+      getting_started: Getting started
+      pending: Pending
+      secure_account: Secure your account
+      verify_id: Verify your ID
+      verify_info: Verify your personal details
+      verify_phone_or_address: Verify phone or address

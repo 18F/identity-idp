@@ -57,10 +57,11 @@ module Idv
       steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
       return steps if idv_session.address_verification_mechanism != 'gpo'
       steps.map do |step|
-        step = step.merge(
-          subtitle: 'idv.step_indicator.pending',
+        step = {
+          name: step,
+          subtitle: t('step_indicator.idv.pending'),
           pending: true,
-        ) if step[:slug] == :verify_phone_or_address
+        } if step == :verify_phone_or_address
 
         step
       end

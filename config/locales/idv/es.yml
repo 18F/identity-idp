@@ -153,13 +153,6 @@ es:
       full_name: Nombre completo
       mailing_address: Dirección postal
       ssn: Número de Seguro Social (SSN, sigla en inglés)
-    step_indicator:
-      getting_started: Getting started
-      pending: Pending
-      secure_account: Secure your account
-      verify_id: Verify your ID
-      verify_info: Verify your personal details
-      verify_phone_or_address: Verify phone or address
     titles:
       activated: Su identidad ha sido verificada.
       cancel: No podemos verificar su identidad.

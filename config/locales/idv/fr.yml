@@ -166,13 +166,6 @@ fr:
       full_name: Nom complet
       mailing_address: Adresse postale
       ssn: Numéro de sécurité sociale (SSN)
-    step_indicator:
-      getting_started: Getting started
-      pending: Pending
-      secure_account: Secure your account
-      verify_id: Verify your ID
-      verify_info: Verify your personal details
-      verify_phone_or_address: Verify phone or address
     titles:
       activated: Votre identité a déjà été vérifiée
       cancel: Nous ne pouvons pas vérifier votre identité

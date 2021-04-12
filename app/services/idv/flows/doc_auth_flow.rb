@@ -15,26 +15,11 @@ module Idv
       }.freeze
 
       STEP_INDICATOR_STEPS = [
-        {
-          slug: :getting_started,
-          title: 'idv.step_indicator.getting_started',
-        },
-        {
-          slug: :verify_id,
-          title: 'idv.step_indicator.verify_id',
-        },
-        {
-          slug: :verify_info,
-          title: 'idv.step_indicator.verify_info',
-        },
-        {
-          slug: :verify_phone_or_address,
-          title: 'idv.step_indicator.verify_phone_or_address',
-        },
-        {
-          slug: :secure_account,
-          title: 'idv.step_indicator.secure_account',
-        },
+        :getting_started,
+        :verify_id,
+        :verify_info,
+        :verify_phone_or_address,
+        :secure_account,
       ].freeze
 
       OPTIONAL_SHOW_STEPS = {

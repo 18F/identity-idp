@@ -81,6 +81,7 @@ module Flow
       klass = self.class
       flow = klass::FSM_SETTINGS[:flow]
       @name = klass.name.underscore.gsub('_controller', '')
+      @namespace = klass.module_parent.name.underscore
       @step_url = klass::FSM_SETTINGS[:step_url]
       @final_url = klass::FSM_SETTINGS[:final_url]
       @analytics_id = klass::FSM_SETTINGS[:analytics_id]
@@ -114,9 +115,10 @@ module Flow
       return if call_optional_show_step(step)
       step_params = flow.extra_view_variables(step)
       local_params = step_params.merge(
-        step_template: "#{@view || @name}/#{step}",
+        flow_namespace: @namespace,
         flow_session: flow_session,
         step_indicator: step_indicator_params,
+        step_template: "#{@view || @name}/#{step}",
       )
       render template: 'layouts/flow_step', locals: local_params
     end
