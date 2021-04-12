@@ -19,7 +19,7 @@ current_step_index = normalized_steps.index { |step| step[:name] == local_assign
 %>
 
 <%= tag.div class: classes do %>
-  <div class="step-indicator__scroller">
+  <ol class="step-indicator__scroller">
     <% normalized_steps.each_with_index do |step, index| %>
       <%= render(
         'shared/step_indicator_step',
@@ -29,6 +29,6 @@ current_step_index = normalized_steps.index { |step| step[:name] == local_assign
         pending: step[:pending],
       ) { step[:title] } %>
     <% end %>
-  </div>
+  </ol>
 <% end %>
 <% javascript_packs_tag_once 'step-indicator' %>

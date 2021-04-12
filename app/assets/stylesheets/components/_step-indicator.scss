@@ -50,6 +50,8 @@ $step-indicator-pending-color: #a8b6c6;
 
 .step-indicator__scroller {
   display: flex;
+  list-style-type: none;
+  margin: 0;
   overflow: scroll;
   padding: units(1) units(3) units(2);
   scrollbar-width: none;
