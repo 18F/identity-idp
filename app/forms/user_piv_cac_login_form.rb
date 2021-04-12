@@ -24,7 +24,7 @@ class UserPivCacLoginForm
   end
 
   def user_found
-    maybe_user = Db::PivCacConfiguration::FindUserByX509.call(x509_dn_uuid)
+    maybe_user = Db::PivCacConfiguration.find_user_by_x509(x509_dn_uuid)
     if maybe_user.present?
       self.user = maybe_user
       true

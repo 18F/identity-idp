@@ -53,7 +53,7 @@ module Users
     def remove_piv_cac
       revoke_remember_device(current_user)
       current_user_id = current_user.id
-      Db::PivCacConfiguration::Delete.call(current_user_id, params[:id].to_i)
+      Db::PivCacConfiguration.delete(current_user_id, params[:id].to_i)
     end
 
     def render_prompt
