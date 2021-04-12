@@ -1,6 +1,6 @@
 $step-indicator-current-step-border-width: 3px;
 $step-indicator-line-height: 4px;
-$step-indicator-complete-color: #38bf53;
+$step-indicator-complete-color: color('success');
 $step-indicator-pending-color: #a8b6c6;
 
 .step-indicator {
@@ -111,7 +111,7 @@ $step-indicator-pending-color: #a8b6c6;
 }
 
 .step-indicator__step--complete:not(.step-indicator__step--pending)::before {
-  background-color: $step-indicator-complete-color;
+  background-color: color('white');
   background-image: url(image-path('alert/success.svg'));
 }
 
