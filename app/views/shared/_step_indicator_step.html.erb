@@ -17,6 +17,12 @@ classes << 'step-indicator__step--pending' if local_assigns[:pending]
   <span class="step-indicator__step-title">
     <%= title %>
   </span>
+  <% if local_assigns[:complete] %>
+    <span class="usa-sr-only"><%= t('step_indicator.completed') %></span>
+  <% end %>
+  <% if !local_assigns[:complete] && !local_assigns[:pending] && !local_assigns[:current] %>
+    <span class="usa-sr-only"><%= t('step_indicator.not_completed') %></span>
+  <% end %>
   <% if local_assigns[:pending] %>
     <span class="step-indicator__step-subtitle">
       <%= t('step_indicator.pending') %>

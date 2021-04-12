@@ -18,7 +18,11 @@ end
 current_step_index = normalized_steps.index { |step| step[:name] == local_assigns[:current_step] }
 %>
 
-<%= tag.div class: classes do %>
+<%= tag.div(
+  role: 'region',
+  aria: { label: t('step_indicator.accessible_label') },
+  class: classes,
+) do %>
   <ol class="step-indicator__scroller">
     <% normalized_steps.each_with_index do |step, index| %>
       <%= render(
