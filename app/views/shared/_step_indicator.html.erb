@@ -27,9 +27,12 @@ current_step_index = normalized_steps.index { |step| step[:name] == local_assign
     <% normalized_steps.each_with_index do |step, index| %>
       <%= render(
         'shared/step_indicator_step',
-        current: current_step == step[:name],
-        complete: current_step_index > index && !step[:pending],
-        pending: step[:pending],
+        status: step[:status] ||
+          if current_step == step[:name]
+            :current
+          elsif current_step_index > index
+            :complete
+          end,
       ) { step[:title] } %>
     <% end %>
   </ol>
