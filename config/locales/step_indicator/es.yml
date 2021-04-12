@@ -3,11 +3,11 @@ es:
   step_indicator:
     accessible_label: Step progress
     completed: Completed
-    not_completed: Not completed
-    pending: Pending
     idv:
       getting_started: Getting started
       secure_account: Secure your account
       verify_id: Verify your ID
       verify_info: Verify your personal details
       verify_phone_or_address: Verify phone or address
+    not_completed: Not completed
+    pending: Pending
