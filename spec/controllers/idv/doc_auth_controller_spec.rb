@@ -42,10 +42,24 @@ describe Idv::DocAuthController do
 
   describe '#show' do
     it 'renders the correct template' do
+      expect(subject).to receive(:render).with(
+        template: 'layouts/flow_step',
+        locals: hash_including(
+          :back_image_upload_url,
+          :front_image_upload_url,
+          :selfie_image_upload_url,
+          :flow_session,
+          step_template: 'idv/doc_auth/document_capture',
+          flow_namespace: 'idv',
+          step_indicator: hash_including(
+            :steps,
+            current_step: :verify_id,
+          ),
+        ),
+      ).and_call_original
+
       mock_next_step(:document_capture)
       get :show, params: { step: 'document_capture' }
-
-      expect(response).to render_template :document_capture
     end
 
     it 'redirects to the right step' do
