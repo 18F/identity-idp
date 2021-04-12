@@ -25,7 +25,6 @@ current_step_index = normalized_steps.index { |step| step[:name] == local_assign
         'shared/step_indicator_step',
         current: current_step == step[:name],
         complete: current_step_index > index,
-        subtitle: step[:subtitle],
         pending: step[:pending],
       ) { step[:title] } %>
     <% end %>

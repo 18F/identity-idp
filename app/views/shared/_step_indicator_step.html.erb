@@ -3,7 +3,6 @@ yields: Step title (required).
 locals:
 * current: Whether the step is the current step. Defaults to `false`.
 * complete: Whether the step is a completed step. Defaults to `false`.
-* subtitle: Optional step subtitle text.
 * pending: Whether the step should be shown in a pending state.
 %>
 <%
@@ -18,7 +17,9 @@ classes << 'step-indicator__step--pending' if local_assigns[:pending]
   <span class="step-indicator__step-title">
     <%= title %>
   </span>
-  <span class="step-indicator__step-subtitle">
-    <%= subtitle if local_assigns[:subtitle] %>
-  </span>
+  <% if local_assigns[:pending] %>
+    <span class="step-indicator__step-subtitle">
+      <%= t('step_indicator.pending') %>
+    </span>
+  <% end %>
 <% end %>
