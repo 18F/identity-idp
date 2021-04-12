@@ -53,6 +53,10 @@ module Flow
       obj.extra_view_variables
     end
 
+    def flow_path
+      'standard'
+    end
+
     private
 
     def wrap_send(handler)

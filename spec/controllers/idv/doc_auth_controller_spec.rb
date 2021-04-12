@@ -62,7 +62,7 @@ describe Idv::DocAuthController do
     end
 
     it 'tracks analytics' do
-      result = { step: 'welcome', step_count: 1 }
+      result = { step: 'welcome', flow_path: 'standard', step_count: 1 }
 
       get :show, params: { step: 'welcome' }
 
@@ -108,7 +108,7 @@ describe Idv::DocAuthController do
       mock_next_step(:back_image)
       allow_any_instance_of(Flow::BaseFlow).to \
         receive(:flow_session).and_return(pii_from_doc: {})
-      result = { success: true, errors: {}, step: 'ssn', step_count: 1 }
+      result = { success: true, errors: {}, step: 'ssn', flow_path: 'standard', step_count: 1 }
 
       put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
@@ -152,6 +152,7 @@ describe Idv::DocAuthController do
           message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
         },
         step: 'welcome',
+        flow_path: 'standard',
         step_count: 1,
       }
 
@@ -367,6 +368,7 @@ describe Idv::DocAuthController do
           success: false,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts,
           step: 'verify_document_status',
+          flow_path: 'standard',
           step_count: 1,
         }
       )
@@ -376,6 +378,7 @@ describe Idv::DocAuthController do
           success: false,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts,
           step: 'verify_document_status',
+          flow_path: 'standard',
           step_count: 1,
         }
       )

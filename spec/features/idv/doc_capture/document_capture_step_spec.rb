@@ -55,6 +55,7 @@ feature 'doc capture document capture step' do
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH + ' visited',
         step: 'document_capture',
+        flow_path: 'hybrid',
       )
     end
   end
@@ -139,6 +140,14 @@ feature 'doc capture document capture step' do
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
+        flow_path: 'hybrid',
+        result: 'Passed',
+        billed: true,
+      )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
+        step: 'document_capture',
+        flow_path: 'hybrid',
         result: 'Passed',
         billed: true,
       )
