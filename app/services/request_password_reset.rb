@@ -23,6 +23,9 @@ RequestPasswordReset = RedactedStruct.new(:email, :request_id, :analytics, keywo
     else
       token = user.set_reset_password_token
       UserMailer.reset_password_instructions(user, email, token: token).deliver_now
+
+      event = PushNotification::RecoveryActivatedEvent.new(user: user)
+      PushNotification::HttpPush.deliver(event)
     end
   end
 

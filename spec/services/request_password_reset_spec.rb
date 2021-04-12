@@ -43,6 +43,13 @@ RSpec.describe RequestPasswordReset do
         expect { RequestPasswordReset.new(email: email).perform }.
           to(change { user.reload.reset_password_token })
       end
+
+      it 'sends a recovery activated push event' do
+        expect(PushNotification::HttpPush).to receive(:deliver).
+          with(PushNotification::RecoveryActivatedEvent.new(user: user))
+
+        RequestPasswordReset.new(email: email).perform
+      end
     end
 
     context 'when the user is found, not privileged, and not yet confirmed' do
@@ -86,6 +93,12 @@ RSpec.describe RequestPasswordReset do
 
         RequestPasswordReset.new(email: unconfirmed_email_address.email).perform
       end
+
+      it 'does not send a recovery activated push event' do
+        expect(PushNotification::HttpPush).to_not receive(:deliver)
+
+        RequestPasswordReset.new(email: unconfirmed_email_address.email).perform
+      end
     end
 
     context 'when two users have the same email address' do
@@ -112,10 +125,10 @@ RSpec.describe RequestPasswordReset do
     end
 
     context 'when the user requests password resets above the allowable threshold' do
+      let(:analytics) { FakeAnalytics.new }
       it 'throttles the email sending and logs a throttle event' do
         max_attempts = AppConfig.env.reset_password_email_max_attempts.to_i
 
-        analytics = FakeAnalytics.new
         max_attempts.times do
           expect { RequestPasswordReset.new(email: email, analytics: analytics).perform }.
             to(change { user.reload.reset_password_token })
@@ -129,6 +142,24 @@ RSpec.describe RequestPasswordReset do
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
           throttle_type: :reset_password_email,
         )
+      end
+
+      it 'only sends a push notification when the attempts have not been throttled' do
+        max_attempts = AppConfig.env.reset_password_email_max_attempts.to_i
+
+        expect(PushNotification::HttpPush).to receive(:deliver).
+          with(PushNotification::RecoveryActivatedEvent.new(user: user)).
+          exactly(max_attempts).times
+
+
+        max_attempts.times do
+          expect { RequestPasswordReset.new(email: email, analytics: analytics).perform }.
+            to(change { user.reload.reset_password_token })
+        end
+
+        # extra time, throttled
+        expect { RequestPasswordReset.new(email: email, analytics: analytics).perform }.
+          to_not(change { user.reload.reset_password_token })
       end
     end
   end

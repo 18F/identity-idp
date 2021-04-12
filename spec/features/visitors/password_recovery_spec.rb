@@ -12,6 +12,10 @@ feature 'Password Recovery' do
       visit root_path
       click_link t('links.passwords.forgot')
       fill_in 'Email', with: user.email
+
+      expect(PushNotification::HttpPush).to receive(:deliver).
+        with(PushNotification::RecoveryActivatedEvent.new(user: user))
+
       click_button t('forms.buttons.continue')
 
       expect(current_path).to eq forgot_password_path
