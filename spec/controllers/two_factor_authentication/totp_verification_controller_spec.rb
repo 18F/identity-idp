@@ -7,12 +7,12 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa
         @secret = subject.current_user.generate_totp_secret
         user = subject.current_user
-        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
+        Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
       end
 
       it 'redirects to the profile' do
         cfg = subject.current_user.auth_app_configurations.first
-        expect(Db::AuthAppConfiguration::Authenticate).to receive(:call).and_return(cfg)
+        expect(Db::AuthAppConfiguration).to receive(:authenticate).and_return(cfg)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
         post :create, params: { code: generate_totp_code(@secret) }
@@ -53,7 +53,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa
         user = subject.current_user
         @secret = user.generate_totp_secret
-        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
+        Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
         post :create, params: { code: 'abc' }
       end
 
@@ -76,7 +76,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa
         user = subject.current_user
         @secret = user.generate_totp_secret
-        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
+        Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
 
         stub_analytics
 
@@ -107,7 +107,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa(user)
         @secret = subject.current_user.generate_totp_secret
         user = subject.current_user
-        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
+        Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
       end
 
       describe 'when user submits an invalid TOTP' do

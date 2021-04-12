@@ -98,7 +98,7 @@ module Users
     end
 
     def revoke_otp_secret_key
-      Db::AuthAppConfiguration::Delete.call(current_user, params[:id].to_i)
+      Db::AuthAppConfiguration.delete(current_user, params[:id].to_i)
     end
 
     def mark_user_as_fully_authenticated
