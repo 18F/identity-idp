@@ -14,6 +14,14 @@ module Idv
         verify_wait: Idv::Steps::RecoverVerifyWaitStep,
       }.freeze
 
+      STEP_INDICATOR_STEPS = [
+        :getting_started,
+        :verify_id,
+        :verify_info,
+        :verify_phone_or_address,
+        :secure_account,
+      ].freeze
+
       OPTIONAL_SHOW_STEPS = {
         verify_wait: Idv::Steps::RecoverVerifyWaitStepShow,
       }.freeze

@@ -6,6 +6,14 @@ module Idv
         capture_complete: Idv::Steps::CaptureCompleteStep,
       }.freeze
 
+      STEP_INDICATOR_STEPS = [
+        :getting_started,
+        :verify_id,
+        :verify_info,
+        :verify_phone_or_address,
+        :secure_account,
+      ].freeze
+
       ACTIONS = {
         reset: Idv::Actions::ResetAction,
         verify_document: Idv::Actions::VerifyDocumentAction,
