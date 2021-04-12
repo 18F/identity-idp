@@ -58,12 +58,15 @@ module Users
     def validate_otp_delivery_preference_and_send_code
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
+      phone_capabilities = PhoneNumberCapabilities.new(parsed_phone)
 
       if result.success?
         handle_valid_otp_params(delivery_preference)
-      else
+      elsif phone_capabilities.supports_sms?
         handle_valid_otp_params('sms')
         flash[:error] = result.errors[:phone].first
+      else
+        handle_invalid_otp_delivery_preference(result)
       end
     end
 

@@ -541,9 +541,9 @@ feature 'Sign in' do
   it_behaves_like 'signing in with the site in Spanish', :oidc
 
   context 'user signs in with Voice OTP delivery preference to an unsupported country' do
-    it 'falls back to SMS with an error message' do
+    it 'falls back to SMS with an error message if SMS is supported' do
       user = create(:user, :signed_up,
-                    otp_delivery_preference: 'voice', with: { phone: '+1 441-295-9644' })
+                    otp_delivery_preference: 'voice', with: { phone: '+61 02 1234 5678' })
       signin(user.email, user.password)
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
@@ -552,9 +552,25 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'Bermuda',
+        location: 'Australia',
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
+    end
+
+    it 'shows error message if SMS and Voice are not supported' do
+      user = create(:user, :signed_up,
+                    otp_delivery_preference: 'voice', with: { phone: '+84 09 1234 5678' })
+      signin(user.email, user.password)
+
+      expect(Telephony::Test::Call.calls.length).to eq(0)
+      expect(Telephony::Test::Message.messages.length).to eq(0)
+      expect(page).
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+      expect(page).to have_content t(
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        location: 'Vietnam',
+      )
+      expect(user.reload.otp_delivery_preference).to eq 'voice'
     end
   end
 
