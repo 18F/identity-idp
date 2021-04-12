@@ -1,6 +1,5 @@
 $step-indicator-current-step-border-width: 3px;
 $step-indicator-line-height: 4px;
-$step-indicator-complete-color: color('success');
 $step-indicator-pending-color: #a8b6c6;
 
 .step-indicator {
@@ -106,7 +105,7 @@ $step-indicator-pending-color: #a8b6c6;
     circle at center,
     color('white') 0%,
     color('white') ($root-font-size-equiv / 2 - $step-indicator-current-step-border-width),
-    $step-indicator-complete-color ($root-font-size-equiv / 2 - $step-indicator-current-step-border-width),
+    color('success') ($root-font-size-equiv / 2 - $step-indicator-current-step-border-width),
   );
 }
 
@@ -135,7 +134,7 @@ $step-indicator-pending-color: #a8b6c6;
 }
 
 .step-indicator__step--complete:not(.step-indicator__step--pending):not(:last-child)::after {
-  background-color: $step-indicator-complete-color;
+  background-color: color('success');
 }
 
 .step-indicator__step--current .step-indicator__step-title {
