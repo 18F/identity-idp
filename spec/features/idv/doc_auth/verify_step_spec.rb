@@ -112,7 +112,7 @@ feature 'doc auth verify step' do
       step_name: Idv::Steps::VerifyWaitStepShow,
     )
 
-    Timecop.travel(AppConfig.env.idv_attempt_window_in_hours.to_i.hours.from_now) do
+    Timecop.travel(IdentityConfig.store.idv_attempt_window_in_hours.hours.from_now) do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
       click_idv_continue

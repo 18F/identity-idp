@@ -87,16 +87,16 @@ module Rack
     if IdentityConfig.store.logins_per_ip_track_only_mode
       track(
         'logins/ip',
-        limit: AppConfig.env.logins_per_ip_limit.to_i,
-        period: AppConfig.env.logins_per_ip_period.to_i,
+        limit: IdentityConfig.store.logins_per_ip_limit,
+        period: IdentityConfig.store.logins_per_ip_period,
       ) do |req|
         req.remote_ip if req.path == '/' && req.post?
       end
     else
       throttle(
         'logins/ip',
-        limit: AppConfig.env.logins_per_ip_limit.to_i,
-        period: AppConfig.env.logins_per_ip_period.to_i,
+        limit: IdentityConfig.store.logins_per_ip_limit,
+        period: IdentityConfig.store.logins_per_ip_period,
       ) do |req|
         req.remote_ip if req.path == '/' && req.post?
       end
@@ -140,9 +140,9 @@ module Rack
         email = user['email'].to_s.downcase.strip
         email_fingerprint = Pii::Fingerprinter.fingerprint(email) if email.present?
         email_and_ip = "#{email_fingerprint}-#{req.remote_ip}"
-        maxretry = AppConfig.env.logins_per_email_and_ip_limit.to_i
-        findtime = AppConfig.env.logins_per_email_and_ip_period.to_i
-        bantime = AppConfig.env.logins_per_email_and_ip_bantime.to_i
+        maxretry = IdentityConfig.store.logins_per_email_and_ip_limit
+        findtime = IdentityConfig.store.logins_per_email_and_ip_period
+        bantime = IdentityConfig.store.logins_per_email_and_ip_bantime
 
         Allow2Ban.filter(email_and_ip, maxretry: maxretry, findtime: findtime, bantime: bantime) do
           # The count for the email and IP combination is incremented if the return value is truthy.

@@ -5,7 +5,7 @@ feature 'doc capture document capture step' do
   include DocAuthHelper
   include DocCaptureHelper
 
-  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
+  let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { false }
   let(:sp_requests_ial2_strict) { true }
@@ -28,7 +28,7 @@ feature 'doc capture document capture step' do
 
     before do
       Capybara.reset_session!
-      expired_minutes = (AppConfig.env.doc_capture_request_valid_for_minutes.to_i + 1).minutes
+      expired_minutes = (IdentityConfig.store.doc_capture_request_valid_for_minutes + 1).minutes
       document_capture_session = user.document_capture_sessions.last
       document_capture_session.requested_at -= expired_minutes
       document_capture_session.save!
@@ -161,7 +161,7 @@ feature 'doc capture document capture step' do
         ),
       )
 
-      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
       end
@@ -176,7 +176,7 @@ feature 'doc capture document capture step' do
 
       IdentityDocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+      Timecop.travel(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 
@@ -248,7 +248,7 @@ feature 'doc capture document capture step' do
         ),
       )
 
-      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
       end
@@ -263,7 +263,7 @@ feature 'doc capture document capture step' do
 
       IdentityDocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+      Timecop.travel(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 

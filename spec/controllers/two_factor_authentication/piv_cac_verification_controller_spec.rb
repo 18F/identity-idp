@@ -199,7 +199,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         stub_sign_in_before_2fa(user)
       end
 
-      let(:lockout_period) { AppConfig.env.lockout_period_in_minutes.to_i.minutes }
+      let(:lockout_period) { IdentityConfig.store.lockout_period_in_minutes.minutes }
 
       let(:user) do
         create(:user, :signed_up, :with_piv_or_cac,

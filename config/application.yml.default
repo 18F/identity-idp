@@ -30,6 +30,7 @@ acuant_assure_id_username: ''
 acuant_attempt_window_in_minutes: '360'
 acuant_facial_match_license_key: ''
 acuant_facial_match_url: ''
+acuant_max_attempts: '20'
 acuant_passlive_url: ''
 # These are dummy creds used to initialize the acuant SDK
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
@@ -46,7 +47,9 @@ aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
 backup_code_cost: '2000$8$1$'
 backup_code_skip_symmetric_encryption: 'false'
+database_pool_idp: '5'
 database_statement_timeout: '2500'
+database_timeout: '5000'
 deleted_user_accounts_report_configs: '[]'
 disable_email_sending: 'true'
 disallow_all_web_crawlers: 'true'
@@ -93,14 +96,17 @@ lexisnexis_trueid_password: test_password
 lexisnexis_trueid_liveness_workflow: customers.gsa.instant.verify.workflow
 lexisnexis_trueid_noliveness_workflow: customers.gsa.instant.verify.workflow
 ###################################################################
+lockout_period_in_minutes: '10'
 log_to_stdout: 'false'
 logins_per_email_and_ip_bantime: '60'
+logins_per_email_and_ip_limit: '5'
 logins_per_email_and_ip_period: '60'
 logins_per_ip_period: '60'
 logo_upload_enabled: 'false'
 mailer_domain_name: http://localhost:3000
 max_auth_apps_per_account: '2'
 max_emails_per_account: '12'
+max_mail_events: '4'
 max_mail_events_window_in_days: '30'
 max_piv_cac_per_account: '2'
 min_password_score: '3'
@@ -175,7 +181,6 @@ development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_reset_auth_token: abc123
-  acuant_max_attempts: '20'
   address_proof_result_lambda_token: 123ABC
   attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -192,11 +197,9 @@ development:
   database_host: ''
   database_name: ''
   database_password: ''
-  database_pool_idp: '5'
   database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
-  database_timeout: '5000'
   database_username: ''
   doc_auth_vendor: 'mock'
   document_proof_result_lambda_token: ABC123
@@ -208,11 +211,8 @@ development:
   identity_pki_local_dev: 'true'
   issuers_with_email_nameid_format: ''
   liveness_checking_enabled: 'true'
-  lockout_period_in_minutes: '10'
-  logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '5'
   logo_upload_enabled: 'true'
-  max_mail_events: '4'
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
@@ -260,7 +260,6 @@ production:
   aamva_private_key:
   aamva_public_key:
   account_reset_auth_token:
-  acuant_max_attempts: '20'
   address_proof_result_lambda_token:
   attribute_cost: 4000$8$4$
   attribute_encryption_key:
@@ -275,11 +274,9 @@ production:
   database_host:
   database_name:
   database_password:
-  database_pool_idp:
   database_read_replica_host: ''
   database_readonly_password:
   database_readonly_username:
-  database_timeout:
   database_username:
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
@@ -293,12 +290,9 @@ production:
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
   issuers_with_email_nameid_format: sp1,sp2
-  lockout_period_in_minutes: '10'
-  logins_per_email_and_ip_limit: '5'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '20'
   logins_per_ip_track_only_mode: 'true'
-  max_mail_events: '4'
   newrelic_browser_app_id: ''
   newrelic_browser_key: ''
   newrelic_license_key: ''
@@ -369,11 +363,9 @@ test:
   database_host: ''
   database_name: ''
   database_password: ''
-  database_pool_idp:
   database_read_replica_host: ''
   database_readonly_password: ''
   database_readonly_username: ''
-  database_timeout: '5000'
   database_username: ''
   doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'

@@ -9,7 +9,7 @@ describe EmailAddress do
 
   let(:email) { 'jd@example.com' }
   let(:email_address) { create(:email_address, email: email) }
-  let(:valid_for_hours) { AppConfig.env.add_email_link_valid_for_hours.to_i.hours }
+  let(:valid_for_hours) { IdentityConfig.store.add_email_link_valid_for_hours.hours }
 
   describe 'creation' do
     it 'stores an encrypted form of the email address' do
@@ -38,7 +38,7 @@ describe EmailAddress do
       email_address.confirmation_sent_at = Time.zone.now - valid_for_hours + 1.minute
       email_address.save
       expect(email_address.confirmation_period_expired?).to be_falsey
-      AppConfig.env.add_email_link_valid_for_hours.to_i.hours
+      IdentityConfig.store.add_email_link_valid_for_hours.hours
     end
 
     it 'returns true when beyond add_email_link_valid_for_hours value' do

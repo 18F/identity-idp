@@ -152,19 +152,9 @@ describe ProductionDatabaseConfiguration do
       before { stub_role_config('idp') }
 
       it 'returns the idp pool size' do
-        allow(AppConfig.env).to receive(:database_pool_idp).and_return(7)
+        allow(IdentityConfig.store).to receive(:database_pool_idp).and_return(7)
 
         expect(ProductionDatabaseConfiguration.pool).to eq(7)
-      end
-
-      it 'defaults to 5' do
-        allow(AppConfig.env).to receive(:database_pool_idp).and_return(nil)
-
-        expect(ProductionDatabaseConfiguration.pool).to eq(5)
-
-        allow(AppConfig.env).to receive(:database_pool_idp).and_return('')
-
-        expect(ProductionDatabaseConfiguration.pool).to eq(5)
       end
     end
 

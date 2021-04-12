@@ -5,8 +5,8 @@ describe 'throttling requests' do
   before(:each) { Rack::Attack.cache.store.clear }
 
   let(:requests_per_ip_limit) { AppConfig.env.requests_per_ip_limit.to_i }
-  let(:logins_per_ip_limit) { AppConfig.env.logins_per_ip_limit.to_i }
-  let(:logins_per_email_and_ip_limit) { AppConfig.env.logins_per_email_and_ip_limit.to_i }
+  let(:logins_per_ip_limit) { IdentityConfig.store.logins_per_ip_limit }
+  let(:logins_per_email_and_ip_limit) { IdentityConfig.store.logins_per_email_and_ip_limit }
 
   describe 'safelists' do
     it 'allows all requests from localhost' do
@@ -113,8 +113,8 @@ describe 'throttling requests' do
       throttle_data = request.env['rack.attack.throttle_data']['logins/ip']
 
       expect(throttle_data[:count]).to eq(1)
-      expect(throttle_data[:limit]).to eq(AppConfig.env.logins_per_ip_limit.to_i)
-      expect(throttle_data[:period]).to eq(AppConfig.env.logins_per_ip_period.to_i.seconds)
+      expect(throttle_data[:limit]).to eq(IdentityConfig.store.logins_per_ip_limit)
+      expect(throttle_data[:period]).to eq(IdentityConfig.store.logins_per_ip_period.seconds)
     end
 
     context 'when the number of requests is lower than the limit' do

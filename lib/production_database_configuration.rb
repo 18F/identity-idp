@@ -36,7 +36,7 @@ class ProductionDatabaseConfiguration
   end
 
   def self.pool
-    AppConfig.env.database_pool_idp.presence || 5
+    IdentityConfig.store.database_pool_idp
   end
 
   private_class_method def self.readonly_mode?
