@@ -20,7 +20,7 @@ class StepIndicator {
 
   bind() {
     this.mediaQueryList = window.matchMedia(SMALL_VIEWPORT_MEDIA_QUERY);
-    this.mediaQueryList.addEventListener('change', () => this.onBreakpointMatchChange());
+    this.mediaQueryList.addListener(() => this.onBreakpointMatchChange());
     this.onBreakpointMatchChange();
     if (this.isSmallViewport) {
       this.setScrollOffset();
