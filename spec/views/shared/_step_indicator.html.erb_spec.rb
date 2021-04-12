@@ -1,0 +1,149 @@
+require 'rails_helper'
+
+describe 'shared/_step_indicator.html.erb' do
+  let(:classes) { nil }
+  let(:steps) { [:one, :two, :three] }
+  let(:current_step) { :one }
+  let(:locale_scope) { 'example' }
+
+  around do |example|
+    original_backend = I18n.backend
+    I18n.backend = I18n::Backend::Chain.new(
+      I18n::Backend::KeyValue.new(Hash.new, true),
+      original_backend,
+    )
+    I18n.backend.store_translations(
+      :en,
+      step_indicator: {
+        example: {
+          one: 'One',
+          two: 'Two',
+          three: 'Three',
+        },
+      },
+    )
+    example.run
+    I18n.backend = original_backend
+  end
+
+  before do
+    render(
+      'shared/step_indicator',
+      steps: steps,
+      current_step: current_step,
+      locale_scope: locale_scope,
+      class: classes,
+    )
+  end
+
+  describe 'classes' do
+    let(:classes) { nil }
+
+    context 'without custom classes given' do
+      let(:classes) { nil }
+
+      it 'renders with default classes' do
+        expect(rendered).to have_selector('.step-indicator')
+      end
+    end
+
+    context 'with custom classes' do
+      let(:classes) { 'my-custom-class' }
+
+      it 'renders with additional custom classes' do
+        expect(rendered).to have_selector('.step-indicator.my-custom-class')
+      end
+    end
+  end
+
+  describe 'steps' do
+    context 'with slug steps' do
+      it 'renders steps' do
+        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.one'))
+        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.two'))
+        expect(rendered).to have_css(
+          '.step-indicator__step',
+          text: t('step_indicator.example.three'),
+        )
+      end
+    end
+
+    context 'with object steps' do
+      let(:steps) { [{ name: :one }, { name: :two }, { name: :three }] }
+
+      it 'renders steps' do
+        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.one'))
+        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.two'))
+        expect(rendered).to have_css(
+          '.step-indicator__step',
+          text: t('step_indicator.example.three'),
+        )
+      end
+    end
+
+    context 'with mix of slug and object steps' do
+      let(:steps) { [:one, { name: :two }, :three] }
+
+      it 'renders steps' do
+        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.one'))
+        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.two'))
+        expect(rendered).to have_css(
+          '.step-indicator__step',
+          text: t('step_indicator.example.three'),
+        )
+      end
+    end
+
+    context 'explicit step status' do
+      let(:steps) { [{ name: :one, status: :pending }, :two] }
+      let(:current_step) { :two }
+
+      it 'renders with status' do
+        expect(rendered).to have_css(
+          '.step-indicator__step--pending',
+          text: t('step_indicator.example.one'),
+        )
+      end
+    end
+  end
+
+  describe 'current_step' do
+    it 'renders current step' do
+      expect(rendered).to have_css('[aria-current]', text: t('step_indicator.example.one'))
+    end
+
+    context 'with complete step' do
+      let(:current_step) { :two }
+
+      it 'renders current step' do
+        expect(rendered).to have_css('[aria-current]', text: t('step_indicator.example.two'))
+      end
+
+      it 'renders completed step' do
+        expect(rendered).to have_css(
+          '.step-indicator__step--complete',
+          text: t('step_indicator.example.one'),
+        )
+        expect(rendered).to have_css(
+          '.step-indicator__step--complete',
+          text: t('step_indicator.completed'),
+        )
+      end
+    end
+  end
+
+  describe 'locale_scope' do
+    it 'translates using given scope' do
+      expect(rendered).to have_css('[aria-current]', text: t('step_indicator.example.one'))
+    end
+
+    context 'with nil scope' do
+      let(:steps) { [{ name: :one, title: 'Nil Scope One' }] }
+      let(:locale_scope) { nil }
+
+      it 'uses title' do
+        expect(rendered).to have_css('[aria-current]', text: 'Nil Scope One')
+      end
+    end
+  end
+end
