@@ -13,5 +13,9 @@ feature 'doc auth email sent step' do
     expect(page).to have_current_path(idv_doc_auth_email_sent_step)
     user = User.first
     expect(page).to have_content(t('doc_auth.instructions.email_sent', email: user.email))
+    expect(page).to have_css(
+      '.step-indicator__step--current',
+      text: t('step_indicator.flows.idv.verify_id'),
+    )
   end
 end

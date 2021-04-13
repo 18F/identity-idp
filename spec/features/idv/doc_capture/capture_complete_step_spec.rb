@@ -13,5 +13,9 @@ feature 'capture complete step' do
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_capture_doc_capture_complete_step)
     expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+    expect(page).to have_css(
+      '.step-indicator__step--current',
+      text: t('step_indicator.flows.idv.verify_id'),
+    )
   end
 end

@@ -16,6 +16,10 @@ feature 'recovery upload step' do
   it 'is on the correct page' do
     expect(page).to have_current_path(idv_recovery_upload_step)
     expect(page).to have_content(t('doc_auth.headings.upload'))
+    expect(page).to have_css(
+      '.step-indicator__step--current',
+      text: t('step_indicator.flows.idv.verify_id'),
+    )
   end
 
   it 'proceeds to the next page' do

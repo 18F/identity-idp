@@ -22,6 +22,10 @@ feature 'recovery verify step' do
     complete_recovery_steps_before_verify_step
     expect(page).to have_current_path(idv_recovery_verify_step)
     expect(page).to have_content(t('doc_auth.headings.verify'))
+    expect(page).to have_css(
+      '.step-indicator__step--current',
+      text: t('step_indicator.flows.idv.verify_info'),
+    )
   end
 
   it 'proceeds to the next page upon confirmation' do

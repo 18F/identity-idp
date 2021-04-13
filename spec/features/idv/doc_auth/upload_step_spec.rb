@@ -16,6 +16,10 @@ feature 'doc auth upload step' do
 
     it 'is on the correct page' do
       expect(page).to have_current_path(idv_doc_auth_upload_step)
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_id'),
+      )
     end
 
     it 'proceeds to send link via email page when user chooses to upload from computer' do
@@ -36,6 +40,10 @@ feature 'doc auth upload step' do
 
     it 'is on the correct page' do
       expect(page).to have_current_path(idv_doc_auth_upload_step)
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_id'),
+      )
     end
 
     it 'proceeds to document capture when user chooses to upload from computer' do
