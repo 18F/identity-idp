@@ -213,7 +213,9 @@ describe Idv::ReviewController do
       it 'shows steps' do
         get :new
 
-        expect(subject.view_assigns['step_indicator_steps']).to all(be_a(Symbol))
+        expect(subject.view_assigns['step_indicator_steps']).not_to include(
+          hash_including(name: :verify_phone_or_address, status: :pending),
+        )
       end
     end
 
