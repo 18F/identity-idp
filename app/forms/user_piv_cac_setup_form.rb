@@ -27,6 +27,8 @@ class UserPivCacSetupForm
 
   def process_valid_submission
     Db::PivCacConfiguration.create(user, x509_dn_uuid, @name, x509_issuer)
+    event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+    PushNotification::HttpPush.deliver(event)
     true
   rescue PG::UniqueViolation
     self.error_type = 'piv_cac.already_associated'

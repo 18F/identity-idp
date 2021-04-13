@@ -54,6 +54,8 @@ module Users
       revoke_remember_device(current_user)
       current_user_id = current_user.id
       Db::PivCacConfiguration.delete(current_user_id, params[:id].to_i)
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
     end
 
     def render_prompt
