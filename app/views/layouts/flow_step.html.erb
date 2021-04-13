@@ -1,11 +1,13 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render(
-    'shared/step_indicator',
-    locale_scope: flow_namespace,
-    steps: step_indicator[:steps],
-    current_step: step_indicator[:current_step],
-    class: 'margin-x-neg-2 margin-top-neg-2 tablet:margin-x-neg-6 tablet:margin-top-neg-4'
-  ) if local_assigns[:step_indicator] %>
+<% if local_assigns.dig(:step_indicator, :steps).presence %>
+  <% content_for(:pre_flash_content) do %>
+    <%= render(
+      'shared/step_indicator',
+      locale_scope: flow_namespace,
+      steps: step_indicator[:steps],
+      current_step: step_indicator[:current_step],
+      class: 'margin-x-neg-2 margin-top-neg-2 tablet:margin-x-neg-6 tablet:margin-top-neg-4'
+    ) %>
+  <% end %>
 <% end %>
 <% content_for(:content) { render(template: step_template, locals: local_assigns) } %>
 <%= render template: 'layouts/base' %>

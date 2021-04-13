@@ -5,12 +5,15 @@ feature 'doc capture document capture step' do
   include DocAuthHelper
   include DocCaptureHelper
 
+  let(:ial2_step_indicator_enabled) { true }
   let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { false }
   let(:sp_requests_ial2_strict) { true }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
+    allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+      and_return(ial2_step_indicator_enabled)
     allow(IdentityConfig.store).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(Identity::Hostdata::EC2).to receive(:load).
@@ -61,10 +64,30 @@ feature 'doc capture document capture step' do
   end
 
   context 'when liveness checking is enabled' do
+    let(:ial2_step_indicator_enabled) { true }
     let(:liveness_enabled) { true }
 
     before do
+      allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+        and_return(ial2_step_indicator_enabled)
       complete_doc_capture_steps_before_first_step(user)
+    end
+
+    context 'ial2 step indicator enabled' do
+      it 'shows the step indicator' do
+        expect(page).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.verify_id'),
+        )
+      end
+    end
+
+    context 'ial2 step indicator disabled' do
+      let(:ial2_step_indicator_enabled) { false }
+
+      it 'does not show the step indicator' do
+        expect(page).not_to have_css('.step-indicator')
+      end
     end
 
     context 'when the SP does not request strict IAL2' do
@@ -83,10 +106,6 @@ feature 'doc capture document capture step' do
         expect(current_path).to eq(idv_capture_doc_document_capture_step)
         expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
         expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-        expect(page).to have_css(
-          '.step-indicator__step--current',
-          text: t('step_indicator.flows.idv.verify_id'),
-        )
       end
 
       it 'does not show the selfie upload option' do
@@ -113,10 +132,6 @@ feature 'doc capture document capture step' do
       expect(current_path).to eq(idv_capture_doc_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_id'),
-      )
     end
 
     it 'shows the selfie upload option' do
@@ -228,10 +243,6 @@ feature 'doc capture document capture step' do
       expect(current_path).to eq(idv_capture_doc_document_capture_step)
       expect(page).to have_content(t('doc_auth.headings.document_capture_front'))
       expect(page).to have_content(t('doc_auth.headings.document_capture_back'))
-      expect(page).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.verify_id'),
-      )
     end
 
     it 'does not show the selfie upload option' do

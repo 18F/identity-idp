@@ -4,6 +4,8 @@ describe 'idv/review/new.html.erb' do
   include XPathHelper
 
   context 'user has completed all steps' do
+    let(:ial2_step_indicator_enabled) { true }
+
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
@@ -19,6 +21,8 @@ describe 'idv/review/new.html.erb' do
         phone: '+1 (213) 555-0000',
       }
       @step_indicator_steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
+      allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+        and_return(ial2_step_indicator_enabled)
 
       render
     end
@@ -32,11 +36,6 @@ describe 'idv/review/new.html.erb' do
       expect(rendered).to have_content('666-66-1234')
       expect(rendered).to have_content('+1 213-555-0000')
       expect(rendered).to have_content('March 29, 1972')
-
-      expect(view.content_for(:pre_flash_content)).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.secure_account'),
-      )
     end
 
     it 'renders the correct content heading' do
@@ -50,6 +49,23 @@ describe 'idv/review/new.html.erb' do
 
     it 'renders the correct header for the accordion' do
       expect(rendered).to have_content(t('idv.messages.review.intro'))
+    end
+
+    context 'ial2 step indicator enabled' do
+      it 'shows the step indicator' do
+        expect(view.content_for(:pre_flash_content)).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.secure_account'),
+        )
+      end
+    end
+
+    context 'ial2 step indicator disabled' do
+      let(:ial2_step_indicator_enabled) { false }
+
+      it 'does not show the step indicator' do
+        expect(view.content_for(:pre_flash_content)).not_to have_css('.step-indicator')
+      end
     end
   end
 end

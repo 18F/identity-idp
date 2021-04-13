@@ -5,6 +5,7 @@ feature 'recovery verify step' do
   include DocAuthHelper
   include RecoveryHelper
 
+  let(:ial2_step_indicator_enabled) { true }
   let(:user) { create(:user, :signed_up, :with_phone) }
   let(:good_ssn) { '666-66-1234' }
   let(:profile) { create(:profile, :active, :verified, user: user, pii: saved_pii) }
@@ -14,6 +15,8 @@ feature 'recovery verify step' do
   let(:max_attempts) { idv_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
+    allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+      and_return(ial2_step_indicator_enabled)
     profile
     sign_in_before_2fa(user)
   end
@@ -22,10 +25,6 @@ feature 'recovery verify step' do
     complete_recovery_steps_before_verify_step
     expect(page).to have_current_path(idv_recovery_verify_step)
     expect(page).to have_content(t('doc_auth.headings.verify'))
-    expect(page).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_info'),
-    )
   end
 
   it 'proceeds to the next page upon confirmation' do
@@ -96,6 +95,25 @@ feature 'recovery verify step' do
 
     click_on t('two_factor_authentication.account_reset.reset_your_account')
     expect(page).to have_current_path(account_reset_request_path)
+  end
+
+  context 'ial2 step indicator enabled' do
+    it 'shows the step indicator' do
+      complete_recovery_steps_before_verify_step
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_info'),
+      )
+    end
+  end
+
+  context 'ial2 step indicator disabled' do
+    let(:ial2_step_indicator_enabled) { false }
+
+    it 'does not show the step indicator' do
+      complete_recovery_steps_before_verify_step
+      expect(page).not_to have_css('.step-indicator')
+    end
   end
 
   context 'in progress' do
