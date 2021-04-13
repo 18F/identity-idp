@@ -33,4 +33,12 @@ feature 'doc auth verify step' do
 
     expect(page).to have_current_path(idv_doc_auth_verify_step)
   end
+
+  it 'sends the user to start doc auth if there is no pii from the document in session' do
+    visit sign_out_url
+    sign_in_and_2fa_user
+    visit idv_address_path
+
+    expect(page).to have_current_path(idv_doc_auth_welcome_step)
+  end
 end
