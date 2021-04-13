@@ -22,7 +22,11 @@ class WebauthnSetupForm
   def submit(protocol, params)
     consume_parameters(params)
     success = valid? && valid_attestation_response?(protocol)
-    create_webauthn_configuration if success
+    if success
+      create_webauthn_configuration
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+      PushNotification::HttpPush.deliver(event)
+    end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end

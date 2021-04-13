@@ -67,6 +67,8 @@ module Users
       create_user_event(:webauthn_key_removed)
       WebauthnConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
       revoke_remember_device(current_user)
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
       flash[:success] = t('notices.webauthn_deleted')
       track_delete(true)
     end
