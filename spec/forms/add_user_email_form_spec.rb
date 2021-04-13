@@ -7,13 +7,6 @@ RSpec.describe AddUserEmailForm do
   let(:user) { User.create(email: original_email) }
 
   describe '#submit' do
-    let(:push_notifications_enabled) { true }
-
-    before do
-      allow(IdentityConfig.store).to receive(:push_notifications_enabled).
-        and_return(push_notifications_enabled)
-    end
-
     let(:new_email) { 'new@example.com' }
 
     subject(:submit) { form.submit(user, email: new_email) }
