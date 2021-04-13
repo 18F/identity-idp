@@ -68,7 +68,6 @@ class AddUserEmailForm
   end
 
   def notify_subscribers
-    return unless IdentityConfig.store.push_notifications_enabled
     event = PushNotification::EmailChangedEvent.new(user: existing_user, email: email_address.email)
     PushNotification::HttpPush.deliver(event)
   end
