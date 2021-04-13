@@ -11,8 +11,7 @@ module Db
     end
 
     def self.find_user_by_x509(x509_dn_uuid)
-      piv_cac_config = ::PivCacConfiguration.find_by(x509_dn_uuid: x509_dn_uuid)
-      piv_cac_config&.user
+      ::PivCacConfiguration.find_by(x509_dn_uuid: x509_dn_uuid)&.user
     end
   end
 end
