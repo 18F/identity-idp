@@ -9,11 +9,11 @@ locals:
 classes = ['step-indicator']
 classes << local_assigns[:class] if local_assigns[:class]
 normalized_steps = steps.map do |step|
-  step = { name: step } if step.is_a? Symbol
-  step = {
-    title: t(step[:name], scope: [:step_indicator, :flows, locale_scope]),
-  }.merge(step) if local_assigns[:locale_scope]
-  step
+  if local_assigns[:locale_scope]
+    { title: t(step[:name], scope: [:step_indicator, :flows, locale_scope]) }.merge(step)
+  else
+    step
+  end
 end
 current_step_index = normalized_steps.index { |step| step[:name] == local_assigns[:current_step] }
 %>

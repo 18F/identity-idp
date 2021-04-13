@@ -15,11 +15,11 @@ module Idv
       }.freeze
 
       STEP_INDICATOR_STEPS = [
-        :getting_started,
-        :verify_id,
-        :verify_info,
-        :verify_phone_or_address,
-        :secure_account,
+        { name: :getting_started },
+        { name: :verify_id },
+        { name: :verify_info },
+        { name: :verify_phone_or_address },
+        { name: :secure_account },
       ].freeze
 
       OPTIONAL_SHOW_STEPS = {

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'shared/_step_indicator.html.erb' do
   let(:classes) { nil }
-  let(:steps) { [:one, :two, :three] }
+  let(:steps) { [{ name: :one }, { name: :two }, { name: :three }] }
   let(:current_step) { :one }
   let(:locale_scope) { 'example' }
 
@@ -59,63 +59,23 @@ describe 'shared/_step_indicator.html.erb' do
   end
 
   describe 'steps' do
-    context 'with slug steps' do
-      it 'renders steps' do
-        expect(rendered).to have_css(
-          '.step-indicator__step',
-          text: t('step_indicator.flows.example.one'),
-        )
-        expect(rendered).to have_css(
-          '.step-indicator__step',
-          text: t('step_indicator.flows.example.two'),
-        )
-        expect(rendered).to have_css(
-          '.step-indicator__step',
-          text: t('step_indicator.flows.example.three'),
-        )
-      end
-    end
-
-    context 'with object steps' do
-      let(:steps) { [{ name: :one }, { name: :two }, { name: :three }] }
-
-      it 'renders steps' do
-        expect(rendered).to have_css(
-          '.step-indicator__step',
-          text: t('step_indicator.flows.example.one'),
-        )
-        expect(rendered).to have_css(
-          '.step-indicator__step',
-          text: t('step_indicator.flows.example.two'),
-        )
-        expect(rendered).to have_css(
-          '.step-indicator__step',
-          text: t('step_indicator.flows.example.three'),
-        )
-      end
-    end
-
-    context 'with mix of slug and object steps' do
-      let(:steps) { [:one, { name: :two }, :three] }
-
-      it 'renders steps' do
-        expect(rendered).to have_css(
-          '.step-indicator__step',
-          text: t('step_indicator.flows.example.one'),
-        )
-        expect(rendered).to have_css(
-          '.step-indicator__step',
-          text: t('step_indicator.flows.example.two'),
-        )
-        expect(rendered).to have_css(
-          '.step-indicator__step',
-          text: t('step_indicator.flows.example.three'),
-        )
-      end
+    it 'renders steps' do
+      expect(rendered).to have_css(
+        '.step-indicator__step',
+        text: t('step_indicator.flows.example.one'),
+      )
+      expect(rendered).to have_css(
+        '.step-indicator__step',
+        text: t('step_indicator.flows.example.two'),
+      )
+      expect(rendered).to have_css(
+        '.step-indicator__step',
+        text: t('step_indicator.flows.example.three'),
+      )
     end
 
     context 'explicit step status' do
-      let(:steps) { [{ name: :one, status: :pending }, :two] }
+      let(:steps) { [{ name: :one, status: :pending }, { name: :two }] }
       let(:current_step) { :two }
 
       it 'renders with status' do
