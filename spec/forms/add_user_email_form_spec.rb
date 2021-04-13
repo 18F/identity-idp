@@ -30,7 +30,8 @@ RSpec.describe AddUserEmailForm do
     end
 
     it 'notifies subscribers that the email was changed' do
-      expect(PushNotification::HttpPush).to receive(:deliver)
+      expect(PushNotification::HttpPush).to receive(:deliver).
+        with(PushNotification::EmailChangedEvent.new(user: user, email: new_email))
 
       submit
     end
