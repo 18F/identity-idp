@@ -46,8 +46,6 @@ module AccountReset
     end
 
     def send_push_notifications
-      return unless IdentityConfig.store.push_notifications_enabled
-
       event = PushNotification::AccountPurgedEvent.new(user: user)
       PushNotification::HttpPush.deliver(event)
     end

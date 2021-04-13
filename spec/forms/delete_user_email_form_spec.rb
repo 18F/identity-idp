@@ -2,13 +2,6 @@ require 'rails_helper'
 
 describe DeleteUserEmailForm do
   describe '#submit' do
-    let(:push_notifications_enabled) { true }
-
-    before do
-      allow(IdentityConfig.store).to receive(:push_notifications_enabled).
-        and_return(push_notifications_enabled)
-    end
-
     subject(:submit) { form.submit }
 
     context 'with only a single email address' do
@@ -53,16 +46,6 @@ describe DeleteUserEmailForm do
         expect(PushNotification::HttpPush).to receive(:deliver)
 
         submit
-      end
-
-      context 'when push notifications are disabled' do
-        let(:push_notifications_enabled) { false }
-
-        it 'does not notify subscribers' do
-          expect(PushNotification::HttpPush).to_not receive(:deliver)
-
-          submit
-        end
       end
     end
 

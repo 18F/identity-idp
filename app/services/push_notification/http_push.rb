@@ -17,6 +17,8 @@ module PushNotification
     end
 
     def deliver
+      return unless IdentityConfig.store.push_notifications_enabled
+
       event.user.
         service_providers.
         merge(ServiceProviderIdentity.not_deleted).
