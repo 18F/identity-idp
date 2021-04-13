@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe AddUserEmailForm do
   subject(:form) { AddUserEmailForm.new }
@@ -7,6 +7,13 @@ RSpec.describe AddUserEmailForm do
   let(:user) { User.create(email: original_email) }
 
   describe '#submit' do
+    let(:push_notifications_enabled) { true }
+
+    before do
+      allow(IdentityConfig.store).to receive(:push_notifications_enabled).
+        and_return(push_notifications_enabled)
+    end
+
     let(:new_email) { 'new@example.com' }
 
     subject(:submit) { form.submit(user, email: new_email) }
@@ -20,6 +27,12 @@ RSpec.describe AddUserEmailForm do
       email_address_record = EmailAddress.find_with_email(new_email)
       expect(email_address_record).to be_present
       expect(email_address_record.confirmed_at).to be_nil
+    end
+
+    it 'notifies subscribers that the email was changed' do
+      expect(PushNotification::HttpPush).to receive(:deliver)
+
+      submit
     end
 
     context 'when the new email address has an expired previous attempt for the same account' do
