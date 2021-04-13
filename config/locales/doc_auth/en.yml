@@ -59,7 +59,8 @@ en:
           or your ID is too small or blurry in the photos. Make sure your ID is large
           within the image frame and try taking new pictures.
       file_type:
-        invalid: This file type is not accepted, please choose a JPG, PNG, BMP, or TIFF file.
+        invalid: This file type is not accepted, please choose a JPG, PNG, BMP, or
+          TIFF file.
       general:
         liveness: We couldn't verify your ID and photo of yourself. Try taking new
           pictures.

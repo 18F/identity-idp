@@ -73,7 +73,8 @@ fr:
           votre pièce d'identité est grande et qu'elle est située dans le cadre de
           l'image puis essayez de prendre des nouvelles photos.
       file_type:
-        invalid: Ce type de fichier n'est pas accepté, veuillez choisir un fichier JPG, PNG, BMP ou TIFF.
+        invalid: Ce type de fichier n'est pas accepté, veuillez choisir un fichier
+          JPG, PNG, BMP ou TIFF.
       general:
         liveness: Nous n'avons pas pu vérifier votre pièce d'identité et votre photo.
           Essayez de prendre de nouvelles photos.
