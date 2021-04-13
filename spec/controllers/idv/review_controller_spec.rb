@@ -209,6 +209,12 @@ describe Idv::ReviewController do
             phone_message: "<strong>#{t('idv.messages.phone.phone_of_record')}</strong>"),
         )
       end
+
+      it 'shows steps' do
+        get :new
+
+        expect(subject.view_assigns['step_indicator_steps']).to all(be_a(Symbol))
+      end
     end
 
     context 'user chooses address verification' do
@@ -221,6 +227,14 @@ describe Idv::ReviewController do
 
         expect(flash.now[:success]).to eq(
           t('idv.messages.mail_sent'),
+        )
+      end
+
+      it 'shows revises steps to show pending address verification' do
+        get :new
+
+        expect(subject.view_assigns['step_indicator_steps']).to include(
+          hash_including(name: :verify_phone_or_address, status: :pending),
         )
       end
     end
