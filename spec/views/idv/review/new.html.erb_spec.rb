@@ -18,6 +18,7 @@ describe 'idv/review/new.html.erb' do
         zipcode: '12345',
         phone: '+1 (213) 555-0000',
       }
+      @step_indicator_steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
 
       render
     end
@@ -31,6 +32,11 @@ describe 'idv/review/new.html.erb' do
       expect(rendered).to have_content('666-66-1234')
       expect(rendered).to have_content('+1 213-555-0000')
       expect(rendered).to have_content('March 29, 1972')
+
+      expect(view.content_for(:pre_flash_content)).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.secure_account'),
+      )
     end
 
     it 'renders the correct content heading' do
