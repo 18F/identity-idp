@@ -1,16 +1,16 @@
 ---
 es:
   step_indicator:
-    accessible_label: Progreso del paso # Placeholder
+    accessible_label: Progreso del paso
     flows:
       idv:
-        getting_started: Empezando # Placeholder
-        secure_account: Asegure su cuenta # Placeholder
-        verify_id: Verifica tu identificación # Placeholder
-        verify_info: Verifica tus datos personales # Placeholder
-        verify_phone_or_address: Verificar teléfono o dirección # Placeholder
+        getting_started: Empezando
+        secure_account: Asegure su cuenta
+        verify_id: Verifica tu identificación
+        verify_info: Verifica tus datos personales
+        verify_phone_or_address: Verificar teléfono o dirección
     status:
-      complete: Terminado # Placeholder
-      current: Paso actual # Placeholder
-      not_complete: Sin completar # Placeholder
-      pending: Pendiente # Placeholder
+      complete: Terminado
+      current: Paso actual
+      not_complete: Sin completar
+      pending: Pendiente
