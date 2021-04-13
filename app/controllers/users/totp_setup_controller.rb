@@ -99,6 +99,8 @@ module Users
 
     def revoke_otp_secret_key
       Db::AuthAppConfiguration.delete(current_user, params[:id].to_i)
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
     end
 
     def mark_user_as_fully_authenticated

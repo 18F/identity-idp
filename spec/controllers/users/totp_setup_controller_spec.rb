@@ -230,6 +230,9 @@ describe Users::TotpSetupController, devise: true do
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
+        # Receives twice because one is sent when signing up with a second factor
+        expect(PushNotification::HttpPush).to receive(:deliver).
+          with(PushNotification::RecoveryInformationChangedEvent.new(user: user)).twice
         allow(subject).to receive(:create_user_event)
 
         delete :disable, params: { id: totp_app.id }

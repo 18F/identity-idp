@@ -30,7 +30,11 @@ class TotpSetupForm
     # The two_factor_authentication gem raises an error if the secret is nil.
     return false if secret.nil?
     new_timestamp = Db::AuthAppConfiguration.confirm(secret, code)
-    create_auth_app(user, secret, new_timestamp, name) if new_timestamp
+    if new_timestamp
+      create_auth_app(user, secret, new_timestamp, name) if new_timestamp
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+      PushNotification::HttpPush.deliver(event)
+    end
     new_timestamp.present?
   end
 
