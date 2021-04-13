@@ -23,6 +23,7 @@ RSpec.describe PushNotification::HttpPush do
   end
   let(:now) { Time.zone.now }
   let(:risc_notifications_sqs_enabled) { 'false' }
+  let(:push_notifications_enabled) { true }
   let(:sqs_client) { Aws::SQS::Client.new(stub_responses: true) }
   let(:sqs_queue_url) { 'https://some-queue-url.example.com/example' }
 
@@ -32,6 +33,8 @@ RSpec.describe PushNotification::HttpPush do
     allow(AppConfig.env).to receive(:risc_notifications_sqs_enabled).
       and_return(risc_notifications_sqs_enabled)
     allow(Identity::Hostdata).to receive(:env).and_return('dev')
+    allow(IdentityConfig.store).to receive(:push_notifications_enabled).
+      and_return(push_notifications_enabled)
 
     allow(http_push).to receive(:sqs_client).and_return(sqs_client)
 
@@ -43,6 +46,16 @@ RSpec.describe PushNotification::HttpPush do
 
   describe '#deliver' do
     subject(:deliver) { http_push.deliver }
+
+    context 'when push_notifications_enabled is disabled' do
+      let(:push_notifications_enabled) { false }
+
+      it 'does not deliver any notifications' do
+        expect(http_push).to_not receive(:deliver_one)
+
+        deliver
+      end
+    end
 
     context 'when the SQS queue is disabled' do
       let(:risc_notifications_sqs_enabled) { 'false' }
