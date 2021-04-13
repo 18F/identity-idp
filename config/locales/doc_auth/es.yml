@@ -53,6 +53,9 @@ es:
           tomar nuevas fotografías con una luz más brillante.
         visible_photo_check: No pudimos verificar la foto de su identificación. Intente
           tomar nuevas fotografías.
+      camera:
+        blocked: Su cámara está bloqueada
+        failed: No se ha podido encender la cámara, por favor, inténtelo de nuevo.
       dpi:
         top_msg: No pudimos leer su identificación. Es posible que el tamaño de su
           imagen sea demasiado chico, que su identificación sea demasiado pequeña
@@ -63,6 +66,8 @@ es:
           pequeña o que las fotos estén borrosas. Asegúrese de que su identificación
           ocupe un gran espacio dentro del marco de la imagen e intente tomar nuevas
           fotos.
+      file_type:
+        invalid: Ese formato no es admitido, por favor elija un archivo JPG, PNG, BMP, o TIFF.
       general:
         liveness: No pudimos verificar su documento de identidad y su foto. Intente
           tomar nuevas fotografías.
@@ -75,6 +80,7 @@ es:
         no_liveness: No pudimos verificar su documento de identidad. Intente tomar
           nuevas fotografías.
       glare:
+        failed_short: Hay reflejos en la imagen, por favor inténtelo de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos.
           Asegúrese de que el flash de su cámara esté desactivado e intente tomar
           una nueva foto.
@@ -91,11 +97,13 @@ es:
       pii:
         birth_date_min_age: Tu cumpleaños no cumple con el requisito de edad mínima.
       sharpness:
+        failed_short: La imagen está borrosa, por favor inténtelo de nuevo.
         top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado
           borrosa u oscura. Intente tomar una nueva foto en un área iluminada.
         top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos
           estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un área
           iluminada.
+      upload_error: Lo siento, algo salió mal por nuestra parte.
     forms:
       address1: Dirección
       change_file: Cambiar archivo
