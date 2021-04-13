@@ -19,7 +19,10 @@ class UpdateUser
     if attributes[:phone_id].present?
       update_phone_configuration
     else
-      create_phone_configuration
+      phone_configuration = create_phone_configuration
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+      PushNotification::HttpPush.deliver(event)
+      phone_configuration
     end
   end
 

@@ -25,6 +25,8 @@ module Users
     def destroy
       track_deletion_analytics_event
       phone_configuration.destroy!
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
       revoke_remember_device(current_user)
       flash[:success] = t('two_factor_authentication.phone.delete.success')
       redirect_to account_url
