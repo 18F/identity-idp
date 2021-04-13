@@ -43,7 +43,8 @@ describe DeleteUserEmailForm do
       end
 
       it 'notifies subscribers that the identier was recycled' do
-        expect(PushNotification::HttpPush).to receive(:deliver).exactly(2).times
+        expect(PushNotification::HttpPush).to receive(:deliver).exactly(2).times.
+          with(PushNotification::EmailChangedEvent.new(user: user, email: email_address.email))
 
         submit
       end
