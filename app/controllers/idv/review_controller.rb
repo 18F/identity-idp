@@ -59,7 +59,7 @@ module Idv
       return steps if idv_session.address_verification_mechanism != 'gpo'
       steps.map do |step|
         if step[:name] == :verify_phone_or_address
-          step.merge({ status: :pending })
+          step.merge(status: :pending)
         else
           step
         end
