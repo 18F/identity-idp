@@ -160,6 +160,13 @@ describe Users::PivCacAuthenticationSetupController do
           expect(user.reload.piv_cac_configurations).to be_empty
         end
 
+        it 'sends a recovery information changed event' do
+          # Receives twice because one is sent when signing up with a second factor
+          expect(PushNotification::HttpPush).to receive(:deliver).
+            with(PushNotification::RecoveryInformationChangedEvent.new(user: user)).twice
+          delete :delete, params: { id: piv_cac_configuration_id }
+        end
+
         it 'resets the remember device revocation date/time' do
           delete :delete, params: { id: piv_cac_configuration_id }
           expect(subject.current_user.reload.remember_device_revoked_at.to_i).to \

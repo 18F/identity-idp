@@ -62,7 +62,6 @@ describe 'Account Reset Request: Delete Account', email: true do
     end
 
     it 'sends push notifications if push_notifications_enabled is true' do
-      allow(IdentityConfig.store).to receive(:push_notifications_enabled).and_return(true)
       identity = IdentityLinker.new(user, 'urn:gov:gsa:openidconnect:test').link_identity
       agency_identity = AgencyIdentityLinker.new(identity).link_identity
 
@@ -86,6 +85,7 @@ describe 'Account Reset Request: Delete Account', email: true do
 
       reset_email
 
+      allow(IdentityConfig.store).to receive(:push_notifications_enabled).and_return(true)
       Timecop.travel(2.days.from_now) do
         request = stub_push_notification_request(
           sp_push_notification_endpoint: push_notification_url,

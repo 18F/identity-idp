@@ -11,4 +11,28 @@ describe Users::BackupCodeSetupController do
     expect(response.body).to eq(codes.join("\r\n") + "\r\n")
     expect(response.header['Content-Type']).to eq('text/plain')
   end
+
+  it 'creates backup codes' do
+    user = create(:user, :signed_up)
+    stub_sign_in(user)
+    # Receives twice because one is sent when signing up with a second factor
+    expect(PushNotification::HttpPush).to receive(:deliver).
+      with(PushNotification::RecoveryInformationChangedEvent.new(user: user)).twice
+    post :create
+
+    expect(response).to render_template('create')
+    expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
+  end
+
+  it 'deletes backup codes' do
+    user = create(:user, :signed_up)
+    stub_sign_in(user)
+    # Receives twice because one is sent when signing up with a second factor
+    expect(PushNotification::HttpPush).to receive(:deliver).
+      with(PushNotification::RecoveryInformationChangedEvent.new(user: user)).twice
+    post :delete
+
+    expect(response).to redirect_to(account_two_factor_authentication_path)
+    expect(user.backup_code_configurations.length).to eq 0
+  end
 end

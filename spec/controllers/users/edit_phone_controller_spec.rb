@@ -38,8 +38,11 @@ describe Users::EditPhoneController do
     let(:user) { create(:user, :signed_up) }
     let(:phone_configuration) { create(:phone_configuration, user: user) }
 
-    it 'deletes the phone configuraiton' do
+    it 'deletes the phone configuration' do
       stub_sign_in(user.reload)
+      # Receives twice because one is sent when signing up with a second factor
+      expect(PushNotification::HttpPush).to receive(:deliver).
+        with(PushNotification::RecoveryInformationChangedEvent.new(user: user)).twice
       delete :destroy, params: { id: phone_configuration.id }
 
       expect(response).to redirect_to(account_url)
