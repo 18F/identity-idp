@@ -103,7 +103,7 @@ ignore_unused:
   - 'jobs.sms_otp_sender_job.verify_message'
   - 'service_providers.*'
   - 'simple_form.*'
-  - 'step_indicator.idv.*'
+  - 'step_indicator.flows.*'
   - 'time.*'
   - 'two_factor_authentication.invalid_otp'
   - 'two_factor_authentication.invalid_personal_key'
