@@ -45,9 +45,10 @@ class DeleteUserEmailForm
   end
 
   def notify_subscribers
-    event = PushNotification::IdentifierRecycledEvent.new(user: user, email: email_address)
-    PushNotification::HttpPush.deliver(event)
-    event = PushNotification::EmailChangedEvent.new(user: user, email: email_address.email)
-    PushNotification::HttpPush.deliver(event)
+    identifier_recycled = PushNotification::IdentifierRecycledEvent.new(user: user,
+                                                                        email: email_address)
+    PushNotification::HttpPush.deliver(identifier_recycled)
+    email_changed = PushNotification::EmailChangedEvent.new(user: user, email: email_address.email)
+    PushNotification::HttpPush.deliver(email_changed)
   end
 end
