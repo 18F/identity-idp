@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe PushNotification::IdentifierRecycledEvent do
+RSpec.describe PushNotification::EmailChangedEvent do
   subject(:event) do
-    PushNotification::IdentifierRecycledEvent.new(
+    PushNotification::EmailChangedEvent.new(
       user: user,
       email: email,
     )
@@ -13,7 +13,7 @@ RSpec.describe PushNotification::IdentifierRecycledEvent do
 
   describe '#event_type' do
     it 'is the RISC event type' do
-      expect(event.event_type).to eq(PushNotification::IdentifierRecycledEvent::EVENT_TYPE)
+      expect(event.event_type).to eq(PushNotification::EmailChangedEvent::EVENT_TYPE)
     end
   end
 

@@ -1,6 +1,6 @@
 module PushNotification
-  class IdentifierRecycledEvent
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/identifier-recycled'.freeze
+  class EmailChangedEvent
+    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/identifier-changed'.freeze
 
     attr_reader :user, :email
 

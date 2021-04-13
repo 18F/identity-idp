@@ -19,7 +19,7 @@ describe DeleteUserEmailForm do
         expect(user.email_addresses.reload).to_not be_empty
       end
 
-      it 'does not notify subscribers that the identier was recycled' do
+      it 'does not notify subscribers that the identifier was recycled or email changed' do
         expect(PushNotification::HttpPush).to_not receive(:deliver)
 
         submit
@@ -42,8 +42,12 @@ describe DeleteUserEmailForm do
         expect(deleted_email).to be_empty
       end
 
-      it 'notifies subscribers that the identier was recycled' do
-        expect(PushNotification::HttpPush).to receive(:deliver)
+      it 'notifies subscribers that the identifier was recycled and the email changed' do
+        expect(PushNotification::HttpPush).to receive(:deliver).once.
+          with(PushNotification::IdentifierRecycledEvent.new(user: user,
+                                                             email: email_address.email))
+        expect(PushNotification::HttpPush).to receive(:deliver).once.
+            with(PushNotification::EmailChangedEvent.new(user: user, email: email_address.email))
 
         submit
       end
