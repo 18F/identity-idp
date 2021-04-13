@@ -1,16 +1,16 @@
 ---
 fr:
   step_indicator:
-    accessible_label: Progression de l'étape
+    accessible_label: Progression par étapes
     flows:
       idv:
-        getting_started: Commencer
-        secure_account: Sécurise ton compte
-        verify_id: Vérifiez votre identifiant
-        verify_info: Vérifiez vos informations personnelles
-        verify_phone_or_address: Vérifiez le téléphone ou l'adresse
+        getting_started: Démarrer
+        secure_account: Sécurisez votre compte
+        verify_id: Vérifier votre identité
+        verify_info: Vérifier vos données personnelles
+        verify_phone_or_address: Vérifier le téléphone ou l'adresse
     status:
-      complete: Complété
-      current: Étape actuelle
-      not_complete: Pas achevé
+      complete: Terminé
+      current: Étape en cours
+      not_complete: Non terminé
       pending: En attente
