@@ -5,7 +5,6 @@ RSpec.describe RequestPasswordReset do
     let(:user) { create(:user) }
     let(:email) { user.email_addresses.first.email }
 
-
     context 'when the user is not found' do
       it 'sends the account registration email' do
         email = 'nonexistent@example.com'
