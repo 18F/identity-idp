@@ -29,7 +29,7 @@ describe 'shared/_step_indicator_step.html.erb' do
         end
 
         it 'renders accessible indicator' do
-          expect(rendered).to have_text(t('step_indicator.not_completed'))
+          expect(rendered).to have_text(t('step_indicator.status.not_complete'))
         end
       end
 
@@ -44,7 +44,7 @@ describe 'shared/_step_indicator_step.html.erb' do
         end
 
         it 'renders accessible indicator' do
-          expect(rendered).to have_selector('[aria-current]')
+          expect(rendered).to have_text(t('step_indicator.status.current'))
         end
       end
 
@@ -59,7 +59,7 @@ describe 'shared/_step_indicator_step.html.erb' do
         end
 
         it 'renders visible pending indicator' do
-          expect(rendered).to have_text(t('step_indicator.pending'))
+          expect(rendered).to have_text(t('step_indicator.status.pending'))
         end
       end
 
@@ -74,7 +74,7 @@ describe 'shared/_step_indicator_step.html.erb' do
         end
 
         it 'renders accessible indicator' do
-          expect(rendered).to have_text(t('step_indicator.completed'))
+          expect(rendered).to have_text(t('step_indicator.status.complete'))
         end
       end
     end

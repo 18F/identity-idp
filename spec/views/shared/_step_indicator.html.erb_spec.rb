@@ -15,10 +15,12 @@ describe 'shared/_step_indicator.html.erb' do
     I18n.backend.store_translations(
       :en,
       step_indicator: {
-        example: {
-          one: 'One',
-          two: 'Two',
-          three: 'Three',
+        flows: {
+          example: {
+            one: 'One',
+            two: 'Two',
+            three: 'Three',
+          },
         },
       },
     )
@@ -59,11 +61,17 @@ describe 'shared/_step_indicator.html.erb' do
   describe 'steps' do
     context 'with slug steps' do
       it 'renders steps' do
-        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.one'))
-        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.two'))
         expect(rendered).to have_css(
           '.step-indicator__step',
-          text: t('step_indicator.example.three'),
+          text: t('step_indicator.flows.example.one'),
+        )
+        expect(rendered).to have_css(
+          '.step-indicator__step',
+          text: t('step_indicator.flows.example.two'),
+        )
+        expect(rendered).to have_css(
+          '.step-indicator__step',
+          text: t('step_indicator.flows.example.three'),
         )
       end
     end
@@ -72,11 +80,17 @@ describe 'shared/_step_indicator.html.erb' do
       let(:steps) { [{ name: :one }, { name: :two }, { name: :three }] }
 
       it 'renders steps' do
-        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.one'))
-        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.two'))
         expect(rendered).to have_css(
           '.step-indicator__step',
-          text: t('step_indicator.example.three'),
+          text: t('step_indicator.flows.example.one'),
+        )
+        expect(rendered).to have_css(
+          '.step-indicator__step',
+          text: t('step_indicator.flows.example.two'),
+        )
+        expect(rendered).to have_css(
+          '.step-indicator__step',
+          text: t('step_indicator.flows.example.three'),
         )
       end
     end
@@ -85,11 +99,17 @@ describe 'shared/_step_indicator.html.erb' do
       let(:steps) { [:one, { name: :two }, :three] }
 
       it 'renders steps' do
-        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.one'))
-        expect(rendered).to have_css('.step-indicator__step', text: t('step_indicator.example.two'))
         expect(rendered).to have_css(
           '.step-indicator__step',
-          text: t('step_indicator.example.three'),
+          text: t('step_indicator.flows.example.one'),
+        )
+        expect(rendered).to have_css(
+          '.step-indicator__step',
+          text: t('step_indicator.flows.example.two'),
+        )
+        expect(rendered).to have_css(
+          '.step-indicator__step',
+          text: t('step_indicator.flows.example.three'),
         )
       end
     end
@@ -101,7 +121,7 @@ describe 'shared/_step_indicator.html.erb' do
       it 'renders with status' do
         expect(rendered).to have_css(
           '.step-indicator__step--pending',
-          text: t('step_indicator.example.one'),
+          text: t('step_indicator.flows.example.one'),
         )
       end
     end
@@ -109,24 +129,30 @@ describe 'shared/_step_indicator.html.erb' do
 
   describe 'current_step' do
     it 'renders current step' do
-      expect(rendered).to have_css('[aria-current]', text: t('step_indicator.example.one'))
+      expect(rendered).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.example.one'),
+      )
     end
 
     context 'with complete step' do
       let(:current_step) { :two }
 
       it 'renders current step' do
-        expect(rendered).to have_css('[aria-current]', text: t('step_indicator.example.two'))
+        expect(rendered).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.example.two'),
+        )
       end
 
       it 'renders completed step' do
         expect(rendered).to have_css(
           '.step-indicator__step--complete',
-          text: t('step_indicator.example.one'),
+          text: t('step_indicator.flows.example.one'),
         )
         expect(rendered).to have_css(
           '.step-indicator__step--complete',
-          text: t('step_indicator.completed'),
+          text: t('step_indicator.status.complete'),
         )
       end
     end
@@ -134,7 +160,10 @@ describe 'shared/_step_indicator.html.erb' do
 
   describe 'locale_scope' do
     it 'translates using given scope' do
-      expect(rendered).to have_css('[aria-current]', text: t('step_indicator.example.one'))
+      expect(rendered).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.example.one'),
+      )
     end
 
     context 'with nil scope' do
@@ -142,7 +171,10 @@ describe 'shared/_step_indicator.html.erb' do
       let(:locale_scope) { nil }
 
       it 'uses title' do
-        expect(rendered).to have_css('[aria-current]', text: 'Nil Scope One')
+        expect(rendered).to have_css(
+          '.step-indicator__step--current',
+          text: 'Nil Scope One',
+        )
       end
     end
   end
