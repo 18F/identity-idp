@@ -5,11 +5,6 @@ RSpec.describe RequestPasswordReset do
     let(:user) { create(:user) }
     let(:email) { user.email_addresses.first.email }
 
-    let(:push_notifications_enabled) { true }
-    before do
-      allow(IdentityConfig.store).to receive(:push_notifications_enabled).
-        and_return(push_notifications_enabled)
-    end
 
     context 'when the user is not found' do
       it 'sends the account registration email' do
@@ -50,27 +45,11 @@ RSpec.describe RequestPasswordReset do
           to(change { user.reload.reset_password_token })
       end
 
+      it 'sends a recovery activated push event' do
+        expect(PushNotification::HttpPush).to receive(:deliver).
+          with(PushNotification::RecoveryActivatedEvent.new(user: user))
 
-
-      context 'when push notifications are enabled' do
-        let(:push_notifications_enabled) { true }
-
-        it 'does not send a push event' do
-          expect(PushNotification::HttpPush).to_not receive(:deliver)
-
-          RequestPasswordReset.new(email: email).perform
-        end
-      end
-
-      context 'when push notifications are disabled' do
-        let(:push_notifications_enabled) { false }
-
-        it 'sends a recovery activated push event' do
-          expect(PushNotification::HttpPush).to receive(:deliver).
-            with(PushNotification::RecoveryActivatedEvent.new(user: user))
-
-          RequestPasswordReset.new(email: email).perform
-        end
+        RequestPasswordReset.new(email: email).perform
       end
     end
 
