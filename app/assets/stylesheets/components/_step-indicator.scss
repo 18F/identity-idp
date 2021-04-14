@@ -142,12 +142,12 @@ $step-indicator-pending-color: #a8b6c6;
 }
 
 .step-indicator__step-subtitle {
-  display: none;
-  font-style: italic;
-  height: 0;
-  overflow: visible;
+  @include at-media-max('tablet') {
+    @include sr-only;
+  }
 
-  @include at-media('tablet-lg') {
+  @include at-media('tablet') {
     display: block;
+    font-style: italic;
   }
 }
