@@ -38,6 +38,13 @@ class StepIndicator {
     }
   }
 
+  /**
+   * Toggles the scrollable region to be focusable at small viewports where the contents are in-
+   * fact scrollable. This ensures that those who navigate using a keyboard are able to scroll the
+   * content.
+   *
+   * @see https://dequeuniversity.com/rules/axe/4.0/scrollable-region-focusable
+   */
   toggleWrapperFocusable() {
     const { scroller } = this.elements;
     if (this.isSmallViewport) {

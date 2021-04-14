@@ -12,6 +12,12 @@ classes << 'step-indicator__step--complete' if local_assigns[:status] == :comple
 classes << 'step-indicator__step--pending' if local_assigns[:status] == :pending
 %>
 
+<%#
+Using `aria-current="step"` would be the preferred method to indicate the current step, but at the
+time of implementation, it is not announced correctly for `li` elements in iOS VoiceOver.
+
+See: https://www.w3.org/TR/wai-aria-1.1/#aria-current
+%>
 <%= tag.li class: classes do %>
   <span class="step-indicator__step-title">
     <%= title %>
