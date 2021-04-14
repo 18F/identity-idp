@@ -24,3 +24,5 @@ classes << local_assigns[:class] if local_assigns[:class]
   **local_assigns,
   class: classes,
 ) %>
+
+<%= javascript_packs_tag_once 'one-time-code-input' %>
