@@ -160,6 +160,27 @@ describe Profile do
       expect(active_profile).to_not be_active
       expect(profile).to be_active
     end
+
+    it 'sends a reproof completed push event' do
+      expect(PushNotification::HttpPush).to receive(:deliver).
+        with(PushNotification::ReproofCompletedEvent.new(user: user))
+
+      Profile.create(user: user, active: true)
+      profile.activate
+    end
+
+    it 'does not send a reproof event when there is a non active profile' do
+      expect(PushNotification::HttpPush).to_not receive(:deliver)
+
+      Profile.create(user: user, active: false)
+      profile.activate
+    end
+
+    it 'does not send a reproof event when there is no active profile' do
+      expect(PushNotification::HttpPush).to_not receive(:deliver)
+
+      profile.activate
+    end
   end
 
   describe '#deactivate' do
