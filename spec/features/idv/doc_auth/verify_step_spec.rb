@@ -4,10 +4,13 @@ feature 'doc auth verify step' do
   include IdvStepHelper
   include DocAuthHelper
 
+  let(:ial2_step_indicator_enabled) { true }
   let(:skip_step_completion) { false }
   let(:max_attempts) { idv_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
+    allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+      and_return(ial2_step_indicator_enabled)
     unless skip_step_completion
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_verify_step
@@ -139,6 +142,23 @@ feature 'doc auth verify step' do
       throttle_type: :idv_resolution,
       step_name: Idv::Steps::VerifyWaitStepShow,
     )
+  end
+
+  context 'ial2 step indicator enabled' do
+    it 'shows the step indicator' do
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_info'),
+      )
+    end
+  end
+
+  context 'ial2 step indicator disabled' do
+    let(:ial2_step_indicator_enabled) { false }
+
+    it 'does not show the step indicator' do
+      expect(page).not_to have_css('.step-indicator')
+    end
   end
 
   context 'when the user lives in an AAMVA supported state' do

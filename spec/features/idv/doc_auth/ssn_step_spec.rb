@@ -6,7 +6,11 @@ feature 'doc auth ssn step' do
   include DocCaptureHelper
 
   context 'desktop' do
+    let(:ial2_step_indicator_enabled) { true }
+
     before do
+      allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+        and_return(ial2_step_indicator_enabled)
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_ssn_step
     end
@@ -32,10 +36,31 @@ feature 'doc auth ssn step' do
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
+
+    context 'ial2 step indicator enabled' do
+      it 'shows the step indicator' do
+        expect(page).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.verify_info'),
+        )
+      end
+    end
+
+    context 'ial2 step indicator disabled' do
+      let(:ial2_step_indicator_enabled) { false }
+
+      it 'does not show the step indicator' do
+        expect(page).not_to have_css('.step-indicator')
+      end
+    end
   end
 
   context 'doc capture hand-off' do
+    let(:ial2_step_indicator_enabled) { true }
+
     before do
+      allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+        and_return(ial2_step_indicator_enabled)
       allow(Identity::Hostdata::EC2).to receive(:load).
         and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
       in_doc_capture_session { complete_doc_capture_steps_before_capture_complete_step }
@@ -67,6 +92,23 @@ feature 'doc auth ssn step' do
       click_idv_continue
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    end
+
+    context 'ial2 step indicator enabled' do
+      it 'shows the step indicator' do
+        expect(page).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.verify_info'),
+        )
+      end
+    end
+
+    context 'ial2 step indicator disabled' do
+      let(:ial2_step_indicator_enabled) { false }
+
+      it 'does not show the step indicator' do
+        expect(page).not_to have_css('.step-indicator')
+      end
     end
   end
 end

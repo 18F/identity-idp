@@ -1,6 +1,8 @@
 module Idv
   module Steps
     class DocumentCaptureStep < DocAuthBaseStep
+      STEP_INDICATOR_STEP = :verify_id
+
       IMAGE_UPLOAD_PARAM_NAMES = %i[
         front_image back_image selfie_image
       ].freeze

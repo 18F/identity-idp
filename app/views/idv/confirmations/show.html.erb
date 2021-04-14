@@ -1,3 +1,14 @@
+<% if IdentityConfig.store.ial2_step_indicator_enabled %>
+  <% content_for(:pre_flash_content) do %>
+    <%= render 'shared/step_indicator', {
+      steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+      current_step: :secure_account,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-2 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+    } %>
+  <% end %>
+<% end %>
+
 <% title t('titles.personal_key') %>
 
 <%= render 'shared/personal_key', code: @code, update_path: idv_confirmations_path %>

@@ -68,6 +68,7 @@
     </div>
     <div class="container">
       <div class="padding-x-2 padding-y-2 tablet:padding-y-8 tablet:padding-x-10 margin-x-auto tablet:margin-bottom-8 border-box <%= local_assigns[:disable_card].present? ? '' : 'card' %>" role="main">
+        <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
         <%= render 'shared/flashes' %>
         <%= content_for?(:content) ? yield(:content) : yield %>
       </div>

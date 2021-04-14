@@ -4,17 +4,37 @@ feature 'doc auth document capture step' do
   include IdvStepHelper
   include DocAuthHelper
 
+  let(:ial2_step_indicator_enabled) { true }
   let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { false }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
+    allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+      and_return(ial2_step_indicator_enabled)
     allow(IdentityConfig.store).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
+  end
+
+  context 'ial2 step indicator enabled' do
+    it 'shows the step indicator' do
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_id'),
+      )
+    end
+  end
+
+  context 'ial2 step indicator disabled' do
+    let(:ial2_step_indicator_enabled) { false }
+
+    it 'does not show the step indicator' do
+      expect(page).not_to have_css('.step-indicator')
+    end
   end
 
   context 'when liveness checking is enabled' do

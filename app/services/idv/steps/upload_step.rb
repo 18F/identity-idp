@@ -1,6 +1,8 @@
 module Idv
   module Steps
     class UploadStep < DocAuthBaseStep
+      STEP_INDICATOR_STEP = :verify_id
+
       def call
         if params[:type] == 'desktop'
           handle_desktop_selection
@@ -59,7 +61,7 @@ module Idv
 
       def mobile_device?
         return @mobile_device if defined?(@mobile_device)
-        
+
         client = DeviceDetector.new(request.user_agent)
         @mobile_device = client.device_type != 'desktop'
       end

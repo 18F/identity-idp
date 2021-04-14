@@ -1,6 +1,8 @@
 module Idv
   module Steps
     class LinkSentStep < DocAuthBaseStep
+      STEP_INDICATOR_STEP = :verify_id
+
       def call
         return render_document_capture_cancelled if document_capture_session&.cancelled_at
         return render_step_incomplete_error unless take_photo_with_phone_successful?

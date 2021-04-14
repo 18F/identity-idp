@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import { JSDOM, ResourceLoader } from 'jsdom';
+import matchMediaPolyfill from 'mq-polyfill';
 
 /**
  * Returns an instance of a JSDOM DOM instance configured for the test environment.
@@ -40,6 +41,20 @@ export function createDOM() {
       return this.parentNode;
     },
   });
+
+  matchMediaPolyfill(dom.window);
+
+  dom.window.resizeTo = function (width, height) {
+    Object.assign(this, {
+      innerWidth: width,
+      innerHeight: height,
+      outerWidth: width,
+      outerHeight: height,
+    }).dispatchEvent(new this.Event('resize'));
+  };
+
+  // See: https://github.com/jsdom/jsdom/issues/1695
+  dom.window.Element.prototype.scrollIntoView = () => {};
 
   // JSDOM doesn't implement scrollTo, and loudly complains (logs) when it's called, conflicting
   // with global log error capturing. This suppresses said logging.
