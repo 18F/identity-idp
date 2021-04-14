@@ -57,11 +57,11 @@ describe 'idv/come_back_later/show.html.erb' do
 
       expect(view.content_for(:pre_flash_content)).to have_css(
         '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.secure_account'),
+        text: t('step_indicator.flows.idv.verify_phone_or_address'),
       )
       expect(view.content_for(:pre_flash_content)).to have_css(
-        '.step-indicator__step--pending',
-        text: t('step_indicator.flows.idv.verify_phone_or_address'),
+        '.step-indicator__step--complete',
+        text: t('step_indicator.flows.idv.secure_account'),
       )
     end
   end

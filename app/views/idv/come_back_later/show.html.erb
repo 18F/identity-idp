@@ -2,9 +2,9 @@
   <% content_for(:pre_flash_content) do %>
     <%= render 'shared/step_indicator', {
       steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS.map do |step|
-        step[:name] == :verify_phone_or_address ? step.merge(status: :pending) : step
+        step[:name] == :secure_account ? step.merge(status: :complete) : step
       end,
-      current_step: :secure_account,
+      current_step: :verify_phone_or_address,
       locale_scope: 'idv',
       class: 'margin-x-neg-2 margin-top-neg-2 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
     } %>
