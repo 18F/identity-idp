@@ -7,6 +7,7 @@ module Idv
     before_action :confirm_profile_has_been_created
 
     def show
+      @step_indicator_steps = step_indicator_steps
       track_final_idv_event
 
       finish_idv_session
@@ -23,6 +24,15 @@ module Idv
     end
 
     private
+
+    def step_indicator_steps
+      return [] if !IdentityConfig.store.ial2_step_indicator_enabled
+      steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
+      return steps if idv_session.address_verification_mechanism != 'gpo'
+      steps.map do |step|
+        step[:name] == :verify_phone_or_address ? step.merge(status: :pending) : step
+      end
+    end
 
     def next_step
       if session[:sp] && !pending_profile?
