@@ -26,7 +26,7 @@ shared_examples 'idv confirmation step' do |sp|
 
     context 'user selected gpo verification' do
       context 'ial2 step indicator enabled' do
-        it 'shows step indicator progress with pending verify step' do
+        it 'shows step indicator progress with pending verify phone step' do
           expect(page).to have_css(
             '.step-indicator__step--current',
             text: t('step_indicator.flows.idv.secure_account'),
@@ -58,7 +58,15 @@ shared_examples 'idv confirmation step' do |sp|
       complete_idv_steps_with_phone_before_confirmation_step
     end
 
-    it 'shows step indicator progress' do
+    it 'shows step indicator progress with complete verify phone step' do
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.secure_account'),
+      )
+      expect(page).to have_css(
+        '.step-indicator__step--complete',
+        text: t('step_indicator.flows.idv.verify_phone_or_address'),
+      )
     end
 
     it 'redirects to the completions page and then to the SP', if: sp.present? do
