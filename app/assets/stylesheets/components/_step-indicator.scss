@@ -101,12 +101,8 @@ $step-indicator-pending-color: #a8b6c6;
 }
 
 .step-indicator__step--current::before {
-  background: radial-gradient(
-    circle at center,
-    color('white') 0%,
-    color('white') ($root-font-size-equiv / 2 - $step-indicator-current-step-border-width),
-    color('success') ($root-font-size-equiv / 2 - $step-indicator-current-step-border-width),
-  );
+  background-color: color('white');
+  border: $step-indicator-current-step-border-width solid color('success');
 }
 
 .step-indicator__step--complete:not(.step-indicator__step--pending)::before {
