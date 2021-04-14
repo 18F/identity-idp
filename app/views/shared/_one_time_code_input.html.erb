@@ -1,0 +1,26 @@
+<%#
+Renders a numeric OTP code input field. In addition to the locals described below, all additional
+local assigns will be applied directly to the text input as a hash of HTML attributes.
+
+locals:
+* name: Field name. Defaults to `:code`.
+* value: Field value. Defaults to `''`.
+%>
+<%
+name = local_assigns[:name] || :code
+classes = ['field monospace usa-input one-time-code-input']
+classes << local_assigns[:class] if local_assigns[:class]
+%>
+
+<%= text_field_tag(
+  name,
+  nil,
+  aria: { invalid: false },
+  pattern: '[0-9]*',
+  maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+  autocomplete: 'one-time-code',
+  inputmode: 'numeric',
+  type: 'text',
+  **local_assigns,
+  class: classes,
+) %>
