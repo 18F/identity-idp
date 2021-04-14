@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-describe 'shared/_spinner-button.html.erb' do
+describe 'shared/_spinner_button.html.erb' do
   it 'raises an error if no block given' do
-    expect { render 'shared/spinner-button' }.to raise_error('no block content given')
+    expect { render 'shared/spinner_button' }.to raise_error('no block content given')
   end
 
   describe 'classes' do
     let(:classes) { nil }
 
     before do
-      render('shared/spinner-button', class: classes) { tag.button }
+      render('shared/spinner_button', class: classes) { tag.button }
     end
 
     context 'without custom classes given' do
@@ -33,7 +33,7 @@ describe 'shared/_spinner-button.html.erb' do
     let(:action_message) { nil }
 
     before do
-      render('shared/spinner-button', action_message: action_message) { tag.button }
+      render('shared/spinner_button', action_message: action_message) { tag.button }
     end
 
     context 'without action message' do
