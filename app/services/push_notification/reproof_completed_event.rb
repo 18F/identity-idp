@@ -1,6 +1,6 @@
 module PushNotification
   class ReproofCompletedEvent
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/reproof-completed'.freeze
+    EVENT_TYPE = 'https://schemas.login.gov/secevent/risc/event-type/reproof-completed'.freeze
 
     attr_reader :user
 
