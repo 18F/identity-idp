@@ -2,30 +2,19 @@
 
 <h1>Push Notification Events</h1>
 
-<div class="card card-wide">
-  <div class="padding-4">
+<div>
+  <div>
     <%= button_to 'Clear events', test_push_notification_path, method: :delete, class: 'usa-button' %>
-    <div class="grid-row grid-gap margin-top-2">
+    <div class="margin-top-2">
       <h2>Events</h2>
-
-      <table class="usa-table">
-        <thead>
-          <tr>
-            <th scope="col">Push Notification URL</th>
-            <th scope="col">Payload</th>
-            <th scope="col">JWT</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @events.each do |event| %>
-            <tr>
-              <th scope="row"><%= event[:url] %></th>
-              <td style="overflow-wrap:anywhere"><%= event[:payload].to_json %></td>
-              <td style="overflow-wrap:anywhere"><%= event[:jwt] %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+      <% @events.each do |event| %>
+        <div>
+          <h3>JTI: <%= event[:payload][:jti] %></h3>
+          <div>URL: <%= event[:url] %></div>
+          <div>Payload: <pre><code><%= JSON.pretty_generate(event[:payload]) %></code></pre></div>
+          <div>JWT: <pre><code><%= event[:jwt] %></code></pre></div>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
