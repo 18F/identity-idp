@@ -5,7 +5,7 @@ class OneTimeCodeInput {
    * @param {HTMLInputElement} input
    */
   constructor(input) {
-    this.elements = { input };
+    this.elements = { input, form: input.closest('form') };
     this.options = {
       transport: /** @type {OTPCredentialTransportType=} */ (input.dataset.transport),
     };
@@ -21,22 +21,22 @@ class OneTimeCodeInput {
    * @param {OTPCredentialTransportType} transport
    */
   async receive(transport) {
+    const { input, form } = this.elements;
     const controller = new AbortController();
 
-    const form = this.elements.input.closest('form');
     if (form) {
       form.addEventListener('submit', () => controller.abort());
     }
 
-    let code;
     try {
-      ({ code } = await /** @type {OTPCredentialsContainer} */ (navigator.credentials).get({
+      const { code } = await /** @type {OTPCredentialsContainer} */ (navigator.credentials).get({
         otp: { transport: [transport] },
         signal: controller.signal,
-      }));
-    } catch {}
+      });
 
-    return code;
+      input.value = code;
+      form?.submit();
+    } catch {}
   }
 }
 
