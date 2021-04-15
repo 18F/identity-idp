@@ -5,6 +5,7 @@ local assigns will be applied directly to the text input as a hash of HTML attri
 locals:
 * name: Field name. Defaults to `:code`.
 * value: Field value. Defaults to `''`.
+* class: CSS classes to add (optional)
 %>
 <%
 name = local_assigns.delete(:name) || :code
