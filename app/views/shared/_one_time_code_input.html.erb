@@ -7,9 +7,9 @@ locals:
 * value: Field value. Defaults to `''`.
 %>
 <%
-name = local_assigns[:name] || :code
+name = local_assigns.delete(:name) || :code
 classes = ['field monospace usa-input one-time-code-input']
-classes << local_assigns[:class] if local_assigns[:class]
+classes << local_assigns.delete(:class) if local_assigns[:class]
 %>
 
 <%= text_field_tag(
