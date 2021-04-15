@@ -162,10 +162,10 @@ describe Profile do
     end
 
     it 'sends a reproof completed push event' do
+      Profile.create(user: user, active: true)
       expect(PushNotification::HttpPush).to receive(:deliver).
         with(PushNotification::ReproofCompletedEvent.new(user: user))
 
-      Profile.create(user: user, active: true)
       profile.activate
     end
 
