@@ -11,15 +11,23 @@ import withBackgroundEncryptedUpload from '../higher-order/with-background-encry
 import './review-issues-step.scss';
 
 /**
+ * @typedef {'front'|'back'} DocumentSide
+ */
+
+/**
  * @typedef ReviewIssuesStepValue
  *
  * @prop {Blob|string|null|undefined} front Front image value.
  * @prop {Blob|string|null|undefined} back Back image value.
  * @prop {Blob|string|null|undefined} selfie Back image value.
+ * @prop {string=} front_image_metadata Front image metadata.
+ * @prop {string=} back_image_metadata Back image metadata.
  */
 
 /**
  * Sides of document to present as file input.
+ *
+ * @type {DocumentSide[]}
  */
 const DOCUMENT_SIDES = ['front', 'back'];
 
@@ -81,7 +89,9 @@ function ReviewIssuesStep({
             /* i18n-tasks-use t('doc_auth.headings.front') */
             bannerText={t(`doc_auth.headings.${side}`)}
             value={value[side]}
-            onChange={(nextValue) => onChange({ [side]: nextValue })}
+            onChange={(nextValue, metadata) =>
+              onChange({ [side]: nextValue, [`${side}_image_metadata`]: JSON.stringify(metadata) })
+            }
             className="document-capture-review-issues-step__input"
             errorMessage={sideError ? <FormErrorMessage error={sideError} /> : undefined}
             name={side}

@@ -10,6 +10,7 @@ import ReviewIssuesStep, {
 } from '@18f/identity-document-capture/components/review-issues-step';
 import { render } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';
+import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/review-issues-step', () => {
   const sandbox = useSandbox();
@@ -67,17 +68,21 @@ describe('document-capture/components/review-issues-step', () => {
     expect(getByLabelText('doc_auth.headings.document_capture_selfie')).to.be.ok();
   });
 
-  it('calls onChange callback with uploaded image', () => {
+  it('calls onChange callback with uploaded image', async () => {
     const onChange = sinon.stub();
     const { getByLabelText } = render(<ReviewIssuesStep onChange={onChange} />);
-    const file = new window.File([''], 'upload.png', { type: 'image/png' });
+    const file = await getFixtureFile('doc_auth_images/id-back.jpg');
 
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file);
-    expect(onChange.getCall(0).args[0]).to.deep.equal({ front: file });
+    await new Promise((resolve) => onChange.callsFake(resolve));
+    expect(onChange).to.have.been.calledWith({
+      front: file,
+      front_image_metadata: sinon.match(/^\{.+\}$/),
+    });
   });
 
   it('performs background encrypted uploads', async () => {
-    const onChange = sandbox.spy();
+    const onChange = sandbox.stub();
     sandbox.stub(window, 'fetch').callsFake(() =>
       Promise.resolve({
         ok: true,
@@ -102,9 +107,10 @@ describe('document-capture/components/review-issues-step', () => {
       </UploadContextProvider>,
     );
 
-    const file = new window.File([''], 'upload.png', { type: 'image/png' });
+    const file = await getFixtureFile('doc_auth_images/id-back.jpg');
 
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), file);
+    await new Promise((resolve) => onChange.callsFake(resolve));
     const patch = onChange.getCall(0).args[0];
     expect(await patch.back_image_url).to.equal('about:blank#back');
     expect(window.fetch.getCall(0).args[0]).to.equal('about:blank#back');

@@ -85,7 +85,10 @@ import './acuant-capture.scss';
  * @prop {string} label Label associated with file input.
  * @prop {string=} bannerText Optional banner text to show in file input.
  * @prop {string|Blob|null|undefined} value Current value.
- * @prop {(nextValue:string|Blob|null)=>void} onChange Callback receiving next value on change.
+ * @prop {(
+ *   nextValue: string|Blob|null,
+ *   metadata?: ImageAnalyticsPayload
+ * )=>void} onChange Callback receiving next value on change.
  * @prop {'user'=} capture Facing mode of capture. If capture is not specified and a camera is
  * supported, defaults to the Acuant environment camera capture.
  * @prop {string=} className Optional additional class names.
@@ -167,10 +170,12 @@ function getImageDimensions(file) {
         image.onload = () => resolve({ width: image.width, height: image.height });
         image.onerror = () => resolve({ width: null, height: null });
         image.src = objectURL;
-      }).then(({ width, height }) => {
-        window.URL.revokeObjectURL(objectURL);
-        return { width, height };
       })
+        .then(({ width, height }) => {
+          window.URL.revokeObjectURL(objectURL);
+          return { width, height };
+        })
+        .catch(() => ({ width: null, height: null }))
     : Promise.resolve({ width: null, height: null });
 }
 
@@ -220,10 +225,11 @@ function AcuantCapture(
    * Calls onChange with next value and resets any errors which may be present.
    *
    * @param {Blob|string|null} nextValue Next value.
+   * @param {ImageAnalyticsPayload=} metadata Capture metadata.
    */
-  function onChangeAndResetError(nextValue) {
+  function onChangeAndResetError(nextValue, metadata) {
     setOwnErrorMessage(null);
-    onChange(nextValue);
+    onChange(nextValue, metadata);
   }
 
   /**
@@ -231,25 +237,26 @@ function AcuantCapture(
    *
    * @param {File?} nextValue Next value, if set.
    */
-  function onUpload(nextValue) {
+  async function onUpload(nextValue) {
+    /** @type {ImageAnalyticsPayload=} */
+    let analyticsPayload;
     if (nextValue) {
-      getImageDimensions(nextValue).then(({ width, height }) => {
-        /** @type {ImageAnalyticsPayload} */
-        const analyticsPayload = {
-          width,
-          height,
-          mimeType: nextValue.type,
-          source: 'upload',
-        };
+      const { width, height } = await getImageDimensions(nextValue);
 
-        addPageAction({
-          label: `IdV: ${name} image added`,
-          payload: analyticsPayload,
-        });
+      analyticsPayload = {
+        width,
+        height,
+        mimeType: nextValue.type,
+        source: 'upload',
+      };
+
+      addPageAction({
+        label: `IdV: ${name} image added`,
+        payload: analyticsPayload,
       });
     }
 
-    onChangeAndResetError(nextValue);
+    onChangeAndResetError(nextValue, analyticsPayload);
   }
 
   /**
@@ -330,7 +337,6 @@ function AcuantCapture(
       setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
       assessment = 'blurry';
     } else {
-      onChangeAndResetError(data);
       assessment = 'success';
     }
 
@@ -357,6 +363,10 @@ function AcuantCapture(
       label: `IdV: ${name} image added`,
       payload: analyticsPayload,
     });
+
+    if (assessment === 'success') {
+      onChangeAndResetError(data, analyticsPayload);
+    }
 
     setIsCapturingEnvironment(false);
   }

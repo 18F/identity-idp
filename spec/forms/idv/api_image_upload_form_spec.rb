@@ -3,24 +3,33 @@ require 'rails_helper'
 RSpec.describe Idv::ApiImageUploadForm do
   subject(:form) do
     Idv::ApiImageUploadForm.new(
-      {
+      ActionController::Parameters.new(
         front: front_image,
+        front_image_metadata: front_image_metadata,
         back: back_image,
+        back_image_metadata: back_image_metadata,
         selfie: selfie_image,
         document_capture_session_uuid: document_capture_session_uuid,
-      },
+      ),
       liveness_checking_enabled: liveness_checking_enabled?,
       issuer: 'test_issuer',
-      analytics: FakeAnalytics.new,
+      analytics: fake_analytics,
     )
   end
 
   let(:front_image) { DocAuthImageFixtures.document_front_image_multipart }
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
+  let(:front_image_metadata) do
+    { width: 40, height: 40, mimeType: 'image/png', source: 'upload' }.to_json
+  end
+  let(:back_image_metadata) do
+    { width: 20, height: 20, mimeType: 'image/png', source: 'upload' }.to_json
+  end
   let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
   let!(:document_capture_session) { DocumentCaptureSession.create! }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:liveness_checking_enabled?) { true }
+  let(:fake_analytics) { FakeAnalytics.new }
 
   describe '#valid?' do
     context 'with all valid images' do
@@ -84,6 +93,45 @@ RSpec.describe Idv::ApiImageUploadForm do
   end
 
   describe '#submit' do
+    context 'valid form' do
+      it 'logs analytics' do
+        form.submit
+
+        expect(fake_analytics).to have_logged_event(
+          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+          success: true,
+          errors: {},
+          exception: nil,
+          result: 'Passed',
+          billed: true,
+          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          user_id: nil,
+          front_image_metadata: JSON.parse(front_image_metadata, symbolize_names: true),
+          back_image_metadata: JSON.parse(back_image_metadata, symbolize_names: true),
+        )
+      end
+    end
+
+    context 'invalid metadata shape' do
+      let(:back_image_metadata) { '{' }
+
+      it 'logs analytics excluding invalid metadata' do
+        form.submit
+
+        expect(fake_analytics).to have_logged_event(
+          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+          success: true,
+          errors: {},
+          exception: nil,
+          result: 'Passed',
+          billed: true,
+          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          user_id: nil,
+          front_image_metadata: JSON.parse(front_image_metadata, symbolize_names: true),
+        )
+      end
+    end
+
     context 'form is missing a required param' do
       let(:front_image) { nil }
 

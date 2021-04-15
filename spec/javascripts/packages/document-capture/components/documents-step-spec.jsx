@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import DeviceContext from '@18f/identity-document-capture/context/device';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { render } from '../../../support/document-capture';
+import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/documents-step', () => {
   it('renders with front and back inputs', () => {
@@ -15,13 +16,17 @@ describe('document-capture/components/documents-step', () => {
     expect(back).to.be.ok();
   });
 
-  it('calls onChange callback with uploaded image', () => {
+  it('calls onChange callback with uploaded image', async () => {
     const onChange = sinon.stub();
     const { getByLabelText } = render(<DocumentsStep onChange={onChange} />);
-    const file = new window.File([''], 'upload.png', { type: 'image/png' });
+    const file = await getFixtureFile('doc_auth_images/id-back.jpg');
 
     userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), file);
-    expect(onChange.getCall(0).args[0]).to.deep.equal({ front: file });
+    await new Promise((resolve) => onChange.callsFake(resolve));
+    expect(onChange).to.have.been.calledWith({
+      front: file,
+      front_image_metadata: sinon.match(/^\{.+\}$/),
+    });
   });
 
   it('renders device-specific instructions', () => {
