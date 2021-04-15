@@ -6,7 +6,9 @@ class OneTimeCodeInput {
    */
   constructor(input) {
     this.elements = { input };
-    this.options = { transport: /** @type {string=} */ (input.dataset.transport) };
+    this.options = {
+      transport: /** @type {OTPCredentialTransportType=} */ (input.dataset.transport),
+    };
   }
 
   bind() {
@@ -16,7 +18,7 @@ class OneTimeCodeInput {
   }
 
   /**
-   * @param {string} transport
+   * @param {OTPCredentialTransportType} transport
    */
   async receive(transport) {
     const controller = new AbortController();

@@ -9,7 +9,7 @@ interface OTPCredentialsContainer extends CredentialsContainer {
  * @see https://wicg.github.io/web-otp/#CredentialRequestOptions
  */
 interface OTPCredentialRequestOptions extends CredentialRequestOptions {
-  otp: { transport: string[] };
+  otp: { transport: OTPCredentialTransportType[] };
 }
 
 /**
@@ -17,4 +17,11 @@ interface OTPCredentialRequestOptions extends CredentialRequestOptions {
  */
 interface OTPCredential extends Credential {
   code: string;
+}
+
+/**
+ * @see https://wicg.github.io/web-otp/#enum-transport
+ */
+declare enum OTPCredentialTransportType {
+  SMS = 'sms',
 }
