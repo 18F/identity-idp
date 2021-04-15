@@ -20,7 +20,7 @@
 
 const input = document.querySelector('.one-time-code-input');
 
-if (input && window.OTPCredential) {
+if (input?.dataset.transport && window.OTPCredential) {
   const controller = new AbortController();
 
   const form = input.closest('form');
@@ -29,7 +29,7 @@ if (input && window.OTPCredential) {
   }
 
   /** @type {OTPCredentialsContainer} */ (navigator.credentials)
-    .get({ otp: { transport: ['sms'] }, signal: controller.signal })
+    .get({ otp: { transport: [input.dataset.transport] }, signal: controller.signal })
     .then((credential) => {
       input.value = credential.code;
       form?.submit();

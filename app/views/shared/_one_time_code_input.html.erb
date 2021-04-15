@@ -4,11 +4,13 @@ local assigns will be applied directly to the text input as a hash of HTML attri
 
 locals:
 * name: Field name. Defaults to `:code`.
+* transport: WebOTP transport method. Defaults to 'sms'.
 * value: Field value. Defaults to `''`.
 * class: CSS classes to add (optional)
 %>
 <%
-name = local_assigns.delete(:name) || :code
+name = local_assigns.delete(:name) { :code }
+transport = local_assigns.delete(:transport) { 'sms' }
 classes = ['field monospace usa-input one-time-code-input']
 classes << local_assigns.delete(:class) if local_assigns[:class]
 %>
@@ -17,6 +19,7 @@ classes << local_assigns.delete(:class) if local_assigns[:class]
   name,
   nil,
   aria: { invalid: false },
+  data: { transport: transport },
   pattern: '[0-9]*',
   maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
   autocomplete: 'one-time-code',
