@@ -36,10 +36,10 @@ module PushNotification
     attr_reader :now
 
     def deliver_one(service_provider)
+      deliver_local(service_provider) if IdentityConfig.store.risc_notifications_local_enabled
+
       if AppConfig.env.risc_notifications_sqs_enabled == 'true'
         deliver_sqs(service_provider)
-      elsif IdentityConfig.store.risc_notifications_local_enabled
-        deliver_local(service_provider)
       else
         deliver_direct(service_provider)
       end
