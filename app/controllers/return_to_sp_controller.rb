@@ -3,6 +3,7 @@ class ReturnToSpController < ApplicationController
 
   def cancel
     redirect_url = sp_return_url_resolver.return_to_sp_url
+    analytics.track_event(Analytics::RETURN_TO_SP_CANCEL, redirect_url: redirect_url)
     redirect_to redirect_url
   end
 
