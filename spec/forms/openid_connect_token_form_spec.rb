@@ -24,9 +24,11 @@ RSpec.describe OpenidConnectTokenForm do
   let(:client_id) { service_provider.issuer }
 
   let(:service_provider) do
-    create(:service_provider,
-           cert: nil,
-           certs: ['saml_test_sp2', 'saml_test_sp'])
+    create(
+      :service_provider,
+      cert: nil,
+      certs: ['saml_test_sp2', 'saml_test_sp'],
+    )
   end
 
   let(:nonce) { SecureRandom.hex }
@@ -421,10 +423,12 @@ RSpec.describe OpenidConnectTokenForm do
       it 'has a properly-encoded id_token with an expiration that matches the expires_in' do
         id_token = response[:id_token]
 
-        payload, _head = JWT.decode(id_token, server_public_key, true,
-                                    algorithm: 'RS256',
-                                    iss: root_url, verify_iss: true,
-                                    aud: client_id, verify_aud: true).map(&:with_indifferent_access)
+        payload, _head = JWT.decode(
+          id_token, server_public_key, true,
+          algorithm: 'RS256',
+          iss: root_url, verify_iss: true,
+          aud: client_id, verify_aud: true
+        ).map(&:with_indifferent_access)
 
         expect(payload[:nonce]).to eq(nonce)
 

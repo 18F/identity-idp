@@ -43,8 +43,10 @@ RSpec.describe OtpRateLimiter do
 
   describe '#increment' do
     it 'updates otp_last_sent_at' do
-      tracker = OtpRequestsTracker.find_or_create_with_phone_and_confirmed(phone,
-                                                                           false)
+      tracker = OtpRequestsTracker.find_or_create_with_phone_and_confirmed(
+        phone,
+        false,
+      )
       old_otp_last_sent_at = tracker.reload.otp_last_sent_at
       otp_rate_limiter.increment
       new_otp_last_sent_at = tracker.reload.otp_last_sent_at

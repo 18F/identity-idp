@@ -50,9 +50,11 @@ class PivCacErrorPresenter
     when 'piv_cac.already_associated'
       t('instructions.mfa.piv_cac.already_associated_html', try_again: try_again_link)
     when 'user.not_found'
-      t('instructions.mfa.piv_cac.account_not_found_html',
+      t(
+        'instructions.mfa.piv_cac.account_not_found_html',
         sign_in: @view.link_to(t('headings.sign_in_without_sp'), root_url),
-        create_account: @view.link_to(t('links.create_account'), sign_up_email_url))
+        create_account: @view.link_to(t('links.create_account'), sign_up_email_url),
+      )
     when 'certificate.none'
       t('instructions.mfa.piv_cac.no_certificate_html', try_again: try_again_link)
     when 'certificate.not_auth_cert'

@@ -21,10 +21,12 @@ describe 'idv/come_back_later/show.html.erb' do
     it 'renders return to SP message' do
       render
       expect(rendered).to have_content(
-        strip_tags(t(
-                     'idv.messages.come_back_later_sp_html',
-                     sp: @decorated_session.sp_name,
-                   )),
+        strip_tags(
+          t(
+            'idv.messages.come_back_later_sp_html',
+            sp: @decorated_session.sp_name,
+          ),
+        ),
       )
     end
   end
@@ -43,10 +45,12 @@ describe 'idv/come_back_later/show.html.erb' do
     it 'renders return to account message' do
       render
       expect(rendered).to have_content(
-        strip_tags(t(
-                     'idv.messages.come_back_later_no_sp_html',
-                     app: APP_NAME,
-                   )),
+        strip_tags(
+          t(
+            'idv.messages.come_back_later_no_sp_html',
+            app: APP_NAME,
+          ),
+        ),
       )
     end
   end

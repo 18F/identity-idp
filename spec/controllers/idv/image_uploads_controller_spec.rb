@@ -138,11 +138,13 @@ describe Idv::ImageUploadsController do
         action
 
         expect(response.status).to eq(400)
-        expect(json).to eq({
-                              success: false,
-                              errors: [{ field: 'front', message: 'Please fill in this field.' }],
-                              remaining_attempts: 3,
-                            })
+        expect(json).to eq(
+          {
+            success: false,
+            errors: [{ field: 'front', message: 'Please fill in this field.' }],
+            remaining_attempts: 3,
+          },
+        )
       end
 
       it 'returns an error when throttled' do
@@ -152,10 +154,12 @@ describe Idv::ImageUploadsController do
         action
 
         expect(response.status).to eq(429)
-        expect(json).to eq({
-                              success: false,
-                              redirect: idv_session_errors_throttled_url,
-                            })
+        expect(json).to eq(
+          {
+            success: false,
+            redirect: idv_session_errors_throttled_url,
+          },
+        )
       end
 
       it 'tracks analytics' do

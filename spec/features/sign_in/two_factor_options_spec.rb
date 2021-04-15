@@ -72,8 +72,10 @@ describe '2FA options when signing in' do
 
   context 'when the user only has SMS configured with a number that we cannot call' do
     it 'only displays SMS and Personal key' do
-      user = create(:user, :signed_up,
-                    otp_delivery_preference: 'sms', with: { phone: '+12423270143' })
+      user = create(
+        :user, :signed_up,
+        otp_delivery_preference: 'sms', with: { phone: '+12423270143' }
+      )
       sign_in_user(user)
 
       click_link t('two_factor_authentication.login_options_link_text')
@@ -93,8 +95,10 @@ describe '2FA options when signing in' do
 
   context "the user's otp_delivery_preference is voice but number is unsupported" do
     it 'only displays SMS and Personal key' do
-      user = create(:user, :signed_up,
-                    otp_delivery_preference: 'voice', with: { phone: '+12423270143' })
+      user = create(
+        :user, :signed_up,
+        otp_delivery_preference: 'voice', with: { phone: '+12423270143' }
+      )
       sign_in_user(user)
 
       click_link t('two_factor_authentication.login_options_link_text')

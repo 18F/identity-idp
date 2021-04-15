@@ -27,10 +27,14 @@ feature 'SP Costing', :email do
     expect_sp_cost_type(1, 2, 'acuant_front_image')
     expect_sp_cost_type(2, 2, 'acuant_back_image')
     expect_sp_cost_type(3, 2, 'acuant_result')
-    expect_sp_cost_type(4, 2, 'lexis_nexis_resolution',
-                        transaction_id: IdentityIdpFunctions::ResolutionMockClient::TRANSACTION_ID)
-    expect_sp_cost_type(5, 2, 'aamva',
-                        transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID)
+    expect_sp_cost_type(
+      4, 2, 'lexis_nexis_resolution',
+      transaction_id: IdentityIdpFunctions::ResolutionMockClient::TRANSACTION_ID
+    )
+    expect_sp_cost_type(
+      5, 2, 'aamva',
+      transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID
+    )
     expect_sp_cost_type(6, 2, 'lexis_nexis_address')
     expect_sp_cost_type(7, 2, 'user_added')
     expect_sp_cost_type(8, 2, 'authentication')

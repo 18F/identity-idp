@@ -94,9 +94,11 @@ class RegisterUserEmailForm
     self.success = true
     user.save!
     Funnel::Registration::Create.call(user.id)
-    SendSignUpEmailConfirmation.new(user).call(request_id: request_id,
-                                               instructions: instructions,
-                                               password_reset_requested: password_reset_requested?)
+    SendSignUpEmailConfirmation.new(user).call(
+      request_id: request_id,
+      instructions: instructions,
+      password_reset_requested: password_reset_requested?,
+    )
   end
 
   def extra_analytics_attributes

@@ -86,8 +86,10 @@ describe Users::WebauthnSetupController do
 
       it 'creates a webauthn key removed event' do
         expect(Event).to receive(:create).
-          with(hash_including(user_id: controller.current_user.id,
-                              event_type: :webauthn_key_removed, ip: '0.0.0.0'))
+          with(hash_including(
+            user_id: controller.current_user.id,
+            event_type: :webauthn_key_removed, ip: '0.0.0.0'
+          ))
 
         delete :delete, params: { id: webauthn_configuration.id }
 

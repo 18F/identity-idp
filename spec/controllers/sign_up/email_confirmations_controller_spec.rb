@@ -159,8 +159,10 @@ describe SignUp::EmailConfirmationsController do
       get :create, params: { confirmation_token: 'foo' }
 
       expect(flash[:error]).
-        to eq t('devise.confirmations.already_confirmed',
-                action: t('devise.confirmations.sign_in'))
+        to eq t(
+          'devise.confirmations.already_confirmed',
+          action: t('devise.confirmations.sign_in'),
+        )
       expect(response).to redirect_to root_url
     end
   end

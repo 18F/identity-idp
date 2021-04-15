@@ -5,10 +5,12 @@ describe Idv::DocAuthController do
 
   describe 'before_actions' do
     it 'includes corrects before_actions' do
-      expect(subject).to have_actions(:before,
-                                      :confirm_two_factor_authenticated,
-                                      :fsm_initialize,
-                                      :ensure_correct_step)
+      expect(subject).to have_actions(
+        :before,
+        :confirm_two_factor_authenticated,
+        :fsm_initialize,
+        :ensure_correct_step,
+      )
     end
 
     it 'includes before_actions from IdvSession' do
@@ -194,7 +196,7 @@ describe Idv::DocAuthController do
     let(:front_image_iv) { SecureRandom.random_bytes(12) }
     let(:back_image_iv) { SecureRandom.random_bytes(12) }
     let(:selfie_image_iv) { SecureRandom.random_bytes(12) }
-      encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+    encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
 
     before do
       mock_document_capture_step
@@ -355,11 +357,13 @@ describe Idv::DocAuthController do
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(400)
-      expect(response.body).to eq({
-        success: false,
-        errors: [{ field: 'front', message: 'Wrong document' }],
-        remaining_attempts: IdentityConfig.store.acuant_max_attempts,
-      }.to_json)
+      expect(response.body).to eq(
+        {
+          success: false,
+          errors: [{ field: 'front', message: 'Wrong document' }],
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+        }.to_json,
+      )
     end
 
     it 'returns status of fail with incomplete PII from doc auth' do
@@ -370,12 +374,14 @@ describe Idv::DocAuthController do
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(400)
-      expect(response.body).to eq({
-        success: false,
-        errors: [{ field: 'pii',
-                   message: I18n.t('doc_auth.errors.general.no_liveness') }],
-        remaining_attempts: IdentityConfig.store.acuant_max_attempts,
-      }.to_json)
+      expect(response.body).to eq(
+        {
+          success: false,
+          errors: [{ field: 'pii',
+                     message: I18n.t('doc_auth.errors.general.no_liveness') }],
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+        }.to_json,
+      )
       expect(@analytics).to have_received(:track_event).with(
         'IdV: ' + "#{Analytics::DOC_AUTH} verify_document_status submitted".downcase, {
           errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },

@@ -10,10 +10,12 @@ describe 'users/totp_setup/new.html.erb' do
       @code = 'D4C2L47CVZ3JJHD7'
       @qrcode = 'qrcode.png'
 
-      @presenter = SetupPresenter.new(current_user: user,
-                                      user_fully_authenticated: false,
-                                      user_opted_remember_device_cookie: true,
-                                      remember_device_default: true)
+      @presenter = SetupPresenter.new(
+        current_user: user,
+        user_fully_authenticated: false,
+        user_opted_remember_device_cookie: true,
+        remember_device_default: true,
+      )
     end
 
     it 'renders the QR code' do

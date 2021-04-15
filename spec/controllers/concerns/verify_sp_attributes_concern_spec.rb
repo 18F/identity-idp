@@ -69,9 +69,11 @@ RSpec.describe VerifySpAttributesConcern do
 
     context 'when the identity has been soft-deleted (consent has been revoked)' do
       let(:sp_session_identity) do
-        build(:service_provider_identity,
-              deleted_at: 1.day.ago,
-              last_consented_at: 2.years.ago)
+        build(
+          :service_provider_identity,
+          deleted_at: 1.day.ago,
+          last_consented_at: 2.years.ago,
+        )
       end
 
       it 'is false' do
@@ -137,9 +139,11 @@ RSpec.describe VerifySpAttributesConcern do
 
   describe '#needs_completions_screen?' do
     let(:sp_session_identity) do
-      build(:service_provider_identity,
-            user: user,
-            verified_attributes: verified_attributes)
+      build(
+        :service_provider_identity,
+        user: user,
+        verified_attributes: verified_attributes,
+      )
     end
     let(:sp_session) { {} }
     let(:user) { build(:user) }

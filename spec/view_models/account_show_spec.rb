@@ -19,8 +19,10 @@ describe AccountShow do
       it 'returns the shared/null partial' do
         user = User.new.decorate
         allow(user).to receive(:pending_profile_requires_verification?).and_return(false)
-        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user,
-                                        locked_for_session: false)
+        profile_index = AccountShow.new(
+          decrypted_pii: {}, personal_key: '', decorated_user: user,
+          locked_for_session: false
+        )
 
         expect(profile_index.pending_profile_partial).to eq 'shared/null'
       end
@@ -34,8 +36,10 @@ describe AccountShow do
         first_name = 'John'
         last_name = 'Doe'
         birthday = Date.new(2000, 7, 27)
-        decrypted_pii = Pii::Attributes.new_from_hash(first_name: first_name, last_name: last_name,
-                                                      dob: birthday)
+        decrypted_pii = Pii::Attributes.new_from_hash(
+          first_name: first_name, last_name: last_name,
+          dob: birthday
+        )
         profile_index = AccountShow.new(
           decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user.decorate,
           locked_for_session: false
@@ -83,8 +87,10 @@ describe AccountShow do
         allow_any_instance_of(
           TwoFactorAuthentication::AuthAppPolicy,
         ).to receive(:enabled?).and_return(false)
-        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user,
-                                        locked_for_session: false)
+        profile_index = AccountShow.new(
+          decrypted_pii: {}, personal_key: '', decorated_user: user,
+          locked_for_session: false
+        )
 
         expect(profile_index.totp_content).to eq t('account.index.auth_app_disabled')
       end

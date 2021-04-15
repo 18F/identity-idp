@@ -25,8 +25,10 @@ module LambdaCallback
     end
 
     def resolution_result_parameter
-      params.require(:resolution_result).permit(:exception, :success, :timed_out, :transaction_id,
-                                                errors: {}, context: {})
+      params.require(:resolution_result).permit(
+        :exception, :success, :timed_out, :transaction_id,
+        errors: {}, context: {}
+      )
     end
 
     def track_exception_in_result(result)

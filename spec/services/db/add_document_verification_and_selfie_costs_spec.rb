@@ -28,9 +28,11 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
   end
 
   subject do
-    described_class.new(user_id: user_id,
-                        issuer: issuer,
-                        liveness_checking_enabled: liveness_checking_enabled)
+    described_class.new(
+      user_id: user_id,
+      issuer: issuer,
+      liveness_checking_enabled: liveness_checking_enabled,
+    )
   end
 
   context 'with no selfie' do

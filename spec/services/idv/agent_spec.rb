@@ -19,8 +19,10 @@ describe Idv::Agent do
 
       context 'proofing state_id enabled' do
         it 'does not proof state_id if resolution fails' do
-          agent = Idv::Agent.new({ ssn: '444-55-6666', first_name: Faker::Name.first_name,
-                                   zipcode: '11111' })
+          agent = Idv::Agent.new(
+            { ssn: '444-55-6666', first_name: Faker::Name.first_name,
+              zipcode: '11111' },
+          )
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
@@ -55,8 +57,10 @@ describe Idv::Agent do
 
       context 'proofing state_id disabled' do
         it 'does not proof state_id if resolution fails' do
-          agent = Idv::Agent.new({ ssn: '444-55-6666', first_name: Faker::Name.first_name,
-                                   zipcode: '11111' })
+          agent = Idv::Agent.new(
+            { ssn: '444-55-6666', first_name: Faker::Name.first_name,
+              zipcode: '11111' },
+          )
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
@@ -69,8 +73,10 @@ describe Idv::Agent do
         end
 
         it 'does not proof state_id if resolution succeeds' do
-          agent = Idv::Agent.new({ ssn: '444-55-8888', first_name: Faker::Name.first_name,
-                                   zipcode: '11111' })
+          agent = Idv::Agent.new(
+            { ssn: '444-55-8888', first_name: Faker::Name.first_name,
+              zipcode: '11111' },
+          )
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: false, trace_id: trace_id
           )
@@ -84,8 +90,10 @@ describe Idv::Agent do
       end
 
       it 'returns an unsuccessful result and notifies exception trackers if an exception occurs' do
-        agent = Idv::Agent.new(ssn: '444-55-8888', first_name: 'Time Exception',
-                               zipcode: '11111')
+        agent = Idv::Agent.new(
+          ssn: '444-55-8888', first_name: 'Time Exception',
+          zipcode: '11111'
+        )
 
         agent.proof_resolution(
           document_capture_session, should_proof_state_id: true, trace_id: trace_id

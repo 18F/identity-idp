@@ -141,8 +141,10 @@ describe UserPivCacSetupForm do
     resp = { 'nonce' => nonce, 'is_auth_cert' => is_auth_cert, 'uuid' => 'a', 'subject' => 'b' }
     allow(PivCacService).to receive(:decode_token).with(token) { resp }
 
-    result = described_class.new(user: user, token: token, nonce: nonce, name: 'Card 1',
-                                 piv_cac_required: true).submit
+    result = described_class.new(
+      user: user, token: token, nonce: nonce, name: 'Card 1',
+      piv_cac_required: true
+    ).submit
     expect(result.success?).to eq(is_auth_cert)
     expect(result.errors).to eq(errors)
   end

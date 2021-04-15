@@ -26,10 +26,12 @@ class MonitorHelper
 
   def setup
     if local?
-      context.create(:user,
-                     :with_phone,
-                     email: config.login_gov_sign_in_email,
-                     password: config.login_gov_sign_in_password)
+      context.create(
+        :user,
+        :with_phone,
+        email: config.login_gov_sign_in_email,
+        password: config.login_gov_sign_in_password,
+      )
     else
       config.check_env_variables!
       reset_sessions

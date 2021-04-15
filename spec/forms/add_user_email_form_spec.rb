@@ -31,11 +31,13 @@ RSpec.describe AddUserEmailForm do
 
     context 'when the new email address has an expired previous attempt for the same account' do
       before do
-        create(:email_address,
-               email: new_email,
-               user: user,
-               confirmed_at: nil,
-               confirmation_sent_at: 1.month.ago)
+        create(
+          :email_address,
+          email: new_email,
+          user: user,
+          confirmed_at: nil,
+          confirmation_sent_at: 1.month.ago,
+        )
       end
 
       it 'sends a confirmation email, as if it was not previously linked' do

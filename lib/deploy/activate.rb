@@ -36,8 +36,10 @@ module Deploy
 
     # Clone the private-but-not-secret git repo
     def clone_idp_config
-      private_git_repo_url = ENV.fetch('IDP_private_config_repo',
-                                       'git@github.com:18F/identity-idp-config.git')
+      private_git_repo_url = ENV.fetch(
+        'IDP_private_config_repo',
+        'git@github.com:18F/identity-idp-config.git',
+      )
       checkout_dir = File.join(root, idp_config_checkout_name)
 
       cmd = ['git', 'clone', private_git_repo_url, checkout_dir]

@@ -2,9 +2,11 @@ module Db
   class AuthAppConfiguration
     def self.create(user, otp_secret_key, totp_timestamp, name = Time.zone.now.to_s)
       user.save
-      user.auth_app_configurations.create(otp_secret_key: otp_secret_key,
-                                          totp_timestamp: totp_timestamp,
-                                          name: name)
+      user.auth_app_configurations.create(
+        otp_secret_key: otp_secret_key,
+        totp_timestamp: totp_timestamp,
+        name: name,
+      )
     end
 
     def self.authenticate(user, code)
@@ -23,8 +25,10 @@ module Db
 
     def self.confirm(secret, code)
       totp = ROTP::TOTP.new(secret, digits: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
-      totp.verify(code, drift_ahead: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
-                  drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS)
+      totp.verify(
+        code, drift_ahead: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
+              drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS
+      )
     end
 
     def self.delete(current_user, auth_app_cfg_id)

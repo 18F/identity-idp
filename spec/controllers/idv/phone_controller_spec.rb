@@ -29,8 +29,10 @@ describe Idv::PhoneController do
 
   describe '#new' do
     let(:user) do
-      build(:user, :with_phone,
-            with: { phone: good_phone, confirmed_at: Time.zone.now })
+      build(
+        :user, :with_phone,
+        with: { phone: good_phone, confirmed_at: Time.zone.now }
+      )
     end
 
     before do
@@ -91,8 +93,10 @@ describe Idv::PhoneController do
     it 'shows waiting interstitial if async process is in progress' do
       # having a document capture session with PII but without results will trigger
       # in progress behavior
-      document_capture_session = DocumentCaptureSession.create(user_id: user.id,
-                                                               requested_at: Time.zone.now)
+      document_capture_session = DocumentCaptureSession.create(
+        user_id: user.id,
+        requested_at: Time.zone.now,
+      )
       document_capture_session.create_proofing_session
 
       subject.idv_session.idv_phone_step_document_capture_session_uuid =
@@ -166,9 +170,11 @@ describe Idv::PhoneController do
 
       context 'when same as user phone' do
         it 'redirects to review page and sets phone_confirmed_at' do
-          user = build(:user, :with_phone, with: {
-                         phone: good_phone, confirmed_at: Time.zone.now
-                       })
+          user = build(
+            :user, :with_phone, with: {
+              phone: good_phone, confirmed_at: Time.zone.now
+            }
+          )
           stub_verify_steps_one_and_two(user)
 
           put :create, params: { idv_phone_form: { phone: good_phone } }
@@ -192,9 +198,11 @@ describe Idv::PhoneController do
 
       context 'when different phone from user phone' do
         it 'redirects to otp page and does not set phone_confirmed_at' do
-          user = build(:user, :with_phone, with: {
-                         phone: '+1 (415) 555-0130', confirmed_at: Time.zone.now
-                       })
+          user = build(
+            :user, :with_phone, with: {
+              phone: '+1 (415) 555-0130', confirmed_at: Time.zone.now
+            }
+          )
           stub_verify_steps_one_and_two(user)
 
           put :create, params: { idv_phone_form: { phone: good_phone } }

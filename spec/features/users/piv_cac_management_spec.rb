@@ -26,10 +26,12 @@ feature 'PIV/CAC Management' do
 
       nonce = piv_cac_nonce_from_form_action
 
-      visit_piv_cac_service(setup_piv_cac_url,
-                            nonce: nonce,
-                            uuid: uuid,
-                            subject: 'SomeIgnoredSubject')
+      visit_piv_cac_service(
+        setup_piv_cac_url,
+        nonce: nonce,
+        uuid: uuid,
+        subject: 'SomeIgnoredSubject',
+      )
 
       expect(current_path).to eq account_path
       visit account_two_factor_authentication_path
@@ -68,10 +70,12 @@ feature 'PIV/CAC Management' do
 
       nonce = piv_cac_nonce_from_form_action
 
-      visit_piv_cac_service(setup_piv_cac_url,
-                            nonce: nonce,
-                            uuid: uuid,
-                            subject: 'SomeIgnoredSubject')
+      visit_piv_cac_service(
+        setup_piv_cac_url,
+        nonce: nonce,
+        uuid: uuid,
+        subject: 'SomeIgnoredSubject',
+      )
 
       expect(current_path).to eq account_path
 
@@ -92,15 +96,19 @@ feature 'PIV/CAC Management' do
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
       nonce = piv_cac_nonce_from_form_action
-      visit_piv_cac_service(setup_piv_cac_url,
-                            nonce: nonce,
-                            error: 'certificate.none',
-                            key_id: 'AB:CD:EF')
+      visit_piv_cac_service(
+        setup_piv_cac_url,
+        nonce: nonce,
+        error: 'certificate.none',
+        key_id: 'AB:CD:EF',
+      )
       expect(current_path).to eq setup_piv_cac_error_path
       expect(page).to have_link(t('instructions.mfa.piv_cac.try_again'), href: setup_piv_cac_url)
       expect(page).to have_content(
-        t('instructions.mfa.piv_cac.no_certificate_html',
-          try_again: t('instructions.mfa.piv_cac.try_again')),
+        t(
+          'instructions.mfa.piv_cac.no_certificate_html',
+          try_again: t('instructions.mfa.piv_cac.try_again'),
+        ),
       )
     end
 
@@ -112,10 +120,12 @@ feature 'PIV/CAC Management' do
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
       nonce = piv_cac_nonce_from_form_action
-      visit_piv_cac_service(setup_piv_cac_url,
-                            nonce: nonce,
-                            error: 'certificate.expired',
-                            key_id: 'AB:CD:EF')
+      visit_piv_cac_service(
+        setup_piv_cac_url,
+        nonce: nonce,
+        error: 'certificate.expired',
+        key_id: 'AB:CD:EF',
+      )
       expect(current_path).to eq setup_piv_cac_error_path
       expect(page).to have_link(
         t('instructions.mfa.piv_cac.please_try_again'),
@@ -123,8 +133,10 @@ feature 'PIV/CAC Management' do
       )
 
       expect(page).to have_content(
-        t('instructions.mfa.piv_cac.did_not_work_html',
-          please_try_again: t('instructions.mfa.piv_cac.please_try_again')),
+        t(
+          'instructions.mfa.piv_cac.did_not_work_html',
+          please_try_again: t('instructions.mfa.piv_cac.please_try_again'),
+        ),
       )
     end
 

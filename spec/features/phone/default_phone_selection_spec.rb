@@ -3,9 +3,11 @@ require 'rails_helper'
 describe 'default phone selection' do
   let(:user) { create(:user, :with_phone) }
   let(:phone_config2) do
-    create(:phone_configuration, user: user,
-                                 phone: '+1 202-555-2323',
-                                 created_at: Time.zone.now + 1.hour)
+    create(
+      :phone_configuration, user: user,
+                            phone: '+1 202-555-2323',
+                            created_at: Time.zone.now + 1.hour
+    )
   end
 
   describe 'sms delivery preference' do
@@ -99,8 +101,10 @@ describe 'default phone selection' do
         check 'new_phone_form_otp_make_default_number'
         click_button t('forms.buttons.continue')
 
-        expect(page).to have_content t('instructions.mfa.voice.number_message_html',
-                                       number: '+1 202-555-3434')
+        expect(page).to have_content t(
+          'instructions.mfa.voice.number_message_html',
+          number: '+1 202-555-3434',
+        )
 
         submit_prefilled_otp_code(user, 'voice')
 
@@ -109,8 +113,10 @@ describe 'default phone selection' do
 
         set_new_browser_session
         sign_in_before_2fa(user)
-        expect(page).to have_content t('instructions.mfa.voice.number_message_html',
-                                       number: '***-***-3434')
+        expect(page).to have_content t(
+          'instructions.mfa.voice.number_message_html',
+          number: '***-***-3434',
+        )
       end
     end
   end

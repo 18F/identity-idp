@@ -46,11 +46,13 @@ describe SamlIdpController do
     end
 
     let(:service_provider) do
-      create(:service_provider,
-             cert: nil, # override singular cert
-             certs: ['sp_sinatra_demo', 'saml_test_sp'],
-             active: true,
-             assertion_consumer_logout_service_url: 'https://example.com')
+      create(
+        :service_provider,
+        cert: nil, # override singular cert
+        certs: ['sp_sinatra_demo', 'saml_test_sp'],
+        active: true,
+        assertion_consumer_logout_service_url: 'https://example.com',
+      )
     end
 
     let(:right_cert_settings) do
@@ -477,10 +479,12 @@ describe SamlIdpController do
 
     context 'service provider has multiple certs' do
       let(:service_provider) do
-        create(:service_provider,
-               cert: nil, # override singular cert
-               certs: ['saml_test_sp2', 'saml_test_sp'],
-               active: true)
+        create(
+          :service_provider,
+          cert: nil, # override singular cert
+          certs: ['saml_test_sp2', 'saml_test_sp'],
+          active: true,
+        )
       end
 
       let(:first_cert_settings) do
@@ -849,37 +853,47 @@ describe SamlIdpController do
         end
 
         it 'includes a KeyInfo element' do
-          element = signature.at('//ds:KeyInfo',
-                                 ds: Saml::XML::Namespaces::SIGNATURE)
+          element = signature.at(
+            '//ds:KeyInfo',
+            ds: Saml::XML::Namespaces::SIGNATURE,
+          )
 
           expect(element.name).to eq('KeyInfo')
         end
 
         it 'includes a X509Data element' do
-          element = signature.at('//ds:X509Data',
-                                 ds: Saml::XML::Namespaces::SIGNATURE)
+          element = signature.at(
+            '//ds:X509Data',
+            ds: Saml::XML::Namespaces::SIGNATURE,
+          )
 
           expect(element.name).to eq('X509Data')
         end
 
         it 'includes a X509Certificate element' do
-          element = signature.at('//ds:X509Certificate',
-                                 ds: Saml::XML::Namespaces::SIGNATURE)
+          element = signature.at(
+            '//ds:X509Certificate',
+            ds: Saml::XML::Namespaces::SIGNATURE,
+          )
 
           expect(element.name).to eq('X509Certificate')
         end
 
         it 'includes the saml cert from the certs folder' do
-          element = signature.at('//ds:X509Certificate',
-                                 ds: Saml::XML::Namespaces::SIGNATURE)
+          element = signature.at(
+            '//ds:X509Certificate',
+            ds: Saml::XML::Namespaces::SIGNATURE,
+          )
 
           crt = AppArtifacts.store.saml_2021_cert
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 
         it 'includes a SignatureValue element' do
-          element = signature.at('//ds:Signature/ds:SignatureValue',
-                                 ds: Saml::XML::Namespaces::SIGNATURE)
+          element = signature.at(
+            '//ds:Signature/ds:SignatureValue',
+            ds: Saml::XML::Namespaces::SIGNATURE,
+          )
 
           expect(element.name).to eq('SignatureValue')
           expect(element.text).to be_present
@@ -921,8 +935,10 @@ describe SamlIdpController do
 
         context 'Reference' do
           let(:reference) do
-            signed_info.at('//ds:SignedInfo/ds:Reference',
-                           ds: Saml::XML::Namespaces::SIGNATURE)
+            signed_info.at(
+              '//ds:SignedInfo/ds:Reference',
+              ds: Saml::XML::Namespaces::SIGNATURE,
+            )
           end
 
           it 'includes a Reference element' do
@@ -986,8 +1002,10 @@ describe SamlIdpController do
 
         context 'SubjectConfirmation' do
           let(:subject_confirmation) do
-            subject.at('//ds:SubjectConfirmation',
-                       ds: 'urn:oasis:names:tc:SAML:2.0:assertion')
+            subject.at(
+              '//ds:SubjectConfirmation',
+              ds: 'urn:oasis:names:tc:SAML:2.0:assertion',
+            )
           end
 
           it 'has a SubjectConfirmation element' do
@@ -1000,8 +1018,10 @@ describe SamlIdpController do
 
           context 'SubjectConfirmationData' do
             let(:subject_confirmation_data) do
-              subject_confirmation.at('//ds:SubjectConfirmationData',
-                                      ds: 'urn:oasis:names:tc:SAML:2.0:assertion')
+              subject_confirmation.at(
+                '//ds:SubjectConfirmationData',
+                ds: 'urn:oasis:names:tc:SAML:2.0:assertion',
+              )
             end
 
             let(:attributes) do
@@ -1268,8 +1288,10 @@ describe SamlIdpController do
   end
 
   def expect_sp_authentication_cost
-    sp_cost = SpCost.where(issuer: 'http://localhost:3000',
-                           cost_type: 'authentication').first
+    sp_cost = SpCost.where(
+      issuer: 'http://localhost:3000',
+      cost_type: 'authentication',
+    ).first
     expect(sp_cost).to be_present
   end
 end

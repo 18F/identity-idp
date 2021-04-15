@@ -64,12 +64,14 @@ describe Profile do
     end
 
     it 'fingerprints the PII' do
-      fingerprint = Pii::Fingerprinter.fingerprint([
-        pii.first_name,
-        pii.last_name,
-        pii.zipcode,
-        Date.parse(pii.dob).year,
-      ].join(':'))
+      fingerprint = Pii::Fingerprinter.fingerprint(
+        [
+          pii.first_name,
+          pii.last_name,
+          pii.zipcode,
+          Date.parse(pii.dob).year,
+        ].join(':'),
+      )
 
       expect { encrypt_pii }.
         to change { profile.name_zip_birth_year_signature }.
