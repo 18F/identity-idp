@@ -10,6 +10,7 @@
   <div class="col-12 sm-col-5 margin-bottom-1 tablet:margin-bottom-0 sm-mr-20p inline-block">
     <%= render(
       'shared/one_time_code_input',
+      transport: nil,
       name: :code,
       value: @code,
       required: true,
