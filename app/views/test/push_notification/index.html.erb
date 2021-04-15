@@ -1,0 +1,31 @@
+<%= content_for(:meta_refresh) { '15' } %>
+
+<h1>Push Notification Events</h1>
+
+<div class="card card-wide">
+  <div class="padding-4">
+    <%= button_to 'Clear events', test_push_notification_path, method: :delete, class: 'usa-button' %>
+    <div class="grid-row grid-gap margin-top-2">
+      <h2>Events</h2>
+
+      <table class="usa-table">
+        <thead>
+          <tr>
+            <th scope="col">Push Notification URL</th>
+            <th scope="col">Payload</th>
+            <th scope="col">JWT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @events.each do |event| %>
+            <tr>
+              <th scope="row"><%= event[:url] %></th>
+              <td style="overflow-wrap:anywhere"><%= event[:payload].to_json %></td>
+              <td style="overflow-wrap:anywhere"><%= event[:jwt] %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
