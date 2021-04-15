@@ -93,6 +93,10 @@ module DocAuthRouter
 
     private
 
+    def translate_form_response!(response)
+      raise NotImplementedError
+    end
+
     # rubocop:disable Style/GuardClause
     def translate_generic_errors!(response)
       if response.errors[:network] == true
