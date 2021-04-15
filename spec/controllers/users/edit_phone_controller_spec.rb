@@ -40,9 +40,8 @@ describe Users::EditPhoneController do
 
     it 'deletes the phone configuration' do
       stub_sign_in(user.reload)
-      # Receives twice because one is sent when signing up with a second factor
       expect(PushNotification::HttpPush).to receive(:deliver).
-        with(PushNotification::RecoveryInformationChangedEvent.new(user: user)).twice
+        with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
       delete :destroy, params: { id: phone_configuration.id }
 
       expect(response).to redirect_to(account_url)

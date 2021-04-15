@@ -19,10 +19,7 @@ class UpdateUser
     if attributes[:phone_id].present?
       update_phone_configuration
     else
-      phone_configuration = create_phone_configuration
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
-      PushNotification::HttpPush.deliver(event)
-      phone_configuration
+      create_phone_configuration
     end
   end
 
@@ -32,7 +29,10 @@ class UpdateUser
 
   def create_phone_configuration
     return if phone_attributes[:phone].blank? || duplicate_phone?
-    MfaContext.new(user).phone_configurations.create(phone_attributes)
+    phone_configuration = MfaContext.new(user).phone_configurations.create(phone_attributes)
+    event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+    PushNotification::HttpPush.deliver(event)
+    phone_configuration
   end
 
   def duplicate_phone?

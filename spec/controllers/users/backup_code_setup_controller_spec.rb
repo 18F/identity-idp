@@ -15,9 +15,8 @@ describe Users::BackupCodeSetupController do
   it 'creates backup codes' do
     user = create(:user, :signed_up)
     stub_sign_in(user)
-    # Receives twice because one is sent when signing up with a second factor
     expect(PushNotification::HttpPush).to receive(:deliver).
-      with(PushNotification::RecoveryInformationChangedEvent.new(user: user)).twice
+      with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
     post :create
 
     expect(response).to render_template('create')
@@ -27,9 +26,8 @@ describe Users::BackupCodeSetupController do
   it 'deletes backup codes' do
     user = create(:user, :signed_up)
     stub_sign_in(user)
-    # Receives twice because one is sent when signing up with a second factor
     expect(PushNotification::HttpPush).to receive(:deliver).
-      with(PushNotification::RecoveryInformationChangedEvent.new(user: user)).twice
+      with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
     post :delete
 
     expect(response).to redirect_to(account_two_factor_authentication_path)

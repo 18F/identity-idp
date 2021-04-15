@@ -161,9 +161,8 @@ describe Users::PivCacAuthenticationSetupController do
         end
 
         it 'sends a recovery information changed event' do
-          # Receives twice because one is sent when signing up with a second factor
           expect(PushNotification::HttpPush).to receive(:deliver).
-            with(PushNotification::RecoveryInformationChangedEvent.new(user: user)).twice
+            with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
           delete :delete, params: { id: piv_cac_configuration_id }
         end
 
