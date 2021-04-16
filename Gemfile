@@ -27,6 +27,7 @@ gem 'saml_idp', @saml_gem
 gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
 gem 'autoprefixer-rails', '~> 10.0'
+gem 'aws-sdk-cloudwatch'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-lambda'
 gem 'aws-sdk-ses', '~> 1.6'
