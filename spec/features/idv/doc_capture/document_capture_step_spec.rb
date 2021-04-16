@@ -189,7 +189,7 @@ feature 'doc capture document capture step' do
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
           success: false,
-          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
       )
 
@@ -221,14 +221,14 @@ feature 'doc capture document capture step' do
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
           success: false,
-          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
       )
 
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-      expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
   end
 
@@ -276,7 +276,7 @@ feature 'doc capture document capture step' do
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
           success: false,
-          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
       )
 
@@ -308,14 +308,14 @@ feature 'doc capture document capture step' do
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
           success: false,
-          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
       )
 
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-      expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
   end
 
@@ -344,7 +344,7 @@ feature 'doc capture document capture step' do
       submit_empty_form
 
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-      expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
 
     it 'does not proceed to the next step if there is no result' do

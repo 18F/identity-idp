@@ -2,6 +2,13 @@
 - doc_auth.buttons.take_picture
 - doc_auth.buttons.take_picture_retry
 - doc_auth.buttons.upload_picture
+- doc_auth.errors.camera.failed
+- doc_auth.errors.camera.blocked
+- doc_auth.errors.file_type.invalid
+- doc_auth.errors.general.network_error
+- doc_auth.errors.glare.failed_short
+- doc_auth.errors.sharpness.failed_short
+- doc_auth.errors.upload_error
 - doc_auth.forms.change_file
 - doc_auth.forms.choose_file_html
 - doc_auth.forms.selected_file
@@ -50,13 +57,6 @@
 - doc_auth.tips.review_issues_selfie_text2
 - doc_auth.tips.review_issues_selfie_text3
 - doc_auth.tips.review_issues_selfie_text4
-- errors.doc_auth.acuant_network_error
-- errors.doc_auth.capture_failure
-- errors.doc_auth.document_capture_selfie_consent_blocked
-- errors.doc_auth.invalid_file_input_type
-- errors.doc_auth.photo_blurry
-- errors.doc_auth.photo_glare
-- errors.doc_auth.upload_error
 - errors.file_input.invalid_type
 - errors.messages.try_again
 - forms.buttons.continue

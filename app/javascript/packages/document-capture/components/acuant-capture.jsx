@@ -331,10 +331,10 @@ function AcuantCapture(
     /** @type {AcuantImageAssessment} */
     let assessment;
     if (isAssessedAsGlare) {
-      setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
+      setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
       assessment = 'glare';
     } else if (isAssessedAsBlurry) {
-      setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
+      setOwnErrorMessage(t('doc_auth.errors.sharpness.failed_short'));
       assessment = 'blurry';
     } else {
       assessment = 'success';
@@ -378,7 +378,7 @@ function AcuantCapture(
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
             onImageCaptureFailure={(error) => {
-              setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
+              setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
               setIsCapturingEnvironment(false);
               addPageAction({
                 label: 'IdV: Image capture failed',
@@ -393,7 +393,7 @@ function AcuantCapture(
         label={label}
         hint={hasCapture || !allowUpload ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
-        invalidTypeText={t('errors.doc_auth.invalid_file_input_type')}
+        invalidTypeText={t('doc_auth.errors.file_type.invalid')}
         fileUpdatedText={t('doc_auth.info.image_updated')}
         accept={isMockClient ? undefined : ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff']}
         capture={capture}

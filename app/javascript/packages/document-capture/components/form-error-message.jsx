@@ -40,7 +40,7 @@ function FormErrorMessage({ error }) {
   if (error instanceof BackgroundEncryptedUploadError) {
     return (
       <>
-        {t('errors.doc_auth.upload_error')}{' '}
+        {t('doc_auth.errors.upload_error')}{' '}
         {t('errors.messages.try_again').split(' ').join(NBSP_UNICODE)}
       </>
     );

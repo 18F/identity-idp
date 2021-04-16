@@ -180,7 +180,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       method: method,
       response: IdentityDocAuth::Response.new(
         success: false,
-        errors: { error: I18n.t('errors.doc_auth.general_error') },
+        errors: { error: I18n.t('doc_auth.errors.general.no_liveness') },
       ),
     )
   end

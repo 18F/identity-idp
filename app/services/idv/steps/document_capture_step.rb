@@ -96,7 +96,7 @@ module Idv
           extract_pii_from_doc(stored_result)
         else
           extra = { stored_result_present: stored_result.present? }
-          failure(I18n.t('errors.doc_auth.acuant_network_error'), extra)
+          failure(I18n.t('doc_auth.errors.general.network_error'), extra)
         end
       end
 

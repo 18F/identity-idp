@@ -205,7 +205,7 @@ describe('document-capture/components/document-capture', () => {
     userEvent.click(submitButton);
 
     const notice = await findByRole('alert');
-    expect(notice.textContent).to.equal('errors.doc_auth.acuant_network_error');
+    expect(notice.textContent).to.equal('doc_auth.errors.general.network_error');
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -551,9 +551,9 @@ describe('document-capture/components/document-capture', () => {
 
         const alerts = await findAllByRole('alert');
         expect(alerts).to.have.lengthOf(2);
-        expect(alerts[0].textContent).to.equal('errors.doc_auth.acuant_network_error');
+        expect(alerts[0].textContent).to.equal('doc_auth.errors.general.network_error');
         expect(alerts[1].textContent).to.equal(
-          'errors.doc_auth.upload_error errors.messages.try_again',
+          'doc_auth.errors.upload_error errors.messages.try_again',
         );
 
         const input = await getByLabelText('doc_auth.headings.document_capture_front');

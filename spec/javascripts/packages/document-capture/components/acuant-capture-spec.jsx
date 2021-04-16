@@ -194,7 +194,7 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByLabelText('Image');
       fireEvent.click(button);
 
-      await findByText('errors.doc_auth.capture_failure');
+      await findByText('doc_auth.errors.camera.failed');
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(addPageAction).to.have.been.calledWith({
@@ -344,7 +344,7 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = await findByText('errors.doc_auth.photo_glare');
+      const error = await findByText('doc_auth.errors.glare.failed_short');
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
         label: 'IdV: test image added',
@@ -393,7 +393,7 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = await findByText('errors.doc_auth.photo_blurry');
+      const error = await findByText('doc_auth.errors.sharpness.failed_short');
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
         label: 'IdV: test image added',
@@ -442,13 +442,13 @@ describe('document-capture/components/acuant-capture', () => {
       const input = getByLabelText('Image');
       userEvent.upload(input, file);
 
-      expect(await findByText('errors.doc_auth.invalid_file_input_type')).to.be.ok();
+      expect(await findByText('doc_auth.errors.file_type.invalid')).to.be.ok();
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      expect(getByText('errors.doc_auth.photo_blurry')).to.be.ok();
-      expect(() => getByText('errors.doc_auth.invalid_file_input_type')).to.throw();
+      expect(getByText('doc_auth.errors.sharpness.failed_short')).to.be.ok();
+      expect(() => getByText('doc_auth.errors.file_type.invalid')).to.throw();
     });
 
     it('removes error message once image is corrected', async () => {
@@ -485,7 +485,7 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = await findByText('errors.doc_auth.photo_blurry');
+      const error = await findByText('doc_auth.errors.sharpness.failed_short');
 
       fireEvent.click(button);
       await waitForElementToBeRemoved(error);

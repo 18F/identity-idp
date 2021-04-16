@@ -72,8 +72,7 @@ module DocAuthRouter
     IdentityDocAuth::Errors::GLARE_LOW_BOTH_SIDES => 'doc_auth.errors.glare.top_msg_plural',
   }.freeze
 
-  # Adds translations to responses from Acuant
-  class AcuantErrorTranslatorProxy
+  class DocAuthErrorTranslatorProxy
     attr_reader :client
 
     def initialize(client)
@@ -92,6 +91,27 @@ module DocAuthRouter
       @client.respond_to?(method_name) || super
     end
 
+    private
+
+    def translate_form_response!(response)
+      raise NotImplementedError
+    end
+
+    # rubocop:disable Style/GuardClause
+    def translate_generic_errors!(response)
+      if response.errors[:network] == true
+        response.errors[:network] = I18n.t('doc_auth.errors.general.network_error')
+      end
+
+      if response.errors[:selfie] == true
+        response.errors[:selfie] = I18n.t('doc_auth.errors.general.liveness')
+      end
+    end
+    # rubocop:enable Style/GuardClause
+  end
+
+  # Adds translations to responses from Acuant
+  class AcuantErrorTranslatorProxy < DocAuthErrorTranslatorProxy
     private
 
     # Translates IdentityDocAuth::GetResultsResponse errors
@@ -113,46 +133,16 @@ module DocAuthRouter
         else
           friendly_message = FriendlyError::Message.call(untranslated_error, 'doc_auth')
           if friendly_message == untranslated_error
-            I18n.t('errors.doc_auth.general_error')
+            I18n.t('doc_auth.errors.general.no_liveness')
           else
             friendly_message
           end
         end
       end&.uniq!
     end
-
-    # rubocop:disable Style/GuardClause
-    def translate_generic_errors!(response)
-      if response.errors[:network] == true
-        response.errors[:network] = I18n.t('errors.doc_auth.acuant_network_error')
-      end
-
-      if response.errors[:selfie] == true
-        response.errors[:selfie] = I18n.t('errors.doc_auth.selfie')
-      end
-    end
-    # rubocop:enable Style/GuardClause
   end
 
-  class LexisNexisTranslatorProxy
-    attr_reader :client
-
-    def initialize(client)
-      @client = client
-    end
-
-    def method_missing(name, *args, &block)
-      if @client.respond_to?(name)
-        translate_form_response!(@client.send(name, *args, &block))
-      else
-        super
-      end
-    end
-
-    def respond_to_missing?(method_name, include_private = false)
-      @client.respond_to?(method_name) || super
-    end
-
+  class LexisNexisTranslatorProxy < DocAuthErrorTranslatorProxy
     private
 
     # Translates IdentityDocAuth::GetResultsResponse errors
@@ -179,14 +169,6 @@ module DocAuthRouter
         end
       end
     end
-
-    # rubocop:disable Style/GuardClause
-    def translate_generic_errors!(response)
-      if response.errors[:network] == true
-        response.errors[:network] = I18n.t('doc_auth.errors.general.network_error')
-      end
-    end
-    # rubocop:enable Style/GuardClause
   end
 
   def self.client
