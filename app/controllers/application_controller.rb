@@ -53,6 +53,13 @@ class ApplicationController < ActionController::Base
       Analytics.new(user: analytics_user, request: request, sp: current_sp&.issuer, ahoy: ahoy)
   end
 
+  def cloudwatch_metric_writer
+    @cloudwatch_metric_writer ||= CloudwatchMetricWriter.new(
+      current_sp: current_sp,
+      request_ial: sp_session_ial_1_or_2,
+    )
+  end
+
   def analytics_user
     effective_user || AnonymousUser.new
   end

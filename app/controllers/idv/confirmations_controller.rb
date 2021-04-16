@@ -45,6 +45,7 @@ module Idv
         new_phone_added: !configured_phones.include?(idv_session.applicant['phone']),
       }
       analytics.track_event(Analytics::IDV_FINAL, result)
+      cloudwatch_metric_writer.write_metric('ProofingCompleted')
       add_proofing_component
     end
 

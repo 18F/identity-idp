@@ -4,6 +4,7 @@ module Idv
     before_action :redirect_if_mail_bounced
     before_action :redirect_if_pending_profile
     before_action :extend_timeout_using_meta_refresh_for_select_paths
+    before_action :track_proofing_started_metric
 
     include IdvSession # remove if we retire the non docauth LOA3 flow
     include Flow::FlowStateMachine
@@ -49,6 +50,13 @@ module Idv
 
     def flow_session
       user_session['idv/doc_auth']
+    end
+
+    def track_proofing_started_metric
+      return if current_session[:proofing_started_metric_written]
+
+      cloudwatch_metric_writer.write_metric('ProofingStarted')
+      current_session[:proofing_started_metric_written] = true
     end
   end
 end

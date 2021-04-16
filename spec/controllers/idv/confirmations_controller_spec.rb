@@ -123,6 +123,13 @@ describe Idv::ConfirmationsController do
       expect(flash[:success]).to eq t('idv.messages.confirm')
     end
 
+    it 'tracks an proofing completed cloudwatch metric' do
+      expect(controller.cloudwatch_metric_writer).to receive(:write_metric).
+                                                     with('ProofingCompleted').
+                                                     once
+      get :show
+    end
+
     context 'user used 2FA phone as phone of record' do
       before do
         subject.idv_session.applicant['phone'] =

@@ -102,6 +102,15 @@ describe Idv::DocAuthController do
       )
     end
 
+    it 'writes a proofing started cloudwatch metrics on the first visit' do
+      expect(controller.cloudwatch_metric_writer).to receive(:write_metric).
+                                                       with('ProofingStarted').
+                                                       once
+
+      get :show, params: { step: 'welcome' }
+      get :show, params: { step: 'welcome' }
+    end
+
     it 'increments the analytics step counts on subsequent submissions' do
       get :show, params: { step: 'welcome' }
       get :show, params: { step: 'welcome' }
