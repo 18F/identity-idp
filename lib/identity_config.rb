@@ -120,6 +120,7 @@ class IdentityConfig
     config.add(:personal_key_retired, type: :boolean)
     config.add(:piv_cac_service_url)
     config.add(:piv_cac_verify_token_url)
+    config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)
     config.add(:proofer_mock_fallback, type: :boolean)
     config.add(:push_notifications_enabled, type: :boolean)
     config.add(:rack_mini_profiler, type: :boolean)
