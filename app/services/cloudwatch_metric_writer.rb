@@ -37,10 +37,8 @@ class CloudwatchMetricWriter
         value: current_sp.issuer || 'NULL',
       },
       {
-      {
         name: 'RequestIAL',
         value: request_ial,
-      }
       },
       {
         name: 'DeployEnvironment',
