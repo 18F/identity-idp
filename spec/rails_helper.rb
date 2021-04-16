@@ -84,6 +84,7 @@ RSpec.configure do |config|
   config.before(:each) do
     Telephony::Test::Message.clear_messages
     Telephony::Test::Call.clear_calls
+    PushNotification::LocalEventQueue.clear!
   end
 
   config.before(:each) do

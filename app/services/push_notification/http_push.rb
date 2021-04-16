@@ -36,6 +36,8 @@ module PushNotification
     attr_reader :now
 
     def deliver_one(service_provider)
+      deliver_local(service_provider) if IdentityConfig.store.risc_notifications_local_enabled
+
       if AppConfig.env.risc_notifications_sqs_enabled == 'true'
         deliver_sqs(service_provider)
       else
@@ -68,6 +70,15 @@ module PushNotification
            Faraday::ConnectionFailed,
            PushNotification::PushNotificationError => err
       NewRelic::Agent.notice_error(err)
+    end
+
+    def deliver_local(service_provider)
+      event = {
+        url: service_provider.push_notification_url,
+        payload: jwt_payload(service_provider),
+        jwt: jwt(service_provider),
+      }
+      PushNotification::LocalEventQueue.events << event
     end
 
     def jwt(service_provider)

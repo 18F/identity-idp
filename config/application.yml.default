@@ -145,6 +145,7 @@ remember_device_expiration_hours_aal_1: '720'
 remember_device_expiration_hours_aal_2: '12'
 report_timeout:
 requests_per_ip_track_only_mode: 'false'
+risc_notifications_local_enabled: 'false'
 risc_notifications_sqs_enabled: 'false'
 ruby_workers_enabled: 'true'
 s3_reports_enabled: 'false'
