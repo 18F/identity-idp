@@ -7,8 +7,10 @@ class PartiallySignedInModalPresenter
   end
 
   def message
-    t('notices.timeout_warning.partially_signed_in.message_html',
-      time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown'))
+    t(
+      'notices.timeout_warning.partially_signed_in.message_html',
+      time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown'),
+    )
   end
 
   def continue

@@ -1,9 +1,11 @@
 module Db
   class PivCacConfiguration
     def self.create(user, x509_dn_uuid, name = x509_dn_uuid, issuer = nil)
-      user.piv_cac_configurations.create!(x509_dn_uuid: x509_dn_uuid,
-                                          name: name,
-                                          x509_issuer: issuer)
+      user.piv_cac_configurations.create!(
+        x509_dn_uuid: x509_dn_uuid,
+        name: name,
+        x509_issuer: issuer,
+      )
     end
 
     def self.delete(user_id, cfg_id)

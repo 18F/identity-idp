@@ -8,8 +8,10 @@ describe PartiallySignedInModalPresenter do
 
   describe '#message' do
     it 'returns the partially signed in message' do
-      message = t('notices.timeout_warning.partially_signed_in.message_html',
-                  time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown'))
+      message = t(
+        'notices.timeout_warning.partially_signed_in.message_html',
+        time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown'),
+      )
 
       expect(presenter.message).to eq message
     end

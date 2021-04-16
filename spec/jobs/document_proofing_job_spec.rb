@@ -11,11 +11,11 @@ RSpec.describe DocumentProofingJob, type: :job do
     stub_request(:get, 'http://example.com/front').
       to_return(body: encryption_helper.encrypt(
         data: '{}', key: encryption_key, iv: front_image_iv,
-    ))
+      ))
     stub_request(:get, 'http://example.com/back').
       to_return(body: encryption_helper.encrypt(
         data: '{}', key: encryption_key, iv: back_image_iv,
-    ))
+      ))
     document_arguments = {
       encryption_key: Base64.encode64(encryption_key),
       front_image_iv: Base64.encode64(front_image_iv),

@@ -2,7 +2,7 @@ module Flow
   class BaseFlow
     attr_accessor :flow_session
     attr_reader :steps, :actions, :current_user, :params, :request, :json, :http_status,
-      :controller
+                :controller
 
     def initialize(controller, steps, actions, session)
       @controller = controller
@@ -80,6 +80,6 @@ module Flow
     end
 
     delegate :flash, :session, :current_user, :params, :request, :poll_with_meta_refresh,
-      :analytics, to: :@controller
+             :analytics, to: :@controller
   end
 end

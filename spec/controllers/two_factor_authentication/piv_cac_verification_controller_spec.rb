@@ -2,8 +2,10 @@ require 'rails_helper'
 
 describe TwoFactorAuthentication::PivCacVerificationController do
   let(:user) do
-    create(:user, :signed_up, :with_piv_or_cac,
-           with: { phone: '+1 (703) 555-0000' })
+    create(
+      :user, :signed_up, :with_piv_or_cac,
+      with: { phone: '+1 (703) 555-0000' }
+    )
   end
 
   let(:nonce) { 'once' }
@@ -66,11 +68,13 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         get :show, params: { token: 'good-token' }
 
         expect(response).to redirect_to account_path
-        expect(subject.user_session[:decrypted_x509]).to eq({
-          'subject' => x509_subject,
-          'issuer' => x509_issuer,
-          'presented' => true,
-        }.to_json)
+        expect(subject.user_session[:decrypted_x509]).to eq(
+          {
+            'subject' => x509_subject,
+            'issuer' => x509_issuer,
+            'presented' => true,
+          }.to_json,
+        )
       end
 
       it 'resets the second_factor_attempts_count' do
@@ -202,9 +206,11 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       let(:lockout_period) { IdentityConfig.store.lockout_period_in_minutes.minutes }
 
       let(:user) do
-        create(:user, :signed_up, :with_piv_or_cac,
-               second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
-               second_factor_attempts_count: 3)
+        create(
+          :user, :signed_up, :with_piv_or_cac,
+          second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
+          second_factor_attempts_count: 3
+        )
       end
 
       describe 'when user submits an incorrect piv/cac' do

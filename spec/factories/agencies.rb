@@ -9,9 +9,11 @@ FactoryBot.define do
 
     id { Agency.last&.id.to_i + 1 } # autoincrementer is messed up for this table
     name do
-      format(agency_name_templates.sample,
-             industry: Faker::Company.industry,
-             tag: SecureRandom.hex)
+      format(
+        agency_name_templates.sample,
+        industry: Faker::Company.industry,
+        tag: SecureRandom.hex,
+      )
     end
     abbreviation do
       name.

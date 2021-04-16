@@ -137,8 +137,14 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.new_device_sign_in.info_html',
-                                     date: date, location: location)))
+        to have_content(
+          strip_tags(
+            t(
+              'user_mailer.new_device_sign_in.info_html',
+              date: date, location: location,
+            ),
+          ),
+        )
       expect(mail.html_part.body).to include(
         '/events/disavow?disavowal_token=asdf1234',
       )
@@ -297,8 +303,10 @@ describe UserMailer, type: :mailer do
       reset_text = t('user_mailer.account_reset_granted.cancel_link_text')
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.intro_html', app: APP_NAME,
-            cancel_account_reset: reset_text),
+          t(
+            'user_mailer.account_reset_request.intro_html', app: APP_NAME,
+                                                            cancel_account_reset: reset_text
+          ),
         ),
       )
     end

@@ -33,8 +33,10 @@ module RememberDeviceConcern
   end
 
   def remember_device_expired_for_sp?
-    expired_for_interval?(current_user,
-                          decorated_session.mfa_expiration_interval)
+    expired_for_interval?(
+      current_user,
+      decorated_session.mfa_expiration_interval,
+    )
   end
 
   def pii_locked_for_session?(user)

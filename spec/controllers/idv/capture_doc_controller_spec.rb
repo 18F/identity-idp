@@ -6,10 +6,12 @@ describe Idv::CaptureDocController do
 
   describe 'before_actions' do
     it 'includes corrects before_actions' do
-      expect(subject).to have_actions(:before,
-                                      :ensure_user_id_in_session,
-                                      :fsm_initialize,
-                                      :ensure_correct_step)
+      expect(subject).to have_actions(
+        :before,
+        :ensure_user_id_in_session,
+        :fsm_initialize,
+        :ensure_correct_step,
+      )
     end
   end
 

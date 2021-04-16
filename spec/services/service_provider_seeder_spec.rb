@@ -187,8 +187,10 @@ RSpec.describe ServiceProviderSeeder do
 
     context 'when the rails environment is not in the service_provider.yml config file' do
       let(:seeder) do
-        ServiceProviderSeeder.new(rails_env: 'non-existant environment',
-                                  deploy_env: 'non-existant environment')
+        ServiceProviderSeeder.new(
+          rails_env: 'non-existant environment',
+          deploy_env: 'non-existant environment',
+        )
       end
 
       it 'logs the error' do

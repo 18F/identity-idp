@@ -75,15 +75,19 @@ describe AgencyIdentityLinker do
     it 'returns sp_identity if it exists' do
       create_identity(user, 'http://localhost:3000', 'UUID1')
       AgencyIdentity.create(user_id: user.id, agency_id: 1, uuid: 'UUID2')
-      sp_identity = AgencyIdentityLinker.sp_identity_from_uuid_and_sp('UUID2',
-                                                                      'http://localhost:3000')
+      sp_identity = AgencyIdentityLinker.sp_identity_from_uuid_and_sp(
+        'UUID2',
+        'http://localhost:3000',
+      )
       expect(sp_identity.uuid).to eq('UUID1')
       expect(sp_identity.service_provider).to eq('http://localhost:3000')
     end
 
     it 'returns nil if sp_identity does not exist' do
-      sp_identity = AgencyIdentityLinker.sp_identity_from_uuid_and_sp('UUID1',
-                                                                      'http://localhost:3000')
+      sp_identity = AgencyIdentityLinker.sp_identity_from_uuid_and_sp(
+        'UUID1',
+        'http://localhost:3000',
+      )
       expect(sp_identity).to eq(nil)
     end
   end

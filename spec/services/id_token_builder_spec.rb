@@ -6,14 +6,16 @@ RSpec.describe IdTokenBuilder do
   let(:code) { SecureRandom.hex }
 
   let(:identity) do
-    build(:service_provider_identity,
-          nonce: SecureRandom.hex,
-          uuid: SecureRandom.uuid,
-          ial: 2,
-          # this is a known value from an example developer guide
-          # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
-          access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
-          user: create(:user))
+    build(
+      :service_provider_identity,
+      nonce: SecureRandom.hex,
+      uuid: SecureRandom.uuid,
+      ial: 2,
+      # this is a known value from an example developer guide
+      # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
+      access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
+      user: create(:user),
+    )
   end
 
   let(:now) { Time.zone.now }
@@ -31,10 +33,12 @@ RSpec.describe IdTokenBuilder do
     subject(:id_token) { Timecop.freeze(now) { builder.id_token } }
 
     let(:decoded_id_token) do
-      JWT.decode(id_token,
-                 AppArtifacts.store.oidc_public_key,
-                 true,
-                 algorithm: 'RS256').map(&:with_indifferent_access)
+      JWT.decode(
+        id_token,
+        AppArtifacts.store.oidc_public_key,
+        true,
+        algorithm: 'RS256',
+      ).map(&:with_indifferent_access)
     end
 
     let(:decoded_payload) { decoded_id_token.first }

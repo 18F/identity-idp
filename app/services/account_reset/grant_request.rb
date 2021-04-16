@@ -9,8 +9,10 @@ module AccountReset
       arr = AccountResetRequest.find_by(user_id: @user_id)
       arr.with_lock do
         return false if arr.granted_token_valid?
-        account_reset_request.update(granted_at: Time.zone.now,
-                                     granted_token: token)
+        account_reset_request.update(
+          granted_at: Time.zone.now,
+          granted_token: token,
+        )
       end
       true
     end

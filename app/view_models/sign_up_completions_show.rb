@@ -42,11 +42,13 @@ class SignUpCompletionsShow
       return content_tag(:strong, I18n.t('titles.sign_up.verified', app: APP_NAME))
     end
 
-    safe_join([I18n.t(
-      'titles.sign_up.completion_html',
-      accent: content_tag(:strong, I18n.t('titles.sign_up.loa1')),
-      app: APP_NAME,
-    ).html_safe])
+    safe_join(
+      [I18n.t(
+        'titles.sign_up.completion_html',
+        accent: content_tag(:strong, I18n.t('titles.sign_up.loa1')),
+        app: APP_NAME,
+      ).html_safe],
+    )
   end
   # rubocop:enable Rails/OutputSafety
 

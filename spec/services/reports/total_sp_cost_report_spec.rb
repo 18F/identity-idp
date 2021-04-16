@@ -15,13 +15,15 @@ describe Reports::TotalSpCostReport do
     ::SpCost.create(issuer: issuer1, ial: 1, agency_id: 2, cost_type: 'foo')
     ::SpCost.create(issuer: issuer1, ial: 1, agency_id: 2, cost_type: 'foo')
     ::SpCost.create(issuer: issuer2, ial: 2, agency_id: 3, cost_type: 'bar')
-    expect(JSON.parse(subject.call)).to eq([{
-                                             'cost_type' => 'bar',
-                                             'count' => 1,
-                                           },
-                                            {
-                                              'cost_type' => 'foo',
-                                              'count' => 3,
-                                            }])
+    expect(JSON.parse(subject.call)).to eq(
+      [{
+        'cost_type' => 'bar',
+        'count' => 1,
+      },
+       {
+         'cost_type' => 'foo',
+         'count' => 3,
+       }],
+    )
   end
 end

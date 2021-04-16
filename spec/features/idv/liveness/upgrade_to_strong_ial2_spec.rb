@@ -34,8 +34,10 @@ describe 'Strong IAL2' do
     it 'upgrades user to IAL2 strict if liveness checking is enabled' do
       allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
 
-      user ||= create(:profile, :active, :verified,
-                      pii: { first_name: 'John', ssn: '111223333' }).user
+      user ||= create(
+        :profile, :active, :verified,
+        pii: { first_name: 'John', ssn: '111223333' }
+      ).user
       visit_idp_from_sp_with_ial2(:oidc)
       sign_in_user(user)
       fill_in_code_with_last_phone_otp
@@ -60,8 +62,10 @@ describe 'Strong IAL2' do
 
       visit_idp_from_sp_with_ial2(:oidc)
 
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=invalid_request'\
-'&error_description=Acr+values+Liveness+checking+is+disabled')
+      expect(current_url).to start_with(
+        'http://localhost:7654/auth/result?error=invalid_request'\
+        '&error_description=Acr+values+Liveness+checking+is+disabled',
+      )
     end
   end
 
@@ -69,8 +73,10 @@ describe 'Strong IAL2' do
     it 'upgrades user to IAL2 strict if liveness checking is enabled' do
       allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
 
-      user ||= create(:profile, :active, :verified,
-                      pii: { first_name: 'John', ssn: '111223333' }).user
+      user ||= create(
+        :profile, :active, :verified,
+        pii: { first_name: 'John', ssn: '111223333' }
+      ).user
       visit_idp_from_oidc_sp_with_ial2_strict
       sign_in_user(user)
       fill_in_code_with_last_phone_otp
@@ -95,8 +101,10 @@ describe 'Strong IAL2' do
 
       visit_idp_from_oidc_sp_with_ial2_strict
 
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=invalid_request'\
-'&error_description=Acr+values+Liveness+checking+is+disabled')
+      expect(current_url).to start_with(
+        'http://localhost:7654/auth/result?error=invalid_request'\
+        '&error_description=Acr+values+Liveness+checking+is+disabled',
+      )
     end
   end
 end

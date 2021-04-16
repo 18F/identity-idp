@@ -59,16 +59,20 @@ describe Idv::GpoMail do
       device.save
     else
       last_login_at = Time.zone.now
-      device = Device.create(user_id: user.id,
-                             user_agent: '',
-                             cookie_uuid: uuid,
-                             last_used_at: last_login_at,
-                             last_ip: remote_ip)
+      device = Device.create(
+        user_id: user.id,
+        user_agent: '',
+        cookie_uuid: uuid,
+        last_used_at: last_login_at,
+        last_ip: remote_ip,
+      )
     end
-    Event.create(user_id: user.id,
-                 device_id: device.id,
-                 ip: remote_ip,
-                 event_type: event,
-                 created_at: updated_at, updated_at: updated_at)
+    Event.create(
+      user_id: user.id,
+      device_id: device.id,
+      ip: remote_ip,
+      event_type: event,
+      created_at: updated_at, updated_at: updated_at
+    )
   end
 end

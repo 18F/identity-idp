@@ -13,9 +13,9 @@ SimpleForm.setup do |config|
   end
 
   config.wrappers :vertical_form,
-    tag: 'div',
-    class: 'margin-bottom-4',
-    error_class: 'has-error' do |b|
+                  tag: 'div',
+                  class: 'margin-bottom-4',
+                  error_class: 'has-error' do |b|
     b.use :html5
     b.use :placeholder
     b.optional :maxlength

@@ -113,10 +113,12 @@ class OpenidConnectTokenForm
 
     matching_cert = service_provider.ssl_certs.find do |ssl_cert|
       err = nil
-      payload, _headers = JWT.decode(client_assertion, ssl_cert.public_key, true,
-                                     algorithm: 'RS256', iss: client_id,
-                                     verify_iss: true, sub: client_id,
-                                     verify_sub: true)
+      payload, _headers = JWT.decode(
+        client_assertion, ssl_cert.public_key, true,
+        algorithm: 'RS256', iss: client_id,
+        verify_iss: true, sub: client_id,
+        verify_sub: true
+      )
     rescue JWT::DecodeError => err
       next
     end
@@ -125,8 +127,10 @@ class OpenidConnectTokenForm
       validate_aud_claim(payload)
       validate_iat(payload)
     else
-      errors.add(:client_assertion,
-                 err&.message || t('openid_connect.token.errors.invalid_signature'))
+      errors.add(
+        :client_assertion,
+        err&.message || t('openid_connect.token.errors.invalid_signature'),
+      )
     end
   end
 
@@ -136,8 +140,10 @@ class OpenidConnectTokenForm
     aud_as_array.map! { |aud| aud.to_s.chomp('/') }
     return true if aud_as_array.include?(api_openid_connect_token_url)
 
-    errors.add(:client_assertion,
-               t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url))
+    errors.add(
+      :client_assertion,
+      t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
+    )
   end
 
   def validate_iat(payload)

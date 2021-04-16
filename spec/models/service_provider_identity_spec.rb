@@ -29,8 +29,10 @@ RSpec.describe ServiceProviderIdentity do
       identity.uuid = nil
 
       expect { identity.save }.
-        to raise_error(ActiveRecord::NotNullViolation,
-                       /null value in column "uuid".*violates not-null constraint/)
+        to raise_error(
+          ActiveRecord::NotNullViolation,
+          /null value in column "uuid".*violates not-null constraint/,
+        )
     end
 
     it 'uses a DB index to enforce uniqueness' do
@@ -40,8 +42,10 @@ RSpec.describe ServiceProviderIdentity do
       identity2.uuid = identity1.uuid
 
       expect { identity2.save }.
-        to raise_error(ActiveRecord::StatementInvalid,
-                       /duplicate key value violates unique constraint/)
+        to raise_error(
+          ActiveRecord::StatementInvalid,
+          /duplicate key value violates unique constraint/,
+        )
     end
   end
 

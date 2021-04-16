@@ -34,9 +34,11 @@ module AccountReset
     end
 
     def update_account_reset_request
-      account_reset_request.update!(cancelled_at: Time.zone.now,
-                                    request_token: nil,
-                                    granted_token: nil)
+      account_reset_request.update!(
+        cancelled_at: Time.zone.now,
+        request_token: nil,
+        granted_token: nil,
+      )
     end
 
     def user

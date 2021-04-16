@@ -15,10 +15,12 @@ RSpec.describe AccountResetHealthChecker do
 
     context 'when a request is not serviced on time' do
       before do
-        AccountResetRequest.create(id: 1,
-                                   user_id: 2,
-                                   requested_at: Time.zone.now - wait_period - buffer_period,
-                                   request_token: 'foo')
+        AccountResetRequest.create(
+          id: 1,
+          user_id: 2,
+          requested_at: Time.zone.now - wait_period - buffer_period,
+          request_token: 'foo',
+        )
       end
 
       it 'returns an unhealthy check' do
@@ -28,11 +30,13 @@ RSpec.describe AccountResetHealthChecker do
 
     context 'when an old request was cancelled' do
       before do
-        AccountResetRequest.create(id: 1,
-                                   user_id: 2,
-                                   requested_at: Time.zone.now - wait_period - buffer_period,
-                                   request_token: 'foo',
-                                   cancelled_at: Time.zone.now)
+        AccountResetRequest.create(
+          id: 1,
+          user_id: 2,
+          requested_at: Time.zone.now - wait_period - buffer_period,
+          request_token: 'foo',
+          cancelled_at: Time.zone.now,
+        )
       end
 
       it 'returns an unhealthy check' do
@@ -42,12 +46,14 @@ RSpec.describe AccountResetHealthChecker do
 
     context 'when all requests are serviced on time' do
       before do
-        AccountResetRequest.create(id: 1,
-                                   user_id: 2,
-                                   requested_at: Time.zone.now - wait_period - buffer_period,
-                                   request_token: 'foo',
-                                   granted_at: Time.zone.now - buffer_period,
-                                   granted_token: 'bar')
+        AccountResetRequest.create(
+          id: 1,
+          user_id: 2,
+          requested_at: Time.zone.now - wait_period - buffer_period,
+          request_token: 'foo',
+          granted_at: Time.zone.now - buffer_period,
+          granted_token: 'bar',
+        )
       end
 
       it 'returns a healthy check' do
