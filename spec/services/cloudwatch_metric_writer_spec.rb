@@ -31,6 +31,7 @@ RSpec.describe CloudwatchMetricWriter do
   end
 
   before do
+    allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
     allow(Identity::Hostdata).to receive(:env).and_return('int')
   end
 
@@ -89,6 +90,14 @@ RSpec.describe CloudwatchMetricWriter do
       )
 
       subject.write_metric('FunMetric', value: custom_value, unit: custom_unit)
+    end
+
+    it 'does not do anything outside a deployed environment' do
+      allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(false)
+
+      expect(cloudwatch_client).to_not receive(:put_metric_data)
+
+      subject.write_metric('FunMetric')
     end
   end
 end
