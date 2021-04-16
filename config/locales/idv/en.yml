@@ -17,7 +17,6 @@ en:
         warning_4: You'll still have a login.gov account for your email address
         warning_5: You can manage or delete that account on your profile page
     errors:
-      bad_dob: Your date of birth must be a valid date.
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have requested too much mail in the last month.
       pattern_mismatch:
