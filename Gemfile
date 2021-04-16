@@ -117,7 +117,7 @@ group :test do
   gem 'axe-matchers', '~> 2.6.0'
   gem 'capybara-screenshot', '>= 1.0.23'
   gem 'capybara-selenium', '>= 0.0.6'
-  gem 'codeclimate-test-reporter', require: false
+  gem 'simplecov', '~> 0.21.0', require: false
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'faker'

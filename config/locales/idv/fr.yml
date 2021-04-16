@@ -18,7 +18,6 @@ fr:
         warning_4: Votre adresse e-mail sera encore associée à un compte login.gov
         warning_5: Vous pouvez gérer ou supprimer ce compte sur votre page de profil
     errors:
-      bad_dob: Votre date de naissance doit être une date valide.
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
       mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       pattern_mismatch:
