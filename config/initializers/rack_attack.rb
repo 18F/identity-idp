@@ -128,6 +128,33 @@ module Rack
       end
     end
 
+    ### Prevent SMS and voice classification spam ###
+
+    # A user can use the form at `/add/phone` and `/phone_setup` to check whether
+    # a phone number is a VOIP number. We rate limit these endpoints to reduce
+    # misuse of that form and charges from our phone classification vendor.
+
+    # Throttle new phone addition
+    #
+    # Key: "rack::attack:#{Time.now.to_i/:period}:phone_setups/ip:#{req.remote_ip}"
+    if IdentityConfig.store.phone_setups_per_ip_track_only_mode
+      track(
+        'phone_setups/ip',
+        limit: AppConfig.env.phone_setups_per_ip_limit.to_i,
+        period: AppConfig.env.phone_setups_per_ip_period.to_i,
+      ) do |req|
+        req.remote_ip if req.path.match?(%r{(/add/phone|/phone_setup)}) && !req.get?
+      end
+    else
+      throttle(
+        'phone_setups/ip',
+        limit: AppConfig.env.phone_setups_per_ip_limit.to_i,
+        period: AppConfig.env.phone_setups_per_ip_period.to_i,
+      ) do |req|
+        req.remote_ip if req.path.match?(%r{/add/phone|/phone_setup}) && !req.get?
+      end
+    end
+
     # Lockout IP addresses that are attempting to sign in with the same username
     # over and over.
     # After maxretry requests in findtime minutes, block all requests from that IP for bantime.
