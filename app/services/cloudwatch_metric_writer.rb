@@ -7,21 +7,15 @@ class CloudwatchMetricWriter
     @cloudwatch_client = cloudwatch_client
   end
 
-  def write_metric(name, dimensions: {}, value: 1, unit: 'Count')
-    client.put_metric_data(
-      namespace: "IdentityIDP",
+  def write_metric(name, dimensions: [], value: 1, unit: 'Count')
+    cloudwatch_client.put_metric_data(
+      namespace: "#{Identity::Hostdata.env || 'local'}/idp", # TODO: Drop 'local'
       metric_data: [
         {
           metric_name: name,
-          dimensions: base_dimenstions.merge(dimensions),
-          timestamp: Time.now,
+          dimensions: base_dimenstions + dimensions,
+          timestamp: Time.zone.now,
           value: value,
-          statistic_values: {
-            sample_count: 1,
-            sum: value,
-            minimum: value,
-            maximum: value,
-          },
           unit: unit,
         },
       ],
@@ -38,11 +32,7 @@ class CloudwatchMetricWriter
       },
       {
         name: 'RequestIAL',
-        value: request_ial,
-      },
-      {
-        name: 'DeployEnvironment',
-        value: Identity::Hostdata.env,
+        value: request_ial.to_s,
       },
     ]
   end
