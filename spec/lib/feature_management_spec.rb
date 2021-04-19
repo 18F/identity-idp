@@ -62,7 +62,7 @@ describe 'FeatureManagement', type: :feature do
 
       it 'returns false in production mode when server is pt' do
         allow(Rails.env).to receive(:production?).and_return(true)
-        allow(AppConfig.env).to receive(:domain_name).and_return('idp.pt.login.gov')
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('idp.pt.login.gov')
 
         expect(FeatureManagement.prefill_otp_codes?).to eq(false)
       end
@@ -107,7 +107,7 @@ describe 'FeatureManagement', type: :feature do
     context 'server domain name is dev, qa, or int' do
       it 'returns true' do
         %w[idp.dev.login.gov idp.int.login.gov idp.qa.login.gov].each do |domain|
-          allow(AppConfig.env).to receive(:domain_name).and_return(domain)
+          allow(IdentityConfig.store).to receive(:domain_name).and_return(domain)
 
           expect(FeatureManagement.reveal_gpo_code?).to eq(true)
         end
@@ -125,7 +125,7 @@ describe 'FeatureManagement', type: :feature do
     context 'Rails env is not development and server is not dev, qa, or int' do
       it 'returns false' do
         allow(Rails.env).to receive(:development?).and_return(false)
-        allow(AppConfig.env).to receive(:domain_name).and_return('foo.login.gov')
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('foo.login.gov')
 
         expect(FeatureManagement.reveal_gpo_code?).to eq(false)
       end

@@ -61,7 +61,7 @@ describe Users::WebauthnSetupController do
       end
 
       before do
-        allow(AppConfig.env).to receive(:domain_name).and_return('localhost:3000')
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         controller.user_session[:webauthn_challenge] = webauthn_challenge
       end
 
