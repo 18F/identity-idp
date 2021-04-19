@@ -155,6 +155,7 @@ requests_per_ip_limit: '300'
 requests_per_ip_period: '300'
 requests_per_ip_track_only_mode: 'false'
 reset_password_email_max_attempts: '20'
+reset_password_email_window_in_minutes: '60'
 risc_notifications_local_enabled: 'false'
 risc_notifications_sqs_enabled: 'false'
 ruby_workers_enabled: 'true'
@@ -234,7 +235,6 @@ development:
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   recurring_jobs_disabled_names: "[]"
-  reset_password_email_window_in_minutes: '60'
   resolution_proof_result_lambda_token: ABC123
   s3_report_bucket_prefix:
   saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
@@ -311,7 +311,6 @@ production:
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
-  reset_password_email_window_in_minutes: '60'
   resolution_proof_result_lambda_token:
   ruby_workers_enabled: 'false'
   s3_report_bucket_prefix: login-gov.reports
