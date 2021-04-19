@@ -2,7 +2,7 @@ import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import {
   I18nContext,
-  ServiceProviderContext,
+  ServiceProviderContextProvider,
   UploadContextProvider,
 } from '@18f/identity-document-capture';
 import ReviewIssuesStep, {
@@ -125,28 +125,30 @@ describe('document-capture/components/review-issues-step', () => {
               '<strong>Having trouble?</strong> Get help at %{sp_name}',
           }}
         >
-          <ServiceProviderContext.Provider
+          <ServiceProviderContextProvider
             value={{
               name: 'Example App',
-              failureToProofURL: 'https://example.com',
+              failureToProofURL: 'https://example.com/?step=document_capture',
               isLivenessRequired: false,
             }}
           >
             <ReviewIssuesStep />
-          </ServiceProviderContext.Provider>
+          </ServiceProviderContextProvider>
         </I18nContext.Provider>,
       );
 
       const help = getByText('Having trouble?').closest('a');
 
-      expect(help.href).to.equal('https://example.com/');
       expect(help).to.be.ok();
+      expect(help.href).to.equal(
+        'https://example.com/?step=document_capture&location=review_issues_having_trouble',
+      );
     });
 
     context('ial2', () => {
       it('renders with front and back inputs', () => {
         const { getByLabelText } = render(
-          <ServiceProviderContext.Provider
+          <ServiceProviderContextProvider
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
@@ -154,7 +156,7 @@ describe('document-capture/components/review-issues-step', () => {
             }}
           >
             <ReviewIssuesStep />
-          </ServiceProviderContext.Provider>,
+          </ServiceProviderContextProvider>,
         );
 
         expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();
@@ -166,7 +168,7 @@ describe('document-capture/components/review-issues-step', () => {
     context('ial2 strict', () => {
       it('renders with front, back, and selfie inputs', () => {
         const { getByLabelText } = render(
-          <ServiceProviderContext.Provider
+          <ServiceProviderContextProvider
             value={{
               name: 'Example App',
               failureToProofURL: 'https://example.com',
@@ -174,7 +176,7 @@ describe('document-capture/components/review-issues-step', () => {
             }}
           >
             <ReviewIssuesStep />
-          </ServiceProviderContext.Provider>,
+          </ServiceProviderContextProvider>,
         );
 
         expect(getByLabelText('doc_auth.headings.document_capture_front')).to.be.ok();

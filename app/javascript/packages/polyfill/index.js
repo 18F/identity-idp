@@ -1,3 +1,5 @@
+import isSafe from './is-safe';
+
 /**
  * @typedef Polyfill
  *
@@ -6,11 +8,11 @@
  */
 
 /**
- * @typedef {"fetch"|"classlist"|"crypto"|"custom-event"} SupportedPolyfills
+ * @typedef {"fetch"|"classlist"|"crypto"|"custom-event"|"url"} SupportedPolyfills
  */
 
 /**
- * @type {Record<string,Polyfill>}
+ * @type {Record<SupportedPolyfills,Polyfill>}
  */
 const POLYFILLS = {
   fetch: {
@@ -26,16 +28,12 @@ const POLYFILLS = {
     load: () => import(/* webpackChunkName: "webcrypto-shim" */ 'webcrypto-shim'),
   },
   'custom-event': {
-    test() {
-      try {
-        // eslint-disable-next-line no-new
-        new window.CustomEvent('test');
-        return true;
-      } catch {
-        return false;
-      }
-    },
+    test: () => isSafe(() => new window.CustomEvent('test')),
     load: () => import(/* webpackChunkName: "custom-event-polyfill" */ 'custom-event-polyfill'),
+  },
+  url: {
+    test: () => isSafe(() => new URL('http://example.com')) && isSafe(() => new URLSearchParams()),
+    load: () => import(/* webpackChunkName: "js-polyfills-url" */ 'js-polyfills/url'),
   },
 };
 
