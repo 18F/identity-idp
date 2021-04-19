@@ -32,7 +32,7 @@ class WebauthnVerificationForm
 
   # this gives us a hook to override the domain embedded in the attestation test object
   def self.domain_name
-    AppConfig.env.domain_name
+    IdentityConfig.store.domain_name
   end
 
   private

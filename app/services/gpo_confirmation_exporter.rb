@@ -45,7 +45,7 @@ class GpoConfirmationExporter
       format_date(now),
       format_date(due),
       service_provider.friendly_name || 'Login.gov',
-      "https://#{AppConfig.env.domain_name}",
+      "https://#{IdentityConfig.store.domain_name}",
     ]
   end
 

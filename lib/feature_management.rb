@@ -62,7 +62,7 @@ class FeatureManagement
   end
 
   def self.current_env_allowed_to_see_gpo_code?
-    ENVS_WHERE_PREFILLING_GPO_CODE_ALLOWED.include?(AppConfig.env.domain_name)
+    ENVS_WHERE_PREFILLING_GPO_CODE_ALLOWED.include?(IdentityConfig.store.domain_name)
   end
 
   def self.show_demo_banner?

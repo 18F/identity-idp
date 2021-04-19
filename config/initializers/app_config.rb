@@ -12,7 +12,6 @@ AppConfig.require_keys(
     database_host
     database_password
     database_username
-    domain_name
     enable_rate_limiting
     enable_test_routes
     enable_usps_verification

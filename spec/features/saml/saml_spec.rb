@@ -124,7 +124,7 @@ feature 'saml api' do
       it 'populates issuer with the idp name' do
         expect(xmldoc.issuer_nodeset.length).to eq(1)
         expect(xmldoc.issuer_nodeset[0].content).to eq(
-          "https://#{AppConfig.env.domain_name}/api/saml",
+          "https://#{IdentityConfig.store.domain_name}/api/saml",
         )
       end
 

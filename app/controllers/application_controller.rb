@@ -73,7 +73,7 @@ class ApplicationController < ActionController::Base
   end
 
   def default_url_options
-    { locale: locale_url_param, host: AppConfig.env.domain_name }
+    { locale: locale_url_param, host: IdentityConfig.store.domain_name }
   end
 
   def sign_out(*args)

@@ -55,7 +55,7 @@ module Upaya
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
 
-    routes.default_url_options[:host] = AppConfig.env.domain_name
+    routes.default_url_options[:host] = IdentityConfig.store.domain_name
 
     config.action_mailer.default_options = {
       from: Mail::Address.new.tap do |mail|
@@ -72,7 +72,7 @@ module Upaya
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
-          next if source == AppConfig.env.domain_name
+          next if source == IdentityConfig.store.domain_name
 
           ServiceProvider.pluck(:redirect_uris).flatten.compact.find do |uri|
             split_uri = uri.split('//')

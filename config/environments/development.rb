@@ -22,7 +22,7 @@ Rails.application.configure do
   config.action_view.annotate_rendered_view_with_filenames = true
 
   config.action_mailer.default_url_options = {
-    host: AppConfig.env.domain_name,
+    host: IdentityConfig.store.domain_name,
     protocol: ENV['HTTPS'] == 'on' ? 'https' : 'http',
   }
   config.action_mailer.asset_host = IdentityConfig.store.mailer_domain_name
