@@ -34,7 +34,7 @@ class StepIndicator {
   setScrollOffset() {
     const { currentStep } = this.elements;
     if (currentStep) {
-      currentStep.scrollIntoView({ inline: 'center' });
+      currentStep.scrollIntoView({ inline: 'center', block: 'nearest' });
     }
   }
 

@@ -54,4 +54,31 @@ describe 'idv/come_back_later/show.html.erb' do
       )
     end
   end
+
+  context 'ial2 step indicator enabled' do
+    it 'shows step indicator with pending status' do
+      render
+
+      expect(view.content_for(:pre_flash_content)).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_phone_or_address'),
+      )
+      expect(view.content_for(:pre_flash_content)).to have_css(
+        '.step-indicator__step--complete',
+        text: t('step_indicator.flows.idv.secure_account'),
+      )
+    end
+  end
+
+  context 'ial2 step indicator disabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).and_return(false)
+    end
+
+    it 'does not show step indicator' do
+      render
+
+      expect(view.content_for(:pre_flash_content)).not_to have_css('.step-indicator')
+    end
+  end
 end

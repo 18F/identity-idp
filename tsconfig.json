@@ -20,6 +20,7 @@
     "app/javascript/packs/form-validation.js",
     "app/javascript/packs/intl-tel-input.js",
     "app/javascript/packs/spinner-button.js",
+    "app/javascript/packs/step-indicator.js",
     "app/javascript/packs/session-expire-session.js",
     "app/javascript/packs/session-timeout-ping.js"
   ],
