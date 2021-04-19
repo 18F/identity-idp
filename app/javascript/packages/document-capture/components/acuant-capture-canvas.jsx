@@ -98,7 +98,7 @@ import useI18n from '../hooks/use-i18n';
  * @prop {number} moireraw Detected image raw moiré.
  * @prop {number} dpi Detected image resolution.
  *
- * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.3/SimpleHTMLApp#acuantcamera
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.4/SimpleHTMLApp#acuantcamera
  */
 
 /**
