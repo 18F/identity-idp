@@ -121,7 +121,7 @@ module PushNotification
 
     def eventbridge_client
       @eventbridge_client ||= Aws::EventBridge::Client.new(
-        region: Identity::Hostdata.aws_region
+        region: Identity::Hostdata.aws_region,
       )
     end
   end
