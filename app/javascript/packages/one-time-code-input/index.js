@@ -36,7 +36,14 @@ class OneTimeCodeInput {
 
       input.value = code;
       form?.submit();
-    } catch {}
+    } catch {
+      // Thrown errors may be expected if:
+      // - the user submits the form and triggers the abort controller's signal. ('AbortError')
+      // - or, credential retrieval times out. ('InvalidStateError')
+      // Timeout errors occur in the real world, but they are not defined in the current version of
+      // of the specification. Ideally we would only allow expected errors and throw any others, but
+      // since this could unknowingly change in the future, we instead absorb all errors.
+    }
   }
 }
 
