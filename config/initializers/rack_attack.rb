@@ -114,7 +114,7 @@ module Rack
       track(
         'otps/ip',
         limit: IdentityConfig.store.otps_per_ip_limit,
-        period: AppConfig.env.otps_per_ip_period.to_i,
+        period: IdentityConfig.store.otps_per_ip_period,
       ) do |req|
         req.remote_ip if req.path.match?(%r{/otp/send})
       end
@@ -122,7 +122,7 @@ module Rack
       throttle(
         'otps/ip',
         limit: IdentityConfig.store.otps_per_ip_limit,
-        period: AppConfig.env.otps_per_ip_period.to_i,
+        period: IdentityConfig.store.otps_per_ip_period,
       ) do |req|
         req.remote_ip if req.path.match?(%r{/otp/send})
       end
