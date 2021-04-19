@@ -114,6 +114,7 @@ class IdentityConfig
     config.add(:min_password_score, type: :integer)
     config.add(:mx_timeout, type: :integer)
     config.add(:no_sp_campaigns_whitelist, type: :json)
+    config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otps_per_ip_track_only_mode, type: :boolean)
     config.add(:nonessential_email_banlist, type: :json)
     config.add(:outbound_connection_check_url)
