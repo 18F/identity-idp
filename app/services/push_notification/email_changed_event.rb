@@ -23,7 +23,7 @@ module PushNotification
     end
 
     def ==(other)
-      user == other.user && email == other.email
+      other.class == self.class && user == other.user && email == other.email
     end
   end
 end
