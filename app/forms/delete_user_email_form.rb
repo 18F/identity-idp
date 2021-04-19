@@ -50,5 +50,7 @@ class DeleteUserEmailForm
     PushNotification::HttpPush.deliver(identifier_recycled)
     email_changed = PushNotification::EmailChangedEvent.new(user: user, email: email)
     PushNotification::HttpPush.deliver(email_changed)
+    recovery_information_changed = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+    PushNotification::HttpPush.deliver(recovery_information_changed)
   end
 end
