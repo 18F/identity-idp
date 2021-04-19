@@ -105,14 +105,13 @@ describe ReturnToSpController do
       end
     end
 
-    context 'with flow, step, or location parameters' do
+    context 'with step or location parameters' do
       it 'logs with extra analytics properties' do
-        get 'failure_to_proof', params: { flow: 'example', step: 'first', location: 'bottom' }
+        get 'failure_to_proof', params: { step: 'first', location: 'bottom' }
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
           redirect_url: a_kind_of(String),
-          flow: 'example',
           step: 'first',
           location: 'bottom',
         )

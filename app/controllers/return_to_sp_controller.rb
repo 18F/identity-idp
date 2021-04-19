@@ -20,7 +20,7 @@ class ReturnToSpController < ApplicationController
   private
 
   def idv_location_params
-    params.permit(:flow, :step, :location).to_h.symbolize_keys
+    params.permit(:step, :location).to_h.symbolize_keys
   end
 
   def sp_return_url_resolver
