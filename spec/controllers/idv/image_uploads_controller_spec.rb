@@ -9,7 +9,9 @@ describe Idv::ImageUploadsController do
     let(:params) do
       {
         front: DocAuthImageFixtures.document_front_image_multipart,
+        front_image_metadata: '{"glare":99.99}',
         back: DocAuthImageFixtures.document_back_image_multipart,
+        back_image_metadata: '{"glare":99.99}',
         selfie: DocAuthImageFixtures.selfie_image_multipart,
         document_capture_session_uuid: document_capture_session.uuid,
       }
@@ -218,6 +220,10 @@ describe Idv::ImageUploadsController do
           result: 'Passed',
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
+          client_image_metrics: {
+            front: { glare: 99.99 },
+            back: { glare: 99.99 },
+          },
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -279,6 +285,10 @@ describe Idv::ImageUploadsController do
               result: 'Passed',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
+              client_image_metrics: {
+                front: { glare: 99.99 },
+                back: { glare: 99.99 },
+              },
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -318,6 +328,10 @@ describe Idv::ImageUploadsController do
               result: 'Passed',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
+              client_image_metrics: {
+                front: { glare: 99.99 },
+                back: { glare: 99.99 },
+              },
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -357,6 +371,10 @@ describe Idv::ImageUploadsController do
               result: 'Passed',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
+              client_image_metrics: {
+                front: { glare: 99.99 },
+                back: { glare: 99.99 },
+              },
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -418,6 +436,10 @@ describe Idv::ImageUploadsController do
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
           exception: nil,
+          client_image_metrics: {
+            front: { glare: 99.99 },
+            back: { glare: 99.99 },
+          },
         )
 
         action
@@ -463,6 +485,10 @@ describe Idv::ImageUploadsController do
           exception: nil,
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
+          client_image_metrics: {
+            front: { glare: 99.99 },
+            back: { glare: 99.99 },
+          },
         )
 
         action
