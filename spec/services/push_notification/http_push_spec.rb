@@ -22,26 +22,20 @@ RSpec.describe PushNotification::HttpPush do
     )
   end
   let(:now) { Time.zone.now }
-  let(:risc_notifications_sqs_enabled) { 'false' }
+  let(:risc_notifications_eventbridge_enabled) { false }
   let(:push_notifications_enabled) { true }
-  let(:sqs_client) { Aws::SQS::Client.new(stub_responses: true) }
-  let(:sqs_queue_url) { 'https://some-queue-url.example.com/example' }
+  let(:eventbridge_client) { Aws::EventBridge::Client.new(stub_responses: true) }
 
   subject(:http_push) { PushNotification::HttpPush.new(event, now: now) }
 
   before do
-    allow(AppConfig.env).to receive(:risc_notifications_sqs_enabled).
-      and_return(risc_notifications_sqs_enabled)
+    allow(IdentityConfig.store).to receive(:risc_notifications_eventbridge_enabled).
+      and_return(risc_notifications_eventbridge_enabled)
     allow(Identity::Hostdata).to receive(:env).and_return('dev')
     allow(IdentityConfig.store).to receive(:push_notifications_enabled).
       and_return(push_notifications_enabled)
 
-    allow(http_push).to receive(:sqs_client).and_return(sqs_client)
-
-    sqs_client.stub_responses(
-      :get_queue_url,
-      { queue_url: sqs_queue_url },
-    )
+    allow(http_push).to receive(:eventbridge_client).and_return(eventbridge_client)
   end
 
   describe '#deliver' do
@@ -57,8 +51,8 @@ RSpec.describe PushNotification::HttpPush do
       end
     end
 
-    context 'when the SQS queue is disabled' do
-      let(:risc_notifications_sqs_enabled) { 'false' }
+    context 'when the EventBridge is disabled' do
+      let(:risc_notifications_eventbridge_enabled) { false }
 
       it 'makes an HTTP post to service providers with a push_notification_url' do
         stub_request(:post, sp_with_push_url.push_notification_url).
@@ -86,22 +80,21 @@ RSpec.describe PushNotification::HttpPush do
       end
     end
 
-    context 'when the SQS queue is enabled' do
-      let(:risc_notifications_sqs_enabled) { 'true' }
+    context 'when the EventBridge is enabled' do
+      let(:risc_notifications_eventbridge_enabled) { true }
 
-      it 'posts to the SQS queue' do
-        expect(sqs_client).to receive(:get_queue_url).
-          with(queue_name: 'dev-risc-notifications').
-          and_call_original
+      it 'posts to the EventBridge' do
+        expect(eventbridge_client).to receive(:put_events).and_wrap_original do |impl, entries:|
+          expect(entries.size).to eq(1)
+          entry = entries.first
 
-        expect(sqs_client).to receive(:send_message) do |queue_url:, message_body:|
-          expect(queue_url).to eq(sqs_queue_url)
-
-          message = JSON.parse(message_body, symbolize_names: true)
-          expect(message[:push_notification_url]).to eq(sp_with_push_url.push_notification_url)
+          expect(entry[:time]).to eq(now)
+          expect(entry[:source]).to eq(sp_with_push_url.issuer)
+          expect(entry[:event_bus_name]).to eq('dev-risc-notifications')
+          expect(entry[:detail_type]).to eq('notification')
 
           payload, headers = JWT.decode(
-            message[:jwt],
+            entry[:detail],
             AppArtifacts.store.oidc_public_key,
             true,
             algorithm: 'RS256',
@@ -114,6 +107,8 @@ RSpec.describe PushNotification::HttpPush do
           expect(payload['exp']).to eq((now + 12.hours).to_i)
           expect(payload['aud']).to eq(sp_with_push_url.push_notification_url)
           expect(payload['events']).to eq(event.event_type => event.payload.as_json)
+
+          impl.call(entries: entries)
         end
 
         deliver
@@ -125,8 +120,8 @@ RSpec.describe PushNotification::HttpPush do
 
       let(:agency_uuid) { AgencyIdentityLinker.new(sp_with_push_url_identity).link_identity.uuid }
 
-      context 'when the SQS queue is disabled' do
-        let(:risc_notifications_sqs_enabled) { 'false' }
+      context 'when the EventBridge is disabled' do
+        let(:risc_notifications_eventbridge_enabled) { false }
 
         it 'sends the agency-specific uuid' do
           stub_request(:post, sp_with_push_url.push_notification_url).
@@ -145,15 +140,16 @@ RSpec.describe PushNotification::HttpPush do
         end
       end
 
-      context 'when the SQS queue is enabled' do
-        let(:risc_notifications_sqs_enabled) { 'true' }
+      context 'when the EventBridge is enabled' do
+        let(:risc_notifications_eventbridge_enabled) { true }
 
         it 'sends the agency-specific uuid' do
-          expect(sqs_client).to receive(:send_message) do |queue_url:, message_body:|
-            message = JSON.parse(message_body, symbolize_names: true)
+          expect(eventbridge_client).to receive(:put_events) do |entries:|
+            expect(entries.size).to eq(1)
+            entry = entries.first
 
             payload, _headers = JWT.decode(
-              message[:jwt],
+              entry[:detail],
               AppArtifacts.store.oidc_public_key,
               true,
               algorithm: 'RS256',
@@ -211,8 +207,8 @@ RSpec.describe PushNotification::HttpPush do
         RevokeServiceProviderConsent.new(identity).call
       end
 
-      context 'when the SQS queue is disabled' do
-        let(:risc_notifications_sqs_enabled) { 'false' }
+      context 'when the EventBridge is disabled' do
+        let(:risc_notifications_eventbridge_enabled) { false }
 
         it 'does not notify that SP' do
           deliver
@@ -221,11 +217,11 @@ RSpec.describe PushNotification::HttpPush do
         end
       end
 
-      context 'when the SQS queue is enabled' do
-        let(:risc_notifications_sqs_enabled) { 'true' }
+      context 'when the EventBridge is enabled' do
+        let(:risc_notifications_eventbridge_enabled) { true }
 
         it 'does not notify that SP' do
-          expect(sqs_client).to_not receive(:send_message)
+          expect(eventbridge_client).to_not receive(:put_events)
 
           deliver
         end
