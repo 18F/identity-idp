@@ -268,7 +268,7 @@ feature 'Password Recovery' do
     user = create(:user, :signed_up)
     email = user.email
 
-    max_attempts = AppConfig.env.reset_password_email_max_attempts.to_i
+    max_attempts = IdentityConfig.store.reset_password_email_max_attempts
     max_attempts.times do |i|
       submit_email_for_password_reset(email)
       expect(unread_emails_for(email).size).to eq(i + 1)

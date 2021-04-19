@@ -27,7 +27,7 @@ class Throttle < ApplicationRecord
       attempt_window: IdentityConfig.store.reg_confirmed_email_window_in_minutes,
     },
     reset_password_email: {
-      max_attempts: AppConfig.env.reset_password_email_max_attempts.to_i,
+      max_attempts: IdentityConfig.store.reset_password_email_max_attempts,
       attempt_window: AppConfig.env.reset_password_email_window_in_minutes.to_i,
     },
     idv_resolution: {
