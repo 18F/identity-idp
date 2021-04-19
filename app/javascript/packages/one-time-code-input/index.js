@@ -22,7 +22,7 @@ class OneTimeCodeInput {
    */
   async receive(transport) {
     const { input, form } = this.elements;
-    const controller = new AbortController();
+    const controller = new window.AbortController();
 
     if (form) {
       form.addEventListener('submit', () => controller.abort());
