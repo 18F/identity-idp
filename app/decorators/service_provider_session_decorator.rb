@@ -92,7 +92,7 @@ class ServiceProviderSessionDecorator
   end
 
   def mfa_expiration_interval
-    aal_1_expiration = AppConfig.env.remember_device_expiration_hours_aal_1.to_i.hours
+    aal_1_expiration = IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
     aal_2_expiration = AppConfig.env.remember_device_expiration_hours_aal_2.to_i.hours
     return aal_2_expiration if sp_aal > 1
     return aal_2_expiration if sp_ial > 1

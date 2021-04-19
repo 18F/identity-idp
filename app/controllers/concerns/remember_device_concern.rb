@@ -77,6 +77,6 @@ module RememberDeviceConcern
   end
 
   def remember_device_cookie_expiration
-    AppConfig.env.remember_device_expiration_hours_aal_1.to_i.hours.from_now
+    IdentityConfig.store.remember_device_expiration_hours_aal_1.hours.from_now
   end
 end

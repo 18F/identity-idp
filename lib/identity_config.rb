@@ -144,6 +144,7 @@ class IdentityConfig
     config.add(:reg_confirmed_email_window_in_minutes, type: :integer)
     config.add(:reg_unconfirmed_email_max_attempts, type: :integer)
     config.add(:reg_unconfirmed_email_window_in_minutes, type: :integer)
+    config.add(:remember_device_expiration_hours_aal_1, type: :integer)
     config.add(:requests_per_ip_track_only_mode, type: :boolean)
     config.add(:risc_notifications_local_enabled, type: :boolean)
     config.add(:s3_reports_enabled, type: :boolean)
