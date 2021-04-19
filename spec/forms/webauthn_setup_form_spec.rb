@@ -10,7 +10,7 @@ describe WebauthnSetupForm do
   describe '#submit' do
     context 'when the input is valid' do
       it 'returns FormResponse with success: true' do
-        allow(IdentityConfig.store.to receive(:domain_name).and_return('localhost:3000')
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         result = instance_double(FormResponse)
         params = {
           attestation_object: attestation_object,
