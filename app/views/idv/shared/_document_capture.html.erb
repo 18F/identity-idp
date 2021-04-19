@@ -23,7 +23,7 @@
   status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     send(@step_url, step: :verify_document_status) :
     nil,
-  status_poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
+  status_poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
   sp_name: sp_name,
   flow_path: flow_path,
   failure_to_proof_url: failure_to_proof_url,
