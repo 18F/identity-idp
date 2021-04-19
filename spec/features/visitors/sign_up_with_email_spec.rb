@@ -70,7 +70,7 @@ feature 'Visitor signs up with email address' do
     sign_up_with(email)
 
     starting_count = unread_emails_for(email).size
-    max_attempts = AppConfig.env.reg_unconfirmed_email_max_attempts.to_i
+    max_attempts = IdentityConfig.store.reg_unconfirmed_email_max_attempts
     max_attempts.times do |i|
       sign_up_with(email)
       expect(unread_emails_for(email).size).to eq(starting_count + i + 1)

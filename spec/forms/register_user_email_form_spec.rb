@@ -73,7 +73,7 @@ describe RegisterUserEmailForm do
 
       it 'creates throttle events after reaching throttle limit' do
         user = create(:user, email: 'test@example.com', confirmed_at: nil, uuid: '123')
-        (AppConfig.env.reg_unconfirmed_email_max_attempts.to_i + 1).times do
+        (IdentityConfig.store.reg_unconfirmed_email_max_attempts + 1).times do
           subject.submit(email: 'test@example.com')
         end
 
