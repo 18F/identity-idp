@@ -57,7 +57,7 @@ module Rack
     if IdentityConfig.store.requests_per_ip_track_only_mode
       track(
         'req/ip',
-        limit: AppConfig.env.requests_per_ip_limit.to_i,
+        limit: IdentityConfig.store.requests_per_ip_limit,
         period: AppConfig.env.requests_per_ip_period.to_i,
       ) do |req|
         req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
@@ -65,7 +65,7 @@ module Rack
     else
       throttle(
         'req/ip',
-        limit: AppConfig.env.requests_per_ip_limit.to_i,
+        limit: IdentityConfig.store.requests_per_ip_limit,
         period: AppConfig.env.requests_per_ip_period.to_i,
       ) do |req|
         req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
