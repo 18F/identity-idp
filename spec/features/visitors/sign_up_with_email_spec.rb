@@ -80,7 +80,7 @@ feature 'Visitor signs up with email address' do
     sign_up_with(email)
     expect(unread_emails_for(email).size).to eq(starting_count + max_attempts)
 
-    window_in_minutes = AppConfig.env.reg_unconfirmed_email_window_in_minutes.to_i + 1
+    window_in_minutes = IdentityConfig.store.reg_unconfirmed_email_window_in_minutes + 1
     Timecop.travel(Time.zone.now + window_in_minutes.minutes) do
       sign_up_with(email)
       expect(unread_emails_for(email).size).to eq(starting_count + max_attempts + 1)

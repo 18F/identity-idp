@@ -33,7 +33,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
     submit_resend_email_confirmation(email)
     expect(unread_emails_for(user.email).size).to eq(max_attempts)
 
-    window_in_minutes = AppConfig.env.reg_unconfirmed_email_window_in_minutes.to_i + 1
+    window_in_minutes = IdentityConfig.store.reg_unconfirmed_email_window_in_minutes + 1
     Timecop.travel(Time.zone.now + window_in_minutes.minutes) do
       submit_resend_email_confirmation(email)
       expect(unread_emails_for(user.email).size).to eq(max_attempts + 1)
