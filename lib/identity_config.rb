@@ -147,6 +147,7 @@ class IdentityConfig
     config.add(:remember_device_expiration_hours_aal_1, type: :integer)
     config.add(:remember_device_expiration_hours_aal_2, type: :integer)
     config.add(:requests_per_ip_limit, type: :integer)
+    config.add(:requests_per_ip_period, type: :integer)
     config.add(:requests_per_ip_track_only_mode, type: :boolean)
     config.add(:risc_notifications_local_enabled, type: :boolean)
     config.add(:s3_reports_enabled, type: :boolean)

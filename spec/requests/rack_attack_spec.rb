@@ -24,7 +24,7 @@ describe 'throttling requests' do
 
       expect(throttle_data[:count]).to eq(1)
       expect(throttle_data[:limit]).to eq(IdentityConfig.store.requests_per_ip_limit)
-      expect(throttle_data[:period]).to eq(AppConfig.env.requests_per_ip_period.to_i)
+      expect(throttle_data[:period]).to eq(IdentityConfig.store.requests_per_ip_period)
     end
 
     context 'when the number of requests is lower than the limit' do
