@@ -18,8 +18,8 @@ classes << local_assigns.delete(:class) if local_assigns[:class]
 <%= text_field_tag(
   name,
   nil,
-  aria: { invalid: false },
-  data: { transport: transport },
+  'aria-invalid': 'false',
+  'data-transport': transport,
   pattern: '[0-9]*',
   maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
   autocomplete: 'one-time-code',
