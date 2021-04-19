@@ -78,7 +78,7 @@ class FeatureManagement
   end
 
   def self.recaptcha_enabled?(session, reset)
-    AbTest.new(:ab_test_recaptcha_enabled, AppConfig.env.recaptcha_enabled_percent).
+    AbTest.new(:ab_test_recaptcha_enabled, IdentityConfig.store.recaptcha_enabled_percent).
       enabled?(session, reset)
   end
 

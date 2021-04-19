@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe AbTest do
   describe '#enabled' do
     context 'with percent set to 100' do
-      let(:ab_test) { AbTest.new(:key, '100') }
+      let(:ab_test) { AbTest.new(:key, 100) }
 
       it 'it returns true for a new session' do
         expect(ab_test.enabled?({}, true)).to eq(true)
@@ -17,7 +17,7 @@ RSpec.describe AbTest do
     end
 
     context 'with percent set to 0' do
-      let(:ab_test) { AbTest.new(:key, '0') }
+      let(:ab_test) { AbTest.new(:key, 0) }
 
       it 'it returns false for a new session' do
         expect(ab_test.enabled?({}, true)).to eq(false)
@@ -31,7 +31,7 @@ RSpec.describe AbTest do
     end
 
     context 'with percent set to 50' do
-      let(:ab_test) { AbTest.new(:key, '50') }
+      let(:ab_test) { AbTest.new(:key, 50) }
 
       it 'it returns true or false for a new session' do
         enabled = ab_test.enabled?({}, true)
