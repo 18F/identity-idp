@@ -6,7 +6,7 @@ feature 'phone otp rate limiting', :idv_job do
   let(:user) { user_with_2fa }
 
   describe 'otp sends' do
-    let(:max_attempts) { AppConfig.env.otp_delivery_blocklist_maxretry.to_i + 1 }
+    let(:max_attempts) { IdentityConfig.store.otp_delivery_blocklist_maxretry + 1 }
 
     it 'rate limits sends from the otp delivery method step' do
       start_idv_from_sp
