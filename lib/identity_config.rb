@@ -133,6 +133,7 @@ class IdentityConfig
     config.add(:proofer_mock_fallback, type: :boolean)
     config.add(:push_notifications_enabled, type: :boolean)
     config.add(:rack_mini_profiler, type: :boolean)
+    config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:recurring_jobs_disabled_names, type: :json)
     config.add(:redis_throttle_url)
     config.add(:redis_url)
