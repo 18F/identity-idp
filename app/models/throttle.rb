@@ -23,7 +23,7 @@ class Throttle < ApplicationRecord
       attempt_window: AppConfig.env.reg_unconfirmed_email_window_in_minutes.to_i,
     },
     reg_confirmed_email: {
-      max_attempts: AppConfig.env.reg_confirmed_email_max_attempts.to_i,
+      max_attempts: IdentityConfig.store.reg_confirmed_email_max_attempts,
       attempt_window: AppConfig.env.reg_confirmed_email_window_in_minutes.to_i,
     },
     reset_password_email: {
