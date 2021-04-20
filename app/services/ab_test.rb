@@ -1,7 +1,7 @@
 class AbTest
   def initialize(key, percent_on)
     @key = key
-    @percent_on = percent_on.to_s.to_i
+    @percent_on = percent_on
   end
 
   def enabled?(session, reset)

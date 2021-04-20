@@ -57,16 +57,16 @@ module Rack
     if IdentityConfig.store.requests_per_ip_track_only_mode
       track(
         'req/ip',
-        limit: AppConfig.env.requests_per_ip_limit.to_i,
-        period: AppConfig.env.requests_per_ip_period.to_i,
+        limit: IdentityConfig.store.requests_per_ip_limit,
+        period: IdentityConfig.store.requests_per_ip_period,
       ) do |req|
         req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
       end
     else
       throttle(
         'req/ip',
-        limit: AppConfig.env.requests_per_ip_limit.to_i,
-        period: AppConfig.env.requests_per_ip_period.to_i,
+        limit: IdentityConfig.store.requests_per_ip_limit,
+        period: IdentityConfig.store.requests_per_ip_period,
       ) do |req|
         req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
       end
@@ -113,16 +113,16 @@ module Rack
     if IdentityConfig.store.otps_per_ip_track_only_mode
       track(
         'otps/ip',
-        limit: AppConfig.env.otps_per_ip_limit.to_i,
-        period: AppConfig.env.otps_per_ip_period.to_i,
+        limit: IdentityConfig.store.otps_per_ip_limit,
+        period: IdentityConfig.store.otps_per_ip_period,
       ) do |req|
         req.remote_ip if req.path.match?(%r{/otp/send})
       end
     else
       throttle(
         'otps/ip',
-        limit: AppConfig.env.otps_per_ip_limit.to_i,
-        period: AppConfig.env.otps_per_ip_period.to_i,
+        limit: IdentityConfig.store.otps_per_ip_limit,
+        period: IdentityConfig.store.otps_per_ip_period,
       ) do |req|
         req.remote_ip if req.path.match?(%r{/otp/send})
       end

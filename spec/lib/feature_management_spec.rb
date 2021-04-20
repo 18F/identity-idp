@@ -261,7 +261,7 @@ describe 'FeatureManagement', type: :feature do
     describe '#recaptcha_enabled?' do
       context 'when recaptcha is enabled 100 percent' do
         before do
-          allow(AppConfig.env).to receive(:recaptcha_enabled_percent).and_return('100')
+          allow(IdentityConfig.store).to receive(:recaptcha_enabled_percent).and_return(100)
         end
 
         it 'enables the feature when the session is new' do
@@ -278,7 +278,7 @@ describe 'FeatureManagement', type: :feature do
 
       context 'when recaptcha is enabled 0 percent' do
         before do
-          allow(AppConfig.env).to receive(:recaptcha_enabled_percent).and_return('0')
+          allow(IdentityConfig.store).to receive(:recaptcha_enabled_percent).and_return(0)
         end
 
         it 'disables the feature when the session is new' do
@@ -295,7 +295,7 @@ describe 'FeatureManagement', type: :feature do
 
       context 'when recaptcha is enabled 50 percent' do
         before do
-          allow(AppConfig.env).to receive(:recaptcha_enabled_percent).and_return('50')
+          allow(IdentityConfig.store).to receive(:recaptcha_enabled_percent).and_return(50)
         end
 
         it 'enables the feature when the session is new and random number is 70' do

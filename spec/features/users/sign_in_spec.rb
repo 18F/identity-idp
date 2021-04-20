@@ -246,10 +246,10 @@ feature 'Sign in' do
 
   context 'session approaches timeout', js: true do
     before :each do
-      allow(AppConfig.env).to receive(:session_check_frequency).and_return('1')
-      allow(AppConfig.env).to receive(:session_check_delay).and_return('2')
-      allow(AppConfig.env).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in.to_s)
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
+        and_return(Devise.timeout_in)
 
       sign_in_and_2fa_user
       visit root_path
@@ -281,10 +281,10 @@ feature 'Sign in' do
 
   context 'user only signs in via email and password', js: true do
     it 'displays the session timeout warning with partially signed in copy' do
-      allow(AppConfig.env).to receive(:session_check_frequency).and_return('1')
-      allow(AppConfig.env).to receive(:session_check_delay).and_return('2')
-      allow(AppConfig.env).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in.to_s)
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
+        and_return(Devise.timeout_in)
 
       user = create(:user, :signed_up)
       sign_in_user(user)
@@ -304,7 +304,7 @@ feature 'Sign in' do
       fill_in 'Email', with: 'test@example.com'
 
       expect(page).to have_content(
-        t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes),
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
         wait: 5,
       )
       expect(page).to have_field('Email', with: '')
@@ -316,7 +316,7 @@ feature 'Sign in' do
 
       visit root_path
       expect(page).to_not have_content(
-        t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes),
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
       )
     end
   end
@@ -356,7 +356,7 @@ feature 'Sign in' do
       fill_in 'Password', with: user.password
 
       expect(page).to have_content(
-        t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes),
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
       )
       expect(find_field('Email').value).to be_blank
       expect(find_field('Password').value).to be_blank

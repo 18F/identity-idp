@@ -268,7 +268,7 @@ feature 'Password Recovery' do
     user = create(:user, :signed_up)
     email = user.email
 
-    max_attempts = AppConfig.env.reset_password_email_max_attempts.to_i
+    max_attempts = IdentityConfig.store.reset_password_email_max_attempts
     max_attempts.times do |i|
       submit_email_for_password_reset(email)
       expect(unread_emails_for(email).size).to eq(i + 1)
@@ -278,7 +278,7 @@ feature 'Password Recovery' do
     submit_email_for_password_reset(email)
     expect(unread_emails_for(email).size).to eq(max_attempts)
 
-    window_in_minutes = AppConfig.env.reset_password_email_window_in_minutes.to_i + 1
+    window_in_minutes = IdentityConfig.store.reset_password_email_window_in_minutes + 1
     Timecop.travel(Time.zone.now + window_in_minutes.minutes) do
       submit_email_for_password_reset(email)
       expect(unread_emails_for(email).size).to eq(max_attempts + 1)

@@ -112,6 +112,7 @@ max_mail_events_window_in_days: '30'
 max_piv_cac_per_account: '2'
 min_password_score: '3'
 mx_timeout: '3'
+otp_delivery_blocklist_maxretry: '10'
 otp_valid_for: '10'
 otps_per_ip_limit: '25'
 otps_per_ip_period: '300'
@@ -143,11 +144,18 @@ recaptcha_site_key: key1
 recovery_code_length: '4'
 redis_throttle_url: redis://localhost:6379/1
 redis_url: redis://localhost:6379/0
+reg_confirmed_email_max_attempts: '20'
 reg_confirmed_email_window_in_minutes: '60'
+reg_unconfirmed_email_max_attempts: '20'
+reg_unconfirmed_email_window_in_minutes: '60'
 remember_device_expiration_hours_aal_1: '720'
 remember_device_expiration_hours_aal_2: '12'
 report_timeout:
+requests_per_ip_limit: '300'
+requests_per_ip_period: '300'
 requests_per_ip_track_only_mode: 'false'
+reset_password_email_max_attempts: '20'
+reset_password_email_window_in_minutes: '60'
 risc_notifications_local_enabled: 'false'
 risc_notifications_eventbridge_enabled: 'false'
 ruby_workers_enabled: 'true'
@@ -173,6 +181,7 @@ verify_personal_key_attempt_window_in_minutes: '15'
 verify_personal_key_max_attempts: '5'
 use_dashboard_service_providers: 'false'
 use_kms: 'false'
+usps_confirmation_max_days: '10'
 usps_ipp_password: ''
 usps_ipp_root_url: ''
 usps_ipp_sponsor_id: ''
@@ -224,17 +233,9 @@ development:
   no_sp_campaigns_whitelist: '[]'
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: '5'
-  otp_delivery_blocklist_maxretry: '10'
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   recurring_jobs_disabled_names: "[]"
-  reg_confirmed_email_max_attempts: '20'
-  reg_unconfirmed_email_max_attempts: '20'
-  reg_unconfirmed_email_window_in_minutes: '60'
-  requests_per_ip_limit: '300'
-  requests_per_ip_period: '300'
-  reset_password_email_max_attempts: '20'
-  reset_password_email_window_in_minutes: '60'
   resolution_proof_result_lambda_token: ABC123
   s3_report_bucket_prefix:
   saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
@@ -245,7 +246,6 @@ development:
   sps_over_quota_limit_notify_email_list: '[]'
   telephony_adapter: test
   use_dashboard_service_providers: 'true'
-  usps_confirmation_max_days: '10'
   usps_download_sftp_directory: "/undeliverable"
   usps_download_sftp_host: localhost
   usps_download_sftp_password: test
@@ -305,20 +305,12 @@ production:
   no_sp_campaigns_whitelist: '[]'
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: '5'
-  otp_delivery_blocklist_maxretry: '10'
   participate_in_dap: 'true'
   password_pepper:
   piv_cac_verify_token_secret:
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
-  reg_confirmed_email_max_attempts: '20'
-  reg_unconfirmed_email_max_attempts: '20'
-  reg_unconfirmed_email_window_in_minutes: '60'
-  requests_per_ip_limit: '300'
-  requests_per_ip_period: '300'
-  reset_password_email_max_attempts: '20'
-  reset_password_email_window_in_minutes: '60'
   resolution_proof_result_lambda_token:
   ruby_workers_enabled: 'false'
   s3_report_bucket_prefix: login-gov.reports
@@ -426,7 +418,6 @@ test:
   verify_gpo_key_max_attempts: '2'
   verify_personal_key_attempt_window_in_minutes: '3'
   verify_personal_key_max_attempts: '1'
-  usps_confirmation_max_days: '10'
   usps_download_sftp_directory: "/undeliverable"
   usps_download_sftp_host:
   usps_download_sftp_password:

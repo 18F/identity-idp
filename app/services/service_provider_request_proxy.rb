@@ -4,7 +4,6 @@
 # To migrate code simply replace ServiceProviderRequest with ServiceProviderRequestProxy
 class ServiceProviderRequestProxy
   REDIS_KEY_PREFIX = 'spr:'.freeze
-  DEFAULT_TTL_HOURS = 24
 
   # This is used to support the .last method. That method is only used in the
   # test environment

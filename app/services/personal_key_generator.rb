@@ -42,6 +42,6 @@ class PersonalKeyGenerator
   end
 
   def personal_key_length
-    AppConfig.env.recovery_code_length.to_i || length
+    IdentityConfig.store.recovery_code_length || length
   end
 end

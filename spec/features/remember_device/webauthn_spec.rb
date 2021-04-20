@@ -5,7 +5,7 @@ describe 'Remembering a webauthn device' do
 
   before do
     allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
-    allow(AppConfig.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
   end
 
   let(:user) { create(:user, :signed_up) }

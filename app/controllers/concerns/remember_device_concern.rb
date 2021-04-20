@@ -40,7 +40,7 @@ module RememberDeviceConcern
   end
 
   def pii_locked_for_session?(user)
-    expired_for_interval?(user, AppConfig.env.pii_lock_timeout_in_minutes.to_i.minutes)
+    expired_for_interval?(user, IdentityConfig.store.pii_lock_timeout_in_minutes.minutes)
   end
 
   def revoke_remember_device(user)
@@ -77,6 +77,6 @@ module RememberDeviceConcern
   end
 
   def remember_device_cookie_expiration
-    AppConfig.env.remember_device_expiration_hours_aal_1.to_i.hours.from_now
+    IdentityConfig.store.remember_device_expiration_hours_aal_1.hours.from_now
   end
 end

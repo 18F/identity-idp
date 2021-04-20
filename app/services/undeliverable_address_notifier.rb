@@ -44,7 +44,7 @@ class UndeliverableAddressNotifier
       env.usps_download_sftp_host,
       env.usps_download_sftp_username,
       password: env.usps_download_sftp_password,
-      timeout: env.usps_download_sftp_timeout.to_i,
+      timeout: IdentityConfig.store.usps_download_sftp_timeout,
     ]
   end
 
