@@ -168,6 +168,7 @@ class IdentityConfig
     config.add(:use_dashboard_service_providers, type: :boolean)
     config.add(:use_kms, type: :boolean)
     config.add(:usps_confirmation_max_days, type: :integer)
+    config.add(:usps_download_sftp_timeout, type: :integer)
     config.add(:usps_upload_enabled, type: :boolean)
     config.add(:valid_authn_contexts, type: :json)
     final_env = config.add(:usps_ipp_root_url)
