@@ -4,7 +4,7 @@ module SessionTimeoutWarningHelper
   end
 
   def session_timeout_start
-    (AppConfig.env.session_check_delay || 30).to_i
+    IdentityConfig.store.session_check_delay
   end
 
   def session_timeout_warning
