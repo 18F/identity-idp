@@ -14,9 +14,5 @@ module PushNotification
     def ==(other)
       self.class == other.class && user == other.user
     end
-
-    def event_type
-      self.class::EVENT_TYPE
-    end
   end
 end
