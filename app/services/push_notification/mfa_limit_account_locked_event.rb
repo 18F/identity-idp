@@ -1,5 +1,7 @@
 module PushNotification
   class MfaLimitAccountLockedEvent
+    include IssSubEvent
+
     EVENT_TYPE =
       'https://schemas.login.gov/secevent/risc/event-type/mfa-limit-account-locked'.freeze
 
@@ -7,25 +9,6 @@ module PushNotification
 
     def initialize(user:)
       @user = user
-    end
-
-    def event_type
-      EVENT_TYPE
-    end
-
-    def payload(iss_sub:)
-      {
-        subject: {
-          subject_type: 'iss-sub',
-          iss: Rails.application.routes.url_helpers.root_url,
-          sub: iss_sub,
-        },
-      }
-    end
-
-    # Used by specs for argument matching
-    def ==(other)
-      self.class == other.class && user == other.user
     end
   end
 end
