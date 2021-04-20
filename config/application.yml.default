@@ -276,13 +276,13 @@ production:
   basic_auth_user_name:
   dashboard_api_token:
   dashboard_url: https://dashboard.demo.login.gov
-  database_host:
-  database_name:
-  database_password:
+  database_host: ''
+  database_name: ''
+  database_password: ''
   database_read_replica_host: ''
-  database_readonly_password:
-  database_readonly_username:
-  database_username:
+  database_readonly_password: ''
+  database_readonly_username: ''
+  database_username: ''
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
   disallow_ial2_recovery: 'true'

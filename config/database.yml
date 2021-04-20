@@ -34,7 +34,7 @@ test:
 
 production:
   <<: *defaults
-  database: <%= AppConfig.env.database_name %>
+  database: <%= IdentityConfig.store.database_name %>
   username: <%= ProductionDatabaseConfiguration.username %>
   host: <%= ProductionDatabaseConfiguration.host %>
   password: <%= ProductionDatabaseConfiguration.password %>
