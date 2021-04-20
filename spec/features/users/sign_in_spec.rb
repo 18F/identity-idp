@@ -248,8 +248,8 @@ feature 'Sign in' do
     before :each do
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
-      allow(AppConfig.env).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in.to_s)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
+        and_return(Devise.timeout_in)
 
       sign_in_and_2fa_user
       visit root_path
@@ -283,8 +283,8 @@ feature 'Sign in' do
     it 'displays the session timeout warning with partially signed in copy' do
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
-      allow(AppConfig.env).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in.to_s)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
+        and_return(Devise.timeout_in)
 
       user = create(:user, :signed_up)
       sign_in_user(user)

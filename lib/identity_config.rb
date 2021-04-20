@@ -159,6 +159,7 @@ class IdentityConfig
     config.add(:session_check_delay, type: :integer)
     config.add(:session_check_frequency, type: :integer)
     config.add(:session_timeout_in_minutes, type: :integer)
+    config.add(:session_timeout_warning_seconds, type: :integer)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)

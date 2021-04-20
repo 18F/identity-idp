@@ -8,7 +8,7 @@ module SessionTimeoutWarningHelper
   end
 
   def session_timeout_warning
-    (AppConfig.env.session_timeout_warning_seconds || 30).to_i
+    IdentityConfig.store.session_timeout_warning_seconds
   end
 
   def timeout_refresh_path
