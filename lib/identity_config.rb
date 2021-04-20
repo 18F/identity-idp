@@ -157,6 +157,7 @@ class IdentityConfig
     config.add(:saml_secret_rotation_enabled, type: :boolean)
     config.add(:service_provider_request_ttl_hours, type: :integer)
     config.add(:session_check_delay, type: :integer)
+    config.add(:session_check_frequency, type: :integer)
     config.add(:show_user_attribute_deprecation_warnings, type: :boolean)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)

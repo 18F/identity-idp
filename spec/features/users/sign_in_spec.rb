@@ -246,7 +246,7 @@ feature 'Sign in' do
 
   context 'session approaches timeout', js: true do
     before :each do
-      allow(AppConfig.env).to receive(:session_check_frequency).and_return('1')
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
       allow(AppConfig.env).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in.to_s)
@@ -281,7 +281,7 @@ feature 'Sign in' do
 
   context 'user only signs in via email and password', js: true do
     it 'displays the session timeout warning with partially signed in copy' do
-      allow(AppConfig.env).to receive(:session_check_frequency).and_return('1')
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
       allow(AppConfig.env).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in.to_s)

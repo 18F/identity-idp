@@ -3,8 +3,7 @@ require 'rails_helper'
 describe SessionTimeoutWarningHelper do
   describe '#time_left_in_session' do
     it 'describes time left based on when the timeout warning appears' do
-      allow(AppConfig.env).
-        to receive(:session_check_frequency).and_return('1')
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
       allow(AppConfig.env).
         to receive(:session_timeout_warning_seconds).and_return('3')

@@ -1,6 +1,6 @@
 module SessionTimeoutWarningHelper
   def session_timeout_frequency
-    (AppConfig.env.session_check_frequency || 150).to_i
+    IdentityConfig.store.session_check_frequency
   end
 
   def session_timeout_start
