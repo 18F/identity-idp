@@ -53,7 +53,6 @@ class AddUserEmailForm
     @success = true
     email_address.save!
     SendAddEmailConfirmation.new(user).call(email_address)
-    notify_subscribers
   end
 
   def extra_analytics_attributes
@@ -65,10 +64,5 @@ class AddUserEmailForm
 
   def existing_user
     @_user ||= User.find_with_email(email) || AnonymousUser.new
-  end
-
-  def notify_subscribers
-    event = PushNotification::EmailChangedEvent.new(user: existing_user, email: email_address.email)
-    PushNotification::HttpPush.deliver(event)
   end
 end
