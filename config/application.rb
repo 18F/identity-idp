@@ -8,7 +8,6 @@ require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 require 'identity/logging/railtie'
 
-require_relative '../lib/app_config_reader'
 require_relative '../lib/app_config'
 require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
@@ -20,18 +19,11 @@ APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
-    configuration = AppConfigReader.new.read_configuration(
-      write_copy_to: Rails.root.join('tmp', 'application.yml'),
+    configuration = Identity::Hostdata::ConfigReader.new(app_root: Rails.root).read_configuration(
+      Rails.env, write_copy_to: Rails.root.join('tmp', 'application.yml')
     )
-
     AppConfig.setup(configuration)
-
-    root_config = configuration.except(['development', 'production', 'test'])
-    environment_config = root_config[Rails.env]
-    merged_config = root_config.merge(environment_config)
-    merged_config.symbolize_keys!
-
-    IdentityConfig.build_store(merged_config)
+    IdentityConfig.build_store(configuration)
 
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false
