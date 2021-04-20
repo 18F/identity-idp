@@ -32,9 +32,15 @@ class StepIndicator {
   }
 
   setScrollOffset() {
-    const { currentStep } = this.elements;
+    const { currentStep, scroller } = this.elements;
     if (currentStep) {
-      currentStep.scrollIntoView({ inline: 'center', block: 'nearest' });
+      const scrollerPaddingLeft = parseInt(window.getComputedStyle(scroller).paddingLeft, 10);
+      const { scrollWidth: scrollerScrollWidth, clientWidth: scrollerClientWidth } = scroller;
+      const { offsetLeft: currentStepOffsetLeft } = currentStep;
+      scroller.scrollLeft =
+        currentStepOffsetLeft -
+        scrollerPaddingLeft -
+        (scrollerScrollWidth - scrollerClientWidth) / 2;
     }
   }
 
