@@ -185,18 +185,17 @@ function AcuantCaptureCanvas({
       )}
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video id="acuant-player" controls autoPlay playsInline style={{ display: 'none' }} />
-      <div id="acuant-sdk-capture-view">
-        <canvas
-          id="acuant-video-canvas"
-          style={{
-            width: '100%',
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-          }}
-        />
-      </div>
+      <canvas
+        id="acuant-video-canvas"
+        width="100%"
+        height="auto"
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+      />
     </>
   );
 }
