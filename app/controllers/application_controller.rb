@@ -113,7 +113,10 @@ class ApplicationController < ActionController::Base
     return unless params[:timeout]
 
     unless current_user
-      flash[:info] = t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes)
+      flash[:info] = t(
+        'notices.session_cleared',
+        minutes: IdentityConfig.store.session_timeout_in_minutes,
+      )
     end
     begin
       redirect_to url_for(permitted_timeout_params)

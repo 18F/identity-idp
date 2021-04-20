@@ -304,7 +304,7 @@ feature 'Sign in' do
       fill_in 'Email', with: 'test@example.com'
 
       expect(page).to have_content(
-        t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes),
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
         wait: 5,
       )
       expect(page).to have_field('Email', with: '')
@@ -316,7 +316,7 @@ feature 'Sign in' do
 
       visit root_path
       expect(page).to_not have_content(
-        t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes),
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
       )
     end
   end
@@ -356,7 +356,7 @@ feature 'Sign in' do
       fill_in 'Password', with: user.password
 
       expect(page).to have_content(
-        t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes),
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
       )
       expect(find_field('Email').value).to be_blank
       expect(find_field('Password').value).to be_blank
