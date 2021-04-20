@@ -22,13 +22,6 @@ RSpec.describe AddUserEmailForm do
       expect(email_address_record.confirmed_at).to be_nil
     end
 
-    it 'notifies subscribers that the email was changed' do
-      expect(PushNotification::HttpPush).to receive(:deliver).
-        with(PushNotification::EmailChangedEvent.new(user: user, email: new_email))
-
-      submit
-    end
-
     context 'when the new email address has an expired previous attempt for the same account' do
       before do
         create(

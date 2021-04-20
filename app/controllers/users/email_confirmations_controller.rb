@@ -42,9 +42,15 @@ module Users
       email_address.user.confirmed_email_addresses.each do |confirmed_email_address|
         UserMailer.email_added(email_address.user, confirmed_email_address.email).deliver_now
       end
+      notify_subscribers(email_address)
+    end
 
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: email_address.user)
-      PushNotification::HttpPush.deliver(event)
+    def notify_subscribers(email_address)
+      user = email_address.user
+      email_event = PushNotification::EmailChangedEvent.new(user: user, email: email_address.email)
+      PushNotification::HttpPush.deliver(email_event)
+      recovery_event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+      PushNotification::HttpPush.deliver(recovery_event)
     end
 
     def process_unsuccessful_confirmation
