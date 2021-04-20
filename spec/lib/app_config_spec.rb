@@ -33,6 +33,12 @@ describe AppConfig::Environment do
         /test_key value must be String/,
       ).to_stderr
     end
+
+    it 'sets ENV' do
+      described_class.new(config)
+
+      expect(ENV['test_key']).to eq 'value'
+    end
   end
 
   describe '#method_missing' do
