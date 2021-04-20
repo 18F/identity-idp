@@ -7,7 +7,8 @@ gem 'rails', '~> 6.1.3'
 
 # Variables can be overridden for local dev in Gemfile-dev
 @doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.5.1' }
-@hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.0.0' }
+# TODO: Switch to a tag once one is available
+@hostdata_gem ||= { github: '18F/identity-hostdata', branch: 'jmhooper-config-reader' }
 @idp_functions_gem ||= { github: '18F/identity-idp-functions', ref:'d9241bdfea85a76c170e456a89' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @proofer_gem ||= { github: '18F/identity-proofer-gem', ref: 'v2.8.0' }

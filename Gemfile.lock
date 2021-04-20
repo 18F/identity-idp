@@ -23,8 +23,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 29c9b463c4e5243e0c98fd2d87374fbb87b9f0cc
-  tag: v3.0.0
+  revision: e1cf4f6dc983b8c5001163d7945e1e2f0fdf6ccc
+  branch: jmhooper-config-reader
   specs:
     identity-hostdata (3.0.0)
       aws-sdk-s3 (~> 1.8)
