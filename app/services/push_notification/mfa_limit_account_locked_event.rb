@@ -1,8 +1,9 @@
 module PushNotification
-  class AccountPurgedEvent
+  class MfaLimitAccountLockedEvent
     include IssSubEvent
 
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/account-purged'.freeze
+    EVENT_TYPE =
+      'https://schemas.login.gov/secevent/risc/event-type/mfa-limit-account-locked'.freeze
 
     attr_reader :user
 

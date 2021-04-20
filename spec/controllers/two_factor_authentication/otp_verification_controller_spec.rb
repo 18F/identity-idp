@@ -138,6 +138,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           with(properties)
 
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
+        expect(PushNotification::HttpPush).to receive(:deliver).
+          with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         post :create, params:
         { code: '12345',
