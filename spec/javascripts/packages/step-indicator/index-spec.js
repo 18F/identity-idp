@@ -1,35 +1,31 @@
 import StepIndicator from '@18f/identity-step-indicator';
 import userEvent from '@testing-library/user-event';
 import { useSandbox } from '../../support/sinon';
+import useDefineProperty from '../../support/define-property';
 
 describe('StepIndicator', () => {
   const sandbox = useSandbox();
+  const defineProperty = useDefineProperty();
 
-  beforeEach(() => {
+  function initialize({ currentStepIndex = 0 } = {}) {
     document.body.innerHTML = `
       <div role="region" aria-label="Step progress" class="step-indicator">
         <ol class="step-indicator__scroller">
-          <li class="step-indicator__step">
-            <span class="step-indicator__step-title">
-              Step one
-            </span>
-            <span class="usa-sr-only">
-              Completed
-            </span>
-          </li>
-          <li class="step-indicator__step step-indicator__step--current">
-            <span class="step-indicator__step-title">
-              Step two
-            </span>
-            <span class="usa-sr-only">
-              Current step
-            </span>
-          </li>
+          ${Array.from(Array(5))
+            .map(
+              (_value, index) => `
+            <li class="step-indicator__step ${
+              currentStepIndex === index ? 'step-indicator__step--current' : ''
+            } ">
+              <span class="step-indicator__step-title">
+                Step
+              </span>
+            </li>
+          `,
+            )
+            .join('')}
         </ol>
       </div>`;
-  });
-
-  function initialize() {
     const stepIndicator = new StepIndicator(document.body.firstElementChild);
     stepIndicator.bind();
     return stepIndicator;
@@ -47,10 +43,38 @@ describe('StepIndicator', () => {
     });
 
     it('scrolls to current item', () => {
-      const currentStep = document.querySelector('.step-indicator__step--current');
-      sandbox.stub(currentStep, 'scrollIntoView');
-      initialize();
-      expect(currentStep.scrollIntoView).to.have.been.calledOnce();
+      sandbox.stub(window, 'getComputedStyle').callsFake((element) => ({
+        paddingLeft: element.classList.contains('step-indicator__scroller') ? '24px' : '0',
+      }));
+      defineProperty(window.Element.prototype, 'scrollWidth', {
+        get() {
+          return this.classList.contains('step-indicator__scroller') ? 593 : 0;
+        },
+      });
+      defineProperty(window.Element.prototype, 'clientWidth', {
+        get() {
+          return this.classList.contains('step-indicator__scroller') ? 375 : 0;
+        },
+      });
+      defineProperty(window.HTMLElement.prototype, 'offsetLeft', {
+        get() {
+          return this.classList.contains('step-indicator__step--current')
+            ? Array.from(this.parentNode.children).indexOf(this) * 109 + 24
+            : 0;
+        },
+      });
+
+      let stepIndicator;
+      stepIndicator = initialize({ currentStepIndex: 0 });
+      expect(stepIndicator.elements.scroller.scrollLeft).to.equal(-109);
+      stepIndicator = initialize({ currentStepIndex: 1 });
+      expect(stepIndicator.elements.scroller.scrollLeft).to.equal(0);
+      stepIndicator = initialize({ currentStepIndex: 2 });
+      expect(stepIndicator.elements.scroller.scrollLeft).to.equal(109);
+      stepIndicator = initialize({ currentStepIndex: 3 });
+      expect(stepIndicator.elements.scroller.scrollLeft).to.equal(218);
+      stepIndicator = initialize({ currentStepIndex: 4 });
+      expect(stepIndicator.elements.scroller.scrollLeft).to.equal(327);
     });
 
     it('makes scroller unfocusable when transitioning to large viewport', () => {
