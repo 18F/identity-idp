@@ -25,7 +25,7 @@ module PushNotification
 
     # Used by specs for argument matching
     def ==(other)
-      user == other.user
+      self.class == other.class && user == other.user
     end
   end
 end
