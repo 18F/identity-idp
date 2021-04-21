@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'identity_idp_functions/encryption_helper'
 
 RSpec.describe IdentityIdpFunctions::EncryptionHelper do
   subject(:encryption_helper) { IdentityIdpFunctions::EncryptionHelper.new }

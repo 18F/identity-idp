@@ -6,20 +6,24 @@ ruby '~> 2.6.5'
 gem 'rails', '~> 6.1.3'
 
 # Variables can be overridden for local dev in Gemfile-dev
+@aamva_api_gem ||= { github: '18F/identity-aamva-api-client-gem', tag: 'v4.2.0' }
 @doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.5.1' }
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.1.0' }
+@lexisnexis_api_gem ||= { github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @proofer_gem ||= { github: '18F/identity-proofer-gem', ref: 'v2.8.0' }
+@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.13.0-18f' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.1.12' }
 @validations_gem ||= { github: '18F/identity-validations', branch: 'main' }
-@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.13.0-18f' }
 
+gem 'aamva', @aamva_api_gem
 gem 'identity-doc-auth', @doc_auth_gem
 gem 'identity-hostdata', @hostdata_gem
 gem 'identity-logging', @logging_gem
-gem 'proofer', @proofer_gem
 gem 'identity-telephony', @telephony_gem
 gem 'identity_validations', @validations_gem
+gem 'lexisnexis', @lexisnexis_api_gem
+gem 'proofer', @proofer_gem
 gem 'saml_idp', @saml_gem
 
 gem 'ahoy_matey', '~> 3.0'
@@ -130,12 +134,4 @@ group :test do
   gem 'webdrivers', '~> 4.0'
   gem 'webmock'
   gem 'zonebie'
-end
-
-group :production do
-  @aamva_api_gem ||= { github: '18F/identity-aamva-api-client-gem', tag: 'v4.2.0' }
-  @lexisnexis_api_gem ||= { github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0' }
-
-  gem 'aamva', @aamva_api_gem
-  gem 'lexisnexis', @lexisnexis_api_gem
 end
