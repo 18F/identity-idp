@@ -41,8 +41,6 @@ class DocumentProofingJob < ApplicationJob
       end
     end
 
-    proofer_result.exception = proofer_result.exception.inspect if proofer_result.exception
-
     dcs = DocumentCaptureSession.new(result_id: result_id)
 
     dcs.store_doc_auth_result(
@@ -73,7 +71,13 @@ class DocumentProofingJob < ApplicationJob
   end
 
   def decrypt_from_s3(timer, name, url, iv, key)
-    encrypted_image = timer.time("download.#{name}") { s3_helper.download(url) }
+    encrypted_image = timer.time("download.#{name}") do
+      if s3_helper.s3_url?(url)
+        s3_helper.download(url)
+      else
+        build_faraday.get(url).body.b
+      end
+    end
     timer.time("decrypt.#{name}") do
       encryption_helper.decrypt(data: encrypted_image, iv: iv, key: key)
     end
