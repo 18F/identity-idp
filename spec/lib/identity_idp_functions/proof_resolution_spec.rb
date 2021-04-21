@@ -22,7 +22,7 @@ RSpec.describe IdentityIdpFunctions::ProofResolution do
       state_id_jurisdiction: 'WI',
     }
   end
-  let(:logger) { Logger.new('/dev/null')  }
+  let(:logger) { Logger.new('/dev/null') }
 
   describe '#proof' do
     let(:should_proof_state_id) { true }
@@ -55,9 +55,11 @@ RSpec.describe IdentityIdpFunctions::ProofResolution do
         allow(AppConfig.env).to receive(:lexisnexis_request_mode).and_return('aaa')
         allow(AppConfig.env).to receive(:lexisnexis_username).and_return('aaa')
         allow(AppConfig.env).to receive(:lexisnexis_password).and_return('aaa')
-        allow(AppConfig.env).to receive(:lexisnexis_base_url).and_return('https://lexisnexis.example.com/')
+        allow(AppConfig.env).to receive(:lexisnexis_base_url).
+          and_return('https://lexisnexis.example.com/')
         allow(AppConfig.env).to receive(:lexisnexis_instant_verify_workflow).and_return('aaa')
-        allow(AppConfig.env).to receive(:lexisnexis_base_url).and_return('https://lexisnexis.example.com/')
+        allow(AppConfig.env).to receive(:lexisnexis_base_url).
+          and_return('https://lexisnexis.example.com/')
         allow(AppConfig.env).to receive(:lexisnexis_instant_verify_workflow).and_return('aaa')
 
         allow(aamva_proofer).to receive(:proof).
@@ -211,7 +213,8 @@ RSpec.describe IdentityIdpFunctions::ProofResolution do
         end
 
         it 'does not check LexisNexis when AAMVA proofing does not match' do
-          expect(aamva_proofer).to receive(:proof).and_return(Proofer::Result.new(exception: 'error'))
+          expect(aamva_proofer).to receive(:proof).
+            and_return(Proofer::Result.new(exception: 'error'))
           expect(lexisnexis_proofer).to_not receive(:proof)
 
           function.proof

@@ -8,6 +8,7 @@ module IdentityIdpFunctions
       @results = {}
     end
 
+    # rubocop:disable Rails/TimeZone
     def time(name)
       start = Time.now.to_f
 
@@ -15,5 +16,6 @@ module IdentityIdpFunctions
     ensure
       results[name] = ((Time.now.to_f - start) * 1000).round(2)
     end
+    # rubocop:enable Rails/TimeZone
   end
 end
