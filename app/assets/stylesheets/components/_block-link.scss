@@ -7,7 +7,7 @@
   @include u-border-y(1px, 'primary-light');
   @include u-text('no-underline');
 
-  & + & {
+  li + li &:only-child {
     @include u-margin-top(neg-3);
     @include u-border-top(0);
   }
