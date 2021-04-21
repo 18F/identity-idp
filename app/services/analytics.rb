@@ -90,7 +90,6 @@ class Analytics
   EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'.freeze
   EVENT_DISAVOWAL_TOKEN_INVALID = 'Event disavowal token invalid'.freeze
   EVENTS_VISIT = 'Events Page Visited'.freeze
-  EXPIRED_LETTERS = 'Expired Letters'.freeze
   FORGET_ALL_BROWSERS_SUBMITTED = 'Forget All Browsers Submitted'.freeze
   FORGET_ALL_BROWSERS_VISITED = 'Forget All Browsers Visited'.freeze
   IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended

@@ -98,13 +98,6 @@ fr:
         visiter le %{help_link} de %{app} ou %{contact_link}.
       subject: Adresse email supprimée
     help_link_text: Centre d'aide
-    letter_expired:
-      info_html: La lettre que nous avons postée à votre adresse contient un code
-        de confirmation arrivé à expiration et ne peut plus être utilisée pour terminer
-        le processus de vérification. Pour vérifier votre adresse et terminer le processus
-        de vérification de votre identité, vous devez vous connecter à %{link} et
-        demander une autre lettre.
-      subject: Votre code de confirmation d'adresse a expiré
     letter_reminder:
       info_html: La lettre que vous êtes sur le point de recevoir contiendra un code
         de confirmation nous permettant de vérifier votre adresse. Vous pouvez terminer
@@ -208,7 +201,3 @@ fr:
       help: ''
       info: Certains SP ont dépassé leur limite de quota.
       subject: Certains SP ont atteint leur limite de quota
-    undeliverable_address:
-      call_to_action_html: Veuillez vous connecter à %{link} et suivre les instructions.
-      intro: Nous n'avons pas pu envoyer votre lettre à l'adresse que vous avez indiquée.
-      subject: La lettre envoyée à votre adresse était non livrable
