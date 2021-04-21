@@ -5,6 +5,8 @@ require 'json'
 require 'retries'
 require 'identity_idp_functions/faraday_helper'
 require 'identity_idp_functions/timer'
+require 'identity_idp_functions/encryption_helper'
+require 'identity_idp_functions/s3_helper'
 
 module IdentityIdpFunctions
   class ProofDocument
