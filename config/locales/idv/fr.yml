@@ -179,3 +179,8 @@ fr:
       session:
         phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
         review: Entrez à nouveau votre mot de passe login.gov pour crypter vos données
+    troubleshooting:
+      headings:
+        missing_required_items: Est-ce qu’il vous manque un de ces éléments?
+      options:
+        get_help_at_sp: Demandez de l’aide à %{sp_name}

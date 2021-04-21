@@ -49,16 +49,7 @@ function DocumentsStep({
 
   return (
     <>
-      {isMobile && (
-        <>
-          <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>
-          <p>
-            {formatHTML(t('doc_auth.info.id_worn_html'), {
-              strong: 'strong',
-            })}
-          </p>
-        </>
-      )}
+      {isMobile && <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>}
       <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.document_capture_id_text1')}</li>

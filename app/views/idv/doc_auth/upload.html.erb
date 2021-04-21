@@ -22,20 +22,6 @@
   <%= t('doc_auth.info.upload_no_image_storage') %>
 </p>
 
-<p>
-  <%= t('doc_auth.info.id_worn_html') %>
-</p>
-
-<% if decorated_session.sp_name %>
-  <p>
-    <%= t(
-      'doc_auth.info.no_other_id_help_bold_html',
-      failure_to_proof_url: return_to_sp_failure_to_proof_path,
-      sp_name: decorated_session.sp_name,
-    ) %>
-  </p>
-<% end %>
-
 <hr class="margin-y-4" />
 
 <div class='clearfix'>

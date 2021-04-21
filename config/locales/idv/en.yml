@@ -163,3 +163,8 @@ en:
       session:
         phone: Enter a phone number with your name on the plan
         review: Re-enter your login.gov password to protect your data
+    troubleshooting:
+      headings:
+        missing_required_items: Are you missing one of these items?
+      options:
+        get_help_at_sp: Get help at %{sp_name}
