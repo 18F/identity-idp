@@ -100,6 +100,9 @@ Rails/TimeZone:
     - strict
     - flexible
 
+Rails/Delegate:
+  Enabled: false
+
 Layout/ParameterAlignment:
   # Alignment of parameters in multi-line method calls.
   #
