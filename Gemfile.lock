@@ -31,18 +31,6 @@ GIT
       aws-sdk-s3 (~> 1.8)
 
 GIT
-  remote: https://github.com/18F/identity-idp-functions.git
-  revision: d9241bdfea85a76c170e456a89ec6601549f4c4a
-  ref: d9241bdfea85a76c170e456a89
-  specs:
-    identity-idp-functions (0.15.2)
-      aamva (>= 4.0.0)
-      aws-sdk-s3 (>= 1.73)
-      aws-sdk-ssm (>= 1.55)
-      lexisnexis (>= 3.0.0)
-      retries (>= 0.0.5)
-
-GIT
   remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
   revision: 005bd6a56ab6101ecb3b5b47d2648ed38b13ffa6
   tag: v3.2.0
@@ -205,9 +193,6 @@ GEM
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.1)
     aws-sdk-ses (1.36.0)
-      aws-sdk-core (~> 3, >= 3.109.0)
-      aws-sigv4 (~> 1.1)
-    aws-sdk-ssm (1.103.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.2.2)
@@ -782,7 +767,6 @@ DEPENDENCIES
   i18n-tasks (>= 0.9.31)
   identity-doc-auth!
   identity-hostdata!
-  identity-idp-functions!
   identity-logging!
   identity-telephony!
   identity_validations!
@@ -824,6 +808,7 @@ DEPENDENCIES
   recaptcha
   redacted_struct
   redis-session-store (>= 0.11.3)
+  retries
   rotp (~> 6.1)
   rqrcode
   rspec-rails (~> 4.0)
