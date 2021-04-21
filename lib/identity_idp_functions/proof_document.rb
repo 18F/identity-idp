@@ -1,24 +1,16 @@
-require 'bundler/setup' if !defined?(Bundler)
 require 'base64'
 require 'faraday'
 require 'identity-doc-auth'
 require 'json'
 require 'retries'
-require '/opt/ruby/lib/function_helper' if !defined?(IdentityIdpFunctions::FunctionHelper)
 
 module IdentityIdpFunctions
   class ProofDocument
     include IdentityIdpFunctions::FaradayHelper
-    include IdentityIdpFunctions::LoggingHelper
-
-    def self.handle(event:, context:, &callback_block) # rubocop:disable Lint/UnusedMethodArgument
-      params = JSON.parse(event.to_json, symbolize_names: true)
-      new(**params).proof(&callback_block)
-    end
 
     attr_reader :encryption_key, :front_image_iv, :back_image_iv, :selfie_image_iv,
                 :front_image_url, :back_image_url, :selfie_image_url,
-                :liveness_checking_enabled, :callback_url, :trace_id, :timer
+                :liveness_checking_enabled, :trace_id, :logger, :timer
 
     alias_method :liveness_checking_enabled?, :liveness_checking_enabled
 
@@ -30,7 +22,7 @@ module IdentityIdpFunctions
                    back_image_url:,
                    selfie_image_url:,
                    liveness_checking_enabled:,
-                   callback_url:,
+                   logger:,
                    trace_id: nil)
       @encryption_key = Base64.decode64(encryption_key.to_s)
       @front_image_iv = Base64.decode64(front_image_iv.to_s)
@@ -40,7 +32,7 @@ module IdentityIdpFunctions
       @back_image_url = back_image_url
       @selfie_image_url = selfie_image_url
       @liveness_checking_enabled = liveness_checking_enabled
-      @callback_url = callback_url
+      @logger = logger
       @trace_id = trace_id
       @timer = IdentityIdpFunctions::Timer.new
     end
@@ -68,19 +60,11 @@ module IdentityIdpFunctions
 
       result[:exception] = proofer_result.exception.inspect if proofer_result.exception
 
-      callback_body = {
+      {
         document_result: result,
       }
-
-      if block_given?
-        yield callback_body
-      else
-        timer.time('callback') do
-          post_callback(callback_body: callback_body)
-        end
-      end
     ensure
-      log_event(
+      logger.info(
         name: 'ProofDocument',
         trace_id: trace_id,
         success: proofer_result&.success?,
@@ -88,38 +72,8 @@ module IdentityIdpFunctions
       )
     end
 
-    def post_callback(callback_body:)
-      with_retries(**faraday_retry_options) do
-        build_faraday.post(
-          callback_url,
-          callback_body.to_json,
-          'X-API-AUTH-TOKEN' => api_auth_token,
-          'Content-Type' => 'application/json',
-          'Accept' => 'application/json',
-        )
-      end
-    end
-
-    def api_auth_token
-      @api_auth_token ||= ENV.fetch('IDP_API_AUTH_TOKEN') do
-        ssm_helper.load('document_proof_result_token')
-      end
-    end
-
     def doc_auth_client
-      @doc_auth_client ||= IdentityDocAuth::Acuant::AcuantClient.new(
-        assure_id_password: ssm_helper.load('acuant_assure_id_password'),
-        assure_id_subscription_id: ssm_helper.load('acuant_assure_id_subscription_id'),
-        assure_id_url: ssm_helper.load('acuant_assure_id_url'),
-        assure_id_username: ssm_helper.load('acuant_assure_id_username'),
-        facial_match_url: ssm_helper.load('acuant_facial_match_url'),
-        passlive_url: ssm_helper.load('acuant_passlive_url'),
-        timeout: ssm_helper.load('acuant_timeout'),
-      )
-    end
-
-    def ssm_helper
-      @ssm_helper ||= SsmHelper.new
+      @doc_auth_client ||= DocAuthRouter.client
     end
 
     def encryption_helper

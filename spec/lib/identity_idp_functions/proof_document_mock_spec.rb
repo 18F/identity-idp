@@ -1,10 +1,8 @@
-require 'spec_helper'
-require 'securerandom'
-require 'identity-idp-functions/proof_document_mock'
+require 'rails_helper'
+require 'identity_idp_functions/proof_document_mock'
 
 RSpec.describe IdentityIdpFunctions::ProofDocumentMock do
   let(:idp_api_auth_token) { SecureRandom.hex }
-  let(:callback_url) { 'https://example.login.gov/api/callbacks/proof-document/:token' }
   let(:trace_id) { SecureRandom.uuid }
   let(:applicant_pii) do
     {
@@ -27,7 +25,6 @@ RSpec.describe IdentityIdpFunctions::ProofDocumentMock do
       back_image_url: back_image_url,
       selfie_image_url: selfie_image_url,
       liveness_checking_enabled: true,
-      callback_url: callback_url,
       trace_id: trace_id,
     }
   end
@@ -47,67 +44,11 @@ RSpec.describe IdentityIdpFunctions::ProofDocumentMock do
     encrypt_and_stub_s3(body: body, url: selfie_image_url, iv: selfie_image_iv, key: encryption_key)
   end
 
-  describe '.handle' do
-    before do
-      stub_const(
-        'ENV',
-        'IDP_API_AUTH_TOKEN' => idp_api_auth_token,
-      )
-
-      stub_request(:post, callback_url).
-        with(
-          headers: {
-            'Content-Type' => 'application/json',
-            'X-API-AUTH-TOKEN' => idp_api_auth_token,
-          },
-        ) do |request|
-        expect(JSON.parse(request.body, symbolize_names: true)).to eq(
-          document_result: {
-            billed: true,
-            errors: {},
-            exception: nil,
-            pii_from_doc: applicant_pii,
-            result: 'Passed',
-            success: true,
-          },
-        )
-      end
-    end
-
-    it 'runs' do
-      IdentityIdpFunctions::ProofDocumentMock.handle(event: event, context: nil)
-    end
-
-    context 'when called with a block' do
-      it 'gives the results to the block instead of posting to the callback URL' do
-        yielded_result = nil
-        IdentityIdpFunctions::ProofDocumentMock.handle(
-          event: event,
-          context: nil,
-        ) do |result|
-          yielded_result = result
-        end
-
-        expect(yielded_result).to eq(
-          document_result: {
-            billed: true,
-            errors: {},
-            exception: nil,
-            pii_from_doc: applicant_pii,
-            result: 'Passed',
-            success: true,
-          },
-        )
-
-        expect(a_request(:post, callback_url)).to_not have_been_made
-      end
-    end
-  end
+  let(:logger) { Logger.new('/dev/null') }
 
   describe '#proof' do
     subject(:function) do
       IdentityIdpFunctions::ProofDocumentMock.new(
-        callback_url: callback_url,
         encryption_key: Base64.encode64(encryption_key),
         front_image_iv: Base64.encode64(front_image_iv),
         back_image_iv: Base64.encode64(back_image_iv),
@@ -117,83 +58,28 @@ RSpec.describe IdentityIdpFunctions::ProofDocumentMock do
         selfie_image_url: selfie_image_url,
         liveness_checking_enabled: true,
         trace_id: trace_id,
-      )
-    end
-
-    before do
-      stub_request(:post, callback_url).
-        with(headers: { 'X-API-AUTH-TOKEN' => idp_api_auth_token })
-
-      stub_const(
-        'ENV',
-        'IDP_API_AUTH_TOKEN' => idp_api_auth_token,
+        logger: logger,
       )
     end
 
     context 'with a successful response from the proofer' do
-      it 'posts back to the callback url' do
-        function.proof
-
-        expect(WebMock).to have_requested(:post, callback_url)
+      it 'returns a response' do
+        expect(function.proof).to eq(
+          document_result: {
+            billed: true,
+            errors: {},
+            exception: nil,
+            pii_from_doc: applicant_pii,
+            result: 'Passed',
+            success: true,
+          },
+        )
       end
-
-      it_behaves_like 'callback url behavior'
 
       it 'logs the trace_id and timing info' do
-        expect(function).to receive(:log_event).with(hash_including(:timing, trace_id: trace_id))
+        expect(logger).to receive(:info).with(hash_including(:timing, trace_id: trace_id))
 
         function.proof
-      end
-    end
-
-    context 'with an unsuccessful response from the proofer' do
-      it 'posts back to the callback url' do
-        function.proof
-
-        expect(WebMock).to have_requested(:post, callback_url)
-      end
-    end
-
-    context 'with a connection error talking to the proofer' do
-      before do
-        allow(function.doc_auth_client).to receive(:proof).
-          and_raise(Faraday::ConnectionFailed.new('error')).
-          and_raise(Faraday::ConnectionFailed.new('error')).
-          and_raise(Faraday::ConnectionFailed.new('error'))
-      end
-
-      it 'retries 3 times then errors' do
-        expect(WebMock).to_not have_requested(:post, callback_url)
-      end
-    end
-
-    context 'with a connection error posting to the callback url' do
-      before do
-        stub_request(:post, callback_url).
-          to_timeout.
-          to_timeout.
-          to_timeout
-      end
-
-      it 'retries 3 then errors' do
-        expect { function.proof }.to raise_error(Faraday::ConnectionFailed)
-
-        expect(a_request(:post, callback_url)).to have_been_made.times(3)
-      end
-    end
-
-    context 'when there are no params in the ENV' do
-      before do
-        ENV.clear
-      end
-
-      it 'loads secrets from SSM' do
-        expect(function.ssm_helper).to receive(:load).with('document_proof_result_token').
-          and_return(idp_api_auth_token)
-
-        function.proof
-
-        expect(WebMock).to have_requested(:post, callback_url)
       end
     end
 
@@ -223,8 +109,6 @@ RSpec.describe IdentityIdpFunctions::ProofDocumentMock do
         expect(a_request(:get, front_image_url)).to have_been_made
         expect(a_request(:get, back_image_url)).to have_been_made
         expect(a_request(:get, selfie_image_url)).to have_been_made
-
-        expect(a_request(:post, callback_url)).to have_been_made
       end
     end
   end

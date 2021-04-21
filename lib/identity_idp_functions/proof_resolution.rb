@@ -1,48 +1,30 @@
-require 'bundler/setup' if !defined?(Bundler)
 require 'json'
 require 'retries'
 require 'proofer'
 require 'aamva'
 require 'lexisnexis'
-require '/opt/ruby/lib/function_helper' if !defined?(IdentityIdpFunctions::FunctionHelper)
 
 module IdentityIdpFunctions
   class ProofResolution
     include IdentityIdpFunctions::FaradayHelper
-    include IdentityIdpFunctions::LoggingHelper
-
-    def self.handle(event:, context:, &callback_block) # rubocop:disable Lint/UnusedMethodArgument
-      params = JSON.parse(event.to_json, symbolize_names: true)
-      new(**params).proof(&callback_block)
-    end
 
     attr_reader :applicant_pii,
-                :callback_url,
                 :trace_id,
-                :aamva_config,
-                :lexisnexis_config,
+                :logger,
                 :timer
 
-    # @param [Hash] aamva_config should only be included when run in-process, this config includes
-    # secrets that should should not be sent in the lambda payload
-    # @param [Hash] lexisnexis_config should only be included when run in-process, this config
-    # includes secrets that should should not be sent in the lambda payload
     def initialize(
       applicant_pii:,
-      callback_url:,
       should_proof_state_id:,
+      logger:,
       dob_year_only: false,
-      trace_id: nil,
-      aamva_config: {},
-      lexisnexis_config: {}
+      trace_id: nil
     )
       @applicant_pii = applicant_pii
-      @callback_url = callback_url
       @should_proof_state_id = should_proof_state_id
       @dob_year_only = dob_year_only
       @trace_id = trace_id
-      @aamva_config = aamva_config
-      @lexisnexis_config = lexisnexis_config
+      @logger = logger
       @timer = IdentityIdpFunctions::Timer.new
     end
 
@@ -61,41 +43,18 @@ module IdentityIdpFunctions
       keyword_init: true,
     )
 
-    # rubocop:disable Metrics/PerceivedComplexity
     def proof
-      if !block_given?
-        if api_auth_token.to_s.empty?
-          raise Errors::MisconfiguredLambdaError, 'IDP_API_AUTH_TOKEN is not configured'
-        end
-
-        if !aamva_config.empty?
-          raise Errors::MisconfiguredLambdaError,
-                'aamva config should not be present in lambda payload'
-        end
-
-        if !lexisnexis_config.empty?
-          raise Errors::MisconfiguredLambdaError,
-                'lexisnexis config should not be present in lambda payload'
-        end
-      end
-
       callback_log_data = if dob_year_only? && should_proof_state_id?
                             proof_aamva_then_lexisnexis_dob_only
                           else
                             proof_lexisnexis_then_aamva
                           end
 
-      callback_body = {
+      {
         resolution_result: callback_log_data.result,
       }
-
-      if block_given?
-        yield callback_body
-      else
-        post_callback(callback_body: callback_body)
-      end
     ensure
-      log_event(
+      logger.info(
         name: 'ProofResolution',
         trace_id: trace_id,
         resolution_success: callback_log_data&.resolution_success,
@@ -103,7 +62,6 @@ module IdentityIdpFunctions
         timing: timer.results,
       )
     end
-    # rubocop:enable Metrics/PerceivedComplexity
 
     # @return [CallbackLogData]
     def proof_lexisnexis_then_aamva
@@ -214,52 +172,28 @@ module IdentityIdpFunctions
       result
     end
 
-    def post_callback(callback_body:)
-      with_retries(**faraday_retry_options) do
-        build_faraday.post(
-          callback_url,
-          callback_body.to_json,
-          'X-API-AUTH-TOKEN' => api_auth_token,
-          'Content-Type' => 'application/json',
-          'Accept' => 'application/json',
-        )
-      end
-    end
-
     def lexisnexis_proofer
       @lexisnexis_proofer ||= LexisNexis::InstantVerify::Proofer.new(
-        account_id: lexisnexis_config[:account_id] || ssm_helper.load('lexisnexis_account_id'),
-        request_mode: lexisnexis_config[:request_mode] ||
-          ssm_helper.load('lexisnexis_request_mode'),
-        username: lexisnexis_config[:username] || ssm_helper.load('lexisnexis_username'),
-        password: lexisnexis_config[:password] || ssm_helper.load('lexisnexis_password'),
-        base_url: lexisnexis_config[:base_url] || ssm_helper.load('lexisnexis_base_url'),
-        instant_verify_workflow: lexisnexis_config[:instant_verify_workflow] ||
-          ssm_helper.load('lexisnexis_instant_verify_workflow'),
-        request_timeout: lexisnexis_config[:request_timeout],
+        instant_verify_workflow: AppConfig.env.lexisnexis_instant_verify_workflow,
+        account_id: AppConfig.env.lexisnexis_account_id,
+        base_url: AppConfig.env.lexisnexis_base_url,
+        username: AppConfig.env.lexisnexis_username,
+        password: AppConfig.env.lexisnexis_password,
+        request_mode: AppConfig.env.lexisnexis_request_mode,
+        request_timeout: IdentityConfig.store.lexisnexis_timeout,
       )
     end
 
     def aamva_proofer
       @aamva_proofer ||= Aamva::Proofer.new(
-        auth_request_timeout: aamva_config[:auth_request_timeout],
-        auth_url: aamva_config[:auth_url],
-        cert_enabled: aamva_config[:cert_enabled],
-        private_key: aamva_config[:private_key] || ssm_helper.load('aamva_private_key'),
-        public_key: aamva_config[:public_key] || ssm_helper.load('aamva_public_key'),
-        verification_request_timeout: aamva_config[:verification_request_timeout],
-        verification_url: aamva_config[:verification_url],
+        auth_request_timeout: AppConfig.env.aamva_auth_request_timeout,
+        auth_url: AppConfig.env.aamva_auth_url,
+        cert_enabled: IdentityConfig.store.aamva_cert_enabled,
+        private_key: AppConfig.env.aamva_private_key,
+        public_key: AppConfig.env.aamva_public_key,
+        verification_request_timeout: AppConfig.env.aamva_verification_request_timeout,
+        verification_url: IdentityConfig.store.aamva_verification_url,
       )
-    end
-
-    def api_auth_token
-      @api_auth_token ||= ENV.fetch('IDP_API_AUTH_TOKEN') do
-        ssm_helper.load('resolution_proof_result_token')
-      end
-    end
-
-    def ssm_helper
-      @ssm_helper ||= SsmHelper.new
     end
   end
 end
