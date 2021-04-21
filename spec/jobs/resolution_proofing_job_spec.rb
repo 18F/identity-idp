@@ -34,24 +34,32 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:state_id_proofer) { instance_double(Aamva::Proofer, class: Aamva::Proofer) }
   let(:trace_id) { SecureRandom.uuid }
 
-  subject(:instance) { ResolutionProofingJob.new }
-
-  subject(:perform) do
-    instance.perform(
-      result_id: document_capture_session.result_id,
-      should_proof_state_id: should_proof_state_id,
-      dob_year_only: dob_year_only,
-      encrypted_arguments: encrypted_arguments,
-      trace_id: trace_id,
-    )
-  end
-
-  describe '#perform' do
+  describe '.perform_later' do
     it 'stores results' do
-      perform
+      ResolutionProofingJob.perform_later(
+        result_id: document_capture_session.result_id,
+        should_proof_state_id: should_proof_state_id,
+        dob_year_only: dob_year_only,
+        encrypted_arguments: encrypted_arguments,
+        trace_id: trace_id,
+      )
 
       result = document_capture_session.load_proofing_result[:result]
       expect(result).to be_present
+    end
+  end
+
+  describe '#perform' do
+    let(:instance) { ResolutionProofingJob.new }
+
+    subject(:perform) do
+      instance.perform(
+        result_id: document_capture_session.result_id,
+        should_proof_state_id: should_proof_state_id,
+        dob_year_only: dob_year_only,
+        encrypted_arguments: encrypted_arguments,
+        trace_id: trace_id,
+      )
     end
 
     context 'webmock lexisnexis' do
