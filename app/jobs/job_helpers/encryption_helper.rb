@@ -1,4 +1,4 @@
-module IdentityIdpFunctions
+module JobHelpers
   class EncryptionHelper
     def decrypt(data:, iv:, key:)
       cipher = build_cipher

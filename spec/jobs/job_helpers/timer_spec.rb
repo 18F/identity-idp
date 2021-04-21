@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-RSpec.describe IdentityIdpFunctions::Timer do
+RSpec.describe JobHelpers::Timer do
   subject(:timer) do
-    IdentityIdpFunctions::Timer.new
+    JobHelpers::Timer.new
   end
 
   describe '#time' do

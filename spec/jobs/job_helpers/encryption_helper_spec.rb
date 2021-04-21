@@ -1,8 +1,7 @@
 require 'rails_helper'
-require 'identity_idp_functions/encryption_helper'
 
-RSpec.describe IdentityIdpFunctions::EncryptionHelper do
-  subject(:encryption_helper) { IdentityIdpFunctions::EncryptionHelper.new }
+RSpec.describe JobHelpers::EncryptionHelper do
+  subject(:encryption_helper) { JobHelpers::EncryptionHelper.new }
 
   describe '#decrypt' do
     let(:key) { SecureRandom.random_bytes(32) }

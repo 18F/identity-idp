@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe IdentityIdpFunctions::S3Helper do
-  subject(:s3_helper) { IdentityIdpFunctions::S3Helper.new }
+RSpec.describe JobHelpers::S3Helper do
+  subject(:s3_helper) { JobHelpers::S3Helper.new }
 
   describe '#s3_url?' do
     subject(:s3_url?) { s3_helper.s3_url?(url) }

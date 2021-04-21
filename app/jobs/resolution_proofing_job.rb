@@ -1,8 +1,5 @@
-require 'identity_idp_functions/faraday_helper'
-require 'identity_idp_functions/timer'
-
 class ResolutionProofingJob < ApplicationJob
-  include IdentityIdpFunctions::FaradayHelper
+  include JobHelpers::FaradayHelper
 
   queue_as :default
 
@@ -15,7 +12,7 @@ class ResolutionProofingJob < ApplicationJob
 
   def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
               dob_year_only:)
-    timer = IdentityIdpFunctions::Timer.new
+    timer = JobHelpers::Timer.new
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,

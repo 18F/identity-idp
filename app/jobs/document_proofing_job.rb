@@ -1,16 +1,11 @@
-require 'identity_idp_functions/faraday_helper'
-require 'identity_idp_functions/timer'
-require 'identity_idp_functions/encryption_helper'
-require 'identity_idp_functions/s3_helper'
-
 class DocumentProofingJob < ApplicationJob
-  include IdentityIdpFunctions::FaradayHelper
+  include JobHelpers::FaradayHelper
 
   queue_as :default
 
   def perform(result_id:, encrypted_arguments:, trace_id:,
               liveness_checking_enabled:)
-    timer = IdentityIdpFunctions::Timer.new
+    timer = JobHelpers::Timer.new
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,
@@ -63,11 +58,11 @@ class DocumentProofingJob < ApplicationJob
   end
 
   def encryption_helper
-    @encryption_helper ||= IdentityIdpFunctions::EncryptionHelper.new
+    @encryption_helper ||= JobHelpers::EncryptionHelper.new
   end
 
   def s3_helper
-    @s3_helper ||= IdentityIdpFunctions::S3Helper.new
+    @s3_helper ||= JobHelpers::S3Helper.new
   end
 
   def decrypt_from_s3(timer, name, url, iv, key)

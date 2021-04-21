@@ -1,13 +1,10 @@
-require 'identity_idp_functions/faraday_helper'
-require 'identity_idp_functions/timer'
-
 class AddressProofingJob < ApplicationJob
-  include IdentityIdpFunctions::FaradayHelper
+  include JobHelpers::FaradayHelper
 
   queue_as :default
 
   def perform(result_id:, encrypted_arguments:, trace_id:)
-    timer = IdentityIdpFunctions::Timer.new
+    timer = JobHelpers::Timer.new
 
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),

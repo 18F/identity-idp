@@ -166,7 +166,7 @@ RSpec.describe DocumentProofingJob, type: :job do
 
       before do
         data = { document: applicant_pii }.to_json
-        encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+        encryption_helper = JobHelpers::EncryptionHelper.new
 
         stub_request(:get, front_image_url).to_return(
           body: encryption_helper.encrypt(data: data, key: encryption_key, iv: front_image_iv),
