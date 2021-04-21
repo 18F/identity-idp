@@ -9,7 +9,7 @@ RSpec.describe AddressProofingJob, type: :job do
 
     AddressProofingJob.perform_later(
       result_id: document_capture_session.result_id,
-      encrypted_arguments: encrypted_arguments, callback_url: nil, trace_id: nil
+      encrypted_arguments: encrypted_arguments, trace_id: nil
     )
 
     result = document_capture_session.load_proofing_result[:result]

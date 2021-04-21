@@ -3,6 +3,8 @@ require 'retries'
 require 'proofer'
 require_relative 'resolution_mock_client'
 require_relative 'state_id_mock_client'
+require 'identity_idp_functions/faraday_helper'
+require 'identity_idp_functions/timer'
 
 module IdentityIdpFunctions
   class ProofResolutionMock

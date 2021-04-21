@@ -2,6 +2,8 @@ require 'json'
 require 'retries'
 require 'proofer'
 require 'lexisnexis'
+require 'identity_idp_functions/faraday_helper'
+require 'identity_idp_functions/timer'
 
 module IdentityIdpFunctions
   class ProofAddress

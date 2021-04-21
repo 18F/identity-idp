@@ -8,7 +8,6 @@ gem 'rails', '~> 6.1.3'
 # Variables can be overridden for local dev in Gemfile-dev
 @doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.5.1' }
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.1.0' }
-@idp_functions_gem ||= { github: '18F/identity-idp-functions', ref:'d9241bdfea85a76c170e456a89' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @proofer_gem ||= { github: '18F/identity-proofer-gem', ref: 'v2.8.0' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.1.12' }
@@ -17,7 +16,6 @@ gem 'rails', '~> 6.1.3'
 
 gem 'identity-doc-auth', @doc_auth_gem
 gem 'identity-hostdata', @hostdata_gem
-gem 'identity-idp-functions', @idp_functions_gem
 gem 'identity-logging', @logging_gem
 gem 'proofer', @proofer_gem
 gem 'identity-telephony', @telephony_gem
@@ -62,6 +60,7 @@ gem 'readthis'
 gem 'recaptcha', require: 'recaptcha/rails'
 gem 'redacted_struct'
 gem 'redis-session-store', '>= 0.11.3'
+gem 'retries'
 gem 'rotp', '~> 6.1'
 gem 'rqrcode'
 gem 'ruby-progressbar'

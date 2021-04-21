@@ -2,6 +2,8 @@ require 'json'
 require 'proofer'
 require 'retries'
 require_relative 'address_mock_client'
+require 'identity_idp_functions/faraday_helper'
+require 'identity_idp_functions/timer'
 
 module IdentityIdpFunctions
   class ProofAddressMock

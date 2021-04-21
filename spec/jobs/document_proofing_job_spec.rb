@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'identity_idp_functions/encryption_helper'
 
 RSpec.describe DocumentProofingJob, type: :job do
   it 'stores results' do
@@ -32,7 +33,7 @@ RSpec.describe DocumentProofingJob, type: :job do
     DocumentProofingJob.perform_later(
       result_id: document_capture_session.result_id,
       liveness_checking_enabled: false, encrypted_arguments: encrypted_arguments,
-      callback_url: nil, trace_id: nil
+      trace_id: nil
     )
 
     result = document_capture_session.load_doc_auth_async_result

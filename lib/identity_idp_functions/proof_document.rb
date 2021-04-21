@@ -3,6 +3,8 @@ require 'faraday'
 require 'identity-doc-auth'
 require 'json'
 require 'retries'
+require 'identity_idp_functions/faraday_helper'
+require 'identity_idp_functions/timer'
 
 module IdentityIdpFunctions
   class ProofDocument

@@ -3,6 +3,8 @@ require 'retries'
 require 'proofer'
 require 'aamva'
 require 'lexisnexis'
+require 'identity_idp_functions/faraday_helper'
+require 'identity_idp_functions/timer'
 
 module IdentityIdpFunctions
   class ProofResolution
