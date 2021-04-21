@@ -10,7 +10,7 @@ import { forwardRef } from 'react';
  * @param {PageHeadingProps & Record<string,any>} props Props object.
  */
 function PageHeading({ children, className, ...props }, ref) {
-  const classes = ['page-heading', 'h3', className].filter(Boolean).join(' ');
+  const classes = ['page-heading', className].filter(Boolean).join(' ');
 
   return (
     // Disable reason: Intended as pass-through to heading HTML element.
