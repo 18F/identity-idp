@@ -1,28 +1,25 @@
 require 'rails_helper'
-require 'identity_idp_functions/encryption_helper'
 
 RSpec.describe DocumentProofingJob, type: :job do
+  let(:front_image_url) { 'http://example.com/front' }
+  let(:back_image_url) { 'http://example.com/back' }
+  let(:encryption_key) { SecureRandom.random_bytes(32) }
+  let(:front_image_iv) { SecureRandom.random_bytes(12) }
+  let(:back_image_iv) { SecureRandom.random_bytes(12) }
+
+  before do
+    body = '{}'
+    encrypt_and_stub_s3(body: body, url: front_image_url, iv: front_image_iv, key: encryption_key)
+    encrypt_and_stub_s3(body: body, url: back_image_url, iv: back_image_iv, key: encryption_key)
+  end
+
   it 'stores results' do
-    encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
-    encryption_key = SecureRandom.random_bytes(32)
-    front_image_iv = SecureRandom.random_bytes(12)
-    back_image_iv = SecureRandom.random_bytes(12)
-
-
-    stub_request(:get, 'http://example.com/front').
-      to_return(body: encryption_helper.encrypt(
-        data: '{}', key: encryption_key, iv: front_image_iv,
-      ))
-    stub_request(:get, 'http://example.com/back').
-      to_return(body: encryption_helper.encrypt(
-        data: '{}', key: encryption_key, iv: back_image_iv,
-      ))
     document_arguments = {
       encryption_key: Base64.encode64(encryption_key),
       front_image_iv: Base64.encode64(front_image_iv),
       back_image_iv: Base64.encode64(back_image_iv),
-      front_image_url: 'http://example.com/front',
-      back_image_url: 'http://example.com/back',
+      front_image_url: front_image_url,
+      back_image_url: back_image_url,
     }
 
     document_capture_session = DocumentCaptureSession.new(result_id: SecureRandom.hex)
