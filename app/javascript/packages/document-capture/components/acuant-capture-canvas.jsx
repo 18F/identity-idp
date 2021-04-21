@@ -98,7 +98,7 @@ import useI18n from '../hooks/use-i18n';
  * @prop {number} moireraw Detected image raw moiré.
  * @prop {number} dpi Detected image resolution.
  *
- * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.4/SimpleHTMLApp#acuantcamera
+ * @see https://github.com/Acuant/JavascriptWebSDKV11/tree/11.4.3/SimpleHTMLApp#acuantcamera
  */
 
 /**
@@ -185,17 +185,18 @@ function AcuantCaptureCanvas({
       )}
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video id="acuant-player" controls autoPlay playsInline style={{ display: 'none' }} />
-      <canvas
-        id="acuant-video-canvas"
-        width="100%"
-        height="auto"
-        style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      />
+      <div id="acuant-sdk-capture-view">
+        <canvas
+          id="acuant-video-canvas"
+          style={{
+            width: '100%',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        />
+      </div>
     </>
   );
 }
