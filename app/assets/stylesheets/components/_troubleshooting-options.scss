@@ -1,0 +1,21 @@
+.troubleshooting-options {
+  @include u-margin-y(4);
+
+  &::before {
+    @include u-margin-bottom(4);
+    background-color: color('secondary');
+    content: '';
+    display: block;
+    height: 4px;
+    width: 5.5rem;
+  }
+}
+
+.troubleshooting-options__heading {
+  @include u-margin-y(1.5);
+  font-size: units(2);
+}
+
+.troubleshooting-options__options {
+  @include add-list-reset;
+}
