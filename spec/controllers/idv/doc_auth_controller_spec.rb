@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'identity_idp_functions/encryption_helper'
 
 describe Idv::DocAuthController do
   include DocAuthHelper
