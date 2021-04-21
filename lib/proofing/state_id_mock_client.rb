@@ -2,7 +2,7 @@
 
 require 'proofer'
 
-module IdentityIdpFunctions
+module Proofing
   class StateIdMockClient < Proofer::Base
     vendor_name 'StateIdMock'
 

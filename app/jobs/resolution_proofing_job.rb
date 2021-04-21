@@ -163,8 +163,8 @@ class ResolutionProofingJob < ApplicationJob
 
   def resolution_proofer
     @resolution_proofer ||= if IdentityConfig.store.proofer_mock_fallback
-      require 'identity_idp_functions/resolution_mock_client'
-      IdentityIdpFunctions::ResolutionMockClient.new
+      require 'proofing/resolution_mock_client'
+      Proofing::ResolutionMockClient.new
     else
       LexisNexis::InstantVerify::Proofer.new(
         instant_verify_workflow: AppConfig.env.lexisnexis_instant_verify_workflow,
@@ -180,8 +180,8 @@ class ResolutionProofingJob < ApplicationJob
 
   def state_id_proofer
     @state_id_proofer ||= if IdentityConfig.store.proofer_mock_fallback
-      require 'identity_idp_functions/state_id_mock_client'
-      IdentityIdpFunctions::StateIdMockClient.new
+      require 'proofing/state_id_mock_client'
+      Proofing::StateIdMockClient.new
     else
       Aamva::Proofer.new(
         auth_request_timeout: AppConfig.env.aamva_auth_request_timeout,

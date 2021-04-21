@@ -44,8 +44,8 @@ class AddressProofingJob < ApplicationJob
 
   def address_proofer
     @address_proofer ||= if IdentityConfig.store.proofer_mock_fallback
-      require 'identity_idp_functions/address_mock_client'
-      IdentityIdpFunctions::AddressMockClient.new
+      require 'proofing/address_mock_client'
+      Proofing::AddressMockClient.new
     else
       LexisNexis::PhoneFinder::Proofer.new(
         phone_finder_workflow: AppConfig.env.lexisnexis_phone_finder_workflow,

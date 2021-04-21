@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'identity_idp_functions/address_mock_client'
+require 'proofing/address_mock_client'
 
 RSpec.describe AddressProofingJob, type: :job do
   let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
@@ -91,7 +91,7 @@ RSpec.describe AddressProofingJob, type: :job do
       context 'with an unsuccessful response from the proofer' do
         let(:applicant_pii) do
           super().merge(
-            phone: IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
+            phone: Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
           )
         end
 
