@@ -493,7 +493,7 @@ GEM
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
-    rack-mini-profiler (2.2.0)
+    rack-mini-profiler (2.3.1)
       rack (>= 1.2.0)
     rack-proxy (0.6.5)
       rack
