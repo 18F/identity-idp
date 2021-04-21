@@ -24,12 +24,16 @@ class ResolutionProofingJob < ApplicationJob
     applicant_pii = decrypted_args[:applicant_pii]
 
     callback_log_data = if dob_year_only && should_proof_state_id
-                          proof_aamva_then_lexisnexis_dob_only(timer: timer, applicant_pii: applicant_pii)
+                          proof_aamva_then_lexisnexis_dob_only(
+                            timer: timer,
+                            applicant_pii: applicant_pii,
+                            dob_year_only: dob_year_only,
+                          )
                         else
                           proof_lexisnexis_then_aamva(
                             timer: timer,
                             applicant_pii: applicant_pii,
-                            should_proof_state_id: should_proof_state_id
+                            should_proof_state_id: should_proof_state_id,
                           )
                         end
 
@@ -88,7 +92,7 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   # @return [CallbackLogData]
-  def proof_aamva_then_lexisnexis_dob_only(timer:, applicant_pii:)
+  def proof_aamva_then_lexisnexis_dob_only(timer:, applicant_pii:, dob_year_only:)
     proofer_result = timer.time('state_id') do
       with_retries(**faraday_retry_options) do
         state_id_proofer.proof(applicant_pii)
@@ -111,7 +115,7 @@ class ResolutionProofingJob < ApplicationJob
     if state_id_success
       lexisnexis_result = timer.time('resolution') do
         with_retries(**faraday_retry_options) do
-          resolution_proofer.proof(applicant_pii.merge(dob_year_only: dob_year_only?))
+          resolution_proofer.proof(applicant_pii.merge(dob_year_only: dob_year_only))
         end
       end
 
