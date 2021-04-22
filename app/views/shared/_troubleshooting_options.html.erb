@@ -4,14 +4,17 @@ locals:
 * heading: Heading text.
 * options: List of link options to display, as an array of hashes with `url` and `text` values.
 %>
-<% heading_level = local_assigns[:heading_level] || :h2 %>
-<section class="troubleshooting-options">
-  <%= content_tag(heading_level, heading, class: 'troubleshooting-options__heading') %>
-  <ul class="troubleshooting-options__options">
-    <% options.each do |option| %>
-      <li>
-        <%= render('shared/block_link', url: option[:url]) { option[:text] } %>
-      </li>
-    <% end %>
-  </ul>
-</section>
+<% if local_assigns[:options].presence %>
+  <% heading_level = local_assigns[:heading_level] || :h2 %>
+  <% classes = ['troubleshooting-options', *local_assigns[:class]] %>
+  <section class="troubleshooting-options">
+    <%= content_tag(heading_level, heading, class: 'troubleshooting-options__heading') %>
+    <ul class="troubleshooting-options__options">
+      <% options.each do |option| %>
+        <li>
+          <%= render('shared/block_link', url: option[:url]) { option[:text] } %>
+        </li>
+      <% end %>
+    </ul>
+  </section>
+<% end %>
