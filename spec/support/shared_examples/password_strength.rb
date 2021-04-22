@@ -101,7 +101,7 @@ shared_examples 'strong password' do |form_class|
     form = form_class.constantize.new(user)
     password = 'a7K!hf🇺🇸🇺🇸🇺🇸'
     errors = {
-      password: ['is too short (minimum is 12 characters)'],
+      password: [t('errors.messages.too_short', count: 12)],
     }
     extra = hash_including(user_id: '123')
     result = instance_double(FormResponse)
