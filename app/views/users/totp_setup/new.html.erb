@@ -2,7 +2,7 @@
 
 <% help_link = new_window_link_to t('links.what_is_totp'),
                                   MarketingSite.help_authentication_app_url %>
-<h1 class="h3 margin-y-0"><%= t('headings.totp_setup.new') %></h1>
+<h1 class="margin-y-0"><%= t('headings.totp_setup.new') %></h1>
 <p class="mt-tiny margin-bottom-4"><%= t('forms.totp_setup.totp_intro_html', link: help_link) %></p>
 <%= form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'margin-bottom-1') do %>
   <ul class="list-reset">
