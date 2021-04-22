@@ -166,5 +166,7 @@ en:
     troubleshooting:
       headings:
         missing_required_items: Are you missing one of these items?
+        need_assistance: 'Need immediate assistance? Here’s how to get help:'
       options:
+        contact_support: Contact %{app} Support
         get_help_at_sp: Get help at %{sp_name}

@@ -18,8 +18,6 @@ fr:
       token_missing: jeton manquant
     confirm_password_incorrect: Mot de passe incorrect.
     doc_auth:
-      acuant_throttle: Pour éviter les abus, nous limitons le nombre de fois où vous
-        pouvez essayer de valider un document. Veuillez réessayer plus tard.
       consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
       document_capture_cancelled: Vous avez annulé le téléchargement des photos de
@@ -55,6 +53,10 @@ fr:
       send_link_throttle: Vous avez essayé plusieurs fois, essayez à nouveau dans
         10 minutes. Vous pouvez également cliquer sur recommencer et choisir d'utiliser
         votre ordinateur.
+      throttled_heading: Nous n’avons pas pu vérifier votre identité et votre photo
+      throttled_text_html: "<strong>Veuillez réessayer dans %{timeout}.</strong> Pour
+        votre sécurité, nous limitons le nombre de fois où vous pouvez tenter de vérifier
+        un document en ligne."
     file_input:
       invalid_type: Ce type de fichier n'est pas accepté, veuillez réessayer.
     invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer

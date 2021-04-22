@@ -169,5 +169,7 @@ es:
     troubleshooting:
       headings:
         missing_required_items: "¿Le falta alguno de estos puntos?"
+        need_assistance: "¿Necesita ayuda inmediata? Así es como puede obtener ayuda:"
       options:
+        contact_support: Póngase en contacto con el servicio de asistencia de %{app}
         get_help_at_sp: Obtenga ayuda en %{sp_name}

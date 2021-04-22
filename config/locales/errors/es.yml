@@ -18,8 +18,6 @@ es:
       token_missing: falta el token
     confirm_password_incorrect: La contraseña es incorrecta.
     doc_auth:
-      acuant_throttle: Para evitar abusos, limitamos el número de veces que puede
-        intentar validar un documento. Por favor, inténtelo de nuevo más tarde.
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
         y luego haga clic en continuar.
       document_capture_cancelled: Ha cancelado la carga de fotos de su identificación
@@ -53,6 +51,10 @@ es:
         para obtener más información.
       send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en 10 minutos.
         También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
+      throttled_heading: No pudimos verificar la identificación ni la foto
+      throttled_text_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
+        Por su seguridad, limitamos el número de veces que puede intentar verificar
+        un documento en línea."
     file_input:
       invalid_type: No se acepta este tipo de archivo, por favor, vuelva a intentarlo.
     invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
