@@ -90,7 +90,7 @@ class MonitorHelper
   end
 
   def check_for_otp
-    otp_regex = /Your security code is (?<code>\d{6})/
+    otp_regex = /Your security code is (?<code>[a-zA-Z0-9]{6})/
 
     if local?
       match_data = Telephony::Test::Message.messages.last.body.match(otp_regex)
