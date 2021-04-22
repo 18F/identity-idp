@@ -95,7 +95,6 @@ ignore_unused:
   - 'devise.failure.*'
   - 'devise.mailer.reset_password_instructions.subject'
   - 'devise.sessions.signed_in'
-  - 'errors.messages.*'
   - 'forms.two_factor_choice.legend'
   - 'forms.two_factor_recovery_choice.legend'
   - 'idv.errors.pattern_mismatch.*'
