@@ -103,7 +103,6 @@ shared_examples 'strong password' do |form_class|
     errors = {
       password: ['is too short (minimum is 12 characters)'],
     }
-    binding.pry
     extra = hash_including(user_id: '123')
     result = instance_double(FormResponse)
 
