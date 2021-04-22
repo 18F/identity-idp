@@ -1,8 +1,7 @@
 require 'rails_helper'
 
-describe 'idv/phone_errors/warning.html.erb' do
+describe 'idv/phone_errors/timeout.html.erb' do
   let(:sp_name) { 'Example SP' }
-  let(:remaining_step_attempts) { 5 }
   let(:enable_gpo_verification) { false }
 
   before do
@@ -13,21 +12,22 @@ describe 'idv/phone_errors/warning.html.erb' do
     allow(decorated_session).to receive(:sp_name).and_return(sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
-    assign(:remaining_step_attempts, remaining_step_attempts)
-
     render
   end
 
   it 'shows warning text' do
-    expect(rendered).to have_text(t('idv.failure.phone.warning'))
+    expect(rendered).to have_text(t('idv.failure.phone.timeout'))
   end
 
   it 'shows a primary action' do
     expect(rendered).to have_link(t('idv.failure.button.warning'), href: idv_phone_path)
   end
 
-  it 'shows remaining attempts' do
-    expect(rendered).to have_text(t('idv.failure.attempts', count: remaining_step_attempts))
+  it 'shows contact support option' do
+    expect(rendered).to have_link(
+      t('idv.troubleshooting.options.contact_support', app: APP_NAME),
+      href: MarketingSite.contact_url,
+    )
   end
 
   context 'gpo verification disabled' do

@@ -32,8 +32,6 @@ es:
         one: Por razones de seguridad, le queda un intento.
         other: Por razones de seguridad, le queda %{count} intentos.
       button:
-        jobfail: Inténtelo de nuevo mañana
-        timeout: Inténtelo de nuevo
         warning: Inténtelo de nuevo
       errors:
         link: contáctanos
@@ -51,7 +49,7 @@ es:
           para volver a intentar un número de teléfono.
         heading: No hemos podido asociar su nombre y dirección a este número de teléfono
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
-          Vuelve a intentarlo mañana.
+          Vuelve a intentarlo.
         timeout: Nuestra solicitud para verificar tu información ha caducado.
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
       sessions:

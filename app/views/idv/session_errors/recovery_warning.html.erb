@@ -5,12 +5,12 @@
     text: t('idv.failure.button.warning'),
     url: idv_recovery_path,
   },
-  extra_options: [
-    {
+  options: Proc.new do |options|
+    options.prepend(
       text: t('two_factor_authentication.account_reset.reset_your_account'),
       url: account_reset_request_path,
-    },
-  ],
+    )
+  end,
 ) do %>
   <p><%= t('idv.failure.sessions.warning') %></p>
   <p><strong><%= t('idv.failure.attempts', count: @remaining_step_attempts) %></strong></p>

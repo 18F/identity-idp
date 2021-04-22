@@ -1,0 +1,24 @@
+<%#
+yields: Warning text to show.
+locals:
+* contact_support_option: Whether to show "Contact Support" option. Defaults to false.
+%>
+<%= render(
+  'idv/shared/warning',
+  heading: t('idv.failure.phone.heading'),
+  action: {
+    text: t('idv.failure.button.warning'),
+    url: idv_phone_path,
+  },
+  options: Proc.new do |options|
+    options.prepend(
+      text: t('idv.form.activate_by_mail'),
+      url: idv_gpo_path,
+    ) if FeatureManagement.enable_gpo_verification?
+    options.prepend(
+      url: MarketingSite.contact_url,
+      text: t('idv.troubleshooting.options.contact_support', app: APP_NAME),
+    ) if local_assigns[:contact_support_option]
+    options
+  end,
+) { yield } %>

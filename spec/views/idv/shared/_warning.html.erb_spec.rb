@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'idv/shared/_warning.html.erb' do
   let(:sp_name) { nil }
-  let(:extra_options) { nil }
+  let(:options) { nil }
   let(:heading) { 'Warning' }
   let(:action) { nil }
 
@@ -11,7 +11,7 @@ describe 'idv/shared/_warning.html.erb' do
     allow(decorated_session).to receive(:sp_name).and_return(sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
-    render 'idv/shared/warning', heading: heading, action: action, extra_options: extra_options
+    render 'idv/shared/warning', heading: heading, action: action, options: options
   end
 
   it 'renders heading' do
@@ -51,15 +51,15 @@ describe 'idv/shared/_warning.html.erb' do
     end
   end
 
-  describe 'extra_options' do
-    context 'without extra options' do
+  describe 'options' do
+    context 'without options customization' do
       it 'does not render troubleshooting options' do
         expect(rendered).not_to have_css('.troubleshooting-options')
       end
     end
 
-    context 'with extra options' do
-      let(:extra_options) { [{ text: 'Example', url: '#example' }] }
+    context 'with options customization' do
+      let(:options) { Proc.new { |options| options.append(text: 'Example', url: '#example') } }
 
       it 'renders a list of troubleshooting options' do
         expect(rendered).to have_link('Example', href: '#example')

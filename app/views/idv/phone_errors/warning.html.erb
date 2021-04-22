@@ -1,17 +1,4 @@
-<%= render(
-  'idv/shared/warning',
-  heading: t('idv.failure.phone.heading'),
-  action: {
-    text: t('idv.failure.button.warning'),
-    url: idv_phone_path,
-  },
-  extra_options: [
-    FeatureManagement.enable_gpo_verification? && {
-      text: t('idv.form.activate_by_mail'),
-      url: idv_gpo_path,
-    },
-  ].select(&:present?),
-) do %>
+<%= render('idv/phone_errors/warning') do %>
   <p><%= t('idv.failure.phone.warning') %></p>
   <p><strong><%= t('idv.failure.attempts', count: @remaining_step_attempts) %></strong></p>
 <% end %>

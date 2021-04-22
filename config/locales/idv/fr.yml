@@ -34,8 +34,6 @@ fr:
         one: Pour des raisons de sécurité, il vous reste une tentative.
         other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
       button:
-        jobfail: Essayez à nouveau demain
-        timeout: Essayez à nouveau
         warning: Essayez à nouveau
       errors:
         link: contactez-nous
@@ -54,7 +52,7 @@ fr:
         heading: Nous n’avons pas pu associer votre nom et votre adresse à ce numéro
           de téléphone
         jobfail: Un problème s'est produit et nous ne pouvons pas traiter votre demande
-          pour le moment. Veuillez réessayer demain.
+          pour le moment. Veuillez réessayer.
         timeout: Notre demande de vérification de vos renseignements a expiré.
         warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
       sessions:
