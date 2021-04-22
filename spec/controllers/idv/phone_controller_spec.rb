@@ -124,7 +124,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks form error and does not make a vendor API call' do
-        expect(Idv::Proofer).to_not receive(:get_vendor)
+        expect_any_instance_of(Idv::Agent).to_not receive(:proof_address)
 
         put :create, params: { idv_phone_form: { phone: '703' } }
 
