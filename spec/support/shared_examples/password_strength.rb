@@ -103,17 +103,10 @@ shared_examples 'strong password' do |form_class|
     errors = {
       password: [t('errors.messages.too_short', count: 12)],
     }
-    extra = hash_including(user_id: '123')
-    result = instance_double(FormResponse)
+    result = form.submit(password: password)
 
-    if %w[PasswordForm ResetPasswordForm].include?(form_class)
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors, extra: extra).and_return(result)
-    else
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors).and_return(result)
-    end
-
-    expect(form.submit(password: password)).to eq result
+    expect(result.success?).to eq(false)
+    expect(result.errors).to eq(errors)
+    expect(result.extra).to include(user_id: '123') if result.extra.present?
   end
 end
