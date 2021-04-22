@@ -19,10 +19,16 @@ class DocumentProofingJob < ApplicationJob
     back_image_url = decrypted_args[:back_image_url]
     selfie_image_url = decrypted_args[:selfie_image_url]
 
-    front_image = decrypt_from_s3(timer, :front, front_image_url, front_image_iv, encryption_key)
-    back_image = decrypt_from_s3(timer, :back, back_image_url, back_image_iv, encryption_key)
+    front_image = decrypt_from_s3(
+      timer: timer, name: :front, url: front_image_url, iv: front_image_iv, key: encryption_key
+    )
+    back_image = decrypt_from_s3(
+      timer: timer, name: :back, url: back_image_url, iv: back_image_iv, key: encryption_key
+    )
     selfie_image = if liveness_checking_enabled
-      decrypt_from_s3(timer, :selfie, selfie_image_url, selfie_image_iv, encryption_key)
+      decrypt_from_s3(
+        timer: timer, name: :selfie, url: selfie_image_url, iv: selfie_image_iv, key: encryption_key
+      )
     end
 
     proofer_result = timer.time('proof_documents') do
@@ -65,7 +71,7 @@ class DocumentProofingJob < ApplicationJob
     @s3_helper ||= JobHelpers::S3Helper.new
   end
 
-  def decrypt_from_s3(timer, name, url, iv, key)
+  def decrypt_from_s3(timer:, name:, url:, iv:, key:)
     encrypted_image = timer.time("download.#{name}") do
       if s3_helper.s3_url?(url)
         s3_helper.download(url)

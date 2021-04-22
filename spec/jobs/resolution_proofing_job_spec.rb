@@ -194,7 +194,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         end
 
         it 'logs the trace_id and timing info' do
-          expect(instance.logger).to receive(:info).with(hash_including(:timing, trace_id: trace_id))
+          expect(instance.logger).to receive(:info).
+            with(hash_including(:timing, trace_id: trace_id))
 
           perform
         end

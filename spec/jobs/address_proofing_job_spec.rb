@@ -25,7 +25,7 @@ RSpec.describe AddressProofingJob, type: :job do
       AddressProofingJob.perform_later(
         result_id: document_capture_session.result_id,
         encrypted_arguments: encrypted_arguments,
-        trace_id: trace_id
+        trace_id: trace_id,
       )
 
       result = document_capture_session.load_proofing_result[:result]
