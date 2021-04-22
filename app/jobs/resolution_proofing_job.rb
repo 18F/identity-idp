@@ -160,7 +160,6 @@ class ResolutionProofingJob < ApplicationJob
 
   def resolution_proofer
     @resolution_proofer ||= if IdentityConfig.store.proofer_mock_fallback
-      require 'proofing/resolution_mock_client'
       Proofing::ResolutionMockClient.new
     else
       LexisNexis::InstantVerify::Proofer.new(
@@ -177,7 +176,6 @@ class ResolutionProofingJob < ApplicationJob
 
   def state_id_proofer
     @state_id_proofer ||= if IdentityConfig.store.proofer_mock_fallback
-      require 'proofing/state_id_mock_client'
       Proofing::StateIdMockClient.new
     else
       Aamva::Proofer.new(

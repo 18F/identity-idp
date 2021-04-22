@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'proofing/address_mock_client'
 
 RSpec.describe AddressProofingJob, type: :job do
   let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
