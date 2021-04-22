@@ -1,6 +1,6 @@
 require 'proofer'
 
-module IdentityIdpFunctions
+module Proofing
   class ResolutionMockClient < Proofer::Base
     vendor_name 'ResolutionMock'
 

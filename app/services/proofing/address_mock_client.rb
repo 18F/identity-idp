@@ -1,6 +1,6 @@
 require 'proofer'
 
-module IdentityIdpFunctions
+module Proofing
   class AddressMockClient < Proofer::Base
     vendor_name 'AddressMock'
 

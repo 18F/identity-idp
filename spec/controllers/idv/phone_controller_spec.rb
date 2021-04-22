@@ -6,7 +6,7 @@ describe Idv::PhoneController do
   let(:max_attempts) { idv_max_attempts }
   let(:good_phone) { '+1 (703) 555-0000' }
   let(:bad_phone) do
-    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+    Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
   let(:normalized_phone) { '7035550000' }
   let(:bad_phone) { '+1 (703) 555-5555' }
@@ -124,7 +124,7 @@ describe Idv::PhoneController do
       end
 
       it 'tracks form error and does not make a vendor API call' do
-        expect(Idv::Proofer).to_not receive(:get_vendor)
+        expect_any_instance_of(Idv::Agent).to_not receive(:proof_address)
 
         put :create, params: { idv_phone_form: { phone: '703' } }
 

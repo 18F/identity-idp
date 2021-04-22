@@ -1,6 +1,6 @@
 require 'faraday'
 
-module IdentityIdpFunctions
+module JobHelpers
   module FaradayHelper
     # @return [Faraday::Connection] builds a Faraday instance with our defaults
     def build_faraday
