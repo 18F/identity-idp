@@ -94,4 +94,27 @@ shared_examples 'strong password' do |form_class|
     end
     expect(form.submit(password: password)).to eq result
   end
+
+  it 'does not allow a password that does not have the minimum number of graphemes' do
+    user = build_stubbed(:user, email: 'custom@benevolent.com', uuid: '123')
+    allow(user).to receive(:reset_password_period_valid?).and_return(true)
+    form = form_class.constantize.new(user)
+    password = 'a7K!hf🇺🇸🇺🇸🇺🇸'
+    errors = {
+      password: ['is too short (minimum is 12 characters)'],
+    }
+    binding.pry
+    extra = hash_including(user_id: '123')
+    result = instance_double(FormResponse)
+
+    if %w[PasswordForm ResetPasswordForm].include?(form_class)
+      expect(FormResponse).to receive(:new).
+        with(success: false, errors: errors, extra: extra).and_return(result)
+    else
+      expect(FormResponse).to receive(:new).
+        with(success: false, errors: errors).and_return(result)
+    end
+
+    expect(form.submit(password: password)).to eq result
+  end
 end

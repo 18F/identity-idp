@@ -8,6 +8,7 @@ module FormPasswordValidator
     validates :password,
               presence: true,
               length: { in: Devise.password_length }
+    validate :password_graphemes_length
     validate :strong_password
     validate :not_pwned
   end
@@ -20,6 +21,15 @@ module FormPasswordValidator
     return unless errors.messages.blank? && password_score.score < min_password_score
 
     errors.add :password, :weak_password, i18n_variables
+  end
+
+  def password_graphemes_length
+    return if errors.messages.present?
+    if password.grapheme_clusters.length < Devise.password_length.min
+      errors.add(:password, :too_short, count: Devise.password_length.min)
+    elsif password.grapheme_clusters.length > Devise.password_length.max
+      errors.add(:password, :too_long, count: Devise.password_length.max)
+    end
   end
 
   def password_score
