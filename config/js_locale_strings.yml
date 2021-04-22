@@ -30,7 +30,6 @@
 - doc_auth.info.document_capture_upload_image
 - doc_auth.info.get_help_at_sp_html
 - doc_auth.info.image_updated
-- doc_auth.info.id_worn_html
 - doc_auth.info.interstitial_eta
 - doc_auth.info.interstitial_thanks
 - doc_auth.instructions.document_capture_selfie_consent_banner

@@ -53,20 +53,6 @@
 
     <p><%= t('doc_auth.info.document_capture_intro_acknowledgment') %></p>
 
-    <p>
-      <%= t('doc_auth.info.id_worn_html') %>
-    </p>
-
-    <% if sp_name %>
-      <p>
-        <%= t(
-                'doc_auth.info.no_other_id_help_bold_html',
-                failure_to_proof_url: failure_to_proof_url,
-                sp_name: sp_name,
-            ) %>
-      </p>
-    <% end %>
-
     <p class="margin-top-2 margin-bottom-0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
 
     <ul>

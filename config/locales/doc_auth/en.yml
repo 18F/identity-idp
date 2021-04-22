@@ -146,8 +146,6 @@ en:
       document_capture_upload_image: We only use your ID to verify your identity,
         and we will not save any images.
       get_help_at_sp_html: "<strong>Having trouble?</strong> Get help at %{sp_name}"
-      id_worn_html: "<strong>Is your ID worn or damaged?</strong> Use another state-issued
-        ID if you have one."
       image_updated: Image updated
       interstitial_eta: This might take up to a minute. We’ll load the next step automatically
         when it’s done.
@@ -160,8 +158,6 @@ en:
         your ID using your phone.
       link_sent_complete_nojs: When you are done, click Continue here to finish verifying
         your identity.
-      no_other_id_help_bold_html: "<strong>If you do not have a state-issued ID</strong>,
-        <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
       privacy_html: Login.gov is a secure, government website that adheres to the
         highest standards in data protection. We only use your data to verify your
         identity. %{link} about our privacy and security measures.

@@ -174,8 +174,6 @@ fr:
         votre identité, et nous n'enregistrerons aucune image.
       get_help_at_sp_html: "<strong>Vous avez des problèmes?</strong> Obtenez de l'aide
         à %{sp_name}"
-      id_worn_html: "<strong>Votre carte d'identité est-elle usée ou endommagée?</strong>
-        Utilisez une autre carte d'identité délivrée par l'État si vous en avez une."
       image_updated: Image mise à jour
       interstitial_eta: Cette opération peut prendre jusqu'à une minute. Nous chargerons
         automatiquement l'étape suivante lorsqu'elle sera terminée.
@@ -188,9 +186,6 @@ fr:
         que vous aurez confirmé votre identifiant à l'aide de votre téléphone.
       link_sent_complete_nojs: Quand vous aurez fini, cliquez sur « Continuer » ici
         pour terminer la vérification de votre identité.
-      no_other_id_help_bold_html: "<strong>Si vous n'avez pas de carte d'identité
-        délivrée par l'État</strong>, <a href=%{failure_to_proof_url}>obtenez de l'aide
-        à l'adresse %{sp_name}.</a>"
       privacy_html: Login.gov est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous n'utilisons
         vos données uniquement pour vérifier votre identité. %{link} sur nos mesures
