@@ -36,9 +36,9 @@ RSpec.describe OtpVerificationForm do
       it 'returns FormResponse with success: false' do
         user = build_stubbed(:user)
         invalid_codes = [
-          "123abcd",
-          "1234567",
-          "abcde",
+          '123abcd',
+          '1234567',
+          'abcde',
           "aaaaa\n123456\naaaaaaaaa",
         ]
 
