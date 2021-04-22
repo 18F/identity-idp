@@ -74,7 +74,8 @@ textarea {
 // http://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
 // and added .mfa-alpha/mfa-digits class selectors as per CodeClimate warning to:
 // 'Avoid qualifying attribute selectors with an element.'
-.mfa-alpha, .mfa-digits {
+.mfa-alpha,
+.mfa-digits {
   -moz-appearance: textfield;
 }
 
