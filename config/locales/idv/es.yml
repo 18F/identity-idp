@@ -166,3 +166,8 @@ es:
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
         review: Vuelve a ingresar tu contraseña de login.gov para encriptar tus datos
+    troubleshooting:
+      headings:
+        missing_required_items: "¿Le falta alguno de estos puntos?"
+      options:
+        get_help_at_sp: Obtenga ayuda en %{sp_name}

@@ -72,6 +72,20 @@
     </li>
   </ul>
 
+  <% if decorated_session.sp_name %>
+    <%= render(
+      'shared/troubleshooting_options',
+      heading_level: :h3,
+      heading: t('idv.troubleshooting.headings.missing_required_items'),
+      options: [
+        {
+          url: return_to_sp_failure_to_proof_path,
+          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+        },
+      ],
+    ) %>
+  <% end %>
+
   <h2><%= t('doc_auth.instructions.privacy') %></h2>
   <p><%== t('doc_auth.info.privacy_html', link: new_window_link_to(t('doc_auth.instructions.learn_more'),
             MarketingSite.security_and_privacy_practices_url)) %></p>
