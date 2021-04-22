@@ -15,7 +15,7 @@
   </p>
 <% end %>
 
-<p><%= t('idv.failure.attempts_html', count: @remaining_step_attempts) %></p>
+<p><strong><%= t('idv.failure.attempts', count: @remaining_step_attempts) %></strong></p>
 
 <%= render 'idv/shared/back_to_sp_link' %>
 
