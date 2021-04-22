@@ -91,12 +91,6 @@ en:
         %{app} %{help_link} or %{contact_link}.
       subject: Email address deleted
     help_link_text: Help Center
-    letter_expired:
-      info_html: The letter we mailed to your address has a confirmation code that
-        has expired and can no longer be used to complete the verification process.
-        To verify your address and complete the identity verification process you
-        will need to sign into %{link} and request another letter.
-      subject: Your address confirmation code has expired
     letter_reminder:
       info_html: The letter you are about to receive will contain a confirmation code
         that helps us verify your address. You can complete the identity verification
@@ -188,7 +182,3 @@ en:
       help: ''
       info: There are SPs that have gone over their quota limit.
       subject: Some SPs have reached their quota limit
-    undeliverable_address:
-      call_to_action_html: Please sign into %{link} and follow instructions.
-      intro: We were unable to mail your letter to the address you provided.
-      subject: The letter sent to your address was undeliverable

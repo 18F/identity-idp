@@ -24,14 +24,6 @@ Rails.application.routes.draw do
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
 
-  # Routes that are triggered by lambda functions to initiate recurring jobs
-  scope module: :recurring_job do
-    post '/api/account_reset/send_notifications' => 'send_account_reset_notifications#create'
-    post '/api/expired_letters' => 'expired_letters#create'
-    post '/api/usps_download' => 'undeliverable_address#create'
-    post '/api/usps_upload' => 'gpo_upload#create'
-  end
-
   # i18n routes. Alphabetically sorted.
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
     # Devise handles login itself. It's first in the chain to avoid a redirect loop during
