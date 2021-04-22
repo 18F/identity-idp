@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PhoneConfirmation::ConfirmationSession do
+RSpec.describe PhoneConfirmation::ConfirmationSession do
   describe '.start' do
     it 'starts a session for voice' do
       result = described_class.start(
@@ -8,7 +8,7 @@ describe PhoneConfirmation::ConfirmationSession do
         phone: '+1 (202) 123-4567',
       )
 
-      expect(result.code).to match(/\d{6}/)
+      expect(result.code).to match(/[a-z0-9]{6}/i)
       expect(result.phone).to eq('+1 (202) 123-4567')
       expect(result.sent_at).to be_within(1.second).of(Time.zone.now)
       expect(result.delivery_method).to eq(:voice)
@@ -22,7 +22,7 @@ describe PhoneConfirmation::ConfirmationSession do
         phone: '+1 (202) 123-4567',
       )
 
-      expect(result.code).to match(/\d{6}/)
+      expect(result.code).to match(/[a-z0-9]{6}/i)
       expect(result.phone).to eq('+1 (202) 123-4567')
       expect(result.sent_at).to be_within(1.second).of(Time.zone.now)
       expect(result.delivery_method).to eq(:sms)
