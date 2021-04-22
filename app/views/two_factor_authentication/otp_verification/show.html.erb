@@ -17,12 +17,11 @@
                          value: @presenter.code_value,
                          required: true,
                          autofocus: true,
-                         pattern: '[0-9]*',
-                         class: 'field monospace mfa usa-input margin-bottom-5',
+                         pattern: '[a-zA-Z0-9]*',
+                         class: 'field monospace mfa-alpha usa-input margin-bottom-5',
                          aria: { invalid: false, describedby: 'code-instructs' },
                          maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
-                         autocomplete: 'one-time-code',
-                         type: 'tel' %>
+                         autocomplete: 'one-time-code' %>
       <%= submit_tag t('forms.buttons.submit.default'),
                      class: 'usa-button usa-button--big usa-button--full-width' %>
     </div>

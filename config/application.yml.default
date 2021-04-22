@@ -114,6 +114,7 @@ min_password_score: '3'
 mx_timeout: '3'
 otp_delivery_blocklist_maxretry: '10'
 otp_valid_for: '10'
+otp_use_alphanumeric: 'true'
 otps_per_ip_limit: '25'
 otps_per_ip_period: '300'
 otps_per_ip_track_only_mode: 'true'
@@ -289,6 +290,7 @@ production:
   no_sp_campaigns_whitelist: '[]'
   nonessential_email_banlist: '[]'
   otp_delivery_blocklist_findtime: '5'
+  otp_use_alphanumeric: 'false'
   participate_in_dap: 'true'
   password_pepper:
   piv_cac_verify_token_secret:

@@ -19,7 +19,9 @@ module UserOtpMethods
   end
 
   def authenticate_direct_otp(code)
-    return false if direct_otp.nil? || direct_otp != code || direct_otp_expired?
+    return false if direct_otp.nil?
+    return false if direct_otp_expired?
+    return false if direct_otp != Base32::Crockford.normalize(code)
     clear_direct_otp
     true
   end

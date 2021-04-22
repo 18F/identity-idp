@@ -29,6 +29,12 @@ class FormResponse
     Array(message_or_messages).first
   end
 
+  def ==(other)
+    success? == other.success? &&
+      errors == other.errors &&
+      extra == other.extra
+  end
+
   private
 
   attr_reader :success

@@ -1,9 +1,7 @@
 require 'rails_helper'
 require 'saml_idp_constants'
 
-MAX_GOOD_PASSWORD = '!1aZ' * 32
-
-describe User do
+RSpec.describe User do
   describe 'Associations' do
     it { is_expected.to have_many(:identities) }
     it { is_expected.to have_many(:agency_identities) }
