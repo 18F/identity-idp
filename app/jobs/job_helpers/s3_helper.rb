@@ -1,4 +1,4 @@
-module IdentityIdpFunctions
+module JobHelpers
   class S3Helper
     def s3_url?(url)
       URI.parse(url).host.split('.').include?('s3')

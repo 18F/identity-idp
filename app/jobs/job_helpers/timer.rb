@@ -1,6 +1,6 @@
 require 'time'
 
-module IdentityIdpFunctions
+module JobHelpers
   class Timer
     attr_reader :results
 

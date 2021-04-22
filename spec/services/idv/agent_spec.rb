@@ -5,7 +5,7 @@ describe Idv::Agent do
   include IdvHelper
 
   let(:bad_phone) do
-    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+    Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
 
   describe 'instance' do
@@ -31,7 +31,7 @@ describe Idv::Agent do
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include(
             state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
 
@@ -50,7 +50,7 @@ describe Idv::Agent do
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to include(
             state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
       end
@@ -68,7 +68,7 @@ describe Idv::Agent do
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include(
             state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
 
@@ -84,7 +84,7 @@ describe Idv::Agent do
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to_not include(
             state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
       end

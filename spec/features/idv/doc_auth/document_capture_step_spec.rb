@@ -334,7 +334,7 @@ feature 'doc auth document capture step' do
 
         original = File.read('app/assets/images/logo.png')
 
-        encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+        encryption_helper = JobHelpers::EncryptionHelper.new
         encryption_key = Base64.decode64(args[:encryption_key])
 
         Capybara.current_driver = :rack_test # ChromeDriver doesn't support `page.status_code`

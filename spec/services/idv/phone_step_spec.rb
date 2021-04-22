@@ -22,13 +22,13 @@ describe Idv::PhoneStep do
   end
   let(:good_phone) { '2255555000' }
   let(:bad_phone) do
-    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+    Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
   let(:fail_phone) do
-    IdentityIdpFunctions::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
+    Proofing::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
   end
   let(:timeout_phone) do
-    IdentityIdpFunctions::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
+    Proofing::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
   let(:trace_id) { SecureRandom.uuid }
 

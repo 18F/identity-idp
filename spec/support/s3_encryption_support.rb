@@ -2,7 +2,7 @@ def encrypt_and_stub_s3(body:, url:, iv:, key:)
   prefix = URI(url).path.gsub(%r{^/}, '')
 
   @responses ||= {}
-  @responses[prefix] = IdentityIdpFunctions::EncryptionHelper.new.encrypt(
+  @responses[prefix] = JobHelpers::EncryptionHelper.new.encrypt(
     data: body, iv: iv, key: key,
   )
 
