@@ -174,7 +174,7 @@ describe Idv::ImageUploadsController do
           Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
           success: false,
           errors: {
-            limit: [I18n.t('errors.doc_auth.acuant_throttle')],
+            limit: [I18n.t('errors.doc_auth.throttled_heading')],
           },
           user_id: user.uuid,
           remaining_attempts: 0,

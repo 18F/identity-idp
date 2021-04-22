@@ -60,7 +60,7 @@ describe ImageUploadResponsePresenter do
         FormResponse.new(
           success: false,
           errors: {
-            limit: t('errors.doc_auth.acuant_throttle'),
+            limit: t('errors.doc_auth.throttled_heading'),
           },
         )
       end
@@ -106,7 +106,7 @@ describe ImageUploadResponsePresenter do
         FormResponse.new(
           success: false,
           errors: {
-            limit: t('errors.doc_auth.acuant_throttle'),
+            limit: t('errors.doc_auth.throttled_heading'),
           },
           extra: {},
         )

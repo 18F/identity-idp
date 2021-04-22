@@ -182,5 +182,8 @@ fr:
     troubleshooting:
       headings:
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
+        need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
+          obtenir de l’aide:'
       options:
+        contact_support: Contacter le service d’assistance de %{app}
         get_help_at_sp: Demandez de l’aide à %{sp_name}
