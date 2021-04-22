@@ -18,8 +18,6 @@ en:
       token_missing: token missing
     confirm_password_incorrect: Incorrect password.
     doc_auth:
-      acuant_throttle: To prevent abuse we limit the number of times you can attempt
-        to validate a document.  Please try again later.
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
       document_capture_cancelled: You have cancelled uploading photos of your ID on
@@ -52,6 +50,10 @@ en:
         limit.  Please contact your service provider for more information.
       send_link_throttle: You tried too many times, please try again in 10 minutes.
         You can also click on Start Over and choose to use your computer instead.
+      throttled_heading: We could not verify your ID and photo of you
+      throttled_text_html: "<strong>Please try again in %{timeout}.</strong> For your
+        security, we limit the number of times you can attempt to verify a document
+        online."
     file_input:
       invalid_type: This file type is not accepted, please try again.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
