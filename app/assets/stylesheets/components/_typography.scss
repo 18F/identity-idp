@@ -30,7 +30,7 @@ body { -webkit-font-smoothing: antialiased; }
 .underline { text-decoration: underline; }
 
 // given how similar & coupled these are, single line preferred
-// scss-lint:disable SingleLinePerSelector
+// scss-lint:disable SingleLinePerSelector, SpaceBeforeBrace
 h1, .h1 { font-size: $h1; }
 h2, .h2 { font-size: $h2; }
 h3      { font-size: $h3; }
@@ -46,7 +46,7 @@ h6, .h6 { font-size: $h6; }
   h5, .h5 { font-size: $sm-h5; }
   h6, .h6 { font-size: $sm-h6; }
 }
-// scss-lint:enable SingleLinePerSelector
+// scss-lint:enable SingleLinePerSelector, SpaceBeforeBrace
 
 //================================================
 // Pending upstream Login Design System revisions:
