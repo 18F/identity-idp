@@ -134,7 +134,7 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
 
   let shownErrorMessage;
   if (isAccessRejected) {
-    shownErrorMessage = t('errors.doc_auth.document_capture_selfie_consent_blocked');
+    shownErrorMessage = t('doc_auth.errors.camera.blocked');
   } else if (errorMessage) {
     shownErrorMessage = errorMessage;
   }

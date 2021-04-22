@@ -18,6 +18,13 @@ RSpec.describe ServiceProviderSeeder do
       expect { run }.to change(ServiceProvider, :count)
     end
 
+    it 'updates the plural certs column' do
+      run
+
+      sp = ServiceProvider.from_issuer('http://localhost:3000')
+      expect(sp.certs).to eq(['saml_test_sp', 'saml_test_sp2'])
+    end
+
     context 'with other existing service providers in the database' do
       let!(:existing_provider) { create(:service_provider) }
 
@@ -180,8 +187,10 @@ RSpec.describe ServiceProviderSeeder do
 
     context 'when the rails environment is not in the service_provider.yml config file' do
       let(:seeder) do
-        ServiceProviderSeeder.new(rails_env: 'non-existant environment',
-                                  deploy_env: 'non-existant environment')
+        ServiceProviderSeeder.new(
+          rails_env: 'non-existant environment',
+          deploy_env: 'non-existant environment',
+        )
       end
 
       it 'logs the error' do

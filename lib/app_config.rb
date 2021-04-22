@@ -5,8 +5,8 @@ class AppConfig
     attr_reader :env
   end
 
-  def self.setup(configuration, env = Rails.env)
-    @env ||= Environment.new(configuration, env)
+  def self.setup(configuration)
+    @env ||= Environment.new(configuration)
   end
 
   def self.require_keys(keys)
@@ -16,17 +16,15 @@ class AppConfig
   class Environment
     attr_reader :config
 
-    def initialize(configuration, env)
+    def initialize(configuration)
       @config = {}
 
-      keys = Set.new(configuration.keys - %w[production development test])
-      keys |= configuration[env]&.keys || []
+      keys = configuration.keys
 
       keys.each do |key|
-        value = configuration.dig(env, key) || configuration[key]
-        env_value = ENV[key]
+        value = configuration[key]
+        env_value = ENV[key.to_s]
 
-        check_string_key(key)
         check_string_value(key, value)
 
         if env_value
@@ -34,14 +32,14 @@ class AppConfig
           @config[key] = env_value
         else
           @config[key] = value
-          ENV[key] = value
+          ENV[key.to_s] = value
         end
       end
     end
 
     def require_keys(keys)
       keys.each do |key|
-        raise "#{key} is missing" unless @config.key?(key)
+        raise "#{key} is missing" unless @config.key?(key.to_sym)
       end
 
       true
@@ -54,21 +52,17 @@ class AppConfig
 
     private
 
-    def check_string_key(key)
-      warn "AppConfig WARNING: key #{key} must be String" unless key.is_a?(String)
-    end
-
     def check_string_value(key, value)
       warn "AppConfig WARNING: #{key} value must be String" unless value.nil? || value.is_a?(String)
     end
 
     def respond_to_missing?(method_name, _include_private = false)
-      key = method_name.to_s
+      key = method_name.to_sym
       @config.key?(key)
     end
 
     def method_missing(method, *_args)
-      key = method.to_s
+      key = method.to_sym
 
       @config[key]
     end

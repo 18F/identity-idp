@@ -3,14 +3,15 @@ require 'rails_helper'
 describe SamlIdpController do
   include SamlAuthHelper
 
-  let(:aal_context_enabled) { 'false' }
+  let(:aal_context_enabled) { false }
 
   before do
     # All the tests here were written prior to the interstitial
     # authorization confirmation page so let's force the system
     # to skip past that page
     allow(controller).to receive(:auth_count).and_return(2)
-    allow(AppConfig.env).to receive(:aal_authn_context_enabled).and_return(aal_context_enabled)
+    allow(IdentityConfig.store).to receive(:aal_authn_context_enabled).
+      and_return(aal_context_enabled)
   end
 
   render_views
@@ -42,6 +43,72 @@ describe SamlIdpController do
       expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
 
       delete :logout, params: { SAMLRequest: 'foo' }
+    end
+
+    let(:service_provider) do
+      create(
+        :service_provider,
+        cert: nil, # override singular cert
+        certs: ['sp_sinatra_demo', 'saml_test_sp'],
+        active: true,
+        assertion_consumer_logout_service_url: 'https://example.com',
+      )
+    end
+
+    let(:right_cert_settings) do
+      sp1_saml_settings.tap do |settings|
+        settings.issuer = service_provider.issuer
+        settings.assertion_consumer_logout_service_url = 'https://example.com'
+      end
+    end
+
+    let(:wrong_cert_settings) do
+      sp1_saml_settings.tap do |settings|
+        settings.issuer = service_provider.issuer
+        settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
+        settings.private_key = OpenSSL::PKey::RSA.new(
+          File.read(Rails.root + 'keys/saml_test_sp2.key'),
+        ).to_pem
+      end
+    end
+
+    it 'accepts requests from a correct cert' do
+      saml_request = UriService.params(
+        OneLogin::RubySaml::Logoutrequest.new.create(right_cert_settings),
+      )[:SAMLRequest]
+
+      payload = [
+        ['SAMLRequest', saml_request],
+        ['RelayState', 'aaa'],
+        ['SigAlg', 'SHA256'],
+      ]
+      canon_string = payload.map { |k, v| "#{k}=#{CGI.escape(v)}" }.join('&')
+
+      private_sp_key = OpenSSL::PKey::RSA.new(right_cert_settings.private_key)
+      signature = private_sp_key.sign(OpenSSL::Digest.new('SHA256'), canon_string)
+
+      certificate = OpenSSL::X509::Certificate.new(right_cert_settings.certificate)
+
+      # This is the same verification process we expect the SAML gem will run
+      expect(
+        certificate.public_key.verify(
+          OpenSSL::Digest.new('SHA256'),
+          signature,
+          canon_string,
+        ),
+      ).to eq(true)
+
+      delete :logout, params: payload.to_h.merge(Signature: Base64.encode64(signature))
+
+      expect(response).to be_ok
+    end
+
+    it 'rejects requests from a wrong cert' do
+      delete :logout, params: UriService.params(
+        OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
+      )
+
+      expect(response).to be_bad_request
     end
   end
 
@@ -117,7 +184,7 @@ describe SamlIdpController do
 
   describe 'GET /api/saml/auth' do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
-    let(:aal_level) { AppConfig.env.aal_authn_context_enabled == 'true' ? 2 : nil }
+    let(:aal_level) { IdentityConfig.store.aal_authn_context_enabled ? 2 : nil }
 
     context 'with IAL2 and the identity is already verified' do
       let(:user) { create(:profile, :active, :verified).user }
@@ -250,7 +317,7 @@ describe SamlIdpController do
 
     context 'aal_authn_context_enabled is true' do
       let(:user) { create(:user, :signed_up) }
-      let(:aal_context_enabled) { 'true' }
+      let(:aal_context_enabled) { true }
 
       context 'authn_context is missing' do
         let(:auth_settings) { missing_authn_context_saml_settings }
@@ -299,7 +366,7 @@ describe SamlIdpController do
 
     context 'aal_authn_context_enabled is false' do
       let(:user) { create(:user, :signed_up) }
-      let(:aal_context_enabled) { 'false' }
+      let(:aal_context_enabled) { false }
 
       context 'authn_context is missing' do
         let(:auth_settings) { missing_authn_context_saml_settings }
@@ -407,6 +474,45 @@ describe SamlIdpController do
 
         expect(@analytics).to have_received(:track_event).
           with(Analytics::SAML_AUTH, analytics_hash)
+      end
+    end
+
+    context 'service provider has multiple certs' do
+      let(:service_provider) do
+        create(
+          :service_provider,
+          cert: nil, # override singular cert
+          certs: ['saml_test_sp2', 'saml_test_sp'],
+          active: true,
+        )
+      end
+
+      let(:first_cert_settings) do
+        saml_settings.tap do |settings|
+          settings.issuer = service_provider.issuer
+        end
+      end
+
+      let(:second_cert_settings) do
+        saml_settings.tap do |settings|
+          settings.issuer = service_provider.issuer
+          settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
+          settings.private_key = OpenSSL::PKey::RSA.new(
+            File.read(Rails.root + 'keys/saml_test_sp2.key'),
+          ).to_pem
+        end
+      end
+
+      it 'encrypts the response to the right key' do
+        user = create(:user, :signed_up)
+        generate_saml_response(user, second_cert_settings)
+
+        expect(response).to_not be_redirect
+
+        expect { xmldoc.saml_response(first_cert_settings) }.to raise_error
+
+        response = xmldoc.saml_response(second_cert_settings)
+        expect(response.decrypted_document).to be
       end
     end
 
@@ -679,7 +785,7 @@ describe SamlIdpController do
       it 'includes an Issuer element inherited from the base URL' do
         expect(issuer.name).to eq('Issuer')
         expect(issuer.namespace.href).to eq(Saml::XML::Namespaces::ASSERTION)
-        expect(issuer.text).to eq("https://#{AppConfig.env.domain_name}/api/saml")
+        expect(issuer.text).to eq("https://#{IdentityConfig.store.domain_name}/api/saml")
       end
 
       it 'includes a Status element with a StatusCode child element' do
@@ -747,37 +853,47 @@ describe SamlIdpController do
         end
 
         it 'includes a KeyInfo element' do
-          element = signature.at('//ds:KeyInfo',
-                                 ds: Saml::XML::Namespaces::SIGNATURE)
+          element = signature.at(
+            '//ds:KeyInfo',
+            ds: Saml::XML::Namespaces::SIGNATURE,
+          )
 
           expect(element.name).to eq('KeyInfo')
         end
 
         it 'includes a X509Data element' do
-          element = signature.at('//ds:X509Data',
-                                 ds: Saml::XML::Namespaces::SIGNATURE)
+          element = signature.at(
+            '//ds:X509Data',
+            ds: Saml::XML::Namespaces::SIGNATURE,
+          )
 
           expect(element.name).to eq('X509Data')
         end
 
         it 'includes a X509Certificate element' do
-          element = signature.at('//ds:X509Certificate',
-                                 ds: Saml::XML::Namespaces::SIGNATURE)
+          element = signature.at(
+            '//ds:X509Certificate',
+            ds: Saml::XML::Namespaces::SIGNATURE,
+          )
 
           expect(element.name).to eq('X509Certificate')
         end
 
         it 'includes the saml cert from the certs folder' do
-          element = signature.at('//ds:X509Certificate',
-                                 ds: Saml::XML::Namespaces::SIGNATURE)
+          element = signature.at(
+            '//ds:X509Certificate',
+            ds: Saml::XML::Namespaces::SIGNATURE,
+          )
 
           crt = AppArtifacts.store.saml_2021_cert
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 
         it 'includes a SignatureValue element' do
-          element = signature.at('//ds:Signature/ds:SignatureValue',
-                                 ds: Saml::XML::Namespaces::SIGNATURE)
+          element = signature.at(
+            '//ds:Signature/ds:SignatureValue',
+            ds: Saml::XML::Namespaces::SIGNATURE,
+          )
 
           expect(element.name).to eq('SignatureValue')
           expect(element.text).to be_present
@@ -819,8 +935,10 @@ describe SamlIdpController do
 
         context 'Reference' do
           let(:reference) do
-            signed_info.at('//ds:SignedInfo/ds:Reference',
-                           ds: Saml::XML::Namespaces::SIGNATURE)
+            signed_info.at(
+              '//ds:SignedInfo/ds:Reference',
+              ds: Saml::XML::Namespaces::SIGNATURE,
+            )
           end
 
           it 'includes a Reference element' do
@@ -884,8 +1002,10 @@ describe SamlIdpController do
 
         context 'SubjectConfirmation' do
           let(:subject_confirmation) do
-            subject.at('//ds:SubjectConfirmation',
-                       ds: 'urn:oasis:names:tc:SAML:2.0:assertion')
+            subject.at(
+              '//ds:SubjectConfirmation',
+              ds: 'urn:oasis:names:tc:SAML:2.0:assertion',
+            )
           end
 
           it 'has a SubjectConfirmation element' do
@@ -898,8 +1018,10 @@ describe SamlIdpController do
 
           context 'SubjectConfirmationData' do
             let(:subject_confirmation_data) do
-              subject_confirmation.at('//ds:SubjectConfirmationData',
-                                      ds: 'urn:oasis:names:tc:SAML:2.0:assertion')
+              subject_confirmation.at(
+                '//ds:SubjectConfirmationData',
+                ds: 'urn:oasis:names:tc:SAML:2.0:assertion',
+              )
             end
 
             let(:attributes) do
@@ -992,7 +1114,7 @@ describe SamlIdpController do
           end
 
           context 'with AAL authn context enabled' do
-            let(:aal_context_enabled) { 'true' }
+            let(:aal_context_enabled) { true }
 
             it 'has contents set to AAL2' do
               expect(subject.content).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
@@ -1000,7 +1122,7 @@ describe SamlIdpController do
           end
 
           context 'without AAL authn context enabled' do
-            let(:aal_context_enabled) { 'false' }
+            let(:aal_context_enabled) { false }
 
             it 'has contents set to IAL1' do
               expect(subject.content).to eq Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
@@ -1166,8 +1288,10 @@ describe SamlIdpController do
   end
 
   def expect_sp_authentication_cost
-    sp_cost = SpCost.where(issuer: 'http://localhost:3000',
-                           cost_type: 'authentication').first
+    sp_cost = SpCost.where(
+      issuer: 'http://localhost:3000',
+      cost_type: 'authentication',
+    ).first
     expect(sp_cost).to be_present
   end
 end

@@ -1,6 +1,8 @@
 module Idv
   module Steps
     class WelcomeStep < DocAuthBaseStep
+      STEP_INDICATOR_STEP = :getting_started
+
       def call
         return no_camera_redirect if params[:no_camera]
         create_document_capture_session(document_capture_session_uuid_key)

@@ -107,8 +107,10 @@ module DocAuthHelper
 
 
   def mobile_device
-    DeviceDetector.new('Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) \
-AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1')
+    DeviceDetector.new(
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) \
+AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
+    )
   end
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)
@@ -178,7 +180,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       method: method,
       response: IdentityDocAuth::Response.new(
         success: false,
-        errors: { error: I18n.t('errors.doc_auth.general_error') },
+        errors: { error: I18n.t('doc_auth.errors.general.no_liveness') },
       ),
     )
   end
@@ -201,8 +203,10 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
     dcs = DocumentCaptureSession.where(uuid: uuid).first_or_create
     dcs.create_doc_auth_session
     if idv_result
-      dcs.store_doc_auth_result(result: idv_result.except(:pii_from_doc),
-                                pii: idv_result[:pii_from_doc])
+      dcs.store_doc_auth_result(
+        result: idv_result.except(:pii_from_doc),
+        pii: idv_result[:pii_from_doc],
+      )
     end
   end
 

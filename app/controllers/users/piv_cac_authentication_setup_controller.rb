@@ -53,7 +53,9 @@ module Users
     def remove_piv_cac
       revoke_remember_device(current_user)
       current_user_id = current_user.id
-      Db::PivCacConfiguration::Delete.call(current_user_id, params[:id].to_i)
+      Db::PivCacConfiguration.delete(current_user_id, params[:id].to_i)
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
     end
 
     def render_prompt
@@ -129,7 +131,7 @@ module Users
     end
 
     def cap_piv_cac_count
-      return unless AppConfig.env.max_piv_cac_per_account.to_i <= current_cac_count
+      return unless IdentityConfig.store.max_piv_cac_per_account <= current_cac_count
       redirect_to account_two_factor_authentication_path
     end
 

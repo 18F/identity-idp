@@ -6,7 +6,7 @@ import {
   DeviceContext,
   AcuantContextProvider,
   UploadContextProvider,
-  ServiceProviderContext,
+  ServiceProviderContextProvider,
   AnalyticsContext,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
@@ -57,11 +57,6 @@ const appRoot = /** @type {HTMLDivElement} */ (document.getElementById('document
 const isMockClient = appRoot.hasAttribute('data-mock-client');
 const keepAliveEndpoint = /** @type {string} */ (appRoot.getAttribute('data-keep-alive-endpoint'));
 
-/**
- * @return {import(
- *   '@18f/identity-document-capture/context/service-provider'
- * ).ServiceProviderContext}
- */
 function getServiceProvider() {
   const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
   const isLivenessRequired = appRoot.hasAttribute('data-liveness-required');
@@ -98,19 +93,22 @@ const device = {
 
 /** @type {import('@18f/identity-document-capture/context/analytics').AddPageAction} */
 function addPageAction(action) {
+  const { flowPath } = appRoot.dataset;
+  const payload = { ...action.payload, flow_path: flowPath };
+
   const { newrelic } = /** @type {DocumentCaptureGlobal} */ (window);
   if (action.key && newrelic) {
-    newrelic.addPageAction(action.key, action.payload);
+    newrelic.addPageAction(action.key, payload);
   }
 
-  trackEvent(action.label, action.payload);
+  trackEvent(action.label, payload);
 }
 
 /** @type {import('@18f/identity-document-capture/context/analytics').NoticeError} */
 const noticeError = (error) =>
   /** @type {DocumentCaptureGlobal} */ (window).newrelic?.noticeError(error);
 
-loadPolyfills(['fetch', 'crypto']).then(async () => {
+loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
   const backgroundUploadURLs = getBackgroundUploadURLs();
   const isAsyncForm = Object.keys(backgroundUploadURLs).length > 0;
   const csrf = /** @type {string} */ (getMetaContent('csrf-token'));
@@ -160,11 +158,11 @@ loadPolyfills(['fetch', 'crypto']).then(async () => {
             formData={formData}
           >
             <I18nContext.Provider value={i18n.strings}>
-              <ServiceProviderContext.Provider value={getServiceProvider()}>
+              <ServiceProviderContextProvider value={getServiceProvider()}>
                 <AssetContext.Provider value={assets}>
                   <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
                 </AssetContext.Provider>
-              </ServiceProviderContext.Provider>
+              </ServiceProviderContextProvider>
             </I18nContext.Provider>
           </UploadContextProvider>
         </AcuantContextProvider>

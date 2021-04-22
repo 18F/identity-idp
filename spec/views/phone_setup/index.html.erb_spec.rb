@@ -8,10 +8,12 @@ describe 'users/phone_setup/index.html.erb' do
 
     @new_phone_form = NewPhoneForm.new(user)
 
-    @presenter = SetupPresenter.new(current_user: user,
-                                    user_fully_authenticated: false,
-                                    user_opted_remember_device_cookie: true,
-                                    remember_device_default: true)
+    @presenter = SetupPresenter.new(
+      current_user: user,
+      user_fully_authenticated: false,
+      user_opted_remember_device_cookie: true,
+      remember_device_default: true,
+    )
   end
 
   it 'sets form autocomplete to off' do

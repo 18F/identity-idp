@@ -4,7 +4,7 @@ feature 'OIDC Authorization Confirmation' do
   include OidcAuthHelper
 
   before do
-    allow(AppConfig.env).to receive(:otp_delivery_blocklist_maxretry).and_return('9999')
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(9999)
   end
 
   context 'authenticated user signs in to new sp' do

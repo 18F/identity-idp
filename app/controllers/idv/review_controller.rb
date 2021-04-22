@@ -29,6 +29,7 @@ module Idv
 
     def new
       @applicant = idv_session.applicant
+      @step_indicator_steps = step_indicator_steps
       analytics.track_event(Analytics::IDV_REVIEW_VISIT)
 
       gpo_mail_service = Idv::GpoMail.new(current_user)
@@ -52,9 +53,17 @@ module Idv
 
     private
 
+    def step_indicator_steps
+      return [] if !IdentityConfig.store.ial2_step_indicator_enabled
+      steps = Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS
+      return steps if idv_session.address_verification_mechanism != 'gpo'
+      steps.map do |step|
+        step[:name] == :verify_phone_or_address ? step.merge(status: :pending) : step
+      end
+    end
+
     def flash_message_content
-      # NOTE: remove usps after next deploy
-      if %w[gpo usps].include?(idv_session.address_verification_mechanism)
+      if idv_session.address_verification_mechanism == 'gpo'
         t('idv.messages.mail_sent')
       else
         phone_of_record_msg = ActionController::Base.helpers.content_tag(

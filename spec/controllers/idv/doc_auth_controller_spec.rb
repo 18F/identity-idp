@@ -5,10 +5,12 @@ describe Idv::DocAuthController do
 
   describe 'before_actions' do
     it 'includes corrects before_actions' do
-      expect(subject).to have_actions(:before,
-                                      :confirm_two_factor_authenticated,
-                                      :fsm_initialize,
-                                      :ensure_correct_step)
+      expect(subject).to have_actions(
+        :before,
+        :confirm_two_factor_authenticated,
+        :fsm_initialize,
+        :ensure_correct_step,
+      )
     end
 
     it 'includes before_actions from IdvSession' do
@@ -42,10 +44,24 @@ describe Idv::DocAuthController do
 
   describe '#show' do
     it 'renders the correct template' do
+      expect(subject).to receive(:render).with(
+        template: 'layouts/flow_step',
+        locals: hash_including(
+          :back_image_upload_url,
+          :front_image_upload_url,
+          :selfie_image_upload_url,
+          :flow_session,
+          step_template: 'idv/doc_auth/document_capture',
+          flow_namespace: 'idv',
+          step_indicator: hash_including(
+            :steps,
+            current_step: :verify_id,
+          ),
+        ),
+      ).and_call_original
+
       mock_next_step(:document_capture)
       get :show, params: { step: 'document_capture' }
-
-      expect(response).to render_template :document_capture
     end
 
     it 'redirects to the right step' do
@@ -62,7 +78,7 @@ describe Idv::DocAuthController do
     end
 
     it 'tracks analytics' do
-      result = { step: 'welcome', step_count: 1 }
+      result = { step: 'welcome', flow_path: 'standard', step_count: 1 }
 
       get :show, params: { step: 'welcome' }
 
@@ -108,7 +124,7 @@ describe Idv::DocAuthController do
       mock_next_step(:back_image)
       allow_any_instance_of(Flow::BaseFlow).to \
         receive(:flow_session).and_return(pii_from_doc: {})
-      result = { success: true, errors: {}, step: 'ssn', step_count: 1 }
+      result = { success: true, errors: {}, step: 'ssn', flow_path: 'standard', step_count: 1 }
 
       put :update, params: {step: 'ssn', doc_auth: { step: 'ssn', ssn: '111-11-1111' } }
 
@@ -152,6 +168,7 @@ describe Idv::DocAuthController do
           message: 'Doc Auth error: Javascript could not detect camera on mobile device.',
         },
         step: 'welcome',
+        flow_path: 'standard',
         step_count: 1,
       }
 
@@ -179,7 +196,7 @@ describe Idv::DocAuthController do
     let(:front_image_iv) { SecureRandom.random_bytes(12) }
     let(:back_image_iv) { SecureRandom.random_bytes(12) }
     let(:selfie_image_iv) { SecureRandom.random_bytes(12) }
-      encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+    encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
 
     before do
       mock_document_capture_step
@@ -227,7 +244,7 @@ describe Idv::DocAuthController do
 
     context 'with selfie checking enabled' do
       before do
-        allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
+        allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
       end
 
       it 'successfully submits the images' do
@@ -340,11 +357,13 @@ describe Idv::DocAuthController do
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(400)
-      expect(response.body).to eq({
-        success: false,
-        errors: [{ field: 'front', message: 'Wrong document' }],
-        remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
-      }.to_json)
+      expect(response.body).to eq(
+        {
+          success: false,
+          errors: [{ field: 'front', message: 'Wrong document' }],
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+        }.to_json,
+      )
     end
 
     it 'returns status of fail with incomplete PII from doc auth' do
@@ -355,18 +374,21 @@ describe Idv::DocAuthController do
       put :update, params: { step: 'verify_document_status' }
 
       expect(response.status).to eq(400)
-      expect(response.body).to eq({
-        success: false,
-        errors: [{ field: 'pii',
-                   message: I18n.t('doc_auth.errors.general.no_liveness') }],
-        remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
-      }.to_json)
+      expect(response.body).to eq(
+        {
+          success: false,
+          errors: [{ field: 'pii',
+                     message: I18n.t('doc_auth.errors.general.no_liveness') }],
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+        }.to_json,
+      )
       expect(@analytics).to have_received(:track_event).with(
         'IdV: ' + "#{Analytics::DOC_AUTH} verify_document_status submitted".downcase, {
           errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           success: false,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
           step: 'verify_document_status',
+          flow_path: 'standard',
           step_count: 1,
         }
       )
@@ -374,8 +396,9 @@ describe Idv::DocAuthController do
         Analytics::DOC_AUTH + ' submitted', {
           errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           success: false,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
           step: 'verify_document_status',
+          flow_path: 'standard',
           step_count: 1,
         }
       )

@@ -41,7 +41,7 @@ RSpec.describe GoBackHelper do
       let(:referer) { 'https://gsa.gov/' }
 
       before do
-        allow(AppConfig.env).to receive(:domain_name).and_return('gsa.gov')
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('gsa.gov')
       end
 
       it 'is path from referer' do
@@ -63,7 +63,7 @@ RSpec.describe GoBackHelper do
     let(:domain_name) { nil }
 
     before do
-      allow(AppConfig.env).to receive(:domain_name).and_return(domain_name)
+      allow(IdentityConfig.store).to receive(:domain_name).and_return(domain_name)
     end
 
     subject { app_host }

@@ -48,6 +48,9 @@ en:
           in brighter lighting.
         visible_photo_check: We couldn't verify the photo on your ID. Try taking new
           pictures.
+      camera:
+        blocked: Your camera is blocked
+        failed: Camera failed to start, please try again.
       dpi:
         top_msg: We couldn't read your ID. Your image size may be too small, or your
           ID is too small or blurry in the photo. Make sure your ID is large within
@@ -55,6 +58,9 @@ en:
         top_msg_plural: We couldn't read your ID. Your image sizes may be too small,
           or your ID is too small or blurry in the photos. Make sure your ID is large
           within the image frame and try taking new pictures.
+      file_type:
+        invalid: This file type is not accepted, please choose a JPG, PNG, BMP, or
+          TIFF file.
       general:
         liveness: We couldn't verify your ID and photo of yourself. Try taking new
           pictures.
@@ -66,6 +72,7 @@ en:
           to submit your images again later.
         no_liveness: We couldn't verify your ID. Try taking new pictures.
       glare:
+        failed_short: Image has glare, please try again.
         top_msg: We couldn't read your ID. Your photo may have glare. Make sure that
           the flash on your camera is off and try taking a new picture.
         top_msg_plural: We couldn't read your ID. Your photos may have glare. Make
@@ -79,10 +86,12 @@ en:
       pii:
         birth_date_min_age: Your birthday does not meet the minimum age requirement.
       sharpness:
+        failed_short: Image is blurry, please try again.
         top_msg: We couldn't read your ID. Your photo may be too blurry or dark. Try
           taking a new picture in a bright area.
         top_msg_plural: We couldn't read your ID. Your photos may be too blurry or
           dark. Try taking new pictures in a bright area.
+      upload_error: Sorry, something went wrong on our end.
     forms:
       address1: Address
       change_file: Change file

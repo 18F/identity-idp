@@ -33,6 +33,7 @@ class SamlIdpController < ApplicationController
     return sign_out_with_flash if raw_saml_request.nil?
 
     decode_request(raw_saml_request)
+
     track_logout_event
 
     return head(:bad_request) unless valid_saml_request?

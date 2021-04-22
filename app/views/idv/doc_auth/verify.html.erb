@@ -55,7 +55,7 @@
   </div>
 
   <div class="margin-top-6">
-    <%= render 'shared/spinner-button',
+    <%= render 'shared/spinner_button',
               action_message: t('doc_auth.info.verifying'),
               class: 'grid-col-12 tablet:grid-col-6' do %>
       <%= button_to(
@@ -69,7 +69,7 @@
             error_message: t('idv.failure.exceptions.internal_error'),
             alert_target: '#form-steps-wait-alert',
             wait_step_path: idv_doc_auth_step_path(step: :verify_wait),
-            poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
+            poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
           },
         },
         class: 'usa-button usa-button--big usa-button--full-width',

@@ -1,5 +1,7 @@
-RequestPasswordReset = RedactedStruct.new(:email, :request_id, :analytics, keyword_init: true,
-                                          allowed_members: [:request_id]) do
+RequestPasswordReset = RedactedStruct.new(
+  :email, :request_id, :analytics, keyword_init: true,
+                                   allowed_members: [:request_id]
+) do
   def perform
     if user_should_receive_registration_email?
       form = RegisterUserEmailForm.new(password_reset_requested: true, analytics: analytics)
@@ -23,6 +25,9 @@ RequestPasswordReset = RedactedStruct.new(:email, :request_id, :analytics, keywo
     else
       token = user.set_reset_password_token
       UserMailer.reset_password_instructions(user, email, token: token).deliver_now
+
+      event = PushNotification::RecoveryActivatedEvent.new(user: user)
+      PushNotification::HttpPush.deliver(event)
     end
   end
 

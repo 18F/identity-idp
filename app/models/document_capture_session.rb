@@ -14,7 +14,7 @@ class DocumentCaptureSession < ApplicationRecord
         success: doc_auth_response.success?,
         pii: doc_auth_response.pii_from_doc,
       ),
-      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+      expires_in: IdentityConfig.store.async_wait_timeout_seconds,
     )
     save!
   end
@@ -29,7 +29,7 @@ class DocumentCaptureSession < ApplicationRecord
         id: generate_result_id,
         status: DocumentCaptureSessionAsyncResult::IN_PROGRESS,
       ),
-      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+      expires_in: IdentityConfig.store.async_wait_timeout_seconds,
     )
     save!
   end
@@ -42,7 +42,7 @@ class DocumentCaptureSession < ApplicationRecord
         result: result,
         status: DocumentCaptureSessionAsyncResult::DONE,
       ),
-      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+      expires_in: IdentityConfig.store.async_wait_timeout_seconds,
     )
     save!
   end
@@ -58,7 +58,7 @@ class DocumentCaptureSession < ApplicationRecord
         status: ProofingSessionAsyncResult::IN_PROGRESS,
         result: nil,
       ),
-      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+      expires_in: IdentityConfig.store.async_wait_timeout_seconds,
     )
     save!
   end
@@ -70,13 +70,14 @@ class DocumentCaptureSession < ApplicationRecord
         result: proofing_result,
         status: ProofingSessionAsyncResult::DONE,
       ),
-      expires_in: AppConfig.env.async_wait_timeout_seconds.to_i,
+      expires_in: IdentityConfig.store.async_wait_timeout_seconds,
     )
   end
 
   def expired?
     return true unless requested_at
-    requested_at + AppConfig.env.doc_capture_request_valid_for_minutes.to_i.minutes < Time.zone.now
+    (requested_at + IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes) <
+      Time.zone.now
   end
 
   private

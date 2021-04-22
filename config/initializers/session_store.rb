@@ -10,9 +10,9 @@ options = {
     expire_after: nil,
 
     # Redis expires session after N minutes
-    ttl: AppConfig.env.session_timeout_in_minutes.to_i.minutes,
+    ttl: IdentityConfig.store.session_timeout_in_minutes.minutes,
 
-    key_prefix: "#{AppConfig.env.domain_name}:session:",
+    key_prefix: "#{IdentityConfig.store.domain_name}:session:",
     url: IdentityConfig.store.redis_url,
   },
   on_session_load_error: SessionEncryptorErrorHandler,

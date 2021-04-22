@@ -173,16 +173,12 @@ describe ServiceProvider do
 
   describe '#metadata' do
     context 'when the service provider is defined in the YAML' do
-      it 'returns a hash with symbolized attributes from YAML plus fingerprint' do
-        fingerprint = {
-          fingerprint: '40808e52ef80f92e697149e058af95f898cefd9a54d0dc2416bd607c8f9891fa',
+      it 'returns a hash with symbolized attributes from YAML' do
+        yaml_attributes = {
+          issuer: 'http://localhost:3000',
         }
 
-        yaml_attributes = ServiceProviderConfig.new(
-          issuer: 'http://localhost:3000',
-        ).sp_attributes
-
-        expect(service_provider.metadata).to eq yaml_attributes.merge!(fingerprint)
+        expect(service_provider.metadata).to include(yaml_attributes)
       end
     end
   end

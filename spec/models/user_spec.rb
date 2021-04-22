@@ -72,8 +72,10 @@ describe User do
       user.uuid = nil
 
       expect { user.save }.
-        to raise_error(ActiveRecord::NotNullViolation,
-                       /null value in column "uuid".*violates not-null constraint/)
+        to raise_error(
+          ActiveRecord::NotNullViolation,
+          /null value in column "uuid".*violates not-null constraint/,
+        )
     end
 
     it 'uses a DB index to enforce uniqueness' do
@@ -83,8 +85,10 @@ describe User do
       user2.uuid = user1.uuid
 
       expect { user2.save }.
-        to raise_error(ActiveRecord::StatementInvalid,
-                       /duplicate key value violates unique constraint/)
+        to raise_error(
+          ActiveRecord::StatementInvalid,
+          /duplicate key value violates unique constraint/,
+        )
     end
   end
 
@@ -293,18 +297,24 @@ describe User do
   context 'when a user has multiple phone_configurations' do
     before do
       @user = create(:user, email: 'test1@test.com')
-      @phone_config1 = create(:phone_configuration, user: @user,
-                                                    phone: '+1 111 111 1111',
-                                                    created_at: Time.zone.now - 3.days,
-                                                    made_default_at: nil)
-      @phone_config2 = create(:phone_configuration, user: @user,
-                                                    phone: '+1 222 222 2222',
-                                                    created_at: Time.zone.now - 2.days,
-                                                    made_default_at: nil)
-      @phone_config3 = create(:phone_configuration, user: @user,
-                                                    phone: '+1 333 333 3333',
-                                                    created_at: Time.zone.now - 1.day,
-                                                    made_default_at: nil)
+      @phone_config1 = create(
+        :phone_configuration, user: @user,
+                              phone: '+1 111 111 1111',
+                              created_at: Time.zone.now - 3.days,
+                              made_default_at: nil
+      )
+      @phone_config2 = create(
+        :phone_configuration, user: @user,
+                              phone: '+1 222 222 2222',
+                              created_at: Time.zone.now - 2.days,
+                              made_default_at: nil
+      )
+      @phone_config3 = create(
+        :phone_configuration, user: @user,
+                              phone: '+1 333 333 3333',
+                              created_at: Time.zone.now - 1.day,
+                              made_default_at: nil
+      )
     end
 
     describe '#default_phone_configuration' do

@@ -61,7 +61,7 @@ describe Users::WebauthnSetupController do
       end
 
       before do
-        allow(AppConfig.env).to receive(:domain_name).and_return('localhost:3000')
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         controller.user_session[:webauthn_challenge] = webauthn_challenge
       end
 
@@ -86,8 +86,10 @@ describe Users::WebauthnSetupController do
 
       it 'creates a webauthn key removed event' do
         expect(Event).to receive(:create).
-          with(hash_including(user_id: controller.current_user.id,
-                              event_type: :webauthn_key_removed, ip: '0.0.0.0'))
+          with(hash_including(
+            user_id: controller.current_user.id,
+            event_type: :webauthn_key_removed, ip: '0.0.0.0'
+          ))
 
         delete :delete, params: { id: webauthn_configuration.id }
 
@@ -99,6 +101,13 @@ describe Users::WebauthnSetupController do
       it 'tracks the delete in analytics' do
         result = { success: true, mfa_method_counts: { auth_app: 1, phone: 1 } }
         expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_DELETED, result)
+
+        delete :delete, params: { id: webauthn_configuration.id }
+      end
+
+      it 'sends a recovery information changed event' do
+        expect(PushNotification::HttpPush).to receive(:deliver).
+          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
         delete :delete, params: { id: webauthn_configuration.id }
       end

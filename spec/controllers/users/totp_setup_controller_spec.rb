@@ -230,6 +230,8 @@ describe Users::TotpSetupController, devise: true do
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
+        expect(PushNotification::HttpPush).to receive(:deliver).
+          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
         allow(subject).to receive(:create_user_event)
 
         delete :disable, params: { id: totp_app.id }
@@ -256,8 +258,8 @@ describe Users::TotpSetupController, devise: true do
 
   def next_auth_app_id
     recs = ActiveRecord::Base.connection.execute(
-        "SELECT NEXTVAL(pg_get_serial_sequence('auth_app_configurations', 'id')) AS new_id",
-        )
+      "SELECT NEXTVAL(pg_get_serial_sequence('auth_app_configurations', 'id')) AS new_id",
+    )
     recs[0]['new_id'] - 1
   end
 end

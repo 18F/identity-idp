@@ -226,10 +226,12 @@ feature 'Two Factor Authentication' do
 
       nonce = visit_login_two_factor_piv_cac_and_get_nonce
 
-      visit_piv_cac_service(login_two_factor_piv_cac_path,
-                            uuid: user.piv_cac_configurations.first.x509_dn_uuid,
-                            dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-                            nonce: nonce)
+      visit_piv_cac_service(
+        login_two_factor_piv_cac_path,
+        uuid: user.piv_cac_configurations.first.x509_dn_uuid,
+        dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+        nonce: nonce,
+      )
       expect(current_path).to eq account_path
     end
 
@@ -241,19 +243,23 @@ feature 'Two Factor Authentication' do
 
       nonce = visit_login_two_factor_piv_cac_and_get_nonce
 
-      visit_piv_cac_service(login_two_factor_piv_cac_path,
-                            uuid: user.piv_cac_configurations.first.x509_dn_uuid + 'X',
-                            dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345',
-                            nonce: nonce)
+      visit_piv_cac_service(
+        login_two_factor_piv_cac_path,
+        uuid: user.piv_cac_configurations.first.x509_dn_uuid + 'X',
+        dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345',
+        nonce: nonce,
+      )
       expect(current_path).to eq login_two_factor_piv_cac_path
       expect(page).to have_content(t('two_factor_authentication.invalid_piv_cac'))
     end
 
     context 'user with Voice preference sends SMS, causing a Telephony error' do
       let(:user) do
-        create(:user, :signed_up,
-               otp_delivery_preference: 'voice',
-               with: { phone: '+12255551000', delivery_preference: 'voice' })
+        create(
+          :user, :signed_up,
+          otp_delivery_preference: 'voice',
+          with: { phone: '+12255551000', delivery_preference: 'voice' }
+        )
       end
       let(:otp_rate_limiter) do
         OtpRateLimiter.new(user: user, phone_confirmed: true, phone: '+12255551000')
@@ -312,7 +318,7 @@ feature 'Two Factor Authentication' do
     scenario 'attempting to reuse a TOTP code results in an error' do
       secret = 'abcdefghi'
       user = create(:user, :signed_up, :with_authentication_app)
-      Db::AuthAppConfiguration::Create.call(user, secret, nil, 'foo')
+      Db::AuthAppConfiguration.create(user, secret, nil, 'foo')
       otp = generate_totp_code(secret)
 
       Timecop.freeze do

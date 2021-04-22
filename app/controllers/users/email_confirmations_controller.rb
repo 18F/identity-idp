@@ -27,7 +27,7 @@ module Users
     end
 
     def process_successful_confirmation(email_address)
-      confirm_and_notify_user(email_address)
+      confirm_and_notify(email_address)
       if current_user
         flash[:success] = t('devise.confirmations.confirmed')
         redirect_to account_url
@@ -37,11 +37,20 @@ module Users
       end
     end
 
-    def confirm_and_notify_user(email_address)
+    def confirm_and_notify(email_address)
       email_address.update!(confirmed_at: Time.zone.now)
       email_address.user.confirmed_email_addresses.each do |confirmed_email_address|
         UserMailer.email_added(email_address.user, confirmed_email_address.email).deliver_now
       end
+      notify_subscribers(email_address)
+    end
+
+    def notify_subscribers(email_address)
+      user = email_address.user
+      email_event = PushNotification::EmailChangedEvent.new(user: user, email: email_address.email)
+      PushNotification::HttpPush.deliver(email_event)
+      recovery_event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+      PushNotification::HttpPush.deliver(recovery_event)
     end
 
     def process_unsuccessful_confirmation

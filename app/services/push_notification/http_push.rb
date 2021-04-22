@@ -17,6 +17,8 @@ module PushNotification
     end
 
     def deliver
+      return unless IdentityConfig.store.push_notifications_enabled
+
       event.user.
         service_providers.
         merge(ServiceProviderIdentity.not_deleted).
@@ -34,20 +36,26 @@ module PushNotification
     attr_reader :now
 
     def deliver_one(service_provider)
-      if AppConfig.env.risc_notifications_sqs_enabled == 'true'
-        deliver_sqs(service_provider)
+      deliver_local(service_provider) if IdentityConfig.store.risc_notifications_local_enabled
+
+      if IdentityConfig.store.risc_notifications_eventbridge_enabled
+        deliver_eventbridge(service_provider)
       else
         deliver_direct(service_provider)
       end
     end
 
-    def deliver_sqs(service_provider)
-      sqs_client.send_message(
-        queue_url: sqs_queue_url,
-        message_body: {
-          push_notification_url: service_provider.push_notification_url,
-          jwt: jwt(service_provider),
-        }.to_json,
+    def deliver_eventbridge(service_provider)
+      eventbridge_client.put_events(
+        entries: [
+          {
+            time: now,
+            source: service_provider.issuer,
+            detail_type: 'notification',
+            detail: jwt(service_provider),
+            event_bus_name: "#{Identity::Hostdata.env}-risc-notifications",
+          },
+        ],
       )
     end
 
@@ -66,6 +74,15 @@ module PushNotification
            Faraday::ConnectionFailed,
            PushNotification::PushNotificationError => err
       NewRelic::Agent.notice_error(err)
+    end
+
+    def deliver_local(service_provider)
+      event = {
+        url: service_provider.push_notification_url,
+        payload: jwt_payload(service_provider),
+        jwt: jwt(service_provider),
+      }
+      PushNotification::LocalEventQueue.events << event
     end
 
     def jwt(service_provider)
@@ -102,17 +119,10 @@ module PushNotification
         )&.uuid
     end
 
-    def sqs_client
-      @sqs_client ||= Aws::SQS::Client.new(
-        region: Identity::Hostdata::EC2.load.region,
+    def eventbridge_client
+      @eventbridge_client ||= Aws::EventBridge::Client.new(
+        region: Identity::Hostdata.aws_region,
       )
-    end
-
-    def sqs_queue_url
-      @sqs_queue_url ||=
-        sqs_client.get_queue_url(
-          queue_name: "#{Identity::Hostdata.env}-risc-notifications",
-        ).queue_url
     end
   end
 end

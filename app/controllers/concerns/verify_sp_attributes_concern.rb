@@ -71,7 +71,7 @@ module VerifySpAttributesConcern
 
   def requested_attributes_verified?
     @sp_session_identity && (
-      sp_session[:requested_attributes] - @sp_session_identity.verified_attributes.to_a
+      Array(sp_session[:requested_attributes]) - @sp_session_identity.verified_attributes.to_a
     ).empty?
   end
 end

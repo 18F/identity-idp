@@ -32,6 +32,8 @@ latest.dump
 logstash.conf
 rerun.txt
 Vagrantfile
+Gemfile-dev
+Gemfile-dev.lock
 
 # folders
 /certs

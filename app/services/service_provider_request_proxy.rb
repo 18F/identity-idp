@@ -4,7 +4,6 @@
 # To migrate code simply replace ServiceProviderRequest with ServiceProviderRequestProxy
 class ServiceProviderRequestProxy
   REDIS_KEY_PREFIX = 'spr:'.freeze
-  DEFAULT_TTL_HOURS = 24
 
   # This is used to support the .last method. That method is only used in the
   # test environment
@@ -33,15 +32,19 @@ class ServiceProviderRequestProxy
   def self.find_or_create_by(uuid:)
     obj = find_by(uuid: uuid)
     return obj if obj
-    spr = ServiceProviderRequest.new(uuid: uuid, issuer: nil, url: nil, ial: nil,
-                                     aal: nil, requested_attributes: nil)
+    spr = ServiceProviderRequest.new(
+      uuid: uuid, issuer: nil, url: nil, ial: nil,
+      aal: nil, requested_attributes: nil
+    )
     yield(spr)
-    create(uuid: uuid,
-           issuer: spr.issuer,
-           url: spr.url,
-           ial: spr.ial,
-           aal: spr.aal,
-           requested_attributes: spr.requested_attributes)
+    create(
+      uuid: uuid,
+      issuer: spr.issuer,
+      url: spr.url,
+      ial: spr.ial,
+      aal: spr.aal,
+      requested_attributes: spr.requested_attributes,
+    )
   end
 
   def self.create(hash)

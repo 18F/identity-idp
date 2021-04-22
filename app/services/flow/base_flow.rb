@@ -2,7 +2,7 @@ module Flow
   class BaseFlow
     attr_accessor :flow_session
     attr_reader :steps, :actions, :current_user, :params, :request, :json, :http_status,
-      :controller
+                :controller
 
     def initialize(controller, steps, actions, session)
       @controller = controller
@@ -30,9 +30,13 @@ module Flow
       @http_status = status || :ok
     end
 
+    def step_handler(step)
+      steps[step] || actions[step]
+    end
+
     def handle(step)
       @flow_session[:error_message] = nil
-      handler = steps[step] || actions[step]
+      handler = step_handler(step)
       return failure("Unhandled step #{step}") unless handler
       wrap_send(handler)
     end
@@ -47,10 +51,14 @@ module Flow
     end
 
     def extra_view_variables(step)
-      handler = steps[step] || actions[step]
+      handler = step_handler(step)
       return failure("Unhandled step #{step}") unless handler
       obj = handler.new(self)
       obj.extra_view_variables
+    end
+
+    def flow_path
+      'standard'
     end
 
     private
@@ -72,6 +80,6 @@ module Flow
     end
 
     delegate :flash, :session, :current_user, :params, :request, :poll_with_meta_refresh,
-      :analytics, to: :@controller
+             :analytics, to: :@controller
   end
 end

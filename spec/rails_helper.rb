@@ -1,14 +1,35 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 if ENV['COVERAGE']
-  require 'simplecov'
-  SimpleCov.start 'rails' do
+  require 'simplecov/no_defaults'
+  require 'simplecov/default_formatter'
+  require 'simplecov-html'
+
+  SimpleCov.start do
+    formatter SimpleCov::Formatter::MultiFormatter.new(
+      SimpleCov::Formatter.from_env(ENV),
+    )
+
+    track_files '{app,lib}/**/*.rb'
+    add_group 'Controllers', 'app/controllers'
+    add_group 'Channels', 'app/channels'
+    add_group 'Forms', 'app/forms'
+    add_group 'Models', 'app/models'
+    add_group 'Mailers', 'app/mailers'
+    add_group 'Helpers', 'app/helpers'
+    add_group 'Jobs', %w[app/jobs app/workers]
+    add_group 'Libraries', 'lib/'
+    add_group 'Presenters', 'app/presenters'
+    add_group 'Services', 'app/services'
+    add_filter '^/spec/'
+    add_filter '/vendor/bundle/'
     add_filter '/config/'
     add_filter '/lib/deploy/migration_statement_timeout.rb'
     add_filter '/lib/tasks/create_test_accounts.rb'
+    add_filter %r{^/db/}
+  end
 
-    # this is loaded super early by the Gemfile so it gets ignored by SimpleCov
-    # and sinks our coverage reports, so we ignore it
-    add_filter '/lib/lambda_jobs/git_ref.rb'
+  at_exit do
+    SimpleCov.run_exit_tasks!
   end
 end
 
@@ -66,7 +87,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, js: true) do
-    allow(AppConfig.env).to receive(:domain_name).and_return('127.0.0.1')
+    allow(IdentityConfig.store).to receive(:domain_name).and_return('127.0.0.1')
     server = Capybara.current_session.server
     allow(Rails.application.routes).to receive(:default_url_options).and_return(
       Rails.application.routes.default_url_options.merge(host: "#{server.host}:#{server.port}"),
@@ -74,7 +95,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :controller) do
-    @request.host = AppConfig.env.domain_name
+    @request.host = IdentityConfig.store.domain_name
   end
 
   config.before(:each) do
@@ -84,6 +105,7 @@ RSpec.configure do |config|
   config.before(:each) do
     Telephony::Test::Message.clear_messages
     Telephony::Test::Call.clear_calls
+    PushNotification::LocalEventQueue.clear!
   end
 
   config.before(:each) do

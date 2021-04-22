@@ -181,11 +181,11 @@ class UserDecorator
 
   def lockout_period
     return DEFAULT_LOCKOUT_PERIOD if lockout_period_config.blank?
-    lockout_period_config.to_i.minutes
+    lockout_period_config.minutes
   end
 
   def lockout_period_config
-    @config ||= AppConfig.env.lockout_period_in_minutes
+    @config ||= IdentityConfig.store.lockout_period_in_minutes
   end
 
   def lockout_period_expired?

@@ -197,8 +197,21 @@ module Idv
       update_funnel(client_response)
       track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-        client_response.to_h,
+        client_response.to_h.merge(client_image_metrics: image_metadata),
       )
+    end
+
+    def image_metadata
+      params.permit(:front_image_metadata, :back_image_metadata).
+        to_h.
+        transform_values do |str|
+          JSON.parse(str)
+        rescue JSON::ParserError
+          nil
+        end.
+        compact.
+        transform_keys { |key| key.gsub(/_image_metadata$/, '') }.
+        deep_symbolize_keys
     end
 
     def add_costs(response)

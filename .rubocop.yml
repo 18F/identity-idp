@@ -34,7 +34,7 @@ Metrics/BlockLength:
   CountComments: false  # count full line comments?
   Enabled: true
   Max: 25
-  ExcludedMethods:
+  IgnoredMethods:
     - 'Struct.new'
     - 'RedactedStruct.new'
   Exclude:
@@ -99,6 +99,9 @@ Rails/TimeZone:
   SupportedStyles:
     - strict
     - flexible
+
+Rails/Delegate:
+  Enabled: false
 
 Layout/ParameterAlignment:
   # Alignment of parameters in multi-line method calls.
@@ -345,4 +348,50 @@ Style/ArgumentsForwarding:
   Enabled: true
 
 Style/NilLambda:
+  Enabled: true
+
+Layout/ArgumentAlignment:
+  Enabled: true
+
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: true
+
+Layout/FirstMethodArgumentLineBreak:
+  Enabled: true
+
+Layout/ClosingParenthesisIndentation:
+  Enabled: true
+
+Layout/FirstArgumentIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+  IndentationWidth: ~
+
+Layout/IndentationConsistency:
+  Enabled: true
+  EnforcedStyle: normal
+
+Layout/IndentationStyle:
+  Enabled: true
+  IndentationWidth: ~
+
+Layout/HashAlignment:
+  Enabled: true
+
+Layout/MultilineHashBraceLayout:
+  Enabled: true
+  EnforcedStyle: symmetrical
+
+Layout/FirstHashElementIndentation:
+  Enabled: true
+  EnforcedStyle: consistent
+  IndentationWidth: ~
+
+Lint/AmbiguousAssignment:
+  Enabled: true
+
+Lint/DeprecatedConstants:
+  Enabled: true
+
+Layout/ArrayAlignment:
   Enabled: true

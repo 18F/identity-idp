@@ -2,7 +2,7 @@ class SendExpiredLetterNotifications
   def call
     notifications_sent = 0
     GpoConfirmationCode.where(
-      'created_at < ?', Time.zone.now - AppConfig.env.usps_confirmation_max_days.to_i.days
+      'created_at < ?', Time.zone.now - IdentityConfig.store.usps_confirmation_max_days.days
     ).where(bounced_at: nil, letter_expired_sent_at: nil).
       order(created_at: :asc).each do |gpo_confirmation_code|
       mark_sent_and_send_email(gpo_confirmation_code)

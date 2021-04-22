@@ -1,0 +1,16 @@
+---
+es:
+  step_indicator:
+    accessible_label: Progreso por pasos
+    flows:
+      idv:
+        getting_started: Inicio
+        secure_account: Proteje tu cuenta
+        verify_id: Verifica tu identificación
+        verify_info: Verifica tus datos personales
+        verify_phone_or_address: Verifica el teléfono o dirección
+    status:
+      complete: Completo
+      current: Siguiente paso
+      not_complete: No se ha completado
+      pending: Pendiente

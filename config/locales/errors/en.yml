@@ -18,11 +18,8 @@ en:
       token_missing: token missing
     confirm_password_incorrect: Incorrect password.
     doc_auth:
-      acuant_network_error: Sorry we are experiencing technical difficulties. Please
-        try again later.
       acuant_throttle: To prevent abuse we limit the number of times you can attempt
         to validate a document.  Please try again later.
-      capture_failure: Camera failed to start, please try again.
       consent_form: Before you can continue, you must give us permission. Please check
         the box below and then click continue.
       document_capture_cancelled: You have cancelled uploading photos of your ID on
@@ -47,25 +44,14 @@ en:
         <li>Your selfie is taken in a well-lit area with a plain background</li>
         <li>You are not wearing a hat or glasses, and your head is fully visible</li>
         </ul>
-      document_capture_selfie_consent_blocked: Your camera is blocked
       document_verification_timeout: The server took too long to respond. Please try
         again.
-      general_error: We could not read or verify your ID. Try to take and upload new
-        images of both the front and back of your ID. Make sure everything can be
-        easily read, including the barcode.
-      invalid_file_input_type: This file type is not accepted, please choose a JPG,
-        PNG, BMP, or TIFF file.
       phone_step_incomplete: You must go to your phone and upload photos of your ID
         before continuing. We sent you a link with instructions.
-      photo_blurry: Image is blurry, please try again.
-      photo_glare: Image has glare, please try again.
       quota_reached: Sorry your service provider has reached its identity verification
         limit.  Please contact your service provider for more information.
-      selfie: We couldn't read the photo of yourself, or match the photo to your ID.
-        Try taking a new picture.
       send_link_throttle: You tried too many times, please try again in 10 minutes.
         You can also click on Start Over and choose to use your computer instead.
-      upload_error: Sorry, something went wrong on our end.
     file_input:
       invalid_type: This file type is not accepted, please try again.
     invalid_authenticity_token: Oops, something went wrong. Please try again.

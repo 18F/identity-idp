@@ -6,6 +6,14 @@ module Idv
         capture_complete: Idv::Steps::CaptureCompleteStep,
       }.freeze
 
+      STEP_INDICATOR_STEPS = [
+        { name: :getting_started },
+        { name: :verify_id },
+        { name: :verify_info },
+        { name: :verify_phone_or_address },
+        { name: :secure_account },
+      ].freeze
+
       ACTIONS = {
         reset: Idv::Actions::ResetAction,
         verify_document: Idv::Actions::VerifyDocumentAction,
@@ -15,6 +23,10 @@ module Idv
 
       def initialize(controller, session, _name)
         super(controller, STEPS, ACTIONS, session)
+      end
+
+      def flow_path
+        'hybrid'
       end
     end
   end

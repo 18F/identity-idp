@@ -5,13 +5,16 @@ feature 'doc capture document capture step' do
   include DocAuthHelper
   include DocCaptureHelper
 
-  let(:max_attempts) { AppConfig.env.acuant_max_attempts.to_i }
+  let(:ial2_step_indicator_enabled) { true }
+  let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
   let(:user) { user_with_2fa }
-  let(:liveness_enabled) { 'false' }
+  let(:liveness_enabled) { false }
   let(:sp_requests_ial2_strict) { true }
   let(:fake_analytics) { FakeAnalytics.new }
   before do
-    allow(AppConfig.env).to receive(:liveness_checking_enabled).
+    allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+      and_return(ial2_step_indicator_enabled)
+    allow(IdentityConfig.store).to receive(:liveness_checking_enabled).
       and_return(liveness_enabled)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
@@ -28,7 +31,7 @@ feature 'doc capture document capture step' do
 
     before do
       Capybara.reset_session!
-      expired_minutes = (AppConfig.env.doc_capture_request_valid_for_minutes.to_i + 1).minutes
+      expired_minutes = (IdentityConfig.store.doc_capture_request_valid_for_minutes + 1).minutes
       document_capture_session = user.document_capture_sessions.last
       document_capture_session.requested_at -= expired_minutes
       document_capture_session.save!
@@ -55,15 +58,36 @@ feature 'doc capture document capture step' do
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH + ' visited',
         step: 'document_capture',
+        flow_path: 'hybrid',
       )
     end
   end
 
   context 'when liveness checking is enabled' do
-    let(:liveness_enabled) { 'true' }
+    let(:ial2_step_indicator_enabled) { true }
+    let(:liveness_enabled) { true }
 
     before do
+      allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+        and_return(ial2_step_indicator_enabled)
       complete_doc_capture_steps_before_first_step(user)
+    end
+
+    context 'ial2 step indicator enabled' do
+      it 'shows the step indicator' do
+        expect(page).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.verify_id'),
+        )
+      end
+    end
+
+    context 'ial2 step indicator disabled' do
+      let(:ial2_step_indicator_enabled) { false }
+
+      it 'does not show the step indicator' do
+        expect(page).not_to have_css('.step-indicator')
+      end
     end
 
     context 'when the SP does not request strict IAL2' do
@@ -139,6 +163,14 @@ feature 'doc capture document capture step' do
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
+        flow_path: 'hybrid',
+        result: 'Passed',
+        billed: true,
+      )
+      expect(fake_analytics).to have_logged_event(
+        'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
+        step: 'document_capture',
+        flow_path: 'hybrid',
         result: 'Passed',
         billed: true,
       )
@@ -157,11 +189,11 @@ feature 'doc capture document capture step' do
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
           success: false,
-          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
       )
 
-      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
       end
@@ -176,7 +208,7 @@ feature 'doc capture document capture step' do
 
       IdentityDocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+      Timecop.travel(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 
@@ -189,19 +221,19 @@ feature 'doc capture document capture step' do
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
           success: false,
-          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
       )
 
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-      expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
   end
 
   context 'when liveness checking is not enabled' do
-    let(:liveness_enabled) { 'false' }
+    let(:liveness_enabled) { false }
 
     before do
       complete_doc_capture_steps_before_first_step(user)
@@ -244,11 +276,11 @@ feature 'doc capture document capture step' do
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
           success: false,
-          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
       )
 
-      allow(AppConfig.env).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
       end
@@ -263,7 +295,7 @@ feature 'doc capture document capture step' do
 
       IdentityDocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(AppConfig.env.acuant_attempt_window_in_minutes.to_i.minutes.from_now) do
+      Timecop.travel(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 
@@ -276,14 +308,14 @@ feature 'doc capture document capture step' do
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
           success: false,
-          errors: { network: I18n.t('errors.doc_auth.acuant_network_error') },
+          errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
       )
 
       attach_and_submit_images
 
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-      expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
   end
 
@@ -312,7 +344,7 @@ feature 'doc capture document capture step' do
       submit_empty_form
 
       expect(page).to have_current_path(idv_capture_doc_document_capture_step)
-      expect(page).to have_content(I18n.t('errors.doc_auth.acuant_network_error'))
+      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
 
     it 'does not proceed to the next step if there is no result' do

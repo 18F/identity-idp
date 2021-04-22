@@ -1,3 +1,14 @@
+<% if IdentityConfig.store.ial2_step_indicator_enabled %>
+  <% content_for(:pre_flash_content) do %>
+    <%= render 'shared/step_indicator', {
+      steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+      current_step: :verify_phone_or_address,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-2 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+    } %>
+  <% end %>
+<% end %>
+
 <div id="form-steps-wait-alert">
   <%= render 'shared/alert', {
     type: 'success',
@@ -41,7 +52,7 @@
                          error_message: t('idv.failure.exceptions.internal_error'),
                          alert_target: '#form-steps-wait-alert',
                          wait_step_path: idv_phone_path,
-                         poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
+                         poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
                        },
                        html: {
                          autocomplete: 'off',
@@ -57,7 +68,7 @@
     <%= render 'idv/phone/verification_options' %>
   <% end %>
 
-  <%= render 'shared/spinner-button',
+  <%= render 'shared/spinner_button',
              action_message: t('doc_auth.info.verifying'),
              class: 'margin-top-4' do %>
     <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide' %>

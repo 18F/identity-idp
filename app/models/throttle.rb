@@ -15,28 +15,28 @@ class Throttle < ApplicationRecord
 
   THROTTLE_CONFIG = {
     idv_acuant: {
-      max_attempts: AppConfig.env.acuant_max_attempts.to_i,
-      attempt_window: AppConfig.env.acuant_attempt_window_in_minutes.to_i,
+      max_attempts: IdentityConfig.store.acuant_max_attempts,
+      attempt_window: IdentityConfig.store.acuant_attempt_window_in_minutes,
     },
     reg_unconfirmed_email: {
-      max_attempts: AppConfig.env.reg_unconfirmed_email_max_attempts.to_i,
-      attempt_window: AppConfig.env.reg_unconfirmed_email_window_in_minutes.to_i,
+      max_attempts: IdentityConfig.store.reg_unconfirmed_email_max_attempts,
+      attempt_window: IdentityConfig.store.reg_unconfirmed_email_window_in_minutes,
     },
     reg_confirmed_email: {
-      max_attempts: AppConfig.env.reg_confirmed_email_max_attempts.to_i,
-      attempt_window: AppConfig.env.reg_confirmed_email_window_in_minutes.to_i,
+      max_attempts: IdentityConfig.store.reg_confirmed_email_max_attempts,
+      attempt_window: IdentityConfig.store.reg_confirmed_email_window_in_minutes,
     },
     reset_password_email: {
-      max_attempts: AppConfig.env.reset_password_email_max_attempts.to_i,
-      attempt_window: AppConfig.env.reset_password_email_window_in_minutes.to_i,
+      max_attempts: IdentityConfig.store.reset_password_email_max_attempts,
+      attempt_window: IdentityConfig.store.reset_password_email_window_in_minutes,
     },
     idv_resolution: {
-      max_attempts: AppConfig.env.idv_max_attempts.to_i,
-      attempt_window: AppConfig.env.idv_attempt_window_in_hours.to_i * 60,
+      max_attempts: IdentityConfig.store.idv_max_attempts,
+      attempt_window: IdentityConfig.store.idv_attempt_window_in_hours * 60,
     },
     idv_send_link: {
-      max_attempts: AppConfig.env.idv_send_link_max_attempts.to_i,
-      attempt_window: AppConfig.env.idv_send_link_attempt_window_in_minutes.to_i,
+      max_attempts: IdentityConfig.store.idv_send_link_max_attempts,
+      attempt_window: IdentityConfig.store.idv_send_link_attempt_window_in_minutes,
     },
     verify_personal_key: {
       max_attempts: AppConfig.env.verify_personal_key_max_attempts.to_i,

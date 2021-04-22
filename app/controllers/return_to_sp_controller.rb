@@ -9,11 +9,19 @@ class ReturnToSpController < ApplicationController
 
   def failure_to_proof
     redirect_url = sp_return_url_resolver.failure_to_proof_url
-    analytics.track_event(Analytics::RETURN_TO_SP_FAILURE_TO_PROOF, redirect_url: redirect_url)
+    analytics.track_event(
+      Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+      redirect_url: redirect_url,
+      **idv_location_params,
+    )
     redirect_to redirect_url
   end
 
   private
+
+  def idv_location_params
+    params.permit(:step, :location).to_h.symbolize_keys
+  end
 
   def sp_return_url_resolver
     @sp_return_url_resolver ||= SpReturnUrlResolver.new(

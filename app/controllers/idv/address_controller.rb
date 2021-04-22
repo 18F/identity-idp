@@ -3,9 +3,9 @@ module Idv
     include IdvSession
 
     before_action :confirm_two_factor_authenticated
+    before_action :confirm_pii_from_doc
 
     def new
-      @pii = user_session['idv/doc_auth']['pii_from_doc']
       analytics.track_event(Analytics::IDV_ADDRESS_VISIT)
     end
 
@@ -20,6 +20,12 @@ module Idv
     end
 
     private
+
+    def confirm_pii_from_doc
+      @pii = user_session.dig('idv/doc_auth', 'pii_from_doc')
+      return if @pii.present?
+      redirect_to idv_doc_auth_url
+    end
 
     def idv_form
       Idv::AddressForm.new(

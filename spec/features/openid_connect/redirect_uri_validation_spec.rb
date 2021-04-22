@@ -32,8 +32,10 @@ describe 'redirect_uri validation' do
       expect(current_host).to eq 'www.example.com'
       expect(current_path).to eq '/errors/service_provider_inactive'
       expect(page).
-        to have_content t('service_providers.errors.inactive.heading',
-          sp_name: 'Example iOS App (inactive)')
+        to have_content t(
+          'service_providers.errors.inactive.heading',
+          sp_name: 'Example iOS App (inactive)',
+        )
     end
   end
 

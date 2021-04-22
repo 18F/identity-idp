@@ -6,37 +6,34 @@ class ProductionDatabaseConfiguration
   '.freeze.gsub(/^\s+/, '')
 
   def self.host
-    env = AppConfig.env
     if readonly_mode?
-      raise if env.database_read_replica_host.blank?
-      env.database_read_replica_host
+      raise if IdentityConfig.store.database_read_replica_host.blank?
+      IdentityConfig.store.database_read_replica_host
     else
-      env.database_host
+      IdentityConfig.store.database_host
     end
   end
 
   def self.username
-    env = AppConfig.env
     if readonly_mode?
-      raise if env.database_readonly_username.blank?
-      env.database_readonly_username
+      raise if IdentityConfig.store.database_readonly_username.blank?
+      IdentityConfig.store.database_readonly_username
     else
-      env.database_username
+      IdentityConfig.store.database_username
     end
   end
 
   def self.password
-    env = AppConfig.env
     if readonly_mode?
-      raise if env.database_readonly_password.blank?
-      env.database_readonly_password
+      raise if IdentityConfig.store.database_readonly_password.blank?
+      IdentityConfig.store.database_readonly_password
     else
-      env.database_password
+      IdentityConfig.store.database_password
     end
   end
 
   def self.pool
-    AppConfig.env.database_pool_idp.presence || 5
+    IdentityConfig.store.database_pool_idp
   end
 
   private_class_method def self.readonly_mode?
@@ -48,9 +45,8 @@ class ProductionDatabaseConfiguration
   end
 
   private_class_method def self.readonly_credentials_present?
-    env = AppConfig.env
-    env.database_readonly_username.present? &&
-    env.database_readonly_password.present?
+    IdentityConfig.store.database_readonly_username.present? &&
+    IdentityConfig.store.database_readonly_password.present?
   end
 
   private_class_method def self.print_readonly_warning

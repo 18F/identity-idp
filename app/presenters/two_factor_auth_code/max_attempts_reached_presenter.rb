@@ -47,9 +47,11 @@ module TwoFactorAuthCode
     private
 
     def please_try_again
-      t(:please_try_again_html,
+      t(
+        :please_try_again_html,
         scope: T_SCOPE, id: COUNTDOWN_ID,
-        time_remaining: decorated_user.lockout_time_remaining_in_words)
+        time_remaining: decorated_user.lockout_time_remaining_in_words
+      )
     end
 
     def read_about_two_factor_authentication

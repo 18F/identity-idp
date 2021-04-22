@@ -5,9 +5,11 @@ RSpec.describe IalContext do
   let(:sp_liveness_checking_required) { false }
   let(:sp_ial) { nil }
   let(:service_provider) do
-    build(:service_provider,
-          liveness_checking_required: sp_liveness_checking_required,
-          ial: sp_ial)
+    build(
+      :service_provider,
+      liveness_checking_required: sp_liveness_checking_required,
+      ial: sp_ial,
+    )
   end
 
   subject(:ial_context) { IalContext.new(ial: ial, service_provider: service_provider) }

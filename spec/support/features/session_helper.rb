@@ -67,11 +67,13 @@ module Features
 
       stub_piv_cac_service
       nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-      visit_piv_cac_service(current_url,
-                            nonce: nonce,
-                            uuid: user.piv_cac_configurations.first.x509_dn_uuid,
-                            subject: 'SomeIgnoredSubject',
-                            error: error)
+      visit_piv_cac_service(
+        current_url,
+        nonce: nonce,
+        uuid: user.piv_cac_configurations.first.x509_dn_uuid,
+        subject: 'SomeIgnoredSubject',
+        error: error,
+      )
     end
 
     def signin_with_bad_piv
@@ -88,10 +90,12 @@ module Features
 
       stub_piv_cac_service
       nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-      visit_piv_cac_service(current_url,
-                            nonce: nonce,
-                            uuid: uuid,
-                            subject: 'SomeIgnoredSubject')
+      visit_piv_cac_service(
+        current_url,
+        nonce: nonce,
+        uuid: uuid,
+        subject: 'SomeIgnoredSubject',
+      )
     end
 
     def fill_in_bad_piv_cac_credentials_and_submit
@@ -214,9 +218,11 @@ module Features
     end
 
     def user_with_piv_cac
-      create(:user, :signed_up, :with_piv_or_cac,
-             with: { phone: '+1 (703) 555-0000' },
-             password: VALID_PASSWORD)
+      create(
+        :user, :signed_up, :with_piv_or_cac,
+        with: { phone: '+1 (703) 555-0000' },
+        password: VALID_PASSWORD
+      )
     end
 
     def confirm_last_user
@@ -548,10 +554,12 @@ module Features
       expect(page).to have_current_path setup_piv_cac_path
 
       nonce = piv_cac_nonce_from_form_action
-      visit_piv_cac_service(setup_piv_cac_url,
-                            nonce: nonce,
-                            uuid: SecureRandom.uuid,
-                            subject: 'SomeIgnoredSubject')
+      visit_piv_cac_service(
+        setup_piv_cac_url,
+        nonce: nonce,
+        uuid: SecureRandom.uuid,
+        subject: 'SomeIgnoredSubject',
+      )
     end
 
     def sign_in_via_branded_page(user)
@@ -561,7 +569,7 @@ module Features
     end
 
     def stub_piv_cac_service
-      allow(AppConfig.env).to receive(:identity_pki_disabled).and_return('false')
+      allow(IdentityConfig.store).to receive(:identity_pki_disabled).and_return(false)
       allow(IdentityConfig.store).to receive(:piv_cac_service_url).
         and_return('http://piv.example.com/')
       allow(IdentityConfig.store).to receive(:piv_cac_verify_token_url).and_return('http://piv.example.com/')

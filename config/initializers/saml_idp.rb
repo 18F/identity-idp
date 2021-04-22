@@ -2,7 +2,7 @@ require 'feature_management'
 
 SamlIdp.configure do |config|
   protocol = Rails.env.development? ? 'http://' : 'https://'
-  api_base = protocol + AppConfig.env.domain_name + '/api'
+  api_base = protocol + IdentityConfig.store.domain_name + '/api'
 
   config.algorithm = OpenSSL::Digest::SHA256
   # config.signature_alg = 'rsa-sha256'
@@ -36,8 +36,6 @@ SamlIdp.configure do |config|
 
   # Find ServiceProvider metadata_url and fingerprint based on our settings
   config.service_provider.finder = lambda do |issuer_or_entity_id|
-    sp_config = ServiceProviderConfig.new(issuer: issuer_or_entity_id)
-    sp = sp_config.service_provider
-    sp_config.sp_attributes.merge(fingerprint: sp.fingerprint, cert: sp.ssl_cert)
+    ServiceProvider.from_issuer(issuer_or_entity_id).metadata
   end
 end

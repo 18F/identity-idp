@@ -1,6 +1,8 @@
 module Idv
   module Steps
     class DocumentCaptureStep < DocAuthBaseStep
+      STEP_INDICATOR_STEP = :verify_id
+
       IMAGE_UPLOAD_PARAM_NAMES = %i[
         front_image back_image selfie_image
       ].freeze
@@ -39,8 +41,10 @@ module Idv
         return handle_document_verification_failure(response) unless response.success?
         doc_pii_form_result = Idv::DocPiiForm.new(response.pii_from_doc).submit
         unless doc_pii_form_result.success?
-          doc_auth_form_result = IdentityDocAuth::Response.new(success: false,
-                                                               errors: doc_pii_form_result.errors)
+          doc_auth_form_result = IdentityDocAuth::Response.new(
+            success: false,
+            errors: doc_pii_form_result.errors,
+          )
           doc_auth_form_result = doc_auth_form_result.merge(response)
           return handle_document_verification_failure(doc_auth_form_result)
         end
@@ -81,8 +85,10 @@ module Idv
         unless get_results_response.is_a?(IdentityDocAuth::Acuant::Responses::GetResultsResponse)
           return
         end
-        Funnel::DocAuth::LogDocumentError.call(user_id,
-                                               get_results_response&.result_code&.name.to_s)
+        Funnel::DocAuth::LogDocumentError.call(
+          user_id,
+          get_results_response&.result_code&.name.to_s,
+        )
       end
 
       def handle_stored_result
@@ -90,7 +96,7 @@ module Idv
           extract_pii_from_doc(stored_result)
         else
           extra = { stored_result_present: stored_result.present? }
-          failure(I18n.t('errors.doc_auth.acuant_network_error'), extra)
+          failure(I18n.t('doc_auth.errors.general.network_error'), extra)
         end
       end
 

@@ -2,9 +2,9 @@ class Agreements::IntegrationUsage < ApplicationRecord
   self.table_name = 'integration_usages'
 
   belongs_to :iaa_order, -> { includes(iaa_gtc: :partner_account) },
-                         inverse_of: :integration_usages
+             inverse_of: :integration_usages
   belongs_to :integration, -> { includes(:partner_account) },
-                           inverse_of: :integration_usages
+             inverse_of: :integration_usages
 
   has_one :partner_account, through: :integration
 

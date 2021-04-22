@@ -63,6 +63,15 @@ class MfaContext
       piv_cac_configurations + auth_app_configurations
   end
 
+  def two_factor_enabled?
+    return true if phone_configurations.any?(&:mfa_enabled?)
+    return true if piv_cac_configurations.any?(&:mfa_enabled?)
+    return true if auth_app_configurations.any?(&:mfa_enabled?)
+    return true if backup_code_configurations.any?(&:mfa_enabled?)
+    return true if webauthn_configurations.any?(&:mfa_enabled?)
+    return false
+  end
+
   def enabled_mfa_methods_count
     phone_configurations.to_a.select(&:mfa_enabled?).count +
       webauthn_configurations.to_a.select(&:mfa_enabled?).count +
@@ -93,7 +102,7 @@ class MfaContext
   private
 
   def personal_key_method_count
-    return 0 if AppConfig.env.personal_key_retired == 'true'
+    return 0 if IdentityConfig.store.personal_key_retired
     (personal_key_configuration.mfa_enabled? ? 1 : 0)
   end
 

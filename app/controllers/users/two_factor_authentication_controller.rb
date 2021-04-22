@@ -58,12 +58,15 @@ module Users
     def validate_otp_delivery_preference_and_send_code
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
+      phone_capabilities = PhoneNumberCapabilities.new(parsed_phone)
 
       if result.success?
         handle_valid_otp_params(delivery_preference)
-      else
+      elsif phone_capabilities.supports_sms?
         handle_valid_otp_params('sms')
         flash[:error] = result.errors[:phone].first
+      else
+        handle_invalid_otp_delivery_preference(result)
       end
     end
 
@@ -196,9 +199,11 @@ module Users
     end
 
     def delivery_params
-      params.require(:otp_delivery_selection_form).permit(:otp_delivery_preference,
-                                                          :otp_make_default_number,
-                                                          :resend)
+      params.require(:otp_delivery_selection_form).permit(
+        :otp_delivery_preference,
+        :otp_make_default_number,
+        :resend,
+      )
     end
 
     def phone_to_deliver_to
@@ -208,9 +213,11 @@ module Users
     end
 
     def otp_rate_limiter
-      @_otp_rate_limited ||= OtpRateLimiter.new(phone: phone_to_deliver_to,
-                                                user: current_user,
-                                                phone_confirmed: authentication_context?)
+      @_otp_rate_limited ||= OtpRateLimiter.new(
+        phone: phone_to_deliver_to,
+        user: current_user,
+        phone_confirmed: authentication_context?,
+      )
     end
 
     def redirect_url

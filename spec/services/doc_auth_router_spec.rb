@@ -78,7 +78,7 @@ RSpec.describe DocAuthRouter do
       expect(response.errors[:some_other_key]).to eq(['will not be translated'])
       expect(response.errors[:results]).to match_array(
         [
-          I18n.t('errors.doc_auth.general_error', locale: :es),
+          I18n.t('doc_auth.errors.general.no_liveness', locale: :es),
           I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read', locale: :es),
         ],
       )
@@ -97,7 +97,7 @@ RSpec.describe DocAuthRouter do
 
       response = proxy.get_results(instance_id: 'abcdef')
 
-      expect(response.errors[:network]).to eq(I18n.t('errors.doc_auth.acuant_network_error'))
+      expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.general.network_error'))
     end
 
     it 'translates generic selfie errors' do
@@ -113,7 +113,7 @@ RSpec.describe DocAuthRouter do
 
       response = proxy.get_results(instance_id: 'abcdef')
 
-      expect(response.errors[:selfie]).to eq(I18n.t('errors.doc_auth.selfie'))
+      expect(response.errors[:selfie]).to eq(I18n.t('doc_auth.errors.general.liveness'))
     end
   end
 

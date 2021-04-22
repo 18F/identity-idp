@@ -25,7 +25,7 @@ describe('document-capture/components/form-error-message', () => {
     const { getByText } = render(
       <I18nContext.Provider
         value={{
-          'errors.doc_auth.upload_error': 'Sorry, something went wrong on our end.',
+          'doc_auth.errors.upload_error': 'Sorry, something went wrong on our end.',
           'errors.messages.try_again': 'Please try again.',
         }}
       >

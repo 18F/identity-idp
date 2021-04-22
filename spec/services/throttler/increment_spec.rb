@@ -14,10 +14,12 @@ describe Throttler::Increment do
   end
 
   it 'it increments a throttle if one exists' do
-    Throttle.create(user_id: user_id,
-                    throttle_type: throttle_type,
-                    attempts: 1,
-                    attempted_at: Time.zone.now)
+    Throttle.create(
+      user_id: user_id,
+      throttle_type: throttle_type,
+      attempts: 1,
+      attempted_at: Time.zone.now,
+    )
     subject.call(user_id, throttle_type)
 
     expect(throttle.attempts).to eq(2)

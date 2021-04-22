@@ -32,7 +32,9 @@ module IdvHelper
   end
 
   def click_idv_continue
-    click_on t('forms.buttons.continue'), match: :first
+    continue_button = page.find_button(t('forms.buttons.continue'), match: :first)
+    page.execute_script('arguments[0].scrollIntoView()', continue_button) if javascript_enabled?
+    continue_button.click
     # If button shows spinner when clicked, wait for it to finish.
     expect(page).to have_no_css('.spinner-button.spinner-button--spinner-active', wait: 10)
   end

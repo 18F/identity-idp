@@ -40,18 +40,22 @@ module Users
     private
 
     def totp_setup_form
-      @totp_setup_form ||= TotpSetupForm.new(current_user,
-                                             new_totp_secret,
-                                             params[:code].strip,
-                                             params[:name].to_s.strip)
+      @totp_setup_form ||= TotpSetupForm.new(
+        current_user,
+        new_totp_secret,
+        params[:code].strip,
+        params[:name].to_s.strip,
+      )
     end
 
     def set_totp_setup_presenter
-      @presenter = SetupPresenter.new(current_user: current_user,
-                                      user_fully_authenticated: user_fully_authenticated?,
-                                      user_opted_remember_device_cookie:
-                                          user_opted_remember_device_cookie,
-                                      remember_device_default: remember_device_default)
+      @presenter = SetupPresenter.new(
+        current_user: current_user,
+        user_fully_authenticated: user_fully_authenticated?,
+        user_opted_remember_device_cookie:
+                                                  user_opted_remember_device_cookie,
+        remember_device_default: remember_device_default,
+      )
     end
 
     def user_opted_remember_device_cookie
@@ -98,7 +102,9 @@ module Users
     end
 
     def revoke_otp_secret_key
-      Db::AuthAppConfiguration::Delete.call(current_user, params[:id].to_i)
+      Db::AuthAppConfiguration.delete(current_user, params[:id].to_i)
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
     end
 
     def mark_user_as_fully_authenticated
@@ -124,7 +130,7 @@ module Users
     end
 
     def cap_auth_app_count
-      return unless AppConfig.env.max_auth_apps_per_account.to_i <= current_auth_app_count
+      return unless IdentityConfig.store.max_auth_apps_per_account <= current_auth_app_count
       redirect_to account_two_factor_authentication_path
     end
 

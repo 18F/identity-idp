@@ -56,7 +56,8 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   end
 
   def reverify_link
-    t('two_factor_authentication.account_reset.recover_html',
+    t(
+      'two_factor_authentication.account_reset.recover_html',
       reset_link: @view.link_to(
         t('two_factor_authentication.account_reset.reset_link'),
         account_reset_request_path(locale: LinkLocaleResolver.locale),
@@ -64,25 +65,30 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
       reverify_link: @view.link_to(
         t('two_factor_authentication.account_reset.reverify_link'),
         account_reset_recover_path,
-      ))
+      ),
+    )
   end
 
   private
 
   def account_reset_link
-    t('two_factor_authentication.account_reset.text_html',
+    t(
+      'two_factor_authentication.account_reset.text_html',
       link: @view.link_to(
         t('two_factor_authentication.account_reset.link'),
         account_reset_request_path(locale: LinkLocaleResolver.locale),
-      ))
+      ),
+    )
   end
 
   def account_reset_cancel_link
-    t('two_factor_authentication.account_reset.pending_html',
+    t(
+      'two_factor_authentication.account_reset.pending_html',
       cancel_link: @view.link_to(
         t('two_factor_authentication.account_reset.cancel_link'),
         account_reset_cancel_url(token: account_reset_token),
-      ))
+      ),
+    )
   end
 
   def account_reset_token

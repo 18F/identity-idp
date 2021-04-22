@@ -8,7 +8,6 @@ require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 require 'identity/logging/railtie'
 
-require_relative '../lib/app_config_reader'
 require_relative '../lib/app_config'
 require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
@@ -20,18 +19,11 @@ APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
-    configuration = AppConfigReader.new.read_configuration(
-      write_copy_to: Rails.root.join('tmp', 'application.yml'),
+    configuration = Identity::Hostdata::ConfigReader.new(app_root: Rails.root).read_configuration(
+      Rails.env, write_copy_to: Rails.root.join('tmp', 'application.yml')
     )
-
     AppConfig.setup(configuration)
-
-    root_config = configuration.except(['development', 'production', 'test'])
-    environment_config = root_config[Rails.env]
-    merged_config = root_config.merge(environment_config)
-    merged_config.symbolize_keys!
-
-    IdentityConfig.build_store(merged_config)
+    IdentityConfig.build_store(configuration)
 
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false
@@ -55,7 +47,7 @@ module Upaya
     config.i18n.default_locale = :en
     config.action_controller.per_form_csrf_tokens = true
 
-    routes.default_url_options[:host] = AppConfig.env.domain_name
+    routes.default_url_options[:host] = IdentityConfig.store.domain_name
 
     config.action_mailer.default_options = {
       from: Mail::Address.new.tap do |mail|
@@ -72,7 +64,7 @@ module Upaya
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
-          next if source == AppConfig.env.domain_name
+          next if source == IdentityConfig.store.domain_name
 
           ServiceProvider.pluck(:redirect_uris).flatten.compact.find do |uri|
             split_uri = uri.split('//')
@@ -91,7 +83,7 @@ module Upaya
       end
     end
 
-    if AppConfig.env.enable_rate_limiting == 'true'
+    if IdentityConfig.store.enable_rate_limiting
       config.middleware.use Rack::Attack
     else
       # Rack::Attack auto-includes itself as a Railtie, so we need to

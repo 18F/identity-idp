@@ -13,15 +13,19 @@ class ServiceProviderSeeder
     service_providers.each do |issuer, config|
       next unless write_service_provider?(config)
       ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
-        sp.update(approved: true,
-                  active: true,
-                  native: true,
-                  friendly_name: config['friendly_name'])
-      end.update!(config.except('agency',
-                                'restrict_to_deploy_env',
-                                'uuid_priority',
-                                'protocol',
-                                'native'))
+        sp.update(
+          approved: true,
+          active: true,
+          native: true,
+          friendly_name: config['friendly_name'],
+        )
+      end.update!(config.except(
+        'agency',
+        'restrict_to_deploy_env',
+        'uuid_priority',
+        'protocol',
+        'native',
+      ))
     end
   end
 

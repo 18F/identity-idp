@@ -21,7 +21,16 @@ RSpec.describe OpenidConnectTokenForm do
   let(:client_assertion_type) { OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE }
   let(:client_assertion) { JWT.encode(jwt_payload, client_private_key, 'RS256') }
 
-  let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
+  let(:client_id) { service_provider.issuer }
+
+  let(:service_provider) do
+    create(
+      :service_provider,
+      cert: nil,
+      certs: ['saml_test_sp2', 'saml_test_sp'],
+    )
+  end
+
   let(:nonce) { SecureRandom.hex }
   let(:code_challenge) { nil }
   let(:jwt_payload) do
@@ -259,7 +268,30 @@ RSpec.describe OpenidConnectTokenForm do
           end
         end
 
-        context 'signed by the wrong key' do
+        context 'signed by a second key' do
+          let(:client_private_key) do
+            OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp2.key').read)
+          end
+
+          it 'is still valid' do
+            expect(valid?).to eq(true)
+          end
+        end
+
+        context 'service provider has no certs registered' do
+          before do
+            service_provider.certs = []
+            service_provider.save!
+          end
+
+          it 'is has an error' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).
+              to include(t('openid_connect.token.errors.invalid_signature'))
+          end
+        end
+
+        context 'signed by an unknown key' do
           let(:client_private_key) { OpenSSL::PKey::RSA.new(2048) }
 
           it 'is invalid' do
@@ -391,10 +423,12 @@ RSpec.describe OpenidConnectTokenForm do
       it 'has a properly-encoded id_token with an expiration that matches the expires_in' do
         id_token = response[:id_token]
 
-        payload, _head = JWT.decode(id_token, server_public_key, true,
-                                    algorithm: 'RS256',
-                                    iss: root_url, verify_iss: true,
-                                    aud: client_id, verify_aud: true).map(&:with_indifferent_access)
+        payload, _head = JWT.decode(
+          id_token, server_public_key, true,
+          algorithm: 'RS256',
+          iss: root_url, verify_iss: true,
+          aud: client_id, verify_aud: true
+        ).map(&:with_indifferent_access)
 
         expect(payload[:nonce]).to eq(nonce)
 

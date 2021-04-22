@@ -66,7 +66,7 @@ class OpenidConnectTokenForm
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")
 
-    session_expiration = AppConfig.env.session_timeout_in_minutes.to_i.minutes.ago
+    session_expiration = IdentityConfig.store.session_timeout_in_minutes.minutes.ago
     @identity = ServiceProviderIdentity.where(session_uuid: code).
                 where('updated_at >= ?', session_expiration).
                 order(updated_at: :desc).first
@@ -109,14 +109,29 @@ class OpenidConnectTokenForm
   def validate_client_assertion
     return if identity.blank?
 
-    payload, _headers = JWT.decode(client_assertion, service_provider.ssl_cert.public_key, true,
-                                   algorithm: 'RS256', iss: client_id,
-                                   verify_iss: true, sub: client_id,
-                                   verify_sub: true)
-    validate_aud_claim(payload)
-    validate_iat(payload)
-  rescue JWT::DecodeError => err
-    errors.add(:client_assertion, err.message)
+    payload, _headers, err = nil
+
+    matching_cert = service_provider.ssl_certs.find do |ssl_cert|
+      err = nil
+      payload, _headers = JWT.decode(
+        client_assertion, ssl_cert.public_key, true,
+        algorithm: 'RS256', iss: client_id,
+        verify_iss: true, sub: client_id,
+        verify_sub: true
+      )
+    rescue JWT::DecodeError => err
+      next
+    end
+
+    if matching_cert && payload
+      validate_aud_claim(payload)
+      validate_iat(payload)
+    else
+      errors.add(
+        :client_assertion,
+        err&.message || t('openid_connect.token.errors.invalid_signature'),
+      )
+    end
   end
 
   def validate_aud_claim(payload)
@@ -125,8 +140,10 @@ class OpenidConnectTokenForm
     aud_as_array.map! { |aud| aud.to_s.chomp('/') }
     return true if aud_as_array.include?(api_openid_connect_token_url)
 
-    errors.add(:client_assertion,
-               t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url))
+    errors.add(
+      :client_assertion,
+      t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url),
+    )
   end
 
   def validate_iat(payload)

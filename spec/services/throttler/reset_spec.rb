@@ -8,10 +8,12 @@ describe Throttler::Reset do
   let(:throttle) { Throttle.all.first }
 
   it 'resets attempt count to 0' do
-    Throttle.create(user_id: user_id,
-                    throttle_type: throttle_type,
-                    attempts: max_attempts,
-                    attempted_at: Time.zone.now)
+    Throttle.create(
+      user_id: user_id,
+      throttle_type: throttle_type,
+      attempts: max_attempts,
+      attempted_at: Time.zone.now,
+    )
     subject.call(user_id, throttle_type)
 
     expect(throttle.attempts).to eq(0)

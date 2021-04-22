@@ -127,7 +127,7 @@ Rails.application.routes.draw do
       get '/timeout' => 'users/sessions#timeout'
     end
 
-    if AppConfig.env.enable_test_routes == 'true'
+    if IdentityConfig.store.enable_test_routes
       namespace :test do
         # Assertion granting test start + return.
         get '/saml/login' => 'saml_test#index'
@@ -142,6 +142,8 @@ Rails.application.routes.draw do
 
         get '/telephony' => 'telephony#index'
         delete '/telephony' => 'telephony#destroy'
+        get '/push_notification' => 'push_notification#index'
+        delete '/push_notification' => 'push_notification#destroy'
 
         get '/s3/:key' => 'fake_s3#show', as: :fake_s3
         put '/s3/:key' => 'fake_s3#update'
@@ -173,7 +175,7 @@ Rails.application.routes.draw do
     get '/account/two_factor_authentication' => 'accounts/two_factor_authentication#show'
 
     get '/errors/service_provider_inactive' => 'users/service_provider_inactive#index',
-      as: :sp_inactive_error
+        as: :sp_inactive_error
 
     get '/events/disavow' => 'event_disavowal#new', as: :event_disavowal
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal

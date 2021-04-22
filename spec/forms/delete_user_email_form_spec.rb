@@ -2,13 +2,6 @@ require 'rails_helper'
 
 describe DeleteUserEmailForm do
   describe '#submit' do
-    let(:push_notifications_enabled) { 'true' }
-
-    before do
-      allow(AppConfig.env).to receive(:push_notifications_enabled).
-        and_return(push_notifications_enabled)
-    end
-
     subject(:submit) { form.submit }
 
     context 'with only a single email address' do
@@ -26,7 +19,7 @@ describe DeleteUserEmailForm do
         expect(user.email_addresses.reload).to_not be_empty
       end
 
-      it 'does not notify subscribers that the identier was recycled' do
+      it 'does not notify subscribers that the identifier was recycled or email changed' do
         expect(PushNotification::HttpPush).to_not receive(:deliver)
 
         submit
@@ -49,20 +42,23 @@ describe DeleteUserEmailForm do
         expect(deleted_email).to be_empty
       end
 
-      it 'notifies subscribers that the identier was recycled' do
-        expect(PushNotification::HttpPush).to receive(:deliver)
+      it 'notifies subscribers that the identifier was recycled and the email changed' do
+        expect(PushNotification::HttpPush).to receive(:deliver).once.
+          with(PushNotification::IdentifierRecycledEvent.new(
+            user: user,
+            email: email_address.email,
+          )).ordered
+        expect(PushNotification::HttpPush).to receive(:deliver).once.
+          with(PushNotification::EmailChangedEvent.new(
+            user: user,
+            email: email_address.email,
+          )).ordered
+        expect(PushNotification::HttpPush).to receive(:deliver).once.
+            with(PushNotification::RecoveryInformationChangedEvent.new(
+              user: user,
+            )).ordered
 
         submit
-      end
-
-      context 'when push notifications are disabled' do
-        let(:push_notifications_enabled) { 'false' }
-
-        it 'does not notify subscribers' do
-          expect(PushNotification::HttpPush).to_not receive(:deliver)
-
-          submit
-        end
       end
     end
 

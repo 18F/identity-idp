@@ -23,10 +23,11 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 8fa7ceeb9c5f8a5f3c4ceadba2c86a8a4f780f1f
-  tag: v2.0.0
+  revision: 4f978b9f2e573e99f54c69869846c7aae983c4ae
+  tag: v3.1.0
   specs:
-    identity-hostdata (2.0.0)
+    identity-hostdata (3.1.0)
+      activesupport (~> 6.1)
       aws-sdk-s3 (~> 1.8)
 
 GIT
@@ -77,10 +78,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: fd7c822cc3c12d218766f2c65fdca74a461de9da
-  tag: 0.12.2.18f
+  revision: b48dbd2bedac1e61e38361e58270d546c9886243
+  tag: v0.13.0-18f
   specs:
-    saml_idp (0.12.2.pre.18f)
+    saml_idp (0.13.0.pre.18f)
       activesupport
       builder
       httparty
@@ -170,7 +171,7 @@ GEM
       safely_block (>= 0.2.1)
     american_date (1.1.1)
     android_key_attestation (0.3.0)
-    ast (2.4.1)
+    ast (2.4.2)
     autoprefixer-rails (10.1.0.0)
       execjs
     awrence (1.1.1)
@@ -184,6 +185,9 @@ GEM
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
+    aws-sdk-eventbridge (1.18.0)
+      aws-sdk-core (~> 3, >= 3.109.0)
+      aws-sigv4 (~> 1.1)
     aws-sdk-kms (1.40.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
@@ -201,9 +205,6 @@ GEM
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.1)
     aws-sdk-ses (1.36.0)
-      aws-sdk-core (~> 3, >= 3.109.0)
-      aws-sigv4 (~> 1.1)
-    aws-sdk-sqs (1.35.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
     aws-sdk-ssm (1.103.0)
@@ -262,8 +263,6 @@ GEM
     childprocess (3.0.0)
     choice (0.2.0)
     chunky_png (1.3.15)
-    codeclimate-test-reporter (1.0.9)
-      simplecov (<= 0.13)
     coderay (1.1.3)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
@@ -303,7 +302,7 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.4.4)
-    docile (1.1.5)
+    docile (1.3.5)
     dotiw (5.1.0)
       activesupport
       i18n
@@ -396,7 +395,7 @@ GEM
     irb (1.2.9)
       reline (>= 0.1.5)
     jmespath (1.4.0)
-    json (2.4.1)
+    json (2.5.1)
     json-jwt (1.13.0)
       activesupport (>= 4.2)
       aes_key_wrap
@@ -443,7 +442,7 @@ GEM
     net-ssh (5.2.0)
     newrelic_rpm (6.14.0)
     nio4r (2.5.7)
-    nokogiri (1.11.2)
+    nokogiri (1.11.3)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
     notiffany (0.1.3)
@@ -459,7 +458,7 @@ GEM
     parallel (1.20.1)
     parallel_tests (2.29.2)
       parallel
-    parser (2.7.2.0)
+    parser (3.0.1.0)
       ast (~> 2.4.1)
     pg (1.2.3)
     phonelib (0.6.47)
@@ -471,6 +470,7 @@ GEM
     premailer-rails (1.11.1)
       actionmailer (>= 3)
       premailer (~> 1.7, >= 1.7.9)
+    profanity_filter (0.1.1)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -493,7 +493,7 @@ GEM
     rack-cors (1.1.1)
       rack (>= 2.0.0)
     rack-headers_filter (0.0.1)
-    rack-mini-profiler (2.2.0)
+    rack-mini-profiler (2.3.1)
       rack (>= 1.2.0)
     rack-proxy (0.6.5)
       rack
@@ -566,7 +566,7 @@ GEM
       actionpack (>= 5.0)
       railties (>= 5.0)
     retries (0.0.5)
-    rexml (3.2.4)
+    rexml (3.2.5)
     rotp (6.2.0)
     rqrcode (1.1.2)
       chunky_png (~> 1.0)
@@ -595,16 +595,16 @@ GEM
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
     rspec-support (3.10.0)
-    rubocop (1.4.2)
+    rubocop (1.11.0)
       parallel (~> 1.10)
-      parser (>= 2.7.1.5)
+      parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
-      regexp_parser (>= 1.8)
+      regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.1.1)
+      rubocop-ast (>= 1.2.0, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (>= 1.4.0, < 2.0)
-    rubocop-ast (1.3.0)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.4.1)
       parser (>= 2.7.1.5)
     rubocop-rails (2.5.2)
       activesupport
@@ -612,9 +612,10 @@ GEM
       rubocop (>= 0.72.0)
     ruby-graphviz (1.2.5)
       rexml
-    ruby-progressbar (1.10.1)
-    ruby-saml (1.11.0)
-      nokogiri (>= 1.5.10)
+    ruby-progressbar (1.11.0)
+    ruby-saml (1.12.2)
+      nokogiri (>= 1.10.5)
+      rexml
     ruby-statistics (2.1.2)
     ruby2_keywords (0.0.2)
     rubyzip (1.3.0)
@@ -649,11 +650,12 @@ GEM
     simple_form (5.0.3)
       actionpack (>= 5.0)
       activemodel (>= 5.0)
-    simplecov (0.13.0)
-      docile (~> 1.1.0)
-      json (>= 1.8, < 3)
-      simplecov-html (~> 0.10.0)
-    simplecov-html (0.10.2)
+    simplecov (0.21.2)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.12.3)
+    simplecov_json_formatter (0.1.2)
     smart_properties (1.15.0)
     sprockets (4.0.2)
       concurrent-ruby (~> 1.0)
@@ -747,10 +749,10 @@ DEPENDENCIES
   american_date
   autoprefixer-rails (~> 10.0)
   aws-sdk-cloudwatchlogs
+  aws-sdk-eventbridge
   aws-sdk-kms (~> 1.4)
   aws-sdk-lambda
   aws-sdk-ses (~> 1.6)
-  aws-sdk-sqs
   axe-matchers (~> 2.6.0)
   base32-crockford
   better_errors (>= 2.5.1)
@@ -760,7 +762,6 @@ DEPENDENCIES
   bullet (>= 6.0.2)
   capybara-screenshot (>= 1.0.23)
   capybara-selenium (>= 0.0.6)
-  codeclimate-test-reporter
   daemons (~> 1.3)
   delayed_job_active_record (~> 4.1)
   derailed_benchmarks (~> 1.8)
@@ -801,6 +802,7 @@ DEPENDENCIES
   pg
   phonelib
   premailer-rails (>= 1.11.1)
+  profanity_filter
   proofer!
   pry-byebug
   pry-doc
@@ -826,7 +828,7 @@ DEPENDENCIES
   rqrcode
   rspec-rails (~> 4.0)
   rspec-retry
-  rubocop (~> 1.4.0)
+  rubocop (~> 1.11.0)
   rubocop-rails (>= 2.5.2)
   ruby-progressbar
   ruby-saml
@@ -837,6 +839,7 @@ DEPENDENCIES
   secure_headers (~> 6.3)
   shoulda-matchers (~> 4.0)
   simple_form (>= 5.0.2)
+  simplecov (~> 0.21.0)
   stringex
   strong_migrations (>= 0.4.2)
   subprocess

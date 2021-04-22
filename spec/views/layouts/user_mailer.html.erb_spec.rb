@@ -40,7 +40,9 @@ describe 'layouts/user_mailer.html.erb' do
   end
 
   it 'includes link to the privacy policy' do
-    expect(rendered).to have_link(t('mailer.privacy_policy'),
-                                  href: MarketingSite.security_and_privacy_practices_url)
+    expect(rendered).to have_link(
+      t('mailer.privacy_policy'),
+      href: MarketingSite.security_and_privacy_practices_url,
+    )
   end
 end

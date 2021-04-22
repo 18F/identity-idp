@@ -25,8 +25,10 @@ module LambdaCallback
     end
 
     def address_result_parameter
-      params.require(:address_result).permit(:exception, :success, :timed_out,
-                                             errors: {}, context: {})
+      params.require(:address_result).permit(
+        :exception, :success, :timed_out,
+        errors: {}, context: {}
+      )
     end
 
     def track_exception_in_result(result)

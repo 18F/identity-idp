@@ -64,12 +64,14 @@ describe Profile do
     end
 
     it 'fingerprints the PII' do
-      fingerprint = Pii::Fingerprinter.fingerprint([
-        pii.first_name,
-        pii.last_name,
-        pii.zipcode,
-        Date.parse(pii.dob).year,
-      ].join(':'))
+      fingerprint = Pii::Fingerprinter.fingerprint(
+        [
+          pii.first_name,
+          pii.last_name,
+          pii.zipcode,
+          Date.parse(pii.dob).year,
+        ].join(':'),
+      )
 
       expect { encrypt_pii }.
         to change { profile.name_zip_birth_year_signature }.
@@ -159,6 +161,27 @@ describe Profile do
       active_profile.reload
       expect(active_profile).to_not be_active
       expect(profile).to be_active
+    end
+
+    it 'sends a reproof completed push event' do
+      Profile.create(user: user, active: true)
+      expect(PushNotification::HttpPush).to receive(:deliver).
+        with(PushNotification::ReproofCompletedEvent.new(user: user))
+
+      profile.activate
+    end
+
+    it 'does not send a reproof event when there is a non active profile' do
+      expect(PushNotification::HttpPush).to_not receive(:deliver)
+
+      Profile.create(user: user, active: false)
+      profile.activate
+    end
+
+    it 'does not send a reproof event when there is no active profile' do
+      expect(PushNotification::HttpPush).to_not receive(:deliver)
+
+      profile.activate
     end
   end
 
