@@ -8,14 +8,15 @@ import {
   getPageErrorMessage,
 } from '../../../app/javascript/packs/form-steps-wait';
 
-const POLL_PAGE_MARKUP = '<!doctype html><title>x</title><meta content="1" http-equiv="refresh">';
-const NON_POLL_PAGE_MARKUP = '<!doctype html><title>x</title>';
+const POLL_PAGE_MARKUP =
+  '<!doctype html><title>x</title><meta content="1" http-equiv="refresh">Example';
+const NON_POLL_PAGE_MARKUP = '<!doctype html><title>x</title>Example';
 
 describe('getDOMFromHTML', () => {
   it('returns document of given markup', () => {
     const dom = getDOMFromHTML(NON_POLL_PAGE_MARKUP);
 
-    expect(dom.querySelector('title').textContent).to.equal('x');
+    expect(dom.body.textContent).to.equal('Example');
   });
 });
 
