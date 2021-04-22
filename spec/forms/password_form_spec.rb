@@ -12,19 +12,16 @@ describe PasswordForm, type: :model do
         user = build_stubbed(:user)
 
         form = PasswordForm.new(user)
-
         password = 'valid password'
-
         extra = {
           user_id: user.uuid,
           request_id_present: false,
         }
 
-        result = instance_double(FormResponse)
+        result = form.submit(password: password)
 
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(form.submit(password: password)).to eq result
+        expect(result.success?).to eq true
+        expect(result.extra).to eq extra
       end
     end
 
@@ -33,23 +30,19 @@ describe PasswordForm, type: :model do
         user = build_stubbed(:user, uuid: '123')
 
         form = PasswordForm.new(user)
-
         password = 'invalid'
-
         errors = {
           password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
         }
-
         extra = {
           user_id: '123',
           request_id_present: false,
         }
 
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(form.submit(password: password)).to eq result
+        result = form.submit(password: password)
+        expect(result.success?).to eq false
+        expect(result.errors).to eq errors
+        expect(result.extra).to eq extra
       end
     end
 
@@ -62,11 +55,10 @@ describe PasswordForm, type: :model do
           user_id: user.uuid,
           request_id_present: true,
         }
-        result = instance_double(FormResponse)
 
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(form.submit(password: password, request_id: 'foo')).to eq result
+        result = form.submit(password: password, request_id: 'foo')
+        expect(result.success?).to eq true
+        expect(result.extra).to eq extra
       end
     end
 
@@ -79,11 +71,9 @@ describe PasswordForm, type: :model do
           user_id: user.uuid,
           request_id_present: true,
         }
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(form.submit(password: password, request_id: "\xFFbar\xF8")).to eq result
+        result = form.submit(password: password, request_id: "\xFFbar\xF8")
+        expect(result.success?).to eq true
+        expect(result.extra).to eq extra
       end
     end
   end

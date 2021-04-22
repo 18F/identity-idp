@@ -10,17 +10,12 @@ shared_examples 'strong password' do |form_class|
         ' Add another word or two.' \
         ' Uncommon words are better'],
     }
-    extra = hash_including(user_id: '123')
-    result = instance_double(FormResponse)
 
-    if %w[PasswordForm ResetPasswordForm].include?(form_class)
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors, extra: extra).and_return(result)
-    else
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors).and_return(result)
-    end
-    expect(form.submit(password: password)).to eq result
+    result = form.submit(password: password)
+
+    expect(result.success?).to eq(false)
+    expect(result.errors).to eq(errors)
+    expect(result.extra).to include(user_id: '123') if result.extra.present?
   end
 
   it 'does not allow a password that needs more words' do
@@ -33,17 +28,12 @@ shared_examples 'strong password' do |form_class|
         ' Add another word or two.' \
         ' Uncommon words are better'],
     }
-    extra = hash_including(user_id: '123')
-    result = instance_double(FormResponse)
 
-    if %w[PasswordForm ResetPasswordForm].include?(form_class)
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors, extra: extra).and_return(result)
-    else
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors).and_return(result)
-    end
-    expect(form.submit(password: password)).to eq result
+    result = form.submit(password: password)
+
+    expect(result.success?).to eq(false)
+    expect(result.errors).to eq(errors)
+    expect(result.extra).to include(user_id: '123') if result.extra.present?
   end
 
   # This test is disabled for now because zxcvbn doesn't support this
@@ -59,17 +49,11 @@ shared_examples 'strong password' do |form_class|
         ' Uncommon words are better'],
     }
 
-    extra = hash_including(user_id: '123')
-    result = instance_double(FormResponse)
+    result = form.submit(password: password)
 
-    if %w[PasswordForm ResetPasswordForm].include?(form_class)
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors, extra: extra).and_return(result)
-    else
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors).and_return(result)
-    end
-    expect(form.submit(password: password)).to eq result
+    expect(result.success?).to eq(false)
+    expect(result.errors).to eq(errors)
+    expect(result.extra).to include(user_id: '123') if result.extra.present?
   end
 
   it 'does not allow a password that is the user email' do
@@ -82,17 +66,11 @@ shared_examples 'strong password' do |form_class|
         ' Add another word or two.' \
         ' Uncommon words are better'],
     }
-    extra = hash_including(user_id: '123')
-    result = instance_double(FormResponse)
+    result = form.submit(password: password)
 
-    if %w[PasswordForm ResetPasswordForm].include?(form_class)
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors, extra: extra).and_return(result)
-    else
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors).and_return(result)
-    end
-    expect(form.submit(password: password)).to eq result
+    expect(result.success?).to eq(false)
+    expect(result.errors).to eq(errors)
+    expect(result.extra).to include(user_id: '123') if result.extra.present?
   end
 
   it 'does not allow a password that does not have the minimum number of graphemes' do
