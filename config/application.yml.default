@@ -193,7 +193,6 @@ development:
   aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
-  address_proof_result_lambda_token: 123ABC
   attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost":
@@ -214,7 +213,6 @@ development:
   database_readonly_username: ''
   database_username: ''
   doc_auth_vendor: 'mock'
-  document_proof_result_lambda_token: ABC123
   domain_name: localhost:3000
   enable_rate_limiting: 'false'
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -233,7 +231,6 @@ development:
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   recurring_jobs_disabled_names: "[]"
-  resolution_proof_result_lambda_token: ABC123
   s3_report_bucket_prefix:
   saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
@@ -255,7 +252,6 @@ production:
   aal_authn_context_enabled: 'false'
   aamva_private_key:
   aamva_public_key:
-  address_proof_result_lambda_token:
   attribute_cost: 4000$8$4$
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
@@ -277,7 +273,6 @@ production:
   disallow_all_web_crawlers: 'false'
   disallow_ial2_recovery: 'true'
   doc_auth_vendor: 'acuant'
-  document_proof_result_lambda_token:
   domain_name: login.gov
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
@@ -300,7 +295,6 @@ production:
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
-  resolution_proof_result_lambda_token:
   ruby_workers_enabled: 'false'
   s3_report_bucket_prefix: login-gov.reports
   s3_reports_enabled: 'true'
@@ -328,7 +322,6 @@ test:
   acuant_facial_match_url: https://facial_match.example.com
   acuant_max_attempts: '4'
   acuant_passlive_url: https://liveness.example.com
-  address_proof_result_lambda_token: test_token_address
   attribute_cost: 800$8$1$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost":
@@ -350,7 +343,6 @@ test:
   doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'
   doc_capture_polling_enabled: 'false'
-  document_proof_result_lambda_token: test_token_document
   domain_name: www.example.com
   exception_recipients: test1@test.com
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -386,7 +378,6 @@ test:
   requests_per_ip_period: '60'
   reset_password_email_max_attempts: '5'
   reset_password_email_window_in_minutes: '80'
-  resolution_proof_result_lambda_token: test_token_resolution
   s3_report_bucket_prefix:
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 800$8$1$
