@@ -3,15 +3,7 @@ yields: Page instruction content.
 locals:
 * heading: Page title and primary page heading text.
 * action: Optional hash of `text`, `url` of a primary action link.
-* options: Optional proc to modify default set of options.
-%>
-<%
-options = []
-options << {
-  url: return_to_sp_failure_to_proof_path,
-  text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-} if decorated_session.sp_name
-options = local_assigns[:options].call(options) if local_assigns[:options].respond_to? :call
+* options: Array of troubleshooting options.
 %>
 <% title heading %>
 <%= image_tag('alert/warning-lg.svg', width: 54, alt: '', class: 'display-block') %>

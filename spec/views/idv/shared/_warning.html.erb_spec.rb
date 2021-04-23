@@ -51,18 +51,10 @@ describe 'idv/shared/_warning.html.erb' do
   end
 
   describe 'options' do
-    context 'without options customization' do
-      it 'does not render troubleshooting options' do
-        expect(rendered).not_to have_css('.troubleshooting-options')
-      end
-    end
+    let(:options) { [{text: 'Example', url: '#example'}] }
 
-    context 'with options customization' do
-      let(:options) { Proc.new { |options| options.append(text: 'Example', url: '#example') } }
-
-      it 'renders a list of troubleshooting options' do
-        expect(rendered).to have_link('Example', href: '#example')
-      end
+    it 'renders a list of troubleshooting options' do
+      expect(rendered).to have_link('Example', href: '#example')
     end
   end
 end

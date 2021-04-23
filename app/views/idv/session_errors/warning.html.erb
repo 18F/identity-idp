@@ -5,6 +5,12 @@
     text: t('idv.failure.button.warning'),
     url: idv_doc_auth_path,
   },
+  options: [
+    decorated_session.sp_name && {
+      url: return_to_sp_failure_to_proof_path,
+      text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+    },
+  ].compact,
 ) do %>
   <p><%= t('idv.failure.sessions.warning') %></p>
   <p><strong><%= t('idv.failure.attempts', count: @remaining_step_attempts) %></strong></p>
