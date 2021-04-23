@@ -95,8 +95,8 @@ es:
       submit: Agregar tarjeta PIV/CAC
     registration:
       labels:
-        email: Dirección de correo electrónico
-        email_language: Seleccionar preferencia de idioma de correo electrónico
+        email: Ingrese su dirección de correo electrónico
+        email_language: Seleccione su preferencia de idioma de correo electrónico
     ssn:
       show: Mostrar Número de Seguro Social
     totp_delete:

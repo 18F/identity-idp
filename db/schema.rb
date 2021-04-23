@@ -636,6 +636,7 @@ ActiveRecord::Schema.define(version: 2021_04_28_145328) do
     t.string "encrypted_recovery_code_digest", default: ""
     t.datetime "remember_device_revoked_at"
     t.string "email_language", limit: 10
+    t.datetime "accepted_terms_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true

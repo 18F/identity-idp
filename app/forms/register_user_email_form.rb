@@ -4,6 +4,7 @@ class RegisterUserEmailForm
   include FormEmailValidator
 
   validate :service_provider_request_exists
+  validate :validate_terms_accepted
 
   attr_reader :email_address
   attr_accessor :email_language
@@ -31,7 +32,14 @@ class RegisterUserEmailForm
     'true'
   end
 
+  def validate_terms_accepted
+    return if @terms_accepted
+
+    errors.add(:terms_accepted, t('errors.registration.terms'))
+  end
+
   def submit(params, instructions = nil)
+    @terms_accepted = params[:terms_accepted] == 'true'
     build_user_and_email_address_with_email(
       email: params[:email],
       email_language: params[:email_language],
@@ -91,6 +99,7 @@ class RegisterUserEmailForm
 
   def process_successful_submission(request_id, instructions)
     self.success = true
+    user.accepted_terms_at = Time.zone.now
     user.save!
     Funnel::Registration::Create.call(user.id)
     SendSignUpEmailConfirmation.new(user).call(

@@ -96,8 +96,8 @@ fr:
       submit: Ajouter une carte PIV/CAC
     registration:
       labels:
-        email: Adresse e-mail
-        email_language: Sélectionnez la préférence de langue des e-mails
+        email: Entrez votre adresse email
+        email_language: Sélectionnez votre préférence de langue pour les e-mails
     ssn:
       show: Afficher le numéro de sécurité sociale
     totp_delete:
