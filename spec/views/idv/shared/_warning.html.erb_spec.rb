@@ -17,23 +17,6 @@ describe 'idv/shared/_warning.html.erb' do
     expect(rendered).to have_css('h1', text: heading)
   end
 
-  context 'without an SP' do
-    it 'renders a list of troubleshooting options' do
-      expect(rendered).not_to have_link(href: return_to_sp_cancel_path)
-    end
-  end
-
-  context 'with an SP' do
-    let(:sp_name) { 'Example SP' }
-
-    it 'renders a list of troubleshooting options' do
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path,
-      )
-    end
-  end
-
   describe 'action' do
     context 'without action' do
       it 'does not render action button' do
