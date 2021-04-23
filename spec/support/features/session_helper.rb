@@ -442,12 +442,12 @@ module Features
     end
 
     def submit_form_with_invalid_email
-      fill_in 'Email', with: 'invalidemail'
+      fill_in t('forms.registration.labels.email'), with: 'invalidemail'
       click_button t('forms.buttons.submit.default')
     end
 
     def submit_form_with_valid_but_wrong_email
-      fill_in 'Email', with: 'test@example.com'
+      fill_in t('forms.registration.labels.email'), with: 'test@example.com'
       click_button t('forms.buttons.submit.default')
     end
 
