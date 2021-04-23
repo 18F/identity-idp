@@ -15,6 +15,7 @@
       <%= label_tag :code, t('forms.two_factor.code'), class: 'block bold' %>
       <%= render(
         'shared/one_time_code_input',
+        transport: nil,
         name: :code,
         value: @presenter.code_value,
         required: true,
