@@ -8,7 +8,8 @@ shared_examples 'remember device' do
   it 'requires 2FA on sign in after expiration' do
     user = remember_device_and_sign_out_user
 
-    days_to_travel = (AppConfig.env.remember_device_expiration_hours_aal_1.to_i + 1).hours.from_now
+    days_to_travel = (IdentityConfig.store.remember_device_expiration_hours_aal_1 + 1).
+      hours.from_now
     Timecop.travel days_to_travel do
       sign_in_user(user)
 

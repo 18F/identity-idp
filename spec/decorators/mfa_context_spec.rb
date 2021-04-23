@@ -284,7 +284,7 @@ describe MfaContext do
 
     context 'with a phone and a personal key and personal key retired' do
       it 'returns 1' do
-        allow(AppConfig.env).to receive(:personal_key_retired).and_return('true')
+        allow(IdentityConfig.store).to receive(:personal_key_retired).and_return(true)
         user = create(:user, :with_phone, :with_personal_key)
         subject = described_class.new(user.reload)
 

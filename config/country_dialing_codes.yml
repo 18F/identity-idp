@@ -264,7 +264,8 @@ DO:
 DZ:
   country_code: '213'
   name: Algeria
-  supports_sms: true
+  # Temporarily disabled due to SMS fraud attack 2021-04-16
+  supports_sms: false
   supports_voice: false
 EC:
   country_code: '593'

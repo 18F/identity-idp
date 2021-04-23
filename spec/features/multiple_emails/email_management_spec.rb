@@ -57,8 +57,10 @@ feature 'managing email address' do
     it 'Allows delete when more than one confirmed email exists' do
       user = create(:user, :signed_up, email: 'test@example.com ')
       confirmed_email1 = user.confirmed_email_addresses.first
-      confirmed_email2 = create(:email_address, user: user,
-                                                confirmed_at: Time.zone.now)
+      confirmed_email2 = create(
+        :email_address, user: user,
+                        confirmed_at: Time.zone.now
+      )
       user.email_addresses.reload
 
       sign_in_and_2fa_user(user)
@@ -115,8 +117,10 @@ feature 'managing email address' do
 
     def delete_email_should_fail(email)
       visit manage_email_confirm_delete_url(id: email.id)
-      expect(page).to have_content t('email_addresses.delete.confirm',
-                                     email: email.email)
+      expect(page).to have_content t(
+        'email_addresses.delete.confirm',
+        email: email.email,
+      )
       click_button t('forms.email.buttons.delete')
 
       expect(page).to have_current_path(account_path)
@@ -125,8 +129,10 @@ feature 'managing email address' do
 
     def delete_email_should_not_fail(email)
       visit manage_email_confirm_delete_url(id: email.id)
-      expect(page).to have_content t('email_addresses.delete.confirm',
-                                     email: email.email)
+      expect(page).to have_content t(
+        'email_addresses.delete.confirm',
+        email: email.email,
+      )
       click_button t('forms.email.buttons.delete')
 
       expect(page).to have_current_path(account_path)

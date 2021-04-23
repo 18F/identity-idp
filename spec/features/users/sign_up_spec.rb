@@ -280,8 +280,10 @@ feature 'Sign Up' do
   context 'legacy (pre multi email) user w/expired confirmation token on user and email_address' do
     it 'does not return an error and redirect to root after confirming and entering password' do
       email = 'test2@test.com'
-      User.create!(confirmation_token: 'foo', uuid: 'foo', email: email,
-                   confirmation_sent_at: Time.zone.now)
+      User.create!(
+        confirmation_token: 'foo', uuid: 'foo', email: email,
+        confirmation_sent_at: Time.zone.now
+      )
       Timecop.travel 1.year.from_now do
         visit sign_up_email_path
         submit_form_with_valid_email(email)
@@ -326,8 +328,6 @@ feature 'Sign Up' do
   end
 
   it 'forces user to setup a PIV/CAC and offers no other option or fallback question' do
-    allow(AppConfig.env).to receive(:allow_piv_cac_required).and_return('true')
-
     visit_idp_from_oidc_sp_with_hspd12_and_require_piv_cac
     sign_up_and_set_password
 

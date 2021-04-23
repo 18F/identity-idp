@@ -1,6 +1,6 @@
 <% title @presenter.title %>
 
-<h1 class='h3 margin-y-0'>
+<h1 class='margin-y-0'>
   <%= @presenter.heading %>
 </h1>
 
@@ -8,10 +8,10 @@
   <%= raw @presenter.info %>
 </p>
 
-<%= render 'shared/spinner-button' do %>
+<%= render 'shared/spinner_button' do %>
   <%= link_to @presenter.piv_cac_capture_text,
               @presenter.piv_cac_service_link,
-              class: 'usa-button usa-button--big' %>
+              class: 'usa-button usa-button--wide usa-button--big' %>
 <% end %>
 
 <%= render 'shared/cancel', link: new_user_session_url %>

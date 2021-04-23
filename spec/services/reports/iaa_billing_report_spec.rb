@@ -122,19 +122,27 @@ describe Reports::IaaBillingReport do
 
   it 'ignores sps without an IAA or a start date or an end date' do
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, ial: 1)
-    ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, ial: 1, iaa: iaa,
-                           iaa_start_date: iaa_start_date1)
-    ServiceProvider.create(issuer: issuer3, friendly_name: issuer3, ial: 1, iaa: iaa2,
-                           iaa_end_date: iaa_end_date1)
+    ServiceProvider.create(
+      issuer: issuer2, friendly_name: issuer2, ial: 1, iaa: iaa,
+      iaa_start_date: iaa_start_date1
+    )
+    ServiceProvider.create(
+      issuer: issuer3, friendly_name: issuer3, ial: 1, iaa: iaa2,
+      iaa_end_date: iaa_end_date1
+    )
 
     expect(subject.call).to eq([].to_json)
   end
 
   it 'rolls up 2 issuers in a single IAA' do
-    ServiceProvider.create(issuer: issuer, friendly_name: issuer, ial: 1, iaa: iaa,
-                           iaa_start_date: iaa_start_date1, iaa_end_date: iaa_end_date1)
-    ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, ial: 2, iaa: iaa,
-                           iaa_start_date: iaa_start_date1, iaa_end_date: iaa_end_date1)
+    ServiceProvider.create(
+      issuer: issuer, friendly_name: issuer, ial: 1, iaa: iaa,
+      iaa_start_date: iaa_start_date1, iaa_end_date: iaa_end_date1
+    )
+    ServiceProvider.create(
+      issuer: issuer2, friendly_name: issuer2, ial: 2, iaa: iaa,
+      iaa_start_date: iaa_start_date1, iaa_end_date: iaa_end_date1
+    )
 
     expect(subject.call).to eq(results_for_1_iaa.to_json)
   end
@@ -143,25 +151,41 @@ describe Reports::IaaBillingReport do
     last_month = now.last_month
     today_year_month = now.strftime('%Y%m')
 
-    ServiceProvider.create(issuer: issuer, friendly_name: issuer, ial: 1, iaa: iaa,
-                           iaa_start_date: iaa_start_date1, iaa_end_date: iaa_end_date1)
-    ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, ial: 2, iaa: iaa2,
-                           iaa_start_date: iaa_start_date2, iaa_end_date: iaa_end_date2)
-    ServiceProvider.create(issuer: issuer3, friendly_name: issuer3, ial: 2, iaa: iaa2,
-                           iaa_start_date: iaa_start_date2, iaa_end_date: iaa_end_date2)
-    ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'a',
-                    last_ial2_authenticated_at: now - 1.hour)
-    ServiceProviderIdentity.create(user_id: 2, service_provider: issuer2, uuid: 'b',
-                    last_ial2_authenticated_at: last_month)
-    ServiceProviderIdentity.create(user_id: 3, service_provider: issuer3, uuid: 'c',
-                    last_ial2_authenticated_at: now - 1.hour)
+    ServiceProvider.create(
+      issuer: issuer, friendly_name: issuer, ial: 1, iaa: iaa,
+      iaa_start_date: iaa_start_date1, iaa_end_date: iaa_end_date1
+    )
+    ServiceProvider.create(
+      issuer: issuer2, friendly_name: issuer2, ial: 2, iaa: iaa2,
+      iaa_start_date: iaa_start_date2, iaa_end_date: iaa_end_date2
+    )
+    ServiceProvider.create(
+      issuer: issuer3, friendly_name: issuer3, ial: 2, iaa: iaa2,
+      iaa_start_date: iaa_start_date2, iaa_end_date: iaa_end_date2
+    )
+    ServiceProviderIdentity.create(
+      user_id: 1, service_provider: issuer, uuid: 'a',
+      last_ial2_authenticated_at: now - 1.hour
+    )
+    ServiceProviderIdentity.create(
+      user_id: 2, service_provider: issuer2, uuid: 'b',
+      last_ial2_authenticated_at: last_month
+    )
+    ServiceProviderIdentity.create(
+      user_id: 3, service_provider: issuer3, uuid: 'c',
+      last_ial2_authenticated_at: now - 1.hour
+    )
     create(:profile, :active, :verified, user_id: 1)
     create(:profile, :active, :verified, user_id: 2)
     create(:profile, :active, :verified, user_id: 3)
-    MonthlySpAuthCount.create(issuer: issuer, ial: 1, year_month: today_year_month, user_id: 2,
-                              auth_count: 7)
-    MonthlySpAuthCount.create(issuer: issuer2, ial: 2, year_month: today_year_month, user_id: 3,
-                              auth_count: 3)
+    MonthlySpAuthCount.create(
+      issuer: issuer, ial: 1, year_month: today_year_month, user_id: 2,
+      auth_count: 7
+    )
+    MonthlySpAuthCount.create(
+      issuer: issuer2, ial: 2, year_month: today_year_month, user_id: 3,
+      auth_count: 3
+    )
 
     tuples = subject.call
     expect(tuples).to include(results_for_2_iaas_1.to_json)

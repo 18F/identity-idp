@@ -105,10 +105,12 @@ class UspsInPersonProofer
       IPPAssuranceLevel: '1.5',
     }.to_json
 
-    headers = request_headers.merge({
-      'Authorization' => @token,
-      'RequestID' => request_id,
-    })
+    headers = request_headers.merge(
+      {
+        'Authorization' => @token,
+        'RequestID' => request_id,
+      },
+    )
 
     resp = faraday.post(url, body, headers)
 
@@ -135,10 +137,12 @@ class UspsInPersonProofer
       enrollmentCode: enrollment_code,
     }.to_json
 
-    headers = request_headers.merge({
-      'Authorization' => @token,
-      'RequestID' => request_id,
-    })
+    headers = request_headers.merge(
+      {
+        'Authorization' => @token,
+        'RequestID' => request_id,
+      },
+    )
 
     resp = faraday.post(url, body, headers)
 
@@ -165,10 +169,12 @@ class UspsInPersonProofer
       uniqueID: unique_id,
     }.to_json
 
-    headers = request_headers.merge({
-      'Authorization' => @token,
-      'RequestID' => request_id,
-    })
+    headers = request_headers.merge(
+      {
+        'Authorization' => @token,
+        'RequestID' => request_id,
+      },
+    )
 
     resp = faraday.post(url, body, headers)
 
@@ -180,7 +186,7 @@ class UspsInPersonProofer
   end
 
   def root_url
-    AppConfig.env.usps_ipp_root_url
+    IdentityConfig.store.usps_ipp_root_url
   end
 
   def sponsor_id

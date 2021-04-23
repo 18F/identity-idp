@@ -21,10 +21,12 @@ class Profile < ApplicationRecord
   # rubocop:disable Rails/SkipsModelValidations
   def activate
     now = Time.zone.now
+    is_reproof = Profile.find_by(user_id: user_id, active: true)
     transaction do
       Profile.where('user_id=?', user_id).update_all(active: false)
       update!(active: true, activated_at: now, deactivation_reason: nil, verified_at: now)
     end
+    send_push_notifications if is_reproof
   end
   # rubocop:enable Rails/SkipsModelValidations
 
@@ -93,5 +95,10 @@ class Profile < ApplicationRecord
   def encrypt_compound_pii_fingerprint(pii)
     compound_pii_fingerprint = self.class.build_compound_pii_fingerprint(pii)
     self.name_zip_birth_year_signature = compound_pii_fingerprint if compound_pii_fingerprint
+  end
+
+  def send_push_notifications
+    event = PushNotification::ReproofCompletedEvent.new(user: user)
+    PushNotification::HttpPush.deliver(event)
   end
 end

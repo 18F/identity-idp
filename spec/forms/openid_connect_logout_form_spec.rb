@@ -7,11 +7,13 @@ RSpec.describe OpenidConnectLogoutForm do
 
   let(:service_provider) { 'urn:gov:gsa:openidconnect:test' }
   let(:identity) do
-    create(:service_provider_identity,
-           service_provider: service_provider,
-           user: build(:user),
-           access_token: SecureRandom.hex,
-           session_uuid: SecureRandom.uuid)
+    create(
+      :service_provider_identity,
+      service_provider: service_provider,
+      user: build(:user),
+      access_token: SecureRandom.hex,
+      session_uuid: SecureRandom.uuid,
+    )
   end
 
   let(:id_token_hint) do

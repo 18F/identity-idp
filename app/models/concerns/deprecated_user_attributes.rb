@@ -24,6 +24,6 @@ module DeprecatedUserAttributes
   private
 
   def show_user_attribute_deprecation_warnings
-    AppConfig.env.show_user_attribute_deprecation_warnings == 'true'
+    IdentityConfig.store.show_user_attribute_deprecation_warnings
   end
 end

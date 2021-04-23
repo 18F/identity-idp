@@ -81,6 +81,7 @@ module Flow
       klass = self.class
       flow = klass::FSM_SETTINGS[:flow]
       @name = klass.name.underscore.gsub('_controller', '')
+      @namespace = flow.name.split('::').first.underscore
       @step_url = klass::FSM_SETTINGS[:step_url]
       @final_url = klass::FSM_SETTINGS[:final_url]
       @analytics_id = klass::FSM_SETTINGS[:analytics_id]
@@ -113,8 +114,13 @@ module Flow
       @request = request
       return if call_optional_show_step(step)
       step_params = flow.extra_view_variables(step)
-      local_params = step_params.merge(flow_session: flow_session)
-      render template: "#{@view || @name}/#{step}", locals: local_params
+      local_params = step_params.merge(
+        flow_namespace: @namespace,
+        flow_session: flow_session,
+        step_indicator: step_indicator_params,
+        step_template: "#{@view || @name}/#{step}",
+      )
+      render template: 'layouts/flow_step', locals: local_params
     end
 
     def call_optional_show_step(optional_step)
@@ -141,6 +147,16 @@ module Flow
         return true
       end
       false
+    end
+
+    def step_indicator_params
+      return if !IdentityConfig.store.ial2_step_indicator_enabled
+      handler = flow.step_handler(current_step)
+      return if !flow.class.const_defined?('STEP_INDICATOR_STEPS') || !handler
+      {
+        steps: flow.class::STEP_INDICATOR_STEPS,
+        current_step: handler::STEP_INDICATOR_STEP,
+      }
     end
 
     def ensure_correct_step
@@ -182,6 +198,7 @@ module Flow
 
     def analytics_properties
       {
+        flow_path: @flow.flow_path,
         step: current_step,
         step_count: current_flow_step_counts[current_step_name],
       }

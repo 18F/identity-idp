@@ -35,6 +35,13 @@
   }
 }
 
+.usa-button:not([class*='margin-']) {
+  // Temporary: To be backported to design system. Margins should be applied at the button element,
+  // or at the very least (a) we don't want the margins to offset full-width buttons on mobile, and
+  // (b) the default margin would not be large enough on its own.
+  margin-right: 0;
+}
+
 .usa-button.usa-button--unstyled:visited {
   // Temporary: Links in the IdP do not currently conform to the design system and instead retain
   // their color even if visited. Part of the work of LG-3877 should be to remove these styles, and
@@ -53,6 +60,23 @@
 }
 
 .usa-button--unstyled {
+  // Temporary: To be backported to design system. Unstyled buttons should inherit the appearance
+  // of a link.
+  display: inline;
+  width: auto;
+
+  // Temporary: To be backported to design system. Unstyled buttons should not ever show the default
+  // opaque disabled background color. Typically a button would not be both disabled and active, but
+  // it is possible in some browsers when e.g. disabling a button in response to its own click.
+  &.usa-button:disabled:hover,
+  &.usa-button:disabled.usa-button--hover,
+  &.usa-button:disabled:active,
+  &.usa-button:disabled.usa-button--active,
+  &.usa-button:disabled:focus,
+  &.usa-button:disabled.usa-focus {
+    background-color: transparent;
+  }
+
   &:hover,
   &:active {
     // Temporary: These styles should be ported upstream to the design system, optionally as part of

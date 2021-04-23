@@ -5,6 +5,7 @@ import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import AcuantCapture, {
   ACCEPTABLE_GLARE_SCORE,
   ACCEPTABLE_SHARPNESS_SCORE,
+  getNormalizedAcuantCaptureFailureMessage,
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import DeviceContext from '@18f/identity-document-capture/context/device';
@@ -42,6 +43,25 @@ describe('document-capture/components/acuant-capture', () => {
   let validUpload;
   before(async () => {
     validUpload = await getFixtureFile('doc_auth_images/id-back.jpg');
+  });
+
+  describe('getNormalizedAcuantCaptureFailureMessage', () => {
+    [
+      null,
+      undefined,
+      'Camera not supported.',
+      'already started.',
+      'already started',
+      'Missing HTML elements.',
+      /** @type {MediaStreamError} */ (new Error()),
+      'nonsense',
+    ].forEach((error) => {
+      it('returns a string', () => {
+        const message = getNormalizedAcuantCaptureFailureMessage(error);
+
+        expect(message).to.be.a('string');
+      });
+    });
   });
 
   context('mobile', () => {
@@ -156,12 +176,15 @@ describe('document-capture/components/acuant-capture', () => {
     });
 
     it('shows error if capture fails', async () => {
+      const addPageAction = sinon.spy();
       const { container, getByLabelText, findByText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
-            <AcuantCapture label="Image" />
-          </AcuantContextProvider>
-        </DeviceContext.Provider>,
+        <AnalyticsContext.Provider value={{ addPageAction }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
       );
 
       initialize({
@@ -171,9 +194,13 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByLabelText('Image');
       fireEvent.click(button);
 
-      await findByText('errors.doc_auth.capture_failure');
-      expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+      await findByText('doc_auth.errors.camera.failed');
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
+      expect(addPageAction).to.have.been.calledWith({
+        label: 'IdV: Image capture failed',
+        payload: { field: 'test', error: 'User or system denied camera access' },
+      });
     });
 
     it('calls onChange with the captured image on successful capture', async () => {
@@ -199,9 +226,26 @@ describe('document-capture/components/acuant-capture', () => {
       fireEvent.click(button);
       await new Promise((resolve) => onChange.callsFake(resolve));
 
-      expect(onChange.getCall(0).args).to.have.lengthOf(1);
-      expect(onChange.getCall(0).args[0]).to.equal('data:image/png,');
-      expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+      expect(onChange).to.have.been.calledWith(
+        'data:image/png,',
+        sinon.match({
+          assessment: 'success',
+          documentType: 'id',
+          dpi: sinon.match.number,
+          glare: sinon.match.number,
+          glareScoreThreshold: sinon.match.number,
+          height: sinon.match.number,
+          isAssessedAsBlurry: false,
+          isAssessedAsGlare: false,
+          mimeType: 'image/jpeg',
+          moire: sinon.match.number,
+          sharpness: sinon.match.number,
+          sharpnessScoreThreshold: sinon.match.number,
+          source: 'acuant',
+          width: sinon.match.number,
+        }),
+      );
+      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
     });
 
     it('ends the capture when the component unmounts', () => {
@@ -242,8 +286,8 @@ describe('document-capture/components/acuant-capture', () => {
       expect(window.AcuantCameraUI.start.calledOnce).to.be.true();
     });
 
-    it('renders upload button when value and capture not supported', () => {
-      const onChange = sinon.spy();
+    it('renders upload button when value and capture not supported', async () => {
+      const onChange = sinon.stub();
       const onClick = sinon.spy();
       const { getByText, getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
@@ -264,7 +308,16 @@ describe('document-capture/components/acuant-capture', () => {
       expect(onClick).to.have.been.calledOnce();
 
       userEvent.upload(input, validUpload);
-      expect(onChange).to.have.been.calledWith(validUpload);
+      await new Promise((resolve) => onChange.callsFake(resolve));
+      expect(onChange).to.have.been.calledWith(
+        validUpload,
+        sinon.match({
+          height: sinon.match.number,
+          mimeType: 'image/jpeg',
+          source: 'upload',
+          width: sinon.match.number,
+        }),
+      );
     });
 
     it('renders error message if capture succeeds but photo glare exceeds threshold', async () => {
@@ -273,7 +326,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" analyticsPrefix="image" />
+              <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -291,10 +344,10 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = await findByText('errors.doc_auth.photo_glare');
+      const error = await findByText('doc_auth.errors.glare.failed_short');
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: image added',
+        label: 'IdV: test image added',
         payload: {
           documentType: 'id',
           mimeType: 'image/jpeg',
@@ -322,7 +375,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" analyticsPrefix="image" />
+              <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -340,10 +393,10 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = await findByText('errors.doc_auth.photo_blurry');
+      const error = await findByText('doc_auth.errors.sharpness.failed_short');
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: image added',
+        label: 'IdV: test image added',
         payload: {
           documentType: 'id',
           mimeType: 'image/jpeg',
@@ -389,13 +442,13 @@ describe('document-capture/components/acuant-capture', () => {
       const input = getByLabelText('Image');
       userEvent.upload(input, file);
 
-      expect(await findByText('errors.doc_auth.invalid_file_input_type')).to.be.ok();
+      expect(await findByText('doc_auth.errors.file_type.invalid')).to.be.ok();
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      expect(getByText('errors.doc_auth.photo_blurry')).to.be.ok();
-      expect(() => getByText('errors.doc_auth.invalid_file_input_type')).to.throw();
+      expect(getByText('doc_auth.errors.sharpness.failed_short')).to.be.ok();
+      expect(() => getByText('doc_auth.errors.file_type.invalid')).to.throw();
     });
 
     it('removes error message once image is corrected', async () => {
@@ -404,7 +457,7 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank">
-              <AcuantCapture label="Image" analyticsPrefix="image" />
+              <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -432,13 +485,13 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = await findByText('errors.doc_auth.photo_blurry');
+      const error = await findByText('doc_auth.errors.sharpness.failed_short');
 
       fireEvent.click(button);
       await waitForElementToBeRemoved(error);
       expect(addPageAction).to.have.been.calledWith({
         key: 'documentCapture.acuantWebSDKResult',
-        label: 'IdV: image added',
+        label: 'IdV: test image added',
         payload: {
           documentType: 'id',
           mimeType: 'image/jpeg',
@@ -647,8 +700,7 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     fireEvent.change(input, { target: { files: [] } });
 
-    expect(onChange.getCall(0).args).to.have.lengthOf(1);
-    expect(onChange.getCall(0).args).to.deep.equal([null]);
+    expect(onChange).to.have.been.calledWith(null, undefined);
   });
 
   it('restricts accepted file types', () => {
@@ -669,7 +721,7 @@ describe('document-capture/components/acuant-capture', () => {
     const { getByLabelText } = render(
       <AnalyticsContext.Provider value={{ addPageAction }}>
         <AcuantContextProvider sdkSrc="about:blank">
-          <AcuantCapture label="Image" analyticsPrefix="image" />
+          <AcuantCapture label="Image" name="test" />
         </AcuantContextProvider>
       </AnalyticsContext.Provider>,
     );
@@ -679,7 +731,7 @@ describe('document-capture/components/acuant-capture', () => {
 
     await new Promise((resolve) => addPageAction.callsFake(resolve));
     expect(addPageAction).to.have.been.calledWith({
-      label: 'IdV: image added',
+      label: 'IdV: test image added',
       payload: {
         height: sinon.match.number,
         mimeType: 'image/jpeg',

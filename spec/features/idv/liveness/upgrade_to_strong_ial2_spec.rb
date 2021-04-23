@@ -13,7 +13,7 @@ describe 'Strong IAL2' do
     end
 
     it 'starts the proofing process if liveness is enabled' do
-      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
+      allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
 
       visit_idp_from_sp_with_ial2(:saml)
       sign_up_and_2fa_ial1_user
@@ -32,10 +32,12 @@ describe 'Strong IAL2' do
     end
 
     it 'upgrades user to IAL2 strict if liveness checking is enabled' do
-      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
+      allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
 
-      user ||= create(:profile, :active, :verified,
-                      pii: { first_name: 'John', ssn: '111223333' }).user
+      user ||= create(
+        :profile, :active, :verified,
+        pii: { first_name: 'John', ssn: '111223333' }
+      ).user
       visit_idp_from_sp_with_ial2(:oidc)
       sign_in_user(user)
       fill_in_code_with_last_phone_otp
@@ -56,21 +58,25 @@ describe 'Strong IAL2' do
     end
 
     it 'returns an error if liveness checking is disabled' do
-      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('false')
+      allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(false)
 
       visit_idp_from_sp_with_ial2(:oidc)
 
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=invalid_request'\
-'&error_description=Acr+values+Liveness+checking+is+disabled')
+      expect(current_url).to start_with(
+        'http://localhost:7654/auth/result?error=invalid_request'\
+        '&error_description=Acr+values+Liveness+checking+is+disabled',
+      )
     end
   end
 
   context 'with SP that sends an IAL2 strict request and a verified profile with no liveness' do
     it 'upgrades user to IAL2 strict if liveness checking is enabled' do
-      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('true')
+      allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
 
-      user ||= create(:profile, :active, :verified,
-                      pii: { first_name: 'John', ssn: '111223333' }).user
+      user ||= create(
+        :profile, :active, :verified,
+        pii: { first_name: 'John', ssn: '111223333' }
+      ).user
       visit_idp_from_oidc_sp_with_ial2_strict
       sign_in_user(user)
       fill_in_code_with_last_phone_otp
@@ -91,12 +97,14 @@ describe 'Strong IAL2' do
     end
 
     it 'returns an error if liveness checking is disabled' do
-      allow(AppConfig.env).to receive(:liveness_checking_enabled).and_return('false')
+      allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(false)
 
       visit_idp_from_oidc_sp_with_ial2_strict
 
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=invalid_request'\
-'&error_description=Acr+values+Liveness+checking+is+disabled')
+      expect(current_url).to start_with(
+        'http://localhost:7654/auth/result?error=invalid_request'\
+        '&error_description=Acr+values+Liveness+checking+is+disabled',
+      )
     end
   end
 end

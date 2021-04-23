@@ -140,7 +140,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_unauthorized_scope
-    return unless @unauthorized_scope && AppConfig.env.unauthorized_scope_enabled == 'true'
+    return unless @unauthorized_scope && IdentityConfig.store.unauthorized_scope_enabled
     errors.add(:scope, t('openid_connect.authorization.errors.unauthorized_scope'))
   end
 
@@ -153,8 +153,10 @@ class OpenidConnectAuthorizeForm
   def validate_verified_within_format
     return true if @duration_parser.valid?
 
-    errors.add(:verified_within,
-               t('openid_connect.authorization.errors.invalid_verified_within_format'))
+    errors.add(
+      :verified_within,
+      t('openid_connect.authorization.errors.invalid_verified_within_format'),
+    )
     false
   end
 
@@ -162,9 +164,13 @@ class OpenidConnectAuthorizeForm
     return true if verified_within.blank?
     return true if verified_within >= MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS.days
 
-    errors.add(:verified_within,
-               t('openid_connect.authorization.errors.invalid_verified_within_duration',
-                 count: MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS))
+    errors.add(
+      :verified_within,
+      t(
+        'openid_connect.authorization.errors.invalid_verified_within_duration',
+        count: MINIMUM_REPROOF_VERIFIED_WITHIN_DAYS,
+      ),
+    )
     false
   end
 

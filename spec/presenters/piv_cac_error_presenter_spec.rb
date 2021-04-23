@@ -25,8 +25,10 @@ describe PivCacErrorPresenter do
 
   describe '#description' do
     let(:expected_description) {
-      t('instructions.mfa.piv_cac.no_certificate_html',
-        try_again: view.link_to(t('instructions.mfa.piv_cac.try_again'), ''))
+      t(
+        'instructions.mfa.piv_cac.no_certificate_html',
+        try_again: view.link_to(t('instructions.mfa.piv_cac.try_again'), ''),
+      )
     }
 
     it { expect(presenter.description).to eq expected_description }

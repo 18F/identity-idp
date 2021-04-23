@@ -15,14 +15,20 @@ describe Db::Identity::SpUserQuotas do
 
   it 'returns the total ial2 user count per fiscal year with percent ial2 quota' do
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
-    ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, ial2_quota: 1,
-                           app_id: app_id2)
+    ServiceProvider.create(
+      issuer: issuer2, friendly_name: issuer2, ial2_quota: 1,
+      app_id: app_id2
+    )
     ServiceProviderIdentity.create(user_id: 1, service_provider: issuer, uuid: 'foo1')
     ServiceProviderIdentity.create(user_id: 2, service_provider: issuer, uuid: 'foo2')
-    ServiceProviderIdentity.create(user_id: 3, service_provider: issuer, uuid: 'foo3',
-                                   verified_at: Time.zone.now)
-    ServiceProviderIdentity.create(user_id: 4, service_provider: issuer2, uuid: 'foo4',
-                                   verified_at: Time.zone.now)
+    ServiceProviderIdentity.create(
+      user_id: 3, service_provider: issuer, uuid: 'foo3',
+      verified_at: Time.zone.now
+    )
+    ServiceProviderIdentity.create(
+      user_id: 4, service_provider: issuer2, uuid: 'foo4',
+      verified_at: Time.zone.now
+    )
     result = { issuer: issuer, app_id: app_id, ial2_total: 1, percent_ial2_quota: 0 }.to_json
     result2 = { issuer: issuer2, app_id: app_id2, ial2_total: 1, percent_ial2_quota: 100 }.to_json
 

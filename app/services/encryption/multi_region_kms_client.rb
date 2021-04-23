@@ -36,9 +36,11 @@ module Encryption
     def encrypt_multi(key_id, plaintext, encryption_context)
       region_ciphers = {}
       @aws_clients.each do |region, kms_client|
-        raw_region_ciphertext = kms_client.encrypt(key_id: key_id,
-                                                   plaintext: plaintext,
-                                                   encryption_context: encryption_context)
+        raw_region_ciphertext = kms_client.encrypt(
+          key_id: key_id,
+          plaintext: plaintext,
+          encryption_context: encryption_context,
+        )
         region_ciphers[region] = Base64.strict_encode64(raw_region_ciphertext.ciphertext_blob)
       end
       { regions: region_ciphers }.to_json
@@ -49,9 +51,11 @@ module Encryption
       unless region_client
         raise EncryptionError, 'Current region not found in clients for legacy encryption'
       end
-      region_client.encrypt(key_id: key_id,
-                            plaintext: plaintext,
-                            encryption_context: encryption_context).ciphertext_blob
+      region_client.encrypt(
+        key_id: key_id,
+        plaintext: plaintext,
+        encryption_context: encryption_context,
+      ).ciphertext_blob
     end
 
     CipherData = RedactedStruct.new(

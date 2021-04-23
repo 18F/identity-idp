@@ -1,6 +1,8 @@
 module Idv
   module Steps
     class SsnStep < DocAuthBaseStep
+      STEP_INDICATOR_STEP = :verify_info
+
       def call
         flow_session[:pii_from_doc][:ssn] = flow_params[:ssn]
       end

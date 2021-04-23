@@ -44,11 +44,13 @@ module Users
     private
 
     def set_webauthn_setup_presenter
-      @presenter = SetupPresenter.new(current_user: current_user,
-                                      user_fully_authenticated: user_fully_authenticated?,
-                                      user_opted_remember_device_cookie:
-                                          user_opted_remember_device_cookie,
-                                      remember_device_default: remember_device_default)
+      @presenter = SetupPresenter.new(
+        current_user: current_user,
+        user_fully_authenticated: user_fully_authenticated?,
+        user_opted_remember_device_cookie:
+                                                  user_opted_remember_device_cookie,
+        remember_device_default: remember_device_default,
+      )
     end
 
     def user_opted_remember_device_cookie
@@ -67,6 +69,8 @@ module Users
       create_user_event(:webauthn_key_removed)
       WebauthnConfiguration.where(user_id: current_user.id, id: params[:id]).destroy_all
       revoke_remember_device(current_user)
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
       flash[:success] = t('notices.webauthn_deleted')
       track_delete(true)
     end

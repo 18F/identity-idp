@@ -129,14 +129,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def undeliverable_address(user, email_address)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
-    with_user_locale(user) do
-      mail(to: email_address.email, subject: t('user_mailer.undeliverable_address.subject'))
-    end
-  end
-
   def doc_auth_desktop_link_to_sp(user, email_address, application, link)
     with_user_locale(user) do
       @link = link
@@ -150,14 +142,6 @@ class UserMailer < ActionMailer::Base
 
     with_user_locale(user) do
       mail(to: email, subject: t('user_mailer.letter_reminder.subject'))
-    end
-  end
-
-  def letter_expired(user, email)
-    return unless email_should_receive_nonessential_notifications?(email)
-
-    with_user_locale(user) do
-      mail(to: email, subject: t('user_mailer.letter_expired.subject'))
     end
   end
 

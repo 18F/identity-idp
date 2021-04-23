@@ -32,7 +32,7 @@ class WebauthnVerificationForm
 
   # this gives us a hook to override the domain embedded in the attestation test object
   def self.domain_name
-    AppConfig.env.domain_name
+    IdentityConfig.store.domain_name
   end
 
   private
@@ -62,8 +62,10 @@ class WebauthnVerificationForm
     return false unless @webauthn_configuration
 
     public_key = @webauthn_configuration.credential_public_key
-    assertion_response.valid?(@challenge.pack('c*'), original_origin,
-                              public_key: Base64.decode64(public_key), sign_count: 0)
+    assertion_response.valid?(
+      @challenge.pack('c*'), original_origin,
+      public_key: Base64.decode64(public_key), sign_count: 0
+    )
   end
 
   def extra_analytics_attributes

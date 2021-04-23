@@ -3,8 +3,9 @@ require 'rails_helper'
 RSpec.describe IdentityJobLogSubscriber, type: :job do
   it 'logs events' do
     expect(Rails.logger).to receive(:info).at_least(3).times do |log|
-      return if log.nil?
-      json = JSON.parse(log)
+      next if log.nil?
+      json = log.kind_of?(Hash) ? log : JSON.parse(log)
+      next if json['name'].nil?
       expect(json['name']).to be_in [
         'enqueue.active_job', 'perform_start.active_job', 'perform.active_job'
       ]
@@ -22,7 +23,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
 
     AddressProofingJob.perform_later(
       result_id: document_capture_session.result_id,
-      encrypted_arguments: encrypted_arguments, callback_url: nil, trace_id: nil
+      encrypted_arguments: encrypted_arguments, trace_id: nil
     )
   end
 end

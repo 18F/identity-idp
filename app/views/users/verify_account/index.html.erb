@@ -1,6 +1,19 @@
+<% if IdentityConfig.store.ial2_step_indicator_enabled %>
+  <% content_for(:pre_flash_content) do %>
+    <%= render 'shared/step_indicator', {
+      steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS.map do |step|
+        step[:name] == :secure_account ? step.merge(status: :complete) : step
+      end,
+      current_step: :verify_phone_or_address,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-2 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+    } %>
+  <% end %>
+<% end %>
+
 <% title t('titles.verify_profile') %>
 
-<h1 class="h3 margin-y-0">
+<h1 class="margin-y-0">
   <%= t('forms.verify_profile.title') %>
 </h1>
 <p class="mt-tiny margin-bottom-0">
@@ -8,11 +21,24 @@
 </p>
 <%= validated_form_for(@verify_account_form, url: verify_account_path,
                      html: { autocomplete: 'off', method: :post, role: 'form' }) do |f| %>
-  <%= f.input :otp, required: true, input_html: { aria: { invalid: false } },
-    label: t('forms.verify_profile.name'), wrapper_html: { class: 'margin-bottom-4' }, wrapper: :inline_form do %>
-    <%= f.input_field :otp, as: :inline, autofocus: true, type: 'text', maxlength: '10', value: @code %>
-    <%= f.button :submit, t('forms.verify_profile.submit'), class: 'usa-button--big' %>
-  <% end %>
+  <div class="grid-row margin-bottom-5">
+    <div class="grid-col-12 tablet:grid-col-6">
+      <%= f.input :otp,
+                  type: 'text',
+                  maxlength: 10,
+                  required: true,
+                  autofocus: true,
+                  input_html: {
+                    aria: { invalid: false },
+                    value: @code,
+                  },
+                  label: t('forms.verify_profile.name'),
+                  class: 'margin-bottom-5' %>
+      <%= f.button :submit,
+                   t('forms.verify_profile.submit'),
+                   class: 'usa-button--big usa-button--full-width' %>
+    </div>
+  </div>
 <% end %>
 
 <% if FeatureManagement.enable_gpo_verification? && !@mail_spammed %>

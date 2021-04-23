@@ -9,8 +9,10 @@ describe 'accounts/show.html.erb' do
     allow(view).to receive(:current_user).and_return(user)
     assign(
       :view_model,
-      AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
-                      locked_for_session: false),
+      AccountShow.new(
+        decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user,
+        locked_for_session: false
+      ),
     )
   end
 
@@ -34,8 +36,10 @@ describe 'accounts/show.html.erb' do
     it 'contains link to reactivate profile via personal key or reverification' do
       render
 
-      expect(rendered).to have_link(t('account.index.reactivation.link'),
-                                    href: reactivate_account_path)
+      expect(rendered).to have_link(
+        t('account.index.reactivation.link'),
+        href: reactivate_account_path,
+      )
     end
   end
 

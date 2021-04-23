@@ -13,8 +13,10 @@ describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCounts do
 
   it 'returns 1 unique despite the count for the user being 7' do
     ServiceProvider.create(issuer: issuer, friendly_name: issuer, app_id: app_id)
-    MonthlySpAuthCount.create(issuer: issuer, ial: 1, year_month: year_month, user_id: 2,
-                              auth_count: 7)
+    MonthlySpAuthCount.create(
+      issuer: issuer, ial: 1, year_month: year_month, user_id: 2,
+      auth_count: 7
+    )
     result = { issuer: issuer, year_month: year_month, app_id: app_id, total: 1 }.to_json
 
     expect(subject.call.ntuples).to eq(1)

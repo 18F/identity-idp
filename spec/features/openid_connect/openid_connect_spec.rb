@@ -39,7 +39,7 @@ describe 'OpenID Connect' do
 
     it 'succeeds in forcing login with prompt login and prior session' do
       user = oidc_end_client_secret_jwt(prompt: 'login')
-      Timecop.travel((AppConfig.env.sp_handoff_bounce_max_seconds.to_i + 1).seconds.from_now) do
+      Timecop.travel((IdentityConfig.store.sp_handoff_bounce_max_seconds + 1).seconds.from_now) do
         oidc_end_client_secret_jwt(prompt: 'login', user: user)
       end
     end
@@ -55,8 +55,10 @@ describe 'OpenID Connect' do
     end
 
     it 'fails with prompt login if not allowed for SP' do
-      visit_idp_from_ial1_oidc_sp(prompt: 'login',
-                                  client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned')
+      visit_idp_from_ial1_oidc_sp(
+        prompt: 'login',
+        client_id: 'urn:gov:gsa:openidconnect:test_prompt_login_banned',
+      )
 
       expect(current_path).to eq(openid_connect_authorize_path)
       expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
@@ -149,9 +151,11 @@ describe 'OpenID Connect' do
 
   it 'returns verified_at in an ial1 session if requested', driver: :mobile_rack_test do
     user = user_with_2fa
-    profile = create(:profile, :active, :verified,
-                     pii: { first_name: 'John', ssn: '111223333' },
-                     user: user)
+    profile = create(
+      :profile, :active, :verified,
+      pii: { first_name: 'John', ssn: '111223333' },
+      user: user
+    )
 
     token_response = sign_in_get_token_response(
       user: user,
@@ -231,10 +235,12 @@ describe 'OpenID Connect' do
   it 'sends the user through idv again via verified_within param' do
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     user = user_with_2fa
-    _profile = create(:profile, :active,
-                      verified_at: 60.days.ago,
-                      pii: { first_name: 'John', ssn: '111223333', dob: '1970-01-01' },
-                      user: user)
+    _profile = create(
+      :profile, :active,
+      verified_at: 60.days.ago,
+      pii: { first_name: 'John', ssn: '111223333', dob: '1970-01-01' },
+      user: user
+    )
 
     token_response = sign_in_get_token_response(
       user: user,
@@ -700,8 +706,10 @@ describe 'OpenID Connect' do
     end
     expect(current_path).to eq('/')
 
-    user ||= create(:profile, :active, :verified,
-                    pii: { first_name: 'John', ssn: '111223333' }).user
+    user ||= create(
+      :profile, :active, :verified,
+      pii: { first_name: 'John', ssn: '111223333' }
+    ).user
 
     sign_in_live_with_2fa(user)
     click_agree_and_continue_optional

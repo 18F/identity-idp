@@ -85,13 +85,16 @@ import './acuant-capture.scss';
  * @prop {string} label Label associated with file input.
  * @prop {string=} bannerText Optional banner text to show in file input.
  * @prop {string|Blob|null|undefined} value Current value.
- * @prop {(nextValue:string|Blob|null)=>void} onChange Callback receiving next value on change.
+ * @prop {(
+ *   nextValue: string|Blob|null,
+ *   metadata?: ImageAnalyticsPayload
+ * )=>void} onChange Callback receiving next value on change.
  * @prop {'user'=} capture Facing mode of capture. If capture is not specified and a camera is
  * supported, defaults to the Acuant environment camera capture.
  * @prop {string=} className Optional additional class names.
  * @prop {boolean=} allowUpload Whether to allow file upload. Defaults to `true`.
  * @prop {ReactNode=} errorMessage Error to show.
- * @prop {string} analyticsPrefix Prefix to prepend to user action analytics labels.
+ * @prop {string} name Prefix to prepend to user action analytics labels.
  */
 
 /**
@@ -127,6 +130,33 @@ function getDocumentTypeLabel(documentType) {
 }
 
 /**
+ * @param {import('./acuant-capture-canvas').AcuantCaptureFailureError} error
+ *
+ * @return {string}
+ */
+export function getNormalizedAcuantCaptureFailureMessage(error) {
+  if (error instanceof Error) {
+    return 'User or system denied camera access';
+  }
+
+  if (!error) {
+    return 'Cropping failure';
+  }
+
+  switch (error) {
+    case 'Camera not supported.':
+      return 'Camera not supported';
+    case 'Missing HTML elements.':
+      return 'Required page elements are not available';
+    case 'already started.':
+    case 'already started':
+      return 'Capture already started';
+    default:
+      return 'Unknown error';
+  }
+}
+
+/**
  * @param {File} file Image file.
  *
  * @return {Promise<{width: number?, height: number?}>}
@@ -140,10 +170,12 @@ function getImageDimensions(file) {
         image.onload = () => resolve({ width: image.width, height: image.height });
         image.onerror = () => resolve({ width: null, height: null });
         image.src = objectURL;
-      }).then(({ width, height }) => {
-        window.URL.revokeObjectURL(objectURL);
-        return { width, height };
       })
+        .then(({ width, height }) => {
+          window.URL.revokeObjectURL(objectURL);
+          return { width, height };
+        })
+        .catch(() => ({ width: null, height: null }))
     : Promise.resolve({ width: null, height: null });
 }
 
@@ -163,7 +195,7 @@ function AcuantCapture(
     className,
     allowUpload = true,
     errorMessage,
-    analyticsPrefix,
+    name,
   },
   ref,
 ) {
@@ -193,10 +225,11 @@ function AcuantCapture(
    * Calls onChange with next value and resets any errors which may be present.
    *
    * @param {Blob|string|null} nextValue Next value.
+   * @param {ImageAnalyticsPayload=} metadata Capture metadata.
    */
-  function onChangeAndResetError(nextValue) {
+  function onChangeAndResetError(nextValue, metadata) {
     setOwnErrorMessage(null);
-    onChange(nextValue);
+    onChange(nextValue, metadata);
   }
 
   /**
@@ -204,25 +237,26 @@ function AcuantCapture(
    *
    * @param {File?} nextValue Next value, if set.
    */
-  function onUpload(nextValue) {
+  async function onUpload(nextValue) {
+    /** @type {ImageAnalyticsPayload=} */
+    let analyticsPayload;
     if (nextValue) {
-      getImageDimensions(nextValue).then(({ width, height }) => {
-        /** @type {ImageAnalyticsPayload} */
-        const analyticsPayload = {
-          width,
-          height,
-          mimeType: nextValue.type,
-          source: 'upload',
-        };
+      const { width, height } = await getImageDimensions(nextValue);
 
-        addPageAction({
-          label: `IdV: ${analyticsPrefix} added`,
-          payload: analyticsPayload,
-        });
+      analyticsPayload = {
+        width,
+        height,
+        mimeType: nextValue.type,
+        source: 'upload',
+      };
+
+      addPageAction({
+        label: `IdV: ${name} image added`,
+        payload: analyticsPayload,
       });
     }
 
-    onChangeAndResetError(nextValue);
+    onChangeAndResetError(nextValue, analyticsPayload);
   }
 
   /**
@@ -297,13 +331,12 @@ function AcuantCapture(
     /** @type {AcuantImageAssessment} */
     let assessment;
     if (isAssessedAsGlare) {
-      setOwnErrorMessage(t('errors.doc_auth.photo_glare'));
+      setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
       assessment = 'glare';
     } else if (isAssessedAsBlurry) {
-      setOwnErrorMessage(t('errors.doc_auth.photo_blurry'));
+      setOwnErrorMessage(t('doc_auth.errors.sharpness.failed_short'));
       assessment = 'blurry';
     } else {
-      onChangeAndResetError(data);
       assessment = 'success';
     }
 
@@ -327,9 +360,13 @@ function AcuantCapture(
 
     addPageAction({
       key: 'documentCapture.acuantWebSDKResult',
-      label: `IdV: ${analyticsPrefix} added`,
+      label: `IdV: ${name} image added`,
       payload: analyticsPayload,
     });
+
+    if (assessment === 'success') {
+      onChangeAndResetError(data, analyticsPayload);
+    }
 
     setIsCapturingEnvironment(false);
   }
@@ -340,9 +377,13 @@ function AcuantCapture(
         <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
-            onImageCaptureFailure={() => {
-              setOwnErrorMessage(t('errors.doc_auth.capture_failure'));
+            onImageCaptureFailure={(error) => {
+              setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
               setIsCapturingEnvironment(false);
+              addPageAction({
+                label: 'IdV: Image capture failed',
+                payload: { field: name, error: getNormalizedAcuantCaptureFailureMessage(error) },
+              });
             }}
           />
         </FullScreen>
@@ -352,7 +393,7 @@ function AcuantCapture(
         label={label}
         hint={hasCapture || !allowUpload ? undefined : t('doc_auth.tips.document_capture_hint')}
         bannerText={bannerText}
-        invalidTypeText={t('errors.doc_auth.invalid_file_input_type')}
+        invalidTypeText={t('doc_auth.errors.file_type.invalid')}
         fileUpdatedText={t('doc_auth.info.image_updated')}
         accept={isMockClient ? undefined : ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff']}
         capture={capture}
@@ -365,6 +406,7 @@ function AcuantCapture(
       <div className="margin-top-2">
         {isMobile && (
           <Button
+            isFlexibleWidth
             isOutline={!value}
             isUnstyled={!!value}
             onClick={startCaptureOrTriggerUpload}
@@ -383,9 +425,11 @@ function AcuantCapture(
           formatHTML(t('doc_auth.buttons.take_or_upload_picture'), {
             'lg-take-photo': () => null,
             'lg-upload': ({ children }) => (
-              <Button isUnstyled onClick={forceUpload} className="margin-left-1">
-                {children}
-              </Button>
+              <span className="padding-left-1">
+                <Button isUnstyled onClick={forceUpload}>
+                  {children}
+                </Button>
+              </span>
             ),
           })}
       </div>

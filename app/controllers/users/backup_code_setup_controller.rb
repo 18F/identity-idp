@@ -43,6 +43,8 @@ module Users
 
     def delete
       current_user.backup_code_configurations.destroy_all
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
       flash[:success] = t('notices.backup_codes_deleted')
       revoke_remember_device(current_user)
       redirect_to account_two_factor_authentication_path
@@ -61,11 +63,12 @@ module Users
     end
 
     def set_backup_code_setup_presenter
-      @presenter = SetupPresenter.new(current_user: current_user,
-                                      user_fully_authenticated: user_fully_authenticated?,
-                                      user_opted_remember_device_cookie:
-                                          user_opted_remember_device_cookie,
-                                      remember_device_default: remember_device_default)
+      @presenter = SetupPresenter.new(
+        current_user: current_user,
+        user_fully_authenticated: user_fully_authenticated?,
+        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+        remember_device_default: remember_device_default,
+      )
     end
 
     def user_opted_remember_device_cookie
@@ -80,11 +83,13 @@ module Users
     def save_backup_codes
       mark_user_as_fully_authenticated
       generator.save(user_session[:backup_codes])
+      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+      PushNotification::HttpPush.deliver(event)
       create_user_event(:backup_codes_added)
     end
 
     def generator
-      @generator ||= BackupCodeGenerator.new(@current_user)
+      @generator ||= BackupCodeGenerator.new(current_user)
     end
   end
 end

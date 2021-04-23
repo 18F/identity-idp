@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-/** @typedef {Record<string,string|number|boolean|null>} Payload */
+/** @typedef {Record<string,string|number|boolean|null|undefined>} Payload */
 
 /**
  * @typedef PageAction

@@ -18,8 +18,10 @@ class ServiceProvider < ApplicationRecord
   include IdentityValidations::ServiceProviderValidation
 
   scope(:active, -> { where(active: true) })
-  scope(:with_push_notification_urls,
-        -> { where.not(push_notification_url: nil).where.not(push_notification_url: '') })
+  scope(
+    :with_push_notification_urls,
+    -> { where.not(push_notification_url: nil).where.not(push_notification_url: '') },
+  )
 
   def self.from_issuer(issuer)
     return NullServiceProvider.new(issuer: nil) if issuer.blank? || issuer.include?("\x00")
@@ -27,12 +29,12 @@ class ServiceProvider < ApplicationRecord
   end
 
   def metadata
-    attributes.symbolize_keys
+    attributes.symbolize_keys.merge(certs: ssl_certs)
   end
 
   # @return [Array<OpenSSL::X509::Certificate>]
   def ssl_certs
-    @ssl_certs ||= Array(certs).map do |cert|
+    @ssl_certs ||= (certs.presence || Array(cert)).select(&:present?).map do |cert|
       OpenSSL::X509::Certificate.new(load_cert(cert))
     end
   end

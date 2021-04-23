@@ -38,8 +38,10 @@ describe Users::EditPhoneController do
     let(:user) { create(:user, :signed_up) }
     let(:phone_configuration) { create(:phone_configuration, user: user) }
 
-    it 'deletes the phone configuraiton' do
+    it 'deletes the phone configuration' do
       stub_sign_in(user.reload)
+      expect(PushNotification::HttpPush).to receive(:deliver).
+        with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
       delete :destroy, params: { id: phone_configuration.id }
 
       expect(response).to redirect_to(account_url)

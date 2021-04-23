@@ -3,18 +3,24 @@ require 'rails_helper'
 describe Idv::Steps::VerifyStep do
   let(:user) { build(:user) }
   let(:service_provider) do
-    create(:service_provider,
-           issuer: 'http://sp.example.com',
-           app_id: '123')
+    create(
+      :service_provider,
+      issuer: 'http://sp.example.com',
+      app_id: '123',
+    )
   end
   let(:controller) do
-    instance_double('controller',
-                    session: { sp: { issuer: service_provider.issuer } },
-                    current_user: user,
-                    request: double('request',
-                                    headers: {
-                                      'X-Amzn-Trace-Id' => amzn_trace_id,
-                                    }))
+    instance_double(
+      'controller',
+      session: { sp: { issuer: service_provider.issuer } },
+      current_user: user,
+      request: double(
+        'request',
+        headers: {
+          'X-Amzn-Trace-Id' => amzn_trace_id,
+        },
+      ),
+    )
   end
   let(:amzn_trace_id) { SecureRandom.uuid }
 
@@ -38,7 +44,7 @@ describe Idv::Steps::VerifyStep do
       expect(flow.flow_session[:pii_from_doc][:uuid_prefix]).to eq service_provider.app_id
     end
 
-    it 'passes the X-Amzn-Trace-Id to the lambda' do
+    it 'passes the X-Amzn-Trace-Id to the proofer' do
       expect(step.send(:idv_agent)).to receive(:proof_resolution).
         with(
           kind_of(DocumentCaptureSession),

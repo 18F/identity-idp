@@ -9,7 +9,6 @@ ENV MAKEFLAGS "-j$(nproc)"
 
 # Install dev and test gems
 COPY Gemfile Gemfile.lock ./
-COPY lib/lambda_jobs/git_ref.rb ./lib/lambda_jobs/
 RUN bundle install -j $(nproc) --system --with development test
 
 # Install NPM packages

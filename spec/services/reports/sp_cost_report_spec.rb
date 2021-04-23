@@ -18,19 +18,21 @@ describe Reports::SpCostReport do
     ::SpCost.create(issuer: issuer2, ial: 2, agency_id: 3, cost_type: 'bar')
     ServiceProvider.create(issuer: issuer1, friendly_name: issuer1, app_id: app_id1)
     ServiceProvider.create(issuer: issuer2, friendly_name: issuer2, app_id: app_id2)
-    expect(JSON.parse(subject.call)).to eq([{
-                                             'issuer' => 'issuer1',
-                                             'ial' => 1,
-                                             'app_id' => app_id1,
-                                             'cost_type' => 'foo',
-                                             'count' => 2,
-                                           },
-                                            {
-                                              'issuer' => 'issuer2',
-                                              'ial' => 2,
-                                              'app_id' => app_id2,
-                                              'cost_type' => 'bar',
-                                              'count' => 1,
-                                            }])
+    expect(JSON.parse(subject.call)).to eq(
+      [{
+        'issuer' => 'issuer1',
+        'ial' => 1,
+        'app_id' => app_id1,
+        'cost_type' => 'foo',
+        'count' => 2,
+      },
+       {
+         'issuer' => 'issuer2',
+         'ial' => 2,
+         'app_id' => app_id2,
+         'cost_type' => 'bar',
+         'count' => 1,
+       }],
+    )
   end
 end

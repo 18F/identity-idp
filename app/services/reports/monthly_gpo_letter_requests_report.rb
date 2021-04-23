@@ -10,8 +10,10 @@ module Reports
         ::LetterRequestsToGpoFtpLog.where(ftp_at: start_time..end_time)
       end
       totals = calculate_totals(daily_results)
-      save_report(REPORT_NAME, {total_letter_requests: totals,
-                                daily_letter_requests: daily_results}.to_json)
+      save_report(
+        REPORT_NAME, {total_letter_requests: totals,
+                      daily_letter_requests: daily_results}.to_json
+      )
     end
 
     private

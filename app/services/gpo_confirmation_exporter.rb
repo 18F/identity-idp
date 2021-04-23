@@ -3,7 +3,7 @@ class GpoConfirmationExporter
   LINE_ENDING = "\r\n".freeze
   HEADER_ROW_ID = '01'.freeze
   CONTENT_ROW_ID = '02'.freeze
-  OTP_MAX_VALID_DAYS = AppConfig.env.usps_confirmation_max_days.to_i
+  OTP_MAX_VALID_DAYS = IdentityConfig.store.usps_confirmation_max_days
 
   def initialize(confirmations)
     @confirmations = confirmations
@@ -45,7 +45,7 @@ class GpoConfirmationExporter
       format_date(now),
       format_date(due),
       service_provider.friendly_name || 'Login.gov',
-      "https://#{AppConfig.env.domain_name}",
+      "https://#{IdentityConfig.store.domain_name}",
     ]
   end
 

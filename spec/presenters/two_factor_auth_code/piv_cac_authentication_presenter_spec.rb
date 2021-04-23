@@ -16,10 +16,12 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   let(:aal3_required) { true }
   let(:piv_cac_required) { false }
   let(:service_provider_mfa_policy) do
-    instance_double(ServiceProviderMfaPolicy,
-                    aal3_required?: aal3_required,
-                    piv_cac_required?: piv_cac_required,
-                    allow_user_to_switch_method?: allow_user_to_switch_method)
+    instance_double(
+      ServiceProviderMfaPolicy,
+      aal3_required?: aal3_required,
+      piv_cac_required?: piv_cac_required,
+      allow_user_to_switch_method?: allow_user_to_switch_method,
+    )
   end
 
   before do

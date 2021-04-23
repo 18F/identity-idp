@@ -1,6 +1,17 @@
+<% if IdentityConfig.store.ial2_step_indicator_enabled %>
+  <% content_for(:pre_flash_content) do %>
+    <%= render 'shared/step_indicator', {
+      steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+      current_step: :verify_phone_or_address,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-2 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+    } %>
+  <% end %>
+<% end %>
+
 <% title t('titles.enter_2fa_code') %>
 
-<h1 class="h3 margin-y-0">
+<h1 class="margin-y-0">
   <%= t('two_factor_authentication.header_text') %>
 </h1>
 
@@ -11,17 +22,17 @@
 <%= form_tag(:idv_otp_verification, method: :put, role: 'form', class: 'margin-top-4') do %>
   <div class="grid-row margin-bottom-5">
     <div class="grid-col-12 tablet:grid-col-6">
-      <%= label_tag 'code', t('forms.two_factor.code'), class: 'block bold' %>
-      <%= text_field_tag :code, '',
-                         value: @code,
-                         required: true,
-                         aria: { invalid: false, describedby: 'code-instructs' },
-                         autofocus: true,
-                         pattern: '[0-9]*',
-                         class: 'col-12 field monospace mfa usa-input margin-bottom-5',
-                         maxlength: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
-                         autocomplete: 'one-time-code',
-                         type: 'tel' %>
+      <%= label_tag :code, t('forms.two_factor.code'), class: 'block bold' %>
+      <%= render(
+        'shared/one_time_code_input',
+        transport: nil,
+        name: :code,
+        value: @code,
+        required: true,
+        autofocus: true,
+        numeric: false,
+        class: 'col-12 margin-bottom-5',
+      ) %>
       <%= submit_tag t('forms.buttons.submit.default'),
                      class: 'usa-button usa-button--big usa-button--full-width' %>
     </div>

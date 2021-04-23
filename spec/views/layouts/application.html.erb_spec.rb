@@ -110,7 +110,7 @@ describe 'layouts/application.html.erb' do
           service_provider_request: nil,
         ).call,
       )
-      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
+      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
 
       render
 
@@ -120,7 +120,7 @@ describe 'layouts/application.html.erb' do
 
   context 'user is fully authenticated' do
     it 'does not render the DAP analytics' do
-      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
+      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
 
       render
 
@@ -135,7 +135,7 @@ describe 'layouts/application.html.erb' do
     end
 
     it 'does not render the DAP analytics' do
-      allow(AppConfig.env).to receive(:participate_in_dap).and_return('true')
+      allow(IdentityConfig.store).to receive(:participate_in_dap).and_return(true)
 
       render
 

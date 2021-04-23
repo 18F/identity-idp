@@ -67,7 +67,7 @@ module Idv
         redirect_to throttled_url
         IdentityDocAuth::Response.new(
           success: false,
-          errors: { limit: I18n.t('errors.doc_auth.acuant_throttle') },
+          errors: { limit: I18n.t('errors.doc_auth.throttled_heading') },
         )
       end
 

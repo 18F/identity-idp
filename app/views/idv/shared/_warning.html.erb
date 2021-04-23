@@ -1,0 +1,28 @@
+<%#
+yields: Page instruction content.
+locals:
+* heading: Page title and primary page heading text.
+* action: Optional hash of `text`, `url` of a primary action link.
+* options: Array of troubleshooting options.
+%>
+<% title heading %>
+<%= image_tag('alert/warning-lg.svg', width: 54, alt: '', class: 'display-block') %>
+
+<h1 class="margin-top-4 margin-bottom-2"><%= heading %></h1>
+
+<%= yield %>
+
+<% if local_assigns[:action] %>
+  <div class="margin-top-4">
+    <%= tag.a href: action[:url], class: 'usa-button usa-button--big usa-button--wide' do %>
+      <%= action[:text] %>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render(
+  'shared/troubleshooting_options',
+  heading: t('idv.troubleshooting.headings.having_trouble'),
+  options: options,
+  class: 'padding-top-1',
+) %>

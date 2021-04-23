@@ -79,7 +79,12 @@ module Users
     end
 
     def create_account_if_email_not_found
-      user, result = RequestPasswordReset.new(email, request_id).perform
+      user, result = RequestPasswordReset.new(
+        email: email,
+        request_id: request_id,
+        analytics: analytics,
+      ).perform
+
       return unless result
 
       analytics.track_event(Analytics::USER_REGISTRATION_EMAIL, result.to_h)

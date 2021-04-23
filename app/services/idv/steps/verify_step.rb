@@ -1,6 +1,8 @@
 module Idv
   module Steps
     class VerifyStep < VerifyBaseStep
+      STEP_INDICATOR_STEP = :verify_info
+
       def call
         enqueue_job
       end

@@ -6,7 +6,7 @@ RSpec.describe Health::OutboundController do
 
     context 'when the outbound connections are healthy' do
       before do
-        stub_request(:head, AppConfig.env.outbound_connection_check_url).
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
           to_return(status: 200)
       end
 
@@ -22,13 +22,16 @@ RSpec.describe Health::OutboundController do
         json = JSON.parse(response.body, symbolize_names: true)
 
         expect(json[:healthy]).to eq(true)
-        expect(json[:result]).to eq(status: 200, url: AppConfig.env.outbound_connection_check_url)
+        expect(json[:result]).to eq(
+          status: 200,
+          url: IdentityConfig.store.outbound_connection_check_url,
+        )
       end
     end
 
     context 'when the outbound connections are uhealthy' do
       before do
-        stub_request(:head, AppConfig.env.outbound_connection_check_url).to_timeout
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).to_timeout
       end
 
       it 'is a 500' do

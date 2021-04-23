@@ -1,3 +1,16 @@
+<% if IdentityConfig.store.ial2_step_indicator_enabled %>
+  <% content_for(:pre_flash_content) do %>
+    <%= render 'shared/step_indicator', {
+      steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS.map do |step|
+        step[:name] == :secure_account ? step.merge(status: :complete) : step
+      end,
+      current_step: :verify_phone_or_address,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-2 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+    } %>
+  <% end %>
+<% end %>
+
 <%= image_tag(asset_url('come-back.svg'),
               size: '140', class: 'block margin-x-auto') %>
 <h2 class="center">

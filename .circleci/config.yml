@@ -121,7 +121,7 @@ jobs:
       CC_TEST_REPORTER_ID: faecd27e9aed532634b3f4d3e251542d7de9457cfca96a94208a63270ef9b42e
       COVERAGE: true
 
-    parallelism: 4
+    parallelism: 8
 
     working_directory: ~/identity-idp
 
@@ -195,6 +195,7 @@ jobs:
       - run:
           name: Run Lints
           command: |
+            make lint_yarn_lockfile
             yarn run lint
             yarn run typecheck
             bundle exec rubocop

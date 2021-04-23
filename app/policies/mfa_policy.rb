@@ -9,7 +9,7 @@ class MfaPolicy
   end
 
   def two_factor_enabled?
-    mfa_user.two_factor_configurations.any?(&:mfa_enabled?)
+    mfa_user.two_factor_enabled?
   end
 
   def aal3_mfa_enabled?

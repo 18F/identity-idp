@@ -7,13 +7,16 @@ module SignUp
     before_action :require_no_authentication
 
     def new
-      @register_user_email_form = RegisterUserEmailForm.new
+      @register_user_email_form = RegisterUserEmailForm.new(analytics: analytics)
       analytics.track_event(Analytics::USER_REGISTRATION_ENTER_EMAIL_VISIT)
       render :new, locals: { request_id: nil }, formats: :html
     end
 
     def create
-      @register_user_email_form = RegisterUserEmailForm.new(recaptcha_results: validate_recaptcha)
+      @register_user_email_form = RegisterUserEmailForm.new(
+        recaptcha_results: validate_recaptcha,
+        analytics: analytics,
+      )
 
       result = @register_user_email_form.submit(permitted_params)
 

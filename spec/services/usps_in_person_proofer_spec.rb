@@ -17,7 +17,8 @@ RSpec.describe UspsInPersonProofer do
     it 'returns facilities' do
       stub_request_token
       stub_request_facilities
-      location = double('Location',
+      location = double(
+        'Location',
         address: Faker::Address.street_address,
         city: Faker::Address.city,
         state: Faker::Address.state_abbr,
@@ -42,7 +43,8 @@ RSpec.describe UspsInPersonProofer do
     it 'returns enrollment information' do
       stub_request_token
       stub_request_enroll
-      applicant = double('applicant',
+      applicant = double(
+        'applicant',
         address: Faker::Address.street_address,
         city: Faker::Address.city,
         state: Faker::Address.state_abbr,
@@ -65,7 +67,8 @@ RSpec.describe UspsInPersonProofer do
       stub_request_token
       stub_request_failed_proofing_results
 
-      applicant = double('applicant',
+      applicant = double(
+        'applicant',
         unique_id: '123456789',
         enrollment_code: '123456789',
       )
@@ -83,7 +86,8 @@ RSpec.describe UspsInPersonProofer do
       stub_request_token
       stub_request_passed_proofing_results
 
-      applicant = double('applicant',
+      applicant = double(
+        'applicant',
         unique_id: '123456789',
         enrollment_code: '123456789',
       )
@@ -101,7 +105,8 @@ RSpec.describe UspsInPersonProofer do
       stub_request_token
       stub_request_in_progress_proofing_results
 
-      applicant = double('applicant',
+      applicant = double(
+        'applicant',
         unique_id: '123456789',
         enrollment_code: '123456789',
       )
@@ -121,7 +126,8 @@ RSpec.describe UspsInPersonProofer do
     it 'returns enrollment information' do
       stub_request_token
       stub_request_enrollment_code
-      applicant = double('applicant',
+      applicant = double(
+        'applicant',
         unique_id: '123456789',
       )
 

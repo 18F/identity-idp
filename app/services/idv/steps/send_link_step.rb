@@ -1,6 +1,8 @@
 module Idv
   module Steps
     class SendLinkStep < DocAuthBaseStep
+      STEP_INDICATOR_STEP = :verify_id
+
       def call
         return throttled_failure if throttled_else_increment
         telephony_result = send_link

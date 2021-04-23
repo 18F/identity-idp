@@ -10,7 +10,7 @@ describe WebauthnSetupForm do
   describe '#submit' do
     context 'when the input is valid' do
       it 'returns FormResponse with success: true' do
-        allow(AppConfig.env).to receive(:domain_name).and_return('localhost:3000')
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         result = instance_double(FormResponse)
         params = {
           attestation_object: attestation_object,
@@ -25,6 +25,20 @@ describe WebauthnSetupForm do
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra_attributes).and_return(result)
         expect(subject.submit(protocol, params)).to eq result
+      end
+
+      it 'sends a recovery information changed event' do
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+        expect(PushNotification::HttpPush).to receive(:deliver).
+          with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+        params = {
+          attestation_object: attestation_object,
+          client_data_json: setup_client_data_json,
+          name: 'mykey',
+        }
+
+        subject.submit(protocol, params)
       end
     end
 
@@ -47,7 +61,7 @@ describe WebauthnSetupForm do
       end
 
       it 'returns false with an error when the attestation response raises an error' do
-        allow(AppConfig.env).to receive(:domain_name).and_return('localhost:3000')
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
 
         result = instance_double(FormResponse)

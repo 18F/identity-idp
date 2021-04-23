@@ -5,9 +5,11 @@ module TwoFactorAuthCode
     end
 
     def help_text
-      t("instructions.mfa.#{two_factor_authentication_method}.confirm_code_html",
+      t(
+        "instructions.mfa.#{two_factor_authentication_method}.confirm_code_html",
         email: content_tag(:strong, user_email),
-        app: content_tag(:strong, APP_NAME))
+        app: content_tag(:strong, APP_NAME),
+      )
     end
 
     def fallback_question

@@ -40,7 +40,8 @@ describe Deploy::Activate do
           'accountId' => '12345',
         }.to_json)
 
-      s3_client.stub_responses(:get_object, proc do |context|
+      s3_client.stub_responses(
+        :get_object, proc do |context|
           key = context.params[:key]
           body = s3_contents[key]
           if body.present?

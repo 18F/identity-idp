@@ -20,12 +20,4 @@ class BackupCodeDepletedPresenter
   def continue_bttn_prologue
     nil
   end
-
-  def continue_bttn_title
-    t('forms.buttons.continue')
-  end
-
-  def continue_bttn_class
-    'usa-button usa-button--big usa-button--wide'
-  end
 end

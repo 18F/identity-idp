@@ -6,7 +6,7 @@ RSpec.describe OutboundHealthChecker do
 
     context 'bad config' do
       before do
-        expect(AppConfig.env).to receive(:outbound_connection_check_url).and_return('')
+        expect(IdentityConfig.store).to receive(:outbound_connection_check_url).and_return('')
       end
 
       it 'is not healthy' do
@@ -17,7 +17,7 @@ RSpec.describe OutboundHealthChecker do
 
     context 'successful connection to endpoint' do
       before do
-        stub_request(:head, AppConfig.env.outbound_connection_check_url).
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
           to_return(status: status)
       end
 
@@ -27,7 +27,7 @@ RSpec.describe OutboundHealthChecker do
         it 'is healthy' do
           expect(check).to be_healthy
           expect(check.result).to eq(
-            url: AppConfig.env.outbound_connection_check_url,
+            url: IdentityConfig.store.outbound_connection_check_url,
             status: status,
           )
         end
@@ -39,7 +39,7 @@ RSpec.describe OutboundHealthChecker do
         it 'is healthy' do
           expect(check).to be_healthy
           expect(check.result).to eq(
-            url: AppConfig.env.outbound_connection_check_url,
+            url: IdentityConfig.store.outbound_connection_check_url,
             status: status,
           )
         end
@@ -77,7 +77,7 @@ RSpec.describe OutboundHealthChecker do
 
     context 'timeout from endpoint' do
       before do
-        stub_request(:head, AppConfig.env.outbound_connection_check_url).to_timeout
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).to_timeout
       end
 
       it 'is not healthy' do

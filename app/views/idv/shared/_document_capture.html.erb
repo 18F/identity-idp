@@ -1,6 +1,6 @@
 <% title t('titles.doc_auth.verify') %>
 <% content_for :meta_tags do %>
-  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: AppConfig.env.acuant_sdk_initialization_endpoint %>
+  <%= tag :meta, name: 'acuant-sdk-initialization-endpoint', content: IdentityConfig.store.acuant_sdk_initialization_endpoint %>
   <%= tag :meta, name: 'acuant-sdk-initialization-creds', content: AppConfig.env.acuant_sdk_initialization_creds %>
 <% end %>
 <% SecureHeaders.append_content_security_policy_directives(
@@ -23,8 +23,9 @@
   status_endpoint: FeatureManagement.document_capture_async_uploads_enabled? ?
     send(@step_url, step: :verify_document_status) :
     nil,
-  status_poll_interval_ms: AppConfig.env.poll_rate_for_verify_in_seconds.to_i * 1000,
+  status_poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
   sp_name: sp_name,
+  flow_path: flow_path,
   failure_to_proof_url: failure_to_proof_url,
   front_image_upload_url: front_image_upload_url,
   back_image_upload_url: back_image_upload_url,
@@ -34,7 +35,7 @@
 <div class="no-js">
   <%= render 'idv/doc_auth/error_messages', flow_session: flow_session %>
 
-  <h1 class="h3 margin-y-0">
+  <h1 class="margin-y-0">
     <% if liveness_checking_enabled? %>
       <%= t('doc_auth.headings.document_capture_heading_with_selfie_html') %>
     <% else %>
@@ -51,20 +52,6 @@
     <%# ---- Front Image ----- %>
 
     <p><%= t('doc_auth.info.document_capture_intro_acknowledgment') %></p>
-
-    <p>
-      <%= t('doc_auth.info.id_worn_html') %>
-    </p>
-
-    <% if sp_name %>
-      <p>
-        <%= t(
-                'doc_auth.info.no_other_id_help_bold_html',
-                failure_to_proof_url: failure_to_proof_url,
-                sp_name: sp_name,
-            ) %>
-      </p>
-    <% end %>
 
     <p class="margin-top-2 margin-bottom-0"><%= t('doc_auth.tips.document_capture_header_text') %></p>
 

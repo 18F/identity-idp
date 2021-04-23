@@ -2,7 +2,7 @@ module UnconfirmedUserConcern
   include ActionView::Helpers::DateHelper
 
   def find_user_with_confirmation_token
-    @confirmation_token = params[:confirmation_token]
+    @confirmation_token = params.permit(:confirmation_token)[:confirmation_token]
     @email_address = EmailConfirmationTokenValidator.email_address_from_token(@confirmation_token)
     @user = @email_address&.user
   end

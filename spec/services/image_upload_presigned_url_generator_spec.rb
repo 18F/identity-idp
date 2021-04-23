@@ -14,12 +14,12 @@ RSpec.describe ImageUploadPresignedUrlGenerator do
     let(:transaction_id) { SecureRandom.uuid }
 
     before do
-      expect(AppConfig.env).
+      expect(IdentityConfig.store).
         to receive(:doc_auth_enable_presigned_s3_urls).and_return(doc_auth_enable_presigned_s3_urls)
     end
 
     context 'when doc_auth_enable_presigned_s3_urls is disabled' do
-      let(:doc_auth_enable_presigned_s3_urls) { 'false' }
+      let(:doc_auth_enable_presigned_s3_urls) { false }
 
       it 'is nil' do
         expect(presigned_image_upload_url).to eq(nil)
@@ -27,7 +27,7 @@ RSpec.describe ImageUploadPresignedUrlGenerator do
     end
 
     context 'when doc_auth_enable_presigned_s3_urls is enabled' do
-      let(:doc_auth_enable_presigned_s3_urls) { 'true' }
+      let(:doc_auth_enable_presigned_s3_urls) { true }
 
       before do
         expect(Identity::Hostdata).to receive(:in_datacenter?).and_return(in_datacenter)

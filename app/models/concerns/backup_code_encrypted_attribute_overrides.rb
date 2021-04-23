@@ -15,7 +15,20 @@ module BackupCodeEncryptedAttributeOverrides
 
   # Override usual setter method in order to also set fingerprint
   def code=(code)
-    set_encrypted_attribute(name: :code, value: code)
-    self.code_fingerprint = code.present? ? encrypted_attributes[:code].fingerprint : ''
+    code = RandomPhrase.normalize(code)
+
+    self.salted_code_fingerprint = BackupCodeConfiguration.scrypt_password_digest(
+      password: code,
+      salt: code_salt,
+      cost: code_cost,
+    ) if code.present? && code_cost.present? && code_salt.present?
+
+    if skip_legacy_encryption?
+      self.encrypted_code = ''
+      self.code_fingerprint = self.salted_code_fingerprint # "garbage" value, has to be unique
+    else
+      set_encrypted_attribute(name: :code, value: code)
+      self.code_fingerprint = code.present? ? encrypted_attributes[:code].fingerprint : ''
+    end
   end
 end

@@ -4,7 +4,7 @@ feature 'Remembering a phone' do
   include IdvStepHelper
 
   before do
-    allow(AppConfig.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
+    allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
   end
 
   let(:user) { user_with_2fa }

@@ -5,7 +5,7 @@ describe Idv::Agent do
   include IdvHelper
 
   let(:bad_phone) do
-    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+    Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
 
   describe 'instance' do
@@ -19,8 +19,10 @@ describe Idv::Agent do
 
       context 'proofing state_id enabled' do
         it 'does not proof state_id if resolution fails' do
-          agent = Idv::Agent.new({ ssn: '444-55-6666', first_name: Faker::Name.first_name,
-                                   zipcode: '11111' })
+          agent = Idv::Agent.new(
+            { ssn: '444-55-6666', first_name: Faker::Name.first_name,
+              zipcode: '11111' },
+          )
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
@@ -29,7 +31,7 @@ describe Idv::Agent do
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include(
             state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
 
@@ -48,15 +50,17 @@ describe Idv::Agent do
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to include(
             state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
       end
 
       context 'proofing state_id disabled' do
         it 'does not proof state_id if resolution fails' do
-          agent = Idv::Agent.new({ ssn: '444-55-6666', first_name: Faker::Name.first_name,
-                                   zipcode: '11111' })
+          agent = Idv::Agent.new(
+            { ssn: '444-55-6666', first_name: Faker::Name.first_name,
+              zipcode: '11111' },
+          )
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
@@ -64,13 +68,15 @@ describe Idv::Agent do
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
           expect(result[:context][:stages]).to_not include(
             state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
 
         it 'does not proof state_id if resolution succeeds' do
-          agent = Idv::Agent.new({ ssn: '444-55-8888', first_name: Faker::Name.first_name,
-                                   zipcode: '11111' })
+          agent = Idv::Agent.new(
+            { ssn: '444-55-8888', first_name: Faker::Name.first_name,
+              zipcode: '11111' },
+          )
           agent.proof_resolution(
             document_capture_session, should_proof_state_id: false, trace_id: trace_id
           )
@@ -78,14 +84,16 @@ describe Idv::Agent do
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to_not include(
             state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
       end
 
       it 'returns an unsuccessful result and notifies exception trackers if an exception occurs' do
-        agent = Idv::Agent.new(ssn: '444-55-8888', first_name: 'Time Exception',
-                               zipcode: '11111')
+        agent = Idv::Agent.new(
+          ssn: '444-55-8888', first_name: 'Time Exception',
+          zipcode: '11111'
+        )
 
         agent.proof_resolution(
           document_capture_session, should_proof_state_id: true, trace_id: trace_id

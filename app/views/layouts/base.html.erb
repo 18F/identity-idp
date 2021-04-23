@@ -68,6 +68,7 @@
     </div>
     <div class="container">
       <div class="padding-x-2 padding-y-2 tablet:padding-y-8 tablet:padding-x-10 margin-x-auto tablet:margin-bottom-8 border-box <%= local_assigns[:disable_card].present? ? '' : 'card' %>" role="main">
+        <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
         <%= render 'shared/flashes' %>
         <%= content_for?(:content) ? yield(:content) : yield %>
       </div>
@@ -97,7 +98,7 @@
   <%= javascript_packs_tag_once 'application', prepend: true %>
   <%= render_javascript_pack_once_tags %>
 
-  <%= render 'shared/dap_analytics' if AppConfig.env.participate_in_dap == 'true' && !session_with_trust? %>
+  <%= render 'shared/dap_analytics' if IdentityConfig.store.participate_in_dap && !session_with_trust? %>
 </body>
 
 </html>

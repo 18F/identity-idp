@@ -11,15 +11,23 @@ import withBackgroundEncryptedUpload from '../higher-order/with-background-encry
 import './review-issues-step.scss';
 
 /**
+ * @typedef {'front'|'back'} DocumentSide
+ */
+
+/**
  * @typedef ReviewIssuesStepValue
  *
  * @prop {Blob|string|null|undefined} front Front image value.
  * @prop {Blob|string|null|undefined} back Back image value.
  * @prop {Blob|string|null|undefined} selfie Back image value.
+ * @prop {string=} front_image_metadata Front image metadata.
+ * @prop {string=} back_image_metadata Back image metadata.
  */
 
 /**
  * Sides of document to present as file input.
+ *
+ * @type {DocumentSide[]}
  */
 const DOCUMENT_SIDES = ['front', 'back'];
 
@@ -55,11 +63,6 @@ function ReviewIssuesStep({
 
   return (
     <>
-      <p>
-        {formatHTML(t('doc_auth.info.id_worn_html'), {
-          strong: 'strong',
-        })}
-      </p>
       <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.review_issues_id_text1')}</li>
@@ -81,10 +84,12 @@ function ReviewIssuesStep({
             /* i18n-tasks-use t('doc_auth.headings.front') */
             bannerText={t(`doc_auth.headings.${side}`)}
             value={value[side]}
-            onChange={(nextValue) => onChange({ [side]: nextValue })}
+            onChange={(nextValue, metadata) =>
+              onChange({ [side]: nextValue, [`${side}_image_metadata`]: JSON.stringify(metadata) })
+            }
             className="document-capture-review-issues-step__input"
             errorMessage={sideError ? <FormErrorMessage error={sideError} /> : undefined}
-            analyticsPrefix={`${side} image`}
+            name={side}
           />
         );
       })}
@@ -109,7 +114,7 @@ function ReviewIssuesStep({
               allowUpload={false}
               className="document-capture-review-issues-step__input"
               errorMessage={selfieError ? <FormErrorMessage error={selfieError} /> : undefined}
-              analyticsPrefix="selfie"
+              name="selfie"
             />
           ) : (
             <SelfieCapture
@@ -128,7 +133,7 @@ function ReviewIssuesStep({
         </>
       )}
       {serviceProvider.name && (
-        <BlockLink url={serviceProvider.failureToProofURL}>
+        <BlockLink url={serviceProvider.getFailureToProofURL('review_issues_having_trouble')}>
           {formatHTML(t('doc_auth.info.get_help_at_sp_html', { sp_name: serviceProvider.name }), {
             strong: 'strong',
           })}

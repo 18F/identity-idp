@@ -141,7 +141,7 @@ describe Users::SessionsController, devise: true do
       expect(flash[:info]).to eq t(
         'notices.session_timedout',
         app: APP_NAME,
-        minutes: AppConfig.env.session_timeout_in_minutes,
+        minutes: IdentityConfig.store.session_timeout_in_minutes,
       )
 
       expect(subject.current_user).to be_nil
@@ -539,7 +539,7 @@ describe Users::SessionsController, devise: true do
 
         expect(json['timeout'].to_datetime.to_i).to be >= timeout.to_i
         expect(json['timeout'].to_datetime.to_i).to be_within(1).of(
-          Time.zone.now.to_i + AppConfig.env.session_timeout_in_minutes.to_i * 60,
+          Time.zone.now.to_i + IdentityConfig.store.session_timeout_in_minutes * 60,
         )
       end
 
@@ -550,7 +550,7 @@ describe Users::SessionsController, devise: true do
         json ||= JSON.parse(response.body)
 
         expect(json['remaining']).to be_within(1).of(
-          AppConfig.env.session_timeout_in_minutes.to_i * 60,
+          IdentityConfig.store.session_timeout_in_minutes * 60,
         )
       end
 

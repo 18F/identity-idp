@@ -4,7 +4,7 @@ class ImageUploadPresignedUrlGenerator
   def presigned_image_upload_url(image_type:, transaction_id:)
     keyname = "#{transaction_id}-#{image_type}"
 
-    if AppConfig.env.doc_auth_enable_presigned_s3_urls != 'true'
+    if !IdentityConfig.store.doc_auth_enable_presigned_s3_urls
       nil
     elsif !Identity::Hostdata.in_datacenter?
       Rails.application.routes.url_helpers.test_fake_s3_url(key: keyname)

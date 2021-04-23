@@ -16,4 +16,11 @@ describe Db::DeletedUser::Create do
     deleted_user = DeletedUser.first
     expect(deleted_user.user_id).to eq(user.id)
   end
+
+  it 'fails gracefully if we try to insert the same user twice and returns the deleted user' do
+    user = create(:user)
+    deleted_user1 = subject.call(user.id)
+    deleted_user2 = subject.call(user.id)
+    expect(deleted_user1).to eq(deleted_user2)
+  end
 end

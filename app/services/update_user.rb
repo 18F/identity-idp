@@ -5,8 +5,12 @@ class UpdateUser
   end
 
   def call
-    result = user.update!(attributes.except(:phone_id, :phone, :phone_confirmed_at,
-                                            :otp_make_default_number))
+    result = user.update!(
+      attributes.except(
+        :phone_id, :phone, :phone_confirmed_at,
+        :otp_make_default_number
+      ),
+    )
     manage_phone_configuration
     result
   end
@@ -29,7 +33,10 @@ class UpdateUser
 
   def create_phone_configuration
     return if phone_attributes[:phone].blank? || duplicate_phone?
-    MfaContext.new(user).phone_configurations.create(phone_attributes)
+    phone_configuration = MfaContext.new(user).phone_configurations.create(phone_attributes)
+    event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+    PushNotification::HttpPush.deliver(event)
+    phone_configuration
   end
 
   def duplicate_phone?

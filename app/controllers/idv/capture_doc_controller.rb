@@ -52,9 +52,5 @@ module Idv
     def document_capture_session_uuid
       params['document-capture-session']
     end
-
-    def analytics_user
-      user_id_from_token ? User.find(user_id_from_token) : super
-    end
   end
 end

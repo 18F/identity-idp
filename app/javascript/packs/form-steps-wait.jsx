@@ -31,7 +31,7 @@ const DEFAULT_OPTIONS = {
  * @return {Document} DOM document.
  */
 export function getDOMFromHTML(html) {
-  const dom = document.implementation.createHTMLDocument();
+  const dom = document.implementation.createHTMLDocument('');
   dom.body.innerHTML = html;
   return dom;
 }

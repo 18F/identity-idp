@@ -18,6 +18,8 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def handle_second_factor_locked_user(type)
     analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
+    event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)
+    PushNotification::HttpPush.deliver(event)
     handle_max_attempts(type + '_login_attempts')
   end
 

@@ -34,10 +34,12 @@ module Users
     end
 
     def two_factor_options_presenter
-      TwoFactorOptionsPresenter.new(user_agent: request.user_agent,
-                                    user: current_user,
-                                    aal3_required: service_provider_mfa_policy.aal3_required?,
-                                    piv_cac_required: service_provider_mfa_policy.piv_cac_required?)
+      TwoFactorOptionsPresenter.new(
+        user_agent: request.user_agent,
+        user: current_user,
+        aal3_required: service_provider_mfa_policy.aal3_required?,
+        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+      )
     end
 
     def process_valid_form

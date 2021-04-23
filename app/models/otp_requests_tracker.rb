@@ -13,10 +13,12 @@ class OtpRequestsTracker < ApplicationRecord
   def self.atomic_increment(id)
     now = Time.zone.now
     # The following sql offers superior db performance with one write and no locking overhead
-    query = sanitize_sql_array(['UPDATE otp_requests_trackers ' \
-                                 'SET otp_send_count = otp_send_count + 1,' \
-                                 'otp_last_sent_at = ?, updated_at = ? ' \
-                                 'WHERE id = ?', now, now, id])
+    query = sanitize_sql_array(
+      ['UPDATE otp_requests_trackers ' \
+                                       'SET otp_send_count = otp_send_count + 1,' \
+                                       'otp_last_sent_at = ?, updated_at = ? ' \
+                                       'WHERE id = ?', now, now, id],
+    )
     OtpRequestsTracker.connection.execute(query)
     OtpRequestsTracker.find(id)
   end

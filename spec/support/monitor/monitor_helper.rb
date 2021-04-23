@@ -26,10 +26,12 @@ class MonitorHelper
 
   def setup
     if local?
-      context.create(:user,
-                     :with_phone,
-                     email: config.login_gov_sign_in_email,
-                     password: config.login_gov_sign_in_password)
+      context.create(
+        :user,
+        :with_phone,
+        email: config.login_gov_sign_in_email,
+        password: config.login_gov_sign_in_password,
+      )
     else
       config.check_env_variables!
       reset_sessions
@@ -88,7 +90,7 @@ class MonitorHelper
   end
 
   def check_for_otp
-    otp_regex = /Your security code is (?<code>\d{6})/
+    otp_regex = /Your security code is (?<code>[a-zA-Z0-9]{6})/
 
     if local?
       match_data = Telephony::Test::Message.messages.last.body.match(otp_regex)

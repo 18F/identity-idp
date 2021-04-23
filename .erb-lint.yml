@@ -30,6 +30,7 @@ linters:
           - 'btn(-(small|big|narrow|wide|link|primary|secondary|danger|disabled|big|narrow|transparent))?'
           - ':not(label).btn-border'
           - 'border-(black|gray|white|aqua|orange|fuchsia|purple|maroon|darken-[1-4]|lighten-[1-4])'
+          - 'h3'
         suggestion: 'Use USWDS classes instead of BassCSS.'
       - deprecated:
           - 'js-consent-form'

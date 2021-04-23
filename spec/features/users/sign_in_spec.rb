@@ -65,11 +65,13 @@ feature 'Sign in' do
   scenario 'user opts to add piv/cac card' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
     nonce = piv_cac_nonce_from_form_action
-    visit_piv_cac_service(current_url,
-                          nonce: nonce,
-                          dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-                          uuid: SecureRandom.uuid,
-                          subject: 'SomeIgnoredSubject')
+    visit_piv_cac_service(
+      current_url,
+      nonce: nonce,
+      dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+      uuid: SecureRandom.uuid,
+      subject: 'SomeIgnoredSubject',
+    )
 
     expect(current_path).to eq login_add_piv_cac_success_path
     click_continue
@@ -79,12 +81,14 @@ feature 'Sign in' do
   scenario 'user opts to add piv/cac card but gets an error' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
     nonce = piv_cac_nonce_from_form_action
-    visit_piv_cac_service(current_url,
-                          nonce: nonce,
-                          dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-                          uuid: SecureRandom.uuid,
-                          error: 'certificate.bad',
-                          subject: 'SomeIgnoredSubject')
+    visit_piv_cac_service(
+      current_url,
+      nonce: nonce,
+      dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+      uuid: SecureRandom.uuid,
+      error: 'certificate.bad',
+      subject: 'SomeIgnoredSubject',
+    )
 
     expect(page).to have_current_path(login_piv_cac_error_path(error: 'certificate.bad'))
   end
@@ -126,11 +130,13 @@ feature 'Sign in' do
 
     stub_piv_cac_service
     nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-    visit_piv_cac_service(current_url,
-                          nonce: nonce,
-                          dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-                          uuid: SecureRandom.uuid,
-                          subject: 'SomeIgnoredSubject')
+    visit_piv_cac_service(
+      current_url,
+      nonce: nonce,
+      dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+      uuid: SecureRandom.uuid,
+      subject: 'SomeIgnoredSubject',
+    )
 
     expect(page).to have_current_path(login_piv_cac_error_path(error: 'user.not_found'))
     visit sign_up_email_path
@@ -240,10 +246,10 @@ feature 'Sign in' do
 
   context 'session approaches timeout', js: true do
     before :each do
-      allow(AppConfig.env).to receive(:session_check_frequency).and_return('1')
-      allow(AppConfig.env).to receive(:session_check_delay).and_return('2')
-      allow(AppConfig.env).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in.to_s)
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
+        and_return(Devise.timeout_in)
 
       sign_in_and_2fa_user
       visit root_path
@@ -275,10 +281,10 @@ feature 'Sign in' do
 
   context 'user only signs in via email and password', js: true do
     it 'displays the session timeout warning with partially signed in copy' do
-      allow(AppConfig.env).to receive(:session_check_frequency).and_return('1')
-      allow(AppConfig.env).to receive(:session_check_delay).and_return('2')
-      allow(AppConfig.env).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in.to_s)
+      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
+      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(2)
+      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds).
+        and_return(Devise.timeout_in)
 
       user = create(:user, :signed_up)
       sign_in_user(user)
@@ -298,7 +304,7 @@ feature 'Sign in' do
       fill_in 'Email', with: 'test@example.com'
 
       expect(page).to have_content(
-        t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes),
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
         wait: 5,
       )
       expect(page).to have_field('Email', with: '')
@@ -310,7 +316,7 @@ feature 'Sign in' do
 
       visit root_path
       expect(page).to_not have_content(
-        t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes),
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
       )
     end
   end
@@ -350,7 +356,7 @@ feature 'Sign in' do
       fill_in 'Password', with: user.password
 
       expect(page).to have_content(
-        t('notices.session_cleared', minutes: AppConfig.env.session_timeout_in_minutes),
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
       )
       expect(find_field('Email').value).to be_blank
       expect(find_field('Password').value).to be_blank
@@ -541,9 +547,11 @@ feature 'Sign in' do
   it_behaves_like 'signing in with the site in Spanish', :oidc
 
   context 'user signs in with Voice OTP delivery preference to an unsupported country' do
-    it 'falls back to SMS with an error message' do
-      user = create(:user, :signed_up,
-                    otp_delivery_preference: 'voice', with: { phone: '+1 441-295-9644' })
+    it 'falls back to SMS with an error message if SMS is supported' do
+      user = create(
+        :user, :signed_up,
+        otp_delivery_preference: 'voice', with: { phone: '+61 02 1234 5678' }
+      )
       signin(user.email, user.password)
 
       expect(Telephony::Test::Call.calls.length).to eq(0)
@@ -552,16 +560,36 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'Bermuda',
+        location: 'Australia',
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
+    end
+
+    it 'shows error message if SMS and Voice are not supported' do
+      user = create(
+        :user, :signed_up,
+        otp_delivery_preference: 'voice', with: { phone: '+84 09 1234 5678' }
+      )
+      signin(user.email, user.password)
+
+      expect(Telephony::Test::Call.calls.length).to eq(0)
+      expect(Telephony::Test::Message.messages.length).to eq(0)
+      expect(page).
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+      expect(page).to have_content t(
+        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        location: 'Vietnam',
+      )
+      expect(user.reload.otp_delivery_preference).to eq 'voice'
     end
   end
 
   context 'user tries to visit /login/two_factor/voice with an unsupported phone' do
     it 'displays an error message but does not send another SMS' do
-      user = create(:user, :signed_up,
-                    otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' })
+      user = create(
+        :user, :signed_up,
+        otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' }
+      )
       signin(user.email, user.password)
       visit login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
 
@@ -579,8 +607,10 @@ feature 'Sign in' do
 
   context 'user tries to visit /otp/send with voice delivery to an unsupported phone' do
     it 'displays an error message but does not send another SMS' do
-      user = create(:user, :signed_up,
-                    otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' })
+      user = create(
+        :user, :signed_up,
+        otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' }
+      )
       signin(user.email, user.password)
       visit otp_send_path(
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
@@ -600,8 +630,10 @@ feature 'Sign in' do
 
   context 'user with voice delivery preference visits /otp/send' do
     it 'displays an error message but does not send another SMS' do
-      user = create(:user, :signed_up,
-                    otp_delivery_preference: 'voice', with: { phone: '+91 1234567890' })
+      user = create(
+        :user, :signed_up,
+        otp_delivery_preference: 'voice', with: { phone: '+91 1234567890' }
+      )
       signin(user.email, user.password)
       visit otp_send_path(
         otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true },
@@ -750,8 +782,8 @@ feature 'Sign in' do
   context 'multiple auth apps' do
     it 'allows you to sign in with either' do
       user = create(:user, :signed_up)
-      Db::AuthAppConfiguration::Create.call(user, 'foo', nil, 'foo')
-      Db::AuthAppConfiguration::Create.call(user, 'bar', nil, 'bar')
+      Db::AuthAppConfiguration.create(user, 'foo', nil, 'foo')
+      Db::AuthAppConfiguration.create(user, 'bar', nil, 'bar')
 
       visit new_user_session_path
       fill_in_credentials_and_submit(user.email, user.password)
@@ -788,8 +820,10 @@ feature 'Sign in' do
     end
 
     it 'returns ial2 info for a verified user' do
-      user = create(:profile, :active, :verified,
-                    pii: { first_name: 'John', ssn: '111223333' }).user
+      user = create(
+        :profile, :active, :verified,
+        pii: { first_name: 'John', ssn: '111223333' }
+      ).user
       visit_idp_from_oidc_sp_with_ialmax
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
@@ -821,8 +855,10 @@ feature 'Sign in' do
     end
 
     it 'returns ial2 info for a verified user' do
-      user = create(:profile, :active, :verified,
-                    pii: { first_name: 'John', ssn: '111223333' }).user
+      user = create(
+        :profile, :active, :verified,
+        pii: { first_name: 'John', ssn: '111223333' }
+      ).user
       visit_idp_from_saml_sp_with_ialmax
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
@@ -958,11 +994,13 @@ feature 'Sign in' do
 
     stub_piv_cac_service
     nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_login.submit')))
-    visit_piv_cac_service(current_url,
-                          nonce: nonce,
-                          dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
-                          uuid: SecureRandom.uuid,
-                          subject: 'SomeIgnoredSubject')
+    visit_piv_cac_service(
+      current_url,
+      nonce: nonce,
+      dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+      uuid: SecureRandom.uuid,
+      subject: 'SomeIgnoredSubject',
+    )
 
     expect(page).to have_current_path(login_piv_cac_error_path(error: 'user.not_found'))
     visit new_user_session_path

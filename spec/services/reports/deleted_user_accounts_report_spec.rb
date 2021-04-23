@@ -17,11 +17,13 @@ describe Reports::DeletedUserAccountsReport do
   end
 
   it 'sends out a report to the email listed with one deleted user account' do
-    create(:service_provider_identity,
-           service_provider: issuer,
-           user: user,
-           uuid: uuid,
-           last_authenticated_at: last_authenticated_at)
+    create(
+      :service_provider_identity,
+      service_provider: issuer,
+      user: user,
+      uuid: uuid,
+      last_authenticated_at: last_authenticated_at,
+    )
     user.destroy!
 
     allow(IdentityConfig.store).to receive(:deleted_user_accounts_report_configs).and_return(

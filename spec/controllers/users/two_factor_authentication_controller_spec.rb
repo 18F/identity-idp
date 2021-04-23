@@ -250,6 +250,7 @@ describe Users::TwoFactorAuthenticationController do
           to: MfaContext.new(subject.current_user).phone_configurations.first.phone,
           expiration: 10,
           channel: :sms,
+          domain: Identity::Hostdata.domain,
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -297,7 +298,7 @@ describe Users::TwoFactorAuthenticationController do
       it 'marks the user as locked out after too many attempts' do
         expect(@user.second_factor_locked_at).to be_nil
 
-        (AppConfig.env.otp_delivery_blocklist_maxretry.to_i + 1).times do
+        (IdentityConfig.store.otp_delivery_blocklist_maxretry + 1).times do
           get :send_code, params: {
             otp_delivery_selection_form: { otp_delivery_preference: 'sms',
                                            otp_make_default_number: nil },
@@ -326,6 +327,7 @@ describe Users::TwoFactorAuthenticationController do
           to: MfaContext.new(subject.current_user).phone_configurations.first.phone,
           expiration: 10,
           channel: :voice,
+          domain: Identity::Hostdata.domain,
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -381,6 +383,7 @@ describe Users::TwoFactorAuthenticationController do
           to: @unconfirmed_phone,
           expiration: 10,
           channel: :sms,
+          domain: Identity::Hostdata.domain,
         )
       end
 

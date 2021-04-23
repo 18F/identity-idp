@@ -28,7 +28,7 @@ class SessionDecorator
   end
 
   def mfa_expiration_interval
-    AppConfig.env.remember_device_expiration_hours_aal_1.to_i.hours
+    IdentityConfig.store.remember_device_expiration_hours_aal_1.hours
   end
 
   def remember_device_default

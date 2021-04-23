@@ -1,18 +1,15 @@
 module Idv
   class Session
-    # NOTE: remove _usps_ attributes after next deploy
     VALID_SESSION_ATTRIBUTES = %i[
       address_verification_mechanism
       applicant
       idv_phone_step_document_capture_session_uuid
-      idv_usps_document_capture_session_uuid
       idv_gpo_document_capture_session_uuid
       vendor_phone_confirmation
       user_phone_confirmation
       pii
       previous_phone_step_params
       previous_profile_step_params
-      previous_usps_step_params
       previous_gpo_step_params
       profile_confirmation
       profile_id
@@ -29,24 +26,6 @@ module Idv
       @current_user = current_user
       @issuer = issuer
       set_idv_session
-    end
-
-    def idv_gpo_document_capture_session_uuid(value = nil)
-      if value
-        session[:idv_gpo_document_capture_session_uuid] = value
-      else
-        session[:idv_gpo_document_capture_session_uuid] ||
-          session[:idv_usps_document_capture_session_uuid]
-      end
-    end
-
-    def previous_gpo_step_params(value = nil)
-      if value
-        session[:previous_gpo_step_params] = value
-      else
-        session[:previous_gpo_step_params] ||
-          session[:previous_usps_step_params]
-      end
     end
 
     def method_missing(method_sym, *arguments, &block)
@@ -99,7 +78,7 @@ module Idv
 
     def complete_session
       complete_profile if phone_confirmed?
-      create_gpo_entry if %w[usps gpo].include?(address_verification_mechanism)
+      create_gpo_entry if address_verification_mechanism == 'gpo'
     end
 
     def complete_profile
@@ -121,7 +100,7 @@ module Idv
     end
 
     def address_mechanism_chosen?
-      vendor_phone_confirmation == true || %w[gpo usps].include?(address_verification_mechanism)
+      vendor_phone_confirmation == true || address_verification_mechanism == 'gpo'
     end
 
     def user_phone_confirmation_session

@@ -5,26 +5,30 @@ describe Idv::PhoneStep do
 
   let(:user) { build(:user) }
   let(:service_provider) do
-    create(:service_provider,
-           issuer: 'http://sp.example.com',
-           app_id: '123')
+    create(
+      :service_provider,
+      issuer: 'http://sp.example.com',
+      app_id: '123',
+    )
   end
   let(:idv_session) do
-    idvs = Idv::Session.new(user_session: {},
-                            current_user: user,
-                            issuer: service_provider.issuer)
+    idvs = Idv::Session.new(
+      user_session: {},
+      current_user: user,
+      issuer: service_provider.issuer,
+    )
     idvs.applicant = { first_name: 'Some' }
     idvs
   end
   let(:good_phone) { '2255555000' }
   let(:bad_phone) do
-    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+    Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
   let(:fail_phone) do
-    IdentityIdpFunctions::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
+    Proofing::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
   end
   let(:timeout_phone) do
-    IdentityIdpFunctions::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
+    Proofing::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
   let(:trace_id) { SecureRandom.uuid }
 
@@ -52,9 +56,11 @@ describe Idv::PhoneStep do
       expect(result.errors).to be_empty
       expect(result.extra).to eq(extra)
       expect(idv_session.vendor_phone_confirmation).to eq true
-      expect(idv_session.applicant).to eq(first_name: 'Some',
-                                          phone: good_phone,
-                                          uuid_prefix: service_provider.app_id)
+      expect(idv_session.applicant).to eq(
+        first_name: 'Some',
+        phone: good_phone,
+        uuid_prefix: service_provider.app_id,
+      )
     end
 
     it 'fails with bad params' do

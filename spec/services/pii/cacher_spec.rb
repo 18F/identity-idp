@@ -4,15 +4,17 @@ describe Pii::Cacher do
   let(:password) { 'salty peanuts are best' }
   let(:user) { create(:user, :with_phone, password: password) }
   let(:profile) do
-    build(:profile, :active, :verified,
-          user: user,
-          pii: {
-            ssn: '1234',
-            dob: '1970-01-01',
-            first_name: 'Test',
-            last_name: 'McTesterson',
-            zipcode: '20001',
-          })
+    build(
+      :profile, :active, :verified,
+      user: user,
+      pii: {
+        ssn: '1234',
+        dob: '1970-01-01',
+        first_name: 'Test',
+        last_name: 'McTesterson',
+        zipcode: '20001',
+      }
+    )
   end
   let(:diff_profile) { build(:profile, :verified, user: user, pii: { ssn: '5678' }) }
   let(:user_session) { {} }

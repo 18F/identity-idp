@@ -1,28 +1,39 @@
 require 'digest'
 
 class BackupCodeGenerator
-  attr_reader :length
+  attr_reader :num_words
 
   NUMBER_OF_CODES = 10
 
-  def initialize(user, length: 3, split: 4)
-    @length = length
-    @split = split
+  def initialize(
+    user,
+    num_words: BackupCodeConfiguration::NUM_WORDS,
+    skip_legacy_encryption: IdentityConfig.store.backup_code_skip_symmetric_encryption
+  )
+    @num_words = num_words
     @user = user
+    @skip_legacy_encryption = skip_legacy_encryption
   end
 
+  def skip_legacy_encryption?
+    @skip_legacy_encryption
+  end
+
+  # @return [Array<String>]
   def generate
     delete_existing_codes
     generate_new_codes
   end
 
+  # @return [Array<String>]
   def create
     @user.save
     save(generate)
   end
 
+  # @return [Boolean]
   def verify(plaintext_code)
-    backup_code = normalize(plaintext_code)
+    backup_code = RandomPhrase.normalize(plaintext_code)
     code = BackupCodeConfiguration.find_with_code(code: backup_code, user_id: @user.id)
     return unless code_usable?(code)
     code.update!(used_at: Time.zone.now)
@@ -33,9 +44,10 @@ class BackupCodeGenerator
     @user.backup_code_configurations.destroy_all
   end
 
-  def save(codes)
+  # @return [Array<String>]
+  def save(codes, salt: SecureRandom.hex(32))
     delete_existing_codes
-    codes.each { |code| save_code(code) }
+    codes.each { |code| save_code(code: code, salt: salt) }
   end
 
   private
@@ -52,19 +64,24 @@ class BackupCodeGenerator
     code && code.used_at.nil?
   end
 
-  def save_code(code)
-    @user.backup_code_configurations.create!(code: code)
-  end
-
-  def normalize(plaintext_code)
-    plaintext_code.gsub(/\W/, '').delete('-').downcase.strip
+  def save_code(code:, salt:)
+    @user.backup_code_configurations.create!(
+      code_salt: salt,
+      code_cost: cost,
+      skip_legacy_encryption: skip_legacy_encryption?,
+      code: code,
+    )
   end
 
   def backup_code
-    normalize(SecureRandom.hex(@split * @length / 2))
+    RandomPhrase.new(num_words: num_words, separator: nil).to_s
   end
 
   def result
     @result ||= []
+  end
+
+  def cost
+    AppConfig.env.backup_code_cost
   end
 end

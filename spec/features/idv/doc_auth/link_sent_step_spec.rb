@@ -5,10 +5,13 @@ feature 'doc auth link sent step' do
   include DocAuthHelper
   include DocCaptureHelper
 
+  let(:ial2_step_indicator_enabled) { true }
   let(:user) { sign_in_and_2fa_user }
   let(:doc_capture_polling_enabled) { false }
 
   before do
+    allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
+      and_return(ial2_step_indicator_enabled)
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).
       and_return(doc_capture_polling_enabled)
     user
@@ -118,4 +121,21 @@ feature 'doc auth link sent step' do
 
   it_behaves_like 'with doc capture polling enabled'
   it_behaves_like 'with doc capture polling disabled'
+
+  context 'ial2 step indicator enabled' do
+    it 'shows the step indicator' do
+      expect(page).to have_css(
+        '.step-indicator__step--current',
+        text: t('step_indicator.flows.idv.verify_id'),
+      )
+    end
+  end
+
+  context 'ial2 step indicator disabled' do
+    let(:ial2_step_indicator_enabled) { false }
+
+    it 'does not show the step indicator' do
+      expect(page).not_to have_css('.step-indicator')
+    end
+  end
 end

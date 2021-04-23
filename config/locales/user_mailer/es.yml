@@ -93,12 +93,6 @@ es:
         el %{app} %{help_link} o el %{contact_link}.
       subject: Dirección de correo electrónico eliminada
     help_link_text: Centro de Ayuda
-    letter_expired:
-      info_html: La carta que le enviamos a su dirección tiene un código de confirmación
-        que ha caducado y ya no se puede utilizar para completar el proceso de verificación.
-        Para verificar su dirección y completar el proceso de verificación de identidad,
-        deberá iniciar sesión en %{link} y solicitar otra carta.
-      subject: El código de confirmación de tu dirección ha caducado
     letter_reminder:
       info_html: La carta que está a punto de recibir contendrá un código de confirmación
         que nos ayudará a verificar su dirección. Puede completar el proceso de verificación
@@ -192,7 +186,3 @@ es:
       help: ''
       info: Hay SP que han superado su límite de cuota.
       subject: Algunos SP han alcanzado su límite de cuota.
-    undeliverable_address:
-      call_to_action_html: Por favor inicie sesión en %{link} y siga las instrucciones.
-      intro: No pudimos enviar su carta por correo a la dirección que proporcionó.
-      subject: La carta enviada a su dirección no se pudo entregar

@@ -27,7 +27,7 @@ describe ReauthnRequiredController do
 
     context 'authenticated outside the authn window' do
       before do
-        controller.user_session[:authn_at] -= AppConfig.env.reauthn_window.to_i
+        controller.user_session[:authn_at] -= IdentityConfig.store.reauthn_window
       end
 
       it 'redirects to password confirmation' do

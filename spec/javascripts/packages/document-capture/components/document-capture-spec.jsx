@@ -7,7 +7,7 @@ import httpUpload, {
   toFormEntryError,
 } from '@18f/identity-document-capture/services/upload';
 import {
-  ServiceProviderContext,
+  ServiceProviderContextProvider,
   UploadContextProvider,
   AcuantContextProvider,
   DeviceContext,
@@ -205,7 +205,7 @@ describe('document-capture/components/document-capture', () => {
     userEvent.click(submitButton);
 
     const notice = await findByRole('alert');
-    expect(notice.textContent).to.equal('errors.doc_auth.acuant_network_error');
+    expect(notice.textContent).to.equal('doc_auth.errors.general.network_error');
 
     expect(console).to.have.loggedError(/^Error: Uncaught/);
     expect(console).to.have.loggedError(
@@ -314,11 +314,11 @@ describe('document-capture/components/document-capture', () => {
   it('redirects from a server error', async () => {
     const { getByLabelText, getByText } = render(
       <UploadContextProvider upload={httpUpload} endpoint="/upload">
-        <ServiceProviderContext.Provider value={{ isLivenessRequired: false }}>
+        <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
           <AcuantContextProvider sdkSrc="about:blank">
             <DocumentCapture />
           </AcuantContextProvider>
-        </ServiceProviderContext.Provider>
+        </ServiceProviderContextProvider>
       </UploadContextProvider>,
     );
 
@@ -334,8 +334,11 @@ describe('document-capture/components/document-capture', () => {
           }),
       });
 
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_front'), validUpload);
-    userEvent.upload(getByLabelText('doc_auth.headings.document_capture_back'), validUpload);
+    const frontImage = getByLabelText('doc_auth.headings.document_capture_front');
+    const backImage = getByLabelText('doc_auth.headings.document_capture_back');
+    userEvent.upload(frontImage, validUpload);
+    userEvent.upload(backImage, validUpload);
+    await waitFor(() => frontImage.src && backImage.src);
 
     userEvent.click(getByText('forms.buttons.submit.default'));
     await waitFor(() => window.location.hash === '#teapot');
@@ -358,8 +361,10 @@ describe('document-capture/components/document-capture', () => {
           expect(payload).to.have.keys([
             'front_image_iv',
             'front_image_url',
+            'front_image_metadata',
             'back_image_iv',
             'back_image_url',
+            'back_image_metadata',
             'selfie_image_iv',
             'selfie_image_url',
           ]);
@@ -513,11 +518,11 @@ describe('document-capture/components/document-capture', () => {
           backgroundUploadEncryptKey={key}
           upload={upload}
         >
-          <ServiceProviderContext.Provider value={{ isLivenessRequired: false }}>
+          <ServiceProviderContextProvider value={{ isLivenessRequired: false }}>
             <AcuantContextProvider sdkSrc="about:blank">
               <DocumentCapture />
             </AcuantContextProvider>
-          </ServiceProviderContext.Provider>
+          </ServiceProviderContextProvider>
         </UploadContextProvider>,
       );
       const { getByLabelText, getByText } = renderResult;
@@ -546,9 +551,9 @@ describe('document-capture/components/document-capture', () => {
 
         const alerts = await findAllByRole('alert');
         expect(alerts).to.have.lengthOf(2);
-        expect(alerts[0].textContent).to.equal('errors.doc_auth.acuant_network_error');
+        expect(alerts[0].textContent).to.equal('doc_auth.errors.general.network_error');
         expect(alerts[1].textContent).to.equal(
-          'errors.doc_auth.upload_error errors.messages.try_again',
+          'doc_auth.errors.upload_error errors.messages.try_again',
         );
 
         const input = await getByLabelText('doc_auth.headings.document_capture_front');

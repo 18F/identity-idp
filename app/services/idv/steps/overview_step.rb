@@ -1,6 +1,8 @@
 module Idv
   module Steps
     class OverviewStep < DocAuthBaseStep
+      STEP_INDICATOR_STEP = :getting_started
+
       def call; end
 
       def form_submit

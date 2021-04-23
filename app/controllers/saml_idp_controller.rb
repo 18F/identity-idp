@@ -34,11 +34,6 @@ class SamlIdpController < ApplicationController
 
     decode_request(raw_saml_request)
 
-    # Plumb the fingerprint through to the internal service_provider representation
-    if saml_request && matching_cert
-      saml_request.service_provider.fingerprint = Fingerprinter.fingerprint_cert(matching_cert)
-    end
-
     track_logout_event
 
     return head(:bad_request) unless valid_saml_request?

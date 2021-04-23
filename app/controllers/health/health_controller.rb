@@ -14,7 +14,7 @@ module Health
     end
 
     def job_run_healthchecks_enabled?
-      AppConfig.env.job_run_healthchecks_enabled == 'true'
+      IdentityConfig.store.job_run_healthchecks_enabled
     end
   end
 end

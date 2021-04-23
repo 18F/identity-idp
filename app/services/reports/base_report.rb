@@ -44,7 +44,7 @@ module Reports
     end
 
     def save_report(report_name, body)
-      if AppConfig.env.s3_reports_enabled == 'false'
+      if !IdentityConfig.store.s3_reports_enabled
         logger.info('Not uploading report to S3, s3_reports_enabled is false')
         return body
       end

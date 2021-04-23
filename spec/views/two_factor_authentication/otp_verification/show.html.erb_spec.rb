@@ -47,9 +47,11 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
 
     context 'OTP copy' do
       let(:help_text) do
-        t('instructions.mfa.sms.number_message_html',
+        t(
+          'instructions.mfa.sms.number_message_html',
           number: content_tag(:strong, presenter_data[:phone_number]),
-          expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES)
+          expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+        )
       end
 
       it 'informs the user that an OTP has been sent to their number via #help_text' do
@@ -156,10 +158,12 @@ describe 'two_factor_authentication/otp_verification/show.html.erb' do
       it 'allows user to resend code using the same delivery method' do
         render
 
-        resend_path = otp_send_path(otp_delivery_selection_form: {
-                                      otp_delivery_preference: otp_delivery_preference,
-                                      resend: true,
-                                    })
+        resend_path = otp_send_path(
+          otp_delivery_selection_form: {
+            otp_delivery_preference: otp_delivery_preference,
+            resend: true,
+          },
+        )
 
         expect(rendered).to have_link(
           t('links.two_factor_authentication.get_another_code'),

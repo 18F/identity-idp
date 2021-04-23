@@ -10,7 +10,7 @@ describe TotpVerificationForm do
         result = instance_double(FormResponse)
 
         cfg = user.auth_app_configurations.first
-        allow(Db::AuthAppConfiguration::Authenticate).to receive(:call).and_return(cfg)
+        allow(Db::AuthAppConfiguration).to receive(:authenticate).and_return(cfg)
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: { multi_factor_auth_method: 'totp',

@@ -49,17 +49,25 @@ describe 'devise/sessions/new.html.erb' do
     render
 
     expect(rendered).
-      to have_link(t('notices.privacy.security_and_privacy_practices'),
-                   href: MarketingSite.security_and_privacy_practices_url)
+      to have_link(
+        t('notices.privacy.security_and_privacy_practices'),
+        href: MarketingSite.security_and_privacy_practices_url,
+      )
     expect(rendered).
-      to have_selector("a[href='#{MarketingSite.security_and_privacy_practices_url}']\
-[target='_blank'][rel='noopener noreferrer']")
+      to have_selector(
+        "a[href='#{MarketingSite.security_and_privacy_practices_url}']\
+[target='_blank'][rel='noopener noreferrer']",
+      )
 
     expect(rendered).
-      to have_link(t('notices.privacy.privacy_act_statement'),
-                   href: MarketingSite.privacy_act_statement_url)
-    expect(rendered).to have_selector("a[href='#{MarketingSite.privacy_act_statement_url}']\
-[target='_blank'][rel='noopener noreferrer']")
+      to have_link(
+        t('notices.privacy.privacy_act_statement'),
+        href: MarketingSite.privacy_act_statement_url,
+      )
+    expect(rendered).to have_selector(
+      "a[href='#{MarketingSite.privacy_act_statement_url}']\
+[target='_blank'][rel='noopener noreferrer']",
+    )
   end
 
   context 'when SP is present' do

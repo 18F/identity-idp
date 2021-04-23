@@ -1,6 +1,17 @@
+<% if IdentityConfig.store.ial2_step_indicator_enabled %>
+  <% content_for(:pre_flash_content) do %>
+    <%= render 'shared/step_indicator', {
+      steps: @step_indicator_steps,
+      current_step: :secure_account,
+      locale_scope: 'idv',
+      class: 'margin-x-neg-2 margin-top-neg-2 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+    } %>
+  <% end %>
+<% end %>
+
 <% title t('idv.titles.review') %>
 
-<h1 class="h3">
+<h1>
   <%= t('idv.titles.session.review') %>
 </h1>
 
@@ -17,8 +28,7 @@
               input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
   <div class="right-align margin-top-neg-2 margin-bottom-6">
     <%= t('idv.forgot_password.link_html',
-          link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url,
-                        class: 'usa-button usa-button--unstyled margin-left-1', form_class: 'inline-block')) %>
+          link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1')) %>
 
   </div>
   <%= accordion('review-verified-info', t('idv.messages.review.intro')) do %>

@@ -41,9 +41,11 @@ class OpenidConnectLogoutForm
               :success
 
   def load_identity
-    payload, _headers = JWT.decode(id_token_hint, AppArtifacts.store.oidc_public_key, true,
-                                   algorithm: 'RS256',
-                                   leeway: Float::INFINITY).map(&:with_indifferent_access)
+    payload, _headers = JWT.decode(
+      id_token_hint, AppArtifacts.store.oidc_public_key, true,
+      algorithm: 'RS256',
+      leeway: Float::INFINITY
+    ).map(&:with_indifferent_access)
 
     identity_from_payload(payload)
   rescue JWT::DecodeError

@@ -39,8 +39,10 @@ feature 'OMB Fitara compliance officer runs report' do
 
       Timecop.travel Date.new(2018, 1, 2) do
         expect(Reports::OmbFitaraReport.new.send(:generate_s3_paths, report_name)).
-          to eq(['ci/omb-fitara-report/latest.omb-fitara-report.json',
-                 'ci/omb-fitara-report/2018/2018-01-02.omb-fitara-report.json'])
+          to eq(
+            ['ci/omb-fitara-report/latest.omb-fitara-report.json',
+             'ci/omb-fitara-report/2018/2018-01-02.omb-fitara-report.json'],
+          )
       end
     end
   end

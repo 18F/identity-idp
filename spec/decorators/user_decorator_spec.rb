@@ -71,7 +71,7 @@ describe UserDecorator do
       Timecop.freeze(Time.zone.now) do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
         user_decorator = UserDecorator.new(user)
-        allow(AppConfig.env).to receive(:lockout_period_in_minutes).and_return('8')
+        allow(IdentityConfig.store).to receive(:lockout_period_in_minutes).and_return(8)
 
         expect(user_decorator.lockout_time_remaining).to eq 300
       end
@@ -83,7 +83,7 @@ describe UserDecorator do
       Timecop.freeze(Time.zone.now) do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 181)
         user_decorator = UserDecorator.new(user)
-        allow(AppConfig.env).to receive(:lockout_period_in_minutes).and_return('8')
+        allow(IdentityConfig.store).to receive(:lockout_period_in_minutes).and_return(8)
 
         expect(user_decorator.lockout_time_remaining_in_words).
           to eq '4 minutes and 59 seconds'
@@ -261,10 +261,12 @@ describe UserDecorator do
     let(:decorated_user) { user.decorate }
     let!(:event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
     let!(:identity) do
-      create(:service_provider_identity,
-             :active,
-             user: user,
-             last_authenticated_at: Time.zone.now - 60.days)
+      create(
+        :service_provider_identity,
+        :active,
+        user: user,
+        last_authenticated_at: Time.zone.now - 60.days,
+      )
     end
     let!(:another_event) do
       create(:event, user: user, event_type: :email_changed, created_at: Time.zone.now - 30.days)

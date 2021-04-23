@@ -47,7 +47,7 @@ describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:pii]).to eq [t('doc_auth.errors.lexis_nexis.full_name_check')]
+        expect(result.errors[:pii]).to eq [t('doc_auth.errors.alerts.full_name_check')]
       end
     end
 
@@ -58,7 +58,7 @@ describe Idv::DocPiiForm do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
         expect(result.errors[:pii]).to eq [
-          t('doc_auth.errors.lexis_nexis.general_error_no_liveness'),
+          t('doc_auth.errors.general.no_liveness'),
         ]
       end
     end
@@ -70,7 +70,7 @@ describe Idv::DocPiiForm do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
         expect(result.errors[:pii]).to eq [
-          t('doc_auth.errors.lexis_nexis.birth_date_min_age'),
+          t('doc_auth.errors.pii.birth_date_min_age'),
         ]
       end
     end

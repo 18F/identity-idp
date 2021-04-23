@@ -137,8 +137,14 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.new_device_sign_in.info_html',
-                                     date: date, location: location)))
+        to have_content(
+          strip_tags(
+            t(
+              'user_mailer.new_device_sign_in.info_html',
+              date: date, location: location,
+            ),
+          ),
+        )
       expect(mail.html_part.body).to include(
         '/events/disavow?disavowal_token=asdf1234',
       )
@@ -297,8 +303,10 @@ describe UserMailer, type: :mailer do
       reset_text = t('user_mailer.account_reset_granted.cancel_link_text')
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.intro_html', app: APP_NAME,
-            cancel_account_reset: reset_text),
+          t(
+            'user_mailer.account_reset_request.intro_html', app: APP_NAME,
+                                                            cancel_account_reset: reset_text
+          ),
         ),
       )
     end
@@ -383,32 +391,6 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#undeliverable_address' do
-    let(:mail) { UserMailer.undeliverable_address(user, email_address) }
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [email_address.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.undeliverable_address.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.undeliverable_address.intro')))
-    end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      email_address = EmailAddress.new(email: banned_email)
-      mail = UserMailer.undeliverable_address(user, email_address)
-      expect(mail.to).to eq(nil)
-    end
-  end
-
   describe '#doc_auth_desktop_link_to_sp' do
     let(:app) { 'login.gov' }
     let(:link) { root_url }
@@ -430,31 +412,6 @@ describe UserMailer, type: :mailer do
 
       expect(mail.html_part.body).to \
         have_content(strip_tags(I18n.t('user_mailer.doc_auth_link.message', sp_link: nil)))
-    end
-  end
-
-  describe '#letter_expired' do
-    let(:mail) { UserMailer.letter_expired(user, email_address.email) }
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [email_address.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.letter_expired.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.letter_expired.info_html', link: APP_NAME)))
-    end
-
-    it 'does not send mail to emails in nonessential email banlist' do
-      mail = UserMailer.letter_expired(user, banned_email)
-      expect(mail.to).to eq(nil)
     end
   end
 

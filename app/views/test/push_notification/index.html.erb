@@ -1,0 +1,20 @@
+<%= content_for(:meta_refresh) { '15' } %>
+
+<h1>Push Notification Events</h1>
+
+<div>
+  <div>
+    <%= button_to 'Clear events', test_push_notification_path, method: :delete, class: 'usa-button' %>
+    <div class="margin-top-2">
+      <h2>Events</h2>
+      <% @events.each do |event| %>
+        <div>
+          <h3>JTI: <%= event[:payload][:jti] %></h3>
+          <div>URL: <%= event[:url] %></div>
+          <div>Payload: <pre><code><%= JSON.pretty_generate(event[:payload]) %></code></pre></div>
+          <div>JWT: <pre><code><%= event[:jwt] %></code></pre></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

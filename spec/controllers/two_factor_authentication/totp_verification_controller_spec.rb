@@ -7,12 +7,12 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa
         @secret = subject.current_user.generate_totp_secret
         user = subject.current_user
-        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
+        Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
       end
 
       it 'redirects to the profile' do
         cfg = subject.current_user.auth_app_configurations.first
-        expect(Db::AuthAppConfiguration::Authenticate).to receive(:call).and_return(cfg)
+        expect(Db::AuthAppConfiguration).to receive(:authenticate).and_return(cfg)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
         post :create, params: { code: generate_totp_code(@secret) }
@@ -53,7 +53,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa
         user = subject.current_user
         @secret = user.generate_totp_secret
-        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
+        Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
         post :create, params: { code: 'abc' }
       end
 
@@ -76,7 +76,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa
         user = subject.current_user
         @secret = user.generate_totp_secret
-        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
+        Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
 
         stub_analytics
 
@@ -90,6 +90,8 @@ describe TwoFactorAuthentication::TotpVerificationController do
         expect(@analytics).to receive(:track_mfa_submit_event).
           with(attributes)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
+        expect(PushNotification::HttpPush).to receive(:deliver).
+          with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
 
         post :create, params: { code: '12345' }
       end
@@ -97,7 +99,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
     context 'when the user lockout period expires' do
       before do
-        lockout_period = AppConfig.env.lockout_period_in_minutes.to_i.minutes
+        lockout_period = IdentityConfig.store.lockout_period_in_minutes.minutes
         user = create(
           :user,
           :signed_up,
@@ -107,7 +109,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa(user)
         @secret = subject.current_user.generate_totp_secret
         user = subject.current_user
-        Db::AuthAppConfiguration::Create.call(user, @secret, nil, 'foo')
+        Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
       end
 
       describe 'when user submits an invalid TOTP' do

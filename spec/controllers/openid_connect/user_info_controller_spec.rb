@@ -72,9 +72,11 @@ RSpec.describe OpenidConnect::UserInfoController do
       let(:identity) { build(:service_provider_identity, user: create(:user)) }
 
       before do
-        fake_verifier = instance_double(AccessTokenVerifier,
-                                        identity: identity,
-                                        submit: FormResponse.new(success: true, errors: {}))
+        fake_verifier = instance_double(
+          AccessTokenVerifier,
+          identity: identity,
+          submit: FormResponse.new(success: true, errors: {}),
+        )
         expect(AccessTokenVerifier).to receive(:new).
           with(authorization_header).and_return(fake_verifier)
       end

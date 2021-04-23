@@ -1,12 +1,5 @@
 <% if decorated_session.sp_name %>
-  <hr>
-    <div class="margin-bottom-2 margin-top-2">
-      <div class="right">
-        <%= link_to image_tag(asset_url('carat-right.svg'), size: '10'),
-            return_to_sp_failure_to_proof_path, class: 'bold block usa-button usa-button--unstyled text-decoration-none' %>
-      </div>
-      <%= link_to t('idv.failure.help.get_help_html', sp_name: decorated_session.sp_name),
-          return_to_sp_failure_to_proof_path, class: 'block usa-button usa-button--unstyled text-decoration-none' %>
-    </div>
-  <hr/>
+  <%= render 'shared/block_link', url: return_to_sp_failure_to_proof_path do %>
+    <%= t('idv.failure.help.get_help_html', sp_name: decorated_session.sp_name) %>
+  <% end %>
 <% end %>

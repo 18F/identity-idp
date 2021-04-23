@@ -45,5 +45,33 @@ feature 'verify profile with OTP' do
       expect(page).to have_content(t('errors.messages.confirmation_code_incorrect'))
       expect(page.body).to_not match('the wrong code')
     end
+
+    context 'ial2 step indicator enabled' do
+      before do
+        sign_in_live_with_2fa(user)
+      end
+
+      it 'shows step indicator progress with current verify step, completed secure account' do
+        expect(page).to have_css(
+          '.step-indicator__step--current',
+          text: t('step_indicator.flows.idv.verify_phone_or_address'),
+        )
+        expect(page).to have_css(
+          '.step-indicator__step--complete',
+          text: t('step_indicator.flows.idv.secure_account'),
+        )
+      end
+    end
+
+    context 'ial2 step indicator disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).and_return(false)
+        sign_in_live_with_2fa(user)
+      end
+
+      it 'does not show step indicator progress' do
+        expect(page).not_to have_css('.step-indicator')
+      end
+    end
   end
 end

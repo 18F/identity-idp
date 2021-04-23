@@ -26,7 +26,9 @@ class UserPivCacSetupForm
   private
 
   def process_valid_submission
-    Db::PivCacConfiguration::Create.call(user, x509_dn_uuid, @name, x509_issuer)
+    Db::PivCacConfiguration.create(user, x509_dn_uuid, @name, x509_issuer)
+    event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
+    PushNotification::HttpPush.deliver(event)
     true
   rescue PG::UniqueViolation
     self.error_type = 'piv_cac.already_associated'
@@ -41,7 +43,7 @@ class UserPivCacSetupForm
     self.x509_dn_uuid = @data['uuid']
     self.x509_dn = @data['subject']
     self.x509_issuer = @data['issuer']
-    if Db::PivCacConfiguration::FindUserByX509.call(x509_dn_uuid)
+    if Db::PivCacConfiguration.find_user_by_x509(x509_dn_uuid)
       self.error_type = 'piv_cac.already_associated'
       false
     else
