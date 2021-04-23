@@ -167,6 +167,7 @@ es:
         review: Vuelve a ingresar tu contraseña de login.gov para encriptar tus datos
     troubleshooting:
       headings:
+        having_trouble: "¿Tiene alguna dificultad? Esto es lo que puede hacer:"
         missing_required_items: "¿Le falta alguno de estos puntos?"
         need_assistance: "¿Necesita ayuda inmediata? Así es como puede obtener ayuda:"
       options:
