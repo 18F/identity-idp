@@ -4,8 +4,7 @@ describe 'idv/session_errors/recovery_exception.html.erb' do
   let(:sp_name) { 'Example SP' }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator)
-    allow(decorated_session).to receive(:sp_name).and_return(sp_name)
+    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
     render

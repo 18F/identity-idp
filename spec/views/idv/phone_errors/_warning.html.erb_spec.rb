@@ -6,8 +6,7 @@ describe 'idv/phone_errors/_warning.html.erb' do
   let(:contact_support_option) { false }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator)
-    allow(decorated_session).to receive(:sp_name).and_return(sp_name)
+    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
     render('idv/phone_errors/warning', contact_support_option: contact_support_option) do

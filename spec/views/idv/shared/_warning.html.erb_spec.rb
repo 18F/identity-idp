@@ -7,8 +7,7 @@ describe 'idv/shared/_warning.html.erb' do
   let(:action) { nil }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator)
-    allow(decorated_session).to receive(:sp_name).and_return(sp_name)
+    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
     render 'idv/shared/warning', heading: heading, action: action, options: options

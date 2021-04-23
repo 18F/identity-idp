@@ -5,8 +5,7 @@ describe 'idv/session_errors/_throttled.html.erb' do
   let(:extra_options) { nil }
 
   before do
-    decorated_session = instance_double(ServiceProviderSessionDecorator)
-    allow(decorated_session).to receive(:sp_name).and_return(sp_name)
+    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
     render 'idv/session_errors/throttled', extra_options: extra_options

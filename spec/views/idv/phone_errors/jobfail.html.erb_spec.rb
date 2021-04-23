@@ -8,8 +8,7 @@ describe 'idv/phone_errors/jobfail.html.erb' do
     allow(FeatureManagement).to receive(:enable_gpo_verification?).
       and_return(enable_gpo_verification)
 
-    decorated_session = instance_double(ServiceProviderSessionDecorator)
-    allow(decorated_session).to receive(:sp_name).and_return(sp_name)
+    decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
     render
