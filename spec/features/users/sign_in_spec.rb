@@ -301,13 +301,13 @@ feature 'Sign in' do
       allow(Devise).to receive(:timeout_in).and_return(1)
 
       visit sign_up_email_path(request_id: '123abc')
-      fill_in 'Email', with: 'test@example.com'
+      fill_in t('forms.registration.labels.email'), with: 'test@example.com'
 
       expect(page).to have_content(
         t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
         wait: 5,
       )
-      expect(page).to have_field('Email', with: '')
+      expect(page).to have_field(t('forms.registration.labels.email'), with: '')
       expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
     end
 
