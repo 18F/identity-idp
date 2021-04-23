@@ -23,6 +23,22 @@ describe 'shared/_one_time_code_input.html.erb' do
     end
   end
 
+  describe 'numeric' do
+    context 'no numeric given' do
+      it 'renders input mode "numeric"' do
+        expect(rendered).to have_selector('[inputmode="numeric"]')
+      end
+    end
+
+    context 'numeric is false' do
+      let(:params) { { numeric: false } }
+
+      it 'renders input mode "text"' do
+        expect(rendered).to have_selector('[inputmode="text"]')
+      end
+    end
+  end
+
   describe 'classes' do
     context 'without custom classes given' do
       it 'renders with default classes' do
