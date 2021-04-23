@@ -13,7 +13,7 @@ gem 'rails', '~> 6.1.3'
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @proofer_gem ||= { github: '18F/identity-proofer-gem', ref: 'v2.8.0' }
 @saml_gem ||= { github: '18F/saml_idp', tag: 'v0.13.0-18f' }
-@telephony_gem ||= { github: '18f/identity-telephony', branch: 'margolis-alphanumeric-otp' }
+@telephony_gem ||= { github: '18f/identity-telephony', branch: 'margolis-alphanumeric-otp-with-origin' }
 @validations_gem ||= { github: '18F/identity-validations', branch: 'main' }
 
 gem 'aamva', @aamva_api_gem
