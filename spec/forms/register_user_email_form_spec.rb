@@ -124,8 +124,9 @@ describe RegisterUserEmailForm do
       it 'saves the user email_language for a valid form' do
         form = RegisterUserEmailForm.new(analytics: analytics)
 
-        response = form.submit(email: 'not_taken@gmail.com', email_language: 'fr',
-                               terms_accepted: 'true')
+        response = form.submit(
+          email: 'not_taken@gmail.com', email_language: 'fr', terms_accepted: 'true',
+        )
         expect(response).to be_success
 
         expect(User.find_with_email('not_taken@gmail.com').email_language).to eq('fr')

@@ -6,7 +6,7 @@ class RegisterUserEmailForm
   validate :service_provider_request_exists
   validate :validate_terms_accepted
 
-  attr_reader :email_address
+  attr_reader :email_address, :terms_accepted
   attr_accessor :email_language
   attr_accessor :password_reset_requested
 
