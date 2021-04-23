@@ -457,7 +457,7 @@ module Features
 
     def submit_form_with_valid_email(email = 'test@test.com')
       find('#user_terms_accepted').set(true)
-      fill_in t('account.index.email'), with: email
+      fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
 
