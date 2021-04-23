@@ -79,8 +79,8 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: f984626b961a0ccc55c57dffa2f0cab8dc302887
-  branch: margolis-alphanumeric-otp-with-origin
+  revision: 02b73c7bdf6ad6df6067102302c3e8363ce5e0aa
+  tag: v0.2.0
   specs:
     identity-telephony (0.2.0)
       aws-sdk-pinpoint
