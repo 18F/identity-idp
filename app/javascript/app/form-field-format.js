@@ -31,20 +31,6 @@ function formatForm() {
       delimiterLazyShow: true,
     });
   }
-
-  if (document.querySelector('.mfa-digits')) {
-    new Cleave('.mfa-digits', {
-      numericOnly: true,
-      blocks: [6],
-    });
-  }
-
-  if (document.querySelector('.mfa-alpha')) {
-    new Cleave('.mfa-alpha', {
-      numericOnly: false,
-      blocks: [6],
-    });
-  }
 }
 
 document.addEventListener('DOMContentLoaded', formatForm);
