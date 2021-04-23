@@ -48,7 +48,6 @@ describe SamlIdpController do
     let(:service_provider) do
       create(
         :service_provider,
-        cert: nil, # override singular cert
         certs: ['sp_sinatra_demo', 'saml_test_sp'],
         active: true,
         assertion_consumer_logout_service_url: 'https://example.com',
@@ -481,7 +480,6 @@ describe SamlIdpController do
       let(:service_provider) do
         create(
           :service_provider,
-          cert: nil, # override singular cert
           certs: ['saml_test_sp2', 'saml_test_sp'],
           active: true,
         )

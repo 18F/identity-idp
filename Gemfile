@@ -14,7 +14,7 @@ gem 'rails', '~> 6.1.3'
 @proofer_gem ||= { github: '18F/identity-proofer-gem', ref: 'v2.8.0' }
 @saml_gem ||= { github: '18F/saml_idp', tag: 'v0.13.0-18f' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.2.0' }
-@validations_gem ||= { github: '18F/identity-validations', branch: 'main' }
+@validations_gem ||= { github: '18F/identity-validations', tag: 'v0.4.0' }
 
 gem 'aamva', @aamva_api_gem
 gem 'identity-doc-auth', @doc_auth_gem

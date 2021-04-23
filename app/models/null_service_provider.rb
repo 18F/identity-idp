@@ -14,7 +14,6 @@ class NullServiceProvider
     assertion_consumer_logout_service_url
     attribute_bundle
     block_encryption
-    cert
     certs
     created_at
     default_aal

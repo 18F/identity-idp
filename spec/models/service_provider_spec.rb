@@ -72,19 +72,19 @@ describe ServiceProvider do
     end
 
     it 'accepts a blank certificate' do
-      sp = build(:service_provider, redirect_uris: [], cert: '')
+      sp = build(:service_provider, redirect_uris: [], certs: [''])
 
       expect(sp).to be_valid
     end
 
     it 'fails if certificate is present but not x509' do
-      sp = build(:service_provider, redirect_uris: [], cert: 'saml_test_invalid_sp')
+      sp = build(:service_provider, redirect_uris: [], certs: ['saml_test_invalid_sp'])
 
       expect(sp).to_not be_valid
     end
 
     it 'accepts a valid x509 certificate' do
-      sp = build(:service_provider, redirect_uris: [], cert: 'saml_test_sp')
+      sp = build(:service_provider, redirect_uris: [], certs: ['saml_test_sp'])
 
       expect(sp).to be_valid
     end
@@ -203,16 +203,8 @@ describe ServiceProvider do
   end
 
   describe '#ssl_certs' do
-    context 'with an empty string singular cert' do
-      let(:service_provider) { build(:service_provider, cert: '', certs: nil) }
-
-      it 'is the empty array' do
-        expect(service_provider.ssl_certs).to eq([])
-      end
-    end
-
     context 'with an empty string plural cert' do
-      let(:service_provider) { build(:service_provider, cert: nil, certs: ['']) }
+      let(:service_provider) { build(:service_provider, certs: ['']) }
 
       it 'is the empty array' do
         expect(service_provider.ssl_certs).to eq([])
@@ -221,28 +213,8 @@ describe ServiceProvider do
 
     let(:pem) { Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read }
 
-    context 'with the PEM of a cert in the singular column' do
-      let(:service_provider) { build(:service_provider, cert: pem, certs: nil) }
-
-      it 'is an array of the X509 cert' do
-        expect(service_provider.ssl_certs.length).to eq(1)
-        expect(service_provider.ssl_certs.first).to be_kind_of(OpenSSL::X509::Certificate)
-        expect(service_provider.ssl_certs.first.to_pem).to eq(pem)
-      end
-    end
-
     context 'with the PEM of a cert in the plural column' do
-      let(:service_provider) { build(:service_provider, cert: nil, certs: [pem]) }
-
-      it 'is an array of the X509 cert' do
-        expect(service_provider.ssl_certs.length).to eq(1)
-        expect(service_provider.ssl_certs.first).to be_kind_of(OpenSSL::X509::Certificate)
-        expect(service_provider.ssl_certs.first.to_pem).to eq(pem)
-      end
-    end
-
-    context 'with the name of a cert in the singular column' do
-      let(:service_provider) { build(:service_provider, cert: 'saml_test_sp', certs: nil) }
+      let(:service_provider) { build(:service_provider, certs: [pem]) }
 
       it 'is an array of the X509 cert' do
         expect(service_provider.ssl_certs.length).to eq(1)
@@ -252,7 +224,7 @@ describe ServiceProvider do
     end
 
     context 'with the name of a cert in the plural column' do
-      let(:service_provider) { build(:service_provider, cert: nil, certs: ['saml_test_sp']) }
+      let(:service_provider) { build(:service_provider, certs: ['saml_test_sp']) }
 
       it 'is an array of the X509 cert' do
         expect(service_provider.ssl_certs.length).to eq(1)

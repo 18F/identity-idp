@@ -185,7 +185,7 @@ feature 'saml api' do
           issuer: dashboard_sp_issuer,
           friendly_name: 'Sample Dashboard ServiceProvider',
           acs_url: 'http://sp.example.org/saml/login',
-          cert: saml_test_sp_cert,
+          certs: [saml_test_sp_cert],
           active: true,
         },
       ]
