@@ -125,6 +125,7 @@ class IdentityConfig
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
     config.add(:otp_valid_for, type: :integer)
+    config.add(:otp_use_alphanumeric, type: :boolean)
     config.add(:otps_per_ip_limit, type: :integer)
     config.add(:otps_per_ip_period, type: :integer)
     config.add(:otps_per_ip_track_only_mode, type: :boolean)

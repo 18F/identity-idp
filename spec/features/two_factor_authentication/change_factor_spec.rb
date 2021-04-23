@@ -42,6 +42,7 @@ feature 'Changing authentication factor' do
             to: old_phone,
             expiration: 10,
             channel: :sms,
+            domain: Identity::Hostdata.domain,
           )
 
           expect(current_path).

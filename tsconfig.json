@@ -18,6 +18,7 @@
     "app/javascript/packs/document-capture.jsx",
     "app/javascript/packs/form-steps-wait.jsx",
     "app/javascript/packs/form-validation.js",
+    "app/javascript/packs/one-time-code-input.js",
     "app/javascript/packs/intl-tel-input.js",
     "app/javascript/packs/spinner-button.js",
     "app/javascript/packs/step-indicator.js",
