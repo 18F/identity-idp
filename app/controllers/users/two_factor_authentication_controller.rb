@@ -178,6 +178,7 @@ module Users
         otp: current_user.direct_otp,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         channel: method.to_sym,
+        domain: Identity::Hostdata.domain,
       }
       Telephony.send(send_otp_method_name, params)
     end

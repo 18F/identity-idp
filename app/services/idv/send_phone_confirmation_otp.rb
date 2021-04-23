@@ -59,6 +59,7 @@ module Idv
         to: phone,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         channel: delivery_method,
+        domain: Identity::Hostdata.domain,
       )
       add_cost
       otp_sent_response
