@@ -3,7 +3,8 @@ require 'rails_helper'
 describe 'shared/_troubleshooting_options.html.erb' do
   let(:heading) { '' }
   let(:heading_level) { nil }
-  let(:options) { [] }
+  let(:options) { [{ text: 'One', url: '#one' }, { text: 'Two', url: '#two' }] }
+  let(:classes) { nil }
 
   before do
     render(
@@ -11,6 +12,7 @@ describe 'shared/_troubleshooting_options.html.erb' do
       heading: heading,
       heading_level: heading_level,
       options: options,
+      class: classes,
     )
   end
 
@@ -39,11 +41,35 @@ describe 'shared/_troubleshooting_options.html.erb' do
   end
 
   describe 'options' do
-    let(:options) { [{ text: 'One', url: '#one' }, { text: 'Two', url: '#two' }] }
+    context 'without any options' do
+      let(:options) { [] }
 
-    it 'renders options as links' do
-      expect(rendered).to have_css('a[href="#one"]', text: 'One')
-      expect(rendered).to have_css('a[href="#two"]', text: 'Two')
+      it 'does not render anything' do
+        expect(rendered).to be_empty
+      end
+    end
+
+    context 'with options' do
+      it 'renders options as links' do
+        expect(rendered).to have_css('a[href="#one"]', text: 'One')
+        expect(rendered).to have_css('a[href="#two"]', text: 'Two')
+      end
+    end
+  end
+
+  describe 'options' do
+    context 'without custom class' do
+      it 'renders default css class' do
+        expect(rendered).to have_css('.troubleshooting-options')
+      end
+    end
+
+    context 'with custom class' do
+      let(:classes) { 'my-custom-class' }
+
+      it 'renders with default and custom css classes' do
+        expect(rendered).to have_css('.troubleshooting-options.my-custom-class')
+      end
     end
   end
 end

@@ -28,12 +28,10 @@ es:
         zipcode: 'Su código postal debe ser ingresado como #####-####'
       unsupported_otp_delivery_method: Seleccione una manera de recibir un código.
     failure:
-      attempts_html:
-        one: Tiene usted <strong> 1 intento restante.</ strong>
-        other: Tiene usted <strong>%{count} intentos restantes.</strong>
+      attempts:
+        one: Por razones de seguridad, le queda un intento.
+        other: Por razones de seguridad, le queda %{count} intentos.
       button:
-        jobfail: Inténtelo de nuevo mañana
-        timeout: Inténtelo de nuevo
         warning: Inténtelo de nuevo
       errors:
         link: contáctanos
@@ -49,19 +47,21 @@ es:
       phone:
         fail_html: Para proteger su identidad, debe <strong>esperar 6 horas</strong>
           para volver a intentar un número de teléfono.
-        heading: No pudimos coincidir su nombre y dirección con este número de teléfono.
+        heading: No hemos podido asociar su nombre y dirección a este número de teléfono
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
-          Vuelve a intentarlo mañana.
-        timeout: Nuestra solicitud para verificar tu información ha caducado.
-        warning: Compruebe la información que ingresó.
+          Vuelve a intentarlo.
+        timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve
+          a intentarlo.
+        warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
         fail_html: Para su seguridad, la verificación de identidad de su cuenta está
           <strong>bloqueada durante 6 horas</strong>.
         heading: No hemos podido encontrar registros que coincidan con su información
           personal.
-        warning: Compruebe la información que ingresó. Los errores comunes son números
-          incorrectos de Seguro Social, código postal o fecha de nacimiento.
+        warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
+          Los errores más comunes suelen producirse al ingresar un Número de Seguridad
+          Social o un Código Postal incorrecto.
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:
@@ -75,7 +75,7 @@ es:
         warning_2: Tendrá que volver a ingresar su información personal, como su nombre,
           número de identificación del estado, etc.
     form:
-      activate_by_mail: Verifique su dirección por correo en su lugar.
+      activate_by_mail: Verifique su dirección por correo
       address1: Dirección
       address2: Dirección (opcional)
       city: Ciudad
@@ -168,6 +168,7 @@ es:
         review: Vuelve a ingresar tu contraseña de login.gov para encriptar tus datos
     troubleshooting:
       headings:
+        having_trouble: "¿Tiene alguna dificultad? Esto es lo que puede hacer:"
         missing_required_items: "¿Le falta alguno de estos puntos?"
         need_assistance: "¿Necesita ayuda inmediata? Así es como puede obtener ayuda:"
       options:

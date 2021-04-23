@@ -1,17 +1,21 @@
-<% title t("idv.failure.sessions.heading") %>
-
-<%= image_tag('alert/warning-lg.svg', alt: '', width: 54) %>
-
-<h1 class="margin-bottom-1 margin-top-4 margin-y-0"><%= t("idv.failure.sessions.heading") %></h1>
-
-<p><%= t("idv.failure.sessions.warning") %></p>
-
-<hr>
-
-<p><%= t('idv.failure.attempts_html', count: @remaining_step_attempts) %></p>
-
-<%= render 'idv/shared/reset_your_account' %>
-
-<div class='margin-top-4'>
-  <%= link_to t("idv.failure.button.warning"), idv_recovery_path %>
-</div>
+<%= render(
+  'idv/shared/warning',
+  heading: t('idv.failure.sessions.heading'),
+  action: {
+    text: t('idv.failure.button.warning'),
+    url: idv_recovery_path,
+  },
+  options: [
+    {
+      text: t('two_factor_authentication.account_reset.reset_your_account'),
+      url: account_reset_request_path,
+    },
+    decorated_session.sp_name && {
+      url: return_to_sp_failure_to_proof_path,
+      text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+    },
+  ].compact,
+) do %>
+  <p><%= t('idv.failure.sessions.warning') %></p>
+  <p><strong><%= t('idv.failure.attempts', count: @remaining_step_attempts) %></strong></p>
+<% end %>

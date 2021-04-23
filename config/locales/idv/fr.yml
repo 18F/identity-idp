@@ -30,12 +30,10 @@ fr:
         zipcode: 'Votre code ZIP doit être inscrit de cette façon : #####-####'
       unsupported_otp_delivery_method: Sélectionnez une méthode pour recevoir un code.
     failure:
-      attempts_html:
-        one: Il ne vous reste qu' strongune tentative./strong
-        other: Il ne vous reste que strong%{count} tentatives./strong
+      attempts:
+        one: Pour des raisons de sécurité, il vous reste une tentative.
+        other: Pour des raisons de sécurité, il vous reste %{count} tentatives.
       button:
-        jobfail: Essayez à nouveau demain
-        timeout: Essayez à nouveau
         warning: Essayez à nouveau
       errors:
         link: contactez-nous
@@ -51,21 +49,22 @@ fr:
       phone:
         fail_html: Pour protéger votre identité, vous devez <strong>attendre 6 heures</strong>
           pour réessayer un numéro de téléphone.
-        heading: Nous n'avons pas pu faire correspondre votre nom et votre adresse
-          à ce numéro de téléphone.
+        heading: Nous n’avons pas pu associer votre nom et votre adresse à ce numéro
+          de téléphone
         jobfail: Un problème s'est produit et nous ne pouvons pas traiter votre demande
-          pour le moment. Veuillez réessayer demain.
-        timeout: Notre demande de vérification de vos renseignements a expiré.
-        warning: Veuillez vérifier l'information que vous avez fournie.
+          pour le moment. Veuillez réessayer.
+        timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
+          réessayer.
+        warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
       sessions:
         exception: Une erreur interne s'est produite lors du traitement de votre demande.
         fail_html: Pour votre sécurité, la vérification d'identité de votre compte
           est <strong>verrouillée pendant 6 heures</strong>.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
-        warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
-          de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont
-          des erreurs communes.
+        warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
+          Les erreurs les plus courantes sont un numéro de sécurité sociale ou un
+          code postal incorrect.
       timeout: Le temps d'attente pour le traitement de votre demande est plus long
         que d'habitude Veuillez réessayer.
     forgot_password:
@@ -81,7 +80,7 @@ fr:
         warning_2: Vous devrez ressaisir vos informations personnelles, comme votre
           nom, votre numéro d’identification, etc.
     form:
-      activate_by_mail: Vérifiez votre adresse par courrier à la place.
+      activate_by_mail: Vérifiez plutôt votre adresse par courrier
       address1: Adresse
       address2: Adresse (optional)
       city: Ville
@@ -181,6 +180,7 @@ fr:
         review: Entrez à nouveau votre mot de passe login.gov pour crypter vos données
     troubleshooting:
       headings:
+        having_trouble: 'Des difficultés? Voici ce que vous pouvez faire:'
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'

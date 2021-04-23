@@ -1,6 +1,10 @@
 .troubleshooting-options {
   @include u-margin-y(4);
 
+  &:last-child {
+    margin-bottom: 0;
+  }
+
   &::before {
     @include u-margin-bottom(4);
     background-color: color('secondary');

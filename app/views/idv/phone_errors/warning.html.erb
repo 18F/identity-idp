@@ -1,24 +1,4 @@
-<% title t("idv.failure.phone.heading") %>
-
-<%= image_tag('alert/warning-lg.svg', alt: '', width: 54) %>
-
-<h1 class="margin-bottom-1 margin-top-4 margin-y-0"><%= t("idv.failure.phone.heading") %></h1>
-
-<p><%= t("idv.failure.phone.warning") %></p>
-
-<hr>
-
-<% if FeatureManagement.enable_gpo_verification? %>
-  <p>
-    <%= t('idv.form.no_alternate_phone_html',
-      link: link_to(t('idv.form.activate_by_mail'), idv_gpo_path)) %>
-  </p>
+<%= render('idv/phone_errors/warning') do %>
+  <p><%= t('idv.failure.phone.warning') %></p>
+  <p><strong><%= t('idv.failure.attempts', count: @remaining_step_attempts) %></strong></p>
 <% end %>
-
-<p><%= t('idv.failure.attempts_html', count: @remaining_step_attempts) %></p>
-
-<%= render 'idv/shared/back_to_sp_link' %>
-
-<div class='margin-top-4'>
-  <%= link_to t("idv.failure.button.warning"), idv_phone_path %>
-</div>

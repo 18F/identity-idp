@@ -27,12 +27,10 @@ en:
         zipcode: 'Your zipcode must be entered in as #####-####'
       unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
-      attempts_html:
-        one: You have <strong>1 attempt remaining.</strong>
-        other: You have <strong>%{count} attempts remaining.</strong>
+      attempts:
+        one: For security reasons, you have one attempt remaining.
+        other: For security reasons, you have %{count} attempts remaining.
       button:
-        jobfail: Try again tomorrow
-        timeout: Try again
         warning: Try again
       errors:
         link: please contact us
@@ -47,18 +45,18 @@ en:
       phone:
         fail_html: To protect your identity, you must <strong>wait 6 hours</strong>
           to try a phone number again.
-        heading: We couldn't match your name and address to this phone number.
+        heading: We could not match your name and address to this phone number
         jobfail: Something went wrong and we cannot process your request at this time.
-          Please try again tomorrow.
-        timeout: Our request to verify your information timed out.
-        warning: Please check the information you entered.
+          Please try again.
+        timeout: Our request to verify your information timed out. Please try again.
+        warning: Please check the information you entered and try again.
       sessions:
         exception: There was an internal error processing your request.
         fail_html: For your security, identity verification for your account is <strong>locked
           for 6 hours</strong>.
         heading: We could not find records matching your personal information.
-        warning: Please check the information you entered. Common mistakes are an
-          incorrect Social Security Number, ZIP Code, or date of birth.
+        warning: Please check the information you entered and try again. Common mistakes
+          are an incorrect Social Security number or ZIP code.
       timeout: We are experiencing higher than usual wait time processing your request.
         Please try again.
     forgot_password:
@@ -73,7 +71,7 @@ en:
         warning_2: You'll have to re-enter your personal information, like your name,
           state ID number, etc.
     form:
-      activate_by_mail: Verify your address by mail instead.
+      activate_by_mail: Verify your address by mail instead
       address1: Address
       address2: Address (optional)
       city: City
@@ -165,6 +163,7 @@ en:
         review: Re-enter your login.gov password to protect your data
     troubleshooting:
       headings:
+        having_trouble: 'Having trouble? Here’s what you can do:'
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
       options:

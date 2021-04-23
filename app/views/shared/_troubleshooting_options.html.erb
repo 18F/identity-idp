@@ -3,15 +3,19 @@ locals:
 * heading_level: Tag name for heading. Does not affect visual appearance. Defaults to :h2.
 * heading: Heading text.
 * options: List of link options to display, as an array of hashes with `url` and `text` values.
+* class: Additional class names to add to wrapper element.
 %>
-<% heading_level = local_assigns[:heading_level] || :h2 %>
-<section class="troubleshooting-options">
-  <%= content_tag(heading_level, heading, class: 'troubleshooting-options__heading') %>
-  <ul class="troubleshooting-options__options">
-    <% options.each do |option| %>
-      <li>
-        <%= render('shared/block_link', url: option[:url]) { option[:text] } %>
-      </li>
-    <% end %>
-  </ul>
-</section>
+<% if local_assigns[:options].presence %>
+  <% heading_level = local_assigns[:heading_level] || :h2 %>
+  <% classes = ['troubleshooting-options', *local_assigns[:class]] %>
+  <%= tag.section class: classes do %>
+    <%= content_tag(heading_level, heading, class: 'troubleshooting-options__heading') %>
+    <ul class="troubleshooting-options__options">
+      <% options.each do |option| %>
+        <li>
+          <%= render('shared/block_link', url: option[:url]) { option[:text] } %>
+        </li>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>
