@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_06_170306) do
+ActiveRecord::Schema.define(version: 2021_04_23_221651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -541,14 +541,11 @@ ActiveRecord::Schema.define(version: 2021_04_06_170306) do
     t.text "metadata_url"
     t.text "acs_url"
     t.text "assertion_consumer_logout_service_url"
-    t.text "cert"
     t.text "logo"
-    t.string "fingerprint"
     t.string "signature"
     t.string "block_encryption", default: "aes256-cbc", null: false
     t.text "sp_initiated_login_url"
     t.text "return_to_sp_url"
-    t.string "agency"
     t.json "attribute_bundle"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -569,7 +566,6 @@ ActiveRecord::Schema.define(version: 2021_04_06_170306) do
     t.integer "ial2_quota"
     t.boolean "liveness_checking_required"
     t.string "remote_logo_key"
-    t.string "deal_id"
     t.date "launch_date"
     t.string "iaa"
     t.date "iaa_start_date"
