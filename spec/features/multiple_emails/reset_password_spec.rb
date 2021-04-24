@@ -13,7 +13,7 @@ describe 'reset password with multiple emails' do
 
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: email1
+    fill_in t('forms.registration.labels.email'), with: email1
     click_button t('forms.buttons.continue')
 
     Capybara.reset_session!
@@ -26,7 +26,7 @@ describe 'reset password with multiple emails' do
 
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: email2
+    fill_in t('forms.registration.labels.email'), with: email2
     click_button t('forms.buttons.continue')
   end
 
@@ -50,7 +50,7 @@ describe 'reset password with multiple emails' do
 
     visit root_path
     click_link t('links.passwords.forgot')
-    fill_in 'Email', with: unconfirmed_email_address.email
+    fill_in t('forms.registration.labels.email'), with: unconfirmed_email_address.email
     click_button t('forms.buttons.continue')
   end
 end

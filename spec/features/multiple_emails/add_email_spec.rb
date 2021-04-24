@@ -132,7 +132,7 @@ feature 'adding email address' do
 
     expect(page).to have_current_path(add_email_path)
 
-    fill_in 'Email', with: 'foo'
+    fill_in t('forms.registration.labels.email'), with: 'foo'
     click_button t('forms.buttons.submit.default')
 
     expect(page).to have_current_path(add_email_path)
@@ -146,7 +146,7 @@ feature 'adding email address' do
 
     expect(page).to have_current_path(add_email_path)
 
-    fill_in 'Email', with: user.email_addresses.first.email
+    fill_in t('forms.registration.labels.email'), with: user.email_addresses.first.email
     click_button t('forms.buttons.submit.default')
 
     expect(page).to have_current_path(add_email_path)
@@ -196,7 +196,7 @@ feature 'adding email address' do
     expect(fake_email).to receive(:confirmation_sent_at=)
     expect(EmailAddress).to receive(:new).and_return(fake_email)
 
-    fill_in 'Email', with: email
+    fill_in t('forms.registration.labels.email'), with: email
     click_button t('forms.buttons.submit.default')
 
     expect(page).to have_current_path(add_email_path)
@@ -219,7 +219,7 @@ feature 'adding email address' do
         with(email).and_call_original
     end
 
-    fill_in 'Email', with: email
+    fill_in t('forms.registration.labels.email'), with: email
     click_button t('forms.buttons.submit.default')
 
     expect(page).to have_current_path(add_email_verify_email_path)
