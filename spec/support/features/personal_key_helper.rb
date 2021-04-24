@@ -17,7 +17,7 @@ module PersonalKeyHelper
 
   def trigger_reset_password_and_click_email_link(email)
     visit new_user_password_path
-    fill_in t('forms.registration.labels.email'), with: email
+    fill_in 'Email', with: email
     click_button t('forms.buttons.continue')
     open_last_email
     click_email_link_matching(/reset_password_token/)
