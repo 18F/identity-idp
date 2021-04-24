@@ -26,8 +26,7 @@ RSpec.describe 'Account email language' do
         within(page.find('.profile-info-box', text: 'Language')) do
           click_link('Edit')
         end
-
-        choose 'Français'
+        select 'Français', from: 'user_email_language'
         click_button 'Submit'
       end
 
