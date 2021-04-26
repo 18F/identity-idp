@@ -18,6 +18,7 @@ data:
     - config/locales/%{locale}.yml
     - config/locales/**/*.%{locale}.yml
     - config/locales/**/%{locale}.yml
+    - "<%= %x[bundle show activemodel].chomp %>/**/locale/%{locale}.yml"
 
   # Locale files to write new keys to, based on a list of key pattern => file rules. Matched from top to bottom:
   # `i18n-tasks normalize -p` will force move the keys according to these rules
@@ -97,6 +98,7 @@ ignore_unused:
   - 'devise.sessions.signed_in'
   - 'forms.two_factor_choice.legend'
   - 'forms.two_factor_recovery_choice.legend'
+  - 'errors.messages.*'
   - 'idv.errors.pattern_mismatch.*'
   - 'jobs.sms_otp_sender_job.login_message'
   - 'jobs.sms_otp_sender_job.verify_message'
