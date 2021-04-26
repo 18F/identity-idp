@@ -38,13 +38,15 @@ class ResolutionProofingJob < ApplicationJob
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
   ensure
-    logger.info({
-      name: 'ProofResolution',
-      trace_id: trace_id,
-      resolution_success: callback_log_data&.resolution_success,
-      state_id_success: callback_log_data&.state_id_success,
-      timing: timer.results,
-    }.to_json)
+    logger.info(
+      {
+        name: 'ProofResolution',
+        trace_id: trace_id,
+        resolution_success: callback_log_data&.resolution_success,
+        state_id_success: callback_log_data&.state_id_success,
+        timing: timer.results,
+      }.to_json
+    )
   end
 
   private
