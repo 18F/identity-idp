@@ -33,10 +33,6 @@ es:
         other: Por razones de seguridad, le queda %{count} intentos.
       button:
         warning: Inténtelo de nuevo
-      errors:
-        link: contáctanos
-        text_html: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo
-          mañana.
       exceptions:
         internal_error: Se produjo un error interno al procesar tu solicitud. Por
           favor, inténtalo de nuevo.

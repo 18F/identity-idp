@@ -32,9 +32,6 @@ en:
         other: For security reasons, you have %{count} attempts remaining.
       button:
         warning: Try again
-      errors:
-        link: please contact us
-        text_html: If you keep getting these errors, %{link}, or try again tomorrow.
       exceptions:
         internal_error: There was an internal error processing your request. Please
           try again.
