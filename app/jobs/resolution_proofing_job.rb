@@ -45,7 +45,7 @@ class ResolutionProofingJob < ApplicationJob
         resolution_success: callback_log_data&.resolution_success,
         state_id_success: callback_log_data&.state_id_success,
         timing: timer.results,
-      }.to_json
+      }.to_json,
     )
   end
 

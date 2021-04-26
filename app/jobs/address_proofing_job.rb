@@ -35,7 +35,7 @@ class AddressProofingJob < ApplicationJob
         trace_id: trace_id,
         success: proofer_result&.success?,
         timing: timer.results,
-      }.to_json
+      }.to_json,
     )
   end
 
