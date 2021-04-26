@@ -122,19 +122,19 @@ RSpec.describe DocumentProofingJob, type: :job do
       end
 
       it 'logs the trace_id and timing info' do
-        expect(instance.logger).to receive(:info).with(
-          hash_including(
+        expect(instance.logger).to receive(:info) do |message|
+          expect(JSON.parse(message, symbolize_names: true)).to include(
             trace_id: trace_id,
             timing: hash_including(
-              'decrypt.back' => kind_of(Float),
-              'decrypt.front' => kind_of(Float),
-              'decrypt.selfie' => kind_of(Float),
-              'download.back' => kind_of(Float),
-              'download.front' => kind_of(Float),
-              'download.selfie' => kind_of(Float),
+              'decrypt.back': kind_of(Float),
+              'decrypt.front': kind_of(Float),
+              'decrypt.selfie': kind_of(Float),
+              'download.back': kind_of(Float),
+              'download.front': kind_of(Float),
+              'download.selfie': kind_of(Float),
             ),
-          ),
-        )
+          )
+        end
 
         perform
       end

@@ -47,12 +47,12 @@ class DocumentProofingJob < ApplicationJob
       pii: proofer_result.pii_from_doc,
     )
   ensure
-    logger.info(
+    logger.info({
       name: 'ProofDocument',
       trace_id: trace_id,
       success: proofer_result&.success?,
       timing: timer.results,
-    )
+    }.to_json)
   end
 
   private
