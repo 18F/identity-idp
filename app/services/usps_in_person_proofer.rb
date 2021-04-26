@@ -26,8 +26,8 @@ class UspsInPersonProofer
   def request_token
     url = "#{root_url}/oauth/authenticate"
     body = {
-      username: AppConfig.env.usps_ipp_username,
-      password: AppConfig.env.usps_ipp_password,
+      username: IdentityConfig.store.usps_ipp_username,
+      password: IdentityConfig.store.usps_ipp_password,
       grant_type: 'implicit',
       response_type: 'token',
       client_id: '424ada78-62ae-4c53-8e3a-0b737708a9db',

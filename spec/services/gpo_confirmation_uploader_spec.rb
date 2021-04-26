@@ -107,23 +107,19 @@ RSpec.describe GpoConfirmationUploader do
 
   def sftp_options
     [
-      env.usps_upload_sftp_host,
-      env.usps_upload_sftp_username,
-      password: env.usps_upload_sftp_password,
-      timeout: env.usps_upload_sftp_timeout.to_i,
+      IdentityConfig.store.usps_upload_sftp_host,
+      IdentityConfig.store.usps_upload_sftp_username,
+      password: IdentityConfig.store.usps_upload_sftp_password,
+      timeout: IdentityConfig.store.usps_upload_sftp_timeout,
     ]
   end
 
   def upload_folder
     timestamp = Time.zone.now.strftime('%Y%m%d')
-    File.join(AppConfig.env.usps_upload_sftp_directory, "batch#{timestamp}.psv")
+    File.join(IdentityConfig.store.usps_upload_sftp_directory, "batch#{timestamp}.psv")
   end
 
   def write_permission
     'w'
-  end
-
-  def env
-    AppConfig.env
   end
 end
