@@ -12,6 +12,10 @@
     @include u-border-top(0);
   }
 
+  li + li:last-child &:only-child {
+    @include u-margin-bottom(0);
+  }
+
   &:focus {
     outline: none;
 
