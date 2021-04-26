@@ -32,7 +32,11 @@ describe ApplicationController do
       it 'sets sets the cookie sp_issuer' do
         get :index
 
+        controller_set_cookies = controller.send(:cookies).instance_variable_get(:@set_cookies)
+        cookie_expiration = controller_set_cookies['sp_issuer'][:expires]
+
         expect(cookies[:sp_issuer]).to eq(sp.issuer)
+        expect(cookie_expiration).to be_within(3.seconds).of(15.minutes.from_now)
       end
     end
 
