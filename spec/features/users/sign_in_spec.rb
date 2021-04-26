@@ -352,7 +352,7 @@ feature 'Sign in' do
       allow(Devise).to receive(:timeout_in).and_return(1)
       user = create(:user)
       visit root_path
-      fill_in t('forms.registration.labels.email'), with: user.email
+      fill_in 'Email', with: user.email
       fill_in 'Password', with: user.password
 
       expect(page).to have_content(

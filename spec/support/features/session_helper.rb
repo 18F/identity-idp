@@ -475,7 +475,7 @@ module Features
     end
 
     def submit_resend_email_confirmation_form_with_correct_email(email)
-      fill_in t('forms.registration.labels.email'), with: email
+      fill_in 'Email', with: email
       click_button t('forms.buttons.resend_confirmation')
     end
 
