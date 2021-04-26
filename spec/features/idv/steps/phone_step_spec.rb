@@ -191,7 +191,7 @@ feature 'idv phone step' do
       fill_out_phone_form_fail
       click_idv_continue
 
-      expect(page).to have_content(t('headings.lock_failure'))
+      expect(page).to have_content(t('idv.troubleshooting.headings.need_assistance'))
       expect(page).to_not have_content(t('idv.form.activate_by_mail'))
     end
   end
