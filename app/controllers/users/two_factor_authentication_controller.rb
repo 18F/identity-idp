@@ -222,7 +222,7 @@ module Users
     end
 
     def redirect_url
-      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
+      if !mobile? && TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
         login_two_factor_piv_cac_url(reauthn_params)
       elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
         login_two_factor_webauthn_url(reauthn_params)
