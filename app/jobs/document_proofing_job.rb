@@ -48,10 +48,12 @@ class DocumentProofingJob < ApplicationJob
     )
   ensure
     logger.info(
-      name: 'ProofDocument',
-      trace_id: trace_id,
-      success: proofer_result&.success?,
-      timing: timer.results,
+      {
+        name: 'ProofDocument',
+        trace_id: trace_id,
+        success: proofer_result&.success?,
+        timing: timer.results,
+      }.to_json,
     )
   end
 

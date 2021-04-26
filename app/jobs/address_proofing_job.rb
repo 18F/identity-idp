@@ -30,10 +30,12 @@ class AddressProofingJob < ApplicationJob
     document_capture_session.store_proofing_result(result)
   ensure
     logger.info(
-      name: 'ProofAddress',
-      trace_id: trace_id,
-      success: proofer_result&.success?,
-      timing: timer.results,
+      {
+        name: 'ProofAddress',
+        trace_id: trace_id,
+        success: proofer_result&.success?,
+        timing: timer.results,
+      }.to_json,
     )
   end
 
