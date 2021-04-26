@@ -45,8 +45,9 @@ es:
       help:
         get_help_html: Obtener ayuda en <strong>%{sp_name}</strong>
       phone:
-        fail_html: Para proteger su identidad, debe <strong>esperar 6 horas</strong>
-          para volver a intentar un número de teléfono.
+        fail_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
+          Por su seguridad, limitamos el número de veces que puede intentar verificar
+          su número de teléfono en línea."
         heading: No hemos podido asociar su nombre y dirección a este número de teléfono
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
           Vuelve a intentarlo.
@@ -55,8 +56,9 @@ es:
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
-        fail_html: Para su seguridad, la verificación de identidad de su cuenta está
-          <strong>bloqueada durante 6 horas</strong>.
+        fail_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
+          Por su seguridad, limitamos el número de veces que puede intentar verificar
+          la información personal en línea."
         heading: No hemos podido encontrar registros que coincidan con su información
           personal.
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.

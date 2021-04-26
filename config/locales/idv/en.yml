@@ -43,8 +43,9 @@ en:
       help:
         get_help_html: Get help at <strong>%{sp_name}</strong>
       phone:
-        fail_html: To protect your identity, you must <strong>wait 6 hours</strong>
-          to try a phone number again.
+        fail_html: "<strong>Please try again in %{timeout}.</strong> For your security,
+          we limit the number of times you can attempt to verify your phone number
+          online."
         heading: We could not match your name and address to this phone number
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again.
@@ -52,8 +53,9 @@ en:
         warning: Please check the information you entered and try again.
       sessions:
         exception: There was an internal error processing your request.
-        fail_html: For your security, identity verification for your account is <strong>locked
-          for 6 hours</strong>.
+        fail_html: "<strong>Please try again in %{timeout}.</strong> For your security,
+          we limit the number of times you can attempt to verify personal information
+          online."
         heading: We could not find records matching your personal information.
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP code.
