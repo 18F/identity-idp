@@ -104,7 +104,7 @@ class ApplicationController < ActionController::Base
                           else
                             {
                               value: current_sp.issuer,
-                              expires: AppConfig.env.issuer_cookie_expiration,
+                              expires: IdentityConfig.store.session_timeout_in_minutes.minutes,
                             }
                           end
   end
