@@ -58,7 +58,7 @@ describe Idv::SendPhoneConfirmationOtp do
           to: phone,
           expiration: 10,
           channel: :sms,
-          domain: Identity::Hostdata.domain,
+          domain: IdentityConfig.store.domain_name,
         )
       end
     end
@@ -84,7 +84,7 @@ describe Idv::SendPhoneConfirmationOtp do
           to: phone,
           expiration: 10,
           channel: :voice,
-          domain: Identity::Hostdata.domain,
+          domain: IdentityConfig.store.domain_name,
         )
       end
     end

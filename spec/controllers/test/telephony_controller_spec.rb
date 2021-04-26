@@ -8,14 +8,14 @@ describe Test::TelephonyController do
         otp: '123456',
         expiration: 10,
         channel: :sms,
-        domain: Identity::Hostdata.domain,
+        domain: IdentityConfig.store.domain_name,
       )
       Telephony.send_authentication_otp(
         to: '(555) 555-5000',
         otp: '654321',
         expiration: 10,
         channel: :voice,
-        domain: Identity::Hostdata.domain,
+        domain: IdentityConfig.store.domain_name,
       )
 
       get :index
@@ -43,14 +43,14 @@ describe Test::TelephonyController do
         otp: '123456',
         expiration: 10,
         channel: :sms,
-        domain: Identity::Hostdata.domain,
+        domain: IdentityConfig.store.domain_name,
       )
       Telephony.send_authentication_otp(
         to: '(555) 555-5000',
         otp: '654321',
         expiration: 10,
         channel: :voice,
-        domain: Identity::Hostdata.domain,
+        domain: IdentityConfig.store.domain_name,
       )
 
       delete :destroy
