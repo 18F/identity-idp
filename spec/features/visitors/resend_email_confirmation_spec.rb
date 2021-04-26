@@ -13,7 +13,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
 
   scenario 'user can resend their confirmation instructions via email' do
     user.save!
-    fill_in t('forms.registration.labels.email'), with: user.email
+    fill_in 'Email', with: user.email
 
     click_button t('forms.buttons.resend_confirmation')
     expect(unread_emails_for(user.email)).to be_present
