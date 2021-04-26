@@ -1,12 +1,24 @@
 <%#
 yields: Page instruction content.
 locals:
+* type: `:warning` or `:error`. Defaults to `:error`.
 * heading: Page title and primary page heading text.
 * action: Optional hash of `text`, `url` of a primary action link.
 * options: Array of troubleshooting options.
 %>
+<%
+type = local_assigns.fetch(:type, :error)
+options = local_assigns.fetch(:options, [])
+if type == :error
+  image_src = 'alert/fail-x.svg'
+  troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
+else
+  image_src = 'alert/warning-lg.svg'
+  troubleshooting_heading = t('idv.troubleshooting.headings.having_trouble')
+end
+%>
 <% title heading %>
-<%= image_tag('alert/warning-lg.svg', width: 54, alt: '', class: 'display-block') %>
+<%= image_tag(image_src, width: 54, alt: '', class: 'display-block') %>
 
 <h1 class="margin-top-4 margin-bottom-2"><%= heading %></h1>
 
@@ -22,7 +34,7 @@ locals:
 
 <%= render(
   'shared/troubleshooting_options',
-  heading: t('idv.troubleshooting.headings.having_trouble'),
+  heading: troubleshooting_heading,
   options: options,
   class: 'padding-top-1',
 ) %>

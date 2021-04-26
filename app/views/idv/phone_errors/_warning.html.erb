@@ -4,7 +4,8 @@ locals:
 * contact_support_option: Whether to show "Contact Support" option. Defaults to false.
 %>
 <%= render(
-  'idv/shared/warning',
+  'idv/shared/error',
+  type: :warning,
   heading: t('idv.failure.phone.heading'),
   action: {
     text: t('idv.failure.button.warning'),
