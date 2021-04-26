@@ -250,7 +250,7 @@ describe Users::TwoFactorAuthenticationController do
           to: MfaContext.new(subject.current_user).phone_configurations.first.phone,
           expiration: 10,
           channel: :sms,
-          domain: Identity::Hostdata.domain,
+          domain: IdentityConfig.store.domain_name,
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -327,7 +327,7 @@ describe Users::TwoFactorAuthenticationController do
           to: MfaContext.new(subject.current_user).phone_configurations.first.phone,
           expiration: 10,
           channel: :voice,
-          domain: Identity::Hostdata.domain,
+          domain: IdentityConfig.store.domain_name,
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -383,7 +383,7 @@ describe Users::TwoFactorAuthenticationController do
           to: @unconfirmed_phone,
           expiration: 10,
           channel: :sms,
-          domain: Identity::Hostdata.domain,
+          domain: IdentityConfig.store.domain_name,
         )
       end
 
