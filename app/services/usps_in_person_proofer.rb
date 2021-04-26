@@ -190,7 +190,7 @@ class UspsInPersonProofer
   end
 
   def sponsor_id
-    AppConfig.env.usps_ipp_sponsor_id.to_i
+    IdentityConfig.store.usps_ipp_sponsor_id.to_i
   end
 
   def request_id
