@@ -64,7 +64,7 @@ module Idv
           document_capture_session
         else
           DocumentCaptureSession.find_by(
-            uuid: flow_session[verify_document_capture_session_uuid_key],
+            uuid: flow_session[session_uuid_key],
           )
         end
       end
@@ -97,16 +97,24 @@ module Idv
       end
 
       def delete_async
-        flow_session.delete(verify_document_capture_session_uuid_key)
+        flow_session.delete(session_uuid_key)
       end
 
       def document_capture_analytics(message)
         data = {
           error: message,
-          uuid: flow_session[verify_document_capture_session_uuid_key],
+          uuid: flow_session[session_uuid_key],
         }
 
         @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC, data)
+      end
+
+      def session_uuid_key
+        if in_recovery_flow?
+          recover_verify_document_capture_session_uuid_key
+        else
+          verify_document_capture_session_uuid_key
+        end
       end
     end
   end

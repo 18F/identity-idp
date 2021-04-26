@@ -34,7 +34,7 @@ module Idv
           document_capture_session
         else
           create_document_capture_session(
-            verify_document_capture_session_uuid_key,
+            session_uuid_key,
           )
         end
         verify_document_capture_session.requested_at = Time.zone.now
@@ -54,7 +54,13 @@ module Idv
         nil
       end
 
-      private
+      def session_uuid_key
+        if in_recovery_flow?
+          recover_verify_document_capture_session_uuid_key
+        else
+          verify_document_capture_session_uuid_key
+        end
+      end
 
       def image_params
         params.permit(

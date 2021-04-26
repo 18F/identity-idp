@@ -147,6 +147,10 @@ module Idv
         :verify_document_action_document_capture_session_uuid
       end
 
+      def in_recovery_flow?
+        @flow.is_a?(Idv::Flows::RecoveryFlow)
+      end
+
       delegate :idv_session, :session, to: :@flow
     end
   end
