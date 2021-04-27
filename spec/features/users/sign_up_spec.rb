@@ -41,7 +41,7 @@ feature 'Sign Up' do
       visit sign_up_email_path
       find('#user_terms_accepted').set(true)
       fill_in t('forms.registration.labels.email'), with: email
-      select 'Español', from: 'user_email_language'
+      choose 'Español'
       click_button t('forms.buttons.submit.default')
 
       user = User.find_with_email(email)

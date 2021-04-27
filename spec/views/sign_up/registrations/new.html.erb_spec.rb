@@ -37,7 +37,7 @@ describe 'sign_up/registrations/new.html.erb' do
   it 'has a localized header' do
     render
 
-    expect(rendered).to have_selector('h1', text: t('headings.registrations.enter_email'))
+    expect(rendered).to have_selector('h1', text: t('titles.registrations.new'))
   end
 
   it 'sets form autocomplete to off' do
@@ -71,15 +71,5 @@ describe 'sign_up/registrations/new.html.erb' do
         "a[href='#{MarketingSite.security_and_privacy_practices_url}']\
 [target='_blank'][rel='noopener noreferrer']",
       )
-
-    expect(rendered).
-      to have_link(
-        t('notices.privacy.privacy_act_statement'),
-        href: MarketingSite.privacy_act_statement_url,
-      )
-    expect(rendered).to have_selector(
-      "a[href='#{MarketingSite.privacy_act_statement_url}']\
-[target='_blank'][rel='noopener noreferrer']",
-    )
   end
 end
