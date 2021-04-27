@@ -281,10 +281,6 @@ Rails.application.routes.draw do
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/exception' => 'session_errors#exception'
       get '/session/errors/throttled' => 'session_errors#throttled'
-      get '/session/errors/recovery_failure' => 'session_errors#recovery_failure'
-      get '/session/errors/recovery_warning' => 'session_errors#recovery_warning'
-      get '/session/errors/recovery_exception' => 'session_errors#recovery_exception'
-      get '/session/errors/recovery_throttled' => 'session_errors#recovery_throttled'
       delete '/session' => 'sessions#destroy'
       get '/cancel/' => 'cancellations#new', as: :cancel
       delete '/cancel' => 'cancellations#destroy'
