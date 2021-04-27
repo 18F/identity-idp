@@ -12,7 +12,6 @@ RSpec.describe User do
     it { is_expected.to have_many(:webauthn_configurations) }
     it { is_expected.to have_one(:doc_auth) }
     it { is_expected.to have_one(:proofing_component) }
-    it { is_expected.to have_one(:account_recovery_request) }
     it { is_expected.to have_many(:throttles) }
   end
 
