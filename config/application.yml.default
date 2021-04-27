@@ -299,6 +299,10 @@ production:
   telephony_adapter: pinpoint
   use_kms: 'true'
   usps_confirmation_max_days: '30'
+  usps_upload_sftp_directory: ''
+  usps_upload_sftp_host: ''
+  usps_upload_sftp_password: ''
+  usps_upload_sftp_username: ''
 
 test:
   aal_authn_context_enabled: 'true'
