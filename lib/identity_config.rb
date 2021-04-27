@@ -145,7 +145,6 @@ class IdentityConfig
     config.add(:rack_mini_profiler, type: :boolean)
     config.add(:rack_timeout_service_timeout_seconds, type: :integer)
     config.add(:reauthn_window, type: :integer)
-    config.add(:recaptcha_enabled_percent, type: :integer)
     config.add(:recovery_code_length, type: :integer)
     config.add(:recurring_jobs_disabled_names, type: :json)
     config.add(:redis_throttle_url)
