@@ -41,6 +41,8 @@ class IdentityConfig
     @written_env
   end
 
+  attr_reader :written_env
+
   def self.build_store(config_map)
     config = IdentityConfig.new(config_map)
     config.add(:aal_authn_context_enabled, type: :boolean)
@@ -177,11 +179,19 @@ class IdentityConfig
     config.add(:use_dashboard_service_providers, type: :boolean)
     config.add(:use_kms, type: :boolean)
     config.add(:usps_confirmation_max_days, type: :integer)
+    config.add(:usps_ipp_password, type: :string)
+    config.add(:usps_ipp_root_url, type: :string)
+    config.add(:usps_ipp_sponsor_id, type: :string)
+    config.add(:usps_ipp_username, type: :string)
     config.add(:usps_upload_enabled, type: :boolean)
+    config.add(:usps_upload_sftp_directory, type: :string)
+    config.add(:usps_upload_sftp_host, type: :string)
+    config.add(:usps_upload_sftp_password, type: :string)
+    config.add(:usps_upload_sftp_timeout, type: :integer)
+    config.add(:usps_upload_sftp_username, type: :string)
     config.add(:valid_authn_contexts, type: :json)
-    final_env = config.add(:usps_ipp_root_url)
 
-    @store = RedactedStruct.new('IdentityConfig', *final_env.keys, keyword_init: true).
-      new(**final_env)
+    @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
+      new(**config.written_env)
   end
 end
