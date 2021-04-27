@@ -77,11 +77,6 @@ class FeatureManagement
     IdentityConfig.store.saml_secret_rotation_enabled
   end
 
-  def self.recaptcha_enabled?(session, reset)
-    AbTest.new(:ab_test_recaptcha_enabled, IdentityConfig.store.recaptcha_enabled_percent).
-      enabled?(session, reset)
-  end
-
   def self.disallow_all_web_crawlers?
     IdentityConfig.store.disallow_all_web_crawlers
   end

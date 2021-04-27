@@ -81,18 +81,4 @@ describe 'devise/passwords/new.html.erb' do
       expect(rendered).to_not have_selector('.usa-alert')
     end
   end
-
-  it 'does not render a recaptcha with recaptcha disabled' do
-    allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(false)
-    render
-
-    expect(rendered).to_not have_selector('#recaptcha')
-  end
-
-  it 'renders a recaptcha with recaptcha enabled' do
-    allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
-    render
-
-    expect(rendered).to have_selector('#recaptcha')
-  end
 end

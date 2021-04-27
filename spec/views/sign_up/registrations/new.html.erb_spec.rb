@@ -58,20 +58,6 @@ describe 'sign_up/registrations/new.html.erb' do
     expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_url)
   end
 
-  it 'does not render a recaptcha with recaptcha disabled' do
-    allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(false)
-    render
-
-    expect(rendered).to_not have_selector('#recaptcha')
-  end
-
-  it 'renders a recaptcha with recaptcha enabled' do
-    allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
-    render
-
-    expect(rendered).to have_selector('#recaptcha')
-  end
-
   it 'includes a link to security / privacy page and privacy statement act' do
     render
 

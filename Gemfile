@@ -60,7 +60,6 @@ gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
 gem 'raise-if-root'
 gem 'readthis'
-gem 'recaptcha', require: 'recaptcha/rails'
 gem 'redacted_struct'
 gem 'redis-session-store', '>= 0.11.3'
 gem 'retries'
