@@ -17,7 +17,7 @@ class AddUserEmailForm
     @email = params[:email]
     @email_address = email_address_record(@email)
 
-    if valid_form?
+    if valid?
       process_successful_submission
     else
       @success = false
@@ -40,10 +40,6 @@ class AddUserEmailForm
 
   attr_writer :email
   attr_reader :success, :email_address
-
-  def valid_form?
-    valid?
-  end
 
   def process_successful_submission
     @success = true
