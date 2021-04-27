@@ -37,8 +37,6 @@ module Idv
       success = idv_result[:success]
       handle_successful_proofing_attempt if success
 
-      add_proofing_cost(transaction_id: idv_result[:transaction_id])
-
       delete_async
       FormResponse.new(
         success: success, errors: idv_result[:errors],
@@ -70,11 +68,6 @@ module Idv
     def handle_successful_proofing_attempt
       update_idv_session
       start_phone_confirmation_session
-    end
-
-    def add_proofing_cost(transaction_id:)
-      Db::SpCost::AddSpCost.call(idv_session.issuer, 2, :lexis_nexis_address, transaction_id: transaction_id)
-      Db::ProofingCost::AddUserProofingCost.call(idv_session.current_user.id, :lexis_nexis_address)
     end
 
     def applicant
@@ -152,7 +145,12 @@ module Idv
     end
 
     def run_job(document_capture_session)
-      Idv::Agent.new(applicant).proof_address(document_capture_session, trace_id: trace_id)
+      Idv::Agent.new(applicant).proof_address(
+        document_capture_session,
+        trace_id: trace_id,
+        issuer: idv_session.issuer,
+        user_id: idv_session.current_user.id,
+      )
     end
 
     def timed_out
