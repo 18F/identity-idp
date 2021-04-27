@@ -3,7 +3,7 @@ class AddressProofingJob < ApplicationJob
 
   queue_as :default
 
-  def perform(result_id:, encrypted_arguments:, trace_id:)
+  def perform(user_id:, issuer:, result_id:, encrypted_arguments:, trace_id:)
     timer = JobHelpers::Timer.new
 
     decrypted_args = JSON.parse(
@@ -18,6 +18,11 @@ class AddressProofingJob < ApplicationJob
         address_proofer.proof(applicant_pii)
       end
     end
+
+    Db::SpCost::AddSpCost.call(
+      issuer, 2, :lexis_nexis_address, transaction_id: proofer_result.transaction_id
+    )
+    Db::ProofingCost::AddUserProofingCost.call(user_id, :lexis_nexis_address)
 
     result = proofer_result.to_h
     result[:context] = { stages: [address: address_proofer.class.vendor_name] }

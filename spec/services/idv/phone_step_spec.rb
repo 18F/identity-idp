@@ -135,6 +135,28 @@ describe Idv::PhoneStep do
       expect(idv_session.vendor_phone_confirmation).to eq(true)
       expect(idv_session.user_phone_confirmation).to be_falsy
     end
+
+    it 'records the transaction_id in the cost' do
+      expect do
+        subject.submit(phone: good_phone)
+        subject.async_state_done(subject.async_state)
+      end.to(change { SpCost.count }.by(1))
+
+      sp_cost = SpCost.last
+      expect(sp_cost.issuer).to eq(service_provider.issuer)
+      expect(sp_cost.transaction_id).to eq('address-mock-transaction-id-123')
+    end
+
+    it 'records the transaction_id in the cost for failures too' do
+      expect do
+        subject.submit(phone: bad_phone)
+        subject.async_state_done(subject.async_state)
+      end.to(change { SpCost.count }.by(1))
+
+      sp_cost = SpCost.last
+      expect(sp_cost.issuer).to eq(service_provider.issuer)
+      expect(sp_cost.transaction_id).to eq('address-mock-transaction-id-123')
+    end
   end
 
   describe '#failure_reason' do

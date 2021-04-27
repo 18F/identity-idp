@@ -7,6 +7,8 @@ RSpec.describe AddressProofingJob, type: :job do
       { applicant_pii: applicant_pii }.to_json,
     )
   end
+  let(:user_id) { SecureRandom.random_number(1000) }
+  let(:issuer) { build(:service_provider).issuer }
   let(:applicant_pii) do
     {
       first_name: 'Johnny',
@@ -25,6 +27,8 @@ RSpec.describe AddressProofingJob, type: :job do
         result_id: document_capture_session.result_id,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
+        user_id: user_id,
+        issuer: issuer,
       )
 
       result = document_capture_session.load_proofing_result[:result]
@@ -41,6 +45,8 @@ RSpec.describe AddressProofingJob, type: :job do
         result_id: document_capture_session.result_id,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
+        user_id: user_id,
+        issuer: issuer,
       )
     end
 
@@ -83,6 +89,18 @@ RSpec.describe AddressProofingJob, type: :job do
             { address: 'lexisnexis:phone_finder' },
           ] },
         )
+      end
+
+      it 'adds cost data' do
+        expect { perform }.
+          to(change { SpCost.count }.by(1).and(change { ProofingCost.count }.by(1)))
+
+        sp_cost = SpCost.last
+        expect(sp_cost.issuer).to eq(issuer)
+        expect(sp_cost.transaction_id).to eq(conversation_id)
+
+        proofing_cost = ProofingCost.last
+        expect(proofing_cost.user_id).to eq(user_id)
       end
     end
 

@@ -20,13 +20,15 @@ module Idv
       )
     end
 
-    def proof_address(document_capture_session, trace_id:)
+    def proof_address(document_capture_session, user_id:, issuer:, trace_id:)
       document_capture_session.create_proofing_session
       encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
         { applicant_pii: @applicant }.to_json,
       )
 
       AddressProofingJob.perform_later(
+        user_id: user_id,
+        issuer: issuer,
         encrypted_arguments: encrypted_arguments,
         result_id: document_capture_session.result_id,
         trace_id: trace_id,

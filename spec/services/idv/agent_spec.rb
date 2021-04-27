@@ -110,10 +110,14 @@ describe Idv::Agent do
 
     describe '#proof_address' do
       let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
+      let(:user_id) { SecureRandom.random_number(1000) }
+      let(:issuer) { build(:service_provider).issuer }
 
       it 'proofs addresses successfully with valid information' do
         agent = Idv::Agent.new({ phone: Faker::PhoneNumber.cell_phone })
-        agent.proof_address(document_capture_session, trace_id: trace_id)
+        agent.proof_address(
+          document_capture_session, trace_id: trace_id, user_id: user_id, issuer: issuer
+        )
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq true
@@ -121,7 +125,9 @@ describe Idv::Agent do
 
       it 'fails to proof addresses with invalid information' do
         agent = Idv::Agent.new(phone: bad_phone)
-        agent.proof_address(document_capture_session, trace_id: trace_id)
+        agent.proof_address(
+          document_capture_session, trace_id: trace_id, user_id: user_id, issuer: issuer
+        )
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq false
