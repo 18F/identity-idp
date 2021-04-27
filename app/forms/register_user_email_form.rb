@@ -13,8 +13,7 @@ class RegisterUserEmailForm
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(analytics:, recaptcha_results: [true, {}], password_reset_requested: false)
-    @allow, @recaptcha_h = recaptcha_results
+  def initialize(analytics:, password_reset_requested: false)
     @throttled = false
     @password_reset_requested = password_reset_requested
     @analytics = analytics
@@ -41,7 +40,7 @@ class RegisterUserEmailForm
     if valid_form?
       process_successful_submission(request_id, instructions)
     else
-      self.success = @allow && process_errors(request_id)
+      self.success = process_errors(request_id)
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
@@ -73,7 +72,7 @@ class RegisterUserEmailForm
   end
 
   def valid_form?
-    @allow && valid? && !email_taken?
+    valid? && !email_taken?
   end
 
   def lookup_email_taken
@@ -107,7 +106,7 @@ class RegisterUserEmailForm
       user_id: user.uuid || existing_user.uuid,
       domain_name: email&.split('@')&.last,
       throttled: @throttled,
-    }.merge(@recaptcha_h)
+    }
   end
 
   def process_errors(request_id)

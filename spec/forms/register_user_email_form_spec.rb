@@ -121,66 +121,13 @@ describe RegisterUserEmailForm do
         expect(submit_form).to eq result
       end
 
-      it 'is valid with valid recaptcha' do
-        result = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(result)
-        captcha_results = mock_captcha(enabled: true, present: true, valid: true)
-        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results, analytics: analytics)
-        submit_form = form.submit(email: 'not_taken@gmail.com')
-        extra = {
-          email_already_exists: false,
-          throttled: false,
-          user_id: User.find_with_email('not_taken@gmail.com').uuid,
-          domain_name: 'gmail.com',
-          recaptcha_valid: true,
-          recaptcha_present: true,
-          recaptcha_enabled: true,
-        }
-
-        expect(FormResponse).to have_received(:new).
-          with(success: true, errors: {}, extra: extra)
-        expect(submit_form).to eq result
-      end
-
       it 'saves the user email_language for a valid form' do
-        captcha_results = mock_captcha(enabled: true, present: true, valid: true)
-        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results, analytics: analytics)
+        form = RegisterUserEmailForm.new(analytics: analytics)
 
         response = form.submit(email: 'not_taken@gmail.com', email_language: 'fr')
         expect(response).to be_success
 
         expect(User.find_with_email('not_taken@gmail.com').email_language).to eq('fr')
-      end
-
-      it 'does not save the user email_language for an invalid form' do
-        captcha_results = mock_captcha(enabled: true, present: true, valid: false)
-        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results, analytics: analytics)
-
-        response = form.submit(email: 'not_taken@gmail.com', email_language: 'fr')
-        expect(response).to_not be_success
-
-        expect(User.find_with_email('not_taken@gmail.com')&.email_language).to be_nil
-      end
-
-      it 'is invalid with invalid recaptcha' do
-        result = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(result)
-        captcha_results = mock_captcha(enabled: true, present: true, valid: false)
-        form = RegisterUserEmailForm.new(recaptcha_results: captcha_results, analytics: analytics)
-        submit_form = form.submit(email: 'not_taken@gmail.com')
-        extra = {
-          email_already_exists: false,
-          throttled: false,
-          user_id: 'anonymous-uuid',
-          domain_name: 'gmail.com',
-          recaptcha_valid: false,
-          recaptcha_present: true,
-          recaptcha_enabled: true,
-        }
-
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: {}, extra: extra)
-        expect(submit_form).to eq result
       end
     end
 
@@ -264,14 +211,5 @@ describe RegisterUserEmailForm do
         expect(submit_form).to eq result
       end
     end
-  end
-
-  def mock_captcha(enabled:, present:, valid:)
-    allow = enabled ? valid : true
-    [allow, {
-      recaptcha_valid: valid,
-      recaptcha_present: present,
-      recaptcha_enabled: enabled,
-    }]
   end
 end

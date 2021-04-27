@@ -4,9 +4,8 @@ class PasswordResetEmailForm
 
   attr_reader :email
 
-  def initialize(email, recaptcha_results = [true, {}])
+  def initialize(email)
     @email = email
-    @allow, @recaptcha_h = recaptcha_results
   end
 
   def resend
@@ -15,7 +14,7 @@ class PasswordResetEmailForm
 
   def submit
     FormResponse.new(
-      success: @allow && valid?, errors: errors.messages,
+      success: valid?, errors: errors.messages,
       extra: extra_analytics_attributes
     )
   end
@@ -29,7 +28,7 @@ class PasswordResetEmailForm
       user_id: user&.uuid || 'nonexistent-uuid',
       confirmed: user&.confirmed? == true,
       active_profile: user&.active_profile.present?,
-    }.merge(@recaptcha_h)
+    }
   end
 
   def user

@@ -377,7 +377,6 @@ GEM
     irb (1.2.9)
       reline (>= 0.1.5)
     jmespath (1.4.0)
-    json (2.5.1)
     json-jwt (1.13.0)
       activesupport (>= 4.2)
       aes_key_wrap
@@ -532,8 +531,6 @@ GEM
     readthis (2.2.0)
       connection_pool (~> 2.1)
       redis (>= 3.0, < 5.0)
-    recaptcha (5.2.1)
-      json
     redacted_struct (1.1.0)
     redis (4.2.5)
     redis-session-store (0.11.3)
@@ -801,7 +798,6 @@ DEPENDENCIES
   rails-erd (>= 1.6.0)
   raise-if-root
   readthis
-  recaptcha
   redacted_struct
   redis-session-store (>= 0.11.3)
   retries

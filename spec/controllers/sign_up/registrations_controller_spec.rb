@@ -31,40 +31,11 @@ describe SignUp::RegistrationsController, devise: true do
 
   describe '#create' do
     context 'when registering with a new email' do
-      it 'tracks successful user registration with recaptcha enabled' do
+      it 'tracks successful user registration' do
         stub_analytics
 
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
-
-        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
-
-        post :create, params: { user: { email: 'new@example.com' }, 'g-recaptcha-response': 'foo' }
-
-        user = User.find_with_email('new@example.com')
-
-        analytics_hash = {
-          success: true,
-          throttled: false,
-          errors: {},
-          email_already_exists: false,
-          user_id: user.uuid,
-          domain_name: 'example.com',
-        }.merge(captcha_h)
-
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
-
-        expect(subject).to have_received(:create_user_event).with(:account_created, user)
-      end
-
-      it 'tracks successful user registration with recaptcha disabled' do
-        stub_analytics
-
-        allow(@analytics).to receive(:track_event)
-        allow(subject).to receive(:create_user_event)
-
-        captcha_h = mock_captcha(enabled: false, present: false, valid: true)
 
         post :create, params: { user: { email: 'new@example.com' } }
 
@@ -77,7 +48,7 @@ describe SignUp::RegistrationsController, devise: true do
           email_already_exists: false,
           user_id: user.uuid,
           domain_name: 'example.com',
-        }.merge(captcha_h)
+        }
 
         expect(@analytics).to have_received(:track_event).
           with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
@@ -110,90 +81,6 @@ describe SignUp::RegistrationsController, devise: true do
 
         expect(response).to redirect_to account_path
       end
-
-      it 'prevents a bot from registering' do
-        stub_analytics
-
-        allow(@analytics).to receive(:track_event)
-        allow(subject).to receive(:create_user_event)
-
-        captcha_h = mock_captcha(enabled: true, present: true, valid: false)
-
-        post :create, params: { user: { email: 'new@example.com' }, 'g-recaptcha-response': 'foo' }
-
-        user = User.find_with_email('new@example.com')
-        expect(user).to be_nil
-
-        analytics_hash = {
-          success: false,
-          throttled: false,
-          errors: {},
-          email_already_exists: false,
-          user_id: 'anonymous-uuid',
-          domain_name: 'example.com',
-        }.merge(captcha_h)
-
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
-
-        expect(response).to render_template(:new)
-      end
-
-      it 'prevents a user from registering if they bypass the captcha' do
-        stub_analytics
-
-        allow(@analytics).to receive(:track_event)
-        allow(subject).to receive(:create_user_event)
-
-        captcha_h = mock_captcha(enabled: true, present: false, valid: false)
-
-        post :create, params: { user: { email: 'new@example.com' }, 'g-recaptcha-response': '' }
-
-        user = User.find_with_email('new@example.com')
-        expect(user).to be_nil
-
-        analytics_hash = {
-          success: false,
-          throttled: false,
-          errors: {},
-          email_already_exists: false,
-          user_id: 'anonymous-uuid',
-          domain_name: 'example.com',
-        }.merge(captcha_h)
-
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
-
-        expect(response).to render_template(:new)
-      end
-
-      it 'prevents a bot from registering if they do not send the captcha' do
-        stub_analytics
-
-        allow(@analytics).to receive(:track_event)
-        allow(subject).to receive(:create_user_event)
-
-        captcha_h = mock_captcha(enabled: true, present: false, valid: false)
-
-        post :create, params: { user: { email: 'new@example.com' } }
-
-        user = User.find_with_email('new@example.com')
-        expect(user).to be_nil
-
-        analytics_hash = {
-          success: false,
-          throttled: false,
-          errors: {},
-          email_already_exists: false,
-          user_id: 'anonymous-uuid',
-          domain_name: 'example.com',
-        }.merge(captcha_h)
-
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
-
-        expect(response).to render_template(:new)
-      end
     end
 
     it 'tracks successful user registration with existing email' do
@@ -201,7 +88,6 @@ describe SignUp::RegistrationsController, devise: true do
 
       stub_analytics
 
-      captcha_h = mock_captcha(enabled: true, present: true, valid: true)
       analytics_hash = {
         success: true,
         throttled: false,
@@ -209,19 +95,18 @@ describe SignUp::RegistrationsController, devise: true do
         email_already_exists: true,
         user_id: existing_user.uuid,
         domain_name: 'example.com',
-      }.merge(captcha_h)
+      }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
       expect(subject).to_not receive(:create_user_event)
 
-      post :create, params: { user: { email: 'TEST@example.com ' }, 'g-recaptcha-response': 'foo' }
+      post :create, params: { user: { email: 'TEST@example.com ' } }
     end
 
     it 'tracks unsuccessful user registration' do
       stub_analytics
 
-      captcha_h = mock_captcha(enabled: true, present: true, valid: true)
       analytics_hash = {
         success: false,
         throttled: false,
@@ -229,13 +114,12 @@ describe SignUp::RegistrationsController, devise: true do
         email_already_exists: false,
         user_id: 'anonymous-uuid',
         domain_name: 'invalid',
-      }.merge(captcha_h)
+      }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
 
-      post :create, params: { user: { email: 'invalid@', request_id: '' },
-                              'g-recaptcha-response': 'foo' }
+      post :create, params: { user: { email: 'invalid@', request_id: '' } }
     end
 
     it 'renders new if email is nil' do
@@ -255,16 +139,5 @@ describe SignUp::RegistrationsController, devise: true do
 
       expect(response).to render_template(:new)
     end
-  end
-
-  def mock_captcha(enabled:, present:, valid:)
-    allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(enabled)
-    allow_any_instance_of(SignUp::RegistrationsController).to receive(:verify_recaptcha).
-      and_return(valid)
-    {
-      recaptcha_valid: valid,
-      recaptcha_present: present,
-      recaptcha_enabled: enabled,
-    }
   end
 end
