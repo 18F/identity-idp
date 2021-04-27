@@ -24,6 +24,14 @@ class IdentityConfig
         raise 'invalid boolean value'
       end
     end,
+    timestamp: proc do |value|
+      # When the store is built `Time.zone` is not set resulting in a NoMethodError
+      # if Time.zone.parse is called
+      #
+      # rubocop:disable Rails/TimeZone
+      Time.parse(value)
+      # rubocop:enable Rails/TimeZone
+    end,
   }
 
   def initialize(read_env)
@@ -31,11 +39,11 @@ class IdentityConfig
     @written_env = {}
   end
 
-  def add(key, type: :string, is_sensitive: false, options: {})
+  def add(key, type: :string, is_sensitive: false, allow_nil: false, options: {})
     value = @read_env[key]
-    raise "#{key} is required but is not present" if value.nil?
-    converted_value = CONVERTERS.fetch(type).call(value, options: options)
-    raise "#{key} is required but is not present" if converted_value.nil?
+
+    converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
+    raise "#{key} is required but is not present" if converted_value.nil? && !allow_nil
 
     @written_env[key] = converted_value
     @written_env
@@ -51,8 +59,8 @@ class IdentityConfig
     config.add(:aamva_verification_url)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
-    config.add(:acuant_maintenance_window_start)
-    config.add(:acuant_maintenance_window_finish)
+    config.add(:acuant_maintenance_window_start, type: :timestamp, allow_nil: true)
+    config.add(:acuant_maintenance_window_finish, type: :timestamp, allow_nil: true)
     config.add(:acuant_assure_id_password)
     config.add(:acuant_assure_id_username)
     config.add(:acuant_assure_id_subscription_id)
