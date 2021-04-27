@@ -34,7 +34,13 @@ describe Deploy::Activate do
       allow(Identity::Hostdata).to receive(:env).and_return('int')
       allow(Identity::Hostdata).to receive(:instance_role).and_return(instance_role)
 
+      ec2_api_token = SecureRandom.hex
+
+      stub_request(:put, 'http://169.254.169.254/latest/api/token').
+        to_return(body: ec2_api_token)
+
       stub_request(:get, 'http://169.254.169.254/2016-09-02/dynamic/instance-identity/document').
+        with(headers: { 'X-aws-ec2-metadata-token' => ec2_api_token }).
         to_return(body: {
           'region' => 'us-west-1',
           'accountId' => '12345',
@@ -107,7 +113,7 @@ describe Deploy::Activate do
 
   context 'outside a deployed production environment' do
     before do
-      stub_request(:get, 'http://169.254.169.254/2016-09-02/dynamic/instance-identity/document').
+      stub_request(:put, 'http://169.254.169.254/latest/api/token').
         to_timeout
 
       # for now, stub cloning identity-idp-config
