@@ -31,13 +31,12 @@ module Upaya
 
     if AppConfig.env.ruby_workers_enabled == 'true'
       config.active_job.queue_adapter = :delayed_job
-
-      FileUtils.mkdir_p(Rails.root.join('log'))
-      config.active_job.logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
     else
       config.active_job.queue_adapter = :inline
     end
 
+    FileUtils.mkdir_p(Rails.root.join('log'))
+    config.active_job.logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
     config.active_job.logger.formatter = config.log_formatter
 
     config.time_zone = 'UTC'
