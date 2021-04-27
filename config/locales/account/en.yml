@@ -98,7 +98,7 @@ en:
       two_factor_authentication: Your authentication methods
       your_account: Your Account
     re_verify:
-      banner: We've hidden your profile information to protect your privacy.
+      banner: We’ve hidden your profile information to protect your privacy.
       footer: Authenticate to view your information.
     revoke_consent:
       link_title: Disconnect

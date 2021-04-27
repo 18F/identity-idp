@@ -1,5 +1,6 @@
 require 'yaml'
 require 'active_support/core_ext/object/try'
+require 'rubypants-unicode'
 
 module YamlNormalizer
   module_function
@@ -23,7 +24,7 @@ module YamlNormalizer
   end
 
   def handle_hash(hash)
-    copy = hash.each_value { |value| handle_value(value) }.dup
+    copy = hash.transform_values { |value| handle_value(value) }
     hash.clear
     copy.keys.sort.each do |key|
       hash[key] = copy[key]
@@ -37,14 +38,23 @@ module YamlNormalizer
 
   def handle_value(value)
     if value.is_a?(String)
-      trim(value)
+      handle_string(value)
     elsif value.is_a?(Array)
       handle_array(value)
     elsif value.is_a?(Hash)
       handle_hash(value)
-    elsif value && value != true && value != false
+    elsif value == true || value == false
+      value
+    elsif value
       raise ArgumentError, "unknown YAML value #{value}"
     end
+  end
+
+  def handle_string(value)
+    [
+      method(:trim),
+      method(:format_punctuation),
+    ].reduce(value) { |result, method| method.call(result) }
   end
 
   def trim(str)
@@ -52,5 +62,10 @@ module YamlNormalizer
     ended_with_space_after_colon = str =~ /: \s*\Z/
     str.rstrip!
     str << ' ' if ended_with_space_after_colon
+    str
+  end
+
+  def format_punctuation(str)
+    RubyPants.new(str).to_html
   end
 end

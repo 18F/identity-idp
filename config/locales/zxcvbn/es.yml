@@ -25,13 +25,13 @@ es:
         si solos son fáciles de adivinar
       predictable_substitutions_like__instead_of_a_dont_help_very_much: No hay necesidad
         de símbolos, dígitos o letras mayúsculas
-      recent_years_are_easy_to_guess: Sustituciones predecibles como '@' en lugar
-        de 'a' no ayudan mucho
+      recent_years_are_easy_to_guess: Sustituciones predecibles como ‘@’ en lugar
+        de ‘a’ no ayudan mucho
       repeats_like_aaa_are_easy_to_guess: Los años recientes son fáciles de adivinar
       repeats_like_abcabcabc_are_only_slightly_harder_to_guess_than_abc: Las repeticiones
-        como "aaa" son fáciles de adivinar
-      reversed_words_arent_much_harder_to_guess: Las repeticiones como "abcabcabc"
-        son sólo un poco más difíciles de adivinar que "abc"
+        como “aaa” son fáciles de adivinar
+      reversed_words_arent_much_harder_to_guess: Las repeticiones como “abcabcabc”
+        son sólo un poco más difíciles de adivinar que “abc”
       sequences_like_abc_or_6543_are_easy_to_guess: Las palabras invertidas no son
         mucho más difíciles de adivinar
       short_keyboard_patterns_are_easy_to_guess: Las secuencias como abc o 6543 son

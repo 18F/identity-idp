@@ -9,7 +9,7 @@ en:
         instructions: "%{sp_name} no longer uses login.gov as a sign-in service for
           their website. If you already created a login.gov account, it is still active
           and can be used to access other participating government websites."
-        instructions2: Please visit the agency's website to contact them for more
+        instructions2: Please visit the agency’s website to contact them for more
           information.
     help_text:
       default:

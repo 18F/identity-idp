@@ -7,11 +7,11 @@ en:
       are_you_sure_desc: "<br><b>Backup codes are not very safe</b> because they can
         easily be lost or stolen. <b>If you can, choose a different method</b> (use
         a phone, download an authentication application, or use a security key). <br><br><b>If
-        you continue with backup codes, keep them safe</b>.  We'll give you 10 codes
-        that you can download, print, copy or write down.  Later, you'll have to enter
+        you continue with backup codes, keep them safe</b>.  We’ll give you 10 codes
+        that you can download, print, copy or write down.  Later, you’ll have to enter
         one every time you sign in."
       are_you_sure_other_option: Choose a different method
-      are_you_sure_title: Are you sure?  We'll give you backup codes to save and use.
+      are_you_sure_title: Are you sure?  We’ll give you backup codes to save and use.
       caution_delete: If you delete your backup codes you will no longer be able to
         use them to sign in.
       confirm_delete: Are you sure you want to delete your backup codes?
@@ -23,7 +23,7 @@ en:
       generate: Get codes
       print: Print
       regenerate: Get new codes
-      subinfo_html: "<b>Don't lose these codes</b>. Download, print, or copy them.
+      subinfo_html: "<b>Don’t lose these codes</b>. Download, print, or copy them.
         Each code can only be used once. After you’ve used all 10 codes, we’ll give
         you 10 new codes.  Keep your codes as safe as your password."
       subtitle: Your backup codes
@@ -65,7 +65,7 @@ en:
           password: New password
       show: Show password
     personal_key:
-      alternative: Don't have your personal key?
+      alternative: Don’t have your personal key?
       confirmation_label: Personal key
       instructions: Please confirm you have a copy of your personal key by entering
         it below.
@@ -74,7 +74,7 @@ en:
       buttons:
         delete: Remove phone
     piv_cac_delete:
-      caution: If you remove your PIV/CAC card you won't be able to use it to access
+      caution: If you remove your PIV/CAC card you won’t be able to use it to access
         your login.gov account.
       confirm: Are you sure you want to remove your PIV/CAC card?
     piv_cac_login:
@@ -84,9 +84,9 @@ en:
     piv_cac_setup:
       nickname: PIV/CAC nickname
       no_thanks: No thanks
-      piv_cac_intro_html: We'll ask you to present your PIV/CAC card <strong>each
+      piv_cac_intro_html: We’ll ask you to present your PIV/CAC card <strong>each
         time you sign in</strong> as part of two-factor authentication.<br><br>After
-        clicking "Add PIV/CAC" your browser will prompt you for your PIV/CAC PIN and
+        clicking “Add PIV/CAC” your browser will prompt you for your PIV/CAC PIN and
         have you select a certificate.
       submit: Add PIV/CAC card
     registration:
@@ -96,14 +96,14 @@ en:
     ssn:
       show: Show Social Security Number
     totp_delete:
-      caution: If you remove your authentication app you won't be able to use it to
+      caution: If you remove your authentication app you won’t be able to use it to
         access your login.gov account.
       confirm: Are you sure you want to remove your authentication app?
     totp_setup:
       totp_intro_html: Set up an authentication app to sign in using temporary security
         codes. %{link}
       totp_step_1: Give it a nickname
-      totp_step_1a: If you add more than one app, you'll know which ones which.
+      totp_step_1a: If you add more than one app, you’ll know which ones which.
       totp_step_2: Open your authentication app
       totp_step_3: Scan this QR barcode with your app
       totp_step_4: Enter the temporary code from your app
@@ -120,7 +120,7 @@ en:
       submit: Confirm account
       title: Confirm your account
     webauthn_delete:
-      caution: If you remove your security key you won't be able to use it to access
+      caution: If you remove your security key you won’t be able to use it to access
         your login.gov account.
       confirm: Are you sure you want to remove your security key?
     webauthn_setup:
