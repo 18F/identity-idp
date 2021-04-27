@@ -156,9 +156,6 @@ describe 'Account Reset Request: Delete Account', email: true do
       signin(user_email, user.password)
       click_link t('two_factor_authentication.login_options_link_text')
 
-      # Account reset link should not be present
-      expect(page).to_not have_content(t('two_factor_authentication.account_reset.link'))
-
       # Visiting account reset directly should redirect to 2FA
       visit account_reset_request_path
 

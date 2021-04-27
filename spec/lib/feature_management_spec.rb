@@ -273,20 +273,6 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
-  describe '#disallow_ial2_recovery?' do
-    it 'returns true when AppConfig setting is true' do
-      allow(IdentityConfig.store).to receive(:disallow_ial2_recovery) { true }
-
-      expect(FeatureManagement.disallow_ial2_recovery?).to eq(true)
-    end
-
-    it 'returns false when AppConfig setting is false' do
-      allow(IdentityConfig.store).to receive(:disallow_ial2_recovery) { false }
-
-      expect(FeatureManagement.disallow_ial2_recovery?).to eq(false)
-    end
-  end
-
   describe '#identity_pki_local_dev?' do
     context 'when in development mode' do
       before(:each) do

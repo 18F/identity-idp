@@ -92,9 +92,6 @@ class Analytics
   EVENTS_VISIT = 'Events Page Visited'.freeze
   FORGET_ALL_BROWSERS_SUBMITTED = 'Forget All Browsers Submitted'.freeze
   FORGET_ALL_BROWSERS_VISITED = 'Forget All Browsers Visited'.freeze
-  IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended
-  IAL2_RECOVERY_REQUEST = 'IAL2 Recovery Request'.freeze
-  IAL2_RECOVERY_REQUEST_VISITED = 'IAL2 Recovery Request Visited'.freeze
   IDV_ADDRESS_VISIT = 'IdV: address visited'.freeze
   IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze

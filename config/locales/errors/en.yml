@@ -13,9 +13,6 @@ en:
     capture_doc:
       invalid_link: This link is expired or not valid.  Please request another link
         to verify your identity on a mobile phone.
-      token_expired: token expired
-      token_invalid: token invalid
-      token_missing: token missing
     confirm_password_incorrect: Incorrect password.
     doc_auth:
       consent_form: Before you can continue, you must give us permission. Please check

@@ -81,10 +81,6 @@ class FeatureManagement
     IdentityConfig.store.disallow_all_web_crawlers
   end
 
-  def self.disallow_ial2_recovery?
-    IdentityConfig.store.disallow_ial2_recovery
-  end
-
   def self.gpo_upload_enabled?
     # leaving the usps name for backwards compatibility
     IdentityConfig.store.usps_upload_enabled

@@ -23,17 +23,6 @@ shared_examples_for 'an idv session errors controller action' do
     end
   end
 
-  context 'the user is not authenticated and recovering their account' do
-    it 'renders the error' do
-      user = create(:user, :signed_up)
-      controller.session[:ial2_recovery_user_id] = user.id
-
-      get action
-
-      expect(response).to render_template(template)
-    end
-  end
-
   context 'the user is not authenticated and in doc capture flow' do
     it 'renders the error' do
       user = create(:user, :signed_up)

@@ -145,13 +145,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def confirm_email_and_reverify(user, email, account_recovery_request)
-    with_user_locale(user) do
-      @token = account_recovery_request.request_token
-      mail(to: email.email, subject: t('recover.email.confirm'))
-    end
-  end
-
   def add_email(user, email, token)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)

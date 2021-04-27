@@ -8,9 +8,6 @@ module Rack
       '/verify/doc_auth/document_capture',
       '/verify/doc_auth/verify',
       '/verify/capture_doc/document_capture',
-      '/verify/recovery/front_image',
-      '/verify/recovery/back_image',
-      '/verify/recovery/verify',
       '/verify/doc_auth/link_sent',
     ]
 
