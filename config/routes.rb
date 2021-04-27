@@ -174,10 +174,6 @@ Rails.application.routes.draw do
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
-    get '/authenticator_start' => 'users/totp_setup#start'
-
-    get '/recovery_key_setup' => 'users/recovery_key_setup#new'
-    patch '/recovery_key_setup' => 'users/recovery_key_setup#confirm'
 
     get '/forgot_password' => 'forgot_password#show'
 
@@ -243,7 +239,6 @@ Rails.application.routes.draw do
     get '/user_authorization_confirmation' => 'users/authorization_confirmation#show'
     put '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#update', as: :reset_user_authorization
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
-    delete '/sign_up/cancel' => 'sign_up/cancellations#destroy'
 
     get '/return_to_sp/cancel' => 'return_to_sp#cancel'
     get '/return_to_sp/failure_to_proof' => 'return_to_sp#failure_to_proof'
