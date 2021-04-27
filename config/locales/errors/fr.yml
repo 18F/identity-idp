@@ -13,9 +13,6 @@ fr:
     capture_doc:
       invalid_link: Ce lien a expiré ou n'est pas valide. Veuillez demander un autre
         lien pour vérifier votre identité sur un téléphone mobile.
-      token_expired: jeton expiré
-      token_invalid: jeton invalide
-      token_missing: jeton manquant
     confirm_password_incorrect: Mot de passe incorrect.
     doc_auth:
       consent_form: Avant de pouvoir continuer, vous devez nous donner la permission.

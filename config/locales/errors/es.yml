@@ -13,9 +13,6 @@ es:
     capture_doc:
       invalid_link: Este enlace ha caducado o no es válido. Solicite otro enlace para
         verificar su identidad en un teléfono móvil.
-      token_expired: token caducado
-      token_invalid: ficha invalida
-      token_missing: falta el token
     confirm_password_incorrect: La contraseña es incorrecta.
     doc_auth:
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
