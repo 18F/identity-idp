@@ -17,22 +17,8 @@ RSpec.describe EffectiveUser, type: :controller do
     end
 
     context 'non-existent user' do
-      before do
-        session[:ial2_recovery_user_id] = -1
-      end
-
       it 'returns session user id' do
         expect(subject).to be_nil
-      end
-    end
-
-    context 'logged out with ial2 recovery session user id' do
-      before do
-        session[:ial2_recovery_user_id] = user.id
-      end
-
-      it 'returns session user id' do
-        expect(subject).to eq user
       end
     end
 

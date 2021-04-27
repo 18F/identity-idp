@@ -36,11 +36,3 @@ es:
         el enlace que se encuentra dentro para continuar con la verificación de su
         cuenta.
       reverify: Para restablecer su cuenta, tendremos que volver a verificar su identidad
-    reverify:
-      email_confirmed: Hemos confirmado su dirección de correo electrónico
-      instructions: Queremos asegurarnos de que usted, y solo usted, tenga acceso
-        a su cuenta
-      reverify: A continuación, volvamos a verificar su identidad
-      success: Has recuperado exitosamente tu cuenta. Para evitar tener que recuperar
-        su cuenta en el futuro, agregue otra opción de seguridad de las siguientes
-        opciones de autenticación de dos factores.

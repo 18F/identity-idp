@@ -33,10 +33,3 @@ en:
         Once you receive the email, click the link inside to continue re-verifying
         your account.
       reverify: To reset your account, we'll need to re-verify your identity
-    reverify:
-      email_confirmed: We have confirmed your email address
-      instructions: We want to make sure you, and only you, have access to your account
-      reverify: Next, let's re-verify your identity
-      success: You have successfully recovered your account. To prevent having to
-        recover your account in the future, please add another authentication method
-        from the two-factor authentication options below.

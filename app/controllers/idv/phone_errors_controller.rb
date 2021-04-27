@@ -2,7 +2,7 @@ module Idv
   class PhoneErrorsController < ApplicationController
     include IdvSession
 
-    before_action :confirm_two_factor_authenticated_or_recovery
+    before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_phone_step_needed
 
     def warning
@@ -25,11 +25,6 @@ module Idv
       max_attempts = Throttle::THROTTLE_CONFIG[:idv_resolution][:max_attempts]
       attempt_count = idv_session.step_attempts[:phone]
       max_attempts - attempt_count
-    end
-
-    def confirm_two_factor_authenticated_or_recovery
-      return if session[:ial2_recovery_user_id].present?
-      confirm_two_factor_authenticated
     end
 
     def confirm_idv_phone_step_needed

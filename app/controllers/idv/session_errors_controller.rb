@@ -20,7 +20,6 @@ module Idv
     end
 
     def confirm_two_factor_authenticated_or_user_id_in_session
-      return if session[:ial2_recovery_user_id].present?
       return if session[:doc_capture_user_id].present?
 
       confirm_two_factor_authenticated
@@ -32,9 +31,6 @@ module Idv
     end
 
     def user_id
-      ial2_recovery_user_id = session[:ial2_recovery_user_id]
-      return ial2_recovery_user_id if ial2_recovery_user_id.present?
-
       doc_capture_user_id = session[:doc_capture_user_id]
       return doc_capture_user_id if doc_capture_user_id.present?
 
