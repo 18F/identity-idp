@@ -11,7 +11,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
   default_csp_config = {
     default_src: ["'self'"],
-    child_src: ["'self'", 'www.google.com'], # CSP 2.0 only; replaces frame_src
+    child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: connect_src.flatten,
@@ -32,8 +32,6 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
       '*.nr-data.net',
       'dap.digitalgov.gov',
       '*.google-analytics.com',
-      'www.google.com',
-      'www.gstatic.com',
       AppConfig.env.asset_host,
     ],
     style_src: ["'self'", AppConfig.env.asset_host],
