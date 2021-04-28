@@ -55,9 +55,9 @@ describe AttributeAsserter do
       zipcode: '  12345-1234',
     )
   end
-  let(:phone_format_e164_opt_out_list) { '[]' }
+  let(:phone_format_e164_opt_out_list) { [] }
   before do
-    allow(AppConfig.env).to receive(:phone_format_e164_opt_out_list).
+    allow(IdentityConfig.store).to receive(:phone_format_e164_opt_out_list).
       and_return(phone_format_e164_opt_out_list)
   end
 
@@ -96,7 +96,7 @@ describe AttributeAsserter do
         end
 
         context 'when the service provider is in the e164 opt-out list' do
-          let(:phone_format_e164_opt_out_list) { [service_provider.issuer].to_json }
+          let(:phone_format_e164_opt_out_list) { [service_provider.issuer] }
 
           it 'leaves the phone format as-is' do
             expect(user.asserted_attributes[:phone][:getter].call(user)).to eq '1 (888) 867-5309'

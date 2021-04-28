@@ -6,7 +6,7 @@ class FeatureManagement
   ].freeze
 
   def self.telephony_test_adapter?
-    AppConfig.env.telephony_adapter.blank? || AppConfig.env.telephony_adapter == 'test'
+    IdentityConfig.store.telephony_adapter == 'test'
   end
 
   def self.identity_pki_disabled?
@@ -116,16 +116,6 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
-  # Whether or not we can call the phone_info endpoint at all
-  def self.voip_check?
-    AppConfig.env.voip_check == 'true'
-  end
-
-  # Whether or not we should block VOIP phone numbers
-  def self.voip_block?
-    AppConfig.env.voip_block == 'true'
-  end
-
   def self.ruby_workers_enabled?
     AppConfig.env.ruby_workers_enabled == 'true'
   end
@@ -133,10 +123,9 @@ class FeatureManagement
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
   # @return [Set<String>] set of phone numbers normalized to e164
   def self.voip_allowed_phones
-    @voip_allowed_phones ||= if (allowed_phones = AppConfig.env.voip_allowed_phones).present?
-      JSON.parse(allowed_phones).map { |p| Phonelib.parse(p).e164 }.to_set
-    else
-      Set.new
+    @voip_allowed_phones ||= begin
+      allowed_phones = IdentityConfig.store.voip_allowed_phones
+      allowed_phones.map { |p| Phonelib.parse(p).e164 }.to_set
     end
   end
 end

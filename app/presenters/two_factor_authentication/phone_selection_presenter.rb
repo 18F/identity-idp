@@ -19,7 +19,7 @@ module TwoFactorAuthentication
           phone: masked_number(configuration.phone),
         )
       else
-        voip_note = if FeatureManagement.voip_block?
+        voip_note = if IdentityConfig.store.voip_block
           t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip')
         end
 
