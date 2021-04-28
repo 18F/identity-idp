@@ -93,7 +93,7 @@ RSpec.describe Idv::ApiImageUploadForm do
   end
 
   describe '#submit' do
-    context 'valid form' do
+    context 'with a valid form' do
       it 'logs analytics' do
         form.submit
 
@@ -105,6 +105,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           result: 'Passed',
           billed: true,
           remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          state: 'MT',
           user_id: nil,
           client_image_metrics: {
             front: JSON.parse(front_image_metadata, symbolize_names: true),
