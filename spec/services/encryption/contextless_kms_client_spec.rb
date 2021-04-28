@@ -108,13 +108,13 @@ describe Encryption::ContextlessKmsClient do
             plaintext: long_kms_plaintext[0..long_kms_plaintext_chunksize - 1],
             ciphertext: 'chunk1',
             key_id: IdentityConfig.store.aws_kms_key_id,
-            region: AppConfig.env.aws_region,
+            region: IdentityConfig.store.aws_region,
           },
           {
             plaintext: long_kms_plaintext[long_kms_plaintext_chunksize..-1],
             ciphertext: 'chunk2',
             key_id: IdentityConfig.store.aws_kms_key_id,
-            region: AppConfig.env.aws_region,
+            region: IdentityConfig.store.aws_region,
           },
         ],
       )

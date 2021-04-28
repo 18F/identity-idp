@@ -87,6 +87,7 @@ class IdentityConfig
     config.add(:aws_kms_key_id, type: :string)
     config.add(:aws_kms_multi_region_enabled, type: :boolean)
     config.add(:aws_kms_regions, type: :json)
+    config.add(:aws_region, type: :string)
     config.add(:backup_code_skip_symmetric_encryption, type: :boolean)
     config.add(:dashboard_api_token, type: :string)
     config.add(:database_host, type: :string)

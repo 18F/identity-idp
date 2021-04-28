@@ -22,7 +22,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
       'login.gov',
       AppConfig.env.asset_host,
       'idscangoweb.acuant.com',
-      AppConfig.env.aws_region && "https://s3.#{AppConfig.env.aws_region}.amazonaws.com",
+      IdentityConfig.store.aws_region && "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com",
     ].select(&:present?),
     media_src: ["'self'"],
     object_src: ["'none'"],
