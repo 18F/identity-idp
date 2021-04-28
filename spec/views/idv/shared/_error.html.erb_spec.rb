@@ -11,7 +11,6 @@ describe 'idv/shared/_error.html.erb' do
   before do
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
-    allow(view).to receive(:title)
 
     render 'idv/shared/error', **params
   end
