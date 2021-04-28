@@ -1,5 +1,6 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[x509_dn_uuid otp_secret_key totp_timestamp unlock_token]
+  self.ignored_columns = %w[x509_dn_uuid otp_secret_key totp_timestamp unlock_token 
+                            unconfirmed_email encrypted_otp_secret_key]
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
