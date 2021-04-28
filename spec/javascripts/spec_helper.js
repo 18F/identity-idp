@@ -2,14 +2,18 @@ import { Crypto } from '@peculiar/webcrypto';
 import chai from 'chai';
 import dirtyChai from 'dirty-chai';
 import sinonChai from 'sinon-chai';
+import chaiAsPromised from 'chai-as-promised';
 import { createDOM, useCleanDOM } from './support/dom';
 import { chaiConsoleSpy, useConsoleLogSpy } from './support/console';
+import { sinonChaiAsPromised } from './support/sinon';
 import { createObjectURLAsDataURL } from './support/file';
 import { useBrowserCompatibleEncrypt } from './support/crypto';
 
 chai.use(dirtyChai);
 chai.use(sinonChai);
+chai.use(chaiAsPromised);
 chai.use(chaiConsoleSpy);
+chai.use(sinonChaiAsPromised);
 global.expect = chai.expect;
 
 // Emulate a DOM, since many modules will assume the presence of these globals exist as a side

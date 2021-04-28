@@ -717,7 +717,7 @@ describe('document-capture/components/acuant-capture', () => {
   });
 
   it('logs metrics for manual upload', async () => {
-    const addPageAction = sinon.mock();
+    const addPageAction = sinon.stub();
     const { getByLabelText } = render(
       <AnalyticsContext.Provider value={{ addPageAction }}>
         <AcuantContextProvider sdkSrc="about:blank">
@@ -729,14 +729,57 @@ describe('document-capture/components/acuant-capture', () => {
     const input = getByLabelText('Image');
     userEvent.upload(input, validUpload);
 
-    await new Promise((resolve) => addPageAction.callsFake(resolve));
-    expect(addPageAction).to.have.been.calledWith({
+    await expect(addPageAction).to.eventually.be.calledWith({
       label: 'IdV: test image added',
       payload: {
         height: sinon.match.number,
         mimeType: 'image/jpeg',
         source: 'upload',
         width: sinon.match.number,
+      },
+    });
+  });
+
+  it('logs clicks', () => {
+    const addPageAction = sinon.stub();
+    const { getByText, getByLabelText } = render(
+      <I18nContext.Provider
+        value={{ 'doc_auth.buttons.take_or_upload_picture': '<lg-upload>Upload</lg-upload>' }}
+      >
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AnalyticsContext.Provider value={{ addPageAction }}>
+            <AcuantContextProvider sdkSrc="about:blank">
+              <AcuantCapture label="Image" name="test" />
+            </AcuantContextProvider>
+          </AnalyticsContext.Provider>
+        </DeviceContext.Provider>
+      </I18nContext.Provider>,
+    );
+
+    const placeholder = getByLabelText('Image');
+    userEvent.click(placeholder);
+    const button = getByText('doc_auth.buttons.take_picture');
+    userEvent.click(button);
+    const upload = getByText('Upload');
+    fireEvent.click(upload);
+
+    expect(addPageAction).to.have.been.calledThrice();
+    expect(addPageAction.getCall(0)).to.have.been.calledWith({
+      label: 'IdV: test image clicked',
+      payload: {
+        source: 'placeholder',
+      },
+    });
+    expect(addPageAction.getCall(1)).to.have.been.calledWith({
+      label: 'IdV: test image clicked',
+      payload: {
+        source: 'button',
+      },
+    });
+    expect(addPageAction.getCall(2)).to.have.been.calledWith({
+      label: 'IdV: test image clicked',
+      payload: {
+        source: 'upload',
       },
     });
   });
