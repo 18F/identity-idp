@@ -28,7 +28,7 @@ module KeyRotationHelper
   def rotate_attribute_encryption_key_with_invalid_queue
     store = IdentityConfig.store
     allow(store).to receive(:attribute_encryption_key_queue).and_return(
-      [{ key: 'key-that-was-never-used-in-the-past' }],
+      [{ 'key' => 'key-that-was-never-used-in-the-past' }],
     )
     allow(store).to receive(:attribute_encryption_key).and_return('4' * 32)
   end
