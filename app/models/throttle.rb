@@ -44,7 +44,7 @@ class Throttle < ApplicationRecord
     },
     verify_gpo_key: {
       max_attempts: AppConfig.env.verify_gpo_key_max_attempts.to_i,
-      attempt_window: AppConfig.env.verify_gpo_key_attempt_window_in_minutes.to_i,
+      attempt_window: IdentityConfig.store.verify_gpo_key_attempt_window_in_minutes,
     },
   }.freeze
 
