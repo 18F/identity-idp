@@ -6,7 +6,7 @@ module Features
 
     def sign_up_with(email)
       visit sign_up_email_path
-      first('#user_terms_accepted', visible: false).click
+      find('#user_terms_accepted').set(true)
       fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
@@ -443,13 +443,13 @@ module Features
     end
 
     def submit_form_with_invalid_email
-      first('#user_terms_accepted', visible: false).click
+      find('#user_terms_accepted').set(true)
       fill_in t('forms.registration.labels.email'), with: 'invalidemail'
       click_button t('forms.buttons.submit.default')
     end
 
     def submit_form_with_valid_but_wrong_email
-      first('#user_terms_accepted', visible: false).click
+      find('#user_terms_accepted').set(true)
       fill_in t('forms.registration.labels.email'), with: 'test@example.com'
       click_button t('forms.buttons.submit.default')
     end
@@ -459,7 +459,7 @@ module Features
     end
 
     def submit_form_with_valid_email(email = 'test@test.com')
-      first('#user_terms_accepted', visible: false).click
+      find('#user_terms_accepted').set(true)
       fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end

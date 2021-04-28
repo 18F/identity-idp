@@ -107,18 +107,18 @@ feature 'Sign Up' do
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
   end
 
-  context 'with js' do #, js: true do
-    # before do
-    #   page.driver.browser.execute_cdp(
-    #     'Browser.grantPermissions',
-    #     origin: page.server_url,
-    #     permissions: ['clipboardReadWrite'],
-    #   )
-    # end
-    #
-    # after do
-    #   page.driver.browser.execute_cdp('Browser.resetPermissions')
-    # end
+  context 'with js', js: true do
+    before do
+      page.driver.browser.execute_cdp(
+        'Browser.grantPermissions',
+        origin: page.server_url,
+        permissions: ['clipboardReadWrite'],
+      )
+    end
+
+    after do
+      page.driver.browser.execute_cdp('Browser.resetPermissions')
+    end
 
     context 'user enters their email as their password', email: true do
       it 'treats it as a weak password' do
