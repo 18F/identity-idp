@@ -140,16 +140,16 @@ module Rack
     if IdentityConfig.store.phone_setups_per_ip_track_only_mode
       track(
         'phone_setups/ip',
-        limit: AppConfig.env.phone_setups_per_ip_limit.to_i,
-        period: AppConfig.env.phone_setups_per_ip_period.to_i,
+        limit: IdentityConfig.store.phone_setups_per_ip_limit,
+        period: IdentityConfig.store.phone_setups_per_ip_period,
       ) do |req|
         req.remote_ip if req.path.match?(%r{(/add/phone|/phone_setup)}) && !req.get?
       end
     else
       throttle(
         'phone_setups/ip',
-        limit: AppConfig.env.phone_setups_per_ip_limit.to_i,
-        period: AppConfig.env.phone_setups_per_ip_period.to_i,
+        limit: IdentityConfig.store.phone_setups_per_ip_limit,
+        period: IdentityConfig.store.phone_setups_per_ip_period,
       ) do |req|
         req.remote_ip if req.path.match?(%r{/add/phone|/phone_setup}) && !req.get?
       end

@@ -257,7 +257,7 @@ describe 'throttling requests' do
   end
 
   describe 'phone setups per ip' do
-    let(:phone_setups_per_ip_limit) { AppConfig.env.phone_setups_per_ip_limit.to_i }
+    let(:phone_setups_per_ip_limit) { AppConfig.env.phone_setups_per_ip_limit }
 
     context 'when the number of requests is under the limit' do
       it 'does not throttle the request' do
