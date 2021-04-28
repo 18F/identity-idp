@@ -41,7 +41,7 @@ module JobRunner
     end
 
     def log_execution_completed_message
-      if job_run.error.present?
+      if job_run.error?
         Rails.logger.warn("#{job_configuration}: Job failed: #{job_run.error}")
       else
         Rails.logger.info("#{job_configuration}: Job finished successfully")
