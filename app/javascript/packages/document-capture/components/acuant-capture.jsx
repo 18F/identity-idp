@@ -204,6 +204,7 @@ function AcuantCapture(
   const { addPageAction } = useContext(AnalyticsContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
+  const isProxyingClickEvent = useRef(false);
   const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {?string} */ (null));
   const ifStillMounted = useIfStillMounted();
@@ -260,6 +261,31 @@ function AcuantCapture(
   }
 
   /**
+   * Given a click source, returns a higher-order function that, when called, will log an event
+   * before calling the original function.
+   *
+   * @template {(...args: any[]) => any} T
+   *
+   * @param {string} source Click source.
+   *
+   * @return {(fn: T) => (...args: Parameters<T>) => ReturnType<T>}
+   */
+  function withLoggedClick(source) {
+    return (fn) => (...args) => {
+      if (!isProxyingClickEvent.current) {
+        addPageAction({
+          label: `IdV: ${name} image clicked`,
+          payload: { source },
+        });
+      }
+
+      isProxyingClickEvent.current = false;
+
+      return fn(...args);
+    };
+  }
+
+  /**
    * Responds to a click by starting capture if supported in the environment, or triggering the
    * default file picker prompt. The click event may originate from the file input itself, or
    * another element which aims to trigger the prompt of the file input.
@@ -290,6 +316,7 @@ function AcuantCapture(
 
       isForceUploading.current = false;
     } else {
+      isProxyingClickEvent.current = true;
       inputRef.current?.click();
     }
   }
@@ -312,6 +339,7 @@ function AcuantCapture(
       inputRef.current.removeAttribute('capture');
     }
 
+    isProxyingClickEvent.current = true;
     inputRef.current.click();
 
     if (originalCapture !== null) {
@@ -399,7 +427,7 @@ function AcuantCapture(
         capture={capture}
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}
-        onClick={startCaptureOrTriggerUpload}
+        onClick={withLoggedClick('placeholder')(startCaptureOrTriggerUpload)}
         onChange={onUpload}
         onError={() => setOwnErrorMessage(null)}
       />
@@ -409,7 +437,7 @@ function AcuantCapture(
             isFlexibleWidth
             isOutline={!value}
             isUnstyled={!!value}
-            onClick={startCaptureOrTriggerUpload}
+            onClick={withLoggedClick('button')(startCaptureOrTriggerUpload)}
             className={value ? 'margin-right-1' : 'margin-right-2'}
           >
             {(hasCapture || !allowUpload) &&
@@ -426,7 +454,7 @@ function AcuantCapture(
             'lg-take-photo': () => null,
             'lg-upload': ({ children }) => (
               <span className="padding-left-1">
-                <Button isUnstyled onClick={forceUpload}>
+                <Button isUnstyled onClick={withLoggedClick('upload')(forceUpload)}>
                   {children}
                 </Button>
               </span>
