@@ -44,7 +44,7 @@ module Encryption
       end
 
       def current_key
-        AppConfig.env.attribute_encryption_key
+        IdentityConfig.store.attribute_encryption_key
       end
 
       def all_keys

@@ -41,6 +41,7 @@ async_wait_timeout_seconds: '60'
 aws_http_timeout: '5'
 aws_http_retry_limit: '2'
 aws_http_retry_max_delay: '1'
+aws_kms_key_id: alias/login-dot-gov-test-keymaker
 aws_logo_bucket:
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
@@ -191,12 +192,8 @@ development:
   aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
-  attribute_cost: 4000$8$4$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
-  attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost":
-    "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$"
-    }]'
-  aws_kms_key_id: alias/login-dot-gov-development-keymaker
+  attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_logo_bucket:
   aws_kms_regions: '["us-west-2", "us-east-1"]'
   dashboard_api_token: test_token
@@ -248,10 +245,8 @@ production:
   aal_authn_context_enabled: 'false'
   aamva_private_key:
   aamva_public_key:
-  attribute_cost: 4000$8$4$
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
-  aws_kms_key_id:
   aws_kms_regions: '["us-west-2"]'
   aws_logo_bucket:
   dashboard_api_token:
@@ -314,12 +309,8 @@ test:
   acuant_facial_match_url: https://facial_match.example.com
   acuant_max_attempts: '4'
   acuant_passlive_url: https://liveness.example.com
-  attribute_cost: 800$8$1$
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
-  attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost":
-    "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$"
-    }]'
-  aws_kms_key_id: alias/login-dot-gov-test-keymaker
+  attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   aws_kms_regions: '["us-west-2", "us-east-1"]'
   dashboard_api_token: 123ABC
   dashboard_url: https://dashboard.demo.login.gov
