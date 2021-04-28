@@ -43,7 +43,7 @@
     <div class="bg-light-blue padding-top-3 padding-left-3 padding-right-3 margin-bottom-3">
       <label class="margin-top-neg-1 margin-bottom-3" for="terms_accepted">
         <div class="bg-light-blue" >
-          <%= f.check_box :terms_accepted, { required: true }, true, false %>
+          <%= f.check_box :terms_accepted, { required: true, aria: { invalid: false } }, true, false %>
           <span class="indicator"></span>
           <%= t('account.terms') %>
         </div>
