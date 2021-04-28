@@ -5,7 +5,7 @@ namespace :newrelic do
   #     bundle exec newrelic deployment -r $(git rev-parse HEAD)
   #
   # The reason for the rake task is that our `newrelic.yml` file contains ERB
-  # blocks that expect the AppConfig to be setup and for identity-hostdata to be
+  # blocks that expect the IdentityConfig to be setup and for identity-hostdata to be
   # loaded. This rake task loads the rails environment before reporting the
   # deployment so the NewRelic config is loaded correctly.
   #

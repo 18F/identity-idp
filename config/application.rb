@@ -29,7 +29,7 @@ module Upaya
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
 
-    if AppConfig.env.ruby_workers_enabled == 'true'
+    if IdentityConfig.store.ruby_workers_enabled
       config.active_job.queue_adapter = :delayed_job
     else
       config.active_job.queue_adapter = :inline
