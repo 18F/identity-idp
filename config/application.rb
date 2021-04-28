@@ -56,8 +56,8 @@ module Upaya
 
     config.action_mailer.default_options = {
       from: Mail::Address.new.tap do |mail|
-        mail.address = AppConfig.env.email_from
-        mail.display_name = AppConfig.env.email_from_display_name
+        mail.address = IdentityConfig.store.email_from
+        mail.display_name = IdentityConfig.store.email_from_display_name
       end.to_s,
     }
 

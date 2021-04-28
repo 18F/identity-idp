@@ -39,7 +39,7 @@ acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
-asset_host:
+asset_host: ''
 async_wait_timeout_seconds: '60'
 aws_http_timeout: '5'
 aws_http_retry_limit: '2'
@@ -152,7 +152,7 @@ reg_unconfirmed_email_max_attempts: '20'
 reg_unconfirmed_email_window_in_minutes: '60'
 remember_device_expiration_hours_aal_1: '720'
 remember_device_expiration_hours_aal_2: '12'
-report_timeout:
+report_timeout: '0'
 requests_per_ip_limit: '300'
 requests_per_ip_period: '300'
 requests_per_ip_track_only_mode: 'false'

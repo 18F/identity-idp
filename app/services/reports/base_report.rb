@@ -31,7 +31,7 @@ module Reports
     end
 
     def report_timeout
-      AppConfig.env.report_timeout.to_i
+      IdentityConfig.store.report_timeout
     end
 
     def transaction_with_timeout
