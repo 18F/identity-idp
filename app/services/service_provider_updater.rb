@@ -51,7 +51,7 @@ class ServiceProviderUpdater
   end
 
   def url
-    AppConfig.env.dashboard_url
+    IdentityConfig.store.dashboard_url
   end
 
   def dashboard_service_providers
