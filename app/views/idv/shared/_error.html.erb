@@ -2,7 +2,8 @@
 yields: Page instruction content.
 locals:
 * type: `:warning` or `:error`. Defaults to `:error`.
-* heading: Page title and primary page heading text.
+* heading: Primary page heading text. Also used as page title if title is not given.
+* title: Optional custom page title, defaulting to the heading.
 * action: Optional hash of `text`, `url` of a primary action link.
 * options: Array of troubleshooting options.
 %>
@@ -17,7 +18,7 @@ else
   troubleshooting_heading = t('idv.troubleshooting.headings.having_trouble')
 end
 %>
-<% title heading %>
+<% title local_assigns.fetch(:title, heading) %>
 <%= image_tag(image_src, width: 54, alt: '', class: 'display-block') %>
 
 <h1 class="margin-top-4 margin-bottom-2"><%= heading %></h1>
