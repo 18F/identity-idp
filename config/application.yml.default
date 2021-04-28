@@ -73,6 +73,7 @@ event_disavowal_expiration_hours: '240'
 exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 gpo_designated_receiver_pii: '{}'
+hide_phone_mfa_signup: 'false'
 ial2_step_indicator_enabled: 'true'
 identity_pki_disabled: 'false'
 identity_pki_local_dev: 'false'

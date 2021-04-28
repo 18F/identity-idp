@@ -100,10 +100,6 @@ class FeatureManagement
     IdentityConfig.store.doc_auth_enable_presigned_s3_urls
   end
 
-  def self.hide_phone_mfa_signup?
-    AppConfig.env.hide_phone_mfa_signup == 'true'
-  end
-
   def self.liveness_checking_enabled?
     IdentityConfig.store.liveness_checking_enabled
   end
