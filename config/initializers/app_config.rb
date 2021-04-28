@@ -55,8 +55,6 @@ AppConfig.require_keys(
     saml_endpoint_configs
     s3_report_bucket_prefix
     s3_reports_enabled
-    secret_key_base
-    session_encryption_key
     session_timeout_in_minutes
     use_kms
   ],

@@ -16,7 +16,7 @@ Devise.setup do |config|
   config.paranoid = true
   config.password_length = 12..128
   config.reset_password_within = 6.hours
-  config.secret_key = AppConfig.env.secret_key_base
+  config.secret_key = IdentityConfig.store.secret_key_base
   config.sign_in_after_reset_password = false
   config.sign_out_via = :delete
   config.skip_session_storage = [:http_auth]
