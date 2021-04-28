@@ -10,7 +10,7 @@ Rails.application.configure do
   config.asset_host = proc do |_source, request|
     # we want precompiled assets to have domain-agnostic URLs
     # and request is nil during asset precompilation
-    (AppConfig.env.asset_host || IdentityConfig.store.domain_name) if request
+    (IdentityConfig.store.asset_host.presence || IdentityConfig.store.domain_name) if request
   end
   config.assets.js_compressor = :uglifier
   config.assets.compile = false
@@ -23,7 +23,7 @@ Rails.application.configure do
     host: IdentityConfig.store.domain_name,
     protocol: 'https',
   }
-  config.action_mailer.asset_host = AppConfig.env.asset_host ||
+  config.action_mailer.asset_host = IdentityConfig.store.asset_host.presence ||
                                     IdentityConfig.store.mailer_domain_name
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = if IdentityConfig.store.disable_email_sending
