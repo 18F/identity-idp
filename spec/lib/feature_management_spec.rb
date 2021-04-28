@@ -357,25 +357,13 @@ describe 'FeatureManagement', type: :feature do
     before do
       # clear memoization
       FeatureManagement.instance_variable_set(:@voip_allowed_phones, nil)
-
-      expect(AppConfig.env).to receive(:voip_allowed_phones).and_return(voip_allowed_phones)
     end
 
-    context 'with a nil or missing config' do
-      let(:voip_allowed_phones) { nil }
+    it 'normalizes phone numbers and put them in a set' do
+      voip_allowed_phones = ['+18885551234', '+18888675309']
 
-      it 'is the empty set' do
-        expect(FeatureManagement.voip_allowed_phones).to eq(Set.new)
-      end
-    end
-
-    context 'when there are phone numbers in the list' do
-      let(:voip_allowed_phones) { '["18885551234", "+18888675309"]' }
-
-      it 'normalizes phone numbers and put them in a set' do
-        expect(FeatureManagement.voip_allowed_phones).
-          to eq(Set['+18885551234', '+18888675309'])
-      end
+      expect(IdentityConfig.store).to receive(:voip_allowed_phones).and_return(voip_allowed_phones)
+      expect(FeatureManagement.voip_allowed_phones).to eq(Set['+18885551234', '+18888675309'])
     end
   end
 end

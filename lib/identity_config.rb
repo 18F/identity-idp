@@ -210,6 +210,7 @@ class IdentityConfig
     config.add(:usps_upload_sftp_timeout, type: :integer)
     config.add(:usps_upload_sftp_username, type: :string)
     config.add(:valid_authn_contexts, type: :json)
+    config.add(:voip_allowed_phones, type: :json)
 
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
