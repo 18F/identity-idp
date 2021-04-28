@@ -344,9 +344,9 @@ test:
   logins_per_email_and_ip_limit: '2'
   logins_per_ip_limit: '3'
   max_mail_events: '2'
-  newrelic_browser_app_id:
-  newrelic_browser_key:
-  newrelic_license_key:
+  newrelic_browser_app_id: ''
+  newrelic_browser_key: ''
+  newrelic_license_key: ''
   no_sp_campaigns_whitelist: '["campaign1"]'
   nonessential_email_banlist: '["banned_email@gmail.com"]'
   otp_delivery_blocklist_findtime: '1'
