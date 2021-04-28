@@ -35,6 +35,29 @@ describe 'idv/shared/_error.html.erb' do
     end
   end
 
+  describe 'title' do
+    context 'without title' do
+      let(:params) { { heading: heading } }
+
+      it 'sets title as defaulting to heading' do
+        expect(view).to receive(:title).with(heading)
+
+        render 'idv/shared/error', **params
+      end
+    end
+
+    context 'with title' do
+      let(:title) { 'Example Title' }
+      let(:params) { { heading: heading, title: title } }
+
+      it 'sets title' do
+        expect(view).to receive(:title).with(title)
+
+        render 'idv/shared/error', **params
+      end
+    end
+  end
+
   describe 'options' do
     context 'no options' do
       let(:options) { [] }
