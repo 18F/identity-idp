@@ -165,12 +165,12 @@ class ResolutionProofingJob < ApplicationJob
       Proofing::ResolutionMockClient.new
     else
       LexisNexis::InstantVerify::Proofer.new(
-        instant_verify_workflow: AppConfig.env.lexisnexis_instant_verify_workflow,
-        account_id: AppConfig.env.lexisnexis_account_id,
-        base_url: AppConfig.env.lexisnexis_base_url,
-        username: AppConfig.env.lexisnexis_username,
-        password: AppConfig.env.lexisnexis_password,
-        request_mode: AppConfig.env.lexisnexis_request_mode,
+        instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
+        account_id: IdentityConfig.store.lexisnexis_account_id,
+        base_url: IdentityConfig.store.lexisnexis_base_url,
+        username: IdentityConfig.store.lexisnexis_username,
+        password: IdentityConfig.store.lexisnexis_password,
+        request_mode: IdentityConfig.store.lexisnexis_request_mode,
         request_timeout: IdentityConfig.store.lexisnexis_timeout,
       )
     end

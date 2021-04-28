@@ -71,16 +71,13 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
 
-        allow(AppConfig.env).to receive(:lexisnexis_account_id).and_return('abc123')
-        allow(AppConfig.env).to receive(:lexisnexis_request_mode).and_return('aaa')
-        allow(AppConfig.env).to receive(:lexisnexis_username).and_return('aaa')
-        allow(AppConfig.env).to receive(:lexisnexis_password).and_return('aaa')
-        allow(AppConfig.env).to receive(:lexisnexis_base_url).
+        allow(IdentityConfig.store).to receive(:lexisnexis_account_id).and_return('abc123')
+        allow(IdentityConfig.store).to receive(:lexisnexis_request_mode).and_return('aaa')
+        allow(IdentityConfig.store).to receive(:lexisnexis_username).and_return('aaa')
+        allow(IdentityConfig.store).to receive(:lexisnexis_password).and_return('aaa')
+        allow(IdentityConfig.store).to receive(:lexisnexis_base_url).
           and_return('https://lexisnexis.example.com/')
-        allow(AppConfig.env).to receive(:lexisnexis_instant_verify_workflow).and_return('aaa')
-        allow(AppConfig.env).to receive(:lexisnexis_base_url).
-          and_return('https://lexisnexis.example.com/')
-        allow(AppConfig.env).to receive(:lexisnexis_instant_verify_workflow).and_return('aaa')
+        allow(IdentityConfig.store).to receive(:lexisnexis_instant_verify_workflow).and_return('aaa')
 
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
 
