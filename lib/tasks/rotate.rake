@@ -1,7 +1,7 @@
 namespace :rotate do
   # benchmark: 100k updates in 00:28:35 with cost '800$8$1$'
   # e.g.
-  #  bundle exec rake rotate:email_encryption_key ATTRIBUTE_COST='800$8$1$'
+  #  bundle exec rake rotate:email_encryption_key
   #
   desc 'attribute encryption key'
   task attribute_encryption_key: :environment do

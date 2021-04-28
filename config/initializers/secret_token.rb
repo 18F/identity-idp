@@ -1,1 +1,1 @@
-Rails.application.config.secret_key_base = AppConfig.env.secret_key_base
+Rails.application.config.secret_key_base = IdentityConfig.store.secret_key_base

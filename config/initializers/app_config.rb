@@ -5,7 +5,6 @@ AppConfig.require_keys(
     acuant_max_attempts
     acuant_attempt_window_in_minutes
     async_wait_timeout_seconds
-    attribute_encryption_key
     database_statement_timeout
     disallow_all_web_crawlers
     database_name
@@ -37,7 +36,6 @@ AppConfig.require_keys(
     otp_delivery_blocklist_maxretry
     otp_valid_for
     password_max_attempts
-    password_pepper
     rack_timeout_service_timeout_seconds
     reauthn_window
     recovery_code_length
@@ -57,9 +55,6 @@ AppConfig.require_keys(
     saml_endpoint_configs
     s3_report_bucket_prefix
     s3_reports_enabled
-    scrypt_cost
-    secret_key_base
-    session_encryption_key
     session_timeout_in_minutes
     use_kms
   ],
