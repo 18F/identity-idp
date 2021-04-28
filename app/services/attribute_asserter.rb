@@ -67,7 +67,7 @@ class AttributeAsserter
   end
 
   def add_bundle(attrs)
-    phone_format_opt_out = JSON.parse(AppConfig.env.phone_format_e164_opt_out_list || '[]')
+    phone_format_opt_out = IdentityConfig.store.phone_format_e164_opt_out_list
 
     bundle.each do |attr|
       next unless VALID_ATTRIBUTES.include? attr

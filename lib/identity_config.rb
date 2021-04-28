@@ -150,6 +150,7 @@ class IdentityConfig
     config.add(:participate_in_dap, type: :boolean)
     config.add(:password_max_attempts, type: :integer)
     config.add(:personal_key_retired, type: :boolean)
+    config.add(:phone_format_e164_opt_out_list, type: :json)
     config.add(:pii_lock_timeout_in_minutes, type: :integer)
     config.add(:piv_cac_service_url)
     config.add(:piv_cac_verify_token_url)

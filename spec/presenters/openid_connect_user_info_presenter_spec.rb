@@ -20,9 +20,9 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
   subject(:presenter) { OpenidConnectUserInfoPresenter.new(identity) }
 
-  let(:phone_format_e164_opt_out_list) { '[]' }
+  let(:phone_format_e164_opt_out_list) { [] }
   before do
-    allow(AppConfig.env).to receive(:phone_format_e164_opt_out_list).
+    allow(IdentityConfig.store).to receive(:phone_format_e164_opt_out_list).
       and_return(phone_format_e164_opt_out_list)
   end
 
@@ -137,7 +137,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           end
 
           context 'when the service provider is in the e164 opt-out list' do
-            let(:phone_format_e164_opt_out_list) { [service_provider.issuer].to_json }
+            let(:phone_format_e164_opt_out_list) { [service_provider.issuer] }
 
             it 'leaves the phone format as-is' do
               expect(user_info[:phone]).to eq('(703) 555-5555')
