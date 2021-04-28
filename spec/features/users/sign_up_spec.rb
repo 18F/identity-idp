@@ -92,7 +92,7 @@ feature 'Sign Up' do
 
   scenario 'renders an error when the telephony gem responds with an error' do
     allow(Telephony).to receive(:phone_info).and_return(
-      Telephony::PhoneNumberInfo.new(carrier: 'Test', type: :test, error: nil)
+      Telephony::PhoneNumberInfo.new(carrier: 'Test', type: :test, error: nil),
     )
 
     sign_up_and_set_password
