@@ -2,8 +2,16 @@ class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
   before_action :attach_images
-  default from: email_with_name(AppConfig.env.email_from, AppConfig.env.email_from_display_name),
-          reply_to: email_with_name(AppConfig.env.email_from, AppConfig.env.email_from_display_name)
+  default(
+    from: email_with_name(
+      IdentityConfig.store.email_from,
+      IdentityConfig.store.email_from_display_name,
+    ),
+    reply_to: email_with_name(
+      IdentityConfig.store.email_from,
+      IdentityConfig.store.email_from_display_name,
+    ),
+  )
 
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
     with_user_locale(user) do

@@ -102,6 +102,8 @@ class IdentityConfig
     config.add(:doc_capture_polling_enabled, type: :boolean)
     config.add(:doc_capture_request_valid_for_minutes, type: :integer)
     config.add(:domain_name, type: :string)
+    config.add(:email_from, type: :string)
+    config.add(:email_from_display_name, type: :string)
     config.add(:enable_load_testing_mode, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
