@@ -73,7 +73,8 @@ module Idv
         selfie_image: selfie&.read,
         liveness_checking_enabled: liveness_checking_enabled?,
       )
-      response = response.merge(extra_attributes_response(state: response.pii_from_doc[:state]))
+      response.extra.merge!(extra_attributes)
+      response.extra.merge!(state: response.pii_from_doc[:state])
 
       update_analytics(response)
 
@@ -82,7 +83,7 @@ module Idv
 
     def validate_pii_from_doc(client_response)
       response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
-      response = response.merge(extra_attributes_response)
+      response.extra.merge!(extra_attributes)
 
       track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
@@ -92,20 +93,7 @@ module Idv
 
       response
     end
-
-    def extra_attributes_response(state: nil)
-      @extra_attributes_response ||= begin
-         extras = extra_attributes
-         extras[:state] = state if state
-
-         Idv::DocAuthFormResponse.new(
-           success: true,
-           errors: {},
-           extra: extras,
-         )
-      end
-    end
-
+    
     def extra_attributes
       @extra_attributes ||= {
         remaining_attempts: remaining_attempts,
