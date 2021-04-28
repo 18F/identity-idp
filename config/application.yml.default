@@ -45,7 +45,7 @@ aws_http_timeout: '5'
 aws_http_retry_limit: '2'
 aws_http_retry_max_delay: '1'
 aws_kms_key_id: alias/login-dot-gov-test-keymaker
-aws_logo_bucket:
+aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
 backup_code_cost: '2000$8$1$'
@@ -197,7 +197,7 @@ development:
   aamva_public_key: 123abc
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
-  aws_logo_bucket:
+  aws_logo_bucket: ''
   aws_kms_regions: '["us-west-2", "us-east-1"]'
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
@@ -253,7 +253,7 @@ production:
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
   aws_kms_regions: '["us-west-2"]'
-  aws_logo_bucket:
+  aws_logo_bucket: ''
   dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
