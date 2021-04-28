@@ -59,6 +59,16 @@ class ServiceProvider < ApplicationRecord
     File.read(cert_file)
   end
 
+  def redirect_uris_are_parsable
+    return if redirect_uris.blank?
+
+    redirect_uris.each do |uri|
+      next if redirect_uri_valid?(uri)
+      errors.add(:redirect_uris, :invalid)
+      break
+    end
+  end
+
   def redirect_uri_valid?(redirect_uri)
     parsed_uri = URI.parse(redirect_uri)
     parsed_uri.scheme.present? && parsed_uri.host.present?
