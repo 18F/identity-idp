@@ -181,12 +181,12 @@ class ResolutionProofingJob < ApplicationJob
       Proofing::StateIdMockClient.new
     else
       Aamva::Proofer.new(
-        auth_request_timeout: AppConfig.env.aamva_auth_request_timeout,
-        auth_url: AppConfig.env.aamva_auth_url,
+        auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
+        auth_url: IdentityConfig.store.aamva_auth_url,
         cert_enabled: IdentityConfig.store.aamva_cert_enabled,
-        private_key: AppConfig.env.aamva_private_key,
-        public_key: AppConfig.env.aamva_public_key,
-        verification_request_timeout: AppConfig.env.aamva_verification_request_timeout,
+        private_key: IdentityConfig.store.aamva_private_key,
+        public_key: IdentityConfig.store.aamva_public_key,
+        verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
         verification_url: IdentityConfig.store.aamva_verification_url,
       )
     end
