@@ -204,7 +204,7 @@ function AcuantCapture(
   const { addPageAction } = useContext(AnalyticsContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
-  const isProxyingClickEvent = useRef(false);
+  const isSuppressingClickLogging = useRef(false);
   const [isCapturingEnvironment, setIsCapturingEnvironment] = useState(false);
   const [ownErrorMessage, setOwnErrorMessage] = useState(/** @type {?string} */ (null));
   const ifStillMounted = useIfStillMounted();
@@ -272,17 +272,26 @@ function AcuantCapture(
    */
   function withLoggedClick(source) {
     return (fn) => (...args) => {
-      if (!isProxyingClickEvent.current) {
+      if (!isSuppressingClickLogging.current) {
         addPageAction({
           label: `IdV: ${name} image clicked`,
           payload: { source },
         });
       }
 
-      isProxyingClickEvent.current = false;
-
       return fn(...args);
     };
+  }
+
+  /**
+   * Calls the given function, during which time any normal click logging will be suppressed.
+   *
+   * @param {() => any} fn Function to call
+   */
+  function withoutClickLogging(fn) {
+    isSuppressingClickLogging.current = true;
+    fn();
+    isSuppressingClickLogging.current = false;
   }
 
   /**
@@ -316,8 +325,7 @@ function AcuantCapture(
 
       isForceUploading.current = false;
     } else {
-      isProxyingClickEvent.current = true;
-      inputRef.current?.click();
+      withoutClickLogging(() => inputRef.current?.click());
     }
   }
 
@@ -339,8 +347,7 @@ function AcuantCapture(
       inputRef.current.removeAttribute('capture');
     }
 
-    isProxyingClickEvent.current = true;
-    inputRef.current.click();
+    withoutClickLogging(() => inputRef.current?.click());
 
     if (originalCapture !== null) {
       inputRef.current.setAttribute('capture', originalCapture);
