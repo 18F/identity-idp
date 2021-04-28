@@ -11,6 +11,7 @@ describe 'idv/shared/_error.html.erb' do
   before do
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
+    allow(view).to receive(:title)
 
     render 'idv/shared/error', **params
   end
@@ -31,6 +32,29 @@ describe 'idv/shared/_error.html.erb' do
 
       it 'renders action button' do
         expect(rendered).to have_link('Example', href: '#example')
+      end
+    end
+  end
+
+  describe 'title' do
+    context 'without title' do
+      let(:params) { { heading: heading } }
+
+      it 'sets title as defaulting to heading' do
+        expect(view).to receive(:title).with(heading)
+
+        render 'idv/shared/error', **params
+      end
+    end
+
+    context 'with title' do
+      let(:title) { 'Example Title' }
+      let(:params) { { heading: heading, title: title } }
+
+      it 'sets title' do
+        expect(view).to receive(:title).with(title)
+
+        render 'idv/shared/error', **params
       end
     end
   end
