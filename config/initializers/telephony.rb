@@ -1,6 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 Telephony.config do |c|
-  c.adapter = AppConfig.env.telephony_adapter.to_sym || :test
+  c.adapter = IdentityConfig.store.telephony_adapter.to_sym
   c.logger = if FeatureManagement.log_to_stdout?
                Logger.new(STDOUT, level: :info)
              else

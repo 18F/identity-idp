@@ -6,7 +6,7 @@ class FeatureManagement
   ].freeze
 
   def self.telephony_test_adapter?
-    AppConfig.env.telephony_adapter.blank? || AppConfig.env.telephony_adapter == 'test'
+    IdentityConfig.store.telephony_adapter == 'test'
   end
 
   def self.identity_pki_disabled?
