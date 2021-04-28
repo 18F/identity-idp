@@ -51,26 +51,12 @@ class ServiceProvider < ApplicationRecord
     @allowed_list.include? issuer
   end
 
-  def live?
-    active? && approved?
-  end
-
   private
 
   def load_cert(cert)
     cert_file = Rails.root.join('certs', 'sp', "#{cert}.crt")
     return OpenSSL::X509::Certificate.new(cert) unless File.exist?(cert_file)
     File.read(cert_file)
-  end
-
-  def redirect_uris_are_parsable
-    return if redirect_uris.blank?
-
-    redirect_uris.each do |uri|
-      next if redirect_uri_valid?(uri)
-      errors.add(:redirect_uris, :invalid)
-      break
-    end
   end
 
   def redirect_uri_valid?(redirect_uri)

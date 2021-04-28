@@ -51,12 +51,6 @@ class SamlIdpController < ApplicationController
     redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
   end
 
-  def saml_request_valid?(saml_request)
-    return false unless saml_request
-    decode_request(saml_request)
-    valid_saml_request?
-  end
-
   def saml_metadata
     SamlEndpoint.new(request).saml_metadata
   end

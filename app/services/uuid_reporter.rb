@@ -54,7 +54,7 @@ class UuidReporter
   end
 
   def all_issuers_belong_to_an_sp?
-    return if ServiceProvider.where(issuer: issuers).count == issuers.length 
+    return if ServiceProvider.where(issuer: issuers).count == issuers.length
 
     raise ArgumentError.new('All of the issuers must correspond to a service provider')
   end
