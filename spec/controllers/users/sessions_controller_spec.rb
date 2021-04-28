@@ -395,8 +395,6 @@ describe Users::SessionsController, devise: true do
       it 'only tracks the cookie presence in analytics' do
         user = create(:user, :signed_up)
 
-        allow(AppConfig.env).to receive(:remember_device_expiration_days).and_return('2')
-
         cookies.encrypted[:remember_device] = {
           value: RememberDeviceCookie.new(user_id: user.id, created_at: 2.days.ago).to_json,
         }
