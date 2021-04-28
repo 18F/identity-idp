@@ -77,7 +77,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         allow(IdentityConfig.store).to receive(:lexisnexis_password).and_return('aaa')
         allow(IdentityConfig.store).to receive(:lexisnexis_base_url).
           and_return('https://lexisnexis.example.com/')
-        allow(IdentityConfig.store).to receive(:lexisnexis_instant_verify_workflow).and_return('aaa')
+        allow(IdentityConfig.store).to receive(:lexisnexis_instant_verify_workflow).
+          and_return('aaa')
 
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
 
