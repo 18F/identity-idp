@@ -221,6 +221,6 @@ module DocAuthRouter
   end
 
   def self.doc_auth_vendor
-    AppConfig.env.doc_auth_vendor
+    IdentityConfig.store.doc_auth_vendor
   end
 end

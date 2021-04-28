@@ -110,6 +110,7 @@ class IdentityConfig
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
     config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_extend_timeout_by_minutes, type: :integer)
+    config.add(:doc_auth_vendor, type: :string)
     config.add(:doc_capture_polling_enabled, type: :boolean)
     config.add(:doc_capture_request_valid_for_minutes, type: :integer)
     config.add(:domain_name, type: :string)
