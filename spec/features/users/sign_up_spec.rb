@@ -91,6 +91,10 @@ feature 'Sign Up' do
   end
 
   scenario 'renders an error when the telephony gem responds with an error' do
+    allow(Telephony).to receive(:phone_info).and_return(
+      Telephony::PhoneNumberInfo.new(carrier: 'Test', type: :test, error: nil)
+    )
+
     sign_up_and_set_password
     select_2fa_option('phone')
     expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
