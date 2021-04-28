@@ -9,9 +9,9 @@ RSpec.describe YamlNormalizer do
       File.open(tempfile.path, 'w') do |f|
         f.puts <<~YAML
           some:
+            value1: 'quoted'
             key: >
               quoted
-            value1: 'quoted'
             value2: "quoted"
         YAML
       end
@@ -35,6 +35,36 @@ RSpec.describe YamlNormalizer do
   end
 
   describe '.handle_hash' do
+    context 'unsorted keys' do
+      let(:original) do
+        {
+          a: 'a',
+          c: 'c',
+          d: {
+            f: 'f',
+            e: 'e',
+          },
+        }
+      end
+
+      let(:sorted) do
+        {
+          a: 'a',
+          c: 'c',
+          d: {
+            e: 'e',
+            f: 'f',
+          },
+        }
+      end
+
+      it 'sorts keys' do
+        YamlNormalizer.handle_hash(original)
+
+        expect(original.to_json).to eq(sorted.to_json)
+      end
+    end
+
     context 'trailing newlines' do
       let(:original) do
         {
@@ -69,6 +99,28 @@ RSpec.describe YamlNormalizer do
         YamlNormalizer.handle_hash(original)
 
         expect(original).to eq(trimmed)
+      end
+    end
+
+    context 'unformatted punctuation' do
+      let(:original) { { a: '<strong class="example">Hello "world"...</strong>' } }
+      let(:formatted) { { a: '<strong class="example">Hello “world”…</strong>' } }
+
+      it 'formats punctuation' do
+        YamlNormalizer.handle_hash(original)
+
+        expect(original).to eq(formatted)
+      end
+    end
+
+    context 'booleans' do
+      let(:original) { { a: true, b: false } }
+      let(:expected) { { a: true, b: false } }
+
+      it 'trims leading newlines but not intermediate ones' do
+        YamlNormalizer.handle_hash(original)
+
+        expect(original).to eq(expected)
       end
     end
 

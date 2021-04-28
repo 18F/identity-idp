@@ -9,6 +9,6 @@ fr:
       bullet2: Vous ne recevrez pas de notifications de compte à cette adresse email
       confirm: Etes-vous sûr que vous voulez supprimer %{email}?
       failure: Impossible de supprimer cette adresse email.
-      success: L'adresse email a été supprimée.
+      success: L’adresse email a été supprimée.
       warning: Si vous supprimez votre adresse e-mail
     unconfirmed: "(non confirmé)"

@@ -59,10 +59,6 @@ class NullServiceProvider
     false
   end
 
-  def live?
-    false
-  end
-
   def metadata
     {}
   end

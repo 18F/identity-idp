@@ -22,8 +22,7 @@ babelLoader.exclude = /node_modules\/(?!@18f\/identity-|identity-style-guide|usw
 const sassLoader = environment.loaders.get('sass');
 // Prepend minimum required design system variables, mixins, and functions to make available to all
 // Webpack-imported SCSS files. Notably, this should _not_ include any actual CSS output on its own.
-// Note: This option is renamed `additionalData` in newer versions of `sass-loader`.
-sassLoader.use.find(({ loader }) => loader === 'sass-loader').options.prependData = `
+sassLoader.use.find(({ loader }) => loader === 'sass-loader').options.additionalData = `
 $font-path: '~identity-style-guide/dist/assets/fonts';
 $image-path: '~identity-style-guide/dist/assets/img';
 @import '~identity-style-guide/dist/assets/scss/functions/asset-path';

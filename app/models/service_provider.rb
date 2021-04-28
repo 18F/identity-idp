@@ -49,10 +49,6 @@ class ServiceProvider < ApplicationRecord
     @allowed_list.include? issuer
   end
 
-  def live?
-    active? && approved?
-  end
-
   private
 
   def load_cert(cert)

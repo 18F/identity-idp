@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_23_221651) do
+ActiveRecord::Schema.define(version: 2021_04_27_230314) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -492,13 +492,6 @@ ActiveRecord::Schema.define(version: 2021_04_23_221651) do
     t.integer "acuant_result_count", default: 0
     t.integer "acuant_selfie_count", default: 0
     t.index ["user_id"], name: "index_proofing_costs_on_user_id", unique: true
-  end
-
-  create_table "push_account_deletes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.integer "agency_id", null: false
-    t.string "uuid", null: false
-    t.index ["created_at"], name: "index_push_account_deletes_on_created_at"
   end
 
   create_table "registration_logs", force: :cascade do |t|

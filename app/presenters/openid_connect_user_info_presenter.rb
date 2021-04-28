@@ -58,9 +58,7 @@ class OpenidConnectUserInfoPresenter
   def phone
     return if ial2_data.phone.blank?
 
-    opt_out_list = JSON.parse(AppConfig.env.phone_format_e164_opt_out_list || '[]')
-
-    if opt_out_list.include?(identity.service_provider)
+    if IdentityConfig.store.phone_format_e164_opt_out_list.include?(identity.service_provider)
       ial2_data.phone
     else
       Phonelib.parse(ial2_data.phone).e164

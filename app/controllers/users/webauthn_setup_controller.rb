@@ -122,9 +122,5 @@ module Users
       user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
     end
-
-    def user_already_has_a_personal_key?
-      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
-    end
   end
 end

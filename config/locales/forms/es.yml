@@ -91,7 +91,7 @@ es:
       no_thanks: No, gracias
       piv_cac_intro_html: Le pediremos que presente su tarjeta PIV/CAC <strong>cada
         vez que inicie sesión</strong> como parte de la autenticación de dos factores.<br><br>Después
-        de hacer clic en "Agregar PIV/CAC", su navegador le solicitará su PIN PIV/CAC
+        de hacer clic en “Agregar PIV/CAC”, su navegador le solicitará su PIN PIV/CAC
         y le pedirá que seleccione un certificado.
       submit: Agregar tarjeta PIV/CAC
     registration:

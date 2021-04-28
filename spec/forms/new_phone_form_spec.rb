@@ -186,7 +186,7 @@ describe NewPhoneForm do
       end
 
       before do
-        allow(FeatureManagement).to receive(:voip_check?).and_return(true)
+        allow(IdentityConfig.store).to receive(:voip_check).and_return(true)
 
         expect(Telephony).to receive(:phone_info).with(phone).
           and_raise(Aws::Pinpoint::Errors::BadRequestException.new(nil, nil))
@@ -209,12 +209,12 @@ describe NewPhoneForm do
 
     context 'voip numbers' do
       let(:telephony_gem_voip_number) { '+12255552000' }
-      let(:voip_block?) { false }
-      let(:voip_check?) { true }
+      let(:voip_block) { false }
+      let(:voip_check) { true }
 
       before do
-        allow(FeatureManagement).to receive(:voip_block?).and_return(voip_block?)
-        allow(FeatureManagement).to receive(:voip_check?).and_return(voip_check?)
+        allow(IdentityConfig.store).to receive(:voip_block).and_return(voip_block)
+        allow(IdentityConfig.store).to receive(:voip_check).and_return(voip_check)
       end
 
       subject(:result) do
@@ -222,7 +222,7 @@ describe NewPhoneForm do
       end
 
       context 'when voip numbers are blocked' do
-        let(:voip_block?) { true }
+        let(:voip_block) { true }
 
         it 'is invalid' do
           expect(result.success?).to eq(false)
@@ -249,7 +249,7 @@ describe NewPhoneForm do
         end
 
         context 'when voip checks are disabled' do
-          let(:voip_check?) { false }
+          let(:voip_check) { false }
 
           it 'does not check the phone type' do
             expect(Telephony).to_not receive(:phone_info)
@@ -276,7 +276,7 @@ describe NewPhoneForm do
       end
 
       context 'when voip checks are disabled' do
-        let(:voip_check?) { false }
+        let(:voip_check) { false }
 
         it 'does not check the phone type' do
           expect(Telephony).to_not receive(:phone_info)

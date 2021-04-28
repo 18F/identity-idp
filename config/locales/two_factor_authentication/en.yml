@@ -15,12 +15,12 @@ en:
       reverify_link: re-verify your identity
       successful_cancel: Thank you. Your request to delete your login.gov account
         has been cancelled.
-      text_html: If you can't use any of the authentication methods above, you can
+      text_html: If you can’t use any of the authentication methods above, you can
         reset your preferences by %{link}.
     backup_code_fallback:
-      question: Don't have your backup codes available?
+      question: Don’t have your backup codes available?
     backup_code_header_text: Enter your backup security code
-    backup_code_prompt: You can use this security code once. After you enter it, you'll
+    backup_code_prompt: You can use this security code once. After you enter it, you’ll
       need to use a new key.
     choose_another_option: "‹ Choose another option"
     devices:
@@ -83,8 +83,8 @@ en:
     no_auth_option: No authentication option could be found for you to sign in.
     otp_delivery_preference:
       instruction: You can change this selection the next time you sign in. If you
-        entered a landline, please select "Phone call" below.
-      phone_unsupported: We're unable to make phone calls to people in %{location}
+        entered a landline, please select “Phone call” below.
+      phone_unsupported: We’re unable to make phone calls to people in %{location}
         at this time.
       sms: Text message (SMS)
       title: How should we send you a code?
@@ -95,26 +95,26 @@ en:
       label: Default phone number
       title: Make this your default phone number?
     personal_key_fallback:
-      question: Don't have your personal key?
+      question: Don’t have your personal key?
     personal_key_header_text: Enter your personal key
-    personal_key_prompt: You can use this personal key once. After you enter it, you'll
+    personal_key_prompt: You can use this personal key once. After you enter it, you’ll
       be provided a new key.
     phone:
       delete:
         failure: Unable to remove your phone.
         success: Your phone has been removed.
     phone_fallback:
-      question: Don't have access to your phone right now?
+      question: Don’t have access to your phone right now?
     phone_fee_disclosure: Message and data rates may apply.
-    phone_info_html: We'll send you a security code <strong>each time you sign in</strong>.
+    phone_info_html: We’ll send you a security code <strong>each time you sign in</strong>.
     phone_label: Phone number
-    phone_sms_info_html: We'll text a security code <strong>each time you sign in</strong>.
+    phone_sms_info_html: We’ll text a security code <strong>each time you sign in</strong>.
     phone_sms_label: Mobile phone number
-    phone_voice_info_html: We'll call you with a security code <strong>each time you
+    phone_voice_info_html: We’ll call you with a security code <strong>each time you
       sign in</strong>.
     phone_voice_label: Phone number
     piv_cac_fallback:
-      question: Don't have your PIV or CAC available?
+      question: Don’t have your PIV or CAC available?
     piv_cac_header_text: Present your PIV/CAC
     piv_cac_webauthn_available: Use your security key
     please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
@@ -122,7 +122,7 @@ en:
       link: read about two-factor authentication
       text_html: You can %{link} and why we use it at our Help page.
     totp_fallback:
-      question: Don't have your authenticator app?
+      question: Don’t have your authenticator app?
     totp_header_text: Enter your authentication app code
     two_factor_aal3_choice: Additional authentication required
     two_factor_aal3_choice_intro: This app requires a higher level of security. You
@@ -161,7 +161,7 @@ en:
       You need to verify your identity using a government employee ID (PIV/CAC) to
       access your information.
     webauthn_fallback:
-      question: Don't have your security key available?
+      question: Don’t have your security key available?
     webauthn_header_text: Connect your security key
     webauthn_piv_available: Use your PIV or CAC
     webauthn_verified:

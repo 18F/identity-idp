@@ -22,7 +22,7 @@ es:
       help_html: Si no desea eliminar su cuenta, %{cancel_account_reset}.
       intro_html: Su período de espera de 24 horas ha finalizado. Complete el paso
         2 del proceso.<br><br>Si no ha podido localizar sus métodos de autenticación,
-        seleccione "confirmar eliminación" para eliminar su cuenta de %{app}.<br><br>
+        seleccione “confirmar eliminación” para eliminar su cuenta de %{app}.<br><br>
         En el futuro, si necesita acceder a los sitios web gubernamentales participantes
         que utilizan %{app}, puede crear una nueva cuenta %{app} con la misma dirección
         de correo electrónico después de que se elimine su cuenta.<br><br>
@@ -164,7 +164,7 @@ es:
         de inicio de sesión. por teléfono o correo electrónico</b>. Puede tomar medidas
         adicionales para proteger su cuenta habilitando la autenticación de dos factores.
       step_1: Visite el sitio web login.gov y seleccione iniciar sesión
-      step_2: Seleccione "¿olvidó su contraseña?" al final de la página
+      step_2: Seleccione “¿olvidó su contraseña?” al final de la página
       step_3: Siga las instrucciones para restablecer su contraseña
       subject: Actividad inusual — restablezca su contraseña de login.gov
     reset_password_instructions:

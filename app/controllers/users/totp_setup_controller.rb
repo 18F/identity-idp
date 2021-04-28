@@ -112,10 +112,6 @@ module Users
       user_session[:authn_at] = Time.zone.now
     end
 
-    def user_already_has_a_personal_key?
-      TwoFactorAuthentication::PersonalKeyPolicy.new(current_user).configured?
-    end
-
     def process_invalid_code
       flash[:error] = if totp_setup_form.name_taken
                         t('errors.piv_cac_setup.unique_name')

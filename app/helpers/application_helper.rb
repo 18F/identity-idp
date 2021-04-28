@@ -7,14 +7,6 @@ module ApplicationHelper
     content_for(:background_cls) { cls }
   end
 
-  def step_class(step, active)
-    if active > step
-      'complete'
-    elsif active == step
-      'active'
-    end
-  end
-
   def sp_session
     session.fetch(:sp, {})
   end
@@ -38,22 +30,9 @@ module ApplicationHelper
     sp_session && sp_session[:ial2]
   end
 
-  def user_verifying_identity?
-    return unless current_user
-    sp_session && sp_session[:ial2] && multiple_factors_enabled?
-  end
-
   def liveness_checking_enabled?
     FeatureManagement.liveness_checking_enabled? &&
       (sp_session[:issuer].blank? || sp_session[:ial2_strict])
-  end
-
-  def sign_up_or_idv_no_js_link
-    if user_signing_up?
-      destroy_user_path
-    elsif user_verifying_identity?
-      idv_doc_auth_url
-    end
   end
 
   def cancel_link_text

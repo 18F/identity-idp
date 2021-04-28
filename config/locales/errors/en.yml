@@ -55,16 +55,16 @@ en:
       invalid_type: This file type is not accepted, please try again.
     invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
-    max_password_attempts_reached: You've entered too many incorrect passwords. You
-      can reset your password using the "Forgot your password?" link.
+    max_password_attempts_reached: You’ve entered too many incorrect passwords. You
+      can reset your password using the “Forgot your password?” link.
     messages:
       already_confirmed: was already confirmed, please try signing in
       blank: Please fill in this field.
       confirmation_code_incorrect: Incorrect code. Did you type it in correctly?
       confirmation_invalid_token: Invalid confirmation link. Either the link expired
         or you already confirmed your account.
-      confirmation_period_expired: Expired confirmation link. You can click "Resend
-        confirmation instructions" to get another one.
+      confirmation_period_expired: Expired confirmation link. You can click “Resend
+        confirmation instructions” to get another one.
       expired: has expired, please request a new one
       format_mismatch: Please match the requested format.
       gpo_otp_expired: Your confirmation code has expired. Please request another
@@ -74,9 +74,9 @@ en:
       invalid_calling_area: Calls to that phone number are not supported. Please try
         SMS if you have an SMS-capable phone.
       invalid_phone_number: The phone number entered is not valid.
-      invalid_sms_number: The phone number entered doesn't support text messaging.
+      invalid_sms_number: The phone number entered doesn’t support text messaging.
         Try the Phone call option.
-      invalid_voice_number: Invalid phone number. Check that you've entered the correct
+      invalid_voice_number: Invalid phone number. Check that you’ve entered the correct
         country code or area code.
       missing_field: Please fill in this field.
       must_have_us_country_code: Invalid phone number. Please make sure you enter
@@ -89,7 +89,7 @@ en:
         as an authenticator. Please use a different phone number.
       phone_unsupported: Sorry, we are unable to send SMS at this time. Please try
         the phone call option below, or use your personal key.
-      pwned_password: The password you entered is not safe. It's in a list of known
+      pwned_password: The password you entered is not safe. It’s in a list of known
         passwords exposed in data breaches.
       try_again: Please try again.
       unauthorized_authn_context: Unauthorized authentication context
@@ -110,7 +110,7 @@ en:
     webauthn_setup:
       already_registered: Security key already registered. Please try a different
         security key.
-      attestation_error: Sorry, but your security key doesn't appear to be a FIDO
+      attestation_error: Sorry, but your security key doesn’t appear to be a FIDO
         security key.  Please make sure your device is listed at https://fidoalliance.org/certification/fido-certified-products/
         and if you believe the error is ours, please contact us at hello@login.gov.
       general_error: There was an error adding your hardware security key. Please

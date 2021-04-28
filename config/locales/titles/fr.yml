@@ -37,7 +37,7 @@ fr:
     present_webauthn: Branchez votre clé de sécurité physique
     reactivate_account: Réactiver le profil
     registrations:
-      new: S'inscrire et créer un compte
+      new: S’inscrire et créer un compte
     revoke_consent: Révoquer le consentement
     sign_up:
       completion_html: Vous avez %{accent} avec %{app}
@@ -48,8 +48,8 @@ fr:
         pour partager vos informations
       verified: Vous avez verifié votre identité avec %{app}
     totp_setup:
-      new: Ajouter une application d'authentification
-    two_factor_setup: Configuration de l'authentification à deux facteurs
+      new: Ajouter une application d’authentification
+    two_factor_setup: Configuration de l’authentification à deux facteurs
     verify_email: Consultez vos courriels
     verify_profile: Activez votre compte
     visitors:

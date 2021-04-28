@@ -24,6 +24,14 @@ class IdentityConfig
         raise 'invalid boolean value'
       end
     end,
+    timestamp: proc do |value|
+      # When the store is built `Time.zone` is not set resulting in a NoMethodError
+      # if Time.zone.parse is called
+      #
+      # rubocop:disable Rails/TimeZone
+      Time.parse(value)
+      # rubocop:enable Rails/TimeZone
+    end,
   }
 
   def initialize(read_env)
@@ -31,11 +39,11 @@ class IdentityConfig
     @written_env = {}
   end
 
-  def add(key, type: :string, is_sensitive: false, options: {})
+  def add(key, type: :string, is_sensitive: false, allow_nil: false, options: {})
     value = @read_env[key]
-    raise "#{key} is required but is not present" if value.nil?
-    converted_value = CONVERTERS.fetch(type).call(value, options: options)
-    raise "#{key} is required but is not present" if converted_value.nil?
+
+    converted_value = CONVERTERS.fetch(type).call(value, options: options) if !value.nil?
+    raise "#{key} is required but is not present" if converted_value.nil? && !allow_nil
 
     @written_env[key] = converted_value
     @written_env
@@ -51,11 +59,17 @@ class IdentityConfig
     config.add(:aamva_verification_url)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
+    config.add(:acuant_maintenance_window_start, type: :timestamp, allow_nil: true)
+    config.add(:acuant_maintenance_window_finish, type: :timestamp, allow_nil: true)
+    config.add(:acuant_assure_id_password)
+    config.add(:acuant_assure_id_username)
+    config.add(:acuant_assure_id_subscription_id)
     config.add(:acuant_assure_id_url)
     config.add(:acuant_attempt_window_in_minutes, type: :integer)
     config.add(:acuant_facial_match_url)
     config.add(:acuant_max_attempts, type: :integer)
     config.add(:acuant_passlive_url)
+    config.add(:acuant_sdk_initialization_creds)
     config.add(:acuant_sdk_initialization_endpoint)
     config.add(:acuant_timeout, type: :integer)
     config.add(:add_email_link_valid_for_hours, type: :integer)
@@ -81,6 +95,9 @@ class IdentityConfig
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)
     config.add(:doc_auth_enable_presigned_s3_urls, type: :boolean)
+    config.add(:doc_auth_error_dpi_threshold, type: :integer)
+    config.add(:doc_auth_error_sharpness_threshold, type: :integer)
+    config.add(:doc_auth_error_glare_threshold, type: :integer)
     config.add(:doc_auth_extend_timeout_by_minutes, type: :integer)
     config.add(:doc_capture_polling_enabled, type: :boolean)
     config.add(:doc_capture_request_valid_for_minutes, type: :integer)
@@ -101,7 +118,19 @@ class IdentityConfig
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:issuers_with_email_nameid_format, type: :comma_separated_string_list)
     config.add(:job_run_healthchecks_enabled, type: :boolean)
+    config.add(:lexisnexis_base_url, type: :string)
+    config.add(:lexisnexis_request_mode, type: :string)
+    config.add(:lexisnexis_account_id, type: :string)
+    config.add(:lexisnexis_username, type: :string)
+    config.add(:lexisnexis_password, type: :string)
+    config.add(:lexisnexis_phone_finder_workflow, type: :string)
+    config.add(:lexisnexis_instant_verify_workflow, type: :string)
     config.add(:lexisnexis_timeout, type: :integer)
+    config.add(:lexisnexis_trueid_account_id, type: :string)
+    config.add(:lexisnexis_trueid_username, type: :string)
+    config.add(:lexisnexis_trueid_password, type: :string)
+    config.add(:lexisnexis_trueid_liveness_workflow, type: :string)
+    config.add(:lexisnexis_trueid_noliveness_workflow, type: :string)
     config.add(:liveness_checking_enabled, type: :boolean)
     config.add(:lockout_period_in_minutes, type: :integer)
     config.add(:log_to_stdout, type: :boolean)
@@ -112,6 +141,9 @@ class IdentityConfig
     config.add(:logins_per_ip_period, type: :integer)
     config.add(:logins_per_ip_track_only_mode, type: :boolean)
     config.add(:logo_upload_enabled, type: :boolean)
+    config.add(:newrelic_browser_app_id, type: :string)
+    config.add(:newrelic_browser_key, type: :string)
+    config.add(:newrelic_license_key, type: :string)
     config.add(:mailer_domain_name)
     config.add(:max_auth_apps_per_account, type: :integer)
     config.add(:max_emails_per_account, type: :integer)
@@ -133,7 +165,12 @@ class IdentityConfig
     config.add(:participate_in_dap, type: :boolean)
     config.add(:password_max_attempts, type: :integer)
     config.add(:personal_key_retired, type: :boolean)
+    config.add(:phone_format_e164_opt_out_list, type: :json)
+    config.add(:phone_setups_per_ip_limit, type: :integer)
+    config.add(:phone_setups_per_ip_period, type: :integer)
     config.add(:pii_lock_timeout_in_minutes, type: :integer)
+    config.add(:pinpoint_sms_configs, type: :json)
+    config.add(:pinpoint_voice_configs, type: :json)
     config.add(:piv_cac_service_url)
     config.add(:piv_cac_verify_token_url)
     config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)
@@ -172,6 +209,7 @@ class IdentityConfig
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
+    config.add(:telephony_adapter, type: :string)
     config.add(:unauthorized_scope_enabled, type: :boolean)
     config.add(:use_dashboard_service_providers, type: :boolean)
     config.add(:use_kms, type: :boolean)
@@ -187,6 +225,9 @@ class IdentityConfig
     config.add(:usps_upload_sftp_timeout, type: :integer)
     config.add(:usps_upload_sftp_username, type: :string)
     config.add(:valid_authn_contexts, type: :json)
+    config.add(:voip_allowed_phones, type: :json)
+    config.add(:voip_block, type: :boolean)
+    config.add(:voip_check, type: :boolean)
 
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)

@@ -98,7 +98,7 @@ module Users
       reset_password_token = Devise.token_generator.digest(User, :reset_password_token, token)
 
       user = User.find_or_initialize_with_error_by(:reset_password_token, reset_password_token)
-      user.reset_password_token = token if user.reset_password_token.present?
+      user.reset_password_token = token if user.reset_password_token?
       user
     end
 

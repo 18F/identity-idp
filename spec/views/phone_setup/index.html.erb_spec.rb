@@ -29,7 +29,7 @@ describe 'users/phone_setup/index.html.erb' do
 
   context 'voip numbers' do
     before do
-      allow(FeatureManagement).to receive(:voip_block?).and_return(voip_block)
+      allow(IdentityConfig.store).to receive(:voip_block).and_return(voip_block)
     end
 
 
