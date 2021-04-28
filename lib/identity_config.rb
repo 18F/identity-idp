@@ -228,6 +228,7 @@ class IdentityConfig
     config.add(:valid_authn_contexts, type: :json)
     config.add(:verify_gpo_key_attempt_window_in_minutes, type: :integer)
     config.add(:verify_gpo_key_max_attempts, type: :integer)
+    config.add(:verify_personal_key_attempt_window_in_minutes, type: :integer)
     config.add(:verify_personal_key_max_attempts, type: :integer)
     config.add(:voip_allowed_phones, type: :json)
     config.add(:voip_block, type: :boolean)
