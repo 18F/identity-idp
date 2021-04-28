@@ -260,13 +260,13 @@ describe 'FeatureManagement', type: :feature do
   end
 
   describe '#disallow_all_web_crawlers?' do
-    it 'returns true when AppConfig setting is true' do
+    it 'returns true when IdentityConfig setting is true' do
       allow(IdentityConfig.store).to receive(:disallow_all_web_crawlers) { true }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(true)
     end
 
-    it 'returns false when AppConfig setting is false' do
+    it 'returns false when IdentityConfig setting is false' do
       allow(IdentityConfig.store).to receive(:disallow_all_web_crawlers) { false }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
@@ -279,13 +279,13 @@ describe 'FeatureManagement', type: :feature do
         allow(Rails.env).to receive(:development?).and_return(true)
       end
 
-      it 'returns true when AppConfig setting is true' do
+      it 'returns true when IdentityConfig setting is true' do
         allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { true }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(true)
       end
 
-      it 'returns false when AppConfig setting is false' do
+      it 'returns false when IdentityConfig setting is false' do
         allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { false }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
@@ -297,13 +297,13 @@ describe 'FeatureManagement', type: :feature do
         allow(Rails.env).to receive(:development?).and_return(false)
       end
 
-      it 'returns false when AppConfig setting is true' do
+      it 'returns false when IdentityConfig setting is true' do
         allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { true }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
 
-      it 'returns false when AppConfig setting is false' do
+      it 'returns false when IdentityConfig setting is false' do
         allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { false }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
@@ -312,13 +312,13 @@ describe 'FeatureManagement', type: :feature do
   end
 
   describe '#document_capture_async_uploads_enabled?' do
-    it 'returns true when AppConfig presigned S3 URL setting is true' do
+    it 'returns true when IdentityConfig presigned S3 URL setting is true' do
       allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls) { true }
 
       expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(true)
     end
 
-    it 'returns false when AppConfig presigned S3 URL setting is false' do
+    it 'returns false when IdentityConfig presigned S3 URL setting is false' do
       allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls) { false }
 
       expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(false)
