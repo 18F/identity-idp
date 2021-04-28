@@ -218,6 +218,7 @@ describe Idv::ImageUploadsController do
           billed: true,
           exception: nil,
           result: 'Passed',
+          state: 'MT',
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
           client_image_metrics: {
@@ -283,6 +284,7 @@ describe Idv::ImageUploadsController do
               billed: true,
               exception: nil,
               result: 'Passed',
+              state: 'ND',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
               client_image_metrics: {
@@ -326,6 +328,7 @@ describe Idv::ImageUploadsController do
               billed: true,
               exception: nil,
               result: 'Passed',
+              state: 'Maryland',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
               client_image_metrics: {
@@ -369,6 +372,7 @@ describe Idv::ImageUploadsController do
               billed: true,
               exception: nil,
               result: 'Passed',
+              state: 'ND',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
               client_image_metrics: {
@@ -435,6 +439,7 @@ describe Idv::ImageUploadsController do
           },
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
+          state: nil,
           exception: nil,
           client_image_metrics: {
             front: { glare: 99.99 },
@@ -482,6 +487,7 @@ describe Idv::ImageUploadsController do
           },
           billed: true,
           result: 'Caution',
+          state: nil,
           exception: nil,
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
