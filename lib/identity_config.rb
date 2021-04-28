@@ -123,6 +123,7 @@ class IdentityConfig
     config.add(:event_disavowal_expiration_hours, type: :integer)
     config.add(:exception_recipients, type: :comma_separated_string_list)
     config.add(:geo_data_file_path, type: :string)
+    config.add(:gpo_designated_receiver_pii, type: :json)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:ial2_step_indicator_enabled, type: :boolean)
     config.add(:identity_pki_disabled, type: :boolean)

@@ -15,8 +15,8 @@ RSpec.describe GpoDailyTestSender do
   end
 
   before do
-    allow(AppConfig.env).to receive(:gpo_designated_receiver_pii).
-      and_return(designated_receiver_pii.to_json)
+    allow(IdentityConfig.store).to receive(:gpo_designated_receiver_pii).
+      and_return(designated_receiver_pii.stringify_keys)
   end
 
   describe '#run' do
@@ -31,8 +31,10 @@ RSpec.describe GpoDailyTestSender do
       expect(gpo_confirmation_code.profile_id).to eq(-1)
     end
 
-    context 'when the designed receiver PII is missing' do
-      let(:designated_receiver_pii) { '' }
+    context 'when attempting handle the designated reciver renders an error' do
+      before do
+        allow(subject).to receive(:valid_designated_receiver_pii?).and_raise('test error')
+      end
 
       it 'does not create gpo records' do
         expect { sender.run }.
