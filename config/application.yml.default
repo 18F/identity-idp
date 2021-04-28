@@ -254,7 +254,7 @@ production:
   attribute_encryption_key_queue: '[]'
   aws_kms_regions: '["us-west-2"]'
   aws_logo_bucket:
-  dashboard_api_token:
+  dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
   database_name: ''
