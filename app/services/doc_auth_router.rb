@@ -192,14 +192,14 @@ module DocAuthRouter
     when 'lexisnexis'
       LexisNexisTranslatorProxy.new(
         IdentityDocAuth::LexisNexis::LexisNexisClient.new(
-          account_id: AppConfig.env.lexisnexis_account_id,
-          base_url: AppConfig.env.lexisnexis_base_url,
-          request_mode: AppConfig.env.lexisnexis_request_mode,
-          trueid_account_id: AppConfig.env.lexisnexis_trueid_account_id,
-          trueid_liveness_workflow: AppConfig.env.lexisnexis_trueid_liveness_workflow,
-          trueid_noliveness_workflow: AppConfig.env.lexisnexis_trueid_noliveness_workflow,
-          trueid_password: AppConfig.env.lexisnexis_trueid_password,
-          trueid_username: AppConfig.env.lexisnexis_trueid_username,
+          account_id: IdentityConfig.store.lexisnexis_account_id,
+          base_url: IdentityConfig.store.lexisnexis_base_url,
+          request_mode: IdentityConfig.store.lexisnexis_request_mode,
+          trueid_account_id: IdentityConfig.store.lexisnexis_trueid_account_id,
+          trueid_liveness_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_workflow,
+          trueid_noliveness_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_workflow,
+          trueid_password: IdentityConfig.store.lexisnexis_trueid_password,
+          trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
           timeout: IdentityConfig.store.lexisnexis_timeout,
           exception_notifier: method(:notify_exception),
           locale: I18n.locale,
