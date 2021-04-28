@@ -86,10 +86,6 @@ module FormHelper
     PhoneNumberCapabilities::INTERNATIONAL_CODES.keys
   end
 
-  def state_name_for_abbrev(abbrev)
-    us_states_territories.find([]) { |state| state.second == abbrev }.first
-  end
-
   private
 
   def international_phone_code_label(code_data)

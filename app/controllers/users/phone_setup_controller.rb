@@ -53,10 +53,6 @@ module Users
       end
     end
 
-    def delivery_preference
-      current_user.otp_delivery_preference
-    end
-
     def new_phone_form_params
       params.require(:new_phone_form).permit(
         :phone,

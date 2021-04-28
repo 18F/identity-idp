@@ -368,10 +368,6 @@ class ApplicationController < ActionController::Base
     render template, **opts, layout: 'base'
   end
 
-  def user_has_ial1_identity_for_issuer?(issuer)
-    current_user.identities.where(service_provider: issuer, ial: 1).any?
-  end
-
   def analytics_exception_info(exception)
     {
       backtrace: Rails.backtrace_cleaner.send(:filter, exception.backtrace),
