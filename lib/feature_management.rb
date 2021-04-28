@@ -123,6 +123,9 @@ class FeatureManagement
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests
   # @return [Set<String>] set of phone numbers normalized to e164
   def self.voip_allowed_phones
-    @voip_allowed_phones ||= IdentityConfig.store.voip_allowed_phones.to_set
+    @voip_allowed_phones ||= begin
+      allowed_phones = IdentityConfig.store.voip_allowed_phones
+      allowed_phones.map { |p| Phonelib.parse(p).e164 }.to_set
+    end
   end
 end

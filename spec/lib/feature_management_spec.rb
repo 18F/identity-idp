@@ -360,7 +360,7 @@ describe 'FeatureManagement', type: :feature do
     end
 
     it 'normalizes phone numbers and put them in a set' do
-      voip_allowed_phones = ['+18885551234', '+18888675309']
+      voip_allowed_phones = ['18885551234', '+18888675309']
 
       expect(IdentityConfig.store).to receive(:voip_allowed_phones).and_return(voip_allowed_phones)
       expect(FeatureManagement.voip_allowed_phones).to eq(Set['+18885551234', '+18888675309'])
