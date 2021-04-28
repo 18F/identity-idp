@@ -26,7 +26,7 @@ RSpec.describe TwoFactorAuthentication::PhoneSelectionPresenter do
 
       context 'when VOIP numbers are blocked' do
         before do
-          allow(FeatureManagement).to receive(:voip_block?).and_return(true)
+          allow(IdentityConfig.store).to receive(:voip_block).and_return(true)
         end
 
         it 'tells people to not use voip numbers' do
