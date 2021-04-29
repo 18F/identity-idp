@@ -6,7 +6,7 @@
 <p class="mt-tiny margin-bottom-4"><%= t('forms.totp_setup.totp_intro_html', link: help_link) %></p>
 <%= form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'margin-bottom-1') do %>
   <ul class="list-reset">
-    <li class="padding-y-2 border-top">
+    <li class="padding-y-2 border-top border-primary-light">
       <div class="margin-bottom-2">
         <div class="margin-right-1 inline-block circle circle-number bg-blue white">1</div>
         <div class="inline-block bold" id="totp-nickname"><%= t('forms.totp_setup.totp_step_1') %></div>
@@ -21,11 +21,11 @@
         </div>
       </div>
     </li>
-    <li class="padding-y-2 border-top">
+    <li class="padding-y-2 border-top border-primary-light">
       <div class="margin-right-1 inline-block circle circle-number bg-blue white">2</div>
       <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_2') %></div>
     </li>
-    <li class="padding-y-2 border-top">
+    <li class="padding-y-2 border-top border-primary-light">
       <div class="margin-bottom-2">
         <div class="margin-right-1 inline-block circle circle-number bg-blue white">3</div>
         <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_3') %></div>
@@ -47,7 +47,7 @@
         </div>
       </div>
     </li>
-    <li class="padding-y-2 border-top">
+    <li class="padding-y-2 border-top border-primary-light">
       <div class="margin-bottom-2">
         <div class="margin-right-1 inline-block circle circle-number bg-blue white">4</div>
         <div class="inline-block bold" id="totp-label"><%= t('forms.totp_setup.totp_step_4') %></div>
