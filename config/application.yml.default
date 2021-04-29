@@ -1,4 +1,4 @@
-# This file is used by the AppConfig class
+# This file is used by the IdentityConfig class
 
 # The defaults set in this file are used as the basis for configuration in all
 # production and development environments. On deployed EC2 servers, we run
@@ -13,7 +13,6 @@
 # if you're sharing your code publicly.
 
 # Make sure any new entries you add are enclosed in single quotes.
-# AppConfig requires all values to be explicit strings.
 
 aal_authn_context_enabled: 'false'
 aamva_auth_request_timeout: '5'
