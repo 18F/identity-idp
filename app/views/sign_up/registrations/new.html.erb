@@ -40,18 +40,15 @@
                  locals: { f: f, selection: @register_user_email_form.email_language } %>
     </fieldset>
 
-    <div class="bg-light-blue padding-top-3 padding-left-3 padding-right-3 margin-bottom-3">
-      <label class="margin-top-neg-1 margin-bottom-3" for="terms_accepted">
-        <div class="bg-light-blue" >
-          <%= f.check_box :terms_accepted, { required: true, aria: { invalid: false } }, true, false %>
-          <span class="indicator"></span>
-          <%= t('account.terms') %>
-        </div>
-      </label>
+    <div class="margin-bottom-3">
+      <%= f.check_box :terms_accepted, { class: 'usa-checkbox__input',
+                                         required: true, aria: { invalid: false } }, true, false %>
+      <label for="user_terms_accepted" class="usa-checkbox__label"><%= t('account.terms') %></label>
     </div>
 
     <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>
-    <%= f.button :button, t('forms.buttons.submit.default'), type: :submit, class: 'usa-button--big grid-col-8 mobile-lg:grid-col-6' %>
+    <%= f.button :button, t('forms.buttons.submit.default'), type: :submit,
+                 class: 'usa-button--big grid-col-8 mobile-lg:grid-col-6' %>
 <% end %>
 </div>
 
