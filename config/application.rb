@@ -8,7 +8,6 @@ require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 require 'identity/logging/railtie'
 
-require_relative '../lib/app_config'
 require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
 require_relative '../lib/identity_job_log_subscriber'
@@ -22,7 +21,6 @@ module Upaya
     configuration = Identity::Hostdata::ConfigReader.new(app_root: Rails.root).read_configuration(
       Rails.env, write_copy_to: Rails.root.join('tmp', 'application.yml')
     )
-    AppConfig.setup(configuration)
     IdentityConfig.build_store(configuration)
 
     config.load_defaults '6.1'
