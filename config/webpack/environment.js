@@ -25,19 +25,7 @@ const sassLoader = environment.loaders.get('sass');
 sassLoader.use.find(({ loader }) => loader === 'sass-loader').options.additionalData = `
 $font-path: '~identity-style-guide/dist/assets/fonts';
 $image-path: '~identity-style-guide/dist/assets/img';
-@import '~identity-style-guide/dist/assets/scss/functions/asset-path';
-@import '~identity-style-guide/dist/assets/scss/functions/focus';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/custom-styles';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/general';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/typography';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/spacing';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/color';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/utilities';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/components';
-@import '~identity-style-guide/dist/assets/scss/uswds/packages/required';
-@import '~identity-style-guide/dist/assets/scss/uswds/utilities/palettes/all';
-@import '~identity-style-guide/dist/assets/scss/uswds/utilities/rules/all';
-@import '~identity-style-guide/dist/assets/scss/uswds/utilities/rules/package';`;
+@import '~identity-style-guide/dist/assets/scss/packages/required';`;
 
 sassLoader.use.find(({ loader }) => loader === 'css-loader').options.sourceMap = false;
 
