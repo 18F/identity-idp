@@ -16,7 +16,7 @@ RSpec.describe GpoDailyTestSender do
 
   before do
     allow(IdentityConfig.store).to receive(:gpo_designated_receiver_pii).
-      and_return(designated_receiver_pii.stringify_keys)
+      and_return(designated_receiver_pii)
   end
 
   describe '#run' do
