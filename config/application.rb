@@ -29,7 +29,7 @@ module Upaya
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
 
-    if AppConfig.env.ruby_workers_enabled == 'true'
+    if IdentityConfig.store.ruby_workers_enabled
       config.active_job.queue_adapter = :delayed_job
     else
       config.active_job.queue_adapter = :inline
@@ -56,8 +56,8 @@ module Upaya
 
     config.action_mailer.default_options = {
       from: Mail::Address.new.tap do |mail|
-        mail.address = AppConfig.env.email_from
-        mail.display_name = AppConfig.env.email_from_display_name
+        mail.address = IdentityConfig.store.email_from
+        mail.display_name = IdentityConfig.store.email_from_display_name
       end.to_s,
     }
 

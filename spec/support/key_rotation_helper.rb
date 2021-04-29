@@ -1,11 +1,10 @@
 module KeyRotationHelper
   def rotate_hmac_key
-    env = AppConfig.env
-    old_hmac_key = env.hmac_fingerprinter_key
+    old_hmac_key = IdentityConfig.store.hmac_fingerprinter_key
     allow(IdentityConfig.store).to receive(:hmac_fingerprinter_key_queue).and_return(
       ["#{old_hmac_key}"],
     )
-    allow(env).to receive(:hmac_fingerprinter_key).and_return('4' * 32)
+    allow(IdentityConfig.store).to receive(:hmac_fingerprinter_key).and_return('4' * 32)
   end
 
   def rotate_attribute_encryption_key(new_key = '4' * 32)

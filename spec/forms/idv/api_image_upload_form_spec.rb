@@ -104,7 +104,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           exception: nil,
           result: 'Passed',
           billed: true,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
           state: 'MT',
           user_id: nil,
           client_image_metrics: {
@@ -128,7 +128,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           exception: nil,
           result: 'Passed',
           billed: true,
-          remaining_attempts: AppConfig.env.acuant_max_attempts.to_i,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
           user_id: nil,
           client_image_metrics: {
             front: JSON.parse(front_image_metadata, symbolize_names: true),

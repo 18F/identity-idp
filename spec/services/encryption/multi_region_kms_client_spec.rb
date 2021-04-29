@@ -11,7 +11,7 @@ describe Encryption::MultiRegionKmsClient do
     allow(FeatureManagement).to receive(:kms_multi_region_enabled?).
       and_return(kms_multi_region_enabled)
     allow(IdentityConfig.store).to receive(:aws_kms_regions).and_return(aws_kms_regions)
-    allow(AppConfig.env).to receive(:aws_region).and_return(aws_region)
+    allow(IdentityConfig.store).to receive(:aws_region).and_return(aws_region)
 
     stub_mapped_aws_kms_client(
       [

@@ -34,7 +34,7 @@ describe Encryption::KmsClient do
     allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Layout/LineLength
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
     allow(IdentityConfig.store).to receive(:aws_kms_regions).and_return(aws_kms_regions)
-    allow(AppConfig.env).to receive(:aws_region).and_return(aws_region)
+    allow(IdentityConfig.store).to receive(:aws_region).and_return(aws_region)
     allow(IdentityConfig.store).to receive(:aws_kms_key_id).and_return(key_id)
   end
 

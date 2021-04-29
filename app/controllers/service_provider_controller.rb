@@ -12,11 +12,18 @@ class ServiceProviderController < ApplicationController
   private
 
   def authorize
-    if authorization_token == AppConfig.env.dashboard_api_token
+    if authorization_token_valid?
       yield
     else
       head :unauthorized
     end
+  end
+
+  def authorization_token_valid?
+    ActiveSupport::SecurityUtils.secure_compare(
+      authorization_token,
+      IdentityConfig.store.dashboard_api_token,
+    )
   end
 
   def authorization_token

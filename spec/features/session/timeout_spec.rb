@@ -41,7 +41,7 @@ feature 'Session Timeout' do
     it 'signs out the user and displays the timeout message' do
       sign_in_and_2fa_user
 
-      timeout_in_minutes = AppConfig.env.session_total_duration_timeout_in_minutes.to_i
+      timeout_in_minutes = IdentityConfig.store.session_total_duration_timeout_in_minutes.to_i
       Timecop.travel (timeout_in_minutes + 1).minutes.from_now do
         visit account_path
 

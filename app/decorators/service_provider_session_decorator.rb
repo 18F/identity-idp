@@ -36,8 +36,8 @@ class ServiceProviderSessionDecorator
   end
 
   def s3_logo_url(service_provider)
-    region = AppConfig.env.aws_region
-    bucket = AppConfig.env.aws_logo_bucket
+    region = IdentityConfig.store.aws_region
+    bucket = IdentityConfig.store.aws_logo_bucket
     key = service_provider.remote_logo_key
 
     "https://s3.#{region}.amazonaws.com/#{bucket}/#{key}"

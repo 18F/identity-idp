@@ -39,13 +39,13 @@ acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 acuant_timeout: '45'
 add_email_link_valid_for_hours: '24'
-asset_host:
+asset_host: ''
 async_wait_timeout_seconds: '60'
 aws_http_timeout: '5'
 aws_http_retry_limit: '2'
 aws_http_retry_max_delay: '1'
 aws_kms_key_id: alias/login-dot-gov-test-keymaker
-aws_logo_bucket:
+aws_logo_bucket: ''
 aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
 backup_code_cost: '2000$8$1$'
@@ -73,6 +73,7 @@ event_disavowal_expiration_hours: '240'
 exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 gpo_designated_receiver_pii: '{}'
+hide_phone_mfa_signup: 'false'
 ial2_step_indicator_enabled: 'true'
 identity_pki_disabled: 'false'
 identity_pki_local_dev: 'false'
@@ -152,7 +153,7 @@ reg_unconfirmed_email_max_attempts: '20'
 reg_unconfirmed_email_window_in_minutes: '60'
 remember_device_expiration_hours_aal_1: '720'
 remember_device_expiration_hours_aal_2: '12'
-report_timeout:
+report_timeout: '0'
 requests_per_ip_limit: '300'
 requests_per_ip_period: '300'
 requests_per_ip_track_only_mode: 'false'
@@ -197,7 +198,7 @@ development:
   aamva_public_key: 123abc
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
-  aws_logo_bucket:
+  aws_logo_bucket: ''
   aws_kms_regions: '["us-west-2", "us-east-1"]'
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
@@ -227,7 +228,7 @@ development:
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   recurring_jobs_disabled_names: "[]"
-  s3_report_bucket_prefix:
+  s3_report_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
@@ -253,8 +254,8 @@ production:
   attribute_encryption_key:
   attribute_encryption_key_queue: '[]'
   aws_kms_regions: '["us-west-2"]'
-  aws_logo_bucket:
-  dashboard_api_token:
+  aws_logo_bucket: ''
+  dashboard_api_token: ''
   dashboard_url: https://dashboard.demo.login.gov
   database_host: ''
   database_name: ''
@@ -364,7 +365,7 @@ test:
   requests_per_ip_period: '60'
   reset_password_email_max_attempts: '5'
   reset_password_email_window_in_minutes: '80'
-  s3_report_bucket_prefix:
+  s3_report_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base

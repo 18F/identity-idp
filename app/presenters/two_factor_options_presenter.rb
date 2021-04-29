@@ -58,7 +58,7 @@ class TwoFactorOptionsPresenter
   end
 
   def phone_options
-    return [] if piv_cac_required? || aal3_only? || FeatureManagement.hide_phone_mfa_signup?
+    return [] if piv_cac_required? || aal3_only? || IdentityConfig.store.hide_phone_mfa_signup
     [TwoFactorAuthentication::PhoneSelectionPresenter.new]
   end
 

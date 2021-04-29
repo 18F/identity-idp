@@ -15,14 +15,15 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: connect_src.flatten,
-    font_src: ["'self'", 'data:', AppConfig.env.asset_host],
+    font_src: ["'self'", 'data:', IdentityConfig.store.asset_host.presence],
     img_src: [
       "'self'",
       'data:',
       'login.gov',
-      AppConfig.env.asset_host,
+      IdentityConfig.store.asset_host.presence,
       'idscangoweb.acuant.com',
-      AppConfig.env.aws_region && "https://s3.#{AppConfig.env.aws_region}.amazonaws.com",
+      IdentityConfig.store.aws_region.presence &&
+        "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com",
     ].select(&:present?),
     media_src: ["'self'"],
     object_src: ["'none'"],
@@ -32,9 +33,9 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
       '*.nr-data.net',
       'dap.digitalgov.gov',
       '*.google-analytics.com',
-      AppConfig.env.asset_host,
+      IdentityConfig.store.asset_host.presence,
     ],
-    style_src: ["'self'", AppConfig.env.asset_host],
+    style_src: ["'self'", IdentityConfig.store.asset_host.presence],
     base_uri: ["'self'"],
   }
 

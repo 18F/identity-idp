@@ -3,7 +3,7 @@ pattern =
 log_formatter = Aws::Log::Formatter.new(pattern)
 
 Aws.config.update(
-  region: AppConfig.env.aws_region,
+  region: IdentityConfig.store.aws_region,
   http_open_timeout: IdentityConfig.store.aws_http_timeout.to_f,
   http_read_timeout: IdentityConfig.store.aws_http_timeout.to_f,
   retry_limit: IdentityConfig.store.aws_http_retry_limit,

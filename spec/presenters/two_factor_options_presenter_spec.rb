@@ -39,7 +39,7 @@ describe TwoFactorOptionsPresenter do
 
     context 'when hide_phone_mfa_signup is enabled' do
       before do
-        allow(FeatureManagement).to receive(:hide_phone_mfa_signup?).and_return(true)
+        allow(IdentityConfig.store).to receive(:hide_phone_mfa_signup).and_return(true)
       end
 
       it 'supplies all the options except phone' do

@@ -100,10 +100,6 @@ class FeatureManagement
     IdentityConfig.store.doc_auth_enable_presigned_s3_urls
   end
 
-  def self.hide_phone_mfa_signup?
-    AppConfig.env.hide_phone_mfa_signup == 'true'
-  end
-
   def self.liveness_checking_enabled?
     IdentityConfig.store.liveness_checking_enabled
   end
@@ -114,10 +110,6 @@ class FeatureManagement
 
   def self.log_to_stdout?
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
-  end
-
-  def self.ruby_workers_enabled?
-    AppConfig.env.ruby_workers_enabled == 'true'
   end
 
   # Manual allowlist for VOIPs, should only include known VOIPs that we use for smoke tests

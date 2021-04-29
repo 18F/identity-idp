@@ -250,7 +250,7 @@ class ApplicationController < ActionController::Base
     session_created_at = user_session&.dig(:created_at)
     return if session_created_at.blank?
     session_created_at = Time.zone.parse(session_created_at.to_s)
-    timeout_in_minutes = AppConfig.env.session_total_duration_timeout_in_minutes.to_i.minutes
+    timeout_in_minutes = IdentityConfig.store.session_total_duration_timeout_in_minutes.minutes
     (session_created_at + timeout_in_minutes) < Time.zone.now
   end
 
