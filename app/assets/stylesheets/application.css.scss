@@ -1,7 +1,10 @@
 @import 'variables/colors';
 @import 'variables/app';
 @import 'vendor';
-@import 'identity-style-guide/dist/assets/scss/styles';
+@import 'identity-style-guide/dist/assets/scss/packages/required';
+@import 'identity-style-guide/dist/assets/scss/packages/global';
+@import 'identity-style-guide/dist/assets/scss/packages/components';
 @import 'components/all';
+@import 'identity-style-guide/dist/assets/scss/packages/utilities';
 @import 'utilities/all';
 @import 'print';
