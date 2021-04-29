@@ -22,7 +22,8 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
       'login.gov',
       IdentityConfig.store.asset_host.presence,
       'idscangoweb.acuant.com',
-      IdentityConfig.store.aws_region && "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com",
+      IdentityConfig.store.aws_region.presence &&
+        "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com",
     ].select(&:present?),
     media_src: ["'self'"],
     object_src: ["'none'"],
