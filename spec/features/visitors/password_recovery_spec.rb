@@ -64,7 +64,7 @@ feature 'Password Recovery' do
       confirm_last_user
       reset_email
       visit sign_up_email_resend_path
-      fill_in 'Email', with: user.email
+      fill_in t('forms.registration.labels.email'), with: user.email
       click_button t('forms.buttons.resend_confirmation')
       open_last_email
       click_email_link_matching(/confirmation_token/)
