@@ -217,6 +217,6 @@ shared_examples 'sp handoff after identity verification' do |sp|
     expect(page.status_code).to eq(200)
     certs_response = JSON.parse(page.body).with_indifferent_access
 
-    JSON::JWK.new(certs_response[:keys].first).to_key
+    JWT::JWK.import(certs_response[:keys].first).public_key
   end
 end

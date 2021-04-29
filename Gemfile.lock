@@ -151,7 +151,6 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
-    aes_key_wrap (1.1.0)
     ahoy_matey (3.1.0)
       activesupport (>= 5)
       device_detector
@@ -377,10 +376,6 @@ GEM
     irb (1.2.9)
       reline (>= 0.1.5)
     jmespath (1.4.0)
-    json-jwt (1.13.0)
-      activesupport (>= 4.2)
-      aes_key_wrap
-      bindata
     jwt (2.2.2)
     knapsack (1.20.0)
       rake
@@ -765,7 +760,6 @@ DEPENDENCIES
   identity-telephony!
   identity_validations!
   irb
-  json-jwt (>= 1.11.0)
   jwt
   knapsack
   lexisnexis!

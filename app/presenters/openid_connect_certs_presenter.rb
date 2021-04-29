@@ -1,7 +1,7 @@
 class OpenidConnectCertsPresenter
   def certs
     {
-      keys: keys.map { |key| JSON::JWK.new(key) },
+      keys: keys.map { |key| JWT::JWK.new(key).export },
     }
   end
 
