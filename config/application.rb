@@ -23,6 +23,37 @@ module Upaya
     )
     IdentityConfig.build_store(configuration)
 
+    Identity::Hostdata.setup do |config|
+      # application.yml
+      #   load the default frmo source control
+      #   load the one from S3
+      #   parse em into a DSL
+
+      config.merge_ymls(
+        Rails.root.join('default.yml'),
+        if in_datacenter?
+          config.app_secrets_s3('/%<env>/idp/application.yml')
+        else
+          Rails.root.join('override.yml')
+        end,
+        ENV,
+      ).define do |config|
+         # set up ***all*** the keys 
+        add(:aal_authn_context_enabled, type: :boolean)
+      end
+
+      # download arbirary secrets & expose them as properties
+      config.define do |config|
+        # set up all the artifacts
+        store.add_artifact(:saml_2020_key, '/%<env>s/saml2020.key.enc')
+      end
+    end
+
+    Identity::Hostdata.store.aal_authn_context_enabled # its a boolean
+    Identity::Hostdata.store.saml_2020_key # its a blarb
+
+
+
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
