@@ -93,7 +93,7 @@ module Idv
 
       response
     end
-    
+
     def extra_attributes
       @extra_attributes ||= {
         remaining_attempts: remaining_attempts,
@@ -190,7 +190,7 @@ module Idv
       update_funnel(client_response)
       track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-        client_response.to_h.merge(client_image_metrics: image_metadata),
+        client_response.to_h.merge(client_image_metrics: image_metadata, async: false),
       )
     end
 
