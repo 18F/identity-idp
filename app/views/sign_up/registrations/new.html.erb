@@ -44,6 +44,9 @@
       <%= f.check_box :terms_accepted, { class: 'usa-checkbox__input',
                                          required: true, aria: { invalid: false } }, true, false %>
       <label for="user_terms_accepted" class="usa-checkbox__label"><%= t('account.terms') %></label>
+      <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
+        Please check this box to continue
+      </div>
     </div>
 
     <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>

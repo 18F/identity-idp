@@ -18,12 +18,9 @@ function disableFormSubmit(event) {
 }
 
 /**
- * Given an `input` or `invalid` event, updates custom validity of the given input.
- *
- * @param {Event} event Input or invalid event.
+ * @param {HTMLInputElement} input
  */
-function checkInputValidity(event) {
-  const input = /** @type {HTMLInputElement} */ (event.target);
+function validateInput(input) {
   input.setCustomValidity('');
   input.setAttribute('aria-invalid', String(!input.validity.valid));
 
@@ -46,11 +43,21 @@ function checkInputValidity(event) {
 }
 
 /**
+ * Given an `input` or `invalid` event, updates custom validity of the given input.
+ *
+ * @param {Event} event Input or invalid event.
+ */
+function checkInputValidity(event) {
+  const input = /** @type {HTMLInputElement} */ (event.target);
+  validateInput(input);
+}
+
+/**
  * Binds validation to a given input.
  *
  * @param {HTMLInputElement} input Input element.
  */
-function validateInput(input) {
+function addInputValidationListeners(input) {
   input.addEventListener('input', checkInputValidity);
   input.addEventListener('invalid', checkInputValidity);
 }
@@ -62,9 +69,18 @@ function validateInput(input) {
  */
 export function initialize(form) {
   /** @type {HTMLInputElement[]} */
-  const fields = Array.from(form.querySelectorAll('.field'));
-  fields.forEach(validateInput);
-  form.addEventListener('submit', disableFormSubmit);
+  const fields = Array.from(form.querySelectorAll('.field,[required]'));
+  fields.forEach(addInputValidationListeners);
+  form.noValidate = true;
+  form.addEventListener('submit', (event) => {
+    fields.forEach(validateInput);
+    if (form.checkValidity()) {
+      disableFormSubmit(event);
+    } else {
+      event.preventDefault();
+      form.reportValidity();
+    }
+  });
 }
 
 loadPolyfills(['classlist']).then(() => {
