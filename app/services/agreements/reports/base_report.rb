@@ -2,11 +2,12 @@ module Agreements
   module Reports
     class BaseReport < ::Reports::BaseReport
       def gen_s3_bucket_name
-        "#{AppConfig.env.partner_api_bucket_prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
+        prefix = IdentityConfig.store.partner_api_bucket_prefix
+        "#{prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
       end
 
       def save_report(report_name, body, path = nil)
-        if AppConfig.env.s3_reports_enabled == 'false'
+        if !IdentityConfig.store.s3_reports_enabled
           logger.info('Not uploading report to S3, s3_reports_enabled is false')
           return body
         end
