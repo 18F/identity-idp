@@ -10,20 +10,16 @@ module Agreements
           logger.info('Not uploading report to S3, s3_reports_enabled is false')
           return body
         end
-        upload_file_to_s3_timestamped_and_latest(report_name, body, path)
+        upload_file_to_s3(report_name, body, path)
       end
 
       def upload_file_to_s3_timestamped_and_latest(report_name, body, path)
-        latest_path, path = generate_s3_paths(report_name, path)
-        url = upload_file_to_s3_bucket(path: path, body: body, content_type: 'application/json')
-        upload_file_to_s3_bucket(path: latest_path, body: body, content_type: 'application/json')
-        url
+        s3_path = "#{path}#{endpoint_path}"
+        upload_file_to_s3_bucket(path: s3_path, body: body, content_type: 'application/json')
       end
 
       def generate_s3_paths(name, endpoint_path)
-        latest = "#{endpoint_path}#{name}"
-        now = Time.zone.now
-        [latest, "archive/#{endpoint_path}#{name}/#{now.year}/#{now.strftime('%F')}.#{name}.json"]
+        "#{endpoint_path}#{name}"
       end
     end
   end

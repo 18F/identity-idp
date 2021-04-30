@@ -31,6 +31,11 @@ FactoryBot.define do
     iaa_status
 
     order_number { Faker::Types.rb_integer(to: 1000) }
+
+    trait :with_dates do
+      start_date { Time.zone.today }
+      end_date { start_date + 1.year }
+    end
   end
 
   factory :integration_status, class: Agreements::IntegrationStatus do
