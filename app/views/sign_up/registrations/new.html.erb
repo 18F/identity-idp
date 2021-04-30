@@ -41,9 +41,10 @@
     </fieldset>
 
     <div class="margin-bottom-3">
-      <%= f.check_box :terms_accepted, { class: 'usa-checkbox__input',
-                                         required: true, aria: { invalid: false } }, true, false %>
-      <label for="user_terms_accepted" class="usa-checkbox__label"><%= t('account.terms') %></label>
+      <label for="user_terms_accepted">
+        <%= f.check_box :terms_accepted, { required: true, aria: { invalid: false } }, true, false %>
+        <span class="padding-left-1"><%= t('account.terms') %></span>
+      </label>
     </div>
 
     <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>
