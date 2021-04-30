@@ -29,10 +29,7 @@ describe Idv::Agent do
 
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-          expect(result[:context][:stages]).to_not include(
-            state_id: 'StateIdMock',
-            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
-          )
+          expect(result[:context][:stages].key?(:state_id)).to eq false
         end
 
         it 'does proof state_id if resolution succeeds' do
@@ -48,8 +45,8 @@ describe Idv::Agent do
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
           result = document_capture_session.load_proofing_result.result
-          expect(result[:context][:stages]).to include(
-            state_id: 'StateIdMock',
+          expect(result[:context][:stages][:state_id]).to include(
+            client: 'StateIdMock',
             transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
@@ -66,10 +63,7 @@ describe Idv::Agent do
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-          expect(result[:context][:stages]).to_not include(
-            state_id: 'StateIdMock',
-            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
-          )
+          expect(result[:context][:stages].key?(:state_id)).to eq false
         end
 
         it 'does not proof state_id if resolution succeeds' do

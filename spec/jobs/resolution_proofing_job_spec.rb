@@ -109,16 +109,26 @@ RSpec.describe ResolutionProofingJob, type: :job do
           success: true,
           timed_out: false,
           context: {
-            stages: [
-              {
-                resolution: LexisNexis::InstantVerify::Proofer.vendor_name,
+            dob_year_only: dob_year_only,
+            should_proof_state_id: true,
+            stages: {
+              resolution: {
+                client: LexisNexis::InstantVerify::Proofer.vendor_name,
+                errors: {},
+                exception: nil,
+                success: true,
+                timed_out: false,
                 transaction_id: lexisnexis_transaction_id,
               },
-              {
-                state_id: Aamva::Proofer.vendor_name,
+              state_id: {
+                client: Aamva::Proofer.vendor_name,
+                errors: {},
+                exception: nil,
+                success: true,
+                timed_out: false,
                 transaction_id: aamva_transaction_id,
               },
-            ],
+            },
           },
           transaction_id: lexisnexis_transaction_id,
         )
@@ -160,16 +170,26 @@ RSpec.describe ResolutionProofingJob, type: :job do
             success: false,
             timed_out: false,
             context: {
-              stages: [
-                {
-                  state_id: Aamva::Proofer.vendor_name,
+              dob_year_only: dob_year_only,
+              should_proof_state_id: true,
+              stages: {
+                state_id: {
+                  client: Aamva::Proofer.vendor_name,
+                  errors: {},
+                  exception: nil,
+                  success: true,
+                  timed_out: false,
                   transaction_id: aamva_transaction_id,
                 },
-                {
-                  resolution: LexisNexis::InstantVerify::Proofer.vendor_name,
+                resolution: {
+                  client: LexisNexis::InstantVerify::Proofer.vendor_name,
+                  errors: {},
+                  exception: kind_of(String),
+                  success: false,
+                  timed_out: false,
                   transaction_id: nil,
                 },
-              ],
+              },
             },
             transaction_id: nil,
           )
@@ -255,10 +275,30 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
           result = document_capture_session.load_proofing_result[:result]
 
-          expect(result.dig(:context, :stages)).to eq [
-            { state_id: 'aamva:state_id', transaction_id: aamva_transaction_id },
-            { resolution: 'lexisnexis:instant_verify', transaction_id: lexisnexis_transaction_id },
-          ]
+          expect(result[:context]).to eq(
+            {
+              dob_year_only: dob_year_only,
+              should_proof_state_id: true,
+              stages: {
+                state_id: {
+                  client: 'aamva:state_id',
+                  errors: {},
+                  exception: nil,
+                  success: true,
+                  timed_out: false,
+                  transaction_id: aamva_transaction_id,
+                },
+                resolution: {
+                  client: 'lexisnexis:instant_verify',
+                  errors: {},
+                  exception: nil,
+                  success: true,
+                  timed_out: false,
+                  transaction_id: lexisnexis_transaction_id,
+                },
+              },
+            },
+          )
 
           expect(result.dig(:transaction_id)).to eq(lexisnexis_transaction_id)
         end
