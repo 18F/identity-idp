@@ -6,7 +6,7 @@ module Features
 
     def sign_up_with(email)
       visit sign_up_email_path
-      check t('account.terms')
+      check t('account.terms'), allow_label_click: true
       fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
