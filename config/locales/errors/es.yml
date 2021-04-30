@@ -48,7 +48,8 @@ es:
         para obtener más información.
       send_link_throttle: Lo intentaste muchas veces, vuelve a intentarlo en 10 minutos.
         También puedes hacer clic en comenzar de nuevo y elegir usar tu computadora.
-      throttled_heading: No pudimos verificar la identificación ni la foto
+      throttled_heading: No pudimos verificar la identificación
+      throttled_heading_liveness: No pudimos verificar la identificación ni la foto
       throttled_text_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
         Por su seguridad, limitamos el número de veces que puede intentar verificar
         un documento en línea."
