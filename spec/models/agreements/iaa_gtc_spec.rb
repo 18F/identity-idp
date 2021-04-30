@@ -24,4 +24,12 @@ RSpec.describe Agreements::IaaGtc, type: :model do
 
     it { is_expected.to have_many(:iaa_orders).dependent(:restrict_with_exception) }
   end
+
+  describe '#partner_status' do
+    it 'returns the partner_name of the IaaStatus' do
+      iaa_status = build(:iaa_status, partner_name: 'foo')
+      gtc = build(:iaa_gtc, iaa_status: iaa_status)
+      expect(gtc.partner_status).to eq('foo')
+    end
+  end
 end

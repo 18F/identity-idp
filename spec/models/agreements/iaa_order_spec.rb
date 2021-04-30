@@ -38,6 +38,14 @@ RSpec.describe Agreements::IaaOrder, type: :model do
     it { is_expected.to have_many(:integrations).through(:integration_usages) }
   end
 
+  describe '#partner_status' do
+    it 'returns the partner_name of the IaaStatus' do
+      iaa_status = build(:iaa_status, partner_name: 'foo')
+      order = build(:iaa_order, iaa_status: iaa_status)
+      expect(order.partner_status).to eq('foo')
+    end
+  end
+
   describe '#in_pop?' do
     let(:order) do
       build(

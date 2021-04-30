@@ -12,9 +12,6 @@ class ServiceProvider < ApplicationRecord
                         primary_key: :issuer,
                         class_name: 'ServiceProviderIdentity'
   has_one :integration, class_name: 'Agreements::Integration'
-  has_many :sp_return_logs, inverse_of: :service_provider,
-                            foreign_key: :issuer,
-                            primary_key: :issuer
   # rubocop:enable Rails/HasManyOrHasOneDependent
 
   # Do not define validations in this model.

@@ -7,4 +7,8 @@ class Agreements::IntegrationStatus < ApplicationRecord
   validates :order, presence: true,
                     uniqueness: true,
                     numericality: { only_integer: true }
+
+  def partner_name
+    super || name
+  end
 end
