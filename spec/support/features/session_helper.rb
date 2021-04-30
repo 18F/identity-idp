@@ -459,7 +459,7 @@ module Features
     end
 
     def submit_form_with_valid_email(email = 'test@test.com')
-      check t('account.terms')
+      check t('account.terms'), allow_label_click: true
       fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
