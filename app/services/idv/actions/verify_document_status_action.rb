@@ -24,7 +24,7 @@ module Idv
               async: true,
               remaining_attempts: remaining_attempts,
               client_image_metrics: nil, # Need to resolve how to capture image metrics, see LG-4488
-            )
+            ),
           )
 
           if form_response.success?
