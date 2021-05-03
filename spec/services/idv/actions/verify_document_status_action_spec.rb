@@ -4,16 +4,44 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   include IdvHelper
 
   let(:user) { build(:user) }
-  let(:controller) do
-    instance_double(Idv::DocAuthController, url_options: {}, analytics: analytics)
-  end
   let(:session) { { 'idv/doc_auth' => {} } }
+  let(:controller) do
+    instance_double(Idv::DocAuthController, url_options: {}, session: session, analytics: analytics)
+  end
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
   let(:analytics) { FakeAnalytics.new }
+  let(:result) { { result: 'Passed', success: true, errors: {}, exception: nil, billed: true } }
+  let(:pii) { { state: 'MD' } }
+  let(:done) { true }
+  let(:async_state) { OpenStruct.new(result: result, pii: pii, 'done?' => done) }
 
   subject { described_class.new(flow) }
 
   describe '#call' do
+    context 'successful async result' do
+      before do
+        allow(subject).to receive(:async_state).and_return(async_state)
+        allow(subject).to receive(:process_result).and_return(true)
+      end
+
+      it 'calls analytics to log the successful event' do
+        subject.call
+
+        expect(analytics).to have_logged_event(
+          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+          result: 'Passed',
+          success: true,
+          errors: {},
+          exception: nil,
+          billed: true,
+          state: 'MD',
+          async: true,
+          remaining_attempts: nil,
+          client_image_metrics: nil,
+        )
+      end
+    end
+
     it 'calls analytics if timed out from no document capture session' do
       response = subject.call
 
