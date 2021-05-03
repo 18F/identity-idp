@@ -54,7 +54,7 @@ module SignUp
     end
 
     def update_sp_return_logs_with_user(user_id)
-      Db::SpReturnLog::UpdateUser.call(sp_request_id, user_id)
+      Db::SpReturnLog.update_user(sp_request_id, user_id)
     end
 
     def sp_request_id
