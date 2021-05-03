@@ -62,18 +62,26 @@ class ResolutionProofingJob < ApplicationJob
     result = proofer_result.to_h
     resolution_success = proofer_result.success?
 
-    result[:context] = {
-      stages: [
-        {
-          resolution: resolution_proofer.class.vendor_name,
-          transaction_id: proofer_result.transaction_id,
-        },
-      ],
-    }
     result[:transaction_id] = proofer_result.transaction_id
 
+    exception = proofer_result.exception.inspect if proofer_result.exception
     result[:timed_out] = proofer_result.timed_out?
-    result[:exception] = proofer_result.exception.inspect if proofer_result.exception
+    result[:exception] = exception
+
+    result[:context] = {
+      dob_year_only: false,
+      should_proof_state_id: should_proof_state_id,
+      stages: {
+        resolution: {
+          client: resolution_proofer.class.vendor_name,
+          errors: proofer_result.errors,
+          exception: exception,
+          success: proofer_result.success?,
+          timed_out: proofer_result.timed_out?,
+          transaction_id: proofer_result.transaction_id,
+        },
+      },
+    }
 
     state_id_success = nil
     if should_proof_state_id && result[:success]
@@ -101,14 +109,21 @@ class ResolutionProofingJob < ApplicationJob
     result = proofer_result.to_h
     state_id_success = proofer_result.success?
     resolution_success = nil
+    exception = proofer_result.exception.inspect if proofer_result.exception
 
     result[:context] = {
-      stages: [
-        {
-          state_id: state_id_proofer.class.vendor_name,
+      dob_year_only: dob_year_only,
+      should_proof_state_id: true,
+      stages: {
+        state_id: {
+          client: state_id_proofer.class.vendor_name,
+          errors: proofer_result.errors,
+          exception: exception,
+          success: state_id_success,
+          timed_out: proofer_result.timed_out?,
           transaction_id: proofer_result.transaction_id,
         },
-      ],
+      },
     }
 
     if state_id_success
@@ -119,15 +134,21 @@ class ResolutionProofingJob < ApplicationJob
       end
 
       resolution_success = lexisnexis_result.success?
+      exception = lexisnexis_result.exception.inspect if lexisnexis_result.exception
 
       result.merge!(lexisnexis_result.to_h) do |key, orig, current|
         key == :messages ? orig + current : current
       end
 
-      result[:context][:stages].push(
-        resolution: resolution_proofer.class.vendor_name,
+      result[:context][:stages][:resolution] = {
+        client: resolution_proofer.class.vendor_name,
+        errors: lexisnexis_result.errors,
+        exception: exception,
+        success: lexisnexis_result.success?,
+        timed_out: lexisnexis_result.timed_out?,
         transaction_id: lexisnexis_result.transaction_id,
-      )
+      }
+
       result[:transaction_id] = lexisnexis_result.transaction_id
       result[:timed_out] = lexisnexis_result.timed_out?
       result[:exception] = lexisnexis_result.exception.inspect if lexisnexis_result.exception
@@ -145,17 +166,22 @@ class ResolutionProofingJob < ApplicationJob
       state_id_proofer.proof(applicant_pii)
     end
 
-    result[:context][:stages].push(
-      state_id: state_id_proofer.class.vendor_name,
-      transaction_id: proofer_result.transaction_id,
-    )
-
     result.merge!(proofer_result.to_h) do |key, orig, current|
       key == :messages ? orig + current : current
     end
 
+    exception = proofer_result.exception.inspect if proofer_result.exception
     result[:timed_out] = proofer_result.timed_out?
-    result[:exception] = proofer_result.exception.inspect if proofer_result.exception
+    result[:exception] = exception
+
+    result[:context][:stages][:state_id] = {
+      client: state_id_proofer.class.vendor_name,
+      errors: proofer_result.errors,
+      success: proofer_result.success?,
+      timed_out: proofer_result.timed_out?,
+      exception: exception,
+      transaction_id: proofer_result.transaction_id,
+    }
 
     result
   end
