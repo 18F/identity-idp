@@ -2,6 +2,7 @@
 fr:
   sign_up:
     agree_and_continue: Acceptez et continuez
+    agree_to_rules_of_use_and_continue: Veuillez cocher cette case pour continuer
     cancel:
       success: Le dossier contenant votre information a été effacé
       warning_header: 'Si vous annulez maintenant:'
