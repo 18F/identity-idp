@@ -38,7 +38,8 @@ module Db
       end
 
       # Builds "value BETWEEN range_start AND range_end"
-      # value#between() only works on literal values, not other columns
+      # We need to do this because Arel's value#between() only works on values
+      # that can go in the stdlib Range class
       def self.between(value, range_start, range_end)
         Arel::Nodes::Between.new(
           value,
@@ -46,7 +47,7 @@ module Db
         )
       end
 
-      # Builds psql equivalent of SUM(IF(condition, 1, 0)) in mysql
+      # Builds psql equivalent of mysql's SUM(IF(condition, 1, 0))
       def self.sum_if(condition)
         Arel::Nodes::Sum.new([
           Arel::Nodes::Case.new.when(condition).then(1).else(0)
