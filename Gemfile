@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
-ruby '~> 2.6.5'
+ruby '~> 2.6'
 
 gem 'rails', '~> 6.1.3'
 
@@ -33,10 +33,9 @@ gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'aws-sdk-eventbridge'
 gem 'base32-crockford'
-gem 'daemons', '~> 1.3'
 gem 'delayed_job_active_record', '~> 4.1'
 gem 'device_detector'
-gem 'devise', '~> 4.7.2'
+gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
