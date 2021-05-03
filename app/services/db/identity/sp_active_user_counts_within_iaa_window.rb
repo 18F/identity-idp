@@ -29,7 +29,7 @@ module Db
             sum_if(ial2_within_iaa).as('total_ial2_active'),
           ).joins(:identities).
           where(
-            ial1_within_iaa.or(ial2_within_iaa)
+            ial1_within_iaa.or(ial2_within_iaa),
           ).group(service_providers[:issuer]).
           order(service_providers[:issuer]).
           to_sql
@@ -43,15 +43,17 @@ module Db
       def self.between(value, range_start, range_end)
         Arel::Nodes::Between.new(
           value,
-          Arel::Nodes::And.new([range_start, range_end])
+          Arel::Nodes::And.new([range_start, range_end]),
         )
       end
 
       # Builds psql equivalent of mysql's SUM(IF(condition, 1, 0))
       def self.sum_if(condition)
-        Arel::Nodes::Sum.new([
-          Arel::Nodes::Case.new.when(condition).then(1).else(0)
-        ])
+        Arel::Nodes::Sum.new(
+          [
+            Arel::Nodes::Case.new.when(condition).then(1).else(0),
+          ],
+        )
       end
     end
   end

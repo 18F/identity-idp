@@ -13,7 +13,7 @@ describe Db::Identity::SpActiveUserCountsWithinIaaWindow do
         :service_provider,
         issuer: 'issuer1',
         iaa_start_date: nil,
-        iaa_end_date: nil
+        iaa_end_date: nil,
       )
     end
 
