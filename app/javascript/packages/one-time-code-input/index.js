@@ -35,7 +35,6 @@ class OneTimeCodeInput {
       });
 
       input.value = code;
-      form?.submit();
     } catch {
       // Thrown errors may be expected if:
       // - the user submits the form and triggers the abort controller's signal. ('AbortError')

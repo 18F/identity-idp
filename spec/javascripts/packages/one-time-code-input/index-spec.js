@@ -42,7 +42,7 @@ describe('OneTimeCodeInput', () => {
     });
 
     context('in form', () => {
-      it('fills value and submits form', async () => {
+      it('fills value', async () => {
         const otcInput = initialize({ inForm: true });
 
         await waitFor(() => expect(otcInput.elements.input.value).to.equal('123456'));
@@ -50,7 +50,6 @@ describe('OneTimeCodeInput', () => {
           otp: { transport: ['sms'] },
           signal: sandbox.match.instanceOf(window.AbortSignal),
         });
-        expect(onSubmit).to.have.been.calledOnce();
       });
 
       it('cancels credential receiver on submit', (done) => {
@@ -71,7 +70,6 @@ describe('OneTimeCodeInput', () => {
           otp: { transport: ['sms'] },
           signal: sandbox.match.instanceOf(window.AbortSignal),
         });
-        expect(onSubmit).not.to.have.been.called();
       });
     });
 
