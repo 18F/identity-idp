@@ -77,8 +77,8 @@ es:
       address1: Dirección
       address2: Dirección (opcional)
       city: Ciudad
-      no_alternate_phone_html: "<strong>%{link}</strong>. Le enviaremos una carta con
-        un código."
+      no_alternate_phone_html: "<strong>%{link}</strong>. Le enviaremos una carta
+        con un código."
       password: Contraseña
       phone: Teléfono
       ssn_label_html: Número de Seguro Social
