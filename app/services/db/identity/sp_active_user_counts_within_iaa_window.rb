@@ -29,8 +29,6 @@ module Db
                 by_issuer[service_provider.issuer][sp_return_log.ial] << sp_return_log.user_id
               end
             end
-            puts sp_return_logs.size
-            puts by_issuer.size
           end
 
         by_issuer.map do |issuer, ial_to_user_ids|
