@@ -72,6 +72,8 @@ describe NullServiceProvider do
         autosave_associated_records_for_identities
         belongs_to_counter_cache_after_update
         validate_associated_records_for_identities
+        autosave_associated_records_for_sp_return_logs
+        validate_associated_records_for_sp_return_logs
       ]
       null_sp_methods = NullServiceProvider.instance_methods
 

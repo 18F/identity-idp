@@ -96,7 +96,7 @@ describe Db::Identity::SpActiveUserCountsWithinIaaWindow do
           user: user,
           service_provider: service_provider_september_to_september,
           ial: 2,
-          returned_at: inside_september_to_september
+          returned_at: inside_september_to_september,
         )
       end
 
