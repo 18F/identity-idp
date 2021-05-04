@@ -3,57 +3,52 @@ module Db
     # Similar to SpActiveUserCounts, but it limits dates to within active IAA windows
     class SpActiveUserCountsWithinIaaWindow
       def self.call
-        service_providers = ServiceProvider.arel_table
-        identities = ServiceProviderIdentity.arel_table
-
-        ial1_within_iaa = between(
-          identities[:last_ial1_authenticated_at],
-          service_providers[:iaa_start_date],
-          service_providers[:iaa_end_date],
-        )
-
-        ial2_within_iaa = between(
-          identities[:last_ial2_authenticated_at],
-          service_providers[:iaa_start_date],
-          service_providers[:iaa_end_date],
-        )
-
-        sql = ServiceProvider.
-          select(
-            service_providers[:issuer],
-            service_providers[:app_id].maximum.as('app_id'),
-            service_providers[:iaa].maximum.as('iaa'),
-            service_providers[:iaa_start_date].minimum.as('iaa_start_date'),
-            service_providers[:iaa_end_date].maximum.as('iaa_end_date'),
-            sum_if(ial1_within_iaa).as('total_ial1_active'),
-            sum_if(ial2_within_iaa).as('total_ial2_active'),
-          ).joins(:identities).
-          where(
-            ial1_within_iaa.or(ial2_within_iaa),
-          ).group(service_providers[:issuer]).
-          order(service_providers[:issuer]).
-          to_sql
+        sql = <<-SQL
+          SELECT
+            subq.issuer
+          , MAX(subq.app_id) AS app_id
+          , MAX(subq.iaa) AS iaa
+          , MAX(subq.iaa_start_date) AS iaa_start_date
+          , MAX(subq.iaa_end_date) AS iaa_end_date
+          , SUM(
+              CASE subq.ial
+              WHEN 1
+              THEN 1
+              ELSE 0
+              END
+            ) AS total_ial1_active
+          , SUM (
+              CASE subq.ial
+              WHEN 2
+              THEN 1
+              ELSE 0
+              END
+            ) AS total_ial2_active
+          FROM (
+            SELECT
+              service_providers.issuer
+            , sp_return_logs.user_id
+            , sp_return_logs.ial
+            , MAX(service_providers.app_id) AS app_id
+            , MAX(service_providers.iaa) AS iaa
+            , MIN(service_providers.iaa_start_date) AS iaa_start_date
+            , MAX(service_providers.iaa_end_date) AS iaa_end_date
+            FROM
+              service_providers
+            JOIN
+              sp_return_logs ON service_providers.issuer = sp_return_logs.issuer
+            WHERE
+              sp_return_logs.returned_at BETWEEN service_providers.iaa_start_date AND service_providers.iaa_end_date
+            GROUP BY
+              service_providers.issuer
+            , sp_return_logs.user_id
+            , sp_return_logs.ial
+          ) subq
+          GROUP BY
+            subq.issuer
+        SQL
 
         ActiveRecord::Base.connection.execute(sql)
-      end
-
-      # Builds "value BETWEEN range_start AND range_end"
-      # We need to do this because Arel's value#between() only works on values
-      # that can go in the stdlib Range class
-      def self.between(value, range_start, range_end)
-        Arel::Nodes::Between.new(
-          value,
-          Arel::Nodes::And.new([range_start, range_end]),
-        )
-      end
-
-      # Builds psql equivalent of mysql's SUM(IF(condition, 1, 0))
-      def self.sum_if(condition)
-        Arel::Nodes::Sum.new(
-          [
-            Arel::Nodes::Case.new.when(condition).then(1).else(0),
-          ],
-        )
       end
     end
   end
