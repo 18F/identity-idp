@@ -82,7 +82,7 @@ fr:
       address1: Adresse
       address2: Adresse (optional)
       city: Ville
-      no_alternate_phone_html: "<strong>%{link}</strong> Nous vous ferons parvenir
+      no_alternate_phone_html: "<strong>%{link}</strong>. Nous vous ferons parvenir
         une lettre contenant un code."
       password: Mot de passe
       phone: Numéro de téléphone
