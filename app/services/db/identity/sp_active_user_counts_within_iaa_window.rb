@@ -3,68 +3,49 @@ module Db
     # Similar to SpActiveUserCounts, but it limits dates to within active IAA windows
     class SpActiveUserCountsWithinIaaWindow
       def self.call
-        start_ends = ServiceProvider.select(:id, :issuer, :iaa_start_date, :iaa_end_date).
+        min_date, max_date = ServiceProvider.
           where.not(iaa_start_date: nil).
           where.not(iaa_end_date: nil).
-          group_by { |sp| [sp.iaa_start_date, sp.iaa_end_date] }
+          pluck(:iaa_start_date, :iaa_end_date).
+          flatten.minmax
 
-        start_ends.flat_map do |(iaa_start_date, iaa_end_date), service_providers|
-          params = {
-            iaa_start_date: quote(iaa_start_date),
-            iaa_end_date: quote(iaa_end_date),
-            issuers: service_providers.map { |sp| quote(sp.issuer) }.join(', ')
-          }
-
-          sql = format(<<-SQL, params)
-            SELECT
-              subq.issuer
-            , MAX(subq.app_id) AS app_id
-            , MAX(subq.iaa) AS iaa
-            , MAX(subq.iaa_start_date) AS iaa_start_date
-            , MAX(subq.iaa_end_date) AS iaa_end_date
-            , SUM(
-                CASE subq.ial
-                WHEN 1 THEN 1
-                ELSE 0
-                END
-              ) AS total_ial1_active
-            , SUM (
-                CASE subq.ial
-                WHEN 2 THEN 1
-                ELSE 0
-                END
-              ) AS total_ial2_active
-            FROM (
-              SELECT
-                service_providers.issuer
-              , sp_return_logs.user_id
-              , sp_return_logs.ial
-              , MAX(service_providers.app_id) AS app_id
-              , MAX(service_providers.iaa) AS iaa
-              , MIN(service_providers.iaa_start_date) AS iaa_start_date
-              , MAX(service_providers.iaa_end_date) AS iaa_end_date
-              FROM
-                service_providers
-              JOIN
-                sp_return_logs ON service_providers.issuer = sp_return_logs.issuer
-              WHERE
-                sp_return_logs.returned_at BETWEEN %{iaa_start_date} AND %{iaa_end_date}
-                AND service_providers.issuer IN (%{issuers})
-              GROUP BY
-                service_providers.issuer
-              , sp_return_logs.user_id
-              , sp_return_logs.ial
-            ) subq
-            GROUP BY
-              subq.issuer
-          SQL
-
-          ActiveRecord::Base.connection.execute(sql).to_a
+        # issuer => ial => Set<UserIds>
+        by_issuer = Hash.new do |h, k|
+          h[k] = Hash.new { |h, k| h[k] = Set.new }
         end
-      end
 
-      def self.quote(value)
-        ActiveRecord::Base.connection.quote(value)
+        ::SpReturnLog.
+          where(returned_at: min_date..max_date).
+          includes(:service_provider).
+          find_in_batches(batch_size: 100_000) do |sp_return_logs|
+            sp_return_logs.each do |sp_return_log|
+              service_provider = sp_return_log.service_provider
+
+              next if service_provider.nil? # guard against bad legacy data
+
+              iaa_range = service_provider.iaa_start_date..service_provider.iaa_end_date
+
+              if iaa_range.cover?(sp_return_log.returned_at)
+                by_issuer[service_provider.issuer][sp_return_log.ial] << sp_return_log.user_id
+              end
+            end
+            puts sp_return_logs.size
+            puts by_issuer.size
+          end
+
+        by_issuer.map do |issuer, ial_to_user_ids|
+          service_provider = ServiceProvider.from_issuer(issuer)
+
+          {
+            issuer: service_provider.issuer,
+            app_id: service_provider.app_id,
+            iaa: service_provider.iaa,
+            iaa_start_date: service_provider.iaa_start_date.to_s,
+            iaa_end_date: service_provider.iaa_end_date.to_s,
+            total_ial1_active: ial_to_user_ids[1].size,
+            total_ial2_active: ial_to_user_ids[2].size,
+          }
+        end
       end
     end
   end
