@@ -21,7 +21,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
     context 'successful async result' do
       before do
         allow(subject).to receive(:async_state).and_return(async_state)
-        allow(subject).to receive(:process_result).and_return(true)
+        allow(subject).to receive(:add_cost).and_return(true)
       end
 
       it 'calls analytics to log the successful event' do
