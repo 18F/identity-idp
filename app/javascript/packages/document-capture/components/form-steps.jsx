@@ -213,11 +213,7 @@ function FormSteps({
     <form ref={formRef} onSubmit={toNextStep}>
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
       {unknownFieldErrors.map(({ field, error }) => (
-        <Alert
-          key={[field, error.message].join()}
-          type="error"
-          className="margin-bottom-4 margin-top-2 tablet:margin-top-0"
-        >
+        <Alert key={[field, error.message].join()} type="error" className="margin-bottom-4">
           <FormErrorMessage error={error} />
         </Alert>
       ))}
