@@ -100,8 +100,8 @@ module Idv
       end
 
       def remaining_attempts
-        return nil unless document_capture_session
-        Throttler::RemainingCount.call(document_capture_session.user_id, :idv_acuant)
+        return nil unless verify_document_capture_session
+        Throttler::RemainingCount.call(verify_document_capture_session.user_id, :idv_acuant)
       end
 
       def timed_out
