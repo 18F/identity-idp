@@ -146,4 +146,19 @@ describe SamlIdp::Controller do
       validate_saml_request
     end
   end
+
+  context 'invalid XML in SAML Request' do
+    # This was encountered IRL on 2021-02-09
+    before do
+      allow_any_instance_of(subject).to receive(:valid_saml_request?).and_raise(Nokogiri::XML::SyntaxError)
+    end
+
+    it 'returns headers only with a bad_request status' do
+      params[:SAMLRequest] = make_saml_request
+
+      expect(self).to receive(:head).with(:bad_request)
+
+      validate_saml_request
+    end
+  end
 end
