@@ -20,21 +20,40 @@ describe Reports::SpActiveUsersOverPeriodOfPerformanceReport do
       iaa_start_date: now - 6.months,
       iaa_end_date: now + 6.months,
     )
-    ServiceProviderIdentity.create(
-      user_id: 1, service_provider: issuer, uuid: 'foo1',
-      last_ial1_authenticated_at: now, last_ial2_authenticated_at: now
+    create(
+      :sp_return_log,
+      user_id: 1,
+      service_provider: service_provider,
+      ial: 1,
+      returned_at: now,
     )
-    ServiceProviderIdentity.create(
-      user_id: 2, service_provider: issuer, uuid: 'foo2',
-      last_ial1_authenticated_at: now
+    create(
+      :sp_return_log,
+      user_id: 1,
+      service_provider: service_provider,
+      ial: 2,
+      returned_at: now,
     )
-    ServiceProviderIdentity.create(
-      user_id: 3, service_provider: issuer, uuid: 'foo3',
-      last_ial2_authenticated_at: now
+    create(
+      :sp_return_log,
+      user_id: 2,
+      service_provider: service_provider,
+      ial: 1,
+      returned_at: now,
     )
-    ServiceProviderIdentity.create(
-      user_id: 4, service_provider: issuer, uuid: 'foo4',
-      last_ial2_authenticated_at: now
+    create(
+      :sp_return_log,
+      user_id: 3,
+      service_provider: service_provider,
+      ial: 2,
+      returned_at: now,
+    )
+    create(
+      :sp_return_log,
+      user_id: 4,
+      service_provider: service_provider,
+      ial: 2,
+      returned_at: now,
     )
 
     result = subject.call

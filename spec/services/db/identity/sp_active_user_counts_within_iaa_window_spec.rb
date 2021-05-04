@@ -4,7 +4,7 @@ describe Db::Identity::SpActiveUserCountsWithinIaaWindow do
   subject { described_class }
 
   it 'is empty' do
-    expect(subject.call.ntuples).to eq(0)
+    expect(subject.call.size).to eq(0)
   end
 
   context 'with data' do
@@ -115,7 +115,7 @@ describe Db::Identity::SpActiveUserCountsWithinIaaWindow do
     it 'returns active user counts by SP with the IAA start/end, counted by IAL1 level' do
       result = subject.call
 
-      expect(result.ntuples).to eq(2)
+      expect(result.size).to eq(2)
 
       april = result.first
       expect(april.symbolize_keys).to eq(
