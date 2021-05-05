@@ -1,5 +1,3 @@
-# NOTE: if updating this to match current AWS config, consider bringing back
-# the daily CircleCI check added in 3d4194c1f76ca1554852bacfde4abdea2ebb6104
 ---
 AD:
   country_code: '376'
@@ -264,7 +262,6 @@ DO:
 DZ:
   country_code: '213'
   name: Algeria
-  # Temporarily disabled due to SMS fraud attack 2021-04-16
   supports_sms: false
   supports_voice: false
 EC:
