@@ -31,11 +31,7 @@ module SamlAuthHelper
   end
 
   def request_authn_context
-    if IdentityConfig.store.aal_authn_context_enabled
-      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
-    else
-      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    end
+    Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
   end
 
   def sp_fingerprint

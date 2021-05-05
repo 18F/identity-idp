@@ -14,7 +14,6 @@
 
 # Make sure any new entries you add are enclosed in single quotes.
 
-aal_authn_context_enabled: 'false'
 aamva_auth_request_timeout: '5'
 aamva_auth_url: 'https://example.org:12345/auth/url'
 aamva_cert_enabled: 'true'
@@ -192,7 +191,6 @@ voip_block: 'true'
 voip_allowed_phones: '[]'
 
 development:
-  aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
@@ -245,7 +243,6 @@ development:
 # includes *.identitysandbox.gov and *.login.gov.
 #
 production:
-  aal_authn_context_enabled: 'false'
   aamva_auth_url: 'https://authentication-cert.aamva.org/Authentication/Authenticate.svc'
   aamva_private_key: ''
   aamva_public_key: ''
@@ -307,7 +304,6 @@ production:
   usps_upload_sftp_username: ''
 
 test:
-  aal_authn_context_enabled: 'true'
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   acuant_assure_id_url: https://example.com

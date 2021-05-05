@@ -3,15 +3,11 @@ require 'rails_helper'
 describe SamlIdpController do
   include SamlAuthHelper
 
-  let(:aal_context_enabled) { false }
-
   before do
     # All the tests here were written prior to the interstitial
     # authorization confirmation page so let's force the system
     # to skip past that page
     allow(controller).to receive(:auth_count).and_return(2)
-    allow(IdentityConfig.store).to receive(:aal_authn_context_enabled).
-      and_return(aal_context_enabled)
   end
 
   render_views
@@ -183,7 +179,7 @@ describe SamlIdpController do
 
   describe 'GET /api/saml/auth' do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
-    let(:aal_level) { IdentityConfig.store.aal_authn_context_enabled ? 2 : nil }
+    let(:aal_level) { 2 }
 
     context 'with IAL2 and the identity is already verified' do
       let(:user) { create(:profile, :active, :verified).user }
@@ -314,9 +310,8 @@ describe SamlIdpController do
       end
     end
 
-    context 'aal_authn_context_enabled is true' do
+    context 'inspecting authn_context_enabled' do
       let(:user) { create(:user, :signed_up) }
-      let(:aal_context_enabled) { true }
 
       context 'authn_context is missing' do
         let(:auth_settings) { missing_authn_context_saml_settings }
@@ -350,53 +345,6 @@ describe SamlIdpController do
           expect(response.status).to eq(200)
           expect(authn_context_class_ref).
             to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
-        end
-
-        it 'returns AAL2 authn_context when AAL2 is requested' do
-          auth_settings = requested_aal2_authn_context_saml_settings
-          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
-          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
-
-          expect(response.status).to eq(200)
-          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
-        end
-      end
-    end
-
-    context 'aal_authn_context_enabled is false' do
-      let(:user) { create(:user, :signed_up) }
-      let(:aal_context_enabled) { false }
-
-      context 'authn_context is missing' do
-        let(:auth_settings) { missing_authn_context_saml_settings }
-
-        it 'returns saml response with IAL1 in authn context' do
-          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
-          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
-
-          expect(response.status).to eq(200)
-          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
-        end
-      end
-
-      context 'authn_context is defined by sp' do
-        it 'returns default AAL authn_context when default AAL is requested' do
-          auth_settings = requested_default_aal_authn_context_saml_settings
-          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
-          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
-
-          expect(response.status).to eq(200)
-          expect(authn_context_class_ref).
-            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
-        end
-
-        it 'returns IAL1 authn_context when IAL1 is requested' do
-          auth_settings = requested_ial1_authn_context_saml_settings
-          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
-          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
-
-          expect(response.status).to eq(200)
-          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
         end
 
         it 'returns AAL2 authn_context when AAL2 is requested' do
@@ -1111,20 +1059,8 @@ describe SamlIdpController do
             expect(subject).to_not be_nil
           end
 
-          context 'with AAL authn context enabled' do
-            let(:aal_context_enabled) { true }
-
-            it 'has contents set to AAL2' do
-              expect(subject.content).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
-            end
-          end
-
-          context 'without AAL authn context enabled' do
-            let(:aal_context_enabled) { false }
-
-            it 'has contents set to IAL1' do
-              expect(subject.content).to eq Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-            end
+          it 'has contents set to AAL2' do
+            expect(subject.content).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
           end
         end
       end
