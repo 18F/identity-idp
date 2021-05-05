@@ -37,6 +37,9 @@ lint_erb:
 lint_yarn_lockfile:
 	(! git diff --name-only | grep yarn.lock) || (echo "Error: Sync Yarn lockfile using 'yarn install'"; exit 1)
 
+lint_yaml: normalize_yaml
+	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
+
 lintfix:
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -R -a

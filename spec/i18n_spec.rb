@@ -149,12 +149,6 @@ RSpec.describe 'I18n' do
         expect(bad_keys).to be_empty
       end
 
-      it 'is formatted as normalized YAML' do
-        normalized_yaml = YAML.dump(YamlNormalizer.handle_hash(YAML.load_file(full_path)))
-
-        expect(File.read(full_path)).to(eq(normalized_yaml), 'run `make normalize_yaml` to fix')
-      end
-
       it 'does not contain any translations expecting legacy fallback behavior' do
         bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
           value.include?('NOT TRANSLATED YET')
