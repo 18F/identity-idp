@@ -27,9 +27,12 @@ module Db
           return
         end
         agency_id = (issuer.present? && ServiceProvider.find_by(issuer: issuer)&.agency_id) || 0
+        service_provider = ServiceProvider.from_issuer(issuer)
+        ial_context = IalContext.new(ial: ial, service_provider: service_provider)
+        ial_1_or_2 = ial_context.ial2_or_greater? ? 2 : 1
         ::SpCost.create(
           issuer: issuer.to_s,
-          ial: ial,
+          ial: ial_1_or_2,
           agency_id: agency_id,
           cost_type: token,
           transaction_id: transaction_id,
