@@ -25,6 +25,7 @@ describe Reports::SpActiveUsersOverPeriodOfPerformanceReport do
       user_id: 1,
       service_provider: service_provider,
       ial: 1,
+      requested_at: now,
       returned_at: now,
     )
     create(
@@ -32,6 +33,7 @@ describe Reports::SpActiveUsersOverPeriodOfPerformanceReport do
       user_id: 1,
       service_provider: service_provider,
       ial: 2,
+      requested_at: now,
       returned_at: now,
     )
     create(
@@ -39,6 +41,7 @@ describe Reports::SpActiveUsersOverPeriodOfPerformanceReport do
       user_id: 2,
       service_provider: service_provider,
       ial: 1,
+      requested_at: now,
       returned_at: now,
     )
     create(
@@ -46,6 +49,7 @@ describe Reports::SpActiveUsersOverPeriodOfPerformanceReport do
       user_id: 3,
       service_provider: service_provider,
       ial: 2,
+      requested_at: now,
       returned_at: now,
     )
     create(
@@ -53,6 +57,7 @@ describe Reports::SpActiveUsersOverPeriodOfPerformanceReport do
       user_id: 4,
       service_provider: service_provider,
       ial: 2,
+      requested_at: now,
       returned_at: now,
     )
 

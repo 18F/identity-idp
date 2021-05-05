@@ -14,8 +14,10 @@ module Db
           h[k] = Hash.new { |h, k| h[k] = Set.new }
         end
 
+        session_duration = IdentityConfig.store.session_timeout_in_minutes.minutes
+
         ::SpReturnLog.
-          where(returned_at: min_date..max_date).
+          where(requested_at: min_date..(max_date + session_duration)).
           includes(:service_provider).
           find_in_batches(batch_size: 100_000) do |sp_return_logs|
             sp_return_logs.each do |sp_return_log|
@@ -25,7 +27,7 @@ module Db
 
               iaa_range = service_provider.iaa_start_date..service_provider.iaa_end_date
 
-              if iaa_range.cover?(sp_return_log.returned_at)
+              if sp_return_log.returned_at && iaa_range.cover?(sp_return_log.returned_at)
                 by_issuer[service_provider.issuer][sp_return_log.ial] << sp_return_log.user_id
               end
             end
