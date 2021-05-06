@@ -3,15 +3,11 @@ require 'rails_helper'
 describe SamlIdpController do
   include SamlAuthHelper
 
-  let(:aal_context_enabled) { false }
-
   before do
     # All the tests here were written prior to the interstitial
     # authorization confirmation page so let's force the system
     # to skip past that page
     allow(controller).to receive(:auth_count).and_return(2)
-    allow(IdentityConfig.store).to receive(:aal_authn_context_enabled).
-      and_return(aal_context_enabled)
   end
 
   render_views
@@ -183,7 +179,7 @@ describe SamlIdpController do
 
   describe 'GET /api/saml/auth' do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
-    let(:aal_level) { IdentityConfig.store.aal_authn_context_enabled ? 2 : nil }
+    let(:aal_level) { 2 }
 
     context 'with IAL2 and the identity is already verified' do
       let(:user) { create(:profile, :active, :verified).user }
@@ -314,9 +310,8 @@ describe SamlIdpController do
       end
     end
 
-    context 'aal_authn_context_enabled is true' do
+    context 'authn_context scenarios' do
       let(:user) { create(:user, :signed_up) }
-      let(:aal_context_enabled) { true }
 
       context 'authn_context is missing' do
         let(:auth_settings) { missing_authn_context_saml_settings }
@@ -363,53 +358,6 @@ describe SamlIdpController do
       end
     end
 
-    context 'aal_authn_context_enabled is false' do
-      let(:user) { create(:user, :signed_up) }
-      let(:aal_context_enabled) { false }
-
-      context 'authn_context is missing' do
-        let(:auth_settings) { missing_authn_context_saml_settings }
-
-        it 'returns saml response with IAL1 in authn context' do
-          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
-          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
-
-          expect(response.status).to eq(200)
-          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
-        end
-      end
-
-      context 'authn_context is defined by sp' do
-        it 'returns default AAL authn_context when default AAL is requested' do
-          auth_settings = requested_default_aal_authn_context_saml_settings
-          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
-          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
-
-          expect(response.status).to eq(200)
-          expect(authn_context_class_ref).
-            to eq(Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF)
-        end
-
-        it 'returns IAL1 authn_context when IAL1 is requested' do
-          auth_settings = requested_ial1_authn_context_saml_settings
-          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
-          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
-
-          expect(response.status).to eq(200)
-          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF)
-        end
-
-        it 'returns AAL2 authn_context when AAL2 is requested' do
-          auth_settings = requested_aal2_authn_context_saml_settings
-          decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
-          authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
-
-          expect(response.status).to eq(200)
-          expect(authn_context_class_ref).to eq(Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF)
-        end
-      end
-    end
-
     context 'service provider is inactive' do
       it 'responds with an error page' do
         user = create(:user, :signed_up)
@@ -437,7 +385,7 @@ describe SamlIdpController do
           success: false,
           errors: { service_provider: [t('errors.messages.unauthorized_service_provider')] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_contexts,
           service_provider: 'invalid_provider',
         }
 
@@ -660,7 +608,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: false,
@@ -682,7 +630,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_contexts,
           service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
           idv: false,
           finish_profile: false,
@@ -708,7 +656,7 @@ describe SamlIdpController do
           success: false,
           errors: { nameid_format: [t('errors.messages.unauthorized_nameid_format')] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
         }
 
@@ -1111,20 +1059,8 @@ describe SamlIdpController do
             expect(subject).to_not be_nil
           end
 
-          context 'with AAL authn context enabled' do
-            let(:aal_context_enabled) { true }
-
-            it 'has contents set to AAL2' do
-              expect(subject.content).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
-            end
-          end
-
-          context 'without AAL authn context enabled' do
-            let(:aal_context_enabled) { false }
-
-            it 'has contents set to IAL1' do
-              expect(subject.content).to eq Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-            end
+          it 'has contents set to AAL2' do
+            expect(subject.content).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
           end
         end
       end
@@ -1191,7 +1127,10 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
+          authn_context: [
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          ],
           service_provider: 'http://localhost:3000',
           idv: true,
           finish_profile: false,
@@ -1226,7 +1165,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: false,
@@ -1255,7 +1194,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: true,
