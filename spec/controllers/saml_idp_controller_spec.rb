@@ -385,7 +385,7 @@ describe SamlIdpController do
           success: false,
           errors: { service_provider: [t('errors.messages.unauthorized_service_provider')] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_context,
           service_provider: 'invalid_provider',
         }
 
@@ -608,7 +608,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_context,
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: false,
@@ -630,7 +630,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_context,
           service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
           idv: false,
           finish_profile: false,
@@ -656,7 +656,7 @@ describe SamlIdpController do
           success: false,
           errors: { nameid_format: [t('errors.messages.unauthorized_nameid_format')] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_context,
           service_provider: 'http://localhost:3000',
         }
 
@@ -1162,7 +1162,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_context,
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: false,
@@ -1191,7 +1191,7 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [request_authn_context],
+          authn_context: request_authn_context,
           service_provider: 'http://localhost:3000',
           idv: false,
           finish_profile: true,

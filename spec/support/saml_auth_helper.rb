@@ -31,7 +31,10 @@ module SamlAuthHelper
   end
 
   def request_authn_context
-    Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
+    [
+      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+    ]
   end
 
   def sp_fingerprint
