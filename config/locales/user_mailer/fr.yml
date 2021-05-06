@@ -42,6 +42,13 @@ fr:
         compte %{app}. Votre compte ne sera pas supprimé tant que vous ne l’aurez
         pas confirmé.'
       subject: Comment supprimer votre compte login.gov
+    account_verified:
+      contact_link: nous contacter
+      disavowal_link: changer votre mot de passe
+      intro_html: Vous avez vérifié avec succès votre identité auprès de %{app} le
+        %{date} en utilisant login.gov. Si vous n’avez pas effectué cette action,
+        veuillez %{contact_link} et vous connecter pour %{disavowal_link}.
+      subject: Vous avez vérifié votre identité avec %{app}
     add_email:
       footer: Ce lien expirera dans %{confirmation_period}.
       header: Merci d’avoir ajouté un email. S’il vous plaît cliquez sur le lien ci-dessous

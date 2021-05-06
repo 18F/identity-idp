@@ -34,7 +34,11 @@ module Users
         analytics.track_event(Analytics::ACCOUNT_VERIFICATION_SUBMITTED, result.to_h)
 
         if result.success?
-          create_user_event(:account_verified)
+          event = create_user_event_with_disavowal(:account_verified)
+          UserAlerts::AlertUserAboutAccountVerified.call(
+            current_user, event.created_at, nil,
+            event.disavowal_token
+          )
           flash[:success] = t('account.index.verification.success')
           redirect_to sign_up_completed_url
         else

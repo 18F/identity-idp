@@ -197,6 +197,17 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.deleted_accounts_report.subject'))
   end
 
+  def account_verified(user, email_address, date_time:, app:, disavowal_token:)
+    return unless email_should_receive_nonessential_notifications?(email_address.email)
+
+    with_user_locale(user) do
+      @date = I18n.localize(date_time, format: '%B %-d, %Y')
+      @app = app
+      @disavowal_token = disavowal_token
+      mail(to: email_address.email, subject: t('user_mailer.account_verified.subject', app: @app))
+    end
+  end
+
   private
 
   def email_should_receive_nonessential_notifications?(email)
