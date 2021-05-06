@@ -12,7 +12,7 @@
 
 <%= validated_form_for(current_user, url: account_email_language_path, method: 'PATCH') do |f| %>
   <fieldset class="usa-fieldset">
-    <legend class="sans-serif margin-bottom-1">
+    <legend class="margin-bottom-1">
       <%= t('account.email_language.please_select') %>
     </legend>
     <%= render partial: 'shared/email_languages',

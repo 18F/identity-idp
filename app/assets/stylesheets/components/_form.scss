@@ -9,8 +9,6 @@ $radio-checkbox-space: 1.5rem;
 }
 
 legend {
-  // short-circuits line-height to stop inheritance
-  font: $small-font-size $serif-font-family;
   font-weight: $heading-font-weight;
 }
 
@@ -179,7 +177,7 @@ input::-webkit-inner-spin-button {
 
 .usa-form-group--error {
   border-left-style: none;
-  margin-top: 0;
+  margin-top: units(3); // Remove after: https://github.com/uswds/uswds/issues/4189
   padding-left: 0;
 
   @include at-media('desktop') {

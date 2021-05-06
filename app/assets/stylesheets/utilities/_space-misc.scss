@@ -30,6 +30,10 @@
   .sm-mtn3 { margin-top: -$space-3; }
 }
 
+.margin-top-neg-4 {
+  margin-top: units(-4);
+}
+
 @include at-media('tablet') {
   .tablet\:margin-x-neg-6 {
     margin-left: units(-6);

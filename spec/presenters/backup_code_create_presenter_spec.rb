@@ -25,7 +25,8 @@ describe BackupCodeCreatePresenter do
 
   describe '#other_option_title' do
     it 'uses localization' do
-      expect(presenter.other_option_title).to eq t('forms.backup_code.are_you_sure_other_option')
+      expect(presenter.other_option_title).
+        to eq t('two_factor_authentication.choose_another_option')
     end
   end
 

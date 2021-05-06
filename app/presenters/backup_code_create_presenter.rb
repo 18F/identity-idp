@@ -14,7 +14,7 @@ class BackupCodeCreatePresenter
   end
 
   def other_option_title
-    t('forms.backup_code.are_you_sure_other_option')
+    t('two_factor_authentication.choose_another_option')
   end
 
   def continue_bttn_prologue
