@@ -12,7 +12,7 @@ gem 'rails', '~> 6.1.3'
 @lexisnexis_api_gem ||= { github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @proofer_gem ||= { github: '18F/identity-proofer-gem', ref: 'v2.8.0' }
-@saml_gem ||= { github: '18F/saml_idp', branch: 'margolis-remove-httparty' } # TODO: use tag
+@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.1-18f' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.2.0' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.4.0' }
 

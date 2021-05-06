@@ -66,8 +66,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: bf187d9c333173a472cf5ef3941cd8897d0b9edc
-  branch: margolis-remove-httparty
+  revision: 1b59d834efcc4df3d40db213eb4092fc4d5ff4c6
+  tag: v0.14.1-18f
   specs:
     saml_idp (0.14.1.pre.18f)
       activesupport
