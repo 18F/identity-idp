@@ -7,12 +7,13 @@ version: 2.1
 orbs:
   jq: circleci/jq@2.2.0
   slack: circleci/slack@3.4.2
+  browser-tools: circleci/browser-tools@1.1
 executors:
   # Common container definition used by all jobs
   ruby_browsers:
     docker:
       # Specify the Ruby version you desire here
-      - image: circleci/ruby:2.6.6-node-browsers
+      - image: cimg/ruby:2.6.6-browsers
         environment:
           RAILS_ENV: test
 
@@ -34,6 +35,7 @@ commands:
       - run:
           name: Install dependencies
           command: |
+            gem install bundler:1.17.3
             bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/bundle
       - save_cache:
           key: v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
@@ -126,6 +128,7 @@ jobs:
     working_directory: ~/identity-idp
 
     steps:
+      - browser-tools/install-browser-tools
       - checkout
       - bundle-yarn-install
       - run:
@@ -190,6 +193,7 @@ jobs:
     working_directory: ~/identity-idp
     executor: ruby_browsers
     steps:
+      - browser-tools/install-browser-tools
       - checkout
       - bundle-yarn-install
       - run:
@@ -210,6 +214,7 @@ jobs:
     environment:
       MONITOR_ENV: DEV
     steps:
+      - browser-tools/install-browser-tools
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
@@ -226,6 +231,7 @@ jobs:
     environment:
       MONITOR_ENV: INT
     steps:
+      - browser-tools/install-browser-tools
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.int.identitysandbox.gov/api/deploy.json
@@ -242,6 +248,7 @@ jobs:
     environment:
       MONITOR_ENV: STAGING
     steps:
+      - browser-tools/install-browser-tools
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.staging.login.gov/api/deploy.json
@@ -258,6 +265,7 @@ jobs:
     environment:
       MONITOR_ENV: PROD
     steps:
+      - browser-tools/install-browser-tools
       - checkout
       - bundle-yarn-install
       - run:
@@ -268,7 +276,7 @@ jobs:
       - store-smoketest-results
   check-pinpoint-config:
     docker:
-      - image: circleci/ruby:2.6-node-browsers
+      - image: cimg/ruby:2.6.6-node
     steps:
       - checkout
       - bundle-yarn-install
