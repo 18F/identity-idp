@@ -1,3 +1,5 @@
+require 'csv'
+
 module DataRequests
   class WriteCloudwatchLogs
     HEADERS = %w[
