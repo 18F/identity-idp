@@ -74,7 +74,7 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
 .PHONY: setup all lint run test check brakeman
 
 normalize_yaml:
-	i18n-tasks normalize
+	bundle exec i18n-tasks normalize
 	find ./config/locales -type f | xargs ./scripts/normalize-yaml config/country_dialing_codes.yml
 
 optimize_svg:
