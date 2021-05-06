@@ -105,7 +105,7 @@ module DocAuthRouter
     def translate_doc_auth_errors!(response)
       # acuant selfie errors are handled in translate_generic_errors!
       error_keys = IdentityDocAuth::ErrorGenerator::ERROR_KEYS.dup
-      error_keys.delete(:selfie) if DocAuthRouter::doc_auth_vendor  == 'acuant'
+      error_keys.delete(:selfie) if DocAuthRouter::doc_auth_vendor == 'acuant'
 
       error_keys.each do |category|
         response.errors[category]&.map! do |plain_error|

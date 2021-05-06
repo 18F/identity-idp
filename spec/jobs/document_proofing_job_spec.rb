@@ -74,7 +74,7 @@ RSpec.describe DocumentProofingJob, type: :job do
 
     context 'with a successful response from the proofer' do
       before do
-        expect(DocAuthRouter).to receive('doc_auth_vendor').and_return('acuant')
+        expect(DocAuthRouter).to receive('doc_auth_vendor').and_return('acuant').twice
 
         url = URI.join('https://example.com', '/AssureIDService/Document/Instance')
         stub_request(:post, url).to_return(body: '"this-is-a-test-instance-id"')

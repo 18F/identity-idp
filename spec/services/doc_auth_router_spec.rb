@@ -171,7 +171,7 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      expect(Rails.logger).to receive(:warn).with('unknown LexisNexis error=some_obscure_error')
+      expect(Rails.logger).to receive(:warn).with('unknown DocAuth error=some_obscure_error')
 
       response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
 
