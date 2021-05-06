@@ -1127,7 +1127,10 @@ describe SamlIdpController do
           success: true,
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-          authn_context: [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF],
+          authn_context: [
+            Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          ],
           service_provider: 'http://localhost:3000',
           idv: true,
           finish_profile: false,

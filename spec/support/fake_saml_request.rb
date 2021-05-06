@@ -8,11 +8,12 @@ class FakeSamlRequest
   end
 
   def requested_authn_context
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+    Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
   end
 
   def requested_authn_contexts
     [
+      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
       Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
     ]
   end
@@ -22,7 +23,7 @@ class FakeSamlRequest
   end
 
   def requested_aal_authn_context
-    nil
+    Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
   end
 
   def valid?
