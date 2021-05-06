@@ -1,3 +1,5 @@
+require 'csv'
+
 class UserSeeder
   def self.run(**opts)
     new(**opts).run
