@@ -105,7 +105,6 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'pry-doc'
   gem 'pry-rails'
-  gem 'psych'
   gem 'puma'
   gem 'rspec-rails', '~> 4.0'
   gem 'rubocop', '~> 1.11.0', require: false

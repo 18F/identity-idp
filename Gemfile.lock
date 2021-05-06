@@ -451,7 +451,6 @@ GEM
       yard (~> 0.9.11)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    psych (3.2.1)
     public_suffix (4.0.6)
     puma (5.2.2)
       nio4r (~> 2.0)
@@ -771,7 +770,6 @@ DEPENDENCIES
   pry-byebug
   pry-doc
   pry-rails
-  psych
   puma
   rack-attack (>= 6.2.1)
   rack-cors (>= 1.0.5)
