@@ -121,7 +121,7 @@ RSpec.describe IdTokenBuilder do
       end
     end
 
-    it 'sets the alt in the JWT headers' do
+    it 'sets the algorithm header' do
       expect(decoded_headers[:alg]).to eq('RS256')
     end
 
