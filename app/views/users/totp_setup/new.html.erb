@@ -2,11 +2,11 @@
 
 <% help_link = new_window_link_to t('links.what_is_totp'),
                                   MarketingSite.help_authentication_app_url %>
-<h1 class="h3 margin-y-0"><%= t('headings.totp_setup.new') %></h1>
+<h1 class="margin-y-0"><%= t('headings.totp_setup.new') %></h1>
 <p class="mt-tiny margin-bottom-4"><%= t('forms.totp_setup.totp_intro_html', link: help_link) %></p>
 <%= form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'margin-bottom-1') do %>
   <ul class="list-reset">
-    <li class="padding-y-2 border-top">
+    <li class="padding-y-2 border-top border-primary-light">
       <div class="margin-bottom-2">
         <div class="margin-right-1 inline-block circle circle-number bg-blue white">1</div>
         <div class="inline-block bold" id="totp-nickname"><%= t('forms.totp_setup.totp_step_1') %></div>
@@ -21,11 +21,11 @@
         </div>
       </div>
     </li>
-    <li class="padding-y-2 border-top">
+    <li class="padding-y-2 border-top border-primary-light">
       <div class="margin-right-1 inline-block circle circle-number bg-blue white">2</div>
       <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_2') %></div>
     </li>
-    <li class="padding-y-2 border-top">
+    <li class="padding-y-2 border-top border-primary-light">
       <div class="margin-bottom-2">
         <div class="margin-right-1 inline-block circle circle-number bg-blue white">3</div>
         <div class="inline-block bold"><%= t('forms.totp_setup.totp_step_3') %></div>
@@ -47,7 +47,7 @@
         </div>
       </div>
     </li>
-    <li class="padding-y-2 border-top">
+    <li class="padding-y-2 border-top border-primary-light">
       <div class="margin-bottom-2">
         <div class="margin-right-1 inline-block circle circle-number bg-blue white">4</div>
         <div class="inline-block bold" id="totp-label"><%= t('forms.totp_setup.totp_step_4') %></div>
@@ -55,9 +55,14 @@
       <div class="sm-col-9 sm-ml-28p">
         <div class="clearfix margin-x-neg-1">
           <div class="col col-6 sm-col-7 padding-x-1">
-            <%= text_field_tag :code, '', required: true, aria: { invalid: false }, pattern: '[0-9]*', type: 'tel',
-                class: 'block col-12 field monospace mfa', maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
-                'aria-labelledby': 'totp-label' %>
+            <%= render(
+              'shared/one_time_code_input',
+              transport: nil,
+              name: :code,
+              'aria-labelledby': 'totp-label',
+              required: true,
+              class: 'block col-12',
+            ) %>
           </div>
         </div>
       </div>

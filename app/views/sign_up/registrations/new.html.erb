@@ -8,7 +8,7 @@
   message: t('sign_up.email.invalid_email_alert_head'),
 } %>
 
-<h1 class='h3 margin-y-0'><%= t('headings.registrations.enter_email') %></h1>
+<h1 class='margin-y-0'><%= t('headings.registrations.enter_email') %></h1>
 
 <div class='margin-bottom-6'>
   <%= validated_form_for(@register_user_email_form,
@@ -41,7 +41,6 @@
     </fieldset>
 
     <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>
-    <%= render 'shared/recaptcha' %>
     <%= f.button :submit, t('forms.buttons.submit.default'), class: 'usa-button--big grid-col-8 mobile-lg:grid-col-6' %>
   <% end %>
 </div>

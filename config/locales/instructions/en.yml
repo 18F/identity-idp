@@ -3,15 +3,15 @@ en:
   instructions:
     account:
       reactivate:
-        begin: Let's get started.
+        begin: Let’s get started.
         explanation: 'When you created your account, we gave you a list of words and
           asked you to store them in a safe place. It looked similar to this:'
         intro: We take extra steps to keep your personal information secure and private,
           so resetting your password takes a little extra effort.
         modal:
-          copy: If you don't have your personal key, you will need to verify your
+          copy: If you don’t have your personal key, you will need to verify your
             identity again.
-          heading: Don't have your personal key?
+          heading: Don’t have your personal key?
         with_key: Do you have your personal key?
     forgot_password:
       close_window: You can close this browser window once you have reset your password.
@@ -25,12 +25,12 @@ en:
         manual_entry: Or enter this code manually into your authentication app
       piv_cac:
         account_not_found_html: "<p><strong>%{sign_in}</strong> with your email address
-          and password. Then add your PIV/CAC to your account.</p> <p><strong>Don't
+          and password. Then add your PIV/CAC to your account.</p> <p><strong>Don’t
           have a login.gov account?</strong> %{create_account}</p>"
-        add_from_sign_in_html: <strong>Instructions:</strong> Insert your PIV or CAC
-          on <strong>"ADD PIV/CAC"</strong>. You'll need to <strong>choose a certificate</strong>
+        add_from_sign_in_html: "<strong>Instructions:</strong> Insert your PIV or
+          CAC on <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a certificate</strong>
           (the right one likely has your name of it) and <strong>enter your PIN</strong>
-          (your PIN was created when you set up your PIV/CAC).
+          (your PIN was created when you set up your PIV/CAC)."
         already_associated_html: Please choose a certificate from a different PIV/CAC,
           contact your administrator to ensure your PIV/CAC is up to date. If you
           think this is an error, %{try_again}.
@@ -50,13 +50,13 @@ en:
           Please %{please_try_again} with a different certificate. If this problem
           continues, contact your agency administrator.
         please_try_again: try again
-        sign_in: Make sure <strong>you have a login.gov account</strong> and <strong>you've
+        sign_in: Make sure <strong>you have a login.gov account</strong> and <strong>you’ve
           set up PIV/CAC</strong> as a two-factor authentication method.
         step_1: Give it a nickname
-        step_1_info: If you add more than one PIV/CAC, you'll know which one's which.
+        step_1_info: If you add more than one PIV/CAC, you’ll know which one’s which.
         step_2: Insert your PIV/CAC into your card reader
         step_3: Add your PIV/CAC
-        step_3_info_html: You'll need to <strong>choose a certificate</strong> (the
+        step_3_info_html: You’ll need to <strong>choose a certificate</strong> (the
           right one likely has your name in it) and <strong>enter your PIN</strong>
           (your PIN was created when you set up your PIV/CAC).
         try_again: try again
@@ -86,7 +86,7 @@ en:
       help_text_header: Password safety tips
       info:
         lead: It must be at least %{min_length} characters long and not be a commonly
-          used password. That's it!
+          used password. That’s it!
       strength:
         i: Very weak
         ii: Weak
@@ -96,11 +96,11 @@ en:
         v: Great!
     personal_key:
       accent: Write it down or print it out.
-      email_body: Don't lose your personal key or share it with others.  We'll ask
+      email_body: Don’t lose your personal key or share it with others.  We’ll ask
         for it if you reset your password.
       email_title: Save it.  Keep it safe.
-      info_html: You'll need this personal key if you forget your password.  If you
-        reset your password and don't have this key, you'll have to verify your identity
+      info_html: You’ll need this personal key if you forget your password.  If you
+        reset your password and don’t have this key, you’ll have to verify your identity
         again.
     sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back
       to login.gov. Please contact %{sp_link} for help.

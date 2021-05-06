@@ -49,7 +49,7 @@ module Idv
       today = Time.zone.today
       age = today.year - dob_date.year - ((today.month > dob_date.month ||
         (today.month == dob_date.month && today.day >= dob_date.day)) ? 0 : 1)
-      age >= AppConfig.env.idv_min_age_years.to_i
+      age >= IdentityConfig.store.idv_min_age_years
     end
 
     def state_valid?

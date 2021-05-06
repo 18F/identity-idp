@@ -91,6 +91,10 @@ feature 'Sign Up' do
   end
 
   scenario 'renders an error when the telephony gem responds with an error' do
+    allow(Telephony).to receive(:phone_info).and_return(
+      Telephony::PhoneNumberInfo.new(carrier: 'Test', type: :test, error: nil),
+    )
+
     sign_up_and_set_password
     select_2fa_option('phone')
     expect(page).to_not have_content t('two_factor_authentication.otp_make_default_number.title')
@@ -225,26 +229,6 @@ feature 'Sign Up' do
     visit authenticator_setup_path
 
     expect(page).to have_current_path root_path
-  end
-
-  context 'CSP whitelists recaptcha for style-src' do
-    scenario 'recaptcha is disabled' do
-      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(false)
-
-      visit sign_up_email_path
-
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('style-src \'self\''))
-    end
-
-    scenario 'recaptcha is enabled' do
-      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
-
-      visit sign_up_email_path
-
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('style-src \'self\' \'unsafe-inline\''))
-    end
   end
 
   describe 'user is partially authenticated and phone 2fa is not configured' do

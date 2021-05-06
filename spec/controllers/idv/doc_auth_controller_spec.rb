@@ -196,12 +196,12 @@ describe Idv::DocAuthController do
     let(:front_image_iv) { SecureRandom.random_bytes(12) }
     let(:back_image_iv) { SecureRandom.random_bytes(12) }
     let(:selfie_image_iv) { SecureRandom.random_bytes(12) }
-    encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+    encryption_helper = JobHelpers::EncryptionHelper.new
 
     before do
       mock_document_capture_step
 
-      encryption_helper = IdentityIdpFunctions::EncryptionHelper.new
+      encryption_helper = JobHelpers::EncryptionHelper.new
       stub_request(:get, front_image_url).
         to_return(body: encryption_helper.encrypt(
           data: '{}', key: encryption_key, iv: front_image_iv,
@@ -278,7 +278,7 @@ describe Idv::DocAuthController do
       {
         first_name: Faker::Name.first_name,
         last_name: Faker::Name.last_name,
-        dob: (Time.zone.today - (AppConfig.env.idv_min_age_years.to_i + 1).years).to_s,
+        dob: (Time.zone.today - (IdentityConfig.store.idv_min_age_years + 1).years).to_s,
         address1: Faker::Address.street_address,
         city: Faker::Address.city,
         state: Faker::Address.state_abbr,

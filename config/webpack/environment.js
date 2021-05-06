@@ -22,23 +22,10 @@ babelLoader.exclude = /node_modules\/(?!@18f\/identity-|identity-style-guide|usw
 const sassLoader = environment.loaders.get('sass');
 // Prepend minimum required design system variables, mixins, and functions to make available to all
 // Webpack-imported SCSS files. Notably, this should _not_ include any actual CSS output on its own.
-// Note: This option is renamed `additionalData` in newer versions of `sass-loader`.
-sassLoader.use.find(({ loader }) => loader === 'sass-loader').options.prependData = `
+sassLoader.use.find(({ loader }) => loader === 'sass-loader').options.additionalData = `
 $font-path: '~identity-style-guide/dist/assets/fonts';
 $image-path: '~identity-style-guide/dist/assets/img';
-@import '~identity-style-guide/dist/assets/scss/functions/asset-path';
-@import '~identity-style-guide/dist/assets/scss/functions/focus';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/custom-styles';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/general';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/typography';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/spacing';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/color';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/utilities';
-@import '~identity-style-guide/dist/assets/scss/uswds-theme/components';
-@import '~identity-style-guide/dist/assets/scss/uswds/packages/required';
-@import '~identity-style-guide/dist/assets/scss/uswds/utilities/palettes/all';
-@import '~identity-style-guide/dist/assets/scss/uswds/utilities/rules/all';
-@import '~identity-style-guide/dist/assets/scss/uswds/utilities/rules/package';`;
+@import '~identity-style-guide/dist/assets/scss/packages/required';`;
 
 sassLoader.use.find(({ loader }) => loader === 'css-loader').options.sourceMap = false;
 

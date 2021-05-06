@@ -14,68 +14,68 @@ en:
       use_phone: Use your phone
     errors:
       alerts:
-        barcode_content_check: We couldn't read the barcode on the back of your ID.
+        barcode_content_check: We couldn’t read the barcode on the back of your ID.
           It could be because of a problem with the barcode, or the barcode is a new
-          type that we don't recognize yet. Use another state-issued ID if you have
+          type that we don’t recognize yet. Use another state-issued ID if you have
           one.
-        barcode_read_check: We couldn't read the barcode on the back of your ID. Try
+        barcode_read_check: We couldn’t read the barcode on the back of your ID. Try
           taking a new picture.
         birth_date_checks: We couldn’t read the birth date on your ID. Try taking
           new pictures.
-        control_number_check: We couldn't read the reference number on the back of
+        control_number_check: We couldn’t read the reference number on the back of
           your ID. Try taking a new picture.
         doc_crosscheck: We couldn’t recognize your ID. It may be worn or damaged,
-          or the front and the back of the ID don't match. Try taking new pictures.
+          or the front and the back of the ID don’t match. Try taking new pictures.
         doc_number_checks: We couldn’t read the document number on your ID. Try taking
           new pictures.
-        expiration_checks: The document has expired, or we couldn't read the expiration
+        expiration_checks: The document has expired, or we couldn’t read the expiration
           date on your ID. If your ID is not expired, try taking new pictures.
-        full_name_check: We couldn't read the full name on your ID. Try taking new
+        full_name_check: We couldn’t read the full name on your ID. Try taking new
           pictures.
         id_not_recognized: We couldn’t recognize your ID. It may be worn, damaged,
           or a type of ID that we don’t recognize. Try taking new pictures.
-        id_not_verified: We couldn't verify your ID. It might have moved when you
+        id_not_verified: We couldn’t verify your ID. It might have moved when you
           took the picture. Try taking new pictures.
-        issue_date_checks: We couldn't read the issue date on your ID. Try taking
+        issue_date_checks: We couldn’t read the issue date on your ID. Try taking
           new pictures.
-        ref_control_number_check: We couldn't read the control number barcode. Try
+        ref_control_number_check: We couldn’t read the control number barcode. Try
           taking new pictures.
-        selfie_failure: We couldn't match the photo of you to your ID. Try taking
+        selfie_failure: We couldn’t match the photo of you to your ID. Try taking
           a new picture of yourself or the front of your ID.
-        sex_check: We couldn't read the sex on your ID. Try taking new pictures.
-        visible_color_check: We couldn't verify your ID. It might have moved when
+        sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
+        visible_color_check: We couldn’t verify your ID. It might have moved when
           you took the picture, or the picture is too dark. Try taking new pictures
           in brighter lighting.
-        visible_photo_check: We couldn't verify the photo on your ID. Try taking new
+        visible_photo_check: We couldn’t verify the photo on your ID. Try taking new
           pictures.
       camera:
         blocked: Your camera is blocked
         failed: Camera failed to start, please try again.
       dpi:
-        top_msg: We couldn't read your ID. Your image size may be too small, or your
+        top_msg: We couldn’t read your ID. Your image size may be too small, or your
           ID is too small or blurry in the photo. Make sure your ID is large within
           the image frame and try taking a new picture.
-        top_msg_plural: We couldn't read your ID. Your image sizes may be too small,
+        top_msg_plural: We couldn’t read your ID. Your image sizes may be too small,
           or your ID is too small or blurry in the photos. Make sure your ID is large
           within the image frame and try taking new pictures.
       file_type:
         invalid: This file type is not accepted, please choose a JPG, PNG, BMP, or
           TIFF file.
       general:
-        liveness: We couldn't verify your ID and photo of yourself. Try taking new
+        liveness: We couldn’t verify your ID and photo of yourself. Try taking new
           pictures.
-        multiple_back_id_failures: We couldn't verify the back of your ID. Try taking
+        multiple_back_id_failures: We couldn’t verify the back of your ID. Try taking
           a new picture.
-        multiple_front_id_failures: We couldn't verify the front of your ID. Try taking
+        multiple_front_id_failures: We couldn’t verify the front of your ID. Try taking
           a new picture.
         network_error: We are having technical difficulties on our end. Please try
           to submit your images again later.
-        no_liveness: We couldn't verify your ID. Try taking new pictures.
+        no_liveness: We couldn’t verify your ID. Try taking new pictures.
       glare:
         failed_short: Image has glare, please try again.
-        top_msg: We couldn't read your ID. Your photo may have glare. Make sure that
+        top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that
           the flash on your camera is off and try taking a new picture.
-        top_msg_plural: We couldn't read your ID. Your photos may have glare. Make
+        top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make
           sure that the flash on your camera is off and try taking new pictures.
       no_camera:
         explanation: To continue, sign in to your login.gov account on any device
@@ -87,9 +87,9 @@ en:
         birth_date_min_age: Your birthday does not meet the minimum age requirement.
       sharpness:
         failed_short: Image is blurry, please try again.
-        top_msg: We couldn't read your ID. Your photo may be too blurry or dark. Try
+        top_msg: We couldn’t read your ID. Your photo may be too blurry or dark. Try
           taking a new picture in a bright area.
-        top_msg_plural: We couldn't read your ID. Your photos may be too blurry or
+        top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or
           dark. Try taking new pictures in a bright area.
       upload_error: Sorry, something went wrong on our end.
     forms:
@@ -118,7 +118,7 @@ en:
       document_capture_selfie: Your photo
       front: Front
       interstitial: We are processing your images
-      lets_go: Let's get started
+      lets_go: Let’s get started
       photo: Photo
       review_issues: Check your images and try again
       secure_account: Secure your account
@@ -146,8 +146,6 @@ en:
       document_capture_upload_image: We only use your ID to verify your identity,
         and we will not save any images.
       get_help_at_sp_html: "<strong>Having trouble?</strong> Get help at %{sp_name}"
-      id_worn_html: "<strong>Is your ID worn or damaged?</strong> Use another state-issued
-        ID if you have one."
       image_updated: Image updated
       interstitial_eta: This might take up to a minute. We’ll load the next step automatically
         when it’s done.
@@ -160,29 +158,27 @@ en:
         your ID using your phone.
       link_sent_complete_nojs: When you are done, click Continue here to finish verifying
         your identity.
-      no_other_id_help_bold_html: "<strong>If you do not have a state-issued ID</strong>,
-        <a href=%{failure_to_proof_url}>get help at %{sp_name}.</a>"
       privacy_html: Login.gov is a secure, government website that adheres to the
         highest standards in data protection. We only use your data to verify your
         identity. %{link} about our privacy and security measures.
-      secure_account: After you verify, we'll ask you to encrypt your account. Encryption
+      secure_account: After you verify, we’ll ask you to encrypt your account. Encryption
         means your data is protected and only you, the account holder, will be able
         to access or change your information.
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
-      upload: We'll collect information about you by reading your state-issued ID.
+      upload: We’ll collect information about you by reading your state-issued ID.
       upload_computer_link: Upload from your computer
-      upload_from_computer: Don't have a phone?
+      upload_from_computer: Don’t have a phone?
       upload_from_computer_not_allowed: Sign in to your login.gov account on any device
         that has a camera, like a tablet or computer with a webcam.
       upload_from_phone: Upload pictures directly from your phone camera
-      upload_liveness_enabled: We'll collect information about you by reading your
-        state-issued ID. Then, you'll take a photo of yourself to confirm that you
+      upload_liveness_enabled: We’ll collect information about you by reading your
+        state-issued ID. Then, you’ll take a photo of yourself to confirm that you
         are the owner of the ID.
       upload_no_image_storage: We do not store images you upload. We only verify your
         identity.
-      verify_identity: We'll ask for your personal information. We'll use, keep and
+      verify_identity: We’ll ask for your personal information. We’ll use, keep and
         share some of your personal information to verify your identity against public
         records.
       verifying: Verifying…
@@ -199,19 +195,19 @@ en:
         and look for a notification in your browser or check your system settings
         to confirm camera access."
       document_capture_selfie_consent_banner: login.gov needs permission to use your
-        device's camera
+        device’s camera
       document_capture_selfie_consent_blocked: login.gov needs permission to use your
         camera so that you can prove your ID belongs to you.
-      document_capture_selfie_consent_blocked_action: Check your web browser's settings
-        for this site or your computer's system settings to allow login.gov to access
+      document_capture_selfie_consent_blocked_action: Check your web browser’s settings
+        for this site or your computer’s system settings to allow login.gov to access
         the camera.
-      document_capture_selfie_instructions: Now take a picture of yourself. We'll
+      document_capture_selfie_instructions: Now take a picture of yourself. We’ll
         compare it to the image on the front of your ID.
       email_sent: Link sent to %{email}. Please check your desktop email and follow
         instructions to verify your identity.
       learn_more: Learn more
       privacy: Our privacy and security standards
-      send_sms: We'll send a text message to your device with a link.  Follow that
+      send_sms: We’ll send a text message to your device with a link.  Follow that
         link to your browser to take photos of the front and back of your ID.
       switch_back: Switch back to your computer to finish verifying your identity
       text1: ''

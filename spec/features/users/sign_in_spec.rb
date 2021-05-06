@@ -689,13 +689,6 @@ feature 'Sign in' do
     end
   end
 
-  it 'does not whitelist style-src in CSP' do
-    allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
-    visit root_path
-    expect(page.response_headers['Content-Security-Policy']).
-      to(include('style-src \'self\''))
-  end
-
   context 'user is totp_enabled but not phone_enabled' do
     before do
       user = create(:user, :with_authentication_app, :with_backup_code)

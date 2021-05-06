@@ -178,6 +178,7 @@ module Users
         otp: current_user.direct_otp,
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         channel: method.to_sym,
+        domain: IdentityConfig.store.domain_name,
       }
       Telephony.send(send_otp_method_name, params)
     end
@@ -221,7 +222,7 @@ module Users
     end
 
     def redirect_url
-      if TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled? && !mobile?
+      if !mobile? && TwoFactorAuthentication::PivCacPolicy.new(current_user).enabled?
         login_two_factor_piv_cac_url(reauthn_params)
       elsif TwoFactorAuthentication::WebauthnPolicy.new(current_user).enabled?
         login_two_factor_webauthn_url(reauthn_params)

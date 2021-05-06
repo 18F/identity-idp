@@ -34,8 +34,8 @@ describe Encryption::KmsClient do
     allow(FeatureManagement).to receive(:kms_multi_region_enabled?).and_return(kms_multi_region_enabled) # rubocop:disable Layout/LineLength
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)
     allow(IdentityConfig.store).to receive(:aws_kms_regions).and_return(aws_kms_regions)
-    allow(AppConfig.env).to receive(:aws_region).and_return(aws_region)
-    allow(AppConfig.env).to receive(:aws_kms_key_id).and_return(key_id)
+    allow(IdentityConfig.store).to receive(:aws_region).and_return(aws_region)
+    allow(IdentityConfig.store).to receive(:aws_kms_key_id).and_return(key_id)
   end
 
   let(:key_id) { 'key1' }
@@ -45,7 +45,7 @@ describe Encryption::KmsClient do
   let(:local_encryption_key) do
     OpenSSL::HMAC.digest(
       'sha256',
-      AppConfig.env.password_pepper,
+      IdentityConfig.store.password_pepper,
       '123-abc-456-defattribute-bundlecontextuser_id',
     )
   end

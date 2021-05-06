@@ -8,7 +8,6 @@ require 'rails/test_unit/railtie'
 require 'sprockets/railtie'
 require 'identity/logging/railtie'
 
-require_relative '../lib/app_config'
 require_relative '../lib/identity_config'
 require_relative '../lib/fingerprinter'
 require_relative '../lib/identity_job_log_subscriber'
@@ -22,18 +21,22 @@ module Upaya
     configuration = Identity::Hostdata::ConfigReader.new(app_root: Rails.root).read_configuration(
       Rails.env, write_copy_to: Rails.root.join('tmp', 'application.yml')
     )
-    AppConfig.setup(configuration)
     IdentityConfig.build_store(configuration)
 
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false
     config.assets.unknown_asset_fallback = true
 
-    if AppConfig.env.ruby_workers_enabled == 'true'
+    if IdentityConfig.store.ruby_workers_enabled
       config.active_job.queue_adapter = :delayed_job
     else
       config.active_job.queue_adapter = :inline
     end
+
+    FileUtils.mkdir_p(Rails.root.join('log'))
+    config.active_job.logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
+    config.active_job.logger.formatter = config.log_formatter
+
     config.time_zone = 'UTC'
 
     # Generate CSRF tokens that are encoded in URL-safe Base64.
@@ -51,8 +54,8 @@ module Upaya
 
     config.action_mailer.default_options = {
       from: Mail::Address.new.tap do |mail|
-        mail.address = AppConfig.env.email_from
-        mail.display_name = AppConfig.env.email_from_display_name
+        mail.address = IdentityConfig.store.email_from
+        mail.display_name = IdentityConfig.store.email_from_display_name
       end.to_s,
     }
 

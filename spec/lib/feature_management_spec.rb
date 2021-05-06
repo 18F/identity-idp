@@ -257,101 +257,19 @@ describe 'FeatureManagement', type: :feature do
         end
       end
     end
-
-    describe '#recaptcha_enabled?' do
-      context 'when recaptcha is enabled 100 percent' do
-        before do
-          allow(IdentityConfig.store).to receive(:recaptcha_enabled_percent).and_return(100)
-        end
-
-        it 'enables the feature when the session is new' do
-          session = {}
-          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
-        end
-
-        it 'enables the feature when the session is old' do
-          session = {}
-          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
-          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(true)
-        end
-      end
-
-      context 'when recaptcha is enabled 0 percent' do
-        before do
-          allow(IdentityConfig.store).to receive(:recaptcha_enabled_percent).and_return(0)
-        end
-
-        it 'disables the feature when the session is new' do
-          session = {}
-          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
-        end
-
-        it 'disables the feature when the session is old' do
-          session = {}
-          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
-          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(false)
-        end
-      end
-
-      context 'when recaptcha is enabled 50 percent' do
-        before do
-          allow(IdentityConfig.store).to receive(:recaptcha_enabled_percent).and_return(50)
-        end
-
-        it 'enables the feature when the session is new and random number is 70' do
-          session = {}
-          allow(SecureRandom).to receive(:random_number).and_return(70)
-          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
-        end
-
-        it 'disables the feature when the session is new and random number is 30' do
-          session = {}
-          allow(SecureRandom).to receive(:random_number).and_return(30)
-          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
-        end
-
-        it 'enables the feature when the session is old and the random number is 70' do
-          session = {}
-          allow(SecureRandom).to receive(:random_number).and_return(70)
-          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
-          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(true)
-        end
-
-        it 'disables the feature when the session is old and the random number is 30' do
-          session = {}
-          allow(SecureRandom).to receive(:random_number).and_return(30)
-          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
-          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(false)
-        end
-      end
-    end
   end
 
   describe '#disallow_all_web_crawlers?' do
-    it 'returns true when AppConfig setting is true' do
+    it 'returns true when IdentityConfig setting is true' do
       allow(IdentityConfig.store).to receive(:disallow_all_web_crawlers) { true }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(true)
     end
 
-    it 'returns false when AppConfig setting is false' do
+    it 'returns false when IdentityConfig setting is false' do
       allow(IdentityConfig.store).to receive(:disallow_all_web_crawlers) { false }
 
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
-    end
-  end
-
-  describe '#disallow_ial2_recovery?' do
-    it 'returns true when AppConfig setting is true' do
-      allow(IdentityConfig.store).to receive(:disallow_ial2_recovery) { true }
-
-      expect(FeatureManagement.disallow_ial2_recovery?).to eq(true)
-    end
-
-    it 'returns false when AppConfig setting is false' do
-      allow(IdentityConfig.store).to receive(:disallow_ial2_recovery) { false }
-
-      expect(FeatureManagement.disallow_ial2_recovery?).to eq(false)
     end
   end
 
@@ -361,13 +279,13 @@ describe 'FeatureManagement', type: :feature do
         allow(Rails.env).to receive(:development?).and_return(true)
       end
 
-      it 'returns true when AppConfig setting is true' do
+      it 'returns true when IdentityConfig setting is true' do
         allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { true }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(true)
       end
 
-      it 'returns false when AppConfig setting is false' do
+      it 'returns false when IdentityConfig setting is false' do
         allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { false }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
@@ -379,13 +297,13 @@ describe 'FeatureManagement', type: :feature do
         allow(Rails.env).to receive(:development?).and_return(false)
       end
 
-      it 'returns false when AppConfig setting is true' do
+      it 'returns false when IdentityConfig setting is true' do
         allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { true }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
       end
 
-      it 'returns false when AppConfig setting is false' do
+      it 'returns false when IdentityConfig setting is false' do
         allow(IdentityConfig.store).to receive(:identity_pki_local_dev) { false }
 
         expect(FeatureManagement.identity_pki_local_dev?).to eq(false)
@@ -394,13 +312,13 @@ describe 'FeatureManagement', type: :feature do
   end
 
   describe '#document_capture_async_uploads_enabled?' do
-    it 'returns true when AppConfig presigned S3 URL setting is true' do
+    it 'returns true when IdentityConfig presigned S3 URL setting is true' do
       allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls) { true }
 
       expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(true)
     end
 
-    it 'returns false when AppConfig presigned S3 URL setting is false' do
+    it 'returns false when IdentityConfig presigned S3 URL setting is false' do
       allow(IdentityConfig.store).to receive(:doc_auth_enable_presigned_s3_urls) { false }
 
       expect(FeatureManagement.document_capture_async_uploads_enabled?).to eq(false)
@@ -439,25 +357,13 @@ describe 'FeatureManagement', type: :feature do
     before do
       # clear memoization
       FeatureManagement.instance_variable_set(:@voip_allowed_phones, nil)
-
-      expect(AppConfig.env).to receive(:voip_allowed_phones).and_return(voip_allowed_phones)
     end
 
-    context 'with a nil or missing config' do
-      let(:voip_allowed_phones) { nil }
+    it 'normalizes phone numbers and put them in a set' do
+      voip_allowed_phones = ['18885551234', '+18888675309']
 
-      it 'is the empty set' do
-        expect(FeatureManagement.voip_allowed_phones).to eq(Set.new)
-      end
-    end
-
-    context 'when there are phone numbers in the list' do
-      let(:voip_allowed_phones) { '["18885551234", "+18888675309"]' }
-
-      it 'normalizes phone numbers and put them in a set' do
-        expect(FeatureManagement.voip_allowed_phones).
-          to eq(Set['+18885551234', '+18888675309'])
-      end
+      expect(IdentityConfig.store).to receive(:voip_allowed_phones).and_return(voip_allowed_phones)
+      expect(FeatureManagement.voip_allowed_phones).to eq(Set['+18885551234', '+18888675309'])
     end
   end
 end

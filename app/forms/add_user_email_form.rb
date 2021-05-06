@@ -8,10 +8,6 @@ class AddUserEmailForm
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(recaptcha_results = [true, {}])
-    @allow, @recaptcha_h = recaptcha_results
-  end
-
   def user
     @user ||= User.new
   end
@@ -21,7 +17,7 @@ class AddUserEmailForm
     @email = params[:email]
     @email_address = email_address_record(@email)
 
-    if valid_form?
+    if valid?
       process_successful_submission
     else
       @success = false
@@ -45,10 +41,6 @@ class AddUserEmailForm
   attr_writer :email
   attr_reader :success, :email_address
 
-  def valid_form?
-    @allow && valid?
-  end
-
   def process_successful_submission
     @success = true
     email_address.save!
@@ -59,7 +51,7 @@ class AddUserEmailForm
     {
       user_id: existing_user.uuid,
       domain_name: email&.split('@')&.last,
-    }.merge(@recaptcha_h)
+    }
   end
 
   def existing_user

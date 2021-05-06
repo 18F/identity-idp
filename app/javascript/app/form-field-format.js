@@ -31,13 +31,6 @@ function formatForm() {
       delimiterLazyShow: true,
     });
   }
-
-  if (document.querySelector('.mfa')) {
-    new Cleave('.mfa', {
-      numericOnly: true,
-      blocks: [6],
-    });
-  }
 }
 
 document.addEventListener('DOMContentLoaded', formatForm);

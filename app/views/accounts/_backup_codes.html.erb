@@ -6,7 +6,7 @@
     <%= render @view_model.backup_codes_partial %>
   </div>
 </div>
-<div class="grid-row padding-1 border border-light-blue">
+<div class="grid-row padding-1 border border-primary-light">
   <% if TwoFactorAuthentication::BackupCodePolicy.new(current_user).configured? %>
     <div class="grid-col-9">
       <%= t 'account.index.backup_codes_exist' %>

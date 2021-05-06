@@ -16,7 +16,7 @@ module Idv
         form_response = form.submit
 
         if current_async_state.done?
-          process_result(current_async_state.result)
+          process_result(current_async_state)
 
           if form_response.success?
             async_result_response = async_state_done(current_async_state)
@@ -54,8 +54,17 @@ module Idv
         doc_pii_form_result
       end
 
-      def process_result(result)
-        add_cost(:acuant_result) if result.to_h[:billed]
+      def process_result(async_state)
+        add_cost(:acuant_result) if async_state.result.to_h[:billed]
+        @flow.analytics.track_event(
+          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+          async_state.result.to_h.merge(
+            state: async_state.pii[:state],
+            async: true,
+            remaining_attempts: remaining_attempts,
+            client_image_metrics: nil, # Need to resolve how to capture image metrics, see LG-4488
+          ),
+        )
       end
 
       def verify_document_capture_session
@@ -88,6 +97,11 @@ module Idv
         end
 
         proofing_job_result
+      end
+
+      def remaining_attempts
+        return nil unless verify_document_capture_session
+        Throttler::RemainingCount.call(verify_document_capture_session.user_id, :idv_acuant)
       end
 
       def timed_out

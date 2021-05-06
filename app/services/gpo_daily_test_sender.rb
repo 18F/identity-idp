@@ -24,10 +24,7 @@ class GpoDailyTestSender
 
   # @return [Hash]
   def designated_receiver_pii
-    @designated_receiver_pii ||= JSON.parse(
-      AppConfig.env.gpo_designated_receiver_pii,
-      symbolize_names: true,
-    )
+    @designated_receiver_pii ||= IdentityConfig.store.gpo_designated_receiver_pii
   end
 
   def valid_designated_receiver_pii?

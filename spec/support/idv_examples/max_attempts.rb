@@ -1,4 +1,6 @@
 shared_examples 'verification step max attempts' do |step, sp|
+  include ActionView::Helpers::DateHelper
+
   let(:locale) { LinkLocaleResolver.locale }
   let(:user) { user_with_2fa }
   let(:step_locale_key) do
@@ -51,7 +53,16 @@ shared_examples 'verification step max attempts' do |step, sp|
 
     scenario 'user sees the failure screen' do
       expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading"))
-      expect(page).to have_content(strip_tags(t("idv.failure.#{step_locale_key}.fail_html")))
+      expect(page).to have_content(
+        strip_tags(
+          t(
+            'idv.failure.phone.fail_html',
+            timeout: distance_of_time_in_words(
+              IdentityConfig.store.idv_attempt_window_in_hours.hours,
+            ),
+          ),
+        ),
+      )
     end
   end
 

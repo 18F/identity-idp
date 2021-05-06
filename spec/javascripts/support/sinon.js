@@ -29,3 +29,46 @@ export function useSandbox(config) {
 
   return sandbox;
 }
+
+/**
+ * Chai plugin which allows a combination of `calledWith` and `eventually` to expect an eventual
+ * spy (stub) call.
+ *
+ * @param {import('chai')} chai Chai object.
+ * @param {import('chai/lib/chai/utils')} utils Chai plugin utilities.
+ */
+export function sinonChaiAsPromised({ Assertion }, utils) {
+  /* eslint-disable no-underscore-dangle */
+  Assertion.overwriteProperty(
+    'eventually',
+    (originalGetter) =>
+      function (...args) {
+        const isSpy = typeof this._obj?.getCall === 'function';
+        if (isSpy) {
+          utils.flag(this, 'spyEventually', true);
+        }
+
+        return originalGetter.apply(this, ...args);
+      },
+  );
+
+  Assertion.overwriteMethod(
+    'calledWith',
+    (originalMethod) =>
+      function (action, ...otherArgs) {
+        if (!utils.flag(this, 'spyEventually')) {
+          return originalMethod.apply(this, [action, ...otherArgs]);
+        }
+
+        return new Promise((resolve) => {
+          if (this._obj.calledWith(action)) {
+            resolve();
+          } else {
+            this._obj.withArgs(action).callsFake(resolve);
+          }
+        });
+      },
+    (originalMethod) => originalMethod,
+  );
+  /* eslint-enable no-underscore-dangle */
+}

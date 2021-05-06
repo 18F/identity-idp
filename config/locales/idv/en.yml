@@ -10,11 +10,11 @@ en:
       send_confirmation_code: Continue
     cancel:
       warnings:
-        warning_1: We won't be able to verify your identity
-        warning_2: We won't keep a record of your name, address, birth date, or Social
+        warning_1: We won’t be able to verify your identity
+        warning_2: We won’t keep a record of your name, address, birth date, or Social
           Security number
-        warning_3: You won't be able to securely access your information using %{app}
-        warning_4: You'll still have a login.gov account for your email address
+        warning_3: You won’t be able to securely access your information using %{app}
+        warning_4: You’ll still have a login.gov account for your email address
         warning_5: You can manage or delete that account on your profile page
     errors:
       incorrect_password: The password you entered is not correct.
@@ -27,16 +27,11 @@ en:
         zipcode: 'Your zipcode must be entered in as #####-####'
       unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
-      attempts_html:
-        one: You have <strong>1 attempt remaining.</strong>
-        other: You have <strong>%{count} attempts remaining.</strong>
+      attempts:
+        one: For security reasons, you have one attempt remaining.
+        other: For security reasons, you have %{count} attempts remaining.
       button:
-        jobfail: Try again tomorrow
-        timeout: Try again
         warning: Try again
-      errors:
-        link: please contact us
-        text_html: If you keep getting these errors, %{link}, or try again tomorrow.
       exceptions:
         internal_error: There was an internal error processing your request. Please
           try again.
@@ -45,39 +40,41 @@ en:
       help:
         get_help_html: Get help at <strong>%{sp_name}</strong>
       phone:
-        fail_html: To protect your identity, you must <strong>wait 6 hours</strong>
-          to try a phone number again.
-        heading: We couldn't match your name and address to this phone number.
+        fail_html: "<strong>Please try again in %{timeout}.</strong> For your security,
+          we limit the number of times you can attempt to verify your phone number
+          online."
+        heading: We could not match your name and address to this phone number
         jobfail: Something went wrong and we cannot process your request at this time.
-          Please try again tomorrow.
-        timeout: Our request to verify your information timed out.
-        warning: Please check the information you entered.
+          Please try again.
+        timeout: Our request to verify your information timed out. Please try again.
+        warning: Please check the information you entered and try again.
       sessions:
         exception: There was an internal error processing your request.
-        fail_html: For your security, identity verification for your account is <strong>locked
-          for 6 hours</strong>.
+        fail_html: "<strong>Please try again in %{timeout}.</strong> For your security,
+          we limit the number of times you can attempt to verify personal information
+          online."
         heading: We could not find records matching your personal information.
-        warning: Please check the information you entered. Common mistakes are an
-          incorrect Social Security Number, ZIP Code, or date of birth.
+        warning: Please check the information you entered and try again. Common mistakes
+          are an incorrect Social Security number or ZIP code.
       timeout: We are experiencing higher than usual wait time processing your request.
         Please try again.
     forgot_password:
       link_html: Forgot password? %{link}
       link_text: Follow these instructions
-      modal_header: Are you sure you can't remember your password?
+      modal_header: Are you sure you can’t remember your password?
       reset_password: Reset password
       try_again: Try again
       warnings:
-        warning_1: If you forgot your password, you'll need to reset it and fill out
+        warning_1: If you forgot your password, you’ll need to reset it and fill out
           the form again.
-        warning_2: You'll have to re-enter your personal information, like your name,
+        warning_2: You’ll have to re-enter your personal information, like your name,
           state ID number, etc.
     form:
-      activate_by_mail: Verify your address by mail instead.
+      activate_by_mail: Verify your address by mail instead
       address1: Address
       address2: Address (optional)
       city: City
-      no_alternate_phone_html: "<strong>%{link}</strong>  We'll mail you a letter
+      no_alternate_phone_html: "<strong>%{link}</strong>  We’ll mail you a letter
         with a code in it."
       password: Password
       phone: Phone Number
@@ -86,7 +83,7 @@ en:
       zipcode: ZIP Code
     index:
       id:
-        need_html: If you're creating an account, you'll need a <strong>current state-issued
+        need_html: If you’re creating an account, you’ll need a <strong>current state-issued
           ID</strong>.
     messages:
       activated_html: Your identity has been verified. If you need to change your
@@ -112,17 +109,17 @@ en:
           you specify.
         resend: Send me another letter
         success: It should arrive in 5 to 10 business days.
-      hardfail: We can't log you in right now, but you can try verifying your identity
+      hardfail: We can’t log you in right now, but you can try verifying your identity
         again in %{hours} hours.
       mail_sent: Your letter is on its way
       otp_delivery_method:
-        phone_number_html: We'll send a code to <strong>%{phone}</strong>
+        phone_number_html: We’ll send a code to <strong>%{phone}</strong>
       personal_key: This is your new personal key. Write it down and keep it in a
         safe place. You will need it if you ever lose your password.
       phone:
-        alert_html: "<strong>This phone number must...</strong>"
-        description: We'll check this number with phone bill records.  This is to
-          help verify your identity; we won't use it to call or text you.
+        alert_html: "<strong>This phone number must…</strong>"
+        description: We’ll check this number with phone bill records.  This is to
+          help verify your identity; we won’t use it to call or text you.
         final_note_html: "<strong>If you set up a phone for two-factor authentication</strong>,
           this can be a different number."
         phone_of_record: Phone of record
@@ -143,7 +140,7 @@ en:
           - TEST SITE
         read_more_encrypt: Read more about how login.gov protects your personal information
         review_message: When you re-enter your password, login.gov will protect the
-          information you've given us, so that only you can access it
+          information you’ve given us, so that only you can access it
     review:
       dob: Date of birth
       full_name: Full name
@@ -153,7 +150,7 @@ en:
       activated: Your identity has already been verified
       cancel: We cannot verify your identity
       come_back_later: Come back soon.
-      hardfail: We weren't able to verify your identity with %{app}
+      hardfail: We weren’t able to verify your identity with %{app}
       mail:
         resend: Want another letter?
         verify: Want a letter?
@@ -163,3 +160,11 @@ en:
       session:
         phone: Enter a phone number with your name on the plan
         review: Re-enter your login.gov password to protect your data
+    troubleshooting:
+      headings:
+        having_trouble: 'Having trouble? Here’s what you can do:'
+        missing_required_items: Are you missing one of these items?
+        need_assistance: 'Need immediate assistance? Here’s how to get help:'
+      options:
+        contact_support: Contact %{app} Support
+        get_help_at_sp: Get help at %{sp_name}

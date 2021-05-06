@@ -47,7 +47,7 @@ shared_examples 'failed idv job' do |step|
 
   def fill_out_phone_form_error
     fill_in :idv_phone_form_phone, with:
-      IdentityIdpFunctions::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
+      Proofing::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
   end
 
   def fill_out_idv_form_timeout
@@ -57,7 +57,7 @@ shared_examples 'failed idv job' do |step|
 
   def fill_out_phone_form_timeout
     fill_in :idv_phone_form_phone, with:
-      IdentityIdpFunctions::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
+      Proofing::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
 
   def session_timeout_path

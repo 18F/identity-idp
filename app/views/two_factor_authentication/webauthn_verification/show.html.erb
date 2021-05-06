@@ -1,6 +1,6 @@
 <% title t('titles.present_webauthn') %>
 
-<h1 class='h3 margin-y-0'>
+<h1 class='margin-y-0'>
   <%= t('two_factor_authentication.webauthn_header_text') %>
 </h1>
 
@@ -46,7 +46,7 @@
     <p class="half-center">
       <%= t('two_factor_authentication.webauthn_verified.info') %>
     </p>
-    <div class="border border-light-blue rounded-lg padding-x-2 padding-y-1 margin-top-4">
+    <div class="border border-primary-light rounded-lg padding-x-2 padding-y-1 margin-top-4">
       <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
       <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?, class: 'margin-y-2 margin-left-2 margin-right-1' %>
       <%= label_tag 'remember_device',

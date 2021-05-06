@@ -11,18 +11,19 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   connect_src << %w[ws://localhost:3035 http://localhost:3035] if Rails.env.development?
   default_csp_config = {
     default_src: ["'self'"],
-    child_src: ["'self'", 'www.google.com'], # CSP 2.0 only; replaces frame_src
+    child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: connect_src.flatten,
-    font_src: ["'self'", 'data:', AppConfig.env.asset_host],
+    font_src: ["'self'", 'data:', IdentityConfig.store.asset_host.presence],
     img_src: [
       "'self'",
       'data:',
       'login.gov',
-      AppConfig.env.asset_host,
+      IdentityConfig.store.asset_host.presence,
       'idscangoweb.acuant.com',
-      AppConfig.env.aws_region && "https://s3.#{AppConfig.env.aws_region}.amazonaws.com",
+      IdentityConfig.store.aws_region.presence &&
+        "https://s3.#{IdentityConfig.store.aws_region}.amazonaws.com",
     ].select(&:present?),
     media_src: ["'self'"],
     object_src: ["'none'"],
@@ -32,11 +33,9 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
       '*.nr-data.net',
       'dap.digitalgov.gov',
       '*.google-analytics.com',
-      'www.google.com',
-      'www.gstatic.com',
-      AppConfig.env.asset_host,
+      IdentityConfig.store.asset_host.presence,
     ],
-    style_src: ["'self'", AppConfig.env.asset_host],
+    style_src: ["'self'", IdentityConfig.store.asset_host.presence],
     base_uri: ["'self'"],
   }
 

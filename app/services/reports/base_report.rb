@@ -27,11 +27,11 @@ module Reports
     end
 
     def gen_s3_bucket_name
-      "#{AppConfig.env.s3_report_bucket_prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
+      "#{IdentityConfig.store.s3_report_bucket_prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
     end
 
     def report_timeout
-      AppConfig.env.report_timeout.to_i
+      IdentityConfig.store.report_timeout
     end
 
     def transaction_with_timeout

@@ -90,12 +90,8 @@ class Analytics
   EVENT_DISAVOWAL_PASSWORD_RESET = 'Event disavowal password reset'.freeze
   EVENT_DISAVOWAL_TOKEN_INVALID = 'Event disavowal token invalid'.freeze
   EVENTS_VISIT = 'Events Page Visited'.freeze
-  EXPIRED_LETTERS = 'Expired Letters'.freeze
   FORGET_ALL_BROWSERS_SUBMITTED = 'Forget All Browsers Submitted'.freeze
   FORGET_ALL_BROWSERS_VISITED = 'Forget All Browsers Visited'.freeze
-  IAL2_RECOVERY = 'IAL2 Recovery'.freeze # visited or submitted is appended
-  IAL2_RECOVERY_REQUEST = 'IAL2 Recovery Request'.freeze
-  IAL2_RECOVERY_REQUEST_VISITED = 'IAL2 Recovery Request Visited'.freeze
   IDV_ADDRESS_VISIT = 'IdV: address visited'.freeze
   IDV_ADDRESS_SUBMITTED = 'IdV: address submitted'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
@@ -132,9 +128,6 @@ class Analytics
   IDV_GPO_ADDRESS_VISITED = 'IdV: USPS address visited'.freeze
   IDV_VERIFICATION_ATTEMPT_CANCELLED = 'IdV: verification attempt cancelled'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
-  LAMBDA_RESULT_RESOLUTION_PROOF_RESULT = 'Lambda Resolution Proof Result Received'.freeze
-  LAMBDA_RESULT_ADDRESS_PROOF_RESULT = 'Lambda Address Proof Result Received'.freeze
-  LAMBDA_RESULT_DOCUMENT_PROOF_RESULT = 'Lambda Document Proof Result Received'.freeze
   LOGOUT_INITIATED = 'Logout Initiated'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze

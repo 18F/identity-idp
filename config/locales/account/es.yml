@@ -19,7 +19,7 @@ es:
       sentence_connector: o
       updated: Se actualizó su preferencia de idioma de correo electrónico.
     forget_all_browsers:
-      longer_description: Una vez que elija "olvidar todos los navegadores", necesitaremos
+      longer_description: Una vez que elija “olvidar todos los navegadores”, necesitaremos
         información adicional para saber que en realidad está iniciando sesión en
         su cuenta. Le pediremos un método de autenticación de múltiples factores (como
         texto / código de SMS o una clave de seguridad) cada vez que desee acceder

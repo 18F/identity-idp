@@ -67,13 +67,12 @@ module Idv
         redirect_to throttled_url
         IdentityDocAuth::Response.new(
           success: false,
-          errors: { limit: I18n.t('errors.doc_auth.acuant_throttle') },
+          errors: { limit: I18n.t('errors.doc_auth.throttled_heading') },
         )
       end
 
       def throttled_url
-        return idv_session_errors_throttled_url unless @flow.class == Idv::Flows::RecoveryFlow
-        idv_session_errors_recovery_throttled_url
+        idv_session_errors_throttled_url
       end
 
       def throttled_else_increment

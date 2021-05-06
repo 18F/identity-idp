@@ -7,6 +7,10 @@ class ServiceProviderUpdater
     updated_at
   ].to_set.freeze
 
+  SP_IGNORED_ATTRIBUTES = %i[
+    cert
+  ]
+
   def run
     dashboard_service_providers.each do |service_provider|
       update_local_caches(HashWithIndifferentAccess.new(service_provider))
@@ -43,11 +47,11 @@ class ServiceProviderUpdater
   end
 
   def cleaned_service_provider(service_provider)
-    service_provider.except(*SP_PROTECTED_ATTRIBUTES)
+    service_provider.except(*SP_PROTECTED_ATTRIBUTES, *SP_IGNORED_ATTRIBUTES)
   end
 
   def url
-    AppConfig.env.dashboard_url
+    IdentityConfig.store.dashboard_url
   end
 
   def dashboard_service_providers

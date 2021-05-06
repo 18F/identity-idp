@@ -42,10 +42,6 @@ describe 'accounts/two_factor_authentication/show.html.erb' do
       render
 
       expect(rendered).to have_link(t('forms.buttons.disable', href: auth_app_delete_path))
-      expect(rendered).not_to have_link(
-        t('account.index.auth_app_add'),
-        href: authenticator_start_path,
-      )
     end
   end
 

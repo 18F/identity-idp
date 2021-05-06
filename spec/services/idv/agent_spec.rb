@@ -5,7 +5,7 @@ describe Idv::Agent do
   include IdvHelper
 
   let(:bad_phone) do
-    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+    Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
 
   describe 'instance' do
@@ -29,10 +29,7 @@ describe Idv::Agent do
 
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-          expect(result[:context][:stages]).to_not include(
-            state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
-          )
+          expect(result[:context][:stages].key?(:state_id)).to eq false
         end
 
         it 'does proof state_id if resolution succeeds' do
@@ -48,9 +45,9 @@ describe Idv::Agent do
             document_capture_session, should_proof_state_id: true, trace_id: trace_id
           )
           result = document_capture_session.load_proofing_result.result
-          expect(result[:context][:stages]).to include(
-            state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
+          expect(result[:context][:stages][:state_id]).to include(
+            client: 'StateIdMock',
+            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
       end
@@ -66,10 +63,7 @@ describe Idv::Agent do
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-          expect(result[:context][:stages]).to_not include(
-            state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
-          )
+          expect(result[:context][:stages].key?(:state_id)).to eq false
         end
 
         it 'does not proof state_id if resolution succeeds' do
@@ -84,7 +78,7 @@ describe Idv::Agent do
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to_not include(
             state_id: 'StateIdMock',
-            transaction_id: IdentityIdpFunctions::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
           )
         end
       end
@@ -110,10 +104,14 @@ describe Idv::Agent do
 
     describe '#proof_address' do
       let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
+      let(:user_id) { SecureRandom.random_number(1000) }
+      let(:issuer) { build(:service_provider).issuer }
 
       it 'proofs addresses successfully with valid information' do
         agent = Idv::Agent.new({ phone: Faker::PhoneNumber.cell_phone })
-        agent.proof_address(document_capture_session, trace_id: trace_id)
+        agent.proof_address(
+          document_capture_session, trace_id: trace_id, user_id: user_id, issuer: issuer
+        )
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq true
@@ -121,7 +119,9 @@ describe Idv::Agent do
 
       it 'fails to proof addresses with invalid information' do
         agent = Idv::Agent.new(phone: bad_phone)
-        agent.proof_address(document_capture_session, trace_id: trace_id)
+        agent.proof_address(
+          document_capture_session, trace_id: trace_id, user_id: user_id, issuer: issuer
+        )
         result = document_capture_session.load_proofing_result[:result]
         expect(result[:context][:stages]).to include({ address: 'AddressMock' })
         expect(result[:success]).to eq false

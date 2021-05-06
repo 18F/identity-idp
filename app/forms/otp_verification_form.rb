@@ -22,7 +22,7 @@ class OtpVerificationForm
   end
 
   def pattern_matching_otp_code_format
-    /\A\d{#{otp_code_length}}\Z/
+    /\A[a-z0-9]{#{otp_code_length}}\z/i
   end
 
   def otp_code_length

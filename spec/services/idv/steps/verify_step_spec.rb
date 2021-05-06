@@ -44,7 +44,7 @@ describe Idv::Steps::VerifyStep do
       expect(flow.flow_session[:pii_from_doc][:uuid_prefix]).to eq service_provider.app_id
     end
 
-    it 'passes the X-Amzn-Trace-Id to the lambda' do
+    it 'passes the X-Amzn-Trace-Id to the proofer' do
       expect(step.send(:idv_agent)).to receive(:proof_resolution).
         with(
           kind_of(DocumentCaptureSession),

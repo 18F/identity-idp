@@ -122,7 +122,7 @@ RSpec.describe Users::VerifyAccountController do
       let(:submitted_otp) { 'a-wrong-otp' }
 
       it 'renders the index page to show errors' do
-        max_attempts = AppConfig.env.verify_gpo_key_max_attempts.to_i
+        max_attempts = IdentityConfig.store.verify_gpo_key_max_attempts
 
         expect(@analytics).to receive(:track_event).with(
           Analytics::ACCOUNT_VERIFICATION_SUBMITTED,

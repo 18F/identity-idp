@@ -70,14 +70,6 @@ textarea {
   }
 }
 
-// hide number field input spin box as per:
-// http://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
-// and added .mfa class selector as per CodeClimate warning to:
-// 'Avoid qualifying attribute selectors with an element.'
-.mfa {
-  -moz-appearance: textfield;
-}
-
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;

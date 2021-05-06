@@ -15,8 +15,6 @@ Thank you for your interest in contributing to the login.gov IdP! For complete i
 
 ## Creating your local development environment
 
-There are two methods that we recommend for installing for local development. One is container based with Docker, while the other is focused on your local machine's installation (advanced). For those who are not familiar with setting up local environments on your machine, we recommend [installing with Docker](#installing-with-docker).
-
 ### Installing on your local machine
 
 This installation method is meant for those who are familiar with setting up local development environments on their machines.
@@ -201,4 +199,6 @@ It's likely that you'll be prompted with a screen with warnings about an unsafe 
 
 ### Installing with Docker
 
-See the [Docker documentation](./docs/Docker.md) to install the IdP as a container.
+There was an initial attempt to dockerize the IDP but it is currently deprecated, mostly non-functional, and not maintained. There is ongoing work to make the IDP more [12 Factor](https://12factor.net/) compliant which will eventually lead to better support for containerization.
+
+If you'd like to work with the previous implementation see the [Docker documentation](./docs/Docker.md) to install the IdP as a container. 

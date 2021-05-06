@@ -1,5 +1,6 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[x509_dn_uuid otp_secret_key totp_timestamp]
+  self.ignored_columns = %w[x509_dn_uuid otp_secret_key totp_timestamp unlock_token 
+                            unconfirmed_email encrypted_otp_secret_key]
   include NonNullUuid
 
   include ::NewRelic::Agent::MethodTracer
@@ -43,7 +44,6 @@ class User < ApplicationRecord
   has_one :doc_auth, dependent: :destroy, inverse_of: :user, class_name: 'DocAuthRecord'
   has_many :backup_code_configurations, dependent: :destroy
   has_many :document_capture_sessions, dependent: :destroy
-  has_one :account_recovery_request, dependent: :destroy
   has_many :throttles, dependent: :destroy
   has_one :registration_log, dependent: :destroy
   has_one :proofing_component, dependent: :destroy

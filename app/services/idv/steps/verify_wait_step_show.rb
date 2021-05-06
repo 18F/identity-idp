@@ -28,18 +28,21 @@ module Idv
 
       def async_state_done(current_async_state)
         add_proofing_costs(current_async_state.result)
-        response = idv_result_to_form_response(current_async_state.result)
-        response = check_ssn(flow_session[:pii_from_doc]) if response.success?
-        summarize_result_and_throttle_failures(response)
+        form_response = idv_result_to_form_response(current_async_state.result)
+        if form_response.success?
+          response = check_ssn(flow_session[:pii_from_doc]) if form_response.success?
+          form_response = form_response.merge(response)
+        end
+        summarize_result_and_throttle_failures(form_response)
         delete_async
 
-        if response.success?
+        if form_response.success?
           mark_step_complete(:verify_wait)
         else
           mark_step_incomplete(:verify)
         end
 
-        response
+        form_response
       end
 
       def async_state

@@ -15,12 +15,6 @@ describe NullServiceProvider do
     end
   end
 
-  describe '#live?' do
-    it 'returns false' do
-      expect(subject.live?).to eq false
-    end
-  end
-
   describe '#metadata' do
     it 'returns empty Hash' do
       empty_hash = {}

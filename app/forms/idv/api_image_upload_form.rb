@@ -73,7 +73,8 @@ module Idv
         selfie_image: selfie&.read,
         liveness_checking_enabled: liveness_checking_enabled?,
       )
-      response = response.merge(extra_attributes_response)
+      response.extra.merge!(extra_attributes)
+      response.extra.merge!(state: response.pii_from_doc[:state])
 
       update_analytics(response)
 
@@ -82,7 +83,7 @@ module Idv
 
     def validate_pii_from_doc(client_response)
       response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
-      response = response.merge(extra_attributes_response)
+      response.extra.merge!(extra_attributes)
 
       track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
@@ -91,14 +92,6 @@ module Idv
       store_pii(client_response) if client_response.success? && response.success?
 
       response
-    end
-
-    def extra_attributes_response
-      @extra_attributes_response ||= Idv::DocAuthFormResponse.new(
-        success: true,
-        errors: {},
-        extra: extra_attributes,
-      )
     end
 
     def extra_attributes
@@ -154,7 +147,7 @@ module Idv
     def throttle_if_rate_limited
       return unless @throttled
       track_event(Analytics::THROTTLER_RATE_LIMIT_TRIGGERED, throttle_type: :idv_acuant)
-      errors.add(:limit, t('errors.doc_auth.acuant_throttle'))
+      errors.add(:limit, t('errors.doc_auth.throttled_heading'))
     end
 
     def self.human_attribute_name(attr, options = {})
@@ -197,7 +190,7 @@ module Idv
       update_funnel(client_response)
       track_event(
         Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-        client_response.to_h.merge(client_image_metrics: image_metadata),
+        client_response.to_h.merge(client_image_metrics: image_metadata, async: false),
       )
     end
 

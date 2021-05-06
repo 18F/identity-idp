@@ -104,7 +104,7 @@ class ApplicationController < ActionController::Base
                           else
                             {
                               value: current_sp.issuer,
-                              expires: AppConfig.env.issuer_cookie_expiration,
+                              expires: IdentityConfig.store.session_timeout_in_minutes.minutes,
                             }
                           end
   end
@@ -250,7 +250,7 @@ class ApplicationController < ActionController::Base
     session_created_at = user_session&.dig(:created_at)
     return if session_created_at.blank?
     session_created_at = Time.zone.parse(session_created_at.to_s)
-    timeout_in_minutes = AppConfig.env.session_total_duration_timeout_in_minutes.to_i.minutes
+    timeout_in_minutes = IdentityConfig.store.session_total_duration_timeout_in_minutes.minutes
     (session_created_at + timeout_in_minutes) < Time.zone.now
   end
 
@@ -366,10 +366,6 @@ class ApplicationController < ActionController::Base
 
   def render_full_width(template, **opts)
     render template, **opts, layout: 'base'
-  end
-
-  def user_has_ial1_identity_for_issuer?(issuer)
-    current_user.identities.where(service_provider: issuer, ial: 1).any?
   end
 
   def analytics_exception_info(exception)

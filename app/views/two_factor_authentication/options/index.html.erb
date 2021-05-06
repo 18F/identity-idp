@@ -1,6 +1,6 @@
 <% title @presenter.title %>
 
-<h1 class="h3 margin-y-0">
+<h1 class="margin-y-0">
   <%= @presenter.heading %>
 </h1>
 
@@ -43,15 +43,9 @@
 <% end %>
 
 <br/>
-<% if current_user.decorate.identity_verified? && !FeatureManagement.disallow_ial2_recovery? %>
-  <p>
-    <%= @presenter.reverify_link %>
-  </p>
-<% else %>
-  <p>
-    <%= @presenter.account_reset_or_cancel_link %>
-  </p>
-<% end %>
+<p>
+  <%= @presenter.account_reset_or_cancel_link %>
+</p>
 
 <%= render 'shared/cancel', link: destroy_user_session_path %>
 

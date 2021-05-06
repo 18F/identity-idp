@@ -47,7 +47,7 @@ module Encryption
     end
 
     def encrypt_legacy(key_id, plaintext, encryption_context)
-      region_client = @aws_clients[AppConfig.env.aws_region]
+      region_client = @aws_clients[IdentityConfig.store.aws_region]
       unless region_client
         raise EncryptionError, 'Current region not found in clients for legacy encryption'
       end
@@ -75,8 +75,8 @@ module Encryption
     def resolve_region_decryption(regions)
       # For each region that the ciphertext has a cipher for, check to see if that region is
       # represented in the clients available. Check default region before checking others
-      curr_region_client = @aws_clients[AppConfig.env.aws_region]
-      curr_region_cipher = regions[AppConfig.env.aws_region]
+      curr_region_client = @aws_clients[IdentityConfig.store.aws_region]
+      curr_region_cipher = regions[IdentityConfig.store.aws_region]
       if curr_region_cipher && curr_region_client
         CipherData.new(curr_region_client, Base64.strict_decode64(curr_region_cipher))
       else
@@ -86,7 +86,7 @@ module Encryption
 
     def resolve_legacy_decryption(ciphertext)
       # Decode the raw ciphertext
-      curr_region = AppConfig.env.aws_region
+      curr_region = IdentityConfig.store.aws_region
       region_client = @aws_clients[curr_region]
       resolved_ciphertext = ciphertext
       return CipherData.new(region_client, resolved_ciphertext) if region_client

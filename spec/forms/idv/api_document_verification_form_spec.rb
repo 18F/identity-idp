@@ -120,7 +120,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
       it 'is not valid' do
         expect(form.valid?).to eq(false)
         expect(form.errors.attribute_names).to eq([:limit])
-        expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.acuant_throttle')])
+        expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.throttled_heading')])
         expect(analytics).to have_logged_event(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
           throttle_type: :idv_acuant,

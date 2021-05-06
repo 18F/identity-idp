@@ -121,7 +121,7 @@ jobs:
       CC_TEST_REPORTER_ID: faecd27e9aed532634b3f4d3e251542d7de9457cfca96a94208a63270ef9b42e
       COVERAGE: true
 
-    parallelism: 4
+    parallelism: 5
 
     working_directory: ~/identity-idp
 
@@ -203,18 +203,6 @@ jobs:
             make check_asset_strings
             make lint_optimized_assets
             NODE_ENV=production ./bin/webpack && yarn es5-safe
-  build-release-container:
-    working_directory: ~/identity-idp
-    docker:
-      - image: circleci/ruby:2.6
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: |
-          if [ -z "$CIRCLE_TAG" ]; then exit 0; fi # this shouldn't be necessary...
-          docker build -t logindotgov/idp:$CIRCLE_TAG -f production.Dockerfile .
-          echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-          docker push logindotgov/idp:$CIRCLE_TAG
   smoketest-dev:
     working_directory: ~/identity-idp
     executor: ruby_browsers
@@ -283,12 +271,6 @@ workflows:
     jobs:
       - build
       - lints
-      - build-release-container:
-          requires:
-            - build
-          filters:
-            tags:
-              only: "/^[0-9]{4}-[0-9]{2}-[0-9]{2,}.*/"
 
   # Theses are staggered separately from the smoke tests in the identity-monitor repo
   # because they share credentials and would mess each other up if run concurrently

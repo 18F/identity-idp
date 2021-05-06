@@ -2,8 +2,16 @@ class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
   before_action :attach_images
-  default from: email_with_name(AppConfig.env.email_from, AppConfig.env.email_from_display_name),
-          reply_to: email_with_name(AppConfig.env.email_from, AppConfig.env.email_from_display_name)
+  default(
+    from: email_with_name(
+      IdentityConfig.store.email_from,
+      IdentityConfig.store.email_from_display_name,
+    ),
+    reply_to: email_with_name(
+      IdentityConfig.store.email_from,
+      IdentityConfig.store.email_from_display_name,
+    ),
+  )
 
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
     with_user_locale(user) do
@@ -129,14 +137,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def undeliverable_address(user, email_address)
-    return unless email_should_receive_nonessential_notifications?(email_address.email)
-
-    with_user_locale(user) do
-      mail(to: email_address.email, subject: t('user_mailer.undeliverable_address.subject'))
-    end
-  end
-
   def doc_auth_desktop_link_to_sp(user, email_address, application, link)
     with_user_locale(user) do
       @link = link
@@ -150,21 +150,6 @@ class UserMailer < ActionMailer::Base
 
     with_user_locale(user) do
       mail(to: email, subject: t('user_mailer.letter_reminder.subject'))
-    end
-  end
-
-  def letter_expired(user, email)
-    return unless email_should_receive_nonessential_notifications?(email)
-
-    with_user_locale(user) do
-      mail(to: email, subject: t('user_mailer.letter_expired.subject'))
-    end
-  end
-
-  def confirm_email_and_reverify(user, email, account_recovery_request)
-    with_user_locale(user) do
-      @token = account_recovery_request.request_token
-      mail(to: email.email, subject: t('recover.email.confirm'))
     end
   end
 

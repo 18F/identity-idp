@@ -4,12 +4,11 @@ describe Encryption::Encryptors::AttributeEncryptor do
   let(:plaintext) { 'some secret text' }
   let(:current_key) { '1' * 32 }
   let(:retired_key) { '2' * 32 }
-  let(:retired_cost) { '2000$8$1$' }
 
   before do
-    allow(AppConfig.env).to receive(:attribute_encryption_key).and_return(current_key)
+    allow(IdentityConfig.store).to receive(:attribute_encryption_key).and_return(current_key)
     allow(IdentityConfig.store).to receive(:attribute_encryption_key_queue).and_return(
-      [{ 'key' => retired_key, 'cost' => retired_cost }],
+      [{ 'key' => retired_key }],
     )
   end
 

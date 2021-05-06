@@ -6,43 +6,42 @@ ruby '~> 2.6.5'
 gem 'rails', '~> 6.1.3'
 
 # Variables can be overridden for local dev in Gemfile-dev
+@aamva_api_gem ||= { github: '18F/identity-aamva-api-client-gem', tag: 'v4.2.0' }
 @doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.5.1' }
-@hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.1.2' }
-@idp_functions_gem ||= { github: '18F/identity-idp-functions', ref:'d9241bdfea85a76c170e456a89' }
+@hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.2.0' }
+@lexisnexis_api_gem ||= { github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @proofer_gem ||= { github: '18F/identity-proofer-gem', ref: 'v2.8.0' }
-@telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.1.12' }
-@validations_gem ||= { github: '18F/identity-validations', branch: 'main' }
-@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.13.0-18f' }
+@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.0-18f' }
+@telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.2.0' }
+@validations_gem ||= { github: '18F/identity-validations', tag: 'v0.4.0' }
 
+gem 'aamva', @aamva_api_gem
 gem 'identity-doc-auth', @doc_auth_gem
 gem 'identity-hostdata', @hostdata_gem
-gem 'identity-idp-functions', @idp_functions_gem
 gem 'identity-logging', @logging_gem
-gem 'proofer', @proofer_gem
 gem 'identity-telephony', @telephony_gem
 gem 'identity_validations', @validations_gem
+gem 'lexisnexis', @lexisnexis_api_gem
+gem 'proofer', @proofer_gem
 gem 'saml_idp', @saml_gem
 
 gem 'ahoy_matey', '~> 3.0'
 gem 'american_date'
 gem 'autoprefixer-rails', '~> 10.0'
 gem 'aws-sdk-kms', '~> 1.4'
-gem 'aws-sdk-lambda'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'aws-sdk-eventbridge'
 gem 'base32-crockford'
-gem 'daemons', '~> 1.3'
 gem 'delayed_job_active_record', '~> 4.1'
 gem 'device_detector'
-gem 'devise', '~> 4.7.2'
+gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
 gem 'foundation_emails'
 gem 'hiredis'
 gem 'http_accept_language'
-gem 'json-jwt', '>= 1.11.0'
 gem 'jwt'
 gem 'local_time'
 gem 'lograge', '>= 0.11.2'
@@ -59,9 +58,9 @@ gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
 gem 'raise-if-root'
 gem 'readthis'
-gem 'recaptcha', require: 'recaptcha/rails'
 gem 'redacted_struct'
 gem 'redis-session-store', '>= 0.11.3'
+gem 'retries'
 gem 'rotp', '~> 6.1'
 gem 'rqrcode'
 gem 'ruby-progressbar'
@@ -126,17 +125,10 @@ group :test do
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'rspec-retry'
+  gem 'rubypants-unicode', '~> 0.2.5'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'timecop'
   gem 'webdrivers', '~> 4.0'
   gem 'webmock'
   gem 'zonebie'
-end
-
-group :production do
-  @aamva_api_gem ||= { github: '18F/identity-aamva-api-client-gem', tag: 'v4.2.0' }
-  @lexisnexis_api_gem ||= { github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0' }
-
-  gem 'aamva', @aamva_api_gem
-  gem 'lexisnexis', @lexisnexis_api_gem
 end

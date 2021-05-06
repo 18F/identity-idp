@@ -51,12 +51,6 @@ class SamlIdpController < ApplicationController
     redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
   end
 
-  def saml_request_valid?(saml_request)
-    return false unless saml_request
-    decode_request(saml_request)
-    valid_saml_request?
-  end
-
   def saml_metadata
     SamlEndpoint.new(request).saml_metadata
   end
@@ -104,7 +98,7 @@ class SamlIdpController < ApplicationController
 
   def track_events
     analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: sp_session_ial)
-    Db::SpReturnLog::AddReturn.call(request_id, current_user.id)
+    Db::SpReturnLog.add_return(request_id, current_user.id)
     increment_monthly_auth_count
     add_sp_cost(:authentication)
   end

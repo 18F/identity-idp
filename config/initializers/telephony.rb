@@ -1,13 +1,13 @@
 # rubocop:disable Metrics/BlockLength
 Telephony.config do |c|
-  c.adapter = AppConfig.env.telephony_adapter.to_sym || :test
+  c.adapter = IdentityConfig.store.telephony_adapter.to_sym
   c.logger = if FeatureManagement.log_to_stdout?
                Logger.new(STDOUT, level: :info)
              else
                Logger.new('log/telephony.log', level: :info)
              end
 
-  JSON.parse(AppConfig.env.pinpoint_sms_configs).each do |sms_json_config|
+  IdentityConfig.store.pinpoint_sms_configs.each do |sms_json_config|
     c.pinpoint.add_sms_config do |sms|
       sms.application_id = sms_json_config['application_id']
       sms.region = sms_json_config['region']
@@ -19,7 +19,7 @@ Telephony.config do |c|
     end
   end
 
-  JSON.parse(AppConfig.env.pinpoint_voice_configs).each do |voice_json_config|
+  IdentityConfig.store.pinpoint_voice_configs.each do |voice_json_config|
     c.pinpoint.add_voice_config do |voice|
       voice.region = voice_json_config['region']
       voice.longcode_pool = voice_json_config['longcode_pool'] || []

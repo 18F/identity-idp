@@ -82,7 +82,7 @@ module PivCacService
     end
 
     def authenticate(token)
-      secret = AppConfig.env.piv_cac_verify_token_secret
+      secret = IdentityConfig.store.piv_cac_verify_token_secret
       return '' if secret.blank?
       nonce = SecureRandom.hex(10)
       hmac = Base64.urlsafe_encode64(

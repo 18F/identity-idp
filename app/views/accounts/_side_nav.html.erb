@@ -1,5 +1,5 @@
 <nav class="sidenav">
-  <ul class="card usa-sidenav">
+  <ul class="bg-white border-x border-base-lighter usa-sidenav">
     <% Navigation.new(user: current_user, url_options: url_options).navigation_items.each do |nav_item| %>
       <li class="usa-sidenav__item">
         <%= link_to nav_item.href, class: current_page?(nav_item.href) ? 'usa-current' : '' do %>

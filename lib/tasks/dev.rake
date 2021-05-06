@@ -29,16 +29,16 @@ namespace :dev do
     Rails.logger.warn "email=#{ial2_user.email} personal_key=#{personal_key}"
   end
 
-  # protip: set ATTRIBUTE_COST and SCRYPT_COST env vars to '800$8$1$'
+  # protip: set SCRYPT_COST env vars to '800$8$1$'
   # or whatever the test env uses, to override config/application.yml
   # before running this task.
   # e.g.
-  # rake dev:random_users NUM_USERS=1000 SCRYPT_COST='800$8$1$' ATTRIBUTE_COST='800$8$1$'
+  # rake dev:random_users NUM_USERS=1000 SCRYPT_COST='800$8$1$'
 
   # some baseline metrics
-  # $ rake dev:random_users NUM_USERS=1000 SCRYPT_COST='800$8$1$' ATTRIBUTE_COST='800$8$1$'
+  # $ rake dev:random_users NUM_USERS=1000 SCRYPT_COST='800$8$1$'
   # Users: 100% |==================================================| Time: 00:00:37
-  # $ rake dev:random_users NUM_USERS=100000 SCRYPT_COST='800$8$1$' ATTRIBUTE_COST='800$8$1$'
+  # $ rake dev:random_users NUM_USERS=100000 SCRYPT_COST='800$8$1$'
   # Users: 100% |==================================================| Time: 01:06:08
 
   desc 'Create N random User records'

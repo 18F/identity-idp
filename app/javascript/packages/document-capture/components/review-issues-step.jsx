@@ -63,11 +63,6 @@ function ReviewIssuesStep({
 
   return (
     <>
-      <p>
-        {formatHTML(t('doc_auth.info.id_worn_html'), {
-          strong: 'strong',
-        })}
-      </p>
       <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.review_issues_id_text1')}</li>

@@ -24,20 +24,6 @@ Rails.application.routes.draw do
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
 
-  # Routes that are triggered by lambda functions to initiate recurring jobs
-  scope module: :recurring_job do
-    post '/api/account_reset/send_notifications' => 'send_account_reset_notifications#create'
-    post '/api/expired_letters' => 'expired_letters#create'
-    post '/api/usps_download' => 'undeliverable_address#create'
-    post '/api/usps_upload' => 'gpo_upload#create'
-  end
-
-  scope module: :lambda_callback do
-    post '/api/proofing_results/address/:result_id' => 'address_proof_result#create', as: 'address_proof_result'
-    post '/api/proofing_results/resolution/:result_id' => 'resolution_proof_result#create', as: 'resolution_proof_result'
-    post '/api/proofing_results/document/:result_id' => 'document_proof_result#create', as: 'document_proof_result'
-  end
-
   # i18n routes. Alphabetically sorted.
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
     # Devise handles login itself. It's first in the chain to avoid a redirect loop during
@@ -84,11 +70,6 @@ Rails.application.routes.draw do
 
       get '/account_reset/request' => 'account_reset/request#show'
       post '/account_reset/request' => 'account_reset/request#create'
-      unless FeatureManagement.disallow_ial2_recovery?
-        get '/account_reset/recover' => 'account_reset/recover#show'
-        post '/account_reset/recover' => 'account_reset/recover#create'
-        get '/account_reset/recover/email_sent' => 'account_reset/recover#email_sent'
-      end
       get '/account_reset/cancel' => 'account_reset/cancel#show'
       post '/account_reset/cancel' => 'account_reset/cancel#create'
       get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
@@ -193,10 +174,6 @@ Rails.application.routes.draw do
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
-    get '/authenticator_start' => 'users/totp_setup#start'
-
-    get '/recovery_key_setup' => 'users/recovery_key_setup#new'
-    patch '/recovery_key_setup' => 'users/recovery_key_setup#confirm'
 
     get '/forgot_password' => 'forgot_password#show'
 
@@ -262,7 +239,6 @@ Rails.application.routes.draw do
     get '/user_authorization_confirmation' => 'users/authorization_confirmation#show'
     put '/user_authorization_confirmation/reset' => 'users/authorization_confirmation#update', as: :reset_user_authorization
     get '/sign_up/cancel/' => 'sign_up/cancellations#new', as: :sign_up_cancel
-    delete '/sign_up/cancel' => 'sign_up/cancellations#destroy'
 
     get '/return_to_sp/cancel' => 'return_to_sp#cancel'
     get '/return_to_sp/failure_to_proof' => 'return_to_sp#failure_to_proof'
@@ -300,10 +276,6 @@ Rails.application.routes.draw do
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/exception' => 'session_errors#exception'
       get '/session/errors/throttled' => 'session_errors#throttled'
-      get '/session/errors/recovery_failure' => 'session_errors#recovery_failure'
-      get '/session/errors/recovery_warning' => 'session_errors#recovery_warning'
-      get '/session/errors/recovery_exception' => 'session_errors#recovery_exception'
-      get '/session/errors/recovery_throttled' => 'session_errors#recovery_throttled'
       delete '/session' => 'sessions#destroy'
       get '/cancel/' => 'cancellations#new', as: :cancel
       delete '/cancel' => 'cancellations#destroy'
@@ -320,11 +292,6 @@ Rails.application.routes.draw do
           as: :capture_doc_dashes
       get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
       put '/capture_doc/:step' => 'capture_doc#update'
-      unless FeatureManagement.disallow_ial2_recovery?
-        get '/recovery' => 'recovery#index'
-        get '/recovery/:step' => 'recovery#show', as: :recovery_step
-        put '/recovery/:step' => 'recovery#update'
-      end
     end
 
     get '/account/verify' => 'users/verify_account#index', as: :verify_account

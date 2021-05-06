@@ -22,13 +22,13 @@ describe Idv::PhoneStep do
   end
   let(:good_phone) { '2255555000' }
   let(:bad_phone) do
-    IdentityIdpFunctions::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+    Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
   let(:fail_phone) do
-    IdentityIdpFunctions::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
+    Proofing::AddressMockClient::FAILED_TO_CONTACT_PHONE_NUMBER
   end
   let(:timeout_phone) do
-    IdentityIdpFunctions::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
+    Proofing::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
   let(:trace_id) { SecureRandom.uuid }
 
@@ -134,6 +134,28 @@ describe Idv::PhoneStep do
       expect(result.success?).to eq(true)
       expect(idv_session.vendor_phone_confirmation).to eq(true)
       expect(idv_session.user_phone_confirmation).to be_falsy
+    end
+
+    it 'records the transaction_id in the cost' do
+      expect do
+        subject.submit(phone: good_phone)
+        subject.async_state_done(subject.async_state)
+      end.to(change { SpCost.count }.by(1))
+
+      sp_cost = SpCost.last
+      expect(sp_cost.issuer).to eq(service_provider.issuer)
+      expect(sp_cost.transaction_id).to eq('address-mock-transaction-id-123')
+    end
+
+    it 'records the transaction_id in the cost for failures too' do
+      expect do
+        subject.submit(phone: bad_phone)
+        subject.async_state_done(subject.async_state)
+      end.to(change { SpCost.count }.by(1))
+
+      sp_cost = SpCost.last
+      expect(sp_cost.issuer).to eq(service_provider.issuer)
+      expect(sp_cost.transaction_id).to eq('address-mock-transaction-id-123')
     end
   end
 
