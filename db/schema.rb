@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_27_230314) do
+ActiveRecord::Schema.define(version: 2021_05_06_030314) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -621,7 +621,6 @@ ActiveRecord::Schema.define(version: 2021_04_27_230314) do
     t.datetime "second_factor_locked_at"
     t.datetime "locked_at"
     t.integer "failed_attempts", default: 0
-    t.string "unlock_token", limit: 255
     t.datetime "phone_confirmed_at"
     t.text "encrypted_otp_secret_key"
     t.string "direct_otp"
@@ -643,7 +642,6 @@ ActiveRecord::Schema.define(version: 2021_04_27_230314) do
     t.index ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["unconfirmed_email"], name: "index_users_on_unconfirmed_email"
-    t.index ["unlock_token"], name: "index_users_on_unlock_token"
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
