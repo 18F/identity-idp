@@ -310,7 +310,7 @@ describe SamlIdpController do
       end
     end
 
-    context 'inspecting authn_context_enabled' do
+    context 'authn_context scenarios' do
       let(:user) { create(:user, :signed_up) }
 
       context 'authn_context is missing' do
