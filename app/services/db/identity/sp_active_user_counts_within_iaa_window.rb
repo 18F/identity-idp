@@ -26,7 +26,7 @@ module Db
               END
             ) AS total_ial2_active
           FROM service_providers
-         INNER JOIN identities ON identities.service_provider = service_providers.issuer
+          INNER JOIN identities ON identities.service_provider = service_providers.issuer
           WHERE
           (
                identities.last_ial1_authenticated_at >= service_providers.iaa_start_date
