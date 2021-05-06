@@ -4,14 +4,10 @@ describe Db::Identity::SpActiveUserCountsWithinIaaWindow do
   subject { described_class }
 
   it 'is empty' do
-    expect(subject.call.size).to eq(0)
+    expect(subject.call.ntuples).to eq(0)
   end
 
   context 'with data' do
-    let(:user1) { create(:user) }
-    let(:user2) { create(:user) }
-    let(:user3) { create(:user) }
-
     let(:service_provider_no_start_end) do
       create(
         :service_provider,
@@ -45,83 +41,56 @@ describe Db::Identity::SpActiveUserCountsWithinIaaWindow do
     let(:outside_iaas) { Date.new(2020, 1, 1) }
 
     before do
-      # SP without start/end dates, one user with 2 IAL 1 logins (skipped)
-      2.times do
-        create(
-          :sp_return_log,
-          user: user1,
-          service_provider: service_provider_no_start_end,
-          ial: 1,
-          requested_at: inside_april_to_april,
-          returned_at: inside_april_to_april,
-        )
-      end
-
-      # April-April SP
-      # one user with 1 IAL1 login within IAA window
+      # SP without start/end dates, one IAL 1 login (skipped)
       create(
-        :sp_return_log,
-        user: user1,
-        service_provider: service_provider_april_to_april,
-        ial: 1,
-        requested_at: inside_april_to_april,
-        returned_at: inside_april_to_april,
+        :service_provider_identity,
+        service_provider_record: service_provider_no_start_end,
+        last_ial1_authenticated_at: inside_april_to_april,
       )
 
-      # another user, 1 IAL1 login outside IAA window (skipped)
+      # April-April SP
+      # one IAL1 login within IAA window
       create(
-        :sp_return_log,
-        user: user2,
-        service_provider: service_provider_april_to_april,
-        ial: 1,
-        requested_at: outside_iaas,
-        returned_at: outside_iaas,
+        :service_provider_identity,
+        service_provider_record: service_provider_april_to_april,
+        last_ial1_authenticated_at: inside_april_to_april,
+      )
+      # one IAL1 login outside IAA window (skipped)
+      create(
+        :service_provider_identity,
+        service_provider_record: service_provider_april_to_april,
+        last_ial1_authenticated_at: outside_iaas,
       )
 
       # September-September SP
-      # has two IAL1 user logins, each logging in twice within IAA window
-      [user1, user2].each do |user|
-        2.times do
-          create(
-            :sp_return_log,
-            user: user,
-            service_provider: service_provider_september_to_september,
-            ial: 1,
-            requested_at: inside_september_to_september,
-            returned_at: inside_september_to_september,
-          )
-        end
-      end
-
-      # has 3 user IAL2 logins within IAA window
-      [user1, user2, user3].each do |user|
+      # has two IAL1 logins within IAA window
+      2.times do
         create(
-          :sp_return_log,
-          user: user,
-          service_provider: service_provider_september_to_september,
-          ial: 2,
-          requested_at: inside_september_to_september,
-          returned_at: inside_september_to_september,
+          :service_provider_identity,
+          service_provider_record: service_provider_september_to_september,
+          last_ial1_authenticated_at: inside_september_to_september,
         )
       end
-
+      # has two IAL2 logins within IAA window
+      3.times do
+        create(
+          :service_provider_identity,
+          service_provider_record: service_provider_september_to_september,
+          last_ial2_authenticated_at: inside_september_to_september,
+        )
+      end
       # has one IAL2 login outside IAA window (skipped)
-      [user1, user2].each do |user|
-        create(
-          :sp_return_log,
-          user: user,
-          service_provider: service_provider_september_to_september,
-          ial: 2,
-          requested_at: outside_iaas,
-          returned_at: outside_iaas,
-        )
-      end
+      create(
+        :service_provider_identity,
+        service_provider_record: service_provider_september_to_september,
+        last_ial2_authenticated_at: outside_iaas,
+      )
     end
 
     it 'returns active user counts by SP with the IAA start/end, counted by IAL1 level' do
       result = subject.call
 
-      expect(result.size).to eq(2)
+      expect(result.ntuples).to eq(2)
 
       april = result.first
       expect(april.symbolize_keys).to eq(

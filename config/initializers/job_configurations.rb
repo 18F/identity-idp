@@ -139,7 +139,7 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'SP active users over period of peformance report',
   interval: 24 * 60 * 60, # 24 hours
-  timeout: 4 * 60 * 60, # 4 hours... very slow job :[
+  timeout: 300,
   callback: -> { Reports::SpActiveUsersOverPeriodOfPerformanceReport.new.call },
 )
 

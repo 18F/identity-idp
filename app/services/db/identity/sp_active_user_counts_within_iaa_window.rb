@@ -3,49 +3,57 @@ module Db
     # Similar to SpActiveUserCounts, but it limits dates to within active IAA windows
     class SpActiveUserCountsWithinIaaWindow
       def self.call
-        min_date, max_date = ServiceProvider.
-          where.not(iaa_start_date: nil).
-          where.not(iaa_end_date: nil).
-          pluck(:iaa_start_date, :iaa_end_date).
-          flatten.minmax
+        service_providers = ServiceProvider.arel_table
+        identities = ServiceProviderIdentity.arel_table
 
-        # issuer => ial => Set<UserIds>
-        by_issuer = Hash.new do |h, k|
-          h[k] = Hash.new { |h, k| h[k] = Set.new }
-        end
+        ial1_within_iaa = between(
+          identities[:last_ial1_authenticated_at],
+          service_providers[:iaa_start_date],
+          service_providers[:iaa_end_date],
+        )
 
-        session_duration = IdentityConfig.store.session_timeout_in_minutes.minutes
+        ial2_within_iaa = between(
+          identities[:last_ial2_authenticated_at],
+          service_providers[:iaa_start_date],
+          service_providers[:iaa_end_date],
+        )
 
-        ::SpReturnLog.
-          where(requested_at: min_date..(max_date + session_duration)).
-          includes(:service_provider).
-          find_in_batches(batch_size: 100_000) do |sp_return_logs|
-            sp_return_logs.each do |sp_return_log|
-              service_provider = sp_return_log.service_provider
+        sql = ServiceProvider.
+          select(
+            service_providers[:issuer],
+            service_providers[:app_id].maximum.as('app_id'),
+            service_providers[:iaa].maximum.as('iaa'),
+            service_providers[:iaa_start_date].minimum.as('iaa_start_date'),
+            service_providers[:iaa_end_date].maximum.as('iaa_end_date'),
+            sum_if(ial1_within_iaa).as('total_ial1_active'),
+            sum_if(ial2_within_iaa).as('total_ial2_active'),
+          ).joins(:identities).
+          where(
+            ial1_within_iaa.or(ial2_within_iaa),
+          ).group(service_providers[:issuer]).
+          order(service_providers[:issuer]).
+          to_sql
 
-              next if service_provider.nil? # guard against bad legacy data
+        ActiveRecord::Base.connection.execute(sql)
+      end
 
-              iaa_range = service_provider.iaa_start_date..service_provider.iaa_end_date
+      # Builds "value BETWEEN range_start AND range_end"
+      # We need to do this because Arel's value#between() only works on values
+      # that can go in the stdlib Range class
+      def self.between(value, range_start, range_end)
+        Arel::Nodes::Between.new(
+          value,
+          Arel::Nodes::And.new([range_start, range_end]),
+        )
+      end
 
-              if sp_return_log.returned_at && iaa_range.cover?(sp_return_log.returned_at)
-                by_issuer[service_provider.issuer][sp_return_log.ial] << sp_return_log.user_id
-              end
-            end
-          end
-
-        by_issuer.map do |issuer, ial_to_user_ids|
-          service_provider = ServiceProvider.from_issuer(issuer)
-
-          {
-            issuer: service_provider.issuer,
-            app_id: service_provider.app_id,
-            iaa: service_provider.iaa,
-            iaa_start_date: service_provider.iaa_start_date.to_s,
-            iaa_end_date: service_provider.iaa_end_date.to_s,
-            total_ial1_active: ial_to_user_ids[1].size,
-            total_ial2_active: ial_to_user_ids[2].size,
-          }
-        end
+      # Builds psql equivalent of mysql's SUM(IF(condition, 1, 0))
+      def self.sum_if(condition)
+        Arel::Nodes::Sum.new(
+          [
+            Arel::Nodes::Case.new.when(condition).then(1).else(0),
+          ],
+        )
       end
     end
   end
