@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_06_030314) do
+ActiveRecord::Schema.define(version: 2021_04_28_145328) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -615,14 +615,12 @@ ActiveRecord::Schema.define(version: 2021_05_06_030314) do
     t.string "confirmation_token", limit: 255
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.string "unconfirmed_email", limit: 255
     t.integer "second_factor_attempts_count", default: 0
     t.string "uuid", limit: 255, null: false
     t.datetime "second_factor_locked_at"
     t.datetime "locked_at"
     t.integer "failed_attempts", default: 0
     t.datetime "phone_confirmed_at"
-    t.text "encrypted_otp_secret_key"
     t.string "direct_otp"
     t.datetime "direct_otp_sent_at"
     t.datetime "idv_attempted_at"
@@ -639,9 +637,7 @@ ActiveRecord::Schema.define(version: 2021_05_06_030314) do
     t.datetime "remember_device_revoked_at"
     t.string "email_language", limit: 10
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
-    t.index ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["unconfirmed_email"], name: "index_users_on_unconfirmed_email"
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
   end
 
