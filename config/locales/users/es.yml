@@ -28,4 +28,4 @@ es:
     rules_of_use:
       check_box_to_accept: translate
       details_html: translate
-      overview: translate
+      overview: translate %{link}
