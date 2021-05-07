@@ -18,7 +18,7 @@
     <% MfaContext.new(current_user).phone_configurations.each do |phone_configuration| %>
       <div class="grid-row padding-1 border-top border-left border-right border-primary-light">
         <div class="grid-col-5">
-          <%= phone_configuration.phone %>
+          <%= PhoneFormatter.format(phone_configuration.phone) %>
         </div>
         <div class="grid-col-4 text-center">
           <% if current_user.default_phone_configuration == phone_configuration %>

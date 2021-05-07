@@ -110,6 +110,20 @@ describe 'accounts/show.html.erb' do
           t('account.index.phone'), href: manage_phone_path(id: user.phone_configurations.first.id)
         )
       end
+
+      context 'phone number formatting' do
+        before do
+          user.phone_configurations.first.tap do |phone_configuration|
+            phone_configuration.phone = '+18888675309'
+            phone_configuration.save
+          end
+        end
+
+        it 'formats phone numbers' do
+          render
+          expect(rendered).to have_selector('.grid-col-5', text: '+1 888-867-5309')
+        end
+      end
     end
   end
 
