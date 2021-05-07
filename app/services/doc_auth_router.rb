@@ -94,79 +94,41 @@ module DocAuthRouter
     private
 
     def translate_form_response!(response)
-      raise NotImplementedError
-    end
-
-    # rubocop:disable Style/GuardClause
-    def translate_generic_errors!(response)
-      if response.errors[:network] == true
-        response.errors[:network] = I18n.t('doc_auth.errors.general.network_error')
-      end
-
-      if response.errors[:selfie] == true
-        response.errors[:selfie] = I18n.t('doc_auth.errors.general.liveness')
-      end
-    end
-    # rubocop:enable Style/GuardClause
-  end
-
-  # Adds translations to responses from Acuant
-  class AcuantErrorTranslatorProxy < DocAuthErrorTranslatorProxy
-    private
-
-    # Translates IdentityDocAuth::GetResultsResponse errors
-    def translate_form_response!(response)
       return response unless response.is_a?(IdentityDocAuth::Response)
 
-      translate_friendly_errors!(response)
+      translate_doc_auth_errors!(response)
       translate_generic_errors!(response)
 
       response
     end
 
-    def translate_friendly_errors!(response)
-      response.errors[:results]&.map! do |untranslated_error|
-        error_key = ERROR_TRANSLATIONS[untranslated_error]
+    def translate_doc_auth_errors!(response)
+      # acuant selfie errors are handled in translate_generic_errors!
+      error_keys = IdentityDocAuth::ErrorGenerator::ERROR_KEYS.dup
+      error_keys.delete(:selfie) if DocAuthRouter::doc_auth_vendor == 'acuant'
 
-        if error_key
-          I18n.t(error_key)
-        else
-          friendly_message = FriendlyError::Message.call(untranslated_error, 'doc_auth')
-          if friendly_message == untranslated_error
-            I18n.t('doc_auth.errors.general.no_liveness')
-          else
-            friendly_message
-          end
-        end
-      end&.uniq!
-    end
-  end
-
-  class LexisNexisTranslatorProxy < DocAuthErrorTranslatorProxy
-    private
-
-    # Translates IdentityDocAuth::GetResultsResponse errors
-    def translate_form_response!(response)
-      return response unless response.is_a?(IdentityDocAuth::Response)
-
-      translate_trueid_errors!(response)
-      translate_generic_errors!(response)
-
-      response
-    end
-
-    def translate_trueid_errors!(response)
-      IdentityDocAuth::LexisNexis::ErrorGenerator::ERROR_KEYS.each do |category|
+      error_keys.each do |category|
         response.errors[category]&.map! do |plain_error|
           error_key = ERROR_TRANSLATIONS[plain_error]
           if error_key
             I18n.t(error_key)
           else
-            Rails.logger.warn("unknown LexisNexis error=#{plain_error}")
+            Rails.logger.warn("unknown DocAuth error=#{plain_error}")
             # This isn't right, this should depend on the liveness setting
             I18n.t('doc_auth.errors.general.no_liveness')
           end
         end
+      end
+    end
+
+    def translate_generic_errors!(response)
+      if response.errors[:network] == true
+        response.errors[:network] = I18n.t('doc_auth.errors.general.network_error')
+      end
+
+      # this is only relevant to acuant code path
+      if response.errors[:selfie] == true
+        response.errors[:selfie] = I18n.t('doc_auth.errors.general.liveness')
       end
     end
   end
@@ -174,7 +136,7 @@ module DocAuthRouter
   def self.client
     case doc_auth_vendor
     when 'acuant'
-      AcuantErrorTranslatorProxy.new(
+      DocAuthErrorTranslatorProxy.new(
         IdentityDocAuth::Acuant::AcuantClient.new(
           assure_id_password: IdentityConfig.store.acuant_assure_id_password,
           assure_id_subscription_id: IdentityConfig.store.acuant_assure_id_subscription_id,
@@ -190,7 +152,7 @@ module DocAuthRouter
         ),
       )
     when 'lexisnexis'
-      LexisNexisTranslatorProxy.new(
+      DocAuthErrorTranslatorProxy.new(
         IdentityDocAuth::LexisNexis::LexisNexisClient.new(
           account_id: IdentityConfig.store.lexisnexis_account_id,
           base_url: IdentityConfig.store.lexisnexis_base_url,
@@ -203,6 +165,9 @@ module DocAuthRouter
           timeout: IdentityConfig.store.lexisnexis_timeout,
           exception_notifier: method(:notify_exception),
           locale: I18n.locale,
+          dpi_threshold: IdentityConfig.store.doc_auth_error_dpi_threshold,
+          sharpness_threshold: IdentityConfig.store.doc_auth_error_sharpness_threshold,
+          glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
       )
     when 'mock'
