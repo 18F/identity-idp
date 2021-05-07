@@ -89,8 +89,10 @@ module Idv
       if idv_session.phone_confirmed?
         event = create_user_event_with_disavowal(:account_verified)
         UserAlerts::AlertUserAboutAccountVerified.call(
-          current_user, event.created_at,
-          decorated_session.sp_name, event.disavowal_token
+          user: current_user,
+          date_time: event.created_at,
+          app: decorated_session.sp_name,
+          disavowal_token: event.disavowal_token,
         )
       end
     end

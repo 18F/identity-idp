@@ -14,7 +14,12 @@ describe UserAlerts::AlertUserAboutAccountVerified do
 
       allow(UserMailer).to receive(:account_verified).and_call_original
 
-      described_class.call(user, date_time, '', disavowal_token)
+      described_class.call(
+        user: user,
+        date_time: date_time,
+        app: '',
+        disavowal_token: disavowal_token,
+      )
 
       expect(UserMailer).to have_received(:account_verified).
         exactly(confirmed_email_addresses.count).times

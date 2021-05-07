@@ -36,8 +36,10 @@ module Users
         if result.success?
           event = create_user_event_with_disavowal(:account_verified)
           UserAlerts::AlertUserAboutAccountVerified.call(
-            current_user, event.created_at, nil,
-            event.disavowal_token
+            user: current_user,
+            date_time: event.created_at,
+            app: nil,
+            disavowal_token: event.disavowal_token,
           )
           flash[:success] = t('account.index.verification.success')
           redirect_to sign_up_completed_url
