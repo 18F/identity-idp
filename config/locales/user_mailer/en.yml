@@ -42,7 +42,7 @@ en:
       contact_link: contact us
       disavowal_link: change your password
       intro_html: You successfully verified your identity with %{app} on %{date} using
-        Login.gov. If you did not perform this action, please %{contact_link} and
+        %{app_name}. If you did not perform this action, please %{contact_link} and
         sign in to %{disavowal_link}.
       subject: You verified your identity with %{app}.
     add_email:
