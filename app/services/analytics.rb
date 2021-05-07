@@ -178,6 +178,7 @@ class Analytics
   RETURN_TO_SP_CANCEL = 'Return to SP: Cancelled'.freeze
   RETURN_TO_SP_FAILURE_TO_PROOF = 'Return to SP: Failed to proof'.freeze
   RULES_OF_USE_VISIT = 'Rules Of Use Visited'.freeze
+  RULES_OF_USE_SUBMITTED = 'Rules Of Use Submitted'.freeze
   SECURITY_EVENT_RECEIVED = 'RISC: Security event received'.freeze
   SP_REVOKE_CONSENT_REVOKED = 'SP Revoke Consent: Revoked'.freeze
   SP_REVOKE_CONSENT_VISITED = 'SP Revoke Consent: Visited'.freeze
