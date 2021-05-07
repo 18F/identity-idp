@@ -14,6 +14,7 @@ class BackupCodeBackfillerJob < ApplicationJob
   # the same salt to make forward lookups more efficient
   def perform(start_id:, count:)
     User.
+      includes(:backup_code_configurations).
       where('id >= ?', start_id).
       limit(count).
       each do |user|
