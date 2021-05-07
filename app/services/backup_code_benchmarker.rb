@@ -68,7 +68,7 @@ class BackupCodeBenchmarker
         Benchmark.realtime do
           batch.each_slice(num_per_user) do |slice|
             Benchmark.realtime do
-              job.perform_batch(backup_code_configurations)
+              job.perform_batch(slice)
             end.tap do |duration|
               logger.info "duration=#{duration} batch_size=#{slice.size}"
             end

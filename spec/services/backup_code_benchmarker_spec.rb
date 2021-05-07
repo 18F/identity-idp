@@ -50,7 +50,7 @@ RSpec.describe BackupCodeBenchmarker do
 
       BackupCodeConfiguration.all.each do |cfg|
         expect(cfg.salted_code_fingerprint).to eq(
-          benchmarker.scrypt_password_digest(
+          BackupCodeConfiguration.scrypt_password_digest(
             password: id_to_code.fetch(cfg.id),
             salt: cfg.code_salt,
             cost: cfg.code_cost,
