@@ -25,3 +25,8 @@ es:
       generated_on_html: Generado el %{date}
       header: Su clave personal
       print: Imprima esta página
+    rules_of_use:
+      check_box_to_accept: translate
+      details_html: |-
+        translate
+      overview: translate

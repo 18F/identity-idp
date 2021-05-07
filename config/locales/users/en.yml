@@ -24,3 +24,14 @@ en:
       generated_on_html: Generated on %{date}
       header: Your personal key
       print: Print
+    rules_of_use:
+      check_box_to_accept: Check this box to accept the login.gov
+      details_html: |-
+        <div class="bold margin-bottom-1">Rules of Use:</div>
+        <ul>
+        <li>Explain how the login.gov service works and what you can expect from it,</li>
+        <li>The terms under which we provide the login.gov service to you,</li>
+        <li>How we use your information and your rights to that information, ands</li>
+        <li>The conditions you agree to when you take certain actions on the login.gov service.</li>
+        </ul>
+      overview: We've updated our %{link}. Please review and check the box below to continue.

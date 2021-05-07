@@ -107,6 +107,7 @@ es:
     registration:
       terms: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
         y luego haga clic en continuar.
+    rules_of_use: Marque esta casilla para continuar
     two_factor_auth_setup:
       must_select_option: Seleccione un método de autenticación.
     verify_personal_key:
