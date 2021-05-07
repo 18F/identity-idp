@@ -315,10 +315,11 @@ class ApplicationController < ActionController::Base
   end
 
   def first_auth_of_session?(issuer, ial)
-    authenticated_to_sp_token = "auth_counted_ial#{ial}_#{issuer}"
-    authenticated_to_sp = user_session[authenticated_to_sp_token]
+    auth_sp_token = "auth_counted_#{issuer}"
+    auth_sp_token.concat('ial1') if ial == 1
+    authenticated_to_sp = user_session[auth_sp_token]
     return if authenticated_to_sp
-    user_session[authenticated_to_sp_token] = true
+    user_session[auth_sp_token] = true
   end
 
   def mfa_policy
@@ -373,7 +374,13 @@ class ApplicationController < ActionController::Base
   end
 
   def add_sp_cost(token)
-    Db::SpCost::AddSpCost.call(sp_session[:issuer].to_s, sp_session_ial, token)
+    Db::SpCost::AddSpCost.call(
+      sp_session[:issuer].to_s,
+      sp_session_ial,
+      token,
+      transaction_id: nil,
+      user_id: current_user.id,
+    )
   end
 
   def mobile?

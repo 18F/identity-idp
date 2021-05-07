@@ -8,10 +8,16 @@ class MonthlySpAuthCount < ApplicationRecord
       SET auth_count = monthly_sp_auth_counts.auth_count + 1
     SQL
     year_month = Time.zone.today.strftime('%Y%m')
+    current_user = User.find_by(id: user_id)
     service_provider = ServiceProvider.from_issuer(issuer)
-    ial_context = IalContext.new(ial: ial, service_provider: service_provider)
-    ial_1_or_2 = ial_context.ial2_or_greater? ? 2 : 1
-    query = sanitize_sql_array([sql, issuer.to_s, ial_1_or_2, year_month, user_id])
+    ial_context = IalContext.new(ial: ial, service_provider: service_provider, user: current_user)
+    query = sanitize_sql_array(
+      [sql,
+       issuer.to_s,
+       ial_context.bill_for_ial_1_or_2,
+       year_month,
+       user_id],
+    )
     MonthlySpAuthCount.connection.execute(query)
   end
 end
