@@ -3,8 +3,9 @@
 <h1><%= t('titles.rules_of_use') %></h1>
 
 <p>
-<%== t('users.rules_of_use.overview', link: new_window_link_to(t('titles.rules_of_use'),
-                                                              "http://localhost:4000/policy/rules-of-use/")) %>
+<%== t('users.rules_of_use.overview',
+       link: new_window_link_to(t('titles.rules_of_use'),
+                                MarketingSite.security_and_privacy_practices_url)) %>
 </p>
 
 <%= t('users.rules_of_use.details_html') %>
