@@ -44,7 +44,7 @@ es:
       contact_link: contacto con nosotros
       disavowal_link: cambiar tu contraseña
       intro_html: Verificaste correctamente tu identidad con %{app} el %{date} a través
-        de login.gov. Si no realizaste esta acción, ponte en %{contact_link} e inicia
+        de %{app_name}. Si no realizaste esta acción, ponte en %{contact_link} e inicia
         sesión para %{disavowal_link}.
       subject: Verificaste tu identidad con %{app}
     add_email:

@@ -204,6 +204,7 @@ class UserMailer < ActionMailer::Base
       @date = I18n.localize(date_time, format: '%B %-d, %Y')
       @app = app
       @disavowal_token = disavowal_token
+      @app_name = APP_NAME
       mail(to: email_address.email, subject: t('user_mailer.account_verified.subject', app: @app))
     end
   end

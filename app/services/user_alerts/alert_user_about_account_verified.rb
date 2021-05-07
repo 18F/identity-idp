@@ -1,7 +1,7 @@
 module UserAlerts
   class AlertUserAboutAccountVerified
     def self.call(user, date_time, app, disavowal_token)
-      app = app || 'Login.gov'
+      app = app || APP_NAME
       user.confirmed_email_addresses.each do |email_address|
         UserMailer.account_verified(
           user,
