@@ -121,7 +121,6 @@ module DocAuthRouter
       end
     end
 
-    # rubocop:disable Style/GuardClause
     def translate_generic_errors!(response)
       if response.errors[:network] == true
         response.errors[:network] = I18n.t('doc_auth.errors.general.network_error')
@@ -132,7 +131,6 @@ module DocAuthRouter
         response.errors[:selfie] = I18n.t('doc_auth.errors.general.liveness')
       end
     end
-    # rubocop:enable Style/GuardClause
   end
 
   def self.client
