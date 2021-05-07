@@ -10,9 +10,8 @@ class RulesOfUseForm
     ActiveModel::Name.new(self, nil, 'User')
   end
 
-  def initialize(user:, analytics:)
+  def initialize(user)
     @user = user
-    @analytics = analytics
   end
 
   def validate_terms_accepted
@@ -29,7 +28,7 @@ class RulesOfUseForm
       self.success = false
     end
 
-    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+    FormResponse.new(success: success, errors: errors.messages)
   end
 
   private
@@ -40,11 +39,5 @@ class RulesOfUseForm
     self.success = true
     user.accepted_terms_at = Time.zone.now
     user.save!
-  end
-
-  def extra_analytics_attributes
-    {
-      user_id: user.uuid,
-    }
   end
 end

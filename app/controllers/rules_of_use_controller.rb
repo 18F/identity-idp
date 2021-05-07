@@ -25,7 +25,7 @@ class RulesOfUseController < ApplicationController
   private
 
   def new_rules_of_use_form
-    RulesOfUseForm.new(user: current_user, analytics: analytics)
+    RulesOfUseForm.new(current_user)
   end
 
   def process_successful_agreement_to_rules_of_use
