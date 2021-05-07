@@ -1,5 +1,0 @@
-#!/usr/bin/env ruby
-
-require_relative '../lib/github_metrics'
-
-GithubMetrics::PrAgeReporter.new.call

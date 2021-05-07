@@ -90,9 +90,6 @@ update_country_dialing_codes:
 check_asset_strings:
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
 
-generate_deploy_checklist:
-	ruby lib/release_management/generate_deploy_checklist.rb
-
 local_gems_bundle:
 	BUNDLE_GEMFILE=Gemfile-dev bundle install
 
