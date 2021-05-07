@@ -34,4 +34,5 @@ en:
         <li>How we use your information and your rights to that information, ands</li>
         <li>The conditions you agree to when you take certain actions on the login.gov service.</li>
         </ul>
-      overview: We've updated our %{link}. Please review and check the box below to continue.
+      overview: We’ve updated our %{link}. Please review and check the box below to
+        continue.
