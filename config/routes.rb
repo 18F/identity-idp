@@ -161,8 +161,8 @@ Rails.application.routes.draw do
     get '/events/disavow' => 'event_disavowal#new', as: :event_disavowal
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal
 
-    get '/users/rules_of_use' => 'users/rules_of_use#new'
-    post '/users/rules_of_use' => 'users/rules_of_use#create'
+    get '/rules_of_use' => 'users/rules_of_use#new'
+    post '/rules_of_use' => 'users/rules_of_use#create'
 
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
