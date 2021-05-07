@@ -6,7 +6,6 @@ module Users
     def new
       analytics.track_event(Analytics::RULES_OF_USE_VISIT)
       @rules_of_use_form = new_rules_of_use_form
-      render :new, locals: { request_id: nil }, formats: :html
     end
 
     def create
