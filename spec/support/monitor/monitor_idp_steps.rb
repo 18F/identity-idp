@@ -57,6 +57,12 @@ module MonitorIdpSteps
     fill_in 'user_email', with: email
     fill_in 'user_password', with: monitor.config.login_gov_sign_in_password
     click_on 'Sign in'
+
+    if current_path == rules_of_use_path
+      check t('users.rules_of_use.check_box_to_accept'), allow_label_click: true
+      click_button t('forms.buttons.continue')
+    end
+
     fill_in 'code', with: monitor.check_for_otp
     uncheck 'Remember this browser'
     click_on 'Submit'
