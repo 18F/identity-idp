@@ -37,7 +37,6 @@ class RulesOfUseForm
 
   def process_successful_submission
     self.success = true
-    user.accepted_terms_at = Time.zone.now
-    user.save!
+    UpdateUser.new(user: user, attributes: { accepted_terms_at: Time.zone.now }).call
   end
 end
