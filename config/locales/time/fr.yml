@@ -18,6 +18,7 @@ fr:
   time:
     am: A.M.
     formats:
+      event_date: "%-d %B %Y"
       event_timestamp: "%e %B %Y à %H:%M"
       event_timestamp_utc: "%e %B %Y à %H:%M UTC"
       event_timestamp_with_zone: "%e %B %Y à %H:%M %Z"

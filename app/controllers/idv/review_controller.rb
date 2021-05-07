@@ -85,7 +85,16 @@ module Idv
       idv_session.create_profile_from_applicant_with_password(password)
       idv_session.cache_encrypted_pii(password)
       idv_session.complete_session
-      create_user_event(:account_verified) if idv_session.phone_confirmed?
+
+      if idv_session.phone_confirmed?
+        event = create_user_event_with_disavowal(:account_verified)
+        UserAlerts::AlertUserAboutAccountVerified.call(
+          user: current_user,
+          date_time: event.created_at,
+          app: decorated_session.sp_name,
+          disavowal_token: event.disavowal_token,
+        )
+      end
     end
 
     def valid_password?

@@ -348,15 +348,10 @@ describe Idv::ReviewController do
         end
 
         it 'creates an `account_verified` event once per confirmation' do
-          expect(Event).to receive(:create).with(
-            hash_including(
-              user_id: user.id,
-              event_type: :account_verified,
-              ip: '0.0.0.0',
-            ),
-          )
-
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          disavowal_event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
+            where.not(disavowal_token_fingerprint: nil).count
+          expect(disavowal_event_count).to eq 1
         end
       end
 
