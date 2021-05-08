@@ -38,5 +38,5 @@ fr:
         <li>Comment nous utilisons vos informations et vos droits sur ces informations, et</li>
         <li>Les conditions que vous acceptez lorsque vous effectuez certaines actions sur le service login.gov.</li>
         </ul>
-      overview: Nous avons mis à jour notre %{link}. Veuillez consulter et cocher
+      overview_html: Nous avons mis à jour notre %{link}. Veuillez consulter et cocher
         la case ci-dessous pour continuer.

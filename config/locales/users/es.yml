@@ -35,5 +35,5 @@ es:
         <li>Cómo usamos su información y sus derechos sobre esa información, y</li>
         <li>Las condiciones que acepta cuando realiza determinadas acciones en el servicio login.gov.</li>
         </ul>
-      overview: Actualizamos nuestro %{link}. Revise y marque la casilla a continuación
+      overview_html: Actualizamos nuestro %{link}. Revise y marque la casilla a continuación
         para continuar.
