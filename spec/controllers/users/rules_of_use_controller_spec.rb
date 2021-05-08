@@ -54,11 +54,11 @@ RSpec.describe Users::RulesOfUseController do
   end
 
   describe '#create' do
-    subject(:action) do
-      post :create, params: { user: { terms_accepted: 'true' } }
-    end
+    context 'when the user needs to accept the rules of use and does accept them' do
+      subject(:action) do
+        post :create, params: { user: { terms_accepted: 'true' } }
+      end
 
-    context 'when the user needs to accept the rules of use' do
       before do
         sign_in_before_2fa_with_user_that_needs_to_accept_rules_of_use
       end
@@ -79,6 +79,36 @@ RSpec.describe Users::RulesOfUseController do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with(Analytics::RULES_OF_USE_SUBMITTED, hash_including(success: true))
+
+        action
+      end
+    end
+
+    context 'when the user needs to accept the rules of use and does not accept them' do
+      subject(:action) do
+        post :create, params: { user: { terms_accepted: 'false' } }
+      end
+
+      before do
+        sign_in_before_2fa_with_user_that_needs_to_accept_rules_of_use
+      end
+
+      it 'does not updates the user accepted terms at timestamp' do
+        action
+
+        expect(controller.current_user.reload.accepted_terms_at).to be_nil
+      end
+
+      it 'redirects to the two factor authentication page' do
+        action
+
+        expect(response).to render_template(:new)
+      end
+
+      it 'logs a failure analytics event' do
+        stub_analytics
+        expect(@analytics).to receive(:track_event).
+            with(Analytics::RULES_OF_USE_SUBMITTED, hash_including(success: false))
 
         action
       end
