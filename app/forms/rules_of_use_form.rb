@@ -20,7 +20,7 @@ class RulesOfUseForm
     errors.add(:terms_accepted, t('errors.rules_of_use'))
   end
 
-  def submit(params, instructions = nil)
+  def submit(params)
     @terms_accepted = params[:terms_accepted] == 'true'
     if valid?
       process_successful_submission
