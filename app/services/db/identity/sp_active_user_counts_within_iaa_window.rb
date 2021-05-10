@@ -3,9 +3,6 @@ module Db
     # Similar to SpActiveUserCounts, but it limits dates to within active IAA windows
     class SpActiveUserCountsWithinIaaWindow
       def self.call
-        service_providers = ServiceProvider.arel_table
-        identities = ServiceProviderIdentity.arel_table
-
         sql = <<~SQL
           SELECT
             service_providers.issuer
