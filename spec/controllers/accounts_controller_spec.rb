@@ -55,6 +55,23 @@ describe AccountsController do
       end
     end
 
+    context 'when a profile is pending' do
+      render_views
+      it 'renders the pending profile banner' do
+        user = create(
+          :user,
+          :signed_up,
+          profiles: [build(:profile, deactivation_reason: :verification_pending)],
+        )
+
+        sign_in user
+        get :show
+
+        expect(response).to render_template(:show)
+        expect(response).to render_template(partial: 'accounts/_pending_profile_gpo')
+      end
+    end
+
     context 'when logging in with piv/cac' do
       context 'when the user is proofed' do
         it 'renders a locked profile' do

@@ -454,9 +454,21 @@ describe Users::SessionsController, devise: true do
     end
 
     context 'with a new user' do
+      render_views
+
       it 'renders the new template' do
         get :new
         expect(response).to render_template(:new)
+      end
+
+      it 'renders the return to service provider template when arriving from an SP' do
+        sp = create(:service_provider, issuer: 'https://awesome')
+        subject.session[:sp] = { issuer: sp.issuer }
+
+        get :new
+
+        expect(response).to render_template(:new)
+        expect(response).to render_template(partial: 'devise/sessions/_return_to_service_provider')
       end
 
       it 'tracks page visit, any alert flashes, and the Devise stored location' do

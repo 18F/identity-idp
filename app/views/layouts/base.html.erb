@@ -63,7 +63,11 @@
       <% if content_for?(:nav) %>
         <%= yield(:nav) %>
       <% else %>
-        <%= render decorated_session.nav_partial %>
+        <% if decorated_session.sp_name %>
+          <%= render 'shared/nav_branded' %>
+        <% else %>
+          <%= render 'shared/nav_lite' %>
+        <% end %>
       <% end %>
     </div>
     <div class="container">

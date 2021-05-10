@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe SignUp::CompletionsController do
   describe '#show' do
+    render_views
     context 'user signed in, sp info present' do
       before do
         stub_analytics
@@ -73,23 +74,25 @@ describe SignUp::CompletionsController do
       expect(response).to redirect_to(account_url)
     end
 
-    it 'renders show if the user has an sp in the active session' do
+    it 'renders show if the user has an invalid sp in the active session' do
       user = create(:user)
       stub_sign_in(user)
       subject.session[:sp] = { issuer: 'awesome sp', ial2: false }
       get :show
 
       expect(response).to render_template(:show)
+      expect(response).to render_template(partial: 'sign_up/completions/_show_identities')
     end
 
     it 'renders show if the user has identities and no active session' do
       user = create(:user)
-      create(:service_provider_identity, user: user)
+      sp = create(:service_provider, issuer: 'https://awesome')
       stub_sign_in(user)
-      subject.session[:sp] = { issuer: 'awesome sp', ial2: false }
+      subject.session[:sp] = { issuer: sp.issuer, ial2: false, requested_attributes: [:email] }
       get :show
 
       expect(response).to render_template(:show)
+      expect(response).to render_template(partial: 'sign_up/completions/_show_sp')
     end
   end
 
