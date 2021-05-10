@@ -24,11 +24,13 @@ class BackupCodeBenchmarker
     @logger = logger
   end
 
-  def run
+  # @yield block to call after rows are created, before they are backfilled
+  def run(&before_convert)
     raise 'do not run in prod' if Identity::Hostdata.env == 'prod'
 
     silence_active_record_logger do
       prepare!
+      yield if block_given?
       convert!
     end
   end
@@ -59,12 +61,14 @@ class BackupCodeBenchmarker
   end
 
   def convert!
+    job = BackupCodeBackfillerJob.new
+
     Benchmark.realtime do
       BackupCodeConfiguration.limit(num_rows).find_in_batches(batch_size: batch_size) do |batch|
         Benchmark.realtime do
           batch.each_slice(num_per_user) do |slice|
             Benchmark.realtime do
-              convert_codes!(slice)
+              job.perform_batch(slice)
             end.tap do |duration|
               logger.info "duration=#{duration} batch_size=#{slice.size}"
             end
@@ -76,32 +80,6 @@ class BackupCodeBenchmarker
     end.tap do |duration|
       logger.info "duration=#{duration} batch_size=#{num_rows} (done)"
     end
-  end
-
-  # @param [Array<BackupCodeConfiguration>] backup_code_configurations
-  def convert_codes!(backup_code_configurations)
-    salt = SecureRandom.hex(32)
-
-    backup_code_configurations.each do |backup_code_configuration|
-      code = backup_code_configuration.code
-
-      backup_code_configuration.update(
-        code_cost: cost,
-        code_salt: salt,
-        salted_code_fingerprint: BackupCodeConfiguration.scrypt_password_digest(
-          password: code,
-          salt: salt,
-          cost: cost,
-        ),
-      )
-    end
-  end
-
-  # @see PasswordVerifier#scrypt_password_digest
-  def scrypt_password_digest(password:, salt:, cost:)
-    scrypt_salt = cost + OpenSSL::Digest::SHA256.hexdigest(salt)
-    scrypted = SCrypt::Engine.hash_secret password, scrypt_salt, 32
-    scrypt_password_digest = SCrypt::Password.new(scrypted).digest
   end
 
   # @yield a block to run with a silenced AR logger

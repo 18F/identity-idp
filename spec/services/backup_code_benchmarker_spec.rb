@@ -40,14 +40,18 @@ RSpec.describe BackupCodeBenchmarker do
     end
 
     it 'sets scrypted value' do
-      benchmarker.run
+      id_to_code = nil
+
+      benchmarker.run do
+        id_to_code = BackupCodeConfiguration.all.map { |b| [b.id, b.code] }.to_h
+      end
 
       expect(BackupCodeConfiguration.count).to eq(num_rows)
 
       BackupCodeConfiguration.all.each do |cfg|
         expect(cfg.salted_code_fingerprint).to eq(
-          benchmarker.scrypt_password_digest(
-            password: cfg.code,
+          BackupCodeConfiguration.scrypt_password_digest(
+            password: id_to_code.fetch(cfg.id),
             salt: cfg.code_salt,
             cost: cfg.code_cost,
           ),
