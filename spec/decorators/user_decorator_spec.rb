@@ -278,28 +278,6 @@ describe UserDecorator do
     end
   end
 
-  context 'badge partials' do
-    let(:verified_profile) do
-      build(:profile, :active, :verified, pii: { ssn: '1111', dob: '1920-01-01' })
-    end
-
-    describe '#verified_account_partial' do
-      subject(:partial) { UserDecorator.new(user).verified_account_partial }
-
-      context 'with an unverified account' do
-        let(:user) { build(:user) }
-
-        it { expect(partial).to eq('shared/null') }
-      end
-
-      context 'with a verified account' do
-        let(:user) { create(:user, profiles: [verified_profile]) }
-
-        it { expect(partial).to eq('accounts/verified_account_badge') }
-      end
-    end
-  end
-
   describe '#password_reset_profile' do
     let(:user) { create(:user) }
     subject(:decorated_user) { UserDecorator.new(user) }

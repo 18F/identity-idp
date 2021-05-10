@@ -27,20 +27,6 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe '#return_to_service_provider_partial' do
-    it 'returns the correct partial' do
-      expect(subject.return_to_service_provider_partial).to eq(
-        'devise/sessions/return_to_service_provider',
-      )
-    end
-  end
-
-  describe '#nav_partial' do
-    it 'returns the correct partial' do
-      expect(subject.nav_partial).to eq 'shared/nav_branded'
-    end
-  end
-
   describe '#new_session_heading' do
     it 'returns the correct string' do
       expect(subject.new_session_heading).to eq I18n.t('headings.sign_in_with_sp', sp: sp_name)

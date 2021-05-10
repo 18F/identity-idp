@@ -4,7 +4,7 @@ module TwoFactorAuthCode
     include ActionView::Helpers::TranslationHelper
     include Rails.application.routes.url_helpers
 
-    attr_reader :code_value
+    attr_reader :code_value, :reauthn
 
     def initialize(data:, view:, remember_device_default: true)
       data.each do |key, value|
@@ -32,14 +32,6 @@ module TwoFactorAuthCode
 
     def fallback_links
       raise NotImplementedError
-    end
-
-    def reauthn_hidden_field_partial
-      if reauthn
-        'two_factor_authentication/totp_verification/reauthn'
-      else
-        'shared/null'
-      end
     end
 
     def remember_device_box_checked?
@@ -73,6 +65,6 @@ module TwoFactorAuthCode
       MfaPolicy.new(@view.current_user).no_factors_enabled?
     end
 
-    attr_reader :personal_key_unavailable, :view, :reauthn, :user_opted_remember_device_cookie
+    attr_reader :personal_key_unavailable, :view, :user_opted_remember_device_cookie
   end
 end

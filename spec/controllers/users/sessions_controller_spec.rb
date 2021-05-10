@@ -469,6 +469,21 @@ describe Users::SessionsController, devise: true do
 
         get :new
       end
+
+      context 'renders partials' do
+        render_views
+        it 'renders the return to service provider template when arriving from an SP' do
+          sp = create(:service_provider, issuer: 'https://awesome')
+          subject.session[:sp] = { issuer: sp.issuer }
+
+          get :new
+
+          expect(response).to render_template(:new)
+          expect(response).to render_template(
+            partial: 'devise/sessions/_return_to_service_provider',
+          )
+        end
+      end
     end
 
     context 'with fully authenticated user who has a pending profile' do

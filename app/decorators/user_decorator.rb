@@ -156,14 +156,6 @@ class UserDecorator
     user.identities.not_deleted.order('created_at DESC')
   end
 
-  def verified_account_partial
-    if identity_verified?
-      'accounts/verified_account_badge'
-    else
-      'shared/null'
-    end
-  end
-
   def delete_account_bullet_key
     if identity_verified?
       I18n.t('users.delete.bullet_2_loa3', app: APP_NAME)

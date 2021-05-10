@@ -21,7 +21,11 @@
       <%= t('headings.account.activity') %>
     </h2>
     <% @view_model.recent_events.each do |event| %>
-      <%= render event.event_partial, event: event %>
+      <% if event.is_a?(ServiceProviderIdentity) %>
+        <%= render 'accounts/identity_item', event: event %>
+      <% else %>
+        <%= render 'accounts/event_item', event: event %>
+      <% end %>
     <% end %>
   </div>
 </div>

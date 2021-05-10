@@ -29,12 +29,6 @@ describe SignUpCompletionsShow do
       )
     end
 
-    describe '#service_provider_partial' do
-      it 'returns show_sp path' do
-        expect(view_model.service_provider_partial).to eq('sign_up/completions/show_sp')
-      end
-    end
-
     describe '#heading' do
       subject(:heading) { view_model.heading }
 
@@ -64,12 +58,6 @@ describe SignUpCompletionsShow do
 
     let(:create_identity) do
       create(:service_provider_identity, user_id: @user.id)
-    end
-
-    describe '#service_provider_partial' do
-      it 'returns show_identities path' do
-        expect(view_model.service_provider_partial).to eq('sign_up/completions/show_identities')
-      end
     end
 
     describe '#identities' do

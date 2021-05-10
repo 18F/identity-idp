@@ -15,7 +15,7 @@
     </h2>
 
     <% @events.each do |event| %>
-      <%= render event.event_partial, event: event %>
+      <%= render 'accounts/event_item', event: event %>
     <% end %>
   </div>
 

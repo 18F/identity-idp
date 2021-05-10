@@ -3,14 +3,6 @@ class SessionDecorator
     @view_context = view_context
   end
 
-  def return_to_service_provider_partial
-    'shared/null'
-  end
-
-  def nav_partial
-    'shared/nav_lite'
-  end
-
   def registration_heading
     'sign_up/registrations/registration_heading'
   end

@@ -1,34 +1,6 @@
 require 'rails_helper'
 
 describe AccountShow do
-  describe '#pending_profile_partial' do
-    context 'user needs profile gpo verification' do
-      it 'returns the accounts/pending_profile_gpo partial' do
-        user = User.new.decorate
-        allow(user).to receive(:pending_profile_requires_verification?).and_return(true)
-        profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: 'foo', decorated_user: user,
-          locked_for_session: false
-        )
-
-        expect(profile_index.pending_profile_partial).to eq 'accounts/pending_profile_gpo'
-      end
-    end
-
-    context 'user does not need profile verification' do
-      it 'returns the shared/null partial' do
-        user = User.new.decorate
-        allow(user).to receive(:pending_profile_requires_verification?).and_return(false)
-        profile_index = AccountShow.new(
-          decrypted_pii: {}, personal_key: '', decorated_user: user,
-          locked_for_session: false
-        )
-
-        expect(profile_index.pending_profile_partial).to eq 'shared/null'
-      end
-    end
-  end
-
   describe '#header_personalization' do
     context 'AccountShow instance has decrypted_pii' do
       it "returns the user's first name" do
