@@ -20,6 +20,13 @@ feature 'Internationalization' do
       it 'displays a translated header to the user' do
         expect(page).to have_content t('headings.sign_in_without_sp', locale: 'en')
       end
+
+      it 'initializes front-end logger with default locale' do
+        expect(page).to have_selector(
+          "[data-analytics-endpoint='#{api_logger_path(locale: nil)}']",
+          visible: :all,
+        )
+      end
     end
 
     context 'when the user has set their locale to :es' do
@@ -27,6 +34,13 @@ feature 'Internationalization' do
 
       it 'displays a translated header to the user' do
         expect(page).to have_content t('headings.sign_in_without_sp', locale: 'es')
+      end
+
+      it 'initializes front-end logger with locale parameter' do
+        expect(page).to have_selector(
+          "[data-analytics-endpoint='#{api_logger_path(locale: 'es')}']",
+          visible: :all,
+        )
       end
     end
 
