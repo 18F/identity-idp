@@ -45,7 +45,7 @@
                                          required: true, aria: { invalid: false } }, true, false %>
       <label for="user_terms_accepted" class="usa-checkbox__label"><%= t('account.terms') %></label>
       <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
-        <%= t('sign_up.agree_to_rules_of_use_and_continue') %>>
+        <%= t('sign_up.agree_to_rules_of_use_and_continue') %>
       </div>
     </div>
 
@@ -59,7 +59,7 @@
 
 <p class='margin-top-2'>
    <%= new_window_link_to(t('notices.privacy.security_and_privacy_practices'),
-                          MarketingSite.security_and_privacy_practices_url) %>
+                          'http://localhost:4000/policy/rules-of-use/') %>
 </p>
 
 <%= javascript_packs_tag_once 'email-validation', 'accept-terms-button' %>
