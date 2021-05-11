@@ -18,9 +18,12 @@ function disableFormSubmit(event) {
 }
 
 /**
- * @param {HTMLInputElement} input
+ * Given an `input` or `invalid` event, updates custom validity of the given input.
+ *
+ * @param {Event} event Input or invalid event.
  */
-function validateInput(input) {
+function checkInputValidity(event) {
+  const input = /** @type {HTMLInputElement} */ (event.target);
   input.setCustomValidity('');
   input.setAttribute('aria-invalid', String(!input.validity.valid));
   if (
@@ -50,21 +53,11 @@ function validateInput(input) {
 }
 
 /**
- * Given an `input` or `invalid` event, updates custom validity of the given input.
- *
- * @param {Event} event Input or invalid event.
- */
-function checkInputValidity(event) {
-  const input = /** @type {HTMLInputElement} */ (event.target);
-  validateInput(input);
-}
-
-/**
  * Binds validation to a given input.
  *
  * @param {HTMLInputElement} input Input element.
  */
-function addInputValidationListeners(input) {
+function validateInput(input) {
   input.addEventListener('input', checkInputValidity);
   input.addEventListener('invalid', checkInputValidity);
 }
