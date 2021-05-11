@@ -26,7 +26,14 @@ function checkInputValidity(event) {
   const input = /** @type {HTMLInputElement} */ (event.target);
   input.setCustomValidity('');
   input.setAttribute('aria-invalid', String(!input.validity.valid));
-
+  if (
+    event.type === 'invalid' &&
+    !input.validity.valid &&
+    input.parentNode?.querySelector('.display-if-invalid')
+  ) {
+    event.preventDefault();
+    input.focus();
+  }
   const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
 
   if (input.validity.valueMissing) {
