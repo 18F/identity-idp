@@ -33,7 +33,7 @@ class RegisterUserEmailForm
   end
 
   def validate_terms_accepted
-    return if @terms_accepted
+    return if @terms_accepted || !AppConfig.rules_of_use_enabled
 
     errors.add(:terms_accepted, t('errors.registration.terms'))
   end
@@ -99,8 +99,9 @@ class RegisterUserEmailForm
 
   def process_successful_submission(request_id, instructions)
     self.success = true
-    user.accepted_terms_at = Time.zone.now
-    user.save!
+    if AppConfig.rules_of_use_enabled
+      UpdateUser.new(user: user, attributes: { accepted_terms_at: Time.zone.now }).call
+    end
     Funnel::Registration::Create.call(user.id)
     SendSignUpEmailConfirmation.new(user).call(
       request_id: request_id,
