@@ -627,6 +627,11 @@ MO:
   name: Macau
   supports_sms: true
   supports_voice: false
+MP:
+  country_code: '1'
+  name: Northern Mariana Islands
+  supports_sms: true
+  supports_voice: true
 MQ:
   country_code: '596'
   name: Martinique
