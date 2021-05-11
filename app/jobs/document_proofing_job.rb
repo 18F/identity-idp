@@ -4,7 +4,10 @@ class DocumentProofingJob < ApplicationJob
   queue_as :default
 
   def perform(result_id:, encrypted_arguments:, trace_id:,
-              liveness_checking_enabled:)
+              liveness_checking_enabled:, analytics_data:)
+    dcs = DocumentCaptureSession.find_by(result_id: result_id)
+    user = dcs.user
+
     timer = JobHelpers::Timer.new
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
@@ -40,11 +43,25 @@ class DocumentProofingJob < ApplicationJob
       end
     end
 
-    dcs = DocumentCaptureSession.new(result_id: result_id)
-
     dcs.store_doc_auth_result(
       result: proofer_result.to_h, # pii_from_doc is excluded from to_h to stop accidental logging
       pii: proofer_result.pii_from_doc,
+    )
+
+    analytics = Analytics.new(user: user, request: nil, sp: nil)
+
+    remaining_attempts = Throttler::RemainingCount.call(
+      user.id,
+      :idv_acuant,
+    )
+
+    analytics.track_non_browser_event(
+      Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+      proofer_result.to_h.merge(
+        state: proofer_result.pii_from_doc[:state],
+        async: true,
+        remaining_attempts: remaining_attempts,
+      ).merge(analytics_data),
     )
   ensure
     logger.info(

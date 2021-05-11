@@ -21,7 +21,26 @@ class Analytics
     # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
     ::NewRelic::Agent.add_custom_attributes(
       user_id: analytics_hash[:user_id],
-      user_ip: request.remote_ip,
+      user_ip: request&.remote_ip,
+      service_provider: sp,
+      event_name: event,
+    )
+  end
+
+  def track_non_browser_event(event, attributes = {})
+    analytics_hash = {
+      event_properties: attributes.except(:user_id),
+      user_id: attributes[:user_id] || user.uuid,
+      locale: I18n.locale,
+    }
+
+    ahoy.track(event, analytics_hash)
+    register_doc_auth_step_from_analytics_event(event, attributes)
+
+    # Tag NewRelic APM trace with a handful of useful metadata
+    # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
+    ::NewRelic::Agent.add_custom_attributes(
+      user_id: analytics_hash[:user_id],
       service_provider: sp,
       event_name: event,
     )

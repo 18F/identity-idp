@@ -45,7 +45,10 @@ RSpec.describe DocumentProofingJob, type: :job do
     )
   end
 
-  let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
+  let(:user) { create(:user) }
+  let(:document_capture_session) do
+    DocumentCaptureSession.create(user_id: user.id, result_id: SecureRandom.hex)
+  end
 
   describe '.perform_later' do
     it 'stores results' do
@@ -54,6 +57,7 @@ RSpec.describe DocumentProofingJob, type: :job do
         liveness_checking_enabled: liveness_checking_enabled,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
+        analytics_data: {},
       )
 
       result = document_capture_session.load_doc_auth_async_result
@@ -69,6 +73,7 @@ RSpec.describe DocumentProofingJob, type: :job do
         liveness_checking_enabled: liveness_checking_enabled,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
+        analytics_data: {},
       )
     end
 
