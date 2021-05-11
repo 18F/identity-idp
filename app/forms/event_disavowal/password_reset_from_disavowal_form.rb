@@ -15,7 +15,7 @@ module EventDisavowal
 
       success = valid?
       handle_valid_password if success
-      FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+      FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
     end
 
     private

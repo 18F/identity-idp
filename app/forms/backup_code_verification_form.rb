@@ -10,7 +10,6 @@ class BackupCodeVerificationForm
     @backup_code = params[:backup_code]
     FormResponse.new(
       success: valid_backup_code?,
-      errors: {},
       extra: extra_analytics_attributes,
     )
   end

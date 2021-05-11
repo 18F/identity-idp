@@ -17,7 +17,7 @@ module AccountReset
 
       handle_successful_submission if success
 
-      FormResponse.new(success: success, errors: errors.messages, extra: extra)
+      FormResponse.new(success: success, errors: errors, extra: extra)
     end
 
     private

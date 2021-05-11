@@ -126,7 +126,7 @@ module Idv
       end
 
       def form_submit
-        return FormResponse.new(success: true, errors: {}) if request_should_use_stored_result?
+        return FormResponse.new(success: true) if request_should_use_stored_result?
 
         Idv::DocumentCaptureForm.
           new(liveness_checking_enabled: liveness_checking_enabled?).

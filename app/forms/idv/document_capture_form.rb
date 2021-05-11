@@ -26,7 +26,7 @@ module Idv
     def submit(params)
       consume_params(params)
 
-      FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
+      FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
     end
 
     private

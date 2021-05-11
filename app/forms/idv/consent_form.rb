@@ -7,7 +7,7 @@ module Idv
     def submit(params)
       @ial2_consent_given = params[:ial2_consent_given] == 'true'
 
-      FormResponse.new(success: valid?, errors: errors.messages)
+      FormResponse.new(success: valid?, errors: errors)
     end
 
     def ial2_consent_given?

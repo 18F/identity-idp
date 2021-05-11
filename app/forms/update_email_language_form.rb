@@ -16,7 +16,7 @@ class UpdateEmailLanguageForm
 
     FormResponse.new(
       success: valid?,
-      errors: errors.messages,
+      errors: errors,
     )
   end
 end

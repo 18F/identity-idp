@@ -76,7 +76,7 @@ module Flow
     end
 
     def successful_response
-      FormResponse.new(success: true, errors: {})
+      FormResponse.new(success: true)
     end
 
     delegate :flash, :session, :current_user, :params, :request, :poll_with_meta_refresh,

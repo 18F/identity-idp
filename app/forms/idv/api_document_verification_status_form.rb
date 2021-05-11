@@ -14,7 +14,7 @@ module Idv
     def submit
       FormResponse.new(
         success: valid?,
-        errors: errors.messages,
+        errors: errors,
         extra: {
           remaining_attempts: remaining_attempts,
         },
