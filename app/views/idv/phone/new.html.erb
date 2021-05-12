@@ -64,7 +64,7 @@
  <%= f.input :phone, required: true, input_html: { aria: { invalid: false }, class: 'sm-col-8' }, label: false,
    wrapper_html: { class: 'margin-right-2' } %>
 
-  <% if FeatureManagement.enable_gpo_verification? %>
+  <% if @gpo_letter_available %>
     <%= render 'idv/phone/verification_options' %>
   <% end %>
 

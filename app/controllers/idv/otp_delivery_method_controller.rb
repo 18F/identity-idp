@@ -11,6 +11,8 @@ module Idv
 
     def new
       analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT)
+      @gpo_letter_available = FeatureManagement.enable_gpo_verification? &&
+                              !Idv::GpoMail.new(current_user).mail_spammed?
     end
 
     def create

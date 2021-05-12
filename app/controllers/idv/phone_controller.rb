@@ -13,12 +13,16 @@ module Idv
 
       if async_state.none?
         analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
+        @gpo_letter_available = FeatureManagement.enable_gpo_verification? &&
+                                !Idv::GpoMail.new(current_user).mail_spammed?
         render :new
       elsif async_state.in_progress?
         render :wait
       elsif async_state.timed_out?
         analytics.track_event(Analytics::PROOFING_ADDRESS_TIMEOUT)
         flash.now[:error] = I18n.t('idv.failure.timeout')
+        @gpo_letter_available = FeatureManagement.enable_gpo_verification? &&
+                                !Idv::GpoMail.new(current_user).mail_spammed?
         render :new
       elsif async_state.done?
         async_state_done(async_state)
