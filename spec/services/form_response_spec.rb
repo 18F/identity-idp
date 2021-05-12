@@ -78,7 +78,7 @@ describe FormResponse do
       response2 = FormResponse.new(success: false, errors: errors2)
 
       combined_response = response1.merge(response2)
-      expect(combined_response.extra).to eq(error_details: { email_language: [:blank, :invalid] })
+      expect(combined_response.to_h[:error_details]).to eq(email_language: [:blank, :invalid])
     end
 
     it 'merges hash and ActiveModel::Errors' do
@@ -93,7 +93,7 @@ describe FormResponse do
       expect(combined_response.errors).to eq(
         email_language: ['Language cannot be blank', 'Language is not valid'],
       )
-      expect(combined_response.extra).to eq(error_details: { email_language: [:blank] })
+      expect(combined_response.to_h[:error_details]).to eq(email_language: [:blank])
     end
 
     it 'returns true if one is false and one is true' do
@@ -162,6 +162,19 @@ describe FormResponse do
         }
 
         expect(response.to_h).to eq response_hash
+      end
+
+      it 'omits details if merged errors are empty' do
+        errors = ActiveModel::Errors.new(build_stubbed(:user))
+        response1 = FormResponse.new(success: true, errors: errors)
+        response2 = FormResponse.new(success: true, errors: errors)
+        combined_response = response1.merge(response2)
+        response_hash = {
+          success: true,
+          errors: {},
+        }
+
+        expect(combined_response.to_h).to eq response_hash
       end
     end
   end

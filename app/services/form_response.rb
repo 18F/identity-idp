@@ -2,10 +2,8 @@ class FormResponse
   def initialize(success:, errors: {}, extra: {})
     @success = success
     @errors = errors.is_a?(ActiveModel::Errors) ? errors.messages.to_hash : errors
+    @error_details = errors.details if errors.is_a?(ActiveModel::Errors)
     @extra = extra
-    @extra.merge!(
-      error_details: flatten_details(errors.details),
-    ) if errors.is_a?(ActiveModel::Errors) && errors.details.present?
   end
 
   attr_reader :errors, :extra
@@ -15,21 +13,23 @@ class FormResponse
   end
 
   def to_h
-    { success: success, errors: errors }.merge!(extra)
+    { success: success, errors: errors }.merge!(extra).tap do |hash|
+      hash[:error_details] = flatten_details(error_details) if error_details.present?
+    end
   end
 
   def merge(other)
-    FormResponse.new(
+    self.class.new(
       success: success? && other.success?,
       errors: errors.merge(other.errors, &method(:merge_arrays)),
-      extra: extra.merge(other.extra) do |key, first, second|
-        if key == :error_details
-          first.merge(second, &method(:merge_arrays))
-        else
-          second
-        end
-      end,
-    )
+      extra: extra.merge(other.extra),
+    ).tap do |merged_response|
+      own_details = error_details
+      other_details = other.instance_eval { error_details } if other.is_a?(self.class)
+      merged_response.instance_eval do
+        @error_details = Hash(own_details).merge(Hash(other_details), &method(:merge_arrays))
+      end
+    end
   end
 
   def first_error_message
@@ -51,8 +51,9 @@ class FormResponse
   end
 
   def flatten_details(details)
-    details.to_hash.transform_values { |errors| errors.pluck(:error) }
+    details.transform_values { |errors| errors.pluck(:error) }
   end
 
   attr_reader :success
+  attr_accessor :error_details
 end
