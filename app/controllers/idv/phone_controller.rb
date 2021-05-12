@@ -13,17 +13,13 @@ module Idv
 
       if async_state.none?
         analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
-        @gpo_letter_available = FeatureManagement.enable_gpo_verification? &&
-                                !Idv::GpoMail.new(current_user).mail_spammed?
-        render :new
+        render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.in_progress?
         render :wait
       elsif async_state.timed_out?
         analytics.track_event(Analytics::PROOFING_ADDRESS_TIMEOUT)
         flash.now[:error] = I18n.t('idv.failure.timeout')
-        @gpo_letter_available = FeatureManagement.enable_gpo_verification? &&
-                                !Idv::GpoMail.new(current_user).mail_spammed?
-        render :new
+        render :new, locals: { gpo_letter_available: gpo_letter_available }
       elsif async_state.done?
         async_state_done(async_state)
       end
@@ -32,7 +28,7 @@ module Idv
     def create
       result = idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
-      return render(:new) unless result.success?
+      return render :new, locals: { gpo_letter_available: gpo_letter_available } if !result.success?
       submit_proofing_attempt
       redirect_to idv_phone_path
     end
@@ -100,6 +96,11 @@ module Idv
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_VENDOR, form_result.to_h)
       redirect_to_next_step and return if async_state.result[:success]
       handle_proofing_failure
+    end
+
+    def gpo_letter_available
+      @_gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
+                                 !Idv::GpoMail.new(current_user).mail_spammed?
     end
   end
 end
