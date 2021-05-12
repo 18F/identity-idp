@@ -176,6 +176,7 @@ describe Idv::OtpDeliveryMethodController do
         result = {
           success: false,
           errors: { otp_delivery_preference: ['is not included in the list'] },
+          error_details: { otp_delivery_preference: [:inclusion] },
           otp_delivery_preference: '🎷',
         }
 

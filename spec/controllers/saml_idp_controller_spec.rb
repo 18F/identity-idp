@@ -300,6 +300,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { authn_context: [t('errors.messages.unauthorized_authn_context')] },
+          error_details: { authn_context: [:unauthorized_authn_context] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
           service_provider: 'http://localhost:3000',
@@ -384,6 +385,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { service_provider: [t('errors.messages.unauthorized_service_provider')] },
+          error_details: { service_provider: [:unauthorized_service_provider] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           service_provider: 'invalid_provider',
@@ -413,6 +415,10 @@ describe SamlIdpController do
           errors: {
             service_provider: [t('errors.messages.unauthorized_service_provider')],
             authn_context: [t('errors.messages.unauthorized_authn_context')],
+          },
+          error_details: {
+            authn_context: [:unauthorized_authn_context],
+            service_provider: [:unauthorized_service_provider],
           },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
@@ -655,6 +661,7 @@ describe SamlIdpController do
         analytics_hash = {
           success: false,
           errors: { nameid_format: [t('errors.messages.unauthorized_nameid_format')] },
+          error_details: { nameid_format: [:unauthorized_nameid_format] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',

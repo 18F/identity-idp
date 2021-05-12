@@ -9,16 +9,17 @@ describe TotpSetupForm do
     context 'when TOTP code is valid' do
       it 'returns FormResponse with success: true' do
         form = TotpSetupForm.new(user, secret, code)
-        result = instance_double(FormResponse)
         extra = {
           totp_secret_present: true,
           multi_factor_auth_method: 'totp',
           auth_app_configuration_id: next_auth_app_id,
         }
 
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(form.submit).to eq result
+        expect(form.submit.to_h).to eq(
+          success: true,
+          errors: {},
+          **extra,
+        )
         expect(user.auth_app_configurations.any?).to eq true
       end
 
@@ -34,16 +35,17 @@ describe TotpSetupForm do
     context 'when TOTP code is invalid' do
       it 'returns FormResponse with success: false' do
         form = TotpSetupForm.new(user, secret, 'kode')
-        result = instance_double(FormResponse)
         extra = {
           totp_secret_present: true,
           multi_factor_auth_method: 'totp',
           auth_app_configuration_id: nil,
         }
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: extra).and_return(result)
-        expect(form.submit).to eq result
+        expect(form.submit.to_h).to include(
+          success: false,
+          errors: {},
+          **extra,
+        )
         expect(user.auth_app_configurations.any?).to eq false
       end
     end
@@ -53,16 +55,17 @@ describe TotpSetupForm do
     context 'when the secret key is not present' do
       it 'returns FormResponse with success: false' do
         form = TotpSetupForm.new(user, nil, 'kode')
-        result = instance_double(FormResponse)
         extra = {
           totp_secret_present: false,
           multi_factor_auth_method: 'totp',
           auth_app_configuration_id: nil,
         }
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: extra).and_return(result)
-        expect(form.submit).to eq result
+        expect(form.submit.to_h).to include(
+          success: false,
+          errors: {},
+          **extra,
+        )
         expect(user.auth_app_configurations.any?).to eq false
       end
     end

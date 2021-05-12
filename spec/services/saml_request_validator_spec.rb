@@ -7,21 +7,23 @@ describe SamlRequestValidator do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
         authn_context = [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF]
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
-        allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
           service_provider: sp.issuer,
           nameid_format: name_id_format,
         }
 
-        SamlRequestValidator.new.call(
+        response = SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
           nameid_format: name_id_format,
         )
 
-        expect(FormResponse).to have_received(:new).
-          with(success: true, errors: {}, extra: extra)
+        expect(response.to_h).to include(
+          success: true,
+          errors: {},
+          **extra,
+        )
       end
     end
 
@@ -30,7 +32,6 @@ describe SamlRequestValidator do
         sp = ServiceProvider.from_issuer('foo')
         authn_context = [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF]
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
-        allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
           service_provider: sp.issuer,
@@ -40,14 +41,18 @@ describe SamlRequestValidator do
           service_provider: [t('errors.messages.unauthorized_service_provider')],
         }
 
-        SamlRequestValidator.new.call(
+        response = SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
           nameid_format: name_id_format,
         )
 
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: errors, extra: extra)
+        expect(response.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 
@@ -56,7 +61,6 @@ describe SamlRequestValidator do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
         authn_context = [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF]
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
-        allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
           service_provider: sp.issuer,
@@ -66,14 +70,18 @@ describe SamlRequestValidator do
           nameid_format: [t('errors.messages.unauthorized_nameid_format')],
         }
 
-        SamlRequestValidator.new.call(
+        response = SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
           nameid_format: name_id_format,
         )
 
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: errors, extra: extra)
+        expect(response.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 
@@ -82,21 +90,23 @@ describe SamlRequestValidator do
         sp = ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata')
         authn_context = [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF]
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
-        allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
           service_provider: sp.issuer,
           nameid_format: name_id_format,
         }
 
-        SamlRequestValidator.new.call(
+        response = SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
           nameid_format: name_id_format,
         )
 
-        expect(FormResponse).to have_received(:new).
-          with(success: true, errors: {}, extra: extra)
+        expect(response.to_h).to include(
+          success: true,
+          errors: {},
+          **extra,
+        )
       end
 
       it 'returns FormResponse with success: true for ial2 on ial:2 sp' do
@@ -104,21 +114,23 @@ describe SamlRequestValidator do
         sp.ial = 2
         authn_context = [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF]
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
-        allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
           service_provider: sp.issuer,
           nameid_format: name_id_format,
         }
 
-        SamlRequestValidator.new.call(
+        response = SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
           nameid_format: name_id_format,
         )
 
-        expect(FormResponse).to have_received(:new).
-          with(success: true, errors: {}, extra: extra)
+        expect(response.to_h).to include(
+          success: true,
+          errors: {},
+          **extra,
+        )
       end
     end
 
@@ -127,7 +139,6 @@ describe SamlRequestValidator do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
         authn_context = ['IAL1']
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
-        allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
           service_provider: sp.issuer,
@@ -137,14 +148,18 @@ describe SamlRequestValidator do
           authn_context: [t('errors.messages.unauthorized_authn_context')],
         }
 
-        SamlRequestValidator.new.call(
+        response = SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
           nameid_format: name_id_format,
         )
 
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: errors, extra: extra)
+        expect(response.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
 
       it 'returns FormResponse with success: false for ial2 on an ial:1 sp' do
@@ -152,7 +167,6 @@ describe SamlRequestValidator do
         sp.ial = 1
         authn_context = [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF]
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
-        allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
           service_provider: sp.issuer,
@@ -162,14 +176,18 @@ describe SamlRequestValidator do
           authn_context: [t('errors.messages.unauthorized_authn_context')],
         }
 
-        SamlRequestValidator.new.call(
+        response = SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
           nameid_format: name_id_format,
         )
 
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: errors, extra: extra)
+        expect(response.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 
@@ -178,7 +196,6 @@ describe SamlRequestValidator do
         sp = ServiceProvider.from_issuer('foo')
         authn_context = ['IAL1']
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
-        allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
           service_provider: sp.issuer,
@@ -189,14 +206,18 @@ describe SamlRequestValidator do
           service_provider: [t('errors.messages.unauthorized_service_provider')],
         }
 
-        SamlRequestValidator.new.call(
+        response = SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
           nameid_format: name_id_format,
         )
 
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: errors, extra: extra)
+        expect(response.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 
@@ -205,7 +226,6 @@ describe SamlRequestValidator do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
         authn_context = [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF]
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
-        allow(FormResponse).to receive(:new)
         extra = {
           authn_context: authn_context,
           service_provider: sp.issuer,
@@ -215,14 +235,18 @@ describe SamlRequestValidator do
           nameid_format: [t('errors.messages.unauthorized_nameid_format')],
         }
 
-        SamlRequestValidator.new.call(
+        response = SamlRequestValidator.new.call(
           service_provider: sp,
           authn_context: authn_context,
           nameid_format: name_id_format,
         )
 
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: errors, extra: extra)
+        expect(response.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
   end
