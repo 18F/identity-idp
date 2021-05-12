@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_28_145328) do
+ActiveRecord::Schema.define(version: 2021_05_12_141236) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -648,8 +648,6 @@ ActiveRecord::Schema.define(version: 2021_04_28_145328) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "bounced_at"
-    t.datetime "letter_expired_sent_at"
-    t.index ["bounced_at", "letter_expired_sent_at", "created_at"], name: "index_ucc_expired_letters"
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
   end
