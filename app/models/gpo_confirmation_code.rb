@@ -1,5 +1,6 @@
 class GpoConfirmationCode < ApplicationRecord
   self.table_name = 'usps_confirmation_codes'
+  self.ignored_columns = %w[letter_expired_sent_at]
 
   belongs_to :profile
 
