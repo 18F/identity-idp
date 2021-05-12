@@ -190,3 +190,11 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   timeout: 300,
   callback: -> { Reports::MonthlyGpoLetterRequestsReport.new.call },
 )
+
+# Send Partner API reports to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'Partner API report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Agreements::Reports::PartnerApiReport.new.call },
+)

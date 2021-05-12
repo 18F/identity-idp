@@ -218,6 +218,7 @@ GEM
     bindata (2.4.9)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
+    blueprinter (0.25.3)
     bootsnap (1.5.1)
       msgpack (~> 1.0)
     brakeman (4.10.0)
@@ -723,6 +724,7 @@ DEPENDENCIES
   base32-crockford
   better_errors (>= 2.5.1)
   binding_of_caller
+  blueprinter (~> 0.25.3)
   bootsnap (~> 1.5.0)
   brakeman
   bullet (>= 6.0.2)
