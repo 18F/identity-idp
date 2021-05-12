@@ -384,4 +384,12 @@ class ApplicationController < ActionController::Base
     client = DeviceDetector.new(request.user_agent)
     client.device_type != 'desktop'
   end
+
+  def override_ahoy_user
+    user_id = session[:doc_capture_user_id]
+    return unless user_id
+    user = User.find_by(id: user_id)
+    return unless user
+    ahoy.authenticate(user)
+  end
 end
