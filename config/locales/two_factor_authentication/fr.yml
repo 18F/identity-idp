@@ -23,7 +23,7 @@ fr:
     backup_code_header_text: Entrez votre code de sécurité de secours
     backup_code_prompt: Vous pouvez utiliser ce code de sécurité une fois. Après l’avoir
       entré, vous devrez utiliser une nouvelle clé.
-    choose_another_option: "‹ Choisissez une autre option"
+    choose_another_option: '‹ Choisissez une autre option'
     devices:
       auth_app: Application d’authentification
       backup_code: Codes de sécurité personnels

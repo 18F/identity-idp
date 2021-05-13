@@ -4,18 +4,18 @@ es:
     backup_code:
       are_you_sure_continue_prologue: Si no tienes acceso a ningún otro método de
         autenticación,
-      are_you_sure_desc: "<br> <b> Los códigos de respaldo no son muy seguros </b>
+      are_you_sure_desc: '<br> <b> Los códigos de respaldo no son muy seguros </b>
         porque se pueden perder o robar fácilmente. <b> Si peude, elija otra opción
         </b>, (usar un teléfono, descargar una aplicación de autenticación o usar
         una clave de seguridad). <br><br> <b> Si continúa con los códigos de copia
         de seguridad, manténgalos seguros </b>. Le daremos 10 códigos que puede descargar,
         imprimir, copiar o escribir. Más tarde, deberás ingresar un codigo cada vez
-        que inicies sesión."
-      are_you_sure_title: "¿Estás seguro? Le daremos códigos de respaldo para guardar
-        y usar."
+        que inicies sesión.'
+      are_you_sure_title: '¿Estás seguro? Le daremos códigos de respaldo para guardar
+        y usar.'
       caution_delete: Si elimina sus códigos de respaldo, ya no podrá usarlos para
         iniciar sesión.
-      confirm_delete: "¿Estás seguro de que deseas eliminar tus códigos de respaldo?"
+      confirm_delete: '¿Estás seguro de que deseas eliminar tus códigos de respaldo?'
       depleted_desc: Usaste todos tus códigos de respaldo. Generaremos nuevos códigos
         de respaldo después de que hagas clic en continuar. Guárdalas en un lugar
         seguro para asegurarte de que puedas volver a iniciar sesión en el futuro.
@@ -24,18 +24,18 @@ es:
       generate: Obtener códigos
       print: Impresión
       regenerate: Obtener nuevos códigos
-      subinfo_html: "<b>No pierdas estos códigos</b>. Descarga, imprime, o copialos.
+      subinfo_html: '<b>No pierdas estos códigos</b>. Descarga, imprime, o copialos.
         Cada código solo se puede usar una vez. Después de que haya utilizado el décimo
         código, le daremos 10 códigos nuevos. Mantenga sus códigos tan seguros como
-        una contraseña."
+        una contraseña.'
       subtitle: Tus códigos de respaldo
       title: Códigos de respaldo
     backup_code_regenerate:
       caution: Si vuelve a generar sus códigos de respaldo, recibirá un nuevo conjunto
         de códigos de respaldo. Sus códigos de copia de seguridad originales ya no
         serán válidos.
-      confirm: "¿Está seguro de que desea volver a generar sus códigos de copia de
-        seguridad?"
+      confirm: '¿Está seguro de que desea volver a generar sus códigos de copia de
+        seguridad?'
     buttons:
       back: Atrás
       cancel: Sí, cancelar
@@ -69,7 +69,7 @@ es:
           password: Nueva contraseña
       show: Mostrar contraseña
     personal_key:
-      alternative: "¿No tiene su clave personal?"
+      alternative: '¿No tiene su clave personal?'
       confirmation_label: Clave personal
       instructions: Confirme que tiene una copia de su clave personal ingresándola
         a continuación.
@@ -80,7 +80,7 @@ es:
     piv_cac_delete:
       caution: Si retira su tarjeta PIV/CAC, no podrá usarla para acceder a su cuenta
         login.gov.
-      confirm: "¿Estás seguro de que deseas eliminar tu tarjeta PIV/CAC?"
+      confirm: '¿Estás seguro de que deseas eliminar tu tarjeta PIV/CAC?'
     piv_cac_login:
       submit: Inserte su PIV/CAC
     piv_cac_mfa:
@@ -102,7 +102,7 @@ es:
     totp_delete:
       caution: Si elimina su aplicación de autenticación, no podrá usarla para acceder
         a su cuenta login.gov.
-      confirm: "¿Seguro que quieres eliminar tu aplicación de autenticación?"
+      confirm: '¿Seguro que quieres eliminar tu aplicación de autenticación?'
     totp_setup:
       totp_intro_html: Configure una aplicación de autenticación para iniciar sesión
         con códigos de seguridad temporales. %{link}
@@ -126,7 +126,7 @@ es:
     webauthn_delete:
       caution: Si elimina su clave de seguridad, no podrá usarla para acceder a su
         cuenta login.gov.
-      confirm: "¿Estás seguro de que quieres eliminar tu clave de seguridad?"
+      confirm: '¿Estás seguro de que quieres eliminar tu clave de seguridad?'
     webauthn_setup:
       continue: Continuar
       instructions_text: Presione el botón en su clave de seguridad para registrarlo

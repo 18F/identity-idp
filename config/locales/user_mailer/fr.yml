@@ -91,8 +91,8 @@ fr:
           courriel.
         unconfirmed: Merci d’avoir envoyé votre adresse email.
       footer: Ce lien expirera dans %{confirmation_period}.
-      header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller
-        le lien complet dans votre navigateur."
+      header: '%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller
+        le lien complet dans votre navigateur.'
       link_text: Confirmez votre adresse email
       request_with_diff_email: Vous pouvez demander votre mot de passe en utilisant
         une adresse e-mail différente qui est connectée à votre compte %{app_name}.
@@ -116,8 +116,8 @@ fr:
       help_html: Si vous n’avez pas changé votre mot de passe, vous pouvez réinitialiser
         votre mot de passe %{disavowal_link}. Pour plus d’aide, veuillez visiter le
         %{help_link} de %{app} ou %{contact_link}.
-      info_html: "<p>Votre compte login.gov a été connecté sur un nouvel appareil.</p><br/><br/>
-        <p><strong>%{date}<br/>%{location}</strong></p>"
+      info_html: '<p>Votre compte login.gov a été connecté sur un nouvel appareil.</p><br/><br/>
+        <p><strong>%{date}<br/>%{location}</strong></p>'
       subject: Nouvelle connexion avec votre compte Login.gov
     password_changed:
       disavowal_link: ici

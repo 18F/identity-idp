@@ -12,7 +12,7 @@ en:
       email: Email address
       full_name: Full name
       intro_html: 'We’ll share this information with %{sp}:'
-      outro_html: "%{sp} will only use this information to connect to your account"
+      outro_html: '%{sp} will only use this information to connect to your account'
       phone: Phone number
       social_security_number: Social Security Number
       verified_at: Updated on

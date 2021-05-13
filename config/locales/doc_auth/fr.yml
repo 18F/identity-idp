@@ -6,8 +6,8 @@ fr:
       change_ssn: changement
       continue: Continuer
       start_over: Recommencer
-      take_or_upload_picture: "<lg-take-photo>Prendre une photo</lg-take-photo> ou
-        <lg-upload>Télécharger une photo</lg-upload>"
+      take_or_upload_picture: '<lg-take-photo>Prendre une photo</lg-take-photo> ou
+        <lg-upload>Télécharger une photo</lg-upload>'
       take_picture: Prendre une photo
       take_picture_retry: Reprendre la photo
       upload_picture: Télécharger une photo
@@ -172,8 +172,8 @@ fr:
         images que vous téléchargez. Nous vérifions uniquement votre identité.
       document_capture_upload_image: Nous n’utilisons votre identifiant que pour vérifier
         votre identité, et nous n’enregistrerons aucune image.
-      get_help_at_sp_html: "<strong>Vous avez des problèmes?</strong> Obtenez de l’aide
-        à %{sp_name}"
+      get_help_at_sp_html: '<strong>Vous avez des problèmes?</strong> Obtenez de l’aide
+        à %{sp_name}'
       image_updated: Image mise à jour
       interstitial_eta: Cette opération peut prendre jusqu’à une minute. Nous chargerons
         automatiquement l’étape suivante lorsqu’elle sera terminée.
@@ -226,9 +226,9 @@ fr:
       consent: En cochant cette case, vous autorisez login.gov à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous ne les utiliserons
         que pour vérifier votre identité.
-      document_capture_selfie_consent_action: "<lg-underline>Autorisez l’accès à la
+      document_capture_selfie_consent_action: '<lg-underline>Autorisez l’accès à la
         caméra</lg-underline> et recherchez une notification dans votre navigateur
-        ou vérifiez les paramètres de votre système pour confirmer l’accès à la caméra."
+        ou vérifiez les paramètres de votre système pour confirmer l’accès à la caméra.'
       document_capture_selfie_consent_banner: login.gov a besoin d’une autorisation
         pour utiliser la caméra de votre appareil
       document_capture_selfie_consent_blocked: login.gov a besoin d’une autorisation

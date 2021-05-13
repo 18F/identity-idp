@@ -7,10 +7,10 @@ fr:
         sécurité à plusieurs comptes gouvernementaux en ligne. Vous trouverez ci-dessous
         une liste de tous les comptes actuellement connectés.
     email_language:
-      default: "%{language} (par défaut)"
+      default: '%{language} (par défaut)'
       edit_title: Modifier la préférence de langue des e-mails
-      languages_list: "%{app_name} vous permet de recevoir votre communication par
-        e-mail dans %{list}."
+      languages_list: '%{app_name} vous permet de recevoir votre communication par
+        e-mail dans %{list}.'
       name:
         en: Anglais
         es: l’Espagnol
@@ -34,7 +34,7 @@ fr:
       backup_codes_exist: Généré
       backup_codes_no_exist: Non généré
       default: défaut
-      device: "%{browser} sur %{os}"
+      device: '%{browser} sur %{os}'
       dob: Date de naissance
       email: Adresse e-mail
       email_add: Ajouter un email
@@ -53,7 +53,7 @@ fr:
           de mot passe. Vous pouvez utiliser votre clé personnelle pour réactiver
           votre profil.
         link: Réactivez votre profil maintenant.
-      sign_in_location_and_ip: "%{ip} (adresse IP probablement située dans %{location})"
+      sign_in_location_and_ip: '%{ip} (adresse IP probablement située dans %{location})'
       ssn: Numéro d’assurance sociale
       totp_confirm_delete: Oui, supprimez l’application d’authentification
       unknown_location: lieu inconnu

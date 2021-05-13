@@ -19,7 +19,7 @@ es:
       phone: Agregar un número de teléfono
     cancellations:
       confirmation: Ha cancelado la verificación de su identidad con login.gov
-      prompt: "¿Estas seguro que quieres cancelar?"
+      prompt: '¿Estas seguro que quieres cancelar?'
     confirmations:
       new: Enviar otro email de confirmación
     create_account_with_sp:
@@ -33,7 +33,7 @@ es:
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar
-      forgot: "¿Olvidó su contraseña?"
+      forgot: '¿Olvidó su contraseña?'
     personal_key: Guarda tu clave personal
     piv_cac:
       certificate:
@@ -60,7 +60,7 @@ es:
       new: Use su tarjeta PIV/CAC para asegurar su cuenta
     registrations:
       enter_email: Ingrese su dirección de correo electrónico
-    session_timeout_warning: "¿Necesita más tiempo?"
+    session_timeout_warning: '¿Necesita más tiempo?'
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
     sp_handoff_bounced: Hubo un problema al conectarse a %{sp_name}

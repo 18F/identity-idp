@@ -6,8 +6,8 @@ en:
       change_ssn: change
       continue: Continue
       start_over: Start over
-      take_or_upload_picture: "<lg-take-photo>Take photo</lg-take-photo> or <lg-upload>Upload
-        photo</lg-upload>"
+      take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or <lg-upload>Upload
+        photo</lg-upload>'
       take_picture: Take photo
       take_picture_retry: Retake photo
       upload_picture: Upload photo
@@ -145,7 +145,7 @@ en:
         your identity.
       document_capture_upload_image: We only use your ID to verify your identity,
         and we will not save any images.
-      get_help_at_sp_html: "<strong>Having trouble?</strong> Get help at %{sp_name}"
+      get_help_at_sp_html: '<strong>Having trouble?</strong> Get help at %{sp_name}'
       image_updated: Image updated
       interstitial_eta: This might take up to a minute. We’ll load the next step automatically
         when it’s done.
@@ -191,9 +191,10 @@ en:
       bullet3: A phone number on a phone plan associated with your name
       consent: By checking this box, you are letting login.gov ask for, use, keep,
         and share your personal information. We will only use it to verify your identity.
-      document_capture_selfie_consent_action: "<lg-underline>Allow access to the camera</lg-underline>
+      document_capture_selfie_consent_action:
+        '<lg-underline>Allow access to the camera</lg-underline>
         and look for a notification in your browser or check your system settings
-        to confirm camera access."
+        to confirm camera access.'
       document_capture_selfie_consent_banner: login.gov needs permission to use your
         device’s camera
       document_capture_selfie_consent_blocked: login.gov needs permission to use your

@@ -41,9 +41,9 @@ es:
       help:
         get_help_html: Obtener ayuda en <strong>%{sp_name}</strong>
       phone:
-        fail_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
+        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
           Por su seguridad, limitamos el número de veces que puede intentar verificar
-          su número de teléfono en línea."
+          su número de teléfono en línea.'
         heading: No hemos podido asociar su nombre y dirección a este número de teléfono
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
           Vuelve a intentarlo.
@@ -52,9 +52,9 @@ es:
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
-        fail_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
+        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
           Por su seguridad, limitamos el número de veces que puede intentar verificar
-          la información personal en línea."
+          la información personal en línea.'
         heading: No hemos podido encontrar registros que coincidan con su información
           personal.
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
@@ -63,9 +63,9 @@ es:
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:
-      link_html: "¿Se te olvidó tu contraseña? %{link}"
+      link_html: '¿Se te olvidó tu contraseña? %{link}'
       link_text: Siga estas instrucciones
-      modal_header: "¿Estás seguro de que no puedes recordar tu contraseña?"
+      modal_header: '¿Estás seguro de que no puedes recordar tu contraseña?'
       reset_password: Restablecer la contraseña
       try_again: Inténtalo de nuevo
       warnings:
@@ -77,8 +77,8 @@ es:
       address1: Dirección
       address2: Dirección (opcional)
       city: Ciudad
-      no_alternate_phone_html: "<strong>%{link}</strong>. Le enviaremos una carta
-        con un código."
+      no_alternate_phone_html: '<strong>%{link}</strong>. Le enviaremos una carta
+        con un código.'
       password: Contraseña
       phone: Teléfono
       ssn_label_html: Número de Seguro Social
@@ -122,15 +122,15 @@ es:
         alert_html: Este número de teléfono <strong>debe ser</strong>
         description: Verificamos los registros para asegurarnos de que eres quien
           eres, y de que eres el propietario de tu cuenta.
-        final_note_html: "<strong>Si configura un teléfono para la autenticación de
-          dos factores</strong>, este puede ser un número diferente."
+        final_note_html: '<strong>Si configura un teléfono para la autenticación de
+          dos factores</strong>, este puede ser un número diferente.'
         phone_of_record: Teléfono del registro
         rules:
-        - en un plan de teléfono con su nombre en él
-        - no es un teléfono virtual (como Google Voice o Skype)
-        - no es un número de teléfono prepago
-        - un número de EE. UU.
-      return_to_profile: "‹ Volver a tu perfil de login.gov"
+          - en un plan de teléfono con su nombre en él
+          - no es un teléfono virtual (como Google Voice o Skype)
+          - no es un número de teléfono prepago
+          - un número de EE. UU.
+      return_to_profile: '‹ Volver a tu perfil de login.gov'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
@@ -156,9 +156,9 @@ es:
       come_back_later: Vuelve pronto.
       hardfail: No pudimos verificar su identidad con %{app}.
       mail:
-        resend: "¿Desea otra carta?"
-        verify: "¿Desea una carta?"
-      otp_delivery_method: "¿Cómo te gustaría recibir el código?"
+        resend: '¿Desea otra carta?'
+        verify: '¿Desea una carta?'
+      otp_delivery_method: '¿Cómo te gustaría recibir el código?'
       phone: Número de teléfono del registro
       review: Revise y envíe
       session:
@@ -166,9 +166,9 @@ es:
         review: Vuelve a ingresar tu contraseña de login.gov para encriptar tus datos
     troubleshooting:
       headings:
-        having_trouble: "¿Tiene alguna dificultad? Esto es lo que puede hacer:"
-        missing_required_items: "¿Le falta alguno de estos puntos?"
-        need_assistance: "¿Necesita ayuda inmediata? Así es como puede obtener ayuda:"
+        having_trouble: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'
+        missing_required_items: '¿Le falta alguno de estos puntos?'
+        need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
       options:
         contact_support: Póngase en contacto con el servicio de asistencia de %{app}
         get_help_at_sp: Obtenga ayuda en %{sp_name}

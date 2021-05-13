@@ -12,8 +12,8 @@ fr:
       email: Adresse e-mail
       full_name: Nom complet
       intro_html: 'Nous partagerons cette information avec %{sp}:'
-      outro_html: "%{sp} utilisera cette information uniquement pour se connecter
-        à votre compte"
+      outro_html: '%{sp} utilisera cette information uniquement pour se connecter
+        à votre compte'
       phone: Numéro de téléphone
       social_security_number: Numéro de sécurité sociale
       verified_at: Mis à jour le

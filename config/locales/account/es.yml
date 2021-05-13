@@ -7,10 +7,10 @@ es:
         cuentas gubernamentales en línea. A continuación se muestra una lista de todas
         las cuentas que tiene actualmente conectadas.
     email_language:
-      default: "%{language} (predeterminado)"
+      default: '%{language} (predeterminado)'
       edit_title: Editar la preferencia de idioma del correo electrónico
-      languages_list: "%{app_name} le permite recibir su comunicación por correo electrónico
-        en %{list}"
+      languages_list: '%{app_name} le permite recibir su comunicación por correo electrónico
+        en %{list}'
       name:
         en: Inglés
         es: Español
@@ -34,7 +34,7 @@ es:
       backup_codes_exist: Generado
       backup_codes_no_exist: No generado
       default: defecto
-      device: "%{browser} en %{os}"
+      device: '%{browser} en %{os}'
       dob: Fecha de nacimiento
       email: Dirección de correo electrónico
       email_add: Agregar email

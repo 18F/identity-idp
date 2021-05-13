@@ -1,7 +1,7 @@
 ---
 es:
   notices:
-    account_reactivation: "¡Estupendo! Tiene su clave personal."
+    account_reactivation: '¡Estupendo! Tiene su clave personal.'
     backup_codes_configured: Códigos de respaldo fueron agregados a tu cuenta.
     backup_codes_deleted: Tus códigos de respaldo fueron eliminados de tu cuenta.
     dap_participation: Participamos en el programa analítico del Gobierno de Estados
@@ -10,7 +10,7 @@ es:
       first_paragraph_end: con un enlace para restablecer su contraseña. Siga el enlace
         para continuar restableciendo su contraseña.
       first_paragraph_start: Enviamos un email a
-      no_email_sent_explanation_start: "¿No recibió un email?"
+      no_email_sent_explanation_start: '¿No recibió un email?'
       resend_email_success: Enviamos otro email para restablecer la contraseña.
       use_diff_email:
         link: crear una cuenta nueva
@@ -19,7 +19,7 @@ es:
       contact_us: Contacta con nosotros
       currently_under_maintenance_html: Actualmente estamos <b>en mantenimiento hasta
         el %{finish}</b> para algunos de nuestros servicios.
-      need_assistance: "¿Necesita ayuda?"
+      need_assistance: '¿Necesita ayuda?'
     password_changed: Ha cambiado su contraseña.
     phone_confirmed: Un teléfono fue agregado a tu cuenta.
     piv_cac_configured: Una tarjeta PIV/CAC fue agregada a tu cuenta.
@@ -37,12 +37,12 @@ es:
       first_paragraph_end: con un enlace para confirmar su dirección de correo electrónico.
         Siga el enlace para continuar agregando este correo electrónico a su cuenta.
       first_paragraph_start: Enviamos un correo electrónico a
-      no_email_sent_explanation_start: "¿No recibió un correo electrónico?"
+      no_email_sent_explanation_start: '¿No recibió un correo electrónico?'
     signed_up_but_unconfirmed:
       first_paragraph_end: con un enlace para confirmar su email. Siga el enlace para
         continuar creando su cuenta.
       first_paragraph_start: Enviamos un email a
-      no_email_sent_explanation_start: "¿No recibió un email?"
+      no_email_sent_explanation_start: '¿No recibió un email?'
     timeout_warning:
       partially_signed_in:
         continue: Continuar el inicio de sesión

@@ -28,8 +28,8 @@ es:
         de correo electrónico después de que se elimine su cuenta.<br><br>
       subject: Elimina tu cuenta login.gov
     account_reset_request:
-      cancel: "¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta login.gov
-        para cancelar."
+      cancel: '¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta login.gov
+        para cancelar.'
       header: Su cuenta será eliminada en 24 horas
       intro_html: 'Como medida de seguridad, %{app} requiere un proceso de dos pasos
         para eliminar su cuenta:<br><br> Paso uno: hay un período de espera de 24
@@ -81,13 +81,13 @@ es:
       create_new_account: crea una cuenta nueva.
       email_not_found: El correo electrónico no encontrado
       first_sentence:
-        confirmed: "¿Desea cambiar su email?"
+        confirmed: '¿Desea cambiar su email?'
         forgot_password: Intentó restablecer su contraseña de login.gov pero no tenemos
           una cuenta vinculada a esta dirección de correo electrónico.
         unconfirmed: Gracias por enviar su dirección de correo electrónico.
       footer: Este enlace expira en %{confirmation_period}.
-      header: "%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
-        completo en su navegador."
+      header: '%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
+        completo en su navegador.'
       link_text: Confirmar el correo
       request_with_diff_email: Puedes solicitar tu contraseña usando una dirección
         de correo electrónico diferente que está conectada a su cuenta %{app_name}.
@@ -109,8 +109,9 @@ es:
       disavowal_link: aquí
       help_html: Si no realizó este cambio puede restablecer su contraseña %{disavowal_link}.
         Para más ayuda, visite el %{app} %{help_link} o el %{contact_link}.
-      info_html: "<p>Su cuenta Login.gov acaba de iniciar sesión en un nuevo dispositivo.</p><br/><br/>
-        <p><strong>%{date}<br/>%{location}</strong></p>"
+      info_html:
+        '<p>Su cuenta Login.gov acaba de iniciar sesión en un nuevo dispositivo.</p><br/><br/>
+        <p><strong>%{date}<br/>%{location}</strong></p>'
       subject: Nuevo initio de sesion con su Login.gov cuenta
     password_changed:
       disavowal_link: aquí

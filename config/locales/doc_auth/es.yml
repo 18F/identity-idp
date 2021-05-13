@@ -6,8 +6,8 @@ es:
       change_ssn: cambio
       continue: Continuar
       start_over: Comenzar de nuevo
-      take_or_upload_picture: "<lg-take-photo>Toma una foto</lg-take-photo> o <lg-upload>Sube
-        una foto</lg-upload>"
+      take_or_upload_picture: '<lg-take-photo>Toma una foto</lg-take-photo> o <lg-upload>Sube
+        una foto</lg-upload>'
       take_picture: Tomar una foto
       take_picture_retry: Retirar la foto
       upload_picture: Subir foto
@@ -139,11 +139,11 @@ es:
       ssn: Por favor ingrese su número de seguro social.
       take_picture: Toma una foto con un teléfono
       text_message: Enviamos un mensaje a su teléfono
-      upload: "¿Cómo le gustaría subir su documento de identidad expedido por el estado?"
+      upload: '¿Cómo le gustaría subir su documento de identidad expedido por el estado?'
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       upload_from_phone_liveness_enabled: Utilice un celular para agregar su documento
         de identidad y tomarse
-      upload_liveness_enabled: "¿Cómo te gustaría verificar su identidad?"
+      upload_liveness_enabled: '¿Cómo te gustaría verificar su identidad?'
       verify: Por favor verifica tu información
       verify_identity: Verifique su identidad
       welcome: Verifique su identidad para acceder de forma segura a los servicios
@@ -159,12 +159,12 @@ es:
         que subes. Solo verificamos su identidad.
       document_capture_upload_image: Solo utilizamos su ID para verificar su identidad
         y no guardaremos ninguna imagen.
-      get_help_at_sp_html: "<strong>¿Tienes algún problema?</strong> Obtén ayuda en
-        %{sp_name}"
+      get_help_at_sp_html: '<strong>¿Tienes algún problema?</strong> Obtén ayuda en
+        %{sp_name}'
       image_updated: Imagen actualizada
       interstitial_eta: Esto puede tardar hasta un minuto. Cargaremos el siguiente
         paso automáticamente cuando esté terminado.
-      interstitial_thanks: "¡Gracias por su paciencia!"
+      interstitial_thanks: '¡Gracias por su paciencia!'
       keep_window_open: No cierres esta ventana.
       lets_go: 'La verificación de la identidad se realiza en dos partes:'
       link_sent: Verifique su teléfono y siga las instrucciones para tomar una fotografía
@@ -186,7 +186,7 @@ es:
       upload: Recopilaremos información sobre usted leyendo su documento de identidad
         expedido por el estado.
       upload_computer_link: Sube desde tu computadora
-      upload_from_computer: "¿No tiene un teléfono?"
+      upload_from_computer: '¿No tiene un teléfono?'
       upload_from_computer_not_allowed: Inicie sesión en su cuenta de login.gov en
         cualquier dispositivo que tenga una cámara, como una tableta o una computadora
         con una cámara web.
@@ -210,9 +210,9 @@ es:
       consent: Al marcar esta casilla, usted permite que login.gov solicite, utilice,
         conserve y comparta su información personal. Solo la utilizaremos para verificar
         su identidad.
-      document_capture_selfie_consent_action: "<lg-underline>Permita el acceso a la
+      document_capture_selfie_consent_action: '<lg-underline>Permita el acceso a la
         cámara</lg-underline> y busque una notificación en su navegador o revise la
-        configuración del sistema para confirmar el acceso a la cámara."
+        configuración del sistema para confirmar el acceso a la cámara.'
       document_capture_selfie_consent_banner: login.gov necesita permiso para usar
         la cámara de su dispositivo
       document_capture_selfie_consent_blocked: login.gov necesita permiso para usar
@@ -250,13 +250,13 @@ es:
       document_capture_selfie_text3: No use sombrero o anteojos
       review_issues_id_header_text: 'Revise las imágenes de su documento de identidad
         expedido por el estado:'
-      review_issues_id_text1: "¿Ha usado un fondo oscuro?"
-      review_issues_id_text2: "¿Tomó la foto en una superficie plana?"
-      review_issues_id_text3: "¿Tiene el flash de su cámara apagado?"
-      review_issues_id_text4: "¿Todos los detalles están nítidos y claramente visibles?"
+      review_issues_id_text1: '¿Ha usado un fondo oscuro?'
+      review_issues_id_text2: '¿Tomó la foto en una superficie plana?'
+      review_issues_id_text3: '¿Tiene el flash de su cámara apagado?'
+      review_issues_id_text4: '¿Todos los detalles están nítidos y claramente visibles?'
       review_issues_selfie_header_text: 'Revise su propia foto:'
-      review_issues_selfie_text1: "¿Está de cara a la cámara?"
-      review_issues_selfie_text2: "¿Tiene en la foto toda la cabeza y la cara?"
-      review_issues_selfie_text3: "¿Está la foto contra un fondo liso?"
-      review_issues_selfie_text4: "¿Su cara está totalmente visible, no está cubierta
-        por un sombrero o por anteojos?"
+      review_issues_selfie_text1: '¿Está de cara a la cámara?'
+      review_issues_selfie_text2: '¿Tiene en la foto toda la cabeza y la cara?'
+      review_issues_selfie_text3: '¿Está la foto contra un fondo liso?'
+      review_issues_selfie_text4: '¿Su cara está totalmente visible, no está cubierta
+        por un sombrero o por anteojos?'

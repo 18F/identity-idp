@@ -19,11 +19,11 @@ es:
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
         puede restablecer tus preferencias por %{link}.
     backup_code_fallback:
-      question: "¿No tienes tus códigos de seguridad disponibles?"
+      question: '¿No tienes tus códigos de seguridad disponibles?'
     backup_code_header_text: Ingrese su código de seguridad de respaldo
     backup_code_prompt: Puede utilizar este código de seguridad una vez. Después de
       ingresarlo, deberá usar una nueva clave.
-    choose_another_option: "‹ Elige otra opción"
+    choose_another_option: '‹ Elige otra opción'
     devices:
       auth_app: Aplicación de autenticación
       backup_code: Códigos de seguridad personal
@@ -94,15 +94,15 @@ es:
       phone_unsupported: En este momento no podemos realizar llamadas a personas en
         %{location}.
       sms: Mensaje de texto (SMS, sigla en inglés)
-      title: "¿Cómo deberíamos enviarle un código?"
+      title: '¿Cómo deberíamos enviarle un código?'
       voice: Llamada telefónica
     otp_make_default_number:
       instruction: Marque la casilla a continuación si desea que este sea el teléfono
         predeterminado número que recibe mensajes de texto o llamadas telefónicas.
       label: Número de teléfono predeterminado
-      title: "¿Es este tu número de teléfono predeterminado?"
+      title: '¿Es este tu número de teléfono predeterminado?'
     personal_key_fallback:
-      question: "¿No tiene su clave personal?"
+      question: '¿No tiene su clave personal?'
     personal_key_header_text: Ingrese su clave personal
     personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
       se le dará una nueva clave.
@@ -111,7 +111,7 @@ es:
         failure: No se puede eliminar el teléfono.
         success: Su teléfono ha sido eliminado.
     phone_fallback:
-      question: "¿No tiene acceso a su teléfono ahora mismo?"
+      question: '¿No tiene acceso a su teléfono ahora mismo?'
     phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
     phone_info_html: Le enviaremos o llamaremos con un código de seguridad <strong>cada
       vez que inicie sesión</strong>.
@@ -123,7 +123,7 @@ es:
       que inicies sesión</strong>.
     phone_voice_label: Número de teléfono
     piv_cac_fallback:
-      question: "¿No tienes su PIV o CAC disponibles?"
+      question: '¿No tienes su PIV o CAC disponibles?'
     piv_cac_header_text: Presenta tu PIV/CAC
     piv_cac_webauthn_available: Utilice su llave de seguridad
     please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
@@ -131,7 +131,7 @@ es:
       link: leer acerca de la autenticación de dos factores
       text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
     totp_fallback:
-      question: "¿No tiene su aplicación de autenticación?"
+      question: '¿No tiene su aplicación de autenticación?'
     totp_header_text: Ingrese su código de la app de autenticación
     two_factor_aal3_choice: Se requiere autenticación adicional
     two_factor_aal3_choice_intro: Esta aplicación requiere un mayor nivel de seguridad.
@@ -173,7 +173,7 @@ es:
       de un dispositivo físico como una clave de seguridad o identificación de empleado
       gubernamental (PIV/CAC)
     webauthn_fallback:
-      question: "¿No dispone de su llave de seguridad?"
+      question: '¿No dispone de su llave de seguridad?'
     webauthn_header_text: Conecte su llave de seguridad
     webauthn_piv_available: Utilice su PIV o CAC
     webauthn_verified:

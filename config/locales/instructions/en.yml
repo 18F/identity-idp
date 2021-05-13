@@ -24,13 +24,13 @@ en:
           at %{app}.
         manual_entry: Or enter this code manually into your authentication app
       piv_cac:
-        account_not_found_html: "<p><strong>%{sign_in}</strong> with your email address
+        account_not_found_html: '<p><strong>%{sign_in}</strong> with your email address
           and password. Then add your PIV/CAC to your account.</p> <p><strong>Don’t
-          have a login.gov account?</strong> %{create_account}</p>"
-        add_from_sign_in_html: "<strong>Instructions:</strong> Insert your PIV or
+          have a login.gov account?</strong> %{create_account}</p>'
+        add_from_sign_in_html: '<strong>Instructions:</strong> Insert your PIV or
           CAC on <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a certificate</strong>
           (the right one likely has your name of it) and <strong>enter your PIN</strong>
-          (your PIN was created when you set up your PIV/CAC)."
+          (your PIN was created when you set up your PIV/CAC).'
         already_associated_html: Please choose a certificate from a different PIV/CAC,
           contact your administrator to ensure your PIV/CAC is up to date. If you
           think this is an error, %{try_again}.

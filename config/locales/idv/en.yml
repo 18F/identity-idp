@@ -40,9 +40,9 @@ en:
       help:
         get_help_html: Get help at <strong>%{sp_name}</strong>
       phone:
-        fail_html: "<strong>Please try again in %{timeout}.</strong> For your security,
+        fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
           we limit the number of times you can attempt to verify your phone number
-          online."
+          online.'
         heading: We could not match your name and address to this phone number
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again.
@@ -50,9 +50,9 @@ en:
         warning: Please check the information you entered and try again.
       sessions:
         exception: There was an internal error processing your request.
-        fail_html: "<strong>Please try again in %{timeout}.</strong> For your security,
+        fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
           we limit the number of times you can attempt to verify personal information
-          online."
+          online.'
         heading: We could not find records matching your personal information.
         warning: Please check the information you entered and try again. Common mistakes
           are an incorrect Social Security number or ZIP code.
@@ -74,8 +74,8 @@ en:
       address1: Address
       address2: Address (optional)
       city: City
-      no_alternate_phone_html: "<strong>%{link}</strong>. We’ll mail you a letter
-        with a code in it."
+      no_alternate_phone_html: '<strong>%{link}</strong>. We’ll mail you a letter
+        with a code in it.'
       password: Password
       phone: Phone Number
       ssn_label_html: Social Security Number
@@ -117,17 +117,17 @@ en:
       personal_key: This is your new personal key. Write it down and keep it in a
         safe place. You will need it if you ever lose your password.
       phone:
-        alert_html: "<strong>This phone number must…</strong>"
+        alert_html: '<strong>This phone number must…</strong>'
         description: We’ll check this number with phone bill records.  This is to
           help verify your identity; we won’t use it to call or text you.
-        final_note_html: "<strong>If you set up a phone for two-factor authentication</strong>,
-          this can be a different number."
+        final_note_html: '<strong>If you set up a phone for two-factor authentication</strong>,
+          this can be a different number.'
         phone_of_record: Phone of record
         rules:
-        - be on a phone plan with your name on it
-        - not be a virtual phone (such as Google Voice or Skype)
-        - be a U.S. number
-      return_to_profile: "‹ Return to your login.gov profile"
+          - be on a phone plan with your name on it
+          - not be a virtual phone (such as Google Voice or Skype)
+          - be a U.S. number
+      return_to_profile: '‹ Return to your login.gov profile'
       review:
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information

@@ -7,10 +7,10 @@ en:
         government accounts online. Below is a list of all the accounts you currently
         have connected.
     email_language:
-      default: "%{language} (default)"
+      default: '%{language} (default)'
       edit_title: Edit email language preference
-      languages_list: "%{app_name} allows you to receive your email communication
-        in %{list}."
+      languages_list: '%{app_name} allows you to receive your email communication
+        in %{list}.'
       name:
         en: English
         es: Spanish
@@ -33,7 +33,7 @@ en:
       backup_codes_exist: Generated
       backup_codes_no_exist: Not generated
       default: default
-      device: "%{browser} on %{os}"
+      device: '%{browser} on %{os}'
       dob: Date of birth
       email: Email address
       email_add: Add email
