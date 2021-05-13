@@ -118,7 +118,8 @@ fr:
         new_address: Nous vous enverrons une lettre avec un code de confirmation à
           l’adresse que vous spécifiez.
         resend: Envoyez-moi une autre lettre
-        success: Elle devrait arriver dans 5 à 10 jours ouvrables.
+        timeframe: Les lettres sont envoyées le jour ouvrable suivant par courrier
+          de première classe USPS et prennent généralement de 3 à 7 jours ouvrables.
       hardfail: Nous ne pouvons pas vous connecter pour le moment, mais vous pouvez
         retenter d’effectuer la vérification de votre identité dans %{hours} heures.
       mail_sent: Votre lettre est en route
@@ -128,16 +129,16 @@ fr:
         dans un endroit sécuritaire. Vous en aurez besoin si vous perdez votre mot
         de passe.
       phone:
-        alert_html: Ce numéro de téléphone <strong>doit être</strong>
+        alert_html: "<strong>Ce numéro de téléphone doit…</strong>"
         description: Nous vérifions les dossiers pour vous assurer que vous êtes ce
           que vous dites et que vous êtes propriétaire de votre compte.
         final_note_html: "<strong>Si vous configurez un téléphone pour l’authentification
           à deux facteurs</strong>, il peut s’agir d’un numéro différent."
         phone_of_record: numéro de téléphone enregistré
         rules:
-        - sur un plan de téléphone avec votre nom dessus
+        - être un plan téléphonique associé à votre nom. Il n'est pas nécessaire que
+          vous soyez le titulaire principal du compte.
         - pas un téléphone virtuel (comme Google Voice ou Skype)
-        - pas un numéro de téléphone prépayé
         - un numéro américain
       return_to_profile: "‹ Revenir à votre profil login.gov"
       review:

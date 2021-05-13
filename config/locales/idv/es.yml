@@ -110,7 +110,8 @@ es:
         new_address: Le enviaremos una carta con un código de confirmación a la dirección
           que especifique.
         resend: Envíeme otra carta
-        success: Debe llegar en 5 a 10 días laborales.
+        timeframe: Las correspondencias se envían al día siguiente por correo de primera
+          clase de USPS, y por lo general tardan entre 3 y 7 días laborables.
       hardfail: No puedes iniciar sesión en estos instantes pero puedes intentar verificar
         tu edad de nuevo en %{hours} horas.
       mail_sent: Su carta está en camino
@@ -119,16 +120,16 @@ es:
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert_html: Este número de teléfono <strong>debe ser</strong>
+        alert_html: "<strong>Este número de teléfono debe…</strong>"
         description: Verificamos los registros para asegurarnos de que eres quien
           eres, y de que eres el propietario de tu cuenta.
         final_note_html: "<strong>Si configura un teléfono para la autenticación de
           dos factores</strong>, este puede ser un número diferente."
         phone_of_record: Teléfono del registro
         rules:
-        - en un plan de teléfono con su nombre en él
+        - ser un plan telefónico que esté asociado a su nombre. En este caso, no es
+          necesario que usted sea el titular principal de la cuenta.
         - no es un teléfono virtual (como Google Voice o Skype)
-        - no es un número de teléfono prepago
         - un número de EE. UU.
       return_to_profile: "‹ Volver a tu perfil de login.gov"
       review:
