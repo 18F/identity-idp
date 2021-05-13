@@ -65,7 +65,6 @@ module Users
     def form_response(emails:, telephony_responses:)
       FormResponse.new(
         success: true,
-        errors: {},
         extra: {
           emails: emails.count,
           sms_message_ids: telephony_responses.map { |resp| resp.to_h[:message_id] },

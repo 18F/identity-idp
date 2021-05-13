@@ -8,7 +8,7 @@ module Idv
 
     def submit(params)
       self.otp_delivery_preference = params[:otp_delivery_preference]
-      FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
+      FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
     end
 
     private

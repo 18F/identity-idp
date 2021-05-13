@@ -95,6 +95,7 @@ describe SignUp::EmailConfirmationsController do
       analytics_hash = {
         success: false,
         errors: { confirmation_token: [t('errors.messages.expired')] },
+        error_details: { confirmation_token: [:expired] },
         user_id: user.uuid,
       }
 
@@ -118,6 +119,7 @@ describe SignUp::EmailConfirmationsController do
       analytics_hash = {
         success: false,
         errors: { confirmation_token: [t('errors.messages.expired')] },
+        error_details: { confirmation_token: [:expired] },
         user_id: user.uuid,
       }
 

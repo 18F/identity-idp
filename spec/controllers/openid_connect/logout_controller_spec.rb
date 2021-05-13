@@ -91,6 +91,7 @@ RSpec.describe OpenidConnect::LogoutController do
                  success: false,
                  client_id: service_provider,
                  errors: errors,
+                 error_details: hash_including(*errors.keys),
                  sp_initiated: true,
                  oidc: true)
 

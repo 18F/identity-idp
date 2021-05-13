@@ -11,7 +11,6 @@ describe WebauthnSetupForm do
     context 'when the input is valid' do
       it 'returns FormResponse with success: true' do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
-        result = instance_double(FormResponse)
         params = {
           attestation_object: attestation_object,
           client_data_json: setup_client_data_json,
@@ -22,9 +21,11 @@ describe WebauthnSetupForm do
           multi_factor_auth_method: 'webauthn',
         }
 
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra_attributes).and_return(result)
-        expect(subject.submit(protocol, params)).to eq result
+        expect(subject.submit(protocol, params).to_h).to eq(
+          success: true,
+          errors: {},
+          **extra_attributes,
+        )
       end
 
       it 'sends a recovery information changed event' do
@@ -44,7 +45,6 @@ describe WebauthnSetupForm do
 
     context 'when the input is invalid' do
       it 'returns FormResponse with success: false' do
-        result = instance_double(FormResponse)
         params = {
           attestation_object: attestation_object,
           client_data_json: setup_client_data_json,
@@ -55,16 +55,17 @@ describe WebauthnSetupForm do
           multi_factor_auth_method: 'webauthn',
         }
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: extra_attributes).and_return(result)
-        expect(subject.submit(protocol, params)).to eq result
+        expect(subject.submit(protocol, params).to_h).to eq(
+          success: false,
+          errors: {},
+          **extra_attributes,
+        )
       end
 
       it 'returns false with an error when the attestation response raises an error' do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
 
-        result = instance_double(FormResponse)
         params = {
           attestation_object: attestation_object,
           client_data_json: setup_client_data_json,
@@ -75,10 +76,12 @@ describe WebauthnSetupForm do
           multi_factor_auth_method: 'webauthn',
         }
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, extra: extra_attributes, errors:
-            { name: [I18n.t('errors.webauthn_setup.attestation_error')] }).and_return(result)
-        expect(subject.submit(protocol, params)).to eq result
+        expect(subject.submit(protocol, params).to_h).to eq(
+          success: false,
+          errors: { name: [I18n.t('errors.webauthn_setup.attestation_error')] },
+          error_details: { name: [I18n.t('errors.webauthn_setup.attestation_error')] },
+          **extra_attributes,
+        )
       end
     end
   end

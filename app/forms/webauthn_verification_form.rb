@@ -25,7 +25,7 @@ class WebauthnVerificationForm
     success = valid? && valid_assertion_response?(protocol)
     FormResponse.new(
       success: success,
-      errors: errors.messages,
+      errors: errors,
       extra: extra_analytics_attributes,
     )
   end

@@ -17,7 +17,7 @@ module Idv
       success = valid?
       self.phone = params[:phone] unless success
 
-      FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+      FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
     end
 
     def user_has_multiple_phones?

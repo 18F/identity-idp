@@ -54,7 +54,7 @@ module Idv
     def validate_form
       response = Idv::DocAuthFormResponse.new(
         success: valid?,
-        errors: errors.messages,
+        errors: errors,
         extra: extra_attributes,
       )
 

@@ -31,7 +31,6 @@ module Idv
     def too_many_otp_sends_response
       FormResponse.new(
         success: false,
-        errors: {},
         extra: extra_analytics_attributes,
       )
     end
@@ -67,7 +66,7 @@ module Idv
 
     def otp_sent_response
       FormResponse.new(
-        success: telephony_response.success?, errors: {}, extra: extra_analytics_attributes,
+        success: telephony_response.success?, extra: extra_analytics_attributes,
       )
     end
 

@@ -20,24 +20,24 @@ describe UpdateUserPasswordForm, type: :model do
         errors = {
           password: [t('errors.messages.too_short.other', count: Devise.password_length.first)],
         }
-        result = instance_double(FormResponse)
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors).and_return(result)
         expect(UpdateUser).not_to receive(:new)
         expect(EmailNotifier).not_to receive(:new)
         expect(ActiveProfileEncryptor).not_to receive(:new)
-        expect(subject.submit(params)).to eq result
+        expect(subject.submit(params).to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+        )
       end
     end
 
     context 'when the password is valid' do
       it 'returns FormResponse with success: true' do
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}).and_return(result)
-        expect(subject.submit(params)).to eq result
+        expect(subject.submit(params).to_h).to eq(
+          success: true,
+          errors: {},
+        )
       end
 
       it 'updates the user' do

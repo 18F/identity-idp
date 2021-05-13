@@ -10,7 +10,7 @@ class SamlRequestValidator
     self.authn_context = Array(authn_context)
     self.nameid_format = nameid_format
 
-    FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
+    FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
   end
 
   private

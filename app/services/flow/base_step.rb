@@ -47,7 +47,7 @@ module Flow
     end
 
     def form_submit
-      FormResponse.new(success: true, errors: {})
+      FormResponse.new(success: true)
     end
 
     def failure(message, extra = nil)

@@ -23,7 +23,7 @@ class AddUserEmailForm
       @success = false
     end
 
-    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
 
   def email_address_record(email)

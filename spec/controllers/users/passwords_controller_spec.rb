@@ -72,14 +72,16 @@ describe Users::PasswordsController do
         params = { password: 'new' }
         patch :update, params: { update_user_password_form: params }
 
-        errors = {
-          password: [
-            t('errors.messages.too_short.other', count: Devise.password_length.first),
-          ],
-        }
-
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_CHANGED, success: false, errors: errors)
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::PASSWORD_CHANGED,
+          success: false,
+          errors: {
+            password: [
+              t('errors.messages.too_short.other', count: Devise.password_length.first),
+            ],
+          },
+          error_details: { password: [:too_short] },
+        )
         expect(response).to render_template(:edit)
       end
 

@@ -133,6 +133,9 @@ describe Idv::PhoneController do
           errors: {
             phone: [t('errors.messages.must_have_us_country_code')],
           },
+          error_details: {
+            phone: [:must_have_us_country_code],
+          },
           country_code: nil,
           area_code: nil,
         }

@@ -383,14 +383,14 @@ RSpec.describe OpenidConnectTokenForm do
   describe '#submit' do
     context 'with valid params' do
       it 'returns FormResponse with success: true' do
-        response = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(response)
-
         submission = form.submit
 
-        expect(submission).to eq response
-        expect(FormResponse).to have_received(:new).
-          with(success: true, errors: {}, extra: { client_id: client_id, user_id: user.uuid })
+        expect(submission.to_h).to eq(
+          success: true,
+          errors: {},
+          client_id: client_id,
+          user_id: user.uuid,
+        )
       end
     end
 
@@ -398,15 +398,15 @@ RSpec.describe OpenidConnectTokenForm do
       let(:code) { nil }
 
       it 'returns FormResponse with success: false' do
-        response = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(response)
-
         submission = form.submit
 
-        expect(submission).to eq response
-        expect(FormResponse).to have_received(:new).
-          with(success: false, errors: form.errors.messages, extra: { client_id: nil,
-                                                                      user_id: nil })
+        expect(submission.to_h).to include(
+          success: false,
+          errors: form.errors.messages,
+          error_details: hash_including(*form.errors.keys),
+          client_id: nil,
+          user_id: nil,
+        )
       end
     end
   end

@@ -30,11 +30,11 @@ describe OtpDeliverySelectionForm do
           context: 'authentication',
         }
 
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(subject.submit(otp_delivery_preference: 'sms', resend: true)).to eq result
+        expect(subject.submit(otp_delivery_preference: 'sms', resend: true).to_h).to eq(
+          success: true,
+          errors: {},
+          **extra,
+        )
       end
     end
 
@@ -53,16 +53,18 @@ describe OtpDeliverySelectionForm do
           context: 'authentication',
         }
 
-        result = instance_double(FormResponse)
         subject = OtpDeliverySelectionForm.new(
           build_stubbed(:user),
           nil,
           'authentication',
         )
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(subject.submit(otp_delivery_preference: 'foo')).to eq result
+        expect(subject.submit(otp_delivery_preference: 'foo').to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 

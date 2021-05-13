@@ -8,7 +8,6 @@ class TotpVerificationForm
     cfg = if_valid_totp_code_return_config
     FormResponse.new(
       success: cfg.present?,
-      errors: {},
       extra: extra_analytics_attributes(cfg&.id),
     )
   end
