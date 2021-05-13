@@ -37,4 +37,13 @@ RSpec.describe Agreements::IaaOrder, type: :model do
     it { is_expected.to have_many(:integration_usages).dependent(:restrict_with_exception) }
     it { is_expected.to have_many(:integrations).through(:integration_usages) }
   end
+
+  describe '#partner_status' do
+    it 'returns the partner_name of the associated iaa_status' do
+      status = build(:iaa_status, partner_name: 'foo')
+      order = build(:iaa_order, iaa_status: status)
+
+      expect(order.partner_status).to eq('foo')
+    end
+  end
 end
