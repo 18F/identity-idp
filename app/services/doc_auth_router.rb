@@ -177,11 +177,11 @@ module DocAuthRouter
     end
   end
 
-  def self.notify_exception(exception, custom_params = nil)
+  def self.notify_exception(exception, custom_params = nil, expected = false)
     if custom_params
-      NewRelic::Agent.notice_error(exception, custom_params: custom_params)
+      NewRelic::Agent.notice_error(exception, custom_params: custom_params, expected: expected)
     else
-      NewRelic::Agent.notice_error(exception)
+      NewRelic::Agent.notice_error(exception, expected: expected)
     end
   end
 
