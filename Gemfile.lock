@@ -13,10 +13,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: d848096ab0f3995ea1a999770e7f8f654d65cb9a
-  tag: v0.6.0
+  revision: 9d5ad9a7f8f29ad89386267e0a8879c6a2d7377a
+  tag: v0.6.1
   specs:
-    identity-doc-auth (0.6.0)
+    identity-doc-auth (0.6.1)
       activesupport
       faraday
       redacted_struct (>= 1.0.0)
