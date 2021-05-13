@@ -49,13 +49,15 @@
       </div>
     </label>
 
-    <% if FeatureManagement.enable_gpo_verification? %>
+    <div class="margin-top-4"></div>
+    <% if gpo_letter_available %>
       <div class="margin-top-4">
         <%= t('idv.form.no_alternate_phone_html', link: link_to(t('idv.form.activate_by_mail'), idv_gpo_path)) %>
       </div>
     <% end %>
+
     <div class="margin-top-2">
-        <%= t('instructions.mfa.wrong_number_html', link: link_to(t('forms.two_factor.try_again'), idv_phone_path)) %>
+      <%= t('instructions.mfa.wrong_number_html', link: link_to(t('forms.two_factor.try_again'), idv_phone_path)) %>
     </div>
 
   </fieldset>

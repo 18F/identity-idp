@@ -11,6 +11,7 @@ module Idv
 
     def new
       analytics.track_event(Analytics::IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT)
+      render :new, locals: { gpo_letter_available: gpo_letter_available }
     end
 
     def create
@@ -41,7 +42,7 @@ module Idv
 
     def render_new_with_error_message
       flash[:error] = t('idv.errors.unsupported_otp_delivery_method')
-      render :new
+      render :new, locals: { gpo_letter_available: gpo_letter_available }
     end
 
     def send_phone_confirmation_otp_and_handle_result
@@ -75,6 +76,11 @@ module Idv
 
     def otp_delivery_selection_form
       @otp_delivery_selection_form ||= Idv::OtpDeliveryMethodForm.new
+    end
+
+    def gpo_letter_available
+      @_gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
+                                 !Idv::GpoMail.new(current_user).mail_spammed?
     end
   end
 end
