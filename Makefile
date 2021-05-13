@@ -7,6 +7,7 @@
 CONFIG = config/application.yml
 HOST ?= localhost
 PORT ?= 3000
+NODE_BIN = node_modules/.bin
 
 all: check
 
@@ -73,9 +74,10 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
 
 .PHONY: setup all lint run test check brakeman
 
-normalize_yaml:
+normalize_yaml: $(wildcard config/locales/*/*.yml config/country_dialing_codes.yml)
 	bundle exec i18n-tasks normalize
-	find ./config/locales -type f | xargs ./scripts/normalize-yaml config/country_dialing_codes.yml
+	./scripts/normalize-yaml $?
+	$(NODE_BIN)/prettier --write $?
 
 optimize_svg:
 	# Without disabling minifyStyles, keyframes are removed (e.g. `app/assets/images/id-card.svg`).
