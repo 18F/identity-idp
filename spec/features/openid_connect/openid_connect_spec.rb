@@ -5,11 +5,22 @@ describe 'OpenID Connect' do
   include OidcAuthHelper
   include DocAuthHelper
 
-  it 'it sets the sp_issuer cookie' do
+  it 'sets the sp_issuer cookie' do
     visit_idp_from_ial1_oidc_sp
 
     cookie = cookies.filter { |c| c.name == 'sp_issuer' }.first.value
     expect(cookie).to eq(OidcAuthHelper::OIDC_ISSUER)
+  end
+
+  it 'receives an ID token with a kid that matches the certs endpooint' do
+    id_token = sign_in_get_id_token
+
+    _payload, headers = JWT.decode(
+      id_token, sp_public_key, true, algorithm: 'RS256'
+    ).map(&:with_indifferent_access)
+
+    kid = headers[:kid]
+    expect(certs_response[:keys].find { |key| key[:kid] == kid }).to be
   end
 
   context 'with client_secret_jwt' do
@@ -676,12 +687,14 @@ describe 'OpenID Connect' do
     JSON.parse(page.body).with_indifferent_access
   end
 
-  def sp_public_key
+  def certs_response
     page.driver.get api_openid_connect_certs_path
 
     expect(page.status_code).to eq(200)
-    certs_response = JSON.parse(page.body).with_indifferent_access
+    JSON.parse(page.body).with_indifferent_access
+  end
 
+  def sp_public_key
     JWT::JWK.import(certs_response[:keys].first).public_key
   end
 

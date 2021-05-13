@@ -4,11 +4,6 @@ module Reports
   class BaseReport
     private
 
-    def arbitrary_start_day(month:, day:)
-      now = Time.zone.now.beginning_of_day
-      now.change(year: now.month >= month ? now.year : now.year - 1, month: month, day: day)
-    end
-
     def fiscal_start_date
       now = Time.zone.now.beginning_of_day
       now.change(year: now.month >= 10 ? now.year : now.year - 1, month: 10, day: 1)

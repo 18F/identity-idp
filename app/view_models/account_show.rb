@@ -17,40 +17,6 @@ class AccountShow
     decorated_user.password_reset_profile.present?
   end
 
-  def pending_profile_partial
-    if decorated_user.pending_profile_requires_verification?
-      if decorated_user.gpo_mail_bounced?
-        'accounts/pending_profile_bounced_gpo'
-      else
-        'accounts/pending_profile_gpo'
-      end
-    else
-      'shared/null'
-    end
-  end
-
-  def unphishable_badge_partial
-    return 'shared/null' unless MfaPolicy.new(decorated_user.user).unphishable?
-    'accounts/unphishable_badge'
-  end
-
-  def verified_account_badge_partial
-    return 'shared/null' unless decorated_user.identity_verified?
-    'accounts/verified_account_badge'
-  end
-
-  def edit_action_partial
-    'accounts/actions/edit_action_button'
-  end
-
-  def manage_action_partial
-    'accounts/actions/manage_action_button'
-  end
-
-  def delete_action_partial
-    'accounts/actions/delete_action_button'
-  end
-
   def show_pii_partial?
     decrypted_pii.present? || decorated_user.identity_verified?
   end
@@ -62,22 +28,6 @@ class AccountShow
     else
       false
     end
-  end
-
-  def backup_codes_partial
-    if TwoFactorAuthentication::BackupCodePolicy.new(decorated_user.user).configured?
-      regenerate_backup_codes_partial
-    else
-      generate_backup_codes_partial
-    end
-  end
-
-  def regenerate_backup_codes_partial
-    'accounts/actions/regenerate_backup_codes'
-  end
-
-  def generate_backup_codes_partial
-    'accounts/actions/generate_backup_codes'
   end
 
   def backup_codes_generated_at

@@ -486,6 +486,38 @@ describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#account_verified' do
+    disavowal_token = 'i_am_disavowal_token'
+    let(:app) { '' }
+    let(:date_time) { Time.zone.now }
+    let(:mail) do
+      UserMailer.account_verified(
+        user, email_address, date_time: date_time, app: app,
+                             disavowal_token: disavowal_token
+      )
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.account_verified.subject', app: app)
+    end
+
+    it 'does not send mail to emails in nonessential email banlist' do
+      email_address = EmailAddress.new(email: banned_email)
+      mail = UserMailer.account_verified(
+        user, email_address, date_time: date_time, app: app,
+                             disavowal_token: disavowal_token
+      )
+      expect(mail.to).to eq(nil)
+    end
+  end
+
   def strip_tags(str)
     ActionController::Base.helpers.strip_tags(str)
   end

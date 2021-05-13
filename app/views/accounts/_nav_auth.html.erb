@@ -1,20 +1,20 @@
 <div class="bg-white">
   <div class="container tablet:padding-x-2 tablet:padding-y-4">
     <div class="clearfix">
-      <div class="margin-y-1 margin-left-2 tablet:margin-0 col col-4">
+      <div class="margin-y-105 margin-left-2 tablet:margin-0 col col-4">
         <%= link_to image_tag(asset_url('logo.svg'),
                               alt: APP_NAME,
                               class: 'text-bottom',
                               width: 170), root_path %>
       </div>
-      <div class="right-align col col-8 padding-right-1 authnav-greeting">
-        <div class="inline-block margin-right-1 truncate-inline">
-          <p class="inline-block truncate margin-0">
+      <div class="col col-8 padding-right-1 display-none desktop:display-flex flex-justify-end">
+        <div class="margin-right-1 truncate-inline">
+          <p class="truncate margin-0">
             <%= t('account.welcome') %>
             <strong><%= greeting %></strong>
           </p>
         </div>
-        <div class="inline-block right border-silver border-left">
+        <div class="border-silver border-left">
           <p class="margin-0">
             <%= link_to t('links.sign_out'), destroy_user_session_path,
                         class: 'padding-left-1' %>
@@ -22,7 +22,7 @@
         </div>
       </div>
       <div class="desktop:display-none display-flex flex-row flex-justify-end">
-        <%= link_to t('links.sign_out'), destroy_user_session_path, class: 'margin-top-1 margin-right-2'%>
+        <%= link_to t('links.sign_out'), destroy_user_session_path, class: 'margin-top-105 margin-right-2'%>
         <% if enable_mobile_nav %>
           <button class="usa-menu-btn"><%= t('account.navigation.menu') %></button>
         <% end %>

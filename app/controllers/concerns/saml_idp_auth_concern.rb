@@ -57,24 +57,7 @@ module SamlIdpAuthConcern
 
   def requested_authn_contexts
     @requested_authn_contexts ||= saml_request.requested_authn_contexts.presence ||
-                                  [default_authn_context]
-  end
-
-  def requested_authn_context
-    if IdentityConfig.store.aal_authn_context_enabled
-      requested_aal_authn_context
-    else
-      sp_defined_aal_context = saml_request.requested_aal_authn_context
-      sp_defined_aal_context.presence || requested_ial_authn_context
-    end
-  end
-
-  def default_authn_context
-    if IdentityConfig.store.aal_authn_context_enabled
-      default_aal_context
-    else
-      default_ial_context
-    end
+                                  [default_aal_context]
   end
 
   def default_aal_context
@@ -153,7 +136,7 @@ module SamlIdpAuthConcern
     encode_response(
       current_user,
       name_id_format: name_id_format,
-      authn_context_classref: requested_authn_context,
+      authn_context_classref: requested_aal_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: encryption_opts,
       signature: saml_response_signature_options,

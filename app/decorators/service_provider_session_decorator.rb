@@ -48,14 +48,6 @@ class ServiceProviderSessionDecorator
     ActionController::Base.helpers.image_path("sp-logos/#{logo}")
   end
 
-  def return_to_service_provider_partial
-    'devise/sessions/return_to_service_provider'
-  end
-
-  def nav_partial
-    'shared/nav_branded'
-  end
-
   def new_session_heading
     I18n.t('headings.sign_in_with_sp', sp: sp_name)
   end

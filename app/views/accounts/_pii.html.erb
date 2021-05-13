@@ -58,7 +58,7 @@
         <%= t('account.index.phone') %>
       </div>
       <div class="mobile-lg:grid-col-8 padding-x-1">
-        <%= pii.phone %>
+        <%= PhoneFormatter.format(pii.phone) %>
       </div>
     </div>
   </div>

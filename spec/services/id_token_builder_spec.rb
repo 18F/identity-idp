@@ -42,6 +42,7 @@ RSpec.describe IdTokenBuilder do
     end
 
     let(:decoded_payload) { decoded_id_token.first }
+    let(:decoded_headers) { decoded_id_token.last }
 
     it 'sets the issuer to the root url' do
       expect(decoded_payload[:iss]).to eq(root_url)
@@ -118,6 +119,14 @@ RSpec.describe IdTokenBuilder do
           expect(decoded_payload[:email]).to eq(identity.user.email_addresses.first.email)
         end
       end
+    end
+
+    it 'sets the algorithm header' do
+      expect(decoded_headers[:alg]).to eq('RS256')
+    end
+
+    it 'sets the kid for the signing key in the JWT headers' do
+      expect(decoded_headers[:kid]).to eq(JWT::JWK.new(AppArtifacts.store.oidc_private_key).kid)
     end
   end
 end

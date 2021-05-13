@@ -1,3 +1,5 @@
+require 'csv'
+
 class UuidReporter
   def self.run(**opts)
     new(**opts).run

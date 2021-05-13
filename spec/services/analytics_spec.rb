@@ -37,6 +37,7 @@ describe Analytics do
       analytics_hash = {
         event_properties: {},
         user_id: current_user.uuid,
+        locale: I18n.locale,
       }
 
       expect(ahoy).to receive(:track).
@@ -52,6 +53,7 @@ describe Analytics do
       analytics_hash = {
         event_properties: {},
         user_id: tracked_user.uuid,
+        locale: I18n.locale,
       }
 
       expect(ahoy).to receive(:track).
@@ -89,6 +91,22 @@ describe Analytics do
       expect(browser).to receive(:device_name)
       expect(browser).to receive(:device_type)
       expect(browser).to receive(:bot?)
+
+      analytics.track_event('Trackable Event')
+    end
+
+    it 'includes the locale of the current request' do
+      locale = :fr
+      allow(I18n).to receive(:locale).and_return(locale)
+
+      analytics_hash = {
+        event_properties: {},
+        user_id: current_user.uuid,
+        locale: locale,
+      }
+
+      expect(ahoy).to receive(:track).
+        with('Trackable Event', analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event')
     end

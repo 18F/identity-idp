@@ -10,6 +10,7 @@ class Analytics
     analytics_hash = {
       event_properties: attributes.except(:user_id),
       user_id: attributes[:user_id] || user.uuid,
+      locale: I18n.locale,
     }
     analytics_hash.merge!(request_attributes)
 

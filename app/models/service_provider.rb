@@ -2,8 +2,6 @@ require 'fingerprinter'
 require 'identity_validations'
 
 class ServiceProvider < ApplicationRecord
-  self.ignored_columns = %w[deal_id agency aal fingerprint cert]
-
   belongs_to :agency
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
@@ -57,22 +55,5 @@ class ServiceProvider < ApplicationRecord
     cert_file = Rails.root.join('certs', 'sp', "#{cert}.crt")
     return OpenSSL::X509::Certificate.new(cert) unless File.exist?(cert_file)
     File.read(cert_file)
-  end
-
-  def redirect_uris_are_parsable
-    return if redirect_uris.blank?
-
-    redirect_uris.each do |uri|
-      next if redirect_uri_valid?(uri)
-      errors.add(:redirect_uris, :invalid)
-      break
-    end
-  end
-
-  def redirect_uri_valid?(redirect_uri)
-    parsed_uri = URI.parse(redirect_uri)
-    parsed_uri.scheme.present? && parsed_uri.host.present?
-  rescue URI::BadURIError, URI::InvalidURIError
-    false
   end
 end

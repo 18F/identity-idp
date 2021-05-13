@@ -3,7 +3,11 @@
     <%= t('forms.backup_code.title') %>
   </h2>
   <div class="grid-col-auto">
-    <%= render @view_model.backup_codes_partial %>
+    <% if TwoFactorAuthentication::BackupCodePolicy.new(@view_model.decorated_user.user).configured? %>
+      <%= render 'accounts/actions/regenerate_backup_codes' %>
+    <% else %>
+      <%= render 'accounts/actions/generate_backup_codes' %>
+    <% end %>
   </div>
 </div>
 <div class="grid-row padding-1 border border-primary-light">

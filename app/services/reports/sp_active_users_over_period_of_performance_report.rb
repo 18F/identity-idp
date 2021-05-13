@@ -6,7 +6,7 @@ module Reports
 
     def call
       results = transaction_with_timeout do
-        Db::Identity::SpActiveUserCounts.call(arbitrary_start_day(month: 4, day: 1))
+        Db::Identity::SpActiveUserCountsWithinIaaWindow.call
       end
       save_report(REPORT_NAME, results.to_json)
     end

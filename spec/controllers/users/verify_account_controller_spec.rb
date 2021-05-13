@@ -6,10 +6,10 @@ RSpec.describe Users::VerifyAccountController do
   let(:otp) { 'ABC123' }
   let(:submitted_otp) { otp }
   let(:pending_profile) { build(:profile) }
+  let(:user) { create(:user) }
 
   before do
     stub_analytics
-    user = create(:user)
     stub_sign_in(user)
     decorated_user = stub_decorated_user_with_pending_profile(user)
     create(
@@ -99,6 +99,9 @@ RSpec.describe Users::VerifyAccountController do
 
         action
 
+        disavowal_event_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0').
+          where.not(disavowal_token_fingerprint: nil).count
+        expect(disavowal_event_count).to eq 1
         expect(response).to redirect_to(sign_up_completed_url)
       end
     end

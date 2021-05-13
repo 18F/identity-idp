@@ -137,7 +137,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
   ) : (
     <>
       {submissionError && !(submissionError instanceof UploadFormEntriesError) && (
-        <Alert type="error" className="margin-bottom-4 margin-top-2 tablet:margin-top-0">
+        <Alert type="error" className="margin-bottom-4">
           {t('doc_auth.errors.general.network_error')}
         </Alert>
       )}
