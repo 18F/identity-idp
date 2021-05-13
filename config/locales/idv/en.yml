@@ -108,7 +108,8 @@ en:
         new_address: We will mail a letter with a confirmation code to the address
           you specify.
         resend: Send me another letter
-        success: It should arrive in 5 to 10 business days.
+        timeframe: Letters are sent the next business day via USPS First Class Mail,
+          and typically take 3 to 7 business days.
       hardfail: We can’t log you in right now, but you can try verifying your identity
         again in %{hours} hours.
       mail_sent: Your letter is on its way
@@ -124,7 +125,8 @@ en:
           this can be a different number."
         phone_of_record: Phone of record
         rules:
-        - be on a phone plan with your name on it
+        - be a phone plan associated with your name. You do not need to be the primary
+          account holder.
         - not be a virtual phone (such as Google Voice or Skype)
         - be a U.S. number
       return_to_profile: "‹ Return to your login.gov profile"
