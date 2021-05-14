@@ -16,6 +16,28 @@ RSpec.describe Agreements::Iaa do
   it { is_expected.to delegate_method(:end_date).to(:order).with_prefix }
   it { is_expected.to delegate_method(:estimated_amount).to(:order).with_prefix }
 
+  describe 'attributes' do
+    describe 'ial2_users' do
+      it 'defaults to zero' do
+        expect(iaa.ial2_users).to eq(0)
+      end
+      it 'can be set to a custom value' do
+        iaa.ial2_users = 10
+        expect(iaa.ial2_users).to eq(10)
+      end
+    end
+
+    describe 'authentications' do
+      it 'defaults to an empty hash' do
+        expect(iaa.authentications).to eq({})
+      end
+      it 'can be set to a custom value' do
+        iaa.authentications = { 'issuer1' => 10 }
+        expect(iaa.authentications).to eq({ 'issuer1' => 10 })
+      end
+    end
+  end
+
   describe '#iaa_number' do
     it 'returns the formatted IAA number' do
       expect(iaa.iaa_number).to eq('LGABC210001-0001-0002')
