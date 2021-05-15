@@ -31,7 +31,8 @@ module DataRequests
       return if user_uuids_by_device.keys.include?(cookie_uuid)
 
       warn "Searching for new devices matching #{cookie_uuid}"
-      user_uuids = User.joins(:devices).where(devices: { cookie_uuid: cookie_uuid }).pluck(:uuid)
+      user_ids = Device.where(cookie_uuid: cookie_uuid).pluck(:user_id)
+      user_uuids = User.where(id: user_ids).pluck(:uuid)
       user_uuids_by_device[cookie_uuid] = user_uuids
     end
 
