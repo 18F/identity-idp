@@ -6,6 +6,7 @@
 require:
   - rubocop-rails
   - ./lib/linters/url_options_linter.rb
+  - ./lib/linters/localized_validation_message_linter.rb
 
 AllCops:
   Exclude:
@@ -29,6 +30,9 @@ IdentityIdp/UrlOptionsLinter:
   Enabled: true
   Exclude:
     - 'spec/**/*.rb'
+
+IdentityIdp/LocalizedValidationMessageLinter:
+  Enabled: true
 
 Metrics/BlockLength:
   CountComments: false  # count full line comments?
