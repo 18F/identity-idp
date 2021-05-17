@@ -1,11 +1,11 @@
 module DataRequests
   ##
-  # This class recursively looks up networks of users who are sharing devices.
+  # This class iteratively looks up networks of users who are sharing devices.
   # It does this by first looking up the devices for a set of users.
   # Then it looks at all of the users who have signed in from those devices.
   # If a user who has not had their devices looked up is present, it looks up
   # the devices for that user.
-  # This process is done recuresively until all devices and users within a
+  # This process is done iteratively until all devices and users within a
   # network are found.
   #
   class LookupSharedDeviceUsers
@@ -17,6 +17,10 @@ module DataRequests
 
     def call
       lookup_users(initial_users)
+      while true
+        break if user_uuids_to_lookup.empty?
+        lookup_users(users_to_lookup)
+      end
       user_uuids_by_device
     end
 
@@ -27,7 +31,8 @@ module DataRequests
       return if user_uuids_by_device.keys.include?(cookie_uuid)
 
       warn "Searching for new devices matching #{cookie_uuid}"
-      user_uuids = User.joins(:devices).where(devices: { cookie_uuid: cookie_uuid }).pluck(:uuid)
+      user_ids = Device.where(cookie_uuid: cookie_uuid).pluck(:user_id)
+      user_uuids = User.where(id: user_ids).pluck(:uuid)
       user_uuids_by_device[cookie_uuid] = user_uuids
     end
 
@@ -35,8 +40,6 @@ module DataRequests
       users.each do |user|
         lookup_user(user)
       end
-      return if user_uuids_to_lookup.empty?
-      lookup_users(users_to_lookup)
     end
 
     def lookup_user(user)
