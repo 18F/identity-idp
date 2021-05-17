@@ -2,7 +2,8 @@ module Idv
   class ConsentForm
     include ActiveModel::Model
 
-    validates :ial2_consent_given?, acceptance: { message: I18n.t('errors.doc_auth.consent_form') }
+    validates :ial2_consent_given?,
+              acceptance: { message: Proc.new { I18n.t('errors.doc_auth.consent_form') } }
 
     def submit(params)
       @ial2_consent_given = params[:ial2_consent_given] == 'true'
