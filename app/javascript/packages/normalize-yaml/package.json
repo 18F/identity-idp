@@ -1,0 +1,14 @@
+{
+  "name": "@18f/identity-normalize-yaml",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "bin": {
+    "normalize-yaml": "./cli.js"
+  },
+  "dependencies": {
+    "prettier": "^2.2.1",
+    "smartquotes": "^2.3.2",
+    "yaml": "^2.0.0-5"
+  }
+}
