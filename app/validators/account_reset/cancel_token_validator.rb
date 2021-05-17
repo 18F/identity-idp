@@ -6,7 +6,7 @@ module AccountReset
       validates :token,
                 presence: {
                   message: Proc.new { I18n.t('errors.account_reset.cancel_token_missing') },
-                },
+                }
       validate :valid_token
     end
 
