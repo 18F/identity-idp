@@ -1,5 +1,5 @@
 module Db
-  module MonthlySpAuthCost
+  module MonthlySpAuthCount
     module UniqueMonthlyAuthCountsByIaa
       module_function
 

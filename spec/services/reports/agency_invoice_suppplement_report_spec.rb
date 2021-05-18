@@ -50,7 +50,7 @@ RSpec.describe Reports::AgencyInvoiceSupplementReport do
         )
 
         # 2 unique users in whole month IAL 2 at each iaa2 SP
-        [user1, user2].each do |sp|
+        [user1, user2].each do |user|
           create(
             :monthly_sp_auth_count,
             user_id: user.id,
@@ -70,13 +70,13 @@ RSpec.describe Reports::AgencyInvoiceSupplementReport do
             iaa: iaa1,
             ial: 1,
             year_month: inside_iaa1.strftime('%Y%m'),
-            unique_count: 1,
+            unique_users: 1,
           },
           {
             iaa: iaa2,
             ial: 2,
             year_month: inside_iaa2.strftime('%Y%m'),
-            unique_count: 1,
+            unique_users: 2,
           }
         ]
 

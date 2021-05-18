@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Db::MonthlySpAuthCost::UniqueMonthlyAuthCountsByIaa do
+RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
   describe '.call' do
     let(:iaa) { 'iaa1' }
 
     subject(:results) do
-      Db::MonthlySpAuthCost::UniqueMonthlyAuthCountsByIaa.call(iaa)
+      Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(iaa)
     end
 
     it 'is empty with no data' do

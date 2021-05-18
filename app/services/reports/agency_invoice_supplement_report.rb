@@ -5,7 +5,7 @@ module Reports
     def call
       results = iaas.flat_map do |iaa|
         transaction_with_timeout do
-          Db::MonthlySpAuthCost::UniqueMonthlyAuthCountsByIaa.call(iaa)
+          Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(iaa)
         end.to_a
       end
 
