@@ -13,13 +13,14 @@ module Db
         full_months, partial_months = months(date_range).partition { |m| full_month?(m) }
 
         subquery = [
-          full_month_subquery(iaa: iaa, issuers: issuers, full_months: full_months),
-          *partial_month_subqueries(iaa: iaa, issuers: issuers, partial_months: partial_months)
+          full_month_subquery(issuers: issuers, full_months: full_months),
+          *partial_month_subqueries(issuers: issuers, partial_months: partial_months)
         ].join(' UNION ALL ')
 
         params = {
           iaa_start_date: quote(date_range.begin),
           iaa_end_date: quote(date_range.end),
+          iaa: quote(iaa),
           subquery: subquery, # intentionally not quoted
         }
 
@@ -28,7 +29,7 @@ module Db
           SELECT
             billing_month_logs.year_month
           , billing_month_logs.ial
-          , billing_month_logs.iaa
+          , %{iaa} AS iaa
           , %{iaa_start_date} AS iaa_start_date
           , %{iaa_end_date} AS iaa_end_date
           , COUNT(DISTINCT billing_month_logs.user_id) AS unique_users
@@ -41,22 +42,19 @@ module Db
               WHERE
                   lookback_logs.user_id = billing_month_logs.user_id
               AND lookback_logs.ial = billing_month_logs.ial
-              AND lookback_logs.iaa = billing_month_logs.iaa
               AND lookback_logs.year_month < billing_month_logs.year_month
             )
           GROUP BY
             billing_month_logs.year_month
           , billing_month_logs.ial
-          , billing_month_logs.iaa
         SQL
 
         ActiveRecord::Base.connection.execute(sql)
       end
 
       # @return [String]
-      def full_month_subquery(iaa:, issuers:, full_months:)
+      def full_month_subquery(issuers:, full_months:)
         params = {
-          iaa: iaa,
           issuers: issuers,
           year_months: full_months.map { |r| r.begin.strftime('%Y%m') }
         }.transform_values { |value| quote(value) }
@@ -67,7 +65,6 @@ module Db
           , monthly_sp_auth_counts.year_month
           , monthly_sp_auth_counts.auth_count
           , monthly_sp_auth_counts.ial
-          , %{iaa} AS iaa
           FROM
             monthly_sp_auth_counts
           WHERE
@@ -77,14 +74,13 @@ module Db
       end
 
       # @return [Array<String>]
-      def partial_month_subqueries(iaa:, issuers:, partial_months:)
+      def partial_month_subqueries(issuers:, partial_months:)
         partial_months.map do |month_range|
           params = {
             range_start: month_range.begin,
             range_end: month_range.end,
             year_month: month_range.begin.strftime('%Y%m'),
             issuers: issuers,
-            iaa: iaa,
           }.transform_values { |value| quote(value) }
 
 
@@ -94,7 +90,6 @@ module Db
             , %{year_month} AS year_month
             , COUNT(sp_return_logs.id) AS auth_count
             , sp_return_logs.ial
-            , %{iaa} AS iaa
             FROM sp_return_logs
             INNER JOIN service_providers
               ON sp_return_logs.issuer = service_providers.issuer
@@ -103,6 +98,7 @@ module Db
               AND sp_return_logs.returned_at IS NOT NULL
               AND sp_return_logs.requested_at BETWEEN
                     service_providers.iaa_start_date AND service_providers.iaa_end_date
+              AND service_providers.issuer IN %{issuers}
             GROUP BY
               sp_return_logs.user_id
             , sp_return_logs.ial
