@@ -88,6 +88,7 @@ lint_optimized_assets: optimize_assets
 
 update_country_dialing_codes:
 	bundle exec ./scripts/pinpoint-supported-countries > config/country_dialing_codes.yml
+	yarn normalize-yaml config/country_dialing_codes.yml
 
 check_asset_strings:
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets

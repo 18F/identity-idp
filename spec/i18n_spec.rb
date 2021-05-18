@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'i18n/tasks'
-require 'yaml_normalizer'
 
 module I18n
   module Tasks
