@@ -71,12 +71,16 @@ RSpec.describe Reports::AgencyInvoiceSupplementReport do
             ial1_unique_count: 1,
             ial2_unique_count: 0,
             year_month: inside_iaa1.strftime('%Y%m'),
+            iaa_start_date: iaa1_range.begin.to_s,
+            iaa_end_date: iaa1_range.end.to_s,
           },
           {
             iaa: iaa2,
             ial1_unique_count: 0,
             ial2_unique_count: 2,
             year_month: inside_iaa2.strftime('%Y%m'),
+            iaa_start_date: iaa2_range.begin.to_s,
+            iaa_end_date: iaa2_range.end.to_s,
           }
         ]
 

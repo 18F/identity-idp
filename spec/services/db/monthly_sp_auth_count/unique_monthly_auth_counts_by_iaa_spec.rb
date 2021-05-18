@@ -91,24 +91,32 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             iaa: iaa,
             year_month: '202009',
             unique_users: 1,
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
           },
           {
             ial: 2,
             iaa: iaa,
             year_month: '202009',
             unique_users: 2,
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
           },
           {
             ial: 1,
             iaa: iaa,
             year_month: '202010',
             unique_users: 1,
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
           },
           {
             ial: 2,
             iaa: iaa,
             year_month: '202010',
             unique_users: 1,
+            iaa_start_date: iaa_range.begin.to_s,
+            iaa_end_date: iaa_range.end.to_s,
           },
         ]
 

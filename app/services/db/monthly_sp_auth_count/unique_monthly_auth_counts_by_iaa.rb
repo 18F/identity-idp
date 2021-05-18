@@ -17,12 +17,20 @@ module Db
           *partial_month_subqueries(iaa: iaa, issuers: issuers, partial_months: partial_months)
         ].join(' UNION ALL ')
 
-        sql = format(<<~SQL, subquery: subquery)
+        params = {
+          iaa_start_date: quote(date_range.begin),
+          iaa_end_date: quote(date_range.end),
+          subquery: subquery, # intentionally not quoted
+        }
+
+        sql = format(<<~SQL, params)
           WITH subquery AS (%{subquery})
           SELECT
             billing_month_logs.year_month
           , billing_month_logs.ial
           , billing_month_logs.iaa
+          , %{iaa_start_date} AS iaa_start_date
+          , %{iaa_end_date} AS iaa_end_date
           , COUNT(DISTINCT billing_month_logs.user_id) AS unique_users
           FROM
             subquery billing_month_logs

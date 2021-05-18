@@ -27,12 +27,17 @@ module Reports
       raw_results.group_by { |r| [r['iaa'], r['year_month']] }.
         transform_values do |grouped|
           iaa = grouped.first['iaa']
+          iaa_start_date = grouped.first['iaa_start_date']
+          iaa_end_date = grouped.first['iaa_end_date']
           year_month = grouped.first['year_month']
+
           ial1_unique_count = grouped.find { |r| r['ial'] == 1 }&.dig('unique_users') || 0
           ial2_unique_count = grouped.find { |r| r['ial'] == 2 }&.dig('unique_users') || 0
 
           {
             iaa: iaa,
+            iaa_start_date: iaa_start_date,
+            iaa_end_date: iaa_end_date,
             year_month: year_month,
             ial1_unique_count: ial1_unique_count,
             ial2_unique_count: ial2_unique_count,
