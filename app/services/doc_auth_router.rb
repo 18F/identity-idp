@@ -171,7 +171,7 @@ module DocAuthRouter
         ),
       )
     when 'mock'
-      IdentityDocAuth::Mock::DocAuthMockClient.new
+      DocAuthErrorTranslatorProxy.new(IdentityDocAuth::Mock::DocAuthMockClient.new)
     else
       raise "#{doc_auth_vendor} is not a valid doc auth vendor"
     end
