@@ -14,7 +14,7 @@ module Db
 
         subquery = [
           full_month_subquery(issuers: issuers, full_months: full_months),
-          *partial_month_subqueries(issuers: issuers, partial_months: partial_months)
+          *partial_month_subqueries(issuers: issuers, partial_months: partial_months),
         ].join(' UNION ALL ')
 
         params = {
@@ -56,7 +56,7 @@ module Db
       def full_month_subquery(issuers:, full_months:)
         params = {
           issuers: issuers,
-          year_months: full_months.map { |r| r.begin.strftime('%Y%m') }
+          year_months: full_months.map { |r| r.begin.strftime('%Y%m') },
         }.transform_values { |value| quote(value) }
 
         full_month_subquery = format(<<~SQL, params)
