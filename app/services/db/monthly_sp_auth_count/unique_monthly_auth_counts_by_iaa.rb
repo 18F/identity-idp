@@ -1,6 +1,6 @@
 module Db
-  module SpCost
-    module SpCostSummaryByIaa
+  module MonthlySpAuthCost
+    module UniqueMonthlyAuthCountsByIaa
       module_function
 
       # @param [String] iaa

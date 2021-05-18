@@ -10,86 +10,75 @@ RSpec.describe Reports::AgencyInvoiceSupplementReport do
 
     context 'with data' do
       let(:iaa1) { 'iaa1' }
-      let(:iaa1_range) { Date.new(2020, 9, 1)..Date.new(2021, 9, 1) }
+      let(:iaa1_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 14) }
       let(:inside_iaa1) { iaa1_range.begin + 1.day }
 
       let(:iaa2) { 'iaa2' }
-      let(:iaa2_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 15) }
+      let(:iaa2_range) { Date.new(2020, 9, 1)..Date.new(2021, 8, 30) }
       let(:inside_iaa2) { iaa2_range.begin + 1.day }
 
-      let!(:iaa1_sps) do
-        1.times.map do
-          create(
-            :service_provider,
-            iaa: iaa1,
-            iaa_start_date: iaa1_range.begin,
-            iaa_end_date: iaa1_range.end,
-            app_id: SecureRandom.hex,
-          )
-        end
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
+
+      let!(:iaa1_sp) do
+        create(
+          :service_provider,
+          iaa: iaa1,
+          iaa_start_date: iaa1_range.begin,
+          iaa_end_date: iaa1_range.end,
+        )
       end
 
-      let!(:iaa2_sps) do
-        2.times.map do
-          create(
-            :service_provider,
-            iaa: iaa2,
-            iaa_start_date: iaa2_range.begin,
-            iaa_end_date: iaa2_range.end,
-            app_id: SecureRandom.hex,
-          )
-        end
+      let!(:iaa2_sp) do
+        create(
+          :service_provider,
+          iaa: iaa2,
+          iaa_start_date: iaa2_range.begin,
+          iaa_end_date: iaa2_range.end,
+        )
       end
 
       before do
-        # 1x IAL 1 at each iaa1 SP
-        iaa1_sps.map do |sp|
-          create(
-            :sp_cost,
-            issuer: sp.issuer,
-            cost_type:
-            'authentication',
-            ial: 1,
-            created_at: inside_iaa1,
-          )
-        end
+        # 1 unique user in partial month at IAA 1 @ IAL 1
+        create(
+          :sp_return_log,
+          user_id: user1.id,
+          issuer: iaa1_sp.issuer,
+          ial: 1,
+          requested_at: inside_iaa1,
+          returned_at: inside_iaa1,
+        )
 
-        # 2x IAL 2 at each iaa2 SP
-        iaa2_sps.map do |sp|
-          2.times do
-            create(
-              :sp_cost,
-              issuer: sp.issuer,
-              cost_type: 'authentication',
-              ial: 2,
-              created_at: inside_iaa2,
-            )
-          end
+        # 2 unique users in whole month IAL 2 at each iaa2 SP
+        [user1, user2].each do |sp|
+          create(
+            :monthly_sp_auth_count,
+            user_id: user.id,
+            auth_count: 1,
+            ial: 2,
+            issuer: iaa2_sp.issuer,
+            year_month: inside_iaa2.strftime('%Y%m'),
+          )
         end
       end
 
       it 'counts up costs by issuer + ial, and includes iaa and app_id' do
         results = JSON.parse(report.call, symbolize_names: true)
 
-        rows = iaa1_sps.map do |sp|
+        rows = [
           {
-            issuer: sp.issuer,
+            iaa: iaa1,
             ial: 1,
-            cost_type: 'authentication',
-            iaa: sp.iaa,
-            app_id: sp.app_id,
-            count: 1,
-          }
-        end + iaa2_sps.map do |sp|
+            year_month: inside_iaa1.strftime('%Y%m'),
+            unique_count: 1,
+          },
           {
-            issuer: sp.issuer,
+            iaa: iaa2,
             ial: 2,
-            cost_type: 'authentication',
-            iaa: sp.iaa,
-            app_id: sp.app_id,
-            count: 2,
+            year_month: inside_iaa2.strftime('%Y%m'),
+            unique_count: 1,
           }
-        end
+        ]
 
         expect(results).to match_array(rows)
       end

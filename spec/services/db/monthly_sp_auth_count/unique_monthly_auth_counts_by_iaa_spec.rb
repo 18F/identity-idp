@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe Db::SpCost::SpCostSummaryByIaa do
+RSpec.describe Db::MonthlySpAuthCost::UniqueMonthlyAuthCountsByIaa do
   describe '.call' do
     let(:iaa) { 'iaa1' }
 
     subject(:results) do
-      Db::SpCost::SpCostSummaryByIaa.call(iaa)
+      Db::MonthlySpAuthCost::UniqueMonthlyAuthCountsByIaa.call(iaa)
     end
 
     it 'is empty with no data' do
@@ -44,7 +44,7 @@ RSpec.describe Db::SpCost::SpCostSummaryByIaa do
           issuer: issuer1,
           ial: 1,
           requested_at: inside_partial_month,
-          returned_at: inside_whole_month,
+          returned_at: inside_partial_month,
         )
 
         # 2 unique user in partial month @ IAL2
@@ -55,7 +55,7 @@ RSpec.describe Db::SpCost::SpCostSummaryByIaa do
             issuer: issuer2,
             ial: 2,
             requested_at: inside_partial_month,
-            returned_at: inside_whole_month,
+            returned_at: inside_partial_month,
           )
         end
 
