@@ -81,7 +81,7 @@ RSpec.describe Reports::AgencyInvoiceSupplementReport do
             year_month: inside_iaa2.strftime('%Y%m'),
             iaa_start_date: iaa2_range.begin.to_s,
             iaa_end_date: iaa2_range.end.to_s,
-          }
+          },
         ]
 
         expect(results).to match_array(rows)
