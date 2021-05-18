@@ -28,7 +28,7 @@ module PhoneConfirmation
     end
 
     def matches_code?(candidate_code)
-      Devise.secure_compare(candidate_code, code)
+      Base32::Crockford.normalize(candidate_code) == Base32::Crockford.normalize(code)
     end
 
     def expired?
