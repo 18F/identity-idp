@@ -439,7 +439,7 @@ describe Idv::ImageUploadsController do
         expect(json[:errors]).to eq [
           {
             field: 'front',
-            message: 'We couldn’t verify the front of your ID. Try taking a new picture.'
+            message: 'We couldn’t verify the front of your ID. Try taking a new picture.',
           },
         ]
       end
