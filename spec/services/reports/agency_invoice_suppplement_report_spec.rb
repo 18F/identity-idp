@@ -68,15 +68,15 @@ RSpec.describe Reports::AgencyInvoiceSupplementReport do
         rows = [
           {
             iaa: iaa1,
-            ial: 1,
+            ial1_unique_count: 1,
+            ial2_unique_count: 0,
             year_month: inside_iaa1.strftime('%Y%m'),
-            unique_users: 1,
           },
           {
             iaa: iaa2,
-            ial: 2,
+            ial1_unique_count: 0,
+            ial2_unique_count: 2,
             year_month: inside_iaa2.strftime('%Y%m'),
-            unique_users: 2,
           }
         ]
 
