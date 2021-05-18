@@ -7,7 +7,7 @@ en:
         without_key: I don’t have my key
     back_to_sp: Back to %{sp}
     cancel: Cancel
-    cancel_account_creation: "‹ Cancel account creation"
+    cancel_account_creation: '‹ Cancel account creation'
     contact: Contact
     continue_sign_in: Continue sign in
     copy: Copy
@@ -15,7 +15,7 @@ en:
     go_back: Go back
     help: Help
     my_account: my account
-    new_window: "(opens new window)"
+    new_window: '(opens new window)'
     next: Sign in
     passwords:
       forgot: Forgot your password?

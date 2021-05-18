@@ -147,7 +147,7 @@ We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rben
 
 #### Translations
 
-  Login.gov translates the IdP into English, French and Spanish. To help us handle extra newlines and make sure we wrap lines consistently, we have a script called `./scripts/normalize-yaml` that helps format YAML consistently. After importing translations (or making changes to the *.yml files with strings, run this for the IdP app:
+  Login.gov translates the IdP into English, French and Spanish. To help us handle extra newlines and make sure we wrap lines consistently, we have a script that helps format YAML consistently. After importing translations (or making changes to the `*.yml` files with strings, run this for the IdP app:
 
   ```
   $ make normalize_yaml
@@ -201,4 +201,4 @@ It's likely that you'll be prompted with a screen with warnings about an unsafe 
 
 There was an initial attempt to dockerize the IDP but it is currently deprecated, mostly non-functional, and not maintained. There is ongoing work to make the IDP more [12 Factor](https://12factor.net/) compliant which will eventually lead to better support for containerization.
 
-If you'd like to work with the previous implementation see the [Docker documentation](./docs/Docker.md) to install the IdP as a container. 
+If you'd like to work with the previous implementation see the [Docker documentation](./docs/Docker.md) to install the IdP as a container.

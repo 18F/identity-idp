@@ -8128,6 +8128,11 @@ slice-ansi@^4.0.0:
     astral-regex "^2.0.0"
     is-fullwidth-code-point "^3.0.0"
 
+smartquotes@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/smartquotes/-/smartquotes-2.3.2.tgz#fb1630c49ba04e57446e1a97dc10d590072af4a6"
+  integrity sha512-0R6YJ5hLpDH4mZR7N5eZ12oCMLspvGOHL9A9SEm2e3b/CQmQidekW4SWSKEmor/3x6m3NCBBEqLzikcZC9VJNQ==
+
 snapdragon-node@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
@@ -9392,6 +9397,11 @@ yaml@^1.7.2:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.10.0.tgz#3b593add944876077d4d683fee01081bd9fff31e"
   integrity sha512-yr2icI4glYaNG+KWONODapy2/jDdMSDnrONSjblABjD9B4Z5LgiircSt8m8sRZFNi08kG9Sm0uSHtEmP3zaEGg==
+
+yaml@^2.0.0-5:
+  version "2.0.0-5"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.0.0-5.tgz#00906046dc119427b2b4f7cf9041d34682d1480b"
+  integrity sha512-qH5L5eqW8cyv/N1U6rkK/O0M7kOK3BSo48d05Ptm03ITNsVFwg6TQ47wR72Db/ULWH5RfNJv+CqnG17Pyn8eqQ==
 
 yargs-parser@20.2.4:
   version "20.2.4"
