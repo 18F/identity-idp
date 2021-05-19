@@ -3,9 +3,10 @@ require 'rails_helper'
 RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
   describe '.call' do
     let(:iaa) { 'iaa1' }
+    let(:aggregate) { :sum }
 
     subject(:results) do
-      Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(iaa)
+      Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(iaa: iaa, aggregate: aggregate)
     end
 
     it 'is empty with no data' do
@@ -64,7 +65,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           create(
             :monthly_sp_auth_count,
             user_id: user.id,
-            auth_count: 1,
+            auth_count: 10,
             ial: 1,
             issuer: issuer1,
             year_month: inside_whole_month.strftime('%Y%m'),
@@ -76,7 +77,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           create(
             :monthly_sp_auth_count,
             user_id: user.id,
-            auth_count: 1,
+            auth_count: 100,
             ial: 2,
             issuer: issuer2,
             year_month: inside_whole_month.strftime('%Y%m'),
@@ -84,43 +85,133 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
         end
       end
 
-      it 'counts up costs by iaa' do
-        rows = [
-          {
-            ial: 1,
-            iaa: iaa,
-            year_month: '202009',
-            unique_users: 1,
-            iaa_start_date: iaa_range.begin.to_s,
-            iaa_end_date: iaa_range.end.to_s,
-          },
-          {
-            ial: 2,
-            iaa: iaa,
-            year_month: '202009',
-            unique_users: 2,
-            iaa_start_date: iaa_range.begin.to_s,
-            iaa_end_date: iaa_range.end.to_s,
-          },
-          {
-            ial: 1,
-            iaa: iaa,
-            year_month: '202010',
-            unique_users: 1,
-            iaa_start_date: iaa_range.begin.to_s,
-            iaa_end_date: iaa_range.end.to_s,
-          },
-          {
-            ial: 2,
-            iaa: iaa,
-            year_month: '202010',
-            unique_users: 1,
-            iaa_start_date: iaa_range.begin.to_s,
-            iaa_end_date: iaa_range.end.to_s,
-          },
-        ]
+      context 'aggregate type :sum' do
+        let(:aggregate) { :sum }
 
-        expect(results.map(&:symbolize_keys)).to match_array(rows)
+        it 'adds up auth_counts and sp_return_log instances' do
+          rows = [
+            {
+              ial: 1,
+              iaa: iaa,
+              year_month: '202009',
+              total_auth_count: 1,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              ial: 2,
+              iaa: iaa,
+              year_month: '202009',
+              total_auth_count: 2,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              ial: 1,
+              iaa: iaa,
+              year_month: '202010',
+              total_auth_count: 20,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              ial: 2,
+              iaa: iaa,
+              year_month: '202010',
+              total_auth_count: 300,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+          ]
+
+          expect(results.map(&:symbolize_keys)).to match_array(rows)
+        end
+      end
+
+      context 'aggregate type :unique' do
+        let(:aggregate) { :unique }
+
+        it 'counts unique users per month' do
+          rows = [
+            {
+              ial: 1,
+              iaa: iaa,
+              year_month: '202009',
+              unique_users: 1,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              ial: 2,
+              iaa: iaa,
+              year_month: '202009',
+              unique_users: 2,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              ial: 1,
+              iaa: iaa,
+              year_month: '202010',
+              unique_users: 2,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              ial: 2,
+              iaa: iaa,
+              year_month: '202010',
+              unique_users: 3,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+          ]
+
+          expect(results.map(&:symbolize_keys)).to match_array(rows)
+        end
+      end
+
+      context 'aggregate type :new_unique' do
+        let(:aggregate) { :new_unique }
+
+        it 'only counts new unique users each month' do
+          rows = [
+            {
+              ial: 1,
+              iaa: iaa,
+              year_month: '202009',
+              new_unique_users: 1,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              ial: 2,
+              iaa: iaa,
+              year_month: '202009',
+              new_unique_users: 2,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              ial: 1,
+              iaa: iaa,
+              year_month: '202010',
+              new_unique_users: 1,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+            {
+              ial: 2,
+              iaa: iaa,
+              year_month: '202010',
+              new_unique_users: 1,
+              iaa_start_date: iaa_range.begin.to_s,
+              iaa_end_date: iaa_range.end.to_s,
+            },
+          ]
+
+          expect(results.map(&:symbolize_keys)).to match_array(rows)
+        end
       end
     end
   end

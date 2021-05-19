@@ -4,9 +4,14 @@ module Reports
 
     def call
       raw_results = iaas.flat_map do |iaa|
-        transaction_with_timeout do
-          Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(iaa)
-        end.to_a
+        [:sum, :unique, :new_unique].flat_map do |aggregate|
+          transaction_with_timeout do
+            Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(
+              iaa: iaa,
+              aggregate: aggregate,
+            )
+          end.to_a
+        end
       end
 
       results = combine_by_iaa_month(raw_results)
@@ -31,18 +36,23 @@ module Reports
           iaa_end_date = grouped.first['iaa_end_date']
           year_month = grouped.first['year_month']
 
-          ial1_unique_count = grouped.find { |r| r['ial'] == 1 }&.dig('unique_users') || 0
-          ial2_unique_count = grouped.find { |r| r['ial'] == 2 }&.dig('unique_users') || 0
-
           {
             iaa: iaa,
             iaa_start_date: iaa_start_date,
             iaa_end_date: iaa_end_date,
             year_month: year_month,
-            ial1_unique_count: ial1_unique_count,
-            ial2_unique_count: ial2_unique_count,
+            ial1_total_auth_count: extract(grouped, 'total_auth_count', ial: 1),
+            ial2_total_auth_count: extract(grouped, 'total_auth_count', ial: 2),
+            ial1_unique_users: extract(grouped, 'unique_users', ial: 1),
+            ial2_unique_users: extract(grouped, 'unique_users', ial: 2),
+            ial1_new_unique_users: extract(grouped, 'new_unique_users', ial: 1),
+            ial2_new_unique_users: extract(grouped, 'new_unique_users', ial: 2),
           }
         end.values
+    end
+
+    def extract(arr, key, ial:)
+      arr.find { |elem| elem['ial'] == ial && elem[key] }&.dig(key) || 0
     end
   end
 end

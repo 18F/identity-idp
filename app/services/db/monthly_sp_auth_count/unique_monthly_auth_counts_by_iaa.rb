@@ -4,8 +4,9 @@ module Db
       module_function
 
       # @param [String] iaa
+      # @param [Symbol] aggregate (one of :sum, :unique, :new_unique)
       # @return [PG::Result]
-      def call(iaa)
+      def call(iaa:, aggregate:)
         date_range, issuers = iaa_parts(iaa)
 
         return [] if !date_range || !issuers
@@ -17,11 +18,46 @@ module Db
           *partial_month_subqueries(issuers: issuers, partial_months: partial_months),
         ].join(' UNION ALL ')
 
+        select_clause = case aggregate
+        when :sum
+          <<~SQL
+            SUM(billing_month_logs.auth_count)::bigint AS total_auth_count
+          SQL
+        when :unique
+          <<~SQL
+            COUNT(DISTINCT billing_month_logs.user_id) AS unique_users
+          SQL
+        when :new_unique
+          <<~SQL
+            COUNT(DISTINCT billing_month_logs.user_id) AS new_unique_users
+          SQL
+        else
+          raise "unknown aggregate=#{aggregate}"
+        end
+
+        where_clause = case aggregate
+        when :new_unique
+          <<~SQL
+            NOT EXISTS (
+              SELECT 1
+              FROM subquery lookback_logs
+              WHERE
+                  lookback_logs.user_id = billing_month_logs.user_id
+              AND lookback_logs.ial = billing_month_logs.ial
+              AND lookback_logs.year_month < billing_month_logs.year_month
+            )
+          SQL
+        else
+          'TRUE'
+        end
+
         params = {
           iaa_start_date: quote(date_range.begin),
           iaa_end_date: quote(date_range.end),
           iaa: quote(iaa),
-          subquery: subquery, # intentionally not quoted
+          subquery: subquery,
+          select_clause: select_clause,
+          where_clause: where_clause,
         }
 
         sql = format(<<~SQL, params)
@@ -32,18 +68,11 @@ module Db
           , %{iaa} AS iaa
           , %{iaa_start_date} AS iaa_start_date
           , %{iaa_end_date} AS iaa_end_date
-          , COUNT(DISTINCT billing_month_logs.user_id) AS unique_users
+          , %{select_clause}
           FROM
             subquery billing_month_logs
           WHERE
-            NOT EXISTS (
-              SELECT 1
-              FROM subquery lookback_logs
-              WHERE
-                  lookback_logs.user_id = billing_month_logs.user_id
-              AND lookback_logs.ial = billing_month_logs.ial
-              AND lookback_logs.year_month < billing_month_logs.year_month
-            )
+            %{where_clause}
           GROUP BY
             billing_month_logs.year_month
           , billing_month_logs.ial
