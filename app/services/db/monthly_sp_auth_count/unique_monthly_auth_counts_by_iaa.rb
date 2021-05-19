@@ -121,7 +121,6 @@ module Db
             issuers: issuers,
           }.transform_values { |value| quote(value) }
 
-
           format(<<~SQL, params)
             SELECT
               sp_return_logs.user_id
