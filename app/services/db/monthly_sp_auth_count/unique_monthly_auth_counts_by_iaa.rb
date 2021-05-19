@@ -1,24 +1,29 @@
 module Db
   module MonthlySpAuthCount
     module UniqueMonthlyAuthCountsByIaa
+      include Reports::QueryHelpers
+
       module_function
 
       # Aggregates a user metric at across issuers within the same IAA, during that IAA's
       # period of performance (between its start and end date), month-over-month, by IAL level
       # @param [String] iaa
       # @param [Symbol] aggregate (one of :sum, :unique, :new_unique)
-      # @return [PG::Result]
+      # @return [PG::Result, Array]
       def call(iaa:, aggregate:)
         date_range, issuers = iaa_parts(iaa)
 
         return [] if !date_range || !issuers
 
-        full_months, partial_months = months(date_range).partition { |m| full_month?(m) }
+        full_months, partial_months = Reports::MonthHelper.months(date_range).
+          partition do |month_range|
+            Reports::MonthHelper.full_month?(month_range)
+          end
 
         # The subqueries create a uniform representation of data:
         # - full months from monthly_sp_auth_counts
         # - partial months by aggregating sp_return_logs
-        # The results are rows with [user_id, ial, iaa, year_month]
+        # The results are rows with [user_id, ial, auth_count, year_month]
         subquery = [
           full_month_subquery(issuers: issuers, full_months: full_months),
           *partial_month_subqueries(issuers: issuers, partial_months: partial_months),
@@ -128,64 +133,15 @@ module Db
             , COUNT(sp_return_logs.id) AS auth_count
             , sp_return_logs.ial
             FROM sp_return_logs
-            INNER JOIN service_providers
-              ON sp_return_logs.issuer = service_providers.issuer
             WHERE
                   sp_return_logs.requested_at BETWEEN %{range_start} AND %{range_end}
               AND sp_return_logs.returned_at IS NOT NULL
-              AND sp_return_logs.requested_at BETWEEN
-                    service_providers.iaa_start_date AND service_providers.iaa_end_date
-              AND service_providers.issuer IN %{issuers}
+              AND sp_return_logs.issuer IN %{issuers}
             GROUP BY
               sp_return_logs.user_id
             , sp_return_logs.ial
           SQL
         end
-      end
-
-      def quote(value)
-        if value.is_a?(Array)
-          "(#{value.map { |v| ActiveRecord::Base.connection.quote(v) }.join(', ')})"
-        else
-          ActiveRecord::Base.connection.quote(value)
-        end
-      end
-
-      # Takes a date range and breaks it into an array of ranges by month. The first and last items
-      # may be partial months (ex starting in the middle and ending at the end) and the intermediate
-      # items are always full months (1st to last of month)
-      # @example
-      #   months(Date.new(2021, 3, 15)..Date.new(2021, 5, 15))
-      #   => [
-      #     Date.new(2021, 3, 15)..Date.new(2021, 3, 31),
-      #     Date.new(2021, 4, 1)..Date.new(2021, 4, 30),
-      #     Date.new(2021, 5, 1)..Date.new(2021, 5, 15),
-      #   ]
-      # @param [Range<Date>] date_range
-      # @return [Array<Range<Date>>]
-      def months(date_range)
-        results = []
-
-        results << (date_range.begin..date_range.begin.end_of_month)
-
-        current = date_range.begin.end_of_month + 1.day
-        while current < date_range.end.beginning_of_month
-          month_start = current.beginning_of_month
-          month_end = current.end_of_month
-
-          results << (month_start..month_end)
-
-          current = month_end + 1.day
-        end
-
-        results << (date_range.end.beginning_of_month..date_range.end)
-
-        results
-      end
-
-      def full_month?(date_range)
-        date_range.begin == date_range.begin.beginning_of_month &&
-          date_range.end == date_range.end.end_of_month
       end
 
       # @return [Array(Range<Date>, Array<String>)] date_range, issuers
