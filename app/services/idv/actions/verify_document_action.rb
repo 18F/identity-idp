@@ -49,6 +49,10 @@ module Idv
           verify_document_capture_session,
           liveness_checking_enabled: liveness_checking_enabled?,
           trace_id: amzn_trace_id,
+          analytics_data: {
+            client_image_metrics: image_metadata,
+            browser_attributes: @flow.analytics.browser_attributes,
+          },
         )
 
         nil
@@ -61,6 +65,20 @@ module Idv
           ['encryption_key', 'front_image_iv', 'back_image_iv', 'selfie_image_iv',
            'front_image_url', 'back_image_url', 'selfie_image_url'],
         )
+      end
+
+
+      def image_metadata
+        params.permit(:front_image_metadata, :back_image_metadata).
+          to_h.
+          transform_values do |str|
+            JSON.parse(str)
+          rescue JSON::ParserError
+            nil
+          end.
+          compact.
+          transform_keys { |key| key.gsub(/_image_metadata$/, '') }.
+          deep_symbolize_keys
       end
     end
   end

@@ -14,6 +14,10 @@ class FakeAnalytics
   def track_mfa_submit_event(_attributes)
     # no-op
   end
+
+  def browser_attributes
+    {}
+  end
 end
 
 RSpec::Matchers.define :have_logged_event do |event_name, attributes|

@@ -12,7 +12,8 @@ class Analytics
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }
-    analytics_hash.merge!(request_attributes)
+
+    analytics_hash.merge!(request_attributes) if request
 
     ahoy.track(event, analytics_hash)
     register_doc_auth_step_from_analytics_event(event, attributes)
@@ -21,7 +22,7 @@ class Analytics
     # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
     ::NewRelic::Agent.add_custom_attributes(
       user_id: analytics_hash[:user_id],
-      user_ip: request.remote_ip,
+      user_ip: request&.remote_ip,
       service_provider: sp,
       event_name: event,
     )

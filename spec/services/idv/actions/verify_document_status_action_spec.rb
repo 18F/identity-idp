@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Idv::Actions::VerifyDocumentStatusAction do
   include IdvHelper
 
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
   let(:session) { { 'idv/doc_auth' => {} } }
   let(:controller) do
     instance_double(Idv::DocAuthController, url_options: {}, session: session, analytics: analytics)
@@ -11,9 +11,16 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
   let(:analytics) { FakeAnalytics.new }
   let(:result) { { result: 'Passed', success: true, errors: {}, exception: nil, billed: true } }
-  let(:pii) { { state: 'MD' } }
+  let(:pii) do
+    {
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      dob: Faker::Date.birthday(min_age: IdentityConfig.store.idv_min_age_years + 1).to_s,
+      state: Faker::Address.state_abbr,
+    }
+  end
   let(:done) { true }
-  let(:async_state) { OpenStruct.new(result: result, pii: pii, 'done?' => done) }
+  let(:async_state) { OpenStruct.new(result: result, pii: pii, pii_from_doc: pii, 'done?' => done) }
 
   subject { described_class.new(flow) }
 
@@ -22,22 +29,16 @@ describe Idv::Actions::VerifyDocumentStatusAction do
       before do
         allow(subject).to receive(:async_state).and_return(async_state)
         allow(subject).to receive(:add_cost).and_return(true)
+        allow(subject).to receive(:current_user).and_return(user)
       end
 
       it 'calls analytics to log the successful event' do
         subject.call
 
         expect(analytics).to have_logged_event(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-          result: 'Passed',
+          Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
           success: true,
           errors: {},
-          exception: nil,
-          billed: true,
-          state: 'MD',
-          async: true,
-          remaining_attempts: nil,
-          client_image_metrics: nil,
         )
       end
     end
