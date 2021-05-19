@@ -62,7 +62,7 @@ RSpec.describe DocAuthRouter do
       DocAuthRouter::DocAuthErrorTranslatorProxy.new(IdentityDocAuth::Mock::DocAuthMockClient.new)
     end
 
-    it 'translates errors[:results] using FriendlyError' do
+    it 'translates errors using the normal doc auth translator' do
       IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :get_results,
         response: IdentityDocAuth::Response.new(
