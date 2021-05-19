@@ -4,12 +4,12 @@ module Db
     # iaa_start_date and iaa_end_date
     # Also similar to UniqueMonthlyAuthCountsByIaa, but aggregates by issuer
     # instead of iaa
-    module TotalMonthlyAuthCountsByIaaWindow
+    module TotalMonthlyAuthCountsWithinIaaWindow
       extend Reports::QueryHelpers
 
       module_function
 
-      # @return [Array<Range<Date>>]
+      # @return [PG::Result,Array]
       def call(service_provider)
         if !service_provider.iaa_start_date || !service_provider.iaa_end_date
           return []
@@ -31,6 +31,7 @@ module Db
         ].join(' UNION ALL ')
 
         params = {
+          iaa: quote(service_provider.iaa),
           iaa_start_date: quote(iaa_range.begin),
           iaa_end_date: quote(iaa_range.end),
           issuer: quote(service_provider.issuer),
@@ -42,6 +43,7 @@ module Db
             billing_month_logs.year_month
           , billing_month_logs.ial
           , %{issuer} AS issuer
+          , %{iaa} AS iaa
           , %{iaa_start_date} AS iaa_start_date
           , %{iaa_end_date} AS iaa_end_date
           , SUM(billing_month_logs.auth_count)::bigint AS total_auth_count

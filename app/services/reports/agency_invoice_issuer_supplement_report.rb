@@ -5,7 +5,7 @@ module Reports
     def call
       raw_results = service_providers.flat_map do |service_provider|
         transaction_with_timeout do
-          Db::MonthlySpAuthCount::TotalMonthlyAuthCountsByIaaWindow.call(service_provider)
+          Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow.call(service_provider)
         end.to_a
       end
 
@@ -26,12 +26,14 @@ module Reports
       raw_results.group_by { |r| [r['issuer'], r['year_month']] }.
         transform_values do |grouped|
           issuer = grouped.first['issuer']
+          iaa = grouped.first['iaa']
           iaa_start_date = grouped.first['iaa_start_date']
           iaa_end_date = grouped.first['iaa_end_date']
           year_month = grouped.first['year_month']
 
           {
             issuer: issuer,
+            iaa: iaa,
             iaa_start_date: iaa_start_date,
             iaa_end_date: iaa_end_date,
             year_month: year_month,
