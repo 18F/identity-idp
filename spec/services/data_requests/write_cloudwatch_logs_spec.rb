@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'csv'
 
 RSpec.describe DataRequests::WriteCloudwatchLogs do
   let(:now) { Time.zone.now }
