@@ -121,7 +121,7 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
 
 # Agency Invoice Supplement Report to S3
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
-  name: 'SP Invoice supplement report',
+  name: 'SP Invoice supplement report by IAA',
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
   callback: -> { Reports::AgencyInvoiceIaaSupplementReport.new.call },
@@ -129,7 +129,7 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
 
 # Agency Invoice Supplement Report to S3
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
-  name: 'SP Invoice supplement report',
+  name: 'SP Invoice supplement report by issuer',
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
   callback: -> { Reports::AgencyInvoiceIssuerSupplementReport.new.call },
