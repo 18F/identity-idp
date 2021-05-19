@@ -48,14 +48,14 @@ class DocumentProofingJob < ApplicationJob
       pii: proofer_result.pii_from_doc,
     )
 
-    analytics = Analytics.new(user: user, request: nil, sp: nil)
+    analytics = Analytics.new(user: user, request: nil, sp: dcs.issuer)
 
     remaining_attempts = Throttler::RemainingCount.call(
       user.id,
       :idv_acuant,
     )
 
-    analytics.track_non_browser_event(
+    analytics.track_event(
       Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
       proofer_result.to_h.merge(
         state: proofer_result.pii_from_doc[:state],

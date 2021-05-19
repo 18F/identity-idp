@@ -11,10 +11,6 @@ class FakeAnalytics
     nil
   end
 
-  def track_non_browser_event(event, attributes = {})
-    track_event(event, attributes)
-  end
-
   def track_mfa_submit_event(_attributes)
     # no-op
   end
