@@ -62,7 +62,7 @@ RSpec.describe DocAuthRouter do
       DocAuthRouter::DocAuthErrorTranslatorProxy.new(IdentityDocAuth::Mock::DocAuthMockClient.new)
     end
 
-    it 'translates errors[:results] using FriendlyError' do
+    it 'translates errors using the normal doc auth translator' do
       IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :get_results,
         response: IdentityDocAuth::Response.new(
@@ -77,7 +77,9 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = I18n.with_locale(:es) { proxy.get_results(instance_id: 'abcdef') }
+      response = I18n.with_locale(:es) {
+        proxy.get_results(instance_id: 'abcdef', liveness_enabled: false)
+      }
 
       expect(response.errors[:some_other_key]).to eq(['will not be translated'])
       expect(response.errors[:general]).to match_array(
@@ -99,7 +101,7 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = proxy.get_results(instance_id: 'abcdef')
+      response = proxy.get_results(instance_id: 'abcdef', liveness_enabled: false)
 
       expect(response.errors[:network]).to eq(I18n.t('doc_auth.errors.general.network_error'))
     end
@@ -115,7 +117,7 @@ RSpec.describe DocAuthRouter do
         ),
       )
 
-      response = proxy.get_results(instance_id: 'abcdef')
+      response = proxy.get_results(instance_id: 'abcdef', liveness_enabled: false)
 
       expect(response.errors[:selfie]).to eq([I18n.t('doc_auth.errors.alerts.selfie_failure')])
     end
