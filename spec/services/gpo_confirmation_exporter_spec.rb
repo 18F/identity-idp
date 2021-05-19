@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'csv'
 
 describe GpoConfirmationExporter do
   let(:issuer) { 'http://localhost:3000' }
