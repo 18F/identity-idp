@@ -1,6 +1,6 @@
 module Reports
-  class AgencyInvoiceSupplementReport < BaseReport
-    REPORT_NAME = 'agency-invoice-supplemement-report'.freeze
+  class AgencyInvoiceIaaSupplementReport < BaseReport
+    REPORT_NAME = 'agency-invoice-iaa-supplemement-report'.freeze
 
     def call
       raw_results = iaas.flat_map do |iaa|

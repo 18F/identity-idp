@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Reports::AgencyInvoiceSupplementReport do
-  subject(:report) { Reports::AgencyInvoiceSupplementReport.new }
+RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
+  subject(:report) { Reports::AgencyInvoiceIaaSupplementReport.new }
 
   describe '#call' do
     it 'is empty with no data' do
