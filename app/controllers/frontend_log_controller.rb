@@ -2,7 +2,6 @@ class FrontendLogController < ApplicationController
   respond_to :json
 
   skip_before_action :verify_authenticity_token
-  before_action :override_ahoy_user
   before_action :check_user_authenticated
   before_action :validate_parameter_types
 

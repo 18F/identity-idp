@@ -1,7 +1,6 @@
 module Idv
   class CaptureDocController < ApplicationController
     before_action :ensure_user_id_in_session
-    before_action :override_ahoy_user
 
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
