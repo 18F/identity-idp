@@ -11,30 +11,31 @@ module Db
 
       # @return [PG::Result,Array]
       def call(service_provider)
-        if !service_provider.iaa_start_date || !service_provider.iaa_end_date
-          return []
-        end
+        return [] if !service_provider.iaa_start_date || !service_provider.iaa_end_date
 
         iaa_range = (service_provider.iaa_start_date..service_provider.iaa_end_date)
 
-        full_months, partial_months = Reports::MonthHelper.months(iaa_range).partition do |month_range|
-          Reports::MonthHelper.full_month?(month_range)
-        end
+        full_months, partial_months = Reports::MonthHelper.months(iaa_range).
+          partition do |month_range|
+            Reports::MonthHelper.full_month?(month_range)
+          end
+
+        issuer = service_provider.issuer
 
         # The subqueries create a uniform representation of data:
         # - full months from monthly_sp_auth_counts
         # - partial months by aggregating sp_return_logs
         # The results are rows with [user_id, ial, auth_count, year_month]
         subquery = [
-          full_month_subquery(issuer: service_provider.issuer, full_months: full_months),
-          *partial_month_subqueries(issuer: service_provider.issuer, partial_months: partial_months),
+          full_month_subquery(issuer: issuer, full_months: full_months),
+          *partial_month_subqueries(issuer: issuer, partial_months: partial_months),
         ].join(' UNION ALL ')
 
         params = {
           iaa: quote(service_provider.iaa),
           iaa_start_date: quote(iaa_range.begin),
           iaa_end_date: quote(iaa_range.end),
-          issuer: quote(service_provider.issuer),
+          issuer: quote(issuer),
           subquery: subquery,
         }
 
