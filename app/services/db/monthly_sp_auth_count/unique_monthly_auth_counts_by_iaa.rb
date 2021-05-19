@@ -143,6 +143,16 @@ module Db
         end
       end
 
+      # Takes a date range and breaks it into an array of ranges by month. The first and last items
+      # may be partial months (ex starting in the middle and ending at the end) and the intermediate
+      # items are always full months (1st to last of month)
+      # @example
+      #   months(Date.new(2021, 3, 15)..Date.new(2021, 5, 15))
+      #   => [
+      #     Date.new(2021, 3, 15)..Date.new(2021, 3, 31),
+      #     Date.new(2021, 4, 1)..Date.new(2021, 4, 30),
+      #     Date.new(2021, 5, 1)..Date.new(2021, 5, 15),
+      #   ]
       # @param [Range<Date>] date_range
       # @return [Array<Range<Date>>]
       def months(date_range)
