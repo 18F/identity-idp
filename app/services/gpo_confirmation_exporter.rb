@@ -1,3 +1,5 @@
+require 'csv'
+
 class GpoConfirmationExporter
   DELIMITER = '|'.freeze
   LINE_ENDING = "\r\n".freeze
