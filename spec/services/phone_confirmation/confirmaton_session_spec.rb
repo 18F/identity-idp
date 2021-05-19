@@ -48,9 +48,10 @@ RSpec.describe PhoneConfirmation::ConfirmationSession do
   end
 
   describe '#matches_code?' do
+    let(:code) { OtpCodeGenerator.generate_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH) }
     subject do
       described_class.new(
-        code: '123456',
+        code: code,
         phone: '+1 (202) 123-4567',
         sent_at: Time.zone.now,
         delivery_method: :sms,
@@ -58,11 +59,22 @@ RSpec.describe PhoneConfirmation::ConfirmationSession do
     end
 
     it 'returns true if the code matches' do
-      expect(subject.matches_code?('123456')).to eq(true)
+      expect(subject.matches_code?(code)).to eq(true)
+    end
+
+    it 'returns true if the code matches with different case' do
+      random_case_code = code.chars.map { |c| (rand 2) == 0 ? c.downcase : c.upcase }.join
+      lowercase_code = code.downcase
+      uppercase_code = code.upcase
+
+      expect(subject.matches_code?(random_case_code )).to eq(true)
+      expect(subject.matches_code?(lowercase_code)).to eq(true)
+      expect(subject.matches_code?(uppercase_code)).to eq(true)
     end
 
     it 'returns false if the code does not match' do
-      expect(subject.matches_code?('111111')).to eq(false)
+      bad_code = '1' * (TwoFactorAuthenticatable::DIRECT_OTP_LENGTH - 1)
+      expect(subject.matches_code?('11111')).to eq(false)
     end
 
     it 'uses a secure comparison' do
