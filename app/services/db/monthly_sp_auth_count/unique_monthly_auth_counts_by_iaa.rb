@@ -3,6 +3,8 @@ module Db
     module UniqueMonthlyAuthCountsByIaa
       module_function
 
+      # Aggregates a user metric at across issuers within the same IAA, during that IAA's
+      # period of performance (between its start and end date), month-over-month, by IAL level
       # @param [String] iaa
       # @param [Symbol] aggregate (one of :sum, :unique, :new_unique)
       # @return [PG::Result]
@@ -13,6 +15,10 @@ module Db
 
         full_months, partial_months = months(date_range).partition { |m| full_month?(m) }
 
+        # The subqueries create a uniform representation of data:
+        # - full months from monthly_sp_auth_counts
+        # - partial months by aggregating sp_return_logs
+        # The results are rows with [user_id, ial, iaa, year_month]
         subquery = [
           full_month_subquery(issuers: issuers, full_months: full_months),
           *partial_month_subqueries(issuers: issuers, partial_months: partial_months),
@@ -37,6 +43,9 @@ module Db
 
         where_clause = case aggregate
         when :new_unique
+          # "new unique users" are users that we are seeing for the first
+          # time this month, so this filters out users we have seen in a past
+          # month by joining the subquery against itself
           <<~SQL
             NOT EXISTS (
               SELECT 1
