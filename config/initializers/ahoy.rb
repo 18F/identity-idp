@@ -14,6 +14,7 @@ module Ahoy
     end
 
     def track_event(data)
+      data.delete(:user_id)
       data[:id] = data.delete(:event_id)
       data[:visitor_id] = ahoy.visitor_token
       data[:visit_id] = data.delete(:visit_token)
