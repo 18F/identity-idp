@@ -1,7 +1,7 @@
 module Db
   module MonthlySpAuthCount
     module UniqueMonthlyAuthCountsByIaa
-      include Reports::QueryHelpers
+      extend Reports::QueryHelpers
 
       module_function
 
