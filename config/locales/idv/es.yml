@@ -11,8 +11,8 @@ es:
     cancel:
       warnings:
         warning_1: No podremos verificar tu identidad
-        warning_2: No guardaremos tu nombre, dirección, fecha de nacimiento ni número
-          de la seguridad social
+        warning_2: No guardaremos tu nombre, dirección, fecha de nacimiento ni número de
+          la seguridad social
         warning_3: No podrás acceder de forma segura a tu información usando %{app}
         warning_4: Seguirás teniendo una cuenta login.gov para tu dirección de correo
           electrónico
@@ -22,7 +22,8 @@ es:
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
       pattern_mismatch:
         dob: Su fecha de nacimiento debe ser ingresada en este formato mes/día/año.
-        personal_key: 'Introduzca su clave personal para esta cuenta. Ejemplo: ABC1-DEF2-G3HI-J456'
+        personal_key: 'Introduzca su clave personal para esta cuenta. Ejemplo:
+          ABC1-DEF2-G3HI-J456'
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
         state_id_number: Su número de ID no puede tener más de 25 caracteres
         zipcode: 'Su código postal debe ser ingresado como #####-####'
@@ -34,38 +35,38 @@ es:
       button:
         warning: Inténtelo de nuevo
       exceptions:
-        internal_error: Se produjo un error interno al procesar tu solicitud. Por
-          favor, inténtalo de nuevo.
+        internal_error: Se produjo un error interno al procesar tu solicitud. Por favor,
+          inténtalo de nuevo.
         link: contáctanos
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
       help:
         get_help_html: Obtener ayuda en <strong>%{sp_name}</strong>
       phone:
-        fail_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
-          Por su seguridad, limitamos el número de veces que puede intentar verificar
-          su número de teléfono en línea."
+        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
+          seguridad, limitamos el número de veces que puede intentar verificar
+          su número de teléfono en línea.'
         heading: No hemos podido asociar su nombre y dirección a este número de teléfono
         jobfail: Algo ha fallado y no podemos procesar tu solicitud en este momento.
           Vuelve a intentarlo.
-        timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve
-          a intentarlo.
+        timeout: Nuestra solicitud para verificar tu información ha caducado. Vuelve a
+          intentarlo.
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
       sessions:
         exception: Hubo un error interno al procesar su solicitud.
-        fail_html: "<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong>
-          Por su seguridad, limitamos el número de veces que puede intentar verificar
-          la información personal en línea."
+        fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
+          seguridad, limitamos el número de veces que puede intentar verificar
+          la información personal en línea.'
         heading: No hemos podido encontrar registros que coincidan con su información
           personal.
         warning: Por favor, verifique la información que ingresó y vuelva a intentarlo.
-          Los errores más comunes suelen producirse al ingresar un Número de Seguridad
-          Social o un Código Postal incorrecto.
+          Los errores más comunes suelen producirse al ingresar un Número de
+          Seguridad Social o un Código Postal incorrecto.
       timeout: Estamos experimentando un tiempo de espera superior al habitual al
         procesar su solicitud. Inténtalo de nuevo.
     forgot_password:
-      link_html: "¿Se te olvidó tu contraseña? %{link}"
+      link_html: '¿Se te olvidó tu contraseña? %{link}'
       link_text: Siga estas instrucciones
-      modal_header: "¿Estás seguro de que no puedes recordar tu contraseña?"
+      modal_header: '¿Estás seguro de que no puedes recordar tu contraseña?'
       reset_password: Restablecer la contraseña
       try_again: Inténtalo de nuevo
       warnings:
@@ -77,8 +78,7 @@ es:
       address1: Dirección
       address2: Dirección (opcional)
       city: Ciudad
-      no_alternate_phone_html: "<strong>%{link}</strong>. Le enviaremos una carta
-        con un código."
+      no_alternate_phone_html: '<strong>%{link}</strong>. Le enviaremos una carta con un código.'
       password: Contraseña
       phone: Teléfono
       ssn_label_html: Número de Seguro Social
@@ -89,15 +89,15 @@ es:
         need_html: Si está creando una cuenta, necesitará una <strong>identificación
           emitida por el estado actual</strong>.
     messages:
-      activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
-        verificada, por favor, %{link}.
+      activated_html: Su identidad ha sido verificada. Si necesita cambiar la
+        información verificada, por favor, %{link}.
       activated_link: Contáctenos
       agencies_login: Ahora puede continuar e iniciar sesión en estas agencias.
       agency_login_html: Ahora puedes continuar e iniciar sesión en <br><strong>%{sp}</strong>.
-      cancel: Para continuar %{app} necesita verificar su identidad. Necesitamos recopilar
-        información personal básica, así como su información financiera para completar
-        este proceso. Si no tiene la información que necesitamos en este momento,
-        puede continuar más tarde.
+      cancel: Para continuar %{app} necesita verificar su identidad. Necesitamos
+        recopilar información personal básica, así como su información
+        financiera para completar este proceso. Si no tiene la información que
+        necesitamos en este momento, puede continuar más tarde.
       clear_and_start_over: Borrar mi información y empezar de nuevo
       come_back_later: Una vez llegue tu carta, regístrate en %{app} e introduce tu
         código de verificación cuando se te solicite.
@@ -107,44 +107,45 @@ es:
       gpo:
         address_on_file: Le enviaremos una carta con un código de confirmación a su
           dirección verificada en el archivo.
-        new_address: Le enviaremos una carta con un código de confirmación a la dirección
-          que especifique.
+        new_address: Le enviaremos una carta con un código de confirmación a la
+          dirección que especifique.
         resend: Envíeme otra carta
-        success: Debe llegar en 5 a 10 días laborales.
-      hardfail: No puedes iniciar sesión en estos instantes pero puedes intentar verificar
-        tu edad de nuevo en %{hours} horas.
+        timeframe: Las correspondencias se envían al día siguiente por correo de primera
+          clase de USPS, y por lo general tardan entre 3 y 7 días laborables.
+      hardfail: No puedes iniciar sesión en estos instantes pero puedes intentar
+        verificar tu edad de nuevo en %{hours} horas.
       mail_sent: Su carta está en camino
       otp_delivery_method:
         phone_number_html: Te enviaremos un código a <strong>%{phone}</strong>
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert_html: Este número de teléfono <strong>debe ser</strong>
-        description: Verificamos los registros para asegurarnos de que eres quien
-          eres, y de que eres el propietario de tu cuenta.
-        final_note_html: "<strong>Si configura un teléfono para la autenticación de
-          dos factores</strong>, este puede ser un número diferente."
+        alert_html: '<strong>Este número de teléfono debe…</strong>'
+        description: Verificamos los registros para asegurarnos de que eres quien eres,
+          y de que eres el propietario de tu cuenta.
+        final_note_html: '<strong>Si configura un teléfono para la autenticación de dos
+          factores</strong>, este puede ser un número diferente.'
         phone_of_record: Teléfono del registro
         rules:
-        - en un plan de teléfono con su nombre en él
-        - no es un teléfono virtual (como Google Voice o Skype)
-        - no es un número de teléfono prepago
-        - un número de EE. UU.
-      return_to_profile: "‹ Volver a tu perfil de login.gov"
+          - ser un plan telefónico que esté asociado a su nombre. En este caso,
+            no es necesario que usted sea el titular principal de la cuenta.
+          - no es un teléfono virtual (como Google Voice o Skype)
+          - un número de EE. UU.
+      return_to_profile: '‹ Volver a tu perfil de login.gov'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
-        utilizar su cuenta en %{sp_name} hasta que la active ingresando un código
-        de confirmación.
-      select_verification_without_sp: Para proteger su cuenta de robo de identidad,
-        su perfil no se activará hasta que ingrese un código de confirmación.
+        utilizar su cuenta en %{sp_name} hasta que la active ingresando un
+        código de confirmación.
+      select_verification_without_sp: Para proteger su cuenta de robo de identidad, su
+        perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
         read_more_encrypt: Lea más sobre cómo login.gov protege su información personal
-        review_message: Cuando vuelva a ingresar su contraseña, login.gov cifrará
-          sus datos para asegurarse de que nadie más pueda acceder a ellos.
+        review_message: Cuando vuelva a ingresar su contraseña, login.gov cifrará sus
+          datos para asegurarse de que nadie más pueda acceder a ellos.
     review:
       dob: Fecha de nacimiento
       full_name: Nombre completo
@@ -156,9 +157,9 @@ es:
       come_back_later: Vuelve pronto.
       hardfail: No pudimos verificar su identidad con %{app}.
       mail:
-        resend: "¿Desea otra carta?"
-        verify: "¿Desea una carta?"
-      otp_delivery_method: "¿Cómo te gustaría recibir el código?"
+        resend: '¿Desea otra carta?'
+        verify: '¿Desea una carta?'
+      otp_delivery_method: '¿Cómo te gustaría recibir el código?'
       phone: Número de teléfono del registro
       review: Revise y envíe
       session:
@@ -166,9 +167,9 @@ es:
         review: Vuelve a ingresar tu contraseña de login.gov para encriptar tus datos
     troubleshooting:
       headings:
-        having_trouble: "¿Tiene alguna dificultad? Esto es lo que puede hacer:"
-        missing_required_items: "¿Le falta alguno de estos puntos?"
-        need_assistance: "¿Necesita ayuda inmediata? Así es como puede obtener ayuda:"
+        having_trouble: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'
+        missing_required_items: '¿Le falta alguno de estos puntos?'
+        need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
       options:
         contact_support: Póngase en contacto con el servicio de asistencia de %{app}
         get_help_at_sp: Obtenga ayuda en %{sp_name}

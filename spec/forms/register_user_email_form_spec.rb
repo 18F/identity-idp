@@ -23,11 +23,11 @@ describe RegisterUserEmailForm do
           domain_name: 'gmail.com',
         }
 
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(subject.submit(email: 'TAKEN@gmail.com')).to eq result
+        expect(subject.submit(email: 'TAKEN@gmail.com').to_h).to eq(
+          success: true,
+          errors: {},
+          **extra,
+        )
         expect(subject.email).to eq 'taken@gmail.com'
         expect(mailer).to have_received(:deliver_now)
       end
@@ -64,11 +64,11 @@ describe RegisterUserEmailForm do
           domain_name: 'test.com',
         }
 
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(subject.submit(email: user.email)).to eq result
+        expect(subject.submit(email: user.email).to_h).to eq(
+          success: true,
+          errors: {},
+          **extra,
+        )
       end
 
       it 'creates throttle events after reaching throttle limit' do
@@ -106,8 +106,6 @@ describe RegisterUserEmailForm do
 
     context 'when email is not already taken' do
       it 'is valid' do
-        result = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(result)
         submit_form = subject.submit(email: 'not_taken@gmail.com')
         extra = {
           email_already_exists: false,
@@ -116,9 +114,11 @@ describe RegisterUserEmailForm do
           domain_name: 'gmail.com',
         }
 
-        expect(FormResponse).to have_received(:new).
-          with(success: true, errors: {}, extra: extra)
-        expect(submit_form).to eq result
+        expect(submit_form.to_h).to eq(
+          success: true,
+          errors: {},
+          **extra,
+        )
       end
 
       it 'saves the user email_language for a valid form' do
@@ -142,19 +142,18 @@ describe RegisterUserEmailForm do
           domain_name: 'invalid_email',
         }
 
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(subject.submit(email: 'invalid_email')).to eq result
+        expect(subject.submit(email: 'invalid_email').to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 
     context 'when request_id is invalid' do
       it 'returns unsuccessful and adds an error to the form object' do
         errors = { email: [t('sign_up.email.invalid_request')] }
-        result = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(result)
         submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: 'fake_id')
         extra = {
           domain_name: 'gmail.com',
@@ -163,9 +162,12 @@ describe RegisterUserEmailForm do
           user_id: 'anonymous-uuid',
         }
 
-        expect(FormResponse).to have_received(:new).
-          with(errors: errors, extra: extra, success: false)
-        expect(submit_form).to eq result
+        expect(submit_form.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 
@@ -178,8 +180,6 @@ describe RegisterUserEmailForm do
           uuid: SecureRandom.uuid,
         )
         request_id = sp_request.uuid
-        result = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(result)
         submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: request_id)
         extra = {
           domain_name: 'gmail.com',
@@ -188,16 +188,16 @@ describe RegisterUserEmailForm do
           user_id: User.find_with_email('not_taken@gmail.com').uuid,
         }
 
-        expect(FormResponse).to have_received(:new).
-          with(errors: {}, extra: extra, success: true)
-        expect(submit_form).to eq result
+        expect(submit_form.to_h).to eq(
+          success: true,
+          errors: {},
+          **extra,
+        )
       end
     end
 
     context 'when request_id is blank' do
       it 'returns success with no errors' do
-        result = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(result)
         submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: nil)
         extra = {
           domain_name: 'gmail.com',
@@ -206,9 +206,11 @@ describe RegisterUserEmailForm do
           user_id: User.find_with_email('not_taken@gmail.com').uuid,
         }
 
-        expect(FormResponse).to have_received(:new).
-          with(errors: {}, extra: extra, success: true)
-        expect(submit_form).to eq result
+        expect(submit_form.to_h).to eq(
+          success: true,
+          errors: {},
+          **extra,
+        )
       end
     end
   end

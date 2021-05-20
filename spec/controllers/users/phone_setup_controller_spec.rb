@@ -47,6 +47,12 @@ describe Users::PhoneSetupController do
             t('two_factor_authentication.otp_delivery_preference.phone_unsupported', location: ''),
           ],
         },
+        error_details: {
+          phone: [
+            :improbable_phone,
+            t('two_factor_authentication.otp_delivery_preference.phone_unsupported', location: ''),
+          ],
+        },
         otp_delivery_preference: 'sms',
         area_code: nil,
         carrier: 'Test Mobile Carrier',

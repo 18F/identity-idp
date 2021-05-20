@@ -12,34 +12,26 @@ describe PasswordResetEmailForm do
         user = create(:user, :signed_up, email: 'test1@test.com')
         subject = PasswordResetEmailForm.new('Test1@test.com')
 
-        extra = {
+        expect(subject.submit.to_h).to eq(
+          success: true,
+          errors: {},
           user_id: user.uuid,
           confirmed: true,
           active_profile: false,
-        }
-
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(subject.submit).to eq result
+        )
         expect(subject).to respond_to(:resend)
       end
     end
 
     context 'when email is valid and user does not exist' do
       it 'returns hash with properties about the event and the nonexistent user' do
-        extra = {
+        expect(subject.submit.to_h).to eq(
+          success: true,
+          errors: {},
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,
-        }
-
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(subject.submit).to eq result
+        )
       end
     end
 
@@ -49,17 +41,14 @@ describe PasswordResetEmailForm do
 
         errors = { email: [t('valid_email.validations.email.invalid')] }
 
-        extra = {
+        expect(subject.submit.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,
-        }
-
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(subject.submit).to eq result
+        )
       end
     end
   end

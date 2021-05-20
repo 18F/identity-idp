@@ -44,6 +44,9 @@ describe Idv::ImageUploadsController do
           errors: {
             front: ['Please fill in this field.'],
           },
+          error_details: {
+            front: [:blank],
+          },
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
         )
@@ -91,6 +94,9 @@ describe Idv::ImageUploadsController do
           Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
           success: false,
           errors: {
+            front: [I18n.t('doc_auth.errors.not_a_file')],
+          },
+          error_details: {
             front: [I18n.t('doc_auth.errors.not_a_file')],
           },
           user_id: user.uuid,
@@ -174,6 +180,9 @@ describe Idv::ImageUploadsController do
           Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
           success: false,
           errors: {
+            limit: [I18n.t('errors.doc_auth.throttled_heading')],
+          },
+          error_details: {
             limit: [I18n.t('errors.doc_auth.throttled_heading')],
           },
           user_id: user.uuid,
@@ -301,6 +310,9 @@ describe Idv::ImageUploadsController do
               errors: {
                 pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
+              error_details: {
+                pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
+              },
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
@@ -346,6 +358,9 @@ describe Idv::ImageUploadsController do
               errors: {
                 pii: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
+              error_details: {
+                pii: [I18n.t('doc_auth.errors.general.no_liveness')],
+              },
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
             )
@@ -389,6 +404,9 @@ describe Idv::ImageUploadsController do
               Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
               success: false,
               errors: {
+                pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
+              },
+              error_details: {
                 pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               user_id: user.uuid,

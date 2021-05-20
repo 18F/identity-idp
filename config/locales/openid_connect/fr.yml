@@ -23,10 +23,10 @@ fr:
     token:
       errors:
         invalid_aud: Affirmation liée à l’auditoire non valide, attendu %{url}
-        invalid_authentication: Le client doit s’authentifier par PKCE ou private_key_jwt,
-          code_challenge ou client_assertion manquant
-        invalid_code: est non valide soit parce qu’il est périmé, soit parce qu’il
-          ne correspond à aucun utilisateur. Veuillez consulter notre documentation
+        invalid_authentication: Le client doit s’authentifier par PKCE ou
+          private_key_jwt, code_challenge ou client_assertion manquant
+        invalid_code: est non valide soit parce qu’il est périmé, soit parce qu’il ne
+          correspond à aucun utilisateur. Veuillez consulter notre documentation
           à https://developers.login.gov/oidc/#token
         invalid_code_verifier: code_verifier ne correspondait pas à code_challenge
         invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante
@@ -37,5 +37,5 @@ fr:
       errors:
         malformed_authorization: Forme de l’en-tête d’autorisation non valide
         no_authorization: Aucune en-tête d’autorisation fournie
-        not_found: L’autorisation pour le contenu du access_token fourni introuvable
-          ou il peut être expiré
+        not_found: L’autorisation pour le contenu du access_token fourni introuvable ou
+          il peut être expiré

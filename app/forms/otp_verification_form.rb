@@ -7,7 +7,6 @@ class OtpVerificationForm
   def submit
     FormResponse.new(
       success: valid_direct_otp_code?,
-      errors: {},
       extra: extra_analytics_attributes,
     )
   end

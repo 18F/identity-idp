@@ -19,11 +19,12 @@ describe ResetPasswordForm, type: :model do
 
         extra = { user_id: '123', profile_deactivated: false }
 
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(form.submit(password: password)).to eq result
+        expect(form.submit(password: password).to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 
@@ -42,11 +43,12 @@ describe ResetPasswordForm, type: :model do
 
         extra = { user_id: '123', profile_deactivated: false }
 
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(form.submit(password: password)).to eq result
+        expect(form.submit(password: password).to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 
@@ -58,15 +60,16 @@ describe ResetPasswordForm, type: :model do
         form = ResetPasswordForm.new(user)
         password = 'valid password'
         extra = { user_id: '123', profile_deactivated: false }
-        result = instance_double(FormResponse)
         user_updater = instance_double(UpdateUser)
         allow(UpdateUser).to receive(:new).
           with(user: user, attributes: { password: password }).and_return(user_updater)
 
         expect(user_updater).to receive(:call)
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(form.submit(password: password)).to eq result
+        expect(form.submit(password: password).to_h).to eq(
+          success: true,
+          errors: {},
+          **extra,
+        )
       end
     end
 
@@ -86,11 +89,12 @@ describe ResetPasswordForm, type: :model do
 
         extra = { user_id: '123', profile_deactivated: false }
 
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(form.submit(password: password)).to eq result
+        expect(form.submit(password: password).to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 
@@ -105,11 +109,12 @@ describe ResetPasswordForm, type: :model do
 
         extra = { user_id: nil, profile_deactivated: false }
 
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(form.submit(password: 'a good and powerful password')).to eq result
+        expect(form.submit(password: 'a good and powerful password').to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
       end
     end
 

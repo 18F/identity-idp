@@ -3,7 +3,7 @@ class WebauthnVisitForm
 
   def submit(params)
     check_params(params)
-    FormResponse.new(success: errors.empty?, errors: errors.messages)
+    FormResponse.new(success: errors.empty?, errors: errors)
   end
 
   def check_params(params)

@@ -23,7 +23,7 @@ class OtpDeliverySelectionForm
       change_otp_delivery_preference_to_sms
     end
 
-    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
 
   private

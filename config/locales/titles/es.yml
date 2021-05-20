@@ -45,8 +45,8 @@ es:
       confirmation: Continuar para iniciar sesión
       loa1: creó una cuenta
       new_sp: Acabas de iniciar sesión por primera vez
-      refresh_consent: Ha pasado un año desde que nos dio su consentimiento para compartir
-        su información
+      refresh_consent: Ha pasado un año desde que nos dio su consentimiento para
+        compartir su información
       verified: Tiene verificó su identidad con %{app}
     totp_setup:
       new: Agregar aplicación de autenticación

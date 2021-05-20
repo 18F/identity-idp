@@ -13,7 +13,7 @@ class UpdateUserPasswordForm
     self.password = params[:password]
     success = valid?
     process_valid_submission if success
-    FormResponse.new(success: success, errors: errors.messages)
+    FormResponse.new(success: success, errors: errors)
   end
 
   private

@@ -8,7 +8,6 @@ class EventDisavowalController < ApplicationController
       Analytics::EVENT_DISAVOWAL,
       FormResponse.new(
         success: true,
-        errors: {},
         extra: EventDisavowal::BuildDisavowedEventAnalyticsAttributes.call(disavowed_event),
       ).to_h,
     )

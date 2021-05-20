@@ -112,7 +112,9 @@ RSpec.describe Users::VerifyAccountController do
       it 'redirects to the index page to show errors' do
         expect(@analytics).to receive(:track_event).with(
           Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
-          success: false, errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
+          success: false,
+          errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
+          error_details: { otp: [:confirmation_code_incorrect]},
         )
 
         action
@@ -129,7 +131,9 @@ RSpec.describe Users::VerifyAccountController do
 
         expect(@analytics).to receive(:track_event).with(
           Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
-          success: false, errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
+          success: false,
+          errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
+          error_details: { otp: [:confirmation_code_incorrect]},
         ).exactly(max_attempts).times
 
         expect(@analytics).to receive(:track_event).with(

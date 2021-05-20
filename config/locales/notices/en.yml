@@ -46,8 +46,8 @@ en:
     timeout_warning:
       partially_signed_in:
         continue: Continue sign in
-        message_html: For your security, in %{time_left_in_session} we will cancel
-          your sign in.
+        message_html: For your security, in %{time_left_in_session} we will cancel your
+          sign in.
         sign_out: Cancel sign in
       signed_in:
         continue: Keep me signed in

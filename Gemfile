@@ -100,7 +100,7 @@ group :development, :test do
   gem 'erb_lint', '~> 0.0.37', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
-  gem 'nokogiri', '~> 1.11.0'
+  gem 'nokogiri', '~> 1.11.4'
   gem 'parallel_tests'
   gem 'pry-byebug'
   gem 'pry-doc'
@@ -125,7 +125,6 @@ group :test do
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'rspec-retry'
-  gem 'rubypants-unicode', '~> 0.2.5'
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'timecop'
   gem 'webdrivers', '~> 4.0'

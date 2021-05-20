@@ -9,12 +9,13 @@ describe PersonalKeyForm do
         old_code = user.reload.encrypted_recovery_code_digest
 
         form = PersonalKeyForm.new(user, raw_code)
-        result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'personal key' }
 
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(form.submit).to eq result
+        expect(form.submit.to_h).to eq(
+          success: true,
+          errors: {},
+          **extra,
+        )
         expect(user.reload.encrypted_recovery_code_digest).to eq old_code
       end
     end
@@ -25,12 +26,14 @@ describe PersonalKeyForm do
         errors = { personal_key: ['Incorrect personal key'] }
 
         form = PersonalKeyForm.new(user, 'foo')
-        result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'personal key' }
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(form.submit).to eq result
+        expect(form.submit.to_h).to include(
+          success: false,
+          errors: errors,
+          error_details: hash_including(*errors.keys),
+          **extra,
+        )
         expect(user.encrypted_recovery_code_digest).to_not be_nil
         expect(form.personal_key).to be_nil
       end

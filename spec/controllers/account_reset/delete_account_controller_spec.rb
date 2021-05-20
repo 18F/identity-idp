@@ -37,6 +37,7 @@ describe AccountReset::DeleteAccountController do
         event: 'delete',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_invalid')] },
+        error_details: { token: [t('errors.account_reset.granted_token_invalid')] },
         mfa_method_counts: {},
         account_age_in_days: 0,
       }
@@ -56,6 +57,7 @@ describe AccountReset::DeleteAccountController do
         event: 'delete',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_missing')] },
+        error_details: { token: [:blank] },
         mfa_method_counts: {},
         account_age_in_days: 0,
       }
@@ -79,6 +81,7 @@ describe AccountReset::DeleteAccountController do
         event: 'delete',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_expired')] },
+        error_details: { token: [t('errors.account_reset.granted_token_expired')] },
         mfa_method_counts: {},
         account_age_in_days: 2,
       }
@@ -103,6 +106,7 @@ describe AccountReset::DeleteAccountController do
         event: 'granted token validation',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_invalid')] },
+        error_details: { token: [t('errors.account_reset.granted_token_invalid')] },
       }
       expect(@analytics).
         to receive(:track_event).with(Analytics::ACCOUNT_RESET, properties)
@@ -124,6 +128,7 @@ describe AccountReset::DeleteAccountController do
         event: 'granted token validation',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_expired')] },
+        error_details: { token: [t('errors.account_reset.granted_token_expired')] },
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, properties)

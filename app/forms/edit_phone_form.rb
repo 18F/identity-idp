@@ -16,7 +16,7 @@ class EditPhoneForm
     ingest_submitted_params(params)
     success = valid?
     update_phone_configuration if success
-    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
 
   def masked_number

@@ -81,6 +81,7 @@ RSpec.describe Risc::SecurityEventsController do
                client_id: service_provider.issuer,
                error_code: SecurityEventForm::ErrorCodes::JWT_AUD,
                errors: kind_of(Hash),
+               error_details: kind_of(Hash),
                jti: jti,
                success: false,
                user_id: user.uuid)

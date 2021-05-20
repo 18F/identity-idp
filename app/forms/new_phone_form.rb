@@ -23,7 +23,7 @@ class NewPhoneForm
     success = valid?
     self.phone = submitted_phone unless success
 
-    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
 
   def delivery_preference_sms?

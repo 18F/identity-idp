@@ -52,13 +52,14 @@ fr:
         missing: Erreur interne.
     piv_cac_login:
       account_not_found: Votre PIV / CAC n’est pas connecté à un compte
-      add: Configurez votre PIV ou votre CAC en tant que méthode d’authentification
-        à deux facteurs pour pouvoir l’utiliser pour vous connecter.
+      add: Configurez votre PIV ou votre CAC en tant que méthode d’authentification à
+        deux facteurs pour pouvoir l’utiliser pour vous connecter.
       new: Utilisez votre PIV / CAC pour vous connecter à votre compte
-      success: Vous avez correctement configuré PIV/CAC en tant que méthode d’authentification.
+      success: Vous avez correctement configuré PIV/CAC en tant que méthode
+        d’authentification.
     piv_cac_setup:
-      already_associated: La carte PIV/CAC que vous avez présentée est associée à
-        un autre utilisateur.
+      already_associated: La carte PIV/CAC que vous avez présentée est associée à un
+        autre utilisateur.
       new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
     registrations:
       enter_email: Entrez votre adresse email

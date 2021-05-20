@@ -12,6 +12,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: { user: ['invalid_token'] },
+          error_details: { user: [:blank] },
           user_id: nil,
         }
 
@@ -37,6 +38,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: { user: ['token_expired'] },
+          error_details: { user: ['token_expired'] },
           user_id: '123',
         }
 
@@ -100,6 +102,10 @@ describe Users::ResetPasswordsController, devise: true do
             password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
             reset_password_token: ['token_expired'],
           },
+          error_details: {
+            password: [:too_short],
+            reset_password_token: ['token_expired'],
+          },
           user_id: user.uuid,
           profile_deactivated: false,
         }
@@ -129,6 +135,9 @@ describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: {
             password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
+          },
+          error_details: {
+            password: [:too_short],
           },
           user_id: user.uuid,
           profile_deactivated: false,
@@ -410,6 +419,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: { email: [t('valid_email.validations.email.invalid')] },
+          error_details: { email: [t('valid_email.validations.email.invalid')] },
           user_id: 'nonexistent-uuid',
           confirmed: false,
           active_profile: false,

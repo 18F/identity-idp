@@ -2,38 +2,39 @@
 fr:
   forms:
     backup_code:
-      are_you_sure_continue_prologue: Si vous n’avez accès à aucune autre méthode
-        d’authentification,
-      are_you_sure_desc: "<br><b>Les codes de sauvegarde ne sont pas très sûrs</b>
-        car ils peuvent facilement être perdus ou volés. <b> Si vous le pouvez, choisissez
-        une autre option</b> (utiliser un téléphone, télécharger une application d’authentification
-        ou utiliser une clé de sécurité). <br><br><b>Si vous continuez à utiliser
-        des codes de sauvegarde, protégez-les </b>. Nous vous donnerons 10 codes que
-        vous pourrez télécharger, imprimer, copier ou écrire. Plus tard, vous devrez
-        en entrer un à chaque fois que vous vous connectez."
-      are_you_sure_title: Êtes-vous sûr? Nous vous donnerons des codes de sauvegarde
-        à sauvegarder et à utiliser.
+      are_you_sure_continue_prologue: Si vous n’avez accès à aucune autre méthode d’authentification,
+      are_you_sure_desc: '<br><b>Les codes de sauvegarde ne sont pas très sûrs</b> car
+        ils peuvent facilement être perdus ou volés. <b> Si vous le pouvez,
+        choisissez une autre option</b> (utiliser un téléphone, télécharger une
+        application d’authentification ou utiliser une clé de sécurité).
+        <br><br><b>Si vous continuez à utiliser des codes de sauvegarde,
+        protégez-les </b>. Nous vous donnerons 10 codes que vous pourrez
+        télécharger, imprimer, copier ou écrire. Plus tard, vous devrez en
+        entrer un à chaque fois que vous vous connectez.'
+      are_you_sure_title: Êtes-vous sûr? Nous vous donnerons des codes de sauvegarde à
+        sauvegarder et à utiliser.
       caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus
         les utiliser pour vous connecter.
       confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
-      depleted_desc: Vous avez utilisé tous vos codes de sauvegarde. Nous allons générer
-        de nouveaux codes de sauvegarde après avoir cliqué sur Continuer. Rangez-les
-        dans un endroit sûr pour pouvoir vous connecter à nouveau ultérieurement.
+      depleted_desc: Vous avez utilisé tous vos codes de sauvegarde. Nous allons
+        générer de nouveaux codes de sauvegarde après avoir cliqué sur
+        Continuer. Rangez-les dans un endroit sûr pour pouvoir vous connecter à
+        nouveau ultérieurement.
       depleted_title: Créer de nouveaux codes de sauvegarde
       download: Télécharger
       generate: Obtenir des codes
       print: Impression
       regenerate: Obtenir de nouveaux codes
-      subinfo_html: "<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou copiez-les.
-        Chaque code ne peut être utilisé qu’une seule fois. Une fois que vous avez
-        utilisé les 10 codes, nous vous en donnons 10 nouveaux. Gardez vos codes aussi
-        sûr qu’un mot de passe."
+      subinfo_html: '<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou
+        copiez-les. Chaque code ne peut être utilisé qu’une seule fois. Une fois
+        que vous avez utilisé les 10 codes, nous vous en donnons 10 nouveaux.
+        Gardez vos codes aussi sûr qu’un mot de passe.'
       subtitle: Vos codes de sauvegarde
       title: Codes de sauvegarde
     backup_code_regenerate:
       caution: Si vous régénérez vos codes de sauvegarde, vous recevrez un nouvel
-        ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne seront
-        plus valides.
+        ensemble de codes de sauvegarde. Vos codes de sauvegarde d’origine ne
+        seront plus valides.
       confirm: Êtes-vous sûr de vouloir régénérer vos codes de sauvegarde?
     buttons:
       back: Retour
@@ -70,8 +71,8 @@ fr:
     personal_key:
       alternative: Vous n’avez pas votre clé personnelle?
       confirmation_label: Clé personnelle
-      instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle
-        en l’entrant ci-dessous.
+      instructions: Veuillez confirmer que vous avez une copie de votre clé
+        personnelle en l’entrant ci-dessous.
       title: Entrez votre clé personnelle
     phone:
       buttons:
@@ -87,10 +88,11 @@ fr:
     piv_cac_setup:
       nickname: Pseudo PIV/CAC
       no_thanks: Non merci
-      piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC chaque
-        <strong>fois que vous vous connecterez</strong> dans le cadre de l’authentification
-        à deux facteurs.<br><br>Après avoir cliqué sur “Ajouter PIV/CAC”, votre navigateur
-        vous demandera votre code PIN PIV/CAC et vous choisirez un certificat.
+      piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC
+        chaque <strong>fois que vous vous connecterez</strong> dans le cadre de
+        l’authentification à deux facteurs.<br><br>Après avoir cliqué sur
+        “Ajouter PIV/CAC”, votre navigateur vous demandera votre code PIN
+        PIV/CAC et vous choisirez un certificat.
       submit: Ajouter une carte PIV/CAC
     registration:
       labels:
@@ -103,8 +105,8 @@ fr:
         plus l’utiliser pour accéder à votre compte login.gov.
       confirm: Voulez-vous vraiment supprimer votre application d’authentification?
     totp_setup:
-      totp_intro_html: Configurez une application d’authentification pour vous connecter
-        à l’aide de codes de sécurité temporaires. %{link}
+      totp_intro_html: Configurez une application d’authentification pour vous
+        connecter à l’aide de codes de sécurité temporaires. %{link}
       totp_step_1: Donnez-lui un surnom
       totp_step_1a: Si vous ajoutez plusieurs applications, vous saurez lesquelles.
       totp_step_2: Démarrez votre application d’authentification
@@ -124,18 +126,19 @@ fr:
       submit: Confirmer le compte
       title: Confirmez votre compte
     webauthn_delete:
-      caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus l’utiliser
-        pour accéder à votre compte login.gov.
+      caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus
+        l’utiliser pour accéder à votre compte login.gov.
       confirm: Êtes-vous sûr de vouloir supprimer votre clé de sécurité?
     webauthn_setup:
       continue: Continuer
-      instructions_text: Appuyez sur le bouton de votre clé de sécurité pour l’enregistrer
-        avec login.gov
+      instructions_text: Appuyez sur le bouton de votre clé de sécurité pour
+        l’enregistrer avec login.gov
       instructions_title: Connectez votre clé de sécurité
-      intro_html: Ajoutez une clé de sécurité en tant que méthode d’authentification
-        à votre compte. Votre clé de sécurité doit prendre en charge le standard FIDO.
-        Vous pouvez ajouter autant de clés de sécurité que vous le souhaitez et nous
-        en recommandons au moins deux pour faciliter la récupération du compte.
+      intro_html: Ajoutez une clé de sécurité en tant que méthode d’authentification à
+        votre compte. Votre clé de sécurité doit prendre en charge le standard
+        FIDO. Vous pouvez ajouter autant de clés de sécurité que vous le
+        souhaitez et nous en recommandons au moins deux pour faciliter la
+        récupération du compte.
       login_text: Appuyez sur le bouton de votre clé de sécurité pour vous connecter
         avec login.gov
       nickname: Pseudo clé de sécurité

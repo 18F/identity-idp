@@ -39,18 +39,13 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with valid params' do
       it 'is successful' do
-        allow(FormResponse).to receive(:new)
-
-        form.submit
-
-        extra_attributes = {
+        expect(result.to_h).to eq(
+          success: true,
+          errors: {},
           client_id: client_id,
           redirect_uri: nil,
           unauthorized_scope: true,
-        }
-
-        expect(FormResponse).to have_received(:new).
-          with(success: true, errors: {}, extra: extra_attributes)
+        )
       end
     end
 
@@ -59,20 +54,15 @@ RSpec.describe OpenidConnectAuthorizeForm do
         let(:response_type) { nil }
 
         it 'is unsuccessful and has error messages' do
-          form_response = instance_double(FormResponse)
-
-          extra_attributes = {
+          expect(result.to_h).to eq(
+            success: false,
+            errors: { response_type: ['is not included in the list'] },
+            error_details: { response_type: [:inclusion] },
             client_id: client_id,
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
                           "Response+type+is+not+included+in+the+list&state=#{state}",
             unauthorized_scope: true,
-          }
-
-          errors = { response_type: ['is not included in the list'] }
-
-          expect(FormResponse).to receive(:new).
-            with(success: false, errors: errors, extra: extra_attributes).and_return(form_response)
-          expect(result).to eq form_response
+          )
         end
       end
     end

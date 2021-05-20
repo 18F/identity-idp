@@ -1,17 +1,6 @@
 require 'rails_helper'
 
 describe FormResponse do
-  describe '.new' do
-    it 'raises an error if errors is not a Hash' do
-      errors = ['bar', [{ foo: 'bar' }], ['foobar']]
-
-      errors.each do |error|
-        expect { FormResponse.new(success: true, errors: error) }.
-          to raise_error NoMethodError
-      end
-    end
-  end
-
   describe '#success?' do
     context 'when the success argument is true' do
       it 'returns true' do
@@ -31,21 +20,36 @@ describe FormResponse do
   end
 
   describe '#errors' do
-    it 'returns the value of the errors argument' do
-      errors = { foo: 'bar' }
-      response = FormResponse.new(success: true, errors: errors)
+    context 'initialized with hash' do
+      it 'returns the value of the errors argument' do
+        errors = { foo: 'bar' }
+        response = FormResponse.new(success: true, errors: errors)
 
-      expect(response.errors).to eq errors
+        expect(response.errors).to eq errors
+      end
+    end
+
+    context 'initialized with ActiveModel::Errors' do
+      it 'returns the messages value of the errors argument' do
+        errors = ActiveModel::Errors.new(build_stubbed(:user))
+        errors.add(:email_language, :blank, message: 'Language cannot be blank')
+        response = FormResponse.new(success: false, errors: errors)
+
+        expect(response.errors).to eq errors.messages
+      end
     end
   end
 
   describe '#merge' do
     it 'merges the extra analytics' do
-      response1 = FormResponse.new(success: true, errors: {}, extra: { step: 'foo' })
-      response2 = IdentityDocAuth::Response.new(success: true, extra: { is_fallback_link: true })
+      response1 = FormResponse.new(success: true, errors: {}, extra: { step: 'foo', order: [1, 2] })
+      response2 = IdentityDocAuth::Response.new(
+        success: true,
+        extra: { is_fallback_link: true, order: [2, 1] },
+      )
 
       combined_response = response1.merge(response2)
-      expect(combined_response.extra).to eq({ step: 'foo', is_fallback_link: true })
+      expect(combined_response.extra).to eq({ step: 'foo', is_fallback_link: true, order: [2, 1] })
     end
 
     it 'merges errors' do
@@ -54,6 +58,42 @@ describe FormResponse do
 
       combined_response = response1.merge(response2)
       expect(combined_response.errors).to eq(front: 'error', back: 'error')
+    end
+
+    it 'merges multiple errors for key' do
+      response1 = FormResponse.new(success: false, errors: { front: 'front-error-1' })
+      response2 = IdentityDocAuth::Response.new(success: true, errors: { front: ['front-error-2'] })
+
+      combined_response = response1.merge(response2)
+      expect(combined_response.errors).to eq(front: ['front-error-1', 'front-error-2'])
+    end
+
+    it 'merges error details' do
+      errors1 = ActiveModel::Errors.new(build_stubbed(:user))
+      errors1.add(:email_language, :blank, message: 'Language cannot be blank')
+      errors2 = ActiveModel::Errors.new(build_stubbed(:user))
+      errors2.add(:email_language, :invalid, message: 'Language is not valid')
+
+      response1 = FormResponse.new(success: false, errors: errors1)
+      response2 = FormResponse.new(success: false, errors: errors2)
+
+      combined_response = response1.merge(response2)
+      expect(combined_response.to_h[:error_details]).to eq(email_language: [:blank, :invalid])
+    end
+
+    it 'merges hash and ActiveModel::Errors' do
+      errors1 = ActiveModel::Errors.new(build_stubbed(:user))
+      errors1.add(:email_language, :blank, message: 'Language cannot be blank')
+      errors2 = { email_language: 'Language is not valid' }
+
+      response1 = FormResponse.new(success: false, errors: errors1)
+      response2 = FormResponse.new(success: false, errors: errors2)
+
+      combined_response = response1.merge(response2)
+      expect(combined_response.errors).to eq(
+        email_language: ['Language cannot be blank', 'Language is not valid'],
+      )
+      expect(combined_response.to_h[:error_details]).to eq(email_language: [:blank])
     end
 
     it 'returns true if one is false and one is true' do
@@ -92,6 +132,49 @@ describe FormResponse do
         }
 
         expect(response.to_h).to eq response_hash
+      end
+    end
+
+    context 'when errors is an ActiveModel::Errors' do
+      it 'returns a hash with success, errors, and error_details keys' do
+        errors = ActiveModel::Errors.new(build_stubbed(:user))
+        errors.add(:email_language, :blank, message: 'Language cannot be blank')
+        response = FormResponse.new(success: false, errors: errors)
+        response_hash = {
+          success: false,
+          errors: {
+            email_language: ['Language cannot be blank'],
+          },
+          error_details: {
+            email_language: [:blank],
+          },
+        }
+
+        expect(response.to_h).to eq response_hash
+      end
+
+      it 'omits details if errors are empty' do
+        errors = ActiveModel::Errors.new(build_stubbed(:user))
+        response = FormResponse.new(success: true, errors: errors)
+        response_hash = {
+          success: true,
+          errors: {},
+        }
+
+        expect(response.to_h).to eq response_hash
+      end
+
+      it 'omits details if merged errors are empty' do
+        errors = ActiveModel::Errors.new(build_stubbed(:user))
+        response1 = FormResponse.new(success: true, errors: errors)
+        response2 = FormResponse.new(success: true, errors: errors)
+        combined_response = response1.merge(response2)
+        response_hash = {
+          success: true,
+          errors: {},
+        }
+
+        expect(combined_response.to_h).to eq response_hash
       end
     end
   end

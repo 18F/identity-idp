@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'i18n/tasks'
-require 'yaml_normalizer'
 
 module I18n
   module Tasks
@@ -147,12 +146,6 @@ RSpec.describe 'I18n' do
         end
 
         expect(bad_keys).to be_empty
-      end
-
-      it 'is formatted as normalized YAML' do
-        normalized_yaml = YAML.dump(YamlNormalizer.handle_hash(YAML.load_file(full_path)))
-
-        expect(File.read(full_path)).to(eq(normalized_yaml), 'run `make normalize_yaml` to fix')
       end
 
       it 'does not contain any translations expecting legacy fallback behavior' do

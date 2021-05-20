@@ -37,6 +37,9 @@ lint_erb:
 lint_yarn_lockfile:
 	(! git diff --name-only | grep yarn.lock) || (echo "Error: Sync Yarn lockfile using 'yarn install'"; exit 1)
 
+lint_yaml: normalize_yaml
+	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
+
 lintfix:
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -R -a
@@ -71,8 +74,7 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
 .PHONY: setup all lint run test check brakeman
 
 normalize_yaml:
-	i18n-tasks normalize
-	find ./config/locales -type f | xargs ./scripts/normalize-yaml config/country_dialing_codes.yml
+	find ./config/locales -type f | xargs yarn normalize-yaml config/country_dialing_codes.yml
 
 optimize_svg:
 	# Without disabling minifyStyles, keyframes are removed (e.g. `app/assets/images/id-card.svg`).
@@ -86,6 +88,7 @@ lint_optimized_assets: optimize_assets
 
 update_country_dialing_codes:
 	bundle exec ./scripts/pinpoint-supported-countries > config/country_dialing_codes.yml
+	yarn normalize-yaml config/country_dialing_codes.yml
 
 check_asset_strings:
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets

@@ -21,7 +21,9 @@ RSpec.describe OpenidConnect::UserInfoController do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with(Analytics::OPENID_CONNECT_BEARER_TOKEN,
-               success: false, errors: hash_including(:access_token))
+               success: false,
+               errors: hash_including(:access_token),
+               error_details: hash_including(:access_token))
 
         action
       end
@@ -41,7 +43,9 @@ RSpec.describe OpenidConnect::UserInfoController do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with(Analytics::OPENID_CONNECT_BEARER_TOKEN,
-               success: false, errors: hash_including(:access_token))
+               success: false,
+               errors: hash_including(:access_token),
+               error_details: hash_including(:access_token))
 
         action
       end
@@ -60,7 +64,9 @@ RSpec.describe OpenidConnect::UserInfoController do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with(Analytics::OPENID_CONNECT_BEARER_TOKEN,
-               success: false, errors: hash_including(:access_token))
+               success: false,
+               errors: hash_including(:access_token),
+               error_details: hash_including(:access_token))
 
         action
       end
