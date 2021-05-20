@@ -65,6 +65,7 @@ RSpec.configure do |config|
   config.include Features::MailerHelper, type: :feature
   config.include Features::SessionHelper, type: :feature
   config.include Features::StripTagsHelper, type: :feature
+  config.include AgreementsHelper
   config.include AnalyticsHelper
   config.include AwsKmsClientHelper
   config.include KeyRotationHelper

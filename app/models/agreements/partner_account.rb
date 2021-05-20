@@ -10,4 +10,8 @@ class Agreements::PartnerAccount < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true
   validates :requesting_agency, presence: true, uniqueness: true
+
+  def partner_status
+    partner_account_status.partner_name
+  end
 end
