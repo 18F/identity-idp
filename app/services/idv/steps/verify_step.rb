@@ -24,11 +24,16 @@ module Idv
           document_capture_session,
           should_proof_state_id: should_use_aamva?(pii_from_doc),
           trace_id: amzn_trace_id,
+          expired_document: expired_document,
         )
       end
 
       def pii_from_doc
         flow_session[:pii_from_doc]
+      end
+
+      def expired_document
+        flow_session[:expired_document]
       end
 
       def idv_agent

@@ -49,6 +49,7 @@ module Idv
           uuid: current_user.uuid,
           phone: current_user.phone_configurations.take&.phone,
         )
+        flow_session[:expired_document] = response.extra[:expired_document]
       end
 
       def user_id_from_token

@@ -11,7 +11,7 @@ class ResolutionProofingJob < ApplicationJob
   )
 
   def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
-              dob_year_only:)
+              dob_year_only:, expired_document:)
     timer = JobHelpers::Timer.new
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
@@ -20,7 +20,7 @@ class ResolutionProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
 
-    callback_log_data = if dob_year_only && should_proof_state_id
+    callback_log_data = if !expired_document && dob_year_only && should_proof_state_id
                           proof_aamva_then_lexisnexis_dob_only(
                             timer: timer,
                             applicant_pii: applicant_pii,
@@ -31,6 +31,7 @@ class ResolutionProofingJob < ApplicationJob
                             timer: timer,
                             applicant_pii: applicant_pii,
                             should_proof_state_id: should_proof_state_id,
+                            expired_document: expired_document,
                           )
                         end
 
@@ -52,7 +53,7 @@ class ResolutionProofingJob < ApplicationJob
   private
 
   # @return [CallbackLogData]
-  def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:)
+  def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:, expired_document:)
     proofer_result = timer.time('resolution') do
       with_retries(**faraday_retry_options) do
         resolution_proofer.proof(applicant_pii)
@@ -84,7 +85,7 @@ class ResolutionProofingJob < ApplicationJob
     }
 
     state_id_success = nil
-    if should_proof_state_id && result[:success]
+    if should_proof_state_id && result[:success] && !expired_document
       timer.time('state_id') do
         proof_state_id(timer: timer, applicant_pii: applicant_pii, result: result)
       end

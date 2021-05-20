@@ -99,7 +99,9 @@ module DocAuthRouter
     def translate_form_response!(response)
       return response unless response.is_a?(IdentityDocAuth::Response)
 
-      check_only_error_expired!(response)
+      # This needs to happen before we translate, since it relies on the original error keys
+      response = ExpiredLicenseAllower.new(response).processed_response
+
       translate_doc_auth_errors!(response)
       translate_generic_errors!(response)
 
@@ -133,13 +135,6 @@ module DocAuthRouter
       # this is only relevant to acuant code path
       if response.errors[:selfie] == true
         response.errors[:selfie] = I18n.t('doc_auth.errors.general.liveness')
-      end
-    end
-
-    def check_only_error_expired!(response)
-      if response.errors.keys == [:id] &&
-        response.errors[:id] == [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK]
-        response.extra[:only_error_expired] = true
       end
     end
   end

@@ -4,7 +4,7 @@ module Idv
       @applicant = applicant.symbolize_keys
     end
 
-    def proof_resolution(document_capture_session, should_proof_state_id:, trace_id:)
+    def proof_resolution(document_capture_session, should_proof_state_id:, trace_id:, expired_document:)
       document_capture_session.create_proofing_session
 
       encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
@@ -17,6 +17,7 @@ module Idv
         dob_year_only: IdentityConfig.store.proofing_send_partial_dob,
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
+        expired_document: expired_document,
       )
     end
 
