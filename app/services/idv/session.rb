@@ -16,6 +16,7 @@ module Idv
       profile_step_params
       personal_key
       resolution_successful
+      reproof_at
       step_attempts
     ].freeze
 
@@ -140,6 +141,7 @@ module Idv
         applicant: applicant,
         user: current_user,
         user_password: user_password,
+        reproof_at: reproof_at ? Time.zone.parse(reproof_at) : nil,
       )
     end
   end

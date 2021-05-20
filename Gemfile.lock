@@ -13,10 +13,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: a652b46e563f1d7b655717d1be3aa752582d32e4
-  tag: v0.8.0
+  revision: 346caf261f6661f92521ea481fe61cbeda9f7c7e
+  branch: margolis-separate-expiration-errors
   specs:
-    identity-doc-auth (0.8.0)
+    identity-doc-auth (0.9.0)
       activesupport
       faraday
       redacted_struct (>= 1.0.0)
