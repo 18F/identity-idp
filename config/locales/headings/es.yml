@@ -58,8 +58,6 @@ es:
     piv_cac_setup:
       already_associated: La PIV/CAC que has presentado está asociada a otro usuario.
       new: Use su tarjeta PIV/CAC para asegurar su cuenta
-    registrations:
-      enter_email: Ingrese su dirección de correo electrónico
     session_timeout_warning: '¿Necesita más tiempo?'
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
