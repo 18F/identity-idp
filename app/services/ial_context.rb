@@ -32,8 +32,7 @@ class IalContext
   end
 
   def ial2_requested?
-    return true if ialmax_requested? && user_ial2_verified?
-    ial == ::Idp::Constants::IAL2
+    (ialmax_requested? && user_ial2_verified?) || ial == ::Idp::Constants::IAL2
   end
 
   def ial2_or_greater?

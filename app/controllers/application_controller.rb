@@ -303,8 +303,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_session_ial
-    return 1 if sp_session[:ial].blank?
-    sp_session[:ial]
+    sp_session[:ial].presence || 1
   end
 
   def increment_monthly_auth_count

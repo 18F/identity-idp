@@ -164,7 +164,7 @@ RSpec.describe IalContext do
       it { expect(ial_context.bill_for_ial_1_or_2).to eq(1) }
     end
 
-    context 'when ial1' do
+    context 'when ial2' do
       let(:ial) { Idp::Constants::IAL2 }
       it { expect(ial_context.bill_for_ial_1_or_2).to eq(2) }
     end
@@ -193,7 +193,7 @@ RSpec.describe IalContext do
       it { expect(ial_context.bill_for_ial_1_or_2).to eq(2) }
     end
 
-    context 'when ial strict' do
+    context 'when ial2 strict' do
       let(:ial) { Idp::Constants::IAL2_STRICT }
       it { expect(ial_context.bill_for_ial_1_or_2).to eq(2) }
     end

@@ -16,14 +16,16 @@ module OidcAuthHelper
   end
 
   def visit_idp_from_ial2_strict_oidc_sp(**args)
-    params = ial2_strict_params args
+    args[:acr_values] = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
+    params = ial2_params args
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
     oidc_path
   end
 
   def visit_idp_from_ial_max_oidc_sp(**args)
-    params = ial_max_params args
+    args[:acr_values] = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+    params = ial2_params args
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
     oidc_path
@@ -72,11 +74,12 @@ module OidcAuthHelper
   def ial2_params(prompt: nil,
                   state: SecureRandom.hex,
                   nonce: SecureRandom.hex,
-                  client_id: OIDC_ISSUER)
+                  client_id: OIDC_ISSUER,
+                  acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF)
     ial2_params = {
       client_id: client_id,
       response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+      acr_values: acr_values,
       scope: 'openid email profile:name social_security_number',
       redirect_uri: 'http://localhost:7654/auth/result',
       state: state,
@@ -84,40 +87,6 @@ module OidcAuthHelper
     }
     ial2_params[:prompt] = prompt if prompt
     ial2_params
-  end
-
-  def ial2_strict_params(prompt: nil,
-                         state: SecureRandom.hex,
-                         nonce: SecureRandom.hex,
-                         client_id: OIDC_ISSUER)
-    ial2_strict_params = {
-      client_id: client_id,
-      response_type: 'code',
-      acr_values: Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
-      scope: 'openid email profile:name social_security_number',
-      redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
-      nonce: nonce,
-    }
-    ial2_strict_params[:prompt] = prompt if prompt
-    ial2_strict_params
-  end
-
-  def ial_max_params(prompt: nil,
-                     state: SecureRandom.hex,
-                     nonce: SecureRandom.hex,
-                     client_id: OIDC_ISSUER)
-    ial_max_params = {
-      client_id: client_id,
-      response_type: 'code',
-      acr_values: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-      scope: 'openid email profile:name social_security_number',
-      redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
-      nonce: nonce,
-    }
-    ial_max_params[:prompt] = prompt if prompt
-    ial_max_params
   end
 
   def include_aal3(params)
