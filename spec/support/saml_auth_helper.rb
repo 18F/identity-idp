@@ -178,6 +178,18 @@ module SamlAuthHelper
     settings
   end
 
+  def sp1_ial_max_saml_settings
+    settings = sp1_saml_settings.dup
+    settings.authn_context = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+    settings
+  end
+
+  def sp1_ial2_strict_saml_settings
+    settings = sp1_saml_settings.dup
+    settings.authn_context = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
+    settings
+  end
+
   def loa3_saml_settings
     settings = sp1_saml_settings.dup
     settings.authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
@@ -202,6 +214,26 @@ module SamlAuthHelper
 
   def ial2_with_bundle_saml_settings
     settings = sp1_ial2_saml_settings
+    settings.authn_context = [
+      settings.authn_context,
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+    ]
+    settings
+  end
+
+  def ial_max_with_bundle_saml_settings
+    settings = sp1_ial_max_saml_settings
+    settings.authn_context = [
+      settings.authn_context,
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+    ]
+    settings
+  end
+
+  def ial2_strict_with_bundle_saml_settings
+    settings = sp1_ial2_strict_saml_settings
     settings.authn_context = [
       settings.authn_context,
       "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
@@ -343,6 +375,26 @@ module SamlAuthHelper
     visit api_saml_auth2021_path(
       SAMLRequest: CGI.unescape(saml_request(saml_settings)),
     )
+  end
+
+  def visit_idp_from_ial2_strict_saml_sp(**args)
+    settings = ial2_strict_with_bundle_saml_settings
+    settings.security[:embed_sign] = false
+    settings.issuer = args[:issuer] if args[:issuer]
+    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
+    saml_authn_request = auth_request.create(settings)
+    visit saml_authn_request
+    saml_authn_request
+  end
+
+  def visit_idp_from_ial_max_saml_sp(**args)
+    settings = ial_max_with_bundle_saml_settings
+    settings.security[:embed_sign] = false
+    settings.issuer = args[:issuer] if args[:issuer]
+    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
+    saml_authn_request = auth_request.create(settings)
+    visit saml_authn_request
+    saml_authn_request
   end
 
   def visit_idp_from_ial2_saml_sp(**args)
