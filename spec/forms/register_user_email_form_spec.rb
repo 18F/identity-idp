@@ -156,8 +156,11 @@ describe RegisterUserEmailForm do
     context 'when request_id is invalid' do
       it 'returns unsuccessful and adds an error to the form object' do
         errors = { email: [t('sign_up.email.invalid_request')] }
-        submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: 'fake_id',
-                                     terms_accepted: 'true')
+        submit_form = subject.submit(
+          email: 'not_taken@gmail.com',
+          request_id: 'fake_id',
+          terms_accepted: 'true',
+        )
         extra = {
           domain_name: 'gmail.com',
           email_already_exists: false,
@@ -183,8 +186,11 @@ describe RegisterUserEmailForm do
           uuid: SecureRandom.uuid,
         )
         request_id = sp_request.uuid
-        submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: request_id,
-                                     terms_accepted: 'true')
+        submit_form = subject.submit(
+          email: 'not_taken@gmail.com',
+          request_id: request_id,
+          terms_accepted: 'true',
+        )
         extra = {
           domain_name: 'gmail.com',
           email_already_exists: false,
@@ -202,8 +208,11 @@ describe RegisterUserEmailForm do
 
     context 'when request_id is blank' do
       it 'returns success with no errors' do
-        submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: nil,
-                                     terms_accepted: 'true')
+        submit_form = subject.submit(
+          email: 'not_taken@gmail.com',
+          request_id: nil,
+          terms_accepted: 'true',
+        )
         extra = {
           domain_name: 'gmail.com',
           email_already_exists: false,
@@ -222,9 +231,6 @@ describe RegisterUserEmailForm do
     context 'when user does not agree to terms' do
       it 'returns failure with errors' do
         errors = { terms_accepted: [t('errors.registration.terms')] }
-        result = instance_double(FormResponse)
-        allow(FormResponse).to receive(:new).and_return(result)
-        submit_form = subject.submit(email: 'not_taken@gmail.com')
         extra = {
           domain_name: 'gmail.com',
           email_already_exists: false,
@@ -232,10 +238,10 @@ describe RegisterUserEmailForm do
           user_id: 'anonymous-uuid',
         }
 
-        expect(FormResponse).to have_received(:new).
-            with(errors: errors, extra: extra, success: false)
-        expect(submit_form).to eq result
-
+        submit_form = subject.submit(email: 'not_taken@gmail.com')
+        expect(submit_form.success?).to eq false
+        expect(submit_form.extra).to eq extra
+        expect(submit_form.errors).to eq errors
       end
     end
   end
