@@ -1,4 +1,11 @@
 class MonthlySpAuthCount < ApplicationRecord
+  # rubocop:disable Rails/InverseOf
+  belongs_to :user
+  belongs_to :service_provider,
+             foreign_key: 'issuer',
+             primary_key: 'issuer'
+  # rubocop:enable Rails/InverseOf
+
   def self.increment(user_id, issuer, ial)
     # The following sql offers superior db performance with one write and no locking overhead
     sql = <<~SQL
