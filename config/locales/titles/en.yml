@@ -39,6 +39,7 @@ en:
     registrations:
       new: Create your account
     revoke_consent: Revoke Consent
+    rules_of_use: Rules of Use
     sign_up:
       completion_html: You’ve %{accent} with %{app}
       confirmation: Continue to sign in

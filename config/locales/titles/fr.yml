@@ -39,6 +39,7 @@ fr:
     registrations:
       new: S’inscrire et créer un compte
     revoke_consent: Révoquer le consentement
+    rules_of_use: Règles d’utilisation
     sign_up:
       completion_html: Vous avez %{accent} avec %{app}
       confirmation: Continuer à vous connecter

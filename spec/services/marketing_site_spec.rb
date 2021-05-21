@@ -31,6 +31,22 @@ RSpec.describe MarketingSite do
     end
   end
 
+  describe '.rules_of_use_url' do
+    it 'points to the rules of use page' do
+      expect(MarketingSite.rules_of_use_url).
+          to eq('https://www.login.gov/policy/rules-of-use/')
+    end
+
+    context 'when the user has set their locale to :es' do
+      before { I18n.locale = :es }
+
+      it 'points to the rules of use page with the locale appended' do
+        expect(MarketingSite.rules_of_use_url).
+            to eq('https://www.login.gov/es/policy/rules-of-use/')
+      end
+    end
+  end
+
   describe '.messaging_practices_url' do
     it 'points to messaging practices section of the privacy page' do
       expect(MarketingSite.messaging_practices_url).

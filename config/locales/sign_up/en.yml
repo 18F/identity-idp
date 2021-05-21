@@ -11,3 +11,4 @@ en:
         includes an @ and a domain name.'
       invalid_email_alert_inline: Enter a real email address
       invalid_request: The email form is invalid
+    terms: Check this box to accept the login.gov

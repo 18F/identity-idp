@@ -40,6 +40,7 @@ es:
     registrations:
       new: Crea tu cuenta
     revoke_consent: Revocar consentimiento
+    rules_of_use: Reglas de uso
     sign_up:
       completion_html: Tiene %{accent} con %{app}
       confirmation: Continuar para iniciar sesión

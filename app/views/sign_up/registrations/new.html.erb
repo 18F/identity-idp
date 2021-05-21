@@ -43,7 +43,10 @@
     <div class="margin-bottom-3">
       <%= f.check_box :terms_accepted, { class: 'usa-checkbox__input',
                                          required: true, aria: { invalid: false } }, true, false %>
-      <label for="user_terms_accepted" class="usa-checkbox__label"><%= t('account.terms') %></label>
+      <label for="user_terms_accepted" class="usa-checkbox__label">
+        <%= t('sign_up.terms') %>
+        <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
+      </label>
       <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
         <%= t('sign_up.agree_to_rules_of_use_and_continue') %>
       </div>
@@ -58,8 +61,14 @@
 <%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
 
 <p class='margin-top-2'>
-   <%= new_window_link_to(t('notices.privacy.security_and_privacy_practices'),
-                          MarketingSite.security_and_privacy_practices_url) %>
+  <%= new_window_link_to(t('notices.privacy.security_and_privacy_practices'),
+                         MarketingSite.security_and_privacy_practices_url) %>
 </p>
+
+<p>
+  <%= new_window_link_to(t('notices.privacy.privacy_act_statement'),
+                         MarketingSite.privacy_act_statement_url) %>
+</p>
+
 
 <%= javascript_packs_tag_once 'email-validation', 'accept-terms-button' %>

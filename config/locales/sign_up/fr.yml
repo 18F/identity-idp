@@ -11,3 +11,4 @@ fr:
         Assurez-vous qu’il comprend un @ et un nom de domaine.'
       invalid_email_alert_inline: Entrez une adresse email réelle
       invalid_request: Le formulaire email est invalide
+    terms: Cochez cette case pour accepter les règles d’utilisation de login.gov
