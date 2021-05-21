@@ -37,8 +37,9 @@ en:
     present_webauthn: Connect your hardware security key
     reactivate_account: Reactivate your account
     registrations:
-      new: Sign up for an account
+      new: Create your account
     revoke_consent: Revoke Consent
+    rules_of_use: Rules of Use
     sign_up:
       completion_html: You’ve %{accent} with %{app}
       confirmation: Continue to sign in

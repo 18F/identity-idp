@@ -88,8 +88,8 @@ en:
       submit: Add PIV/CAC card
     registration:
       labels:
-        email: Email address
-        email_language: Select email language preference
+        email: Enter your email address
+        email_language: Select your email language preference
     ssn:
       show: Show Social Security Number
     totp_delete:

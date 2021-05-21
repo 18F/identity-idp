@@ -37,7 +37,7 @@ module SignUp
     end
 
     def permitted_params
-      params.require(:user).permit(:email, :email_language, :request_id)
+      params.require(:user).permit(:email, :email_language, :request_id, :terms_accepted)
     end
 
     def process_successful_creation

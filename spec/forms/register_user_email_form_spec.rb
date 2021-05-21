@@ -23,7 +23,7 @@ describe RegisterUserEmailForm do
           domain_name: 'gmail.com',
         }
 
-        expect(subject.submit(email: 'TAKEN@gmail.com').to_h).to eq(
+        expect(subject.submit(email: 'TAKEN@gmail.com', terms_accepted: 'true').to_h).to eq(
           success: true,
           errors: {},
           **extra,
@@ -36,7 +36,7 @@ describe RegisterUserEmailForm do
         existing_user = create(:user, :signed_up, email: 'taken@example.com')
 
         (IdentityConfig.store.reg_confirmed_email_max_attempts + 1).times do
-          subject.submit(email: 'TAKEN@example.com')
+          subject.submit(email: 'TAKEN@example.com', terms_accepted: 'true')
         end
 
         expect(analytics).to have_logged_event(
@@ -64,7 +64,7 @@ describe RegisterUserEmailForm do
           domain_name: 'test.com',
         }
 
-        expect(subject.submit(email: user.email).to_h).to eq(
+        expect(subject.submit(email: user.email, terms_accepted: 'true').to_h).to eq(
           success: true,
           errors: {},
           **extra,
@@ -74,7 +74,7 @@ describe RegisterUserEmailForm do
       it 'creates throttle events after reaching throttle limit' do
         user = create(:user, email: 'test@example.com', confirmed_at: nil, uuid: '123')
         (IdentityConfig.store.reg_unconfirmed_email_max_attempts + 1).times do
-          subject.submit(email: 'test@example.com')
+          subject.submit(email: 'test@example.com', terms_accepted: 'true')
         end
 
         expect(analytics).to have_logged_event(
@@ -94,7 +94,7 @@ describe RegisterUserEmailForm do
         expect(SendSignUpEmailConfirmation).to receive(:new).
           and_return(send_sign_up_email_confirmation)
 
-        result = subject.submit(email: email_address.email)
+        result = subject.submit(email: email_address.email, terms_accepted: 'true')
         uuid = result.extra[:user_id]
         new_user = User.find_by(uuid: uuid)
 
@@ -106,7 +106,7 @@ describe RegisterUserEmailForm do
 
     context 'when email is not already taken' do
       it 'is valid' do
-        submit_form = subject.submit(email: 'not_taken@gmail.com')
+        submit_form = subject.submit(email: 'not_taken@gmail.com', terms_accepted: 'true')
         extra = {
           email_already_exists: false,
           throttled: false,
@@ -124,7 +124,9 @@ describe RegisterUserEmailForm do
       it 'saves the user email_language for a valid form' do
         form = RegisterUserEmailForm.new(analytics: analytics)
 
-        response = form.submit(email: 'not_taken@gmail.com', email_language: 'fr')
+        response = form.submit(
+          email: 'not_taken@gmail.com', email_language: 'fr', terms_accepted: 'true',
+        )
         expect(response).to be_success
 
         expect(User.find_with_email('not_taken@gmail.com').email_language).to eq('fr')
@@ -142,7 +144,7 @@ describe RegisterUserEmailForm do
           domain_name: 'invalid_email',
         }
 
-        expect(subject.submit(email: 'invalid_email').to_h).to include(
+        expect(subject.submit(email: 'invalid_email', terms_accepted: 'true').to_h).to include(
           success: false,
           errors: errors,
           error_details: hash_including(*errors.keys),
@@ -154,7 +156,11 @@ describe RegisterUserEmailForm do
     context 'when request_id is invalid' do
       it 'returns unsuccessful and adds an error to the form object' do
         errors = { email: [t('sign_up.email.invalid_request')] }
-        submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: 'fake_id')
+        submit_form = subject.submit(
+          email: 'not_taken@gmail.com',
+          request_id: 'fake_id',
+          terms_accepted: 'true',
+        )
         extra = {
           domain_name: 'gmail.com',
           email_already_exists: false,
@@ -180,7 +186,11 @@ describe RegisterUserEmailForm do
           uuid: SecureRandom.uuid,
         )
         request_id = sp_request.uuid
-        submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: request_id)
+        submit_form = subject.submit(
+          email: 'not_taken@gmail.com',
+          request_id: request_id,
+          terms_accepted: 'true',
+        )
         extra = {
           domain_name: 'gmail.com',
           email_already_exists: false,
@@ -198,7 +208,11 @@ describe RegisterUserEmailForm do
 
     context 'when request_id is blank' do
       it 'returns success with no errors' do
-        submit_form = subject.submit(email: 'not_taken@gmail.com', request_id: nil)
+        submit_form = subject.submit(
+          email: 'not_taken@gmail.com',
+          request_id: nil,
+          terms_accepted: 'true',
+        )
         extra = {
           domain_name: 'gmail.com',
           email_already_exists: false,
@@ -211,6 +225,23 @@ describe RegisterUserEmailForm do
           errors: {},
           **extra,
         )
+      end
+    end
+
+    context 'when user does not agree to terms' do
+      it 'returns failure with errors' do
+        errors = { terms_accepted: [t('errors.registration.terms')] }
+        extra = {
+          domain_name: 'gmail.com',
+          email_already_exists: false,
+          throttled: false,
+          user_id: 'anonymous-uuid',
+        }
+
+        submit_form = subject.submit(email: 'not_taken@gmail.com')
+        expect(submit_form.success?).to eq false
+        expect(submit_form.extra).to eq extra
+        expect(submit_form.errors).to eq errors
       end
     end
   end

@@ -6,7 +6,8 @@ module Features
 
     def sign_up_with(email)
       visit sign_up_email_path
-      fill_in 'Email', with: email
+      check t('sign_up.terms'), allow_label_click: true
+      fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
 
@@ -442,12 +443,14 @@ module Features
     end
 
     def submit_form_with_invalid_email
-      fill_in 'Email', with: 'invalidemail'
+      check t('sign_up.terms')
+      fill_in t('forms.registration.labels.email'), with: 'invalidemail'
       click_button t('forms.buttons.submit.default')
     end
 
     def submit_form_with_valid_but_wrong_email
-      fill_in 'Email', with: 'test@example.com'
+      check t('sign_up.terms')
+      fill_in t('forms.registration.labels.email'), with: 'test@example.com'
       click_button t('forms.buttons.submit.default')
     end
 
@@ -456,7 +459,8 @@ module Features
     end
 
     def submit_form_with_valid_email(email = 'test@test.com')
-      fill_in t('account.index.email'), with: email
+      check t('sign_up.terms'), allow_label_click: true
+      fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
 
@@ -471,7 +475,7 @@ module Features
     end
 
     def submit_resend_email_confirmation_form_with_correct_email(email)
-      fill_in 'Email', with: email
+      fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.resend_confirmation')
     end
 

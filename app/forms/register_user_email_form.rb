@@ -4,8 +4,9 @@ class RegisterUserEmailForm
   include FormEmailValidator
 
   validate :service_provider_request_exists
+  validate :validate_terms_accepted
 
-  attr_reader :email_address
+  attr_reader :email_address, :terms_accepted
   attr_accessor :email_language
   attr_accessor :password_reset_requested
 
@@ -31,7 +32,14 @@ class RegisterUserEmailForm
     'true'
   end
 
+  def validate_terms_accepted
+    return if @terms_accepted || !IdentityConfig.store.rules_of_use_enabled
+
+    errors.add(:terms_accepted, t('errors.registration.terms'))
+  end
+
   def submit(params, instructions = nil)
+    @terms_accepted = params[:terms_accepted] == 'true'
     build_user_and_email_address_with_email(
       email: params[:email],
       email_language: params[:email_language],
@@ -91,7 +99,9 @@ class RegisterUserEmailForm
 
   def process_successful_submission(request_id, instructions)
     self.success = true
-    user.save!
+    if IdentityConfig.store.rules_of_use_enabled
+      UpdateUser.new(user: user, attributes: { accepted_terms_at: Time.zone.now }).call
+    end
     Funnel::Registration::Create.call(user.id)
     SendSignUpEmailConfirmation.new(user).call(
       request_id: request_id,

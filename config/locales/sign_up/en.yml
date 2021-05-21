@@ -2,6 +2,7 @@
 en:
   sign_up:
     agree_and_continue: Agree and continue
+    agree_to_rules_of_use_and_continue: Please check this box to continue
     cancel:
       success: Your account has been deleted. We did not save your information.
       warning_header: 'If you cancel now:'
@@ -10,3 +11,4 @@ en:
         includes an @ and a domain name.'
       invalid_email_alert_inline: Enter a real email address
       invalid_request: The email form is invalid
+    terms: Check this box to accept the login.gov

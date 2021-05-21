@@ -2,6 +2,7 @@
 fr:
   sign_up:
     agree_and_continue: Acceptez et continuez
+    agree_to_rules_of_use_and_continue: Veuillez cocher cette case pour continuer
     cancel:
       success: Le dossier contenant votre information a été effacé
       warning_header: 'Si vous annulez maintenant:'
@@ -10,3 +11,4 @@ fr:
         Assurez-vous qu’il comprend un @ et un nom de domaine.'
       invalid_email_alert_inline: Entrez une adresse email réelle
       invalid_request: Le formulaire email est invalide
+    terms: Cochez cette case pour accepter les règles d’utilisation de login.gov

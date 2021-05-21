@@ -2,6 +2,7 @@
 es:
   sign_up:
     agree_and_continue: Aceptar y continuar
+    agree_to_rules_of_use_and_continue: Marque esta casilla para continuar
     cancel:
       success: Su cuenta ha sido eliminada. No guardamos su información.
       warning_header: 'Si cancela ahora:'
@@ -10,3 +11,4 @@ es:
         real. Asegúrese de que incluye una @ y un nombre de dominio.'
       invalid_email_alert_inline: Ingrese una dirección de correo electrónico real
       invalid_request: El formulario de correo electrónico no es válido
+    terms: Marque esta casilla para aceptar las reglas de uso de login.gov

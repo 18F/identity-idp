@@ -100,6 +100,9 @@ en:
       weak_password: Your password is not strong enough. %{feedback}
     piv_cac_setup:
       unique_name: That name is already taken. Please choose a different name.
+    registration:
+      terms: Before you can continue, you must give us permission. Please check the
+        box below and then click continue.
     two_factor_auth_setup:
       must_select_option: Select an authentication method.
     verify_personal_key:
