@@ -13,4 +13,16 @@ RSpec.describe Agreements::IaaStatus, type: :model do
     it { is_expected.to have_many(:iaa_gtcs).dependent(:restrict_with_exception) }
     it { is_expected.to have_many(:iaa_orders).dependent(:restrict_with_exception) }
   end
+
+  describe '#partner_name' do
+    it 'returns the partner_name if set' do
+      status = build(:iaa_status, name: 'foo', partner_name: 'bar')
+      expect(status.partner_name).to eq('bar')
+    end
+
+    it 'returns the name if no partner_name is set' do
+      status = build(:iaa_status, name: 'foo', partner_name: nil)
+      expect(status.partner_name).to eq('foo')
+    end
+  end
 end

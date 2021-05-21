@@ -67,12 +67,10 @@ class AttributeAsserter
   end
 
   def add_bundle(attrs)
-    phone_format_opt_out = IdentityConfig.store.phone_format_e164_opt_out_list
-
     bundle.each do |attr|
       next unless VALID_ATTRIBUTES.include? attr
       getter = ascii? ? attribute_getter_function_ascii(attr) : attribute_getter_function(attr)
-      if attr == :phone && !phone_format_opt_out.include?(service_provider.issuer)
+      if attr == :phone
         getter = wrap_with_phone_formatter(getter)
       elsif attr == :zipcode
         getter = wrap_with_zipcode_formatter(getter)

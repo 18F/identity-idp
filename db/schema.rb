@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 2021_05_20_181258) do
     t.string "last_ip", limit: 255, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cookie_uuid"], name: "index_devices_on_cookie_uuid"
     t.index ["user_id", "cookie_uuid"], name: "index_device_user_id_cookie_uuid"
     t.index ["user_id", "last_used_at"], name: "index_device_user_id_last_used_at"
   end
@@ -650,8 +651,6 @@ ActiveRecord::Schema.define(version: 2021_05_20_181258) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "bounced_at"
-    t.datetime "letter_expired_sent_at"
-    t.index ["bounced_at", "letter_expired_sent_at", "created_at"], name: "index_ucc_expired_letters"
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
   end
