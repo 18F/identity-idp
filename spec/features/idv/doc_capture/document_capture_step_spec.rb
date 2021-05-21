@@ -8,9 +8,10 @@ feature 'doc capture document capture step' do
   let(:ial2_step_indicator_enabled) { true }
   let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
   let(:user) { user_with_2fa }
-  let(:liveness_enabled) { false }
+  let(:liveness_enabled) { true }
   let(:sp_requests_ial2_strict) { true }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:sp_name) { 'Test SP' }
   before do
     allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
       and_return(ial2_step_indicator_enabled)
@@ -18,6 +19,8 @@ feature 'doc capture document capture step' do
       and_return(liveness_enabled)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
     if sp_requests_ial2_strict
       visit_idp_from_oidc_sp_with_ial2_strict
     else
@@ -38,8 +41,6 @@ feature 'doc capture document capture step' do
     end
 
     it 'logs events as an anonymous user' do
-      allow(Analytics).to receive(:new).and_return(fake_analytics)
-      expect(Analytics).to receive(:new).with(hash_including(user: instance_of(AnonymousUser)))
       visit request_uri
 
       expect(fake_analytics).to have_logged_event(
@@ -51,15 +52,25 @@ feature 'doc capture document capture step' do
 
   context 'valid session' do
     it 'logs events as the inherited user' do
-      allow(Analytics).to receive(:new).and_return(fake_analytics)
-      expect(Analytics).to receive(:new).with(hash_including(user: user))
       complete_doc_capture_steps_before_first_step(user)
-
       expect(fake_analytics).to have_logged_event(
         Analytics::DOC_AUTH + ' visited',
         step: 'document_capture',
         flow_path: 'hybrid',
       )
+    end
+
+    context 'when javascript is enabled', :js do
+      it 'logs return to sp link click' do
+        complete_doc_capture_steps_before_first_step(user)
+        click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
+
+        expect(fake_analytics).to have_logged_event(
+          Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+          step: 'document_capture',
+          location: 'documents_having_trouble',
+        )
+      end
     end
   end
 
@@ -154,9 +165,6 @@ feature 'doc capture document capture step' do
     end
 
     it 'proceeds to the next page with valid info and logs analytics info' do
-      allow(Analytics).to receive(:new).and_return(fake_analytics)
-      expect(Analytics).to receive(:new).with(hash_including(user: user))
-
       attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
@@ -184,7 +192,6 @@ feature 'doc capture document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
@@ -271,7 +278,6 @@ feature 'doc capture document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
         response: IdentityDocAuth::Response.new(
