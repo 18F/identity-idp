@@ -67,6 +67,7 @@ class SamlIdpController < ApplicationController
 
   def capture_analytics
     analytics_payload = @result.to_h.merge(
+      endpoint: request.env['PATH_INFO'],
       idv: identity_needs_verification?,
       finish_profile: profile_needs_verification?,
     )
