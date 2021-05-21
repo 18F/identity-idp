@@ -25,7 +25,10 @@ describe Idv::Agent do
               zipcode: '11111' },
           )
           agent.proof_resolution(
-            document_capture_session, should_proof_state_id: true, trace_id: trace_id, document_expired: document_expired
+            document_capture_session,
+            should_proof_state_id: true,
+            trace_id: trace_id,
+            document_expired: document_expired,
           )
 
           result = document_capture_session.load_proofing_result.result

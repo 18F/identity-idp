@@ -46,10 +46,12 @@ class ExpiredLicenseAllower
   end
 
   def allowable_expired_license?
-    only_error_was_document_expired? &&
-      response.pii_from_doc[:state_id_expiration] &&
-      (state_id_expiration = Date.parse(response.pii_from_doc[:state_id_expiration])) &&
-      state_id_expiration >= IdentityConfig.store.proofing_expired_license_after
+    !!(
+      only_error_was_document_expired? &&
+        response.pii_from_doc[:state_id_expiration] &&
+        (state_id_expiration = Date.parse(response.pii_from_doc[:state_id_expiration])) &&
+        state_id_expiration >= IdentityConfig.store.proofing_expired_license_after
+    )
   end
 
   def reproof_at

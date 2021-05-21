@@ -78,6 +78,7 @@ feature 'doc auth document capture step' do
         flow_path: 'standard',
         result: 'Passed',
         billed: true,
+        document_expired: false,
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
@@ -85,6 +86,7 @@ feature 'doc auth document capture step' do
         flow_path: 'standard',
         result: 'Passed',
         billed: true,
+        document_expired: false,
       )
       expect_costing_for_document
     end
@@ -286,6 +288,67 @@ feature 'doc auth document capture step' do
       attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
+    end
+  end
+
+  context 'when the only error is an expired drivers license' do
+    before do
+      allow(IdentityConfig.store).to receive(:proofing_allow_expired_license).
+        and_return(proofing_allow_expired_license)
+      allow(IdentityConfig.store).to receive(:proofing_expired_license_after).
+        and_return(Date.new(2020, 3, 1))
+
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
+
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_images,
+        response: IdentityDocAuth::Response.new(
+          pii_from_doc: IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+            state_id_expiration: '04/01/2020',
+          ),
+          extra: {
+            billed: true,
+          },
+          success: true,
+          errors: {
+            id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
+          },
+        )
+      )
+    end
+
+    context 'when expired licenses are not allowed' do
+      let(:proofing_allow_expired_license) { false }
+
+      it 'shows an error and does not go to the next page' do
+        attach_and_submit_images
+        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+
+        expect(fake_analytics).to have_logged_event(
+          Analytics::DOC_AUTH + ' submitted',
+          document_expired: true,
+          would_have_passed: true,
+        )
+      end
+    end
+
+    context 'when expired licenses are allowed' do
+      let(:proofing_allow_expired_license) { true }
+
+      it 'proceeds to the next page and adds expired_document in the session' do
+        attach_and_submit_images
+        expect(page).to have_current_path(next_step)
+
+        # session_data = page.get_rack_session
+        # expect(session_data.dig('warden.user.user.session', 'idv/doc_auth', 'document_expired')).
+        #   to eq(true)
+
+        expect(fake_analytics).to have_logged_event(
+          Analytics::DOC_AUTH + ' submitted',
+          document_expired: true,
+        )
+      end
     end
   end
 

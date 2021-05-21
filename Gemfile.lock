@@ -13,8 +13,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: 346caf261f6661f92521ea481fe61cbeda9f7c7e
-  branch: margolis-separate-expiration-errors
+  revision: 204ca459221bd9e0a42c2cc51041adc90940de9b
+  tag: v0.9.0
   specs:
     identity-doc-auth (0.9.0)
       activesupport
