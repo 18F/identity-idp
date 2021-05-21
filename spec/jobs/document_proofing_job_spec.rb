@@ -146,7 +146,7 @@ RSpec.describe DocumentProofingJob, type: :job do
     end
 
     context 'with an unsuccessful response from the proofer' do
-      let(:doc_auth_client) { IdentityDocAuth::Acuant::AcuantClient }
+      let(:doc_auth_client) { instance_double(IdentityDocAuth::Acuant::AcuantClient) }
 
       before do
         allow(instance).to receive(:doc_auth_client).and_return(doc_auth_client)
@@ -161,6 +161,39 @@ RSpec.describe DocumentProofingJob, type: :job do
         result = document_capture_session.load_doc_auth_async_result
 
         expect(result.result[:success]).to eq(false)
+      end
+    end
+
+    context 'with an expired license response from the proofer' do
+      before do
+        allow(IdentityConfig.store).to receive(:proofing_allow_expired_license).and_return(true)
+        allow(IdentityConfig.store).to receive(:proofing_expired_license_after).
+          and_return(Date.new(2020, 3, 1))
+        allow(IdentityConfig.store).to receive(:proofing_expired_license_reproof_at).
+          and_return(Date.new(2025, 3, 1))
+
+        IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_images,
+          response: IdentityDocAuth::Response.new(
+            success: false,
+            pii_from_doc: IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+              state_id_expiration: '04/01/2020',
+            ),
+            errors: {
+              id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
+            },
+          ),
+        )
+      end
+
+      it 'records the document expired status in the result' do
+        perform
+
+        result = document_capture_session.load_doc_auth_async_result
+
+        expect(result.result[:success]).to eq(true)
+        expect(result.result[:document_expired]).to eq(true)
+        expect(result.result[:reproof_at]).to eq('2025-03-01')
       end
     end
 
