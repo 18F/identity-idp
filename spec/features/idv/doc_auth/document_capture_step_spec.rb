@@ -307,10 +307,7 @@ feature 'doc auth document capture step' do
           pii_from_doc: IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
             state_id_expiration: '04/01/2020',
           ),
-          extra: {
-            billed: true,
-          },
-          success: true,
+          success: false,
           errors: {
             id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
           },
