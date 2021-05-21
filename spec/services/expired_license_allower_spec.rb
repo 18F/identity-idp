@@ -4,7 +4,7 @@ RSpec.describe ExpiredLicenseAllower do
   subject(:allower) { ExpiredLicenseAllower.new(response) }
 
   let(:proofing_allow_expired_license) { false }
-  let(:proofing_expired_license_after) { Date.today }
+  let(:proofing_expired_license_after) { Date.new(2021, 3, 1) }
 
   let(:response) { IdentityDocAuth::Response.new }
 
@@ -26,19 +26,26 @@ RSpec.describe ExpiredLicenseAllower do
       end
     end
 
-    context 'for a response that has multiple errors' do
+    context 'for a response that has DOCUMENT_EXPIRED_CHECK and other errors' do
       let(:response) do
         IdentityDocAuth::Response.new(
           success: false,
           errors: {
-            id: [IdentityDocAuth::Errors::EXPIRATION_CHECKS],
+            id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK, IdentityDocAuth::Errors::EXPIRATION_CHECKS],
             front: [IdentityDocAuth::Errors::VISIBLE_PHOTO_CHECK],
           }
         )
       end
 
-      it 'does not change the response' do
-        expect(processed_response).to eq(response)
+      it 'does not change the response success' do
+        expect(processed_response.success?).to eq(response.success?)
+      end
+
+      it 'adds document_expired and would_have_passed' do
+        expect(processed_response.extra).to include(
+          document_expired: true,
+          would_have_passed: false,
+        )
       end
     end
 
@@ -61,8 +68,8 @@ RSpec.describe ExpiredLicenseAllower do
         context 'when the response PII does not have state_id_expiration' do
           let(:pii_from_doc) { {} }
 
-          it 'does not change the response' do
-            expect(processed_response).to eq(response)
+          it 'does not change the success' do
+            expect(processed_response.success?).to eq(false)
           end
         end
 
@@ -72,8 +79,8 @@ RSpec.describe ExpiredLicenseAllower do
           context 'when the state_id_expiration is before proofing_expired_license_after' do
             let(:pii_from_doc) { { state_id_expiration: '01/01/2021' } }
 
-            it 'does not change the response' do
-              expect(processed_response).to eq(response)
+            it 'does not change the success' do
+              expect(processed_response.success?).to eq(false)
             end
           end
 
@@ -84,8 +91,12 @@ RSpec.describe ExpiredLicenseAllower do
               expect(processed_response).to_not eq(response)
 
               expect(processed_response.success?).to eq(true)
-              expect(processed_response.extra[:expired_document]).to eq(true)
+              expect(processed_response.extra[:document_expired]).to eq(true)
               expect(processed_response.extra[:reproof_at]).to eq('2023-03-01')
+            end
+
+            it 'overrides the errors to be blank' do
+              expect(processed_response.errors).to eq({})
             end
           end
         end
@@ -94,8 +105,30 @@ RSpec.describe ExpiredLicenseAllower do
       context 'when proofing_allow_expired_license is false' do
         let(:proofing_allow_expired_license) { false }
 
-        it 'does not change the response' do
-          expect(processed_response).to eq(response)
+        it 'does not change the success' do
+          expect(processed_response.success?).to eq(false)
+        end
+
+        context 'when the state_id_expiration is before proofing_expired_license_after' do
+          let(:pii_from_doc) { { state_id_expiration: '01/01/2021' } }
+
+          it 'has would_have_passed false' do
+            expect(processed_response.extra).to include(
+              document_expired: true,
+              would_have_passed: false,
+            )
+          end
+        end
+
+        context 'when the state_id_expiration is after proofing_expired_license_after' do
+          let(:pii_from_doc) { { state_id_expiration: '04/01/2021' } }
+
+          it 'has would_have_passed true' do
+            expect(processed_response.extra).to include(
+              document_expired: true,
+              would_have_passed: true,
+            )
+          end
         end
       end
     end
