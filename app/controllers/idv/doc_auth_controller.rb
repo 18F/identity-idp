@@ -20,10 +20,7 @@ module Idv
     }.freeze
 
     def return_to_sp
-      redirect_to return_to_sp_failure_to_proof_url(
-        step: next_step,
-        **params.permit(:location).to_h.symbolize_keys,
-      )
+      redirect_to return_to_sp_failure_to_proof_url(step: next_step, location: params[:location])
     end
 
     def redirect_if_mail_bounced
