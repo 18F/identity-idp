@@ -30,8 +30,6 @@ class ExpiredLicenseAllower
   end
 
   def allow_expired_license?
-    # binding.pry
-
     IdentityConfig.store.proofing_allow_expired_license &&
       only_error_expired? &&
       response.pii_from_doc[:state_id_expiration] &&
