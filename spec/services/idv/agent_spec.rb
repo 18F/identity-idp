@@ -13,6 +13,7 @@ describe Idv::Agent do
     let(:trace_id) { SecureRandom.uuid }
 
     let(:agent) { Idv::Agent.new(applicant) }
+    let(:document_expired) { false }
 
     describe '#proof_resolution' do
       let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
@@ -24,7 +25,7 @@ describe Idv::Agent do
               zipcode: '11111' },
           )
           agent.proof_resolution(
-            document_capture_session, should_proof_state_id: true, trace_id: trace_id
+            document_capture_session, should_proof_state_id: true, trace_id: trace_id, document_expired: document_expired
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -42,7 +43,10 @@ describe Idv::Agent do
             state_id_jurisdiction: 'MD',
           )
           agent.proof_resolution(
-            document_capture_session, should_proof_state_id: true, trace_id: trace_id
+            document_capture_session,
+            should_proof_state_id: true,
+            trace_id: trace_id,
+            document_expired: document_expired,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages][:state_id]).to include(
@@ -59,7 +63,10 @@ describe Idv::Agent do
               zipcode: '11111' },
           )
           agent.proof_resolution(
-            document_capture_session, should_proof_state_id: true, trace_id: trace_id
+            document_capture_session,
+            should_proof_state_id: true,
+            trace_id: trace_id,
+            document_expired: document_expired,
           )
           result = document_capture_session.load_proofing_result.result
           expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
@@ -72,7 +79,10 @@ describe Idv::Agent do
               zipcode: '11111' },
           )
           agent.proof_resolution(
-            document_capture_session, should_proof_state_id: false, trace_id: trace_id
+            document_capture_session,
+            should_proof_state_id: false,
+            trace_id: trace_id,
+            document_expired: document_expired,
           )
 
           result = document_capture_session.load_proofing_result.result
@@ -90,7 +100,10 @@ describe Idv::Agent do
         )
 
         agent.proof_resolution(
-          document_capture_session, should_proof_state_id: true, trace_id: trace_id
+          document_capture_session,
+          should_proof_state_id: true,
+          trace_id: trace_id,
+          document_expired: document_expired,
         )
         result = document_capture_session.load_proofing_result.result
 

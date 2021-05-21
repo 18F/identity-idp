@@ -16,6 +16,7 @@ describe Idv::ConfirmationsController do
       applicant: applicant,
       user: user,
       user_password: password,
+      reproof_at: nil,
     )
     profile = profile_maker.save_profile
     idv_session.pii = profile_maker.pii_attributes

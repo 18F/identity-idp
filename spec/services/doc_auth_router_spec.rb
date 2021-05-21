@@ -186,7 +186,7 @@ RSpec.describe DocAuthRouter do
       )
     end
 
-    context 'expiration errors' do
+    context 'when the errors include DOCUMENT_EXPIRED' do
       context 'when there are multiple errors' do
         before do
           IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
@@ -204,30 +204,10 @@ RSpec.describe DocAuthRouter do
           )
         end
 
-        it 'does not set extra[:only_error_expired]' do
+        it 'sets extra[:document_expired]' do
           response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
 
-          expect(response.extra).to_not have_key(:only_error_expired)
-        end
-      end
-
-      context 'when the only error is id: DOCUMENT_EXPIRED' do
-        before do
-          IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
-            method: :post_images,
-            response: IdentityDocAuth::Response.new(
-              success: false,
-              errors: {
-                id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
-              },
-            ),
-          )
-        end
-
-        it 'sets extra[:only_error_expired] = true' do
-          response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
-
-          expect(response.extra[:only_error_expired]).to eq(true)
+          expect(response.extra[:document_expired]).to eq(true)
         end
       end
     end
