@@ -19,7 +19,7 @@
                                          required: true, aria: { invalid: false } }, true, false %>
       <label for="user_terms_accepted" class="usa-checkbox__label">
         <%= t('users.rules_of_use.check_box_to_accept') %>
-        <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.security_and_privacy_practices_url) %>
+        <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
       </label>
       <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
         <%= t('errors.rules_of_use') %>
