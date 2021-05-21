@@ -31,6 +31,11 @@ RSpec.describe Agreements::IaaBlueprint do
     Agreements::Iaa.new(
       gtc: gtc,
       order: order,
+      ial2_users: 10,
+      authentications: {
+        'issuer1' => 100,
+        'issuer2' => 1_000,
+      },
     )
   end
   let(:expected) do
@@ -51,6 +56,11 @@ RSpec.describe Agreements::IaaBlueprint do
           order_end_date: '2021-12-31',
           order_estimated_amount: '20000.53',
           order_status: 'active',
+          ial2_users: 10,
+          authentications: {
+            'issuer1' => 100,
+            'issuer2' => 1_000,
+          },
         },
       ],
     }.to_json

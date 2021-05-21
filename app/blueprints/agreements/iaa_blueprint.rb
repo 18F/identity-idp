@@ -15,5 +15,7 @@ module Agreements
     field :order_end_date, datetime_format: '%Y-%m-%d'
     field :order_estimated_amount
     field :order_status
+    field :ial2_users
+    field :authentications
   end
 end

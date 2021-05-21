@@ -3,7 +3,11 @@ module Agreements
     class IaasByAgency
       def self.call
         IaaGtc.
-          includes(:iaa_status, partner_account: :agency, iaa_orders: :iaa_status).
+          includes(
+            :iaa_status,
+            partner_account: :agency,
+            iaa_orders: %i[iaa_status integrations],
+          ).
           group_by { |gtc| gtc.partner_account.agency.abbreviation }.
           transform_values do |gtcs|
             gtcs.map do |gtc|
