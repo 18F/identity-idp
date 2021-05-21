@@ -337,14 +337,29 @@ feature 'doc auth document capture step' do
         attach_and_submit_images
         expect(page).to have_current_path(next_step)
 
-        # session_data = page.get_rack_session
-        # expect(session_data.dig('warden.user.user.session', 'idv/doc_auth', 'document_expired')).
-        #   to eq(true)
-
         expect(fake_analytics).to have_logged_event(
           Analytics::DOC_AUTH + ' submitted',
           document_expired: true,
         )
+
+        # finish the rest of the flow so we can make sure the data is plumbed through
+        fill_out_ssn_form_ok
+        click_idv_continue
+
+        expect(page).to have_content(t('doc_auth.headings.verify'))
+        click_idv_continue
+
+        fill_out_phone_form_mfa_phone(user)
+        click_idv_continue
+
+        fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+        click_idv_continue
+
+        acknowledge_and_confirm_personal_key(js: false)
+
+        profile = user.active_profile
+        expect(profile.reproof_at.to_date).
+          to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
       end
     end
   end

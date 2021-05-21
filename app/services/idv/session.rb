@@ -142,8 +142,15 @@ module Idv
         applicant: applicant,
         user: current_user,
         user_password: user_password,
-        reproof_at: reproof_at ? Time.zone.parse(reproof_at) : nil,
+        reproof_at: reproof_at,
       )
+    end
+
+    # @return [Date,nil]
+    def reproof_at
+      date_str = user_session.dig('idv/doc_auth', :reproof_at)
+
+      Date.parse(date_str) if date_str
     end
   end
 end

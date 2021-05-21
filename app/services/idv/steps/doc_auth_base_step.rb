@@ -52,6 +52,7 @@ module Idv
         )
         if response.respond_to?(:extra)
           flow_session[:document_expired] = response.extra&.dig(:document_expired)
+          flow_session[:reproof_at] = response.extra&.dig(:reproof_at)
         end
       end
 
