@@ -31,9 +31,12 @@ RSpec.describe ExpiredLicenseAllower do
         IdentityDocAuth::Response.new(
           success: false,
           errors: {
-            id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK, IdentityDocAuth::Errors::EXPIRATION_CHECKS],
+            id: [
+              IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK,
+              IdentityDocAuth::Errors::EXPIRATION_CHECKS,
+            ],
             front: [IdentityDocAuth::Errors::VISIBLE_PHOTO_CHECK],
-          }
+          },
         )
       end
 

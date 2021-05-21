@@ -4,7 +4,12 @@ module Idv
       @applicant = applicant.symbolize_keys
     end
 
-    def proof_resolution(document_capture_session, should_proof_state_id:, trace_id:, expired_document:)
+    def proof_resolution(
+      document_capture_session,
+      should_proof_state_id:,
+      trace_id:,
+      expired_document:
+    )
       document_capture_session.create_proofing_session
 
       encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(

@@ -26,9 +26,9 @@ class ExpiredLicenseAllower
             success: true, # merge uses "&&" to combine success, so this does not override
             extra: {
               document_expired: document_expired?,
-              would_have_passed: allowable_expired_license?
+              would_have_passed: allowable_expired_license?,
             },
-          )
+          ),
         )
       end
     else
