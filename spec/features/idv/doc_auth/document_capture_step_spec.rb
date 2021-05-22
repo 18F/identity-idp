@@ -368,7 +368,9 @@ feature 'doc auth document capture step' do
     before do
       allow(DocumentProofingJob).to receive(:perform_later).
         and_call_original
+    end
 
+    it 'proceeds to the next page with valid info' do
       set_up_document_capture_result(
         uuid: DocumentCaptureSession.last.uuid,
         idv_result: {
@@ -389,9 +391,7 @@ feature 'doc auth document capture step' do
           },
         },
       )
-    end
 
-    it 'proceeds to the next page with valid info' do
       attach_file 'Front of your ID', 'app/assets/images/logo.png'
       attach_file 'Back of your ID', 'app/assets/images/logo.png'
 
@@ -431,9 +431,9 @@ feature 'doc auth document capture step' do
     end
 
     context 'when expired licenses are allowed' do
-      let(:proofing_allow_expired_license) { true }
-
       before do
+        allow(IdentityConfig.store).to receive(:proofing_allow_expired_license).and_return(true)
+
         IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_images,
           response: IdentityDocAuth::Response.new(
