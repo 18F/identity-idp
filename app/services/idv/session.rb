@@ -148,7 +148,7 @@ module Idv
 
     # @return [Date,nil]
     def reproof_at
-      date_str = user_session.dig('idv/doc_auth', :reproof_at)
+      date_str = user_session.dig('idv/doc_auth', :reproof_at) # via flow_session[:reproof_at]
 
       Date.parse(date_str) if date_str
     end
