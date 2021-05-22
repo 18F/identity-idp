@@ -59,8 +59,8 @@ module MonitorIdpSteps
     click_on 'Sign in'
 
     if current_path == rules_of_use_path
-      check t('users.rules_of_use.check_box_to_accept'), allow_label_click: true
-      click_button t('forms.buttons.continue')
+      check 'user_terms_accepted', allow_label_click: true
+      click_button 'Continue'
     end
 
     fill_in 'code', with: monitor.check_for_otp
