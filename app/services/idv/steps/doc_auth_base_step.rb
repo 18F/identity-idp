@@ -43,7 +43,9 @@ module Idv
         Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuthRouter.doc_auth_vendor)
       end
 
-      # @param [IdentityDocAuth::Response,DocumentCaptureSessionAsyncResult] response
+      # @param [IdentityDocAuth::Response,
+      #   DocumentCaptureSessionAsyncResult,
+      #   DocumentCaptureSessionResult] response
       def extract_pii_from_doc(response)
         current_user = User.find(user_id)
         flow_session[:pii_from_doc] = response.pii_from_doc.merge(
@@ -54,7 +56,7 @@ module Idv
           # Sync flow: IdentityDocAuth::Response
           flow_session[:document_expired] = response.extra&.dig(:document_expired)
           flow_session[:reproof_at] = response.extra&.dig(:reproof_at)
-        else
+        elsif response.respond_to?(:result)
           # Async flow: DocumentCaptureSessionAsyncResult
           flow_session[:document_expired] = response.result&.dig(:document_expired)
           flow_session[:reproof_at] = response.result&.dig(:reproof_at)
