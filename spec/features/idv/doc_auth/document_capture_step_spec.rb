@@ -78,7 +78,6 @@ feature 'doc auth document capture step' do
         flow_path: 'standard',
         result: 'Passed',
         billed: true,
-        document_expired: false,
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
@@ -86,7 +85,6 @@ feature 'doc auth document capture step' do
         flow_path: 'standard',
         result: 'Passed',
         billed: true,
-        document_expired: false,
       )
       expect_costing_for_document
     end
