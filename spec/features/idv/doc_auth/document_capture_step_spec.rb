@@ -311,7 +311,7 @@ feature 'doc auth document capture step' do
           errors: {
             id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
           },
-        )
+        ),
       )
     end
 
