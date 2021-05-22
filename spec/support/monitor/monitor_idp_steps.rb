@@ -58,7 +58,7 @@ module MonitorIdpSteps
     fill_in 'user_password', with: monitor.config.login_gov_sign_in_password
     click_on 'Sign in'
 
-    if current_path == rules_of_use_path
+    if current_path == '/rules_of_use'
       check 'user_terms_accepted', allow_label_click: true
       click_button 'Continue'
     end
