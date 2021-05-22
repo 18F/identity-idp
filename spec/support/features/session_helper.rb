@@ -17,6 +17,8 @@ module Features
     end
 
     def choose_another_security_option(option)
+      accept_rules_of_use_and_continue_if_displayed
+
       click_link t('two_factor_authentication.login_options_link_text')
 
       expect(current_path).to eq login_two_factor_options_path
@@ -262,7 +264,14 @@ module Features
     end
 
     def fill_in_code_with_last_phone_otp
+      accept_rules_of_use_and_continue_if_displayed
       fill_in :code, with: last_phone_otp
+    end
+
+    def accept_rules_of_use_and_continue_if_displayed
+      return unless current_path == rules_of_use_path
+      check t('users.rules_of_use.check_box_to_accept'), allow_label_click: true
+      click_button t('forms.buttons.continue')
     end
 
     def click_submit_default

@@ -109,7 +109,7 @@ module Users
       create_user_event(:sign_in_before_2fa)
       update_sp_return_logs_with_user(current_user.id)
       update_last_sign_in_at_on_email
-      redirect_to_2fa_or_pending_reset
+      redirect_to next_url_after_valid_authentication
     end
 
     def now
@@ -173,11 +173,13 @@ module Users
       params.fetch(:request_id, '')
     end
 
-    def redirect_to_2fa_or_pending_reset
+    def next_url_after_valid_authentication
       if pending_account_reset_request.present?
-        redirect_to account_reset_pending_url
+        account_reset_pending_url
+      elsif current_user.accepted_rules_of_use?
+        user_two_factor_authentication_url
       else
-        redirect_to user_two_factor_authentication_url
+        rules_of_use_url
       end
     end
 

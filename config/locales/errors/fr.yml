@@ -116,6 +116,7 @@ fr:
     registration:
       terms: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
+    rules_of_use: Veuillez cocher cette case pour continuer
     two_factor_auth_setup:
       must_select_option: Sélectionnez une méthode d’authentification.
     verify_personal_key:
