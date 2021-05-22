@@ -184,7 +184,7 @@ feature 'doc auth verify step' do
       expect(agent).to have_received(:proof_resolution).with(
         anything,
         should_proof_state_id: true,
-        document_expired: false,
+        document_expired: nil,
         trace_id: anything,
       )
     end
@@ -213,7 +213,7 @@ feature 'doc auth verify step' do
       expect(agent).to have_received(:proof_resolution).with(
         anything,
         should_proof_state_id: false,
-        document_expired: false,
+        document_expired: nil,
         trace_id: anything,
       )
     end
@@ -238,7 +238,7 @@ feature 'doc auth verify step' do
       expect(agent).to have_received(:proof_resolution).with(
         anything,
         should_proof_state_id: false,
-        document_expired: false,
+        document_expired: nil,
         trace_id: anything,
       )
     end

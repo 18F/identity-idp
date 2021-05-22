@@ -17,7 +17,6 @@ module Idv
       profile_step_params
       personal_key
       resolution_successful
-      reproof_at
       step_attempts
     ].freeze
 
