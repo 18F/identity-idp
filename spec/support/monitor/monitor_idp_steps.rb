@@ -24,7 +24,7 @@ module MonitorIdpSteps
   # @return [String] email address for the account
   def create_new_account_up_until_password(email_address = random_email_address)
     fill_in 'user_email', with: email_address
-    check t('sign_up.terms')
+    check 'user_terms_accepted', allow_label_click: true
     click_on 'Submit'
     confirmation_link = monitor.check_for_confirmation_link
     visit confirmation_link
