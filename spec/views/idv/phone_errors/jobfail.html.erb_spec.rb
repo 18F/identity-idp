@@ -33,7 +33,7 @@ describe 'idv/phone_errors/jobfail.html.erb' do
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
         t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path,
+        href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'jobfail'),
       )
       expect(rendered).not_to have_link(t('idv.form.activate_by_mail'), href: idv_gpo_path)
     end
@@ -45,7 +45,7 @@ describe 'idv/phone_errors/jobfail.html.erb' do
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
         t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path,
+        href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'jobfail'),
       )
       expect(rendered).to have_link(t('idv.form.activate_by_mail'), href: idv_gpo_path)
     end
