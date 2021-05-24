@@ -1,6 +1,6 @@
 # Needs the "raw" response error codes, which needs to happen before translation
 class ExpiredLicenseAllower
-  # @param IdentityDocAuth::Response
+  # @param [IdentityDocAuth::Response]
   def initialize(response)
     @response = response
   end
