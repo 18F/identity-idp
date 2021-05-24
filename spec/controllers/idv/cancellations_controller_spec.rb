@@ -35,9 +35,13 @@ describe Idv::CancellationsController do
       stub_sign_in
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with(Analytics::IDV_CANCELLATION_CONFIRMED)
+      expect(@analytics).to receive(:track_event).with(
+        Analytics::IDV_CANCELLATION_CONFIRMED,
+        step: 'first',
+        location: 'top',
+      )
 
-      delete :destroy
+      delete :destroy, params: { step: 'first', location: 'top' }
     end
   end
 end

@@ -6,4 +6,4 @@
   <%= t('doc_auth.instructions.email_sent', email: current_user.email) %>
 </h1>
 
-<%= render 'idv/doc_auth/start_over_or_cancel' %>
+<%= render 'idv/doc_auth/start_over_or_cancel', step: 'email_sent' %>

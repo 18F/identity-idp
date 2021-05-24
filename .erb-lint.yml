@@ -9,7 +9,6 @@ linters:
       - '*/app/views/accounts/*'
       - '*/app/views/devise/*'
       - '*/app/views/idv/address/*'
-      - '*/app/views/idv/cancellations/*'
       - '*/app/views/idv/come_back_later/*'
       - '*/app/views/idv/confirmations/*'
       - '*/app/views/idv/capture_doc/*'
