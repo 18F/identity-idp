@@ -9,6 +9,7 @@ feature 'doc auth document capture step' do
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { false }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:sp_name) { 'Test SP' }
   before do
     allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
       and_return(ial2_step_indicator_enabled)
@@ -16,8 +17,27 @@ feature 'doc auth document capture step' do
       and_return(liveness_enabled)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
+    if liveness_enabled
+      visit_idp_from_oidc_sp_with_ial2_strict
+    else
+      visit_idp_from_oidc_sp_with_ial2
+    end
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
+  end
+
+  context 'when javascript is enabled', js: true do
+    it 'logs return to sp link click' do
+      click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
+
+      expect(fake_analytics).to have_logged_event(
+        Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+        step: 'document_capture',
+        location: 'documents_having_trouble',
+      )
+    end
   end
 
   context 'ial2 step indicator enabled' do
@@ -66,9 +86,6 @@ feature 'doc auth document capture step' do
     end
 
     it 'proceeds to the next page with valid info and logs analytics info' do
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
-
       attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
@@ -98,9 +115,6 @@ feature 'doc auth document capture step' do
     end
 
     it 'does not proceed to the next page with a successful doc auth but missing information' do
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
-
       mock_doc_auth_no_name_pii(:post_images)
       attach_and_submit_images
 
@@ -125,7 +139,6 @@ feature 'doc auth document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
@@ -204,7 +217,6 @@ feature 'doc auth document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
@@ -375,6 +387,6 @@ feature 'doc auth document capture step' do
   end
 
   def costing_for(cost_type)
-    SpCost.where(ial: 2, issuer: '', agency_id: 0, cost_type: cost_type.to_s).first
+    SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
   end
 end
