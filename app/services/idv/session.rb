@@ -3,7 +3,6 @@ module Idv
     VALID_SESSION_ATTRIBUTES = %i[
       address_verification_mechanism
       applicant
-      document_expired
       idv_phone_step_document_capture_session_uuid
       idv_gpo_document_capture_session_uuid
       vendor_phone_confirmation
@@ -143,6 +142,10 @@ module Idv
         user_password: user_password,
         document_expired: document_expired,
       )
+    end
+
+    def document_expired
+      user_session.dig('idv/doc_auth', :document_expired) # via flow_session[:document_expired]
     end
   end
 end
