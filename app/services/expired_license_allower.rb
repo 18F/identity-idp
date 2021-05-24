@@ -16,7 +16,6 @@ class ExpiredLicenseAllower
           exception: response.exception,
           extra: response.extra.merge(
             document_expired: document_expired?,
-            reproof_at: reproof_at,
           ),
           pii_from_doc: response.pii_from_doc,
         )
@@ -52,10 +51,6 @@ class ExpiredLicenseAllower
         (state_id_expiration = Date.parse(response.pii_from_doc[:state_id_expiration])) &&
         state_id_expiration >= IdentityConfig.store.proofing_expired_license_after
     )
-  end
-
-  def reproof_at
-    IdentityConfig.store.proofing_expired_license_reproof_at.to_s
   end
 
   private

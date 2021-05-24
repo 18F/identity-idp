@@ -141,15 +141,8 @@ module Idv
         applicant: applicant,
         user: current_user,
         user_password: user_password,
-        reproof_at: reproof_at,
+        document_expired: document_expired,
       )
-    end
-
-    # @return [Date,nil]
-    def reproof_at
-      date_str = user_session.dig('idv/doc_auth', :reproof_at) # via flow_session[:reproof_at]
-
-      Date.parse(date_str) if date_str
     end
   end
 end

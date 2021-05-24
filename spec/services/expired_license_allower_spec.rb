@@ -90,12 +90,11 @@ RSpec.describe ExpiredLicenseAllower do
           context 'when the state_id_expiration is after proofing_expired_license_after' do
             let(:pii_from_doc) { { state_id_expiration: '04/01/2021' } }
 
-            it 'returns a successful response with expired_document and reproof_at' do
+            it 'returns a successful response with document_expired' do
               expect(processed_response).to_not eq(response)
 
               expect(processed_response.success?).to eq(true)
               expect(processed_response.extra[:document_expired]).to eq(true)
-              expect(processed_response.extra[:reproof_at]).to eq('2023-03-01')
             end
 
             it 'overrides the errors to be blank' do

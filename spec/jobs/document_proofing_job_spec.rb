@@ -193,7 +193,6 @@ RSpec.describe DocumentProofingJob, type: :job do
 
         expect(result.result[:success]).to eq(true)
         expect(result.result[:document_expired]).to eq(true)
-        expect(result.result[:reproof_at]).to eq('2025-03-01')
       end
     end
 

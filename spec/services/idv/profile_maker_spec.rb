@@ -4,14 +4,14 @@ describe Idv::ProfileMaker do
   let(:applicant) { { first_name: 'Some', last_name: 'One' } }
   let(:user) { create(:user, :signed_up) }
   let(:user_password) { user.password }
-  let(:reproof_at) { nil }
+  let(:document_expired) { nil }
 
   subject(:profile_maker) do
     described_class.new(
       applicant: applicant,
       user: user,
       user_password: user_password,
-      reproof_at: reproof_at,
+      document_expired: document_expired,
     )
   end
 
@@ -32,13 +32,14 @@ describe Idv::ProfileMaker do
       expect(pii.first_name).to eq 'Some'
     end
 
-    context 'with a reproof_at date' do
-      let(:reproof_at) { Date.new(2025, 1, 1) }
+    context 'with an expired doucument' do
+      let(:document_expired) { true }
 
       it 'saves the profile.reproof_at' do
         profile = profile_maker.save_profile
 
-        expect(profile.reproof_at.to_date).to eq(reproof_at)
+        expect(profile.reproof_at.to_date).
+          to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
       end
     end
   end

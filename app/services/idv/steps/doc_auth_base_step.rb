@@ -55,11 +55,9 @@ module Idv
         if response.respond_to?(:extra)
           # Sync flow: IdentityDocAuth::Response
           flow_session[:document_expired] = response.extra&.dig(:document_expired)
-          flow_session[:reproof_at] = response.extra&.dig(:reproof_at)
         elsif response.respond_to?(:result)
           # Async flow: DocumentCaptureSessionAsyncResult
           flow_session[:document_expired] = response.result&.dig(:document_expired)
-          flow_session[:reproof_at] = response.result&.dig(:reproof_at)
         end
       end
 
