@@ -86,6 +86,14 @@ shared_examples 'signing in as IAL2 with piv/cac' do |sp|
     ial2_sign_in_with_piv_cac_goes_to_sp(sp)
   end
 
+  if sp == :saml
+    context 'no authn_context specified' do
+      it 'redirects to the SP after authenticating and getting the password', :email do
+        no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
+      end
+    end
+  end
+
   it 'gets bad password error', :email do
     ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
   end
@@ -260,6 +268,30 @@ def ial2_sign_in_with_piv_cac_goes_to_sp(sp)
 
     expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
   end
+end
+
+def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
+  raise NotImplementedError if sp == :oidc
+
+  user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
+  user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
+
+  visit_idp_from_saml_sp(
+    saml_overrides: {
+      issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+      authn_context: nil,
+    },
+  )
+
+  click_on t('account.login.piv_cac')
+  fill_in_piv_cac_credentials_and_submit(user)
+
+  # capture password before redirecting to SP
+  expect(current_url).to eq capture_password_url
+
+  fill_in_password_and_submit(user.password)
+
+  expect(current_url).to eq @saml_authn_request
 end
 
 def ial2_sign_in_with_piv_cac_gets_bad_password_error(sp)
