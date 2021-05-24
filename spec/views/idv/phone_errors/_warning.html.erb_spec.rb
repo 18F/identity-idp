@@ -3,15 +3,13 @@ require 'rails_helper'
 describe 'idv/phone_errors/_warning.html.erb' do
   let(:sp_name) { nil }
   let(:text) { 'A problem occurred' }
-  let(:contact_support_option) { false }
+  let(:assigns) { {} }
 
   before do
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
 
-    render('idv/phone_errors/warning', contact_support_option: contact_support_option) do
-      text
-    end
+    render('idv/phone_errors/warning', assigns) { text }
   end
 
   it 'renders heading' do
@@ -37,7 +35,7 @@ describe 'idv/phone_errors/_warning.html.erb' do
     end
 
     context 'with contact support option' do
-      let(:contact_support_option) { true }
+      let(:assigns) { { contact_support_option: true } }
 
       it 'renders a list of troubleshooting options' do
         expect(rendered).to have_link(
@@ -63,8 +61,28 @@ describe 'idv/phone_errors/_warning.html.erb' do
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
         t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-        href: return_to_sp_failure_to_proof_path,
+        href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
       )
+    end
+
+    context 'without a name' do
+      it 'renders failure to proof url with default location' do
+        expect(rendered).to have_link(
+          t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+          href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'warning'),
+        )
+      end
+    end
+
+    context 'with a name' do
+      let(:assigns) { { name: 'fail' } }
+
+      it 'renders failure to proof url with name as location' do
+        expect(rendered).to have_link(
+          t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+          href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'fail'),
+        )
+      end
     end
   end
 end

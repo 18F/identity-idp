@@ -3,7 +3,10 @@
       heading: t('idv.failure.sessions.heading'),
       options: [
         decorated_session.sp_name && {
-          url: return_to_sp_failure_to_proof_path,
+          url: return_to_sp_failure_to_proof_path(
+            step: 'verify_info',
+            location: request.params[:action],
+          ),
           text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
         },
         {
