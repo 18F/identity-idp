@@ -99,9 +99,8 @@ class RegisterUserEmailForm
 
   def process_successful_submission(request_id, instructions)
     self.success = true
-    if IdentityConfig.store.rules_of_use_enabled
-      UpdateUser.new(user: user, attributes: { accepted_terms_at: Time.zone.now }).call
-    end
+    user.accepted_terms_at = Time.zone.now if IdentityConfig.store.rules_of_use_enabled
+    user.save!
     Funnel::Registration::Create.call(user.id)
     SendSignUpEmailConfirmation.new(user).call(
       request_id: request_id,
