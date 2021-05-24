@@ -21,6 +21,9 @@ module DocAuthRouter
     IdentityDocAuth::Errors::DOC_NUMBER_CHECKS =>
       'doc_auth.errors.alerts.doc_number_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.expiration_checks')
+    IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK =>
+      'doc_auth.errors.alerts.expiration_checks',
+    # i18n-tasks-use t('doc_auth.errors.alerts.expiration_checks')
     IdentityDocAuth::Errors::EXPIRATION_CHECKS =>
       'doc_auth.errors.alerts.expiration_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.full_name_check')
@@ -95,6 +98,9 @@ module DocAuthRouter
 
     def translate_form_response!(response)
       return response unless response.is_a?(IdentityDocAuth::Response)
+
+      # This needs to happen before we translate, since it relies on the original error keys
+      response = ExpiredLicenseAllower.new(response).processed_response
 
       translate_doc_auth_errors!(response)
       translate_generic_errors!(response)

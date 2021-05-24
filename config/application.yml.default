@@ -136,6 +136,9 @@ piv_cac_service_url: https://localhost:8443/
 piv_cac_verify_token_url: https://localhost:8443/
 poll_rate_for_verify_in_seconds: '3'
 proofer_mock_fallback: 'true'
+proofing_allow_expired_license: 'false'
+proofing_expired_license_after: '2020-03-01'
+proofing_expired_license_reproof_at: '2023-03-01'
 proofing_send_partial_dob: 'false'
 push_notifications_enabled: 'false'
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'

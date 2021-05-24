@@ -24,6 +24,7 @@ class IdentityConfig
         raise 'invalid boolean value'
       end
     end,
+    date: proc { |value| Date.parse(value) if value },
     timestamp: proc do |value|
       # When the store is built `Time.zone` is not set resulting in a NoMethodError
       # if Time.zone.parse is called
@@ -198,6 +199,9 @@ class IdentityConfig
     config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
+    config.add(:proofing_allow_expired_license, type: :boolean)
+    config.add(:proofing_expired_license_after, type: :date)
+    config.add(:proofing_expired_license_reproof_at, type: :date)
     config.add(:proofing_send_partial_dob, type: :boolean)
     config.add(:push_notifications_enabled, type: :boolean)
     config.add(:pwned_passwords_file_path, type: :string)
