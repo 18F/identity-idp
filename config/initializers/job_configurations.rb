@@ -204,5 +204,5 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'Partner API report',
   interval: 24 * 60 * 60, # 24 hours
   timeout: 300,
-  callback: -> { Agreements::Reports::PartnerApiReport.new.call },
+  callback: -> { Agreements::Reports::PartnerApiReport.new.run },
 )
