@@ -356,8 +356,7 @@ feature 'doc auth document capture step' do
         acknowledge_and_confirm_personal_key(js: false)
 
         profile = user.active_profile
-        expect(profile.reproof_at.to_date).
-          to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
+        expect(profile.reproof_at).to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
       end
     end
   end
@@ -473,8 +472,7 @@ feature 'doc auth document capture step' do
         acknowledge_and_confirm_personal_key(js: true)
 
         profile = user.active_profile
-        expect(profile.reproof_at.to_date).
-          to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
+        expect(profile.reproof_at).to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
       end
     end
   end

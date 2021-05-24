@@ -38,8 +38,7 @@ describe Idv::ProfileMaker do
       it 'saves the profile.reproof_at' do
         profile = profile_maker.save_profile
 
-        expect(profile.reproof_at.to_date).
-          to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
+        expect(profile.reproof_at).to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
       end
     end
   end

@@ -458,7 +458,7 @@ ActiveRecord::Schema.define(version: 2021_05_20_181258) do
     t.boolean "phone_confirmed", default: false, null: false
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
-    t.datetime "reproof_at"
+    t.date "reproof_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
     t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
