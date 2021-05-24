@@ -206,3 +206,17 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   timeout: 300,
   callback: -> { Agreements::Reports::PartnerApiReport.new.run },
 )
+
+if IdentityConfig.store.ruby_workers_enabled
+  # Queue heartbeat job to DelayedJob
+  JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+    name: 'Job Queue Heartbeat',
+    interval: 5 * 60, # 5 minutes
+    timeout: 4 * 60,
+    callback: -> do
+      HeartbeatJob.perform_later
+    end,
+    health_critical: false,
+    failures_before_alarm: 0,
+  )
+end
