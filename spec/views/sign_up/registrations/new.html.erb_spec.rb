@@ -90,7 +90,7 @@ describe 'sign_up/registrations/new.html.erb' do
       allow(IdentityConfig.store).to receive(:rules_of_use_enabled).and_return(true)
     end
 
-    it 'does shows rules of use checkbox' do
+    it 'shows rules of use checkbox' do
       render
 
       expect(rendered).to have_content(t('sign_up.terms'))
