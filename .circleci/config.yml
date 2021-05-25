@@ -168,7 +168,6 @@ jobs:
             bin/rails zeitwerk:check
 
             bundle exec rake knapsack:rspec
-            yarn test
       - run:
           name: Code Climate Test Coverage
           command: |
