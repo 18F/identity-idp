@@ -14,7 +14,7 @@ feature 'doc auth cancel' do
 
     click_link t('links.cancel')
 
-    expect(page).to have_current_path(idv_cancel_path)
+    expect(page).to have_current_path(idv_cancel_path(step: 'verify'))
 
     click_button t('forms.buttons.cancel')
 

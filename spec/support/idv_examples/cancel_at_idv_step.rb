@@ -37,7 +37,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       expect(page).to have_link(
         "‹ #{t('links.back_to_sp', sp: sp_name)}",
-        href: return_to_sp_failure_to_proof_path,
+        href: return_to_sp_failure_to_proof_path(step: step, location: 'cancel'),
       )
 
       # After visiting /verify, expect to redirect to the jurisdiction step,

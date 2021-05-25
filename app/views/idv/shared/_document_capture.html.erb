@@ -136,7 +136,7 @@
                   class: 'usa-button usa-button--unstyled') %>
   </div>
 <% else %>
-  <%= render 'shared/cancel', link: idv_cancel_path %>
+  <%= render 'shared/cancel', link: idv_cancel_path(step: 'document_capture') %>
 <% end %>
 
 <%= nonced_javascript_tag do %>
