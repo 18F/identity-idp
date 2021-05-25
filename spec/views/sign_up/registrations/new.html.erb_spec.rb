@@ -72,4 +72,28 @@ describe 'sign_up/registrations/new.html.erb' do
 [target='_blank'][rel='noopener noreferrer']",
       )
   end
+
+  context 'with rules of use disabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:rules_of_use_enabled).and_return(false)
+    end
+
+    it 'does not show rules of use checkbox' do
+      render
+
+      expect(rendered).not_to have_content(t('sign_up.terms'))
+    end
+  end
+
+  context 'with rules of use enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:rules_of_use_enabled).and_return(true)
+    end
+
+    it 'does shows rules of use checkbox' do
+      render
+
+      expect(rendered).to have_content(t('sign_up.terms'))
+    end
+  end
 end

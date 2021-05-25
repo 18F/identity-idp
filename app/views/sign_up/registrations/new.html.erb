@@ -40,17 +40,20 @@
                  locals: { f: f, selection: @register_user_email_form.email_language } %>
     </fieldset>
 
-    <div class="margin-bottom-3">
-      <%= f.check_box :terms_accepted, { class: 'usa-checkbox__input',
-                                         required: true, aria: { invalid: false } }, true, false %>
-      <label for="user_terms_accepted" class="usa-checkbox__label">
-        <%= t('sign_up.terms') %>
-        <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
-      </label>
-      <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
-        <%= t('sign_up.agree_to_rules_of_use_and_continue') %>
+    <% if IdentityConfig.store.rules_of_use_enabled %>
+      <div class="margin-bottom-3">
+        <%= f.check_box :terms_accepted, { class: 'usa-checkbox__input',
+                                          required: true, aria: { invalid: false } }, true, false %>
+        <label for="user_terms_accepted" class="usa-checkbox__label">
+          <%= t('sign_up.terms') %>
+          <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
+        </label>
+        <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
+          <%= t('sign_up.agree_to_rules_of_use_and_continue') %>
+        </div>
       </div>
-    </div>
+      <%= javascript_packs_tag_once 'accept-terms-button' %>
+    <% end %>
 
     <%= f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id } %>
     <%= f.button :button, t('forms.buttons.submit.default'), type: :submit,
@@ -71,4 +74,4 @@
 </p>
 
 
-<%= javascript_packs_tag_once 'email-validation', 'accept-terms-button' %>
+<%= javascript_packs_tag_once 'email-validation' %>
