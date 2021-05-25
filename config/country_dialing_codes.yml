@@ -1,5 +1,9 @@
 # NOTE: if updating this to match current AWS config, consider bringing back
 # the daily CircleCI check added in 3d4194c1f76ca1554852bacfde4abdea2ebb6104
+# `supports_voice` and `supports_sms` describe whether we are capable of sending
+# using those methods. A country that supports voice may be limited to
+# sending voice only to previously confirmed numbers when `supports_voice_unconfirmed` is set to false.
+# In those countries, it is not possible to register new phones.
 ---
 AD:
   country_code: '376'

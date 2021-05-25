@@ -25,7 +25,7 @@ module TwoFactorAuthentication
     private
 
     def confirm_multiple_factors_enabled
-      return if confirmation_context? || phone_enabled?
+      return if UserSessionContext.confirmation_context?(context) || phone_enabled?
 
       if MfaPolicy.new(current_user).two_factor_enabled? &&
          !phone_enabled? && user_signed_in?
@@ -42,7 +42,9 @@ module TwoFactorAuthentication
     def confirm_voice_capability
       return if two_factor_authentication_method == 'sms'
 
-      capabilities = PhoneNumberCapabilities.new(phone)
+      is_authentication_context = UserSessionContext.authentication_context?(context)
+
+      capabilities = PhoneNumberCapabilities.new(phone, is_authentication_context)
 
       return if capabilities.supports_voice?
 

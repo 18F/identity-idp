@@ -50,4 +50,8 @@ class OtpDeliverySelectionForm
   def parsed_phone
     @_parsed_phone ||= Phonelib.parse(phone)
   end
+
+  def confirmed_phone?
+    UserSessionContext.authentication_context?(context)
+  end
 end
