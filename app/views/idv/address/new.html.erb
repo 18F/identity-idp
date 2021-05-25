@@ -17,7 +17,7 @@
 
 <div class="margin-top-4 margin-bottom-4">
   <%= validated_form_for(:idv_form, url: idv_address_path, method: 'POST',
-                         html: {autocomplete: 'off', role: 'form', class: 'margin-top-2'}) do |f| %>
+                         html: {autocomplete: 'off', class: 'margin-top-2'}) do |f| %>
 
     <%= f.input :address1, label: t('idv.form.address1'), wrapper_html: {class: 'margin-bottom-1'},
                 required: true, maxlength: 255, input_html: { aria: { invalid: false }, value: @pii['address1'] } %>

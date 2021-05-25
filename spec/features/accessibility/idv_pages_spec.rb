@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'axe/rspec'
+require 'axe-rspec'
 
 feature 'Accessibility on IDV pages', :js do
   describe 'IDV pages' do
@@ -10,7 +10,7 @@ feature 'Accessibility on IDV pages', :js do
 
       visit idv_path
 
-      expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -21,7 +21,7 @@ feature 'Accessibility on IDV pages', :js do
       visit idv_cancel_path
 
       expect(current_path).to eq idv_cancel_path
-      expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -32,7 +32,7 @@ feature 'Accessibility on IDV pages', :js do
       complete_all_doc_auth_steps
 
       expect(current_path).to eq idv_phone_path
-      expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -44,7 +44,7 @@ feature 'Accessibility on IDV pages', :js do
       click_idv_continue
 
       expect(page).to have_current_path(idv_review_path)
-      expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -58,7 +58,7 @@ feature 'Accessibility on IDV pages', :js do
       click_continue
 
       expect(current_path).to eq idv_confirmations_path
-      expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -72,7 +72,7 @@ feature 'Accessibility on IDV pages', :js do
       click_continue
 
       expect(current_path).to eq idv_confirmations_path
-      expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end
@@ -86,7 +86,7 @@ feature 'Accessibility on IDV pages', :js do
       click_continue
 
       expect(current_path).to eq idv_confirmations_path
-      expect(page).to be_accessible.according_to :section508, :"best-practice"
+      expect(page).to be_axe_clean.according_to :section508, :"best-practice", :wcag21aa
       expect(page).to label_required_fields
       expect(page).to be_uniquely_titled
     end

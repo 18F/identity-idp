@@ -8,7 +8,7 @@
                        as: :user,
                        url: capture_password_url,
                        method: :post,
-                       html: { autocomplete: 'off', role: 'form' }) do |f| %>
+                       html: { autocomplete: 'off' }) do |f| %>
   <%= f.input :password, label: t('account.index.password'), required: true,
               input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
   <div>

@@ -76,7 +76,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
     visit idv_doc_auth_welcome_step unless current_path == idv_doc_auth_welcome_step
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
   end
 
   def complete_doc_auth_steps_before_agreement_step(expect_accessible: false)
@@ -95,7 +95,7 @@ module DocAuthHelper
     complete_doc_auth_steps_before_upload_step(expect_accessible: expect_accessible)
     # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
     return if page.current_path == idv_doc_auth_document_capture_step
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
     click_on t('doc_auth.info.upload_computer_link')
   end
 
@@ -115,20 +115,20 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false)
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
     attach_and_submit_images
   end
 
   def complete_doc_auth_steps_before_verify_step(expect_accessible: false)
     complete_doc_auth_steps_before_ssn_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
     fill_out_ssn_form_ok
     click_idv_continue
   end
 
   def complete_doc_auth_steps_before_address_step(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
     click_link t('doc_auth.buttons.change_address')
   end
 
@@ -145,7 +145,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
 
   def complete_all_doc_auth_steps(expect_accessible: false)
     complete_doc_auth_steps_before_verify_step(expect_accessible: expect_accessible)
-    expect(page).to be_accessible.according_to :section508, :"best-practice" if expect_accessible
+    expect(page).to be_axe_clean.according_to :section508, :"best-practice" if expect_accessible
     click_idv_continue
   end
 

@@ -11,7 +11,7 @@
 <%= t('users.rules_of_use.details_html') %>
 <div class='margin-bottom-6'>
   <%= validated_form_for(@rules_of_use_form,
-      html: { autocomplete: 'off', role: 'form' },
+      html: { autocomplete: 'off' },
       url: rules_of_use_path) do |f| %>
 
     <div class="margin-bottom-3">

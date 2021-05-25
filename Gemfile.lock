@@ -193,9 +193,16 @@ GEM
       aws-sigv4 (~> 1.1)
     aws-sigv4 (1.2.2)
       aws-eventstream (~> 1, >= 1.0.2)
-    axe-matchers (2.6.1)
-      dumb_delegator (~> 0.8)
-      virtus (~> 1.0)
+    axe-core-api (4.2.0)
+      capybara
+      dumb_delegator
+      selenium-webdriver
+      virtus
+      watir
+    axe-core-rspec (4.2.0)
+      axe-core-api
+      dumb_delegator
+      virtus
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
@@ -287,7 +294,7 @@ GEM
     dotiw (5.1.0)
       activesupport
       i18n
-    dumb_delegator (0.8.1)
+    dumb_delegator (1.0.0)
     email_spec (2.2.0)
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
@@ -665,6 +672,9 @@ GEM
       equalizer (~> 0.0, >= 0.0.9)
     warden (1.2.9)
       rack (>= 2.0.9)
+    watir (6.19.1)
+      regexp_parser (>= 1.2, < 3)
+      selenium-webdriver (>= 3.142.7)
     webauthn (2.5.0)
       android_key_attestation (~> 0.3.0)
       awrence (~> 1.1)
@@ -720,7 +730,7 @@ DEPENDENCIES
   aws-sdk-eventbridge
   aws-sdk-kms (~> 1.4)
   aws-sdk-ses (~> 1.6)
-  axe-matchers (~> 2.6.0)
+  axe-core-rspec (~> 4.2)
   base32-crockford
   better_errors (>= 2.5.1)
   binding_of_caller

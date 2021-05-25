@@ -7,8 +7,7 @@
 <%= validated_form_for(@reset_password_form,
     url: user_password_path,
     html: { autocomplete: 'off',
-    method: :put,
-    role: 'form' }) do |f| %>
+            method: :put }) do |f| %>
   <%= f.input :reset_password_token, as: :hidden %>
   <%= f.full_error :reset_password_token %>
   <%= f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,

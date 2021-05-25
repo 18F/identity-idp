@@ -20,7 +20,7 @@
   <%= t('forms.verify_profile.instructions') %>
 </p>
 <%= validated_form_for(@verify_account_form, url: verify_account_path,
-                     html: { autocomplete: 'off', method: :post, role: 'form' }) do |f| %>
+                     html: { autocomplete: 'off', method: :post }) do |f| %>
   <div class="grid-row margin-bottom-5">
     <div class="grid-col-12 tablet:grid-col-6">
       <%= f.input :otp,

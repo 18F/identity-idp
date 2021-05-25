@@ -114,7 +114,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'axe-matchers', '~> 2.6.0'
+  gem 'axe-core-rspec', '~> 4.2'
   gem 'capybara-screenshot', '>= 1.0.23'
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'simplecov', '~> 0.21.0', require: false
