@@ -76,7 +76,6 @@ export function useCleanDOM() {
     while (document.body.firstChild) {
       document.body.removeChild(document.body.firstChild);
     }
+    window.location.hash = '';
   });
-
-  window.location.hash = '';
 }
