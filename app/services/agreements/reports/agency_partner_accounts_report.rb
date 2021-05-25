@@ -2,7 +2,7 @@ module Agreements
   module Reports
     class AgencyPartnerAccountsReport < BaseReport
       def initialize(agency:, partner_accounts:)
-        @agency = agency.downcase
+        @agency = agency
         @partner_accounts = partner_accounts.sort_by(&:requesting_agency)
       end
 
@@ -10,8 +10,11 @@ module Agreements
         save_report(
           'partner_accounts',
           PartnerAccountBlueprint.render(partner_accounts, root: :partner_accounts),
-          "agencies/#{agency}/",
         )
+      end
+
+      def report_path
+        "agencies/#{agency.downcase}/"
       end
 
       private

@@ -12,8 +12,11 @@ module Agreements
         save_report(
           'agreements',
           IaaBlueprint.render(iaas, root: :agreements),
-          "agencies/#{agency}/",
         )
+      end
+
+      def report_path
+        "agencies/#{agency.downcase}/"
       end
 
       private

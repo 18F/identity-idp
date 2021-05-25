@@ -7,4 +7,12 @@ RSpec.describe Agreements::Reports::AgenciesReport do
 
     expect(described_class.new(agencies: [agency]).run).to eq(expected)
   end
+
+  describe '#report_path' do
+    it 'saves to the root directory' do
+      report = described_class.new(agencies: [build(:agency)])
+
+      expect(report.report_path).to eq('')
+    end
+  end
 end
