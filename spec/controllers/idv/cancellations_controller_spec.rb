@@ -11,7 +11,7 @@ describe Idv::CancellationsController do
     it 'tracks the event in analytics when referer is nil' do
       stub_sign_in
       stub_analytics
-      properties = { request_came_from: 'no referer' }
+      properties = { request_came_from: 'no referer', step: nil }
 
       expect(@analytics).to receive(:track_event).with(Analytics::IDV_CANCELLATION, properties)
 
@@ -22,11 +22,21 @@ describe Idv::CancellationsController do
       stub_sign_in
       stub_analytics
       request.env['HTTP_REFERER'] = 'http://example.com/'
-      properties = { request_came_from: 'users/sessions#new' }
+      properties = { request_came_from: 'users/sessions#new', step: nil }
 
       expect(@analytics).to receive(:track_event).with(Analytics::IDV_CANCELLATION, properties)
 
       get :new
+    end
+
+    it 'tracks the event in analytics when step param is present' do
+      stub_sign_in
+      stub_analytics
+      properties = { request_came_from: 'no referer', step: 'first' }
+
+      expect(@analytics).to receive(:track_event).with(Analytics::IDV_CANCELLATION, properties)
+
+      get :new, params: { step: 'first' }
     end
   end
 
@@ -38,10 +48,9 @@ describe Idv::CancellationsController do
       expect(@analytics).to receive(:track_event).with(
         Analytics::IDV_CANCELLATION_CONFIRMED,
         step: 'first',
-        location: 'top',
       )
 
-      delete :destroy, params: { step: 'first', location: 'top' }
+      delete :destroy, params: { step: 'first' }
     end
   end
 end
