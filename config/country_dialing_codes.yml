@@ -755,7 +755,8 @@ PH:
   country_code: '63'
   name: Philippines
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 PK:
   country_code: '92'
   name: Pakistan
@@ -915,7 +916,8 @@ TH:
   country_code: '66'
   name: Thailand
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 TJ:
   country_code: '992'
   name: Tajikistan
@@ -1010,7 +1012,8 @@ VN:
   country_code: '84'
   name: Vietnam
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 VU:
   country_code: '678'
   name: Vanuatu
