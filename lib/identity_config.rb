@@ -246,6 +246,7 @@ class IdentityConfig
     config.add(:sp_context_needed_environment, type: :string)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
+    config.add(:state_tracking_enabled, type: :boolean)
     config.add(:telephony_adapter, type: :string)
     config.add(:unauthorized_scope_enabled, type: :boolean)
     config.add(:use_dashboard_service_providers, type: :boolean)

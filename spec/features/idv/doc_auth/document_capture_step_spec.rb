@@ -214,6 +214,14 @@ feature 'doc auth document capture step' do
 
       expect(page).to have_current_path(next_step)
       expect_costing_for_document
+      expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+    end
+
+    it 'does not track state if state tracking is disabled' do
+      allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
+      attach_and_submit_images
+
+      expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
