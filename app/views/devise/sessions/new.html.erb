@@ -19,7 +19,7 @@
   resource,
   as: resource_name,
   url: session_path(resource_name),
-  html: { autocomplete: 'off', role: 'form' }) do |f|
+  html: { autocomplete: 'off' }) do |f|
 %>
   <%= f.input :email,
               label: t('account.index.email'),

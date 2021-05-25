@@ -13,7 +13,7 @@
 <%= render('shared/alert') { t('two_factor_authentication.lockout_information') } %>
 
 <%= validated_form_for @two_factor_options_form,
-                       html: { autocomplete: 'off', role: 'form' },
+                       html: { autocomplete: 'off' },
                        method: :patch,
                        url: two_factor_options_path do |f| %>
   <div class="margin-bottom-4">

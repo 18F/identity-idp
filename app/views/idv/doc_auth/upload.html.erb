@@ -50,7 +50,7 @@
       :doc_auth,
       url: url_for(type: :mobile),
       method: 'PUT',
-      html: { autocomplete: 'off', role: 'form', class: 'margin-top-2' },
+      html: { autocomplete: 'off', class: 'margin-top-2' },
     ) do %>
       <button type="submit" class="usa-button usa-button--big margin-top-05">
         <%= t('doc_auth.buttons.use_phone') %>
@@ -69,7 +69,7 @@
       :doc_auth,
       url: url_for(type: :desktop),
       method: 'PUT',
-      html: { autocomplete: 'off', role: 'form', class: 'inline' }
+      html: { autocomplete: 'off', class: 'inline' }
     ) do %>
       <button type="submit" class="usa-button usa-button--unstyled">
         <%= t('doc_auth.info.upload_computer_link') %>

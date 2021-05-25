@@ -8,7 +8,7 @@
   <%= @presenter.phone_number_message %>
 </p>
 
-<%= form_tag(:login_otp, method: :post, role: 'form', class: 'margin-top-4') do %>
+<%= form_tag(:login_otp, method: :post, class: 'margin-top-4') do %>
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>
