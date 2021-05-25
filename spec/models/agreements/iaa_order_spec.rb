@@ -29,21 +29,32 @@ RSpec.describe Agreements::IaaOrder, type: :model do
         is_greater_than_or_equal_to(0).
         allow_nil
     end
+    it { is_expected.to validate_presence_of(:start_date) }
+    it { is_expected.to validate_presence_of(:end_date) }
+    it 'validates that the end_date must be after the start_date' do
+      subject.end_date = subject.start_date - 1.day
+      expect(subject).not_to be_valid
+    end
 
     it { is_expected.to belong_to(:iaa_gtc) }
-    it { is_expected.to belong_to(:iaa_status) }
 
     it { is_expected.to have_one(:partner_account).through(:iaa_gtc) }
     it { is_expected.to have_many(:integration_usages).dependent(:restrict_with_exception) }
     it { is_expected.to have_many(:integrations).through(:integration_usages) }
   end
 
-  describe '#partner_status' do
-    it 'returns the partner_name of the associated iaa_status' do
-      status = build(:iaa_status, partner_name: 'foo')
-      order = build(:iaa_order, iaa_status: status)
-
-      expect(order.partner_status).to eq('foo')
+  describe '#status' do
+    it 'returns "pending_start" if the agreement is not yet in force' do
+      order = build(:iaa_order, start_date: Time.zone.tomorrow)
+      expect(order.status).to eq('pending_start')
+    end
+    it 'returns "expired" if the agreement is no longer in force' do
+      order = build(:iaa_order, start_date: Time.zone.today - 1.year, end_date: Time.zone.yesterday)
+      expect(order.status).to eq('expired')
+    end
+    it 'returns "active" if the agreement is in force' do
+      order = build(:iaa_order, start_date: Time.zone.yesterday, end_date: Time.zone.tomorrow)
+      expect(order.status).to eq('active')
     end
   end
 

@@ -10,7 +10,6 @@ production:
     end_date: "2021-02-14"
     estimated_amount: 200.78
     pricing_model: 2
-    iaa_status: step2
     approved_apps:
       - "Foo"
       - "Bar"

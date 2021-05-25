@@ -7,7 +7,6 @@ development:
     end_date: "2021-02-14"
     estimated_amount: 1_181_292.21
     pricing_model: 2
-    iaa_status: active
     approved_apps:
       - "Foo"
       - "Bar"
@@ -20,10 +19,9 @@ development:
     order_number: 2
     mod_number: 1
     start_date: "2020-05-01"
-    end_date: "2021-04-31"
+    end_date: "2021-04-30"
     estimated_amount: 959_839.12
     pricing_model: 3
-    iaa_status: active
     approved_apps:
       - "One app"
       - "Another app"
@@ -39,7 +37,6 @@ test:
     end_date: "2021-02-14"
     estimated_amount: 1_181_292.21
     pricing_model: 2
-    iaa_status: active
     approved_apps:
       - "Foo"
       - "Bar"
@@ -52,10 +49,9 @@ test:
     order_number: 2
     mod_number: 1
     start_date: "2020-05-01"
-    end_date: "2021-04-31"
+    end_date: "2021-04-30"
     estimated_amount: 959_839.12
     pricing_model: 3
-    iaa_status: active
     approved_apps:
       - "One app"
       - "Another app"

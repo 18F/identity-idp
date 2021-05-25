@@ -5,7 +5,6 @@ module AgreementsHelper
     Agreements::Integration.delete_all
     Agreements::IntegrationStatus.delete_all
     Agreements::IaaGtc.delete_all
-    Agreements::IaaStatus.delete_all
     Agreements::PartnerAccount.delete_all
     Agreements::PartnerAccountStatus.delete_all
   end

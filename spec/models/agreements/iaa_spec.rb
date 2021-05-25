@@ -10,11 +10,13 @@ RSpec.describe Agreements::Iaa do
   it { is_expected.to delegate_method(:start_date).to(:gtc).with_prefix }
   it { is_expected.to delegate_method(:end_date).to(:gtc).with_prefix }
   it { is_expected.to delegate_method(:estimated_amount).to(:gtc).with_prefix }
+  it { is_expected.to delegate_method(:status).to(:gtc).with_prefix }
   it { is_expected.to delegate_method(:order_number).to(:order) }
   it { is_expected.to delegate_method(:mod_number).to(:order).with_prefix }
   it { is_expected.to delegate_method(:start_date).to(:order).with_prefix }
   it { is_expected.to delegate_method(:end_date).to(:order).with_prefix }
   it { is_expected.to delegate_method(:estimated_amount).to(:order).with_prefix }
+  it { is_expected.to delegate_method(:status).to(:order).with_prefix }
 
   describe 'attributes' do
     describe 'ial2_users' do
@@ -47,18 +49,6 @@ RSpec.describe Agreements::Iaa do
   describe '#partner_account' do
     it 'returns the requesting agency of the partner account' do
       expect(iaa.partner_account).to eq(gtc.partner_account.requesting_agency)
-    end
-  end
-
-  describe '#gtc_status' do
-    it 'returns the partner-facing status of the GTC' do
-      expect(iaa.gtc_status).to eq(gtc.partner_status)
-    end
-  end
-
-  describe '#order_status' do
-    it 'returns the partner-facing status of the order' do
-      expect(iaa.order_status).to eq(order.partner_status)
     end
   end
 

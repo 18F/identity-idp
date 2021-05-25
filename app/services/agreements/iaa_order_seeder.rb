@@ -18,8 +18,6 @@ module Agreements
 
     def process_config(_key, config)
       config['iaa_gtc'] = IaaGtc.find_by!(gtc_number: config['iaa_gtc'])
-      config['iaa_status'] =
-        IaaStatus.find_by!(name: config['iaa_status'])
 
       # this is used in the after_seed method to generate the associated
       # IntegrationUsages after the IaaOrders are created / updated.
@@ -28,7 +26,7 @@ module Agreements
       @associated_integrations[key] = config['integrations']
 
       permitted_attrs =
-        %w[order_number mod_number start_date end_date estimated_amount iaa_status iaa_gtc]
+        %w[order_number mod_number start_date end_date estimated_amount iaa_gtc]
       config.slice(*permitted_attrs)
     end
 

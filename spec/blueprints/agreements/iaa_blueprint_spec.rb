@@ -2,17 +2,18 @@ require 'rails_helper'
 
 RSpec.describe Agreements::IaaBlueprint do
   let(:account) { create(:partner_account, requesting_agency: 'ABC-DEF') }
-  let(:status) { create(:iaa_status, name: 'private name', partner_name: 'active') }
+  let(:iaa_start) { Time.zone.yesterday }
+  let(:gtc_end) { Time.zone.yesterday + 5.years }
+  let(:order_end) { Time.zone.yesterday + 1.year }
   let(:gtc) do
     create(
       :iaa_gtc,
       partner_account: account,
       gtc_number: 'LGABC210001',
       mod_number: 0,
-      start_date: '2021-01-01',
-      end_date: '2025-12-31',
+      start_date: iaa_start,
+      end_date: gtc_end,
       estimated_amount: 100_000,
-      iaa_status: status,
     )
   end
   let(:order) do
@@ -21,10 +22,9 @@ RSpec.describe Agreements::IaaBlueprint do
       iaa_gtc: gtc,
       order_number: 1,
       mod_number: 0,
-      start_date: '2021-01-01',
-      end_date: '2021-12-31',
+      start_date: iaa_start,
+      end_date: order_end,
       estimated_amount: 20_000.53,
-      iaa_status: status,
     )
   end
   let(:iaa) do
@@ -46,14 +46,14 @@ RSpec.describe Agreements::IaaBlueprint do
           partner_account: 'ABC-DEF',
           gtc_number: 'LGABC210001',
           gtc_mod_number: 0,
-          gtc_start_date: '2021-01-01',
-          gtc_end_date: '2025-12-31',
+          gtc_start_date: iaa_start.strftime('%Y-%m-%d'),
+          gtc_end_date: gtc_end.strftime('%Y-%m-%d'),
           gtc_estimated_amount: '100000.0',
           gtc_status: 'active',
           order_number: 1,
           order_mod_number: 0,
-          order_start_date: '2021-01-01',
-          order_end_date: '2021-12-31',
+          order_start_date: iaa_start.strftime('%Y-%m-%d'),
+          order_end_date: order_end.strftime('%Y-%m-%d'),
           order_estimated_amount: '20000.53',
           order_status: 'active',
           ial2_users: 10,
