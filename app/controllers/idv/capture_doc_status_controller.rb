@@ -11,26 +11,34 @@ module Idv
     private
 
     def document_capture_session_poll_render_result
-      return { plain: 'Unauthorized', status: :unauthorized } unless flow_session
-      session_uuid = flow_session[:document_capture_session_uuid]
-      document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
-      return { plain: 'Unauthorized', status: :unauthorized } unless document_capture_session
-      return { plain: 'Cancelled', status: :gone } if document_capture_session.cancelled_at
+      return { json: nil, status: :unauthorized } unless flow_session
+      return { json: nil, status: :unauthorized } unless document_capture_session
+      return { json: nil, status: :gone } if document_capture_session.cancelled_at
+      return {
+        json: { redirect: idv_session_errors_throttled_url },
+        status: :too_many_requests,
+      } if is_throttled
 
-      render_result(document_capture_session)
-    end
-
-    def render_result(document_capture_session)
       result = document_capture_session.load_result ||
                document_capture_session.load_doc_auth_async_result
 
-      return { plain: 'Pending', status: :accepted } if result.blank?
-      return { plain: 'Unauthorized', status: :unauthorized } unless result.success?
-      { plain: 'Complete', status: :ok }
+      return { json: nil, status: :accepted } if result.blank?
+      return { json: nil, status: :unauthorized } unless result.success?
+      { json: nil, status: :ok }
     end
 
     def flow_session
       user_session['idv/doc_auth']
+    end
+
+    def document_capture_session
+      return @document_capture_session if defined?(@document_capture_session)
+      session_uuid = flow_session[:document_capture_session_uuid]
+      @document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
+    end
+
+    def is_throttled
+      Throttler::IsThrottled.call(document_capture_session.user_id, :idv_acuant)
     end
   end
 end

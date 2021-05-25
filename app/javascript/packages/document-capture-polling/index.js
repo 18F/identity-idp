@@ -68,12 +68,23 @@ export class DocumentCapturePolling {
   }
 
   /**
-   * @param {{ isCancelled: boolean }} params
+   * @param {{
+   *   isCancelled?: boolean,
+   *   isThrottled?: boolean,
+   *   redirect?: string,
+   * }} params
    */
-  async onComplete({ isCancelled }) {
-    await this.trackEvent('IdV: Link sent capture doc polling complete', { isCancelled });
+  async onComplete({ isCancelled = false, isThrottled = false, redirect }) {
+    await this.trackEvent('IdV: Link sent capture doc polling complete', {
+      isCancelled,
+      isThrottled,
+    });
     this.bindPromptOnNavigate(false);
-    this.elements.form.submit();
+    if (redirect) {
+      window.location.href = redirect;
+    } else {
+      this.elements.form.submit();
+    }
   }
 
   schedulePoll() {
@@ -93,6 +104,12 @@ export class DocumentCapturePolling {
       case 410:
         this.onComplete({ isCancelled: response.status === 410 });
         break;
+
+      case 429: {
+        const { redirect } = await response.json();
+        this.onComplete({ isThrottled: true, redirect });
+        break;
+      }
 
       default:
         this.schedulePoll();
