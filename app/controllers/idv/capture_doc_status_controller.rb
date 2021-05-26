@@ -16,7 +16,7 @@ module Idv
       return {
         json: { redirect: idv_session_errors_throttled_url },
         status: :too_many_requests,
-      } if is_throttled
+      } if throttled?
 
       result = document_capture_session.load_result ||
                document_capture_session.load_doc_auth_async_result
@@ -36,7 +36,7 @@ module Idv
       @document_capture_session = DocumentCaptureSession.find_by(uuid: session_uuid)
     end
 
-    def is_throttled
+    def throttled?
       Throttler::IsThrottled.call(document_capture_session.user_id, :idv_acuant)
     end
   end
