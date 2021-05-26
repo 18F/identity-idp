@@ -137,7 +137,7 @@ def sign_up_and_view_personal_key
 end
 
 def expect_confirmation_modal_to_appear_with_first_code_field_in_focus
-  expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='display-none']")
+  expect(page).to have_no_xpath("//div[@id='personal-key-confirm'][@class='display-none']")
   expect(page.evaluate_script('document.activeElement.name')).to eq 'personal_key'
 end
 

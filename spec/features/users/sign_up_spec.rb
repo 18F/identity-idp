@@ -11,7 +11,7 @@ feature 'Sign Up' do
 
       sign_up
 
-      expect(page).not_to have_content t('errors.messages.confirmation_invalid_token')
+      expect(page).to have_no_content t('errors.messages.confirmation_invalid_token')
     end
 
     scenario 'with invalid token' do
@@ -20,7 +20,7 @@ feature 'Sign Up' do
 
       sign_up
 
-      expect(page).not_to have_content t('errors.messages.confirmation_invalid_token')
+      expect(page).to have_no_content t('errors.messages.confirmation_invalid_token')
     end
 
     scenario 'with no token and an email address that contains a nil token' do
@@ -30,7 +30,7 @@ feature 'Sign Up' do
 
       sign_up
 
-      expect(page).not_to have_content t('errors.messages.confirmation_invalid_token')
+      expect(page).to have_no_content t('errors.messages.confirmation_invalid_token')
     end
   end
 

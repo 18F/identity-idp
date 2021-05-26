@@ -70,7 +70,7 @@ feature 'verify profile with OTP' do
       end
 
       it 'does not show step indicator progress' do
-        expect(page).not_to have_css('.step-indicator')
+        expect(page).to have_no_css('.step-indicator')
       end
     end
   end

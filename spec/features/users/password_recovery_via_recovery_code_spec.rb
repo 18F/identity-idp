@@ -38,7 +38,7 @@ feature 'Password recovery via personal key' do
 
     visit account_path
 
-    expect(page).not_to have_content(t('headings.account.verified_account'))
+    expect(page).to have_no_content(t('headings.account.verified_account'))
 
     click_link t('account.index.reactivation.link')
     click_on t('links.account.reactivate.without_key')
@@ -89,7 +89,7 @@ feature 'Password recovery via personal key' do
       click_on t('links.account.reactivate.without_key')
       click_on t('links.cancel')
 
-      expect(page).not_to have_content('[id="reactivate-account-modal"]')
+      expect(page).to have_no_content('[id="reactivate-account-modal"]')
     end
   end
 

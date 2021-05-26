@@ -287,7 +287,7 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      expect(page).not_to have_link(t('two_factor_authentication.piv_cac_fallback.question'))
+      expect(page).to have_no_link(t('two_factor_authentication.piv_cac_fallback.question'))
     end
   end
 

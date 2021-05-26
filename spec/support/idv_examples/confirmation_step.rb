@@ -42,7 +42,7 @@ shared_examples 'idv confirmation step' do |sp|
         let(:ial2_step_indicator_enabled) { false }
 
         it 'does not show step indicator progress' do
-          expect(page).not_to have_css('.step-indicator')
+          expect(page).to have_no_css('.step-indicator')
         end
       end
     end
@@ -97,7 +97,7 @@ shared_examples 'idv confirmation step' do |sp|
             '.step-indicator__step--current',
             text: t('step_indicator.flows.idv.secure_account'),
           )
-          expect(page).not_to have_css('.step-indicator__step--pending')
+          expect(page).to have_no_css('.step-indicator__step--pending')
         end
       end
 
@@ -105,7 +105,7 @@ shared_examples 'idv confirmation step' do |sp|
         let(:ial2_step_indicator_enabled) { false }
 
         it 'does not show step indicator progress' do
-          expect(page).not_to have_css('.step-indicator')
+          expect(page).to have_no_css('.step-indicator')
         end
       end
     end

@@ -53,7 +53,7 @@ feature 'doc auth document capture step' do
     let(:ial2_step_indicator_enabled) { false }
 
     it 'does not show the step indicator' do
-      expect(page).not_to have_css('.step-indicator')
+      expect(page).to have_no_css('.step-indicator')
     end
   end
 
@@ -191,7 +191,7 @@ feature 'doc auth document capture step' do
     end
 
     it 'does not show the selfie upload option' do
-      expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+      expect(page).to have_no_content(t('doc_auth.headings.document_capture_selfie'))
     end
 
     it 'displays document capture tips' do
@@ -204,9 +204,9 @@ feature 'doc auth document capture step' do
     end
 
     it 'does not display selfie tips' do
-      expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
-      expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
-      expect(page).not_to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
+      expect(page).to have_no_content(I18n.t('doc_auth.tips.document_capture_selfie_text1'))
+      expect(page).to have_no_content(I18n.t('doc_auth.tips.document_capture_selfie_text2'))
+      expect(page).to have_no_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
     end
 
     it 'proceeds to the next page with valid info' do

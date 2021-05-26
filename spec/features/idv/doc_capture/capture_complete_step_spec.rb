@@ -32,7 +32,7 @@ feature 'capture complete step' do
     let(:ial2_step_indicator_enabled) { false }
 
     it 'does not show the step indicator' do
-      expect(page).not_to have_css('.step-indicator')
+      expect(page).to have_no_css('.step-indicator')
     end
   end
 end
