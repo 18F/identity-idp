@@ -14,7 +14,8 @@ AE:
   country_code: '971'
   name: United Arab Emirates
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 AF:
   country_code: '93'
   name: Afghanistan
@@ -159,7 +160,8 @@ BY:
   country_code: '375'
   name: Belarus
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 BZ:
   country_code: '501'
   name: Belize
@@ -285,7 +287,7 @@ EG:
   country_code: '20'
   name: Egypt
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
 ES:
   country_code: '34'
   name: Spain
@@ -470,7 +472,8 @@ JO:
   country_code: '962'
   name: Jordan
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 JP:
   country_code: '81'
   name: Japan
@@ -515,7 +518,8 @@ KW:
   country_code: '965'
   name: Kuwait
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 KY:
   country_code: '1345'
   name: Cayman Islands
@@ -796,7 +800,8 @@ QA:
   country_code: '974'
   name: Qatar
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 RE:
   country_code: '262'
   name: Reunion Island
@@ -816,7 +821,8 @@ RU:
   country_code: '7'
   name: Russia
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 RW:
   country_code: '250'
   name: Rwanda
@@ -826,7 +832,8 @@ SA:
   country_code: '966'
   name: Saudi Arabia
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 SB:
   country_code: '677'
   name: Solomon Islands
