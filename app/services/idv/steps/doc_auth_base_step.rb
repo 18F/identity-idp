@@ -59,6 +59,7 @@ module Idv
           # Async flow: DocumentCaptureSessionAsyncResult
           flow_session[:document_expired] = response.result&.dig(:document_expired)
         end
+        track_document_state
       end
 
       def user_id_from_token
@@ -154,6 +155,16 @@ module Idv
 
       def verify_document_capture_session_uuid_key
         :verify_document_action_document_capture_session_uuid
+      end
+
+      def track_document_state
+        return unless IdentityConfig.store.state_tracking_enabled
+        state = flow_session[:pii_from_doc][:state]
+        return unless state
+        doc_auth_log = DocAuthLog.find_by(user_id: user_id)
+        return unless doc_auth_log
+        doc_auth_log.state = state
+        doc_auth_log.save!
       end
 
       delegate :idv_session, :session, to: :@flow
