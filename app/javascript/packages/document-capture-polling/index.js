@@ -22,6 +22,15 @@ export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
  */
 
 /**
+ * @enum
+ */
+const ResultType = {
+  SUCCESS: 'SUCCESS',
+  CANCELLED: 'CANCELLED',
+  THROTTLED: 'THROTTLED',
+};
+
+/**
  * Manages polling requests for document capture hybrid flow.
  */
 export class DocumentCapturePolling {
@@ -68,16 +77,12 @@ export class DocumentCapturePolling {
   }
 
   /**
-   * @param {{
-   *   isCancelled?: boolean,
-   *   isThrottled?: boolean,
-   *   redirect?: string,
-   * }} params
+   * @param {{ result?: ResultType, redirect?: string }} params
    */
-  async onComplete({ isCancelled = false, isThrottled = false, redirect }) {
+  async onComplete({ result = ResultType.SUCCESS, redirect } = {}) {
     await this.trackEvent('IdV: Link sent capture doc polling complete', {
-      isCancelled,
-      isThrottled,
+      isCancelled: result === ResultType.CANCELLED,
+      isThrottled: result === ResultType.THROTTLED,
     });
     this.bindPromptOnNavigate(false);
     if (redirect) {
@@ -101,13 +106,16 @@ export class DocumentCapturePolling {
 
     switch (response.status) {
       case 200:
+        this.onComplete();
+        break;
+
       case 410:
-        this.onComplete({ isCancelled: response.status === 410 });
+        this.onComplete({ result: ResultType.CANCELLED });
         break;
 
       case 429: {
         const { redirect } = await response.json();
-        this.onComplete({ isThrottled: true, redirect });
+        this.onComplete({ result: ResultType.THROTTLED, redirect });
         break;
       }
 
