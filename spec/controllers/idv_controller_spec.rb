@@ -34,7 +34,7 @@ describe IdvController do
 
       get :index
 
-      expect(response).to redirect_to idv_fail_url
+      expect(response).to redirect_to idv_session_errors_failure_url
     end
 
     it 'redirects to account recovery if user has a password reset profile' do
@@ -154,69 +154,6 @@ describe IdvController do
         get :activated
 
         expect(response).to redirect_to idv_url
-      end
-    end
-  end
-
-  describe '#fail' do
-    context 'user has an active profile' do
-      it 'does not allow direct access and redirects to activated url' do
-        profile = create(:profile, :active, :verified)
-
-        stub_sign_in(profile.user)
-
-        get :fail
-
-        expect(response).to redirect_to idv_activated_url
-      end
-    end
-
-    context 'user does not have an active profile and has not exceeded IdV attempts' do
-      it 'does not allow direct access and redirects to the main IdV page' do
-        stub_sign_in
-
-        get :fail
-
-        expect(response).to redirect_to idv_url
-      end
-    end
-
-    context 'user does not have an active profile and has exceeded IdV attempts' do
-      let(:user) { create(:user) }
-
-      before do
-        profile = create(
-          :profile,
-          user: user,
-        )
-        Throttle.create(
-          throttle_type: 5,
-          user_id: user.id,
-          attempts: 5,
-          attempted_at: Time.zone.now,
-        )
-
-        stub_sign_in(profile.user)
-      end
-
-      it 'allows direct access' do
-        get :fail
-
-        expect(response).to render_template('idv/fail')
-      end
-
-      context 'when there is an SP in the session' do
-        render_views
-
-        before do
-          session[:sp] = { issuer: create(:service_provider).issuer }
-        end
-
-        it 'includes a link back to the failure to proof URL' do
-          get :fail
-
-          expect(response.body).to include(return_to_sp_failure_to_proof_path)
-        end
       end
     end
   end

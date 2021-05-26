@@ -37,8 +37,6 @@ en:
         internal_error: There was an internal error processing your request. Please try again.
         link: please contact us
         text_html: Please try again. If you keep getting these errors, %{link}.
-      help:
-        get_help_html: Get help at <strong>%{sp_name}</strong>
       phone:
         fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
           we limit the number of times you can attempt to verify your phone
@@ -108,8 +106,6 @@ en:
         resend: Send me another letter
         timeframe: Letters are sent the next business day via USPS First Class Mail, and
           typically take 3 to 7 business days.
-      hardfail: We can’t log you in right now, but you can try verifying your identity
-        again in %{hours} hours.
       mail_sent: Your letter is on its way
       otp_delivery_method:
         phone_number_html: We’ll send a code to <strong>%{phone}</strong>
@@ -150,7 +146,6 @@ en:
       activated: Your identity has already been verified
       cancel: We cannot verify your identity
       come_back_later: Come back soon.
-      hardfail: We weren’t able to verify your identity with %{app}
       mail:
         resend: Want another letter?
         verify: Want a letter?
