@@ -417,6 +417,15 @@ module SamlAuthHelper
     saml_authn_request
   end
 
+  def visit_idp_from_saml_sp(saml_overrides: {})
+    settings = saml_settings.dup
+    saml_overrides.each do |setting, value|
+      settings.send("#{setting}=", value)
+    end
+    @saml_authn_request = auth_request.create(settings)
+    visit @saml_authn_request
+  end
+
   private
 
   def link_user_to_identity(user, link, settings)

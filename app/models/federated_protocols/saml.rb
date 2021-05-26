@@ -27,7 +27,11 @@ module FederatedProtocols
     attr_reader :request
 
     def default_authn_context
-      ::Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      if current_service_provider&.ial
+        ::Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[current_service_provider.ial]
+      else
+        ::Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      end
     end
 
     def current_service_provider

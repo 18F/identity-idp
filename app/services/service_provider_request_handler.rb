@@ -35,7 +35,7 @@ class ServiceProviderRequestHandler
 
   def sp_stored_in_session
     return if sp_request_id.blank?
-    ServiceProviderRequestProxy.from_uuid(sp_session[:request_id]).issuer
+    ServiceProviderRequestProxy.from_uuid(sp_request_id).issuer
   end
 
   def pull_request_id_from_current_sp_session_id
