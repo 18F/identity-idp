@@ -33,7 +33,6 @@ describe Idv::CaptureDocStatusController do
         get :show
 
         expect(response.status).to eq(401)
-        expect(response.body).to eq('Unauthorized')
       end
     end
 
@@ -44,7 +43,6 @@ describe Idv::CaptureDocStatusController do
         get :show
 
         expect(response.status).to eq(401)
-        expect(response.body).to eq('Unauthorized')
       end
     end
 
@@ -58,7 +56,19 @@ describe Idv::CaptureDocStatusController do
         get :show
 
         expect(response.status).to eq(410)
-        expect(response.body).to eq('Cancelled')
+      end
+    end
+
+    context 'when the user is throttled' do
+      before do
+        allow(Throttler::IsThrottled).to receive(:call).with(user.id, :idv_acuant).and_return(true)
+      end
+
+      it 'returns throttled with redirect' do
+        get :show
+
+        expect(response.status).to eq(429)
+        expect(JSON.parse(response.body)).to include('redirect')
       end
     end
 
@@ -67,7 +77,6 @@ describe Idv::CaptureDocStatusController do
         get :show
 
         expect(response.status).to eq(202)
-        expect(response.body).to eq('Pending')
       end
     end
 
@@ -86,7 +95,6 @@ describe Idv::CaptureDocStatusController do
         get :show
 
         expect(response.status).to eq(401)
-        expect(response.body).to eq('Unauthorized')
       end
     end
 
@@ -105,7 +113,6 @@ describe Idv::CaptureDocStatusController do
         get :show
 
         expect(response.status).to eq(200)
-        expect(response.body).to eq('Complete')
       end
     end
   end
