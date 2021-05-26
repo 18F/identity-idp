@@ -22,7 +22,7 @@ export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
  */
 
 /**
- * @enum
+ * @enum {string}
  */
 const ResultType = {
   SUCCESS: 'SUCCESS',
