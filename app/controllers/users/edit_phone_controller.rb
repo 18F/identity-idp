@@ -60,10 +60,7 @@ module Users
     end
 
     def edit_phone_params
-      params.require(:edit_phone_form).permit(
-        :delivery_preference,
-        :make_default_number,
-      )
+      params.require(:edit_phone_form).permit(:delivery_preference, :make_default_number)
     end
   end
 end

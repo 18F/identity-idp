@@ -21,9 +21,7 @@ class ApplicationController < ActionController::Base
     PG::ConnectionBad, # raised when a Postgres connection times out
     Rack::Timeout::RequestTimeoutException,
     Redis::BaseConnectionError,
-  ].each do |error|
-    rescue_from error, with: :render_timeout
-  end
+  ].each { |error| rescue_from error, with: :render_timeout }
 
   helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
 
@@ -63,12 +61,13 @@ class ApplicationController < ActionController::Base
   delegate :remember_device_default, to: :decorated_session
 
   def decorated_session
-    @_decorated_session ||= DecoratedSession.new(
-      sp: current_sp,
-      view_context: view_context,
-      sp_session: sp_session,
-      service_provider_request: service_provider_request,
-    ).call
+    @_decorated_session ||=
+      DecoratedSession.new(
+        sp: current_sp,
+        view_context: view_context,
+        sp_session: sp_session,
+        service_provider_request: service_provider_request,
+      ).call
   end
 
   def default_url_options
@@ -102,24 +101,23 @@ class ApplicationController < ActionController::Base
   end
 
   def cache_issuer_in_cookie
-    cookies[:sp_issuer] = if current_sp.nil?
-                            nil
-                          else
-                            {
-                              value: current_sp.issuer,
-                              expires: IdentityConfig.store.session_timeout_in_minutes.minutes,
-                            }
-                          end
+    cookies[:sp_issuer] =
+      if current_sp.nil?
+        nil
+      else
+        {
+          value: current_sp.issuer,
+          expires: IdentityConfig.store.session_timeout_in_minutes.minutes,
+        }
+      end
   end
 
   def redirect_on_timeout
     return unless params[:timeout]
 
     unless current_user
-      flash[:info] = t(
-        'notices.session_cleared',
-        minutes: IdentityConfig.store.session_timeout_in_minutes,
-      )
+      flash[:info] =
+        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes)
     end
     begin
       redirect_to url_for(permitted_timeout_params)
@@ -205,13 +203,8 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !reauthn? && user_signed_in? &&
-      two_factor_enabled? &&
-      session['warden.user.user.session'] &&
-      !session['warden.user.user.session'].try(
-        :[],
-        TwoFactorAuthenticatable::NEED_AUTHENTICATION,
-      )
+    !reauthn? && user_signed_in? && two_factor_enabled? && session['warden.user.user.session'] &&
+      !session['warden.user.user.session'].try(:[], TwoFactorAuthenticatable::NEED_AUTHENTICATION)
   end
 
   def reauthn?
@@ -224,10 +217,10 @@ class ApplicationController < ActionController::Base
     authenticate_user!(force: true)
     return prompt_to_setup_mfa unless two_factor_enabled?
     return prompt_to_verify_mfa unless user_fully_authenticated?
-    return prompt_to_setup_mfa if service_provider_mfa_policy.
-                                  user_needs_sp_auth_method_setup?
-    return prompt_to_verify_sp_required_mfa if service_provider_mfa_policy.
-                                               user_needs_sp_auth_method_verification?
+    return prompt_to_setup_mfa if service_provider_mfa_policy.user_needs_sp_auth_method_setup?
+    if service_provider_mfa_policy.user_needs_sp_auth_method_verification?
+      return prompt_to_verify_sp_required_mfa
+    end
     enforce_total_session_duration_timeout
     true
   end
@@ -329,13 +322,14 @@ class ApplicationController < ActionController::Base
   end
 
   def service_provider_mfa_policy
-    @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
-      user: current_user,
-      service_provider: sp_from_sp_session,
-      auth_method: user_session[:auth_method],
-      aal_level_requested: sp_session[:aal_level_requested],
-      piv_cac_requested: sp_session[:piv_cac_requested],
-    )
+    @service_provider_mfa_policy ||=
+      ServiceProviderMfaPolicy.new(
+        user: current_user,
+        service_provider: sp_from_sp_session,
+        auth_method: user_session[:auth_method],
+        aal_level_requested: sp_session[:aal_level_requested],
+        piv_cac_requested: sp_session[:piv_cac_requested],
+      )
   end
 
   def sp_session
@@ -360,7 +354,9 @@ class ApplicationController < ActionController::Base
       NewRelic::Agent.notice_error(exception)
     end
     render template: 'pages/page_took_too_long',
-           layout: false, status: :service_unavailable, formats: :html
+           layout: false,
+           status: :service_unavailable,
+           formats: :html
   end
 
   def render_full_width(template, **opts)

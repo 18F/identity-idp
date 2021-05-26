@@ -7,12 +7,13 @@ class EventsController < ApplicationController
 
   def show
     analytics.track_event(Analytics::EVENTS_VISIT)
-    @view_model = AccountShow.new(
-      decrypted_pii: nil,
-      personal_key: nil,
-      decorated_user: current_user.decorate,
-      locked_for_session: pii_locked_for_session?(current_user),
-    )
+    @view_model =
+      AccountShow.new(
+        decrypted_pii: nil,
+        personal_key: nil,
+        decorated_user: current_user.decorate,
+        locked_for_session: pii_locked_for_session?(current_user),
+      )
     device_and_events
   rescue ActiveRecord::RecordNotFound, ActiveModel::RangeError
     render_not_found
@@ -22,15 +23,16 @@ class EventsController < ApplicationController
 
   def device_and_events
     user_id = current_user.id
-    @events = DeviceTracking::ListDeviceEvents.call(user_id, device_id, 0, EVENTS_PAGE_SIZE).
-              map(&:decorate)
+    @events =
+      DeviceTracking::ListDeviceEvents.call(user_id, device_id, 0, EVENTS_PAGE_SIZE).map(&:decorate)
     @device = Device.where(user_id: user_id).find(device_id)
   end
 
   def device_id
-    @device_id_param ||= begin
-      id = params[:id].try(:to_i)
-      id || 0
-    end
+    @device_id_param ||=
+      begin
+        id = params[:id].try(:to_i)
+        id || 0
+      end
   end
 end

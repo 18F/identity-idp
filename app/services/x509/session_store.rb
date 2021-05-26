@@ -31,8 +31,13 @@ module X509
         },
       }
 
-      session_store.
-        send(:set_session, {}, session_uuid, session_data, expire_after: expiration.to_i)
+      session_store.send(
+        :set_session,
+        {},
+        session_uuid,
+        session_data,
+        expire_after: expiration.to_i,
+      )
     end
 
     private

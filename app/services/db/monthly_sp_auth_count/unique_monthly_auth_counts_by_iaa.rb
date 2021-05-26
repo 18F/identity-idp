@@ -15,43 +15,46 @@ module Db
 
         return [] if !date_range || !issuers
 
-        full_months, partial_months = Reports::MonthHelper.months(date_range).
-          partition do |month_range|
-            Reports::MonthHelper.full_month?(month_range)
-          end
+        full_months, partial_months =
+          Reports::MonthHelper
+            .months(date_range)
+            .partition { |month_range| Reports::MonthHelper.full_month?(month_range) }
 
         # The subqueries create a uniform representation of data:
         # - full months from monthly_sp_auth_counts
         # - partial months by aggregating sp_return_logs
         # The results are rows with [user_id, ial, auth_count, year_month]
-        subquery = [
-          full_month_subquery(issuers: issuers, full_months: full_months),
-          *partial_month_subqueries(issuers: issuers, partial_months: partial_months),
-        ].join(' UNION ALL ')
+        subquery =
+          [
+            full_month_subquery(issuers: issuers, full_months: full_months),
+            *partial_month_subqueries(issuers: issuers, partial_months: partial_months),
+          ].join(' UNION ALL ')
 
-        select_clause = case aggregate
-        when :sum
-          <<~SQL
+        select_clause =
+          case aggregate
+          when :sum
+            <<~SQL
             SUM(billing_month_logs.auth_count)::bigint AS total_auth_count
           SQL
-        when :unique
-          <<~SQL
+          when :unique
+            <<~SQL
             COUNT(DISTINCT billing_month_logs.user_id) AS unique_users
           SQL
-        when :new_unique
-          <<~SQL
+          when :new_unique
+            <<~SQL
             COUNT(DISTINCT billing_month_logs.user_id) AS new_unique_users
           SQL
-        else
-          raise "unknown aggregate=#{aggregate}"
-        end
+          else
+            raise "unknown aggregate=#{aggregate}"
+          end
 
-        where_clause = case aggregate
-        when :new_unique
-          # "new unique users" are users that we are seeing for the first
-          # time this month, so this filters out users we have seen in a past
-          # month by joining the subquery against itself
-          <<~SQL
+        where_clause =
+          case aggregate
+          when :new_unique
+            # "new unique users" are users that we are seeing for the first
+            # time this month, so this filters out users we have seen in a past
+            # month by joining the subquery against itself
+            <<~SQL
             NOT EXISTS (
               SELECT 1
               FROM subquery lookback_logs
@@ -61,9 +64,9 @@ module Db
               AND lookback_logs.year_month < billing_month_logs.year_month
             )
           SQL
-        else
-          'TRUE'
-        end
+          else
+            'TRUE'
+          end
 
         params = {
           iaa_start_date: quote(date_range.begin),
@@ -97,10 +100,11 @@ module Db
 
       # @return [String]
       def full_month_subquery(issuers:, full_months:)
-        params = {
-          issuers: issuers,
-          year_months: full_months.map { |r| r.begin.strftime('%Y%m') },
-        }.transform_values { |value| quote(value) }
+        params =
+          {
+            issuers: issuers,
+            year_months: full_months.map { |r| r.begin.strftime('%Y%m') },
+          }.transform_values { |value| quote(value) }
 
         full_month_subquery = format(<<~SQL, params)
           SELECT
@@ -119,12 +123,13 @@ module Db
       # @return [Array<String>]
       def partial_month_subqueries(issuers:, partial_months:)
         partial_months.map do |month_range|
-          params = {
-            range_start: month_range.begin,
-            range_end: month_range.end,
-            year_month: month_range.begin.strftime('%Y%m'),
-            issuers: issuers,
-          }.transform_values { |value| quote(value) }
+          params =
+            {
+              range_start: month_range.begin,
+              range_end: month_range.end,
+              year_month: month_range.begin.strftime('%Y%m'),
+              issuers: issuers,
+            }.transform_values { |value| quote(value) }
 
           format(<<~SQL, params)
             SELECT
@@ -146,22 +151,17 @@ module Db
 
       # @return [Array(Range<Date>, Array<String>)] date_range, issuers
       def iaa_parts(iaa)
-        issuer_start_ends = ServiceProvider.
-          where(iaa: iaa).
-          pluck(:issuer, :iaa_start_date, :iaa_end_date)
+        issuer_start_ends =
+          ServiceProvider.where(iaa: iaa).pluck(:issuer, :iaa_start_date, :iaa_end_date)
 
         return [] if issuer_start_ends.empty?
 
-        iaa_start_date, iaa_end_date = issuer_start_ends.flat_map do |_, start, finish|
-          [start, finish]
-        end.minmax
+        iaa_start_date, iaa_end_date =
+          issuer_start_ends.flat_map { |_, start, finish| [start, finish] }.minmax
 
         issuers = issuer_start_ends.map { |issuer, *rest| issuer }.uniq
 
-        [
-          (iaa_start_date..iaa_end_date),
-          issuers,
-        ]
+        [(iaa_start_date..iaa_end_date), issuers]
       end
     end
   end

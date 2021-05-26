@@ -3,8 +3,7 @@ module Idv
     class AgreementStep < DocAuthBaseStep
       STEP_INDICATOR_STEP = :getting_started
 
-      def call
-      end
+      def call; end
 
       def form_submit
         skip_to_capture if params[:skip_upload]

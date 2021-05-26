@@ -16,10 +16,7 @@ module JobHelpers
     end
 
     def faraday_retry_options
-      {
-        max_tries: 3,
-        rescue: [Faraday::TimeoutError, Faraday::ConnectionFailed],
-      }
+      { max_tries: 3, rescue: [Faraday::TimeoutError, Faraday::ConnectionFailed] }
     end
   end
 end

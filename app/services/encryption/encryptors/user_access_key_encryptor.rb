@@ -28,17 +28,14 @@ module Encryption
       attr_reader :encryptor, :user_access_key
 
       def build_ciphertext(encryption_key, encrypted_contents)
-        [
-          encode(encryption_key),
-          encrypted_contents,
-        ].join(DELIMITER)
+        [encode(encryption_key), encrypted_contents].join(DELIMITER)
       end
 
       def encryption_key_from_ciphertext(ciphertext)
         encoded_encryption_key = ciphertext.split(DELIMITER).first
-        raise EncryptionError, 'ciphertext is invalid' unless valid_base64_encoding?(
-          encoded_encryption_key,
-        )
+        unless valid_base64_encoding?(encoded_encryption_key)
+          raise EncryptionError, 'ciphertext is invalid'
+        end
         decode(encoded_encryption_key)
       end
 

@@ -57,9 +57,6 @@ class ResetPasswordForm
   end
 
   def extra_analytics_attributes
-    {
-      user_id: user.uuid,
-      profile_deactivated: (@profile_deactivated == true),
-    }
+    { user_id: user.uuid, profile_deactivated: (@profile_deactivated == true) }
   end
 end

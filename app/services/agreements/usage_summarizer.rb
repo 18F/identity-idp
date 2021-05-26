@@ -7,9 +7,7 @@ module Agreements
     def initialize(iaas:)
       @iaas = iaas
       @iaas_by_issuer = map_iaas_to_issuers
-      @usage = {
-        iaas: empty_iaa_usage_hash,
-      }
+      @usage = { iaas: empty_iaa_usage_hash }
     end
 
     def call

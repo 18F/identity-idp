@@ -1,15 +1,8 @@
 # Update ServiceProvider table by pulling from the Dashboard app API (lower environments only)
 class ServiceProviderUpdater
-  SP_PROTECTED_ATTRIBUTES = %i[
-    created_at
-    id
-    native
-    updated_at
-  ].to_set.freeze
+  SP_PROTECTED_ATTRIBUTES = %i[created_at id native updated_at].to_set.freeze
 
-  SP_IGNORED_ATTRIBUTES = %i[
-    cert
-  ]
+  SP_IGNORED_ATTRIBUTES = %i[cert]
 
   def run
     dashboard_service_providers.each do |service_provider|

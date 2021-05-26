@@ -8,8 +8,7 @@ class NewPhoneForm
   validate :validate_not_voip
   validate :validate_not_duplicate
 
-  attr_accessor :phone, :international_code, :otp_delivery_preference,
-                :otp_make_default_number
+  attr_accessor :phone, :international_code, :otp_delivery_preference, :otp_make_default_number
 
   def initialize(user)
     self.user = user
@@ -58,10 +57,7 @@ class NewPhoneForm
   def ingest_phone_number(params)
     self.international_code = params[:international_code]
     self.submitted_phone = params[:phone]
-    self.phone = PhoneFormatter.format(
-      submitted_phone,
-      country_code: international_code,
-    )
+    self.phone = PhoneFormatter.format(submitted_phone, country_code: international_code)
   end
 
   def extra_analytics_attributes
@@ -71,9 +67,7 @@ class NewPhoneForm
       carrier: @phone_info&.carrier,
       country_code: parsed_phone.country,
       area_code: parsed_phone.area_code,
-    }.tap do |extra|
-      extra[:redacted_phone] = @redacted_phone if @redacted_phone
-    end
+    }.tap { |extra| extra[:redacted_phone] = @redacted_phone if @redacted_phone }
   end
 
   def validate_not_voip
@@ -84,7 +78,7 @@ class NewPhoneForm
     return unless IdentityConfig.store.voip_block
 
     if @phone_info.type == :voip &&
-       !FeatureManagement.voip_allowed_phones.include?(parsed_phone.e164)
+         !FeatureManagement.voip_allowed_phones.include?(parsed_phone.e164)
       errors.add(:phone, I18n.t('errors.messages.voip_check_error'))
     elsif @phone_info.error
       errors.add(:phone, I18n.t('errors.messages.voip_phone'))
@@ -95,9 +89,10 @@ class NewPhoneForm
   end
 
   def validate_not_duplicate
-    current_user_phones = user.phone_configurations.map do |phone_configuration|
-      PhoneFormatter.format(phone_configuration.phone)
-    end
+    current_user_phones =
+      user.phone_configurations.map do |phone_configuration|
+        PhoneFormatter.format(phone_configuration.phone)
+      end
 
     return unless current_user_phones.include?(phone)
     errors.add(:phone, I18n.t('errors.messages.phone_duplicate'))

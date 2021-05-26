@@ -39,8 +39,9 @@ module Idv
 
       delete_async
       FormResponse.new(
-        success: success, errors: idv_result[:errors],
-        extra: extra_analytics_attributes
+        success: success,
+        errors: idv_result[:errors],
+        extra: extra_analytics_attributes,
       )
     end
 
@@ -55,10 +56,11 @@ module Idv
 
     def proof_address
       return if idv_session.idv_phone_step_document_capture_session_uuid
-      document_capture_session = DocumentCaptureSession.create(
-        user_id: idv_session.current_user.id,
-        requested_at: Time.zone.now,
-      )
+      document_capture_session =
+        DocumentCaptureSession.create(
+          user_id: idv_session.current_user.id,
+          requested_at: Time.zone.now,
+        )
 
       idv_session.idv_phone_step_document_capture_session_uuid = document_capture_session.uuid
 
@@ -71,10 +73,7 @@ module Idv
     end
 
     def applicant
-      @applicant ||= idv_session.applicant.merge(
-        phone: normalized_phone,
-        uuid_prefix: uuid_prefix,
-      )
+      @applicant ||= idv_session.applicant.merge(phone: normalized_phone, uuid_prefix: uuid_prefix)
     end
 
     def uuid_prefix
@@ -82,20 +81,17 @@ module Idv
     end
 
     def normalized_phone
-      @normalized_phone ||= begin
-        formatted_phone = PhoneFormatter.format(phone_param)
-        formatted_phone.gsub(/\D/, '')[1..-1] if formatted_phone.present?
-      end
+      @normalized_phone ||=
+        begin
+          formatted_phone = PhoneFormatter.format(phone_param)
+          formatted_phone.gsub(/\D/, '')[1..-1] if formatted_phone.present?
+        end
     end
 
     def phone_param
       params = step_params || idv_session.previous_phone_step_params
       step_phone = params[:phone]
-      if step_phone == 'other'
-        params[:other_phone]
-      else
-        step_phone
-      end
+      step_phone == 'other' ? params[:other_phone] : step_phone
     end
 
     def increment_attempts_count
@@ -112,16 +108,18 @@ module Idv
       idv_session.vendor_phone_confirmation = true
       idv_session.user_phone_confirmation = phone_matches_user_phone?
       Db::ProofingComponent::Add.call(
-        idv_session.current_user.id, :address_check,
-        'lexis_nexis_address'
+        idv_session.current_user.id,
+        :address_check,
+        'lexis_nexis_address',
       )
     end
 
     def start_phone_confirmation_session
-      idv_session.user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.start(
-        phone: PhoneFormatter.format(applicant[:phone]),
-        delivery_method: :sms,
-      )
+      idv_session.user_phone_confirmation_session =
+        PhoneConfirmation::ConfirmationSession.start(
+          phone: PhoneFormatter.format(applicant[:phone]),
+          delivery_method: :sms,
+        )
     end
 
     def phone_matches_user_phone?
@@ -131,26 +129,24 @@ module Idv
     end
 
     def user_phones
-      MfaContext.new(
-        idv_session.current_user,
-      ).phone_configurations.map do |phone_configuration|
+      MfaContext.new(idv_session.current_user).phone_configurations.map do |phone_configuration|
         PhoneFormatter.format(phone_configuration.phone)
       end.compact
     end
 
     def extra_analytics_attributes
-      {
-        vendor: idv_result.except(:errors, :success),
-      }
+      { vendor: idv_result.except(:errors, :success) }
     end
 
     def run_job(document_capture_session)
-      Idv::Agent.new(applicant).proof_address(
-        document_capture_session,
-        trace_id: trace_id,
-        issuer: idv_session.issuer,
-        user_id: idv_session.current_user.id,
-      )
+      Idv::Agent
+        .new(applicant)
+        .proof_address(
+          document_capture_session,
+          trace_id: trace_id,
+          issuer: idv_session.issuer,
+          user_id: idv_session.current_user.id,
+        )
     end
 
     def timed_out

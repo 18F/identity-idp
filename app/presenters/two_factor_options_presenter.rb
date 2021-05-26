@@ -13,8 +13,9 @@ class TwoFactorOptionsPresenter
   end
 
   def icon
-    return 'icon-lock-alert-important.svg' if piv_cac_required? ||
-                                              (aal3_only? && mfa_policy.two_factor_enabled?)
+    if piv_cac_required? || (aal3_only? && mfa_policy.two_factor_enabled?)
+      return 'icon-lock-alert-important.svg'
+    end
   end
 
   def icon_alt_text

@@ -9,10 +9,7 @@ module AccountReset
       notify_user_by_email(request)
       notify_user_by_sms_if_applicable
 
-      FormResponse.new(
-        success: true,
-        extra: extra_analytics_attributes,
-      )
+      FormResponse.new(success: true, extra: extra_analytics_attributes)
     end
 
     private

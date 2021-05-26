@@ -3,34 +3,31 @@ module Idv
     class DocumentCaptureStep < DocAuthBaseStep
       STEP_INDICATOR_STEP = :verify_id
 
-      IMAGE_UPLOAD_PARAM_NAMES = %i[
-        front_image back_image selfie_image
-      ].freeze
+      IMAGE_UPLOAD_PARAM_NAMES = %i[front_image back_image selfie_image].freeze
 
       def call
-        if request_should_use_stored_result?
-          handle_stored_result
-        else
-          post_images_and_handle_result
-        end
+        request_should_use_stored_result? ? handle_stored_result : post_images_and_handle_result
       end
 
       def extra_view_variables
         url_builder = ImageUploadPresignedUrlGenerator.new
 
         {
-          front_image_upload_url: url_builder.presigned_image_upload_url(
-            image_type: 'front',
-            transaction_id: flow_session[:document_capture_session_uuid],
-          ),
-          back_image_upload_url: url_builder.presigned_image_upload_url(
-            image_type: 'back',
-            transaction_id: flow_session[:document_capture_session_uuid],
-          ),
-          selfie_image_upload_url: url_builder.presigned_image_upload_url(
-            image_type: 'selfie',
-            transaction_id: flow_session[:document_capture_session_uuid],
-          ),
+          front_image_upload_url:
+            url_builder.presigned_image_upload_url(
+              image_type: 'front',
+              transaction_id: flow_session[:document_capture_session_uuid],
+            ),
+          back_image_upload_url:
+            url_builder.presigned_image_upload_url(
+              image_type: 'back',
+              transaction_id: flow_session[:document_capture_session_uuid],
+            ),
+          selfie_image_upload_url:
+            url_builder.presigned_image_upload_url(
+              image_type: 'selfie',
+              transaction_id: flow_session[:document_capture_session_uuid],
+            ),
         }
       end
 
@@ -41,10 +38,8 @@ module Idv
         return handle_document_verification_failure(response) unless response.success?
         doc_pii_form_result = Idv::DocPiiForm.new(response.pii_from_doc).submit
         unless doc_pii_form_result.success?
-          doc_auth_form_result = IdentityDocAuth::Response.new(
-            success: false,
-            errors: doc_pii_form_result.errors,
-          )
+          doc_auth_form_result =
+            IdentityDocAuth::Response.new(success: false, errors: doc_pii_form_result.errors)
           doc_auth_form_result = doc_auth_form_result.merge(response)
           return handle_document_verification_failure(doc_auth_form_result)
         end
@@ -58,12 +53,14 @@ module Idv
       def post_images
         return throttled_response if throttled_else_increment
 
-        result = DocAuthRouter.client.post_images(
-          front_image: front_image.read,
-          back_image: back_image.read,
-          selfie_image: selfie_image&.read,
-          liveness_checking_enabled: liveness_checking_enabled?,
-        )
+        result =
+          DocAuthRouter.client.post_images(
+            front_image: front_image.read,
+            back_image: back_image.read,
+            selfie_image: selfie_image&.read,
+            liveness_checking_enabled: liveness_checking_enabled?,
+          )
+
         # DP: should these cost recordings happen in the doc_auth_client?
         add_costs(result)
         result
@@ -71,11 +68,12 @@ module Idv
 
       def handle_document_verification_failure(response)
         mark_step_incomplete(:document_capture)
-        notice = if liveness_checking_enabled?
-                   { notice: I18n.t('errors.doc_auth.document_capture_info_with_selfie_html') }
-                 else
-                   { notice: I18n.t('errors.doc_auth.document_capture_info_html') }
-                 end
+        notice =
+          if liveness_checking_enabled?
+            { notice: I18n.t('errors.doc_auth.document_capture_info_with_selfie_html') }
+          else
+            { notice: I18n.t('errors.doc_auth.document_capture_info_html') }
+          end
         log_document_error(response)
         extra = response.to_h.merge(notice)
         failure(response.first_error_message, extra)
@@ -128,9 +126,9 @@ module Idv
       def form_submit
         return FormResponse.new(success: true) if request_should_use_stored_result?
 
-        Idv::DocumentCaptureForm.
-          new(liveness_checking_enabled: liveness_checking_enabled?).
-          submit(permit(IMAGE_UPLOAD_PARAM_NAMES))
+        Idv::DocumentCaptureForm
+          .new(liveness_checking_enabled: liveness_checking_enabled?)
+          .submit(permit(IMAGE_UPLOAD_PARAM_NAMES))
       end
     end
   end

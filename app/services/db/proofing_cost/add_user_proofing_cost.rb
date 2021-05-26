@@ -1,7 +1,8 @@
 module Db
   module ProofingCost
     class AddUserProofingCost
-      class ProofingCostTypeError < StandardError; end
+      class ProofingCostTypeError < StandardError
+      end
 
       TOKEN_WHITELIST = %i[
         acuant_front_image

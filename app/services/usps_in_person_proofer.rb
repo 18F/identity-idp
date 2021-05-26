@@ -1,9 +1,8 @@
 class UspsInPersonProofer
   attr_reader :token, :token_expires_at
 
-  PostOffice = Struct.new(
-    :distance, :address, :city, :phone, :name, :zip_code, :state, keyword_init: true
-  )
+  PostOffice =
+    Struct.new(:distance, :address, :city, :phone, :name, :zip_code, :state, keyword_init: true)
 
   # Makes a request to retrieve a new OAuth token
   # and modifies self to store the token and when
@@ -35,11 +34,7 @@ class UspsInPersonProofer
     }.to_json
     resp = faraday.post(url, body, request_headers)
 
-    if resp.success?
-      JSON.parse(resp.body)
-    else
-      { error: 'Failed to get token', response: resp }
-    end
+    resp.success? ? JSON.parse(resp.body) : { error: 'Failed to get token', response: resp }
   end
 
   # Makes HTTP request to get nearby in-person proofing facilities
@@ -58,10 +53,7 @@ class UspsInPersonProofer
       zipCode: location.zip_code,
     }.to_json
 
-    headers = request_headers.merge(
-      'Authorization' => @token,
-      'RequestID' => request_id,
-    )
+    headers = request_headers.merge('Authorization' => @token, 'RequestID' => request_id)
 
     resp = faraday.post(url, body, headers)
 
@@ -105,20 +97,11 @@ class UspsInPersonProofer
       IPPAssuranceLevel: '1.5',
     }.to_json
 
-    headers = request_headers.merge(
-      {
-        'Authorization' => @token,
-        'RequestID' => request_id,
-      },
-    )
+    headers = request_headers.merge({ 'Authorization' => @token, 'RequestID' => request_id })
 
     resp = faraday.post(url, body, headers)
 
-    if resp.success?
-      JSON.parse(resp.body)
-    else
-      { error: 'failed to get enroll', response: resp }
-    end
+    resp.success? ? JSON.parse(resp.body) : { error: 'failed to get enroll', response: resp }
   end
 
   # Makes HTTP request to retrieve proofing status
@@ -131,18 +114,9 @@ class UspsInPersonProofer
   # @return [Hash] API response
   def request_proofing_results(unique_id, enrollment_code)
     url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getProofingResults"
-    body = {
-      sponsorID: sponsor_id,
-      uniqueID: unique_id,
-      enrollmentCode: enrollment_code,
-    }.to_json
+    body = { sponsorID: sponsor_id, uniqueID: unique_id, enrollmentCode: enrollment_code }.to_json
 
-    headers = request_headers.merge(
-      {
-        'Authorization' => @token,
-        'RequestID' => request_id,
-      },
-    )
+    headers = request_headers.merge({ 'Authorization' => @token, 'RequestID' => request_id })
 
     resp = faraday.post(url, body, headers)
 
@@ -164,25 +138,13 @@ class UspsInPersonProofer
   # @return [Hash] API response
   def request_enrollment_code(unique_id)
     url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/requestEnrollmentCode"
-    body = {
-      sponsorID: sponsor_id,
-      uniqueID: unique_id,
-    }.to_json
+    body = { sponsorID: sponsor_id, uniqueID: unique_id }.to_json
 
-    headers = request_headers.merge(
-      {
-        'Authorization' => @token,
-        'RequestID' => request_id,
-      },
-    )
+    headers = request_headers.merge({ 'Authorization' => @token, 'RequestID' => request_id })
 
     resp = faraday.post(url, body, headers)
 
-    if resp.success?
-      JSON.parse(resp.body)
-    else
-      resp
-    end
+    resp.success? ? JSON.parse(resp.body) : resp
   end
 
   def root_url

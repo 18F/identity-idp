@@ -24,8 +24,8 @@ class EmailAddress < ApplicationRecord
   end
 
   def confirmation_period_expired?
-    expiration_time = confirmation_sent_at +
-                      IdentityConfig.store.add_email_link_valid_for_hours.hours
+    expiration_time =
+      confirmation_sent_at + IdentityConfig.store.add_email_link_valid_for_hours.hours
     Time.zone.now > expiration_time
   end
 

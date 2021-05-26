@@ -2,13 +2,9 @@ module Idv
   class DocumentCaptureForm
     include ActiveModel::Model
 
-    ATTRIBUTES = %i[front_image
-                    back_image
-                    selfie_image].freeze
+    ATTRIBUTES = %i[front_image back_image selfie_image].freeze
 
-    attr_accessor :front_image,
-                  :back_image,
-                  :selfie_image
+    attr_accessor :front_image, :back_image, :selfie_image
     attr_reader :liveness_checking_enabled
 
     validates :front_image, presence: true

@@ -12,9 +12,8 @@ module Idv
     )
       document_capture_session.create_proofing_session
 
-      encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
-        { applicant_pii: @applicant }.to_json,
-      )
+      encrypted_arguments =
+        Encryption::Encryptors::SessionEncryptor.new.encrypt({ applicant_pii: @applicant }.to_json)
 
       ResolutionProofingJob.perform_later(
         encrypted_arguments: encrypted_arguments,
@@ -28,9 +27,8 @@ module Idv
 
     def proof_address(document_capture_session, user_id:, issuer:, trace_id:)
       document_capture_session.create_proofing_session
-      encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
-        { applicant_pii: @applicant }.to_json,
-      )
+      encrypted_arguments =
+        Encryption::Encryptors::SessionEncryptor.new.encrypt({ applicant_pii: @applicant }.to_json)
 
       AddressProofingJob.perform_later(
         user_id: user_id,
@@ -41,11 +39,16 @@ module Idv
       )
     end
 
-    def proof_document(document_capture_session, liveness_checking_enabled:, trace_id:,
-                       analytics_data:)
-      encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
-        { document_arguments: @applicant }.to_json,
-      )
+    def proof_document(
+      document_capture_session,
+      liveness_checking_enabled:,
+      trace_id:,
+      analytics_data:
+    )
+      encrypted_arguments =
+        Encryption::Encryptors::SessionEncryptor.new.encrypt(
+          { document_arguments: @applicant }.to_json,
+        )
 
       DocumentProofingJob.perform_later(
         encrypted_arguments: encrypted_arguments,

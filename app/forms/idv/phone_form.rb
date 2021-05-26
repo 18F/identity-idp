@@ -25,9 +25,7 @@ module Idv
     end
 
     def phone_belongs_to_user?
-      @user.phone_configurations.any? do |configuration|
-        configuration.phone == phone
-      end
+      @user.phone_configurations.any? { |configuration| configuration.phone == phone }
     end
 
     private
@@ -49,10 +47,7 @@ module Idv
     end
 
     def extra_analytics_attributes
-      {
-        country_code: parsed_phone.country,
-        area_code: parsed_phone.area_code,
-      }
+      { country_code: parsed_phone.country, area_code: parsed_phone.area_code }
     end
 
     def parsed_phone

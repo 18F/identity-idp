@@ -42,9 +42,7 @@ class NullServiceProvider
     updated_at
   ].freeze
 
-  COLUMNS.each do |col|
-    define_method(col) { nil }
-  end
+  COLUMNS.each { |col| define_method(col) { nil } }
 
   def initialize(issuer:, friendly_name: 'Null ServiceProvider')
     @issuer = issuer

@@ -22,9 +22,7 @@ module KeyRotator
     def rotate_pii_fingerprints(profile, pii_attributes)
       ssn_fingerprint = Pii::Fingerprinter.fingerprint(pii_attributes.ssn.to_s)
 
-      columns_to_update = {
-        ssn_signature: ssn_fingerprint,
-      }
+      columns_to_update = { ssn_signature: ssn_fingerprint }
 
       if (compound_pii_fingerprint = Profile.build_compound_pii_fingerprint(pii_attributes))
         columns_to_update[:name_zip_birth_year_signature] = compound_pii_fingerprint

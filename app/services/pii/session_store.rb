@@ -25,14 +25,15 @@ module Pii
     # Only used for convenience in tests
     # @param [Pii::Attributes] pii
     def put(pii, expiration = 5.minutes)
-      session_data = {
-        'warden.user.user.session' => {
-          decrypted_pii: pii.to_h.to_json,
-        },
-      }
+      session_data = { 'warden.user.user.session' => { decrypted_pii: pii.to_h.to_json } }
 
-      session_store.
-        send(:set_session, {}, session_uuid, session_data, expire_after: expiration.to_i)
+      session_store.send(
+        :set_session,
+        {},
+        session_uuid,
+        session_data,
+        expire_after: expiration.to_i,
+      )
     end
 
     # @api private

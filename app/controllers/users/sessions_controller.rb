@@ -59,11 +59,12 @@ module Users
       analytics.track_event(Analytics::SESSION_TIMED_OUT)
       request_id = sp_session[:request_id]
       sign_out
-      flash[:info] = t(
-        'notices.session_timedout',
-        app: APP_NAME,
-        minutes: IdentityConfig.store.session_timeout_in_minutes,
-      )
+      flash[:info] =
+        t(
+          'notices.session_timedout',
+          app: APP_NAME,
+          minutes: IdentityConfig.store.session_timeout_in_minutes,
+        )
       redirect_to root_url(request_id: request_id)
     end
 
@@ -94,10 +95,11 @@ module Users
     end
 
     def process_locked_out_user
-      presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
-        'generic_login_attempts',
-        current_user.decorate,
-      )
+      presenter =
+        TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
+          'generic_login_attempts',
+          current_user.decorate,
+        )
       sign_out
       render_full_width('shared/_failure', locals: { presenter: presenter })
     end
@@ -184,9 +186,7 @@ module Users
     end
 
     def pending_account_reset_request
-      AccountReset::FindPendingRequestForUser.new(
-        current_user,
-      ).call
+      AccountReset::FindPendingRequestForUser.new(current_user).call
     end
 
     LETTERS_AND_DASHES = /\A[a-z0-9\-]+\Z/i.freeze

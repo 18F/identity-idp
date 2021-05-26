@@ -44,9 +44,10 @@ module ProfanityDetector
     # Map of {Integer => Set<string>}
     profanity_by_length = Hash.new { |h, k| h[k] = Set.new }
 
-    ProfanityFilter::Base.dictionary.keys.each do |word|
-      profanity_by_length[word.size] << word.downcase
-    end
+    ProfanityFilter::Base
+      .dictionary
+      .keys
+      .each { |word| profanity_by_length[word.size] << word.downcase }
 
     # Map of {Integer => Regexp}
     @regex_by_length = Hash.new

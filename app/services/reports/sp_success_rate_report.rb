@@ -5,9 +5,7 @@ module Reports
     REPORT_NAME = 'sp-success-rate-report'.freeze
 
     def call
-      results = transaction_with_timeout do
-        Db::SpReturnLog.success_rate_by_sp
-      end
+      results = transaction_with_timeout { Db::SpReturnLog.success_rate_by_sp }
       save_report(REPORT_NAME, results.to_json)
     end
   end

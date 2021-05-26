@@ -8,11 +8,7 @@ class PivCacConfiguration < ApplicationRecord
   end
 
   def selection_presenters
-    if mfa_enabled?
-      [TwoFactorAuthentication::PivCacSelectionPresenter.new(self)]
-    else
-      []
-    end
+    mfa_enabled? ? [TwoFactorAuthentication::PivCacSelectionPresenter.new(self)] : []
   end
 
   def friendly_name
@@ -20,10 +16,6 @@ class PivCacConfiguration < ApplicationRecord
   end
 
   def self.selection_presenters(set)
-    if set.any?
-      set.first.selection_presenters
-    else
-      []
-    end
+    set.any? ? set.first.selection_presenters : []
   end
 end

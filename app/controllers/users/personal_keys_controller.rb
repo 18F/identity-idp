@@ -10,7 +10,8 @@ module Users
       personal_key = user_session[:personal_key]
 
       analytics.track_event(
-        Analytics::PERSONAL_KEY_VIEWED, personal_key_present: personal_key.present?
+        Analytics::PERSONAL_KEY_VIEWED,
+        personal_key_present: personal_key.present?,
       )
 
       return redirect_to account_url if personal_key.blank?
@@ -50,14 +51,18 @@ module Users
 
     # @return [FormResponse]
     def send_new_personal_key_notifications
-      emails = current_user.confirmed_email_addresses.map do |email_address|
-        UserMailer.personal_key_regenerated(current_user, email_address.email).deliver_now
-      end
+      emails =
+        current_user.confirmed_email_addresses.map do |email_address|
+          UserMailer.personal_key_regenerated(current_user, email_address.email).deliver_now
+        end
 
-      telephony_responses = MfaContext.new(current_user).
-                            phone_configurations.map do |phone_configuration|
-        Telephony.send_personal_key_regeneration_notice(to: phone_configuration.phone)
-      end
+      telephony_responses =
+        MfaContext
+          .new(current_user)
+          .phone_configurations
+          .map do |phone_configuration|
+            Telephony.send_personal_key_regeneration_notice(to: phone_configuration.phone)
+          end
 
       form_response(emails: emails, telephony_responses: telephony_responses)
     end

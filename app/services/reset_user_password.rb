@@ -27,8 +27,7 @@ class ResetUserPassword
   end
 
   def log_event
-    UserEventCreator.new(current_user: user).
-      create_out_of_band_user_event(:password_invalidated)
+    UserEventCreator.new(current_user: user).create_out_of_band_user_event(:password_invalidated)
   end
 
   def notify_user

@@ -7,7 +7,7 @@ module TwoFactorAuthCode
 
     def webauthn_help
       if service_provider_mfa_policy.aal3_required? &&
-         service_provider_mfa_policy.allow_user_to_switch_method?
+           service_provider_mfa_policy.allow_user_to_switch_method?
         t('instructions.mfa.webauthn.confirm_webauthn_or_aal3_html')
       elsif service_provider_mfa_policy.aal3_required?
         t('instructions.mfa.webauthn.confirm_webauthn_only_html')
@@ -38,22 +38,14 @@ module TwoFactorAuthCode
 
     def link_path
       if service_provider_mfa_policy.aal3_required?
-        if service_provider_mfa_policy.allow_user_to_switch_method?
-          login_two_factor_piv_cac_url
-        else
-          ''
-        end
+        service_provider_mfa_policy.allow_user_to_switch_method? ? login_two_factor_piv_cac_url : ''
       else
         super
       end
     end
 
     def cancel_link
-      if reauthn
-        account_path
-      else
-        sign_out_path
-      end
+      reauthn ? account_path : sign_out_path
     end
 
     def fallback_question

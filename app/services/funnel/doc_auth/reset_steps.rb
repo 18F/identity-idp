@@ -6,10 +6,14 @@ module Funnel
       def self.call(user_id)
         doc_auth_log = DocAuthLog.find_by(user_id: user_id)
         return unless doc_auth_log
-        DocAuthLog.new.attributes.keys.each do |attribute|
-          next if SKIP_FIELDS.index(attribute)
-          reset_attributes(doc_auth_log, attribute)
-        end
+        DocAuthLog
+          .new
+          .attributes
+          .keys
+          .each do |attribute|
+            next if SKIP_FIELDS.index(attribute)
+            reset_attributes(doc_auth_log, attribute)
+          end
         doc_auth_log.save
       end
 

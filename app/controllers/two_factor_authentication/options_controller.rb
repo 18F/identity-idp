@@ -15,10 +15,14 @@ module TwoFactorAuthentication
 
     EXTRA_URL_OPTIONS = {
       'voice' => {
-        otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+        otp_delivery_selection_form: {
+          otp_delivery_preference: 'voice',
+        },
       },
       'sms' => {
-        otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+        otp_delivery_selection_form: {
+          otp_delivery_preference: 'sms',
+        },
       },
     }.freeze
 

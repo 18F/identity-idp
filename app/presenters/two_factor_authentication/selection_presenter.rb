@@ -29,11 +29,7 @@ module TwoFactorAuthentication
     private
 
     def option_mode
-      if @configuration.present?
-        'login_options'
-      else
-        'two_factor_choice_options'
-      end
+      @configuration.present? ? 'login_options' : 'two_factor_choice_options'
     end
   end
 end

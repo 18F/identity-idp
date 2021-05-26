@@ -22,9 +22,7 @@ module Idv
         { name: :secure_account },
       ].freeze
 
-      OPTIONAL_SHOW_STEPS = {
-        verify_wait: Idv::Steps::VerifyWaitStepShow,
-      }.freeze
+      OPTIONAL_SHOW_STEPS = { verify_wait: Idv::Steps::VerifyWaitStepShow }.freeze
 
       ACTIONS = {
         cancel_send_link: Idv::Actions::CancelSendLinkAction,

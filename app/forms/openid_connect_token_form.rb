@@ -5,22 +5,14 @@ class OpenidConnectTokenForm
 
   ISSUED_AT_LEEWAY_SECONDS = 10.seconds.to_i
 
-  ATTRS = %i[
-    client_assertion
-    client_assertion_type
-    code
-    code_verifier
-    grant_type
-  ].freeze
+  ATTRS = %i[client_assertion client_assertion_type code code_verifier grant_type].freeze
 
   attr_reader(*ATTRS)
 
   CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'.freeze
 
   validates_inclusion_of :grant_type, in: %w[authorization_code]
-  validates_inclusion_of :client_assertion_type,
-                         in: [CLIENT_ASSERTION_TYPE],
-                         if: :private_key_jwt?
+  validates_inclusion_of :client_assertion_type, in: [CLIENT_ASSERTION_TYPE], if: :private_key_jwt?
 
   validate :validate_code
   validate :validate_pkce_or_private_key_jwt
@@ -28,9 +20,7 @@ class OpenidConnectTokenForm
   validate :validate_client_assertion, if: :private_key_jwt?
 
   def initialize(params)
-    ATTRS.each do |key|
-      instance_variable_set(:"@#{key}", params[key])
-    end
+    ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
     @identity = find_identity_with_code
   end
 
@@ -67,9 +57,12 @@ class OpenidConnectTokenForm
     return if code.blank? || code.include?("\x00")
 
     session_expiration = IdentityConfig.store.session_timeout_in_minutes.minutes.ago
-    @identity = ServiceProviderIdentity.where(session_uuid: code).
-                where('updated_at >= ?', session_expiration).
-                order(updated_at: :desc).first
+    @identity =
+      ServiceProviderIdentity
+        .where(session_uuid: code)
+        .where('updated_at >= ?', session_expiration)
+        .order(updated_at: :desc)
+        .first
   end
 
   def pkce?
@@ -95,8 +88,9 @@ class OpenidConnectTokenForm
   end
 
   def validate_code
-    errors.add :code, t('openid_connect.token.errors.invalid_code') if identity.blank? ||
-                                                                       !identity.user
+    if identity.blank? || !identity.user
+      errors.add :code, t('openid_connect.token.errors.invalid_code')
+    end
   end
 
   def validate_code_verifier
@@ -111,17 +105,23 @@ class OpenidConnectTokenForm
 
     payload, _headers, err = nil
 
-    matching_cert = service_provider.ssl_certs.find do |ssl_cert|
-      err = nil
-      payload, _headers = JWT.decode(
-        client_assertion, ssl_cert.public_key, true,
-        algorithm: 'RS256', iss: client_id,
-        verify_iss: true, sub: client_id,
-        verify_sub: true
-      )
-    rescue JWT::DecodeError => err
-      next
-    end
+    matching_cert =
+      service_provider.ssl_certs.find do |ssl_cert|
+        err = nil
+        payload, _headers =
+          JWT.decode(
+            client_assertion,
+            ssl_cert.public_key,
+            true,
+            algorithm: 'RS256',
+            iss: client_id,
+            verify_iss: true,
+            sub: client_id,
+            verify_sub: true,
+          )
+      rescue JWT::DecodeError => err
+        next
+      end
 
     if matching_cert && payload
       validate_aud_claim(payload)
@@ -169,10 +169,7 @@ class OpenidConnectTokenForm
   end
 
   def extra_analytics_attributes
-    {
-      client_id: client_id,
-      user_id: identity&.user&.uuid,
-    }
+    { client_id: client_id, user_id: identity&.user&.uuid }
   end
 
   def clear_authorization_code

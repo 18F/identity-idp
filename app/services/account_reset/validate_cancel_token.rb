@@ -22,10 +22,7 @@ module AccountReset
     end
 
     def extra_analytics_attributes
-      {
-        event: 'cancel token validation',
-        user_id: user.uuid,
-      }
+      { event: 'cancel token validation', user_id: user.uuid }
     end
   end
 end

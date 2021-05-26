@@ -41,33 +41,36 @@ module Reports
     end
 
     def active_ial2_counts_for_iaa(sp)
-      count = Db::Identity::IaaActiveUserCount.new(
-        sp.iaa,
-        sp.iaa_start_date,
-        sp.iaa_end_date,
-      ).call(2, today)
-      { iaa: sp.iaa,
+      count =
+        Db::Identity::IaaActiveUserCount
+          .new(sp.iaa, sp.iaa_start_date, sp.iaa_end_date)
+          .call(2, today)
+      {
+        iaa: sp.iaa,
         iaa_start_date: sp.iaa_start_date.strftime('%Y-%m-%d'),
         iaa_end_date: sp.iaa_end_date.strftime('%Y-%m-%d'),
-        ial2_active_count: count }.stringify_keys
+        ial2_active_count: count,
+      }.stringify_keys
     end
 
     def unique_iaa_sps
       iaa_done = {}
       sps = []
-      ServiceProvider.where.not(
-        iaa: nil,
-      ).where.not(
-        iaa_start_date: nil,
-      ).where.not(
-        iaa_end_date: nil,
-      ).sort_by(&:issuer).each do |sp|
-        iaa = sp.iaa
-        (sps_for_iaa[iaa] ||= []) << sp
-        next if iaa_done[iaa]
-        sps << sp
-        iaa_done[iaa] = true
-      end
+      ServiceProvider
+        .where
+        .not(iaa: nil)
+        .where
+        .not(iaa_start_date: nil)
+        .where
+        .not(iaa_end_date: nil)
+        .sort_by(&:issuer)
+        .each do |sp|
+          iaa = sp.iaa
+          (sps_for_iaa[iaa] ||= []) << sp
+          next if iaa_done[iaa]
+          sps << sp
+          iaa_done[iaa] = true
+        end
       sps
     end
   end

@@ -64,9 +64,9 @@ module Idv
     end
 
     def non_address_pii
-      pii_to_h.
-        slice('first_name', 'middle_name', 'last_name', 'dob', 'phone', 'ssn').
-        merge(uuid_prefix: ServiceProvider.from_issuer(sp_session[:issuer]).app_id)
+      pii_to_h
+        .slice('first_name', 'middle_name', 'last_name', 'dob', 'phone', 'ssn')
+        .merge(uuid_prefix: ServiceProvider.from_issuer(sp_session[:issuer]).app_id)
     end
 
     def pii_to_h
@@ -80,19 +80,22 @@ module Idv
     end
 
     def idv_session_settings(hash)
-      { 'vendor_phone_confirmation': false,
+      {
+        'vendor_phone_confirmation': false,
         'user_phone_confirmation': false,
         'resolution_successful': 'phone',
         'address_verification_mechanism': 'gpo',
         'profile_confirmation': true,
         'params': hash,
         'applicant': hash,
-        'uuid': current_user.uuid }
+        'uuid': current_user.uuid,
+      }
     end
 
     def confirm_mail_not_spammed
-      redirect_to idv_review_url if idv_session.address_mechanism_chosen? &&
-                                    gpo_mail_service.mail_spammed?
+      if idv_session.address_mechanism_chosen? && gpo_mail_service.mail_spammed?
+        redirect_to idv_review_url
+      end
     end
 
     def confirm_user_completed_idv_profile_step
@@ -112,11 +115,12 @@ module Idv
     end
 
     def confirmation_maker_perform
-      confirmation_maker = GpoConfirmationMaker.new(
-        pii: Pii::Cacher.new(current_user, user_session).fetch,
-        issuer: sp_session[:issuer],
-        profile: current_user.decorate.pending_profile,
-      )
+      confirmation_maker =
+        GpoConfirmationMaker.new(
+          pii: Pii::Cacher.new(current_user, user_session).fetch,
+          issuer: sp_session[:issuer],
+          profile: current_user.decorate.pending_profile,
+        )
       confirmation_maker.perform
       confirmation_maker
     end
@@ -183,22 +187,25 @@ module Idv
       return if idv_session.idv_gpo_document_capture_session_uuid
       idv_session.previous_gpo_step_params = profile_params.to_h
 
-      document_capture_session = DocumentCaptureSession.create(
-        user_id: current_user.id,
-        issuer: sp_session[:issuer],
-        ial2_strict: sp_session[:ial2_strict],
-        requested_at: Time.zone.now,
-      )
+      document_capture_session =
+        DocumentCaptureSession.create(
+          user_id: current_user.id,
+          issuer: sp_session[:issuer],
+          ial2_strict: sp_session[:ial2_strict],
+          requested_at: Time.zone.now,
+        )
 
       document_capture_session.create_proofing_session
       idv_session.idv_gpo_document_capture_session_uuid = document_capture_session.uuid
       applicant = pii(profile_params.to_h)
-      Idv::Agent.new(applicant).proof_resolution(
-        document_capture_session,
-        should_proof_state_id: false,
-        trace_id: amzn_trace_id,
-        document_expired: idv_session.document_expired,
-      )
+      Idv::Agent
+        .new(applicant)
+        .proof_resolution(
+          document_capture_session,
+          should_proof_state_id: false,
+          trace_id: amzn_trace_id,
+          document_expired: idv_session.document_expired,
+        )
     end
 
     def async_state

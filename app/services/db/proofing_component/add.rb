@@ -10,6 +10,7 @@ module Db
         source_check
         verified_at
       ].freeze
+
       # address_check: lexis_nexis_phone, usps
       # document_check: acuant
       # document_type: state_id

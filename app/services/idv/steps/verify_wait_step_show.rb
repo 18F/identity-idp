@@ -36,11 +36,7 @@ module Idv
         summarize_result_and_throttle_failures(form_response)
         delete_async
 
-        if form_response.success?
-          mark_step_complete(:verify_wait)
-        else
-          mark_step_incomplete(:verify)
-        end
+        form_response.success? ? mark_step_complete(:verify_wait) : mark_step_incomplete(:verify)
 
         form_response
       end

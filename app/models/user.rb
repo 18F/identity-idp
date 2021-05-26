@@ -31,6 +31,7 @@ class User < ApplicationRecord
   has_many :identities, class_name: 'ServiceProviderIdentity'
   has_many :events # we are retaining events after delete
   has_many :devices # we are retaining devices after delete
+
   # rubocop:enable Rails/HasManyOrHasOneDependent
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
@@ -46,9 +47,7 @@ class User < ApplicationRecord
   has_many :throttles, dependent: :destroy
   has_one :registration_log, dependent: :destroy
   has_one :proofing_component, dependent: :destroy
-  has_many :service_providers,
-           through: :identities,
-           source: :service_provider_record
+  has_many :service_providers, through: :identities, source: :service_provider_record
 
   attr_accessor :asserted_attributes
 

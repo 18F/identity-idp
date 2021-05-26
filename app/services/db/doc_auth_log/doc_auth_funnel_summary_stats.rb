@@ -1,9 +1,17 @@
 module Db
   module DocAuthLog
     class DocAuthFunnelSummaryStats
-      SKIP_FIELDS =
-        %w[id user_id created_at updated_at no_sp_session_started_at no_sp_campaign issuer
-           last_document_error state].freeze
+      SKIP_FIELDS = %w[
+        id
+        user_id
+        created_at
+        updated_at
+        no_sp_session_started_at
+        no_sp_campaign
+        issuer
+        last_document_error
+        state
+      ].freeze
 
       def call
         total_count = ::DocAuthLog.count
@@ -29,10 +37,14 @@ module Db
 
       def execute_funnel_sql
         sep = ''
-        ::DocAuthLog.new.attributes.keys.each do |attribute|
-          next unless append_sql(sql_a, attribute, sep)
-          sep = ','
-        end
+        ::DocAuthLog
+          .new
+          .attributes
+          .keys
+          .each do |attribute|
+            next unless append_sql(sql_a, attribute, sep)
+            sep = ','
+          end
         sql_a << ' FROM doc_auth_logs'
         ActiveRecord::Base.connection.execute(sql_a.join)[0]
       end

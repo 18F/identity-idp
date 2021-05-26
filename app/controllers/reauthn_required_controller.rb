@@ -37,12 +37,9 @@ class ReauthnRequiredController < ApplicationController
   end
 
   def factor_from_controller_name
-    {
-      'emails' => 'email',
-      'passwords' => 'password',
-      'phones' => 'phone',
-      'delete' => 'delete',
-    }[controller_name]
+    { 'emails' => 'email', 'passwords' => 'password', 'phones' => 'phone', 'delete' => 'delete' }[
+      controller_name
+    ]
   end
 
   def store_location(url)

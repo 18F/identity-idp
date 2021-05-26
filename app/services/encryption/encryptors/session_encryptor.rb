@@ -11,9 +11,8 @@ module Encryption
       end
 
       def decrypt(ciphertext)
-        aes_ciphertext = KmsClient.new.decrypt(
-          decode(ciphertext), 'context' => 'session-encryption'
-        )
+        aes_ciphertext =
+          KmsClient.new.decrypt(decode(ciphertext), 'context' => 'session-encryption')
         aes_encryptor.decrypt(aes_ciphertext, aes_encryption_key)
       end
 

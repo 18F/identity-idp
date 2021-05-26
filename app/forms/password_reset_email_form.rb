@@ -13,10 +13,7 @@ class PasswordResetEmailForm
   end
 
   def submit
-    FormResponse.new(
-      success: valid?, errors: errors,
-      extra: extra_analytics_attributes
-    )
+    FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
   end
 
   private

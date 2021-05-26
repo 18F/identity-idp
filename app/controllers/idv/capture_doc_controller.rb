@@ -21,9 +21,9 @@ module Idv
     private
 
     def ensure_user_id_in_session
-      return if session[:doc_capture_user_id] &&
-                token.blank? &&
-                document_capture_session_uuid.blank?
+      if session[:doc_capture_user_id] && token.blank? && document_capture_session_uuid.blank?
+        return
+      end
 
       result = CaptureDoc::ValidateDocumentCaptureSession.new(document_capture_session_uuid).call
 

@@ -20,9 +20,12 @@ module AccountReset
     end
 
     def notify_user_via_phone_of_account_reset_cancellation
-      MfaContext.new(user).phone_configurations.each do |phone_configuration|
-        Telephony.send_account_reset_cancellation_notice(to: phone_configuration.phone)
-      end
+      MfaContext
+        .new(user)
+        .phone_configurations
+        .each do |phone_configuration|
+          Telephony.send_account_reset_cancellation_notice(to: phone_configuration.phone)
+        end
     end
   end
 end

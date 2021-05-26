@@ -6,11 +6,7 @@ module AccountReset
       result = AccountReset::ValidateCancelToken.new(token).call
       track_event(result)
 
-      if result.success?
-        handle_valid_token
-      else
-        handle_invalid_token(result)
-      end
+      result.success? ? handle_valid_token : handle_invalid_token(result)
     end
 
     def create

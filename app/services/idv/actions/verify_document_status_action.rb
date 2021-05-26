@@ -8,10 +8,11 @@ module Idv
       private
 
       def process_async_state(current_async_state)
-        form = ApiDocumentVerificationStatusForm.new(
-          async_state: current_async_state,
-          document_capture_session: verify_document_capture_session,
-        )
+        form =
+          ApiDocumentVerificationStatusForm.new(
+            async_state: current_async_state,
+            document_capture_session: verify_document_capture_session,
+          )
 
         form_response = form.submit
 
@@ -24,17 +25,12 @@ module Idv
           end
         end
 
-        presenter = ImageUploadResponsePresenter.new(
-          form_response: form_response,
-          url_options: url_options,
-        )
+        presenter =
+          ImageUploadResponsePresenter.new(form_response: form_response, url_options: url_options)
 
         status = :accepted if current_async_state.in_progress?
 
-        render_json(
-          presenter,
-          status: status || presenter.status,
-        )
+        render_json(presenter, status: status || presenter.status)
 
         form_response
       end
@@ -65,13 +61,14 @@ module Idv
 
       def verify_document_capture_session
         return @verify_document_capture_session if defined?(@verify_document_capture_session)
-        @verify_document_capture_session = if hybrid_flow_mobile?
-          document_capture_session
-        else
-          DocumentCaptureSession.find_by(
-            uuid: flow_session[verify_document_capture_session_uuid_key],
-          )
-        end
+        @verify_document_capture_session =
+          if hybrid_flow_mobile?
+            document_capture_session
+          else
+            DocumentCaptureSession.find_by(
+              uuid: flow_session[verify_document_capture_session_uuid_key],
+            )
+          end
       end
 
       def async_state
@@ -111,10 +108,7 @@ module Idv
       end
 
       def document_capture_analytics(message)
-        data = {
-          error: message,
-          uuid: flow_session[verify_document_capture_session_uuid_key],
-        }
+        data = { error: message, uuid: flow_session[verify_document_capture_session_uuid_key] }
 
         @flow.analytics.track_event(Analytics::DOC_AUTH_ASYNC, data)
       end

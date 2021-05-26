@@ -16,11 +16,7 @@ class VerifyAccountForm
 
   def submit
     result = valid?
-    if result
-      activate_profile
-    else
-      reset_sensitive_fields
-    end
+    result ? activate_profile : reset_sensitive_fields
     FormResponse.new(success: result, errors: errors)
   end
 

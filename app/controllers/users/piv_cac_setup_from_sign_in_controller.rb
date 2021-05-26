@@ -8,11 +8,7 @@ module Users
     before_action :set_piv_cac_setup_csp_form_action_uris, only: :prompt
 
     def prompt
-      if params.key?(:token)
-        process_piv_cac_setup
-      else
-        render_prompt
-      end
+      params.key?(:token) ? process_piv_cac_setup : render_prompt
     end
 
     def success; end
@@ -36,20 +32,17 @@ module Users
     def process_piv_cac_setup
       result = user_piv_cac_form.submit
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
-      if result.success?
-        process_valid_submission
-      else
-        process_invalid_submission
-      end
+      result.success? ? process_valid_submission : process_invalid_submission
     end
 
     def user_piv_cac_form
-      @user_piv_cac_form ||= UserPivCacSetupForm.new(
-        user: current_user,
-        token: params[:token],
-        nonce: piv_cac_nonce,
-        name: user_session[:piv_cac_nickname],
-      )
+      @user_piv_cac_form ||=
+        UserPivCacSetupForm.new(
+          user: current_user,
+          token: params[:token],
+          nonce: piv_cac_nonce,
+          name: user_session[:piv_cac_nickname],
+        )
     end
 
     def process_invalid_submission

@@ -3,14 +3,16 @@ class UserMailer < ActionMailer::Base
   include LocaleHelper
   before_action :attach_images
   default(
-    from: email_with_name(
-      IdentityConfig.store.email_from,
-      IdentityConfig.store.email_from_display_name,
-    ),
-    reply_to: email_with_name(
-      IdentityConfig.store.email_from,
-      IdentityConfig.store.email_from_display_name,
-    ),
+    from:
+      email_with_name(
+        IdentityConfig.store.email_from,
+        IdentityConfig.store.email_from_display_name,
+      ),
+    reply_to:
+      email_with_name(
+        IdentityConfig.store.email_from,
+        IdentityConfig.store.email_from_display_name,
+      ),
   )
 
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
@@ -148,9 +150,7 @@ class UserMailer < ActionMailer::Base
   def letter_reminder(user, email)
     return unless email_should_receive_nonessential_notifications?(email)
 
-    with_user_locale(user) do
-      mail(to: email, subject: t('user_mailer.letter_reminder.subject'))
-    end
+    with_user_locale(user) { mail(to: email, subject: t('user_mailer.letter_reminder.subject')) }
   end
 
   def add_email(user, email, token)
@@ -167,17 +167,13 @@ class UserMailer < ActionMailer::Base
   def email_added(user, email)
     return unless email_should_receive_nonessential_notifications?(email)
 
-    with_user_locale(user) do
-      mail(to: email, subject: t('user_mailer.email_added.subject'))
-    end
+    with_user_locale(user) { mail(to: email, subject: t('user_mailer.email_added.subject')) }
   end
 
   def email_deleted(user, email)
     return unless email_should_receive_nonessential_notifications?(email)
 
-    with_user_locale(user) do
-      mail(to: email, subject: t('user_mailer.email_deleted.subject'))
-    end
+    with_user_locale(user) { mail(to: email, subject: t('user_mailer.email_deleted.subject')) }
   end
 
   def add_email_associated_with_another_account(email)

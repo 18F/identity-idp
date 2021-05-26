@@ -3,21 +3,20 @@ class BackupCodeBackfillerJob < ApplicationJob
 
   # Helper to be run manually in a Rails console once
   def self.enqueue_all(batch_size: 10_000)
-    Range.new(1, User.last.id).
-      step(batch_size).
-      each do |start|
-        perform_later(start_id: start, count: batch_size)
-      end
+    Range
+      .new(1, User.last.id)
+      .step(batch_size)
+      .each { |start| perform_later(start_id: start, count: batch_size) }
   end
 
   # Operates on a batch by user, so that we can give a batch
   # the same salt to make forward lookups more efficient
   def perform(start_id:, count:)
-    User.
-      includes(:backup_code_configurations).
-      where('id >= ?', start_id).
-      limit(count).
-      each do |user|
+    User
+      .includes(:backup_code_configurations)
+      .where('id >= ?', start_id)
+      .limit(count)
+      .each do |user|
         perform_batch(user.backup_code_configurations)
       rescue => e
         if Rails.env.production?

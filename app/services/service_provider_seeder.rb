@@ -1,6 +1,7 @@
 # Update ServiceProvider from config/service_providers.yml (all environments in rake db:seed)
 class ServiceProviderSeeder
-  class ExtraServiceProviderError < StandardError; end
+  class ExtraServiceProviderError < StandardError
+  end
 
   def initialize(rails_env: Rails.env, deploy_env: Identity::Hostdata.env)
     @rails_env = rails_env
@@ -19,13 +20,9 @@ class ServiceProviderSeeder
           native: true,
           friendly_name: config['friendly_name'],
         )
-      end.update!(config.except(
-        'agency',
-        'restrict_to_deploy_env',
-        'uuid_priority',
-        'protocol',
-        'native',
-      ))
+      end.update!(
+        config.except('agency', 'restrict_to_deploy_env', 'uuid_priority', 'protocol', 'native'),
+      )
     end
   end
 
@@ -64,9 +61,8 @@ class ServiceProviderSeeder
 
     return if extra_sps.empty?
 
-    extra_sp_error = ExtraServiceProviderError.new(
-      "Extra service providers found in DB: #{extra_sps.join(', ')}",
-    )
+    extra_sp_error =
+      ExtraServiceProviderError.new("Extra service providers found in DB: #{extra_sps.join(', ')}")
     NewRelic::Agent.notice_error(extra_sp_error)
   end
 end

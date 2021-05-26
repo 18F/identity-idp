@@ -5,10 +5,12 @@ class ServiceProvider < ApplicationRecord
   belongs_to :agency
 
   # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :identities, inverse_of: :service_provider_record,
-                        foreign_key: 'service_provider',
-                        primary_key: 'issuer',
-                        class_name: 'ServiceProviderIdentity'
+  has_many :identities,
+           inverse_of: :service_provider_record,
+           foreign_key: 'service_provider',
+           primary_key: 'issuer',
+           class_name: 'ServiceProviderIdentity'
+
   # rubocop:enable Rails/HasManyOrHasOneDependent
 
   # Do not define validations in this model.
@@ -32,9 +34,8 @@ class ServiceProvider < ApplicationRecord
 
   # @return [Array<OpenSSL::X509::Certificate>]
   def ssl_certs
-    @ssl_certs ||= Array(certs).select(&:present?).map do |cert|
-      OpenSSL::X509::Certificate.new(load_cert(cert))
-    end
+    @ssl_certs ||=
+      Array(certs).select(&:present?).map { |cert| OpenSSL::X509::Certificate.new(load_cert(cert)) }
   end
 
   def encrypt_responses?

@@ -34,27 +34,23 @@ class SamlRequestValidator
   end
 
   def authorized_authn_context
-    if !valid_authn_context? ||
-       (ial2_context_requested? && service_provider.ial != 2)
+    if !valid_authn_context? || (ial2_context_requested? && service_provider.ial != 2)
       errors.add(:authn_context, :unauthorized_authn_context)
     end
   end
 
   def valid_authn_context?
-    authn_contexts = authn_context.reject do |classref|
-      classref.include?(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
-    end
-    authn_contexts.all? do |classref|
-      Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(classref)
-    end
+    authn_contexts =
+      authn_context.reject do |classref|
+        classref.include?(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
+      end
+    authn_contexts.all? { |classref| Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(classref) }
   end
 
   def ial2_context_requested?
     case authn_context
     when Array
-      authn_context.any? do |classref|
-        Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(classref)
-      end
+      authn_context.any? { |classref| Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(classref) }
     else
       Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(authn_context)
     end
@@ -68,9 +64,9 @@ class SamlRequestValidator
   end
 
   def email_nameid_format?
-    [
-      'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
-      'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
+    %w[
+      urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
+      urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress
     ].include?(nameid_format)
   end
 

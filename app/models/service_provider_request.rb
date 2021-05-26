@@ -4,8 +4,15 @@ class ServiceProviderRequest
   # upon deployment
   attr_accessor :uuid, :issuer, :url, :ial, :aal, :requested_attributes
 
-  def initialize(uuid: nil, issuer: nil, url: nil,
-                 loa: nil, ial: nil, aal: nil, requested_attributes: [])
+  def initialize(
+    uuid: nil,
+    issuer: nil,
+    url: nil,
+    loa: nil,
+    ial: nil,
+    aal: nil,
+    requested_attributes: []
+  )
     @uuid = uuid
     @issuer = issuer
     @url = url

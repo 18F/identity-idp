@@ -23,9 +23,7 @@ module DataRequests
     def call
       CSV.open(File.join(output_dir, 'logs.csv'), 'w') do |csv|
         csv << HEADERS
-        cloudwatch_results.each do |row|
-          csv << build_row(row)
-        end
+        cloudwatch_results.each { |row| csv << build_row(row) }
       end
     end
 
@@ -37,20 +35,20 @@ module DataRequests
       timestamp = data.dig('time')
       event_name = data.dig('name')
       success = data.dig('properties', 'event_properties', 'success')
-      multi_factor_auth_method = data.dig(
-        'properties', 'event_properties', 'multi_factor_auth_method'
-      )
+      multi_factor_auth_method =
+        data.dig('properties', 'event_properties', 'multi_factor_auth_method')
 
-      mfa_key = case multi_factor_auth_method
-      when 'sms', 'voice'
-        'phone_configuration_id'
-      when 'piv_cac'
-        'piv_cac_configuration_id'
-      when 'webauthn'
-        'webauthn_configuration_id'
-      when 'totp'
-        'auth_app_configuration_id'
-      end
+      mfa_key =
+        case multi_factor_auth_method
+        when 'sms', 'voice'
+          'phone_configuration_id'
+        when 'piv_cac'
+          'piv_cac_configuration_id'
+        when 'webauthn'
+          'webauthn_configuration_id'
+        when 'totp'
+          'auth_app_configuration_id'
+        end
 
       row_id = data.dig('properties', 'event_properties', mfa_key)
       multi_factor_id = row_id && "#{mfa_key}:#{row_id}"

@@ -69,10 +69,7 @@ class RegisterUserEmailForm
   attr_accessor :success, :request_id
 
   def build_user_and_email_address_with_email(email:, email_language:)
-    self.email_address = user.email_addresses.build(
-      user: user,
-      email: email,
-    )
+    self.email_address = user.email_addresses.build(user: user, email: email)
     user.email = email # Delete this when email address is retired
 
     self.email_language = email_language
@@ -102,11 +99,13 @@ class RegisterUserEmailForm
     user.accepted_terms_at = Time.zone.now if IdentityConfig.store.rules_of_use_enabled
     user.save!
     Funnel::Registration::Create.call(user.id)
-    SendSignUpEmailConfirmation.new(user).call(
-      request_id: request_id,
-      instructions: instructions,
-      password_reset_requested: password_reset_requested?,
-    )
+    SendSignUpEmailConfirmation
+      .new(user)
+      .call(
+        request_id: request_id,
+        instructions: instructions,
+        password_reset_requested: password_reset_requested?,
+      )
   end
 
   def extra_analytics_attributes

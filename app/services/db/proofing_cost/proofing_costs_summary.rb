@@ -6,9 +6,7 @@ module Db
       def call
         total_count = ::ProofingCost.count
         return {} if total_count.zero?
-        results.each do |key, value|
-          results[key] = (value.to_f / total_count).round(2)
-        end
+        results.each { |key, value| results[key] = (value.to_f / total_count).round(2) }
         results['total_proofing_costs_users_count'] = total_count
         results
       end
@@ -21,10 +19,14 @@ module Db
 
       def execute_summary_sql
         sep = ''
-        ::ProofingCost.new.attributes.keys.each do |attribute|
-          next unless append_sql(sql_a, attribute, sep)
-          sep = ','
-        end
+        ::ProofingCost
+          .new
+          .attributes
+          .keys
+          .each do |attribute|
+            next unless append_sql(sql_a, attribute, sep)
+            sep = ','
+          end
         sql_a << ' FROM proofing_costs'
         ActiveRecord::Base.connection.execute(sql_a.join)[0]
       end

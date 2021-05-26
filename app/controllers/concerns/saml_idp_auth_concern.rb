@@ -21,11 +21,12 @@ module SamlIdpAuthConcern
   def validate_service_provider_and_authn_context
     @saml_request_validator = SamlRequestValidator.new
 
-    @result = @saml_request_validator.call(
-      service_provider: current_service_provider,
-      authn_context: requested_authn_contexts,
-      nameid_format: name_id_format,
-    )
+    @result =
+      @saml_request_validator.call(
+        service_provider: current_service_provider,
+        authn_context: requested_authn_contexts,
+        nameid_format: name_id_format,
+      )
 
     return if @result.success?
 
@@ -56,8 +57,8 @@ module SamlIdpAuthConcern
   end
 
   def requested_authn_contexts
-    @requested_authn_contexts ||= saml_request.requested_authn_contexts.presence ||
-                                  [default_aal_context]
+    @requested_authn_contexts ||=
+      saml_request.requested_authn_contexts.presence || [default_aal_context]
   end
 
   def default_aal_context
@@ -85,8 +86,9 @@ module SamlIdpAuthConcern
   end
 
   def link_identity_from_session_data
-    IdentityLinker.new(current_user, current_issuer).
-      link_identity(ial: ial_context.ial_for_identity_record)
+    IdentityLinker
+      .new(current_user, current_issuer)
+      .link_identity(ial: ial_context.ial_for_identity_record)
   end
 
   def identity_needs_verification?
@@ -96,10 +98,8 @@ module SamlIdpAuthConcern
   def_delegators :ial_context, :ial2_requested?
 
   def ial_context
-    @ial_context ||= IalContext.new(
-      ial: requested_ial_authn_context,
-      service_provider: current_service_provider,
-    )
+    @ial_context ||=
+      IalContext.new(ial: requested_ial_authn_context, service_provider: current_service_provider)
   end
 
   def active_identity
@@ -161,10 +161,7 @@ module SamlIdpAuthConcern
 
   def saml_response_signature_options
     endpoint = SamlEndpoint.new(request)
-    {
-      x509_certificate: endpoint.x509_certificate,
-      secret_key: endpoint.secret_key,
-    }
+    { x509_certificate: endpoint.x509_certificate, secret_key: endpoint.secret_key }
   end
 
   def current_service_provider

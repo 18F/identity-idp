@@ -8,15 +8,8 @@ class RiscConfigurationPresenter
     {
       issuer: root_url,
       jwks_uri: api_openid_connect_certs_url,
-      delivery_methods_supported: [
-        DELIVERY_METHOD_PUSH,
-      ],
-      delivery: [
-        {
-          delivery_method: DELIVERY_METHOD_PUSH,
-          url: api_risc_security_events_url,
-        },
-      ],
+      delivery_methods_supported: [DELIVERY_METHOD_PUSH],
+      delivery: [{ delivery_method: DELIVERY_METHOD_PUSH, url: api_risc_security_events_url }],
     }
   end
 

@@ -14,9 +14,6 @@ class UpdateEmailLanguageForm
 
     UpdateUser.new(user: user, attributes: { email_language: email_language }).call if valid?
 
-    FormResponse.new(
-      success: valid?,
-      errors: errors,
-    )
+    FormResponse.new(success: valid?, errors: errors)
   end
 end

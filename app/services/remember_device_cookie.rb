@@ -11,10 +11,7 @@ class RememberDeviceCookie
   def self.from_json(json)
     parsed_json = JSON.parse(json)
     check_cookie_role(parsed_json)
-    new(
-      user_id: parsed_json['user_id'],
-      created_at: Time.zone.parse(parsed_json['created_at']),
-    )
+    new(user_id: parsed_json['user_id'], created_at: Time.zone.parse(parsed_json['created_at']))
   end
 
   private_class_method def self.check_cookie_role(parsed_json)

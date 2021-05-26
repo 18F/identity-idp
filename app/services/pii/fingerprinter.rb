@@ -18,11 +18,14 @@ module Pii
     end
 
     def self.verify_queue(text, fingerprint)
-      IdentityConfig.store.hmac_fingerprinter_key_queue.each do |key|
-        return true if ActiveSupport::SecurityUtils.secure_compare(
-          fingerprint, fingerprint(text, key)
-        )
-      end
+      IdentityConfig
+        .store
+        .hmac_fingerprinter_key_queue
+        .each do |key|
+          if ActiveSupport::SecurityUtils.secure_compare(fingerprint, fingerprint(text, key))
+            return true
+          end
+        end
       false
     end
 

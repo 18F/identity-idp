@@ -14,9 +14,8 @@ module Idv
 
         pii_from_doc[:uuid_prefix] = ServiceProvider.from_issuer(sp_session[:issuer]).app_id
 
-        document_capture_session = create_document_capture_session(
-          verify_step_document_capture_session_uuid_key,
-        )
+        document_capture_session =
+          create_document_capture_session(verify_step_document_capture_session_uuid_key)
 
         document_capture_session.requested_at = Time.zone.now
 

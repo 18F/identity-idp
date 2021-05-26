@@ -5,10 +5,7 @@ class OtpVerificationForm
   end
 
   def submit
-    FormResponse.new(
-      success: valid_direct_otp_code?,
-      extra: extra_analytics_attributes,
-    )
+    FormResponse.new(success: valid_direct_otp_code?, extra: extra_analytics_attributes)
   end
 
   private
@@ -29,8 +26,6 @@ class OtpVerificationForm
   end
 
   def extra_analytics_attributes
-    {
-      multi_factor_auth_method: 'otp_code',
-    }
+    { multi_factor_auth_method: 'otp_code' }
   end
 end

@@ -79,7 +79,8 @@ class Analytics
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
   ADD_EMAIL = 'Add Email: Email Submitted'.freeze
   ADD_EMAIL_CONFIRMATION = 'Add Email: Email Confirmation'.freeze
-  ADD_EMAIL_CONFIRMATION_RESEND = 'Add Email: Email Confirmation requested due to invalid token'.freeze
+  ADD_EMAIL_CONFIRMATION_RESEND =
+    'Add Email: Email Confirmation requested due to invalid token'.freeze
   ADD_EMAIL_VISIT = 'Add Email: enter email visited'.freeze
   AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'.freeze
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
@@ -135,8 +136,10 @@ class Analytics
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze
   MULTI_FACTOR_AUTH_ENTER_PIV_CAC = 'Multi-Factor Authentication: enter PIV CAC visited'.freeze
   MULTI_FACTOR_AUTH_ENTER_TOTP_VISIT = 'Multi-Factor Authentication: enter TOTP visited'.freeze
-  MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT = 'Multi-Factor Authentication: enter personal key visited'.freeze
-  MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT = 'Multi-Factor Authentication: enter backup code visited'.freeze
+  MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT =
+    'Multi-Factor Authentication: enter personal key visited'.freeze
+  MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT =
+    'Multi-Factor Authentication: enter backup code visited'.freeze
   MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'.freeze
   MULTI_FACTOR_AUTH_OPTION_LIST = 'Multi-Factor Authentication: option list'.freeze
   MULTI_FACTOR_AUTH_OPTION_LIST_VISIT = 'Multi-Factor Authentication: option list visited'.freeze
@@ -157,9 +160,12 @@ class Analytics
   PENDING_ACCOUNT_RESET_CANCELLED = 'Pending account reset cancelled'.freeze
   PENDING_ACCOUNT_RESET_VISITED = 'Pending account reset visited'.freeze
   PERSONAL_KEY_ALERT_ABOUT_SIGN_IN = 'Personal key: Alert user about sign in'.freeze
-  PERSONAL_KEY_REACTIVATION = 'Personal key reactivation: Account reactivated with personal key'.freeze
-  PERSONAL_KEY_REACTIVATION_SIGN_IN = 'Personal key reactivation: Account reactivated with personal key as MFA'.freeze
-  PERSONAL_KEY_REACTIVATION_SUBMITTED = 'Personal key reactivation: Personal key form submitted'.freeze
+  PERSONAL_KEY_REACTIVATION =
+    'Personal key reactivation: Account reactivated with personal key'.freeze
+  PERSONAL_KEY_REACTIVATION_SIGN_IN =
+    'Personal key reactivation: Account reactivated with personal key as MFA'.freeze
+  PERSONAL_KEY_REACTIVATION_SUBMITTED =
+    'Personal key reactivation: Personal key form submitted'.freeze
   PERSONAL_KEY_REACTIVATION_VISITED = 'Personal key reactivation: Personal key form visitted'.freeze
   PERSONAL_KEY_VIEWED = 'Personal Key Viewed'.freeze
   PHONE_CHANGE_SUBMITTED = 'Phone Number Change: Form submitted'.freeze
@@ -168,7 +174,8 @@ class Analytics
   PIV_CAC_LOGIN = 'PIV/CAC Login'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
-  PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS = 'Profile: Created new personal key notifications'.freeze
+  PROFILE_PERSONAL_KEY_CREATE_NOTIFICATIONS =
+    'Profile: Created new personal key notifications'.freeze
   PROOFING_ADDRESS_TIMEOUT = 'Proofing Address Timeout'.freeze
   PROOFING_DOCUMENT_TIMEOUT = 'Proofing Document Timeout'.freeze
   PROOFING_RESOLUTION_TIMEOUT = 'Proofing Resolution Timeout'.freeze
@@ -208,7 +215,8 @@ class Analytics
   USER_REGISTRATION_COMPLETE = 'User registration: complete'.freeze
   USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'.freeze
   USER_REGISTRATION_EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'.freeze
-  USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND = 'User Registration: Email Confirmation requested due to invalid token'.freeze
+  USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND =
+    'User Registration: Email Confirmation requested due to invalid token'.freeze
   USER_REGISTRATION_ENTER_EMAIL_VISIT = 'User Registration: enter email visited'.freeze
   USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'.freeze
   USER_REGISTRATION_2FA_SETUP = 'User Registration: 2FA Setup'.freeze

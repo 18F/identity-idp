@@ -1,9 +1,8 @@
 class MonthlySpAuthCount < ApplicationRecord
   # rubocop:disable Rails/InverseOf
   belongs_to :user
-  belongs_to :service_provider,
-             foreign_key: 'issuer',
-             primary_key: 'issuer'
+  belongs_to :service_provider, foreign_key: 'issuer', primary_key: 'issuer'
+
   # rubocop:enable Rails/InverseOf
 
   def self.increment(user_id, issuer, ial)
@@ -18,13 +17,8 @@ class MonthlySpAuthCount < ApplicationRecord
     current_user = User.find_by(id: user_id)
     service_provider = ServiceProvider.from_issuer(issuer)
     ial_context = IalContext.new(ial: ial, service_provider: service_provider, user: current_user)
-    query = sanitize_sql_array(
-      [sql,
-       issuer.to_s,
-       ial_context.bill_for_ial_1_or_2,
-       year_month,
-       user_id],
-    )
+    query =
+      sanitize_sql_array([sql, issuer.to_s, ial_context.bill_for_ial_1_or_2, year_month, user_id])
     MonthlySpAuthCount.connection.execute(query)
   end
 end

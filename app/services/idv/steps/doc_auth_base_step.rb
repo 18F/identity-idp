@@ -48,10 +48,11 @@ module Idv
       #   DocumentCaptureSessionResult] response
       def extract_pii_from_doc(response)
         current_user = User.find(user_id)
-        flow_session[:pii_from_doc] = response.pii_from_doc.merge(
-          uuid: current_user.uuid,
-          phone: current_user.phone_configurations.take&.phone,
-        )
+        flow_session[:pii_from_doc] =
+          response.pii_from_doc.merge(
+            uuid: current_user.uuid,
+            phone: current_user.phone_configurations.take&.phone,
+          )
         if response.respond_to?(:extra)
           # Sync flow: IdentityDocAuth::Response
           flow_session[:document_expired] = response.extra&.dig(:document_expired)
@@ -78,7 +79,9 @@ module Idv
         redirect_to throttled_url
         IdentityDocAuth::Response.new(
           success: false,
-          errors: { limit: I18n.t('errors.doc_auth.throttled_heading') },
+          errors: {
+            limit: I18n.t('errors.doc_auth.throttled_heading'),
+          },
         )
       end
 
@@ -101,11 +104,13 @@ module Idv
       end
 
       def add_costs(result)
-        Db::AddDocumentVerificationAndSelfieCosts.
-          new(user_id: user_id,
-              issuer: sp_session[:issuer].to_s,
-              liveness_checking_enabled: liveness_checking_enabled?).
-          call(result)
+        Db::AddDocumentVerificationAndSelfieCosts
+          .new(
+            user_id: user_id,
+            issuer: sp_session[:issuer].to_s,
+            liveness_checking_enabled: liveness_checking_enabled?,
+          )
+          .call(result)
       end
 
       def sp_session
@@ -117,20 +122,20 @@ module Idv
       end
 
       def create_document_capture_session(key)
-        document_capture_session = DocumentCaptureSession.create(
-          user_id: user_id,
-          issuer: sp_session[:issuer],
-          ial2_strict: sp_session[:ial2_strict],
-        )
+        document_capture_session =
+          DocumentCaptureSession.create(
+            user_id: user_id,
+            issuer: sp_session[:issuer],
+            ial2_strict: sp_session[:ial2_strict],
+          )
         flow_session[key] = document_capture_session.uuid
 
         document_capture_session
       end
 
       def document_capture_session
-        @document_capture_session ||= DocumentCaptureSession.find_by(
-          uuid: flow_session[document_capture_session_uuid_key],
-        )
+        @document_capture_session ||=
+          DocumentCaptureSession.find_by(uuid: flow_session[document_capture_session_uuid_key])
       end
 
       def no_sp?

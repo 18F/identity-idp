@@ -5,9 +5,7 @@ module Reports
     REPORT_NAME = 'total-monthly-auths-report'.freeze
 
     def call
-      auth_counts = transaction_with_timeout do
-        Db::MonthlySpAuthCount::TotalMonthlyAuthCounts.call
-      end
+      auth_counts = transaction_with_timeout { Db::MonthlySpAuthCount::TotalMonthlyAuthCounts.call }
       save_report(REPORT_NAME, auth_counts.to_json)
     end
   end

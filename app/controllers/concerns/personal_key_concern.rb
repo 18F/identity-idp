@@ -3,9 +3,7 @@ module PersonalKeyConcern
 
   extend ActiveSupport::Concern
 
-  included do
-    rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
-  end
+  included { rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin }
 
   def create_new_code
     if active_profile.present?

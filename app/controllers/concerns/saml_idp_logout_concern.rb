@@ -22,10 +22,7 @@ module SamlIdpLogoutConcern
   end
 
   def logout_response
-    encode_response(
-      current_user,
-      signature: saml_response_signature_options,
-    )
+    encode_response(current_user, signature: saml_response_signature_options)
   end
 
   def track_logout_event
@@ -40,9 +37,6 @@ module SamlIdpLogoutConcern
 
   def saml_response_signature_options
     endpoint = SamlEndpoint.new(request)
-    {
-      x509_certificate: endpoint.x509_certificate,
-      secret_key: endpoint.secret_key,
-    }
+    { x509_certificate: endpoint.x509_certificate, secret_key: endpoint.secret_key }
   end
 end

@@ -22,10 +22,7 @@ module Idv
       def send_link
         session_uuid = flow_session[:document_capture_session_uuid]
         update_document_capture_session_requested_at(session_uuid)
-        Telephony.send_doc_auth_link(
-          to: formatted_destination_phone,
-          link: link(session_uuid),
-        )
+        Telephony.send_doc_auth_link(to: formatted_destination_phone, link: link(session_uuid))
       end
 
       def form_submit

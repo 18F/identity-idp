@@ -37,17 +37,18 @@ module EncryptedRedisStructStorage
     payload = struct.as_json
     payload.delete('id')
 
-    utf_8_encode_strs = proc do |value|
-      if value.is_a?(String)
-        value.dup.force_encoding('UTF-8')
-      elsif value.is_a?(Array)
-        value.map(&utf_8_encode_strs)
-      elsif value.is_a?(Hash)
-        value.transform_values!(&utf_8_encode_strs)
-      else
-        value
+    utf_8_encode_strs =
+      proc do |value|
+        if value.is_a?(String)
+          value.dup.force_encoding('UTF-8')
+        elsif value.is_a?(Array)
+          value.map(&utf_8_encode_strs)
+        elsif value.is_a?(Hash)
+          value.transform_values!(&utf_8_encode_strs)
+        else
+          value
+        end
       end
-    end
 
     payload.transform_values!(&utf_8_encode_strs)
 
@@ -71,9 +72,7 @@ module EncryptedRedisStructStorage
   # @param [Struct] struct
   # @param [Hash] data
   def init_fields(struct:, data:)
-    data.slice(*struct.members).each do |key, value|
-      struct[key] = value
-    end
+    data.slice(*struct.members).each { |key, value| struct[key] = value }
   end
 
   def check_for_id_property!(type)

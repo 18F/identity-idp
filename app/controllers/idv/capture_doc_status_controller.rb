@@ -16,21 +16,22 @@ module Idv
     private
 
     def status
-      @status ||= begin
-        if !flow_session || !document_capture_session
-          :unauthorized
-        elsif document_capture_session.cancelled_at
-          :gone
-        elsif throttled?
-          :too_many_requests
-        elsif session_result.blank?
-          :accepted
-        elsif !session_result.success?
-          :unauthorized
-        else
-          :ok
+      @status ||=
+        begin
+          if !flow_session || !document_capture_session
+            :unauthorized
+          elsif document_capture_session.cancelled_at
+            :gone
+          elsif throttled?
+            :too_many_requests
+          elsif session_result.blank?
+            :accepted
+          elsif !session_result.success?
+            :unauthorized
+          else
+            :ok
+          end
         end
-      end
     end
 
     def flow_session
@@ -39,8 +40,8 @@ module Idv
 
     def session_result
       return @session_result if defined?(@session_result)
-      @session_result = document_capture_session.load_result ||
-                        document_capture_session.load_doc_auth_async_result
+      @session_result =
+        document_capture_session.load_result || document_capture_session.load_doc_auth_async_result
     end
 
     def document_capture_session

@@ -34,6 +34,7 @@ class DeleteUserEmailForm
       email_fingerprint: new_email_address.email_fingerprint,
     )
   end
+
   # rubocop:enable Rails/SkipsModelValidations
 
   def email_address_destroyed

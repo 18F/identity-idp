@@ -27,8 +27,9 @@ class AddUserEmailForm
   end
 
   def email_address_record(email)
-    record = EmailAddress.where(user_id: user.id).find_with_email(email) ||
-             EmailAddress.new(user_id: user.id, email: email)
+    record =
+      EmailAddress.where(user_id: user.id).find_with_email(email) ||
+        EmailAddress.new(user_id: user.id, email: email)
 
     record.confirmation_token = SecureRandom.uuid
     record.confirmation_sent_at = Time.zone.now
@@ -48,10 +49,7 @@ class AddUserEmailForm
   end
 
   def extra_analytics_attributes
-    {
-      user_id: existing_user.uuid,
-      domain_name: email&.split('@')&.last,
-    }
+    { user_id: existing_user.uuid, domain_name: email&.split('@')&.last }
   end
 
   def existing_user

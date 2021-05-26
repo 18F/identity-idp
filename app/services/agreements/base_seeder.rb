@@ -8,9 +8,7 @@ module Agreements
     def run
       records.each do |key, config|
         config = process_config(key, config)
-        record = record_class.find_or_initialize_by(
-          primary_attribute_bundle(config),
-        )
+        record = record_class.find_or_initialize_by(primary_attribute_bundle(config))
         record.assign_attributes(config)
         record.save!
       rescue ActiveRecord::RecordNotFound => e

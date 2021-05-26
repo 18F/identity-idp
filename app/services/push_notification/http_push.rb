@@ -19,12 +19,12 @@ module PushNotification
     def deliver
       return unless IdentityConfig.store.push_notifications_enabled
 
-      event.user.
-        service_providers.
-        merge(ServiceProviderIdentity.not_deleted).
-        with_push_notification_urls.each do |service_provider|
-          deliver_one(service_provider)
-        end
+      event
+        .user
+        .service_providers
+        .merge(ServiceProviderIdentity.not_deleted)
+        .with_push_notification_urls
+        .each { |service_provider| deliver_one(service_provider) }
     end
 
     def url_options
@@ -60,12 +60,13 @@ module PushNotification
     end
 
     def deliver_direct(service_provider)
-      response = faraday.post(
-        service_provider.push_notification_url,
-        jwt(service_provider),
-        'Accept' => 'application/json',
-        'Content-Type' => 'application/secevent+jwt',
-      )
+      response =
+        faraday.post(
+          service_provider.push_notification_url,
+          jwt(service_provider),
+          'Accept' => 'application/json',
+          'Content-Type' => 'application/secevent+jwt',
+        )
 
       unless response.success?
         raise PushNotification::PushNotificationError, "status=#{response.status}"
@@ -109,10 +110,7 @@ module PushNotification
     end
 
     def agency_uuid(service_provider)
-      AgencyIdentity.find_by(
-        user_id: event.user.id,
-        agency_id: service_provider.agency_id,
-      )&.uuid ||
+      AgencyIdentity.find_by(user_id: event.user.id, agency_id: service_provider.agency_id)&.uuid ||
         ServiceProviderIdentity.find_by(
           user_id: event.user.id,
           service_provider: service_provider.issuer,
@@ -120,9 +118,7 @@ module PushNotification
     end
 
     def eventbridge_client
-      @eventbridge_client ||= Aws::EventBridge::Client.new(
-        region: Identity::Hostdata.aws_region,
-      )
+      @eventbridge_client ||= Aws::EventBridge::Client.new(region: Identity::Hostdata.aws_region)
     end
   end
 end

@@ -19,17 +19,20 @@ class FormResponse
   end
 
   def merge(other)
-    self.class.new(
-      success: success? && other.success?,
-      errors: errors.merge(other.errors, &method(:merge_arrays)),
-      extra: extra.merge(other.extra),
-    ).tap do |merged_response|
-      own_details = error_details
-      other_details = other.instance_eval { error_details } if other.is_a?(self.class)
-      merged_response.instance_eval do
-        @error_details = Hash(own_details).merge(Hash(other_details), &method(:merge_arrays))
+    self
+      .class
+      .new(
+        success: success? && other.success?,
+        errors: errors.merge(other.errors, &method(:merge_arrays)),
+        extra: extra.merge(other.extra),
+      )
+      .tap do |merged_response|
+        own_details = error_details
+        other_details = other.instance_eval { error_details } if other.is_a?(self.class)
+        merged_response.instance_eval do
+          @error_details = Hash(own_details).merge(Hash(other_details), &method(:merge_arrays))
+        end
       end
-    end
   end
 
   def first_error_message
@@ -39,9 +42,7 @@ class FormResponse
   end
 
   def ==(other)
-    success? == other.success? &&
-      errors == other.errors &&
-      extra == other.extra
+    success? == other.success? && errors == other.errors && extra == other.extra
   end
 
   private

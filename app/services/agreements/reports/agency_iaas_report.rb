@@ -3,16 +3,11 @@ module Agreements
     class AgencyIaasReport < BaseReport
       def initialize(agency:, iaas:)
         @agency = agency
-        @iaas = iaas.sort_by do |iaa|
-          [iaa.partner_account, iaa.iaa_number]
-        end
+        @iaas = iaas.sort_by { |iaa| [iaa.partner_account, iaa.iaa_number] }
       end
 
       def run
-        save_report(
-          'agreements',
-          IaaBlueprint.render(iaas, root: :agreements),
-        )
+        save_report('agreements', IaaBlueprint.render(iaas, root: :agreements))
       end
 
       def report_path

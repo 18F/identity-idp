@@ -135,8 +135,12 @@ class UserDecorator
   end
 
   def recent_events
-    events = Event.where(user_id: user.id).order('created_at DESC').limit(MAX_RECENT_EVENTS).
-             map(&:decorate)
+    events =
+      Event
+        .where(user_id: user.id)
+        .order('created_at DESC')
+        .limit(MAX_RECENT_EVENTS)
+        .map(&:decorate)
     (events + identity_events).sort_by(&:happened_at).reverse
   end
 

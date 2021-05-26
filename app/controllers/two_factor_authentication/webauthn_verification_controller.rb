@@ -13,20 +13,14 @@ module TwoFactorAuthentication
 
     def confirm
       result = form.submit(request.protocol, params)
-      analytics.track_mfa_submit_event(
-        result.to_h.merge(analytics_properties),
-      )
+      analytics.track_mfa_submit_event(result.to_h.merge(analytics_properties))
       handle_webauthn_result(result)
     end
 
     private
 
     def handle_webauthn_result(result)
-      if result.success?
-        handle_valid_webauthn
-      else
-        handle_invalid_webauthn
-      end
+      result.success? ? handle_valid_webauthn : handle_invalid_webauthn
     end
 
     def handle_valid_webauthn
@@ -59,8 +53,10 @@ module TwoFactorAuthentication
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
         view: view_context,
-        data: { credential_ids: credential_ids,
-                user_opted_remember_device_cookie: user_opted_remember_device_cookie },
+        data: {
+          credential_ids: credential_ids,
+          user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+        },
         remember_device_default: remember_device_default,
       )
     end

@@ -5,12 +5,10 @@ class UpdateUser
   end
 
   def call
-    result = user.update!(
-      attributes.except(
-        :phone_id, :phone, :phone_confirmed_at,
-        :otp_make_default_number
-      ),
-    )
+    result =
+      user.update!(
+        attributes.except(:phone_id, :phone, :phone_confirmed_at, :otp_make_default_number),
+      )
     manage_phone_configuration
     result
   end
@@ -20,11 +18,7 @@ class UpdateUser
   attr_reader :user, :attributes
 
   def manage_phone_configuration
-    if attributes[:phone_id].present?
-      update_phone_configuration
-    else
-      create_phone_configuration
-    end
+    attributes[:phone_id].present? ? update_phone_configuration : create_phone_configuration
   end
 
   def update_phone_configuration
@@ -44,20 +38,17 @@ class UpdateUser
   end
 
   def phone_attributes
-    @phone_attributes ||= {
-      phone: attributes[:phone],
-      confirmed_at: attributes[:phone_confirmed_at],
-      delivery_preference: attribute(:otp_delivery_preference),
-      made_default_at: made_default_at_date,
-    }.delete_if { |_, value| value.nil? }
+    @phone_attributes ||=
+      {
+        phone: attributes[:phone],
+        confirmed_at: attributes[:phone_confirmed_at],
+        delivery_preference: attribute(:otp_delivery_preference),
+        made_default_at: made_default_at_date,
+      }.delete_if { |_, value| value.nil? }
   end
 
   def made_default_at_date
-    if attributes[:otp_make_default_number].to_s == 'true'
-      Time.zone.now
-    else
-      current_made_default_at
-    end
+    attributes[:otp_make_default_number].to_s == 'true' ? Time.zone.now : current_made_default_at
   end
 
   def current_made_default_at
@@ -75,10 +66,6 @@ class UpdateUser
   # we no longer write data to the user model, we can remove this and simplify
   # some of this code.
   def attribute(name)
-    if attributes.include?(name)
-      attributes[name]
-    else
-      user.send(name)
-    end
+    attributes.include?(name) ? attributes[name] : user.send(name)
   end
 end

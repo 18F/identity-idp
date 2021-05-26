@@ -12,11 +12,7 @@ module Risc
       if result.success?
         head :accepted
       else
-        render status: :bad_request,
-               json: {
-                 err: form.error_code,
-                 description: form.description,
-               }
+        render status: :bad_request, json: { err: form.error_code, description: form.description }
       end
     end
   end

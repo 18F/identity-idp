@@ -6,10 +6,7 @@ class TotpVerificationForm
 
   def submit
     cfg = if_valid_totp_code_return_config
-    FormResponse.new(
-      success: cfg.present?,
-      extra: extra_analytics_attributes(cfg&.id),
-    )
+    FormResponse.new(success: cfg.present?, extra: extra_analytics_attributes(cfg&.id))
   end
 
   private
@@ -30,9 +27,6 @@ class TotpVerificationForm
   end
 
   def extra_analytics_attributes(cfg_id)
-    {
-      multi_factor_auth_method: 'totp',
-      auth_app_configuration_id: cfg_id,
-    }
+    { multi_factor_auth_method: 'totp', auth_app_configuration_id: cfg_id }
   end
 end

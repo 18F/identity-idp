@@ -8,8 +8,7 @@ class SpReturnUrlResolver
   end
 
   def return_to_sp_url
-    oidc_access_denied_redirect_url.presence ||
-      service_provider.return_to_sp_url.presence ||
+    oidc_access_denied_redirect_url.presence || service_provider.return_to_sp_url.presence ||
       inferred_redirect_url
   end
 
@@ -27,10 +26,6 @@ class SpReturnUrlResolver
   def oidc_access_denied_redirect_url
     return if oidc_redirect_uri.blank? || oidc_state.blank?
     return unless service_provider.redirect_uris.include?(oidc_redirect_uri)
-    UriService.add_params(
-      oidc_redirect_uri,
-      error: 'access_denied',
-      state: oidc_state,
-    )
+    UriService.add_params(oidc_redirect_uri, error: 'access_denied', state: oidc_state)
   end
 end

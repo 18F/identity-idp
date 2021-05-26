@@ -49,10 +49,7 @@ class CalendarService
   end
 
   def observed_holidays
-    holidays.
-      concat([next_new_years]).
-      map(&method(:observed)).
-      select { |oh| oh.year == year }
+    holidays.concat([next_new_years]).map(&method(:observed)).select { |oh| oh.year == year }
   end
 
   # January 1st
@@ -62,23 +59,17 @@ class CalendarService
 
   # 3rd Monday of January
   def mlk
-    Date.new(year, 1, 1).
-      step(Date.new(year, 2, 1)).
-      select(&:monday?)[2]
+    Date.new(year, 1, 1).step(Date.new(year, 2, 1)).select(&:monday?)[2]
   end
 
   # 3rd Monday of February
   def washington
-    Date.new(year, 2, 1).
-      step(Date.new(year, 3, 1)).
-      select(&:monday?)[2]
+    Date.new(year, 2, 1).step(Date.new(year, 3, 1)).select(&:monday?)[2]
   end
 
   # Last Monday of May
   def memorial
-    Date.new(year, 6, 1).
-      step(Date.new(year, 5, 1), -1).
-      find(&:monday?)
+    Date.new(year, 6, 1).step(Date.new(year, 5, 1), -1).find(&:monday?)
   end
 
   # July 4th
@@ -88,16 +79,12 @@ class CalendarService
 
   # First Monday of September
   def labor
-    Date.new(year, 9, 1).
-      step(Date.new(year, 10, 1)).
-      find(&:monday?)
+    Date.new(year, 9, 1).step(Date.new(year, 10, 1)).find(&:monday?)
   end
 
   # Second Monday of October
   def columbus
-    Date.new(year, 10, 1).
-      step(Date.new(year, 11, 1)).
-      select(&:monday?).second
+    Date.new(year, 10, 1).step(Date.new(year, 11, 1)).select(&:monday?).second
   end
 
   # November 11th
@@ -107,9 +94,7 @@ class CalendarService
 
   # 4th Thursday of November
   def thanksgiving
-    Date.new(year, 11, 1).
-      step(Date.new(year, 12, 1)).
-      select(&:thursday?)[3]
+    Date.new(year, 11, 1).step(Date.new(year, 12, 1)).select(&:thursday?)[3]
   end
 
   # December 25th

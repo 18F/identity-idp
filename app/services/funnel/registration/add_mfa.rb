@@ -5,11 +5,7 @@ module Funnel
         now = Time.zone.now
         funnel = RegistrationLog.find_by(user_id: user_id)
         return if funnel.blank? || funnel.first_mfa.present?
-        funnel.update!(
-          first_mfa: mfa_method,
-          first_mfa_at: now,
-          registered_at: now,
-        )
+        funnel.update!(first_mfa: mfa_method, first_mfa_at: now, registered_at: now)
       end
     end
   end

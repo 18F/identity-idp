@@ -1,8 +1,6 @@
 module TwoFactorAuthCode
   class PhoneDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
-    attr_reader(
-      :otp_delivery_preference, :otp_make_default_number
-    )
+    attr_reader(:otp_delivery_preference, :otp_make_default_number)
 
     def header
       t('two_factor_authentication.header_text')

@@ -2,7 +2,8 @@ module PushNotification
   class RecoveryInformationChangedEvent
     include IssSubEvent
 
-    EVENT_TYPE = 'https://schemas.openid.net/secevent/risc/event-type/recovery-information-changed'.freeze
+    EVENT_TYPE =
+      'https://schemas.openid.net/secevent/risc/event-type/recovery-information-changed'.freeze
 
     attr_reader :user
 

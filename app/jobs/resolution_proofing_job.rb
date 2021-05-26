@@ -3,38 +3,40 @@ class ResolutionProofingJob < ApplicationJob
 
   queue_as :default
 
-  CallbackLogData = Struct.new(
-    :result,
-    :resolution_success,
-    :state_id_success,
-    keyword_init: true,
-  )
+  CallbackLogData = Struct.new(:result, :resolution_success, :state_id_success, keyword_init: true)
 
-  def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
-              dob_year_only:, document_expired:)
+  def perform(
+    result_id:,
+    encrypted_arguments:,
+    trace_id:,
+    should_proof_state_id:,
+    dob_year_only:,
+    document_expired:
+  )
     timer = JobHelpers::Timer.new
-    decrypted_args = JSON.parse(
-      Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
-      symbolize_names: true,
-    )
+    decrypted_args =
+      JSON.parse(
+        Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
+        symbolize_names: true,
+      )
 
     applicant_pii = decrypted_args[:applicant_pii]
 
-    callback_log_data = if !document_expired && dob_year_only && should_proof_state_id
-                          proof_aamva_then_lexisnexis_dob_only(
-                            timer: timer,
-                            applicant_pii: applicant_pii,
-                            dob_year_only: dob_year_only,
-                          )
-                        else
-                          proof_lexisnexis_then_aamva(
-                            timer: timer,
-                            applicant_pii: applicant_pii,
-                            should_proof_state_id: should_proof_state_id,
-                            document_expired: document_expired,
-                          )
-                        end
-
+    callback_log_data =
+      if !document_expired && dob_year_only && should_proof_state_id
+        proof_aamva_then_lexisnexis_dob_only(
+          timer: timer,
+          applicant_pii: applicant_pii,
+          dob_year_only: dob_year_only,
+        )
+      else
+        proof_lexisnexis_then_aamva(
+          timer: timer,
+          applicant_pii: applicant_pii,
+          should_proof_state_id: should_proof_state_id,
+          document_expired: document_expired,
+        )
+      end
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
@@ -54,11 +56,10 @@ class ResolutionProofingJob < ApplicationJob
 
   # @return [CallbackLogData]
   def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:, document_expired:)
-    proofer_result = timer.time('resolution') do
-      with_retries(**faraday_retry_options) do
-        resolution_proofer.proof(applicant_pii)
+    proofer_result =
+      timer.time('resolution') do
+        with_retries(**faraday_retry_options) { resolution_proofer.proof(applicant_pii) }
       end
-    end
 
     result = proofer_result.to_h
     resolution_success = proofer_result.success?
@@ -101,11 +102,10 @@ class ResolutionProofingJob < ApplicationJob
 
   # @return [CallbackLogData]
   def proof_aamva_then_lexisnexis_dob_only(timer:, applicant_pii:, dob_year_only:)
-    proofer_result = timer.time('state_id') do
-      with_retries(**faraday_retry_options) do
-        state_id_proofer.proof(applicant_pii)
+    proofer_result =
+      timer.time('state_id') do
+        with_retries(**faraday_retry_options) { state_id_proofer.proof(applicant_pii) }
       end
-    end
 
     result = proofer_result.to_h
     state_id_success = proofer_result.success?
@@ -128,11 +128,12 @@ class ResolutionProofingJob < ApplicationJob
     }
 
     if state_id_success
-      lexisnexis_result = timer.time('resolution') do
-        with_retries(**faraday_retry_options) do
-          resolution_proofer.proof(applicant_pii.merge(dob_year_only: dob_year_only))
+      lexisnexis_result =
+        timer.time('resolution') do
+          with_retries(**faraday_retry_options) do
+            resolution_proofer.proof(applicant_pii.merge(dob_year_only: dob_year_only))
+          end
         end
-      end
 
       resolution_success = lexisnexis_result.success?
       exception = lexisnexis_result.exception.inspect if lexisnexis_result.exception
@@ -163,9 +164,7 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def proof_state_id(timer:, applicant_pii:, result:)
-    proofer_result = with_retries(**faraday_retry_options) do
-      state_id_proofer.proof(applicant_pii)
-    end
+    proofer_result = with_retries(**faraday_retry_options) { state_id_proofer.proof(applicant_pii) }
 
     result.merge!(proofer_result.to_h) do |key, orig, current|
       key == :messages ? orig + current : current
@@ -188,34 +187,36 @@ class ResolutionProofingJob < ApplicationJob
   end
 
   def resolution_proofer
-    @resolution_proofer ||= if IdentityConfig.store.proofer_mock_fallback
-      Proofing::ResolutionMockClient.new
-    else
-      LexisNexis::InstantVerify::Proofer.new(
-        instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
-        account_id: IdentityConfig.store.lexisnexis_account_id,
-        base_url: IdentityConfig.store.lexisnexis_base_url,
-        username: IdentityConfig.store.lexisnexis_username,
-        password: IdentityConfig.store.lexisnexis_password,
-        request_mode: IdentityConfig.store.lexisnexis_request_mode,
-        request_timeout: IdentityConfig.store.lexisnexis_timeout,
-      )
-    end
+    @resolution_proofer ||=
+      if IdentityConfig.store.proofer_mock_fallback
+        Proofing::ResolutionMockClient.new
+      else
+        LexisNexis::InstantVerify::Proofer.new(
+          instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
+          account_id: IdentityConfig.store.lexisnexis_account_id,
+          base_url: IdentityConfig.store.lexisnexis_base_url,
+          username: IdentityConfig.store.lexisnexis_username,
+          password: IdentityConfig.store.lexisnexis_password,
+          request_mode: IdentityConfig.store.lexisnexis_request_mode,
+          request_timeout: IdentityConfig.store.lexisnexis_timeout,
+        )
+      end
   end
 
   def state_id_proofer
-    @state_id_proofer ||= if IdentityConfig.store.proofer_mock_fallback
-      Proofing::StateIdMockClient.new
-    else
-      Aamva::Proofer.new(
-        auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
-        auth_url: IdentityConfig.store.aamva_auth_url,
-        cert_enabled: IdentityConfig.store.aamva_cert_enabled,
-        private_key: IdentityConfig.store.aamva_private_key,
-        public_key: IdentityConfig.store.aamva_public_key,
-        verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
-        verification_url: IdentityConfig.store.aamva_verification_url,
-      )
-    end
+    @state_id_proofer ||=
+      if IdentityConfig.store.proofer_mock_fallback
+        Proofing::StateIdMockClient.new
+      else
+        Aamva::Proofer.new(
+          auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
+          auth_url: IdentityConfig.store.aamva_auth_url,
+          cert_enabled: IdentityConfig.store.aamva_cert_enabled,
+          private_key: IdentityConfig.store.aamva_private_key,
+          public_key: IdentityConfig.store.aamva_public_key,
+          verification_request_timeout: IdentityConfig.store.aamva_verification_request_timeout,
+          verification_url: IdentityConfig.store.aamva_verification_url,
+        )
+      end
   end
 end

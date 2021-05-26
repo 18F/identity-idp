@@ -14,6 +14,7 @@ class ServiceProviderIdentity < ApplicationRecord
              class_name: 'ServiceProvider',
              foreign_key: 'service_provider',
              primary_key: 'issuer'
+
   # rubocop:enable Rails/InverseOf
 
   scope :not_deleted, -> { where(deleted_at: nil) }

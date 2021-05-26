@@ -24,9 +24,7 @@ class PersonalKeyForm
   attr_reader :user, :success
 
   def extra_analytics_attributes
-    {
-      multi_factor_auth_method: 'personal key',
-    }
+    { multi_factor_auth_method: 'personal key' }
   end
 
   def reset_sensitive_fields

@@ -29,11 +29,7 @@ class BackupCodeConfiguration < ApplicationRecord
   end
 
   def self.selection_presenters(set)
-    if set.any?
-      set.first.selection_presenters
-    else
-      []
-    end
+    set.any? ? set.first.selection_presenters : []
   end
 
   class << self
@@ -41,21 +37,24 @@ class BackupCodeConfiguration < ApplicationRecord
       return if code.blank?
       code = RandomPhrase.normalize(code)
 
-      user_salt_costs = select(:code_salt, :code_cost).
-        distinct.
-        where(user_id: user_id).
-        where.not(code_salt: nil).where.not(code_cost: nil).
-        pluck(:code_salt, :code_cost)
+      user_salt_costs =
+        select(:code_salt, :code_cost)
+          .distinct
+          .where(user_id: user_id)
+          .where
+          .not(code_salt: nil)
+          .where
+          .not(code_cost: nil)
+          .pluck(:code_salt, :code_cost)
 
-      salted_fingerprints = user_salt_costs.map do |salt, cost|
-        scrypt_password_digest(password: code, salt: salt, cost: cost)
-      end
+      salted_fingerprints =
+        user_salt_costs.map do |salt, cost|
+          scrypt_password_digest(password: code, salt: salt, cost: cost)
+        end
 
-      where(
-        code_fingerprint: create_fingerprint(code),
-      ).or(
-        where(salted_code_fingerprint: salted_fingerprints),
-      ).find_by(user_id: user_id)
+      where(code_fingerprint: create_fingerprint(code))
+        .or(where(salted_code_fingerprint: salted_fingerprints))
+        .find_by(user_id: user_id)
     end
 
     def scrypt_password_digest(password:, salt:, cost:)

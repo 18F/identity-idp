@@ -38,10 +38,7 @@ module Idv
     end
 
     def handle_max_attempts(type)
-      presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
-        type,
-        decorated_user,
-      )
+      presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(type, decorated_user)
       sign_out
       render_full_width('shared/_failure', locals: { presenter: presenter })
     end

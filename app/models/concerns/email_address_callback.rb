@@ -2,7 +2,11 @@ module EmailAddressCallback
   extend ActiveSupport::Concern
 
   EMAIL_COLUMNS = %i[
-    encrypted_email confirmation_token confirmed_at confirmation_sent_at email_fingerprint
+    encrypted_email
+    confirmation_token
+    confirmed_at
+    confirmation_sent_at
+    email_fingerprint
   ].freeze
 
   def self.included(base)

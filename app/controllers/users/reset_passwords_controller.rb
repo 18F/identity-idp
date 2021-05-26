@@ -50,9 +50,7 @@ module Users
     protected
 
     def forbidden_passwords(email_addresses)
-      email_addresses.flat_map do |email_address|
-        ForbiddenPasswords.new(email_address.email).call
-      end
+      email_addresses.flat_map { |email_address| ForbiddenPasswords.new(email_address.email).call }
     end
 
     def email_params
@@ -77,11 +75,8 @@ module Users
     end
 
     def create_account_if_email_not_found
-      user, result = RequestPasswordReset.new(
-        email: email,
-        request_id: request_id,
-        analytics: analytics,
-      ).perform
+      user, result =
+        RequestPasswordReset.new(email: email, request_id: request_id, analytics: analytics).perform
 
       return unless result
 
@@ -134,8 +129,7 @@ module Users
     end
 
     def user_params
-      params.require(:reset_password_form).
-        permit(:password, :reset_password_token)
+      params.require(:reset_password_form).permit(:password, :reset_password_token)
     end
 
     def assert_reset_token_passed

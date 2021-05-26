@@ -22,11 +22,9 @@ module Users
     private
 
     def user_params
-      params.require(:new_phone_form).permit(
-        :phone, :international_code,
-        :otp_delivery_preference,
-        :otp_make_default_number
-      )
+      params
+        .require(:new_phone_form)
+        .permit(:phone, :international_code, :otp_delivery_preference, :otp_make_default_number)
     end
 
     def already_has_phone?
@@ -36,9 +34,10 @@ module Users
     def confirm_phone
       flash[:info] = t('devise.registrations.phone_update_needs_confirmation')
       prompt_to_confirm_phone(
-        id: user_session[:phone_id], phone: @new_phone_form.phone,
+        id: user_session[:phone_id],
+        phone: @new_phone_form.phone,
         selected_delivery_method: @new_phone_form.otp_delivery_preference,
-        selected_default_number: @new_phone_form.otp_make_default_number
+        selected_default_number: @new_phone_form.otp_make_default_number,
       )
     end
   end

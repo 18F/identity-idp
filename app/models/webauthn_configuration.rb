@@ -17,10 +17,6 @@ class WebauthnConfiguration < ApplicationRecord
   end
 
   def self.selection_presenters(set)
-    if set.any?
-      set.first.selection_presenters
-    else
-      []
-    end
+    set.any? ? set.first.selection_presenters : []
   end
 end

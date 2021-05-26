@@ -42,12 +42,7 @@ class ReactivateAccountSession
   attr_reader :session
 
   def generate_session
-    {
-      active: false,
-      personal_key: false,
-      pii: nil,
-      x509: nil,
-    }
+    { active: false, personal_key: false, pii: nil, x509: nil }
   end
 
   def reactivate_account_session

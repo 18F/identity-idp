@@ -5,9 +5,7 @@ module FormPasswordValidator
     attr_accessor :password
     attr_reader :user
 
-    validates :password,
-              presence: true,
-              length: { in: Devise.password_length }
+    validates :password, presence: true, length: { in: Devise.password_length }
     validate :password_graphemes_length
     validate :strong_password
     validate :not_pwned
@@ -33,10 +31,11 @@ module FormPasswordValidator
   end
 
   def password_score
-    @password_score = ZXCVBN_TESTER.test(
-      password,
-      user.email_addresses.flat_map { |address| ForbiddenPasswords.new(address.email).call },
-    )
+    @password_score =
+      ZXCVBN_TESTER.test(
+        password,
+        user.email_addresses.flat_map { |address| ForbiddenPasswords.new(address.email).call },
+      )
   end
 
   def not_pwned
@@ -50,17 +49,16 @@ module FormPasswordValidator
   end
 
   def i18n_variables
-    {
-      feedback: zxcvbn_feedback,
-    }
+    { feedback: zxcvbn_feedback }
   end
 
   def zxcvbn_feedback
     feedback = @password_score.feedback.values.flatten.reject(&:empty?)
 
-    feedback.map do |error|
-      I18n.t("zxcvbn.feedback.#{i18n_key(error)}")
-    end.join('. ').gsub(/\.\s*\./, '.')
+    feedback.map { |error| I18n.t("zxcvbn.feedback.#{i18n_key(error)}") }.join('. ').gsub(
+      /\.\s*\./,
+      '.',
+    )
   end
 
   def i18n_key(key)

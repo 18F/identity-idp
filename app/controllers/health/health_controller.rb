@@ -3,10 +3,7 @@ module Health
     private
 
     def health_checker
-      checkers = {
-        database: DatabaseHealthChecker,
-        account_reset: AccountResetHealthChecker,
-      }
+      checkers = { database: DatabaseHealthChecker, account_reset: AccountResetHealthChecker }
       if job_run_healthchecks_enabled?
         checkers[:job_runner_critical] = JobRunner::HealthCheckerCritical
       end

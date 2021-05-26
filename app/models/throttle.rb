@@ -3,15 +3,15 @@ class Throttle < ApplicationRecord
   validates :user_id, presence: true
 
   enum throttle_type: {
-    idv_acuant: 1,
-    reg_unconfirmed_email: 2,
-    reg_confirmed_email: 3,
-    reset_password_email: 4,
-    idv_resolution: 5,
-    idv_send_link: 6,
-    verify_personal_key: 7,
-    verify_gpo_key: 8,
-  }
+         idv_acuant: 1,
+         reg_unconfirmed_email: 2,
+         reg_confirmed_email: 3,
+         reset_password_email: 4,
+         idv_resolution: 5,
+         idv_send_link: 6,
+         verify_personal_key: 7,
+         verify_gpo_key: 8,
+       }
 
   THROTTLE_CONFIG = {
     idv_acuant: {

@@ -22,10 +22,11 @@ module DataRequests
     private
 
     def output_file
-      @output_file ||= begin
-        output_path = File.join(output_dir, 'user.csv')
-        File.open(output_path, 'w')
-      end
+      @output_file ||=
+        begin
+          output_path = File.join(output_dir, 'user.csv')
+          File.open(output_path, 'w')
+        end
     end
 
     def write_rows_to_csv(rows, *columns)
@@ -33,9 +34,7 @@ module DataRequests
 
       return output_file.puts("No data\n\n") if rows.empty?
 
-      rows.each do |row|
-        output_file.puts CSV.generate_line(row.values_at(*columns))
-      end
+      rows.each { |row| output_file.puts CSV.generate_line(row.values_at(*columns)) }
       output_file.puts("\n")
     end
 
@@ -43,7 +42,8 @@ module DataRequests
       output_file.puts('Auth app configurations:')
       write_rows_to_csv(
         user_report[:mfa_configurations][:auth_app_configurations],
-        :name, :created_at
+        :name,
+        :created_at,
       )
     end
 
@@ -51,7 +51,8 @@ module DataRequests
       output_file.puts('Backup code configurations:')
       write_rows_to_csv(
         user_report[:mfa_configurations][:backup_code_configurations],
-        :created_at, :used_at
+        :created_at,
+        :used_at,
       )
     end
 
@@ -64,7 +65,9 @@ module DataRequests
       output_file.puts('Phone configurations:')
       write_rows_to_csv(
         user_report[:mfa_configurations][:phone_configurations],
-        :phone, :created_at, :confirmed_at
+        :phone,
+        :created_at,
+        :confirmed_at,
       )
     end
 
@@ -72,7 +75,8 @@ module DataRequests
       output_file.puts('PIV/CAC configurations:')
       write_rows_to_csv(
         user_report[:mfa_configurations][:piv_cac_configurations],
-        :name, :created_at
+        :name,
+        :created_at,
       )
     end
 
@@ -80,7 +84,8 @@ module DataRequests
       output_file.puts('WebAuthn configurations:')
       write_rows_to_csv(
         user_report[:mfa_configurations][:webauthn_configurations],
-        :name, :created_at
+        :name,
+        :created_at,
       )
     end
   end

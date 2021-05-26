@@ -27,13 +27,11 @@ class FrontendLogController < ApplicationController
   def validate_parameter_types
     return if valid_event? && valid_payload?
 
-    render json: { success: false, error_message: 'invalid parameters' },
-           status: :bad_request
+    render json: { success: false, error_message: 'invalid parameters' }, status: :bad_request
   end
 
   def valid_event?
-    log_params[:event].is_a?(String) &&
-      log_params[:event].present?
+    log_params[:event].is_a?(String) && log_params[:event].present?
   end
 
   def valid_payload?

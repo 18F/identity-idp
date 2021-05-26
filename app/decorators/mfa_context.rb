@@ -6,11 +6,7 @@ class MfaContext
   end
 
   def phone_configurations
-    if user.present?
-      user.phone_configurations
-    else
-      PhoneConfiguration.none
-    end
+    user.present? ? user.phone_configurations : PhoneConfiguration.none
   end
 
   def phone_configuration(id = nil)
@@ -19,35 +15,19 @@ class MfaContext
   end
 
   def webauthn_configurations
-    if user.present?
-      user.webauthn_configurations
-    else
-      WebauthnConfiguration.none
-    end
+    user.present? ? user.webauthn_configurations : WebauthnConfiguration.none
   end
 
   def backup_code_configurations
-    if user.present?
-      user.backup_code_configurations.unused
-    else
-      BackupCodeConfiguration.none
-    end
+    user.present? ? user.backup_code_configurations.unused : BackupCodeConfiguration.none
   end
 
   def piv_cac_configurations
-    if user.present?
-      user.piv_cac_configurations
-    else
-      PivCacConfiguration.none
-    end
+    user.present? ? user.piv_cac_configurations : PivCacConfiguration.none
   end
 
   def auth_app_configurations
-    if user.present?
-      user.auth_app_configurations
-    else
-      AuthAppConfiguration.none
-    end
+    user.present? ? user.auth_app_configurations : AuthAppConfiguration.none
   end
 
   def personal_key_configuration
@@ -77,8 +57,7 @@ class MfaContext
       webauthn_configurations.to_a.select(&:mfa_enabled?).count +
       (backup_code_configurations.any? ? 1 : 0) +
       piv_cac_configurations.to_a.select(&:mfa_enabled?).count +
-      auth_app_configurations.to_a.select(&:mfa_enabled?).count +
-      personal_key_method_count
+      auth_app_configurations.to_a.select(&:mfa_enabled?).count + personal_key_method_count
   end
 
   # returns a hash showing the count for each enabled 2FA configuration,

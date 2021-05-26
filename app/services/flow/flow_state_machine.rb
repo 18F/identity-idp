@@ -24,6 +24,7 @@ module Flow
       if @analytics_id
         increment_step_name_counts
         analytics.track_event(analytics_submitted, result.to_h.merge(analytics_properties))
+
         # keeping the old event names for backward compatibility
         analytics.track_event(old_analytics_submitted, result.to_h.merge(analytics_properties))
       end
@@ -50,6 +51,7 @@ module Flow
       if @analytics_id
         increment_step_name_counts
         analytics.track_event(analytics_visited, analytics_properties)
+
         # keeping the old event names for backward compatibility
         analytics.track_event(old_analytics_visited, analytics_properties)
       end
@@ -114,12 +116,13 @@ module Flow
       @request = request
       return if call_optional_show_step(step)
       step_params = flow.extra_view_variables(step)
-      local_params = step_params.merge(
-        flow_namespace: @namespace,
-        flow_session: flow_session,
-        step_indicator: step_indicator_params,
-        step_template: "#{@view || @name}/#{step}",
-      )
+      local_params =
+        step_params.merge(
+          flow_namespace: @namespace,
+          flow_session: flow_session,
+          step_indicator: step_indicator_params,
+          step_template: "#{@view || @name}/#{step}",
+        )
       render template: 'layouts/flow_step', locals: local_params
     end
 
@@ -134,6 +137,7 @@ module Flow
         optional_properties = result.to_h.merge(step: optional_show_step_name)
 
         analytics.track_event(analytics_optional_step, optional_properties)
+
         # keeping the old event names for backward compatibility
         analytics.track_event(old_analytics_optional_step, optional_properties)
       end
@@ -152,10 +156,7 @@ module Flow
     def step_indicator_params
       handler = flow.step_handler(current_step)
       return if !flow.class.const_defined?('STEP_INDICATOR_STEPS') || !handler
-      {
-        steps: flow.class::STEP_INDICATOR_STEPS,
-        current_step: handler::STEP_INDICATOR_STEP,
-      }
+      { steps: flow.class::STEP_INDICATOR_STEPS, current_step: handler::STEP_INDICATOR_STEP }
     end
 
     def ensure_correct_step

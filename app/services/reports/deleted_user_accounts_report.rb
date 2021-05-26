@@ -30,9 +30,7 @@ module Reports
       issuers.each do |issuer|
         transaction_with_timeout do
           rows = DeletedAccountsReport.call(issuer, 10_000)
-          rows.each do |row|
-            csv << [row['last_authenticated_at'], row['identity_uuid']]
-          end
+          rows.each { |row| csv << [row['last_authenticated_at'], row['identity_uuid']] }
         end
       end
       csv.string

@@ -28,15 +28,15 @@ class EventDisavowalController < ApplicationController
   private
 
   def forbidden_passwords
-    disavowed_event.user.email_addresses.flat_map do |email_address|
-      ForbiddenPasswords.new(email_address.email).call
-    end
+    disavowed_event
+      .user
+      .email_addresses
+      .flat_map { |email_address| ForbiddenPasswords.new(email_address.email).call }
   end
 
   def password_reset_from_disavowal_form
-    @password_reset_from_disavowal_form ||= EventDisavowal::PasswordResetFromDisavowalForm.new(
-      disavowed_event,
-    )
+    @password_reset_from_disavowal_form ||=
+      EventDisavowal::PasswordResetFromDisavowalForm.new(disavowed_event)
   end
 
   def password_reset_params

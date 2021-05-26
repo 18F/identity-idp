@@ -23,13 +23,10 @@ module Proofing
 
       if first_name.match?(/Bad/i)
         result.add_error(:first_name, 'Unverified first name.')
-
       elsif first_name.match?(/Time/i)
         raise Proofer::TimeoutError, 'resolution mock timeout'
-
       elsif applicant[:ssn].match?(/6666/)
         result.add_error(:ssn, 'Unverified SSN.')
-
       elsif applicant[:zipcode] == UNVERIFIABLE_ZIP_CODE
         result.add_error(:zipcode, 'Unverified ZIP code.')
       end

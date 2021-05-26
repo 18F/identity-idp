@@ -15,10 +15,7 @@ class AuthTokenController < ApplicationController
 
   def auth_token_valid?
     return false if request_auth_token.blank?
-    ActiveSupport::SecurityUtils.secure_compare(
-      request_auth_token,
-      config_auth_token,
-    )
+    ActiveSupport::SecurityUtils.secure_compare(request_auth_token, config_auth_token)
   end
 
   def request_auth_token

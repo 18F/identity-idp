@@ -15,15 +15,16 @@ class SamlRequestParser
   attr_reader :request
 
   def authn_context_attr_nodes
-    @_attr_nodes ||= begin
-      doc = Saml::XML::Document.parse(request.raw_xml)
-      doc.xpath(
-        '//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
-        samlp: Saml::XML::Namespaces::PROTOCOL,
-        saml: Saml::XML::Namespaces::ASSERTION,
-      ).select do |node|
-        node.content =~ /#{Regexp.escape(URI_PATTERN)}/
+    @_attr_nodes ||=
+      begin
+        doc = Saml::XML::Document.parse(request.raw_xml)
+        doc
+          .xpath(
+            '//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
+            samlp: Saml::XML::Namespaces::PROTOCOL,
+            saml: Saml::XML::Namespaces::ASSERTION,
+          )
+          .select { |node| node.content =~ /#{Regexp.escape(URI_PATTERN)}/ }
       end
-    end
   end
 end

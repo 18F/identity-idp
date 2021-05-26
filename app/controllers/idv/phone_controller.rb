@@ -72,10 +72,11 @@ module Idv
     end
 
     def set_idv_form
-      @idv_form ||= Idv::PhoneForm.new(
-        user: current_user,
-        previous_params: idv_session.previous_phone_step_params,
-      )
+      @idv_form ||=
+        Idv::PhoneForm.new(
+          user: current_user,
+          previous_params: idv_session.previous_phone_step_params,
+        )
     end
 
     def failure_url(reason)
@@ -99,8 +100,8 @@ module Idv
     end
 
     def gpo_letter_available
-      @_gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
-                                 !Idv::GpoMail.new(current_user).mail_spammed?
+      @_gpo_letter_available ||=
+        FeatureManagement.enable_gpo_verification? && !Idv::GpoMail.new(current_user).mail_spammed?
     end
   end
 end

@@ -17,11 +17,12 @@ module BackupCodeEncryptedAttributeOverrides
   def code=(code)
     code = RandomPhrase.normalize(code)
 
-    self.salted_code_fingerprint = BackupCodeConfiguration.scrypt_password_digest(
-      password: code,
-      salt: code_salt,
-      cost: code_cost,
-    ) if code.present? && code_cost.present? && code_salt.present?
+    self.salted_code_fingerprint =
+      BackupCodeConfiguration.scrypt_password_digest(
+        password: code,
+        salt: code_salt,
+        cost: code_cost,
+      ) if code.present? && code_cost.present? && code_salt.present?
 
     if skip_legacy_encryption?
       self.encrypted_code = ''

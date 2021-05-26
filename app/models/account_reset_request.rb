@@ -9,7 +9,6 @@ class AccountResetRequest < ApplicationRecord
 
   def granted_token_expired?
     granted_at.present? &&
-      ((Time.zone.now - granted_at) >
-       IdentityConfig.store.account_reset_token_valid_for_days.days)
+      ((Time.zone.now - granted_at) > IdentityConfig.store.account_reset_token_valid_for_days.days)
   end
 end

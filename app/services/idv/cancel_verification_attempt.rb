@@ -7,12 +7,12 @@ module Idv
     end
 
     def call
-      user.profiles.verification_pending.each do |profile|
-        profile.update!(
-          active: false,
-          deactivation_reason: :verification_cancelled,
-        )
-      end
+      user
+        .profiles
+        .verification_pending
+        .each do |profile|
+          profile.update!(active: false, deactivation_reason: :verification_cancelled)
+        end
     end
   end
 end

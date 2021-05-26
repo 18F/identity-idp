@@ -14,10 +14,7 @@ module Idv
     end
 
     def submit
-      Idv::DocAuthFormResponse.new(
-        success: valid?,
-        errors: errors,
-      )
+      Idv::DocAuthFormResponse.new(success: valid?, errors: errors)
     end
 
     private
@@ -47,8 +44,18 @@ module Idv
     def dob_meets_min_age?
       dob_date = Date.parse(dob)
       today = Time.zone.today
-      age = today.year - dob_date.year - ((today.month > dob_date.month ||
-        (today.month == dob_date.month && today.day >= dob_date.day)) ? 0 : 1)
+      age =
+        today.year - dob_date.year -
+          (
+            if (
+                 today.month > dob_date.month ||
+                   (today.month == dob_date.month && today.day >= dob_date.day)
+               )
+              0
+            else
+              1
+            end
+          )
       age >= IdentityConfig.store.idv_min_age_years
     end
 

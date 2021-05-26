@@ -24,12 +24,8 @@ module Test
     end
 
     def slo_response
-      @slo_response ||= logout_response.create(
-        settings,
-        logout_request.id,
-        nil,
-        RelayState: params[:RelayState],
-      )
+      @slo_response ||=
+        logout_response.create(settings, logout_request.id, nil, RelayState: params[:RelayState])
     end
 
     private

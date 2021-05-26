@@ -5,9 +5,10 @@ module Users
 
     def edit
       @update_user_password_form = UpdateUserPasswordForm.new(current_user)
-      @forbidden_passwords = current_user.email_addresses.flat_map do |email_address|
-        ForbiddenPasswords.new(email_address.email).call
-      end
+      @forbidden_passwords =
+        current_user.email_addresses.flat_map do |email_address|
+          ForbiddenPasswords.new(email_address.email).call
+        end
     end
 
     def update
@@ -17,11 +18,7 @@ module Users
 
       analytics.track_event(Analytics::PASSWORD_CHANGED, result.to_h)
 
-      if result.success?
-        handle_valid_password
-      else
-        handle_invalid_password
-      end
+      result.success? ? handle_valid_password : handle_invalid_password
     end
 
     private
@@ -55,9 +52,10 @@ module Users
       # need to provide our custom forbidden passwords data that zxcvbn needs,
       # otherwise the JS will throw an exception and the password strength
       # meter will not appear.
-      @forbidden_passwords = current_user.email_addresses.flat_map do |email_address|
-        ForbiddenPasswords.new(email_address.email).call
-      end
+      @forbidden_passwords =
+        current_user.email_addresses.flat_map do |email_address|
+          ForbiddenPasswords.new(email_address.email).call
+        end
       render :edit
     end
   end

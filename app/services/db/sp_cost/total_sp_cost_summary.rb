@@ -13,6 +13,7 @@ module Db
           WHERE %{start} <= created_at and created_at <= %{finish}
           GROUP BY cost_type ORDER BY cost_type
         SQL
+
         ActiveRecord::Base.connection.execute(sql)
       end
     end

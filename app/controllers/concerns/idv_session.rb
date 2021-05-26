@@ -1,9 +1,7 @@
 module IdvSession
   extend ActiveSupport::Concern
 
-  included do
-    before_action :redirect_if_sp_context_needed
-  end
+  included { before_action :redirect_if_sp_context_needed }
 
   def confirm_idv_session_started
     redirect_to idv_doc_auth_url if idv_session.applicant.blank?
@@ -11,7 +9,7 @@ module IdvSession
 
   def confirm_idv_needed
     if current_user.active_profile.blank? ||
-       decorated_session.requested_more_recent_verification? || liveness_upgrade_required?
+         decorated_session.requested_more_recent_verification? || liveness_upgrade_required?
       return
     end
 
@@ -28,11 +26,12 @@ module IdvSession
   end
 
   def idv_session
-    @_idv_session ||= Idv::Session.new(
-      user_session: user_session,
-      current_user: current_user,
-      issuer: sp_session[:issuer],
-    )
+    @_idv_session ||=
+      Idv::Session.new(
+        user_session: user_session,
+        current_user: current_user,
+        issuer: sp_session[:issuer],
+      )
   end
 
   def idv_attempter_throttled?

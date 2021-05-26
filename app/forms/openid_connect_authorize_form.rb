@@ -70,13 +70,14 @@ class OpenidConnectAuthorizeForm
 
   def link_identity_to_service_provider(current_user, rails_session_id)
     identity_linker = IdentityLinker.new(current_user, client_id)
-    @identity = identity_linker.link_identity(
-      nonce: nonce,
-      rails_session_id: rails_session_id,
-      ial: ial_context.ial_for_identity_record,
-      scope: scope.join(' '),
-      code_challenge: code_challenge,
-    )
+    @identity =
+      identity_linker.link_identity(
+        nonce: nonce,
+        rails_session_id: rails_session_id,
+        ial: ial_context.ial_for_identity_record,
+        scope: scope.join(' '),
+        code_challenge: code_challenge,
+      )
   end
 
   def success_redirect_uri
@@ -94,10 +95,7 @@ class OpenidConnectAuthorizeForm
     acr_values.filter { |acr| %r{/aal/}.match? acr }
   end
 
-  def_delegators :ial_context,
-                 :ial2_or_greater?,
-                 :ial2_requested?,
-                 :ial2_strict_requested?
+  def_delegators :ial_context, :ial2_or_greater?, :ial2_requested?, :ial2_strict_requested?
 
   private
 
@@ -183,11 +181,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def extra_analytics_attributes
-    {
-      client_id: client_id,
-      redirect_uri: result_uri,
-      unauthorized_scope: @unauthorized_scope,
-    }
+    { client_id: client_id, redirect_uri: result_uri, unauthorized_scope: @unauthorized_scope }
   end
 
   def result_uri
@@ -214,7 +208,7 @@ class OpenidConnectAuthorizeForm
 
   def validate_privileges
     if (ial2_requested? && !ial_context.ial2_service_provider?) ||
-       (ial_context.ialmax_requested? && !ial_context.ial2_service_provider?)
+         (ial_context.ialmax_requested? && !ial_context.ial2_service_provider?)
       errors.add(:acr_values, t('openid_connect.authorization.errors.no_auth'))
     end
   end

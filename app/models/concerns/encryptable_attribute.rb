@@ -73,11 +73,7 @@ module EncryptableAttribute
 
   def set_encrypted_attribute(name:, value:)
     setter = encrypted_attribute_name(name)
-    new_value = if value.present?
-                  build_encrypted_attribute_from_plain(name, value).encrypted
-                else
-                  value
-                end
+    new_value = value.present? ? build_encrypted_attribute_from_plain(name, value).encrypted : value
     self[setter] = new_value
   end
 

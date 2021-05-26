@@ -42,16 +42,15 @@ module Idv
       end
 
       def document_capture_session_result
-        @document_capture_session_result ||= (
-          document_capture_session&.load_result ||
-          document_capture_session&.load_doc_auth_async_result
-        )
+        @document_capture_session_result ||=
+          (
+            document_capture_session&.load_result ||
+              document_capture_session&.load_doc_auth_async_result
+          )
       end
 
       def mark_steps_complete
-        %i[send_link link_sent email_sent document_capture].each do |step|
-          mark_step_complete(step)
-        end
+        %i[send_link link_sent email_sent document_capture].each { |step| mark_step_complete(step) }
       end
     end
   end

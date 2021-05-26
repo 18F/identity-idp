@@ -5,10 +5,7 @@ module Encryption
     include Encodable
     include ::NewRelic::Agent::MethodTracer
 
-    KEY_TYPE = {
-      KMS: 'KMSc',
-      LOCAL_KEY: 'LOCc',
-    }.freeze
+    KEY_TYPE = { KMS: 'KMSc', LOCAL_KEY: 'LOCc' }.freeze
 
     def encrypt(plaintext, encryption_context)
       KmsLogger.log(:encrypt, encryption_context)
@@ -42,11 +39,10 @@ module Encryption
     end
 
     def encrypt_kms(plaintext, encryption_context)
-      KEY_TYPE[:KMS] + chunk_plaintext(plaintext).map do |chunk|
-        Base64.strict_encode64(
-          encrypt_raw_kms(chunk, encryption_context),
-        )
-      end.to_json
+      KEY_TYPE[:KMS] +
+        chunk_plaintext(plaintext).map do |chunk|
+          Base64.strict_encode64(encrypt_raw_kms(chunk, encryption_context))
+        end.to_json
     end
 
     def encrypt_raw_kms(plaintext, encryption_context)
@@ -58,10 +54,7 @@ module Encryption
       clipped_ciphertext = ciphertext.gsub(/\A#{KEY_TYPE[:KMS]}/, '')
       ciphertext_chunks = JSON.parse(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
-        decrypt_raw_kms(
-          Base64.strict_decode64(chunk),
-          encryption_context,
-        )
+        decrypt_raw_kms(Base64.strict_decode64(chunk), encryption_context)
       end.join('')
     rescue JSON::ParserError, ArgumentError => error
       raise EncryptionError, "Failed to parse KMS ciphertext: #{error}"
@@ -74,21 +67,17 @@ module Encryption
     end
 
     def encrypt_local(plaintext, encryption_context)
-      KEY_TYPE[:LOCAL_KEY] + chunk_plaintext(plaintext).map do |chunk|
-        Base64.strict_encode64(
-          encryptor.encrypt(chunk, local_encryption_key(encryption_context)),
-        )
-      end.to_json
+      KEY_TYPE[:LOCAL_KEY] +
+        chunk_plaintext(plaintext).map do |chunk|
+          Base64.strict_encode64(encryptor.encrypt(chunk, local_encryption_key(encryption_context)))
+        end.to_json
     end
 
     def decrypt_local(ciphertext, encryption_context)
       clipped_ciphertext = ciphertext.gsub(/\A#{KEY_TYPE[:LOCAL_KEY]}/, '')
       ciphertext_chunks = JSON.parse(clipped_ciphertext)
       ciphertext_chunks.map do |chunk|
-        encryptor.decrypt(
-          Base64.strict_decode64(chunk),
-          local_encryption_key(encryption_context),
-        )
+        encryptor.decrypt(Base64.strict_decode64(chunk), local_encryption_key(encryption_context))
       end.join('')
     rescue JSON::ParserError, ArgumentError => error
       raise EncryptionError, "Failed to parse local ciphertext: #{error}"

@@ -20,10 +20,7 @@ module DataRequests
 
     def auth_app_configurations_report
       user.auth_app_configurations.map do |auth_app_configuration|
-        {
-          name: auth_app_configuration.name,
-          created_at: auth_app_configuration.created_at,
-        }
+        { name: auth_app_configuration.name, created_at: auth_app_configuration.created_at }
       end
     end
 
@@ -48,19 +45,13 @@ module DataRequests
 
     def piv_cac_configurations_report
       user.piv_cac_configurations.map do |piv_cac_configuration|
-        {
-          name: piv_cac_configuration.name,
-          created_at: piv_cac_configuration.created_at,
-        }
+        { name: piv_cac_configuration.name, created_at: piv_cac_configuration.created_at }
       end
     end
 
     def webauthn_configurations_report
       user.webauthn_configurations.map do |webauthn_configuration|
-        {
-          name: webauthn_configuration.name,
-          created_at: webauthn_configuration.created_at,
-        }
+        { name: webauthn_configuration.name, created_at: webauthn_configuration.created_at }
       end
     end
   end

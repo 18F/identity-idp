@@ -14,12 +14,7 @@ module PushNotification
     end
 
     def payload(*)
-      {
-        subject: {
-          subject_type: 'email',
-          email: email,
-        },
-      }
+      { subject: { subject_type: 'email', email: email } }
     end
 
     def ==(other)

@@ -1,7 +1,6 @@
 class PhoneNumberCapabilities
-  INTERNATIONAL_CODES = YAML.load_file(
-    Rails.root.join('config', 'country_dialing_codes.yml'),
-  ).freeze
+  INTERNATIONAL_CODES =
+    YAML.load_file(Rails.root.join('config', 'country_dialing_codes.yml')).freeze
 
   attr_reader :phone, :phone_confirmed
 
@@ -23,14 +22,10 @@ class PhoneNumberCapabilities
     return false if country_code_data.nil?
 
     supports_voice = country_code_data['supports_voice']
-    supports_voice_unconfirmed = country_code_data.fetch(
-      'supports_voice_unconfirmed',
-      supports_voice,
-    )
+    supports_voice_unconfirmed =
+      country_code_data.fetch('supports_voice_unconfirmed', supports_voice)
 
-    supports_voice_unconfirmed || (
-      supports_voice && phone_confirmed
-    )
+    supports_voice_unconfirmed || (supports_voice && phone_confirmed)
   end
 
   def unsupported_location

@@ -5,19 +5,15 @@ module Users
     include TwoFactorAuthenticatableMethods
 
     def new
-      if params.key?(:token)
-        process_piv_cac_login
-      else
-        render_prompt
-      end
+      params.key?(:token) ? process_piv_cac_login : render_prompt
     end
 
     def redirect_to_piv_cac_service
       create_piv_cac_nonce
       redirect_to PivCacService.piv_cac_service_link(
-        nonce: piv_cac_nonce,
-        redirect_uri: login_piv_cac_url,
-      )
+                    nonce: piv_cac_nonce,
+                    redirect_uri: login_piv_cac_url,
+                  )
     end
 
     def account_not_found; end
@@ -27,11 +23,12 @@ module Users
     def temporary_error; end
 
     def error
-      @presenter = PivCacErrorPresenter.new(
-        error: params[:error],
-        view: view_context,
-        try_again_url: login_piv_cac_url,
-      )
+      @presenter =
+        PivCacErrorPresenter.new(
+          error: params[:error],
+          view: view_context,
+          try_again_url: login_piv_cac_url,
+        )
     end
 
     private
@@ -51,18 +48,11 @@ module Users
       analytics.track_event(Analytics::PIV_CAC_LOGIN, result.to_h)
       clear_piv_cac_information
       clear_piv_cac_nonce
-      if result.success?
-        process_valid_submission
-      else
-        process_invalid_submission
-      end
+      result.success? ? process_valid_submission : process_invalid_submission
     end
 
     def piv_cac_login_form
-      @piv_cac_login_form ||= UserPivCacLoginForm.new(
-        token: params[:token],
-        nonce: piv_cac_nonce,
-      )
+      @piv_cac_login_form ||= UserPivCacLoginForm.new(token: params[:token], nonce: piv_cac_nonce)
     end
 
     def process_valid_submission
@@ -81,11 +71,7 @@ module Users
     end
 
     def next_step
-      if ial_context.ial2_requested?
-        capture_password_url
-      else
-        after_otp_verification_confirmation_url
-      end
+      ial_context.ial2_requested? ? capture_password_url : after_otp_verification_confirmation_url
     end
 
     def ial_context
@@ -105,10 +91,7 @@ module Users
     def mark_user_session_authenticated(authentication_type)
       user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = false
       user_session[:authn_at] = Time.zone.now
-      analytics.track_event(
-        Analytics::USER_MARKED_AUTHED,
-        authentication_type: authentication_type,
-      )
+      analytics.track_event(Analytics::USER_MARKED_AUTHED, authentication_type: authentication_type)
     end
   end
 end

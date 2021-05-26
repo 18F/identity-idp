@@ -47,9 +47,13 @@ class UserEventCreator
   end
 
   def create_device_for_user(user)
-    device = DeviceTracking::CreateDevice.call(
-      user.id, request.remote_ip, request.user_agent, cookies[:device]
-    )
+    device =
+      DeviceTracking::CreateDevice.call(
+        user.id,
+        request.remote_ip,
+        request.user_agent,
+        cookies[:device],
+      )
     assign_device_cookie(device.cookie_uuid)
     device
   end
@@ -65,7 +69,10 @@ class UserEventCreator
 
   def create_event_for_device(event_type:, user:, device:)
     Event.create(
-      user_id: user.id, device_id: device&.id, ip: request&.remote_ip, event_type: event_type,
+      user_id: user.id,
+      device_id: device&.id,
+      ip: request&.remote_ip,
+      event_type: event_type,
     )
   end
 

@@ -32,10 +32,12 @@ module Idv
         doc_pii_response = validate_pii_from_doc(client_response) if client_response.success?
       end
 
-      return determine_response(
-        form_response: form_response,
-        client_response: client_response,
-        doc_pii_response: doc_pii_response,
+      return(
+        determine_response(
+          form_response: form_response,
+          client_response: client_response,
+          doc_pii_response: doc_pii_response,
+        )
       )
     end
 
@@ -45,34 +47,27 @@ module Idv
 
     def throttled_else_increment
       return unless document_capture_session
-      @throttled = Throttler::IsThrottledElseIncrement.call(
-        document_capture_session.user_id,
-        :idv_acuant,
-      )
+      @throttled =
+        Throttler::IsThrottledElseIncrement.call(document_capture_session.user_id, :idv_acuant)
     end
 
     def validate_form
-      response = Idv::DocAuthFormResponse.new(
-        success: valid?,
-        errors: errors,
-        extra: extra_attributes,
-      )
+      response =
+        Idv::DocAuthFormResponse.new(success: valid?, errors: errors, extra: extra_attributes)
 
-      track_event(
-        Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
-        response.to_h,
-      )
+      track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM, response.to_h)
 
       response
     end
 
     def post_images_to_client
-      response = doc_auth_client.post_images(
-        front_image: front.read,
-        back_image: back.read,
-        selfie_image: selfie&.read,
-        liveness_checking_enabled: liveness_checking_enabled?,
-      )
+      response =
+        doc_auth_client.post_images(
+          front_image: front.read,
+          back_image: back.read,
+          selfie_image: selfie&.read,
+          liveness_checking_enabled: liveness_checking_enabled?,
+        )
       response.extra.merge!(extra_attributes)
       response.extra.merge!(state: response.pii_from_doc[:state])
 
@@ -85,20 +80,14 @@ module Idv
       response = Idv::DocPiiForm.new(client_response.pii_from_doc).submit
       response.extra.merge!(extra_attributes)
 
-      track_event(
-        Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
-        response.to_h,
-      )
+      track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION, response.to_h)
       store_pii(client_response) if client_response.success? && response.success?
 
       response
     end
 
     def extra_attributes
-      @extra_attributes ||= {
-        remaining_attempts: remaining_attempts,
-        user_id: user_uuid,
-      }
+      @extra_attributes ||= { remaining_attempts: remaining_attempts, user_id: user_uuid }
     end
 
     def remaining_attempts
@@ -133,9 +122,8 @@ module Idv
     end
 
     def document_capture_session
-      @document_capture_session ||= DocumentCaptureSession.find_by(
-        uuid: document_capture_session_uuid,
-      )
+      @document_capture_session ||=
+        DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
     end
 
     def validate_images
@@ -165,24 +153,20 @@ module Idv
     def as_readable(image_key)
       return @readable[image_key] if @readable.key?(image_key)
       value = params[image_key]
-      @readable[image_key] = begin
-        if value.respond_to?(:read)
-          value
-        elsif value.is_a? String
-          DataUrlImage.new(value)
+      @readable[image_key] =
+        begin
+          if value.respond_to?(:read)
+            value
+          elsif value.is_a? String
+            DataUrlImage.new(value)
+          end
+        rescue URI::InvalidURIError => error
+          error
         end
-      rescue URI::InvalidURIError => error
-        error
-      end
     end
 
     def track_event(event, attributes = {})
-      if analytics.present?
-        analytics.track_event(
-          event,
-          attributes,
-        )
-      end
+      analytics.track_event(event, attributes) if analytics.present?
     end
 
     def update_analytics(client_response)
@@ -195,32 +179,30 @@ module Idv
     end
 
     def image_metadata
-      params.permit(:front_image_metadata, :back_image_metadata).
-        to_h.
-        transform_values do |str|
-          JSON.parse(str)
-        rescue JSON::ParserError
-          nil
-        end.
-        compact.
-        transform_keys { |key| key.gsub(/_image_metadata$/, '') }.
-        deep_symbolize_keys
+      params.permit(:front_image_metadata, :back_image_metadata).to_h.transform_values do |str|
+        JSON.parse(str)
+      rescue JSON::ParserError
+        nil
+      end.compact.transform_keys { |key| key.gsub(/_image_metadata$/, '') }.deep_symbolize_keys
     end
 
     def add_costs(response)
-      Db::AddDocumentVerificationAndSelfieCosts.
-        new(user_id: user_id,
-            issuer: issuer,
-            liveness_checking_enabled: liveness_checking_enabled?).
-        call(response)
+      Db::AddDocumentVerificationAndSelfieCosts
+        .new(
+          user_id: user_id,
+          issuer: issuer,
+          liveness_checking_enabled: liveness_checking_enabled?,
+        )
+        .call(response)
     end
 
     def update_funnel(client_response)
       steps = %i[front_image back_image]
       steps << :selfie if liveness_checking_enabled?
       steps.each do |step|
-        Funnel::DocAuth::RegisterStep.new(user_id, issuer).
-          call(step.to_s, :update, client_response.success?)
+        Funnel::DocAuth::RegisterStep
+          .new(user_id, issuer)
+          .call(step.to_s, :update, client_response.success?)
       end
     end
 

@@ -36,6 +36,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
       configurations = mfa.aal3_configurations
     else
       configurations = mfa.two_factor_configurations
+
       # for now, we include the personal key since that's our current behavior,
       # but there are designs to remove personal key from the option list and
       # make it a link with some additional text to call it out as a special
@@ -44,6 +45,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
         configurations << mfa.personal_key_configuration
       end
     end
+
     # A user can have multiples of certain types of MFA methods, such as
     # webauthn keys and phones. However, we only want to show one of each option
     # during login, except for phones, where we want to allow the user to choose
@@ -58,14 +60,16 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   def reverify_link
     t(
       'two_factor_authentication.account_reset.recover_html',
-      reset_link: @view.link_to(
-        t('two_factor_authentication.account_reset.reset_link'),
-        account_reset_request_path(locale: LinkLocaleResolver.locale),
-      ),
-      reverify_link: @view.link_to(
-        t('two_factor_authentication.account_reset.reverify_link'),
-        account_reset_recover_path,
-      ),
+      reset_link:
+        @view.link_to(
+          t('two_factor_authentication.account_reset.reset_link'),
+          account_reset_request_path(locale: LinkLocaleResolver.locale),
+        ),
+      reverify_link:
+        @view.link_to(
+          t('two_factor_authentication.account_reset.reverify_link'),
+          account_reset_recover_path,
+        ),
     )
   end
 
@@ -74,20 +78,22 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
   def account_reset_link
     t(
       'two_factor_authentication.account_reset.text_html',
-      link: @view.link_to(
-        t('two_factor_authentication.account_reset.link'),
-        account_reset_request_path(locale: LinkLocaleResolver.locale),
-      ),
+      link:
+        @view.link_to(
+          t('two_factor_authentication.account_reset.link'),
+          account_reset_request_path(locale: LinkLocaleResolver.locale),
+        ),
     )
   end
 
   def account_reset_cancel_link
     t(
       'two_factor_authentication.account_reset.pending_html',
-      cancel_link: @view.link_to(
-        t('two_factor_authentication.account_reset.cancel_link'),
-        account_reset_cancel_url(token: account_reset_token),
-      ),
+      cancel_link:
+        @view.link_to(
+          t('two_factor_authentication.account_reset.cancel_link'),
+          account_reset_cancel_url(token: account_reset_token),
+        ),
     )
   end
 

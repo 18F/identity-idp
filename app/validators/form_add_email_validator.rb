@@ -8,11 +8,7 @@ module FormAddEmailValidator
 
     validate :email_is_available_to_user
 
-    validates :email,
-              email: {
-                mx_with_fallback: !ENV['RAILS_OFFLINE'],
-                ban_disposable_email: true,
-              }
+    validates :email, email: { mx_with_fallback: !ENV['RAILS_OFFLINE'], ban_disposable_email: true }
   end
 
   private

@@ -14,9 +14,7 @@ class ExpiredLicenseAllower
           success: true, # new response with explicit true overrides success
           errors: {},
           exception: response.exception,
-          extra: response.extra.merge(
-            document_expired: document_expired?,
-          ),
+          extra: response.extra.merge(document_expired: document_expired?),
           pii_from_doc: response.pii_from_doc,
         )
       else
@@ -46,8 +44,7 @@ class ExpiredLicenseAllower
 
   def allowable_expired_license?
     !!(
-      only_error_was_document_expired? &&
-        response.pii_from_doc[:state_id_expiration] &&
+      only_error_was_document_expired? && response.pii_from_doc[:state_id_expiration] &&
         (state_id_expiration = Date.parse(response.pii_from_doc[:state_id_expiration])) &&
         state_id_expiration >= IdentityConfig.store.proofing_expired_license_after
     )

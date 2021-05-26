@@ -14,6 +14,7 @@ module Db
             sp_costs.issuer = service_providers.issuer
           GROUP BY sp_costs.issuer,sp_costs.ial,cost_type ORDER BY issuer,ial,cost_type
         SQL
+
         ActiveRecord::Base.connection.execute(sql)
       end
     end

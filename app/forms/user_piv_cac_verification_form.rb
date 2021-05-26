@@ -2,8 +2,16 @@ class UserPivCacVerificationForm
   include ActiveModel::Model
   include PivCacFormHelpers
 
-  attr_accessor :x509_dn_uuid, :x509_dn, :x509_issuer, :token, :error_type, :nonce, :user, :key_id,
-                :piv_cac_required, :piv_cac_configuration
+  attr_accessor :x509_dn_uuid,
+                :x509_dn,
+                :x509_issuer,
+                :token,
+                :error_type,
+                :nonce,
+                :user,
+                :key_id,
+                :piv_cac_required,
+                :piv_cac_configuration
 
   validates :token, presence: true
   validates :nonce, presence: true
@@ -23,9 +31,7 @@ class UserPivCacVerificationForm
   private
 
   def valid_submission?
-    user_has_piv_cac &&
-      valid_token? &&
-      x509_cert_matches
+    user_has_piv_cac && valid_token? && x509_cert_matches
   end
 
   def x509_cert_matches
@@ -48,9 +54,6 @@ class UserPivCacVerificationForm
   end
 
   def extra_analytics_attributes
-    {
-      multi_factor_auth_method: 'piv_cac',
-      piv_cac_configuration_id: piv_cac_configuration&.id,
-    }
+    { multi_factor_auth_method: 'piv_cac', piv_cac_configuration_id: piv_cac_configuration&.id }
   end
 end

@@ -31,11 +31,13 @@ class SendAddEmailConfirmation
   end
 
   def already_confirmed_by_another_user?
-    EmailAddress.where(
-      email_fingerprint: Pii::Fingerprinter.fingerprint(email_address.email),
-    ).where.not(confirmed_at: nil).
-      where.not(user_id: email_address.user_id).
-      first
+    EmailAddress
+      .where(email_fingerprint: Pii::Fingerprinter.fingerprint(email_address.email))
+      .where
+      .not(confirmed_at: nil)
+      .where
+      .not(user_id: email_address.user_id)
+      .first
   end
 
   def send_email
@@ -47,16 +49,10 @@ class SendAddEmailConfirmation
   end
 
   def send_email_associated_with_another_account_email
-    UserMailer.add_email_associated_with_another_account(
-      email_address.email,
-    ).deliver_now
+    UserMailer.add_email_associated_with_another_account(email_address.email).deliver_now
   end
 
   def send_confirmation_email
-    UserMailer.add_email(
-      user,
-      email_address.email,
-      confirmation_token,
-    ).deliver_now
+    UserMailer.add_email(user, email_address.email, confirmation_token).deliver_now
   end
 end

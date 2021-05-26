@@ -23,11 +23,7 @@ class WebauthnVerificationForm
   def submit(protocol, params)
     consume_parameters(params)
     success = valid? && valid_assertion_response?(protocol)
-    FormResponse.new(
-      success: success,
-      errors: errors,
-      extra: extra_analytics_attributes,
-    )
+    FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
   end
 
   # this gives us a hook to override the domain embedded in the attestation test object
@@ -37,12 +33,7 @@ class WebauthnVerificationForm
 
   private
 
-  attr_reader :success,
-              :user,
-              :challenge,
-              :authenticator_data,
-              :client_data_json,
-              :signature
+  attr_reader :success, :user, :challenge, :authenticator_data, :client_data_json, :signature
 
   def consume_parameters(params)
     @authenticator_data = params[:authenticator_data]
@@ -52,26 +43,26 @@ class WebauthnVerificationForm
   end
 
   def valid_assertion_response?(protocol)
-    assertion_response = ::WebAuthn::AuthenticatorAssertionResponse.new(
-      authenticator_data: Base64.decode64(@authenticator_data),
-      client_data_json: Base64.decode64(@client_data_json),
-      signature: Base64.decode64(@signature),
-    )
+    assertion_response =
+      ::WebAuthn::AuthenticatorAssertionResponse.new(
+        authenticator_data: Base64.decode64(@authenticator_data),
+        client_data_json: Base64.decode64(@client_data_json),
+        signature: Base64.decode64(@signature),
+      )
     original_origin = "#{protocol}#{self.class.domain_name}"
     @webauthn_configuration = user.webauthn_configurations.find_by(credential_id: @credential_id)
     return false unless @webauthn_configuration
 
     public_key = @webauthn_configuration.credential_public_key
     assertion_response.valid?(
-      @challenge.pack('c*'), original_origin,
-      public_key: Base64.decode64(public_key), sign_count: 0
+      @challenge.pack('c*'),
+      original_origin,
+      public_key: Base64.decode64(public_key),
+      sign_count: 0,
     )
   end
 
   def extra_analytics_attributes
-    {
-      multi_factor_auth_method: 'webauthn',
-      webauthn_configuration_id: @webauthn_configuration&.id,
-    }
+    { multi_factor_auth_method: 'webauthn', webauthn_configuration_id: @webauthn_configuration&.id }
   end
 end

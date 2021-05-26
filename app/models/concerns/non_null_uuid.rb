@@ -2,9 +2,7 @@
 module NonNullUuid
   extend ActiveSupport::Concern
 
-  included do
-    before_create :generate_uuid
-  end
+  included { before_create :generate_uuid }
 
   def generate_uuid
     self.uuid ||= SecureRandom.uuid

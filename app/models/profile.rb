@@ -10,11 +10,11 @@ class Profile < ApplicationRecord
   scope(:verified, -> { where.not(verified_at: nil) })
 
   enum deactivation_reason: {
-    password_reset: 1,
-    encryption_error: 2,
-    verification_pending: 3,
-    verification_cancelled: 4,
-  }
+         password_reset: 1,
+         encryption_error: 2,
+         verification_pending: 3,
+         verification_cancelled: 4,
+       }
 
   attr_reader :personal_key
 
@@ -28,6 +28,7 @@ class Profile < ApplicationRecord
     end
     send_push_notifications if is_reproof
   end
+
   # rubocop:enable Rails/SkipsModelValidations
 
   def deactivate(reason)
@@ -56,20 +57,14 @@ class Profile < ApplicationRecord
 
   def encrypt_recovery_pii(pii)
     personal_key = personal_key_generator.create
-    encryptor = Encryption::Encryptors::PiiEncryptor.new(
-      personal_key_generator.normalize(personal_key),
-    )
+    encryptor =
+      Encryption::Encryptors::PiiEncryptor.new(personal_key_generator.normalize(personal_key))
     self.encrypted_pii_recovery = encryptor.encrypt(pii.to_json, user_uuid: user.uuid)
     @personal_key = personal_key
   end
 
   def self.build_compound_pii_fingerprint(pii)
-    values = [
-      pii.first_name,
-      pii.last_name,
-      pii.zipcode,
-      pii.dob && Date.parse(pii[:dob]).year,
-    ]
+    values = [pii.first_name, pii.last_name, pii.zipcode, pii.dob && Date.parse(pii[:dob]).year]
 
     return unless values.all?(&:present?)
 

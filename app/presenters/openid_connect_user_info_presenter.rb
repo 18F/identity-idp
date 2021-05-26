@@ -8,15 +8,14 @@ class OpenidConnectUserInfoPresenter
   end
 
   def user_info
-    info = {
-      sub: uuid_from_sp_identity(identity),
-      iss: root_url,
-      email: email_from_sp_identity(identity),
-      email_verified: true,
-      verified_at: verified_at,
-    }.
-           merge(x509_attributes).
-           merge(ial2_attributes)
+    info =
+      {
+        sub: uuid_from_sp_identity(identity),
+        iss: root_url,
+        email: email_from_sp_identity(identity),
+        email_verified: true,
+        verified_at: verified_at,
+      }.merge(x509_attributes).merge(ial2_attributes)
 
     OpenidConnectAttributeScoper.new(identity.scope).filter(info)
   end
@@ -74,10 +73,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def formatted_address
-    [
-      street_address,
-      "#{ial2_data.city}, #{ial2_data.state} #{postal_code}",
-    ].compact.join("\n")
+    [street_address, "#{ial2_data.city}, #{ial2_data.state} #{postal_code}"].compact.join("\n")
   end
 
   def postal_code
@@ -93,13 +89,14 @@ class OpenidConnectUserInfoPresenter
   end
 
   def ial2_data
-    @ial2_data ||= begin
-      if ial2_session? || ialmax_session? || ial2_strict_session?
-        Pii::SessionStore.new(identity.rails_session_id).load
-      else
-        Pii::Attributes.new_from_hash({})
+    @ial2_data ||=
+      begin
+        if ial2_session? || ialmax_session? || ial2_strict_session?
+          Pii::SessionStore.new(identity.rails_session_id).load
+        else
+          Pii::Attributes.new_from_hash({})
+        end
       end
-    end
   end
 
   def ial2_session?
@@ -115,13 +112,14 @@ class OpenidConnectUserInfoPresenter
   end
 
   def x509_data
-    @x509_data ||= begin
-      if x509_session?
-        X509::SessionStore.new(identity.rails_session_id).load
-      else
-        X509::Attributes.new_from_hash({})
+    @x509_data ||=
+      begin
+        if x509_session?
+          X509::SessionStore.new(identity.rails_session_id).load
+        else
+          X509::Attributes.new_from_hash({})
+        end
       end
-    end
   end
 
   def x509_session?

@@ -22,10 +22,7 @@ module Users
     def create
       @verify_account_form = build_verify_account_form
 
-      throttled = Throttler::IsThrottledElseIncrement.call(
-        current_user.id,
-        :verify_gpo_key,
-      )
+      throttled = Throttler::IsThrottledElseIncrement.call(current_user.id, :verify_gpo_key)
 
       if throttled
         render_throttled
@@ -62,10 +59,7 @@ module Users
     end
 
     def build_verify_account_form
-      VerifyAccountForm.new(
-        user: current_user,
-        otp: params_otp,
-      )
+      VerifyAccountForm.new(user: current_user, otp: params_otp)
     end
 
     def params_otp

@@ -37,9 +37,7 @@ module DataRequests
     end
 
     def lookup_users(users)
-      users.each do |user|
-        lookup_user(user)
-      end
+      users.each { |user| lookup_user(user) }
     end
 
     def lookup_user(user)
@@ -54,9 +52,7 @@ module DataRequests
     end
 
     def users_to_lookup
-      user_uuids_to_lookup.map do |uuid|
-        User.find_by(uuid: uuid)
-      end
+      user_uuids_to_lookup.map { |uuid| User.find_by(uuid: uuid) }
     end
 
     ##

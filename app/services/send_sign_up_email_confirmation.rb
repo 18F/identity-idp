@@ -35,10 +35,11 @@ class SendSignUpEmailConfirmation
   end
 
   def email_address
-    @email_address ||= begin
-      handle_multiple_email_address_error if user.email_addresses.count > 1
-      user.email_addresses.take
-    end
+    @email_address ||=
+      begin
+        handle_multiple_email_address_error if user.email_addresses.count > 1
+        user.email_addresses.take
+      end
   end
 
   def valid_confirmation_token_exists?
@@ -53,10 +54,7 @@ class SendSignUpEmailConfirmation
   end
 
   def remove_legacy_confirmation_info_on_user
-    email_address.user.update!(
-      confirmation_token: nil,
-      confirmation_sent_at: nil,
-    )
+    email_address.user.update!(confirmation_token: nil, confirmation_sent_at: nil)
   end
 
   def send_confirmation_email(request_id, instructions)

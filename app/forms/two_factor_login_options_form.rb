@@ -4,8 +4,10 @@ class TwoFactorLoginOptionsForm
   attr_reader :selection
   attr_reader :configuration_id
 
-  validates :selection, inclusion: { in: %w[voice sms auth_app piv_cac personal_key
-                                            webauthn backup_code] }
+  validates :selection,
+            inclusion: {
+              in: %w[voice sms auth_app piv_cac personal_key webauthn backup_code],
+            }
 
   def initialize(user)
     self.user = user
@@ -36,8 +38,6 @@ class TwoFactorLoginOptionsForm
   end
 
   def extra_analytics_attributes
-    {
-      selection: selection,
-    }
+    { selection: selection }
   end
 end

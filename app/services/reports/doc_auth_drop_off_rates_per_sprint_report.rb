@@ -25,8 +25,12 @@ module Reports
         transaction_with_timeout do
           start = date
           finish = date.next_day(14)
-          ret << Db::DocAuthLog::BlanketDropOffRatesAllSpsInRange.new.
-                 call('Sprint', fmt(start), fmt(finish))
+          ret <<
+            Db::DocAuthLog::BlanketDropOffRatesAllSpsInRange.new.call(
+              'Sprint',
+              fmt(start),
+              fmt(finish),
+            )
           date = finish
         end
       end

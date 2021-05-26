@@ -6,8 +6,11 @@ module UserAlerts
         UserMailer.new_device_sign_in(
           user: user,
           email_address: email_address,
-          date: device.last_used_at.in_time_zone('Eastern Time (US & Canada)').
-            strftime('%B %-d, %Y %H:%M Eastern Time'),
+          date:
+            device
+              .last_used_at
+              .in_time_zone('Eastern Time (US & Canada)')
+              .strftime('%B %-d, %Y %H:%M Eastern Time'),
           location: login_location,
           disavowal_token: disavowal_token,
         ).deliver_now

@@ -3,13 +3,7 @@ class ServiceProviderMfaPolicy
 
   attr_reader :mfa_context, :auth_method, :service_provider
 
-  def initialize(
-    user:,
-    service_provider:,
-    auth_method:,
-    aal_level_requested:,
-    piv_cac_requested:
-  )
+  def initialize(user:, service_provider:, auth_method:, aal_level_requested:, piv_cac_requested:)
     @user = user
     @mfa_context = MfaContext.new(user)
     @auth_method = auth_method

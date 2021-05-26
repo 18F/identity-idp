@@ -45,17 +45,19 @@ class BackupCodeBenchmarker
 
     logger.info "creating #{num_to_create} backup code configurations"
 
-    num_to_create.times.each_slice(batch_size) do |slice|
-      slice.each_slice(num_per_user) do |user_slice|
-        user_id += 1
+    num_to_create
+      .times
+      .each_slice(batch_size) do |slice|
+        slice.each_slice(num_per_user) do |user_slice|
+          user_id += 1
 
-        user_slice.each do
-          code = generator.send(:backup_code)
+          user_slice.each do
+            code = generator.send(:backup_code)
 
-          BackupCodeConfiguration.create(user_id: user_id, code: code)
+            BackupCodeConfiguration.create(user_id: user_id, code: code)
+          end
         end
       end
-    end
 
     logger.info 'done creating backup codes'
   end
@@ -64,22 +66,18 @@ class BackupCodeBenchmarker
     job = BackupCodeBackfillerJob.new
 
     Benchmark.realtime do
-      BackupCodeConfiguration.limit(num_rows).find_in_batches(batch_size: batch_size) do |batch|
-        Benchmark.realtime do
-          batch.each_slice(num_per_user) do |slice|
-            Benchmark.realtime do
-              job.perform_batch(slice)
-            end.tap do |duration|
-              logger.info "duration=#{duration} batch_size=#{slice.size}"
+      BackupCodeConfiguration
+        .limit(num_rows)
+        .find_in_batches(batch_size: batch_size) do |batch|
+          Benchmark.realtime do
+            batch.each_slice(num_per_user) do |slice|
+              Benchmark.realtime { job.perform_batch(slice) }.tap do |duration|
+                logger.info "duration=#{duration} batch_size=#{slice.size}"
+              end
             end
-          end
-        end.tap do |duration|
-          logger.info "duration=#{duration} batch_size=#{batch.size}"
+          end.tap { |duration| logger.info "duration=#{duration} batch_size=#{batch.size}" }
         end
-      end
-    end.tap do |duration|
-      logger.info "duration=#{duration} batch_size=#{num_rows} (done)"
-    end
+    end.tap { |duration| logger.info "duration=#{duration} batch_size=#{num_rows} (done)" }
   end
 
   # @yield a block to run with a silenced AR logger

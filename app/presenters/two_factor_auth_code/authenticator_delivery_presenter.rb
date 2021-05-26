@@ -17,11 +17,7 @@ module TwoFactorAuthCode
     end
 
     def cancel_link
-      if reauthn
-        account_path
-      else
-        sign_out_path
-      end
+      reauthn ? account_path : sign_out_path
     end
 
     private

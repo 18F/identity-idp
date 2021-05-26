@@ -13,19 +13,16 @@ module Users
     before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]
 
     def new
-      if params.key?(:token)
-        process_piv_cac_setup
-      else
-        render_prompt
-      end
+      params.key?(:token) ? process_piv_cac_setup : render_prompt
     end
 
     def error
-      @presenter = PivCacErrorPresenter.new(
-        error: params[:error],
-        view: view_context,
-        try_again_url: setup_piv_cac_url,
-      )
+      @presenter =
+        PivCacErrorPresenter.new(
+          error: params[:error],
+          view: view_context,
+          try_again_url: setup_piv_cac_url,
+        )
     end
 
     def delete
@@ -60,37 +57,34 @@ module Users
 
     def render_prompt
       analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
-      @presenter = PivCacAuthenticationSetupPresenter.new(
-        current_user, user_fully_authenticated?, user_piv_cac_form
-      )
+      @presenter =
+        PivCacAuthenticationSetupPresenter.new(
+          current_user,
+          user_fully_authenticated?,
+          user_piv_cac_form,
+        )
       render :new
     end
 
     def piv_cac_service_url_with_redirect
-      PivCacService.piv_cac_service_link(
-        nonce: piv_cac_nonce,
-        redirect_uri: setup_piv_cac_url,
-      )
+      PivCacService.piv_cac_service_link(nonce: piv_cac_nonce, redirect_uri: setup_piv_cac_url)
     end
 
     def process_piv_cac_setup
       result = user_piv_cac_form.submit
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
-      if result.success?
-        process_valid_submission
-      else
-        process_invalid_submission
-      end
+      result.success? ? process_valid_submission : process_invalid_submission
     end
 
     def user_piv_cac_form
-      @user_piv_cac_form ||= UserPivCacSetupForm.new(
-        user: current_user,
-        token: params[:token],
-        nonce: piv_cac_nonce,
-        name: user_session[:piv_cac_nickname],
-        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
-      )
+      @user_piv_cac_form ||=
+        UserPivCacSetupForm.new(
+          user: current_user,
+          token: params[:token],
+          nonce: piv_cac_nonce,
+          name: user_session[:piv_cac_nickname],
+          piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+        )
     end
 
     def process_valid_submission

@@ -16,11 +16,7 @@ module TwoFactorAuthentication
 
       analytics.track_mfa_submit_event(result.to_h)
 
-      if result.success?
-        handle_valid_otp
-      else
-        handle_invalid_otp
-      end
+      result.success? ? handle_valid_otp : handle_invalid_otp
     end
 
     private

@@ -13,13 +13,13 @@ module Users
     private
 
     def email_address
-      @email_address ||= EmailConfirmationTokenValidator.
-                         email_address_from_token(params[:confirmation_token])
+      @email_address ||=
+        EmailConfirmationTokenValidator.email_address_from_token(params[:confirmation_token])
     end
 
     def email_confirmation_token_validator
-      @email_confirmation_token_validator ||= EmailConfirmationTokenValidator.
-                                              new(email_address, current_user)
+      @email_confirmation_token_validator ||=
+        EmailConfirmationTokenValidator.new(email_address, current_user)
     end
 
     def email_address_already_confirmed?
@@ -39,9 +39,12 @@ module Users
 
     def confirm_and_notify(email_address)
       email_address.update!(confirmed_at: Time.zone.now)
-      email_address.user.confirmed_email_addresses.each do |confirmed_email_address|
-        UserMailer.email_added(email_address.user, confirmed_email_address.email).deliver_now
-      end
+      email_address
+        .user
+        .confirmed_email_addresses
+        .each do |confirmed_email_address|
+          UserMailer.email_added(email_address.user, confirmed_email_address.email).deliver_now
+        end
       notify_subscribers(email_address)
     end
 

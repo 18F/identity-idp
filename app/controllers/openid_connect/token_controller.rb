@@ -8,8 +8,7 @@ module OpenidConnect
       result = @token_form.submit
       analytics.track_event(Analytics::OPENID_CONNECT_TOKEN, result.to_h)
 
-      render json: @token_form.response,
-             status: (result.success? ? :ok : :bad_request)
+      render json: @token_form.response, status: (result.success? ? :ok : :bad_request)
     end
 
     def options

@@ -7,14 +7,11 @@ module AccountReset
     end
 
     def call
-      AccountResetRequest.where(
-        user: user,
-        granted_at: nil,
-        cancelled_at: nil,
-      ).where(
-        'requested_at > ?',
-        IdentityConfig.store.account_reset_wait_period_days.days.ago,
-      ).order(requested_at: :asc).first
+      AccountResetRequest
+        .where(user: user, granted_at: nil, cancelled_at: nil)
+        .where('requested_at > ?', IdentityConfig.store.account_reset_wait_period_days.days.ago)
+        .order(requested_at: :asc)
+        .first
     end
   end
 end

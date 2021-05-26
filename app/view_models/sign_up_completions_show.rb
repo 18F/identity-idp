@@ -1,8 +1,14 @@
 class SignUpCompletionsShow
   include ActionView::Helpers::TagHelper
 
-  def initialize(ial2_requested:, decorated_session:, current_user:, handoff:, ialmax_requested:,
-                 consent_has_expired:)
+  def initialize(
+    ial2_requested:,
+    decorated_session:,
+    current_user:,
+    handoff:,
+    ialmax_requested:,
+    consent_has_expired:
+  )
     @ial2_requested = ial2_requested
     @decorated_session = decorated_session
     @current_user = current_user
@@ -43,24 +49,23 @@ class SignUpCompletionsShow
     end
 
     safe_join(
-      [I18n.t(
-        'titles.sign_up.completion_html',
-        accent: content_tag(:strong, I18n.t('titles.sign_up.loa1')),
-        app: APP_NAME,
-      ).html_safe],
+      [
+        I18n.t(
+          'titles.sign_up.completion_html',
+          accent: content_tag(:strong, I18n.t('titles.sign_up.loa1')),
+          app: APP_NAME,
+        ).html_safe,
+      ],
     )
   end
+
   # rubocop:enable Rails/OutputSafety
 
   def title
     if requested_ial == 'ial2'
       I18n.t('titles.sign_up.verified')
     else
-      I18n.t(
-        'titles.sign_up.completion_html',
-        accent: I18n.t('titles.sign_up.loa1'),
-        app: APP_NAME,
-      )
+      I18n.t('titles.sign_up.completion_html', accent: I18n.t('titles.sign_up.loa1'), app: APP_NAME)
     end
   end
 
@@ -81,20 +86,15 @@ class SignUpCompletionsShow
 
   def identities
     if @current_user
-      @identities ||= @current_user.identities.order(
-        last_authenticated_at: :desc,
-      ).limit(MAX_RECENT_IDENTITIES)
+      @identities ||=
+        @current_user.identities.order(last_authenticated_at: :desc).limit(MAX_RECENT_IDENTITIES)
     else
       false
     end
   end
 
   def user_has_identities?
-    if identities
-      identities.length.positive?
-    else
-      false
-    end
+    identities ? identities.length.positive? : false
   end
 
   private

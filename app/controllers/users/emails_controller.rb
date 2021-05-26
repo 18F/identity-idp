@@ -78,9 +78,9 @@ module Users
       session[:email] = @add_user_email_form.email
 
       redirect_to add_email_verify_email_url(
-        resend: resend_confirmation,
-        request_id: permitted_params[:request_id],
-      )
+                    resend: resend_confirmation,
+                    request_id: permitted_params[:request_id],
+                  )
     end
 
     def session_email

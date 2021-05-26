@@ -6,14 +6,15 @@ module TwoFactorAuthentication
     before_action :check_sp_required_mfa_bypass
 
     def show
-      analytics.track_event(
-        Analytics::MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT, context: context
-      )
-      @presenter = TwoFactorAuthCode::BackupCodePresenter.new(
-        view: view_context,
-        data: { current_user: current_user },
-        remember_device_default: remember_device_default,
-      )
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_BACKUP_CODE_VISIT, context: context)
+      @presenter =
+        TwoFactorAuthCode::BackupCodePresenter.new(
+          view: view_context,
+          data: {
+            current_user: current_user,
+          },
+          remember_device_default: remember_device_default,
+        )
       @backup_code_form = BackupCodeVerificationForm.new(current_user)
     end
 
@@ -38,7 +39,9 @@ module TwoFactorAuthentication
     def presenter_for_two_factor_authentication_method
       TwoFactorAuthCode::BackupCodePresenter.new(
         view: view_context,
-        data: { current_user: current_user },
+        data: {
+          current_user: current_user,
+        },
       )
     end
 

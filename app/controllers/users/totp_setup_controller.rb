@@ -24,11 +24,7 @@ module Users
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
 
-      if result.success?
-        process_valid_code
-      else
-        process_invalid_code
-      end
+      result.success? ? process_valid_code : process_invalid_code
     end
 
     def disable
@@ -40,22 +36,23 @@ module Users
     private
 
     def totp_setup_form
-      @totp_setup_form ||= TotpSetupForm.new(
-        current_user,
-        new_totp_secret,
-        params[:code].strip,
-        params[:name].to_s.strip,
-      )
+      @totp_setup_form ||=
+        TotpSetupForm.new(
+          current_user,
+          new_totp_secret,
+          params[:code].strip,
+          params[:name].to_s.strip,
+        )
     end
 
     def set_totp_setup_presenter
-      @presenter = SetupPresenter.new(
-        current_user: current_user,
-        user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie:
-                                                  user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
-      )
+      @presenter =
+        SetupPresenter.new(
+          current_user: current_user,
+          user_fully_authenticated: user_fully_authenticated?,
+          user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+          remember_device_default: remember_device_default,
+        )
     end
 
     def user_opted_remember_device_cookie
@@ -113,11 +110,12 @@ module Users
     end
 
     def process_invalid_code
-      flash[:error] = if totp_setup_form.name_taken
-                        t('errors.piv_cac_setup.unique_name')
-                      else
-                        t('errors.invalid_totp')
-                      end
+      flash[:error] =
+        if totp_setup_form.name_taken
+          t('errors.piv_cac_setup.unique_name')
+        else
+          t('errors.invalid_totp')
+        end
       redirect_to authenticator_setup_url
     end
 

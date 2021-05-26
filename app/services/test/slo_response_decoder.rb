@@ -6,10 +6,7 @@ module Test
     end
 
     def response
-      @response ||= OneLogin::RubySaml::Response.new(
-        params[:SAMLResponse],
-        settings: settings,
-      )
+      @response ||= OneLogin::RubySaml::Response.new(params[:SAMLResponse], settings: settings)
     end
 
     private

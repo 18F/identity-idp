@@ -10,11 +10,7 @@ module Idv
     def submit(code:)
       @code = code
       success = code_valid?
-      if success
-        clear_second_factor_attempts
-      else
-        increment_second_factor_attempts
-      end
+      success ? clear_second_factor_attempts : increment_second_factor_attempts
       FormResponse.new(success: success, extra: extra_analytics_attributes)
     end
 

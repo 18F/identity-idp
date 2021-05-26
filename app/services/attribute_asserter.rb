@@ -16,12 +16,14 @@ class AttributeAsserter
     phone
   ].freeze
 
-  def initialize(user:,
-                 service_provider:,
-                 name_id_format:,
-                 authn_request:,
-                 decrypted_pii:,
-                 user_session:)
+  def initialize(
+    user:,
+    service_provider:,
+    name_id_format:,
+    authn_request:,
+    decrypted_pii:,
+    user_session:
+  )
     self.user = user
     self.service_provider = service_provider
     self.name_id_format = name_id_format
@@ -41,6 +43,7 @@ class AttributeAsserter
     add_x509(attrs) if bundle.include?(:x509_presented) && x509_data
     user.asserted_attributes = attrs
   end
+
   # rubocop:enable Metrics/PerceivedComplexity
 
   private
@@ -84,18 +87,12 @@ class AttributeAsserter
     proc do |principal|
       result = getter.call(principal)
 
-      if result.present?
-        Phonelib.parse(result).e164
-      else
-        result
-      end
+      result.present? ? Phonelib.parse(result).e164 : result
     end
   end
 
   def wrap_with_zipcode_formatter(getter)
-    proc do |principal|
-      getter.call(principal)&.strip&.slice(0, 5)
-    end
+    proc { |principal| getter.call(principal)&.strip&.slice(0, 5) }
   end
 
   def add_verified_at(attrs)
@@ -158,9 +155,8 @@ class AttributeAsserter
   end
 
   def bundle
-    @_bundle ||= (
-      authn_request_bundle || service_provider.metadata[:attribute_bundle] || []
-    ).map(&:to_sym)
+    @_bundle ||=
+      (authn_request_bundle || service_provider.metadata[:attribute_bundle] || []).map(&:to_sym)
   end
 
   def authn_request_bundle
@@ -178,10 +174,11 @@ class AttributeAsserter
 
   def x509_data
     return @x509_data if defined?(@x509_data)
-    @x509_data ||= begin
-      x509_hash = user_session[:decrypted_x509]
-      X509::Attributes.new_from_json(x509_hash) if x509_hash
-    end
+    @x509_data ||=
+      begin
+        x509_hash = user_session[:decrypted_x509]
+        X509::Attributes.new_from_json(x509_hash) if x509_hash
+      end
   end
 
   def ascii?

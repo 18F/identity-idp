@@ -29,10 +29,7 @@ module Idv
     delegate :phone, :code, :delivery_method, to: :user_phone_confirmation_session
 
     def too_many_otp_sends_response
-      FormResponse.new(
-        success: false,
-        extra: extra_analytics_attributes,
-      )
+      FormResponse.new(success: false, extra: extra_analytics_attributes)
     end
 
     def rate_limit_exceeded?
@@ -44,30 +41,25 @@ module Idv
     end
 
     def otp_rate_limiter
-      @otp_rate_limiter ||= OtpRateLimiter.new(
-        user: user,
-        phone: phone,
-        phone_confirmed: true,
-      )
+      @otp_rate_limiter ||= OtpRateLimiter.new(user: user, phone: phone, phone_confirmed: true)
     end
 
     def send_otp
       idv_session.user_phone_confirmation_session = user_phone_confirmation_session.regenerate_otp
-      @telephony_response = Telephony.send_confirmation_otp(
-        otp: code,
-        to: phone,
-        expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
-        channel: delivery_method,
-        domain: IdentityConfig.store.domain_name,
-      )
+      @telephony_response =
+        Telephony.send_confirmation_otp(
+          otp: code,
+          to: phone,
+          expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+          channel: delivery_method,
+          domain: IdentityConfig.store.domain_name,
+        )
       add_cost
       otp_sent_response
     end
 
     def otp_sent_response
-      FormResponse.new(
-        success: telephony_response.success?, extra: extra_analytics_attributes,
-      )
+      FormResponse.new(success: telephony_response.success?, extra: extra_analytics_attributes)
     end
 
     def add_cost

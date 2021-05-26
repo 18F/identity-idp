@@ -15,10 +15,10 @@ module Db
 
         iaa_range = (service_provider.iaa_start_date..service_provider.iaa_end_date)
 
-        full_months, partial_months = Reports::MonthHelper.months(iaa_range).
-          partition do |month_range|
-            Reports::MonthHelper.full_month?(month_range)
-          end
+        full_months, partial_months =
+          Reports::MonthHelper
+            .months(iaa_range)
+            .partition { |month_range| Reports::MonthHelper.full_month?(month_range) }
 
         issuer = service_provider.issuer
 
@@ -26,24 +26,25 @@ module Db
         # - full months from monthly_sp_auth_counts
         # - partial months by aggregating sp_return_logs
         # The results are rows with [ial, auth_count, year_month, issuer, iaa, iaa start, iaa end]
-        union_query = [
-          full_month_subquery(sp: service_provider, full_months: full_months),
-          *partial_month_subqueries(sp: service_provider, partial_months: partial_months),
-        ].join(' UNION ALL ')
+        union_query =
+          [
+            full_month_subquery(sp: service_provider, full_months: full_months),
+            *partial_month_subqueries(sp: service_provider, partial_months: partial_months),
+          ].join(' UNION ALL ')
 
         ActiveRecord::Base.connection.execute(union_query)
       end
 
-
       # @return [String]
       def full_month_subquery(sp:, full_months:)
-        params = {
-          iaa: sp.iaa,
-          issuer: sp.issuer,
-          iaa_start_date: sp.iaa_start_date,
-          iaa_end_date: sp.iaa_end_date,
-          year_months: full_months.map { |r| r.begin.strftime('%Y%m') },
-        }.transform_values { |value| quote(value) }
+        params =
+          {
+            iaa: sp.iaa,
+            issuer: sp.issuer,
+            iaa_start_date: sp.iaa_start_date,
+            iaa_end_date: sp.iaa_end_date,
+            year_months: full_months.map { |r| r.begin.strftime('%Y%m') },
+          }.transform_values { |value| quote(value) }
 
         full_month_subquery = format(<<~SQL, params)
           SELECT
@@ -68,15 +69,16 @@ module Db
       # @return [Array<String>]
       def partial_month_subqueries(sp:, partial_months:)
         partial_months.map do |month_range|
-          params = {
-            iaa: sp.iaa,
-            issuer: sp.issuer,
-            iaa_start_date: sp.iaa_start_date,
-            iaa_end_date: sp.iaa_end_date,
-            range_start: month_range.begin,
-            range_end: month_range.end,
-            year_month: month_range.begin.strftime('%Y%m'),
-          }.transform_values { |value| quote(value) }
+          params =
+            {
+              iaa: sp.iaa,
+              issuer: sp.issuer,
+              iaa_start_date: sp.iaa_start_date,
+              iaa_end_date: sp.iaa_end_date,
+              range_start: month_range.begin,
+              range_end: month_range.end,
+              year_month: month_range.begin.strftime('%Y%m'),
+            }.transform_values { |value| quote(value) }
 
           format(<<~SQL, params)
             SELECT

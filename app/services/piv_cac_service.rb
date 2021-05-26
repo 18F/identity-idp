@@ -8,16 +8,17 @@ module PivCacService
     include Rails.application.routes.url_helpers
 
     def decode_token(token)
-      token_present(token) &&
-        token_decoded(token)
+      token_present(token) && token_decoded(token)
     end
 
     def piv_cac_service_link(nonce:, redirect_uri:)
-      uri = if FeatureManagement.development_and_identity_pki_disabled?
-              URI(test_piv_cac_entry_url)
-            else
-              URI(randomize_uri(IdentityConfig.store.piv_cac_service_url))
-            end
+      uri =
+        if FeatureManagement.development_and_identity_pki_disabled?
+          URI(test_piv_cac_entry_url)
+        else
+          URI(randomize_uri(IdentityConfig.store.piv_cac_service_url))
+        end
+
       # add the nonce and redirect uri
       uri.query = { nonce: nonce, redirect_uri: redirect_uri }.to_query
       uri.to_s
@@ -41,9 +42,7 @@ module PivCacService
     end
 
     def any_partial_domains_match?(givens, matchers)
-      givens.any? do |given|
-        matchers.any? { |matcher| given.end_with?(matcher) }
-      end
+      givens.any? { |given| matchers.any? { |matcher| given.end_with?(matcher) } }
     end
 
     def randomize_uri(uri)
@@ -70,11 +69,13 @@ module PivCacService
         ssl_config = { verify: !FeatureManagement.identity_pki_local_dev? }
       end
 
-      Faraday.new(ssl: ssl_config).post(
-        verify_token_uri,
-        URI.encode_www_form({ token: token }),
-        Authentication: authenticate(token),
-      )
+      Faraday
+        .new(ssl: ssl_config)
+        .post(
+          verify_token_uri,
+          URI.encode_www_form({ token: token }),
+          Authentication: authenticate(token),
+        )
     end
 
     def verify_token_uri
@@ -85,9 +86,8 @@ module PivCacService
       secret = IdentityConfig.store.piv_cac_verify_token_secret
       return '' if secret.blank?
       nonce = SecureRandom.hex(10)
-      hmac = Base64.urlsafe_encode64(
-        OpenSSL::HMAC.digest('SHA256', secret, [token, nonce].join('+')),
-      )
+      hmac =
+        Base64.urlsafe_encode64(OpenSSL::HMAC.digest('SHA256', secret, [token, nonce].join('+')))
       "hmac :#{nonce}:#{hmac}"
     end
 

@@ -1,49 +1,35 @@
 # Helps route between various doc auth backends, provided by the identity-doc-auth gem
 module DocAuthRouter
-
   ERROR_TRANSLATIONS = {
     # i18n-tasks-use t('doc_auth.errors.alerts.barcode_content_check')
     IdentityDocAuth::Errors::BARCODE_CONTENT_CHECK =>
       'doc_auth.errors.alerts.barcode_content_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.barcode_read_check')
-    IdentityDocAuth::Errors::BARCODE_READ_CHECK =>
-      'doc_auth.errors.alerts.barcode_read_check',
+    IdentityDocAuth::Errors::BARCODE_READ_CHECK => 'doc_auth.errors.alerts.barcode_read_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.birth_date_checks')
-    IdentityDocAuth::Errors::BIRTH_DATE_CHECKS =>
-      'doc_auth.errors.alerts.birth_date_checks',
+    IdentityDocAuth::Errors::BIRTH_DATE_CHECKS => 'doc_auth.errors.alerts.birth_date_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.control_number_check')
-    IdentityDocAuth::Errors::CONTROL_NUMBER_CHECK =>
-      'doc_auth.errors.alerts.control_number_check',
+    IdentityDocAuth::Errors::CONTROL_NUMBER_CHECK => 'doc_auth.errors.alerts.control_number_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.doc_crosscheck')
-    IdentityDocAuth::Errors::DOC_CROSSCHECK =>
-      'doc_auth.errors.alerts.doc_crosscheck',
+    IdentityDocAuth::Errors::DOC_CROSSCHECK => 'doc_auth.errors.alerts.doc_crosscheck',
     # i18n-tasks-use t('doc_auth.errors.alerts.doc_number_checks')
-    IdentityDocAuth::Errors::DOC_NUMBER_CHECKS =>
-      'doc_auth.errors.alerts.doc_number_checks',
+    IdentityDocAuth::Errors::DOC_NUMBER_CHECKS => 'doc_auth.errors.alerts.doc_number_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.expiration_checks')
-    IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK =>
-      'doc_auth.errors.alerts.expiration_checks',
+    IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK => 'doc_auth.errors.alerts.expiration_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.expiration_checks')
-    IdentityDocAuth::Errors::EXPIRATION_CHECKS =>
-      'doc_auth.errors.alerts.expiration_checks',
+    IdentityDocAuth::Errors::EXPIRATION_CHECKS => 'doc_auth.errors.alerts.expiration_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.full_name_check')
-    IdentityDocAuth::Errors::FULL_NAME_CHECK =>
-      'doc_auth.errors.alerts.full_name_check',
+    IdentityDocAuth::Errors::FULL_NAME_CHECK => 'doc_auth.errors.alerts.full_name_check',
     # i18n-tasks-use t('doc_auth.errors.general.liveness')
-    IdentityDocAuth::Errors::GENERAL_ERROR_LIVENESS =>
-      'doc_auth.errors.general.liveness',
+    IdentityDocAuth::Errors::GENERAL_ERROR_LIVENESS => 'doc_auth.errors.general.liveness',
     # i18n-tasks-use t('doc_auth.errors.general.no_liveness')
-    IdentityDocAuth::Errors::GENERAL_ERROR_NO_LIVENESS =>
-      'doc_auth.errors.general.no_liveness',
+    IdentityDocAuth::Errors::GENERAL_ERROR_NO_LIVENESS => 'doc_auth.errors.general.no_liveness',
     # i18n-tasks-use t('doc_auth.errors.alerts.id_not_recognized')
-    IdentityDocAuth::Errors::ID_NOT_RECOGNIZED =>
-      'doc_auth.errors.alerts.id_not_recognized',
+    IdentityDocAuth::Errors::ID_NOT_RECOGNIZED => 'doc_auth.errors.alerts.id_not_recognized',
     # i18n-tasks-use t('doc_auth.errors.alerts.id_not_verified')
-    IdentityDocAuth::Errors::ID_NOT_VERIFIED =>
-      'doc_auth.errors.alerts.id_not_verified',
+    IdentityDocAuth::Errors::ID_NOT_VERIFIED => 'doc_auth.errors.alerts.id_not_verified',
     # i18n-tasks-use t('doc_auth.errors.alerts.issue_date_checks')
-    IdentityDocAuth::Errors::ISSUE_DATE_CHECKS =>
-      'doc_auth.errors.alerts.issue_date_checks',
+    IdentityDocAuth::Errors::ISSUE_DATE_CHECKS => 'doc_auth.errors.alerts.issue_date_checks',
     # i18n-tasks-use t('doc_auth.errors.general.multiple_back_id_failures')
     IdentityDocAuth::Errors::MULTIPLE_BACK_ID_FAILURES =>
       'doc_auth.errors.general.multiple_back_id_failures',
@@ -117,7 +103,7 @@ module DocAuthRouter
     def translate_doc_auth_errors!(response)
       # acuant selfie errors are handled in translate_generic_errors!
       error_keys = IdentityDocAuth::ErrorGenerator::ERROR_KEYS.dup
-      error_keys.delete(:selfie) if DocAuthRouter::doc_auth_vendor == 'acuant'
+      error_keys.delete(:selfie) if DocAuthRouter.doc_auth_vendor == 'acuant'
 
       error_keys.each do |category|
         response.errors[category]&.map! do |plain_error|
@@ -126,6 +112,7 @@ module DocAuthRouter
             I18n.t(error_key)
           else
             Rails.logger.warn("unknown DocAuth error=#{plain_error}")
+
             # This isn't right, this should depend on the liveness setting
             I18n.t('doc_auth.errors.general.no_liveness')
           end

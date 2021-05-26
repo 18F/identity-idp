@@ -49,12 +49,7 @@ module PhoneConfirmation
     end
 
     def to_h
-      {
-        code: code,
-        phone: phone,
-        sent_at: sent_at.to_i,
-        delivery_method: delivery_method,
-      }
+      { code: code, phone: phone, sent_at: sent_at.to_i, delivery_method: delivery_method }
     end
 
     def self.from_h(hash)

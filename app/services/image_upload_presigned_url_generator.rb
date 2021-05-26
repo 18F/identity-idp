@@ -9,10 +9,7 @@ class ImageUploadPresignedUrlGenerator
     elsif !Identity::Hostdata.in_datacenter?
       Rails.application.routes.url_helpers.test_fake_s3_url(key: keyname)
     else
-      s3_presigned_url(
-        bucket_prefix: bucket_prefix,
-        keyname: keyname,
-      ).to_s
+      s3_presigned_url(bucket_prefix: bucket_prefix, keyname: keyname).to_s
     end
   end
 

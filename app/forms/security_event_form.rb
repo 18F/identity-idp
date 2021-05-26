@@ -100,19 +100,20 @@ class SecurityEventForm
     error_code = nil
     error_message = nil
 
-    matching_public_key = service_provider&.ssl_certs&.find do |ssl_cert|
-      error_code = nil
-      error_message = nil
-      JWT.decode(body, ssl_cert.public_key, true, algorithm: 'RS256', leeway: Float::INFINITY)
-    rescue JWT::IncorrectAlgorithm
-      error_code = ErrorCodes::JWT_CRYPTO
-      error_message = t('risc.security_event.errors.alg_unsupported', expected_alg: 'RS256')
-      nil
-    rescue JWT::VerificationError => err
-      error_code = ErrorCodes::JWS
-      error_message = err.message
-      nil
-    end
+    matching_public_key =
+      service_provider&.ssl_certs&.find do |ssl_cert|
+        error_code = nil
+        error_message = nil
+        JWT.decode(body, ssl_cert.public_key, true, algorithm: 'RS256', leeway: Float::INFINITY)
+      rescue JWT::IncorrectAlgorithm
+        error_code = ErrorCodes::JWT_CRYPTO
+        error_message = t('risc.security_event.errors.alg_unsupported', expected_alg: 'RS256')
+        nil
+      rescue JWT::VerificationError => err
+        error_code = ErrorCodes::JWS
+        error_message = err.message
+        nil
+      end
 
     if error_code && error_message
       @error_code = error_code
@@ -140,11 +141,8 @@ class SecurityEventForm
   def record_already_exists?
     return @record_already_exists if defined?(@record_already_exists)
 
-    @record_already_exists = SecurityEvent.where(
-      issuer: service_provider.issuer,
-      jti: jti,
-      user_id: user.id,
-    ).exists?
+    @record_already_exists =
+      SecurityEvent.where(issuer: service_provider.issuer, jti: jti, user_id: user.id).exists?
   end
 
   def validate_iss
@@ -221,11 +219,7 @@ class SecurityEventForm
     return nil if jwt_payload['events'].blank?
 
     matching_event_types = jwt_payload['events'].keys & SecurityEvent::EVENT_TYPES
-    if matching_event_types.present?
-      matching_event_types.first
-    else
-      jwt_payload['events'].keys.first
-    end
+    matching_event_types.present? ? matching_event_types.first : jwt_payload['events'].keys.first
   end
 
   def subject_type
@@ -236,18 +230,11 @@ class SecurityEventForm
     return if event.blank? || !service_provider
     return @identity if defined?(@identity)
 
-    @identity = if service_provider.agency_id
-                  identity_from_agency_identity
-                else
-                  identity_from_identity
-                end
+    @identity = service_provider.agency_id ? identity_from_agency_identity : identity_from_identity
   end
 
   def identity_from_agency_identity
-    AgencyIdentity.find_by(
-      uuid: event.dig('subject', 'sub'),
-      agency_id: service_provider.agency_id,
-    )
+    AgencyIdentity.find_by(uuid: event.dig('subject', 'sub'), agency_id: service_provider.agency_id)
   end
 
   def identity_from_identity
@@ -267,11 +254,6 @@ class SecurityEventForm
   end
 
   def extra_analytics_attributes
-    {
-      client_id: client_id,
-      error_code: error_code,
-      jti: jti,
-      user_id: user&.uuid,
-    }
+    { client_id: client_id, error_code: error_code, jti: jti, user_id: user&.uuid }
   end
 end

@@ -6,11 +6,7 @@ module AccountReset
       result = AccountReset::ValidateGrantedToken.new(token).call
       analytics.track_event(Analytics::ACCOUNT_RESET, result.to_h)
 
-      if result.success?
-        handle_valid_token
-      else
-        handle_invalid_token(result)
-      end
+      result.success? ? handle_valid_token : handle_invalid_token(result)
     end
 
     def delete
@@ -18,11 +14,7 @@ module AccountReset
       result = AccountReset::DeleteAccount.new(granted_token).call
       analytics.track_event(Analytics::ACCOUNT_RESET, result.to_h.except(:email))
 
-      if result.success?
-        handle_successful_deletion(result)
-      else
-        handle_invalid_token(result)
-      end
+      result.success? ? handle_successful_deletion(result) : handle_invalid_token(result)
     end
 
     private

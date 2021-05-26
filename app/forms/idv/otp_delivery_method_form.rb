@@ -16,9 +16,7 @@ module Idv
     attr_writer :otp_delivery_preference
 
     def extra_analytics_attributes
-      {
-        otp_delivery_preference: otp_delivery_preference,
-      }
+      { otp_delivery_preference: otp_delivery_preference }
     end
   end
 end

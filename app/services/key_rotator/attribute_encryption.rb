@@ -9,6 +9,7 @@ module KeyRotator
     def rotate
       model.update_columns(encrypted_attributes)
     end
+
     # rubocop:enable Rails/SkipsModelValidations
 
     private
@@ -16,14 +17,16 @@ module KeyRotator
     attr_reader :model, :encryptor
 
     def encrypted_attributes
-      model.class.encryptable_attributes.each_with_object({}) do |attribute, result|
-        plain_attribute = model.public_send(attribute)
-        next unless plain_attribute
+      model
+        .class
+        .encryptable_attributes
+        .each_with_object({}) do |attribute, result|
+          plain_attribute = model.public_send(attribute)
+          next unless plain_attribute
 
-        result[:"encrypted_#{attribute}"] = EncryptedAttribute.new_from_decrypted(
-          plain_attribute,
-        ).encrypted
-      end
+          result[:"encrypted_#{attribute}"] =
+            EncryptedAttribute.new_from_decrypted(plain_attribute).encrypted
+        end
     end
   end
 end

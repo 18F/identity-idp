@@ -29,11 +29,7 @@ module Pii
     attr_reader :user, :user_session
 
     def rotate_fingerprints(profile)
-      KeyRotator::HmacFingerprinter.new.rotate(
-        user: user,
-        profile: profile,
-        pii_attributes: fetch,
-      )
+      KeyRotator::HmacFingerprinter.new.rotate(user: user, profile: profile, pii_attributes: fetch)
     end
 
     def rotate_encrypted_attributes
@@ -44,8 +40,7 @@ module Pii
     end
 
     def stale_fingerprints?(profile)
-      stale_email_fingerprint? ||
-        stale_ssn_signature?(profile) ||
+      stale_email_fingerprint? || stale_ssn_signature?(profile) ||
         stale_compound_pii_signature?(profile)
     end
 

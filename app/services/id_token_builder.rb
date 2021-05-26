@@ -25,9 +25,11 @@ class IdTokenBuilder
   attr_reader :code
 
   def jwt_payload
-    OpenidConnectUserInfoPresenter.new(identity).user_info.
-      merge(id_token_claims).
-      merge(timestamp_claims)
+    OpenidConnectUserInfoPresenter
+      .new(identity)
+      .user_info
+      .merge(id_token_claims)
+      .merge(timestamp_claims)
   end
 
   def id_token_claims
@@ -42,20 +44,20 @@ class IdTokenBuilder
   end
 
   def timestamp_claims
-    {
-      exp: @custom_expiration || expires,
-      iat: now.to_i,
-      nbf: now.to_i,
-    }
+    { exp: @custom_expiration || expires, iat: now.to_i, nbf: now.to_i }
   end
 
   def acr
     ial = identity.ial
     case ial
-    when Idp::Constants::IAL_MAX then Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::IAL1 then Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::IAL2 then Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-    when Idp::Constants::IAL2_STRICT then Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::IAL_MAX
+      Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::IAL1
+      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::IAL2
+      Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
+    when Idp::Constants::IAL2_STRICT
+      Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
     else
       raise "Unknown ial #{ial}"
     end

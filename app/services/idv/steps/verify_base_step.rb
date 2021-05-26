@@ -2,8 +2,40 @@ module Idv
   module Steps
     class VerifyBaseStep < DocAuthBaseStep
       AAMVA_SUPPORTED_JURISDICTIONS = %w[
-        AR AZ CO CT DC DE FL GA IA ID IL IN KY MA MD ME MI MO MS MT ND NE NJ NM
-        PA RI SC SD TX VA VT WA WI WY
+        AR
+        AZ
+        CO
+        CT
+        DC
+        DE
+        FL
+        GA
+        IA
+        ID
+        IL
+        IN
+        KY
+        MA
+        MD
+        ME
+        MI
+        MO
+        MS
+        MT
+        ND
+        NE
+        NJ
+        NM
+        PA
+        RI
+        SC
+        SD
+        TX
+        VA
+        VT
+        WA
+        WI
+        WY
       ].freeze
 
       private
@@ -47,12 +79,15 @@ module Idv
         FormResponse.new(
           success: idv_success(idv_result),
           errors: idv_errors(idv_result),
-          extra: { proofing_results: idv_extra(idv_result) },
+          extra: {
+            proofing_results: idv_extra(idv_result),
+          },
         )
       end
 
       def add_proofing_costs(results)
         vendors = results[:context][:stages]
+
         # backwards-compatibility, can be removed after next deploy (2021-04-29)
         if vendors.is_a?(Array)
           vendors.each do |hash|

@@ -40,9 +40,10 @@ module OpenidConnect
 
     def confirm_user_is_authenticated_with_fresh_mfa
       bump_auth_count unless user_fully_authenticated?
-      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated? &&
-                                                                 service_provider_mfa_policy.
-                                                                 auth_method_confirms_to_sp_request?
+      unless user_fully_authenticated? &&
+               service_provider_mfa_policy.auth_method_confirms_to_sp_request?
+        return confirm_two_factor_authenticated(request_id)
+      end
       redirect_to user_two_factor_authentication_url if device_not_remembered?
     end
 
@@ -72,20 +73,24 @@ module OpenidConnect
     end
 
     def track_authorize_analytics(result)
-      analytics_attributes = result.to_h.except(:redirect_uri).
-                             merge(user_fully_authenticated: user_fully_authenticated?)
+      analytics_attributes =
+        result.to_h.except(:redirect_uri).merge(user_fully_authenticated: user_fully_authenticated?)
 
-      analytics.track_event(
-        Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION, analytics_attributes
-      )
+      analytics.track_event(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION, analytics_attributes)
     end
 
     def identity_needs_verification?
-      ((@authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?) &&
-        (current_user.decorate.identity_not_verified? ||
-        decorated_session.requested_more_recent_verification?)) ||
-        (@authorize_form.ial2_strict_requested? &&
-        !current_user.active_profile&.includes_liveness_check?)
+      (
+        (@authorize_form.ial2_requested? || @authorize_form.ial2_strict_requested?) &&
+          (
+            current_user.decorate.identity_not_verified? ||
+              decorated_session.requested_more_recent_verification?
+          )
+      ) ||
+        (
+          @authorize_form.ial2_strict_requested? &&
+            !current_user.active_profile&.includes_liveness_check?
+        )
     end
 
     def build_authorize_form_from_params
@@ -130,8 +135,7 @@ module OpenidConnect
     end
 
     def pii_requested_but_locked?
-      sp_session && sp_session_ial > 1 &&
-        UserDecorator.new(current_user).identity_verified? &&
+      sp_session && sp_session_ial > 1 && UserDecorator.new(current_user).identity_verified? &&
         user_session[:decrypted_pii].blank?
     end
 

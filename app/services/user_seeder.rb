@@ -99,13 +99,13 @@ class UserSeeder
     user.encrypted_email = ee.encrypted
     user.reset_password(PASSWORD, PASSWORD)
     Event.create(user_id: user.id, event_type: :account_created)
+
     # rubocop:disable Rails/SkipsModelValidations
     user.email_addresses.update_all(confirmed_at: Time.zone.now)
+
     # rubocop:enable Rails/SkipsModelValidations
     generator = BackupCodeGenerator.new(user)
-    generator.generate.tap do |codes|
-      generator.save(codes)
-    end
+    generator.generate.tap { |codes| generator.save(codes) }
   end
 
   def create_profile(user:, row:)

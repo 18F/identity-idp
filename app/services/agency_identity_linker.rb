@@ -11,11 +11,12 @@ class AgencyIdentityLinker
 
   def self.sp_identity_from_uuid_and_sp(uuid, service_provider)
     ai = AgencyIdentity.where(uuid: uuid).take
-    criteria = if ai
-                 { user_id: ai.user_id, service_provider: service_provider }
-               else
-                 { uuid: uuid, service_provider: service_provider }
-               end
+    criteria =
+      if ai
+        { user_id: ai.user_id, service_provider: service_provider }
+      else
+        { uuid: uuid, service_provider: service_provider }
+      end
     ServiceProviderIdentity.where(criteria).take
   end
 

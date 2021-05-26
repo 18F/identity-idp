@@ -44,9 +44,9 @@ module Encryption
       end
 
       def sane_payload?(payload)
-        payload.split(DELIMITER).each do |segment|
-          return false unless valid_base64_encoding?(segment)
-        end
+        payload
+          .split(DELIMITER)
+          .each { |segment| return false unless valid_base64_encoding?(segment) }
       end
 
       def join_segments(*segments)

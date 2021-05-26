@@ -24,21 +24,19 @@ class ReturnToSpController < ApplicationController
   end
 
   def sp_return_url_resolver
-    @sp_return_url_resolver ||= SpReturnUrlResolver.new(
-      service_provider: current_sp,
-      oidc_state: sp_request_params[:state],
-      oidc_redirect_uri: sp_request_params[:redirect_uri],
-    )
+    @sp_return_url_resolver ||=
+      SpReturnUrlResolver.new(
+        service_provider: current_sp,
+        oidc_state: sp_request_params[:state],
+        oidc_redirect_uri: sp_request_params[:redirect_uri],
+      )
   end
 
   def sp_request_params
-    @request_params ||= begin
-      if sp_request_url.present?
-        UriService.params(sp_request_url)
-      else
-        {}
+    @request_params ||=
+      begin
+        sp_request_url.present? ? UriService.params(sp_request_url) : {}
       end
-    end
   end
 
   def sp_request_url

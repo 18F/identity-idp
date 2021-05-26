@@ -1,8 +1,19 @@
 module Db
   module DocAuthLog
     module DropOffRatesHelper
-      STEPS = %w[welcome agreement capture_document cap_doc_submit ssn verify_info
-                 verify_submit phone encrypt personal_key verified].freeze
+      STEPS = %w[
+        welcome
+        agreement
+        capture_document
+        cap_doc_submit
+        ssn
+        verify_info
+        verify_submit
+        phone
+        encrypt
+        personal_key
+        verified
+      ].freeze
 
       private
 
@@ -43,11 +54,12 @@ module Db
       end
 
       def images_submitted
-        predicates = [
-          'back_image_submit_count>0',
-          'mobile_back_image_submit_count>0',
-          'capture_mobile_back_image_submit_count>0',
-        ].join(' or ')
+        predicates =
+          %w[
+            back_image_submit_count>0
+            mobile_back_image_submit_count>0
+            capture_mobile_back_image_submit_count>0
+          ].join(' or ')
 
         "(#{predicates})"
       end
@@ -57,9 +69,7 @@ module Db
       end
 
       def piv_cac_submitted
-        predicates = [
-          'present_cac_submit_count>0',
-        ].join(' or ')
+        predicates = ['present_cac_submit_count>0'].join(' or ')
 
         "(#{predicates})"
       end

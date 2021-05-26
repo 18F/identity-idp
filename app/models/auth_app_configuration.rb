@@ -12,11 +12,7 @@ class AuthAppConfiguration < ApplicationRecord
   end
 
   def selection_presenters
-    if mfa_enabled?
-      [TwoFactorAuthentication::AuthAppSelectionPresenter.new(self)]
-    else
-      []
-    end
+    mfa_enabled? ? [TwoFactorAuthentication::AuthAppSelectionPresenter.new(self)] : []
   end
 
   def friendly_name
@@ -24,10 +20,6 @@ class AuthAppConfiguration < ApplicationRecord
   end
 
   def self.selection_presenters(set)
-    if set.any?
-      set.first.selection_presenters
-    else
-      []
-    end
+    set.any? ? set.first.selection_presenters : []
   end
 end

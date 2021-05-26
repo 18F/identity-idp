@@ -12,9 +12,7 @@ module SignUp
     end
 
     def create
-      @register_user_email_form = RegisterUserEmailForm.new(
-        analytics: analytics,
-      )
+      @register_user_email_form = RegisterUserEmailForm.new(analytics: analytics)
 
       result = @register_user_email_form.submit(permitted_params)
 
@@ -49,8 +47,9 @@ module SignUp
       session[:email] = @register_user_email_form.email
 
       redirect_to sign_up_verify_email_url(
-        resend: resend_confirmation, request_id: permitted_params[:request_id],
-      )
+                    resend: resend_confirmation,
+                    request_id: permitted_params[:request_id],
+                  )
     end
 
     def update_sp_return_logs_with_user(user_id)

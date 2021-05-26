@@ -8,10 +8,7 @@ class BackupCodeVerificationForm
 
   def submit(params)
     @backup_code = params[:backup_code]
-    FormResponse.new(
-      success: valid_backup_code?,
-      extra: extra_analytics_attributes,
-    )
+    FormResponse.new(success: valid_backup_code?, extra: extra_analytics_attributes)
   end
 
   attr_reader :user, :backup_code
@@ -21,8 +18,6 @@ class BackupCodeVerificationForm
   end
 
   def extra_analytics_attributes
-    {
-      multi_factor_auth_method: 'backup_code',
-    }
+    { multi_factor_auth_method: 'backup_code' }
   end
 end

@@ -58,10 +58,11 @@ module Idv
     end
 
     def phone_confirmation_otp_verification_form
-      @phone_confirmation_otp_verification_form ||= PhoneConfirmationOtpVerificationForm.new(
-        user: current_user,
-        user_phone_confirmation_session: idv_session.user_phone_confirmation_session,
-      )
+      @phone_confirmation_otp_verification_form ||=
+        PhoneConfirmationOtpVerificationForm.new(
+          user: current_user,
+          user_phone_confirmation_session: idv_session.user_phone_confirmation_session,
+        )
     end
   end
 end

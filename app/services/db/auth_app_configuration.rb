@@ -12,12 +12,13 @@ module Db
     def self.authenticate(user, code)
       user.auth_app_configurations.each do |cfg|
         totp = ROTP::TOTP.new(cfg.otp_secret_key, digits: TwoFactorAuthenticatable::OTP_LENGTH)
-        new_timestamp = totp.verify(
-          code,
-          drift_ahead: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
-          drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
-          after: cfg.totp_timestamp,
-        )
+        new_timestamp =
+          totp.verify(
+            code,
+            drift_ahead: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
+            drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
+            after: cfg.totp_timestamp,
+          )
         return cfg if update_timestamp(cfg, new_timestamp)
       end
       nil
@@ -26,8 +27,9 @@ module Db
     def self.confirm(secret, code)
       totp = ROTP::TOTP.new(secret, digits: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
       totp.verify(
-        code, drift_ahead: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
-              drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS
+        code,
+        drift_ahead: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
+        drift_behind: TwoFactorAuthenticatable::ALLOWED_OTP_DRIFT_SECONDS,
       )
     end
 

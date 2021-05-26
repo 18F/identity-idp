@@ -28,16 +28,11 @@ module Idv
     def ssn_is_unique?
       return false if ssn.nil?
 
-      @ssn_is_unique ||= DuplicateSsnFinder.new(
-        ssn: ssn,
-        user: @user,
-      ).ssn_is_unique?
+      @ssn_is_unique ||= DuplicateSsnFinder.new(ssn: ssn, user: @user).ssn_is_unique?
     end
 
     def extra_analytics_attributes
-      {
-        ssn_is_unique: ssn_is_unique?,
-      }
+      { ssn_is_unique: ssn_is_unique? }
     end
 
     private

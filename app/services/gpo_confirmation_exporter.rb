@@ -21,9 +21,7 @@ class GpoConfirmationExporter
 
   def make_psv(csv)
     csv << make_header_row(confirmations.size)
-    confirmations.each do |confirmation|
-      csv << make_entry_row(confirmation.entry)
-    end
+    confirmations.each { |confirmation| csv << make_entry_row(confirmation.entry) }
   end
 
   def make_header_row(num_entries)

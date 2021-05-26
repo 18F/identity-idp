@@ -12,9 +12,8 @@ module ApplicationHelper
   end
 
   def user_signing_up?
-    params[:confirmation_token].present? || (
-      current_user && !MfaPolicy.new(current_user).two_factor_enabled?
-    )
+    params[:confirmation_token].present? ||
+      (current_user && !MfaPolicy.new(current_user).two_factor_enabled?)
   end
 
   def session_with_trust?
@@ -36,11 +35,7 @@ module ApplicationHelper
   end
 
   def cancel_link_text
-    if user_signing_up?
-      t('links.cancel_account_creation')
-    else
-      t('links.cancel')
-    end
+    user_signing_up? ? t('links.cancel_account_creation') : t('links.cancel')
   end
 
   def desktop_device?

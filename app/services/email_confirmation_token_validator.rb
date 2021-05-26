@@ -46,9 +46,7 @@ class EmailConfirmationTokenValidator
   attr_reader :success
 
   def extra_analytics_attributes
-    {
-      user_id: user&.uuid,
-    }
+    { user_id: user&.uuid }
   end
 
   def confirmation_token; end
@@ -60,10 +58,11 @@ class EmailConfirmationTokenValidator
 
   def already_confirmed_email_address
     return unless email_address_found_with_token?
-    @already_confirmed_email_address ||= EmailAddress.where(
-      'email_fingerprint=? AND confirmed_at IS NOT NULL',
-      Pii::Fingerprinter.fingerprint(email_address.email),
-    ).first
+    @already_confirmed_email_address ||=
+      EmailAddress.where(
+        'email_fingerprint=? AND confirmed_at IS NOT NULL',
+        Pii::Fingerprinter.fingerprint(email_address.email),
+      ).first
   end
 
   def token_found

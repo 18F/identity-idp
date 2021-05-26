@@ -45,9 +45,10 @@ class SamlIdpController < ApplicationController
 
   def confirm_user_is_authenticated_with_fresh_mfa
     bump_auth_count unless user_fully_authenticated?
-    return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated? &&
-                                                               service_provider_mfa_policy.
-                                                               auth_method_confirms_to_sp_request?
+    unless user_fully_authenticated? &&
+             service_provider_mfa_policy.auth_method_confirms_to_sp_request?
+      return confirm_two_factor_authenticated(request_id)
+    end
     redirect_to user_two_factor_authentication_url if remember_device_expired_for_sp?
   end
 
@@ -66,11 +67,12 @@ class SamlIdpController < ApplicationController
   end
 
   def capture_analytics
-    analytics_payload = @result.to_h.merge(
-      endpoint: request.env['PATH_INFO'],
-      idv: identity_needs_verification?,
-      finish_profile: profile_needs_verification?,
-    )
+    analytics_payload =
+      @result.to_h.merge(
+        endpoint: request.env['PATH_INFO'],
+        idv: identity_needs_verification?,
+        finish_profile: profile_needs_verification?,
+      )
     analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
   end
 
@@ -85,14 +87,18 @@ class SamlIdpController < ApplicationController
     domain = SecureHeadersWhitelister.extract_domain(action_url)
 
     # Returns fully formed CSP array w/"'self'", domain, and ServiceProvider#redirect_uris
-    csp_uris = SecureHeadersWhitelister.csp_with_sp_redirect_uris(
-      domain, decorated_session.sp_redirect_uris
-    )
+    csp_uris =
+      SecureHeadersWhitelister.csp_with_sp_redirect_uris(domain, decorated_session.sp_redirect_uris)
     override_content_security_policy_directives(form_action: csp_uris)
 
     render(
       template: 'saml_idp/shared/saml_post_binding',
-      locals: { action_url: action_url, message: message, type: type, csp_uris: csp_uris },
+      locals: {
+        action_url: action_url,
+        message: message,
+        type: type,
+        csp_uris: csp_uris,
+      },
       layout: false,
     )
   end

@@ -7,9 +7,7 @@ module Reports
     REPORT_NAME = 'omb-fitara-report'.freeze
 
     def call
-      results = transaction_with_timeout do
-        report_hash
-      end
+      results = transaction_with_timeout { report_hash }
       save_report(REPORT_NAME, results.to_json)
     end
 

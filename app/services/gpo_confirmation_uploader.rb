@@ -22,9 +22,7 @@ class GpoConfirmationUploader
   def upload_export(export)
     return unless FeatureManagement.gpo_upload_enabled?
     io = StringIO.new(export)
-    Net::SFTP.start(*sftp_config) do |sftp|
-      sftp.upload!(io, remote_path)
-    end
+    Net::SFTP.start(*sftp_config) { |sftp| sftp.upload!(io, remote_path) }
   end
 
   def clear_confirmations(confirmations)

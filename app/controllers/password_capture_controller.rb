@@ -11,11 +11,7 @@ class PasswordCaptureController < ApplicationController
   end
 
   def create
-    if current_user.valid_password?(password)
-      handle_valid_password
-    else
-      handle_invalid_password
-    end
+    current_user.valid_password?(password) ? handle_valid_password : handle_invalid_password
   end
 
   private

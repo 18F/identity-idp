@@ -2,9 +2,7 @@ module Db
   module Identity
     class SpActiveUserCounts
       def self.call(start)
-        params = {
-          start: ActiveRecord::Base.connection.quote(start),
-        }
+        params = { start: ActiveRecord::Base.connection.quote(start) }
         sql = format(<<~SQL, params)
           SELECT
             service_providers.issuer,
@@ -31,6 +29,7 @@ module Db
           WHERE union_of_ial1_and_ial2_results.issuer = service_providers.issuer
           GROUP BY service_providers.issuer ORDER BY service_providers.issuer
         SQL
+
         ActiveRecord::Base.connection.execute(sql)
       end
     end

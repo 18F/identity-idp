@@ -49,16 +49,18 @@ module TwoFactorAuthCode
     def please_try_again
       t(
         :please_try_again_html,
-        scope: T_SCOPE, id: COUNTDOWN_ID,
-        time_remaining: decorated_user.lockout_time_remaining_in_words
+        scope: T_SCOPE,
+        id: COUNTDOWN_ID,
+        time_remaining: decorated_user.lockout_time_remaining_in_words,
       )
     end
 
     def read_about_two_factor_authentication
-      link = link_to(
-        t('read_about_two_factor_authentication.link', scope: T_SCOPE),
-        MarketingSite.help_url,
-      )
+      link =
+        link_to(
+          t('read_about_two_factor_authentication.link', scope: T_SCOPE),
+          MarketingSite.help_url,
+        )
 
       t('read_about_two_factor_authentication.text_html', scope: T_SCOPE, link: link)
     end

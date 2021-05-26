@@ -21,18 +21,16 @@ module Idv
     def submit
       throttled_else_increment
 
-      response = FormResponse.new(
-        success: valid?,
-        errors: errors,
-        extra: {
-          remaining_attempts: remaining_attempts,
-        },
-      )
+      response =
+        FormResponse.new(
+          success: valid?,
+          errors: errors,
+          extra: {
+            remaining_attempts: remaining_attempts,
+          },
+        )
 
-      @analytics.track_event(
-        Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
-        response.to_h,
-      )
+      @analytics.track_event(Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM, response.to_h)
 
       response
     end
@@ -51,9 +49,8 @@ module Idv
     end
 
     def document_capture_session
-      @document_capture_session ||= DocumentCaptureSession.find_by(
-        uuid: document_capture_session_uuid,
-      )
+      @document_capture_session ||=
+        DocumentCaptureSession.find_by(uuid: document_capture_session_uuid)
     end
 
     private
@@ -86,19 +83,14 @@ module Idv
 
     def throttle_if_rate_limited
       return unless @throttled
-      @analytics.track_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-        throttle_type: :idv_acuant,
-      )
+      @analytics.track_event(Analytics::THROTTLER_RATE_LIMIT_TRIGGERED, throttle_type: :idv_acuant)
       errors.add(:limit, t('errors.doc_auth.throttled_heading'))
     end
 
     def throttled_else_increment
       return unless document_capture_session
-      @throttled = Throttler::IsThrottledElseIncrement.call(
-        document_capture_session.user_id,
-        :idv_acuant,
-      )
+      @throttled =
+        Throttler::IsThrottledElseIncrement.call(document_capture_session.user_id, :idv_acuant)
     end
 
     def validate_image_urls

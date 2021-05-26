@@ -26,13 +26,17 @@ class DurationParser
   # @api private
   def parse_duration(number, duration)
     case duration
-    when 'd' # days
+    when 'd'
+      # days
       number.days
-    when 'w' # weeks
+    when 'w'
+      # weeks
       (7 * number).days
-    when 'm' # months
+    when 'm'
+      # months
       (30 * number).days
-    when 'y' # years
+    when 'y'
+      # years
       (365 * number).days
     end
   end

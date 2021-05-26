@@ -14,9 +14,8 @@ module Reports
     private
 
     def run_report_and_save_to_s3
-      @sp_user_quotas_list = transaction_with_timeout do
-        Db::Identity::SpUserQuotas.call(fiscal_start_date)
-      end
+      @sp_user_quotas_list =
+        transaction_with_timeout { Db::Identity::SpUserQuotas.call(fiscal_start_date) }
       save_report(REPORT_NAME, @sp_user_quotas_list.to_json)
     end
 

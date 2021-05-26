@@ -12,11 +12,7 @@ module Idv
     def update
       form_result = idv_form.submit(profile_params)
       analytics.track_event(Analytics::IDV_ADDRESS_SUBMITTED, form_result.to_h)
-      if form_result.success?
-        success
-      else
-        failure
-      end
+      form_result.success? ? success : failure
     end
 
     private
@@ -35,9 +31,7 @@ module Idv
     end
 
     def success
-      profile_params.each do |key, value|
-        user_session['idv/doc_auth']['pii_from_doc'][key] = value
-      end
+      profile_params.each { |key, value| user_session['idv/doc_auth']['pii_from_doc'][key] = value }
       redirect_to idv_doc_auth_url
     end
 

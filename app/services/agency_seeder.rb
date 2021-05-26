@@ -1,10 +1,6 @@
 # Update Agency from config/agencies.yml (all environments in rake db:seed)
 class AgencySeeder
-  def initialize(
-    rails_env: Rails.env,
-    deploy_env: Identity::Hostdata.env,
-    yaml_path: 'config'
-  )
+  def initialize(rails_env: Rails.env, deploy_env: Identity::Hostdata.env, yaml_path: 'config')
     @rails_env = rails_env
     @deploy_env = deploy_env
     @yaml_path = yaml_path
@@ -13,11 +9,7 @@ class AgencySeeder
   def run
     agencies.each do |agency_id, config|
       agency = Agency.find_by(id: agency_id)
-      if agency
-        agency.update!(config)
-      else
-        Agency.create!(config.merge(id: agency_id))
-      end
+      agency ? agency.update!(config) : Agency.create!(config.merge(id: agency_id))
     end
   end
 

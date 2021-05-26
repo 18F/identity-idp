@@ -28,11 +28,7 @@ module Test
     end
 
     def scope
-      if params[:ial].to_i == 2
-        'openid email profile'
-      else
-        'openid email'
-      end
+      params[:ial].to_i == 2 ? 'openid email profile' : 'openid email'
     end
   end
 end

@@ -28,12 +28,13 @@ module Users
     private
 
     def set_setup_presenter
-      @presenter = SetupPresenter.new(
-        current_user: current_user,
-        user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
-      )
+      @presenter =
+        SetupPresenter.new(
+          current_user: current_user,
+          user_fully_authenticated: user_fully_authenticated?,
+          user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+          remember_device_default: remember_device_default,
+        )
     end
 
     def user_opted_remember_device_cookie
@@ -54,12 +55,9 @@ module Users
     end
 
     def new_phone_form_params
-      params.require(:new_phone_form).permit(
-        :phone,
-        :international_code,
-        :otp_delivery_preference,
-        :otp_make_default_number,
-      )
+      params
+        .require(:new_phone_form)
+        .permit(:phone, :international_code, :otp_delivery_preference, :otp_make_default_number)
     end
   end
 end

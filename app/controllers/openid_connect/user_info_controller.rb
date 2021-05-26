@@ -19,8 +19,7 @@ module OpenidConnect
       if response.success?
         @current_identity = verifier.identity
       else
-        render json: { error: verifier.errors[:access_token].join(' ') },
-               status: :unauthorized
+        render json: { error: verifier.errors[:access_token].join(' ') }, status: :unauthorized
       end
     end
   end

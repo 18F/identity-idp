@@ -19,8 +19,9 @@ module SignUp
     private
 
     def confirm_user_needs_initial_personal_key
-      redirect_to(account_url) if user_session[:personal_key].nil? &&
-                                  current_user.encrypted_recovery_code_digest.present?
+      if user_session[:personal_key].nil? && current_user.encrypted_recovery_code_digest.present?
+        redirect_to(account_url)
+      end
     end
 
     def assign_initial_personal_key

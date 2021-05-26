@@ -8,7 +8,7 @@ module TwoFactorAuthCode
 
     def piv_cac_help
       if service_provider_mfa_policy.aal3_required? &&
-         service_provider_mfa_policy.allow_user_to_switch_method?
+           service_provider_mfa_policy.allow_user_to_switch_method?
         t('instructions.mfa.piv_cac.confirm_piv_cac_or_aal3_html')
       elsif service_provider_mfa_policy.aal3_required? ||
             service_provider_mfa_policy.piv_cac_required?
@@ -51,11 +51,7 @@ module TwoFactorAuthCode
     end
 
     def cancel_link
-      if reauthn
-        account_path
-      else
-        sign_out_path
-      end
+      reauthn ? account_path : sign_out_path
     end
 
     def piv_cac_service_link

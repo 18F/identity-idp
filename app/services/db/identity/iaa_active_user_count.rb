@@ -34,6 +34,7 @@ module Db
           user_id IN (select user_id from profiles)
           %{prior_months_sql}
         SQL
+
         ActiveRecord::Base.connection.execute(sql)[0]['active_count']
       end
 

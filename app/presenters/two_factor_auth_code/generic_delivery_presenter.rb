@@ -7,9 +7,7 @@ module TwoFactorAuthCode
     attr_reader :code_value, :reauthn
 
     def initialize(data:, view:, remember_device_default: true)
-      data.each do |key, value|
-        instance_variable_set("@#{key}", value)
-      end
+      data.each { |key, value| instance_variable_set("@#{key}", value) }
       @view = view
       @remember_device_default = remember_device_default
     end
@@ -40,25 +38,20 @@ module TwoFactorAuthCode
     end
 
     def url_options
-      if @view.respond_to?(:url_options)
-        @view.url_options
-      else
-        LinkLocaleResolver.locale_options
-      end
+      @view.respond_to?(:url_options) ? @view.url_options : LinkLocaleResolver.locale_options
     end
 
     private
 
     def service_provider_mfa_policy
-      @service_provider_mfa_policy ||= ServiceProviderMfaPolicy.new(
-        user: @view.current_user,
-        service_provider: ServiceProvider.from_issuer(
-          @view.sp_session[:issuer],
-        ),
-        auth_method: @view.user_session[:auth_method],
-        aal_level_requested: @view.sp_session[:aal_level_requested],
-        piv_cac_requested: @view.sp_session[:piv_cac_requested],
-      )
+      @service_provider_mfa_policy ||=
+        ServiceProviderMfaPolicy.new(
+          user: @view.current_user,
+          service_provider: ServiceProvider.from_issuer(@view.sp_session[:issuer]),
+          auth_method: @view.user_session[:auth_method],
+          aal_level_requested: @view.sp_session[:aal_level_requested],
+          piv_cac_requested: @view.sp_session[:piv_cac_requested],
+        )
     end
 
     def no_factors_enabled?

@@ -16,11 +16,12 @@ module Encryption
 
     def initialize(password: nil, salt: nil, cost: nil, scrypt_hash: nil)
       cost ||= IdentityConfig.store.scrypt_cost
-      scrypt_password = if scrypt_hash.present?
-                          SCrypt::Password.new(scrypt_hash)
-                        else
-                          build_scrypt_password(password, salt, cost)
-                        end
+      scrypt_password =
+        if scrypt_hash.present?
+          SCrypt::Password.new(scrypt_hash)
+        else
+          build_scrypt_password(password, salt, cost)
+        end
       self.cost = scrypt_password.cost
       self.salt = scrypt_password.salt
       self.z1, self.z2 = split_scrypt_digest(scrypt_password.digest)
@@ -87,18 +88,15 @@ module Encryption
     end
 
     def split_scrypt_digest(digest)
-      [
-        digest.slice(0...32),
-        digest.slice(32...64),
-      ]
+      [digest.slice(0...32), digest.slice(32...64)]
     end
 
     def xor(left, right)
       left_unpacked = left.unpack('C*')
       right_unpacked = right.unpack('C*')
-      left_unpacked.zip(right_unpacked).map do |left_byte, right_byte|
-        left_byte ^ right_byte
-      end.pack('C*')
+      left_unpacked.zip(right_unpacked).map { |left_byte, right_byte| left_byte ^ right_byte }.pack(
+        'C*',
+      )
     end
 
     add_method_tracer :initialize, "Custom/#{name}/build"

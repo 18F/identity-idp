@@ -22,7 +22,9 @@ module UnconfirmedUserConcern
   def track_user_already_confirmed_event
     hash = {
       success: false,
-      errors: { email: [t('errors.messages.already_confirmed')] },
+      errors: {
+        email: [t('errors.messages.already_confirmed')],
+      },
       user_id: @user.uuid,
     }
     analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, hash)
@@ -32,7 +34,9 @@ module UnconfirmedUserConcern
     return if @email_address.present?
     hash = {
       success: false,
-      errors: { confirmation_token: [t('errors.messages.confirmation_invalid_token')] },
+      errors: {
+        confirmation_token: [t('errors.messages.confirmation_invalid_token')],
+      },
       user_id: nil,
     }
     analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, hash)
@@ -42,23 +46,20 @@ module UnconfirmedUserConcern
   def process_confirmation
     result = email_confirmation_token_validator.submit
     analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, result.to_h)
-    if result.success?
-      process_successful_confirmation
-    else
-      process_unsuccessful_confirmation
-    end
+    result.success? ? process_successful_confirmation : process_unsuccessful_confirmation
   end
 
   def email_confirmation_token_validator
-    @email_confirmation_token_validator ||= EmailConfirmationTokenValidator.
-                                            new(@email_address, current_user)
+    @email_confirmation_token_validator ||=
+      EmailConfirmationTokenValidator.new(@email_address, current_user)
   end
 
   def process_valid_confirmation_token
     @confirmation_token = params[:confirmation_token]
-    @forbidden_passwords = @user.email_addresses.flat_map do |email_address|
-      ForbiddenPasswords.new(email_address.email).call
-    end
+    @forbidden_passwords =
+      @user.email_addresses.flat_map do |email_address|
+        ForbiddenPasswords.new(email_address.email).call
+      end
     flash.now[:success] = t('devise.confirmations.confirmed_but_must_set_password')
     session[:user_confirmation_token] = @confirmation_token
   end
@@ -79,9 +80,13 @@ module UnconfirmedUserConcern
 
   def confirmation_period_expired_error
     current_time = Time.zone.now
-    confirmation_period = distance_of_time_in_words(
-      current_time, current_time + Devise.confirm_within, true, accumulate_on: :hours
-    )
+    confirmation_period =
+      distance_of_time_in_words(
+        current_time,
+        current_time + Devise.confirm_within,
+        true,
+        accumulate_on: :hours,
+      )
     I18n.t('errors.messages.confirmation_period_expired', period: confirmation_period)
   end
 end

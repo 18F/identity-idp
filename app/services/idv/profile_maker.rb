@@ -10,10 +10,7 @@ module Idv
     end
 
     def save_profile
-      profile = Profile.new(
-        deactivation_reason: :verification_pending,
-        user: user,
-      )
+      profile = Profile.new(deactivation_reason: :verification_pending, user: user)
       profile.encrypt_pii(pii_attributes, user_password)
       profile.proofing_components = current_proofing_components_to_json
       if document_expired

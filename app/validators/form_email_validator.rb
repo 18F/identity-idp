@@ -6,11 +6,7 @@ module FormEmailValidator
 
     before_validation :downcase_and_strip
 
-    validates :email,
-              email: {
-                mx_with_fallback: !ENV['RAILS_OFFLINE'],
-                ban_disposable_email: true,
-              }
+    validates :email, email: { mx_with_fallback: !ENV['RAILS_OFFLINE'], ban_disposable_email: true }
   end
 
   private

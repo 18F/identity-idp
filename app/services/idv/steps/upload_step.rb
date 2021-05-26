@@ -4,29 +4,17 @@ module Idv
       STEP_INDICATOR_STEP = :verify_id
 
       def call
-        if params[:type] == 'desktop'
-          handle_desktop_selection
-        else
-          handle_mobile_selection
-        end
+        params[:type] == 'desktop' ? handle_desktop_selection : handle_mobile_selection
       end
 
       private
 
       def handle_desktop_selection
-        if mobile_device?
-          send_user_to_email_sent_step
-        else
-          bypass_send_link_steps
-        end
+        mobile_device? ? send_user_to_email_sent_step : bypass_send_link_steps
       end
 
       def handle_mobile_selection
-        if mobile_device?
-          bypass_send_link_steps
-        else
-          send_user_to_send_link_step
-        end
+        mobile_device? ? bypass_send_link_steps : send_user_to_send_link_step
       end
 
       def identity
@@ -44,9 +32,8 @@ module Idv
       def send_user_to_email_sent_step
         mark_step_complete(:send_link)
         mark_step_complete(:link_sent)
-        UserMailer.doc_auth_desktop_link_to_sp(
-          current_user, current_user.email, application, link
-        ).deliver_now
+        UserMailer.doc_auth_desktop_link_to_sp(current_user, current_user.email, application, link)
+          .deliver_now
       end
 
       def send_user_to_send_link_step

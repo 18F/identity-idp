@@ -23,7 +23,7 @@ class AccountShow
 
   def show_manage_personal_key_partial?
     if TwoFactorAuthentication::PersonalKeyPolicy.new(decorated_user.user).visible? &&
-       decorated_user.password_reset_profile.blank?
+         decorated_user.password_reset_profile.blank?
       true
     else
       false
@@ -60,18 +60,19 @@ class AccountShow
 
   private
 
-  PiiAccessor = RedactedStruct.new(
-    :obfuscated,
-    :full_name,
-    :address1,
-    :address2,
-    :city,
-    :state,
-    :zipcode,
-    :dob,
-    :phone,
-    keyword_init: true,
-  )
+  PiiAccessor =
+    RedactedStruct.new(
+      :obfuscated,
+      :full_name,
+      :address1,
+      :address2,
+      :city,
+      :state,
+      :zipcode,
+      :dob,
+      :phone,
+      keyword_init: true,
+    )
 
   def obfuscated_pii_accessor
     PiiAccessor.new(

@@ -59,10 +59,8 @@ module Users
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
       phone_is_confirmed = UserSessionContext.authentication_context?(context)
-      phone_capabilities = PhoneNumberCapabilities.new(
-        parsed_phone,
-        phone_confirmed: phone_is_confirmed,
-      )
+      phone_capabilities =
+        PhoneNumberCapabilities.new(parsed_phone, phone_confirmed: phone_is_confirmed)
 
       if result.success?
         handle_valid_otp_params(delivery_preference)
@@ -112,9 +110,9 @@ module Users
     def redirect_to_otp_verification_with_error
       flash[:error] = t('errors.messages.phone_unsupported')
       redirect_to login_two_factor_url(
-        otp_delivery_preference: phone_configuration.delivery_preference,
-        reauthn: reauthn?,
-      )
+                    otp_delivery_preference: phone_configuration.delivery_preference,
+                    reauthn: reauthn?,
+                  )
     end
 
     def capture_analytics_for_exception(telephony_error)
@@ -132,9 +130,8 @@ module Users
     end
 
     def otp_delivery_selection_form
-      @otp_delivery_selection_form ||= OtpDeliverySelectionForm.new(
-        current_user, phone_to_deliver_to, context
-      )
+      @otp_delivery_selection_form ||=
+        OtpDeliverySelectionForm.new(current_user, phone_to_deliver_to, context)
     end
 
     def reauthn_param
@@ -157,10 +154,10 @@ module Users
       track_events(method)
       if @telephony_result.success?
         redirect_to login_two_factor_url(
-          otp_delivery_preference: method,
-          otp_make_default_number: default,
-          reauthn: reauthn?,
-        )
+                      otp_delivery_preference: method,
+                      otp_make_default_number: default,
+                      reauthn: reauthn?,
+                    )
       else
         invalid_phone_number(@telephony_result.error, action: action_name)
       end
@@ -204,11 +201,9 @@ module Users
     end
 
     def delivery_params
-      params.require(:otp_delivery_selection_form).permit(
-        :otp_delivery_preference,
-        :otp_make_default_number,
-        :resend,
-      )
+      params
+        .require(:otp_delivery_selection_form)
+        .permit(:otp_delivery_preference, :otp_make_default_number, :resend)
     end
 
     def phone_to_deliver_to
@@ -218,11 +213,12 @@ module Users
     end
 
     def otp_rate_limiter
-      @_otp_rate_limited ||= OtpRateLimiter.new(
-        phone: phone_to_deliver_to,
-        user: current_user,
-        phone_confirmed: UserSessionContext.authentication_context?(context),
-      )
+      @_otp_rate_limited ||=
+        OtpRateLimiter.new(
+          phone: phone_to_deliver_to,
+          user: current_user,
+          phone_confirmed: UserSessionContext.authentication_context?(context),
+        )
     end
 
     def redirect_url
@@ -236,11 +232,7 @@ module Users
     end
 
     def reauthn_params
-      if reauthn?
-        { reauthn: reauthn? }
-      else
-        {}
-      end
+      reauthn? ? { reauthn: reauthn? } : {}
     end
   end
 end

@@ -20,9 +20,6 @@ class PasswordForm
   attr_reader :request_id
 
   def extra_analytics_attributes
-    {
-      user_id: user.uuid,
-      request_id_present: !request_id.empty?,
-    }
+    { user_id: user.uuid, request_id_present: !request_id.empty? }
   end
 end

@@ -3,40 +3,40 @@ module FormHelper
   # This method is single statement spread across many lines for readability
   def us_states_territories
     [
-      ['Alabama', 'AL'],
-      ['Alaska', 'AK'],
+      %w[Alabama AL],
+      %w[Alaska AK],
       ['American Samoa', 'AS'],
-      ['Arizona', 'AZ'],
-      ['Arkansas', 'AR'],
+      %w[Arizona AZ],
+      %w[Arkansas AR],
       ['Armed Forces Americas', 'AA'],
       ['Armed Forces Others', 'AE'],
       ['Armed Forces Pacific', 'AP'],
-      ['California', 'CA'],
-      ['Colorado', 'CO'],
-      ['Connecticut', 'CT'],
-      ['Delaware', 'DE'],
+      %w[California CA],
+      %w[Colorado CO],
+      %w[Connecticut CT],
+      %w[Delaware DE],
       ['District of Columbia', 'DC'],
-      ['Florida', 'FL'],
-      ['Georgia', 'GA'],
-      ['Guam', 'GU'],
-      ['Hawaii', 'HI'],
-      ['Idaho', 'ID'],
-      ['Illinois', 'IL'],
-      ['Indiana', 'IN'],
-      ['Iowa', 'IA'],
-      ['Kansas', 'KS'],
-      ['Kentucky', 'KY'],
-      ['Louisiana', 'LA'],
-      ['Maine', 'ME'],
-      ['Maryland', 'MD'],
-      ['Massachusetts', 'MA'],
-      ['Michigan', 'MI'],
-      ['Minnesota', 'MN'],
-      ['Mississippi', 'MS'],
-      ['Missouri', 'MO'],
-      ['Montana', 'MT'],
-      ['Nebraska', 'NE'],
-      ['Nevada', 'NV'],
+      %w[Florida FL],
+      %w[Georgia GA],
+      %w[Guam GU],
+      %w[Hawaii HI],
+      %w[Idaho ID],
+      %w[Illinois IL],
+      %w[Indiana IN],
+      %w[Iowa IA],
+      %w[Kansas KS],
+      %w[Kentucky KY],
+      %w[Louisiana LA],
+      %w[Maine ME],
+      %w[Maryland MD],
+      %w[Massachusetts MA],
+      %w[Michigan MI],
+      %w[Minnesota MN],
+      %w[Mississippi MS],
+      %w[Missouri MO],
+      %w[Montana MT],
+      %w[Nebraska NE],
+      %w[Nevada NV],
       ['New Hampshire', 'NH'],
       ['New Jersey', 'NJ'],
       ['New Mexico', 'NM'],
@@ -44,42 +44,42 @@ module FormHelper
       ['North Carolina', 'NC'],
       ['North Dakota', 'ND'],
       ['Northern Mariana Islands', 'MP'],
-      ['Ohio', 'OH'],
-      ['Oklahoma', 'OK'],
-      ['Oregon', 'OR'],
-      ['Pennsylvania', 'PA'],
+      %w[Ohio OH],
+      %w[Oklahoma OK],
+      %w[Oregon OR],
+      %w[Pennsylvania PA],
       ['Puerto Rico', 'PR'],
       ['Rhode Island', 'RI'],
       ['South Carolina', 'SC'],
       ['South Dakota', 'SD'],
-      ['Tennessee', 'TN'],
-      ['Texas', 'TX'],
+      %w[Tennessee TN],
+      %w[Texas TX],
       ['United States Minor Outlying Islands', 'UM'],
-      ['Utah', 'UT'],
-      ['Vermont', 'VT'],
+      %w[Utah UT],
+      %w[Vermont VT],
       ['Virgin Islands', 'VI'],
-      ['Virginia', 'VA'],
-      ['Washington', 'WA'],
+      %w[Virginia VA],
+      %w[Washington WA],
       ['West Virginia', 'WV'],
-      ['Wisconsin', 'WI'],
-      ['Wyoming', 'WY'],
+      %w[Wisconsin WI],
+      %w[Wyoming WY],
     ]
   end
+
   # rubocop:enable Style/WordArray
 
   def international_phone_codes
-    codes = PhoneNumberCapabilities::INTERNATIONAL_CODES.map do |key, value|
-      [
-        international_phone_code_label(value),
-        key,
-        { data: international_phone_codes_data(value) },
-      ]
-    end
+    codes =
+      PhoneNumberCapabilities::INTERNATIONAL_CODES.map do |key, value|
+        [
+          international_phone_code_label(value),
+          key,
+          { data: international_phone_codes_data(value) },
+        ]
+      end
 
     # Sort alphabetically by label, but put the US first in the list
-    codes.sort_by do |label, key, _data|
-      [key == 'US' ? -1 : 1, label]
-    end
+    codes.sort_by { |label, key, _data| [key == 'US' ? -1 : 1, label] }
   end
 
   def supported_country_codes

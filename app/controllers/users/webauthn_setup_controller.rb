@@ -21,11 +21,7 @@ module Users
       form = WebauthnSetupForm.new(current_user, user_session)
       result = form.submit(request.protocol, params)
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_SETUP, result.to_h)
-      if result.success?
-        process_valid_webauthn
-      else
-        process_invalid_webauthn(form)
-      end
+      result.success? ? process_valid_webauthn : process_invalid_webauthn(form)
     end
 
     def delete
@@ -44,13 +40,13 @@ module Users
     private
 
     def set_webauthn_setup_presenter
-      @presenter = SetupPresenter.new(
-        current_user: current_user,
-        user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie:
-                                                  user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
-      )
+      @presenter =
+        SetupPresenter.new(
+          current_user: current_user,
+          user_fully_authenticated: user_fully_authenticated?,
+          user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+          remember_device_default: remember_device_default,
+        )
     end
 
     def user_opted_remember_device_cookie

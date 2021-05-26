@@ -70,17 +70,17 @@ module SignUp
 
     def sign_user_out_and_instruct_to_go_back_to_mobile_app
       sign_out
-      flash[:info] = t(
-        'instructions.go_back_to_mobile_app',
-        friendly_name: view_model.decorated_session.sp_name,
-      )
+      flash[:info] =
+        t('instructions.go_back_to_mobile_app', friendly_name: view_model.decorated_session.sp_name)
       redirect_to new_user_session_url
     end
 
     def analytics_attributes(page_occurence)
-      { ial2: sp_session[:ial2],
+      {
+        ial2: sp_session[:ial2],
         service_provider_name: decorated_session.sp_name,
-        page_occurence: page_occurence }
+        page_occurence: page_occurence,
+      }
     end
 
     def track_completion_event(last_page)

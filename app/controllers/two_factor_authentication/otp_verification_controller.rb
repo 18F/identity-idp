@@ -15,11 +15,7 @@ module TwoFactorAuthentication
     def create
       result = OtpVerificationForm.new(current_user, sanitized_otp_code).submit
       post_analytics(result)
-      if result.success?
-        handle_valid_otp
-      else
-        handle_invalid_otp
-      end
+      result.success? ? handle_valid_otp : handle_invalid_otp
     end
 
     private
@@ -27,8 +23,7 @@ module TwoFactorAuthentication
     def confirm_multiple_factors_enabled
       return if UserSessionContext.confirmation_context?(context) || phone_enabled?
 
-      if MfaPolicy.new(current_user).two_factor_enabled? &&
-         !phone_enabled? && user_signed_in?
+      if MfaPolicy.new(current_user).two_factor_enabled? && !phone_enabled? && user_signed_in?
         return redirect_to user_two_factor_authentication_url
       end
 
@@ -48,10 +43,11 @@ module TwoFactorAuthentication
 
       return if capabilities.supports_voice?
 
-      flash[:error] = t(
-        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: capabilities.unsupported_location,
-      )
+      flash[:error] =
+        t(
+          'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: capabilities.unsupported_location,
+        )
       redirect_to login_two_factor_url(otp_delivery_preference: 'sms', reauthn: reauthn?)
     end
 
@@ -82,8 +78,8 @@ module TwoFactorAuthentication
         context: context,
         multi_factor_auth_method: params[:otp_delivery_preference],
         confirmation_for_add_phone: confirmation_for_add_phone?,
-        phone_configuration_id: user_session[:phone_id] ||
-          current_user.default_phone_configuration&.id,
+        phone_configuration_id:
+          user_session[:phone_id] || current_user.default_phone_configuration&.id,
       }
     end
   end

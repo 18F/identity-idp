@@ -28,10 +28,7 @@ module Funnel
         success
         document_capture
       ].freeze
-      STEP_TYPE_TO_CLASS = {
-        update: RegisterSubmitStep,
-        view: RegisterViewStep,
-      }.freeze
+      STEP_TYPE_TO_CLASS = { update: RegisterSubmitStep, view: RegisterViewStep }.freeze
 
       def initialize(user_id, issuer)
         @user_id = user_id

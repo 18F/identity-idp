@@ -3,11 +3,7 @@ class OpenidConnectLogoutForm
   include ActionView::Helpers::TranslationHelper
   include RedirectUriValidator
 
-  ATTRS = %i[
-    id_token_hint
-    post_logout_redirect_uri
-    state
-  ].freeze
+  ATTRS = %i[id_token_hint post_logout_redirect_uri state].freeze
 
   attr_reader(*ATTRS)
 
@@ -20,9 +16,7 @@ class OpenidConnectLogoutForm
   validate :validate_identity
 
   def initialize(params)
-    ATTRS.each do |key|
-      instance_variable_set(:"@#{key}", params[key])
-    end
+    ATTRS.each { |key| instance_variable_set(:"@#{key}", params[key]) }
 
     @identity = load_identity
   end
@@ -37,15 +31,19 @@ class OpenidConnectLogoutForm
 
   private
 
-  attr_reader :identity,
-              :success
+  attr_reader :identity, :success
 
   def load_identity
-    payload, _headers = JWT.decode(
-      id_token_hint, AppArtifacts.store.oidc_public_key, true,
-      algorithm: 'RS256',
-      leeway: Float::INFINITY
-    ).map(&:with_indifferent_access)
+    payload, _headers =
+      JWT
+        .decode(
+          id_token_hint,
+          AppArtifacts.store.oidc_public_key,
+          true,
+          algorithm: 'RS256',
+          leeway: Float::INFINITY,
+        )
+        .map(&:with_indifferent_access)
 
     identity_from_payload(payload)
   rescue JWT::DecodeError

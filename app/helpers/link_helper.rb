@@ -26,8 +26,7 @@ module LinkHelper
       end
     else
       link_to(url, html_options) do
-        content_tag('span', name) +
-          content_tag('span', t('links.new_window'), class: 'usa-sr-only')
+        content_tag('span', name) + content_tag('span', t('links.new_window'), class: 'usa-sr-only')
       end
     end
   end

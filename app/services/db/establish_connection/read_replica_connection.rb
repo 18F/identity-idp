@@ -34,11 +34,7 @@ module Db
       end
 
       def database_name
-        if Rails.env.production?
-          IdentityConfig.store.database_name
-        else
-          "upaya_#{Rails.env}"
-        end
+        Rails.env.production? ? IdentityConfig.store.database_name : "upaya_#{Rails.env}"
       end
     end
   end

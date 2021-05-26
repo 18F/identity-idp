@@ -3,9 +3,7 @@ module Encryption
     include Encodable
     include ::NewRelic::Agent::MethodTracer
 
-    KEY_TYPE = {
-      KMS: 'KMSx',
-    }.freeze
+    KEY_TYPE = { KMS: 'KMSx' }.freeze
 
     def encrypt(plaintext)
       KmsLogger.log(:encrypt)
@@ -49,10 +47,8 @@ module Encryption
 
     def encrypt_raw_kms(plaintext)
       raise ArgumentError, 'kms plaintext exceeds 4096 bytes' if plaintext.bytesize > 4096
-      aws_client.encrypt(
-        key_id: IdentityConfig.store.aws_kms_key_id,
-        plaintext: plaintext,
-      ).ciphertext_blob
+      aws_client.encrypt(key_id: IdentityConfig.store.aws_kms_key_id, plaintext: plaintext)
+        .ciphertext_blob
     end
 
     def decrypt_kms(ciphertext)
@@ -86,10 +82,11 @@ module Encryption
     end
 
     def aws_client
-      @aws_client ||= Aws::KMS::Client.new(
-        instance_profile_credentials_timeout: 1, # defaults to 1 second
-        instance_profile_credentials_retries: 5, # defaults to 0 retries
-      )
+      @aws_client ||=
+        Aws::KMS::Client.new(
+          instance_profile_credentials_timeout: 1, # defaults to 1 second
+          instance_profile_credentials_retries: 5, # defaults to 0 retries
+        )
     end
 
     def encryptor

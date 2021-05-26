@@ -1,7 +1,8 @@
 module Db
   module SpCost
     class AddSpCost
-      class SpCostTypeError < StandardError; end
+      class SpCostTypeError < StandardError
+      end
 
       TOKEN_WHITELIST = %i[
         aamva
@@ -29,11 +30,8 @@ module Db
         agency_id = (issuer.present? && ServiceProvider.find_by(issuer: issuer)&.agency_id) || 0
         current_user = User.find_by(id: user_id)
         service_provider = ServiceProvider.from_issuer(issuer)
-        ial_context = IalContext.new(
-          ial: ial,
-          service_provider: service_provider,
-          user: current_user,
-        )
+        ial_context =
+          IalContext.new(ial: ial, service_provider: service_provider, user: current_user)
         ::SpCost.create(
           issuer: issuer.to_s,
           ial: ial_context.bill_for_ial_1_or_2,

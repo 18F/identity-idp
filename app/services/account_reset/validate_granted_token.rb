@@ -18,10 +18,7 @@ module AccountReset
     attr_reader :success
 
     def extra_analytics_attributes
-      {
-        user_id: user.uuid,
-        event: 'granted token validation',
-      }
+      { user_id: user.uuid, event: 'granted token validation' }
     end
   end
 end

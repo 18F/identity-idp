@@ -77,9 +77,11 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_alert(path)
-    path_to_section_map = { new_user_session_path => 'sign_in',
-                            sign_up_email_path => 'sign_up',
-                            new_user_password_path => 'forgot_password' }
+    path_to_section_map = {
+      new_user_session_path => 'sign_in',
+      sign_up_email_path => 'sign_up',
+      new_user_password_path => 'forgot_password',
+    }
     custom_alert(path_to_section_map[path])
   end
 
@@ -127,12 +129,9 @@ class ServiceProviderSessionDecorator
   end
 
   def request_params
-    @request_params ||= begin
-      if request_url.present?
-        UriService.params(request_url)
-      else
-        {}
+    @request_params ||=
+      begin
+        request_url.present? ? UriService.params(request_url) : {}
       end
-    end
   end
 end

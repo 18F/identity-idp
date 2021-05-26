@@ -18,23 +18,17 @@ module TwoFactorAuthentication
     def redirect_to_piv_cac_service
       create_piv_cac_nonce
       redirect_to PivCacService.piv_cac_service_link(
-        nonce: piv_cac_nonce,
-        redirect_uri: login_two_factor_piv_cac_url,
-      )
+                    nonce: piv_cac_nonce,
+                    redirect_uri: login_two_factor_piv_cac_url,
+                  )
     end
 
     private
 
     def process_token
       result = piv_cac_verfication_form.submit
-      analytics.track_mfa_submit_event(
-        result.to_h.merge(analytics_properties),
-      )
-      if result.success?
-        handle_valid_piv_cac
-      else
-        handle_invalid_piv_cac
-      end
+      analytics.track_mfa_submit_event(result.to_h.merge(analytics_properties))
+      result.success? ? handle_valid_piv_cac : handle_invalid_piv_cac
     end
 
     def handle_valid_piv_cac
@@ -73,12 +67,13 @@ module TwoFactorAuthentication
     end
 
     def piv_cac_verfication_form
-      @piv_cac_verification_form ||= UserPivCacVerificationForm.new(
-        user: current_user,
-        token: params[:token],
-        nonce: piv_cac_nonce,
-        piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
-      )
+      @piv_cac_verification_form ||=
+        UserPivCacVerificationForm.new(
+          user: current_user,
+          token: params[:token],
+          nonce: piv_cac_nonce,
+          piv_cac_required: service_provider_mfa_policy.piv_cac_required?,
+        )
     end
 
     def confirm_piv_cac_enabled

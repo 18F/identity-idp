@@ -8,10 +8,7 @@ module Users
 
     def new
       analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_VISITED)
-      @personal_key_form = VerifyPersonalKeyForm.new(
-        user: current_user,
-        personal_key: '',
-      )
+      @personal_key_form = VerifyPersonalKeyForm.new(user: current_user, personal_key: '')
 
       if Throttler::IsThrottled.call(current_user.id, :verify_personal_key)
         render_throttled
@@ -21,10 +18,7 @@ module Users
     end
 
     def create
-      throttled = Throttler::IsThrottledElseIncrement.call(
-        current_user.id,
-        :verify_personal_key,
-      )
+      throttled = Throttler::IsThrottledElseIncrement.call(current_user.id, :verify_personal_key)
 
       if throttled
         render_throttled
@@ -32,11 +26,7 @@ module Users
         result = personal_key_form.submit
 
         analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED, result.to_h)
-        if result.success?
-          handle_success(result)
-        else
-          handle_failure(result)
-        end
+        result.success? ? handle_success(result) : handle_failure(result)
       end
     end
 

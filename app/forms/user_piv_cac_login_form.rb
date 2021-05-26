@@ -19,8 +19,7 @@ class UserPivCacLoginForm
   private
 
   def valid_submission?
-    valid_token? &&
-      user_found
+    valid_token? && user_found
   end
 
   def user_found

@@ -28,8 +28,10 @@ module Idv
     end
 
     def confirm_step_needed
-      redirect_to idv_review_url if idv_session.address_verification_mechanism != 'phone' ||
-                                    idv_session.user_phone_confirmation == true
+      if idv_session.address_verification_mechanism != 'phone' ||
+           idv_session.user_phone_confirmation == true
+        redirect_to idv_review_url
+      end
     end
 
     def set_idv_phone
@@ -66,12 +68,13 @@ module Idv
 
     def save_delivery_preference
       original_session = idv_session.user_phone_confirmation_session
-      idv_session.user_phone_confirmation_session = PhoneConfirmation::ConfirmationSession.new(
-        code: original_session.code,
-        phone: original_session.phone,
-        sent_at: original_session.sent_at,
-        delivery_method: @otp_delivery_selection_form.otp_delivery_preference.to_sym,
-      )
+      idv_session.user_phone_confirmation_session =
+        PhoneConfirmation::ConfirmationSession.new(
+          code: original_session.code,
+          phone: original_session.phone,
+          sent_at: original_session.sent_at,
+          delivery_method: @otp_delivery_selection_form.otp_delivery_preference.to_sym,
+        )
     end
 
     def otp_delivery_selection_form
@@ -79,8 +82,8 @@ module Idv
     end
 
     def gpo_letter_available
-      @_gpo_letter_available ||= FeatureManagement.enable_gpo_verification? &&
-                                 !Idv::GpoMail.new(current_user).mail_spammed?
+      @_gpo_letter_available ||=
+        FeatureManagement.enable_gpo_verification? && !Idv::GpoMail.new(current_user).mail_spammed?
     end
   end
 end

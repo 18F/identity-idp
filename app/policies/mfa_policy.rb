@@ -13,8 +13,7 @@ class MfaPolicy
   end
 
   def aal3_mfa_enabled?
-    mfa_user.piv_cac_configurations.present? ||
-      mfa_user.webauthn_configurations.present?
+    mfa_user.piv_cac_configurations.present? || mfa_user.webauthn_configurations.present?
   end
 
   def aal3_configurations

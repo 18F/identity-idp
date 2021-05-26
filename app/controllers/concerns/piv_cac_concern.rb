@@ -40,11 +40,12 @@ module PivCacConcern
     # retirement they can also be redirected to the SP. Thusly the redirect URI
     # for the SP and for the PIV/CAC service need appear in the CSP form-action
     # Returns fully formed CSP array w/"'self'" and redirect_uris
-    piv_cac_uri = if Rails.env.development?
-                    IdentityConfig.store.piv_cac_service_url
-                  else
-                    "https://*.pivcac.#{Identity::Hostdata.env}.#{Identity::Hostdata.domain}"
-                  end
+    piv_cac_uri =
+      if Rails.env.development?
+        IdentityConfig.store.piv_cac_service_url
+      else
+        "https://*.pivcac.#{Identity::Hostdata.env}.#{Identity::Hostdata.domain}"
+      end
     [piv_cac_uri] + csp_uris
   end
 end
