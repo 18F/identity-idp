@@ -22,6 +22,15 @@ export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
  */
 
 /**
+ * @enum {number}
+ */
+const StatusCodes = {
+  SUCCESS: 200,
+  GONE: 410,
+  TOO_MANY_REQUESTS: 429,
+};
+
+/**
  * @enum {string}
  */
 const ResultType = {
@@ -105,15 +114,15 @@ export class DocumentCapturePolling {
     const response = await window.fetch(this.statusEndpoint);
 
     switch (response.status) {
-      case 200:
+      case StatusCodes.SUCCESS:
         this.onComplete();
         break;
 
-      case 410:
+      case StatusCodes.GONE:
         this.onComplete({ result: ResultType.CANCELLED });
         break;
 
-      case 429: {
+      case StatusCodes.TOO_MANY_REQUESTS: {
         const { redirect } = await response.json();
         this.onComplete({ result: ResultType.THROTTLED, redirect });
         break;
