@@ -5,7 +5,7 @@ class PhoneNumberCapabilities
 
   attr_reader :phone, :phone_confirmed
 
-  def initialize(phone, phone_confirmed)
+  def initialize(phone, phone_confirmed:)
     @phone = phone
     @phone_confirmed = phone_confirmed
   end
