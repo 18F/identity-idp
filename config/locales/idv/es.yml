@@ -39,8 +39,6 @@ es:
           inténtalo de nuevo.
         link: contáctanos
         text_html: Inténtalo de nuevo. Si sigues recibiendo estos errores, %{link}.
-      help:
-        get_help_html: Obtener ayuda en <strong>%{sp_name}</strong>
       phone:
         fail_html: '<strong>Por favor, inténtelo de nuevo en %{timeout}.</strong> Por su
           seguridad, limitamos el número de veces que puede intentar verificar
@@ -112,8 +110,6 @@ es:
         resend: Envíeme otra carta
         timeframe: Las correspondencias se envían al día siguiente por correo de primera
           clase de USPS, y por lo general tardan entre 3 y 7 días laborables.
-      hardfail: No puedes iniciar sesión en estos instantes pero puedes intentar
-        verificar tu edad de nuevo en %{hours} horas.
       mail_sent: Su carta está en camino
       otp_delivery_method:
         phone_number_html: Te enviaremos un código a <strong>%{phone}</strong>
@@ -155,7 +151,6 @@ es:
       activated: Su identidad ha sido verificada.
       cancel: No podemos verificar su identidad.
       come_back_later: Vuelve pronto.
-      hardfail: No pudimos verificar su identidad con %{app}.
       mail:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'

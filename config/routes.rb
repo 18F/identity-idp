@@ -253,7 +253,6 @@ Rails.application.routes.draw do
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
-      get '/fail' => 'idv#fail'
     end
     scope '/verify', module: 'idv', as: 'idv' do
       get '/come_back_later' => 'come_back_later#show'
