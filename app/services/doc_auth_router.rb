@@ -73,6 +73,12 @@ module DocAuthRouter
     IdentityDocAuth::Errors::GLARE_LOW_ONE_SIDE => 'doc_auth.errors.glare.top_msg',
     # i18n-tasks-use t('doc_auth.errors.glare.top_msg_plural')
     IdentityDocAuth::Errors::GLARE_LOW_BOTH_SIDES => 'doc_auth.errors.glare.top_msg_plural',
+    # i18n-tasks-use t('doc_auth.errors.http.image_load')
+    IdentityDocAuth::Errors::IMAGE_LOAD_FAILURE => 'doc_auth.errors.http.image_load',
+    # i18n-tasks-use t('doc_auth.errors.http.pixel_depth')
+    IdentityDocAuth::Errors::PIXEL_DEPTH_FAILURE => 'doc_auth.errors.http.pixel_depth',
+    # i18n-tasks-use t('doc_auth.errors.http.image_size')
+    IdentityDocAuth::Errors::IMAGE_SIZE_FAILURE => 'doc_auth.errors.http.image_size',
   }.freeze
 
   class DocAuthErrorTranslatorProxy

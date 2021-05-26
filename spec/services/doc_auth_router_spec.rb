@@ -211,5 +211,23 @@ RSpec.describe DocAuthRouter do
         end
       end
     end
+
+    it 'translates http response errors and maintains exceptions' do
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_images,
+        response: IdentityDocAuth::Response.new(
+          success: false,
+          errors: {
+            general: [IdentityDocAuth::Errors::IMAGE_LOAD_FAILURE],
+          },
+          exception: IdentityDocAuth::RequestError.new('Test 438 HTTP failure', 438),
+        ),
+      )
+
+      response = proxy.post_images(front_image: 'a', back_image: 'b', selfie_image: 'c')
+
+      expect(response.errors).to eq(general: [I18n.t('doc_auth.errors.http.image_load')])
+      expect(response.exception.message).to eq('Test 438 HTTP failure')
+    end
   end
 end
