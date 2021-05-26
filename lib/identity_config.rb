@@ -130,7 +130,6 @@ class IdentityConfig
     config.add(:hide_phone_mfa_signup, type: :boolean)
     config.add(:hmac_fingerprinter_key, type: :string)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
-    config.add(:ial2_step_indicator_enabled, type: :boolean)
     config.add(:identity_pki_disabled, type: :boolean)
     config.add(:identity_pki_local_dev, type: :boolean)
     config.add(:idv_attempt_window_in_hours, type: :integer)

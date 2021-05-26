@@ -73,7 +73,6 @@ exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 gpo_designated_receiver_pii: '{}'
 hide_phone_mfa_signup: 'false'
-ial2_step_indicator_enabled: 'true'
 identity_pki_disabled: 'false'
 identity_pki_local_dev: 'false'
 idv_attempt_window_in_hours: '6'
@@ -273,7 +272,6 @@ production:
   enable_usps_verification: 'false'
   hmac_fingerprinter_key:
   hmac_fingerprinter_key_queue: '[]'
-  ial2_step_indicator_enabled: 'false'
   issuers_with_email_nameid_format: sp1,sp2
   logins_per_ip_limit: '20'
   logins_per_ip_period: '20'

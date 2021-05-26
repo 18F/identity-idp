@@ -179,18 +179,6 @@ describe Idv::ConfirmationsController do
           )
         end
       end
-
-      context 'ial2 step indicator disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).and_return(false)
-        end
-
-        it 'assigns empty step indicator steps' do
-          get :show
-
-          expect(assigns(:step_indicator_steps)).to eq([])
-        end
-      end
     end
   end
 
