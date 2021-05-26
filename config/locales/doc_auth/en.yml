@@ -74,7 +74,7 @@ en:
         image_load: There is something wrong with your image file. Please take new
           photos of your ID and try again.
         image_size: You image size is too large or too small. Please add images of your
-          ID that are about 2025 x 1275.
+          ID that are about 2025 x 1275 pixels.
         pixel_depth: The pixel depth of your image file is not supported. Please take
           new photos of your ID and try again. Supported image pixel depth is
           24-bit RGB.
