@@ -11,8 +11,7 @@ module Idv
     private
 
     def document_capture_session_poll_render_result
-      return { json: nil, status: :unauthorized } unless flow_session
-      return { json: nil, status: :unauthorized } unless document_capture_session
+      return { json: nil, status: :unauthorized } if !flow_session || !document_capture_session
       return { json: nil, status: :gone } if document_capture_session.cancelled_at
       return {
         json: { redirect: idv_session_errors_throttled_url },
