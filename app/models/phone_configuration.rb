@@ -15,7 +15,7 @@ class PhoneConfiguration < ApplicationRecord
   def selection_presenters
     options = []
 
-    capabilities = PhoneNumberCapabilities.new(phone, !!confirmed_at?)
+    capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: !!confirmed_at?)
 
     if capabilities.supports_sms?
       options << TwoFactorAuthentication::SmsSelectionPresenter.new(self)

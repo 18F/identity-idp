@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe PhoneNumberCapabilities do
   let(:phone) { '+1 (703) 555-5000' }
-  let(:confirmed) { false }
-  subject(:capabilities) { PhoneNumberCapabilities.new(phone, confirmed) }
+  let(:phone_confirmed) { false }
+  subject(:capabilities) { PhoneNumberCapabilities.new(phone, phone_confirmed: phone_confirmed) }
 
   describe '#sms_only?' do
     context 'voice is supported' do
@@ -59,13 +59,13 @@ describe PhoneNumberCapabilities do
     end
 
     context 'Philippines number that is confirmed' do
-      let(:confirmed) { true }
+      let(:phone_confirmed) { true }
       let(:phone) { '+63 (703) 555-5000' }
       it { is_expected.to eq(true) }
     end
 
     context 'Philippines number that is unconfirmed' do
-      let(:confirmed) { false }
+      let(:phone_confirmed) { false }
       let(:phone) { '+63 (703) 555-5000' }
       it { is_expected.to eq(false) }
     end
@@ -73,18 +73,30 @@ describe PhoneNumberCapabilities do
 
   describe '#unsupported_location' do
     it 'returns the name of the unsupported country (Bahamas)' do
-      locality = PhoneNumberCapabilities.new('+1 (242) 327-0143', false).unsupported_location
+      locality = PhoneNumberCapabilities.new(
+        '+1 (242) 327-0143',
+        phone_confirmed: false,
+      ).unsupported_location
+
       expect(locality).to eq('Bahamas')
     end
 
     it 'returns the name of the unsupported country (Bermuda)' do
-      locality = PhoneNumberCapabilities.new('+1 (441) 295-9644', false).unsupported_location
+      locality = PhoneNumberCapabilities.new(
+        '+1 (441) 295-9644',
+        phone_confirmed: false,
+      ).unsupported_location
+
       expect(locality).to eq('Bermuda')
     end
 
     context 'phonelib returns default country' do
       it 'returns the default country' do
-        locality = PhoneNumberCapabilities.new('703-555-1212', false).unsupported_location
+        locality = PhoneNumberCapabilities.new(
+          '703-555-1212',
+          phone_confirmed: false,
+        ).unsupported_location
+
         expect(locality).to eq('United States')
       end
     end

@@ -278,9 +278,10 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def voice_otp_delivery_unsupported?
     if UserSessionContext.authentication_context?(context)
-      PhoneNumberCapabilities.new(phone_configuration&.phone, true).supports_voice?
+      PhoneNumberCapabilities.new(phone_configuration&.phone, phone_confirmed: true).supports_voice?
     else
-      PhoneNumberCapabilities.new(user_session[:unconfirmed_phone], false).supports_voice?
+      phone = user_session[:unconfirmed_phone]
+      PhoneNumberCapabilities.new(phone, phone_confirmed: false).supports_voice?
     end
   end
 

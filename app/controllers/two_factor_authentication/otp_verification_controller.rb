@@ -42,9 +42,9 @@ module TwoFactorAuthentication
     def confirm_voice_capability
       return if two_factor_authentication_method == 'sms'
 
-      is_authentication_context = UserSessionContext.authentication_context?(context)
+      phone_is_confirmed = UserSessionContext.authentication_context?(context)
 
-      capabilities = PhoneNumberCapabilities.new(phone, is_authentication_context)
+      capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: phone_is_confirmed)
 
       return if capabilities.supports_voice?
 
