@@ -220,7 +220,7 @@ RSpec.describe DocAuthRouter do
           errors: {
             general: [IdentityDocAuth::Errors::IMAGE_LOAD_FAILURE],
           },
-          exception: IdentityDocAuth::RequestError.new('Test 438 HTTP failure', 438)
+          exception: IdentityDocAuth::RequestError.new('Test 438 HTTP failure', 438),
         ),
       )
 
