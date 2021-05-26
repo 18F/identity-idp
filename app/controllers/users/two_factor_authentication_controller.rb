@@ -58,7 +58,11 @@ module Users
     def validate_otp_delivery_preference_and_send_code
       result = otp_delivery_selection_form.submit(otp_delivery_preference: delivery_preference)
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
-      phone_capabilities = PhoneNumberCapabilities.new(parsed_phone)
+      phone_is_confirmed = UserSessionContext.authentication_context?(context)
+      phone_capabilities = PhoneNumberCapabilities.new(
+        parsed_phone,
+        phone_confirmed: phone_is_confirmed,
+      )
 
       if result.success?
         handle_valid_otp_params(delivery_preference)
@@ -184,7 +188,7 @@ module Users
     end
 
     def send_otp_method_name
-      if authentication_context?
+      if UserSessionContext.authentication_context?(context)
         :send_authentication_otp
       else
         :send_confirmation_otp
@@ -208,7 +212,7 @@ module Users
     end
 
     def phone_to_deliver_to
-      return phone_configuration&.phone if authentication_context?
+      return phone_configuration&.phone if UserSessionContext.authentication_context?(context)
 
       user_session[:unconfirmed_phone]
     end
@@ -217,7 +221,7 @@ module Users
       @_otp_rate_limited ||= OtpRateLimiter.new(
         phone: phone_to_deliver_to,
         user: current_user,
-        phone_confirmed: authentication_context?,
+        phone_confirmed: UserSessionContext.authentication_context?(context),
       )
     end
 

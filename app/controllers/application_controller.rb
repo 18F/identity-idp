@@ -2,7 +2,6 @@ require 'core_extensions/string/permit'
 
 class ApplicationController < ActionController::Base
   String.include CoreExtensions::String::Permit
-  include UserSessionContext
   include VerifyProfileConcern
   include LocaleHelper
   include VerifySpAttributesConcern
@@ -79,6 +78,10 @@ class ApplicationController < ActionController::Base
   def sign_out(*args)
     request.cookie_jar.delete('ahoy_visit')
     super
+  end
+
+  def context
+    user_session[:context] || UserSessionContext::DEFAULT_CONTEXT
   end
 
   private

@@ -120,4 +120,8 @@ class NewPhoneForm
   def redact(phone)
     phone.gsub(/[a-z]/i, 'X').gsub(/\d/i, '#')
   end
+
+  def confirmed_phone?
+    false
+  end
 end

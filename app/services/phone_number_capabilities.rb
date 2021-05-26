@@ -3,10 +3,11 @@ class PhoneNumberCapabilities
     Rails.root.join('config', 'country_dialing_codes.yml'),
   ).freeze
 
-  attr_reader :phone
+  attr_reader :phone, :phone_confirmed
 
-  def initialize(phone)
+  def initialize(phone, phone_confirmed:)
     @phone = phone
+    @phone_confirmed = phone_confirmed
   end
 
   def sms_only?
@@ -20,7 +21,16 @@ class PhoneNumberCapabilities
 
   def supports_voice?
     return false if country_code_data.nil?
-    country_code_data['supports_voice']
+
+    supports_voice = country_code_data['supports_voice']
+    supports_voice_unconfirmed = country_code_data.fetch(
+      'supports_voice_unconfirmed',
+      supports_voice,
+    )
+
+    supports_voice_unconfirmed || (
+      supports_voice && phone_confirmed
+    )
   end
 
   def unsupported_location

@@ -568,7 +568,7 @@ feature 'Sign in' do
     it 'shows error message if SMS and Voice are not supported' do
       user = create(
         :user, :signed_up,
-        otp_delivery_preference: 'voice', with: { phone: '+84 09 1234 5678' }
+        otp_delivery_preference: 'voice', with: { phone: '+213 09 1234 5678' }
       )
       signin(user.email, user.password)
 
@@ -578,7 +578,7 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'Vietnam',
+        location: 'Algeria',
       )
       expect(user.reload.otp_delivery_preference).to eq 'voice'
     end
