@@ -99,5 +99,15 @@ describe ServiceProvider do
         expect(service_provider.ssl_certs.first.to_pem).to eq(pem)
       end
     end
+
+    context 'when a cert is named in the DB but does not exist on disk' do
+      let(:service_provider) { build(:service_provider, certs: ['i_do_not_exist', 'saml_test_sp']) }
+
+      it 'is an array of the existing certs only' do
+        expect(service_provider.ssl_certs.length).to eq(1)
+        expect(service_provider.ssl_certs.first).to be_kind_of(OpenSSL::X509::Certificate)
+        expect(service_provider.ssl_certs.first.to_pem).to eq(pem)
+      end
+    end
   end
 end
