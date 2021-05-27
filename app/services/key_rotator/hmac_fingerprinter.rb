@@ -26,7 +26,8 @@ module KeyRotator
         ssn_signature: ssn_fingerprint,
       }
 
-      if (compound_pii_fingerprint = Profile.build_compound_pii_fingerprint(pii_attributes))
+      if (compound_pii = Profile.build_compound_pii(pii_attributes))
+        compound_pii_fingerprint = Pii::Fingerprinter.fingerprint(compound_pii)
         columns_to_update[:name_zip_birth_year_signature] = compound_pii_fingerprint
       end
 

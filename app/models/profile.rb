@@ -63,7 +63,7 @@ class Profile < ApplicationRecord
     @personal_key = personal_key
   end
 
-  def self.build_compound_pii_fingerprint(pii)
+  def self.build_compound_pii(pii)
     values = [
       pii.first_name,
       pii.last_name,
@@ -72,8 +72,7 @@ class Profile < ApplicationRecord
     ]
 
     return unless values.all?(&:present?)
-
-    Pii::Fingerprinter.fingerprint(values.join(':'))
+    values.join(':')
   end
 
   def includes_liveness_check?
@@ -93,8 +92,11 @@ class Profile < ApplicationRecord
   end
 
   def encrypt_compound_pii_fingerprint(pii)
-    compound_pii_fingerprint = self.class.build_compound_pii_fingerprint(pii)
-    self.name_zip_birth_year_signature = compound_pii_fingerprint if compound_pii_fingerprint
+    compound_pii = self.class.build_compound_pii(pii)
+
+    if compound_pii
+      self.name_zip_birth_year_signature = Pii::Fingerprinter.fingerprint(compound_pii)
+    end
   end
 
   def send_push_notifications
