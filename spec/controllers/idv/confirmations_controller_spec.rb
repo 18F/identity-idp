@@ -170,14 +170,12 @@ describe Idv::ConfirmationsController do
         subject.idv_session.address_verification_mechanism = 'gpo'
       end
 
-      context 'ial2 step indicator enabled' do
-        it 'assigns step indicator steps with pending status' do
-          get :show
+      it 'assigns step indicator steps with pending status' do
+        get :show
 
-          expect(assigns(:step_indicator_steps)).to include(
-            hash_including(name: :verify_phone_or_address, status: :pending),
-          )
-        end
+        expect(assigns(:step_indicator_steps)).to include(
+          hash_including(name: :verify_phone_or_address, status: :pending),
+        )
       end
     end
   end
