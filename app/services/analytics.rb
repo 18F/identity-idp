@@ -16,6 +16,7 @@ class Analytics
     analytics_hash.merge!(request_attributes) if request
 
     ahoy.track(event, analytics_hash)
+    maybe_track_in_cloudwatch(event, analytics_hash)
     register_doc_auth_step_from_analytics_event(event, attributes)
 
     # Tag NewRelic APM trace with a handful of useful metadata
@@ -37,6 +38,41 @@ class Analytics
   def track_mfa_submit_event(attributes)
     track_event(MULTI_FACTOR_AUTH, attributes)
     mfa_event_type = (attributes[:success] ? 'success' : 'fail')
+  end
+
+  def maybe_track_in_cloudwatch(event, analytics_hash)
+    if HAHA_CLOUDWATCH_TRANSLATIONS.key?(event) && IdentityConfig.store.cloudwatch_metrics_enabled
+      client = Aws::CloudWatch::Client.new
+      resp = client.put_metric_data({
+        namespace: "mhenke/proofing", # required
+        metric_data: [ # required
+                       {
+                         metric_name: event, # required
+                         dimensions: [
+                           {
+                             name: "service_provider", # required
+                             value: analytics_hash[:service_provider], # required
+                           },
+                           {
+                             name: "user_id", # required
+                             value: analytics_hash[:user_id], # required
+                           },
+                         ],
+                         timestamp: Time.zone.now,
+                         statistic_values: {
+                           sample_count: 1.0, # required
+                           sum: 1.0, # required
+                           minimum: 1.0, # required
+                           maximum: 1.0, # required
+                         },
+                         values: [1.0],
+                         counts: [1.0],
+                         unit: "None",
+                         storage_resolution: 60,
+                       },
+        ],
+      })
+    end
   end
 
   attr_reader :user, :request, :sp, :ahoy
@@ -219,5 +255,43 @@ class Analytics
   USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'.freeze
   WEBAUTHN_DELETED = 'WebAuthn Deleted'.freeze
   WEBAUTHN_SETUP_VISIT = 'WebAuthn Setup Visited'.freeze
+
+  HAHA_CLOUDWATCH_TRANSLATIONS = {
+    IDV_ADDRESS_VISIT => {},
+    IDV_ADDRESS_SUBMITTED => {},
+    IDV_BASIC_INFO_VISIT => {},
+    IDV_BASIC_INFO_SUBMITTED_FORM => {},
+    IDV_BASIC_INFO_SUBMITTED_VENDOR => {},
+    IDV_CANCELLATION => {},
+    IDV_CANCELLATION_CONFIRMED => {},
+    IDV_COME_BACK_LATER_VISIT => {},
+    IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM => {},
+    IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR => {},
+    IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION => {},
+    IDV_FINAL => {},
+    IDV_FORGOT_PASSWORD => {},
+    IDV_FORGOT_PASSWORD_CONFIRMED => {},
+    IDV_INTRO_VISIT => {},
+    IDV_JURISDICTION_VISIT => {},
+    IDV_JURISDICTION_FORM => {},
+    IDV_PHONE_CONFIRMATION_FORM => {},
+    IDV_PHONE_CONFIRMATION_VENDOR => {},
+    IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_ATTEMPTS => {},
+    IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_LOCKED_OUT => {},
+    IDV_PHONE_CONFIRMATION_OTP_RATE_LIMIT_SENDS => {},
+    IDV_PHONE_CONFIRMATION_OTP_RESENT => {},
+    IDV_PHONE_CONFIRMATION_OTP_SENT => {},
+    IDV_PHONE_CONFIRMATION_OTP_SUBMITTED => {},
+    IDV_PHONE_CONFIRMATION_OTP_VISIT => {},
+    IDV_PHONE_OTP_DELIVERY_SELECTION_SUBMITTED => {},
+    IDV_PHONE_OTP_DELIVERY_SELECTION_VISIT => {},
+    IDV_PHONE_RECORD_VISIT => {},
+    IDV_REVIEW_COMPLETE => {},
+    IDV_REVIEW_VISIT => {},
+    IDV_GPO_ADDRESS_LETTER_REQUESTED => {},
+    IDV_GPO_ADDRESS_SUBMITTED => {},
+    IDV_GPO_ADDRESS_VISITED => {},
+    IDV_VERIFICATION_ATTEMPT_CANCELLED => {}
+  }
 end
 # rubocop:enable Layout/LineLength

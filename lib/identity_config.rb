@@ -92,6 +92,7 @@ class IdentityConfig
     config.add(:aws_region, type: :string)
     config.add(:backup_code_cost, type: :string)
     config.add(:backup_code_skip_symmetric_encryption, type: :boolean)
+    config.add(:cloudwatch_metrics_enabled, type: :boolean)
     config.add(:dashboard_api_token, type: :string)
     config.add(:dashboard_url, type: :string)
     config.add(:database_host, type: :string)
