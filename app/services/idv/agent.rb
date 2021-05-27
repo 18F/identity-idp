@@ -4,7 +4,12 @@ module Idv
       @applicant = applicant.symbolize_keys
     end
 
-    def proof_resolution(document_capture_session, should_proof_state_id:, trace_id:)
+    def proof_resolution(
+      document_capture_session,
+      should_proof_state_id:,
+      trace_id:,
+      document_expired:
+    )
       document_capture_session.create_proofing_session
 
       encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
@@ -17,6 +22,7 @@ module Idv
         dob_year_only: IdentityConfig.store.proofing_send_partial_dob,
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
+        document_expired: document_expired,
       )
     end
 
@@ -35,7 +41,8 @@ module Idv
       )
     end
 
-    def proof_document(document_capture_session, liveness_checking_enabled:, trace_id:)
+    def proof_document(document_capture_session, liveness_checking_enabled:, trace_id:,
+                       analytics_data:)
       encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
         { document_arguments: @applicant }.to_json,
       )
@@ -45,6 +52,7 @@ module Idv
         liveness_checking_enabled: liveness_checking_enabled,
         result_id: document_capture_session.result_id,
         trace_id: trace_id,
+        analytics_data: analytics_data,
       )
     end
   end

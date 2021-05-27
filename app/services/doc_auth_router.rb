@@ -21,6 +21,9 @@ module DocAuthRouter
     IdentityDocAuth::Errors::DOC_NUMBER_CHECKS =>
       'doc_auth.errors.alerts.doc_number_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.expiration_checks')
+    IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK =>
+      'doc_auth.errors.alerts.expiration_checks',
+    # i18n-tasks-use t('doc_auth.errors.alerts.expiration_checks')
     IdentityDocAuth::Errors::EXPIRATION_CHECKS =>
       'doc_auth.errors.alerts.expiration_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.full_name_check')
@@ -70,6 +73,12 @@ module DocAuthRouter
     IdentityDocAuth::Errors::GLARE_LOW_ONE_SIDE => 'doc_auth.errors.glare.top_msg',
     # i18n-tasks-use t('doc_auth.errors.glare.top_msg_plural')
     IdentityDocAuth::Errors::GLARE_LOW_BOTH_SIDES => 'doc_auth.errors.glare.top_msg_plural',
+    # i18n-tasks-use t('doc_auth.errors.http.image_load')
+    IdentityDocAuth::Errors::IMAGE_LOAD_FAILURE => 'doc_auth.errors.http.image_load',
+    # i18n-tasks-use t('doc_auth.errors.http.pixel_depth')
+    IdentityDocAuth::Errors::PIXEL_DEPTH_FAILURE => 'doc_auth.errors.http.pixel_depth',
+    # i18n-tasks-use t('doc_auth.errors.http.image_size')
+    IdentityDocAuth::Errors::IMAGE_SIZE_FAILURE => 'doc_auth.errors.http.image_size',
   }.freeze
 
   class DocAuthErrorTranslatorProxy
@@ -95,6 +104,9 @@ module DocAuthRouter
 
     def translate_form_response!(response)
       return response unless response.is_a?(IdentityDocAuth::Response)
+
+      # This needs to happen before we translate, since it relies on the original error keys
+      response = ExpiredLicenseAllower.new(response).processed_response
 
       translate_doc_auth_errors!(response)
       translate_generic_errors!(response)
@@ -171,7 +183,7 @@ module DocAuthRouter
         ),
       )
     when 'mock'
-      IdentityDocAuth::Mock::DocAuthMockClient.new
+      DocAuthErrorTranslatorProxy.new(IdentityDocAuth::Mock::DocAuthMockClient.new)
     else
       raise "#{doc_auth_vendor} is not a valid doc auth vendor"
     end

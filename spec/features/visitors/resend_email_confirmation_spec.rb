@@ -13,7 +13,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
 
   scenario 'user can resend their confirmation instructions via email' do
     user.save!
-    fill_in 'Email', with: user.email
+    fill_in t('forms.registration.labels.email'), with: user.email
 
     click_button t('forms.buttons.resend_confirmation')
     expect(unread_emails_for(user.email)).to be_present
@@ -49,7 +49,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
 
     button = t('forms.buttons.resend_confirmation')
     invalid_addresses.each do |email|
-      fill_in 'Email', with: email
+      fill_in t('forms.registration.labels.email'), with: email
       click_button button
       button = t('forms.buttons.submit.default')
 
@@ -66,7 +66,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
 
     button = t('forms.buttons.resend_confirmation')
     invalid_addresses.each do |email|
-      fill_in 'Email', with: email
+      fill_in t('forms.registration.labels.email'), with: email
       click_button button
       button = t('forms.buttons.submit.default')
 
@@ -75,7 +75,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
   end
 
   scenario 'user enters empty email' do
-    fill_in 'Email', with: ''
+    fill_in t('forms.registration.labels.email'), with: ''
     click_button t('forms.buttons.resend_confirmation')
 
     expect(page).to have_content t('valid_email.validations.email.invalid')
@@ -83,7 +83,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
 
   def submit_resend_email_confirmation(email)
     visit sign_up_email_resend_path
-    fill_in 'Email', with: email
+    fill_in t('forms.registration.labels.email'), with: email
     click_button t('forms.buttons.resend_confirmation')
   end
 end

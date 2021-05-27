@@ -8,6 +8,7 @@ FactoryBot.define do
       with { {} }
       email { Faker::Internet.safe_email }
       confirmed_at { Time.zone.now }
+      accepted_terms_at { Time.zone.now }
     end
 
     after(:build) do |user, evaluator|
@@ -18,6 +19,7 @@ FactoryBot.define do
       )
       user.email = evaluator.email
       user.confirmed_at = evaluator.confirmed_at
+      user.accepted_terms_at = Time.zone.now
     end
 
     after(:stub) do |user, evaluator|
@@ -28,6 +30,7 @@ FactoryBot.define do
       )
       user.email = evaluator.email
       user.confirmed_at = evaluator.confirmed_at
+      user.accepted_terms_at = Time.zone.now
     end
 
     trait :with_multiple_emails do

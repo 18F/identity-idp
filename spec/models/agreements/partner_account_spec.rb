@@ -16,4 +16,12 @@ RSpec.describe Agreements::PartnerAccount, type: :model do
     it { is_expected.to have_many(:iaa_orders).through(:iaa_gtcs) }
     it { is_expected.to have_many(:integrations) }
   end
+
+  describe '#partner_status' do
+    it 'returns the partner_name of the associated partner_account_status' do
+      status = build(:partner_account_status, partner_name: 'foo')
+      account = build(:partner_account, partner_account_status: status)
+      expect(account.partner_status).to eq('foo')
+    end
+  end
 end

@@ -47,7 +47,7 @@
     :doc_auth,
     url: url_for,
     method: 'PUT',
-    html: { autocomplete: 'off', role: 'form', class: 'margin-top-2 js-document-capture-form' }
+    html: { autocomplete: 'off', class: 'margin-top-2 js-document-capture-form' }
   ) do |f| %>
     <%# ---- Front Image ----- %>
 
@@ -136,7 +136,7 @@
                   class: 'usa-button usa-button--unstyled') %>
   </div>
 <% else %>
-  <%= render 'shared/cancel', link: idv_cancel_path %>
+  <%= render 'shared/cancel', link: idv_cancel_path(step: 'document_capture') %>
 <% end %>
 
 <%= nonced_javascript_tag do %>

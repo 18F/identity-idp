@@ -9,6 +9,7 @@ feature 'doc auth document capture step' do
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { false }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:sp_name) { 'Test SP' }
   before do
     allow(IdentityConfig.store).to receive(:ial2_step_indicator_enabled).
       and_return(ial2_step_indicator_enabled)
@@ -16,8 +17,27 @@ feature 'doc auth document capture step' do
       and_return(liveness_enabled)
     allow(Identity::Hostdata::EC2).to receive(:load).
       and_return(OpenStruct.new(region: 'us-west-2', account_id: '123456789'))
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
+    if liveness_enabled
+      visit_idp_from_oidc_sp_with_ial2_strict
+    else
+      visit_idp_from_oidc_sp_with_ial2
+    end
     sign_in_and_2fa_user(user)
     complete_doc_auth_steps_before_document_capture_step
+  end
+
+  context 'when javascript is enabled', js: true do
+    it 'logs return to sp link click' do
+      click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
+
+      expect(fake_analytics).to have_logged_event(
+        Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+        step: 'document_capture',
+        location: 'documents_having_trouble',
+      )
+    end
   end
 
   context 'ial2 step indicator enabled' do
@@ -66,9 +86,6 @@ feature 'doc auth document capture step' do
     end
 
     it 'proceeds to the next page with valid info and logs analytics info' do
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
-
       attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
@@ -98,9 +115,6 @@ feature 'doc auth document capture step' do
     end
 
     it 'does not proceed to the next page with a successful doc auth but missing information' do
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
-
       mock_doc_auth_no_name_pii(:post_images)
       attach_and_submit_images
 
@@ -125,7 +139,6 @@ feature 'doc auth document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
@@ -201,10 +214,17 @@ feature 'doc auth document capture step' do
 
       expect(page).to have_current_path(next_step)
       expect_costing_for_document
+      expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MT')
+    end
+
+    it 'does not track state if state tracking is disabled' do
+      allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
+      attach_and_submit_images
+
+      expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
@@ -289,6 +309,78 @@ feature 'doc auth document capture step' do
     end
   end
 
+  context 'when the only error is an expired drivers license' do
+    before do
+      allow(IdentityConfig.store).to receive(:proofing_allow_expired_license).
+        and_return(proofing_allow_expired_license)
+      allow(IdentityConfig.store).to receive(:proofing_expired_license_after).
+        and_return(Date.new(2020, 3, 1))
+
+      allow_any_instance_of(ApplicationController).
+        to receive(:analytics).and_return(fake_analytics)
+
+      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        method: :post_images,
+        response: IdentityDocAuth::Response.new(
+          pii_from_doc: IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+            state_id_expiration: '04/01/2020',
+          ),
+          success: false,
+          errors: {
+            id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
+          },
+        ),
+      )
+    end
+
+    context 'when expired licenses are not allowed' do
+      let(:proofing_allow_expired_license) { false }
+
+      it 'shows an error and does not go to the next page' do
+        attach_and_submit_images
+        expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+
+        expect(fake_analytics).to have_logged_event(
+          Analytics::DOC_AUTH + ' submitted',
+          document_expired: true,
+          would_have_passed: true,
+        )
+      end
+    end
+
+    context 'when expired licenses are allowed' do
+      let(:proofing_allow_expired_license) { true }
+
+      it 'proceeds to the next page and saves reproof_at to the profile' do
+        attach_and_submit_images
+        expect(page).to have_current_path(next_step)
+
+        expect(fake_analytics).to have_logged_event(
+          Analytics::DOC_AUTH + ' submitted',
+          document_expired: true,
+        )
+
+        # finish the rest of the flow so we can make sure the data is plumbed through
+        fill_out_ssn_form_ok
+        click_idv_continue
+
+        expect(page).to have_content(t('doc_auth.headings.verify'))
+        click_idv_continue
+
+        fill_out_phone_form_mfa_phone(user)
+        click_idv_continue
+
+        fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+        click_idv_continue
+
+        acknowledge_and_confirm_personal_key(js: false)
+
+        profile = user.active_profile
+        expect(profile.reproof_at).to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
+      end
+    end
+  end
+
   context 'when using async uploads', :js do
     before do
       allow(DocumentProofingJob).to receive(:perform_later).
@@ -354,6 +446,55 @@ feature 'doc auth document capture step' do
         expect(back_plain.b).to eq(original.b)
       end
     end
+
+    context 'when expired licenses are allowed' do
+      before do
+        allow(IdentityConfig.store).to receive(:proofing_allow_expired_license).and_return(true)
+
+        IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_images,
+          response: IdentityDocAuth::Response.new(
+            success: false,
+            pii_from_doc: IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+              state_id_expiration: '04/01/2020',
+            ),
+            errors: {
+              id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
+            },
+          ),
+        )
+      end
+
+      it 'proceeds to the next page and saves reproof_at to the profile' do
+        attach_file 'Front of your ID', 'app/assets/images/logo.png'
+        attach_file 'Back of your ID', 'app/assets/images/logo.png'
+
+        form = page.find('#document-capture-form')
+        front_url = form['data-front-image-upload-url']
+        back_url = form['data-back-image-upload-url']
+        click_on 'Submit'
+
+        expect(page).to have_current_path(next_step, wait: 20)
+
+        # finish the rest of the flow so we can make sure the data is plumbed through
+        fill_out_ssn_form_ok
+        click_idv_continue
+
+        expect(page).to have_content(t('doc_auth.headings.verify'))
+        click_idv_continue
+
+        fill_out_phone_form_mfa_phone(user)
+        click_idv_continue
+
+        fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+        click_idv_continue
+
+        acknowledge_and_confirm_personal_key(js: true)
+
+        profile = user.active_profile
+        expect(profile.reproof_at).to eq(IdentityConfig.store.proofing_expired_license_reproof_at)
+      end
+    end
   end
 
   def next_step
@@ -375,6 +516,6 @@ feature 'doc auth document capture step' do
   end
 
   def costing_for(cost_type)
-    SpCost.where(ial: 2, issuer: '', agency_id: 0, cost_type: cost_type.to_s).first
+    SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
   end
 end

@@ -161,6 +161,9 @@ Rails.application.routes.draw do
     get '/events/disavow' => 'event_disavowal#new', as: :event_disavowal
     post '/events/disavow' => 'event_disavowal#create', as: :events_disavowal
 
+    get '/rules_of_use' => 'users/rules_of_use#new'
+    post '/rules_of_use' => 'users/rules_of_use#create'
+
     get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
     get '/piv_cac_error' => 'users/piv_cac_authentication_setup#error', as: :setup_piv_cac_error
     delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
@@ -250,7 +253,6 @@ Rails.application.routes.draw do
     scope '/verify', as: 'idv' do
       get '/' => 'idv#index'
       get '/activated' => 'idv#activated'
-      get '/fail' => 'idv#fail'
     end
     scope '/verify', module: 'idv', as: 'idv' do
       get '/come_back_later' => 'come_back_later#show'
@@ -282,6 +284,7 @@ Rails.application.routes.draw do
       get '/address' => 'address#new'
       post '/address' => 'address#update'
       get '/doc_auth' => 'doc_auth#index'
+      get '/doc_auth/return_to_sp' => 'doc_auth#return_to_sp'
       get '/doc_auth/:step' => 'doc_auth#show', as: :doc_auth_step
       put '/doc_auth/:step' => 'doc_auth#update'
       get '/doc_auth/link_sent/poll' => 'capture_doc_status#show', as: :capture_doc_status
@@ -290,6 +293,7 @@ Rails.application.routes.draw do
       get '/capture-doc' => 'capture_doc#index',
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
+      get '/capture_doc/return_to_sp' => 'capture_doc#return_to_sp'
       get '/capture_doc/:step' => 'capture_doc#show', as: :capture_doc_step
       put '/capture_doc/:step' => 'capture_doc#update'
     end

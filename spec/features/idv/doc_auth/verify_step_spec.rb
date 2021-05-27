@@ -182,7 +182,10 @@ feature 'doc auth verify step' do
       click_idv_continue
 
       expect(agent).to have_received(:proof_resolution).with(
-        anything, should_proof_state_id: true, trace_id: anything
+        anything,
+        should_proof_state_id: true,
+        document_expired: nil,
+        trace_id: anything,
       )
     end
   end
@@ -208,7 +211,10 @@ feature 'doc auth verify step' do
       click_idv_continue
 
       expect(agent).to have_received(:proof_resolution).with(
-        anything, should_proof_state_id: false, trace_id: anything
+        anything,
+        should_proof_state_id: false,
+        document_expired: nil,
+        trace_id: anything,
       )
     end
   end
@@ -230,7 +236,10 @@ feature 'doc auth verify step' do
       click_idv_continue
 
       expect(agent).to have_received(:proof_resolution).with(
-        anything, should_proof_state_id: false, trace_id: anything
+        anything,
+        should_proof_state_id: false,
+        document_expired: nil,
+        trace_id: anything,
       )
     end
   end

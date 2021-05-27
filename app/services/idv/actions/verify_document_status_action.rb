@@ -43,6 +43,11 @@ module Idv
       def async_state_done(async_result)
         doc_pii_form_result = Idv::DocPiiForm.new(async_result.pii).submit
 
+        @flow.analytics.track_event(
+          Analytics::IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION,
+          doc_pii_form_result.to_h.merge(remaining_attempts: remaining_attempts),
+        )
+
         delete_async
         if doc_pii_form_result.success?
           extract_pii_from_doc(async_result)
@@ -56,15 +61,6 @@ module Idv
 
       def process_result(async_state)
         add_cost(:acuant_result) if async_state.result.to_h[:billed]
-        @flow.analytics.track_event(
-          Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
-          async_state.result.to_h.merge(
-            state: async_state.pii[:state],
-            async: true,
-            remaining_attempts: remaining_attempts,
-            client_image_metrics: nil, # Need to resolve how to capture image metrics, see LG-4488
-          ),
-        )
       end
 
       def verify_document_capture_session

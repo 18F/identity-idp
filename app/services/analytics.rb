@@ -12,7 +12,8 @@ class Analytics
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }
-    analytics_hash.merge!(request_attributes)
+
+    analytics_hash.merge!(request_attributes) if request
 
     ahoy.track(event, analytics_hash)
     register_doc_auth_step_from_analytics_event(event, attributes)
@@ -21,7 +22,7 @@ class Analytics
     # https://www.rubydoc.info/github/newrelic/rpm/NewRelic/Agent#add_custom_attributes-instance_method
     ::NewRelic::Agent.add_custom_attributes(
       user_id: analytics_hash[:user_id],
-      user_ip: request.remote_ip,
+      user_ip: request&.remote_ip,
       service_provider: sp,
       event_name: event,
     )
@@ -176,6 +177,8 @@ class Analytics
   REMEMBERED_DEVICE_USED_FOR_AUTH = 'Remembered device used for authentication'.freeze
   RETURN_TO_SP_CANCEL = 'Return to SP: Cancelled'.freeze
   RETURN_TO_SP_FAILURE_TO_PROOF = 'Return to SP: Failed to proof'.freeze
+  RULES_OF_USE_VISIT = 'Rules Of Use Visited'.freeze
+  RULES_OF_USE_SUBMITTED = 'Rules Of Use Submitted'.freeze
   SECURITY_EVENT_RECEIVED = 'RISC: Security event received'.freeze
   SP_REVOKE_CONSENT_REVOKED = 'SP Revoke Consent: Revoked'.freeze
   SP_REVOKE_CONSENT_VISITED = 'SP Revoke Consent: Visited'.freeze

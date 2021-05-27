@@ -256,6 +256,7 @@ describe SamlIdpController do
                nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
                authn_context: ['http://idmanagement.gov/ns/assurance/ial/2'],
                service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+               endpoint: '/api/saml/auth2021',
                idv: false,
                finish_profile: false)
         expect(@analytics).to receive(:track_event).
@@ -616,6 +617,7 @@ describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
+          endpoint: '/api/saml/auth2021',
           idv: false,
           finish_profile: false,
         }
@@ -638,6 +640,7 @@ describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
           service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+          endpoint: '/api/saml/auth2021',
           idv: false,
           finish_profile: false,
         }
@@ -1139,6 +1142,7 @@ describe SamlIdpController do
             Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           ],
           service_provider: 'http://localhost:3000',
+          endpoint: '/api/saml/auth2021',
           idv: true,
           finish_profile: false,
         }
@@ -1174,6 +1178,7 @@ describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
+          endpoint: '/api/saml/auth2021',
           idv: false,
           finish_profile: false,
         }
@@ -1203,6 +1208,7 @@ describe SamlIdpController do
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
           service_provider: 'http://localhost:3000',
+          endpoint: '/api/saml/auth2021',
           idv: false,
           finish_profile: true,
         }

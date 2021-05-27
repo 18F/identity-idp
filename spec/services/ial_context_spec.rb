@@ -11,8 +11,9 @@ RSpec.describe IalContext do
       ial: sp_ial,
     )
   end
+  let(:user) { nil }
 
-  subject(:ial_context) { IalContext.new(ial: ial, service_provider: service_provider) }
+  subject(:ial_context) { IalContext.new(ial: ial, service_provider: service_provider, user: user) }
 
   describe '#ial' do
     context 'with an integer input' do
@@ -107,6 +108,29 @@ RSpec.describe IalContext do
     end
   end
 
+  describe '#user_ial2_verified?' do
+    context 'when the user is nil' do
+      let(:user) { nil }
+      it { expect(ial_context.user_ial2_verified?).to eq(false) }
+    end
+
+    context 'when the user has not proofed' do
+      let(:user) { create(:user, :signed_up) }
+      it { expect(ial_context.user_ial2_verified?).to eq(false) }
+    end
+
+    context 'when the user has proofed for ial2' do
+      let(:user) do
+        create(
+          :user,
+          :signed_up,
+          profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
+        )
+      end
+      it { expect(ial_context.user_ial2_verified?).to eq(true) }
+    end
+  end
+
   describe '#ialmax_requested?' do
     context 'when ialmax is requested' do
       let(:ial) { Idp::Constants::IAL_MAX }
@@ -126,6 +150,52 @@ RSpec.describe IalContext do
     context 'when ial 2 strict is requested' do
       let(:ial) { Idp::Constants::IAL2_STRICT }
       it { expect(ial_context.ialmax_requested?).to eq(false) }
+    end
+  end
+
+  describe '#bill_for_ial_1_or_2' do
+    context 'when ial is nil' do
+      let(:ial) { nil }
+      it { expect(ial_context.bill_for_ial_1_or_2).to eq(1) }
+    end
+
+    context 'when ial1' do
+      let(:ial) { Idp::Constants::IAL1 }
+      it { expect(ial_context.bill_for_ial_1_or_2).to eq(1) }
+    end
+
+    context 'when ial2' do
+      let(:ial) { Idp::Constants::IAL2 }
+      it { expect(ial_context.bill_for_ial_1_or_2).to eq(2) }
+    end
+
+    context 'when ial max and the user is nil' do
+      let(:ial) { Idp::Constants::IAL_MAX }
+      let(:user) { nil }
+      it { expect(ial_context.bill_for_ial_1_or_2).to eq(1) }
+    end
+
+    context 'when ial max and the user has not proofed' do
+      let(:ial) { Idp::Constants::IAL_MAX }
+      let(:user) { create(:user, :signed_up) }
+      it { expect(ial_context.bill_for_ial_1_or_2).to eq(1) }
+    end
+
+    context 'when ial max and the user has proofed for ial2' do
+      let(:ial) { Idp::Constants::IAL_MAX }
+      let(:user) do
+        create(
+          :user,
+          :signed_up,
+          profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
+        )
+      end
+      it { expect(ial_context.bill_for_ial_1_or_2).to eq(2) }
+    end
+
+    context 'when ial2 strict' do
+      let(:ial) { Idp::Constants::IAL2_STRICT }
+      it { expect(ial_context.bill_for_ial_1_or_2).to eq(2) }
     end
   end
 
@@ -235,6 +305,18 @@ RSpec.describe IalContext do
     context 'when the SP is nil' do
       let(:service_provider) { nil }
       let(:ial) { Idp::Constants::IAL2 }
+      it { expect(ial_context.ial2_requested?).to eq(true) }
+    end
+
+    context 'when ial max and the user has proofed for ial2' do
+      let(:ial) { Idp::Constants::IAL_MAX }
+      let(:user) do
+        create(
+          :user,
+          :signed_up,
+          profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })],
+        )
+      end
       it { expect(ial_context.ial2_requested?).to eq(true) }
     end
   end

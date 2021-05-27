@@ -81,19 +81,15 @@ module Users
     end
 
     def next_step
-      if request_is_ial2?
+      if ial_context.ial2_requested?
         capture_password_url
       else
         after_otp_verification_confirmation_url
       end
     end
 
-    def request_is_ial2?
-      request_ial == Idp::Constants::IAL2
-    end
-
-    def request_ial
-      sp_session ? sp_session_ial_1_or_2 : 1
+    def ial_context
+      @ial_context ||= IalContext.new(ial: sp_session_ial, service_provider: current_sp)
     end
 
     def process_invalid_submission

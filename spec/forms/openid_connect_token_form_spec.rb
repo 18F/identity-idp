@@ -403,7 +403,7 @@ RSpec.describe OpenidConnectTokenForm do
         expect(submission.to_h).to include(
           success: false,
           errors: form.errors.messages,
-          error_details: hash_including(*form.errors.keys),
+          error_details: hash_including(*form.errors.attribute_names),
           client_id: nil,
           user_id: nil,
         )

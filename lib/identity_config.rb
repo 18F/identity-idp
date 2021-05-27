@@ -24,6 +24,7 @@ class IdentityConfig
         raise 'invalid boolean value'
       end
     end,
+    date: proc { |value| Date.parse(value) if value },
     timestamp: proc do |value|
       # When the store is built `Time.zone` is not set resulting in a NoMethodError
       # if Time.zone.parse is called
@@ -118,6 +119,7 @@ class IdentityConfig
     config.add(:email_from, type: :string)
     config.add(:email_from_display_name, type: :string)
     config.add(:enable_load_testing_mode, type: :boolean)
+    config.add(:enable_partner_api, type: :boolean)
     config.add(:enable_rate_limiting, type: :boolean)
     config.add(:enable_test_routes, type: :boolean)
     config.add(:enable_usps_verification, type: :boolean)
@@ -182,10 +184,10 @@ class IdentityConfig
     config.add(:otps_per_ip_track_only_mode, type: :boolean)
     config.add(:outbound_connection_check_url)
     config.add(:participate_in_dap, type: :boolean)
+    config.add(:partner_api_bucket_prefix, type: :string)
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
     config.add(:personal_key_retired, type: :boolean)
-    config.add(:phone_format_e164_opt_out_list, type: :json)
     config.add(:phone_setups_per_ip_limit, type: :integer)
     config.add(:phone_setups_per_ip_period, type: :integer)
     config.add(:pii_lock_timeout_in_minutes, type: :integer)
@@ -197,6 +199,9 @@ class IdentityConfig
     config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)
     config.add(:poll_rate_for_verify_in_seconds, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
+    config.add(:proofing_allow_expired_license, type: :boolean)
+    config.add(:proofing_expired_license_after, type: :date)
+    config.add(:proofing_expired_license_reproof_at, type: :date)
     config.add(:proofing_send_partial_dob, type: :boolean)
     config.add(:push_notifications_enabled, type: :boolean)
     config.add(:pwned_passwords_file_path, type: :string)
@@ -222,6 +227,7 @@ class IdentityConfig
     config.add(:risc_notifications_local_enabled, type: :boolean)
     config.add(:risc_notifications_eventbridge_enabled, type: :boolean)
     config.add(:ruby_workers_enabled, type: :boolean)
+    config.add(:rules_of_use_enabled, type: :boolean)
     config.add(:s3_report_bucket_prefix, type: :string)
     config.add(:s3_reports_enabled, type: :boolean)
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
@@ -240,6 +246,7 @@ class IdentityConfig
     config.add(:sp_context_needed_environment, type: :string)
     config.add(:sp_handoff_bounce_max_seconds, type: :integer)
     config.add(:sps_over_quota_limit_notify_email_list, type: :json)
+    config.add(:state_tracking_enabled, type: :boolean)
     config.add(:telephony_adapter, type: :string)
     config.add(:unauthorized_scope_enabled, type: :boolean)
     config.add(:use_dashboard_service_providers, type: :boolean)

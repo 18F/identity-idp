@@ -1,5 +1,46 @@
 EnableDefaultLinters: false
 linters:
+  Rubocop:
+    enabled: true
+    # There's no special reason for these excludes other than the fact that they have existing
+    # issues that haven't been resolved yet. Fix 'em up!
+    exclude:
+      - '*/app/views/account_reset/*'
+      - '*/app/views/accounts/*'
+      - '*/app/views/devise/*'
+      - '*/app/views/idv/address/*'
+      - '*/app/views/idv/come_back_later/*'
+      - '*/app/views/idv/confirmations/*'
+      - '*/app/views/idv/capture_doc/*'
+      - '*/app/views/idv/doc_auth/*'
+      - '*/app/views/idv/forgot_password/*'
+      - '*/app/views/idv/gpo/*'
+      - '*/app/views/idv/otp_delivery_method/*'
+      - '*/app/views/idv/otp_verification/*'
+      - '*/app/views/idv/phone/*'
+      - '*/app/views/idv/review/*'
+      - '*/app/views/idv/shared/*'
+      - '*/app/views/forgot_password/*'
+      - '*/app/views/event_disavowal/*'
+      - '*/app/views/events/*'
+      - '*/app/views/layouts/*'
+      - '*/app/views/mfa_confirmation/*'
+      - '*/app/views/pages/*'
+      - '*/app/views/partials/*'
+      - '*/app/views/password_capture/*'
+      - '*/app/views/reactivate_account/*'
+      - '*/app/views/saml_idp/*'
+      - '*/app/views/service_provider_mfa/*'
+      - '*/app/views/session_timeout/*'
+      - '*/app/views/shared/*'
+      - '*/app/views/sign_up/*'
+      - '*/app/views/test/*'
+      - '*/app/views/two_factor_authentication/*'
+      - '*/app/views/user_mailer/*'
+      - '*/app/views/users/*'
+    rubocop_config:
+      inherit_from:
+        - .rubocop.yml
   DeprecatedClasses:
     enabled: true
     rule_set:

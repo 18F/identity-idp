@@ -15,7 +15,7 @@ describe 'idv/phone_errors/failure.html.erb' do
   it 'renders a list of troubleshooting options' do
     expect(rendered).to have_link(
       t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
-      href: return_to_sp_failure_to_proof_path,
+      href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'failure'),
     )
     expect(rendered).to have_link(
       t('idv.troubleshooting.options.contact_support', app: APP_NAME),

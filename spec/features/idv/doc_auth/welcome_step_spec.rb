@@ -1,42 +1,77 @@
 require 'rails_helper'
 
 feature 'doc auth welcome step' do
+  include IdvHelper
   include DocAuthHelper
 
   def expect_doc_auth_upload_step
     expect(page).to have_current_path(idv_doc_auth_upload_step)
   end
 
+  let(:fake_analytics) { FakeAnalytics.new }
+  let(:maintenance_window) { [] }
+  let(:sp_name) { 'Test SP' }
+
+  before do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ServiceProviderSessionDecorator).to receive(:sp_name).and_return(sp_name)
+    start, finish = maintenance_window
+    allow(IdentityConfig.store).to receive(:acuant_maintenance_window_start).and_return(start)
+    allow(IdentityConfig.store).to receive(:acuant_maintenance_window_finish).and_return(finish)
+
+    visit_idp_from_sp_with_ial2(:oidc)
+    sign_in_and_2fa_user
+    complete_doc_auth_steps_before_welcome_step
+  end
+
+  it 'logs return to sp link click' do
+    click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
+
+    expect(fake_analytics).to have_logged_event(
+      Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+      step: 'welcome',
+    )
+  end
+
   context 'skipping upload step', :js, driver: :headless_chrome_mobile do
-    let(:fake_analytics) { FakeAnalytics.new }
-
-    before do
-      allow_any_instance_of(ApplicationController).
-        to receive(:analytics).and_return(fake_analytics)
-
-      sign_in_and_2fa_user
-      complete_doc_auth_steps_before_welcome_step
+    it 'progresses to the agreement screen' do
       click_continue
+      expect(page).to have_current_path(idv_doc_auth_agreement_step)
+    end
+  end
+
+  context 'cancelling' do
+    let(:sp_name) { 'Test SP' }
+    before do
+      sp = build_stubbed(:service_provider, friendly_name: sp_name)
+      allow_any_instance_of(ApplicationController).to receive(:current_sp).and_return(sp)
     end
 
-    it 'progresses to the agreement screen' do
-      expect(page).to have_current_path(idv_doc_auth_agreement_step)
+    it 'logs events when returning to sp' do
+      click_on t('links.cancel')
+      expect(fake_analytics).to have_logged_event(Analytics::IDV_CANCELLATION, step: 'welcome')
+
+      click_on t('forms.buttons.cancel')
+      expect(fake_analytics).to have_logged_event(
+        Analytics::IDV_CANCELLATION_CONFIRMED,
+        step: 'welcome',
+      )
+
+      click_on "‹ #{t('links.back_to_sp', sp: sp_name)}"
+      expect(fake_analytics).to have_logged_event(
+        Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+        step: 'welcome',
+        location: 'cancel',
+      )
     end
   end
 
   context 'during the acuant maintenance window' do
     context 'during the acuant maintenance window' do
-      let(:start) { Time.zone.parse('2020-01-01T00:00:00Z') }
-      let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
-      let(:finish) { Time.zone.parse('2020-01-01T23:59:59Z') }
-
-      before do
-        allow(IdentityConfig.store).to receive(:acuant_maintenance_window_start).and_return(start)
-        allow(IdentityConfig.store).to receive(:acuant_maintenance_window_finish).and_return(finish)
-
-        sign_in_and_2fa_user
-        complete_doc_auth_steps_before_welcome_step
+      let(:maintenance_window) do
+        [Time.zone.parse('2020-01-01T00:00:00Z'), Time.zone.parse('2020-01-01T23:59:59Z')]
       end
+      let(:now) { Time.zone.parse('2020-01-01T12:00:00Z') }
 
       around do |ex|
         Timecop.travel(now) { ex.run }

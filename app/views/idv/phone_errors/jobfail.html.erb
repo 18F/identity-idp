@@ -1,3 +1,7 @@
-<%= render('idv/phone_errors/warning', contact_support_option: true) do %>
-  <p><%= t('idv.failure.phone.jobfail') %></p>
-<% end %>
+<%= render(
+      'idv/phone_errors/warning',
+      contact_support_option: true,
+      name: request.params[:action],
+    ) do %>
+      <p><%= t('idv.failure.phone.jobfail') %></p>
+    <% end %>

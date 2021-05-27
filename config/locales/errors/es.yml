@@ -104,6 +104,10 @@ es:
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
     piv_cac_setup:
       unique_name: El nombre ya fue escogido. Por favor, elija un nombre diferente.
+    registration:
+      terms: Antes de continuar, debe darnos permiso. Marque la casilla a continuación
+        y luego haga clic en continuar.
+    rules_of_use: Marque esta casilla para continuar
     two_factor_auth_setup:
       must_select_option: Seleccione un método de autenticación.
     verify_personal_key:

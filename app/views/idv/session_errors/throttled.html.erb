@@ -1,25 +1,28 @@
 <%= render(
-  'idv/shared/error',
-  heading: FeatureManagement.liveness_checking_enabled? && sp_session[:ial2_strict].presence ?
-    t('errors.doc_auth.throttled_heading_liveness') :
-    t('errors.doc_auth.throttled_heading'),
-  options: [
-    decorated_session.sp_name && {
-      url: return_to_sp_failure_to_proof_path,
-      text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-    },
-    {
-      url: MarketingSite.contact_url,
-      text: t('idv.troubleshooting.options.contact_support', app: APP_NAME),
-    },
-  ].select(&:present?)
-) do %>
-  <p>
-    <%= t(
-      'errors.doc_auth.throttled_text_html',
-      timeout: distance_of_time_in_words(
-        IdentityConfig.store.acuant_attempt_window_in_minutes.minutes,
-      ),
-    ) %>
-  </p>
-<% end %>
+      'idv/shared/error',
+      heading: FeatureManagement.liveness_checking_enabled? && sp_session[:ial2_strict].presence ?
+        t('errors.doc_auth.throttled_heading_liveness') :
+        t('errors.doc_auth.throttled_heading'),
+      options: [
+        decorated_session.sp_name && {
+          url: return_to_sp_failure_to_proof_path(
+            step: 'verify_info',
+            location: request.params[:action],
+          ),
+          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+        },
+        {
+          url: MarketingSite.contact_url,
+          text: t('idv.troubleshooting.options.contact_support', app: APP_NAME),
+        },
+      ].select(&:present?),
+    ) do %>
+      <p>
+        <%= t(
+              'errors.doc_auth.throttled_text_html',
+              timeout: distance_of_time_in_words(
+                IdentityConfig.store.acuant_attempt_window_in_minutes.minutes,
+              ),
+            ) %>
+      </p>
+    <% end %>

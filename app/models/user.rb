@@ -64,6 +64,10 @@ class User < ApplicationRecord
     email_addresses.where.not(confirmed_at: nil).any?
   end
 
+  def accepted_rules_of_use?
+    self.accepted_terms_at.present?
+  end
+
   def set_reset_password_token
     super
   end

@@ -21,13 +21,20 @@ module Idv
     def submit
       throttled_else_increment
 
-      FormResponse.new(
+      response = FormResponse.new(
         success: valid?,
         errors: errors,
         extra: {
           remaining_attempts: remaining_attempts,
         },
       )
+
+      @analytics.track_event(
+        Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM,
+        response.to_h,
+      )
+
+      response
     end
 
     def remaining_attempts

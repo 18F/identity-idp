@@ -301,13 +301,13 @@ feature 'Sign in' do
       allow(Devise).to receive(:timeout_in).and_return(1)
 
       visit sign_up_email_path(request_id: '123abc')
-      fill_in 'Email', with: 'test@example.com'
+      fill_in t('forms.registration.labels.email'), with: 'test@example.com'
 
       expect(page).to have_content(
         t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
         wait: 5,
       )
-      expect(page).to have_field('Email', with: '')
+      expect(page).to have_field(t('forms.registration.labels.email'), with: '')
       expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
     end
 
@@ -568,7 +568,7 @@ feature 'Sign in' do
     it 'shows error message if SMS and Voice are not supported' do
       user = create(
         :user, :signed_up,
-        otp_delivery_preference: 'voice', with: { phone: '+84 09 1234 5678' }
+        otp_delivery_preference: 'voice', with: { phone: '+213 09 1234 5678' }
       )
       signin(user.email, user.password)
 
@@ -578,7 +578,7 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'Vietnam',
+        location: 'Algeria',
       )
       expect(user.reload.otp_delivery_preference).to eq 'voice'
     end

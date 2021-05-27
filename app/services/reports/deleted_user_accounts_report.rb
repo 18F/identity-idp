@@ -1,4 +1,5 @@
 require 'identity/hostdata'
+require 'csv'
 
 module Reports
   class DeletedUserAccountsReport < BaseReport

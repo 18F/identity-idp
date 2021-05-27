@@ -24,6 +24,7 @@ module MonitorIdpSteps
   # @return [String] email address for the account
   def create_new_account_up_until_password(email_address = random_email_address)
     fill_in 'user_email', with: email_address
+    check 'user_terms_accepted', allow_label_click: true
     click_on 'Submit'
     confirmation_link = monitor.check_for_confirmation_link
     visit confirmation_link
@@ -56,6 +57,12 @@ module MonitorIdpSteps
     fill_in 'user_email', with: email
     fill_in 'user_password', with: monitor.config.login_gov_sign_in_password
     click_on 'Sign in'
+
+    if current_path == '/rules_of_use'
+      check 'user_terms_accepted', allow_label_click: true
+      click_button 'Continue'
+    end
+
     fill_in 'code', with: monitor.check_for_otp
     uncheck 'Remember this browser'
     click_on 'Submit'

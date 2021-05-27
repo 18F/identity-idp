@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_28_145328) do
+ActiveRecord::Schema.define(version: 2021_05_21_141731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 2021_04_28_145328) do
     t.string "last_ip", limit: 255, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cookie_uuid"], name: "index_devices_on_cookie_uuid"
     t.index ["user_id", "cookie_uuid"], name: "index_device_user_id_cookie_uuid"
     t.index ["user_id", "last_used_at"], name: "index_device_user_id_last_used_at"
   end
@@ -195,6 +196,7 @@ ActiveRecord::Schema.define(version: 2021_04_28_145328) do
     t.integer "document_capture_error_count", default: 0
     t.datetime "agreement_view_at"
     t.integer "agreement_view_count", default: 0
+    t.string "state"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end
@@ -457,7 +459,9 @@ ActiveRecord::Schema.define(version: 2021_04_28_145328) do
     t.boolean "phone_confirmed", default: false, null: false
     t.jsonb "proofing_components"
     t.string "name_zip_birth_year_signature"
+    t.date "reproof_at"
     t.index ["name_zip_birth_year_signature"], name: "index_profiles_on_name_zip_birth_year_signature"
+    t.index ["reproof_at"], name: "index_profiles_on_reproof_at"
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
@@ -636,6 +640,7 @@ ActiveRecord::Schema.define(version: 2021_04_28_145328) do
     t.string "encrypted_recovery_code_digest", default: ""
     t.datetime "remember_device_revoked_at"
     t.string "email_language", limit: 10
+    t.datetime "accepted_terms_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
@@ -648,8 +653,6 @@ ActiveRecord::Schema.define(version: 2021_04_28_145328) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "bounced_at"
-    t.datetime "letter_expired_sent_at"
-    t.index ["bounced_at", "letter_expired_sent_at", "created_at"], name: "index_ucc_expired_letters"
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
   end

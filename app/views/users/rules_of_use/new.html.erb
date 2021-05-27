@@ -1,0 +1,36 @@
+<% title t('titles.registrations.new') %>
+
+<h1><%= t('titles.rules_of_use') %></h1>
+
+<p>
+<%= t('users.rules_of_use.overview_html',
+      link: new_window_link_to(t('titles.rules_of_use'),
+                               MarketingSite.rules_of_use_url)) %>
+</p>
+
+<%= t('users.rules_of_use.details_html') %>
+<div class='margin-bottom-6'>
+  <%= validated_form_for(@rules_of_use_form,
+      html: { autocomplete: 'off' },
+      url: rules_of_use_path) do |f| %>
+
+    <div class="margin-bottom-3">
+      <%= f.check_box :terms_accepted, { class: 'usa-checkbox__input',
+                                         required: true, aria: { invalid: false } }, true, false %>
+      <label for="user_terms_accepted" class="usa-checkbox__label">
+        <%= t('users.rules_of_use.check_box_to_accept') %>
+        <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
+      </label>
+      <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
+        <%= t('errors.rules_of_use') %>
+      </div>
+    </div>
+
+    <%= f.button :button, t('forms.buttons.continue'), type: :submit,
+                 class: 'usa-button--big grid-col-8 mobile-lg:grid-col-6' %>
+<% end %>
+</div>
+
+<%= render 'shared/cancel', link: decorated_session.cancel_link_url %>
+
+<%= javascript_packs_tag_once 'accept-terms-button' %>

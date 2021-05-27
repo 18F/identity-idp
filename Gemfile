@@ -7,7 +7,7 @@ gem 'rails', '~> 6.1.3'
 
 # Variables can be overridden for local dev in Gemfile-dev
 @aamva_api_gem ||= { github: '18F/identity-aamva-api-client-gem', tag: 'v4.2.0' }
-@doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.7.0' }
+@doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.9.2' }
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.2.0' }
 @lexisnexis_api_gem ||= { github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
@@ -34,6 +34,7 @@ gem 'aws-sdk-ses', '~> 1.6'
 gem 'aws-sdk-eventbridge'
 gem 'base32-crockford'
 gem 'delayed_job_active_record', '~> 4.1'
+gem 'blueprinter', '~> 0.25.3'
 gem 'device_detector'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
@@ -113,7 +114,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'axe-matchers', '~> 2.6.0'
+  gem 'axe-core-rspec', '~> 4.2'
   gem 'capybara-screenshot', '>= 1.0.23'
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'simplecov', '~> 0.21.0', require: false

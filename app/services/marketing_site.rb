@@ -18,6 +18,10 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'policy/our-privacy-act-statement/').to_s
   end
 
+  def self.rules_of_use_url
+    URI.join(BASE_URL, locale_segment, 'policy/rules-of-use/').to_s
+  end
+
   def self.messaging_practices_url
     URI.join(BASE_URL, locale_segment, 'policy/messaging-terms-and-conditions/').to_s
   end

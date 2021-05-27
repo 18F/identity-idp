@@ -1,0 +1,42 @@
+class RulesOfUseForm
+  include ActiveModel::Model
+  include ActionView::Helpers::TranslationHelper
+
+  validate :validate_terms_accepted
+
+  attr_reader :terms_accepted
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, 'User')
+  end
+
+  def initialize(user)
+    @user = user
+  end
+
+  def validate_terms_accepted
+    return if @terms_accepted
+
+    errors.add(:terms_accepted, t('errors.rules_of_use'))
+  end
+
+  def submit(params)
+    @terms_accepted = params[:terms_accepted] == 'true'
+    if valid?
+      process_successful_submission
+    else
+      self.success = false
+    end
+
+    FormResponse.new(success: success, errors: errors)
+  end
+
+  private
+
+  attr_accessor :success, :user
+
+  def process_successful_submission
+    self.success = true
+    UpdateUser.new(user: user, attributes: { accepted_terms_at: Time.zone.now }).call
+  end
+end

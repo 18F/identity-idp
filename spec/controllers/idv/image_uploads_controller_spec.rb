@@ -425,7 +425,7 @@ describe Idv::ImageUploadsController do
           method: :post_images,
           response: IdentityDocAuth::Response.new(
             success: false,
-            errors: { front: ['Too blurry', 'Wrong document'] },
+            errors: { front: [IdentityDocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES] },
           ),
         )
       end
@@ -437,8 +437,10 @@ describe Idv::ImageUploadsController do
         expect(json[:success]).to eq(false)
         expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
-          { field: 'front', message: 'Too blurry' },
-          { field: 'front', message: 'Wrong document' },
+          {
+            field: 'front',
+            message: 'We couldn’t verify the front of your ID. Try taking a new picture.',
+          },
         ]
       end
 
@@ -457,7 +459,7 @@ describe Idv::ImageUploadsController do
           Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
           success: false,
           errors: {
-            front: ['Too blurry', 'Wrong document'],
+            front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
           },
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
@@ -485,8 +487,8 @@ describe Idv::ImageUploadsController do
         expect(json[:remaining_attempts]).to be_a_kind_of(Numeric)
         expect(json[:errors]).to eq [
           {
-            field: 'results',
-            message: I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read'),
+            field: 'back',
+            message: I18n.t('doc_auth.errors.alerts.barcode_content_check'),
           },
         ]
       end
@@ -506,7 +508,7 @@ describe Idv::ImageUploadsController do
           Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
           success: false,
           errors: {
-            results: [I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read')],
+            back: [I18n.t('doc_auth.errors.alerts.barcode_content_check')],
           },
           async: false,
           billed: true,

@@ -44,7 +44,7 @@ feature 'doc auth test credentials', :js do
     )
     click_on 'Submit'
 
-    expect(page).to have_content(I18n.t('friendly_errors.doc_auth.barcode_could_not_be_read'))
+    expect(page).to have_content(I18n.t('doc_auth.errors.alerts.barcode_content_check'))
     expect(page).to have_current_path(idv_doc_auth_document_capture_step)
   end
 end

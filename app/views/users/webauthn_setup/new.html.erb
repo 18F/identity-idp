@@ -12,7 +12,7 @@
 </p>
 
 <div>
-   <%= form_tag(webauthn_setup_path, method: :patch, role: 'form', class: 'margin-bottom-1 read-after-submit', id: 'webauthn_form') do %>
+   <%= form_tag(webauthn_setup_path, method: :patch, class: 'margin-bottom-1 read-after-submit', id: 'webauthn_form') do %>
       <%= hidden_field_tag :user_id, current_user.id, id: 'user_id' %>
       <%= hidden_field_tag :user_email, current_user.email, id: 'user_email' %>
       <%= hidden_field_tag :user_challenge, '[' + user_session[:webauthn_challenge].split.join(',') + ']', id: 'user_challenge' %>

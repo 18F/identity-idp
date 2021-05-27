@@ -74,6 +74,7 @@ describe('DocumentCapturePolling', () => {
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
       isCancelled: false,
+      isThrottled: false,
     });
   });
 
@@ -87,8 +88,26 @@ describe('DocumentCapturePolling', () => {
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
     expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
       isCancelled: true,
+      isThrottled: false,
     });
     expect(subject.elements.form.submit).to.have.been.called();
+  });
+
+  it('redirects when throttled', async () => {
+    sandbox
+      .stub(window, 'fetch')
+      .withArgs('/status')
+      .resolves({ status: 429, json: () => Promise.resolve({ redirect: '#throttled' }) });
+
+    sandbox.clock.tick(DOC_CAPTURE_POLL_INTERVAL);
+    await flushPromises();
+
+    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling started');
+    expect(trackEvent).to.have.been.calledWith('IdV: Link sent capture doc polling complete', {
+      isCancelled: false,
+      isThrottled: true,
+    });
+    expect(window.location.hash).to.equal('#throttled');
   });
 
   it('polls until max, then showing form to submit', async () => {

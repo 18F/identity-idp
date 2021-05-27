@@ -3,7 +3,6 @@ class IdvController < ApplicationController
   include AccountReactivationConcern
 
   before_action :confirm_two_factor_authenticated
-  before_action :confirm_idv_needed, only: [:fail]
   before_action :profile_needs_reactivation?, only: [:index]
 
   def index
@@ -16,7 +15,7 @@ class IdvController < ApplicationController
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :idv_resolution,
       )
-      redirect_to idv_fail_url
+      redirect_to idv_session_errors_failure_url
     elsif sp_over_quota_limit?
       flash[:error] = t('errors.doc_auth.quota_reached')
       redirect_to account_url
@@ -29,10 +28,6 @@ class IdvController < ApplicationController
     redirect_to idv_url unless active_profile?
     redirect_to account_url if session[:ial2_with_no_sp_campaign]
     idv_session.clear
-  end
-
-  def fail
-    redirect_to idv_url and return unless idv_attempter_throttled?
   end
 
   private

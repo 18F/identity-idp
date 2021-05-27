@@ -1,3 +1,5 @@
+require 'csv'
+
 module DataRequests
   class WriteUserEvents
     attr_reader :user_report, :output_dir

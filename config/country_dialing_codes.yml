@@ -1,5 +1,9 @@
 # NOTE: if updating this to match current AWS config, consider bringing back
 # the daily CircleCI check added in 3d4194c1f76ca1554852bacfde4abdea2ebb6104
+# `supports_voice` and `supports_sms` describe whether we are capable of sending
+# using those methods. A country that supports voice may be limited to
+# sending voice only to previously confirmed numbers when `supports_voice_unconfirmed` is set to false.
+# In those countries, it is not possible to register new phones.
 ---
 AD:
   country_code: '376'
@@ -10,7 +14,8 @@ AE:
   country_code: '971'
   name: United Arab Emirates
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 AF:
   country_code: '93'
   name: Afghanistan
@@ -155,7 +160,8 @@ BY:
   country_code: '375'
   name: Belarus
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 BZ:
   country_code: '501'
   name: Belize
@@ -281,7 +287,7 @@ EG:
   country_code: '20'
   name: Egypt
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
 ES:
   country_code: '34'
   name: Spain
@@ -466,7 +472,8 @@ JO:
   country_code: '962'
   name: Jordan
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 JP:
   country_code: '81'
   name: Japan
@@ -511,7 +518,8 @@ KW:
   country_code: '965'
   name: Kuwait
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 KY:
   country_code: '1345'
   name: Cayman Islands
@@ -751,7 +759,8 @@ PH:
   country_code: '63'
   name: Philippines
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 PK:
   country_code: '92'
   name: Pakistan
@@ -791,7 +800,8 @@ QA:
   country_code: '974'
   name: Qatar
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 RE:
   country_code: '262'
   name: Reunion Island
@@ -811,7 +821,8 @@ RU:
   country_code: '7'
   name: Russia
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 RW:
   country_code: '250'
   name: Rwanda
@@ -821,7 +832,8 @@ SA:
   country_code: '966'
   name: Saudi Arabia
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 SB:
   country_code: '677'
   name: Solomon Islands
@@ -911,7 +923,8 @@ TH:
   country_code: '66'
   name: Thailand
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 TJ:
   country_code: '992'
   name: Tajikistan
@@ -1006,7 +1019,8 @@ VN:
   country_code: '84'
   name: Vietnam
   supports_sms: false
-  supports_voice: false
+  supports_voice: true
+  supports_voice_unconfirmed: false
 VU:
   country_code: '678'
   name: Vanuatu

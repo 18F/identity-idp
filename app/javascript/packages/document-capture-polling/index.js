@@ -22,6 +22,24 @@ export const MAX_DOC_CAPTURE_POLL_ATTEMPTS = Math.floor(
  */
 
 /**
+ * @enum {number}
+ */
+const StatusCodes = {
+  SUCCESS: 200,
+  GONE: 410,
+  TOO_MANY_REQUESTS: 429,
+};
+
+/**
+ * @enum {string}
+ */
+const ResultType = {
+  SUCCESS: 'SUCCESS',
+  CANCELLED: 'CANCELLED',
+  THROTTLED: 'THROTTLED',
+};
+
+/**
  * Manages polling requests for document capture hybrid flow.
  */
 export class DocumentCapturePolling {
@@ -68,12 +86,19 @@ export class DocumentCapturePolling {
   }
 
   /**
-   * @param {{ isCancelled: boolean }} params
+   * @param {{ result?: ResultType, redirect?: string }} params
    */
-  async onComplete({ isCancelled }) {
-    await this.trackEvent('IdV: Link sent capture doc polling complete', { isCancelled });
+  async onComplete({ result = ResultType.SUCCESS, redirect } = {}) {
+    await this.trackEvent('IdV: Link sent capture doc polling complete', {
+      isCancelled: result === ResultType.CANCELLED,
+      isThrottled: result === ResultType.THROTTLED,
+    });
     this.bindPromptOnNavigate(false);
-    this.elements.form.submit();
+    if (redirect) {
+      window.location.href = redirect;
+    } else {
+      this.elements.form.submit();
+    }
   }
 
   schedulePoll() {
@@ -89,10 +114,19 @@ export class DocumentCapturePolling {
     const response = await window.fetch(this.statusEndpoint);
 
     switch (response.status) {
-      case 200:
-      case 410:
-        this.onComplete({ isCancelled: response.status === 410 });
+      case StatusCodes.SUCCESS:
+        this.onComplete();
         break;
+
+      case StatusCodes.GONE:
+        this.onComplete({ result: ResultType.CANCELLED });
+        break;
+
+      case StatusCodes.TOO_MANY_REQUESTS: {
+        const { redirect } = await response.json();
+        this.onComplete({ result: ResultType.THROTTLED, redirect });
+        break;
+      }
 
       default:
         this.schedulePoll();

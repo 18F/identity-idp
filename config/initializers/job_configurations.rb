@@ -119,6 +119,22 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   callback: -> { Reports::SpCostReport.new.call },
 )
 
+# Agency Invoice Supplement Report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'SP Invoice supplement report by IAA',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::AgencyInvoiceIaaSupplementReport.new.call },
+)
+
+# Agency Invoice Supplement Report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'SP Invoice supplement report by issuer',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::AgencyInvoiceIssuerSupplementReport.new.call },
+)
+
 # Total SP Costs Report to S3
 JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   name: 'Total SP cost report',
@@ -182,3 +198,25 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   timeout: 300,
   callback: -> { Reports::MonthlyGpoLetterRequestsReport.new.call },
 )
+
+# Send Partner API reports to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'Partner API report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Agreements::Reports::PartnerApiReport.new.run },
+)
+
+if IdentityConfig.store.ruby_workers_enabled
+  # Queue heartbeat job to DelayedJob
+  JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+    name: 'Job Queue Heartbeat',
+    interval: 5 * 60, # 5 minutes
+    timeout: 4 * 60,
+    callback: -> do
+      HeartbeatJob.perform_later
+    end,
+    health_critical: false,
+    failures_before_alarm: 0,
+  )
+end

@@ -10,7 +10,7 @@
 <%= validated_form_for(@password_form,
                        url: sign_up_create_password_path,
                        method: :post,
-                       html: { role: 'form', autocomplete: 'off' }) do |f| %>
+                       html: { autocomplete: 'off' }) do |f| %>
   <%= f.input :password, required: true,
               input_html: { aria: { invalid: false, describedby: 'password-description' },
                             class: 'password-toggle' } %>

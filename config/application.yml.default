@@ -64,6 +64,7 @@ doc_capture_request_valid_for_minutes: '15'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 enable_load_testing_mode: 'false'
+enable_partner_api: 'false'
 enable_rate_limiting: 'true'
 enable_test_routes: 'true'
 enable_usps_verification: 'true'
@@ -122,9 +123,9 @@ otps_per_ip_period: '300'
 otps_per_ip_track_only_mode: 'true'
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: 'false'
+partner_api_bucket_prefix: ''
 password_max_attempts: '3'
 personal_key_retired: 'true'
-phone_format_e164_opt_out_list: '[]'
 phone_setups_per_ip_limit: '25'
 phone_setups_per_ip_period: '300'
 phone_setups_per_ip_track_only_mode: 'false'
@@ -135,6 +136,9 @@ piv_cac_service_url: https://localhost:8443/
 piv_cac_verify_token_url: https://localhost:8443/
 poll_rate_for_verify_in_seconds: '3'
 proofer_mock_fallback: 'true'
+proofing_allow_expired_license: 'false'
+proofing_expired_license_after: '2020-03-01'
+proofing_expired_license_reproof_at: '2023-03-01'
 proofing_send_partial_dob: 'false'
 push_notifications_enabled: 'false'
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
@@ -224,6 +228,7 @@ development:
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   recurring_jobs_disabled_names: "[]"
+  rules_of_use_enabled: 'true'
   s3_report_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
@@ -231,6 +236,7 @@ development:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost"]'
   sps_over_quota_limit_notify_email_list: '[]'
+  state_tracking_enabled: 'true'
   telephony_adapter: test
   use_dashboard_service_providers: 'true'
   usps_upload_sftp_directory: "/gsa_order"
@@ -285,6 +291,7 @@ production:
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
   ruby_workers_enabled: 'false'
+  rules_of_use_enabled: 'false'
   s3_report_bucket_prefix: login-gov.reports
   s3_reports_enabled: 'true'
   saml_endpoint_configs: '[]'
@@ -293,6 +300,7 @@ production:
   session_encryption_key:
   skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
   sps_over_quota_limit_notify_email_list: '[]'
+  state_tracking_enabled: 'false'
   telephony_adapter: pinpoint
   use_kms: 'true'
   usps_confirmation_max_days: '30'
@@ -358,6 +366,7 @@ test:
   requests_per_ip_period: '60'
   reset_password_email_max_attempts: '5'
   reset_password_email_window_in_minutes: '80'
+  rules_of_use_enabled: 'true'
   s3_report_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 800$8$1$
@@ -365,6 +374,7 @@ test:
   session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
   skip_encryption_allowed_list: '[]'
   sps_over_quota_limit_notify_email_list: '["test1@test.com"]'
+  state_tracking_enabled: 'true'
   telephony_adapter: test
   verify_gpo_key_attempt_window_in_minutes: '3'
   verify_gpo_key_max_attempts: '2'
