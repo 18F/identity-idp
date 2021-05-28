@@ -29,7 +29,9 @@ DocumentCaptureSessionAsyncResult = RedactedStruct.new(
     status == DocumentCaptureSessionAsyncResult::DONE
   end
 
-  alias_method :success?, :done?
+  def success?
+    done? && result[:success]
+  end
 
   def in_progress?
     status == DocumentCaptureSessionAsyncResult::IN_PROGRESS
