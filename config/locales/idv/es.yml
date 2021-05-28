@@ -9,7 +9,15 @@ es:
         send: Enviar una carta
       send_confirmation_code: Continuar
     cancel:
+      headings:
+        confirmation:
+          hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono
+        prompt:
+          hybrid: ¿Seguro que desea cancelar la carga de fotos de su identificación en
+            este teléfono?
       warnings:
+        hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
+          con la verificación de su identidad.
         warning_1: No podremos verificar tu identidad
         warning_2: No guardaremos tu nombre, dirección, fecha de nacimiento ni número de
           la seguridad social

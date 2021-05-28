@@ -9,7 +9,16 @@ fr:
         send: Envoyer une lettre
       send_confirmation_code: Continuer
     cancel:
+      headings:
+        confirmation:
+          hybrid: Vous avez annulé le téléchargement de vos photos d'identité sur ce
+            téléphone
+        prompt:
+          hybrid: Êtes-vous sûr de vouloir annuler le téléchargement de vos photos
+            d'identité sur ce téléphone?
       warnings:
+        hybrid: Si vous annulez maintenant, vous serez invité à retourner sur votre
+          ordinateur pour continuer à vérifier votre identité.
         warning_1: Nous ne serons pas en mesure de vérifier votre identité
         warning_2: Nous ne conserverons aucune information relative à votre nom, votre
           adresse, votre date de naissance, ou votre numéro de sécurité sociale

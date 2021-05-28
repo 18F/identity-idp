@@ -9,7 +9,15 @@ en:
         send: Send a letter
       send_confirmation_code: Continue
     cancel:
+      headings:
+        confirmation:
+          hybrid: You have cancelled uploading photos of your ID on this phone
+        prompt:
+          hybrid: Are you sure you want to cancel uploading photos of your ID on this
+            phone?
       warnings:
+        hybrid: If you cancel now, you will be prompted to switch back to your computer
+          to continue verifying your identity.
         warning_1: We won’t be able to verify your identity
         warning_2: We won’t keep a record of your name, address, birth date, or Social
           Security number

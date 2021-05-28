@@ -17,7 +17,7 @@ es:
     doc_auth:
       consent_form: Antes de continuar, debe darnos permiso. Marque la casilla a
         continuación y luego haga clic en continuar.
-      document_capture_cancelled: Ha cancelado la carga de fotos de su identificación en su teléfono.
+      document_capture_cancelled: Ha cancelado la carga de fotos de su identificación en este teléfono.
       document_capture_info_html: |-
         <div class="bold">Por favor verifique que:</div>
         <ul>

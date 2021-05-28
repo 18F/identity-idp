@@ -1,34 +1,32 @@
-<% title t('headings.cancellations.prompt') %>
-
-<%= image_tag(asset_url('alert/warning-lg.svg'), alt: '', width: 54) %>
-
-<h1 class="margin-top-4 margin-bottom-2">
-  <%= t('headings.cancellations.prompt') %>
-</h1>
-
-<p class='margin-bottom-1 bold'><%= t('sign_up.cancel.warning_header') %></p>
-
-<ul class="list-reset yellow-dots">
-  <li><%= t('idv.cancel.warnings.warning_1') %></li>
-  <li><%= t('idv.cancel.warnings.warning_2') %></li>
-  <li><%= t('idv.cancel.warnings.warning_3', app: APP_NAME) %></li>
-  <li><%= t('idv.cancel.warnings.warning_4') %></li>
-  <li><%= t('idv.cancel.warnings.warning_5') %></li>
-</ul>
-
-<div class='margin-top-4'>
-  <%= button_to(
-        t('forms.buttons.cancel'),
-        idv_cancel_path(step: params[:step], location: 'cancel'),
-        method: :delete,
-        class: 'usa-button usa-button--big usa-button--wide',
-      ) %>
-</div>
-
-<div class='margin-top-2'>
-  <%= link_to(
-        t('links.go_back'),
-        @go_back_path,
-        class: 'usa-button usa-button--big usa-button--wide usa-button--outline',
-      ) %>
-</div>
+<%= render(
+      layout: 'idv/shared/error',
+      locals: {
+        type: :warning,
+        title: t('headings.cancellations.prompt'),
+        heading: @hybrid_session ?
+          t('idv.cancel.headings.prompt.hybrid') :
+          t('headings.cancellations.prompt'),
+        action: {
+          text: t('forms.buttons.cancel'),
+          url: idv_cancel_path(step: params[:step], location: 'cancel'),
+          method: :delete,
+        },
+        action_secondary: {
+          text: t('links.go_back'),
+          url: @go_back_path,
+        },
+      },
+    ) do %>
+      <% if @hybrid_session %>
+        <p><%= t('idv.cancel.warnings.hybrid') %></p>
+      <% else %>
+        <p class="margin-bottom-1 text-bold"><%= t('sign_up.cancel.warning_header') %></p>
+        <ul class="yellow-dots">
+          <li><%= t('idv.cancel.warnings.warning_1') %></li>
+          <li><%= t('idv.cancel.warnings.warning_2') %></li>
+          <li><%= t('idv.cancel.warnings.warning_3', app: APP_NAME) %></li>
+          <li><%= t('idv.cancel.warnings.warning_4') %></li>
+          <li><%= t('idv.cancel.warnings.warning_5') %></li>
+        </ul>
+      <% end %>
+    <% end %>
