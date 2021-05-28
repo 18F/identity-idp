@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_21_141731) do
+ActiveRecord::Schema.define(version: 2021_05_26_023854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -268,6 +268,8 @@ ActiveRecord::Schema.define(version: 2021_05_21_141731) do
     t.index ["gtc_number"], name: "index_iaa_gtcs_on_gtc_number", unique: true
     t.index ["iaa_status_id"], name: "index_iaa_gtcs_on_iaa_status_id"
     t.index ["partner_account_id"], name: "index_iaa_gtcs_on_partner_account_id"
+    t.check_constraint "end_date IS NOT NULL", name: "iaa_gtcs_end_date_null"
+    t.check_constraint "start_date IS NOT NULL", name: "iaa_gtcs_start_date_null"
   end
 
   create_table "iaa_orders", force: :cascade do |t|
@@ -282,6 +284,8 @@ ActiveRecord::Schema.define(version: 2021_05_21_141731) do
     t.index ["iaa_gtc_id", "order_number"], name: "index_iaa_orders_on_iaa_gtc_id_and_order_number", unique: true
     t.index ["iaa_gtc_id"], name: "index_iaa_orders_on_iaa_gtc_id"
     t.index ["iaa_status_id"], name: "index_iaa_orders_on_iaa_status_id"
+    t.check_constraint "end_date IS NOT NULL", name: "iaa_orders_end_date_null"
+    t.check_constraint "start_date IS NOT NULL", name: "iaa_orders_start_date_null"
   end
 
   create_table "iaa_statuses", force: :cascade do |t|

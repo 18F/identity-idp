@@ -18,19 +18,30 @@ RSpec.describe Agreements::IaaGtc, type: :model do
         is_greater_than_or_equal_to(0).
         allow_nil
     end
+    it { is_expected.to validate_presence_of(:start_date) }
+    it { is_expected.to validate_presence_of(:end_date) }
+    it 'validates that the end_date must be after the start_date' do
+      subject.end_date = subject.start_date - 1.day
+      expect(subject).not_to be_valid
+    end
 
     it { is_expected.to belong_to(:partner_account) }
-    it { is_expected.to belong_to(:iaa_status) }
 
     it { is_expected.to have_many(:iaa_orders).dependent(:restrict_with_exception) }
   end
 
-  describe '#partner_status' do
-    it 'returns the partner_name of the associated iaa_status' do
-      status = build(:iaa_status, partner_name: 'foo')
-      gtc = build(:iaa_gtc, iaa_status: status)
-
-      expect(gtc.partner_status).to eq('foo')
+  describe '#status' do
+    it 'returns "pending_start" if the agreement is not yet in force' do
+      gtc = build(:iaa_gtc, start_date: Time.zone.tomorrow)
+      expect(gtc.status).to eq('pending_start')
+    end
+    it 'returns "expired" if the agreement is no longer in force' do
+      gtc = build(:iaa_gtc, start_date: Time.zone.today - 1.year, end_date: Time.zone.yesterday)
+      expect(gtc.status).to eq('expired')
+    end
+    it 'returns "active" if the agreement is in force' do
+      gtc = build(:iaa_gtc, start_date: Time.zone.yesterday, end_date: Time.zone.tomorrow)
+      expect(gtc.status).to eq('active')
     end
   end
 end
