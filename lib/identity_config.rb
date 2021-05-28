@@ -226,7 +226,6 @@ class IdentityConfig
     config.add(:risc_notifications_local_enabled, type: :boolean)
     config.add(:risc_notifications_eventbridge_enabled, type: :boolean)
     config.add(:ruby_workers_enabled, type: :boolean)
-    config.add(:rules_of_use_enabled, type: :boolean)
     config.add(:s3_report_bucket_prefix, type: :string)
     config.add(:s3_reports_enabled, type: :boolean)
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
