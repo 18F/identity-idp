@@ -3,22 +3,20 @@
       heading: @hybrid_session ?
         t('idv.cancel.headings.confirmation.hybrid') :
         t('headings.cancellations.confirmation'),
-      options: [
-        !@hybrid_session && decorated_session.sp_name && {
-          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-          url: @return_to_sp_path,
-        },
-      ].select(&:present?),
     ) do %>
       <% if @hybrid_session %>
         <p><%= t('doc_auth.instructions.switch_back') %></p>
         <%= image_tag(asset_url('idv/switch.png'), width: 193) %>
       <% else %>
-        <ul class="red-dots">
+        <ul class="red-dots margin-bottom-2">
           <li><%= t('idv.cancel.warnings.warning_2') %></li>
           <li><%= t('idv.cancel.warnings.warning_3', app: APP_NAME) %></li>
           <li><%= t('idv.cancel.warnings.warning_4') %></li>
           <li><%= t('idv.cancel.warnings.warning_5') %></li>
         </ul>
+        <%= link_to(
+              "‹ #{t('links.back_to_sp', sp: decorated_session.sp_name || t('links.my_account'))}",
+              decorated_session.sp_name ? @return_to_sp_path : account_url,
+            ) %>
       <% end %>
     <% end %>
