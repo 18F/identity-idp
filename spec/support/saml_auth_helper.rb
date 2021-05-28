@@ -2,15 +2,15 @@ require 'saml_idp_constants'
 
 ## GET /api/saml/auth helper methods
 module SamlAuthHelper
-  def saml_settings
+  def saml_settings(overrides: {}, security_overrides: {})
     settings = OneLogin::RubySaml::Settings.new
 
     # SP settings
     settings.assertion_consumer_service_url = 'http://localhost:3000/test/saml/decode_assertion'
     settings.assertion_consumer_logout_service_url = 'http://localhost:3000/test/saml/decode_slo_request'
+    settings.authn_context = request_authn_contexts
     settings.certificate = saml_test_sp_cert
     settings.private_key = saml_test_sp_key
-    settings.authn_context = request_authn_contexts
     settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
 
     # SP + IdP Settings
@@ -21,11 +21,19 @@ module SamlAuthHelper
     settings.security[:digest_method] = 'http://www.w3.org/2001/04/xmlenc#sha256'
     settings.security[:signature_method] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
     settings.double_quote_xml_attribute_values = true
+
     # IdP setting
     settings.idp_sso_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/auth2021"
     settings.idp_slo_target_url = "http://#{IdentityConfig.store.domain_name}/api/saml/logout2021"
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
+
+    overrides.each do |setting, value|
+      settings.send("#{setting}=", value)
+    end
+    security_overrides.each do |setting, value|
+      settings.security[setting] = value
+    end
 
     settings
   end
@@ -37,10 +45,8 @@ module SamlAuthHelper
     ]
   end
 
-  def sp_fingerprint
-    @sp_fingerprint ||= Fingerprinter.fingerprint_cert(
-      OpenSSL::X509::Certificate.new(saml_test_sp_cert),
-    )
+  def saml_test_sp_cert
+    @saml_test_sp_cert ||= File.read(Rails.root.join('certs', 'sp', 'saml_test_sp.crt'))
   end
 
   def idp_fingerprint
@@ -48,6 +54,47 @@ module SamlAuthHelper
       OpenSSL::X509::Certificate.new(saml_test_idp_cert),
     )
   end
+
+  def auth_request
+    @auth_request ||= OneLogin::RubySaml::Authrequest.new
+  end
+
+  def logout_request
+    @logout_request ||= OneLogin::RubySaml::Logoutrequest.new
+  end
+
+  def saml_authn_request_url(saml_overrides: {}, saml_security_overrides: {})
+    auth_request.create(
+      saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides),
+    )
+  end
+
+  def saml_logout_request_url(saml_overrides: {}, saml_security_overrides: {})
+    logout_request.create(
+      saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides),
+    )
+  end
+
+  def visit_saml_authn_request_url(saml_overrides: {}, saml_security_overrides: {})
+    # settings = saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides)
+    # @saml_authn_request = auth_request.create(settings)
+    authn_request_url = saml_authn_request_url(
+      saml_overrides: saml_overrides,
+      saml_security_overrides: saml_security_overrides
+    )
+    visit authn_request_url
+  end
+
+  def visit_saml_logout_request_url(saml_overrides: {}, saml_security_overrides: {})
+    settings = saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides)
+    logout_request_url = saml_logout_request_url(
+      saml_overrides: saml_overrides,
+      saml_security_overrides: saml_security_overrides
+    )
+    visit logout_request_url
+  end
+
+  private
 
   def saml_test_sp_key
     @private_key ||= OpenSSL::PKey::RSA.new(
@@ -59,13 +106,10 @@ module SamlAuthHelper
     AppArtifacts.store.saml_2021_cert
   end
 
-  def saml_test_sp_cert
-    @saml_test_sp_cert ||= File.read(Rails.root.join('certs', 'sp', 'saml_test_sp.crt'))
-  end
+  public
 
-  def auth_request
-    @auth_request ||= OneLogin::RubySaml::Authrequest.new
-  end
+  ##################################################################################################
+  ##################################################################################################
 
   def authnrequest_get(issuer: nil)
     auth_request.create(saml_spec_settings(issuer: issuer))
@@ -406,15 +450,6 @@ module SamlAuthHelper
     saml_authn_request = auth_request.create(settings)
     visit saml_authn_request
     saml_authn_request
-  end
-
-  def visit_idp_from_saml_sp(saml_overrides: {})
-    settings = saml_settings.dup
-    saml_overrides.each do |setting, value|
-      settings.send("#{setting}=", value)
-    end
-    @saml_authn_request = auth_request.create(settings)
-    visit @saml_authn_request
   end
 
   private
