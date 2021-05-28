@@ -30,7 +30,8 @@ module Db
         if full_months.present?
           union_query << full_month_subquery(sp: service_provider, full_months: full_months)
         end
-        union_query.concat(partial_month_subqueries(sp: service_provider, partial_months: partial_months))
+        union_query.
+          concat(partial_month_subqueries(sp: service_provider, partial_months: partial_months))
         union_query = union_query.join(' UNION ALL ')
 
         ActiveRecord::Base.connection.execute(union_query)
