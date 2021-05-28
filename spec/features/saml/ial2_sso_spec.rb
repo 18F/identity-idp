@@ -5,9 +5,22 @@ feature 'IAL2 Single Sign On' do
   include IdvStepHelper
   include DocAuthHelper
 
+  def saml_ial2_request_url
+    saml_authn_request_url(
+      saml_overrides: {
+        issuer: 'saml_sp_ial2',
+        authn_context: [
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+        ],
+        # name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+      },
+    )
+  end
+
   def perform_id_verification_with_gpo_without_confirming_code(user)
-    saml_authn_request = auth_request.create(ial2_with_bundle_saml_settings)
-    visit saml_authn_request
+    visit saml_ial2_request_url
     fill_in_credentials_and_submit(user.email, user.password)
     uncheck(t('forms.messages.remember_device'))
     fill_in_code_with_last_phone_otp
@@ -23,7 +36,7 @@ feature 'IAL2 Single Sign On' do
 
   def expected_gpo_return_to_sp_url
     URI.join(
-      ServiceProvider.find_by(issuer: ial2_with_bundle_saml_settings.issuer).acs_url,
+      ServiceProvider.find_by(issuer: 'saml_sp_ial2').acs_url,
       '/',
     ).to_s
   end
@@ -46,27 +59,21 @@ feature 'IAL2 Single Sign On' do
 
   context 'First time registration' do
     let(:email) { 'test@test.com' }
-    before do
-      @saml_authn_request = auth_request.create(ial2_with_bundle_saml_settings)
-    end
 
     it 'shows user the start page with accordion' do
-      saml_authn_request = auth_request.create(ial2_with_bundle_saml_settings)
       sp_content = [
         'Test SP',
         t('headings.create_account_with_sp.sp_text'),
       ].join(' ')
 
-      visit saml_authn_request
+      visit saml_ial2_request_url
 
       expect(current_path).to match new_user_session_path
       expect(page).to have_content(sp_content)
     end
 
     it 'shows user the start page with a link back to the SP' do
-      saml_authn_request = auth_request.create(saml_settings)
-
-      visit saml_authn_request
+      visit saml_authn_request_url
 
       expect(page).to have_link(
         t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: return_to_sp_cancel_path
@@ -186,14 +193,14 @@ feature 'IAL2 Single Sign On' do
     context 'returning to verify after canceling during the same session' do
       it 'allows the user to verify' do
         user = create(:user, :signed_up)
-        saml_authn_request = auth_request.create(ial2_with_bundle_saml_settings)
+        request_url = saml_ial2_request_url
 
-        visit saml_authn_request
+        visit request_url
         sign_in_live_with_2fa(user)
         complete_all_doc_auth_steps
         click_on t('links.cancel')
         click_on t('forms.buttons.cancel')
-        visit saml_authn_request
+        visit request_url
         complete_all_doc_auth_steps
 
         expect(current_path).to eq idv_phone_path
