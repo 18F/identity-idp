@@ -6,10 +6,10 @@ feature 'IAL1 Single Sign On' do
   context 'First time registration', email: true do
     it 'takes user to agency handoff page when sign up flow complete' do
       email = 'test@test.com'
-      authn_request = auth_request.create(saml_settings)
+      request_url = saml_authn_request_url
 
       perform_in_browser(:one) do
-        visit authn_request
+        visit request_url
         sign_up_user_from_sp_without_confirming_email(email)
       end
 
@@ -31,35 +31,34 @@ feature 'IAL1 Single Sign On' do
 
         continue_as(email)
 
-        expect(current_url).to eq authn_request
+        expect(current_url).to eq request_url
         expect(page.get_rack_session.keys).to include('sp')
       end
     end
 
     it 'takes user to the service provider, allows user to visit IDP' do
       user = create(:user, :signed_up)
-      saml_authn_request = auth_request.create(saml_settings)
+      request_url = saml_authn_request_url
 
-      visit saml_authn_request
+      visit request_url
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
       click_agree_and_continue
 
-      expect(current_url).to eq saml_authn_request
+      expect(current_url).to eq request_url
 
       visit root_path
       expect(current_path).to eq account_path
     end
 
     it 'shows user the start page without accordion' do
-      saml_authn_request = auth_request.create(saml_settings)
       sp_content = [
         'Your friendly Government Agency',
         t('headings.create_account_with_sp.sp_text'),
       ].join(' ')
 
-      visit saml_authn_request
+      visit saml_authn_request_url
 
       expect(current_url).to match new_user_session_path
       expect(page).to have_content(sp_content)
@@ -67,9 +66,7 @@ feature 'IAL1 Single Sign On' do
     end
 
     it 'shows user the start page with a link back to the SP' do
-      saml_authn_request = auth_request.create(saml_settings)
-
-      visit saml_authn_request
+      visit saml_authn_request_url
 
       expect(page).to have_link(
         t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: return_to_sp_cancel_path
@@ -78,9 +75,9 @@ feature 'IAL1 Single Sign On' do
 
     it 'after session timeout, signing in takes user back to SP' do
       user = create(:user, :signed_up)
-      saml_authn_request = auth_request.create(saml_settings)
+      request_url = saml_authn_request_url
 
-      visit saml_authn_request
+      visit request_url
       sp_request_id = ServiceProviderRequestProxy.last.uuid
 
       visit timeout_path
@@ -91,13 +88,13 @@ feature 'IAL1 Single Sign On' do
       click_submit_default
       click_agree_and_continue
 
-      expect(current_url).to eq saml_authn_request
+      expect(current_url).to eq request_url
     end
   end
 
   context 'fully signed up user authenticates new sp' do
     let(:user) { create(:user, :signed_up) }
-    let(:saml_authn_request) { auth_request.create(saml_settings) }
+    let(:saml_authn_request) { saml_authn_request_url }
 
     before do
       sign_in_user(user)
@@ -139,8 +136,7 @@ feature 'IAL1 Single Sign On' do
       user = create(:user, :signed_up)
       sign_in_user(user)
 
-      saml_authn_request = auth_request.create(saml_settings)
-      visit saml_authn_request
+      visit saml_authn_request_url
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
     end
@@ -150,8 +146,7 @@ feature 'IAL1 Single Sign On' do
     it 'prompts to set up 2FA' do
       sign_in_user
 
-      saml_authn_request = auth_request.create(saml_settings)
-      visit saml_authn_request
+      visit saml_authn_request_url
 
       expect(current_path).to eq two_factor_options_path
     end
@@ -159,8 +154,7 @@ feature 'IAL1 Single Sign On' do
 
   context 'visiting IdP via SP, then using the language selector' do
     it 'preserves the request_id in the url' do
-      authn_request = auth_request.create(saml_settings)
-      visit authn_request
+      visit saml_authn_request_url
 
       within(:css, '.i18n-desktop-dropdown', visible: false) do
         find_link(t('i18n.locale.es'), visible: false).click
@@ -172,12 +166,12 @@ feature 'IAL1 Single Sign On' do
 
   context 'visiting IdP via SP, then going back to SP and visiting IdP again' do
     it 'displays the branded page' do
-      authn_request = auth_request.create(saml_settings)
-      visit authn_request
+      request_url = saml_authn_request_url
+      visit request_url
 
       expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
 
-      visit authn_request
+      visit request_url
 
       expect(current_url).to match(%r{http://www.example.com/\?request_id=.+})
     end
@@ -186,9 +180,8 @@ feature 'IAL1 Single Sign On' do
   context 'canceling sign in after email and password' do
     it 'returns to the branded landing page' do
       user = create(:user, :signed_up)
-      authn_request = auth_request.create(saml_settings)
 
-      visit authn_request
+      visit saml_authn_request_url
       fill_in_credentials_and_submit(user.email, user.password)
       sp_request_id = ServiceProviderRequestProxy.last.uuid
       sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
@@ -202,7 +195,15 @@ feature 'IAL1 Single Sign On' do
   context 'requesting verified_at for an IAL1 account' do
     it 'shows verified_at as a requested attribute, even if blank' do
       user = create(:user, :signed_up)
-      saml_authn_request = auth_request.create(ial1_with_verified_at_saml_settings)
+      saml_authn_request = saml_authn_request_url(
+        saml_overrides: {
+          issuer: 'saml_sp_ial2',
+          authn_context: [
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,verified_at",
+          ],
+        },
+      )
 
       visit saml_authn_request
       fill_in_credentials_and_submit(user.email, user.password)

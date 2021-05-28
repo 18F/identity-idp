@@ -15,7 +15,7 @@ feature 'SAML Authorization Confirmation' do
       check :remember_device
       fill_in_code_with_last_phone_otp
       click_submit_default
-      visit saml_authn_request
+      visit request_url
       click_agree_and_continue
       visit sign_out_url
 
@@ -24,7 +24,7 @@ feature 'SAML Authorization Confirmation' do
 
     let(:user1) { create_user_and_remember_device }
     let(:user2) { create_user_and_remember_device }
-    let(:saml_authn_request) { auth_request.create(saml_settings) }
+    let(:request_url) { saml_authn_request_url }
 
     before do
       # Cycle user2 first so user1's remember device will stick
@@ -35,18 +35,18 @@ feature 'SAML Authorization Confirmation' do
     it 'it confirms the user wants to continue to the SP after signing in again' do
       sign_in_user(user1)
 
-      visit saml_authn_request
+      visit request_url
 
       expect(current_url).to match(user_authorization_confirmation_path)
       continue_as(user1.email)
 
-      expect(current_url).to eq(saml_authn_request)
+      expect(current_url).to eq(request_url)
     end
 
     it 'it allows the user to switch accounts prior to continuing to the SP' do
       sign_in_user(user1)
 
-      visit saml_authn_request
+      visit request_url
       expect(current_url).to match(user_authorization_confirmation_path)
       continue_as(user2.email, user2.password)
 
@@ -54,12 +54,12 @@ feature 'SAML Authorization Confirmation' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_url).to eq(saml_authn_request)
+      expect(current_url).to eq(request_url)
     end
 
     it 'does not render an error if a user goes back after opting to switch accounts' do
       sign_in_user(user1)
-      visit saml_authn_request
+      visit request_url
 
       expect(current_path).to eq(user_authorization_confirmation_path)
 

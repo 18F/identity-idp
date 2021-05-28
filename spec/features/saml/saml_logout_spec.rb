@@ -4,17 +4,17 @@ feature 'SAML logout' do
   include SamlAuthHelper
 
   let(:user) { create(:user, :signed_up) }
-  let(:sp_saml_settings) { sp1_saml_settings }
-  let(:service_provider) { ServiceProvider.find_by(issuer: sp_saml_settings.issuer) }
 
   context 'with a SAML request' do
     context 'when logging out from the SP' do
       it 'contains all redirect_uris in CSP when user is logged out of the IDP' do
         sign_in_and_2fa_user(user)
-        visit auth_request.create(sp_saml_settings)
+        visit_saml_authn_request_url(
+          saml_overrides: {
+            issuer: 'saml_sp_ial2',
+          },
+        )
         click_continue
-
-        settings = sp_saml_settings.dup
 
         # Sign out of the IDP
         visit account_path
@@ -22,8 +22,11 @@ feature 'SAML logout' do
         expect(current_path).to eq root_path
 
         # SAML logout request
-        request = OneLogin::RubySaml::Logoutrequest.new
-        visit request.create(settings)
+        visit_saml_logout_request_url(
+          saml_overrides: {
+            issuer: 'saml_sp_ial2',
+          },
+        )
 
         # contains all redirect_uris in content security policy
         expect(page.response_headers['Content-Security-Policy']).to include(
@@ -34,14 +37,19 @@ feature 'SAML logout' do
 
       it 'contains all redirect_uris in CSP when user is logged in to the IDP' do
         sign_in_and_2fa_user(user)
-        visit auth_request.create(sp_saml_settings)
+        visit_saml_authn_request_url(
+          saml_overrides: {
+            issuer: 'saml_sp_ial2',
+          },
+        )
         click_continue
 
-        settings = sp_saml_settings.dup
-
         # SAML logout request
-        request = OneLogin::RubySaml::Logoutrequest.new
-        visit request.create(settings)
+        visit_saml_logout_request_url(
+          saml_overrides: {
+            issuer: 'saml_sp_ial2',
+          },
+        )
 
         # contains all redirect_uris in content security policy
         expect(page.response_headers['Content-Security-Policy']).to include(
@@ -54,13 +62,10 @@ feature 'SAML logout' do
     context 'the SP implements SLO' do
       it 'logs the user out and redirects to the SP' do
         sign_in_and_2fa_user(user)
-        visit auth_request.create(sp_saml_settings)
+        visit_saml_authn_request_url
         click_continue
 
-        settings = sp_saml_settings.dup
-
-        request = OneLogin::RubySaml::Logoutrequest.new
-        visit request.create(settings)
+        visit_saml_logout_request_url
 
         xmldoc = SamlResponseDoc.new('feature', 'logout_assertion')
 
@@ -87,11 +92,12 @@ feature 'SAML logout' do
 
     context 'the user is not signed in' do
       it 'redirects to the SP' do
-        settings = sp_saml_settings.dup
-        settings.name_identifier_value = 'asdf-1234'
-
-        request = OneLogin::RubySaml::Logoutrequest.new
-        visit request.create(settings)
+        visit_saml_logout_request_url(
+          saml_overrides: {
+            issuer: 'saml_sp_ial2',
+            name_identifier_value: 'asdf-1234',
+          },
+        )
 
         # It should contain a SAMLResponse
         expect(page.find('#SAMLResponse', visible: false)).to be_truthy
@@ -106,12 +112,15 @@ feature 'SAML logout' do
       it 'renders an error' do
         sign_in_and_2fa_user(user)
 
-        settings = invalid_service_provider_settings.dup
-        settings.name_identifier_value = 'asdf-1234'
-        settings.security[:logout_requests_signed] = false
-
-        request = OneLogin::RubySaml::Logoutrequest.new
-        visit request.create(settings)
+        visit_saml_logout_request_url(
+          saml_overrides: {
+            issuer: 'invalid_provider',
+            name_identifier_value: 'asdf-1234',
+          },
+          saml_security_overrides: {
+            logout_requests_signed: false,
+          },
+        )
 
         expect(current_path).to eq(api_saml_logout2021_path)
         expect(page.driver.status_code).to eq(400)
