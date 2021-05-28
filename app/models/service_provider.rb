@@ -33,8 +33,9 @@ class ServiceProvider < ApplicationRecord
   # @return [Array<OpenSSL::X509::Certificate>]
   def ssl_certs
     @ssl_certs ||= Array(certs).select(&:present?).map do |cert|
-      OpenSSL::X509::Certificate.new(load_cert(cert))
-    end
+      cert_content = load_cert(cert)
+      OpenSSL::X509::Certificate.new(cert_content) if cert_content
+    end.compact
   end
 
   def encrypt_responses?
@@ -51,9 +52,12 @@ class ServiceProvider < ApplicationRecord
 
   private
 
+  # @return [String,nil]
   def load_cert(cert)
-    cert_file = Rails.root.join('certs', 'sp', "#{cert}.crt")
-    return OpenSSL::X509::Certificate.new(cert) unless File.exist?(cert_file)
-    File.read(cert_file)
+    if cert.include?('-----BEGIN CERTIFICATE-----')
+      cert
+    elsif (cert_file = Rails.root.join('certs', 'sp', "#{cert}.crt")) && File.exist?(cert_file)
+      File.read(cert_file)
+    end
   end
 end
