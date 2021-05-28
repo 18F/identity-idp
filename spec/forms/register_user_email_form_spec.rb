@@ -244,25 +244,5 @@ describe RegisterUserEmailForm do
         expect(submit_form.errors).to eq errors
       end
     end
-
-    context 'when email is not already taken and rules of use is disabled' do
-      it 'is valid without checking rules of use box' do
-        allow(IdentityConfig.store).to receive(:rules_of_use_enabled).and_return(false)
-
-        submit_form = subject.submit(email: 'not_taken@example.com')
-        extra = {
-          email_already_exists: false,
-          throttled: false,
-          user_id: User.find_with_email('not_taken@example.com').uuid,
-          domain_name: 'example.com',
-        }
-
-        expect(submit_form.to_h).to eq(
-          success: true,
-          errors: {},
-          **extra,
-        )
-      end
-    end
   end
 end
