@@ -83,5 +83,13 @@ RSpec.describe Db::MonthlySpAuthCount::TotalMonthlyAuthCountsWithinIaaWindow do
         expect(result.map(&:symbolize_keys)).to match_array(rows)
       end
     end
+
+    context 'with only partial months' do
+      let(:iaa_range) { Date.new(2021, 1, 15)..Date.new(2021, 1, 17) }
+
+      it 'works' do
+        expect(result.map(&:symbolize_keys)).to match_array([])
+      end
+    end
   end
 end
