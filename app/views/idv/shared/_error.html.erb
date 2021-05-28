@@ -4,7 +4,8 @@ locals:
 * type: `:warning` or `:error`. Defaults to `:error`.
 * heading: Primary page heading text. Also used as page title if title is not given.
 * title: Optional custom page title, defaulting to the heading.
-* action: Optional hash of `text`, `url` of a primary action link.
+* action: Optional hash of `text`, `url`, optional `method` of a primary action link.
+* action_secondary: Optional hash of `text`, `url`, optional `method` of a secondary action link.
 * options: Array of troubleshooting options.
 %>
 <%
@@ -27,15 +28,29 @@ end
 
 <% if local_assigns[:action] %>
   <div class="margin-top-4">
-    <%= tag.a href: action[:url], class: 'usa-button usa-button--big usa-button--wide' do %>
-      <%= action[:text] %>
-    <% end %>
+    <%= button_or_link_to(
+          action[:text],
+          action[:url],
+          class: 'usa-button usa-button--big usa-button--wide',
+          method: action[:method],
+        ) %>
   </div>
+
+  <% if local_assigns[:action_secondary] %>
+    <div class="margin-top-2">
+      <%= button_or_link_to(
+            action_secondary[:text],
+            action_secondary[:url],
+            class: 'usa-button usa-button--big usa-button--wide usa-button--outline',
+            method: action_secondary[:method],
+          ) %>
+    </div>
+  <% end %>
 <% end %>
 
 <%= render(
-  'shared/troubleshooting_options',
-  heading: troubleshooting_heading,
-  options: options,
-  class: 'margin-top-5',
-) %>
+      'shared/troubleshooting_options',
+      heading: troubleshooting_heading,
+      options: options,
+      class: 'margin-top-5',
+    ) %>
