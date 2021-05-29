@@ -93,8 +93,8 @@ describe Idv::PhoneController do
     it 'shows waiting interstitial if async process is in progress' do
       # having a document capture session with PII but without results will trigger
       # in progress behavior
-      document_capture_session = DocumentCaptureSession.create(
-        user_id: user.id,
+      document_capture_session = DocumentCaptureSession.create_by_user_id(
+        user.id,
         requested_at: Time.zone.now,
       )
       document_capture_session.create_proofing_session

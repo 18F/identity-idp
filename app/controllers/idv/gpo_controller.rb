@@ -183,8 +183,8 @@ module Idv
       return if idv_session.idv_gpo_document_capture_session_uuid
       idv_session.previous_gpo_step_params = profile_params.to_h
 
-      document_capture_session = DocumentCaptureSession.create(
-        user_id: current_user.id,
+      document_capture_session = DocumentCaptureSession.create_by_user_id(
+        current_user.id,
         issuer: sp_session[:issuer],
         ial2_strict: sp_session[:ial2_strict],
         requested_at: Time.zone.now,

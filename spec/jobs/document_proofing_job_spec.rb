@@ -47,7 +47,7 @@ RSpec.describe DocumentProofingJob, type: :job do
 
   let(:user) { create(:user) }
   let(:document_capture_session) do
-    DocumentCaptureSession.create(user_id: user.id, result_id: SecureRandom.hex)
+    DocumentCaptureSession.create_by_user_id(user.id, result_id: SecureRandom.hex)
   end
 
   describe '.perform_later' do
