@@ -6,7 +6,7 @@ class DocumentCaptureSession < ApplicationRecord
   def self.create_by_user_id(user_id, hash = {})
     return unless user_id
     reuse_session = DocumentCaptureSession.
-        find_by(user_id: user_id) || DocumentCaptureSession.new(user_id: user_id)
+      find_by(user_id: user_id) || DocumentCaptureSession.new(user_id: user_id)
     reuse_session.reset
     reuse_session.assign_attributes(hash)
     reuse_session.save!
@@ -91,7 +91,6 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def reset
-    self.uuid = nil
     self.result_id = nil
     now = Time.zone.now
     self.created_at = now
