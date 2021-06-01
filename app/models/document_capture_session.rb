@@ -92,7 +92,6 @@ class DocumentCaptureSession < ApplicationRecord
   def reset
     self.result_id = nil
     now = Time.zone.now
-    self.created_at = now
     self.updated_at = now
     self.requested_at = nil
     self.ial2_strict = nil
