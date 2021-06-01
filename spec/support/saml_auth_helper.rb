@@ -111,12 +111,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def invalid_service_provider_settings
-    settings = saml_settings.dup
-    settings.issuer = 'invalid_provider'
-    settings
-  end
-
   def invalid_service_provider_and_authn_context_settings
     settings = saml_settings.dup
     settings.authn_context = 'http://idmanagement.gov/ns/assurance/loa/5'
