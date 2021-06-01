@@ -43,7 +43,12 @@ describe SamlIdpController do
 
       context 'with signed_response_message_requested false' do
         before do
-          generate_saml_response(user, sp_not_requesting_signed_saml_response_settings)
+          generate_saml_response(
+            user,
+            saml_settings(
+              overrides: { issuer: 'test_saml_sp_not_requesting_signed_response_message' },
+            ),
+          )
         end
 
         it 'only finds one Signature' do
