@@ -33,6 +33,10 @@ class ApplicationController < ActionController::Base
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
 
+  before_action do
+    Rack::MiniProfiler.authorize_request
+  end
+
   def session_expires_at
     now = Time.zone.now
     session[:session_expires_at] = now + Devise.timeout_in

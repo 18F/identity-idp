@@ -56,6 +56,8 @@ gem 'profanity_filter'
 gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
+gem 'rack-mini-profiler', '>= 1.1.3'
+gem 'stackprof'
 gem 'rack-timeout', require: false
 gem 'raise-if-root'
 gem 'readthis'
@@ -90,7 +92,6 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'irb'
   gem 'octokit'
-  gem 'rack-mini-profiler', '>= 1.1.3', require: false
   gem 'rails-erd', '>= 1.6.0'
 end
 
