@@ -109,12 +109,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def missing_nameid_format_saml_settings
-    settings = saml_settings.dup
-    settings.name_identifier_format = nil
-    settings
-  end
-
   def email_nameid_saml_settings_for_disallowed_issuer
     settings = saml_settings.dup
     settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL

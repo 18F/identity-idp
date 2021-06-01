@@ -649,7 +649,7 @@ describe SamlIdpController do
       end
 
       it 'defaults to persistent' do
-        auth_settings = missing_nameid_format_saml_settings
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         IdentityLinker.new(user, auth_settings.issuer).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
