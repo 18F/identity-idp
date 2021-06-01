@@ -26,13 +26,10 @@ module Db
         # - full months from monthly_sp_auth_counts
         # - partial months by aggregating sp_return_logs
         # The results are rows with [ial, auth_count, year_month, issuer, iaa, iaa start, iaa end]
-        union_query = []
-        if full_months.present?
-          union_query << full_month_subquery(sp: service_provider, full_months: full_months)
-        end
-        union_query.
-          concat(partial_month_subqueries(sp: service_provider, partial_months: partial_months))
-        union_query = union_query.join(' UNION ALL ')
+        union_query = [
+          full_month_subquery(sp: service_provider, full_months: full_months),
+          *partial_month_subqueries(sp: service_provider, partial_months: partial_months),
+        ].compact.join(' UNION ALL ')
 
         ActiveRecord::Base.connection.execute(union_query)
       end
@@ -40,6 +37,7 @@ module Db
 
       # @return [String]
       def full_month_subquery(sp:, full_months:)
+        return nil if full_months.blank?
         params = {
           iaa: sp.iaa,
           issuer: sp.issuer,

@@ -24,12 +24,10 @@ module Db
         # - full months from monthly_sp_auth_counts
         # - partial months by aggregating sp_return_logs
         # The results are rows with [user_id, ial, auth_count, year_month]
-        subquery = []
-        if full_months.present?
-          subquery << full_month_subquery(issuers: issuers, full_months: full_months)
-        end
-        subquery.concat(partial_month_subqueries(issuers: issuers, partial_months: partial_months))
-        subquery = subquery.join(' UNION ALL ')
+        subquery = [
+          full_month_subquery(issuers: issuers, full_months: full_months),
+          *partial_month_subqueries(issuers: issuers, partial_months: partial_months),
+        ].compact.join(' UNION ALL ')
 
         select_clause = case aggregate
         when :sum
@@ -99,6 +97,7 @@ module Db
 
       # @return [String]
       def full_month_subquery(issuers:, full_months:)
+        return nil if full_months.blank?
         params = {
           issuers: issuers,
           year_months: full_months.map { |r| r.begin.strftime('%Y%m') },
