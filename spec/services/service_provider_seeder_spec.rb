@@ -18,11 +18,14 @@ RSpec.describe ServiceProviderSeeder do
       expect { run }.to change(ServiceProvider, :count)
     end
 
-    it 'updates the plural certs column' do
+    it 'updates the plural certs column with the PEM content of certs' do
+      cert_names = ['saml_test_sp', 'saml_test_sp2']
+      pems = cert_names.map { |cert| Rails.root.join('certs', 'sp', "#{cert}.crt").read }
+
       run
 
       sp = ServiceProvider.from_issuer('http://localhost:3000')
-      expect(sp.certs).to eq(['saml_test_sp', 'saml_test_sp2'])
+      expect(sp.certs).to eq(pems)
     end
 
     context 'with other existing service providers in the database' do
