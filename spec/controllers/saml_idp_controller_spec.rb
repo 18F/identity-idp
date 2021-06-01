@@ -51,20 +51,24 @@ describe SamlIdpController do
     end
 
     let(:right_cert_settings) do
-      sp1_saml_settings.tap do |settings|
-        settings.issuer = service_provider.issuer
-        settings.assertion_consumer_logout_service_url = 'https://example.com'
-      end
+      saml_settings(
+        overrides: {
+          issuer: service_provider.issuer,
+          assertion_consumer_logout_service_url: 'https://example.com',
+        },
+      )
     end
 
     let(:wrong_cert_settings) do
-      sp1_saml_settings.tap do |settings|
-        settings.issuer = service_provider.issuer
-        settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
-        settings.private_key = OpenSSL::PKey::RSA.new(
-          File.read(Rails.root + 'keys/saml_test_sp2.key'),
-        ).to_pem
-      end
+      saml_settings(
+        overrides: {
+          issuer: service_provider.issuer,
+          certificate: File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt')),
+          private_key: OpenSSL::PKey::RSA.new(
+            File.read(Rails.root + 'keys/saml_test_sp2.key'),
+          ).to_pem,
+        },
+      )
     end
 
     it 'accepts requests from a correct cert' do
