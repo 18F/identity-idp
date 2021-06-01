@@ -109,12 +109,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def ial1_saml_settings
-    settings = saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    settings
-  end
-
   def sp1_ial1_saml_settings
     saml_settings(
       overrides: {
@@ -467,8 +461,9 @@ module SamlAuthHelper
 
   def visit_idp_from_sp_with_ial1(sp)
     if sp == :saml
-      @saml_authn_request = auth_request.create(ial1_saml_settings)
-      visit @saml_authn_request
+      visit_saml_authn_request_url(
+        saml_overrides: { authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF },
+      )
     elsif sp == :oidc
       @state = SecureRandom.hex
       @client_id = 'urn:gov:gsa:openidconnect:sp:server'
