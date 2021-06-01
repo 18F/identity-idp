@@ -371,7 +371,12 @@ describe SamlIdpController do
       it 'responds with an error page' do
         user = create(:user, :signed_up)
 
-        generate_saml_response(user, sp2_saml_settings_inactive)
+        generate_saml_response(
+          user,
+          saml_settings(
+            overrides: { issuer: 'http://localhost:3000/inactive_sp' },
+          ),
+        )
 
         expect(controller).to redirect_to sp_inactive_error_url
       end
