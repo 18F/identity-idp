@@ -671,8 +671,13 @@ describe SamlIdpController do
           with(Analytics::SAML_AUTH, analytics_hash)
       end
 
-      it 'defaults to email when configured' do
-        auth_settings = missing_nameid_format_saml_settings
+      it 'defaults to email when added to issuers_with_email_nameid_format' do
+        auth_settings = saml_settings(
+          overrides: {
+            issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+            name_identifier_format: nil,
+          },
+        )
         ServiceProvider.
           find_by(issuer: auth_settings.issuer).
           update!(email_nameid_format_allowed: true)
