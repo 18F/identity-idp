@@ -381,7 +381,7 @@ describe SamlIdpController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        generate_saml_response(user, invalid_service_provider_settings)
+        generate_saml_response(user, saml_settings(overrides: { issuer: 'invalid_provider' }))
 
         expect(controller).to render_template('saml_idp/auth/error')
         expect(response.status).to eq(400)
