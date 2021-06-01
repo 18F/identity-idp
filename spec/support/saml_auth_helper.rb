@@ -109,9 +109,10 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def email_nameid_saml_settings_for_allowed_issuer
+  def missing_nameid_format_saml_settings_for_allowed_email_issuer
     settings = saml_settings.dup
-    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
+    settings.name_identifier_format = nil
+    settings.issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'
     settings
   end
 

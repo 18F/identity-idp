@@ -598,7 +598,12 @@ describe SamlIdpController do
       let(:user) { create(:user, :signed_up) }
 
       before do
-        settings = email_nameid_saml_settings
+        settings = saml_settings(
+          overrides: {
+            issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+          },
+        )
         ServiceProvider.
           find_by(issuer: settings.issuer).
           update!(email_nameid_format_allowed: true)
