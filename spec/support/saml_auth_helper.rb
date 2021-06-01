@@ -63,31 +63,34 @@ module SamlAuthHelper
     @logout_request ||= OneLogin::RubySaml::Logoutrequest.new
   end
 
-  def saml_authn_request_url(saml_overrides: {}, saml_security_overrides: {})
+  def saml_authn_request_url(saml_overrides: {}, saml_security_overrides: {}, params: {})
     auth_request.create(
       saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides),
+      params,
     )
   end
 
-  def saml_logout_request_url(saml_overrides: {}, saml_security_overrides: {})
+  def saml_logout_request_url(saml_overrides: {}, saml_security_overrides: {}, params: {})
     logout_request.create(
       saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides),
+      params,
     )
   end
 
-  def visit_saml_authn_request_url(saml_overrides: {}, saml_security_overrides: {})
+  def visit_saml_authn_request_url(saml_overrides: {}, saml_security_overrides: {}, params: {})
     authn_request_url = saml_authn_request_url(
       saml_overrides: saml_overrides,
       saml_security_overrides: saml_security_overrides,
+      params: params,
     )
     visit authn_request_url
   end
 
-  def visit_saml_logout_request_url(saml_overrides: {}, saml_security_overrides: {})
-    settings = saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides)
+  def visit_saml_logout_request_url(saml_overrides: {}, saml_security_overrides: {}, params: {})
     logout_request_url = saml_logout_request_url(
       saml_overrides: saml_overrides,
       saml_security_overrides: saml_security_overrides,
+      params: params,
     )
     visit logout_request_url
   end
@@ -108,15 +111,6 @@ module SamlAuthHelper
 
   ##################################################################################################
   ##################################################################################################
-
-  def sp1_ial1_saml_settings
-    saml_settings(
-      overrides: {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
-        authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      },
-    )
-  end
 
   def sp1_ial2_saml_settings
     saml_settings(
@@ -266,10 +260,6 @@ module SamlAuthHelper
         overrides: { issuer: 'https://rp2.serviceprovider.com/auth/saml/metadata' },
       ),
     )
-  end
-
-  def ial1_authnrequest
-    auth_request.create(sp1_ial1_saml_settings)
   end
 
   def ial2_authnrequest
@@ -435,11 +425,6 @@ module SamlAuthHelper
     auth_params = OneLogin::RubySaml::Authrequest.new.create_params(settings, params)
     auth_params.merge(params)
     auth_params
-  end
-
-  def get_saml_authn_request(settings = saml_settings, params = {})
-    saml_authn_request = auth_request.create(settings, params)
-    visit saml_authn_request
   end
 
   def post_saml_authn_request(settings = saml_settings, params = {})
