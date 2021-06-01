@@ -291,7 +291,11 @@ describe SamlIdpController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        saml_get_auth(invalid_authn_context_settings)
+        saml_get_auth(
+          saml_settings(
+            overrides: { authn_context: 'http://idmanagement.gov/ns/assurance/loa/5' },
+          ),
+        )
 
         expect(controller).to render_template('saml_idp/auth/error')
         expect(response.status).to eq(400)
