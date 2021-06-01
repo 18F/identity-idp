@@ -109,12 +109,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def sp_not_requesting_signed_saml_response_settings
-    settings = saml_settings.dup
-    settings.issuer = 'test_saml_sp_not_requesting_signed_response_message'
-    settings
-  end
-
   def sp_requesting_signed_saml_response_settings
     settings = saml_settings.dup
     settings.issuer = 'test_saml_sp_requesting_signed_response_message'
