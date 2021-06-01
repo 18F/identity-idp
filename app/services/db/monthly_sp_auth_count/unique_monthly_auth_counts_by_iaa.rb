@@ -97,7 +97,7 @@ module Db
 
       # @return [String]
       def full_month_subquery(issuers:, full_months:)
-        return nil if full_months.blank?
+        return if full_months.blank?
         params = {
           issuers: issuers,
           year_months: full_months.map { |r| r.begin.strftime('%Y%m') },

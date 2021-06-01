@@ -37,7 +37,7 @@ module Db
 
       # @return [String]
       def full_month_subquery(sp:, full_months:)
-        return nil if full_months.blank?
+        return if full_months.blank?
         params = {
           iaa: sp.iaa,
           issuer: sp.issuer,
