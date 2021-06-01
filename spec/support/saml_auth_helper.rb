@@ -109,13 +109,7 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def sp_requesting_signed_saml_response_settings
-    settings = saml_settings.dup
-    settings.issuer = 'test_saml_sp_requesting_signed_response_message'
-    settings
-  end
-
-  def email_nameid_saml_settings
+  def email_nameid_saml_settings_for_allowed_issuer
     settings = saml_settings.dup
     settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
     settings

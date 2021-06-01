@@ -23,7 +23,10 @@ describe SamlIdpController do
 
       context 'with signed_response_message_requested true' do
         before do
-          generate_saml_response(user, sp_requesting_signed_saml_response_settings)
+          settings = saml_settings(
+            overrides: { issuer: 'test_saml_sp_requesting_signed_response_message' },
+          )
+          generate_saml_response(user, settings)
         end
 
         it 'finds Signatures in the message and assertion' do
