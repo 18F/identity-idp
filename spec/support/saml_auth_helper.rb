@@ -109,12 +109,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def email_nameid_saml_settings_for_disallowed_issuer
-    settings = saml_settings.dup
-    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
-    settings
-  end
-
   def ial1_saml_settings
     settings = saml_settings.dup
     settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF

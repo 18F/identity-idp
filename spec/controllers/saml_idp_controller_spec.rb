@@ -708,7 +708,10 @@ describe SamlIdpController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        saml_get_auth(email_nameid_saml_settings_for_disallowed_issuer)
+        auth_settings = saml_settings(
+          overrides: { name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL },
+        )
+        saml_get_auth(auth_settings)
 
         expect(controller).to render_template('saml_idp/auth/error')
         expect(response.status).to eq(400)
