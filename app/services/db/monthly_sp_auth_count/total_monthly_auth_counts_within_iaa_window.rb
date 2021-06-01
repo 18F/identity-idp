@@ -27,9 +27,9 @@ module Db
         # - partial months by aggregating sp_return_logs
         # The results are rows with [ial, auth_count, year_month, issuer, iaa, iaa start, iaa end]
         union_query = [
-          full_month_subquery(sp: service_provider, full_months: full_months),
+          *full_month_subquery(sp: service_provider, full_months: full_months),
           *partial_month_subqueries(sp: service_provider, partial_months: partial_months),
-        ].compact.join(' UNION ALL ')
+        ].join(' UNION ALL ')
 
         ActiveRecord::Base.connection.execute(union_query)
       end
