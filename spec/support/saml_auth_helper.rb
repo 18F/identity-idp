@@ -111,16 +111,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def authnrequest_get(issuer: nil)
-    auth_request.create(saml_spec_settings(issuer: issuer))
-  end
-
-  def saml_spec_settings(issuer: nil)
-    settings = saml_settings.dup
-    settings.issuer = issuer || 'http://localhost:3000'
-    settings
-  end
-
   def invalid_authn_context_settings
     settings = saml_settings.dup
     settings.authn_context = 'http://idmanagement.gov/ns/assurance/loa/5'

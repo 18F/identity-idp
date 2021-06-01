@@ -46,7 +46,7 @@ feature 'saml api' do
   end
 
   it 'it sets the sp_issuer cookie' do
-    visit authnrequest_get
+    visit_saml_authn_request_url
 
     expect(cookies.find { |c| c.name == 'sp_issuer' }.value).to eq('http://localhost:3000')
   end
@@ -54,14 +54,14 @@ feature 'saml api' do
   context 'SAML Assertions' do
     context 'before fully signing in' do
       it 'directs users to the start page' do
-        visit authnrequest_get
+        visit_saml_authn_request_url
 
         expect(current_path).to eq new_user_session_path
       end
 
       it 'prompts the user to enter OTP' do
         sign_in_before_2fa(user)
-        visit authnrequest_get
+        visit_saml_authn_request_url
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
@@ -70,7 +70,7 @@ feature 'saml api' do
     context 'user has not set up 2FA yet and signs in' do
       before do
         sign_in_before_2fa
-        visit authnrequest_get
+        visit_saml_authn_request_url
       end
 
       it 'prompts the user to set up 2FA' do
@@ -103,7 +103,7 @@ feature 'saml api' do
     context 'user can get a well-formed signed Assertion' do
       before do
         sign_in_and_2fa_user(user)
-        visit authnrequest_get
+        visit_saml_authn_request_url
         click_agree_and_continue
       end
 
@@ -134,7 +134,7 @@ feature 'saml api' do
 
       # Verify http://www.w3.org/2000/09/xmldsig#enveloped-signature
       it 'applies xmldsig enveloped signature correctly' do
-        saml_response = xmldoc.saml_response(saml_spec_settings)
+        saml_response = xmldoc.saml_response(saml_settings)
         saml_response.soft = false
         expect(saml_response.is_valid?).to eq true
       end
@@ -159,11 +159,11 @@ feature 'saml api' do
       it 'redirects to /test/saml/decode_assertion after submitting the form' do
         click_button t('forms.buttons.submit.default')
         expect(page.current_url).
-          to eq(saml_spec_settings.assertion_consumer_service_url)
+          to eq(saml_settings.assertion_consumer_service_url)
       end
 
       it 'stores SP identifier in Identity model' do
-        expect(user.last_identity.service_provider).to eq saml_spec_settings.issuer
+        expect(user.last_identity.service_provider).to eq saml_settings.issuer
       end
 
       it 'stores last_authenticated_at in Identity model' do
