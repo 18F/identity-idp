@@ -109,12 +109,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def sp2_saml_settings
-    settings = saml_settings.dup
-    settings.issuer = 'https://rp2.serviceprovider.com/auth/saml/metadata'
-    settings
-  end
-
   def sp2_saml_settings_inactive
     settings = saml_settings.dup
     settings.issuer = 'http://localhost:3000/inactive_sp'
@@ -317,7 +311,11 @@ module SamlAuthHelper
   end
 
   def sp2_authnrequest
-    auth_request.create(sp2_saml_settings)
+    auth_request.create(
+      saml_settings(
+        overrides: { issuer: 'https://rp2.serviceprovider.com/auth/saml/metadata' },
+      ),
+    )
   end
 
   def ial1_authnrequest
