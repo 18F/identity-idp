@@ -314,10 +314,10 @@ describe AttributeAsserter do
                   "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
                 ],
               },
-              )
+            )
             CGI.unescape(
               request_url.split('SAMLRequest').last,
-              )
+            )
           end
           # rubocop:enable Layout/LineLength
 

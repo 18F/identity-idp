@@ -76,11 +76,9 @@ module SamlAuthHelper
   end
 
   def visit_saml_authn_request_url(saml_overrides: {}, saml_security_overrides: {})
-    # settings = saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides)
-    # @saml_authn_request = auth_request.create(settings)
     authn_request_url = saml_authn_request_url(
       saml_overrides: saml_overrides,
-      saml_security_overrides: saml_security_overrides
+      saml_security_overrides: saml_security_overrides,
     )
     visit authn_request_url
   end
@@ -89,7 +87,7 @@ module SamlAuthHelper
     settings = saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides)
     logout_request_url = saml_logout_request_url(
       saml_overrides: saml_overrides,
-      saml_security_overrides: saml_security_overrides
+      saml_security_overrides: saml_security_overrides,
     )
     visit logout_request_url
   end
@@ -110,12 +108,6 @@ module SamlAuthHelper
 
   ##################################################################################################
   ##################################################################################################
-
-  def sp1_saml_settings
-    settings = saml_settings.dup
-    settings.issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'
-    settings
-  end
 
   def aal3_sp1_saml_settings
     settings = saml_settings.dup
@@ -181,40 +173,58 @@ module SamlAuthHelper
   end
 
   def sp1_ial1_saml_settings
-    settings = sp1_saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    settings
+    saml_settings(
+      overrides: {
+        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      },
+    )
   end
 
   def sp1_ial2_saml_settings
-    settings = sp1_saml_settings.dup
-    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
-    settings.authn_context = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
-    settings
+    saml_settings(
+      overrides: {
+        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+      },
+    )
   end
 
   def sp1_ial_max_saml_settings
-    settings = sp1_saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-    settings
+    saml_settings(
+      overrides: {
+        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        authn_context: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+      },
+    )
   end
 
   def sp1_ial2_strict_saml_settings
-    settings = sp1_saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
-    settings
+    saml_settings(
+      overrides: {
+        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        authn_context: Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
+      },
+    )
   end
 
   def loa3_saml_settings
-    settings = sp1_saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
-    settings
+    saml_settings(
+      overrides: {
+        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        authn_context: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+      },
+    )
   end
 
   def ialmax_saml_settings
-    settings = sp1_saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-    settings
+    saml_settings(
+      overrides: {
+        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        authn_context: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+      },
+    )
   end
 
   def ialmax_with_bundle_saml_settings
@@ -268,36 +278,49 @@ module SamlAuthHelper
   end
 
   def ial1_with_verified_at_saml_settings
-    settings = sp1_saml_settings
-    settings.authn_context = [
-      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,verified_at",
-    ]
-    settings
+    saml_settings(
+      overrides: {
+        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        authn_context: [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,verified_at",
+        ],
+      },
+    )
   end
 
   def ial1_with_bundle_saml_settings
-    settings = sp1_saml_settings
-    settings.authn_context = [
-      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-    ]
-    settings
+    saml_settings(
+      overrides: {
+        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        authn_context: [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+        ],
+      },
+    )
   end
 
   def ial1_with_aal3_saml_settings
-    settings = sp1_saml_settings
-    settings.authn_context = [
-      Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-      Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-    ]
-    settings
+    saml_settings(
+      overrides: {
+        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        authn_context: [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+        ],
+      },
+    )
   end
 
   def sp1_authnrequest
-    auth_request.create(sp1_saml_settings)
+    auth_request.create(
+      saml_settings(
+        overrides: { issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata' },
+      ),
+    )
   end
 
   def sp2_authnrequest
