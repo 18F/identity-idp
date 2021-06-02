@@ -7,6 +7,9 @@ Telephony.config do |c|
                Logger.new('log/telephony.log', level: :info)
              end
 
+  c.voice_pause_time = IdentityConfig.store.voice_otp_pause_time
+  c.voice_rate = IdentityConfig.store.voice_otp_speech_rate
+
   IdentityConfig.store.pinpoint_sms_configs.each do |sms_json_config|
     c.pinpoint.add_sms_config do |sms|
       sms.application_id = sms_json_config['application_id']

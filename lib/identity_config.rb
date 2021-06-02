@@ -265,6 +265,8 @@ class IdentityConfig
     config.add(:verify_gpo_key_max_attempts, type: :integer)
     config.add(:verify_personal_key_attempt_window_in_minutes, type: :integer)
     config.add(:verify_personal_key_max_attempts, type: :integer)
+    config.add(:voice_otp_pause_time)
+    config.add(:voice_otp_speech_rate)
     config.add(:voip_allowed_phones, type: :json)
     config.add(:voip_block, type: :boolean)
     config.add(:voip_check, type: :boolean)
