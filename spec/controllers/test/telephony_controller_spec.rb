@@ -21,10 +21,10 @@ describe Test::TelephonyController do
       get :index
 
       expect(assigns(:messages).length).to eq(1)
-      expect(assigns(:messages).first.body).to include('123456')
+      expect(assigns(:messages).first.otp).to include('123456')
 
       expect(assigns(:calls).length).to eq(1)
-      expect(assigns(:calls).first.body).to include('6, 5, 4, 3, 2, 1')
+      expect(assigns(:calls).first.otp).to eq('654321')
     end
 
     it '404s in production' do
