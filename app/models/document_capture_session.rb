@@ -95,8 +95,8 @@ class DocumentCaptureSession < ApplicationRecord
     self.updated_at = now
     self.requested_at = nil
     self.ial2_strict = nil
-    self.issuer = nil
     self.cancelled_at = nil
+    self.issuer = nil
   end
 
   private
