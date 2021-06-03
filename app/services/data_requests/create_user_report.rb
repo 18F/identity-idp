@@ -30,8 +30,12 @@ module DataRequests
 
     def requesting_issuer_uuid
       return user.uuid if requesting_issuers.blank?
-      user.identities.where(service_provider: requesting_issuers).first&.uuid ||
+      user.agency_identities.where(agency: requesting_agencies).first&.uuid ||
         "NonSPUser##{user.id}"
+    end
+
+    def requesting_agencies
+      ServiceProvider.where(issuer: requesting_issuers).map(&:agency).uniq
     end
 
     def user_events_report
