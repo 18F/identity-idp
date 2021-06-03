@@ -68,12 +68,26 @@ module PushNotification
       )
 
       unless response.success?
-        raise PushNotification::PushNotificationError, "status=#{response.status}"
+        Rails.logger.warn(
+          {
+            event: 'http_push_error',
+            event_type: event.event_type,
+            service_provider: service_provider.issuer,
+            status: response.status,
+          }.to_json,
+        )
       end
     rescue Faraday::TimeoutError,
            Faraday::ConnectionFailed,
            PushNotification::PushNotificationError => err
-      NewRelic::Agent.notice_error(err)
+      Rails.logger.warn(
+        {
+          event: 'http_push_error',
+          event_type: event.event_type,
+          service_provider: service_provider.issuer,
+          error: err.message,
+        }.to_json,
+      )
     end
 
     def deliver_local(service_provider)

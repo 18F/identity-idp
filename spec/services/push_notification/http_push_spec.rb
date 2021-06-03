@@ -179,9 +179,13 @@ RSpec.describe PushNotification::HttpPush do
         expect(WebMock).to have_requested(:post, third_sp.push_notification_url)
       end
 
-      it 'notifies NewRelic' do
-        expect(NewRelic::Agent).to receive(:notice_error).
-          with(instance_of(Faraday::ConnectionFailed))
+      it 'logs a warning' do
+        expect(Rails.logger).to receive(:warn) do |msg|
+          payload = JSON.parse(msg, symbolize_names: true)
+          expect(payload).to include(
+            service_provider: sp_with_push_url.issuer,
+          )
+        end
 
         deliver
       end
@@ -193,9 +197,14 @@ RSpec.describe PushNotification::HttpPush do
           to_return(status: 500)
       end
 
-      it 'notifies NewRelic' do
-        expect(NewRelic::Agent).to receive(:notice_error).
-          with(instance_of(PushNotification::PushNotificationError))
+      it 'logs a warning' do
+        expect(Rails.logger).to receive(:warn) do |msg|
+          payload = JSON.parse(msg, symbolize_names: true)
+          expect(payload).to include(
+            service_provider: sp_with_push_url.issuer,
+            status: 500,
+          )
+        end
 
         deliver
       end
