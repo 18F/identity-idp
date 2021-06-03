@@ -150,7 +150,6 @@ module Flow
     end
 
     def step_indicator_params
-      return if !IdentityConfig.store.ial2_step_indicator_enabled
       handler = flow.step_handler(current_step)
       return if !flow.class.const_defined?('STEP_INDICATOR_STEPS') || !handler
       {

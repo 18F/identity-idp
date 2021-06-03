@@ -21,9 +21,14 @@ class Agreements::IaaOrder < ApplicationRecord
   validates :estimated_amount, numericality: { less_than: 10_000_000_000,
                                                greater_than_or_equal_to: 0,
                                                allow_nil: true }
+  validates :start_date, presence: true
+  validates :end_date, presence: true
+  validate :end_date_after_start_date
 
-  def partner_status
-    iaa_status.partner_name
+  def status
+    return 'pending_start' if Time.zone.today < start_date
+    return 'expired' if Time.zone.today > end_date
+    'active'
   end
 
   def in_pop?(date)
@@ -34,6 +39,13 @@ class Agreements::IaaOrder < ApplicationRecord
   end
 
   private
+
+  def end_date_after_start_date
+    return unless start_date.present? && end_date.present?
+    return unless end_date <= start_date
+
+    errors.add(:end_date, 'must be after start date')
+  end
 
   def pop_range
     return unless start_date.present? && end_date.present?

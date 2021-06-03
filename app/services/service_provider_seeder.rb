@@ -13,14 +13,21 @@ class ServiceProviderSeeder
     service_providers.each do |issuer, config|
       next unless write_service_provider?(config)
       ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
+        cert_pems = Array(config['certs']).map do |cert|
+          cert_path = Rails.root.join('certs', 'sp', "#{cert}.crt")
+          cert_path.read if cert_path.exist?
+        end.compact
+
         sp.update(
           approved: true,
           active: true,
           native: true,
           friendly_name: config['friendly_name'],
+          certs: cert_pems,
         )
       end.update!(config.except(
         'agency',
+        'certs',
         'restrict_to_deploy_env',
         'uuid_priority',
         'protocol',

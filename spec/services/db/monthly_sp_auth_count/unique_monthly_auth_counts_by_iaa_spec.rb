@@ -214,5 +214,45 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
         end
       end
     end
+
+    context 'with only partial month data' do
+      let(:iaa_range) { Date.new(2020, 9, 15)..Date.new(2020, 9, 17) }
+      let(:issuer) { 'issuer1' }
+      let(:rows) { [] }
+
+      before do
+        create(
+          :service_provider,
+          iaa: iaa,
+          issuer: issuer,
+          iaa_start_date: iaa_range.begin,
+          iaa_end_date: iaa_range.end,
+        )
+      end
+
+      context 'aggregate type :sum' do
+        let(:aggregate) { :sum }
+
+        it 'adds up auth_counts and sp_return_log instances' do
+          expect(results.map(&:symbolize_keys)).to match_array(rows)
+        end
+      end
+
+      context 'aggregate type :unique' do
+        let(:aggregate) { :unique }
+
+        it 'counts unique users per month' do
+          expect(results.map(&:symbolize_keys)).to match_array(rows)
+        end
+      end
+
+      context 'aggregate type :new_unique' do
+        let(:aggregate) { :new_unique }
+
+        it 'only counts new unique users each month' do
+          expect(results.map(&:symbolize_keys)).to match_array(rows)
+        end
+      end
+    end
   end
 end

@@ -14,23 +14,20 @@ FactoryBot.define do
     requesting_agency { "#{agency.abbreviation}-#{Faker::Name.initials(number: 3)}" }
   end
 
-  factory :iaa_status, class: Agreements::IaaStatus do
-    name { Faker::Types.rb_string(words: 2) }
-    order { Faker::Types.rb_integer(to: 1_000_000) }
-  end
-
   factory :iaa_gtc, class: Agreements::IaaGtc do
     partner_account
-    iaa_status
 
     gtc_number { "LG#{Faker::Name.initials(number: 3)}FY210001" }
+    start_date { Time.zone.today }
+    end_date { Time.zone.today + 5.years }
   end
 
   factory :iaa_order, class: Agreements::IaaOrder do
     iaa_gtc
-    iaa_status
 
     order_number { Faker::Types.rb_integer(to: 1000) }
+    start_date { Time.zone.today }
+    end_date { Time.zone.today + 1.year }
   end
 
   factory :integration_status, class: Agreements::IntegrationStatus do

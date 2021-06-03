@@ -68,9 +68,9 @@ module Pii
       return false unless profile
       decrypted_pii = fetch
       return false unless decrypted_pii
-      fingerprint = Profile.build_compound_pii_fingerprint(decrypted_pii)
-      return false unless fingerprint
-      Pii::Fingerprinter.stale?(fingerprint, profile.name_zip_birth_year_signature)
+      compound_pii = Profile.build_compound_pii(decrypted_pii)
+      return false unless compound_pii
+      Pii::Fingerprinter.stale?(compound_pii, profile.name_zip_birth_year_signature)
     end
   end
 end
