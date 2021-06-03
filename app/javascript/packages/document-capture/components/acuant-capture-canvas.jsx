@@ -188,6 +188,8 @@ function AcuantCaptureCanvas({
       <div id="acuant-sdk-capture-view">
         <canvas
           id="acuant-video-canvas"
+          tabIndex={0}
+          aria-label="Live video from device camera"
           style={{
             width: '100%',
             position: 'absolute',

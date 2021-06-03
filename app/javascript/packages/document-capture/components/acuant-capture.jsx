@@ -409,7 +409,10 @@ function AcuantCapture(
   return (
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
-        <FullScreen onRequestClose={() => setIsCapturingEnvironment(false)}>
+        <FullScreen
+          label="Document capture dialog"
+          onRequestClose={() => setIsCapturingEnvironment(false)}
+        >
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
             onImageCaptureFailure={(error) => {

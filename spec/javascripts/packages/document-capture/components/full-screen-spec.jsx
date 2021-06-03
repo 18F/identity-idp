@@ -12,9 +12,9 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('is rendered as an accessible modal', () => {
-    const { container } = render(<FullScreen>Content</FullScreen>);
+    const { baseElement } = render(<FullScreen>Content</FullScreen>);
 
-    expect(container.firstChild.hasAttribute('aria-modal')).to.be.true();
+    expect(baseElement.querySelector('[role]').getAttribute('role')).to.equal('dialog');
   });
 
   it('calls close callback when close button is clicked', () => {
@@ -30,19 +30,19 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('transitions focus into the modal', (done) => {
-    const { container } = render(<FullScreen>Content</FullScreen>);
+    const { baseElement } = render(<FullScreen>Content</FullScreen>);
 
     // The `focus-trap` library only assigns initial focus after a timeout.
     // Schedule to assert immediately following.
     setTimeout(() => {
-      expect(container.contains(document.activeElement)).to.be.true();
+      expect(baseElement.contains(document.activeElement)).to.be.true();
 
       done();
     }, 0);
   });
 
   it('traps focus', (done) => {
-    const { container, getByLabelText } = render(<FullScreen>Content</FullScreen>);
+    const { baseElement, getByLabelText } = render(<FullScreen>Content</FullScreen>);
 
     const button = getByLabelText('users.personal_key.close');
 
@@ -57,7 +57,7 @@ describe('document-capture/components/full-screen', () => {
     setTimeout(() => {
       fireEvent(button, event);
 
-      expect(container.contains(document.activeElement)).to.be.true();
+      expect(baseElement.contains(document.activeElement)).to.be.true();
 
       done();
     }, 0);
