@@ -26,6 +26,18 @@ feature 'doc capture document capture step' do
     allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
   end
 
+  it 'offers the user the option to cancel and return to desktop' do
+    complete_doc_capture_steps_before_first_step(user)
+
+    click_on t('links.cancel')
+
+    expect(page).to have_text(t('idv.cancel.headings.prompt.hybrid'))
+
+    click_on t('forms.buttons.cancel')
+
+    expect(page).to have_text(t('idv.cancel.headings.confirmation.hybrid'))
+  end
+
   context 'invalid session' do
     let!(:request_uri) { doc_capture_request_uri(user) }
 

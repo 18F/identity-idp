@@ -5,8 +5,17 @@ describe 'idv/shared/_error.html.erb' do
   let(:options) { [{ text: 'Example', url: '#example' }] }
   let(:heading) { 'Error' }
   let(:action) { nil }
+  let(:action_secondary) { nil }
   let(:type) { nil }
-  let(:params) { { type: type, heading: heading, action: action, options: options } }
+  let(:params) do
+    {
+      type: type,
+      heading: heading,
+      action: action,
+      action_secondary: action_secondary,
+      options: options,
+    }
+  end
 
   before do
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
@@ -22,15 +31,57 @@ describe 'idv/shared/_error.html.erb' do
   describe 'action' do
     context 'without action' do
       it 'does not render action button' do
-        expect(rendered).not_to have_css('.usa-button')
+        expect(rendered).not_to have_css('.usa-button--primary')
       end
     end
 
     context 'with action' do
-      let(:action) { { text: 'Example', url: '#example' } }
+      let(:action) { { text: 'Primary Action', url: '#primary' } }
 
       it 'renders action button' do
-        expect(rendered).to have_link('Example', href: '#example')
+        expect(rendered).to have_link('Primary Action', href: '#primary')
+      end
+    end
+
+    context 'with form action' do
+      let(:action) { { text: 'Delete', url: '#delete', method: :delete } }
+
+      it 'renders action button' do
+        expect(rendered).to have_button('Delete')
+        expect(rendered).to have_css(
+          'form[action="#delete"] input[name="_method"][value="delete"]',
+          visible: :all,
+        )
+      end
+    end
+  end
+
+  describe 'secondary action' do
+    let(:action) { { text: 'Primary Action', url: '#primary' } }
+
+    context 'without secondary action' do
+      it 'does not render secondary action button' do
+        expect(rendered).not_to have_css('.usa-button--outline')
+      end
+    end
+
+    context 'with secondary action' do
+      let(:action_secondary) { { text: 'Secondary Action', url: '#secondary' } }
+
+      it 'renders secondary action button' do
+        expect(rendered).to have_link('Secondary Action', href: '#secondary')
+      end
+    end
+
+    context 'with form action' do
+      let(:action_secondary) { { text: 'Delete', url: '#delete', method: :delete } }
+
+      it 'renders action button' do
+        expect(rendered).to have_button('Delete')
+        expect(rendered).to have_css(
+          'form[action="#delete"] input[name="_method"][value="delete"]',
+          visible: :all,
+        )
       end
     end
   end

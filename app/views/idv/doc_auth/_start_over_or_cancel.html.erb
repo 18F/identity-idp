@@ -1,2 +1,15 @@
-<%= render 'idv/doc_auth/start_over' %>
-<%= render 'shared/cancel', link: idv_cancel_path(step: local_assigns[:step]) %>
+<%#
+locals:
+* hide_start_over: Whether to omit the "Start Over" link
+%>
+<div class="margin-top-4">
+  <% if !local_assigns[:hide_start_over] %>
+    <%= button_to(
+          t('doc_auth.buttons.start_over'),
+          idv_doc_auth_step_path(step: :reset),
+          method: :put,
+          class: 'usa-button usa-button--unstyled'
+        ) %>
+  <% end %>
+  <%= render 'shared/cancel', link: idv_cancel_path(step: local_assigns[:step]) %>
+</div>
