@@ -43,6 +43,14 @@ feature 'doc auth link sent step' do
     expect(page).to have_current_path(idv_doc_auth_link_sent_step)
   end
 
+  it 'does not proceed to the next page if the capture flow is unsuccessful' do
+    mock_doc_captured(user.id, IdentityDocAuth::Response.new(success: false))
+
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+  end
+
   it 'shows the step indicator' do
     expect(page).to have_css(
       '.step-indicator__step--current',

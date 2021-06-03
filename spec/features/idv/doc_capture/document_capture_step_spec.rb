@@ -38,6 +38,61 @@ feature 'doc capture document capture step' do
     expect(page).to have_text(t('idv.cancel.headings.confirmation.hybrid'))
   end
 
+  it 'advances original session once complete' do
+    using_doc_capture_session { attach_and_submit_images }
+
+    click_idv_continue
+    expect(page).to have_current_path(idv_doc_auth_ssn_step)
+  end
+
+  it 'does not advance original session with errors' do
+    using_doc_capture_session do
+      mock_general_doc_auth_client_error(:create_document)
+      attach_and_submit_images
+    end
+
+    click_idv_continue
+    expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+  end
+
+  context 'when using async uploads' do
+    it 'advances original session once complete' do
+      using_doc_capture_session do
+        set_up_document_capture_result(
+          uuid: DocumentCaptureSession.last.uuid,
+          idv_result: {
+            success: true,
+            errors: {},
+            messages: [],
+            pii_from_doc: {},
+          },
+        )
+        click_idv_continue
+      end
+
+      click_idv_continue
+      expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    end
+
+    it 'does not advance original session with errors' do
+      using_doc_capture_session do
+        set_up_document_capture_result(
+          uuid: DocumentCaptureSession.last.uuid,
+          idv_result: {
+            success: false,
+            errors: {},
+            messages: ['message'],
+            pii_from_doc: {},
+          },
+        )
+        click_idv_continue
+      end
+
+      click_idv_continue
+      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+    end
+  end
+
   context 'invalid session' do
     let!(:request_uri) { doc_capture_request_uri(user) }
 

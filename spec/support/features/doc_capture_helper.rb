@@ -24,6 +24,14 @@ module DocCaptureHelper
     visit request_uri
   end
 
+  def using_doc_capture_session(user = user_with_2fa, &block)
+    request_uri = doc_capture_request_uri(user)
+    Capybara.using_session('mobile') do
+      visit request_uri
+      yield
+    end
+  end
+
   def complete_doc_capture_steps_before_document_capture_step(user = user_with_2fa)
     complete_doc_capture_steps_before_first_step(user) unless
       current_path == idv_capture_doc_document_capture_step
