@@ -7,6 +7,12 @@ class UserPivCacLoginForm
   validates :token, presence: true
   validates :nonce, presence: true
 
+  def initialize(token:, nonce:, piv_cac_required: false)
+    @token = token
+    @nonce = nonce
+    @piv_cac_required = piv_cac_required
+  end
+
   def submit
     success = valid? && valid_submission?
 
