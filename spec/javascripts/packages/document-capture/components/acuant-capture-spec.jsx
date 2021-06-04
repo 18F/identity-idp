@@ -224,9 +224,8 @@ describe('document-capture/components/acuant-capture', () => {
 
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
-      await new Promise((resolve) => onChange.callsFake(resolve));
 
-      expect(onChange).to.have.been.calledWith(
+      await expect(onChange).to.eventually.be.calledWith(
         'data:image/png,',
         sinon.match({
           assessment: 'success',
@@ -245,7 +244,7 @@ describe('document-capture/components/acuant-capture', () => {
           width: sinon.match.number,
         }),
       );
-      expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
+      await expect(window.AcuantCameraUI.end).to.eventually.be.called();
     });
 
     it('ends the capture when the component unmounts', () => {
