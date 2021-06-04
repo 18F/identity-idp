@@ -20,7 +20,7 @@ function useImmutableCallback(fn, dependencies = []) {
     ref.current = fn;
   }, [fn, ...dependencies]);
 
-  return useCallback(() => ref.current(), [ref]);
+  return useCallback((...args) => ref.current(...args), [ref]);
 }
 
 export default useImmutableCallback;

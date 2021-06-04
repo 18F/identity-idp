@@ -24,8 +24,9 @@ describe('document-capture/hooks/use-immutable-callback', () => {
     });
 
     rerender({ fn: callback2 });
-    result.current();
+    const args = [1, 2];
+    result.current(...args);
 
-    expect(callback2).to.have.been.called();
+    expect(callback2).to.have.been.calledWith(...args);
   });
 });
