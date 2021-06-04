@@ -50,43 +50,36 @@ function useFocusTrap(containerRef, onRequestClose) {
   }, []);
 }
 
-const useBodyClass = (() => {
+/**
+ * @param {string} className Class name to add to body element
+ * @param {React.ComponentType<any>} Component React component definition
+ */
+function useBodyClass(className, Component) {
   /**
-   * @type {WeakMap<any, number>}
+   * Increments the number of active instances for the current component by the given amount, adding
+   * or removing the body class for the first and last instance respectively.
+   *
+   * @param {number} amount
    */
-  const activeInstancesByComponent = new WeakMap();
+  function incrementActiveInstances(amount) {
+    const activeInstances = useBodyClass.activeInstancesByComponent.get(Component) || 0;
+    const nextActiveInstances = activeInstances + amount;
 
-  return (
-    /**
-     * @param {string} className Class name to add to body element
-     * @param {React.ComponentType<any>} Component React component definition
-     */
-    (className, Component) => {
-      /**
-       * Increments the number of active instances for the current component by the given amount,
-       * adding or removing the body class for the first and last instance respectively.
-       *
-       * @param {number} amount
-       */
-      function incrementActiveInstances(amount) {
-        const activeInstances = activeInstancesByComponent.get(Component) || 0;
-        const nextActiveInstances = activeInstances + amount;
-
-        if (nextActiveInstances === 1 || nextActiveInstances === 0) {
-          document.body.classList.toggle(className, nextActiveInstances > 0);
-          document.documentElement.classList.toggle(className, nextActiveInstances > 0);
-        }
-
-        activeInstancesByComponent.set(Component, nextActiveInstances);
-      }
-
-      useEffect(() => {
-        incrementActiveInstances(1);
-        return () => incrementActiveInstances(-1);
-      }, []);
+    if (nextActiveInstances === 1 || nextActiveInstances === 0) {
+      document.body.classList.toggle(className, nextActiveInstances > 0);
+      document.documentElement.classList.toggle(className, nextActiveInstances > 0);
     }
-  );
-})();
+
+    useBodyClass.activeInstancesByComponent.set(Component, nextActiveInstances);
+  }
+
+  useEffect(() => {
+    incrementActiveInstances(1);
+    return () => incrementActiveInstances(-1);
+  }, []);
+}
+
+useBodyClass.activeInstancesByComponent = /** @type {WeakMap<*, number>} */ (new WeakMap());
 
 /**
  * @param {React.MutableRefObject<HTMLElement?>} containerRef
