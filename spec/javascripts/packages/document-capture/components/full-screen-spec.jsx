@@ -1,8 +1,50 @@
+import { useRef } from 'react';
+import { screen } from '@testing-library/dom';
 import { render, fireEvent } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
-import FullScreen from '@18f/identity-document-capture/components/full-screen';
+import FullScreen, {
+  useInertSiblingElements,
+} from '@18f/identity-document-capture/components/full-screen';
 
 describe('document-capture/components/full-screen', () => {
+  describe('useInertSiblingElements', () => {
+    beforeEach(() => {
+      document.body.innerHTML = `
+        <div data-testid="sibling-1"></div>
+        <div data-testid="sibling-2" aria-hidden="true"></div>
+        <div data-testid="container"></div>
+        <div data-testid="sibling-3"></div>
+      `;
+    });
+
+    it('applies aria-hidden to siblings', () => {
+      const container = screen.getByTestId('container');
+      renderHook(() => useInertSiblingElements(useRef(container)));
+
+      expect(screen.getByTestId('sibling-1').getAttribute('aria-hidden')).to.equal('true');
+      expect(screen.getByTestId('sibling-2').getAttribute('aria-hidden')).to.equal('true');
+      expect(screen.getByTestId('sibling-3').getAttribute('aria-hidden')).to.equal('true');
+    });
+
+    it('does not apply aria-hidden to itself', () => {
+      const container = screen.getByTestId('container');
+      renderHook(() => useInertSiblingElements(useRef(container)));
+
+      expect(container.hasAttribute('aria-hidden')).to.be.false();
+    });
+
+    it('restores original hidden values to siblings after unmount', () => {
+      const container = screen.getByTestId('container');
+      const { unmount } = renderHook(() => useInertSiblingElements(useRef(container)));
+      unmount();
+
+      expect(screen.getByTestId('sibling-1').hasAttribute('aria-hidden')).to.be.false();
+      expect(screen.getByTestId('sibling-2').getAttribute('aria-hidden')).to.equal('true');
+      expect(screen.getByTestId('sibling-3').hasAttribute('aria-hidden')).to.be.false();
+    });
+  });
+
   it('renders with a close button', () => {
     const { getByLabelText } = render(<FullScreen>Content</FullScreen>);
 

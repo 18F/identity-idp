@@ -20,22 +20,29 @@ import useFocusTrap from '../hooks/use-focus-trap';
 /**
  * @param {React.MutableRefObject<HTMLElement?>} containerRef
  */
-function useSoleAccessibleContent(containerRef) {
+export function useInertSiblingElements(containerRef) {
   useEffect(() => {
     const container = containerRef.current;
 
     /**
-     * @type {Element[]}
+     * @type {[Element, string|null][]}
      */
-    let siblings = [];
+    const originalElementAttributeValues = [];
     if (container && container.parentNode) {
-      siblings = Array.from(container.parentNode.children).filter(
-        (node) => node !== container && !node.hasAttribute('aria-hidden'),
-      );
+      for (const child of container.parentNode.children) {
+        if (child !== container) {
+          originalElementAttributeValues.push([child, child.getAttribute('aria-hidden')]);
+          child.setAttribute('aria-hidden', 'true');
+        }
+      }
     }
 
-    siblings.forEach((node) => node.setAttribute('aria-hidden', 'true'));
-    return () => siblings.forEach((node) => node.removeAttribute('aria-hidden'));
+    return () =>
+      originalElementAttributeValues.forEach(([child, ariaHidden]) =>
+        ariaHidden === null
+          ? child.removeAttribute('aria-hidden')
+          : child.setAttribute('aria-hidden', ariaHidden),
+      );
   });
 }
 
@@ -52,7 +59,7 @@ function FullScreen({ onRequestClose = () => {}, label, children }) {
     onDeactivate: onFocusTrapDeactivate,
   });
   useToggleBodyClassByPresence('has-full-screen-overlay', FullScreen);
-  useSoleAccessibleContent(containerRef);
+  useInertSiblingElements(containerRef);
 
   return createPortal(
     <div ref={containerRef} role="dialog" aria-label={label} className="full-screen bg-white">
