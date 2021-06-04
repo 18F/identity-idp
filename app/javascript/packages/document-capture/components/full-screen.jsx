@@ -10,30 +10,23 @@ import useImmutableCallback from '../hooks/use-immutable-callback';
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
- * @typedef {()=>void} RequestCloseCallback
- */
-
-/**
  * @typedef FullScreenProps
  *
- * @prop {RequestCloseCallback=} onRequestClose Callback invoked when user initiates close intent.
+ * @prop {()=>void=} onRequestClose Callback invoked when user initiates close intent.
  * @prop {string} label Accessible label for modal.
  * @prop {ReactNode} children Child elements.
  */
 
 /**
  * @param {React.MutableRefObject<HTMLElement?>} containerRef
- * @param {RequestCloseCallback} onRequestClose
+ * @param {import('focus-trap').Options=} options
  */
-function useFocusTrap(containerRef, onRequestClose) {
+function useFocusTrap(containerRef, options) {
   const trapRef = useRef(/** @type {FocusTrap?} */ (null));
 
   useEffect(() => {
     if (containerRef.current) {
-      trapRef.current = createFocusTrap(containerRef.current, {
-        onDeactivate: onRequestClose,
-        clickOutsideDeactivates: true,
-      });
+      trapRef.current = createFocusTrap(containerRef.current, options);
 
       trapRef.current.activate();
     }
@@ -74,7 +67,10 @@ function FullScreen({ onRequestClose = () => {}, label, children }) {
   const { getAssetPath } = useAsset();
   const containerRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const onFocusTrapDeactivate = useImmutableCallback(onRequestClose);
-  useFocusTrap(containerRef, onFocusTrapDeactivate);
+  useFocusTrap(containerRef, {
+    clickOutsideDeactivates: true,
+    onDeactivate: onFocusTrapDeactivate,
+  });
   useToggleBodyClassByPresence('has-full-screen-overlay', FullScreen);
   useSoleAccessibleContent(containerRef);
 
