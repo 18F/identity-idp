@@ -4,6 +4,7 @@ import { createFocusTrap } from 'focus-trap';
 import useI18n from '../hooks/use-i18n';
 import useAsset from '../hooks/use-asset';
 import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-presence';
+import useImmutableCallback from '../hooks/use-immutable-callback';
 
 /** @typedef {import('focus-trap').FocusTrap} FocusTrap */
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -26,19 +27,11 @@ import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-pres
  */
 function useFocusTrap(containerRef, onRequestClose) {
   const trapRef = useRef(/** @type {FocusTrap?} */ (null));
-  const onRequestCloseRef = useRef(onRequestClose);
-
-  useEffect(() => {
-    // Since the focus trap is only initialized once, but the callback could
-    // be changed, ensure that the current reference is kept as a mutable value
-    // to reference in the deactivation.
-    onRequestCloseRef.current = onRequestClose;
-  }, [onRequestClose]);
 
   useEffect(() => {
     if (containerRef.current) {
       trapRef.current = createFocusTrap(containerRef.current, {
-        onDeactivate: () => onRequestCloseRef.current(),
+        onDeactivate: onRequestClose,
         clickOutsideDeactivates: true,
       });
 
@@ -80,7 +73,8 @@ function FullScreen({ onRequestClose = () => {}, label, children }) {
   const { t } = useI18n();
   const { getAssetPath } = useAsset();
   const containerRef = useRef(/** @type {HTMLDivElement?} */ (null));
-  useFocusTrap(containerRef, onRequestClose);
+  const onFocusTrapDeactivate = useImmutableCallback(onRequestClose);
+  useFocusTrap(containerRef, onFocusTrapDeactivate);
   useToggleBodyClassByPresence('has-full-screen-overlay', FullScreen);
   useSoleAccessibleContent(containerRef);
 
