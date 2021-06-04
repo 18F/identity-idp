@@ -46,29 +46,41 @@ export function sinonChaiAsPromised({ Assertion }, utils) {
         const isSpy = typeof this._obj?.getCall === 'function';
         if (isSpy) {
           utils.flag(this, 'spyEventually', true);
+        } else {
+          return originalGetter.apply(this, ...args);
         }
-
-        return originalGetter.apply(this, ...args);
       },
+  );
+
+  const ifEventually = (callback) => (originalMethod) =>
+    function (...args) {
+      return (utils.flag(this, 'spyEventually') ? callback : originalMethod).apply(this, args);
+    };
+
+  Assertion.overwriteProperty(
+    'called',
+    ifEventually(function () {
+      return new Promise((resolve) => {
+        if (this._obj.called) {
+          resolve();
+        } else {
+          this._obj.callsFake(resolve);
+        }
+      });
+    }),
   );
 
   Assertion.overwriteMethod(
     'calledWith',
-    (originalMethod) =>
-      function (action, ...otherArgs) {
-        if (!utils.flag(this, 'spyEventually')) {
-          return originalMethod.apply(this, [action, ...otherArgs]);
+    ifEventually(function (...args) {
+      return new Promise((resolve) => {
+        if (this._obj.calledWith(...args)) {
+          resolve();
+        } else {
+          this._obj.withArgs(...args).callsFake(resolve);
         }
-
-        return new Promise((resolve) => {
-          if (this._obj.calledWith(action)) {
-            resolve();
-          } else {
-            this._obj.withArgs(action).callsFake(resolve);
-          }
-        });
-      },
-    (originalMethod) => originalMethod,
+      });
+    }),
   );
   /* eslint-enable no-underscore-dangle */
 }
