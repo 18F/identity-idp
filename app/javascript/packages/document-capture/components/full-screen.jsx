@@ -1,10 +1,10 @@
 import { useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { createFocusTrap } from 'focus-trap';
 import useI18n from '../hooks/use-i18n';
 import useAsset from '../hooks/use-asset';
 import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-presence';
 import useImmutableCallback from '../hooks/use-immutable-callback';
+import useFocusTrap from '../hooks/use-focus-trap';
 
 /** @typedef {import('focus-trap').FocusTrap} FocusTrap */
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -16,26 +16,6 @@ import useImmutableCallback from '../hooks/use-immutable-callback';
  * @prop {string} label Accessible label for modal.
  * @prop {ReactNode} children Child elements.
  */
-
-/**
- * @param {React.MutableRefObject<HTMLElement?>} containerRef
- * @param {import('focus-trap').Options=} options
- */
-function useFocusTrap(containerRef, options) {
-  const trapRef = useRef(/** @type {FocusTrap?} */ (null));
-
-  useEffect(() => {
-    if (containerRef.current) {
-      trapRef.current = createFocusTrap(containerRef.current, options);
-
-      trapRef.current.activate();
-    }
-
-    return () => {
-      trapRef.current?.deactivate();
-    };
-  }, []);
-}
 
 /**
  * @param {React.MutableRefObject<HTMLElement?>} containerRef
