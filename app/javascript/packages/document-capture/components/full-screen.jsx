@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { createFocusTrap } from 'focus-trap';
 import useI18n from '../hooks/use-i18n';
 import useAsset from '../hooks/use-asset';
+import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-presence';
 
 /** @typedef {import('focus-trap').FocusTrap} FocusTrap */
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -51,37 +52,6 @@ function useFocusTrap(containerRef, onRequestClose) {
 }
 
 /**
- * @param {string} className Class name to add to body element
- * @param {React.ComponentType<any>} Component React component definition
- */
-function useBodyClass(className, Component) {
-  /**
-   * Increments the number of active instances for the current component by the given amount, adding
-   * or removing the body class for the first and last instance respectively.
-   *
-   * @param {number} amount
-   */
-  function incrementActiveInstances(amount) {
-    const activeInstances = useBodyClass.activeInstancesByComponent.get(Component) || 0;
-    const nextActiveInstances = activeInstances + amount;
-
-    if (nextActiveInstances === 1 || nextActiveInstances === 0) {
-      document.body.classList.toggle(className, nextActiveInstances > 0);
-      document.documentElement.classList.toggle(className, nextActiveInstances > 0);
-    }
-
-    useBodyClass.activeInstancesByComponent.set(Component, nextActiveInstances);
-  }
-
-  useEffect(() => {
-    incrementActiveInstances(1);
-    return () => incrementActiveInstances(-1);
-  }, []);
-}
-
-useBodyClass.activeInstancesByComponent = /** @type {WeakMap<*, number>} */ (new WeakMap());
-
-/**
  * @param {React.MutableRefObject<HTMLElement?>} containerRef
  */
 function useSoleAccessibleContent(containerRef) {
@@ -111,7 +81,7 @@ function FullScreen({ onRequestClose = () => {}, label, children }) {
   const { getAssetPath } = useAsset();
   const containerRef = useRef(/** @type {HTMLDivElement?} */ (null));
   useFocusTrap(containerRef, onRequestClose);
-  useBodyClass('has-full-screen-overlay', FullScreen);
+  useToggleBodyClassByPresence('has-full-screen-overlay', FullScreen);
   useSoleAccessibleContent(containerRef);
 
   return createPortal(
