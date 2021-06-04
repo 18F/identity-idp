@@ -4,7 +4,6 @@ class DocumentCaptureSession < ApplicationRecord
   belongs_to :user
 
   def self.create_by_user_id(user_id, hash = {})
-    return unless user_id
     reuse_session = DocumentCaptureSession.where(user_id: user_id).first_or_create
     reuse_session.reset
     reuse_session.assign_attributes(hash)
