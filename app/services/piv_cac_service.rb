@@ -70,7 +70,9 @@ module PivCacService
         ssl_config = { verify: !FeatureManagement.identity_pki_local_dev? }
       end
 
-      Faraday.new(ssl: ssl_config).post(
+      Faraday.new(ssl: ssl_config) do |f|
+        f.request :instrumentation
+      end.post(
         verify_token_uri,
         URI.encode_www_form({ token: token }),
         Authentication: authenticate(token),
