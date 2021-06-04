@@ -64,7 +64,7 @@ module SamlAuthHelper
   end
 
   def saml_authn_request_url(saml_overrides: {}, saml_security_overrides: {}, params: {})
-    auth_request.create(
+    @saml_authn_request = auth_request.create(
       saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides),
       params,
     )
