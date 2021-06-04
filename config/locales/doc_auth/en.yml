@@ -1,6 +1,9 @@
 ---
 en:
   doc_auth:
+    accessible_labels:
+      camera_video_capture: Live video from device camera
+      document_capture_dialog: Document capture
     buttons:
       change_address: change
       change_ssn: change

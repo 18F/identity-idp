@@ -189,7 +189,7 @@ function AcuantCaptureCanvas({
         <canvas
           id="acuant-video-canvas"
           tabIndex={0}
-          aria-label="Live video from device camera"
+          aria-label={t('doc_auth.accessible_labels.camera_video_capture')}
           style={{
             width: '100%',
             position: 'absolute',

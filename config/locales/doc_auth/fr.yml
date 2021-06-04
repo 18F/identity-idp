@@ -1,6 +1,9 @@
 ---
 fr:
   doc_auth:
+    accessible_labels:
+      camera_video_capture: Vidéo en direct de la caméra de l'appareil
+      document_capture_dialog: Saisie de documents
     buttons:
       change_address: changement
       change_ssn: changement
