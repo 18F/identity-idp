@@ -108,7 +108,7 @@ RSpec.describe AddressProofingJob, type: :job do
       context 'with an unsuccessful response from the proofer' do
         let(:applicant_pii) do
           super().merge(
-            phone: Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
+            phone: Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
           )
         end
 
