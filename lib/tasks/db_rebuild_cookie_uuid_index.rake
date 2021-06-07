@@ -19,4 +19,17 @@ namespace :db do
       'CREATE INDEX CONCURRENTLY "index_devices_on_cookie_uuid" ON "devices" ("cookie_uuid")',
     )
   end
+
+  desc 'Check for an invalid cookie_uuid index on devices and print the result'
+  task check_for_invalid_cookie_uuid_index: :environment do
+    query = <<~SQL
+      SELECT * FROM pg_class, pg_index
+      WHERE pg_index.indisvalid = false
+        AND pg_index.indexrelid = pg_class.oid
+        AND pg_class.relname = 'index_devices_on_cookie_uuid'
+    SQL
+    results = ActiveRecord::Base.connection.execute(query)
+
+    puts "Found #{results.num_tuples} invalid index(es)"
+  end
 end
