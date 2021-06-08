@@ -44,7 +44,7 @@ ActiveSupport::Notifications.subscribe('request_log.faraday') do |name, starts, 
   url = env[:url]
   http_method = env[:method].to_s.upcase
   duration_seconds = ends - starts
-  service = env.request.context&['service_name']
+  service = env.request.context&.dig(:service_name)
   metadata = {
     http_method: http_method,
     host: url.host,
