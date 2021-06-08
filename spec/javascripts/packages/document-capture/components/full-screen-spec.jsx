@@ -7,6 +7,8 @@ import FullScreen, {
   useInertSiblingElements,
 } from '@18f/identity-document-capture/components/full-screen';
 
+const delay = () => new Promise((resolve) => setTimeout(resolve, 0));
+
 describe('document-capture/components/full-screen', () => {
   describe('useInertSiblingElements', () => {
     beforeEach(() => {
@@ -51,6 +53,27 @@ describe('document-capture/components/full-screen', () => {
     const button = getByLabelText('users.personal_key.close');
 
     expect(button.nodeName).to.equal('BUTTON');
+  });
+
+  it('focuses the first interactive element', async () => {
+    const { getByRole } = render(
+      <FullScreen>
+        <button type="button">One</button>
+        <button type="button">Two</button>
+      </FullScreen>,
+    );
+
+    await delay(); // focus-trap delays initial focus by default
+    expect(document.activeElement).to.equal(getByRole('button', { name: 'One' }));
+  });
+
+  it('focuses the close button as a fallback', async () => {
+    const { getByRole } = render(<FullScreen />);
+
+    await delay(); // focus-trap delays initial focus by default
+    expect(document.activeElement).to.equal(
+      getByRole('button', { name: 'users.personal_key.close' }),
+    );
   });
 
   it('is rendered as an accessible modal', () => {
