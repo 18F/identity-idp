@@ -1,0 +1,70 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <soap:Header>
+    <Action xmlns="http://www.w3.org/2005/08/addressing">http://schemas.xmlsoap.org/ws/2005/02/trust/RST/SCT</Action>
+    <MessageID xmlns="http://www.w3.org/2005/08/addressing">urn:uuid:12345678-abcd-efgh-ijkl-1234567890ab</MessageID>
+    <To xmlns="http://www.w3.org/2005/08/addressing" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="_12345678-abcd-efgh-ijkl-1234567890ab">https://authentication-cert.example.com/Authentication/Authenticate.svc</To>
+    <ReplyTo xmlns="http://www.w3.org/2005/08/addressing">
+      <Address>http://www.w3.org/2005/08/addressing/anonymous</Address>
+    </ReplyTo>
+    <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" soap:mustUnderstand="true">
+      <wsse:BinarySecurityToken EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary" ValueType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-x509-token-profile-1.0#X509v3" wsu:Id="X509-12345678-abcd-efgh-ijkl-1234567890ab"></wsse:BinarySecurityToken>
+      <wsu:Timestamp wsu:Id="TS-12345678-abcd-efgh-ijkl-1234567890ab">
+        <wsu:Created>2017-01-01T00:00:00Z</wsu:Created>
+        <wsu:Expires>2017-01-01T00:05:00Z</wsu:Expires>
+      </wsu:Timestamp>
+      <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="SIG-12345678-abcd-efgh-ijkl-1234567890ab">
+        <ds:SignedInfo>
+          <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="soap"/>
+          </ds:CanonicalizationMethod>
+          <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+          <ds:Reference URI="#TS-12345678-abcd-efgh-ijkl-1234567890ab">
+            <ds:Transforms>
+              <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="wsse soap"/>
+              </ds:Transform>
+            </ds:Transforms>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+            <ds:DigestValue>NmI1d5uNOXfg6Sq2gh89TMCokPI=</ds:DigestValue>
+          </ds:Reference>
+          <ds:Reference URI="#_12345678-abcd-efgh-ijkl-1234567890ab">
+            <ds:Transforms>
+              <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="soap"/>
+              </ds:Transform>
+            </ds:Transforms>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+            <ds:DigestValue>uIfPouaveIZdBSvpP7FSAky/srg=</ds:DigestValue>
+          </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue></ds:SignatureValue>
+        <ds:KeyInfo Id="KI-12345678-abcd-efgh-ijkl-1234567890ab">
+          <wsse:SecurityTokenReference xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" wsu:Id="STR-12345678-abcd-efgh-ijkl-1234567890ab">
+            <wsse:KeyIdentifier EncodingType="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#Base64Binary" ValueType="http://docs.oasis-open.org/wss/oasis-wss-soap-message-security-1.1#ThumbprintSHA1"></wsse:KeyIdentifier>
+          </wsse:SecurityTokenReference>
+        </ds:KeyInfo>
+      </ds:Signature>
+    </wsse:Security>
+  </soap:Header>
+  <soap:Body>
+    <wst:RequestSecurityToken xmlns:wst="http://schemas.xmlsoap.org/ws/2005/02/trust">
+      <wst:RequestType>http://schemas.xmlsoap.org/ws/2005/02/trust/Issue</wst:RequestType>
+      <wsp:AppliesTo xmlns:wsp="http://www.w3.org/ns/ws-policy">
+        <wsa:EndpointReference xmlns:wsa="http://www.w3.org/2005/08/addressing">
+          <wsa:Address>https://authentication-cert.example.com/Authentication/Authenticate.svc</wsa:Address>
+        </wsa:EndpointReference>
+      </wsp:AppliesTo>
+      <wst:Lifetime xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+        <wsu:Created>2017-01-01T00:00:00Z</wsu:Created>
+        <wsu:Expires>2017-01-01T00:05:00Z</wsu:Expires>
+      </wst:Lifetime>
+      <wst:TokenType>http://schemas.xmlsoap.org/ws/2005/02/sc/sct</wst:TokenType>
+      <wst:KeySize>256</wst:KeySize>
+      <wst:Entropy>
+        <wst:BinarySecret Type="http://schemas.xmlsoap.org/ws/2005/02/trust/Nonce">MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDA=</wst:BinarySecret>
+      </wst:Entropy>
+      <wst:ComputedKeyAlgorithm>http://schemas.xmlsoap.org/ws/2005/02/trust/CK/PSHA1</wst:ComputedKeyAlgorithm>
+      <wst:Renewing/>
+    </wst:RequestSecurityToken>
+  </soap:Body>
+</soap:Envelope>

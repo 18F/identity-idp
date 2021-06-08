@@ -6,7 +6,6 @@ ruby '~> 2.6.5'
 gem 'rails', '~> 6.1.3'
 
 # Variables can be overridden for local dev in Gemfile-dev
-@aamva_api_gem ||= { github: '18F/identity-aamva-api-client-gem', tag: 'v4.2.0' }
 @doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.9.2' }
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.2.0' }
 @lexisnexis_api_gem ||= { github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0' }
@@ -16,7 +15,6 @@ gem 'rails', '~> 6.1.3'
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.3.0' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.6.0' }
 
-gem 'aamva', @aamva_api_gem
 gem 'identity-doc-auth', @doc_auth_gem
 gem 'identity-hostdata', @hostdata_gem
 gem 'identity-logging', @logging_gem
@@ -41,6 +39,7 @@ gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
 gem 'foundation_emails'
+gem 'hashie', '~> 4.1'
 gem 'hiredis'
 gem 'http_accept_language'
 gem 'jwt'
@@ -79,6 +78,7 @@ gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
 gem 'webauthn', '~> 2.1'
 gem 'webpacker', '~> 5.1'
+gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'zxcvbn-js'
 

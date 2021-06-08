@@ -1,0 +1,37 @@
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing">
+  <s:Header>
+    <a:Action s:mustUnderstand="1">http://www.w3.org/2005/08/addressing/soap/fault</a:Action>
+    <a:RelatesTo>urn:uuid:ba3effe7-d1c1-456e-8515-03471c7d9439</a:RelatesTo>
+  </s:Header>
+  <s:Body>
+    <s:Fault>
+      <s:Code>
+        <s:Value>s:Sender</s:Value>
+        <s:Subcode>
+          <s:Value xmlns:a="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">a:FooBar</s:Value>
+        </s:Subcode>
+      </s:Code>
+      <s:Reason>
+        <s:Text xml:lang="en-US">A FooBar error occurred</s:Text>
+      </s:Reason>
+      <Exception xmlns="http://aamva.org/exceptions/1.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <ProgramExceptions>
+          <ProgramException>
+            <ExceptionId>0047</ExceptionId>
+            <ExceptionText>MVA did not respond in a timely fashion</ExceptionText>
+            <ExceptionTypeCode>I</ExceptionTypeCode>
+            <ExceptionFatalIndicatorCode>true</ExceptionFatalIndicatorCode>
+            <ExceptionActorText>DLDV VSS</ExceptionActorText>
+          </ProgramException>
+          <ProgramException>
+            <ExceptionId>0048</ExceptionId>
+            <ExceptionText>Servers are experiencing higher than regular traffic</ExceptionText>
+            <ExceptionTypeCode>J</ExceptionTypeCode>
+            <ExceptionFatalIndicatorCode>true</ExceptionFatalIndicatorCode>
+            <ExceptionActorText>DLDV VSS</ExceptionActorText>
+          </ProgramException>
+        </ProgramExceptions>
+      </Exception>
+    </s:Fault>
+  </s:Body>
+</s:Envelope>

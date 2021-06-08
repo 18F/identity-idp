@@ -31,7 +31,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:resolution_proofer) do
     instance_double(LexisNexis::InstantVerify::Proofer, class: LexisNexis::InstantVerify::Proofer)
   end
-  let(:state_id_proofer) { instance_double(Aamva::Proofer, class: Aamva::Proofer) }
+  let(:state_id_proofer) do
+    instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
+  end
   let(:trace_id) { SecureRandom.uuid }
   let(:document_expired) { false }
 
@@ -124,7 +126,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 transaction_id: lexisnexis_transaction_id,
               },
               state_id: {
-                client: Aamva::Proofer.vendor_name,
+                client: Proofing::Aamva::Proofer.vendor_name,
                 errors: {},
                 exception: nil,
                 success: true,
@@ -177,7 +179,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
               should_proof_state_id: true,
               stages: {
                 state_id: {
-                  client: Aamva::Proofer.vendor_name,
+                  client: Proofing::Aamva::Proofer.vendor_name,
                   errors: {},
                   exception: nil,
                   success: true,
