@@ -25,7 +25,7 @@ ActiveSupport::Notifications.subscribe('request_metric.faraday') do |name, start
   url = env[:url]
   http_method = env[:method].to_s.upcase
   duration_seconds = ends - starts
-  service = env.request.context.fetch('service_name')
+  service = env.request.context.fetch(:service_name)
   metadata = {
     http_method: http_method,
     host: url.host,

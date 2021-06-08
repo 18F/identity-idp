@@ -93,11 +93,27 @@ class DocumentProofingJob < ApplicationJob
       if s3_helper.s3_url?(url)
         s3_helper.download(url)
       else
-        build_faraday.get(url).body.b
+        build_faraday.get(url) do |req|
+          req.options.context = { service_name: 'document_proofing_image_download' }
+        end.body.b
       end
     end
     timer.time("decrypt.#{name}") do
       encryption_helper.decrypt(data: encrypted_image, iv: iv, key: key)
+    end
+  end
+
+  # @return [Faraday::Connection] builds a Faraday instance with our defaults
+  def build_faraday
+    Faraday.new do |conn|
+      conn.options.timeout = 3
+      conn.options.read_timeout = 3
+      conn.options.open_timeout = 3
+      conn.options.write_timeout = 3
+      conn.request :instrumentation, name: 'request_log.faraday'
+
+      # raises errors on 4XX or 5XX responses
+      conn.response :raise_error
     end
   end
 end

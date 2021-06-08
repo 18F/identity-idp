@@ -65,7 +65,9 @@ module PushNotification
         jwt(service_provider),
         'Accept' => 'application/json',
         'Content-Type' => 'application/secevent+jwt',
-      )
+      ) do |req|
+        req.options.context = { service_name: 'http_push_direct' }
+      end
 
       unless response.success?
         Rails.logger.warn(
@@ -119,7 +121,10 @@ module PushNotification
     end
 
     def faraday
-      Faraday.new { |faraday| faraday.adapter :net_http }
+      Faraday.new do |f|
+        f.request :instrumentation, name: 'request_log.faraday'
+        f.adapter :net_http
+      end
     end
 
     def agency_uuid(service_provider)
