@@ -2,7 +2,7 @@ require 'openssl'
 
 module AamvaFixtures
   def self.example_config
-    Aamva::Proofer::Config.new(
+    Proofing::Aamva::Proofer::Config.new(
       cert_enabled: 'false',
       private_key: Base64.strict_encode64(aamva_private_key.to_der),
       public_key: Base64.strict_encode64(aamva_public_key.to_der),

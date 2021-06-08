@@ -342,6 +342,7 @@ GEM
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
     hashdiff (1.0.1)
+    hashie (4.1.0)
     heapy (0.2.0)
       thor
     highline (2.0.3)
@@ -687,6 +688,8 @@ GEM
     websocket-driver (0.7.3)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
+    xmldsig (0.6.6)
+      nokogiri (>= 1.6.8, < 2.0.0)
     xmlenc (0.7.1)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -737,6 +740,7 @@ DEPENDENCIES
   foundation_emails
   gmail (>= 0.7.1)
   guard-rspec
+  hashie (~> 4.1)
   hiredis
   http_accept_language
   i18n-tasks (>= 0.9.31)
@@ -809,6 +813,7 @@ DEPENDENCIES
   webdrivers (~> 4.0)
   webmock
   webpacker (~> 5.1)
+  xmldsig (~> 0.6)
   xmlenc (~> 0.7, >= 0.7.1)
   zonebie
   zxcvbn-js
