@@ -1,9 +1,32 @@
+import sinon from 'sinon';
+import userEvent from '@testing-library/user-event';
 import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
-import AcuantCaptureCanvas from '@18f/identity-document-capture/components/acuant-capture-canvas';
+import AcuantCaptureCanvas, {
+  defineObservableProperty,
+} from '@18f/identity-document-capture/components/acuant-capture-canvas';
 import { render, useAcuant } from '../../../support/document-capture';
 
 describe('document-capture/components/acuant-capture-canvas', () => {
   const { initialize } = useAcuant();
+
+  describe('defineObservableProperty', () => {
+    it('behaves like an object', () => {
+      const object = {};
+      defineObservableProperty(object, 'key', () => {});
+      object.key = 'value';
+
+      expect(object.key).to.equal('value');
+    });
+
+    it('calls the callback on changes', () => {
+      const callback = sinon.spy();
+      const object = {};
+      defineObservableProperty(object, 'key', callback);
+      object.key = 'value';
+
+      expect(callback).to.have.been.calledOnceWithExactly();
+    });
+  });
 
   it('waits for initialization', () => {
     render(
@@ -45,5 +68,48 @@ describe('document-capture/components/acuant-capture-canvas', () => {
     unmount();
 
     expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
+  });
+
+  it('renders a labelled button', () => {
+    const { getByRole } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCaptureCanvas />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
+    );
+
+    initialize();
+
+    const button = getByRole('button', {
+      name: 'doc_auth.accessible_labels.camera_video_capture_label',
+    });
+    userEvent.click(button);
+    userEvent.type(button, 'b{space}{enter}', { skipClick: true });
+    expect(button).to.be.ok();
+    expect(window.AcuantCamera.triggerCapture).to.have.been.calledThrice();
+  });
+
+  it('defers to Acuant tap to capture', () => {
+    const { getByRole } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCaptureCanvas />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
+    );
+
+    initialize();
+
+    // This assumes that Acuant SDK will assign its own click handlers to respond to clicks on the
+    // canvas, which happens in combination with assigning the callback property to the canvas.
+    const canvas = getByRole('button');
+    canvas.callback = () => {};
+
+    userEvent.click(canvas);
+
+    // It's expected that the capture will be handled internally in Acuant SDK, not as a result of
+    // an explicit call to the triggerCapture public API.
+    expect(window.AcuantCamera.triggerCapture).not.to.have.been.called();
   });
 });

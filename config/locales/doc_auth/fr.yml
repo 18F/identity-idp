@@ -2,6 +2,8 @@
 fr:
   doc_auth:
     accessible_labels:
+      camera_video_capture_instructions: Nous prendrons automatiquement la photo. Ou, cliquez pour capturer.
+      camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d'identité
       document_capture_dialog: Capture du document
     buttons:
       change_address: changement
