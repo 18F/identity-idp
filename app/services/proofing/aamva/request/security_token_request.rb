@@ -112,9 +112,14 @@ module Proofing
         end
 
         def request_body_template
-          template_file_path = File.join(
-            File.dirname(__FILE__),
-            'templates/security_token.xml.erb',
+          template_file_path = Rails.root.join(
+            'app',
+            'services',
+            'proofing',
+            'aamva',
+            'request',
+            'templates',
+            'security_token.xml.erb',
           )
           File.read(template_file_path)
         end
