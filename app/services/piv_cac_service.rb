@@ -71,12 +71,14 @@ module PivCacService
       end
 
       Faraday.new(ssl: ssl_config) do |f|
-        f.request :instrumentation
+        f.request :instrumentation, name: 'request_metric.faraday'
       end.post(
         verify_token_uri,
         URI.encode_www_form({ token: token }),
         Authentication: authenticate(token),
-      )
+      ) do |req|
+        req.options.context = { service_name: 'piv_cac_token' }
+      end
     end
 
     def verify_token_uri
