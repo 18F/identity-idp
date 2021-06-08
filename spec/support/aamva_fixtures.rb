@@ -8,7 +8,7 @@ module AamvaFixtures
       public_key: Base64.strict_encode64(aamva_public_key.to_der),
       verification_url: 'https://verificationservices-primary.example.com:18449/dldv/2.1/valuefree',
       auth_url: 'https://authentication-cert.example.com/Authentication/Authenticate.svc',
-      )
+    )
   end
 
   def self.aamva_private_key
@@ -17,7 +17,7 @@ module AamvaFixtures
 
   def self.aamva_public_key
     @aamva_public_key ||= begin
-      current_time = Time.now
+      current_time = Time.zone.now
       cert = OpenSSL::X509::Certificate.new
       cert.subject = cert.issuer = OpenSSL::X509::Name.parse('/C=BE/O=Test/OU=Test/CN=Test')
       cert.not_before = current_time
@@ -33,10 +33,12 @@ module AamvaFixtures
         ef.create_extension('basicConstraints', 'CA:TRUE', true),
         ef.create_extension('subjectKeyIdentifier', 'hash'),
       ]
-      cert.add_extension ef.create_extension('authorityKeyIdentifier',
-                                             'keyid:always,issuer:always')
+      cert.add_extension ef.create_extension(
+        'authorityKeyIdentifier',
+        'keyid:always,issuer:always',
+      )
 
-      cert.sign aamva_private_key, OpenSSL::Digest::SHA256.new
+      cert.sign aamva_private_key, OpenSSL::Digest.new('SHA256')
       cert
     end
   end
@@ -98,7 +100,7 @@ module AamvaFixtures
     fullpath = File.join(
       File.dirname(__FILE__),
       '../fixtures',
-      path
+      path,
     )
     File.read(fullpath)
   end
