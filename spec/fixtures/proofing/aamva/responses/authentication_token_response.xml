@@ -1,0 +1,21 @@
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing" xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd">
+  <s:Header>
+    <a:Action s:mustUnderstand="1">http://aamva.org/authentication/3.1.0/IAuthenticationService/AuthenticateResponse</a:Action>
+    <a:RelatesTo>urn:uuid:7eb3fa83-c036-4ddd-b137-ca3f742b69cb</a:RelatesTo>
+    <ActivityId xmlns="http://schemas.microsoft.com/2004/09/ServiceModel/Diagnostics" CorrelationId="194cbf9b-0515-439a-922e-6ab8a77dd4a7">00000000-0000-0000-0000-000000000000</ActivityId>
+    <o:Security xmlns:o="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" s:mustUnderstand="1">
+      <u:Timestamp u:Id="_0">
+        <u:Created>2017-10-30T17:43:51.679Z</u:Created>
+        <u:Expires>2017-10-30T17:48:51.679Z</u:Expires>
+      </u:Timestamp>
+    </o:Security>
+  </s:Header>
+  <s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <AuthenticateResponse xmlns="http://aamva.org/authentication/3.1.0">
+      <AuthenticateResult>
+        <Token>KEYKEYKEY</Token>
+        <Success>true</Success>
+      </AuthenticateResult>
+    </AuthenticateResponse>
+  </s:Body>
+</s:Envelope>

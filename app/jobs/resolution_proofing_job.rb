@@ -207,7 +207,7 @@ class ResolutionProofingJob < ApplicationJob
     @state_id_proofer ||= if IdentityConfig.store.proofer_mock_fallback
       Proofing::Mock::StateIdMockClient.new
     else
-      Aamva::Proofer.new(
+      Proofing::Aamva::Proofer.new(
         auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
         auth_url: IdentityConfig.store.aamva_auth_url,
         cert_enabled: IdentityConfig.store.aamva_cert_enabled,

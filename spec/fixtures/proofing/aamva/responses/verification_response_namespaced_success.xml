@@ -1,0 +1,26 @@
+<s:Envelope xmlns:s="http://www.w3.org/2003/05/soap-envelope" xmlns:a="http://www.w3.org/2005/08/addressing">
+  <s:Header>
+    <a:Action s:mustUnderstand="1">
+      http://aamva.org/dldv/wsdl/2.1/IDLDVService21/VerifyDriverLicenseDataResponse
+    </a:Action>
+    <a:MessageID>uuid:1111111111111111    1UNISG</a:MessageID>
+  </s:Header>
+  <s:Body xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <VerifyDriverLicenseDataResponse xmlns="http://aamva.org/dldv/wsdl/2.1">
+      <VerifyDriverLicenseDataResult>
+        <ControlData xmlns="http://aamva.org/niem/extensions/1.0">
+          <MessageAddress>
+            <TransactionLocatorId>transaction-locator-id-67890</TransactionLocatorId>
+            <MessageOriginatorId>WI</MessageOriginatorId>
+            <MessageDestinationId>GSA</MessageDestinationId>
+          </MessageAddress>
+        </ControlData>
+        <DriverLicenseNumberMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</DriverLicenseNumberMatchIndicator>
+        <PersonBirthDateMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonBirthDateMatchIndicator>
+        <PersonLastNameExactMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonLastNameExactMatchIndicator>
+        <PersonFirstNameExactMatchIndicator xmlns="http://aamva.org/niem/extensions/1.0">true</PersonFirstNameExactMatchIndicator>
+      </VerifyDriverLicenseDataResult>
+    </VerifyDriverLicenseDataResponse>
+  </s:Body>
+</s:Envelope>
+

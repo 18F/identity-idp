@@ -31,7 +31,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:resolution_proofer) do
     instance_double(LexisNexis::InstantVerify::Proofer, class: LexisNexis::InstantVerify::Proofer)
   end
-  let(:state_id_proofer) { instance_double(Aamva::Proofer, class: Aamva::Proofer) }
+  let(:state_id_proofer) do
+    instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)
+  end
   let(:trace_id) { SecureRandom.uuid }
   let(:document_expired) { false }
 
