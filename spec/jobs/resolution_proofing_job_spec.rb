@@ -126,7 +126,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 transaction_id: lexisnexis_transaction_id,
               },
               state_id: {
-                client: Aamva::Proofer.vendor_name,
+                client: Proofing::Aamva::Proofer.vendor_name,
                 errors: {},
                 exception: nil,
                 success: true,
@@ -179,7 +179,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
               should_proof_state_id: true,
               stages: {
                 state_id: {
-                  client: Aamva::Proofer.vendor_name,
+                  client: Proofing::Aamva::Proofer.vendor_name,
                   errors: {},
                   exception: nil,
                   success: true,
