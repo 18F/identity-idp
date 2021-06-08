@@ -11,7 +11,7 @@ import { useRef, useEffect, useCallback } from 'react';
  * @param {F} fn
  * @param {any[]=} dependencies Callback dependencies
  *
- * @return F
+ * @return {F}
  */
 function useImmutableCallback(fn, dependencies = []) {
   const ref = useRef(/** @type {F} */ (() => {}));
@@ -20,7 +20,7 @@ function useImmutableCallback(fn, dependencies = []) {
     ref.current = fn;
   }, [fn, ...dependencies]);
 
-  return useCallback((...args) => ref.current(...args), [ref]);
+  return useCallback(/** @type {F} */ ((...args) => ref.current(...args)), [ref]);
 }
 
 export default useImmutableCallback;
