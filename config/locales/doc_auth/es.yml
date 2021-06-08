@@ -2,7 +2,6 @@
 es:
   doc_auth:
     accessible_labels:
-      camera_video_capture: Video en vivo desde la cámara del dispositivo
       document_capture_dialog: Captura de documentos
     buttons:
       change_address: cambio
