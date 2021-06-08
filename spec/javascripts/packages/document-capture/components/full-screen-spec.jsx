@@ -54,9 +54,9 @@ describe('document-capture/components/full-screen', () => {
   });
 
   it('is rendered as an accessible modal', () => {
-    const { baseElement } = render(<FullScreen>Content</FullScreen>);
+    const { getByRole } = render(<FullScreen>Content</FullScreen>);
 
-    expect(baseElement.querySelector('[role]').getAttribute('role')).to.equal('dialog');
+    expect(getByRole('dialog')).to.be.ok();
   });
 
   it('calls close callback when close button is clicked', () => {
