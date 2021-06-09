@@ -3,7 +3,8 @@ class DocumentCaptureSession < ApplicationRecord
 
   belongs_to :user
 
-  def self.create_by_user_id(user_id, hash = {})
+  def self.create_by_user_id(user_id, analytics, hash = {})
+    @analytics = analytics
     reuse_session = DocumentCaptureSession.where(user_id: user_id).first_or_create
     reuse_session.reset
     reuse_session.assign_attributes(hash)
@@ -96,6 +97,12 @@ class DocumentCaptureSession < ApplicationRecord
     self.ial2_strict = nil
     self.issuer = nil
     self.cancelled_at = nil
+  end
+
+  def alert_if_session_in_use(analytics)
+    return unless self.created_at && !self.result_id && !self.cancelled_at
+
+    @analytics.track_event(Analytics::DOCUMENT_CAPTURE_SESSION_OVERWRITTEN)
   end
 
   private

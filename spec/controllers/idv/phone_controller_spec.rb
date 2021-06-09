@@ -95,6 +95,7 @@ describe Idv::PhoneController do
       # in progress behavior
       document_capture_session = DocumentCaptureSession.create_by_user_id(
         user.id,
+        @analytics,
         requested_at: Time.zone.now,
       )
       document_capture_session.create_proofing_session
