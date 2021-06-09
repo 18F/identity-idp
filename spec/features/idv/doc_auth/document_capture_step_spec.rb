@@ -209,6 +209,7 @@ feature 'doc auth document capture step' do
       attach_and_submit_images
 
       expect(DocAuthLog.find_by(user_id: user.id).state).to be_nil
+      expect(DocAuthLog.find_by(user_id: user.id).aamva).to be_nil
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
