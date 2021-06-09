@@ -52,24 +52,12 @@ module Idv
       end
 
       def add_proofing_costs(results)
-        vendors = results[:context][:stages]
-        # backwards-compatibility, can be removed after next deploy (2021-04-29)
-        if vendors.is_a?(Array)
-          vendors.each do |hash|
-            process_aamva(hash[:transaction_id]) if hash[:state_id]
-            if hash[:resolution]
-              # transaction_id comes from ConversationId
-              add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-            end
-          end
-        else
-          vendors.each do |stage, hash|
-            if stage == :resolution
-              # transaction_id comes from ConversationId
-              add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-            elsif stage == :state_id
-              process_aamva(hash[:transaction_id])
-            end
+        results[:context][:stages].each do |stage, hash|
+          if stage == :resolution
+            # transaction_id comes from ConversationId
+            add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
+          elsif stage == :state_id
+            process_aamva(hash[:transaction_id])
           end
         end
       end
