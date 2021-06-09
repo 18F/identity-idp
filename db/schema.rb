@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_26_024753) do
+ActiveRecord::Schema.define(version: 2021_06_07_215515) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -197,6 +197,7 @@ ActiveRecord::Schema.define(version: 2021_05_26_024753) do
     t.datetime "agreement_view_at"
     t.integer "agreement_view_count", default: 0
     t.string "state"
+    t.boolean "aamva"
     t.index ["user_id"], name: "index_doc_auth_logs_on_user_id", unique: true
     t.index ["verified_view_at"], name: "index_doc_auth_logs_on_verified_view_at"
   end

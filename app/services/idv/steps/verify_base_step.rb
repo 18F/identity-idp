@@ -52,28 +52,12 @@ module Idv
       end
 
       def add_proofing_costs(results)
-        vendors = results[:context][:stages]
-        # backwards-compatibility, can be removed after next deploy (2021-04-29)
-        if vendors.is_a?(Array)
-          vendors.each do |hash|
-            if hash[:state_id]
-              # transaction_id comes from TransactionLocatorId
-              add_cost(:aamva, transaction_id: hash[:transaction_id])
-            end
-            if hash[:resolution]
-              # transaction_id comes from ConversationId
-              add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-            end
-          end
-        else
-          vendors.each do |stage, hash|
-            if stage == :resolution
-              # transaction_id comes from ConversationId
-              add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
-            elsif stage == :state_id
-              # transaction_id comes from TransactionLocatorId
-              add_cost(:aamva, transaction_id: hash[:transaction_id])
-            end
+        results[:context][:stages].each do |stage, hash|
+          if stage == :resolution
+            # transaction_id comes from ConversationId
+            add_cost(:lexis_nexis_resolution, transaction_id: hash[:transaction_id])
+          elsif stage == :state_id
+            process_aamva(hash[:transaction_id])
           end
         end
       end
@@ -102,6 +86,20 @@ module Idv
         return false if sp_session.nil?
         banlist = IdentityConfig.store.aamva_sp_banlist_issuers
         banlist.include?(sp_session[:issuer])
+      end
+
+      def process_aamva(transaction_id)
+        # transaction_id comes from TransactionLocatorId
+        add_cost(:aamva, transaction_id: transaction_id)
+        track_aamva
+      end
+
+      def track_aamva
+        return unless IdentityConfig.store.state_tracking_enabled
+        doc_auth_log = DocAuthLog.find_by(user_id: user_id)
+        return unless doc_auth_log
+        doc_auth_log.aamva = true
+        doc_auth_log.save!
       end
     end
   end
