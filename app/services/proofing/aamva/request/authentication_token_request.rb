@@ -38,7 +38,9 @@ module Proofing
         def send
           with_retries(max_tries: 2, rescue: [Faraday::TimeoutError, Faraday::ConnectionFailed]) do
             Response::AuthenticationTokenResponse.new(
-              http_client.post(url, body, headers),
+              http_client.post(url, body, headers) do |req|
+                req.options.context = { service_name: 'aamva_authentication_token' }
+              end,
             )
           end
         rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
@@ -58,6 +60,7 @@ module Proofing
 
         def http_client
           Faraday.new(request: { open_timeout: timeout, timeout: timeout }) do |faraday|
+            faraday.request :instrumentation, name: 'request_metric.faraday'
             faraday.adapter :net_http
           end
         end
