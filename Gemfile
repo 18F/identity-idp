@@ -6,7 +6,7 @@ ruby '~> 2.6.5'
 gem 'rails', '~> 6.1.3'
 
 # Variables can be overridden for local dev in Gemfile-dev
-@doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.9.2' }
+@doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.9.3' }
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.2.0' }
 @lexisnexis_api_gem ||= { github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
