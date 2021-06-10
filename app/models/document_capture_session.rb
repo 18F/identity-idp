@@ -4,9 +4,12 @@ class DocumentCaptureSession < ApplicationRecord
   belongs_to :user
 
   def self.create_by_user_id(user_id, analytics, hash = {})
-    @analytics = analytics
-    reuse_session = DocumentCaptureSession.where(user_id: user_id).first_or_create
-    reuse_session.reset
+    reuse_session = DocumentCaptureSession.find_by(user_id: user_id)
+    if reuse_session
+      reuse_session.reset(analytics)
+    else
+      reuse_session = DocumentCaptureSession.create(user_id: user_id)
+    end
     reuse_session.assign_attributes(hash)
     reuse_session.save!
     reuse_session
@@ -89,10 +92,10 @@ class DocumentCaptureSession < ApplicationRecord
       Time.zone.now
   end
 
-  def reset
+  def reset(analytics)
+    alert_if_session_in_use(analytics)
+
     self.result_id = nil
-    now = Time.zone.now
-    self.updated_at = now
     self.requested_at = nil
     self.ial2_strict = nil
     self.issuer = nil
@@ -102,7 +105,7 @@ class DocumentCaptureSession < ApplicationRecord
   def alert_if_session_in_use(analytics)
     return unless self.created_at && !self.result_id && !self.cancelled_at
 
-    @analytics.track_event(Analytics::DOCUMENT_CAPTURE_SESSION_OVERWRITTEN)
+    analytics.track_event(Analytics::DOCUMENT_CAPTURE_SESSION_OVERWRITTEN)
   end
 
   private
