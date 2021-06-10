@@ -1,7 +1,9 @@
 module IdvSession
   extend ActiveSupport::Concern
+  include EffectiveUser
 
   included do
+    before_action :redirect_unless_effective_user
     before_action :redirect_if_sp_context_needed
   end
 
@@ -10,16 +12,19 @@ module IdvSession
   end
 
   def confirm_idv_needed
-    if current_user.active_profile.blank? ||
-       decorated_session.requested_more_recent_verification? || liveness_upgrade_required?
-      return
-    end
+    return if effective_user.active_profile.blank? ||
+              decorated_session.requested_more_recent_verification? ||
+              liveness_upgrade_required?
 
     redirect_to idv_activated_url
   end
 
+  def hybrid_session?
+    session[:doc_capture_user_id].present?
+  end
+
   def liveness_upgrade_required?
-    sp_session[:ial2_strict] && !current_user.active_profile&.includes_liveness_check?
+    sp_session[:ial2_strict] && !effective_user.active_profile&.includes_liveness_check?
   end
 
   def confirm_idv_vendor_session_started
@@ -30,20 +35,24 @@ module IdvSession
   def idv_session
     @_idv_session ||= Idv::Session.new(
       user_session: user_session,
-      current_user: current_user,
+      current_user: effective_user,
       issuer: sp_session[:issuer],
     )
   end
 
   def idv_attempter_throttled?
-    Throttler::IsThrottled.call(current_user.id, :idv_resolution)
+    Throttler::IsThrottled.call(effective_user.id, :idv_resolution)
+  end
+
+  def redirect_unless_effective_user
+    redirect_to root_url if !effective_user
   end
 
   def redirect_if_sp_context_needed
     return if sp_from_sp_session.present?
     return unless Identity::Hostdata.in_datacenter?
     return if Identity::Hostdata.env != IdentityConfig.store.sp_context_needed_environment
-    return if current_user.profiles.any?
+    return if effective_user.profiles.any?
 
     redirect_to account_url
   end

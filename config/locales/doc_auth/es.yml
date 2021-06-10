@@ -240,7 +240,8 @@ es:
       send_sms: Le enviaremos un mensaje de texto a su dispositivo con un enlace. Siga
         ese enlace a su navegador para tomar fotografías de la parte delantera y
         trasera de su identificación.
-      switch_back: Vuelve a tu computadora para terminar de verificar tu identidad
+      switch_back: Regrese a su computadora para continuar con la verificación de su
+        identidad.
       text1: ''
       text1a: como un teléfono o una computadora.
       text2: No es necesario disponer de la credencial.

@@ -3,6 +3,8 @@ module Idv
     class LinkSentStep < DocAuthBaseStep
       STEP_INDICATOR_STEP = :verify_id
 
+      HYBRID_FLOW_STEPS = %i[upload send_link link_sent email_sent document_capture]
+
       def call
         return render_document_capture_cancelled if document_capture_session&.cancelled_at
         return render_step_incomplete_error unless take_photo_with_phone_successful?
@@ -10,10 +12,6 @@ module Idv
         # The doc capture flow will have fetched the results already. We need
         # to fetch them again here to add the PII to this session
         handle_document_verification_success(document_capture_session_result)
-      end
-
-      def extra_view_variables
-        { is_cancelled: !!document_capture_session&.cancelled_at }
       end
 
       private
@@ -31,6 +29,8 @@ module Idv
 
       def render_document_capture_cancelled
         failure(I18n.t('errors.doc_auth.document_capture_cancelled'))
+        mark_steps_incomplete
+        redirect_to idv_url
       end
 
       def render_step_incomplete_error
@@ -38,7 +38,7 @@ module Idv
       end
 
       def take_photo_with_phone_successful?
-        document_capture_session_result.present?
+        document_capture_session_result.present? && document_capture_session_result.success?
       end
 
       def document_capture_session_result
@@ -49,9 +49,11 @@ module Idv
       end
 
       def mark_steps_complete
-        %i[send_link link_sent email_sent document_capture].each do |step|
-          mark_step_complete(step)
-        end
+        HYBRID_FLOW_STEPS.each { |step| mark_step_complete(step) }
+      end
+
+      def mark_steps_incomplete
+        HYBRID_FLOW_STEPS.each { |step| mark_step_incomplete(step) }
       end
     end
   end

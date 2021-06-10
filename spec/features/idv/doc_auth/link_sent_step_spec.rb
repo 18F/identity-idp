@@ -43,6 +43,14 @@ feature 'doc auth link sent step' do
     expect(page).to have_current_path(idv_doc_auth_link_sent_step)
   end
 
+  it 'does not proceed to the next page if the capture flow is unsuccessful' do
+    mock_doc_captured(user.id, IdentityDocAuth::Response.new(success: false))
+
+    click_idv_continue
+
+    expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+  end
+
   it 'shows the step indicator' do
     expect(page).to have_css(
       '.step-indicator__step--current',
@@ -55,16 +63,16 @@ feature 'doc auth link sent step' do
       document_capture_session = user.document_capture_sessions.last
       document_capture_session.cancelled_at = Time.zone.now
       document_capture_session.save!
-      visit current_path
     end
 
-    it 'does not poll' do
-      expect(page).to_not have_css('script[src*="doc-capture-polling"]')
-    end
+    it 'redirects to before hybrid flow started and shows alert text' do
+      click_idv_continue
 
-    it 'does not show continue button or instruction text' do
-      expect(page).to_not have_button(t('forms.buttons.continue'), visible: :all)
-      expect(page).to_not have_content(:all, t('doc_auth.info.link_sent_complete_nojs'))
+      expect(page).to have_current_path(idv_doc_auth_upload_step)
+      expect(page).to have_css(
+        '.usa-alert--error',
+        text: t('errors.doc_auth.document_capture_cancelled'),
+      )
     end
   end
 

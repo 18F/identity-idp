@@ -38,6 +38,38 @@ describe Idv::CancellationsController do
 
       get :new, params: { step: 'first' }
     end
+
+    context 'when no session' do
+      it 'redirects to root' do
+        get :new
+
+        expect(response).to redirect_to(root_url)
+      end
+    end
+
+    context 'when hybrid session' do
+      before do
+        session[:doc_capture_user_id] = create(:user).id
+      end
+
+      it 'renders template' do
+        get :new
+
+        expect(response).to render_template(:new)
+      end
+    end
+
+    context 'when regular session' do
+      before do
+        stub_sign_in
+      end
+
+      it 'renders template' do
+        get :new
+
+        expect(response).to render_template(:new)
+      end
+    end
   end
 
   describe '#destroy' do
@@ -51,6 +83,53 @@ describe Idv::CancellationsController do
       )
 
       delete :destroy, params: { step: 'first' }
+    end
+
+    context 'when no session' do
+      it 'redirects to root' do
+        delete :destroy
+
+        expect(response).to redirect_to(root_url)
+      end
+    end
+
+    context 'when hybrid session' do
+      let(:user) { create(:user) }
+      let(:document_capture_session) { user.document_capture_sessions.create! }
+      before do
+        session[:doc_capture_user_id] = user.id
+        session[:document_capture_session_uuid] = document_capture_session.uuid
+      end
+
+      it 'cancels document capture' do
+        delete :destroy
+
+        expect(document_capture_session.reload.cancelled_at).to be_present
+      end
+
+      it 'renders template' do
+        delete :destroy
+
+        expect(response).to render_template(:destroy)
+      end
+    end
+
+    context 'when regular session' do
+      before do
+        stub_sign_in
+      end
+
+      it 'destroys session' do
+        expect(subject.user_session).to receive(:delete).with('idv/doc_auth')
+
+        delete :destroy
+      end
+
+      it 'renders template' do
+        delete :destroy
+
+        expect(response).to render_template(:destroy)
+      end
     end
   end
 end

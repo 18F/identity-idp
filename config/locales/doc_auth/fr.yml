@@ -256,8 +256,7 @@ fr:
       send_sms: Nous enverrons un message texte à votre appareil avec un lien. Suivez
         ce lien vers votre navigateur pour prendre des photos du recto et du
         verso de votre identifiant.
-      switch_back: Revenez sur votre ordinateur pour terminer la vérification de votre
-        identité
+      switch_back: Retournez sur votre ordinateur pour continuer à vérifier votre identité.
       text1: ''
       text1a: tel qu’un téléphone ou un ordinateur
       text2: Vous n’aurez pas besoin de la carte avec vous.

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_26_023854) do
+ActiveRecord::Schema.define(version: 2021_05_26_024753) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -264,9 +264,7 @@ ActiveRecord::Schema.define(version: 2021_05_26_023854) do
     t.date "end_date"
     t.decimal "estimated_amount", precision: 12, scale: 2
     t.bigint "partner_account_id"
-    t.bigint "iaa_status_id"
     t.index ["gtc_number"], name: "index_iaa_gtcs_on_gtc_number", unique: true
-    t.index ["iaa_status_id"], name: "index_iaa_gtcs_on_iaa_status_id"
     t.index ["partner_account_id"], name: "index_iaa_gtcs_on_partner_account_id"
     t.check_constraint "end_date IS NOT NULL", name: "iaa_gtcs_end_date_null"
     t.check_constraint "start_date IS NOT NULL", name: "iaa_gtcs_start_date_null"
@@ -280,20 +278,10 @@ ActiveRecord::Schema.define(version: 2021_05_26_023854) do
     t.decimal "estimated_amount", precision: 12, scale: 2
     t.integer "pricing_model", default: 2, null: false
     t.bigint "iaa_gtc_id"
-    t.bigint "iaa_status_id"
     t.index ["iaa_gtc_id", "order_number"], name: "index_iaa_orders_on_iaa_gtc_id_and_order_number", unique: true
     t.index ["iaa_gtc_id"], name: "index_iaa_orders_on_iaa_gtc_id"
-    t.index ["iaa_status_id"], name: "index_iaa_orders_on_iaa_status_id"
     t.check_constraint "end_date IS NOT NULL", name: "iaa_orders_end_date_null"
     t.check_constraint "start_date IS NOT NULL", name: "iaa_orders_start_date_null"
-  end
-
-  create_table "iaa_statuses", force: :cascade do |t|
-    t.string "name", null: false
-    t.integer "order", null: false
-    t.string "partner_name"
-    t.index ["name"], name: "index_iaa_statuses_on_name", unique: true
-    t.index ["order"], name: "index_iaa_statuses_on_order", unique: true
   end
 
   create_table "identities", force: :cascade do |t|
@@ -678,10 +666,8 @@ ActiveRecord::Schema.define(version: 2021_05_26_023854) do
   end
 
   add_foreign_key "document_capture_sessions", "users"
-  add_foreign_key "iaa_gtcs", "iaa_statuses"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"
-  add_foreign_key "iaa_orders", "iaa_statuses"
   add_foreign_key "integration_usages", "iaa_orders"
   add_foreign_key "integration_usages", "integrations"
   add_foreign_key "integrations", "integration_statuses"
