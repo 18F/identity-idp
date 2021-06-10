@@ -103,9 +103,13 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def alert_if_session_in_use(analytics)
-    return unless self.created_at && !self.result_id && !self.cancelled_at
+    return unless session_in_use?
 
     analytics.track_event(Analytics::DOCUMENT_CAPTURE_SESSION_OVERWRITTEN)
+  end
+
+  def session_in_use?
+    self.created_at && !self.result_id && !self.cancelled_at
   end
 
   private
