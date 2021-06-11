@@ -440,6 +440,12 @@ Lint/NonDeterministicRequireOrder:
 Lint/NonLocalExitFromIterator:
   Enabled: true
 
+Lint/NumberedParameterAssignment:
+  Enabled: true
+
+Lint/OrAssignmentToConstant:
+  Enabled: true
+
 Lint/OrderedMagicComments:
   Enabled: true
 
@@ -515,6 +521,9 @@ Lint/SelfAssignment:
 Lint/ShadowedArgument:
   Enabled: true
   IgnoreImplicitReferences: false
+
+Lint/SymbolConversion:
+  Enabled: true
 
 Lint/Syntax:
   Enabled: true
@@ -673,6 +682,9 @@ Performance/RedundantMerge:
 Performance/RedundantSortBlock:
   Enabled: true
 
+Performance/RedundantSplitRegexpArgument:
+  Enabled: true
+
 Performance/RedundantStringChars:
   Enabled: true
 
@@ -805,12 +817,6 @@ Style/CommandLiteral:
 Style/CommentedKeyword:
   Enabled: true
 
-Style/ConditionalAssignment:
-  Enabled: true
-  EnforcedStyle: assign_to_condition
-  SingleLineConditionsOnly: true
-  IncludeTernaryExpressions: true
-
 Style/DefWithParentheses:
   Enabled: true
 
@@ -856,6 +862,9 @@ Style/For:
 Style/GlobalVars:
   Enabled: true
   AllowedVariables: []
+
+Style/HashConversion:
+  Enabled: true
 
 Style/HashExcept:
   Enabled: true
@@ -975,9 +984,6 @@ Style/RandomWithOffset:
 Style/RedundantAssignment:
   Enabled: true
 
-Style/RedundantBegin:
-  Enabled: true
-
 Style/RedundantCondition:
   Enabled: true
 
@@ -1040,14 +1046,14 @@ Style/Semicolon:
   Enabled: true
   AllowAsExpressionSeparator: false
 
-Style/SlicingWithRange:
-  Enabled: true
-
 Style/StabbyLambdaParentheses:
   Enabled: true
   EnforcedStyle: require_parentheses
 
 Style/StderrPuts:
+  Enabled: true
+
+Style/StringChars:
   Enabled: true
 
 Style/StringLiterals:
