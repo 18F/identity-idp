@@ -2,7 +2,7 @@ module RuboCop
   module Cop
     module IdentityIdp
       class LocalizedValidationMessageLinter < RuboCop::Cop::Cop
-        MSG = 'Use Proc.new when translating validation message'.freeze
+        MSG = 'Use proc when translating validation message'.freeze
 
         RESTRICT_ON_SEND = [
           :validate,

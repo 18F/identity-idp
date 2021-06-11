@@ -13,13 +13,13 @@ describe RuboCop::Cop::IdentityIdp::LocalizedValidationMessageLinter do
     it 'registers an offense when using static translated string as validation message' do
       expect_offense(<<~RUBY)
         validates :a, presence: { message: I18n.t('error') }
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use Proc.new when translating validation message
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use proc when translating validation message
       RUBY
     end
 
     it 'registers no offense when using proc as validation message' do
       expect_no_offenses(<<~RUBY)
-        validates :a, presence: { message: Proc.new { I18n.t('error') } }
+        validates :a, presence: { message: proc { I18n.t('error') } }
       RUBY
     end
   end
@@ -28,13 +28,13 @@ describe RuboCop::Cop::IdentityIdp::LocalizedValidationMessageLinter do
     it 'registers an offense when using static translated string as validation message' do
       expect_offense(<<~RUBY)
         validates_presence_of :a, message: I18n.t('error')
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use Proc.new when translating validation message
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use proc when translating validation message
       RUBY
     end
 
     it 'registers no offense when using proc as validation message' do
       expect_no_offenses(<<~RUBY)
-        validates_presence_of :a, message: Proc.new { I18n.t('error') }
+        validates_presence_of :a, message: proc { I18n.t('error') }
       RUBY
     end
   end
