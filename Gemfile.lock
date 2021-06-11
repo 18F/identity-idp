@@ -18,17 +18,6 @@ GIT
       aws-sdk-s3 (~> 1.8)
 
 GIT
-  remote: https://github.com/18F/identity-lexisnexis-api-client-gem.git
-  revision: 79eb47856a297f5ecd5d9b3f1abcb1f01e6f563b
-  tag: v3.2.1
-  specs:
-    lexisnexis (3.2.1)
-      activesupport
-      faraday
-      proofer
-      redacted_struct (>= 1.0.0)
-
-GIT
   remote: https://github.com/18F/identity-logging.git
   revision: 7a341c9784275f44b0b0c3456a00a51fa79f4241
   tag: v0.1.0
@@ -753,7 +742,6 @@ DEPENDENCIES
   irb
   jwt
   knapsack
-  lexisnexis!
   local_time
   lograge (>= 0.11.2)
   maxminddb
