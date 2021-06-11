@@ -50,7 +50,7 @@ class AddressProofingJob < ApplicationJob
     @address_proofer ||= if IdentityConfig.store.proofer_mock_fallback
       Proofing::Mock::AddressMockClient.new
     else
-      LexisNexis::PhoneFinder::Proofer.new(
+      Proofing::LexisNexis::PhoneFinder::Proofer.new(
         phone_finder_workflow: IdentityConfig.store.lexisnexis_phone_finder_workflow,
         account_id: IdentityConfig.store.lexisnexis_account_id,
         base_url: IdentityConfig.store.lexisnexis_base_url,
