@@ -24,7 +24,6 @@ linters:
       - '*/app/views/layouts/*'
       - '*/app/views/mfa_confirmation/*'
       - '*/app/views/partials/*'
-      - '*/app/views/password_capture/*'
       - '*/app/views/reactivate_account/*'
       - '*/app/views/saml_idp/*'
       - '*/app/views/service_provider_mfa/*'
