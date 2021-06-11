@@ -1,5 +1,3 @@
-require 'json'
-
 module Proofing
   module LexisNexis
     class Response

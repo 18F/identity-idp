@@ -1,9 +1,3 @@
-require 'base64'
-require 'uri'
-require 'faraday'
-require 'active_support/core_ext/object/blank'
-require 'active_support/notifications'
-
 module Proofing
   module LexisNexis
     class RequestError < StandardError; end

@@ -1,8 +1,3 @@
-require 'date'
-require 'json'
-require 'securerandom'
-require 'rails_helper'
-
 module Proofing
   module LexisNexis
     module InstantVerify
