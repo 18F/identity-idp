@@ -7,7 +7,6 @@ linters:
     exclude:
       - '*/app/views/account_reset/*'
       - '*/app/views/accounts/*'
-      - '*/app/views/devise/*'
       - '*/app/views/idv/address/*'
       - '*/app/views/idv/come_back_later/*'
       - '*/app/views/idv/confirmations/*'
