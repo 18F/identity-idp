@@ -23,7 +23,6 @@ linters:
       - '*/app/views/events/*'
       - '*/app/views/layouts/*'
       - '*/app/views/mfa_confirmation/*'
-      - '*/app/views/pages/*'
       - '*/app/views/partials/*'
       - '*/app/views/password_capture/*'
       - '*/app/views/reactivate_account/*'
