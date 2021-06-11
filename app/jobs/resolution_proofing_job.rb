@@ -191,7 +191,7 @@ class ResolutionProofingJob < ApplicationJob
     @resolution_proofer ||= if IdentityConfig.store.proofer_mock_fallback
       Proofing::Mock::ResolutionMockClient.new
     else
-      LexisNexis::InstantVerify::Proofer.new(
+      Proofing::LexisNexis::InstantVerify::Proofer.new(
         instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
         account_id: IdentityConfig.store.lexisnexis_account_id,
         base_url: IdentityConfig.store.lexisnexis_base_url,

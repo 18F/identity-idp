@@ -1,0 +1,35 @@
+{
+  "Settings": {
+    "AccountNumber": "test_account",
+    "Mode": "testing",
+    "Reference": "0987:1234-abcd",
+    "Locale": "en_US",
+    "Venue": "online"
+  },
+  "Person": {
+    "Name": {
+      "FirstName": "Testy",
+      "LastName": "McTesterson"
+    },
+    "SSN": {
+      "Number": "123456789",
+      "Type": "ssn9"
+    },
+    "DateOfBirth": {
+      "Year": "1980",
+      "Month": "1",
+      "Day": "1"
+    },
+    "Addresses": [
+      {
+        "StreetAddress1": "123 Main St",
+        "StreetAddress2": "Ste 3",
+        "City": "Baton Rouge",
+        "State": "LA",
+        "Zip5": "70802",
+        "Country": "US",
+        "Context": "primary"
+      }
+    ]
+  }
+}
