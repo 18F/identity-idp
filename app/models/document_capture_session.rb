@@ -3,6 +3,18 @@ class DocumentCaptureSession < ApplicationRecord
 
   belongs_to :user
 
+  def self.create_by_user_id(user_id, analytics, hash = {})
+    reuse_session = DocumentCaptureSession.find_by(user_id: user_id)
+    if reuse_session
+      reuse_session.reset(analytics)
+    else
+      reuse_session = DocumentCaptureSession.create(user_id: user_id)
+    end
+    reuse_session.assign_attributes(hash)
+    reuse_session.save!
+    reuse_session
+  end
+
   def load_result
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
   end
@@ -78,6 +90,26 @@ class DocumentCaptureSession < ApplicationRecord
     return true unless requested_at
     (requested_at + IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes) <
       Time.zone.now
+  end
+
+  def reset(analytics)
+    alert_if_session_in_use(analytics)
+
+    self.result_id = nil
+    self.requested_at = nil
+    self.ial2_strict = nil
+    self.issuer = nil
+    self.cancelled_at = nil
+  end
+
+  def alert_if_session_in_use(analytics)
+    return unless session_in_use?
+
+    analytics.track_event(Analytics::DOCUMENT_CAPTURE_SESSION_OVERWRITTEN)
+  end
+
+  def session_in_use?
+    self.created_at && !self.result_id && !self.cancelled_at
   end
 
   private

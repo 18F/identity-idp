@@ -31,8 +31,13 @@ describe Idv::PhoneStep do
     Proofing::Mock::AddressMockClient::PROOFER_TIMEOUT_PHONE_NUMBER
   end
   let(:trace_id) { SecureRandom.uuid }
+  let(:analytics) { FakeAnalytics.new }
 
-  subject { described_class.new(idv_session: idv_session, trace_id: trace_id) }
+  subject { described_class.new(
+    idv_session: idv_session,
+    trace_id: trace_id,
+    analytics: analytics,
+  ) }
 
   describe '#submit' do
     it 'succeeds with good params' do

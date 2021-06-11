@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe DocumentCaptureSession do
+  let(:fake_analytics) { FakeAnalytics.new }
+  let(:user) { create(:user, :signed_up) }
   let(:doc_auth_response) do
     IdentityDocAuth::Response.new(
       success: true,
@@ -69,6 +71,30 @@ describe DocumentCaptureSession do
 
         expect(record.expired?).to eq(false)
       end
+    end
+  end
+
+  describe '.create_by_user_id' do
+    it 'triggers an analytics event if an attempt is made to try to overwrite a session in use' do
+      DocumentCaptureSession.create_by_user_id(user.id, fake_analytics)
+      DocumentCaptureSession.create_by_user_id(user.id, fake_analytics)
+      expect(fake_analytics).
+        to have_logged_event(Analytics::DOCUMENT_CAPTURE_SESSION_OVERWRITTEN, {})
+    end
+
+    it 'does not trigger an analytics event upon first use' do
+      DocumentCaptureSession.create_by_user_id(user.id, fake_analytics)
+      expect(fake_analytics).
+        to_not have_logged_event(Analytics::DOCUMENT_CAPTURE_SESSION_OVERWRITTEN, {})
+    end
+
+    it 'does not trigger an analytics event upon reuse' do
+      session = DocumentCaptureSession.create_by_user_id(user.id, fake_analytics)
+      session.result_id = 'foo'
+      session.save!
+      DocumentCaptureSession.create_by_user_id(user.id, fake_analytics)
+      expect(fake_analytics).
+        to_not have_logged_event(Analytics::DOCUMENT_CAPTURE_SESSION_OVERWRITTEN, {})
     end
   end
 end
