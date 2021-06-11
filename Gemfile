@@ -96,7 +96,7 @@ end
 
 group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
-  gem 'bootsnap', '~> 1.5.0', require: false
+  gem 'bootsnap', '~> 1.7.0', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'erb_lint', '~> 0.0.37', require: false
   gem 'i18n-tasks', '>= 0.9.31'
