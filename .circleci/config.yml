@@ -114,6 +114,21 @@ commands:
           destination: capybara
 
 jobs:
+  setup:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    steps:
+      - checkout
+      - bundle-yarn-install
+      - run:
+          name: Test Setup
+          command: |
+            bundle exec rake assets:precompile
+      - persist_to_workspace:
+          root: "."
+          paths:
+            - "public/assets"
+
   build:
     executor: ruby_browsers
 
@@ -128,6 +143,8 @@ jobs:
     steps:
       - checkout
       - bundle-yarn-install
+      - attach_workspace:
+          at: "."
       - run:
           name: Install AWS CLI
           command: |
@@ -190,10 +207,6 @@ jobs:
     steps:
       - checkout
       - bundle-yarn-install
-      - run:
-          name: Test Setup
-          command: |
-            bundle exec rake assets:precompile
       - run:
           name: Run Tests
           command: |
@@ -283,9 +296,16 @@ workflows:
   version: 2
   release:
     jobs:
-      - build
-      - javascript_build
-      - lints
+      - setup
+      - build:
+          requires:
+            - setup
+      - javascript_build:
+          requires:
+            - setup
+      - lints:
+          requires:
+            - setup
 
   # Theses are staggered separately from the smoke tests in the identity-monitor repo
   # because they share credentials and would mess each other up if run concurrently
