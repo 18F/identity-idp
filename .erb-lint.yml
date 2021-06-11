@@ -21,7 +21,6 @@ linters:
       - '*/app/views/forgot_password/*'
       - '*/app/views/event_disavowal/*'
       - '*/app/views/events/*'
-      - '*/app/views/layouts/*'
       - '*/app/views/mfa_confirmation/*'
       - '*/app/views/partials/*'
       - '*/app/views/reactivate_account/*'
