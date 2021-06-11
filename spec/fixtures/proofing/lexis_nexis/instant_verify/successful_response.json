@@ -1,0 +1,57 @@
+{
+  "Status": {
+    "ConversationId": "8624642277235233040",
+    "RequestId": "13936712",
+    "TransactionStatus": "passed",
+    "Reference": "Reference1",
+    "ServerInfo": "ASERVER-W7D"
+  },
+  "Products": [
+    {
+      "ProductType": "Discovery",
+      "ExecutedStepName": "Discovery",
+      "ProductStatus": "pass"
+    },
+    {
+      "ProductType": "Velocity",
+      "ExecutedStepName": "Velocity",
+      "ProductStatus": "pass",
+      "Items": [
+        {
+          "ItemName": "FREQUENCY",
+          "ItemStatus": "pass"
+        }
+      ]
+    },
+    {
+      "ProductType": "InstantVerify",
+      "ExecutedStepName": "InstantVerify",
+      "ProductStatus": "pass",
+      "Items": [
+        {
+          "ItemName": "SsnDeathMatchVerification",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "SSNSSAValid",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "DOBFullVerified",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "DOBYearVerified",
+          "ItemStatus": "pass"
+        },
+        {
+          "ItemName": "OFAC",
+          "ItemStatus": "pass",
+          "ItemReason": {
+            "Code": "ipatriot"
+          }
+        }
+      ]
+    }
+  ]
+}
