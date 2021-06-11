@@ -20,7 +20,7 @@ FactoryBot.define do
         split(' ').
         map { |w| w.chars.first.upcase }.
         select { |c| /\w/.match?(c) }.
-        join
+        join + id.to_s
     end
   end
 end
