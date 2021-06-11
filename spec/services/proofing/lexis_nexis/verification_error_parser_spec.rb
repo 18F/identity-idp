@@ -9,23 +9,17 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
       JSON.parse(LexisNexisFixtures.instant_verify_year_of_birth_fail_response_json)
     end
 
-    context 'outside of Rails' do
-      it { expect(error_parser).to be }
-    end
-
-    context 'within a Rails app' do
-      it 'logs a message formatted as JSON' do
-        expect(Rails.logger).to receive(:info) do |arg|
-          expect(JSON.parse(arg, symbolize_names: true)).to eq(
-            name: 'lexisnexis_partial_dob',
-            original_passed: false,
-            passed_partial_dob: true,
-            partial_dob_override_enabled: false,
-          )
-        end
-
-        expect(error_parser).to be
+    it 'logs a message formatted as JSON' do
+      expect(Rails.logger).to receive(:info) do |arg|
+        expect(JSON.parse(arg, symbolize_names: true)).to eq(
+          name: 'lexisnexis_partial_dob',
+          original_passed: false,
+          passed_partial_dob: true,
+          partial_dob_override_enabled: false,
+        )
       end
+
+      expect(error_parser).to be
     end
   end
 
