@@ -32,7 +32,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
 
         expect { verification_request.send }.to raise_error(
           Proofer::TimeoutError,
-          'LexisNexis timed out waiting for verification response'
+          'LexisNexis timed out waiting for verification response',
         )
       end
     end
@@ -50,7 +50,9 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
     end
   end
 
-  subject(:instance) { Proofing::LexisNexis::InstantVerify::Proofer.new(**LexisNexisFixtures.example_config.to_h) }
+  subject(:instance) do
+    Proofing::LexisNexis::InstantVerify::Proofer.new(**LexisNexisFixtures.example_config.to_h)
+  end
 
   describe '#proof' do
     subject(:result) { instance.proof(applicant) }
@@ -80,19 +82,21 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
           expect(result.success?).to eq(false)
           expect(result.errors).to include(
             base: include(a_kind_of(String)),
-            'Execute Instant Verify': include(a_kind_of(Hash))
+            'Execute Instant Verify': include(a_kind_of(Hash)),
           )
         end
       end
 
       context 'when the response is a year-of-birth failure and a date-of-birth failure' do
-        let(:response_body) { LexisNexisFixtures.instant_verify_date_of_birth_full_fail_response_json }
+        let(:response_body) do
+          LexisNexisFixtures.instant_verify_date_of_birth_full_fail_response_json
+        end
 
         it 'is a failure result' do
           expect(result.success?).to eq(false)
           expect(result.errors).to include(
             base: include(a_kind_of(String)),
-            'Execute Instant Verify': include(a_kind_of(Hash))
+            'Execute Instant Verify': include(a_kind_of(Hash)),
           )
         end
       end
@@ -120,13 +124,15 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
       end
 
       context 'when the response is a year-of-birth failure and a date-of-birth failure' do
-        let(:response_body) { LexisNexisFixtures.instant_verify_date_of_birth_full_fail_response_json }
+        let(:response_body) do
+          LexisNexisFixtures.instant_verify_date_of_birth_full_fail_response_json
+        end
 
         it 'is a failure result' do
           expect(result.success?).to eq(false)
           expect(result.errors).to include(
             base: include(a_kind_of(String)),
-            'Execute Instant Verify': include(a_kind_of(Hash))
+            'Execute Instant Verify': include(a_kind_of(Hash)),
           )
         end
       end

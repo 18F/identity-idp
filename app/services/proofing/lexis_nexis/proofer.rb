@@ -20,7 +20,7 @@ module Proofing
           :base_url,
           :request_mode,
           :request_timeout,
-        ]
+        ],
       )
 
       attr_reader :config

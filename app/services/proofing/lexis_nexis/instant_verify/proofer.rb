@@ -6,14 +6,14 @@ module Proofing
         vendor_name 'lexisnexis:instant_verify'
 
         required_attributes :uuid,
-          :first_name,
-          :last_name,
-          :dob,
-          :ssn,
-          :address1,
-          :city,
-          :state,
-          :zipcode
+                            :first_name,
+                            :last_name,
+                            :dob,
+                            :ssn,
+                            :address1,
+                            :city,
+                            :state,
+                            :zipcode
 
         optional_attributes :address2, :uuid_prefix, :dob_year_only
 

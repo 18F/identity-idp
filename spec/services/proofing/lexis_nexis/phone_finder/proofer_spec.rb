@@ -34,13 +34,15 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
     end
 
     context 'when the response is a failure' do
-      let(:response_body) { LexisNexisFixtures.instant_verify_date_of_birth_full_fail_response_json }
+      let(:response_body) do
+        LexisNexisFixtures.instant_verify_date_of_birth_full_fail_response_json
+      end
 
       it 'is a failure result' do
         expect(result.success?).to eq(false)
         expect(result.errors).to include(
           base: include(a_kind_of(String)),
-          'Execute Instant Verify': include(a_kind_of(Hash))
+          'Execute Instant Verify': include(a_kind_of(Hash)),
         )
       end
     end

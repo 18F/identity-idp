@@ -49,7 +49,10 @@ module Proofing
       private
 
       def verification_error_parser
-        @verification_error_parser ||= VerificationErrorParser.new(response_body, dob_year_only: dob_year_only?)
+        @verification_error_parser ||= VerificationErrorParser.new(
+          response_body,
+          dob_year_only: dob_year_only?,
+        )
       end
 
       def handle_unexpected_http_status_code_error

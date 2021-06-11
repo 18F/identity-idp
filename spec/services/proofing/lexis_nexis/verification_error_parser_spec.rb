@@ -5,7 +5,9 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
   subject(:error_parser) { described_class.new(response_body) }
 
   describe '#initialize' do
-    let(:response_body) { JSON.parse(LexisNexisFixtures.instant_verify_year_of_birth_fail_response_json) }
+    let(:response_body) do
+      JSON.parse(LexisNexisFixtures.instant_verify_year_of_birth_fail_response_json)
+    end
 
     context 'outside of Rails' do
       it { expect(error_parser).to be }
@@ -31,9 +33,9 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
     subject(:errors) { error_parser.parsed_errors }
 
     it 'should return an array of errors from the response' do
-      expect(errors[:base]).to include("total.scoring.model.verification.fail")
-      expect(errors[:base]).to include("31000123456789")
-      expect(errors[:base]).to include("1234-abcd")
+      expect(errors[:base]).to include('total.scoring.model.verification.fail')
+      expect(errors[:base]).to include('31000123456789')
+      expect(errors[:base]).to include('1234-abcd')
 
       expect(errors[:Discovery]).to eq(nil) # This should be absent since it passed
       expect(errors[:SomeOtherProduct]).to eq(response_body['Products'][1])
@@ -68,7 +70,7 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
       it { is_expected.to eq(true) }
     end
 
-    context 'with both DOBYearVerified and DOBFullVerified passing but some other product failing' do
+    context 'with both DOBYearVerified and DOBFullVerified passing, some other product failing' do
       let(:items) do
         [
           { 'ItemName' => 'DOBYearVerified', 'ItemStatus' => 'pass' },
@@ -90,7 +92,7 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
       it { is_expected.to eq(true) }
     end
 
-    context 'with both DOBYearVerified passed, and DOBFullVerified failing and some other product failing' do
+    context 'with DOBYearVerified passed and DOBFullVerified failing, some other product failing' do
       let(:items) do
         [
           { 'ItemName' => 'DOBYearVerified', 'ItemStatus' => 'pass' },

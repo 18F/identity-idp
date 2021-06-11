@@ -6,7 +6,7 @@ describe Proofing::LexisNexis::Response do
   let(:response) do
     Faraday::Response.new(
       status: response_status_code,
-      body: response_body
+      body: response_body,
     )
   end
 
@@ -20,7 +20,7 @@ describe Proofing::LexisNexis::Response do
       it 'raises an error that includes the status code and the body' do
         expect { subject }.to raise_error(
           Proofing::LexisNexis::Response::UnexpectedHTTPStatusCodeError,
-          "Unexpected status code '500': something went horribly wrong"
+          "Unexpected status code '500': something went horribly wrong",
         )
       end
     end
@@ -35,7 +35,7 @@ describe Proofing::LexisNexis::Response do
       it 'raises an error that includes the transaction status code' do
         expect { subject }.to raise_error(
           Proofing::LexisNexis::Response::UnexpectedVerificationStatusCodeError,
-          "Invalid status in response body: 'fake_status'"
+          "Invalid status in response body: 'fake_status'",
         )
       end
     end
@@ -44,16 +44,17 @@ describe Proofing::LexisNexis::Response do
       let(:response_body) { LexisNexisFixtures.instant_verify_error_response_json }
 
       it 'raises an error that includes the reason code and information from the response' do
-        error = begin
-                  subject
-                rescue Proofing::LexisNexis::Response::VerificationTransactionError => e
-                  e
-                end
+        error =
+          begin
+            subject
+          rescue Proofing::LexisNexis::Response::VerificationTransactionError => e
+            e
+          end
 
         expect(error).to be_a(Proofing::LexisNexis::Response::VerificationTransactionError)
-        expect(error.message).to include("5556787618334595970")
-        expect(error.message).to include("1234-abcd")
-        expect(error.message).to include("invalid_transaction_initiate")
+        expect(error.message).to include('5556787618334595970')
+        expect(error.message).to include('1234-abcd')
+        expect(error.message).to include('invalid_transaction_initiate')
         expect(error.message).to include(JSON.parse(response_body)['Information'].to_json)
       end
     end

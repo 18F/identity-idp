@@ -37,14 +37,14 @@ module Proofing
           conn.post(url, body, headers) do |req|
             req.options.context = { service_name: metric_name }
           end,
-          **response_options
+          **response_options,
         )
       rescue Faraday::TimeoutError, Faraday::ConnectionFailed => e
         # NOTE: This is only for when Faraday is using NET::HTTP if the adapter is changed
         # this will have to change to handle timeouts
         if e.message == 'execution expired'
           raise ::Proofer::TimeoutError,
-            'LexisNexis timed out waiting for verification response'
+                'LexisNexis timed out waiting for verification response'
         else
           message = "Lexis Nexis request raised #{e.class} with the message: #{e.message}"
           raise LexisNexis::RequestError, message
@@ -74,7 +74,7 @@ module Proofing
       def build_request_url
         URI.join(
           base_url,
-          url_request_path
+          url_request_path,
         ).to_s
       end
 

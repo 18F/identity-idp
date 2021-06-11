@@ -29,7 +29,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:lexisnexis_transaction_id) { SecureRandom.uuid }
   let(:aamva_transaction_id) { SecureRandom.uuid }
   let(:resolution_proofer) do
-    instance_double(Proofing::LexisNexis::InstantVerify::Proofer, class: Proofing::LexisNexis::InstantVerify::Proofer)
+    instance_double(
+      Proofing::LexisNexis::InstantVerify::Proofer,
+      class: Proofing::LexisNexis::InstantVerify::Proofer,
+    )
   end
   let(:state_id_proofer) do
     instance_double(Proofing::Aamva::Proofer, class: Proofing::Aamva::Proofer)

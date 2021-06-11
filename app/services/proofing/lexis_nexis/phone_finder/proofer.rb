@@ -5,11 +5,11 @@ module Proofing
         vendor_name 'lexisnexis:phone_finder'
 
         required_attributes :uuid,
-          :first_name,
-          :last_name,
-          :dob,
-          :ssn,
-          :phone
+                            :first_name,
+                            :last_name,
+                            :dob,
+                            :ssn,
+                            :phone
 
         optional_attributes :uuid_prefix
 

@@ -57,12 +57,14 @@ module Proofing
             original_passed = (product['ProductStatus'] == 'pass')
             passed_partial_dob = instant_verify_dob_year_only_pass?(product['Items'])
 
-            Rails.logger.info({
-              name: 'lexisnexis_partial_dob',
-              original_passed: original_passed,
-              passed_partial_dob: passed_partial_dob,
-              partial_dob_override_enabled: dob_year_only?,
-            }.to_json) if defined?(Rails) && Rails.logger
+            Rails.logger.info(
+              {
+                name: 'lexisnexis_partial_dob',
+                original_passed: original_passed,
+                passed_partial_dob: passed_partial_dob,
+                partial_dob_override_enabled: dob_year_only?,
+              }.to_json,
+            )
 
             next if original_passed || (dob_year_only? && passed_partial_dob)
           else

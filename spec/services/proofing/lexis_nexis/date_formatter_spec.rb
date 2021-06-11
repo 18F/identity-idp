@@ -26,7 +26,7 @@ describe Proofing::LexisNexis::DateFormatter do
       expect(date_formatter.formatted_date).to eq(
         Year: '2020',
         Month: '4',
-        Day: '15'
+        Day: '15',
       )
     end
   end

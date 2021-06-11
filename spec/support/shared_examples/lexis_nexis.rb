@@ -38,9 +38,9 @@ shared_examples 'a lexisnexis proofer' do
 
         expect(result.success?).to eq(false)
         expect(result.errors).to eq(
-                                   base: ['test error'],
-                                   Discovery: ['another test error']
-                                 )
+          base: ['test error'],
+          Discovery: ['another test error'],
+        )
         expect(result.transaction_id).to eq(conversation_id)
       end
     end
