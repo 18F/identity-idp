@@ -108,6 +108,7 @@ en:
       zip_code: Zip Code
     headings:
       address: Mailing Address
+      address_update: Update your mailing address
       back: Back
       capture_complete: We have verified your state-issued ID
       document_capture: Add your state-issued ID

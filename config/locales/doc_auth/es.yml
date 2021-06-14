@@ -134,6 +134,7 @@ es:
       zip_code: Código postal
     headings:
       address: Dirección de envio
+      address_update: Actualice su dirección postal
       back: Parte Trasera
       capture_complete: Hemos verificado su identificación expedida por el estado
       document_capture: Añada su documento de identidad expedido por el estado
