@@ -125,9 +125,9 @@ jobs:
           command: |
             bundle exec rake assets:precompile
       - persist_to_workspace:
-          root: "."
+          root: .
           paths:
-            - "public/assets"
+            - public/assets
 
   build:
     executor: ruby_browsers
@@ -143,8 +143,6 @@ jobs:
     steps:
       - checkout
       - bundle-yarn-install
-      - attach_workspace:
-          at: "."
       - run:
           name: Install AWS CLI
           command: |
@@ -178,7 +176,8 @@ jobs:
             cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
             bundle exec rake db:create db:migrate --trace
             bundle exec rake db:seed
-            bundle exec rake assets:precompile
+      - attach_workspace:
+          at: .
       - run:
           name: Run Tests
           command: |
