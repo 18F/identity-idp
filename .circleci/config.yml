@@ -128,6 +128,8 @@ jobs:
           root: .
           paths:
             - public/assets
+            - public/packs
+            - public/packs-test
 
   build:
     executor: ruby_browsers
