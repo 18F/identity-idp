@@ -31,7 +31,7 @@ describe Proofing::LexisNexis::InstantVerify::Proofer do
         stub_request(:post, verification_request.url).to_timeout
 
         expect { verification_request.send }.to raise_error(
-          Proofer::TimeoutError,
+          Proofing::TimeoutError,
           'LexisNexis timed out waiting for verification response',
         )
       end

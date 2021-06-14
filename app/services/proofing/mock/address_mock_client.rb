@@ -1,6 +1,6 @@
 module Proofing
   module Mock
-    class AddressMockClient < Proofer::Base
+    class AddressMockClient < Proofing::Base
       vendor_name 'AddressMock'
 
       required_attributes :phone
@@ -21,7 +21,7 @@ module Proofing
         elsif plain_phone == FAILED_TO_CONTACT_PHONE_NUMBER
           raise 'Failed to contact proofing vendor'
         elsif plain_phone == PROOFER_TIMEOUT_PHONE_NUMBER
-          raise Proofer::TimeoutError, 'address mock timeout'
+          raise Proofing::TimeoutError, 'address mock timeout'
         end
         result.transaction_id = TRANSACTION_ID
         result.context[:message] = 'some context for the mock address proofer'

@@ -38,7 +38,7 @@ module Proofing
           end
         rescue Faraday::TimeoutError, Faraday::ConnectionFailed => err
           message = "AAMVA raised #{err.class} waiting for security token response: #{err.message}"
-          raise ::Proofer::TimeoutError, message
+          raise ::Proofing::TimeoutError, message
         end
 
         def auth_url

@@ -37,7 +37,7 @@ module Proofing
         # NOTE: This is only for when Faraday is using NET::HTTP if the adapter is changed
         # this will have to change to handle timeouts
         if e.message == 'execution expired'
-          raise ::Proofer::TimeoutError,
+          raise ::Proofing::TimeoutError,
                 'LexisNexis timed out waiting for verification response'
         else
           message = "Lexis Nexis request raised #{e.class} with the message: #{e.message}"

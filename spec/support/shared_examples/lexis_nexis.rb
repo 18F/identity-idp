@@ -2,7 +2,7 @@ shared_examples 'a lexisnexis proofer' do
   let(:verification_status) { 'passed' }
   let(:conversation_id) { 'foo' }
   let(:verification_errors) { {} }
-  let(:result) { Proofer::Result.new }
+  let(:result) { Proofing::Result.new }
 
   before do
     response = instance_double(Proofing::LexisNexis::Response)
