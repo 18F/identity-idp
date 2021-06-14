@@ -24,7 +24,6 @@ module Proofing
     end
 
     def errors
-      # Hack city since `transform_values` isn't available until Ruby 2.4
       @errors.transform_values(&:to_a)
     end
 

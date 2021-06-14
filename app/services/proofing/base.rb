@@ -43,7 +43,7 @@ module Proofing
       result = Proofing::Result.new
       execute_proof(proofer, vendor_applicant, result)
       result
-    rescue StandardError => exception
+    rescue => exception
       Proofing::Result.new(exception: exception)
     end
 
