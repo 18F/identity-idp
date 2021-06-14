@@ -1,0 +1,41 @@
+<% title t('titles.doc_auth.verify') %>
+
+<h1>
+  <%= t('doc_auth.headings.ssn_update') %>
+</h1>
+
+<p>
+  <%= t('doc_auth.info.ssn') %>
+  <%= new_window_link_to(t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
+</p>
+
+<%= validated_form_for(
+  :doc_auth,
+  url: url_for,
+  method: :put,
+  html: { autocomplete: 'off', class: 'margin-top-2' }
+) do |f| %>
+  <div class='clearfix margin-x-neg-1'>
+    <div class='sm-col sm-col-8 padding-x-1 margin-top-2'>
+      <!-- maxlength set and includes '-' delimiters to work around cleave bug -->
+      <%= f.input(
+        :ssn,
+        as: :password,
+        label: t('idv.form.ssn_label_html'),
+        required: true,
+        pattern: '^\d{3}-?\d{2}-?\d{4}$',
+        maxlength: 11,
+        input_html: { aria: { invalid: false }, class: 'ssn ssn-toggle', value: '' }
+      ) %>
+    </div>
+  </div>
+
+  <p><%= flow_session[:error_message] %></p>
+
+  <div class='margin-top-0'>
+    <button type='submit' class='usa-button usa-button--big usa-button--wide'>
+      <%= t('forms.buttons.submit.update') %>
+    </button>
+  </div>
+<% end %>
+<%= render 'idv/doc_auth/start_over_or_cancel', step: 'ssn' %>

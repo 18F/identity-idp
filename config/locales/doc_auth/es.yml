@@ -150,6 +150,7 @@ es:
       secure_account: Asegure su cuenta
       selfie: Tómese una foto
       ssn: Por favor ingrese su número de seguro social.
+      ssn_update: Actualice su número de seguro social
       take_picture: Toma una foto con un teléfono
       text_message: Enviamos un mensaje a su teléfono
       upload: '¿Cómo le gustaría subir su documento de identidad expedido por el
@@ -193,6 +194,11 @@ es:
         su cuenta. Con el cifrado, sus datos quedan protegidos, por lo que solo
         usted, el titular de la cuenta, puede acceder a su información o
         modificarla.
+      ssn: Necesitamos su número de Seguro Social para validar su nombre, fecha de
+        nacimiento y habla a. Su número de Seguro Social está encriptado. Con su
+        consentimiento, compartimos este información con la agencia
+        gubernamental a la que está intentando acceder para verificar su
+        identidad.
       tag: Recomendado
       take_picture: Use la cámara en su teléfono móvil y cargue imágenes de su
         identificación. Solo usamos las imágenes para verificar su identidad.

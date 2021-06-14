@@ -124,6 +124,7 @@ en:
       secure_account: Secure your account
       selfie: Take a photo of yourself
       ssn: Please enter your social security number.
+      ssn_update: Update your social security number
       take_picture: Take a photo with a phone
       text_message: We sent a message to your phone
       upload: How would you like to upload your state-issued ID?
@@ -162,6 +163,10 @@ en:
       secure_account: After you verify, we’ll ask you to encrypt your account.
         Encryption means your data is protected and only you, the account
         holder, will be able to access or change your information.
+      ssn: We need your Social Security number to validate your name, date of birth
+        and address.  Your Social Security number is encrypted.  With your
+        consent, we share this information with the government agency you are
+        trying to access to verify your identity.
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.
