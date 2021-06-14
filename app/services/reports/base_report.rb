@@ -48,8 +48,9 @@ module Reports
 
     def upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
       latest_path, path = generate_s3_paths(report_name, extension)
-      url = upload_file_to_s3_bucket(path: path, body: body, content_type: 'application/json')
-      upload_file_to_s3_bucket(path: latest_path, body: body, content_type: 'application/json')
+      content_type = Mime::Type.lookup_by_extension(extension).to_s
+      url = upload_file_to_s3_bucket(path: path, body: body, content_type: content_type)
+      upload_file_to_s3_bucket(path: latest_path, body: body, content_type: content_type)
       url
     end
 

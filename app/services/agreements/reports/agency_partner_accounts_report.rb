@@ -10,6 +10,7 @@ module Agreements
         save_report(
           'partner_accounts',
           PartnerAccountBlueprint.render(partner_accounts, root: :partner_accounts),
+          extension: 'json',
         )
       end
 

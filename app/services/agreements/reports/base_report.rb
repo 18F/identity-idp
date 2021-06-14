@@ -6,17 +6,21 @@ module Agreements
         "#{prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
       end
 
-      def save_report(report_name, body)
+      def save_report(report_name, body, extension:)
         if !IdentityConfig.store.s3_reports_enabled
           logger.info('Not uploading report to S3, s3_reports_enabled is false')
           return body
         end
-        upload_file_to_s3(report_name, body)
+        upload_file_to_s3(report_name, body, extension)
       end
 
-      def upload_file_to_s3(report_name, body)
+      def upload_file_to_s3(report_name, body, extension)
         s3_path = "#{report_path}#{report_name}"
-        upload_file_to_s3_bucket(path: s3_path, body: body, content_type: 'application/json')
+        upload_file_to_s3_bucket(
+          path: s3_path,
+          body: body,
+          content_type: Mime::Type.lookup_by_extension(extension).to_s
+        )
       end
 
       # The following public method should be defined in the child class

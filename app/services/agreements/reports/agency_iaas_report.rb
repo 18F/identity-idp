@@ -12,6 +12,7 @@ module Agreements
         save_report(
           'agreements',
           IaaBlueprint.render(iaas, root: :agreements),
+          extension: 'json',
         )
       end
 
