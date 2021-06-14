@@ -98,4 +98,30 @@ describe('document-capture/components/acuant-capture-canvas', () => {
     userEvent.type(button, 'b{space}{enter}', { skipClick: true });
     expect(onClick).to.have.been.calledThrice();
   });
+
+  it('announces "tap to capture" mode', () => {
+    const { getByRole, getByLabelText, getByText } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCaptureCanvas />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
+    );
+
+    initialize();
+
+    expect(getByText('doc_auth.accessible_labels.camera_video_capture_instructions')).to.be.ok();
+
+    // This assumes that Acuant SDK will assign its own click handlers to respond to clicks on the
+    // canvas, which happens in combination with assigning the callback property to the canvas.
+    const canvas = getByLabelText('doc_auth.accessible_labels.camera_video_capture_label');
+    canvas.callback = () => {};
+
+    expect(() =>
+      getByText('doc_auth.accessible_labels.camera_video_capture_instructions'),
+    ).to.throw();
+    expect(getByRole('status').textContent).to.equal(
+      'doc_auth.accessible_labels.status_tap_to_capture',
+    );
+  });
 });

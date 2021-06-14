@@ -5,6 +5,10 @@ en:
       camera_video_capture_instructions: We will automatically take the picture
       camera_video_capture_label: Viewfinder with frame to center your ID
       document_capture_dialog: Document capture
+      status_align: Align document in frame
+      status_capturing: Taking photo in three seconds
+      status_tap_to_capture: Automatic capture disabled
+      status_move_closer: Move camera closer to document
     buttons:
       change_address: change
       change_ssn: change
