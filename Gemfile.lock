@@ -27,13 +27,6 @@ GIT
       rails (>= 6.1)
 
 GIT
-  remote: https://github.com/18F/identity-proofer-gem.git
-  revision: 9c73058b6cafd5299266fb9d554ced04ec63b84a
-  ref: v2.8.0
-  specs:
-    proofer (2.8.0)
-
-GIT
   remote: https://github.com/18F/identity-validations.git
   revision: 0cc887c73f9909bef142585d557613c290c7aeec
   tag: v0.6.0
@@ -754,7 +747,6 @@ DEPENDENCIES
   phonelib
   premailer-rails (>= 1.11.1)
   profanity_filter
-  proofer!
   pry-byebug
   pry-doc
   pry-rails

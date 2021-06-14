@@ -91,7 +91,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         allow(instance).to receive(:state_id_proofer).and_return(state_id_proofer)
 
         allow(state_id_proofer).to receive(:proof).
-          and_return(Proofer::Result.new(transaction_id: aamva_transaction_id))
+          and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
       end
 
       let(:lexisnexis_response) do
@@ -214,9 +214,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
       context 'with a successful response from the proofer' do
         before do
           expect(resolution_proofer).to receive(:proof).
-            and_return(Proofer::Result.new)
+            and_return(Proofing::Result.new)
           expect(state_id_proofer).to receive(:proof).
-            and_return(Proofer::Result.new)
+            and_return(Proofing::Result.new)
         end
 
         it 'logs the trace_id and timing info' do
@@ -234,7 +234,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       context 'does not call state id with an unsuccessful response from the proofer' do
         it 'posts back to the callback url' do
           expect(resolution_proofer).to receive(:proof).
-            and_return(Proofer::Result.new(exception: 'error'))
+            and_return(Proofing::Result.new(exception: 'error'))
           expect(state_id_proofer).not_to receive(:proof)
 
           perform
@@ -246,7 +246,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         it 'does not call state_id proof if resolution proof is successful' do
           expect(resolution_proofer).to receive(:proof).
-            and_return(Proofer::Result.new)
+            and_return(Proofing::Result.new)
 
           expect(state_id_proofer).not_to receive(:proof)
           perform
@@ -257,17 +257,17 @@ RSpec.describe ResolutionProofingJob, type: :job do
         let(:dob_year_only) { true }
 
         it 'only sends the birth year to LexisNexis (extra applicant attribute)' do
-          expect(state_id_proofer).to receive(:proof).and_return(Proofer::Result.new)
+          expect(state_id_proofer).to receive(:proof).and_return(Proofing::Result.new)
           expect(resolution_proofer).to receive(:proof).
             with(hash_including(dob_year_only: true)).
-            and_return(Proofer::Result.new)
+            and_return(Proofing::Result.new)
 
           perform
         end
 
         it 'does not check LexisNexis when AAMVA proofing does not match' do
           expect(state_id_proofer).to receive(:proof).
-            and_return(Proofer::Result.new(exception: 'error'))
+            and_return(Proofing::Result.new(exception: 'error'))
           expect(resolution_proofer).to_not receive(:proof)
 
           perform
@@ -275,9 +275,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         it 'logs the correct context' do
           expect(state_id_proofer).to receive(:proof).
-            and_return(Proofer::Result.new(transaction_id: aamva_transaction_id))
+            and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
           expect(resolution_proofer).to receive(:proof).
-            and_return(Proofer::Result.new(transaction_id: lexisnexis_transaction_id))
+            and_return(Proofing::Result.new(transaction_id: lexisnexis_transaction_id))
 
           perform
 
@@ -318,7 +318,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         it 'does not send the data to AAMVA' do
           expect(resolution_proofer).to receive(:proof).
-            and_return(Proofer::Result.new)
+            and_return(Proofing::Result.new)
 
           expect(state_id_proofer).not_to receive(:proof)
           perform

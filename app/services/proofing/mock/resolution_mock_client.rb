@@ -1,8 +1,6 @@
-require 'proofer'
-
 module Proofing
   module Mock
-    class ResolutionMockClient < Proofer::Base
+    class ResolutionMockClient < Proofing::Base
       vendor_name 'ResolutionMock'
 
       required_attributes :first_name, :ssn, :zipcode
@@ -26,7 +24,7 @@ module Proofing
           result.add_error(:first_name, 'Unverified first name.')
 
         elsif first_name.match?(/Time/i)
-          raise Proofer::TimeoutError, 'resolution mock timeout'
+          raise Proofing::TimeoutError, 'resolution mock timeout'
 
         elsif applicant[:ssn].match?(/6666/)
           result.add_error(:ssn, 'Unverified SSN.')

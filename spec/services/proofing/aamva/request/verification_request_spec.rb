@@ -89,7 +89,7 @@ describe Proofing::Aamva::Request::VerificationRequest do
           to_timeout
 
         expect { subject.send }.to raise_error(
-          ::Proofer::TimeoutError,
+          ::Proofing::TimeoutError,
           'AAMVA raised Faraday::ConnectionFailed waiting for verification response: execution expired',
         )
       end
@@ -102,7 +102,7 @@ describe Proofing::Aamva::Request::VerificationRequest do
           to_raise(Faraday::ConnectionFailed.new('error'))
 
         expect { subject.send }.to raise_error(
-          ::Proofer::TimeoutError,
+          ::Proofing::TimeoutError,
           'AAMVA raised Faraday::ConnectionFailed waiting for verification response: error',
         )
       end

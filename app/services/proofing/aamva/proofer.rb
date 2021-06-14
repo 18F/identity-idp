@@ -1,10 +1,9 @@
 require 'ostruct'
-require 'proofer'
 require 'redacted_struct'
 
 module Proofing
   module Aamva
-    class Proofer < Proofer::Base
+    class Proofer < Proofing::Base
       Config = RedactedStruct.new(
         :auth_request_timeout,
         :auth_url,
