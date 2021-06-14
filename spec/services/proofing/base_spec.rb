@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe Proofer::Base do
+describe Proofing::Base do
   let(:impl) do
-    Class.new(Proofer::Base) do
+    Class.new(Proofing::Base) do
       def hello(applicant, results)
         raise 'Uh oh' unless applicant & results
       end
@@ -228,7 +228,7 @@ describe Proofer::Base do
 
       it 'returns a successful result' do
         expect(instance).to receive(:hello).
-          with(restricted_applicant, an_instance_of(Proofer::Result))
+          with(restricted_applicant, an_instance_of(Proofing::Result))
         expect(subject.exception?).to eq(false)
         expect(subject.failed?).to eq(false)
         expect(subject.success?).to eq(true)
@@ -251,7 +251,7 @@ describe Proofer::Base do
 
       it 'returns a successful result' do
         expect(instance).to receive(:hello).
-          with(restricted_applicant, an_instance_of(Proofer::Result))
+          with(restricted_applicant, an_instance_of(Proofing::Result))
         expect(subject.exception?).to eq(false)
         expect(subject.failed?).to eq(false)
         expect(subject.success?).to eq(true)
@@ -269,7 +269,7 @@ describe Proofer::Base do
       it 'does not affect the other proofer' do
         # rubocop:disable Lint/UselessAssignment
         # This is an explicit check for class-level side effects
-        impl2 = Class.new(Proofer::Base) do
+        impl2 = Class.new(Proofing::Base) do
           required_attributes :foobarbaz
         end
         # rubocop:enable Lint/UselessAssignment

@@ -2,7 +2,7 @@
 
 module Proofing
   module Mock
-    class StateIdMockClient < Proofer::Base
+    class StateIdMockClient < Proofing::Base
       vendor_name 'StateIdMock'
 
       required_attributes :state_id_number, :state_id_type, :state_id_jurisdiction

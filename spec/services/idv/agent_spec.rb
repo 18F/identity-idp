@@ -110,7 +110,7 @@ describe Idv::Agent do
         )
         result = document_capture_session.load_proofing_result.result
 
-        expect(result[:exception]).to start_with('#<Proofer::TimeoutError: ')
+        expect(result[:exception]).to start_with('#<Proofing::TimeoutError: ')
         expect(result).to include(
           success: false,
           timed_out: true,

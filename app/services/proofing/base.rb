@@ -1,6 +1,6 @@
 require 'set'
 
-module Proofer
+module Proofing
   class Base
     @vendor_name = nil
     @required_attributes = []
@@ -40,11 +40,11 @@ module Proofer
     def proof(applicant)
       vendor_applicant = restrict_attributes(applicant)
       validate_attributes(vendor_applicant)
-      result = Proofer::Result.new
+      result = Proofing::Result.new
       execute_proof(proofer, vendor_applicant, result)
       result
     rescue StandardError => exception
-      Proofer::Result.new(exception: exception)
+      Proofing::Result.new(exception: exception)
     end
 
     private

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Used in async document capture flow by LambdaJobs::Runner/Idv::Proofer.document_job_class
+# Used in async document capture flow by LambdaJobs::Runner/Idv::Proofing.document_job_class
 DocumentCaptureSessionAsyncResult = RedactedStruct.new(
   :id,
   :status,

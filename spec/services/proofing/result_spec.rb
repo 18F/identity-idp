@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe Proofer::Result do
+describe Proofing::Result do
   describe '#add_error' do
     shared_examples 'add_error' do |key|
       it 'returns itself' do
-        expect(result).to be_an_instance_of(Proofer::Result)
+        expect(result).to be_an_instance_of(Proofing::Result)
       end
 
       it 'adds an error under the key' do
@@ -19,22 +19,22 @@ describe Proofer::Result do
     let(:error) { 'FOOBAR' }
 
     context 'with no key' do
-      let(:result) { Proofer::Result.new.add_error(error) }
+      let(:result) { Proofing::Result.new.add_error(error) }
       it_behaves_like 'add_error', :base
     end
 
     context 'with a key' do
-      let(:result) { Proofer::Result.new.add_error(:foo, error) }
+      let(:result) { Proofing::Result.new.add_error(:foo, error) }
       it_behaves_like 'add_error', :foo
     end
   end
 
   describe '#add_message' do
     let(:message) { 'FOOBAR' }
-    let(:result) { Proofer::Result.new.add_message(message) }
+    let(:result) { Proofing::Result.new.add_message(message) }
 
     it 'returns itself' do
-      expect(result).to be_an_instance_of(Proofer::Result)
+      expect(result).to be_an_instance_of(Proofing::Result)
     end
 
     it 'adds a message' do
@@ -50,11 +50,11 @@ describe Proofer::Result do
     subject { result.exception? }
 
     context 'when there is an exception' do
-      let(:result) { Proofer::Result.new(exception: StandardError.new) }
+      let(:result) { Proofing::Result.new(exception: StandardError.new) }
       it { is_expected.to eq(true) }
     end
     context 'when there is no exception' do
-      let(:result) { Proofer::Result.new }
+      let(:result) { Proofing::Result.new }
       it { is_expected.to eq(false) }
     end
   end
@@ -63,17 +63,17 @@ describe Proofer::Result do
     subject { result.failed? }
 
     context 'when there is an error AND an exception' do
-      let(:result) { Proofer::Result.new(exception: StandardError.new).add_error('foobar') }
+      let(:result) { Proofing::Result.new(exception: StandardError.new).add_error('foobar') }
       it { is_expected.to eq(false) }
     end
 
     context 'when there is an error and no exception' do
-      let(:result) { Proofer::Result.new.add_error('foobar') }
+      let(:result) { Proofing::Result.new.add_error('foobar') }
       it { is_expected.to eq(true) }
     end
 
     context 'when there is no error' do
-      let(:result) { Proofer::Result.new }
+      let(:result) { Proofing::Result.new }
       it { is_expected.to eq(false) }
     end
   end
@@ -82,17 +82,17 @@ describe Proofer::Result do
     subject { result.success? }
 
     context 'when there is an error AND an exception' do
-      let(:result) { Proofer::Result.new(exception: StandardError.new).add_error('foobar') }
+      let(:result) { Proofing::Result.new(exception: StandardError.new).add_error('foobar') }
       it { is_expected.to eq(false) }
     end
 
     context 'when there is an error and no exception' do
-      let(:result) { Proofer::Result.new.add_error('foobar') }
+      let(:result) { Proofing::Result.new.add_error('foobar') }
       it { is_expected.to eq(false) }
     end
 
     context 'when there is no error and no exception' do
-      let(:result) { Proofer::Result.new }
+      let(:result) { Proofing::Result.new }
       it { is_expected.to eq(true) }
     end
   end
@@ -101,17 +101,17 @@ describe Proofer::Result do
     subject { result.timed_out? }
 
     context 'when there is a timeout error' do
-      let(:result) { Proofer::Result.new(exception: Proofer::TimeoutError.new) }
+      let(:result) { Proofing::Result.new(exception: Proofing::TimeoutError.new) }
       it { is_expected.to eq(true) }
     end
 
     context 'when there is a generic error' do
-      let(:result) { Proofer::Result.new(exception: StandardError.new) }
+      let(:result) { Proofing::Result.new(exception: StandardError.new) }
       it { is_expected.to eq(false) }
     end
 
     context 'when there is no error' do
-      let(:result) { Proofer::Result.new }
+      let(:result) { Proofing::Result.new }
       it { is_expected.to eq(false) }
     end
   end
@@ -120,7 +120,7 @@ describe Proofer::Result do
     context 'when provided' do
       it 'is present' do
         context = { foo: 'bar' }
-        result = Proofer::Result.new
+        result = Proofing::Result.new
         result.context = context
         expect(result.context).to eq(context)
       end
@@ -131,7 +131,7 @@ describe Proofer::Result do
     context 'when provided' do
       it 'is present' do
         transaction_id = 'foo'
-        result = Proofer::Result.new
+        result = Proofing::Result.new
         result.transaction_id = transaction_id
         expect(result.transaction_id).to eq(transaction_id)
       end

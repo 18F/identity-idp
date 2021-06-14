@@ -2,7 +2,7 @@ require 'redacted_struct'
 
 module Proofing
   module LexisNexis
-    class Proofer < Proofer::Base
+    class Proofer < Proofing::Base
       Config = RedactedStruct.new(
         :instant_verify_workflow,
         :phone_finder_workflow,

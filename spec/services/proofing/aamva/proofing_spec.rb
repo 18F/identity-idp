@@ -24,7 +24,7 @@ describe Proofing::Aamva::Proofer do
       first_name_fuzzy_alternative: true,
     }
   end
-  let(:result) { Proofer::Result.new }
+  let(:result) { Proofing::Result.new }
 
   subject do
     described_class.new(
