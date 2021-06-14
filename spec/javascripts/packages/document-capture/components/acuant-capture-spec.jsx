@@ -757,8 +757,10 @@ describe('document-capture/components/acuant-capture', () => {
 
     const placeholder = getByLabelText('Image');
     userEvent.click(placeholder);
+    userEvent.click(getByLabelText('users.personal_key.close'));
     const button = getByText('doc_auth.buttons.take_picture');
     userEvent.click(button);
+    userEvent.click(getByLabelText('users.personal_key.close'));
     const upload = getByText('Upload');
     fireEvent.click(upload);
 

@@ -3,7 +3,6 @@ import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
 import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
-import useButtonRole from '../hooks/use-button-role';
 import useImmutableCallback from '../hooks/use-immutable-callback';
 
 /**
@@ -172,7 +171,6 @@ function AcuantCaptureCanvas({
   const { getAssetPath } = useAsset();
   const { t } = useI18n();
   const instanceId = useInstanceId();
-  const createButtonRoleProps = useButtonRole();
   const canvasRef = useRef(/** @type {(HTMLCanvasElement & {callback: function})?} */ (null));
   const onCropped = useImmutableCallback(
     (response) => {
@@ -223,17 +221,6 @@ function AcuantCaptureCanvas({
     }
   }, []);
 
-  /**
-   * Triggers a capture of the current camera canvas frame.
-   */
-  function triggerCapture() {
-    const { AcuantCamera, AcuantCameraUI } = /** @type {AcuantGlobal} */ (window);
-    AcuantCamera.triggerCapture((response) => {
-      AcuantCameraUI.end();
-      AcuantCamera.crop(response.data, response.width, response.height, captureType, onCropped);
-    });
-  }
-
   // The video element is never visible to the user, but it needs to be present
   // in the DOM for the Acuant SDK to capture the feed from the camera.
 
@@ -263,9 +250,6 @@ function AcuantCaptureCanvas({
         <canvas
           id="acuant-video-canvas"
           ref={canvasRef}
-          tabIndex={0}
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...createButtonRoleProps(captureType === 'TAP' ? () => {} : triggerCapture)}
           aria-labelledby={`acuant-sdk-heading-${instanceId}`}
           aria-describedby={`acuant-sdk-instructions-${instanceId}`}
           style={{
@@ -282,6 +266,9 @@ function AcuantCaptureCanvas({
           <p id={`acuant-sdk-instructions-${instanceId}`}>
             {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
           </p>
+          <button type="button" aria-disabled={captureType !== 'TAP'}>
+            {t('doc_auth.buttons.take_picture')}
+          </button>
         </canvas>
       </div>
     </>

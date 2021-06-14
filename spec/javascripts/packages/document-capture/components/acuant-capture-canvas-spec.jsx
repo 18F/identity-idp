@@ -70,8 +70,8 @@ describe('document-capture/components/acuant-capture-canvas', () => {
     expect(window.AcuantCameraUI.end.calledOnce).to.be.true();
   });
 
-  it('renders a labelled button', () => {
-    const { getByRole } = render(
+  it('renders a "take photo" button', () => {
+    const { getByRole, getByLabelText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
         <AcuantContextProvider sdkSrc="about:blank">
           <AcuantCaptureCanvas />
@@ -81,35 +81,21 @@ describe('document-capture/components/acuant-capture-canvas', () => {
 
     initialize();
 
-    const button = getByRole('button', {
-      name: 'doc_auth.accessible_labels.camera_video_capture_label',
-    });
-    userEvent.click(button);
-    userEvent.type(button, 'b{space}{enter}', { skipClick: true });
-    expect(button).to.be.ok();
-    expect(window.AcuantCamera.triggerCapture).to.have.been.calledThrice();
-  });
+    const button = getByRole('button', { name: 'doc_auth.buttons.take_picture' });
 
-  it('defers to Acuant tap to capture', () => {
-    const { getByRole } = render(
-      <DeviceContext.Provider value={{ isMobile: true }}>
-        <AcuantContextProvider sdkSrc="about:blank">
-          <AcuantCaptureCanvas />
-        </AcuantContextProvider>
-      </DeviceContext.Provider>,
-    );
-
-    initialize();
+    expect(button.getAttribute('aria-disabled')).to.equal('true');
 
     // This assumes that Acuant SDK will assign its own click handlers to respond to clicks on the
     // canvas, which happens in combination with assigning the callback property to the canvas.
-    const canvas = getByRole('button');
+    const canvas = getByLabelText('doc_auth.accessible_labels.camera_video_capture_label');
     canvas.callback = () => {};
 
-    userEvent.click(canvas);
+    expect(button.getAttribute('aria-disabled')).to.equal('false');
 
-    // It's expected that the capture will be handled internally in Acuant SDK, not as a result of
-    // an explicit call to the triggerCapture public API.
-    expect(window.AcuantCamera.triggerCapture).not.to.have.been.called();
+    const onClick = sinon.spy();
+    canvas.addEventListener('click', onClick);
+    userEvent.click(button);
+    userEvent.type(button, 'b{space}{enter}', { skipClick: true });
+    expect(onClick).to.have.been.calledThrice();
   });
 });

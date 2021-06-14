@@ -2,7 +2,7 @@
 es:
   doc_auth:
     accessible_labels:
-      camera_video_capture_instructions: Tomaremos la foto automáticamente. O haga clic para capturar.
+      camera_video_capture_instructions: Tomaremos la foto automáticamente.
       camera_video_capture_label: Visor con marco para centrar su ID
       document_capture_dialog: Captura del documento
     buttons:
