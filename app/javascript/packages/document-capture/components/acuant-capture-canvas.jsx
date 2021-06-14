@@ -296,10 +296,7 @@ function AcuantCaptureCanvas({
       /** @type {AcuantGlobal} */ (window).AcuantCamera.start = (callback, ...args) =>
         originalAcuantCameraStart((response) => {
           const nextFrameState = response?.state || AcuantDocumentState.NO_DOCUMENT;
-          if (nextFrameState !== frameState) {
-            setFrameState(nextFrameState);
-          }
-
+          setFrameState(nextFrameState);
           callback(response);
         }, ...args);
 
