@@ -18,6 +18,7 @@ class NullServiceProvider
     created_at
     default_aal
     description
+    email_nameid_format_allowed
     failure_to_proof_url
     help_text
     iaa

@@ -253,7 +253,7 @@ describe SamlIdpController do
           with(Analytics::SAML_AUTH,
                success: true,
                errors: {},
-               nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+               nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
                authn_context: ['http://idmanagement.gov/ns/assurance/ial/2'],
                service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
                endpoint: '/api/saml/auth2021',
@@ -562,7 +562,11 @@ describe SamlIdpController do
       let(:user) { create(:user, :signed_up) }
 
       before do
-        generate_saml_response(user, email_nameid_saml_settings_for_allowed_issuer)
+        settings = email_nameid_saml_settings
+        ServiceProvider.
+          find_by(issuer: settings.issuer).
+          update!(email_nameid_format_allowed: true)
+        generate_saml_response(user, settings)
       end
 
       # Testing the <saml:Subject> element when the SP is configured to use a
@@ -626,8 +630,11 @@ describe SamlIdpController do
           with(Analytics::SAML_AUTH, analytics_hash)
       end
 
-      it 'defaults to email when added to issuers_with_email_nameid_format' do
-        auth_settings = missing_nameid_format_saml_settings_for_allowed_email_issuer
+      it 'defaults to email when configured' do
+        auth_settings = missing_nameid_format_saml_settings
+        ServiceProvider.
+          find_by(issuer: auth_settings.issuer).
+          update!(email_nameid_format_allowed: true)
         IdentityLinker.new(user, auth_settings.issuer).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
@@ -639,7 +646,7 @@ describe SamlIdpController do
           errors: {},
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           authn_context: request_authn_contexts,
-          service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+          service_provider: auth_settings.issuer,
           endpoint: '/api/saml/auth2021',
           idv: false,
           finish_profile: false,

@@ -38,12 +38,10 @@ module SamlIdpAuthConcern
   end
 
   def default_name_id_format
-    return Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL if sp_uses_email_nameid_format?
+    if current_service_provider.email_nameid_format_allowed
+      return Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
+    end
     Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
-  end
-
-  def sp_uses_email_nameid_format?
-    Saml::Idp::Constants::ISSUERS_WITH_EMAIL_NAMEID_FORMAT.include?(current_service_provider.issuer)
   end
 
   def store_saml_request
