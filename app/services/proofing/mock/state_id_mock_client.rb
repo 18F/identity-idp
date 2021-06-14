@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'proofer'
-
 module Proofing
   module Mock
     class StateIdMockClient < Proofer::Base

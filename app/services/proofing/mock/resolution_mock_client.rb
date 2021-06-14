@@ -1,5 +1,3 @@
-require 'proofer'
-
 module Proofing
   module Mock
     class ResolutionMockClient < Proofer::Base

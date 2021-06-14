@@ -1,4 +1,3 @@
-require 'proofer'
 require 'redacted_struct'
 
 module Proofing
