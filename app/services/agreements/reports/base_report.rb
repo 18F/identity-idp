@@ -19,7 +19,7 @@ module Agreements
         upload_file_to_s3_bucket(
           path: s3_path,
           body: body,
-          content_type: Mime::Type.lookup_by_extension(extension).to_s
+          content_type: Mime::Type.lookup_by_extension(extension).to_s,
         )
       end
 
