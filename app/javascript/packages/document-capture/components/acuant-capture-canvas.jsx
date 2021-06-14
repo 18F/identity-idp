@@ -355,6 +355,7 @@ function AcuantCaptureCanvas({
         <canvas
           id="acuant-video-canvas"
           ref={canvasRef}
+          tabIndex={0}
           aria-labelledby={`acuant-sdk-heading-${instanceId}`}
           aria-describedby={`acuant-sdk-instructions-${instanceId}`}
           style={{
@@ -373,7 +374,7 @@ function AcuantCaptureCanvas({
               {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
             </p>
           )}
-          <button key="button" type="button" aria-disabled={captureType !== 'TAP'}>
+          <button key="button" type="button" disabled={captureType !== 'TAP'}>
             {t('doc_auth.buttons.take_picture')}
           </button>
         </canvas>

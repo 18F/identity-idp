@@ -83,14 +83,14 @@ describe('document-capture/components/acuant-capture-canvas', () => {
 
     const button = getByRole('button', { name: 'doc_auth.buttons.take_picture' });
 
-    expect(button.getAttribute('aria-disabled')).to.equal('true');
+    expect(button.disabled).to.be.true();
 
     // This assumes that Acuant SDK will assign its own click handlers to respond to clicks on the
     // canvas, which happens in combination with assigning the callback property to the canvas.
     const canvas = getByLabelText('doc_auth.accessible_labels.camera_video_capture_label');
     canvas.callback = () => {};
 
-    expect(button.getAttribute('aria-disabled')).to.equal('false');
+    expect(button.disabled).to.be.false();
 
     const onClick = sinon.spy();
     canvas.addEventListener('click', onClick);
