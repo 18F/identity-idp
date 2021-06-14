@@ -8,7 +8,7 @@ module Reports
       results = transaction_with_timeout do
         Db::Identity::SpActiveUserCountsWithinIaaWindow.call
       end
-      save_report(REPORT_NAME, results.to_json)
+      save_report(REPORT_NAME, results.to_json, extension: 'json')
     end
   end
 end

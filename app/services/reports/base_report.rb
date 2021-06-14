@@ -38,26 +38,26 @@ module Reports
       end
     end
 
-    def save_report(report_name, body)
+    def save_report(report_name, body, extension:)
       if !IdentityConfig.store.s3_reports_enabled
         logger.info('Not uploading report to S3, s3_reports_enabled is false')
         return body
       end
-      upload_file_to_s3_timestamped_and_latest(report_name, body)
+      upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
     end
 
-    def upload_file_to_s3_timestamped_and_latest(report_name, body)
-      latest_path, path = generate_s3_paths(report_name)
+    def upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
+      latest_path, path = generate_s3_paths(report_name, extension)
       url = upload_file_to_s3_bucket(path: path, body: body, content_type: 'application/json')
       upload_file_to_s3_bucket(path: latest_path, body: body, content_type: 'application/json')
       url
     end
 
-    def generate_s3_paths(name)
+    def generate_s3_paths(name, extension)
       host_data_env = Identity::Hostdata.env
-      latest = "#{host_data_env}/#{name}/latest.#{name}.json"
+      latest = "#{host_data_env}/#{name}/latest.#{name}.#{extension}"
       now = Time.zone.now
-      [latest, "#{host_data_env}/#{name}/#{now.year}/#{now.strftime('%F')}.#{name}.json"]
+      [latest, "#{host_data_env}/#{name}/#{now.year}/#{now.strftime('%F')}.#{name}.#{extension}"]
     end
 
     def logger
