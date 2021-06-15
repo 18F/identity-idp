@@ -119,6 +119,26 @@ describe('document-capture/components/acuant-capture-canvas', () => {
     );
   });
 
+  it('does not announce state changes after capture', () => {
+    // This test case accounts for a quirk of Acuant where `onFrameAvailable` is called with "small
+    // document" after capture has already happened.
+    const { getByRole } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCaptureCanvas />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
+    );
+
+    initialize();
+
+    const { onFrameAvailable, onCaptured } = window.AcuantCameraUI.start.getCall(0).args[0];
+    onCaptured();
+    onFrameAvailable({ state: AcuantDocumentState.SMALL_DOCUMENT });
+
+    expect(getByRole('status').textContent).to.be.empty();
+  });
+
   it('announces "tap to capture" mode', () => {
     const { getByRole, getByLabelText, getByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>

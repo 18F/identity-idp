@@ -259,6 +259,7 @@ function AcuantCaptureCanvas({
   const { getAssetPath } = useAsset();
   const { t } = useI18n();
   const instanceId = useInstanceId();
+  const [hasCaptured, setHasCaptured] = useState(false);
   const canvasRef = useRef(/** @type {(HTMLCanvasElement & {callback: function})?} */ (null));
   const onCropped = useImmutableCallback(
     (response) => {
@@ -291,12 +292,15 @@ function AcuantCaptureCanvas({
 
   useEffect(() => {
     if (isReady) {
+      setHasCaptured(false);
       /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
         {
           onFrameAvailable(result) {
             setFrameState(result.state);
           },
-          onCaptured() {},
+          onCaptured() {
+            setHasCaptured(true);
+          },
           onCropped,
         },
         onImageCaptureFailure,
@@ -372,7 +376,7 @@ function AcuantCaptureCanvas({
           </button>
         </canvas>
         <div role="status" aria-live="polite" className="usa-sr-only">
-          {t(getStatusLabelKey(captureStatus))}
+          {isReady && !hasCaptured ? t(getStatusLabelKey(captureStatus)) : null}
         </div>
       </div>
     </>
