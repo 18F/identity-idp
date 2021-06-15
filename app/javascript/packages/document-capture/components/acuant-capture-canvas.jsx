@@ -18,7 +18,7 @@ const CaptureStatus = {
 /**
  * @enum {number}
  */
-const AcuantDocumentState = {
+export const AcuantDocumentState = {
   NO_DOCUMENT: 0,
   SMALL_DOCUMENT: 1,
   GOOD_DOCUMENT: 2,
@@ -27,7 +27,7 @@ const AcuantDocumentState = {
 /**
  * @enum {number}
  */
-const AcuantUIState = {
+export const AcuantUIState = {
   CAPTURING: -1,
   TAP_TO_CAPTURE: -2,
 };
@@ -290,18 +290,12 @@ function AcuantCaptureCanvas({
   }, []);
 
   useEffect(() => {
-    let originalAcuantCameraStart;
     if (isReady) {
-      originalAcuantCameraStart = /** @type {AcuantGlobal} */ (window).AcuantCamera.start;
-      /** @type {AcuantGlobal} */ (window).AcuantCamera.start = (callback, ...args) =>
-        originalAcuantCameraStart((response) => {
-          const nextFrameState = response?.state || AcuantDocumentState.NO_DOCUMENT;
-          setFrameState(nextFrameState);
-          callback(response);
-        }, ...args);
-
       /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
         {
+          onFrameAvailable(result) {
+            setFrameState(result.state);
+          },
           onCaptured() {},
           onCropped,
         },
@@ -321,7 +315,6 @@ function AcuantCaptureCanvas({
     return () => {
       if (isReady) {
         /** @type {AcuantGlobal} */ (window).AcuantCameraUI.end();
-        /** @type {AcuantGlobal} */ (window).AcuantCamera.start = originalAcuantCameraStart;
       }
     };
   }, [isReady]);

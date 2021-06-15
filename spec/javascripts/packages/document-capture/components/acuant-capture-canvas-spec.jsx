@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { AcuantContextProvider, DeviceContext } from '@18f/identity-document-capture';
 import AcuantCaptureCanvas, {
   defineObservableProperty,
+  AcuantDocumentState,
 } from '@18f/identity-document-capture/components/acuant-capture-canvas';
 import { render, useAcuant } from '../../../support/document-capture';
 
@@ -97,6 +98,25 @@ describe('document-capture/components/acuant-capture-canvas', () => {
     userEvent.click(button);
     userEvent.type(button, 'b{space}{enter}', { skipClick: true });
     expect(onClick).to.have.been.calledThrice();
+  });
+
+  it('announces state changes', () => {
+    const { getByRole } = render(
+      <DeviceContext.Provider value={{ isMobile: true }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCaptureCanvas />
+        </AcuantContextProvider>
+      </DeviceContext.Provider>,
+    );
+
+    initialize();
+
+    const { onFrameAvailable } = window.AcuantCameraUI.start.getCall(0).args[0];
+    onFrameAvailable({ state: AcuantDocumentState.SMALL_DOCUMENT });
+
+    expect(getByRole('status').textContent).to.equal(
+      'doc_auth.accessible_labels.status_move_closer',
+    );
   });
 
   it('announces "tap to capture" mode', () => {
