@@ -55,6 +55,7 @@ feature 'doc auth verify step' do
     click_button t('doc_auth.buttons.change_ssn')
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    expect(page).to have_content(t('doc_auth.headings.ssn_update'))
   end
 
   it 'does not proceed to the next page if resolution fails' do
