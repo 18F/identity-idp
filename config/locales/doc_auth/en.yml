@@ -7,8 +7,8 @@ en:
       document_capture_dialog: Document capture
       status_align: Align document in frame
       status_capturing: Taking photo in three seconds
-      status_tap_to_capture: Automatic capture disabled
       status_move_closer: Move camera closer to document
+      status_tap_to_capture: Automatic capture disabled
     buttons:
       change_address: change
       change_ssn: change
