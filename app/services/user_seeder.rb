@@ -62,7 +62,6 @@ class UserSeeder
 
   PII_ATTRS = %w[
     first_name
-    middle_name
     last_name
     dob
     ssn
