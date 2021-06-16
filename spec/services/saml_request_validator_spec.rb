@@ -88,6 +88,7 @@ describe SamlRequestValidator do
     context 'valid authn context and authorized email nameid format for SP' do
       it 'returns FormResponse with success: true' do
         sp = ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata')
+        sp.update!(email_nameid_format_allowed: true)
         authn_context = [Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF]
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
         extra = {
@@ -111,6 +112,7 @@ describe SamlRequestValidator do
 
       it 'returns FormResponse with success: true for ial2 on ial:2 sp' do
         sp = ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata')
+        sp.update!(email_nameid_format_allowed: true)
         sp.ial = 2
         authn_context = [Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF]
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
