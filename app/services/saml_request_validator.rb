@@ -62,7 +62,7 @@ class SamlRequestValidator
 
   def authorized_email_nameid_format
     return unless email_nameid_format?
-    return if service_provider_allowed_to_use_email_nameid_format?
+    return if service_provider.email_nameid_format_allowed
 
     errors.add(:nameid_format, :unauthorized_nameid_format)
   end
@@ -72,9 +72,5 @@ class SamlRequestValidator
       'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
       'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress',
     ].include?(nameid_format)
-  end
-
-  def service_provider_allowed_to_use_email_nameid_format?
-    Saml::Idp::Constants::ISSUERS_WITH_EMAIL_NAMEID_FORMAT.include?(service_provider.issuer)
   end
 end
