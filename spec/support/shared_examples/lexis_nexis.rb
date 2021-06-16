@@ -74,12 +74,10 @@ shared_examples 'a lexisnexis request' do |basic_auth: true|
       stub_request(:post, subject.url).
         to_return(status: 200, body: response_body)
 
-      verification_response = instance_double(Proofing::LexisNexis::Response)
-      expect(Proofing::LexisNexis::Response).to receive(:new).
-        with(kind_of(Faraday::Response), anything).
-        and_return(verification_response)
-
-      expect(subject.send).to eq(verification_response)
+      ln_response = subject.send
+      expect(ln_response).to be_a(Proofing::LexisNexis::Response)
+      expect(ln_response.response.status).to eq 200
+      expect(ln_response.response.body).to eq response_body
     end
   end
 end
