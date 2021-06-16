@@ -16,7 +16,7 @@ module Reports
 
       results = combine_by_iaa_month(raw_results)
 
-      save_report(REPORT_NAME, results.to_json)
+      save_report(REPORT_NAME, results.to_json, extension: 'json')
     end
 
     # @return [Array<String>]

@@ -8,7 +8,7 @@ module Reports
       report = transaction_with_timeout do
         Db::DocAuthLog::DocAuthFunnelSummaryStats.new.call
       end
-      save_report(REPORT_NAME, report.to_json)
+      save_report(REPORT_NAME, report.to_json, extension: 'json')
     end
   end
 end
