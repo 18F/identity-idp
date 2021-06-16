@@ -9,9 +9,9 @@ import useImmutableCallback from '../hooks/use-immutable-callback';
  * Defines a property on the given object, calling the change callback when that property is set to
  * a new value.
  *
- * @param {*} object Object on which to define property.
+ * @param {any} object Object on which to define property.
  * @param {string} property Property name to observe.
- * @param {() => void} onChangeCallback Callback to trigger on change.
+ * @param {(nextValue: any) => void} onChangeCallback Callback to trigger on change.
  */
 export function defineObservableProperty(object, property, onChangeCallback) {
   let currentValue;
