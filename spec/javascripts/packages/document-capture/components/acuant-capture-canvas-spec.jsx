@@ -18,13 +18,13 @@ describe('document-capture/components/acuant-capture-canvas', () => {
       expect(object.key).to.equal('value');
     });
 
-    it('calls the callback on changes', () => {
+    it('calls the callback on changes, with the changed value', () => {
       const callback = sinon.spy();
       const object = {};
       defineObservableProperty(object, 'key', callback);
       object.key = 'value';
 
-      expect(callback).to.have.been.calledOnceWithExactly();
+      expect(callback).to.have.been.calledOnceWithExactly('value');
     });
   });
 

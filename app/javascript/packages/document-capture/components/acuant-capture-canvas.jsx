@@ -22,7 +22,7 @@ export function defineObservableProperty(object, property, onChangeCallback) {
     },
     set(nextValue) {
       currentValue = nextValue;
-      onChangeCallback();
+      onChangeCallback(nextValue);
     },
   });
 }
@@ -215,8 +215,8 @@ function AcuantCaptureCanvas({
     if (canvasRef.current) {
       // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
       // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
-      defineObservableProperty(canvasRef.current, 'callback', () => {
-        setCaptureType(canvasRef.current?.callback ? 'TAP' : 'AUTO');
+      defineObservableProperty(canvasRef.current, 'callback', (callback) => {
+        setCaptureType(callback ? 'TAP' : 'AUTO');
       });
     }
   }, []);
