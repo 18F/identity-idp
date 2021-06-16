@@ -8,7 +8,7 @@ module Reports
       user_counts = transaction_with_timeout do
         Db::Identity::SpUserCounts.call
       end
-      save_report(REPORT_NAME, user_counts.to_json)
+      save_report(REPORT_NAME, user_counts.to_json, extension: 'json')
     end
   end
 end

@@ -7,7 +7,7 @@ module Reports
 
     def call
       ret = generate_report
-      save_report(REPORT_NAME, ret.join)
+      save_report(REPORT_NAME, ret.join, extension: 'txt')
     end
 
     private
