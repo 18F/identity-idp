@@ -9,11 +9,11 @@ import { sinonChaiAsPromised } from './support/sinon';
 import { createObjectURLAsDataURL } from './support/file';
 import { useBrowserCompatibleEncrypt } from './support/crypto';
 
-chai.use(dirtyChai);
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiConsoleSpy);
 chai.use(sinonChaiAsPromised);
+chai.use(dirtyChai);
 global.expect = chai.expect;
 
 // Emulate a DOM, since many modules will assume the presence of these globals exist as a side

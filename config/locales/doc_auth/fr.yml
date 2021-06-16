@@ -1,6 +1,8 @@
 ---
 fr:
   doc_auth:
+    accessible_labels:
+      document_capture_dialog: Capture du document
     buttons:
       change_address: changement
       change_ssn: changement
