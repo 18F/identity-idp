@@ -1,7 +1,31 @@
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
 import useI18n from '../hooks/use-i18n';
+import useInstanceId from '../hooks/use-instance-id';
+import useImmutableCallback from '../hooks/use-immutable-callback';
+
+/**
+ * Defines a property on the given object, calling the change callback when that property is set to
+ * a new value.
+ *
+ * @param {any} object Object on which to define property.
+ * @param {string} property Property name to observe.
+ * @param {(nextValue: any) => void} onChangeCallback Callback to trigger on change.
+ */
+export function defineObservableProperty(object, property, onChangeCallback) {
+  let currentValue;
+
+  Object.defineProperty(object, property, {
+    get() {
+      return currentValue;
+    },
+    set(nextValue) {
+      currentValue = nextValue;
+      onChangeCallback(nextValue);
+    },
+  });
+}
 
 /**
  * @typedef AcuantCameraUIText
@@ -17,6 +41,12 @@ import useI18n from '../hooks/use-i18n';
  * @typedef AcuantCameraUIOptions
  *
  * @prop {AcuantCameraUIText} text Camera UI text strings.
+ */
+
+/**
+ * Capture type.
+ *
+ * @typedef {'AUTO'|'TAP'} AcuantCaptureType
  */
 
 /**
@@ -62,9 +92,23 @@ import useI18n from '../hooks/use-i18n';
  */
 
 /**
+ * @typedef AcuantCamera
+ *
+ * @prop {(callback: (response: AcuantImage)=>void)=>void} triggerCapture
+ * @prop {(
+ *   data: string,
+ *   width: number,
+ *   height: number,
+ *   capType: AcuantCaptureType,
+ *   callback: (result: AcuantImage) => void,
+ * )=>void} crop
+ */
+
+/**
  * @typedef AcuantGlobals
  *
  * @prop {AcuantCameraUI} AcuantCameraUI Acuant camera UI API.
+ * @prop {AcuantCamera} AcuantCamera Acuant camera API.
  */
 
 /**
@@ -126,19 +170,36 @@ function AcuantCaptureCanvas({
   const { isReady } = useContext(AcuantContext);
   const { getAssetPath } = useAsset();
   const { t } = useI18n();
+  const instanceId = useInstanceId();
+  const canvasRef = useRef(/** @type {(HTMLCanvasElement & {callback: function})?} */ (null));
+  const onCropped = useImmutableCallback(
+    (response) => {
+      if (response) {
+        onImageCaptureSuccess(response);
+      } else {
+        onImageCaptureFailure(response);
+      }
+    },
+    [onImageCaptureSuccess, onImageCaptureFailure],
+  );
+  const [captureType, setCaptureType] = useState(/** @type {AcuantCaptureType} */ ('AUTO'));
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      // Acuant SDK assigns a callback property to the canvas when it switches to its "Tap to
+      // Capture" mode (Acuant SDK v11.4.4, L158). Infer capture type by presence of the property.
+      defineObservableProperty(canvasRef.current, 'callback', (callback) => {
+        setCaptureType(callback ? 'TAP' : 'AUTO');
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (isReady) {
       /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
         {
           onCaptured() {},
-          onCropped(response) {
-            if (response) {
-              onImageCaptureSuccess(response);
-            } else {
-              onImageCaptureFailure(response);
-            }
-          },
+          onCropped,
         },
         onImageCaptureFailure,
         {
@@ -188,6 +249,9 @@ function AcuantCaptureCanvas({
       <div id="acuant-sdk-capture-view">
         <canvas
           id="acuant-video-canvas"
+          ref={canvasRef}
+          aria-labelledby={`acuant-sdk-heading-${instanceId}`}
+          aria-describedby={`acuant-sdk-instructions-${instanceId}`}
           style={{
             width: '100%',
             position: 'absolute',
@@ -195,7 +259,17 @@ function AcuantCaptureCanvas({
             left: '50%',
             transform: 'translate(-50%, -50%)',
           }}
-        />
+        >
+          <h2 id={`acuant-sdk-heading-${instanceId}`}>
+            {t('doc_auth.accessible_labels.camera_video_capture_label')}
+          </h2>
+          <p id={`acuant-sdk-instructions-${instanceId}`}>
+            {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
+          </p>
+          <button type="button" aria-disabled={captureType !== 'TAP'}>
+            {t('doc_auth.buttons.take_picture')}
+          </button>
+        </canvas>
       </div>
     </>
   );
