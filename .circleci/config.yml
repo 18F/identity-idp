@@ -15,7 +15,7 @@ executors:
       - image: circleci/ruby:2.7.3-node-browsers
         environment:
           RAILS_ENV: test
-          BUNDLER_VERSION: 1.17.3
+          BUNDLER_VERSION: 2.2.20
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
