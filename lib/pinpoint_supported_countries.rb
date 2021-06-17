@@ -31,7 +31,8 @@ class PinpointSupportedCountries
     keyword_init: true,
   )
 
-  # @return [Hash<String, String>] a hash that matches the structure of pinpoint_supported_countries.yml
+  # @return [Hash<String, String>] a hash that matches the structure
+  #   of pinpoint_supported_countries.yml
   def run
     country_dialing_codes = load_country_dialing_codes
 
