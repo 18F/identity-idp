@@ -67,9 +67,6 @@ class AttributeAsserter
   end
 
   def add_bundle(attrs)
-    american_date_format = IdentityConfig.store.
-      dob_international_format_opt_out_list.include?(service_provider.issuer)
-
     bundle.each do |attr|
       next unless VALID_ATTRIBUTES.include? attr
       getter = ascii? ? attribute_getter_function_ascii(attr) : attribute_getter_function(attr)
@@ -78,7 +75,11 @@ class AttributeAsserter
       elsif attr == :zipcode
         getter = wrap_with_zipcode_formatter(getter)
       elsif attr == :dob
-        getter = wrap_with_dob_formatter(getter, american_date_format: american_date_format)
+        getter = wrap_with_dob_formatter(
+          getter,
+          american_date_format: IdentityConfig.store.
+            dob_international_format_opt_out_list.include?(service_provider.issuer),
+        )
       end
       attrs[attr] = { getter: getter }
     end
