@@ -11,7 +11,7 @@ module Reports
 
       results = combine_by_issuer_month(raw_results)
 
-      save_report(REPORT_NAME, results.to_json)
+      save_report(REPORT_NAME, results.to_json, extension: 'json')
     end
 
     def service_providers

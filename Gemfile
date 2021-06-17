@@ -6,24 +6,18 @@ ruby '~> 2.6.5'
 gem 'rails', '~> 6.1.3'
 
 # Variables can be overridden for local dev in Gemfile-dev
-@aamva_api_gem ||= { github: '18F/identity-aamva-api-client-gem', tag: 'v4.2.0' }
-@doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.9.2' }
+@doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.9.3' }
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.2.0' }
-@lexisnexis_api_gem ||= { github: '18F/identity-lexisnexis-api-client-gem', tag: 'v3.2.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
-@proofer_gem ||= { github: '18F/identity-proofer-gem', ref: 'v2.8.0' }
 @saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.1-18f' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.3.0' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.6.0' }
 
-gem 'aamva', @aamva_api_gem
 gem 'identity-doc-auth', @doc_auth_gem
 gem 'identity-hostdata', @hostdata_gem
 gem 'identity-logging', @logging_gem
 gem 'identity-telephony', @telephony_gem
 gem 'identity_validations', @validations_gem
-gem 'lexisnexis', @lexisnexis_api_gem
-gem 'proofer', @proofer_gem
 gem 'saml_idp', @saml_gem
 
 gem 'ahoy_matey', '~> 3.0'
@@ -41,6 +35,7 @@ gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
 gem 'foundation_emails'
+gem 'hashie', '~> 4.1'
 gem 'hiredis'
 gem 'http_accept_language'
 gem 'jwt'
@@ -79,6 +74,7 @@ gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
 gem 'webauthn', '~> 2.1'
 gem 'webpacker', '~> 5.1'
+gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
 gem 'zxcvbn-js'
 
@@ -96,7 +92,7 @@ end
 
 group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
-  gem 'bootsnap', '~> 1.5.0', require: false
+  gem 'bootsnap', '~> 1.7.0', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'erb_lint', '~> 0.0.37', require: false
   gem 'i18n-tasks', '>= 0.9.31'

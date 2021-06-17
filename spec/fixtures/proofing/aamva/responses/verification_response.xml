@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dldv:VerifyDriverLicenseDataResponse xmlns:dldv="http://aamva.org/dldv/dldverification/2.1">
+  <ControlData>
+    <MessageAddress>
+      <TransactionLocatorID>1234-abcd-efgh</TransactionLocatorID>
+      <MessageOriginatorID>GSA</MessageOriginatorID>
+      <MessageDestinationID>CA</MessageDestinationID>
+    </MessageAddress>
+  </ControlData>
+  <DriverLicenseNumberMatchIndicator>true</DriverLicenseNumberMatchIndicator>
+  <PersonBirthDateMatchIndicator>true</PersonBirthDateMatchIndicator>
+  <PersonLastNameExactMatchIndicator>true</PersonLastNameExactMatchIndicator>
+  <PersonLastNameFuzzyPrimaryMatchIndicator>true</PersonLastNameFuzzyPrimaryMatchIndicator>
+  <PersonLastNameFuzzyAlternateMatchIndicator>true</PersonLastNameFuzzyAlternateMatchIndicator>
+  <PersonFirstNameExactMatchIndicator>true</PersonFirstNameExactMatchIndicator>
+  <PersonFirstNameFuzzyPrimaryMatchIndicator>true</PersonFirstNameFuzzyPrimaryMatchIndicator>
+  <PersonFirstNameFuzzyAlternateMatchIndicator>true</PersonFirstNameFuzzyAlternateMatchIndicator>
+  <DocumentCategoryMatchIndicator>true</DocumentCategoryMatchIndicator>
+</dldv:VerifyDriverLicenseDataResponse>

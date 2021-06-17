@@ -59,6 +59,7 @@ Layout/LineLength:
   - https
   Exclude:
     - 'config/routes.rb'
+    - 'spec/fixtures/**/*.json'
 
 Metrics/ModuleLength:
   CountComments: false
@@ -227,6 +228,8 @@ Style/StringLiterals:
   - single_quotes
   - double_quotes
   ConsistentQuotesInMultiline: true
+  Exclude:
+    - 'spec/fixtures/**/*.json'
 
 Style/TrailingCommaInArguments:
   # If `comma`, the cop requires a comma after the last argument, but only for
@@ -249,6 +252,8 @@ Style/TrailingCommaInArrayLiteral:
     - comma
     - consistent_comma
     - no_comma
+  Exclude:
+    - 'spec/fixtures/**/*.json'
 
 Style/TrailingCommaInHashLiteral:
   # If `comma`, the cop requires a comma after the last item in an array or
@@ -260,6 +265,8 @@ Style/TrailingCommaInHashLiteral:
     - comma
     - consistent_comma
     - no_comma
+  Exclude:
+    - 'spec/fixtures/**/*.json'
 
 Naming/MethodParameterName:
   MinNameLength: 2

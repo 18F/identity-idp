@@ -11,8 +11,12 @@ module Reports
       end
       totals = calculate_totals(daily_results)
       save_report(
-        REPORT_NAME, {total_letter_requests: totals,
-                      daily_letter_requests: daily_results}.to_json
+        REPORT_NAME,
+        {
+          total_letter_requests: totals,
+          daily_letter_requests: daily_results,
+        }.to_json,
+        extension: 'json',
       )
     end
 

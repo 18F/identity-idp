@@ -9,6 +9,7 @@ module Agreements
         save_report(
           'agencies',
           AgencyBlueprint.render(agencies, root: :agencies),
+          extension: 'json',
         )
       end
 

@@ -5,7 +5,7 @@ describe Idv::Agent do
   include IdvHelper
 
   let(:bad_phone) do
-    Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+    Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
 
   describe 'instance' do
@@ -54,7 +54,7 @@ describe Idv::Agent do
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages][:state_id]).to include(
             client: 'StateIdMock',
-            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
           )
         end
       end
@@ -91,7 +91,7 @@ describe Idv::Agent do
           result = document_capture_session.load_proofing_result.result
           expect(result[:context][:stages]).to_not include(
             state_id: 'StateIdMock',
-            transaction_id: Proofing::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
           )
         end
       end
@@ -110,7 +110,7 @@ describe Idv::Agent do
         )
         result = document_capture_session.load_proofing_result.result
 
-        expect(result[:exception]).to start_with('#<Proofer::TimeoutError: ')
+        expect(result[:exception]).to start_with('#<Proofing::TimeoutError: ')
         expect(result).to include(
           success: false,
           timed_out: true,

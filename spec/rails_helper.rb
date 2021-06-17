@@ -70,6 +70,7 @@ RSpec.configure do |config|
   config.include AwsKmsClientHelper
   config.include KeyRotationHelper
   config.include OtpHelper
+  config.include XmlHelper
 
   config.before(:suite) do
     Rails.application.load_seed

@@ -60,7 +60,11 @@ module Idv
     end
 
     def step
-      @_step ||= Idv::PhoneStep.new(idv_session: idv_session, trace_id: amzn_trace_id)
+      @_step ||= Idv::PhoneStep.new(
+        idv_session: idv_session,
+        trace_id: amzn_trace_id,
+        analytics: analytics,
+      )
     end
 
     def step_params

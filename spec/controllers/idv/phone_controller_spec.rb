@@ -6,7 +6,7 @@ describe Idv::PhoneController do
   let(:max_attempts) { idv_max_attempts }
   let(:good_phone) { '+1 (703) 555-0000' }
   let(:bad_phone) do
-    Proofing::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
+    Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER
   end
   let(:normalized_phone) { '7035550000' }
   let(:bad_phone) { '+1 (703) 555-5555' }
@@ -93,8 +93,9 @@ describe Idv::PhoneController do
     it 'shows waiting interstitial if async process is in progress' do
       # having a document capture session with PII but without results will trigger
       # in progress behavior
-      document_capture_session = DocumentCaptureSession.create(
-        user_id: user.id,
+      document_capture_session = DocumentCaptureSession.create_by_user_id(
+        user.id,
+        @analytics,
         requested_at: Time.zone.now,
       )
       document_capture_session.create_proofing_session

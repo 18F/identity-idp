@@ -15,7 +15,9 @@ module OutboundHealthChecker
       raise 'missing outbound_connection_check_url'
     end
 
-    response = faraday.head(IdentityConfig.store.outbound_connection_check_url)
+    response = faraday.head(IdentityConfig.store.outbound_connection_check_url) do |req|
+      req.options.context = { service_name: 'outbound_health_check' }
+    end
 
     { url: IdentityConfig.store.outbound_connection_check_url, status: response.status }
   end
@@ -23,6 +25,7 @@ module OutboundHealthChecker
   # @api private
   def faraday
     Faraday.new do |conn|
+      conn.request :instrumentation, name: 'request_log.faraday'
       conn.adapter :net_http
 
       conn.options.timeout = 1

@@ -17,7 +17,7 @@ module Reports
       @sp_user_quotas_list = transaction_with_timeout do
         Db::Identity::SpUserQuotas.call(fiscal_start_date)
       end
-      save_report(REPORT_NAME, @sp_user_quotas_list.to_json)
+      save_report(REPORT_NAME, @sp_user_quotas_list.to_json, extension: 'json')
     end
 
     def update_quota_limit_cache

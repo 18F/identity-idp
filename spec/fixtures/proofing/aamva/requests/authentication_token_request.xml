@@ -1,0 +1,51 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope">
+  <soap:Header>
+    <Action xmlns="http://www.w3.org/2005/08/addressing">
+      http://aamva.org/authentication/3.1.0/IAuthenticationService/Authenticate
+    </Action>
+    <MessageID xmlns="http://www.w3.org/2005/08/addressing">
+      urn:uuid:12345678-abcd-efgh-ijkl-1234567890ab
+    </MessageID>
+    <To xmlns="http://www.w3.org/2005/08/addressing">
+      https://authentication-cert.example.com/Authentication/Authenticate.svc
+    </To>
+    <ReplyTo xmlns="http://www.w3.org/2005/08/addressing">
+      <Address>http://www.w3.org/2005/08/addressing/anonymous</Address>
+    </ReplyTo>
+    <wsse:Security xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" soap:mustUnderstand="true">
+      <wsu:Timestamp wsu:Id="TS-12345678-abcd-efgh-ijkl-1234567890ab">
+        <wsu:Created>2017-01-01T00:00:00Z</wsu:Created>
+        <wsu:Expires>2017-01-01T00:05:00Z</wsu:Expires>
+      </wsu:Timestamp>
+      <c:SecurityContextToken xmlns:c="http://schemas.xmlsoap.org/ws/2005/02/sc" xmlns:u="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" u:Id="sct-token-reference">
+        <c:Identifier>sct-token-identifier</c:Identifier>
+      </c:SecurityContextToken>
+      <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#" Id="SIG-da727273-b306-42a4-8e9c-e7de2c2725b4">
+        <ds:SignedInfo>
+          <ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+            <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="soap"/>
+          </ds:CanonicalizationMethod>
+          <ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#hmac-sha1"/>
+          <ds:Reference URI="#TS-12345678-abcd-efgh-ijkl-1234567890ab">
+            <ds:Transforms>
+              <ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#">
+                <ec:InclusiveNamespaces xmlns:ec="http://www.w3.org/2001/10/xml-exc-c14n#" PrefixList="wsse soap"/>
+              </ds:Transform>
+            </ds:Transforms>
+            <ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+            <ds:DigestValue>NmI1d5uNOXfg6Sq2gh89TMCokPI=</ds:DigestValue>
+          </ds:Reference>
+        </ds:SignedInfo>
+        <ds:SignatureValue>4771a7mz7vXX+dGZVFY52gKiq4E=</ds:SignatureValue>
+        <ds:KeyInfo Id="KI-12345678-abcd-efgh-ijkl-1234567890ab">
+          <o:SecurityTokenReference xmlns:o="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
+            <o:Reference URI="#sct-token-reference" ValueType="http://schemas.xmlsoap.org/ws/2005/02/sc/sct"/>
+          </o:SecurityTokenReference>
+        </ds:KeyInfo>
+      </ds:Signature>
+    </wsse:Security>
+  </soap:Header>
+  <soap:Body>
+    <Authenticate xmlns="http://aamva.org/authentication/3.1.0" xmlns:ns2="http://schemas.microsoft.com/2003/10/Serialization/"/>
+  </soap:Body>
+</soap:Envelope>
