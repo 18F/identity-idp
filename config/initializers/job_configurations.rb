@@ -207,6 +207,14 @@ JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
   callback: -> { Agreements::Reports::PartnerApiReport.new.run },
 )
 
+# Send daily auth report to S3
+JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
+  name: 'Daily Auth Report',
+  interval: 24 * 60 * 60, # 24 hours
+  timeout: 300,
+  callback: -> { Reports::DailyAuthsReport.new(Date.yesterday).call },
+)
+
 if IdentityConfig.store.ruby_workers_enabled
   # Queue heartbeat job to DelayedJob
   JobRunner::Runner.add_config JobRunner::JobConfiguration.new(
