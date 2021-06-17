@@ -105,7 +105,6 @@ describe 'authorization count' do
     end
 
     context 'using oidc' do
-
       it 'counts IAL1 auth at same sp' do
         visit_idp_from_ial2_oidc_sp(client_id: client_id_1)
         click_continue
@@ -172,7 +171,6 @@ describe 'authorization count' do
     end
 
     context 'using saml' do
-
       it 'counts IAL1 auth at same sp' do
         visit_idp_from_ial2_saml_sp(issuer: issuer_1)
         click_agree_and_continue

@@ -8,10 +8,7 @@ locals:
 * action_secondary: Optional hash of `text`, `url`, optional `method` of a secondary action link.
 * options: Array of troubleshooting options.
 %>
-<%
-type = local_assigns.fetch(:type, :error)
-options = local_assigns.fetch(:options, [])
-if type == :error
+<% if local_assigns.fetch(:type, :error) == :error
   image_src = 'alert/fail-x.svg'
   troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
 else
@@ -51,6 +48,6 @@ end
 <%= render(
       'shared/troubleshooting_options',
       heading: troubleshooting_heading,
-      options: options,
+      options: local_assigns.fetch(:options, []),
       class: 'margin-top-5',
     ) %>

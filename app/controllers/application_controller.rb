@@ -356,7 +356,7 @@ class ApplicationController < ActionController::Base
 
   def render_timeout(exception)
     analytics.track_event(Analytics::RESPONSE_TIMED_OUT, analytics_exception_info(exception))
-    if exception.class == Rack::Timeout::RequestTimeoutException
+    if exception.instance_of?(Rack::Timeout::RequestTimeoutException)
       NewRelic::Agent.notice_error(exception)
     end
     render template: 'pages/page_took_too_long',

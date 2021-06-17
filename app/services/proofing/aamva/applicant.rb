@@ -15,7 +15,7 @@ module Proofing
       end
 
       private_class_method def self.format_dob(dob)
-        return dob if dob =~ /\A\d{4}-\d{2}-\d{2}\z/
+        return dob if /\A\d{4}-\d{2}-\d{2}\z/.match?(dob)
         return '' if dob.nil? || dob == ''
 
         date = date_from_dob_string(dob)
@@ -25,9 +25,9 @@ module Proofing
       end
 
       private_class_method def self.date_from_dob_string(dob_string)
-        if dob_string =~ /\A\d{8}\z/
+        if /\A\d{8}\z/.match?(dob_string)
           Date.strptime(dob_string, '%Y%m%d')
-        elsif dob_string =~ %r{\A\d{2}/\d{2}/\d{4}\z}
+        elsif %r{\A\d{2}/\d{2}/\d{4}\z}.match?(dob_string)
           Date.strptime(dob_string, '%m/%d/%Y')
         end
       end

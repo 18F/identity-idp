@@ -263,4 +263,3 @@ describe Users::TotpSetupController, devise: true do
     recs[0]['new_id'] - 1
   end
 end
-

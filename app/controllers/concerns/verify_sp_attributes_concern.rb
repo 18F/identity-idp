@@ -35,7 +35,7 @@ module VerifySpAttributesConcern
 
   def new_service_provider_attributes
     user_session[:verify_shared_attributes] if
-      user_session.class == ActiveSupport::HashWithIndifferentAccess
+      user_session.instance_of?(ActiveSupport::HashWithIndifferentAccess)
   end
 
   def clear_verify_attributes_sessions

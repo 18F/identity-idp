@@ -16,7 +16,7 @@ module Rack
     end
 
     def call_with_excludes(env)
-      if env['REQUEST_URI'] && env['REQUEST_URI'].start_with?(*self.class.excludes)
+      if env['REQUEST_URI']&.start_with?(*self.class.excludes)
         @app.call(env)
       else
         call_without_excludes(env)

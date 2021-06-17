@@ -4,7 +4,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
   it 'logs events' do
     expect(Rails.logger).to receive(:info).at_least(3).times do |log|
       next if log.nil?
-      json = log.kind_of?(Hash) ? log : JSON.parse(log)
+      json = log.is_a?(Hash) ? log : JSON.parse(log)
       next if json['name'].nil?
       expect(json['name']).to be_in [
         'enqueue.active_job', 'perform_start.active_job', 'perform.active_job'
