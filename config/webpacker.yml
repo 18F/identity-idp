@@ -51,7 +51,6 @@ development:
     watch_options:
       ignored: /node_modules\/(?!@18f\/identity-)/
 
-
 test:
   <<: *default
   compile: true
