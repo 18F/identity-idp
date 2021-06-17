@@ -1,6 +1,10 @@
 - doc_auth.accessible_labels.camera_video_capture_instructions
 - doc_auth.accessible_labels.camera_video_capture_label
 - doc_auth.accessible_labels.document_capture_dialog
+- doc_auth.accessible_labels.status_align
+- doc_auth.accessible_labels.status_capturing
+- doc_auth.accessible_labels.status_tap_to_capture
+- doc_auth.accessible_labels.status_move_closer
 - doc_auth.buttons.take_or_upload_picture
 - doc_auth.buttons.take_picture
 - doc_auth.buttons.take_picture_retry

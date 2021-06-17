@@ -1,9 +1,40 @@
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useMemo, useEffect, useRef, useState } from 'react';
 import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
 import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
 import useImmutableCallback from '../hooks/use-immutable-callback';
+
+/**
+ * @enum {string}
+ */
+const CaptureStatus = {
+  ALIGN: 'ALIGN',
+  MOVE_CLOSER: 'MOVE_CLOSER',
+  TAP_TO_CAPTURE: 'TAP_TO_CAPTURE',
+  CAPTURING: 'CAPTURING',
+};
+
+/**
+ * @enum {number}
+ */
+export const AcuantDocumentState = {
+  NO_DOCUMENT: 0,
+  SMALL_DOCUMENT: 1,
+  GOOD_DOCUMENT: 2,
+};
+
+/**
+ * @enum {number}
+ */
+export const AcuantUIState = {
+  CAPTURING: -1,
+  TAP_TO_CAPTURE: -2,
+};
+
+/**
+ * @typedef {AcuantDocumentState & AcuantUIState} AcuantFrameState
+ */
 
 /**
  * Defines a property on the given object, calling the change callback when that property is set to
@@ -77,7 +108,8 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  * @prop {(response: AcuantCaptureImage)=>void} onCaptured Document captured callback.
  * @prop {(response: AcuantSuccessResponse?)=>void} onCropped Document cropped callback. Null if
  * cropping error.
- * @prop {(response: object)=>void=} onFrameAvailable Optional frame available callback.
+ * @prop {(response: AcuantDetectedResult)=>void=} onFrameAvailable Optional frame available
+ * callback.
  */
 
 /**
@@ -94,6 +126,7 @@ export function defineObservableProperty(object, property, onChangeCallback) {
 /**
  * @typedef AcuantCamera
  *
+ * @prop {(callback: (response: AcuantImage)=>void, errorCallback: function)=>void} start
  * @prop {(callback: (response: AcuantImage)=>void)=>void} triggerCapture
  * @prop {(
  *   data: string,
@@ -132,6 +165,12 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  */
 
 /**
+ * @typedef AcuantDetectedResult
+ *
+ * @prop {AcuantFrameState} state
+ */
+
+/**
  * @typedef AcuantSuccessResponse
  *
  * @prop {AcuantImage} image Image object.
@@ -161,6 +200,55 @@ export function defineObservableProperty(object, property, onChangeCallback) {
  */
 
 /**
+ * Returns the computed capture status based on current capture type and frame state.
+ *
+ * @param {AcuantCaptureType} captureType Current capture type.
+ * @param {AcuantFrameState} frameState Current frame state.
+ *
+ * @return {CaptureStatus}
+ */
+function getCaptureStatus(captureType, frameState) {
+  // Acuant internally updates UI state to "Tap to Capture" but does _not_ invoke the
+  // `onFrameAvailable` callback, so we have to track `captureType` separately.
+  if (captureType === 'TAP' || frameState === AcuantUIState.TAP_TO_CAPTURE) {
+    return CaptureStatus.TAP_TO_CAPTURE;
+  }
+
+  switch (frameState) {
+    case AcuantDocumentState.GOOD_DOCUMENT:
+      return CaptureStatus.CAPTURING;
+    case AcuantDocumentState.SMALL_DOCUMENT:
+      return CaptureStatus.MOVE_CLOSER;
+    default:
+      return CaptureStatus.ALIGN;
+  }
+}
+
+/**
+ * Returns the translation key to use for the status text based on current capture status.
+ *
+ * @param {CaptureStatus} captureStatus
+ *
+ * @return {string}
+ */
+function getStatusLabelKey(captureStatus) {
+  switch (captureStatus) {
+    case CaptureStatus.CAPTURING:
+      // i18n-tasks-use t('doc_auth.accessible_labels.status_capturing')
+      return 'doc_auth.accessible_labels.status_capturing';
+    case CaptureStatus.MOVE_CLOSER:
+      // i18n-tasks-use t('doc_auth.accessible_labels.status_move_closer')
+      return 'doc_auth.accessible_labels.status_move_closer';
+    case CaptureStatus.TAP_TO_CAPTURE:
+      // i18n-tasks-use t('doc_auth.accessible_labels.status_tap_to_capture')
+      return 'doc_auth.accessible_labels.status_tap_to_capture';
+    default:
+      // i18n-tasks-use t('doc_auth.accessible_labels.status_align')
+      return 'doc_auth.accessible_labels.status_align';
+  }
+}
+
+/**
  * @param {AcuantCaptureCanvasProps} props Component props.
  */
 function AcuantCaptureCanvas({
@@ -171,6 +259,7 @@ function AcuantCaptureCanvas({
   const { getAssetPath } = useAsset();
   const { t } = useI18n();
   const instanceId = useInstanceId();
+  const [hasCaptured, setHasCaptured] = useState(false);
   const canvasRef = useRef(/** @type {(HTMLCanvasElement & {callback: function})?} */ (null));
   const onCropped = useImmutableCallback(
     (response) => {
@@ -183,6 +272,13 @@ function AcuantCaptureCanvas({
     [onImageCaptureSuccess, onImageCaptureFailure],
   );
   const [captureType, setCaptureType] = useState(/** @type {AcuantCaptureType} */ ('AUTO'));
+  const [frameState, setFrameState] = useState(
+    /** @type {AcuantFrameState} */ (AcuantDocumentState.NO_DOCUMENT),
+  );
+  const captureStatus = useMemo(() => getCaptureStatus(captureType, frameState), [
+    captureType,
+    frameState,
+  ]);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -196,9 +292,15 @@ function AcuantCaptureCanvas({
 
   useEffect(() => {
     if (isReady) {
+      setHasCaptured(false);
       /** @type {AcuantGlobal} */ (window).AcuantCameraUI.start(
         {
-          onCaptured() {},
+          onFrameAvailable(result) {
+            setFrameState(result.state);
+          },
+          onCaptured() {
+            setHasCaptured(true);
+          },
           onCropped,
         },
         onImageCaptureFailure,
@@ -250,6 +352,7 @@ function AcuantCaptureCanvas({
         <canvas
           id="acuant-video-canvas"
           ref={canvasRef}
+          tabIndex={0}
           aria-labelledby={`acuant-sdk-heading-${instanceId}`}
           aria-describedby={`acuant-sdk-instructions-${instanceId}`}
           style={{
@@ -260,16 +363,21 @@ function AcuantCaptureCanvas({
             transform: 'translate(-50%, -50%)',
           }}
         >
-          <h2 id={`acuant-sdk-heading-${instanceId}`}>
+          <h2 key="label" id={`acuant-sdk-heading-${instanceId}`}>
             {t('doc_auth.accessible_labels.camera_video_capture_label')}
           </h2>
-          <p id={`acuant-sdk-instructions-${instanceId}`}>
-            {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
-          </p>
-          <button type="button" aria-disabled={captureType !== 'TAP'}>
+          {captureType !== 'TAP' && (
+            <p key="description" id={`acuant-sdk-instructions-${instanceId}`}>
+              {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
+            </p>
+          )}
+          <button key="button" type="button" disabled={captureType !== 'TAP'}>
             {t('doc_auth.buttons.take_picture')}
           </button>
         </canvas>
+        <div role="status" aria-live="polite" className="usa-sr-only">
+          {isReady && !hasCaptured ? t(getStatusLabelKey(captureStatus)) : null}
+        </div>
       </div>
     </>
   );
