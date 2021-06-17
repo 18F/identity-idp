@@ -25,6 +25,11 @@ RSpec.describe PinpointSupportedCountries do
           </tr>
         </thead>
         <tr>
+          <td colspan="4">
+            A
+          </td>
+        </tr>
+        <tr>
           <td>Argentina</td>
           <td>AR</td>
           <td></td>
@@ -35,6 +40,11 @@ RSpec.describe PinpointSupportedCountries do
           <td>AU</td>
           <td>Yes</td>
           <td>Yes</td>
+        </tr>
+        <tr>
+          <td colspan="4">
+            B
+          </td>
         </tr>
         <tr>
           <td>Belarus</td>

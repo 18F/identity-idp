@@ -43,15 +43,18 @@ class PinpointSupportedCountries
 
   # @return [Array<CountrySupport>]
   def sms_support
-    TableConverter.new(download(PINPOINT_SMS_URL)).convert.map do |sms_config|
-      CountrySupport.new(
-        iso_code: sms_config['ISO code'],
-        name: trim_trailing_digits(sms_config['Country or region']),
-        # The list is of supported countries, but ones that are 'Yes1' require sender IDs,
-        # which we do not have (so we do not support them)
-        supports_sms: sms_config['Supports sender IDs'] != 'Yes1',
-      )
-    end
+    TableConverter.new(download(PINPOINT_SMS_URL)).
+      convert.
+      select { |sms_config| sms_config['ISO code'] }. # skip section rows
+      map do |sms_config|
+        CountrySupport.new(
+          iso_code: sms_config['ISO code'],
+          name: trim_trailing_digits(sms_config['Country or region']),
+          # The list is of supported countries, but ones that are 'Yes1' require sender IDs,
+          # which we do not have (so we do not support them)
+          supports_sms: sms_config['Supports sender IDs'] != 'Yes1',
+        )
+      end
   end
 
   # @return [Array<CountrySupport>]
