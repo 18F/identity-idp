@@ -67,7 +67,7 @@ class AttributeAsserter
   end
 
   def add_bundle(attrs)
-    dob_international_opt_out = IdentityConfig.store.
+    american_date_format = IdentityConfig.store.
       dob_international_format_opt_out_list.include?(service_provider.issuer)
 
     bundle.each do |attr|
@@ -78,7 +78,7 @@ class AttributeAsserter
       elsif attr == :zipcode
         getter = wrap_with_zipcode_formatter(getter)
       elsif attr == :dob
-        getter = wrap_with_dob_formatter(getter, international_format: !dob_international_opt_out)
+        getter = wrap_with_dob_formatter(getter, american_date_format: american_date_format)
       end
       attrs[attr] = { getter: getter }
     end
@@ -103,15 +103,15 @@ class AttributeAsserter
     end
   end
 
-  def wrap_with_dob_formatter(getter, international_format:)
+  def wrap_with_dob_formatter(getter, american_date_format:)
     proc do |principal|
       if (date_str = getter.call(principal))
         date = Date.parse(date_str)
 
-        if international_format
-          date.to_s
-        else
+        if american_date_format
           date.strftime('%m/%d/%Y')
+        else
+          date.to_s
         end
       end
     end
