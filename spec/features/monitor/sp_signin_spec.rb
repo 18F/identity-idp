@@ -20,7 +20,7 @@ RSpec.describe 'smoke test: SP initiated sign in' do
         expect(current_url).to match(%r{https://.*usajobs\.gov})
       elsif monitor.remote?
         expect(page).to have_content('OpenID Connect Sinatra Example')
-        expect(current_url).to match(%r{https:\/\/(sp|\w+-identity)\-oidc\-sinatra})
+        expect(current_url).to match(%r{https://(sp|\w+-identity)-oidc-sinatra})
       else
         expect(page).to have_content('OpenID Connect Test Controller')
       end

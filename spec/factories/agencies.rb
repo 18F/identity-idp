@@ -18,7 +18,7 @@ FactoryBot.define do
     abbreviation do
       name.
         split(' ').
-        map { |w| w.chars.first.upcase }.
+        map { |w| w[0].upcase }.
         select { |c| /\w/.match?(c) }.
         join + id.to_s
     end

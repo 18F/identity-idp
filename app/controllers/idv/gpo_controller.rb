@@ -80,14 +80,14 @@ module Idv
     end
 
     def idv_session_settings(hash)
-      { 'vendor_phone_confirmation': false,
-        'user_phone_confirmation': false,
-        'resolution_successful': 'phone',
-        'address_verification_mechanism': 'gpo',
-        'profile_confirmation': true,
-        'params': hash,
-        'applicant': hash,
-        'uuid': current_user.uuid }
+      { vendor_phone_confirmation: false,
+        user_phone_confirmation: false,
+        resolution_successful: 'phone',
+        address_verification_mechanism: 'gpo',
+        profile_confirmation: true,
+        params: hash,
+        applicant: hash,
+        uuid: current_user.uuid }
     end
 
     def confirm_mail_not_spammed

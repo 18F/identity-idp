@@ -6,7 +6,6 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     job = event.payload[:job]
     ex = event.payload[:exception_object]
 
-
     json = default_attributes(event, job)
 
     if ex
@@ -118,6 +117,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   private
+
   def default_attributes(event, job)
     {
       duration_ms: event.duration,
@@ -153,7 +153,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   def trace_id(job)
-    return unless job && job.arguments.first
+    return unless job&.arguments&.first
     job.arguments.first[:trace_id]
   end
 end

@@ -8,7 +8,7 @@ RSpec.describe OtpCodeGenerator do
 
     it 'generates crockford-32 encoded words' do
       expect(generate_digits).
-        to match(/\A[a-z0-9]{#{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH}}\Z/i)
+        to match(/\A[a-z0-9]{#{TwoFactorAuthenticatable::DIRECT_OTP_LENGTH}}\Z/io)
     end
 
     it 'filters out profanity' do

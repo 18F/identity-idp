@@ -14,8 +14,8 @@ module Funnel
       end
 
       def self.reset_attributes(doc_auth_log, attribute)
-        doc_auth_log[attribute] = nil if attribute =~ /at$/
-        doc_auth_log[attribute] = 0 if attribute =~ /count$/
+        doc_auth_log[attribute] = nil if /at$/.match?(attribute)
+        doc_auth_log[attribute] = 0 if /count$/.match?(attribute)
       end
       private_class_method :reset_attributes
     end

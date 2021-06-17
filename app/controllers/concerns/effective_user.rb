@@ -1,5 +1,4 @@
 module EffectiveUser
-
   def effective_user
     return current_user if effective_user_id == current_user&.id
     return User.find_by(id: effective_user_id) if effective_user_id

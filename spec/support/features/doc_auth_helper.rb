@@ -105,7 +105,6 @@ module DocAuthHelper
     click_on t('doc_auth.info.upload_computer_link')
   end
 
-
   def mobile_device
     DeviceDetector.new(
       'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) \

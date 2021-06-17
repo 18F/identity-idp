@@ -30,7 +30,7 @@ class BackupCodeBenchmarker
 
     silence_active_record_logger do
       prepare!
-      yield if block_given?
+      yield if before_convert
       convert!
     end
   end

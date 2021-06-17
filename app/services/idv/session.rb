@@ -29,7 +29,7 @@ module Idv
     end
 
     def method_missing(method_sym, *arguments, &block)
-      attr_name_sym = method_sym.to_s.gsub(/=\z/, '').to_sym
+      attr_name_sym = method_sym.to_s.delete_suffix('=').to_sym
       if VALID_SESSION_ATTRIBUTES.include?(attr_name_sym)
         return session[attr_name_sym] if arguments.empty?
         session[attr_name_sym] = arguments.first
@@ -39,7 +39,7 @@ module Idv
     end
 
     def respond_to_missing?(method_sym, include_private)
-      attr_name_sym = method_sym.to_s.gsub(/=\z/, '').to_sym
+      attr_name_sym = method_sym.to_s.delete_suffix('=').to_sym
       VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
     end
 

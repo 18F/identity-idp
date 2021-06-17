@@ -133,7 +133,7 @@ RSpec.describe ServiceProviderSessionDecorator do
           service_provider_request: ServiceProviderRequestProxy.new,
         )
 
-        expect(subject.sp_logo_url).to match(%r{sp-logos\/18f-[0-9a-f]+\.svg$})
+        expect(subject.sp_logo_url).to match(%r{sp-logos/18f-[0-9a-f]+\.svg$})
       end
     end
 
