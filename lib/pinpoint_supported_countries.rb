@@ -33,6 +33,15 @@ class PinpointSupportedCountries
 
   # @return [Hash<String, String>] a hash that matches the structure of country_dialing_codes.yml
   def run
+    country_dialing_codes = load_country_dialing_codes
+
+    duplicate_iso = country_dialing_codes.
+      group_by(&:iso_code).
+      select { |iso, arr| arr.size > 1 }.
+      keys
+
+    raise "error countries with duplicate iso codes: #{duplicate_iso}" if duplicate_iso.size > 0
+
     country_dialing_codes.sort_by(&:name).map do |country_dialing_code|
       [
         country_dialing_code.iso_code,
@@ -49,7 +58,7 @@ class PinpointSupportedCountries
       map do |sms_config|
         CountrySupport.new(
           iso_code: sms_config['ISO code'],
-          name: trim_trailing_digits(sms_config['Country or region']),
+          name: trim_trailing_digits_spaces(sms_config['Country or region']),
           # The list is of supported countries, but ones that are 'Yes1' require sender IDs,
           # which we do not have (so we do not support them)
           supports_sms: sms_config['Supports sender IDs'] != 'Yes1',
@@ -61,7 +70,7 @@ class PinpointSupportedCountries
   def voice_support
     TableConverter.new(download(PINPOINT_VOICE_URL)).convert.map do |voice_config|
       CountrySupport.new(
-        name: trim_trailing_digits(
+        name: trim_trailing_digits_spaces(
           voice_config['Country or Region'], # Yes, it is capitalized differently :[
         ),
         supports_voice: true,
@@ -70,11 +79,11 @@ class PinpointSupportedCountries
   end
 
   # @return [Array<CountryDialingCode>] combines sms and voice support into one array of configs
-  def country_dialing_codes
+  def load_country_dialing_codes
     (sms_support + voice_support).group_by(&:name).map do |_name, configs|
       combined = configs.reduce(:merge)
 
-      iso_code = remap_iso_code(combined.iso_code)
+      iso_code = name_to_iso_code(combined.name) || remap_iso_code(combined.iso_code)
       phone_data = Phonelib.phone_data[iso_code]
 
       raise "no phone_data for '#{iso_code}', maybe it needs to be remapped?" unless phone_data
@@ -95,14 +104,34 @@ class PinpointSupportedCountries
     code
   end
 
+  # AWS docs differ from the standard
+  # https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
   def remap_iso_code(iso_code)
     {
       'AN' => 'BQ',
+      'BDE' => 'BD',
+      'DN' => 'DM',
+      'H' => 'HT',
+      'TX' => 'TZ',
     }.fetch(iso_code, iso_code)
   end
 
-  def trim_trailing_digits(str)
-    str.gsub(/\d$/, '')
+  # AWS docs have the wrong code for many of these names
+  def name_to_iso_code(name)
+    {
+      'Cambodia' => 'KH',
+      'Gibraltar' => 'GI',
+      'Ivory Coast' => 'CI',
+      'Latvia' => 'LV',
+      'Mozambique' => 'MZ',
+      'Norway' => 'NO',
+      'Slovenia' => 'SI',
+      'Tuvalu' => 'TV',
+    }[name]
+  end
+
+  def trim_trailing_digits_spaces(str)
+    str.gsub(/[\d ]+$/, '')
   end
 
   def digits_only?(str)
