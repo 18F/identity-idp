@@ -51,7 +51,7 @@ describe 'shared/_nav_branded.html.erb' do
     end
 
     it 'renders the logo from S3' do
-      expect(rendered).to match(/src=\"#{img_url}\"/)
+      expect(rendered).to match(/src="#{img_url}"/)
     end
   end
 

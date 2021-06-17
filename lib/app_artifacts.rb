@@ -44,7 +44,7 @@ class AppArtifacts
     end
 
     def read_local_artifact(path)
-      formatted_path = format(path, env: 'local').sub(%r{\A/}, '')
+      formatted_path = format(path, env: 'local').delete_prefix('/')
       file_path = Rails.root.join('config', 'artifacts.example', formatted_path)
       return nil unless File.exist?(file_path)
       File.read(file_path)

@@ -19,7 +19,7 @@ class BackupCodeBackfillerJob < ApplicationJob
       limit(count).
       each do |user|
         perform_batch(user.backup_code_configurations)
-      rescue => e
+    rescue => e
         if Rails.env.production?
           Rails.logger.warn("error converting backup codes for user_id=#{user.id} #{e}")
         else

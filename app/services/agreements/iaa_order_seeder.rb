@@ -51,4 +51,3 @@ module Agreements
     end
   end
 end
-

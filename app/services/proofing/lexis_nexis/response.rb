@@ -2,7 +2,9 @@ module Proofing
   module LexisNexis
     class Response
       class UnexpectedHTTPStatusCodeError < StandardError; end
+
       class UnexpectedVerificationStatusCodeError < StandardError; end
+
       class VerificationTransactionError < StandardError; end
 
       attr_reader :response

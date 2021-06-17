@@ -11,7 +11,7 @@ module OtpHelper
     [
       Telephony::Test::Message.messages,
       Telephony::Test::Call.calls,
-    ].flatten.compact.sort_by(&:sent_at).reverse.each do |message_or_call|
+    ].flatten.compact.sort_by(&:sent_at).reverse_each do |message_or_call|
       otp = message_or_call.otp
       return otp if otp.present?
     end

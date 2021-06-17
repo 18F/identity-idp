@@ -28,9 +28,12 @@ class DocumentProofingJob < ApplicationJob
     back_image = decrypt_from_s3(
       timer: timer, name: :back, url: back_image_url, iv: back_image_iv, key: encryption_key,
     )
-    selfie_image = decrypt_from_s3(
-      timer: timer, name: :selfie, url: selfie_image_url, iv: selfie_image_iv, key: encryption_key,
-    ) if liveness_checking_enabled
+    if liveness_checking_enabled
+      selfie_image = decrypt_from_s3(
+        timer: timer, name: :selfie, url: selfie_image_url, iv: selfie_image_iv,
+        key: encryption_key
+      )
+    end
 
     proofer_result = timer.time('proof_documents') do
       with_retries(**faraday_retry_options) do

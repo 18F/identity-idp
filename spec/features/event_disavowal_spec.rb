@@ -65,7 +65,7 @@ feature 'disavowing an action' do
     open_last_email
 
     # Click the disavowal link a first time
-    click_email_link_matching(%r{events\/disavow})
+    click_email_link_matching(%r{events/disavow})
     expect(page).to have_content(t('headings.passwords.change'))
 
     # Click the disavowal link a second time and expect it to still work
@@ -73,7 +73,7 @@ feature 'disavowing an action' do
   end
 
   scenario 'attempting to reset a password after having already disavowed an action' do
-    disavow_link_regex = %r{/events/disavow\?disavowal_token=[^\"]*}
+    disavow_link_regex = %r{/events/disavow\?disavowal_token=[^"]*}
 
     perform_disavowable_password_reset
     email = open_last_email
@@ -93,7 +93,7 @@ feature 'disavowing an action' do
 
     Timecop.travel 11.days.from_now do
       open_last_email
-      click_email_link_matching(%r{events\/disavow})
+      click_email_link_matching(%r{events/disavow})
 
       expect(page).to have_content(t('event_disavowals.errors.event_disavowal_expired'))
       expect(page).to have_current_path(root_path)
@@ -104,7 +104,7 @@ feature 'disavowing an action' do
     perform_disavowable_password_reset
 
     open_last_email
-    click_email_link_matching(%r{events\/disavow})
+    click_email_link_matching(%r{events/disavow})
 
     expect(page).to have_content(t('headings.passwords.change'))
 
@@ -146,7 +146,7 @@ feature 'disavowing an action' do
     set_new_browser_session
 
     open_last_email
-    click_email_link_matching(%r{events\/disavow})
+    click_email_link_matching(%r{events/disavow})
 
     expect(page).to have_content(t('headings.passwords.change'))
 

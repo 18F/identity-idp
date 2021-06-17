@@ -16,7 +16,6 @@ feature 'verify profile with OTP' do
   end
 
   context 'GPO letter' do
-
     it 'shows step indicator progress with current verify step, completed secure account' do
       sign_in_live_with_2fa(user)
 
