@@ -67,6 +67,9 @@ class AttributeAsserter
   end
 
   def add_bundle(attrs)
+    dob_international_opt_out = IdentityConfig.store.
+      dob_international_format_opt_out_list.include?(service_provider.issuer)
+
     bundle.each do |attr|
       next unless VALID_ATTRIBUTES.include? attr
       getter = ascii? ? attribute_getter_function_ascii(attr) : attribute_getter_function(attr)
@@ -74,6 +77,8 @@ class AttributeAsserter
         getter = wrap_with_phone_formatter(getter)
       elsif attr == :zipcode
         getter = wrap_with_zipcode_formatter(getter)
+      elsif attr == :dob
+        getter = wrap_with_dob_formatter(getter, international_format: !dob_international_opt_out)
       end
       attrs[attr] = { getter: getter }
     end
@@ -95,6 +100,20 @@ class AttributeAsserter
   def wrap_with_zipcode_formatter(getter)
     proc do |principal|
       getter.call(principal)&.strip&.slice(0, 5)
+    end
+  end
+
+  def wrap_with_dob_formatter(getter, international_format:)
+    proc do |principal|
+      if (date_str = getter.call(principal))
+        date = Date.parse(date_str)
+
+        if international_format
+          date.to_s
+        else
+          date.strftime('%m/%d/%Y')
+        end
+      end
     end
   end
 
