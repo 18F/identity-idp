@@ -81,7 +81,7 @@ RSpec.describe PinpointSupportedCountries do
   end
 
   describe '#run' do
-    it 'returns a hash that matches the structure of country_dialing_codes.yml' do
+    it 'returns a hash that matches the structure of pinpoint_supported_countries.yml' do
       expect(countries.run).to eq YAML.safe_load <<-STR
         AR:
           country_code: '54'

@@ -1,7 +1,13 @@
 class PhoneNumberCapabilities
-  INTERNATIONAL_CODES = YAML.load_file(
-    Rails.root.join('config', 'country_dialing_codes.yml'),
+  PINPOINT_SUPPORTED_COUNTRIES = YAML.load_file(
+    Rails.root.join('config', 'pinpoint_supported_countries.yml'),
   ).freeze
+
+  PINPOINT_OVERRIDES = YAML.load_file(
+    Rails.root.join('config', 'pinpoint_overrides.yml'),
+  ).freeze
+
+  INTERNATIONAL_CODES = PINPOINT_SUPPORTED_COUNTRIES.deep_merge(PINPOINT_OVERRIDES).freeze
 
   attr_reader :phone, :phone_confirmed
 

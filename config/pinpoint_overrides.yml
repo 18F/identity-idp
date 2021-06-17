@@ -1,0 +1,160 @@
+AE:
+  supports_voice_unconfirmed: false
+  supports_sms: false
+  supports_voice: true
+AR:
+  supports_voice: false
+AT:
+  supports_voice: false
+AU:
+  supports_voice: false
+BB:
+  supports_voice: false
+BF:
+  supports_voice: false
+BG:
+  supports_voice: false
+BH:
+  supports_voice: false
+BR:
+  supports_voice: false
+BY:
+  supports_voice_unconfirmed: false
+  supports_sms: false
+  supports_voice: true
+CA:
+  supports_voice: false
+CH:
+  supports_voice: false
+CL:
+  supports_voice: false
+CO:
+  supports_voice: false
+CY:
+  supports_voice: false
+DE:
+  supports_voice: false
+DO:
+  supports_voice: false
+EC:
+  supports_voice: false
+EG:
+  supports_sms: false
+  supports_voice: true
+FI:
+  supports_voice: false
+GB:
+  supports_voice: false
+GD:
+  supports_voice: false
+GR:
+  supports_voice: false
+GT:
+  supports_voice: false
+HR:
+  supports_voice: false
+HU:
+  supports_voice: false
+ID:
+  supports_voice: false
+IE:
+  supports_voice: false
+IL:
+  supports_voice: false
+IS:
+  supports_voice: false
+IT:
+  supports_voice: false
+JM:
+  supports_voice: false
+JO:
+  supports_voice_unconfirmed: false
+  supports_sms: false
+  supports_voice: true
+JP:
+  supports_voice: false
+KE:
+  supports_voice: false
+KH:
+  supports_voice: false
+KW:
+  supports_voice_unconfirmed: false
+  supports_sms: false
+  supports_voice: true
+KY:
+  supports_voice: false
+KZ:
+  supports_voice: false
+LT:
+  supports_voice: false
+LU:
+  supports_voice: false
+LV:
+  supports_sms: true
+  supports_voice: false
+MD:
+  supports_voice: false
+ML:
+  supports_voice: false
+MX:
+  supports_voice: false
+MY:
+  supports_voice: false
+NI:
+  supports_voice: false
+'NO':
+  supports_sms: true
+  supports_voice: false
+NZ:
+  supports_voice: false
+PA:
+  supports_voice: false
+PE:
+  supports_voice: false
+PH:
+  supports_voice_unconfirmed: false
+  supports_sms: false
+PK:
+  supports_voice: false
+PL:
+  supports_voice: false
+PR:
+  supports_voice: false
+QA:
+  supports_voice_unconfirmed: false
+  supports_sms: false
+  supports_voice: true
+RO:
+  supports_voice: false
+RU:
+  supports_voice_unconfirmed: false
+  supports_sms: false
+  supports_voice: true
+SA:
+  supports_voice_unconfirmed: false
+  supports_sms: false
+  supports_voice: true
+SI:
+  supports_voice: false
+SK:
+  supports_voice: false
+SV:
+  supports_voice: false
+TH:
+  supports_voice_unconfirmed: false
+  supports_sms: false
+TJ:
+  supports_voice: false
+TT:
+  supports_voice: false
+TW:
+  supports_voice: false
+UY:
+  supports_voice: false
+VE:
+  supports_voice: false
+VN:
+  supports_voice_unconfirmed: false
+  supports_sms: false
+ZA:
+  supports_voice: false

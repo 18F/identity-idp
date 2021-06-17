@@ -4,7 +4,7 @@ require 'nokogiri'
 require 'phonelib'
 
 # Scrapes HTML tables from Pinpoint help sites to parse out supported countries, and
-# puts them in a format compatible with country_dialig_codes.yml
+# puts them in a format compatible with pinpoint_supported_countries.yml
 class PinpointSupportedCountries
   PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-countries.html'.freeze
   PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-voice-countries.html'.freeze
@@ -21,7 +21,7 @@ class PinpointSupportedCountries
     end
   end
 
-  # Corresponds to a block in country_dialing_codes.yml
+  # Corresponds to a block in pinpoint_supported_countries.yml
   CountryDialingCode = Struct.new(
     :iso_code,
     :country_code,
@@ -31,7 +31,7 @@ class PinpointSupportedCountries
     keyword_init: true,
   )
 
-  # @return [Hash<String, String>] a hash that matches the structure of country_dialing_codes.yml
+  # @return [Hash<String, String>] a hash that matches the structure of pinpoint_supported_countries.yml
   def run
     country_dialing_codes = load_country_dialing_codes
 

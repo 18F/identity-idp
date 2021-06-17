@@ -74,7 +74,7 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
 .PHONY: setup all lint run test check brakeman
 
 normalize_yaml:
-	find ./config/locales -type f | xargs yarn normalize-yaml config/country_dialing_codes.yml
+	find ./config/locales -type f | xargs yarn normalize-yaml config/pinpoint_supported_countries.yml
 
 optimize_svg:
 	# Without disabling minifyStyles, keyframes are removed (e.g. `app/assets/images/id-card.svg`).
@@ -86,9 +86,9 @@ optimize_assets: optimize_svg
 lint_optimized_assets: optimize_assets
 	(! git diff --name-only | grep "\.svg$$") || (echo "Error: Optimize assets using 'make optimize_assets'"; exit 1)
 
-update_country_dialing_codes:
-	bundle exec ./scripts/pinpoint-supported-countries > config/country_dialing_codes.yml
-	yarn normalize-yaml config/country_dialing_codes.yml
+update_pinpoint_supported_countries:
+	bundle exec ./scripts/pinpoint-supported-countries > config/pinpoint_supported_countries.yml
+	yarn normalize-yaml config/pinpoint_supported_countries.yml
 
 check_asset_strings:
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
