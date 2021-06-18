@@ -123,10 +123,10 @@ RSpec.describe PinpointSupportedCountries do
     end
   end
 
-  describe '#country_dialing_codes' do
+  describe '#load_country_dialing_codes' do
     # rubocop:disable Layout/LineLength
     it 'combines sms and voice support and country code into a shared config' do
-      expect(countries.country_dialing_codes).to eq [
+      expect(countries.load_country_dialing_codes).to eq [
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '54', iso_code: 'AR', name: 'Argentina', supports_sms: true, supports_voice: true),
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '61', iso_code: 'AU', name: 'Australia', supports_sms: true, supports_voice: true),
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '375', iso_code: 'BY', name: 'Belarus', supports_sms: false, supports_voice: false),
