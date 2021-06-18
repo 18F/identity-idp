@@ -68,10 +68,12 @@ module SamlIdp
     end
 
     def requested_authn_context
-      if authn_request? && authn_context_node
-        authn_context_node.content
-      else
-        nil
+      return authn_context_node.content if authn_request? && authn_context_node
+    end
+
+    def requested_authn_context_comparison
+      if authn_request? && requested_authn_context_node
+        requested_authn_context_node["Comparison"]
       end
     end
 
@@ -191,6 +193,13 @@ module SamlIdp
                                       saml: assertion).first
     end
     private :name_id_format_node
+
+    def requested_authn_context_node
+      @_authn_context_node ||= xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext",
+        samlp: samlp,
+        saml: assertion).first
+    end
+    private :requested_authn_context_node
 
     def authn_context_node
       @_authn_context_node ||= xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef",

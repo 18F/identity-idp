@@ -68,6 +68,10 @@ module SamlIdp
         expect(subject.name_id_format).to eq("urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress")
       end
 
+      it "has a valid requested authn context comparison" do
+        expect(subject.requested_authn_context_comparison).to eq("exact")
+      end
+
       it "has a valid authn context" do
         expect(subject.requested_authn_context).to eq("urn:oasis:names:tc:SAML:2.0:ac:classes:Password")
       end
