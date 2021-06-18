@@ -1,7 +1,6 @@
 AE:
   supports_voice_unconfirmed: false
   supports_sms: false
-  supports_voice: true
 AR:
   supports_voice: false
 AT:
@@ -21,7 +20,6 @@ BR:
 BY:
   supports_voice_unconfirmed: false
   supports_sms: false
-  supports_voice: true
 CA:
   supports_voice: false
 CH:
@@ -40,7 +38,6 @@ EC:
   supports_voice: false
 EG:
   supports_sms: false
-  supports_voice: true
 FI:
   supports_voice: false
 GB:
@@ -70,7 +67,6 @@ JM:
 JO:
   supports_voice_unconfirmed: false
   supports_sms: false
-  supports_voice: true
 JP:
   supports_voice: false
 KE:
@@ -80,7 +76,6 @@ KH:
 KW:
   supports_voice_unconfirmed: false
   supports_sms: false
-  supports_voice: true
 KY:
   supports_voice: false
 KZ:
@@ -90,7 +85,6 @@ LT:
 LU:
   supports_voice: false
 LV:
-  supports_sms: true
   supports_voice: false
 MD:
   supports_voice: false
@@ -103,7 +97,6 @@ MY:
 NI:
   supports_voice: false
 'NO':
-  supports_sms: true
   supports_voice: false
 NZ:
   supports_voice: false
@@ -123,17 +116,14 @@ PR:
 QA:
   supports_voice_unconfirmed: false
   supports_sms: false
-  supports_voice: true
 RO:
   supports_voice: false
 RU:
   supports_voice_unconfirmed: false
   supports_sms: false
-  supports_voice: true
 SA:
   supports_voice_unconfirmed: false
   supports_sms: false
-  supports_voice: true
 SI:
   supports_voice: false
 SK:
