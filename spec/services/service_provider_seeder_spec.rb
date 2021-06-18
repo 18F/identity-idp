@@ -61,13 +61,16 @@ RSpec.describe ServiceProviderSeeder do
           :service_provider,
           issuer: 'http://test.host',
           acs_url: 'http://test.host/test/saml/decode_assertion_old',
+          certs: ['a', 'b'],
         )
       end
 
       it 'updates the attributes based on the current value of the yml file' do
-        expect { run }.
-          to change { ServiceProvider.from_issuer('http://test.host').acs_url }.
-          to('http://test.host/test/saml/decode_assertion')
+        expect { run }.to(
+          change { ServiceProvider.from_issuer('http://test.host').acs_url }.
+            to('http://test.host/test/saml/decode_assertion').and(
+              change { ServiceProvider.from_issuer('http://test.host').certs }.
+                to([Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read])))
       end
     end
 
