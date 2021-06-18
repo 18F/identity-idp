@@ -70,7 +70,9 @@ RSpec.describe ServiceProviderSeeder do
           change { ServiceProvider.from_issuer('http://test.host').acs_url }.
             to('http://test.host/test/saml/decode_assertion').and(
               change { ServiceProvider.from_issuer('http://test.host').certs }.
-                to([Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read])))
+                to([Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read]),
+            ),
+        )
       end
     end
 
