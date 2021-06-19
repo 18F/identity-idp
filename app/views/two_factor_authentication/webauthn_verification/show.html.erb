@@ -28,7 +28,7 @@
       </div>
     </div>
     <p class="half-center">
-      <%= t('forms.webauthn_setup.login_text') %>
+      <input type="button" id="webauthn-button" class="usa-button usa-button--big usa-button--wide" value="<%= t('forms.buttons.continue') %>">
     </p>
     <%= render 'shared/fallback_links', presenter: @presenter %>
   <% end %>
