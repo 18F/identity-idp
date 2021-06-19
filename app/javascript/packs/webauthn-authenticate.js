@@ -22,4 +22,10 @@ function webauthn() {
     webauthnSuccessContainer.classList.remove('hidden');
   });
 }
-document.addEventListener('DOMContentLoaded', webauthn);
+
+function webauthnButton() {
+  const button = document.getElementById('webauthn-button');
+  button.addEventListener('click', webauthn);
+}
+
+document.addEventListener('DOMContentLoaded', webauthnButton);
