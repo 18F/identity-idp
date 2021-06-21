@@ -14,7 +14,6 @@ linters:
       - '*/app/views/idv/otp_delivery_method/*'
       - '*/app/views/idv/otp_verification/*'
       - '*/app/views/idv/phone/*'
-      - '*/app/views/idv/review/*'
       - '*/app/views/idv/shared/_document_capture.html.erb'
       - '*/app/views/event_disavowal/*'
       - '*/app/views/mfa_confirmation/*'
