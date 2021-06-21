@@ -11,6 +11,11 @@
   <%= t('doc_auth.headings.ssn') %>
 </h1>
 
+<p>
+  <%= t('doc_auth.info.ssn') %>
+  <%= new_window_link_to(t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url) %>
+</p>
+
 <%= validated_form_for(
   :doc_auth,
   url: url_for,
