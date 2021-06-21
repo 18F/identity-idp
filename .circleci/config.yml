@@ -306,9 +306,7 @@ jobs:
       - run:
           name: Check current AWS Pinpoint country support
           command: |-
-            bundle exec ./scripts/pinpoint-supported-countries > pinpoint.yml
-            yarn normalize-yaml pinpoint.yml
-            diff pinpoint.yml config/pinpoint_supported_countries.yml
+            make lint_country_dialing_codes
       - slack/status:
           fail_only: true
           failure_message: ":aws-emoji: :red_circle: AWS Pinpoint country configuration is out of date"

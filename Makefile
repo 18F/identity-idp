@@ -88,7 +88,17 @@ lint_optimized_assets: optimize_assets
 
 update_pinpoint_supported_countries:
 	bundle exec ./scripts/pinpoint-supported-countries > config/pinpoint_supported_countries.yml
-	yarn normalize-yaml config/pinpoint_supported_countries.yml
+	bundle exec ./scripts/deep-merge-yaml \
+		--comment 'Generated from `make update_pinpoint_supported_countries`' \
+		--sources \
+		-- \
+		config/pinpoint_supported_countries.yml \
+		config/pinpoint_overrides.yml \
+		> config/country_dialing_codes.yml
+	yarn normalize-yaml config/country_dialing_codes.yml config/pinpoint_supported_countries.yml
+
+lint_country_dialing_codes: update_pinpoint_supported_countries
+	(! git diff --name-only | grep config/country_dialing_codes.yml) || (echo "Error: Run 'make update_pinpoint_supported_countries' to update country codes"; exit 1)
 
 check_asset_strings:
 	find ./app/javascript -name "*.js*" | xargs ./scripts/check-assets
