@@ -11,6 +11,10 @@ class FakeSamlRequest
     Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
   end
 
+  def requested_authn_context_comparison
+    'exact'
+  end
+
   def requested_authn_contexts
     [
       Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
