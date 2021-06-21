@@ -39,6 +39,11 @@ AM:
   name: Armenia
   supports_sms: true
   supports_voice: false
+AO:
+  country_code: '244'
+  name: Angola
+  supports_sms: true
+  supports_voice: false
 AR:
   country_code: '54'
   name: Argentina
@@ -97,6 +102,11 @@ BG:
 BH:
   country_code: '973'
   name: Bahrain
+  supports_sms: true
+  supports_voice: false
+BI:
+  country_code: '257'
+  name: Burundi
   supports_sms: true
   supports_voice: false
 BJ:

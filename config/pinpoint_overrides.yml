@@ -120,6 +120,16 @@ MD:
   supports_voice: false
 ML:
   supports_voice: false
+AO:
+  country_code: '244'
+  name: Angola
+  supports_sms: true
+  supports_voice: false
+BI:
+  country_code: '257'
+  name: Burundi
+  supports_sms: true
+  supports_voice: false
 MP:
   country_code: '1'
   name: Northern Mariana Islands
