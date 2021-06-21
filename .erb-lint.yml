@@ -84,3 +84,5 @@ linters:
       - deprecated:
           - 'js-consent-form'
         suggestion: 'Rename classes that are known to be hidden by the Hush plugin'
+  SpaceAroundErbTag:
+    enabled: true

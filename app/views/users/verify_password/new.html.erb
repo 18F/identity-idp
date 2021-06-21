@@ -16,7 +16,7 @@
 <% end %>
 
 <div class='margin-top-6'>
-  <%=  accordion('review-verified-info', t('idv.messages.review.intro')) do %>
+  <%= accordion('review-verified-info', t('idv.messages.review.intro')) do %>
     <%= render 'shared/pii_review', pii: @decrypted_pii, phone: @decrypted_pii[:phone] %>
   <% end %>
 </div>
