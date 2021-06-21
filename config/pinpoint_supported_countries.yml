@@ -521,9 +521,7 @@ KZ:
   supports_voice: true
 LA:
   country_code: '856'
-  name: 'Laos
-
-    '
+  name: Laos
   supports_sms: true
   supports_voice: false
 LB:

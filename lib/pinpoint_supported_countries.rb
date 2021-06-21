@@ -132,7 +132,7 @@ class PinpointSupportedCountries
   end
 
   def trim_trailing_digits_spaces(str)
-    str.gsub(/[\d ]+$/, '')
+    str.gsub(/[\d\s]+$/, '')
   end
 
   def digits_only?(str)
