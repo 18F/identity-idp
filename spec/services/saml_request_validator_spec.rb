@@ -136,6 +136,93 @@ describe SamlRequestValidator do
       end
     end
 
+    context 'unsupported authn context with step up and valid sp and nameID format' do
+      it 'returns a FormResponse with success: true for Comparison=minimum' do
+        Saml::Idp::Constants::PASSWORD_AUTHN_CONTEXT_CLASSREFS.each do |password_context|
+          sp = ServiceProvider.from_issuer('http://localhost:3000')
+          authn_context = [password_context]
+          comparison = 'minimum'
+          name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
+          extra = {
+            authn_context: authn_context,
+            service_provider: sp.issuer,
+            nameid_format: name_id_format,
+          }
+
+          response = SamlRequestValidator.new.call(
+            service_provider: sp,
+            authn_context: authn_context,
+            authn_context_comparison: comparison,
+            nameid_format: name_id_format,
+          )
+
+          expect(response.to_h).to include(
+            success: true,
+            errors: {},
+            **extra,
+          )
+        end
+      end
+
+      it 'returns a FormResponse with success: true for Comparison=better' do
+        Saml::Idp::Constants::PASSWORD_AUTHN_CONTEXT_CLASSREFS.each do |password_context|
+          sp = ServiceProvider.from_issuer('http://localhost:3000')
+          authn_context = [password_context]
+          comparison = 'better'
+          name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
+          extra = {
+            authn_context: authn_context,
+            service_provider: sp.issuer,
+            nameid_format: name_id_format,
+          }
+
+          response = SamlRequestValidator.new.call(
+            service_provider: sp,
+            authn_context: authn_context,
+            authn_context_comparison: comparison,
+            nameid_format: name_id_format,
+          )
+
+          expect(response.to_h).to include(
+            success: true,
+            errors: {},
+            **extra,
+          )
+        end
+      end
+    end
+
+    context 'unsupported authn context without step up and valid sp and nameID format' do
+      it 'returns FormResponse with success: false for unknown authn context' do
+        Saml::Idp::Constants::PASSWORD_AUTHN_CONTEXT_CLASSREFS.each do |password_context|
+          sp = ServiceProvider.from_issuer('http://localhost:3000')
+          authn_context = [password_context]
+          name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
+          extra = {
+            authn_context: authn_context,
+            service_provider: sp.issuer,
+            nameid_format: name_id_format,
+          }
+          errors = {
+            authn_context: [t('errors.messages.unauthorized_authn_context')],
+          }
+
+          response = SamlRequestValidator.new.call(
+            service_provider: sp,
+            authn_context: authn_context,
+            nameid_format: name_id_format,
+          )
+
+          expect(response.to_h).to include(
+            success: false,
+            errors: errors,
+            error_details: hash_including(*errors.keys),
+            **extra,
+          )
+        end
+      end
+    end
+
     context 'invalid authn context and valid sp and authorized nameID format' do
       it 'returns FormResponse with success: false for unknown authn context' do
         sp = ServiceProvider.from_issuer('http://localhost:3000')

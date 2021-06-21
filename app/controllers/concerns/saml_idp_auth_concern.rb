@@ -24,6 +24,7 @@ module SamlIdpAuthConcern
     @result = @saml_request_validator.call(
       service_provider: current_service_provider,
       authn_context: requested_authn_contexts,
+      authn_context_comparison: saml_request.requested_authn_context_comparison,
       nameid_format: name_id_format,
     )
 

@@ -14,6 +14,10 @@ module Saml
       IAL2_STRICT_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/2?strict=true".freeze
       IALMAX_AUTHN_CONTEXT_CLASSREF = "#{IAL_AUTHN_CONTEXT_PREFIX}/0".freeze
 
+      PASSWORD_AUTHN_CONTEXT_CLASSREFS = %w[
+        urn:oasis:names:tc:SAML:2.0:ac:classes:Password
+        urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport
+      ].freeze
       DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF = 'urn:gov:gsa:ac:classes:sp:PasswordProtectedTransport:duo'.freeze
       AAL_AUTHN_CONTEXT_PREFIX = 'http://idmanagement.gov/ns/assurance/aal'.freeze
       AAL1_AUTHN_CONTEXT_CLASSREF = "#{AAL_AUTHN_CONTEXT_PREFIX}/1".freeze
