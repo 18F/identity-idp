@@ -8,7 +8,6 @@ linters:
       - '*/app/views/account_reset/*'
       - '*/app/views/accounts/*'
       - '*/app/views/idv/address/*'
-      - '*/app/views/idv/come_back_later/*'
       - '*/app/views/idv/confirmations/*'
       - '*/app/views/idv/capture_doc/*'
       - '*/app/views/idv/doc_auth/*'
