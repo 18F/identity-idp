@@ -578,8 +578,8 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: '',
-      ).gsub(/\s+/, ' ')
+        location: 'Algeria',
+      )
       expect(user.reload.otp_delivery_preference).to eq 'voice'
     end
   end
