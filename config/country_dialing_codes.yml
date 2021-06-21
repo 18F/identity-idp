@@ -61,7 +61,7 @@ AW:
   supports_voice: false
 AZ:
   country_code: '994'
-  name: Azerbijan
+  name: Azerbaijan
   supports_sms: true
   supports_voice: false
 BA:
@@ -382,7 +382,7 @@ GP:
   supports_voice: false
 GQ:
   country_code: '240'
-  name: Equitorial Guinea
+  name: Equatorial Guinea
   supports_sms: true
   supports_voice: false
 GR:
@@ -694,7 +694,7 @@ MV:
   supports_voice: false
 MW:
   country_code: '265'
-  name: Malwai
+  name: Malawi
   supports_sms: true
   supports_voice: false
 MX:

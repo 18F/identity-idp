@@ -16,7 +16,8 @@ BG:
   supports_voice: false
 BH:
   supports_voice: false
-
+AZ:
+  name: Azerbaijan
 BJ:
   country_code: '229'
   name: Benin
@@ -47,6 +48,8 @@ DE:
   supports_voice: false
 DO:
   supports_voice: false
+GQ:
+  name: Equatorial Guinea
 DZ:
   country_code: '213'
   name: Algeria
@@ -137,6 +140,8 @@ PA:
   supports_voice: false
 PE:
   supports_voice: false
+MW:
+  name: Malawi
 PH:
   supports_sms: false
   supports_voice_unconfirmed: false
