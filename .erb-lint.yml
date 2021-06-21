@@ -11,7 +11,6 @@ linters:
       - '*/app/views/idv/confirmations/*'
       - '*/app/views/idv/capture_doc/*'
       - '*/app/views/idv/doc_auth/*'
-      - '*/app/views/idv/otp_delivery_method/*'
       - '*/app/views/idv/otp_verification/*'
       - '*/app/views/idv/phone/*'
       - '*/app/views/idv/shared/_document_capture.html.erb'
