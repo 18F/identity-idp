@@ -19,7 +19,6 @@ linters:
       - '*/app/views/service_provider_mfa/*'
       - '*/app/views/session_timeout/*'
       - '*/app/views/shared/*'
-      - '*/app/views/sign_up/*'
       - '*/app/views/two_factor_authentication/*'
       - '*/app/views/user_mailer/*'
       - '*/app/views/users/*'
