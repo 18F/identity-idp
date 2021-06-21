@@ -20,7 +20,6 @@ linters:
       - '*/app/views/idv/shared/_document_capture.html.erb'
       - '*/app/views/event_disavowal/*'
       - '*/app/views/mfa_confirmation/*'
-      - '*/app/views/partials/*'
       - '*/app/views/reactivate_account/*'
       - '*/app/views/saml_idp/*'
       - '*/app/views/service_provider_mfa/*'
