@@ -148,7 +148,6 @@ describe NewPhoneForm do
 
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(true)
-      expect(result.errors).to be_empty
     end
 
     context 'when the user has already added the number' do

@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+require 'yaml'
+require 'active_support/core_ext/hash/deep_merge'
+require 'optparse'
+
+comments = []
+sources = true
+
+parser = OptionParser.new do |opts|
+  opts.banner = <<~EOS
+    Usage: #{$PROGRAM_NAME} a.yml b.yml"
+
+    Reads in YAML files and combines them via deep merge, in order
+  EOS
+
+  opts.on('-c', '--comment STR', 'a string to print as a comment at the top of the file') do |c|
+    comments << c
+  end
+
+  opts.on('--[no-]sources', 'print the source files as commments at the top') do |s|
+    sources = s
+  end
+
+  opts.on('-h', '--help') do
+    puts opts
+    exit 0
+  end
+end
+
+parser.order!
+
+comments.each do |comment|
+  puts "# #{comment}"
+end
+
+if sources
+  puts '# Sources:'
+  ARGV.each do |path|
+    puts "# - #{path}"
+  end
+end
+
+result = ARGV.map do |path|
+  YAML.load_file(path)
+end.reduce(&:deep_merge)
+
+puts result.to_yaml
