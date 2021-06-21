@@ -18,7 +18,6 @@ linters:
       - '*/app/views/idv/phone/*'
       - '*/app/views/idv/review/*'
       - '*/app/views/idv/shared/_document_capture.html.erb'
-      - '*/app/views/forgot_password/*'
       - '*/app/views/event_disavowal/*'
       - '*/app/views/events/*'
       - '*/app/views/mfa_confirmation/*'
