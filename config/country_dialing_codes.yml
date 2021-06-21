@@ -99,6 +99,11 @@ BH:
   name: Bahrain
   supports_sms: true
   supports_voice: false
+BJ:
+  country_code: '229'
+  name: Benin
+  supports_sms: true
+  supports_voice: false
 BL:
   country_code: '590'
   name: Burundi
@@ -112,6 +117,11 @@ BM:
 BN:
   country_code: '673'
   name: Brunei
+  supports_sms: true
+  supports_voice: false
+BO:
+  country_code: '591'
+  name: Bolivia
   supports_sms: true
   supports_voice: false
 BQ:
@@ -249,6 +259,11 @@ DO:
   country_code: '1'
   name: Dominican Republic
   supports_sms: true
+  supports_voice: false
+DZ:
+  country_code: '213'
+  name: Algeria
+  supports_sms: false
   supports_voice: false
 EC:
   country_code: '593'
@@ -496,6 +511,11 @@ KH:
   name: Cambodia
   supports_sms: true
   supports_voice: false
+KI:
+  country_code: '686'
+  name: Kiribati
+  supports_sms: true
+  supports_voice: false
 KM:
   country_code: '269'
   name: Comoros
@@ -637,6 +657,11 @@ MO:
   name: Macau
   supports_sms: true
   supports_voice: false
+MP:
+  country_code: '1'
+  name: Northern Mariana Islands
+  supports_sms: true
+  supports_voice: true
 MQ:
   country_code: '596'
   name: Martinique
@@ -793,6 +818,11 @@ PT:
   name: Portugal
   supports_sms: true
   supports_voice: false
+PW:
+  country_code: '680'
+  name: Palau
+  supports_sms: true
+  supports_voice: false
 PY:
   country_code: '595'
   name: Paraguay
@@ -916,6 +946,11 @@ TC:
   name: Turks and Caicos Islands
   supports_sms: true
   supports_voice: false
+TD:
+  country_code: '235'
+  name: Chad
+  supports_sms: true
+  supports_voice: false
 TG:
   country_code: '228'
   name: Togo
@@ -1000,6 +1035,11 @@ UY:
 UZ:
   country_code: '998'
   name: Uzbekistan
+  supports_sms: true
+  supports_voice: false
+VC:
+  country_code: '1784'
+  name: Saint Vincent and the Grenadines
   supports_sms: true
   supports_voice: false
 VE:
