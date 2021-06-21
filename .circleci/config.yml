@@ -297,6 +297,19 @@ jobs:
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
       - store-smoketest-results
+  check-pinpoint-config:
+    docker:
+      - image: circleci/ruby:2.7.3
+    steps:
+      - checkout
+      - bundle-yarn-install
+      - run:
+          name: Check current AWS Pinpoint country support
+          command: |-
+            make lint_country_dialing_codes
+      - slack/status:
+          fail_only: true
+          failure_message: ":aws-emoji: :red_circle: AWS Pinpoint country configuration is out of date"
 workflows:
   version: 2
   release:
@@ -311,6 +324,18 @@ workflows:
       - lints:
           requires:
             - setup
+
+  daily-external-pinpoint-checker:
+    jobs:
+      - check-pinpoint-config
+    triggers:
+      - schedule:
+          # Once a day at 12pm
+          cron: "0 12 * * *"
+          filters:
+            branches:
+              only:
+                - main
 
   # Theses are staggered separately from the smoke tests in the identity-monitor repo
   # because they share credentials and would mess each other up if run concurrently
