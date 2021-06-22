@@ -51,10 +51,14 @@ feature 'doc auth verify step' do
     expect(page).to have_selector("input[value='59010']")
   end
 
-  it 'proceeds to the ssn page if the user clicks change ssn' do
+  it 'proceeds to the ssn page if the user clicks change ssn and allows user to go back' do
     click_button t('doc_auth.buttons.change_ssn')
 
     expect(page).to have_current_path(idv_doc_auth_ssn_step)
+    expect(page).to have_content(t('doc_auth.headings.ssn_update'))
+
+    click_button t('forms.buttons.back')
+    expect(page).to have_current_path(idv_doc_auth_verify_step)
   end
 
   it 'does not proceed to the next page if resolution fails' do
