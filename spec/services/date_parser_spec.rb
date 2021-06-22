@@ -10,6 +10,12 @@ RSpec.describe DateParser do
       it { is_expected.to eq(Date.new(1970, 12, 31)) }
     end
 
+    context 'single digit american date month and year' do
+      let(:str) { '2/1/1970' }
+
+      it { is_expected.to eq(Date.new(1970, 2, 1)) }
+    end
+
     context 'with an international style date' do
       let(:str) { '1970-12-31' }
 
