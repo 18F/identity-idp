@@ -29,6 +29,7 @@ module Idv
       ACTIONS = {
         cancel_send_link: Idv::Actions::CancelSendLinkAction,
         cancel_link_sent: Idv::Actions::CancelLinkSentAction,
+        cancel_update_ssn: Idv::Actions::CancelUpdateSsnAction,
         reset: Idv::Actions::ResetAction,
         redo_ssn: Idv::Actions::RedoSsnAction,
         verify_document: Idv::Actions::VerifyDocumentAction,
