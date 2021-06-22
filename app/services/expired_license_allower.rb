@@ -49,7 +49,7 @@ class ExpiredLicenseAllower
       only_error_was_document_expired? &&
         response.pii_from_doc[:state_id_expiration] &&
         # Can switch to Date.parse after next deploy
-        (state_id_expiration = DateParser.parse(response.pii_from_doc[:state_id_expiration])) &&
+        (state_id_expiration = DateParser.parse_legacy(response.pii_from_doc[:state_id_expiration])) &&
         state_id_expiration >= IdentityConfig.store.proofing_expired_license_after
     )
   end

@@ -68,7 +68,7 @@ class Profile < ApplicationRecord
       pii.first_name,
       pii.last_name,
       pii.zipcode,
-      pii.dob && DateParser.parse(pii[:dob]).year,
+      pii.dob && DateParser.parse_legacy(pii[:dob]).year,
     ]
 
     return unless values.all?(&:present?)
