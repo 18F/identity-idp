@@ -298,8 +298,7 @@ jobs:
       - notify-slack-smoke-test-status
       - store-smoketest-results
   check-pinpoint-config:
-    docker:
-      - image: circleci/ruby:2.7.3
+    executor: ruby_browsers
     steps:
       - checkout
       - bundle-yarn-install
