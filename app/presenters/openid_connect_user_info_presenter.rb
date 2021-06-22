@@ -67,7 +67,7 @@ class OpenidConnectUserInfoPresenter
     american_date_format = IdentityConfig.store.
       dob_international_format_opt_out_list.include?(identity.service_provider)
 
-    date = Date.parse(ial2_data.dob)
+    date = DateParser.parse(ial2_data.dob)
 
     if american_date_format
       date.strftime('%m/%d/%Y')
