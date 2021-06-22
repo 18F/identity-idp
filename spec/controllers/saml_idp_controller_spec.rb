@@ -681,6 +681,100 @@ describe SamlIdpController do
       end
     end
 
+    context 'service provider sends unsupported NameID format' do
+      let(:user) { create(:user, :signed_up) }
+      let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
+      let(:subject) { xmldoc.subject_nodeset[0] }
+      let(:name_id) { subject.at('//ds:NameID', ds: Saml::XML::Namespaces::ASSERTION) }
+
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
+
+      it 'sends the appropriate identifier for non-email NameID SPs' do
+        auth_settings = missing_nameid_format_saml_settings
+        auth_settings.name_identifier_format =
+          'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
+        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+          authn_context: request_authn_contexts,
+          service_provider: 'http://localhost:3000',
+          endpoint: '/api/saml/auth2021',
+          idv: false,
+          finish_profile: false,
+        }
+
+        expect(name_id.children.first.to_s).to eq(user.agency_identities.last.uuid)
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
+      end
+      it 'sends the appropriate identifier for email NameID SPs' do
+        auth_settings = missing_nameid_format_saml_settings
+        auth_settings.name_identifier_format =
+          'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
+        ServiceProvider.
+          find_by(issuer: auth_settings.issuer).
+          update!(email_nameid_format_allowed: true)
+        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+          authn_context: request_authn_contexts,
+          service_provider: auth_settings.issuer,
+          endpoint: '/api/saml/auth2021',
+          idv: false,
+          finish_profile: false,
+        }
+
+        expect(name_id.children.first.to_s).to eq(user.email_addresses.first.email)
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
+      end
+      it 'sends the old user ID for legacy SPS' do
+        auth_settings = missing_nameid_format_saml_settings
+        auth_settings.name_identifier_format =
+          'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
+        ServiceProvider.
+          find_by(issuer: auth_settings.issuer).
+          update!(use_legacy_name_id_behavior: true)
+        IdentityLinker.new(user, auth_settings.issuer).link_identity
+        user.identities.last.update!(verified_attributes: ['email'])
+        generate_saml_response(user, auth_settings)
+
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          nameid_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
+          authn_context: request_authn_contexts,
+          service_provider: 'http://localhost:3000',
+          endpoint: '/api/saml/auth2021',
+          idv: false,
+          finish_profile: false,
+        }
+
+        expect(name_id.children.first.to_s).to eq(user.id.to_s)
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
+      end
+    end
+
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
         head '/api/saml/auth2021?SAMLRequest=bang!'
