@@ -3,8 +3,6 @@ import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import AcuantCapture, {
-  ACCEPTABLE_GLARE_SCORE,
-  ACCEPTABLE_SHARPNESS_SCORE,
   getNormalizedAcuantCaptureFailureMessage,
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
@@ -25,16 +23,6 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
   moireraw: 99,
   glare: 100,
   sharpness: 100,
-};
-
-const ACUANT_CAPTURE_GLARE_RESULT = {
-  ...ACUANT_CAPTURE_SUCCESS_RESULT,
-  glare: ACCEPTABLE_GLARE_SCORE - 1,
-};
-
-const ACUANT_CAPTURE_BLURRY_RESULT = {
-  ...ACUANT_CAPTURE_SUCCESS_RESULT,
-  sharpness: ACCEPTABLE_SHARPNESS_SCORE - 1,
 };
 
 describe('document-capture/components/acuant-capture', () => {
@@ -324,7 +312,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText, findByText } = render(
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" glareThreshold={50}>
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -336,7 +324,10 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCaptured();
           await Promise.resolve();
-          callbacks.onCropped(ACUANT_CAPTURE_GLARE_RESULT);
+          callbacks.onCropped({
+            ...ACUANT_CAPTURE_SUCCESS_RESULT,
+            glare: 49,
+          });
         }),
       });
 
@@ -353,10 +344,10 @@ describe('document-capture/components/acuant-capture', () => {
           source: 'acuant',
           dpi: 519,
           moire: 99,
-          glare: ACCEPTABLE_GLARE_SCORE - 1,
+          glare: 49,
           height: 1104,
-          sharpnessScoreThreshold: ACCEPTABLE_SHARPNESS_SCORE,
-          glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
+          sharpnessScoreThreshold: sinon.match.number,
+          glareScoreThreshold: 50,
           isAssessedAsBlurry: false,
           isAssessedAsGlare: true,
           assessment: 'glare',
@@ -373,7 +364,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText, findByText } = render(
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" sharpnessThreshold={50}>
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -385,7 +376,10 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCaptured();
           await Promise.resolve();
-          callbacks.onCropped(ACUANT_CAPTURE_BLURRY_RESULT);
+          callbacks.onCropped({
+            ...ACUANT_CAPTURE_SUCCESS_RESULT,
+            sharpness: 49,
+          });
         }),
       });
 
@@ -404,12 +398,12 @@ describe('document-capture/components/acuant-capture', () => {
           moire: 99,
           glare: 100,
           height: 1104,
-          sharpnessScoreThreshold: ACCEPTABLE_SHARPNESS_SCORE,
-          glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
+          sharpnessScoreThreshold: 50,
+          glareScoreThreshold: sinon.match.number,
           isAssessedAsBlurry: true,
           isAssessedAsGlare: false,
           assessment: 'blurry',
-          sharpness: ACCEPTABLE_SHARPNESS_SCORE - 1,
+          sharpness: 49,
           width: 1748,
         },
       });
@@ -420,7 +414,7 @@ describe('document-capture/components/acuant-capture', () => {
     it('shows at most one error message between AcuantCapture and FileInput', async () => {
       const { getByLabelText, getByText, findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
-          <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantContextProvider sdkSrc="about:blank" sharpnessThreshold={50}>
             <AcuantCapture label="Image" />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -432,7 +426,10 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCaptured();
           await Promise.resolve();
-          callbacks.onCropped(ACUANT_CAPTURE_BLURRY_RESULT);
+          callbacks.onCropped({
+            ...ACUANT_CAPTURE_SUCCESS_RESULT,
+            sharpness: 49,
+          });
         }),
       });
 
@@ -455,7 +452,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText, findByText } = render(
         <AnalyticsContext.Provider value={{ addPageAction }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
-            <AcuantContextProvider sdkSrc="about:blank">
+            <AcuantContextProvider sdkSrc="about:blank" sharpnessThreshold={50}>
               <AcuantCapture label="Image" name="test" />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -470,7 +467,10 @@ describe('document-capture/components/acuant-capture', () => {
             await Promise.resolve();
             callbacks.onCaptured();
             await Promise.resolve();
-            callbacks.onCropped(ACUANT_CAPTURE_BLURRY_RESULT);
+            callbacks.onCropped({
+              ...ACUANT_CAPTURE_SUCCESS_RESULT,
+              sharpness: 49,
+            });
           })
           .onSecondCall()
           .callsFake(async (callbacks) => {
@@ -499,12 +499,12 @@ describe('document-capture/components/acuant-capture', () => {
           moire: 99,
           glare: 100,
           height: 1104,
-          sharpnessScoreThreshold: ACCEPTABLE_SHARPNESS_SCORE,
-          glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
+          sharpnessScoreThreshold: 50,
+          glareScoreThreshold: sinon.match.number,
           isAssessedAsBlurry: true,
           isAssessedAsGlare: false,
           assessment: 'blurry',
-          sharpness: ACCEPTABLE_SHARPNESS_SCORE - 1,
+          sharpness: 49,
           width: 1748,
         },
       });

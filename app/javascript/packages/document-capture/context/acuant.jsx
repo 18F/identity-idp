@@ -52,11 +52,27 @@ import AnalyticsContext from './analytics';
 /**
  * @typedef AcuantContextProviderProps
  *
- * @prop {string=}   sdkSrc      SDK source URL.
- * @prop {string?=}  credentials SDK credentials.
- * @prop {string?=}  endpoint    Endpoint to submit payload.
- * @prop {ReactNode} children    Child element.
+ * @prop {string=} sdkSrc SDK source URL.
+ * @prop {string?=} credentials SDK credentials.
+ * @prop {string?=} endpoint Endpoint to submit payload.
+ * @prop {number=} glareThreshold Minimum acceptable glare score for images.
+ * @prop {number=} sharpnessThreshold Minimum acceptable sharpness score for images.
+ * @prop {ReactNode} children Child element.
  */
+
+/**
+ * The minimum glare score value to be considered acceptable.
+ *
+ * @type {number}
+ */
+export const DEFAULT_ACCEPTABLE_GLARE_SCORE = 30;
+
+/**
+ * The minimum sharpness score value to be considered acceptable.
+ *
+ * @type {number}
+ */
+export const DEFAULT_ACCEPTABLE_SHARPNESS_SCORE = 30;
 
 const AcuantContext = createContext({
   isReady: false,
@@ -64,6 +80,8 @@ const AcuantContext = createContext({
   isError: false,
   isCameraSupported: /** @type {boolean?} */ (null),
   credentials: /** @type {string?} */ (null),
+  glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
+  sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
   endpoint: /** @type {string?} */ (null),
 });
 
@@ -74,6 +92,8 @@ function AcuantContextProvider({
   sdkSrc = '/acuant/11.4.3/AcuantJavascriptWebSdk.min.js',
   credentials = null,
   endpoint = null,
+  glareThreshold = DEFAULT_ACCEPTABLE_GLARE_SCORE,
+  sharpnessThreshold = DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
   children,
 }) {
   const { isMobile } = useContext(DeviceContext);
@@ -87,8 +107,26 @@ function AcuantContextProvider({
   // types should treat camera as unsupported, since it's not relevant for Acuant SDK usage.
   const [isCameraSupported, setIsCameraSupported] = useState(isMobile ? null : false);
   const value = useMemo(
-    () => ({ isReady, isAcuantLoaded, isError, isCameraSupported, endpoint, credentials }),
-    [isReady, isAcuantLoaded, isError, isCameraSupported, endpoint, credentials],
+    () => ({
+      isReady,
+      isAcuantLoaded,
+      isError,
+      isCameraSupported,
+      endpoint,
+      credentials,
+      glareThreshold,
+      sharpnessThreshold,
+    }),
+    [
+      isReady,
+      isAcuantLoaded,
+      isError,
+      isCameraSupported,
+      endpoint,
+      credentials,
+      glareThreshold,
+      sharpnessThreshold,
+    ],
   );
 
   useEffect(() => {
