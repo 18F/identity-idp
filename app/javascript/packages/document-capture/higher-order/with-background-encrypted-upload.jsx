@@ -143,8 +143,10 @@ const withBackgroundEncryptedUpload = (Component) =>
       onChange(nextValuesWithUpload);
     }
 
-    // eslint-disable-next-line react/jsx-props-no-spreading
-    return <Component {...props} onChange={onChangeWithBackgroundEncryptedUpload} />;
+    return (
+      // eslint-disable-next-line react/jsx-props-no-spreading
+      <Component {...props} onError={onError} onChange={onChangeWithBackgroundEncryptedUpload} />
+    );
   };
 
 export default withBackgroundEncryptedUpload;
