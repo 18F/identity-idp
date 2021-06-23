@@ -19,11 +19,16 @@ function useIfStillMounted() {
     };
   });
 
-  const ifStillMounted = (fn) => (...args) => {
-    if (isMounted.current) {
-      fn(...args);
-    }
-  };
+  /**
+   * @template {(...args) => any} T
+   * @param {T} fn
+   */
+  const ifStillMounted = (fn) =>
+    /** @type {T} */ ((...args) => {
+      if (isMounted.current) {
+        fn(...args);
+      }
+    });
 
   return ifStillMounted;
 }
