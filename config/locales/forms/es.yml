@@ -135,4 +135,5 @@ es:
         cuenta. Su clave de seguridad debe ser compatible con el estándar FIDO.
         Puede agregar tantas claves de seguridad como desee, y le recomendamos
         al menos dos para que la recuperación de la cuenta sea más fácil.
+      login_text: Cuando esté listo para autenticarse, presione el botón
       nickname: Apodo clave de seguridad

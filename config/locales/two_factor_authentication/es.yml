@@ -176,6 +176,7 @@ es:
       question: '¿No dispone de su llave de seguridad?'
     webauthn_header_text: Conecte su llave de seguridad
     webauthn_piv_available: Utilice su PIV o CAC
+    webauthn_use_key: Usar llave de seguridad
     webauthn_verified:
       header: Llave de seguridad verificada
       info: Hemos verificado su llave de seguridad. Haga clic en continuar para

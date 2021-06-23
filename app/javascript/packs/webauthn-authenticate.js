@@ -10,6 +10,9 @@ function webauthn() {
     window.location.href = href;
   }
 
+  const spinner = document.getElementById('spinner');
+  spinner.classList.remove('hidden');
+
   WebAuthn.verifyWebauthnDevice({
     userChallenge: document.getElementById('user_challenge').value,
     credentialIds: document.getElementById('credential_ids').value,
