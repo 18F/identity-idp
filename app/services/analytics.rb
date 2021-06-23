@@ -53,10 +53,6 @@ class Analytics
                              name: "service_provider", # required
                              value: analytics_hash[:service_provider], # required
                            },
-                           {
-                             name: "user_id", # required
-                             value: analytics_hash[:user_id], # required
-                           },
                          ],
                          timestamp: Time.zone.now,
                          statistic_values: {
