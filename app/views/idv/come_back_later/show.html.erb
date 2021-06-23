@@ -1,16 +1,18 @@
 <% content_for(:pre_flash_content) do %>
   <%= render 'shared/step_indicator', {
-    steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS.map do |step|
-      step[:name] == :secure_account ? step.merge(status: :complete) : step
-    end,
-    current_step: :verify_phone_or_address,
-    locale_scope: 'idv',
-    class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-  } %>
+        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS.map do |step|
+          step[:name] == :secure_account ? step.merge(status: :complete) : step
+        end,
+        current_step: :verify_phone_or_address,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      } %>
 <% end %>
 
-<%= image_tag(asset_url('come-back.svg'),
-              size: '140', class: 'block margin-x-auto') %>
+<%= image_tag(
+      asset_url('come-back.svg'),
+      size: '140', class: 'block margin-x-auto',
+    ) %>
 <h2 class="center">
   <%= t('idv.titles.come_back_later') %>
 </h2>
@@ -26,13 +28,17 @@
   </p>
   <div class="center">
     <% if decorated_session.sp_name.present? %>
-      <%= link_to(t('idv.buttons.continue_plain'),
-                  return_to_sp_cancel_path,
-                  class: 'usa-button usa-button--big usa-button--wide') %>
+      <%= link_to(
+            t('idv.buttons.continue_plain'),
+            return_to_sp_cancel_path,
+            class: 'usa-button usa-button--big usa-button--wide',
+          ) %>
     <% else %>
-      <%= link_to(t('idv.buttons.continue_plain'),
-                  account_path,
-                  class: 'usa-button usa-button--big usa-button--wide') %>
+      <%= link_to(
+            t('idv.buttons.continue_plain'),
+            account_path,
+            class: 'usa-button usa-button--big usa-button--wide',
+          ) %>
     <% end %>
   </div>
 </div>
