@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe OutboundHealthChecker do
+  before do
+    Rails.cache.clear
+  end
+
   describe '#check' do
     subject(:check) { OutboundHealthChecker.check }
 
