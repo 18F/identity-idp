@@ -23,6 +23,15 @@ describe('identity-components/alert', () => {
     expect(alert.classList.contains('my-class')).to.be.true();
   });
 
+  it('is optionally focusable', () => {
+    const { getByRole } = render(<Alert isFocusable />);
+
+    const alert = getByRole('alert');
+    alert.focus();
+
+    expect(document.activeElement).to.equal(alert);
+  });
+
   it('forwards ref', () => {
     const ref = createRef();
     const { container } = render(<Alert ref={ref} />);
