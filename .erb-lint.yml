@@ -15,7 +15,6 @@ linters:
       - '*/app/views/event_disavowal/*'
       - '*/app/views/mfa_confirmation/*'
       - '*/app/views/reactivate_account/*'
-      - '*/app/views/saml_idp/*'
       - '*/app/views/service_provider_mfa/*'
       - '*/app/views/session_timeout/*'
       - '*/app/views/shared/*'
