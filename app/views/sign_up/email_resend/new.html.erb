@@ -3,9 +3,11 @@
 <h1 class='margin-y-0'>
   <%= t('headings.confirmations.new') %>
 </h1>
-<%= validated_form_for(@resend_email_confirmation_form,
-                       url: sign_up_register_path,
-                       html: { autocomplete: 'off', method: :post }) do |f| %>
+<%= validated_form_for(
+      @resend_email_confirmation_form,
+      url: sign_up_register_path,
+      html: { autocomplete: 'off', method: :post },
+    ) do |f| %>
   <%= f.input :email,
               label: t('forms.registration.labels.email'),
               required: true,
