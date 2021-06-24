@@ -8,6 +8,7 @@ import useI18n from '../hooks/use-i18n';
  * @typedef FormErrorMessageProps
  *
  * @prop {Error} error Error for which message should be generated.
+ * @prop {boolean=} isDetail Whether to use an extended description for the error, if available.
  */
 
 /**
@@ -31,7 +32,7 @@ export class CameraAccessDeclinedError extends Error {}
 /**
  * @param {FormErrorMessageProps} props Props object.
  */
-function FormErrorMessage({ error }) {
+function FormErrorMessage({ error, isDetail = false }) {
   const { t } = useI18n();
 
   if (error instanceof RequiredValueMissingError) {
@@ -39,7 +40,13 @@ function FormErrorMessage({ error }) {
   }
 
   if (error instanceof CameraAccessDeclinedError) {
-    return <>{t('doc_auth.errors.camera.blocked')}</>;
+    return (
+      <>
+        {isDetail
+          ? t('doc_auth.errors.camera.blocked_detail')
+          : t('doc_auth.errors.camera.blocked')}
+      </>
+    );
   }
 
   if (error instanceof UploadFormEntryError) {

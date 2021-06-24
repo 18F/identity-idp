@@ -58,4 +58,22 @@ describe('document-capture/components/form-error-message', () => {
 
     expect(container.childNodes).to.be.empty();
   });
+
+  describe('isDetail', () => {
+    it('returns formatted CameraAccessDeclinedError', () => {
+      const { getByText } = render(
+        <I18nContext.Provider
+          value={{
+            'doc_auth.errors.camera.blocked_detail':
+              'We don’t have permission to access the camera. Please check your browser or system' +
+              ' settings, reload this page, or upload a photo instead.',
+          }}
+        >
+          <FormErrorMessage error={new CameraAccessDeclinedError()} isDetail />
+        </I18nContext.Provider>,
+      );
+
+      expect(getByText('We don’t have permission', { exact: false })).to.be.ok();
+    });
+  });
 });
