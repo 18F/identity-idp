@@ -1,6 +1,8 @@
 module Risc
   # Controller to receive SET (Security Event Tokens)
   class SecurityEventsController < ApplicationController
+    prepend_before_action :skip_session_load
+    prepend_before_action :skip_session_expiration
     skip_before_action :verify_authenticity_token
 
     def create
