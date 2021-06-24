@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import AcuantCapture, {
+  isAcuantCameraAccessFailure,
   getNormalizedAcuantCaptureFailureMessage,
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
@@ -49,6 +50,16 @@ describe('document-capture/components/acuant-capture', () => {
 
         expect(message).to.be.a('string');
       });
+    });
+  });
+
+  describe('isAcuantCameraAccessFailure', () => {
+    it('returns false if not a camera access failure', () => {
+      expect(isAcuantCameraAccessFailure('Camera not supported.')).to.be.false();
+    });
+
+    it('returns true if a camera access failure', () => {
+      expect(isAcuantCameraAccessFailure(new Error())).to.be.true();
     });
   });
 

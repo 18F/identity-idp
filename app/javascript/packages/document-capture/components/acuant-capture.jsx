@@ -100,6 +100,16 @@ import './acuant-capture.scss';
  */
 
 /**
+ * Returns true if the given Acuant capture failure was caused by the user declining access to the
+ * camera, or false otherwise.
+ *
+ * @param {import('./acuant-capture-canvas').AcuantCaptureFailureError} error
+ *
+ * @return {boolean}
+ */
+export const isAcuantCameraAccessFailure = (error) => error instanceof Error;
+
+/**
  * Returns a human-readable document label corresponding to the given document type constant.
  *
  * @param {AcuantDocumentType} documentType
@@ -123,7 +133,7 @@ function getDocumentTypeLabel(documentType) {
  * @return {string}
  */
 export function getNormalizedAcuantCaptureFailureMessage(error) {
-  if (error instanceof Error) {
+  if (isAcuantCameraAccessFailure(error)) {
     return 'User or system denied camera access';
   }
 
@@ -444,8 +454,7 @@ function AcuantCapture(
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
             onImageCaptureFailure={(error) => {
-              const didDeclineAccess = error instanceof Error;
-              if (didDeclineAccess) {
+              if (isAcuantCameraAccessFailure(error)) {
                 if (fullScreenRef.current?.focusTrap) {
                   suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
                 }
