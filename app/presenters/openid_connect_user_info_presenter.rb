@@ -39,7 +39,7 @@ class OpenidConnectUserInfoPresenter
     {
       given_name: stringify_attr(ial2_data.first_name),
       family_name: stringify_attr(ial2_data.last_name),
-      birthdate: stringify_attr(ial2_data.dob),
+      birthdate: dob,
       social_security_number: stringify_attr(ial2_data.ssn),
       address: address,
       phone: phone,
@@ -59,6 +59,21 @@ class OpenidConnectUserInfoPresenter
     return if ial2_data.phone.blank?
 
     Phonelib.parse(ial2_data.phone).e164
+  end
+
+  def dob
+    return if ial2_data.dob.blank?
+
+    american_date_format = IdentityConfig.store.
+      dob_international_format_opt_out_list.include?(identity.service_provider)
+
+    date = Date.parse(ial2_data.dob)
+
+    if american_date_format
+      date.strftime('%m/%d/%Y')
+    else
+      date.to_s
+    end
   end
 
   def address
