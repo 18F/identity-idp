@@ -41,6 +41,7 @@ class NullServiceProvider
     signed_response_message_requested
     sp_initiated_login_url
     updated_at
+    use_legacy_name_id_behavior
   ].freeze
 
   COLUMNS.each do |col|

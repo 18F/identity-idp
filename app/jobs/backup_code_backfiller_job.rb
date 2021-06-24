@@ -16,16 +16,17 @@ class BackupCodeBackfillerJob < ApplicationJob
     User.
       includes(:backup_code_configurations).
       where('id >= ?', start_id).
+      order(:id).
       limit(count).
       each do |user|
         perform_batch(user.backup_code_configurations)
-      rescue => e
-        if Rails.env.production?
-          Rails.logger.warn("error converting backup codes for user_id=#{user.id} #{e}")
-        else
-          raise e
-        end
+    rescue => e
+      if Rails.env.production?
+        Rails.logger.warn("error converting backup codes for user_id=#{user.id} #{e}")
+      else
+        raise e
       end
+    end
   end
 
   def perform_batch(backup_code_configurations)

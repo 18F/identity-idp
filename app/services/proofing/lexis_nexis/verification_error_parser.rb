@@ -67,9 +67,9 @@ module Proofing
             )
 
             next if original_passed || (dob_year_only? && passed_partial_dob)
-          else
-            next if product['ProductStatus'] == 'pass'
-          end
+          elsif product['ProductStatus'] == 'pass'
+            next
+end
 
           key = product.fetch('ExecutedStepName').to_sym
           error_messages[key] = product

@@ -2,7 +2,7 @@ module KeyRotationHelper
   def rotate_hmac_key
     old_hmac_key = IdentityConfig.store.hmac_fingerprinter_key
     allow(IdentityConfig.store).to receive(:hmac_fingerprinter_key_queue).and_return(
-      ["#{old_hmac_key}"],
+      [old_hmac_key.to_s],
     )
     allow(IdentityConfig.store).to receive(:hmac_fingerprinter_key).and_return('4' * 32)
   end

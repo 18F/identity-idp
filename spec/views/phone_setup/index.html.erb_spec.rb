@@ -32,7 +32,6 @@ describe 'users/phone_setup/index.html.erb' do
       allow(IdentityConfig.store).to receive(:voip_block).and_return(voip_block)
     end
 
-
     context 'when voip numbers are allowed' do
       let(:voip_block) { false }
 

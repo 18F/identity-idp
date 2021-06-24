@@ -35,10 +35,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 1b59d834efcc4df3d40db213eb4092fc4d5ff4c6
-  tag: v0.14.1-18f
+  revision: 89d93da7b45cad7f01b5335f762f5f020d40765f
+  tag: v0.14.2-18f
   specs:
-    saml_idp (0.14.1.pre.18f)
+    saml_idp (0.14.2.pre.18f)
       activesupport
       builder
       faraday
@@ -540,17 +540,20 @@ GEM
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
     rspec-support (3.10.2)
-    rubocop (1.11.0)
+    rubocop (1.14.0)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.2.0, < 2.0)
+      rubocop-ast (>= 1.5.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
-    rubocop-ast (1.4.1)
-      parser (>= 2.7.1.5)
+    rubocop-ast (1.7.0)
+      parser (>= 3.0.1.1)
+    rubocop-performance (1.11.3)
+      rubocop (>= 1.7.0, < 2.0)
+      rubocop-ast (>= 0.4.0)
     rubocop-rails (2.5.2)
       activesupport
       rack (>= 1.1)
@@ -771,7 +774,8 @@ DEPENDENCIES
   rqrcode
   rspec-rails (~> 4.0)
   rspec-retry
-  rubocop (~> 1.11.0)
+  rubocop (~> 1.14.0)
+  rubocop-performance (~> 1.11.2)
   rubocop-rails (>= 2.5.2)
   ruby-progressbar
   ruby-saml

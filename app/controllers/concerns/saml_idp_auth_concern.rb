@@ -24,6 +24,7 @@ module SamlIdpAuthConcern
     @result = @saml_request_validator.call(
       service_provider: current_service_provider,
       authn_context: requested_authn_contexts,
+      authn_context_comparison: saml_request.requested_authn_context_comparison,
       nameid_format: name_id_format,
     )
 
@@ -34,7 +35,17 @@ module SamlIdpAuthConcern
   end
 
   def name_id_format
-    @name_id_format ||= saml_request.name_id_format || default_name_id_format
+    @name_id_format ||= specified_name_id_format || default_name_id_format
+  end
+
+  def specified_name_id_format
+    if recognized_name_id_format? || current_service_provider.use_legacy_name_id_behavior?
+      saml_request.name_id_format
+    end
+  end
+
+  def recognized_name_id_format?
+    Saml::Idp::Constants::VALID_NAME_ID_FORMATS.include?(saml_request.name_id_format)
   end
 
   def default_name_id_format

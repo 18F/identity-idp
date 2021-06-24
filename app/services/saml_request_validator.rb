@@ -5,9 +5,10 @@ class SamlRequestValidator
   validate :authorized_authn_context
   validate :authorized_email_nameid_format
 
-  def call(service_provider:, authn_context:, nameid_format:)
+  def call(service_provider:, authn_context:, nameid_format:, authn_context_comparison: nil)
     self.service_provider = service_provider
     self.authn_context = Array(authn_context)
+    self.authn_context_comparison = authn_context_comparison || 'exact'
     self.nameid_format = nameid_format
 
     FormResponse.new(success: valid?, errors: errors, extra: extra_analytics_attributes)
@@ -15,7 +16,7 @@ class SamlRequestValidator
 
   private
 
-  attr_accessor :service_provider, :authn_context, :nameid_format
+  attr_accessor :service_provider, :authn_context, :authn_context_comparison, :nameid_format
 
   def extra_analytics_attributes
     {
@@ -41,12 +42,19 @@ class SamlRequestValidator
   end
 
   def valid_authn_context?
+    valid_contexts = Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.dup
+    valid_contexts += Saml::Idp::Constants::PASSWORD_AUTHN_CONTEXT_CLASSREFS if step_up_comparison?
+
     authn_contexts = authn_context.reject do |classref|
       classref.include?(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
     end
     authn_contexts.all? do |classref|
-      Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(classref)
+      valid_contexts.include?(classref)
     end
+  end
+
+  def step_up_comparison?
+    %w[minimum better].include? authn_context_comparison
   end
 
   def ial2_context_requested?

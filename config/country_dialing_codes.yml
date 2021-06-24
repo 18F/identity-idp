@@ -1,9 +1,7 @@
-# NOTE: if updating this to match current AWS config, consider bringing back
-# the daily CircleCI check added in 3d4194c1f76ca1554852bacfde4abdea2ebb6104
-# `supports_voice` and `supports_sms` describe whether we are capable of sending
-# using those methods. A country that supports voice may be limited to
-# sending voice only to previously confirmed numbers when `supports_voice_unconfirmed` is set to false.
-# In those countries, it is not possible to register new phones.
+# Generated from `make update_pinpoint_supported_countries`
+# Sources:
+# - config/pinpoint_supported_countries.yml
+# - config/pinpoint_overrides.yml
 ---
 AD:
   country_code: '376'
@@ -12,7 +10,7 @@ AD:
   supports_voice: false
 AE:
   country_code: '971'
-  name: United Arab Emirates
+  name: United Arab Emirates (UAE)
   supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
@@ -114,6 +112,11 @@ BI:
 BJ:
   country_code: '229'
   name: Benin
+  supports_sms: true
+  supports_voice: false
+BL:
+  country_code: '590'
+  name: Burundi
   supports_sms: true
   supports_voice: false
 BM:
@@ -239,7 +242,7 @@ CY:
   supports_voice: false
 CZ:
   country_code: '420'
-  name: Czechia
+  name: Czechia (Czech Republic)
   supports_sms: true
   supports_voice: false
 DE:
@@ -270,7 +273,6 @@ DO:
 DZ:
   country_code: '213'
   name: Algeria
-  # Temporarily disabled due to SMS fraud attack 2021-04-16
   supports_sms: false
   supports_voice: false
 EC:
@@ -288,6 +290,11 @@ EG:
   name: Egypt
   supports_sms: false
   supports_voice: true
+ER:
+  country_code: '291'
+  name: Eritrea
+  supports_sms: true
+  supports_voice: false
 ES:
   country_code: '34'
   name: Spain
@@ -306,6 +313,11 @@ FI:
 FJ:
   country_code: '679'
   name: Fiji
+  supports_sms: true
+  supports_voice: false
+FM:
+  country_code: '691'
+  name: Micronesia (Federated States of)
   supports_sms: true
   supports_voice: false
 FO:
@@ -341,6 +353,11 @@ GE:
 GF:
   country_code: '594'
   name: French Guiana
+  supports_sms: true
+  supports_voice: false
+GG:
+  country_code: '44'
+  name: Guernsey
   supports_sms: true
   supports_voice: false
 GH:
@@ -443,6 +460,11 @@ IL:
   name: Israel
   supports_sms: true
   supports_voice: false
+IM:
+  country_code: '44'
+  name: Isle of Man
+  supports_sms: true
+  supports_voice: false
 IN:
   country_code: '91'
   name: India
@@ -461,6 +483,11 @@ IS:
 IT:
   country_code: '39'
   name: Italy
+  supports_sms: true
+  supports_voice: false
+JE:
+  country_code: '44'
+  name: Jersey
   supports_sms: true
   supports_voice: false
 JM:
@@ -610,9 +637,14 @@ MG:
   name: Madagascar
   supports_sms: true
   supports_voice: false
+MH:
+  country_code: '692'
+  name: Marshall Islands, The
+  supports_sms: true
+  supports_voice: false
 MK:
   country_code: '389'
-  name: Former Yugoslav Republic of Macedonia
+  name: Macedonia
   supports_sms: true
   supports_voice: false
 ML:
@@ -730,6 +762,11 @@ NP:
   name: Nepal
   supports_sms: true
   supports_voice: false
+NU:
+  country_code: '683'
+  name: Niue
+  supports_sms: true
+  supports_voice: false
 NZ:
   country_code: '64'
   name: New Zealand
@@ -748,6 +785,11 @@ PA:
 PE:
   country_code: '51'
   name: Peru
+  supports_sms: true
+  supports_voice: false
+PF:
+  country_code: '689'
+  name: French Polynesia
   supports_sms: true
   supports_voice: false
 PG:
@@ -778,7 +820,7 @@ PR:
   supports_voice: false
 PS:
   country_code: '970'
-  name: Palestinian Territories
+  name: Palestine
   supports_sms: true
   supports_voice: false
 PT:
@@ -804,7 +846,7 @@ QA:
   supports_voice_unconfirmed: false
 RE:
   country_code: '262'
-  name: Reunion Island
+  name: Rèunion (France)
   supports_sms: true
   supports_voice: false
 RO:
@@ -867,6 +909,11 @@ SK:
 SL:
   country_code: '232'
   name: Sierra Leone
+  supports_sms: true
+  supports_voice: false
+SM:
+  country_code: '378'
+  name: San Marino
   supports_sms: true
   supports_voice: false
 SN:
@@ -960,6 +1007,11 @@ TT:
   name: Trinidad and Tobago
   supports_sms: true
   supports_voice: false
+TV:
+  country_code: '688'
+  name: Tuvalu
+  supports_sms: true
+  supports_voice: false
 TW:
   country_code: '886'
   name: Taiwan
@@ -1031,9 +1083,19 @@ WS:
   name: Samoa
   supports_sms: true
   supports_voice: false
+XK:
+  country_code: '383'
+  name: Kosovo
+  supports_sms: true
+  supports_voice: false
 YE:
   country_code: '967'
   name: Yemen
+  supports_sms: true
+  supports_voice: false
+YT:
+  country_code: '262'
+  name: Mayotte
   supports_sms: true
   supports_voice: false
 ZA:

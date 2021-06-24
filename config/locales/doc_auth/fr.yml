@@ -5,6 +5,10 @@ fr:
       camera_video_capture_instructions: Nous prendrons automatiquement la photo
       camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d'identité
       document_capture_dialog: Capture du document
+      status_align: Alignez le document dans le cadre
+      status_capturing: Prise de photo en trois secondes
+      status_move_closer: Rapprochez l'appareil photo du document
+      status_tap_to_capture: Capture automatique désactivée
     buttons:
       change_address: changement
       change_ssn: changement
@@ -142,7 +146,7 @@ fr:
       state: Etat
       zip_code: Code postal
     headings:
-      address: Adresse mail
+      address: Mettre à jour votre adresse postale
       back: Verso
       capture_complete: Nous avons vérifié votre carte d’identité délivrée par l’État
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
@@ -158,7 +162,8 @@ fr:
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
       selfie: Prenez une photo de vous-même
-      ssn: S’il vous plaît entrez votre numéro de sécurité sociale.
+      ssn: S’il vous plaît entrez votre numéro de Sécurité Sociale.
+      ssn_update: Mettre à jour votre numéro de Sécurité Sociale
       take_picture: Prendre une photo avec un téléphone
       text_message: Nous avons envoyé un message à votre téléphone
       upload: Comment souhaitez-vous télécharger votre carte d’identité délivrée par
@@ -206,6 +211,11 @@ fr:
         crypter votre compte. Le cryptage garantit la protection de vos données
         et seul vous, le titulaire du compte, pourrez accéder à vos informations
         ou les modifier.
+      ssn: Nous avons besoin de votre numéro de sécurité sociale pour valider votre
+        nom, date de naissance et adresse. Votre numéro de sécurité sociale est
+        crypté. Avec votre accord, nous partageons ce informations auprès de
+        l'agence gouvernementale à laquelle vous essayez d'accéder pour vérifier
+        votre identité.
       tag: Recommandation
       take_picture: Utilisez l’appareil photo sur votre téléphone portable et
         téléchargez des images de votre identifiant. Nous utilisons uniquement

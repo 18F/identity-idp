@@ -34,7 +34,6 @@ module Db
         ActiveRecord::Base.connection.execute(union_query)
       end
 
-
       # @return [String]
       def full_month_subquery(sp:, full_months:)
         return if full_months.blank?

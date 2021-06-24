@@ -9,7 +9,7 @@ RSpec.describe 'SVG files' do
 
       it 'does not contain inline style tags (that render poorly in IE due to CSP)' do
         expect(subject.css('style')).to be_empty.or(
-          have_attributes(text: match(%r{^\s*/\*\!lint-ignore\*/})),
+          have_attributes(text: match(%r{^\s*/\*!lint-ignore\*/})),
         )
       end
 

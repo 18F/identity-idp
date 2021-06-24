@@ -64,7 +64,6 @@ feature 'doc auth welcome step' do
         'IdV: ' + "#{Analytics::DOC_AUTH} upload submitted".downcase,
         step: 'upload', step_count: 2, success: true,
       )
-
     end
   end
 

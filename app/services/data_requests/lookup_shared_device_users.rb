@@ -17,7 +17,7 @@ module DataRequests
 
     def call
       lookup_users(initial_users)
-      while true
+      loop do
         break if user_uuids_to_lookup.empty?
         lookup_users(users_to_lookup)
       end
@@ -28,7 +28,7 @@ module DataRequests
 
     def lookup_device(device)
       cookie_uuid = device.cookie_uuid
-      return if user_uuids_by_device.keys.include?(cookie_uuid)
+      return if user_uuids_by_device.key?(cookie_uuid)
 
       warn "Searching for new devices matching #{cookie_uuid}"
       user_ids = Device.where(cookie_uuid: cookie_uuid).pluck(:user_id)

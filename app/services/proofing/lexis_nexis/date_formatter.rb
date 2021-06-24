@@ -22,9 +22,9 @@ module Proofing
       private
 
       def parse_date_string(date_string)
-        if date_string =~ /\A\d{8}\z/
+        if /\A\d{8}\z/.match?(date_string)
           Date.strptime(date_string, '%Y%m%d')
-        elsif date_string =~ %r{\A\d{2}/\d{2}/\d{4}\z}
+        elsif %r{\A\d{2}/\d{2}/\d{4}\z}.match?(date_string)
           Date.strptime(date_string, '%m/%d/%Y')
         end
       end

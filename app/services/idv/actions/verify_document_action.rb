@@ -67,13 +67,12 @@ module Idv
         )
       end
 
-
       def image_metadata
         params.permit(:front_image_metadata, :back_image_metadata).
           to_h.
           transform_values do |str|
             JSON.parse(str)
-          rescue JSON::ParserError
+        rescue JSON::ParserError
             nil
           end.
           compact.

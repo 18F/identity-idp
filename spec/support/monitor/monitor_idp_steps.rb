@@ -45,7 +45,7 @@ module MonitorIdpSteps
     fill_in 'code', with: otp
     uncheck 'Remember this browser'
     click_on 'Submit'
-    if current_path.match(/two_factor_options_success/)
+    if /two_factor_options_success/.match?(current_path)
       click_on 'Continue'
       setup_backup_codes
     end
@@ -77,7 +77,7 @@ module MonitorIdpSteps
     fill_in 'name', with: 'Authentication app'
     fill_in 'code', with: generate_totp_code(secret)
     click_button 'Submit'
-    if current_path.match(/two_factor_options_success/)
+    if /two_factor_options_success/.match?(current_path)
       click_on 'Continue'
       setup_backup_codes
     end

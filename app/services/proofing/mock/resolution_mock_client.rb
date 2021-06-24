@@ -17,7 +17,7 @@ module Proofing
         first_name = applicant[:first_name]
         ssn = applicant[:ssn]
 
-        raise 'Failed to contact proofing vendor' if first_name =~ /Fail/i
+        raise 'Failed to contact proofing vendor' if /Fail/i.match?(first_name)
         raise 'Failed to contact proofing vendor' if ssn == NO_CONTACT_SSN
 
         if first_name.match?(/Bad/i)

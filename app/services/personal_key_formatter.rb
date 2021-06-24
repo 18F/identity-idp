@@ -6,7 +6,7 @@ class PersonalKeyFormatter
   REGEXP = "(?:#{VALID_WORD}([\s-])?){#{WORD_COUNT - 1}}#{VALID_WORD}".freeze
 
   def self.regexp
-    /\A#{REGEXP}\Z/
+    /\A#{REGEXP}\Z/o
   end
 
   def self.regexp_string

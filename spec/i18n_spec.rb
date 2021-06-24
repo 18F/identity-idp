@@ -39,7 +39,7 @@ module I18n
 
       def allowed_untranslated_key?(locale, key)
         ALLOWED_UNTRANSLATED_KEYS.any? do |entry|
-          next unless key =~ Regexp.new(entry[:key])
+          next unless key&.match?(Regexp.new(entry[:key]))
           !entry.key?(:locales) || entry[:locales].include?(locale.to_sym)
         end
       end
@@ -140,7 +140,7 @@ RSpec.describe 'I18n' do
         bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
           next unless value.is_a?(String)
 
-          interpolation_names = value.scan(/%\{([^\}]+)\}/).flatten
+          interpolation_names = value.scan(/%\{([^}]+)\}/).flatten
 
           interpolation_names.any? { |name| name.downcase != name }
         end

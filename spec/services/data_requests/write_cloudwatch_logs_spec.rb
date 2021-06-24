@@ -90,8 +90,7 @@ RSpec.describe DataRequests::WriteCloudwatchLogs do
              %w[voice phone_configuration_id:2222],
              %w[piv_cac piv_cac_configuration_id:3333],
              %w[webauthn webauthn_configuration_id:4444],
-             %w[totp auth_app_configuration_id:5555],
-                            ],
+             %w[totp auth_app_configuration_id:5555]],
           )
       end
     end

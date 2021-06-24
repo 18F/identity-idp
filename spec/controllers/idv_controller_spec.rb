@@ -117,7 +117,6 @@ describe IdvController do
         end
       end
 
-
       context 'local development' do
         before do
           allow(Identity::Hostdata).to receive(:env).and_return(nil)

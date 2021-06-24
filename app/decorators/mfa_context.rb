@@ -73,11 +73,11 @@ class MfaContext
   end
 
   def enabled_mfa_methods_count
-    phone_configurations.to_a.select(&:mfa_enabled?).count +
-      webauthn_configurations.to_a.select(&:mfa_enabled?).count +
+    phone_configurations.to_a.count(&:mfa_enabled?) +
+      webauthn_configurations.to_a.count(&:mfa_enabled?) +
       (backup_code_configurations.any? ? 1 : 0) +
-      piv_cac_configurations.to_a.select(&:mfa_enabled?).count +
-      auth_app_configurations.to_a.select(&:mfa_enabled?).count +
+      piv_cac_configurations.to_a.count(&:mfa_enabled?) +
+      auth_app_configurations.to_a.count(&:mfa_enabled?) +
       personal_key_method_count
   end
 
@@ -89,14 +89,14 @@ class MfaContext
   end
 
   def phishable_configuration_count
-    phone_configurations.to_a.select(&:mfa_enabled?).count +
+    phone_configurations.to_a.count(&:mfa_enabled?) +
       (backup_code_configurations.any? ? 1 : 0) +
-      auth_app_configurations.to_a.select(&:mfa_enabled?).count
+      auth_app_configurations.to_a.count(&:mfa_enabled?)
   end
 
   def unphishable_configuration_count
-    webauthn_configurations.to_a.select(&:mfa_enabled?).count +
-      piv_cac_configurations.to_a.select(&:mfa_enabled?).count
+    webauthn_configurations.to_a.count(&:mfa_enabled?) +
+      piv_cac_configurations.to_a.count(&:mfa_enabled?)
   end
 
   private
