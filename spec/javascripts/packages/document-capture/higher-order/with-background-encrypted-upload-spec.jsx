@@ -240,8 +240,8 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           const patch = onChange.getCall(0).args[0];
           await patch.foo_image_url.catch(() => {});
           expect(onError).to.have.been.calledOnceWith(
-            'foo',
             sinon.match.instanceOf(BackgroundEncryptedUploadError),
+            { field: 'foo' },
           );
           expect(addPageAction).to.have.been.calledWith({
             label: 'IdV: document capture async upload encryption',
@@ -257,8 +257,8 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           const patch = onChange.getCall(0).args[0];
           await patch.foo_image_url.catch(() => {});
           expect(onError).to.have.been.calledOnceWith(
-            'foo',
             sinon.match.instanceOf(BackgroundEncryptedUploadError),
+            { field: 'foo' },
           );
         });
 

@@ -134,7 +134,7 @@ const withBackgroundEncryptedUpload = (Component) =>
               const error = new BackgroundEncryptedUploadError();
               error.baseField = key;
               error.fields = [key, `${key}_image_iv`, `${key}_image_url`];
-              onError(key, error);
+              onError(error, { field: key });
               throw error;
             });
         }
