@@ -24,6 +24,11 @@ const NBSP_UNICODE = '\u00A0';
 export class RequiredValueMissingError extends Error {}
 
 /**
+ * An error representing user declined access to camera.
+ */
+export class CameraAccessDeclinedError extends Error {}
+
+/**
  * @param {FormErrorMessageProps} props Props object.
  */
 function FormErrorMessage({ error }) {
@@ -31,6 +36,10 @@ function FormErrorMessage({ error }) {
 
   if (error instanceof RequiredValueMissingError) {
     return <>{t('simple_form.required.text')}</>;
+  }
+
+  if (error instanceof CameraAccessDeclinedError) {
+    return <>{t('doc_auth.errors.camera.blocked')}</>;
   }
 
   if (error instanceof UploadFormEntryError) {

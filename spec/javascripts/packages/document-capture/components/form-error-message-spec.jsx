@@ -1,6 +1,7 @@
 import { I18nContext } from '@18f/identity-document-capture';
 import FormErrorMessage, {
   RequiredValueMissingError,
+  CameraAccessDeclinedError,
 } from '@18f/identity-document-capture/components/form-error-message';
 import { UploadFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { BackgroundEncryptedUploadError } from '@18f/identity-document-capture/higher-order/with-background-encrypted-upload';
@@ -40,6 +41,16 @@ describe('document-capture/components/form-error-message', () => {
       'try',
       'again.',
     ]);
+  });
+
+  it('returns formatted CameraAccessDeclinedError', () => {
+    const { getByText } = render(
+      <I18nContext.Provider value={{ 'doc_auth.errors.camera.blocked': 'Your camera is blocked' }}>
+        <FormErrorMessage error={new CameraAccessDeclinedError()} />
+      </I18nContext.Provider>,
+    );
+
+    expect(getByText('Your camera is blocked')).to.be.ok();
   });
 
   it('returns null if error is of an unknown type', () => {
