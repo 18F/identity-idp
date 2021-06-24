@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import BlockLink from './block-link';
 import AcuantCapture from './acuant-capture';
-import FormErrorMessage from './form-error-message';
+import FormErrorMessage, { CameraAccessDeclinedError } from './form-error-message';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import ServiceProviderContext from '../context/service-provider';
@@ -41,6 +41,7 @@ function DocumentsStep({
   value = {},
   onChange = () => {},
   errors = [],
+  onError = () => {},
   registerField = () => undefined,
 }) {
   const { t, formatHTML } = useI18n();
@@ -84,6 +85,10 @@ function DocumentsStep({
                 [`${side}_image_metadata`]: JSON.stringify(metadata),
               })
             }
+            onCameraAccessDeclined={() => {
+              onError(new CameraAccessDeclinedError(), { field: side });
+              onError(new CameraAccessDeclinedError());
+            }}
             errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
             name={side}
           />

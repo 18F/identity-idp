@@ -11,6 +11,7 @@
 - doc_auth.buttons.upload_picture
 - doc_auth.errors.camera.failed
 - doc_auth.errors.camera.blocked
+- doc_auth.errors.camera.blocked_detail
 - doc_auth.errors.file_type.invalid
 - doc_auth.errors.general.network_error
 - doc_auth.errors.glare.failed_short

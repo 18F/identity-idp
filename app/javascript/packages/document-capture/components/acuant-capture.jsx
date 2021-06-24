@@ -22,6 +22,7 @@ import './acuant-capture.scss';
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./acuant-capture-canvas').AcuantSuccessResponse} AcuantSuccessResponse */
 /** @typedef {import('./acuant-capture-canvas').AcuantDocumentType} AcuantDocumentType */
+/** @typedef {import('./full-screen').FullScreenRefHandle} FullScreenRefHandle */
 
 /**
  * @typedef {"id"|"passport"|"none"} AcuantDocumentTypeLabel
@@ -89,6 +90,7 @@ import './acuant-capture.scss';
  *   nextValue: string|Blob|null,
  *   metadata?: ImageAnalyticsPayload
  * )=>void} onChange Callback receiving next value on change.
+ * @prop {()=>void=} onCameraAccessDeclined Camera permission declined callback.
  * @prop {'user'=} capture Facing mode of capture. If capture is not specified and a camera is
  * supported, defaults to the Acuant environment camera capture.
  * @prop {string=} className Optional additional class names.
@@ -166,6 +168,36 @@ function getImageDimensions(file) {
 }
 
 /**
+ * Pauses default focus trap behaviors for a single tick. If a focus transition occurs during this
+ * tick, the focus trap's deactivation will be overridden to prevent any default focus return, in
+ * order to avoid a race condition between the intended focus targets.
+ *
+ * @param {import('focus-trap').FocusTrap} focusTrap
+ */
+function suspendFocusTrapForAnticipatedFocus(focusTrap) {
+  // Pause trap event listeners to prevent focus from being pulled back into the trap container in
+  // response to programmatic focus transitions.
+  focusTrap.pause();
+
+  // If an element is focused while behaviors are suspended, prevent the default deactivate from
+  // attempting to return focus to any other element.
+  const originalDeactivate = focusTrap.deactivate;
+  function onFocus() {
+    focusTrap.deactivate = (deactivateOptions) =>
+      originalDeactivate({ ...deactivateOptions, returnFocus: false });
+  }
+  document.addEventListener('focusin', onFocus, true);
+
+  // After the current frame, assume that focus was not moved elsewhere, or at least resume original
+  // trap behaviors.
+  setTimeout(() => {
+    document.removeEventListener('focusin', onFocus, true);
+    focusTrap.deactivate = originalDeactivate;
+    focusTrap.unpause();
+  }, 0);
+}
+
+/**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
  * in supported devices.
  *
@@ -177,6 +209,7 @@ function AcuantCapture(
     bannerText,
     value,
     onChange = () => {},
+    onCameraAccessDeclined = () => {},
     capture,
     className,
     allowUpload = true,
@@ -195,6 +228,7 @@ function AcuantCapture(
   } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { addPageAction } = useContext(AnalyticsContext);
+  const fullScreenRef = useRef(/** @type {FullScreenRefHandle?} */ (null));
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
   const isForceUploading = useRef(false);
   const isSuppressingClickLogging = useRef(false);
@@ -403,13 +437,24 @@ function AcuantCapture(
     <div className={[className, 'document-capture-acuant-capture'].filter(Boolean).join(' ')}>
       {isCapturingEnvironment && (
         <FullScreen
+          ref={fullScreenRef}
           label={t('doc_auth.accessible_labels.document_capture_dialog')}
           onRequestClose={() => setIsCapturingEnvironment(false)}
         >
           <AcuantCaptureCanvas
             onImageCaptureSuccess={onAcuantImageCaptureSuccess}
             onImageCaptureFailure={(error) => {
-              setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
+              const didDeclineAccess = error instanceof Error;
+              if (didDeclineAccess) {
+                if (fullScreenRef.current?.focusTrap) {
+                  suspendFocusTrapForAnticipatedFocus(fullScreenRef.current.focusTrap);
+                }
+
+                onCameraAccessDeclined();
+              } else {
+                setOwnErrorMessage(t('doc_auth.errors.camera.failed'));
+              }
+
               setIsCapturingEnvironment(false);
               addPageAction({
                 label: 'IdV: Image capture failed',
