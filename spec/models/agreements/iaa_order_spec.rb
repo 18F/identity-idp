@@ -68,7 +68,7 @@ RSpec.describe Agreements::IaaOrder, type: :model do
     end
 
     it 'raises an argument error if a non-date/datetime is passed in' do
-      expect{ order.in_pop?('foo') }.to raise_error(ArgumentError)
+      expect { order.in_pop?('foo') }.to raise_error(ArgumentError)
     end
     it 'returns false if the start_date is nil' do
       order.start_date = nil

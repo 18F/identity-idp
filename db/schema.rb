@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_14_145845) do
+ActiveRecord::Schema.define(version: 2021_06_22_182910) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -564,6 +564,7 @@ ActiveRecord::Schema.define(version: 2021_06_14_145845) do
     t.integer "default_aal"
     t.string "certs", array: true
     t.boolean "email_nameid_format_allowed", default: false
+    t.boolean "use_legacy_name_id_behavior", default: false
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

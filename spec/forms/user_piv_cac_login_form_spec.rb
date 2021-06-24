@@ -70,7 +70,7 @@ describe UserPivCacLoginForm do
       let(:piv_cac_required) { true }
 
       it 'returns FormResponse with success: true when the token indicates auth cert' do
-        resp = { 'nonce' => nonce, 'is_auth_cert' => true, 
+        resp = { 'nonce' => nonce, 'is_auth_cert' => true,
                  'uuid' => piv_cac_configuration.x509_dn_uuid }
         allow(PivCacService).to receive(:decode_token).with(token) { resp }
 
@@ -80,7 +80,7 @@ describe UserPivCacLoginForm do
       end
 
       it 'returns FormResponse with success: false when the token indicates not an auth cert' do
-        resp = { 'nonce' => nonce, 'is_auth_cert' => false, 
+        resp = { 'nonce' => nonce, 'is_auth_cert' => false,
                  'uuid' => piv_cac_configuration.x509_dn_uuid }
         allow(PivCacService).to receive(:decode_token).with(token) { resp }
 

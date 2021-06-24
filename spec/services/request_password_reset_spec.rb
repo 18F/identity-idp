@@ -151,7 +151,6 @@ RSpec.describe RequestPasswordReset do
           with(PushNotification::RecoveryActivatedEvent.new(user: user)).
           exactly(max_attempts).times
 
-
         max_attempts.times do
           expect { RequestPasswordReset.new(email: email, analytics: analytics).perform }.
             to(change { user.reload.reset_password_token })

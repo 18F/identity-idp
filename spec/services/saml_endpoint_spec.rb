@@ -75,9 +75,9 @@ describe SamlEndpoint do
     it 'returns the saml metadata with the suffix added to the urls' do
       result = subject.saml_metadata
 
-      expect(result.configurator.single_service_post_location).to match(%r{api\/saml\/auth2021\Z})
+      expect(result.configurator.single_service_post_location).to match(%r{api/saml/auth2021\Z})
       expect(result.configurator.single_logout_service_post_location).to match(
-        %r{api\/saml\/logout2021\Z},
+        %r{api/saml/logout2021\Z},
       )
     end
   end

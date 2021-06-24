@@ -1,6 +1,14 @@
 ---
 en:
   doc_auth:
+    accessible_labels:
+      camera_video_capture_instructions: We will automatically take the picture
+      camera_video_capture_label: Viewfinder with frame to center your ID
+      document_capture_dialog: Document capture
+      status_align: Align document in frame
+      status_capturing: Taking photo in three seconds
+      status_move_closer: Move camera closer to document
+      status_tap_to_capture: Automatic capture disabled
     buttons:
       change_address: change
       change_ssn: change
@@ -107,7 +115,7 @@ en:
       state: State
       zip_code: Zip Code
     headings:
-      address: Mailing Address
+      address: Update your mailing address
       back: Back
       capture_complete: We have verified your state-issued ID
       document_capture: Add your state-issued ID
@@ -123,7 +131,8 @@ en:
       review_issues: Check your images and try again
       secure_account: Secure your account
       selfie: Take a photo of yourself
-      ssn: Please enter your social security number.
+      ssn: Please enter your Social Security number.
+      ssn_update: Update your Social Security number
       take_picture: Take a photo with a phone
       text_message: We sent a message to your phone
       upload: How would you like to upload your state-issued ID?
@@ -162,6 +171,10 @@ en:
       secure_account: After you verify, we’ll ask you to encrypt your account.
         Encryption means your data is protected and only you, the account
         holder, will be able to access or change your information.
+      ssn: We need your Social Security number to validate your name, date of birth
+        and address.  Your Social Security number is encrypted.  With your
+        consent, we share this information with the government agency you are
+        trying to access to verify your identity.
       tag: Recommended
       take_picture: Use the camera on your mobile phone and upload images of your
         ID.  We only use the images to verify your identity.

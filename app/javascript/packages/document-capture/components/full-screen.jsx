@@ -1,81 +1,79 @@
-import { useRef, useEffect, useCallback } from 'react';
-import { createFocusTrap } from 'focus-trap';
+import { useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import useI18n from '../hooks/use-i18n';
 import useAsset from '../hooks/use-asset';
+import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-presence';
+import useImmutableCallback from '../hooks/use-immutable-callback';
+import useFocusTrap from '../hooks/use-focus-trap';
 
+/** @typedef {import('focus-trap').FocusTrap} FocusTrap */
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
  * @typedef FullScreenProps
  *
  * @prop {()=>void=} onRequestClose Callback invoked when user initiates close intent.
- * @prop {ReactNode} children       Child elements.
+ * @prop {string} label Accessible label for modal.
+ * @prop {ReactNode} children Child elements.
  */
 
 /**
- * Number of active instances of FullScreen currently mounted, used in determining when overlay body
- * class should be added or removed.
- *
- * @type {number}
+ * @param {React.MutableRefObject<HTMLElement?>} containerRef
  */
-let activeInstances = 0;
+export function useInertSiblingElements(containerRef) {
+  useEffect(() => {
+    const container = containerRef.current;
+
+    /**
+     * @type {[Element, string|null][]}
+     */
+    const originalElementAttributeValues = [];
+    if (container && container.parentNode) {
+      for (const child of container.parentNode.children) {
+        if (child !== container) {
+          originalElementAttributeValues.push([child, child.getAttribute('aria-hidden')]);
+          child.setAttribute('aria-hidden', 'true');
+        }
+      }
+    }
+
+    return () =>
+      originalElementAttributeValues.forEach(([child, ariaHidden]) =>
+        ariaHidden === null
+          ? child.removeAttribute('aria-hidden')
+          : child.setAttribute('aria-hidden', ariaHidden),
+      );
+  });
+}
 
 /**
  * @param {FullScreenProps} props Props object.
  */
-function FullScreen({ onRequestClose = () => {}, children }) {
+function FullScreen({ onRequestClose = () => {}, label, children }) {
   const { t } = useI18n();
   const { getAssetPath } = useAsset();
-  const trapRef = useRef(/** @type {?import('focus-trap').FocusTrap} */ (null));
-  const onRequestCloseRef = useRef(onRequestClose);
-  useEffect(() => {
-    // Since the focus trap is only initialized once, but the callback could
-    // be changed, ensure that the current reference is kept as a mutable value
-    // to reference in the deactivation.
-    onRequestCloseRef.current = onRequestClose;
-  }, [onRequestClose]);
+  const containerRef = useRef(/** @type {HTMLDivElement?} */ (null));
+  const onFocusTrapDeactivate = useImmutableCallback(onRequestClose);
+  useFocusTrap(containerRef, {
+    clickOutsideDeactivates: true,
+    onDeactivate: onFocusTrapDeactivate,
+  });
+  useToggleBodyClassByPresence('has-full-screen-overlay', FullScreen);
+  useInertSiblingElements(containerRef);
 
-  const setFocusTrapRef = useCallback((node) => {
-    if (trapRef.current) {
-      trapRef.current.deactivate();
-    }
-
-    if (node) {
-      trapRef.current = createFocusTrap(node, {
-        onDeactivate: () => onRequestCloseRef.current(),
-        clickOutsideDeactivates: true,
-      });
-
-      trapRef.current.activate();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (activeInstances++ === 0) {
-      document.body.classList.add('has-full-screen-overlay');
-      document.documentElement.classList.add('has-full-screen-overlay');
-    }
-
-    return () => {
-      if (--activeInstances === 0) {
-        document.body.classList.remove('has-full-screen-overlay');
-        document.documentElement.classList.remove('has-full-screen-overlay');
-      }
-    };
-  }, []);
-
-  return (
-    <div ref={setFocusTrapRef} aria-modal="true" className="full-screen bg-white">
+  return createPortal(
+    <div ref={containerRef} role="dialog" aria-label={label} className="full-screen bg-white">
+      {children}
       <button
         type="button"
         aria-label={t('users.personal_key.close')}
-        onClick={() => trapRef.current?.deactivate()}
+        onClick={onRequestClose}
         className="full-screen-close-button usa-button padding-2 margin-2"
       >
         <img alt="" src={getAssetPath('close-white-alt.svg')} className="full-screen-close-icon" />
       </button>
-      {children}
-    </div>
+    </div>,
+    document.body,
   );
 }
 

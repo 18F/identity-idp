@@ -70,12 +70,13 @@ export function useAcuant() {
       start = sinon.stub(),
       end = sinon.stub(),
       startSelfieCapture = sinon.stub(),
+      triggerCapture = sinon.stub(),
     } = {}) {
       window.AcuantJavascriptWebSdk = {
         initialize: (_credentials, _endpoint, { onSuccess, onFail }) =>
           isSuccess ? onSuccess() : onFail(),
       };
-      window.AcuantCamera = { isCameraSupported };
+      window.AcuantCamera = { isCameraSupported, triggerCapture };
       window.AcuantCameraUI = { start, end };
       window.AcuantPassiveLiveness = { startSelfieCapture };
       act(window.onAcuantSdkLoaded);

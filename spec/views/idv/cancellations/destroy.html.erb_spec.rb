@@ -46,7 +46,6 @@ describe 'idv/cancellations/destroy.html.erb' do
           href: account_url,
         )
       end
-
     end
 
     context 'with associated service provider' do

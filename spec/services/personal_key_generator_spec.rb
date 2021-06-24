@@ -37,7 +37,7 @@ describe PersonalKeyGenerator do
     it 'allows length to be configured via ENV var' do
       allow(IdentityConfig.store).to receive(:recovery_code_length).and_return(14)
 
-      fourteen_letters_and_spaces_start_end_with_letter = /\A(\w+\-){13}\w+\z/
+      fourteen_letters_and_spaces_start_end_with_letter = /\A(\w+-){13}\w+\z/
       expect(generator.create).to match(fourteen_letters_and_spaces_start_end_with_letter)
     end
 

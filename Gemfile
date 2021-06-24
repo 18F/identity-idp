@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
-ruby '~> 2.6.5'
+ruby '~> 2.7.3'
 
 gem 'rails', '~> 6.1.3'
 
@@ -9,7 +9,7 @@ gem 'rails', '~> 6.1.3'
 @doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.9.3' }
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.2.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
-@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.1-18f' }
+@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.2-18f' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.3.0' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.6.0' }
 
@@ -105,7 +105,8 @@ group :development, :test do
   gem 'psych'
   gem 'puma'
   gem 'rspec-rails', '~> 4.0'
-  gem 'rubocop', '~> 1.11.0', require: false
+  gem 'rubocop', '~> 1.14.0', require: false
+  gem 'rubocop-performance', '~> 1.11.2', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
 end
 

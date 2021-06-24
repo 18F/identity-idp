@@ -54,10 +54,9 @@ module Reports
       url
     end
 
-    def generate_s3_paths(name, extension)
+    def generate_s3_paths(name, extension, now: Time.zone.now)
       host_data_env = Identity::Hostdata.env
       latest = "#{host_data_env}/#{name}/latest.#{name}.#{extension}"
-      now = Time.zone.now
       [latest, "#{host_data_env}/#{name}/#{now.year}/#{now.strftime('%F')}.#{name}.#{extension}"]
     end
 

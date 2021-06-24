@@ -139,6 +139,8 @@ test:
     iaa: 'ABC123-2020'
     iaa_start_date: '2020-01-01'
     iaa_end_date: '2020-12-31'
+    certs:
+      - 'saml_test_sp'
 
   'urn:gov:gsa:openidconnect:test':
     redirect_uris:

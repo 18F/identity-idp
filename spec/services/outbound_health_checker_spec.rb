@@ -74,7 +74,6 @@ RSpec.describe OutboundHealthChecker do
       end
     end
 
-
     context 'timeout from endpoint' do
       before do
         stub_request(:head, IdentityConfig.store.outbound_connection_check_url).to_timeout
