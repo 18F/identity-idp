@@ -43,4 +43,26 @@ namespace :partners do
       exit(-1)
     end
   end
+
+  desc 'Retrieve a mapping of agency UUIDs to user IDs given an issuer'
+  task export_user_ids_to_agency_uuids: :environment do
+    options = {
+      issuer: ENV['ISSUER'],
+      output: ENV['OUTPUT'],
+    }
+
+    if options.values.any?(&:nil?)
+      puts 'You must define the environment variables ISSUER and OUTPUT'
+      exit(-1)
+    end
+
+    begin
+      count = UserIdToAgencyUuidReporter.run(**options)
+      puts "#{count} records exported"
+      puts 'Complete!'
+    rescue ArgumentError, StandardError => e
+      puts "ERROR: #{e.message}"
+      exit(-1)
+    end
+  end
 end
