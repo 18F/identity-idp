@@ -39,7 +39,7 @@ module SamlIdpAuthConcern
   end
 
   def specified_name_id_format
-    if recognized_name_id_format? || current_service_provider.use_legacy_name_id_behavior?
+    if recognized_name_id_format? || current_service_provider.use_legacy_name_id_behavior
       saml_request.name_id_format
     end
   end
