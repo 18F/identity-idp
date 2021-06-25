@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.7.3'
 
-gem 'rails', '~> 6.1.3'
+gem 'rails', '~> 6.1.4'
 
 # Variables can be overridden for local dev in Gemfile-dev
 @doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.10.1' }
