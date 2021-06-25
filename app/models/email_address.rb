@@ -38,6 +38,18 @@ class EmailAddress < ApplicationRecord
       find_by(email_fingerprint: email_fingerprint)
     end
 
+    def update_last_sign_in_at_on_user_id_and_email(user_id:, email:)
+      return nil if !email.is_a?(String) || email.empty?
+
+      email = email.downcase.strip
+      email_fingerprint = create_fingerprint(email)
+      # rubocop:disable Rails/SkipsModelValidations
+      EmailAddress.where(user_id: user_id, email_fingerprint: email_fingerprint).update_all(
+        last_sign_in_at: Time.zone.now,
+      )
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+
     private
 
     def create_fingerprint(email)
