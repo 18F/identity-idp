@@ -8,17 +8,19 @@ class OpenidConnectUserInfoPresenter
   end
 
   def user_info
+    scoper = OpenidConnectAttributeScoper.new(identity.scope)
     info = {
       sub: uuid_from_sp_identity(identity),
       iss: root_url,
       email: email_from_sp_identity(identity),
       email_verified: true,
-      verified_at: verified_at,
-    }.
-           merge(x509_attributes).
-           merge(ial2_attributes)
+    }
 
-    OpenidConnectAttributeScoper.new(identity.scope).filter(info)
+    info.merge!(ial2_attributes) if scoper.ial2_scopes_requested?
+    info.merge!(x509_attributes) if scoper.x509_scopes_requested?
+    info[:verified_at] = verified_at if scoper.verified_at_requested?
+
+    scoper.filter(info)
   end
 
   def url_options
