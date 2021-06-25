@@ -7,7 +7,7 @@ gem 'rails', '~> 6.1.3'
 
 # Variables can be overridden for local dev in Gemfile-dev
 @doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.10.1' }
-@hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.2.0' }
+@hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.3.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.2-18f' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.3.0' }

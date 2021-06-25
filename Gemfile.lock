@@ -10,10 +10,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 0583a0a5abd9052c8c95d96c821f9564c04e82c4
-  tag: v3.2.0
+  revision: 32fc831b47d17c878381279c936014e9956fcbe7
+  tag: v3.3.0
   specs:
-    identity-hostdata (3.2.0)
+    identity-hostdata (3.3.0)
       activesupport (~> 6.1)
       aws-sdk-s3 (~> 1.8)
 
