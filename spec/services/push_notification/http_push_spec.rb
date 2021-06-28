@@ -118,7 +118,11 @@ RSpec.describe PushNotification::HttpPush do
 
       context 'with an error from eventbridge' do
         before do
-          eventbridge_client.stub_responses(:put_events, failed_entry_count: 1, entries: [ { error_code: 'MalformedDetail', error_message: 'Detail is malformed' }])
+          eventbridge_client.stub_responses(
+            :put_events,
+            failed_entry_count: 1,
+            entries: [{ error_code: 'MalformedDetail', error_message: 'Detail is malformed' }],
+          )
         end
 
         it 'logs a warning' do
