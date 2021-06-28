@@ -39,7 +39,7 @@ class EmailAddress < ApplicationRecord
     end
 
     def update_last_sign_in_at_on_user_id_and_email(user_id:, email:)
-      return nil if !email.is_a?(String) || email.empty?
+      return nil if email.to_s.empty?
 
       email = email.downcase.strip
       email_fingerprint = create_fingerprint(email)
