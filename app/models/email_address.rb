@@ -46,6 +46,7 @@ class EmailAddress < ApplicationRecord
       # rubocop:disable Rails/SkipsModelValidations
       EmailAddress.where(user_id: user_id, email_fingerprint: email_fingerprint).update_all(
         last_sign_in_at: Time.zone.now,
+        updated_at: Time.zone.now,
       )
       # rubocop:enable Rails/SkipsModelValidations
     end
