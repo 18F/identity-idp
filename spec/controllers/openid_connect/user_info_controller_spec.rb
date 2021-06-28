@@ -100,6 +100,11 @@ RSpec.describe OpenidConnect::UserInfoController do
 
         action
       end
+
+      it 'does not change session' do
+        action
+        expect(request.session).to be_empty
+      end
     end
   end
 end
