@@ -95,7 +95,7 @@ class AccountShow
       city: @decrypted_pii.city,
       state: @decrypted_pii.state,
       zipcode: @decrypted_pii.zipcode,
-      dob: @decrypted_pii.dob.to_date.to_formatted_s(:long),
+      dob: DateParser.parse_legacy(@decrypted_pii.dob).to_formatted_s(:long),
       phone: @decrypted_pii.phone,
     )
   end
