@@ -95,9 +95,21 @@ class AccountShow
       city: @decrypted_pii.city,
       state: @decrypted_pii.state,
       zipcode: @decrypted_pii.zipcode,
-      dob: @decrypted_pii.dob.to_date.to_formatted_s(:long),
+      dob: dob,
       phone: @decrypted_pii.phone,
     )
+  end
+
+  def dob
+    @decrypted_pii.dob.to_date.to_formatted_s(:long)
+  rescue Date::Error
+    Rails.logger.warn({
+      error: 'invalid_dob',
+      location: 'account_show',
+      user_id: decorated_user.user.uuid,
+      redacted_dob: @decrypted_pii.dob.gsub(/\d/, '#'),
+    }.to_json)
+    ''
   end
 
   def determine_pii

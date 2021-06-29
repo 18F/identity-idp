@@ -88,7 +88,7 @@ module SignUp
     end
 
     def pii
-      @pii ||= JSON.parse(user_session['decrypted_pii']).symbolize_keys
+      JSON.parse(user_session['decrypted_pii']).symbolize_keys
     end
 
     def address
@@ -118,6 +118,14 @@ module SignUp
     def dob
       pii_dob = pii[:dob]
       pii_dob ? pii_dob.to_date.to_formatted_s(:long) : ''
+    rescue Date::Error
+      Rails.logger.warn({
+        error: 'invalid_dob',
+        location: 'completions_controller',
+        user_id: current_user.uuid,
+        redacted_dob: pii_dob.gsub(/\d/, '#'),
+      }.to_json)
+      ''
     end
 
     def verified_at
