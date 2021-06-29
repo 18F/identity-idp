@@ -119,12 +119,14 @@ module SignUp
       pii_dob = pii[:dob]
       pii_dob ? pii_dob.to_date.to_formatted_s(:long) : ''
     rescue Date::Error
-      Rails.logger.warn({
-        error: 'invalid_dob',
-        location: 'completions_controller',
-        user_id: current_user.uuid,
-        redacted_dob: pii_dob.gsub(/\d/, '#'),
-      }.to_json)
+      Rails.logger.warn(
+        {
+          error: 'invalid_dob',
+          location: 'completions_controller',
+          user_id: current_user.uuid,
+          redacted_dob: pii_dob.gsub(/\d/, '#'),
+        }.to_json,
+      )
       ''
     end
 

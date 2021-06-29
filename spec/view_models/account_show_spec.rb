@@ -106,9 +106,7 @@ describe AccountShow do
   describe '#pii' do
     let(:user) { build(:user) }
     let(:decrypted_pii) do
-      Pii::Attributes.new_from_hash(
-        dob: dob
-      )
+      Pii::Attributes.new_from_hash(dob: dob)
     end
 
     subject(:account_show) do
@@ -116,7 +114,7 @@ describe AccountShow do
         decrypted_pii: decrypted_pii,
         personal_key: '',
         decorated_user: user.decorate,
-        locked_for_session: false
+        locked_for_session: false,
       )
     end
 
@@ -135,7 +133,6 @@ describe AccountShow do
         expect(account_show.pii.dob).to eq('January 01, 1970')
       end
     end
-
 
     context 'birthday is formatted as an international date' do
       let(:dob) { '1970-01-01' }
