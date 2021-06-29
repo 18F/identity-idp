@@ -48,20 +48,11 @@ describe SignUp::CompletionsController do
         end
 
         context 'with american-style birthday data' do
-          let(:pii) { { dob: '01/01/1970' } }
+          let(:pii) { { dob: '12/31/1970' } }
 
           it 'renders data' do
             get :show
-            expect(assigns(:pii)[:birthdate]).to eq('January 01, 1970')
-          end
-        end
-
-        context 'with american-style birthday data with dashes' do
-          let(:pii) { { dob: '01-01-1970' } }
-
-          it 'renders data' do
-            get :show
-            expect(assigns(:pii)[:birthdate]).to eq('January 01, 1970')
+            expect(assigns(:pii)[:birthdate]).to eq('December 31, 1970')
           end
         end
 
@@ -71,15 +62,6 @@ describe SignUp::CompletionsController do
           it 'renders data' do
             get :show
             expect(assigns(:pii)[:birthdate]).to eq('January 01, 1970')
-          end
-        end
-
-        context 'with a date that does not exist' do
-          let(:pii) { { dob: '2020-12-32' } }
-
-          it 'leaves birthday as nil' do
-            get :show
-            expect(assigns(:pii)[:birthdate]).to eq('')
           end
         end
       end

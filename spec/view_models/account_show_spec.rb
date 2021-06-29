@@ -119,18 +119,10 @@ describe AccountShow do
     end
 
     context 'birthday is formatted as an american date' do
-      let(:dob) { '01/01/1970' }
+      let(:dob) { '12/31/1970' }
 
       it 'parses the birthday' do
-        expect(account_show.pii.dob).to eq('January 01, 1970')
-      end
-    end
-
-    context 'birthday is formatted as an american date with dashes' do
-      let(:dob) { '1-1-1970' }
-
-      it 'parses the birthday' do
-        expect(account_show.pii.dob).to eq('January 01, 1970')
+        expect(account_show.pii.dob).to eq('December 31, 1970')
       end
     end
 
@@ -139,14 +131,6 @@ describe AccountShow do
 
       it 'parses the birthday' do
         expect(account_show.pii.dob).to eq('January 01, 1970')
-      end
-    end
-
-    context 'birthday is an invalid date' do
-      let(:dob) { '2020-12-32' }
-
-      it 'has a blank birthday' do
-        expect(account_show.pii.dob).to eq('')
       end
     end
   end
