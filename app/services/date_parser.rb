@@ -5,7 +5,7 @@ module DateParser
   # since we have legacy data in PII bundles that may be stored this way
   # @param [String,Date] val
   def self.parse_legacy(val)
-    return val if val.kind_of?(Date)
+    return val if val.is_a?(Date)
 
     if (m = val.match(AMERICAN_REGEX))
       Date.parse("#{m[:year]}-#{m[:month]}-#{m[:day]}")
