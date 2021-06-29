@@ -189,19 +189,23 @@ function suspendFocusTrapForAnticipatedFocus(focusTrap) {
   // response to programmatic focus transitions.
   focusTrap.pause();
 
+  const originalFocus = document.activeElement;
+
   // If an element is focused while behaviors are suspended, prevent the default deactivate from
   // attempting to return focus to any other element.
   const originalDeactivate = focusTrap.deactivate;
-  function onFocus() {
-    focusTrap.deactivate = (deactivateOptions) =>
-      originalDeactivate({ ...deactivateOptions, returnFocus: false });
-  }
-  document.addEventListener('focusin', onFocus, true);
+  focusTrap.deactivate = (deactivateOptions) => {
+    const didChangeFocus = originalFocus !== document.activeElement;
+    if (didChangeFocus) {
+      deactivateOptions = { ...deactivateOptions, returnFocus: false };
+    }
+
+    return originalDeactivate(deactivateOptions);
+  };
 
   // After the current frame, assume that focus was not moved elsewhere, or at least resume original
   // trap behaviors.
   setTimeout(() => {
-    document.removeEventListener('focusin', onFocus, true);
     focusTrap.deactivate = originalDeactivate;
     focusTrap.unpause();
   }, 0);
