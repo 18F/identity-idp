@@ -88,7 +88,7 @@ module SignUp
     end
 
     def pii
-      JSON.parse(user_session['decrypted_pii']).symbolize_keys
+      @parsed_pii ||= JSON.parse(user_session['decrypted_pii']).symbolize_keys
     end
 
     def address
