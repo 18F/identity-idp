@@ -8,11 +8,6 @@ import AnalyticsContext from '../context/analytics';
  */
 
 /**
- * @typedef {import('react').FC<V>} FC
- * @template V
- */
-
-/**
  * An error representing a failure to complete encrypted upload of image.
  */
 export class BackgroundEncryptedUploadError extends Error {
