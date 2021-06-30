@@ -131,7 +131,7 @@ class OpenidConnectAuthorizeForm
   # This check relies on the fact that problematic SPs are returned as nil.
   # It should be disentangled and SP errors should be validated explicitly.
   def validate_client_id
-    return if !service_provider || service_provider.active?
+    return if service_provider&.active?
     errors.add(:client_id, t('openid_connect.authorization.errors.bad_client_id'))
   end
 

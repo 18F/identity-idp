@@ -140,14 +140,11 @@ describe ServiceProviderUpdater do
       end
 
       it 'removes inactive Service Providers' do
-        expect(ServiceProvider.find_by(issuer: inactive_dashboard_sp_issuer)).
-          to be_a NullServiceProvider
+        expect(ServiceProvider.find_by(issuer: inactive_dashboard_sp_issuer)).to be_nil
 
         subject.run
 
-        sp = ServiceProvider.find_by(issuer: inactive_dashboard_sp_issuer)
-
-        expect(sp).to be_a NullServiceProvider
+        expect(ServiceProvider.find_by(issuer: inactive_dashboard_sp_issuer)).to be_nil
       end
 
       it 'ignores attempts to alter native Service Providers' do

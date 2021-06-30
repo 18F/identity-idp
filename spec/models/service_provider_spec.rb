@@ -32,8 +32,8 @@ describe ServiceProvider do
     context 'the record does not exist' do
       let(:service_provider) { ServiceProvider.find_by(issuer: 'no-such-issuer') }
 
-      it 'returns NullServiceProvider' do
-        expect(service_provider).to be_a NullServiceProvider
+      it 'is nil' do
+        expect(service_provider).to be_nil
       end
     end
   end

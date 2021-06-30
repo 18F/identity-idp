@@ -39,10 +39,10 @@ class ServiceProviderUpdater
   end
 
   def sync_model(sp, cleaned_attributes)
-    if sp.is_a?(NullServiceProvider)
-      ServiceProvider.create!(cleaned_attributes)
-    else
+    if sp
       sp.update(cleaned_attributes)
+    else
+      ServiceProvider.create!(cleaned_attributes)
     end
   end
 

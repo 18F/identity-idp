@@ -32,7 +32,7 @@ describe ServiceProviderController do
       end
 
       after do
-        ServiceProvider.find_by(issuer: dashboard_sp_issuer).destroy
+        ServiceProvider.find_by(issuer: dashboard_sp_issuer)&.destroy
       end
 
       it 'returns 200' do
