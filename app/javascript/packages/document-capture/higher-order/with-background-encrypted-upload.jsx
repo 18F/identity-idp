@@ -61,11 +61,11 @@ export async function encrypt(key, iv, value) {
   );
 }
 
-const withBackgroundEncryptedUpload = (Component) =>
+const withBackgroundEncryptedUpload = (Component) => {
   /**
    * @param {Pick<FormStepComponentProps<Record<string,any>>, 'onChange'|'onError'>} props
    */
-  ({ onChange, onError, ...props }) => {
+  function ComposedComponent({ onChange, onError, ...props }) {
     const { backgroundUploadURLs, backgroundUploadEncryptKey } = useContext(UploadContext);
     const { addPageAction, noticeError } = useContext(AnalyticsContext);
 
@@ -147,6 +147,13 @@ const withBackgroundEncryptedUpload = (Component) =>
       // eslint-disable-next-line react/jsx-props-no-spreading
       <Component {...props} onError={onError} onChange={onChangeWithBackgroundEncryptedUpload} />
     );
-  };
+  }
+
+  ComposedComponent.displayName = `WithBackgroundEncryptedUpload(${
+    Component.displayName || Component.name
+  })`;
+
+  return ComposedComponent;
+};
 
 export default withBackgroundEncryptedUpload;

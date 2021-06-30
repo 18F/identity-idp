@@ -61,7 +61,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
   });
 
   describe('withBackgroundEncryptedUpload', () => {
-    const Component = withBackgroundEncryptedUpload(({ onChange, onError, errorOnMount }) => {
+    function OriginalComponent({ onChange, onError, errorOnMount }) {
       useEffect(() => {
         onChange({ foo: 'bar', baz: 'quux' });
       }, []);
@@ -73,7 +73,8 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
       }, [errorOnMount]);
 
       return null;
-    });
+    }
+    const Component = withBackgroundEncryptedUpload(OriginalComponent);
 
     describe('encrypt', () => {
       it('resolves to AES-GCM encrypted data from string value', async () => {
@@ -122,6 +123,10 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
       render(<Component onChange={() => {}} onError={onError} errorOnMount />);
 
       expect(onError).to.have.been.calledOnce();
+    });
+
+    it('maintains and decorates the original component display name', () => {
+      expect(Component.displayName).to.equal('WithBackgroundEncryptedUpload(OriginalComponent)');
     });
 
     describe('upload', () => {

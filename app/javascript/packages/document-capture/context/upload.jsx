@@ -10,6 +10,8 @@ const UploadContext = createContext({
   backgroundUploadEncryptKey: /** @type {CryptoKey=} */ (undefined),
 });
 
+UploadContext.displayName = 'UploadContext';
+
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**

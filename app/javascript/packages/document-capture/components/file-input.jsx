@@ -94,9 +94,10 @@ export function isValidForAccepts(mimeType, accept) {
 }
 
 /**
- * @type {import('react').ForwardRefExoticComponent<FileInputProps & ReactRefAttributes>}
+ * @param {FileInputProps} props Props object.
+ * @param {import('react').ForwardedRef<any>} ref
  */
-const FileInput = forwardRef((props, ref) => {
+function FileInput(props, ref) {
   const {
     label,
     hint,
@@ -284,6 +285,6 @@ const FileInput = forwardRef((props, ref) => {
       </div>
     </div>
   );
-});
+}
 
-export default FileInput;
+export default forwardRef(FileInput);
