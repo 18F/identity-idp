@@ -149,8 +149,9 @@ const withBackgroundEncryptedUpload = (Component) => {
     );
   }
 
-  const { displayName: originalDisplayName = Component.name } = Component;
-  ComposedComponent.displayName = `WithBackgroundEncryptedUpload(${originalDisplayName})`;
+  ComposedComponent.displayName = `WithBackgroundEncryptedUpload(${
+    Component.displayName || Component.name
+  })`;
 
   return ComposedComponent;
 };
