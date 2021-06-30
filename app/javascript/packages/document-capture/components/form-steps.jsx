@@ -26,17 +26,25 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
  */
 
 /**
+ * @typedef {(
+ *   field:string,
+ *   options?:Partial<FormStepRegisterFieldOptions>
+ * )=>undefined|import('react').RefCallback<HTMLElement>} RegisterFieldCallback
+ */
+
+/**
+ * @typedef {(error:Error, options?: {field?: string?})=>void} OnErrorCallback
+ */
+
+/**
  * @typedef FormStepComponentProps
  *
  * @prop {(nextValues:Partial<V>)=>void} onChange Update values, merging with existing values.
- * @prop {(error:Error, options?: {field?: string?})=>void} onError Trigger a field error.
+ * @prop {OnErrorCallback} onError Trigger a field error.
  * @prop {Partial<V>} value Current values.
  * @prop {FormStepError<V>[]} errors Current active errors.
- * @prop {(
- *   field:string,
- *   options?:Partial<FormStepRegisterFieldOptions>
- * )=>undefined|import('react').RefCallback<HTMLElement>} registerField Registers field by given
- * name, returning ref assignment function.
+ * @prop {RegisterFieldCallback} registerField Registers field by given name, returning ref
+ * assignment function.
  *
  * @template V
  */
