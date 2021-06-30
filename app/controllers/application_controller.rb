@@ -139,19 +139,16 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_from_sp_session
-    sp = ServiceProvider.from_issuer(sp_session[:issuer])
-    sp if sp.is_a? ServiceProvider
+    ServiceProvider.find_by(issuer: sp_session[:issuer])
   end
 
   def sp_from_request_id
-    sp = ServiceProvider.from_issuer(service_provider_request.issuer)
-    sp if sp.is_a? ServiceProvider
+    ServiceProvider.find_by(issuer: service_provider_request.issuer)
   end
 
   def sp_from_request_issuer_logout
     return if action_name != 'logout'
-    issuer_sp = ServiceProvider.from_issuer(saml_request&.service_provider&.identifier)
-    issuer_sp if issuer_sp.is_a? ServiceProvider
+    ServiceProvider.find_by(issuer: saml_request&.service_provider&.identifier)
   end
 
   def service_provider_request

@@ -28,10 +28,9 @@ module Db
         end
         agency_id = (issuer.present? && ServiceProvider.find_by(issuer: issuer)&.agency_id) || 0
         current_user = User.find_by(id: user_id)
-        service_provider = ServiceProvider.from_issuer(issuer)
         ial_context = IalContext.new(
           ial: ial,
-          service_provider: service_provider,
+          service_provider: ServiceProvider.find_by(issuer: issuer),
           user: current_user,
         )
         ::SpCost.create(

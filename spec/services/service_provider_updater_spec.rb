@@ -90,14 +90,14 @@ describe ServiceProviderUpdater do
       end
 
       after do
-        ServiceProvider.from_issuer(dashboard_sp_issuer).try(:destroy)
-        ServiceProvider.from_issuer(inactive_dashboard_sp_issuer).try(:destroy)
+        ServiceProvider.find_by(issuer: dashboard_sp_issuer).try(:destroy)
+        ServiceProvider.find_by(issuer: inactive_dashboard_sp_issuer).try(:destroy)
       end
 
       it 'creates new dashboard-provided Service Providers' do
         subject.run
 
-        sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
+        sp = ServiceProvider.find_by(issuer: dashboard_sp_issuer)
 
         expect(sp.agency).to eq agency_1
         expect(sp.ssl_certs.first).to be_a OpenSSL::X509::Certificate
@@ -121,7 +121,7 @@ describe ServiceProviderUpdater do
 
         subject.run
 
-        sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
+        sp = ServiceProvider.find_by(issuer: dashboard_sp_issuer)
 
         expect(sp.agency).to eq agency_1
         expect(sp.ssl_certs.first).to be_a OpenSSL::X509::Certificate
@@ -140,12 +140,12 @@ describe ServiceProviderUpdater do
       end
 
       it 'removes inactive Service Providers' do
-        expect(ServiceProvider.from_issuer(inactive_dashboard_sp_issuer)).
+        expect(ServiceProvider.find_by(issuer: inactive_dashboard_sp_issuer)).
           to be_a NullServiceProvider
 
         subject.run
 
-        sp = ServiceProvider.from_issuer(inactive_dashboard_sp_issuer)
+        sp = ServiceProvider.find_by(issuer: inactive_dashboard_sp_issuer)
 
         expect(sp).to be_a NullServiceProvider
       end
@@ -153,7 +153,7 @@ describe ServiceProviderUpdater do
       it 'ignores attempts to alter native Service Providers' do
         subject.run
 
-        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
 
         expect(sp.agency).to_not eq 'trying to override a test SP'
       end
@@ -161,14 +161,14 @@ describe ServiceProviderUpdater do
       it 'updates redirect_uris' do
         subject.run
 
-        sp = ServiceProvider.from_issuer(openid_connect_issuer)
+        sp = ServiceProvider.find_by(issuer: openid_connect_issuer)
 
         expect(sp.redirect_uris).to eq(openid_connect_redirect_uris)
       end
 
       it 'updates certs (plural)' do
         expect { subject.run }.
-          to(change { ServiceProvider.from_issuer(openid_connect_issuer).ssl_certs.size }.to(2))
+          to(change { ServiceProvider.find_by(issuer: openid_connect_issuer).ssl_certs.size }.to(2))
       end
     end
 

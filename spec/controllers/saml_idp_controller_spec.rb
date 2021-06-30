@@ -198,7 +198,7 @@ describe SamlIdpController do
       let(:asserter) do
         AttributeAsserter.new(
           user: user,
-          service_provider: ServiceProvider.from_issuer(sp1_ial2_saml_settings.issuer),
+          service_provider: ServiceProvider.find_by(issuer: sp1_ial2_saml_settings.issuer),
           authn_request: this_authn_request,
           name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           decrypted_pii: pii,
@@ -1256,7 +1256,7 @@ describe SamlIdpController do
 
     def stub_requested_attributes
       request_parser = instance_double(SamlRequestPresenter)
-      service_provider = ServiceProvider.from_issuer('http://localhost:3000')
+      service_provider = ServiceProvider.find_by(issuer: 'http://localhost:3000')
       service_provider.ial = 2
       service_provider.save
       expect(SamlRequestPresenter).to receive(:new).

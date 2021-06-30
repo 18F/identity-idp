@@ -62,13 +62,9 @@ class OpenidConnectLogoutForm
     errors.add(:id_token_hint, t('openid_connect.logout.errors.id_token_hint')) unless identity
   end
 
-  def service_provider
-    @_service_provider ||= ServiceProvider.from_issuer(identity&.service_provider)
-  end
-
   def extra_analytics_attributes
     {
-      client_id: service_provider.issuer,
+      client_id: identity.service_provider_record&.issuer,
       redirect_uri: redirect_uri,
       sp_initiated: true,
       oidc: true,

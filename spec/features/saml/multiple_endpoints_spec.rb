@@ -49,7 +49,7 @@ describe 'multiple saml endpoints' do
       visit endpoint_authn_request
       click_agree_and_continue
 
-      service_provider = ServiceProvider.from_issuer(endpoint_saml_settings.issuer)
+      service_provider = ServiceProvider.find_by(issuer: endpoint_saml_settings.issuer)
       uuid = user.decorate.active_identity_for(service_provider).uuid
       endpoint_saml_settings = saml_settings
       endpoint_saml_settings.name_identifier_value = uuid

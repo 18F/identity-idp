@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe GpoConfirmationExporter do
   let(:issuer) { 'http://localhost:3000' }
-  let(:service_provider) { ServiceProvider.from_issuer(issuer) }
+  let(:service_provider) { ServiceProvider.find_by(issuer: issuer) }
   let(:confirmations) do
     [
       GpoConfirmation.new(

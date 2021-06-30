@@ -33,7 +33,7 @@ class GpoConfirmationExporter
   def make_entry_row(entry)
     now = current_date
     due = now + OTP_MAX_VALID_DAYS.days
-    service_provider = ServiceProvider.from_issuer(entry[:issuer])
+    service_provider = ServiceProvider.find_by(issuer: entry[:issuer])
 
     [
       CONTENT_ROW_ID,
@@ -46,7 +46,7 @@ class GpoConfirmationExporter
       entry[:otp],
       format_date(now),
       format_date(due),
-      service_provider.friendly_name || 'Login.gov',
+      service_provider&.friendly_name || 'Login.gov',
       "https://#{IdentityConfig.store.domain_name}",
     ]
   end

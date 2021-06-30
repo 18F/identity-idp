@@ -24,16 +24,12 @@ class ServiceProviderIdentity < ApplicationRecord
     update!(session_uuid: nil)
   end
 
-  def sp
-    @sp ||= ServiceProvider.from_issuer(service_provider)
-  end
-
   def display_name
-    sp_metadata[:friendly_name] || sp.agency&.name || service_provider
+    sp_metadata[:friendly_name] || service_provider_record&.agency&.name || service_provider
   end
 
   def agency_name
-    sp.agency&.name || sp_metadata[:friendly_name] || service_provider
+    service_provider_record&.agency&.name || sp_metadata[:friendly_name] || service_provider
   end
 
   def piv_cac_enabled?
@@ -53,7 +49,7 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def service_provider_id
-    sp.id
+    service_provider_record&.id
   end
 
   def happened_at

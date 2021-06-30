@@ -35,7 +35,7 @@ module FederatedProtocols
     end
 
     def current_service_provider
-      ServiceProvider.from_issuer(issuer)
+      ServiceProvider.find_by(issuer: issuer)
     end
   end
 end

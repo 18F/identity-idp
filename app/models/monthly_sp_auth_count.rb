@@ -16,7 +16,7 @@ class MonthlySpAuthCount < ApplicationRecord
     SQL
     year_month = Time.zone.today.strftime('%Y%m')
     current_user = User.find_by(id: user_id)
-    service_provider = ServiceProvider.from_issuer(issuer)
+    service_provider = ServiceProvider.find_by(issuer: issuer)
     ial_context = IalContext.new(ial: ial, service_provider: service_provider, user: current_user)
     query = sanitize_sql_array(
       [sql,

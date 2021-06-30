@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ServiceProvider do
-  let(:service_provider) { ServiceProvider.from_issuer('http://localhost:3000') }
+  let(:service_provider) { ServiceProvider.find_by(issuer: 'http://localhost:3000') }
 
   describe 'associations' do
     subject { service_provider }
@@ -30,7 +30,7 @@ describe ServiceProvider do
     end
 
     context 'the record does not exist' do
-      let(:service_provider) { ServiceProvider.from_issuer('no-such-issuer') }
+      let(:service_provider) { ServiceProvider.find_by(issuer: 'no-such-issuer') }
 
       it 'returns NullServiceProvider' do
         expect(service_provider).to be_a NullServiceProvider
