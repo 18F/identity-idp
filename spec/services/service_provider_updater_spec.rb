@@ -6,7 +6,7 @@ describe ServiceProviderUpdater do
   let(:fake_dashboard_url) { 'http://dashboard.example.org' }
   let(:dashboard_sp_issuer) { 'some-dashboard-service-provider' }
   let(:inactive_dashboard_sp_issuer) { 'old-dashboard-service-provider' }
-  let(:openid_connect_issuer) { 'sp:test:foo:bar' }
+  let(:oidc_issuer) { 'sp:test:foo:bar' }
   let(:openid_connect_redirect_uris) { %w[http://localhost:1234 my-app://result] }
 
   let(:agency_1) { create(:agency) }
@@ -63,7 +63,7 @@ describe ServiceProviderUpdater do
   end
   let(:openid_connect_sp) do
     {
-      issuer: openid_connect_issuer,
+      issuer: oidc_issuer,
       friendly_name: 'a service provider',
       agency_id: agency_1.id,
       redirect_uris: openid_connect_redirect_uris,
@@ -158,14 +158,14 @@ describe ServiceProviderUpdater do
       it 'updates redirect_uris' do
         subject.run
 
-        sp = ServiceProvider.find_by(issuer: openid_connect_issuer)
+        sp = ServiceProvider.find_by(issuer: oidc_issuer)
 
         expect(sp.redirect_uris).to eq(openid_connect_redirect_uris)
       end
 
       it 'updates certs (plural)' do
         expect { subject.run }.
-          to(change { ServiceProvider.find_by(issuer: openid_connect_issuer).ssl_certs.size }.to(2))
+          to(change { ServiceProvider.find_by(issuer: oidc_issuer)&.ssl_certs&.size }.to(2))
       end
     end
 

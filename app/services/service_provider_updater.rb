@@ -34,7 +34,7 @@ class ServiceProviderUpdater
 
   def create_or_update_service_provider(issuer, service_provider)
     sp = ServiceProvider.find_by(issuer: issuer)
-    return if !sp || sp.native?
+    return if sp&.native?
     sync_model(sp, cleaned_service_provider(service_provider))
   end
 
