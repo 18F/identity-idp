@@ -21,6 +21,8 @@ const ServiceProviderContext = createContext(
   }),
 );
 
+ServiceProviderContext.displayName = 'ServiceProviderContext';
+
 /**
  * @typedef ServiceProviderContextProviderProps
  *
