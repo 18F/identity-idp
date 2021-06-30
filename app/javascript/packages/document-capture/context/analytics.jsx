@@ -32,4 +32,6 @@ const AnalyticsContext = createContext(
   }),
 );
 
+AnalyticsContext.displayName = 'AnalyticsContext';
+
 export default AnalyticsContext;

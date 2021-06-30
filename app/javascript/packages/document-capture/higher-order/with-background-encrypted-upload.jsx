@@ -8,6 +8,11 @@ import AnalyticsContext from '../context/analytics';
  */
 
 /**
+ * @typedef {import('react').FC<V>} FC
+ * @template V
+ */
+
+/**
  * An error representing a failure to complete encrypted upload of image.
  */
 export class BackgroundEncryptedUploadError extends Error {
@@ -61,11 +66,11 @@ export async function encrypt(key, iv, value) {
   );
 }
 
-const withBackgroundEncryptedUpload = (Component) =>
+const withBackgroundEncryptedUpload = (Component) => {
   /**
    * @param {Pick<FormStepComponentProps<Record<string,any>>, 'onChange'|'onError'>} props
    */
-  ({ onChange, onError, ...props }) => {
+  function ComposedComponent({ onChange, onError, ...props }) {
     const { backgroundUploadURLs, backgroundUploadEncryptKey } = useContext(UploadContext);
     const { addPageAction, noticeError } = useContext(AnalyticsContext);
 
@@ -147,6 +152,12 @@ const withBackgroundEncryptedUpload = (Component) =>
       // eslint-disable-next-line react/jsx-props-no-spreading
       <Component {...props} onError={onError} onChange={onChangeWithBackgroundEncryptedUpload} />
     );
-  };
+  }
+
+  const { displayName = Component.name } = Component;
+  ComposedComponent.displayName = `WithBackgroundEncryptedUpload(${displayName})`;
+
+  return ComposedComponent;
+};
 
 export default withBackgroundEncryptedUpload;
