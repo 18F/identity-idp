@@ -62,7 +62,7 @@ module Idv
     end
 
     def flash_message_content
-      unless idv_session.address_verification_mechanism == 'gpo'
+      if idv_session.address_verification_mechanism != 'gpo'
         phone_of_record_msg = ActionController::Base.helpers.content_tag(
           :strong, t('idv.messages.phone.phone_of_record')
         )
