@@ -166,7 +166,9 @@ RSpec.describe ServiceProviderIdentity do
 
     context 'for an sp with a failure to proof url' do
       it 'returns the failure_to_proof_url for the sp' do
-        failure_to_proof_url = ServiceProvider.find_by(issuer: service_provider).failure_to_proof_url
+        failure_to_proof_url = ServiceProvider.find_by(
+          issuer: service_provider,
+        ).failure_to_proof_url
         expect(subject.failure_to_proof_url).to eq(failure_to_proof_url)
       end
     end

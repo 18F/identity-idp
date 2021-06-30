@@ -66,7 +66,7 @@ class OpenidConnectAuthorizeForm
 
   def service_provider
     return @service_provider if defined?(@service_provider)
-    @service_provider = ServiceProvider.find_by(issuer:client_id)
+    @service_provider = ServiceProvider.find_by(issuer: client_id)
   end
 
   def link_identity_to_service_provider(current_user, rails_session_id)
