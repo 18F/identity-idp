@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import useI18n from '../hooks/use-i18n';
 import useAsset from '../hooks/use-asset';
@@ -15,6 +15,10 @@ import useFocusTrap from '../hooks/use-focus-trap';
  * @prop {()=>void=} onRequestClose Callback invoked when user initiates close intent.
  * @prop {string} label Accessible label for modal.
  * @prop {ReactNode} children Child elements.
+ */
+
+/**
+ * @typedef {{focusTrap: import('focus-trap').FocusTrap?}} FullScreenRefHandle
  */
 
 /**
@@ -48,16 +52,18 @@ export function useInertSiblingElements(containerRef) {
 
 /**
  * @param {FullScreenProps} props Props object.
+ * @param {import('react').ForwardedRef<FullScreenRefHandle>} ref
  */
-function FullScreen({ onRequestClose = () => {}, label, children }) {
+function FullScreen({ onRequestClose = () => {}, label, children }, ref) {
   const { t } = useI18n();
   const { getAssetPath } = useAsset();
   const containerRef = useRef(/** @type {HTMLDivElement?} */ (null));
   const onFocusTrapDeactivate = useImmutableCallback(onRequestClose);
-  useFocusTrap(containerRef, {
+  const focusTrap = useFocusTrap(containerRef, {
     clickOutsideDeactivates: true,
     onDeactivate: onFocusTrapDeactivate,
   });
+  useImperativeHandle(ref, () => ({ focusTrap }), [focusTrap]);
   useToggleBodyClassByPresence('has-full-screen-overlay', FullScreen);
   useInertSiblingElements(containerRef);
 
@@ -77,4 +83,4 @@ function FullScreen({ onRequestClose = () => {}, label, children }) {
   );
 }
 
-export default FullScreen;
+export default forwardRef(FullScreen);

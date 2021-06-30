@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, createRef } from 'react';
 import { screen } from '@testing-library/dom';
 import { render, fireEvent } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
@@ -175,5 +175,12 @@ describe('document-capture/components/full-screen', () => {
     rerender(<></>);
 
     expect(document.body.classList.contains('has-full-screen-overlay')).to.be.false();
+  });
+
+  it('exposes focus trap on its ref', () => {
+    const ref = createRef();
+    render(<FullScreen ref={ref}>Content</FullScreen>);
+
+    expect(ref.current.focusTrap.deactivate).to.be.a('function');
   });
 });

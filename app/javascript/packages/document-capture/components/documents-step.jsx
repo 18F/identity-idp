@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import BlockLink from './block-link';
-import AcuantCapture from './acuant-capture';
-import FormErrorMessage from './form-error-message';
+import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import ServiceProviderContext from '../context/service-provider';
@@ -41,6 +40,7 @@ function DocumentsStep({
   value = {},
   onChange = () => {},
   errors = [],
+  onError = () => {},
   registerField = () => undefined,
 }) {
   const { t, formatHTML } = useI18n();
@@ -64,31 +64,17 @@ function DocumentsStep({
           })}
         </BlockLink>
       )}
-      {DOCUMENT_SIDES.map((side) => {
-        const error = errors.find(({ field }) => field === side)?.error;
-
-        return (
-          <AcuantCapture
-            key={side}
-            ref={registerField(side, { isRequired: true })}
-            /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
-            /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
-            label={t(`doc_auth.headings.document_capture_${side}`)}
-            /* i18n-tasks-use t('doc_auth.headings.back') */
-            /* i18n-tasks-use t('doc_auth.headings.front') */
-            bannerText={t(`doc_auth.headings.${side}`)}
-            value={value[side]}
-            onChange={(nextValue, metadata) =>
-              onChange({
-                [side]: nextValue,
-                [`${side}_image_metadata`]: JSON.stringify(metadata),
-              })
-            }
-            errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
-            name={side}
-          />
-        );
-      })}
+      {DOCUMENT_SIDES.map((side) => (
+        <DocumentSideAcuantCapture
+          key={side}
+          side={side}
+          registerField={registerField}
+          value={value[side]}
+          onChange={onChange}
+          errors={errors}
+          onError={onError}
+        />
+      ))}
     </>
   );
 }

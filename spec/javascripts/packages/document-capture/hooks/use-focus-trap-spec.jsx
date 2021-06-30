@@ -21,12 +21,12 @@ describe('document-capture/hooks/use-focus-trap', () => {
     screen.getByTestId('outsideButton').focus();
   });
 
-  it('returns focus trap ref', () => {
+  it('returns focus trap', () => {
     const container = document.querySelector('.container');
     const { result } = renderHook(() => useFocusTrap(useRef(container), DEFAULT_OPTIONS));
 
-    const trapRef = result.current;
-    expect(trapRef.current.deactivate).to.be.a('function');
+    const trap = result.current;
+    expect(trap.deactivate).to.be.a('function');
   });
 
   it('traps focus', () => {
@@ -43,8 +43,8 @@ describe('document-capture/hooks/use-focus-trap', () => {
     const container = document.querySelector('.container');
     const { result } = renderHook(() => useFocusTrap(useRef(container), DEFAULT_OPTIONS));
 
-    const trapRef = result.current;
-    trapRef.current.deactivate();
+    const trap = result.current;
+    trap.deactivate();
 
     // Delay for focus return isn't configurable.
     await delay();

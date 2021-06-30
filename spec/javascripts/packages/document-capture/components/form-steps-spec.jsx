@@ -22,7 +22,7 @@ describe('document-capture/components/form-steps', () => {
             data-is-error={errors.some(({ field }) => field === 'secondInputOne') || undefined}
             onChange={(event) => {
               if (event.target.validationMessage) {
-                onError('secondInputOne', new Error(event.target.validationMessage));
+                onError(new Error(event.target.validationMessage), { field: 'secondInputOne' });
               } else {
                 onChange({ changed: true });
                 onChange({ secondInputOne: event.target.value });
@@ -39,6 +39,9 @@ describe('document-capture/components/form-steps', () => {
               onChange({ secondInputTwo: event.target.value });
             }}
           />
+          <button type="button" onClick={() => onError(new Error())}>
+            Create Step Error
+          </button>
         </>
       ),
     },
@@ -379,5 +382,15 @@ describe('document-capture/components/form-steps', () => {
     userEvent.type(inputOne, 'one');
 
     expect(inputOne.hasAttribute('data-is-error')).to.be.true();
+  });
+
+  it('renders and moves focus to step errors', () => {
+    const steps = [STEPS[1]];
+
+    const { getByRole } = render(<FormSteps steps={steps} />);
+    const button = getByRole('button', { name: 'Create Step Error' });
+    userEvent.click(button);
+
+    expect(getByRole('alert')).to.equal(document.activeElement);
   });
 });

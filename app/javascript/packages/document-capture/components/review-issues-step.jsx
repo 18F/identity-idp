@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
+import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantCapture from './acuant-capture';
 import BlockLink from './block-link';
 import SelfieCapture from './selfie-capture';
@@ -54,6 +55,7 @@ function ReviewIssuesStep({
   value = {},
   onChange = () => {},
   errors = [],
+  onError = () => {},
   registerField = () => undefined,
 }) {
   const { t, formatHTML } = useI18n();
@@ -70,29 +72,18 @@ function ReviewIssuesStep({
         <li>{t('doc_auth.tips.review_issues_id_text3')}</li>
         <li>{t('doc_auth.tips.review_issues_id_text4')}</li>
       </ul>
-      {DOCUMENT_SIDES.map((side) => {
-        const sideError = errors.find(({ field }) => field === side)?.error;
-
-        return (
-          <AcuantCapture
-            key={side}
-            ref={registerField(side, { isRequired: true })}
-            /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
-            /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
-            label={t(`doc_auth.headings.document_capture_${side}`)}
-            /* i18n-tasks-use t('doc_auth.headings.back') */
-            /* i18n-tasks-use t('doc_auth.headings.front') */
-            bannerText={t(`doc_auth.headings.${side}`)}
-            value={value[side]}
-            onChange={(nextValue, metadata) =>
-              onChange({ [side]: nextValue, [`${side}_image_metadata`]: JSON.stringify(metadata) })
-            }
-            className="document-capture-review-issues-step__input"
-            errorMessage={sideError ? <FormErrorMessage error={sideError} /> : undefined}
-            name={side}
-          />
-        );
-      })}
+      {DOCUMENT_SIDES.map((side) => (
+        <DocumentSideAcuantCapture
+          key={side}
+          side={side}
+          registerField={registerField}
+          value={value[side]}
+          onChange={onChange}
+          errors={errors}
+          onError={onError}
+          className="document-capture-review-issues-step__input"
+        />
+      ))}
       {serviceProvider.isLivenessRequired && (
         <>
           <hr className="margin-y-4" />
