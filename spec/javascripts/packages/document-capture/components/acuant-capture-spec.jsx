@@ -3,6 +3,7 @@ import { fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import AcuantCapture, {
+  isAcuantCameraAccessFailure,
   getNormalizedAcuantCaptureFailureMessage,
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
@@ -49,6 +50,16 @@ describe('document-capture/components/acuant-capture', () => {
 
         expect(message).to.be.a('string');
       });
+    });
+  });
+
+  describe('isAcuantCameraAccessFailure', () => {
+    it('returns false if not a camera access failure', () => {
+      expect(isAcuantCameraAccessFailure('Camera not supported.')).to.be.false();
+    });
+
+    it('returns true if a camera access failure', () => {
+      expect(isAcuantCameraAccessFailure(new Error())).to.be.true();
     });
   });
 
@@ -176,19 +187,86 @@ describe('document-capture/components/acuant-capture', () => {
       );
 
       initialize({
-        start: sinon.stub().callsArgWithAsync(1, new Error()),
+        start: sinon.stub().callsArgWithAsync(1, 'Camera not supported.'),
       });
 
       const button = getByLabelText('Image');
-      fireEvent.click(button);
+      userEvent.click(button);
 
       await findByText('doc_auth.errors.camera.failed');
       expect(window.AcuantCameraUI.end).to.have.been.calledOnce();
       expect(container.querySelector('.full-screen')).to.be.null();
       expect(addPageAction).to.have.been.calledWith({
         label: 'IdV: Image capture failed',
+        payload: { field: 'test', error: 'Camera not supported' },
+      });
+      expect(document.activeElement).to.equal(button);
+    });
+
+    it('calls onCameraAccessDeclined if camera access is declined', async () => {
+      const addPageAction = sinon.spy();
+      const onCameraAccessDeclined = sinon.stub();
+      const { container, getByLabelText } = render(
+        <AnalyticsContext.Provider value={{ addPageAction }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <AcuantContextProvider sdkSrc="about:blank">
+              <AcuantCapture
+                label="Image"
+                name="test"
+                onCameraAccessDeclined={onCameraAccessDeclined}
+              />
+            </AcuantContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsArgWithAsync(1, new Error()),
+      });
+
+      const button = getByLabelText('Image');
+      userEvent.click(button);
+
+      await Promise.all([
+        expect(onCameraAccessDeclined).to.eventually.be.called(),
+        expect(window.AcuantCameraUI.end).to.eventually.be.called(),
+      ]);
+      expect(container.querySelector('.full-screen')).to.be.null();
+      expect(addPageAction).to.have.been.calledWith({
+        label: 'IdV: Image capture failed',
         payload: { field: 'test', error: 'User or system denied camera access' },
       });
+      expect(document.activeElement).to.equal(button);
+    });
+
+    it('blocks focus trap default focus return behavior if focus transitions during error', async () => {
+      let outsideInput;
+      const onCameraAccessDeclined = sinon.stub().callsFake(() => {
+        outsideInput.focus();
+      });
+      const { container, getByLabelText, getByTestId } = render(
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <input data-testid="outside-input" />
+            <AcuantCapture
+              label="Image"
+              name="test"
+              onCameraAccessDeclined={onCameraAccessDeclined}
+            />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>,
+      );
+      outsideInput = getByTestId('outside-input');
+
+      initialize({
+        start: sinon.stub().callsArgWithAsync(1, new Error()),
+      });
+
+      const button = getByLabelText('Image');
+      userEvent.click(button);
+
+      await waitFor(() => !container.querySelector('.full-screen'));
+      expect(document.activeElement).to.equal(outsideInput);
     });
 
     it('calls onChange with the captured image on successful capture', async () => {

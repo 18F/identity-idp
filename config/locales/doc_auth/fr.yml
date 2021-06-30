@@ -67,7 +67,10 @@ fr:
         visible_photo_check: Nous n’avons pas pu vérifier la photo sur votre pièce
           d’identité. Essayez de prendre de nouvelles photos.
       camera:
-        blocked: Votre caméra est bloquée
+        blocked: Votre appareil photo est bloqué
+        blocked_detail: Nous n'avons pas la permission d'accéder à l'appareil photo.
+          Veuillez vérifier les paramètres de votre navigateur ou de votre
+          système, recharger cette page ou télécharger une photo à la place.
         failed: L’appareil photo n’a pas réussi à démarrer, veuillez réessayer.
       dpi:
         top_msg: Nous n’avons pas pu lire votre pièce d’identité. La taille de votre
