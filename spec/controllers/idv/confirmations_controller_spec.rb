@@ -173,6 +173,7 @@ describe Idv::ConfirmationsController do
       it 'assigns step indicator steps with pending status' do
         get :show
 
+        expect(flash.now[:success]).to eq t('idv.messages.mail_sent')
         expect(assigns(:step_indicator_steps)).to include(
           hash_including(name: :verify_phone_or_address, status: :pending),
         )

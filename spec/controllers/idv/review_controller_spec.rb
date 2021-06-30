@@ -226,14 +226,6 @@ describe Idv::ReviewController do
         idv_session.address_verification_mechanism = 'gpo'
       end
 
-      it 'displays a helpful flash message to the user' do
-        get :new
-
-        expect(flash.now[:success]).to eq(
-          t('idv.messages.mail_sent'),
-        )
-      end
-
       it 'shows revises steps to show pending address verification' do
         get :new
 
@@ -254,7 +246,6 @@ describe Idv::ReviewController do
       it 'displays a success message' do
         get :new
 
-        expect(flash.now[:success]).to eq t('idv.messages.mail_sent')
         expect(flash.now[:error]).to be_nil
       end
     end
