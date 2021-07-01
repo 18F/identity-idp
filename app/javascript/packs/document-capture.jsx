@@ -56,6 +56,8 @@ const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).Log
 const appRoot = /** @type {HTMLDivElement} */ (document.getElementById('document-capture-form'));
 const isMockClient = appRoot.hasAttribute('data-mock-client');
 const keepAliveEndpoint = /** @type {string} */ (appRoot.getAttribute('data-keep-alive-endpoint'));
+const glareThreshold = Number(appRoot.getAttribute('data-glare-threshold')) ?? undefined;
+const sharpnessThreshold = Number(appRoot.getAttribute('data-sharpness-threshold')) ?? undefined;
 
 function getServiceProvider() {
   const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
@@ -143,6 +145,8 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
         <AcuantContextProvider
           credentials={getMetaContent('acuant-sdk-initialization-creds')}
           endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
+          glareThreshold={glareThreshold}
+          sharpnessThreshold={sharpnessThreshold}
         >
           <UploadContextProvider
             endpoint={/** @type {string} */ (appRoot.getAttribute('data-endpoint'))}

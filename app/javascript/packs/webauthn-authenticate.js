@@ -10,6 +10,9 @@ function webauthn() {
     window.location.href = href;
   }
 
+  const spinner = document.getElementById('spinner');
+  spinner.classList.remove('hidden');
+
   WebAuthn.verifyWebauthnDevice({
     userChallenge: document.getElementById('user_challenge').value,
     credentialIds: document.getElementById('credential_ids').value,
@@ -22,4 +25,10 @@ function webauthn() {
     webauthnSuccessContainer.classList.remove('hidden');
   });
 }
-document.addEventListener('DOMContentLoaded', webauthn);
+
+function webauthnButton() {
+  const button = document.getElementById('webauthn-button');
+  button.addEventListener('click', webauthn);
+}
+
+document.addEventListener('DOMContentLoaded', webauthnButton);

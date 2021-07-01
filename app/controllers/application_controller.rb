@@ -34,6 +34,7 @@ class ApplicationController < ActionController::Base
   before_action :cache_issuer_in_cookie
 
   def session_expires_at
+    return if @skip_session_expiration || @skip_session_load
     now = Time.zone.now
     session[:session_expires_at] = now + Devise.timeout_in
     session[:pinged_at] ||= now
@@ -102,6 +103,7 @@ class ApplicationController < ActionController::Base
   end
 
   def cache_issuer_in_cookie
+    return if @skip_session_load
     cookies[:sp_issuer] = if current_sp.nil?
                             nil
                           else

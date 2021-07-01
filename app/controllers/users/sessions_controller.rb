@@ -108,7 +108,10 @@ module Users
       add_sp_cost(:digest)
       create_user_event(:sign_in_before_2fa)
       update_sp_return_logs_with_user(current_user.id)
-      update_last_sign_in_at_on_email
+      EmailAddress.update_last_sign_in_at_on_user_id_and_email(
+        user_id: current_user.id,
+        email: auth_params[:email],
+      )
       redirect_to next_url_after_valid_authentication
     end
 
@@ -148,11 +151,6 @@ module Users
       }
 
       analytics.track_event(Analytics::EMAIL_AND_PASSWORD_AUTH, properties)
-    end
-
-    def update_last_sign_in_at_on_email
-      email_address = current_user.email_addresses.find_with_email(params[:user][:email])
-      email_address.update!(last_sign_in_at: Time.zone.now)
     end
 
     def user_signed_in_and_not_locked_out?(user)
