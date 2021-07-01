@@ -135,8 +135,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_sp
-    return @current_sp if defined?(@current_sp)
-    @current_sp = sp_from_sp_session || sp_from_request_id || sp_from_request_issuer_logout
+    @current_sp ||= sp_from_sp_session || sp_from_request_id || sp_from_request_issuer_logout
   end
 
   def sp_from_sp_session
