@@ -3,14 +3,11 @@ module DateParser
 
   # Date parsing with a fallback for american-style Month/Day/Year
   # since we have legacy data in PII bundles that may be stored this way
-  # @param [String,Date] val
-  def self.parse_legacy(val)
-    return val if val.is_a?(Date)
-
-    if (m = val.match(AMERICAN_REGEX))
+  def self.parse_legacy(str)
+    if (m = str.match(AMERICAN_REGEX))
       Date.parse("#{m[:year]}-#{m[:month]}-#{m[:day]}")
     else
-      Date.parse(val)
+      Date.parse(str)
     end
   end
 end
