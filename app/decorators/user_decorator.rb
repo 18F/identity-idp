@@ -153,7 +153,7 @@ class UserDecorator
   end
 
   def connected_apps
-    user.identities.not_deleted.order('created_at DESC')
+    user.identities.not_deleted.includes(:service_provider_record).order('created_at DESC')
   end
 
   def delete_account_bullet_key
