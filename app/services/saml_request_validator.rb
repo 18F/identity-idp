@@ -26,10 +26,10 @@ class SamlRequestValidator
     }
   end
 
-  # This check relies on the fact that problematic SPs are returned as nil.
-  # It should be disentangled and SP errors should be validated explicitly.
+  # This checks that the SP matches something in the database
+  # SamlIdpAuthConcern#check_sp_active checks that it's currently active
   def authorized_service_provider
-    return if service_provider&.active?
+    return if service_provider
     errors.add(:service_provider, :unauthorized_service_provider)
   end
 
