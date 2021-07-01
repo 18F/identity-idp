@@ -64,7 +64,7 @@ class OpenidConnectLogoutForm
 
   def extra_analytics_attributes
     {
-      client_id: identity.service_provider_record&.issuer,
+      client_id: identity&.service_provider,
       redirect_uri: redirect_uri,
       sp_initiated: true,
       oidc: true,
