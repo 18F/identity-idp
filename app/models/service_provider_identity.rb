@@ -7,8 +7,6 @@ class ServiceProviderIdentity < ApplicationRecord
   belongs_to :user
   validates :service_provider, presence: true
 
-  delegate :metadata, to: :sp, prefix: true
-
   # rubocop:disable Rails/InverseOf
   belongs_to :service_provider_record,
              class_name: 'ServiceProvider',
@@ -22,6 +20,10 @@ class ServiceProviderIdentity < ApplicationRecord
 
   def deactivate
     update!(session_uuid: nil)
+  end
+
+  def sp_metadata
+    service_provider_record&.metadata || {}
   end
 
   def display_name
