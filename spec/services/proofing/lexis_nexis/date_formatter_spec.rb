@@ -17,6 +17,12 @@ describe Proofing::LexisNexis::DateFormatter do
 
       it { is_expected.to eq(Date.new(1993, 1, 2)) }
     end
+
+    context 'with a YYYY-MM-DD formatted date' do
+      let(:date_string) { '1993-01-02' }
+
+      it { is_expected.to eq(Date.new(1993, 1, 2)) }
+    end
   end
 
   describe '#formatted_date' do
