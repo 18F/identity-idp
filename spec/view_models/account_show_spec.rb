@@ -102,36 +102,4 @@ describe AccountShow do
       expect(account_show.backup_codes_generated_at).to be_nil
     end
   end
-
-  describe '#pii' do
-    let(:user) { build(:user) }
-    let(:decrypted_pii) do
-      Pii::Attributes.new_from_hash(dob: dob)
-    end
-
-    subject(:account_show) do
-      AccountShow.new(
-        decrypted_pii: decrypted_pii,
-        personal_key: '',
-        decorated_user: user.decorate,
-        locked_for_session: false,
-      )
-    end
-
-    context 'birthday is formatted as an american date' do
-      let(:dob) { '12/31/1970' }
-
-      it 'parses the birthday' do
-        expect(account_show.pii.dob).to eq('December 31, 1970')
-      end
-    end
-
-    context 'birthday is formatted as an international date' do
-      let(:dob) { '1970-01-01' }
-
-      it 'parses the birthday' do
-        expect(account_show.pii.dob).to eq('January 01, 1970')
-      end
-    end
-  end
 end
