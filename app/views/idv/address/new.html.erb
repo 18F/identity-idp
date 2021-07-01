@@ -1,10 +1,10 @@
 <% content_for(:pre_flash_content) do %>
   <%= render 'shared/step_indicator', {
-        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
-        current_step: :verify_info,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      } %>
+    steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+    current_step: :verify_info,
+    locale_scope: 'idv',
+    class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+  } %>
 <% end %>
 
 <% title t('titles.doc_auth.verify') %>
@@ -14,30 +14,28 @@
 </h1>
 
 <div class="margin-top-4 margin-bottom-4">
-  <%= validated_form_for(
-        :idv_form, url: idv_address_path, method: 'POST',
-                   html: {autocomplete: 'off', class: 'margin-top-2'}
-      ) do |f| %>
+  <%= validated_form_for(:idv_form, url: idv_address_path, method: 'POST',
+                         html: {autocomplete: 'off', class: 'margin-top-2'}) do |f| %>
 
     <%= f.input :address1, label: t('idv.form.address1'), wrapper_html: {class: 'margin-bottom-1'},
-                           required: true, maxlength: 255, input_html: { aria: { invalid: false }, value: @pii['address1'] } %>
+                required: true, maxlength: 255, input_html: { aria: { invalid: false }, value: @pii['address1'] } %>
     <%= f.input :address2, label: t('idv.form.address2'), required: false, maxlength: 255,
-                           input_html: { value: @pii['address2'] } %>
+                input_html: { value: @pii['address2'] } %>
     <%= f.input :city, label: t('idv.form.city'), required: true, maxlength: 255,
-                       input_html: { aria: { invalid: false }, value: @pii['city'] } %>
+                input_html: { aria: { invalid: false }, value: @pii['city'] } %>
 
     <div class="clearfix margin-x-neg-1">
       <div class="sm-col sm-col-8 padding-x-1">
         <%= f.input :state, collection: us_states_territories,
-                            label: t('idv.form.state'), required: true,
-                            selected: @pii['state'] %>
+                    label: t('idv.form.state'), required: true,
+                    selected: @pii['state'] %>
       </div>
       <div class="sm-col sm-col-4 padding-x-1">
         <%# using :tel for mobile numeric keypad %>
         <%= f.input :zipcode, as: :tel,
-                              label: t('idv.form.zipcode'), required: true,
-                              pattern: '(\d{5}([\-]\d{4})?)',
-                              input_html: { aria: { invalid: false }, class: 'zipcode', value: @pii['zipcode'] } %>
+                    label: t('idv.form.zipcode'), required: true,
+                    pattern: '(\d{5}([\-]\d{4})?)',
+                    input_html: { aria: { invalid: false }, class: 'zipcode', value: @pii['zipcode'] } %>
       </div>
     </div>
     <div class="margin-top-0">

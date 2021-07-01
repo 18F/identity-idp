@@ -4,8 +4,6 @@ import { renderHook } from '@testing-library/react-hooks';
 import { DeviceContext, AnalyticsContext } from '@18f/identity-document-capture';
 import AcuantContext, {
   Provider as AcuantContextProvider,
-  DEFAULT_ACCEPTABLE_GLARE_SCORE,
-  DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
 } from '@18f/identity-document-capture/context/acuant';
 import { render } from '../../../support/document-capture';
 
@@ -25,22 +23,7 @@ describe('document-capture/context/acuant', () => {
       isCameraSupported: null,
       credentials: null,
       endpoint: null,
-      glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-      sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
     });
-  });
-
-  it('allows configurable acceptable scores', () => {
-    const { result } = renderHook(() => useContext(AcuantContext), {
-      wrapper: ({ children }) => (
-        <AcuantContextProvider glareThreshold={60} sharpnessThreshold={70}>
-          {children}
-        </AcuantContextProvider>
-      ),
-    });
-
-    expect(result.current.glareThreshold).to.equal(60);
-    expect(result.current.sharpnessThreshold).to.equal(70);
   });
 
   context('desktop', () => {
@@ -72,8 +55,6 @@ describe('document-capture/context/acuant', () => {
         isCameraSupported: false,
         credentials: null,
         endpoint: null,
-        glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-        sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
       });
     });
   });
@@ -91,7 +72,7 @@ describe('document-capture/context/acuant', () => {
       expect(script).to.be.ok();
     });
 
-    it('provides context from provider credentials', () => {
+    it('provides context from provider crendentials', () => {
       const { result } = renderHook(() => useContext(AcuantContext), {
         wrapper: ({ children }) => (
           <DeviceContext.Provider value={{ isMobile: true }}>
@@ -109,8 +90,6 @@ describe('document-capture/context/acuant', () => {
         isCameraSupported: null,
         credentials: 'a',
         endpoint: 'b',
-        glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-        sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
       });
     });
 
@@ -145,8 +124,6 @@ describe('document-capture/context/acuant', () => {
           isCameraSupported: true,
           credentials: null,
           endpoint: null,
-          glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-          sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
         });
       });
 
@@ -191,8 +168,6 @@ describe('document-capture/context/acuant', () => {
           isCameraSupported: null,
           credentials: null,
           endpoint: null,
-          glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-          sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
         });
       });
 

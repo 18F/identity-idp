@@ -11,9 +11,6 @@ class SamlIdpController < ApplicationController
   include VerifyProfileConcern
   include AuthorizationCountConcern
 
-  prepend_before_action :skip_session_load, only: :metadata
-  prepend_before_action :skip_session_expiration, only: :metadata
-
   skip_before_action :verify_authenticity_token
   before_action :confirm_user_is_authenticated_with_fresh_mfa, only: :auth
   before_action :bump_auth_count, only: [:auth]

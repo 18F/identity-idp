@@ -139,5 +139,6 @@ fr:
         FIDO. Vous pouvez ajouter autant de clés de sécurité que vous le
         souhaitez et nous en recommandons au moins deux pour faciliter la
         récupération du compte.
-      login_text: Lorsque vous êtes prêt à vous authentifier, appuyez sur le bouton
+      login_text: Appuyez sur le bouton de votre clé de sécurité pour vous connecter
+        avec login.gov
       nickname: Pseudo clé de sécurité

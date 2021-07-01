@@ -11,11 +11,9 @@
   <%= t('instructions.password.forgot') %>
 </p>
 
-<%= validated_form_for(
-      @password_reset_email_form,
-      url: user_password_path,
-      html: { autocomplete: 'off', method: :post },
-    ) do |f| %>
+<%= validated_form_for(@password_reset_email_form,
+                       url: user_password_path,
+                       html: { autocomplete: 'off', method: :post }) do |f| %>
   <%= f.input :email,
               required: true,
               input_html: { autocorrect: 'off',

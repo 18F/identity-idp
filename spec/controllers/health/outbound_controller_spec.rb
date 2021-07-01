@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Health::OutboundController do
-  before do
-    Rails.cache.clear
-  end
-
   describe '#index' do
     subject(:action) { get :index }
 

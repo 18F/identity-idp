@@ -25,18 +25,11 @@ describe SignUp::CompletionsController do
       end
 
       context 'IAL2' do
-        let(:user) do
-          create(:user, profiles: [create(:profile, :verified, :active)])
-        end
-        let(:pii) { {} }
-
-        before do
+        it 'tracks page visit' do
+          user = create(:user, profiles: [create(:profile, :verified, :active)])
           stub_sign_in(user)
           subject.session[:sp] = { issuer: 'awesome sp', ial2: true }
-          allow(controller).to receive(:user_session).and_return('decrypted_pii' => pii.to_json)
-        end
 
-        it 'tracks page visit' do
           get :show
 
           expect(@analytics).to have_received(:track_event).with(
@@ -45,24 +38,6 @@ describe SignUp::CompletionsController do
             service_provider_name: subject.decorated_session.sp_name,
             page_occurence: '',
           )
-        end
-
-        context 'with american-style birthday data' do
-          let(:pii) { { dob: '12/31/1970' } }
-
-          it 'renders data' do
-            get :show
-            expect(assigns(:pii)[:birthdate]).to eq('December 31, 1970')
-          end
-        end
-
-        context 'with international style birthday data' do
-          let(:pii) { { dob: '1970-01-01' } }
-
-          it 'renders data' do
-            get :show
-            expect(assigns(:pii)[:birthdate]).to eq('January 01, 1970')
-          end
         end
       end
     end

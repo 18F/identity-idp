@@ -1,31 +1,29 @@
 class OpenidConnectAttributeScoper
-  X509_SCOPES = %w[
+  VALID_SCOPES = %w[
+    address
+    email
+    openid
+    phone
+    profile
+    profile:birthdate
+    profile:name
+    profile:verified_at
+    social_security_number
     x509
     x509:subject
     x509:issuer
     x509:presented
-  ]
-
-  IAL2_SCOPES = %w[
-    address
-    phone
-    profile
-    profile:name
-    profile:birthdate
-    social_security_number
-  ]
-
-  VALID_SCOPES = %w[
-    email
-    openid
-    profile:verified_at
-  ] + X509_SCOPES + IAL2_SCOPES
+  ].freeze
 
   VALID_IAL1_SCOPES = %w[
     email
     openid
     profile:verified_at
-  ] + X509_SCOPES
+    x509
+    x509:subject
+    x509:issuer
+    x509:presented
+  ].freeze
 
   ATTRIBUTE_SCOPES_MAP = {
     email: %w[email],
@@ -59,18 +57,6 @@ class OpenidConnectAttributeScoper
 
   def initialize(scope)
     @scopes = parse_scope(scope)
-  end
-
-  def ial2_scopes_requested?
-    (scopes & IAL2_SCOPES).any?
-  end
-
-  def x509_scopes_requested?
-    (scopes & X509_SCOPES).any?
-  end
-
-  def verified_at_requested?
-    scopes.include?('profile:verified_at') || scopes.include?('profile')
   end
 
   def filter(user_info)

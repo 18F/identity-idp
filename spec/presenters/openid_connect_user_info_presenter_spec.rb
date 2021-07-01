@@ -86,7 +86,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         {
           first_name: 'John',
           last_name: 'Smith',
-          dob: '12/31/1970',
+          dob: '1970-01-01',
           address1: '123 Fake St',
           address2: 'Apt 456',
           city: 'Washington',
@@ -109,7 +109,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             aggregate_failures do
               expect(user_info[:given_name]).to eq('John')
               expect(user_info[:family_name]).to eq('Smith')
-              expect(user_info[:birthdate]).to eq('1970-12-31')
+              expect(user_info[:birthdate]).to eq('1970-01-01')
               expect(user_info[:phone]).to eq('+17035555555')
               expect(user_info[:phone_verified]).to eq(true)
               expect(user_info[:address]).to eq(
@@ -128,17 +128,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             json = user_info.as_json
 
             expect(json['given_name']).to eq('John')
-          end
-
-          context 'when the SP is in the dob_international_format_opt_out_list' do
-            before do
-              allow(IdentityConfig.store).to receive(:dob_international_format_opt_out_list).
-                and_return([identity.service_provider])
-            end
-
-            it 'formats the dob american style' do
-              expect(user_info[:birthdate]).to eq('12/31/1970')
-            end
           end
         end
 

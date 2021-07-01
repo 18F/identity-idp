@@ -8,19 +8,17 @@ class OpenidConnectUserInfoPresenter
   end
 
   def user_info
-    scoper = OpenidConnectAttributeScoper.new(identity.scope)
     info = {
       sub: uuid_from_sp_identity(identity),
       iss: root_url,
       email: email_from_sp_identity(identity),
       email_verified: true,
-    }
+      verified_at: verified_at,
+    }.
+           merge(x509_attributes).
+           merge(ial2_attributes)
 
-    info.merge!(ial2_attributes) if scoper.ial2_scopes_requested?
-    info.merge!(x509_attributes) if scoper.x509_scopes_requested?
-    info[:verified_at] = verified_at if scoper.verified_at_requested?
-
-    scoper.filter(info)
+    OpenidConnectAttributeScoper.new(identity.scope).filter(info)
   end
 
   def url_options
@@ -41,7 +39,7 @@ class OpenidConnectUserInfoPresenter
     {
       given_name: stringify_attr(ial2_data.first_name),
       family_name: stringify_attr(ial2_data.last_name),
-      birthdate: dob,
+      birthdate: stringify_attr(ial2_data.dob),
       social_security_number: stringify_attr(ial2_data.ssn),
       address: address,
       phone: phone,
@@ -61,21 +59,6 @@ class OpenidConnectUserInfoPresenter
     return if ial2_data.phone.blank?
 
     Phonelib.parse(ial2_data.phone).e164
-  end
-
-  def dob
-    return if ial2_data.dob.blank?
-
-    american_date_format = IdentityConfig.store.
-      dob_international_format_opt_out_list.include?(identity.service_provider)
-
-    date = DateParser.parse_legacy(ial2_data.dob)
-
-    if american_date_format
-      date.strftime('%m/%d/%Y')
-    else
-      date.to_s
-    end
   end
 
   def address

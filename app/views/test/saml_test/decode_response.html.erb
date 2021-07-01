@@ -27,7 +27,7 @@
             <% xml_doc = Base64.encode64(response.document.to_s) %>
             <%= link_to 'Open in New Window',
                         "data:text/xml;charset=utf-8;base64,#{xml_doc}",
-                        target: '_blank', rel: 'noopener noreferrer' %>
+                        target: '_blank'%>
           </td>
         </tr>
         <tr>
@@ -37,7 +37,7 @@
               <% xml_doc = Base64.encode64(response.decrypted_document.to_s) %>
               <%= link_to 'Open in New Window',
                           "data:text/xml;charset=utf-8;base64,#{xml_doc}",
-                          target: '_blank', rel: 'noopener noreferrer' %>
+                          target: '_blank' %>
             </td>
           <% else %>
             <td>Document not encrypted</td>

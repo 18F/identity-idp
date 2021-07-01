@@ -1,7 +1,5 @@
 module Health
   class AbstractHealthController < ApplicationController
-    prepend_before_action :skip_session_load
-    prepend_before_action :skip_session_expiration
     newrelic_ignore_apdex
 
     def index

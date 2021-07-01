@@ -57,21 +57,6 @@ describe 'AwsS3Helper' do
       expect { helper.s3_presigned_url(bucket_prefix: '', keyname: 'image_type') }.
         to raise_error(ArgumentError, 'bucket_prefix is required')
     end
-
-    it 'is created with an expiration' do
-      key = "#{session_uuid}-#{image_type}"
-      object = Aws::S3::Object.new(bucket_name: bucket, key: key)
-      allow(helper).to receive(:s3_object).and_return(object)
-      expect(object).to receive(:presigned_url).with(
-        kind_of(Symbol),
-        hash_including(expires_in: helper.presigned_url_expiration_in_seconds),
-      ).and_call_original
-
-      helper.s3_presigned_url(
-        bucket_prefix: prefix,
-        keyname: key,
-      )
-    end
   end
 
   describe '#s3_resource' do
@@ -84,12 +69,6 @@ describe 'AwsS3Helper' do
       it 'returns nil' do
         expect(helper.s3_resource).to be_nil
       end
-    end
-  end
-
-  describe '#presigned_url_expiration_in_seconds' do
-    it 'returns a number' do
-      expect(helper.presigned_url_expiration_in_seconds).to be_a_kind_of(Numeric)
     end
   end
 end
