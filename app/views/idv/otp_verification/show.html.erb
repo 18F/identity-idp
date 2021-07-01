@@ -1,10 +1,10 @@
 <% content_for(:pre_flash_content) do %>
   <%= render 'shared/step_indicator', {
-        steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
-        current_step: :verify_phone_or_address,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      } %>
+    steps: Idv::Flows::DocAuthFlow::STEP_INDICATOR_STEPS,
+    current_step: :verify_phone_or_address,
+    locale_scope: 'idv',
+    class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+  } %>
 <% end %>
 
 <% title t('titles.enter_2fa_code') %>
@@ -22,14 +22,14 @@
     <div class="grid-col-12 tablet:grid-col-6">
       <%= label_tag :code, t('forms.two_factor.code'), class: 'block bold' %>
       <%= render(
-            'shared/one_time_code_input',
-            name: :code,
-            value: @code,
-            required: true,
-            autofocus: true,
-            numeric: false,
-            class: 'col-12 margin-bottom-5',
-          ) %>
+        'shared/one_time_code_input',
+        name: :code,
+        value: @code,
+        required: true,
+        autofocus: true,
+        numeric: false,
+        class: 'col-12 margin-bottom-5',
+      ) %>
       <%= submit_tag t('forms.buttons.submit.default'),
                      class: 'usa-button usa-button--big usa-button--full-width' %>
     </div>

@@ -1,7 +1,5 @@
 module OpenidConnect
   class UserInfoController < ApplicationController
-    prepend_before_action :skip_session_load
-    prepend_before_action :skip_session_expiration
     skip_before_action :verify_authenticity_token
     before_action :authenticate_identity_via_bearer_token
 

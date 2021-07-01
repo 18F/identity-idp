@@ -4,8 +4,6 @@ describe 'idv/review/new.html.erb' do
   include XPathHelper
 
   context 'user has completed all steps' do
-    let(:dob) { '1972-03-29' }
-
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
@@ -13,7 +11,7 @@ describe 'idv/review/new.html.erb' do
         first_name: 'Some',
         last_name: 'One',
         ssn: '666-66-1234',
-        dob: dob,
+        dob: Date.parse('1972-03-29'),
         address1: '123 Main St',
         city: 'Somewhere',
         state: 'MO',
@@ -54,14 +52,6 @@ describe 'idv/review/new.html.erb' do
         '.step-indicator__step--current',
         text: t('step_indicator.flows.idv.secure_account'),
       )
-    end
-
-    context 'with an american-style dob' do
-      let(:dob) { '12/31/1970' }
-
-      it 'renders correctly' do
-        expect(rendered).to have_selector('.h4.bold', text: 'December 31, 1970')
-      end
     end
   end
 end

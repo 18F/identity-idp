@@ -2,10 +2,10 @@
 
 <% if @resend_confirmation %>
   <%= render 'shared/alert', {
-        type: 'success',
-        class: 'margin-bottom-4',
-        message: t('notices.resend_confirmation_email.success'),
-      } %>
+    type: 'success',
+    class: 'margin-bottom-4',
+    message: t('notices.resend_confirmation_email.success'),
+  } %>
 <% end %>
 
 <div class="margin-top-neg-2">
@@ -32,18 +32,14 @@
   <p><%= t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start') %>
   <%= f.button :submit, t('links.resend'), class: 'usa-button--unstyled ml-tiny' %></p>
 
-  <% link = link_to(
-       t('notices.use_diff_email.link'),
-       sign_up_email_path(request_id: params[:request_id]),
-     ) %>
+  <% link = link_to(t('notices.use_diff_email.link'),
+           sign_up_email_path(request_id: params[:request_id])) %>
   <p><%= t('notices.use_diff_email.text_html', link: link) %></p>
   <p><%= t('devise.registrations.close_window') %></p>
 
   <% if FeatureManagement.enable_load_testing_mode? %>
-    <%= link_to(
-          'CONFIRM NOW',
-          sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
-          id: 'confirm-now',
-        ) %>
+    <%= link_to('CONFIRM NOW',
+      sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
+      id: 'confirm-now') %>
   <% end %>
 <% end %>

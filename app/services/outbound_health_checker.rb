@@ -4,13 +4,10 @@ module OutboundHealthChecker
 
   # @return [HealthCheckSummary]
   def check
-    jitter = rand(-5..5)
-    Rails.cache.fetch('outbound_health_check', expires_in: (45 + jitter).seconds) do
-      HealthCheckSummary.new(healthy: true, result: outbound_response)
-    rescue StandardError => err
-      NewRelic::Agent.notice_error(err)
-      HealthCheckSummary.new(healthy: false, result: err.message)
-    end
+    HealthCheckSummary.new(healthy: true, result: outbound_response)
+  rescue StandardError => err
+    NewRelic::Agent.notice_error(err)
+    HealthCheckSummary.new(healthy: false, result: err.message)
   end
 
   def outbound_response

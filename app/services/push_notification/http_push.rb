@@ -46,29 +46,17 @@ module PushNotification
     end
 
     def deliver_eventbridge(service_provider)
-      response = eventbridge_client.put_events(
+      eventbridge_client.put_events(
         entries: [
           {
             time: now,
             source: service_provider.issuer,
             detail_type: 'notification',
-            detail: { jwt: jwt(service_provider) }.to_json,
+            detail: jwt(service_provider),
             event_bus_name: "#{Identity::Hostdata.env}-risc-notifications",
           },
         ],
       )
-
-      if response.failed_entry_count.to_i > 0
-        Rails.logger.warn(
-          {
-            event: 'http_push_error',
-            transport: 'eventbridge',
-            event_type: event.event_type,
-            service_provider: service_provider.issuer,
-            error: response.to_s,
-          }.to_json,
-        )
-      end
     end
 
     def deliver_direct(service_provider)
@@ -85,7 +73,6 @@ module PushNotification
         Rails.logger.warn(
           {
             event: 'http_push_error',
-            transport: 'direct',
             event_type: event.event_type,
             service_provider: service_provider.issuer,
             status: response.status,
@@ -98,7 +85,6 @@ module PushNotification
       Rails.logger.warn(
         {
           event: 'http_push_error',
-          transport: 'direct',
           event_type: event.event_type,
           service_provider: service_provider.issuer,
           error: err.message,

@@ -17,9 +17,9 @@
     </div>
     <div class='i18n-mobile-dropdown tablet:display-none display-none'>
       <ul class='list-reset margin-bottom-0 white center'>
-        <% I18n.available_locales.each do |locale| %>
+        <%  I18n.available_locales.each do |locale| %>
           <li class='border-bottom border-primary-light'>
-            <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'block py-12p padding-x-2 text-decoration-none blue fs-13p' %>
+            <%= link_to t("i18n.locale.#{locale}"), sanitized_requested_url.merge(locale: locale), class: 'block py-12p padding-x-2 text-decoration-none blue fs-13p'%>
           </li>
         <% end %>
       </ul>

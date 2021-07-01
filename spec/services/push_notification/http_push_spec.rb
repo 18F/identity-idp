@@ -93,10 +93,8 @@ RSpec.describe PushNotification::HttpPush do
           expect(entry[:event_bus_name]).to eq('dev-risc-notifications')
           expect(entry[:detail_type]).to eq('notification')
 
-          detail_json = JSON.parse(entry[:detail], symbolize_names: true)
-
           payload, headers = JWT.decode(
-            detail_json[:jwt],
+            entry[:detail],
             AppArtifacts.store.oidc_public_key,
             true,
             algorithm: 'RS256',
@@ -114,22 +112,6 @@ RSpec.describe PushNotification::HttpPush do
         end
 
         deliver
-      end
-
-      context 'with an error from eventbridge' do
-        before do
-          eventbridge_client.stub_responses(
-            :put_events,
-            failed_entry_count: 1,
-            entries: [{ error_code: 'MalformedDetail', error_message: 'Detail is malformed' }],
-          )
-        end
-
-        it 'logs a warning' do
-          expect(Rails.logger).to receive(:warn)
-
-          deliver
-        end
       end
     end
 
@@ -162,22 +144,18 @@ RSpec.describe PushNotification::HttpPush do
         let(:risc_notifications_eventbridge_enabled) { true }
 
         it 'sends the agency-specific uuid' do
-          expect(eventbridge_client).to receive(:put_events).and_wrap_original do |impl, entries:|
+          expect(eventbridge_client).to receive(:put_events) do |entries:|
             expect(entries.size).to eq(1)
             entry = entries.first
 
-            detail_json = JSON.parse(entry[:detail], symbolize_names: true)
-
-            payload, headers = JWT.decode(
-              detail_json[:jwt],
+            payload, _headers = JWT.decode(
+              entry[:detail],
               AppArtifacts.store.oidc_public_key,
               true,
               algorithm: 'RS256',
             )
 
             expect(payload['events'][event.event_type]['subject']['sub']).to eq(agency_uuid)
-
-            impl.call(entries: entries)
           end
 
           deliver

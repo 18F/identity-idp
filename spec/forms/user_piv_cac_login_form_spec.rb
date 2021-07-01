@@ -65,6 +65,32 @@ describe UserPivCacLoginForm do
       end
     end
 
+    context 'when piv cac is required' do
+      let(:token) { 'good-token' }
+      let(:piv_cac_required) { true }
+
+      it 'returns FormResponse with success: true when the token indicates auth cert' do
+        resp = { 'nonce' => nonce, 'is_auth_cert' => true,
+                 'uuid' => piv_cac_configuration.x509_dn_uuid }
+        allow(PivCacService).to receive(:decode_token).with(token) { resp }
+
+        result = form.submit
+
+        expect(result.success?).to eq true
+      end
+
+      it 'returns FormResponse with success: false when the token indicates not an auth cert' do
+        resp = { 'nonce' => nonce, 'is_auth_cert' => false,
+                 'uuid' => piv_cac_configuration.x509_dn_uuid }
+        allow(PivCacService).to receive(:decode_token).with(token) { resp }
+
+        result = form.submit
+
+        expect(result.success?).to eq false
+        expect(result.errors).to eq({ type: 'certificate.not_auth_cert' })
+      end
+    end
+
     context 'when token is missing' do
       let(:token) {}
 

@@ -43,10 +43,10 @@
                                 <tr>
                                   <th>
                                     <%= image_tag(
-                                          attachments['logo.png'].url,
-                                          size: '142x19',
-                                          style: 'width: 142px; height: 19px;',
-                                        ) %>
+                                      attachments['logo.png'].url,
+                                      size: '142x19',
+                                      style: 'width: 142px; height: 19px;',
+                                    ) %>
                                   </th>
                                   <th class="expander"></th>
                                 </tr>
@@ -101,17 +101,17 @@
                                         <th>
                                           <p>
                                             <%= (t('mailer.no_reply') + ' ' + t(
-                                                  'mailer.help',
-                                                  link: link_to(
-                                                    MarketingSite.nice_help_url,
-                                                    MarketingSite.help_url,
-                                                  ),
-                                                  app: link_to(
-                                                    APP_NAME,
-                                                    IdentityConfig.store.mailer_domain_name,
-                                                    style: 'text-decoration: none;',
-                                                  ),
-                                                )).html_safe %>
+                                              'mailer.help',
+                                              link: link_to(
+                                                MarketingSite.nice_help_url,
+                                                MarketingSite.help_url,
+                                              ),
+                                              app: link_to(
+                                                APP_NAME,
+                                                IdentityConfig.store.mailer_domain_name,
+                                                style: 'text-decoration: none;',
+                                              ),
+                                            )).html_safe %>
                                           </p>
                                         </th>
                                       </tr>
@@ -142,16 +142,16 @@
                                         <th>
                                           <p>
                                             <%= link_to(
-                                                  t('mailer.about', app: APP_NAME),
-                                                  MarketingSite.base_url,
-                                                  style: 'text-decoration: underline;',
-                                                ).html_safe %>
+                                              t('mailer.about', app: APP_NAME),
+                                              MarketingSite.base_url,
+                                              style: 'text-decoration: underline;',
+                                            ).html_safe %>
                                             &nbsp;&nbsp;|&nbsp;&nbsp;
                                             <%= link_to(
-                                                  t('mailer.privacy_policy'),
-                                                  MarketingSite.security_and_privacy_practices_url,
-                                                  style: 'text-decoration: underline;',
-                                                ).html_safe %>
+                                              t('mailer.privacy_policy'),
+                                              MarketingSite.security_and_privacy_practices_url,
+                                              style: 'text-decoration: underline;',
+                                            ).html_safe %>
                                           </p>
                                         </th>
                                         <th class="expander"></th>
