@@ -107,7 +107,7 @@ class AttributeAsserter
   def wrap_with_dob_formatter(getter, american_date_format:)
     proc do |principal|
       if (date_str = getter.call(principal))
-        date = Date.parse(date_str)
+        date = DateParser.parse_legacy(date_str)
 
         if american_date_format
           date.strftime('%m/%d/%Y')

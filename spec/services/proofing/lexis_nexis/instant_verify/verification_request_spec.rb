@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
+  let(:dob) { '01/01/1980' }
   let(:applicant) do
     {
       uuid_prefix: '0987',
@@ -8,7 +9,7 @@ describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
       first_name: 'Testy',
       last_name: 'McTesterson',
       ssn: '123-45-6789',
-      dob: '01/01/1980',
+      dob: dob,
       address1: '123 Main St',
       address2: 'Ste 3',
       city: 'Baton Rouge',
@@ -49,6 +50,15 @@ describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
       it 'does not prepend' do
         parsed_body = JSON.parse(subject.body, symbolize_names: true)
         expect(parsed_body[:Settings][:Reference]).to eq(applicant[:uuid])
+      end
+    end
+
+    context 'with an international-formatted dob' do
+      let(:dob) { '1980-01-01' }
+
+      it 'formats the DOB correctly' do
+        parsed_body = JSON.parse(subject.body, symbolize_names: true)
+        expect(parsed_body.dig(:Person, :DateOfBirth, :Year)).to eq('1980')
       end
     end
   end
