@@ -34,7 +34,7 @@ describe SamlRequestValidator do
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
         extra = {
           authn_context: authn_context,
-          service_provider: sp.issuer,
+          service_provider: sp&.issuer,
           nameid_format: name_id_format,
         }
         errors = {
@@ -287,7 +287,7 @@ describe SamlRequestValidator do
         name_id_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
         extra = {
           authn_context: authn_context,
-          service_provider: sp.issuer,
+          service_provider: sp&.issuer,
           nameid_format: name_id_format,
         }
         errors = {
