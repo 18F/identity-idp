@@ -98,20 +98,6 @@ import './acuant-capture.scss';
  */
 
 /**
- * The minimum glare score value to be considered acceptable.
- *
- * @type {number}
- */
-export const ACCEPTABLE_GLARE_SCORE = 50;
-
-/**
- * The minimum sharpness score value to be considered acceptable.
- *
- * @type {number}
- */
-export const ACCEPTABLE_SHARPNESS_SCORE = 50;
-
-/**
  * Returns a human-readable document label corresponding to the given document type constant.
  *
  * @param {AcuantDocumentType} documentType
@@ -199,7 +185,14 @@ function AcuantCapture(
   },
   ref,
 ) {
-  const { isReady, isAcuantLoaded, isError, isCameraSupported } = useContext(AcuantContext);
+  const {
+    isReady,
+    isAcuantLoaded,
+    isError,
+    isCameraSupported,
+    glareThreshold,
+    sharpnessThreshold,
+  } = useContext(AcuantContext);
   const { isMockClient } = useContext(UploadContext);
   const { addPageAction } = useContext(AnalyticsContext);
   const inputRef = useRef(/** @type {?HTMLInputElement} */ (null));
@@ -359,8 +352,8 @@ function AcuantCapture(
    */
   function onAcuantImageCaptureSuccess(nextCapture) {
     const { image, cardType, dpi, moire, glare, sharpness } = nextCapture;
-    const isAssessedAsGlare = glare < ACCEPTABLE_GLARE_SCORE;
-    const isAssessedAsBlurry = sharpness < ACCEPTABLE_SHARPNESS_SCORE;
+    const isAssessedAsGlare = glare < glareThreshold;
+    const isAssessedAsBlurry = sharpness < sharpnessThreshold;
     const { width, height, data } = image;
 
     /** @type {AcuantImageAssessment} */
@@ -385,10 +378,10 @@ function AcuantCapture(
       dpi,
       moire,
       glare,
-      glareScoreThreshold: ACCEPTABLE_GLARE_SCORE,
+      glareScoreThreshold: glareThreshold,
       isAssessedAsGlare,
       sharpness,
-      sharpnessScoreThreshold: ACCEPTABLE_SHARPNESS_SCORE,
+      sharpnessScoreThreshold: sharpnessThreshold,
       isAssessedAsBlurry,
       assessment,
     };
