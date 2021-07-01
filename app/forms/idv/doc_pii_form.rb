@@ -45,7 +45,7 @@ module Idv
     end
 
     def dob_meets_min_age?
-      dob_date = Date.parse(dob)
+      dob_date = DateParser.parse_legacy(dob)
       today = Time.zone.today
       age = today.year - dob_date.year - ((today.month > dob_date.month ||
         (today.month == dob_date.month && today.day >= dob_date.day)) ? 0 : 1)
