@@ -62,6 +62,11 @@ class OpenidConnectLogoutForm
     errors.add(:id_token_hint, t('openid_connect.logout.errors.id_token_hint')) unless identity
   end
 
+  # Used by RedirectUriValidator
+  def service_provider
+    identity&.service_provider_record
+  end
+
   def extra_analytics_attributes
     {
       client_id: identity&.service_provider,
