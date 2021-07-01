@@ -36,12 +36,4 @@ describe Proofing::LexisNexis::DateFormatter do
       )
     end
   end
-
-  describe '#yyyymmdd' do
-    let(:date_string) { '01/31/2020' }
-
-    it 'is a correctly-formatted string' do
-      expect(date_formatter.yyyymmdd).to eq('20200131')
-    end
-  end
 end

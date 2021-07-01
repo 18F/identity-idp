@@ -8,7 +8,7 @@ describe Proofing::LexisNexis::PhoneFinder::Proofer do
       first_name: 'Testy',
       last_name: 'McTesterson',
       ssn: '123-45-6789',
-      dob: '01/01/1980',
+      dob: '1980-01-01',
       phone: '5551231234',
     }
   end
