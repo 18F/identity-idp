@@ -141,7 +141,7 @@ class UserDecorator
   end
 
   def identity_events
-    user.identities.order('last_authenticated_at DESC')
+    user.identities.includes(:service_provider_record).order('last_authenticated_at DESC')
   end
 
   def recent_devices
