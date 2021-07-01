@@ -3,6 +3,7 @@ Rails.application.configure do
   config.webpacker.check_yarn_integrity = false
 
   config.cache_classes = true
+  config.cache_store = :redis_cache_store, { url: IdentityConfig.store.redis_url }
   config.eager_load = true
   config.consider_all_requests_local = false
   config.action_controller.perform_caching = true

@@ -1,10 +1,10 @@
 <% content_for(:pre_flash_content) do %>
   <%= render 'shared/step_indicator', {
-    steps: @step_indicator_steps,
-    current_step: :secure_account,
-    locale_scope: 'idv',
-    class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-  } %>
+        steps: @step_indicator_steps,
+        current_step: :secure_account,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      } %>
 <% end %>
 
 <% title t('idv.titles.review') %>
@@ -17,21 +17,27 @@
   <%= t('idv.messages.sessions.review_message') %>
 </p>
 
-<%= new_window_link_to(t('idv.messages.sessions.read_more_encrypt'),
-                       MarketingSite.security_url)%>
+<%= new_window_link_to(
+      t('idv.messages.sessions.read_more_encrypt'),
+      MarketingSite.security_url,
+    ) %>
 
-<%= validated_form_for(current_user, url: idv_review_path,
-                       html: { autocomplete: 'off', method: :put }) do |f| %>
+<%= validated_form_for(
+      current_user, url: idv_review_path,
+                    html: { autocomplete: 'off', method: :put }
+    ) do |f| %>
   <%= f.input :password, label: t('idv.form.password'), required: true,
-              input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
+                         input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
   <div class="right-align margin-top-neg-2 margin-bottom-6">
-    <%= t('idv.forgot_password.link_html',
-          link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1')) %>
+    <%= t(
+          'idv.forgot_password.link_html',
+          link: link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1'),
+        ) %>
 
   </div>
   <%= accordion('review-verified-info', t('idv.messages.review.intro')) do %>
     <%= render 'shared/pii_review', pii: @applicant,
-               phone: PhoneFormatter.format(@applicant[:phone]) %>
+                                    phone: PhoneFormatter.format(@applicant[:phone]) %>
   <% end %>
 
   <%= f.button(

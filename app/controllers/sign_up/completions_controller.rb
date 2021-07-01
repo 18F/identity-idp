@@ -88,7 +88,7 @@ module SignUp
     end
 
     def pii
-      @pii ||= JSON.parse(user_session['decrypted_pii']).symbolize_keys
+      @parsed_pii ||= JSON.parse(user_session['decrypted_pii']).symbolize_keys
     end
 
     def address
@@ -117,7 +117,7 @@ module SignUp
 
     def dob
       pii_dob = pii[:dob]
-      pii_dob ? pii_dob.to_date.to_formatted_s(:long) : ''
+      pii_dob ? DateParser.parse_legacy(pii_dob).to_formatted_s(:long) : ''
     end
 
     def verified_at
