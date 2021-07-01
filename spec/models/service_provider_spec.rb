@@ -21,23 +21,6 @@ describe ServiceProvider do
     end
   end
 
-  describe '#from_issuer' do
-    context 'the record exists' do
-      it 'fetches the record' do
-        expect(service_provider).to be_a ServiceProvider
-        expect(service_provider.persisted?).to eq true
-      end
-    end
-
-    context 'the record does not exist' do
-      let(:service_provider) { ServiceProvider.find_by(issuer: 'no-such-issuer') }
-
-      it 'is nil' do
-        expect(service_provider).to be_nil
-      end
-    end
-  end
-
   describe '#metadata' do
     context 'when the service provider is defined in the YAML' do
       it 'returns a hash with symbolized attributes from YAML' do
