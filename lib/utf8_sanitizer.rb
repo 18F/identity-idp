@@ -9,7 +9,9 @@ class Utf8Sanitizer
   def call(env)
     parser = RackRequestParser.new(Rack::Request.new(env))
 
-    if invalid_strings(parser.values_to_check)
+    if has_invalid_strings(parser.values_to_check) ||
+       params_have_null_byte?(parser.request.params) ||
+       has_null_byte?(parser.request.body)
       return bad_request_and_log(invalid_utf8_event(env, parser.request))
     end
 
@@ -22,7 +24,23 @@ class Utf8Sanitizer
 
   private
 
-  def invalid_strings(values)
+  # @param [Hash] params
+  def params_have_null_byte?(params)
+    params.values.any? { |value| has_null_byte?(value) }
+  end
+
+  def has_null_byte?(param)
+    case param
+    when Hash
+      param.values.any? { |value| has_null_byte?(value) }
+    when Array
+      param.any? { |value| has_null_byte?(value) }
+    when String
+      param.include?("\x00")
+    end
+  end
+
+  def has_invalid_strings(values)
     string_values(values).any? { |string| invalid_string?(string) }
   end
 
