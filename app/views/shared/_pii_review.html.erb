@@ -20,7 +20,7 @@
   </div>
 
   <div class="h4 bold ico-absolute ico-absolute-success">
-    <%= DateParser.parse_legacy(pii[:dob]).to_formatted_s(:long) %>
+    <%= pii[:dob].to_date.to_formatted_s(:long) %>
   </div>
 
   <div class="margin-top-4 h6">
