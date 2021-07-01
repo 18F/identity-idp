@@ -82,6 +82,7 @@ class CalendarService
       find(&:monday?)
   end
 
+  # June 19th
   def juneteenth
     Date.new(year, 6, 19)
   end
