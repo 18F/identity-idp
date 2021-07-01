@@ -388,7 +388,7 @@ describe SamlIdpController do
           error_details: { service_provider: [:unauthorized_service_provider] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
-          service_provider: 'invalid_provider',
+          service_provider: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -422,7 +422,7 @@ describe SamlIdpController do
           },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
-          service_provider: 'invalid_provider',
+          service_provider: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
