@@ -24,7 +24,7 @@ class ServiceProviderRequestProxy
   end
 
   def self.find_by(uuid:)
-    return unless uuid
+    return if uuid.blank?
     obj = REDIS_POOL.with { |client| client.read(key(uuid)) }
     obj ? hash_to_spr(obj, uuid) : nil
   end
