@@ -3,16 +3,16 @@ module AccountResetHealthChecker
 
   # @return [HealthCheckSummary]
   def check
-    rec = find_request_not_serviced_within_26_hours
-    HealthCheckSummary.new(healthy: rec.nil?, result: rec)
+    unserviced_request_exists = request_not_serviced_within_26_hours?
+    HealthCheckSummary.new(healthy: !unserviced_request_exists, result: unserviced_request_exists)
   end
 
   # @api private
-  def find_request_not_serviced_within_26_hours
+  def request_not_serviced_within_26_hours?
     AccountResetRequest.where(
       sql,
       tvalue: Time.zone.now - IdentityConfig.store.account_reset_wait_period_days.days - 2.hours,
-    ).order('requested_at ASC').first
+    ).exists?
   end
 
   def sql
