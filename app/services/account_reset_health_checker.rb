@@ -3,7 +3,7 @@ module AccountResetHealthChecker
 
   # @return [HealthCheckSummary]
   def check
-    unserviced_request_exists = request_not_serviced_within_26_hours?
+    unserviced_request_exists = request_not_serviced_within_wait_period_plus_2_hours?
     HealthCheckSummary.new(healthy: !unserviced_request_exists, result: unserviced_request_exists)
   end
 
