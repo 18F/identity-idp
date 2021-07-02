@@ -1,14 +1,22 @@
 module Proofing
   class Result
     attr_reader :exception
-    attr_accessor :context, :transaction_id
+    attr_accessor :context, :transaction_id, :reference
 
-    def initialize(errors: {}, messages: Set.new, context: {}, exception: nil, transaction_id: nil)
+    def initialize(
+      errors: {},
+      messages: Set.new,
+      context: {},
+      exception: nil,
+      transaction_id: nil,
+      reference: nil
+    )
       @errors = errors
       @messages = messages
       @context = context
       @exception = exception
       @transaction_id = transaction_id
+      @reference = reference
     end
 
     # rubocop:disable Style/OptionalArguments

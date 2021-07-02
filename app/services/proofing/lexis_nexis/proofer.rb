@@ -31,6 +31,7 @@ module Proofing
       def proof_applicant(applicant, result)
         response = send_verification_request(applicant)
         result.transaction_id = response.conversation_id
+        result.reference = response.reference
         return if response.verification_status == 'passed'
 
         response.verification_errors.each do |key, error_message|

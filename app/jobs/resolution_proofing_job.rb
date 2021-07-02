@@ -63,6 +63,7 @@ class ResolutionProofingJob < ApplicationJob
     resolution_success = proofer_result.success?
 
     result[:transaction_id] = proofer_result.transaction_id
+    result[:reference] = proofer_result.reference
 
     exception = proofer_result.exception.inspect if proofer_result.exception
     result[:timed_out] = proofer_result.timed_out?
@@ -79,6 +80,7 @@ class ResolutionProofingJob < ApplicationJob
           success: proofer_result.success?,
           timed_out: proofer_result.timed_out?,
           transaction_id: proofer_result.transaction_id,
+          reference: proofer_result.reference,
         },
       },
     }
@@ -147,9 +149,11 @@ class ResolutionProofingJob < ApplicationJob
         success: lexisnexis_result.success?,
         timed_out: lexisnexis_result.timed_out?,
         transaction_id: lexisnexis_result.transaction_id,
+        reference: lexisnexis_result.reference,
       }
 
       result[:transaction_id] = lexisnexis_result.transaction_id
+      result[:reference] = lexisnexis_result.reference
       result[:timed_out] = lexisnexis_result.timed_out?
       result[:exception] = lexisnexis_result.exception.inspect if lexisnexis_result.exception
     end
