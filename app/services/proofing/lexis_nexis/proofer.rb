@@ -37,6 +37,10 @@ module Proofing
         response.verification_errors.each do |key, error_message|
           result.add_error(key, error_message)
         end
+      rescue Response::TrackedError => error
+        result.exception = error
+        result.transaction_id = error.conversation_id
+        result
       end
 
       private

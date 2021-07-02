@@ -152,7 +152,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         let(:lexisnexis_response) do
           {
             'Status' => {
-              'CoversationId' => lexisnexis_transaction_id,
+              'ConversationId' => lexisnexis_transaction_id,
               'Reference' => lexisnexis_reference,
               'Workflow' => 'foobar.baz',
               'TransactionStatus' => 'error',
@@ -200,12 +200,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   exception: kind_of(String),
                   success: false,
                   timed_out: false,
-                  transaction_id: nil,
+                  transaction_id: lexisnexis_transaction_id,
                   reference: nil,
                 },
               },
             },
-            transaction_id: nil,
+            transaction_id: lexisnexis_transaction_id,
             reference: nil,
           )
         end
