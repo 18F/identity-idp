@@ -40,6 +40,7 @@ module Users
 
     def confirm_need_to_accept_rules_of_use
       return unless current_user.accepted_terms_at
+      return unless current_user.accepted_terms_at > IdentityConfig.store.rules_of_use_updated_at
 
       redirect_to user_two_factor_authentication_url
     end
