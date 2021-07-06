@@ -137,4 +137,15 @@ describe Proofing::Result do
       end
     end
   end
+
+  describe 'reference' do
+    context 'when provided' do
+      it 'is present' do
+        reference = SecureRandom.uuid
+        result = Proofing::Result.new
+        result.reference = reference
+        expect(result.reference).to eq(reference)
+      end
+    end
+  end
 end
