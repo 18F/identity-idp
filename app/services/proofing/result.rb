@@ -1,6 +1,7 @@
 module Proofing
   class Result
-    attr_accessor :context, :exception, :transaction_id, :reference
+    attr_reader :exception
+    attr_accessor :context, :transaction_id, :reference
 
     def initialize(
       errors: {},
