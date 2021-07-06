@@ -40,7 +40,6 @@ module Proofing
       def parse_base_error_message
         return "Invalid status in response body: '#{verification_status}'" if !valid_status?
 
-        error_code = transaction_reason_code
         if verification_status == 'error'
           error_information = body.fetch('Information', {}).to_json
           "Response error with code '#{error_code}': #{error_information}"
@@ -51,16 +50,8 @@ module Proofing
         end
       end
 
-      def transaction_reason_code
+      def error_code
         body.dig('Status', 'TransactionReasonCode', 'Code')
-      end
-
-      def conversation_id
-        body.dig('Status', 'ConversationId')
-      end
-
-      def reference
-        body.dig('Status', 'Reference')
       end
 
       def valid_status?
