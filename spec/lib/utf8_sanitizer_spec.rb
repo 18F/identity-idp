@@ -48,7 +48,7 @@ RSpec.describe Utf8Sanitizer do
       expect(last_response).to be_bad_request
     end
 
-    it 'blocks null bytes in the body' do
+    it 'blocks null bytes inside the body' do
       post '/test', body: "\x00"
       expect(last_response).to be_bad_request
     end
