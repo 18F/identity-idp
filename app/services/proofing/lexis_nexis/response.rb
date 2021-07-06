@@ -89,9 +89,8 @@ module Proofing
 
         error_code = response_body.dig('Status', 'TransactionReasonCode', 'Code')
         error_information = response_body.fetch('Information', {}).to_json
-        tracking_ids = "(LN ConversationId: #{conversation_id}; Reference: #{reference}) "
 
-        message = "#{tracking_ids} Response error with code '#{error_code}': #{error_information}"
+        message = "Response error with code '#{error_code}': #{error_information}"
         raise VerificationTransactionError.new(
           message,
           conversation_id: conversation_id,

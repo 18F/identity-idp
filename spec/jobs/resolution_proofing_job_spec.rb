@@ -177,7 +177,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
           result = document_capture_session.load_proofing_result[:result]
 
           expect(result).to match(
-            exception: kind_of(String),
+            exception: a_string_starting_with(
+              '#<Proofing::LexisNexis::Response::VerificationTransactionError: ' \
+              'Response error with code \'invalid_transaction_initiate\':',
+            ),
             errors: {},
             messages: [],
             success: false,
