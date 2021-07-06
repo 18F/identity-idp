@@ -2,12 +2,13 @@ module Proofing
   module LexisNexis
     class Response
       class TrackedError < StandardError
-        attr_reader :conversation_id
+        attr_reader :conversation_id, :reference
 
-        def initialize(message = '', conversation_id:)
+        def initialize(message = '', conversation_id:, reference:)
           super(message)
 
           @conversation_id = conversation_id
+          @reference = reference
         end
       end
 
@@ -76,7 +77,11 @@ module Proofing
         return if %w[passed failed error].include?(verification_status)
 
         message = "Invalid status in response body: '#{verification_status}'"
-        raise UnexpectedVerificationStatusCodeError.new(message, conversation_id: conversation_id)
+        raise UnexpectedVerificationStatusCodeError.new(
+          message,
+          conversation_id: conversation_id,
+          reference: reference,
+        )
       end
 
       def handle_verification_transaction_error
@@ -87,7 +92,11 @@ module Proofing
         tracking_ids = "(LN ConversationId: #{conversation_id}; Reference: #{reference}) "
 
         message = "#{tracking_ids} Response error with code '#{error_code}': #{error_information}"
-        raise VerificationTransactionError.new(message, conversation_id: conversation_id)
+        raise VerificationTransactionError.new(
+          message,
+          conversation_id: conversation_id,
+          reference: reference,
+        )
       end
     end
   end

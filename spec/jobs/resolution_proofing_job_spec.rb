@@ -201,12 +201,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   success: false,
                   timed_out: false,
                   transaction_id: lexisnexis_transaction_id,
-                  reference: nil,
+                  reference: lexisnexis_reference,
                 },
               },
             },
             transaction_id: lexisnexis_transaction_id,
-            reference: nil,
+            reference: lexisnexis_reference,
           )
         end
       end

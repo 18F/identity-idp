@@ -40,6 +40,7 @@ module Proofing
       rescue Response::TrackedError => error
         result.exception = error
         result.transaction_id = error.conversation_id
+        result.reference = error.reference
         result
       end
 
