@@ -32,7 +32,7 @@ class Utf8Sanitizer
   def contains_null_byte?(param)
     case param
     when Hash
-      param.values.any? { |value| contains_null_byte?(value) }
+      param.any? { |key, value| contains_null_byte?(key) || contains_null_byte?(value) }
     when Array
       param.any? { |value| contains_null_byte?(value) }
     when String

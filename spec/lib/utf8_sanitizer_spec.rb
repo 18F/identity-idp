@@ -43,6 +43,11 @@ RSpec.describe Utf8Sanitizer do
       expect(last_response).to be_bad_request
     end
 
+    it 'blocks null bytes in the keys of params' do
+      post '/test', params: { "key_\x00" => 'value' }
+      expect(last_response).to be_bad_request
+    end
+
     it 'blocks null bytes in the body' do
       post '/test', body: "\x00"
       expect(last_response).to be_bad_request
