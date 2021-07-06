@@ -27,6 +27,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:should_proof_state_id) { true }
 
   let(:lexisnexis_transaction_id) { SecureRandom.uuid }
+  let(:lexisnexis_reference) { SecureRandom.uuid }
   let(:aamva_transaction_id) { SecureRandom.uuid }
   let(:resolution_proofer) do
     instance_double(
@@ -99,6 +100,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           'Status' => {
             'TransactionStatus' => 'passed',
             'ConversationId' => lexisnexis_transaction_id,
+            'Reference' => lexisnexis_reference,
           },
         }
       end
@@ -127,6 +129,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 success: true,
                 timed_out: false,
                 transaction_id: lexisnexis_transaction_id,
+                reference: lexisnexis_reference,
               },
               state_id: {
                 client: Proofing::Aamva::Proofer.vendor_name,
@@ -139,6 +142,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             },
           },
           transaction_id: lexisnexis_transaction_id,
+          reference: lexisnexis_reference,
         )
       end
 
@@ -149,6 +153,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
           {
             'Status' => {
               'CoversationId' => lexisnexis_transaction_id,
+              'Reference' => lexisnexis_reference,
               'Workflow' => 'foobar.baz',
               'TransactionStatus' => 'error',
               'TransactionReasonCode' => {
@@ -196,10 +201,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   success: false,
                   timed_out: false,
                   transaction_id: nil,
+                  reference: nil,
                 },
               },
             },
             transaction_id: nil,
+            reference: nil,
           )
         end
       end
@@ -276,8 +283,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
         it 'logs the correct context' do
           expect(state_id_proofer).to receive(:proof).
             and_return(Proofing::Result.new(transaction_id: aamva_transaction_id))
-          expect(resolution_proofer).to receive(:proof).
-            and_return(Proofing::Result.new(transaction_id: lexisnexis_transaction_id))
+          expect(resolution_proofer).to receive(:proof).and_return(
+            Proofing::Result.new(
+              transaction_id: lexisnexis_transaction_id,
+              reference: lexisnexis_reference,
+            ),
+          )
 
           perform
 
@@ -303,12 +314,14 @@ RSpec.describe ResolutionProofingJob, type: :job do
                   success: true,
                   timed_out: false,
                   transaction_id: lexisnexis_transaction_id,
+                  reference: lexisnexis_reference,
                 },
               },
             },
           )
 
           expect(result.dig(:transaction_id)).to eq(lexisnexis_transaction_id)
+          expect(result.dig(:reference)).to eq(lexisnexis_reference)
         end
       end
 
