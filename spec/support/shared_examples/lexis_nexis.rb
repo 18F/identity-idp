@@ -1,6 +1,7 @@
 shared_examples 'a lexisnexis proofer' do
   let(:verification_status) { 'passed' }
   let(:conversation_id) { 'foo' }
+  let(:reference) { SecureRandom.uuid }
   let(:verification_errors) { {} }
   let(:result) { Proofing::Result.new }
 
@@ -8,6 +9,7 @@ shared_examples 'a lexisnexis proofer' do
     response = instance_double(Proofing::LexisNexis::Response)
     allow(response).to receive(:verification_status).and_return(verification_status)
     allow(response).to receive(:conversation_id).and_return(conversation_id)
+    allow(response).to receive(:reference).and_return(reference)
     allow(response).to receive(:verification_errors).and_return(verification_errors)
 
     allow(verification_request).to receive(:send).and_return(response)
@@ -24,6 +26,7 @@ shared_examples 'a lexisnexis proofer' do
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
         expect(result.transaction_id).to eq(conversation_id)
+        expect(result.reference).to eq(reference)
       end
     end
 
@@ -42,6 +45,7 @@ shared_examples 'a lexisnexis proofer' do
           Discovery: ['another test error'],
         )
         expect(result.transaction_id).to eq(conversation_id)
+        expect(result.reference).to eq(reference)
       end
     end
   end
