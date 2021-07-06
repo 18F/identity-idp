@@ -177,11 +177,14 @@ RSpec.describe ResolutionProofingJob, type: :job do
           result = document_capture_session.load_proofing_result[:result]
 
           expect(result).to match(
-            exception: a_string_starting_with(
-              '#<Proofing::LexisNexis::Response::VerificationTransactionError: ' \
-              'Response error with code \'invalid_transaction_initiate\':',
-            ),
-            errors: {},
+            exception: nil,
+            errors: {
+              base: [
+                a_string_starting_with(
+                  'Response error with code \'invalid_transaction_initiate\':',
+                ),
+              ],
+            },
             messages: [],
             success: false,
             timed_out: false,
@@ -199,8 +202,14 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 },
                 resolution: {
                   client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-                  errors: {},
-                  exception: kind_of(String),
+                  errors: {
+                    base: [
+                      a_string_starting_with(
+                        'Response error with code \'invalid_transaction_initiate\':',
+                      ),
+                    ],
+                  },
+                  exception: nil,
                   success: false,
                   timed_out: false,
                   transaction_id: lexisnexis_transaction_id,
