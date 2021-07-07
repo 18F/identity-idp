@@ -8,8 +8,8 @@ module Proofing
       def initialize(response_body, dob_year_only: false)
         @body = response_body
         @dob_year_only = dob_year_only
-        @base_error_message = parse_base_error_message
         @product_error_messages = parse_product_error_messages
+        @base_error_message = parse_base_error_message
       end
 
       def dob_year_only?
@@ -38,19 +38,29 @@ module Proofing
       attr_reader :base_error_message, :product_error_messages
 
       def parse_base_error_message
-        error_code = body.dig('Status', 'TransactionReasonCode', 'Code')
-        conversation_id = body.dig('Status', 'ConversationId')
-        reference = body.dig('Status', 'Reference')
-        tracking_ids = "(LN ConversationId: #{conversation_id}; Reference: #{reference}) "
+        return "Invalid status in response body: '#{verification_status}'" if !valid_status?
 
-        return "#{tracking_ids} Verification failed without a reason code" if error_code.nil?
+        if verification_status == 'error'
+          error_information = body.fetch('Information', {}).to_json
+          "Response error with code '#{error_code}': #{error_information}"
+        elsif error_code.nil?
+          'Verification failed without a reason code'
+        else
+          "Verification failed with code: '#{error_code}'"
+        end
+      end
 
-        "#{tracking_ids} Verification failed with code: '#{error_code}'"
+      def error_code
+        body.dig('Status', 'TransactionReasonCode', 'Code')
+      end
+
+      def valid_status?
+        %w[passed failed error].include?(verification_status)
       end
 
       def parse_product_error_messages
         products = body['Products']
-        return { products: 'Products missing from response' } if products.nil?
+        return {} if products.nil?
 
         products.each_with_object({}) do |product, error_messages|
           if product['ProductType'] == 'InstantVerify'

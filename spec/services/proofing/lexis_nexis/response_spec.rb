@@ -24,40 +24,6 @@ describe Proofing::LexisNexis::Response do
         )
       end
     end
-
-    context 'with an invalid transaction status' do
-      let(:response_body) do
-        parsed_body = JSON.parse(super())
-        parsed_body['Status']['TransactionStatus'] = 'fake_status'
-        parsed_body.to_json
-      end
-
-      it 'raises an error that includes the transaction status code' do
-        expect { subject }.to raise_error(
-          Proofing::LexisNexis::Response::UnexpectedVerificationStatusCodeError,
-          "Invalid status in response body: 'fake_status'",
-        )
-      end
-    end
-
-    context 'with a transaction error' do
-      let(:response_body) { LexisNexisFixtures.instant_verify_error_response_json }
-
-      it 'raises an error that includes the reason code and information from the response' do
-        error =
-          begin
-            subject
-          rescue Proofing::LexisNexis::Response::VerificationTransactionError => e
-            e
-          end
-
-        expect(error).to be_a(Proofing::LexisNexis::Response::VerificationTransactionError)
-        expect(error.message).to include('5556787618334595970')
-        expect(error.message).to include('1234-abcd')
-        expect(error.message).to include('invalid_transaction_initiate')
-        expect(error.message).to include(JSON.parse(response_body)['Information'].to_json)
-      end
-    end
   end
 
   describe '#verification_errors' do
@@ -84,6 +50,32 @@ describe Proofing::LexisNexis::Response do
     context 'failed' do
       let(:response_body) { LexisNexisFixtures.instant_verify_failure_response_json }
       it { expect(subject.verification_status).to eq('failed') }
+
+      context 'with a transaction error' do
+        let(:response_body) { LexisNexisFixtures.instant_verify_error_response_json }
+
+        it 'returns a hash of errors' do
+          errors = subject.verification_errors
+
+          expect(errors).to match(base: a_string_starting_with('Response error with code'))
+        end
+      end
+
+      context 'with an invalid transaction status' do
+        let(:response_body) do
+          parsed_body = JSON.parse(super())
+          parsed_body['Status']['TransactionStatus'] = 'fake_status'
+          parsed_body.to_json
+        end
+
+        it 'returns a hash of errors' do
+          errors = subject.verification_errors
+
+          expect(errors).to be_a(Hash)
+          expect(errors).to include(:base, :SomeOtherProduct, :InstantVerify)
+          expect(errors[:base]).to eq("Invalid status in response body: 'fake_status'")
+        end
+      end
     end
   end
 end
