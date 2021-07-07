@@ -21,7 +21,7 @@ module SecureHeadersConcern
   def csp_uris
     return ["'self'"] if stored_url_for_user.blank?
     # Returns fully formed CSP array w/"'self'" and redirect_uris
-    SecureHeadersWhitelister.csp_with_sp_redirect_uris(
+    SecureHeadersAllowList.csp_with_sp_redirect_uris(
       authorize_params[:redirect_uri],
       decorated_session.sp_redirect_uris,
     )

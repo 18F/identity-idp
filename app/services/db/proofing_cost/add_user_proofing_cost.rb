@@ -3,7 +3,7 @@ module Db
     class AddUserProofingCost
       class ProofingCostTypeError < StandardError; end
 
-      TOKEN_WHITELIST = %i[
+      TOKEN_ALLOWLIST = %i[
         acuant_front_image
         acuant_back_image
         acuant_result
@@ -18,7 +18,7 @@ module Db
       def self.call(user_id, token)
         return unless user_id
         proofing_cost = ::ProofingCost.find_or_create_by(user_id: user_id)
-        unless TOKEN_WHITELIST.include?(token.to_sym)
+        unless TOKEN_ALLOWLIST.include?(token.to_sym)
           NewRelic::Agent.notice_error(ProofingCostTypeError.new(token.to_s))
           return
         end
