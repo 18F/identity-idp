@@ -5,7 +5,7 @@ feature 'SAML logout' do
 
   let(:user) { create(:user, :signed_up) }
   let(:sp_saml_settings) { sp1_saml_settings }
-  let(:service_provider) { ServiceProvider.from_issuer(sp_saml_settings.issuer) }
+  let(:service_provider) { ServiceProvider.find_by(issuer: sp_saml_settings.issuer) }
 
   context 'with a SAML request' do
     context 'when logging out from the SP' do

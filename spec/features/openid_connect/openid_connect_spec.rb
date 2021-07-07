@@ -587,7 +587,7 @@ describe 'OpenID Connect' do
       fill_in_credentials_and_submit(user.email, user.password)
       uncheck(t('forms.messages.remember_device'))
       sp_request_id = ServiceProviderRequestProxy.last.uuid
-      sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')
+      sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')
 
       expect(current_url).to eq new_user_session_url(request_id: sp_request_id)

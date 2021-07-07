@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe ServiceProvider do
-  let(:service_provider) { ServiceProvider.from_issuer('http://localhost:3000') }
+  let(:service_provider) { ServiceProvider.find_by(issuer: 'http://localhost:3000') }
 
   describe 'associations' do
     subject { service_provider }
@@ -18,23 +18,6 @@ describe ServiceProvider do
   describe '#issuer' do
     it 'returns the constructor value' do
       expect(service_provider.issuer).to eq 'http://localhost:3000'
-    end
-  end
-
-  describe '#from_issuer' do
-    context 'the record exists' do
-      it 'fetches the record' do
-        expect(service_provider).to be_a ServiceProvider
-        expect(service_provider.persisted?).to eq true
-      end
-    end
-
-    context 'the record does not exist' do
-      let(:service_provider) { ServiceProvider.from_issuer('no-such-issuer') }
-
-      it 'returns NullServiceProvider' do
-        expect(service_provider).to be_a NullServiceProvider
-      end
     end
   end
 

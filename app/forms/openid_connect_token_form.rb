@@ -81,11 +81,11 @@ class OpenidConnectTokenForm
   end
 
   def non_pkce_sp
-    !service_provider.pkce
+    !service_provider&.pkce
   end
 
   def pkce_sp
-    pkce = service_provider.pkce
+    pkce = service_provider&.pkce
     pkce.nil? || pkce
   end
 
@@ -111,7 +111,7 @@ class OpenidConnectTokenForm
 
     payload, _headers, err = nil
 
-    matching_cert = service_provider.ssl_certs.find do |ssl_cert|
+    matching_cert = service_provider&.ssl_certs&.find do |ssl_cert|
       err = nil
       payload, _headers = JWT.decode(
         client_assertion, ssl_cert.public_key, true,
@@ -155,7 +155,8 @@ class OpenidConnectTokenForm
   end
 
   def service_provider
-    @service_provider ||= ServiceProvider.from_issuer(client_id)
+    return @service_provider if defined?(@service_provider)
+    @service_provider = ServiceProvider.find_by(issuer: client_id)
   end
 
   def client_id

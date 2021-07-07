@@ -146,7 +146,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def verified_at
-    return if identity.sp.ial.to_i < 2
+    return if identity&.service_provider_record&.ial.to_i < 2
 
     identity.user.active_profile&.verified_at&.to_i
   end

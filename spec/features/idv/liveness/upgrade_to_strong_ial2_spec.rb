@@ -8,7 +8,7 @@ describe 'Strong IAL2' do
 
   context 'with an sp that requires livess and a new account' do
     before do
-      ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata').
+      ServiceProvider.find_by(issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata').
         update!(liveness_checking_required: true)
     end
 
@@ -26,7 +26,7 @@ describe 'Strong IAL2' do
 
   context 'with an sp that requires liveness and a current verified profile with no liveness' do
     before do
-      ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server').update!(
+      ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server').update!(
         liveness_checking_required: true,
       )
     end
