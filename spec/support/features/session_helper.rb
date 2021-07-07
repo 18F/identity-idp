@@ -149,7 +149,7 @@ module Features
 
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
         session[:sp] = { ial2: ial2, issuer: sp.issuer, request_id: '123' }
       end
 
@@ -344,7 +344,7 @@ module Features
     def ial1_sp_session
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
         session[:sp] = {
           ial2: false,
           issuer: sp.issuer,

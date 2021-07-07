@@ -7,7 +7,7 @@ class DecoratedSession
   end
 
   def call
-    if sp.is_a? ServiceProvider
+    if sp
       ServiceProviderSessionDecorator.new(
         sp: sp,
         view_context: view_context,

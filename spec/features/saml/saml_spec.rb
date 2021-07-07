@@ -201,7 +201,7 @@ feature 'saml api' do
         )
       end
 
-      after { ServiceProvider.from_issuer(dashboard_sp_issuer).destroy }
+      after { ServiceProvider.find_by(issuer: dashboard_sp_issuer)&.destroy }
 
       it 'updates the service providers in the database' do
         page.driver.header 'X-LOGIN-DASHBOARD-TOKEN', '123ABC'

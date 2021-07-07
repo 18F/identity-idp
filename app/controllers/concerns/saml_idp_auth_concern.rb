@@ -14,7 +14,7 @@ module SamlIdpAuthConcern
   private
 
   def check_sp_active
-    return if current_service_provider.active?
+    return if current_service_provider&.active?
     redirect_to sp_inactive_error_url
   end
 
@@ -39,7 +39,7 @@ module SamlIdpAuthConcern
   end
 
   def specified_name_id_format
-    if recognized_name_id_format? || current_service_provider.use_legacy_name_id_behavior
+    if recognized_name_id_format? || current_service_provider&.use_legacy_name_id_behavior
       saml_request.name_id_format
     end
   end
@@ -49,7 +49,7 @@ module SamlIdpAuthConcern
   end
 
   def default_name_id_format
-    if current_service_provider.email_nameid_format_allowed
+    if current_service_provider&.email_nameid_format_allowed
       return Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL
     end
     Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
@@ -70,7 +70,7 @@ module SamlIdpAuthConcern
   end
 
   def default_aal_context
-    if current_service_provider.default_aal
+    if current_service_provider&.default_aal
       Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[current_service_provider.default_aal]
     else
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
@@ -78,7 +78,7 @@ module SamlIdpAuthConcern
   end
 
   def default_ial_context
-    if current_service_provider.ial
+    if current_service_provider&.ial
       Saml::Idp::Constants::AUTHN_CONTEXT_IAL_TO_CLASSREF[current_service_provider.ial]
     else
       Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
@@ -149,20 +149,21 @@ module SamlIdpAuthConcern
       reference_id: active_identity.session_uuid,
       encryption: encryption_opts,
       signature: saml_response_signature_options,
-      signed_response_message: current_service_provider.signed_response_message_requested,
+      signed_response_message: current_service_provider&.signed_response_message_requested,
     )
   end
 
   def encryption_opts
     query_params = UriService.params(request.original_url)
-    if query_params[:skip_encryption].present? && current_service_provider.skip_encryption_allowed
+    if query_params[:skip_encryption].present? && current_service_provider&.skip_encryption_allowed
       nil
-    elsif current_service_provider.encrypt_responses?
-      cert = saml_request.service_provider.matching_cert || current_service_provider.ssl_certs.first
+    elsif current_service_provider&.encrypt_responses?
+      cert = saml_request.service_provider.matching_cert ||
+             current_service_provider&.ssl_certs&.first
 
       {
         cert: cert,
-        block_encryption: current_service_provider.block_encryption,
+        block_encryption: current_service_provider&.block_encryption,
         key_transport: 'rsa-oaep-mgf1p',
       }
     end
@@ -177,7 +178,8 @@ module SamlIdpAuthConcern
   end
 
   def current_service_provider
-    @_sp ||= ServiceProvider.from_issuer(current_issuer)
+    return @_sp if defined?(@_sp)
+    @_sp = ServiceProvider.find_by(issuer: current_issuer)
   end
 
   def current_issuer
