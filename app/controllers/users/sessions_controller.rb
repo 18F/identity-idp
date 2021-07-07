@@ -174,7 +174,7 @@ module Users
     def next_url_after_valid_authentication
       if pending_account_reset_request.present?
         account_reset_pending_url
-      elsif current_user.accepted_rules_of_use?
+      elsif current_user.accepted_rules_of_use_still_valid?
         user_two_factor_authentication_url
       else
         rules_of_use_url

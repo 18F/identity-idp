@@ -3,11 +3,12 @@ require 'rails_helper'
 RSpec.describe Users::RulesOfUseController do
   let(:rules_of_use_updated_at) { 1.day.ago }
   let(:accepted_terms_at) { nil }
-  let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
+  let(:user) { create(:user, :signed_up) }
   before do
     user.accepted_terms_at = accepted_terms_at
     user.save!
-    allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).and_return(rules_of_use_updated_at)
+    allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
+      and_return(rules_of_use_updated_at)
   end
   describe 'before_actions' do
     it 'includes appropriate before_actions' do
@@ -52,9 +53,9 @@ RSpec.describe Users::RulesOfUseController do
       end
     end
 
-    context 'with a user who is not up to date with rules of use ' do 
+    context 'with a user who is not up to date with rules of use ' do
       let(:accepted_terms_at) { 2.days.ago }
-      before do 
+      before do
         sign_in_before_2fa(user)
       end
 
@@ -69,12 +70,11 @@ RSpec.describe Users::RulesOfUseController do
 
         action
       end
-
     end
 
-    context 'with a user who is up to date with rules of use' do 
+    context 'with a user who is up to date with rules of use' do
       let(:accepted_terms_at) { 12.hours.ago }
-      before do 
+      before do
         sign_in_before_2fa(user)
       end
 
@@ -153,15 +153,6 @@ RSpec.describe Users::RulesOfUseController do
 
         action
       end
-    end
-
-    context 'with a user who is not up to date with rules of use ' do 
-
-
-    end
-
-    context 'with a user who is up to date with rules of use' do 
-
     end
   end
 end
