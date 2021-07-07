@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe SecureHeadersWhitelister do
+RSpec.describe SecureHeadersAllowList do
   describe '.extract_domain' do
     def extract_domain(url)
-      SecureHeadersWhitelister.extract_domain(url)
+      SecureHeadersAllowList.extract_domain(url)
     end
 
     it 'extracts the domain and port from a url' do
@@ -18,7 +18,7 @@ RSpec.describe SecureHeadersWhitelister do
 
   describe '.csp_with_sp_redirect_uris' do
     def csp_with_sp_redirect_uris(domain, sp_redirect_uris)
-      SecureHeadersWhitelister.csp_with_sp_redirect_uris(domain, sp_redirect_uris)
+      SecureHeadersAllowList.csp_with_sp_redirect_uris(domain, sp_redirect_uris)
     end
 
     it 'generates the proper CSP array from action_url domain and ServiceProvider#redirect_uris' do
