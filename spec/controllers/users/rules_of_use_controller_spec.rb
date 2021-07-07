@@ -3,10 +3,8 @@ require 'rails_helper'
 RSpec.describe Users::RulesOfUseController do
   let(:rules_of_use_updated_at) { 1.day.ago }
   let(:accepted_terms_at) { nil }
-  let(:user) { create(:user, :signed_up) }
+  let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
   before do
-    user.accepted_terms_at = accepted_terms_at
-    user.save!
     allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
       and_return(rules_of_use_updated_at)
   end
