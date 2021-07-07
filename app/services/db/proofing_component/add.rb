@@ -1,7 +1,7 @@
 module Db
   module ProofingComponent
     class Add
-      TOKEN_WHITELIST = %i[
+      TOKEN_ALLOWLIST = %i[
         address_check
         document_check
         document_type
@@ -20,7 +20,7 @@ module Db
       def self.call(user_id, token, value)
         return unless user_id
         proofing_cost = ::ProofingComponent.find_or_create_by(user_id: user_id)
-        return unless TOKEN_WHITELIST.index(token.to_sym)
+        return unless TOKEN_ALLOWLIST.index(token.to_sym)
         proofing_cost[token] = value
         proofing_cost.save
       end
