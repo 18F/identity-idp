@@ -152,7 +152,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         let(:lexisnexis_response) do
           {
             'Status' => {
-              'CoversationId' => lexisnexis_transaction_id,
+              'ConversationId' => lexisnexis_transaction_id,
               'Reference' => lexisnexis_reference,
               'Workflow' => 'foobar.baz',
               'TransactionStatus' => 'error',
@@ -177,8 +177,14 @@ RSpec.describe ResolutionProofingJob, type: :job do
           result = document_capture_session.load_proofing_result[:result]
 
           expect(result).to match(
-            exception: kind_of(String),
-            errors: {},
+            exception: nil,
+            errors: {
+              base: [
+                a_string_starting_with(
+                  'Response error with code \'invalid_transaction_initiate\':',
+                ),
+              ],
+            },
             messages: [],
             success: false,
             timed_out: false,
@@ -196,17 +202,23 @@ RSpec.describe ResolutionProofingJob, type: :job do
                 },
                 resolution: {
                   client: Proofing::LexisNexis::InstantVerify::Proofer.vendor_name,
-                  errors: {},
-                  exception: kind_of(String),
+                  errors: {
+                    base: [
+                      a_string_starting_with(
+                        'Response error with code \'invalid_transaction_initiate\':',
+                      ),
+                    ],
+                  },
+                  exception: nil,
                   success: false,
                   timed_out: false,
-                  transaction_id: nil,
-                  reference: nil,
+                  transaction_id: lexisnexis_transaction_id,
+                  reference: lexisnexis_reference,
                 },
               },
             },
-            transaction_id: nil,
-            reference: nil,
+            transaction_id: lexisnexis_transaction_id,
+            reference: lexisnexis_reference,
           )
         end
       end
