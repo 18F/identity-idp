@@ -229,7 +229,7 @@ jobs:
             make lint_yaml
             yarn run lint
             yarn run typecheck
-            bundle exec rubocop
+            bundle exec rubocop --parallel
             bin/rails zeitwerk:check
             make lint_erb
             make check_asset_strings
