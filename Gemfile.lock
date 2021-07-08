@@ -58,7 +58,7 @@ GIT
 
 GIT
   remote: https://github.com/pauldoomgov/faraday.git
-  revision: 99d6ed848b93770c04ffaad4cb2ad40872c622d9
+  revision: c0d87d83368f601f435ddfb462490183f816fcbb
   branch: main
   specs:
     faraday (1.6.6)
