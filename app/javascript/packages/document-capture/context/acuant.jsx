@@ -85,6 +85,8 @@ const AcuantContext = createContext({
   endpoint: /** @type {string?} */ (null),
 });
 
+AcuantContext.displayName = 'AcuantContext';
+
 /**
  * @param {AcuantContextProviderProps} props Props object.
  */

@@ -59,6 +59,11 @@ describe ServiceProviderRequestProxy do
           to be_an_instance_of NullServiceProviderRequest
       end
 
+      it 'handles empty string' do
+        expect(ServiceProviderRequestProxy.from_uuid('')).
+          to be_an_instance_of NullServiceProviderRequest
+      end
+
       it 'handles hashes' do
         expect(ServiceProviderRequestProxy.from_uuid({})).
           to be_an_instance_of NullServiceProviderRequest

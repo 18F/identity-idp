@@ -39,6 +39,7 @@ class CalendarService
       mlk,
       washington,
       memorial,
+      juneteenth,
       independence,
       labor,
       columbus,
@@ -79,6 +80,11 @@ class CalendarService
     Date.new(year, 6, 1).
       step(Date.new(year, 5, 1), -1).
       find(&:monday?)
+  end
+
+  # June 19th
+  def juneteenth
+    Date.new(year, 6, 19)
   end
 
   # July 4th

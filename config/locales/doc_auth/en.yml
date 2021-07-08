@@ -53,6 +53,9 @@ en:
         visible_photo_check: We couldn’t verify the photo on your ID. Try taking new pictures.
       camera:
         blocked: Your camera is blocked
+        blocked_detail: We don’t have permission to access the camera. Please check your
+          browser or system settings, reload this page, or upload a photo
+          instead.
         failed: Camera failed to start, please try again.
       dpi:
         top_msg: We couldn’t read your ID. Your image size may be too small, or your ID

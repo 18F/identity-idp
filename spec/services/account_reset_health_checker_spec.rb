@@ -8,7 +8,7 @@ RSpec.describe AccountResetHealthChecker do
 
     context 'when there are no requests' do
       it 'returns a healthy check' do
-        expect(summary.result).to eq(nil)
+        expect(summary.result).to eq(false)
         expect(summary.healthy).to eq(true)
       end
     end

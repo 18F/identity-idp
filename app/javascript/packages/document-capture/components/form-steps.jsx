@@ -26,17 +26,25 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
  */
 
 /**
+ * @typedef {(
+ *   field:string,
+ *   options?:Partial<FormStepRegisterFieldOptions>
+ * )=>undefined|import('react').RefCallback<HTMLElement>} RegisterFieldCallback
+ */
+
+/**
+ * @typedef {(error:Error, options?: {field?: string?})=>void} OnErrorCallback
+ */
+
+/**
  * @typedef FormStepComponentProps
  *
  * @prop {(nextValues:Partial<V>)=>void} onChange Update values, merging with existing values.
- * @prop {(field:string, error:Error)=>void} onError Trigger a field error.
+ * @prop {OnErrorCallback} onError Trigger a field error.
  * @prop {Partial<V>} value Current values.
  * @prop {FormStepError<V>[]} errors Current active errors.
- * @prop {(
- *   field:string,
- *   options?:Partial<FormStepRegisterFieldOptions>
- * )=>undefined|import('react').RefCallback<HTMLElement>} registerField Registers field by given
- * name, returning ref assignment function.
+ * @prop {RegisterFieldCallback} registerField Registers field by given name, returning ref
+ * assignment function.
  *
  * @template V
  */
@@ -112,9 +120,11 @@ function FormSteps({
 }) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
+  const firstAlertRef = useRef(/** @type {?HTMLElement} */ (null));
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step', null);
+  const [stepErrors, setStepErrors] = useState(/** @type {Error[]} */ ([]));
   const { t } = useI18n();
   const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
   const didSubmitWithErrors = useRef(false);
@@ -137,6 +147,12 @@ function FormSteps({
       headingRef.current.focus();
     }
   }, []);
+
+  useEffect(() => {
+    if (stepErrors.length && firstAlertRef.current) {
+      firstAlertRef.current.focus();
+    }
+  }, [stepErrors]);
 
   useDidUpdateEffect(onStepChange, [step]);
 
@@ -212,9 +228,15 @@ function FormSteps({
   return (
     <form ref={formRef} onSubmit={toNextStep}>
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
-      {unknownFieldErrors.map(({ field, error }) => (
-        <Alert key={[field, error.message].join()} type="error" className="margin-bottom-4">
-          <FormErrorMessage error={error} />
+      {stepErrors.concat(unknownFieldErrors.map(({ error }) => error)).map((error, i) => (
+        <Alert
+          ref={i === 0 ? firstAlertRef : undefined}
+          isFocusable={i === 0}
+          key={error.message}
+          type="error"
+          className="margin-bottom-4"
+        >
+          <FormErrorMessage error={error} isDetail />
         </Alert>
       ))}
       <PageHeading key="title" ref={headingRef} tabIndex={-1}>
@@ -230,8 +252,12 @@ function FormSteps({
           );
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
         })}
-        onError={ifStillMounted((field, error) => {
-          setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
+        onError={ifStillMounted((error, { field } = {}) => {
+          if (field) {
+            setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
+          } else {
+            setStepErrors([error]);
+          }
         })}
         registerField={(field, options = {}) => {
           if (!fields.current[field]) {

@@ -61,13 +61,20 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
   });
 
   describe('withBackgroundEncryptedUpload', () => {
-    const Component = withBackgroundEncryptedUpload(({ onChange }) => {
+    function OriginalComponent({ onChange, onError, errorOnMount }) {
       useEffect(() => {
         onChange({ foo: 'bar', baz: 'quux' });
       }, []);
 
+      useEffect(() => {
+        if (errorOnMount) {
+          onError(new Error());
+        }
+      }, [errorOnMount]);
+
       return null;
-    });
+    }
+    const Component = withBackgroundEncryptedUpload(OriginalComponent);
 
     describe('encrypt', () => {
       it('resolves to AES-GCM encrypted data from string value', async () => {
@@ -111,6 +118,17 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
       });
     });
 
+    it('passes through original onError', () => {
+      const onError = sinon.spy();
+      render(<Component onChange={() => {}} onError={onError} errorOnMount />);
+
+      expect(onError).to.have.been.calledOnce();
+    });
+
+    it('maintains and decorates the original component display name', () => {
+      expect(Component.displayName).to.equal('WithBackgroundEncryptedUpload(OriginalComponent)');
+    });
+
     describe('upload', () => {
       async function renderWithResponse(response) {
         const addPageAction = sinon.spy();
@@ -132,7 +150,7 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
               backgroundUploadURLs={{ foo: 'about:blank' }}
               backgroundUploadEncryptKey={key}
             >
-              <Component onChange={onChange} onError={onError} />)
+              <Component onChange={onChange} onError={onError} />
             </UploadContextProvider>
           </AnalyticsContext.Provider>,
         );
@@ -227,8 +245,8 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           const patch = onChange.getCall(0).args[0];
           await patch.foo_image_url.catch(() => {});
           expect(onError).to.have.been.calledOnceWith(
-            'foo',
             sinon.match.instanceOf(BackgroundEncryptedUploadError),
+            { field: 'foo' },
           );
           expect(addPageAction).to.have.been.calledWith({
             label: 'IdV: document capture async upload encryption',
@@ -244,8 +262,8 @@ describe('document-capture/higher-order/with-background-encrypted-upload', () =>
           const patch = onChange.getCall(0).args[0];
           await patch.foo_image_url.catch(() => {});
           expect(onError).to.have.been.calledOnceWith(
-            'foo',
             sinon.match.instanceOf(BackgroundEncryptedUploadError),
+            { field: 'foo' },
           );
         });
 

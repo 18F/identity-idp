@@ -8,4 +8,6 @@ import { createContext } from 'react';
 
 const DeviceContext = createContext(/** @type {DeviceContext} */ ({ isMobile: false }));
 
+DeviceContext.displayName = 'DeviceContext';
+
 export default DeviceContext;

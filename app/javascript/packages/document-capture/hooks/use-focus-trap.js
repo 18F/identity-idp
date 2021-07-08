@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { createFocusTrap } from 'focus-trap';
 
 /** @typedef {import('focus-trap').FocusTrap} FocusTrap */
@@ -15,20 +15,22 @@ import { createFocusTrap } from 'focus-trap';
  * @param {React.MutableRefObject<FocusTrap?>} containerRef
  */
 function useFocusTrap(containerRef, options) {
-  const trapRef = useRef(/** @type {FocusTrap?} */ (null));
+  const [trap, setTrap] = useState(/** @type {FocusTrap?} */ (null));
 
   useEffect(() => {
+    let focusTrap;
     if (containerRef.current) {
-      trapRef.current = createFocusTrap(containerRef.current, options);
-      trapRef.current.activate();
+      focusTrap = createFocusTrap(containerRef.current, options);
+      focusTrap.activate();
+      setTrap(focusTrap);
     }
 
     return () => {
-      trapRef.current?.deactivate();
+      focusTrap?.deactivate();
     };
   }, []);
 
-  return trapRef;
+  return trap;
 }
 
 export default useFocusTrap;

@@ -15,7 +15,7 @@ import FileBase64CacheContext from '../context/file-base64-cache';
  */
 function FileImage({ file, alt, className }) {
   const cache = useContext(FileBase64CacheContext);
-  const [, forceRender] = useState();
+  const [, forceRender] = useState(/** @type {number=} */ (undefined));
   const imageData = cache.get(file);
   const ifStillMounted = useIfStillMounted();
 

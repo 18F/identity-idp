@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: 6aad84cb78541d8702ae8e48962dddeff807b5c5
-  tag: v0.9.3
+  revision: 2b1992d83e6a152b2234a5b71b9682d5f89635aa
+  tag: v0.10.1
   specs:
-    identity-doc-auth (0.9.3)
+    identity-doc-auth (0.10.1)
       activesupport
       faraday
       redacted_struct (>= 1.0.0)
@@ -125,7 +125,6 @@ GEM
       device_detector
       geocoder (>= 1.4.5)
       safely_block (>= 0.2.1)
-    american_date (1.1.1)
     android_key_attestation (0.3.0)
     ast (2.4.2)
     autoprefixer-rails (10.2.5.1)
@@ -694,7 +693,6 @@ PLATFORMS
 
 DEPENDENCIES
   ahoy_matey (~> 3.0)
-  american_date
   autoprefixer-rails (~> 10.0)
   aws-sdk-cloudwatchlogs
   aws-sdk-eventbridge
