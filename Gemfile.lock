@@ -685,8 +685,7 @@ GEM
     yard (0.9.26)
     zeitwerk (2.4.2)
     zonebie (0.6.1)
-    zxcvbn-js (4.4.3)
-      execjs
+    zxcvbn (0.1.7)
 
 PLATFORMS
   ruby
@@ -797,7 +796,7 @@ DEPENDENCIES
   xmldsig (~> 0.6)
   xmlenc (~> 0.7, >= 0.7.1)
   zonebie
-  zxcvbn-js
+  zxcvbn (= 0.1.7)
 
 RUBY VERSION
    ruby 2.7.3p183
