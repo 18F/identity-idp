@@ -52,7 +52,7 @@ RSpec.describe 'smoke test: SP initiated sign in' do
   end
 
   def on_consent_screen?
-    page.has_content?("It's been a year since you gave us consent") ||
+    page.has_content?('been a year since you gave us consent') ||
       page.has_content?('You are now signing in for the first time')
   end
 end
