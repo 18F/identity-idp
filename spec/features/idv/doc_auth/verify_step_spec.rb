@@ -183,7 +183,7 @@ feature 'doc auth verify step' do
     end
   end
 
-  context 'when the user lives in an AAMVA unsupported state' do
+  context 'when the user does not live in an AAMVA supported state' do
     it 'does not perform the state ID check' do
       agent = instance_double(Idv::Agent)
       allow(Idv::Agent).to receive(:new).and_return(agent)

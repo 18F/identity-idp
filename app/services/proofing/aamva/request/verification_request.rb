@@ -126,10 +126,6 @@ module Proofing
         end
         # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
-        def uuid
-          SecureRandom.uuid
-        end
-
         def timeout
           (config.verification_request_timeout || 5).to_i
         end

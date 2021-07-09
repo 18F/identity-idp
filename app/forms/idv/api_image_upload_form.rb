@@ -32,7 +32,7 @@ module Idv
         doc_pii_response = validate_pii_from_doc(client_response) if client_response.success?
       end
 
-      return determine_response(
+      determine_response(
         form_response: form_response,
         client_response: client_response,
         doc_pii_response: doc_pii_response,
