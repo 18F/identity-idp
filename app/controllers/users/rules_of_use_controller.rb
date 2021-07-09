@@ -39,7 +39,7 @@ module Users
     end
 
     def confirm_need_to_accept_rules_of_use
-      return unless current_user.accepted_terms_at
+      return unless current_user.accepted_rules_of_use_still_valid?
 
       redirect_to user_two_factor_authentication_url
     end
