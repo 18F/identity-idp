@@ -27,6 +27,26 @@ module Reports
         pluck(:iaa)
     end
 
+    def iaas
+      Agreements::IaaGtc.
+        includes(iaa_orders: { integration_usages: :integration }).
+        flat_map do |gtc|
+          gtc.iaa_orders.flat_map do |iaa_order|
+            key = "#{gtc.gtc_number}-#{format('%04d', iaa_order.order_number)}"
+            issuers = iaa_order.integration_usages.map { |usage| usage.integration.issuer }
+
+            {
+              key: key,
+              issuers: issuers,
+              start_date: gtc.start_date,
+              end_date: gtc.end_date,
+            } if issuers.present?
+          end.compact
+        end
+
+      # GTC number + order number
+    end
+
     # Turns ial1/ial2 rows into ial1/ial2 columns
     def combine_by_iaa_month(raw_results)
       raw_results.group_by { |r| [r['iaa'], r['year_month']] }.
