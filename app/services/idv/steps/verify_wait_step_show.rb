@@ -28,7 +28,10 @@ module Idv
 
       def async_state_done(current_async_state)
         add_proofing_costs(current_async_state.result)
-        form_response = idv_result_to_form_response(current_async_state.result)
+        form_response = idv_result_to_form_response(
+          idv_result: current_async_state.result,
+          state: flow_session[:pii_from_doc][:state],
+        )
         if form_response.success?
           response = check_ssn(flow_session[:pii_from_doc]) if form_response.success?
           form_response = form_response.merge(response)
