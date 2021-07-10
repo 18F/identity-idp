@@ -169,6 +169,8 @@ class IdentityConfig
     config.add(:newrelic_license_key, type: :string)
     config.add(:mailer_domain_name)
     config.add(:max_auth_apps_per_account, type: :integer)
+    config.add(:max_bad_passwords, type: :integer)
+    config.add(:max_bad_passwords_window_in_seconds, type: :integer)
     config.add(:max_emails_per_account, type: :integer)
     config.add(:max_mail_events, type: :integer)
     config.add(:max_mail_events_window_in_days, type: :integer)

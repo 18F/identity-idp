@@ -28,10 +28,15 @@ module Users
     def create
       track_authentication_attempt(auth_params[:email])
 
+      clear_session_bad_password_count_if_window_expired
+      return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
+      @throttle_password_failure = true
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
+    ensure
+      increment_session_bad_password_count if @throttle_password_failure && !current_user
     end
 
     def destroy
@@ -67,6 +72,28 @@ module Users
     end
 
     private
+
+    def clear_session_bad_password_count_if_window_expired
+      locked_at = session[:max_bad_passwords_at]
+      window = IdentityConfig.store.max_bad_passwords_window_in_seconds
+      return if locked_at.nil? || (locked_at + window) > Time.zone.now.to_i
+      [:max_bad_passwords_at, :bad_password_count].each { |x| session.delete(x) }
+    end
+
+    def session_bad_password_count_max_exceeded?
+      session[:bad_password_count].to_i > IdentityConfig.store.max_bad_passwords
+    end
+
+    def increment_session_bad_password_count
+      session[:bad_password_count] = session[:bad_password_count].to_i + 1
+      return unless session_bad_password_count_max_exceeded?
+      session[:max_bad_passwords_at] = Time.zone.now.to_i unless session[:max_bad_passwords_at]
+    end
+
+    def process_locked_out_session
+      flash[:error] = t('errors.sign_in.bad_password_limit')
+      redirect_to root_url(request_id: request_id)
+    end
 
     def redirect_to_signin
       controller_info = 'users/sessions#create'
