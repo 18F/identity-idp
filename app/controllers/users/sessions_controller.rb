@@ -81,7 +81,7 @@ module Users
     end
 
     def session_bad_password_count_max_exceeded?
-      session[:bad_password_count].to_i > IdentityConfig.store.max_bad_passwords
+      session[:bad_password_count].to_i >= IdentityConfig.store.max_bad_passwords
     end
 
     def increment_session_bad_password_count
