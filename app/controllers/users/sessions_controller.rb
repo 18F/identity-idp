@@ -12,6 +12,7 @@ module Users
     before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new]
+    before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
 
     def new
       analytics.track_event(
@@ -28,7 +29,6 @@ module Users
     def create
       track_authentication_attempt(auth_params[:email])
 
-      clear_session_bad_password_count_if_window_expired
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
