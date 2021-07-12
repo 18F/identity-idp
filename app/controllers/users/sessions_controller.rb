@@ -22,7 +22,6 @@ module Users
 
       @request_id = request_id_if_valid
       @ial = sp_session_ial
-      session[:ial2_with_no_sp_campaign] = campaign if sp_session.blank? && params[:ial] == '2'
       super
     end
 
@@ -68,10 +67,6 @@ module Users
     end
 
     private
-
-    def campaign
-      params[:campaign] || 'none'
-    end
 
     def redirect_to_signin
       controller_info = 'users/sessions#create'
