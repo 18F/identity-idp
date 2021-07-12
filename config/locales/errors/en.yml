@@ -104,6 +104,8 @@ en:
       terms: Before you can continue, you must give us permission. Please check the
         box below and then click continue.
     rules_of_use: Please check this box to continue
+    sign_in:
+      bad_password_limit: You have exceeeded the maximum sign in attempts.
     two_factor_auth_setup:
       must_select_option: Select an authentication method.
     verify_personal_key:
