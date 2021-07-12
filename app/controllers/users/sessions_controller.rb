@@ -32,11 +32,11 @@ module Users
       return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
-      @throttle_password_failure = true
+      throttle_password_failure = true
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
     ensure
-      increment_session_bad_password_count if @throttle_password_failure && !current_user
+      increment_session_bad_password_count if throttle_password_failure && !current_user
     end
 
     def destroy
@@ -87,7 +87,7 @@ module Users
     def increment_session_bad_password_count
       session[:bad_password_count] = session[:bad_password_count].to_i + 1
       return unless session_bad_password_count_max_exceeded?
-      session[:max_bad_passwords_at] = Time.zone.now.to_i unless session[:max_bad_passwords_at]
+      session[:max_bad_passwords_at] ||= Time.zone.now.to_i
     end
 
     def process_locked_out_session
