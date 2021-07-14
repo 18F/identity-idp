@@ -1,6 +1,7 @@
 require 'app_artifacts'
 
 AppArtifacts.setup do |store|
+  # When adding or removing certs, make sure to update the 'saml_endpoint_configs' config
   store.add_artifact(:saml_2021_cert, '/%<env>s/saml2021.crt')
   store.add_artifact(:saml_2021_key, '/%<env>s/saml2021.key.enc')
 
