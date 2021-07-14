@@ -23,7 +23,7 @@ module Idv
         data = user_session[:personal_key] + "\r\n"
         send_data data, filename: 'personal_key.txt'
       else
-        Rails.logger.warn("no personal_key in user_session")
+        Rails.logger.warn('no personal_key in user_session')
         head :bad_request
       end
     end
