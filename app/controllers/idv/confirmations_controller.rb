@@ -19,8 +19,13 @@ module Idv
     end
 
     def download
-      data = user_session[:personal_key] + "\r\n"
-      send_data data, filename: 'personal_key.txt'
+      if user_session[:personal_key].present?
+        data = user_session[:personal_key] + "\r\n"
+        send_data data, filename: 'personal_key.txt'
+      else
+        Rails.logger.warn("no personal_key in user_session")
+        head :bad_request
+      end
     end
 
     private
