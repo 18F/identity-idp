@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: 2b1992d83e6a152b2234a5b71b9682d5f89635aa
-  tag: v0.10.1
+  revision: 4b6e5831b8473d62fa0d47429eb0c17a2e6e3c40
+  branch: margolis-warning-not-exception
   specs:
-    identity-doc-auth (0.10.1)
+    identity-doc-auth (0.11.0)
       activesupport
       faraday
       redacted_struct (>= 1.0.0)

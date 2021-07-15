@@ -144,7 +144,8 @@ module DocAuthRouter
     end
   end
 
-  def self.client
+  # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
+  def self.client(warn_notifier: nil)
     case doc_auth_vendor
     when 'acuant'
       DocAuthErrorTranslatorProxy.new(
@@ -157,6 +158,7 @@ module DocAuthRouter
           passlive_url: IdentityConfig.store.acuant_passlive_url,
           timeout: IdentityConfig.store.acuant_timeout,
           exception_notifier: method(:notify_exception),
+          warn_notifier: warn_notifier,
           dpi_threshold: IdentityConfig.store.doc_auth_error_dpi_threshold,
           sharpness_threshold: IdentityConfig.store.doc_auth_error_sharpness_threshold,
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
@@ -175,6 +177,7 @@ module DocAuthRouter
           trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
           timeout: IdentityConfig.store.lexisnexis_timeout,
           exception_notifier: method(:notify_exception),
+          warn_notifier: warn_notifier,
           locale: I18n.locale,
           dpi_threshold: IdentityConfig.store.doc_auth_error_dpi_threshold,
           sharpness_threshold: IdentityConfig.store.doc_auth_error_sharpness_threshold,
@@ -182,7 +185,11 @@ module DocAuthRouter
         ),
       )
     when 'mock'
-      DocAuthErrorTranslatorProxy.new(IdentityDocAuth::Mock::DocAuthMockClient.new)
+      DocAuthErrorTranslatorProxy.new(
+        IdentityDocAuth::Mock::DocAuthMockClient.new(
+          warn_notifier: warn_notifier,
+        ),
+      )
     else
       raise "#{doc_auth_vendor} is not a valid doc auth vendor"
     end
