@@ -57,21 +57,19 @@ describe ApplicationHelper do
     context 'feature enabled' do
       let(:liveness_checking_enabled) { true }
 
-      context 'sp session value set' do
-        context 'sp does not request liveness' do
-          let(:sp_session) { { ial2_strict: false } }
+      context 'sp requests no liveness' do
+        let(:sp_session) { { ial2_strict: false } }
 
-          it 'returns false' do
-            expect(helper.liveness_checking_enabled?).to eq(false)
-          end
+        it 'returns false' do
+          expect(helper.liveness_checking_enabled?).to eq(false)
         end
+      end
 
-        context 'sp requests liveness' do
-          let(:sp_session) { { ial2_strict: true } }
+      context 'sp requests liveness' do
+        let(:sp_session) { { ial2_strict: true } }
 
-          it 'returns true' do
-            expect(helper.liveness_checking_enabled?).to eq(true)
-          end
+        it 'returns true' do
+          expect(helper.liveness_checking_enabled?).to eq(true)
         end
       end
 
