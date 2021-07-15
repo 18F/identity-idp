@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: 4b6e5831b8473d62fa0d47429eb0c17a2e6e3c40
-  branch: margolis-warning-not-exception
+  revision: bfac07129eceb5193f38ef6dde2a864a724940b9
+  tag: v0.11.0
   specs:
     identity-doc-auth (0.11.0)
       activesupport
