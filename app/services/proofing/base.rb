@@ -44,6 +44,7 @@ module Proofing
       execute_proof(proofer, vendor_applicant, result)
       result
     rescue => exception
+      NewRelic::Agent.notice_error(exception)
       Proofing::Result.new(exception: exception)
     end
 
