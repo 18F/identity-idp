@@ -115,6 +115,21 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
+    context 'image data returns unknown errors' do
+      let(:back_image) do
+        Rack::Test::UploadedFile.new(StringIO.new(<<~YAML), original_filename: 'ial2.yml')
+          failed_alerts:
+          - name: Some Made Up Error
+        YAML
+      end
+
+      it 'logs a doc auth warning' do
+        form.submit
+
+        expect(fake_analytics).to have_logged_event(Analytics::DOC_AUTH_WARNING, {})
+      end
+    end
+
     context 'invalid metadata shape' do
       let(:back_image_metadata) { '{' }
 

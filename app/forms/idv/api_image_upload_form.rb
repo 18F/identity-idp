@@ -155,7 +155,9 @@ module Idv
     end
 
     def doc_auth_client
-      @doc_auth_client ||= DocAuthRouter.client
+      @doc_auth_client ||= DocAuthRouter.client(
+        warn_notifier: proc { |attrs| track_event(Analytics::DOC_AUTH_WARNING, attrs) },
+      )
     end
 
     def as_readable(image_key)
