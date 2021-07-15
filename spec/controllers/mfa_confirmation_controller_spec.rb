@@ -47,6 +47,19 @@ describe MfaConfirmationController do
         expect(flash[:error]).to eq t('errors.confirm_password_incorrect')
         expect(session[:password_attempts]).to eq 2
       end
+
+      context 'session data is missing' do
+        before do
+          session.delete(:password_attempts)
+        end
+
+        it 'redirects and increments the password count' do
+          post :create, params: { user: { password: 'wrong' } }
+
+          expect(response).to redirect_to(user_password_confirm_path)
+          expect(session[:password_attempts]).to eq 1
+        end
+      end
     end
 
     context 'password is correct' do
