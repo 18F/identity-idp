@@ -271,6 +271,8 @@ class IdentityConfig
     config.add(:voip_block, type: :boolean)
     config.add(:voip_check, type: :boolean)
 
+    config.add(:github_access_token, type: :string)
+
     @store = RedactedStruct.new('IdentityConfig', *config.written_env.keys, keyword_init: true).
       new(**config.written_env)
   end

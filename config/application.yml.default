@@ -194,6 +194,8 @@ voip_check: 'true'
 voip_block: 'true'
 voip_allowed_phones: '[]'
 
+github_access_token: ''
+
 development:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
