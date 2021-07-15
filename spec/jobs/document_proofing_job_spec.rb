@@ -150,7 +150,7 @@ RSpec.describe DocumentProofingJob, type: :job do
       let(:doc_auth_client) { instance_double(IdentityDocAuth::Acuant::AcuantClient) }
 
       before do
-        allow(instance).to receive(:doc_auth_client).and_return(doc_auth_client)
+        allow(instance).to receive(:build_doc_auth_client).and_return(doc_auth_client)
 
         expect(doc_auth_client).to receive(:post_images).
           and_return(IdentityDocAuth::Response.new(success: false, exception: RuntimeError.new))
