@@ -27,10 +27,7 @@ RSpec.describe Proofing::LexisNexis::VerificationErrorParser do
     subject(:errors) { error_parser.parsed_errors }
 
     it 'should return an array of errors from the response' do
-      expect(errors[:base]).to include('total.scoring.model.verification.fail')
-      expect(errors[:base]).to include('31000123456789')
-      expect(errors[:base]).to include('1234-abcd')
-
+      expect(errors[:base]).to start_with('Verification failed with code:')
       expect(errors[:Discovery]).to eq(nil) # This should be absent since it passed
       expect(errors[:SomeOtherProduct]).to eq(response_body['Products'][1])
       expect(errors[:InstantVerify]).to eq(response_body['Products'][2])

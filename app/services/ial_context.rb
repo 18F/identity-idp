@@ -12,7 +12,7 @@ class IalContext
   end
 
   def ial2_service_provider?
-    service_provider.ial.to_i >= ::Idp::Constants::IAL2
+    service_provider&.ial.to_i >= ::Idp::Constants::IAL2
   end
 
   def default_to_ial2?

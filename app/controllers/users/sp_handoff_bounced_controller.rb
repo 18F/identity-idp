@@ -11,9 +11,9 @@ module Users
     def update_sp_info
       issuer = sp_session[:issuer]
       return if issuer.blank?
-      service_provider = ServiceProvider.from_issuer(issuer)
-      @sp_name = service_provider.friendly_name
-      @sp_link = service_provider.return_to_sp_url
+      service_provider = ServiceProvider.find_by(issuer: issuer)
+      @sp_name = service_provider&.friendly_name || 'Null ServiceProvider'
+      @sp_link = service_provider&.return_to_sp_url
     end
   end
 end

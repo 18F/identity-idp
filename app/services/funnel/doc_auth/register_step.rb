@@ -1,7 +1,7 @@
 module Funnel
   module DocAuth
     class RegisterStep
-      TOKEN_WHITELIST = %i[
+      TOKEN_ALLOWLIST = %i[
         agreement
         welcome
         upload
@@ -39,7 +39,7 @@ module Funnel
       end
 
       def call(token, step_type, success)
-        return unless user_id && TOKEN_WHITELIST.index(token.to_sym)
+        return unless user_id && TOKEN_ALLOWLIST.index(token.to_sym)
         doc_auth_log = find_or_create_doc_auth_log(user_id, token)
         return unless doc_auth_log
         klass = STEP_TYPE_TO_CLASS[step_type]

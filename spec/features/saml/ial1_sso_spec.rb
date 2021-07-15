@@ -191,7 +191,7 @@ feature 'IAL1 Single Sign On' do
       visit authn_request
       fill_in_credentials_and_submit(user.email, user.password)
       sp_request_id = ServiceProviderRequestProxy.last.uuid
-      sp = ServiceProvider.from_issuer('http://localhost:3000')
+      sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
       click_link t('links.cancel')
 
       expect(current_url).to eq new_user_session_url(request_id: sp_request_id)

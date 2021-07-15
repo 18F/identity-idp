@@ -15,6 +15,7 @@ class SamlRequestPresenter
     zipcode: :address,
   }.freeze
 
+  # @param [ServiceProvider,nil] service_provider
   def initialize(request:, service_provider:)
     @request = request
     @service_provider = service_provider
@@ -48,7 +49,7 @@ class SamlRequestPresenter
 
   def bundle
     @_bundle ||= (
-      authn_request_bundle || service_provider.attribute_bundle || []
+      authn_request_bundle || service_provider&.attribute_bundle || []
     ).map(&:to_sym)
   end
 

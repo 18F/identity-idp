@@ -65,7 +65,8 @@ class OpenidConnectAuthorizeForm
   end
 
   def service_provider
-    @_service_provider ||= ServiceProvider.from_issuer(client_id)
+    return @service_provider if defined?(@service_provider)
+    @service_provider = ServiceProvider.find_by(issuer: client_id)
   end
 
   def link_identity_to_service_provider(current_user, rails_session_id)
@@ -127,10 +128,10 @@ class OpenidConnectAuthorizeForm
     end
   end
 
-  # This check relies on the fact that problematic SPs are returned as NullServiceProvider objects.
-  # It should be disentangled and SP errors should be validated explicitly.
+  # This checks that the SP matches something in the database
+  # OpenidConnect::AuthorizationController#check_sp_active checks that it's currently active
   def validate_client_id
-    return if service_provider.active? || !service_provider.is_a?(NullServiceProvider)
+    return if service_provider
     errors.add(:client_id, t('openid_connect.authorization.errors.bad_client_id'))
   end
 
@@ -146,7 +147,7 @@ class OpenidConnectAuthorizeForm
 
   def validate_prompt
     return if prompt == 'select_account'
-    return if prompt == 'login' && service_provider.allow_prompt_login
+    return if prompt == 'login' && service_provider&.allow_prompt_login
     errors.add(:prompt, t('openid_connect.authorization.errors.prompt_invalid'))
   end
 

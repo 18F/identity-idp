@@ -32,7 +32,7 @@ describe ServiceProviderController do
       end
 
       after do
-        ServiceProvider.from_issuer(dashboard_sp_issuer).destroy
+        ServiceProvider.find_by(issuer: dashboard_sp_issuer)&.destroy
       end
 
       it 'returns 200' do
@@ -44,7 +44,7 @@ describe ServiceProviderController do
       it 'updates the matching ServiceProvider in the DB' do
         post :update
 
-        sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
+        sp = ServiceProvider.find_by(issuer: dashboard_sp_issuer)
 
         expect(sp.metadata[:agency]).to eq dashboard_service_providers.first[:agency]
         expect(sp.ssl_certs.first).to be_a OpenSSL::X509::Certificate

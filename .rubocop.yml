@@ -365,6 +365,9 @@ Lint/EmptyEnsure:
 Lint/EmptyExpression:
   Enabled: true
 
+Lint/EmptyInPattern:
+  Enabled: true
+
 Lint/EmptyInterpolation:
   Enabled: true
 
@@ -892,6 +895,9 @@ Style/IfWithSemicolon:
 Style/InfiniteLoop:
   Enabled: true
 
+Style/InPatternThen:
+  Enabled: true
+
 Style/KeywordParametersOrder:
   Enabled: true
 
@@ -921,6 +927,9 @@ Style/MultilineIfModifier:
   Enabled: true
 
 Style/MultilineIfThen:
+  Enabled: true
+
+Style/MultilineInPatternThen:
   Enabled: true
 
 Style/MultilineMemoization:

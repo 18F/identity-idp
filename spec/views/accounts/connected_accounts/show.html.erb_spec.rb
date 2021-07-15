@@ -21,7 +21,7 @@ describe 'accounts/connected_accounts/show.html.erb' do
     expect(rendered).to have_content t('headings.account.connected_accounts')
   end
 
-  context 'with a connected app that is a NullServiceProvider' do
+  context 'with a connected app that is an invalid service provider' do
     before do
       user.identities << create(:service_provider_identity, :active, service_provider: 'aaaaa')
     end

@@ -198,7 +198,7 @@ describe SamlIdpController do
       let(:asserter) do
         AttributeAsserter.new(
           user: user,
-          service_provider: ServiceProvider.from_issuer(sp1_ial2_saml_settings.issuer),
+          service_provider: ServiceProvider.find_by(issuer: sp1_ial2_saml_settings.issuer),
           authn_request: this_authn_request,
           name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           decrypted_pii: pii,
@@ -388,7 +388,7 @@ describe SamlIdpController do
           error_details: { service_provider: [:unauthorized_service_provider] },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: request_authn_contexts,
-          service_provider: 'invalid_provider',
+          service_provider: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -422,7 +422,7 @@ describe SamlIdpController do
           },
           nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           authn_context: ['http://idmanagement.gov/ns/assurance/loa/5'],
-          service_provider: 'invalid_provider',
+          service_provider: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -1256,7 +1256,7 @@ describe SamlIdpController do
 
     def stub_requested_attributes
       request_parser = instance_double(SamlRequestPresenter)
-      service_provider = ServiceProvider.from_issuer('http://localhost:3000')
+      service_provider = ServiceProvider.find_by(issuer: 'http://localhost:3000')
       service_provider.ial = 2
       service_provider.save
       expect(SamlRequestPresenter).to receive(:new).

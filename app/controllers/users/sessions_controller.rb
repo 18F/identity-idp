@@ -12,6 +12,7 @@ module Users
     before_action :store_sp_metadata_in_session, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
     before_action :apply_secure_headers_override, only: [:new]
+    before_action :clear_session_bad_password_count_if_window_expired, only: [:create]
 
     def new
       analytics.track_event(
@@ -22,17 +23,20 @@ module Users
 
       @request_id = request_id_if_valid
       @ial = sp_session_ial
-      session[:ial2_with_no_sp_campaign] = campaign if sp_session.blank? && params[:ial] == '2'
       super
     end
 
     def create
       track_authentication_attempt(auth_params[:email])
 
+      return process_locked_out_session if session_bad_password_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
+      throttle_password_failure = true
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
+    ensure
+      increment_session_bad_password_count if throttle_password_failure && !current_user
     end
 
     def destroy
@@ -69,8 +73,26 @@ module Users
 
     private
 
-    def campaign
-      params[:campaign] || 'none'
+    def clear_session_bad_password_count_if_window_expired
+      locked_at = session[:max_bad_passwords_at]
+      window = IdentityConfig.store.max_bad_passwords_window_in_seconds
+      return if locked_at.nil? || (locked_at + window) > Time.zone.now.to_i
+      [:max_bad_passwords_at, :bad_password_count].each { |x| session.delete(x) }
+    end
+
+    def session_bad_password_count_max_exceeded?
+      session[:bad_password_count].to_i >= IdentityConfig.store.max_bad_passwords
+    end
+
+    def increment_session_bad_password_count
+      session[:bad_password_count] = session[:bad_password_count].to_i + 1
+      return unless session_bad_password_count_max_exceeded?
+      session[:max_bad_passwords_at] ||= Time.zone.now.to_i
+    end
+
+    def process_locked_out_session
+      flash[:error] = t('errors.sign_in.bad_password_limit')
+      redirect_to root_url(request_id: request_id)
     end
 
     def redirect_to_signin
@@ -174,7 +196,7 @@ module Users
     def next_url_after_valid_authentication
       if pending_account_reset_request.present?
         account_reset_pending_url
-      elsif current_user.accepted_rules_of_use?
+      elsif current_user.accepted_rules_of_use_still_valid?
         user_two_factor_authentication_url
       else
         rules_of_use_url

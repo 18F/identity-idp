@@ -80,7 +80,7 @@ module Idv
     end
 
     def uuid_prefix
-      ServiceProvider.from_issuer(idv_session.issuer).app_id
+      ServiceProvider.find_by(issuer: idv_session.issuer)&.app_id
     end
 
     def normalized_phone

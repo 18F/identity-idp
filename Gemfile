@@ -75,7 +75,10 @@ gem 'webauthn', '~> 2.1'
 gem 'webpacker', '~> 5.1'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
-gem 'zxcvbn-js'
+
+# This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
+# It should not be updated without verifying that the behavior still matches JS version 4.4.2.
+gem 'zxcvbn', '0.1.7'
 
 group :development do
   gem 'better_errors', '>= 2.5.1'
@@ -104,7 +107,7 @@ group :development, :test do
   gem 'psych'
   gem 'puma'
   gem 'rspec-rails', '~> 4.0'
-  gem 'rubocop', '~> 1.14.0', require: false
+  gem 'rubocop', '~> 1.18.2', require: false
   gem 'rubocop-performance', '~> 1.11.2', require: false
   gem 'rubocop-rails', '>= 2.5.2', require: false
 end

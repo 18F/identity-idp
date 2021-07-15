@@ -118,7 +118,7 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
-    addressable (2.7.0)
+    addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     ahoy_matey (3.1.0)
       activesupport (>= 5)
@@ -538,13 +538,13 @@ GEM
     rspec-retry (0.6.2)
       rspec-core (> 3.3)
     rspec-support (3.10.2)
-    rubocop (1.14.0)
+    rubocop (1.18.2)
       parallel (~> 1.10)
       parser (>= 3.0.0.0)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml
-      rubocop-ast (>= 1.5.0, < 2.0)
+      rubocop-ast (>= 1.7.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 3.0)
     rubocop-ast (1.7.0)
@@ -685,8 +685,7 @@ GEM
     yard (0.9.26)
     zeitwerk (2.4.2)
     zonebie (0.6.1)
-    zxcvbn-js (4.4.3)
-      execjs
+    zxcvbn (0.1.7)
 
 PLATFORMS
   ruby
@@ -770,7 +769,7 @@ DEPENDENCIES
   rqrcode
   rspec-rails (~> 4.0)
   rspec-retry
-  rubocop (~> 1.14.0)
+  rubocop (~> 1.18.2)
   rubocop-performance (~> 1.11.2)
   rubocop-rails (>= 2.5.2)
   ruby-progressbar
@@ -797,7 +796,7 @@ DEPENDENCIES
   xmldsig (~> 0.6)
   xmlenc (~> 0.7, >= 0.7.1)
   zonebie
-  zxcvbn-js
+  zxcvbn (= 0.1.7)
 
 RUBY VERSION
    ruby 2.7.3p183

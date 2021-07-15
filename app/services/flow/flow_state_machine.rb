@@ -54,11 +54,6 @@ module Flow
         analytics.track_event(old_analytics_visited, analytics_properties)
       end
       Funnel::DocAuth::RegisterStep.new(user_id, issuer).call(current_step, :view, true)
-      register_campaign
-    end
-
-    def register_campaign
-      Funnel::DocAuth::RegisterCampaign.call(user_id, session[:ial2_with_no_sp_campaign])
     end
 
     def user_id

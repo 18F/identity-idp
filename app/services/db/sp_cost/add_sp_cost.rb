@@ -3,7 +3,7 @@ module Db
     class AddSpCost
       class SpCostTypeError < StandardError; end
 
-      TOKEN_WHITELIST = %i[
+      TOKEN_ALLOWLIST = %i[
         aamva
         acuant_front_image
         acuant_back_image
@@ -22,16 +22,15 @@ module Db
 
       def self.call(issuer, ial, token, transaction_id: nil, user_id: nil)
         return if token.blank?
-        unless TOKEN_WHITELIST.include?(token.to_sym)
+        unless TOKEN_ALLOWLIST.include?(token.to_sym)
           NewRelic::Agent.notice_error(SpCostTypeError.new(token.to_s))
           return
         end
         agency_id = (issuer.present? && ServiceProvider.find_by(issuer: issuer)&.agency_id) || 0
         current_user = User.find_by(id: user_id)
-        service_provider = ServiceProvider.from_issuer(issuer)
         ial_context = IalContext.new(
           ial: ial,
-          service_provider: service_provider,
+          service_provider: ServiceProvider.find_by(issuer: issuer),
           user: current_user,
         )
         ::SpCost.create(
