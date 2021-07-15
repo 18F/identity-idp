@@ -215,6 +215,24 @@ feature 'doc capture document capture step' do
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
     end
 
+    it 'logs a warning event when there are unknown errors in the response' do
+      Tempfile.create(['ia2_mock', '.yml']) do |yml_file|
+        yml_file.rewind
+        yml_file.puts <<~YAML
+          failed_alerts:
+          - name: Some Made Up Error
+        YAML
+        yml_file.close
+
+        attach_file 'doc_auth_front_image', yml_file.path
+        attach_file 'doc_auth_back_image', yml_file.path
+        attach_file 'doc_auth_selfie_image', yml_file.path
+        click_idv_continue
+      end
+
+      expect(fake_analytics).to have_logged_event(Analytics::DOC_AUTH_WARNING, {})
+    end
+
     it 'proceeds to the next page with valid info and logs analytics info' do
       attach_and_submit_images
 

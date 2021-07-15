@@ -35,6 +35,10 @@ class DocumentProofingJob < ApplicationJob
       )
     end
 
+    analytics = Analytics.new(user: user, request: nil, sp: dcs.issuer)
+
+    doc_auth_client = build_doc_auth_client(analytics)
+
     proofer_result = timer.time('proof_documents') do
       with_retries(**faraday_retry_options) do
         doc_auth_client.post_images(
@@ -50,8 +54,6 @@ class DocumentProofingJob < ApplicationJob
       result: proofer_result.to_h, # pii_from_doc is excluded from to_h to stop accidental logging
       pii: proofer_result.pii_from_doc,
     )
-
-    analytics = Analytics.new(user: user, request: nil, sp: dcs.issuer)
 
     remaining_attempts = Throttler::RemainingCount.call(
       user.id,
@@ -79,8 +81,10 @@ class DocumentProofingJob < ApplicationJob
 
   private
 
-  def doc_auth_client
-    @doc_auth_client ||= DocAuthRouter.client
+  def build_doc_auth_client(analytics)
+    DocAuthRouter.client(
+      warn_notifier: proc { |attrs| analytics.track_event(Analytics::DOC_AUTH_WARNING, attrs) },
+    )
   end
 
   def encryption_helper
