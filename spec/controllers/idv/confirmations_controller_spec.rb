@@ -221,6 +221,7 @@ describe Idv::ConfirmationsController do
   describe '#download' do
     before do
       stub_idv_session
+      stub_analytics
     end
 
     it 'allows download of code' do
@@ -232,14 +233,14 @@ describe Idv::ConfirmationsController do
 
       expect(response.body).to eq(code + "\r\n")
       expect(response.header['Content-Type']).to eq('text/plain')
+      expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: true)
     end
 
     it 'is a bad request when there is no personal_key in the session' do
-      expect(Rails.logger).to receive(:warn)
-
       get :download
 
       expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: false)
     end
   end
 end
