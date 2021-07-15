@@ -36,4 +36,78 @@ describe ApplicationHelper do
       end
     end
   end
+
+  describe '#liveness_checking_enabled?' do
+    let(:liveness_checking_enabled) { false }
+    let(:sp_session) { {} }
+    let(:current_user) { nil }
+    before do
+      allow(FeatureManagement).to receive(:liveness_checking_enabled?).
+        and_return(liveness_checking_enabled)
+      allow(helper).to receive(:sp_session).and_return(sp_session)
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    context 'feature disabled' do
+      it 'returns false' do
+        expect(helper.liveness_checking_enabled?).to eq(false)
+      end
+    end
+
+    context 'feature enabled' do
+      let(:liveness_checking_enabled) { true }
+
+      context 'sp session value set' do
+        context 'sp does not request liveness' do
+          let(:sp_session) { { ial2_strict: false } }
+
+          it 'returns false' do
+            expect(helper.liveness_checking_enabled?).to eq(false)
+          end
+        end
+
+        context 'sp requests liveness' do
+          let(:sp_session) { { ial2_strict: true } }
+
+          it 'returns true' do
+            expect(helper.liveness_checking_enabled?).to eq(true)
+          end
+        end
+      end
+
+      context 'no current user' do
+        it 'returns false' do
+          expect(helper.liveness_checking_enabled?).to eq(false)
+        end
+      end
+
+      context 'current user has no profiles with liveness' do
+        let(:current_user) { create(:user) }
+
+        it 'returns false' do
+          expect(helper.liveness_checking_enabled?).to eq(false)
+        end
+      end
+
+      context 'current user has profile with liveness' do
+        let(:current_user) do
+          create(
+            :user,
+            profiles: [
+              create(
+                :profile,
+                :verified,
+                deactivation_reason: :password_reset,
+                proofing_components: { liveness_check: true }.to_json,
+              ),
+            ],
+          )
+        end
+
+        it 'returns true' do
+          expect(helper.liveness_checking_enabled?).to eq(true)
+        end
+      end
+    end
+  end
 end

@@ -31,8 +31,9 @@ module ApplicationHelper
   end
 
   def liveness_checking_enabled?
-    FeatureManagement.liveness_checking_enabled? &&
-      (sp_session[:issuer].blank? || sp_session[:ial2_strict])
+    return false if !FeatureManagement.liveness_checking_enabled?
+    return sp_session[:ial2_strict] if sp_session.key?(:ial2_strict)
+    !!current_user && current_user.profiles.verified.any?(&:includes_liveness_check?)
   end
 
   def cancel_link_text
