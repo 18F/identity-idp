@@ -209,6 +209,12 @@ describe Proofing::Base do
         expect(subject.messages).to be_empty
         expect(subject.exception).not_to be_nil
       end
+
+      it 'notifies NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error)
+
+        expect(subject.exception?).to eq(true)
+      end
     end
 
     context 'when the logic calls an instance method' do
