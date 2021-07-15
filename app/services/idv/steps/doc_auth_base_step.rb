@@ -114,7 +114,7 @@ module Idv
 
       def liveness_checking_enabled?
         return false if !FeatureManagement.liveness_checking_enabled?
-        return sp_session[:ial2_strict] if sp_session.key?(:ial2_srict)
+        return sp_session[:ial2_strict] if sp_session.key?(:ial2_strict)
         current_user.profiles.verified.any?(&:includes_liveness_check?)
       end
 
