@@ -79,8 +79,27 @@ describe ApplicationHelper do
         end
       end
 
-      context 'current user has no profiles with liveness' do
+      context 'current user has no profiles' do
         let(:current_user) { create(:user) }
+
+        it 'returns false' do
+          expect(helper.liveness_checking_enabled?).to eq(false)
+        end
+      end
+
+      context 'current user has no profiles with liveness' do
+        let(:current_user) do
+          create(
+            :user,
+            profiles: [
+              create(
+                :profile,
+                :verified,
+                deactivation_reason: :password_reset,
+              ),
+            ],
+          )
+        end
 
         it 'returns false' do
           expect(helper.liveness_checking_enabled?).to eq(false)
