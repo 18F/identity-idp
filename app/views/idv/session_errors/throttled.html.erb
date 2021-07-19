@@ -1,6 +1,6 @@
 <%= render(
       'idv/shared/error',
-      heading: FeatureManagement.liveness_checking_enabled? && sp_session[:ial2_strict].presence ?
+      heading: liveness_checking_enabled? ?
         t('errors.doc_auth.throttled_heading_liveness') :
         t('errors.doc_auth.throttled_heading'),
       options: [
