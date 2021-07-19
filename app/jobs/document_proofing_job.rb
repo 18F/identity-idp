@@ -3,8 +3,14 @@ class DocumentProofingJob < ApplicationJob
 
   queue_as :default
 
-  def perform(result_id:, encrypted_arguments:, trace_id:,
-              liveness_checking_enabled:, analytics_data:)
+  def perform(
+    result_id:,
+    encrypted_arguments:,
+    trace_id:,
+    liveness_checking_enabled:,
+    image_metadata:,
+    analytics_data:
+  )
     dcs = DocumentCaptureSession.find_by(result_id: result_id)
     user = dcs.user
 
@@ -45,6 +51,7 @@ class DocumentProofingJob < ApplicationJob
           front_image: front_image,
           back_image: back_image,
           selfie_image: selfie_image || '',
+          cropping_mode: cropping_mode(image_metadata),
           liveness_checking_enabled: liveness_checking_enabled,
         )
       end
@@ -66,6 +73,7 @@ class DocumentProofingJob < ApplicationJob
         state: proofer_result.pii_from_doc[:state],
         async: true,
         remaining_attempts: remaining_attempts,
+        client_image_metrics: image_metadata,
       ).merge(analytics_data),
     )
   ensure
@@ -89,6 +97,19 @@ class DocumentProofingJob < ApplicationJob
 
   def encryption_helper
     @encryption_helper ||= JobHelpers::EncryptionHelper.new
+  end
+
+  def cropping_mode(image_metadata)
+    if acuant_sdk_capture?(image_metadata)
+      IdentityDocAuth::CroppingModes::NONE
+    else
+      IdentityDocAuth::CroppingModes::ALWAYS
+    end
+  end
+
+  def acuant_sdk_capture?(image_metadata)
+    image_metadata.dig(:front, :source) == 'acuant' &&
+      image_metadata.dig(:back, :source) == 'acuant'
   end
 
   def s3_helper
