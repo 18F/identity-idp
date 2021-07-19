@@ -195,4 +195,87 @@ describe 'partners rake tasks' do
       end
     end
   end
+
+  describe 'partners:export_user_ids_to_agency_uuids' do
+    let(:task) { 'partners:export_user_ids_to_agency_uuids' }
+    let!(:prev_issuer) { ENV['ISSUER'] }
+    let!(:prev_output) { ENV['OUTPUT'] }
+
+    around do |ex|
+      ex.run
+    rescue SystemExit
+    end
+
+    after do
+      ENV['ISSUER'] = prev_issuer
+      ENV['OUTPUT'] = prev_output
+      Rake.application[task].reenable
+    end
+
+    context 'with missing ISSUER' do
+      before do
+        ENV.delete('ISSUER')
+        ENV['OUTPUT'] = 'tmp/user_id_to_uuid_report.csv'
+      end
+
+      it 'displays an error message' do
+        expect { Rake::Task[task].invoke }.to \
+          output("You must define the environment variables ISSUER and OUTPUT\n").
+          to_stdout
+      end
+
+      it 'exits' do
+        allow($stdout).to receive(:puts) # suppress output
+        expect { Rake::Task[task].invoke }.to raise_error(SystemExit)
+      end
+    end
+
+    context 'with missing OUTPUT' do
+      before do
+        ENV['ISSUER'] = 'this_is_an_issuer'
+        ENV.delete('OUTPUT')
+      end
+
+      it 'displays an error message' do
+        expect { Rake::Task[task].invoke }.to \
+          output("You must define the environment variables ISSUER and OUTPUT\n").
+          to_stdout
+      end
+
+      it 'exits' do
+        allow($stdout).to receive(:puts) # suppress output
+        expect { Rake::Task[task].invoke }.to raise_error(SystemExit)
+      end
+    end
+
+    context 'with all ENV variables' do
+      before do
+        ENV['ISSUER'] = 'this_is_an_issuer'
+        ENV['OUTPUT'] = 'tmp/user_id_to_uuid_report.csv'
+
+        # create data to pass SP validations
+        create(:service_provider, issuer: 'this_is_an_issuer')
+      end
+
+      it 'works with valid input' do
+        expect { Rake::Task[task].invoke }.not_to raise_error(SystemExit)
+
+        # clean up
+        File.delete(ENV['OUTPUT'])
+      end
+
+      it 'displays a helpful error message with errors' do
+        allow(UserIdToAgencyUuidReporter).to receive(:run).and_raise(ArgumentError.new('foo'))
+
+        expect { Rake::Task[task].invoke }.to output("ERROR: foo\n").to_stdout
+      end
+
+      it 'exits with errors' do
+        allow($stdout).to receive(:puts) # suppress output
+        allow(UserIdToAgencyUuidReporter).to receive(:run).and_raise(ArgumentError.new('foo'))
+
+        expect { Rake::Task[task].invoke }.to raise_error(SystemExit)
+      end
+    end
+  end
 end
