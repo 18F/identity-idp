@@ -113,7 +113,9 @@ module Idv
       end
 
       def liveness_checking_enabled?
-        FeatureManagement.liveness_checking_enabled? && (no_sp? || sp_session[:ial2_strict])
+        return false if !FeatureManagement.liveness_checking_enabled?
+        return sp_session[:ial2_strict] if sp_session.key?(:ial2_strict)
+        !!current_user.decorate.password_reset_profile&.includes_liveness_check?
       end
 
       def create_document_capture_session(key)
@@ -132,10 +134,6 @@ module Idv
         @document_capture_session ||= DocumentCaptureSession.find_by(
           uuid: flow_session[document_capture_session_uuid_key],
         )
-      end
-
-      def no_sp?
-        sp_session[:issuer].blank?
       end
 
       def document_capture_session_uuid_key

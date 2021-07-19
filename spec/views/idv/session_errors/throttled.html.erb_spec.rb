@@ -3,14 +3,11 @@ require 'rails_helper'
 describe 'idv/session_errors/throttled.html.erb' do
   let(:sp_name) { nil }
   let(:liveness_checking_enabled) { false }
-  let(:sp_session) { {} }
 
   before do
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
-    allow(FeatureManagement).to receive(:liveness_checking_enabled?).
-      and_return(liveness_checking_enabled)
-    allow(view).to receive(:sp_session).and_return(sp_session)
+    allow(view).to receive(:liveness_checking_enabled?).and_return(liveness_checking_enabled)
 
     render
   end
@@ -51,20 +48,8 @@ describe 'idv/session_errors/throttled.html.erb' do
   context 'with liveness feature enabled' do
     let(:liveness_checking_enabled) { true }
 
-    context 'without strict ial2' do
-      let(:sp_session) { {} }
-
-      it 'renders expected heading' do
-        expect(rendered).to have_text(t('errors.doc_auth.throttled_heading'))
-      end
-    end
-
-    context 'with strict ial2' do
-      let(:sp_session) { { ial2_strict: true } }
-
-      it 'renders expected heading' do
-        expect(rendered).to have_text(t('errors.doc_auth.throttled_heading_liveness'))
-      end
+    it 'renders expected heading' do
+      expect(rendered).to have_text(t('errors.doc_auth.throttled_heading'))
     end
   end
 end
