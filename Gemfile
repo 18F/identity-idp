@@ -9,7 +9,7 @@ gem 'rails', '~> 6.1.4'
 @doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.11.0' }
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.3.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
-@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.2-18f' }
+@saml_gem ||= { github: '18F/saml_idp', branch: 'margolis-matching-cert-side-effect' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.3.0' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.6.0' }
 
