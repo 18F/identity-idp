@@ -215,5 +215,63 @@ RSpec.describe Idv::ApiImageUploadForm do
         expect(response.errors[:doc_pii]).to eq('bad')
       end
     end
+
+    describe 'cropping mode' do
+      let(:source) { nil }
+      let(:front_image_metadata) do
+        { width: 40, height: 40, mimeType: 'image/png', source: source }.to_json
+      end
+      let(:back_image_metadata) do
+        { width: 20, height: 20, mimeType: 'image/png', source: source }.to_json
+      end
+      let(:cropping_mode) { nil }
+
+      before do
+        expect_any_instance_of(IdentityDocAuth::Mock::DocAuthMockClient).
+          to receive(:post_images).
+          with(hash_including(cropping_mode: cropping_mode)).
+          and_call_original
+      end
+
+      context 'manual uploads' do
+        let(:source) { 'upload' }
+        let(:cropping_mode) { IdentityDocAuth::CroppingModes::ALWAYS }
+
+        it 'sets cropping mode to always' do
+          form.submit
+        end
+      end
+
+      context 'mixed sources' do
+        let(:source) { 'upload' }
+        let(:back_image_metadata) do
+          { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }.to_json
+        end
+        let(:cropping_mode) { IdentityDocAuth::CroppingModes::ALWAYS }
+
+        it 'sets cropping mode to always' do
+          form.submit
+        end
+      end
+
+      context 'acuant images' do
+        let(:source) { 'acuant' }
+        let(:cropping_mode) { IdentityDocAuth::CroppingModes::NONE }
+
+        it 'sets cropping mode to none' do
+          form.submit
+        end
+      end
+
+      context 'malformed image metadata' do
+        let(:source) { 'upload' }
+        let(:front_image_metadata) { nil.to_json }
+        let(:cropping_mode) { IdentityDocAuth::CroppingModes::ALWAYS }
+
+        it 'sets cropping mode to always' do
+          form.submit
+        end
+      end
+    end
   end
 end

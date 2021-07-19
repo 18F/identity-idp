@@ -41,8 +41,13 @@ module Idv
       )
     end
 
-    def proof_document(document_capture_session, liveness_checking_enabled:, trace_id:,
-                       analytics_data:)
+    def proof_document(
+      document_capture_session,
+      liveness_checking_enabled:,
+      trace_id:,
+      image_metadata:,
+      analytics_data:
+    )
       encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
         { document_arguments: @applicant }.to_json,
       )
@@ -52,6 +57,7 @@ module Idv
         liveness_checking_enabled: liveness_checking_enabled,
         result_id: document_capture_session.result_id,
         trace_id: trace_id,
+        image_metadata: image_metadata,
         analytics_data: analytics_data,
       )
     end

@@ -67,6 +67,7 @@ module Idv
           back_image: back_image.read,
           selfie_image: selfie_image&.read,
           liveness_checking_enabled: liveness_checking_enabled?,
+          cropping_mode: IdentityDocAuth::CroppingModes::ALWAYS, # No-JS flow doesn't use Acuant SDK
         )
         # DP: should these cost recordings happen in the doc_auth_client?
         add_costs(result)
