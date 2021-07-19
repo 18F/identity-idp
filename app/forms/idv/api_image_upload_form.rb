@@ -72,6 +72,7 @@ module Idv
         back_image: back.read,
         selfie_image: selfie&.read,
         liveness_checking_enabled: liveness_checking_enabled?,
+        cropping_mode: cropping_mode,
       )
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc[:state]
@@ -118,6 +119,14 @@ module Idv
 
     def liveness_checking_enabled?
       @liveness_checking_enabled
+    end
+
+    def cropping_mode
+      if acuant_sdk_capture?
+        IdentityDocAuth::CroppingModes::NONE
+      else
+        IdentityDocAuth::CroppingModes::ALWAYS
+      end
     end
 
     def front
@@ -192,8 +201,13 @@ module Idv
       )
     end
 
+    def acuant_sdk_capture?
+      image_metadata.dig(:front, :source) == 'acuant' &&
+        image_metadata.dig(:back, :source) == 'acuant'
+    end
+
     def image_metadata
-      params.permit(:front_image_metadata, :back_image_metadata).
+      @image_metadata ||= params.permit(:front_image_metadata, :back_image_metadata).
         to_h.
         transform_values do |str|
           JSON.parse(str)
