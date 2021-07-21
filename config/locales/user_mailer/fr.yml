@@ -10,7 +10,7 @@ fr:
         vouloir ignorer ce message.
       link_text: Créer votre compte
       subject: Votre demande de réinitialisation de votre mot de passe Login.gov
-      account_reset_cancel:
+    account_reset_cancel:
       intro: Cet e-mail confirme que vous avez annulé votre demande de suppression de
         votre compte Login.gov.
       subject: Supprimer votre compte
@@ -42,7 +42,8 @@ fr:
         période d’attente de 24 heures, vous recevrez un e-mail qui vous
         demandera de confirmer la suppression de votre compte %{app}. Votre
         compte ne sera pas supprimé tant que vous ne l’aurez pas confirmé.'
-      subject: Comment supprimer votre compte Login.gov account_verified:
+      subject: Comment supprimer votre compte Login.gov
+    account_verified:
       contact_link: nous contacter
       disavowal_link: changer votre mot de passe
       intro_html: Vous avez vérifié avec succès votre identité auprès de %{app} le
@@ -147,7 +148,7 @@ fr:
         N’oubliez pas de ne jamais la partager, sauf si vous l’utilisez pour
         vous connecter à un site de confiance qui utilise
         Login.gov.</li></ol></p><br>Merci,<br>L’équipe Login.gov
-        intro: Nouvelle clé personnelle émise
+      intro: Nouvelle clé personnelle émise
       subject: Alerte de sécurité du compte
     personal_key_sign_in:
       help_html: <p>Votre compte Login.gov a été connecté à l’aide de votre clé
