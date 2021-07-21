@@ -158,8 +158,10 @@ module SamlIdpAuthConcern
     if query_params[:skip_encryption].present? && current_service_provider&.skip_encryption_allowed
       nil
     elsif current_service_provider&.encrypt_responses?
+      cert = saml_request.service_provider.matching_cert ||
+             current_service_provider&.ssl_certs&.first
       {
-        cert: saml_request.service_provider.matching_cert,
+        cert: cert,
         block_encryption: current_service_provider&.block_encryption,
         key_transport: 'rsa-oaep-mgf1p',
       }
