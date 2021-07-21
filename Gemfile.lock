@@ -35,8 +35,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: de77d8d1ea528c60cac2d54463ff00ee3cdcdfdc
-  branch: margolis-matching-cert-side-effect
+  revision: cf2ec293aa2c12e8679adfa7d6807a8d77814f4c
+  tag: v0.14.3-18f
   specs:
     saml_idp (0.14.3.pre.18f)
       activesupport
