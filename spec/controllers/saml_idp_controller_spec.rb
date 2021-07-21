@@ -430,6 +430,16 @@ describe SamlIdpController do
       end
     end
 
+    let(:second_cert_settings) do
+      saml_settings.tap do |settings|
+        settings.issuer = service_provider.issuer
+        settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
+        settings.private_key = OpenSSL::PKey::RSA.new(
+          File.read(Rails.root + 'keys/saml_test_sp2.key'),
+        ).to_pem
+      end
+    end
+
     context 'service provider has multiple certs' do
       let(:service_provider) do
         create(
@@ -445,16 +455,6 @@ describe SamlIdpController do
         end
       end
 
-      let(:second_cert_settings) do
-        saml_settings.tap do |settings|
-          settings.issuer = service_provider.issuer
-          settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
-          settings.private_key = OpenSSL::PKey::RSA.new(
-            File.read(Rails.root + 'keys/saml_test_sp2.key'),
-          ).to_pem
-        end
-      end
-
       it 'encrypts the response to the right key' do
         user = create(:user, :signed_up)
         generate_saml_response(user, second_cert_settings)
@@ -465,6 +465,22 @@ describe SamlIdpController do
 
         response = xmldoc.saml_response(second_cert_settings)
         expect(response.decrypted_document).to be
+      end
+    end
+
+    context 'service provider has the wrong certs' do
+      let(:service_provider) do
+        create(
+          :service_provider,
+          certs: ['saml_test_sp'],
+          active: true,
+        )
+      end
+
+      it 'deoes not blow up' do
+        user = create(:user, :signed_up)
+
+        expect { generate_saml_response(user, second_cert_settings) }.to_not raise_error
       end
     end
 
