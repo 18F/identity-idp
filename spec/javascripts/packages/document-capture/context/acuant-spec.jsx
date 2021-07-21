@@ -3,6 +3,7 @@ import { useContext } from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { DeviceContext, AnalyticsContext } from '@18f/identity-document-capture';
 import AcuantContext, {
+  dirname,
   Provider as AcuantContextProvider,
   DEFAULT_ACCEPTABLE_GLARE_SCORE,
   DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
@@ -13,6 +14,15 @@ describe('document-capture/context/acuant', () => {
   afterEach(() => {
     delete window.AcuantJavascriptWebSdk;
     delete window.AcuantCamera;
+  });
+
+  describe('dirname', () => {
+    it('returns the containing directory with trailing slash', () => {
+      const file = '/acuant/AcuantJavascriptWebSdk.min.js';
+      const result = dirname(file);
+
+      expect(result).to.equal('/acuant/');
+    });
   });
 
   it('provides default context value', () => {
