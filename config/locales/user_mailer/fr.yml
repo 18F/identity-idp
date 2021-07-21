@@ -9,7 +9,8 @@ fr:
         une réinitialisation de votre mot de passe, nous vous prions de bien
         vouloir ignorer ce message.
       link_text: Créer votre compte
-      subject: Votre demande de réinitialisation de votre mot de passe Login.gov     account_reset_cancel:
+      subject: Votre demande de réinitialisation de votre mot de passe Login.gov
+      account_reset_cancel:
       intro: Cet e-mail confirme que vous avez annulé votre demande de suppression de
         votre compte Login.gov.
       subject: Supprimer votre compte
@@ -27,7 +28,8 @@ fr:
         accéder aux sites Web gouvernementaux participants qui utilisent %{app},
         vous pouvez créer un nouveau compte %{app} en utilisant la même adresse
         e-mail après la suppression de votre compte.<br><br>
-      subject: Supprimer votre compte Login.gov account_reset_request:
+      subject: Supprimer votre compte Login.gov
+    account_reset_request:
       cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte
         Login.gov pour annuler.
       header: Votre compte sera supprimé dans 24 heures
@@ -191,7 +193,8 @@ fr:
       step_1: Visitez le site Web Login.gov et sélectionnez Connexion
       step_2: Sélectionnez “Vous avez oublié votre mot de passe?” au bas de la page
       step_3: Suivez les instructions pour réinitialiser votre mot de passe
-      subject: Activité inhabituelle — réinitialisez votre mot de passe Login.gov reset_password_instructions:
+      subject: Activité inhabituelle — réinitialisez votre mot de passe Login.gov
+    reset_password_instructions:
       footer: Ce lien expire dans %{expires} heures.
       header: Pour terminer la réinitialisation de votre mot de passe, veuillez
         cliquer sur le lien ci-dessous ou copier et coller le lien complet dans

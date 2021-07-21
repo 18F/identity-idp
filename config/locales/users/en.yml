@@ -25,7 +25,8 @@ en:
       header: Your personal key
       print: Print
     rules_of_use:
-      check_box_to_accept: Check this box to accept the Login.gov       details_html: |-
+      check_box_to_accept: Check this box to accept the Login.gov
+      details_html: |-
         <div class="bold margin-bottom-1">Rules of Use:</div>
         <ul>
         <li>Explain how the Login.gov service works and what you can expect from it,</li>

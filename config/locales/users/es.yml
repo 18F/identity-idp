@@ -26,7 +26,8 @@ es:
       header: Su clave personal
       print: Imprima esta página
     rules_of_use:
-      check_box_to_accept: Marque esta casilla para aceptar las reglas de uso de Login.gov       details_html: |-
+      check_box_to_accept: Marque esta casilla para aceptar las reglas de uso de Login.gov
+      details_html: |-
         <div class="bold margin-bottom-1">Reglas de uso:</div>
         <ul>
         <li>Explique cómo funciona el servicio Login.gov y qué puede esperar de él,</li>

@@ -18,7 +18,8 @@ en:
     add_info:
       phone: Add a phone number
     cancellations:
-      confirmation: You have cancelled verifying your identity with Login.gov       prompt: Are you sure you want to cancel?
+      confirmation: You have cancelled verifying your identity with Login.gov
+      prompt: Are you sure you want to cancel?
     confirmations:
       new: Send another confirmation email
     create_account_with_sp:

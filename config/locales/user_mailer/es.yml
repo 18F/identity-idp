@@ -8,7 +8,8 @@ es:
         y pega el enlace completo en tu navegador. Si no has solicitado
         restablecer tu contraseña puedes ignorar este mensaje.
       link_text: Crea tu cuenta
-      subject: Tu solicitud para restablecer tu contraseña de Login.gov     account_reset_cancel:
+      subject: Tu solicitud para restablecer tu contraseña de Login.gov
+    account_reset_cancel:
       intro: Este correo electrónico confirma que ha cancelado su solicitud para
         eliminar su cuenta de Login.gov.
       subject: Eliminar su cuenta
@@ -26,10 +27,11 @@ es:
         web gubernamentales participantes que utilizan %{app}, puede crear una
         nueva cuenta %{app} con la misma dirección de correo electrónico después
         de que se elimine su cuenta.<br><br>
-      subject: Elimina tu cuenta Login.gov     account_reset_request:
-      cancel: '¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta Login.gov para cancelar.'
-      header: Su cuenta será eliminada en 24 horas
-      intro_html: 'Como medida de seguridad, %{app} requiere un proceso de dos pasos
+      subject: Elimina tu cuenta Login.gov
+    account_reset_request:
+       cancel: '¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta Login.gov para cancelar.'
+       header: Su cuenta será eliminada en 24 horas
+       intro_html: 'Como medida de seguridad, %{app} requiere un proceso de dos pasos
         para eliminar su cuenta:<br><br> Paso uno: hay un período de espera de
         24 horas si ha perdido el acceso a sus métodos de autenticación y
         necesita eliminar su cuenta. Si encuentra sus métodos de autenticación,
@@ -138,7 +140,8 @@ es:
         href="%{account_url}">página de tu cuenta de Login.gov</a>, solicita una
         nueva clave personal</strong>. Recuerda no compartirla nunca a menos que
         la estés usando para acceder a un sitio web de confianza que utilice
-        Login.gov.</li></ol></p><br>Gracias,<br>El equipo de Login.gov intro: Nueva clave personal emitida
+        Login.gov.</li></ol></p><br>Gracias,<br>El equipo de Login.gov
+      intro: Nueva clave personal emitida
       subject: Alerta de seguridad de la cuenta
     personal_key_sign_in:
       help_html: <p>Su cuenta Login.gov acaba de iniciar sesión con su clave personal
@@ -158,7 +161,7 @@ es:
         a menos que lo esté utilizando para iniciar sesión en un sitio web de
         confianza que utiliza Login.gov.</li></ol></p><br>Gracias,<br>El equipo
         de Login.gov
-        intro: Clave personal utilizada para iniciar sesión
+      intro: Clave personal utilizada para iniciar sesión
       subject: Alerta de seguridad de cuenta
     phone_added:
       disavowal_link: restablezca su contraseña
@@ -181,7 +184,8 @@ es:
       step_1: Visite el sitio web Login.gov y seleccione iniciar sesión
       step_2: Seleccione “¿olvidó su contraseña?” al final de la página
       step_3: Siga las instrucciones para restablecer su contraseña
-      subject: Actividad inusual — restablezca su contraseña de Login.gov reset_password_instructions:
+      subject: Actividad inusual — restablezca su contraseña de Login.gov
+      reset_password_instructions:
       footer: Este enlace expira en %{expires} horas.
       header: Para terminar de restablecer su contraseña, haga clic en el enlace de
         abajo o copie y pegue el enlace completo en su navegador.

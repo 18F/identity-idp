@@ -122,7 +122,8 @@ en:
       confirm: Are you sure you want to remove your security key?
     webauthn_setup:
       continue: Continue
-      instructions_text: Press the button on your security key to register it with Login.gov       instructions_title: Connect your security key
+      instructions_text: Press the button on your security key to register it with Login.gov
+      instructions_title: Connect your security key
       intro_html: Add a security key as an authentication method to your
         account.  Your security key must support the FIDO standard.  You can add
         as many security keys as you want, and we recommend at least two for
