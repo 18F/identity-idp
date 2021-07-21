@@ -43,14 +43,14 @@ class MonitorConfig
   end
 
   # An email address that should:
-  # - Have an associated login.gov account created in the environment this is run against
+  # - Have an associated Login.gov account created in the environment this is run against
   # - Have its 2FA set to be SMS messages to the google_voice_phone
   # This is used for testing the password reset flow and SP sign-ins
   def login_gov_sign_in_email
     ENV['MONITOR_SMS_SIGN_IN_EMAIL'] || 'test+sms@example.com'
   end
 
-  # Password for the login.gov account for login_gov_sign_in_email
+  # Password for the Login.gov account for login_gov_sign_in_email
   def login_gov_sign_in_password
     ENV['MONITOR_SMS_SIGN_IN_PASSWORD'] || 'salty pickles'
   end

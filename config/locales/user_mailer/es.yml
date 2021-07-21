@@ -3,18 +3,17 @@ es:
   user_mailer:
     account_does_not_exist:
       intro_html: Esta dirección de correo electrónico aún no está asociada con una
-        cuenta %{app}. Si quieres crear una cuenta login.gov usando esta
+        cuenta %{app}. Si quieres crear una cuenta Login.gov usando esta
         dirección de correo electrónico, haz clic en el siguiente enlace o copia
         y pega el enlace completo en tu navegador. Si no has solicitado
         restablecer tu contraseña puedes ignorar este mensaje.
       link_text: Crea tu cuenta
-      subject: Tu solicitud para restablecer tu contraseña de login.gov
-    account_reset_cancel:
+      subject: Tu solicitud para restablecer tu contraseña de Login.gov     account_reset_cancel:
       intro: Este correo electrónico confirma que ha cancelado su solicitud para
-        eliminar su cuenta de login.gov.
+        eliminar su cuenta de Login.gov.
       subject: Eliminar su cuenta
     account_reset_complete:
-      intro: Este correo electrónico confirma que ha eliminado su cuenta de login.gov.
+      intro: Este correo electrónico confirma que ha eliminado su cuenta de Login.gov.
       subject: Cuenta borrada
     account_reset_granted:
       button: Sí, continúa eliminando
@@ -27,10 +26,8 @@ es:
         web gubernamentales participantes que utilizan %{app}, puede crear una
         nueva cuenta %{app} con la misma dirección de correo electrónico después
         de que se elimine su cuenta.<br><br>
-      subject: Elimina tu cuenta login.gov
-    account_reset_request:
-      cancel: '¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta login.gov
-        para cancelar.'
+      subject: Elimina tu cuenta Login.gov     account_reset_request:
+      cancel: '¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta Login.gov para cancelar.'
       header: Su cuenta será eliminada en 24 horas
       intro_html: 'Como medida de seguridad, %{app} requiere un proceso de dos pasos
         para eliminar su cuenta:<br><br> Paso uno: hay un período de espera de
@@ -41,8 +38,7 @@ es:
         horas, recibirá un correo electrónico que le pedirá que confirme la
         eliminación de su cuenta %{app}. Su cuenta no se eliminará hasta que
         confirme.'
-      subject: Cómo eliminar su cuenta de login.gov
-    account_verified:
+      subject: Cómo eliminar su cuenta de Login.gov account_verified:
       contact_link: contacto con nosotros
       disavowal_link: cambiar tu contraseña
       intro_html: Verificaste correctamente tu identidad con %{app} el %{date} a
@@ -76,7 +72,7 @@ es:
       subject: Verifique su identidad en una computadora de escritorio
     email_added:
       header: Se agregó una nueva dirección de correo electrónico a su perfil de
-        login.gov.
+        Login.gov.
       help: Si no realizó este cambio, inicie sesión en su perfil y administre sus
         direcciones de correo electrónico. Le recomendamos que también cambie su
         contraseña.
@@ -86,7 +82,7 @@ es:
       email_not_found: El correo electrónico no encontrado
       first_sentence:
         confirmed: '¿Desea cambiar su email?'
-        forgot_password: Intentó restablecer su contraseña de login.gov pero no tenemos
+        forgot_password: Intentó restablecer su contraseña de Login.gov pero no tenemos
           una cuenta vinculada a esta dirección de correo electrónico.
         unconfirmed: Gracias por enviar su dirección de correo electrónico.
       footer: Este enlace expira en %{confirmation_period}.
@@ -99,7 +95,7 @@ es:
       try_diff_email: Pruebe con una dirección de correo electrónico diferente
       use_this_email: O use este correo electrónico y
     email_deleted:
-      header: Se eliminó una dirección de correo electrónico de su perfil de login.gov.
+      header: Se eliminó una dirección de correo electrónico de su perfil de Login.gov.
       help_html: Si no desea eliminar esta dirección de correo electrónico, visite el
         %{app} %{help_link} o el %{contact_link}.
       subject: Dirección de correo electrónico eliminada
@@ -126,7 +122,7 @@ es:
         %{contact_link}.
       intro_html: Tiene una contraseña nueva para su cuenta de %{app}.
     personal_key_regenerated:
-      help_html: <p>Tu cuenta de login.gov acaba de emitir una nueva clave personal de
+      help_html: <p>Tu cuenta de Login.gov acaba de emitir una nueva clave personal de
         16 caracteres. Estás recibiendo este correo electrónico para verificar
         que eras tú. </p><p>Si acabas de iniciar sesión y has regenerado tu
         clave personal, ¡fantástico! No es necesario que hagas nada.</p><p>Si no
@@ -135,18 +131,17 @@ es:
         href="%{reset_password_url}">Cambia tu contraseña</a>.</strong> Elige
         una contraseña que aún no hayas utilizado con esta cuenta.
         </li><li><strong><a href="%{account_url}">Inicia sesión en tu cuenta de
-        login.gov</a></strong> y asegúrate de que reconoces toda la información
+        Login.gov</a></strong> y asegúrate de que reconoces toda la información
         de la página de tu cuenta, como los métodos que utilizas para la
         autenticación de dos factores, como el número de teléfono, la aplicación
         de autenticación o la clave de seguridad. </li><li><strong>En la <a
-        href="%{account_url}">página de tu cuenta de login.gov</a>, solicita una
+        href="%{account_url}">página de tu cuenta de Login.gov</a>, solicita una
         nueva clave personal</strong>. Recuerda no compartirla nunca a menos que
         la estés usando para acceder a un sitio web de confianza que utilice
-        login.gov.</li></ol></p><br>Gracias,<br>El equipo de login.gov
-      intro: Nueva clave personal emitida
+        Login.gov.</li></ol></p><br>Gracias,<br>El equipo de Login.gov intro: Nueva clave personal emitida
       subject: Alerta de seguridad de la cuenta
     personal_key_sign_in:
-      help_html: <p>Su cuenta login.gov acaba de iniciar sesión con su clave personal
+      help_html: <p>Su cuenta Login.gov acaba de iniciar sesión con su clave personal
         de 16 caracteres. Usted está recibiendo este e-mail para asegurarse de
         que era usted.</p><p>Si acaba de iniciar sesión con su clave personal,
         ¡genial! No hay nada que tenga que hacer.</p><p>Si no inició sesión con
@@ -154,16 +149,16 @@ es:
         inmediato para proteger su cuenta.<ol><li><strong><a
         href="%{reset_password_url}">Cambie tu contraseña</a>.</strong> Elija
         una contraseña que no haya utilizado con esta cuenta.</li><li><strong><a
-        href="%{account_url}">Inicie sesión en su cuenta login.gov</a></strong>
+        href="%{account_url}">Inicie sesión en su cuenta Login.gov</a></strong>
         y asegúrese de reconocer toda la información en la página de su cuenta,
         incluidos los métodos que utiliza para la autenticación de dos factores,
         como el número de teléfono, la aplicación de autenticación, o la clave
-        de seguridad.</li><li><strong>En la página de su cuenta login.gov,
+        de seguridad.</li><li><strong>En la página de su cuenta Login.gov,
         solicite una nueva clave personal.</strong> Recuerde, nunca lo comparta
         a menos que lo esté utilizando para iniciar sesión en un sitio web de
-        confianza que utiliza login.gov.</li></ol></p><br>Gracias,<br>El equipo
-        de login.gov
-      intro: Clave personal utilizada para iniciar sesión
+        confianza que utiliza Login.gov.</li></ol></p><br>Gracias,<br>El equipo
+        de Login.gov
+        intro: Clave personal utilizada para iniciar sesión
       subject: Alerta de seguridad de cuenta
     phone_added:
       disavowal_link: restablezca su contraseña
@@ -175,19 +170,18 @@ es:
       call_to_action: 'Como medida de precaución, inhabilitamos su contraseña para
         mantener su información segura. Siga los pasos a continuación para
         restablecer su contraseña y asegure su cuenta:'
-      intro: Hemos detectado actividad inusual en su cuenta login.gov. Estamos
+      intro: Hemos detectado actividad inusual en su cuenta Login.gov. Estamos
         preocupados alguien que no sea usted puede estar intentando acceder a su
         información.
       learn_more_link_text: Conozca más sobre sus opciones
-      reminder_html: Le recordamos que <b>login.gov nunca le pedirá sus credenciales
+      reminder_html: Le recordamos que <b>Login.gov nunca le pedirá sus credenciales
         de inicio de sesión. por teléfono o correo electrónico</b>. Puede tomar
         medidas adicionales para proteger su cuenta habilitando la autenticación
         de dos factores.
-      step_1: Visite el sitio web login.gov y seleccione iniciar sesión
+      step_1: Visite el sitio web Login.gov y seleccione iniciar sesión
       step_2: Seleccione “¿olvidó su contraseña?” al final de la página
       step_3: Siga las instrucciones para restablecer su contraseña
-      subject: Actividad inusual — restablezca su contraseña de login.gov
-    reset_password_instructions:
+      subject: Actividad inusual — restablezca su contraseña de Login.gov reset_password_instructions:
       footer: Este enlace expira en %{expires} horas.
       header: Para terminar de restablecer su contraseña, haga clic en el enlace de
         abajo o copie y pegue el enlace completo en su navegador.
