@@ -21,7 +21,18 @@ module ScriptHelper
   end
 
   def render_javascript_pack_once_tags
-    javascript_packs_with_chunks_tag(*@scripts) if @scripts
+    return if !@scripts
+
+    regexp_locale_suffix = %r{\.(#{I18n.available_locales.join('|')})\.js$}
+
+    locale_sources, sources = @scripts.flat_map do |name|
+      current_webpacker_instance.manifest.lookup_pack_with_chunks!(name, type: :javascript)
+    end.uniq.partition { |source| regexp_locale_suffix.match?(source) }
+
+    javascript_include_tag(
+      *locale_sources.filter { |source| source.end_with? ".#{I18n.locale}.js" },
+      *sources,
+    )
   end
 end
 # rubocop:enable Rails/HelperInstanceVariable
