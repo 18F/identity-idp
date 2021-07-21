@@ -72,7 +72,7 @@ module Idv
         back_image: back.read,
         selfie_image: selfie&.read,
         liveness_checking_enabled: liveness_checking_enabled?,
-        cropping_mode: cropping_mode,
+        image_source: image_source,
       )
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc[:state]
@@ -121,11 +121,11 @@ module Idv
       @liveness_checking_enabled
     end
 
-    def cropping_mode
+    def image_source
       if acuant_sdk_capture?
-        IdentityDocAuth::CroppingModes::NONE
+        IdentityDocAuth::ImageSources::ACUANT_SDK
       else
-        IdentityDocAuth::CroppingModes::ALWAYS
+        IdentityDocAuth::ImageSources::UNKNOWN
       end
     end
 

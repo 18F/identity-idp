@@ -51,7 +51,7 @@ class DocumentProofingJob < ApplicationJob
           front_image: front_image,
           back_image: back_image,
           selfie_image: selfie_image || '',
-          cropping_mode: cropping_mode(image_metadata),
+          image_source: image_source(image_metadata),
           liveness_checking_enabled: liveness_checking_enabled,
         )
       end
@@ -99,11 +99,11 @@ class DocumentProofingJob < ApplicationJob
     @encryption_helper ||= JobHelpers::EncryptionHelper.new
   end
 
-  def cropping_mode(image_metadata)
+  def image_source(image_metadata)
     if acuant_sdk_capture?(image_metadata)
-      IdentityDocAuth::CroppingModes::NONE
+      IdentityDocAuth::ImageSources::ACUANT_SDK
     else
-      IdentityDocAuth::CroppingModes::ALWAYS
+      IdentityDocAuth::ImageSources::UNKNOWN
     end
   end
 
