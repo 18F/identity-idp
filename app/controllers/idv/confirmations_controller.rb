@@ -19,16 +19,10 @@ module Idv
     end
 
     def download
-      personal_key = user_session[:personal_key]
+      code = personal_key
 
-      analytics.track_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: personal_key.present?)
-
-      if personal_key.present?
-        data = personal_key + "\r\n"
-        send_data data, filename: 'personal_key.txt'
-      else
-        head :bad_request
-      end
+      analytics.track_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: code.present?)
+      send_data "#{code}\r\n", filename: 'personal_key.txt'
     end
 
     private
@@ -72,7 +66,6 @@ module Idv
     def finish_idv_session
       @code = personal_key
       user_session[:personal_key] = @code
-      idv_session.personal_key = nil
 
       if idv_session.address_verification_mechanism == 'gpo'
         flash.now[:success] = t('idv.messages.mail_sent')
@@ -83,7 +76,7 @@ module Idv
     end
 
     def personal_key
-      idv_session.personal_key || generate_personal_key
+      user_session[:personal_key] ||= generate_personal_key
     end
 
     def generate_personal_key
