@@ -19,8 +19,16 @@ module Idv
     end
 
     def download
-      data = user_session[:personal_key] + "\r\n"
-      send_data data, filename: 'personal_key.txt'
+      personal_key = user_session[:personal_key]
+
+      analytics.track_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: personal_key.present?)
+
+      if personal_key.present?
+        data = personal_key + "\r\n"
+        send_data data, filename: 'personal_key.txt'
+      else
+        head :bad_request
+      end
     end
 
     private

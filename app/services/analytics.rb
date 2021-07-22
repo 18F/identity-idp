@@ -84,6 +84,7 @@ class Analytics
   AUTHENTICATION_CONFIRMATION = 'Authentication Confirmation'.freeze
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'.freeze
+  DOC_AUTH_WARNING = 'Doc Auth Warning'.freeze
   DOCUMENT_CAPTURE_SESSION_OVERWRITTEN = 'Document Capture Session Overwritten'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'.freeze
@@ -106,6 +107,7 @@ class Analytics
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_FORM = 'IdV: doc auth image upload form submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR = 'IdV: doc auth image upload vendor submitted'.freeze
   IDV_DOC_AUTH_SUBMITTED_PII_VALIDATION = 'IdV: doc auth image upload vendor pii validation'.freeze
+  IDV_DOWNLOAD_PERSONAL_KEY = 'IdV: download personal key'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_FORGOT_PASSWORD = 'IdV: forgot password visited'.freeze
   IDV_FORGOT_PASSWORD_CONFIRMED = 'IdV: forgot password confirmed'.freeze

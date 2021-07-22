@@ -49,8 +49,8 @@ module Idv
           verify_document_capture_session,
           liveness_checking_enabled: liveness_checking_enabled?,
           trace_id: amzn_trace_id,
+          image_metadata: image_metadata,
           analytics_data: {
-            client_image_metrics: image_metadata,
             browser_attributes: @flow.analytics.browser_attributes,
           },
         )

@@ -102,17 +102,6 @@ describe Idv::ConfirmationsController do
       expect(assigns(:code)).to eq(code)
     end
 
-    it 'allows download of code' do
-      subject.idv_session.create_profile_from_applicant_with_password(password)
-      code = subject.idv_session.personal_key
-
-      get :show
-      get :download
-
-      expect(response.body).to eq(code + "\r\n")
-      expect(response.header['Content-Type']).to eq('text/plain')
-    end
-
     it 'sets flash[:allow_confirmations_continue] to true' do
       get :show
 
@@ -226,6 +215,32 @@ describe Idv::ConfirmationsController do
 
         expect(response).to redirect_to idv_come_back_later_path
       end
+    end
+  end
+
+  describe '#download' do
+    before do
+      stub_idv_session
+      stub_analytics
+    end
+
+    it 'allows download of code' do
+      subject.idv_session.create_profile_from_applicant_with_password(password)
+      code = subject.idv_session.personal_key
+
+      get :show
+      get :download
+
+      expect(response.body).to eq(code + "\r\n")
+      expect(response.header['Content-Type']).to eq('text/plain')
+      expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: true)
+    end
+
+    it 'is a bad request when there is no personal_key in the session' do
+      get :download
+
+      expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: false)
     end
   end
 end

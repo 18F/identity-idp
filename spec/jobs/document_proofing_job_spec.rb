@@ -9,6 +9,10 @@ RSpec.describe DocumentProofingJob, type: :job do
   let(:back_image_iv) { SecureRandom.random_bytes(12) }
   let(:selfie_image_iv) { SecureRandom.random_bytes(12) }
   let(:trace_id) { SecureRandom.uuid }
+  let(:source) { nil }
+  let(:front_image_metadata) { { mimeType: 'image/png', source: source } }
+  let(:back_image_metadata) { { mimeType: 'image/png', source: source } }
+  let(:image_metadata) { { front: front_image_metadata, back: back_image_metadata } }
   let(:liveness_checking_enabled) { true }
 
   let(:applicant_pii) do
@@ -58,6 +62,7 @@ RSpec.describe DocumentProofingJob, type: :job do
         liveness_checking_enabled: liveness_checking_enabled,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
+        image_metadata: image_metadata,
         analytics_data: {},
       )
 
@@ -74,6 +79,7 @@ RSpec.describe DocumentProofingJob, type: :job do
         liveness_checking_enabled: liveness_checking_enabled,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
+        image_metadata: image_metadata,
         analytics_data: {},
       )
     end
@@ -150,7 +156,7 @@ RSpec.describe DocumentProofingJob, type: :job do
       let(:doc_auth_client) { instance_double(IdentityDocAuth::Acuant::AcuantClient) }
 
       before do
-        allow(instance).to receive(:doc_auth_client).and_return(doc_auth_client)
+        allow(instance).to receive(:build_doc_auth_client).and_return(doc_auth_client)
 
         expect(doc_auth_client).to receive(:post_images).
           and_return(IdentityDocAuth::Response.new(success: false, exception: RuntimeError.new))
@@ -223,6 +229,60 @@ RSpec.describe DocumentProofingJob, type: :job do
         expect(a_request(:get, front_image_url)).to have_been_made
         expect(a_request(:get, back_image_url)).to have_been_made
         expect(a_request(:get, selfie_image_url)).to have_been_made
+      end
+    end
+
+    describe 'cropping mode' do
+      let(:source) { nil }
+      let(:front_image_metadata) { { mimeType: 'image/png', source: source } }
+      let(:back_image_metadata) { { mimeType: 'image/png', source: source } }
+      let(:cropping_mode) { nil }
+
+      before do
+        expect_any_instance_of(IdentityDocAuth::Mock::DocAuthMockClient).
+          to receive(:post_images).
+          with(hash_including(cropping_mode: cropping_mode)).
+          and_call_original
+      end
+
+      context 'manual uploads' do
+        let(:source) { 'upload' }
+        let(:cropping_mode) { IdentityDocAuth::CroppingModes::ALWAYS }
+
+        it 'sets cropping mode to always' do
+          perform
+        end
+      end
+
+      context 'mixed sources' do
+        let(:source) { 'upload' }
+        let(:back_image_metadata) do
+          { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }.to_json
+        end
+        let(:cropping_mode) { IdentityDocAuth::CroppingModes::ALWAYS }
+
+        it 'sets cropping mode to always' do
+          perform
+        end
+      end
+
+      context 'acuant images' do
+        let(:source) { 'acuant' }
+        let(:cropping_mode) { IdentityDocAuth::CroppingModes::NONE }
+
+        it 'sets cropping mode to none' do
+          perform
+        end
+      end
+
+      context 'malformed image metadata' do
+        let(:source) { 'upload' }
+        let(:front_image_metadata) { nil }
+        let(:cropping_mode) { IdentityDocAuth::CroppingModes::ALWAYS }
+
+        it 'sets cropping mode to always' do
+          perform
+        end
       end
     end
   end

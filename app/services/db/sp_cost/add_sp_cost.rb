@@ -26,11 +26,12 @@ module Db
           NewRelic::Agent.notice_error(SpCostTypeError.new(token.to_s))
           return
         end
-        agency_id = (issuer.present? && ServiceProvider.find_by(issuer: issuer)&.agency_id) || 0
+        service_provider = issuer.present? ? ServiceProvider.find_by(issuer: issuer) : nil
+        agency_id = service_provider&.agency_id || 0
         current_user = User.find_by(id: user_id)
         ial_context = IalContext.new(
           ial: ial,
-          service_provider: ServiceProvider.find_by(issuer: issuer),
+          service_provider: service_provider,
           user: current_user,
         )
         ::SpCost.create(

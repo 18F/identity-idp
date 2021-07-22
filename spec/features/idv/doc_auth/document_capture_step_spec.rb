@@ -73,6 +73,11 @@ feature 'doc auth document capture step' do
     end
 
     it 'proceeds to the next page with valid info and logs analytics info' do
+      expect_any_instance_of(IdentityDocAuth::Mock::DocAuthMockClient).
+        to receive(:post_images).
+        with(hash_including(cropping_mode: IdentityDocAuth::CroppingModes::ALWAYS)).
+        and_call_original
+
       attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
