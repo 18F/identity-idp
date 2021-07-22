@@ -29,6 +29,13 @@ executors:
 commands:
   bundle-yarn-install:
     steps:
+      - run:
+          name: Switch Node.js version
+          command: |
+            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            nvm install
       - run: gem install bundler --version $BUNDLER_VERSION
       - restore_cache:
           keys:
