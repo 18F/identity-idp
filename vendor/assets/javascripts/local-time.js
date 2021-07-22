@@ -98,7 +98,8 @@
     }
   }).call(this),function(){
 
-  // Login.gov     var locale = location.pathname.split('/')[1];
+  // Login.gov
+  var locale = location.pathname.split('/')[1];
     if (locale != 'fr' && locale != 'es') {
       locale = 'en';
     }
