@@ -40,7 +40,8 @@ es:
         horas, recibirá un correo electrónico que le pedirá que confirme la
         eliminación de su cuenta %{app}. Su cuenta no se eliminará hasta que
         confirme.'
-      subject: Cómo eliminar su cuenta de Login.gov account_verified:
+      subject: Cómo eliminar su cuenta de Login.gov
+    account_verified:
       contact_link: contacto con nosotros
       disavowal_link: cambiar tu contraseña
       intro_html: Verificaste correctamente tu identidad con %{app} el %{date} a
