@@ -31,7 +31,11 @@ const ExtractKeysWebpackPlugin = require('./extract-keys-webpack-plugin.js');
 function dig(object, keyPath) {
   let result = object;
   for (const segment of keyPath) {
-    result = result?.[segment];
+    if (result == null) {
+      return;
+    }
+
+    result = result[segment];
   }
 
   return result;

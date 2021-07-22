@@ -49,7 +49,8 @@ const getTranslationKeys = (source) =>
  *
  * @return {boolean}
  */
-const isJavaScriptChunk = (chunk) => !!chunk.entryModule?.type.startsWith('javascript/');
+const isJavaScriptChunk = (chunk) =>
+  !!chunk.entryModule && chunk.entryModule.type.startsWith('javascript/');
 
 /**
  * @template {Record<string,any>} Options
@@ -60,11 +61,11 @@ class ExtractKeysWebpackPlugin {
   /**
    * @param {Options=} options
    */
-  constructor(options) {
+  constructor(options = /** @type {Partial<Options>} */ ({})) {
     const { DEFAULT_OPTIONS } = /** @type {typeof ExtractKeysWebpackPlugin} */ (this.constructor);
 
     this.options = /** @type {Options} */ (Object.keys(DEFAULT_OPTIONS).reduce((result, key) => {
-      result[key] = options?.[key] ?? DEFAULT_OPTIONS[key];
+      result[key] = options[key] ?? DEFAULT_OPTIONS[key];
       return result;
     }, {}));
   }
