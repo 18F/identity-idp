@@ -16,6 +16,9 @@ executors:
         environment:
           RAILS_ENV: test
           BUNDLER_VERSION: 2.2.20
+          # The base image sets NODE_VERSION environment variable, which we don't intend to use. Its
+          # presence will cause NVM to treat it as the default version. Unsetting it allows for NVM
+          # to use the version from .nvmrc instead.
           NODE_VERSION: ''
 
       # Specify service dependencies here if necessary
