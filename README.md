@@ -24,7 +24,7 @@ This installation method is meant for those who are familiar with setting up loc
 - Ruby 2.6
 - [PostgreSQL](http://www.postgresql.org/download/)
 - [Redis 5+](http://redis.io/)
-- [Node.js v14.x.x](https://nodejs.org)
+- [Node.js v12](https://nodejs.org)
 - [Yarn](https://yarnpkg.com/en/)
 
 We recommend using [Homebrew](https://brew.sh/), [rbenv](https://github.com/rbenv/rbenv), [nvm](https://github.com/nvm-sh/nvm) or other version management tooling when installing your dependencies. While we don't anticipate changing these frequently, this will ensure that you will be able to easily switch to different versions as needed.
