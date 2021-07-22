@@ -49,6 +49,9 @@ commands:
       - run:
           name: Install Yarn
           command: yarn install --ignore-engines --cache-folder ~/.cache/yarn
+      - run:
+          name: Node.js version
+          command: node -v
       - save_cache:
           key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
