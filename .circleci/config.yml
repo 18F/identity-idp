@@ -109,7 +109,7 @@ commands:
     steps:
       - slack/status:
           fail_only: true
-          failure_message: ":smokeybear::red_circle: Smoke tests failed in environment: $MONITOR_ENV"
+          failure_message: ':smokeybear::red_circle: Smoke tests failed in environment: $MONITOR_ENV'
           include_project_field: false
   store-smoketest-results:
     steps:
@@ -250,7 +250,7 @@ jobs:
           sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
       - bundle-yarn-install
       - run:
-          name: "Smoke tests"
+          name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
@@ -266,7 +266,7 @@ jobs:
           sha_url: https://idp.int.identitysandbox.gov/api/deploy.json
       - bundle-yarn-install
       - run:
-          name: "Smoke tests"
+          name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
@@ -282,7 +282,7 @@ jobs:
           sha_url: https://idp.staging.login.gov/api/deploy.json
       - bundle-yarn-install
       - run:
-          name: "Smoke tests"
+          name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
@@ -296,7 +296,7 @@ jobs:
       - checkout
       - bundle-yarn-install
       - run:
-          name: "Smoke tests"
+          name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
@@ -312,7 +312,7 @@ jobs:
             make lint_country_dialing_codes
       - slack/status:
           fail_only: true
-          failure_message: ":aws-emoji: :red_circle: AWS Pinpoint country configuration is out of date"
+          failure_message: ':aws-emoji: :red_circle: AWS Pinpoint country configuration is out of date'
 workflows:
   version: 2
   release:
@@ -334,7 +334,7 @@ workflows:
     triggers:
       - schedule:
           # Once a day at 12pm
-          cron: "0 12 * * *"
+          cron: '0 12 * * *'
           filters:
             branches:
               only:
@@ -347,7 +347,7 @@ workflows:
   smoketest-dev-workflow:
     triggers:
       - schedule:
-          cron: "55 * * * *"
+          cron: '55 * * * *'
           filters:
             branches:
               only:
@@ -359,7 +359,7 @@ workflows:
   smoketest-int-workflow:
     triggers:
       - schedule:
-          cron: "45 * * * *"
+          cron: '45 * * * *'
           filters:
             branches:
               only:
@@ -371,7 +371,7 @@ workflows:
   smoketest-staging-workflow:
     triggers:
       - schedule:
-          cron: "35 * * * *"
+          cron: '35 * * * *'
           filters:
             branches:
               only:
@@ -383,7 +383,7 @@ workflows:
   smoketest-prod-workflow:
     triggers:
       - schedule:
-          cron: "25 * * * *"
+          cron: '25 * * * *'
           filters:
             branches:
               only:
