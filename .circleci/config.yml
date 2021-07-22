@@ -41,7 +41,6 @@ commands:
             . "$NVM_DIR/nvm.sh" --install
             echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV;
             echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV;
-            source $BASH_ENV;
       - run: gem install bundler --version $BUNDLER_VERSION
       - restore_cache:
           keys:
