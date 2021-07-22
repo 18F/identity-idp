@@ -2,7 +2,8 @@
 
 (function(){var t=this;(function(){(function(){var t=[].slice;
 
-  // Login.gov   window.LocalTime={
+  // Login.gov
+  window.LocalTime={
 
     config:{},run:function(){return this.getController().processElements()},process:function(){var e,n,r,a;for(n=1<=arguments.length?t.call(arguments,0):[],r=0,a=n.length;r<a;r++)e=n[r],this.getController().processElement(e);return n.length},getController:function(){return null!=this.controller?this.controller:this.controller=new e.Controller}}}).call(this)}).call(t);
 
