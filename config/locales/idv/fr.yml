@@ -165,7 +165,7 @@ fr:
         read_more_encrypt: En savoir plus sur la façon dont Login.gov protège vos
           informations personnelles
         review_message: Lorsque vous entrez à nouveau votre mot de passe, Login.gov
-        crypte vos données pour vous assurer que personne ne peut y accéder.
+          crypte vos données pour vous assurer que personne ne peut y accéder.
     review:
       dob: Date de naissance
       full_name: Nom complet
