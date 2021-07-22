@@ -65,7 +65,6 @@ module Idv
 
     def finish_idv_session
       @code = personal_key
-      user_session[:personal_key] = @code
 
       if idv_session.address_verification_mechanism == 'gpo'
         flash.now[:success] = t('idv.messages.mail_sent')
