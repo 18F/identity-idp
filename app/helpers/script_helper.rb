@@ -23,6 +23,8 @@ module ScriptHelper
   def render_javascript_pack_once_tags
     return if !@scripts
 
+    # RailsI18nWebpackPlugin will generate additional assets suffixed per locale, e.g. `.fr.js`.
+    # See: app/javascript/packages/rails-i18n-webpack-plugin/extract-keys-webpack-plugin.js
     regexp_locale_suffix = %r{\.(#{I18n.available_locales.join('|')})\.js$}
 
     locale_sources, sources = @scripts.flat_map do |name|

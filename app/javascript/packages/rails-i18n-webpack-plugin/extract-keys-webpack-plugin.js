@@ -17,17 +17,17 @@ const PLUGIN = 'ExtractKeysWebpackPlugin';
 const TRANSLATE_CALL = /(?:^|[^\w'-])(?:I18n\.)?t\(\s*['"](.+?)['"]/g;
 
 /**
- * Given an original file name and suffix, returns a modified file name with the suffix injected
+ * Given an original file name and locale, returns a modified file name with the locale injected
  * prior to the original file extension.
  *
  * @param {string} filename
- * @param {string} suffix
+ * @param {string} locale
  *
  * @return {string}
  */
-function getAdditionalAssetFilename(filename, suffix) {
+function getAdditionalAssetFilename(filename, locale) {
   const parts = filename.split('.');
-  parts.splice(parts.length - 1, 0, suffix);
+  parts.splice(parts.length - 1, 0, locale);
   return parts.join('.');
 }
 
@@ -89,8 +89,8 @@ class ExtractKeysWebpackPlugin {
                 const source = compilation.assets[filename].source();
                 const keys = getTranslationKeys(source);
                 const additionalAssets = await this.getAdditionalAssets(keys);
-                for (const [suffix, content] of Object.entries(additionalAssets)) {
-                  const assetFilename = getAdditionalAssetFilename(filename, suffix);
+                for (const [locale, content] of Object.entries(additionalAssets)) {
+                  const assetFilename = getAdditionalAssetFilename(filename, locale);
                   compilation.emitAsset(assetFilename, new sources.RawSource(content));
                   chunk.files.push(assetFilename);
                 }
