@@ -82,7 +82,6 @@ export class FormStepsWait {
 
     const { form } = this.elements;
     const { action, method } = form;
-    console.log(form)
     // Clear error, if present.
     this.renderError('');
 
