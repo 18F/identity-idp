@@ -7,6 +7,7 @@ import {
   isPollingPage,
   getPageErrorMessage,
 } from '../../../app/javascript/packs/form-steps-wait';
+import { expect } from 'chai';
 
 const POLL_PAGE_MARKUP = '<meta content="1" http-equiv="refresh">Example';
 const NON_POLL_PAGE_MARKUP = 'Example';
@@ -86,6 +87,7 @@ describe('FormStepsWait', () => {
         data-alert-target="#alert-target"
       >
         <div id="alert-target"></div>
+        <input type="text" id="text-name" aria-label="foo">
         <input type="hidden" name="foo" value="bar">
       </form>
     `;
@@ -154,6 +156,24 @@ describe('FormStepsWait', () => {
           const alert = await findByRole(form, 'alert');
           expect(alert.textContent).to.equal(errorMessage);
         });
+      });
+    });
+
+    context('invalid input', () => {
+
+      let form;
+      let input;
+      beforeEach(() => {
+        form = createForm({ action, method });
+        input = form.querySelector('#text-name');
+        input.setAttribute('required', '');
+      });
+      it('stops spinner', (done) => {
+        new FormStepsWait(form).bind();
+        
+        fireEvent.invalid(form);
+        expect(form.checkValidity()).to.be.false();
+        form.addEventListener('spinner.stop', () => done());
       });
     });
 
