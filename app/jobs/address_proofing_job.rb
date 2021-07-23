@@ -14,9 +14,7 @@ class AddressProofingJob < ApplicationJob
     applicant_pii = decrypted_args[:applicant_pii]
 
     proofer_result = timer.time('address') do
-      with_retries(**faraday_retry_options) do
-        address_proofer.proof(applicant_pii)
-      end
+      address_proofer.proof(applicant_pii)
     end
 
     Db::SpCost::AddSpCost.call(
