@@ -16,7 +16,7 @@ const {
 
 describe('RailsI18nWebpackPlugin', () => {
   it('generates expected output', (done) => {
-    const spy = sinon.spy();
+    const onMissingString = sinon.spy();
 
     webpack(
       {
@@ -26,7 +26,7 @@ describe('RailsI18nWebpackPlugin', () => {
         plugins: [
           new RailsI18nWebpackPlugin({
             configPath: path.resolve(__dirname, 'spec/fixtures/locales'),
-            onMissingString: spy,
+            onMissingString,
           }),
         ],
         output: {
@@ -48,7 +48,14 @@ describe('RailsI18nWebpackPlugin', () => {
             expect(expected).to.equal(actual);
           }
 
-          expect(spy).to.have.been.calledOnceWithExactly('item.3', 'en');
+          expect(onMissingString).to.have.callCount(7);
+          expect(onMissingString).to.have.been.calledWithExactly('item.1', 'es');
+          expect(onMissingString).to.have.been.calledWithExactly('item.2', 'es');
+          expect(onMissingString).to.have.been.calledWithExactly('item.3', 'es');
+          expect(onMissingString).to.have.been.calledWithExactly('forms.button.submit', 'fr');
+          expect(onMissingString).to.have.been.calledWithExactly('item.2', 'fr');
+          expect(onMissingString).to.have.been.calledWithExactly('item.3', 'fr');
+          expect(onMissingString).to.have.been.calledWithExactly('item.3', 'en');
 
           done();
         } catch (error) {

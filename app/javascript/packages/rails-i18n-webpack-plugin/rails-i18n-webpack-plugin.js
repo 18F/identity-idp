@@ -182,11 +182,15 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
     const localeData = await this.getLocaleData(domain, locale);
 
     let translation = dig(localeData, [locale, ...keyPath]);
+    if (translation === undefined) {
+      translation = onMissingString(key, locale);
+    }
+
     if (translation === undefined && locale !== this.options.defaultLocale) {
       translation = await this.resolveTranslation(key, this.options.defaultLocale, () => {});
     }
 
-    return translation || onMissingString(key, locale) || '';
+    return translation || '';
   }
 
   /**
