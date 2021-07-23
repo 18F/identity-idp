@@ -1,3 +1,4 @@
+const sinon = require('sinon');
 const path = require('path');
 const fs = require('fs/promises');
 const webpack = require('webpack');
@@ -15,6 +16,8 @@ const {
 
 describe('RailsI18nWebpackPlugin', () => {
   it('generates expected output', (done) => {
+    const spy = sinon.spy();
+
     webpack(
       {
         entry: {
@@ -23,6 +26,7 @@ describe('RailsI18nWebpackPlugin', () => {
         plugins: [
           new RailsI18nWebpackPlugin({
             configPath: path.resolve(__dirname, 'spec/fixtures/locales'),
+            onMissingString: spy,
           }),
         ],
         output: {
@@ -43,6 +47,8 @@ describe('RailsI18nWebpackPlugin', () => {
           for (const [expected, actual] of [en, es, fr]) {
             expect(expected).to.equal(actual);
           }
+
+          expect(spy).to.have.been.calledOnceWithExactly('item.3', 'en');
 
           done();
         } catch (error) {

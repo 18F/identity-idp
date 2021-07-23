@@ -32,8 +32,8 @@ The default locale for the application.
 
 Optional, defaults to `'en'`.
 
-### `missingStringValue`
+### `onMissingString`
 
-The fallback string to use in case a key cannot be found in locale data.
+Callback invoked when a key cannot be found in locale data, optionally returning a string to return in its place.
 
-Optional, defaults to `''`.
+Optional, defaults to `() => {}`.

@@ -5,13 +5,17 @@ const YAML = require('yaml');
 const ExtractKeysWebpackPlugin = require('./extract-keys-webpack-plugin.js');
 
 /**
+ * @typedef {(key: string, locale: string) => string|undefined|void} MissingStringCallback
+ */
+
+/**
  * @typedef RailsI18nWebpackPluginOptions
  *
  * @prop {string} template String to format using locale data object, generated using util.format.
  * @prop {string} configPath Root path for locale configuration data.
  * @prop {string} defaultLocale Default locale to use if string data is missing for desired locale.
- * @prop {string} missingStringValue Value to use if string data is missing for both desired and
- * default locales.
+ * @prop {MissingStringCallback} onMissingString Callback to call when a key is missing, optionally
+ * returning a string to use in its place.
  */
 
 /**
@@ -107,11 +111,12 @@ const getKeyDomains = (keys) => uniq(keys.map(getKeyDomain));
  * @extends {ExtractKeysWebpackPlugin<RailsI18nWebpackPluginOptions>}
  */
 class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
+  /** @type {RailsI18nWebpackPluginOptions} */
   static DEFAULT_OPTIONS = {
     template: '(window._locale_data = window._locale_data || []).push(%j);',
     configPath: path.resolve(process.cwd(), 'config/locales'),
     defaultLocale: 'en',
-    missingStringValue: '',
+    onMissingString: () => {},
   };
 
   /**
@@ -167,23 +172,21 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
    *
    * @param {string} key
    * @param {string} locale
+   * @param {MissingStringCallback} onMissingString
    *
    * @return {Promise<string>}
    */
-  async resolveTranslation(key, locale) {
+  async resolveTranslation(key, locale, onMissingString = this.options.onMissingString) {
     const keyPath = getKeyPath(key);
     const domain = getKeyDomain(keyPath);
     const localeData = await this.getLocaleData(domain, locale);
-    const translation = dig(localeData, [locale, ...keyPath]);
-    if (translation !== undefined) {
-      return translation;
+
+    let translation = dig(localeData, [locale, ...keyPath]);
+    if (translation === undefined && locale !== this.options.defaultLocale) {
+      translation = await this.resolveTranslation(key, this.options.defaultLocale, () => {});
     }
 
-    if (locale !== this.options.defaultLocale) {
-      return this.resolveTranslation(key, this.options.defaultLocale);
-    }
-
-    return this.options.missingStringValue;
+    return translation ?? onMissingString(key, locale) ?? '';
   }
 
   /**
