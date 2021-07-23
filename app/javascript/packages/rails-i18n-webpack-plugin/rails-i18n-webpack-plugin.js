@@ -186,7 +186,7 @@ class RailsI18nWebpackPlugin extends ExtractKeysWebpackPlugin {
       translation = await this.resolveTranslation(key, this.options.defaultLocale, () => {});
     }
 
-    return translation ?? onMissingString(key, locale) ?? '';
+    return translation || onMissingString(key, locale) || '';
   }
 
   /**
