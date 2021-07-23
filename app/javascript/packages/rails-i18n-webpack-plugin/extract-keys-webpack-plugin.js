@@ -64,10 +64,7 @@ class ExtractKeysWebpackPlugin {
   constructor(options = /** @type {Partial<Options>} */ ({})) {
     const { DEFAULT_OPTIONS } = /** @type {typeof ExtractKeysWebpackPlugin} */ (this.constructor);
 
-    this.options = /** @type {Options} */ (Object.keys(DEFAULT_OPTIONS).reduce((result, key) => {
-      result[key] = options[key] ?? DEFAULT_OPTIONS[key];
-      return result;
-    }, {}));
+    this.options = /** @type {Options} */ ({ ...DEFAULT_OPTIONS, ...options });
   }
 
   /**
