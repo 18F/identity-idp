@@ -1,2 +1,5 @@
-node_modules
+app/assets/javascripts/i18n-strings.js
 fixtures
+node_modules
+public
+vendor

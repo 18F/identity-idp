@@ -1,0 +1,1 @@
+(window._locale_data=window._locale_data||[]).push({"forms.button.submit":"Submit","item.1":"Premier","item.2":"Second","item.3":""});

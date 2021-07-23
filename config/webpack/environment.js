@@ -1,4 +1,5 @@
 const { environment } = require('@rails/webpacker');
+const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
 
 environment.loaders.delete('file');
 environment.loaders.delete('nodeModules');
@@ -36,5 +37,10 @@ const sourceMapLoader = {
   use: ['source-map-loader'],
 };
 environment.loaders.append('sourceMap', sourceMapLoader);
+
+environment.plugins.prepend(
+  'RailsI18nWebpackPlugin',
+  new RailsI18nWebpackPlugin({ template: 'LoginGov.I18n.addStrings(%j);' }),
+);
 
 module.exports = environment;

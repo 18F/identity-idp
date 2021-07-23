@@ -1,5 +1,0 @@
-<% depend_on(Rails.root.join('config', 'js_locale_strings.yml').to_s) %>
-<% Dir.glob(Rails.root.join('config/locales/**/es.yml')).each { |file| depend_on(file) } %>
-<% keys = YAML.load_file Rails.root.join('config', 'js_locale_strings.yml') %>
-
-window.LoginGov.I18n.strings = <%= keys.map { |key| [key, I18n.t(key, locale: 'es')] }.to_h.to_json %>;

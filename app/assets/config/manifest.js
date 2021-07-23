@@ -1,8 +1,5 @@
 //= link_tree ../images
 //= link application.js
-//= link i18n-strings.fr.js
-//= link i18n-strings.en.js
-//= link i18n-strings.es.js
 //= link application.css
 
 //= link i18n-strings.js
