@@ -91,7 +91,7 @@ liveness_checking_enabled: 'false'
 logins_per_ip_track_only_mode: 'false'
 # LexisNexis #####################################################
 lexisnexis_base_url: https://www.example.com
-lexisnexis_timeout: '45'
+lexisnexis_timeout: '10'
 lexisnexis_request_mode: testing
 # Instant Verify and Phone Finder Integrations
 lexisnexis_account_id: test_account
