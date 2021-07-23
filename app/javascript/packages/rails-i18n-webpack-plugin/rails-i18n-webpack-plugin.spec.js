@@ -1,6 +1,6 @@
 const sinon = require('sinon');
 const path = require('path');
-const fs = require('fs/promises');
+const { promises: fs } = require('fs');
 const webpack = require('webpack');
 const RailsI18nWebpackPlugin = require('./rails-i18n-webpack-plugin.js');
 

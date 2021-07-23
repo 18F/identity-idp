@@ -1,4 +1,4 @@
-const fs = require('fs/promises');
+const { promises: fs } = require('fs');
 const { format } = require('util');
 const path = require('path');
 const YAML = require('yaml');
