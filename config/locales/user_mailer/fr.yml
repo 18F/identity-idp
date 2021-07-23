@@ -3,19 +3,19 @@ fr:
   user_mailer:
     account_does_not_exist:
       intro_html: Cette adresse e-mail n’est pas encore associée à un compte %{app}.
-        Si vous souhaitez créer un compte login.gov avec cette adresse e-mail,
+        Si vous souhaitez créer un compte Login.gov avec cette adresse e-mail,
         veuillez cliquer sur le lien ci-dessous ou faites un copier-coller de
         l’intégralité du lien sur votre navigateur. Si vous n’avez pas sollicité
         une réinitialisation de votre mot de passe, nous vous prions de bien
         vouloir ignorer ce message.
       link_text: Créer votre compte
-      subject: Votre demande de réinitialisation de votre mot de passe login.gov
+      subject: Votre demande de réinitialisation de votre mot de passe Login.gov
     account_reset_cancel:
       intro: Cet e-mail confirme que vous avez annulé votre demande de suppression de
-        votre compte login.gov.
+        votre compte Login.gov.
       subject: Supprimer votre compte
     account_reset_complete:
-      intro: Cet e-mail confirme que vous avez supprimé votre compte login.gov.
+      intro: Cet e-mail confirme que vous avez supprimé votre compte Login.gov.
       subject: Compte supprimé
     account_reset_granted:
       button: Oui, continuez la suppression
@@ -28,10 +28,10 @@ fr:
         accéder aux sites Web gouvernementaux participants qui utilisent %{app},
         vous pouvez créer un nouveau compte %{app} en utilisant la même adresse
         e-mail après la suppression de votre compte.<br><br>
-      subject: Supprimer votre compte login.gov
+      subject: Supprimer votre compte Login.gov
     account_reset_request:
       cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte
-        login.gov pour annuler.
+        Login.gov pour annuler.
       header: Votre compte sera supprimé dans 24 heures
       intro_html: 'Par mesure de sécurité, %{app} nécessite un processus en deux
         étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a une
@@ -42,7 +42,7 @@ fr:
         période d’attente de 24 heures, vous recevrez un e-mail qui vous
         demandera de confirmer la suppression de votre compte %{app}. Votre
         compte ne sera pas supprimé tant que vous ne l’aurez pas confirmé.'
-      subject: Comment supprimer votre compte login.gov
+      subject: Comment supprimer votre compte Login.gov
     account_verified:
       contact_link: nous contacter
       disavowal_link: changer votre mot de passe
@@ -78,7 +78,7 @@ fr:
         bureau. Veuillez vous connecter à %{sp_link}
       subject: Vérifiez votre identité sur un ordinateur de bureau
     email_added:
-      header: Une nouvelle adresse e-mail a été ajoutée à votre profil login.gov.
+      header: Une nouvelle adresse e-mail a été ajoutée à votre profil Login.gov.
       help: Si vous n’avez pas apporté cette modification, connectez-vous à votre
         profil et gérez vos adresses e-mail. Nous vous recommandons de changer
         également votre mot de passe.
@@ -89,7 +89,7 @@ fr:
       first_sentence:
         confirmed: Vous tentez de changer votre adresse courriel?
         forgot_password: Vous avez essayé de réinitialiser le mot de passe de votre
-          compte login.gov, mais nous ne possédons pas de compte associé à cette
+          compte Login.gov, mais nous ne possédons pas de compte associé à cette
           adresse courriel.
         unconfirmed: Merci d’avoir envoyé votre adresse email.
       footer: Ce lien expirera dans %{confirmation_period}.
@@ -103,7 +103,7 @@ fr:
       try_diff_email: Essayez une autre adresse e-mail
       use_this_email: Ou utilisez cet e-mail et
     email_deleted:
-      header: Une adresse email a été supprimée de votre profil login.gov.
+      header: Une adresse email a été supprimée de votre profil Login.gov.
       help_html: Si vous ne souhaitez pas supprimer cette adresse électronique
         veuillez visiter le %{help_link} de %{app} ou %{contact_link}.
       subject: Adresse email supprimée
@@ -119,7 +119,7 @@ fr:
       help_html: Si vous n’avez pas changé votre mot de passe, vous pouvez
         réinitialiser votre mot de passe %{disavowal_link}. Pour plus d’aide,
         veuillez visiter le %{help_link} de %{app} ou %{contact_link}.
-      info_html: '<p>Votre compte login.gov a été connecté sur un nouvel
+      info_html: '<p>Votre compte Login.gov a été connecté sur un nouvel
         appareil.</p><br/><br/> <p><strong>%{date}<br/>%{location}</strong></p>'
       subject: Nouvelle connexion avec votre compte Login.gov
     password_changed:
@@ -129,7 +129,7 @@ fr:
         veuillez visiter le %{help_link} de %{app} ou %{contact_link}.
       intro_html: Le mot de passe de votre compte %{app} a été changé.
     personal_key_regenerated:
-      help_html: <p>Votre compte login.gov vient de recevoir une nouvelle clé
+      help_html: <p>Votre compte Login.gov vient de recevoir une nouvelle clé
         personnelle de 16 caractères. Le but de cet e-mail est de s’assurer que
         c’est bien vous qui en êtes à l’origine.</p><p> Si vous venez de vous
         connecter et de régénérer votre clé personnelle, c’est parfait ! Vous
@@ -139,19 +139,19 @@ fr:
         href="%{reset_password_url}"> Modifiez votre mot de passe</a>.</strong>
         Choisissez un mot de passe que vous n’avez pas encore utilisé avec ce
         compte.</li><li><strong><a href="%{account_url}"> Connectez-vous à votre
-        compte login.gov</a></strong> et vérifiez bien que toutes les
+        compte Login.gov</a></strong> et vérifiez bien que toutes les
         informations sur la page de votre compte sont correctes, y compris les
         méthodes que vous utilisez pour l’authentification à deux facteurs, dont
         le numéro de téléphone, l’application d’authentification ou la clé de
         sécurité.</li><li><strong>Sur votre <a href="%{account_url}">page de
-        compte login.gov</a>, demandez une nouvelle clé personnelle.</strong>
+        compte Login.gov</a>, demandez une nouvelle clé personnelle.</strong>
         N’oubliez pas de ne jamais la partager, sauf si vous l’utilisez pour
         vous connecter à un site de confiance qui utilise
-        login.gov.</li></ol></p><br>Merci,<br>L’équipe login.gov
+        Login.gov.</li></ol></p><br>Merci,<br>L’équipe Login.gov
       intro: Nouvelle clé personnelle émise
       subject: Alerte de sécurité du compte
     personal_key_sign_in:
-      help_html: <p>Votre compte login.gov a été connecté à l’aide de votre clé
+      help_html: <p>Votre compte Login.gov a été connecté à l’aide de votre clé
         personnelle. Vous recevez cet email pour vous assurer que c’était bien
         vous.</p><p>Si vous venez de vous connecter avec votre clé personnelle,
         c’est parfait! Vous ne devez rien faire.</p><p>Si vous ne vous êtes pas
@@ -161,15 +161,15 @@ fr:
         de passe</a>.</strong> Choisissez un mot de passe que vous n’avez pas
         encore utilisé avec ce compte.</li><li><strong><a
         href="%{account_url}">Connectez-vous à votre compte
-        login.gov</a></strong> et assurez-vous de reconnaître toutes les
+        Login.gov</a></strong> et assurez-vous de reconnaître toutes les
         informations de la page de votre compte, y compris les méthodes que vous
         utilisez pour l’authentification à deux facteurs, telles que le numéro
         de téléphone, l’application d’authentification ou la clé de
-        sécurité.</li><li><strong>Sur la page de votre compte login.gov,
+        sécurité.</li><li><strong>Sur la page de votre compte Login.gov,
         demandez une nouvelle clé personnelle.</strong> N’oubliez pas de ne
         jamais le partager à moins que vous ne l’utilisiez pour vous connecter à
         un site Web de confiance utilisant
-        login.gov.</li></ol></p><br>Merci,<br>L’équipe login.gov
+        Login.gov.</li></ol></p><br>Merci,<br>L’équipe Login.gov
       intro: La clé personnelle utilisée pour vous connecter
       subject: Alerte de sécurité du compte
     phone_added:
@@ -184,18 +184,18 @@ fr:
         conserver votre informations sûres. Veuillez suivre les étapes
         ci-dessous pour réinitialiser votre mot de passe et Sécurise ton
         compte:'
-      intro: Nous avons détecté une activité inhabituelle sur votre compte login.gov.
+      intro: Nous avons détecté une activité inhabituelle sur votre compte Login.gov.
         Nous sommes concernés quelqu’un d’autre que vous tente peut-être
         d’accéder à vos informations.
       learn_more_link_text: En savoir plus sur vos options
-      reminder_html: Pour rappel, <b>login.gov ne vous demandera jamais vos
+      reminder_html: Pour rappel, <b>Login.gov ne vous demandera jamais vos
         identifiants de connexion par téléphone ou par e-mail</b>. Vous pouvez
         prendre des mesures supplémentaires pour sécuriser votre compte en
         activant l’authentification à deux facteurs.
-      step_1: Visitez le site Web login.gov et sélectionnez Connexion
+      step_1: Visitez le site Web Login.gov et sélectionnez Connexion
       step_2: Sélectionnez “Vous avez oublié votre mot de passe?” au bas de la page
       step_3: Suivez les instructions pour réinitialiser votre mot de passe
-      subject: Activité inhabituelle — réinitialisez votre mot de passe login.gov
+      subject: Activité inhabituelle — réinitialisez votre mot de passe Login.gov
     reset_password_instructions:
       footer: Ce lien expire dans %{expires} heures.
       header: Pour terminer la réinitialisation de votre mot de passe, veuillez

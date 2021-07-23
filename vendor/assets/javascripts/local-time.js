@@ -1,13 +1,13 @@
-// modifications marked with "login.gov" original here: https://github.com/basecamp/local_time/blob/master/app/assets/javascripts/local-time.js
+// modifications marked with "Login.gov" original here: https://github.com/basecamp/local_time/blob/master/app/assets/javascripts/local-time.js
 
 (function(){var t=this;(function(){(function(){var t=[].slice;
 
-  // login.gov
+  // Login.gov
   window.LocalTime={
 
     config:{},run:function(){return this.getController().processElements()},process:function(){var e,n,r,a;for(n=1<=arguments.length?t.call(arguments,0):[],r=0,a=n.length;r<a;r++)e=n[r],this.getController().processElement(e);return n.length},getController:function(){return null!=this.controller?this.controller:this.controller=new e.Controller}}}).call(this)}).call(t);
 
-  // login.gov
+  // Login.gov
   var e=window.LocalTime;
 
   (function(){(function(){
@@ -40,7 +40,7 @@
         }, datetime: {at: "{date} at {time}", formats: {"default": "%B %e, %Y at %l:%M %P %Z"}}
       },
 
-  // login.gov (only the translations we need have been modified)
+  // Login.gov (only the translations we need have been modified)
       es: {
         date: {
           dayNames: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -98,8 +98,8 @@
     }
   }).call(this),function(){
 
-  // login.gov
-    var locale = location.pathname.split('/')[1];
+  // Login.gov
+  var locale = location.pathname.split('/')[1];
     if (locale != 'fr' && locale != 'es') {
       locale = 'en';
     }

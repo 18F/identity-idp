@@ -14,7 +14,7 @@ require_relative '../lib/identity_job_log_subscriber'
 
 Bundler.require(*Rails.groups)
 
-APP_NAME = 'login.gov'.freeze
+APP_NAME = 'Login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
