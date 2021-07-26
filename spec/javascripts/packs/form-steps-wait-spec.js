@@ -7,7 +7,6 @@ import {
   isPollingPage,
   getPageErrorMessage,
 } from '../../../app/javascript/packs/form-steps-wait';
-import { expect } from 'chai';
 
 const POLL_PAGE_MARKUP = '<meta content="1" http-equiv="refresh">Example';
 const NON_POLL_PAGE_MARKUP = 'Example';
@@ -160,7 +159,6 @@ describe('FormStepsWait', () => {
     });
 
     context('invalid input', () => {
-
       let form;
       let input;
       beforeEach(() => {
