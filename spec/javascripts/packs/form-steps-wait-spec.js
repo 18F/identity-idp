@@ -170,10 +170,9 @@ describe('FormStepsWait', () => {
       });
       it('stops spinner', (done) => {
         new FormStepsWait(form).bind();
-        
-        fireEvent.invalid(form);
-        expect(form.checkValidity()).to.be.false();
         form.addEventListener('spinner.stop', () => done());
+
+        fireEvent.invalid(input);
       });
     });
 
