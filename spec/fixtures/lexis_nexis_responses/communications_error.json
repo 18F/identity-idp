@@ -1,0 +1,15 @@
+{
+  "Status": {
+    "ConversationId": "31000473750459",
+    "RequestId": "794609199",
+    "TransactionStatus": "error",
+    "TransactionReasonCode": {"Code": "communications_error", "Description": "Error: Network Communications"},
+    "Reference": "7249e737-0d72-4624-9c8f-ad5832b7d2ba"
+  },
+  "Products": [
+    {
+      "ProductStatus": "error",
+      "ProductReason": {"Code": "communications_error", "Description": "Error: Network Communications"}
+    }
+  ]
+}

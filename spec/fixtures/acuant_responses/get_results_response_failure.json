@@ -175,30 +175,30 @@
   "Fields": [],
   "Images": [
     {
-      "GlareMetric": null,
-      "HorizontalResolution": 96,
+      "GlareMetric": 50,
+      "HorizontalResolution": 300,
       "Id": "fe7c612a-66bb-46ab-8b06-b28f657b6482",
       "IsCropped": false,
       "IsTampered": false,
       "Light": 0,
       "MimeType": "image/jpeg",
-      "SharpnessMetric": null,
+      "SharpnessMetric": 50,
       "Side": 0,
       "Uri": "https://services.assureid.net/AssureIDService/Document/97b0215a-7858-4104-b1f3-17dbaf609140/Image?side=Front&light=White",
-      "VerticalResolution": 96
+      "VerticalResolution": 300
     },
     {
-      "GlareMetric": null,
-      "HorizontalResolution": 96,
+      "GlareMetric": 50,
+      "HorizontalResolution": 300,
       "Id": "60359af3-d87e-46da-ab5b-883ebfec923f",
       "IsCropped": false,
       "IsTampered": false,
       "Light": 0,
       "MimeType": "image/jpeg",
-      "SharpnessMetric": null,
+      "SharpnessMetric": 50,
       "Side": 1,
       "Uri": "https://services.assureid.net/AssureIDService/Document/97b0215a-7858-4104-b1f3-17dbaf609140/Image?side=Back&light=White",
-      "VerticalResolution": 96
+      "VerticalResolution": 300
     }
   ],
   "InstanceId": "97b0215a-7858-4104-b1f3-17dbaf609140",
@@ -212,7 +212,7 @@
     "IsActive": true,
     "IsDevelopment": true,
     "IsTrial": false,
-    "Name": "Dev GSA iProov",
+    "Name": "Dev Test iProov",
     "StorePII": false
   }
 }
