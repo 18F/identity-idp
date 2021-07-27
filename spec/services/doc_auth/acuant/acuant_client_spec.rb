@@ -215,6 +215,8 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
       url = URI.join(assure_id_url, '/AssureIDService/Document/Instance')
       stub_request(:post, url).to_return(body: '', status: 500)
 
+      expect(NewRelic::Agent).to receive(:notice_error)
+
       result = subject.create_document(image_source: image_source)
 
       expect(result.success?).to eq(false)
@@ -229,6 +231,8 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
     it 'returns a response with an exception' do
       url = URI.join(assure_id_url, '/AssureIDService/Document/Instance')
       stub_request(:post, url).to_raise(Faraday::TimeoutError.new('Connection failed'))
+
+      expect(NewRelic::Agent).to receive(:notice_error)
 
       result = subject.create_document(image_source: image_source)
 
@@ -277,6 +281,8 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
     context 'when the get face image request fails' do
       it 'returns a failure' do
         stub_request(:get, get_face_image_url).to_return(status: 404)
+
+        expect(NewRelic::Agent).to receive(:notice_error).at_least(:once)
 
         result = subject.post_selfie(
           instance_id: instance_id,
