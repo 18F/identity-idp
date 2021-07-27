@@ -2,82 +2,82 @@
 module DocAuthRouter
   ERROR_TRANSLATIONS = {
     # i18n-tasks-use t('doc_auth.errors.alerts.barcode_content_check')
-    IdentityDocAuth::Errors::BARCODE_CONTENT_CHECK =>
+    DocAuth::Errors::BARCODE_CONTENT_CHECK =>
       'doc_auth.errors.alerts.barcode_content_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.barcode_read_check')
-    IdentityDocAuth::Errors::BARCODE_READ_CHECK =>
+    DocAuth::Errors::BARCODE_READ_CHECK =>
       'doc_auth.errors.alerts.barcode_read_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.birth_date_checks')
-    IdentityDocAuth::Errors::BIRTH_DATE_CHECKS =>
+    DocAuth::Errors::BIRTH_DATE_CHECKS =>
       'doc_auth.errors.alerts.birth_date_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.control_number_check')
-    IdentityDocAuth::Errors::CONTROL_NUMBER_CHECK =>
+    DocAuth::Errors::CONTROL_NUMBER_CHECK =>
       'doc_auth.errors.alerts.control_number_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.doc_crosscheck')
-    IdentityDocAuth::Errors::DOC_CROSSCHECK =>
+    DocAuth::Errors::DOC_CROSSCHECK =>
       'doc_auth.errors.alerts.doc_crosscheck',
     # i18n-tasks-use t('doc_auth.errors.alerts.doc_number_checks')
-    IdentityDocAuth::Errors::DOC_NUMBER_CHECKS =>
+    DocAuth::Errors::DOC_NUMBER_CHECKS =>
       'doc_auth.errors.alerts.doc_number_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.expiration_checks')
-    IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK =>
+    DocAuth::Errors::DOCUMENT_EXPIRED_CHECK =>
       'doc_auth.errors.alerts.expiration_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.expiration_checks')
-    IdentityDocAuth::Errors::EXPIRATION_CHECKS =>
+    DocAuth::Errors::EXPIRATION_CHECKS =>
       'doc_auth.errors.alerts.expiration_checks',
     # i18n-tasks-use t('doc_auth.errors.alerts.full_name_check')
-    IdentityDocAuth::Errors::FULL_NAME_CHECK =>
+    DocAuth::Errors::FULL_NAME_CHECK =>
       'doc_auth.errors.alerts.full_name_check',
     # i18n-tasks-use t('doc_auth.errors.general.liveness')
-    IdentityDocAuth::Errors::GENERAL_ERROR_LIVENESS =>
+    DocAuth::Errors::GENERAL_ERROR_LIVENESS =>
       'doc_auth.errors.general.liveness',
     # i18n-tasks-use t('doc_auth.errors.general.no_liveness')
-    IdentityDocAuth::Errors::GENERAL_ERROR_NO_LIVENESS =>
+    DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS =>
       'doc_auth.errors.general.no_liveness',
     # i18n-tasks-use t('doc_auth.errors.alerts.id_not_recognized')
-    IdentityDocAuth::Errors::ID_NOT_RECOGNIZED =>
+    DocAuth::Errors::ID_NOT_RECOGNIZED =>
       'doc_auth.errors.alerts.id_not_recognized',
     # i18n-tasks-use t('doc_auth.errors.alerts.id_not_verified')
-    IdentityDocAuth::Errors::ID_NOT_VERIFIED =>
+    DocAuth::Errors::ID_NOT_VERIFIED =>
       'doc_auth.errors.alerts.id_not_verified',
     # i18n-tasks-use t('doc_auth.errors.alerts.issue_date_checks')
-    IdentityDocAuth::Errors::ISSUE_DATE_CHECKS =>
+    DocAuth::Errors::ISSUE_DATE_CHECKS =>
       'doc_auth.errors.alerts.issue_date_checks',
     # i18n-tasks-use t('doc_auth.errors.general.multiple_back_id_failures')
-    IdentityDocAuth::Errors::MULTIPLE_BACK_ID_FAILURES =>
+    DocAuth::Errors::MULTIPLE_BACK_ID_FAILURES =>
       'doc_auth.errors.general.multiple_back_id_failures',
     # i18n-tasks-use t('doc_auth.errors.general.multiple_front_id_failures')
-    IdentityDocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES =>
+    DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES =>
       'doc_auth.errors.general.multiple_front_id_failures',
     # i18n-tasks-use t('doc_auth.errors.alerts.ref_control_number_check')
-    IdentityDocAuth::Errors::REF_CONTROL_NUMBER_CHECK =>
+    DocAuth::Errors::REF_CONTROL_NUMBER_CHECK =>
       'doc_auth.errors.alerts.ref_control_number_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.selfie_failure')
-    IdentityDocAuth::Errors::SELFIE_FAILURE => 'doc_auth.errors.alerts.selfie_failure',
+    DocAuth::Errors::SELFIE_FAILURE => 'doc_auth.errors.alerts.selfie_failure',
     # i18n-tasks-use t('doc_auth.errors.alerts.sex_check')
-    IdentityDocAuth::Errors::SEX_CHECK => 'doc_auth.errors.alerts.sex_check',
+    DocAuth::Errors::SEX_CHECK => 'doc_auth.errors.alerts.sex_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.visible_color_check')
-    IdentityDocAuth::Errors::VISIBLE_COLOR_CHECK => 'doc_auth.errors.alerts.visible_color_check',
+    DocAuth::Errors::VISIBLE_COLOR_CHECK => 'doc_auth.errors.alerts.visible_color_check',
     # i18n-tasks-use t('doc_auth.errors.alerts.visible_photo_check')
-    IdentityDocAuth::Errors::VISIBLE_PHOTO_CHECK => 'doc_auth.errors.alerts.visible_photo_check',
+    DocAuth::Errors::VISIBLE_PHOTO_CHECK => 'doc_auth.errors.alerts.visible_photo_check',
     # i18n-tasks-use t('doc_auth.errors.dpi.top_msg')
-    IdentityDocAuth::Errors::DPI_LOW_ONE_SIDE => 'doc_auth.errors.dpi.top_msg',
+    DocAuth::Errors::DPI_LOW_ONE_SIDE => 'doc_auth.errors.dpi.top_msg',
     # i18n-tasks-use t('doc_auth.errors.dpi.top_msg_plural')
-    IdentityDocAuth::Errors::DPI_LOW_BOTH_SIDES => 'doc_auth.errors.dpi.top_msg_plural',
+    DocAuth::Errors::DPI_LOW_BOTH_SIDES => 'doc_auth.errors.dpi.top_msg_plural',
     # i18n-tasks-use t('doc_auth.errors.sharpness.top_msg')
-    IdentityDocAuth::Errors::SHARP_LOW_ONE_SIDE => 'doc_auth.errors.sharpness.top_msg',
+    DocAuth::Errors::SHARP_LOW_ONE_SIDE => 'doc_auth.errors.sharpness.top_msg',
     # i18n-tasks-use t('doc_auth.errors.sharpness.top_msg_plural')
-    IdentityDocAuth::Errors::SHARP_LOW_BOTH_SIDES => 'doc_auth.errors.sharpness.top_msg_plural',
+    DocAuth::Errors::SHARP_LOW_BOTH_SIDES => 'doc_auth.errors.sharpness.top_msg_plural',
     # i18n-tasks-use t('doc_auth.errors.glare.top_msg')
-    IdentityDocAuth::Errors::GLARE_LOW_ONE_SIDE => 'doc_auth.errors.glare.top_msg',
+    DocAuth::Errors::GLARE_LOW_ONE_SIDE => 'doc_auth.errors.glare.top_msg',
     # i18n-tasks-use t('doc_auth.errors.glare.top_msg_plural')
-    IdentityDocAuth::Errors::GLARE_LOW_BOTH_SIDES => 'doc_auth.errors.glare.top_msg_plural',
+    DocAuth::Errors::GLARE_LOW_BOTH_SIDES => 'doc_auth.errors.glare.top_msg_plural',
     # i18n-tasks-use t('doc_auth.errors.http.image_load')
-    IdentityDocAuth::Errors::IMAGE_LOAD_FAILURE => 'doc_auth.errors.http.image_load',
+    DocAuth::Errors::IMAGE_LOAD_FAILURE => 'doc_auth.errors.http.image_load',
     # i18n-tasks-use t('doc_auth.errors.http.pixel_depth')
-    IdentityDocAuth::Errors::PIXEL_DEPTH_FAILURE => 'doc_auth.errors.http.pixel_depth',
+    DocAuth::Errors::PIXEL_DEPTH_FAILURE => 'doc_auth.errors.http.pixel_depth',
     # i18n-tasks-use t('doc_auth.errors.http.image_size')
-    IdentityDocAuth::Errors::IMAGE_SIZE_FAILURE => 'doc_auth.errors.http.image_size',
+    DocAuth::Errors::IMAGE_SIZE_FAILURE => 'doc_auth.errors.http.image_size',
   }.freeze
 
   class DocAuthErrorTranslatorProxy
@@ -102,7 +102,7 @@ module DocAuthRouter
     private
 
     def translate_form_response!(response)
-      return response unless response.is_a?(IdentityDocAuth::Response)
+      return response unless response.is_a?(DocAuth::Response)
 
       # This needs to happen before we translate, since it relies on the original error keys
       response = ExpiredLicenseAllower.new(response).processed_response
@@ -115,7 +115,7 @@ module DocAuthRouter
 
     def translate_doc_auth_errors!(response)
       # acuant selfie errors are handled in translate_generic_errors!
-      error_keys = IdentityDocAuth::ErrorGenerator::ERROR_KEYS.dup
+      error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
       error_keys.delete(:selfie) if DocAuthRouter.doc_auth_vendor == 'acuant'
 
       error_keys.each do |category|
@@ -149,7 +149,7 @@ module DocAuthRouter
     case doc_auth_vendor
     when 'acuant'
       DocAuthErrorTranslatorProxy.new(
-        IdentityDocAuth::Acuant::AcuantClient.new(
+        DocAuth::Acuant::AcuantClient.new(
           assure_id_password: IdentityConfig.store.acuant_assure_id_password,
           assure_id_subscription_id: IdentityConfig.store.acuant_assure_id_subscription_id,
           assure_id_url: IdentityConfig.store.acuant_assure_id_url,
@@ -157,7 +157,6 @@ module DocAuthRouter
           facial_match_url: IdentityConfig.store.acuant_facial_match_url,
           passlive_url: IdentityConfig.store.acuant_passlive_url,
           timeout: IdentityConfig.store.acuant_timeout,
-          exception_notifier: method(:notify_exception),
           warn_notifier: warn_notifier,
           dpi_threshold: IdentityConfig.store.doc_auth_error_dpi_threshold,
           sharpness_threshold: IdentityConfig.store.doc_auth_error_sharpness_threshold,
@@ -166,7 +165,7 @@ module DocAuthRouter
       )
     when 'lexisnexis'
       DocAuthErrorTranslatorProxy.new(
-        IdentityDocAuth::LexisNexis::LexisNexisClient.new(
+        DocAuth::LexisNexis::LexisNexisClient.new(
           account_id: IdentityConfig.store.lexisnexis_account_id,
           base_url: IdentityConfig.store.lexisnexis_base_url,
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
@@ -176,7 +175,6 @@ module DocAuthRouter
           trueid_password: IdentityConfig.store.lexisnexis_trueid_password,
           trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
           timeout: IdentityConfig.store.lexisnexis_timeout,
-          exception_notifier: method(:notify_exception),
           warn_notifier: warn_notifier,
           locale: I18n.locale,
           dpi_threshold: IdentityConfig.store.doc_auth_error_dpi_threshold,
@@ -186,20 +184,12 @@ module DocAuthRouter
       )
     when 'mock'
       DocAuthErrorTranslatorProxy.new(
-        IdentityDocAuth::Mock::DocAuthMockClient.new(
+        DocAuth::Mock::DocAuthMockClient.new(
           warn_notifier: warn_notifier,
         ),
       )
     else
       raise "#{doc_auth_vendor} is not a valid doc auth vendor"
-    end
-  end
-
-  def self.notify_exception(exception, custom_params = nil, expected = false)
-    if custom_params
-      NewRelic::Agent.notice_error(exception, custom_params: custom_params, expected: expected)
-    else
-      NewRelic::Agent.notice_error(exception, expected: expected)
     end
   end
 

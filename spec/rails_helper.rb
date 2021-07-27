@@ -111,7 +111,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    IdentityDocAuth::Mock::DocAuthMockClient.reset!
+    DocAuth::Mock::DocAuthMockClient.reset!
     original_queue_adapter = ActiveJob::Base.queue_adapter
     descendants = ActiveJob::Base.descendants + [ActiveJob::Base]
 

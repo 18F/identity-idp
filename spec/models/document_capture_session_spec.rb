@@ -4,7 +4,7 @@ describe DocumentCaptureSession do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:user) { create(:user, :signed_up) }
   let(:doc_auth_response) do
-    IdentityDocAuth::Response.new(
+    DocAuth::Response.new(
       success: true,
       pii_from_doc: {
         first_name: 'Testy',

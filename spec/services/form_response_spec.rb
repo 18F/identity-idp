@@ -43,7 +43,7 @@ describe FormResponse do
   describe '#merge' do
     it 'merges the extra analytics' do
       response1 = FormResponse.new(success: true, errors: {}, extra: { step: 'foo', order: [1, 2] })
-      response2 = IdentityDocAuth::Response.new(
+      response2 = DocAuth::Response.new(
         success: true,
         extra: { is_fallback_link: true, order: [2, 1] },
       )
@@ -54,7 +54,7 @@ describe FormResponse do
 
     it 'merges errors' do
       response1 = FormResponse.new(success: false, errors: { front: 'error' })
-      response2 = IdentityDocAuth::Response.new(success: true, errors: { back: 'error' })
+      response2 = DocAuth::Response.new(success: true, errors: { back: 'error' })
 
       combined_response = response1.merge(response2)
       expect(combined_response.errors).to eq(front: 'error', back: 'error')
@@ -62,7 +62,7 @@ describe FormResponse do
 
     it 'merges multiple errors for key' do
       response1 = FormResponse.new(success: false, errors: { front: 'front-error-1' })
-      response2 = IdentityDocAuth::Response.new(success: true, errors: { front: ['front-error-2'] })
+      response2 = DocAuth::Response.new(success: true, errors: { front: ['front-error-2'] })
 
       combined_response = response1.merge(response2)
       expect(combined_response.errors).to eq(front: ['front-error-1', 'front-error-2'])
@@ -98,7 +98,7 @@ describe FormResponse do
 
     it 'returns true if one is false and one is true' do
       response1 = FormResponse.new(success: false, errors: {})
-      response2 = IdentityDocAuth::Response.new(success: true)
+      response2 = DocAuth::Response.new(success: true)
 
       combined_response = response1.merge(response2)
       expect(combined_response.success?).to eq(false)

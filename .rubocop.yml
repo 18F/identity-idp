@@ -724,6 +724,9 @@ Performance/UriDefaultParser:
 Rails/ApplicationMailer:
   Enabled: false
 
+Rails/Blank:
+  Enabled: false
+
 Rails/Delegate:
   Enabled: false
 
@@ -737,6 +740,9 @@ Rails/HttpPositionalArguments:
   Include:
   - spec/**/*
   - test/**/*
+
+Rails/Present:
+  Enabled: false
 
 Rails/RelativeDateConstant:
   Enabled: false

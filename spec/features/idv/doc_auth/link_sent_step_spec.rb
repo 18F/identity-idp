@@ -44,7 +44,7 @@ feature 'doc auth link sent step' do
   end
 
   it 'does not proceed to the next page if the capture flow is unsuccessful' do
-    mock_doc_captured(user.id, IdentityDocAuth::Response.new(success: false))
+    mock_doc_captured(user.id, DocAuth::Response.new(success: false))
 
     click_idv_continue
 

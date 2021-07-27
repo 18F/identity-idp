@@ -101,9 +101,9 @@ class DocumentProofingJob < ApplicationJob
 
   def image_source(image_metadata)
     if acuant_sdk_capture?(image_metadata)
-      IdentityDocAuth::ImageSources::ACUANT_SDK
+      DocAuth::ImageSources::ACUANT_SDK
     else
-      IdentityDocAuth::ImageSources::UNKNOWN
+      DocAuth::ImageSources::UNKNOWN
     end
   end
 
