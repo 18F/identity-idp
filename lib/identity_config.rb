@@ -229,6 +229,7 @@ class IdentityConfig
     config.add(:risc_notifications_local_enabled, type: :boolean)
     config.add(:risc_notifications_eventbridge_enabled, type: :boolean)
     config.add(:ruby_workers_enabled, type: :boolean)
+    config.add(:rules_of_use_horizon_years, type: :integer)
     config.add(:rules_of_use_updated_at, type: :timestamp)
     config.add(:s3_report_bucket_prefix, type: :string)
     config.add(:s3_reports_enabled, type: :boolean)

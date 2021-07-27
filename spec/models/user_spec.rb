@@ -321,6 +321,15 @@ RSpec.describe User do
         expect(user.accepted_rules_of_use_still_valid?).to be_truthy
       end
     end
+
+    context 'with a user who accepted the rules of use more than 6 years ago' do
+      let(:rules_of_use_updated_at) { 7.years.ago }
+      let(:accepted_terms_at) { 6.years.ago - 1.day }
+
+      it 'should return a falsey value' do
+        expect(user.accepted_rules_of_use_still_valid?).to be_falsey
+      end
+    end
   end
 
   context 'when a user has multiple phone_configurations' do
