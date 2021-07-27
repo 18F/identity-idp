@@ -10,7 +10,7 @@ module DocAuth
         end
 
         def headers
-          super().merge 'Content-Type' => 'application/json'
+          super.merge('Content-Type' => 'application/json')
         end
 
         def url
