@@ -5,16 +5,16 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisClient do
   let(:workflow) { 'LIVENESS.WORKFLOW' }
   let(:image_upload_url) do
     URI.join(
-      "https://lexis.nexis.example.com",
+      'https://lexis.nexis.example.com',
       "/restws/identity/v3/accounts/test_account/workflows/#{workflow}/conversations",
     )
   end
 
   subject(:client) do
     DocAuth::LexisNexis::LexisNexisClient.new(
-      base_url: "https://lexis.nexis.example.com",
-      locale: "en",
-      trueid_account_id: "test_account",
+      base_url: 'https://lexis.nexis.example.com',
+      locale: 'en',
+      trueid_account_id: 'test_account',
       trueid_liveness_workflow: 'LIVENESS.WORKFLOW',
       trueid_noliveness_workflow: 'NO.LIVENESS.WORKFLOW',
     )

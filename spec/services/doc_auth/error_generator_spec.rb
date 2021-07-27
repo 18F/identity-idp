@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::ErrorGenerator do
-
   let(:warn_notifier) { instance_double('Proc') }
 
   let(:config) do
@@ -38,7 +37,7 @@ RSpec.describe DocAuth::ErrorGenerator do
     it 'DocAuthResult is Attention' do
       error_info = build_error_info(
         doc_result: 'Attention',
-        failed: [{ name: '2D Barcode Read', result: 'Attention' }]
+        failed: [{ name: '2D Barcode Read', result: 'Attention' }],
       )
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
@@ -50,7 +49,7 @@ RSpec.describe DocAuth::ErrorGenerator do
     it 'DocAuthResult is Failed' do
       error_info = build_error_info(
         doc_result: 'Failed',
-        failed: [{ name: 'Visible Pattern', result: 'Failed' }]
+        failed: [{ name: 'Visible Pattern', result: 'Failed' }],
       )
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
@@ -65,7 +64,7 @@ RSpec.describe DocAuth::ErrorGenerator do
         failed: [
           {name: '2D Barcode Read', result: 'Attention'},
           {name: 'Visible Pattern', result: 'Failed'},
-        ]
+        ],
       )
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
@@ -80,7 +79,7 @@ RSpec.describe DocAuth::ErrorGenerator do
         failed: [
           {name: 'Expiration Date Valid', result: 'Attention'},
           {name: 'Full Name Crosscheck', result: 'Failed'},
-        ]
+        ],
       )
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
@@ -95,7 +94,7 @@ RSpec.describe DocAuth::ErrorGenerator do
         failed: [
           {name: '2D Barcode Read', result: 'Attention'},
           {name: '2D Barcode Content', result: 'Failed'},
-        ]
+        ],
       )
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
@@ -107,7 +106,7 @@ RSpec.describe DocAuth::ErrorGenerator do
     it 'DocAuthResult is Failed with an unknown alert' do
       error_info = build_error_info(
         doc_result: 'Failed',
-        failed: [{ name: 'Not a known alert', result: 'Failed' }]
+        failed: [{ name: 'Not a known alert', result: 'Failed' }],
       )
 
       expect(warn_notifier).to receive(:call).
@@ -125,7 +124,7 @@ RSpec.describe DocAuth::ErrorGenerator do
         failed: [
           { name: 'Not a known alert', result: 'Failed' },
           { name: 'Birth Date Crosscheck', result: 'Failed' },
-        ]
+        ],
       )
 
       expect(warn_notifier).to receive(:call).
@@ -159,7 +158,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       error_info = build_error_info(
         doc_result: 'Attention',
         liveness_result: 'Pass',
-        failed: [{ name: '2D Barcode Read', result: 'Attention' }]
+        failed: [{ name: '2D Barcode Read', result: 'Attention' }],
       )
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
@@ -172,7 +171,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       error_info = build_error_info(
         doc_result: 'Attention',
         liveness_result: 'Fail',
-        failed: [{ name: '2D Barcode Read', result: 'Attention' }]
+        failed: [{ name: '2D Barcode Read', result: 'Attention' }],
       )
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
@@ -185,7 +184,7 @@ RSpec.describe DocAuth::ErrorGenerator do
       error_info = build_error_info(
         doc_result: 'Attention',
         liveness_result: 'Pass',
-        failed: [{ name: '2D Barcode Read', result: 'Attention' }]
+        failed: [{ name: '2D Barcode Read', result: 'Attention' }],
       )
 
       output = described_class.new(config).generate_doc_auth_errors(error_info)
@@ -218,7 +217,7 @@ RSpec.describe DocAuth::ErrorGenerator do
           'VerticalResolution' => 300,
           'SharpnessMetric' => 50,
           'GlareMetric' => 50,
-        }
+        },
       }
     }
 

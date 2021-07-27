@@ -7,15 +7,17 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   let(:failure_body_no_liveness) { LexisNexisFixtures.true_id_response_failure_no_liveness }
   let(:failure_body_with_liveness) { LexisNexisFixtures.true_id_response_failure_with_liveness}
-  let(:failure_body_with_all_failures) { LexisNexisFixtures.true_id_response_failure_with_all_failures}
+  let(:failure_body_with_all_failures) do
+    LexisNexisFixtures.true_id_response_failure_with_all_failures
+  end
 
-
+  # rubocop:disable Layout/LineLength
   let(:failure_response_no_liveness) do
     instance_double(Faraday::Response, status: 200, body: failure_body_no_liveness)
   end
   let(:failure_response_with_liveness) do
     instance_double(Faraday::Response, status: 200, body: failure_body_with_liveness)
-    end
+  end
   let(:failure_response_with_all_failures) do
     instance_double(Faraday::Response, status: 200, body: failure_body_with_all_failures)
   end
@@ -34,6 +36,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:attention_barcode_read) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_barcode_read_attention)
   end
+  # rubocop:enable Layout/LineLength
 
   let(:exception_notifier) { proc { } }
 
@@ -72,9 +75,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
   end
 
-
   context 'when the barcode can not be read' do
-    let(:response) { described_class.new(attention_barcode_read, false, config) }
+    let(:response) do
+      described_class.new(attention_barcode_read, false, config)
+    end
 
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)

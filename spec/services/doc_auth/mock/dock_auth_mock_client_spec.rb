@@ -85,7 +85,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
     )
     get_results_response = client.get_results(
       instance_id: create_document_response.instance_id,
-      liveness_enabled: false
+      liveness_enabled: false,
     )
 
     expect(get_results_response.pii_from_doc).to eq(

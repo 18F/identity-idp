@@ -10,12 +10,12 @@ RSpec.describe DocAuth::Acuant::Requests::FacialMatchRequest do
     end
     let(:request_body) do
       {
-        'Data': {
-          'ImageOne': Base64.strict_encode64(DocAuthImageFixtures.selfie_image),
-          'ImageTwo': Base64.strict_encode64(DocAuthImageFixtures.document_face_image),
+        Data: {
+          ImageOne: Base64.strict_encode64(DocAuthImageFixtures.selfie_image),
+          ImageTwo: Base64.strict_encode64(DocAuthImageFixtures.document_face_image),
         },
-        'Settings': {
-          'SubscriptionId': assure_id_subscription_id,
+        Settings: {
+          SubscriptionId: assure_id_subscription_id,
         },
       }.to_json
     end

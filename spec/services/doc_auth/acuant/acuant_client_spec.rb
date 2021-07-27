@@ -131,7 +131,11 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
           alert_failure_count: 2,
           image_metrics: a_hash_including(:back, :front),
           face_match_results: a_hash_including(:match_score, :is_match),
-          selfie_liveness_results: a_hash_including(:liveness_score, :liveness_assessment, :acuant_error),
+          selfie_liveness_results: a_hash_including(
+            :liveness_score,
+            :liveness_assessment,
+            :acuant_error,
+          ),
         }
 
         expect(result.success?).to eq(true)
@@ -290,7 +294,8 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
           to_return(body: AcuantFixtures.get_face_image_response)
         stub_request(:post, full_facial_match_url).
           to_return(body: AcuantFixtures.facial_match_response_failure)
-        stub_request(:post, full_liveness_url).to_return(body: AcuantFixtures.liveness_response_success)
+        stub_request(:post, full_liveness_url).
+          to_return(body: AcuantFixtures.liveness_response_success)
 
         result = subject.post_selfie(
           instance_id: instance_id,
@@ -308,7 +313,8 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
           to_return(body: AcuantFixtures.get_face_image_response)
         stub_request(:post, full_facial_match_url).
           to_return(body: AcuantFixtures.facial_match_response_success)
-        stub_request(:post, full_liveness_url).to_return(body: AcuantFixtures.liveness_response_failure)
+        stub_request(:post, full_liveness_url).
+          to_return(body: AcuantFixtures.liveness_response_failure)
 
         result = subject.post_selfie(
           instance_id: instance_id,

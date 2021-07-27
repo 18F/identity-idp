@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Acuant::Request do
-
   class SimpleAcuantRequest < DocAuth::Acuant::Request
     def handle_http_response(http_response)
       http_response.body.upcase!

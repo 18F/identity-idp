@@ -210,11 +210,13 @@ RSpec.describe DocAuth::Mock::ResultResponseBuilder do
 
     context 'with a yaml file containing a passing result' do
       subject(:builder) {
-        config = DocAuth::Mock::Config.new({
-          dpi_threshold: 290,
-          sharpness_threshold: 40,
-          glare_threshold: 40,
-        })
+        config = DocAuth::Mock::Config.new(
+          {
+            dpi_threshold: 290,
+            sharpness_threshold: 40,
+            glare_threshold: 40,
+          },
+        )
         described_class.new(input, config, true)
       }
 

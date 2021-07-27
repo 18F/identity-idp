@@ -32,7 +32,8 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         doc_auth_result: 'Passed',
         processed_alerts: a_hash_including(
           failed: all(a_hash_including(:name, :result)),
-          passed: all(a_hash_including(:name, :result))),
+          passed: all(a_hash_including(:name, :result)),
+        ),
         image_metrics: a_hash_including(:back, :front),
         alert_failure_count: 2,
         raw_alerts: raw_alerts,
@@ -44,8 +45,8 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         passed:
           a_collection_including(
             a_hash_including(side: :front, region: 'Flag Pattern'),
-            a_hash_including(side: :front, region: 'Lower Data Labels Right')
-          )
+            a_hash_including(side: :front, region: 'Lower Data Labels Right'),
+          ),
       }
 
       expect(response_hash).to match(expected_hash)
@@ -122,9 +123,9 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         expect(response.errors).to eq(id: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK])
 
         expect(response.pii_from_doc).to include(
-          first_name: "FAKEY",
-          last_name: "MCFAKERSON",
-          state_id_expiration: "2021-01-14",
+          first_name: 'FAKEY',
+          last_name: 'MCFAKERSON',
+          state_id_expiration: '2021-01-14',
         )
       end
     end
@@ -143,7 +144,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
     it 'returns an unsuccessful response with errors' do
       expect(response.success?).to eq(false)
       expect(response.errors).to eq(
-        :id => ["id_not_recognized"],
+        id: ['id_not_recognized'],
       )
       expect(response.exception).to be_nil
       expect(response.result_code).to eq(DocAuth::Acuant::ResultCodes::UNKNOWN)
@@ -162,7 +163,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       it 'returns the untranslated error' do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
-          :id => ["id_not_recognized"],
+          id: ['id_not_recognized'],
         )
         expect(response.exception).to be_nil
       end
@@ -181,7 +182,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       it 'only returns one copy of the each error' do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
-          :id => ["general_error_no_liveness"],
+          id: ['general_error_no_liveness'],
         )
         expect(response.exception).to be_nil
       end
@@ -204,7 +205,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
       it 'does not return errors for alerts with success result codes' do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(
-          :id=>["id_not_recognized"],
+          id: ['id_not_recognized'],
         )
         expect(response.exception).to be_nil
       end

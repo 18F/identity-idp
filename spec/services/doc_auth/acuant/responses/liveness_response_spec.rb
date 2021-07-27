@@ -26,6 +26,7 @@ RSpec.describe DocAuth::Acuant::Responses::LivenessResponse do
     end
   end
 
+  # rubocop:disable Layout/LineLength
   context 'when the response fails' do
     it 'returns a unsuccessful response with errors' do
       http_response = instance_double(
@@ -49,8 +50,9 @@ RSpec.describe DocAuth::Acuant::Responses::LivenessResponse do
             message: 'Face is too small. Move the camera closer to the face and retake the picture.',
             code: 'FaceTooSmall',
           },
-        }
+        },
       )
     end
   end
+  # rubocop:enable Layout/LineLength
 end
