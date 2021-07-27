@@ -24,12 +24,12 @@ module DocAuth
 
         def body
           {
-            'Data': {
-              'ImageOne': Base64.strict_encode64(selfie_image),
-              'ImageTwo': Base64.strict_encode64(document_face_image),
+            Data: {
+              ImageOne: Base64.strict_encode64(selfie_image),
+              ImageTwo: Base64.strict_encode64(document_face_image),
             },
-            'Settings': {
-              'SubscriptionId': config.assure_id_subscription_id,
+            Settings: {
+              SubscriptionId: config.assure_id_subscription_id,
             },
           }.to_json
         end

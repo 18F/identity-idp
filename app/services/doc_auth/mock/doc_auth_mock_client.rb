@@ -97,7 +97,10 @@ module DocAuth
       private
 
       def process_results(instance_id, liveness_checking_enabled, selfie_image)
-        results_response = get_results(instance_id: instance_id, liveness_enabled: liveness_checking_enabled)
+        results_response = get_results(
+          instance_id: instance_id,
+          liveness_enabled: liveness_checking_enabled,
+        )
         return results_response unless results_response.success?
 
         if liveness_checking_enabled

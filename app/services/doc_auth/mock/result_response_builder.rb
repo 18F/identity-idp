@@ -55,18 +55,17 @@ module DocAuth
 
             if [doc_auth_result, image_metrics, failed, passed, liveness_result].any?(&:present?)
               mock_args = {}
-              mock_args.merge!(doc_auth_result: doc_auth_result) if doc_auth_result.present?
-              mock_args.merge!(image_metrics: image_metrics.symbolize_keys) if image_metrics.present?
-              mock_args.merge!(failed: failed.map!(&:symbolize_keys)) if failed.present?
-              mock_args.merge!(passed: passed.map!(&:symbolize_keys)) if passed.present?
-              mock_args.merge!(liveness_result: liveness_result) if liveness_result.present?
+              mock_args[:doc_auth_result] = doc_auth_result if doc_auth_result.present?
+              mock_args[:image_metrics] = image_metrics.symbolize_keys if image_metrics.present?
+              mock_args[:failed] = failed.map!(&:symbolize_keys) if failed.present?
+              mock_args[:passed] = passed.map!(&:symbolize_keys) if passed.present?
+              mock_args[:liveness_result] = liveness_result if liveness_result.present?
 
               fake_response_info = create_response_info(**mock_args)
 
               ErrorGenerator.new(config).generate_doc_auth_errors(fake_response_info)
-            else
-              # general is the key for errors that come from parsing
-              file_data if file_data.include?(:general)
+            elsif file_data.include?(:general) # general is the key for errors from parsing
+              file_data
             end
           end
         end
@@ -91,8 +90,9 @@ module DocAuth
 
       def parse_yaml
         data = YAML.safe_load(uploaded_file, permitted_classes: [Date])
-        if data.kind_of?(Hash)
-          if (m = data.dig('document', 'dob').to_s.match(%r{(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})}))
+        if data.is_a?(Hash)
+          if (m = data.dig('document', 'dob').to_s.
+            match(%r{(?<month>\d{1,2})/(?<day>\d{1,2})/(?<year>\d{4})}))
             data['document']['dob'] = Date.new(m[:year].to_i, m[:month].to_i, m[:day].to_i)
           end
 
@@ -120,17 +120,17 @@ module DocAuth
       DEFAULT_FAILED_ALERTS = [{ name: '2D Barcode Read', result: 'Failed' }].freeze
       DEFAULT_IMAGE_METRICS = {
         front: {
-          "VerticalResolution" => 600,
-          "HorizontalResolution" => 600,
-          "GlareMetric" => 100,
-          "SharpnessMetric" => 100,
+          'VerticalResolution' => 600,
+          'HorizontalResolution' => 600,
+          'GlareMetric' => 100,
+          'SharpnessMetric' => 100,
         },
         back: {
-          "VerticalResolution" => 600,
-          "HorizontalResolution" => 600,
-          "GlareMetric" => 100,
-          "SharpnessMetric" => 100,
-        }
+          'VerticalResolution' => 600,
+          'HorizontalResolution' => 600,
+          'GlareMetric' => 100,
+          'SharpnessMetric' => 100,
+        },
       }.freeze
 
       def create_response_info(

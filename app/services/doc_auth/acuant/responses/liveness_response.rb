@@ -35,7 +35,7 @@ module DocAuth
               liveness_score: liveness_score,
               acuant_error: acuant_error,
               liveness_assessment: liveness_assessment,
-            }
+            },
           }
         end
 

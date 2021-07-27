@@ -87,7 +87,7 @@ module DocAuth
         end
 
         def regions_by_id
-          @regions_by_id ||= raw_regions.index_by { |region| region["Id"] }
+          @regions_by_id ||= raw_regions.index_by { |region| region['Id'] }
         end
 
         def raw_images_data
@@ -130,7 +130,7 @@ module DocAuth
         end
 
         def get_image_info(image_id)
-          @images_by_id ||= raw_images_data.index_by { |image| image["Id"] }
+          @images_by_id ||= raw_images_data.index_by { |image| image['Id'] }
 
           @images_by_id[image_id]
         end
@@ -153,7 +153,7 @@ module DocAuth
 
             new_alert = {
               name: raw_alert['Key'],
-              result: result_code.name
+              result: result_code.name,
             }
 
             new_alert.merge!(get_region_info(region_refs)) if region_refs.present?

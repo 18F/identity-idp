@@ -9,9 +9,7 @@ module DocAuth
 
       # @see DocAuth::ImageSources
       def create_document(image_source:)
-        if !ImageSources::ALL.include?(image_source)
-          raise "unknown image_source=#{image_source}"
-        end
+        raise "unknown image_source=#{image_source}" if !ImageSources::ALL.include?(image_source)
 
         Requests::CreateDocumentRequest.new(config: config, image_source: image_source).fetch
       end
@@ -37,7 +35,7 @@ module DocAuth
       def post_selfie(image:, instance_id:)
         get_face_image_response = Requests::GetFaceImageRequest.new(
           config: config,
-          instance_id: instance_id
+          instance_id: instance_id,
         ).fetch
         return get_face_image_response unless get_face_image_response.success?
 

@@ -27,7 +27,7 @@ module DocAuth
             face_match_results: {
               is_match: parsed_response_body['IsMatch'],
               match_score: match_score,
-            }
+            },
           }
         end
 

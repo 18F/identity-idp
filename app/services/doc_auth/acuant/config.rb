@@ -27,7 +27,7 @@ module DocAuth
         :dpi_threshold,
         :sharpness_threshold,
         :glare_threshold,
-      ]
+      ],
     )
   end
 end

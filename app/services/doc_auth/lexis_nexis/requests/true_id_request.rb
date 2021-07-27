@@ -35,7 +35,11 @@ module DocAuth
         end
 
         def handle_http_response(http_response)
-          LexisNexis::Responses::TrueIdResponse.new(http_response, liveness_checking_enabled, config)
+          LexisNexis::Responses::TrueIdResponse.new(
+            http_response,
+            liveness_checking_enabled,
+            config,
+          )
         end
 
         def method

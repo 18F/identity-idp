@@ -4,6 +4,7 @@ module DocAuth
   module LexisNexis
     module Responses
       class LexisNexisResponseError < StandardError; end
+
       class TrueIdResponse < LexisNexisResponse
         PII_EXCLUDES = %w[
           Age
@@ -73,9 +74,9 @@ module DocAuth
           else
             response_status = {
               lexis_nexis_status: parsed_response_body[:Status],
-              lexis_nexis_info: parsed_response_body.dig(:Information)
+              lexis_nexis_info: parsed_response_body.dig(:Information),
             }
-            e = LexisNexisResponseError.new("Unexpected LN Response: TrueID response not found.")
+            e = LexisNexisResponseError.new('Unexpected LN Response: TrueID response not found.')
 
             config.exception_notifier&.call(e, response_info: response_status)
             return response_status
@@ -100,7 +101,9 @@ module DocAuth
             ].join('-')
           end
 
-          if pii[:state_id_expiration_month] && pii[:state_id_expiration_day] && pii[:state_id_expiration_year]
+          if pii[:state_id_expiration_month] &&
+             pii[:state_id_expiration_day] &&
+             pii[:state_id_expiration_year]
             pii[:state_id_expiration] = [
               pii.delete(:state_id_expiration_year),
               pii.delete(:state_id_expiration_month),

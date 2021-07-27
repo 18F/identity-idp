@@ -145,9 +145,7 @@ module DocAuth
         response_info[:processed_alerts][:failed]&.each do |alert|
           alert_msg_hash = ALERT_MESSAGES[alert[:name].to_sym]
 
-          if alert_msg_hash.present?
-            errors[alert_msg_hash[:type]] << alert_msg_hash[:msg_key]
-          end
+          errors[alert_msg_hash[:type]] << alert_msg_hash[:msg_key] if alert_msg_hash.present?
         end
       end
 
@@ -168,7 +166,10 @@ module DocAuth
     end
 
     def scan_for_unknown_alerts(response_info)
-      all_alerts = [*response_info[:processed_alerts][:failed], *response_info[:processed_alerts][:passed]]
+      all_alerts = [
+        *response_info[:processed_alerts][:failed],
+        *response_info[:processed_alerts][:passed],
+      ]
       unknown_fail_count = 0
 
       unknown_alerts = []
@@ -176,9 +177,7 @@ module DocAuth
         if ALERT_MESSAGES[alert[:name].to_sym].blank?
           unknown_alerts.push(alert[:name])
 
-          if alert[:result] != 'Passed'
-            unknown_fail_count += 1
-          end
+          unknown_fail_count += 1 if alert[:result] != 'Passed'
         end
       end
 

@@ -46,12 +46,10 @@ module DocAuth
 
         if http_response.success?
           handle_http_response(http_response)
+        elsif HANDLED_HTTP_CODES.include?(http_response.status)
+          handle_expected_http_error(http_response)
         else
-          if HANDLED_HTTP_CODES.include?(http_response.status)
-            handle_expected_http_error(http_response)
-          else
-            handle_invalid_response(http_response)
-          end
+          handle_invalid_response(http_response)
         end
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError => e
         handle_connection_error(e)
@@ -131,7 +129,7 @@ module DocAuth
         DocAuth::Response.new(
           success: false,
           errors: { general: [error] },
-          exception: create_http_exception(http_response)
+          exception: create_http_exception(http_response),
         )
       end
 
@@ -151,7 +149,7 @@ module DocAuth
 
       def send_exception_notification(exception, custom_params = nil)
         return if exception.is_a?(DocAuth::RequestError) &&
-          HANDLED_HTTP_CODES.include?(exception.error_code)
+                  HANDLED_HTTP_CODES.include?(exception.error_code)
         config.exception_notifier&.call(exception, custom_params)
       end
     end
