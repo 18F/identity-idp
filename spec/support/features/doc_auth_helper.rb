@@ -158,11 +158,11 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def mock_doc_auth_no_name_pii(method)
-    pii_with_no_name = IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.dup
+    pii_with_no_name = DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.dup
     pii_with_no_name[:last_name] = nil
-    IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,
-      response: IdentityDocAuth::Response.new(
+      response: DocAuth::Response.new(
         pii_from_doc: pii_with_no_name,
         extra: {
           result: 'Passed',
@@ -175,9 +175,9 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
   end
 
   def mock_general_doc_auth_client_error(method)
-    IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: method,
-      response: IdentityDocAuth::Response.new(
+      response: DocAuth::Response.new(
         success: false,
         errors: { error: I18n.t('doc_auth.errors.general.no_liveness') },
       ),
@@ -189,11 +189,11 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       Faraday::Response,
       body: AcuantFixtures.get_results_response_failure,
     )
-    IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+    DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
-      response: IdentityDocAuth::Acuant::Responses::GetResultsResponse.new(
+      response: DocAuth::Acuant::Responses::GetResultsResponse.new(
         failed_http_response,
-        IdentityDocAuth::Acuant::Config.new,
+        DocAuth::Acuant::Config.new,
       ),
     )
   end

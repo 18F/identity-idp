@@ -11,7 +11,7 @@ RSpec.describe DocAuthRouter do
 
       it 'is a translation-proxied acuant client' do
         expect(DocAuthRouter.client).to be_a(DocAuthRouter::DocAuthErrorTranslatorProxy)
-        expect(DocAuthRouter.client.client).to be_a(IdentityDocAuth::Acuant::AcuantClient)
+        expect(DocAuthRouter.client.client).to be_a(DocAuth::Acuant::AcuantClient)
       end
     end
 
@@ -20,7 +20,7 @@ RSpec.describe DocAuthRouter do
 
       it 'is a translation-proxied lexisnexis client' do
         expect(DocAuthRouter.client).to be_a(DocAuthRouter::DocAuthErrorTranslatorProxy)
-        expect(DocAuthRouter.client.client).to be_a(IdentityDocAuth::LexisNexis::LexisNexisClient)
+        expect(DocAuthRouter.client.client).to be_a(DocAuth::LexisNexis::LexisNexisClient)
       end
     end
 
@@ -59,18 +59,18 @@ RSpec.describe DocAuthRouter do
 
   describe DocAuthRouter::DocAuthErrorTranslatorProxy do
     subject(:proxy) do
-      DocAuthRouter::DocAuthErrorTranslatorProxy.new(IdentityDocAuth::Mock::DocAuthMockClient.new)
+      DocAuthRouter::DocAuthErrorTranslatorProxy.new(DocAuth::Mock::DocAuthMockClient.new)
     end
 
     it 'translates errors using the normal doc auth translator' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :get_results,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: {
             some_other_key: ['will not be translated'],
             general: [
-              IdentityDocAuth::Errors::BARCODE_READ_CHECK,
+              DocAuth::Errors::BARCODE_READ_CHECK,
               'Some unknown error that will be the generic message',
             ],
           },
@@ -91,9 +91,9 @@ RSpec.describe DocAuthRouter do
     end
 
     it 'translates generic network errors' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :get_results,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: {
             network: true,
@@ -107,12 +107,12 @@ RSpec.describe DocAuthRouter do
     end
 
     it 'translates generic selfie errors' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :get_results,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: {
-            selfie: [IdentityDocAuth::Errors::SELFIE_FAILURE],
+            selfie: [DocAuth::Errors::SELFIE_FAILURE],
           },
         ),
       )
@@ -123,9 +123,9 @@ RSpec.describe DocAuthRouter do
     end
 
     it 'translates generic network errors' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_images,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: {
             network: true,
@@ -139,16 +139,16 @@ RSpec.describe DocAuthRouter do
     end
 
     it 'translates individual error keys errors' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_images,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: {
-            id: [IdentityDocAuth::Errors::EXPIRATION_CHECKS],
-            front: [IdentityDocAuth::Errors::VISIBLE_PHOTO_CHECK],
-            back: [IdentityDocAuth::Errors::REF_CONTROL_NUMBER_CHECK],
-            selfie: [IdentityDocAuth::Errors::SELFIE_FAILURE],
-            general: [IdentityDocAuth::Errors::GENERAL_ERROR_LIVENESS],
+            id: [DocAuth::Errors::EXPIRATION_CHECKS],
+            front: [DocAuth::Errors::VISIBLE_PHOTO_CHECK],
+            back: [DocAuth::Errors::REF_CONTROL_NUMBER_CHECK],
+            selfie: [DocAuth::Errors::SELFIE_FAILURE],
+            general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS],
             not_translated: true,
           },
         ),
@@ -167,9 +167,9 @@ RSpec.describe DocAuthRouter do
     end
 
     it 'logs a warning for errors it does not recognize and returns a generic error' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_images,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: {
             id: ['some_obscure_error'],
@@ -189,16 +189,16 @@ RSpec.describe DocAuthRouter do
     context 'when the errors include DOCUMENT_EXPIRED' do
       context 'when there are multiple errors' do
         before do
-          IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+          DocAuth::Mock::DocAuthMockClient.mock_response!(
             method: :post_images,
-            response: IdentityDocAuth::Response.new(
+            response: DocAuth::Response.new(
               success: false,
               errors: {
                 id: [
-                  IdentityDocAuth::Errors::EXPIRATION_CHECKS,
-                  IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK,
+                  DocAuth::Errors::EXPIRATION_CHECKS,
+                  DocAuth::Errors::DOCUMENT_EXPIRED_CHECK,
                 ],
-                general: [IdentityDocAuth::Errors::GENERAL_ERROR_LIVENESS],
+                general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS],
               },
             ),
           )
@@ -213,14 +213,14 @@ RSpec.describe DocAuthRouter do
     end
 
     it 'translates http response errors and maintains exceptions' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_images,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: {
-            general: [IdentityDocAuth::Errors::IMAGE_LOAD_FAILURE],
+            general: [DocAuth::Errors::IMAGE_LOAD_FAILURE],
           },
-          exception: IdentityDocAuth::RequestError.new('Test 438 HTTP failure', 438),
+          exception: DocAuth::RequestError.new('Test 438 HTTP failure', 438),
         ),
       )
 

@@ -59,6 +59,46 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
+    def communications_error
+      read_fixture_file_at_path('true_id/communications_error.json')
+    end
+
+    def internal_application_error
+      read_fixture_file_at_path('true_id/internal_application_error.json')
+    end
+
+    def true_id_barcode_read_attention
+      read_fixture_file_at_path('true_id/true_id_response_attention_barcode.json')
+    end
+
+    def true_id_failure_empty
+      read_fixture_file_at_path('true_id/true_id_response_failure_empty.json')
+    end
+
+    def true_id_response_success
+      read_fixture_file_at_path('true_id/true_id_response_success.json')
+    end
+
+    def true_id_response_success_2
+      read_fixture_file_at_path('true_id/true_id_response_success_2.json')
+    end
+
+    def true_id_response_failure_no_liveness
+      read_fixture_file_at_path('true_id/true_id_response_failure_no_liveness.json')
+    end
+
+    def true_id_response_failure_with_liveness
+      read_fixture_file_at_path('true_id/true_id_response_failure_with_liveness.json')
+    end
+
+    def true_id_response_failure_with_all_failures
+      read_fixture_file_at_path('true_id/true_id_response_failure_with_all_failures.json')
+    end
+
+    def true_id_response_malformed
+      read_fixture_file_at_path('true_id/true_id_response_malformed.json')
+    end
+
     private
 
     def read_fixture_file_at_path(filepath)

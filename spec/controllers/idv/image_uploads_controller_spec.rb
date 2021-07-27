@@ -257,9 +257,9 @@ describe Idv::ImageUploadsController do
         let(:dob) { '10/06/1938' }
 
         before do
-          IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+          DocAuth::Mock::DocAuthMockClient.mock_response!(
             method: :get_results,
-            response: IdentityDocAuth::Response.new(
+            response: DocAuth::Response.new(
               success: true,
               errors: {},
               extra: { result: 'Passed', billed: true },
@@ -421,11 +421,11 @@ describe Idv::ImageUploadsController do
 
     context 'when image upload fails' do
       before do
-        IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_images,
-          response: IdentityDocAuth::Response.new(
+          response: DocAuth::Response.new(
             success: false,
-            errors: { front: [IdentityDocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES] },
+            errors: { front: [DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES] },
           ),
         )
       end
