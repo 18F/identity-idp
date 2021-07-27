@@ -298,7 +298,7 @@ RSpec.describe User do
     let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
     before do
       allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years).
-        and_return(6)
+        and_return(rules_of_use_horizon_years)
       allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
         and_return(rules_of_use_updated_at)
     end
