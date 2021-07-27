@@ -16,7 +16,7 @@ module DocAuth
             pii_from_doc: pii_from_doc,
           )
         rescue StandardError => e
-          config.exception_notifier&.call(e)
+          NewRelic::Agent.notice_error(e)
           super(
             success: false,
             errors: { network: true },

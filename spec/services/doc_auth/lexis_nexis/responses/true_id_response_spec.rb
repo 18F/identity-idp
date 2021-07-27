@@ -38,12 +38,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   # rubocop:enable Layout/LineLength
 
-  let(:exception_notifier) { proc { } }
-
   let(:config) do
-    DocAuth::LexisNexis::Config.new(
-      exception_notifier: exception_notifier,
-    )
+    DocAuth::LexisNexis::Config.new
   end
 
   context 'when the response is a success' do
@@ -143,8 +139,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when response is unexpected' do
     it 'it produces reasonable output for communications error' do
-      expect(exception_notifier).to receive(:call).
-        with(anything, hash_including(:response_info)).once
+      expect(NewRelic::Agent).to receive(:notice_error).
+        with(anything, custom_params: hash_including(:response_info)).once
 
       output = described_class.new(communications_error_response, false, config).to_h
 
@@ -154,8 +150,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'it produces reasonable output for internal application error' do
-      expect(exception_notifier).to receive(:call).
-        with(anything, hash_including(:response_info)).once
+      expect(NewRelic::Agent).to receive(:notice_error).
+        with(anything, custom_params: hash_including(:response_info)).once
 
       output = described_class.new(internal_application_error_response, false, config).to_h
 
@@ -165,8 +161,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'it produces reasonable output for an empty TrueID failure' do
-      expect(exception_notifier).to receive(:call).
-        with(anything, hash_including(:response_info)).once
+      expect(NewRelic::Agent).to receive(:notice_error).
+        with(anything, custom_params: hash_including(:response_info)).once
 
       output = described_class.new(failure_response_empty, false, config).to_h
 
@@ -176,7 +172,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'it produces reasonable output for a malformed TrueID response' do
-      expect(exception_notifier).to receive(:call).
+      expect(NewRelic::Agent).to receive(:notice_error).
         with(anything).once
 
       output = described_class.new(failure_response_malformed, false, config).to_h

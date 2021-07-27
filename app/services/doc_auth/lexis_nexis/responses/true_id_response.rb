@@ -78,7 +78,7 @@ module DocAuth
             }
             e = LexisNexisResponseError.new('Unexpected LN Response: TrueID response not found.')
 
-            config.exception_notifier&.call(e, response_info: response_status)
+            NewRelic::Agent.notice_error(e, custom_params: { response_info: response_status })
             return response_status
           end
         end

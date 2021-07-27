@@ -1,9 +1,5 @@
 module DocAuth
   module LexisNexis
-    # @!attribute [rw] exception_notifier
-    #   @return [Proc] should be a proc that accepts an Exception and an optional context hash
-    #   @example
-    #      config.exception_notifier.call(RuntimeError.new("oh no"), attempt_count: 1)
     Config = RedactedStruct.new(
       :account_id,
       :base_url, # required
@@ -14,7 +10,6 @@ module DocAuth
       :trueid_password,
       :trueid_username,
       :timeout, # optional
-      :exception_notifier, # optional
       :warn_notifier, # optional
       :locale,
       :dpi_threshold,
@@ -28,7 +23,6 @@ module DocAuth
         :trueid_liveness_workflow,
         :trueid_noliveness_workflow,
         :timeout,
-        :exception_notifier,
         :locale,
         :dpi_threshold,
         :sharpness_threshold,

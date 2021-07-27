@@ -29,14 +29,11 @@ RSpec.describe DocAuth::Acuant::Request do
   end
   let(:request_method) { :get }
 
-  let(:exception_notifier) { instance_double('Proc') }
-
   let(:config) do
     DocAuth::Acuant::Config.new(
       assure_id_url: assure_id_url,
       assure_id_username: assure_id_username,
       assure_id_password: assure_id_password,
-      exception_notifier: exception_notifier,
     )
   end
 
@@ -81,7 +78,7 @@ RSpec.describe DocAuth::Acuant::Request do
         stub_request(:get, full_url).
           with(headers: request_headers).
           to_return(body: 'test response body', status: 404)
-        allow(exception_notifier).to receive(:call)
+        allow(NewRelic::Agent).to receive(:notice_error)
 
         response = subject.fetch
 
@@ -92,7 +89,7 @@ RSpec.describe DocAuth::Acuant::Request do
     end
 
     context 'when the request resolves with retriable error then succeeds it only retries once' do
-      it 'calls exception_notifier each retry' do
+      it 'calls NewRelic::Agent.notice_error each retry' do
         stub_request(:get, full_url).
           with(headers: request_headers).
           to_return(
@@ -100,7 +97,7 @@ RSpec.describe DocAuth::Acuant::Request do
             { body: 'test response body', status: 200 },
           )
 
-        expect(exception_notifier).to receive(:call).
+        expect(NewRelic::Agent).to receive(:notice_error).
           with(anything, hash_including(:retry)).once
 
         response = subject.fetch
@@ -110,7 +107,7 @@ RSpec.describe DocAuth::Acuant::Request do
     end
 
     context 'when the request resolves with a 404 status it retries' do
-      it 'calls exception_notifier each retry' do
+      it 'calls NewRelic::Agent.notice_error each retry' do
         stub_request(:get, full_url).
           with(headers: request_headers).
           to_return(
@@ -118,10 +115,10 @@ RSpec.describe DocAuth::Acuant::Request do
             { body: 'test response body', status: 404 },
           )
 
-        expect(exception_notifier).to receive(:call).
+        expect(NewRelic::Agent).to receive(:notice_error).
           with(DocAuth::RequestError, nil).once
 
-        expect(exception_notifier).to receive(:call).
+        expect(NewRelic::Agent).to receive(:notice_error).
           with(anything, hash_including(:retry)).twice
 
         response = subject.fetch
@@ -134,7 +131,7 @@ RSpec.describe DocAuth::Acuant::Request do
       it 'returns a response with a timeout message and exception and notifies NewRelic' do
         stub_request(:get, full_url).to_timeout
 
-        expect(exception_notifier).to receive(:call)
+        expect(NewRelic::Agent).to receive(:notice_error)
 
         response = subject.fetch
 
@@ -156,7 +153,7 @@ RSpec.describe DocAuth::Acuant::Request do
           with(headers: request_headers).
           to_return(body: 'test response body', status: 438)
 
-        expect(exception_notifier).not_to receive(:call)
+        expect(NewRelic::Agent).not_to receive(:notice_error)
 
         response = subject.fetch
 
@@ -169,7 +166,7 @@ RSpec.describe DocAuth::Acuant::Request do
           with(headers: request_headers).
           to_return(body: 'test response body', status: 439)
 
-        expect(exception_notifier).not_to receive(:call)
+        expect(NewRelic::Agent).not_to receive(:notice_error)
 
         response = subject.fetch
 
@@ -182,7 +179,7 @@ RSpec.describe DocAuth::Acuant::Request do
           with(headers: request_headers).
           to_return(body: 'test response body', status: 440)
 
-        expect(exception_notifier).not_to receive(:call)
+        expect(NewRelic::Agent).not_to receive(:notice_error)
 
         response = subject.fetch
 

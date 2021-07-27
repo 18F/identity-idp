@@ -47,7 +47,7 @@ module DocAuth
       end
 
       def handle_connection_error(exception)
-        config.exception_notifier&.call(exception)
+        NewRelic::Agent.notice_error(exception)
         DocAuth::Response.new(
           success: false,
           errors: { network: true },
@@ -76,7 +76,7 @@ module DocAuth
           backoff_factor: 2,
           retry_statuses: [404, 500],
           retry_block: lambda do |_env, _options, retries, exc|
-            config.exception_notifier&.call(exc, retry: retries)
+            NewRelic::Agent.notice_error(exc, custom_params: { retry: retries })
           end,
         }
 
