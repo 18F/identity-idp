@@ -448,11 +448,14 @@ describe Users::SessionsController, devise: true do
     end
 
     context 'with a user that accepted the rules of use more than 6 years ago' do
+      let(:rules_of_use_horizon_years) { 6 }
       let(:rules_of_use_updated_at) { 7.years.ago }
       let(:accepted_terms_at) { 6.years.ago - 1.day }
       let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
 
       before do
+        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
+          and_return(rules_of_use_horizon_years)
         allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
           and_return(rules_of_use_updated_at)
       end
