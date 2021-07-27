@@ -1,4 +1,4 @@
-module IdentityDocAuth
+module DocAuth
   module ImageSources
     ACUANT_SDK = :acuant_sdk
     UNKNOWN = :unknown

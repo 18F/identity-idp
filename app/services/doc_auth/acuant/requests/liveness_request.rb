@@ -1,10 +1,7 @@
-require 'identity_doc_auth/acuant/request'
-require 'identity_doc_auth/acuant/responses/liveness_response'
-
-module IdentityDocAuth
+module DocAuth
   module Acuant
     module Requests
-      class LivenessRequest < IdentityDocAuth::Acuant::Request
+      class LivenessRequest < DocAuth::Acuant::Request
         attr_reader :image
 
         def initialize(config:, image:)
@@ -35,7 +32,7 @@ module IdentityDocAuth
         end
 
         def handle_http_response(http_response)
-          IdentityDocAuth::Acuant::Responses::LivenessResponse.new(http_response)
+          DocAuth::Acuant::Responses::LivenessResponse.new(http_response)
         end
 
         def method

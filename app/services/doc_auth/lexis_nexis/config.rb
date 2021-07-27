@@ -1,6 +1,4 @@
-require 'redacted_struct'
-
-module IdentityDocAuth
+module DocAuth
   module LexisNexis
     # @!attribute [rw] exception_notifier
     #   @return [Proc] should be a proc that accepts an Exception and an optional context hash

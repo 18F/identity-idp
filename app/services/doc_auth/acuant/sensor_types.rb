@@ -1,4 +1,4 @@
-module IdentityDocAuth
+module DocAuth
   module Acuant
     module SensorTypes
       UNKNOWN = '0'.freeze

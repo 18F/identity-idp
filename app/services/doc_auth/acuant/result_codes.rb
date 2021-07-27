@@ -1,6 +1,4 @@
-require 'active_support/core_ext/enumerable'
-
-module IdentityDocAuth
+module DocAuth
   module Acuant
     module ResultCodes
       ResultCode = Struct.new(:code, :name, :billed) do

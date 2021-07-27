@@ -1,10 +1,4 @@
-require 'identity_doc_auth/lexis_nexis/config'
-require 'identity_doc_auth/lexis_nexis/request'
-require 'identity_doc_auth/lexis_nexis/requests/true_id_request'
-require 'identity_doc_auth/lexis_nexis/responses/lexis_nexis_response'
-require 'identity_doc_auth/lexis_nexis/responses/true_id_response'
-
-module IdentityDocAuth
+module DocAuth
   module LexisNexis
     class LexisNexisClient
       attr_reader :config

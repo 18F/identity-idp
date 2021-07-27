@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-require 'active_support/core_ext/object/blank'
-require 'identity_doc_auth/error_generator'
-require 'identity_doc_auth/lexis_nexis/responses/lexis_nexis_response'
-
-module IdentityDocAuth
+module DocAuth
   module LexisNexis
     module Responses
       class LexisNexisResponseError < StandardError; end

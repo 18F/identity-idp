@@ -1,6 +1,4 @@
-require 'redacted_struct'
-
-module IdentityDocAuth
+module DocAuth
   module Mock
     Config = RedactedStruct.new(
       :dpi_threshold,

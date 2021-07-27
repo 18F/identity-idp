@@ -1,4 +1,4 @@
-module IdentityDocAuth
+module DocAuth
   module Errors
     # HTTP Status Codes
     IMAGE_LOAD_FAILURE = 'image_load_failure' # 438

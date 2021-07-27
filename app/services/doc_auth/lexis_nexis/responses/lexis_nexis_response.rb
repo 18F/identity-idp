@@ -1,14 +1,9 @@
 # frozen_string_literal: true
 
-require 'identity_doc_auth/response'
-require 'json'
-require 'active_support/core_ext/hash/indifferent_access'
-
-
-module IdentityDocAuth
+module DocAuth
   module LexisNexis
     module Responses
-      class LexisNexisResponse < IdentityDocAuth::Response
+      class LexisNexisResponse < DocAuth::Response
         attr_reader :http_response
 
         def initialize(http_response)

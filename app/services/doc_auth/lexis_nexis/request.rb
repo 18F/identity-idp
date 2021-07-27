@@ -1,7 +1,4 @@
-require 'faraday'
-require 'active_support/notifications'
-
-module IdentityDocAuth
+module DocAuth
   module LexisNexis
     class Request
       attr_reader :config
@@ -44,14 +41,14 @@ module IdentityDocAuth
           'Unexpected HTTP response',
           http_response.status,
         ].join(' ')
-        exception = IdentityDocAuth::RequestError.new(message, http_response.status)
+        exception = DocAuth::RequestError.new(message, http_response.status)
 
         handle_connection_error(exception)
       end
 
       def handle_connection_error(exception)
         config.exception_notifier&.call(exception)
-        IdentityDocAuth::Response.new(
+        DocAuth::Response.new(
           success: false,
           errors: { network: true },
           exception: exception,

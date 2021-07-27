@@ -1,4 +1,4 @@
-module IdentityDocAuth
+module DocAuth
   module Acuant
     module CroppingModes
       # No cropping is performed (default).

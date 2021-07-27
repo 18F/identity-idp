@@ -1,6 +1,4 @@
-require 'active_support/core_ext/time/zones'
-
-module IdentityDocAuth
+module DocAuth
   module Acuant
     class PiiFromDoc
       VALUE = {

@@ -1,4 +1,4 @@
-module IdentityDocAuth
+module DocAuth
   class Response
     attr_reader :errors, :exception, :extra, :pii_from_doc
 

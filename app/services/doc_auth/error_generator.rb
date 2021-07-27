@@ -1,7 +1,6 @@
 # frozen_string_literal: true
-require 'identity_doc_auth/errors'
 
-module IdentityDocAuth
+module DocAuth
   class ErrorGenerator
     attr_reader :config
 

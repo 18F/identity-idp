@@ -1,12 +1,4 @@
-require 'identity_doc_auth/acuant/config'
-require 'identity_doc_auth/acuant/requests/create_document_request'
-require 'identity_doc_auth/acuant/requests/upload_image_request'
-require 'identity_doc_auth/acuant/requests/get_face_image_request'
-require 'identity_doc_auth/acuant/requests/facial_match_request'
-require 'identity_doc_auth/acuant/requests/liveness_request'
-require 'identity_doc_auth/acuant/requests/get_results_request'
-
-module IdentityDocAuth
+module DocAuth
   module Acuant
     class AcuantClient
       attr_reader :config
@@ -15,7 +7,7 @@ module IdentityDocAuth
         @config = Config.new(**config_keywords)
       end
 
-      # @see IdentityDocAuth::ImageSources
+      # @see DocAuth::ImageSources
       def create_document(image_source:)
         if !ImageSources::ALL.include?(image_source)
           raise "unknown image_source=#{image_source}"

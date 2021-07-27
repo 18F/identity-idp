@@ -1,14 +1,11 @@
-require 'identity_doc_auth/acuant/request'
-require 'identity_doc_auth/acuant/responses/create_document_response'
-
-module IdentityDocAuth
+module DocAuth
   module Acuant
     module Requests
-      class CreateDocumentRequest < IdentityDocAuth::Acuant::Request
+      class CreateDocumentRequest < DocAuth::Acuant::Request
         def initialize(config:, image_source:)
           super(config: config)
 
-          # @see IdentityDocAuth::ImageSources
+          # @see DocAuth::ImageSources
           @image_source = image_source
         end
 
@@ -43,7 +40,7 @@ module IdentityDocAuth
         end
 
         def handle_http_response(response)
-          IdentityDocAuth::Acuant::Responses::CreateDocumentResponse.new(response)
+          DocAuth::Acuant::Responses::CreateDocumentResponse.new(response)
         end
 
         def method

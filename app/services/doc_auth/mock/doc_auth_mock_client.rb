@@ -1,9 +1,5 @@
-require 'identity_doc_auth/mock/config'
-require 'securerandom'
-require 'identity_doc_auth/mock/responses/create_document_response'
-
 # rubocop:disable Lint/UnusedMethodArgument
-module IdentityDocAuth
+module DocAuth
   module Mock
     class DocAuthMockClient
       attr_reader :config
@@ -42,21 +38,21 @@ module IdentityDocAuth
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
         self.class.last_uploaded_front_image = image
-        IdentityDocAuth::Response.new(success: true)
+        DocAuth::Response.new(success: true)
       end
 
       def post_back_image(image:, instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
         self.class.last_uploaded_back_image = image
-        IdentityDocAuth::Response.new(success: true)
+        DocAuth::Response.new(success: true)
       end
 
       def post_selfie(image:, instance_id:)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
         self.class.last_uploaded_selfie_image = image
-        IdentityDocAuth::Response.new(success: true)
+        DocAuth::Response.new(success: true)
       end
 
       def post_images(

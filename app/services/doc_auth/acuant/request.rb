@@ -1,6 +1,4 @@
-require 'active_support/notifications'
-
-module IdentityDocAuth
+module DocAuth
   module Acuant
     # https://documentation.help/AssureID-Connect/Error%20Codes.html
     # 438, 439, and 440 are frequent errors that we do not want to be notified of
@@ -117,7 +115,7 @@ module IdentityDocAuth
           'Unexpected HTTP response',
           http_response.status,
         ].join(' ')
-        IdentityDocAuth::RequestError.new(message, http_response.status)
+        DocAuth::RequestError.new(message, http_response.status)
       end
 
       def handle_expected_http_error(http_response)
@@ -130,7 +128,7 @@ module IdentityDocAuth
             Errors::IMAGE_SIZE_FAILURE
         end
 
-        IdentityDocAuth::Response.new(
+        DocAuth::Response.new(
           success: false,
           errors: { general: [error] },
           exception: create_http_exception(http_response)
@@ -144,7 +142,7 @@ module IdentityDocAuth
 
       def handle_connection_error(exception)
         send_exception_notification(exception)
-        IdentityDocAuth::Response.new(
+        DocAuth::Response.new(
           success: false,
           errors: { network: true },
           exception: exception,
@@ -152,7 +150,7 @@ module IdentityDocAuth
       end
 
       def send_exception_notification(exception, custom_params = nil)
-        return if exception.is_a?(IdentityDocAuth::RequestError) &&
+        return if exception.is_a?(DocAuth::RequestError) &&
           HANDLED_HTTP_CODES.include?(exception.error_code)
         config.exception_notifier&.call(exception, custom_params)
       end

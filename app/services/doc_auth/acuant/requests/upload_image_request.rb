@@ -1,10 +1,7 @@
-require 'identity_doc_auth/acuant/request'
-require 'identity_doc_auth/response'
-
-module IdentityDocAuth
+module DocAuth
   module Acuant
     module Requests
-      class UploadImageRequest < IdentityDocAuth::Acuant::Request
+      class UploadImageRequest < DocAuth::Acuant::Request
         attr_reader :image_data, :instance_id, :side
 
         def initialize(config:, image_data:, instance_id:, side:)
@@ -30,7 +27,7 @@ module IdentityDocAuth
         end
 
         def handle_http_response(_response)
-          IdentityDocAuth::Response.new(success: true)
+          DocAuth::Response.new(success: true)
         end
 
         def method

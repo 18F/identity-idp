@@ -1,12 +1,7 @@
-require 'identity_doc_auth/acuant/pii_from_doc'
-require 'identity_doc_auth/acuant/result_codes'
-require 'identity_doc_auth/response'
-require 'identity_doc_auth/error_generator'
-
-module IdentityDocAuth
+module DocAuth
   module Acuant
     module Responses
-      class GetResultsResponse < IdentityDocAuth::Response
+      class GetResultsResponse < DocAuth::Response
         attr_reader :config
 
         BARCODE_COULD_NOT_BE_READ_ERROR = '2D Barcode Read'.freeze
@@ -44,11 +39,11 @@ module IdentityDocAuth
 
         # @return [DocAuth::Acuant::ResultCode::ResultCode]
         def result_code
-          IdentityDocAuth::Acuant::ResultCodes.from_int(parsed_response_body['Result'])
+          DocAuth::Acuant::ResultCodes.from_int(parsed_response_body['Result'])
         end
 
         def pii_from_doc
-          IdentityDocAuth::Acuant::PiiFromDoc.new(parsed_response_body).call
+          DocAuth::Acuant::PiiFromDoc.new(parsed_response_body).call
         end
 
         private
@@ -115,17 +110,17 @@ module IdentityDocAuth
         end
 
         def passed_result?
-          result_code == IdentityDocAuth::Acuant::ResultCodes::PASSED
+          result_code == DocAuth::Acuant::ResultCodes::PASSED
         end
 
         def attention_with_barcode?
-          return false unless result_code == IdentityDocAuth::Acuant::ResultCodes::ATTENTION
+          return false unless result_code == DocAuth::Acuant::ResultCodes::ATTENTION
 
           raw_alerts.all? do |alert|
-            alert_result_code = IdentityDocAuth::Acuant::ResultCodes.from_int(alert['Result'])
+            alert_result_code = DocAuth::Acuant::ResultCodes.from_int(alert['Result'])
 
-            alert_result_code == IdentityDocAuth::Acuant::ResultCodes::PASSED ||
-              (alert_result_code == IdentityDocAuth::Acuant::ResultCodes::ATTENTION &&
+            alert_result_code == DocAuth::Acuant::ResultCodes::PASSED ||
+              (alert_result_code == DocAuth::Acuant::ResultCodes::ATTENTION &&
                alert['Key'] == BARCODE_COULD_NOT_BE_READ_ERROR)
           end
         end
@@ -154,7 +149,7 @@ module IdentityDocAuth
           processed_alerts = { passed: [], failed: [] }
           alerts.each do |raw_alert|
             region_refs = raw_alert['RegionReferences']
-            result_code = IdentityDocAuth::Acuant::ResultCodes.from_int(raw_alert['Result'])
+            result_code = DocAuth::Acuant::ResultCodes.from_int(raw_alert['Result'])
 
             new_alert = {
               name: raw_alert['Key'],
@@ -163,7 +158,7 @@ module IdentityDocAuth
 
             new_alert.merge!(get_region_info(region_refs)) if region_refs.present?
 
-            if result_code != IdentityDocAuth::Acuant::ResultCodes::PASSED
+            if result_code != DocAuth::Acuant::ResultCodes::PASSED
               processed_alerts[:failed].push(new_alert)
             else
               processed_alerts[:passed].push(new_alert)

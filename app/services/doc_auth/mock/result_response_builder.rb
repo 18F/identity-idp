@@ -1,9 +1,4 @@
-require 'yaml'
-require 'active_support/core_ext/object/blank'
-require 'active_support/core_ext/hash/keys'
-require 'uri'
-
-module IdentityDocAuth
+module DocAuth
   module Mock
     class ResultResponseBuilder
       DEFAULT_PII_FROM_DOC = {
@@ -32,7 +27,7 @@ module IdentityDocAuth
       end
 
       def call
-        IdentityDocAuth::Response.new(
+        DocAuth::Response.new(
           success: success?,
           errors: errors,
           pii_from_doc: pii_from_doc,

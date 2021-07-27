@@ -1,10 +1,7 @@
-require 'identity_doc_auth/acuant/request'
-require 'identity_doc_auth/acuant/responses/get_results_response'
-
-module IdentityDocAuth
+module DocAuth
   module Acuant
     module Requests
-      class GetResultsRequest < IdentityDocAuth::Acuant::Request
+      class GetResultsRequest < DocAuth::Acuant::Request
         attr_reader :instance_id
 
         def initialize(config:, instance_id:)
@@ -21,7 +18,7 @@ module IdentityDocAuth
         end
 
         def handle_http_response(http_response)
-          IdentityDocAuth::Acuant::Responses::GetResultsResponse.new(http_response, config)
+          DocAuth::Acuant::Responses::GetResultsResponse.new(http_response, config)
         end
 
         def method

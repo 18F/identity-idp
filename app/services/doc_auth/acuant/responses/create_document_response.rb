@@ -1,10 +1,7 @@
-require 'json'
-require 'identity_doc_auth/response'
-
-module IdentityDocAuth
+module DocAuth
   module Acuant
     module Responses
-      class CreateDocumentResponse < IdentityDocAuth::Response
+      class CreateDocumentResponse < DocAuth::Response
         attr_reader :instance_id
 
         def initialize(http_response)
