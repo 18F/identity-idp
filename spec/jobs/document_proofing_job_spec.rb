@@ -113,6 +113,7 @@ RSpec.describe DocumentProofingJob, type: :job do
 
         expect(result.result).to eq(
           alert_failure_count: 0,
+          vendor: 'Acuant',
           billed: true,
           errors: {},
           face_match_results: { is_match: true, match_score: nil },
@@ -120,7 +121,7 @@ RSpec.describe DocumentProofingJob, type: :job do
           processed_alerts: { failed: [], passed: [] },
           raw_alerts: [],
           raw_regions: [],
-          result: 'Passed',
+          doc_auth_result: 'Passed',
           selfie_liveness_results: {
             acuant_error: { code: nil, message: nil },
             liveness_assessment: 'Live',
