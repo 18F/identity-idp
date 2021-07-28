@@ -85,14 +85,14 @@ feature 'doc auth document capture step' do
         Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
         flow_path: 'standard',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         flow_path: 'standard',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
       )
       expect_costing_for_document
@@ -116,7 +116,7 @@ feature 'doc auth document capture step' do
         Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
         flow_path: 'standard',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
         success: false,
       )
@@ -124,7 +124,7 @@ feature 'doc auth document capture step' do
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         flow_path: 'standard',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
         success: false,
       )

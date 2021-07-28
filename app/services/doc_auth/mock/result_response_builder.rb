@@ -32,7 +32,7 @@ module DocAuth
           errors: errors,
           pii_from_doc: pii_from_doc,
           extra: {
-            result: success? ? 'Passed' : 'Caution',
+            doc_auth_result: success? ? 'Passed' : 'Caution',
             billed: true,
           },
         )

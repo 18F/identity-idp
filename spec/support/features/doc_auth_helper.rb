@@ -165,7 +165,7 @@ AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1
       response: DocAuth::Response.new(
         pii_from_doc: pii_with_no_name,
         extra: {
-          result: 'Passed',
+          doc_auth_result: 'Passed',
           billed: true,
         },
         success: true,

@@ -241,14 +241,14 @@ feature 'doc capture document capture step' do
         Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
         flow_path: 'hybrid',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         flow_path: 'hybrid',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
       )
     end
