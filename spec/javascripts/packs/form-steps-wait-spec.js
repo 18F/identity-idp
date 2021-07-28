@@ -86,6 +86,7 @@ describe('FormStepsWait', () => {
         data-alert-target="#alert-target"
       >
         <div id="alert-target"></div>
+        <input type="text" id="text-name" aria-label="foo">
         <input type="hidden" name="foo" value="bar">
       </form>
     `;
@@ -154,6 +155,22 @@ describe('FormStepsWait', () => {
           const alert = await findByRole(form, 'alert');
           expect(alert.textContent).to.equal(errorMessage);
         });
+      });
+    });
+
+    context('invalid input', () => {
+      let form;
+      let input;
+      beforeEach(() => {
+        form = createForm({ action, method });
+        input = form.querySelector('#text-name');
+        input.setAttribute('required', '');
+      });
+      it('stops spinner', (done) => {
+        new FormStepsWait(form).bind();
+        form.addEventListener('spinner.stop', () => done());
+
+        fireEvent.invalid(input);
       });
     });
 
