@@ -9,6 +9,36 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
     end
 
     context 'with data' do
+      let!(:gtc) do
+        # gtc1234-0001, gtc1234-0002
+        create(
+          :iaa_gtc,
+          gtc_number: 'gtc1234'
+          iaa_orders: [
+            build_iaa_order(issuer: issuer1, order_number: 1, date_range: iaa1_range), # TODO: a real date range
+            build_iaa_order(issuer: issuer2, order_number: 1, date_range: iaa1_range),
+            build_iaa_order(issuer: issuer1, order_number: 2, date_range: iaa2_range),
+            build_iaa_order(issuer: issuer2, order_number: 2, date_range: iaa2_range),
+          ],
+        )
+      end
+
+      def build_iaa_order(issuer:, order_number:, date_range:)
+        build(
+          :iaa_order,
+          order_number: order_number,
+          start_date: date_range.start,
+          end_date: date_range.end,
+          integration_usage: build(
+            :integration_usage,
+            integration: build(
+              :integration,
+              issuer: issuer,
+            ),
+          ),
+        )
+      end
+
       let(:iaa1) { 'iaa1' }
       let(:iaa1_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 14) }
       let(:inside_iaa1) { iaa1_range.begin + 1.day }
