@@ -10,7 +10,7 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
       errors: [],
       pii_from_doc: {},
       extra: {
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
       },
     )
@@ -21,7 +21,7 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
       errors: [],
       pii_from_doc: {},
       extra: {
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: false,
       },
     )

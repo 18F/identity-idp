@@ -271,7 +271,7 @@ RSpec.describe DocAuth::Acuant::AcuantClient do
 
         expect(result.success?).to eq(true)
         expect(result.errors).to eq({})
-        expect(result.class).to eq(DocAuth::Response)
+        expect(result).to be_kind_of(DocAuth::Response)
         expect(get_face_stub).to have_been_requested
         expect(facial_match_stub).to have_been_requested
         expect(liveness_stub).to have_been_requested

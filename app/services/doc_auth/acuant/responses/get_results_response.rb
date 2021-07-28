@@ -12,29 +12,8 @@ module DocAuth
           super(
             success: successful_result?,
             errors: generate_errors,
-            extra: {
-              result: result_code.name,
-              billed: result_code.billed,
-              processed_alerts: processed_alerts,
-              alert_failure_count: processed_alerts[:failed]&.count.to_i,
-              image_metrics: processed_image_metrics,
-              raw_alerts: raw_alerts,
-              raw_regions: raw_regions,
-            }
+            extra: response_info,
           )
-        end
-
-        # Explicitly override #to_h here because this method response object contains PII.
-        # This method is used to determine what from this response gets written to events.log.
-        # #to_h is defined on the super class and should not include any parts of the response that
-        # contain PII. This method is here as a safeguard in case that changes.
-        def to_h
-          {
-            success: success?,
-            errors: errors,
-            exception: exception,
-            billed: result_code.billed,
-          }.merge(response_info)
         end
 
         # @return [DocAuth::Acuant::ResultCode::ResultCode]
@@ -59,6 +38,7 @@ module DocAuth
 
           {
             vendor: 'Acuant',
+            billed: result_code.billed,
             doc_auth_result: result_code.name,
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,

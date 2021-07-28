@@ -41,8 +41,7 @@ class DocumentProofingJob < ApplicationJob
       )
     end
 
-    analytics = Analytics.new(user: user, request: nil, sp: dcs.issuer)
-
+    analytics = build_analytics(dcs)
     doc_auth_client = build_doc_auth_client(analytics)
 
     proofer_result = timer.time('proof_documents') do
@@ -88,6 +87,14 @@ class DocumentProofingJob < ApplicationJob
   end
 
   private
+
+  def build_analytics(document_capture_session)
+    Analytics.new(
+      user: document_capture_session.user,
+      request: nil,
+      sp: document_capture_session.issuer,
+    )
+  end
 
   def build_doc_auth_client(analytics)
     DocAuthRouter.client(

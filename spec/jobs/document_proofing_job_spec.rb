@@ -23,6 +23,7 @@ RSpec.describe DocumentProofingJob, type: :job do
       dob: '01/01/1970',
       ssn: '123456789',
       phone: '18888675309',
+      state: 'MT',
     }
   end
 
@@ -72,6 +73,7 @@ RSpec.describe DocumentProofingJob, type: :job do
   end
 
   describe '#perform' do
+    let(:job_analytics) { FakeAnalytics.new }
     let(:instance) { DocumentProofingJob.new }
     subject(:perform) do
       instance.perform(
@@ -82,6 +84,11 @@ RSpec.describe DocumentProofingJob, type: :job do
         image_metadata: image_metadata,
         analytics_data: {},
       )
+    end
+
+    before do
+      allow(instance).to receive(:build_analytics).
+        with(document_capture_session).and_return(job_analytics)
     end
 
     context 'with a successful response from the proofer' do
@@ -106,31 +113,112 @@ RSpec.describe DocumentProofingJob, type: :job do
           to receive(:pii_from_doc).and_return(applicant_pii)
       end
 
-      it 'returns a response' do
-        perform
+      context 'liveness checking disabled' do
+        let(:liveness_checking_enabled) { false }
 
-        result = document_capture_session.load_doc_auth_async_result
+        it 'returns a response' do
+          perform
 
-        expect(result.result).to eq(
-          alert_failure_count: 0,
-          billed: true,
-          errors: {},
-          face_match_results: { is_match: true, match_score: nil },
-          image_metrics: {},
-          processed_alerts: { failed: [], passed: [] },
-          raw_alerts: [],
-          raw_regions: [],
-          result: 'Passed',
-          selfie_liveness_results: {
-            acuant_error: { code: nil, message: nil },
-            liveness_assessment: 'Live',
-            liveness_score: nil,
-          },
-          success: true,
-          exception: nil,
-        )
+          result = document_capture_session.load_doc_auth_async_result
 
-        expect(result.pii_from_doc).to eq(applicant_pii)
+          expect(result.result).to eq(
+            alert_failure_count: 0,
+            vendor: 'Acuant',
+            doc_auth_result: 'Passed',
+            billed: true,
+            errors: {},
+            image_metrics: {},
+            processed_alerts: { failed: [], passed: [] },
+            raw_alerts: [],
+            raw_regions: [],
+            success: true,
+            exception: nil,
+          )
+
+          expect(job_analytics).to have_logged_event(
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor: 'Acuant',
+            billed: true,
+            doc_auth_result: 'Passed',
+            processed_alerts: { failed: [], passed: [] },
+            alert_failure_count: 0,
+            image_metrics: {},
+            raw_alerts: [],
+            raw_regions: [],
+            state: 'MT',
+            async: true,
+            remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+            client_image_metrics: {
+              front: front_image_metadata,
+              back: back_image_metadata,
+            },
+          )
+
+          expect(result.pii_from_doc).to eq(applicant_pii)
+        end
+      end
+
+      context 'liveness checking enabled' do
+        let(:liveness_checking_enabled) { true }
+
+        it 'returns a response' do
+          perform
+
+          result = document_capture_session.load_doc_auth_async_result
+
+          expect(result.result).to eq(
+            alert_failure_count: 0,
+            vendor: 'Acuant',
+            billed: true,
+            errors: {},
+            face_match_results: { is_match: true, match_score: nil },
+            image_metrics: {},
+            processed_alerts: { failed: [], passed: [] },
+            raw_alerts: [],
+            raw_regions: [],
+            doc_auth_result: 'Passed',
+            selfie_liveness_results: {
+              acuant_error: { code: nil, message: nil },
+              liveness_assessment: 'Live',
+              liveness_score: nil,
+            },
+            success: true,
+            exception: nil,
+          )
+
+          expect(job_analytics).to have_logged_event(
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor: 'Acuant',
+            billed: true,
+            doc_auth_result: 'Passed',
+            processed_alerts: { failed: [], passed: [] },
+            alert_failure_count: 0,
+            image_metrics: {},
+            raw_alerts: [],
+            raw_regions: [],
+            state: 'MT',
+            async: true,
+            remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+            face_match_results: { is_match: true, match_score: nil },
+            selfie_liveness_results: {
+              acuant_error: { code: nil, message: nil },
+              liveness_assessment: 'Live',
+              liveness_score: nil,
+            },
+            client_image_metrics: {
+              front: front_image_metadata,
+              back: back_image_metadata,
+            },
+          )
+
+          expect(result.pii_from_doc).to eq(applicant_pii)
+        end
       end
 
       it 'logs the trace_id and timing info' do
