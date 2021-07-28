@@ -106,32 +106,62 @@ RSpec.describe DocumentProofingJob, type: :job do
           to receive(:pii_from_doc).and_return(applicant_pii)
       end
 
-      it 'returns a response' do
-        perform
+      context 'liveness checking disabled' do
+        let(:liveness_checking_enabled) { false }
 
-        result = document_capture_session.load_doc_auth_async_result
+        it 'returns a response' do
+          perform
 
-        expect(result.result).to eq(
-          alert_failure_count: 0,
-          vendor: 'Acuant',
-          billed: true,
-          errors: {},
-          face_match_results: { is_match: true, match_score: nil },
-          image_metrics: {},
-          processed_alerts: { failed: [], passed: [] },
-          raw_alerts: [],
-          raw_regions: [],
-          doc_auth_result: 'Passed',
-          selfie_liveness_results: {
-            acuant_error: { code: nil, message: nil },
-            liveness_assessment: 'Live',
-            liveness_score: nil,
-          },
-          success: true,
-          exception: nil,
-        )
+          result = document_capture_session.load_doc_auth_async_result
 
-        expect(result.pii_from_doc).to eq(applicant_pii)
+          expect(result.result).to eq(
+            alert_failure_count: 0,
+            vendor: 'Acuant',
+            billed: true,
+            errors: {},
+            image_metrics: {},
+            processed_alerts: { failed: [], passed: [] },
+            raw_alerts: [],
+            raw_regions: [],
+            doc_auth_result: 'Passed',
+            success: true,
+            exception: nil,
+          )
+
+          expect(result.pii_from_doc).to eq(applicant_pii)
+        end
+      end
+
+      context 'liveness checking enabled' do
+        let(:liveness_checking_enabled) { true }
+
+        it 'returns a response' do
+          perform
+
+          result = document_capture_session.load_doc_auth_async_result
+
+          expect(result.result).to eq(
+            alert_failure_count: 0,
+            vendor: 'Acuant',
+            billed: true,
+            errors: {},
+            face_match_results: { is_match: true, match_score: nil },
+            image_metrics: {},
+            processed_alerts: { failed: [], passed: [] },
+            raw_alerts: [],
+            raw_regions: [],
+            doc_auth_result: 'Passed',
+            selfie_liveness_results: {
+              acuant_error: { code: nil, message: nil },
+              liveness_assessment: 'Live',
+              liveness_score: nil,
+            },
+            success: true,
+            exception: nil,
+          )
+
+          expect(result.pii_from_doc).to eq(applicant_pii)
+        end
       end
 
       it 'logs the trace_id and timing info' do
