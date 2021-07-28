@@ -14,7 +14,6 @@ RSpec.describe DocumentProofingJob, type: :job do
   let(:back_image_metadata) { { mimeType: 'image/png', source: source } }
   let(:image_metadata) { { front: front_image_metadata, back: back_image_metadata } }
   let(:liveness_checking_enabled) { true }
-  let(:job_analytics) { FakeAnalytics.new }
 
   let(:applicant_pii) do
     {
@@ -33,7 +32,6 @@ RSpec.describe DocumentProofingJob, type: :job do
     encrypt_and_stub_s3(body: body, url: front_image_url, iv: front_image_iv, key: encryption_key)
     encrypt_and_stub_s3(body: body, url: back_image_url, iv: back_image_iv, key: encryption_key)
     encrypt_and_stub_s3(body: body, url: selfie_image_url, iv: selfie_image_iv, key: encryption_key)
-    allow(Analytics).to receive(:new).and_return(job_analytics)
   end
 
   let(:encrypted_arguments) do
@@ -75,6 +73,7 @@ RSpec.describe DocumentProofingJob, type: :job do
   end
 
   describe '#perform' do
+    let(:job_analytics) { FakeAnalytics.new }
     let(:instance) { DocumentProofingJob.new }
     subject(:perform) do
       instance.perform(
@@ -85,6 +84,11 @@ RSpec.describe DocumentProofingJob, type: :job do
         image_metadata: image_metadata,
         analytics_data: {},
       )
+    end
+
+    before do
+      allow(instance).to receive(:build_analytics).
+        with(document_capture_session).and_return(job_analytics)
     end
 
     context 'with a successful response from the proofer' do
