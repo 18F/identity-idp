@@ -14,6 +14,7 @@ RSpec.describe DocumentProofingJob, type: :job do
   let(:back_image_metadata) { { mimeType: 'image/png', source: source } }
   let(:image_metadata) { { front: front_image_metadata, back: back_image_metadata } }
   let(:liveness_checking_enabled) { true }
+  let(:job_analytics) { FakeAnalytics.new }
 
   let(:applicant_pii) do
     {
@@ -23,6 +24,7 @@ RSpec.describe DocumentProofingJob, type: :job do
       dob: '01/01/1970',
       ssn: '123456789',
       phone: '18888675309',
+      state: 'MT',
     }
   end
 
@@ -31,6 +33,7 @@ RSpec.describe DocumentProofingJob, type: :job do
     encrypt_and_stub_s3(body: body, url: front_image_url, iv: front_image_iv, key: encryption_key)
     encrypt_and_stub_s3(body: body, url: back_image_url, iv: back_image_iv, key: encryption_key)
     encrypt_and_stub_s3(body: body, url: selfie_image_url, iv: selfie_image_iv, key: encryption_key)
+    allow(Analytics).to receive(:new).and_return(job_analytics)
   end
 
   let(:encrypted_arguments) do
@@ -117,15 +120,37 @@ RSpec.describe DocumentProofingJob, type: :job do
           expect(result.result).to eq(
             alert_failure_count: 0,
             vendor: 'Acuant',
+            doc_auth_result: 'Passed',
             billed: true,
             errors: {},
             image_metrics: {},
             processed_alerts: { failed: [], passed: [] },
             raw_alerts: [],
             raw_regions: [],
-            doc_auth_result: 'Passed',
             success: true,
             exception: nil,
+          )
+
+          expect(job_analytics).to have_logged_event(
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor: 'Acuant',
+            billed: true,
+            doc_auth_result: 'Passed',
+            processed_alerts: { failed: [], passed: [] },
+            alert_failure_count: 0,
+            image_metrics: {},
+            raw_alerts: [],
+            raw_regions: [],
+            state: 'MT',
+            async: true,
+            remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+            client_image_metrics: {
+              front: front_image_metadata,
+              back: back_image_metadata,
+            },
           )
 
           expect(result.pii_from_doc).to eq(applicant_pii)
@@ -158,6 +183,34 @@ RSpec.describe DocumentProofingJob, type: :job do
             },
             success: true,
             exception: nil,
+          )
+
+          expect(job_analytics).to have_logged_event(
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor: 'Acuant',
+            billed: true,
+            doc_auth_result: 'Passed',
+            processed_alerts: { failed: [], passed: [] },
+            alert_failure_count: 0,
+            image_metrics: {},
+            raw_alerts: [],
+            raw_regions: [],
+            state: 'MT',
+            async: true,
+            remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+            face_match_results: { is_match: true, match_score: nil },
+            selfie_liveness_results: {
+              acuant_error: { code: nil, message: nil },
+              liveness_assessment: 'Live',
+              liveness_score: nil,
+            },
+            client_image_metrics: {
+              front: front_image_metadata,
+              back: back_image_metadata,
+            },
           )
 
           expect(result.pii_from_doc).to eq(applicant_pii)
