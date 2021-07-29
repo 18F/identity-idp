@@ -33,28 +33,27 @@ RSpec.describe ScriptHelper do
         javascript_packs_tag_once('application', prepend: true)
       end
 
-      it 'prints all unique packs in order' do
+      it 'prints all unique packs in order, locale scripts first' do
         output = render_javascript_pack_once_tags
+        public_output_path = current_webpacker_instance.config.public_output_path
+        public_path = current_webpacker_instance.config.public_path
+        output_path = public_output_path.relative_path_from(public_path)
 
-        application_pack_selector = 'script[src^="/packs-test/js/application-"]'
-        clipboard_pack_selector = 'script[src^="/packs-test/js/clipboard-"]'
-        document_capture_pack_selector = 'script[src^="/packs-test/js/document-capture-"]'
+        selectors = [
+          "script[src^='/#{output_path}/js/application-'][src$='.chunk.en.js']",
+          "script[src^='/#{output_path}/js/document-capture-'][src$='.chunk.en.js']",
+          "script[src^='/#{output_path}/js/runtime~application-']",
+          "script[src^='/#{output_path}/js/application-'][src$='.chunk.js']",
+          "script[src^='/#{output_path}/js/clipboard-'][src$='.chunk.js']",
+          "script[src^='/#{output_path}/js/document-capture-'][src$='.chunk.js']",
+        ]
 
-        expect(output).to have_css(
-          application_pack_selector,
-          count: 1,
-          visible: false,
-        )
-        expect(output).to have_css(
-          "#{application_pack_selector} ~ #{clipboard_pack_selector}",
-          count: 1,
-          visible: false,
-        )
-        expect(output).to have_css(
-          "#{clipboard_pack_selector} ~ #{document_capture_pack_selector}",
-          count: 1,
-          visible: false,
-        )
+        selectors.each_with_index do |selector, i|
+          next_selector = selectors[i + 1]
+          test_selector = selector
+          test_selector += " ~ #{next_selector}" if next_selector
+          expect(output).to have_css(test_selector, count: 1, visible: false)
+        end
       end
     end
   end

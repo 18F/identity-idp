@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-doc-auth.git
-  revision: 27efe0fc8188da2911e2bc349e59cb3f4257fad2
-  tag: v0.12.0
+  revision: adfb1f33e72af1db4987da3dccfe26e5b1bacf1f
+  tag: v0.13.0
   specs:
-    identity-doc-auth (0.12.0)
+    identity-doc-auth (0.13.0)
       activesupport
       faraday
       redacted_struct (>= 1.0.0)
@@ -35,10 +35,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 89d93da7b45cad7f01b5335f762f5f020d40765f
-  tag: v0.14.2-18f
+  revision: cf2ec293aa2c12e8679adfa7d6807a8d77814f4c
+  tag: v0.14.3-18f
   specs:
-    saml_idp (0.14.2.pre.18f)
+    saml_idp (0.14.3.pre.18f)
       activesupport
       builder
       faraday

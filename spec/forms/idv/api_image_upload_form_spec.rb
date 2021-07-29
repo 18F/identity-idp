@@ -216,7 +216,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    describe 'cropping mode' do
+    describe 'image source' do
       let(:source) { nil }
       let(:front_image_metadata) do
         { width: 40, height: 40, mimeType: 'image/png', source: source }.to_json
@@ -224,20 +224,20 @@ RSpec.describe Idv::ApiImageUploadForm do
       let(:back_image_metadata) do
         { width: 20, height: 20, mimeType: 'image/png', source: source }.to_json
       end
-      let(:cropping_mode) { nil }
+      let(:image_source) { nil }
 
       before do
         expect_any_instance_of(IdentityDocAuth::Mock::DocAuthMockClient).
           to receive(:post_images).
-          with(hash_including(cropping_mode: cropping_mode)).
+          with(hash_including(image_source: image_source)).
           and_call_original
       end
 
       context 'manual uploads' do
         let(:source) { 'upload' }
-        let(:cropping_mode) { IdentityDocAuth::CroppingModes::ALWAYS }
+        let(:image_source) { IdentityDocAuth::ImageSources::UNKNOWN }
 
-        it 'sets cropping mode to always' do
+        it 'sets image source to unknown' do
           form.submit
         end
       end
@@ -247,18 +247,18 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:back_image_metadata) do
           { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }.to_json
         end
-        let(:cropping_mode) { IdentityDocAuth::CroppingModes::ALWAYS }
+        let(:image_source) { IdentityDocAuth::ImageSources::UNKNOWN }
 
-        it 'sets cropping mode to always' do
+        it 'sets image source to unknown' do
           form.submit
         end
       end
 
       context 'acuant images' do
         let(:source) { 'acuant' }
-        let(:cropping_mode) { IdentityDocAuth::CroppingModes::NONE }
+        let(:image_source) { IdentityDocAuth::ImageSources::ACUANT_SDK }
 
-        it 'sets cropping mode to none' do
+        it 'sets image source to acuant sdk' do
           form.submit
         end
       end
@@ -266,9 +266,9 @@ RSpec.describe Idv::ApiImageUploadForm do
       context 'malformed image metadata' do
         let(:source) { 'upload' }
         let(:front_image_metadata) { nil.to_json }
-        let(:cropping_mode) { IdentityDocAuth::CroppingModes::ALWAYS }
+        let(:image_source) { IdentityDocAuth::ImageSources::UNKNOWN }
 
-        it 'sets cropping mode to always' do
+        it 'sets image source to unknown' do
           form.submit
         end
       end

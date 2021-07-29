@@ -30,7 +30,7 @@ fr:
       piv_cac:
         account_not_found_html: '<p><strong>%{sign_in}</strong> votre adresse email et
           votre mot de passe. Ajoutez ensuite votre PIV/CAC à votre compte.</p>
-          <p><strong>Vous n’avez pas de compte login.gov?</strong>
+          <p><strong>Vous n’avez pas de compte Login.gov?</strong>
           %{create_account}</p>'
         add_from_sign_in_html: '<strong> Instructions: </ strong> insérez votre PIV ou
           votre CAC dans <strong> “AJOUTER PIV / CAC” </ strong>. Vous devez
@@ -62,7 +62,7 @@ fr:
           pour ce compte. Veuillez %{please_try_again} avec un autre certificat.
           Si ce problème persiste, contactez l’administrateur de votre agence.
         please_try_again: réessayer
-        sign_in: Assurez-vous que <strong>vous disposez d’un compte login.gov</strong>
+        sign_in: Assurez-vous que <strong>vous disposez d’un compte Login.gov</strong>
           et que <strong>vous avez configuré PIV/CAC</strong> en tant que
           méthode d’authentification à deux facteurs.
         step_1: Donnez-lui un surnom
@@ -121,5 +121,5 @@ fr:
         de passe. Si vous réinitialisez votre mot de passe et que vous ne
         possédez pas cette clé, vous devrez vérifier votre identité à nouveau.
     sp_handoff_bounced: Votre connexion a réussi, mais %{sp_name} vous a renvoyé à
-      login.gov. Veuillez contacter %{sp_link} pour obtenir de l’aide.
+      Login.gov. Veuillez contacter %{sp_link} pour obtenir de l’aide.
     sp_handoff_bounced_with_no_sp: votre fournisseur de service

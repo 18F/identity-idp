@@ -54,9 +54,7 @@ class ResolutionProofingJob < ApplicationJob
   # @return [CallbackLogData]
   def proof_lexisnexis_then_aamva(timer:, applicant_pii:, should_proof_state_id:, document_expired:)
     proofer_result = timer.time('resolution') do
-      with_retries(**faraday_retry_options) do
-        resolution_proofer.proof(applicant_pii)
-      end
+      resolution_proofer.proof(applicant_pii)
     end
 
     result = proofer_result.to_h

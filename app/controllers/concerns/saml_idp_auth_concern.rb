@@ -160,7 +160,6 @@ module SamlIdpAuthConcern
     elsif current_service_provider&.encrypt_responses?
       cert = saml_request.service_provider.matching_cert ||
              current_service_provider&.ssl_certs&.first
-
       {
         cert: cert,
         block_encryption: current_service_provider&.block_encryption,
