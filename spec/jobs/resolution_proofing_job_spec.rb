@@ -350,5 +350,19 @@ RSpec.describe ResolutionProofingJob, type: :job do
         end
       end
     end
+
+    context 'a stale job' do
+      before { instance.enqueued_at = 10.minutes.ago }
+
+      it 'bails, notifies newrelic, and does not do any proofing' do
+        expect(instance).to_not receive(:resolution_proofer)
+        expect(instance).to_not receive(:state_id_proofer)
+
+        expect(NewRelic::Agent).to receive(:notice_error).
+          with(kind_of(JobHelpers::StaleJobHelper::StaleJobError))
+
+        perform
+      end
+    end
   end
 end

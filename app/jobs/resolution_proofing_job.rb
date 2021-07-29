@@ -1,5 +1,6 @@
 class ResolutionProofingJob < ApplicationJob
   include JobHelpers::FaradayHelper
+  include JobHelpers::StaleJobHelper
 
   queue_as :default
 
@@ -13,6 +14,12 @@ class ResolutionProofingJob < ApplicationJob
   def perform(result_id:, encrypted_arguments:, trace_id:, should_proof_state_id:,
               dob_year_only:, document_expired:)
     timer = JobHelpers::Timer.new
+
+    if stale_job?(enqueued_at)
+      notify_stale_job
+      return
+    end
+
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,
