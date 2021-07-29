@@ -121,5 +121,15 @@ RSpec.describe AddressProofingJob, type: :job do
         end
       end
     end
+
+    context 'a stale job' do
+      before { instance.enqueued_at = 10.minutes.ago }
+
+      it 'bails and does not do any proofing' do
+        expect(DocAuthRouter).to_not receive(:address_proofer)
+
+        expect { perform }.to raise_error(JobHelpers::StaleJobHelper::StaleJobError)
+      end
+    end
   end
 end

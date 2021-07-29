@@ -1,5 +1,6 @@
 class DocumentProofingJob < ApplicationJob
   include JobHelpers::FaradayHelper
+  include JobHelpers::StaleJobHelper
 
   queue_as :default
 
@@ -11,10 +12,13 @@ class DocumentProofingJob < ApplicationJob
     image_metadata:,
     analytics_data:
   )
+    timer = JobHelpers::Timer.new
+
+    raise_stale_job! if stale_job?(enqueued_at)
+
     dcs = DocumentCaptureSession.find_by(result_id: result_id)
     user = dcs.user
 
-    timer = JobHelpers::Timer.new
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,

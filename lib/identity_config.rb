@@ -80,6 +80,7 @@ class IdentityConfig
     config.add(:add_email_link_valid_for_hours, type: :integer)
     config.add(:asset_host, type: :string)
     config.add(:async_wait_timeout_seconds, type: :integer)
+    config.add(:async_stale_job_timeout_seconds, type: :integer)
     config.add(:attribute_encryption_key, type: :string)
     config.add(:attribute_encryption_key_queue, type: :json)
     config.add(:aws_http_retry_limit, type: :integer)

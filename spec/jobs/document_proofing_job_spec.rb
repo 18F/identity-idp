@@ -93,7 +93,7 @@ RSpec.describe DocumentProofingJob, type: :job do
 
     context 'with a successful response from the proofer' do
       before do
-        expect(DocAuthRouter).to receive('doc_auth_vendor').and_return('acuant').twice
+        expect(DocAuthRouter).to receive(:doc_auth_vendor).and_return('acuant').twice
 
         url = URI.join('https://example.com', '/AssureIDService/Document/Instance')
         stub_request(:post, url).to_return(body: '"this-is-a-test-instance-id"')
@@ -371,6 +371,16 @@ RSpec.describe DocumentProofingJob, type: :job do
         it 'sets image source to unknown' do
           perform
         end
+      end
+    end
+
+    context 'a stale job' do
+      before { instance.enqueued_at = 10.minutes.ago }
+
+      it 'bails and does not do any proofing' do
+        expect(DocAuthRouter).to_not receive(:doc_auth_vendor)
+
+        expect { perform }.to raise_error(JobHelpers::StaleJobHelper::StaleJobError)
       end
     end
   end
