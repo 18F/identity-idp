@@ -15,10 +15,7 @@ class ResolutionProofingJob < ApplicationJob
               dob_year_only:, document_expired:)
     timer = JobHelpers::Timer.new
 
-    if stale_job?(enqueued_at)
-      notify_stale_job
-      return
-    end
+    raise_stale_job! if stale_job?(enqueued_at)
 
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),

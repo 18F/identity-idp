@@ -7,14 +7,12 @@ module JobHelpers
         enqueued_at < IdentityConfig.store.async_stale_job_timeout_seconds.seconds.ago
     end
 
-    def notify_stale_job
-      NewRelic::Agent.notice_error(
-        StaleJobError.new(
-          format(
-            '%s enqueued over %s seconds ago',
-            self.class,
-            IdentityConfig.store.async_stale_job_timeout_seconds,
-          ),
+    def raise_stale_job!
+      raise StaleJobError.new(
+        format(
+          '%s enqueued over %s seconds ago',
+          self.class,
+          IdentityConfig.store.async_stale_job_timeout_seconds,
         ),
       )
     end

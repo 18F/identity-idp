@@ -377,13 +377,10 @@ RSpec.describe DocumentProofingJob, type: :job do
     context 'a stale job' do
       before { instance.enqueued_at = 10.minutes.ago }
 
-      it 'bails, notifies newrelic, and does not do any proofing' do
+      it 'bails and does not do any proofing' do
         expect(DocAuthRouter).to_not receive(:doc_auth_vendor)
 
-        expect(NewRelic::Agent).to receive(:notice_error).
-          with(kind_of(JobHelpers::StaleJobHelper::StaleJobError))
-
-        perform
+        expect { perform }.to raise_error(JobHelpers::StaleJobHelper::StaleJobError)
       end
     end
   end

@@ -14,10 +14,7 @@ class DocumentProofingJob < ApplicationJob
   )
     timer = JobHelpers::Timer.new
 
-    if stale_job?(enqueued_at)
-      notify_stale_job
-      return
-    end
+    raise_stale_job! if stale_job?(enqueued_at)
 
     dcs = DocumentCaptureSession.find_by(result_id: result_id)
     user = dcs.user

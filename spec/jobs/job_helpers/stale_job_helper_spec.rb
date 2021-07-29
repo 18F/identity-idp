@@ -37,12 +37,9 @@ RSpec.describe JobHelpers::StaleJobHelper do
     end
   end
 
-  describe '#notify_stale_job' do
-    it 'notifies NewRelic' do
-      expect(NewRelic::Agent).to receive(:notice_error).
-        with(kind_of(JobHelpers::StaleJobHelper::StaleJobError))
-
-      instance.notify_stale_job
+  describe '#raise_stale_job!' do
+    it 'raises' do
+      expect { instance.raise_stale_job! }.to raise_error(JobHelpers::StaleJobHelper::StaleJobError)
     end
   end
 end

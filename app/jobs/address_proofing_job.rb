@@ -7,10 +7,7 @@ class AddressProofingJob < ApplicationJob
   def perform(user_id:, issuer:, result_id:, encrypted_arguments:, trace_id:)
     timer = JobHelpers::Timer.new
 
-    if stale_job?(enqueued_at)
-      notify_stale_job
-      return
-    end
+    raise_stale_job! if stale_job?(enqueued_at)
 
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
