@@ -9,41 +9,60 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
     end
 
     context 'with data' do
-      let!(:gtc) do
-        # gtc1234-0001, gtc1234-0002
+      let(:partner_account) { create(:partner_account) }
+      let(:gtc) do
         create(
           :iaa_gtc,
-          gtc_number: 'gtc1234'
-          iaa_orders: [
-            build_iaa_order(issuer: issuer1, order_number: 1, date_range: iaa1_range), # TODO: a real date range
-            build_iaa_order(issuer: issuer2, order_number: 1, date_range: iaa1_range),
-            build_iaa_order(issuer: issuer1, order_number: 2, date_range: iaa2_range),
-            build_iaa_order(issuer: issuer2, order_number: 2, date_range: iaa2_range),
-          ],
+          gtc_number: 'gtc1234',
+          partner_account: partner_account,
+          start_date: iaa1_range.begin,
+          end_date: iaa1_range.end,
         )
       end
 
-      def build_iaa_order(issuer:, order_number:, date_range:)
-        build(
+      let(:iaa_order1) {
+ build_iaa_order(issuer: iaa1_sp.issuer, order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc)
+      }
+      let(:iaa_order2) {
+ build_iaa_order(issuer: iaa2_sp.issuer, order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc)
+      }
+
+      # Have to do this because of invalid check when building integration usages
+      let!(:iaa_orders) do
+        [
+          iaa_order1, # TODO: a real date range
+          iaa_order2,
+        ]
+      end
+
+      let(:integration1) { build_integration(issuer: iaa1_sp.issuer) }
+      let(:integration2) { build_integration(issuer: iaa2_sp.issuer) }
+
+      def build_iaa_order(issuer:, order_number:, date_range:, iaa_gtc:)
+        create(
           :iaa_order,
           order_number: order_number,
-          start_date: date_range.start,
+          start_date: date_range.begin,
           end_date: date_range.end,
-          integration_usage: build(
-            :integration_usage,
-            integration: build(
-              :integration,
-              issuer: issuer,
-            ),
-          ),
+          iaa_gtc: iaa_gtc,
+        )
+      end
+
+      def build_integration(issuer:)
+        create(
+          :integration,
+          issuer: issuer,
+          partner_account: partner_account,
         )
       end
 
       let(:iaa1) { 'iaa1' }
+      let(:iaa1_key) { "#{gtc.gtc_number}-#{format('%04d', iaa_order1.order_number)}" }
       let(:iaa1_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 14) }
       let(:inside_iaa1) { iaa1_range.begin + 1.day }
 
       let(:iaa2) { 'iaa2' }
+      let(:iaa2_key) { "#{gtc.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
       let(:iaa2_range) { Date.new(2020, 9, 1)..Date.new(2021, 8, 30) }
       let(:inside_iaa2) { iaa2_range.begin + 1.day }
 
@@ -69,7 +88,12 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
       end
 
       before do
+        iaa_order1.integrations << integration1
+        iaa_order2.integrations << integration2
         # 1 unique user in partial month at IAA 1 @ IAL 1
+        iaa_order1.save
+        iaa_order2.save
+
         create(
           :sp_return_log,
           user_id: user1.id,
@@ -107,7 +131,7 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
 
         rows = [
           {
-            iaa: iaa1,
+            iaa: iaa1_key,
             ial1_total_auth_count: 1,
             ial2_total_auth_count: 0,
             ial1_unique_users: 1,
@@ -119,7 +143,7 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
             iaa_end_date: iaa1_range.end.to_s,
           },
           {
-            iaa: iaa2,
+            iaa: iaa2_key,
             ial1_total_auth_count: 0,
             ial2_total_auth_count: 1,
             ial1_unique_users: 0,
@@ -131,7 +155,7 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
             iaa_end_date: iaa2_range.end.to_s,
           },
           {
-            iaa: iaa2,
+            iaa: iaa2_key,
             ial1_total_auth_count: 0,
             ial2_total_auth_count: 4,
             ial1_unique_users: 0,

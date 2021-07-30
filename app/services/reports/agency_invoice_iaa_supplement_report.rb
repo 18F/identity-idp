@@ -28,15 +28,16 @@ module Reports
             key = "#{gtc.gtc_number}-#{format('%04d', iaa_order.order_number)}"
             issuers = iaa_order.integration_usages.map { |usage| usage.integration.issuer }
 
-            {
-              key: key,
-              issuers: issuers,
-              start_date: gtc.start_date,
-              end_date: gtc.end_date,
-            } if issuers.present?
+            if issuers.present?
+              {
+                key: key,
+                issuers: issuers,
+                start_date: gtc.start_date,
+                end_date: gtc.end_date,
+              }
+            end
           end.compact
         end
-
       # GTC number + order number
     end
 
