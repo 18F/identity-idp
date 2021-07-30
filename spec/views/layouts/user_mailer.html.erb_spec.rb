@@ -35,7 +35,7 @@ describe 'layouts/user_mailer.html.erb' do
     expect(rendered).to have_link(MarketingSite.nice_help_url, href: MarketingSite.help_url)
   end
 
-  it 'includes link to About login.gov' do
+  it 'includes link to About Login.gov' do
     expect(rendered).to have_link(t('mailer.about', app: APP_NAME), href: MarketingSite.base_url)
   end
 

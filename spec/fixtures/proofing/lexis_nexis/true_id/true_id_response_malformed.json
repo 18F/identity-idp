@@ -1,0 +1,22 @@
+{
+  "Status":    {
+    "ConversationId": "31000175156586",
+    "RequestId": "399948246",
+    "TransactionStatus": "passed",
+    "Reference": "Reference1",
+    "ServerInfo": "server.server.regn.net"
+  },
+  "Products": [   {
+    "ProductType": "TrueID",
+    "ExecutedStepName": "True_ID_Step",
+    "ProductConfigurationName": "TrueID_Flow",
+    "ProductStatus": "pass",
+    "ParameterDetails":       [
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert__AlertName",
+        "Values": [{}]
+      }
+    ]
+  }]
+}

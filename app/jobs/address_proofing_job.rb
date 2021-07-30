@@ -1,10 +1,13 @@
 class AddressProofingJob < ApplicationJob
   include JobHelpers::FaradayHelper
+  include JobHelpers::StaleJobHelper
 
   queue_as :default
 
   def perform(user_id:, issuer:, result_id:, encrypted_arguments:, trace_id:)
     timer = JobHelpers::Timer.new
+
+    raise_stale_job! if stale_job?(enqueued_at)
 
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
@@ -14,9 +17,7 @@ class AddressProofingJob < ApplicationJob
     applicant_pii = decrypted_args[:applicant_pii]
 
     proofer_result = timer.time('address') do
-      with_retries(**faraday_retry_options) do
-        address_proofer.proof(applicant_pii)
-      end
+      address_proofer.proof(applicant_pii)
     end
 
     Db::SpCost::AddSpCost.call(

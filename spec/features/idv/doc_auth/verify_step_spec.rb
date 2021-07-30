@@ -166,7 +166,7 @@ feature 'doc auth verify step' do
       stub_const(
         'Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS',
         Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS +
-          [IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
+          [DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
       )
       # rubocop:enable Layout/LineLength
 
@@ -183,7 +183,7 @@ feature 'doc auth verify step' do
     end
   end
 
-  context 'when the user lives in an AAMVA unsupported state' do
+  context 'when the user does not live in an AAMVA supported state' do
     it 'does not perform the state ID check' do
       agent = instance_double(Idv::Agent)
       allow(Idv::Agent).to receive(:new).and_return(agent)
@@ -195,7 +195,7 @@ feature 'doc auth verify step' do
       stub_const(
         'Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS',
         Idv::Steps::VerifyBaseStep::AAMVA_SUPPORTED_JURISDICTIONS -
-          [IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
+          [DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC[:state_id_jurisdiction]],
       )
       # rubocop:enable Layout/LineLength
 

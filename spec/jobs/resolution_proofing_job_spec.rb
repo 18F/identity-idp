@@ -350,5 +350,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
         end
       end
     end
+
+    context 'a stale job' do
+      before { instance.enqueued_at = 10.minutes.ago }
+
+      it 'bails and does not do any proofing' do
+        expect(instance).to_not receive(:resolution_proofer)
+        expect(instance).to_not receive(:state_id_proofer)
+
+        expect { perform }.to raise_error(JobHelpers::StaleJobHelper::StaleJobError)
+      end
+    end
   end
 end

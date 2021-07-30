@@ -14,11 +14,9 @@ FileUtils.cp("Gemfile.lock", "Gemfile-dev.lock")
 # Override the defaults in the native Gemfile. Uncomment and customize for your setup.
 # NOTE: These assume all gems are in the same directory as the IDP and named the same as the repos.
 
-# @doc_auth_gem = { path: '../identity-doc-auth' }
 # @hostdata_gem = { path: '../identity-hostdata' }
 # @idp_functions_gem = { path: '../identity-idp-functions' }
 # @logging_gem = { path: '../identity-logging' }
-# @proofer_gem = { path: '../identity-proofer-gem' }
 # @telephony_gem = { path: '../identity-telephony' }
 # @validations_gem = { path: '../identity-validations' }
 # @saml_gem = { path: '../saml_idp' }

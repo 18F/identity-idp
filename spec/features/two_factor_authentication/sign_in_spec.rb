@@ -363,7 +363,7 @@ feature 'Two Factor Authentication' do
     it 'returns them to the home page' do
       user = create(:user, :signed_up)
       sign_in_user(user)
-      click_link 'login.gov'
+      click_link 'Login.gov'
       expect(current_path).to eq root_path
     end
   end

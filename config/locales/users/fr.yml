@@ -28,14 +28,14 @@ fr:
       header: Votre clé personnelle
       print: Imprimer cette page
     rules_of_use:
-      check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation de login.gov
+      check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation de Login.gov
       details_html: |-
         <div class="bold margin-bottom-1">Règles d’utilisation:</div>
         <ul>
-        <li>Expliquez le fonctionnement du service login.gov et ce que vous pouvez en attendre,</li>
-        <li>Les conditions dans lesquelles nous vous fournissons le service login.gov,</li>
+        <li>Expliquez le fonctionnement du service Login.gov et ce que vous pouvez en attendre,</li>
+        <li>Les conditions dans lesquelles nous vous fournissons le service Login.gov,</li>
         <li>Comment nous utilisons vos informations et vos droits sur ces informations, et</li>
-        <li>Les conditions que vous acceptez lorsque vous effectuez certaines actions sur le service login.gov.</li>
+        <li>Les conditions que vous acceptez lorsque vous effectuez certaines actions sur le service Login.gov.</li>
         </ul>
       overview_html: Nous avons mis à jour notre %{link}. Veuillez consulter et cocher
         la case ci-dessous pour continuer.

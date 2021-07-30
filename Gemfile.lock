@@ -1,14 +1,4 @@
 GIT
-  remote: https://github.com/18F/identity-doc-auth.git
-  revision: 2b1992d83e6a152b2234a5b71b9682d5f89635aa
-  tag: v0.10.1
-  specs:
-    identity-doc-auth (0.10.1)
-      activesupport
-      faraday
-      redacted_struct (>= 1.0.0)
-
-GIT
   remote: https://github.com/18F/identity-hostdata.git
   revision: 32fc831b47d17c878381279c936014e9956fcbe7
   tag: v3.3.0
@@ -35,10 +25,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 89d93da7b45cad7f01b5335f762f5f020d40765f
-  tag: v0.14.2-18f
+  revision: cf2ec293aa2c12e8679adfa7d6807a8d77814f4c
+  tag: v0.14.3-18f
   specs:
-    saml_idp (0.14.2.pre.18f)
+    saml_idp (0.14.3.pre.18f)
       activesupport
       builder
       faraday
@@ -118,7 +108,7 @@ GEM
       minitest (>= 5.1)
       tzinfo (~> 2.0)
       zeitwerk (~> 2.3)
-    addressable (2.7.0)
+    addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
     ahoy_matey (3.1.0)
       activesupport (>= 5)
@@ -685,8 +675,7 @@ GEM
     yard (0.9.26)
     zeitwerk (2.4.2)
     zonebie (0.6.1)
-    zxcvbn-js (4.4.3)
-      execjs
+    zxcvbn (0.1.7)
 
 PLATFORMS
   ruby
@@ -726,7 +715,6 @@ DEPENDENCIES
   hiredis
   http_accept_language
   i18n-tasks (>= 0.9.31)
-  identity-doc-auth!
   identity-hostdata!
   identity-logging!
   identity-telephony!
@@ -797,7 +785,7 @@ DEPENDENCIES
   xmldsig (~> 0.6)
   xmlenc (~> 0.7, >= 0.7.1)
   zonebie
-  zxcvbn-js
+  zxcvbn (= 0.1.7)
 
 RUBY VERSION
    ruby 2.7.3p183

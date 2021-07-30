@@ -4,12 +4,12 @@ fr:
     account_reset:
       cancel_token_invalid: le jeton d’annulation n’est pas valide
       cancel_token_missing: le jeton d’annulation est manquant
-      granted_token_expired: Le lien pour supprimer votre compte login.gov a expiré.
+      granted_token_expired: Le lien pour supprimer votre compte Login.gov a expiré.
         Veuillez créer une autre demande pour supprimer votre compte.
-      granted_token_invalid: Le lien de suppression de votre compte login.gov n’est
+      granted_token_invalid: Le lien de suppression de votre compte Login.gov n’est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre
         e-mail.
-      granted_token_missing: Le lien de suppression de votre compte login.gov n’est
+      granted_token_missing: Le lien de suppression de votre compte Login.gov n’est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre
         e-mail.
     capture_doc:
@@ -117,6 +117,8 @@ fr:
       terms: Avant de pouvoir continuer, vous devez nous donner la permission.
         Veuillez cocher la case ci-dessous puis cliquez sur continuer.
     rules_of_use: Veuillez cocher cette case pour continuer
+    sign_in:
+      bad_password_limit: Vous avez dépassé le nombre maximal de tentatives de connexion.
     two_factor_auth_setup:
       must_select_option: Sélectionnez une méthode d’authentification.
     verify_personal_key:

@@ -1,0 +1,16 @@
+{
+  "Status": {
+    "ConversationId": "31000473747369",
+    "RequestId": "794605589",
+    "TransactionStatus": "error",
+    "TransactionReasonCode": {"Code": "internal_application_error"}
+  },
+  "Information": [
+    {
+      "InformationType": "error-details",
+      "Code": "internal_application_error",
+      "Description": "Error: Internal",
+      "DetailDescription": []
+    }
+  ]
+}

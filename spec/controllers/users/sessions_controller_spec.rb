@@ -167,7 +167,6 @@ describe Users::SessionsController, devise: true do
 
   describe 'POST /' do
     include AccountResetHelper
-
     it 'tracks the successful authentication for existing user' do
       user = create(:user, :signed_up)
       subject.session['user_return_to'] = 'http://example.com'
@@ -413,6 +412,57 @@ describe Users::SessionsController, devise: true do
           with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
         post :create, params: { user: { email: user.email, password: user.password } }
+      end
+    end
+
+    context 'with user that is up to date with rules of use' do
+      let(:rules_of_use_updated_at) { 1.day.ago }
+      let(:accepted_terms_at) { 12.hours.ago }
+      let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
+          and_return(rules_of_use_updated_at)
+      end
+
+      it 'redirects to 2fa since there is no pending account reset rewquests' do
+        post :create, params: { user: { email: user.email, password: user.password } }
+        expect(response).to redirect_to user_two_factor_authentication_url
+      end
+    end
+
+    context 'with user that is not up to date with rules of use' do
+      let(:rules_of_use_updated_at) { 1.day.ago }
+      let(:accepted_terms_at) { 2.days.ago }
+      let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
+          and_return(rules_of_use_updated_at)
+      end
+
+      it 'redirects to rules of use url' do
+        post :create, params: { user: { email: user.email, password: user.password } }
+        expect(response).to redirect_to rules_of_use_url
+      end
+    end
+
+    context 'with a user that accepted the rules of use more than 6 years ago' do
+      let(:rules_of_use_horizon_years) { 6 }
+      let(:rules_of_use_updated_at) { 7.years.ago }
+      let(:accepted_terms_at) { 6.years.ago - 1.day }
+      let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years).
+          and_return(rules_of_use_horizon_years)
+        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
+          and_return(rules_of_use_updated_at)
+      end
+
+      it 'redirects to the rules of user url' do
+        post :create, params: { user: { email: user.email, password: user.password } }
+        expect(response).to redirect_to rules_of_use_url
       end
     end
 

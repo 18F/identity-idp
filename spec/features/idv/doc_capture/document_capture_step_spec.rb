@@ -161,7 +161,7 @@ feature 'doc capture document capture step' do
         click_idv_continue
 
         expect(page).to have_current_path(next_step)
-        expect(IdentityDocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
+        expect(DocAuth::Mock::DocAuthMockClient.last_uploaded_selfie_image).to be_nil
       end
 
       it 'is on the correct_page and shows the document upload options' do
@@ -215,6 +215,24 @@ feature 'doc capture document capture step' do
       expect(page).to have_content(I18n.t('doc_auth.tips.document_capture_selfie_text3'))
     end
 
+    it 'logs a warning event when there are unknown errors in the response' do
+      Tempfile.create(['ia2_mock', '.yml']) do |yml_file|
+        yml_file.rewind
+        yml_file.puts <<~YAML
+          failed_alerts:
+          - name: Some Made Up Error
+        YAML
+        yml_file.close
+
+        attach_file 'doc_auth_front_image', yml_file.path
+        attach_file 'doc_auth_back_image', yml_file.path
+        attach_file 'doc_auth_selfie_image', yml_file.path
+        click_idv_continue
+      end
+
+      expect(fake_analytics).to have_logged_event(Analytics::DOC_AUTH_WARNING, {})
+    end
+
     it 'proceeds to the next page with valid info and logs analytics info' do
       attach_and_submit_images
 
@@ -223,14 +241,14 @@ feature 'doc capture document capture step' do
         Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
         flow_path: 'hybrid',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         flow_path: 'hybrid',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
       )
     end
@@ -243,9 +261,9 @@ feature 'doc capture document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
@@ -264,7 +282,7 @@ feature 'doc capture document capture step' do
         throttle_type: :idv_acuant,
       )
 
-      IdentityDocAuth::Mock::DocAuthMockClient.reset!
+      DocAuth::Mock::DocAuthMockClient.reset!
 
       Timecop.travel(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now) do
         complete_doc_capture_steps_before_first_step(user)
@@ -275,9 +293,9 @@ feature 'doc capture document capture step' do
     end
 
     it 'catches network connection errors on post_front_image' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
@@ -329,9 +347,9 @@ feature 'doc capture document capture step' do
     end
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
@@ -350,7 +368,7 @@ feature 'doc capture document capture step' do
         throttle_type: :idv_acuant,
       )
 
-      IdentityDocAuth::Mock::DocAuthMockClient.reset!
+      DocAuth::Mock::DocAuthMockClient.reset!
 
       Timecop.travel(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now) do
         complete_doc_capture_steps_before_first_step(user)
@@ -361,9 +379,9 @@ feature 'doc capture document capture step' do
     end
 
     it 'catches network connection errors on post_front_image' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
@@ -383,7 +401,7 @@ feature 'doc capture document capture step' do
 
     it 'proceeds to the next step if the result was successful' do
       document_capture_session = user.document_capture_sessions.last
-      response = IdentityDocAuth::Response.new(success: true)
+      response = DocAuth::Response.new(success: true)
       document_capture_session.store_result_from_response(response)
       document_capture_session.save!
 
@@ -394,7 +412,7 @@ feature 'doc capture document capture step' do
 
     it 'does not proceed to the next step if the result was not successful' do
       document_capture_session = user.document_capture_sessions.last
-      response = IdentityDocAuth::Response.new(success: false)
+      response = DocAuth::Response.new(success: false)
       document_capture_session.store_result_from_response(response)
       document_capture_session.save!
 
@@ -412,7 +430,7 @@ feature 'doc capture document capture step' do
 
     it 'uses the form params if form params are present' do
       document_capture_session = user.document_capture_sessions.last
-      response = IdentityDocAuth::Response.new(success: false)
+      response = DocAuth::Response.new(success: false)
       document_capture_session.store_result_from_response(response)
       document_capture_session.save!
 

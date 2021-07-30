@@ -1,14 +1,24 @@
 class DocumentProofingJob < ApplicationJob
   include JobHelpers::FaradayHelper
+  include JobHelpers::StaleJobHelper
 
   queue_as :default
 
-  def perform(result_id:, encrypted_arguments:, trace_id:,
-              liveness_checking_enabled:, analytics_data:)
+  def perform(
+    result_id:,
+    encrypted_arguments:,
+    trace_id:,
+    liveness_checking_enabled:,
+    image_metadata:,
+    analytics_data:
+  )
+    timer = JobHelpers::Timer.new
+
+    raise_stale_job! if stale_job?(enqueued_at)
+
     dcs = DocumentCaptureSession.find_by(result_id: result_id)
     user = dcs.user
 
-    timer = JobHelpers::Timer.new
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,
@@ -35,12 +45,16 @@ class DocumentProofingJob < ApplicationJob
       )
     end
 
+    analytics = build_analytics(dcs)
+    doc_auth_client = build_doc_auth_client(analytics)
+
     proofer_result = timer.time('proof_documents') do
       with_retries(**faraday_retry_options) do
         doc_auth_client.post_images(
           front_image: front_image,
           back_image: back_image,
           selfie_image: selfie_image || '',
+          image_source: image_source(image_metadata),
           liveness_checking_enabled: liveness_checking_enabled,
         )
       end
@@ -50,8 +64,6 @@ class DocumentProofingJob < ApplicationJob
       result: proofer_result.to_h, # pii_from_doc is excluded from to_h to stop accidental logging
       pii: proofer_result.pii_from_doc,
     )
-
-    analytics = Analytics.new(user: user, request: nil, sp: dcs.issuer)
 
     remaining_attempts = Throttler::RemainingCount.call(
       user.id,
@@ -64,6 +76,7 @@ class DocumentProofingJob < ApplicationJob
         state: proofer_result.pii_from_doc[:state],
         async: true,
         remaining_attempts: remaining_attempts,
+        client_image_metrics: image_metadata,
       ).merge(analytics_data),
     )
   ensure
@@ -79,12 +92,35 @@ class DocumentProofingJob < ApplicationJob
 
   private
 
-  def doc_auth_client
-    @doc_auth_client ||= DocAuthRouter.client
+  def build_analytics(document_capture_session)
+    Analytics.new(
+      user: document_capture_session.user,
+      request: nil,
+      sp: document_capture_session.issuer,
+    )
+  end
+
+  def build_doc_auth_client(analytics)
+    DocAuthRouter.client(
+      warn_notifier: proc { |attrs| analytics.track_event(Analytics::DOC_AUTH_WARNING, attrs) },
+    )
   end
 
   def encryption_helper
     @encryption_helper ||= JobHelpers::EncryptionHelper.new
+  end
+
+  def image_source(image_metadata)
+    if acuant_sdk_capture?(image_metadata)
+      DocAuth::ImageSources::ACUANT_SDK
+    else
+      DocAuth::ImageSources::UNKNOWN
+    end
+  end
+
+  def acuant_sdk_capture?(image_metadata)
+    image_metadata.dig(:front, :source) == 'acuant' &&
+      image_metadata.dig(:back, :source) == 'acuant'
   end
 
   def s3_helper

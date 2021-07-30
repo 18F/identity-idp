@@ -26,7 +26,6 @@ class IdvController < ApplicationController
 
   def activated
     redirect_to idv_url unless active_profile?
-    redirect_to account_url if session[:ial2_with_no_sp_campaign]
     idv_session.clear
   end
 

@@ -1,0 +1,18 @@
+{
+  "Status": {
+    "ConversationId": "31000476610559",
+    "RequestId": "799094779",
+    "TransactionStatus": "failed",
+    "TransactionReasonCode": {"Code": "failed_true_id"},
+    "Reference": "03830809-3cba-4df4-801a-1734c29a2b7d"
+  },
+  "Products": [
+    {
+      "ProductType": "TrueID",
+      "ExecutedStepName": "True_ID_Step",
+      "ProductConfigurationName": "GSA.V3.TrueID.PM",
+      "ProductStatus": "fail",
+      "ProductReason": {"Code": "failed_true_id"}
+    }
+  ]
+}

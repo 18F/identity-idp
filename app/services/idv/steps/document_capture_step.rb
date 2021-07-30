@@ -41,7 +41,7 @@ module Idv
         return handle_document_verification_failure(response) unless response.success?
         doc_pii_form_result = Idv::DocPiiForm.new(response.pii_from_doc).submit
         unless doc_pii_form_result.success?
-          doc_auth_form_result = IdentityDocAuth::Response.new(
+          doc_auth_form_result = DocAuth::Response.new(
             success: false,
             errors: doc_pii_form_result.errors,
           )
@@ -58,11 +58,16 @@ module Idv
       def post_images
         return throttled_response if throttled_else_increment
 
-        result = DocAuthRouter.client.post_images(
+        result = DocAuthRouter.client(
+          warn_notifier: proc do |attrs|
+            @flow.analytics.track_event(Analytics::DOC_AUTH_WARNING, attrs)
+          end,
+        ).post_images(
           front_image: front_image.read,
           back_image: back_image.read,
           selfie_image: selfie_image&.read,
           liveness_checking_enabled: liveness_checking_enabled?,
+          image_source: DocAuth::ImageSources::UNKNOWN, # No-JS flow doesn't use Acuant SDK
         )
         # DP: should these cost recordings happen in the doc_auth_client?
         add_costs(result)
@@ -82,9 +87,8 @@ module Idv
       end
 
       def log_document_error(get_results_response)
-        unless get_results_response.is_a?(IdentityDocAuth::Acuant::Responses::GetResultsResponse)
-          return
-        end
+        return unless get_results_response.is_a?(DocAuth::Acuant::Responses::GetResultsResponse)
+
         Funnel::DocAuth::LogDocumentError.call(
           user_id,
           get_results_response&.result_code&.name.to_s,

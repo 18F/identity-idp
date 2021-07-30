@@ -16,6 +16,10 @@ executors:
         environment:
           RAILS_ENV: test
           BUNDLER_VERSION: 2.2.20
+          # The base image sets NODE_VERSION environment variable, which we don't intend to use. Its
+          # presence will cause NVM to treat it as the default version. Unsetting it allows for NVM
+          # to use the version from .nvmrc instead.
+          NODE_VERSION: ''
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -29,6 +33,14 @@ executors:
 commands:
   bundle-yarn-install:
     steps:
+      - run:
+          name: Switch Node.js version
+          command: |
+            wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+            export NVM_DIR="$HOME/.nvm"
+            . "$NVM_DIR/nvm.sh" --install
+            echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV;
+            echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV;
       - run: gem install bundler --version $BUNDLER_VERSION
       - restore_cache:
           keys:
@@ -48,6 +60,9 @@ commands:
       - run:
           name: Install Yarn
           command: yarn install --ignore-engines --cache-folder ~/.cache/yarn
+      - run:
+          name: Print Node.js version
+          command: node -v
       - save_cache:
           key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
@@ -105,7 +120,7 @@ commands:
     steps:
       - slack/status:
           fail_only: true
-          failure_message: ":smokeybear::red_circle: Smoke tests failed in environment: $MONITOR_ENV"
+          failure_message: ':smokeybear::red_circle: Smoke tests failed in environment: $MONITOR_ENV'
           include_project_field: false
   store-smoketest-results:
     steps:
@@ -246,7 +261,7 @@ jobs:
           sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
       - bundle-yarn-install
       - run:
-          name: "Smoke tests"
+          name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
@@ -262,7 +277,7 @@ jobs:
           sha_url: https://idp.int.identitysandbox.gov/api/deploy.json
       - bundle-yarn-install
       - run:
-          name: "Smoke tests"
+          name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
@@ -278,7 +293,7 @@ jobs:
           sha_url: https://idp.staging.login.gov/api/deploy.json
       - bundle-yarn-install
       - run:
-          name: "Smoke tests"
+          name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
@@ -292,7 +307,7 @@ jobs:
       - checkout
       - bundle-yarn-install
       - run:
-          name: "Smoke tests"
+          name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
       - notify-slack-smoke-test-status
@@ -308,7 +323,7 @@ jobs:
             make lint_country_dialing_codes
       - slack/status:
           fail_only: true
-          failure_message: ":aws-emoji: :red_circle: AWS Pinpoint country configuration is out of date"
+          failure_message: ':aws-emoji: :red_circle: AWS Pinpoint country configuration is out of date'
 workflows:
   version: 2
   release:
@@ -330,7 +345,7 @@ workflows:
     triggers:
       - schedule:
           # Once a day at 12pm
-          cron: "0 12 * * *"
+          cron: '0 12 * * *'
           filters:
             branches:
               only:
@@ -343,7 +358,7 @@ workflows:
   smoketest-dev-workflow:
     triggers:
       - schedule:
-          cron: "55 * * * *"
+          cron: '55 * * * *'
           filters:
             branches:
               only:
@@ -355,7 +370,7 @@ workflows:
   smoketest-int-workflow:
     triggers:
       - schedule:
-          cron: "45 * * * *"
+          cron: '45 * * * *'
           filters:
             branches:
               only:
@@ -367,7 +382,7 @@ workflows:
   smoketest-staging-workflow:
     triggers:
       - schedule:
-          cron: "35 * * * *"
+          cron: '35 * * * *'
           filters:
             branches:
               only:
@@ -379,7 +394,7 @@ workflows:
   smoketest-prod-workflow:
     triggers:
       - schedule:
-          cron: "25 * * * *"
+          cron: '25 * * * *'
           filters:
             branches:
               only:

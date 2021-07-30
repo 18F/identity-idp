@@ -21,7 +21,7 @@ describe Idv::ConfirmationsController do
     profile = profile_maker.save_profile
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
-    idv_session.personal_key = profile.personal_key
+    subject.user_session[:personal_key] = profile.personal_key
     allow(subject).to receive(:idv_session).and_return(idv_session)
   end
 
@@ -95,22 +95,11 @@ describe Idv::ConfirmationsController do
 
     it 'sets code instance variable' do
       subject.idv_session.create_profile_from_applicant_with_password(password)
-      code = subject.idv_session.personal_key
+      code = subject.user_session[:personal_key]
 
       get :show
 
       expect(assigns(:code)).to eq(code)
-    end
-
-    it 'allows download of code' do
-      subject.idv_session.create_profile_from_applicant_with_password(password)
-      code = subject.idv_session.personal_key
-
-      get :show
-      get :download
-
-      expect(response.body).to eq(code + "\r\n")
-      expect(response.header['Content-Type']).to eq('text/plain')
     end
 
     it 'sets flash[:allow_confirmations_continue] to true' do
@@ -226,6 +215,46 @@ describe Idv::ConfirmationsController do
 
         expect(response).to redirect_to idv_come_back_later_path
       end
+    end
+  end
+
+  describe '#download' do
+    before do
+      stub_idv_session
+      stub_analytics
+    end
+
+    it 'allows download of code' do
+      subject.idv_session.create_profile_from_applicant_with_password(password)
+      code = subject.user_session[:personal_key]
+
+      get :show
+      get :download
+
+      expect(response.body).to eq(code + "\r\n")
+      expect(response.header['Content-Type']).to eq('text/plain')
+      expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: true)
+    end
+
+    it 'can be called separately from #show' do
+      get :download
+
+      expect(response).to be_ok
+
+      code = subject.user_session[:personal_key]
+      expect(response.body).to eq(code + "\r\n")
+    end
+
+    it 'can be called out of order and have the same code as #show' do
+      subject.user_session[:personal_key] = nil
+
+      expect { get :download }.to change { subject.user_session[:personal_key] }.from(nil)
+
+      expect(response).to be_ok
+      code = response.body.chomp
+
+      get :show
+      expect(assigns(:code)).to eq(code)
     end
   end
 end

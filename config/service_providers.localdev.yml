@@ -232,39 +232,38 @@ test:
     help_text:
       sign_in:
         en: <b>First time here from %{sp_name}?</b><p>Your old %{sp_name} username
-          and password won’t work. Please <a href=%{sp_create_link}>create a login.gov
-          account</a> using the same email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn
+          and password won’t work. Please <a href=%{sp_create_link}>create a Login.gov account</a> using the same email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn
           more</a>
         es: <b>¿Ha venido de %{sp_name}?</b><p>Si tiene un perfil de %{sp_name}
           existente, favor de usar la dirección de correo electrónico primaria o secundaria
           que usó para %{sp_name} para <a href=%{sp_create_link}>crear un nueva cuenta
-          de login.gov</a> <p><a href="https://login.gov/help/">Obtenga más información.</a>
+          de Login.gov</a> <p><a href="https://login.gov/help/">Obtenga más información.</a>
         fr: <b>Êtes-vous venu(e) de %{sp_name}?</b><p> Si vous avez déjà un profil
           %{sp_name}, veuillez utiliser l'adresse e-mail principale ou secondaire
           que vous avez utilisée pour %{sp_name} pour <a href=%{sp_create_link}> créer
-          votre nouveau compte login.gov</a> <p><a href="https://login.gov/help/">En
+          votre nouveau compte Login.gov</a> <p><a href="https://login.gov/help/">En
           savoir plus.</a>
       sign_up:
-        en: Please create a login.gov account using the same email address you
+        en: Please create a Login.gov account using the same email address you
           use for %{sp_name} <p><a href="https://login.gov/help/">Learn more</a>
-        es: Por favor crea un login.gov cuenta usando la misma dirección de correo
+        es: Por favor crea un Login.gov cuenta usando la misma dirección de correo
           electrónico que utiliza para %{sp_name}. <p><a href="https://login.gov/help/">Obtenga
           más información.</a>
-        fr: Veuillez créer un compte login.gov avec la même adresse e-mail que
+        fr: Veuillez créer un compte Login.gov avec la même adresse e-mail que
           vous avez utilisée pour %{sp_name}. <p><a href="https://login.gov/help/">En
           savoir plus.</a>
       forgot_password:
         en: Your old %{sp_name} username and password won’t work. Please
-          <a href=%{sp_create_link}>create a login.gov account</a> using the same
+          <a href=%{sp_create_link}>create a Login.gov account</a> using the same
           email address you use for %{sp_name}. <p><a href="https://login.gov/help/">Learn
           more</a>
         es: Si tiene un perfil de %{sp_name} existente, favor de usar
           la dirección de correo electrónico primaria o secundaria que usó para %{sp_name}
-          para <a href=%{sp_create_link}>crear su nueva cuenta de login.gov</a>. <p><a
+          para <a href=%{sp_create_link}>crear su nueva cuenta de Login.gov</a>. <p><a
           href="https://login.gov/help/">Obtenga más información.</a>
         fr: Si vous avez déjà un profil %{sp_name}, veuillez utiliser
           l'adresse e-mail principale ou secondaire que vous avez utilisée pour %{sp_name}
-          pour <a href=%{sp_create_link}> créer votre nouveau compte login.gov</a>
+          pour <a href=%{sp_create_link}> créer votre nouveau compte Login.gov</a>
           <p><a href="https://login.gov/help/">En savoir plus.</a>
     allow_prompt_login: true
 

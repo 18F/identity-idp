@@ -12,6 +12,10 @@ module AcuantFixtures
     load_response_fixture('get_results_response_failure.json')
   end
 
+  def self.get_results_response_expired
+    load_response_fixture('get_results_response_expired.json')
+  end
+
   def self.get_face_image_response
     load_response_fixture('get_face_image_response.jpg')
   end

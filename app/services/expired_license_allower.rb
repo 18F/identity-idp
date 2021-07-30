@@ -1,16 +1,16 @@
 # Needs the "raw" response error codes, which needs to happen before translation
 class ExpiredLicenseAllower
-  # @param [IdentityDocAuth::Response]
+  # @param [DocAuth::Response]
   def initialize(response)
     @response = response
   end
 
   # When we allow expired drivers licenses, returns a successful response
-  # @return [IdentityDocAuth::Response]
+  # @return [DocAuth::Response]
   def processed_response
     if document_expired?
       if IdentityConfig.store.proofing_allow_expired_license && allowable_expired_license?
-        IdentityDocAuth::Response.new(
+        DocAuth::Response.new(
           success: true, # new response with explicit true overrides success
           errors: {},
           exception: response.exception,
@@ -21,7 +21,7 @@ class ExpiredLicenseAllower
         )
       else
         response.merge(
-          IdentityDocAuth::Response.new(
+          DocAuth::Response.new(
             success: true, # merge uses "&&" to combine success, so this does not override
             extra: {
               document_expired: document_expired?,
@@ -36,12 +36,12 @@ class ExpiredLicenseAllower
   end
 
   def document_expired?
-    !!response.errors[:id]&.include?(IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK)
+    !!response.errors[:id]&.include?(DocAuth::Errors::DOCUMENT_EXPIRED_CHECK)
   end
 
   def only_error_was_document_expired?
     response.errors.keys == [:id] &&
-      response.errors[:id] == [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK]
+      response.errors[:id] == [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK]
   end
 
   def allowable_expired_license?

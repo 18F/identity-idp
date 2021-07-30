@@ -64,8 +64,11 @@ class User < ApplicationRecord
     email_addresses.where.not(confirmed_at: nil).any?
   end
 
-  def accepted_rules_of_use?
-    self.accepted_terms_at.present?
+  def accepted_rules_of_use_still_valid?
+    if self.accepted_terms_at.present?
+      self.accepted_terms_at > IdentityConfig.store.rules_of_use_updated_at &&
+        self.accepted_terms_at > IdentityConfig.store.rules_of_use_horizon_years.years.ago
+    end
   end
 
   def set_reset_password_token

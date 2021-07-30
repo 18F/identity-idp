@@ -30,7 +30,7 @@ class MfaConfirmationController < ApplicationController
   end
 
   def handle_invalid_password
-    session[:password_attempts] += 1
+    session[:password_attempts] = session[:password_attempts].to_i + 1
 
     if session[:password_attempts] < IdentityConfig.store.password_max_attempts
       flash[:error] = t('errors.confirm_password_incorrect')

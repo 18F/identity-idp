@@ -32,7 +32,7 @@ module Idv
         doc_pii_response = validate_pii_from_doc(client_response) if client_response.success?
       end
 
-      return determine_response(
+      determine_response(
         form_response: form_response,
         client_response: client_response,
         doc_pii_response: doc_pii_response,
@@ -72,6 +72,7 @@ module Idv
         back_image: back.read,
         selfie_image: selfie&.read,
         liveness_checking_enabled: liveness_checking_enabled?,
+        image_source: image_source,
       )
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc[:state]
@@ -120,6 +121,14 @@ module Idv
       @liveness_checking_enabled
     end
 
+    def image_source
+      if acuant_sdk_capture?
+        DocAuth::ImageSources::ACUANT_SDK
+      else
+        DocAuth::ImageSources::UNKNOWN
+      end
+    end
+
     def front
       as_readable(:front)
     end
@@ -155,7 +164,9 @@ module Idv
     end
 
     def doc_auth_client
-      @doc_auth_client ||= DocAuthRouter.client
+      @doc_auth_client ||= DocAuthRouter.client(
+        warn_notifier: proc { |attrs| track_event(Analytics::DOC_AUTH_WARNING, attrs) },
+      )
     end
 
     def as_readable(image_key)
@@ -190,8 +201,13 @@ module Idv
       )
     end
 
+    def acuant_sdk_capture?
+      image_metadata.dig(:front, :source) == 'acuant' &&
+        image_metadata.dig(:back, :source) == 'acuant'
+    end
+
     def image_metadata
-      params.permit(:front_image_metadata, :back_image_metadata).
+      @image_metadata ||= params.permit(:front_image_metadata, :back_image_metadata).
         to_h.
         transform_values do |str|
           JSON.parse(str)

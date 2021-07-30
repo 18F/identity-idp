@@ -1,0 +1,745 @@
+{
+  "Status": {
+    "ConversationId": "31000438698728",
+    "RequestId": "749574578",
+    "TransactionStatus": "passed",
+    "TransactionReasonCode": {
+      "Code": "trueid_pass",
+      "Description": "TRUEID PASS"
+    },
+    "Reference": "923c0c86-6f68-47d6-979e-08ff9e53b631"
+  }, "Products": [
+  {
+    "ProductType": "TrueID",
+    "ExecutedStepName": "True_ID_Step",
+    "ProductConfigurationName": "GSA.V3.TrueID.Flow",
+    "ProductStatus": "pass",
+    "ParameterDetails": [
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocumentName",
+        "Values": [{"Value": "Maryland (MD) Driver's License - STAR"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocAuthResult",
+        "Values": [{"Value": "Attention"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocIssuerCode",
+        "Values": [{"Value": "MD"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocIssuerName",
+        "Values": [{"Value": "Maryland"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocIssuerType",
+        "Values": [{"Value": "StateProvince"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocClassCode",
+        "Values": [{"Value": "DriversLicense"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocClass",
+        "Values": [{"Value": "DriversLicense"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocClassName",
+        "Values": [{"Value": "Drivers License"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocIsGeneric",
+        "Values": [{"Value": "false"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocIssue",
+        "Values": [{"Value": "2016"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocIssueType",
+        "Values": [{"Value": "Driver's License - STAR"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DocSize",
+        "Values": [{"Value": "ID1"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "ClassificationMode",
+        "Values": [{"Value": "Automatic"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "OrientationChanged",
+        "Values": [{"Value": "true"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "PresentationChanged",
+        "Values": [{"Value": "false"}]
+      },
+      {
+        "Group": "IMAGE_METRICS_RESULT",
+        "Name": "Side",
+        "Values": [
+          {"Value": "Front"},
+          {"Value": "Back"}
+        ]
+      },
+      {
+        "Group": "IMAGE_METRICS_RESULT",
+        "Name": "GlareMetric",
+        "Values": [
+          {"Value": "100"},
+          {"Value": "100"}
+        ]
+      },
+      {
+        "Group": "IMAGE_METRICS_RESULT",
+        "Name": "SharpnessMetric",
+        "Values": [
+          {"Value": "65"},
+          {"Value": "65"}
+        ]
+      },
+      {
+        "Group": "IMAGE_METRICS_RESULT",
+        "Name": "IsTampered",
+        "Values": [
+          {"Value": "0"},
+          {"Value": "0"}
+        ]
+      },
+      {
+        "Group": "IMAGE_METRICS_RESULT",
+        "Name": "IsCropped",
+        "Values": [
+          {"Value": "1"},
+          {"Value": "1"}
+        ]
+      },
+      {
+        "Group": "IMAGE_METRICS_RESULT",
+        "Name": "HorizontalResolution",
+        "Values": [
+          {"Value": "600"},
+          {"Value": "600"}
+        ]
+      },
+      {
+        "Group": "IMAGE_METRICS_RESULT",
+        "Name": "VerticalResolution",
+        "Values": [
+          {"Value": "600"},
+          {"Value": "600"}
+        ]
+      },
+      {
+        "Group": "IMAGE_METRICS_RESULT",
+        "Name": "Light",
+        "Values": [
+          {"Value": "White"},
+          {"Value": "White"}
+        ]
+      },
+      {
+        "Group": "IMAGE_METRICS_RESULT",
+        "Name": "MimeType",
+        "Values": [
+          {"Value": "image/vnd.ms-photo"},
+          {"Value": "image/vnd.ms-photo"}
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "FullName",
+        "Values": [{"Value": "DAVID LICENSE SAMPLE"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Sex",
+        "Values": [{"Value": "Male"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Age",
+        "Values": [{"Value": "33"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DOB_Year",
+        "Values": [{"Value": "1986"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DOB_Month",
+        "Values": [{"Value": "10"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "DOB_Day",
+        "Values": [{"Value": "13"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "ExpirationDate_Year",
+        "Values": [{"Value": "2099"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "ExpirationDate_Month",
+        "Values": [{"Value": "10"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "ExpirationDate_Day",
+        "Values": [{"Value": "15"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_1_AlertName",
+        "Values": [{"Value": "Visible Pattern"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_2_AlertName",
+        "Values": [{"Value": "2D Barcode Content"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_3_AlertName",
+        "Values": [{"Value": "2D Barcode Read"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_4_AlertName",
+        "Values": [{"Value": "Birth Date Crosscheck"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_5_AlertName",
+        "Values": [{"Value": "Birth Date Valid"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_6_AlertName",
+        "Values": [{"Value": "Document Classification"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_7_AlertName",
+        "Values": [{"Value": "Document Crosscheck Aggregation"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_8_AlertName",
+        "Values": [{"Value": "Document Expired"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_9_AlertName",
+        "Values": [{"Value": "Document Number Crosscheck"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_10_AlertName",
+        "Values": [{"Value": "Expiration Date Crosscheck"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_11_AlertName",
+        "Values": [{"Value": "Expiration Date Valid"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_12_AlertName",
+        "Values": [{"Value": "Full Name Crosscheck"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_13_AlertName",
+        "Values": [{"Value": "Issue Date Crosscheck"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_14_AlertName",
+        "Values": [{"Value": "Issue Date Valid"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_15_AlertName",
+        "Values": [{"Value": "Sex Crosscheck"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_16_AlertName",
+        "Values": [{"Value": "Visible Pattern"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_17_AlertName",
+        "Values": [{"Value": "Visible Pattern"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_18_AlertName",
+        "Values": [{"Value": "Visible Pattern"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_19_AlertName",
+        "Values": [{"Value": "Visible Pattern"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_20_AlertName",
+        "Values": [{"Value": "Visible Pattern"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_21_AlertName",
+        "Values": [{"Value": "Visible Pattern"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_22_AlertName",
+        "Values": [{"Value": "Visible Pattern"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_23_AlertName",
+        "Values": [{"Value": "Visible Pattern"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_1_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_2_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Checked the contents of the two-dimensional barcode on the document."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_3_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Attention",
+            "Detail": "Verified that the two-dimensional barcode on the document was read successfully."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_4_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable birth date field to the human-readable birth date field."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_5_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified that the birth date is valid."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_6_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified that the type of document is supported and is able to be fully authenticated."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_7_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Compared the machine-readable fields to the human-readable fields."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_8_AuthenticationResult",
+        "Values": [
+          {"Value": "Passed", "Detail": "Checked if the document is expired."}
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_9_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable document number field to the human-readable document number field."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_10_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable expiration date field to the human-readable expiration date field."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_11_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified that the expiration date is valid."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_12_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable full name field to the human-readable full name field."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_13_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable issue date field to the human-readable issue date field."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_14_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified that the issue date is valid."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_15_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Compare the machine-readable sex field to the human-readable sex field."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_16_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_17_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_18_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_19_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_20_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_21_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_22_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_23_AuthenticationResult",
+        "Values": [
+          {
+            "Value": "Passed",
+            "Detail": "Verified the presence of a pattern on the visible image."
+          }
+        ]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_1_Regions",
+        "Values": [{"Value": "Background Stripes"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_16_Regions",
+        "Values": [{"Value": "Flag"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_17_Regions",
+        "Values": [{"Value": "Red Background Center"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_18_Regions",
+        "Values": [{"Value": "Background Above Secondary Photo"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_19_Regions",
+        "Values": [{"Value": "Oval Edge"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_20_Regions",
+        "Values": [{"Value": "Curved Lines"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_21_Regions",
+        "Values": [{"Value": "Bottom Left Background"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_22_Regions",
+        "Values": [{"Value": "Center Background"}]
+      },
+      {
+        "Group": "AUTHENTICATION_RESULT",
+        "Name": "Alert_23_Regions",
+        "Values": [{"Value": "Right Background"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_FullName",
+        "Values": [{"Value": "DAVID LICENSE SAMPLE"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_Surname",
+        "Values": [{"Value": "SAMPLE"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_GivenName",
+        "Values": [{"Value": "DAVID LICENSE"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_FirstName",
+        "Values": [{"Value": "DAVID"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_MiddleName",
+        "Values": [{"Value": "LICENSE"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_DOB_Year",
+        "Values": [{"Value": "1986"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_DOB_Month",
+        "Values": [{"Value": "10"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_DOB_Day",
+        "Values": [{"Value": "13"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_DocumentClassName",
+        "Values": [{"Value": "Drivers License"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_DocumentNumber",
+        "Values": [{"Value": "M555555555555"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_ExpirationDate_Year",
+        "Values": [{"Value": "2099"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_ExpirationDate_Month",
+        "Values": [{"Value": "10"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_xpirationDate_Day",
+        "Values": [{"Value": "15"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_IssuingStateCode",
+        "Values": [{"Value": "MD"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_IssuingStateName",
+        "Values": [{"Value": "Maryland"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_Address",
+        "Values": [{"Value": "123 ABC AVExE2x80xA8ANYTOWN, MD 12345"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_AddressLine1",
+        "Values": [{"Value": "123 ABC AVE"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_City",
+        "Values": [{"Value": "ANYTOWN"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_State",
+        "Values": [{"Value": "MD"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_PostalCode",
+        "Values": [{"Value": "12345"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_Sex",
+        "Values": [{"Value": "M"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_Height",
+        "Values": [{"Value": "5' 10\""}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_IssueDate_Year",
+        "Values": [{"Value": "2016"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_IssueDate_Month",
+        "Values": [{"Value": "10"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_IssueDate_Day",
+        "Values": [{"Value": "15"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_LicenseClass",
+        "Values": [{"Value": "C"}]
+      },
+      {
+        "Group": "IDAUTH_FIELD_DATA",
+        "Name": "Fields_LicenseRestrictions",
+        "Values": [{"Value": "B"}]
+      }
+    ]
+  },
+  {
+    "ProductType": "TrueID_Decision",
+    "ExecutedStepName": "Decision",
+    "ProductConfigurationName": "TRUEID_PASS",
+    "ProductStatus": "pass",
+    "ProductReason": {
+      "Code": "trueid_pass",
+      "Description": "TRUEID PASS"
+    }
+  }
+]
+}

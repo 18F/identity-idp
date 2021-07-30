@@ -102,7 +102,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: true,
           errors: {},
           exception: nil,
-          result: 'Passed',
+          doc_auth_result: 'Passed',
           billed: true,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts,
           state: 'MT',
@@ -112,6 +112,21 @@ RSpec.describe Idv::ApiImageUploadForm do
             back: JSON.parse(back_image_metadata, symbolize_names: true),
           },
         )
+      end
+    end
+
+    context 'image data returns unknown errors' do
+      let(:back_image) do
+        Rack::Test::UploadedFile.new(StringIO.new(<<~YAML), original_filename: 'ial2.yml')
+          failed_alerts:
+          - name: Some Made Up Error
+        YAML
+      end
+
+      it 'logs a doc auth warning' do
+        form.submit
+
+        expect(fake_analytics).to have_logged_event(Analytics::DOC_AUTH_WARNING, {})
       end
     end
 
@@ -126,7 +141,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: true,
           errors: {},
           exception: nil,
-          result: 'Passed',
+          doc_auth_result: 'Passed',
           billed: true,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts,
           user_id: nil,
@@ -153,7 +168,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'posting images to client fails' do
       let(:failed_response) do
-        IdentityDocAuth::Response.new(
+        DocAuth::Response.new(
           success: false,
           errors: { front: 'glare' },
           extra: { remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1 },
@@ -198,6 +213,64 @@ RSpec.describe Idv::ApiImageUploadForm do
       it 'includes doc_pii errors' do
         response = form.submit
         expect(response.errors[:doc_pii]).to eq('bad')
+      end
+    end
+
+    describe 'image source' do
+      let(:source) { nil }
+      let(:front_image_metadata) do
+        { width: 40, height: 40, mimeType: 'image/png', source: source }.to_json
+      end
+      let(:back_image_metadata) do
+        { width: 20, height: 20, mimeType: 'image/png', source: source }.to_json
+      end
+      let(:image_source) { nil }
+
+      before do
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
+          to receive(:post_images).
+          with(hash_including(image_source: image_source)).
+          and_call_original
+      end
+
+      context 'manual uploads' do
+        let(:source) { 'upload' }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+
+        it 'sets image source to unknown' do
+          form.submit
+        end
+      end
+
+      context 'mixed sources' do
+        let(:source) { 'upload' }
+        let(:back_image_metadata) do
+          { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }.to_json
+        end
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+
+        it 'sets image source to unknown' do
+          form.submit
+        end
+      end
+
+      context 'acuant images' do
+        let(:source) { 'acuant' }
+        let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
+
+        it 'sets image source to acuant sdk' do
+          form.submit
+        end
+      end
+
+      context 'malformed image metadata' do
+        let(:source) { 'upload' }
+        let(:front_image_metadata) { nil.to_json }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
+
+        it 'sets image source to unknown' do
+          form.submit
+        end
       end
     end
   end

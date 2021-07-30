@@ -10,7 +10,9 @@ describe Idv::Actions::VerifyDocumentStatusAction do
   end
   let(:flow) { Idv::Flows::DocAuthFlow.new(controller, session, 'idv/doc_auth') }
   let(:analytics) { FakeAnalytics.new }
-  let(:result) { { result: 'Passed', success: true, errors: {}, exception: nil, billed: true } }
+  let(:result) do
+    { doc_auth_result: 'Passed', success: true, errors: {}, exception: nil, billed: true }
+  end
   let(:pii) do
     {
       first_name: Faker::Name.first_name,

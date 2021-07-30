@@ -6,14 +6,12 @@ ruby '~> 2.7.3'
 gem 'rails', '~> 6.1.4'
 
 # Variables can be overridden for local dev in Gemfile-dev
-@doc_auth_gem ||= { github: '18F/identity-doc-auth', tag: 'v0.10.1' }
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.3.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
-@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.2-18f' }
+@saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.3-18f' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.3.0' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.6.0' }
 
-gem 'identity-doc-auth', @doc_auth_gem
 gem 'identity-hostdata', @hostdata_gem
 gem 'identity-logging', @logging_gem
 gem 'identity-telephony', @telephony_gem
@@ -75,7 +73,10 @@ gem 'webauthn', '~> 2.1'
 gem 'webpacker', '~> 5.1'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '~> 0.7', '>= 0.7.1'
-gem 'zxcvbn-js'
+
+# This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
+# It should not be updated without verifying that the behavior still matches JS version 4.4.2.
+gem 'zxcvbn', '0.1.7'
 
 group :development do
   gem 'better_errors', '>= 2.5.1'

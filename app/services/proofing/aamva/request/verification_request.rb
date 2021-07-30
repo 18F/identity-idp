@@ -79,17 +79,6 @@ module Proofing
           }
         end
 
-        def document_category_code
-          case applicant.state_id_data.state_id_type
-          when 'drivers_license'
-            '1'
-          when 'drivers_permit'
-            '2'
-          when 'state_id_card'
-            '3'
-          end
-        end
-
         def message_destination_id
           return 'P6' if config.cert_enabled.to_s == 'true'
           applicant.state_id_data.state_id_jurisdiction
@@ -117,7 +106,6 @@ module Proofing
           applicant_address = applicant.address
           {
             '//ns2:IdentificationID' => applicant.state_id_data.state_id_number,
-            '//ns1:DocumentCategoryCode' => document_category_code,
             '//ns1:MessageDestinationId' => message_destination_id,
             '//ns2:PersonGivenName' => applicant.first_name,
             '//ns2:PersonSurName' => applicant.last_name,
@@ -125,10 +113,6 @@ module Proofing
           }
         end
         # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
-
-        def uuid
-          SecureRandom.uuid
-        end
 
         def timeout
           (config.verification_request_timeout || 5).to_i
