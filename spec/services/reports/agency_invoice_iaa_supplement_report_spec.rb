@@ -9,8 +9,9 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
     end
 
     context 'with data' do
-      let(:partner_account) { create(:partner_account) }
-      let(:gtc) do
+      let(:partner_account1) { create(:partner_account) }
+      let(:partner_account2) { create(:partner_account) }
+      let(:gtc1) do
         create(
           :iaa_gtc,
           gtc_number: 'gtc1234',
@@ -20,11 +21,21 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
         )
       end
 
+      let(:gtc2) do
+        create(
+          :iaa_gtc,
+          gtc_number: 'gtc5678',
+          partner_account: partner_account,
+          start_date: iaa2_range.begin,
+          end_date: iaa2_range.end,
+        )
+      end
+
       let(:iaa_order1) {
- build_iaa_order(issuer: iaa1_sp.issuer, order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc)
+        build_iaa_order(issuer: iaa1_sp.issuer, order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc)
       }
       let(:iaa_order2) {
- build_iaa_order(issuer: iaa2_sp.issuer, order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc)
+        build_iaa_order(issuer: iaa2_sp.issuer, order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc)
       }
 
       # Have to do this because of invalid check when building integration usages
@@ -38,7 +49,7 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
       let(:integration1) { build_integration(issuer: iaa1_sp.issuer) }
       let(:integration2) { build_integration(issuer: iaa2_sp.issuer) }
 
-      def build_iaa_order(issuer:, order_number:, date_range:, iaa_gtc:)
+      def build_iaa_order(order_number:, date_range:, iaa_gtc:)
         create(
           :iaa_order,
           order_number: order_number,

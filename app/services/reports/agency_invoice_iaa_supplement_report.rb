@@ -32,8 +32,8 @@ module Reports
               {
                 key: key,
                 issuers: issuers,
-                start_date: gtc.start_date,
-                end_date: gtc.end_date,
+                start_date: iaa_order.start_date,
+                end_date: iaa_order.end_date,
               }
             end
           end.compact
