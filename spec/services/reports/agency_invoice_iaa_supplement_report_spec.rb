@@ -15,7 +15,7 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
         create(
           :iaa_gtc,
           gtc_number: 'gtc1234',
-          partner_account: partner_account,
+          partner_account: partner_account1,
           start_date: iaa1_range.begin,
           end_date: iaa1_range.end,
         )
@@ -25,29 +25,33 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
         create(
           :iaa_gtc,
           gtc_number: 'gtc5678',
-          partner_account: partner_account,
+          partner_account: partner_account2,
           start_date: iaa2_range.begin,
           end_date: iaa2_range.end,
         )
       end
 
       let(:iaa_order1) {
-        build_iaa_order(issuer: iaa1_sp.issuer, order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc)
+        build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
       }
       let(:iaa_order2) {
-        build_iaa_order(issuer: iaa2_sp.issuer, order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc)
+        build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc2)
       }
 
       # Have to do this because of invalid check when building integration usages
       let!(:iaa_orders) do
         [
-          iaa_order1, # TODO: a real date range
+          iaa_order1,
           iaa_order2,
         ]
       end
 
-      let(:integration1) { build_integration(issuer: iaa1_sp.issuer) }
-      let(:integration2) { build_integration(issuer: iaa2_sp.issuer) }
+      let(:integration1) {
+ build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
+      }
+      let(:integration2) {
+ build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
+      }
 
       def build_iaa_order(order_number:, date_range:, iaa_gtc:)
         create(
@@ -59,7 +63,7 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
         )
       end
 
-      def build_integration(issuer:)
+      def build_integration(issuer:, partner_account:)
         create(
           :integration,
           issuer: issuer,
@@ -68,12 +72,12 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
       end
 
       let(:iaa1) { 'iaa1' }
-      let(:iaa1_key) { "#{gtc.gtc_number}-#{format('%04d', iaa_order1.order_number)}" }
+      let(:iaa1_key) { "#{gtc1.gtc_number}-#{format('%04d', iaa_order1.order_number)}" }
       let(:iaa1_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 14) }
       let(:inside_iaa1) { iaa1_range.begin + 1.day }
 
       let(:iaa2) { 'iaa2' }
-      let(:iaa2_key) { "#{gtc.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
+      let(:iaa2_key) { "#{gtc2.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
       let(:iaa2_range) { Date.new(2020, 9, 1)..Date.new(2021, 8, 30) }
       let(:inside_iaa2) { iaa2_range.begin + 1.day }
 
@@ -137,49 +141,104 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
         end
       end
 
-      it 'counts up costs by issuer + ial, and includes iaa and app_id' do
-        results = JSON.parse(report.call, symbolize_names: true)
+      context 'separate agreements and different iaas' do
+        it 'counts up costs by issuer + ial, and includes iaa and app_id' do
+          results = JSON.parse(report.call, symbolize_names: true)
 
-        rows = [
-          {
-            iaa: iaa1_key,
-            ial1_total_auth_count: 1,
-            ial2_total_auth_count: 0,
-            ial1_unique_users: 1,
-            ial2_unique_users: 0,
-            ial1_new_unique_users: 1,
-            ial2_new_unique_users: 0,
-            year_month: inside_iaa1.strftime('%Y%m'),
-            iaa_start_date: iaa1_range.begin.to_s,
-            iaa_end_date: iaa1_range.end.to_s,
-          },
-          {
-            iaa: iaa2_key,
-            ial1_total_auth_count: 0,
-            ial2_total_auth_count: 1,
-            ial1_unique_users: 0,
-            ial2_unique_users: 1,
-            ial1_new_unique_users: 0,
-            ial2_new_unique_users: 1,
-            year_month: inside_iaa2.strftime('%Y%m'),
-            iaa_start_date: iaa2_range.begin.to_s,
-            iaa_end_date: iaa2_range.end.to_s,
-          },
-          {
-            iaa: iaa2_key,
-            ial1_total_auth_count: 0,
-            ial2_total_auth_count: 4,
-            ial1_unique_users: 0,
-            ial2_unique_users: 2,
-            ial1_new_unique_users: 0,
-            ial2_new_unique_users: 1,
-            year_month: (inside_iaa2 + 1.month).strftime('%Y%m'),
-            iaa_start_date: iaa2_range.begin.to_s,
-            iaa_end_date: iaa2_range.end.to_s,
-          },
-        ]
+          rows = [
+            {
+              iaa: iaa1_key,
+              ial1_total_auth_count: 1,
+              ial2_total_auth_count: 0,
+              ial1_unique_users: 1,
+              ial2_unique_users: 0,
+              ial1_new_unique_users: 1,
+              ial2_new_unique_users: 0,
+              year_month: inside_iaa1.strftime('%Y%m'),
+              iaa_start_date: iaa1_range.begin.to_s,
+              iaa_end_date: iaa1_range.end.to_s,
+            },
+            {
+              iaa: iaa2_key,
+              ial1_total_auth_count: 0,
+              ial2_total_auth_count: 1,
+              ial1_unique_users: 0,
+              ial2_unique_users: 1,
+              ial1_new_unique_users: 0,
+              ial2_new_unique_users: 1,
+              year_month: inside_iaa2.strftime('%Y%m'),
+              iaa_start_date: iaa2_range.begin.to_s,
+              iaa_end_date: iaa2_range.end.to_s,
+            },
+            {
+              iaa: iaa2_key,
+              ial1_total_auth_count: 0,
+              ial2_total_auth_count: 4,
+              ial1_unique_users: 0,
+              ial2_unique_users: 2,
+              ial1_new_unique_users: 0,
+              ial2_new_unique_users: 1,
+              year_month: (inside_iaa2 + 1.month).strftime('%Y%m'),
+              iaa_start_date: iaa2_range.begin.to_s,
+              iaa_end_date: iaa2_range.end.to_s,
+            },
+          ]
 
-        expect(results).to match_array(rows)
+          expect(results).to match_array(rows)
+        end
+      end
+
+      context 'one agreement with consecutive iaas' do
+        let(:iaa_order1) {
+          build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
+        }
+        let(:iaa_order2) {
+          build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc1)
+        }
+
+        let(:integration1) {
+          build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
+        }
+        let(:integration2) {
+          build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account1)
+        }
+
+        let(:iaa2_key) { "#{gtc1.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
+
+        let(:iaa1_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 14) }
+        let(:iaa2_range) { Date.new(2021, 4, 14)..Date.new(2022, 4, 13) }
+        it 'counts up costs by issuer + ial, and includes iaa and app_id' do
+          results = JSON.parse(report.call, symbolize_names: true)
+
+          rows = [
+            {
+              iaa: iaa1_key,
+              ial1_total_auth_count: 1,
+              ial2_total_auth_count: 0,
+              ial1_unique_users: 1,
+              ial2_unique_users: 0,
+              ial1_new_unique_users: 1,
+              ial2_new_unique_users: 0,
+              year_month: inside_iaa1.strftime('%Y%m'),
+              iaa_start_date: iaa1_range.begin.to_s,
+              iaa_end_date: iaa1_range.end.to_s,
+            },
+            {
+              iaa: iaa2_key,
+              ial1_total_auth_count: 0,
+              ial2_total_auth_count: 4,
+              ial1_unique_users: 0,
+              ial2_unique_users: 2,
+              ial1_new_unique_users: 0,
+              ial2_new_unique_users: 2,
+              year_month: (inside_iaa2 + 1.month).strftime('%Y%m'),
+              iaa_start_date: iaa2_range.begin.to_s,
+              iaa_end_date: iaa2_range.end.to_s,
+            },
+          ]
+
+          expect(results).to match_array(rows)
+        end
       end
     end
   end
