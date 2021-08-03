@@ -712,7 +712,7 @@ NL:
 'NO':
   country_code: '47'
   name: Norway
-  supports_sms: true
+  supports_sms: false
   supports_voice: true
 NP:
   country_code: '977'
