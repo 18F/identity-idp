@@ -92,6 +92,8 @@ IL:
   supports_voice: false
 IS:
   supports_voice: false
+IQ:
+  supports_sms: false
 IT:
   supports_voice: false
 JM:
