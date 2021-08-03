@@ -90,6 +90,8 @@ IE:
   supports_voice: false
 IL:
   supports_voice: false
+IQ:
+  supports_sms: false
 IS:
   supports_voice: false
 IT:
