@@ -49,7 +49,6 @@ gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
-gem 'raise-if-root', require: false
 gem 'readthis'
 gem 'redacted_struct'
 gem 'redis-session-store', '>= 0.11.3'
@@ -128,4 +127,8 @@ group :test do
   gem 'webdrivers', '~> 4.0'
   gem 'webmock'
   gem 'zonebie'
+end
+
+group :production do
+  gem 'raise-if-root'
 end
