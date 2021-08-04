@@ -1,4 +1,4 @@
-require 'job_runner'
+require 'job_runner/runner'
 
 module Health
   class HealthController < AbstractHealthController
