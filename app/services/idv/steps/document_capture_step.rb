@@ -105,7 +105,9 @@ module Idv
       end
 
       def stored_result
-        @stored_document_capture_session_result ||= document_capture_session&.load_result
+        return @stored_result if defined?(@stored_result)
+        @stored_result = document_capture_session&.load_result ||
+                         document_capture_session&.load_doc_auth_async_result
       end
 
       def request_should_use_stored_result?
