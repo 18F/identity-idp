@@ -146,14 +146,16 @@ function AcuantContextProvider({
         endpoint,
         {
           onSuccess: () => {
+            const {
+              isCameraSupported: nextIsCameraSupported,
+            } = /** @type {AcuantGlobal} */ (window).AcuantCamera;
+
             addPageAction({
               label: 'IdV: Acuant SDK loaded',
-              payload: { success: true },
+              payload: { success: true, isCameraSupported: nextIsCameraSupported },
             });
 
-            setIsCameraSupported(
-              /** @type {AcuantGlobal} */ (window).AcuantCamera.isCameraSupported,
-            );
+            setIsCameraSupported(nextIsCameraSupported);
             setIsReady(true);
             setIsAcuantLoaded(true);
           },
