@@ -1,12 +1,10 @@
 module Users
   class AuthorizationConfirmationController < ApplicationController
     include AuthorizationCountConcern
-    include SecureHeadersConcern
 
     before_action :ensure_sp_in_session_with_request_url, only: :show
     before_action :bump_auth_count
     before_action :confirm_two_factor_authenticated
-    before_action :apply_secure_headers_override, only: [:show]
 
     def show
       analytics.track_event(Analytics::AUTHENTICATION_CONFIRMATION)
