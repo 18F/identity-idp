@@ -1,6 +1,6 @@
 module AccountReset
-  class GrantRequestsAndSendEmails
-    def call
+  class GrantRequestsAndSendEmails < ApplicationJob
+    def perform
       notifications_sent = 0
       AccountResetRequest.where(
         sql_query_for_users_eligible_to_delete_their_accounts,

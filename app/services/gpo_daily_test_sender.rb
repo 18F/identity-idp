@@ -1,6 +1,6 @@
 # Mails a letter to the designated receiver
 class GpoDailyTestSender
-  def run
+  def perform
     if valid_designated_receiver_pii?
       GpoConfirmationMaker.new(
         pii: designated_receiver_pii,

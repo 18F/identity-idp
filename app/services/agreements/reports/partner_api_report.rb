@@ -1,7 +1,7 @@
 module Agreements
   module Reports
     class PartnerApiReport
-      def run
+      def perform
         return unless IdentityConfig.store.enable_partner_api
 
         collect_account_data
