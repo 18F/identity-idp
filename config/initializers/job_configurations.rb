@@ -366,12 +366,12 @@ all_configs = {
       name: 'Daily Auth Report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::DailyAuthsReport.new.perform(Time.zone.today) },
+      callback: -> { Reports::DailyAuthsReport.new.perform(Time.zone.yesterday) },
     },
     good_job: {
       class: 'Reports::DailyAuthsReport',
       cron: cron_24h,
-      args: -> { [Time.zone.today] },
+      args: -> { [Time.zone.yesterday] },
     },
   },
 }
