@@ -31,10 +31,10 @@ module OutboundHealthChecker
       conn.request :instrumentation, name: 'request_log.faraday'
       conn.adapter :net_http
 
-      conn.options.timeout = 1
-      conn.options.read_timeout = 1
-      conn.options.open_timeout = 1
-      conn.options.write_timeout = 1
+      conn.options.timeout = IdentityConfig.store.outbound_connection_check_timeout
+      conn.options.read_timeout = IdentityConfig.store.outbound_connection_check_timeout
+      conn.options.open_timeout = IdentityConfig.store.outbound_connection_check_timeout
+      conn.options.write_timeout = IdentityConfig.store.outbound_connection_check_timeout
 
       # raises errors on 4XX or 5XX responses
       conn.response :raise_error
