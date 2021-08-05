@@ -153,7 +153,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
   end
 
   def trace_id(job)
-    return unless Array(job&.arguments).first.kind_of?(Hash)
+    return unless Array(job&.arguments).first.is_a?(Hash)
     job.arguments.first[:trace_id]
   end
 end
