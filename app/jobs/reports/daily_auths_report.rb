@@ -2,9 +2,17 @@ module Reports
   class DailyAuthsReport < BaseReport
     REPORT_NAME = 'daily-auths-report'
 
+    include GoodJob::ActiveJobExtensions::Concurrency
+
+    good_job_control_concurrency_with(
+      enqueue_limit: 1,
+      perform_limit: 1,
+      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
+    )
+
     attr_reader :report_date
 
-    def perform(report_date = Date.yesterday)
+    def perform(report_date)
       @report_date = report_date
 
       _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)

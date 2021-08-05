@@ -4,16 +4,21 @@ module Reports
   class GpoReport < BaseReport
     REPORT_NAME = 'usps-report'.freeze
 
-    def initialize
+    include GoodJob::ActiveJobExtensions::Concurrency
+
+    good_job_control_concurrency_with(
+      enqueue_limit: 1,
+      perform_limit: 1,
+      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
+    )
+
+    def perform(today)
       @results = {
-        today: Time.zone.today.to_s,
+        today: today.to_s,
         letters_sent_since_days: {},
         letters_sent_and_validated_since_days: {},
         percent_sent_and_validated_since_days: {},
       }
-    end
-
-    def perform
       create_reports
       save_report(REPORT_NAME, @results.to_json, extension: 'json')
       @results.to_json

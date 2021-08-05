@@ -2,7 +2,15 @@ module Reports
   class AgencyInvoiceIaaSupplementReport < BaseReport
     REPORT_NAME = 'agency-invoice-iaa-supplemement-report'.freeze
 
-    def perform
+    include GoodJob::ActiveJobExtensions::Concurrency
+
+    good_job_control_concurrency_with(
+      enqueue_limit: 1,
+      perform_limit: 1,
+      key: -> { "#{REPORT_NAME}-#{arguments.first}" },
+    )
+
+    def perform(_date)
       raw_results = iaas.flat_map do |iaa|
         [:sum, :unique, :new_unique].flat_map do |aggregate|
           transaction_with_timeout do
