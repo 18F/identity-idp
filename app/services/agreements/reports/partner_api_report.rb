@@ -1,6 +1,6 @@
 module Agreements
   module Reports
-    class PartnerApiReport
+    class PartnerApiReport < ApplicationJob
       include GoodJob::ActiveJobExtensions::Concurrency
 
       good_job_control_concurrency_with(
