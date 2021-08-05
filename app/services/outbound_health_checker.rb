@@ -31,6 +31,11 @@ module OutboundHealthChecker
       conn.request :instrumentation, name: 'request_log.faraday'
       conn.adapter :net_http
 
+      retry_options = {
+        max: IdentityConfig.store.outbound_connection_check_retry_count,
+      }
+      conn.request :retry, retry_options
+
       conn.options.timeout = IdentityConfig.store.outbound_connection_check_timeout
       conn.options.read_timeout = IdentityConfig.store.outbound_connection_check_timeout
       conn.options.open_timeout = IdentityConfig.store.outbound_connection_check_timeout
