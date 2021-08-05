@@ -30,7 +30,7 @@ checks:
 
 plugins:
   brakeman:
-    enabled: true
+    enabled: false
   bundler-audit:
     enabled: true
   coffeelint:

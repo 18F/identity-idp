@@ -186,7 +186,7 @@ GEM
     blueprinter (0.25.3)
     bootsnap (1.7.5)
       msgpack (~> 1.0)
-    brakeman (4.10.0)
+    brakeman (5.1.1)
     builder (3.2.4)
     bullet (6.1.2)
       activesupport (>= 3.0.0)
