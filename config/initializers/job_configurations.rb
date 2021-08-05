@@ -12,12 +12,12 @@ all_configs = {
       name: 'Send GPO letter',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { GpoDailyJob.new.perform(Date.today) },
+      callback: -> { GpoDailyJob.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'GpoDailyJob',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send account deletion confirmation notifications
@@ -26,14 +26,14 @@ all_configs = {
       name: 'Account reset notice',
       interval: interval_5m,
       timeout: 4 * 60,
-      callback: -> { AccountReset::GrantRequestsAndSendEmails.new.perform(Date.today) },
+      callback: -> { AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today) },
       health_critical: true,
       failures_before_alarm: 2,
     },
     good_job: {
       class: 'AccountReset::GrantRequestsAndSendEmails',
       cron: cron_5m,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send OMB Fitara report to s3
@@ -42,12 +42,12 @@ all_configs = {
       name: 'OMB Fitara report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::OmbFitaraReport.new.perform(Date.today) },
+      callback: -> { Reports::OmbFitaraReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::OmbFitaraReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send Unique Monthly Auths Report to S3
@@ -56,12 +56,12 @@ all_configs = {
       name: 'Unique monthly auths report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::UniqueMonthlyAuthsReport.new.perform(Date.today) },
+      callback: -> { Reports::UniqueMonthlyAuthsReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::UniqueMonthlyAuthsReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send Unique Yearly Auths Report to S3
@@ -70,12 +70,12 @@ all_configs = {
       name: 'Unique yearly auths report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::UniqueYearlyAuthsReport.new.perform(Date.today) },
+      callback: -> { Reports::UniqueYearlyAuthsReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::UniqueYearlyAuthsReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send Agency User Counts Report to S3
@@ -84,12 +84,12 @@ all_configs = {
       name: 'Agency user counts report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::AgencyUserCountsReport.new.perform(Date.today) },
+      callback: -> { Reports::AgencyUserCountsReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::AgencyUserCountsReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send Total Monthly Auths Report to S3
@@ -98,12 +98,12 @@ all_configs = {
       name: 'Total montly auths report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::TotalMonthlyAuthsReport.new.perform(Date.today) },
+      callback: -> { Reports::TotalMonthlyAuthsReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::TotalMonthlyAuthsReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send Sp User Counts Report to S3
@@ -117,7 +117,7 @@ all_configs = {
     good_job: {
       class: 'Reports::SpUserCountsReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send Sp User Quotas Report to S3
@@ -126,12 +126,12 @@ all_configs = {
       name: 'SP user quotas report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::SpUserQuotasReport.new.perform(Date.today) },
+      callback: -> { Reports::SpUserQuotasReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::SpUserQuotasReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send Doc Auth Funnel Report to S3
@@ -140,12 +140,12 @@ all_configs = {
       name: 'Doc Auth Funnel Report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::DocAuthFunnelReport.new.perform(Date.today) },
+      callback: -> { Reports::DocAuthFunnelReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::DocAuthFunnelReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send Sp Success Rate Report to S3
@@ -154,12 +154,12 @@ all_configs = {
       name: 'SP success rate report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::SpSuccessRateReport.new.perform(Date.today) },
+      callback: -> { Reports::SpSuccessRateReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::SpSuccessRateReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Proofing Costs Report to S3
@@ -168,12 +168,12 @@ all_configs = {
       name: 'Proofing costs report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::ProofingCostsReport.new.perform(Date.today) },
+      callback: -> { Reports::ProofingCostsReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::ProofingCostsReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Doc auth drop off rates per sprint to S3
@@ -182,12 +182,12 @@ all_configs = {
       name: 'Doc auth drop off rates per sprint report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::DocAuthDropOffRatesPerSprintReport.new.perform(Date.today) },
+      callback: -> { Reports::DocAuthDropOffRatesPerSprintReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::DocAuthDropOffRatesPerSprintReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # SP Costs Report to S3
@@ -196,12 +196,12 @@ all_configs = {
       name: 'SP cost report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::SpCostReport.new.perform(Date.today) },
+      callback: -> { Reports::SpCostReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::SpCostReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Agency Invoice Supplement Report to S3
@@ -210,12 +210,12 @@ all_configs = {
       name: 'SP Invoice supplement report by IAA',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::AgencyInvoiceIaaSupplementReport.new.perform(Date.today) },
+      callback: -> { Reports::AgencyInvoiceIaaSupplementReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::AgencyInvoiceIaaSupplementReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Agency Invoice Supplement Report to S3
@@ -224,12 +224,12 @@ all_configs = {
       name: 'SP Invoice supplement report by issuer',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::AgencyInvoiceIssuerSupplementReport.new.perform(Date.today) },
+      callback: -> { Reports::AgencyInvoiceIssuerSupplementReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::AgencyInvoiceIssuerSupplementReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Total SP Costs Report to S3
@@ -238,12 +238,12 @@ all_configs = {
       name: 'Total SP cost report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::TotalSpCostReport.new.perform(Date.today) },
+      callback: -> { Reports::TotalSpCostReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::TotalSpCostReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # SP Active Users Report to S3
@@ -252,12 +252,12 @@ all_configs = {
       name: 'SP active users report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::SpActiveUsersReport.new.perform(Date.today) },
+      callback: -> { Reports::SpActiveUsersReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::SpActiveUsersReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # SP Active Users Report to S3
@@ -266,12 +266,14 @@ all_configs = {
       name: 'SP active users over period of peformance report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::SpActiveUsersOverPeriodOfPerformanceReport.new.perform(Date.today) },
+      callback: -> do
+        Reports::SpActiveUsersOverPeriodOfPerformanceReport.new.perform(Time.zone.today)
+      end,
     },
     good_job: {
       class: 'Reports::SpActiveUsersOverPeriodOfPerformanceReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Doc auth drop off rates report
@@ -280,12 +282,12 @@ all_configs = {
       name: 'Doc auth drop off rates report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::DocAuthDropOffRatesReport.new.perform(Date.today) },
+      callback: -> { Reports::DocAuthDropOffRatesReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::DocAuthDropOffRatesReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # IAA Billing Report
@@ -294,12 +296,12 @@ all_configs = {
       name: 'IAA billing report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::IaaBillingReport.new.perform(Date.today) },
+      callback: -> { Reports::IaaBillingReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::IaaBillingReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send deleted user accounts to S3
@@ -308,12 +310,12 @@ all_configs = {
       name: 'Deleted user accounts report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::DeletedUserAccountsReport.new.perform(Date.today) },
+      callback: -> { Reports::DeletedUserAccountsReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::DeletedUserAccountsReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send GPO Report to S3
@@ -322,12 +324,12 @@ all_configs = {
       name: 'GPO report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::GpoReport.new.perform(Date.today) },
+      callback: -> { Reports::GpoReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::GpoReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send Monthly GPO Letter Requests Report to S3
@@ -336,12 +338,12 @@ all_configs = {
       name: 'Monthly GPO letter requests report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::MonthlyGpoLetterRequestsReport.new.perform(Date.today) },
+      callback: -> { Reports::MonthlyGpoLetterRequestsReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::MonthlyGpoLetterRequestsReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send Partner API reports to S3
@@ -350,12 +352,12 @@ all_configs = {
       name: 'Partner API report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Agreements::Reports::PartnerApiReport.new.perform(Date.today) },
+      callback: -> { Agreements::Reports::PartnerApiReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Agreements::Reports::PartnerApiReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
   # Send daily auth report to S3
@@ -364,12 +366,12 @@ all_configs = {
       name: 'Daily Auth Report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::DailyAuthsReport.new.perform(Date.today) },
+      callback: -> { Reports::DailyAuthsReport.new.perform(Time.zone.today) },
     },
     good_job: {
       class: 'Reports::DailyAuthsReport',
       cron: cron_24h,
-      args: -> { [Date.today] },
+      args: -> { [Time.zone.today] },
     },
   },
 }
@@ -384,26 +386,23 @@ if IdentityConfig.store.ruby_workers_enabled
   }
 end
 
-
 if defined?(Rails::Console)
-  Rails.logger.info "job_configurations: console detected, skipping schedule"
-else
-  if IdentityConfig.store.ruby_workers_enabled
-    Rails.application.configure do
-      config.good_job.cron = all_configs.transform_values { |config| config.fetch(:good_job) }
-    end
-
-    Rails.logger.info "job_configurations: jobs scheduled with good_job.cron"
-  else
-    require 'job_runner/runner'
-    require 'job_runner/job_configuration'
-
-    all_configs.each do |_key, config|
-      JobRunner::Runner.add_config(
-        JobRunner::JobConfiguration.new(**config.fetch(:job_runner)),
-      )
-    end
-
-    Rails.logger.info "job_configurations: jobs scheduled with JobRunner::Runner"
+  Rails.logger.info 'job_configurations: console detected, skipping schedule'
+elsif IdentityConfig.store.ruby_workers_enabled
+  Rails.application.configure do
+    config.good_job.cron = all_configs.transform_values { |config| config.fetch(:good_job) }
   end
+
+  Rails.logger.info 'job_configurations: jobs scheduled with good_job.cron'
+else
+  require 'job_runner/runner'
+  require 'job_runner/job_configuration'
+
+  all_configs.each do |_key, config|
+    JobRunner::Runner.add_config(
+      JobRunner::JobConfiguration.new(**config.fetch(:job_runner)),
+    )
+  end
+
+  Rails.logger.info 'job_configurations: jobs scheduled with JobRunner::Runner'
 end
