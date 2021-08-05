@@ -11,7 +11,7 @@ gem 'rails', '~> 6.1.4'
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.3-18f' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.3.0' }
-@validations_gem ||= { github: '18F/identity-validations', tag: 'v0.6.0' }
+@validations_gem ||= { github: '18F/identity-validations', tag: 'v0.7.0' }
 
 gem 'identity-doc-auth', @doc_auth_gem
 gem 'identity-hostdata', @hostdata_gem
