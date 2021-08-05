@@ -79,15 +79,51 @@ RSpec.describe OutboundHealthChecker do
     end
 
     context 'timeout from endpoint' do
-      before do
-        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).to_timeout
+      it 'retries and is healthy if the second request succeeds' do
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
+          to_timeout.then.to_return(status: 200)
+
+        expect(check).to be_healthy
       end
 
-      it 'is not healthy' do
+      it 'is not healthy after 2 retries' do
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).to_timeout
+
         expect(check).to_not be_healthy
       end
 
       it 'notifies newrelic' do
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).to_timeout
+
+        expect(NewRelic::Agent).to receive(:notice_error)
+
+        check
+      end
+    end
+
+    context 'connection fails to endpoint' do
+      before do
+        allow(IdentityConfig.store).to receive(:outbound_connection_check_retry_count).and_return(2)
+      end
+
+      it 'retries and is healthy if the second request succeeds' do
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
+          to_raise(Faraday::ConnectionFailed).then.to_return(status: 200)
+
+        expect(check).to be_healthy
+      end
+
+      it 'is not healthy after 2 retries' do
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
+          to_raise(Faraday::ConnectionFailed)
+
+        expect(check).to_not be_healthy
+      end
+
+      it 'notifies newrelic' do
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
+          to_raise(Faraday::ConnectionFailed)
+
         expect(NewRelic::Agent).to receive(:notice_error)
 
         check

@@ -185,6 +185,8 @@ class IdentityConfig
     config.add(:otps_per_ip_limit, type: :integer)
     config.add(:otps_per_ip_period, type: :integer)
     config.add(:otps_per_ip_track_only_mode, type: :boolean)
+    config.add(:outbound_connection_check_retry_count, type: :integer)
+    config.add(:outbound_connection_check_timeout, type: :integer)
     config.add(:outbound_connection_check_url)
     config.add(:participate_in_dap, type: :boolean)
     config.add(:partner_api_bucket_prefix, type: :string)
