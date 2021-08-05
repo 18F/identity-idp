@@ -33,6 +33,9 @@ module OutboundHealthChecker
 
       retry_options = {
         max: IdentityConfig.store.outbound_connection_check_retry_count,
+        exceptions: [
+          Errno::ETIMEDOUT, Timeout::Error, Faraday::TimeoutError, Faraday::ConnectionFailed
+        ],
       }
       conn.request :retry, retry_options
 
