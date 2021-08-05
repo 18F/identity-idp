@@ -93,5 +93,20 @@ RSpec.describe OutboundHealthChecker do
         check
       end
     end
+
+    context 'connection fails from endpoint' do
+      before do
+        allow(IdentityConfig.store).to receive(:outbound_connection_check_retry_count).and_return(2)
+        stub_request(:head, IdentityConfig.store.outbound_connection_check_url).
+          to_raise(Faraday::ConnectionFailed).then.to_return(status: 200)
+
+      end
+
+      it 'retries the first first request' do
+        expect(check).to be_healthy
+      end
+
+      it 'is not healthy if the connection still fails out after retrying'
+    end
   end
 end
