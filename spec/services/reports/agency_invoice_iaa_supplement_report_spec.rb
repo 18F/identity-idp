@@ -47,10 +47,10 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
       end
 
       let(:integration1) {
- build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
+        build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
       }
       let(:integration2) {
- build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
+        build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
       }
 
       def build_iaa_order(order_number:, date_range:, iaa_gtc:)

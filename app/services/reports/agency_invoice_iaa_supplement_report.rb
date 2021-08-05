@@ -38,7 +38,6 @@ module Reports
             end
           end.compact
         end
-      # GTC number + order number
     end
 
     # Turns ial1/ial2 rows into ial1/ial2 columns
