@@ -1,14 +1,4 @@
 GIT
-  remote: https://github.com/18F/identity-doc-auth.git
-  revision: adfb1f33e72af1db4987da3dccfe26e5b1bacf1f
-  tag: v0.13.0
-  specs:
-    identity-doc-auth (0.13.0)
-      activesupport
-      faraday
-      redacted_struct (>= 1.0.0)
-
-GIT
   remote: https://github.com/18F/identity-hostdata.git
   revision: 32fc831b47d17c878381279c936014e9956fcbe7
   tag: v3.3.0
@@ -725,7 +715,6 @@ DEPENDENCIES
   hiredis
   http_accept_language
   i18n-tasks (>= 0.9.31)
-  identity-doc-auth!
   identity-hostdata!
   identity-logging!
   identity-telephony!

@@ -73,9 +73,9 @@ feature 'doc auth document capture step' do
     end
 
     it 'proceeds to the next page with valid info and logs analytics info' do
-      expect_any_instance_of(IdentityDocAuth::Mock::DocAuthMockClient).
+      expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
         to receive(:post_images).
-        with(hash_including(image_source: IdentityDocAuth::ImageSources::UNKNOWN)).
+        with(hash_including(image_source: DocAuth::ImageSources::UNKNOWN)).
         and_call_original
 
       attach_and_submit_images
@@ -85,14 +85,14 @@ feature 'doc auth document capture step' do
         Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
         flow_path: 'standard',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
       )
       expect(fake_analytics).to have_logged_event(
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         flow_path: 'standard',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
       )
       expect_costing_for_document
@@ -116,7 +116,7 @@ feature 'doc auth document capture step' do
         Analytics::DOC_AUTH + ' submitted',
         step: 'document_capture',
         flow_path: 'standard',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
         success: false,
       )
@@ -124,7 +124,7 @@ feature 'doc auth document capture step' do
         'IdV: ' + "#{Analytics::DOC_AUTH} document_capture submitted".downcase,
         step: 'document_capture',
         flow_path: 'standard',
-        result: 'Passed',
+        doc_auth_result: 'Passed',
         billed: true,
         success: false,
       )
@@ -158,9 +158,9 @@ feature 'doc auth document capture step' do
     end
 
     it 'catches network connection errors on post_front_image' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
@@ -244,9 +244,9 @@ feature 'doc auth document capture step' do
     end
 
     it 'catches network connection errors on post_front_image' do
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_front_image,
-        response: IdentityDocAuth::Response.new(
+        response: DocAuth::Response.new(
           success: false,
           errors: { network: I18n.t('doc_auth.errors.general.network_error') },
         ),
@@ -262,7 +262,7 @@ feature 'doc auth document capture step' do
   context 'when there is a stored result' do
     it 'proceeds to the next step if the result was successful' do
       document_capture_session = user.document_capture_sessions.last
-      response = IdentityDocAuth::Response.new(success: true)
+      response = DocAuth::Response.new(success: true)
       document_capture_session.store_result_from_response(response)
       document_capture_session.save!
 
@@ -273,7 +273,7 @@ feature 'doc auth document capture step' do
 
     it 'does not proceed to the next step if the result was not successful' do
       document_capture_session = user.document_capture_sessions.last
-      response = IdentityDocAuth::Response.new(success: false)
+      response = DocAuth::Response.new(success: false)
       document_capture_session.store_result_from_response(response)
       document_capture_session.save!
 
@@ -291,7 +291,7 @@ feature 'doc auth document capture step' do
 
     it 'uses the form params if form params are present' do
       document_capture_session = user.document_capture_sessions.last
-      response = IdentityDocAuth::Response.new(success: false)
+      response = DocAuth::Response.new(success: false)
       document_capture_session.store_result_from_response(response)
       document_capture_session.save!
 
@@ -311,15 +311,15 @@ feature 'doc auth document capture step' do
       allow_any_instance_of(ApplicationController).
         to receive(:analytics).and_return(fake_analytics)
 
-      IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+      DocAuth::Mock::DocAuthMockClient.mock_response!(
         method: :post_images,
-        response: IdentityDocAuth::Response.new(
-          pii_from_doc: IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+        response: DocAuth::Response.new(
+          pii_from_doc: DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
             state_id_expiration: '04/01/2020',
           ),
           success: false,
           errors: {
-            id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
+            id: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
           },
         ),
       )
@@ -443,15 +443,15 @@ feature 'doc auth document capture step' do
       before do
         allow(IdentityConfig.store).to receive(:proofing_allow_expired_license).and_return(true)
 
-        IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_images,
-          response: IdentityDocAuth::Response.new(
+          response: DocAuth::Response.new(
             success: false,
-            pii_from_doc: IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+            pii_from_doc: DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
               state_id_expiration: '04/01/2020',
             ),
             errors: {
-              id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
+              id: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
             },
           ),
         )

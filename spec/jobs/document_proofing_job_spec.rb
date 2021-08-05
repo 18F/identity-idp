@@ -23,6 +23,7 @@ RSpec.describe DocumentProofingJob, type: :job do
       dob: '01/01/1970',
       ssn: '123456789',
       phone: '18888675309',
+      state: 'MT',
     }
   end
 
@@ -72,6 +73,7 @@ RSpec.describe DocumentProofingJob, type: :job do
   end
 
   describe '#perform' do
+    let(:job_analytics) { FakeAnalytics.new }
     let(:instance) { DocumentProofingJob.new }
     subject(:perform) do
       instance.perform(
@@ -84,9 +86,14 @@ RSpec.describe DocumentProofingJob, type: :job do
       )
     end
 
+    before do
+      allow(instance).to receive(:build_analytics).
+        with(document_capture_session).and_return(job_analytics)
+    end
+
     context 'with a successful response from the proofer' do
       before do
-        expect(DocAuthRouter).to receive('doc_auth_vendor').and_return('acuant').twice
+        expect(DocAuthRouter).to receive(:doc_auth_vendor).and_return('acuant').twice
 
         url = URI.join('https://example.com', '/AssureIDService/Document/Instance')
         stub_request(:post, url).to_return(body: '"this-is-a-test-instance-id"')
@@ -102,35 +109,116 @@ RSpec.describe DocumentProofingJob, type: :job do
         stub_request(:post, 'https://example.login.gov/api/callbacks/proof-document/:token').
           to_return(body: '')
 
-        allow_any_instance_of(IdentityDocAuth::Acuant::Responses::GetResultsResponse).
+        allow_any_instance_of(DocAuth::Acuant::Responses::GetResultsResponse).
           to receive(:pii_from_doc).and_return(applicant_pii)
       end
 
-      it 'returns a response' do
-        perform
+      context 'liveness checking disabled' do
+        let(:liveness_checking_enabled) { false }
 
-        result = document_capture_session.load_doc_auth_async_result
+        it 'returns a response' do
+          perform
 
-        expect(result.result).to eq(
-          alert_failure_count: 0,
-          billed: true,
-          errors: {},
-          face_match_results: { is_match: true, match_score: nil },
-          image_metrics: {},
-          processed_alerts: { failed: [], passed: [] },
-          raw_alerts: [],
-          raw_regions: [],
-          result: 'Passed',
-          selfie_liveness_results: {
-            acuant_error: { code: nil, message: nil },
-            liveness_assessment: 'Live',
-            liveness_score: nil,
-          },
-          success: true,
-          exception: nil,
-        )
+          result = document_capture_session.load_doc_auth_async_result
 
-        expect(result.pii_from_doc).to eq(applicant_pii)
+          expect(result.result).to eq(
+            alert_failure_count: 0,
+            vendor: 'Acuant',
+            doc_auth_result: 'Passed',
+            billed: true,
+            errors: {},
+            image_metrics: {},
+            processed_alerts: { failed: [], passed: [] },
+            raw_alerts: [],
+            raw_regions: [],
+            success: true,
+            exception: nil,
+          )
+
+          expect(job_analytics).to have_logged_event(
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor: 'Acuant',
+            billed: true,
+            doc_auth_result: 'Passed',
+            processed_alerts: { failed: [], passed: [] },
+            alert_failure_count: 0,
+            image_metrics: {},
+            raw_alerts: [],
+            raw_regions: [],
+            state: 'MT',
+            async: true,
+            remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+            client_image_metrics: {
+              front: front_image_metadata,
+              back: back_image_metadata,
+            },
+          )
+
+          expect(result.pii_from_doc).to eq(applicant_pii)
+        end
+      end
+
+      context 'liveness checking enabled' do
+        let(:liveness_checking_enabled) { true }
+
+        it 'returns a response' do
+          perform
+
+          result = document_capture_session.load_doc_auth_async_result
+
+          expect(result.result).to eq(
+            alert_failure_count: 0,
+            vendor: 'Acuant',
+            billed: true,
+            errors: {},
+            face_match_results: { is_match: true, match_score: nil },
+            image_metrics: {},
+            processed_alerts: { failed: [], passed: [] },
+            raw_alerts: [],
+            raw_regions: [],
+            doc_auth_result: 'Passed',
+            selfie_liveness_results: {
+              acuant_error: { code: nil, message: nil },
+              liveness_assessment: 'Live',
+              liveness_score: nil,
+            },
+            success: true,
+            exception: nil,
+          )
+
+          expect(job_analytics).to have_logged_event(
+            Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor: 'Acuant',
+            billed: true,
+            doc_auth_result: 'Passed',
+            processed_alerts: { failed: [], passed: [] },
+            alert_failure_count: 0,
+            image_metrics: {},
+            raw_alerts: [],
+            raw_regions: [],
+            state: 'MT',
+            async: true,
+            remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+            face_match_results: { is_match: true, match_score: nil },
+            selfie_liveness_results: {
+              acuant_error: { code: nil, message: nil },
+              liveness_assessment: 'Live',
+              liveness_score: nil,
+            },
+            client_image_metrics: {
+              front: front_image_metadata,
+              back: back_image_metadata,
+            },
+          )
+
+          expect(result.pii_from_doc).to eq(applicant_pii)
+        end
       end
 
       it 'logs the trace_id and timing info' do
@@ -153,13 +241,13 @@ RSpec.describe DocumentProofingJob, type: :job do
     end
 
     context 'with an unsuccessful response from the proofer' do
-      let(:doc_auth_client) { instance_double(IdentityDocAuth::Acuant::AcuantClient) }
+      let(:doc_auth_client) { instance_double(DocAuth::Acuant::AcuantClient) }
 
       before do
         allow(instance).to receive(:build_doc_auth_client).and_return(doc_auth_client)
 
         expect(doc_auth_client).to receive(:post_images).
-          and_return(IdentityDocAuth::Response.new(success: false, exception: RuntimeError.new))
+          and_return(DocAuth::Response.new(success: false, exception: RuntimeError.new))
       end
 
       it 'returns a response' do
@@ -179,15 +267,15 @@ RSpec.describe DocumentProofingJob, type: :job do
         allow(IdentityConfig.store).to receive(:proofing_expired_license_reproof_at).
           and_return(Date.new(2025, 3, 1))
 
-        IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_images,
-          response: IdentityDocAuth::Response.new(
+          response: DocAuth::Response.new(
             success: false,
-            pii_from_doc: IdentityDocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
+            pii_from_doc: DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.merge(
               state_id_expiration: '04/01/2020',
             ),
             errors: {
-              id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
+              id: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
             },
           ),
         )
@@ -239,7 +327,7 @@ RSpec.describe DocumentProofingJob, type: :job do
       let(:image_source) { nil }
 
       before do
-        expect_any_instance_of(IdentityDocAuth::Mock::DocAuthMockClient).
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
           to receive(:post_images).
           with(hash_including(image_source: image_source)).
           and_call_original
@@ -247,7 +335,7 @@ RSpec.describe DocumentProofingJob, type: :job do
 
       context 'manual uploads' do
         let(:source) { 'upload' }
-        let(:image_source) { IdentityDocAuth::ImageSources::UNKNOWN }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
         it 'sets image source to unknown' do
           perform
@@ -259,7 +347,7 @@ RSpec.describe DocumentProofingJob, type: :job do
         let(:back_image_metadata) do
           { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }.to_json
         end
-        let(:image_source) { IdentityDocAuth::ImageSources::UNKNOWN }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
         it 'sets image source to unknown' do
           perform
@@ -268,7 +356,7 @@ RSpec.describe DocumentProofingJob, type: :job do
 
       context 'acuant images' do
         let(:source) { 'acuant' }
-        let(:image_source) { IdentityDocAuth::ImageSources::ACUANT_SDK }
+        let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
 
         it 'sets image source to acuant sdk' do
           perform
@@ -278,11 +366,21 @@ RSpec.describe DocumentProofingJob, type: :job do
       context 'malformed image metadata' do
         let(:source) { 'upload' }
         let(:front_image_metadata) { nil }
-        let(:image_source) { IdentityDocAuth::ImageSources::UNKNOWN }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
         it 'sets image source to unknown' do
           perform
         end
+      end
+    end
+
+    context 'a stale job' do
+      before { instance.enqueued_at = 10.minutes.ago }
+
+      it 'bails and does not do any proofing' do
+        expect(DocAuthRouter).to_not receive(:doc_auth_vendor)
+
+        expect { perform }.to raise_error(JobHelpers::StaleJobHelper::StaleJobError)
       end
     end
   end

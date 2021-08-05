@@ -1,5 +1,6 @@
 class DocumentProofingJob < ApplicationJob
   include JobHelpers::FaradayHelper
+  include JobHelpers::StaleJobHelper
 
   queue_as :default
 
@@ -11,10 +12,13 @@ class DocumentProofingJob < ApplicationJob
     image_metadata:,
     analytics_data:
   )
+    timer = JobHelpers::Timer.new
+
+    raise_stale_job! if stale_job?(enqueued_at)
+
     dcs = DocumentCaptureSession.find_by(result_id: result_id)
     user = dcs.user
 
-    timer = JobHelpers::Timer.new
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,
@@ -41,8 +45,7 @@ class DocumentProofingJob < ApplicationJob
       )
     end
 
-    analytics = Analytics.new(user: user, request: nil, sp: dcs.issuer)
-
+    analytics = build_analytics(dcs)
     doc_auth_client = build_doc_auth_client(analytics)
 
     proofer_result = timer.time('proof_documents') do
@@ -89,6 +92,14 @@ class DocumentProofingJob < ApplicationJob
 
   private
 
+  def build_analytics(document_capture_session)
+    Analytics.new(
+      user: document_capture_session.user,
+      request: nil,
+      sp: document_capture_session.issuer,
+    )
+  end
+
   def build_doc_auth_client(analytics)
     DocAuthRouter.client(
       warn_notifier: proc { |attrs| analytics.track_event(Analytics::DOC_AUTH_WARNING, attrs) },
@@ -101,9 +112,9 @@ class DocumentProofingJob < ApplicationJob
 
   def image_source(image_metadata)
     if acuant_sdk_capture?(image_metadata)
-      IdentityDocAuth::ImageSources::ACUANT_SDK
+      DocAuth::ImageSources::ACUANT_SDK
     else
-      IdentityDocAuth::ImageSources::UNKNOWN
+      DocAuth::ImageSources::UNKNOWN
     end
   end
 

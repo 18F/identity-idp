@@ -1,10 +1,13 @@
 class AddressProofingJob < ApplicationJob
   include JobHelpers::FaradayHelper
+  include JobHelpers::StaleJobHelper
 
   queue_as :default
 
   def perform(user_id:, issuer:, result_id:, encrypted_arguments:, trace_id:)
     timer = JobHelpers::Timer.new
+
+    raise_stale_job! if stale_job?(enqueued_at)
 
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),

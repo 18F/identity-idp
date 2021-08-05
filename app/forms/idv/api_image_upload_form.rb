@@ -123,9 +123,9 @@ module Idv
 
     def image_source
       if acuant_sdk_capture?
-        IdentityDocAuth::ImageSources::ACUANT_SDK
+        DocAuth::ImageSources::ACUANT_SDK
       else
-        IdentityDocAuth::ImageSources::UNKNOWN
+        DocAuth::ImageSources::UNKNOWN
       end
     end
 

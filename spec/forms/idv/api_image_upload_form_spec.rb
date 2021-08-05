@@ -102,7 +102,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: true,
           errors: {},
           exception: nil,
-          result: 'Passed',
+          doc_auth_result: 'Passed',
           billed: true,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts,
           state: 'MT',
@@ -141,7 +141,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           success: true,
           errors: {},
           exception: nil,
-          result: 'Passed',
+          doc_auth_result: 'Passed',
           billed: true,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts,
           user_id: nil,
@@ -168,7 +168,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'posting images to client fails' do
       let(:failed_response) do
-        IdentityDocAuth::Response.new(
+        DocAuth::Response.new(
           success: false,
           errors: { front: 'glare' },
           extra: { remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1 },
@@ -227,7 +227,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       let(:image_source) { nil }
 
       before do
-        expect_any_instance_of(IdentityDocAuth::Mock::DocAuthMockClient).
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient).
           to receive(:post_images).
           with(hash_including(image_source: image_source)).
           and_call_original
@@ -235,7 +235,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       context 'manual uploads' do
         let(:source) { 'upload' }
-        let(:image_source) { IdentityDocAuth::ImageSources::UNKNOWN }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
         it 'sets image source to unknown' do
           form.submit
@@ -247,7 +247,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         let(:back_image_metadata) do
           { width: 20, height: 20, mimeType: 'image/png', source: 'acuant' }.to_json
         end
-        let(:image_source) { IdentityDocAuth::ImageSources::UNKNOWN }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
         it 'sets image source to unknown' do
           form.submit
@@ -256,7 +256,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
       context 'acuant images' do
         let(:source) { 'acuant' }
-        let(:image_source) { IdentityDocAuth::ImageSources::ACUANT_SDK }
+        let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }
 
         it 'sets image source to acuant sdk' do
           form.submit
@@ -266,7 +266,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       context 'malformed image metadata' do
         let(:source) { 'upload' }
         let(:front_image_metadata) { nil.to_json }
-        let(:image_source) { IdentityDocAuth::ImageSources::UNKNOWN }
+        let(:image_source) { DocAuth::ImageSources::UNKNOWN }
 
         it 'sets image source to unknown' do
           form.submit

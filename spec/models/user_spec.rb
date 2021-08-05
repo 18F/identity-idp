@@ -292,10 +292,13 @@ RSpec.describe User do
   end
 
   describe '#accepted_rules_of_use_still_valid?' do
+    let(:rules_of_use_horizon_years) { 6 }
     let(:rules_of_use_updated_at) { 1.day.ago }
     let(:accepted_terms_at) { nil }
     let(:user) { create(:user, :signed_up, accepted_terms_at: accepted_terms_at) }
     before do
+      allow(IdentityConfig.store).to receive(:rules_of_use_horizon_years).
+        and_return(rules_of_use_horizon_years)
       allow(IdentityConfig.store).to receive(:rules_of_use_updated_at).
         and_return(rules_of_use_updated_at)
     end
@@ -319,6 +322,16 @@ RSpec.describe User do
 
       it 'should return a truthy value' do
         expect(user.accepted_rules_of_use_still_valid?).to be_truthy
+      end
+    end
+
+    context 'with a user who accepted the rules of use more than 6 years ago' do
+      let(:rules_of_use_horizon_years) { 6 }
+      let(:rules_of_use_updated_at) { 7.years.ago }
+      let(:accepted_terms_at) { 6.years.ago - 1.day }
+
+      it 'should return a falsey value' do
+        expect(user.accepted_rules_of_use_still_valid?).to be_falsey
       end
     end
   end

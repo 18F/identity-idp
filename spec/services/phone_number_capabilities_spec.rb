@@ -43,6 +43,12 @@ describe PhoneNumberCapabilities do
       let(:phone) { '+1 (441) 295-9644' }
       it { is_expected.to eq(true) }
     end
+
+    context 'Iraq number that is unconfirmed' do
+      let(:phone_confirmed) { false }
+      let(:phone) { '+964 (703) 555-5000' }
+      it { is_expected.to eq(false) }
+    end
   end
 
   describe '#supports_voice?' do

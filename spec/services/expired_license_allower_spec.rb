@@ -6,7 +6,7 @@ RSpec.describe ExpiredLicenseAllower do
   let(:proofing_allow_expired_license) { false }
   let(:proofing_expired_license_after) { Date.new(2021, 3, 1) }
 
-  let(:response) { IdentityDocAuth::Response.new }
+  let(:response) { DocAuth::Response.new }
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_allow_expired_license).
@@ -19,7 +19,7 @@ RSpec.describe ExpiredLicenseAllower do
     subject(:processed_response) { allower.processed_response }
 
     context 'for a response that has no errors' do
-      let(:response) { IdentityDocAuth::Response.new(success: true) }
+      let(:response) { DocAuth::Response.new(success: true) }
 
       it 'does not change the response' do
         expect(processed_response).to eq(response)
@@ -28,14 +28,14 @@ RSpec.describe ExpiredLicenseAllower do
 
     context 'for a response that has DOCUMENT_EXPIRED_CHECK and other errors' do
       let(:response) do
-        IdentityDocAuth::Response.new(
+        DocAuth::Response.new(
           success: false,
           errors: {
             id: [
-              IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK,
-              IdentityDocAuth::Errors::EXPIRATION_CHECKS,
+              DocAuth::Errors::DOCUMENT_EXPIRED_CHECK,
+              DocAuth::Errors::EXPIRATION_CHECKS,
             ],
-            front: [IdentityDocAuth::Errors::VISIBLE_PHOTO_CHECK],
+            front: [DocAuth::Errors::VISIBLE_PHOTO_CHECK],
           },
         )
       end
@@ -54,11 +54,11 @@ RSpec.describe ExpiredLicenseAllower do
 
     context 'for a response that only has DOCUMENT_EXPIRED_CHECK error' do
       let(:response) do
-        IdentityDocAuth::Response.new(
+        DocAuth::Response.new(
           success: false,
           pii_from_doc: pii_from_doc,
           errors: {
-            id: [IdentityDocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
+            id: [DocAuth::Errors::DOCUMENT_EXPIRED_CHECK],
           },
         )
       end

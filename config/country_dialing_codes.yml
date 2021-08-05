@@ -473,7 +473,8 @@ IN:
 IQ:
   country_code: '964'
   name: Iraq
-  supports_sms: false
+  supports_sms: true
+  supports_sms_unconfirmed: false
   supports_voice: false
 IS:
   country_code: '354'

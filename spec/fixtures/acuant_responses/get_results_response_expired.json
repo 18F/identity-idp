@@ -1,0 +1,1555 @@
+{
+  "Alerts": [
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was not found",
+      "FieldReferences": [],
+      "Id": "a3aeea6d-eb09-489a-b703-7fe61547fa5b",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "9b2dda4c-7705-4db5-99a6-132b8c8b4a47"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "Examine the data regions of the document for any visible indications that the data has been digitally manipulated. Request a new image, if possible, to repeat the test.",
+      "DataFieldReferences": [],
+      "Description": "Examines a document image for evidence of tampering or digital manipulation.",
+      "Disposition": "Evidence suggests the image has been tampered with or digitally manipulated.",
+      "FieldReferences": [],
+      "Id": "40ff3223-0082-408d-a54c-a0f4664952c8",
+      "ImageReferences": [],
+      "Information": "Tested the document image for evidence of tampering or digital manipulation.",
+      "Key": "Image Tampering Check",
+      "Name": "Image Tampering Check",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The expiration date on the document may have been misread.  Confirm that it is legible and occurs on or after the current date.  Also confirm that the current date and time of the host computer is correctly set.",
+      "DataFieldReferences": [],
+      "Description": "Checked if the document is expired.",
+      "Disposition": "The document has expired",
+      "FieldReferences": [
+        "05943e81-16a5-419e-ad73-2d945fddf10a"
+      ],
+      "Id": "2f7651ac-34b2-49d6-970d-75a8ace09ae1",
+      "ImageReferences": [],
+      "Information": "Verified that the document expiration date does not occur before the current date.",
+      "Key": "Document Expired",
+      "Name": "Document Expired",
+      "RegionReferences": [],
+      "Result": 5
+    },
+    {
+      "Actions": "This test may fail if a document cannot be successfully classified as a supported document type.  This may occur if the document is fraudulent as some fraudulent documents differ so much from authentic documents that they will not be recognized as that type of document.  This may also occur if a valid document is significantly worn or damaged or if the document is of a new or different type that is not yet supported by the library.  The document should be examined manually.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the type of document is supported and is able to be fully authenticated.",
+      "Disposition": "The document type could not be determined",
+      "FieldReferences": [],
+      "Id": "018246a0-7bb9-42ed-b029-211d0c8ac97b",
+      "ImageReferences": [],
+      "Information": "Verified that the document is recognized as a supported document type and that the type of document can be fully authenticated.",
+      "Key": "Document Classification",
+      "Name": "Document Classification",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "Verify that the data extracted from the 2D barcode appears to be correct and matches the data present on the front of the document.",
+      "DataFieldReferences": [],
+      "Description": "Checked the contents of the two-dimensional barcode on the document.",
+      "Disposition": "The 2D barcode is formatted correctly",
+      "FieldReferences": [],
+      "Id": "db4d88e1-15ed-4b0b-90a6-1164c6844ea3",
+      "ImageReferences": [],
+      "Information": "This authentication will fail if a 2D barcode is read but cannot be correctly decoded.  This failure could be caused by if the 2D barcode was incorrectly encoded, either inadvertently due to a manufacturing problem or intentionally.",
+      "Key": "2D Barcode Content",
+      "Name": "2D Barcode Content",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The 2D barcode on the could not be read or may be missing.  Confirm that it is present, is not obstructed with any foreign material (e.g., dirt, labels, stickers), and is not excessively cracked or worn.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the two-dimensional barcode on the document was read successfully.",
+      "Disposition": "The 2D barcode was read successfully",
+      "FieldReferences": [],
+      "Id": "9f831ef5-6361-4be0-9200-2e1eeb175e2b",
+      "ImageReferences": [],
+      "Information": "This authentication will fail if a 2D barcode is expected but could not be read successfully.  This could be caused by a 2D barcode that is dirty, in poor condition, or is covered by a foreign material such as a sticker.  It is also possible that the 2D barcode could be invalid or a poor quality replication of an authentic barcode.",
+      "Key": "2D Barcode Read",
+      "Name": "2D Barcode Read",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The birth date field on the document may have been misread due to dirt or wear.  Confirm that the data from all visible sources match and are free of obstruction.",
+      "DataFieldReferences": [
+        "f0fff0f0-00ff-0fff-ff0f-0f0fff0f0f0f",
+        "a1a1aaaa-a111-11a1-1111-1a111a11111a"
+      ],
+      "Description": "Compare the machine-readable birth date field to the human-readable birth date field.",
+      "Disposition": "The birth dates match",
+      "FieldReferences": [],
+      "Id": "4f59ae27-4276-441a-89ad-96f3da0f4ece",
+      "ImageReferences": [],
+      "Information": "The birth date is present in multiple locations on this document (e.g., visual, 2D barcode, magnetic stripe, contactless smart card).  This test compares this field between two or more of these sources to verify that they match.",
+      "Key": "Birth Date Crosscheck",
+      "Name": "Birth Date Crosscheck",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The birth date on the document may have been misread.  Confirm that it is legible.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the birth date is valid.",
+      "Disposition": "The birth date is valid",
+      "FieldReferences": [
+        "bb1111b1-111b-1b11-111b-11bb111bb1b1"
+      ],
+      "Id": "f403b529-faa9-4158-aedd-198a072e6e7d",
+      "ImageReferences": [],
+      "Information": "Verified that the birth date is valid, in the expected format, and occurs on or before the current date and not outside a reasonable range.",
+      "Key": "Birth Date Valid",
+      "Name": "Birth Date Valid",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The document number field on the document may have been misread due to dirt or wear.  Confirm that the data from all visible sources match and are free of obstructions.",
+      "DataFieldReferences": [
+        "cc1c1111-cc11-11cc-cc11-1c1c1111c111",
+        "1111dd1d-1d11-1111-dd11-dd11111111dd"
+      ],
+      "Description": "Compare the machine-readable document number field to the human-readable document number field.",
+      "Disposition": "The document numbers match",
+      "FieldReferences": [],
+      "Id": "afb8411b-05dc-4e2a-8faa-221cdb64cfc6",
+      "ImageReferences": [],
+      "Information": "The document number is present in multiple locations on this document (e.g., visual, 2D barcode, magnetic stripe, contactless smart card).  This test compares this field between two or more of these sources to verify that they match.",
+      "Key": "Document Number Crosscheck",
+      "Name": "Document Number Crosscheck",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The expiration date on the document may have been misread.  Confirm that it is legible and occurs after the issue and birth dates.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the expiration date is valid.",
+      "Disposition": "The expiration date is valid",
+      "FieldReferences": [
+        "05943e81-16a5-419e-ad73-2d945fddf10a"
+      ],
+      "Id": "ef0444c5-792e-4b90-a144-ffdd8e0aead9",
+      "ImageReferences": [],
+      "Information": "Verified that the document expiration date is valid, in the expected format, and occurs after the issue and birth dates.",
+      "Key": "Expiration Date Valid",
+      "Name": "Expiration Date Valid",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The given name and/or surname fields on the document may have been misread due to dirt or wear.  Confirm that the data from all visible sources match and are free of obstructions.",
+      "DataFieldReferences": [
+        "cdc4152d-8280-4049-b176-9abef1b9e196",
+        "1d894099-73a0-4274-88e1-7bb72f06d971"
+      ],
+      "Description": "Compare the machine-readable full name field to the human-readable full name field.",
+      "Disposition": "The full names match",
+      "FieldReferences": [],
+      "Id": "c4b349c3-396c-4fe1-8d04-60f8341571b3",
+      "ImageReferences": [],
+      "Information": "The full name is composed of the given name and the surname.  These items are present in multiple locations on this document (e.g., visual, 2D barcode, magnetic stripe, contactless smart card).  This test compares this field between two or more of these sources to verify that they match.",
+      "Key": "Full Name Crosscheck",
+      "Name": "Full Name Crosscheck",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "The issue date on the document may have been misread.  Confirm that all of the dates are legible, the issue date occurs on or before the current date, and is before the expiration date.",
+      "DataFieldReferences": [],
+      "Description": "Verified that the issue date is valid.",
+      "Disposition": "The issue date is valid",
+      "FieldReferences": [
+        "49b38720-3c45-4624-802b-5dee0ba66310"
+      ],
+      "Id": "8cfb7eff-c602-4217-980d-702f3bc88d3a",
+      "ImageReferences": [],
+      "Information": "Verified that the document issue date is valid, in the expected format, does not occur in the future, does not occur before the date of birth, and does not occur after the expiration date.",
+      "Key": "Issue Date Valid",
+      "Name": "Issue Date Valid",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "Examine the image for indications that the document was not producted from an original document, on the uncropped image (if available), especially at the edges.",
+      "DataFieldReferences": [],
+      "Description": "Examines a document image for evidence that it could be a picture of a something other than an original document, such as a computer screen.",
+      "Disposition": "No evidence of a non-original document was detected.",
+      "FieldReferences": [],
+      "Id": "0a4dcd5e-b46c-42c9-9542-01a4ea90202d",
+      "ImageReferences": [],
+      "Information": "Tested the document image for evidence that the image was not produced from an original document.",
+      "Key": "Physical Document Presence",
+      "Name": "Physical Document Presence",
+      "RegionReferences": [],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "a475810f-828d-40c4-8545-4f60cf833451",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "9285116d-a348-4932-bdad-8b7cf8a27308"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "0ecfa50a-0b47-483a-9fdd-7aa84ffe3fd6",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "f14a2fde-51a0-4009-a159-56bb32fe7c3f"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "d6ef7f41-e538-418e-8796-2ccbc8d43da7",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "2c42cacb-f019-452c-bd46-b70d6518d9d3"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "Check the visible (white) document image to verify the presence of the security feature.  Possible reasons this test may fail for a valid document may be that the document was moving during the capture, or the document may be excessively worn or damaged.",
+      "DataFieldReferences": [],
+      "Description": "Verified the presence of a pattern on the visible image.",
+      "Disposition": "A visible pattern was found",
+      "FieldReferences": [],
+      "Id": "1ffdf4c6-369e-49e2-b270-c050c9563856",
+      "ImageReferences": [],
+      "Information": "Verified that a security feature in the visible spectrum is present and in an expected location on the document.",
+      "Key": "Visible Pattern",
+      "Name": "Visible Pattern",
+      "RegionReferences": [
+        "e8c6f2c3-d33e-4927-b8cb-48ab4307bcd2"
+      ],
+      "Result": 1
+    },
+    {
+      "Actions": "If the test fails, check to make sure that the photo area is not obscured and that the photo has not been altered or replaced.",
+      "DataFieldReferences": [],
+      "Description": "Verifies the visible characteristics of the Photo",
+      "Disposition": "The photo has the expected appearance",
+      "FieldReferences": [],
+      "Id": "63c1f62c-1e26-4f9c-8f48-31a46ebbfd38",
+      "ImageReferences": [],
+      "Information": "Verifies that the general appearance of photo on the document is as expected. This test may be used to verify that the photo has not been obscured or replaced in any way. ",
+      "Key": "Visible Photo Characteristics",
+      "Name": "Visible Photo Characteristics",
+      "RegionReferences": [
+        "7dba5bbf-1a5f-41bf-9b1c-b1b7b98e0d97"
+      ],
+      "Result": 1
+    }
+  ],
+  "AuthenticationSensitivity": 0,
+  "Biographic": {
+    "Age": 71,
+    "BirthDate": "/Date(-631123200000)/",
+    "ExpirationDate": "/Date(1610582400000)/",
+    "FullName": "FAKEY MIDDLE MCFAKERSON",
+    "Gender": 1,
+    "Photo": "https://us.assureid.acuant.net/AssureIDService/Document/00000000-0a00-00aa-0000-00a0a00a00aa/Field/Image?key=Photo"
+  },
+  "Classification": {
+    "ClassificationDetails": {
+      "Back": {
+        "Class": 0,
+        "ClassCode": null,
+        "ClassName": "Unknown",
+        "CountryCode": "",
+        "DocumentDataTypes": [
+          0
+        ],
+        "GeographicRegions": null,
+        "Id": "168a1e06-a354-42c0-89e5-2574747c251b",
+        "IsGeneric": true,
+        "Issue": null,
+        "IssueType": "ID1 Barcode Back",
+        "IssuerCode": null,
+        "IssuerName": null,
+        "IssuerType": 0,
+        "KeesingCode": null,
+        "Name": "ID1 Barcode Back",
+        "ReferenceDocumentDataTypes": [],
+        "Size": 1,
+        "SupportedImages": [
+          {
+            "Light": 0,
+            "Side": 0
+          },
+          {
+            "Light": 1,
+            "Side": 0
+          },
+          {
+            "Light": 2,
+            "Side": 0
+          },
+          {
+            "Light": 0,
+            "Side": 1
+          },
+          {
+            "Light": 1,
+            "Side": 1
+          },
+          {
+            "Light": 2,
+            "Side": 1
+          }
+        ]
+      },
+      "Front": {
+        "Class": 3,
+        "ClassCode": null,
+        "ClassName": "Drivers License",
+        "CountryCode": "USA",
+        "DocumentDataTypes": [
+          2
+        ],
+        "GeographicRegions": [
+          "NorthAmerica"
+        ],
+        "Id": "b1d95908-e170-448d-8988-1336ba9e4206",
+        "IsGeneric": false,
+        "Issue": "2004",
+        "IssueType": "Driver's License",
+        "IssuerCode": "MN",
+        "IssuerName": "Minnesota",
+        "IssuerType": 2,
+        "KeesingCode": null,
+        "Name": "Minnesota (MN) Driver's License",
+        "ReferenceDocumentDataTypes": [
+          0
+        ],
+        "Size": 1,
+        "SupportedImages": [
+          {
+            "Light": 0,
+            "Side": 0
+          },
+          {
+            "Light": 1,
+            "Side": 0
+          },
+          {
+            "Light": 2,
+            "Side": 0
+          },
+          {
+            "Light": 4,
+            "Side": 0
+          },
+          {
+            "Light": 3,
+            "Side": 0
+          },
+          {
+            "Light": 0,
+            "Side": 1
+          },
+          {
+            "Light": 1,
+            "Side": 1
+          },
+          {
+            "Light": 2,
+            "Side": 1
+          }
+        ]
+      }
+    },
+    "Mode": 0,
+    "OrientationChanged": false,
+    "PresentationChanged": false,
+    "Type": {
+      "Class": 3,
+      "ClassCode": null,
+      "ClassName": "Drivers License",
+      "CountryCode": "USA",
+      "DocumentDataTypes": [
+        2
+      ],
+      "GeographicRegions": [
+        "NorthAmerica"
+      ],
+      "Id": "b1d95908-e170-448d-8988-1336ba9e4206",
+      "IsGeneric": false,
+      "Issue": "2004",
+      "IssueType": "Driver's License",
+      "IssuerCode": "MN",
+      "IssuerName": "Minnesota",
+      "IssuerType": 2,
+      "KeesingCode": null,
+      "Name": "Minnesota (MN) Driver's License",
+      "ReferenceDocumentDataTypes": [
+        0
+      ],
+      "Size": 1,
+      "SupportedImages": [
+        {
+          "Light": 0,
+          "Side": 0
+        },
+        {
+          "Light": 1,
+          "Side": 0
+        },
+        {
+          "Light": 2,
+          "Side": 0
+        },
+        {
+          "Light": 4,
+          "Side": 0
+        },
+        {
+          "Light": 3,
+          "Side": 0
+        },
+        {
+          "Light": 0,
+          "Side": 1
+        },
+        {
+          "Light": 1,
+          "Side": 1
+        },
+        {
+          "Light": 2,
+          "Side": 1
+        }
+      ]
+    }
+  },
+  "DataFields": [
+    {
+      "DataSource": 2,
+      "Description": "The person's date of birth",
+      "Id": "f0fff0f0-00ff-0fff-ff0f-0f0fff0f0f0f",
+      "IsImage": false,
+      "Key": "2D Birth Date",
+      "Name": "Birth Date",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "datetime",
+      "Value": "/Date(-631123200000)/"
+    },
+    {
+      "DataSource": 2,
+      "Description": "A number that identifies a document",
+      "Id": "cc1c1111-cc11-11cc-cc11-1c1c1111c111",
+      "IsImage": false,
+      "Key": "2D Document Number",
+      "Name": "Document Number",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "G111111111111"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's first name",
+      "Id": "3ba44f92-6675-40f5-b759-fa77e4d999af",
+      "IsImage": false,
+      "Key": "2D First Name",
+      "Name": "First Name",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "FAKEY"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's full name (given name plus surname)",
+      "Id": "cdc4152d-8280-4049-b176-9abef1b9e196",
+      "IsImage": false,
+      "Key": "2D Full Name",
+      "Name": "Full Name",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "FAKEY MIDDLE MCFAKERSON"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's given name",
+      "Id": "f9dc6a2c-30f1-42ca-a6c4-b9ede02ab4b3",
+      "IsImage": false,
+      "Key": "2D Given Name",
+      "Name": "Given Name",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "FAKEY MIDDLE"
+    },
+    {
+      "DataSource": 2,
+      "Description": "Abbreviated ID code of the state or country that issued the document",
+      "Id": "98ea7c51-2dff-46d7-bba6-3af4be0957c3",
+      "IsImage": false,
+      "Key": "2D Issuing State Code",
+      "Name": "Issuing State Code",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "MN"
+    },
+    {
+      "DataSource": 2,
+      "Description": "Full name of the state or country that issued the document",
+      "Id": "413e45bd-3706-4688-a49c-b97284aba2b1",
+      "IsImage": false,
+      "Key": "2D Issuing State Name",
+      "Name": "Issuing State Name",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "MINNESOTA"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's middle name",
+      "Id": "0aa7d4bb-0588-4f72-bd42-52b728f1bfca",
+      "IsImage": false,
+      "Key": "2D Middle Name",
+      "Name": "Middle Name",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "MIDDLE"
+    },
+    {
+      "DataSource": 2,
+      "Description": "The person's surname or family name",
+      "Id": "eee00000-eee0-0e00-e0ee-000e0e000000",
+      "IsImage": false,
+      "Key": "2D Surname",
+      "Name": "Surname",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.98,
+      "Type": "string",
+      "Value": "MCFAKERSON"
+    },
+    {
+      "DataSource": 2,
+      "Description": "Raw data extracted from the 2D barcode of the document",
+      "Id": "5a8b2898-d506-4ea0-8e0a-311641eea67d",
+      "IsImage": false,
+      "Key": "Data_2DBarcode",
+      "Name": "2D Barcode Data",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "314debf9-dd14-4f2e-a414-2700ca7092c1",
+      "Reliability": 0.99,
+      "Type": "uri",
+      "Value": "https://us.assureid.acuant.net/AssureIDService/Document/00000000-0a00-00aa-0000-00a0a00a00aa/Data?type=Barcode2D"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's legal, residence, or mailing address",
+      "Id": "d149be26-a694-4534-aa92-51c32cf56e59",
+      "IsImage": false,
+      "Key": "VIZ Address",
+      "Name": "Address",
+      "RegionOfInterest": {
+        "height": 113,
+        "width": 733,
+        "x": 15,
+        "y": 22
+      },
+      "RegionReference": "489401e8-23a7-44c2-b6a2-ea087f179e03",
+      "Reliability": 0.7972221970558167,
+      "Type": "string",
+      "Value": "123 MAIN ST ST PAUL. MN 55555"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's date of birth",
+      "Id": "a1a1aaaa-a111-11a1-1111-1a111a11111a",
+      "IsImage": false,
+      "Key": "VIZ Birth Date",
+      "Name": "Birth Date",
+      "RegionOfInterest": {
+        "height": 17,
+        "width": 109,
+        "x": 5,
+        "y": 6
+      },
+      "RegionReference": "8e8c2a11-07d5-4217-ab2b-254514f0a641",
+      "Reliability": 0.7018181681632996,
+      "Type": "datetime",
+      "Value": "/Date(-631123200000)/"
+    },
+    {
+      "DataSource": 6,
+      "Description": "A number that identifies a document",
+      "Id": "1111dd1d-1d11-1111-dd11-dd11111111dd",
+      "IsImage": false,
+      "Key": "VIZ Document Number",
+      "Name": "Document Number",
+      "RegionOfInterest": {
+        "height": 21,
+        "width": 179,
+        "x": 16,
+        "y": 5
+      },
+      "RegionReference": "7e7f01ee-e55c-4a5e-8ed5-b42766a65ec1",
+      "Reliability": 0.9957143068313599,
+      "Type": "string",
+      "Value": "G111111111111"
+    },
+    {
+      "DataSource": 6,
+      "Description": "Date that the document will expire",
+      "Id": "1ee1111e-ee1e-1e11-e11e-e1e1e1eee111",
+      "IsImage": false,
+      "Key": "VIZ Expiration Date",
+      "Name": "Expiration Date",
+      "RegionOfInterest": {
+        "height": 52,
+        "width": 324,
+        "x": 14,
+        "y": 22
+      },
+      "RegionReference": "07ecef9b-0a9f-412b-b88b-8ec3f5173bac",
+      "Reliability": 0.6236363649368286,
+      "Type": "datetime",
+      "Value": "/Date(1610582400000)/"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's eye color",
+      "Id": "f11f1ff1-11f1-1111-ff11-11f11f111fff",
+      "IsImage": false,
+      "Key": "VIZ Eye Color",
+      "Name": "Eye Color",
+      "RegionOfInterest": {
+        "height": 14,
+        "width": 39,
+        "x": 10,
+        "y": 2
+      },
+      "RegionReference": "b05be09a-c4ca-4d7d-91f4-e12db89604c7",
+      "Reliability": 1,
+      "Type": "string",
+      "Value": "BRN"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's full name (given name plus surname)",
+      "Id": "1d894099-73a0-4274-88e1-7bb72f06d971",
+      "IsImage": false,
+      "Key": "VIZ Full Name",
+      "Name": "Full Name",
+      "RegionOfInterest": {
+        "height": 52,
+        "width": 707,
+        "x": 18,
+        "y": 30
+      },
+      "RegionReference": "4398c09f-e740-4667-ae12-7464a6c3c068",
+      "Reliability": 0.5370000004768372,
+      "Type": "string",
+      "Value": "FAKEY MIDDLE MCFAKERSON"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's height ",
+      "Id": "8e258aac-f426-4b84-8eef-18d0b80daf88",
+      "IsImage": false,
+      "Key": "VIZ Height",
+      "Name": "Height",
+      "RegionOfInterest": {
+        "height": 16,
+        "width": 34,
+        "x": 6,
+        "y": 1
+      },
+      "RegionReference": "cd512b52-9209-4b5c-bfe3-4c036a1d1267",
+      "Reliability": 0.7599999904632568,
+      "Type": "string",
+      "Value": "6-0"
+    },
+    {
+      "DataSource": 7,
+      "Description": "Date that the document was issued",
+      "Id": "db739487-d02a-4ac1-9761-98559ed4cd01",
+      "IsImage": false,
+      "Key": "VIZ Issue Date",
+      "Name": "Issue Date",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Reliability": 0.4399999976158142,
+      "Type": "datetime",
+      "Value": "/Date(1496275200000)/"
+    },
+    {
+      "DataSource": 6,
+      "Description": "A person's image",
+      "Id": "c105294c-bf92-47f8-ab06-d9c566653257",
+      "IsImage": true,
+      "Key": "VIZ Photo",
+      "Name": "Photo",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "7dba5bbf-1a5f-41bf-9b1c-b1b7b98e0d97",
+      "Reliability": 0.9,
+      "Type": "uri",
+      "Value": "https://us.assureid.acuant.net/AssureIDService/Document/00000000-0a00-00aa-0000-00a0a00a00aa/Field/Image?key=VIZ%20Photo"
+    },
+    {
+      "DataSource": 6,
+      "Description": "A single character (translated into M/F from other languages) that identifies the person's gender",
+      "Id": "f40dbbe4-4a96-451e-acb2-beb512d76fb2",
+      "IsImage": false,
+      "Key": "VIZ Sex",
+      "Name": "Sex",
+      "RegionOfInterest": {
+        "height": 15,
+        "width": 15,
+        "x": 10,
+        "y": 7
+      },
+      "RegionReference": "8c38666e-6f87-4201-a2bf-9e4a2eb08962",
+      "Reliability": 0.7200000286102295,
+      "Type": "string",
+      "Value": "M"
+    },
+    {
+      "DataSource": 6,
+      "Description": "An image of the person's signature",
+      "Id": "696e6b5a-13fa-49ef-96d5-db7e289d5c83",
+      "IsImage": true,
+      "Key": "VIZ Signature",
+      "Name": "Signature",
+      "RegionOfInterest": {
+        "height": 0,
+        "width": 0,
+        "x": 0,
+        "y": 0
+      },
+      "RegionReference": "f3c3c14a-ce07-45d9-8cba-95ff3c0f17f6",
+      "Reliability": 0.9,
+      "Type": "uri",
+      "Value": "https://us.assureid.acuant.net/AssureIDService/Document/00000000-0a00-00aa-0000-00a0a00a00aa/Field/Image?key=VIZ%20Signature"
+    },
+    {
+      "DataSource": 6,
+      "Description": "The person's weight or weight class",
+      "Id": "0c0ccc0c-00c0-00cc-0ccc-ccc00c0c0cc0",
+      "IsImage": false,
+      "Key": "VIZ Weight",
+      "Name": "Weight",
+      "RegionOfInterest": {
+        "height": 15,
+        "width": 30,
+        "x": 13,
+        "y": 4
+      },
+      "RegionReference": "5669183b-926b-4dc0-b12a-5fd3968e9dd6",
+      "Reliability": 0.8974999785423279,
+      "Type": "string",
+      "Value": "99"
+    }
+  ],
+  "Device": {
+    "HasContactlessChipReader": false,
+    "HasMagneticStripeReader": false,
+    "SerialNumber": "xxxxx",
+    "Type": {
+      "Manufacturer": "Login.gov",
+      "Model": "Doc Auth 1.0",
+      "SensorType": 3
+    }
+  },
+  "EngineVersion": "2.17.2.291",
+  "Fields": [
+    {
+      "DataFieldReferences": [
+        "d149be26-a694-4534-aa92-51c32cf56e59"
+      ],
+      "DataSource": 6,
+      "Description": "The person's legal, residence, or mailing address",
+      "Id": "1a8af821-1ba3-4e2c-9983-d236e3d8fa2c",
+      "IsImage": false,
+      "Key": "Address",
+      "Name": "Address",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "123 MAIN ST ST PAUL. MN 55555"
+    },
+    {
+      "DataFieldReferences": [
+        "d149be26-a694-4534-aa92-51c32cf56e59"
+      ],
+      "DataSource": 6,
+      "Description": "City of the person's legal, residence, or mailing address",
+      "Id": "42739c82-aa0e-45fd-a802-2243dc1d8852",
+      "IsImage": false,
+      "Key": "Address City",
+      "Name": "Address City",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "ST PAUL"
+    },
+    {
+      "DataFieldReferences": [
+        "d149be26-a694-4534-aa92-51c32cf56e59"
+      ],
+      "DataSource": 6,
+      "Description": "First address line of the person's legal, residence, or mailing address",
+      "Id": "9ed5e9c6-7199-482d-ad22-9ffaed6e4d3c",
+      "IsImage": false,
+      "Key": "Address Line 1",
+      "Name": "Address Line 1",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "123 MAIN ST"
+    },
+    {
+      "DataFieldReferences": [
+        "d149be26-a694-4534-aa92-51c32cf56e59"
+      ],
+      "DataSource": 6,
+      "Description": "Postal code of the person's address",
+      "Id": "cfc75541-9353-4354-a37c-5c7ccdb0602b",
+      "IsImage": false,
+      "Key": "Address Postal Code",
+      "Name": "Address Postal Code",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "55555"
+    },
+    {
+      "DataFieldReferences": [
+        "d149be26-a694-4534-aa92-51c32cf56e59"
+      ],
+      "DataSource": 6,
+      "Description": "State of the person's legal, residence, or mailing address",
+      "Id": "86d14e43-a410-40f0-976c-819c4cb3683d",
+      "IsImage": false,
+      "Key": "Address State",
+      "Name": "Address State",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "MN"
+    },
+    {
+      "DataFieldReferences": [
+        "f0fff0f0-00ff-0fff-ff0f-0f0fff0f0f0f",
+        "a1a1aaaa-a111-11a1-1111-1a111a11111a"
+      ],
+      "DataSource": 2,
+      "Description": "The person's date of birth",
+      "Id": "bb1111b1-111b-1b11-111b-11bb111bb1b1",
+      "IsImage": false,
+      "Key": "Birth Date",
+      "Name": "Birth Date",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "datetime",
+      "Value": "/Date(-631123200000)/"
+    },
+    {
+      "DataFieldReferences": [],
+      "DataSource": 7,
+      "Description": "The localized version of the document class of the document type",
+      "Id": "ca74c286-8367-4201-bab6-c16b60bb36bc",
+      "IsImage": false,
+      "Key": "Document Class Name",
+      "Name": "Document Class Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "Drivers License"
+    },
+    {
+      "DataFieldReferences": [
+        "cc1c1111-cc11-11cc-cc11-1c1c1111c111",
+        "1111dd1d-1d11-1111-dd11-dd11111111dd"
+      ],
+      "DataSource": 2,
+      "Description": "A number that identifies a document",
+      "Id": "d0dbee96-a395-4e98-9e8a-b6b0b3cde3ec",
+      "IsImage": false,
+      "Key": "Document Number",
+      "Name": "Document Number",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "G111111111111"
+    },
+    {
+      "DataFieldReferences": [
+        "1ee1111e-ee1e-1e11-e11e-e1e1e1eee111"
+      ],
+      "DataSource": 6,
+      "Description": "Date that the document will expire",
+      "Id": "05943e81-16a5-419e-ad73-2d945fddf10a",
+      "IsImage": false,
+      "Key": "Expiration Date",
+      "Name": "Expiration Date",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "datetime",
+      "Value": "/Date(1610582400000)/"
+    },
+    {
+      "DataFieldReferences": [
+        "f11f1ff1-11f1-1111-ff11-11f11f111fff"
+      ],
+      "DataSource": 6,
+      "Description": "The person's eye color",
+      "Id": "26c5efe9-a5ee-4fa5-841b-f314713cc8cd",
+      "IsImage": false,
+      "Key": "Eye Color",
+      "Name": "Eye Color",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "BRN"
+    },
+    {
+      "DataFieldReferences": [
+        "3ba44f92-6675-40f5-b759-fa77e4d999af"
+      ],
+      "DataSource": 2,
+      "Description": "The person's first name",
+      "Id": "b79b0263-b22b-4b13-bf34-3dd0ba264574",
+      "IsImage": false,
+      "Key": "First Name",
+      "Name": "First Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "FAKEY"
+    },
+    {
+      "DataFieldReferences": [
+        "cdc4152d-8280-4049-b176-9abef1b9e196",
+        "1d894099-73a0-4274-88e1-7bb72f06d971"
+      ],
+      "DataSource": 2,
+      "Description": "The person's full name (given name plus surname)",
+      "Id": "062598c5-2716-4237-89be-5a9821fe5e7b",
+      "IsImage": false,
+      "Key": "Full Name",
+      "Name": "Full Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "FAKEY MIDDLE MCFAKERSON"
+    },
+    {
+      "DataFieldReferences": [
+        "f9dc6a2c-30f1-42ca-a6c4-b9ede02ab4b3"
+      ],
+      "DataSource": 2,
+      "Description": "The person's given name",
+      "Id": "178bd90c-9f14-4ae5-b4ec-39adf720d41f",
+      "IsImage": false,
+      "Key": "Given Name",
+      "Name": "Given Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "FAKEY MIDDLE"
+    },
+    {
+      "DataFieldReferences": [
+        "8e258aac-f426-4b84-8eef-18d0b80daf88"
+      ],
+      "DataSource": 6,
+      "Description": "The person's height ",
+      "Id": "99ebebb2-afab-47b8-bb2a-c017fbbc79ec",
+      "IsImage": false,
+      "Key": "Height",
+      "Name": "Height",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "6-0"
+    },
+    {
+      "DataFieldReferences": [
+        "db739487-d02a-4ac1-9761-98559ed4cd01"
+      ],
+      "DataSource": 7,
+      "Description": "Date that the document was issued",
+      "Id": "49b38720-3c45-4624-802b-5dee0ba66310",
+      "IsImage": false,
+      "Key": "Issue Date",
+      "Name": "Issue Date",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "datetime",
+      "Value": "/Date(1496275200000)/"
+    },
+    {
+      "DataFieldReferences": [
+        "98ea7c51-2dff-46d7-bba6-3af4be0957c3"
+      ],
+      "DataSource": 7,
+      "Description": "Abbreviated ID code of the state or country that issued the document",
+      "Id": "75867e49-9e33-41c0-be16-d09558499ef2",
+      "IsImage": false,
+      "Key": "Issuing State Code",
+      "Name": "Issuing State Code",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "MN"
+    },
+    {
+      "DataFieldReferences": [
+        "413e45bd-3706-4688-a49c-b97284aba2b1"
+      ],
+      "DataSource": 7,
+      "Description": "Full name of the state or country that issued the document",
+      "Id": "eab59db4-cbca-4739-a1be-c84e3b8bef57",
+      "IsImage": false,
+      "Key": "Issuing State Name",
+      "Name": "Issuing State Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "Minnesota"
+    },
+    {
+      "DataFieldReferences": [
+        "0aa7d4bb-0588-4f72-bd42-52b728f1bfca"
+      ],
+      "DataSource": 2,
+      "Description": "The person's middle name",
+      "Id": "9f013529-fc28-4836-947b-b6af9fd2038f",
+      "IsImage": false,
+      "Key": "Middle Name",
+      "Name": "Middle Name",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "MIDDLE"
+    },
+    {
+      "DataFieldReferences": [
+        "c105294c-bf92-47f8-ab06-d9c566653257"
+      ],
+      "DataSource": 6,
+      "Description": "A person's image",
+      "Id": "20ce245c-8c90-4beb-ab0d-17b455a8fbb3",
+      "IsImage": true,
+      "Key": "Photo",
+      "Name": "Photo",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "uri",
+      "Value": "https://us.assureid.acuant.net/AssureIDService/Document/00000000-0a00-00aa-0000-00a0a00a00aa/Field/Image?key=Photo"
+    },
+    {
+      "DataFieldReferences": [],
+      "DataSource": 7,
+      "Description": "Indicates whether the document is a form of identification that meets the increased security standards for US state-issued driver's licenses and identification cards under the REAL ID Act",
+      "Id": "a563beaf-6f81-402f-a35f-1817343415e2",
+      "IsImage": false,
+      "Key": "REAL ID Compliant",
+      "Name": "REAL ID Compliant",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "False"
+    },
+    {
+      "DataFieldReferences": [
+        "f40dbbe4-4a96-451e-acb2-beb512d76fb2"
+      ],
+      "DataSource": 6,
+      "Description": "A single character (translated into M/F from other languages) that identifies the person's gender",
+      "Id": "6d43b46d-6740-41f6-9bea-a4143abf92ab",
+      "IsImage": false,
+      "Key": "Sex",
+      "Name": "Sex",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "M"
+    },
+    {
+      "DataFieldReferences": [
+        "696e6b5a-13fa-49ef-96d5-db7e289d5c83"
+      ],
+      "DataSource": 6,
+      "Description": "An image of the person's signature",
+      "Id": "339aded1-4923-4b5e-b708-cc82c4ee65dd",
+      "IsImage": true,
+      "Key": "Signature",
+      "Name": "Signature",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "uri",
+      "Value": "https://us.assureid.acuant.net/AssureIDService/Document/00000000-0a00-00aa-0000-00a0a00a00aa/Field/Image?key=Signature"
+    },
+    {
+      "DataFieldReferences": [
+        "eee00000-eee0-0e00-e0ee-000e0e000000"
+      ],
+      "DataSource": 2,
+      "Description": "The person's surname or family name",
+      "Id": "172e8675-756c-405d-9395-ed0671d3c18d",
+      "IsImage": false,
+      "Key": "Surname",
+      "Name": "Surname",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "MCFAKERSON"
+    },
+    {
+      "DataFieldReferences": [
+        "0c0ccc0c-00c0-00cc-0ccc-ccc00c0c0cc0"
+      ],
+      "DataSource": 6,
+      "Description": "The person's weight or weight class",
+      "Id": "9154b9d4-3707-405f-b933-3ff3959ce363",
+      "IsImage": false,
+      "Key": "Weight",
+      "Name": "Weight",
+      "RegionReference": "00000000-0000-0000-0000-000000000000",
+      "Type": "string",
+      "Value": "99"
+    }
+  ],
+  "Images": [
+    {
+      "GlareMetric": 99,
+      "HorizontalResolution": 600,
+      "Id": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "IsCropped": false,
+      "IsTampered": false,
+      "Light": 0,
+      "MimeType": "image/jpeg",
+      "SharpnessMetric": 65,
+      "Side": 0,
+      "VerticalResolution": 600
+    },
+    {
+      "GlareMetric": 99,
+      "HorizontalResolution": 600,
+      "Id": "2512b2b7-0659-4015-a892-2d3094e95821",
+      "IsCropped": false,
+      "IsTampered": false,
+      "Light": 0,
+      "MimeType": "image/jpeg",
+      "SharpnessMetric": 59,
+      "Side": 1,
+      "VerticalResolution": 600
+    }
+  ],
+  "InstanceId": "00000000-0a00-00aa-0000-00a0a00a00aa",
+  "LibraryVersion": "21.05.18.315",
+  "ProcessMode": 2,
+  "Regions": [
+    {
+      "DocumentElement": 4,
+      "Id": "b4fd0de5-da0a-4534-ad1c-312bb6eb7995",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "2004 Series Validator",
+      "Rectangle": {
+        "height": 274,
+        "width": 304,
+        "x": 1509,
+        "y": 646
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "314debf9-dd14-4f2e-a414-2700ca7092c1",
+      "ImageReference": "2512b2b7-0659-4015-a892-2d3094e95821",
+      "Key": "2D Barcode",
+      "Rectangle": {
+        "height": 1280,
+        "width": 2029,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "489401e8-23a7-44c2-b6a2-ea087f179e03",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Address",
+      "Rectangle": {
+        "height": 166,
+        "width": 1289,
+        "x": 648,
+        "y": 481
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "f14a2fde-51a0-4009-a159-56bb32fe7c3f",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Address Font",
+      "Rectangle": {
+        "height": 187,
+        "width": 1313,
+        "x": 623,
+        "y": 494
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "39943348-cfda-4231-a466-0819e24b6e84",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Background",
+      "Rectangle": {
+        "height": 252,
+        "width": 790,
+        "x": 1133,
+        "y": 593
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "9285116d-a348-4932-bdad-8b7cf8a27308",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Background Seal",
+      "Rectangle": {
+        "height": 330,
+        "width": 387,
+        "x": 1454,
+        "y": 638
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "8e8c2a11-07d5-4217-ab2b-254514f0a641",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Birth Date",
+      "Rectangle": {
+        "height": 82,
+        "width": 389,
+        "x": 958,
+        "y": 632
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "5c284fd5-f050-4983-9b75-715271fc42ae",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Block Locate viz",
+      "Rectangle": {
+        "height": 293,
+        "width": 120,
+        "x": 632,
+        "y": 386
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "e8c6f2c3-d33e-4927-b8cb-48ab4307bcd2",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Data Font",
+      "Rectangle": {
+        "height": 134,
+        "width": 505,
+        "x": 622,
+        "y": 803
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "2c42cacb-f019-452c-bd46-b70d6518d9d3",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Date Font",
+      "Rectangle": {
+        "height": 134,
+        "width": 1056,
+        "x": 819,
+        "y": 940
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "7e7f01ee-e55c-4a5e-8ed5-b42766a65ec1",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Document Number",
+      "Rectangle": {
+        "height": 101,
+        "width": 626,
+        "x": 25,
+        "y": 1153
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "d5eb65f1-7bcb-4b30-b3d7-569a691904f7",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Document Type",
+      "Rectangle": {
+        "height": 281,
+        "width": 1150,
+        "x": 725,
+        "y": 221
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "07ecef9b-0a9f-412b-b88b-8ec3f5173bac",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Expiration Date",
+      "Rectangle": {
+        "height": 101,
+        "width": 377,
+        "x": 1494,
+        "y": 951
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "b05be09a-c4ca-4d7d-91f4-e12db89604c7",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Eye Color",
+      "Rectangle": {
+        "height": 65,
+        "width": 173,
+        "x": 865,
+        "y": 776
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "4398c09f-e740-4667-ae12-7464a6c3c068",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Full Name",
+      "Rectangle": {
+        "height": 89,
+        "width": 1282,
+        "x": 646,
+        "y": 404
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "cd512b52-9209-4b5c-bfe3-4c036a1d1267",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Height",
+      "Rectangle": {
+        "height": 77,
+        "width": 137,
+        "x": 663,
+        "y": 903
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "6641456e-4ea4-45cf-8234-7ec0b1bb3ec2",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Issue MM-YYYY",
+      "Rectangle": {
+        "height": 94,
+        "width": 283,
+        "x": 838,
+        "y": 956
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "2a961047-954f-47ac-a29b-d294e2f39af7",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Minnesota Header",
+      "Rectangle": {
+        "height": 284,
+        "width": 1654,
+        "x": 236,
+        "y": 34
+      }
+    },
+    {
+      "DocumentElement": 2,
+      "Id": "7dba5bbf-1a5f-41bf-9b1c-b1b7b98e0d97",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Photo",
+      "Rectangle": {
+        "height": 768,
+        "width": 538,
+        "x": 63,
+        "y": 358
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "8c38666e-6f87-4201-a2bf-9e4a2eb08962",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Sex",
+      "Rectangle": {
+        "height": 84,
+        "width": 98,
+        "x": 646,
+        "y": 761
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "f3c3c14a-ce07-45d9-8cba-95ff3c0f17f6",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Signature",
+      "Rectangle": {
+        "height": 228,
+        "width": 1193,
+        "x": 682,
+        "y": 1042
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "9b2dda4c-7705-4db5-99a6-132b8c8b4a47",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Top Background",
+      "Rectangle": {
+        "height": 295,
+        "width": 427,
+        "x": 34,
+        "y": 44
+      }
+    },
+    {
+      "DocumentElement": 4,
+      "Id": "ef3f45f4-638c-4545-85d9-2a8f879bdae0",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Validator",
+      "Rectangle": {
+        "height": 283,
+        "width": 1654,
+        "x": 236,
+        "y": 34
+      }
+    },
+    {
+      "DocumentElement": 1,
+      "Id": "a193157f-2cf5-47c9-bb0c-48723ce3d4bb",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Variable Reg",
+      "Rectangle": {
+        "height": 122,
+        "width": 267,
+        "x": 644,
+        "y": 950
+      }
+    },
+    {
+      "DocumentElement": 3,
+      "Id": "5669183b-926b-4dc0-b12a-5fd3968e9dd6",
+      "ImageReference": "68fabc65-3ddf-4ef0-93f5-4b960b69c545",
+      "Key": "Weight",
+      "Rectangle": {
+        "height": 72,
+        "width": 163,
+        "x": 889,
+        "y": 893
+      }
+    }
+  ],
+  "Result": 2,
+  "Subscription": {
+    "DocumentProcessMode": 2,
+    "Id": "8e6ddf74-a410-4ae8-bfe1-51ed9f58699c",
+    "IsActive": true,
+    "IsDevelopment": true,
+    "IsTrial": false,
+    "Name": "IRS Proof-of-Concept",
+    "StorePII": false
+  },
+  "TamperResult": 2,
+  "TamperSensitivity": 0
+}

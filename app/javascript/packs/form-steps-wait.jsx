@@ -71,6 +71,7 @@ export class FormStepsWait {
 
   bind() {
     this.elements.form.addEventListener('submit', (event) => this.handleSubmit(event));
+    this.elements.form.addEventListener('invalid', () => this.stopSpinner(), true);
   }
 
   /**
@@ -81,7 +82,6 @@ export class FormStepsWait {
 
     const { form } = this.elements;
     const { action, method } = form;
-
     // Clear error, if present.
     this.renderError('');
 

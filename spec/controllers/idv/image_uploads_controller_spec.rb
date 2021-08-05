@@ -227,7 +227,7 @@ describe Idv::ImageUploadsController do
           async: false,
           billed: true,
           exception: nil,
-          result: 'Passed',
+          doc_auth_result: 'Passed',
           state: 'MT',
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
@@ -257,12 +257,12 @@ describe Idv::ImageUploadsController do
         let(:dob) { '10/06/1938' }
 
         before do
-          IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+          DocAuth::Mock::DocAuthMockClient.mock_response!(
             method: :get_results,
-            response: IdentityDocAuth::Response.new(
+            response: DocAuth::Response.new(
               success: true,
               errors: {},
-              extra: { result: 'Passed', billed: true },
+              extra: { doc_auth_result: 'Passed', billed: true },
               pii_from_doc: {
                 first_name: first_name,
                 last_name: last_name,
@@ -294,7 +294,7 @@ describe Idv::ImageUploadsController do
               async: false,
               billed: true,
               exception: nil,
-              result: 'Passed',
+              doc_auth_result: 'Passed',
               state: 'ND',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
@@ -342,7 +342,7 @@ describe Idv::ImageUploadsController do
               async: false,
               billed: true,
               exception: nil,
-              result: 'Passed',
+              doc_auth_result: 'Passed',
               state: 'Maryland',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
@@ -390,7 +390,7 @@ describe Idv::ImageUploadsController do
               async: false,
               billed: true,
               exception: nil,
-              result: 'Passed',
+              doc_auth_result: 'Passed',
               state: 'ND',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
@@ -421,11 +421,11 @@ describe Idv::ImageUploadsController do
 
     context 'when image upload fails' do
       before do
-        IdentityDocAuth::Mock::DocAuthMockClient.mock_response!(
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
           method: :post_images,
-          response: IdentityDocAuth::Response.new(
+          response: DocAuth::Response.new(
             success: false,
-            errors: { front: [IdentityDocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES] },
+            errors: { front: [DocAuth::Errors::MULTIPLE_FRONT_ID_FAILURES] },
           ),
         )
       end
@@ -512,7 +512,7 @@ describe Idv::ImageUploadsController do
           },
           async: false,
           billed: true,
-          result: 'Caution',
+          doc_auth_result: 'Caution',
           state: nil,
           exception: nil,
           user_id: user.uuid,

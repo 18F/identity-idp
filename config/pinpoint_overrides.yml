@@ -91,7 +91,7 @@ IE:
 IL:
   supports_voice: false
 IQ:
-  supports_sms: false
+  supports_sms_unconfirmed: false
 IS:
   supports_voice: false
 IT:

@@ -43,7 +43,7 @@ module Idv
         Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuthRouter.doc_auth_vendor)
       end
 
-      # @param [IdentityDocAuth::Response,
+      # @param [DocAuth::Response,
       #   DocumentCaptureSessionAsyncResult,
       #   DocumentCaptureSessionResult] response
       def extract_pii_from_doc(response)
@@ -53,7 +53,7 @@ module Idv
           phone: current_user.phone_configurations.take&.phone,
         )
         if response.respond_to?(:extra)
-          # Sync flow: IdentityDocAuth::Response
+          # Sync flow: DocAuth::Response
           flow_session[:document_expired] = response.extra&.dig(:document_expired)
         elsif response.respond_to?(:result)
           # Async flow: DocumentCaptureSessionAsyncResult
@@ -76,7 +76,7 @@ module Idv
           throttle_type: :idv_acuant,
         )
         redirect_to throttled_url
-        IdentityDocAuth::Response.new(
+        DocAuth::Response.new(
           success: false,
           errors: { limit: I18n.t('errors.doc_auth.throttled_heading') },
         )
