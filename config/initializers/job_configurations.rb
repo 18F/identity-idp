@@ -359,7 +359,7 @@ if IdentityConfig.store.ruby_workers_enabled
 end
 
 if IdentityConfig.store.ruby_workers_enabled
-  Rails.application.config do |config|
+  Rails.application.configure do |config|
     config.good_job.cron = all_configs.transform_values { |config| config.fetch(:good_job) }
   end
 else
