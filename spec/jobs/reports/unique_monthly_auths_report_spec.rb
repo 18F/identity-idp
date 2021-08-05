@@ -8,7 +8,7 @@ describe Reports::UniqueMonthlyAuthsReport do
   let(:year_month) { '201901' }
 
   it 'is empty' do
-    expect(subject.perform).to eq('[]')
+    expect(subject.perform(Time.zone.today)).to eq('[]')
   end
 
   it 'returns 1 unique despite the count for the user being 7' do
@@ -19,6 +19,6 @@ describe Reports::UniqueMonthlyAuthsReport do
     )
     result = [{ issuer: 'foo', year_month: '201901', app_id: app_id, total: 1 }].to_json
 
-    expect(subject.perform).to eq(result)
+    expect(subject.perform(Time.zone.today)).to eq(result)
   end
 end

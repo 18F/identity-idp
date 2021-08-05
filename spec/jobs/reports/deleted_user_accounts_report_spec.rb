@@ -13,7 +13,7 @@ describe Reports::DeletedUserAccountsReport do
   it 'is does not send out an email with nothing configured' do
     expect(UserMailer).to_not receive(:deleted_user_accounts_report)
 
-    subject.perform
+    subject.perform(Time.zone.today)
   end
 
   it 'sends out a report to the email listed with one deleted user account' do
@@ -36,6 +36,6 @@ describe Reports::DeletedUserAccountsReport do
       email: email, name: name, issuers: [issuer], data: report,
     )
 
-    subject.perform
+    subject.perform(Time.zone.today)
   end
 end

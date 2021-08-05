@@ -7,7 +7,7 @@ describe Reports::TotalSpCostReport do
   let(:issuer2) { 'issuer2' }
 
   it 'is empty' do
-    expect(subject.perform).to eq('[]')
+    expect(subject.perform(Time.zone.today)).to eq('[]')
   end
 
   it 'totals the cost per sp' do
@@ -15,7 +15,7 @@ describe Reports::TotalSpCostReport do
     ::SpCost.create(issuer: issuer1, ial: 1, agency_id: 2, cost_type: 'foo')
     ::SpCost.create(issuer: issuer1, ial: 1, agency_id: 2, cost_type: 'foo')
     ::SpCost.create(issuer: issuer2, ial: 2, agency_id: 3, cost_type: 'bar')
-    expect(JSON.parse(subject.perform)).to eq(
+    expect(JSON.parse(subject.perform(Time.zone.today))).to eq(
       [{
         'cost_type' => 'bar',
         'count' => 1,

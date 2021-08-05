@@ -5,7 +5,7 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
 
   describe '#perform' do
     it 'is empty with no data' do
-      expect(report.perform).to eq('[]')
+      expect(report.perform(Time.zone.today)).to eq('[]')
     end
 
     context 'with data' do
@@ -73,7 +73,7 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
       end
 
       it 'counts up costs by issuer + ial, and includes iaa and app_id' do
-        results = JSON.parse(report.perform, symbolize_names: true)
+        results = JSON.parse(report.perform(Time.zone.today), symbolize_names: true)
 
         rows = [
           {

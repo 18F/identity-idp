@@ -117,7 +117,7 @@ describe Reports::IaaBillingReport do
   end
 
   it 'works with no SPs' do
-    expect(subject.perform).to eq([].to_json)
+    expect(subject.perform(Time.zone.today)).to eq([].to_json)
   end
 
   it 'ignores sps without an IAA or a start date or an end date' do
@@ -131,7 +131,7 @@ describe Reports::IaaBillingReport do
       iaa_end_date: iaa_end_date1
     )
 
-    expect(subject.perform).to eq([].to_json)
+    expect(subject.perform(Time.zone.today)).to eq([].to_json)
   end
 
   it 'rolls up 2 issuers in a single IAA' do
@@ -144,7 +144,7 @@ describe Reports::IaaBillingReport do
       iaa_start_date: iaa_start_date1, iaa_end_date: iaa_end_date1
     )
 
-    expect(subject.perform).to eq(results_for_1_iaa.to_json)
+    expect(subject.perform(Time.zone.today)).to eq(results_for_1_iaa.to_json)
   end
 
   it 'works with multiple IAAs and issuers' do
@@ -187,7 +187,7 @@ describe Reports::IaaBillingReport do
       auth_count: 3
     )
 
-    tuples = subject.perform
+    tuples = subject.perform(Time.zone.today)
     expect(tuples).to include(results_for_2_iaas_1.to_json)
     expect(tuples).to include(results_for_2_iaas_2.to_json)
   end

@@ -8,7 +8,7 @@ describe Reports::TotalMonthlyAuthsReport do
   let(:year_month) { '201901' }
 
   it 'is empty' do
-    expect(subject.perform).to eq('[]')
+    expect(subject.perform(Time.zone.today)).to eq('[]')
   end
 
   it 'returns the total monthly auths' do
@@ -23,6 +23,6 @@ describe Reports::TotalMonthlyAuthsReport do
     )
     result = [{ issuer: 'foo', ial: 1, year_month: '201901', total: 10, app_id: app_id }].to_json
 
-    expect(subject.perform).to eq(result)
+    expect(subject.perform(Time.zone.today)).to eq(result)
   end
 end

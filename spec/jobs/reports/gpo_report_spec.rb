@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Reports::GpoReport do
-  subject { described_class }
+  subject { described_class.new }
   let(:empty_report) do
     {
       'letters_sent_and_validated_since_days' => {
@@ -34,12 +34,12 @@ describe Reports::GpoReport do
   let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
 
   it 'correctly reports zero letters sent' do
-    expect(JSON.parse(subject.new.perform)).to eq(empty_report)
+    expect(JSON.parse(subject.perform(Time.zone.today))).to eq(empty_report)
   end
 
   it 'correctly reports one letter sent that was verified' do
     create_ucc_for(profile)
-    expect(JSON.parse(subject.new.perform)).to eq(one_letter_sent_and_verified_report)
+    expect(JSON.parse(subject.perform(Time.zone.today))).to eq(one_letter_sent_and_verified_report)
   end
 
   def create_ucc_for(profile)

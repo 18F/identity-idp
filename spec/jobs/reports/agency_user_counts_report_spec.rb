@@ -6,7 +6,7 @@ describe Reports::AgencyUserCountsReport do
   let(:agency) { create(:agency) }
 
   it 'is empty' do
-    expect(subject.perform).to eq('[]')
+    expect(subject.perform(Time.zone.today)).to eq('[]')
   end
 
   it 'returns the total user counts per agency' do
@@ -14,6 +14,6 @@ describe Reports::AgencyUserCountsReport do
     AgencyIdentity.create(user_id: 2, agency_id: agency.id, uuid: 'foo2')
     result = [{ agency: agency.name, total: 2 }].to_json
 
-    expect(subject.perform).to eq(result)
+    expect(subject.perform(Time.zone.today)).to eq(result)
   end
 end

@@ -7,7 +7,7 @@ describe Reports::SpUserQuotasReport do
   let(:app_id) { 'app_id' }
 
   it 'is empty' do
-    expect(subject.perform).to eq('[]')
+    expect(subject.perform(Time.zone.today)).to eq('[]')
   end
 
   it 'runs correctly if the current month is before the fiscal start month of October' do
@@ -29,7 +29,7 @@ describe Reports::SpUserQuotasReport do
     results = [{ issuer: issuer, app_id: app_id, ial2_total: 1, percent_ial2_quota: 0 }].to_json
 
     Timecop.travel Date.new(year, month, day) do
-      expect(subject.perform).to eq(results)
+      expect(subject.perform(Time.zone.today)).to eq(results)
     end
   end
 end

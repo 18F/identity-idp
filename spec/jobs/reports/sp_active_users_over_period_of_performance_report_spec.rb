@@ -8,7 +8,7 @@ describe Reports::SpActiveUsersOverPeriodOfPerformanceReport do
   let(:app_id) { 'app' }
 
   it 'is empty' do
-    expect(subject.perform).to eq('[]')
+    expect(subject.perform(Time.zone.today)).to eq('[]')
   end
 
   it 'returns total active user counts per sp broken down by ial1 and ial2' do
@@ -37,7 +37,7 @@ describe Reports::SpActiveUsersOverPeriodOfPerformanceReport do
       last_ial2_authenticated_at: now
     )
 
-    result = subject.perform
+    result = subject.perform(Time.zone.today)
 
     expect(JSON.parse(result, symbolize_names: true)).to eq(
       [{

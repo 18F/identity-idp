@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::DailyAuthsReport do
-  subject(:report) { Reports::DailyAuthsReport.new(report_date) }
+  subject(:report) { Reports::DailyAuthsReport.new }
 
   let(:report_date) { Date.new(2021, 3, 1) }
 
@@ -17,7 +17,7 @@ RSpec.describe Reports::DailyAuthsReport do
         content_type: 'application/json',
       )
 
-      report.perform
+      report.perform(report_date)
     end
 
     context 'with data' do
@@ -44,7 +44,7 @@ RSpec.describe Reports::DailyAuthsReport do
           )
         end
 
-        report.perform
+        report.perform(report_date)
       end
     end
   end

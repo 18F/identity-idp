@@ -7,7 +7,7 @@ describe Reports::SpUserCountsReport do
   let(:app_id) { 'app_id' }
 
   it 'is empty' do
-    expect(subject.perform).to eq('[]')
+    expect(subject.perform(Time.zone.today)).to eq('[]')
   end
 
   it 'returns the total user counts per sp broken down by ial1 and ial2' do
@@ -20,6 +20,6 @@ describe Reports::SpUserCountsReport do
     )
     result = [{ issuer: issuer, total: 3, ial1_total: 2, ial2_total: 1, app_id: app_id }].to_json
 
-    expect(subject.perform).to eq(result)
+    expect(subject.perform(Time.zone.today)).to eq(result)
   end
 end

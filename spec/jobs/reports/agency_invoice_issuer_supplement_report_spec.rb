@@ -5,7 +5,7 @@ RSpec.describe Reports::AgencyInvoiceIssuerSupplementReport do
 
   describe '#perform' do
     it 'is empty with no data' do
-      expect(report.perform).to eq('[]')
+      expect(report.perform(Time.zone.today)).to eq('[]')
     end
 
     context 'with data' do
@@ -40,7 +40,7 @@ RSpec.describe Reports::AgencyInvoiceIssuerSupplementReport do
       end
 
       it 'totals up auth counts within IAA window by month' do
-        result = JSON.parse(report.perform, symbolize_names: true)
+        result = JSON.parse(report.perform(Time.zone.today), symbolize_names: true)
 
         expect(result).to eq(
           [
