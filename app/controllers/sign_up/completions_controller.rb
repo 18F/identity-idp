@@ -132,7 +132,18 @@ module SignUp
     def pii_to_displayable_attributes
       {
         full_name: full_name,
-        social_security_number: pii[:ssn],
+        social_security_number: render_to_string(
+          partial: 'shared/masked_text',
+          locals: {
+            text: SsnFormatter.format(pii[:ssn]),
+            masked_text: SsnFormatter.format(pii[:ssn], mask: true),
+            accessible_masked_text: t(
+              'idv.accessible_labels.masked_ssn',
+              first_number: pii[:ssn][0],
+              last_number: pii[:ssn][-1],
+            ),
+          },
+        ),
         address: address,
         birthdate: dob,
         phone: PhoneFormatter.format(pii[:phone].to_s),

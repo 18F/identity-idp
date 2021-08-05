@@ -823,7 +823,7 @@ feature 'Sign in' do
       click_submit_default
 
       expect(current_path).to eq sign_up_completed_path
-      expect(page).to have_content('111223333')
+      expect(page).to have_content('1**-**-***3')
 
       click_agree_and_continue
 
@@ -858,7 +858,7 @@ feature 'Sign in' do
       click_submit_default
 
       expect(current_path).to eq sign_up_completed_path
-      expect(page).to have_content('111223333')
+      expect(page).to have_content('1**-**-***3')
 
       click_agree_and_continue
 
