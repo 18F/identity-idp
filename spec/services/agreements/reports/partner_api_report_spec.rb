@@ -2,15 +2,12 @@ require 'rails_helper'
 
 RSpec.describe Agreements::Reports::PartnerApiReport do
   before do
-    store = double(RedactedStruct).tap do |s|
-      allow(s).to receive(:enable_partner_api).and_return(true)
-      allow(s).to receive(:s3_reports_enabled).and_return(false)
-    end
-    allow(IdentityConfig).to receive(:store).and_return(store)
+    allow(IdentityConfig.store).to receive(:enable_partner_api).and_return(true)
+    allow(IdentityConfig.store).to receive(:s3_reports_enabled).and_return(false)
   end
 
   it 'runs a series of reports' do
     # just a smoke test
-    expect(described_class.new.run).to eq(true)
+    expect(described_class.new.perform(Time.zone.today)).to eq(true)
   end
 end
