@@ -7,7 +7,7 @@ feature 'OMB Fitara compliance officer runs report' do
       sign_up_and_2fa_ial1_user
 
       results = '{"counts":[{"month":"201907","count":1},{"month":"201906","count":0}]}'
-      expect(Reports::OmbFitaraReport.new.call).to eq(results)
+      expect(Reports::OmbFitaraReport.new.perform(Time.zone.today)).to eq(results)
     end
   end
 
@@ -17,7 +17,7 @@ feature 'OMB Fitara compliance officer runs report' do
       sign_up_and_2fa_ial1_user
 
       results = '{"counts":[{"month":"201912","count":1},{"month":"201911","count":0}]}'
-      expect(Reports::OmbFitaraReport.new.call).to eq(results)
+      expect(Reports::OmbFitaraReport.new.perform(Time.zone.today)).to eq(results)
     end
   end
 
@@ -27,7 +27,7 @@ feature 'OMB Fitara compliance officer runs report' do
       sign_up_and_2fa_ial1_user
 
       results = '{"counts":[{"month":"201901","count":1},{"month":"201812","count":0}]}'
-      expect(Reports::OmbFitaraReport.new.call).to eq(results)
+      expect(Reports::OmbFitaraReport.new.perform(Time.zone.today)).to eq(results)
     end
   end
 
