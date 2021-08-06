@@ -12,8 +12,8 @@ describe AccountReset::GrantRequestsAndSendEmails do
         create_account_reset_request_for(user)
 
         after_waiting_the_full_wait_period do
-          AccountReset::GrantRequestsAndSendEmails.new.call
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
+          AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
           expect(notifications_sent).to eq(0)
         end
       end
@@ -23,7 +23,7 @@ describe AccountReset::GrantRequestsAndSendEmails do
         cancel_request_for(user)
 
         after_waiting_the_full_wait_period do
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
           expect(notifications_sent).to eq(0)
         end
       end
@@ -32,7 +32,7 @@ describe AccountReset::GrantRequestsAndSendEmails do
         create_account_reset_request_for(user)
 
         after_waiting_the_full_wait_period do
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
 
           expect(notifications_sent).to eq(1)
         end
@@ -43,7 +43,7 @@ describe AccountReset::GrantRequestsAndSendEmails do
         create_account_reset_request_for(user2)
 
         after_waiting_the_full_wait_period do
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
 
           expect(notifications_sent).to eq(2)
         end
@@ -54,7 +54,7 @@ describe AccountReset::GrantRequestsAndSendEmails do
       it 'does not send notifications after a request' do
         create_account_reset_request_for(user)
 
-        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
+        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         expect(notifications_sent).to eq(0)
       end
 
@@ -62,7 +62,7 @@ describe AccountReset::GrantRequestsAndSendEmails do
         create_account_reset_request_for(user)
         cancel_request_for(user)
 
-        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.call
+        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         expect(notifications_sent).to eq(0)
       end
     end

@@ -30,7 +30,7 @@ describe 'Account Reset Request: Delete Account', email: true do
       reset_email
 
       Timecop.travel(Time.zone.now + 2.days) do
-        AccountReset::GrantRequestsAndSendEmails.new.perform
+        AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
 
@@ -99,7 +99,7 @@ describe 'Account Reset Request: Delete Account', email: true do
           },
         )
 
-        AccountReset::GrantRequestsAndSendEmails.new.perform
+        AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
 
