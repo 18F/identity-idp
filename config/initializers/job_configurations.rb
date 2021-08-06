@@ -1,3 +1,6 @@
+require 'job_runner/runner'
+require 'job_runner/job_configuration'
+
 cron_5m = '0/5 * * * *'
 interval_5m = 5 * 60
 cron_24h = '0 0 * * *'
@@ -395,9 +398,6 @@ elsif IdentityConfig.store.ruby_workers_enabled
 
   Rails.logger.info 'job_configurations: jobs scheduled with good_job.cron'
 else
-  require 'job_runner/runner'
-  require 'job_runner/job_configuration'
-
   all_configs.each do |_key, config|
     JobRunner::Runner.add_config(
       JobRunner::JobConfiguration.new(**config.fetch(:job_runner)),
