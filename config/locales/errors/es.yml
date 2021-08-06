@@ -93,7 +93,9 @@ es:
         opción de llamada telefónica a continuación o use su clave personal.
       pwned_password: La contraseña que ingresaste no es segura. Está en una lista de
         contraseñas conocidas expuestas en violaciones de datos.
-      try_again: Por favor, inténtelo de nuevo.
+      too_short:
+        one: es muy corto (mínimo 1 caracter)
+        other: es muy corto (mínimo %{count} caracteres)
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_nameid_format: Formato de ID de nombre no autorizado
       unauthorized_service_provider: Proveedor de servicio no autorizado
