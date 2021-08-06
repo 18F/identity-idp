@@ -96,6 +96,7 @@ es:
       too_short:
         one: es muy corto (mínimo 1 caracter)
         other: es muy corto (mínimo %{count} caracteres)
+      try_again: Por favor, inténtelo de nuevo.
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_nameid_format: Formato de ID de nombre no autorizado
       unauthorized_service_provider: Proveedor de servicio no autorizado
