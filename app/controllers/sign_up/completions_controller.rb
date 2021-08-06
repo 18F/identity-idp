@@ -136,7 +136,7 @@ module SignUp
           partial: 'shared/masked_text',
           locals: {
             text: SsnFormatter.format(pii[:ssn]),
-            masked_text: SsnFormatter.format(pii[:ssn], mask: true),
+            masked_text: SsnFormatter.format_masked(pii[:ssn]),
             accessible_masked_text: t(
               'idv.accessible_labels.masked_ssn',
               first_number: pii[:ssn][0],

@@ -45,7 +45,7 @@
     <%= render(
           'shared/masked_text',
           text: SsnFormatter.format(flow_session[:pii_from_doc][:ssn]),
-          masked_text: SsnFormatter.format(flow_session[:pii_from_doc][:ssn], mask: true),
+          masked_text: SsnFormatter.format_masked(flow_session[:pii_from_doc][:ssn]),
           accessible_masked_text: t(
             'idv.accessible_labels.masked_ssn',
             first_number: flow_session[:pii_from_doc][:ssn][0],
