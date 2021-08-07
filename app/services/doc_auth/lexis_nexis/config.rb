@@ -9,6 +9,7 @@ module DocAuth
       :trueid_noliveness_workflow,
       :trueid_password,
       :trueid_username,
+      :trueid_timeout, # optional
       :timeout, # optional
       :warn_notifier, # optional
       :locale,
@@ -20,9 +21,10 @@ module DocAuth
         :account_id,
         :base_url,
         :request_mode,
+        :timeout,
         :trueid_liveness_workflow,
         :trueid_noliveness_workflow,
-        :timeout,
+        :trueid_timeout,
         :locale,
         :dpi_threshold,
         :sharpness_threshold,
