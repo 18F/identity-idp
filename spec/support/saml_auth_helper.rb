@@ -117,7 +117,6 @@ module SamlAuthHelper
       overrides: {
         issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
         authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-        name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
       },
     )
   end

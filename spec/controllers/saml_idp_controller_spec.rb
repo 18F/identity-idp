@@ -743,7 +743,7 @@ describe SamlIdpController do
       end
 
       it 'sends the appropriate identifier for non-email NameID SPs' do
-        auth_settings = missing_nameid_format_saml_settings
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
         IdentityLinker.new(user, auth_settings.issuer).link_identity
@@ -768,7 +768,7 @@ describe SamlIdpController do
           with(Analytics::SAML_AUTH, analytics_hash)
       end
       it 'sends the appropriate identifier for email NameID SPs' do
-        auth_settings = missing_nameid_format_saml_settings
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
         ServiceProvider.
@@ -796,7 +796,7 @@ describe SamlIdpController do
           with(Analytics::SAML_AUTH, analytics_hash)
       end
       it 'sends the old user ID for legacy SPS' do
-        auth_settings = missing_nameid_format_saml_settings
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
         ServiceProvider.
