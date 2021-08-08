@@ -19,7 +19,7 @@ describe 'AAL3 authentication required in an SAML context' do
     context 'user does not have aal3 auth configured' do
       it 'sends user to set up AAL3 auth' do
         sign_in_and_2fa_user(user_with_2fa)
-        visit aal3_sp1_authnrequest
+        visit_saml_authn_request_url(saml_overrides: { issuer: aal3_issuer, authn_context: nil })
 
         expect(current_url).to eq(two_factor_options_url)
         expect(page).to have_content(t('two_factor_authentication.two_factor_aal3_choice'))
@@ -30,14 +30,14 @@ describe 'AAL3 authentication required in an SAML context' do
     context 'user has aal3 auth configured' do
       it 'sends user to authenticate with AAL3 auth' do
         sign_in_before_2fa(user_with_aal3_2fa)
-        visit aal3_sp1_authnrequest
+        visit_saml_authn_request_url(saml_overrides: { issuer: aal3_issuer, authn_context: nil })
         visit login_two_factor_path(otp_delivery_preference: 'sms')
         expect(current_url).to eq(login_two_factor_webauthn_url)
       end
 
       it 'does not allow an already signed in user to bypass AAL3 auth' do
         sign_in_and_2fa_user(user_with_aal3_2fa)
-        visit aal3_sp1_authnrequest
+        visit_saml_authn_request_url(saml_overrides: { issuer: aal3_issuer, authn_context: nil })
 
         expect(current_url).to eq(login_two_factor_webauthn_url)
       end
