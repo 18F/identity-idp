@@ -136,18 +136,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def ial1_with_aal3_saml_settings
-    saml_settings(
-      overrides: {
-        issuer: sp1_issuer,
-        authn_context: [
-          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
-        ],
-      },
-    )
-  end
-
   def sp1_authnrequest
     auth_request.create(
       saml_settings(
@@ -173,10 +161,6 @@ module SamlAuthHelper
         },
       ),
     )
-  end
-
-  def ial1_aal3_authnrequest
-    auth_request.create(ial1_with_aal3_saml_settings)
   end
 
   def requested_aal2_authn_context_saml_settings

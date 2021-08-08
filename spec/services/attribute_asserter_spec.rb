@@ -27,11 +27,22 @@ describe AttributeAsserter do
     )
   end
   let(:raw_sp1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
-  let(:raw_aal3_sp1_authn_request) { CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last }
+  let(:raw_aal3_sp1_authn_request) do
+    ial1_aal3_authnrequest = saml_authn_request_url(
+      saml_overrides: {
+        issuer: sp1_issuer,
+        authn_context: [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+        ],
+      },
+    )
+    CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last
+  end
   let(:raw_ial1_authn_request) do
     ial1_authn_request_url = saml_authn_request_url(
       saml_overrides: {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        issuer: sp1_issuer,
         authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       },
     )
@@ -47,6 +58,15 @@ describe AttributeAsserter do
     CGI.unescape ial2_authnrequest.split('SAMLRequest').last
   end
   let(:raw_ial1_aal3_authn_request) do
+    ial1_aal3_authnrequest = saml_authn_request_url(
+      saml_overrides: {
+        issuer: sp1_issuer,
+        authn_context: [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+        ],
+      },
+    )
     CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last
   end
   let(:sp1_authn_request) do
