@@ -172,27 +172,6 @@ module SamlAuthHelper
     REXML::XPath.match(decoded_saml_response, '//AuthnContext/AuthnContextClassRef')[0][0]
   end
 
-  def visit_idp_from_ial2_saml_sp(**args)
-    settings = saml_settings(
-      overrides: {
-        issuer: sp1_issuer,
-        authn_context: [
-          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-        ],
-        name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
-      },
-      security_overrides: {
-        embed_sign: false,
-      },
-    )
-    settings.issuer = args[:issuer] if args[:issuer]
-    saml_authn_request = auth_request.create(settings)
-    visit saml_authn_request
-    saml_authn_request
-  end
-
   private
 
   def link_user_to_identity(user, link, settings)

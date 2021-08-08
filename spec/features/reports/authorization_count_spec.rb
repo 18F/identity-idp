@@ -16,6 +16,23 @@ def visit_idp_from_ial1_saml_sp(issuer:)
   )
 end
 
+def visit_idp_from_ial2_saml_sp(issuer:)
+  visit_saml_authn_request_url(
+    saml_overrides: {
+      issuer: issuer,
+      name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+      authn_context: [
+        Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+      ],
+    },
+    saml_security_overrides: {
+      embed_sign: false,
+    },
+  )
+end
+
 describe 'authorization count' do
   include IdvFromSpHelper
   include OidcAuthHelper
