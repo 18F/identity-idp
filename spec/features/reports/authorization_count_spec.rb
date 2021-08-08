@@ -76,6 +76,7 @@ describe 'authorization count' do
         expect_ial1_and_ial2_count(issuer_1)
       end
 
+      # rubocop:disable Layout/LineLength
       it 'counts IAL1 auth when ial max is requested' do
         visit_saml_authn_request_url(
           saml_overrides: {
@@ -96,18 +97,45 @@ describe 'authorization count' do
       end
 
       it 'counts IAL2 auth when ial2 strict is requested' do
-        visit_idp_from_ial2_strict_saml_sp(issuer: issuer_1)
+        visit_saml_authn_request_url(
+          saml_overrides: {
+            issuer: issuer_1,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [
+              Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+          },
+          saml_security_overrides: {
+            embed_sign: false,
+          },
+        )
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
 
       it 'proofs the user and counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        visit_idp_from_ial2_strict_saml_sp(issuer: issuer_1)
+        visit_saml_authn_request_url(
+          saml_overrides: {
+            issuer: issuer_1,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [
+              Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+          },
+          saml_security_overrides: {
+            embed_sign: false,
+          },
+        )
         reproof_for_ial2_strict
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
+      # rubocop:enable Layout/LineLength
     end
   end
 
@@ -234,6 +262,7 @@ describe 'authorization count' do
         expect_ial2_count_only(issuer_2)
       end
 
+      # rubocop:disable Layout/LineLength
       it 'counts IAL2 auth when ial max is requested' do
         visit_saml_authn_request_url(
           saml_overrides: {
@@ -255,11 +284,25 @@ describe 'authorization count' do
 
       it 're-proofs and counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        visit_idp_from_ial2_strict_saml_sp(issuer: issuer_1)
+        visit_saml_authn_request_url(
+          saml_overrides: {
+            issuer: issuer_1,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [
+              Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+          },
+          saml_security_overrides: {
+            embed_sign: false,
+          },
+        )
         reproof_for_ial2_strict
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
+      # rubocop:enable Layout/LineLength
     end
   end
 
