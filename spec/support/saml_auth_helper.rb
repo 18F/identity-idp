@@ -136,18 +136,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def ial1_with_verified_at_saml_settings
-    saml_settings(
-      overrides: {
-        issuer: sp1_issuer,
-        authn_context: [
-          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,verified_at",
-        ],
-      },
-    )
-  end
-
   def ial1_with_bundle_saml_settings
     saml_settings(
       overrides: {
@@ -277,16 +265,6 @@ module SamlAuthHelper
       },
     )
     settings.issuer = args[:issuer] if args[:issuer]
-    saml_authn_request = auth_request.create(settings)
-    visit saml_authn_request
-    saml_authn_request
-  end
-
-  def visit_idp_from_ial1_saml_sp(**args)
-    settings = ial1_with_verified_at_saml_settings
-    settings.security[:embed_sign] = false
-    settings.issuer = args[:issuer] if args[:issuer]
-    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
     saml_authn_request = auth_request.create(settings)
     visit saml_authn_request
     saml_authn_request
