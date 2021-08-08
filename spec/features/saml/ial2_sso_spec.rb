@@ -212,7 +212,12 @@ feature 'IAL2 Single Sign On' do
     it 'redirects to idv_path' do
       sign_in_and_2fa_user
 
-      visit ial2_authnrequest
+      visit_saml_authn_request_url(
+        saml_overrides: {
+          issuer: sp1_issuer,
+          authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        },
+      )
       visit sign_up_completed_path
 
       expect(current_path).to eq idv_doc_auth_step_path(step: :welcome)

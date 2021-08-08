@@ -184,6 +184,14 @@ describe SamlIdpController do
   describe 'GET /api/saml/auth' do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
     let(:aal_level) { 2 }
+    let(:ial2_settings) do
+      saml_settings(
+        overrides: {
+          issuer: sp1_issuer,
+          authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        },
+      )
+    end
 
     context 'with IAL2 and the identity is already verified' do
       let(:user) { create(:profile, :active, :verified).user }
@@ -196,13 +204,19 @@ describe SamlIdpController do
         )
       end
       let(:this_authn_request) do
+        ial2_authnrequest = saml_authn_request_url(
+          saml_overrides: {
+            issuer: sp1_issuer,
+            authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          },
+        )
         raw_req = CGI.unescape ial2_authnrequest.split('SAMLRequest').last
         SamlIdp::Request.from_deflated_request(raw_req)
       end
       let(:asserter) do
         AttributeAsserter.new(
           user: user,
-          service_provider: ServiceProvider.find_by(issuer: sp1_ial2_saml_settings.issuer),
+          service_provider: ServiceProvider.find_by(issuer: sp1_issuer),
           authn_request: this_authn_request,
           name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           decrypted_pii: pii,
@@ -212,7 +226,7 @@ describe SamlIdpController do
 
       before do
         stub_sign_in(user)
-        IdentityLinker.new(user, sp1_ial2_saml_settings.issuer).link_identity(ial: 2)
+        IdentityLinker.new(user, sp1_issuer).link_identity(ial: 2)
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
         )
@@ -222,22 +236,22 @@ describe SamlIdpController do
       it 'calls AttributeAsserter#build' do
         expect(asserter).to receive(:build).at_least(:once).and_call_original
 
-        saml_get_auth(sp1_ial2_saml_settings)
+        saml_get_auth(ial2_settings)
       end
 
       it 'sets identity ial to 2' do
-        saml_get_auth(sp1_ial2_saml_settings)
+        saml_get_auth(ial2_settings)
         expect(user.identities.last.ial).to eq(2)
       end
 
       it 'does not redirect the user to the IdV URL' do
-        saml_get_auth(sp1_ial2_saml_settings)
+        saml_get_auth(ial2_settings)
 
         expect(response).to_not be_redirect
       end
 
       it 'contains verified attributes' do
-        saml_get_auth(sp1_ial2_saml_settings)
+        saml_get_auth(ial2_settings)
 
         expect(xmldoc.attribute_node_for('address1')).to be_nil
 
@@ -268,14 +282,14 @@ describe SamlIdpController do
                ial: 2)
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
-        saml_get_auth(sp1_ial2_saml_settings)
+        saml_get_auth(ial2_settings)
       end
     end
 
     context 'with IAL2 and the identity is not already verified' do
       it 'redirects to IdV URL for IAL2 proofer' do
         user = create(:user, :signed_up)
-        generate_saml_response(user, sp1_ial2_saml_settings)
+        generate_saml_response(user, ial2_settings)
 
         expect(response).to redirect_to idv_path
       end

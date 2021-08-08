@@ -95,7 +95,27 @@ module SamlAuthHelper
     visit logout_request_url
   end
 
+  def saml_get_auth(settings)
+    # GET redirect binding Authn Request
+    get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)) }
+  end
+
+  def saml_post_auth(saml_request)
+    # POST redirect binding Authn Request
+    post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
+  end
+
+  def visit_saml_auth_path
+    visit api_saml_auth2021_path(
+      SAMLRequest: CGI.unescape(saml_request(saml_settings)),
+    )
+  end
+
   private
+
+  def saml_request(settings)
+    authn_request(settings).split('SAMLRequest=').last
+  end
 
   def saml_test_sp_key
     @private_key ||= OpenSSL::PKey::RSA.new(
@@ -109,22 +129,17 @@ module SamlAuthHelper
 
   public
 
-  ##################################################################################################
-  ##################################################################################################
-
-  def sp1_ial2_saml_settings
-    saml_settings(
-      overrides: {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
-        authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-      },
-    )
+  def sp1_issuer
+    'https://rp1.serviceprovider.com/auth/saml/metadata'
   end
+
+  ##################################################################################################
+  ##################################################################################################
 
   def sp1_ial_max_saml_settings
     saml_settings(
       overrides: {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        issuer: sp1_issuer,
         authn_context: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
       },
     )
@@ -133,7 +148,7 @@ module SamlAuthHelper
   def sp1_ial2_strict_saml_settings
     saml_settings(
       overrides: {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        issuer: sp1_issuer,
         authn_context: Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
       },
     )
@@ -142,7 +157,7 @@ module SamlAuthHelper
   def loa3_saml_settings
     saml_settings(
       overrides: {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        issuer: sp1_issuer,
         authn_context: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
       },
     )
@@ -151,7 +166,7 @@ module SamlAuthHelper
   def ialmax_saml_settings
     saml_settings(
       overrides: {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        issuer: sp1_issuer,
         authn_context: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
       },
     )
@@ -159,16 +174,6 @@ module SamlAuthHelper
 
   def ialmax_with_bundle_saml_settings
     settings = ialmax_saml_settings
-    settings.authn_context = [
-      settings.authn_context,
-      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-    ]
-    settings
-  end
-
-  def ial2_with_bundle_saml_settings
-    settings = sp1_ial2_saml_settings
     settings.authn_context = [
       settings.authn_context,
       "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
@@ -210,7 +215,7 @@ module SamlAuthHelper
   def ial1_with_verified_at_saml_settings
     saml_settings(
       overrides: {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        issuer: sp1_issuer,
         authn_context: [
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,verified_at",
@@ -222,7 +227,7 @@ module SamlAuthHelper
   def ial1_with_bundle_saml_settings
     saml_settings(
       overrides: {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        issuer: sp1_issuer,
         authn_context: [
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
@@ -236,7 +241,7 @@ module SamlAuthHelper
   def ial1_with_aal3_saml_settings
     saml_settings(
       overrides: {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        issuer: sp1_issuer,
         authn_context: [
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
@@ -248,7 +253,7 @@ module SamlAuthHelper
   def sp1_authnrequest
     auth_request.create(
       saml_settings(
-        overrides: { issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata' },
+        overrides: { issuer: sp1_issuer },
       ),
     )
   end
@@ -259,10 +264,6 @@ module SamlAuthHelper
         overrides: { issuer: 'https://rp2.serviceprovider.com/auth/saml/metadata' },
       ),
     )
-  end
-
-  def ial2_authnrequest
-    auth_request.create(sp1_ial2_saml_settings)
   end
 
   def aal3_sp1_authnrequest
@@ -336,22 +337,6 @@ module SamlAuthHelper
     REXML::XPath.match(decoded_saml_response, '//AuthnContext/AuthnContextClassRef')[0][0]
   end
 
-  def saml_get_auth(settings)
-    # GET redirect binding Authn Request
-    get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)) }
-  end
-
-  def saml_post_auth(saml_request)
-    # POST redirect binding Authn Request
-    post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
-  end
-
-  def visit_saml_auth_path
-    visit api_saml_auth2021_path(
-      SAMLRequest: CGI.unescape(saml_request(saml_settings)),
-    )
-  end
-
   def visit_idp_from_ial2_strict_saml_sp(**args)
     settings = ial2_strict_with_bundle_saml_settings
     settings.security[:embed_sign] = false
@@ -373,10 +358,21 @@ module SamlAuthHelper
   end
 
   def visit_idp_from_ial2_saml_sp(**args)
-    settings = ial2_with_bundle_saml_settings
-    settings.security[:embed_sign] = false
+    settings = saml_settings(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: [
+          Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+        ],
+        name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+      },
+      security_overrides: {
+        embed_sign: false,
+      },
+    )
     settings.issuer = args[:issuer] if args[:issuer]
-    settings.name_identifier_format = Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT
     saml_authn_request = auth_request.create(settings)
     visit saml_authn_request
     saml_authn_request
@@ -408,10 +404,6 @@ module SamlAuthHelper
 
   def ial2_requested?(settings)
     settings.authn_context != Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-  end
-
-  def saml_request(settings)
-    authn_request(settings).split('SAMLRequest=').last
   end
 
   # generate a SAML Authn request

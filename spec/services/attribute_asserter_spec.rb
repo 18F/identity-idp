@@ -37,7 +37,15 @@ describe AttributeAsserter do
     )
     CGI.unescape ial1_authn_request_url.split('SAMLRequest').last
   end
-  let(:raw_ial2_authn_request) { CGI.unescape ial2_authnrequest.split('SAMLRequest').last }
+  let(:raw_ial2_authn_request) do
+    ial2_authnrequest = saml_authn_request_url(
+      saml_overrides: {
+        issuer: sp1_issuer,
+        authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+      },
+    )
+    CGI.unescape ial2_authnrequest.split('SAMLRequest').last
+  end
   let(:raw_ial1_aal3_authn_request) do
     CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last
   end
