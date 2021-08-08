@@ -133,16 +133,12 @@ module SamlAuthHelper
     'https://rp1.serviceprovider.com/auth/saml/metadata'
   end
 
-  ##################################################################################################
-  ##################################################################################################
-
-  def sp2_authnrequest
-    auth_request.create(
-      saml_settings(
-        overrides: { issuer: 'https://rp2.serviceprovider.com/auth/saml/metadata' },
-      ),
-    )
+  def sp2_issuer
+    'https://rp2.serviceprovider.com/auth/saml/metadata'
   end
+
+  ##################################################################################################
+  ##################################################################################################
 
   def aal3_sp1_authnrequest
     auth_request.create(
