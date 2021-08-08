@@ -77,7 +77,20 @@ describe 'authorization count' do
       end
 
       it 'counts IAL1 auth when ial max is requested' do
-        visit_idp_from_ial_max_saml_sp(issuer: issuer_1)
+        visit_saml_authn_request_url(
+          saml_overrides: {
+            issuer: issuer_1,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [
+              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+          },
+          saml_security_overrides: {
+            embed_sign: false,
+          },
+        )
         click_agree_and_continue
         expect_ial1_count_only(issuer_1)
       end
@@ -222,7 +235,20 @@ describe 'authorization count' do
       end
 
       it 'counts IAL2 auth when ial max is requested' do
-        visit_idp_from_ial_max_saml_sp(issuer: issuer_1)
+        visit_saml_authn_request_url(
+          saml_overrides: {
+            issuer: issuer_1,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [
+              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+          },
+          saml_security_overrides: {
+            embed_sign: false,
+          },
+        )
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
