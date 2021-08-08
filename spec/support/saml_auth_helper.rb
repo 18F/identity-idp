@@ -136,20 +136,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def ial1_with_bundle_saml_settings
-    saml_settings(
-      overrides: {
-        issuer: sp1_issuer,
-        authn_context: [
-          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-          "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-        ],
-      },
-    )
-  end
-
   def ial1_with_aal3_saml_settings
     saml_settings(
       overrides: {
