@@ -834,7 +834,16 @@ feature 'Sign in' do
   context 'saml sp requests ialmax' do
     it 'returns ial1 info for a non-verified user' do
       user = create(:user, :signed_up)
-      visit_idp_from_saml_sp_with_ialmax
+      visit_saml_authn_request_url(
+        saml_overrides: {
+          issuer: sp1_issuer,
+          authn_context: [
+            Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+          ],
+        },
+      )
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default
@@ -852,7 +861,16 @@ feature 'Sign in' do
         :profile, :active, :verified,
         pii: { first_name: 'John', ssn: '111223333' }
       ).user
-      visit_idp_from_saml_sp_with_ialmax
+      visit_saml_authn_request_url(
+        saml_overrides: {
+          issuer: sp1_issuer,
+          authn_context: [
+            Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+          ],
+        },
+      )
       fill_in_credentials_and_submit(user.email, user.password)
       fill_in_code_with_last_phone_otp
       click_submit_default

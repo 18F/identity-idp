@@ -136,25 +136,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def ialmax_saml_settings
-    saml_settings(
-      overrides: {
-        issuer: sp1_issuer,
-        authn_context: Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
-      },
-    )
-  end
-
-  def ialmax_with_bundle_saml_settings
-    settings = ialmax_saml_settings
-    settings.authn_context = [
-      settings.authn_context,
-      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
-    ]
-    settings
-  end
-
   def ial1_with_verified_at_saml_settings
     saml_settings(
       overrides: {
@@ -431,10 +412,5 @@ module SamlAuthHelper
       prompt: 'login',
       nonce: nonce,
     )
-  end
-
-  def visit_idp_from_saml_sp_with_ialmax
-    @saml_authn_request = auth_request.create(ialmax_with_bundle_saml_settings)
-    visit @saml_authn_request
   end
 end
