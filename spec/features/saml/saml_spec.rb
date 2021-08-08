@@ -219,7 +219,7 @@ feature 'saml api' do
 
       before do
         sign_in_and_2fa_user(logout_user)
-        visit sp1_authnrequest
+        visit_saml_authn_request_url(saml_overrides: { issuer: sp1_issuer })
       end
 
       it 'redirects to root' do

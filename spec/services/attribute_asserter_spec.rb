@@ -26,7 +26,10 @@ describe AttributeAsserter do
       metadata: {},
     )
   end
-  let(:raw_sp1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
+  let(:raw_sp1_authn_request) do
+    sp1_authnrequest = saml_authn_request_url(saml_overrides: { issuer: sp1_issuer })
+    CGI.unescape sp1_authnrequest.split('SAMLRequest').last
+  end
   let(:raw_aal3_sp1_authn_request) do
     ial1_aal3_authnrequest = saml_authn_request_url(
       saml_overrides: {

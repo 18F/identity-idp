@@ -136,14 +136,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def sp1_authnrequest
-    auth_request.create(
-      saml_settings(
-        overrides: { issuer: sp1_issuer },
-      ),
-    )
-  end
-
   def sp2_authnrequest
     auth_request.create(
       saml_settings(
