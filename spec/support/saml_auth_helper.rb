@@ -144,34 +144,6 @@ module SamlAuthHelper
   ##################################################################################################
   ##################################################################################################
 
-  def requested_aal2_authn_context_saml_settings
-    settings = saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
-    settings
-  end
-
-  def requested_ial1_authn_context_saml_settings
-    settings = saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
-    settings
-  end
-
-  def requested_default_aal_authn_context_saml_settings
-    settings = saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
-    settings
-  end
-
-  def missing_authn_context_saml_settings
-    settings = saml_settings.dup
-    settings.authn_context = nil
-    settings
-  end
-
-  def saml_test_key
-    @saml_test_key ||= File.read(Rails.root.join('keys', 'saml_test_sp.key'))
-  end
-
   # generates a SAML response and returns a parsed Nokogiri XML document
   def generate_saml_response(user, settings = saml_settings, link: true)
     # user needs to be signed in in order to generate an assertion

@@ -337,7 +337,7 @@ describe SamlIdpController do
       let(:user) { create(:user, :signed_up) }
 
       context 'authn_context is missing' do
-        let(:auth_settings) { missing_authn_context_saml_settings }
+        let(:auth_settings) { saml_settings(overrides: { authn_context: nil }) }
 
         it 'returns saml response with default AAL in authn context' do
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
@@ -351,7 +351,9 @@ describe SamlIdpController do
 
       context 'authn_context is defined by sp' do
         it 'returns default AAL authn_context when default AAL and IAL1 is requested' do
-          auth_settings = requested_default_aal_authn_context_saml_settings
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF },
+          )
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
@@ -361,7 +363,9 @@ describe SamlIdpController do
         end
 
         it 'returns default AAL authn_context when IAL1 is requested' do
-          auth_settings = requested_ial1_authn_context_saml_settings
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF },
+          )
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
@@ -371,7 +375,9 @@ describe SamlIdpController do
         end
 
         it 'returns AAL2 authn_context when AAL2 is requested' do
-          auth_settings = requested_aal2_authn_context_saml_settings
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF },
+          )
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
