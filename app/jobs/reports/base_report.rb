@@ -30,7 +30,7 @@ module Reports
     end
 
     def transaction_with_timeout
-      Db::EstablishConnection::ReadReplicaConnection.new.call do
+      ApplicationRecord.connected_to(role: :reading, shard: :read_replica) do
         ActiveRecord::Base.transaction do
           quoted_timeout = ActiveRecord::Base.connection.quote(report_timeout)
           ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")

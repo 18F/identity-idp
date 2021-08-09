@@ -23,8 +23,23 @@ module Upaya
     )
     IdentityConfig.build_store(configuration)
 
+    console do
+      if ENV['ALLOW_CONSOLE_DB_WRITE_ACCESS'] != 'true' &&
+         IdentityConfig.store.database_readonly_username.present? &&
+         IdentityConfig.store.database_readonly_password.present?
+        warn <<-EOS.squish
+          WARNING: Loading database a configuration with the readonly database user.
+          If you wish to make changes to records in the database set
+          ALLOW_CONSOLE_DB_WRITE_ACCESS to "true" in the environment
+        EOS
+
+        ActiveRecord::Base.establish_connection :primary_replica
+      end
+    end
+
     config.load_defaults '6.1'
     config.active_record.belongs_to_required_by_default = false
+    config.active_record.legacy_connection_handling = false
     config.assets.unknown_asset_fallback = true
 
     if IdentityConfig.store.ruby_workers_enabled

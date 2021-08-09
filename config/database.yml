@@ -1,5 +1,3 @@
-<% require 'production_database_configuration' %>
-
 postgresql: &postgresql
   adapter: postgresql
   encoding: utf8
@@ -24,9 +22,13 @@ defaults: &defaults
     statement_timeout: <%= IdentityConfig.store.database_statement_timeout %>
 
 development:
-  <<: *defaults
+  primary:
+    <<: *defaults
+  primary_replica:
+    <<: *defaults
+    replica: true
 
-test:
+_test: &test
   <<: *defaults
   pool: 10
   checkout_timeout: 10
@@ -34,12 +36,30 @@ test:
   user: <%= ENV['POSTGRES_USER'] %>
   password: <%= ENV['POSTGRES_PASSWORD'] %>
 
+test:
+  primary:
+    <<: *test
+  primary_replica:
+    <<: *test
+    replica: true
+
 production:
-  <<: *defaults
-  database: <%= IdentityConfig.store.database_name %>
-  username: <%= ProductionDatabaseConfiguration.username %>
-  host: <%= ProductionDatabaseConfiguration.host %>
-  password: <%= ProductionDatabaseConfiguration.password %>
-  pool: <%= ProductionDatabaseConfiguration.pool %>
-  sslmode: 'verify-full'
-  sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+  primary:
+    <<: *defaults
+    database: <%= IdentityConfig.store.database_name %>
+    username: <%= IdentityConfig.store.database_username %>
+    host: <%= IdentityConfig.store.database_host %>
+    password: <%= IdentityConfig.store.database_password %>
+    pool: <%= IdentityConfig.store.database_pool_idp %>
+    sslmode: 'verify-full'
+    sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+  primary_replica:
+    <<: *defaults
+    database: <%= IdentityConfig.store.database_name %>
+    username: <%= IdentityConfig.store.database_readonly_username %>
+    host: <%= IdentityConfig.store.database_read_replica_host %>
+    password: <%= IdentityConfig.store.database_readonly_password %>
+    pool: <%= IdentityConfig.store.database_pool_idp %>
+    sslmode: 'verify-full'
+    sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+    replica: true
