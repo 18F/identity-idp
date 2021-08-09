@@ -38,7 +38,7 @@ describe ResetPasswordForm, type: :model do
         password = 'invalid'
 
         errors = {
-          password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
+          password: ["This password is too short (minimum is #{Devise.password_length.first} characters)"],
         }
 
         extra = { user_id: '123', profile_deactivated: false }
@@ -83,7 +83,7 @@ describe ResetPasswordForm, type: :model do
         password = 'short'
 
         errors = {
-          password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
+          password: ["This password is too short (minimum is #{Devise.password_length.first} characters)"],
           reset_password_token: ['token_expired'],
         }
 

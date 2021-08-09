@@ -99,7 +99,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: {
-            password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
+            password: ["This password is too short (minimum is #{Devise.password_length.first} characters)"],
             reset_password_token: ['token_expired'],
           },
           error_details: {
@@ -134,7 +134,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: {
-            password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
+            password: ["This password is too short (minimum is #{Devise.password_length.first} characters)"],
           },
           error_details: {
             password: [:too_short],
