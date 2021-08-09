@@ -10,8 +10,8 @@ es:
       status_move_closer: Acerca la cámara al documento
       status_tap_to_capture: Captura automática desactivada
     buttons:
-      change_address: cambio
-      change_ssn: cambio
+      change_address: Cambio
+      change_ssn: Cambio
       continue: Continuar
       start_over: Comenzar de nuevo
       take_or_upload_picture: '<lg-take-photo>Toma una foto</lg-take-photo> o
@@ -160,7 +160,7 @@ es:
       review_issues: Revise sus imágenes e inténtelo de nuevo
       secure_account: Asegure su cuenta
       selfie: Tómese una foto
-      ssn: Por favor ingrese su número de Seguro Social.
+      ssn: Ingresa tu número de Seguro Social
       ssn_update: Actualice su número de Seguro Social
       take_picture: Toma una foto con un teléfono
       text_message: Enviamos un mensaje a su teléfono
@@ -169,7 +169,7 @@ es:
       upload_from_phone: Tome una foto con un teléfono móvil para cargar su identificación
       upload_from_phone_liveness_enabled: Utilice un celular para agregar su documento de identidad y tomarse
       upload_liveness_enabled: '¿Cómo te gustaría verificar su identidad?'
-      verify: Por favor verifica tu información
+      verify: Verifica tus datos
       verify_identity: Verifique su identidad
       welcome: Verifique su identidad para acceder de forma segura a los servicios
         gubernamentales

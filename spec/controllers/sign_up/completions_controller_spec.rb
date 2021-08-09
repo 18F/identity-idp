@@ -28,7 +28,7 @@ describe SignUp::CompletionsController do
         let(:user) do
           create(:user, profiles: [create(:profile, :verified, :active)])
         end
-        let(:pii) { {} }
+        let(:pii) { { ssn: '123456789' } }
 
         before do
           stub_sign_in(user)
@@ -48,7 +48,7 @@ describe SignUp::CompletionsController do
         end
 
         context 'with american-style birthday data' do
-          let(:pii) { { dob: '12/31/1970' } }
+          let(:pii) { { ssn: '123456789', dob: '12/31/1970' } }
 
           it 'renders data' do
             get :show
@@ -57,7 +57,7 @@ describe SignUp::CompletionsController do
         end
 
         context 'with international style birthday data' do
-          let(:pii) { { dob: '1970-01-01' } }
+          let(:pii) { { ssn: '123456789', dob: '1970-01-01' } }
 
           it 'renders data' do
             get :show

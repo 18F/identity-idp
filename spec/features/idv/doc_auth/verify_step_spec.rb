@@ -20,15 +20,10 @@ feature 'doc auth verify step' do
     expect(page).to have_content(t('doc_auth.headings.verify'))
   end
 
-  it 'can toggle viewing the ssn' do
-    input_with_ssn_value = "input[value='666-66-1234']"
-    expect(page).to have_selector(input_with_ssn_value), visible: false
-
-    find('input.ssn-toggle').click
-    expect(page).to have_selector(input_with_ssn_value), visible: true
-
-    find('input.ssn-toggle').click
-    expect(page).to have_selector(input_with_ssn_value), visible: false
+  it 'masks the ssn' do
+    expect(page).to have_text('6**-**-***4')
+    expect(page.find('.masked-text__text', text: '666-66-1234')).
+      to match_css('.display-none').or have_ancestor('.display-none')
   end
 
   it 'proceeds to the next page upon confirmation' do
@@ -266,6 +261,19 @@ feature 'doc auth verify step' do
       Capybara.using_wait_time(5) do
         example.run
       end
+    end
+
+    it 'can toggle viewing the ssn' do
+      expect(page).to have_text('6**-**-***4')
+      expect(page).not_to have_text('666-66-1234')
+
+      check t('forms.ssn.show'), allow_label_click: true
+      expect(page).to have_text('666-66-1234')
+      expect(page).not_to have_text('6**-**-***4')
+
+      uncheck t('forms.ssn.show'), allow_label_click: true
+      expect(page).to have_text('6**-**-***4')
+      expect(page).not_to have_text('666-66-1234')
     end
 
     it 'proceeds to the next page upon confirmation' do
