@@ -116,7 +116,7 @@ RSpec.describe DocAuth::Acuant::Request do
           )
 
         expect(NewRelic::Agent).to receive(:notice_error).
-          with(DocAuth::RequestError, nil).once
+          with(DocAuth::RequestError, {}).once
 
         expect(NewRelic::Agent).to receive(:notice_error).
           with(anything, hash_including(:retry)).twice
