@@ -58,6 +58,15 @@ RSpec.describe ServiceProviderSessionDecorator do
       end
     end
 
+    context 'sp has a nil custom alert' do
+      let(:sp) { build(:service_provider, help_text: nil) }
+
+      it 'returns nil' do
+        expect(subject.custom_alert('sign_in')).
+          to be_nil
+      end
+    end
+
     context 'sp has a blank custom alert' do
       let(:sp) { build_stubbed(:service_provider, :with_blank_help_text) }
 
