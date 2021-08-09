@@ -7,14 +7,13 @@ feature 'IAL2 Single Sign On' do
 
   def saml_ial2_request_url
     saml_authn_request_url(
-      saml_overrides: {
+      overrides: {
         issuer: 'saml_sp_ial2',
         authn_context: [
           Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
           "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
         ],
-        # name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
       },
     )
   end
@@ -213,7 +212,7 @@ feature 'IAL2 Single Sign On' do
       sign_in_and_2fa_user
 
       visit_saml_authn_request_url(
-        saml_overrides: {
+        overrides: {
           issuer: sp1_issuer,
           authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
         },

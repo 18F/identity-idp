@@ -10,8 +10,8 @@ feature 'SAML RelayState' do
 
     it 'returns RelayState on GET authn request' do
       visit_saml_authn_request_url(
-        saml_overrides: {
-          issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        overrides: {
+          issuer: sp1_issuer,
           authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         },
         params: params,
@@ -26,7 +26,7 @@ feature 'SAML RelayState' do
     it 'returns RelayState on POST authn request' do
       auth_settings = saml_settings(
         overrides: {
-          issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+          issuer: sp1_issuer,
           authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         },
       )
@@ -44,8 +44,8 @@ feature 'SAML RelayState' do
 
     it 'does not return RelayState on GET authn request' do
       visit_saml_authn_request_url(
-        saml_overrides: {
-          issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        overrides: {
+          issuer: sp1_issuer,
           authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         },
       )
@@ -61,7 +61,7 @@ feature 'SAML RelayState' do
     it 'does not return RelayState on POST authn request' do
       auth_settings = saml_settings(
         overrides: {
-          issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+          issuer: sp1_issuer,
           authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         },
       )

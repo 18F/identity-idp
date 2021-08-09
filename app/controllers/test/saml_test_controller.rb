@@ -40,7 +40,7 @@ module Test
     def test_saml_settings
       saml_settings(
         overrides: {
-          issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+          issuer: sp1_issuer,
           authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
         },
       )

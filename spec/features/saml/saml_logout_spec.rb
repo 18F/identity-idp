@@ -10,7 +10,7 @@ feature 'SAML logout' do
       it 'contains all redirect_uris in CSP when user is logged out of the IDP' do
         sign_in_and_2fa_user(user)
         visit_saml_authn_request_url(
-          saml_overrides: {
+          overrides: {
             issuer: 'saml_sp_ial2',
           },
         )
@@ -23,7 +23,7 @@ feature 'SAML logout' do
 
         # SAML logout request
         visit_saml_logout_request_url(
-          saml_overrides: {
+          overrides: {
             issuer: 'saml_sp_ial2',
           },
         )
@@ -38,7 +38,7 @@ feature 'SAML logout' do
       it 'contains all redirect_uris in CSP when user is logged in to the IDP' do
         sign_in_and_2fa_user(user)
         visit_saml_authn_request_url(
-          saml_overrides: {
+          overrides: {
             issuer: 'saml_sp_ial2',
           },
         )
@@ -46,7 +46,7 @@ feature 'SAML logout' do
 
         # SAML logout request
         visit_saml_logout_request_url(
-          saml_overrides: {
+          overrides: {
             issuer: 'saml_sp_ial2',
           },
         )
@@ -93,7 +93,7 @@ feature 'SAML logout' do
     context 'the user is not signed in' do
       it 'redirects to the SP' do
         visit_saml_logout_request_url(
-          saml_overrides: {
+          overrides: {
             issuer: 'saml_sp_ial2',
             name_identifier_value: 'asdf-1234',
           },
@@ -113,12 +113,12 @@ feature 'SAML logout' do
         sign_in_and_2fa_user(user)
 
         visit_saml_logout_request_url(
-          saml_overrides: {
+          overrides: {
             issuer: 'invalid_provider',
             name_identifier_value: 'asdf-1234',
-          },
-          saml_security_overrides: {
-            logout_requests_signed: false,
+            security: {
+              logout_requests_signed: false,
+            },
           },
         )
 

@@ -835,7 +835,7 @@ feature 'Sign in' do
     it 'returns ial1 info for a non-verified user' do
       user = create(:user, :signed_up)
       visit_saml_authn_request_url(
-        saml_overrides: {
+        overrides: {
           issuer: sp1_issuer,
           authn_context: [
             Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
@@ -862,7 +862,7 @@ feature 'Sign in' do
         pii: { first_name: 'John', ssn: '111223333' }
       ).user
       visit_saml_authn_request_url(
-        saml_overrides: {
+        overrides: {
           issuer: sp1_issuer,
           authn_context: [
             Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,

@@ -89,7 +89,7 @@ feature 'saml api' do
     context 'service provider does not explicitly disable encryption' do
       before do
         sign_in_and_2fa_user(user)
-        visit_saml_authn_request_url(saml_overrides: { issuer: sp2_issuer })
+        visit_saml_authn_request_url(overrides: { issuer: sp2_issuer })
         click_agree_and_continue
       end
 
@@ -219,7 +219,7 @@ feature 'saml api' do
 
       before do
         sign_in_and_2fa_user(logout_user)
-        visit_saml_authn_request_url(saml_overrides: { issuer: sp1_issuer })
+        visit_saml_authn_request_url(overrides: { issuer: sp1_issuer })
       end
 
       it 'redirects to root' do

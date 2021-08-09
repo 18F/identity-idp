@@ -62,7 +62,7 @@ class SamlResponseDoc
         OneLogin::RubySaml::Response.new(
           raw_xml_response,
           settings: saml_settings(
-            overrides: { issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata' },
+            overrides: { issuer: sp1_issuer },
           ),
         ).decrypted_document.to_s,
       )

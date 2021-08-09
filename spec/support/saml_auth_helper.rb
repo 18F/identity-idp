@@ -28,13 +28,10 @@ module SamlAuthHelper
     settings.idp_cert_fingerprint = idp_fingerprint
     settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
-    overrides.each do |setting, value|
+    overrides.except(:security).each do |setting, value|
       settings.send("#{setting}=", value)
     end
-    security_overrides.each do |setting, value|
-      settings.security[setting] = value
-    end
-
+    settings.security.merge!(overrides[:security]) if overrides[:security]
     settings
   end
 
@@ -63,35 +60,27 @@ module SamlAuthHelper
     @logout_request ||= OneLogin::RubySaml::Logoutrequest.new
   end
 
-  def saml_authn_request_url(saml_overrides: {}, saml_security_overrides: {}, params: {})
+  def saml_authn_request_url(overrides: {}, params: {})
     @saml_authn_request = auth_request.create(
-      saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides),
+      saml_settings(overrides: overrides),
       params,
     )
   end
 
-  def saml_logout_request_url(saml_overrides: {}, saml_security_overrides: {}, params: {})
+  def saml_logout_request_url(overrides: {}, params: {})
     logout_request.create(
-      saml_settings(overrides: saml_overrides, security_overrides: saml_security_overrides),
+      saml_settings(overrides: overrides),
       params,
     )
   end
 
-  def visit_saml_authn_request_url(saml_overrides: {}, saml_security_overrides: {}, params: {})
-    authn_request_url = saml_authn_request_url(
-      saml_overrides: saml_overrides,
-      saml_security_overrides: saml_security_overrides,
-      params: params,
-    )
+  def visit_saml_authn_request_url(overrides: {}, params: {})
+    authn_request_url = saml_authn_request_url(overrides: overrides, params: params)
     visit authn_request_url
   end
 
-  def visit_saml_logout_request_url(saml_overrides: {}, saml_security_overrides: {}, params: {})
-    logout_request_url = saml_logout_request_url(
-      saml_overrides: saml_overrides,
-      saml_security_overrides: saml_security_overrides,
-      params: params,
-    )
+  def visit_saml_logout_request_url(overrides: {}, params: {})
+    logout_request_url = saml_logout_request_url(overrides: overrides, params: params)
     visit logout_request_url
   end
 
@@ -216,7 +205,7 @@ module SamlAuthHelper
   def visit_idp_from_sp_with_ial1(sp)
     if sp == :saml
       visit_saml_authn_request_url(
-        saml_overrides: { authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF },
+        overrides: { authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF },
       )
     elsif sp == :oidc
       @state = SecureRandom.hex

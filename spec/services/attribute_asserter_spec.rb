@@ -27,12 +27,12 @@ describe AttributeAsserter do
     )
   end
   let(:raw_sp1_authn_request) do
-    sp1_authnrequest = saml_authn_request_url(saml_overrides: { issuer: sp1_issuer })
+    sp1_authnrequest = saml_authn_request_url(overrides: { issuer: sp1_issuer })
     CGI.unescape sp1_authnrequest.split('SAMLRequest').last
   end
   let(:raw_aal3_sp1_authn_request) do
     ial1_aal3_authnrequest = saml_authn_request_url(
-      saml_overrides: {
+      overrides: {
         issuer: sp1_issuer,
         authn_context: [
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -44,7 +44,7 @@ describe AttributeAsserter do
   end
   let(:raw_ial1_authn_request) do
     ial1_authn_request_url = saml_authn_request_url(
-      saml_overrides: {
+      overrides: {
         issuer: sp1_issuer,
         authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
       },
@@ -53,7 +53,7 @@ describe AttributeAsserter do
   end
   let(:raw_ial2_authn_request) do
     ial2_authnrequest = saml_authn_request_url(
-      saml_overrides: {
+      overrides: {
         issuer: sp1_issuer,
         authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
       },
@@ -62,7 +62,7 @@ describe AttributeAsserter do
   end
   let(:raw_ial1_aal3_authn_request) do
     ial1_aal3_authnrequest = saml_authn_request_url(
-      saml_overrides: {
+      overrides: {
         issuer: sp1_issuer,
         authn_context: [
           Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -209,8 +209,8 @@ describe AttributeAsserter do
           # rubocop:disable Layout/LineLength
           let(:raw_ial2_authn_request) do
             request_url = saml_authn_request_url(
-              saml_overrides: {
-                issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+              overrides: {
+                issuer: sp1_issuer,
                 authn_context: [
                   Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
                   "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
@@ -370,8 +370,8 @@ describe AttributeAsserter do
           # rubocop:disable Layout/LineLength
           let(:raw_sp1_authn_request) do
             request_url = saml_authn_request_url(
-              saml_overrides: {
-                issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+              overrides: {
+                issuer: sp1_issuer,
                 authn_context: [
                   Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
                   Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,

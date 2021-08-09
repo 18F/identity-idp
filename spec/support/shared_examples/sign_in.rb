@@ -277,8 +277,8 @@ def no_authn_context_sign_in_with_piv_cac_goes_to_sp(sp)
   user.piv_cac_configurations.create(x509_dn_uuid: 'some-uuid-to-identify-account', name: 'foo')
 
   visit_saml_authn_request_url(
-    saml_overrides: {
-      issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+    overrides: {
+      issuer: sp1_issuer,
       authn_context: nil,
     },
   )

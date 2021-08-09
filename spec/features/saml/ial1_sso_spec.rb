@@ -196,8 +196,8 @@ feature 'IAL1 Single Sign On' do
     it 'shows verified_at as a requested attribute, even if blank' do
       user = create(:user, :signed_up)
       saml_authn_request = saml_authn_request_url(
-        saml_overrides: {
-          issuer: 'saml_sp_ial2',
+        overrides: {
+          issuer: sp1_issuer,
           authn_context: [
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
             "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,verified_at",

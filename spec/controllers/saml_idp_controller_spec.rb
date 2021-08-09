@@ -205,7 +205,7 @@ describe SamlIdpController do
       end
       let(:this_authn_request) do
         ial2_authnrequest = saml_authn_request_url(
-          saml_overrides: {
+          overrides: {
             issuer: sp1_issuer,
             authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           },
@@ -273,7 +273,7 @@ describe SamlIdpController do
                errors: {},
                nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
                authn_context: ['http://idmanagement.gov/ns/assurance/ial/2'],
-               service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+               service_provider: sp1_issuer,
                endpoint: '/api/saml/auth2021',
                idv: false,
                finish_profile: false)
@@ -620,7 +620,7 @@ describe SamlIdpController do
       before do
         settings = saml_settings(
           overrides: {
-            issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+            issuer: sp1_issuer,
             name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
           },
         )
@@ -694,7 +694,7 @@ describe SamlIdpController do
       it 'defaults to email when added to issuers_with_email_nameid_format' do
         auth_settings = saml_settings(
           overrides: {
-            issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+            issuer: sp1_issuer,
             name_identifier_format: nil,
           },
         )

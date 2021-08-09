@@ -58,24 +58,22 @@ module IdvHelper
   def visit_idp_from_sp_with_ial2(sp, **extra)
     if sp == :saml
       saml_overrides = {
-        issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+        issuer: sp1_issuer,
         authn_context: [
           Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
           "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
           "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
         ],
+        security: {
+          embed_sign: false,
+        },
       }
       if javascript_enabled?
         idp_domain_name = "#{page.server.host}:#{page.server.port}"
         saml_overrides[:idp_sso_target_url] = "http://#{idp_domain_name}/api/saml/auth"
         saml_overrides[:idp_slo_target_url] = "http://#{idp_domain_name}/api/saml/logout"
       end
-      visit_saml_authn_request_url(
-        saml_overrides: saml_overrides,
-        saml_security_overrides: {
-          embed_sign: false,
-        },
-      )
+      visit_saml_authn_request_url(overrides: saml_overrides)
     elsif sp == :oidc
       @state = SecureRandom.hex
       @client_id = 'urn:gov:gsa:openidconnect:sp:server'
@@ -133,12 +131,15 @@ module IdvHelper
     # settings = loa3_with_bundle_saml_settings
     # settings.security[:embed_sign] = false
     saml_overrides = {
-      issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+      issuer: sp1_issuer,
       authn_context: [
         Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
         "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
         "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
       ],
+      security: {
+        embed_sign: false,
+      },
     }
     if javascript_enabled?
       idp_domain_name = "#{page.server.host}:#{page.server.port}"
@@ -147,11 +148,6 @@ module IdvHelper
     end
     # @saml_authn_request = auth_request.create(settings)
     # visit @saml_authn_request
-    visit_saml_authn_request_url(
-      saml_overrides: saml_overrides,
-      saml_security_overrides: {
-        embed_sign: false,
-      },
-    )
+    visit_saml_authn_request_url(overrides: saml_overrides)
   end
 end
