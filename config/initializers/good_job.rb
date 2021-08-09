@@ -6,7 +6,6 @@ if IdentityConfig.store.ruby_workers_enabled
     # see config/initializers/job_configurations.rb for cron schedule
   end
 
-  class GoodJob::Job
-    establish_connection :worker_jobs
-  end
+  GoodJob.retry_on_unhandled_error = false
+  GoodJob.on_thread_error = ->(exception) { NewRelic::Agent.notice_error(exception) }
 end
