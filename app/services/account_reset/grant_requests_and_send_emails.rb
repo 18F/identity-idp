@@ -1,6 +1,14 @@
 module AccountReset
-  class GrantRequestsAndSendEmails
-    def call
+  class GrantRequestsAndSendEmails < ApplicationJob
+    include GoodJob::ActiveJobExtensions::Concurrency
+
+    good_job_control_concurrency_with(
+      enqueue_limit: 1,
+      perform_limit: 1,
+      key: -> { "grant-requests-and-send-emails-#{arguments.first}" },
+    )
+
+    def perform(_date)
       notifications_sent = 0
       AccountResetRequest.where(
         sql_query_for_users_eligible_to_delete_their_accounts,

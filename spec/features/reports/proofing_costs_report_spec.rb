@@ -4,7 +4,7 @@ feature 'Proofing Costs report' do
   include IdvStepHelper
   include DocAuthHelper
 
-  let(:report) { JSON.parse(Reports::ProofingCostsReport.new.call) }
+  let(:report) { JSON.parse(Reports::ProofingCostsReport.new.perform(Time.zone.today)) }
   let(:user) { create(:user, :signed_up) }
   let(:user2) { create(:user, :signed_up) }
   let(:summary1) do
