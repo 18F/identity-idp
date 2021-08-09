@@ -174,6 +174,7 @@ module DocAuthRouter
           trueid_noliveness_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_workflow,
           trueid_password: IdentityConfig.store.lexisnexis_trueid_password,
           trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
+          trueid_timeout: IdentityConfig.store.lexisnexis_trueid_timeout,
           timeout: IdentityConfig.store.lexisnexis_timeout,
           warn_notifier: warn_notifier,
           locale: I18n.locale,
