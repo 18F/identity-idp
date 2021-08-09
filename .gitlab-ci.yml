@@ -1,3 +1,7 @@
+# When adding a new job, you'll want to add `extends: .on_push` to ignore
+# scheduled executions, unless you're specifically adding something that should
+# be run periodically, like metric exporters or syncs.
+
 default:
   image: campuscode/ruby-gitlab-ci:2.7.3
 
@@ -36,7 +40,12 @@ stages:
   - build
   - test
 
+.on_push:
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+
 install:
+  extends: .on_push
   stage: build
   variables:
     RAILS_ENV: test
@@ -54,6 +63,7 @@ install:
     - bundle exec rake assets:precompile
 
 lint:
+  extends: .on_push
   stage: test
   cache:
     - <<: *ruby_cache
@@ -65,6 +75,7 @@ lint:
     - make lint
 
 specs:
+  extends: .on_push
   stage: test
   parallel: 5
   cache:
@@ -110,6 +121,7 @@ specs:
     - bundle exec rake knapsack:rspec
 
 js_tests:
+  extends: .on_push
   stage: test
   cache:
     - <<: *yarn_cache
@@ -118,7 +130,7 @@ js_tests:
     - yarn test
 
 sync_from_github:
-  image: alpine/git:latest
+  image: mirror.gcr.io/alpine/git:latest
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
   script:
