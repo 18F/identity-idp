@@ -18,6 +18,7 @@ class ServiceProviderSessionDecorator
   end
 
   def custom_alert(section)
+    return if sp.help_text.nil?
     language = I18n.locale.to_s
     alert = sp.help_text.dig(section, language)
     format(alert, sp_name: sp_name, sp_create_link: sp_create_link) if alert.present?
