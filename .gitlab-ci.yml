@@ -36,7 +36,12 @@ stages:
   - build
   - test
 
+.on_push:
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+
 install:
+  extends: .on_push
   stage: build
   variables:
     RAILS_ENV: test
@@ -54,6 +59,7 @@ install:
     - bundle exec rake assets:precompile
 
 lint:
+  extends: .on_push
   stage: test
   cache:
     - <<: *ruby_cache
@@ -74,6 +80,7 @@ lint:
     - NODE_ENV=production ./bin/webpack && yarn es5-safe
 
 specs:
+  extends: .on_push
   stage: test
   parallel: 5
   cache:
@@ -119,6 +126,7 @@ specs:
     - bundle exec rake knapsack:rspec
 
 js_tests:
+  extends: .on_push
   stage: test
   cache:
     - <<: *yarn_cache
