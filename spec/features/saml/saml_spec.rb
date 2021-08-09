@@ -11,7 +11,7 @@ feature 'saml api' do
 
   context 'when assertion consumer service url is defined' do
     before do
-      visit_saml_auth_path
+      visit_saml_authn_request_url
       expect(sp.acs_url).to_not be_blank
     end
 
@@ -29,7 +29,7 @@ feature 'saml api' do
 
   context 'when assertion consumer service url is blank' do
     before do
-      visit_saml_auth_path
+      visit_saml_authn_request_url
       sp.acs_url = ''
       sp.save
     end

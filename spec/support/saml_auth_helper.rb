@@ -105,12 +105,6 @@ module SamlAuthHelper
     post :auth, params: { SAMLRequest: CGI.unescape(saml_request) }
   end
 
-  def visit_saml_auth_path
-    visit api_saml_auth2021_path(
-      SAMLRequest: CGI.unescape(saml_request(saml_settings)),
-    )
-  end
-
   private
 
   def saml_request(settings)
