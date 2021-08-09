@@ -22,14 +22,31 @@ docker_setup:
 check: lint test
 
 lint:
+# Ruby
 	@echo "--- erb-lint ---"
 	make lint_erb
 	@echo "--- rubocop ---"
-	bundle exec rubocop
-	@echo "--- fasterer ---"
-	bundle exec fasterer
+	bundle exec rubocop --parallel
+	@echo "--- brakeman ---"
+	bundle exec brakeman
+	@echo "--- zeitwerk check ---"
+	bin/rails zeitwerk:check
+# JavaScript
+	@echo "--- lint yarn lockfile---"
+	make lint_yarn_lockfile
 	@echo "--- eslint ---"
 	yarn run lint
+	@echo "--- typescript ---"
+	yarn run typecheck
+	@echo "--- es5-safe ---"
+	NODE_ENV=production ./bin/webpack && yarn es5-safe
+# Other
+	@echo "--- asset check ---"
+	make check_asset_strings
+	@echo "--- lint yaml ---"
+	make lint_yaml
+	@echo "--- check assets are optimized ---"
+	make lint_optimized_assets
 
 lint_erb:
 	bundle exec erblint app/views
