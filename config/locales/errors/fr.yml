@@ -103,8 +103,8 @@ fr:
         dans une liste de mots de passe connus exposés dans les violations de
         données.
       too_short:
-        one: est trop courte (le minimum est de 1 caractère)
-        other: est trop courte (le minimum est de %{count} caractères)
+        one: Ce mot de passe est trop court (le minimum est de 1 caractère)
+        other: Ce mot de passe est trop court (le minimum est de %{count} caractères)
       try_again: Veuillez réessayer.
       unauthorized_authn_context: Contexte d’authentification non autorisé
       unauthorized_nameid_format: Format non autorisé du nom d’identification

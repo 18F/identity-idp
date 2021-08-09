@@ -94,8 +94,8 @@ es:
       pwned_password: La contraseña que ingresaste no es segura. Está en una lista de
         contraseñas conocidas expuestas en violaciones de datos.
       too_short:
-        one: es muy corto (mínimo 1 caracter)
-        other: es muy corto (mínimo %{count} caracteres)
+        one: Esta contraseña es demasiado corta (debe tener 1 carácter como mínimo)
+        other: Esta contraseña es demasiado corta (%{count} caracteres como mínimo)
       try_again: Por favor, inténtelo de nuevo.
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_nameid_format: Formato de ID de nombre no autorizado
