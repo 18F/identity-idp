@@ -30,6 +30,9 @@ module Reports
     end
 
     def transaction_with_timeout
+      # rspec-rails's use_transactional_tests does not play well with switching connections like this :[
+      return yield if Rails.env.test?
+
       ApplicationRecord.connected_to(role: :reading, shard: :read_replica) do
         ActiveRecord::Base.transaction do
           quoted_timeout = ActiveRecord::Base.connection.quote(report_timeout)
