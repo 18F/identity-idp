@@ -28,17 +28,14 @@ development:
     <<: *defaults
     replica: true
 
-_test: &test
-  <<: *defaults
-  pool: 10
-  checkout_timeout: 10
-  database: <%= ENV['POSTGRES_DB'] || "upaya_test#{ENV['TEST_ENV_NUMBER']}" %>
-  user: <%= ENV['POSTGRES_USER'] %>
-  password: <%= ENV['POSTGRES_PASSWORD'] %>
-
 test:
-  primary:
-    <<: *test
+  primary: &test
+    <<: *defaults
+    pool: 10
+    checkout_timeout: 10
+    database: <%= ENV['POSTGRES_DB'] || "upaya_test#{ENV['TEST_ENV_NUMBER']}" %>
+    user: <%= ENV['POSTGRES_USER'] %>
+    password: <%= ENV['POSTGRES_PASSWORD'] %>
   primary_replica:
     <<: *test
     replica: true
