@@ -30,7 +30,8 @@ module Reports
     end
 
     def transaction_with_timeout
-      # rspec-rails's use_transactional_tests does not play well with switching connections like this :[
+      # rspec-rails's use_transactional_tests does not seem to act as expected when switching
+      # connections mid-test, so we just skip for now :[
       return yield if Rails.env.test?
 
       ApplicationRecord.connected_to(role: :reading, shard: :read_replica) do
