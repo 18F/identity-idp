@@ -4,6 +4,8 @@ class DocumentProofingJob < ApplicationJob
 
   queue_as :default
 
+  discard_on JobHelpers::StaleJobHelper::StaleJobError
+
   def perform(
     result_id:,
     encrypted_arguments:,
