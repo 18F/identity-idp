@@ -5,4 +5,8 @@ if IdentityConfig.store.ruby_workers_enabled
     config.good_job.enable_cron = true
     # see config/initializers/job_configurations.rb for cron schedule
   end
+
+  class GoodJob::Job
+    establish_connection :worker_jobs
+  end
 end
