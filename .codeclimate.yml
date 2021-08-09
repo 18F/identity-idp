@@ -29,12 +29,8 @@ checks:
       threshold: # language-specific defaults. an override will affect all languages.
 
 plugins:
-  brakeman:
-    enabled: false
   bundler-audit:
     enabled: true
-  coffeelint:
-    enabled: false
   duplication:
     enabled: true
     config:
@@ -58,10 +54,6 @@ plugins:
       - FIXME
       - HACK
       - BUG
-  pep8:
-    enabled: true
-  reek:
-    enabled: false
   scss-lint:
     enabled: true
     checks:
