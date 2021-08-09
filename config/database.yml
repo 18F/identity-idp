@@ -27,6 +27,9 @@ development:
   primary_replica:
     <<: *defaults
     replica: true
+  worker_jobs:
+    <<: *defaults
+    database: upaya_worker_jobs_<%= Rails.env %>
 
 test:
   primary: &test
@@ -39,6 +42,9 @@ test:
   primary_replica:
     <<: *test
     replica: true
+  worker_jobs:
+    <<: *test
+    database: upaya_worker_jobs_<%= Rails.env %>
 
 production:
   primary:
@@ -60,3 +66,12 @@ production:
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     replica: true
+  worker_jobs:
+    <<: *defaults
+    database: <%= IdentityConfig.store.database_worker_jobs_name %>
+    username: <%= IdentityConfig.store.database_worker_jobs_username %>
+    host: <%= IdentityConfig.store.database_worker_jobs_host %>
+    password: <%= IdentityConfig.store.database_worker_jobs_password %>
+    pool: <%= IdentityConfig.store.database_pool_idp %>
+    sslmode: 'verify-full'
+    sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
