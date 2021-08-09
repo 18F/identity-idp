@@ -32,7 +32,7 @@ lint:
 	@echo "--- zeitwerk check ---"
 	bin/rails zeitwerk:check
 # JavaScript
-	@echo "--- lint yarn lockfile---"
+	@echo "--- lint yarn lockfile ---"
 	make lint_yarn_lockfile
 	@echo "--- eslint ---"
 	yarn run lint
