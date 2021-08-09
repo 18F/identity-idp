@@ -34,7 +34,7 @@ plugins:
   bundler-audit:
     enabled: true
   coffeelint:
-    enabled: true
+    enabled: false
   duplication:
     enabled: true
     config:
