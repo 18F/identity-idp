@@ -4,10 +4,6 @@ module Reports
   class IaaBillingReport < BaseReport
     REPORT_NAME = 'iaa-billing-report'.freeze
 
-    def initialize
-      @sps_for_iaa = {}
-    end
-
     include GoodJob::ActiveJobExtensions::Concurrency
 
     good_job_control_concurrency_with(
@@ -17,6 +13,7 @@ module Reports
     )
 
     def perform(today)
+      @sps_for_iaa = {}
       @today = Time.zone.today
       results = []
       transaction_with_timeout do

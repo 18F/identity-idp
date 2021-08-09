@@ -42,6 +42,16 @@ describe Reports::GpoReport do
     expect(JSON.parse(subject.perform(Time.zone.today))).to eq(one_letter_sent_and_verified_report)
   end
 
+  describe '#good_job_concurrency_key' do
+    let(:date) { Time.zone.today }
+
+    it 'is the job name and the date' do
+      job = described_class.new(date)
+      expect(job.good_job_concurrency_key).
+        to eq("#{described_class::REPORT_NAME}-#{date}")
+    end
+  end
+
   def create_ucc_for(profile)
     GpoConfirmationCode.create(
       profile: profile,
