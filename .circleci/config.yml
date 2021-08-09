@@ -240,16 +240,7 @@ jobs:
       - run:
           name: Run Lints
           command: |
-            make lint_yarn_lockfile
-            make lint_yaml
-            yarn run lint
-            yarn run typecheck
-            bundle exec rubocop --parallel
-            bin/rails zeitwerk:check
-            make lint_erb
-            make check_asset_strings
-            make lint_optimized_assets
-            NODE_ENV=production ./bin/webpack && yarn es5-safe
+            make lint
   smoketest-dev:
     working_directory: ~/identity-idp
     executor: ruby_browsers

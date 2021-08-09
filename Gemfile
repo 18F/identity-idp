@@ -80,7 +80,6 @@ gem 'zxcvbn', '0.1.7'
 group :development do
   gem 'better_errors', '>= 2.5.1'
   gem 'binding_of_caller'
-  gem 'brakeman', require: false
   gem 'derailed_benchmarks', '~> 1.8'
   gem 'guard-rspec', require: false
   gem 'irb'
@@ -92,6 +91,7 @@ end
 group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'bootsnap', '~> 1.7.0', require: false
+  gem 'brakeman', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'erb_lint', '~> 0.0.37', require: false
   gem 'i18n-tasks', '>= 0.9.31'
