@@ -26,11 +26,50 @@ describe AttributeAsserter do
       metadata: {},
     )
   end
-  let(:raw_sp1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
-  let(:raw_aal3_sp1_authn_request) { CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last }
-  let(:raw_ial1_authn_request) { CGI.unescape ial1_authnrequest.split('SAMLRequest').last }
-  let(:raw_ial2_authn_request) { CGI.unescape ial2_authnrequest.split('SAMLRequest').last }
+  let(:raw_sp1_authn_request) do
+    sp1_authnrequest = saml_authn_request_url(overrides: { issuer: sp1_issuer })
+    CGI.unescape sp1_authnrequest.split('SAMLRequest').last
+  end
+  let(:raw_aal3_sp1_authn_request) do
+    ial1_aal3_authnrequest = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+        ],
+      },
+    )
+    CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last
+  end
+  let(:raw_ial1_authn_request) do
+    ial1_authn_request_url = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+      },
+    )
+    CGI.unescape ial1_authn_request_url.split('SAMLRequest').last
+  end
+  let(:raw_ial2_authn_request) do
+    ial2_authnrequest = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+      },
+    )
+    CGI.unescape ial2_authnrequest.split('SAMLRequest').last
+  end
   let(:raw_ial1_aal3_authn_request) do
+    ial1_aal3_authnrequest = saml_authn_request_url(
+      overrides: {
+        issuer: sp1_issuer,
+        authn_context: [
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+        ],
+      },
+    )
     CGI.unescape ial1_aal3_authnrequest.split('SAMLRequest').last
   end
   let(:sp1_authn_request) do
@@ -167,11 +206,23 @@ describe AttributeAsserter do
         end
 
         context 'authn request specifies bundle' do
+          # rubocop:disable Layout/LineLength
           let(:raw_ial2_authn_request) do
+            request_url = saml_authn_request_url(
+              overrides: {
+                issuer: sp1_issuer,
+                authn_context: [
+                  Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+                ],
+              },
+            )
             CGI.unescape(
-              auth_request.create(ial2_with_bundle_saml_settings).split('SAMLRequest').last,
+              request_url.split('SAMLRequest').last,
             )
           end
+          # rubocop:enable Layout/LineLength
 
           it 'uses authn request bundle' do
             expect(user.asserted_attributes.keys).
@@ -316,11 +367,24 @@ describe AttributeAsserter do
         end
 
         context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
+          # rubocop:disable Layout/LineLength
           let(:raw_sp1_authn_request) do
+            request_url = saml_authn_request_url(
+              overrides: {
+                issuer: sp1_issuer,
+                authn_context: [
+                  Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+                  Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+                  "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+                ],
+              },
+            )
             CGI.unescape(
-              auth_request.create(ial1_with_bundle_saml_settings).split('SAMLRequest').last,
+              request_url.split('SAMLRequest').last,
             )
           end
+          # rubocop:enable Layout/LineLength
 
           it 'only includes uuid, email, aal, and ial' do
             expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])

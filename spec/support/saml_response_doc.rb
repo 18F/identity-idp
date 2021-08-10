@@ -61,7 +61,9 @@ class SamlResponseDoc
       Nokogiri::XML(
         OneLogin::RubySaml::Response.new(
           raw_xml_response,
-          settings: sp1_saml_settings,
+          settings: saml_settings(
+            overrides: { issuer: sp1_issuer },
+          ),
         ).decrypted_document.to_s,
       )
     else

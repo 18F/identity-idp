@@ -1,4 +1,27 @@
 test:
+  'saml_sp':
+    acs_url: 'http://example.com/test/saml/decode_assertion'
+    allow_prompt_login: true
+    assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+    block_encryption: 'aes256-cbc'
+    certs:
+      - 'saml_test_sp'
+    friendly_name: 'Test SP'
+
+  'saml_sp_ial2':
+    acs_url: 'http://example.com/test/saml/decode_assertion'
+    allow_prompt_login: true
+    assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+    block_encryption: 'aes256-cbc'
+    certs:
+      - 'saml_test_sp'
+    friendly_name: 'Test SP'
+    ial: 2
+    redirect_uris:
+      - 'http://example.com/'
+      - 'http://example.com/auth/result'
+      - 'http://example.com/logout'
+
   'http://localhost:3000':
     acs_url: 'http://localhost:3000/test/saml/decode_assertion'
     assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
