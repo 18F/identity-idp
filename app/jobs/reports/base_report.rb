@@ -2,6 +2,8 @@ require 'identity/hostdata'
 
 module Reports
   class BaseReport < ApplicationJob
+    queue_as :low
+
     private
 
     def fiscal_start_date
