@@ -128,8 +128,6 @@ module IdvHelper
   end
 
   def visit_idp_from_saml_sp_with_loa3
-    # settings = loa3_with_bundle_saml_settings
-    # settings.security[:embed_sign] = false
     saml_overrides = {
       issuer: sp1_issuer,
       authn_context: [
@@ -146,8 +144,6 @@ module IdvHelper
       saml_overrides[:idp_sso_target_url] = "http://#{idp_domain_name}/api/saml/auth"
       saml_overrides[:idp_slo_target_url] = "http://#{idp_domain_name}/api/saml/logout"
     end
-    # @saml_authn_request = auth_request.create(settings)
-    # visit @saml_authn_request
     visit_saml_authn_request_url(overrides: saml_overrides)
   end
 end
