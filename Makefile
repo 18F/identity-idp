@@ -47,6 +47,8 @@ lint:
 	make lint_yaml
 	@echo "--- check assets are optimized ---"
 	make lint_optimized_assets
+	@echo "--- scss-lint ---"
+	bundle exec scss-lint
 
 lint_erb:
 	bundle exec erblint app/views

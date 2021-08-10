@@ -570,6 +570,11 @@ GEM
       errbase (>= 0.1.1)
     safety_net_attestation (0.4.0)
       jwt (~> 2.0)
+    sass (3.7.4)
+      sass-listen (~> 4.0.0)
+    sass-listen (4.0.0)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -583,6 +588,8 @@ GEM
       faraday (> 0.8, < 2.0)
     scrypt (3.0.7)
       ffi-compiler (>= 1.0, < 2.0)
+    scss_lint (0.59.0)
+      sass (~> 3.5, >= 3.5.5)
     secure_headers (6.3.2)
     securecompare (1.0.0)
     selenium-webdriver (3.142.7)
@@ -776,6 +783,7 @@ DEPENDENCIES
   saml_idp!
   sassc-rails (~> 2.1.2)
   scrypt
+  scss_lint
   secure_headers (~> 6.3)
   shoulda-matchers (~> 4.0)
   simple_form (>= 5.0.2)

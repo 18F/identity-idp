@@ -1,8 +1,13 @@
+scss_files:
+  - 'app/assets/stylesheets/**'
+
 exclude:
   - 'vendor/assets/stylesheets/**'
   - 'node_modules/**'
 
 linters:
+  HexLength:
+    enabled: false
   ColorVariable:
     enabled: false
   SelectorFormat:

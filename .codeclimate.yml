@@ -54,11 +54,6 @@ plugins:
       - FIXME
       - HACK
       - BUG
-  scss-lint:
-    enabled: true
-    checks:
-      HexLength:
-        enabled: false
 
 exclude_patterns:
   - 'db/schema.rb'
