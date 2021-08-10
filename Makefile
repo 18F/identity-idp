@@ -31,6 +31,8 @@ lint:
 	bundle exec brakeman
 	@echo "--- zeitwerk check ---"
 	bin/rails zeitwerk:check
+	@echo "--- bundler-audit ---"
+	bundle exec bundler-audit check --update
 # JavaScript
 	@echo "--- lint yarn lockfile ---"
 	make lint_yarn_lockfile

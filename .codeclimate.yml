@@ -29,8 +29,6 @@ checks:
       threshold: # language-specific defaults. an override will affect all languages.
 
 plugins:
-  bundler-audit:
-    enabled: true
   duplication:
     enabled: true
     config:
