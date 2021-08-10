@@ -78,6 +78,7 @@ enable_usps_verification: 'true'
 event_disavowal_expiration_hours: '240'
 exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
+good_job_max_threads: '5'
 gpo_designated_receiver_pii: '{}'
 hide_phone_mfa_signup: 'false'
 identity_pki_disabled: 'false'
