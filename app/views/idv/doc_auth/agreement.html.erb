@@ -19,14 +19,15 @@
                        url: url_for,
                        method: 'put',
                        html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
-  <br/>
-  <label class="margin-top-neg-1 margin-bottom-4" for="ial2_consent_given">
-    <span class="checkbox">
-      <%= check_box_tag :ial2_consent_given, true, false %>
-      <span class="indicator"></span>
-      <%= t('doc_auth.instructions.consent') %>
-      <%= new_window_link_to t('doc_auth.instructions.learn_more'), 'https://login.gov/policy/' %>
-    </span>
+  <%= check_box_tag(
+        :ial2_consent_given,
+        true,
+        false,
+        class: 'usa-checkbox__input',
+      ) %>
+  <label class="usa-checkbox__label margin-bottom-4" for="ial2_consent_given">
+    <%= t('doc_auth.instructions.consent') %>
+    <%= new_window_link_to t('doc_auth.instructions.learn_more'), 'https://login.gov/policy/' %>
   </label>
   <%= f.button :button, t('doc_auth.buttons.continue'), type: :submit,
                class: 'usa-button--big usa-button--wide' %>

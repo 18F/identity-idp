@@ -118,7 +118,7 @@ feature 'User profile' do
       fill_in 'update_user_password_form_password', with: 'this is a great sentence'
       expect(page).to have_content 'Great'
 
-      find('.checkbox').click
+      check t('forms.passwords.show')
 
       expect(page).to_not have_css('input.password[type="password"]')
       expect(page).to have_css('input.password[type="text"]')

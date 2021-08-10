@@ -12,10 +12,6 @@ const selectedInternationCodeOption = () => {
 
 const setRadioEnabled = (radio, isEnabled) => {
   radio.disabled = !isEnabled;
-
-  const label = /** @type {Element} */ radio.parentNode.parentNode;
-
-  label.classList.toggle('usa-button--disabled', !isEnabled);
 };
 
 const updateOTPDeliveryMethods = () => {
