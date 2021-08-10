@@ -1,5 +1,6 @@
 scss_files:
   - 'app/assets/stylesheets/**'
+  - 'app/javascript/**'
 
 exclude:
   - 'vendor/assets/stylesheets/**'
