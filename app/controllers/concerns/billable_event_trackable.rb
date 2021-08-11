@@ -8,6 +8,7 @@ module BillableEventTrackable
       increment_sp_monthly_auths
       update_sp_return_log(billable: true)
       mark_current_session_billed
+      add_sp_cost(:authentication)
     end
   end
 
