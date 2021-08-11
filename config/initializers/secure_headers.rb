@@ -13,6 +13,7 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     default_src: ["'self'"],
     child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
+    form_action: ["'self'"],
     block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: connect_src.flatten,
     font_src: ["'self'", 'data:', IdentityConfig.store.asset_host.presence],
