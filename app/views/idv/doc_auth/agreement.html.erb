@@ -27,7 +27,7 @@
       ) %>
   <label class="usa-checkbox__label margin-bottom-4" for="ial2_consent_given">
     <%= t('doc_auth.instructions.consent') %>
-    <%= new_window_link_to t('doc_auth.instructions.learn_more'), 'https://login.gov/policy/' %>
+    <%= new_window_link_to t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url %>
   </label>
   <%= f.button :button, t('doc_auth.buttons.continue'), type: :submit,
                class: 'usa-button--big usa-button--wide' %>
