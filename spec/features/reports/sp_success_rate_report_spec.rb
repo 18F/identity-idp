@@ -5,7 +5,7 @@ feature 'scheduler runs report' do
   include IdvHelper
 
   it 'works for no users' do
-    expect(Reports::SpSuccessRateReport.new.call).to eq([].to_json)
+    expect(Reports::SpSuccessRateReport.new.perform(Time.zone.today)).to eq([].to_json)
   end
 
   it 'works for ial1 users that land and leave' do
@@ -13,7 +13,7 @@ feature 'scheduler runs report' do
 
     results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 1, app_id: nil,
                  return_rate: 0.0 }]
-    expect(Reports::SpSuccessRateReport.new.call).to eq(results.to_json)
+    expect(Reports::SpSuccessRateReport.new.perform(Time.zone.today)).to eq(results.to_json)
   end
 
   it 'works for ial2 users that land and leave' do
@@ -21,7 +21,7 @@ feature 'scheduler runs report' do
 
     results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 2, app_id: nil,
                  return_rate: 0.0 }]
-    expect(Reports::SpSuccessRateReport.new.call).to eq(results.to_json)
+    expect(Reports::SpSuccessRateReport.new.perform(Time.zone.today)).to eq(results.to_json)
   end
 
   it 'works for successful sign in' do
@@ -29,7 +29,7 @@ feature 'scheduler runs report' do
 
     results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 1, app_id: nil,
                  return_rate: 1.0 }]
-    expect(Reports::SpSuccessRateReport.new.call).to eq(results.to_json)
+    expect(Reports::SpSuccessRateReport.new.perform(Time.zone.today)).to eq(results.to_json)
   end
 
   it 'works with mixture of success and failure' do
@@ -39,7 +39,7 @@ feature 'scheduler runs report' do
 
     results = [{ issuer: 'urn:gov:gsa:openidconnect:sp:server', ial: 1, app_id: nil,
                  return_rate: 0.5 }]
-    expect(Reports::SpSuccessRateReport.new.call).to eq(results.to_json)
+    expect(Reports::SpSuccessRateReport.new.perform(Time.zone.today)).to eq(results.to_json)
   end
 
   def visit_idp_from_sp_and_back_again

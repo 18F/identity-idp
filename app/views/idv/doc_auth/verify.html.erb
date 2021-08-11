@@ -40,21 +40,22 @@
       class: 'usa-button usa-button--unstyled',
     ) %>
   </div>
-  <%= t('doc_auth.forms.ssn') %>
-  <div class='sm-col sm-col-8 padding-x-0 margin-top-0 margin-bottom-4'>
-    <%= tag.input value: flow_session[:pii_from_doc][:ssn],
-                  class: 'block col-12 field password ssn ssn-toggle bg-white',
-                  aria: { label: t('doc_auth.forms.ssn'), invalid: false, required: false },
-                  readonly: true,
-                  maxlength: 11,
-                  pattern: "^\d{3}-?\d{2}-?\d{4}$",
-                  size: "11",
-                  type: "password",
-                  name: "doc_auth[ssn]",
-                  id: "doc_auth_ssn" %>
+  <div>
+    <%= t('doc_auth.forms.ssn') %>:
+    <%= render(
+          'shared/masked_text',
+          text: SsnFormatter.format(flow_session[:pii_from_doc][:ssn]),
+          masked_text: SsnFormatter.format_masked(flow_session[:pii_from_doc][:ssn]),
+          accessible_masked_text: t(
+            'idv.accessible_labels.masked_ssn',
+            first_number: flow_session[:pii_from_doc][:ssn][0],
+            last_number: flow_session[:pii_from_doc][:ssn][-1],
+          ),
+          toggle_label: t('forms.ssn.show'),
+        ) %>
   </div>
 
-  <div class="margin-top-6">
+  <div class="margin-top-5">
     <%= render 'shared/spinner_button',
               action_message: t('doc_auth.info.verifying'),
               class: 'grid-col-12 tablet:grid-col-6' do %>

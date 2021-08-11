@@ -1,6 +1,19 @@
 namespace :job_runs do
   task :run, [:pidfile] => :environment do |_t, args|
     warn 'Calling job runner. See rails log for output.'
+
+    # This task is used in development by foreman, if it exits early,
+    # it terminates the other processes, so we just have it loop forever until
+    # we fully transition to good_job
+    if IdentityConfig.store.ruby_workers_enabled
+      loop do
+        sleep 60
+      end
+    end
+
+    require 'job_runner/runner'
+    require 'job_runner/job_configuration'
+
     @keep_jobs_loop = true
     @jobs_pid_file = nil
 

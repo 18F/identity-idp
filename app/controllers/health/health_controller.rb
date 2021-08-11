@@ -1,3 +1,5 @@
+require 'job_runner/runner'
+
 module Health
   class HealthController < AbstractHealthController
     private

@@ -10,8 +10,8 @@ en:
       status_move_closer: Move camera closer to document
       status_tap_to_capture: Automatic capture disabled
     buttons:
-      change_address: change
-      change_ssn: change
+      change_address: Change
+      change_ssn: Change
       continue: Continue
       start_over: Start over
       take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or
@@ -134,7 +134,7 @@ en:
       review_issues: Check your images and try again
       secure_account: Secure your account
       selfie: Take a photo of yourself
-      ssn: Please enter your Social Security number.
+      ssn: Enter your Social Security number
       ssn_update: Update your Social Security number
       take_picture: Take a photo with a phone
       text_message: We sent a message to your phone
@@ -142,7 +142,7 @@ en:
       upload_from_phone: Take a photo with a mobile phone to upload your ID
       upload_from_phone_liveness_enabled: Use a mobile phone to add your ID and take a photo of yourself
       upload_liveness_enabled: How would you like to verify your identity?
-      verify: Please verify your information
+      verify: Verify your information
       verify_identity: Verify your identity
       welcome: Verify your identity to securely access government services
     info:

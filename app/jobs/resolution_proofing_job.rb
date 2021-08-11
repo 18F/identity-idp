@@ -4,6 +4,8 @@ class ResolutionProofingJob < ApplicationJob
 
   queue_as :default
 
+  discard_on JobHelpers::StaleJobHelper::StaleJobError
+
   CallbackLogData = Struct.new(
     :result,
     :resolution_success,

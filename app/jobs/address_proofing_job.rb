@@ -4,6 +4,8 @@ class AddressProofingJob < ApplicationJob
 
   queue_as :default
 
+  discard_on JobHelpers::StaleJobHelper::StaleJobError
+
   def perform(user_id:, issuer:, result_id:, encrypted_arguments:, trace_id:)
     timer = JobHelpers::Timer.new
 

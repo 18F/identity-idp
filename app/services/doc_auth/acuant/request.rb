@@ -147,7 +147,7 @@ module DocAuth
         )
       end
 
-      def send_exception_notification(exception, custom_params = nil)
+      def send_exception_notification(exception, custom_params = {})
         return if exception.is_a?(DocAuth::RequestError) &&
                   HANDLED_HTTP_CODES.include?(exception.error_code)
         NewRelic::Agent.notice_error(exception, custom_params)

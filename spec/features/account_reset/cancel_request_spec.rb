@@ -11,7 +11,7 @@ describe 'Account Reset Request: Cancellation' do
       reset_email
 
       Timecop.travel(Time.zone.now + 2.days) do
-        AccountReset::GrantRequestsAndSendEmails.new.call
+        AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/cancel\?token/)
         click_button t('account_reset.cancel_request.cancel_button')
