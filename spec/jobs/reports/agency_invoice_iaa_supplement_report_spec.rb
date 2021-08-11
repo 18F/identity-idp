@@ -75,7 +75,6 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
   let(:iaa2_range) { Date.new(2020, 9, 1)..Date.new(2021, 8, 30) }
   let(:inside_iaa2) { iaa2_range.begin + 1.day }
 
-
   describe '#perform' do
     it 'is empty with no data' do
       expect(report.perform(Time.zone.today)).to eq('[]')
@@ -165,7 +164,6 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
               iaa_end_date: iaa2_range.end.to_s,
             },
           ]
-        
         end
       end
 
@@ -297,7 +295,6 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
       issuer: issuer,
       partner_account: partner_account,
     )
-
   end
 
   describe '#good_job_concurrency_key' do
