@@ -5,6 +5,7 @@ if ENV['COVERAGE']
   require 'simplecov-html'
 
   SimpleCov.start do
+    enable_coverage :branch
     formatter SimpleCov::Formatter::MultiFormatter.new(
       SimpleCov::Formatter.from_env(ENV),
     )

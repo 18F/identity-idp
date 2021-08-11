@@ -31,6 +31,8 @@ lint:
 	bundle exec brakeman
 	@echo "--- zeitwerk check ---"
 	bin/rails zeitwerk:check
+	@echo "--- bundler-audit ---"
+	bundle exec bundler-audit check --update
 # JavaScript
 	@echo "--- lint yarn lockfile ---"
 	make lint_yarn_lockfile
@@ -47,6 +49,8 @@ lint:
 	make lint_yaml
 	@echo "--- check assets are optimized ---"
 	make lint_optimized_assets
+	@echo "--- scss-lint ---"
+	bundle exec scss-lint
 
 lint_erb:
 	bundle exec erblint app/views

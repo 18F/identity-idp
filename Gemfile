@@ -111,6 +111,7 @@ end
 
 group :test do
   gem 'axe-core-rspec', '~> 4.2'
+  gem 'bundler-audit', require: false
   gem 'capybara-screenshot', '>= 1.0.23'
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'simplecov', '~> 0.21.0', require: false
@@ -122,6 +123,7 @@ group :test do
   gem 'rack-test', '>= 1.1.0'
   gem 'rails-controller-testing', '>= 1.0.4'
   gem 'rspec-retry'
+  gem 'scss_lint', require: false
   gem 'shoulda-matchers', '~> 4.0', require: false
   gem 'timecop'
   gem 'webdrivers', '~> 4.0'
