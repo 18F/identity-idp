@@ -88,7 +88,7 @@ feature 'idv review step' do
 
         if sp == :saml
           expect(gpo_confirmation_entry[:issuer]).
-            to eq('https://rp1.serviceprovider.com/auth/saml/metadata')
+            to eq(sp1_issuer)
         else
           expect(gpo_confirmation_entry[:issuer]).
             to eq('urn:gov:gsa:openidconnect:sp:server')

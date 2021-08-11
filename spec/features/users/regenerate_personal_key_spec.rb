@@ -55,20 +55,6 @@ feature 'View personal key' do
 
       it_behaves_like 'personal key page'
     end
-
-    context 'visitting the personal key path' do
-      scenario 'does not regenerate the personal and redirects to account' do
-        sign_in_and_2fa_user(user)
-        old_digest = user.encrypted_recovery_code_digest
-
-        visit sign_up_personal_key_path
-
-        user.reload
-
-        expect(user.encrypted_recovery_code_digest).to eq(old_digest)
-        expect(current_path).to eq(account_path)
-      end
-    end
   end
 
   context 'with javascript enabled', js: true do

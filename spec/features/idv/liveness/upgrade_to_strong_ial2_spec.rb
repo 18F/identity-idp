@@ -8,7 +8,7 @@ describe 'Strong IAL2' do
 
   context 'with an sp that requires livess and a new account' do
     before do
-      ServiceProvider.find_by(issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata').
+      ServiceProvider.find_by(issuer: sp1_issuer).
         update!(liveness_checking_required: true)
     end
 

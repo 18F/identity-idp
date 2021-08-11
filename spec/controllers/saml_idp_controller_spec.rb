@@ -51,20 +51,24 @@ describe SamlIdpController do
     end
 
     let(:right_cert_settings) do
-      sp1_saml_settings.tap do |settings|
-        settings.issuer = service_provider.issuer
-        settings.assertion_consumer_logout_service_url = 'https://example.com'
-      end
+      saml_settings(
+        overrides: {
+          issuer: service_provider.issuer,
+          assertion_consumer_logout_service_url: 'https://example.com',
+        },
+      )
     end
 
     let(:wrong_cert_settings) do
-      sp1_saml_settings.tap do |settings|
-        settings.issuer = service_provider.issuer
-        settings.certificate = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt'))
-        settings.private_key = OpenSSL::PKey::RSA.new(
-          File.read(Rails.root + 'keys/saml_test_sp2.key'),
-        ).to_pem
-      end
+      saml_settings(
+        overrides: {
+          issuer: service_provider.issuer,
+          certificate: File.read(Rails.root.join('certs', 'sp', 'saml_test_sp2.crt')),
+          private_key: OpenSSL::PKey::RSA.new(
+            File.read(Rails.root + 'keys/saml_test_sp2.key'),
+          ).to_pem,
+        },
+      )
     end
 
     it 'accepts requests from a correct cert' do
@@ -180,6 +184,14 @@ describe SamlIdpController do
   describe 'GET /api/saml/auth' do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
     let(:aal_level) { 2 }
+    let(:ial2_settings) do
+      saml_settings(
+        overrides: {
+          issuer: sp1_issuer,
+          authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        },
+      )
+    end
 
     context 'with IAL2 and the identity is already verified' do
       let(:user) { create(:profile, :active, :verified).user }
@@ -192,13 +204,19 @@ describe SamlIdpController do
         )
       end
       let(:this_authn_request) do
+        ial2_authnrequest = saml_authn_request_url(
+          overrides: {
+            issuer: sp1_issuer,
+            authn_context: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          },
+        )
         raw_req = CGI.unescape ial2_authnrequest.split('SAMLRequest').last
         SamlIdp::Request.from_deflated_request(raw_req)
       end
       let(:asserter) do
         AttributeAsserter.new(
           user: user,
-          service_provider: ServiceProvider.find_by(issuer: sp1_ial2_saml_settings.issuer),
+          service_provider: ServiceProvider.find_by(issuer: sp1_issuer),
           authn_request: this_authn_request,
           name_id_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
           decrypted_pii: pii,
@@ -208,7 +226,7 @@ describe SamlIdpController do
 
       before do
         stub_sign_in(user)
-        IdentityLinker.new(user, sp1_ial2_saml_settings.issuer).link_identity(ial: 2)
+        IdentityLinker.new(user, sp1_issuer).link_identity(ial: 2)
         user.identities.last.update!(
           verified_attributes: %w[given_name family_name social_security_number address],
         )
@@ -218,22 +236,22 @@ describe SamlIdpController do
       it 'calls AttributeAsserter#build' do
         expect(asserter).to receive(:build).at_least(:once).and_call_original
 
-        saml_get_auth(sp1_ial2_saml_settings)
+        saml_get_auth(ial2_settings)
       end
 
       it 'sets identity ial to 2' do
-        saml_get_auth(sp1_ial2_saml_settings)
+        saml_get_auth(ial2_settings)
         expect(user.identities.last.ial).to eq(2)
       end
 
       it 'does not redirect the user to the IdV URL' do
-        saml_get_auth(sp1_ial2_saml_settings)
+        saml_get_auth(ial2_settings)
 
         expect(response).to_not be_redirect
       end
 
       it 'contains verified attributes' do
-        saml_get_auth(sp1_ial2_saml_settings)
+        saml_get_auth(ial2_settings)
 
         expect(xmldoc.attribute_node_for('address1')).to be_nil
 
@@ -255,7 +273,7 @@ describe SamlIdpController do
                errors: {},
                nameid_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
                authn_context: ['http://idmanagement.gov/ns/assurance/ial/2'],
-               service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata',
+               service_provider: sp1_issuer,
                endpoint: '/api/saml/auth2021',
                idv: false,
                finish_profile: false)
@@ -264,14 +282,14 @@ describe SamlIdpController do
                ial: 2)
 
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
-        saml_get_auth(sp1_ial2_saml_settings)
+        saml_get_auth(ial2_settings)
       end
     end
 
     context 'with IAL2 and the identity is not already verified' do
       it 'redirects to IdV URL for IAL2 proofer' do
         user = create(:user, :signed_up)
-        generate_saml_response(user, sp1_ial2_saml_settings)
+        generate_saml_response(user, ial2_settings)
 
         expect(response).to redirect_to idv_path
       end
@@ -291,7 +309,11 @@ describe SamlIdpController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        saml_get_auth(invalid_authn_context_settings)
+        saml_get_auth(
+          saml_settings(
+            overrides: { authn_context: 'http://idmanagement.gov/ns/assurance/loa/5' },
+          ),
+        )
 
         expect(controller).to render_template('saml_idp/auth/error')
         expect(response.status).to eq(400)
@@ -315,7 +337,7 @@ describe SamlIdpController do
       let(:user) { create(:user, :signed_up) }
 
       context 'authn_context is missing' do
-        let(:auth_settings) { missing_authn_context_saml_settings }
+        let(:auth_settings) { saml_settings(overrides: { authn_context: nil }) }
 
         it 'returns saml response with default AAL in authn context' do
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
@@ -329,7 +351,9 @@ describe SamlIdpController do
 
       context 'authn_context is defined by sp' do
         it 'returns default AAL authn_context when default AAL and IAL1 is requested' do
-          auth_settings = requested_default_aal_authn_context_saml_settings
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF },
+          )
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
@@ -339,7 +363,9 @@ describe SamlIdpController do
         end
 
         it 'returns default AAL authn_context when IAL1 is requested' do
-          auth_settings = requested_ial1_authn_context_saml_settings
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF },
+          )
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
@@ -349,7 +375,9 @@ describe SamlIdpController do
         end
 
         it 'returns AAL2 authn_context when AAL2 is requested' do
-          auth_settings = requested_aal2_authn_context_saml_settings
+          auth_settings = saml_settings(
+            overrides: { authn_context: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF },
+          )
           decoded_saml_response = generate_decoded_saml_response(user, auth_settings)
           authn_context_class_ref = saml_response_authn_context(decoded_saml_response)
 
@@ -363,7 +391,12 @@ describe SamlIdpController do
       it 'responds with an error page' do
         user = create(:user, :signed_up)
 
-        generate_saml_response(user, sp2_saml_settings_inactive)
+        generate_saml_response(
+          user,
+          saml_settings(
+            overrides: { issuer: 'http://localhost:3000/inactive_sp' },
+          ),
+        )
 
         expect(controller).to redirect_to sp_inactive_error_url
       end
@@ -376,7 +409,7 @@ describe SamlIdpController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        generate_saml_response(user, invalid_service_provider_settings)
+        generate_saml_response(user, saml_settings(overrides: { issuer: 'invalid_provider' }))
 
         expect(controller).to render_template('saml_idp/auth/error')
         expect(response.status).to eq(400)
@@ -403,7 +436,15 @@ describe SamlIdpController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        generate_saml_response(user, invalid_service_provider_and_authn_context_settings)
+        generate_saml_response(
+          user,
+          saml_settings(
+            overrides: {
+              issuer: 'invalid_provider',
+              authn_context: 'http://idmanagement.gov/ns/assurance/loa/5',
+            },
+          ),
+        )
 
         expect(controller).to render_template('saml_idp/auth/error')
         expect(response.status).to eq(400)
@@ -577,7 +618,12 @@ describe SamlIdpController do
       let(:user) { create(:user, :signed_up) }
 
       before do
-        settings = email_nameid_saml_settings
+        settings = saml_settings(
+          overrides: {
+            issuer: sp1_issuer,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL,
+          },
+        )
         ServiceProvider.
           find_by(issuer: settings.issuer).
           update!(email_nameid_format_allowed: true)
@@ -623,7 +669,7 @@ describe SamlIdpController do
       end
 
       it 'defaults to persistent' do
-        auth_settings = missing_nameid_format_saml_settings
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         IdentityLinker.new(user, auth_settings.issuer).link_identity
         user.identities.last.update!(verified_attributes: ['email'])
         generate_saml_response(user, auth_settings)
@@ -645,8 +691,13 @@ describe SamlIdpController do
           with(Analytics::SAML_AUTH, analytics_hash)
       end
 
-      it 'defaults to email when configured' do
-        auth_settings = missing_nameid_format_saml_settings
+      it 'defaults to email when added to issuers_with_email_nameid_format' do
+        auth_settings = saml_settings(
+          overrides: {
+            issuer: sp1_issuer,
+            name_identifier_format: nil,
+          },
+        )
         ServiceProvider.
           find_by(issuer: auth_settings.issuer).
           update!(email_nameid_format_allowed: true)
@@ -677,7 +728,10 @@ describe SamlIdpController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        saml_get_auth(email_nameid_saml_settings_for_disallowed_issuer)
+        auth_settings = saml_settings(
+          overrides: { name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_EMAIL },
+        )
+        saml_get_auth(auth_settings)
 
         expect(controller).to render_template('saml_idp/auth/error')
         expect(response.status).to eq(400)
@@ -709,7 +763,7 @@ describe SamlIdpController do
       end
 
       it 'sends the appropriate identifier for non-email NameID SPs' do
-        auth_settings = missing_nameid_format_saml_settings
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
         IdentityLinker.new(user, auth_settings.issuer).link_identity
@@ -734,7 +788,7 @@ describe SamlIdpController do
           with(Analytics::SAML_AUTH, analytics_hash)
       end
       it 'sends the appropriate identifier for email NameID SPs' do
-        auth_settings = missing_nameid_format_saml_settings
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
         ServiceProvider.
@@ -762,7 +816,7 @@ describe SamlIdpController do
           with(Analytics::SAML_AUTH, analytics_hash)
       end
       it 'sends the old user ID for legacy SPS' do
-        auth_settings = missing_nameid_format_saml_settings
+        auth_settings = saml_settings(overrides: { name_identifier_format: nil })
         auth_settings.name_identifier_format =
           'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified'
         ServiceProvider.

@@ -1,5 +1,38 @@
 require 'rails_helper'
 
+def visit_idp_from_ial1_saml_sp(issuer:)
+  visit_saml_authn_request_url(
+    overrides: {
+      issuer: issuer,
+      name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+      authn_context: [
+        Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,verified_at",
+      ],
+      security: {
+        embed_sign: false,
+      },
+    },
+  )
+end
+
+def visit_idp_from_ial2_saml_sp(issuer:)
+  visit_saml_authn_request_url(
+    overrides: {
+      issuer: issuer,
+      name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+      authn_context: [
+        Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+        "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+      ],
+      security: {
+        embed_sign: false,
+      },
+    },
+  )
+end
+
 describe 'authorization count' do
   include IdvFromSpHelper
   include OidcAuthHelper
@@ -10,7 +43,7 @@ describe 'authorization count' do
   let(:today) { Time.zone.today }
   let(:client_id_1) { 'urn:gov:gsa:openidconnect:sp:server' }
   let(:client_id_2) { 'urn:gov:gsa:openidconnect:sp:server_two' }
-  let(:issuer_1) { 'https://rp1.serviceprovider.com/auth/saml/metadata' }
+  let(:issuer_1) { sp1_issuer }
   let(:issuer_2) { 'https://rp3.serviceprovider.com/auth/saml/metadata' }
 
   context 'an IAL1 user with an active session' do
@@ -76,25 +109,66 @@ describe 'authorization count' do
         expect_ial1_and_ial2_count(issuer_1)
       end
 
+      # rubocop:disable Layout/LineLength
       it 'counts IAL1 auth when ial max is requested' do
-        visit_idp_from_ial_max_saml_sp(issuer: issuer_1)
+        visit_saml_authn_request_url(
+          overrides: {
+            issuer: issuer_1,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [
+              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+            security: {
+              embed_sign: false,
+            },
+          },
+        )
         click_agree_and_continue
         expect_ial1_count_only(issuer_1)
       end
 
       it 'counts IAL2 auth when ial2 strict is requested' do
-        visit_idp_from_ial2_strict_saml_sp(issuer: issuer_1)
+        visit_saml_authn_request_url(
+          overrides: {
+            issuer: issuer_1,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [
+              Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+            security: {
+              embed_sign: false,
+            },
+          },
+        )
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
 
       it 'proofs the user and counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        visit_idp_from_ial2_strict_saml_sp(issuer: issuer_1)
+        visit_saml_authn_request_url(
+          overrides: {
+            issuer: issuer_1,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [
+              Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+            security: {
+              embed_sign: false,
+            },
+          },
+        )
         reproof_for_ial2_strict
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
+      # rubocop:enable Layout/LineLength
     end
   end
 
@@ -221,19 +295,47 @@ describe 'authorization count' do
         expect_ial2_count_only(issuer_2)
       end
 
+      # rubocop:disable Layout/LineLength
       it 'counts IAL2 auth when ial max is requested' do
-        visit_idp_from_ial_max_saml_sp(issuer: issuer_1)
+        visit_saml_authn_request_url(
+          overrides: {
+            issuer: issuer_1,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [
+              Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+            security: {
+              embed_sign: false,
+            },
+          },
+        )
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
 
       it 're-proofs and counts IAL2 auth when ial2 strict is requested' do
         allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
-        visit_idp_from_ial2_strict_saml_sp(issuer: issuer_1)
+        visit_saml_authn_request_url(
+          overrides: {
+            issuer: issuer_1,
+            name_identifier_format: Saml::Idp::Constants::NAME_ID_FORMAT_PERSISTENT,
+            authn_context: [
+              Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
+            ],
+            security: {
+              embed_sign: false,
+            },
+          },
+        )
         reproof_for_ial2_strict
         click_agree_and_continue
         expect_ial2_count_only(issuer_1)
       end
+      # rubocop:enable Layout/LineLength
     end
   end
 

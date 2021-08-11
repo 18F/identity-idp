@@ -1,0 +1,149 @@
+# When adding a new job, you'll want to add `extends: .on_push` to ignore
+# scheduled executions, unless you're specifically adding something that should
+# be run periodically, like metric exporters or syncs.
+
+default:
+  image: campuscode/ruby-gitlab-ci:2.7.3
+
+.bundle_install: &bundle_install
+  - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
+
+.yarn_install: &yarn_install
+  - yarn install --ignore-engines --cache-folder .yarn-cache
+
+cache:
+  - &ruby_cache
+    key:
+      files:
+        - Gemfile.lock
+    paths:
+      - vendor/ruby
+    policy: pull
+
+  - &yarn_cache
+    key:
+      files:
+        - yarn.lock
+    paths:
+      - .yarn-cache/
+    policy: pull
+
+  - &assets_cache
+    key: $CI_COMMIT_SHA
+    paths:
+      - public/assets
+      - public/packs
+      - public/packs-test
+    policy: pull
+
+stages:
+  - build
+  - test
+
+.on_push:
+  rules:
+    - if: $CI_PIPELINE_SOURCE != "schedule"
+
+install:
+  extends: .on_push
+  stage: build
+  variables:
+    RAILS_ENV: test
+  cache:
+    - <<: *ruby_cache
+      policy: pull-push
+    - <<: *yarn_cache
+      policy: pull-push
+    - <<: *assets_cache
+      policy: push
+
+  script:
+    - *bundle_install
+    - *yarn_install
+    - bundle exec rake assets:precompile
+
+lint:
+  extends: .on_push
+  stage: test
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  script:
+    - *bundle_install
+    - *yarn_install
+    - make lint
+
+specs:
+  extends: .on_push
+  stage: test
+  parallel: 5
+  cache:
+    - <<: *ruby_cache
+    - <<: *yarn_cache
+    - <<: *assets_cache
+  variables:
+    AWS_ACCESS_KEY_ID: test
+    AWS_DEFAULT_REGION: us-west-2
+    AWS_REGION: us-west-2
+    AWS_SECRET_ACCESS_KEY: test
+    CAPYBARA_WAIT_TIME_SECONDS: 5
+    POSTGRES_DB: upaya_test
+    POSTGRES_USER: postgres_user
+    POSTGRES_PASSWORD: postgres_password
+    POSTGRES_HOST_AUTH_METHOD: trust
+    RAILS_ENV: test
+  services:
+    - name: postgres:9.6
+      alias: db-postgres
+    - name: redis
+      alias: db-redis
+  script:
+    - *bundle_install
+    - *yarn_install
+    - cp config/application.yml.default config/application.yml
+    - cp config/service_providers.localdev.yml config/service_providers.yml
+    - cp config/agencies.localdev.yml config/agencies.yml
+    - cp config/iaa_gtcs{.localdev,}.yml
+    - cp config/iaa_orders{.localdev,}.yml
+    - cp config/iaa_statuses{.localdev,}.yml
+    - cp config/integration_statuses{.localdev,}.yml
+    - cp config/integrations{.localdev,}.yml
+    - cp config/partner_account_statuses{.localdev,}.yml
+    - cp config/partner_accounts{.localdev,}.yml
+    - cp -a keys.example keys
+    - cp -a certs.example certs
+    - cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt
+    - bundle exec rake db:create db:migrate --trace
+    - bundle exec rake db:seed
+    - >
+        ruby -i -pe 'gsub(/^(\s+)compile: true$/, "\\1compile: false")' config/webpacker.yml
+    - bundle exec rake knapsack:rspec
+
+js_tests:
+  extends: .on_push
+  stage: test
+  cache:
+    - <<: *yarn_cache
+  script:
+    - *yarn_install
+    - yarn test
+
+sync_from_github:
+  image: mirror.gcr.io/alpine/git:latest
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+  script:
+    - cd .git
+    - git config --bool core.bare true
+    - git remote rm origin
+    - git remote add github https://identity-servers:"$github_identity_servers_access_key"@github.com/18F/"$CI_PROJECT_NAME".git
+    - git config --unset remote.github.fetch
+    - git config --add remote.github.fetch '+refs/tags/*:refs/tags/*'
+    - git config --add remote.github.fetch '+refs/heads/*:refs/heads/*'
+    - git remote add gitlab https://identity-servers:"$gitlab_identity_servers_access_key"@gitlab-"$CLUSTER_NAME".gitlab.identitysandbox.gov/lg/"$CI_PROJECT_NAME".git
+    - git config --unset remote.gitlab.fetch
+    - git config --add remote.gitlab.push '+refs/tags/*:refs/tags/*'
+    - git config --add remote.gitlab.push '+refs/heads/*:refs/heads/*'
+    - git fetch github --prune --prune-tags
+    - git push gitlab --prune

@@ -28,7 +28,7 @@ module Upaya
     config.assets.unknown_asset_fallback = true
 
     if IdentityConfig.store.ruby_workers_enabled
-      config.active_job.queue_adapter = :delayed_job
+      config.active_job.queue_adapter = :good_job
     else
       config.active_job.queue_adapter = :inline
     end

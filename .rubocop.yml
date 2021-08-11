@@ -23,6 +23,7 @@ AllCops:
   TargetRailsVersion: 6.0
   UseCache: true
   DisabledByDefault: true
+  SuggestExtensions: false
 
 Rails:
   Enabled: true

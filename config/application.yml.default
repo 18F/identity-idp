@@ -78,6 +78,8 @@ enable_usps_verification: 'true'
 event_disavowal_expiration_hours: '240'
 exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
+good_job_max_threads: '5'
+good_job_queues: 'default:5,low:1;*'
 gpo_designated_receiver_pii: '{}'
 hide_phone_mfa_signup: 'false'
 identity_pki_disabled: 'false'
@@ -104,6 +106,7 @@ lexisnexis_instant_verify_workflow: customers.gsa.instant.verify.workflow
 lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
 lexisnexis_trueid_password: test_password
+lexisnexis_trueid_timeout: '60'
 lexisnexis_trueid_liveness_workflow: customers.gsa.instant.verify.workflow
 lexisnexis_trueid_noliveness_workflow: customers.gsa.instant.verify.workflow
 ###################################################################
@@ -129,6 +132,8 @@ otp_valid_for: '10'
 otps_per_ip_limit: '25'
 otps_per_ip_period: '300'
 otps_per_ip_track_only_mode: 'true'
+outbound_connection_check_retry_count: '2'
+outbound_connection_check_timeout: '5'
 outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: 'false'
 partner_api_bucket_prefix: ''
