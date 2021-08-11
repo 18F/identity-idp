@@ -57,6 +57,7 @@ module PivCacService
     end
 
     def token_decoded(token)
+      return { 'error' => 'token.bad' } unless token.is_a?(String)
       return decode_test_token(token) if token.start_with?('TEST:')
       return { 'error' => 'service.disabled' } if FeatureManagement.identity_pki_disabled?
       res = token_response(token)

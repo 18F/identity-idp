@@ -105,6 +105,14 @@ describe PivCacService do
             expect(test_url).to eq link
           end
         end
+
+        context 'when given a non-String token' do
+          it 'returns bad token error' do
+            expect(PivCacService.decode_token(1)).to eq(
+              'error' => 'token.bad',
+            )
+          end
+        end
       end
 
       describe 'when configured to contact piv_cac service for local development' do
