@@ -24,7 +24,7 @@ defaults: &defaults
 development:
   primary:
     <<: *defaults
-  primary_replica:
+  read_replica:
     <<: *defaults
     replica: true
 
@@ -36,7 +36,7 @@ test:
     database: <%= ENV['POSTGRES_DB'] || "upaya_test#{ENV['TEST_ENV_NUMBER']}" %>
     user: <%= ENV['POSTGRES_USER'] %>
     password: <%= ENV['POSTGRES_PASSWORD'] %>
-  primary_replica:
+  read_replica:
     <<: *test
     replica: true
 
@@ -58,7 +58,7 @@ production:
     pool: <%= pool %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
-  primary_replica:
+  read_replica:
     <<: *defaults
     database: <%= IdentityConfig.store.database_name %>
     username: <%= IdentityConfig.store.database_readonly_username %>
