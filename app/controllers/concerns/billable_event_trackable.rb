@@ -31,7 +31,7 @@ module BillableEventTrackable
     user_session[session_has_been_billed_flag_key] = true
   end
 
-  # The falgs are formatted in this way to preserve continuity across sessions.
+  # The flags are formatted in this way to preserve continuity across sessions.
   # This prevents issues where billable transactions are tracked one way on
   # old instances and a different way on new instances.
   def session_has_been_billed_flag_key
