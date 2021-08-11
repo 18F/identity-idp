@@ -25,7 +25,7 @@ development:
   primary:
     <<: *defaults
     migrations_paths: db/primary_migrate
-  primary_replica:
+  read_replica:
     <<: *defaults
     replica: true
   worker_jobs:
@@ -42,13 +42,21 @@ test:
     user: <%= ENV['POSTGRES_USER'] %>
     password: <%= ENV['POSTGRES_PASSWORD'] %>
     migrations_paths: db/primary_migrate
-  primary_replica:
+  read_replica:
     <<: *test
     replica: true
   worker_jobs:
     <<: *test
     database: <%= "upaya_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
     migrations_paths: db/worker_jobs_migrate
+
+<%
+  pool = if Identity::Hostdata.instance_role == 'worker'
+    IdentityConfig.store.good_job_max_threads + IdentityConfig.store.database_pool_idp
+  else
+    IdentityConfig.store.database_pool_idp
+  end
+%>
 
 production:
   primary:
@@ -57,17 +65,17 @@ production:
     username: <%= IdentityConfig.store.database_username %>
     host: <%= IdentityConfig.store.database_host %>
     password: <%= IdentityConfig.store.database_password %>
-    pool: <%= IdentityConfig.store.database_pool_idp %>
+    pool: <%= pool %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/primary_migrate
-  primary_replica:
+  read_replica:
     <<: *defaults
     database: <%= IdentityConfig.store.database_name %>
     username: <%= IdentityConfig.store.database_readonly_username %>
     host: <%= IdentityConfig.store.database_read_replica_host %>
     password: <%= IdentityConfig.store.database_readonly_password %>
-    pool: <%= IdentityConfig.store.database_pool_idp %>
+    pool: <%= pool %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     replica: true
@@ -77,7 +85,7 @@ production:
     username: <%= IdentityConfig.store.database_worker_jobs_username %>
     host: <%= IdentityConfig.store.database_worker_jobs_host %>
     password: <%= IdentityConfig.store.database_worker_jobs_password %>
-    pool: <%= IdentityConfig.store.database_pool_idp %>
+    pool: <%= pool %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     migrations_paths: db/worker_jobs_migrate

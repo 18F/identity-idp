@@ -5,8 +5,8 @@ class ApplicationRecord < ActiveRecord::Base
     default: { writing: :primary, reading: :primary },
     read_replica: {
       # writing to the read_replica won't work, but AR needs to have something here
-      writing: :primary_replica,
-      reading: :primary_replica,
+      writing: :read_replica,
+      reading: :read_replica,
     },
   }
 end

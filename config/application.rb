@@ -33,7 +33,7 @@ module Upaya
           ALLOW_CONSOLE_DB_WRITE_ACCESS to "true" in the environment
         EOS
 
-        ActiveRecord::Base.establish_connection :primary_replica
+        ActiveRecord::Base.establish_connection :read_replica
       end
     end
 

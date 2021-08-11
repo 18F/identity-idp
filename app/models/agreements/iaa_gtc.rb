@@ -5,6 +5,8 @@ class Agreements::IaaGtc < ApplicationRecord
   belongs_to :iaa_status
 
   has_many :iaa_orders, dependent: :restrict_with_exception
+  has_many :integrations, through: :iaa_orders
+  has_many :service_providers, through: :integrations
 
   validates :gtc_number, presence: true, uniqueness: true
   validates :mod_number, presence: true,

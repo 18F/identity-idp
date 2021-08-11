@@ -2,8 +2,16 @@ require 'rails_helper'
 
 RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
   describe '.call' do
-    let(:iaa) { 'iaa1' }
     let(:aggregate) { :sum }
+    let(:key) { 'iaa1-0001' }
+    let(:iaa) do
+      {
+        key: key,
+        start_date: 1.year.ago,
+        end_date: Time.zone.now,
+        issuers: [],
+      }
+    end
 
     subject(:results) do
       Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa.call(iaa: iaa, aggregate: aggregate)
@@ -14,6 +22,14 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
     end
 
     context 'with data' do
+      let(:iaa) do
+        {
+          key: key,
+          start_date: iaa_range.begin,
+          end_date: iaa_range.end,
+          issuers: [issuer1, issuer2, issuer3],
+        }
+      end
       let(:iaa_range) { Date.new(2020, 9, 15)..Date.new(2021, 9, 14) }
       let(:inside_partial_month) { Date.new(2020, 9, 16) }
       let(:inside_whole_month) { Date.new(2020, 10, 16) }
@@ -92,7 +108,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           rows = [
             {
               ial: 1,
-              iaa: iaa,
+              key: key,
               year_month: '202009',
               total_auth_count: 1,
               iaa_start_date: iaa_range.begin.to_s,
@@ -100,7 +116,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             },
             {
               ial: 2,
-              iaa: iaa,
+              key: key,
               year_month: '202009',
               total_auth_count: 2,
               iaa_start_date: iaa_range.begin.to_s,
@@ -108,7 +124,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             },
             {
               ial: 1,
-              iaa: iaa,
+              key: key,
               year_month: '202010',
               total_auth_count: 20,
               iaa_start_date: iaa_range.begin.to_s,
@@ -116,7 +132,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             },
             {
               ial: 2,
-              iaa: iaa,
+              key: key,
               year_month: '202010',
               total_auth_count: 300,
               iaa_start_date: iaa_range.begin.to_s,
@@ -135,7 +151,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           rows = [
             {
               ial: 1,
-              iaa: iaa,
+              key: key,
               year_month: '202009',
               unique_users: 1,
               iaa_start_date: iaa_range.begin.to_s,
@@ -143,7 +159,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             },
             {
               ial: 2,
-              iaa: iaa,
+              key: key,
               year_month: '202009',
               unique_users: 2,
               iaa_start_date: iaa_range.begin.to_s,
@@ -151,7 +167,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             },
             {
               ial: 1,
-              iaa: iaa,
+              key: key,
               year_month: '202010',
               unique_users: 2,
               iaa_start_date: iaa_range.begin.to_s,
@@ -159,7 +175,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             },
             {
               ial: 2,
-              iaa: iaa,
+              key: key,
               year_month: '202010',
               unique_users: 3,
               iaa_start_date: iaa_range.begin.to_s,
@@ -178,7 +194,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           rows = [
             {
               ial: 1,
-              iaa: iaa,
+              key: key,
               year_month: '202009',
               new_unique_users: 1,
               iaa_start_date: iaa_range.begin.to_s,
@@ -186,7 +202,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             },
             {
               ial: 2,
-              iaa: iaa,
+              key: key,
               year_month: '202009',
               new_unique_users: 2,
               iaa_start_date: iaa_range.begin.to_s,
@@ -194,7 +210,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             },
             {
               ial: 1,
-              iaa: iaa,
+              key: key,
               year_month: '202010',
               new_unique_users: 1,
               iaa_start_date: iaa_range.begin.to_s,
@@ -202,7 +218,7 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             },
             {
               ial: 2,
-              iaa: iaa,
+              key: key,
               year_month: '202010',
               new_unique_users: 1,
               iaa_start_date: iaa_range.begin.to_s,
@@ -219,16 +235,6 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
       let(:iaa_range) { Date.new(2020, 9, 15)..Date.new(2020, 9, 17) }
       let(:issuer) { 'issuer1' }
       let(:rows) { [] }
-
-      before do
-        create(
-          :service_provider,
-          iaa: iaa,
-          issuer: issuer,
-          iaa_start_date: iaa_range.begin,
-          iaa_end_date: iaa_range.end,
-        )
-      end
 
       context 'aggregate type :sum' do
         let(:aggregate) { :sum }

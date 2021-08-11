@@ -2,6 +2,8 @@ require 'identity/hostdata'
 
 module Reports
   class BaseReport < ApplicationJob
+    queue_as :low
+
     private
 
     def fiscal_start_date
@@ -29,10 +31,10 @@ module Reports
       IdentityConfig.store.report_timeout
     end
 
-    def transaction_with_timeout
+    def transaction_with_timeout(rails_env = Rails.env)
       # rspec-rails's use_transactional_tests does not seem to act as expected when switching
       # connections mid-test, so we just skip for now :[
-      return yield if Rails.env.test?
+      return yield if rails_env.test?
 
       ApplicationRecord.connected_to(role: :reading, shard: :read_replica) do
         ActiveRecord::Base.transaction do
