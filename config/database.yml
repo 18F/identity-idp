@@ -40,6 +40,14 @@ test:
     <<: *test
     replica: true
 
+<%
+  pool = if Identity::Hostdata.instance_role == 'worker'
+    IdentityConfig.store.good_job_max_threads * IdentityConfig.store.database_pool_idp
+  else
+    IdentityConfig.store.database_pool_idp
+  end
+%>
+
 production:
   primary:
     <<: *defaults
@@ -47,7 +55,7 @@ production:
     username: <%= IdentityConfig.store.database_username %>
     host: <%= IdentityConfig.store.database_host %>
     password: <%= IdentityConfig.store.database_password %>
-    pool: <%= IdentityConfig.store.database_pool_idp %>
+    pool: <%= pool %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
   primary_replica:
@@ -56,7 +64,7 @@ production:
     username: <%= IdentityConfig.store.database_readonly_username %>
     host: <%= IdentityConfig.store.database_read_replica_host %>
     password: <%= IdentityConfig.store.database_readonly_password %>
-    pool: <%= IdentityConfig.store.database_pool_idp %>
+    pool: <%= pool %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     replica: true
