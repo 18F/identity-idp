@@ -3,109 +3,90 @@ require 'rails_helper'
 RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
   subject(:report) { Reports::AgencyInvoiceIaaSupplementReport.new }
 
+  let(:partner_account1) { create(:partner_account) }
+  let(:partner_account2) { create(:partner_account) }
+  let(:gtc1) do
+    create(
+      :iaa_gtc,
+      gtc_number: 'gtc1234',
+      partner_account: partner_account1,
+      start_date: iaa1_range.begin,
+      end_date: iaa1_range.end,
+    )
+  end
+
+  let(:gtc2) do
+    create(
+      :iaa_gtc,
+      gtc_number: 'gtc5678',
+      partner_account: partner_account2,
+      start_date: iaa2_range.begin,
+      end_date: iaa2_range.end,
+    )
+  end
+
+  let(:iaa_order1) {
+    build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
+  }
+  let(:iaa_order2) {
+    build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc2)
+  }
+
+  # Have to do this because of invalid check when building integration usages
+  let!(:iaa_orders) do
+    [
+      iaa_order1,
+      iaa_order2,
+    ]
+  end
+
+  let!(:iaa1_sp) do
+    create(
+      :service_provider,
+      iaa: iaa1,
+      iaa_start_date: iaa1_range.begin,
+      iaa_end_date: iaa1_range.end,
+    )
+  end
+
+  let!(:iaa2_sp) do
+    create(
+      :service_provider,
+      iaa: iaa2,
+      iaa_start_date: iaa2_range.begin,
+      iaa_end_date: iaa2_range.end,
+    )
+  end
+
+  let(:integration1) {
+    build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
+  }
+  let(:integration2) {
+    build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
+  }
+
+  let(:iaa1) { 'iaa1' }
+  let(:iaa1_key) { "#{gtc1.gtc_number}-#{format('%04d', iaa_order1.order_number)}" }
+  let(:iaa1_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 14) }
+  let(:inside_iaa1) { iaa1_range.begin + 1.day }
+
+  let(:iaa2) { 'iaa2' }
+  let(:iaa2_key) { "#{gtc2.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
+  let(:iaa2_range) { Date.new(2020, 9, 1)..Date.new(2021, 8, 30) }
+  let(:inside_iaa2) { iaa2_range.begin + 1.day }
+
   describe '#call' do
     it 'is empty with no data' do
       expect(report.call).to eq('[]')
     end
 
     context 'with data' do
-      let(:partner_account1) { create(:partner_account) }
-      let(:partner_account2) { create(:partner_account) }
-      let(:gtc1) do
-        create(
-          :iaa_gtc,
-          gtc_number: 'gtc1234',
-          partner_account: partner_account1,
-          start_date: iaa1_range.begin,
-          end_date: iaa1_range.end,
-        )
-      end
-
-      let(:gtc2) do
-        create(
-          :iaa_gtc,
-          gtc_number: 'gtc5678',
-          partner_account: partner_account2,
-          start_date: iaa2_range.begin,
-          end_date: iaa2_range.end,
-        )
-      end
-
-      let(:iaa_order1) {
-        build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
-      }
-      let(:iaa_order2) {
-        build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc2)
-      }
-
-      # Have to do this because of invalid check when building integration usages
-      let!(:iaa_orders) do
-        [
-          iaa_order1,
-          iaa_order2,
-        ]
-      end
-
-      let(:integration1) {
-        build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
-      }
-      let(:integration2) {
-        build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
-      }
-
-      def build_iaa_order(order_number:, date_range:, iaa_gtc:)
-        create(
-          :iaa_order,
-          order_number: order_number,
-          start_date: date_range.begin,
-          end_date: date_range.end,
-          iaa_gtc: iaa_gtc,
-        )
-      end
-
-      def build_integration(issuer:, partner_account:)
-        create(
-          :integration,
-          issuer: issuer,
-          partner_account: partner_account,
-        )
-      end
-
-      let(:iaa1) { 'iaa1' }
-      let(:iaa1_key) { "#{gtc1.gtc_number}-#{format('%04d', iaa_order1.order_number)}" }
-      let(:iaa1_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 14) }
-      let(:inside_iaa1) { iaa1_range.begin + 1.day }
-
-      let(:iaa2) { 'iaa2' }
-      let(:iaa2_key) { "#{gtc2.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
-      let(:iaa2_range) { Date.new(2020, 9, 1)..Date.new(2021, 8, 30) }
-      let(:inside_iaa2) { iaa2_range.begin + 1.day }
-
       let(:user1) { create(:user) }
       let(:user2) { create(:user) }
-
-      let!(:iaa1_sp) do
-        create(
-          :service_provider,
-          iaa: iaa1,
-          iaa_start_date: iaa1_range.begin,
-          iaa_end_date: iaa1_range.end,
-        )
-      end
-
-      let!(:iaa2_sp) do
-        create(
-          :service_provider,
-          iaa: iaa2,
-          iaa_start_date: iaa2_range.begin,
-          iaa_end_date: iaa2_range.end,
-        )
-      end
 
       before do
         iaa_order1.integrations << integration1
         iaa_order2.integrations << integration2
-        # 1 unique user in partial month at IAA 1 @ IAL 1
         iaa_order1.save
         iaa_order2.save
 
@@ -241,5 +222,80 @@ RSpec.describe Reports::AgencyInvoiceIaaSupplementReport do
         end
       end
     end
+  end
+
+  describe '#iaas' do
+    before do
+      iaa_order1.integrations << integration1
+      iaa_order2.integrations << integration2
+      iaa_order1.save
+      iaa_order2.save
+    end
+
+    context 'multiple IAAs on same GTC' do
+      let(:iaa_order1) {
+        build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
+      }
+      let(:iaa_order2) {
+        build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc1)
+      }
+
+      let(:integration2) {
+        build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account1)
+      }
+
+      let(:iaa2_key) { "#{gtc1.gtc_number}-#{format('%04d', iaa_order2.order_number)}" }
+
+      let(:iaa1_range) { Date.new(2020, 4, 15)..Date.new(2021, 4, 14) }
+      let(:iaa2_range) { Date.new(2021, 4, 14)..Date.new(2022, 4, 13) }
+
+      it 'returns both fo the IAAS with the proper key' do
+        iaas = report.iaas
+        orders = iaas.select { |obj| obj[:key].starts_with?(gtc1.gtc_number) }
+        # Expect IAAS with matching GTC to appear
+        expect(orders.count).to eq(2)
+      end
+    end
+
+    context 'IAAS on different GTCs' do
+      let(:integration1) {
+        build_integration(issuer: iaa1_sp.issuer, partner_account: partner_account1)
+      }
+      let(:integration2) {
+        build_integration(issuer: iaa2_sp.issuer, partner_account: partner_account2)
+      }
+      let(:iaa_order1) {
+        build_iaa_order(order_number: 1,  date_range: iaa1_range, iaa_gtc: gtc1)
+      }
+      let(:iaa_order2) {
+        build_iaa_order(order_number: 2,  date_range: iaa2_range, iaa_gtc: gtc2)
+      }
+
+      it 'returns both of the IAAS with the proper key of different GTCs' do
+        iaas = report.iaas
+        gtc1_orders = iaas.select { |obj| obj[:key].starts_with?(gtc1.gtc_number) }
+        gtc2_orders = iaas.select { |obj| obj[:key].starts_with?(gtc2.gtc_number) }
+        expect(gtc1_orders.count).to eq(1)
+        expect(gtc2_orders.count).to eq(1)
+      end
+    end
+  end
+
+  def build_iaa_order(order_number:, date_range:, iaa_gtc:)
+    create(
+      :iaa_order,
+      order_number: order_number,
+      start_date: date_range.begin,
+      end_date: date_range.end,
+      iaa_gtc: iaa_gtc,
+    )
+  end
+
+  def build_integration(issuer:, partner_account:)
+    create(
+      :integration,
+      issuer: issuer,
+      partner_account: partner_account,
+    )
   end
 end
