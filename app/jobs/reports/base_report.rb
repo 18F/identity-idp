@@ -31,8 +31,12 @@ module Reports
       IdentityConfig.store.report_timeout
     end
 
-    def transaction_with_timeout
-      Db::EstablishConnection::ReadReplicaConnection.new.call do
+    def transaction_with_timeout(rails_env = Rails.env)
+      # rspec-rails's use_transactional_tests does not seem to act as expected when switching
+      # connections mid-test, so we just skip for now :[
+      return yield if rails_env.test?
+
+      ApplicationRecord.connected_to(role: :reading, shard: :read_replica) do
         ActiveRecord::Base.transaction do
           quoted_timeout = ActiveRecord::Base.connection.quote(report_timeout)
           ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")

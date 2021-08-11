@@ -1,5 +1,3 @@
-<% require 'production_database_configuration' %>
-
 postgresql: &postgresql
   adapter: postgresql
   encoding: utf8
@@ -24,22 +22,49 @@ defaults: &defaults
     statement_timeout: <%= IdentityConfig.store.database_statement_timeout %>
 
 development:
-  <<: *defaults
+  primary:
+    <<: *defaults
+  read_replica:
+    <<: *defaults
+    replica: true
 
 test:
-  <<: *defaults
-  pool: 10
-  checkout_timeout: 10
-  database: <%= ENV['POSTGRES_DB'] || "upaya_test#{ENV['TEST_ENV_NUMBER']}" %>
-  user: <%= ENV['POSTGRES_USER'] %>
-  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  primary: &test
+    <<: *defaults
+    pool: 10
+    checkout_timeout: 10
+    database: <%= ENV['POSTGRES_DB'] || "upaya_test#{ENV['TEST_ENV_NUMBER']}" %>
+    user: <%= ENV['POSTGRES_USER'] %>
+    password: <%= ENV['POSTGRES_PASSWORD'] %>
+  read_replica:
+    <<: *test
+    replica: true
+
+<%
+  pool = if Identity::Hostdata.instance_role == 'worker'
+    IdentityConfig.store.good_job_max_threads + IdentityConfig.store.database_pool_idp
+  else
+    IdentityConfig.store.database_pool_idp
+  end
+%>
 
 production:
-  <<: *defaults
-  database: <%= IdentityConfig.store.database_name %>
-  username: <%= ProductionDatabaseConfiguration.username %>
-  host: <%= ProductionDatabaseConfiguration.host %>
-  password: <%= ProductionDatabaseConfiguration.password %>
-  pool: <%= ProductionDatabaseConfiguration.pool %>
-  sslmode: 'verify-full'
-  sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+  primary:
+    <<: *defaults
+    database: <%= IdentityConfig.store.database_name %>
+    username: <%= IdentityConfig.store.database_username %>
+    host: <%= IdentityConfig.store.database_host %>
+    password: <%= IdentityConfig.store.database_password %>
+    pool: <%= pool %>
+    sslmode: 'verify-full'
+    sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+  read_replica:
+    <<: *defaults
+    database: <%= IdentityConfig.store.database_name %>
+    username: <%= IdentityConfig.store.database_readonly_username %>
+    host: <%= IdentityConfig.store.database_read_replica_host %>
+    password: <%= IdentityConfig.store.database_readonly_password %>
+    pool: <%= pool %>
+    sslmode: 'verify-full'
+    sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+    replica: true
