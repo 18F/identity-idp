@@ -6,10 +6,11 @@ module Db
       nil
     end
 
-    def self.add_return(request_id, user_id)
+    def self.add_return(request_id, user_id, billable)
       ::SpReturnLog.where(request_id: request_id).update_all(
         user_id: user_id,
         returned_at: Time.zone.now,
+        billable: billable,
       )
       nil
     end

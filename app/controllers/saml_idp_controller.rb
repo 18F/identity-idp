@@ -10,6 +10,7 @@ class SamlIdpController < ApplicationController
   include RememberDeviceConcern
   include VerifyProfileConcern
   include AuthorizationCountConcern
+  include BillableEventTrackable
 
   prepend_before_action :skip_session_load, only: :metadata
   prepend_before_action :skip_session_expiration, only: :metadata
@@ -102,8 +103,6 @@ class SamlIdpController < ApplicationController
 
   def track_events
     analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: sp_session_ial)
-    Db::SpReturnLog.add_return(request_id, current_user.id)
-    increment_monthly_auth_count
-    add_sp_cost(:authentication)
+    track_billing_events
   end
 end

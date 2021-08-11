@@ -22,7 +22,9 @@ class ServiceProviderRequestHandler
   attr_reader :url, :session, :protocol_request, :protocol
 
   def ial
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(protocol.ial) ? 2 : 1
+    uri = URI.parse(protocol.ial)
+    ial_url = "#{uri.scheme}://#{uri.hostname}#{uri.path}"
+    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(ial_url) ? 2 : 1
   end
 
   def current_sp
