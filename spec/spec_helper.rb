@@ -37,10 +37,7 @@ WebMock.disable_net_connect!(
     /codeclimate.com/, # For uploading coverage reports
     /chromedriver\.storage\.googleapis\.com/, # For fetching a chromedriver binary
   ],
-  net_http_connect_on_start: true
 )
-
-
 
 require 'zonebie'
 Zonebie.quiet = true
