@@ -468,7 +468,7 @@ IM:
 IN:
   country_code: '91'
   name: India
-  supports_sms: true
+  supports_sms: false
   supports_voice: false
 IQ:
   country_code: '964'
@@ -581,7 +581,7 @@ LI:
 LK:
   country_code: '94'
   name: Sri Lanka
-  supports_sms: true
+  supports_sms: false
   supports_voice: false
 LR:
   country_code: '231'
@@ -1001,7 +1001,7 @@ TO:
 TR:
   country_code: '90'
   name: Turkey
-  supports_sms: true
+  supports_sms: false
   supports_voice: false
 TT:
   country_code: '1868'

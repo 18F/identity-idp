@@ -49,7 +49,7 @@ RSpec.describe PinpointSupportedCountries do
         <tr>
           <td>Belarus</td>
           <td>BY</td>
-          <td>Yes<sup><a href="#sms-support-note-1">1</a></sup></td>
+          <td>Registration required<sup><a href="#sms-support-note-1">1</a></sup></td>
           <td></td>
         </tr>
       </table>
@@ -112,6 +112,17 @@ RSpec.describe PinpointSupportedCountries do
       ]
     end
     # rubocop:enable Layout/LineLength
+
+    context 'when we have a sender ID for a country' do
+      before do
+        stub_const('PinpointSupportedCountries::SENDER_ID_COUNTRIES', Set['BY'])
+      end
+
+      it 'is supported' do
+        belarus = countries.sms_support.find { |c| c.iso_code == 'BY' }
+        expect(belarus.supports_sms).to eq(true)
+      end
+    end
   end
 
   describe '#voice_support' do
