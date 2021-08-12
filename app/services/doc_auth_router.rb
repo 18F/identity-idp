@@ -144,6 +144,7 @@ module DocAuthRouter
     end
   end
 
+  # rubocop:disable Layout/LineLength
   # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
   def self.client(warn_notifier: nil)
     case doc_auth_vendor
@@ -170,8 +171,10 @@ module DocAuthRouter
           base_url: IdentityConfig.store.lexisnexis_base_url,
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
           trueid_account_id: IdentityConfig.store.lexisnexis_trueid_account_id,
-          trueid_liveness_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_workflow,
-          trueid_noliveness_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_workflow,
+          trueid_liveness_cropping_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_cropping_workflow,
+          trueid_liveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_liveness_nocropping_workflow,
+          trueid_noliveness_cropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_cropping_workflow,
+          trueid_noliveness_nocropping_workflow: IdentityConfig.store.lexisnexis_trueid_noliveness_nocropping_workflow,
           trueid_password: IdentityConfig.store.lexisnexis_trueid_password,
           trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
           trueid_timeout: IdentityConfig.store.lexisnexis_trueid_timeout,
@@ -193,6 +196,7 @@ module DocAuthRouter
       raise "#{doc_auth_vendor} is not a valid doc auth vendor"
     end
   end
+  # rubocop:enable Layout/LineLength
 
   def self.doc_auth_vendor
     IdentityConfig.store.doc_auth_vendor
