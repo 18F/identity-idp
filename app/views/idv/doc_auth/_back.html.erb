@@ -24,7 +24,7 @@ classes << local_assigns[:class] if local_assigns[:class]
         path,
         method: :put,
         class: [*classes, 'usa-button usa-button--unstyled']
-      ) {'‹ ' + t('forms.buttons.back')}%>
+      ) {'‹ ' + t('forms.buttons.back')} %>
     <% else %>
       <%= link_to(text, path, class: classes) %>
     <% end %>
