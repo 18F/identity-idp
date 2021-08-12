@@ -16,12 +16,17 @@ class SimplecovHelper
   def self.configure
     SimpleCov.configure do
       if ENV['CI_JOB_NAME']
+        # this puts results in different sub-folders of coverage/ for each parallel test worker
+        #  by using the job name. Folders end up being coverage/specs-1-5, coverage/specs-2-5, etc.
+        #  This is not necessarily folder name friendly, so non-alphabetic/numeric characters are
+        #  removed.
         job_name = ENV['CI_JOB_NAME'].downcase.
           gsub(/[^a-z0-9]/, '-')[0..62].
           gsub(/(\A-+|-+\z)/, '')
         command_name job_name
         coverage_dir "coverage/#{job_name}"
       end
+
       enable_coverage :branch
 
       formatter SimpleCov::Formatter::MultiFormatter.new(configured_formatters)
@@ -54,8 +59,10 @@ class SimplecovHelper
       SimpleCov::Formatter::HTMLFormatter,
     ]
     if ENV['GITLAB_CI']
+      # GitLab CI uses Cobertura formatter to display diffs in pull requests
       formatters << SimpleCov::Formatter::CoberturaFormatter
     elsif ENV['CIRCLE_CI']
+      # CircleCI uses JSON formatting for CodeClimate
       formatters << SimpleCov::Formatter::JSONFormatter
     end
 
