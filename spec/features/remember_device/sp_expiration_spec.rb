@@ -7,7 +7,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
 
   context "#{protocol}: signing in" do
     it "does not require MFA before #{expiration_time.inspect}" do
-      Timecop.travel(expiration_time.from_now - 1.day) do
+      travel_to(expiration_time.from_now - 1.day) do
         visit_idp_from_sp_with_ial1(protocol)
         sign_in_user(user)
 
@@ -16,7 +16,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
     end
 
     it "does require MFA after #{expiration_time.inspect}" do
-      Timecop.travel(expiration_time.from_now + 1.day) do
+      travel_to(expiration_time.from_now + 1.day) do
         visit_idp_from_sp_with_ial1(protocol)
         sign_in_user(user)
 
@@ -33,7 +33,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
 
   context "#{protocol}: visiting while already signed in" do
     it "does not require MFA before #{expiration_time.inspect}" do
-      Timecop.travel(expiration_time.from_now - 1.day) do
+      travel_to(expiration_time.from_now - 1.day) do
         sign_in_user(user)
         visit_idp_from_sp_with_ial1(protocol)
 
@@ -42,7 +42,7 @@ shared_examples 'expiring remember device for an sp config' do |expiration_time,
     end
 
     it "does require MFA after #{expiration_time.inspect}" do
-      Timecop.travel(expiration_time.from_now + 1.day) do
+      travel_to(expiration_time.from_now + 1.day) do
         if expiration_time == 30.days
           sign_in_live_with_2fa(user)
           visit_idp_from_sp_with_ial1(protocol)

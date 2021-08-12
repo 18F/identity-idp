@@ -84,7 +84,7 @@ feature 'doc auth send link step' do
       throttle_type: :idv_send_link,
     )
 
-    Timecop.travel(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
+    travel_to(Time.zone.now + idv_send_link_attempt_window_in_minutes.minutes) do
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_idv_continue
       expect(page).to have_current_path(idv_doc_auth_link_sent_step)

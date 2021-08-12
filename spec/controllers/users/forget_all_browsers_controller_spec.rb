@@ -46,7 +46,7 @@ RSpec.describe Users::ForgetAllBrowsersController do
     it 'updates the remember_device_revoked_at attribute for the user' do
       now = Time.zone.now
 
-      expect { Timecop.freeze(now) { subject } }.to change { user.remember_device_revoked_at.to_i }.
+      expect { freeze_time { travel_to(now); subject } }.to change { user.remember_device_revoked_at.to_i }.
         from(original_device_revoked_at.to_i).
         to(now.to_i)
     end

@@ -42,8 +42,8 @@ shared_examples 'signing in as IAL1 with piv/cac' do |sp|
 end
 
 shared_examples 'visiting 2fa when fully authenticated' do |sp|
-  before { Timecop.freeze Time.zone.now }
-  after { Timecop.return }
+  before { freeze_time; travel_to(Time.zone.now) }
+  after { travel_back }
 
   it 'redirects to SP after visiting a 2fa screen when fully authenticated', email: true do
     ial1_sign_in_with_personal_key_goes_to_sp(sp)
@@ -63,8 +63,8 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
 end
 
 shared_examples 'signing in as IAL2 with personal key' do |sp|
-  before { Timecop.freeze Time.zone.now }
-  after { Timecop.return }
+  before { freeze_time; travel_to(Time.zone.now) }
+  after { travel_back }
 
   it 'does not present personal key as an MFA option', :email do
     user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
@@ -100,8 +100,8 @@ shared_examples 'signing in as IAL2 with piv/cac' do |sp|
 end
 
 shared_examples 'signing in as IAL1 with personal key after resetting password' do |sp|
-  before { Timecop.freeze Time.zone.now }
-  after { Timecop.return }
+  before { freeze_time; travel_to(Time.zone.now) }
+  after { travel_back }
 
   it 'redirects to SP', email: true do
     user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
@@ -204,7 +204,8 @@ def personal_key_for_ial2_user(user, pii)
 end
 
 def ial1_sign_in_with_personal_key_goes_to_sp(sp)
-  Timecop.freeze Time.zone.now do
+  freeze_time do
+    travel_to(Time.zone.now)
     user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
     old_personal_key = PersonalKeyGenerator.new(user).create
 

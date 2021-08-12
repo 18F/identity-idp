@@ -223,10 +223,10 @@ feature 'saml api' do
       end
 
       it 'redirects to root' do
-        Timecop.travel(Devise.timeout_in + 1.second)
-        visit api_saml_logout2021_url
-        expect(page.current_path).to eq('/')
-        Timecop.return
+        travel(Devise.timeout_in + 1.second) do
+          visit api_saml_logout2021_url
+          expect(page.current_path).to eq('/')
+        end
       end
     end
   end

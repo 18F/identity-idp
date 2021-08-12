@@ -127,7 +127,6 @@ group :test do
   gem 'rspec-retry'
   gem 'scss_lint', require: false
   gem 'shoulda-matchers', '~> 4.0', require: false
-  gem 'timecop'
   gem 'webdrivers', '~> 4.0'
   gem 'webmock'
   gem 'zonebie'
