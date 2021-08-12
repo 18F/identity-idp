@@ -287,6 +287,9 @@ Layout/SpaceInLambdaLiteral:
   Enabled: true
   EnforcedStyle: require_no_space
 
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
+
 Layout/TrailingEmptyLines:
   Enabled: true
   EnforcedStyle: final_newline

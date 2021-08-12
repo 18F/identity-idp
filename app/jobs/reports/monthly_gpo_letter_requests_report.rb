@@ -30,7 +30,7 @@ module Reports
     private
 
     def calculate_totals(daily_results)
-      daily_results.inject(0) {|sum, rec| sum + rec['letter_requests_count'].to_i }
+      daily_results.inject(0) { |sum, rec| sum + rec['letter_requests_count'].to_i }
     end
   end
 end
