@@ -10,8 +10,8 @@ fr:
       status_move_closer: Rapprochez l'appareil photo du document
       status_tap_to_capture: Capture automatique désactivée
     buttons:
-      change_address: changement
-      change_ssn: changement
+      change_address: Changement
+      change_ssn: Changement
       continue: Continuer
       start_over: Recommencer
       take_or_upload_picture: '<lg-take-photo>Prendre une photo</lg-take-photo> ou
@@ -165,7 +165,7 @@ fr:
       review_issues: Vérifiez vos images et essayez à nouveau
       secure_account: Sécuriser votre compte
       selfie: Prenez une photo de vous-même
-      ssn: S’il vous plaît entrez votre numéro de Sécurité Sociale.
+      ssn: Saisissez votre numéro de sécurité sociale
       ssn_update: Mettre à jour votre numéro de Sécurité Sociale
       take_picture: Prendre une photo avec un téléphone
       text_message: Nous avons envoyé un message à votre téléphone
@@ -176,7 +176,7 @@ fr:
       upload_from_phone_liveness_enabled: Utilisez un téléphone portable pour ajouter
         votre pièce d’identité et prendre une photo de vous-même
       upload_liveness_enabled: Comment souhaitez-vous vérifier votre identité?
-      verify: S’il vous plaît vérifier vos informations
+      verify: Vérifier votre information
       verify_identity: Vérifier votre identité
       welcome: Vérifiez votre identité pour accéder en toute sécurité aux services
         gouvernementaux

@@ -1,6 +1,8 @@
 ---
 en:
   idv:
+    accessible_labels:
+      masked_ssn: secure text, starting with %{first_number} and ending with %{last_number}
     buttons:
       cancel: Cancel and return to your profile
       continue_plain: Continue

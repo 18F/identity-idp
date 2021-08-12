@@ -5,8 +5,7 @@ feature 'Canceling Account Creation' do
 
   context 'From the enter email page', email: true do
     it 'redirects to the branded start page' do
-      authn_request = auth_request.create(saml_settings)
-      visit authn_request
+      visit saml_authn_request_url
       sp_request_id = ServiceProviderRequestProxy.last.uuid
       click_link t('links.create_account')
       click_link t('links.cancel')
@@ -17,8 +16,7 @@ feature 'Canceling Account Creation' do
 
   context 'From the enter password page', email: true do
     it 'redirects to the branded start page' do
-      authn_request = auth_request.create(saml_settings)
-      visit authn_request
+      visit saml_authn_request_url
       click_link t('links.create_account')
       submit_form_with_valid_email
       click_confirmation_link_in_email('test@test.com')
@@ -32,8 +30,7 @@ feature 'Canceling Account Creation' do
     end
 
     it 'redirects to the password page after cancelling the cancellation' do
-      authn_request = auth_request.create(saml_settings)
-      visit authn_request
+      visit saml_authn_request_url
       click_link t('links.create_account')
       submit_form_with_valid_email
       click_confirmation_link_in_email('test@test.com')

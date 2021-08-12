@@ -260,29 +260,6 @@ feature 'doc auth document capture step' do
   end
 
   context 'when there is a stored result' do
-    it 'proceeds to the next step if the result was successful' do
-      document_capture_session = user.document_capture_sessions.last
-      response = DocAuth::Response.new(success: true)
-      document_capture_session.store_result_from_response(response)
-      document_capture_session.save!
-
-      submit_empty_form
-
-      expect(page).to have_current_path(next_step)
-    end
-
-    it 'does not proceed to the next step if the result was not successful' do
-      document_capture_session = user.document_capture_sessions.last
-      response = DocAuth::Response.new(success: false)
-      document_capture_session.store_result_from_response(response)
-      document_capture_session.save!
-
-      submit_empty_form
-
-      expect(page).to have_current_path(idv_doc_auth_document_capture_step)
-      expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
-    end
-
     it 'does not proceed to the next step if there is no result' do
       submit_empty_form
 
@@ -298,6 +275,74 @@ feature 'doc auth document capture step' do
       attach_and_submit_images
 
       expect(page).to have_current_path(next_step)
+    end
+
+    context 'sync result' do
+      let(:success) { true }
+
+      before do
+        document_capture_session = user.document_capture_sessions.last
+        response = DocAuth::Response.new(success: success)
+        document_capture_session.store_result_from_response(response)
+        document_capture_session.save!
+      end
+
+      context 'successful result' do
+        let(:success) { true }
+
+        it 'proceeds to the next step' do
+          submit_empty_form
+
+          expect(page).to have_current_path(next_step)
+        end
+      end
+
+      context 'unsuccessful result' do
+        let(:success) { false }
+
+        it 'does not proceed to the next step' do
+          submit_empty_form
+
+          expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+          expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
+        end
+      end
+    end
+
+    context 'async result' do
+      let(:success) { true }
+
+      before do
+        document_capture_session = user.document_capture_sessions.last
+        response = DocAuth::Response.new(success: success)
+        document_capture_session.create_doc_auth_session
+        document_capture_session.store_doc_auth_result(
+          result: response.to_h,
+          pii: response.pii_from_doc,
+        )
+        document_capture_session.save!
+      end
+
+      context 'successful result' do
+        let(:success) { true }
+
+        it 'proceeds to the next step' do
+          submit_empty_form
+
+          expect(page).to have_current_path(next_step)
+        end
+      end
+
+      context 'unsuccessful result' do
+        let(:success) { false }
+
+        it 'does not proceed to the next step' do
+          submit_empty_form
+
+          expect(page).to have_current_path(idv_doc_auth_document_capture_step)
+          expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
+        end
+      end
     end
   end
 

@@ -4,7 +4,7 @@ module SignUp
 
     before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :ial2?
-    before_action :apply_secure_headers_override, only: :show
+    before_action :apply_secure_headers_override, only: [:show, :update]
 
     def show
       @view_model = view_model
@@ -132,7 +132,18 @@ module SignUp
     def pii_to_displayable_attributes
       {
         full_name: full_name,
-        social_security_number: pii[:ssn],
+        social_security_number: render_to_string(
+          partial: 'shared/masked_text',
+          locals: {
+            text: SsnFormatter.format(pii[:ssn]),
+            masked_text: SsnFormatter.format_masked(pii[:ssn]),
+            accessible_masked_text: t(
+              'idv.accessible_labels.masked_ssn',
+              first_number: pii[:ssn][0],
+              last_number: pii[:ssn][-1],
+            ),
+          },
+        ),
         address: address,
         birthdate: dob,
         phone: PhoneFormatter.format(pii[:phone].to_s),

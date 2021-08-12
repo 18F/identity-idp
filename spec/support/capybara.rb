@@ -39,7 +39,7 @@ end
 
 Capybara.server = :puma, { Silent: true }
 
-Capybara.default_max_wait_time = 0.5
+Capybara.default_max_wait_time = (ENV['CAPYBARA_WAIT_TIME_SECONDS'] || '0.5').to_f
 Capybara::Screenshot.autosave_on_failure = false
 Capybara.asset_host = ENV['RAILS_ASSET_HOST'] || 'http://localhost:3000'
 

@@ -23,6 +23,14 @@ describe PagesController do
 
       expect(response).to render_template(layout: false)
     end
+
+    it 'does not load session' do
+      routes.draw { get 'foo' => 'pages#page_not_found' }
+
+      get :page_not_found
+
+      expect(session).to be_empty
+    end
   end
 
   describe 'content expiry' do

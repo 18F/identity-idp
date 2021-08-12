@@ -4,7 +4,7 @@ module Idv
       AAMVA_SUPPORTED_JURISDICTIONS = %w[
         AR AZ CO CT DC DE FL GA IA ID IL IN KY MA MD ME MI MO MS MT ND NE NJ NM
         PA RI SC SD TX VA VT WA WI WY
-      ].freeze
+      ].to_set.freeze
 
       private
 
@@ -81,7 +81,7 @@ module Idv
       end
 
       def aamva_state?(pii_from_doc)
-        AAMVA_SUPPORTED_JURISDICTIONS.include? pii_from_doc['state_id_jurisdiction']
+        AAMVA_SUPPORTED_JURISDICTIONS.include?(pii_from_doc['state_id_jurisdiction'])
       end
 
       def aamva_disallowed_for_service_provider?

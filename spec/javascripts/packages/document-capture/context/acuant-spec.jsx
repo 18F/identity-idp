@@ -133,29 +133,65 @@ describe('document-capture/context/acuant', () => {
         window.AcuantJavascriptWebSdk = {
           initialize: (_credentials, _endpoint, { onSuccess }) => onSuccess(),
         };
-        window.AcuantCamera = { isCameraSupported: true };
-        window.onAcuantSdkLoaded();
       });
 
-      it('provides ready context', () => {
-        expect(result.current).to.eql({
-          isReady: true,
-          isAcuantLoaded: true,
-          isError: false,
-          isCameraSupported: true,
-          credentials: null,
-          endpoint: null,
-          glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
-          sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+      context('camera supported', () => {
+        beforeEach(() => {
+          window.AcuantCamera = { isCameraSupported: true };
+          window.onAcuantSdkLoaded();
+        });
+
+        it('provides ready context', () => {
+          expect(result.current).to.eql({
+            isReady: true,
+            isAcuantLoaded: true,
+            isError: false,
+            isCameraSupported: true,
+            credentials: null,
+            endpoint: null,
+            glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
+            sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+          });
+        });
+
+        it('logs', () => {
+          expect(addPageAction).to.have.been.calledWith({
+            label: 'IdV: Acuant SDK loaded',
+            payload: {
+              success: true,
+              isCameraSupported: true,
+            },
+          });
         });
       });
 
-      it('logs', () => {
-        expect(addPageAction).to.have.been.calledWith({
-          label: 'IdV: Acuant SDK loaded',
-          payload: {
-            success: true,
-          },
+      context('camera not supported', () => {
+        beforeEach(() => {
+          window.AcuantCamera = { isCameraSupported: false };
+          window.onAcuantSdkLoaded();
+        });
+
+        it('provides ready context', () => {
+          expect(result.current).to.eql({
+            isReady: true,
+            isAcuantLoaded: true,
+            isError: false,
+            isCameraSupported: false,
+            credentials: null,
+            endpoint: null,
+            glareThreshold: DEFAULT_ACCEPTABLE_GLARE_SCORE,
+            sharpnessThreshold: DEFAULT_ACCEPTABLE_SHARPNESS_SCORE,
+          });
+        });
+
+        it('logs', () => {
+          expect(addPageAction).to.have.been.calledWith({
+            label: 'IdV: Acuant SDK loaded',
+            payload: {
+              success: true,
+              isCameraSupported: false,
+            },
+          });
         });
       });
     });

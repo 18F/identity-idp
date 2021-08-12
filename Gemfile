@@ -24,7 +24,6 @@ gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'aws-sdk-eventbridge'
 gem 'base32-crockford'
-gem 'delayed_job_active_record', '~> 4.1'
 gem 'blueprinter', '~> 0.25.3'
 gem 'device_detector'
 gem 'devise', '~> 4.8'
@@ -32,6 +31,7 @@ gem 'dotiw', '>= 4.0.1'
 gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
 gem 'foundation_emails'
+gem 'good_job'
 gem 'hashie', '~> 4.1'
 gem 'hiredis'
 gem 'http_accept_language'
@@ -49,7 +49,6 @@ gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
-gem 'raise-if-root'
 gem 'readthis'
 gem 'redacted_struct'
 gem 'redis-session-store', '>= 0.11.3'
@@ -81,7 +80,6 @@ gem 'zxcvbn', '0.1.7'
 group :development do
   gem 'better_errors', '>= 2.5.1'
   gem 'binding_of_caller'
-  gem 'brakeman', require: false
   gem 'derailed_benchmarks', '~> 1.8'
   gem 'guard-rspec', require: false
   gem 'irb'
@@ -93,6 +91,7 @@ end
 group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
   gem 'bootsnap', '~> 1.7.0', require: false
+  gem 'brakeman', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'erb_lint', '~> 0.0.37', require: false
   gem 'i18n-tasks', '>= 0.9.31'
@@ -128,4 +127,8 @@ group :test do
   gem 'webdrivers', '~> 4.0'
   gem 'webmock'
   gem 'zonebie'
+end
+
+group :production do
+  gem 'raise-if-root'
 end

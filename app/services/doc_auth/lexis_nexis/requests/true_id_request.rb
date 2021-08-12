@@ -73,6 +73,10 @@ module DocAuth
         def metric_name
           'lexis_nexis_doc_auth_true_id'
         end
+
+        def timeout
+          config.trueid_timeout&.to_i || 45
+        end
       end
     end
   end

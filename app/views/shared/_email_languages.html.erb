@@ -14,14 +14,14 @@ locals:
                           checked: selection ?
                             selection.to_s == locale.to_s :
                             (I18n.locale.to_s == locale.to_s),
-                          class: 'usa-radio__input',
+                          class: 'usa-radio__input usa-radio__input--bordered',
                           id: item_id) %>
         <%= f.label(:email_language,
                     locale == I18n.locale ?
                       t("account.email_language.default", language: t("i18n.locale.#{locale}")) :
                       t("i18n.locale.#{locale}"),
                     for: item_id,
-                    class: 'usa-radio__label usa-radio-bordered') %>
+                    class: 'usa-radio__label width-full') %>
       </li>
     <% end %>
   </ul>

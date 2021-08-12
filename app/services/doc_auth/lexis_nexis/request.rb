@@ -89,7 +89,6 @@ module DocAuth
       end
 
       def faraday_request_params
-        timeout = config.timeout&.to_i || 45
         { open_timeout: timeout, timeout: timeout }
       end
 
@@ -151,6 +150,10 @@ module DocAuth
 
       def request_mode
         config.request_mode
+      end
+
+      def timeout
+        config.timeout&.to_i || 45
       end
     end
   end
