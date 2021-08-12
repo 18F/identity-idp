@@ -20,7 +20,15 @@ module BillableEventTrackable
   end
 
   def update_sp_return_log(billable:)
-    Db::SpReturnLog.add_return(request_id, current_user.id, billable)
+    ial_context = IalContext.new(
+      ial: sp_session_ial, service_provider: current_sp, user: current_user,
+    )
+    Db::SpReturnLog.add_return(
+      request_id: request_id,
+      user_id: current_user.id,
+      billable: billable,
+      ial: ial_context.bill_for_ial_1_or_2,
+    )
   end
 
   def current_session_has_been_billed?
