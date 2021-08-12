@@ -33,7 +33,6 @@ class SimplecovHelper
 
       track_files '{app,lib}/**/*.rb'
       add_group 'Controllers', 'app/controllers'
-      add_group 'Channels', 'app/channels'
       add_group 'Forms', 'app/forms'
       add_group 'Models', 'app/models'
       add_group 'Mailers', 'app/mailers'
