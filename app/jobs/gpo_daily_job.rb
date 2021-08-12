@@ -7,6 +7,8 @@ class GpoDailyJob < ApplicationJob
     key: -> { "gpo-daily-job-#{arguments.first}" },
   )
 
+  discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
+
   # Enqueue a test letter every day, but only upload letters on working weekdays
   def perform(date)
     GpoDailyTestSender.new.run

@@ -9,6 +9,8 @@ module Agreements
         key: -> { "partner-api-report-#{arguments.first}" },
       )
 
+      discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
+
       def perform(_date)
         return unless IdentityConfig.store.enable_partner_api
 

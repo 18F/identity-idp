@@ -8,6 +8,8 @@ module AccountReset
       key: -> { "grant-requests-and-send-emails-#{arguments.first}" },
     )
 
+    discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
+
     def perform(_date)
       notifications_sent = 0
       AccountResetRequest.where(

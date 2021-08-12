@@ -5,7 +5,4 @@ class ApplicationJob < ActiveJob::Base
 
   # Most jobs are safe to ignore if the underlying records are no longer available
   # discard_on ActiveJob::DeserializationError
-
-  # We use good_job's concurrency features to cancel "extra" or duplicative runs of the same job
-  discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 end
