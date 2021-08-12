@@ -757,7 +757,7 @@ PG:
 PH:
   country_code: '63'
   name: Philippines
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
 PK:
   country_code: '92'

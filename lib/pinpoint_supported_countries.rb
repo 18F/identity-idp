@@ -10,7 +10,9 @@ class PinpointSupportedCountries
   PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-voice-countries.html'.freeze
 
   # The list of countries where we have our sender ID registered
-  SENDER_ID_COUNTRIES = %w[].to_set.freeze
+  SENDER_ID_COUNTRIES = %w[
+    PH
+  ].to_set.freeze
 
   CountrySupport = Struct.new(
     :iso_code,
