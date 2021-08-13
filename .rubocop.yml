@@ -48,8 +48,7 @@ IdentityIdp/UrlOptionsLinter:
 Layout/AccessModifierIndentation:
   Enabled: true
   EnforcedStyle: indent
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/ArgumentAlignment:
   Enabled: true
 
@@ -146,21 +145,18 @@ Layout/ExtraSpacing:
 Layout/FirstArgumentIndentation:
   Enabled: true
   EnforcedStyle: consistent
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: special_inside_parentheses
   SupportedStyles:
     - special_inside_parentheses
     - consistent
     - align_brackets
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/FirstHashElementIndentation:
   Enabled: true
   EnforcedStyle: consistent
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/FirstMethodArgumentLineBreak:
   Enabled: true
 
@@ -176,8 +172,7 @@ Layout/IndentationConsistency:
 
 Layout/IndentationStyle:
   Enabled: true
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/InitialIndentation:
   Enabled: true
 
@@ -222,8 +217,7 @@ Layout/MultilineOperationIndentation:
   SupportedStyles:
     - aligned
     - indented
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/ParameterAlignment:
   Description: Align the parameters of a method call if they span more than one line.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-double-indent
@@ -231,8 +225,7 @@ Layout/ParameterAlignment:
   SupportedStyles:
     - with_first_parameter
     - with_fixed_indentation
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/RescueEnsureAlignment:
   Enabled: true
 
@@ -738,8 +731,7 @@ Rails/FilePath:
   Enabled: false
 
 Rails/HttpPositionalArguments:
-  Description: Use keyword arguments instead of positional arguments in http method
-    calls.
+  Description: Use keyword arguments instead of positional arguments in http method calls.
   Enabled: true
   Include:
     - spec/**/*

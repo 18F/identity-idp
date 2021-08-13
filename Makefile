@@ -95,7 +95,11 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
 .PHONY: setup all lint run test check brakeman
 
 normalize_yaml:
-	find ./config/locales -type f | xargs yarn normalize-yaml config/pinpoint_supported_countries.yml config/pinpoint_overrides.yml config/country_dialing_codes.yml
+	yarn normalize-yaml .rubocop.yml --no-format
+	find ./config/locales -type f | xargs yarn normalize-yaml \
+		config/pinpoint_supported_countries.yml \
+		config/pinpoint_overrides.yml \
+		config/country_dialing_codes.yml
 
 optimize_svg:
 	# Without disabling minifyStyles, keyframes are removed (e.g. `app/assets/images/id-card.svg`).
