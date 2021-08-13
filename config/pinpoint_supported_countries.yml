@@ -137,7 +137,7 @@ BW:
 BY:
   country_code: '375'
   name: Belarus
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 BZ:
   country_code: '501'
@@ -257,7 +257,7 @@ EE:
 EG:
   country_code: '20'
   name: Egypt
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 ER:
   country_code: '291'
@@ -912,7 +912,7 @@ TG:
 TH:
   country_code: '66'
   name: Thailand
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
 TJ:
   country_code: '992'

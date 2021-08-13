@@ -11,7 +11,10 @@ class PinpointSupportedCountries
 
   # The list of countries where we have our sender ID registered
   SENDER_ID_COUNTRIES = %w[
+    BY
+    EG
     PH
+    TH
   ].to_set.freeze
 
   CountrySupport = Struct.new(
