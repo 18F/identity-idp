@@ -63,6 +63,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
           user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
 
           action
+
+          sp_return_log = SpReturnLog.find_by(issuer: client_id)
+          expect(sp_return_log.ial).to eq(1)
         end
 
         context 'with ial2 requested' do
@@ -112,6 +115,28 @@ RSpec.describe OpenidConnect::AuthorizationController do
               )
               allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
               action
+
+              sp_return_log = SpReturnLog.find_by(issuer: client_id)
+                expect(sp_return_log.ial).to eq(2)
+            end
+
+            context 'with the IAL2-string flag' do
+              before do
+                params[:acr_values] = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
+                allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)
+              end
+
+              it 'creates an IAL2 SpReturnLog record' do
+                IdentityLinker.new(user, client_id).link_identity(ial: 22)
+                user.identities.last.update!(
+                  verified_attributes: %w[given_name family_name birthdate verified_at],
+                )
+                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+                action
+
+                sp_return_log = SpReturnLog.find_by(issuer: client_id)
+                expect(sp_return_log.ial).to eq(2)
+              end
             end
           end
 
@@ -183,6 +208,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
           action
+
+          expect(SpReturnLog.count).to eq(0)
         end
       end
 
@@ -207,6 +234,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(@analytics).to_not receive(:track_event).with(Analytics::SP_REDIRECT_INITIATED)
 
           action
+
+          expect(SpReturnLog.count).to eq(0)
         end
       end
     end
