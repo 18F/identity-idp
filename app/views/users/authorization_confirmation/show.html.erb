@@ -32,17 +32,17 @@
   </div>
 
   <div class='margin-top-4 center'>
-    <%= button_to(t('user_authorization_confirmation.continue'),
-                  sign_up_completed_path,
-                  class: 'usa-button usa-button--big usa-button--wide') %>
+    <%= button_to(sign_up_completed_path,
+                  class: 'usa-button usa-button--big usa-button--wide') 
+                  { t('user_authorization_confirmation.continue') } %>
   </div>
   <div class='margin-top-4 center'>
     <%= t('user_authorization_confirmation.or') %>
   </div>
   <div class='margin-top-4 center'>
-    <%= button_to(t('user_authorization_confirmation.sign_in'),
-          reset_user_authorization_path,
+    <%= button_to(reset_user_authorization_path,
           class: 'usa-button usa-button--big usa-button--wide',
-          method: :put) %>
+          method: :put) 
+          { t('user_authorization_confirmation.sign_in') } %>
   </div>
 </div>
