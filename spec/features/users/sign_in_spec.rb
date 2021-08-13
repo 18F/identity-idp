@@ -584,11 +584,15 @@ feature 'Sign in' do
     end
   end
 
+  # For these tests, we need to have a country that is supports_sms: true, supports_vocie: false
+  let(:unsupported_country_phone_number) { '+354 611 1234' }
+  let(:unsupported_country_name) { 'Iceland' }
+
   context 'user tries to visit /login/two_factor/voice with an unsupported phone' do
     it 'displays an error message but does not send another SMS' do
       user = create(
         :user, :signed_up,
-        otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' }
+        otp_delivery_preference: 'sms', with: { phone: unsupported_country_phone_number }
       )
       signin(user.email, user.password)
       visit login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
@@ -599,7 +603,7 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'India',
+        location: unsupported_country_name,
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
     end
@@ -609,7 +613,7 @@ feature 'Sign in' do
     it 'displays an error message but does not send another SMS' do
       user = create(
         :user, :signed_up,
-        otp_delivery_preference: 'sms', with: { phone: '+91 1234567890' }
+        otp_delivery_preference: 'sms', with: { phone: unsupported_country_phone_number }
       )
       signin(user.email, user.password)
       visit otp_send_path(
@@ -622,7 +626,7 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'India',
+        location: unsupported_country_name,
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
     end
@@ -632,7 +636,7 @@ feature 'Sign in' do
     it 'displays an error message but does not send another SMS' do
       user = create(
         :user, :signed_up,
-        otp_delivery_preference: 'voice', with: { phone: '+91 1234567890' }
+        otp_delivery_preference: 'voice', with: { phone: unsupported_country_phone_number }
       )
       signin(user.email, user.password)
       visit otp_send_path(
@@ -645,7 +649,7 @@ feature 'Sign in' do
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
         'two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'India',
+        location: unsupported_country_name,
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
     end
