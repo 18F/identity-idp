@@ -95,7 +95,7 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
 .PHONY: setup all lint run test check brakeman
 
 normalize_yaml:
-	yarn normalize-yaml .rubocop.yml --no-format
+	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-format-content
 	find ./config/locales -type f | xargs yarn normalize-yaml \
 		config/pinpoint_supported_countries.yml \
 		config/pinpoint_overrides.yml \
