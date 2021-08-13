@@ -2,11 +2,13 @@ import YAML from 'yaml';
 import prettier from 'prettier';
 import { getVisitors } from './visitors/index.js';
 
+/** @typedef {'formatContent'|'sortKeys'} Formatter */
+
 /**
  * @typedef NormalizeOptions
  *
  * @prop {Record<string,any>=} prettierConfig Optional Prettier configuration object.
- * @prop {Array<import('./visitors').Formatter>=} formatters Formatters to enable.
+ * @prop {Array<Formatter>=} exclude Formatters to exclude.
  */
 
 /**
@@ -15,9 +17,9 @@ import { getVisitors } from './visitors/index.js';
  *
  * @return {string} Normalized content.
  */
-function normalize(content, { prettierConfig, formatters } = {}) {
+function normalize(content, { prettierConfig, exclude } = {}) {
   const document = YAML.parseDocument(content);
-  YAML.visit(document, getVisitors({ include: formatters }));
+  YAML.visit(document, getVisitors({ exclude }));
   return prettier.format(document.toString(), { ...prettierConfig, parser: 'yaml' });
 }
 

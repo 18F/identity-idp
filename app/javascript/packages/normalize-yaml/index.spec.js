@@ -30,10 +30,10 @@ describe('normalize', () => {
     expect(normalize(original, { prettierConfig })).to.equal(expected);
   });
 
-  it('allows formatting with specific formatters only', () => {
+  it('allows formatting with excluded formatters', () => {
     const original = '---\nmap:\n  b: ...\n  a: ...';
     const expected = '---\nmap:\n  a: ...\n  b: ...\n';
 
-    expect(normalize(original, { formatters: ['sortKeys'] })).to.equal(expected);
+    expect(normalize(original, { exclude: ['formatContent'] })).to.equal(expected);
   });
 });

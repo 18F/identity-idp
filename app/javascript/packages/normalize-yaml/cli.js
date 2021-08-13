@@ -14,10 +14,13 @@ const files = args.filter((arg) => !arg.startsWith('-'));
 const flags = args.filter((arg) => arg.startsWith('-'));
 
 /** @type {import('./index').NormalizeOptions} */
-const options = { prettierConfig };
-if (flags.includes('--no-format')) {
-  options.formatters = [];
-}
+const options = {
+  prettierConfig,
+  exclude: /** @type {import('./index').Formatter[]} */ ([
+    flags.includes('--disable-sort-keys') && 'sortKeys',
+    flags.includes('--disable-format-content') && 'formatContent',
+  ].filter(Boolean)),
+};
 
 Promise.all(
   files.map(async (relativePath) => {
