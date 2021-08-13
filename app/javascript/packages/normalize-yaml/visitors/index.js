@@ -8,7 +8,7 @@ import sortKeys from './sort-keys.js';
 const DEFAULT_VISITORS = { formatContent, sortKeys };
 
 /**
- * @param {{ include?: Array<keyof DEFAULT_VISITORS> }} include
+ * @param {{ include?: Formatter[] }} include
  *
  * @return {Visitor}
  */
