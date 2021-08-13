@@ -202,6 +202,7 @@ class IdentityConfig
     config.add(:phone_setups_per_ip_period, type: :integer)
     config.add(:pii_lock_timeout_in_minutes, type: :integer)
     config.add(:pinpoint_sms_configs, type: :json)
+    config.add(:pinpoint_sms_sender_id, type: :string, allow_nil: true)
     config.add(:pinpoint_voice_configs, type: :json)
     config.add(:piv_cac_service_url)
     config.add(:piv_cac_verify_token_secret)

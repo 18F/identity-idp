@@ -38,10 +38,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 7e255d9a30d605af6529ad6062b3edce00698d77
-  tag: v0.3.0
+  revision: ce223b6e55e052a63d6bf731f3bd90957cb2040c
+  tag: v0.3.1
   specs:
-    identity-telephony (0.3.0)
+    identity-telephony (0.3.1)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n

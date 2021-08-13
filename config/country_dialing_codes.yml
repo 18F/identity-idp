@@ -162,7 +162,7 @@ BW:
 BY:
   country_code: '375'
   name: Belarus
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 BZ:
@@ -288,7 +288,7 @@ EE:
 EG:
   country_code: '20'
   name: Egypt
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
 ER:
   country_code: '291'
@@ -468,7 +468,7 @@ IM:
 IN:
   country_code: '91'
   name: India
-  supports_sms: true
+  supports_sms: false
   supports_voice: false
 IQ:
   country_code: '964'
@@ -581,7 +581,7 @@ LI:
 LK:
   country_code: '94'
   name: Sri Lanka
-  supports_sms: true
+  supports_sms: false
   supports_voice: false
 LR:
   country_code: '231'
@@ -801,7 +801,7 @@ PG:
 PH:
   country_code: '63'
   name: Philippines
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 PK:
@@ -970,7 +970,7 @@ TG:
 TH:
   country_code: '66'
   name: Thailand
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 TJ:
@@ -1001,7 +1001,7 @@ TO:
 TR:
   country_code: '90'
   name: Turkey
-  supports_sms: true
+  supports_sms: false
   supports_voice: false
 TT:
   country_code: '1868'

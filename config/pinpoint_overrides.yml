@@ -41,7 +41,6 @@ BO:
 BR:
   supports_voice: false
 BY:
-  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 CA:
@@ -66,7 +65,6 @@ DZ:
 EC:
   supports_voice: false
 EG:
-  supports_sms: false
   supports_voice: true
 FI:
   supports_voice: false
@@ -155,7 +153,6 @@ PA:
 PE:
   supports_voice: false
 PH:
-  supports_sms: false
   supports_voice_unconfirmed: false
 PK:
   supports_voice: false
@@ -194,7 +191,6 @@ TD:
   supports_sms: true
   supports_voice: false
 TH:
-  supports_sms: false
   supports_voice_unconfirmed: false
 TJ:
   supports_voice: false

@@ -9,6 +9,14 @@ class PinpointSupportedCountries
   PINPOINT_SMS_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-countries.html'.freeze
   PINPOINT_VOICE_URL = 'https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-voice-countries.html'.freeze
 
+  # The list of countries where we have our sender ID registered
+  SENDER_ID_COUNTRIES = %w[
+    BY
+    EG
+    PH
+    TH
+  ].to_set.freeze
+
   CountrySupport = Struct.new(
     :iso_code,
     :name,
@@ -56,12 +64,18 @@ class PinpointSupportedCountries
       convert.
       select { |sms_config| sms_config['ISO code'] }. # skip section rows
       map do |sms_config|
+        iso_code = sms_config['ISO code']
+        supports_sms = case trim_trailing_digits_spaces(sms_config['Supports sender IDs'])
+        when 'Registration required'
+          SENDER_ID_COUNTRIES.include?(iso_code)
+        else
+          true
+        end
+
         CountrySupport.new(
-          iso_code: sms_config['ISO code'],
+          iso_code: iso_code,
           name: trim_trailing_digits_spaces(sms_config['Country or region']),
-          # The list is of supported countries, but ones that are 'Yes1' require sender IDs,
-          # which we do not have (so we do not support them)
-          supports_sms: sms_config['Supports sender IDs'] != 'Yes1',
+          supports_sms: supports_sms,
         )
       end
   end
