@@ -162,7 +162,7 @@ BW:
 BY:
   country_code: '375'
   name: Belarus
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 BZ:
@@ -288,7 +288,7 @@ EE:
 EG:
   country_code: '20'
   name: Egypt
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
 ER:
   country_code: '291'
@@ -801,7 +801,7 @@ PG:
 PH:
   country_code: '63'
   name: Philippines
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 PK:
@@ -970,7 +970,7 @@ TG:
 TH:
   country_code: '66'
   name: Thailand
-  supports_sms: false
+  supports_sms: true
   supports_voice: true
   supports_voice_unconfirmed: false
 TJ:
