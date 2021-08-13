@@ -38,8 +38,8 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: fc61cc534d5fef392e0b81ad3a60beed0dc9555b
-  branch: margolis-sms-sender-id
+  revision: ce223b6e55e052a63d6bf731f3bd90957cb2040c
+  tag: v0.3.1
   specs:
     identity-telephony (0.3.1)
       aws-sdk-pinpoint
