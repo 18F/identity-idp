@@ -6,7 +6,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     instance_double(Faraday::Response, status: 200, body: success_response_body)
   end
   let(:failure_body_no_liveness) { LexisNexisFixtures.true_id_response_failure_no_liveness }
-  let(:failure_body_with_liveness) { LexisNexisFixtures.true_id_response_failure_with_liveness}
+  let(:failure_body_with_liveness) { LexisNexisFixtures.true_id_response_failure_with_liveness }
   let(:failure_body_with_all_failures) do
     LexisNexisFixtures.true_id_response_failure_with_all_failures
   end
