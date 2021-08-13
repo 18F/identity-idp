@@ -2,7 +2,7 @@ import YAML from 'yaml';
 import prettier from 'prettier';
 import { getVisitors } from './visitors/index.js';
 
-/** @typedef {'formatContent'|'sortKeys'} Formatter */
+/** @typedef {'smartPunctuation'|'sortKeys'} Formatter */
 
 /**
  * @typedef NormalizeOptions

@@ -1,4 +1,4 @@
-import { replaceInHTMLContent, ellipses } from './format-content.js';
+import { replaceInHTMLContent, ellipses } from './smart-punctuation.js';
 
 describe('replaceInHTMLContent', () => {
   it('replaces in html content', () => {

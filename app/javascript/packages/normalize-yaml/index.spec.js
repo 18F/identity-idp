@@ -34,6 +34,6 @@ describe('normalize', () => {
     const original = '---\nmap:\n  b: ...\n  a: ...';
     const expected = '---\nmap:\n  a: ...\n  b: ...\n';
 
-    expect(normalize(original, { exclude: ['formatContent'] })).to.equal(expected);
+    expect(normalize(original, { exclude: ['smartPunctuation'] })).to.equal(expected);
   });
 });
