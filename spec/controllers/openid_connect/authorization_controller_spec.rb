@@ -117,7 +117,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               action
 
               sp_return_log = SpReturnLog.find_by(issuer: client_id)
-                expect(sp_return_log.ial).to eq(2)
+              expect(sp_return_log.ial).to eq(2)
             end
 
             context 'with the IAL2-string flag' do
