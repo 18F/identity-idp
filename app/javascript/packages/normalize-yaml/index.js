@@ -1,16 +1,23 @@
 import YAML from 'yaml';
 import prettier from 'prettier';
-import visitors from './visitors/index.js';
+import { getVisitors } from './visitors/index.js';
+
+/**
+ * @typedef NormalizeOptions
+ *
+ * @prop {Record<string,any>=} prettierConfig Optional Prettier configuration object.
+ * @prop {Array<import('./visitors').Formatter>=} formatters Formatters to enable.
+ */
 
 /**
  * @param {string} content Original content.
- * @param {Record<string,any>=} prettierConfig Optional Prettier configuration object.
+ * @param {NormalizeOptions=} options Normalize options.
  *
  * @return {string} Normalized content.
  */
-function normalize(content, prettierConfig) {
+function normalize(content, { prettierConfig, formatters } = {}) {
   const document = YAML.parseDocument(content);
-  YAML.visit(document, visitors);
+  YAML.visit(document, getVisitors({ include: formatters }));
   return prettier.format(document.toString(), { ...prettierConfig, parser: 'yaml' });
 }
 
