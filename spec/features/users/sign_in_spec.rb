@@ -584,7 +584,7 @@ feature 'Sign in' do
     end
   end
 
-  # For these tests, we need to have a country that is supports_sms: true, supports_vocie: false
+  # For these tests, we need to have a country that is supports_sms: true, supports_voice: false
   let(:unsupported_country_phone_number) { '+354 611 1234' }
   let(:unsupported_country_name) { 'Iceland' }
 
