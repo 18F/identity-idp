@@ -4,7 +4,7 @@ module AwsS3Helper
   end
 
   def s3_resource
-    Aws::S3::Resource.new(region: aws_region)
+    Aws::S3::Resource.new(region: Identity::Hostdata.aws_region)
   rescue Aws::Sigv4::Errors::MissingCredentialsError => aws_error
     Rails.logger.info "Aws Missing CredentialsError!\n" + aws_error.message
     nil
