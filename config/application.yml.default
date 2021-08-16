@@ -230,6 +230,9 @@ development:
   database_readonly_username: ''
   database_username: ''
   doc_auth_vendor: 'mock'
+  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: localhost:3000
   enable_rate_limiting: 'false'
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -286,6 +289,9 @@ production:
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
   doc_auth_vendor: 'acuant'
+  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
@@ -344,6 +350,9 @@ test:
   database_username: ''
   doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'
+  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize_alternate_vendor: ''
   doc_capture_polling_enabled: 'false'
   domain_name: www.example.com
   exception_recipients: test1@test.com
