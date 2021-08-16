@@ -199,6 +199,17 @@ module DocAuthRouter
   # rubocop:enable Layout/LineLength
 
   def self.doc_auth_vendor
+    if IdentityConfig.store.doc_auth_vendor_randomize
+      target_percent = IdentityConfig.store.doc_auth_vendor_randomize_percent
+
+      target_percent = target_percent > 100 ? 100 : target_percent
+      target_percent = target_percent < 0 ? 0 : target_percent
+
+      if rand(100) < target_percent
+        return IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
+      end
+    end
+
     IdentityConfig.store.doc_auth_vendor
   end
 end

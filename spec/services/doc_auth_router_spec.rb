@@ -31,6 +31,91 @@ RSpec.describe DocAuthRouter do
         expect { DocAuthRouter.client }.to raise_error(RuntimeError)
       end
     end
+
+    context 'for randomize config' do
+      let(:doc_auth_vendor) { 'test1' }
+      let(:doc_auth_vendor_randomize) { true }
+      let(:doc_auth_vendor_randomize_vendor) { 'test2' }
+      let(:iterations) { 500 }
+      let(:percent_variance) { 0.035 } # 3.5% variance in randomness
+
+      before(:each) do
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).and_return(doc_auth_vendor_randomize)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_vendor).and_return(doc_auth_vendor_randomize_vendor)
+      end
+
+      it 'doc_auth_vendor randomizes at a high number' do
+        doc_auth_vendor_randomize_percent = 75
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).and_return(doc_auth_vendor_randomize_percent)
+
+        results = []
+        (1..iterations).each { |_i| results.push(DocAuthRouter.doc_auth_vendor) }
+
+        target_value = iterations*(doc_auth_vendor_randomize_percent.to_f/100)
+
+        expect(results.tally['test2']).to be_within(iterations*percent_variance).of(target_value)
+      end
+
+      it 'doc_auth_vendor randomizes at a very high number' do
+        doc_auth_vendor_randomize_percent = 97
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).and_return(doc_auth_vendor_randomize_percent)
+
+        results = []
+        (1..iterations).each { |_i| results.push(DocAuthRouter.doc_auth_vendor) }
+
+        target_value = iterations*(doc_auth_vendor_randomize_percent.to_f/100)
+
+        expect(results.tally['test2']).to be_within(iterations*percent_variance).of(target_value)
+      end
+
+      it 'doc_auth_vendor randomizes at a low number' do
+        doc_auth_vendor_randomize_percent = 15
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent)
+          .and_return(doc_auth_vendor_randomize_percent)
+
+        results = []
+        (1..iterations).each { |_i| results.push(DocAuthRouter.doc_auth_vendor) }
+
+        target_value = iterations*(doc_auth_vendor_randomize_percent.to_f/100)
+
+        expect(results.tally['test2']).to be_within(iterations*percent_variance).of(target_value)
+      end
+
+      it 'doc_auth_vendor randomizes at a very low number' do
+        doc_auth_vendor_randomize_percent = 4
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent)
+          .and_return(doc_auth_vendor_randomize_percent)
+
+        results = []
+        (1..iterations).each { |_i| results.push(DocAuthRouter.doc_auth_vendor) }
+
+        target_value = iterations*(doc_auth_vendor_randomize_percent.to_f/100)
+
+        expect(results.tally['test2']).to be_within(iterations*percent_variance).of(target_value)
+      end
+
+      it 'doc_auth_vendor randomizes at 100 when set above 100' do
+        doc_auth_vendor_randomize_percent = 105
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent)
+          .and_return(doc_auth_vendor_randomize_percent)
+
+        results = []
+        (1..iterations).each { |_i| results.push(DocAuthRouter.doc_auth_vendor) }
+
+        expect(results.tally['test2']).to be(iterations)
+      end
+
+      it 'doc_auth_vendor randomizes at 0 when set below 0' do
+        doc_auth_vendor_randomize_percent = -5
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent)
+          .and_return(doc_auth_vendor_randomize_percent)
+
+        results = []
+        (1..iterations).each { |_i| results.push(DocAuthRouter.doc_auth_vendor) }
+
+        expect(results.tally['test2']).to be(nil)
+      end
+    end
   end
 
   describe DocAuthRouter::DocAuthErrorTranslatorProxy do
