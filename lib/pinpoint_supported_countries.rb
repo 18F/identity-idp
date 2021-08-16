@@ -13,6 +13,7 @@ class PinpointSupportedCountries
   SENDER_ID_COUNTRIES = %w[
     BY
     EG
+    JO
     PH
     TH
   ].to_set.freeze

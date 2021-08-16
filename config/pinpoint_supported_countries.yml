@@ -467,7 +467,7 @@ JM:
 JO:
   country_code: '962'
   name: Jordan
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 JP:
   country_code: '81'
