@@ -35,13 +35,13 @@ RSpec.describe DocAuthRouter do
     context 'for randomize config' do
       let(:doc_auth_vendor) { 'test1' }
       let(:doc_auth_vendor_randomize) { true }
-      let(:doc_auth_vendor_randomize_vendor) { 'test2' }
+      let(:doc_auth_vendor_randomize_alternate_vendor) { 'test2' }
       let(:iterations) { 500 }
       let(:percent_variance) { 0.035 } # 3.5% variance in randomness
 
       before(:each) do
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).and_return(doc_auth_vendor_randomize)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_vendor).and_return(doc_auth_vendor_randomize_vendor)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).and_return(doc_auth_vendor_randomize_alternate_vendor)
       end
 
       it 'doc_auth_vendor randomizes at a high number' do
