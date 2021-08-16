@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 5cb2c4138f59cd26e621ffa808440af961d759ea
-  branch: margolis-bucket-name
+  revision: c69cca28c5e9dd35c66c1bfbdb5c2218b560e14b
+  tag: v3.4.0
   specs:
     identity-hostdata (3.4.0)
       activesupport (~> 6.1)
