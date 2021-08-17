@@ -165,7 +165,7 @@ feature 'idv phone step' do
 
       expect(page).to have_content(t('idv.failure.phone.warning'))
 
-      click_on t('idv.form.activate_by_mail')
+      click_on t('idv.troubleshooting.options.verify_by_mail')
       expect(page).to have_content(t('idv.titles.mail.verify'))
 
       click_doc_auth_back_link
@@ -183,7 +183,7 @@ feature 'idv phone step' do
         click_idv_continue
 
         expect(page).to have_content(t('idv.failure.phone.warning'))
-        expect(page).to_not have_content(t('idv.form.activate_by_mail'))
+        expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
 
         click_on t('idv.failure.button.warning')
       end
@@ -192,7 +192,7 @@ feature 'idv phone step' do
       click_idv_continue
 
       expect(page).to have_content(t('idv.troubleshooting.headings.need_assistance'))
-      expect(page).to_not have_content(t('idv.form.activate_by_mail'))
+      expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
     end
   end
 

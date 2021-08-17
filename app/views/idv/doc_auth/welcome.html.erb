@@ -72,30 +72,45 @@
     </li>
   </ul>
 
-  <% if decorated_session.sp_name %>
-    <%= render(
-      'shared/troubleshooting_options',
-      heading_level: :h3,
-      heading: t('idv.troubleshooting.headings.missing_required_items'),
-      options: [
-        {
-          url: idv_doc_auth_return_to_sp_path,
-          text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-        },
-      ],
-    ) %>
-  <% end %>
+  <%= render(
+        'shared/troubleshooting_options',
+        heading_level: :h3,
+        heading: t('idv.troubleshooting.headings.missing_required_items'),
+        options: [
+          {
+            url: MarketingSite.help_idv_supported_documents_url,
+            text: t('idv.troubleshooting.options.supported_documents'),
+          },
+          {
+            url: MarketingSite.help_idv_verify_by_phone_url,
+            text: t('idv.troubleshooting.options.learn_more_address_verification_options'),
+          },
+          decorated_session.sp_name && {
+            url: idv_doc_auth_return_to_sp_path,
+            text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+          },
+        ].select(&:present?),
+      ) %>
 
   <h2><%= t('doc_auth.instructions.privacy') %></h2>
-  <p><%== t('doc_auth.info.privacy_html', link: new_window_link_to(t('doc_auth.instructions.learn_more'),
-            MarketingSite.security_and_privacy_practices_url)) %></p>
+  <p>
+    <%= t(
+          'doc_auth.info.privacy_html',
+          link: new_window_link_to(
+            t('doc_auth.instructions.learn_more'),
+            MarketingSite.security_and_privacy_practices_url,
+          ),
+        ) %>
+  </p>
 
   <%= validated_form_for :doc_auth,
                          url: url_for,
                          method: 'put',
                          html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
     <br/>
-    <%= f.button :button, t('doc_auth.buttons.continue'), type: :submit,
+    <%= f.button :button,
+                 t('doc_auth.buttons.continue'),
+                 type: :submit,
                  class: 'usa-button--big usa-button--wide' %>
   <% end %>
 

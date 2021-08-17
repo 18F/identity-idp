@@ -78,11 +78,9 @@ en:
         warning_2: You’ll have to re-enter your personal information, like your name,
           state ID number, etc.
     form:
-      activate_by_mail: Verify your address by mail instead
       address1: Address
       address2: Address (optional)
       city: City
-      no_alternate_phone_html: '<strong>%{link}</strong>. We’ll mail you a letter with a code in it.'
       password: Password
       phone: Phone Number
       ssn_label_html: Social Security Number
@@ -171,5 +169,11 @@ en:
         missing_required_items: Are you missing one of these items?
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
       options:
+        change_phone_number: Use a different phone number
         contact_support: Contact %{app} Support
         get_help_at_sp: Get help at %{sp_name}
+        learn_more_address_verification_options: Learn more about verifying by phone or mail
+        learn_more_verify_by_mail: Learn more about verifying your address by mail
+        learn_more_verify_by_phone: Learn more about verifying your phone number
+        supported_documents: See a list of accepted state-issued IDs
+        verify_by_mail: Verify your address by mail instead

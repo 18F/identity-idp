@@ -25,7 +25,7 @@ feature 'IAL2 Single Sign On' do
     fill_in_code_with_last_phone_otp
     click_submit_default
     complete_all_doc_auth_steps
-    click_on t('idv.form.activate_by_mail')
+    click_on t('idv.troubleshooting.options.verify_by_mail')
     click_on t('idv.buttons.mail.send')
     fill_in :user_password, with: user.password
     click_continue

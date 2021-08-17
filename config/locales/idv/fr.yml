@@ -88,12 +88,9 @@ fr:
         warning_2: Vous devrez ressaisir vos informations personnelles, comme votre nom,
           votre numéro d’identification, etc.
     form:
-      activate_by_mail: Vérifiez plutôt votre adresse par courrier
       address1: Adresse
       address2: Adresse (optional)
-      city: Ville
-      no_alternate_phone_html: '<strong>%{link}</strong>. Nous vous ferons parvenir
-        une lettre contenant un code.'
+      city: Ville une lettre contenant un code.'
       password: Mot de passe
       phone: Numéro de téléphone
       ssn_label_html: Numéro de sécurité sociale
@@ -194,5 +191,11 @@ fr:
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
       options:
+        change_phone_number: Utiliser un autre numéro de téléphone # Temporary
         contact_support: Contacter le service d’assistance de %{app}
         get_help_at_sp: Demandez de l’aide à %{sp_name}
+        learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
+        learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier
+        learn_more_verify_by_phone: En savoir plus sur la vérification de votre numéro de téléphone
+        supported_documents: Voir la liste des pièces d'identité acceptées et délivrées par l'État
+        verify_by_mail: Vérifiez plutôt votre adresse par courrier

@@ -61,16 +61,27 @@
  <%= f.input :phone, required: true, input_html: { aria: { invalid: false }, class: 'sm-col-8' }, label: false,
    wrapper_html: { class: 'margin-right-2' } %>
 
-  <% if gpo_letter_available %>
-    <%= render 'idv/phone/verification_options' %>
-  <% end %>
-
-  <%= render 'shared/spinner_button',
-             action_message: t('doc_auth.info.verifying'),
-             class: 'margin-top-4' do %>
-    <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide' %>
-  <% end %>
+  <div class="margin-y-5">
+    <%= render('shared/spinner_button', action_message: t('doc_auth.info.verifying')) do %>
+      <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide' %>
+    <% end %>
+  </div>
 <% end %>
+
+<%= render(
+      'shared/troubleshooting_options',
+      heading: t('idv.troubleshooting.headings.having_trouble'),
+      options: [
+        {
+          url: MarketingSite.help_idv_verify_by_phone_url,
+          text: t('idv.troubleshooting.options.learn_more_verify_by_phone'),
+        },
+        gpo_letter_available && {
+          url: idv_gpo_path,
+          text: t('idv.troubleshooting.options.verify_by_mail'),
+        },
+      ].select(&:present?),
+    ) %>
 
 <div class="margin-top-2 padding-top-1 border-top border-primary-light">
   <%= link_to t('links.cancel'), idv_cancel_path(step: 'phone') %>
