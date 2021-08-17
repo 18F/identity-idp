@@ -120,7 +120,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               expect(sp_return_log.ial).to eq(2)
             end
 
-            context 'with the IAL2-string flag' do
+            context 'with the IAL2-strict flag' do
               before do
                 params[:acr_values] = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
                 allow(IdentityConfig.store).to receive(:liveness_checking_enabled).and_return(true)

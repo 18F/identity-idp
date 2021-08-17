@@ -1,6 +1,4 @@
 module BillableEventTrackable
-  extend ActiveSupport::Concern
-
   def track_billing_events
     if current_session_has_been_billed?
       update_sp_return_log(billable: false)
