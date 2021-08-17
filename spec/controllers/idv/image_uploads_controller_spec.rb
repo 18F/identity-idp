@@ -181,7 +181,7 @@ describe Idv::ImageUploadsController do
           :with_throttled,
           attempts: IdentityConfig.store.acuant_max_attempts,
           user: user,
-          throttle_type: :idv_acuant
+          throttle_type: :idv_acuant,
         )
 
         stub_analytics
