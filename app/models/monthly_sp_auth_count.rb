@@ -6,7 +6,7 @@ class MonthlySpAuthCount < ApplicationRecord
              primary_key: 'issuer'
   # rubocop:enable Rails/InverseOf
 
-  def self.increment(user_id, issuer, ial)
+  def self.increment(user_id:, issuer:, ial:)
     # The following sql offers superior db performance with one write and no locking overhead
     sql = <<~SQL
       INSERT INTO monthly_sp_auth_counts (issuer, ial, year_month, user_id, auth_count)
