@@ -15,6 +15,7 @@ describe Idv::Steps::VerifyStep do
       session: { sp: { issuer: service_provider.issuer } },
       current_user: user,
       analytics: FakeAnalytics.new,
+      url_options: {},
       request: double(
         'request',
         headers: {
@@ -25,9 +26,15 @@ describe Idv::Steps::VerifyStep do
   end
   let(:amzn_trace_id) { SecureRandom.uuid }
 
+  let(:pii_from_doc) do
+    {
+      ssn: '123-45-6789'
+    }
+  end
+
   let(:flow) do
     Idv::Flows::DocAuthFlow.new(controller, {}, 'idv/doc_auth').tap do |flow|
-      flow.flow_session = { pii_from_doc: {} }
+      flow.flow_session = { pii_from_doc: pii_from_doc }
     end
   end
 
@@ -55,6 +62,48 @@ describe Idv::Steps::VerifyStep do
         )
 
       step.call
+    end
+
+    context 'when different users use the same SSN within the same timeframe' do
+      let(:user2) { create(:user) }
+      let(:flow2) do
+      end
+      let(:controller2) do
+        instance_double(
+          'controller',
+          session: { sp: { issuer: service_provider.issuer } },
+          current_user: user2,
+          analytics: FakeAnalytics.new,
+          url_options: {},
+          request: double('request', headers: {}),
+        )
+      end
+
+      def build_step(controller)
+        flow = Idv::Flows::DocAuthFlow.new(controller, {}, 'idv/doc_auth').tap do |flow|
+          flow.flow_session = { pii_from_doc: pii_from_doc }
+        end
+
+
+        Idv::Steps::VerifyStep.new(flow)
+      end
+
+       before do
+        stub_const('Throttle::THROTTLE_CONFIG', {
+          proof_ssn: {
+            max_attempts: 2,
+            attempt_window: 10,
+          }
+        }.with_indifferent_access)
+      end
+
+      it 'throttles them all' do
+        expect(build_step(controller).call).to be_kind_of(ApplicationJob)
+        expect(build_step(controller2).call).to be_kind_of(ApplicationJob)
+
+        expect(build_step(controller).call).to be_nil
+        expect(build_step(controller2).call).to be_nil
+      end
     end
   end
 end
