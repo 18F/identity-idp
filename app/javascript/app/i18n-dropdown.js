@@ -1,9 +1,9 @@
 import 'classlist-polyfill';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const mobileLink = document.querySelector('.i18n-mobile-toggle > a');
+  const mobileLink = document.querySelector('.i18n-mobile-toggle > div');
   const mobileDropdown = document.querySelector('.i18n-mobile-dropdown');
-  const desktopLink = document.querySelector('.i18n-desktop-toggle > div.language-button');
+          const desktopLink = document.querySelector('.i18n-desktop-toggle > div');
   const desktopDropdown = document.querySelector('.i18n-desktop-dropdown');
 
   function addListenerMulti(el, s, fn) {
