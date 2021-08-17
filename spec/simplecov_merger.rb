@@ -50,4 +50,6 @@ module SimpleCov
   end
 end
 
-SimpleCov::ResultMerger.merging!
+if $PROGRAM_NAME == __FILE__
+  SimpleCov::ResultMerger.merging!
+end
