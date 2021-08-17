@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_09_203128) do
+ActiveRecord::Schema.define(version: 2021_08_04_180216) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -256,6 +256,26 @@ ActiveRecord::Schema.define(version: 2021_08_09_203128) do
     t.index ["device_id", "created_at"], name: "index_events_on_device_id_and_created_at"
     t.index ["disavowal_token_fingerprint"], name: "index_events_on_disavowal_token_fingerprint"
     t.index ["user_id", "created_at"], name: "index_events_on_user_id_and_created_at"
+  end
+
+  create_table "good_jobs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "queue_name"
+    t.integer "priority"
+    t.jsonb "serialized_params"
+    t.datetime "scheduled_at"
+    t.datetime "performed_at"
+    t.datetime "finished_at"
+    t.text "error"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "active_job_id"
+    t.text "concurrency_key"
+    t.text "cron_key"
+    t.index ["active_job_id", "created_at"], name: "index_good_jobs_on_active_job_id_and_created_at"
+    t.index ["concurrency_key"], name: "index_good_jobs_on_concurrency_key_when_unfinished", where: "(finished_at IS NULL)"
+    t.index ["cron_key", "created_at"], name: "index_good_jobs_on_cron_key_and_created_at"
+    t.index ["queue_name", "scheduled_at"], name: "index_good_jobs_on_queue_name_and_scheduled_at", where: "(finished_at IS NULL)"
+    t.index ["scheduled_at"], name: "index_good_jobs_on_scheduled_at", where: "(finished_at IS NULL)"
   end
 
   create_table "iaa_gtcs", force: :cascade do |t|
