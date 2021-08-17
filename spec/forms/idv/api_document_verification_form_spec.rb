@@ -25,7 +25,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
   let(:back_image_iv) { 'back-iv' }
   let(:selfie_image_url) { 'http://example.com/selfie' }
   let(:selfie_image_iv) { 'selfie-iv' }
-  let!(:document_capture_session) { DocumentCaptureSession.create! }
+  let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:analytics) { FakeAnalytics.new }
   let(:liveness_checking_enabled?) { true }
@@ -113,7 +113,12 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
 
     context 'when throttled from submission' do
       before do
-        allow(Throttler::IsThrottledElseIncrement).to receive(:call).once.and_return(true)
+        create(
+          :throttle,
+          :with_throttled,
+          user: document_capture_session.user,
+          throttle_type: :idv_acuant,
+        )
         form.submit
       end
 

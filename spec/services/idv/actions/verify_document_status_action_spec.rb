@@ -60,6 +60,7 @@ describe Idv::Actions::VerifyDocumentStatusAction do
       verify_document_capture_session = DocumentCaptureSession.new(
         uuid: 'uuid',
         result_id: 'result_id',
+        user: create(:user),
       )
 
       expect(subject).to receive(:verify_document_capture_session).
