@@ -115,6 +115,8 @@ group :test do
   gem 'capybara-screenshot', '>= 1.0.23'
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'simplecov', '~> 0.21.0', require: false
+  gem 'simplecov-cobertura'
+  gem 'simplecov_json_formatter'
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'faker'

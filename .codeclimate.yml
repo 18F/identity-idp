@@ -61,4 +61,4 @@ exclude_patterns:
   - 'scripts/load_testing/'
   - 'tmp/'
   - 'config/initializers/jwt.rb'
-  - 'spec/support/monitor/monitor_email_helper.rb'
+  - 'spec/'

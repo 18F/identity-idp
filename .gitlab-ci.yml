@@ -5,6 +5,9 @@
 default:
   image: campuscode/ruby-gitlab-ci:2.7.3
 
+variables:
+  GITLAB_CI: 'true'
+
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
 
@@ -39,6 +42,7 @@ cache:
 stages:
   - build
   - test
+  - after_test
 
 .on_push:
   rules:
@@ -88,6 +92,7 @@ specs:
     AWS_REGION: us-west-2
     AWS_SECRET_ACCESS_KEY: test
     CAPYBARA_WAIT_TIME_SECONDS: 5
+    COVERAGE: 'true'
     POSTGRES_DB: upaya_test
     POSTGRES_USER: postgres_user
     POSTGRES_PASSWORD: postgres_password
@@ -98,6 +103,11 @@ specs:
       alias: db-postgres
     - name: redis
       alias: db-redis
+  artifacts:
+    expire_in: 31d
+    when: always
+    paths:
+      - coverage/
   script:
     - *bundle_install
     - *yarn_install
@@ -128,6 +138,20 @@ js_tests:
   script:
     - *yarn_install
     - yarn test
+
+coverage:
+  stage: after_test
+  script:
+    - *bundle_install
+    - bundle exec spec/simplecov_merger.rb
+  artifacts:
+      name: coverage
+      expire_in: 31d
+      paths:
+        - coverage/coverage/index.html
+        - coverage/coverage/assets/
+      reports:
+        cobertura: coverage/coverage/coverage.xml
 
 sync_from_github:
   image: mirror.gcr.io/alpine/git:latest

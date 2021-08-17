@@ -14,6 +14,7 @@ executors:
       # Specify the Ruby version you desire here
       - image: circleci/ruby:2.7.3-node-browsers
         environment:
+          CIRCLE_CI: 'true'
           RAILS_ENV: test
           BUNDLER_VERSION: 2.2.20
           # The base image sets NODE_VERSION environment variable, which we don't intend to use. Its
