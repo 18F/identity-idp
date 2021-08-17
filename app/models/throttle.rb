@@ -1,6 +1,7 @@
 class Throttle < ApplicationRecord
   belongs_to :user
-  validates :user_id, presence: true
+  validates :user_id, presence: true, unless: :target?
+  validates :target, presence: true, unless: :user_id?
 
   enum throttle_type: {
     idv_acuant: 1,
@@ -48,8 +49,49 @@ class Throttle < ApplicationRecord
     },
   }.freeze
 
+  # @param [User,Integer,String] target User, its ID, or a string identifier
+  # @param [Symbol] throttle_type
+  # @return [Throttle]
+  def self.for(target:, throttle_type:)
+    throttle = case target
+    when User
+      find_or_create_by(user: target, throttle_type: throttle_type)
+    when Integer
+      find_or_create_by(user_id: target, throttle_type: throttle_type)
+    when String
+      find_or_create_by(target: target, throttle_type: throttle_type)
+    else
+      raise "Unknown throttle target class=#{target.class}"
+    end
+
+    throttle.tap do |t|
+      t.reset_if_expired_and_maxed
+    end
+  end
+
+  # @return [Throttle]
+  def increment
+    return self if maxed?
+    update(attempts: attempts + 1, attempted_at: Time.zone.now)
+    self
+  end
+
   def throttled?
     !expired? && maxed?
+  end
+
+  def throttled_else_increment?
+    if throttled?
+      true
+    else
+      update(attempts: attempts + 1, attempted_at: Time.zone.now)
+      false
+    end
+  end
+
+  def reset
+    update(attempts: 0)
+    self
   end
 
   def remaining_count
@@ -72,5 +114,11 @@ class Throttle < ApplicationRecord
   def self.config_values(throttle_type)
     config = THROTTLE_CONFIG.with_indifferent_access[throttle_type]
     [config[:max_attempts], config[:attempt_window]]
+  end
+
+  # @api private
+  def reset_if_expired_and_maxed
+    return unless expired? && maxed?
+    update(attempts: 0, throttled_count: throttled_count.to_i + 1)
   end
 end

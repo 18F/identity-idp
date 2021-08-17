@@ -13,7 +13,7 @@ module Users
         personal_key: '',
       )
 
-      if Throttler::IsThrottled.call(current_user.id, :verify_personal_key)
+      if throttle.throttled?
         render_throttled
       else
         render :new
@@ -21,12 +21,7 @@ module Users
     end
 
     def create
-      throttled = Throttler::IsThrottledElseIncrement.call(
-        current_user.id,
-        :verify_personal_key,
-      )
-
-      if throttled
+      if throttle.throttled_else_increment?
         render_throttled
       else
         result = personal_key_form.submit
@@ -42,9 +37,16 @@ module Users
 
     private
 
+    def throttle
+      @throttle ||= Throttle.for(
+        target: current_user,
+        throttle_type: :verify_personal_key
+      )
+    end
+
     def render_throttled
       analytics.track_event(
-        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        Analytics::THROTTLE_RATE_LIMIT_TRIGGERED,
         throttle_type: :verify_personal_key,
       )
 

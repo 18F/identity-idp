@@ -53,7 +53,10 @@ module Idv
       end
 
       def throttled_else_increment
-        Throttler::IsThrottledElseIncrement.call(user_id, :idv_send_link)
+        Throttle.for(
+          target: current_user,
+          throttle_type: :reset_password_email,
+        ).throttled_else_increment?
       end
     end
   end

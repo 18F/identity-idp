@@ -61,7 +61,7 @@ describe Idv::CaptureDocStatusController do
 
     context 'when the user is throttled' do
       before do
-        allow(Throttler::IsThrottled).to receive(:call).with(user.id, :idv_acuant).and_return(true)
+        create(:throttle, :with_throttled, user: user, throttle_type: :idv_acuant)
       end
 
       it 'returns throttled with redirect' do

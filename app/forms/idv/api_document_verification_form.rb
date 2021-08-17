@@ -39,7 +39,7 @@ module Idv
 
     def remaining_attempts
       return unless document_capture_session
-      Throttler::RemainingCount.call(document_capture_session.user_id, :idv_acuant)
+      throttler.remaining_count
     end
 
     def liveness_checking_enabled?
@@ -95,9 +95,13 @@ module Idv
 
     def throttled_else_increment
       return unless document_capture_session
-      @throttled = Throttler::IsThrottledElseIncrement.call(
-        document_capture_session.user_id,
-        :idv_acuant,
+      @throttled = throttler.throttled_else_increment?
+    end
+
+    def throttler
+      Throttle.for(
+        target: document_capture_session.user,
+        throttle_type: :idv_acuant,
       )
     end
 

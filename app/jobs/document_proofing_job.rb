@@ -67,10 +67,7 @@ class DocumentProofingJob < ApplicationJob
       pii: proofer_result.pii_from_doc,
     )
 
-    remaining_attempts = Throttler::RemainingCount.call(
-      user.id,
-      :idv_acuant,
-    )
+    remaining_attempts = Throttle.for(target: user, throttle_type: :idv_acuant).remaining_count
 
     analytics.track_event(
       Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,

@@ -12,7 +12,10 @@ module Idv
     private
 
     def remaining_step_attempts
-      Throttler::RemainingCount.call(user_id, :idv_resolution)
+      Throttle.for(
+        target: user_id,
+        throttle_type: :idv_resolution,
+      ).remaining_count
     end
 
     def confirm_two_factor_authenticated_or_user_id_in_session
