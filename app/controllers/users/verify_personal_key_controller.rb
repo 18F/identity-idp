@@ -40,7 +40,7 @@ module Users
     def throttle
       @throttle ||= Throttle.for(
         user: current_user,
-        throttle_type: :verify_personal_key
+        throttle_type: :verify_personal_key,
       )
     end
 

@@ -55,10 +55,9 @@ class Throttle < ApplicationRecord
   # @param [User] user
   # @return [Throttle]
   def self.for(throttle_type:, user: nil, target: nil)
-    throttle = case
-    when user
+    throttle = if user
       find_or_create_by(user: user, throttle_type: throttle_type)
-    when target
+    elsif target
       find_or_create_by(target: target, throttle_type: throttle_type)
     else
       raise 'Throttle must have a user or a target, but neither were provided'

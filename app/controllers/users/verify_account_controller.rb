@@ -50,7 +50,7 @@ module Users
     def throttle
       @throttle ||= Throttle.for(
         user: current_user,
-        throttle_type: :verify_gpo_key
+        throttle_type: :verify_gpo_key,
       )
     end
 

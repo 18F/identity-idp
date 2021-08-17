@@ -250,5 +250,6 @@ module Idv
         user: document_capture_session.user,
         throttle_type: :idv_acuant,
       )
+    end
   end
 end

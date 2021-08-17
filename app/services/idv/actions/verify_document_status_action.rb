@@ -99,7 +99,7 @@ module Idv
         return nil unless verify_document_capture_session
         Throttle.for(
           user: verify_document_capture_session.user,
-          throttle_type: :idv_acuant
+          throttle_type: :idv_acuant,
         ).remaining_count
       end
 
