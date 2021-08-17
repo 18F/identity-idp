@@ -13,7 +13,7 @@ feature 'doc auth send link step' do
   let(:idv_send_link_attempt_window_in_minutes) do
     IdentityConfig.store.idv_send_link_attempt_window_in_minutes
   end
-  let(:document_capture_session) { DocumentCaptureSession.create! }
+  let(:document_capture_session) { DocumentCaptureSession.create!(user: user) }
   let(:fake_analytics) { FakeAnalytics.new }
 
   it 'is on the correct page' do

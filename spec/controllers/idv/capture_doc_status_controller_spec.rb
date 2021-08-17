@@ -8,7 +8,7 @@ describe Idv::CaptureDocStatusController do
   end
 
   describe '#show' do
-    let(:document_capture_session) { DocumentCaptureSession.create! }
+    let(:document_capture_session) { DocumentCaptureSession.create!(user: user) }
     let(:flow_session) { { document_capture_session_uuid: document_capture_session.uuid } }
 
     before do

@@ -50,6 +50,7 @@ module Idv
     end
 
     def throttled?
+      return unless document_capture_session.user
       Throttle.for(
         user: document_capture_session.user,
         throttle_type: :idv_acuant,
