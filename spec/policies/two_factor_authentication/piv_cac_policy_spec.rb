@@ -30,33 +30,4 @@ describe TwoFactorAuthentication::PivCacPolicy do
       it { expect(subject.configured?).to be_truthy }
     end
   end
-
-  describe '#visible?' do
-    let(:user) { build(:user) }
-
-    context 'when enabled' do
-      before(:each) do
-        allow(subject).to receive(:enabled?).and_return(true)
-      end
-
-      it { expect(subject.visible?).to be_truthy }
-    end
-
-    context 'when available' do
-      before(:each) do
-        allow(subject).to receive(:available?).and_return(true)
-      end
-
-      it { expect(subject.visible?).to be_truthy }
-    end
-
-    context 'when neither enabled nor available' do
-      before(:each) do
-        allow(subject).to receive(:enabled?).and_return(false)
-        allow(subject).to receive(:available?).and_return(false)
-      end
-
-      it { expect(subject.visible?).to be_falsey }
-    end
-  end
 end

@@ -16,10 +16,6 @@ module TwoFactorAuthentication
       true
     end
 
-    def second_phone?
-      mfa_user.phone_configurations.any?
-    end
-
     private
 
     attr_reader :mfa_user
