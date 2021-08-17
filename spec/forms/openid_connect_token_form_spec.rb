@@ -89,7 +89,7 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'the code has a null byte' do
-        let(:code) { "\x00code"}
+        let(:code) { "\x00code" }
 
         it 'is invalid' do
           expect(valid?).to eq(false)

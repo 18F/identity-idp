@@ -9,13 +9,15 @@ module DocAuth
           front_image:,
           back_image:,
           selfie_image: nil,
-          liveness_checking_enabled: nil
+          liveness_checking_enabled: nil,
+          image_source: nil
         )
           super(config: config)
           @front_image = front_image
           @back_image = back_image
           @selfie_image = selfie_image
           @liveness_checking_enabled = liveness_checking_enabled
+          @image_source = image_source
         end
 
         private
@@ -59,11 +61,19 @@ module DocAuth
         end
 
         def workflow
-          if liveness_checking_enabled
-            config.trueid_liveness_workflow
+          if liveness_checking_enabled && acuant_sdk_source?
+            config.trueid_liveness_nocropping_workflow
+          elsif liveness_checking_enabled && !acuant_sdk_source?
+            config.trueid_liveness_cropping_workflow
+          elsif !liveness_checking_enabled && acuant_sdk_source?
+            config.trueid_noliveness_nocropping_workflow
           else
-            config.trueid_noliveness_workflow
+            config.trueid_noliveness_cropping_workflow
           end
+        end
+
+        def acuant_sdk_source?
+          @image_source == ImageSources::ACUANT_SDK
         end
 
         def encode(image)

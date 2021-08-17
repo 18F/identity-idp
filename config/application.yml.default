@@ -107,8 +107,10 @@ lexisnexis_trueid_account_id: '12345'
 lexisnexis_trueid_username: test_username
 lexisnexis_trueid_password: test_password
 lexisnexis_trueid_timeout: '60'
-lexisnexis_trueid_liveness_workflow: customers.gsa.instant.verify.workflow
-lexisnexis_trueid_noliveness_workflow: customers.gsa.instant.verify.workflow
+lexisnexis_trueid_liveness_cropping_workflow: customers.gsa.trueid.workflow
+lexisnexis_trueid_liveness_nocropping_workflow: customers.gsa.trueid.workflow
+lexisnexis_trueid_noliveness_cropping_workflow: customers.gsa.trueid.workflow
+lexisnexis_trueid_noliveness_nocropping_workflow: customers.gsa.trueid.workflow
 ###################################################################
 lockout_period_in_minutes: '10'
 log_to_stdout: 'false'

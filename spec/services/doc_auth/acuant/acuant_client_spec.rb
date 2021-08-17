@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Acuant::AcuantClient do
-  let(:assure_id_url) { 'https://acuant.assure.example.com'}
+  let(:assure_id_url) { 'https://acuant.assure.example.com' }
   let(:facial_match_url) { 'https://acuant.facial.example.com' }
   let(:passlive_url) { 'https://acuant.passlive.example.com' }
   let(:image_source) { DocAuth::ImageSources::ACUANT_SDK }

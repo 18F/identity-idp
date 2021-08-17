@@ -312,21 +312,6 @@ class ApplicationController < ActionController::Base
     sp_session[:ial].presence || 1
   end
 
-  def increment_monthly_auth_count
-    return unless current_user&.id
-    issuer = sp_session[:issuer]
-    return if issuer.blank? || !first_auth_of_session?(issuer, sp_session_ial)
-    MonthlySpAuthCount.increment(current_user.id, issuer, sp_session_ial)
-  end
-
-  def first_auth_of_session?(issuer, ial)
-    auth_sp_token = "auth_counted_#{issuer}"
-    auth_sp_token.concat('ial1') if ial == 1
-    authenticated_to_sp = user_session[auth_sp_token]
-    return if authenticated_to_sp
-    user_session[auth_sp_token] = true
-  end
-
   def mfa_policy
     @mfa_policy ||= MfaPolicy.new(current_user)
   end

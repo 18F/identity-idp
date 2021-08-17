@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_04_180216) do
+ActiveRecord::Schema.define(version: 2021_08_11_191107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -606,6 +606,7 @@ ActiveRecord::Schema.define(version: 2021_08_04_180216) do
     t.string "issuer", null: false
     t.integer "user_id"
     t.datetime "returned_at"
+    t.boolean "billable"
     t.index ["request_id"], name: "index_sp_return_logs_on_request_id", unique: true
     t.index ["requested_at"], name: "index_sp_return_logs_on_requested_at"
     t.index ["user_id", "requested_at"], name: "index_sp_return_logs_on_user_id_and_requested_at"

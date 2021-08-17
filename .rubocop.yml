@@ -48,8 +48,7 @@ IdentityIdp/UrlOptionsLinter:
 Layout/AccessModifierIndentation:
   Enabled: true
   EnforcedStyle: indent
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/ArgumentAlignment:
   Enabled: true
 
@@ -89,8 +88,8 @@ Layout/DotPosition:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
   EnforcedStyle: trailing
   SupportedStyles:
-  - leading
-  - trailing
+    - leading
+    - trailing
 
 Layout/EmptyComment:
   Enabled: true
@@ -146,21 +145,18 @@ Layout/ExtraSpacing:
 Layout/FirstArgumentIndentation:
   Enabled: true
   EnforcedStyle: consistent
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/FirstArrayElementIndentation:
   EnforcedStyle: special_inside_parentheses
   SupportedStyles:
-  - special_inside_parentheses
-  - consistent
-  - align_brackets
-  IndentationWidth:
-
+    - special_inside_parentheses
+    - consistent
+    - align_brackets
+  IndentationWidth: null
 Layout/FirstHashElementIndentation:
   Enabled: true
   EnforcedStyle: consistent
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/FirstMethodArgumentLineBreak:
   Enabled: true
 
@@ -176,8 +172,7 @@ Layout/IndentationConsistency:
 
 Layout/IndentationStyle:
   Enabled: true
-  IndentationWidth:
-
+  IndentationWidth: null
 Layout/InitialIndentation:
   Enabled: true
 
@@ -194,10 +189,10 @@ Layout/LineLength:
   Max: 100
   AllowURI: true
   URISchemes:
-  - http
-  - https
+    - http
+    - https
   Exclude:
-  - config/routes.rb
+    - config/routes.rb
 
 Layout/MultilineArrayBraceLayout:
   Enabled: true
@@ -220,19 +215,17 @@ Layout/MultilineMethodDefinitionBraceLayout:
 Layout/MultilineOperationIndentation:
   EnforcedStyle: aligned
   SupportedStyles:
-  - aligned
-  - indented
-  IndentationWidth:
-
+    - aligned
+    - indented
+  IndentationWidth: null
 Layout/ParameterAlignment:
   Description: Align the parameters of a method call if they span more than one line.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-double-indent
   EnforcedStyle: with_first_parameter
   SupportedStyles:
-  - with_first_parameter
-  - with_fixed_indentation
-  IndentationWidth:
-
+    - with_first_parameter
+    - with_fixed_indentation
+  IndentationWidth: null
 Layout/RescueEnsureAlignment:
   Enabled: true
 
@@ -286,6 +279,9 @@ Layout/SpaceBeforeSemicolon:
 Layout/SpaceInLambdaLiteral:
   Enabled: true
   EnforcedStyle: require_no_space
+
+Layout/SpaceInsideBlockBraces:
+  Enabled: true
 
 Layout/TrailingEmptyLines:
   Enabled: true
@@ -501,20 +497,20 @@ Lint/ReturnInVoidContext:
 Lint/SafeNavigationChain:
   Enabled: true
   AllowedMethods:
-  - present?
-  - blank?
-  - presence
-  - try
-  - try!
+    - present?
+    - blank?
+    - presence
+    - try
+    - try!
 
 Lint/SafeNavigationConsistency:
   Enabled: true
   AllowedMethods:
-  - present?
-  - blank?
-  - presence
-  - try
-  - try!
+    - present?
+    - blank?
+    - presence
+    - try
+    - try!
 
 Lint/SafeNavigationWithEmpty:
   Enabled: true
@@ -571,14 +567,14 @@ Metrics/BlockLength:
   Enabled: true
   Max: 25
   IgnoredMethods:
-  - Struct.new
-  - RedactedStruct.new
+    - Struct.new
+    - RedactedStruct.new
   Exclude:
-  - Rakefile
-  - "**/*.rake"
-  - config/environments/*.rb
-  - config/routes.rb
-  - spec/**/*.rb
+    - Rakefile
+    - '**/*.rake'
+    - config/environments/*.rb
+    - config/routes.rb
+    - spec/**/*.rb
 
 Metrics/ModuleLength:
   CountComments: false
@@ -586,7 +582,7 @@ Metrics/ModuleLength:
   Description: Avoid modules longer than 200 lines of code.
   Enabled: true
   Exclude:
-  - spec/**/*
+    - spec/**/*
 
 Metrics/ParameterLists:
   CountKeywordArgs: false
@@ -619,7 +615,7 @@ Naming/MethodParameterName:
 
 Naming/VariableName:
   Exclude:
-  - spec/services/pii/nist_encryption_spec.rb
+    - spec/services/pii/nist_encryption_spec.rb
 
 Performance/BigDecimalWithNumericArgument:
   Enabled: true
@@ -735,12 +731,11 @@ Rails/FilePath:
   Enabled: false
 
 Rails/HttpPositionalArguments:
-  Description: Use keyword arguments instead of positional arguments in http method
-    calls.
+  Description: Use keyword arguments instead of positional arguments in http method calls.
   Enabled: true
   Include:
-  - spec/**/*
-  - test/**/*
+    - spec/**/*
+    - test/**/*
 
 Rails/Present:
   Enabled: false
@@ -754,8 +749,8 @@ Rails/TimeZone:
   Enabled: true
   EnforcedStyle: strict
   SupportedStyles:
-  - strict
-  - flexible
+    - strict
+    - flexible
 
 Security/Eval:
   Enabled: true
@@ -778,8 +773,8 @@ Style/AndOr:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-and-or-or
   EnforcedStyle: conditionals
   SupportedStyles:
-  - always
-  - conditionals
+    - always
+    - conditionals
 
 Style/ArgumentsForwarding:
   Enabled: true
@@ -848,9 +843,9 @@ Style/EmptyCaseCondition:
 Style/EmptyElse:
   EnforcedStyle: both
   SupportedStyles:
-  - empty
-  - nil
-  - both
+    - empty
+    - nil
+    - both
 
 Style/EmptyLambdaParameter:
   Enabled: true
@@ -984,12 +979,12 @@ Style/OrAssignment:
 
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
-    default: "()"
-    "%i": "[]"
-    "%I": "[]"
-    "%r": "{}"
-    "%w": "[]"
-    "%W": "[]"
+    default: '()'
+    '%i': '[]'
+    '%I': '[]'
+    '%r': '{}'
+    '%w': '[]'
+    '%W': '[]'
 
 Style/Proc:
   Enabled: true
@@ -1046,11 +1041,11 @@ Style/SafeNavigation:
   Enabled: true
   ConvertCodeThatCanStartToReturnNil: false
   AllowedMethods:
-  - present?
-  - blank?
-  - presence
-  - try
-  - try!
+    - present?
+    - blank?
+    - presence
+    - try
+    - try!
 
 Style/Sample:
   Enabled: true
@@ -1077,8 +1072,8 @@ Style/StringLiterals:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-string-literals
   EnforcedStyle: single_quotes
   SupportedStyles:
-  - single_quotes
-  - double_quotes
+    - single_quotes
+    - double_quotes
   ConsistentQuotesInMultiline: true
 
 Style/Strip:
@@ -1099,16 +1094,16 @@ Style/TrailingBodyOnModule:
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: comma
   SupportedStylesForMultiline:
-  - comma
-  - consistent_comma
-  - no_comma
+    - comma
+    - consistent_comma
+    - no_comma
 
 Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma
   SupportedStylesForMultiline:
-  - comma
-  - consistent_comma
-  - no_comma
+    - comma
+    - consistent_comma
+    - no_comma
 
 Style/TrailingCommaInBlockArgs:
   Enabled: true
@@ -1116,9 +1111,9 @@ Style/TrailingCommaInBlockArgs:
 Style/TrailingCommaInHashLiteral:
   EnforcedStyleForMultiline: comma
   SupportedStylesForMultiline:
-  - comma
-  - consistent_comma
-  - no_comma
+    - comma
+    - consistent_comma
+    - no_comma
 
 Style/TrailingMethodEndStatement:
   Enabled: true

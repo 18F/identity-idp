@@ -6,10 +6,10 @@ ruby '~> 2.7.3'
 gem 'rails', '~> 6.1.4'
 
 # Variables can be overridden for local dev in Gemfile-dev
-@hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.3.0' }
+@hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.4.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.3-18f' }
-@telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.3.0' }
+@telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.3.1' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.7.0' }
 
 gem 'identity-hostdata', @hostdata_gem
@@ -115,6 +115,8 @@ group :test do
   gem 'capybara-screenshot', '>= 1.0.23'
   gem 'capybara-selenium', '>= 0.0.6'
   gem 'simplecov', '~> 0.21.0', require: false
+  gem 'simplecov-cobertura'
+  gem 'simplecov_json_formatter'
   gem 'email_spec'
   gem 'factory_bot_rails', '>= 5.2.0'
   gem 'faker'

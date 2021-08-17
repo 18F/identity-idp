@@ -27,6 +27,13 @@ describe('normalize', () => {
     const expected = '---\nfoo: "bar"\n';
     const prettierConfig = { singleQuote: false };
 
-    expect(normalize(original, prettierConfig)).to.equal(expected);
+    expect(normalize(original, { prettierConfig })).to.equal(expected);
+  });
+
+  it('allows formatting with excluded formatters', () => {
+    const original = '---\nmap:\n  b: ...\n  a: ...';
+    const expected = '---\nmap:\n  a: ...\n  b: ...\n';
+
+    expect(normalize(original, { exclude: ['smartPunctuation'] })).to.equal(expected);
   });
 });
