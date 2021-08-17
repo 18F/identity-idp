@@ -50,13 +50,12 @@
       <div class='flex flex-align-center flex-justify-center'>
         <% if show_language_dropdown %>
           <ul class='list-reset display-none tablet:display-block margin-bottom-0'>
-            <li class='i18n-desktop-toggle flex margin-y-1 margin-x-2 relative'>
-              <%= link_to '#', class: 'white text-decoration-none border border-blue rounded-lg padding-x-1 py-tiny', 'aria-expanded': 'false' do %>
-                <%= image_tag asset_url('globe-white.svg'), width: 12, class: 'margin-right-1', alt: '',
-                  'aria-hidden': 'true' %>
+            <li class="i18n-desktop-toggle flex margin-y-1 margin-x-2 relative language-container">
+              <div class="white text-decoration-none border border-blue rounded-lg padding-x-1 py-tiny language-button" role="button" tabindex="0" aria-expanded="false">
+                <img src="/assets/globe-white.svg" width="12" class="margin-right-1" alt="" />
                 <%= t('i18n.language') %>
                 <span class='caret inline-block ml-tiny' aria-hidden='true'>&#9662;</span>
-              <% end %>
+              </div>
               <ul class="i18n-desktop-dropdown list-reset margin-bottom-0 white display-none">
                 <% I18n.available_locales.each do |locale| %>
                   <li class='border-bottom border-navy'>
