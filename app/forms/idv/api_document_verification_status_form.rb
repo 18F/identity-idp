@@ -24,7 +24,7 @@ module Idv
     def remaining_attempts
       return unless @document_capture_session
       Throttle.for(
-        target: @document_capture_session.user,
+        user: @document_capture_session.user,
         throttle_type: :idv_acuant,
       ).remaining_count
     end

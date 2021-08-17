@@ -4,10 +4,9 @@ RSpec.describe Throttle do
   let(:throttle_type) { :idv_acuant }
 
   describe '.for' do
-    subject(:for_target) { Throttle.for(target: target, throttle_type: throttle_type) }
-
     context 'when target is a user' do
-      let(:target) { create(:user) }
+      let(:user) { create(:user) }
+      subject(:for_target) { Throttle.for(user: user, throttle_type: throttle_type) }
 
       context 'throttle does not exist yet' do
         it 'creates a new throttle row' do
@@ -16,27 +15,7 @@ RSpec.describe Throttle do
       end
 
       context 'throttle already exists' do
-        let!(:existing) { create(:throttle, user: target, throttle_type: throttle_type) }
-
-        it 'does not create a new throttle row' do
-          expect { for_target }.to_not change { Throttle.count }
-
-          expect(for_target).to eq(existing)
-        end
-      end
-    end
-
-    context 'when target is an integer' do
-      let(:target) { create(:user).id }
-
-      context 'throttle does not exist yet' do
-        it 'creates a new throttle row' do
-          expect { for_target }.to change { Throttle.count }.by(1)
-        end
-      end
-
-      context 'throttle already exists' do
-        let!(:existing) { create(:throttle, user_id: target, throttle_type: throttle_type) }
+        let!(:existing) { create(:throttle, user: user, throttle_type: throttle_type) }
 
         it 'does not create a new throttle row' do
           expect { for_target }.to_not change { Throttle.count }
@@ -48,6 +27,7 @@ RSpec.describe Throttle do
 
     context 'when target is a string' do
       let(:target) { Digest::SHA256.hexdigest(SecureRandom.hex) }
+      subject(:for_target) { Throttle.for(target: target, throttle_type: throttle_type) }
 
       context 'throttle does not exist yet' do
         it 'creates a new throttle row' do
@@ -66,11 +46,10 @@ RSpec.describe Throttle do
       end
     end
 
-    context 'when target is something else' do
-      let(:target) { [1, 2, 3] }
-
+    context 'when target and user are missing' do
       it 'throws an error' do
-        expect { for_target }.to raise_error(/Unknown throttle target class=Array/)
+        expect { Throttle.for(throttle_type: throttle_type) }.
+          to raise_error(/Throttle must have a user or a target/)
       end
     end
   end
@@ -84,18 +63,18 @@ RSpec.describe Throttle do
   end
 
   describe '#throttled?' do
-    let(:user_id) { 1 }
+    let(:user) { create(:user) }
     let(:throttle_type) { :idv_acuant }
     let(:throttle) { Throttle.all.first }
     let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
     let(:attempt_window_in_minutes) { IdentityConfig.store.acuant_attempt_window_in_minutes }
 
-    subject(:throttle) { Throttle.for(target: user_id, throttle_type: throttle_type) }
+    subject(:throttle) { Throttle.for(user: user, throttle_type: throttle_type) }
 
     it 'returns true if throttled' do
       create(
         :throttle,
-        user_id: user_id,
+        user: user,
         throttle_type: throttle_type,
         attempts: max_attempts,
         attempted_at: Time.zone.now,
@@ -107,7 +86,7 @@ RSpec.describe Throttle do
     it 'returns false if the attempts < max_attempts' do
       create(
         :throttle,
-        user_id: user_id,
+        user: user,
         throttle_type: throttle_type,
         attempts: max_attempts - 1,
         attempted_at: Time.zone.now,
@@ -119,7 +98,7 @@ RSpec.describe Throttle do
     it 'returns false if the attempts <= max_attempts but the window is expired' do
       create(
         :throttle,
-        user_id: user_id,
+        user: user,
         throttle_type: throttle_type,
         attempts: max_attempts,
         attempted_at: Time.zone.now - attempt_window_in_minutes.minutes,
@@ -157,17 +136,17 @@ RSpec.describe Throttle do
   end
 
   describe '#reset' do
-    let(:user_id) { 1 }
+    let(:user) { create(:user) }
     let(:throttle_type) { :idv_acuant }
     let(:max_attempts) { 3 }
     let(:subject) { described_class }
 
-    subject(:throttle) { Throttle.for(target: user_id, throttle_type: throttle_type) }
+    subject(:throttle) { Throttle.for(user: user, throttle_type: throttle_type) }
 
     it 'resets attempt count to 0' do
       create(
         :throttle,
-        user_id: user_id,
+        user: user,
         throttle_type: throttle_type,
         attempts: max_attempts,
         attempted_at: Time.zone.now,

@@ -13,7 +13,7 @@ module Idv
 
     def remaining_step_attempts
       Throttle.for(
-        target: user_id,
+        user: User.find(user_id),
         throttle_type: :idv_resolution,
       ).remaining_count
     end

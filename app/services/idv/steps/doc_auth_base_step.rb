@@ -9,7 +9,7 @@ module Idv
 
       def idv_throttle_params
         {
-          target: current_user,
+          user: current_user,
           throttle_type: :idv_resolution,
         }
       end

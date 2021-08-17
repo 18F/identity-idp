@@ -49,19 +49,19 @@ class Throttle < ApplicationRecord
     },
   }.freeze
 
-  # @param [User,Integer,String] target User, its ID, or a string identifier
+  # Either target or user must be supplied
   # @param [Symbol] throttle_type
+  # @param [String] target
+  # @param [User] user
   # @return [Throttle]
-  def self.for(target:, throttle_type:)
-    throttle = case target
-    when User
-      find_or_create_by(user: target, throttle_type: throttle_type)
-    when Integer
-      find_or_create_by(user_id: target, throttle_type: throttle_type)
-    when String
+  def self.for(throttle_type:, user: nil, target: nil)
+    throttle = case
+    when user
+      find_or_create_by(user: user, throttle_type: throttle_type)
+    when target
       find_or_create_by(target: target, throttle_type: throttle_type)
     else
-      raise "Unknown throttle target class=#{target.class}"
+      raise 'Throttle must have a user or a target, but neither were provided'
     end
 
     throttle.tap do |t|

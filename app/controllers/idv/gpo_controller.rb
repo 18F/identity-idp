@@ -138,7 +138,7 @@ module Idv
 
     def idv_throttle_params
       {
-        target: idv_session.current_user,
+        user: idv_session.current_user,
         throttle_type: :idv_resolution,
       }
     end

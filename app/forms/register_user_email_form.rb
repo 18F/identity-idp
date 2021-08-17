@@ -133,7 +133,7 @@ class RegisterUserEmailForm
   end
 
   def send_sign_up_unconfirmed_email(request_id)
-    throttler = Throttle.for(target: existing_user, throttle_type: :reg_unconfirmed_email)
+    throttler = Throttle.for(user: existing_user, throttle_type: :reg_unconfirmed_email)
     @throttled = throttler.throttled_else_increment?
 
     if @throttled

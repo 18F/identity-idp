@@ -100,7 +100,7 @@ module Idv
 
     def throttler
       Throttle.for(
-        target: document_capture_session.user,
+        user: document_capture_session.user,
         throttle_type: :idv_acuant,
       )
     end
