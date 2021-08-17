@@ -22,12 +22,8 @@ module Reports
       Time.zone.now.end_of_day
     end
 
-    def ec2_data
-      @ec2_data ||= Identity::Hostdata::EC2.load
-    end
-
     def gen_s3_bucket_name
-      "#{IdentityConfig.store.s3_report_bucket_prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
+      Identity::Hostdata.bucket_name(IdentityConfig.store.s3_report_bucket_prefix)
     end
 
     def report_timeout
