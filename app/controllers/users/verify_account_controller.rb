@@ -56,7 +56,7 @@ module Users
 
     def render_throttled
       analytics.track_event(
-        Analytics::THROTTLE_RATE_LIMIT_TRIGGERED,
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
         throttle_type: :verify_gpo_key,
       )
 
