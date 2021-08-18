@@ -3,7 +3,7 @@ require 'rails_helper'
 shared_examples_for 'an idv session errors controller action' do
   context 'the user is authenticated and has not confirmed their profile' do
     it 'renders the error' do
-      stub_sign_in
+      stub_sign_in(create(:user))
 
       get action
 

@@ -36,7 +36,7 @@ RSpec.describe Users::VerifyAccountController do
       end
 
       it 'shows throttled page is user is throttled' do
-        allow(Throttler::IsThrottled).to receive(:call).once.and_return(true)
+        create(:throttle, :with_throttled, user: user, throttle_type: :verify_gpo_key)
 
         action
 
@@ -56,7 +56,7 @@ RSpec.describe Users::VerifyAccountController do
 
     context 'with throttle reached' do
       before do
-        allow(Throttler::IsThrottled).to receive(:call).once.and_return(true)
+        create(:throttle, :with_throttled, user: user, throttle_type: :verify_gpo_key)
       end
 
       it 'renders throttled page' do

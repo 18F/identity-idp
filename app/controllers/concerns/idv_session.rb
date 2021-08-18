@@ -41,7 +41,10 @@ module IdvSession
   end
 
   def idv_attempter_throttled?
-    Throttler::IsThrottled.call(effective_user.id, :idv_resolution)
+    Throttle.for(
+      user: effective_user,
+      throttle_type: :idv_resolution,
+    ).throttled?
   end
 
   def redirect_unless_effective_user

@@ -26,7 +26,7 @@ RSpec.describe Idv::ApiImageUploadForm do
     { width: 20, height: 20, mimeType: 'image/png', source: 'upload' }.to_json
   end
   let(:selfie_image) { DocAuthImageFixtures.selfie_image_multipart }
-  let!(:document_capture_session) { DocumentCaptureSession.create! }
+  let!(:document_capture_session) { DocumentCaptureSession.create!(user: create(:user)) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:liveness_checking_enabled?) { true }
   let(:fake_analytics) { FakeAnalytics.new }
@@ -81,7 +81,12 @@ RSpec.describe Idv::ApiImageUploadForm do
 
     context 'when throttled from submission' do
       before do
-        allow(Throttler::IsThrottledElseIncrement).to receive(:call).once.and_return(true)
+        create(
+          :throttle,
+          :with_throttled,
+          user: document_capture_session.user,
+          throttle_type: :idv_acuant,
+        )
         form.submit
       end
 
@@ -104,9 +109,9 @@ RSpec.describe Idv::ApiImageUploadForm do
           exception: nil,
           doc_auth_result: 'Passed',
           billed: true,
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
           state: 'MT',
-          user_id: nil,
+          user_id: document_capture_session.user.uuid,
           client_image_metrics: {
             front: JSON.parse(front_image_metadata, symbolize_names: true),
             back: JSON.parse(back_image_metadata, symbolize_names: true),
@@ -143,8 +148,8 @@ RSpec.describe Idv::ApiImageUploadForm do
           exception: nil,
           doc_auth_result: 'Passed',
           billed: true,
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
-          user_id: nil,
+          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
+          user_id: document_capture_session.user.uuid,
           client_image_metrics: {
             front: JSON.parse(front_image_metadata, symbolize_names: true),
           },

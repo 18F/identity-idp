@@ -411,10 +411,10 @@ describe Idv::DocAuthController do
     allow_any_instance_of(Idv::Flows::DocAuthFlow).to receive(:next_step).and_return(step)
   end
 
-  let(:verify_document_action_session_uuid) { SecureRandom.uuid }
+  let(:user) { create(:user, :signed_up) }
+  let(:verify_document_action_session_uuid) { DocumentCaptureSession.create!(user: user).uuid }
 
   def mock_document_capture_step
-    user = create(:user, :signed_up)
     stub_sign_in(user)
     DocumentCaptureSession.create_by_user_id(user.id, @analytics, result_id: 1, uuid: 'foo')
     allow_any_instance_of(Flow::BaseFlow).to \
