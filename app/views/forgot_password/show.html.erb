@@ -27,7 +27,10 @@
   <%= f.input :resend, as: :hidden, wrapper: false %>
   <%= f.input :request_id, as: :hidden, input_html: { value: request_id } %>
   <p><%= t('notices.forgot_password.no_email_sent_explanation_start') %>
-  <%= f.button :submit, t('links.resend'), class: 'usa-button--unstyled ml-tiny' %></p>
+  <%= button_to(
+      user_password_path,
+      class: 'usa-button usa-button--unstyled ml-tiny',
+    ) { t('links.resend')} %></p>
 
   <% link = link_to(
        t('notices.forgot_password.use_diff_email.link'),

@@ -17,7 +17,7 @@
   </div>
   <hr/>
   <div class='right'>
-    <%= link_to(t('doc_auth.buttons.change_address'), idv_address_url) %>
+    <%= button_to(idv_address_url, method: :get, class: 'usa-button usa-button--unstyled') { t('doc_auth.buttons.change_address') } %>
   </div>
   <div>
     <%= "#{t('doc_auth.forms.address1')}: #{flow_session[:pii_from_doc][:address1]}" %>
