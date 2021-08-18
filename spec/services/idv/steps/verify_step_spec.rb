@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Idv::Steps::VerifyStep do
+  include Rails.application.routes.url_helpers
+
   let(:user) { build(:user) }
   let(:service_provider) do
     create(
@@ -84,11 +86,10 @@ describe Idv::Steps::VerifyStep do
           flow.flow_session = { pii_from_doc: pii_from_doc }
         end
 
-
         Idv::Steps::VerifyStep.new(flow)
       end
 
-       before do
+      before do
         stub_const('Throttle::THROTTLE_CONFIG', {
           proof_ssn: {
             max_attempts: 2,
@@ -97,12 +98,21 @@ describe Idv::Steps::VerifyStep do
         }.with_indifferent_access)
       end
 
+      def redirect(step)
+        step.instance_variable_get(:@flow).instance_variable_get(:@redirect)
+      end
+
       it 'throttles them all' do
         expect(build_step(controller).call).to be_kind_of(ApplicationJob)
         expect(build_step(controller2).call).to be_kind_of(ApplicationJob)
 
-        expect(build_step(controller).call).to be_nil
-        expect(build_step(controller2).call).to be_nil
+        step = build_step(controller)
+        expect(step.call).to be_nil, 'does not enqueue a job'
+        expect(redirect(step)).to eq(idv_session_errors_failure_url)
+
+        step2 = build_step(controller2)
+        expect(step2.call).to be_nil, 'does not enqueue a job'
+        expect(redirect(step2)).to eq(idv_session_errors_failure_url)
       end
     end
   end
