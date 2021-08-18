@@ -1,6 +1,7 @@
 module Idv
   class SessionErrorsController < ApplicationController
     include IdvSession
+    include EffectiveUser
 
     before_action :confirm_two_factor_authenticated_or_user_id_in_session
     before_action :confirm_idv_session_step_needed
@@ -13,7 +14,7 @@ module Idv
 
     def remaining_step_attempts
       Throttle.for(
-        user: User.find(user_id),
+        user: effective_user,
         throttle_type: :idv_resolution,
       ).remaining_count
     end
