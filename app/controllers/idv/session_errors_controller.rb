@@ -29,12 +29,5 @@ module Idv
       return unless user_fully_authenticated?
       redirect_to idv_phone_url if idv_session.profile_confirmation == true
     end
-
-    def user_id
-      doc_capture_user_id = session[:doc_capture_user_id]
-      return doc_capture_user_id if doc_capture_user_id.present?
-
-      current_user.id
-    end
   end
 end
