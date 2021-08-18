@@ -20,7 +20,7 @@
     margin-bottom: 0;
     margin-top: 0;
 
-    div {
+    button {
       padding-bottom: 12px;
       padding-top: 12px;
     }
@@ -33,4 +33,13 @@
   left: -1px;
   position: absolute;
   width: 194px;
+}
+
+.language-desktop-button {
+  background-color: $navy;
+}
+
+.language-mobile-button {
+  background-color: $blue-light;
+  border: none;
 }
