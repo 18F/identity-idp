@@ -63,16 +63,15 @@ class Throttle < ApplicationRecord
       raise 'Throttle must have a user or a target, but neither were provided'
     end
 
-    throttle.tap do |t|
-      t.reset_if_expired_and_maxed
-    end
+    throttle.reset_if_expired_and_maxed
+    throttle
   end
 
-  # @return [Throttle]
+  # @return [Integer]
   def increment
-    return self if maxed?
+    return attempts if maxed?
     update(attempts: attempts + 1, attempted_at: Time.zone.now)
-    self
+    attempts
   end
 
   def throttled?
