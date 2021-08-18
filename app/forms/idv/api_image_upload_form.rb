@@ -45,7 +45,7 @@ module Idv
 
     def throttled_else_increment
       return unless document_capture_session
-      @throttled = throttler.throttled_else_increment?
+      @throttled = throttle.throttled_else_increment?
     end
 
     def validate_form
@@ -101,7 +101,7 @@ module Idv
 
     def remaining_attempts
       return nil unless document_capture_session
-      throttler.remaining_count
+      throttle.remaining_count
     end
 
     def determine_response(form_response:, client_response:, doc_pii_response:)
@@ -245,8 +245,8 @@ module Idv
       document_capture_session&.user&.uuid
     end
 
-    def throttler
-      @throttler ||= Throttle.for(
+    def throttle
+      @throttle ||= Throttle.for(
         user: document_capture_session.user,
         throttle_type: :idv_acuant,
       )
