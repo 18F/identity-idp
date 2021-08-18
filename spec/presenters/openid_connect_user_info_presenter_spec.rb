@@ -129,17 +129,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
             expect(json['given_name']).to eq('John')
           end
-
-          context 'when the SP is in the dob_international_format_opt_out_list' do
-            before do
-              allow(IdentityConfig.store).to receive(:dob_international_format_opt_out_list).
-                and_return([identity.service_provider])
-            end
-
-            it 'formats the dob american style' do
-              expect(user_info[:birthdate]).to eq('12/31/1970')
-            end
-          end
         end
 
         context 'when the scope only includes minimal attributes' do
