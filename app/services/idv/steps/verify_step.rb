@@ -16,7 +16,7 @@ module Idv
 
         if pii_from_doc[:ssn].present?
           throttle = Throttle.for(
-            target: Digest::SHA256.hexdigest(pii_from_doc[:ssn]),
+            target: Pii::Fingerprinter.fingerprint(pii_from_doc[:ssn]),
             throttle_type: :proof_ssn,
           )
 
