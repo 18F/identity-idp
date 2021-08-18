@@ -48,14 +48,6 @@ class AccountShow
     end
   end
 
-  def piv_cac_content
-    if TwoFactorAuthentication::PivCacPolicy.new(decorated_user.user).enabled?
-      I18n.t('account.index.piv_cac_enabled')
-    else
-      I18n.t('account.index.piv_cac_disabled')
-    end
-  end
-
   delegate :recent_events, :recent_devices, :connected_apps, to: :decorated_user
 
   private

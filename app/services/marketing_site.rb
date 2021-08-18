@@ -78,16 +78,6 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'help/signing-in/what-is-a-hardware-security-key/').to_s
   end
 
-  def self.help_privacy_and_security_url
-    URI.join(
-      BASE_URL,
-      locale_segment,
-      'help',
-      'privacy-and-security',
-      'how-does-logingov-protect-my-data',
-    ).to_s
-  end
-
   def self.security_url
     URI.join(BASE_URL, locale_segment, 'security/').to_s
   end

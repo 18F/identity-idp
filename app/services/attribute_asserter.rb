@@ -177,11 +177,6 @@ class AttributeAsserter
     SamlRequestParser.new(authn_request).requested_attributes
   end
 
-  def ial2_authn_context?
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(authn_context) ||
-      (authn_context == Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF)
-  end
-
   def authn_context
     authn_request.requested_ial_authn_context
   end

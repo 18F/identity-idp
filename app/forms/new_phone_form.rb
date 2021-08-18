@@ -38,22 +38,9 @@ class NewPhoneForm
     user.phone_configurations.map(&:phone).include?(phone)
   end
 
-  def masked_number
-    phone_number = nil
-    phone_number = phone_configuration.phone unless phone_configuration.nil?
-    return '' if !phone_number || phone_number.blank?
-    "***-***-#{phone_number[-4..-1]}"
-  end
-
   private
 
   attr_accessor :user, :submitted_phone
-
-  def prefill_phone_number(phone_configuration)
-    self.phone = phone_configuration.phone
-    self.international_code = Phonelib.parse(phone).country || PhoneFormatter::DEFAULT_COUNTRY
-    self.otp_delivery_preference = phone_configuration.delivery_preference
-  end
 
   def ingest_phone_number(params)
     self.international_code = params[:international_code]
