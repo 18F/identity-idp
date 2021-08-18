@@ -10,6 +10,7 @@
             location: request.params[:action],
           ),
           text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+          external: true,
         },
         {
           url: MarketingSite.contact_url,

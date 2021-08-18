@@ -88,6 +88,7 @@
           decorated_session.sp_name && {
             url: idv_doc_auth_return_to_sp_path,
             text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+            external: true,
           },
         ].select(&:present?),
       ) %>

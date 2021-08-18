@@ -27,6 +27,7 @@ locals:
             location: local_assigns.fetch(:name, 'warning'),
           ),
           text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
+          external: true,
         },
       ].select(&:present?),
     ) { yield } %>
