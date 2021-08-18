@@ -31,9 +31,9 @@
   <%= f.input :request_id, as: :hidden, wrapper: false %>
   <p><%= t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start') %>
   <%= button_to(
-      sign_up_register_path,
-      class: 'usa-button usa-button--unstyled ml-tiny',
-    ) { t('links.resend')} %></p>
+        sign_up_register_path,
+        class: 'usa-button usa-button--unstyled ml-tiny',
+      ) { t('links.resend') } %></p>
 
   <% link = link_to(
        t('notices.use_diff_email.link'),
