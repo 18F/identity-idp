@@ -6,22 +6,22 @@ import useI18n from '../hooks/use-i18n';
  * @typedef BlockLinkProps
  *
  * @prop {string} url Link destination.
- * @prop {boolean=} isExternal Whether link directs to external URL.
+ * @prop {boolean=} isNewTab Whether link should open in a new tab. Defaults to false. Use best
+ * judgment to reserve new tabs to when absolutely necessary, such as when form data may otherwise
+ * be lost.
  * @prop {ReactNode} children Child elements.
  */
-
-const isSameHost = (url) => new URL(url, window.location.href).host === window.location.host;
 
 /**
  * @param {BlockLinkProps} props
  */
-function BlockLink({ url, children, isExternal = !isSameHost(url) }) {
+function BlockLink({ url, children, isNewTab = false }) {
   const { t } = useI18n();
 
   return (
-    <a href={url} className="usa-link block-link" target={isExternal ? '_blank' : undefined}>
+    <a href={url} className="usa-link block-link" target={isNewTab ? '_blank' : undefined}>
       {children}
-      {isExternal && (
+      {isNewTab && (
         <>
           {' '}
           <svg

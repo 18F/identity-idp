@@ -10,6 +10,7 @@
         {
           url: MarketingSite.contact_url,
           text: t('idv.troubleshooting.options.contact_support', app: APP_NAME),
+          new_tab: true,
         },
         decorated_session.sp_name && {
           url: return_to_sp_failure_to_proof_path(
@@ -17,7 +18,7 @@
             location: request.params[:action],
           ),
           text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-          external: true,
+          new_tab: true,
         },
       ].compact,
     ) do %>

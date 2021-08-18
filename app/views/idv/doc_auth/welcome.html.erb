@@ -80,15 +80,17 @@
           {
             url: MarketingSite.help_idv_supported_documents_url,
             text: t('idv.troubleshooting.options.supported_documents'),
+            new_tab: true,
           },
           {
             url: MarketingSite.help_idv_verify_by_phone_url,
             text: t('idv.troubleshooting.options.learn_more_address_verification_options'),
+            new_tab: true,
           },
           decorated_session.sp_name && {
             url: idv_doc_auth_return_to_sp_path,
             text: t('idv.troubleshooting.options.get_help_at_sp', sp_name: decorated_session.sp_name),
-            external: true,
+            new_tab: true,
           },
         ].select(&:present?),
       ) %>

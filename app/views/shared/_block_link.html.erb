@@ -2,20 +2,18 @@
 yields: Link text (required).
 locals:
 * url: URL of link.
-* external: Whether link is external. Defaults to true if hostname is different from request.
+* new_tab: Whether link should open in a new tab. Defaults to false. Use best judgment to reserve
+           new tabs to when absolutely necessary, such as when form data may otherwise be lost.
 %>
 <%
 content = yield.presence or raise "no block content given"
-external = local_assigns.fetch(:external) do
-  url_host_with_port = URI.parse(url).select(:host, :port).compact.join(':')
-  url_host_with_port.present? && url_host_with_port != "#{request.host}:#{request.port}"
-end
+new_tab = local_assigns.fetch(:new_tab, false)
 tag_attrs = { href: url, class: 'usa-link block-link' }
-tag_attrs[:target] = '_blank' if external
+tag_attrs[:target] = '_blank' if new_tab
 %>
 <%= tag.a tag_attrs do %>
   <%= content %>
-  <% if external %>
+  <% if new_tab %>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       height="10"
