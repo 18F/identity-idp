@@ -58,8 +58,16 @@ class ApplicationController < ActionController::Base
   attr_writer :analytics
 
   def analytics
-    @analytics ||=
-      Analytics.new(user: analytics_user, request: request, sp: current_sp&.issuer, ahoy: ahoy)
+    return @analytics if @analytics
+    update_session_paths_visited_for_analytics
+    @analytics =
+      Analytics.new(
+        user: analytics_user,
+        request: request,
+        sp: current_sp&.issuer,
+        is_new_session_path: is_new_session_path?,
+        ahoy: ahoy,
+      )
   end
 
   def analytics_user
@@ -385,5 +393,15 @@ class ApplicationController < ActionController::Base
   def mobile?
     client = DeviceDetector.new(request.user_agent)
     client.device_type != 'desktop'
+  end
+
+  def update_session_paths_visited_for_analytics
+    session[:paths_visited] ||= {}
+    session[:is_new_path] = !session[:paths_visited].key?(request.path)
+    session[:paths_visited][request.path] = true
+  end
+
+  def is_new_session_path?
+    session[:is_new_path]
   end
 end
