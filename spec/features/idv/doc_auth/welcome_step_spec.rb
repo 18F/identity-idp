@@ -25,16 +25,12 @@ feature 'doc auth welcome step' do
   end
 
   it 'logs return to sp link click' do
-    new_window = window_opened_by do
-      click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
-    end
+    click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
 
-    within_window new_window do
-      expect(fake_analytics).to have_logged_event(
-        Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
-        step: 'welcome',
-      )
-    end
+    expect(fake_analytics).to have_logged_event(
+      Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+      step: 'welcome',
+    )
   end
 
   context 'skipping upload step', :js, driver: :headless_chrome_mobile do
