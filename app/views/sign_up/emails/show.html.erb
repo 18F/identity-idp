@@ -25,7 +25,6 @@
 <%= validated_form_for @resend_email_confirmation_form,
                        html: { class: 'margin-bottom-2' },
                        url: sign_up_register_path do |f| %>
-  
   <%= f.input :email, as: :hidden, wrapper: false %>
   <%= f.input :resend, as: :hidden, wrapper: false %>
   <%= f.input :request_id, as: :hidden, wrapper: false %>
