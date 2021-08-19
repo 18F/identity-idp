@@ -51,7 +51,7 @@ class Throttle < ApplicationRecord
     proof_ssn: {
       max_attempts: IdentityConfig.store.proof_ssn_max_attempts,
       attempt_window: IdentityConfig.store.proof_ssn_max_attempt_window_in_minutes,
-    }
+    },
   }.freeze
 
   # Either target or user must be supplied

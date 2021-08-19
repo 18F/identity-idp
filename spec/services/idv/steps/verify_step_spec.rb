@@ -30,7 +30,7 @@ describe Idv::Steps::VerifyStep do
 
   let(:pii_from_doc) do
     {
-      ssn: '123-45-6789'
+      ssn: '123-45-6789',
     }
   end
 
@@ -90,12 +90,15 @@ describe Idv::Steps::VerifyStep do
       end
 
       before do
-        stub_const('Throttle::THROTTLE_CONFIG', {
-          proof_ssn: {
-            max_attempts: 2,
-            attempt_window: 10,
-          }
-        }.with_indifferent_access)
+        stub_const(
+          'Throttle::THROTTLE_CONFIG',
+          {
+            proof_ssn: {
+              max_attempts: 2,
+              attempt_window: 10,
+            },
+          }.with_indifferent_access,
+        )
       end
 
       def redirect(step)
