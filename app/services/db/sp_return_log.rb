@@ -1,21 +1,23 @@
 module Db
   class SpReturnLog
     # rubocop:disable Rails/SkipsModelValidations
-    def self.update_user(request_id, user_id)
+    def self.update_user(request_id:, user_id:)
       ::SpReturnLog.where(request_id: request_id).update_all(user_id: user_id)
       nil
     end
 
-    def self.add_return(request_id, user_id)
+    def self.add_return(request_id:, user_id:, billable:, ial:)
       ::SpReturnLog.where(request_id: request_id).update_all(
         user_id: user_id,
         returned_at: Time.zone.now,
+        billable: billable,
+        ial: ial,
       )
       nil
     end
     # rubocop:enable Rails/SkipsModelValidations
 
-    def self.create_request(request_id, ial, issuer)
+    def self.create_request(request_id:, ial:, issuer:)
       ::SpReturnLog.create!(
         request_id: request_id,
         ial: ial,

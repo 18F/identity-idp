@@ -49,7 +49,7 @@ RSpec.describe PinpointSupportedCountries do
         <tr>
           <td>Belarus</td>
           <td>BY</td>
-          <td>Yes<sup><a href="#sms-support-note-1">1</a></sup></td>
+          <td>Registration required<sup><a href="#sms-support-note-1">1</a></sup></td>
           <td></td>
         </tr>
       </table>
@@ -96,7 +96,7 @@ RSpec.describe PinpointSupportedCountries do
         BY:
           country_code: '375'
           name: Belarus
-          supports_sms: false
+          supports_sms: true
           supports_voice: false
       STR
     end
@@ -108,10 +108,21 @@ RSpec.describe PinpointSupportedCountries do
       expect(countries.sms_support).to eq [
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'AR', name: 'Argentina', supports_sms: true),
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'AU', name: 'Australia', supports_sms: true),
-        PinpointSupportedCountries::CountrySupport.new(iso_code: 'BY', name: 'Belarus', supports_sms: false),
+        PinpointSupportedCountries::CountrySupport.new(iso_code: 'BY', name: 'Belarus', supports_sms: true),
       ]
     end
     # rubocop:enable Layout/LineLength
+
+    context 'when we do not have a sender ID for a country that requires one' do
+      before do
+        stub_const('PinpointSupportedCountries::SENDER_ID_COUNTRIES', [])
+      end
+
+      it 'is supported' do
+        belarus = countries.sms_support.find { |c| c.iso_code == 'BY' }
+        expect(belarus.supports_sms).to eq(false)
+      end
+    end
   end
 
   describe '#voice_support' do
@@ -129,7 +140,7 @@ RSpec.describe PinpointSupportedCountries do
       expect(countries.load_country_dialing_codes).to eq [
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '54', iso_code: 'AR', name: 'Argentina', supports_sms: true, supports_voice: true),
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '61', iso_code: 'AU', name: 'Australia', supports_sms: true, supports_voice: true),
-        PinpointSupportedCountries::CountryDialingCode.new(country_code: '375', iso_code: 'BY', name: 'Belarus', supports_sms: false, supports_voice: false),
+        PinpointSupportedCountries::CountryDialingCode.new(country_code: '375', iso_code: 'BY', name: 'Belarus', supports_sms: true, supports_voice: false),
       ]
     end
     # rubocop:enable Layout/LineLength

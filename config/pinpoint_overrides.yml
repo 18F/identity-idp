@@ -1,5 +1,4 @@
 AE:
-  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 AO:
@@ -41,7 +40,6 @@ BO:
 BR:
   supports_voice: false
 BY:
-  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 CA:
@@ -66,7 +64,6 @@ DZ:
 EC:
   supports_voice: false
 EG:
-  supports_sms: false
   supports_voice: true
 FI:
   supports_voice: false
@@ -99,7 +96,6 @@ IT:
 JM:
   supports_voice: false
 JO:
-  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 JP:
@@ -114,7 +110,6 @@ KI:
   supports_sms: true
   supports_voice: false
 KW:
-  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 KY:
@@ -146,7 +141,6 @@ MY:
 NI:
   supports_voice: false
 'NO':
-  supports_sms: true
   supports_voice: false
 NZ:
   supports_voice: false
@@ -155,7 +149,6 @@ PA:
 PE:
   supports_voice: false
 PH:
-  supports_sms: false
   supports_voice_unconfirmed: false
 PK:
   supports_voice: false
@@ -169,17 +162,14 @@ PW:
   supports_sms: true
   supports_voice: false
 QA:
-  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 RO:
   supports_voice: false
 RU:
-  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 SA:
-  supports_sms: false
   supports_voice: true
   supports_voice_unconfirmed: false
 SI:
@@ -194,7 +184,6 @@ TD:
   supports_sms: true
   supports_voice: false
 TH:
-  supports_sms: false
   supports_voice_unconfirmed: false
 TJ:
   supports_voice: false
@@ -212,7 +201,6 @@ VC:
 VE:
   supports_voice: false
 VN:
-  supports_sms: false
   supports_voice_unconfirmed: false
 ZA:
   supports_voice: false

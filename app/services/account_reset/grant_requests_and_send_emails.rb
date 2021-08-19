@@ -1,5 +1,7 @@
 module AccountReset
   class GrantRequestsAndSendEmails < ApplicationJob
+    queue_as :low
+
     include GoodJob::ActiveJobExtensions::Concurrency
 
     good_job_control_concurrency_with(
@@ -7,6 +9,8 @@ module AccountReset
       perform_limit: 1,
       key: -> { "grant-requests-and-send-emails-#{arguments.first}" },
     )
+
+    discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
     def perform(_date)
       notifications_sent = 0

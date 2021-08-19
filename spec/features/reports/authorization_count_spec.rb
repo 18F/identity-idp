@@ -342,16 +342,31 @@ describe 'authorization count' do
   def expect_ial1_count_only(issuer)
     expect(ial1_monthly_auth_count(issuer)).to eq(1)
     expect(ial2_monthly_auth_count(issuer)).to eq(0)
+
+    ial1_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 1)
+    ial2_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 2)
+    expect(ial1_return_logs.count).to eq(1)
+    expect(ial2_return_logs.count).to eq(0)
   end
 
   def expect_ial2_count_only(issuer)
     expect(ial1_monthly_auth_count(issuer)).to eq(0)
     expect(ial2_monthly_auth_count(issuer)).to eq(1)
+
+    ial1_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 1)
+    ial2_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 2)
+    expect(ial1_return_logs.count).to eq(0)
+    expect(ial2_return_logs.count).to eq(1)
   end
 
   def expect_ial1_and_ial2_count(issuer)
     expect(ial1_monthly_auth_count(issuer)).to eq(1)
     expect(ial2_monthly_auth_count(issuer)).to eq(1)
+
+    ial1_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 1)
+    ial2_return_logs = SpReturnLog.where(issuer: issuer, billable: true, ial: 2)
+    expect(ial1_return_logs.count).to eq(1)
+    expect(ial2_return_logs.count).to eq(1)
   end
 
   def ial2_monthly_auth_count(client_id)
@@ -364,6 +379,7 @@ describe 'authorization count' do
 
   def reset_monthly_auth_count_and_login
     MonthlySpAuthCount.delete_all
+    SpReturnLog.delete_all
     visit api_saml_logout2021_url
     fill_in_credentials_and_submit(email, RequestHelper::VALID_PASSWORD)
   end

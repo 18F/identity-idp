@@ -24,12 +24,15 @@ describe 'AwsS3Helper' do
   end
 
   describe '#s3_presigned_url' do
+    let(:client_stub) { Aws::S3::Client.new(region: region, stub_responses: true) }
+
     before do
-      client_stub = Aws::S3::Client.new(region: region, stub_responses: true)
       client_stub.stub_responses(:list_buckets, { buckets: [{ name: bucket }] })
       resource_stub = Aws::S3::Resource.new(client: client_stub)
-      allow(Identity::Hostdata).
-        to receive(:env).and_return(env)
+
+      allow(Identity::Hostdata).to receive(:env).and_return(env)
+      allow(Identity::Hostdata).to receive(:aws_region).and_return(region)
+      allow(Identity::Hostdata).to receive(:aws_account_id).and_return(account_id)
       allow(helper).to receive(:s3_resource).and_return(resource_stub)
     end
 
@@ -60,7 +63,7 @@ describe 'AwsS3Helper' do
 
     it 'is created with an expiration' do
       key = "#{session_uuid}-#{image_type}"
-      object = Aws::S3::Object.new(bucket_name: bucket, key: key)
+      object = Aws::S3::Object.new(bucket_name: bucket, key: key, client: client_stub)
       allow(helper).to receive(:s3_object).and_return(object)
       expect(object).to receive(:presigned_url).with(
         kind_of(Symbol),
@@ -77,6 +80,7 @@ describe 'AwsS3Helper' do
   describe '#s3_resource' do
     context 'AWS credentials are not set' do
       before do
+        allow(Identity::Hostdata).to receive(:aws_region).and_return(region)
         allow(Aws::S3::Resource).to receive(:new).
           and_raise(Aws::Sigv4::Errors::MissingCredentialsError, 'Credentials not set')
       end

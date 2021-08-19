@@ -7,13 +7,14 @@ module Db
 
       # Aggregates a user metric at across issuers within the same IAA, during that IAA's
       # period of performance (between its start and end date), month-over-month, by IAL level
-      # @param [String] iaa
+      # @param [Hash] iaa
       # @param [Symbol] aggregate (one of :sum, :unique, :new_unique)
       # @return [PG::Result, Array]
       def call(iaa:, aggregate:)
-        date_range, issuers = iaa_parts(iaa)
+        date_range = iaa[:start_date]...iaa[:end_date]
+        issuers = iaa[:issuers]
 
-        return [] if !date_range || !issuers
+        return [] if !date_range || issuers.blank?
 
         full_months, partial_months = Reports::MonthHelper.months(date_range).
           partition do |month_range|
@@ -68,7 +69,7 @@ module Db
         params = {
           iaa_start_date: quote(date_range.begin),
           iaa_end_date: quote(date_range.end),
-          iaa: quote(iaa),
+          key: quote(iaa[:key]),
           subquery: subquery,
           select_clause: select_clause,
           where_clause: where_clause,
@@ -79,7 +80,7 @@ module Db
           SELECT
             billing_month_logs.year_month
           , billing_month_logs.ial
-          , %{iaa} AS iaa
+          , %{key} AS key
           , %{iaa_start_date} AS iaa_start_date
           , %{iaa_end_date} AS iaa_end_date
           , %{select_clause}
@@ -143,26 +144,6 @@ module Db
             , sp_return_logs.ial
           SQL
         end
-      end
-
-      # @return [Array(Range<Date>, Array<String>)] date_range, issuers
-      def iaa_parts(iaa)
-        issuer_start_ends = ServiceProvider.
-          where(iaa: iaa).
-          pluck(:issuer, :iaa_start_date, :iaa_end_date)
-
-        return [] if issuer_start_ends.empty?
-
-        iaa_start_date, iaa_end_date = issuer_start_ends.flat_map do |_, start, finish|
-          [start, finish]
-        end.minmax
-
-        issuers = issuer_start_ends.map { |issuer, *rest| issuer }.uniq
-
-        [
-          (iaa_start_date..iaa_end_date),
-          issuers,
-        ]
       end
     end
   end

@@ -5,6 +5,7 @@ module OpenidConnect
     include VerifyProfileConcern
     include SecureHeadersConcern
     include AuthorizationCountConcern
+    include BillableEventTrackable
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
@@ -137,9 +138,7 @@ module OpenidConnect
 
     def track_events
       analytics.track_event(Analytics::SP_REDIRECT_INITIATED, ial: sp_session_ial)
-      Db::SpReturnLog.add_return(request_id, current_user.id)
-      increment_monthly_auth_count
-      add_sp_cost(:authentication)
+      track_billing_events
     end
   end
 end

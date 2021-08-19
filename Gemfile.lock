@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/18F/identity-hostdata.git
-  revision: 32fc831b47d17c878381279c936014e9956fcbe7
-  tag: v3.3.0
+  revision: c69cca28c5e9dd35c66c1bfbdb5c2218b560e14b
+  tag: v3.4.0
   specs:
-    identity-hostdata (3.3.0)
+    identity-hostdata (3.4.0)
       activesupport (~> 6.1)
       aws-sdk-s3 (~> 1.8)
 
@@ -38,10 +38,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: 7e255d9a30d605af6529ad6062b3edce00698d77
-  tag: v0.3.0
+  revision: ce223b6e55e052a63d6bf731f3bd90957cb2040c
+  tag: v0.3.1
   specs:
-    identity-telephony (0.3.0)
+    identity-telephony (0.3.1)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
@@ -191,6 +191,9 @@ GEM
     bullet (6.1.2)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
+    bundler-audit (0.8.0)
+      bundler (>= 1.2.0, < 3)
+      thor (~> 1.0)
     byebug (11.1.3)
     capybara (3.35.3)
       addressable
@@ -570,6 +573,11 @@ GEM
       errbase (>= 0.1.1)
     safety_net_attestation (0.4.0)
       jwt (~> 2.0)
+    sass (3.7.4)
+      sass-listen (~> 4.0.0)
+    sass-listen (4.0.0)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
     sassc (2.4.0)
       ffi (~> 1.9)
     sassc-rails (2.1.2)
@@ -583,6 +591,8 @@ GEM
       faraday (> 0.8, < 2.0)
     scrypt (3.0.7)
       ffi-compiler (>= 1.0, < 2.0)
+    scss_lint (0.59.0)
+      sass (~> 3.5, >= 3.5.5)
     secure_headers (6.3.2)
     securecompare (1.0.0)
     selenium-webdriver (3.142.7)
@@ -599,6 +609,8 @@ GEM
       docile (~> 1.1)
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
+    simplecov-cobertura (1.4.2)
+      simplecov (~> 0.8)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.2)
     smart_properties (1.15.0)
@@ -704,6 +716,7 @@ DEPENDENCIES
   bootsnap (~> 1.7.0)
   brakeman
   bullet (>= 6.0.2)
+  bundler-audit
   capybara-screenshot (>= 1.0.23)
   capybara-selenium (>= 0.0.6)
   derailed_benchmarks (~> 1.8)
@@ -776,10 +789,13 @@ DEPENDENCIES
   saml_idp!
   sassc-rails (~> 2.1.2)
   scrypt
+  scss_lint
   secure_headers (~> 6.3)
   shoulda-matchers (~> 4.0)
   simple_form (>= 5.0.2)
   simplecov (~> 0.21.0)
+  simplecov-cobertura
+  simplecov_json_formatter
   stringex
   strong_migrations (>= 0.4.2)
   subprocess

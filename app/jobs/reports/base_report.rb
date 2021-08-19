@@ -4,6 +4,9 @@ module Reports
   class BaseReport < ApplicationJob
     queue_as :low
 
+    # We use good_job's concurrency features to cancel "extra" or duplicative runs of the same job
+    discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
+
     private
 
     def fiscal_start_date
@@ -19,20 +22,20 @@ module Reports
       Time.zone.now.end_of_day
     end
 
-    def ec2_data
-      @ec2_data ||= Identity::Hostdata::EC2.load
-    end
-
     def gen_s3_bucket_name
-      "#{IdentityConfig.store.s3_report_bucket_prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
+      Identity::Hostdata.bucket_name(IdentityConfig.store.s3_report_bucket_prefix)
     end
 
     def report_timeout
       IdentityConfig.store.report_timeout
     end
 
-    def transaction_with_timeout
-      Db::EstablishConnection::ReadReplicaConnection.new.call do
+    def transaction_with_timeout(rails_env = Rails.env)
+      # rspec-rails's use_transactional_tests does not seem to act as expected when switching
+      # connections mid-test, so we just skip for now :[
+      return yield if rails_env.test?
+
+      ApplicationRecord.connected_to(role: :reading, shard: :read_replica) do
         ActiveRecord::Base.transaction do
           quoted_timeout = ActiveRecord::Base.connection.quote(report_timeout)
           ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")

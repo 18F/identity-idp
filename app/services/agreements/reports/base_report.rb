@@ -2,8 +2,7 @@ module Agreements
   module Reports
     class BaseReport < ::Reports::BaseReport
       def gen_s3_bucket_name
-        prefix = IdentityConfig.store.partner_api_bucket_prefix
-        "#{prefix}.#{ec2_data.account_id}-#{ec2_data.region}"
+        Identity::Hostdata.bucket_name(IdentityConfig.store.partner_api_bucket_prefix)
       end
 
       def save_report(report_name, body, extension:)

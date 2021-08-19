@@ -31,6 +31,8 @@ lint:
 	bundle exec brakeman
 	@echo "--- zeitwerk check ---"
 	bin/rails zeitwerk:check
+	@echo "--- bundler-audit ---"
+	bundle exec bundler-audit check --update
 # JavaScript
 	@echo "--- lint yarn lockfile ---"
 	make lint_yarn_lockfile
@@ -47,6 +49,8 @@ lint:
 	make lint_yaml
 	@echo "--- check assets are optimized ---"
 	make lint_optimized_assets
+	@echo "--- scss-lint ---"
+	bundle exec scss-lint
 
 lint_erb:
 	bundle exec erblint app/views
@@ -91,7 +95,11 @@ run-https: tmp/$(HOST)-$(PORT).key tmp/$(HOST)-$(PORT).crt
 .PHONY: setup all lint run test check brakeman
 
 normalize_yaml:
-	find ./config/locales -type f | xargs yarn normalize-yaml config/pinpoint_supported_countries.yml config/pinpoint_overrides.yml config/country_dialing_codes.yml
+	yarn normalize-yaml .rubocop.yml --disable-sort-keys --disable-smart-punctuation
+	find ./config/locales -type f | xargs yarn normalize-yaml \
+		config/pinpoint_supported_countries.yml \
+		config/pinpoint_overrides.yml \
+		config/country_dialing_codes.yml
 
 optimize_svg:
 	# Without disabling minifyStyles, keyframes are removed (e.g. `app/assets/images/id-card.svg`).

@@ -8,8 +8,4 @@ class PivCacAuthenticationSetupBasePresenter < SetupPresenter
     @user_fully_authenticated = user_fully_authenticated
     @form = form
   end
-
-  def piv_cac_capture_text
-    t('forms.piv_cac_setup.submit')
-  end
 end

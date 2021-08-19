@@ -4,7 +4,7 @@ module AwsS3Helper
   end
 
   def s3_resource
-    Aws::S3::Resource.new(region: aws_region)
+    Aws::S3::Resource.new(region: Identity::Hostdata.aws_region)
   rescue Aws::Sigv4::Errors::MissingCredentialsError => aws_error
     Rails.logger.info "Aws Missing CredentialsError!\n" + aws_error.message
     nil
@@ -15,31 +15,9 @@ module AwsS3Helper
     raise(ArgumentError, 'bucket_prefix is required') if bucket_prefix.blank?
     return if !s3_resource
 
-    s3_resource.bucket(bucket(prefix: bucket_prefix)).object(keyname)
-  end
-
-  def bucket(prefix:)
-    "#{prefix}-#{host_env}.#{aws_account_id}-#{aws_region}"
-  end
-
-  def host_env
-    Identity::Hostdata.env
-  end
-
-  def aws_account_id
-    ec2_data.account_id
-  end
-
-  def aws_region
-    ec2_data.region
-  end
-
-  def ec2_data
-    Identity::Hostdata::EC2.load
-  rescue Net::OpenTimeout, Errno::EHOSTDOWN, Errno::EHOSTUNREACH => e
-    raise e if Identity::Hostdata.in_datacenter?
-
-    OpenStruct.new(account_id: '123456789', region: 'us-west-2')
+    s3_resource.bucket(
+      Identity::Hostdata.bucket_name("#{bucket_prefix}-#{Identity::Hostdata.env}"),
+    ).object(keyname)
   end
 
   def presigned_url_expiration_in_seconds
