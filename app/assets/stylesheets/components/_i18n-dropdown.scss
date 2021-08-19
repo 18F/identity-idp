@@ -1,6 +1,11 @@
 .i18n-mobile-toggle button,
 .i18n-desktop-toggle button {
   @include u-line-height('body', $theme-body-line-height);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  };
 }
 
 .i18n-mobile-toggle,
