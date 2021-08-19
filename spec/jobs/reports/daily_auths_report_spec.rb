@@ -34,18 +34,19 @@ RSpec.describe Reports::DailyAuthsReport do
       end
 
       it 'aggregates by issuer' do
-        expect(report).to receive(:upload_file_to_s3_bucket).exactly(2).times do |path:, body:, content_type:, bucket_name:|
-          parsed = JSON.parse(body, symbolize_names: true)
+        expect(report).to receive(:upload_file_to_s3_bucket).
+          exactly(2).times do |path:, body:, content_type:, bucket_name:|
+            parsed = JSON.parse(body, symbolize_names: true)
 
-          expect(parsed[:start]).to eq(report_date.beginning_of_day.as_json)
-          expect(parsed[:finish]).to eq(report_date.end_of_day.as_json)
-          expect(parsed[:results]).to match_array(
-            [
-              { count: 2, ial: 1, issuer: 'a', iaa: 'iaa123' },
-              { count: 1, ial: 2, issuer: 'a', iaa: 'iaa123' },
-            ],
-          )
-        end
+            expect(parsed[:start]).to eq(report_date.beginning_of_day.as_json)
+            expect(parsed[:finish]).to eq(report_date.end_of_day.as_json)
+            expect(parsed[:results]).to match_array(
+              [
+                { count: 2, ial: 1, issuer: 'a', iaa: 'iaa123' },
+                { count: 1, ial: 2, issuer: 'a', iaa: 'iaa123' },
+              ],
+            )
+          end
 
         report.perform(report_date)
       end
