@@ -78,10 +78,10 @@ module Reports
       @bucket ||= gen_s3_bucket_name
     end
 
-    def upload_file_to_s3_bucket(path:, body:, content_type:)
-      url = "s3://#{bucket}/#{path}"
+    def upload_file_to_s3_bucket(path:, body:, content_type:, bucket_name: bucket)
+      url = "s3://#{bucket_name}/#{path}"
       logger.info("#{class_name}: uploading to #{url}")
-      obj = Aws::S3::Resource.new.bucket(bucket).object(path)
+      obj = Aws::S3::Resource.new.bucket(bucket_name).object(path)
       obj.put(body: body, acl: 'private', content_type: content_type)
       logger.debug("#{class_name}: upload completed to #{url}")
       url

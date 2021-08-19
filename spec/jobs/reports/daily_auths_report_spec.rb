@@ -7,6 +7,8 @@ RSpec.describe Reports::DailyAuthsReport do
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
+    allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
+    allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
   end
 
   describe '#perform' do
@@ -15,7 +17,8 @@ RSpec.describe Reports::DailyAuthsReport do
         path: 'int/daily-auths-report/2021/2021-03-01.daily-auths-report.json',
         body: kind_of(String),
         content_type: 'application/json',
-      )
+        bucket_name: kind_of(String),
+      ).exactly(2).times
 
       report.perform(report_date)
     end
@@ -31,7 +34,7 @@ RSpec.describe Reports::DailyAuthsReport do
       end
 
       it 'aggregates by issuer' do
-        expect(report).to receive(:upload_file_to_s3_bucket) do |path:, body:, content_type:|
+        expect(report).to receive(:upload_file_to_s3_bucket).exactly(2).times do |path:, body:, content_type:, bucket_name:|
           parsed = JSON.parse(body, symbolize_names: true)
 
           expect(parsed[:start]).to eq(report_date.beginning_of_day.as_json)

@@ -246,6 +246,7 @@ development:
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   recurring_jobs_disabled_names: "[]"
   s3_report_bucket_prefix: ''
+  s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
@@ -305,6 +306,7 @@ production:
   redis_url: redis://redis.login.gov.internal:6379
   ruby_workers_enabled: 'false'
   s3_report_bucket_prefix: login-gov.reports
+  s3_report_public_bucket_prefix: login-gov-public-reporting-data
   s3_reports_enabled: 'true'
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
@@ -378,6 +380,7 @@ test:
   reset_password_email_max_attempts: '5'
   reset_password_email_window_in_minutes: '80'
   s3_report_bucket_prefix: ''
+  s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base

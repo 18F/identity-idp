@@ -240,6 +240,7 @@ class IdentityConfig
     config.add(:rules_of_use_horizon_years, type: :integer)
     config.add(:rules_of_use_updated_at, type: :timestamp)
     config.add(:s3_report_bucket_prefix, type: :string)
+    config.add(:s3_report_public_bucket_prefix, type: :string)
     config.add(:s3_reports_enabled, type: :boolean)
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
     config.add(:saml_secret_rotation_enabled, type: :boolean)

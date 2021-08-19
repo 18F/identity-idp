@@ -17,10 +17,22 @@ module Reports
 
       _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)
 
-      upload_file_to_s3_bucket(
-        path: path,
-        body: report_body.to_json,
-        content_type: 'application/json',
+      [
+        gen_s3_bucket_name, # default reporting bucket
+        public_bucket_name,
+      ].each do |bucket_name|
+        upload_file_to_s3_bucket(
+          path: path,
+          body: report_body.to_json,
+          content_type: 'application/json',
+          bucket_name: bucket_name,
+        )
+      end
+    end
+
+    def public_bucket_name
+      Identity::Hostdata.bucket_name(
+        "#{IdentityConfig.store.s3_report_public_bucket_prefix}-#{Identity::Hostdata.env}",
       )
     end
 
