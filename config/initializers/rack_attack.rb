@@ -203,6 +203,6 @@ ActiveSupport::Notifications.subscribe(
 ) do |_name, _start, _finish, _request_id, payload|
   req = payload[:request]
   user = req.env['warden'].user || AnonymousUser.new
-  analytics = Analytics.new(user: user, request: req, sp: nil)
+  analytics = Analytics.new(user: user, request: req, is_new_session_path: false, sp: nil)
   analytics.track_event(Analytics::RATE_LIMIT_TRIGGERED, type: req.env['rack.attack.matched'])
 end
