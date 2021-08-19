@@ -28,6 +28,7 @@ describe Analytics do
       user: current_user,
       request: request,
       sp: 'http://localhost:3000',
+      is_new_session_path: true,
       ahoy: ahoy,
     )
   end
@@ -45,6 +46,7 @@ describe Analytics do
         locale: I18n.locale,
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
+        new_session_path: true,
       }
 
       expect(ahoy).to receive(:track).
@@ -63,6 +65,7 @@ describe Analytics do
         locale: I18n.locale,
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
+        new_session_path: true,
       }
 
       expect(ahoy).to receive(:track).
@@ -87,7 +90,13 @@ describe Analytics do
 
     it 'uses the DeviceDetector gem to parse the user agent' do
       user = build_stubbed(:user, uuid: '123')
-      analytics = Analytics.new(user: user, request: FakeRequest.new, sp: nil, ahoy: ahoy)
+      analytics = Analytics.new(
+        user: user,
+        request: FakeRequest.new,
+        sp: nil,
+        is_new_session_path: true,
+        ahoy: ahoy,
+      )
 
       browser = instance_double(DeviceDetector)
       allow(DeviceDetector).to receive(:new).and_return(browser)
@@ -114,6 +123,7 @@ describe Analytics do
         locale: locale,
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
+        new_session_path: true,
       }
 
       expect(ahoy).to receive(:track).
