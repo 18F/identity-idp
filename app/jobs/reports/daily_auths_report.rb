@@ -18,7 +18,7 @@ module Reports
       _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)
 
       [
-        gen_s3_bucket_name, # default reporting bucket
+        bucket_name, # default reporting bucket
         public_bucket_name,
       ].each do |bucket_name|
         upload_file_to_s3_bucket(

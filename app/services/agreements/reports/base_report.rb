@@ -1,7 +1,7 @@
 module Agreements
   module Reports
     class BaseReport < ::Reports::BaseReport
-      def gen_s3_bucket_name
+      def bucket_name
         Identity::Hostdata.bucket_name(IdentityConfig.store.partner_api_bucket_prefix)
       end
 
