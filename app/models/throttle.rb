@@ -12,6 +12,7 @@ class Throttle < ApplicationRecord
     idv_send_link: 6,
     verify_personal_key: 7,
     verify_gpo_key: 8,
+    proof_ssn: 9,
   }
 
   THROTTLE_CONFIG = {
@@ -46,6 +47,10 @@ class Throttle < ApplicationRecord
     verify_gpo_key: {
       max_attempts: IdentityConfig.store.verify_gpo_key_max_attempts,
       attempt_window: IdentityConfig.store.verify_gpo_key_attempt_window_in_minutes,
+    },
+    proof_ssn: {
+      max_attempts: IdentityConfig.store.proof_ssn_max_attempts,
+      attempt_window: IdentityConfig.store.proof_ssn_max_attempt_window_in_minutes,
     },
   }.freeze
 
