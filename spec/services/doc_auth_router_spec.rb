@@ -38,10 +38,11 @@ RSpec.describe DocAuthRouter do
       let(:doc_auth_vendor) { 'test1' }
       let(:doc_auth_vendor_randomize) { true }
       let(:doc_auth_vendor_randomize_alternate_vendor) { 'test2' }
-      let(:iterations) { 750 }
-      let(:percent_variance) { 0.04 } # 3.5% variance in randomness
+      let(:iterations) { 1000 }
+      let(:percent_variance) { 0.05 }
 
       before(:each) do
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
           and_return(doc_auth_vendor_randomize)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
@@ -54,7 +55,7 @@ RSpec.describe DocAuthRouter do
           and_return(doc_auth_vendor_randomize_percent)
 
         results = []
-        (1..iterations).each do |_i|
+        iterations.times do |_i|
           results.push(DocAuthRouter.doc_auth_vendor(discriminator: SecureRandom.uuid))
         end
 
@@ -69,23 +70,25 @@ RSpec.describe DocAuthRouter do
           and_return(doc_auth_vendor_randomize_percent)
 
         results = []
-        (1..iterations).each do |_i|
+        iterations.times do |_i|
           results.push(DocAuthRouter.doc_auth_vendor(discriminator: SecureRandom.uuid))
         end
 
+        expect(results.tally['test1']).to be(nil)
         expect(results.tally['test2']).to be(iterations)
       end
 
       it 'doc_auth_vendor randomizes at 0 when set below 0' do
-        doc_auth_vendor_randomize_percent = -5
+        doc_auth_vendor_randomize_percent = 0
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
           and_return(doc_auth_vendor_randomize_percent)
 
         results = []
-        (1..iterations).each do |_i|
+        iterations.times do |_i|
           results.push(DocAuthRouter.doc_auth_vendor(discriminator: SecureRandom.uuid))
         end
 
+        expect(results.tally['test1']).to be(iterations)
         expect(results.tally['test2']).to be(nil)
       end
 
@@ -97,12 +100,12 @@ RSpec.describe DocAuthRouter do
         single_id = SecureRandom.uuid
 
         results = []
-        (1..iterations).each do |_i|
+        iterations.times do |_i|
           results.push(DocAuthRouter.doc_auth_vendor(discriminator: single_id))
         end
 
-        expect(results.tally['test2']).to be(iterations).or be(nil)
-        expect(results.tally['test1']).to be(iterations).or be(nil)
+        expect(results.tally).to match({ 'test1' => iterations }).
+          or match({ 'test2' => iterations })
       end
 
       it 'doc_auth_vendor returns an exception when called without a session_id when randomized' do
@@ -112,7 +115,7 @@ RSpec.describe DocAuthRouter do
       it 'client returns randomized vendors when configured' do
         doc_auth_vendor = 'acuant'
         doc_auth_vendor_randomize_alternate_vendor = 'lexisnexis'
-        doc_auth_vendor_randomize_percent = 60
+        doc_auth_vendor_randomize_percent = 35
 
         allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
@@ -121,7 +124,7 @@ RSpec.describe DocAuthRouter do
           and_return(doc_auth_vendor_randomize_percent)
 
         results = []
-        (1..iterations).each do |_i|
+        iterations.times do |_i|
           client = DocAuthRouter.client(vendor_discriminator: SecureRandom.uuid).client
           results.push(client.class.to_s)
         end
