@@ -48,7 +48,7 @@ class DocumentProofingJob < ApplicationJob
     end
 
     analytics = build_analytics(dcs)
-    doc_auth_client = build_doc_auth_client(analytics)
+    doc_auth_client = build_doc_auth_client(analytics, dcs)
 
     proofer_result = timer.time('proof_documents') do
       with_retries(**faraday_retry_options) do
@@ -99,8 +99,9 @@ class DocumentProofingJob < ApplicationJob
     )
   end
 
-  def build_doc_auth_client(analytics)
+  def build_doc_auth_client(analytics, document_capture_session)
     DocAuthRouter.client(
+      vendor_discriminator: document_capture_session.uuid,
       warn_notifier: proc { |attrs| analytics.track_event(Analytics::DOC_AUTH_WARNING, attrs) },
     )
   end
