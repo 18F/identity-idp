@@ -42,16 +42,16 @@ RSpec.describe DocAuthRouter do
       let(:percent_variance) { 0.04 } # 3.5% variance in randomness
 
       before(:each) do
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize)
-          .and_return(doc_auth_vendor_randomize)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor)
-          .and_return(doc_auth_vendor_randomize_alternate_vendor)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize).
+          and_return(doc_auth_vendor_randomize)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
+          and_return(doc_auth_vendor_randomize_alternate_vendor)
       end
 
       it 'doc_auth_vendor randomizes near configured level' do
         doc_auth_vendor_randomize_percent = 57
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent)
-          .and_return(doc_auth_vendor_randomize_percent)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
+          and_return(doc_auth_vendor_randomize_percent)
 
         results = []
         (1..iterations).each do |_i|
@@ -65,8 +65,8 @@ RSpec.describe DocAuthRouter do
 
       it 'doc_auth_vendor randomizes at 100 when set above 100' do
         doc_auth_vendor_randomize_percent = 105
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent)
-          .and_return(doc_auth_vendor_randomize_percent)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
+          and_return(doc_auth_vendor_randomize_percent)
 
         results = []
         (1..iterations).each do |_i|
@@ -78,8 +78,8 @@ RSpec.describe DocAuthRouter do
 
       it 'doc_auth_vendor randomizes at 0 when set below 0' do
         doc_auth_vendor_randomize_percent = -5
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent)
-          .and_return(doc_auth_vendor_randomize_percent)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
+          and_return(doc_auth_vendor_randomize_percent)
 
         results = []
         (1..iterations).each do |_i|
@@ -91,8 +91,8 @@ RSpec.describe DocAuthRouter do
 
       it 'doc_auth_vendor is deterministic when presented with the same session id' do
         doc_auth_vendor_randomize_percent = 50
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent)
-          .and_return(doc_auth_vendor_randomize_percent)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
+          and_return(doc_auth_vendor_randomize_percent)
 
         single_id = SecureRandom.uuid
 
@@ -106,7 +106,7 @@ RSpec.describe DocAuthRouter do
       end
 
       it 'doc_auth_vendor returns an exception when called without a session_id when randomized' do
-        expect{ DocAuthRouter.doc_auth_vendor(discriminator: nil) }.to raise_error
+        expect { DocAuthRouter.doc_auth_vendor(discriminator: nil) }.to raise_error
       end
 
       it 'client returns randomized vendors when configured' do
@@ -115,10 +115,10 @@ RSpec.describe DocAuthRouter do
         doc_auth_vendor_randomize_percent = 60
 
         allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(doc_auth_vendor)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor)
-          .and_return(doc_auth_vendor_randomize_alternate_vendor)
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent)
-          .and_return(doc_auth_vendor_randomize_percent)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_alternate_vendor).
+          and_return(doc_auth_vendor_randomize_alternate_vendor)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_randomize_percent).
+          and_return(doc_auth_vendor_randomize_percent)
 
         results = []
         (1..iterations).each do |_i|
@@ -128,8 +128,8 @@ RSpec.describe DocAuthRouter do
 
         target_value = iterations*(doc_auth_vendor_randomize_percent.to_f/100)
 
-        expect(results.tally['DocAuth::LexisNexis::LexisNexisClient'])
-          .to be_within(iterations*percent_variance).of(target_value)
+        expect(results.tally['DocAuth::LexisNexis::LexisNexisClient']).
+          to be_within(iterations*percent_variance).of(target_value)
       end
     end
   end

@@ -41,7 +41,7 @@ module Idv
 
       def save_proofing_components
         session_doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
-          discriminator: flow_session[document_capture_session_uuid_key]
+          discriminator: flow_session[document_capture_session_uuid_key],
         )
         Db::ProofingComponent::Add.call(user_id, :document_check, session_doc_auth_vendor)
         Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')

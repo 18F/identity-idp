@@ -209,7 +209,7 @@ module DocAuthRouter
       if discriminator.blank?
         raise StandardError.new('doc_auth_vendor called without a session_id when randomized!')
       end
-      target_percent = IdentityConfig.store.doc_auth_vendor_randomize_percent.clamp(0,100)
+      target_percent = IdentityConfig.store.doc_auth_vendor_randomize_percent.clamp(0, 100)
 
       max_sha = (16**64)-1
       user_value = Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
