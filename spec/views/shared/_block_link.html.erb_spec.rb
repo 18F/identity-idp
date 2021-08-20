@@ -11,4 +11,12 @@ describe 'shared/_block_link.html.erb' do
     expect(rendered).to have_selector('a[href="/example"]')
     expect(rendered).to have_content('Link Text')
   end
+
+  it 'renders a link in a new tab' do
+    render('shared/block_link', url: '/example', new_tab: true) { 'Link Text' }
+
+    expect(rendered).to have_selector('a[href="/example"][target="_blank"]')
+    expect(rendered).to have_content('Link Text')
+    expect(rendered).to have_content(t('links.new_window'))
+  end
 end

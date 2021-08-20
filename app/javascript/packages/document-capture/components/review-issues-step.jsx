@@ -124,7 +124,10 @@ function ReviewIssuesStep({
         </>
       )}
       {serviceProvider.name && (
-        <BlockLink url={serviceProvider.getFailureToProofURL('review_issues_having_trouble')}>
+        <BlockLink
+          url={serviceProvider.getFailureToProofURL('review_issues_having_trouble')}
+          isNewTab
+        >
           {formatHTML(t('doc_auth.info.get_help_at_sp_html', { sp_name: serviceProvider.name }), {
             strong: 'strong',
           })}

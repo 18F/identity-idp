@@ -42,6 +42,30 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'help/creating-an-account/authentication-application/').to_s
   end
 
+  def self.help_idv_supported_documents_url
+    URI.join(
+      BASE_URL,
+      locale_segment,
+      'help/verify-your-identity/accepted-state-issued-identification/',
+    ).to_s
+  end
+
+  def self.help_idv_verify_by_mail_url
+    URI.join(
+      BASE_URL,
+      locale_segment,
+      'help/verify-your-identity/verify-your-address-by-mail/',
+    ).to_s
+  end
+
+  def self.help_idv_verify_by_phone_url
+    URI.join(
+      BASE_URL,
+      locale_segment,
+      'help/verify-your-identity/phone-number-and-phone-plan-in-your-name/',
+    ).to_s
+  end
+
   def self.help_which_authentication_method_url
     URI.join(
       BASE_URL,
