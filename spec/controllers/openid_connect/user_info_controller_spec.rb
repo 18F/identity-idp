@@ -105,7 +105,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         action
         session_hash = {
           'paths_visited' => { '/api/openid_connect/userinfo' => true },
-          'is_new_path' => true,
+          'first_path_visit' => true,
         }
         expect(request.session.to_h).to eq(session_hash)
       end

@@ -397,11 +397,11 @@ class ApplicationController < ActionController::Base
 
   def update_session_paths_visited_for_analytics
     session[:paths_visited] ||= {}
-    session[:is_new_path] = !session[:paths_visited].key?(request.path)
+    session[:first_path_visit] = !session[:paths_visited].key?(request.path)
     session[:paths_visited][request.path] = true
   end
 
   def is_new_session_path?
-    session[:is_new_path]
+    session[:first_path_visit]
   end
 end
