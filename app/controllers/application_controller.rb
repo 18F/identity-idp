@@ -65,7 +65,7 @@ class ApplicationController < ActionController::Base
         user: analytics_user,
         request: request,
         sp: current_sp&.issuer,
-        is_new_session_path: first_path_visit_this_session?,
+        first_path_visit_this_session: first_path_visit_this_session?,
         ahoy: ahoy,
       )
   end

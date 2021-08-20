@@ -28,7 +28,7 @@ describe Analytics do
       user: current_user,
       request: request,
       sp: 'http://localhost:3000',
-      is_new_session_path: true,
+      first_path_visit_this_session: true,
       ahoy: ahoy,
     )
   end
@@ -94,7 +94,7 @@ describe Analytics do
         user: user,
         request: FakeRequest.new,
         sp: nil,
-        is_new_session_path: true,
+        first_path_visit_this_session: true,
         ahoy: ahoy,
       )
 
