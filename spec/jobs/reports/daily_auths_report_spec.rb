@@ -52,7 +52,7 @@ RSpec.describe Reports::DailyAuthsReport do
                 issuer: 'a',
                 iaa: 'iaa123',
                 friendly_name: 'The App',
-                agency: 'The Agency'
+                agency: 'The Agency',
               },
               {
                 count: 1,
@@ -60,7 +60,7 @@ RSpec.describe Reports::DailyAuthsReport do
                 issuer: 'a',
                 iaa: 'iaa123',
                 friendly_name: 'The App',
-                agency: 'The Agency'
+                agency: 'The Agency',
               },
             ],
           )
