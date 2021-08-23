@@ -181,9 +181,7 @@ describe Users::ResetPasswordsController, devise: true do
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
 
-        now = Time.zone.now
         freeze_time do
-          travel_to(now)
           user = create(
             :user,
             :signed_up,
