@@ -68,7 +68,7 @@ feature 'Internationalization' do
       visit root_path
       using_wait_time(5) do
         within(:css, '.i18n-desktop-toggle') do
-          click_link t('i18n.language', locale: 'en')
+          click_button t('i18n.language', locale: 'en')
           click_link t('i18n.locale.es')
         end
       end
@@ -77,7 +77,7 @@ feature 'Internationalization' do
       expect(page).to have_content t('i18n.language', locale: 'es')
 
       within(:css, '.i18n-desktop-toggle') do
-        click_link t('i18n.language', locale: 'es')
+        click_button t('i18n.language', locale: 'es')
         click_link t('i18n.locale.en')
       end
 
