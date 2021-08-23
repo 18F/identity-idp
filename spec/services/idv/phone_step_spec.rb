@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Idv::PhoneStep do
   include IdvHelper
 
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
   let(:service_provider) do
     create(
       :service_provider,
@@ -42,6 +42,8 @@ describe Idv::PhoneStep do
   }
 
   describe '#submit' do
+    let(:throttle) { create(:throttle, user: user, throttle_type: :idv_resolution) }
+
     it 'succeeds with good params' do
       context = { stages: [{ address: 'AddressMock' }] }
       extra = {
@@ -96,29 +98,19 @@ describe Idv::PhoneStep do
     end
 
     it 'increments step attempts' do
-      original_step_attempts = idv_session.step_attempts[:phone]
-
-      subject.submit(phone: bad_phone)
-      expect(subject.async_state.done?).to eq true
-      _result = subject.async_state_done(subject.async_state)
-
-      expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts + 1)
+      expect do
+        subject.submit(phone: bad_phone)
+        expect(subject.async_state.done?).to eq true
+        _result = subject.async_state_done(subject.async_state)
+      end.to(change { throttle.reload.attempts }.by(1))
     end
 
     it 'does not increment step attempts when the vendor request times out' do
-      original_step_attempts = idv_session.step_attempts[:phone]
-
-      subject.submit(phone: timeout_phone)
-
-      expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts)
+      expect { subject.submit(phone: timeout_phone) }.to(change { throttle.reload.attempts }.by(0))
     end
 
     it 'does not increment step attempts when the vendor raises an exception' do
-      original_step_attempts = idv_session.step_attempts[:phone]
-
-      subject.submit(phone: fail_phone)
-
-      expect(idv_session.step_attempts[:phone]).to eq(original_step_attempts)
+      expect { subject.submit(phone: fail_phone) }.to(change { throttle.reload.attempts }.by(0))
     end
 
     it 'marks the phone as confirmed if it matches 2FA phone' do
@@ -179,7 +171,12 @@ describe Idv::PhoneStep do
 
     context 'when there are not idv attempts remaining' do
       it 'returns :fail' do
-        idv_session.step_attempts[:phone] = idv_max_attempts - 1
+        create(
+          :throttle,
+          user: user,
+          throttle_type: :idv_resolution,
+          attempts: max_attempts_less_one,
+        )
 
         subject.submit(phone: bad_phone)
         expect(subject.async_state.done?).to eq true

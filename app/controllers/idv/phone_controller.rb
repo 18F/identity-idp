@@ -5,7 +5,7 @@ module Idv
     attr_reader :idv_form
 
     before_action :confirm_step_needed
-    before_action :confirm_step_allowed
+    before_action :confirm_step_allowed, only: :new
     before_action :set_idv_form
 
     def new
@@ -35,6 +35,18 @@ module Idv
 
     private
 
+    def max_attempts_reached
+      analytics.track_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :idv_resolution,
+        step_name: step_name,
+      )
+    end
+
+    def confirm_step_allowed
+      redirect_to failure_url(:fail) if idv_attempter_throttled?
+    end
+
     def redirect_to_next_step
       if phone_confirmation_required?
         redirect_to idv_otp_delivery_method_url
@@ -52,6 +64,7 @@ module Idv
     end
 
     def handle_proofing_failure
+      max_attempts_reached if step.failure_reason == :fail
       redirect_to failure_url(step.failure_reason)
     end
 
