@@ -6,10 +6,6 @@ class RulesOfUseForm
 
   attr_reader :terms_accepted
 
-  def self.model_name
-    ActiveModel::Name.new(self, nil, 'User')
-  end
-
   def initialize(user)
     @user = user
   end

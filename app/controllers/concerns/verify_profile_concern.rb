@@ -1,10 +1,6 @@
 module VerifyProfileConcern
   private
 
-  def account_or_verify_profile_path
-    public_send "#{account_or_verify_profile_route}_path"
-  end
-
   def account_or_verify_profile_url
     public_send "#{account_or_verify_profile_route}_url"
   end

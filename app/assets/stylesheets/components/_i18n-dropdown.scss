@@ -1,3 +1,13 @@
+.i18n-mobile-toggle button,
+.i18n-desktop-toggle button {
+  @include u-line-height('body', $theme-body-line-height);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  };
+}
+
 .i18n-mobile-toggle,
 .i18n-desktop-toggle {
   &.focused .caret {
@@ -20,7 +30,7 @@
     margin-bottom: 0;
     margin-top: 0;
 
-    a {
+    button {
       padding-bottom: 12px;
       padding-top: 12px;
     }
@@ -33,4 +43,13 @@
   left: -1px;
   position: absolute;
   width: 194px;
+}
+
+.language-desktop-button {
+  background-color: transparent;
+}
+
+.language-mobile-button {
+  background-color: $blue-light;
+  border: 0;
 }

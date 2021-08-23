@@ -55,20 +55,6 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
   end
 
-  def reverify_link
-    t(
-      'two_factor_authentication.account_reset.recover_html',
-      reset_link: @view.link_to(
-        t('two_factor_authentication.account_reset.reset_link'),
-        account_reset_request_path(locale: LinkLocaleResolver.locale),
-      ),
-      reverify_link: @view.link_to(
-        t('two_factor_authentication.account_reset.reverify_link'),
-        account_reset_recover_path,
-      ),
-    )
-  end
-
   private
 
   def account_reset_link

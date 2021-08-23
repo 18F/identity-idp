@@ -13,10 +13,4 @@ class SetupPresenter
     return @remember_device_default if user_opted_remember_device_cookie.nil?
     ActiveModel::Type::Boolean.new.cast(user_opted_remember_device_cookie)
   end
-
-  private
-
-  def no_factors_enabled?
-    MfaPolicy.new(@current_user).no_factors_enabled?
-  end
 end

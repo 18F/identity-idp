@@ -33,19 +33,6 @@ module PivCacService
 
     private
 
-    def emails_match_domains?(email_domains, supported_domains)
-      partial_domains, exact_domains = supported_domains.partition { |domain| domain[0] == '.' }
-
-      (email_domains & exact_domains).any? ||
-        any_partial_domains_match?(email_domains, partial_domains)
-    end
-
-    def any_partial_domains_match?(givens, matchers)
-      givens.any? do |given|
-        matchers.any? { |matcher| given.end_with?(matcher) }
-      end
-    end
-
     def randomize_uri(uri)
       # we only support {random}, so we're going for performance here
       uri.gsub('{random}') { |_| SecureRandom.hex(RANDOM_HOSTNAME_BYTES) }
