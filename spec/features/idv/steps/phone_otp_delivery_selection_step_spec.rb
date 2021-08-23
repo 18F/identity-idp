@@ -50,7 +50,7 @@ feature 'IdV phone OTP delivery method selection' do
     it 'can return back to the OTP selection screen' do
       start_idv_from_sp
       complete_idv_steps_before_phone_otp_delivery_selection_step
-      click_on t('idv.form.activate_by_mail')
+      click_on t('idv.troubleshooting.options.verify_by_mail')
 
       expect(page).to have_content(t('idv.titles.mail.verify'))
 

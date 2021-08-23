@@ -1,19 +1,31 @@
+import useI18n from '../hooks/use-i18n';
+
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
  * @typedef BlockLinkProps
  *
  * @prop {string} url Link destination.
+ * @prop {boolean=} isNewTab Whether link should open in a new tab. Defaults to false. Use best
+ * judgment to reserve new tabs to when absolutely necessary, such as when form data may otherwise
+ * be lost.
  * @prop {ReactNode} children Child elements.
  */
 
 /**
  * @param {BlockLinkProps} props
  */
-function BlockLink({ url, children }) {
+function BlockLink({ url, children, isNewTab = false }) {
+  const { t } = useI18n();
+
+  const classes = ['usa-link', 'block-link', isNewTab && 'usa-link--external']
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <a href={url} className="usa-link block-link">
+    <a href={url} className={classes} target={isNewTab ? '_blank' : undefined}>
       {children}
+      {isNewTab && <span className="usa-sr-only"> {t('links.new_window')}</span>}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 5.2 8.91"

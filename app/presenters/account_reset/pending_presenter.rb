@@ -16,7 +16,6 @@ module AccountReset
         account_reset_request.requested_at + wait_time,
         true,
         highest_measures: 2,
-        two_words_connector: " #{I18n.t('datetime.dotiw.two_words_connector')} ",
       )
     end
   end

@@ -48,23 +48,26 @@
         </div>
       </div>
     </label>
-
-    <div class="margin-top-4"></div>
-    <% if gpo_letter_available %>
-      <div class="margin-top-4">
-        <%= t('idv.form.no_alternate_phone_html', link: link_to(t('idv.form.activate_by_mail'), idv_gpo_path)) %>
-      </div>
-    <% end %>
-
-    <div class="margin-top-2">
-      <%= t('instructions.mfa.wrong_number_html', link: link_to(t('forms.two_factor.try_again'), idv_phone_path)) %>
-    </div>
-
   </fieldset>
-  <div class="margin-top-4">
-    <%= submit_tag(t('idv.buttons.send_confirmation_code'), class: 'sm-col-6 col-12 usa-button usa-button--big') %>
+  <div class="margin-y-5">
+    <%= submit_tag(t('idv.buttons.send_confirmation_code'), class: 'usa-button usa-button--big usa-button--wide') %>
   </div>
 <% end %>
+
+<%= render(
+      'shared/troubleshooting_options',
+      heading: t('idv.troubleshooting.headings.having_trouble'),
+      options: [
+        {
+          url: idv_phone_path,
+          text: t('idv.troubleshooting.options.change_phone_number'),
+        },
+        gpo_letter_available && {
+          url: idv_gpo_path,
+          text: t('idv.troubleshooting.options.verify_by_mail'),
+        },
+      ].select(&:present?),
+    ) %>
 
 <div class="margin-top-4 border-top border-primary-light">
   <div class="margin-top-1">

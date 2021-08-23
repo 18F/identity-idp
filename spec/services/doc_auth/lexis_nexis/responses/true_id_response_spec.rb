@@ -10,6 +10,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   let(:failure_body_with_all_failures) do
     LexisNexisFixtures.true_id_response_failure_with_all_failures
   end
+  let(:failure_body_no_liveness_low_dpi) do
+    LexisNexisFixtures.true_id_response_failure_no_liveness_low_dpi
+  end
 
   # rubocop:disable Layout/LineLength
   let(:failure_response_no_liveness) do
@@ -35,6 +38,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   let(:attention_barcode_read) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_barcode_read_attention)
+  end
+  let(:failure_response_no_liveness_low_dpi) do
+    instance_double(Faraday::Response, status: 200, body: failure_body_no_liveness_low_dpi)
   end
   # rubocop:enable Layout/LineLength
 
@@ -180,6 +186,19 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
       expect(output).to include(:backtrace)
+    end
+  end
+
+  context 'when front image HDPI is too low' do
+    it 'returns an unsuccessful response with front DPI error' do
+      output = described_class.new(failure_response_no_liveness_low_dpi, false, config).to_h
+
+      expect(output[:success]).to eq(false)
+      expect(output[:errors]).to eq(
+        general: [DocAuth::Errors::DPI_LOW_ONE_SIDE],
+      )
+      expect(output[:exception]).to be_nil
+      expect(output[:doc_auth_result]).to eq('Failed')
     end
   end
 end

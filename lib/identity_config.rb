@@ -213,6 +213,8 @@ class IdentityConfig
     config.add(:proofing_expired_license_after, type: :date)
     config.add(:proofing_expired_license_reproof_at, type: :date)
     config.add(:proofing_send_partial_dob, type: :boolean)
+    config.add(:proof_ssn_max_attempts, type: :integer)
+    config.add(:proof_ssn_max_attempt_window_in_minutes, type: :integer)
     config.add(:push_notifications_enabled, type: :boolean)
     config.add(:pwned_passwords_file_path, type: :string)
     config.add(:rack_mini_profiler, type: :boolean)

@@ -26,8 +26,16 @@ RSpec.describe Reports::DailyAuthsReport do
     context 'with data' do
       let(:timestamp) { report_date + 12.hours }
 
+      let(:agency) { create(:agency, name: 'The Agency') }
+
       before do
-        create(:service_provider, issuer: 'a', iaa: 'iaa123')
+        create(
+          :service_provider,
+          issuer: 'a',
+          iaa: 'iaa123',
+          friendly_name: 'The App',
+          agency: agency,
+        )
         create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp)
         create(:sp_return_log, ial: 1, issuer: 'a', requested_at: timestamp, returned_at: timestamp)
         create(:sp_return_log, ial: 2, issuer: 'a', requested_at: timestamp, returned_at: timestamp)
@@ -42,8 +50,22 @@ RSpec.describe Reports::DailyAuthsReport do
             expect(parsed[:finish]).to eq(report_date.end_of_day.as_json)
             expect(parsed[:results]).to match_array(
               [
-                { count: 2, ial: 1, issuer: 'a', iaa: 'iaa123' },
-                { count: 1, ial: 2, issuer: 'a', iaa: 'iaa123' },
+                {
+                  count: 2,
+                  ial: 1,
+                  issuer: 'a',
+                  iaa: 'iaa123',
+                  friendly_name: 'The App',
+                  agency: 'The Agency',
+                },
+                {
+                  count: 1,
+                  ial: 2,
+                  issuer: 'a',
+                  iaa: 'iaa123',
+                  friendly_name: 'The App',
+                  agency: 'The Agency',
+                },
               ],
             )
           end

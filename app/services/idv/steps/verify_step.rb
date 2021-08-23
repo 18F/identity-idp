@@ -14,6 +14,23 @@ module Idv
 
         pii_from_doc[:uuid_prefix] = ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id
 
+        if pii_from_doc[:ssn].present?
+          throttle = Throttle.for(
+            target: Pii::Fingerprinter.fingerprint(pii_from_doc[:ssn]),
+            throttle_type: :proof_ssn,
+          )
+
+          if throttle.throttled_else_increment?
+            @flow.analytics.track_event(
+              Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+              throttle_type: :proof_ssn,
+              step_name: self.class,
+            )
+            redirect_to idv_session_errors_failure_url
+            return
+          end
+        end
+
         document_capture_session = create_document_capture_session(
           verify_step_document_capture_session_uuid_key,
         )

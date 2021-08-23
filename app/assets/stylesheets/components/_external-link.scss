@@ -12,5 +12,7 @@
   &::after {
     // The icon is displayed inline, which has no implicit height when included in a flex context.
     align-self: stretch;
+    margin-left: units(.5);
+    margin-right: units(2px);
   }
 }

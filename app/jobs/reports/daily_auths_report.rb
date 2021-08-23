@@ -56,10 +56,14 @@ module Reports
         , sp_return_logs.ial
         , sp_return_logs.issuer
         , service_providers.iaa
+        , MAX(service_providers.friendly_name) AS friendly_name
+        , MAX(agencies.name) AS agency
         FROM
           sp_return_logs
         LEFT JOIN
           service_providers ON service_providers.issuer = sp_return_logs.issuer
+        LEFT JOIN
+          agencies ON service_providers.agency_id = agencies.id
         WHERE
           %{start} <= sp_return_logs.requested_at
           AND sp_return_logs.requested_at <= %{finish}

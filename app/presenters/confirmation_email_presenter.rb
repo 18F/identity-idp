@@ -32,7 +32,6 @@ class ConfirmationEmailPresenter
       current_time + Devise.confirm_within,
       true,
       accumulate_on: :hours,
-      two_words_connector: " #{I18n.t('datetime.dotiw.two_words_connector')} ",
     )
   end
 

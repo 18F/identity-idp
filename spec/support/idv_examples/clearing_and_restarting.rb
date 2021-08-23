@@ -20,7 +20,7 @@ shared_examples 'clearing and restarting idv' do
     expect(user.reload.decorate.pending_profile?).to eq(false)
 
     complete_all_doc_auth_steps
-    click_on t('idv.form.activate_by_mail')
+    click_on t('idv.troubleshooting.options.verify_by_mail')
     if page.has_button?(t('idv.buttons.mail.send'))
       click_on t('idv.buttons.mail.send')
     else

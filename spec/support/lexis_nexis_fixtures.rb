@@ -99,6 +99,10 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_malformed.json')
     end
 
+    def true_id_response_failure_no_liveness_low_dpi
+      read_fixture_file_at_path('true_id/true_id_response_failure_no_liveness_low_dpi.json')
+    end
+
     private
 
     def read_fixture_file_at_path(filepath)
