@@ -83,8 +83,7 @@ module DocAuthRouter
   class DocAuthErrorTranslatorProxy
     attr_reader :client
 
-    def initialize(client, vendor_discriminator: nil)
-      @vendor_discriminator = vendor_discriminator
+    def initialize(client)
       @client = client
     end
 
@@ -117,9 +116,7 @@ module DocAuthRouter
     def translate_doc_auth_errors!(response)
       # acuant selfie errors are handled in translate_generic_errors!
       error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
-      if DocAuthRouter.doc_auth_vendor(discriminator: @vendor_discriminator) == 'acuant'
-        error_keys.delete(:selfie)
-      end
+      error_keys.delete(:selfie) if @client.is_a?(DocAuth::Acuant::AcuantClient)
 
       error_keys.each do |category|
         response.errors[category]&.map! do |plain_error|
@@ -166,7 +163,6 @@ module DocAuthRouter
           sharpness_threshold: IdentityConfig.store.doc_auth_error_sharpness_threshold,
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
-        vendor_discriminator: vendor_discriminator,
       )
     when 'lexisnexis'
       DocAuthErrorTranslatorProxy.new(
@@ -189,14 +185,12 @@ module DocAuthRouter
           sharpness_threshold: IdentityConfig.store.doc_auth_error_sharpness_threshold,
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
-        vendor_discriminator: vendor_discriminator,
       )
     when 'mock'
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Mock::DocAuthMockClient.new(
           warn_notifier: warn_notifier,
         ),
-        vendor_discriminator: vendor_discriminator,
       )
     else
       raise "#{doc_auth_vendor(discriminator: vendor_discriminator)} is not a valid doc auth vendor"
@@ -207,7 +201,7 @@ module DocAuthRouter
   def self.doc_auth_vendor(discriminator: nil)
     if IdentityConfig.store.doc_auth_vendor_randomize
       if discriminator.blank?
-        raise StandardError.new('doc_auth_vendor called without a session_id when randomized!')
+        raise StandardError.new('doc_auth_vendor called without a discriminator when randomized!')
       end
 
       target_percent = IdentityConfig.store.doc_auth_vendor_randomize_percent
@@ -219,8 +213,6 @@ module DocAuthRouter
 
     IdentityConfig.store.doc_auth_vendor
   end
-
-  private
 
   def self.randomize?(target_percent, discriminator)
     max_sha = (16 ** 64) - 1
