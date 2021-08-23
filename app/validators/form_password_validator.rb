@@ -6,8 +6,7 @@ module FormPasswordValidator
     attr_reader :user
 
     validates :password,
-              presence: true,
-              length: { in: Devise.password_length }
+              presence: true
     validate :password_graphemes_length
     validate :strong_password
     validate :not_pwned
@@ -26,7 +25,7 @@ module FormPasswordValidator
   def password_graphemes_length
     return if errors.messages.present?
     if password.grapheme_clusters.length < Devise.password_length.min
-      errors.add(:password, :too_short, count: Devise.password_length.min)
+      errors.add(:password, :password_too_short, count: Devise.password_length.min)
     elsif password.grapheme_clusters.length > Devise.password_length.max
       errors.add(:password, :too_long, count: Devise.password_length.max)
     end

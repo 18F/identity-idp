@@ -93,7 +93,7 @@ es:
         opción de llamada telefónica a continuación o use su clave personal.
       pwned_password: La contraseña que ingresaste no es segura. Está en una lista de
         contraseñas conocidas expuestas en violaciones de datos.
-      too_short:
+      password_too_short:
         one: Esta contraseña es demasiado corta (debe tener 1 carácter como mínimo)
         other: Esta contraseña es demasiado corta (%{count} caracteres como mínimo)
       try_again: Por favor, inténtelo de nuevo.

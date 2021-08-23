@@ -102,7 +102,7 @@ fr:
       pwned_password: Le mot de passe que vous avez entré n’est pas sécurisé. C’est
         dans une liste de mots de passe connus exposés dans les violations de
         données.
-      too_short:
+      password_too_short:
         one: Ce mot de passe est trop court (le minimum est de 1 caractère)
         other: Ce mot de passe est trop court (le minimum est de %{count} caractères)
       try_again: Veuillez réessayer.

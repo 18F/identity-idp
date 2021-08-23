@@ -90,7 +90,7 @@ en:
         phone call option below, or use your personal key.
       pwned_password: The password you entered is not safe. It’s in a list of known
         passwords exposed in data breaches.
-      too_short:
+      password_too_short:
         one: 'This password is too short (minimum is 1 character)'
         other: 'This password is too short (minimum is %{count} characters)'
       try_again: Please try again.
