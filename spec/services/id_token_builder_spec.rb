@@ -30,7 +30,7 @@ RSpec.describe IdTokenBuilder do
   end
 
   describe '#id_token' do
-    subject(:id_token) { freeze_time; travel_to(now); builder.id_token }
+    subject(:id_token) { builder.id_token }
 
     let(:decoded_id_token) do
       JWT.decode(
