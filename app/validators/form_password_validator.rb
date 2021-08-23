@@ -6,7 +6,8 @@ module FormPasswordValidator
     attr_reader :user
 
     validates :password,
-              presence: true
+              presence: true,
+              length: { in: Devise.password_length }
     validate :password_graphemes_length
     validate :strong_password
     validate :not_pwned
