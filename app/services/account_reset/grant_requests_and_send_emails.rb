@@ -27,17 +27,24 @@ module AccountReset
         notifications_sent += 1 if grant_request_and_send_email(arr)
       end
 
-      # TODO: rewrite analytics so that we can generate events even from
-      # background jobs where we have no request or user objects
-      # analytics.track_event(Analytics::ACCOUNT_RESET,
-      #                       event: :notifications, count: notifications_sent)
-
-      Rails.logger.info("Sent #{notifications_sent} account_reset notifications")
+      analytics.track_event(
+        Analytics::ACCOUNT_RESET,
+        event: :notifications,
+        count: notifications_sent
+      )
 
       notifications_sent
     end
 
     private
+
+    def analytics
+      @analytics ||= Analytics.new(
+        user: AnonymousUser.new,
+        request: nil,
+        sp: nil,
+      )
+    end
 
     def sql_query_for_users_eligible_to_delete_their_accounts
       <<~SQL
