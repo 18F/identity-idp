@@ -1,23 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe RiscDeliveryJob do
-  let(:push_notification_url) { 'https://push.example.gov' }
-  let(:jwt) { JWT.encode({ foo: 'bar' }, 'a') }
-  let(:event_type) { PushNotification::IdentifierRecycledEvent::EVENT_TYPE }
-  let(:issuer) { 'issuer1' }
-  let(:transport) { 'ruby_worker' }
-
-  subject(:job) do
-    RiscDeliveryJob.new(
-      push_notification_url: push_notification_url,
-      jwt: jwt,
-      event_type: event_type,
-      issuer: issuer,
-      transport: transport,
-    )
-  end
-
   describe '#perform' do
+    let(:push_notification_url) { 'https://push.example.gov' }
+    let(:jwt) { JWT.encode({ foo: 'bar' }, 'a') }
+    let(:event_type) { PushNotification::IdentifierRecycledEvent::EVENT_TYPE }
+    let(:issuer) { 'issuer1' }
+    let(:transport) { 'ruby_worker' }
+
+    subject(:perform) do
+      RiscDeliveryJob.new.perform(
+        push_notification_url: push_notification_url,
+        jwt: jwt,
+        event_type: event_type,
+        issuer: issuer,
+        transport: transport,
+      )
+    end
+
     it 'POSTs the jwt to the given URL' do
       req = stub_request(:post, push_notification_url).
         with(
@@ -28,7 +28,7 @@ RSpec.describe RiscDeliveryJob do
           },
         )
 
-      job.perform_now
+      perform
 
       expect(req).to have_been_requested
     end
@@ -49,7 +49,7 @@ RSpec.describe RiscDeliveryJob do
             expect(payload[:transport]).to eq(transport)
           end
 
-          expect { job.perform_now }.to_not raise_error
+          expect { perform }.to_not raise_error
         end
       end
 
@@ -59,7 +59,7 @@ RSpec.describe RiscDeliveryJob do
         it 'raises on timeouts (and retries via ActiveJob)' do
           expect(Rails.logger).to_not receive(:warn)
 
-          expect { job.perform_now }.to raise_error(Faraday::ConnectionFailed)
+          expect { perform }.to raise_error(Faraday::ConnectionFailed)
         end
       end
     end
