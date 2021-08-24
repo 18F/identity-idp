@@ -45,7 +45,7 @@ describe SignUp::PasswordsController do
         success: false,
         errors: {
           password:
-            ["This Password is too short (minimum is #{Devise.password_length.first} characters)"],
+            ["This password is too short (minimum is #{Devise.password_length.first} characters)"],
         },
         error_details: {
           password: [:too_short],
