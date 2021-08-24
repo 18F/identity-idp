@@ -13,7 +13,7 @@ module AccountReset
         rounded = (now.to_i / five_minutes) * five_minutes
 
         "grant-requests-and-send-emails-#{rounded}"
-      end
+      end,
     )
 
     discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
