@@ -7,13 +7,15 @@ describe AccountReset::GrantRequestsAndSendEmails do
   let(:user2) { create(:user) }
 
   describe '#perform' do
+    let(:now) { Time.zone.now }
+
     context 'after waiting the full wait period' do
       it 'does not send notifications when the notifications were already sent' do
         create_account_reset_request_for(user)
 
         after_waiting_the_full_wait_period do
-          AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+          AccountReset::GrantRequestsAndSendEmails.new.perform(now)
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
           expect(notifications_sent).to eq(0)
         end
       end
@@ -23,7 +25,7 @@ describe AccountReset::GrantRequestsAndSendEmails do
         cancel_request_for(user)
 
         after_waiting_the_full_wait_period do
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
           expect(notifications_sent).to eq(0)
         end
       end
@@ -32,7 +34,7 @@ describe AccountReset::GrantRequestsAndSendEmails do
         create_account_reset_request_for(user)
 
         after_waiting_the_full_wait_period do
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
 
           expect(notifications_sent).to eq(1)
         end
@@ -43,7 +45,7 @@ describe AccountReset::GrantRequestsAndSendEmails do
         create_account_reset_request_for(user2)
 
         after_waiting_the_full_wait_period do
-          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+          notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
 
           expect(notifications_sent).to eq(2)
         end
@@ -54,7 +56,7 @@ describe AccountReset::GrantRequestsAndSendEmails do
       it 'does not send notifications after a request' do
         create_account_reset_request_for(user)
 
-        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
         expect(notifications_sent).to eq(0)
       end
 
@@ -62,18 +64,24 @@ describe AccountReset::GrantRequestsAndSendEmails do
         create_account_reset_request_for(user)
         cancel_request_for(user)
 
-        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+        notifications_sent = AccountReset::GrantRequestsAndSendEmails.new.perform(now)
         expect(notifications_sent).to eq(0)
       end
     end
   end
 
   describe '#good_job_concurrency_key' do
-    let(:date) { Time.zone.today }
+    it 'is the job name and the current time, rounded to the nearest 5 minutes' do
+      now = Time.zone.at(1629819000)
 
-    it 'is the job name and the date' do
-      job = AccountReset::GrantRequestsAndSendEmails.new(date)
-      expect(job.good_job_concurrency_key).to eq("grant-requests-and-send-emails-#{date}")
+      job_now = AccountReset::GrantRequestsAndSendEmails.new(now)
+      expect(job_now.good_job_concurrency_key).to eq("grant-requests-and-send-emails-#{now.to_i}")
+
+      job_plus_1m = AccountReset::GrantRequestsAndSendEmails.new(now + 1.minute)
+      expect(job_plus_1m.good_job_concurrency_key).to eq(job_now.good_job_concurrency_key)
+
+      job_plus_5m = AccountReset::GrantRequestsAndSendEmails.new(now + 5.minutes)
+      expect(job_plus_5m.good_job_concurrency_key).to_not eq(job_now.good_job_concurrency_key)
     end
   end
 
