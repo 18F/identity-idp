@@ -18,11 +18,11 @@ module AccountReset
 
     discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
-    def perform(_now)
+    def perform(now)
       notifications_sent = 0
       AccountResetRequest.where(
         sql_query_for_users_eligible_to_delete_their_accounts,
-        tvalue: Time.zone.now - IdentityConfig.store.account_reset_wait_period_days.days,
+        tvalue: now - IdentityConfig.store.account_reset_wait_period_days.days,
       ).order('requested_at ASC').each do |arr|
         notifications_sent += 1 if grant_request_and_send_email(arr)
       end
