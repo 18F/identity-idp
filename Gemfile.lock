@@ -130,9 +130,6 @@ GEM
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
-    aws-sdk-eventbridge (1.18.0)
-      aws-sdk-core (~> 3, >= 3.109.0)
-      aws-sigv4 (~> 1.1)
     aws-sdk-kms (1.40.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
@@ -704,7 +701,6 @@ DEPENDENCIES
   ahoy_matey (~> 3.0)
   autoprefixer-rails (~> 10.0)
   aws-sdk-cloudwatchlogs
-  aws-sdk-eventbridge
   aws-sdk-kms (~> 1.4)
   aws-sdk-ses (~> 1.6)
   axe-core-rspec (~> 4.2)

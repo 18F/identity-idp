@@ -38,72 +38,23 @@ module PushNotification
     def deliver_one(service_provider)
       deliver_local(service_provider) if IdentityConfig.store.risc_notifications_local_enabled
 
-      if IdentityConfig.store.risc_notifications_eventbridge_enabled
-        deliver_eventbridge(service_provider)
-      else
-        deliver_direct(service_provider)
-      end
-    end
-
-    def deliver_eventbridge(service_provider)
-      response = eventbridge_client.put_events(
-        entries: [
-          {
-            time: now,
-            source: service_provider.issuer,
-            detail_type: 'notification',
-            detail: { jwt: jwt(service_provider) }.to_json,
-            event_bus_name: "#{Identity::Hostdata.env}-risc-notifications",
-          },
-        ],
-      )
-
-      if response.failed_entry_count.to_i > 0
-        Rails.logger.warn(
-          {
-            event: 'http_push_error',
-            transport: 'eventbridge',
-            event_type: event.event_type,
-            service_provider: service_provider.issuer,
-            error: response.to_s,
-          }.to_json,
-        )
-      end
-    end
-
-    def deliver_direct(service_provider)
-      response = faraday.post(
-        service_provider.push_notification_url,
-        jwt(service_provider),
-        'Accept' => 'application/json',
-        'Content-Type' => 'application/secevent+jwt',
-      ) do |req|
-        req.options.context = { service_name: 'http_push_direct' }
-      end
-
-      unless response.success?
-        Rails.logger.warn(
-          {
-            event: 'http_push_error',
-            transport: 'direct',
-            event_type: event.event_type,
-            service_provider: service_provider.issuer,
-            status: response.status,
-          }.to_json,
-        )
-      end
-    rescue Faraday::TimeoutError,
-           Faraday::ConnectionFailed,
-           PushNotification::PushNotificationError => err
-      Rails.logger.warn(
-        {
-          event: 'http_push_error',
-          transport: 'direct',
+      if IdentityConfig.store.risc_notifications_active_job_enabled
+        RiscDeliveryJob.perform_later(
+          push_notification_url: service_provider.push_notification_url,
+          jwt: jwt(service_provider),
           event_type: event.event_type,
-          service_provider: service_provider.issuer,
-          error: err.message,
-        }.to_json,
-      )
+          issuer: service_provider.issuer,
+          transport: 'ruby_worker',
+        )
+      else
+        RiscDeliveryJob.perform_now(
+          push_notification_url: service_provider.push_notification_url,
+          jwt: jwt(service_provider),
+          event_type: event.event_type,
+          issuer: service_provider.issuer,
+          transport: 'direct',
+        )
+      end
     end
 
     def deliver_local(service_provider)
@@ -134,13 +85,6 @@ module PushNotification
       }
     end
 
-    def faraday
-      Faraday.new do |f|
-        f.request :instrumentation, name: 'request_log.faraday'
-        f.adapter :net_http
-      end
-    end
-
     def agency_uuid(service_provider)
       AgencyIdentity.find_by(
         user_id: event.user.id,
@@ -150,12 +94,6 @@ module PushNotification
           user_id: event.user.id,
           service_provider: service_provider.issuer,
         )&.uuid
-    end
-
-    def eventbridge_client
-      @eventbridge_client ||= Aws::EventBridge::Client.new(
-        region: Identity::Hostdata.aws_region,
-      )
     end
   end
 end
