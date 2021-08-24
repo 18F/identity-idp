@@ -47,6 +47,7 @@ module TwoFactorAuthentication
       TwoFactorLoginOptionsPresenter.new(
         user: current_user,
         view: view_context,
+        context: context,
         service_provider: current_sp,
         aal3_required: service_provider_mfa_policy.aal3_required?,
         piv_cac_required: service_provider_mfa_policy.piv_cac_required?,

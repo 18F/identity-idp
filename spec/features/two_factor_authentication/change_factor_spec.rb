@@ -49,6 +49,20 @@ feature 'Changing authentication factor' do
           to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
+
+    context 'changing authentication methods' do
+      it 'returns user to account page if they choose to cancel' do
+        sign_in_and_2fa_user
+        travel(IdentityConfig.store.reauthn_window + 1)
+        visit manage_password_path
+        complete_2fa_confirmation_without_entering_otp
+
+        click_on t('two_factor_authentication.login_options_link_text')
+        click_on t('links.cancel')
+
+        expect(current_path).to eq account_path
+      end
+    end
   end
 
   def complete_2fa_confirmation

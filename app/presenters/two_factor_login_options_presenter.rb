@@ -3,9 +3,10 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   attr_reader :user
 
-  def initialize(user:, view:, service_provider:, aal3_required:, piv_cac_required:)
+  def initialize(user:, view:, context:, service_provider:, aal3_required:, piv_cac_required:)
     @user = user
     @view = view
+    @context = context
     @service_provider = service_provider
     @aal3_required = aal3_required
     @piv_cac_required = piv_cac_required
@@ -53,6 +54,14 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def account_reset_or_cancel_link
     account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
+  end
+
+  def cancel_link
+    if UserSessionContext.reauthentication_context?(@context)
+      account_path
+    else
+      sign_out_path
+    end
   end
 
   private

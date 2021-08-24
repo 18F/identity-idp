@@ -16,14 +16,14 @@ module Features
       expect(page).to have_content t('sign_up.email.invalid_email_alert_inline')
     end
 
-    def choose_another_security_option(option)
+    def choose_another_security_option(option = nil)
       accept_rules_of_use_and_continue_if_displayed
 
       click_link t('two_factor_authentication.login_options_link_text')
 
       expect(current_path).to eq login_two_factor_options_path
 
-      select_2fa_option(option)
+      select_2fa_option(option) if option
     end
 
     def select_2fa_option(option, **find_options)
