@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileDropdown = document.querySelector('.i18n-mobile-dropdown');
   const desktopLink = document.querySelector('.i18n-desktop-toggle > button');
   const desktopDropdown = document.querySelector('.i18n-desktop-dropdown');
+  const currentLanguage = document.querySelector('html').lang;
+  const urlLinks = document.querySelectorAll('a.language');
 
   function addListenerMulti(el, s, fn) {
     s.split(' ').forEach((e) => el.addEventListener(e, fn, false));
@@ -30,6 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  function removeLanguageAttribute() {
+    urlLinks.forEach((link) => {
+      if (link.lang === currentLanguage) {
+        link.removeAttribute('lang');
+      }
+    });
+  }
+
+  removeLanguageAttribute();
 
   if (desktopLink) {
     languagePicker(desktopLink, desktopDropdown);
