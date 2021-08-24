@@ -7,12 +7,18 @@ module AccountReset
     good_job_control_concurrency_with(
       enqueue_limit: 1,
       perform_limit: 1,
-      key: -> { "grant-requests-and-send-emails-#{arguments.first}" },
+      key: -> do
+        now = arguments.first
+        five_minutes = 5.minutes.to_i
+        rounded = (now.to_i / five_minutes) * five_minutes
+
+        "grant-requests-and-send-emails-#{rounded}"
+      end
     )
 
     discard_on GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError
 
-    def perform(_date)
+    def perform(_now)
       notifications_sent = 0
       AccountResetRequest.where(
         sql_query_for_users_eligible_to_delete_their_accounts,
