@@ -61,7 +61,8 @@ module DocAuth
         selfie_image:,
         liveness_checking_enabled: nil,
         image_source: nil,
-        applicant: nil
+        user_uuid: nil,
+        uuid_prefix: nil
       )
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 

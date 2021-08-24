@@ -6,14 +6,15 @@ module DocAuth
 
         def initialize(
           config:,
-          applicant:,
+          user_uuid:,
+          uuid_prefix:,
           front_image:,
           back_image:,
           selfie_image: nil,
           liveness_checking_enabled: nil,
           image_source: nil
         )
-          super(config: config, applicant: applicant)
+          super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           @front_image = front_image
           @back_image = back_image
           @selfie_image = selfie_image

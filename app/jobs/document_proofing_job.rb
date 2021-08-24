@@ -60,7 +60,8 @@ class DocumentProofingJob < ApplicationJob
           selfie_image: selfie_image || '',
           image_source: image_source(image_metadata),
           liveness_checking_enabled: liveness_checking_enabled,
-          applicant: applicant,
+          user_uuid: applicant&.fetch(:uuid, SecureRandom.uuid),
+          uuid_prefix: applicant&.fetch(:uuid_prefix, nil),
         )
       end
     end

@@ -1,11 +1,12 @@
 module DocAuth
   module LexisNexis
     class Request
-      attr_reader :config, :applicant
+      attr_reader :config, :user_uuid, :uuid_prefix
 
-      def initialize(config:, applicant: nil)
+      def initialize(config:, user_uuid: nil, uuid_prefix: nil)
         @config = config
-        @applicant = applicant
+        @user_uuid = user_uuid
+        @uuid_prefix = uuid_prefix
       end
 
       def fetch
@@ -125,10 +126,9 @@ module DocAuth
       end
 
       def uuid
-        return SecureRandom.uuid unless applicant
+        return SecureRandom.uuid unless user_uuid
 
-        uuid = applicant.fetch(:uuid, SecureRandom.uuid)
-        uuid_prefix = applicant[:uuid_prefix]
+        uuid = user_uuid
 
         if uuid_prefix.present?
           "#{uuid_prefix}:#{uuid}"

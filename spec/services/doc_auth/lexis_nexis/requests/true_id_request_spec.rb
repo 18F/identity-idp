@@ -27,7 +27,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       selfie_image: DocAuthImageFixtures.selfie_image,
       liveness_checking_enabled: liveness_checking_enabled,
       image_source: image_source,
-      applicant: applicant,
+      user_uuid: applicant[:uuid],
+      uuid_prefix: applicant[:uuid_prefix],
     )
   end
 
