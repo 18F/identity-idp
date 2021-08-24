@@ -1,6 +1,8 @@
 class RiscDeliveryJob < ApplicationJob
   queue_as :low
 
+  retry_on Faraday::TimeoutError, Faraday::ConnectionFailed
+
   def perform(
     push_notification_url:,
     jwt:,
