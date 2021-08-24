@@ -30,7 +30,7 @@ module AccountReset
       analytics.track_event(
         Analytics::ACCOUNT_RESET,
         event: :notifications,
-        count: notifications_sent
+        count: notifications_sent,
       )
 
       notifications_sent
