@@ -91,7 +91,7 @@ feature 'disavowing an action' do
   scenario 'attempting to disavow an event after a long time and the disavowal has expired' do
     perform_disavowable_password_reset
 
-    Timecop.travel 11.days.from_now do
+    travel_to(11.days.from_now) do
       open_last_email
       click_email_link_matching(%r{events/disavow})
 

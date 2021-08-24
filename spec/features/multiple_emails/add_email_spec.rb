@@ -176,7 +176,7 @@ feature 'adding email address' do
 
     Capybara.reset_session!
 
-    Timecop.travel 25.hours.from_now do
+    travel_to(25.hours.from_now) do
       click_on_link_in_confirmation_email
       expect(page).to have_current_path(root_path)
       expect(page).to_not have_content(t('devise.confirmations.confirmed_but_sign_in'))

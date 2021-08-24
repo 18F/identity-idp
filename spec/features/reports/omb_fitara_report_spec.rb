@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'OMB Fitara compliance officer runs report' do
   it 'works in july' do
-    Timecop.travel Date.new(2019, 7, 2) do
+    travel_to(Date.new(2019, 7, 2)) do
       visit sign_up_email_path
       sign_up_and_2fa_ial1_user
 
@@ -12,7 +12,7 @@ feature 'OMB Fitara compliance officer runs report' do
   end
 
   it 'works in december' do
-    Timecop.travel Date.new(2019, 12, 2) do
+    travel_to(Date.new(2019, 12, 2)) do
       visit sign_up_email_path
       sign_up_and_2fa_ial1_user
 
@@ -22,7 +22,7 @@ feature 'OMB Fitara compliance officer runs report' do
   end
 
   it 'works in january' do
-    Timecop.travel Date.new(2019, 1, 2) do
+    travel_to(Date.new(2019, 1, 2)) do
       visit sign_up_email_path
       sign_up_and_2fa_ial1_user
 
@@ -37,7 +37,7 @@ feature 'OMB Fitara compliance officer runs report' do
     it 'generates paths with date or latest prefix' do
       expect(Identity::Hostdata).to receive(:env).and_return('ci')
 
-      Timecop.travel Date.new(2018, 1, 2) do
+      travel_to(Date.new(2018, 1, 2)) do
         expect(Reports::OmbFitaraReport.new.send(:generate_s3_paths, report_name, 'json')).
           to eq(
             ['ci/omb-fitara-report/latest.omb-fitara-report.json',

@@ -24,10 +24,10 @@ describe 'signing in with remember device and idling on the sign in page' do
     visit_idp_from_sp_with_ial1(:oidc)
     request_id = ServiceProviderRequestProxy.last.uuid
 
-    Timecop.travel(Devise.timeout_in + 1.minute) do
+    travel(Devise.timeout_in + 1.minute) do
       # Simulate being idle on the sign in page long enough for the session to
-      # be deleted from Redis, but since Redis doesn't respect Timecop, we need
-      # to expire the session manually.
+      # be deleted from Redis, but since Redis doesn't respect ActiveSupport::Testing::TimeHelpers,
+      # we need to expire the session manually.
       session_store.send(:destroy_session_from_sid, session_cookie.value)
       # Simulate refreshing the page with JS to avoid a CSRF error
       visit new_user_session_url(request_id: request_id)

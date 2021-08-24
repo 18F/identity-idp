@@ -269,7 +269,7 @@ feature 'Sign Up' do
         confirmation_token: 'foo', uuid: 'foo', email: email,
         confirmation_sent_at: Time.zone.now
       )
-      Timecop.travel 1.year.from_now do
+      travel_to(1.year.from_now) do
         visit sign_up_email_path
         submit_form_with_valid_email(email)
         click_confirmation_link_in_email(email)

@@ -7,11 +7,11 @@ feature 'Changing authentication factor' do
     before do
       user # Sign up the user
       reauthn_date = (IdentityConfig.store.reauthn_window + 1).seconds.from_now
-      Timecop.travel reauthn_date
+      travel_to(reauthn_date)
     end
 
     after do
-      Timecop.return
+      travel_back
     end
 
     scenario 'editing password' do
@@ -32,22 +32,21 @@ feature 'Changing authentication factor' do
         phone_configuration = MfaContext.new(user).phone_configurations.first
         old_phone = phone_configuration.phone
 
-        Timecop.travel(IdentityConfig.store.reauthn_window + 1) do
-          visit manage_phone_path(id: phone_configuration)
-          complete_2fa_confirmation_without_entering_otp
-          click_link t('links.two_factor_authentication.get_another_code')
+        travel(IdentityConfig.store.reauthn_window + 1)
+        visit manage_phone_path(id: phone_configuration)
+        complete_2fa_confirmation_without_entering_otp
+        click_link t('links.two_factor_authentication.get_another_code')
 
-          expect(Telephony).to have_received(:send_authentication_otp).with(
-            otp: user.reload.direct_otp,
-            to: old_phone,
-            expiration: 10,
-            channel: :sms,
-            domain: IdentityConfig.store.domain_name,
-          )
+        expect(Telephony).to have_received(:send_authentication_otp).with(
+          otp: user.reload.direct_otp,
+          to: old_phone,
+          expiration: 10,
+          channel: :sms,
+          domain: IdentityConfig.store.domain_name,
+        )
 
-          expect(current_path).
-            to eq login_two_factor_path(otp_delivery_preference: 'sms')
-        end
+        expect(current_path).
+          to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
   end
@@ -92,7 +91,7 @@ feature 'Changing authentication factor' do
   describe 'attempting to bypass current password entry' do
     it 'does not allow bypassing this step' do
       sign_in_and_2fa_user
-      Timecop.travel(IdentityConfig.store.reauthn_window + 1) do
+      travel(IdentityConfig.store.reauthn_window + 1) do
         visit manage_password_path
         expect(current_path).to eq user_password_confirm_path
 

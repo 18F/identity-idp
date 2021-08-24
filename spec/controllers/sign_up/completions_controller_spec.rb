@@ -124,7 +124,7 @@ describe SignUp::CompletionsController do
   end
 
   describe '#update' do
-    let(:now) { Time.zone.now }
+    let(:now) { Time.zone.now.change(usec: 0) }
 
     before do
       stub_analytics
@@ -166,7 +166,8 @@ describe SignUp::CompletionsController do
           last_consented_at: now,
           clear_deleted_at: true,
         )
-        Timecop.freeze(now) do
+        freeze_time do
+          travel_to(now)
           patch :update
         end
       end
@@ -217,7 +218,8 @@ describe SignUp::CompletionsController do
           last_consented_at: now,
           clear_deleted_at: true,
         )
-        Timecop.freeze(now) do
+        freeze_time do
+          travel_to(now)
           patch :update
         end
       end

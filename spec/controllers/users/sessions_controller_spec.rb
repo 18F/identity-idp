@@ -97,9 +97,9 @@ describe Users::SessionsController, devise: true do
         expected_time = now + 10
         session[:pinged_at] = now
 
-        Timecop.travel(Time.zone.now + 10)
-        get :active
-        Timecop.return
+        travel_to(Time.zone.now + 10) do
+          get :active
+        end
 
         expect(session[:pinged_at].to_i).to be_within(1).of(expected_time.to_i)
       end

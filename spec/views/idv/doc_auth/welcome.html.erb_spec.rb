@@ -68,7 +68,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
     end
 
     around do |ex|
-      Timecop.travel(now) { ex.run }
+      travel_to(now) { ex.run }
     end
 
     it 'renders the warning banner but no other content' do

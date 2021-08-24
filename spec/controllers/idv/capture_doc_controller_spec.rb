@@ -51,7 +51,7 @@ describe Idv::CaptureDocController do
 
     context 'with an expired token' do
       it 'redirects to the root url' do
-        Timecop.travel(Time.zone.now + 1.day) do
+        travel_to(Time.zone.now + 1.day) do
           get :index, params: { 'document-capture-session': session_uuid }
         end
 

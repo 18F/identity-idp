@@ -79,7 +79,7 @@ describe AccountReset::GrantRequestsAndSendEmails do
 
   def after_waiting_the_full_wait_period
     days = IdentityConfig.store.account_reset_wait_period_days.days
-    Timecop.travel(Time.zone.now + days) do
+    travel_to(Time.zone.now + 1 + days) do
       yield
     end
   end

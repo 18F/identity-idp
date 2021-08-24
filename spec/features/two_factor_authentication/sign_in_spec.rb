@@ -321,7 +321,7 @@ feature 'Two Factor Authentication' do
       Db::AuthAppConfiguration.create(user, secret, nil, 'foo')
       otp = generate_totp_code(secret)
 
-      Timecop.freeze do
+      freeze_time do
         sign_in_user(user)
         fill_in 'code', with: otp
         click_submit_default

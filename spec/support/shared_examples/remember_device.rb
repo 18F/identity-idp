@@ -10,11 +10,10 @@ shared_examples 'remember device' do
 
     days_to_travel = (IdentityConfig.store.remember_device_expiration_hours_aal_1 + 1).
       hours.from_now
-    Timecop.travel days_to_travel do
-      sign_in_user(user)
+    travel_to(days_to_travel)
+    sign_in_user(user)
 
-      expect_mfa_to_be_required_for_user(user)
-    end
+    expect_mfa_to_be_required_for_user(user)
   end
 
   it 'requires 2FA on sign in for another user' do

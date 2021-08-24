@@ -43,7 +43,7 @@ describe Idv::SendPhoneConfirmationOtp do
       it 'sends an sms' do
         allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
-        result = Timecop.freeze(now) { subject.call }
+        result = travel_to(now) { subject.call }
 
         expect(result.success?).to eq(true)
 
@@ -69,7 +69,7 @@ describe Idv::SendPhoneConfirmationOtp do
       it 'makes a phone call' do
         allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 
-        result = Timecop.freeze(now) { subject.call }
+        result = travel_to(now) { subject.call }
 
         expect(result.success?).to eq(true)
 

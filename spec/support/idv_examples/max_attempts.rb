@@ -33,7 +33,7 @@ shared_examples 'verification step max attempts' do |step, sp|
       first(:link, t('links.sign_out')).click
       reattempt_interval = (IdentityConfig.store.idv_attempt_window_in_hours + 1).hours
 
-      Timecop.travel reattempt_interval do
+      travel(reattempt_interval) do
         visit_idp_from_sp_with_ial2(:oidc)
         sign_in_live_with_2fa(user)
 

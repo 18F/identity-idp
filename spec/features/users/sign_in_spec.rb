@@ -230,12 +230,12 @@ feature 'Sign in' do
     visit account_path
     expect(current_path).to eq account_path
 
-    Timecop.travel(Devise.timeout_in + 1.minute)
+    travel(Devise.timeout_in + 1.minute)
 
     visit account_path
     expect(current_path).to eq root_path
 
-    Timecop.return
+    travel_back
   end
 
   scenario 'user session cookie has no explicit expiration time (dies with browser exit)' do
@@ -334,10 +334,10 @@ feature 'Sign in' do
       user = sign_in_and_2fa_user
       click_link(t('links.sign_out'), match: :first)
 
-      Timecop.travel(Devise.timeout_in + 1.minute) do
+      travel(Devise.timeout_in + 1.minute) do
         expect(page).to_not have_content(t('forms.buttons.continue'))
 
-        # Redis doesn't respect Timecop so expire session manually.
+        # Redis doesn't respect ActiveSupport::Testing::TimeHelpers, so expire session manually.
         session_store.send(:destroy_session_from_sid, session_cookie.value)
 
         fill_in_credentials_and_submit(user.email, user.password)

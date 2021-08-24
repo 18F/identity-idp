@@ -68,7 +68,7 @@ describe UserDecorator do
 
   describe '#lockout_time_remaining' do
     it 'returns the difference in seconds between otp drift and second_factor_locked_at' do
-      Timecop.freeze(Time.zone.now) do
+      freeze_time do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
         user_decorator = UserDecorator.new(user)
         allow(IdentityConfig.store).to receive(:lockout_period_in_minutes).and_return(8)
@@ -80,7 +80,7 @@ describe UserDecorator do
 
   describe '#lockout_time_remaining_in_words' do
     it 'converts lockout_time_remaining to words representing minutes and seconds left' do
-      Timecop.freeze(Time.zone.now) do
+      freeze_time do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 181)
         user_decorator = UserDecorator.new(user)
         allow(IdentityConfig.store).to receive(:lockout_period_in_minutes).and_return(8)
