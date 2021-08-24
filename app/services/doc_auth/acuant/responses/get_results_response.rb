@@ -43,8 +43,6 @@ module DocAuth
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
             image_metrics: processed_image_metrics,
-            raw_alerts: raw_alerts,
-            raw_regions: raw_regions,
           }
         end
 
