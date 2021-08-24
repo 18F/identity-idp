@@ -38,6 +38,7 @@ describe Analytics do
         event_properties: {},
         user_id: current_user.uuid,
         locale: I18n.locale,
+        git_sha: IdentityConfig::GIT_SHA,
       }
 
       expect(ahoy).to receive(:track).
@@ -54,6 +55,7 @@ describe Analytics do
         event_properties: {},
         user_id: tracked_user.uuid,
         locale: I18n.locale,
+        git_sha: IdentityConfig::GIT_SHA,
       }
 
       expect(ahoy).to receive(:track).
@@ -103,6 +105,7 @@ describe Analytics do
         event_properties: {},
         user_id: current_user.uuid,
         locale: locale,
+        git_sha: IdentityConfig::GIT_SHA,
       }
 
       expect(ahoy).to receive(:track).

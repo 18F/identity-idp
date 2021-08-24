@@ -42,13 +42,18 @@ class Analytics
   attr_reader :user, :request, :sp, :ahoy
 
   def request_attributes
-    {
+    attributes = {
       user_ip: request.remote_ip,
       hostname: request.host,
       pid: Process.pid,
       service_provider: sp,
       trace_id: request.headers['X-Amzn-Trace-Id'],
-    }.merge!(browser_attributes)
+    }
+
+    attributes[:git_sha] = IdentityConfig::GIT_SHA if IdentityConfig::GIT_SHA
+    attributes[:git_tag] = IdentityConfig::GIT_TAG if IdentityConfig::GIT_TAG
+
+    attributes.merge!(browser_attributes)
   end
 
   def browser

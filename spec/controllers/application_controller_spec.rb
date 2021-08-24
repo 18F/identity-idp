@@ -125,6 +125,7 @@ describe ApplicationController do
 
       expect(payload).to eq(
         user_id: user.uuid,
+        git_sha: IdentityConfig::GIT_SHA,
       )
     end
   end

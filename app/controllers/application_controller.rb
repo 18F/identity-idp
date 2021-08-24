@@ -44,6 +44,8 @@ class ApplicationController < ActionController::Base
   # for lograge
   def append_info_to_payload(payload)
     payload[:user_id] = analytics_user.uuid unless @skip_session_load
+    payload[:git_sha] = IdentityConfig::GIT_SHA if IdentityConfig::GIT_SHA
+    payload[:git_tag] = IdentityConfig::GIT_TAG if IdentityConfig::GIT_TAG
   end
 
   attr_writer :analytics
