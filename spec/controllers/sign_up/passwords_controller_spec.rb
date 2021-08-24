@@ -44,7 +44,7 @@ describe SignUp::PasswordsController do
       analytics_hash = {
         success: false,
         errors: {
-          password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
+          password: ["This Password is too short (minimum is #{Devise.password_length.first} characters)"],
         },
         error_details: {
           password: [:too_short],
