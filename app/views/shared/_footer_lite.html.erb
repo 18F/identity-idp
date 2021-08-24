@@ -61,8 +61,8 @@
                   <li class='border-bottom border-navy'>
                     <%= link_to t("i18n.locale.#{locale}"),
                       sanitized_requested_url.merge(locale: locale),
-                      class: 'block pl-24p padding-y-2 text-decoration-none white language',
-                      lang: locale %>
+                      class: 'block pl-24p padding-y-2 text-decoration-none white',
+                      lang: locale == I18n.locale ? nil : locale %>
                   </li>
                 <% end %>
               </ul>
