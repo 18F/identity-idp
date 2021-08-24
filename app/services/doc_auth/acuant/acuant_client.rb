@@ -58,7 +58,8 @@ module DocAuth
         back_image:,
         selfie_image:,
         image_source:,
-        liveness_checking_enabled: nil
+        liveness_checking_enabled: nil,
+        applicant: nil
       )
         document_response = create_document(image_source: image_source)
         return document_response unless document_response.success?

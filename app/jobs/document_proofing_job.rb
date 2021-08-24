@@ -24,15 +24,17 @@ class DocumentProofingJob < ApplicationJob
     decrypted_args = JSON.parse(
       Encryption::Encryptors::SessionEncryptor.new.decrypt(encrypted_arguments),
       symbolize_names: true,
-    )[:document_arguments]
+    )
+    document_args = decrypted_args[:document_arguments]
+    applicant = decrypted_args[:applicant_pii]
 
-    encryption_key = Base64.decode64(decrypted_args[:encryption_key].to_s)
-    front_image_iv = Base64.decode64(decrypted_args[:front_image_iv].to_s)
-    back_image_iv = Base64.decode64(decrypted_args[:back_image_iv].to_s)
-    selfie_image_iv = Base64.decode64(decrypted_args[:selfie_image_iv].to_s)
-    front_image_url = decrypted_args[:front_image_url]
-    back_image_url = decrypted_args[:back_image_url]
-    selfie_image_url = decrypted_args[:selfie_image_url]
+    encryption_key = Base64.decode64(document_args[:encryption_key].to_s)
+    front_image_iv = Base64.decode64(document_args[:front_image_iv].to_s)
+    back_image_iv = Base64.decode64(document_args[:back_image_iv].to_s)
+    selfie_image_iv = Base64.decode64(document_args[:selfie_image_iv].to_s)
+    front_image_url = document_args[:front_image_url]
+    back_image_url = document_args[:back_image_url]
+    selfie_image_url = document_args[:selfie_image_url]
 
     front_image = decrypt_from_s3(
       timer: timer, name: :front, url: front_image_url, iv: front_image_iv, key: encryption_key,
@@ -58,6 +60,7 @@ class DocumentProofingJob < ApplicationJob
           selfie_image: selfie_image || '',
           image_source: image_source(image_metadata),
           liveness_checking_enabled: liveness_checking_enabled,
+          applicant: applicant,
         )
       end
     end
