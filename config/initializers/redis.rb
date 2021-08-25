@@ -5,3 +5,7 @@ READTHIS_POOL = ConnectionPool.new(size: 10) do
     redis: { url: IdentityConfig.store.redis_url, driver: :hiredis },
   )
 end
+
+REDIS_POOL = ConnectionPool.new(size: 10) do
+  Redis.new(url: IdentityConfig.store.redis_url)
+end
