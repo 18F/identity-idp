@@ -49,7 +49,7 @@ RSpec.configure do |config|
     Rails.application.load_seed
 
     begin
-      READTHIS_POOL.with { |cache| cache.pool.with(&:info) }
+      REDIS_POOL.with { |client| client.info }
     rescue RuntimeError => error
       puts error
       puts 'It appears Redis is not running, but it is required for (some) specs to run'
