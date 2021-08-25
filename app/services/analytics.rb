@@ -1,14 +1,16 @@
 class Analytics
-  def initialize(user:, request:, sp:, ahoy: nil)
+  def initialize(user:, request:, sp:, first_path_visit_this_session:, ahoy: nil)
     @user = user
     @request = request
     @sp = sp
     @ahoy = ahoy || Ahoy::Tracker.new(request: request)
+    @first_path_visit_this_session = first_path_visit_this_session
   end
 
   def track_event(event, attributes = {})
     analytics_hash = {
       event_properties: attributes.except(:user_id),
+      new_session_path: @first_path_visit_this_session,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }

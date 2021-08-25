@@ -43,6 +43,7 @@ module AccountReset
         user: AnonymousUser.new,
         request: nil,
         sp: nil,
+        first_path_visit_this_session: false,
       )
     end
 

@@ -184,7 +184,8 @@ describe ApplicationController do
         allow(controller).to receive(:current_sp).and_return(sp)
 
         expect(Analytics).to receive(:new).
-          with(user: user, request: request, sp: sp.issuer, ahoy: controller.ahoy)
+          with(user: user, request: request, sp: sp.issuer, first_path_visit_this_session: true,
+               ahoy: controller.ahoy)
 
         controller.analytics
       end
@@ -198,7 +199,8 @@ describe ApplicationController do
         allow(AnonymousUser).to receive(:new).and_return(user)
 
         expect(Analytics).to receive(:new).
-          with(user: user, request: request, sp: nil, ahoy: controller.ahoy)
+          with(user: user, request: request, sp: nil, first_path_visit_this_session: true,
+               ahoy: controller.ahoy)
 
         controller.analytics
       end

@@ -101,6 +101,7 @@ class DocumentProofingJob < ApplicationJob
       user: document_capture_session.user,
       request: nil,
       sp: document_capture_session.issuer,
+      first_path_visit_this_session: false,
     )
   end
 
