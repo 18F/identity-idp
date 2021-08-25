@@ -101,7 +101,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         action
       end
 
-      it 'does not change session' do
+      it 'only changes the paths visited in session' do
         action
         session_hash = {
           'paths_visited' => { '/api/openid_connect/userinfo' => true },
