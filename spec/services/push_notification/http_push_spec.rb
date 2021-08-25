@@ -48,6 +48,17 @@ RSpec.describe PushNotification::HttpPush do
       end
     end
 
+    context 'when risc_notifications_active_job_enabled is enabled' do
+      let(:risc_notifications_active_job_enabled) { true }
+
+      it 'delivers a notification via background job' do
+        expect(RiscDeliveryJob).to receive(:perform_later).
+          with(hash_including(transport: 'ruby_worker'))
+
+        deliver
+      end
+    end
+
     it 'makes an HTTP post to service providers with a push_notification_url' do
       stub_request(:post, sp_with_push_url.push_notification_url).
         with do |request|
