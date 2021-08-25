@@ -44,9 +44,10 @@ module Idv
           'encryption_key', 'front_image_iv', 'back_image_iv', 'selfie_image_iv', 'front_image_url',
           'back_image_url', 'selfie_image_url'
         ).to_h
-        applicant_pii = flow_session[:pii_from_doc]
+        applicant_pii = flow_session.fetch(:pii_from_doc, {})
         applicant = {
-          applicant_pii: applicant_pii,
+          user_uuid: applicant_pii[:uuid],
+          uuid_prefix: applicant_pii[:uuid_prefix],
           document_arguments: document_attributes,
         }
 

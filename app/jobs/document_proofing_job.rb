@@ -26,7 +26,8 @@ class DocumentProofingJob < ApplicationJob
       symbolize_names: true,
     )
     document_args = decrypted_args[:document_arguments]
-    applicant = decrypted_args[:applicant_pii]
+    user_uuid = decrypted_args.fetch(:user_uuid, nil)
+    uuid_prefix = decrypted_args.fetch(:uuid_prefix, nil)
 
     encryption_key = Base64.decode64(document_args[:encryption_key].to_s)
     front_image_iv = Base64.decode64(document_args[:front_image_iv].to_s)
@@ -60,8 +61,8 @@ class DocumentProofingJob < ApplicationJob
           selfie_image: selfie_image || '',
           image_source: image_source(image_metadata),
           liveness_checking_enabled: liveness_checking_enabled,
-          user_uuid: applicant&.fetch(:uuid, SecureRandom.uuid),
-          uuid_prefix: applicant&.fetch(:uuid_prefix, nil),
+          user_uuid: user_uuid,
+          uuid_prefix: uuid_prefix,
         )
       end
     end
