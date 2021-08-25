@@ -45,7 +45,7 @@ module Users
     end
 
     def permitted_params
-      params.require(:user).permit(:terms_accepted)
+      params.require(:rules_of_use_form).permit(:terms_accepted)
     end
   end
 end

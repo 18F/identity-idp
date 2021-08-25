@@ -270,7 +270,7 @@ module Features
 
     def accept_rules_of_use_and_continue_if_displayed
       return unless current_path == rules_of_use_path
-      check t('users.rules_of_use.check_box_to_accept'), allow_label_click: true
+      check :user_terms_accepted, allow_label_click: true
       click_button t('forms.buttons.continue')
     end
 
