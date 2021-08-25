@@ -49,6 +49,7 @@ gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
+gem 'readthis'
 gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
 gem 'redis-namespace'
