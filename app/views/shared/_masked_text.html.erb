@@ -19,6 +19,13 @@ checkbox_id = "#{id}-checkbox"
     <%= text %>
   </span>
 <% end %>
+<div class='float-right'>
+  <%= button_to(
+    idv_doc_auth_step_path(step: :redo_ssn),
+    method: :put,
+    class: 'usa-button usa-button--unstyled',
+  ) { t('doc_auth.buttons.change_ssn') } %>
+</div>
 <% if local_assigns[:toggle_label] %>
   <div class="margin-top-2">
     <%= tag.input(
