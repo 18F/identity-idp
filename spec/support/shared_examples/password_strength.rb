@@ -79,7 +79,7 @@ shared_examples 'strong password' do |form_class|
     form = form_class.constantize.new(user)
     password = 'a7K!hf🇺🇸🇺🇸🇺🇸'
     errors = {
-      password: [t('errors.messages.too_short', count: 12)],
+      password: [t('errors.attributes.password.too_short', count: 12)],
     }
     result = form.submit(password: password)
 

@@ -10,6 +10,11 @@ es:
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
       granted_token_missing: El enlace para eliminar tu cuenta de Login.gov no es
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
+    attributes:
+      password:
+        too_short:
+          one: Esta contraseña es demasiado corta (debe tener 1 carácter como mínimo)
+          other: Esta contraseña es demasiado corta (%{count} caracteres como mínimo)
     capture_doc:
       invalid_link: Este enlace ha caducado o no es válido. Solicite otro enlace para
         verificar su identidad en un teléfono móvil.
