@@ -670,8 +670,8 @@ feature 'Sign in' do
     it 'signs out the user if they choose to cancel' do
       user = create(:user, :signed_up)
       signin(user.email, user.password)
-      choose_another_security_option
-
+      accept_rules_of_use_and_continue_if_displayed
+      click_link t('two_factor_authentication.login_options_link_text')
       click_on t('links.cancel')
 
       expect(current_path).to eq root_path
