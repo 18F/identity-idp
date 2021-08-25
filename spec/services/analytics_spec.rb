@@ -34,10 +34,17 @@ describe Analytics do
 
   describe '#track_event' do
     it 'identifies the user and sends the event to the backend' do
+      stub_const(
+        'IdentityConfig::GIT_BRANCH',
+        'my branch',
+      )
+
       analytics_hash = {
         event_properties: {},
         user_id: current_user.uuid,
         locale: I18n.locale,
+        git_sha: IdentityConfig::GIT_SHA,
+        git_branch: IdentityConfig::GIT_BRANCH,
       }
 
       expect(ahoy).to receive(:track).
@@ -54,6 +61,8 @@ describe Analytics do
         event_properties: {},
         user_id: tracked_user.uuid,
         locale: I18n.locale,
+        git_sha: IdentityConfig::GIT_SHA,
+        git_branch: IdentityConfig::GIT_BRANCH,
       }
 
       expect(ahoy).to receive(:track).
@@ -103,6 +112,8 @@ describe Analytics do
         event_properties: {},
         user_id: current_user.uuid,
         locale: locale,
+        git_sha: IdentityConfig::GIT_SHA,
+        git_branch: IdentityConfig::GIT_BRANCH,
       }
 
       expect(ahoy).to receive(:track).

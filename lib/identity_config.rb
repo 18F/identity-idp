@@ -1,4 +1,8 @@
 class IdentityConfig
+  GIT_SHA = `git rev-parse --short=8 HEAD`.chomp
+  GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
+  GIT_BRANCH = `git rev-parse --abbrev-ref HEAD`.chomp
+
   class << self
     attr_reader :store
   end
