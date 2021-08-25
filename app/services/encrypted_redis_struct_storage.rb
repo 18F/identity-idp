@@ -19,7 +19,7 @@ module EncryptedRedisStructStorage
   def load(id, type:)
     check_for_id_property!(type)
 
-    ciphertext = REDIS_POOL.with { |client| client.read(key(id, type: type)) }
+    ciphertext = READTHIS_POOL.with { |client| client.read(key(id, type: type)) }
     return nil if ciphertext.blank?
 
     json = Encryption::Encryptors::SessionEncryptor.new.decrypt(ciphertext)
@@ -51,7 +51,7 @@ module EncryptedRedisStructStorage
 
     payload.transform_values!(&utf_8_encode_strs)
 
-    REDIS_POOL.with do |client|
+    READTHIS_POOL.with do |client|
       client.write(
         key(struct.id, type: struct.class),
         Encryption::Encryptors::SessionEncryptor.new.encrypt(payload.to_json),
