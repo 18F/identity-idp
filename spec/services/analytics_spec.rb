@@ -34,6 +34,11 @@ describe Analytics do
 
   describe '#track_event' do
     it 'identifies the user and sends the event to the backend' do
+      stub_const(
+        'IdentityConfig::GIT_BRANCH',
+        'my branch',
+      )
+
       analytics_hash = {
         event_properties: {},
         user_id: current_user.uuid,

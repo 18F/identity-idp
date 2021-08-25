@@ -120,7 +120,12 @@ describe ApplicationController do
       allow(controller).to receive(:analytics_user).and_return(user)
     end
 
-    it 'adds user_uuid to the lograge output' do
+    it 'adds user_uuid and git metadata to the lograge output' do
+      stub_const(
+        'IdentityConfig::GIT_BRANCH',
+        'my branch',
+      )
+
       controller.append_info_to_payload(payload)
 
       expect(payload).to eq(
