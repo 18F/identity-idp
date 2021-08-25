@@ -679,6 +679,24 @@ feature 'Sign in' do
     end
   end
 
+  context 'user signs in when accepted_terms_at is out of date', js: true do
+    it 'disables terms button correctly and signs in successfully' do
+      user = create(:user, :signed_up, accepted_terms_at: nil)
+      signin(user.email, user.password)
+      button = find_button(t('forms.buttons.continue'))
+      expect(button[:class]).to include('usa-button--disabled')
+
+      # This checkbox element has a non-standard id for the accept-terms-button JS
+      check 'user_terms_accepted', allow_label_click: true
+
+      button = find_button(t('forms.buttons.continue'))
+      expect(button[:class]).to_not include('usa-button--disabled')
+
+      click_button t('forms.buttons.continue')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+    end
+  end
+
   context 'user signs in with personal key, visits account page' do
     # this can happen if you submit the personal key form multiple times quickly
     it 'does not redirect to the personal key page' do
