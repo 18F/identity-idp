@@ -57,6 +57,7 @@ module Idv
         flow_session[:pii_from_doc] = response.pii_from_doc.merge(
           uuid: current_user.uuid,
           phone: current_user.phone_configurations.take&.phone,
+          uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
         )
         if response.respond_to?(:extra)
           # Sync flow: DocAuth::Response
