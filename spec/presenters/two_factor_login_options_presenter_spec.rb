@@ -7,13 +7,13 @@ describe TwoFactorLoginOptionsPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:aal3_required) { false }
   let(:piv_cac_required) { false }
-  let(:context) { UserSessionContext::DEFAULT_CONTEXT }
+  let(:user_session_context) { UserSessionContext::DEFAULT_CONTEXT }
 
   subject(:presenter) do
     TwoFactorLoginOptionsPresenter.new(
       user: user,
       view: view,
-      context: context,
+      user_session_context: user_session_context,
       service_provider: nil,
       aal3_required: false,
       piv_cac_required: false,
@@ -80,13 +80,13 @@ describe TwoFactorLoginOptionsPresenter do
     subject(:cancel_link) { presenter.cancel_link }
 
     context 'default user session context' do
-      let(:context) { UserSessionContext::DEFAULT_CONTEXT }
+      let(:user_session_context) { UserSessionContext::DEFAULT_CONTEXT }
 
       it { should eq sign_out_path }
     end
 
     context 'reauthentication user session context' do
-      let(:context) { UserSessionContext::REAUTHENTICATION_CONTEXT }
+      let(:user_session_context) { UserSessionContext::REAUTHENTICATION_CONTEXT }
 
       it { should eq account_path }
     end
