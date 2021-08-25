@@ -380,7 +380,7 @@ all_configs = {
 }
 
 if IdentityConfig.store.ruby_workers_enabled
-  # Queue heartbeat job to DelayedJob
+  # Queue heartbeat job to GoodJob
   all_configs[:heartbeat_job] = {
     good_job: {
       class: 'HeartbeatJob',
