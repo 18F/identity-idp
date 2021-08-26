@@ -12,7 +12,7 @@ RSpec.describe RiscDeliveryJob do
     let(:jwt) { JWT.encode({ foo: 'bar' }, 'a') }
     let(:event_type) { PushNotification::IdentifierRecycledEvent::EVENT_TYPE }
     let(:issuer) { 'issuer1' }
-    let(:now) { Time.zone.now }
+    let(:now) { 5.hours.ago }
 
     let(:job) { RiscDeliveryJob.new }
     subject(:perform) do

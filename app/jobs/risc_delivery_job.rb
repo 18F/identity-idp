@@ -11,7 +11,7 @@ class RiscDeliveryJob < ApplicationJob
     issuer:,
     now: Time.zone.now
   )
-    response = rate_limiter(push_notification_url).attempt! do
+    response = rate_limiter(push_notification_url).attempt!(now) do
       faraday.post(
         push_notification_url,
         jwt,
