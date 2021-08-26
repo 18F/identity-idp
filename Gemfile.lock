@@ -729,7 +729,7 @@ DEPENDENCIES
   good_job
   guard-rspec
   hashie (~> 4.1)
-  hiredis
+  hiredis (~> 0.6.0)
   http_accept_language
   i18n-tasks (>= 0.9.31)
   identity-hostdata!
@@ -769,6 +769,7 @@ DEPENDENCIES
   raise-if-root
   readthis
   redacted_struct
+  redis (>= 3.2.0)
   redis-session-store (>= 0.11.3)
   retries
   rotp (~> 6.1)

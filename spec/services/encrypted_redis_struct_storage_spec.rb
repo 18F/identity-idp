@@ -119,7 +119,7 @@ RSpec.describe EncryptedRedisStructStorage do
           struct_class.new(id: id, a: 'value for a', b: 'value for b', c: 'value for c'),
         )
 
-        data = REDIS_POOL.with do |client|
+        data = READTHIS_POOL.with do |client|
           client.read(EncryptedRedisStructStorage.key(id, type: struct_class))
         end
 
@@ -134,7 +134,7 @@ RSpec.describe EncryptedRedisStructStorage do
           struct_class.new(id: id, a: 'value for a', b: 'value for b', c: 'value for c'),
         )
 
-        ttl = REDIS_POOL.with do |client|
+        ttl = READTHIS_POOL.with do |client|
           client.pool.with do |redis|
             redis.ttl(EncryptedRedisStructStorage.key(id, type: struct_class))
           end
