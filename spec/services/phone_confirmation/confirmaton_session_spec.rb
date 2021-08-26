@@ -90,7 +90,7 @@ RSpec.describe PhoneConfirmation::ConfirmationSession do
 
       expect(otp_object.expired?).to eq(false)
 
-      Timecop.travel 9.minutes.from_now do
+      travel_to 9.minutes.from_now do
         expect(otp_object.expired?).to eq(false)
       end
     end
@@ -98,7 +98,7 @@ RSpec.describe PhoneConfirmation::ConfirmationSession do
     it 'returns true if the OTP is expired' do
       otp_object = described_class.start(phone: '+1 (225) 123-4567', delivery_method: :sms)
 
-      Timecop.travel 11.minutes.from_now do
+      travel_to 11.minutes.from_now do
         expect(otp_object.expired?).to eq(true)
       end
     end

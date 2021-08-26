@@ -137,15 +137,18 @@ module Idv
     end
 
     def idv_throttle_params
-      [idv_session.current_user.id, :idv_resolution]
+      {
+        user: idv_session.current_user,
+        throttle_type: :idv_resolution,
+      }
     end
 
     def idv_attempter_increment
-      Throttler::Increment.call(*idv_throttle_params)
+      Throttle.for(**idv_throttle_params).increment
     end
 
     def idv_attempter_throttled?
-      Throttler::IsThrottled.call(*idv_throttle_params)
+      Throttle.for(**idv_throttle_params).throttled?
     end
 
     def throttle_failure

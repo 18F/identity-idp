@@ -116,7 +116,7 @@ module DocAuthRouter
     def translate_doc_auth_errors!(response)
       # acuant selfie errors are handled in translate_generic_errors!
       error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
-      error_keys.delete(:selfie) if DocAuthRouter.doc_auth_vendor == 'acuant'
+      error_keys.delete(:selfie) if @client.is_a?(DocAuth::Acuant::AcuantClient)
 
       error_keys.each do |category|
         response.errors[category]&.map! do |plain_error|
@@ -146,8 +146,8 @@ module DocAuthRouter
 
   # rubocop:disable Layout/LineLength
   # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
-  def self.client(warn_notifier: nil)
-    case doc_auth_vendor
+  def self.client(vendor_discriminator: nil, warn_notifier: nil)
+    case doc_auth_vendor(discriminator: vendor_discriminator)
     when 'acuant'
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Acuant::AcuantClient.new(
@@ -193,12 +193,31 @@ module DocAuthRouter
         ),
       )
     else
-      raise "#{doc_auth_vendor} is not a valid doc auth vendor"
+      raise "#{doc_auth_vendor(discriminator: vendor_discriminator)} is not a valid doc auth vendor"
     end
   end
   # rubocop:enable Layout/LineLength
 
-  def self.doc_auth_vendor
+  def self.doc_auth_vendor(discriminator: nil)
+    if IdentityConfig.store.doc_auth_vendor_randomize
+      if discriminator.blank?
+        raise StandardError.new('doc_auth_vendor called without a discriminator when randomized!')
+      end
+
+      target_percent = IdentityConfig.store.doc_auth_vendor_randomize_percent
+
+      if randomize?(target_percent, discriminator)
+        return IdentityConfig.store.doc_auth_vendor_randomize_alternate_vendor
+      end
+    end
+
     IdentityConfig.store.doc_auth_vendor
+  end
+
+  def self.randomize?(target_percent, discriminator)
+    max_sha = (16 ** 64) - 1
+    user_value = Digest::SHA256.hexdigest(discriminator).to_i(16).to_f / max_sha * 100
+
+    user_value < target_percent.clamp(0, 100)
   end
 end

@@ -42,9 +42,6 @@ shared_examples 'signing in as IAL1 with piv/cac' do |sp|
 end
 
 shared_examples 'visiting 2fa when fully authenticated' do |sp|
-  before { Timecop.freeze Time.zone.now }
-  after { Timecop.return }
-
   it 'redirects to SP after visiting a 2fa screen when fully authenticated', email: true do
     ial1_sign_in_with_personal_key_goes_to_sp(sp)
 
@@ -63,9 +60,6 @@ shared_examples 'visiting 2fa when fully authenticated' do |sp|
 end
 
 shared_examples 'signing in as IAL2 with personal key' do |sp|
-  before { Timecop.freeze Time.zone.now }
-  after { Timecop.return }
-
   it 'does not present personal key as an MFA option', :email do
     user = create_ial2_account_go_back_to_sp_and_sign_out(sp)
     pii = { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' }
@@ -100,9 +94,6 @@ shared_examples 'signing in as IAL2 with piv/cac' do |sp|
 end
 
 shared_examples 'signing in as IAL1 with personal key after resetting password' do |sp|
-  before { Timecop.freeze Time.zone.now }
-  after { Timecop.return }
-
   it 'redirects to SP', email: true do
     user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
 
@@ -204,27 +195,25 @@ def personal_key_for_ial2_user(user, pii)
 end
 
 def ial1_sign_in_with_personal_key_goes_to_sp(sp)
-  Timecop.freeze Time.zone.now do
-    user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
-    old_personal_key = PersonalKeyGenerator.new(user).create
+  user = create_ial1_account_go_back_to_sp_and_sign_out(sp)
+  old_personal_key = PersonalKeyGenerator.new(user).create
 
-    Capybara.reset_sessions!
+  Capybara.reset_sessions!
 
-    visit_idp_from_sp_with_ial1(sp)
-    fill_in_credentials_and_submit(user.email, 'Val!d Pass w0rd')
-    choose_another_security_option('personal_key')
-    enter_personal_key(personal_key: old_personal_key)
-    click_submit_default
-    click_agree_and_continue
+  visit_idp_from_sp_with_ial1(sp)
+  fill_in_credentials_and_submit(user.email, 'Val!d Pass w0rd')
+  choose_another_security_option('personal_key')
+  enter_personal_key(personal_key: old_personal_key)
+  click_submit_default
+  click_agree_and_continue
 
-    expect(current_url).to eq @saml_authn_request if sp == :saml
+  expect(current_url).to eq @saml_authn_request if sp == :saml
 
-    return unless sp == :oidc
+  return unless sp == :oidc
 
-    redirect_uri = URI(current_url)
+  redirect_uri = URI(current_url)
 
-    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-  end
+  expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
 end
 
 def ial1_sign_in_with_piv_cac_goes_to_sp(sp)

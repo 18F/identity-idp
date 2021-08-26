@@ -50,7 +50,10 @@ module Idv
     end
 
     def throttled?
-      Throttler::IsThrottled.call(document_capture_session.user_id, :idv_acuant)
+      Throttle.for(
+        user: document_capture_session.user,
+        throttle_type: :idv_acuant,
+      ).throttled?
     end
   end
 end

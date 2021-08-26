@@ -9,7 +9,7 @@ RSpec.describe Idv::ApiDocumentVerificationStatusForm do
   end
 
   let(:async_state) { DocumentCaptureSessionAsyncResult.new }
-  let(:document_capture_session) { DocumentCaptureSession.create! }
+  let(:document_capture_session) { DocumentCaptureSession.create!(user: build(:user)) }
 
   describe '#valid?' do
     context 'with timeout async state' do

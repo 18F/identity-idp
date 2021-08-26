@@ -34,11 +34,10 @@
   <hr/>
   <div class='right'>
     <%= button_to(
-      t('doc_auth.buttons.change_ssn'),
       idv_doc_auth_step_path(step: :redo_ssn),
       method: :put,
       class: 'usa-button usa-button--unstyled',
-    ) %>
+    ) { t('doc_auth.buttons.change_ssn') } %>
   </div>
   <div>
     <%= t('doc_auth.forms.ssn') %>:
@@ -60,7 +59,6 @@
               action_message: t('doc_auth.info.verifying'),
               class: 'grid-col-12 tablet:grid-col-6' do %>
       <%= button_to(
-        t('forms.buttons.continue'),
         url_for,
         method: :put,
         form: {
@@ -74,7 +72,7 @@
           },
         },
         class: 'usa-button usa-button--big usa-button--full-width',
-      ) %>
+      ) { t('forms.buttons.continue') } %>
     <% end %>
   </div>
 </div>

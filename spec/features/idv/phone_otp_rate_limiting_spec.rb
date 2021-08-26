@@ -102,7 +102,7 @@ feature 'phone otp rate limiting', :idv_job do
     Throttle.where(throttle_type: :idv_acuant).destroy_all
 
     retry_minutes = IdentityConfig.store.lockout_period_in_minutes + 1
-    Timecop.travel retry_minutes.minutes.from_now do
+    travel_to(retry_minutes.minutes.from_now) do
       start_idv_from_sp
       complete_idv_steps_before_phone_otp_verification_step(user)
 

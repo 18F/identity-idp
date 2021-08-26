@@ -16,7 +16,7 @@ feature 'Visitor signs in with bad passwords and gets locked out' do
       fill_in_credentials_and_submit(bad_email, bad_password)
       expect(page).to have_content(t('errors.sign_in.bad_password_limit'))
     end
-    Timecop.travel IdentityConfig.store.max_bad_passwords_window_in_seconds.seconds.from_now do
+    travel_to(IdentityConfig.store.max_bad_passwords_window_in_seconds.seconds.from_now) do
       fill_in_credentials_and_submit(bad_email, bad_password)
       expect(page).to have_content(error_message)
     end

@@ -15,12 +15,12 @@
       url: rules_of_use_path) do |f| %>
 
     <div class="margin-bottom-3">
-      <%= f.check_box :terms_accepted, { class: 'usa-checkbox__input',
+      <%= f.check_box :terms_accepted, { id: 'user_terms_accepted', class: 'usa-checkbox__input',
                                          required: true, aria: { invalid: false } }, true, false %>
-      <label for="user_terms_accepted" class="usa-checkbox__label">
+      <%= f.label :terms_accepted, for: 'user_terms_accepted', class: 'usa-checkbox__label' do %>
         <%= t('users.rules_of_use.check_box_to_accept') %>
         <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
-      </label>
+      <% end %>
       <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
         <%= t('errors.rules_of_use') %>
       </div>

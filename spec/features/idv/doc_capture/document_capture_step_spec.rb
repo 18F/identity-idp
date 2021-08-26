@@ -127,13 +127,17 @@ feature 'doc capture document capture step' do
     context 'when javascript is enabled', :js do
       it 'logs return to sp link click' do
         complete_doc_capture_steps_before_first_step(user)
-        click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
+        new_window = window_opened_by do
+          click_on t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name)
+        end
 
-        expect(fake_analytics).to have_logged_event(
-          Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
-          step: 'document_capture',
-          location: 'documents_having_trouble',
-        )
+        within_window new_window do
+          expect(fake_analytics).to have_logged_event(
+            Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
+            step: 'document_capture',
+            location: 'documents_having_trouble',
+          )
+        end
       end
     end
   end
@@ -284,7 +288,7 @@ feature 'doc capture document capture step' do
 
       DocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now) do
+      travel_to(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now + 1) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 
@@ -370,7 +374,7 @@ feature 'doc capture document capture step' do
 
       DocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now) do
+      travel_to(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now + 1) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 

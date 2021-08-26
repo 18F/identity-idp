@@ -21,12 +21,12 @@
                        html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
   <br/>
   <label class="margin-top-neg-1 margin-bottom-4" for="ial2_consent_given">
-    <div class="checkbox">
+    <span class="checkbox">
       <%= check_box_tag :ial2_consent_given, true, false %>
       <span class="indicator"></span>
       <%= t('doc_auth.instructions.consent') %>
       <%= new_window_link_to t('doc_auth.instructions.learn_more'), 'https://login.gov/policy/' %>
-    </div>
+    </span>
   </label>
   <%= f.button :button, t('doc_auth.buttons.continue'), type: :submit,
                class: 'usa-button--big usa-button--wide' %>

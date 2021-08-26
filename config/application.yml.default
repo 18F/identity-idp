@@ -49,7 +49,6 @@ aws_region: 'us-west-2'
 aws_kms_multi_region_enabled: 'false'
 backup_code_cost: '2000$8$1$'
 backup_code_skip_symmetric_encryption: 'false'
-dob_international_format_opt_out_list: '[]'
 doc_auth_error_dpi_threshold: '290'
 doc_auth_error_sharpness_threshold: '40'
 doc_auth_error_glare_threshold: '40'
@@ -155,6 +154,8 @@ proofing_allow_expired_license: 'false'
 proofing_expired_license_after: '2020-03-01'
 proofing_expired_license_reproof_at: '2023-03-01'
 proofing_send_partial_dob: 'false'
+proof_ssn_max_attempts: '10'
+proof_ssn_max_attempt_window_in_minutes: '60'
 push_notifications_enabled: 'false'
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: 'false'
@@ -228,7 +229,14 @@ development:
   database_readonly_password: ''
   database_readonly_username: ''
   database_username: ''
+  database_worker_jobs_name: ''
+  database_worker_jobs_username: ''
+  database_worker_jobs_host: ''
+  database_worker_jobs_password: ''
   doc_auth_vendor: 'mock'
+  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: localhost:3000
   enable_rate_limiting: 'false'
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -285,6 +293,9 @@ production:
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
   doc_auth_vendor: 'acuant'
+  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
@@ -341,8 +352,15 @@ test:
   database_readonly_password: ''
   database_readonly_username: ''
   database_username: ''
+  database_worker_jobs_name: ''
+  database_worker_jobs_username: ''
+  database_worker_jobs_host: ''
+  database_worker_jobs_password: ''
   doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'
+  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize_alternate_vendor: ''
   doc_capture_polling_enabled: 'false'
   domain_name: www.example.com
   exception_recipients: test1@test.com

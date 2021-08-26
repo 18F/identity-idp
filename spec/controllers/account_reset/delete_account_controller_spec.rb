@@ -88,7 +88,7 @@ describe AccountReset::DeleteAccountController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, properties)
 
-      Timecop.travel(Time.zone.now + 2.days) do
+      travel_to(Time.zone.now + 2.days) do
         session[:granted_token] = AccountResetRequest.all[0].granted_token
         delete :delete
       end
@@ -133,7 +133,7 @@ describe AccountReset::DeleteAccountController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, properties)
 
-      Timecop.travel(Time.zone.now + 2.days) do
+      travel_to(Time.zone.now + 2.days) do
         get :show, params: { token: AccountResetRequest.all[0].granted_token }
       end
 

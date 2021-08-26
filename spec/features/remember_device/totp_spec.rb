@@ -39,7 +39,7 @@ describe 'Remembering a TOTP device' do
 
   context 'update totp' do
     after do
-      Timecop.return
+      travel_back
     end
 
     def remember_device_and_sign_out_user
@@ -47,7 +47,7 @@ describe 'Remembering a TOTP device' do
       visit account_two_factor_authentication_path
       page.find('.remove-auth-app').click # Delete
       click_on t('account.index.totp_confirm_delete')
-      Timecop.travel 5.seconds.from_now # Travel past the revoked at date from disabling the device
+      travel_to(10.seconds.from_now) # Travel past the revoked at date from disabling the device
       click_link "+ #{t('account.index.auth_app_add')}", href: authenticator_setup_url
       fill_in :code, with: totp_secret_from_page
       check :remember_device

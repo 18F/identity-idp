@@ -1,6 +1,7 @@
 class Throttle < ApplicationRecord
   belongs_to :user
-  validates :user_id, presence: true
+  validates :user_id, presence: true, unless: :target?
+  validates :target, presence: true, unless: :user_id?
 
   enum throttle_type: {
     idv_acuant: 1,
@@ -11,6 +12,7 @@ class Throttle < ApplicationRecord
     idv_send_link: 6,
     verify_personal_key: 7,
     verify_gpo_key: 8,
+    proof_ssn: 9,
   }
 
   THROTTLE_CONFIG = {
@@ -46,10 +48,53 @@ class Throttle < ApplicationRecord
       max_attempts: IdentityConfig.store.verify_gpo_key_max_attempts,
       attempt_window: IdentityConfig.store.verify_gpo_key_attempt_window_in_minutes,
     },
+    proof_ssn: {
+      max_attempts: IdentityConfig.store.proof_ssn_max_attempts,
+      attempt_window: IdentityConfig.store.proof_ssn_max_attempt_window_in_minutes,
+    },
   }.freeze
+
+  # Either target or user must be supplied
+  # @param [Symbol] throttle_type
+  # @param [String] target
+  # @param [User] user
+  # @return [Throttle]
+  def self.for(throttle_type:, user: nil, target: nil)
+    throttle = if user
+      find_or_create_by(user: user, throttle_type: throttle_type)
+    elsif target
+      find_or_create_by(target: target, throttle_type: throttle_type)
+    else
+      raise 'Throttle must have a user or a target, but neither were provided'
+    end
+
+    throttle.reset_if_expired_and_maxed
+    throttle
+  end
+
+  # @return [Integer]
+  def increment
+    return attempts if maxed?
+    update(attempts: attempts + 1, attempted_at: Time.zone.now)
+    attempts
+  end
 
   def throttled?
     !expired? && maxed?
+  end
+
+  def throttled_else_increment?
+    if throttled?
+      true
+    else
+      update(attempts: attempts + 1, attempted_at: Time.zone.now)
+      false
+    end
+  end
+
+  def reset
+    update(attempts: 0)
+    self
   end
 
   def remaining_count
@@ -72,5 +117,11 @@ class Throttle < ApplicationRecord
   def self.config_values(throttle_type)
     config = THROTTLE_CONFIG.with_indifferent_access[throttle_type]
     [config[:max_attempts], config[:attempt_window]]
+  end
+
+  # @api private
+  def reset_if_expired_and_maxed
+    return unless expired? && maxed?
+    update(attempts: 0, throttled_count: throttled_count.to_i + 1)
   end
 end

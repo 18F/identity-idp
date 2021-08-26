@@ -2,7 +2,7 @@
 locals:
 * heading_level: Tag name for heading. Does not affect visual appearance. Defaults to :h2.
 * heading: Heading text.
-* options: List of link options to display, as an array of hashes with `url` and `text` values.
+* options: List of link options to display, as an array of hashes with `url`, `text`, `external` values.
 * class: Additional class names to add to wrapper element.
 %>
 <% if local_assigns[:options].presence %>
@@ -13,7 +13,7 @@ locals:
     <ul class="troubleshooting-options__options">
       <% options.each do |option| %>
         <li>
-          <%= render('shared/block_link', url: option[:url]) { option[:text] } %>
+          <%= render('shared/block_link', **option.except(:text)) { option[:text] } %>
         </li>
       <% end %>
     </ul>

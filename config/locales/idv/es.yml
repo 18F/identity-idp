@@ -83,11 +83,9 @@ es:
         warning_2: Tendrá que volver a ingresar su información personal, como su nombre,
           número de identificación del estado, etc.
     form:
-      activate_by_mail: Verifique su dirección por correo
       address1: Dirección
       address2: Dirección (opcional)
       city: Ciudad
-      no_alternate_phone_html: '<strong>%{link}</strong>. Le enviaremos una carta con un código.'
       password: Contraseña
       phone: Teléfono
       ssn_label_html: Número de Seguro Social
@@ -177,5 +175,13 @@ es:
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
       options:
+        change_phone_number: Usa un número de teléfono diferente # Temporary
         contact_support: Póngase en contacto con el servicio de asistencia de %{app}
         get_help_at_sp: Obtenga ayuda en %{sp_name}
+        learn_more_address_verification_options: Obtenga más información sobre la verificación por teléfono o por correo
+        learn_more_verify_by_mail: Obtenga más información sobre la verificación de su
+          dirección por correo
+        learn_more_verify_by_phone: Obtenga más información sobre la verificación de su número de teléfono
+        supported_documents: Vea la lista de documentos de identidad emitidos por el
+          estado que son aceptados
+        verify_by_mail: Verifique su dirección por correo

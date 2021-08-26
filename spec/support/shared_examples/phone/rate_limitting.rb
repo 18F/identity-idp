@@ -58,7 +58,7 @@ shared_examples 'phone rate limitting' do |delivery_method|
   end
 
   def expect_rate_limitting_to_expire
-    Timecop.travel 6.minutes.from_now do
+    travel_to(6.minutes.from_now) do
       visit root_path
 
       signin(user.email, user.password || Features::SessionHelper::VALID_PASSWORD)

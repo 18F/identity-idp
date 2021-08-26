@@ -5,7 +5,7 @@ describe Idv::ImageUploadsController do
     subject(:action) { post :create, params: params }
 
     let(:user) { create(:user) }
-    let!(:document_capture_session) { user.document_capture_sessions.create! }
+    let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
     let(:params) do
       {
         front: DocAuthImageFixtures.document_front_image_multipart,
@@ -141,7 +141,13 @@ describe Idv::ImageUploadsController do
     context 'throttling' do
       it 'returns remaining_attempts with error' do
         params.delete(:front)
-        allow(Throttler::RemainingCount).to receive(:call).and_return(3)
+        create(
+          :throttle,
+          :with_throttled,
+          attempts: IdentityConfig.store.acuant_max_attempts - 4,
+          user: user,
+          throttle_type: :idv_acuant,
+        )
 
         action
 
@@ -156,8 +162,7 @@ describe Idv::ImageUploadsController do
       end
 
       it 'returns an error when throttled' do
-        allow(Throttler::IsThrottledElseIncrement).to receive(:call).once.and_return(true)
-        allow(Throttler::RemainingCount).to receive(:call).and_return(0)
+        create(:throttle, :with_throttled, user: user, throttle_type: :idv_acuant)
 
         action
 
@@ -171,8 +176,13 @@ describe Idv::ImageUploadsController do
       end
 
       it 'tracks analytics' do
-        allow(Throttler::IsThrottledElseIncrement).to receive(:call).once.and_return(true)
-        allow(Throttler::RemainingCount).to receive(:call).and_return(0)
+        create(
+          :throttle,
+          :with_throttled,
+          attempts: IdentityConfig.store.acuant_max_attempts,
+          user: user,
+          throttle_type: :idv_acuant,
+        )
 
         stub_analytics
 

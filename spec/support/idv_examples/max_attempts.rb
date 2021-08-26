@@ -33,7 +33,7 @@ shared_examples 'verification step max attempts' do |step, sp|
       first(:link, t('links.sign_out')).click
       reattempt_interval = (IdentityConfig.store.idv_attempt_window_in_hours + 1).hours
 
-      Timecop.travel reattempt_interval do
+      travel(reattempt_interval) do
         visit_idp_from_sp_with_ial2(:oidc)
         sign_in_live_with_2fa(user)
 
@@ -95,6 +95,6 @@ shared_examples 'verification step max attempts' do |step, sp|
   def expect_user_to_fail_at_phone_step
     expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading"))
     expect(current_url).to eq(idv_phone_errors_failure_url(locale: locale))
-    expect(page).to have_link(t('idv.form.activate_by_mail'))
+    expect(page).to have_link(t('idv.troubleshooting.options.verify_by_mail'))
   end
 end

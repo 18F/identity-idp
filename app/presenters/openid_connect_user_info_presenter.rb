@@ -65,17 +65,7 @@ class OpenidConnectUserInfoPresenter
 
   def dob
     return if ial2_data.dob.blank?
-
-    american_date_format = IdentityConfig.store.
-      dob_international_format_opt_out_list.include?(identity.service_provider)
-
-    date = DateParser.parse_legacy(ial2_data.dob)
-
-    if american_date_format
-      date.strftime('%m/%d/%Y')
-    else
-      date.to_s
-    end
+    DateParser.parse_legacy(ial2_data.dob).to_s
   end
 
   def address

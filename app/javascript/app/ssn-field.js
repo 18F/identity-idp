@@ -11,11 +11,11 @@ function formatSSNFieldAndLimitLength() {
       const el = `
         <div class="mt1 right">
           <label class="btn-border" for="ssn-toggle-${i}">
-            <div class="checkbox">
+            <span class="checkbox">
               <input id="ssn-toggle-${i}" type="checkbox">
               <span class="indicator"></span>
               ${I18n.t('forms.ssn.show')}
-            </div>
+            </span>
           </label>
         </div>`;
       input.insertAdjacentHTML('afterend', el);

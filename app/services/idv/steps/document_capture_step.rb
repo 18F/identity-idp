@@ -59,6 +59,7 @@ module Idv
         return throttled_response if throttled_else_increment
 
         result = DocAuthRouter.client(
+          vendor_discriminator: flow_session[:document_capture_session_uuid],
           warn_notifier: proc do |attrs|
             @flow.analytics.track_event(Analytics::DOC_AUTH_WARNING, attrs)
           end,

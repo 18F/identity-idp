@@ -75,11 +75,7 @@ class AttributeAsserter
       elsif attr == :zipcode
         getter = wrap_with_zipcode_formatter(getter)
       elsif attr == :dob
-        getter = wrap_with_dob_formatter(
-          getter,
-          american_date_format: IdentityConfig.store.
-            dob_international_format_opt_out_list.include?(service_provider.issuer),
-        )
+        getter = wrap_with_dob_formatter(getter)
       end
       attrs[attr] = { getter: getter }
     end
@@ -104,16 +100,10 @@ class AttributeAsserter
     end
   end
 
-  def wrap_with_dob_formatter(getter, american_date_format:)
+  def wrap_with_dob_formatter(getter)
     proc do |principal|
       if (date_str = getter.call(principal))
-        date = DateParser.parse_legacy(date_str)
-
-        if american_date_format
-          date.strftime('%m/%d/%Y')
-        else
-          date.to_s
-        end
+        DateParser.parse_legacy(date_str).to_s
       end
     end
   end
@@ -185,11 +175,6 @@ class AttributeAsserter
 
   def authn_request_bundle
     SamlRequestParser.new(authn_request).requested_attributes
-  end
-
-  def ial2_authn_context?
-    Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(authn_context) ||
-      (authn_context == Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF)
   end
 
   def authn_context

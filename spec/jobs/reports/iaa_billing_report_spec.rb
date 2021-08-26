@@ -109,11 +109,11 @@ describe Reports::IaaBillingReport do
     Agreements::IntegrationUsage.delete_all
     Agreements::Integration.delete_all
     ServiceProvider.delete_all
-    Timecop.travel now
+    travel_to(now)
   end
 
   after do
-    Timecop.return
+    travel_back
   end
 
   it 'works with no SPs' do

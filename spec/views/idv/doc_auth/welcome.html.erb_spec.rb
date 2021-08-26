@@ -68,7 +68,7 @@ describe 'idv/doc_auth/welcome.html.erb' do
     end
 
     around do |ex|
-      Timecop.travel(now) { ex.run }
+      travel_to(now) { ex.run }
     end
 
     it 'renders the warning banner but no other content' do
@@ -80,20 +80,30 @@ describe 'idv/doc_auth/welcome.html.erb' do
   end
 
   context 'without service provider' do
-    it 'does not render troubleshooting component' do
+    it 'renders troubleshooting options' do
       render template: 'idv/doc_auth/welcome'
 
-      expect(rendered).not_to include(t('idv.troubleshooting.headings.missing_required_items'))
+      expect(rendered).to have_link(t('idv.troubleshooting.options.supported_documents'))
+      expect(rendered).to have_link(
+        t('idv.troubleshooting.options.learn_more_address_verification_options'),
+      )
+      expect(rendered).not_to have_link(nil, href: idv_doc_auth_return_to_sp_path)
     end
   end
 
   context 'with service provider' do
     let(:sp_name) { 'Example App' }
 
-    it 'renders troubleshooting component' do
+    it 'renders troubleshooting options' do
       render template: 'idv/doc_auth/welcome'
 
-      expect(rendered).to include(t('idv.troubleshooting.headings.missing_required_items'))
+      expect(rendered).to have_link(t('idv.troubleshooting.options.supported_documents'))
+      expect(rendered).to have_link(
+        t('idv.troubleshooting.options.learn_more_address_verification_options'),
+      )
+      expect(rendered).to have_link(
+        t('idv.troubleshooting.options.get_help_at_sp', sp_name: sp_name),
+      )
     end
   end
 end

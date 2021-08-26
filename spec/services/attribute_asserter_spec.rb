@@ -137,27 +137,15 @@ describe AttributeAsserter do
       end
 
       context 'custom bundle includes dob' do
-        let(:dob_international_format_opt_out_list) { [] }
-
         before do
           user.identities << identity
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
             and_return(%w[dob])
-          allow(IdentityConfig.store).to receive(:dob_international_format_opt_out_list).
-            and_return(dob_international_format_opt_out_list)
           subject.build
         end
 
         it 'formats the dob in an international format' do
           expect(user.asserted_attributes[:dob][:getter].call(user)).to eq '1970-12-31'
-        end
-
-        context 'when the SP is in the dob_international_format_opt_out_list' do
-          let(:dob_international_format_opt_out_list) { [identity.service_provider] }
-
-          it 'formats the dob american style' do
-            expect(user.asserted_attributes[:dob][:getter].call(user)).to eq '12/31/1970'
-          end
         end
       end
 

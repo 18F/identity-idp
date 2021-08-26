@@ -37,7 +37,8 @@ describe Users::VerifyPersonalKeyController do
       end
 
       it 'shows throttled page after being throttled' do
-        allow(Throttler::IsThrottled).to receive(:call).once.and_return(true)
+        create(:throttle, :with_throttled, user: user, throttle_type: :verify_personal_key)
+
         get :new
 
         expect(response).to render_template(:throttled)
@@ -48,7 +49,7 @@ describe Users::VerifyPersonalKeyController do
       let(:profiles) { [create(:profile, deactivation_reason: :password_reset)] }
 
       before do
-        allow(Throttler::IsThrottled).to receive(:call).once.and_return(true)
+        create(:throttle, :with_throttled, user: user, throttle_type: :verify_personal_key)
       end
 
       it 'renders throttled page' do

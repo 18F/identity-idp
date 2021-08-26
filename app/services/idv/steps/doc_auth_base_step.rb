@@ -8,15 +8,18 @@ module Idv
       private
 
       def idv_throttle_params
-        [current_user.id, :idv_resolution]
+        {
+          user: current_user,
+          throttle_type: :idv_resolution,
+        }
       end
 
       def attempter_increment
-        Throttler::Increment.call(*idv_throttle_params)
+        Throttle.for(**idv_throttle_params).increment
       end
 
       def attempter_throttled?
-        Throttler::IsThrottled.call(*idv_throttle_params)
+        Throttle.for(**idv_throttle_params).throttled?
       end
 
       def idv_failure(result)
@@ -37,10 +40,13 @@ module Idv
       end
 
       def save_proofing_components
-        Db::ProofingComponent::Add.call(user_id, :document_check, DocAuthRouter.doc_auth_vendor)
+        session_doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
+          discriminator: flow_session[document_capture_session_uuid_key],
+        )
+        Db::ProofingComponent::Add.call(user_id, :document_check, session_doc_auth_vendor)
         Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
         return unless liveness_checking_enabled?
-        Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuthRouter.doc_auth_vendor)
+        Db::ProofingComponent::Add.call(user_id, :liveness_check, session_doc_auth_vendor)
       end
 
       # @param [DocAuth::Response,
@@ -87,7 +93,10 @@ module Idv
       end
 
       def throttled_else_increment
-        Throttler::IsThrottledElseIncrement.call(user_id, :idv_acuant)
+        Throttle.for(
+          target: user_id,
+          throttle_type: :idv_acuant,
+        ).throttled_else_increment?
       end
 
       def user_id

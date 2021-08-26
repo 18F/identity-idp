@@ -28,7 +28,7 @@ describe Reports::SpUserQuotasReport do
     )
     results = [{ issuer: issuer, app_id: app_id, ial2_total: 1, percent_ial2_quota: 0 }].to_json
 
-    Timecop.travel Date.new(year, month, day) do
+    travel_to(Date.new(year, month, day)) do
       expect(subject.perform(Time.zone.today)).to eq(results)
     end
   end
