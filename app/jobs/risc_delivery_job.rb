@@ -16,7 +16,9 @@ class RiscDeliveryJob < ApplicationJob
       'Accept' => 'application/json',
       'Content-Type' => 'application/secevent+jwt',
     ) do |req|
-      req.options.context = { service_name: 'http_push_direct' }
+      req.options.context = {
+        service_name: transport == 'ruby_worker' ? 'risc_http_push_async' : 'risc_http_push_direct'
+      }
     end
 
     unless response.success?
