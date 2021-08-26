@@ -17,7 +17,7 @@
   </div>
   <hr/>
     <div class='grid-row'>
-      <div class='grid-col-6'>
+      <div class='grid-col-fill'>
         <div>
           <%= "#{t('doc_auth.forms.address1')}: #{flow_session[:pii_from_doc][:address1]}" %>
         </div>
@@ -31,27 +31,34 @@
           <%= "#{t('doc_auth.forms.zip_code')}: #{flow_session[:pii_from_doc][:zipcode]}" %>
         </div>
       </div>  
-      <div class='grid-col-6'>
-        <%= link_to(t('doc_auth.buttons.change_address'), idv_address_url, class: 'float-right') %>
+      <div class='grid-auto'>
+        <%= link_to(t('doc_auth.buttons.change_address'), idv_address_url) %>
       </div>        
     </div>
   <hr/>
-  <div>
-    <div>
-      <%= t('doc_auth.forms.ssn') %>:
-      <%= render(
-            'shared/masked_text',
-            text: SsnFormatter.format(flow_session[:pii_from_doc][:ssn]),
-            masked_text: SsnFormatter.format_masked(flow_session[:pii_from_doc][:ssn]),
-            accessible_masked_text: t(
-              'idv.accessible_labels.masked_ssn',
-              first_number: flow_session[:pii_from_doc][:ssn][0],
-              last_number: flow_session[:pii_from_doc][:ssn][-1],
-            ),
-            toggle_label: t('forms.ssn.show'),
-          ) %>
-    </div>
-  </div>
+    <div class='grid-row'>
+      <div class='grid-col-fill'>
+        <%= t('doc_auth.forms.ssn') %>:
+        <%= render(
+              'shared/masked_text',
+              text: SsnFormatter.format(flow_session[:pii_from_doc][:ssn]),
+              masked_text: SsnFormatter.format_masked(flow_session[:pii_from_doc][:ssn]),
+              accessible_masked_text: t(
+                'idv.accessible_labels.masked_ssn',
+                first_number: flow_session[:pii_from_doc][:ssn][0],
+                last_number: flow_session[:pii_from_doc][:ssn][-1],
+              ),
+              toggle_label: t('forms.ssn.show'),
+            ) %>
+      </div>
+      <div class='grid-auto'>
+        <%= button_to(
+          idv_doc_auth_step_path(step: :redo_ssn),
+          method: :put,
+          class: 'usa-button usa-button--unstyled',
+        ) { t('doc_auth.buttons.change_ssn') } %>
+      </div>
+    </div>  
   <div class="margin-top-5">
     <%= render 'shared/spinner_button',
               action_message: t('doc_auth.info.verifying'),
