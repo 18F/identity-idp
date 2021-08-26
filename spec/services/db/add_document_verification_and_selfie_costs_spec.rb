@@ -77,7 +77,7 @@ describe Db::AddDocumentVerificationAndSelfieCosts do
     end
 
     it 'does not fail when _count field is null' do
-      proofing_cost = ::ProofingCost.find_or_create_by(user_id: user_id)
+      proofing_cost = ::ProofingCost.create_or_find_by(user_id: user_id)
       proofing_cost.acuant_front_image_count = nil
       proofing_cost.save
 

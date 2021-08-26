@@ -20,7 +20,7 @@ module AccountReset
     attr_reader :user
 
     def create_request
-      request = AccountResetRequest.find_or_create_by(user: user)
+      request = AccountResetRequest.create_or_find_by(user: user)
       request.update!(
         request_token: SecureRandom.uuid,
         requested_at: Time.zone.now,
