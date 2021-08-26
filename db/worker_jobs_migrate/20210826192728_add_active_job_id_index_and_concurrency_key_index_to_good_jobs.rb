@@ -4,7 +4,7 @@ class AddActiveJobIdIndexAndConcurrencyKeyIndexToGoodJobs < ActiveRecord::Migrat
 
   UPDATE_BATCH_SIZE = 1_000
 
-  class GoodJobJobs < ActiveRecord::Base
+  class GoodJobJobs < WorkerJobApplicationRecord
     self.table_name = "good_jobs"
   end
 
