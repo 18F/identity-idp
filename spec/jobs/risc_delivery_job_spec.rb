@@ -14,7 +14,7 @@ RSpec.describe RiscDeliveryJob do
         push_notification_url: push_notification_url,
         jwt: jwt,
         event_type: event_type,
-        issuer: issuer
+        issuer: issuer,
       )
     end
 
