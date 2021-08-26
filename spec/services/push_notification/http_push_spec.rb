@@ -22,20 +22,17 @@ RSpec.describe PushNotification::HttpPush do
     )
   end
   let(:now) { Time.zone.now }
-  let(:risc_notifications_eventbridge_enabled) { false }
+  let(:risc_notifications_active_job_enabled) { false }
   let(:push_notifications_enabled) { true }
-  let(:eventbridge_client) { Aws::EventBridge::Client.new(stub_responses: true) }
 
   subject(:http_push) { PushNotification::HttpPush.new(event, now: now) }
 
   before do
-    allow(IdentityConfig.store).to receive(:risc_notifications_eventbridge_enabled).
-      and_return(risc_notifications_eventbridge_enabled)
+    allow(IdentityConfig.store).to receive(:risc_notifications_active_job_enabled).
+      and_return(risc_notifications_active_job_enabled)
     allow(Identity::Hostdata).to receive(:env).and_return('dev')
     allow(IdentityConfig.store).to receive(:push_notifications_enabled).
       and_return(push_notifications_enabled)
-
-    allow(http_push).to receive(:eventbridge_client).and_return(eventbridge_client)
   end
 
   describe '#deliver' do
@@ -51,52 +48,24 @@ RSpec.describe PushNotification::HttpPush do
       end
     end
 
-    context 'when the EventBridge is disabled' do
-      let(:risc_notifications_eventbridge_enabled) { false }
+    context 'when risc_notifications_active_job_enabled is enabled' do
+      let(:risc_notifications_active_job_enabled) { true }
 
-      it 'makes an HTTP post to service providers with a push_notification_url' do
-        stub_request(:post, sp_with_push_url.push_notification_url).
-          with do |request|
-            expect(request.headers['Content-Type']).to eq('application/secevent+jwt')
-            expect(request.headers['Accept']).to eq('application/json')
-
-            payload, headers = JWT.decode(
-              request.body,
-              AppArtifacts.store.oidc_public_key,
-              true,
-              algorithm: 'RS256',
-            )
-
-            expect(headers['typ']).to eq('secevent+jwt')
-
-            expect(payload['iss']).to eq(root_url)
-            expect(payload['iat']).to eq(now.to_i)
-            expect(payload['exp']).to eq((now + 12.hours).to_i)
-            expect(payload['aud']).to eq(sp_with_push_url.push_notification_url)
-            expect(payload['events']).to eq(event.event_type => event.payload.as_json)
-          end
+      it 'delivers a notification via background job' do
+        expect(RiscDeliveryJob).to receive(:perform_later)
 
         deliver
       end
     end
 
-    context 'when the EventBridge is enabled' do
-      let(:risc_notifications_eventbridge_enabled) { true }
-
-      it 'posts to the EventBridge' do
-        expect(eventbridge_client).to receive(:put_events).and_wrap_original do |impl, entries:|
-          expect(entries.size).to eq(1)
-          entry = entries.first
-
-          expect(entry[:time]).to eq(now)
-          expect(entry[:source]).to eq(sp_with_push_url.issuer)
-          expect(entry[:event_bus_name]).to eq('dev-risc-notifications')
-          expect(entry[:detail_type]).to eq('notification')
-
-          detail_json = JSON.parse(entry[:detail], symbolize_names: true)
+    it 'makes an HTTP post to service providers with a push_notification_url' do
+      stub_request(:post, sp_with_push_url.push_notification_url).
+        with do |request|
+          expect(request.headers['Content-Type']).to eq('application/secevent+jwt')
+          expect(request.headers['Accept']).to eq('application/json')
 
           payload, headers = JWT.decode(
-            detail_json[:jwt],
+            request.body,
             AppArtifacts.store.oidc_public_key,
             true,
             algorithm: 'RS256',
@@ -109,28 +78,9 @@ RSpec.describe PushNotification::HttpPush do
           expect(payload['exp']).to eq((now + 12.hours).to_i)
           expect(payload['aud']).to eq(sp_with_push_url.push_notification_url)
           expect(payload['events']).to eq(event.event_type => event.payload.as_json)
-
-          impl.call(entries: entries)
         end
 
-        deliver
-      end
-
-      context 'with an error from eventbridge' do
-        before do
-          eventbridge_client.stub_responses(
-            :put_events,
-            failed_entry_count: 1,
-            entries: [{ error_code: 'MalformedDetail', error_message: 'Detail is malformed' }],
-          )
-        end
-
-        it 'logs a warning' do
-          expect(Rails.logger).to receive(:warn)
-
-          deliver
-        end
-      end
+      deliver
     end
 
     context 'with an event that sends agency-specific iss_sub' do
@@ -138,50 +88,20 @@ RSpec.describe PushNotification::HttpPush do
 
       let(:agency_uuid) { AgencyIdentityLinker.new(sp_with_push_url_identity).link_identity.uuid }
 
-      context 'when the EventBridge is disabled' do
-        let(:risc_notifications_eventbridge_enabled) { false }
-
-        it 'sends the agency-specific uuid' do
-          stub_request(:post, sp_with_push_url.push_notification_url).
-            with do |request|
-              payload, _headers = JWT.decode(
-                request.body,
-                AppArtifacts.store.oidc_public_key,
-                true,
-                algorithm: 'RS256',
-              )
-
-              expect(payload['events'][event.event_type]['subject']['sub']).to eq(agency_uuid)
-            end
-
-          deliver
-        end
-      end
-
-      context 'when the EventBridge is enabled' do
-        let(:risc_notifications_eventbridge_enabled) { true }
-
-        it 'sends the agency-specific uuid' do
-          expect(eventbridge_client).to receive(:put_events).and_wrap_original do |impl, entries:|
-            expect(entries.size).to eq(1)
-            entry = entries.first
-
-            detail_json = JSON.parse(entry[:detail], symbolize_names: true)
-
-            payload, headers = JWT.decode(
-              detail_json[:jwt],
+      it 'sends the agency-specific uuid' do
+        stub_request(:post, sp_with_push_url.push_notification_url).
+          with do |request|
+            payload, _headers = JWT.decode(
+              request.body,
               AppArtifacts.store.oidc_public_key,
               true,
               algorithm: 'RS256',
             )
 
             expect(payload['events'][event.event_type]['subject']['sub']).to eq(agency_uuid)
-
-            impl.call(entries: entries)
           end
 
-          deliver
-        end
+        deliver
       end
     end
 
@@ -238,24 +158,10 @@ RSpec.describe PushNotification::HttpPush do
         RevokeServiceProviderConsent.new(identity).call
       end
 
-      context 'when the EventBridge is disabled' do
-        let(:risc_notifications_eventbridge_enabled) { false }
+      it 'does not notify that SP' do
+        deliver
 
-        it 'does not notify that SP' do
-          deliver
-
-          expect(WebMock).not_to have_requested(:get, sp_with_push_url.push_notification_url)
-        end
-      end
-
-      context 'when the EventBridge is enabled' do
-        let(:risc_notifications_eventbridge_enabled) { true }
-
-        it 'does not notify that SP' do
-          expect(eventbridge_client).to_not receive(:put_events)
-
-          deliver
-        end
+        expect(WebMock).not_to have_requested(:get, sp_with_push_url.push_notification_url)
       end
     end
   end
