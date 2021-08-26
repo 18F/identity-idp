@@ -2,22 +2,26 @@ class RiscDeliveryJob < ApplicationJob
   queue_as :low
 
   retry_on Faraday::TimeoutError, Faraday::ConnectionFailed, wait: :exponentially_longer
+  retry_on RedisRateLimiter::LimitError, wait: :exponentially_longer, attempts: :unlimited
 
   def perform(
     push_notification_url:,
     jwt:,
     event_type:,
-    issuer:
+    issuer:,
+    now: Time.zone.now
   )
-    response = faraday.post(
-      push_notification_url,
-      jwt,
-      'Accept' => 'application/json',
-      'Content-Type' => 'application/secevent+jwt',
-    ) do |req|
-      req.options.context = {
-        service_name: inline? ? 'risc_http_push_direct' : 'risc_http_push_async',
-      }
+    response = rate_limiter(push_notification_url).attempt! do
+      faraday.post(
+        push_notification_url,
+        jwt,
+        'Accept' => 'application/json',
+        'Content-Type' => 'application/secevent+jwt',
+      ) do |req|
+        req.options.context = {
+          service_name: inline? ? 'risc_http_push_direct' : 'risc_http_push_async',
+        }
+      end
     end
 
     unless response.success?
@@ -31,17 +35,29 @@ class RiscDeliveryJob < ApplicationJob
         }.to_json,
       )
     end
-  rescue Faraday::TimeoutError, Faraday::ConnectionFailed => err
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed, RedisRateLimiter::LimitError => err
     raise err if !inline?
 
     Rails.logger.warn(
       {
-        event: 'http_push_error',
+        event: err.is_a?(RedisRateLimiter::LimitError) ? 'http_push_rate_limit' : 'http_push_error',
         transport: 'direct',
         event_type: event_type,
         service_provider: issuer,
         error: err.message,
       }.to_json,
+    )
+  end
+
+  def rate_limiter(url)
+    url_overrides = IdentityConfig.store.risc_notifications_rate_limit_overrides.fetch(url, {})
+
+    RedisRateLimiter.new(
+      key: "push-notification-#{url}",
+      max_requests: url_overrides['max_requests'] ||
+        IdentityConfig.store.risc_notifications_rate_limit_max_requests,
+      interval: url_overrides['interval'] ||
+        IdentityConfig.store.risc_notifications_rate_limit_interval,
     )
   end
 
