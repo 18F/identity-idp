@@ -7,8 +7,7 @@ class RiscDeliveryJob < ApplicationJob
     push_notification_url:,
     jwt:,
     event_type:,
-    issuer:,
-    transport:
+    issuer:
   )
     response = faraday.post(
       push_notification_url,
@@ -17,7 +16,7 @@ class RiscDeliveryJob < ApplicationJob
       'Content-Type' => 'application/secevent+jwt',
     ) do |req|
       req.options.context = {
-        service_name: transport == 'ruby_worker' ? 'risc_http_push_async' : 'risc_http_push_direct',
+        service_name: inline? ? 'risc_http_push_direct' : 'risc_http_push_async',
       }
     end
 
@@ -25,7 +24,7 @@ class RiscDeliveryJob < ApplicationJob
       Rails.logger.warn(
         {
           event: 'http_push_error',
-          transport: transport,
+          transport: inline? ? 'direct' : 'async',
           event_type: event_type,
           service_provider: issuer,
           status: response.status,
@@ -33,7 +32,7 @@ class RiscDeliveryJob < ApplicationJob
       )
     end
   rescue Faraday::TimeoutError, Faraday::ConnectionFailed => err
-    raise err if transport == 'ruby_worker'
+    raise err if !inline?
 
     Rails.logger.warn(
       {
@@ -55,5 +54,9 @@ class RiscDeliveryJob < ApplicationJob
       f.options.open_timeout = 3
       f.options.write_timeout = 3
     end
+  end
+
+  def inline?
+    queue_adapter.is_a?(ActiveJob::QueueAdapters::InlineAdapter)
   end
 end

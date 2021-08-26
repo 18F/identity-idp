@@ -44,7 +44,6 @@ module PushNotification
           jwt: jwt(service_provider),
           event_type: event.event_type,
           issuer: service_provider.issuer,
-          transport: 'ruby_worker',
         )
       else
         RiscDeliveryJob.perform_now(
@@ -52,7 +51,6 @@ module PushNotification
           jwt: jwt(service_provider),
           event_type: event.event_type,
           issuer: service_provider.issuer,
-          transport: 'direct',
         )
       end
     end

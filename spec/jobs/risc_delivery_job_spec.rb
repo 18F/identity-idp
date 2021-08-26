@@ -8,13 +8,13 @@ RSpec.describe RiscDeliveryJob do
     let(:issuer) { 'issuer1' }
     let(:transport) { 'ruby_worker' }
 
+    let(:job) { RiscDeliveryJob.new }
     subject(:perform) do
-      RiscDeliveryJob.new.perform(
+      job.perform(
         push_notification_url: push_notification_url,
         jwt: jwt,
         event_type: event_type,
-        issuer: issuer,
-        transport: transport,
+        issuer: issuer
       )
     end
 
@@ -39,14 +39,12 @@ RSpec.describe RiscDeliveryJob do
       end
 
       context 'when performed inline' do
-        let(:transport) { 'direct' }
-
         it 'warns on timeouts' do
           expect(Rails.logger).to receive(:warn) do |msg|
             payload = JSON.parse(msg, symbolize_names: true)
 
             expect(payload[:event]).to eq('http_push_error')
-            expect(payload[:transport]).to eq(transport)
+            expect(payload[:transport]).to eq('direct')
           end
 
           expect { perform }.to_not raise_error
@@ -54,7 +52,10 @@ RSpec.describe RiscDeliveryJob do
       end
 
       context 'when performed in a worker' do
-        let(:transport) { 'ruby_worker' }
+        before do
+          allow(job).to receive(:queue_adapter).
+            and_return(ActiveJob::QueueAdapters::GoodJobAdapter.new)
+        end
 
         it 'raises on timeouts (and retries via ActiveJob)' do
           expect(Rails.logger).to_not receive(:warn)

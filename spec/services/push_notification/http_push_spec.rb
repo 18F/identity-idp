@@ -52,8 +52,7 @@ RSpec.describe PushNotification::HttpPush do
       let(:risc_notifications_active_job_enabled) { true }
 
       it 'delivers a notification via background job' do
-        expect(RiscDeliveryJob).to receive(:perform_later).
-          with(hash_including(transport: 'ruby_worker'))
+        expect(RiscDeliveryJob).to receive(:perform_later)
 
         deliver
       end
