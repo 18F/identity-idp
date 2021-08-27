@@ -31,6 +31,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.infer_spec_type_from_file_location!
 
+  config.include ActiveSupport::Testing::TimeHelpers
   config.include EmailSpec::Helpers
   config.include EmailSpec::Matchers
   config.include AbstractController::Translation
@@ -48,7 +49,7 @@ RSpec.configure do |config|
     Rails.application.load_seed
 
     begin
-      REDIS_POOL.with { |cache| cache.pool.with(&:info) }
+      READTHIS_POOL.with { |cache| cache.pool.with(&:info) }
     rescue RuntimeError => error
       puts error
       puts 'It appears Redis is not running, but it is required for (some) specs to run'

@@ -24,9 +24,14 @@ defaults: &defaults
 development:
   primary:
     <<: *defaults
+    migrations_paths: db/primary_migrate
   read_replica:
     <<: *defaults
     replica: true
+  worker_jobs:
+    <<: *defaults
+    database: upaya_worker_jobs_<%= Rails.env %>
+    migrations_paths: db/worker_jobs_migrate
 
 test:
   primary: &test
@@ -36,9 +41,14 @@ test:
     database: <%= ENV['POSTGRES_DB'] || "upaya_test#{ENV['TEST_ENV_NUMBER']}" %>
     user: <%= ENV['POSTGRES_USER'] %>
     password: <%= ENV['POSTGRES_PASSWORD'] %>
+    migrations_paths: db/primary_migrate
   read_replica:
     <<: *test
     replica: true
+  worker_jobs:
+    <<: *test
+    database: <%= "upaya_worker_jobs_test#{ENV['TEST_ENV_NUMBER']}" %>
+    migrations_paths: db/worker_jobs_migrate
 
 <%
   pool = if Identity::Hostdata.instance_role == 'worker'
@@ -58,6 +68,7 @@ production:
     pool: <%= pool %>
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+    migrations_paths: db/primary_migrate
   read_replica:
     <<: *defaults
     database: <%= IdentityConfig.store.database_name %>
@@ -68,3 +79,13 @@ production:
     sslmode: 'verify-full'
     sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
     replica: true
+  worker_jobs:
+    <<: *defaults
+    database: <%= IdentityConfig.store.database_worker_jobs_name %>
+    username: <%= IdentityConfig.store.database_worker_jobs_username %>
+    host: <%= IdentityConfig.store.database_worker_jobs_host %>
+    password: <%= IdentityConfig.store.database_worker_jobs_password %>
+    pool: <%= pool %>
+    sslmode: 'verify-full'
+    sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
+    migrations_paths: db/worker_jobs_migrate

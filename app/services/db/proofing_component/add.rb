@@ -19,8 +19,9 @@ module Db
 
       def self.call(user_id, token, value)
         return unless user_id
-        proofing_cost = ::ProofingComponent.find_or_create_by(user_id: user_id)
         return unless TOKEN_ALLOWLIST.index(token.to_sym)
+
+        proofing_cost = ::ProofingComponent.create_or_find_by(user_id: user_id)
         proofing_cost[token] = value
         proofing_cost.save
       end

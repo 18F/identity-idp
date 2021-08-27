@@ -288,7 +288,7 @@ feature 'doc capture document capture step' do
 
       DocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now) do
+      travel_to(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now + 1) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 
@@ -374,7 +374,7 @@ feature 'doc capture document capture step' do
 
       DocAuth::Mock::DocAuthMockClient.reset!
 
-      Timecop.travel(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now) do
+      travel_to(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now + 1) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 

@@ -120,11 +120,18 @@ describe ApplicationController do
       allow(controller).to receive(:analytics_user).and_return(user)
     end
 
-    it 'adds user_uuid to the lograge output' do
+    it 'adds user_uuid and git metadata to the lograge output' do
+      stub_const(
+        'IdentityConfig::GIT_BRANCH',
+        'my branch',
+      )
+
       controller.append_info_to_payload(payload)
 
       expect(payload).to eq(
         user_id: user.uuid,
+        git_sha: IdentityConfig::GIT_SHA,
+        git_branch: IdentityConfig::GIT_BRANCH,
       )
     end
   end
@@ -177,7 +184,8 @@ describe ApplicationController do
         allow(controller).to receive(:current_sp).and_return(sp)
 
         expect(Analytics).to receive(:new).
-          with(user: user, request: request, sp: sp.issuer, ahoy: controller.ahoy)
+          with(user: user, request: request, sp: sp.issuer, first_path_visit_this_session: true,
+               ahoy: controller.ahoy)
 
         controller.analytics
       end
@@ -191,7 +199,8 @@ describe ApplicationController do
         allow(AnonymousUser).to receive(:new).and_return(user)
 
         expect(Analytics).to receive(:new).
-          with(user: user, request: request, sp: nil, ahoy: controller.ahoy)
+          with(user: user, request: request, sp: nil, first_path_visit_this_session: true,
+               ahoy: controller.ahoy)
 
         controller.analytics
       end

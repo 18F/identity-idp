@@ -78,7 +78,7 @@ event_disavowal_expiration_hours: '240'
 exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 good_job_max_threads: '5'
-good_job_queues: 'default:5,low:1;*'
+good_job_queues: 'default:5;low:1;*'
 gpo_designated_receiver_pii: '{}'
 hide_phone_mfa_signup: 'false'
 identity_pki_disabled: 'false'
@@ -177,7 +177,10 @@ requests_per_ip_track_only_mode: 'false'
 reset_password_email_max_attempts: '20'
 reset_password_email_window_in_minutes: '60'
 risc_notifications_local_enabled: 'false'
-risc_notifications_eventbridge_enabled: 'false'
+risc_notifications_active_job_enabled: 'false'
+risc_notifications_rate_limit_interval: '60'
+risc_notifications_rate_limit_max_requests: '1000'
+risc_notifications_rate_limit_overrides: '{"https://example.com/push":{"interval":120,"max_requests":10000}}'
 ruby_workers_enabled: 'true'
 rules_of_use_horizon_years: '6'
 rules_of_use_updated_at: '2021-05-21T00:00:00Z'
@@ -229,7 +232,14 @@ development:
   database_readonly_password: ''
   database_readonly_username: ''
   database_username: ''
+  database_worker_jobs_name: ''
+  database_worker_jobs_username: ''
+  database_worker_jobs_host: ''
+  database_worker_jobs_password: ''
   doc_auth_vendor: 'mock'
+  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: localhost:3000
   enable_rate_limiting: 'false'
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
@@ -287,6 +297,9 @@ production:
   disable_email_sending: 'false'
   disallow_all_web_crawlers: 'false'
   doc_auth_vendor: 'acuant'
+  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize_alternate_vendor: ''
   domain_name: login.gov
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
@@ -344,8 +357,15 @@ test:
   database_readonly_password: ''
   database_readonly_username: ''
   database_username: ''
+  database_worker_jobs_name: ''
+  database_worker_jobs_username: ''
+  database_worker_jobs_host: ''
+  database_worker_jobs_password: ''
   doc_auth_enable_presigned_s3_urls: 'true'
   doc_auth_vendor: 'mock'
+  doc_auth_vendor_randomize: 'false'
+  doc_auth_vendor_randomize_percent: 0
+  doc_auth_vendor_randomize_alternate_vendor: ''
   doc_capture_polling_enabled: 'false'
   domain_name: www.example.com
   exception_recipients: test1@test.com

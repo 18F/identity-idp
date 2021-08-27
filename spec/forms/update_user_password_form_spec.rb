@@ -18,7 +18,10 @@ describe UpdateUserPasswordForm, type: :model do
 
       it 'returns FormResponse with success: false and does not do anything else' do
         errors = {
-          password: [t('errors.messages.too_short.other', count: Devise.password_length.first)],
+          password: [t(
+            'errors.attributes.password.too_short.other',
+            count: Devise.password_length.first,
+          )],
         }
 
         expect(UpdateUser).not_to receive(:new)

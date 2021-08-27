@@ -17,7 +17,7 @@ module Db
 
       def self.call(user_id, token)
         return unless user_id
-        proofing_cost = ::ProofingCost.find_or_create_by(user_id: user_id)
+        proofing_cost = ::ProofingCost.create_or_find_by(user_id: user_id)
         unless TOKEN_ALLOWLIST.include?(token.to_sym)
           NewRelic::Agent.notice_error(ProofingCostTypeError.new(token.to_s))
           return

@@ -7,12 +7,12 @@
       <%= t('two_factor_authentication.otp_make_default_number.instruction') %>
     </p>
     <label class="btn-border col-8">
-      <div class="checkbox">
+      <span class="checkbox">
         <%= check_box_tag 'edit_phone_form[make_default_number]',
             :otp_make_default_number, @edit_phone_form.default_phone_configuration? %>
         <span class="indicator"></span>
         <%= t('two_factor_authentication.otp_make_default_number.label') %>
-      </div>
+      </span>
     </label>
   </fieldset>
 </div>

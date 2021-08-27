@@ -40,10 +40,13 @@ module Idv
       end
 
       def save_proofing_components
-        Db::ProofingComponent::Add.call(user_id, :document_check, DocAuthRouter.doc_auth_vendor)
+        session_doc_auth_vendor = DocAuthRouter.doc_auth_vendor(
+          discriminator: flow_session[document_capture_session_uuid_key],
+        )
+        Db::ProofingComponent::Add.call(user_id, :document_check, session_doc_auth_vendor)
         Db::ProofingComponent::Add.call(user_id, :document_type, 'state_id')
         return unless liveness_checking_enabled?
-        Db::ProofingComponent::Add.call(user_id, :liveness_check, DocAuthRouter.doc_auth_vendor)
+        Db::ProofingComponent::Add.call(user_id, :liveness_check, session_doc_auth_vendor)
       end
 
       # @param [DocAuth::Response,
@@ -54,6 +57,7 @@ module Idv
         flow_session[:pii_from_doc] = response.pii_from_doc.merge(
           uuid: current_user.uuid,
           phone: current_user.phone_configurations.take&.phone,
+          uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
         )
         if response.respond_to?(:extra)
           # Sync flow: DocAuth::Response

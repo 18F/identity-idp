@@ -8,6 +8,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   let(:base_url) { 'https://lexis.nexis.example.com' }
   let(:path) { "/restws/identity/v3/accounts/#{account_id}/workflows/#{workflow}/conversations" }
   let(:full_url) { base_url + path }
+  let(:applicant) { { uuid: SecureRandom.uuid, uuid_prefix: '123' } }
   let(:config) do
     DocAuth::LexisNexis::Config.new(
       trueid_account_id: account_id,
@@ -26,6 +27,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       selfie_image: DocAuthImageFixtures.selfie_image,
       liveness_checking_enabled: liveness_checking_enabled,
       image_source: image_source,
+      user_uuid: applicant[:uuid],
+      uuid_prefix: applicant[:uuid_prefix],
     )
   end
 

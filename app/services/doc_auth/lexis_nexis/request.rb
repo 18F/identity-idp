@@ -1,10 +1,12 @@
 module DocAuth
   module LexisNexis
     class Request
-      attr_reader :config
+      attr_reader :config, :user_uuid, :uuid_prefix
 
-      def initialize(config:)
+      def initialize(config:, user_uuid: nil, uuid_prefix: nil)
         @config = config
+        @user_uuid = user_uuid
+        @uuid_prefix = uuid_prefix
       end
 
       def fetch
@@ -123,9 +125,16 @@ module DocAuth
         }
       end
 
-      # AM: Need to account for the uuid-prefix when folding in the lexisnexis gem.
       def uuid
-        SecureRandom.uuid
+        return SecureRandom.uuid unless user_uuid
+
+        uuid = user_uuid
+
+        if uuid_prefix.present?
+          "#{uuid_prefix}:#{uuid}"
+        else
+          uuid
+        end
       end
 
       def username

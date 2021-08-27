@@ -1,4 +1,8 @@
 class IdentityConfig
+  GIT_SHA = `git rev-parse --short=8 HEAD`.chomp
+  GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
+  GIT_BRANCH = `git rev-parse --abbrev-ref HEAD`.chomp
+
   class << self
     attr_reader :store
   end
@@ -105,6 +109,10 @@ class IdentityConfig
     config.add(:database_statement_timeout, type: :integer)
     config.add(:database_timeout, type: :integer)
     config.add(:database_username, type: :string)
+    config.add(:database_worker_jobs_name, type: :string)
+    config.add(:database_worker_jobs_username, type: :string)
+    config.add(:database_worker_jobs_host, type: :string)
+    config.add(:database_worker_jobs_password, type: :string)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disallow_all_web_crawlers, type: :boolean)
@@ -116,6 +124,9 @@ class IdentityConfig
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
     config.add(:doc_auth_extend_timeout_by_minutes, type: :integer)
     config.add(:doc_auth_vendor, type: :string)
+    config.add(:doc_auth_vendor_randomize, type: :boolean)
+    config.add(:doc_auth_vendor_randomize_percent, type: :integer)
+    config.add(:doc_auth_vendor_randomize_alternate_vendor, type: :string)
     config.add(:doc_capture_polling_enabled, type: :boolean)
     config.add(:doc_capture_request_valid_for_minutes, type: :integer)
     config.add(:domain_name, type: :string)
@@ -237,7 +248,10 @@ class IdentityConfig
     config.add(:reset_password_email_max_attempts, type: :integer)
     config.add(:reset_password_email_window_in_minutes, type: :integer)
     config.add(:risc_notifications_local_enabled, type: :boolean)
-    config.add(:risc_notifications_eventbridge_enabled, type: :boolean)
+    config.add(:risc_notifications_active_job_enabled, type: :boolean)
+    config.add(:risc_notifications_rate_limit_interval, type: :integer)
+    config.add(:risc_notifications_rate_limit_max_requests, type: :integer)
+    config.add(:risc_notifications_rate_limit_overrides, type: :json)
     config.add(:ruby_workers_enabled, type: :boolean)
     config.add(:rules_of_use_horizon_years, type: :integer)
     config.add(:rules_of_use_updated_at, type: :timestamp)

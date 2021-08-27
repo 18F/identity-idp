@@ -29,14 +29,14 @@ all_configs = {
       name: 'Account reset notice',
       interval: interval_5m,
       timeout: 4 * 60,
-      callback: -> { AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today) },
+      callback: -> { AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.now) },
       health_critical: true,
       failures_before_alarm: 2,
     },
     good_job: {
       class: 'AccountReset::GrantRequestsAndSendEmails',
       cron: cron_5m,
-      args: -> { [Time.zone.today] },
+      args: -> { [Time.zone.now] },
     },
   },
   # Send OMB Fitara report to s3
@@ -380,7 +380,7 @@ all_configs = {
 }
 
 if IdentityConfig.store.ruby_workers_enabled
-  # Queue heartbeat job to DelayedJob
+  # Queue heartbeat job to GoodJob
   all_configs[:heartbeat_job] = {
     good_job: {
       class: 'HeartbeatJob',

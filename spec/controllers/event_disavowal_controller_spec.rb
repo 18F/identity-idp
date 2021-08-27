@@ -90,7 +90,7 @@ describe EventDisavowalController do
           Analytics::EVENT_DISAVOWAL_PASSWORD_RESET,
           build_analytics_hash(
             success: false,
-            errors: { password: ['is too short (minimum is 12 characters)'] },
+            errors: { password: ['This password is too short (minimum is 12 characters)'] },
           ),
         )
 
@@ -107,7 +107,7 @@ describe EventDisavowalController do
           Analytics::EVENT_DISAVOWAL_PASSWORD_RESET,
           build_analytics_hash(
             success: false,
-            errors: { password: ['is too short (minimum is 12 characters)'] },
+            errors: { password: ['This password is too short (minimum is 12 characters)'] },
           ),
         )
 

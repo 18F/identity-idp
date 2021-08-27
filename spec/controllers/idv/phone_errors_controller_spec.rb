@@ -45,7 +45,7 @@ describe Idv::PhoneErrorsController do
   before do
     allow(idv_session).to receive(:user_phone_confirmation).
       and_return(idv_session_user_phone_confirmation)
-    allow(idv_session).to receive(:step_attempts).and_return(phone: 1)
+    allow(subject).to receive(:remaining_step_attempts).and_return(5)
     allow(controller).to receive(:idv_session).and_return(idv_session)
   end
 

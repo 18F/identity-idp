@@ -25,7 +25,7 @@ shared_examples 'phone otp confirmation' do |delivery_method|
 
   it 'renders an error if the OTP has expired' do
     visit_otp_confirmation(delivery_method)
-    Timecop.travel 11.minutes.from_now do
+    travel_to(11.minutes.from_now) do
       fill_in :code, with: last_otp(delivery_method)
       click_submit_default
       expect(page).to have_content(t('two_factor_authentication.invalid_otp'))

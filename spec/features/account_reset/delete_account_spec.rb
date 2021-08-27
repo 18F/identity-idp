@@ -29,7 +29,7 @@ describe 'Account Reset Request: Delete Account', email: true do
 
       reset_email
 
-      Timecop.travel(Time.zone.now + 2.days) do
+      travel_to(Time.zone.now + 2.days + 1) do
         AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
@@ -86,7 +86,7 @@ describe 'Account Reset Request: Delete Account', email: true do
       reset_email
 
       allow(IdentityConfig.store).to receive(:push_notifications_enabled).and_return(true)
-      Timecop.travel(2.days.from_now) do
+      travel_to(2.days.from_now + 1) do
         request = stub_push_notification_request(
           sp_push_notification_endpoint: push_notification_url,
           event_type: PushNotification::AccountPurgedEvent::EVENT_TYPE,

@@ -77,7 +77,7 @@ describe Users::PasswordsController do
           success: false,
           errors: {
             password: [
-              t('errors.messages.too_short.other', count: Devise.password_length.first),
+              t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
             ],
           },
           error_details: { password: [:too_short] },

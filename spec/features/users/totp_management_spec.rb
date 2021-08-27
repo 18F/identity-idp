@@ -83,7 +83,7 @@ describe 'totp management' do
       click_button 'Submit'
 
       # simulate user delay. totp has a 30 second time step
-      Timecop.travel 30.seconds.from_now do
+      travel_to(30.seconds.from_now) do
         click_link "+ #{t('account.index.auth_app_add')}", href: authenticator_setup_url
 
         secret = find('#qr-code').text

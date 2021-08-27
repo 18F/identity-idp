@@ -3,9 +3,17 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   attr_reader :user
 
-  def initialize(user:, view:, service_provider:, aal3_required:, piv_cac_required:)
+  def initialize(
+    user:,
+    view:,
+    user_session_context:,
+    service_provider:,
+    aal3_required:,
+    piv_cac_required:
+  )
     @user = user
     @view = view
+    @user_session_context = user_session_context
     @service_provider = service_provider
     @aal3_required = aal3_required
     @piv_cac_required = piv_cac_required
@@ -55,18 +63,12 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     account_reset_token_valid? ? account_reset_cancel_link : account_reset_link
   end
 
-  def reverify_link
-    t(
-      'two_factor_authentication.account_reset.recover_html',
-      reset_link: @view.link_to(
-        t('two_factor_authentication.account_reset.reset_link'),
-        account_reset_request_path(locale: LinkLocaleResolver.locale),
-      ),
-      reverify_link: @view.link_to(
-        t('two_factor_authentication.account_reset.reverify_link'),
-        account_reset_recover_path,
-      ),
-    )
+  def cancel_link
+    if UserSessionContext.reauthentication_context?(@user_session_context)
+      account_path
+    else
+      sign_out_path
+    end
   end
 
   private

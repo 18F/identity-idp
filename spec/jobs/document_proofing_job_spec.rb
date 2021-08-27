@@ -93,7 +93,7 @@ RSpec.describe DocumentProofingJob, type: :job do
 
     context 'with a successful response from the proofer' do
       before do
-        expect(DocAuthRouter).to receive(:doc_auth_vendor).and_return('acuant').twice
+        expect(DocAuthRouter).to receive(:doc_auth_vendor).and_return('acuant')
 
         url = URI.join('https://example.com', '/AssureIDService/Document/Instance')
         stub_request(:post, url).to_return(body: '"this-is-a-test-instance-id"')
@@ -129,8 +129,6 @@ RSpec.describe DocumentProofingJob, type: :job do
             errors: {},
             image_metrics: {},
             processed_alerts: { failed: [], passed: [] },
-            raw_alerts: [],
-            raw_regions: [],
             success: true,
             exception: nil,
           )
@@ -146,8 +144,6 @@ RSpec.describe DocumentProofingJob, type: :job do
             processed_alerts: { failed: [], passed: [] },
             alert_failure_count: 0,
             image_metrics: {},
-            raw_alerts: [],
-            raw_regions: [],
             state: 'MT',
             async: true,
             remaining_attempts: IdentityConfig.store.acuant_max_attempts,
@@ -177,8 +173,6 @@ RSpec.describe DocumentProofingJob, type: :job do
             face_match_results: { is_match: true, match_score: nil },
             image_metrics: {},
             processed_alerts: { failed: [], passed: [] },
-            raw_alerts: [],
-            raw_regions: [],
             doc_auth_result: 'Passed',
             selfie_liveness_results: {
               acuant_error: { code: nil, message: nil },
@@ -200,8 +194,6 @@ RSpec.describe DocumentProofingJob, type: :job do
             processed_alerts: { failed: [], passed: [] },
             alert_failure_count: 0,
             image_metrics: {},
-            raw_alerts: [],
-            raw_regions: [],
             state: 'MT',
             async: true,
             remaining_attempts: IdentityConfig.store.acuant_max_attempts,

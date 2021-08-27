@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 describe Users::ResetPasswordsController, devise: true do
+  let(:password_error_message) {
+    "This password is too short (minimum is #{Devise.password_length.first} characters)"
+  }
   describe '#edit' do
     context 'no user matches token' do
       it 'redirects to page where user enters email for password reset token' do
@@ -99,7 +102,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: {
-            password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
+            password: [password_error_message],
             reset_password_token: ['token_expired'],
           },
           error_details: {
@@ -134,7 +137,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: {
-            password: ["is too short (minimum is #{Devise.password_length.first} characters)"],
+            password: [password_error_message],
           },
           error_details: {
             password: [:too_short],
@@ -181,7 +184,7 @@ describe Users::ResetPasswordsController, devise: true do
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
 
-        Timecop.freeze(Time.zone.now) do
+        freeze_time do
           user = create(
             :user,
             :signed_up,

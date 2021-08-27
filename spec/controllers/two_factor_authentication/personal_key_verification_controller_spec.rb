@@ -31,7 +31,6 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
       raw_key = PersonalKeyGenerator.new(user).create
-      old_key = user.reload.encrypted_recovery_code_digest
       stub_sign_in_before_2fa(user)
       get :show
 

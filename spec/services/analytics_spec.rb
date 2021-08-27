@@ -28,16 +28,25 @@ describe Analytics do
       user: current_user,
       request: request,
       sp: 'http://localhost:3000',
+      first_path_visit_this_session: true,
       ahoy: ahoy,
     )
   end
 
   describe '#track_event' do
     it 'identifies the user and sends the event to the backend' do
+      stub_const(
+        'IdentityConfig::GIT_BRANCH',
+        'my branch',
+      )
+
       analytics_hash = {
         event_properties: {},
         user_id: current_user.uuid,
         locale: I18n.locale,
+        git_sha: IdentityConfig::GIT_SHA,
+        git_branch: IdentityConfig::GIT_BRANCH,
+        new_session_path: true,
       }
 
       expect(ahoy).to receive(:track).
@@ -54,6 +63,9 @@ describe Analytics do
         event_properties: {},
         user_id: tracked_user.uuid,
         locale: I18n.locale,
+        git_sha: IdentityConfig::GIT_SHA,
+        git_branch: IdentityConfig::GIT_BRANCH,
+        new_session_path: true,
       }
 
       expect(ahoy).to receive(:track).
@@ -78,7 +90,13 @@ describe Analytics do
 
     it 'uses the DeviceDetector gem to parse the user agent' do
       user = build_stubbed(:user, uuid: '123')
-      analytics = Analytics.new(user: user, request: FakeRequest.new, sp: nil, ahoy: ahoy)
+      analytics = Analytics.new(
+        user: user,
+        request: FakeRequest.new,
+        sp: nil,
+        first_path_visit_this_session: true,
+        ahoy: ahoy,
+      )
 
       browser = instance_double(DeviceDetector)
       allow(DeviceDetector).to receive(:new).and_return(browser)
@@ -103,6 +121,9 @@ describe Analytics do
         event_properties: {},
         user_id: current_user.uuid,
         locale: locale,
+        git_sha: IdentityConfig::GIT_SHA,
+        git_branch: IdentityConfig::GIT_BRANCH,
+        new_session_path: true,
       }
 
       expect(ahoy).to receive(:track).

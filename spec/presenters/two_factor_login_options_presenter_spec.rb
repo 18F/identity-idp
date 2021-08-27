@@ -7,11 +7,13 @@ describe TwoFactorLoginOptionsPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:aal3_required) { false }
   let(:piv_cac_required) { false }
+  let(:user_session_context) { UserSessionContext::DEFAULT_CONTEXT }
 
   subject(:presenter) do
     TwoFactorLoginOptionsPresenter.new(
       user: user,
       view: view,
+      user_session_context: user_session_context,
       service_provider: nil,
       aal3_required: false,
       piv_cac_required: false,
@@ -71,6 +73,22 @@ describe TwoFactorLoginOptionsPresenter do
         klass == TwoFactorAuthentication::WebauthnSelectionPresenter
       end
       expect(webauthn_selection_presenters.count).to eq 1
+    end
+  end
+
+  describe '#cancel_link' do
+    subject(:cancel_link) { presenter.cancel_link }
+
+    context 'default user session context' do
+      let(:user_session_context) { UserSessionContext::DEFAULT_CONTEXT }
+
+      it { should eq sign_out_path }
+    end
+
+    context 'reauthentication user session context' do
+      let(:user_session_context) { UserSessionContext::REAUTHENTICATION_CONTEXT }
+
+      it { should eq account_path }
     end
   end
 end

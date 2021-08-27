@@ -13,7 +13,7 @@ module Idv
     end
 
     def failure_reason
-      return :fail if idv_session.step_attempts[:phone] >= idv_max_attempts
+      return :fail if throttle.throttled?
       return :timeout if idv_result[:timed_out]
       return :jobfail if idv_result[:exception].present?
       return :warning if idv_result[:success] != true
@@ -34,7 +34,7 @@ module Idv
     def async_state_done(async_state)
       @idv_result = async_state.result
 
-      increment_attempts_count unless failed_due_to_timeout_or_exception?
+      throttle.increment unless failed_due_to_timeout_or_exception?
       success = idv_result[:success]
       handle_successful_proofing_attempt if success
 
@@ -49,10 +49,6 @@ module Idv
 
     attr_accessor :idv_session, :step_params, :idv_result
     attr_reader :trace_id
-
-    def idv_max_attempts
-      Throttle::THROTTLE_CONFIG[:idv_resolution][:max_attempts]
-    end
 
     def proof_address
       return if idv_session.idv_phone_step_document_capture_session_uuid
@@ -100,8 +96,8 @@ module Idv
       end
     end
 
-    def increment_attempts_count
-      idv_session.step_attempts[:phone] += 1
+    def throttle
+      @throttle ||= Throttle.for(user: idv_session.current_user, throttle_type: :idv_resolution)
     end
 
     def failed_due_to_timeout_or_exception?

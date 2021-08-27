@@ -34,7 +34,7 @@ feature 'phone otp verification step spec' do
     start_idv_from_sp
     complete_idv_steps_before_phone_otp_verification_step
 
-    Timecop.travel(expiration_minutes.minutes.from_now) do
+    travel_to(expiration_minutes.minutes.from_now) do
       fill_in_code_with_last_phone_otp
       click_button t('forms.buttons.submit.default')
 

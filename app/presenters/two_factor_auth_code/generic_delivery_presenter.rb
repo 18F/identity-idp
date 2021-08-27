@@ -59,10 +59,6 @@ module TwoFactorAuthCode
       )
     end
 
-    def no_factors_enabled?
-      MfaPolicy.new(@view.current_user).no_factors_enabled?
-    end
-
     attr_reader :personal_key_unavailable, :view, :user_opted_remember_device_cookie
   end
 end

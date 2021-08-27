@@ -162,6 +162,7 @@ module Idv
 
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client(
+        vendor_discriminator: document_capture_session_uuid,
         warn_notifier: proc { |attrs| track_event(Analytics::DOC_AUTH_WARNING, attrs) },
       )
     end

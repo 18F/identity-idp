@@ -22,9 +22,7 @@ module Idv
     private
 
     def remaining_step_attempts
-      max_attempts = Throttle::THROTTLE_CONFIG[:idv_resolution][:max_attempts]
-      attempt_count = idv_session.step_attempts[:phone]
-      max_attempts - attempt_count
+      Throttle.for(user: idv_session.current_user, throttle_type: :idv_resolution).remaining_count
     end
 
     def confirm_idv_phone_step_needed

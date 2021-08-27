@@ -230,12 +230,12 @@ feature 'Sign in' do
     visit account_path
     expect(current_path).to eq account_path
 
-    Timecop.travel(Devise.timeout_in + 1.minute)
+    travel(Devise.timeout_in + 1.minute)
 
     visit account_path
     expect(current_path).to eq root_path
 
-    Timecop.return
+    travel_back
   end
 
   scenario 'user session cookie has no explicit expiration time (dies with browser exit)' do
@@ -334,10 +334,10 @@ feature 'Sign in' do
       user = sign_in_and_2fa_user
       click_link(t('links.sign_out'), match: :first)
 
-      Timecop.travel(Devise.timeout_in + 1.minute) do
+      travel(Devise.timeout_in + 1.minute) do
         expect(page).to_not have_content(t('forms.buttons.continue'))
 
-        # Redis doesn't respect Timecop so expire session manually.
+        # Redis doesn't respect ActiveSupport::Testing::TimeHelpers, so expire session manually.
         session_store.send(:destroy_session_from_sid, session_cookie.value)
 
         fill_in_credentials_and_submit(user.email, user.password)
@@ -665,6 +665,37 @@ feature 'Sign in' do
   it_behaves_like 'signing in as IAL2 with piv/cac', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
+
+  context 'user signs in and chooses another authentication method' do
+    it 'signs out the user if they choose to cancel' do
+      user = create(:user, :signed_up)
+      signin(user.email, user.password)
+      accept_rules_of_use_and_continue_if_displayed
+      click_link t('two_factor_authentication.login_options_link_text')
+      click_on t('links.cancel')
+
+      expect(current_path).to eq root_path
+      expect(page).to have_content(t('devise.sessions.signed_out'))
+    end
+  end
+
+  context 'user signs in when accepted_terms_at is out of date', js: true do
+    it 'disables terms button correctly and signs in successfully' do
+      user = create(:user, :signed_up, accepted_terms_at: nil)
+      signin(user.email, user.password)
+      button = find_button(t('forms.buttons.continue'))
+      expect(button[:class]).to include('usa-button--disabled')
+
+      # This checkbox element has a non-standard id for the accept-terms-button JS
+      check 'user_terms_accepted', allow_label_click: true
+
+      button = find_button(t('forms.buttons.continue'))
+      expect(button[:class]).to_not include('usa-button--disabled')
+
+      click_button t('forms.buttons.continue')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+    end
+  end
 
   context 'user signs in with personal key, visits account page' do
     # this can happen if you submit the personal key form multiple times quickly
