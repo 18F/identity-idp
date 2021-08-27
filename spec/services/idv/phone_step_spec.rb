@@ -106,11 +106,11 @@ describe Idv::PhoneStep do
     end
 
     it 'does not increment step attempts when the vendor request times out' do
-      expect { subject.submit(phone: timeout_phone) }.to(change { throttle.reload.attempts }.by(0))
+      expect { subject.submit(phone: timeout_phone) }.to_not change { throttle.reload.attempts }
     end
 
     it 'does not increment step attempts when the vendor raises an exception' do
-      expect { subject.submit(phone: fail_phone) }.to(change { throttle.reload.attempts }.by(0))
+      expect { subject.submit(phone: fail_phone) }.to_not change { throttle.reload.attempts }
     end
 
     it 'marks the phone as confirmed if it matches 2FA phone' do
