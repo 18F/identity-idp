@@ -50,12 +50,16 @@ Rails.application.configure do
     Bullet.enable = false
     Bullet.bullet_logger = true
     Bullet.raise = true
-    Bullet.add_whitelist(
-      type: :n_plus_one_query, class_name: 'User', association: :phone_configurations,
-    )
-    Bullet.add_whitelist(
-      type: :n_plus_one_query, class_name: 'User', association: :email_addresses,
-    )
+    [
+      :phone_configurations,
+      :piv_cac_configurations,
+      :auth_app_configurations,
+      :backup_code_configurations,
+      :webauthn_configurations,
+      :email_addresses,
+    ].each do |association|
+      Bullet.add_whitelist(type: :n_plus_one_query, class_name: 'User', association: association)
+    end
   end
 
   config.active_support.test_order = :random
