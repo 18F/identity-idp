@@ -119,8 +119,8 @@ RSpec.describe EncryptedRedisStructStorage do
           struct_class.new(id: id, a: 'value for a', b: 'value for b', c: 'value for c'),
         )
 
-        data = READTHIS_POOL.with do |client|
-          client.read(EncryptedRedisStructStorage.key(id, type: struct_class))
+        data = REDIS_POOL.with do |client|
+          client.get(EncryptedRedisStructStorage.key(id, type: struct_class))
         end
 
         expect(data).to be_a(String)
@@ -134,10 +134,8 @@ RSpec.describe EncryptedRedisStructStorage do
           struct_class.new(id: id, a: 'value for a', b: 'value for b', c: 'value for c'),
         )
 
-        ttl = READTHIS_POOL.with do |client|
-          client.pool.with do |redis|
-            redis.ttl(EncryptedRedisStructStorage.key(id, type: struct_class))
-          end
+        ttl = REDIS_POOL.with do |redis|
+          redis.ttl(EncryptedRedisStructStorage.key(id, type: struct_class))
         end
 
         expect(ttl).to be <= 60
