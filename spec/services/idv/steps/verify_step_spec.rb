@@ -111,11 +111,11 @@ describe Idv::Steps::VerifyStep do
 
         step = build_step(controller)
         expect(step.call).to be_nil, 'does not enqueue a job'
-        expect(redirect(step)).to eq(idv_session_errors_failure_url)
+        expect(redirect(step)).to eq(idv_session_errors_ssn_failure_url)
 
         step2 = build_step(controller2)
         expect(step2.call).to be_nil, 'does not enqueue a job'
-        expect(redirect(step2)).to eq(idv_session_errors_failure_url)
+        expect(redirect(step2)).to eq(idv_session_errors_ssn_failure_url)
       end
     end
   end

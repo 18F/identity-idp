@@ -10,6 +10,10 @@ module Idv
       @remaining_step_attempts = remaining_step_attempts
     end
 
+    def ssn_failure
+      render 'idv/session_errors/failure'
+    end
+
     private
 
     def remaining_step_attempts
