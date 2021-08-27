@@ -12,11 +12,10 @@
   <div>
     <%= "#{t('doc_auth.forms.last_name')}: #{flow_session[:pii_from_doc][:last_name]}" %>
   </div>
-  <div>
+  <div class='padding-bottom-1'>
     <%= "#{t('doc_auth.forms.dob')}: #{flow_session[:pii_from_doc][:dob]}" %>
   </div>
-  <hr/>
-    <div class='grid-row'>
+    <div class='grid-row padding-bottom-1 padding-top-1 address-box'>
       <div class='grid-col-fill'>
         <div>
           <%= "#{t('doc_auth.forms.address1')}: #{flow_session[:pii_from_doc][:address1]}" %>
@@ -35,8 +34,7 @@
         <%= link_to(t('doc_auth.buttons.change_address'), idv_address_url) %>
       </div>        
     </div>
-  <hr/>
-    <div class='grid-row'>
+    <div class='grid-row padding-top-1'>
       <div class='grid-col-fill'>
         <%= t('doc_auth.forms.ssn') %>:
         <%= render(
