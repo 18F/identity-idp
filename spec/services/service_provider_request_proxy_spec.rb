@@ -45,10 +45,7 @@ describe ServiceProviderRequestProxy do
 
         before do
           READTHIS_POOL.with do |client|
-            client.write(
-              ServiceProviderRequestProxy.key(uuid),
-              issuer: 'foo'
-            )
+            client.write(ServiceProviderRequestProxy.key(uuid), issuer: 'foo')
           end
         end
 
