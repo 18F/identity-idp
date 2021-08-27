@@ -29,7 +29,7 @@ describe Idv::PhoneController do
 
   describe '#new' do
     let(:user) do
-      build(
+      create(
         :user, :with_phone,
         with: { phone: good_phone, confirmed_at: Time.zone.now }
       )
@@ -65,12 +65,16 @@ describe Idv::PhoneController do
       end
     end
 
-    it 'redirects to fail when step attempts are exceeded' do
-      subject.idv_session.step_attempts[:phone] = max_attempts
+    context 'when the user is throttled' do
+      before do
+        create(:throttle, :with_throttled, user: user, throttle_type: :idv_resolution)
+      end
 
-      get :new
+      it 'redirects to fail' do
+        get :new
 
-      expect(response).to redirect_to idv_phone_errors_failure_url
+        expect(response).to redirect_to idv_phone_errors_failure_url
+      end
     end
 
     it 'shows phone form if async process times out and allows successful resubmission' do
@@ -302,6 +306,35 @@ describe Idv::PhoneController do
         expect(response).to redirect_to idv_phone_path
 
         get :new
+      end
+
+      context 'when the user is throttled by submission' do
+        before do
+          user = create(:user, with: { phone: '+1 (415) 555-0130' })
+          stub_verify_steps_one_and_two(user)
+
+          create(
+            :throttle,
+            user: user,
+            throttle_type: :idv_resolution,
+            attempts: max_attempts_less_one,
+          )
+        end
+
+        it 'tracks throttled event' do
+          put :create, params: { idv_phone_form: { phone: bad_phone } }
+
+          stub_analytics
+          allow(@analytics).to receive(:track_event)
+
+          expect(@analytics).to receive(:track_event).with(
+            Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+            throttle_type: :idv_resolution,
+            step_name: a_kind_of(Symbol),
+          )
+
+          get :new
+        end
       end
     end
   end

@@ -5,12 +5,12 @@ module Idv
     attr_reader :idv_form
 
     before_action :confirm_step_needed
-    before_action :confirm_step_allowed
     before_action :set_idv_form
 
     def new
-      async_state = step.async_state
+      redirect_to failure_url(:fail) and return if idv_attempter_throttled?
 
+      async_state = step.async_state
       if async_state.none?
         analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
         render :new, locals: { gpo_letter_available: gpo_letter_available }
@@ -35,6 +35,14 @@ module Idv
 
     private
 
+    def max_attempts_reached
+      analytics.track_event(
+        Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
+        throttle_type: :idv_resolution,
+        step_name: step_name,
+      )
+    end
+
     def redirect_to_next_step
       if phone_confirmation_required?
         redirect_to idv_otp_delivery_method_url
@@ -52,6 +60,7 @@ module Idv
     end
 
     def handle_proofing_failure
+      max_attempts_reached if step.failure_reason == :fail
       redirect_to failure_url(step.failure_reason)
     end
 
