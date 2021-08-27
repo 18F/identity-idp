@@ -44,7 +44,7 @@ module Idv
       end
 
       def self.session_idv(session)
-        session[:idv] ||= { params: {}, step_attempts: { phone: 0 } }
+        session[:idv] ||= {}
       end
     end
   end
