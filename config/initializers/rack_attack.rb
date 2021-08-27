@@ -21,14 +21,12 @@ module Rack
     ### Configure Cache ###
 
     # Note: The store is only used for throttling and fail2ban filtering;
-    # not blocklisting & safelisting. It must implement .increment and .write
-
-    cache = ActiveSupport::Cache::RedisCacheStore.new(
+    # not blocklisting & safelisting
+    Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(
+      namespace: 'rack-attack',
       url: IdentityConfig.store.redis_throttle_url,
       expires_in: 2.weeks.to_i,
     )
-
-    Rack::Attack.cache.store = cache
 
     ### Configure Safelisting ###
 
