@@ -39,20 +39,6 @@ describe ServiceProviderRequestProxy do
         expect(sp_request.loa).to eq(sp_request.ial)
         expect(ServiceProviderRequestProxy.from_uuid('123')).to eq sp_request
       end
-
-      context 'with a value stored by Readthis gem' do
-        let(:uuid) { SecureRandom.uuid }
-
-        before do
-          READTHIS_POOL.with do |client|
-            client.write(ServiceProviderRequestProxy.key(uuid), issuer: 'foo')
-          end
-        end
-
-        it 'loads the data' do
-          expect(ServiceProviderRequestProxy.from_uuid(uuid).issuer).to eq('foo')
-        end
-      end
     end
 
     context 'when the record does not exist' do

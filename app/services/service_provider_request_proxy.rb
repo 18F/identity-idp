@@ -19,18 +19,13 @@ class ServiceProviderRequestProxy
   def self.delete(request_id)
     return unless request_id
     REDIS_POOL.with { |client| client.del(key(request_id)) }
-    READTHIS_POOL.with { |client| client.delete(key(request_id)) }
     self.redis_last_uuid = nil if Rails.env.test?
   end
 
   def self.find_by(uuid:)
     return if uuid.blank?
-    obj = REDIS_POOL.with do |client|
-      str = client.get(key(uuid))
-      JSON.parse(str, symbolize_names: true) if str
-    end
-    obj ||= READTHIS_POOL.with { |client| client.read(key(uuid)) }
-    obj ? hash_to_spr(obj, uuid) : nil
+    str = REDIS_POOL.with { |client| client.get(key(uuid)) }
+    hash_to_spr(JSON.parse(str, symbolize_names: true), uuid) if str
   end
 
   def self.find_or_create_by(uuid:)
@@ -66,9 +61,6 @@ class ServiceProviderRequestProxy
         obj.to_json,
       )
     end
-    READTHIS_POOL.with do |client|
-      client.write(key(uuid), obj)
-    end
     self.redis_last_uuid = uuid if Rails.env.test?
   end
 
@@ -86,10 +78,7 @@ class ServiceProviderRequestProxy
   end
 
   def self.flush
-    if Rails.env.test?
-      REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
-      READTHIS_POOL.with(&:clear)
-    end
+    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb } if Rails.env.test?
   end
 
   def self.hash_to_spr(hash, uuid)
