@@ -56,6 +56,29 @@ RSpec.describe EncryptedRedisStructStorage do
         expect(loaded_result.b).to eq('b')
         expect(loaded_result.c).to eq('c')
       end
+
+      context 'with a struct stored by Readthis gem' do
+        before do
+          READTHIS_POOL.with do |client|
+            struct = struct_class.new(id: id, a: 'a', b: 'b', c: 'c')
+            client.write(
+              EncryptedRedisStructStorage.key(struct.id, type: struct.class),
+              Encryption::Encryptors::SessionEncryptor.new.encrypt(
+                struct.as_json.tap { |s| s.delete('id') }.to_json,
+              ),
+              expires_in: 5,
+            )
+          end
+        end
+
+        it 'loads the value still' do
+          loaded_result = load_struct
+
+          expect(loaded_result.a).to eq('a')
+          expect(loaded_result.b).to eq('b')
+          expect(loaded_result.c).to eq('c')
+        end
+      end
     end
 
     context 'with an ordered initializer struct' do
