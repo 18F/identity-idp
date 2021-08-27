@@ -308,7 +308,7 @@ production:
   redis_url: redis://redis.login.gov.internal:6379
   ruby_workers_enabled: 'false'
   s3_report_bucket_prefix: login-gov.reports
-  s3_report_public_bucket_prefix: login-gov-public-reporting-data
+  s3_report_public_bucket_prefix: login-gov-pubdata
   s3_reports_enabled: 'true'
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
