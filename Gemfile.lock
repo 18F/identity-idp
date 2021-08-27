@@ -716,7 +716,6 @@ DEPENDENCIES
   bundler-audit
   capybara-screenshot (>= 1.0.23)
   capybara-selenium (>= 0.0.6)
-  connection_pool
   derailed_benchmarks (~> 1.8)
   device_detector
   devise (~> 4.8)
