@@ -15,6 +15,7 @@ module Idv
       profile_id
       profile_step_params
       resolution_successful
+      step_attempts
     ].freeze
 
     attr_reader :current_user, :gpo_otp, :issuer
@@ -124,7 +125,7 @@ module Idv
     end
 
     def new_idv_session
-      {}
+      { step_attempts: { phone: 0 } }
     end
 
     def move_pii_to_user_session

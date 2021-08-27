@@ -33,7 +33,7 @@ module Idv
 
     def reset_doc_auth
       user_session.delete('idv/doc_auth')
-      user_session['idv'] = {}
+      user_session['idv'] = { params: {}, step_attempts: { phone: 0 } }
     end
 
     def cancel_document_capture_session
