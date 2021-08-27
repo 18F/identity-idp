@@ -20,7 +20,7 @@ module AccountReset
     private
 
     def account_reset_request
-      AccountResetRequest.find_or_create_by(user_id: @user_id)
+      AccountResetRequest.create_or_find_by(user_id: @user_id)
     end
   end
 end

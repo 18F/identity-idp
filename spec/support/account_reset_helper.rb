@@ -1,6 +1,6 @@
 module AccountResetHelper
   def create_account_reset_request_for(user)
-    request = AccountResetRequest.find_or_create_by(user: user)
+    request = AccountResetRequest.create_or_find_by(user: user)
     request_token = SecureRandom.uuid
     request.update!(
       request_token: request_token,
