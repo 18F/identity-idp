@@ -68,7 +68,7 @@ module DocAuth
           response_info: response_info,
         )
 
-        return { GENERAL => [general_error(liveness_enabled)] }
+        return DocAuth.wrapped_general_error(liveness_enabled)
       # if the alert_error_count is 1 it is just passed along
       elsif alert_error_count > 1
         # Simplify multiple errors into a single error for the user
@@ -76,17 +76,17 @@ module DocAuth
         if error_fields.length == 1
           case error_fields.first
           when ID
-            errors[ID] = Set[general_error(false)]
+            errors[ID] = Set[DocAuth.general_error(false)]
           when FRONT
             errors[FRONT] = Set[Errors::MULTIPLE_FRONT_ID_FAILURES]
           when BACK
             errors[BACK] = Set[Errors::MULTIPLE_BACK_ID_FAILURES]
           end
         elsif error_fields.length > 1
-          return { GENERAL => [general_error(liveness_enabled)] } if error_fields.include?(SELFIE)
+          return DocAuth.wrapped_general_error(liveness_enabled) if error_fields.include?(SELFIE)
 
           # If we don't have a selfie error don't give the message suggesting retaking selfie.
-          return { GENERAL => [general_error(false)] }
+          return DocAuth.wrapped_general_error(false)
         end
       end
 
@@ -157,14 +157,6 @@ module DocAuth
       errors
     end
 
-    def general_error(liveness_enabled)
-      if liveness_enabled
-        Errors::GENERAL_ERROR_LIVENESS
-      else
-        Errors::GENERAL_ERROR_NO_LIVENESS
-      end
-    end
-
     def scan_for_unknown_alerts(response_info)
       all_alerts = [
         *response_info[:processed_alerts][:failed],
@@ -191,5 +183,13 @@ module DocAuth
 
       unknown_fail_count
     end
+  end
+
+  def self.general_error(liveness_enabled)
+    liveness_enabled ? Errors::GENERAL_ERROR_LIVENESS : Errors::GENERAL_ERROR_NO_LIVENESS
+  end
+
+  def self.wrapped_general_error(liveness_enabled)
+    { general: [DocAuth.general_error(liveness_enabled)] }
   end
 end
