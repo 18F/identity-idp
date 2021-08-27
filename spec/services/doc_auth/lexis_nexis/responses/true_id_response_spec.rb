@@ -145,9 +145,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when response is unexpected' do
     it 'it produces reasonable output for communications error' do
-      expect(NewRelic::Agent).to receive(:notice_error).
-        with(anything, custom_params: hash_including(:response_info)).once
-
       output = described_class.new(communications_error_response, false, config).to_h
 
       expect(output[:success]).to eq(false)
@@ -156,9 +153,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'it produces reasonable output for internal application error' do
-      expect(NewRelic::Agent).to receive(:notice_error).
-        with(anything, custom_params: hash_including(:response_info)).once
-
       output = described_class.new(internal_application_error_response, false, config).to_h
 
       expect(output[:success]).to eq(false)
@@ -167,20 +161,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'it produces reasonable output for an empty TrueID failure' do
-      expect(NewRelic::Agent).to receive(:notice_error).
-        with(anything, custom_params: hash_including(:response_info)).once
-
       output = described_class.new(failure_response_empty, false, config).to_h
 
       expect(output[:success]).to eq(false)
-      expect(output[:errors]).to eq(network: true)
+      expect(output[:errors]).to eq(general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS])
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info)
     end
 
     it 'it produces reasonable output for a malformed TrueID response' do
-      expect(NewRelic::Agent).to receive(:notice_error).
-        with(anything).once
-
       output = described_class.new(failure_response_malformed, false, config).to_h
 
       expect(output[:success]).to eq(false)

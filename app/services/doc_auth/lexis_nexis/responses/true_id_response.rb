@@ -3,8 +3,6 @@
 module DocAuth
   module LexisNexis
     module Responses
-      class LexisNexisResponseError < StandardError; end
-
       class TrueIdResponse < LexisNexisResponse
         PII_EXCLUDES = %w[
           Age
@@ -60,6 +58,11 @@ module DocAuth
 
           if true_id_product&.dig(:AUTHENTICATION_RESULT).present?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
+          elsif true_id_product.present?
+            general_error = @liveness_checking_enabled ?
+              Errors::GENERAL_ERROR_LIVENESS : Errors::GENERAL_ERROR_NO_LIVENESS
+
+            { general: [general_error] }
           else
             { network: true } # return a generic technical difficulties error to user
           end
@@ -72,14 +75,11 @@ module DocAuth
               PII_EXCLUDES.include? k
             end
           else
-            response_status = {
+            {
               lexis_nexis_status: parsed_response_body[:Status],
               lexis_nexis_info: parsed_response_body.dig(:Information),
+              exception: 'LexisNexis Response Unexpected: TrueID response details not found.',
             }
-            e = LexisNexisResponseError.new('Unexpected LN Response: TrueID response not found.')
-
-            NewRelic::Agent.notice_error(e, custom_params: { response_info: response_status })
-            return response_status
           end
         end
 
