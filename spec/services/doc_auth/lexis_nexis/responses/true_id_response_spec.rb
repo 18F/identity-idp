@@ -160,12 +160,12 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info)
     end
 
-    it 'it produces reasonable output for an empty TrueID failure' do
+    it 'it produces reasonable output for a TrueID failure without details' do
       output = described_class.new(failure_response_empty, false, config).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS])
-      expect(output).to include(:lexis_nexis_status, :lexis_nexis_info)
+      expect(output).to include(:lexis_nexis_status, :lexis_nexis_info, :exception)
     end
 
     it 'it produces reasonable output for a malformed TrueID response' do
