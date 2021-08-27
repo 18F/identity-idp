@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_auth_token
   rescue_from ActionController::UnknownFormat, with: :render_not_found
+  rescue_from ActionView::MissingTemplate, with: :render_not_acceptable
   [
     ActiveRecord::ConnectionTimeoutError,
     PG::ConnectionBad, # raised when a Postgres connection times out
@@ -357,6 +358,10 @@ class ApplicationController < ActionController::Base
 
   def render_not_found
     render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
+  end
+
+  def render_not_acceptable
+    render template: 'pages/not_acceptable', layout: false, status: :not_acceptable, formats: :html
   end
 
   def render_timeout(exception)
