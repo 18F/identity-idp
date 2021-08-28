@@ -298,7 +298,7 @@ GEM
       mail (>= 2.2.1)
     gmail_xoauth (0.4.2)
       oauth (>= 0.3.6)
-    good_job (1.99.0)
+    good_job (2.0.2)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -474,7 +474,7 @@ GEM
       activesupport (>= 4.2)
       choice (~> 0.2.0)
       ruby-graphviz (~> 1.2)
-    rails-html-sanitizer (1.4.1)
+    rails-html-sanitizer (1.4.2)
       loofah (~> 2.3)
     rails-i18n (6.0.0)
       i18n (>= 0.7, < 2)
@@ -726,7 +726,7 @@ DEPENDENCIES
   faraday
   foundation_emails
   gmail (>= 0.7.1)
-  good_job (< 2.0.0)
+  good_job (~> 2.0.0)
   guard-rspec
   hashie (~> 4.1)
   hiredis (~> 0.6.0)
