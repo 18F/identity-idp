@@ -7,8 +7,10 @@ if IdentityConfig.store.ruby_workers_enabled
     config.good_job.queues = IdentityConfig.store.good_job_queues
     # see config/initializers/job_configurations.rb for cron schedule
   end
-
-  GoodJob.active_record_parent_class = 'WorkerJobApplicationRecord'
-  GoodJob.retry_on_unhandled_error = false
-  GoodJob.on_thread_error = ->(exception) { NewRelic::Agent.notice_error(exception) }
 end
+
+# Configure GoodJob even if it's not enabled, to avoid errors if the good_job process is started,
+# such as in local development.
+GoodJob.active_record_parent_class = 'WorkerJobApplicationRecord'
+GoodJob.retry_on_unhandled_error = false
+GoodJob.on_thread_error = ->(exception) { NewRelic::Agent.notice_error(exception) }
