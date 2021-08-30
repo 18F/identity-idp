@@ -8,7 +8,7 @@ module AccountReset
       enqueue_limit: 1,
       perform_limit: 1,
       key: -> do
-        rounded = ApplicationJob.round_time(time: arguments.first, interval: 5.minutes)
+        rounded = TimeService.round_time(time: arguments.first, interval: 5.minutes)
         "grant-requests-and-send-emails-#{rounded.to_i}"
       end,
     )
