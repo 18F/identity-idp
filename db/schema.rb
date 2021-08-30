@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_17_200558) do
+ActiveRecord::Schema.define(version: 2021_08_30_171713) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -599,7 +599,10 @@ ActiveRecord::Schema.define(version: 2021_08_17_200558) do
     t.integer "attempts", default: 0
     t.integer "throttled_count"
     t.string "target"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["target", "throttle_type"], name: "index_throttles_on_target_and_throttle_type"
+    t.index ["updated_at"], name: "index_throttles_on_updated_at"
     t.index ["user_id", "throttle_type"], name: "index_throttles_on_user_id_and_throttle_type"
   end
 
