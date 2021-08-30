@@ -10,5 +10,4 @@ es:
       invalid_email_alert_head: 'Error: No es una dirección de correo electrónico
         real. Asegúrese de que incluye una @ y un nombre de dominio.'
       invalid_email_alert_inline: Ingrese una dirección de correo electrónico real
-      invalid_request: El formulario de correo electrónico no es válido
     terms: Marque esta casilla para aceptar las reglas de uso de Login.gov

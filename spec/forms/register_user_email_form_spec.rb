@@ -154,26 +154,18 @@ describe RegisterUserEmailForm do
     end
 
     context 'when request_id is invalid' do
-      it 'returns unsuccessful and adds an error to the form object' do
-        errors = { email: [t('sign_up.email.invalid_request')] }
+      it 'returns successful and does not include request_id in email' do
         submit_form = subject.submit(
-          email: 'not_taken@gmail.com',
+          email: 'not_taken@example.com',
           request_id: 'fake_id',
           terms_accepted: 'true',
         )
-        extra = {
-          domain_name: 'gmail.com',
-          email_already_exists: false,
-          throttled: false,
-          user_id: 'anonymous-uuid',
-        }
 
-        expect(submit_form.to_h).to include(
-          success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
-          **extra,
-        )
+        expect(submit_form.success?).to eq true
+
+        last_email = ActionMailer::Base.deliveries.last
+        expect(last_email.to).to eq ['not_taken@example.com']
+        expect(last_email.body).to_not include 'fake_id'
       end
     end
 
@@ -187,15 +179,15 @@ describe RegisterUserEmailForm do
         )
         request_id = sp_request.uuid
         submit_form = subject.submit(
-          email: 'not_taken@gmail.com',
+          email: 'not_taken@example.com',
           request_id: request_id,
           terms_accepted: 'true',
         )
         extra = {
-          domain_name: 'gmail.com',
+          domain_name: 'example.com',
           email_already_exists: false,
           throttled: false,
-          user_id: User.find_with_email('not_taken@gmail.com').uuid,
+          user_id: User.find_with_email('not_taken@example.com').uuid,
         }
 
         expect(submit_form.to_h).to eq(
@@ -203,6 +195,10 @@ describe RegisterUserEmailForm do
           errors: {},
           **extra,
         )
+
+        last_email = ActionMailer::Base.deliveries.last
+        expect(last_email.to).to eq ['not_taken@example.com']
+        expect(last_email.body).to_not include request_id
       end
     end
 
