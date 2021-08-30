@@ -63,6 +63,9 @@ class Throttle < ApplicationRecord
     throttle = if user
       find_or_create_by(user: user, throttle_type: throttle_type)
     elsif target
+      if !target.is_a?(String)
+        raise ArgumentError, "target must be a string, but got #{target.class}"
+      end
       find_or_create_by(target: target, throttle_type: throttle_type)
     else
       raise 'Throttle must have a user or a target, but neither were provided'
