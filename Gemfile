@@ -51,6 +51,7 @@ gem 'rack-timeout', require: false
 gem 'readthis'
 gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
+gem 'redis-namespace'
 gem 'redis-session-store', '>= 0.11.3'
 gem 'retries'
 gem 'rotp', '~> 6.1'

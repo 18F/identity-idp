@@ -7,5 +7,8 @@ READTHIS_POOL = ConnectionPool.new(size: 10) do
 end
 
 REDIS_POOL = ConnectionPool.new(size: 10) do
-  Redis.new(url: IdentityConfig.store.redis_url)
+  Redis::Namespace.new(
+    'redis-pool',
+    redis: Redis.new(url: IdentityConfig.store.redis_url),
+  )
 end

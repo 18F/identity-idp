@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe RiscDeliveryJob do
   around do |ex|
-    REDIS_POOL.with { |r| r.flushdb }
+    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
     ex.run
-    REDIS_POOL.with { |r| r.flushdb }
+    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
   end
 
   describe '#perform' do
