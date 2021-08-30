@@ -44,6 +44,14 @@ RSpec.describe Throttle do
           expect(for_target).to eq(existing)
         end
       end
+
+      context 'target is not actually a string' do
+        let(:target) { create(:user).id }
+
+        it 'raises an error' do
+          expect { for_target }.to raise_error(ArgumentError)
+        end
+      end
     end
 
     context 'when target and user are missing' do
