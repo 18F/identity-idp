@@ -3,7 +3,7 @@ require 'job_runner/job_configuration'
 
 cron_5m = '0/5 * * * *'
 interval_5m = 5 * 60
-cron_1h = '0/ * * * *'
+cron_1h = '0 * * * *'
 interval_1h = 60 * 60
 cron_24h = '0 0 * * *'
 inteval_24h = 24 * 60 * 60
