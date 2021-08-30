@@ -95,7 +95,7 @@ module Idv
 
       def throttled_else_increment
         Throttle.for(
-          user: current_user,
+          user: User.find(user_id),
           throttle_type: :idv_acuant,
         ).throttled_else_increment?
       end
