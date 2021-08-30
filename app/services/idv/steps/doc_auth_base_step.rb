@@ -102,7 +102,7 @@ module Idv
       # Ideally we would not have to re-implement the EffectiveUser mixin
       # but flow_session sometimes != controller#session
       def effective_user
-        current_user || User.find(user_id)
+        current_user || User.find(user_id_from_token)
       end
 
       def user_id
