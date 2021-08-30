@@ -23,6 +23,7 @@ class RemoveOldThrottlesJob < ApplicationJob
     loop do
       removed_count = Throttle.
         where('updated_at < ?', now - (WINDOW + max_window.minutes)).
+        or(Throttle.where(updated_at: nil)).
         limit(limit).
         delete_all
 
