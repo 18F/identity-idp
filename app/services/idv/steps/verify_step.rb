@@ -26,7 +26,7 @@ module Idv
               throttle_type: :proof_ssn,
               step_name: self.class,
             )
-            redirect_to idv_session_errors_failure_url
+            redirect_to idv_session_errors_ssn_failure_url
             return
           end
         end

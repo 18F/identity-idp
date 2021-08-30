@@ -72,4 +72,11 @@ describe Idv::SessionErrorsController do
 
     it_behaves_like 'an idv session errors controller action'
   end
+
+  describe '#ssn_failure' do
+    let(:action) { :ssn_failure }
+    let(:template) { 'idv/session_errors/failure' }
+
+    it_behaves_like 'an idv session errors controller action'
+  end
 end
