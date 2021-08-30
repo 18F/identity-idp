@@ -3,6 +3,8 @@ require 'job_runner/job_configuration'
 
 cron_5m = '0/5 * * * *'
 interval_5m = 5 * 60
+cron_30m = '0/30 * * * *'
+interval_30m = 30 * 60
 cron_24h = '0 0 * * *'
 inteval_24h = 24 * 60 * 60
 
@@ -377,6 +379,20 @@ all_configs = {
       args: -> { [Time.zone.yesterday] },
     },
   },
+  # Removes old rows from the Throttles table
+  remove_old_throttles: {
+    job_runner: {
+      name: 'Remove Old Throttles',
+      interval: interval_30m,
+      timeout: 300,
+      callback: -> { RemoveOldThrottlesJob.new.perform(Time.zone.now) }
+    },
+    good_job: {
+      class: 'RemoveOldThrottlesJob',
+      cron: cron_30m,
+      args: -> { [Time.zone.now] },
+    },
+  }
 }
 
 if IdentityConfig.store.ruby_workers_enabled
