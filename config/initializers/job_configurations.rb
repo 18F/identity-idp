@@ -3,8 +3,8 @@ require 'job_runner/job_configuration'
 
 cron_5m = '0/5 * * * *'
 interval_5m = 5 * 60
-cron_30m = '0/30 * * * *'
-interval_30m = 30 * 60
+cron_1h = '0/ * * * *'
+interval_1h = 60 * 60
 cron_24h = '0 0 * * *'
 inteval_24h = 24 * 60 * 60
 
@@ -383,13 +383,13 @@ all_configs = {
   remove_old_throttles: {
     job_runner: {
       name: 'Remove Old Throttles',
-      interval: interval_30m,
+      interval: interval_1h,
       timeout: 300,
       callback: -> { RemoveOldThrottlesJob.new.perform(Time.zone.now) }
     },
     good_job: {
       class: 'RemoveOldThrottlesJob',
-      cron: cron_30m,
+      cron: cron_1h,
       args: -> { [Time.zone.now] },
     },
   }

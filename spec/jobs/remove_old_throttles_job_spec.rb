@@ -38,17 +38,17 @@ RSpec.describe RemoveOldThrottlesJob do
   end
 
   describe '#good_job_concurrency_key' do
-    it 'is the job name and the current time, rounded to the nearest 30 minutes' do
+    it 'is the job name and the current time, rounded to the nearest hour' do
       now = Time.zone.at(1629819000)
 
       job_now = RemoveOldThrottlesJob.new(now)
       expect(job_now.good_job_concurrency_key).to eq("remove-old-throttles-#{now.to_i}")
 
-      job_plus_15m = RemoveOldThrottlesJob.new(now + 15.minutes)
-      expect(job_plus_15m.good_job_concurrency_key).to eq(job_now.good_job_concurrency_key)
-
       job_plus_30m = RemoveOldThrottlesJob.new(now + 30.minutes)
-      expect(job_plus_30m.good_job_concurrency_key).to_not eq(job_now.good_job_concurrency_key)
+      expect(job_plus_30m.good_job_concurrency_key).to eq(job_now.good_job_concurrency_key)
+
+      job_plus_1h = RemoveOldThrottlesJob.new(now + 1.hour)
+      expect(job_plus_1h.good_job_concurrency_key).to_not eq(job_now.good_job_concurrency_key)
     end
   end
 end

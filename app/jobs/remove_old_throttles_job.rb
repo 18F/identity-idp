@@ -9,7 +9,7 @@ class RemoveOldThrottlesJob < ApplicationJob
     enqueue_limit: 1,
     perform_limit: 1,
     key: -> do
-      rounded = ApplicationJob.round_time(time: arguments.first, interval: 30.minutes)
+      rounded = ApplicationJob.round_time(time: arguments.first, interval: 1.hour)
       "remove-old-throttles-#{rounded.to_i}"
     end,
   )
