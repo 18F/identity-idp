@@ -385,14 +385,14 @@ all_configs = {
       name: 'Remove Old Throttles',
       interval: interval_1h,
       timeout: 300,
-      callback: -> { RemoveOldThrottlesJob.new.perform(Time.zone.now) }
+      callback: -> { RemoveOldThrottlesJob.new.perform(Time.zone.now) },
     },
     good_job: {
       class: 'RemoveOldThrottlesJob',
       cron: cron_1h,
       args: -> { [Time.zone.now] },
     },
-  }
+  },
 }
 
 if IdentityConfig.store.ruby_workers_enabled
