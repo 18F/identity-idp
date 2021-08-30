@@ -41,6 +41,7 @@ module DocAuth
           'Fields_xpirationDate_Day' => :state_id_expiration_day, # this is NOT a typo
           'Fields_ExpirationDate_Month' => :state_id_expiration_month,
           'Fields_ExpirationDate_Year' => :state_id_expiration_year,
+          'Fields_DocumentClassName' => :state_id_type,
         }.freeze
         attr_reader :config
 
@@ -91,7 +92,7 @@ module DocAuth
             pii[idp_key] = true_id_product[:IDAUTH_FIELD_DATA][true_id_key]
           end
 
-          pii[:state_id_type] = 'drivers_license'
+          pii[:state_id_type] = convert_id_type(pii[:state_id_type])
 
           if pii[:dob_month] && pii[:dob_day] && pii[:dob_year]
             pii[:dob] = [
@@ -177,6 +178,17 @@ module DocAuth
         def true_id_product
           products[:TrueID] if products.present?
         end
+
+        def convert_id_type(state_id_type)
+          case state_id_type
+          when 'Identification Card'
+            'state_id_card'
+          when 'Permit'
+            'drivers_permit'
+          when 'Drivers License'
+            'drivers_license'
+          end
+        end 
 
         def parsed_alerts
           return @new_alerts if defined?(@new_alerts)
