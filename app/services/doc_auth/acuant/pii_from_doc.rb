@@ -27,7 +27,7 @@ module DocAuth
         VALUE.each do |key, value|
           hash[value] = @name_to_value[key]
         end
-        hash[:state_id_type] = convert_id_type(hash[:state_id_type])
+        hash[:state_id_type] = DocAuth::Response::ID_TYPE_SLUGS[hash[:state_id_type]]
         hash[:dob] = convert_date(hash[:dob])
         hash[:state_id_expiration] = convert_date(hash[:state_id_expiration])
         hash
@@ -41,17 +41,6 @@ module DocAuth
         return if !match || !match[:milliseconds]
 
         Time.zone.at(match[:milliseconds].to_f / 1000).utc.to_date.to_s
-      end
-
-      def convert_id_type(state_id_type)
-        case state_id_type
-        when 'Identification Card'
-          'state_id_card'
-        when 'Permit'
-          'drivers_permit'
-        when 'Drivers License'
-          'drivers_license'
-        end
       end
 
       private
