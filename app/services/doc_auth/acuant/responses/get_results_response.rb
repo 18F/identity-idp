@@ -43,6 +43,7 @@ module DocAuth
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
             image_metrics: processed_image_metrics,
+            tamper_result: parsed_response_body&.dig('TamperResult')
           }
         end
 
