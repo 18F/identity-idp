@@ -47,6 +47,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        path: '',
       }
 
       expect(ahoy).to receive(:track).
@@ -66,6 +67,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        path: '',
       }
 
       expect(ahoy).to receive(:track).
@@ -124,6 +126,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        path: '',
       }
 
       expect(ahoy).to receive(:track).

@@ -11,6 +11,7 @@ class Analytics
     analytics_hash = {
       event_properties: attributes.except(:user_id),
       new_session_path: @first_path_visit_this_session,
+      path: request&.respond_to?(:path) ? request.path : '',
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }
