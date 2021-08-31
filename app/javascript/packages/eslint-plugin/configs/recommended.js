@@ -37,6 +37,7 @@ module.exports = {
     'react/jsx-curly-newline': 'off',
     'react/jsx-indent': 'off',
     'react/jsx-no-bind': 'off',
+    'react/jsx-props-no-spreading': 'off',
     'react/jsx-one-expression-per-line': 'off',
     'react/jsx-wrap-multilines': 'off',
     'react/jsx-uses-react': 'off',
