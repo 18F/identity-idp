@@ -23,7 +23,7 @@ function BlockLink({ url, children, isNewTab = false }) {
     .join(' ');
 
   return (
-    <a href={url} className={classes} target={isNewTab ? '_blank' : undefined}>
+    <a href={url} className={classes} target={isNewTab ? '_blank' : undefined} rel="noreferrer">
       {children}
       {isNewTab && <span className="usa-sr-only"> {t('links.new_window')}</span>}
       <svg
