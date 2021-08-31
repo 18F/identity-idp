@@ -22,6 +22,7 @@ describe Analytics do
   let(:ahoy) { instance_double(FakeAhoyTracker) }
   let(:current_user) { build_stubbed(:user, uuid: '123') }
   let(:request) { FakeRequest.new }
+  let(:path) { 'fake_path' }
 
   subject(:analytics) do
     Analytics.new(
@@ -47,6 +48,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        path: path,
       }
 
       expect(ahoy).to receive(:track).
@@ -66,6 +68,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        path: path,
       }
 
       expect(ahoy).to receive(:track).
@@ -124,6 +127,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        path: path,
       }
 
       expect(ahoy).to receive(:track).
