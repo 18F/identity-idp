@@ -33,6 +33,7 @@ class RemoveOldThrottlesJob < ApplicationJob
           name: 'remove_old_throttles',
           removed_count: removed_count,
           total_removed: total_removed,
+          total_limit: total_limit,
         }.to_json,
       )
 
