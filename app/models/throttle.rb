@@ -52,7 +52,7 @@ class Throttle < ApplicationRecord
       max_attempts: IdentityConfig.store.proof_ssn_max_attempts,
       attempt_window: IdentityConfig.store.proof_ssn_max_attempt_window_in_minutes,
     },
-  }.freeze
+  }.with_indifferent_access.freeze
 
   # Either target or user must be supplied
   # @param [Symbol] throttle_type
@@ -73,6 +73,14 @@ class Throttle < ApplicationRecord
 
     throttle.reset_if_expired_and_maxed
     throttle
+  end
+
+  def self.attempt_window_in_minutes(throttle_type)
+    THROTTLE_CONFIG.dig(throttle_type, :attempt_window)
+  end
+
+  def self.max_attempts(throttle_type)
+    THROTTLE_CONFIG.dig(throttle_type, :max_attempts)
   end
 
   # @return [Integer]
@@ -102,24 +110,20 @@ class Throttle < ApplicationRecord
 
   def remaining_count
     return 0 if throttled?
-    max_attempts, _attempt_window_in_minutes = Throttle.config_values(throttle_type)
-    max_attempts - attempts
+    Throttle.max_attempts(throttle_type) - attempts
+  end
+
+  def expires_at
+    return Time.zone.now if attempted_at.blank?
+    attempted_at + Throttle.attempt_window_in_minutes(throttle_type).minutes
   end
 
   def expired?
-    return true if attempted_at.blank?
-    _max_attempts, attempt_window_in_minutes = Throttle.config_values(throttle_type)
-    attempted_at + attempt_window_in_minutes.to_i.minutes < Time.zone.now
+    expires_at <= Time.zone.now
   end
 
   def maxed?
-    max_attempts, _attempt_window_in_minutes = Throttle.config_values(throttle_type)
-    attempts >= max_attempts
-  end
-
-  def self.config_values(throttle_type)
-    config = THROTTLE_CONFIG.with_indifferent_access[throttle_type]
-    [config[:max_attempts], config[:attempt_window]]
+    attempts >= Throttle.max_attempts(throttle_type)
   end
 
   # @api private

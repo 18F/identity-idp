@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'doc auth send link step' do
   include IdvStepHelper
   include DocAuthHelper
+  include ActionView::Helpers::DateHelper
 
   before do
     sign_in_and_2fa_user
@@ -65,20 +66,25 @@ feature 'doc auth send link step' do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     user = sign_in_and_2fa_user
     complete_doc_auth_steps_before_send_link_step
-    idv_send_link_max_attempts.times do
-      expect(page).to_not have_content I18n.t('errors.doc_auth.send_link_throttle')
+    timeout = distance_of_time_in_words(Throttle.attempt_window_in_minutes(:idv_send_link).minutes)
+    freeze_time do
+      idv_send_link_max_attempts.times do
+        expect(page).to_not have_content(
+          I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout),
+        )
+
+        fill_in :doc_auth_phone, with: '415-555-0199'
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_doc_auth_link_sent_step)
+        click_doc_auth_back_link
+      end
 
       fill_in :doc_auth_phone, with: '415-555-0199'
       click_idv_continue
-
-      expect(page).to have_current_path(idv_doc_auth_link_sent_step)
-      click_doc_auth_back_link
+      expect(page).to have_current_path(idv_doc_auth_send_link_step)
+      expect(page).to have_content(I18n.t('errors.doc_auth.send_link_throttle', timeout: timeout))
     end
-
-    fill_in :doc_auth_phone, with: '415-555-0199'
-    click_idv_continue
-    expect(page).to have_current_path(idv_doc_auth_send_link_step)
-    expect(page).to have_content I18n.t('errors.doc_auth.send_link_throttle')
     expect(fake_analytics).to have_logged_event(
       Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
       throttle_type: :idv_send_link,
