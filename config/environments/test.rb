@@ -58,7 +58,7 @@ Rails.application.configure do
       :webauthn_configurations,
       :email_addresses,
     ].each do |association|
-      Bullet.add_whitelist(type: :n_plus_one_query, class_name: 'User', association: association)
+      Bullet.add_safelist(type: :n_plus_one_query, class_name: 'User', association: association)
     end
   end
 
