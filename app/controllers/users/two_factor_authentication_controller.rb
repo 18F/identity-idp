@@ -184,14 +184,11 @@ module Users
         channel: method.to_sym,
         domain: IdentityConfig.store.domain_name,
       }
-      Telephony.send(send_otp_method_name, params)
-    end
 
-    def send_otp_method_name
       if UserSessionContext.authentication_context?(context)
-        :send_authentication_otp
+        Telephony.send_authentication_otp(params)
       else
-        :send_confirmation_otp
+        Telephony.send_confirmation_otp(params)
       end
     end
 
