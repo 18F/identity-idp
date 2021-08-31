@@ -4,11 +4,14 @@ RSpec.describe Reports::DailyAuthsReport do
   subject(:report) { Reports::DailyAuthsReport.new }
 
   let(:report_date) { Date.new(2021, 3, 1) }
+  let(:s3_public_reports_enabled) { true }
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
+    allow(IdentityConfig.store).to receive(:s3_public_reports_enabled).
+      and_return(s3_public_reports_enabled)
   end
 
   describe '#perform' do
@@ -21,6 +24,22 @@ RSpec.describe Reports::DailyAuthsReport do
       ).exactly(2).times
 
       report.perform(report_date)
+    end
+
+    context 'when s3 public reports are disabled' do
+      let(:s3_public_reports_enabled) { false }
+
+      it 'only uploads to one bucket' do
+        expect(report).to receive(:upload_file_to_s3_bucket).with(
+          hash_including(
+            path: 'int/daily-auths-report/2021/2021-03-01.daily-auths-report.json',
+          )
+        ).exactly(1).time
+
+        expect(report).to_not receive(:public_bucket_name)
+
+        report.perform(report_date)
+      end
     end
 
     context 'with data' do

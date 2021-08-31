@@ -19,8 +19,9 @@ module Reports
 
       [
         bucket_name, # default reporting bucket
-        public_bucket_name,
-      ].each do |bucket_name|
+        IdentityConfig.store.s3_public_reports_enabled && public_bucket_name,
+      ].select(&:present?).
+        each do |bucket_name|
         upload_file_to_s3_bucket(
           path: path,
           body: report_body.to_json,
@@ -31,9 +32,9 @@ module Reports
     end
 
     def public_bucket_name
-      Identity::Hostdata.bucket_name(
-        "#{IdentityConfig.store.s3_report_public_bucket_prefix}-#{Identity::Hostdata.env}",
-      )
+      if (prefix = IdentityConfig.store.s3_report_public_bucket_prefix)
+        Identity::Hostdata.bucket_name("#{prefix}-#{Identity::Hostdata.env}")
+      end
     end
 
     def start

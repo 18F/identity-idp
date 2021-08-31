@@ -255,6 +255,7 @@ class IdentityConfig
     config.add(:ruby_workers_enabled, type: :boolean)
     config.add(:rules_of_use_horizon_years, type: :integer)
     config.add(:rules_of_use_updated_at, type: :timestamp)
+    config.add(:s3_public_reports_enabled, type: :boolean)
     config.add(:s3_report_bucket_prefix, type: :string)
     config.add(:s3_report_public_bucket_prefix, type: :string)
     config.add(:s3_reports_enabled, type: :boolean)
