@@ -15,7 +15,6 @@ export function createDOM() {
        * @param {string} url
        * @param {import('jsdom').FetchOptions} options
        */
-      // eslint-disable-next-line class-methods-use-this
       fetch(url, options) {
         if (url.startsWith('data:') && options.element instanceof window.HTMLImageElement) {
           const [header, content] = url.split(',');
