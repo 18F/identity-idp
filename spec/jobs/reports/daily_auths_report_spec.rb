@@ -42,7 +42,7 @@ RSpec.describe Reports::DailyAuthsReport do
           hash_including(
             path: 'int/daily-auths-report/2021/2021-03-01.daily-auths-report.json',
             bucket_name: 'reports-bucket.1234-us-west-1',
-          )
+          ),
         ).exactly(1).time
 
         report.perform(report_date)
