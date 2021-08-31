@@ -22,10 +22,6 @@ module Reports
       Time.zone.now.end_of_day
     end
 
-    def gen_s3_bucket_name
-      Identity::Hostdata.bucket_name(IdentityConfig.store.s3_report_bucket_prefix)
-    end
-
     def report_timeout
       IdentityConfig.store.report_timeout
     end
@@ -74,11 +70,11 @@ module Reports
       self.class.name
     end
 
-    def bucket
-      @bucket ||= gen_s3_bucket_name
+    def bucket_name
+      Identity::Hostdata.bucket_name(IdentityConfig.store.s3_report_bucket_prefix)
     end
 
-    def upload_file_to_s3_bucket(path:, body:, content_type:)
+    def upload_file_to_s3_bucket(path:, body:, content_type:, bucket: bucket_name)
       url = "s3://#{bucket}/#{path}"
       logger.info("#{class_name}: uploading to #{url}")
       obj = Aws::S3::Resource.new.bucket(bucket).object(path)
