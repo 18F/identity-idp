@@ -5,6 +5,8 @@ RSpec.describe Reports::DailyAuthsReport do
 
   let(:report_date) { Date.new(2021, 3, 1) }
   let(:s3_public_reports_enabled) { true }
+  let(:s3_report_bucket_prefix) { 'reports-bucket' }
+  let(:s3_report_public_bucket_prefix) { 'public-reports-bucket' }
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -12,16 +14,22 @@ RSpec.describe Reports::DailyAuthsReport do
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
     allow(IdentityConfig.store).to receive(:s3_public_reports_enabled).
       and_return(s3_public_reports_enabled)
+    allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix).
+      and_return(s3_report_bucket_prefix)
+    allow(IdentityConfig.store).to receive(:s3_report_public_bucket_prefix).
+      and_return(s3_report_public_bucket_prefix)
   end
 
   describe '#perform' do
     it 'uploads a file to S3 based on the report date' do
-      expect(report).to receive(:upload_file_to_s3_bucket).with(
-        path: 'int/daily-auths-report/2021/2021-03-01.daily-auths-report.json',
-        body: kind_of(String),
-        content_type: 'application/json',
-        bucket_name: kind_of(String),
-      ).exactly(2).times
+      ['reports-bucket.1234-us-west-1', 'public-reports-bucket-int.1234-us-west-1'].each do |bucket|
+        expect(report).to receive(:upload_file_to_s3_bucket).with(
+          path: 'int/daily-auths-report/2021/2021-03-01.daily-auths-report.json',
+          body: kind_of(String),
+          content_type: 'application/json',
+          bucket_name: bucket,
+        ).exactly(1).time
+      end
 
       report.perform(report_date)
     end
@@ -33,10 +41,9 @@ RSpec.describe Reports::DailyAuthsReport do
         expect(report).to receive(:upload_file_to_s3_bucket).with(
           hash_including(
             path: 'int/daily-auths-report/2021/2021-03-01.daily-auths-report.json',
+            bucket_name: 'reports-bucket.1234-us-west-1',
           )
         ).exactly(1).time
-
-        expect(report).to_not receive(:public_bucket_name)
 
         report.perform(report_date)
       end
