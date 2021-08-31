@@ -37,22 +37,21 @@ shared_examples 'verification step max attempts' do |step, sp|
       first(:link, t('links.sign_out')).click
       reattempt_interval = (IdentityConfig.store.idv_attempt_window_in_hours + 1).hours
 
-      travel(reattempt_interval) do
-        visit_idp_from_sp_with_ial2(:oidc)
-        sign_in_live_with_2fa(user)
+      travel(reattempt_interval)
+      visit_idp_from_sp_with_ial2(:oidc)
+      sign_in_live_with_2fa(user)
 
-        expect(page).to_not have_content(t("idv.failure.#{step_locale_key}.heading"))
-        expect(current_url).to eq(idv_doc_auth_step_url(step: :welcome))
+      expect(page).to_not have_content(t("idv.failure.#{step_locale_key}.heading"))
+      expect(current_url).to eq(idv_doc_auth_step_url(step: :welcome))
 
-        complete_all_doc_auth_steps
-        click_idv_continue
-        fill_in 'Password', with: user.password
-        click_idv_continue
-        click_acknowledge_personal_key
-        click_agree_and_continue
+      complete_all_doc_auth_steps
+      click_idv_continue
+      fill_in 'Password', with: user.password
+      click_idv_continue
+      click_acknowledge_personal_key
+      click_agree_and_continue
 
-        expect(current_url).to start_with('http://localhost:7654/auth/result')
-      end
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
     end
 
     scenario 'user sees the failure screen' do
