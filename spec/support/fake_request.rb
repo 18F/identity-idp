@@ -20,4 +20,8 @@ class FakeRequest
   def cookies
     'fake_cookies'
   end
+
+  def path
+    'fake_path'
+  end
 end
