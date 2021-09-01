@@ -284,6 +284,19 @@ describe NewPhoneForm do
         end
       end
     end
+
+    context 'premium rate phone numbers like 1-900' do
+      let(:premium_rate_phone_number) { '+1 900 867 5309' }
+
+      subject(:result) do
+        form.submit(params.merge(phone: premium_rate_phone_number))
+      end
+
+      it 'is invalid' do
+        expect(result.success?).to eq(false)
+        expect(result.errors[:phone]).to be_present
+      end
+    end
   end
 
   describe '#redact' do

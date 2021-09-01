@@ -7,6 +7,7 @@ class NewPhoneForm
 
   validate :validate_not_voip
   validate :validate_not_duplicate
+  validate :validate_not_premium_rate
 
   attr_accessor :phone, :international_code, :otp_delivery_preference,
                 :otp_make_default_number
@@ -88,6 +89,17 @@ class NewPhoneForm
 
     return unless current_user_phones.include?(phone)
     errors.add(:phone, I18n.t('errors.messages.phone_duplicate'))
+  end
+
+  BLOCKED_PHONE_TYPES = [
+    :premium_rate,
+    :shared_cost,
+  ].freeze
+
+  def validate_not_premium_rate
+    if (parsed_phone.types & BLOCKED_PHONE_TYPES).present?
+      errors.add(:phone, 'premium rate phone number bad TODO translate me')
+    end
   end
 
   def parsed_phone
