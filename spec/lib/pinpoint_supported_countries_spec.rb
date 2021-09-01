@@ -52,6 +52,14 @@ RSpec.describe PinpointSupportedCountries do
           <td>Registration required<sup><a href="#sms-support-note-1">1</a></sup></td>
           <td></td>
         </tr>
+        <tr>
+          <td>Cayman
+             Islands
+          </td>
+          <td>KY</td>
+          <td>No</td>
+          <td>No</td>
+        </tr>
       </table>
     HTML
   end
@@ -76,6 +84,11 @@ RSpec.describe PinpointSupportedCountries do
           <td>Yes</td>
           <td>No</td>
         </tr>
+        <tr>
+          <td>Cayman Islands</td>
+          <td>No</td>
+          <td>No</td>
+        </tr>
       </table>
     HTML
   end
@@ -98,6 +111,11 @@ RSpec.describe PinpointSupportedCountries do
           name: Belarus
           supports_sms: true
           supports_voice: false
+        KY:
+          country_code: '1345'
+          name: Cayman Islands
+          supports_sms: true
+          supports_voice: true
       STR
     end
   end
@@ -109,6 +127,7 @@ RSpec.describe PinpointSupportedCountries do
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'AR', name: 'Argentina', supports_sms: true),
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'AU', name: 'Australia', supports_sms: true),
         PinpointSupportedCountries::CountrySupport.new(iso_code: 'BY', name: 'Belarus', supports_sms: true),
+        PinpointSupportedCountries::CountrySupport.new(iso_code: 'KY', name: 'Cayman Islands', supports_sms: true),
       ]
     end
     # rubocop:enable Layout/LineLength
@@ -126,12 +145,15 @@ RSpec.describe PinpointSupportedCountries do
   end
 
   describe '#voice_support' do
+    # rubocop:disable Layout/LineLength
     it 'parses the voice page from poinpoint an array of configs' do
       expect(countries.voice_support).to eq [
         PinpointSupportedCountries::CountrySupport.new(name: 'Argentina', supports_voice: true),
         PinpointSupportedCountries::CountrySupport.new(name: 'Australia', supports_voice: true),
+        PinpointSupportedCountries::CountrySupport.new(name: 'Cayman Islands', supports_voice: true),
       ]
     end
+    # rubocop:enable Layout/LineLength
   end
 
   describe '#load_country_dialing_codes' do
@@ -141,6 +163,7 @@ RSpec.describe PinpointSupportedCountries do
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '54', iso_code: 'AR', name: 'Argentina', supports_sms: true, supports_voice: true),
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '61', iso_code: 'AU', name: 'Australia', supports_sms: true, supports_voice: true),
         PinpointSupportedCountries::CountryDialingCode.new(country_code: '375', iso_code: 'BY', name: 'Belarus', supports_sms: true, supports_voice: false),
+        PinpointSupportedCountries::CountryDialingCode.new(country_code: '1345', iso_code: 'KY', name: 'Cayman Islands', supports_sms: true, supports_voice: true),
       ]
     end
     # rubocop:enable Layout/LineLength
