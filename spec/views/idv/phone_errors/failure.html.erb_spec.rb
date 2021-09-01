@@ -4,10 +4,16 @@ describe 'idv/phone_errors/failure.html.erb' do
   let(:sp_name) { 'Example SP' }
   let(:timeout_hours) { 6 }
 
+  around do |ex|
+    freeze_time { ex.run }
+  end
+
   before do
     decorated_session = instance_double(ServiceProviderSessionDecorator, sp_name: sp_name)
     allow(view).to receive(:decorated_session).and_return(decorated_session)
     allow(IdentityConfig.store).to receive(:idv_attempt_window_in_hours).and_return(timeout_hours)
+
+    @expires_at = Time.zone.now + timeout_hours.hours
 
     render
   end

@@ -1,10 +1,12 @@
 module Idv
   module Steps
     class SendLinkStep < DocAuthBaseStep
+      include ActionView::Helpers::DateHelper
+
       STEP_INDICATOR_STEP = :verify_id
 
       def call
-        return throttled_failure if throttled_else_increment
+        return throttled_failure if throttle.throttled_else_increment?
         telephony_result = send_link
         return failure(telephony_result.error.friendly_message) unless telephony_result.success?
       end
@@ -16,7 +18,15 @@ module Idv
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
           throttle_type: :idv_send_link,
         )
-        failure(I18n.t('errors.doc_auth.send_link_throttle'))
+        message = I18n.t(
+          'errors.doc_auth.send_link_throttle',
+          timeout: distance_of_time_in_words(
+            Time.zone.now,
+            [throttle.expires_at, Time.zone.now].compact.max,
+            except: :seconds,
+          ),
+        )
+        failure(message)
       end
 
       def send_link
@@ -52,11 +62,11 @@ module Idv
         idv_capture_doc_dashes_url('document-capture-session': session_uuid)
       end
 
-      def throttled_else_increment
-        Throttle.for(
+      def throttle
+        @throttle ||= Throttle.for(
           user: current_user,
           throttle_type: :idv_send_link,
-        ).throttled_else_increment?
+        )
       end
     end
   end

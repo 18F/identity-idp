@@ -50,6 +50,7 @@ module Users
         throttle_type: :verify_personal_key,
       )
 
+      @expires_at = throttle.expires_at
       render :throttled
     end
 

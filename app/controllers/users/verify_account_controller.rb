@@ -60,6 +60,7 @@ module Users
         throttle_type: :verify_gpo_key,
       )
 
+      @expires_at = throttle.expires_at
       render :throttled
     end
 

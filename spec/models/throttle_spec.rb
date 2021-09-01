@@ -2,6 +2,17 @@ require 'rails_helper'
 
 RSpec.describe Throttle do
   let(:throttle_type) { :idv_acuant }
+  let(:max_attempts) { 3 }
+  let(:attempt_window) { 10 }
+
+  before do
+    stub_const(
+      'Throttle::THROTTLE_CONFIG',
+      {
+        throttle_type => { max_attempts: max_attempts, attempt_window: attempt_window },
+      }.with_indifferent_access.freeze,
+    )
+  end
 
   describe '.for' do
     context 'when target is a user' do
@@ -59,6 +70,26 @@ RSpec.describe Throttle do
         expect { Throttle.for(throttle_type: throttle_type) }.
           to raise_error(/Throttle must have a user or a target/)
       end
+    end
+  end
+
+  describe '.attempt_window_in_minutes' do
+    it 'returns configured attempt window for throttle type' do
+      expect(Throttle.attempt_window_in_minutes(throttle_type)).to eq(attempt_window)
+    end
+
+    it 'is indifferent to throttle type stringiness' do
+      expect(Throttle.attempt_window_in_minutes(throttle_type.to_s)).to eq(attempt_window)
+    end
+  end
+
+  describe '.max_attempts' do
+    it 'returns configured attempt window for throttle type' do
+      expect(Throttle.max_attempts(throttle_type)).to eq(max_attempts)
+    end
+
+    it 'is indifferent to throttle type stringiness' do
+      expect(Throttle.max_attempts(throttle_type.to_s)).to eq(max_attempts)
     end
   end
 
@@ -143,10 +174,43 @@ RSpec.describe Throttle do
     end
   end
 
+  describe '#expires_at' do
+    around do |ex|
+      freeze_time { ex.run }
+    end
+
+    let(:attempted_at) { nil }
+    let(:throttle) { create(:throttle, user: create(:user), throttle_type: throttle_type) }
+
+    subject(:expires_at) { throttle.tap { |t| t.update(attempted_at: attempted_at) }.expires_at }
+
+    context 'without having attempted' do
+      let(:attempted_at) { nil }
+
+      it 'returns current time' do
+        expect(expires_at).to eq(Time.zone.now)
+      end
+    end
+
+    context 'with expired throttle' do
+      let(:attempted_at) { Time.zone.now - (attempt_window + 1).minutes }
+
+      it 'returns expiration time' do
+        expect(expires_at).to eq(Time.zone.now - 1.minute)
+      end
+    end
+
+    context 'with active throttle' do
+      let(:attempted_at) { Time.zone.now - (attempt_window - 1).minutes }
+
+      it 'returns expiration time' do
+        expect(expires_at).to eq(Time.zone.now + 1.minute)
+      end
+    end
+  end
+
   describe '#reset' do
     let(:user) { create(:user) }
-    let(:throttle_type) { :idv_acuant }
-    let(:max_attempts) { 3 }
     let(:subject) { described_class }
 
     subject(:throttle) { Throttle.for(user: user, throttle_type: throttle_type) }
