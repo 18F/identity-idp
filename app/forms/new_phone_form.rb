@@ -3,6 +3,11 @@ class NewPhoneForm
   include FormPhoneValidator
   include OtpDeliveryPreferenceValidator
 
+  BLOCKED_PHONE_TYPES = [
+    :premium_rate,
+    :shared_cost,
+  ].freeze
+
   validates :otp_delivery_preference, inclusion: { in: %w[voice sms] }
 
   validate :validate_not_voip
@@ -91,11 +96,6 @@ class NewPhoneForm
     return unless current_user_phones.include?(phone)
     errors.add(:phone, I18n.t('errors.messages.phone_duplicate'))
   end
-
-  BLOCKED_PHONE_TYPES = [
-    :premium_rate,
-    :shared_cost,
-  ].freeze
 
   def validate_not_premium_rate
     if (parsed_phone.types & BLOCKED_PHONE_TYPES).present?
