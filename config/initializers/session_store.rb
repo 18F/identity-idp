@@ -1,7 +1,8 @@
 require 'session_encryptor'
 require 'session_encryptor_error_handler'
 
-options = {
+Rails.application.config.session_store(
+  :redis_session_store,
   key: '_upaya_session',
   redis: {
     driver: :hiredis,
@@ -17,6 +18,4 @@ options = {
   },
   on_session_load_error: SessionEncryptorErrorHandler,
   serializer: SessionEncryptor.new,
-}
-
-Rails.application.config.session_store :redis_session_store, options
+)

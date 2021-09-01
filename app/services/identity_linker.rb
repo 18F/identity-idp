@@ -54,7 +54,7 @@ class IdentityLinker
   end
 
   def merged_attributes(extra_attrs)
-    identity_attributes.merge(optional_attributes(extra_attrs))
+    identity_attributes.merge(optional_attributes(**extra_attrs))
   end
 
   def identity_attributes

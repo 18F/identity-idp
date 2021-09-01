@@ -17,7 +17,7 @@ class CustomDeviseFailureApp < Devise::FailureApp
     if %i[invalid not_found_in_database].include?(message)
       customized_message(message)
     else
-      I18n.t(:"#{scope}.#{message}", options)
+      I18n.t(:"#{scope}.#{message}", **options)
     end
   end
 
