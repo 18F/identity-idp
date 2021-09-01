@@ -58,6 +58,7 @@ describe Users::PhoneSetupController do
         carrier: 'Test Mobile Carrier',
         country_code: nil,
         phone_type: :mobile,
+        types: [],
       }
 
       expect(@analytics).to receive(:track_event).
@@ -88,6 +89,7 @@ describe Users::PhoneSetupController do
           carrier: 'Test Mobile Carrier',
           country_code: 'US',
           phone_type: :mobile,
+          types: [:fixed_or_mobile],
         }
 
         expect(@analytics).to receive(:track_event).
@@ -126,6 +128,7 @@ describe Users::PhoneSetupController do
           carrier: 'Test Mobile Carrier',
           country_code: 'US',
           phone_type: :mobile,
+          types: [:fixed_or_mobile],
         }
 
         expect(@analytics).to receive(:track_event).
@@ -163,6 +166,7 @@ describe Users::PhoneSetupController do
           carrier: 'Test Mobile Carrier',
           country_code: 'US',
           phone_type: :mobile,
+          types: [:fixed_or_mobile],
         }
 
         expect(@analytics).to receive(:track_event).
