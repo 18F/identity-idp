@@ -99,7 +99,7 @@ class NewPhoneForm
 
   def validate_not_premium_rate
     if (parsed_phone.types & BLOCKED_PHONE_TYPES).present?
-      errors.add(:phone, 'premium rate phone number bad TODO translate me')
+      errors.add(:phone, I18n.t('errors.messages.premium_rate_phone'))
     end
   end
 
