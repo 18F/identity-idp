@@ -107,7 +107,8 @@ en:
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       gpo:
-        address_on_file: We will mail a letter with a confirmation code to the address that you provided on the previous step.
+        address_on_file: We will mail a letter with a confirmation code to the address
+          that you provided on the previous step.
         new_address: We will mail a letter with a confirmation code to the address you
           specify.
         resend: Send me another letter
