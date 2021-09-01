@@ -138,7 +138,7 @@ describe Users::VerifyPersonalKeyController do
           throttle_type: :verify_personal_key,
         ).once
 
-        max_attempts, = Throttle.config_values(:verify_personal_key)
+        max_attempts = Throttle.max_attempts(:verify_personal_key)
         (max_attempts + 1).times { post :create, params: { personal_key: bad_key } }
 
         expect(response).to render_template(:throttled)

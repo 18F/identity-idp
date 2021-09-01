@@ -23,7 +23,9 @@
         <%= t(
               'errors.doc_auth.throttled_text_html',
               timeout: distance_of_time_in_words(
-                IdentityConfig.store.acuant_attempt_window_in_minutes.minutes,
+                Time.zone.now,
+                [@expires_at, Time.zone.now].compact.max,
+                except: :seconds,
               ),
             ) %>
       </p>

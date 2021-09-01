@@ -7,20 +7,35 @@ module Idv
     before_action :confirm_idv_session_step_needed
 
     def warning
-      @remaining_step_attempts = remaining_step_attempts
+      @remaining_step_attempts = Throttle.for(
+        user: effective_user,
+        throttle_type: :idv_resolution,
+      ).remaining_count
+    end
+
+    def failure
+      @expires_at = Throttle.for(user: effective_user, throttle_type: :idv_resolution).expires_at
     end
 
     def ssn_failure
+      if ssn_from_doc
+        @expires_at = Throttle.for(
+          target: Pii::Fingerprinter.fingerprint(ssn_from_doc),
+          throttle_type: :proof_ssn,
+        ).expires_at
+      end
+
       render 'idv/session_errors/failure'
+    end
+
+    def throttled
+      @expires_at = Throttle.for(user: effective_user, throttle_type: :idv_acuant).expires_at
     end
 
     private
 
-    def remaining_step_attempts
-      Throttle.for(
-        user: effective_user,
-        throttle_type: :idv_resolution,
-      ).remaining_count
+    def ssn_from_doc
+      user_session&.dig('idv/doc_auth', 'pii_from_doc', 'ssn')
     end
 
     def confirm_two_factor_authenticated_or_user_id_in_session

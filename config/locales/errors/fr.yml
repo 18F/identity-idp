@@ -53,8 +53,8 @@ fr:
       quota_reached: Désolé, votre fournisseur de services a atteint sa limite de
         vérification d’identité. Veuillez contacter votre fournisseur de
         services pour plus d’informations.
-      send_link_throttle: Vous avez essayé plusieurs fois, essayez à nouveau dans 10
-        minutes. Vous pouvez également cliquer sur recommencer et choisir
+      send_link_throttle: Vous avez essayé plusieurs fois, essayez à nouveau dans
+        %{timeout}. Vous pouvez également cliquer sur recommencer et choisir
         d’utiliser votre ordinateur.
       throttled_heading: Nous n’avons pas pu vérifier votre identité
       throttled_heading_liveness: Nous n’avons pas pu vérifier votre identité et votre photo
@@ -127,9 +127,9 @@ fr:
     two_factor_auth_setup:
       must_select_option: Sélectionnez une méthode d’authentification.
     verify_personal_key:
-      throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans 15 minutes.
+      throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
     verify_profile:
-      throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans 10 minutes.
+      throttled: Vous avez essayé plusieurs fois, essayez à nouveau dans %{timeout}.
     webauthn_setup:
       already_registered: Clé de sécurité déjà enregistrée. Veuillez essayer une clé
         de sécurité différente.
