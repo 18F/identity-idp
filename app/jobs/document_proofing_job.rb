@@ -78,6 +78,7 @@ class DocumentProofingJob < ApplicationJob
       Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
       proofer_result.to_h.merge(
         state: proofer_result.pii_from_doc[:state],
+        state_id_type: proofer_result.pii_from_doc[:state_id_type],
         async: true,
         remaining_attempts: remaining_attempts,
         client_image_metrics: image_metadata,

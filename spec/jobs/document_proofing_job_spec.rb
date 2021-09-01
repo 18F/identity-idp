@@ -24,6 +24,7 @@ RSpec.describe DocumentProofingJob, type: :job do
       ssn: '123456789',
       phone: '18888675309',
       state: 'MT',
+      state_id_type: 'drivers_license',
     }
   end
 
