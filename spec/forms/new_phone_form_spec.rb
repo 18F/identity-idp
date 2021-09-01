@@ -296,6 +296,12 @@ describe NewPhoneForm do
         expect(result.success?).to eq(false)
         expect(result.errors[:phone]).to be_present
       end
+
+      it 'logs the type' do
+        expect(result.extra).to include(
+          types: [:premium_rate],
+        )
+      end
     end
   end
 

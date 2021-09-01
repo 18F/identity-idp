@@ -55,7 +55,8 @@ class NewPhoneForm
   def extra_analytics_attributes
     {
       otp_delivery_preference: otp_delivery_preference,
-      phone_type: @phone_info&.type,
+      phone_type: @phone_info&.type, # comes from pinpoint API
+      types: parsed_phone.types, # comes from Phonelib gem
       carrier: @phone_info&.carrier,
       country_code: parsed_phone.country,
       area_code: parsed_phone.area_code,
