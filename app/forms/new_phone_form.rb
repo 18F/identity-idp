@@ -3,10 +3,16 @@ class NewPhoneForm
   include FormPhoneValidator
   include OtpDeliveryPreferenceValidator
 
+  BLOCKED_PHONE_TYPES = [
+    :premium_rate,
+    :shared_cost,
+  ].freeze
+
   validates :otp_delivery_preference, inclusion: { in: %w[voice sms] }
 
   validate :validate_not_voip
   validate :validate_not_duplicate
+  validate :validate_not_premium_rate
 
   attr_accessor :phone, :international_code, :otp_delivery_preference,
                 :otp_make_default_number
@@ -54,7 +60,8 @@ class NewPhoneForm
   def extra_analytics_attributes
     {
       otp_delivery_preference: otp_delivery_preference,
-      phone_type: @phone_info&.type,
+      phone_type: @phone_info&.type, # comes from pinpoint API
+      types: parsed_phone.types, # comes from Phonelib gem
       carrier: @phone_info&.carrier,
       country_code: parsed_phone.country,
       area_code: parsed_phone.area_code,
@@ -88,6 +95,12 @@ class NewPhoneForm
 
     return unless current_user_phones.include?(phone)
     errors.add(:phone, I18n.t('errors.messages.phone_duplicate'))
+  end
+
+  def validate_not_premium_rate
+    if (parsed_phone.types & BLOCKED_PHONE_TYPES).present?
+      errors.add(:phone, I18n.t('errors.messages.premium_rate_phone'))
+    end
   end
 
   def parsed_phone
