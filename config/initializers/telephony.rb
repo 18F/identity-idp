@@ -1,3 +1,5 @@
+require 'pinpoint_supported_countries'
+
 # rubocop:disable Metrics/BlockLength
 Telephony.config do |c|
   c.adapter = IdentityConfig.store.telephony_adapter.to_sym
@@ -10,7 +12,10 @@ Telephony.config do |c|
   c.voice_pause_time = IdentityConfig.store.voice_otp_pause_time
   c.voice_rate = IdentityConfig.store.voice_otp_speech_rate
 
-  c.sender_id = IdentityConfig.store.pinpoint_sms_sender_id
+  c.country_sender_ids = IdentityConfig.store.pinpoint_sms_sender_id.presence &&
+                         PinpointSupportedCountries::SENDER_ID_COUNTRIES.map do |country_code|
+                           [country_code, IdentityConfig.store.pinpoint_sms_sender_id]
+                         end.to_h
 
   IdentityConfig.store.pinpoint_sms_configs.each do |sms_json_config|
     c.pinpoint.add_sms_config do |sms|

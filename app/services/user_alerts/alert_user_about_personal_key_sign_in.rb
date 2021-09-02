@@ -8,7 +8,11 @@ module UserAlerts
         ).deliver_now
       end
       telephony_responses = MfaContext.new(user).phone_configurations.map do |phone_configuration|
-        Telephony.send_personal_key_sign_in_notice(to: phone_configuration.phone)
+        phone = phone_configuration.phone
+        Telephony.send_personal_key_sign_in_notice(
+          to: phone,
+          country_code: Phonelib.parse(phone).country,
+        )
       end
       form_response(emails: emails, telephony_responses: telephony_responses)
     end

@@ -21,7 +21,11 @@ module AccountReset
 
     def notify_user_via_phone_of_account_reset_cancellation
       MfaContext.new(user).phone_configurations.each do |phone_configuration|
-        Telephony.send_account_reset_cancellation_notice(to: phone_configuration.phone)
+        phone = phone_configuration.phone
+        Telephony.send_account_reset_cancellation_notice(
+          to: phone,
+          country_code: Phonelib.parse(phone).country,
+        )
       end
     end
   end

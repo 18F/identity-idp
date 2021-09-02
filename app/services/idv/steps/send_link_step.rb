@@ -35,6 +35,7 @@ module Idv
         Telephony.send_doc_auth_link(
           to: formatted_destination_phone,
           link: link(session_uuid),
+          country_code: Phonelib.parse(formatted_destination_phone).country,
         )
       end
 
