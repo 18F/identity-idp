@@ -36,6 +36,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         ),
         image_metrics: a_hash_including(:back, :front),
         alert_failure_count: 2,
+        tamper_result: 'Passed',
       }
 
       processed_alerts = response_hash[:processed_alerts]

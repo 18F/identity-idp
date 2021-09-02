@@ -131,6 +131,7 @@ RSpec.describe DocumentProofingJob, type: :job do
             processed_alerts: { failed: [], passed: [] },
             success: true,
             exception: nil,
+            tamper_result: nil,
           )
 
           expect(job_analytics).to have_logged_event(
@@ -151,6 +152,7 @@ RSpec.describe DocumentProofingJob, type: :job do
               front: front_image_metadata,
               back: back_image_metadata,
             },
+            tamper_result: nil,
           )
 
           expect(result.pii_from_doc).to eq(applicant_pii)
@@ -181,6 +183,7 @@ RSpec.describe DocumentProofingJob, type: :job do
             },
             success: true,
             exception: nil,
+            tamper_result: nil,
           )
 
           expect(job_analytics).to have_logged_event(
@@ -207,6 +210,7 @@ RSpec.describe DocumentProofingJob, type: :job do
               front: front_image_metadata,
               back: back_image_metadata,
             },
+            tamper_result: nil,
           )
 
           expect(result.pii_from_doc).to eq(applicant_pii)
