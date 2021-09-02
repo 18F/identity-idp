@@ -117,7 +117,7 @@ all_configs = {
       name: 'SP user counts report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::SpUserCountsReport.new.perform },
+      callback: -> { Reports::SpUserCountsReport.new.perform(Time.zone.now) },
     },
     good_job: {
       class: 'Reports::SpUserCountsReport',
