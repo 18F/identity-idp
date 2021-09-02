@@ -80,10 +80,12 @@ describe Deploy::Activate do
       expect(s3_client).to have_received(:get_object).with(
         bucket: 'login-gov.secrets.12345-us-west-1',
         key: 'common/GeoIP2-City.mmdb',
+        response_target: subject.send(:geolocation_db_path),
       )
       expect(s3_client).to have_received(:get_object).with(
         bucket: 'login-gov.secrets.12345-us-west-1',
         key: 'common/pwned-passwords.txt',
+        response_target: subject.send(:pwned_passwords_path),
       )
 
       expect(File.read(geolite_path)).to eq(geolite_content)
