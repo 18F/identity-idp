@@ -1,5 +1,5 @@
 # same as 20210804180216_create_good_jobs.rb but runs in the worker database
-class CreateGoodJobsSeparateDatabase < ActiveRecord::Migration[5.2]
+class CreateGoodJobs < ActiveRecord::Migration[5.2]
   def change
     enable_extension 'pgcrypto'
 

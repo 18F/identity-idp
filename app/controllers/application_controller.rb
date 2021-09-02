@@ -16,6 +16,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_auth_token
   rescue_from ActionController::UnknownFormat, with: :render_not_found
+  rescue_from ActionView::MissingTemplate, with: :render_not_acceptable
   [
     ActiveRecord::ConnectionTimeoutError,
     PG::ConnectionBad, # raised when a Postgres connection times out
@@ -44,13 +45,30 @@ class ApplicationController < ActionController::Base
   # for lograge
   def append_info_to_payload(payload)
     payload[:user_id] = analytics_user.uuid unless @skip_session_load
+
+    payload[:git_sha] = IdentityConfig::GIT_SHA
+    if IdentityConfig::GIT_TAG.present?
+      payload[:git_tag] = IdentityConfig::GIT_TAG
+    else
+      payload[:git_branch] = IdentityConfig::GIT_BRANCH
+    end
+
+    payload
   end
 
   attr_writer :analytics
 
   def analytics
-    @analytics ||=
-      Analytics.new(user: analytics_user, request: request, sp: current_sp&.issuer, ahoy: ahoy)
+    return @analytics if @analytics
+    update_session_paths_visited_for_analytics
+    @analytics =
+      Analytics.new(
+        user: analytics_user,
+        request: request,
+        sp: current_sp&.issuer,
+        first_path_visit_this_session: first_path_visit_this_session?,
+        ahoy: ahoy,
+      )
   end
 
   def analytics_user
@@ -342,6 +360,10 @@ class ApplicationController < ActionController::Base
     render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
   end
 
+  def render_not_acceptable
+    render template: 'pages/not_acceptable', layout: false, status: :not_acceptable, formats: :html
+  end
+
   def render_timeout(exception)
     analytics.track_event(Analytics::RESPONSE_TIMED_OUT, analytics_exception_info(exception))
     if exception.instance_of?(Rack::Timeout::RequestTimeoutException)
@@ -376,5 +398,15 @@ class ApplicationController < ActionController::Base
   def mobile?
     client = DeviceDetector.new(request.user_agent)
     client.device_type != 'desktop'
+  end
+
+  def update_session_paths_visited_for_analytics
+    session[:paths_visited] ||= {}
+    session[:first_path_visit] = !session[:paths_visited].key?(request.path)
+    session[:paths_visited][request.path] = true
+  end
+
+  def first_path_visit_this_session?
+    session[:first_path_visit]
   end
 end

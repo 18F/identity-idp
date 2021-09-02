@@ -64,6 +64,20 @@ describe Idv::SessionErrorsController do
     let(:template) { 'idv/session_errors/warning' }
 
     it_behaves_like 'an idv session errors controller action'
+
+    context 'with throttle attempts' do
+      before do
+        user = create(:user)
+        stub_sign_in(user)
+        create(:throttle, user: user, throttle_type: :idv_resolution, attempts: 1)
+      end
+
+      it 'assigns remaining count' do
+        get action
+
+        expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
+      end
+    end
   end
 
   describe '#failure' do
@@ -71,5 +85,67 @@ describe Idv::SessionErrorsController do
     let(:template) { 'idv/session_errors/failure' }
 
     it_behaves_like 'an idv session errors controller action'
+
+    context 'while throttled' do
+      before do
+        user = create(:user)
+        stub_sign_in(user)
+        create(:throttle, :with_throttled, user: user, throttle_type: :idv_resolution)
+      end
+
+      it 'assigns expiration time' do
+        get action
+
+        expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+    end
+  end
+
+  describe '#ssn_failure' do
+    let(:action) { :ssn_failure }
+    let(:template) { 'idv/session_errors/failure' }
+
+    it_behaves_like 'an idv session errors controller action'
+
+    context 'while throttled' do
+      let(:ssn) { '666666666' }
+
+      before do
+        stub_sign_in
+        create(
+          :throttle,
+          target: Pii::Fingerprinter.fingerprint(ssn),
+          throttle_type: :proof_ssn,
+        )
+        controller.user_session['idv/doc_auth'] = { 'pii_from_doc' => { 'ssn' => ssn } }
+      end
+
+      it 'assigns expiration time' do
+        get action
+
+        expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+    end
+  end
+
+  describe '#throttled' do
+    let(:action) { :throttled }
+    let(:template) { 'idv/session_errors/throttled' }
+
+    it_behaves_like 'an idv session errors controller action'
+
+    context 'while throttled' do
+      before do
+        user = create(:user)
+        stub_sign_in(user)
+        create(:throttle, :with_throttled, user: user, throttle_type: :idv_acuant)
+      end
+
+      it 'assigns expiration time' do
+        get action
+
+        expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+    end
   end
 end

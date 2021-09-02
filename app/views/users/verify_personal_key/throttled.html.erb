@@ -5,5 +5,13 @@
 </h1>
 
 <p>
-  <%= t('errors.verify_personal_key.throttled') %> <%= link_to(t('links.go_back'), account_path) %>.
+  <%= t(
+        'errors.verify_personal_key.throttled',
+        timeout: distance_of_time_in_words(
+          Time.zone.now,
+          [@expires_at, Time.zone.now].compact.max,
+          except: :seconds,
+        ),
+      ) %>
+  <%= link_to(t('links.go_back'), account_path) %>.
 </p>

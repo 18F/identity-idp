@@ -21,15 +21,12 @@ module Rack
     ### Configure Cache ###
 
     # Note: The store is only used for throttling and fail2ban filtering;
-    # not blocklisting & safelisting. It must implement .increment and .write
-    # like ActiveSupport::Cache::Store
-
-    cache = Readthis::Cache.new(
+    # not blocklisting & safelisting
+    Rack::Attack.cache.store = ActiveSupport::Cache::RedisCacheStore.new(
+      namespace: 'rack-attack',
+      url: IdentityConfig.store.redis_throttle_url,
       expires_in: 2.weeks.to_i,
-      redis: { url: IdentityConfig.store.redis_throttle_url, driver: :hiredis },
     )
-
-    Rack::Attack.cache.store = cache
 
     ### Configure Safelisting ###
 
@@ -203,6 +200,6 @@ ActiveSupport::Notifications.subscribe(
 ) do |_name, _start, _finish, _request_id, payload|
   req = payload[:request]
   user = req.env['warden'].user || AnonymousUser.new
-  analytics = Analytics.new(user: user, request: req, sp: nil)
+  analytics = Analytics.new(user: user, request: req, first_path_visit_this_session: false, sp: nil)
   analytics.track_event(Analytics::RATE_LIMIT_TRIGGERED, type: req.env['rack.attack.matched'])
 end

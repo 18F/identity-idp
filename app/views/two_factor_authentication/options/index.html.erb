@@ -47,6 +47,6 @@
   <%= @presenter.account_reset_or_cancel_link %>
 </p>
 
-<%= render 'shared/cancel', link: destroy_user_session_path %>
+<%= render 'shared/cancel', link: @presenter.cancel_link %>
 
 <%= javascript_packs_tag_once 'webauthn-unhide-signin' %>

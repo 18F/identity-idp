@@ -6,25 +6,25 @@ module Idv
     before_action :confirm_idv_phone_step_needed
 
     def warning
-      @remaining_step_attempts = remaining_step_attempts
+      @remaining_step_attempts = throttle.remaining_count
     end
 
     def timeout
-      @remaining_step_attempts = remaining_step_attempts
+      @remaining_step_attempts = throttle.remaining_count
     end
 
     def jobfail
-      @remaining_step_attempts = remaining_step_attempts
+      @remaining_step_attempts = throttle.remaining_count
     end
 
-    def failure; end
+    def failure
+      @expires_at = throttle.expires_at
+    end
 
     private
 
-    def remaining_step_attempts
-      max_attempts = Throttle::THROTTLE_CONFIG[:idv_resolution][:max_attempts]
-      attempt_count = idv_session.step_attempts[:phone]
-      max_attempts - attempt_count
+    def throttle
+      Throttle.for(user: idv_session.current_user, throttle_type: :idv_resolution)
     end
 
     def confirm_idv_phone_step_needed

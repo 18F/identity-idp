@@ -1,4 +1,8 @@
 class IdentityConfig
+  GIT_SHA = `git rev-parse --short=8 HEAD`.chomp
+  GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first
+  GIT_BRANCH = `git rev-parse --abbrev-ref HEAD`.chomp
+
   class << self
     attr_reader :store
   end
@@ -244,7 +248,10 @@ class IdentityConfig
     config.add(:reset_password_email_max_attempts, type: :integer)
     config.add(:reset_password_email_window_in_minutes, type: :integer)
     config.add(:risc_notifications_local_enabled, type: :boolean)
-    config.add(:risc_notifications_eventbridge_enabled, type: :boolean)
+    config.add(:risc_notifications_active_job_enabled, type: :boolean)
+    config.add(:risc_notifications_rate_limit_interval, type: :integer)
+    config.add(:risc_notifications_rate_limit_max_requests, type: :integer)
+    config.add(:risc_notifications_rate_limit_overrides, type: :json)
     config.add(:ruby_workers_enabled, type: :boolean)
     config.add(:rules_of_use_horizon_years, type: :integer)
     config.add(:rules_of_use_updated_at, type: :timestamp)

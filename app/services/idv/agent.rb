@@ -49,7 +49,7 @@ module Idv
       analytics_data:
     )
       encrypted_arguments = Encryption::Encryptors::SessionEncryptor.new.encrypt(
-        { document_arguments: @applicant }.to_json,
+        @applicant.to_json,
       )
 
       DocumentProofingJob.perform_later(

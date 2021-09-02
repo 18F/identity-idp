@@ -274,6 +274,7 @@ Rails.application.routes.draw do
       put '/review' => 'review#create'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/failure' => 'session_errors#failure'
+      get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
       get '/session/errors/throttled' => 'session_errors#throttled'
       delete '/session' => 'sessions#destroy'

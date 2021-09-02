@@ -61,17 +61,6 @@
     "require-await": "error"
   },
   "settings": {
-    "import/core-modules": [
-      "app/components/index",
-      "app/utils/index",
-      "app/pw-toggle",
-      "app/form-field-format",
-      "app/radio-btn",
-      "app/print-personal-key",
-      "app/utils/ms-formatter",
-      "app/phone-internationalization",
-      "app/i18n-dropdown"
-    ],
     "import/internal-regex": "^@18f/identity-"
   },
   "overrides": [

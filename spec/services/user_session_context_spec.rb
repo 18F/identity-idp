@@ -3,7 +3,7 @@ require 'rails_helper'
 describe UserSessionContext do
   let(:confirmation) { { context: 'confirmation' } }
 
-  describe '::initial_authentication_context?' do
+  describe '.initial_authentication_context?' do
     it 'returns true when context is default context' do
       expect(
         UserSessionContext.initial_authentication_context?(UserSessionContext::DEFAULT_CONTEXT),
@@ -25,7 +25,21 @@ describe UserSessionContext do
     end
   end
 
-  describe '::authentication_context?' do
+  describe '.reauthentication_context?' do
+    it 'returns true when context is reauthn context' do
+      expect(
+        UserSessionContext.reauthentication_context?(UserSessionContext::REAUTHENTICATION_CONTEXT),
+      ).to eq true
+    end
+
+    it 'returns false when context is default context' do
+      expect(
+        UserSessionContext.reauthentication_context?(UserSessionContext::DEFAULT_CONTEXT),
+      ).to eq false
+    end
+  end
+
+  describe '.authentication_context?' do
     it 'returns true when context is default or reauth context' do
       expect(
         UserSessionContext.authentication_context?(UserSessionContext::DEFAULT_CONTEXT),
@@ -45,7 +59,7 @@ describe UserSessionContext do
     end
   end
 
-  describe '::confirmation_context?' do
+  describe '.confirmation_context?' do
     it 'returns true when context is confirmation context' do
       expect(
         UserSessionContext.confirmation_context?(UserSessionContext::CONFIRMATION_CONTEXT),

@@ -3,7 +3,6 @@ class RegisterUserEmailForm
   include ActionView::Helpers::TranslationHelper
   include FormEmailValidator
 
-  validate :service_provider_request_exists
   validate :validate_terms_accepted
 
   attr_reader :email_address, :terms_accepted
@@ -91,19 +90,13 @@ class RegisterUserEmailForm
     true
   end
 
-  def service_provider_request_exists
-    return if request_id.blank?
-    return if ServiceProviderRequestProxy.find_by(uuid: request_id)
-    errors.add(:email, t('sign_up.email.invalid_request'))
-  end
-
   def process_successful_submission(request_id, instructions)
     self.success = true
     user.accepted_terms_at = Time.zone.now
     user.save!
     Funnel::Registration::Create.call(user.id)
     SendSignUpEmailConfirmation.new(user).call(
-      request_id: request_id,
+      request_id: email_request_id(request_id),
       instructions: instructions,
       password_reset_requested: password_reset_requested?,
     )
@@ -166,5 +159,9 @@ class RegisterUserEmailForm
 
   def existing_user
     @_user ||= User.find_with_email(email) || AnonymousUser.new
+  end
+
+  def email_request_id(request_id)
+    request_id if request_id.present? && ServiceProviderRequestProxy.find_by(uuid: request_id)
   end
 end

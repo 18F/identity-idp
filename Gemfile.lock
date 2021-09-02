@@ -130,9 +130,6 @@ GEM
       aws-partitions (~> 1, >= 1.239.0)
       aws-sigv4 (~> 1.1)
       jmespath (~> 1.0)
-    aws-sdk-eventbridge (1.18.0)
-      aws-sdk-core (~> 3, >= 3.109.0)
-      aws-sigv4 (~> 1.1)
     aws-sdk-kms (1.40.0)
       aws-sdk-core (~> 3, >= 3.109.0)
       aws-sigv4 (~> 1.1)
@@ -288,7 +285,7 @@ GEM
       rake
     formatador (0.2.5)
     foundation_emails (2.2.1.0)
-    fugit (1.5.0)
+    fugit (1.5.1)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
     geocoder (1.6.7)
@@ -301,7 +298,7 @@ GEM
       mail (>= 2.2.1)
     gmail_xoauth (0.4.2)
       oauth (>= 0.3.6)
-    good_job (1.12.0)
+    good_job (1.99.0)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -499,6 +496,8 @@ GEM
       redis (>= 3.0, < 5.0)
     redacted_struct (1.1.0)
     redis (4.3.1)
+    redis-namespace (1.8.1)
+      redis (>= 3.0.4)
     redis-session-store (0.11.3)
       actionpack (>= 3, < 7)
       redis (>= 3, < 5)
@@ -704,7 +703,6 @@ DEPENDENCIES
   ahoy_matey (~> 3.0)
   autoprefixer-rails (~> 10.0)
   aws-sdk-cloudwatchlogs
-  aws-sdk-eventbridge
   aws-sdk-kms (~> 1.4)
   aws-sdk-ses (~> 1.6)
   axe-core-rspec (~> 4.2)
@@ -730,10 +728,10 @@ DEPENDENCIES
   faraday
   foundation_emails
   gmail (>= 0.7.1)
-  good_job
+  good_job (< 2.0.0)
   guard-rspec
   hashie (~> 4.1)
-  hiredis
+  hiredis (~> 0.6.0)
   http_accept_language
   i18n-tasks (>= 0.9.31)
   identity-hostdata!
@@ -773,6 +771,8 @@ DEPENDENCIES
   raise-if-root
   readthis
   redacted_struct
+  redis (>= 3.2.0)
+  redis-namespace
   redis-session-store (>= 0.11.3)
   retries
   rotp (~> 6.1)

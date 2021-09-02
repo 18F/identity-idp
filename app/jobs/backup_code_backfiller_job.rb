@@ -1,5 +1,5 @@
 class BackupCodeBackfillerJob < ApplicationJob
-  queue_as :low
+  queue_as :long_running
 
   # Helper to be run manually in a Rails console once
   def self.enqueue_all(batch_size: 10_000)

@@ -8,9 +8,9 @@ shared_examples_for 'an idv phone errors controller action' do
   end
 
   context 'the user is authenticated and has not confirmed their phone' do
-    it 'renders the error' do
-      stub_sign_in
+    let(:user) { create(:user) }
 
+    it 'renders the error' do
       get action
 
       expect(response).to render_template(template)
@@ -18,11 +18,10 @@ shared_examples_for 'an idv phone errors controller action' do
   end
 
   context 'the user is authenticated and has confirmed their phone' do
+    let(:user) { create(:user) }
     let(:idv_session_user_phone_confirmation) { true }
 
     it 'redirects to the review url' do
-      stub_sign_in
-
       get action
 
       expect(response).to redirect_to(idv_review_url)
@@ -41,12 +40,15 @@ end
 describe Idv::PhoneErrorsController do
   let(:idv_session) { double }
   let(:idv_session_user_phone_confirmation) { false }
+  let(:user) { nil }
 
   before do
     allow(idv_session).to receive(:user_phone_confirmation).
       and_return(idv_session_user_phone_confirmation)
-    allow(idv_session).to receive(:step_attempts).and_return(phone: 1)
+    allow(idv_session).to receive(:current_user).and_return(user)
+    allow(subject).to receive(:remaining_step_attempts).and_return(5)
     allow(controller).to receive(:idv_session).and_return(idv_session)
+    stub_sign_in(user) if user
   end
 
   describe '#warning' do
@@ -54,6 +56,20 @@ describe Idv::PhoneErrorsController do
     let(:template) { 'idv/phone_errors/warning' }
 
     it_behaves_like 'an idv phone errors controller action'
+
+    context 'with throttle attempts' do
+      let(:user) { create(:user) }
+
+      before do
+        create(:throttle, user: user, throttle_type: :idv_resolution, attempts: 1)
+      end
+
+      it 'assigns remaining count' do
+        get action
+
+        expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
+      end
+    end
   end
 
   describe '#timeout' do
@@ -61,6 +77,20 @@ describe Idv::PhoneErrorsController do
     let(:template) { 'idv/phone_errors/timeout' }
 
     it_behaves_like 'an idv phone errors controller action'
+
+    context 'with throttle attempts' do
+      let(:user) { create(:user) }
+
+      before do
+        create(:throttle, user: user, throttle_type: :idv_resolution, attempts: 1)
+      end
+
+      it 'assigns remaining count' do
+        get action
+
+        expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
+      end
+    end
   end
 
   describe '#jobfail' do
@@ -68,6 +98,20 @@ describe Idv::PhoneErrorsController do
     let(:template) { 'idv/phone_errors/jobfail' }
 
     it_behaves_like 'an idv phone errors controller action'
+
+    context 'with throttle attempts' do
+      let(:user) { create(:user) }
+
+      before do
+        create(:throttle, user: user, throttle_type: :idv_resolution, attempts: 1)
+      end
+
+      it 'assigns remaining count' do
+        get action
+
+        expect(assigns(:remaining_step_attempts)).to be_kind_of(Numeric)
+      end
+    end
   end
 
   describe '#failure' do
@@ -75,5 +119,19 @@ describe Idv::PhoneErrorsController do
     let(:template) { 'idv/phone_errors/failure' }
 
     it_behaves_like 'an idv phone errors controller action'
+
+    context 'while throttled' do
+      let(:user) { create(:user) }
+
+      before do
+        create(:throttle, :with_throttled, user: user, throttle_type: :idv_resolution)
+      end
+
+      it 'assigns expiration time' do
+        get action
+
+        expect(assigns(:expires_at)).to be_kind_of(Time)
+      end
+    end
   end
 end

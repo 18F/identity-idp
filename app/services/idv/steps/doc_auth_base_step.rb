@@ -53,10 +53,10 @@ module Idv
       #   DocumentCaptureSessionAsyncResult,
       #   DocumentCaptureSessionResult] response
       def extract_pii_from_doc(response)
-        current_user = User.find(user_id)
         flow_session[:pii_from_doc] = response.pii_from_doc.merge(
-          uuid: current_user.uuid,
-          phone: current_user.phone_configurations.take&.phone,
+          uuid: effective_user.uuid,
+          phone: effective_user.phone_configurations.take&.phone,
+          uuid_prefix: ServiceProvider.find_by(issuer: sp_session[:issuer])&.app_id,
         )
         if response.respond_to?(:extra)
           # Sync flow: DocAuth::Response
@@ -94,9 +94,15 @@ module Idv
 
       def throttled_else_increment
         Throttle.for(
-          target: user_id,
+          user: effective_user,
           throttle_type: :idv_acuant,
         ).throttled_else_increment?
+      end
+
+      # Ideally we would not have to re-implement the EffectiveUser mixin
+      # but flow_session sometimes != controller#session
+      def effective_user
+        current_user || User.find(user_id_from_token)
       end
 
       def user_id

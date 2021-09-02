@@ -33,10 +33,14 @@ module DocAuth
         back_image:,
         selfie_image:,
         liveness_checking_enabled: nil,
-        image_source: nil
+        image_source: nil,
+        user_uuid: nil,
+        uuid_prefix: nil
       )
         Requests::TrueIdRequest.new(
           config: config,
+          user_uuid: user_uuid,
+          uuid_prefix: uuid_prefix,
           front_image: front_image,
           back_image: back_image,
           selfie_image: selfie_image,

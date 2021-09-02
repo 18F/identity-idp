@@ -1,14 +1,17 @@
 class Analytics
-  def initialize(user:, request:, sp:, ahoy: nil)
+  def initialize(user:, request:, sp:, first_path_visit_this_session:, ahoy: nil)
     @user = user
     @request = request
     @sp = sp
     @ahoy = ahoy || Ahoy::Tracker.new(request: request)
+    @first_path_visit_this_session = first_path_visit_this_session
   end
 
   def track_event(event, attributes = {})
     analytics_hash = {
       event_properties: attributes.except(:user_id),
+      new_session_path: @first_path_visit_this_session,
+      path: request&.path,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }
@@ -42,13 +45,22 @@ class Analytics
   attr_reader :user, :request, :sp, :ahoy
 
   def request_attributes
-    {
+    attributes = {
       user_ip: request.remote_ip,
       hostname: request.host,
       pid: Process.pid,
       service_provider: sp,
       trace_id: request.headers['X-Amzn-Trace-Id'],
-    }.merge!(browser_attributes)
+    }
+
+    attributes[:git_sha] = IdentityConfig::GIT_SHA
+    if IdentityConfig::GIT_TAG.present?
+      attributes[:git_tag] = IdentityConfig::GIT_TAG
+    else
+      attributes[:git_branch] = IdentityConfig::GIT_BRANCH
+    end
+
+    attributes.merge!(browser_attributes)
   end
 
   def browser
