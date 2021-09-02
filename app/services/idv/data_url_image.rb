@@ -19,9 +19,7 @@ module Idv
       if base64_encoded?
         Base64.decode64(@data)
       else
-        # rubocop:disable Lint/UriEscapeUnescape
-        URI.decode(@data)
-        # rubocop:enable Lint/UriEscapeUnescape
+        ''
       end
     end
 
