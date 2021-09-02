@@ -112,7 +112,7 @@ en:
         new_address: We will mail a letter with a confirmation code to the address you
           specify.
         resend: Send me another letter
-        timeframe: Letters are sent the next business day via USPS First Class Mail, and
+        timeframe: Letters are sent the next business day via USPS First Class Mail and
           typically take 3 to 7 business days.
       mail_sent: Your letter is on its way
       otp_delivery_method:

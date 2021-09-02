@@ -118,7 +118,7 @@ es:
           dirección que especifique.
         resend: Envíeme otra carta
         timeframe: Las correspondencias se envían al día siguiente por correo de primera
-          clase de USPS, y por lo general tardan entre 3 y 7 días laborables.
+          clase de USPS y por lo general tardan entre 3 y 7 días laborables.
       mail_sent: Su carta está en camino
       otp_delivery_method:
         phone_number_html: Te enviaremos un código a <strong>%{phone}</strong>
