@@ -57,7 +57,7 @@
 <%= link_to t('shared.skip_link'), '#main-content', class: 'usa-skipnav' %>
   <div class="usa-overlay"></div>
   <%= yield(:mobile_nav) if content_for?(:mobile_nav) %>
-  <div class="site-wrap bg-light-blue">
+  <div class="bg-light-blue">
     <%= render 'shared/banner' %>
     <div aria-label="main-navigation" role="navigation">
       <% if content_for?(:nav) %>
@@ -71,7 +71,7 @@
       <% end %>
     </div>
   </div>
-  <main class="container" id="main-content">
+  <main class="site-wrap container" id="main-content">
     <div class="padding-x-2 padding-y-4 tablet:padding-y-8 tablet:padding-x-10 margin-x-auto tablet:margin-bottom-8 border-box <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
       <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
       <%= render 'shared/flashes' %>
