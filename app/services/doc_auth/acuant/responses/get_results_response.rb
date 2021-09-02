@@ -21,6 +21,11 @@ module DocAuth
           DocAuth::Acuant::ResultCodes.from_int(parsed_response_body['Result'])
         end
 
+        def tamper_result_code
+          # TamperResult uses the same Acuant Enum as Result
+          DocAuth::Acuant::ResultCodes.from_int(parsed_response_body&.dig('TamperResult'))
+        end
+
         def pii_from_doc
           DocAuth::Acuant::PiiFromDoc.new(parsed_response_body).call
         end
@@ -43,7 +48,7 @@ module DocAuth
             processed_alerts: alerts,
             alert_failure_count: alerts[:failed]&.count.to_i,
             image_metrics: processed_image_metrics,
-            tamper_result: parsed_response_body&.dig('TamperResult'),
+            tamper_result: tamper_result_code&.name,
           }
         end
 
