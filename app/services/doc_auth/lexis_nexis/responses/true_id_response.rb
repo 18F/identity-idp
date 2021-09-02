@@ -91,21 +91,21 @@ module DocAuth
           pii[:state_id_type] = 'drivers_license'
 
           if pii[:dob_month] && pii[:dob_day] && pii[:dob_year]
-            pii[:dob] = [
-              pii.delete(:dob_year),
-              pii.delete(:dob_month),
-              pii.delete(:dob_day),
-            ].join('-')
+            pii[:dob] = Date.new(
+              pii.delete(:dob_year).to_i,
+              pii.delete(:dob_month).to_i,
+              pii.delete(:dob_day).to_i,
+            ).to_s
           end
 
           if pii[:state_id_expiration_month] &&
              pii[:state_id_expiration_day] &&
              pii[:state_id_expiration_year]
-            pii[:state_id_expiration] = [
-              pii.delete(:state_id_expiration_year),
-              pii.delete(:state_id_expiration_month),
-              pii.delete(:state_id_expiration_day),
-            ].join('-')
+            pii[:state_id_expiration] = Date.new(
+              pii.delete(:state_id_expiration_year).to_i,
+              pii.delete(:state_id_expiration_month).to_i,
+              pii.delete(:state_id_expiration_day).to_i,
+            ).to_s
           end
 
           pii
