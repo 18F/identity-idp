@@ -85,7 +85,7 @@ describe Deploy::Activate do
       expect(s3_client).to have_received(:get_object).with(
         bucket: 'login-gov.secrets.12345-us-west-1',
         key: 'common/pwned-passwords.txt',
-        response_target: subject.send(:pwned_passwords_path),
+        response_target: kind_of(String),
       )
 
       expect(File.read(geolite_path)).to eq(geolite_content)
