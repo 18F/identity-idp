@@ -66,7 +66,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       minimum_expected_hash = {
         first_name: 'DAVID',
         last_name: 'SAMPLE',
-        dob: '1986-10-13',
+        dob: '1986-07-01',
         state: 'MD',
       }
 
