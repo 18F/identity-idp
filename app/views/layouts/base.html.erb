@@ -71,13 +71,20 @@
       <% end %>
     </div>
   </div>
-  <main class="site-wrap container" id="main-content">
-    <div class="padding-x-2 padding-y-4 tablet:padding-y-8 tablet:padding-x-10 margin-x-auto tablet:margin-bottom-8 border-box <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
-      <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
-      <%= render 'shared/flashes' %>
-      <%= content_for?(:content) ? yield(:content) : yield %>
+  <main class="site-wrap bg-light-blue" id="main-content">
+    <div class="container">
+      <div class="padding-x-2 padding-y-4 tablet:padding-y-8 tablet:padding-x-10 margin-x-auto tablet:margin-bottom-8 border-box <%= local_assigns[:disable_card].present? ? '' : 'card' %>">
+        <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
+        <%= render 'shared/flashes' %>
+        <%= content_for?(:content) ? yield(:content) : yield %>
+      </div>
     </div>
   </main>
+
+
+
+  
+
 
   <%= render 'shared/footer_lite' %>
 
