@@ -31,8 +31,6 @@ module MonitorSpSteps
 
   def log_out_from_oidc_sp
     click_on 'Log out'
-
-    return unless monitor.remote?
   end
 
   def log_out_from_saml_sp
