@@ -30,12 +30,9 @@ module MonitorSpSteps
   end
 
   def log_out_from_oidc_sp
-    within('.usajobs-home__title') do
-      click_link 'Sign Out'
-    end
+    click_on 'Log out'
 
     return unless monitor.remote?
-    expect(current_url).to match(%r{https://login.(uat.)?usajobs.gov/externalloggedout})
   end
 
   def log_out_from_saml_sp
