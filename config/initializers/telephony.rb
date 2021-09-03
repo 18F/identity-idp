@@ -13,9 +13,9 @@ Telephony.config do |c|
   c.voice_rate = IdentityConfig.store.voice_otp_speech_rate
 
   c.country_sender_ids = IdentityConfig.store.pinpoint_sms_sender_id.presence &&
-                         PinpointSupportedCountries::SENDER_ID_COUNTRIES.map do |country_code|
-                           [country_code, IdentityConfig.store.pinpoint_sms_sender_id]
-                         end.to_h
+                         PinpointSupportedCountries::SENDER_ID_COUNTRIES.index_with do
+                           IdentityConfig.store.pinpoint_sms_sender_id
+                         end
 
   IdentityConfig.store.pinpoint_sms_configs.each do |sms_json_config|
     c.pinpoint.add_sms_config do |sms|
