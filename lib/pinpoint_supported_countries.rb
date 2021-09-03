@@ -148,7 +148,7 @@ class PinpointSupportedCountries
   end
 
   def trim_spaces(str)
-    str.gsub(/\s{2,}/, ' ').gsub(/[\s]+$/, '')
+    str.gsub(/\s{2,}/, ' ').gsub(/\s+$/, '')
   end
 
   def digits_only?(str)
