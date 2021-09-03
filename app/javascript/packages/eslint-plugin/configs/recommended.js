@@ -1,17 +1,15 @@
-module.exports = {
-  extends: ['airbnb'],
-  parser: '@babel/eslint-parser',
-  plugins: ['prettier', '@babel', 'mocha'],
+const isInstalled = require('../lib/is-installed');
+
+const config = {
+  extends: /** @type {string[]} */ ([]),
+  plugins: /** @type {string[]} */ ([]),
   env: {
     es6: true,
-    mocha: true,
   },
   rules: {
-    '@babel/no-unused-expressions': 'error',
     'class-methods-use-this': 'off',
     'consistent-return': 'off',
     curly: ['error', 'all'],
-    'prettier/prettier': 'error',
     'func-names': 'off',
     'function-paren-newline': 'off',
     'prefer-arrow-callback': 'off',
@@ -21,8 +19,6 @@ module.exports = {
     indent: 'off',
     'max-len': 'off',
     'max-classes-per-file': 'off',
-    'mocha/no-skipped-tests': 'error',
-    'mocha/no-exclusive-tests': 'error',
     'newline-per-chained-call': 'off',
     'no-console': 'error',
     'no-empty': ['error', { allowEmptyCatch: true }],
@@ -35,6 +31,24 @@ module.exports = {
     'implicit-arrow-linebreak': 'off',
     'object-curly-newline': 'off',
     'operator-linebreak': 'off',
+    'require-await': 'error',
+  },
+};
+
+if (isInstalled('@babel/core')) {
+  config.parser = '@babel/eslint-parser';
+  config.plugins.push('@babel');
+  config.rules['@babel/no-unused-expressions'] = 'error';
+}
+
+if (isInstalled('prettier')) {
+  config.plugins.push('prettier');
+  config.rules['prettier/prettier'] = 'error';
+}
+
+if (isInstalled('react') || isInstalled('preact')) {
+  config.extends.push('airbnb');
+  Object.assign(config.rules, {
     'react/jsx-curly-newline': 'off',
     'react/jsx-indent': 'off',
     'react/jsx-no-bind': 'off',
@@ -44,6 +58,16 @@ module.exports = {
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
-    'require-await': 'error',
-  },
-};
+  });
+} else {
+  config.extends.push('airbnb-base');
+}
+
+if (isInstalled('mocha')) {
+  config.plugins.push('mocha');
+  config.env.mocha = true;
+  config.rules['mocha/no-skipped-tests'] = 'error';
+  config.rules['mocha/no-exclusive-tests'] = 'error';
+}
+
+module.exports = config;
