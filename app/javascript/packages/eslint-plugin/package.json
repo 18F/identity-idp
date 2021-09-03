@@ -9,7 +9,8 @@
   },
   "files": [
     "index.js",
-    "configs"
+    "configs",
+    "lib"
   ],
   "license": "CC0-1.0",
   "bugs": {
