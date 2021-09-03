@@ -8,6 +8,7 @@ const config = {
   },
   rules: {
     'class-methods-use-this': 'off',
+    'comma-dangle': 'off',
     'consistent-return': 'off',
     curly: ['error', 'all'],
     'func-names': 'off',
@@ -28,6 +29,7 @@ const config = {
     'no-restricted-syntax': 'off',
     'no-unused-expressions': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    quotes: 'off',
     'implicit-arrow-linebreak': 'off',
     'object-curly-newline': 'off',
     'operator-linebreak': 'off',
