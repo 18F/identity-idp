@@ -251,6 +251,7 @@ describe Users::TwoFactorAuthenticationController do
           expiration: 10,
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
+          country_code: 'US',
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -328,6 +329,7 @@ describe Users::TwoFactorAuthenticationController do
           expiration: 10,
           channel: :voice,
           domain: IdentityConfig.store.domain_name,
+          country_code: 'US',
         )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
@@ -384,6 +386,7 @@ describe Users::TwoFactorAuthenticationController do
           expiration: 10,
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
+          country_code: 'US',
         )
       end
 

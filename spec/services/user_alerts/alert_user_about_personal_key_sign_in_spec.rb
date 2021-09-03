@@ -24,9 +24,9 @@ describe UserAlerts::AlertUserAboutPersonalKeySignIn do
       expect(UserMailer).to have_received(:personal_key_sign_in).
         with(user, confirmed_email_addresses[1].email, disavowal_token: disavowal_token)
       expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
-        with(to: phone_configurations[0].phone)
+        with(to: phone_configurations[0].phone, country_code: 'US')
       expect(Telephony).to have_received(:send_personal_key_sign_in_notice).
-        with(to: phone_configurations[1].phone)
+        with(to: phone_configurations[1].phone, country_code: 'US')
 
       expect(response.to_h[:emails]).to eq(2)
       expect(response.to_h[:sms_message_ids].size).to eq(2)

@@ -59,6 +59,7 @@ describe Idv::SendPhoneConfirmationOtp do
           expiration: 10,
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
+          country_code: 'US',
         )
       end
     end
@@ -85,6 +86,7 @@ describe Idv::SendPhoneConfirmationOtp do
           expiration: 10,
           channel: :voice,
           domain: IdentityConfig.store.domain_name,
+          country_code: 'US',
         )
       end
     end

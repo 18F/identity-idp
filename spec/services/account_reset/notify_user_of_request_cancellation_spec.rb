@@ -29,9 +29,9 @@ describe AccountReset::NotifyUserOfRequestCancellation do
       phone_config2 = create(:phone_configuration, user: user)
 
       expect(Telephony).to receive(:send_account_reset_cancellation_notice).
-        with(to: phone_config1.phone)
+        with(to: phone_config1.phone, country_code: 'US')
       expect(Telephony).to receive(:send_account_reset_cancellation_notice).
-        with(to: phone_config2.phone)
+        with(to: phone_config2.phone, country_code: 'US')
 
       subject.call
     end
