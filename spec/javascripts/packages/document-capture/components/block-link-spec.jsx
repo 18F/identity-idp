@@ -11,6 +11,7 @@ describe('document-capture/components/block-link', () => {
     const link = getByRole('link');
 
     expect(link.hasAttribute('target')).to.be.false();
+    expect(link.hasAttribute('rel')).to.be.false();
     expect(link.textContent).to.equal(linkText);
   });
 
@@ -24,6 +25,7 @@ describe('document-capture/components/block-link', () => {
     const link = getByRole('link');
 
     expect(link.getAttribute('target')).to.equal('_blank');
+    expect(link.getAttribute('rel')).to.equal('noreferrer');
     expect(link.textContent).to.equal(`${linkText} links.new_window`);
   });
 });
