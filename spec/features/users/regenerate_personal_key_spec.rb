@@ -20,7 +20,7 @@ feature 'View personal key' do
           with(user, user.email).
           and_return(personal_key_sign_in_mail)
         expect(Telephony).to receive(:send_personal_key_regeneration_notice).
-          with(to: user.phone_configurations.first.phone)
+          with(to: user.phone_configurations.first.phone, country_code: 'US')
 
         visit account_two_factor_authentication_path
         click_button t('account.links.regenerate_personal_key')

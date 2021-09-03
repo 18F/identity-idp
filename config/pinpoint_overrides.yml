@@ -87,8 +87,6 @@ IE:
   supports_voice: false
 IL:
   supports_voice: false
-IN:
-  supports_sms: true
 IQ:
   supports_sms_unconfirmed: false
 IS:
