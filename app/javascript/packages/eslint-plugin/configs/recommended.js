@@ -59,6 +59,7 @@ if (isInstalled('react') || isInstalled('preact')) {
     'react/jsx-wrap-multilines': 'off',
     'react/jsx-uses-react': 'off',
     'react/react-in-jsx-scope': 'off',
+    'react/require-default-props': 'off',
     'react/prop-types': 'off',
   });
 } else {
