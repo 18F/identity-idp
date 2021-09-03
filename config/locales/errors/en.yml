@@ -93,8 +93,8 @@ en:
         an authenticator. Please use a different phone number.
       phone_unsupported: Sorry, we are unable to send SMS at this time. Please try the
         phone call option below, or use your personal key.
-      premium_rate_phone: This number has a toll connected to it. Please select a
-        different number and try again.
+      premium_rate_phone: This appears to be a premium rate phone number. Please
+        select a different number and try again.
       pwned_password: The password you entered is not safe. It’s in a list of known
         passwords exposed in data breaches.
       try_again: Please try again.
