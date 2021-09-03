@@ -6,11 +6,18 @@ These configurations largely inherit from the [TTS JavaScript coding standards](
 
 ## Installation
 
-Install using [NPM](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/). [Prettier](https://prettier.io/) and [ESLint](https://eslint.org/) are required as peer dependencies and should be installed if they are not already.
+Install using [NPM](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/). [ESLint](https://eslint.org/) is required as a peer dependency and should be installed if it is not already.
 
 ```
-npm install --save-dev @18f/eslint-plugin-identity eslint prettier
+npm install --save-dev @18f/eslint-plugin-identity eslint
 ```
+
+The configuration automatically includes additional behavior if any of the following packages are installed in your project:
+
+- If `@babel/core` is installed, `@babel/eslint-parser` is used as the parser.
+- If `mocha` is installed, the Mocha environment and Mocha-specific rules are enabled.
+- If `react` or `preact` is installed, JSX and React rules are enabled.
+- If `prettier` is installed, Prettier rules are enabled.
 
 ## Usage
 
