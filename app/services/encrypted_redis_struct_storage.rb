@@ -57,9 +57,6 @@ module EncryptedRedisStructStorage
     REDIS_POOL.with do |client|
       client.setex(struct_key, expires_in, ciphertext)
     end
-    READTHIS_POOL.with do |client|
-      client.write(struct_key, ciphertext, expires_in: expires_in)
-    end
   end
 
   def key(id, type:)
