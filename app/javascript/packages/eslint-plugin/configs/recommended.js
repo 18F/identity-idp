@@ -29,6 +29,7 @@ module.exports = {
     'no-param-reassign': ['off', 'never'],
     'no-confusing-arrow': 'off',
     'no-plusplus': 'off',
+    'no-restricted-syntax': 'off',
     'no-unused-expressions': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'implicit-arrow-linebreak': 'off',
