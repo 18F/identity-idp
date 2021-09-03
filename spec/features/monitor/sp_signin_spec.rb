@@ -15,10 +15,7 @@ RSpec.describe 'smoke test: SP initiated sign in' do
 
       click_on 'Agree and continue' if on_consent_screen?
 
-      if oidc_sp_is_usajobs?
-        expect(page).to have_content('Welcome ')
-        expect(current_url).to match(%r{https://.*usajobs\.gov})
-      elsif monitor.remote?
+      if monitor.remote?
         expect(page).to have_content('OpenID Connect Sinatra Example')
         expect(current_url).to match(%r{https://(sp|\w+-identity)-oidc-sinatra})
       else
