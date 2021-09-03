@@ -494,12 +494,12 @@ module Features
     end
 
     def submit_form_with_invalid_password
-      fill_in 'Password', with: 'invalid'
+      fill_in t('forms.password'), with: 'invalid'
       click_button t('forms.buttons.continue')
     end
 
     def submit_form_with_valid_password(password = VALID_PASSWORD)
-      fill_in 'Password', with: password
+      fill_in t('forms.password'), with: password
       click_button t('forms.buttons.continue')
     end
 

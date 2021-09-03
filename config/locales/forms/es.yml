@@ -60,6 +60,7 @@ es:
       file_updated: Archivo actualizado
     messages:
       remember_device: Recuerde este navegador
+    password: Contraseña
     passwords:
       edit:
         buttons:

@@ -14,7 +14,7 @@
       html: { autocomplete: 'off' },
     ) do |f| %>
   <%= f.input :password, required: true,
-                         label: t('idv.form.password'),
+                         label: t('forms.password'),
                          input_html: { aria: { invalid: false, describedby: 'password-description' },
                                        class: 'password-toggle' } %>
   <%= render 'devise/shared/password_strength', forbidden_passwords: @forbidden_passwords %>

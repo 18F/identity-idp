@@ -55,6 +55,7 @@ en:
       file_updated: File updated
     messages:
       remember_device: Remember this browser
+    password: Password
     passwords:
       edit:
         buttons:

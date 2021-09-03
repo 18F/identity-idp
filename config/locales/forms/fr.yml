@@ -61,6 +61,7 @@ fr:
       file_updated: Fichier mis à jour
     messages:
       remember_device: Enregistrer ce navigateur
+    password: Mot de passe
     passwords:
       edit:
         buttons:
