@@ -32,7 +32,7 @@ acuant_attempt_window_in_minutes: '360'
 acuant_facial_match_url: ''
 acuant_max_attempts: '20'
 acuant_passlive_url: ''
-# These are dummy creds used to initialize the acuant SDK
+# These are publicly available credentials used to initialize the client-side Acuant SDK
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 acuant_timeout: '45'
