@@ -5,6 +5,7 @@ module Users
     include TwoFactorAuthenticatableMethods
 
     def new
+      raise 'oopsies' if rand < 0.3
       if params.key?(:token)
         process_piv_cac_login
       else

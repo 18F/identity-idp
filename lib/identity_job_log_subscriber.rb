@@ -159,3 +159,9 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 end
 
 IdentityJobLogSubscriber.attach_to :active_job
+
+ActiveSupport::Notifications.subscribe 'process_action.action_controller' do |*args|
+  event = ActiveSupport::Notifications::Event.new *args
+  is_error = event.payload[:exception].present?
+  InstanceMonitor.increment_request_counter(is_error: is_error)
+end
