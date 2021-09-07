@@ -24,6 +24,7 @@ RSpec.describe DocumentProofingJob, type: :job do
       ssn: '123456789',
       phone: '18888675309',
       state: 'MT',
+      state_id_type: 'drivers_license',
     }
   end
 
@@ -146,6 +147,7 @@ RSpec.describe DocumentProofingJob, type: :job do
             alert_failure_count: 0,
             image_metrics: {},
             state: 'MT',
+            state_id_type: 'drivers_license',
             async: true,
             remaining_attempts: IdentityConfig.store.acuant_max_attempts,
             client_image_metrics: {
@@ -198,6 +200,7 @@ RSpec.describe DocumentProofingJob, type: :job do
             alert_failure_count: 0,
             image_metrics: {},
             state: 'MT',
+            state_id_type: 'drivers_license',
             async: true,
             remaining_attempts: IdentityConfig.store.acuant_max_attempts,
             face_match_results: { is_match: true, match_score: nil },

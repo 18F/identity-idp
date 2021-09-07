@@ -68,6 +68,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         last_name: 'SAMPLE',
         dob: '1986-07-01',
         state: 'MD',
+        state_id_type: 'drivers_license',
       }
 
       expect(response.pii_from_doc).to include(minimum_expected_hash)
@@ -99,6 +100,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         last_name: 'SAMPLE',
         dob: '1986-10-13',
         state: 'MD',
+        state_id_type: 'drivers_license',
       }
 
       expect(response.pii_from_doc).to include(minimum_expected_hash)

@@ -239,6 +239,7 @@ describe Idv::ImageUploadsController do
           exception: nil,
           doc_auth_result: 'Passed',
           state: 'MT',
+          state_id_type: 'drivers_license',
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
           client_image_metrics: {
@@ -264,6 +265,7 @@ describe Idv::ImageUploadsController do
         let(:first_name) { 'FAKEY' }
         let(:last_name) { 'MCFAKERSON' }
         let(:state) { 'ND' }
+        let(:state_id_type) { 'drivers_license' }
         let(:dob) { '10/06/1938' }
 
         before do
@@ -277,6 +279,7 @@ describe Idv::ImageUploadsController do
                 first_name: first_name,
                 last_name: last_name,
                 state: state,
+                state_id_type: state_id_type,
                 dob: dob,
               },
             ),
@@ -306,6 +309,7 @@ describe Idv::ImageUploadsController do
               exception: nil,
               doc_auth_result: 'Passed',
               state: 'ND',
+              state_id_type: 'drivers_license',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
               client_image_metrics: {
@@ -354,6 +358,7 @@ describe Idv::ImageUploadsController do
               exception: nil,
               doc_auth_result: 'Passed',
               state: 'Maryland',
+              state_id_type: 'drivers_license',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
               client_image_metrics: {
@@ -402,6 +407,7 @@ describe Idv::ImageUploadsController do
               exception: nil,
               doc_auth_result: 'Passed',
               state: 'ND',
+              state_id_type: 'drivers_license',
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
               client_image_metrics: {
@@ -474,6 +480,7 @@ describe Idv::ImageUploadsController do
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
           state: nil,
+          state_id_type: nil,
           exception: nil,
           async: false,
           client_image_metrics: {
@@ -524,6 +531,7 @@ describe Idv::ImageUploadsController do
           billed: true,
           doc_auth_result: 'Caution',
           state: nil,
+          state_id_type: nil,
           exception: nil,
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,

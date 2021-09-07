@@ -76,6 +76,7 @@ module Idv
       )
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc[:state]
+      response.extra[:state_id_type] = response.pii_from_doc[:state_id_type]
 
       update_analytics(response)
 

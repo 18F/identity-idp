@@ -2,6 +2,12 @@ module DocAuth
   class Response
     attr_reader :errors, :exception, :extra, :pii_from_doc
 
+    ID_TYPE_SLUGS = {
+      'Identification Card' => 'state_id_card',
+      'Permit' => 'drivers_permit',
+      'Drivers License' => 'drivers_license',
+    }
+
     def initialize(success:, errors: {}, exception: nil, extra: {}, pii_from_doc: {})
       @success = success
       @errors = errors.to_h

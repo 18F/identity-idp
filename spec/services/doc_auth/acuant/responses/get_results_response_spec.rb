@@ -68,7 +68,7 @@ RSpec.describe DocAuth::Acuant::Responses::GetResultsResponse do
         state_id_expiration: '2022-10-24',
         state_id_number: 'DOE-84-1165',
         state_id_jurisdiction: 'ND',
-        state_id_type: 'drivers_license',
+        state_id_type: 'state_id_card',
       )
     end
   end
