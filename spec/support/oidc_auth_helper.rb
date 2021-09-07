@@ -9,7 +9,7 @@ module OidcAuthHelper
   end
 
   def visit_idp_from_ial1_oidc_sp(**args)
-    params = ial1_params args
+    params = ial1_params(**args)
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
     oidc_path
@@ -17,7 +17,7 @@ module OidcAuthHelper
 
   def visit_idp_from_ial2_strict_oidc_sp(**args)
     args[:acr_values] = Saml::Idp::Constants::IAL2_STRICT_AUTHN_CONTEXT_CLASSREF
-    params = ial2_params args
+    params = ial2_params(**args)
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
     oidc_path
@@ -25,21 +25,21 @@ module OidcAuthHelper
 
   def visit_idp_from_ial_max_oidc_sp(**args)
     args[:acr_values] = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
-    params = ial2_params args
+    params = ial2_params(**args)
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
     oidc_path
   end
 
   def visit_idp_from_ial2_oidc_sp(**args)
-    params = ial2_params args
+    params = ial2_params(**args)
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
     oidc_path
   end
 
   def visit_idp_from_ial1_oidc_sp_requesting_aal3(**args)
-    params = ial1_params args
+    params = ial1_params(**args)
     include_aal3(params)
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
@@ -48,7 +48,7 @@ module OidcAuthHelper
 
   def visit_idp_from_ial1_oidc_sp_defaulting_to_aal3(**args)
     args[:client_id] ||= OIDC_AAL3_ISSUER
-    params = ial1_params args
+    params = ial1_params(**args)
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
     oidc_path

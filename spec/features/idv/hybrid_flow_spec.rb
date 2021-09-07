@@ -17,7 +17,7 @@ describe 'Hybrid Flow' do
 
     expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       sms_link = config[:link]
-      impl.call(config)
+      impl.call(**config)
     end
 
     perform_in_browser(:desktop) do

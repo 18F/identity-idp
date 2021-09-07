@@ -187,9 +187,9 @@ module Users
       }
 
       if UserSessionContext.authentication_context?(context)
-        Telephony.send_authentication_otp(params)
+        Telephony.send_authentication_otp(**params)
       else
-        Telephony.send_confirmation_otp(params)
+        Telephony.send_confirmation_otp(**params)
       end
     end
 
