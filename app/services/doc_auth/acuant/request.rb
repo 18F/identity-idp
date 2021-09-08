@@ -121,7 +121,7 @@ module DocAuth
           success: false,
           errors: error,
           exception: exception,
-          extra: { vendor: 'Acuant' }
+          extra: { vendor: 'Acuant' },
         )
       end
 
