@@ -54,6 +54,7 @@ module DocAuth
           success: false,
           errors: { network: true },
           exception: exception,
+          extra: { vendor: 'TrueID' },
         )
       end
 

@@ -53,6 +53,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
+      expect(response.to_h[:vendor]).to eq('TrueID')
     end
     it 'has no error messages' do
       expect(response.error_messages).to be_empty
@@ -75,6 +76,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
     it 'includes expiration' do
       expect(response.pii_from_doc).to include(state_id_expiration: '2099-10-15')
+    end
+
+    it 'excludes pii fields from logging' do
+      expect(response.extra_attributes.keys).to_not include(*described_class::PII_EXCLUDES)
+    end
+
+    it 'excludes unnecessary raw Alert data from logging' do
+      expect(response.extra_attributes.keys.any? { |key| key.start_with?('Alert_') }).to eq(false)
     end
   end
 
@@ -131,6 +140,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:general]).to contain_exactly(
         DocAuth::Errors::GENERAL_ERROR_LIVENESS,
       )
+      expect(output[:vendor]).to eq('TrueID')
     end
 
     it 'it produces appropriate errors with liveness and everything failing' do
@@ -152,6 +162,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info)
+      expect(output[:vendor]).to eq('TrueID')
     end
 
     it 'it produces reasonable output for internal application error' do
@@ -168,6 +179,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS])
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info, :exception)
+      expect(output[:vendor]).to eq('TrueID')
     end
 
     it 'it produces reasonable output for a malformed TrueID response' do

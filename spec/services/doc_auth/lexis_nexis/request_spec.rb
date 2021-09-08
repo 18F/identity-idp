@@ -49,6 +49,7 @@ RSpec.describe DocAuth::LexisNexis::Request do
           response = subject.fetch
 
           expect(response.class).to eq(DocAuth::Response)
+          expect(response.extra).to include(vendor: 'TrueID')
         end
 
         it 'includes information on the error' do
