@@ -116,10 +116,10 @@ module DocAuth
         DocAuth::RequestError.new(message, http_response.status)
       end
 
-      def create_error_response(error, exception)
+      def create_error_response(errors, exception)
         DocAuth::Response.new(
           success: false,
-          errors: error,
+          errors: errors,
           exception: exception,
           extra: { vendor: 'Acuant' },
         )

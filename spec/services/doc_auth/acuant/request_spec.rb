@@ -138,6 +138,7 @@ RSpec.describe DocAuth::Acuant::Request do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(network: true)
         expect(response.exception).to be_a(Faraday::ConnectionFailed)
+        expect(response.extra).to include(vendor: 'Acuant')
       end
     end
 

@@ -81,6 +81,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'excludes pii fields from logging' do
       expect(response.extra_attributes.keys).to_not include(*described_class::PII_EXCLUDES)
     end
+
+    it 'excludes unnecessary raw Alert data from logging' do
+      expect(response.extra_attributes.keys.any? { |key| key.start_with?('Alert_') }).to eq(false)
+    end
   end
 
   context 'when the barcode can not be read' do
