@@ -267,11 +267,11 @@ feature 'doc auth verify step' do
       expect(page).to have_text('6**-**-***4')
       expect(page).not_to have_text('666-66-1234')
 
-      check t('forms.ssn.show'), allow_label_click: true
+      check t('forms.ssn.show')
       expect(page).to have_text('666-66-1234')
       expect(page).not_to have_text('6**-**-***4')
 
-      uncheck t('forms.ssn.show'), allow_label_click: true
+      uncheck t('forms.ssn.show')
       expect(page).to have_text('6**-**-***4')
       expect(page).not_to have_text('666-66-1234')
     end
