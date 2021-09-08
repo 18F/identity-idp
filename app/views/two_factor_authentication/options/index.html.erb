@@ -14,9 +14,11 @@
         url: login_two_factor_options_path) do |f| %>
   <div class="margin-bottom-4">
     <fieldset class="margin-0 padding-0 border-0">
-      <legend class="margin-bottom-2">
-        <%= @presenter.label %>
-      </legend>
+      <% if @presenter.label.present? %>
+        <legend class="margin-bottom-2">
+          <%= @presenter.label %>
+        </legend>
+      <% end %>
       <% @presenter.options.each_with_index do |option, index| %>
         <div id="<%= "select_#{option.type}" %>" class="<%= option.html_class %>">
           <%= radio_button_tag(
