@@ -4751,12 +4751,13 @@ icss-utils@^4.0.0, icss-utils@^4.1.1:
   dependencies:
     postcss "^7.0.14"
 
-identity-style-guide@^6.0.0:
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-6.0.0.tgz#dc7c629c2744a77f4052e3adb5447fef3c2d7fca"
-  integrity sha512-JutK+sdE9RNYpdlMshI+eV6FmU/AIyavfPlyFsJMjOreyvPV/7L6F8X0j91puXiXj6xQPss9ZdENJrJ6/T24OA==
+identity-style-guide@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-6.1.0.tgz#167cc83b65a68f595ea349048d4db2e634363aee"
+  integrity sha512-8+PgovkibnL3wm+xrHoPXRq0mmEgFaIMHGpN40ieCqlEiB7LFubQE3wEXc/x1gfctrH8cmYT0A1oMOpiVzmewA==
   dependencies:
-    uswds "^2.11.2"
+    domready "^1.0.8"
+    uswds "^2.12.1"
 
 ieee754@^1.1.4:
   version "1.1.13"
@@ -9081,10 +9082,10 @@ use@^3.1.0:
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"
   integrity sha512-cwESVXlO3url9YWlFW/TA9cshCEhtu7IKJ/p5soJ/gGpj7vbvFrAY/eIioQ6Dw23KjZhYgiIo8HOs1nQ2vr/oQ==
 
-uswds@^2.11.2:
-  version "2.12.0"
-  resolved "https://registry.yarnpkg.com/uswds/-/uswds-2.12.0.tgz#6430ca5dc0cda01a11f37519fb8f4cd3fe88944f"
-  integrity sha512-zunOnGXVOye8CSTjzakHBTdhH+Swi6uJLD5xOcI6xmlZFgNzk5qpLdcsxrjtknELBqRUccMRAp4MIlds9QQUMw==
+uswds@^2.12.1:
+  version "2.12.1"
+  resolved "https://registry.yarnpkg.com/uswds/-/uswds-2.12.1.tgz#5c4d3ad41ba408b2468d0e094e3ff800c07b84da"
+  integrity sha512-/GxcYeDGeRYwdTg03MokGXczMJ+0gbJ3uLXPHSkSPktzjO+6tuWu7EtXCSxa3yBzNGXTUTeYRRIhTF+WzzbA4w==
   dependencies:
     classlist-polyfill "^1.0.3"
     del "^6.0.0"
