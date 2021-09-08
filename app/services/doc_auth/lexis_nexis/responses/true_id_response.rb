@@ -69,16 +69,18 @@ module DocAuth
         def extra_attributes
           if true_id_product&.dig(:AUTHENTICATION_RESULT).present?
             attrs = response_info.merge(true_id_product[:AUTHENTICATION_RESULT])
-            attrs.reject do |k, _v|
-              PII_EXCLUDES.include? k
+            attrs.reject! do |k, _v|
+              PII_EXCLUDES.include?(k) || k.start_with?('Alert_')
             end
           else
-            {
+            attrs = {
               lexis_nexis_status: parsed_response_body[:Status],
               lexis_nexis_info: parsed_response_body.dig(:Information),
               exception: 'LexisNexis Response Unexpected: TrueID response details not found.',
             }
           end
+
+          basic_logging_info.merge(attrs)
         end
 
         def pii_from_doc
@@ -122,10 +124,7 @@ module DocAuth
           alerts = parsed_alerts
 
           {
-            conversation_id: conversation_id,
-            reference: reference,
             liveness_enabled: @liveness_checking_enabled,
-            vendor: 'TrueID',
             transaction_status: transaction_status,
             transaction_reason_code: transaction_reason_code,
             product_status: product_status,
@@ -134,6 +133,14 @@ module DocAuth
             alert_failure_count: alerts[:failed]&.count.to_i,
             portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
             image_metrics: parse_image_metrics,
+          }
+        end
+
+        def basic_logging_info
+          {
+            conversation_id: conversation_id,
+            reference: reference,
+            vendor: 'TrueID',
           }
         end
 
