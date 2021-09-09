@@ -85,6 +85,36 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'excludes unnecessary raw Alert data from logging' do
       expect(response.extra_attributes.keys.any? { |key| key.start_with?('Alert_') }).to eq(false)
     end
+
+    it 'produces expected hash output' do
+      expect(response.to_h).to match(
+        success: true,
+        exception: nil,
+        errors: {},
+        conversation_id: a_kind_of(String),
+        reference: a_kind_of(String),
+        vendor: 'TrueID',
+        billed: true,
+        liveness_enabled: false,
+        transaction_status: 'passed',
+        transaction_reason_code: 'trueid_pass',
+        product_status: 'pass',
+        doc_auth_result: 'Passed',
+        processed_alerts: a_hash_including(:passed, :failed),
+        alert_failure_count: a_kind_of(Numeric),
+        portrait_match_results: nil,
+        image_metrics: a_hash_including(:front, :back),
+        'ClassificationMode' => 'Automatic',
+        'DocAuthResult' => 'Passed',
+        'DocClass' => 'DriversLicense',
+        'DocClassCode' => 'DriversLicense',
+        'DocClassName' => 'Drivers License',
+        'DocIsGeneric' => 'false',
+        'DocIssuerType' => 'StateProvince',
+        'OrientationChanged' => 'true',
+        'PresentationChanged' => 'false',
+      )
+    end
   end
 
   context 'when the barcode can not be read' do
@@ -153,6 +183,42 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         DocAuth::Errors::GENERAL_ERROR_LIVENESS,
       )
     end
+
+    it 'produces expected hash output' do
+      output = described_class.new(failure_response_with_all_failures, true, config).to_h
+
+      expect(output).to match(
+        success: false,
+        exception: nil,
+        errors: { general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS] },
+        conversation_id: a_kind_of(String),
+        reference: a_kind_of(String),
+        vendor: 'TrueID',
+        billed: true,
+        liveness_enabled: true,
+        transaction_status: 'failed',
+        transaction_reason_code: 'failed_true_id',
+        product_status: 'pass',
+        doc_auth_result: 'Failed',
+        processed_alerts: a_hash_including(:passed, :failed),
+        alert_failure_count: a_kind_of(Numeric),
+        portrait_match_results: {
+          'FaceMatchResult' => 'Fail',
+          'FaceMatchScore' => '0',
+          'FaceStatusCode' => '0',
+          'FaceErrorMessage' => 'Liveness: PoorQuality',
+        },
+        image_metrics: a_hash_including(:front, :back),
+        'ClassificationMode' => 'Automatic',
+        'DocAuthResult' => 'Failed',
+        'DocClass' => 'DriversLicense',
+        'DocClassCode' => 'DriversLicense',
+        'DocClassName' => 'Drivers License',
+        'DocIsGeneric' => 'false',
+        'OrientationChanged' => 'false',
+        'PresentationChanged' => 'false',
+      )
+    end
   end
 
   context 'when response is unexpected' do
@@ -188,6 +254,12 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
       expect(output).to include(:backtrace)
+    end
+
+    it 'is not billed' do
+      output = described_class.new(failure_response_empty, false, config).to_h
+
+      expect(output[:billed]).to eq(false)
     end
   end
 
