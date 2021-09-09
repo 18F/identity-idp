@@ -6,7 +6,7 @@ module Features
 
     def sign_up_with(email)
       visit sign_up_email_path
-      check t('sign_up.terms'), allow_label_click: true
+      check t('sign_up.terms')
       fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
@@ -270,7 +270,7 @@ module Features
 
     def accept_rules_of_use_and_continue_if_displayed
       return unless current_path == rules_of_use_path
-      check :user_terms_accepted, allow_label_click: true
+      check :user_terms_accepted
       click_button t('forms.buttons.continue')
     end
 
@@ -468,7 +468,7 @@ module Features
     end
 
     def submit_form_with_valid_email(email = 'test@test.com')
-      check t('sign_up.terms'), allow_label_click: true
+      check t('sign_up.terms')
       fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
