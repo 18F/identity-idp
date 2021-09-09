@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Throttle do
-  let(:throttle_type) { :idv_acuant }
+  let(:throttle_type) { :idv_doc_auth }
   let(:max_attempts) { 3 }
   let(:attempt_window) { 10 }
 
@@ -94,7 +94,7 @@ RSpec.describe Throttle do
   end
 
   describe '#increment' do
-    subject(:throttle) { Throttle.for(target: 'aaa', throttle_type: :idv_acuant) }
+    subject(:throttle) { Throttle.for(target: 'aaa', throttle_type: :idv_doc_auth) }
 
     it 'increments attempts' do
       expect { throttle.increment }.to change { throttle.reload.attempts }.by(1)
@@ -103,9 +103,9 @@ RSpec.describe Throttle do
 
   describe '#throttled?' do
     let(:user) { create(:user) }
-    let(:throttle_type) { :idv_acuant }
+    let(:throttle_type) { :idv_doc_auth }
     let(:throttle) { Throttle.all.first }
-    let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
+    let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
     let(:attempt_window_in_minutes) { IdentityConfig.store.doc_auth_attempt_window_in_minutes }
 
     subject(:throttle) { Throttle.for(user: user, throttle_type: throttle_type) }
@@ -148,12 +148,12 @@ RSpec.describe Throttle do
   end
 
   describe '#throttled_else_increment?' do
-    subject(:throttle) { Throttle.for(target: 'aaaa', throttle_type: :idv_acuant) }
+    subject(:throttle) { Throttle.for(target: 'aaaa', throttle_type: :idv_doc_auth) }
 
     context 'throttle has hit limit' do
       before do
         throttle.update(
-          attempts: IdentityConfig.store.acuant_max_attempts + 1,
+          attempts: IdentityConfig.store.doc_auth_max_attempts + 1,
           attempted_at: Time.zone.now,
         )
       end
