@@ -43,6 +43,7 @@ feature 'Changing authentication factor' do
           expiration: 10,
           channel: :sms,
           domain: IdentityConfig.store.domain_name,
+          country_code: 'US',
         )
 
         expect(current_path).

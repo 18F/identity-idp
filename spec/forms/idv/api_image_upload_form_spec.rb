@@ -111,6 +111,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           billed: true,
           remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
           state: 'MT',
+          state_id_type: 'drivers_license',
           user_id: document_capture_session.user.uuid,
           client_image_metrics: {
             front: JSON.parse(front_image_metadata, symbolize_names: true),

@@ -4,9 +4,9 @@ RSpec.describe RedisRateLimiter do
   let(:now) { Time.zone.now }
 
   around do |ex|
-    REDIS_POOL.with { |r| r.flushdb }
+    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
     ex.run
-    REDIS_POOL.with { |r| r.flushdb }
+    REDIS_POOL.with { |namespaced| namespaced.redis.flushdb }
   end
 
   let(:key) { 'some-unique-identifier' }

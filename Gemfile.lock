@@ -38,10 +38,10 @@ GIT
 
 GIT
   remote: https://github.com/18f/identity-telephony.git
-  revision: ce223b6e55e052a63d6bf731f3bd90957cb2040c
-  tag: v0.3.1
+  revision: b73e77c5b003c1b5aad9e3db867f5896781e9e88
+  tag: v0.4.0
   specs:
-    identity-telephony (0.3.1)
+    identity-telephony (0.4.0)
       aws-sdk-pinpoint
       aws-sdk-pinpointsmsvoice
       i18n
@@ -178,14 +178,14 @@ GEM
       parser (>= 2.4)
       smart_properties
     bindata (2.4.10)
-    binding_of_caller (0.8.0)
+    binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
     blueprinter (0.25.3)
     bootsnap (1.7.5)
       msgpack (~> 1.0)
     brakeman (5.1.1)
     builder (3.2.4)
-    bullet (6.1.2)
+    bullet (6.1.5)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bundler-audit (0.8.0)
@@ -223,7 +223,7 @@ GEM
     crass (1.0.6)
     css_parser (1.9.0)
       addressable
-    debug_inspector (0.0.3)
+    debug_inspector (1.1.0)
     derailed_benchmarks (1.8.1)
       benchmark-ips (~> 2)
       get_process_mem (~> 0)
@@ -298,7 +298,7 @@ GEM
       mail (>= 2.2.1)
     gmail_xoauth (0.4.2)
       oauth (>= 0.3.6)
-    good_job (1.99.0)
+    good_job (2.0.2)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -474,7 +474,7 @@ GEM
       activesupport (>= 4.2)
       choice (~> 0.2.0)
       ruby-graphviz (~> 1.2)
-    rails-html-sanitizer (1.4.1)
+    rails-html-sanitizer (1.4.2)
       loofah (~> 2.3)
     rails-i18n (6.0.0)
       i18n (>= 0.7, < 2)
@@ -512,10 +512,10 @@ GEM
     retries (0.0.5)
     rexml (3.2.5)
     rotp (6.2.0)
-    rqrcode (1.1.2)
+    rqrcode (2.1.0)
       chunky_png (~> 1.0)
-      rqrcode_core (~> 0.1)
-    rqrcode_core (0.1.2)
+      rqrcode_core (~> 1.0)
+    rqrcode_core (1.2.0)
     rspec (3.10.0)
       rspec-core (~> 3.10.0)
       rspec-expectations (~> 3.10.0)
@@ -525,7 +525,7 @@ GEM
     rspec-expectations (3.10.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
-    rspec-mocks (3.10.0)
+    rspec-mocks (3.10.2)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-rails (4.0.1)
@@ -638,7 +638,7 @@ GEM
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (2.0.0)
-    uniform_notifier (1.13.0)
+    uniform_notifier (1.14.2)
     user_agent_parser (2.7.0)
     uuid (2.3.9)
       macaddr (~> 1.0)
@@ -728,7 +728,7 @@ DEPENDENCIES
   faraday
   foundation_emails
   gmail (>= 0.7.1)
-  good_job (< 2.0.0)
+  good_job (~> 2.0.0)
   guard-rspec
   hashie (~> 4.1)
   hiredis (~> 0.6.0)

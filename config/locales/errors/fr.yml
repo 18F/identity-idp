@@ -104,6 +104,8 @@ fr:
       phone_unsupported: Désolé, nous ne sommes pas en mesure d’envoyer des SMS pour
         le moment. S’il vous plaît essayez l’option d’appel téléphonique
         ci-dessous, ou utilisez votre clé personnelle.
+      premium_rate_phone: Il semble s’agir d’un numéro de téléphone surtaxé. Veuillez
+        sélectionner un autre numéro et réessayer.
       pwned_password: Le mot de passe que vous avez entré n’est pas sécurisé. C’est
         dans une liste de mots de passe connus exposés dans les violations de
         données.

@@ -21,7 +21,7 @@ module X509
 
     def []=(key, value)
       if value.is_a?(Hash)
-        super(key, X509::Attribute.new(value))
+        super(key, X509::Attribute.new(**value))
       else
         super(key, X509::Attribute.new(raw: value))
       end

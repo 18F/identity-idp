@@ -96,6 +96,8 @@ es:
         diferente.
       phone_unsupported: Lo sentimos, no podemos enviar SMS en este momento. Pruebe la
         opción de llamada telefónica a continuación o use su clave personal.
+      premium_rate_phone: Parece que se trata de un número de teléfono de tarifa
+        premium. Por favor, seleccione otro número e inténtelo de nuevo.
       pwned_password: La contraseña que ingresaste no es segura. Está en una lista de
         contraseñas conocidas expuestas en violaciones de datos.
       try_again: Por favor, inténtelo de nuevo.

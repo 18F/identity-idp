@@ -93,6 +93,6 @@ class ServiceProviderRequestProxy
   end
 
   def self.hash_to_spr(hash, uuid)
-    ServiceProviderRequest.new(hash.merge(uuid: uuid))
+    ServiceProviderRequest.new(**hash.merge(uuid: uuid))
   end
 end

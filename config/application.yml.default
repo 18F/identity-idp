@@ -32,7 +32,7 @@ acuant_attempt_window_in_minutes: '360'
 acuant_facial_match_url: ''
 acuant_max_attempts: '20'
 acuant_passlive_url: ''
-# These are dummy creds used to initialize the acuant SDK
+# These are publicly available credentials used to initialize the client-side Acuant SDK
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 acuant_timeout: '45'
@@ -58,6 +58,7 @@ database_timeout: '5000'
 deleted_user_accounts_report_configs: '[]'
 disable_email_sending: 'true'
 disallow_all_web_crawlers: 'true'
+pinpoint_sms_sender_id: 'aaa'
 doc_auth_extend_timeout_by_minutes: '40'
 doc_capture_polling_enabled: 'true'
 doc_auth_client_glare_threshold: '50'
@@ -184,6 +185,7 @@ risc_notifications_rate_limit_overrides: '{"https://example.com/push":{"interval
 ruby_workers_enabled: 'true'
 rules_of_use_horizon_years: '6'
 rules_of_use_updated_at: '2021-05-21T00:00:00Z'
+s3_public_reports_enabled: 'false'
 s3_reports_enabled: 'false'
 saml_secret_rotation_enabled: 'false'
 service_provider_request_ttl_hours: '24'
@@ -258,6 +260,7 @@ development:
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
   recurring_jobs_disabled_names: "[]"
   s3_report_bucket_prefix: ''
+  s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2020","secret_key_passphrase":"trust-but-verify"},{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 10000$8$1$
   secret_key_base: development_secret_key_base
@@ -320,6 +323,7 @@ production:
   redis_url: redis://redis.login.gov.internal:6379
   ruby_workers_enabled: 'false'
   s3_report_bucket_prefix: login-gov.reports
+  s3_report_public_bucket_prefix: login-gov-pubdata
   s3_reports_enabled: 'true'
   saml_endpoint_configs: '[]'
   scrypt_cost: 10000$8$1$
@@ -400,6 +404,7 @@ test:
   reset_password_email_max_attempts: '5'
   reset_password_email_window_in_minutes: '80'
   s3_report_bucket_prefix: ''
+  s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2021","secret_key_passphrase":"trust-but-verify"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base

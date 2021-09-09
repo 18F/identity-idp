@@ -8,11 +8,8 @@ module AccountReset
       enqueue_limit: 1,
       perform_limit: 1,
       key: -> do
-        now = arguments.first
-        five_minutes = 5.minutes.to_i
-        rounded = (now.to_i / five_minutes) * five_minutes
-
-        "grant-requests-and-send-emails-#{rounded}"
+        rounded = TimeService.round_time(time: arguments.first, interval: 5.minutes)
+        "grant-requests-and-send-emails-#{rounded.to_i}"
       end,
     )
 

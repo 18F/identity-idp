@@ -11,12 +11,13 @@ module Idv
     validate :validate_images
     validate :throttle_if_rate_limited
 
-    def initialize(params, liveness_checking_enabled:, issuer:, analytics: nil)
+    def initialize(params, liveness_checking_enabled:, issuer:, analytics: nil, uuid_prefix: nil)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
       @issuer = issuer
       @analytics = analytics
       @readable = {}
+      @uuid_prefix = uuid_prefix
     end
 
     def submit
@@ -41,7 +42,7 @@ module Idv
 
     private
 
-    attr_reader :params, :analytics, :issuer, :form_response
+    attr_reader :params, :analytics, :issuer, :form_response, :uuid_prefix
 
     def throttled_else_increment
       return unless document_capture_session
@@ -70,9 +71,12 @@ module Idv
         selfie_image: selfie&.read,
         liveness_checking_enabled: liveness_checking_enabled?,
         image_source: image_source,
+        user_uuid: user_uuid,
+        uuid_prefix: uuid_prefix,
       )
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc[:state]
+      response.extra[:state_id_type] = response.pii_from_doc[:state_id_type]
 
       update_analytics(response)
 

@@ -185,12 +185,12 @@
       {
         "Group": "AUTHENTICATION_RESULT",
         "Name": "DOB_Month",
-        "Values": [{"Value": "10"}]
+        "Values": [{"Value": "7"}]
       },
       {
         "Group": "AUTHENTICATION_RESULT",
         "Name": "DOB_Day",
-        "Values": [{"Value": "13"}]
+        "Values": [{"Value": "1"}]
       },
       {
         "Group": "AUTHENTICATION_RESULT",
@@ -627,12 +627,12 @@
       {
         "Group": "IDAUTH_FIELD_DATA",
         "Name": "Fields_DOB_Month",
-        "Values": [{"Value": "10"}]
+        "Values": [{"Value": "7"}]
       },
       {
         "Group": "IDAUTH_FIELD_DATA",
         "Name": "Fields_DOB_Day",
-        "Values": [{"Value": "13"}]
+        "Values": [{"Value": "1"}]
       },
       {
         "Group": "IDAUTH_FIELD_DATA",

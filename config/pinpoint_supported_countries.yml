@@ -437,7 +437,7 @@ IM:
 IN:
   country_code: '91'
   name: India
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 IQ:
   country_code: '964'

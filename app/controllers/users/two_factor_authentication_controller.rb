@@ -183,15 +183,13 @@ module Users
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         channel: method.to_sym,
         domain: IdentityConfig.store.domain_name,
+        country_code: parsed_phone.country,
       }
-      Telephony.send(send_otp_method_name, params)
-    end
 
-    def send_otp_method_name
       if UserSessionContext.authentication_context?(context)
-        :send_authentication_otp
+        Telephony.send_authentication_otp(**params)
       else
-        :send_confirmation_otp
+        Telephony.send_confirmation_otp(**params)
       end
     end
 

@@ -3,6 +3,8 @@ require 'job_runner/job_configuration'
 
 cron_5m = '0/5 * * * *'
 interval_5m = 5 * 60
+cron_1h = '0 * * * *'
+interval_1h = 60 * 60
 cron_24h = '0 0 * * *'
 inteval_24h = 24 * 60 * 60
 
@@ -115,7 +117,7 @@ all_configs = {
       name: 'SP user counts report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::SpUserCountsReport.new.perform },
+      callback: -> { Reports::SpUserCountsReport.new.perform(Time.zone.now) },
     },
     good_job: {
       class: 'Reports::SpUserCountsReport',
@@ -375,6 +377,20 @@ all_configs = {
       class: 'Reports::DailyAuthsReport',
       cron: cron_24h,
       args: -> { [Time.zone.yesterday] },
+    },
+  },
+  # Removes old rows from the Throttles table
+  remove_old_throttles: {
+    job_runner: {
+      name: 'Remove Old Throttles',
+      interval: interval_1h,
+      timeout: 300,
+      callback: -> { RemoveOldThrottlesJob.new.perform(Time.zone.now) },
+    },
+    good_job: {
+      class: 'RemoveOldThrottlesJob',
+      cron: cron_1h,
+      args: -> { [Time.zone.now] },
     },
   },
 }

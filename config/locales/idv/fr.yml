@@ -121,8 +121,8 @@ fr:
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le moment.
       confirm: Vous avez crypté vos données vérifiées
       gpo:
-        address_on_file: Nous posterons une lettre à l’adresse vérifiée dans nos
-          dossiers. Celle-ci contient un code de confirmation.
+        address_on_file: Nous enverrons une lettre avec un code de confirmation à
+          l'adresse que vous avez indiquée à l'étape précédente.
         new_address: Nous vous enverrons une lettre avec un code de confirmation à
           l’adresse que vous spécifiez.
         resend: Envoyez-moi une autre lettre

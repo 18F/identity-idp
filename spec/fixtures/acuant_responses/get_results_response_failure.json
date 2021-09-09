@@ -214,5 +214,7 @@
     "IsTrial": false,
     "Name": "Dev Test iProov",
     "StorePII": false
-  }
+  },
+  "TamperResult": 1,
+  "TamperSensitivity": 0
 }

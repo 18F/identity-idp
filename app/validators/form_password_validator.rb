@@ -20,7 +20,7 @@ module FormPasswordValidator
   def strong_password
     return unless errors.messages.blank? && password_score.score < min_password_score
 
-    errors.add :password, :weak_password, i18n_variables
+    errors.add :password, :weak_password, **i18n_variables
   end
 
   def password_graphemes_length

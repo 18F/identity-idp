@@ -39,6 +39,7 @@ module DocAuth
           'Fields_xpirationDate_Day' => :state_id_expiration_day, # this is NOT a typo
           'Fields_ExpirationDate_Month' => :state_id_expiration_month,
           'Fields_ExpirationDate_Year' => :state_id_expiration_year,
+          'Fields_DocumentClassName' => :state_id_type,
         }.freeze
         attr_reader :config
 
@@ -88,24 +89,24 @@ module DocAuth
             pii[idp_key] = true_id_product[:IDAUTH_FIELD_DATA][true_id_key]
           end
 
-          pii[:state_id_type] = 'drivers_license'
+          pii[:state_id_type] = DocAuth::Response::ID_TYPE_SLUGS[pii[:state_id_type]]
 
           if pii[:dob_month] && pii[:dob_day] && pii[:dob_year]
-            pii[:dob] = [
-              pii.delete(:dob_year),
-              pii.delete(:dob_month),
-              pii.delete(:dob_day),
-            ].join('-')
+            pii[:dob] = Date.new(
+              pii.delete(:dob_year).to_i,
+              pii.delete(:dob_month).to_i,
+              pii.delete(:dob_day).to_i,
+            ).to_s
           end
 
           if pii[:state_id_expiration_month] &&
              pii[:state_id_expiration_day] &&
              pii[:state_id_expiration_year]
-            pii[:state_id_expiration] = [
-              pii.delete(:state_id_expiration_year),
-              pii.delete(:state_id_expiration_month),
-              pii.delete(:state_id_expiration_day),
-            ].join('-')
+            pii[:state_id_expiration] = Date.new(
+              pii.delete(:state_id_expiration_year).to_i,
+              pii.delete(:state_id_expiration_month).to_i,
+              pii.delete(:state_id_expiration_day).to_i,
+            ).to_s
           end
 
           pii

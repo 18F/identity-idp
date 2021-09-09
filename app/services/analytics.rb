@@ -28,6 +28,7 @@ class Analytics
       user_ip: request&.remote_ip,
       service_provider: sp,
       event_name: event,
+      git_sha: IdentityConfig::GIT_SHA,
     )
   end
 

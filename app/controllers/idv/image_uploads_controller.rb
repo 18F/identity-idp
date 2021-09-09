@@ -23,6 +23,7 @@ module Idv
         liveness_checking_enabled: liveness_checking_enabled?,
         issuer: sp_session[:issuer].to_s,
         analytics: analytics,
+        uuid_prefix: current_sp&.app_id,
       )
     end
   end

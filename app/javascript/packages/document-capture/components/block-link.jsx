@@ -22,8 +22,13 @@ function BlockLink({ url, children, isNewTab = false }) {
     .filter(Boolean)
     .join(' ');
 
+  let newTabProps;
+  if (isNewTab) {
+    newTabProps = { target: '_blank', rel: 'noreferrer' };
+  }
+
   return (
-    <a href={url} className={classes} target={isNewTab ? '_blank' : undefined}>
+    <a href={url} className={classes} {...newTabProps}>
       {children}
       {isNewTab && <span className="usa-sr-only"> {t('links.new_window')}</span>}
       <svg
