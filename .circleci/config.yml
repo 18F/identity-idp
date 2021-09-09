@@ -60,7 +60,7 @@ commands:
             - v1-identity-idp-yarn-
       - run:
           name: Install Yarn
-          command: yarn install --ignore-engines --cache-folder ~/.cache/yarn
+          command: yarn install --frozen-lockfile --ignore-engines --cache-folder ~/.cache/yarn
       - run:
           name: Print Node.js version
           command: node -v

@@ -34,8 +34,6 @@ lint:
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
 # JavaScript
-	@echo "--- lint yarn lockfile ---"
-	make lint_yarn_lockfile
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
@@ -54,9 +52,6 @@ lint:
 
 lint_erb:
 	bundle exec erblint app/views
-
-lint_yarn_lockfile:
-	(! git diff --name-only | grep yarn.lock) || (echo "Error: Sync Yarn lockfile using 'yarn install'"; exit 1)
 
 lint_yaml: normalize_yaml
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
