@@ -106,7 +106,7 @@ RSpec.describe Throttle do
     let(:throttle_type) { :idv_acuant }
     let(:throttle) { Throttle.all.first }
     let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
-    let(:attempt_window_in_minutes) { IdentityConfig.store.acuant_attempt_window_in_minutes }
+    let(:attempt_window_in_minutes) { IdentityConfig.store.doc_auth_attempt_window_in_minutes }
 
     subject(:throttle) { Throttle.for(user: user, throttle_type: throttle_type) }
 

@@ -158,7 +158,7 @@ feature 'doc auth document capture step' do
         throttle_type: :idv_acuant,
       )
 
-      travel_to(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now + 1) do
+      travel_to(IdentityConfig.store.doc_auth_attempt_window_in_minutes.minutes.from_now + 1) do
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_document_capture_step
         attach_and_submit_images
@@ -249,7 +249,7 @@ feature 'doc auth document capture step' do
         throttle_type: :idv_acuant,
       )
 
-      travel_to(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now + 1) do
+      travel_to(IdentityConfig.store.doc_auth_attempt_window_in_minutes.minutes.from_now + 1) do
         sign_in_and_2fa_user(user)
         complete_doc_auth_steps_before_document_capture_step
         attach_and_submit_images
