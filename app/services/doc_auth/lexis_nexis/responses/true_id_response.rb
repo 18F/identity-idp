@@ -141,7 +141,12 @@ module DocAuth
             conversation_id: conversation_id,
             reference: reference,
             vendor: 'TrueID',
+            billed: billed?,
           }
+        end
+
+        def billed?
+          !!doc_auth_result && !doc_auth_result_unknown?
         end
 
         def all_passed?
@@ -169,6 +174,10 @@ module DocAuth
 
         def doc_auth_result_attention?
           doc_auth_result == 'Attention'
+        end
+
+        def doc_auth_result_unknown?
+          doc_auth_result == 'Unknown'
         end
 
         def doc_auth_result
