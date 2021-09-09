@@ -63,7 +63,7 @@ lint_yaml: normalize_yaml
 
 lintfix:
 	@echo "--- rubocop fix ---"
-	bundle exec rubocop -R -a
+	bundle exec rubocop -a
 
 brakeman:
 	bundle exec brakeman
