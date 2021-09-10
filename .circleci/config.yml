@@ -168,7 +168,7 @@ jobs:
             - public/packs
             - public/packs-test
 
-  build:
+  ruby_test:
     executor: ruby_browsers
 
     environment:
@@ -368,7 +368,7 @@ workflows:
   release:
     jobs:
       - setup
-      - build:
+      - ruby_test:
           requires:
             - setup
       - javascript_build:
