@@ -55,7 +55,7 @@ feature 'Backup codes' do
       click_continue
 
       generated_at = user.backup_code_configurations.
-                     order(created_at: :asc).last.created_at.
+                     order(created_at: :asc).first.created_at.
                      in_time_zone('UTC')
       formatted_generated_at = l(generated_at, format: t('time.formats.event_timestamp'))
 
