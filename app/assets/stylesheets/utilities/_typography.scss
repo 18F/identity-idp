@@ -47,11 +47,3 @@ h6, .h6 { font-size: $h6; }
   h6, .h6 { font-size: $sm-h6; }
 }
 // scss-lint:enable SingleLinePerSelector, SpaceBeforeBrace
-
-//================================================
-// Pending upstream Login Design System revisions:
-//================================================
-
-.usa-error-message {
-  color: color('error');
-}
