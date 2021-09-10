@@ -79,7 +79,7 @@ module Idv
       def throttled_response
         @flow.analytics.track_event(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-          throttle_type: :idv_acuant,
+          throttle_type: :idv_doc_auth,
         )
         redirect_to throttled_url
         DocAuth::Response.new(
@@ -95,7 +95,7 @@ module Idv
       def throttled_else_increment
         Throttle.for(
           user: effective_user,
-          throttle_type: :idv_acuant,
+          throttle_type: :idv_doc_auth,
         ).throttled_else_increment?
       end
 

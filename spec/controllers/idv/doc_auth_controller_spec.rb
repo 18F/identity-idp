@@ -361,7 +361,7 @@ describe Idv::DocAuthController do
         {
           success: false,
           errors: [{ field: 'front', message: 'Wrong document' }],
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
         }.to_json,
       )
     end
@@ -379,7 +379,7 @@ describe Idv::DocAuthController do
           success: false,
           errors: [{ field: 'pii',
                      message: I18n.t('doc_auth.errors.general.no_liveness') }],
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
         }.to_json,
       )
       expect(@analytics).to have_received(:track_event).with(
@@ -387,7 +387,7 @@ describe Idv::DocAuthController do
           errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           success: false,
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
           step: 'verify_document_status',
           flow_path: 'standard',
           step_count: 1,
@@ -398,7 +398,7 @@ describe Idv::DocAuthController do
           errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           success: false,
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
           step: 'verify_document_status',
           flow_path: 'standard',
           step_count: 1,

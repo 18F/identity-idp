@@ -5,7 +5,7 @@ feature 'doc capture document capture step' do
   include DocAuthHelper
   include DocCaptureHelper
 
-  let(:max_attempts) { IdentityConfig.store.acuant_max_attempts }
+  let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:user) { user_with_2fa }
   let(:liveness_enabled) { true }
   let(:sp_requests_ial2_strict) { true }
@@ -273,7 +273,7 @@ feature 'doc capture document capture step' do
         ),
       )
 
-      allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
       end
@@ -283,12 +283,12 @@ feature 'doc capture document capture step' do
       expect(page).to have_current_path(idv_session_errors_throttled_path)
       expect(fake_analytics).to have_logged_event(
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-        throttle_type: :idv_acuant,
+        throttle_type: :idv_doc_auth,
       )
 
       DocAuth::Mock::DocAuthMockClient.reset!
 
-      travel_to(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now + 1) do
+      travel_to(IdentityConfig.store.doc_auth_attempt_window_in_minutes.minutes.from_now + 1) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 
@@ -359,7 +359,7 @@ feature 'doc capture document capture step' do
         ),
       )
 
-      allow(IdentityConfig.store).to receive(:acuant_max_attempts).and_return(max_attempts)
+      allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
       max_attempts.times do
         attach_and_submit_images
       end
@@ -369,12 +369,12 @@ feature 'doc capture document capture step' do
       expect(page).to have_current_path(idv_session_errors_throttled_path)
       expect(fake_analytics).to have_logged_event(
         Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-        throttle_type: :idv_acuant,
+        throttle_type: :idv_doc_auth,
       )
 
       DocAuth::Mock::DocAuthMockClient.reset!
 
-      travel_to(IdentityConfig.store.acuant_attempt_window_in_minutes.minutes.from_now + 1) do
+      travel_to(IdentityConfig.store.doc_auth_attempt_window_in_minutes.minutes.from_now + 1) do
         complete_doc_capture_steps_before_first_step(user)
         attach_and_submit_images
 
