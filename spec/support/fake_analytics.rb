@@ -21,6 +21,8 @@ class FakeAnalytics
 end
 
 RSpec::Matchers.define :have_logged_event do |event_name, attributes|
+  attributes ||= {}
+
   match do |actual|
     expect(actual).to be_kind_of(FakeAnalytics)
 
