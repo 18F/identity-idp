@@ -16,6 +16,10 @@ describe 'sign_up/passwords/new.html.erb' do
     expect(rendered).to have_content(t('forms.confirmation.show_hdr'))
   end
 
+  it 'renders the proper Password label' do
+    expect(rendered).to have_content(t('forms.password'))
+  end
+
   it 'renders the proper help text' do
     expect(rendered).to have_content(
       t('instructions.password.info.lead', min_length: Devise.password_length.first),
