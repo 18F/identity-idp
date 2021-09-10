@@ -58,6 +58,19 @@ commands:
           key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
+  yarn-production-install:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
+            - v1-identity-idp-yarn-production
+      - run:
+          name: Install Yarn
+          command: yarn install --production --frozen-lockfile --ignore-engines --cache-folder ~/.cache/yarn
+      - save_cache:
+          key: v1-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
 
   bundle-install:
     steps:
@@ -247,11 +260,11 @@ jobs:
     steps:
       - checkout
       - node-install
+      - yarn-production-install
       - bundle-install
       - run:
           name: Run Tests
           command: |
-            yarn install --production --frozen-lockfile
             bundle exec rake assets:precompile
 
   lints:
