@@ -5,8 +5,8 @@ locals:
 <div class="margin-top-4">
   <% if !local_assigns[:hide_start_over] %>
     <%= button_to(
-          idv_doc_auth_step_path(step: :reset),
-          method: :put,
+          idv_session_path,
+          method: :delete,
           class: 'usa-button usa-button--unstyled'
         ) { t('doc_auth.buttons.start_over') } %>
   <% end %>

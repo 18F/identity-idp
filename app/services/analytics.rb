@@ -141,6 +141,7 @@ class Analytics
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
   IDV_REVIEW_COMPLETE = 'IdV: review complete'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze
+  IDV_START_OVER = 'IdV: start over'.freeze
   IDV_GPO_ADDRESS_LETTER_REQUESTED = 'IdV: USPS address letter requested'.freeze
   IDV_GPO_ADDRESS_SUBMITTED = 'IdV: USPS address submitted'.freeze
   IDV_GPO_ADDRESS_VISITED = 'IdV: USPS address visited'.freeze
