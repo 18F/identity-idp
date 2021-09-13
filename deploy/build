@@ -19,12 +19,12 @@ env
 id
 which bundle
 # default bundle directory to shared directory
-: ${BUNDLE_DIRECTORY=/srv/idp/shared/bundle}
+: ${BUNDLE_DIR=/srv/idp/shared/bundle}
 
 # use system libxml2, not the one vendored with nokogiri
 bundle config build.nokogiri --use-system-libraries
 bundle config set --local deployment 'true'
-bundle config set --local path $BUNDLE_DIRECTORY
+bundle config set --local path $BUNDLE_DIR
 bundle config set --local without 'deploy development doc test'
 
 bundle install --jobs 4
