@@ -491,9 +491,6 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    readthis (2.2.0)
-      connection_pool (~> 2.1)
-      redis (>= 3.0, < 5.0)
     redacted_struct (1.1.0)
     redis (4.3.1)
     redis-namespace (1.8.1)
@@ -716,6 +713,7 @@ DEPENDENCIES
   bundler-audit
   capybara-screenshot (>= 1.0.23)
   capybara-selenium (>= 0.0.6)
+  connection_pool
   derailed_benchmarks (~> 1.8)
   device_detector
   devise (~> 4.8)
@@ -769,7 +767,6 @@ DEPENDENCIES
   rails-controller-testing (>= 1.0.4)
   rails-erd (>= 1.6.0)
   raise-if-root
-  readthis
   redacted_struct
   redis (>= 3.2.0)
   redis-namespace
