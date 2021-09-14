@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # This script is called by identity-devops cookbooks as part of the deployment
-# process. It fetches the latest application.yml from S3 to ensure the app is
-# properly configured.
+# process. It fetches identity-idp-config and large data files like pwned passwords and
+# GeoIP from S3.
 
 set -euo pipefail
 
