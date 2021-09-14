@@ -9,12 +9,6 @@ fr:
       delete: Veuillez confirmer
       new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe
-    idv: 
-      come_back_soon: Revenez bientôt
-      get_letter: Obtenez une lettre
-      phone: Vérifiez votre numéro de téléphone
-      review: Saisissez à nouveau votre mot de passe
-      personal_key: Enregistrez votre clé personnelle
     doc_auth:
       doc_capture: Ajoutez votre pièce d'identité
       get_letter: Obtenez une lettre
@@ -33,6 +27,12 @@ fr:
       phone: Modifier votre numéro de téléphone
     enter_2fa_code: Entrez le code de sécurité à utilisation unique
     forget_all_browsers: Oubliez tous les navigateurs
+    idv:
+      come_back_soon: Revenez bientôt
+      get_letter: Obtenez une lettre
+      personal_key: Enregistrez votre clé personnelle
+      phone: Vérifiez votre numéro de téléphone
+      review: Saisissez à nouveau votre mot de passe
     no_auth_option: Aucun message de connexion trouvé
     openid_connect:
       authorization: Autorisation OpenID Connect
