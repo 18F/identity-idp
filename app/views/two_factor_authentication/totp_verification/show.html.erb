@@ -20,7 +20,7 @@
       class: 'col-12',
     ) %>
   </div>
-  <div class="border border-primary-light rounded-lg padding-y-1 margin-top-2 margin-bottom-6 tablet:margin-y-2 col-12 sm-col-7">
+  <div class="border border-primary-light radius-lg padding-y-1 margin-top-2 margin-bottom-6 tablet:margin-y-2 col-12 sm-col-7">
     <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
     <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?,
                       class: 'margin-right-1 margin-left-2' %>
