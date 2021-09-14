@@ -31,7 +31,7 @@ module Reports
       # connections mid-test, so we just skip for now :[
       return yield if rails_env.test?
 
-      ApplicationRecord.connected_to(role: :reading, shard: :read_replica) do
+      ActiveRecord::Base.connected_to(role: :reading, shard: :read_replica) do
         ActiveRecord::Base.transaction do
           quoted_timeout = ActiveRecord::Base.connection.quote(report_timeout)
           ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
