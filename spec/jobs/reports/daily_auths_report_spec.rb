@@ -22,7 +22,7 @@ RSpec.describe Reports::DailyAuthsReport do
     Aws.config[:s3] = {
       stub_responses: {
         put_object: {},
-      }
+      },
     }
   end
 
