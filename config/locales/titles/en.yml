@@ -9,9 +9,22 @@ en:
       delete: Please confirm
       new: Resend confirmation instructions for your account
       show: Choose a password
+    idv: 
+      get_letter: Get a letter
+      phone: Verify your phone number
+      review: Re-enter your password
+      personal_key: Save your personal key
     doc_auth:
+      doc_capture: Add your ID
+      get_started: Lets get started
+      link_sent: Link sent
       otp_delivery: Get code
+      processing_images: Processing your images
+      ssn: Enter your Social Security Number
+      switch_back: Switch back to your computer
+      take_photo: Take photos of your ID with a phone
       verify: Verify identity
+      verify_info: Verify your information 
     edit_info:
       email_language: Edit email language preference
       password: Edit your password

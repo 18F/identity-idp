@@ -20,7 +20,11 @@
   <%= yield(:meta_tags) if content_for?(:meta_tags) %>
 
   <title>
-    <%= APP_NAME %><%= raw(" - #{yield(:title)}") if content_for?(:title) %>
+    <% if content_for?(:title) %>
+      <%= raw("#{yield(:title)} - #{APP_NAME}") %>
+    <% else %>
+      <%= APP_NAME %>
+    <% end %>
   </title>
 
   <%= nonced_javascript_tag do %>

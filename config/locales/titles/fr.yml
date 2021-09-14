@@ -10,8 +10,17 @@ fr:
       new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe
     doc_auth:
+      doc_capture: Ajoutez votre pièce d'identité
+      get_letter: Obtenez une lettre
+      get_started: Commençons
+      link_sent: Lien envoyé
       otp_delivery: Obtenir le code
+      processing_images: Traitement de vos images
+      ssn: Entrez votre numéro de sécurité sociale
+      switch_back: Retournez sur votre ordinateur
+      take_photo: Prenez des photos de votre pièce d'identité avec un téléphone
       verify: Vérifiez votre identité
+      verify_info: Vérifiez vos informations
     edit_info:
       email_language: Modifier la préférence de langue des e-mails
       password: Modifier votre mot de passe
