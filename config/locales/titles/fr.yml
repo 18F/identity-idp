@@ -9,6 +9,12 @@ fr:
       delete: Veuillez confirmer
       new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe
+    idv: 
+      come_back_soon: Revenez bientôt
+      get_letter: Obtenez une lettre
+      phone: Vérifiez votre numéro de téléphone
+      review: Saisissez à nouveau votre mot de passe
+      personal_key: Enregistrez votre clé personnelle
     doc_auth:
       doc_capture: Ajoutez votre pièce d'identité
       get_letter: Obtenez une lettre

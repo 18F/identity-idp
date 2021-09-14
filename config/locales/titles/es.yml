@@ -9,6 +9,12 @@ es:
       delete: Por favor confirmar
       new: Reenviar instrucciones de confirmación de su cuenta
       show: Elija una contraseña
+    idv:
+      come_back_soon: Vuelve pronto
+      get_letter: Recibe una carta 
+      phone: Verifica tu número telefónico
+      review: Vuelve a ingresar tu contraseña
+      personal_key: Guarda tu llave personal
     doc_auth:
       doc_capture: Agrega tu identificación
       get_letter: Recibe una carta

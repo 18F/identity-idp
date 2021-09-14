@@ -9,7 +9,8 @@ en:
       delete: Please confirm
       new: Resend confirmation instructions for your account
       show: Choose a password
-    idv: 
+    idv:
+      come_back_soon: Come back soon
       get_letter: Get a letter
       phone: Verify your phone number
       review: Re-enter your password
