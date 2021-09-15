@@ -52,7 +52,6 @@ linters:
       - '*/app/views/users/shared/*'
       - '*/app/views/users/totp_setup/*'
       - '*/app/views/users/two_factor_authentication_setup/*'
-      - '*/app/views/users/verify_account/throttled.html.erb'
       - '*/app/views/users/verify_password/*'
       - '*/app/views/users/verify_personal_key/*'
       - '*/app/views/users/webauthn_setup/*'
