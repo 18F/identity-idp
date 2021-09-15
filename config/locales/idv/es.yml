@@ -164,7 +164,6 @@ es:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'
       otp_delivery_method: '¿Cómo te gustaría recibir el código?'
-      phone: Número de teléfono del registro
       review: Revise y envíe
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad

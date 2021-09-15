@@ -11,7 +11,6 @@ fr:
       show: Choisissez un mot de passe
     doc_auth:
       doc_capture: Ajoutez votre pièce d'identité
-      get_letter: Obtenez une lettre
       get_started: Commençons
       link_sent: Lien envoyé
       otp_delivery: Obtenir le code
