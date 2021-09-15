@@ -26,7 +26,7 @@
           <div class="radio">
             <%= radio_button_tag('two_factor_options_form[selection]', option.type) %>
             <span class="indicator mt-tiny"></span>
-            <span class="blue bold fs-20p"><%= option.label %></span>
+            <span class="text-primary bold fs-20p"><%= option.label %></span>
             <div class="regular gray-dark fs-10p margin-top-0 mb-tiny"><%= option.info %></div>
           </div>
           <% if option.security_level && @presenter.show_security_level? %>
