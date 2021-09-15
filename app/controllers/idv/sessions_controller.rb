@@ -17,7 +17,6 @@ module Idv
 
     def cancel_verification_attempt_if_pending_profile
       return if current_user.profiles.verification_pending.blank?
-      analytics.track_event(Analytics::IDV_VERIFICATION_ATTEMPT_CANCELLED)
       Idv::CancelVerificationAttempt.new(user: current_user).call
     end
 

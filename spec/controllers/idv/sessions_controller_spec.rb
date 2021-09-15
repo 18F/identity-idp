@@ -58,9 +58,13 @@ describe Idv::SessionsController do
         expect(Idv::CancelVerificationAttempt).to receive(:new).and_return(cancel)
         expect(cancel).to receive(:call)
 
-        delete :destroy
+        delete :destroy, params: { step: 'gpo_verify', location: 'clear_and_start_over' }
 
-        expect(@analytics).to have_logged_event(Analytics::IDV_VERIFICATION_ATTEMPT_CANCELLED)
+        expect(@analytics).to have_logged_event(
+          Analytics::IDV_START_OVER,
+          step: 'gpo_verify',
+          location: 'clear_and_start_over',
+        )
       end
     end
   end
