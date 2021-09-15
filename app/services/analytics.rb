@@ -8,7 +8,7 @@ class Analytics
   end
 
   def track_event(event, attributes = {})
-    update_session_events_and_paths_visited_for_analytics(event) unless attributes[:success]==false
+    update_session_events_and_paths_visited_for_analytics(event) if attributes[:success] != false
     analytics_hash = {
       event_properties: attributes.except(:user_id),
       new_event: first_event_this_session?,
