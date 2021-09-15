@@ -19,13 +19,10 @@
 
   <%= yield(:meta_tags) if content_for?(:meta_tags) %>
 
-  <title>
-    <% if content_for?(:title) %>
-      <%= raw("#{yield(:title)} - #{APP_NAME}") %>
-    <% else %>
-      <%= APP_NAME %>
-    <% end %>
-  </title>
+  
+  <%= content_tag('title',
+                    content_for?(:title) ? raw("#{yield(:title)} - #{APP_NAME}") : APP_NAME, )%>
+  
 
   <%= nonced_javascript_tag do %>
     document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');

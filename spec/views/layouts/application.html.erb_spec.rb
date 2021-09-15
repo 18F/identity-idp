@@ -66,13 +66,24 @@ describe 'layouts/application.html.erb' do
   end
 
   context '<title>' do
-    it 'does not double-escape HTML in the title tag' do
-      view.title("Something with 'single quotes'")
+    context 'with a page title added' do
+      it 'does not double-escape HTML in the title tag' do
+        view.title("Something with 'single quotes'")
 
-      render
+        render
 
-      doc = Nokogiri::HTML(rendered)
-      expect(doc.at_css('title').text).to include("Login.gov - Something with 'single quotes'")
+        doc = Nokogiri::HTML(rendered)
+        expect(doc.at_css('title').text).to include("Something with 'single quotes' - Login.gov")
+      end
+    end
+
+    context 'without a page title added' do
+      it 'should only have Login.gov as title' do
+        render
+
+        doc = Nokogiri::HTML(rendered)
+        expect(doc.at_css('title').text).to include("Login.gov")
+      end
     end
   end
 
