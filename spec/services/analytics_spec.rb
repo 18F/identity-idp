@@ -29,7 +29,7 @@ describe Analytics do
       user: current_user,
       request: request,
       sp: 'http://localhost:3000',
-      first_path_visit_this_session: true,
+      session: {},
       ahoy: ahoy,
     )
   end
@@ -48,6 +48,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        new_event: true,
         path: path,
       }
 
@@ -68,6 +69,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        new_event: true,
         path: path,
       }
 
@@ -97,7 +99,7 @@ describe Analytics do
         user: user,
         request: FakeRequest.new,
         sp: nil,
-        first_path_visit_this_session: true,
+        session: {},
         ahoy: ahoy,
       )
 
@@ -127,6 +129,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        new_event: true,
         path: path,
       }
 
