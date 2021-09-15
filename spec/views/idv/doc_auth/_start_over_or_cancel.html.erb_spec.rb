@@ -32,4 +32,14 @@ describe 'idv/doc_auth/_start_over_or_cancel.html.erb' do
       end
     end
   end
+
+  context 'with step local' do
+    let(:step) { 'first' }
+    let(:locals) { { step: step } }
+
+    it 'creates links with step parameter' do
+      expect(subject).to have_link(t('links.cancel', href: idv_cancel_path(step: step)))
+      expect(subject).to have_css("form[action='#{idv_session_path(step: step)}']")
+    end
+  end
 end
