@@ -29,10 +29,14 @@ describe Idv::SessionsController do
       expect(controller.user_session[:decrypted_pii]).to be_blank
     end
 
-    it 'logs start over' do
-      delete :destroy
+    it 'logs start over with step and location params' do
+      delete :destroy, params: { step: 'first', location: 'get_help' }
 
-      expect(@analytics).to have_logged_event(Analytics::IDV_START_OVER)
+      expect(@analytics).to have_logged_event(
+        Analytics::IDV_START_OVER,
+        step: 'first',
+        location: 'get_help',
+      )
     end
 
     it 'redirects to start of identity verificaton' do
