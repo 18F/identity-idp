@@ -13,7 +13,6 @@ linters:
       - '*/app/views/idv/doc_auth/_error_messages.html.erb'
       - '*/app/views/idv/doc_auth/_ssn_init.html.erb'
       - '*/app/views/idv/doc_auth/_ssn_update.html.erb'
-      - '*/app/views/idv/doc_auth/_start_over_or_cancel.html.erb'
       - '*/app/views/idv/doc_auth/agreement.html.erb'
       - '*/app/views/idv/doc_auth/document_capture.html.erb'
       - '*/app/views/idv/doc_auth/link_sent.html.erb'

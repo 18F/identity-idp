@@ -7,7 +7,7 @@ locals:
     <%= button_to(
           idv_session_path,
           method: :delete,
-          class: 'usa-button usa-button--unstyled'
+          class: 'usa-button usa-button--unstyled',
         ) { t('doc_auth.buttons.start_over') } %>
   <% end %>
   <%= render 'shared/cancel', link: idv_cancel_path(step: local_assigns[:step]) %>
