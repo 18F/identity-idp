@@ -119,7 +119,6 @@ class Analytics
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'.freeze
   DOC_AUTH_WARNING = 'Doc Auth Warning'.freeze
-  DOCUMENT_CAPTURE_SESSION_OVERWRITTEN = 'Document Capture Session Overwritten'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'.freeze
   EMAIL_LANGUAGE_VISITED = 'Email Language: Visited'.freeze

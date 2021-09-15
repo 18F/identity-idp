@@ -416,7 +416,7 @@ describe Idv::DocAuthController do
 
   def mock_document_capture_step
     stub_sign_in(user)
-    DocumentCaptureSession.create_by_user_id(user.id, @analytics, result_id: 1, uuid: 'foo')
+    DocumentCaptureSession.create(user_id: user.id, result_id: 1, uuid: 'foo')
     allow_any_instance_of(Flow::BaseFlow).to \
       receive(:flow_session).and_return(
         'document_capture_session_uuid' => 'foo',
