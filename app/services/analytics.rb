@@ -13,7 +13,7 @@ class Analytics
       event_properties: attributes.except(:user_id),
       new_event: first_event_this_session?,
       new_session_path: first_path_visit_this_session?,
-      path: request.path,
+      path: request&.path,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
     }
