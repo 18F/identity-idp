@@ -37,8 +37,10 @@ class Analytics
   def update_session_events_and_paths_visited_for_analytics(event)
     @session[:paths_visited] ||= {}
     @session[:events] ||= {}
-    @session[:first_path_visit] = !@session[:paths_visited].key?(request.path)
-    @session[:paths_visited][request.path] = true
+    if request
+      @session[:first_path_visit] = !@session[:paths_visited].key?(request.path)
+      @session[:paths_visited][request.path] = true
+    end
     @session[:first_event] = !@session[:events].key?(event)
     @session[:events][event] = true
   end
