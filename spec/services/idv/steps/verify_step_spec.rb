@@ -16,7 +16,6 @@ describe Idv::Steps::VerifyStep do
       'controller',
       session: { sp: { issuer: service_provider.issuer } },
       current_user: user,
-      analytics: FakeAnalytics.new,
       url_options: {},
       request: double(
         'request',

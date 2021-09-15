@@ -1,7 +1,6 @@
 module Idv
   class PhoneStep
-    def initialize(idv_session:, trace_id:, analytics:)
-      @analytics = analytics
+    def initialize(idv_session:, trace_id:)
       self.idv_session = idv_session
       @trace_id = trace_id
     end
@@ -52,9 +51,8 @@ module Idv
 
     def proof_address
       return if idv_session.idv_phone_step_document_capture_session_uuid
-      document_capture_session = DocumentCaptureSession.create_by_user_id(
-        idv_session.current_user.id,
-        @analytics,
+      document_capture_session = DocumentCaptureSession.create(
+        user_id: idv_session.current_user.id,
         requested_at: Time.zone.now,
       )
 

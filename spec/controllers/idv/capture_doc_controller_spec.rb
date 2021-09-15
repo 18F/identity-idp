@@ -26,11 +26,7 @@ describe Idv::CaptureDocController do
 
   describe '#index' do
     let!(:session_uuid) do
-      DocumentCaptureSession.create_by_user_id(
-        user.id,
-        @analytics,
-        requested_at: Time.zone.now,
-      ).uuid
+      DocumentCaptureSession.create!(requested_at: Time.zone.now).uuid
     end
 
     context 'with no session' do
