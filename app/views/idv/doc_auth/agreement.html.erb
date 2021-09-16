@@ -1,12 +1,14 @@
 <% title t('titles.doc_auth.verify') %>
 
-<% if flow_session[:error_message] %>
-  <%= render 'shared/alert', {
-    type: 'error',
-    class: 'margin-bottom-4',
-    message: flow_session[:error_message],
-  } %>
-<% end %>
+<%= render 'shared/alert', {
+  type: 'error',
+  class: [
+    'js-consent-form-alert',
+    'margin-bottom-4',
+    flow_session[:error_message].blank? && 'display-none',
+  ].select(&:present?),
+  message: flow_session[:error_message].presence || t('errors.doc_auth.consent_form'),
+} %>
 
 <h1><%= t('doc_auth.headings.lets_go') %></h1>
 <p><%= t('doc_auth.info.lets_go') %></p>
@@ -19,16 +21,23 @@
                        url: url_for,
                        method: 'put',
                        html: { autocomplete: 'off', class: 'margin-top-2 js-consent-continue-form' } do |f| %>
-  <%= check_box_tag(
-        :ial2_consent_given,
-        true,
-        false,
-        class: 'usa-checkbox__input',
-      ) %>
-  <label class="usa-checkbox__label margin-bottom-4" for="ial2_consent_given">
-    <%= t('doc_auth.instructions.consent') %>
-    <%= new_window_link_to t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url %>
-  </label>
+  <div class="margin-bottom-4">
+    <%= check_box_tag(
+          :ial2_consent_given,
+          true,
+          false,
+          class: 'usa-checkbox__input',
+          required: true,
+          aria: {invalid: false}
+        ) %>
+    <label class="usa-checkbox__label" for="ial2_consent_given">
+      <%= t('doc_auth.instructions.consent') %>
+      <%= new_window_link_to t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url %>
+    </label>
+    <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
+      <%= t('sign_up.agree_to_rules_of_use_and_continue') %>
+    </div>
+  </div>
   <%= f.button :button, t('doc_auth.buttons.continue'), type: :submit,
                class: 'usa-button--big usa-button--wide' %>
 <% end %>
