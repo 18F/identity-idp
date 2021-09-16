@@ -138,6 +138,7 @@ RSpec.describe DocAuth::Acuant::Request do
         expect(response.success?).to eq(false)
         expect(response.errors).to eq(network: true)
         expect(response.exception).to be_a(Faraday::ConnectionFailed)
+        expect(response.extra).to include(vendor: 'Acuant')
       end
     end
 
@@ -159,6 +160,7 @@ RSpec.describe DocAuth::Acuant::Request do
 
         expect_failed_response(response)
         expect(response.errors).to eq(general: [DocAuth::Errors::IMAGE_LOAD_FAILURE])
+        expect(response.extra).to include(vendor: 'Acuant')
       end
 
       it 'it produces a 439 error' do
@@ -172,6 +174,7 @@ RSpec.describe DocAuth::Acuant::Request do
 
         expect_failed_response(response)
         expect(response.errors).to eq(general: [DocAuth::Errors::PIXEL_DEPTH_FAILURE])
+        expect(response.extra).to include(vendor: 'Acuant')
       end
 
       it 'it produces a 440 error' do
@@ -185,6 +188,7 @@ RSpec.describe DocAuth::Acuant::Request do
 
         expect_failed_response(response)
         expect(response.errors).to eq(general: [DocAuth::Errors::IMAGE_SIZE_FAILURE])
+        expect(response.extra).to include(vendor: 'Acuant')
       end
     end
   end

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :throttle do
-    throttle_type { :idv_acuant }
+    throttle_type { :idv_doc_auth }
 
     trait :with_throttled do
       attempts { 9999 }

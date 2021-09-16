@@ -79,9 +79,9 @@ class NewPhoneForm
 
     if @phone_info.type == :voip &&
        !FeatureManagement.voip_allowed_phones.include?(parsed_phone.e164)
-      errors.add(:phone, I18n.t('errors.messages.voip_check_error'))
-    elsif @phone_info.error
       errors.add(:phone, I18n.t('errors.messages.voip_phone'))
+    elsif @phone_info.error
+      errors.add(:phone, I18n.t('errors.messages.voip_check_error'))
     end
   rescue Aws::Pinpoint::Errors::BadRequestException
     errors.add(:phone, :improbable_phone)

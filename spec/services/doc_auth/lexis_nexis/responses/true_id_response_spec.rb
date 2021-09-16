@@ -53,6 +53,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
+      expect(response.to_h[:vendor]).to eq('TrueID')
     end
     it 'has no error messages' do
       expect(response.error_messages).to be_empty
@@ -75,6 +76,44 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
     it 'includes expiration' do
       expect(response.pii_from_doc).to include(state_id_expiration: '2099-10-15')
+    end
+
+    it 'excludes pii fields from logging' do
+      expect(response.extra_attributes.keys).to_not include(*described_class::PII_EXCLUDES)
+    end
+
+    it 'excludes unnecessary raw Alert data from logging' do
+      expect(response.extra_attributes.keys.any? { |key| key.start_with?('Alert_') }).to eq(false)
+    end
+
+    it 'produces expected hash output' do
+      expect(response.to_h).to match(
+        success: true,
+        exception: nil,
+        errors: {},
+        conversation_id: a_kind_of(String),
+        reference: a_kind_of(String),
+        vendor: 'TrueID',
+        billed: true,
+        liveness_enabled: false,
+        transaction_status: 'passed',
+        transaction_reason_code: 'trueid_pass',
+        product_status: 'pass',
+        doc_auth_result: 'Passed',
+        processed_alerts: a_hash_including(:passed, :failed),
+        alert_failure_count: a_kind_of(Numeric),
+        portrait_match_results: nil,
+        image_metrics: a_hash_including(:front, :back),
+        'ClassificationMode' => 'Automatic',
+        'DocAuthResult' => 'Passed',
+        'DocClass' => 'DriversLicense',
+        'DocClassCode' => 'DriversLicense',
+        'DocClassName' => 'Drivers License',
+        'DocIsGeneric' => 'false',
+        'DocIssuerType' => 'StateProvince',
+        'OrientationChanged' => 'true',
+        'PresentationChanged' => 'false',
+      )
     end
   end
 
@@ -131,6 +170,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(errors[:general]).to contain_exactly(
         DocAuth::Errors::GENERAL_ERROR_LIVENESS,
       )
+      expect(output[:vendor]).to eq('TrueID')
     end
 
     it 'it produces appropriate errors with liveness and everything failing' do
@@ -143,6 +183,42 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         DocAuth::Errors::GENERAL_ERROR_LIVENESS,
       )
     end
+
+    it 'produces expected hash output' do
+      output = described_class.new(failure_response_with_all_failures, true, config).to_h
+
+      expect(output).to match(
+        success: false,
+        exception: nil,
+        errors: { general: [DocAuth::Errors::GENERAL_ERROR_LIVENESS] },
+        conversation_id: a_kind_of(String),
+        reference: a_kind_of(String),
+        vendor: 'TrueID',
+        billed: true,
+        liveness_enabled: true,
+        transaction_status: 'failed',
+        transaction_reason_code: 'failed_true_id',
+        product_status: 'pass',
+        doc_auth_result: 'Failed',
+        processed_alerts: a_hash_including(:passed, :failed),
+        alert_failure_count: a_kind_of(Numeric),
+        portrait_match_results: {
+          'FaceMatchResult' => 'Fail',
+          'FaceMatchScore' => '0',
+          'FaceStatusCode' => '0',
+          'FaceErrorMessage' => 'Liveness: PoorQuality',
+        },
+        image_metrics: a_hash_including(:front, :back),
+        'ClassificationMode' => 'Automatic',
+        'DocAuthResult' => 'Failed',
+        'DocClass' => 'DriversLicense',
+        'DocClassCode' => 'DriversLicense',
+        'DocClassName' => 'Drivers License',
+        'DocIsGeneric' => 'false',
+        'OrientationChanged' => 'false',
+        'PresentationChanged' => 'false',
+      )
+    end
   end
 
   context 'when response is unexpected' do
@@ -152,6 +228,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info)
+      expect(output[:vendor]).to eq('TrueID')
     end
 
     it 'it produces reasonable output for internal application error' do
@@ -168,6 +245,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(general: [DocAuth::Errors::GENERAL_ERROR_NO_LIVENESS])
       expect(output).to include(:lexis_nexis_status, :lexis_nexis_info, :exception)
+      expect(output[:vendor]).to eq('TrueID')
     end
 
     it 'it produces reasonable output for a malformed TrueID response' do
@@ -176,6 +254,12 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
       expect(output).to include(:backtrace)
+    end
+
+    it 'is not billed' do
+      output = described_class.new(failure_response_empty, false, config).to_h
+
+      expect(output[:billed]).to eq(false)
     end
   end
 

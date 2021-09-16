@@ -117,7 +117,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
           :throttle,
           :with_throttled,
           user: document_capture_session.user,
-          throttle_type: :idv_acuant,
+          throttle_type: :idv_doc_auth,
         )
         form.submit
       end
@@ -128,7 +128,7 @@ RSpec.describe Idv::ApiDocumentVerificationForm do
         expect(form.errors[:limit]).to eq([I18n.t('errors.doc_auth.throttled_heading')])
         expect(analytics).to have_logged_event(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-          throttle_type: :idv_acuant,
+          throttle_type: :idv_doc_auth,
         )
       end
     end

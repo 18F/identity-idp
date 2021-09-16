@@ -116,6 +116,15 @@ module DocAuth
         DocAuth::RequestError.new(message, http_response.status)
       end
 
+      def create_error_response(errors, exception)
+        DocAuth::Response.new(
+          success: false,
+          errors: errors,
+          exception: exception,
+          extra: { vendor: 'Acuant' },
+        )
+      end
+
       def handle_expected_http_error(http_response)
         error = case http_response.status
           when 438
@@ -126,11 +135,7 @@ module DocAuth
             Errors::IMAGE_SIZE_FAILURE
         end
 
-        DocAuth::Response.new(
-          success: false,
-          errors: { general: [error] },
-          exception: create_http_exception(http_response),
-        )
+        create_error_response({ general: [error] }, create_http_exception(http_response))
       end
 
       def handle_invalid_response(http_response)
@@ -140,11 +145,7 @@ module DocAuth
 
       def handle_connection_error(exception)
         send_exception_notification(exception)
-        DocAuth::Response.new(
-          success: false,
-          errors: { network: true },
-          exception: exception,
-        )
+        create_error_response({ network: true }, exception)
       end
 
       def send_exception_notification(exception, custom_params = {})

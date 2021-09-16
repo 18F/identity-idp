@@ -26,7 +26,7 @@ module Reports
           path: path,
           body: report_body.to_json,
           content_type: 'application/json',
-          bucket_name: bucket_name,
+          bucket: bucket_name,
         )
       end
     end

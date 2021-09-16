@@ -138,7 +138,7 @@ describe Idv::SessionErrorsController do
       before do
         user = create(:user)
         stub_sign_in(user)
-        create(:throttle, :with_throttled, user: user, throttle_type: :idv_acuant)
+        create(:throttle, :with_throttled, user: user, throttle_type: :idv_doc_auth)
       end
 
       it 'assigns expiration time' do

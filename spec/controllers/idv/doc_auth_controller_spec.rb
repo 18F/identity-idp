@@ -361,7 +361,7 @@ describe Idv::DocAuthController do
         {
           success: false,
           errors: [{ field: 'front', message: 'Wrong document' }],
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
         }.to_json,
       )
     end
@@ -379,7 +379,7 @@ describe Idv::DocAuthController do
           success: false,
           errors: [{ field: 'pii',
                      message: I18n.t('doc_auth.errors.general.no_liveness') }],
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
         }.to_json,
       )
       expect(@analytics).to have_received(:track_event).with(
@@ -387,7 +387,7 @@ describe Idv::DocAuthController do
           errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           success: false,
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
           step: 'verify_document_status',
           flow_path: 'standard',
           step_count: 1,
@@ -398,7 +398,7 @@ describe Idv::DocAuthController do
           errors: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           error_details: { pii: [I18n.t('doc_auth.errors.general.no_liveness')] },
           success: false,
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
           step: 'verify_document_status',
           flow_path: 'standard',
           step_count: 1,
@@ -416,7 +416,7 @@ describe Idv::DocAuthController do
 
   def mock_document_capture_step
     stub_sign_in(user)
-    DocumentCaptureSession.create_by_user_id(user.id, @analytics, result_id: 1, uuid: 'foo')
+    DocumentCaptureSession.create(user_id: user.id, result_id: 1, uuid: 'foo')
     allow_any_instance_of(Flow::BaseFlow).to \
       receive(:flow_session).and_return(
         'document_capture_session_uuid' => 'foo',

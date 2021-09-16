@@ -29,7 +29,7 @@ describe Analytics do
       user: current_user,
       request: request,
       sp: 'http://localhost:3000',
-      first_path_visit_this_session: true,
+      session: {},
       ahoy: ahoy,
     )
   end
@@ -48,6 +48,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        new_event: true,
         path: path,
       }
 
@@ -55,6 +56,24 @@ describe Analytics do
         with('Trackable Event', analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event')
+    end
+
+    it 'does not track unique events and paths when an event fails' do
+      analytics_hash = {
+        event_properties: { success: false },
+        user_id: current_user.uuid,
+        locale: I18n.locale,
+        git_sha: IdentityConfig::GIT_SHA,
+        git_branch: IdentityConfig::GIT_BRANCH,
+        new_session_path: nil,
+        new_event: nil,
+        path: path,
+      }
+
+      expect(ahoy).to receive(:track).
+          with('Trackable Event', analytics_hash.merge(request_attributes))
+
+      analytics.track_event('Trackable Event', { success: false })
     end
 
     it 'tracks the user passed in to the track_event method' do
@@ -68,6 +87,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        new_event: true,
         path: path,
       }
 
@@ -97,7 +117,7 @@ describe Analytics do
         user: user,
         request: FakeRequest.new,
         sp: nil,
-        first_path_visit_this_session: true,
+        session: {},
         ahoy: ahoy,
       )
 
@@ -127,6 +147,7 @@ describe Analytics do
         git_sha: IdentityConfig::GIT_SHA,
         git_branch: IdentityConfig::GIT_BRANCH,
         new_session_path: true,
+        new_event: true,
         path: path,
       }
 

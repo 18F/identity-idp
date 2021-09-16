@@ -1,16 +1,18 @@
 class Analytics
-  def initialize(user:, request:, sp:, first_path_visit_this_session:, ahoy: nil)
+  def initialize(user:, request:, sp:, session:, ahoy: nil)
     @user = user
     @request = request
     @sp = sp
     @ahoy = ahoy || Ahoy::Tracker.new(request: request)
-    @first_path_visit_this_session = first_path_visit_this_session
+    @session = session
   end
 
   def track_event(event, attributes = {})
+    update_session_events_and_paths_visited_for_analytics(event) if attributes[:success] != false
     analytics_hash = {
       event_properties: attributes.except(:user_id),
-      new_session_path: @first_path_visit_this_session,
+      new_event: first_event_this_session?,
+      new_session_path: first_path_visit_this_session?,
       path: request&.path,
       user_id: attributes[:user_id] || user.uuid,
       locale: I18n.locale,
@@ -30,6 +32,25 @@ class Analytics
       event_name: event,
       git_sha: IdentityConfig::GIT_SHA,
     )
+  end
+
+  def update_session_events_and_paths_visited_for_analytics(event)
+    @session[:paths_visited] ||= {}
+    @session[:events] ||= {}
+    if request
+      @session[:first_path_visit] = !@session[:paths_visited].key?(request.path)
+      @session[:paths_visited][request.path] = true
+    end
+    @session[:first_event] = !@session[:events].key?(event)
+    @session[:events][event] = true
+  end
+
+  def first_path_visit_this_session?
+    @session[:first_path_visit]
+  end
+
+  def first_event_this_session?
+    @session[:first_event]
   end
 
   def register_doc_auth_step_from_analytics_event(event, attributes)
@@ -98,7 +119,6 @@ class Analytics
   DOC_AUTH = 'Doc Auth'.freeze # visited or submitted is appended
   DOC_AUTH_ASYNC = 'Doc Auth Async'.freeze
   DOC_AUTH_WARNING = 'Doc Auth Warning'.freeze
-  DOCUMENT_CAPTURE_SESSION_OVERWRITTEN = 'Document Capture Session Overwritten'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_DELETION_REQUEST = 'Email Deletion Requested'.freeze
   EMAIL_LANGUAGE_VISITED = 'Email Language: Visited'.freeze

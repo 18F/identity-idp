@@ -72,7 +72,7 @@ class DocumentProofingJob < ApplicationJob
       pii: proofer_result.pii_from_doc,
     )
 
-    remaining_attempts = Throttle.for(user: user, throttle_type: :idv_acuant).remaining_count
+    remaining_attempts = Throttle.for(user: user, throttle_type: :idv_doc_auth).remaining_count
 
     analytics.track_event(
       Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
@@ -102,7 +102,7 @@ class DocumentProofingJob < ApplicationJob
       user: document_capture_session.user,
       request: nil,
       sp: document_capture_session.issuer,
-      first_path_visit_this_session: false,
+      session: {},
     )
   end
 

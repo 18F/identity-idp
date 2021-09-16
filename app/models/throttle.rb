@@ -4,7 +4,7 @@ class Throttle < ApplicationRecord
   validates :target, presence: true, unless: :user_id?
 
   enum throttle_type: {
-    idv_acuant: 1,
+    idv_doc_auth: 1,
     reg_unconfirmed_email: 2,
     reg_confirmed_email: 3,
     reset_password_email: 4,
@@ -16,9 +16,9 @@ class Throttle < ApplicationRecord
   }
 
   THROTTLE_CONFIG = {
-    idv_acuant: {
-      max_attempts: IdentityConfig.store.acuant_max_attempts,
-      attempt_window: IdentityConfig.store.acuant_attempt_window_in_minutes,
+    idv_doc_auth: {
+      max_attempts: IdentityConfig.store.doc_auth_max_attempts,
+      attempt_window: IdentityConfig.store.doc_auth_attempt_window_in_minutes,
     },
     reg_unconfirmed_email: {
       max_attempts: IdentityConfig.store.reg_unconfirmed_email_max_attempts,

@@ -9,7 +9,7 @@ gem 'rails', '~> 6.1.4'
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.4.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.3-18f' }
-@telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.4.0' }
+@telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.4.1' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.7.0' }
 
 gem 'identity-hostdata', @hostdata_gem
@@ -24,6 +24,7 @@ gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'base32-crockford'
 gem 'blueprinter', '~> 0.25.3'
+gem 'connection_pool'
 gem 'device_detector'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
@@ -48,7 +49,6 @@ gem 'rack-attack', '>= 6.2.1'
 gem 'rack-cors', '>= 1.0.5', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout', require: false
-gem 'readthis'
 gem 'redacted_struct'
 gem 'redis', '>= 3.2.0'
 gem 'redis-namespace'
