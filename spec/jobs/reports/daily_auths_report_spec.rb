@@ -37,6 +37,8 @@ RSpec.describe Reports::DailyAuthsReport do
         ).exactly(1).time.and_call_original
       end
 
+      expect(report).to receive(:report_body).and_call_original.once
+
       report.perform(report_date)
     end
 
