@@ -75,6 +75,15 @@ describe 'layouts/application.html.erb' do
         doc = Nokogiri::HTML(rendered)
         expect(doc.at_css('title').text).to include("Something with 'single quotes' - Login.gov")
       end
+
+      it 'properly works with > in the title tag' do
+        view.title("Symbols <>")
+
+        render
+
+        doc = Nokogiri::HTML(rendered)
+        expect(doc.at_css('title').text).to include("Symbols <> - Login.gov")
+      end
     end
 
     context 'without a page title added' do
