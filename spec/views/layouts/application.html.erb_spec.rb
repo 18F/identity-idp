@@ -91,7 +91,7 @@ describe 'layouts/application.html.erb' do
         render
 
         doc = Nokogiri::HTML(rendered)
-        expect(doc.at_css('title').text).to include("Login.gov")
+        expect(doc.at_css('title').text).to include('Login.gov')
       end
     end
   end
