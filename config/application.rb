@@ -41,12 +41,7 @@ module Upaya
     config.active_record.belongs_to_required_by_default = false
     config.active_record.legacy_connection_handling = false
     config.assets.unknown_asset_fallback = true
-
-    if IdentityConfig.store.ruby_workers_enabled
-      config.active_job.queue_adapter = :good_job
-    else
-      config.active_job.queue_adapter = :inline
-    end
+    config.active_job.queue_adapter = :good_job
 
     FileUtils.mkdir_p(Rails.root.join('log'))
     config.active_job.logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
