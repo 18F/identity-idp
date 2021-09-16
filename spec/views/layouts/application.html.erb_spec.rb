@@ -77,7 +77,7 @@ describe 'layouts/application.html.erb' do
       end
 
       it 'properly works with > in the title tag' do
-        view.title("Symbols <>")
+        view.title('Symbols <>')
 
         render
 
