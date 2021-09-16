@@ -252,7 +252,6 @@ class IdentityConfig
     config.add(:risc_notifications_rate_limit_interval, type: :integer)
     config.add(:risc_notifications_rate_limit_max_requests, type: :integer)
     config.add(:risc_notifications_rate_limit_overrides, type: :json)
-    config.add(:ruby_workers_enabled, type: :boolean)
     config.add(:ruby_workers_cron_enabled, type: :boolean)
     config.add(:ruby_workers_idv_enabled, type: :boolean)
     config.add(:rules_of_use_horizon_years, type: :integer)

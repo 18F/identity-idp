@@ -25,7 +25,7 @@ module Idv
         document_expired: document_expired,
       }
 
-      if IdentityConfig.store.ruby_workers_enabled && IdentityConfig.store.ruby_workers_idv_enabled
+      if IdentityConfig.store.ruby_workers_idv_enabled
         ResolutionProofingJob.perform_later(**job_arguments)
       else
         ResolutionProofingJob.perform_now(**job_arguments)
@@ -46,7 +46,7 @@ module Idv
         trace_id: trace_id,
       }
 
-      if IdentityConfig.store.ruby_workers_enabled && IdentityConfig.store.ruby_workers_idv_enabled
+      if IdentityConfig.store.ruby_workers_idv_enabled
         AddressProofingJob.perform_later(**job_arguments)
       else
         AddressProofingJob.perform_now(**job_arguments)

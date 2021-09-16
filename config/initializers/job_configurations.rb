@@ -395,7 +395,7 @@ all_configs = {
   },
 }
 
-if IdentityConfig.store.ruby_workers_enabled && IdentityConfig.store.ruby_workers_cron_enabled
+if IdentityConfig.store.ruby_workers_cron_enabled
   # Queue heartbeat job to GoodJob
   all_configs[:heartbeat_job] = {
     good_job: {
@@ -407,7 +407,7 @@ end
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
-elsif IdentityConfig.store.ruby_workers_enabled && IdentityConfig.store.ruby_workers_cron_enabled
+elsif IdentityConfig.store.ruby_workers_cron_enabled
   Rails.application.configure do
     config.good_job.cron = all_configs.transform_values { |config| config.fetch(:good_job) }
   end
