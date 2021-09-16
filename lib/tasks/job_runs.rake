@@ -5,7 +5,7 @@ namespace :job_runs do
     # This task is used in development by foreman, if it exits early,
     # it terminates the other processes, so we just have it loop forever until
     # we fully transition to good_job
-    if IdentityConfig.store.ruby_workers_enabled
+    if IdentityConfig.store.ruby_workers_cron_enabled
       loop do
         sleep 60
       end
