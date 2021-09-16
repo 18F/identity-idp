@@ -225,7 +225,7 @@ describe NewPhoneForm do
 
         it 'is invalid' do
           expect(result.success?).to eq(false)
-          expect(result.errors[:phone]).to eq([I18n.t('errors.messages.voip_check_error')])
+          expect(result.errors[:phone]).to eq([I18n.t('errors.messages.voip_phone')])
         end
 
         it 'logs the type and carrier' do
