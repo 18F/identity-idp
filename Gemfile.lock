@@ -265,9 +265,6 @@ GEM
     erubi (1.10.0)
     et-orbi (1.2.4)
       tzinfo
-    exception_notification (4.4.3)
-      actionmailer (>= 4.0, < 7)
-      activesupport (>= 4.0, < 7)
     execjs (2.8.1)
     factory_bot (6.2.0)
       activesupport (>= 5.0.0)
@@ -720,7 +717,6 @@ DEPENDENCIES
   dotiw (>= 4.0.1)
   email_spec
   erb_lint (~> 0.0.37)
-  exception_notification (>= 4.4.0)
   factory_bot_rails (>= 5.2.0)
   faker
   faraday

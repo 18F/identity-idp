@@ -138,7 +138,6 @@ class IdentityConfig
     config.add(:enable_test_routes, type: :boolean)
     config.add(:enable_usps_verification, type: :boolean)
     config.add(:event_disavowal_expiration_hours, type: :integer)
-    config.add(:exception_recipients, type: :comma_separated_string_list)
     config.add(:geo_data_file_path, type: :string)
     config.add(:good_job_max_threads, type: :integer)
     config.add(:good_job_queues, type: :string)
