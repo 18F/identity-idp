@@ -83,7 +83,7 @@ describe 'Add a new phone number' do
     click_on "+ #{t('account.index.phone_add')}"
     fill_in :new_phone_form_phone, with: telephony_gem_voip_number
     click_continue
-    expect(page).to have_content(t('errors.messages.voip_phone'))
+    expect(page).to have_content(t('errors.messages.voip_check_error'))
   end
 
   scenario 'adding a phone in a different country', js: true do
