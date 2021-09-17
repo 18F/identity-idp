@@ -1,6 +1,7 @@
 <%
   form_name = form_obj.class.name.underscore.to_s
   form_name_label = form_name + "[otp_make_default_number]"
+  form_name_tag = form_name + "_otp_make_default_number"
 %>
 
 <div class="margin-bottom-4">
@@ -11,13 +12,14 @@
     <p class="margin-top-0 margin-bottom-2" id="otp_make_default_number_instruction">
       <%= t('two_factor_authentication.otp_make_default_number.instruction') %>
     </p>
-    <label class="btn-border col-8">
-      <span class="checkbox">
-        <%= check_box_tag form_name_label,
-            :otp_make_default_number, form_obj.otp_make_default_number %>
-        <span class="indicator"></span>
-        <%= t('two_factor_authentication.otp_make_default_number.label') %>
-      </span>
+    <%= check_box_tag(
+          form_name_label,
+          :otp_make_default_number,
+          form_obj.otp_make_default_number,
+          class: 'usa-checkbox__input usa-checkbox__input--bordered',
+        ) %>
+    <label class="usa-checkbox__label" for="<%= form_name_tag %>">
+      <%= t('two_factor_authentication.otp_make_default_number.label') %>
     </label>
   </fieldset>
 </div>

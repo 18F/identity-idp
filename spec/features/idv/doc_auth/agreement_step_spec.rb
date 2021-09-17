@@ -7,13 +7,17 @@ feature 'doc auth welcome step' do
     expect(page).to have_current_path(idv_doc_auth_upload_step)
   end
 
+  def expect_doc_auth_first_step
+    expect(page).to have_current_path(idv_doc_auth_agreement_step)
+  end
+
   context 'button is disabled when JS is enabled', :js do
     before do
       sign_in_and_2fa_user
       complete_doc_auth_steps_before_agreement_step
     end
 
-    it_behaves_like 'ial2 consent with js'
+    it_behaves_like 'ial2 consent'
   end
 
   context 'button is clickable when JS is disabled' do
@@ -22,11 +26,7 @@ feature 'doc auth welcome step' do
       complete_doc_auth_steps_before_agreement_step
     end
 
-    def expect_doc_auth_first_step
-      expect(page).to have_current_path(idv_doc_auth_agreement_step)
-    end
-
-    it_behaves_like 'ial2 consent without js'
+    it_behaves_like 'ial2 consent'
   end
 
   context 'skipping upload step', :js, driver: :headless_chrome_mobile do
