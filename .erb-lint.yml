@@ -47,6 +47,7 @@ linters:
     enabled: true
     rule_set:
       - deprecated:
+          - (black|silver|white|aqua|blue|navy|teal|green|olive|lime|yellow|orange|red|fuchsia|purple|maroon|color-inherit|muted)
           - 'align-(top|middle|bottom|baseline)'
           - '(left)-align'
           - 'justify'

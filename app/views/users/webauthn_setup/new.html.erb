@@ -29,7 +29,7 @@
        <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?, class: 'margin-y-2 margin-left-2 margin-right-1' %>
        <%= label_tag 'remember_device',
          t('forms.messages.remember_device'),
-         class: 'blue mt-1p' %>
+         class: 'text-primary mt-1p' %>
      </div>
      <%= submit_tag t('forms.buttons.submit.default'), id: 'submit-button', class: 'hidden' %>
    <% end %>
