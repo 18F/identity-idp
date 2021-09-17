@@ -92,16 +92,16 @@ describe 'Add a new phone number' do
     sign_in_and_2fa_user(user)
     click_on "+ #{t('account.index.phone_add')}"
 
-    expect(page.find('label', text: 'Text message (SMS)')).to_not match_css('.usa-button--disabled')
-    expect(page.find('label', text: 'Phone call')).to_not match_css('.usa-button--disabled')
+    expect(page.find_field('Text message (SMS)', disabled: false, visible: :all)).to be_present
+    expect(page.find_field('Phone call', disabled: false, visible: :all)).to be_present
 
     page.find('div[aria-label="Country code"]').click
-    within(page.find('.iti__flag-container')) do
+    within(page.find('.iti__flag-container', visible: :all)) do
       find('span', text: 'Australia').click # a country where SMS is disabled currently
     end
 
-    expect(page.find('label', text: 'Text message (SMS)')).to_not match_css('.usa-button--disabled')
-    expect(page.find('label', text: 'Phone call')).to match_css('.usa-button--disabled')
+    expect(page.find_field('Text message (SMS)', disabled: false, visible: :all)).to be_present
+    expect(page.find_field('Phone call', disabled: true, visible: :all)).to be_present
     expect(page.find('#otp_delivery_preference_instruction')).to have_content('Australia')
   end
 

@@ -9,13 +9,14 @@ function formatSSNFieldAndLimitLength() {
   if (inputs) {
     [].slice.call(inputs).forEach((input, i) => {
       const el = `
-        <div class="mt1 right">
-          <label class="btn-border" for="ssn-toggle-${i}">
-            <span class="checkbox">
-              <input id="ssn-toggle-${i}" type="checkbox">
-              <span class="indicator"></span>
-              ${I18n.t('forms.ssn.show')}
-            </span>
+        <div class="margin-top-1 float-right">
+          <input
+            id="ssn-toggle-${i}"
+            type="checkbox"
+            class="usa-checkbox__input usa-checkbox__input--bordered"
+          >
+          <label for="ssn-toggle-${i}" class="usa-checkbox__label">
+            ${I18n.t('forms.ssn.show')}
           </label>
         </div>`;
       input.insertAdjacentHTML('afterend', el);
