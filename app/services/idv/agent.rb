@@ -16,14 +16,20 @@ module Idv
         { applicant_pii: @applicant }.to_json,
       )
 
-      ResolutionProofingJob.perform_later(
+      job_arguments = {
         encrypted_arguments: encrypted_arguments,
         should_proof_state_id: should_proof_state_id,
         dob_year_only: IdentityConfig.store.proofing_send_partial_dob,
         trace_id: trace_id,
         result_id: document_capture_session.result_id,
         document_expired: document_expired,
-      )
+      }
+
+      if IdentityConfig.store.ruby_workers_idv_enabled
+        ResolutionProofingJob.perform_later(**job_arguments)
+      else
+        ResolutionProofingJob.perform_now(**job_arguments)
+      end
     end
 
     def proof_address(document_capture_session, user_id:, issuer:, trace_id:)
@@ -32,13 +38,19 @@ module Idv
         { applicant_pii: @applicant }.to_json,
       )
 
-      AddressProofingJob.perform_later(
+      job_arguments = {
         user_id: user_id,
         issuer: issuer,
         encrypted_arguments: encrypted_arguments,
         result_id: document_capture_session.result_id,
         trace_id: trace_id,
-      )
+      }
+
+      if IdentityConfig.store.ruby_workers_idv_enabled
+        AddressProofingJob.perform_later(**job_arguments)
+      else
+        AddressProofingJob.perform_now(**job_arguments)
+      end
     end
 
     def proof_document(

@@ -47,6 +47,7 @@ linters:
     enabled: true
     rule_set:
       - deprecated:
+          - (black|silver|white|aqua|blue|navy|teal|green|olive|lime|yellow|orange|red|fuchsia|purple|maroon|color-inherit|muted)
           - 'align-(top|middle|bottom|baseline)'
           - '(left)-align'
           - 'justify'
@@ -70,8 +71,7 @@ linters:
           - '(not-)?rounded(-(top|right|bottom|left|lg))?'
           - '((sm|md|lg)-)?hide'
           - '(sm|md|lg)-show'
-          - 'btn(-(small|big|narrow|wide|link|primary|secondary|danger|disabled|big|narrow|transparent))?'
-          - ':not(label).btn-border'
+          - 'btn(-(small|big|narrow|wide|link|primary|secondary|danger|disabled|big|narrow|transparent|border))?'
           - 'border-(none|black|gray|white|aqua|orange|fuchsia|purple|maroon|darken-[1-4]|lighten-[1-4])'
           - 'h3'
         suggestion: 'Use USWDS classes instead of BassCSS.'

@@ -6,29 +6,29 @@
     <p class="margin-top-0 margin-bottom-2" id="otp_delivery_preference_instruction">
       <%= t('two_factor_authentication.otp_delivery_preference.instruction') %>
     </p>
-    <label
-      class="btn-border col-12 sm-col-5 tablet:margin-right-2 margin-bottom-2 tablet:margin-bottom-0"
-      for='edit_phone_form_delivery_preference_sms'
-    >
-      <div class="radio">
-        <%= radio_button_tag 'edit_phone_form[delivery_preference]',
-          :sms, @edit_phone_form.delivery_preference_sms?,
-          class: :otp_delivery_preference_sms %>
-        <span class="indicator"></span>
-        <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
+    <div class="grid-row grid-gap-2">
+      <div class="grid-col-12 tablet:grid-col-6">
+        <%= radio_button_tag(
+              'edit_phone_form[delivery_preference]',
+              :sms,
+              @edit_phone_form.delivery_preference_sms?,
+              class: 'otp_delivery_preference_sms usa-radio__input usa-radio__input--bordered',
+            ) %>
+        <label
+          class="usa-radio__label width-full"
+          for="edit_phone_form_delivery_preference_sms"
+        ><%= t('two_factor_authentication.otp_delivery_preference.sms') %></label>
+        <%= radio_button_tag(
+              'edit_phone_form[delivery_preference]',
+              :voice,
+              @edit_phone_form.delivery_preference_voice?,
+              class: 'otp_delivery_preference_voice usa-radio__input usa-radio__input--bordered',
+            ) %>
+        <label
+          class="usa-radio__label"
+          for="edit_phone_form_delivery_preference_voice"
+        ><%= t('two_factor_authentication.otp_delivery_preference.voice') %></label>
       </div>
-    </label>
-    <label
-      class="btn-border col-12 sm-col-5 margin-bottom-0"
-      for='edit_phone_form_delivery_preference_voice'
-    >
-      <div class="radio">
-        <%= radio_button_tag 'edit_phone_form[delivery_preference]',
-            :voice, @edit_phone_form.delivery_preference_voice?,
-            class: :otp_delivery_preference_voice %>
-        <span class="indicator"></span>
-        <%= t('two_factor_authentication.otp_delivery_preference.voice') %>
-      </div>
-    </label>
+    </div>
   </fieldset>
 </div>

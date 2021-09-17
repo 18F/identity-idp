@@ -8,13 +8,14 @@ function togglePw() {
       input.parentNode.classList.add('relative');
 
       const el = `
-        <div class="top-n24 right-0 absolute">
-          <label class="btn-border" for="pw-toggle-${i}">
-            <span class="checkbox">
-              <input id="pw-toggle-${i}" type="checkbox">
-              <span class="indicator"></span>
-              ${I18n.t('forms.passwords.show')}
-            </span>
+        <div class="password-toggle__toggle">
+          <input
+            id="pw-toggle-${i}"
+            type="checkbox"
+            class="usa-checkbox__input usa-checkbox__input--bordered"
+          >
+          <label for="pw-toggle-${i}" class="usa-checkbox__label">
+            ${I18n.t('forms.passwords.show')}
           </label>
         </div>`;
       input.insertAdjacentHTML('afterend', el);
