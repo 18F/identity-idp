@@ -10,15 +10,11 @@ const selectedInternationCodeOption = () => {
   return /** @type {HTMLOptionElement} */ (dropdown.item(dropdown.selectedIndex));
 };
 
-const setRadioEnabled = (radio, isEnabled) => {
-  radio.disabled = !isEnabled;
-};
-
 const updateOTPDeliveryMethods = () => {
-  const phoneRadio = document.querySelector(
+  const phoneRadio = /** @type {HTMLInputElement?} */ (document.querySelector(
     '[data-international-phone-form] .otp_delivery_preference_voice',
-  );
-  const smsRadio = /** @type {HTMLElement} */ (document.querySelector(
+  ));
+  const smsRadio = /** @type {HTMLInputElement?} */ (document.querySelector(
     '[data-international-phone-form] .otp_delivery_preference_sms',
   ));
 
@@ -34,8 +30,8 @@ const updateOTPDeliveryMethods = () => {
   const supportsSms = selectedOption.dataset.supportsSms === 'true';
   const supportsVoice = selectedOption.dataset.supportsVoice === 'true';
 
-  setRadioEnabled(smsRadio, supportsSms);
-  setRadioEnabled(phoneRadio, supportsVoice);
+  smsRadio.disabled = !supportsSms;
+  phoneRadio.disabled = !supportsVoice;
 
   if (supportsVoice) {
     deliveryMethodHint.innerText = I18n.t(
