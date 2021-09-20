@@ -1,11 +1,7 @@
-<div class='sm-col sm-col-8 margin-top-1 tablet:margin-top-0 relative'>
-  <div class='verification-badge margin-x-auto'>
-    <% if MfaPolicy.new(@view_model.decorated_user.user).unphishable? %>
-      <%= render 'accounts/unphishable_badge' %>
-    <% end %>
+<% if MfaPolicy.new(@view_model.decorated_user.user).unphishable? %>
+  <%= render 'accounts/unphishable_badge' %>
+<% end %>
 
-    <% if @view_model.decorated_user.identity_verified? %>
-      <%= render 'accounts/verified_account_badge' %>
-    <% end %>
-  </div>
-</div>
+<% if @view_model.decorated_user.identity_verified? %>
+  <%= render 'accounts/verified_account_badge' %>
+<% end %>
