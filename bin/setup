@@ -43,9 +43,6 @@ Dir.chdir APP_ROOT do
   run "test -r config/partner_account_statuses.yml || ln -sv partner_account_statuses.localdev.yml config/partner_account_statuses.yml"
   run "test -r config/partner_accounts.yml || ln -sv partner_accounts.localdev.yml config/partner_accounts.yml"
 
-  puts "== Copying logstash.conf =="
-  run "cat logstash.conf.example | sed 's/path_to_repo/#{APP_ROOT.to_s.gsub('/', '\/')}/g' > logstash.conf"
-
   puts "== Linking sample certs and keys =="
   run "test -r certs || ln -sv certs.example certs"
   run "test -r keys || ln -sv keys.example keys"
