@@ -61,7 +61,7 @@ module TwoFactorAuthentication
     end
 
     def sanitized_otp_code
-      form_params[:code].strip
+      form_params[:code].to_s.strip
     end
 
     def form_params

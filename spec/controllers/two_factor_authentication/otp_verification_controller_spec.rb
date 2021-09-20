@@ -373,6 +373,13 @@ describe TwoFactorAuthentication::OtpVerificationController do
               with(Analytics::MULTI_FACTOR_AUTH_SETUP, properties)
           end
         end
+
+        context 'user does not include a code parameter' do
+          it 'fails and increments attempts count' do
+            post :create, params: { otp_delivery_preference: 'sms' }
+            expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+          end
+        end
       end
 
       context 'when user does not have an existing phone number' do
