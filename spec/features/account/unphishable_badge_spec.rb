@@ -9,7 +9,7 @@ feature 'Unphishable account badge' do
     let(:user) { create(:user, :with_webauthn, :with_piv_or_cac) }
 
     it 'shows an "Unphishable" badge' do
-      expect(page).to have_css('img#unphishable_badge')
+      expect(page).to have_css('.lg-verification-badge', text: t('headings.account.unphishable'))
     end
   end
 
@@ -17,7 +17,10 @@ feature 'Unphishable account badge' do
     let(:user) { create(:user, :signed_up, :with_webauthn) }
 
     it 'does not show an "Unphishable" badge' do
-      expect(page).to_not have_css('img#unphishable_badge')
+      expect(page).to_not have_css(
+        '.lg-verification-badge',
+        text: t('headings.account.unphishable'),
+      )
     end
   end
 end
