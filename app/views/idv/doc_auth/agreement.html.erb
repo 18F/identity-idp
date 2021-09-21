@@ -35,7 +35,7 @@
       <%= new_window_link_to t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url %>
     </label>
     <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
-      <%= t('sign_up.agree_to_rules_of_use_and_continue') %>
+      <%= t('forms.validation.required_checkbox') %>
     </div>
   </div>
   <%= f.button :button, t('doc_auth.buttons.continue'), type: :submit,
