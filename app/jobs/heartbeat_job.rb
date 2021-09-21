@@ -6,10 +6,10 @@ class HeartbeatJob < ApplicationJob
       {
         name: 'queue_metric.good_job',
         # borrowed from: https://github.com/bensheldon/good_job/blob/main/engine/app/controllers/good_job/dashboards_controller.rb#L35
-        num_finished: GoodJob::Job.finished.count,
-        num_unfinished: GoodJob::Job.unfinished.count,
-        num_running: GoodJob::Job.running.count,
-        num_errors: GoodJob::Job.where.not(error: nil).count,
+        num_finished: GoodJob::Execution.finished.count,
+        num_unfinished: GoodJob::Execution.unfinished.count,
+        num_running: GoodJob::Execution.running.count,
+        num_errors: GoodJob::Execution.where.not(error: nil).count,
       }.to_json,
     )
 
