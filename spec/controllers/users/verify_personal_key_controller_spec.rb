@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe Users::VerifyPersonalKeyController do
-  let(:user) { create(:user, profiles: profiles, personal_key: personal_key) }
-  let(:profiles) { [] }
+  let(:user) { create(:user, personal_key: personal_key) }
+  let!(:profiles) { [] }
   let(:personal_key) { 'key' }
 
   before { stub_sign_in(user) }
@@ -22,7 +22,7 @@ describe Users::VerifyPersonalKeyController do
     end
 
     context 'with password reset profile' do
-      let(:profiles) { [create(:profile, deactivation_reason: :password_reset)] }
+      let!(:profiles) { [create(:profile, user: user, deactivation_reason: :password_reset)] }
 
       it 'renders the `new` template' do
         get :new
@@ -46,7 +46,7 @@ describe Users::VerifyPersonalKeyController do
     end
 
     context 'with throttle reached' do
-      let(:profiles) { [create(:profile, deactivation_reason: :password_reset)] }
+      let!(:profiles) { [create(:profile, user: user, deactivation_reason: :password_reset)] }
 
       before do
         create(:throttle, :with_throttled, user: user, throttle_type: :verify_personal_key)
@@ -70,29 +70,44 @@ describe Users::VerifyPersonalKeyController do
   end
 
   describe '#create' do
-    let(:profiles) { [create(:profile, deactivation_reason: :password_reset)] }
+    let!(:profiles) {
+      [
+        create(
+          :profile,
+          user: user, deactivation_reason: :password_reset,
+          pii: { ssn: '123456789' }
+        ),
+      ]
+    }
     let(:form) { instance_double(VerifyPersonalKeyForm) }
     let(:error_text) { 'bad_key' }
     let(:personal_key_error) { { personal_key: [error_text] } }
     let(:response_ok) { FormResponse.new(success: true, errors: {}) }
     let(:response_bad) { FormResponse.new(success: false, errors: personal_key_error, extra: {}) }
 
-    context 'wth a valid form' do
-      before do
+    context 'with a valid form' do
+      it 'redirects to the next step of the account recovery flow' do
         allow(VerifyPersonalKeyForm).to receive(:new).
           with(user: subject.current_user, personal_key: personal_key).
           and_return(form)
         allow(form).to receive(:submit).and_return(response_ok)
-      end
-
-      it 'redirects to the next step of the account recovery flow' do
         post :create, params: { personal_key: personal_key }
 
         expect(response).to redirect_to(verify_password_url)
       end
 
       it 'stores that the personal key was entered in the user session' do
-        post :create, params: { personal_key: personal_key }
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED,
+          { errors: {}, success: true },
+        ).once
+
+        expect(@analytics).to receive(:track_event).with(
+          Analytics::PERSONAL_KEY_REACTIVATION,
+        ).once
+
+        post :create, params: { personal_key: profiles.first.personal_key }
 
         expect(subject.reactivate_account_session.personal_key?).to eq(true)
       end

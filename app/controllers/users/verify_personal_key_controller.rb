@@ -26,7 +26,12 @@ module Users
       else
         result = personal_key_form.submit
 
-        analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED, result.to_h)
+        analytics_result = FormResponse.new(
+          success: result.success?,
+          errors: result.errors,
+          extra: result.extra.except(:decrypted_pii),
+        )
+        analytics.track_event(Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED, analytics_result.to_h)
         if result.success?
           handle_success(result)
         else
