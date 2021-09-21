@@ -104,7 +104,7 @@ linters:
           - '((sm|md|lg)-)?hide'
           - '(sm|md|lg)-show'
           - 'btn(-(small|big|narrow|wide|link|primary|secondary|danger|disabled|big|narrow|transparent|border))?'
-          - 'border-(none|black|gray|silver|white|aqua|blue|navy|teal|green|olive|lime|orange|red|fuchsia|purple|maroon|darken-[1-4]|lighten-[1-4])'
+          - '(border|bg)-(none|black|gray|silver|aqua|blue|navy|teal|green|olive|lime|orange|red|fuchsia|purple|maroon|darken-[1-4]|lighten-[1-4])'
           - 'h3'
         suggestion: 'Use USWDS classes instead of BassCSS.'
       - deprecated:
