@@ -20,7 +20,7 @@ RSpec.describe PinpointSupportedCountries do
           <tr>
             <th>Country or region</th>
             <th>ISO code</th>
-            <th>Supports sender IDs</th>
+            <th>Supports Sender IDs</th>
             <th>Supports two-way SMS (Amazon Pinpoint only)</th>
           </tr>
         </thead>
