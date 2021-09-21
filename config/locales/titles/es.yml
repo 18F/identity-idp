@@ -32,10 +32,10 @@ es:
       phone_verification: Número telefónico no verificado
     forget_all_browsers: Olvídate de todos los navegadores
     idv:
-      cancelled: Se canceló la verificación de identidad
       cancellation_prompt: Cancela la verificación de identidad
+      cancelled: Se canceló la verificación de identidad
       come_back_soon: Vuelve pronto
-      enter_security_code: Recibe un código de seguridad 
+      enter_security_code: Recibe un código de seguridad
       get_letter: Recibe una carta
       personal_key: Guarda tu llave personal
       phone: Verifica tu número telefónico
