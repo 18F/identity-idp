@@ -66,7 +66,7 @@ class PinpointSupportedCountries
       select { |sms_config| sms_config['ISO code'] }. # skip section rows
       map do |sms_config|
         iso_code = sms_config['ISO code']
-        supports_sms = case trim_spaces(sms_config['Supports sender IDs'])
+        supports_sms = case trim_spaces(sms_config['Supports Sender IDs'])
         when 'Registration required1'
           SENDER_ID_COUNTRIES.include?(iso_code)
         when 'Registration required3' # basically only India, has special rules
