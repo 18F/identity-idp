@@ -5,8 +5,7 @@ module AccountReset
     include GoodJob::ActiveJobExtensions::Concurrency
 
     good_job_control_concurrency_with(
-      enqueue_limit: 1,
-      perform_limit: 1,
+      total_limit: 1,
       key: -> do
         rounded = TimeService.round_time(time: arguments.first, interval: 5.minutes)
         "grant-requests-and-send-emails-#{rounded.to_i}"

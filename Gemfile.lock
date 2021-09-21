@@ -292,7 +292,7 @@ GEM
       mail (>= 2.2.1)
     gmail_xoauth (0.4.2)
       oauth (>= 0.3.6)
-    good_job (2.0.2)
+    good_job (2.2.0)
       activejob (>= 5.2.0)
       activerecord (>= 5.2.0)
       concurrent-ruby (>= 1.0.2)
@@ -716,7 +716,7 @@ DEPENDENCIES
   faraday
   foundation_emails
   gmail (>= 0.7.1)
-  good_job (~> 2.0.0)
+  good_job (~> 2.2.0)
   guard-rspec
   hashie (~> 4.1)
   hiredis (~> 0.6.0)
