@@ -48,7 +48,7 @@ fr:
     passwords:
       change: Changez le mot de passe de votre compte
       confirm: Confirmez le mot de passe de votre compte
-      forgot: Réinitialisez le mot de passe de votre compte
+      forgot: Réinitialisez le mot de passe
     personal_key: Juste au cas
     phone_setup: Envoyer votre code de sécurité par SMS ou par appel téléphonique
     piv_cac_login:
