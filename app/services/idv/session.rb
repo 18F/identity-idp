@@ -14,6 +14,7 @@ module Idv
       profile_confirmation
       profile_id
       profile_step_params
+      personal_key
       resolution_successful
     ].freeze
 
@@ -50,6 +51,7 @@ module Idv
       profile = profile_maker.save_profile
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
+      self.personal_key = profile.personal_key
     end
 
     def cache_encrypted_pii(password)
