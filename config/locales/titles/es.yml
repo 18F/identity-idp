@@ -12,7 +12,6 @@ es:
     doc_auth:
       address: Actualice su dirección postal
       doc_capture: Agrega tu identificación
-      forgot_password: Restablecer la contraseña 
       get_started: Iniciemos
       link_sent: Enlace enviado
       otp_delivery: Recibe un código de seguridad
@@ -40,6 +39,7 @@ es:
       get_letter: Recibe una carta
       personal_key: Guarda tu llave personal
       phone: Verifica tu número telefónico
+      reset_password: Restablecer la contraseña 
       review: Vuelve a ingresar tu contraseña
     no_auth_option: No se encontró mensaje de inicio de sesión
     openid_connect:

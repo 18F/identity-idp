@@ -12,7 +12,6 @@ fr:
     doc_auth:
       address: Mettez à jour votre adresse postale
       doc_capture: Ajoutez votre pièce d'identité
-      forgot_password: Réinitialisez le mot de passe
       get_started: Commençons
       link_sent: Lien envoyé
       otp_delivery: Recevez un code de sécurité
@@ -40,6 +39,7 @@ fr:
       get_letter: Obtenez une lettre
       personal_key: Enregistrez votre clé personnelle
       phone: Vérifiez votre numéro de téléphone
+      reset_password: Réinitialisez le mot de passe
       review: Saisissez à nouveau votre mot de passe
     no_auth_option: Aucun message de connexion trouvé
     openid_connect:
