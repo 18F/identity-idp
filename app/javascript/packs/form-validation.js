@@ -3,7 +3,7 @@ import { loadPolyfills } from '@18f/identity-polyfill';
 /** @typedef {{t:(key:string)=>string, key:(key:string)=>string}} LoginGovI18n */
 /** @typedef {{LoginGov:{I18n:LoginGovI18n}}} LoginGovGlobal */
 
-const PATTERN_TYPES = ['dob', 'personal-key', 'ssn', 'state_id_number', 'zipcode'];
+const PATTERN_TYPES = ['personal-key', 'ssn', 'zipcode'];
 
 /**
  * Given a submit event, disables all submit buttons within the target form.
@@ -41,10 +41,8 @@ function checkInputValidity(event) {
   } else if (input.validity.patternMismatch) {
     PATTERN_TYPES.forEach((type) => {
       if (input.classList.contains(type)) {
-        // i18n-tasks-use t('idv.errors.pattern_mismatch.dob')
         // i18n-tasks-use t('idv.errors.pattern_mismatch.personal_key')
         // i18n-tasks-use t('idv.errors.pattern_mismatch.ssn')
-        // i18n-tasks-use t('idv.errors.pattern_mismatch.state_id_number')
         // i18n-tasks-use t('idv.errors.pattern_mismatch.zipcode')
         input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${I18n.key(type)}`));
       }
