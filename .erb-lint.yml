@@ -113,7 +113,7 @@ linters:
           - '(border|bg)-(none|black|gray|silver|aqua|blue|navy|teal|green|olive|lime|orange|red|fuchsia|purple|maroon|darken-[1-4]|lighten-[1-4])'
           - 'bg-(cover|contain|center|top|right|bottom|left)'
           - 'h([03]|00)'
-          - 'h[01]-responsive'
+          - 'h([01]|00)-responsive'
         suggestion: 'Use USWDS classes instead of BassCSS.'
       - deprecated:
           - 'js-consent-form'
