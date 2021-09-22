@@ -245,13 +245,16 @@ describe Idv::ConfirmationsController do
       expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: true)
     end
 
-    it 'recovers pii with the code' do
+    it 'recovers pii and verifies personal key digest with the code' do
       get :show
       get :download
 
       code = response.body.chomp
 
-      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to be
+      expect(PersonalKeyGenerator.new(user).verify(code)).to eq true
+      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to eq(
+        subject.idv_session.send(:user_session)[:idv][:pii],
+      )
     end
 
     it 'is a bad request when there is no personal_key in the session' do
