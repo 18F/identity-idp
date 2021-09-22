@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Idv::ConfirmationsController do
   include SamlAuthHelper
+  include PersonalKeyValidator
 
   def stub_idv_session
     stub_sign_in(user)
@@ -100,6 +101,14 @@ describe Idv::ConfirmationsController do
       get :show
 
       expect(assigns(:code)).to eq(code)
+    end
+
+    it 'can decrypt the profile with the code' do
+      get :show
+
+      code = assigns(:code)
+
+      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to be
     end
 
     it 'sets flash[:allow_confirmations_continue] to true' do
@@ -234,6 +243,15 @@ describe Idv::ConfirmationsController do
       expect(response.body).to eq(code + "\r\n")
       expect(response.header['Content-Type']).to eq('text/plain')
       expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: true)
+    end
+
+    it 'recovers pii with the code' do
+      get :show
+      get :download
+
+      code = response.body.chomp
+
+      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to be
     end
 
     it 'is a bad request when there is no personal_key in the session' do
