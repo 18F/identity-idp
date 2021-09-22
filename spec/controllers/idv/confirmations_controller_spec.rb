@@ -253,7 +253,7 @@ describe Idv::ConfirmationsController do
 
       expect(PersonalKeyGenerator.new(user).verify(code)).to eq true
       expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to eq(
-        subject.idv_session.send(:user_session)[:idv][:pii],
+        subject.idv_session.pii,
       )
     end
 
