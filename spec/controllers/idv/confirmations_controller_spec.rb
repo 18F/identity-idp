@@ -108,7 +108,10 @@ describe Idv::ConfirmationsController do
 
       code = assigns(:code)
 
-      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to be
+      expect(PersonalKeyGenerator.new(user).verify(code)).to eq true
+      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to eq(
+        subject.idv_session.pii,
+      )
     end
 
     it 'sets flash[:allow_confirmations_continue] to true' do
