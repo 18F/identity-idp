@@ -99,7 +99,6 @@ ignore_unused:
   - 'errors.messages.*'
   - 'forms.two_factor_choice.legend'
   - 'forms.two_factor_recovery_choice.legend'
-  - 'idv.errors.pattern_mismatch.*'
   - 'jobs.sms_otp_sender_job.login_message'
   - 'jobs.sms_otp_sender_job.verify_message'
   - 'service_providers.*'
