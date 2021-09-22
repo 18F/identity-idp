@@ -101,7 +101,7 @@ linters:
           - 'field-dark'
           - 'progress'
           - 'flex-(column|none)'
-          - '((sm|md|lg)-)?table(-cell)?'
+          - '((sm|md|lg)-)?table(-(cell|fixed))?'
           - '[xy]-group-item'
           - '(items|self|justify|content)-(start|end|center|baseline|stretch)'
           - 'order-([0-3]|last)'
