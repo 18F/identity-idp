@@ -12,6 +12,7 @@ es:
     doc_auth:
       address: Actualice su dirección postal
       doc_capture: Agrega tu identificación
+      forgot_password: Restablecer la contraseña 
       get_started: Iniciemos
       link_sent: Enlace enviado
       otp_delivery: Recibe un código de seguridad
@@ -74,7 +75,7 @@ es:
     totp_setup:
       new: Agregar aplicación de autenticación
     two_factor_setup: Configuración de autenticación de dos factores
-    verify_email: Revise su email
+    verify_email: Consulta tu correo electrónico
     verify_profile: Active su cuenta
     visitors:
       index: Bienvenido/a

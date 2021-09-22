@@ -12,6 +12,7 @@ fr:
     doc_auth:
       address: Mettez à jour votre adresse postale
       doc_capture: Ajoutez votre pièce d'identité
+      forgot_password: Réinitialisez le mot de passe
       get_started: Commençons
       link_sent: Lien envoyé
       otp_delivery: Recevez un code de sécurité
@@ -73,7 +74,7 @@ fr:
     totp_setup:
       new: Ajouter une application d’authentification
     two_factor_setup: Configuration de l’authentification à deux facteurs
-    verify_email: Consultez vos courriels
+    verify_email: Vérifiez votre courriel
     verify_profile: Activez votre compte
     visitors:
       index: Bienvenue

@@ -12,6 +12,7 @@ en:
     doc_auth:
       address: Update your mailing address
       doc_capture: Add your ID
+      forgot_password: Reset Password
       get_started: Lets get started
       link_sent: Link sent
       otp_delivery: Receive a security code
@@ -20,7 +21,7 @@ en:
       switch_back: Switch back to your computer
       take_photo: Take photos of your ID with a phone
       upload: Verify your ID
-      verify: Verify identity
+      verify: Verify your identity
       verify_info: Verify your information
     edit_info:
       email_language: Edit email language preference
