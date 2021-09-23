@@ -12,8 +12,6 @@ AT:
   supports_voice: false
 AU:
   supports_voice: false
-AZ:
-  name: Azerbaijan
 BB:
   supports_voice: false
 BF:
@@ -30,11 +28,6 @@ BI:
 BJ:
   country_code: '229'
   name: Benin
-  supports_sms: true
-  supports_voice: false
-BO:
-  country_code: '591'
-  name: Bolivia
   supports_sms: true
   supports_voice: false
 BR:
@@ -132,8 +125,6 @@ MP:
   name: Northern Mariana Islands
   supports_sms: true
   supports_voice: true
-MW:
-  name: Malawi
 MX:
   supports_voice: false
 MY:
