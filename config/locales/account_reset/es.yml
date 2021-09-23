@@ -14,7 +14,6 @@ es:
       link_text: crea una cuenta nueva
       title: Has eliminado tu cuenta
     confirm_request:
-      check_your_email: Consultar su correo electrónico
       close_window: Puede cerrar esta ventana si ha terminado.
       instructions_end: para comenzar el proceso de eliminación de cuenta. Siga las
         instrucciones en su correo electrónico para completar el proceso.

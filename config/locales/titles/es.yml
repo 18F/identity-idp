@@ -39,7 +39,7 @@ es:
       get_letter: Recibe una carta
       personal_key: Guarda tu llave personal
       phone: Verifica tu número telefónico
-      reset_password: Restablecer la contraseña 
+      reset_password: Restablecer la contraseña
       review: Vuelve a ingresar tu contraseña
     no_auth_option: No se encontró mensaje de inicio de sesión
     openid_connect:
