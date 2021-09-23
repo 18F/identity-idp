@@ -101,14 +101,24 @@ describe ApplicationController do
       expect(subject.current_user).to be_present
     end
 
-    it 'redirects back to referer if present' do
-      referer = 'http://example.com/sign_up/enter_email?request_id=123'
+    it 'redirects back to referer if present and is not external' do
+      referer = login_piv_cac_url
 
       request.env['HTTP_REFERER'] = referer
 
       get :index
 
       expect(response).to redirect_to(referer)
+    end
+
+    it 'redirects back to home page if present and referer is external' do
+      referer = 'http://testing.example.com'
+
+      request.env['HTTP_REFERER'] = referer
+
+      get :index
+
+      expect(response).to redirect_to(new_user_session_url)
     end
   end
 
