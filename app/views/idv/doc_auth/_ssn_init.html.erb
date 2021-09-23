@@ -24,16 +24,7 @@
 ) do |f| %>
   <div class='clearfix margin-x-neg-1'>
     <div class='sm-col sm-col-8 padding-x-1 margin-top-2'>
-      <!-- maxlength set and includes '-' delimiters to work around cleave bug -->
-      <%= f.input(
-        :ssn,
-        as: :password,
-        label: t('idv.form.ssn_label_html'),
-        required: true,
-        pattern: '^\d{3}-?\d{2}-?\d{4}$',
-        maxlength: 11,
-        input_html: { aria: { invalid: false }, class: 'ssn ssn-toggle', value: '' }
-      ) %>
+      <%= render 'shared/ssn_field', f: f %>
     </div>
     <span class='alert-inline usa-error-message margin-top-neg-3 margin-bottom-3 display-none' role='alert'>
       
