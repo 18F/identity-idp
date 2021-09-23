@@ -379,6 +379,20 @@ all_configs = {
       args: -> { [Time.zone.yesterday] },
     },
   },
+  # Send daily dropoff report to S3
+  daily_dropoffs: {
+    job_runner: {
+      name: 'Daily Dropoff Report',
+      interval: inteval_24h,
+      timeout: 300,
+      callback: -> { Reports::DailyDropoffsReport.new.perform(Time.zone.yesterday) },
+    },
+    good_job: {
+      class: 'Reports::DailyDropoffsReport',
+      cron: cron_24h,
+      args: -> { [Time.zone.yesterday] },
+    },
+  },
   # Removes old rows from the Throttles table
   remove_old_throttles: {
     job_runner: {
