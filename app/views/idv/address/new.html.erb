@@ -26,19 +26,15 @@
     <%= f.input :city, label: t('idv.form.city'), required: true, maxlength: 255,
                        input_html: { aria: { invalid: false }, value: @pii['city'] } %>
 
-    <div class="clearfix margin-x-neg-1">
-      <div class="sm-col sm-col-8 padding-x-1">
-        <%= f.input :state, collection: us_states_territories,
-                            label: t('idv.form.state'), required: true,
-                            selected: @pii['state'] %>
-      </div>
-      <div class="sm-col sm-col-4 padding-x-1">
-        <%# using :tel for mobile numeric keypad %>
-        <%= f.input :zipcode, as: :tel,
-                              label: t('idv.form.zipcode'), required: true,
-                              pattern: '(\d{5}([\-]\d{4})?)',
-                              input_html: { aria: { invalid: false }, class: 'zipcode', value: @pii['zipcode'] } %>
-      </div>
+    <%= f.input :state, collection: us_states_territories,
+                        label: t('idv.form.state'), required: true,
+                        selected: @pii['state'] %>
+    <div class="tablet:grid-col-6">
+      <%# using :tel for mobile numeric keypad %>
+      <%= f.input :zipcode, as: :tel,
+                            label: t('idv.form.zipcode'), required: true,
+                            pattern: '(\d{5}([\-]\d{4})?)',
+                            input_html: { aria: { invalid: false }, class: 'zipcode', value: @pii['zipcode'] } %>
     </div>
     <div class="margin-top-0">
       <button type="submit" class="usa-button usa-button--big usa-button--wide margin-top-2">
