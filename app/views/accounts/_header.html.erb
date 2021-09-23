@@ -1,5 +1,5 @@
-<div class="clearfix padding-top-2 padding-bottom-4 tablet:padding-y-0 margin-bottom-4 bg-lightest-blue sm-bg-none">
-  <div class="sm-col sm-col-4">
+<div class="grid-row padding-top-2 padding-bottom-4 tablet:padding-y-0 margin-bottom-4 bg-lightest-blue sm-bg-none position-relative">
+  <div class="grid-col-12 tablet:grid-col-fill">
     <h1 class="margin-0 center sm-left-align">
       <span class="regular sans-serif tablet:display-none">
         <%= t('account.welcome') %>,
@@ -12,7 +12,9 @@
       </span>
     </h1>
   </div>
-  <%= render 'accounts/badges' %>
+  <div class="account-header__badges grid-col-12 tablet:grid-col-auto tablet:margin-top-neg-1">
+    <%= render 'accounts/badges' %>
+  </div>
 </div>
 <h1 class="padding-bottom-1 bold tablet:display-none serif">
   <%= t('headings.account.login_info') %>

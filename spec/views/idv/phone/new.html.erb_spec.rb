@@ -4,6 +4,8 @@ describe 'idv/phone/new.html.erb' do
   let(:gpo_letter_available) { false }
 
   before do
+    allow(view).to receive(:user_signing_up?).and_return(false)
+    allow(view).to receive(:user_fully_authenticated?).and_return(true)
     allow(view).to receive(:gpo_letter_available).and_return(gpo_letter_available)
     @idv_form = Idv::PhoneForm.new(user: build_stubbed(:user), previous_params: nil)
   end

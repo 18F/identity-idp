@@ -9,7 +9,7 @@ gem 'rails', '~> 6.1.4'
 @hostdata_gem ||= { github: '18F/identity-hostdata', tag: 'v3.4.0' }
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.3-18f' }
-@telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.4.1' }
+@telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.4.2' }
 @validations_gem ||= { github: '18F/identity-validations', tag: 'v0.7.0' }
 
 gem 'identity-hostdata', @hostdata_gem
@@ -28,7 +28,6 @@ gem 'connection_pool'
 gem 'device_detector'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
-gem 'exception_notification', '>= 4.4.0'
 gem 'faraday'
 gem 'foundation_emails'
 gem 'good_job', '~> 2.0.0'
@@ -91,7 +90,7 @@ end
 
 group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
-  gem 'bootsnap', '~> 1.7.0', require: false
+  gem 'bootsnap', '~> 1.9.0', require: false
   gem 'brakeman', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'erb_lint', '~> 0.0.37', require: false

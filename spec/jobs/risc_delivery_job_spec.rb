@@ -40,13 +40,13 @@ RSpec.describe RiscDeliveryJob do
       expect(req).to have_been_requested
     end
 
-    context 'network errors' do
+    context 'SSL network errors' do
       before do
-        stub_request(:post, push_notification_url).to_timeout
+        stub_request(:post, push_notification_url).to_raise(Faraday::SSLError)
       end
 
       context 'when performed inline' do
-        it 'warns on timeouts' do
+        it 'prints warning' do
           expect(Rails.logger).to receive(:warn) do |msg|
             payload = JSON.parse(msg, symbolize_names: true)
 
@@ -64,7 +64,39 @@ RSpec.describe RiscDeliveryJob do
             and_return(ActiveJob::QueueAdapters::GoodJobAdapter.new)
         end
 
-        it 'raises on timeouts (and retries via ActiveJob)' do
+        it 'raises and retries via ActiveJob' do
+          expect(Rails.logger).to_not receive(:warn)
+
+          expect { perform }.to raise_error(Faraday::SSLError)
+        end
+      end
+    end
+
+    context 'slow network errors' do
+      before do
+        stub_request(:post, push_notification_url).to_timeout
+      end
+
+      context 'when performed inline' do
+        it 'prints warning' do
+          expect(Rails.logger).to receive(:warn) do |msg|
+            payload = JSON.parse(msg, symbolize_names: true)
+
+            expect(payload[:event]).to eq('http_push_error')
+            expect(payload[:transport]).to eq('direct')
+          end
+
+          expect { perform }.to_not raise_error
+        end
+      end
+
+      context 'when performed in a worker' do
+        before do
+          allow(job).to receive(:queue_adapter).
+            and_return(ActiveJob::QueueAdapters::GoodJobAdapter.new)
+        end
+
+        it 'raises and retries via ActiveJob' do
           expect(Rails.logger).to_not receive(:warn)
 
           expect { perform }.to raise_error(Faraday::ConnectionFailed)

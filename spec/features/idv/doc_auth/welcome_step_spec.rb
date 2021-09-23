@@ -30,6 +30,7 @@ feature 'doc auth welcome step' do
     expect(fake_analytics).to have_logged_event(
       Analytics::RETURN_TO_SP_FAILURE_TO_PROOF,
       step: 'welcome',
+      location: 'missing_items',
     )
   end
 

@@ -3,6 +3,7 @@ class RiscDeliveryJob < ApplicationJob
 
   retry_on Faraday::TimeoutError,
            Faraday::ConnectionFailed,
+           Faraday::SSLError,
            wait: :exponentially_longer,
            attempts: 5
   retry_on RedisRateLimiter::LimitError,
@@ -40,7 +41,8 @@ class RiscDeliveryJob < ApplicationJob
         }.to_json,
       )
     end
-  rescue Faraday::TimeoutError, Faraday::ConnectionFailed, RedisRateLimiter::LimitError => err
+  rescue Faraday::TimeoutError, Faraday::ConnectionFailed, Faraday::SSLError,
+         RedisRateLimiter::LimitError => err
     raise err if !inline?
 
     Rails.logger.warn(

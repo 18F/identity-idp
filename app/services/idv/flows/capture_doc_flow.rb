@@ -15,7 +15,6 @@ module Idv
       ].freeze
 
       ACTIONS = {
-        reset: Idv::Actions::ResetAction,
         verify_document: Idv::Actions::VerifyDocumentAction,
         verify_document_status: Idv::Actions::VerifyDocumentStatusAction,
       }.freeze
