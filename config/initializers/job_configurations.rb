@@ -379,10 +379,10 @@ all_configs = {
       args: -> { [Time.zone.yesterday] },
     },
   },
-  # Send daily dropoff report to S3
+  # Send daily dropoffs report to S3
   daily_dropoffs: {
     job_runner: {
-      name: 'Daily Dropoff Report',
+      name: 'Daily Dropoffs Report',
       interval: inteval_24h,
       timeout: 300,
       callback: -> { Reports::DailyDropoffsReport.new.perform(Time.zone.yesterday) },
