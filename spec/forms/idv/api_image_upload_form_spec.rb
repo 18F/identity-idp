@@ -85,7 +85,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           :throttle,
           :with_throttled,
           user: document_capture_session.user,
-          throttle_type: :idv_acuant,
+          throttle_type: :idv_doc_auth,
         )
         form.submit
       end
@@ -109,8 +109,9 @@ RSpec.describe Idv::ApiImageUploadForm do
           exception: nil,
           doc_auth_result: 'Passed',
           billed: true,
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           state: 'MT',
+          state_id_type: 'drivers_license',
           user_id: document_capture_session.user.uuid,
           client_image_metrics: {
             front: JSON.parse(front_image_metadata, symbolize_names: true),
@@ -148,7 +149,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           exception: nil,
           doc_auth_result: 'Passed',
           billed: true,
-          remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1,
+          remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           user_id: document_capture_session.user.uuid,
           client_image_metrics: {
             front: JSON.parse(front_image_metadata, symbolize_names: true),
@@ -176,7 +177,7 @@ RSpec.describe Idv::ApiImageUploadForm do
         DocAuth::Response.new(
           success: false,
           errors: { front: 'glare' },
-          extra: { remaining_attempts: IdentityConfig.store.acuant_max_attempts - 1 },
+          extra: { remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1 },
         )
       end
       before do

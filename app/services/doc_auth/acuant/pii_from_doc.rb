@@ -13,6 +13,7 @@ module DocAuth
         'Document Number' => :state_id_number,
         'Issuing State Code' => :state_id_jurisdiction,
         'Expiration Date' => :state_id_expiration,
+        'Document Class Name' => :state_id_type,
       }.freeze
 
       def initialize(id_data_fields)
@@ -26,7 +27,7 @@ module DocAuth
         VALUE.each do |key, value|
           hash[value] = @name_to_value[key]
         end
-        hash[:state_id_type] = 'drivers_license'
+        hash[:state_id_type] = DocAuth::Response::ID_TYPE_SLUGS[hash[:state_id_type]]
         hash[:dob] = convert_date(hash[:dob])
         hash[:state_id_expiration] = convert_date(hash[:state_id_expiration])
         hash

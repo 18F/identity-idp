@@ -1830,5 +1830,7 @@
     "IsTrial": false,
     "Name": "Dev GSA iProov",
     "StorePII": false
-  }
+  },
+  "TamperResult": 1,
+  "TamperSensitivity": 0
 }

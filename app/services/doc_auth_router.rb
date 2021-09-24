@@ -87,9 +87,9 @@ module DocAuthRouter
       @client = client
     end
 
-    def method_missing(name, *args, &block)
+    def method_missing(name, ...)
       if @client.respond_to?(name)
-        translate_form_response!(@client.send(name, *args, &block))
+        translate_form_response!(@client.send(name, ...))
       else
         super
       end

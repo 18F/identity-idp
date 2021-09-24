@@ -29,7 +29,7 @@ module Idv
     end
 
     def throttled
-      @expires_at = Throttle.for(user: effective_user, throttle_type: :idv_acuant).expires_at
+      @expires_at = Throttle.for(user: effective_user, throttle_type: :idv_doc_auth).expires_at
     end
 
     private

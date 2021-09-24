@@ -19,64 +19,28 @@
         <%= text_field_tag(:subject, '', class: 'block col-12 field monospace') %>
       </div>
       <div class="margin-bottom-4">
-        <fieldset class="margin-0 padding-0 border-none">
+        <fieldset class="margin-0 padding-0 border-0">
           <legend class="margin-bottom-1">
             Error Conditions
           </legend>
-          <label class="btn-border col-12 margin-bottom-2">
-            <div class="radio">
-              <%= radio_button_tag(:error, '') %>
-              <%= label_tag(:error_, 'No error') %>
-            </div>
-          </label>
-          <label class="btn-border col-12 margin-bottom-2">
-            <div class="radio">
-              <%= radio_button_tag(:error, 'certificate.none') %>
-              <%= label_tag(:'error_certificate.none', 'No certificate') %>
-            </div>
-          </label>
-          <label class="btn-border col-12 margin-bottom-2">
-            <div class="radio">
-              <%= radio_button_tag(:error, 'certificate.bad') %>
-              <%= label_tag(:'error_certificate.bad', 'Bad certificate') %>
-            </div>
-          </label>
-          <label class="btn-border col-12 margin-bottom-2">
-            <div class="radio">
-              <%= radio_button_tag(:error, 'certificate.expired') %>
-              <%= label_tag(:'error_certificate.expired', 'Expired certificate') %>
-            </div>
-          </label>
-          <label class="btn-border col-12 margin-bottom-2">
-            <div class="radio">
-              <%= radio_button_tag(:error, 'certificate.revoked') %>
-              <%= label_tag(:'error_certificate.revoked', 'Revoked certificate') %>
-            </div>
-          </label>
-          <label class="btn-border col-12 margin-bottom-2">
-            <div class="radio">
-              <%= radio_button_tag(:error, 'certificate.invalid') %>
-              <%= label_tag(:'error_certificate.invalid', 'Invalid certificate') %>
-            </div>
-          </label>
-          <label class="btn-border col-12 margin-bottom-2">
-            <div class="radio">
-              <%= radio_button_tag(:error, 'certificate.unverified') %>
-              <%= label_tag(:'error_certificate.unverified', 'Unverified certificate') %>
-            </div>
-          </label>
-          <label class="btn-border col-12 margin-bottom-2">
-            <div class="radio">
-              <%= radio_button_tag(:error, 'token.missing') %>
-              <%= label_tag(:'error_token.missing', 'Missing token') %>
-            </div>
-          </label>
-          <label class="btn-border col-12 margin-bottom-2">
-            <div class="radio">
-              <%= radio_button_tag(:error, 'token.invalid') %>
-              <%= label_tag(:'error_token.invalid', 'Invalid token') %>
-            </div>
-          </label>
+          <%= radio_button_tag(:error, '', false, class: 'usa-radio__input usa-radio__input--bordered') %>
+          <%= label_tag(:error_, 'No error', class: 'usa-radio__label') %>
+          <%= radio_button_tag(:error, 'certificate.none', false, class: 'usa-radio__input usa-radio__input--bordered') %>
+          <%= label_tag(:'error_certificate.none', 'No certificate', class: 'usa-radio__label') %>
+          <%= radio_button_tag(:error, 'certificate.bad', false, class: 'usa-radio__input usa-radio__input--bordered') %>
+          <%= label_tag(:'error_certificate.bad', 'Bad certificate', class: 'usa-radio__label') %>
+          <%= radio_button_tag(:error, 'certificate.expired', false, class: 'usa-radio__input usa-radio__input--bordered') %>
+          <%= label_tag(:'error_certificate.expired', 'Expired certificate', class: 'usa-radio__label') %>
+          <%= radio_button_tag(:error, 'certificate.revoked', false, class: 'usa-radio__input usa-radio__input--bordered') %>
+          <%= label_tag(:'error_certificate.revoked', 'Revoked certificate', class: 'usa-radio__label') %>
+          <%= radio_button_tag(:error, 'certificate.invalid', false, class: 'usa-radio__input usa-radio__input--bordered') %>
+          <%= label_tag(:'error_certificate.invalid', 'Invalid certificate', class: 'usa-radio__label') %>
+          <%= radio_button_tag(:error, 'certificate.unverified', false, class: 'usa-radio__input usa-radio__input--bordered') %>
+          <%= label_tag(:'error_certificate.unverified', 'Unverified certificate', class: 'usa-radio__label') %>
+          <%= radio_button_tag(:error, 'token.missing', false, class: 'usa-radio__input usa-radio__input--bordered') %>
+          <%= label_tag(:'error_token.missing', 'Missing token', class: 'usa-radio__label') %>
+          <%= radio_button_tag(:error, 'token.invalid', false, class: 'usa-radio__input usa-radio__input--bordered') %>
+          <%= label_tag(:'error_token.invalid', 'Invalid token', class: 'usa-radio__label') %>
         </fieldset>
       </div>
       <div class="col col-6 sm-col-5 padding-x-1">

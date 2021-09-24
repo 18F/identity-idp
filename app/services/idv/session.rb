@@ -14,8 +14,8 @@ module Idv
       profile_confirmation
       profile_id
       profile_step_params
+      personal_key
       resolution_successful
-      step_attempts
     ].freeze
 
     attr_reader :current_user, :gpo_otp, :issuer
@@ -51,6 +51,7 @@ module Idv
       profile = profile_maker.save_profile
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
+      self.personal_key = profile.personal_key
     end
 
     def cache_encrypted_pii(password)
@@ -125,7 +126,7 @@ module Idv
     end
 
     def new_idv_session
-      { step_attempts: { phone: 0 } }
+      {}
     end
 
     def move_pii_to_user_session

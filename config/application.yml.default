@@ -28,11 +28,9 @@ acuant_assure_id_password: ''
 acuant_assure_id_subscription_id: ''
 acuant_assure_id_url: ''
 acuant_assure_id_username: ''
-acuant_attempt_window_in_minutes: '360'
 acuant_facial_match_url: ''
-acuant_max_attempts: '20'
 acuant_passlive_url: ''
-# These are dummy creds used to initialize the acuant SDK
+# These are publicly available credentials used to initialize the client-side Acuant SDK
 acuant_sdk_initialization_creds: 'aWRzY2FuZ293ZWJAYWN1YW50Y29ycC5jb206NVZLcm81Z0JEc1hrdFh2NA=='
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 acuant_timeout: '45'
@@ -58,6 +56,7 @@ database_timeout: '5000'
 deleted_user_accounts_report_configs: '[]'
 disable_email_sending: 'true'
 disallow_all_web_crawlers: 'true'
+doc_auth_attempt_window_in_minutes: '360'
 doc_auth_extend_timeout_by_minutes: '40'
 doc_capture_polling_enabled: 'true'
 doc_auth_client_glare_threshold: '50'
@@ -66,6 +65,7 @@ doc_auth_enable_presigned_s3_urls: 'false'
 doc_auth_error_dpi_threshold: '290'
 doc_auth_error_glare_threshold: '40'
 doc_auth_error_sharpness_threshold: '40'
+doc_auth_max_attempts: '20'
 doc_capture_request_valid_for_minutes: '15'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
@@ -75,7 +75,6 @@ enable_rate_limiting: 'true'
 enable_test_routes: 'true'
 enable_usps_verification: 'true'
 event_disavowal_expiration_hours: '240'
-exception_recipients: user1@example.com,user2@example.com
 geo_data_file_path: 'geo_data/GeoLite2-City.mmdb'
 good_job_max_threads: '5'
 good_job_queues: 'default:5;low:1;*'
@@ -144,6 +143,7 @@ phone_setups_per_ip_limit: '25'
 phone_setups_per_ip_period: '300'
 phone_setups_per_ip_track_only_mode: 'false'
 pii_lock_timeout_in_minutes: '30'
+pinpoint_sms_sender_id: 'aaa'
 pinpoint_sms_configs: '[]'
 pinpoint_voice_configs: '[]'
 piv_cac_service_url: https://localhost:8443/
@@ -181,7 +181,8 @@ risc_notifications_active_job_enabled: 'false'
 risc_notifications_rate_limit_interval: '60'
 risc_notifications_rate_limit_max_requests: '1000'
 risc_notifications_rate_limit_overrides: '{"https://example.com/push":{"interval":120,"max_requests":10000}}'
-ruby_workers_enabled: 'true'
+ruby_workers_cron_enabled: 'true'
+ruby_workers_idv_enabled: 'true'
 rules_of_use_horizon_years: '6'
 rules_of_use_updated_at: '2021-05-21T00:00:00Z'
 s3_public_reports_enabled: 'false'
@@ -320,7 +321,8 @@ production:
   recurring_jobs_disabled_names: "[]"
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
   redis_url: redis://redis.login.gov.internal:6379
-  ruby_workers_enabled: 'false'
+  ruby_workers_cron_enabled: 'false'
+  ruby_workers_idv_enabled: 'false'
   s3_report_bucket_prefix: login-gov.reports
   s3_report_public_bucket_prefix: login-gov-pubdata
   s3_reports_enabled: 'true'
@@ -344,7 +346,6 @@ test:
   aamva_public_key: 123abc
   acuant_assure_id_url: https://example.com
   acuant_facial_match_url: https://facial_match.example.com
-  acuant_max_attempts: '4'
   acuant_passlive_url: https://liveness.example.com
   attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
@@ -363,13 +364,13 @@ test:
   database_worker_jobs_host: ''
   database_worker_jobs_password: ''
   doc_auth_enable_presigned_s3_urls: 'true'
+  doc_auth_max_attempts: '4'
   doc_auth_vendor: 'mock'
   doc_auth_vendor_randomize: 'false'
   doc_auth_vendor_randomize_percent: 0
   doc_auth_vendor_randomize_alternate_vendor: ''
   doc_capture_polling_enabled: 'false'
   domain_name: www.example.com
-  exception_recipients: test1@test.com
   hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: 'true'

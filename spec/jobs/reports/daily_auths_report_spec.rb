@@ -18,6 +18,12 @@ RSpec.describe Reports::DailyAuthsReport do
       and_return(s3_report_bucket_prefix)
     allow(IdentityConfig.store).to receive(:s3_report_public_bucket_prefix).
       and_return(s3_report_public_bucket_prefix)
+
+    Aws.config[:s3] = {
+      stub_responses: {
+        put_object: {},
+      },
+    }
   end
 
   describe '#perform' do
@@ -27,9 +33,11 @@ RSpec.describe Reports::DailyAuthsReport do
           path: 'int/daily-auths-report/2021/2021-03-01.daily-auths-report.json',
           body: kind_of(String),
           content_type: 'application/json',
-          bucket_name: bucket,
-        ).exactly(1).time
+          bucket: bucket,
+        ).exactly(1).time.and_call_original
       end
+
+      expect(report).to receive(:report_body).and_call_original.once
 
       report.perform(report_date)
     end
@@ -41,9 +49,9 @@ RSpec.describe Reports::DailyAuthsReport do
         expect(report).to receive(:upload_file_to_s3_bucket).with(
           hash_including(
             path: 'int/daily-auths-report/2021/2021-03-01.daily-auths-report.json',
-            bucket_name: 'reports-bucket.1234-us-west-1',
+            bucket: 'reports-bucket.1234-us-west-1',
           ),
-        ).exactly(1).time
+        ).exactly(1).time.and_call_original
 
         report.perform(report_date)
       end
@@ -69,7 +77,7 @@ RSpec.describe Reports::DailyAuthsReport do
 
       it 'aggregates by issuer' do
         expect(report).to receive(:upload_file_to_s3_bucket).
-          exactly(2).times do |path:, body:, content_type:, bucket_name:|
+          exactly(2).times do |path:, body:, content_type:, bucket:|
             parsed = JSON.parse(body, symbolize_names: true)
 
             expect(parsed[:start]).to eq(report_date.beginning_of_day.as_json)

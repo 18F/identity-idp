@@ -21,6 +21,7 @@ end
 
 Capybara.javascript_driver = :chrome
 Capybara.default_max_wait_time = 10
+Capybara.automatic_label_click = true # USWDS styles native checkbox/radio as offscreen
 
 Dir['spec/support/monitor/**/*.rb'].sort.each { |file| require File.expand_path(file) }
 

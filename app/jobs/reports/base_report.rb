@@ -9,6 +9,12 @@ module Reports
 
     private
 
+    def public_bucket_name
+      if (prefix = IdentityConfig.store.s3_report_public_bucket_prefix)
+        Identity::Hostdata.bucket_name("#{prefix}-#{Identity::Hostdata.env}")
+      end
+    end
+
     def fiscal_start_date
       now = Time.zone.now.beginning_of_day
       now.change(year: now.month >= 10 ? now.year : now.year - 1, month: 10, day: 1)
@@ -31,7 +37,7 @@ module Reports
       # connections mid-test, so we just skip for now :[
       return yield if rails_env.test?
 
-      ApplicationRecord.connected_to(role: :reading, shard: :read_replica) do
+      ActiveRecord::Base.connected_to(role: :reading, shard: :read_replica) do
         ActiveRecord::Base.transaction do
           quoted_timeout = ActiveRecord::Base.connection.quote(report_timeout)
           ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")

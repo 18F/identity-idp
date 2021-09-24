@@ -1,16 +1,3 @@
-.btn-border {
-  border-color: $border-color;
-  border-radius: $border-radius-lg;
-  border-style: solid;
-  border-width: $border-width;
-  box-sizing: border-box;
-  padding: $space-1 $space-2;
-
-  &.is-focused {
-    border-color: $field-focus-color;
-  }
-}
-
 .account-action-button {
   @include u-radius('lg');
   background-color: color('primary-lighter');

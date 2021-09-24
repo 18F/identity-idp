@@ -32,14 +32,6 @@ describe Idv::DataUrlImage do
       expect(data_url_image.read).to eq(data)
     end
 
-    context 'when data is not base64-encoded' do
-      let(:data_url) { 'data:image/png,a%20+%20b' }
-
-      it 'URI component unescapes the data' do
-        expect(data_url_image.read).to eq('a + b')
-      end
-    end
-
     context 'with bad data' do
       let(:data_url) { 'not_a_url' }
 

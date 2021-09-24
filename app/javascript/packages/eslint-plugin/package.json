@@ -1,0 +1,57 @@
+{
+  "name": "@18f/eslint-plugin-identity",
+  "version": "1.0.0",
+  "description": "ESLint plugin and shareable configurations for Login.gov JavaScript standards",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/18f/identity-idp.git",
+    "directory": "app/javascript/packages/eslint-plugin"
+  },
+  "files": [
+    "index.js",
+    "configs",
+    "lib"
+  ],
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/18f/identity-idp/issues"
+  },
+  "homepage": "https://github.com/18f/identity-idp",
+  "dependencies": {
+    "@babel/eslint-parser": "^7.15.0",
+    "@babel/eslint-plugin": "^7.14.5",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-mocha": "^9.0.0",
+    "eslint-plugin-prettier": "^3.4.1",
+    "eslint-plugin-react": "^7.25.1",
+    "eslint-plugin-react-hooks": "^4.2.0"
+  },
+  "peerDependencies": {
+    "@babel/core": "*",
+    "eslint": "*",
+    "mocha": "*",
+    "preact": "*",
+    "prettier": "*",
+    "react": "*"
+  },
+  "peerDependenciesMeta": {
+    "@babel/core": {
+      "optional": true
+    },
+    "mocha": {
+      "optional": true
+    },
+    "preact": {
+      "optional": true
+    },
+    "prettier": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  }
+}

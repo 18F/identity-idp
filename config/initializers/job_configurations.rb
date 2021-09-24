@@ -117,7 +117,7 @@ all_configs = {
       name: 'SP user counts report',
       interval: inteval_24h,
       timeout: 300,
-      callback: -> { Reports::SpUserCountsReport.new.perform },
+      callback: -> { Reports::SpUserCountsReport.new.perform(Time.zone.now) },
     },
     good_job: {
       class: 'Reports::SpUserCountsReport',
@@ -379,6 +379,20 @@ all_configs = {
       args: -> { [Time.zone.yesterday] },
     },
   },
+  # Send daily dropoffs report to S3
+  daily_dropoffs: {
+    job_runner: {
+      name: 'Daily Dropoffs Report',
+      interval: inteval_24h,
+      timeout: 300,
+      callback: -> { Reports::DailyDropoffsReport.new.perform(Time.zone.yesterday) },
+    },
+    good_job: {
+      class: 'Reports::DailyDropoffsReport',
+      cron: cron_24h,
+      args: -> { [Time.zone.yesterday] },
+    },
+  },
   # Removes old rows from the Throttles table
   remove_old_throttles: {
     job_runner: {
@@ -395,7 +409,7 @@ all_configs = {
   },
 }
 
-if IdentityConfig.store.ruby_workers_enabled
+if IdentityConfig.store.ruby_workers_cron_enabled
   # Queue heartbeat job to GoodJob
   all_configs[:heartbeat_job] = {
     good_job: {
@@ -407,7 +421,7 @@ end
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
-elsif IdentityConfig.store.ruby_workers_enabled
+elsif IdentityConfig.store.ruby_workers_cron_enabled
   Rails.application.configure do
     config.good_job.cron = all_configs.transform_values { |config| config.fetch(:good_job) }
   end

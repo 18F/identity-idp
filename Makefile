@@ -28,14 +28,12 @@ lint:
 	@echo "--- rubocop ---"
 	bundle exec rubocop --parallel
 	@echo "--- brakeman ---"
-	bundle exec brakeman
+	bundle exec brakeman --skip-files app/services/doc_auth_router.rb
 	@echo "--- zeitwerk check ---"
 	bin/rails zeitwerk:check
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
 # JavaScript
-	@echo "--- lint yarn lockfile ---"
-	make lint_yarn_lockfile
 	@echo "--- eslint ---"
 	yarn run lint
 	@echo "--- typescript ---"
@@ -55,15 +53,12 @@ lint:
 lint_erb:
 	bundle exec erblint app/views
 
-lint_yarn_lockfile:
-	(! git diff --name-only | grep yarn.lock) || (echo "Error: Sync Yarn lockfile using 'yarn install'"; exit 1)
-
 lint_yaml: normalize_yaml
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)
 
 lintfix:
 	@echo "--- rubocop fix ---"
-	bundle exec rubocop -R -a
+	bundle exec rubocop -a
 
 brakeman:
 	bundle exec brakeman

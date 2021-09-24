@@ -66,16 +66,18 @@ class PinpointSupportedCountries
       select { |sms_config| sms_config['ISO code'] }. # skip section rows
       map do |sms_config|
         iso_code = sms_config['ISO code']
-        supports_sms = case trim_digits_spaces(sms_config['Supports sender IDs'])
-        when 'Registration required'
+        supports_sms = case trim_spaces(sms_config['Supports Sender IDs'])
+        when 'Registration required1'
           SENDER_ID_COUNTRIES.include?(iso_code)
+        when 'Registration required3' # basically only India, has special rules
+          true
         else
           true
         end
 
         CountrySupport.new(
           iso_code: iso_code,
-          name: trim_digits_spaces(sms_config['Country or region']),
+          name: trim_spaces(sms_config['Country or region']),
           supports_sms: supports_sms,
         )
       end
@@ -85,7 +87,7 @@ class PinpointSupportedCountries
   def voice_support
     TableConverter.new(download(PINPOINT_VOICE_URL)).convert.map do |voice_config|
       CountrySupport.new(
-        name: trim_digits_spaces(
+        name: trim_spaces(
           voice_config['Country or Region'], # Yes, it is capitalized differently :[
         ),
         supports_voice: true,
@@ -145,8 +147,8 @@ class PinpointSupportedCountries
     }[name]
   end
 
-  def trim_digits_spaces(str)
-    str.gsub(/\s{2,}/, ' ').gsub(/[\d\s]+$/, '')
+  def trim_spaces(str)
+    str.gsub(/\s{2,}/, ' ').gsub(/\s+$/, '')
   end
 
   def digits_only?(str)

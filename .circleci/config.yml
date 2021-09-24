@@ -32,7 +32,7 @@ executors:
       - image: redis:5.0.8
 
 commands:
-  bundle-yarn-install:
+  node-install:
     steps:
       - run:
           name: Switch Node.js version
@@ -42,6 +42,38 @@ commands:
             . "$NVM_DIR/nvm.sh" --install
             echo 'export NVM_DIR="$HOME/.nvm"' >> $BASH_ENV;
             echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> $BASH_ENV;
+      - run:
+          name: Print Node.js version
+          command: node -v
+  yarn-install:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
+            - v1-identity-idp-yarn-
+      - run:
+          name: Install Yarn
+          command: yarn install --frozen-lockfile --ignore-engines --cache-folder ~/.cache/yarn
+      - save_cache:
+          key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+  yarn-production-install:
+    steps:
+      - restore_cache:
+          keys:
+            - v1-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
+            - v1-identity-idp-yarn-production
+      - run:
+          name: Install Yarn
+          command: yarn install --production --frozen-lockfile --ignore-engines --cache-folder ~/.cache/yarn
+      - save_cache:
+          key: v1-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.cache/yarn
+
+  bundle-install:
+    steps:
       - run: gem install bundler --version $BUNDLER_VERSION
       - restore_cache:
           keys:
@@ -54,21 +86,6 @@ commands:
           key: v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
-      - restore_cache:
-          keys:
-            - v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
-            - v1-identity-idp-yarn-
-      - run:
-          name: Install Yarn
-          command: yarn install --ignore-engines --cache-folder ~/.cache/yarn
-      - run:
-          name: Print Node.js version
-          command: node -v
-      - save_cache:
-          key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache/yarn
-
   # Custom version of "checkout" that checks out a SHA deployed to sha_url param
   # Adapter from https://gist.github.com/drazisil/e97dc21454120251472154de1c1b1c7b
   checkout-deployed-sha:
@@ -137,7 +154,9 @@ jobs:
     executor: ruby_browsers
     steps:
       - checkout
-      - bundle-yarn-install
+      - node-install
+      - yarn-install
+      - bundle-install
       - run:
           name: Test Setup
           command: |
@@ -149,7 +168,7 @@ jobs:
             - public/packs
             - public/packs-test
 
-  build:
+  ruby_test:
     executor: ruby_browsers
 
     environment:
@@ -162,7 +181,9 @@ jobs:
 
     steps:
       - checkout
-      - bundle-yarn-install
+      - node-install
+      - yarn-install
+      - bundle-install
       - run:
           name: Install AWS CLI
           command: |
@@ -221,23 +242,39 @@ jobs:
           command: |
             aws s3 sync "s3://login-gov-test-coverage/coverage/$CIRCLE_BUILD_NUM" coverage/
             ./cc-test-reporter sum-coverage --output - --parts $CIRCLE_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+  javascript_test:
+    working_directory: ~/identity-idp
+    executor: ruby_browsers
+    steps:
+      - checkout
+      - node-install
+      - yarn-install
+      - run:
+          name: Run Tests
+          command: |
+            yarn test
+
   javascript_build:
     working_directory: ~/identity-idp
     executor: ruby_browsers
     steps:
       - checkout
-      - bundle-yarn-install
+      - node-install
+      - yarn-production-install
+      - bundle-install
       - run:
           name: Run Tests
           command: |
-            yarn test
+            bundle exec rake assets:precompile
 
   lints:
     working_directory: ~/identity-idp
     executor: ruby_browsers
     steps:
       - checkout
-      - bundle-yarn-install
+      - node-install
+      - yarn-install
+      - bundle-install
       - run:
           name: Run Lints
           command: |
@@ -251,7 +288,9 @@ jobs:
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
-      - bundle-yarn-install
+      - node-install
+      - yarn-install
+      - bundle-install
       - run:
           name: 'Smoke tests'
           command: |
@@ -267,7 +306,9 @@ jobs:
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.int.identitysandbox.gov/api/deploy.json
-      - bundle-yarn-install
+      - node-install
+      - yarn-install
+      - bundle-install
       - run:
           name: 'Smoke tests'
           command: |
@@ -283,7 +324,9 @@ jobs:
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.staging.login.gov/api/deploy.json
-      - bundle-yarn-install
+      - node-install
+      - yarn-install
+      - bundle-install
       - run:
           name: 'Smoke tests'
           command: |
@@ -297,7 +340,9 @@ jobs:
       MONITOR_ENV: PROD
     steps:
       - checkout
-      - bundle-yarn-install
+      - node-install
+      - yarn-install
+      - bundle-install
       - run:
           name: 'Smoke tests'
           command: |
@@ -308,7 +353,9 @@ jobs:
     executor: ruby_browsers
     steps:
       - checkout
-      - bundle-yarn-install
+      - node-install
+      - yarn-install
+      - bundle-install
       - run:
           name: Check current AWS Pinpoint country support
           command: |-
@@ -321,10 +368,13 @@ workflows:
   release:
     jobs:
       - setup
-      - build:
+      - ruby_test:
           requires:
             - setup
       - javascript_build:
+          requires:
+            - setup
+      - javascript_test:
           requires:
             - setup
       - lints:

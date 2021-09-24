@@ -219,7 +219,7 @@ feature 'Sign in' do
   scenario 'user can see and use password visibility toggle', js: true do
     visit new_user_session_path
 
-    find('.checkbox').click
+    check t('forms.passwords.show')
 
     expect(page).to have_css('input.password[type="text"]')
   end
@@ -687,7 +687,7 @@ feature 'Sign in' do
       expect(button[:class]).to include('usa-button--disabled')
 
       # This checkbox element has a non-standard id for the accept-terms-button JS
-      check 'user_terms_accepted', allow_label_click: true
+      check 'user_terms_accepted'
 
       button = find_button(t('forms.buttons.continue'))
       expect(button[:class]).to_not include('usa-button--disabled')

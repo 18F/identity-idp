@@ -11,7 +11,7 @@ module DocumentCaptureStepHelper
       # Wait for the background image job to finish and success flash to appear before continuing
       expect(page).to have_content(t('doc_auth.headings.interstitial'))
 
-      Capybara.using_wait_time(3) do
+      Capybara.using_wait_time(10) do
         expect(page).to have_content(t('doc_auth.headings.capture_complete'))
       end
     elsif !javascript_enabled?

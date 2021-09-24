@@ -59,6 +59,7 @@ module Idv
         expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         channel: delivery_method,
         domain: IdentityConfig.store.domain_name,
+        country_code: parsed_phone.country,
       )
       add_cost
       otp_sent_response
@@ -76,7 +77,6 @@ module Idv
     end
 
     def extra_analytics_attributes
-      parsed_phone = Phonelib.parse(phone)
       {
         otp_delivery_preference: delivery_method,
         country_code: parsed_phone.country,
@@ -84,6 +84,10 @@ module Idv
         rate_limit_exceeded: rate_limit_exceeded?,
         telephony_response: @telephony_response,
       }
+    end
+
+    def parsed_phone
+      @parsed_phone ||= Phonelib.parse(phone)
     end
   end
 end

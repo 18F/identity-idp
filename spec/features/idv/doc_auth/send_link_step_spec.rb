@@ -38,7 +38,7 @@ feature 'doc auth send link step' do
     expect(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       expect(config[:link]).to_not include('_')
 
-      impl.call(config)
+      impl.call(**config)
     end
 
     fill_in :doc_auth_phone, with: '415-555-0199'
@@ -106,7 +106,7 @@ feature 'doc auth send link step' do
       params = Rack::Utils.parse_nested_query URI(config[:link]).query
       expect(params).to eq('document-capture-session' => document_capture_session.uuid)
 
-      impl.call(config)
+      impl.call(**config)
     end
 
     fill_in :doc_auth_phone, with: '415-555-0199'

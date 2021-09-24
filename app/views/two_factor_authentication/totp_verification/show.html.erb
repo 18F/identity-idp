@@ -20,13 +20,13 @@
       class: 'col-12',
     ) %>
   </div>
-  <div class="border border-primary-light rounded-lg padding-y-1 margin-top-2 margin-bottom-6 tablet:margin-y-2 col-12 sm-col-7">
+  <div class="border border-primary-light radius-lg padding-y-1 margin-top-2 margin-bottom-6 tablet:margin-y-2 col-12 sm-col-7">
     <%= hidden_field_tag 'remember_device', false, id: 'remember_device_preference' %>
     <%= check_box_tag 'remember_device', true, @presenter.remember_device_box_checked?,
                       class: 'margin-right-1 margin-left-2' %>
     <%= label_tag 'remember_device',
                   t('forms.messages.remember_device'),
-                  class: 'blue margin-right-2' %>
+                  class: 'text-primary margin-right-2' %>
   </div>
   <%= submit_tag t('forms.buttons.submit.default'), class: 'usa-button usa-button--wide usa-button--big' %>
 <% end %>

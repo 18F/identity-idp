@@ -42,7 +42,7 @@ module Deploy
       )
       checkout_dir = File.join(root, idp_config_checkout_name)
 
-      cmd = ['git', 'clone', private_git_repo_url, checkout_dir]
+      cmd = ['git', 'clone', '--depth', '1', '--branch', 'main', private_git_repo_url, checkout_dir]
       logger.info('+ ' + cmd.join(' '))
       Subprocess.check_call(cmd)
     end

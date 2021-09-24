@@ -11,12 +11,13 @@ module Idv
     validate :validate_images
     validate :throttle_if_rate_limited
 
-    def initialize(params, liveness_checking_enabled:, issuer:, analytics: nil)
+    def initialize(params, liveness_checking_enabled:, issuer:, analytics: nil, uuid_prefix: nil)
       @params = params
       @liveness_checking_enabled = liveness_checking_enabled
       @issuer = issuer
       @analytics = analytics
       @readable = {}
+      @uuid_prefix = uuid_prefix
     end
 
     def submit
@@ -41,7 +42,7 @@ module Idv
 
     private
 
-    attr_reader :params, :analytics, :issuer, :form_response
+    attr_reader :params, :analytics, :issuer, :form_response, :uuid_prefix
 
     def throttled_else_increment
       return unless document_capture_session
@@ -70,9 +71,12 @@ module Idv
         selfie_image: selfie&.read,
         liveness_checking_enabled: liveness_checking_enabled?,
         image_source: image_source,
+        user_uuid: user_uuid,
+        uuid_prefix: uuid_prefix,
       )
       response.extra.merge!(extra_attributes)
       response.extra[:state] = response.pii_from_doc[:state]
+      response.extra[:state_id_type] = response.pii_from_doc[:state_id_type]
 
       update_analytics(response)
 
@@ -152,7 +156,7 @@ module Idv
 
     def throttle_if_rate_limited
       return unless @throttled
-      track_event(Analytics::THROTTLER_RATE_LIMIT_TRIGGERED, throttle_type: :idv_acuant)
+      track_event(Analytics::THROTTLER_RATE_LIMIT_TRIGGERED, throttle_type: :idv_doc_auth)
       errors.add(:limit, t('errors.doc_auth.throttled_heading'))
     end
 
@@ -249,7 +253,7 @@ module Idv
     def throttle
       @throttle ||= Throttle.for(
         user: document_capture_session.user,
-        throttle_type: :idv_acuant,
+        throttle_type: :idv_doc_auth,
       )
     end
   end

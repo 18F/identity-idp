@@ -25,7 +25,7 @@ module Idv
       return unless @document_capture_session
       Throttle.for(
         user: @document_capture_session.user,
-        throttle_type: :idv_acuant,
+        throttle_type: :idv_doc_auth,
       ).remaining_count
     end
 

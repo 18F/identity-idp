@@ -34,12 +34,10 @@ fr:
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
       mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       pattern_mismatch:
-        dob: 'Votre date de naissance doit être inscrite de cette façon: mm/jj/aaaa'
         personal_key: 'Veuillez inscrire votre clé personnelle pour ce compte, par
           exemple : ABC1-DEF2-G3HI-J456'
         ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon :
           ###-##-####'
-        state_id_number: Votre numéro d’identification ne peut excéder 25 caractères
         zipcode: 'Votre code ZIP doit être inscrit de cette façon : #####-####'
       unsupported_otp_delivery_method: Sélectionnez une méthode pour recevoir un code.
     failure:
@@ -114,15 +112,15 @@ fr:
         tard.
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later: Une fois que votre lettre vous sera parvenue, veuillez vous
-        connecter à %{app}, puis saisissez votre code de vérification lorsque
+        connecter à %{app}, puis saisissez votre code de confirmation lorsque
         vous y serez invité.
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app}</strong> pour le moment.
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le moment.
       confirm: Vous avez crypté vos données vérifiées
       gpo:
-        address_on_file: Nous posterons une lettre à l’adresse vérifiée dans nos
-          dossiers. Celle-ci contient un code de confirmation.
+        address_on_file: Nous enverrons une lettre avec un code de confirmation à
+          l'adresse que vous avez indiquée à l'étape précédente.
         new_address: Nous vous enverrons une lettre avec un code de confirmation à
           l’adresse que vous spécifiez.
         resend: Envoyez-moi une autre lettre

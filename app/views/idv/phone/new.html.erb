@@ -84,8 +84,6 @@
       ].select(&:present?),
     ) %>
 
-<div class="margin-top-2 padding-top-1 border-top border-primary-light">
-  <%= link_to t('links.cancel'), idv_cancel_path(step: 'phone') %>
-</div>
+<%= render 'idv/doc_auth/start_over_or_cancel', step: 'phone' %>
 
 <% javascript_packs_tag_once 'form-steps-wait' %>

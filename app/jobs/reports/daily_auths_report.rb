@@ -5,8 +5,7 @@ module Reports
     include GoodJob::ActiveJobExtensions::Concurrency
 
     good_job_control_concurrency_with(
-      enqueue_limit: 1,
-      perform_limit: 1,
+      total_limit: 1,
       key: -> { "#{REPORT_NAME}-#{arguments.first}" },
     )
 
@@ -16,6 +15,7 @@ module Reports
       @report_date = report_date
 
       _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: report_date)
+      body = report_body.to_json
 
       [
         bucket_name, # default reporting bucket
@@ -24,16 +24,10 @@ module Reports
         each do |bucket_name|
         upload_file_to_s3_bucket(
           path: path,
-          body: report_body.to_json,
+          body: body,
           content_type: 'application/json',
-          bucket_name: bucket_name,
+          bucket: bucket_name,
         )
-      end
-    end
-
-    def public_bucket_name
-      if (prefix = IdentityConfig.store.s3_report_public_bucket_prefix)
-        Identity::Hostdata.bucket_name("#{prefix}-#{Identity::Hostdata.env}")
       end
     end
 

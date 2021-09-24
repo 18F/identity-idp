@@ -2,8 +2,6 @@
 // Converted Variables
 
 $line-height-1: 1 !default;
-$line-height-2: 1.125 !default;
-$line-height-3: 1.25 !default;
 $line-height-4: 1.5 !default;
 $letter-spacing: 1 !default;
 $caps-letter-spacing: .2em !default;
@@ -41,10 +39,6 @@ $bold-font-weight: bold !default;
 .break-word { word-wrap: break-word }
 
 .line-height-1 { line-height: $line-height-1 }
-
-.line-height-2 { line-height: $line-height-2 }
-
-.line-height-3 { line-height: $line-height-3 }
 
 .line-height-4 { line-height: $line-height-4 }
 

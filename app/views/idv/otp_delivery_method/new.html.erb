@@ -23,30 +23,31 @@
       method: :put
     ) do |f| %>
 
-  <fieldset class="margin-bottom-4 padding-0 border-none">
-    <label class="btn-border col-12 margin-bottom-1">
-      <div class="radio">
-        <%= radio_button_tag 'otp_delivery_preference', :sms, false, class: :otp_delivery_preference_sms %>
-        <span class="indicator mt-tiny"></span>
-        <span class="blue bold fs-20p">
-          <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
-        </span>
-        <div class="regular gray-dark fs-10p mb-tiny">
-          <%= t('two_factor_authentication.two_factor_choice_options.sms_info_html') %>
-        </div>
-      </div>
+  <fieldset class="margin-bottom-4 padding-0 border-0">
+    <%= radio_button_tag(
+          'otp_delivery_preference',
+          :sms,
+          false,
+          class: 'otp_delivery_preference_sms usa-radio__input usa-radio__input--tile',
+        ) %>
+    <label for="otp_delivery_preference_sms" class="usa-radio__label">
+      <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
+      <span class="usa-radio__label-description">
+        <%= t('two_factor_authentication.two_factor_choice_options.sms_info_html') %>
+      </span>
     </label>
-    <label class="btn-border col-12 margin-bottom-0">
-      <div class="radio">
-        <%= radio_button_tag 'otp_delivery_preference', :voice, false, class: :otp_delivery_preference_voice %>
-        <span class="indicator mt-tiny"></span>
-        <span class="blue bold fs-20p">
-          <%= t('two_factor_authentication.otp_delivery_preference.voice') %>
-        </span>
-        <div class="regular gray-dark fs-10p mb-tiny">
-          <%= t('two_factor_authentication.two_factor_choice_options.voice_info_html') %>
-        </div>
-      </div>
+
+    <%= radio_button_tag(
+          'otp_delivery_preference',
+          :voice,
+          false,
+          class: 'otp_delivery_preference_voice usa-radio__input usa-radio__input--tile',
+        ) %>
+    <label for="otp_delivery_preference_voice" class="usa-radio__label">
+      <%= t('two_factor_authentication.otp_delivery_preference.voice') %>
+      <span class="usa-radio__label-description">
+        <%= t('two_factor_authentication.two_factor_choice_options.voice_info_html') %>
+      </span>
     </label>
   </fieldset>
   <div class="margin-y-5">
@@ -69,8 +70,4 @@
       ].select(&:present?),
     ) %>
 
-<div class="margin-top-4 border-top border-primary-light">
-  <div class="margin-top-1">
-    <%= link_to(t('links.cancel'), idv_cancel_path(step: 'phone_otp_delivery_selection')) %>
-  </div>
-</div>
+<%= render 'idv/doc_auth/start_over_or_cancel', step: 'phone_otp_delivery_selection' %>

@@ -24,6 +24,7 @@ RSpec.describe DocumentProofingJob, type: :job do
       ssn: '123456789',
       phone: '18888675309',
       state: 'MT',
+      state_id_type: 'drivers_license',
     }
   end
 
@@ -53,7 +54,7 @@ RSpec.describe DocumentProofingJob, type: :job do
   let(:user) { create(:user) }
   let(:analytics) { FakeAnalytics.new }
   let(:document_capture_session) do
-    DocumentCaptureSession.create_by_user_id(user.id, analytics, result_id: SecureRandom.hex)
+    DocumentCaptureSession.create(user_id: user.id, result_id: SecureRandom.hex)
   end
 
   describe '.perform_later' do
@@ -131,6 +132,7 @@ RSpec.describe DocumentProofingJob, type: :job do
             processed_alerts: { failed: [], passed: [] },
             success: true,
             exception: nil,
+            tamper_result: nil,
           )
 
           expect(job_analytics).to have_logged_event(
@@ -145,12 +147,14 @@ RSpec.describe DocumentProofingJob, type: :job do
             alert_failure_count: 0,
             image_metrics: {},
             state: 'MT',
+            state_id_type: 'drivers_license',
             async: true,
-            remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+            remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
             client_image_metrics: {
               front: front_image_metadata,
               back: back_image_metadata,
             },
+            tamper_result: nil,
           )
 
           expect(result.pii_from_doc).to eq(applicant_pii)
@@ -181,6 +185,7 @@ RSpec.describe DocumentProofingJob, type: :job do
             },
             success: true,
             exception: nil,
+            tamper_result: nil,
           )
 
           expect(job_analytics).to have_logged_event(
@@ -195,8 +200,9 @@ RSpec.describe DocumentProofingJob, type: :job do
             alert_failure_count: 0,
             image_metrics: {},
             state: 'MT',
+            state_id_type: 'drivers_license',
             async: true,
-            remaining_attempts: IdentityConfig.store.acuant_max_attempts,
+            remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
             face_match_results: { is_match: true, match_score: nil },
             selfie_liveness_results: {
               acuant_error: { code: nil, message: nil },
@@ -207,6 +213,7 @@ RSpec.describe DocumentProofingJob, type: :job do
               front: front_image_metadata,
               back: back_image_metadata,
             },
+            tamper_result: nil,
           )
 
           expect(result.pii_from_doc).to eq(applicant_pii)

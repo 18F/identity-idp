@@ -18,18 +18,26 @@ env
 
 id
 which bundle
-
-bundle_dir=/srv/idp/shared
+# default bundle directory to shared directory
+: ${BUNDLE_DIR=/srv/idp/shared/bundle}
+: ${IDP_LOCAL_DEPENDENCIES=false}
 
 # use system libxml2, not the one vendored with nokogiri
 bundle config build.nokogiri --use-system-libraries
+bundle config set --local deployment 'true'
+bundle config set --local path $BUNDLE_DIR
+bundle config set --local without 'deploy development doc test'
 
-bundle install --deployment --jobs 4 \
-    --path "$bundle_dir/bundle" \
-    --binstubs "$bundle_dir/bin" \
-    --without 'deploy development doc test'
+if [ "$IDP_LOCAL_DEPENDENCIES" == "true" ]
+then
+  bundle install --jobs 4 --local
+  yarn install --production --frozen-lockfile --offline
+else
+  bundle install --jobs 4
+  yarn install --production --frozen-lockfile
+fi
 
-bundle exec yarn install
+bundle binstubs --all
 
 set +x
 

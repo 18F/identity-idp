@@ -468,7 +468,7 @@ IM:
 IN:
   country_code: '91'
   name: India
-  supports_sms: false
+  supports_sms: true
   supports_voice: false
 IQ:
   country_code: '964'
@@ -847,7 +847,7 @@ QA:
   supports_voice_unconfirmed: false
 RE:
   country_code: '262'
-  name: Rèunion (France)
+  name: Réunion (France)
   supports_sms: true
   supports_voice: false
 RO:
@@ -939,7 +939,7 @@ SS:
   supports_voice: false
 ST:
   country_code: '239'
-  name: Sao Tome and Principe
+  name: São Tomé and Príncipe
   supports_sms: true
   supports_voice: false
 SV:

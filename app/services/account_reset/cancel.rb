@@ -30,7 +30,10 @@ module AccountReset
     end
 
     def notify_user_via_phone_of_account_reset_cancellation
-      @telephony_response = Telephony.send_account_reset_cancellation_notice(to: phone)
+      @telephony_response = Telephony.send_account_reset_cancellation_notice(
+        to: phone,
+        country_code: Phonelib.parse(phone).country,
+      )
     end
 
     def update_account_reset_request

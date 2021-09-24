@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Idv::ConfirmationsController do
   include SamlAuthHelper
+  include PersonalKeyValidator
 
   def stub_idv_session
     stub_sign_in(user)
@@ -21,7 +22,7 @@ describe Idv::ConfirmationsController do
     profile = profile_maker.save_profile
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
-    subject.user_session[:personal_key] = profile.personal_key
+    idv_session.personal_key = profile.personal_key
     allow(subject).to receive(:idv_session).and_return(idv_session)
   end
 
@@ -95,11 +96,22 @@ describe Idv::ConfirmationsController do
 
     it 'sets code instance variable' do
       subject.idv_session.create_profile_from_applicant_with_password(password)
-      code = subject.user_session[:personal_key]
+      code = subject.idv_session.personal_key
 
       get :show
 
       expect(assigns(:code)).to eq(code)
+    end
+
+    it 'can decrypt the profile with the code' do
+      get :show
+
+      code = assigns(:code)
+
+      expect(PersonalKeyGenerator.new(user).verify(code)).to eq true
+      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to eq(
+        subject.idv_session.pii,
+      )
     end
 
     it 'sets flash[:allow_confirmations_continue] to true' do
@@ -226,7 +238,7 @@ describe Idv::ConfirmationsController do
 
     it 'allows download of code' do
       subject.idv_session.create_profile_from_applicant_with_password(password)
-      code = subject.user_session[:personal_key]
+      code = subject.idv_session.personal_key
 
       get :show
       get :download
@@ -236,25 +248,23 @@ describe Idv::ConfirmationsController do
       expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: true)
     end
 
-    it 'can be called separately from #show' do
+    it 'recovers pii and verifies personal key digest with the code' do
+      get :show
       get :download
 
-      expect(response).to be_ok
-
-      code = subject.user_session[:personal_key]
-      expect(response.body).to eq(code + "\r\n")
-    end
-
-    it 'can be called out of order and have the same code as #show' do
-      subject.user_session[:personal_key] = nil
-
-      expect { get :download }.to change { subject.user_session[:personal_key] }.from(nil)
-
-      expect(response).to be_ok
       code = response.body.chomp
 
-      get :show
-      expect(assigns(:code)).to eq(code)
+      expect(PersonalKeyGenerator.new(user).verify(code)).to eq true
+      expect(user.profiles.first.recover_pii(normalize_personal_key(code))).to eq(
+        subject.idv_session.pii,
+      )
+    end
+
+    it 'is a bad request when there is no personal_key in the session' do
+      get :download
+
+      expect(response).to be_bad_request
+      expect(@analytics).to have_logged_event(Analytics::IDV_DOWNLOAD_PERSONAL_KEY, success: false)
     end
   end
 end

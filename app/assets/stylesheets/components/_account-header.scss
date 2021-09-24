@@ -1,0 +1,8 @@
+.account-header__badges {
+  @include at-media-max('tablet') {
+    @include u-pin-x;
+    @include u-pin-bottom;
+    @include u-text('center');
+    transform: translateY(50%);
+  }
+}

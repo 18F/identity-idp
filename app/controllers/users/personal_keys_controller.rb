@@ -56,7 +56,11 @@ module Users
 
       telephony_responses = MfaContext.new(current_user).
                             phone_configurations.map do |phone_configuration|
-        Telephony.send_personal_key_regeneration_notice(to: phone_configuration.phone)
+        phone = phone_configuration.phone
+        Telephony.send_personal_key_regeneration_notice(
+          to: phone,
+          country_code: Phonelib.parse(phone).country,
+        )
       end
 
       form_response(emails: emails, telephony_responses: telephony_responses)

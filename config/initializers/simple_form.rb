@@ -25,7 +25,7 @@ SimpleForm.setup do |config|
     b.use :label, class: 'bold'
     b.use :hint,  wrap_with: { tag: 'div', class: 'italic' }
     b.use :input, class: 'block col-12 field'
-    b.use :error, wrap_with: { tag: 'div', class: 'mt-tiny h6 red error-message' }
+    b.use :error, wrap_with: { tag: 'div', class: 'mt-tiny h6 text-error error-message' }
   end
 
   config.default_wrapper = :vertical_form

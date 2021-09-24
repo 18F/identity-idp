@@ -60,13 +60,12 @@ class ApplicationController < ActionController::Base
 
   def analytics
     return @analytics if @analytics
-    update_session_paths_visited_for_analytics
     @analytics =
       Analytics.new(
         user: analytics_user,
         request: request,
         sp: current_sp&.issuer,
-        first_path_visit_this_session: first_path_visit_this_session?,
+        session: session,
         ahoy: ahoy,
       )
   end
@@ -398,15 +397,5 @@ class ApplicationController < ActionController::Base
   def mobile?
     client = DeviceDetector.new(request.user_agent)
     client.device_type != 'desktop'
-  end
-
-  def update_session_paths_visited_for_analytics
-    session[:paths_visited] ||= {}
-    session[:first_path_visit] = !session[:paths_visited].key?(request.path)
-    session[:paths_visited][request.path] = true
-  end
-
-  def first_path_visit_this_session?
-    session[:first_path_visit]
   end
 end

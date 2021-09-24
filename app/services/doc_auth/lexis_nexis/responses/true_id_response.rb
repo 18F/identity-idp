@@ -39,6 +39,7 @@ module DocAuth
           'Fields_xpirationDate_Day' => :state_id_expiration_day, # this is NOT a typo
           'Fields_ExpirationDate_Month' => :state_id_expiration_month,
           'Fields_ExpirationDate_Year' => :state_id_expiration_year,
+          'Fields_DocumentClassName' => :state_id_type,
         }.freeze
         attr_reader :config
 
@@ -68,16 +69,18 @@ module DocAuth
         def extra_attributes
           if true_id_product&.dig(:AUTHENTICATION_RESULT).present?
             attrs = response_info.merge(true_id_product[:AUTHENTICATION_RESULT])
-            attrs.reject do |k, _v|
-              PII_EXCLUDES.include? k
+            attrs.reject! do |k, _v|
+              PII_EXCLUDES.include?(k) || k.start_with?('Alert_')
             end
           else
-            {
+            attrs = {
               lexis_nexis_status: parsed_response_body[:Status],
               lexis_nexis_info: parsed_response_body.dig(:Information),
               exception: 'LexisNexis Response Unexpected: TrueID response details not found.',
             }
           end
+
+          basic_logging_info.merge(attrs)
         end
 
         def pii_from_doc
@@ -88,24 +91,24 @@ module DocAuth
             pii[idp_key] = true_id_product[:IDAUTH_FIELD_DATA][true_id_key]
           end
 
-          pii[:state_id_type] = 'drivers_license'
+          pii[:state_id_type] = DocAuth::Response::ID_TYPE_SLUGS[pii[:state_id_type]]
 
           if pii[:dob_month] && pii[:dob_day] && pii[:dob_year]
-            pii[:dob] = [
-              pii.delete(:dob_year),
-              pii.delete(:dob_month),
-              pii.delete(:dob_day),
-            ].join('-')
+            pii[:dob] = Date.new(
+              pii.delete(:dob_year).to_i,
+              pii.delete(:dob_month).to_i,
+              pii.delete(:dob_day).to_i,
+            ).to_s
           end
 
           if pii[:state_id_expiration_month] &&
              pii[:state_id_expiration_day] &&
              pii[:state_id_expiration_year]
-            pii[:state_id_expiration] = [
-              pii.delete(:state_id_expiration_year),
-              pii.delete(:state_id_expiration_month),
-              pii.delete(:state_id_expiration_day),
-            ].join('-')
+            pii[:state_id_expiration] = Date.new(
+              pii.delete(:state_id_expiration_year).to_i,
+              pii.delete(:state_id_expiration_month).to_i,
+              pii.delete(:state_id_expiration_day).to_i,
+            ).to_s
           end
 
           pii
@@ -121,10 +124,7 @@ module DocAuth
           alerts = parsed_alerts
 
           {
-            conversation_id: conversation_id,
-            reference: reference,
             liveness_enabled: @liveness_checking_enabled,
-            vendor: 'TrueID',
             transaction_status: transaction_status,
             transaction_reason_code: transaction_reason_code,
             product_status: product_status,
@@ -134,6 +134,19 @@ module DocAuth
             portrait_match_results: true_id_product[:PORTRAIT_MATCH_RESULT],
             image_metrics: parse_image_metrics,
           }
+        end
+
+        def basic_logging_info
+          {
+            conversation_id: conversation_id,
+            reference: reference,
+            vendor: 'TrueID',
+            billed: billed?,
+          }
+        end
+
+        def billed?
+          !!doc_auth_result && !doc_auth_result_unknown?
         end
 
         def all_passed?
@@ -161,6 +174,10 @@ module DocAuth
 
         def doc_auth_result_attention?
           doc_auth_result == 'Attention'
+        end
+
+        def doc_auth_result_unknown?
+          doc_auth_result == 'Unknown'
         end
 
         def doc_auth_result

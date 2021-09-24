@@ -30,11 +30,9 @@ en:
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have requested too much mail in the last month.
       pattern_mismatch:
-        dob: Your date of birth must be entered in as mm/dd/yyyy
         personal_key: 'Please enter your personal key for this account. Example:
           ABC1-DEF2-G3HI-J456'
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
-        state_id_number: Your ID number cannot be more than 25 characters.
         zipcode: 'Your zipcode must be entered in as #####-####'
       unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
@@ -102,17 +100,17 @@ en:
         need at this time you can continue later.
       clear_and_start_over: Clear my information and start over
       come_back_later: Once your letter arrives, sign into %{app}, and enter your
-        verification code when prompted.
+        confirmation code when prompted.
       come_back_later_no_sp_html: You can return to your <strong>%{app} account</strong> for now.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       gpo:
-        address_on_file: We will mail a letter with a confirmation code to your verified
-          address on file.
+        address_on_file: We will mail a letter with a confirmation code to the address
+          that you provided on the previous step.
         new_address: We will mail a letter with a confirmation code to the address you
           specify.
         resend: Send me another letter
-        timeframe: Letters are sent the next business day via USPS First Class Mail, and
+        timeframe: Letters are sent the next business day via USPS First Class Mail and
           typically take 3 to 7 business days.
       mail_sent: Your letter is on its way
       otp_delivery_method:
