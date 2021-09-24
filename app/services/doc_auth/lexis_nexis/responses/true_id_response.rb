@@ -110,17 +110,6 @@ module DocAuth
 
         private
 
-        def parse_date(year:, month:, day:)
-          return nil unless year && month && day
-
-          i_year = year.to_i
-          i_month = month.to_i
-          i_day = day.to_i
-          return nil unless i_year > 0 && i_month > 0 && i_day > 0
-
-          Date.new(i_year, i_month, i_day).to_s
-        end
-
         def response_info
           @response_info ||= create_response_info
         end
@@ -254,6 +243,12 @@ module DocAuth
           end
 
           new_metrics
+        end
+
+        def parse_date(year:, month:, day:)
+          if year.to_i.positive? && month.to_i.positive? && day.to_i.positive?
+            Date.new(year.to_i, month.to_i, day.to_i).to_s
+          end
         end
       end
     end
