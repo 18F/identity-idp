@@ -155,7 +155,7 @@ es:
       mailing_address: Dirección postal
       ssn: Número de Seguro Social (SSN, sigla en inglés)
     titles:
-      activated: Su identidad ha sido verificada.
+      activated: Ya se verificó tu identidad.
       cancel: No podemos verificar su identidad.
       come_back_later: Vuelve pronto.
       mail:
