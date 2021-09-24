@@ -27,7 +27,6 @@ function inlineValidation() {
           ${I18n.t('forms.ssn.show')}
         </span>`;
       input.insertAdjacentHTML('afterend', alert);
-      alertInline.classList.remove('display-none');
       blurInput(input);
     }
   
