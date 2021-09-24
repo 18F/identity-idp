@@ -13,6 +13,7 @@ class OpenidConnectUserInfoPresenter
       sub: uuid_from_sp_identity(identity),
       iss: root_url,
       email: email_from_sp_identity(identity),
+      alternate_emails: alternate_emails_from_sp_identity(identity),
       email_verified: true,
     }
 
@@ -35,6 +36,10 @@ class OpenidConnectUserInfoPresenter
 
   def email_from_sp_identity(identity)
     EmailContext.new(identity.user).last_sign_in_email_address.email
+  end
+
+  def alternate_emails_from_sp_identity(identity)
+    EmailContext.new(identity.user).alternate_email_addresses.map(&:email)
   end
 
   def ial2_attributes

@@ -30,6 +30,7 @@ class OpenidConnectAttributeScoper
   ATTRIBUTE_SCOPES_MAP = {
     email: %w[email],
     email_verified: %w[email],
+    alternate_emails: %w[email],
     address: %w[address],
     phone: %w[phone],
     phone_verified: %w[phone],
@@ -45,7 +46,7 @@ class OpenidConnectAttributeScoper
 
   SCOPE_ATTRIBUTE_MAP = {}.tap do |scope_attribute_map|
     ATTRIBUTE_SCOPES_MAP.each do |attribute, scopes|
-      next [] if attribute.match?(/_verified$/)
+      next [] if attribute.match?(/_verified$/) || attribute == 'alternate_emails'
       scopes.each do |scope|
         scope_attribute_map[scope] ||= []
         scope_attribute_map[scope] << attribute

@@ -29,6 +29,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         expect(user_info[:iss]).to eq(root_url)
         expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
         expect(user_info[:email_verified]).to eq(true)
+        expect(user_info[:alternate_emails]).to eq([])
       end
     end
 
@@ -138,6 +139,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
             aggregate_failures do
               expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
               expect(user_info[:email_verified]).to eq(true)
+              expect(user_info[:alternate_emails]).to eq([])
               expect(user_info[:given_name]).to eq(nil)
               expect(user_info[:family_name]).to eq(nil)
               expect(user_info[:birthdate]).to eq(nil)
