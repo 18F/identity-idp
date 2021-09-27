@@ -13,7 +13,6 @@ en:
       link_text: create a new account
       title: You have deleted your account
     confirm_request:
-      check_your_email: Check your email
       close_window: You can close this window if you’re done.
       instructions_end: to begin the account delete process. Follow the instructions
         in your email to complete the process.

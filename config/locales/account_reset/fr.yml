@@ -13,7 +13,6 @@ fr:
       link_text: créer un nouveau compte
       title: Vous avez supprimé votre compte
     confirm_request:
-      check_your_email: Vérifiez votre email
       close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
       instructions_end: pour commencer le compte. Supprimer le processus. Suivez les
         instructions dans votre e-mail pour terminer le processus.
