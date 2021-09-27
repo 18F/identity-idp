@@ -105,7 +105,7 @@ module Users
         redirect_to_otp_verification_with_error
       else
         flash[:error] = telephony_error.friendly_message
-        redirect_back(fallback_location: account_url)
+        redirect_back(fallback_location: account_url, allow_other_host: false)
       end
     end
 
