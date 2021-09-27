@@ -8,6 +8,7 @@ require:
   - rubocop-performance
   - ./lib/linters/url_options_linter.rb
   - ./lib/linters/localized_validation_message_linter.rb
+  - ./lib/linters/redirect_back_linter.rb
 
 AllCops:
   Exclude:
@@ -46,6 +47,9 @@ IdentityIdp/UrlOptionsLinter:
   Enabled: true
   Exclude:
     - 'spec/**/*.rb'
+
+IdentityIdp/RedirectBackLinter:
+  Enabled: true
 
 Layout/AccessModifierIndentation:
   Enabled: true
