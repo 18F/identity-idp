@@ -236,6 +236,7 @@ describe Idv::PhoneController do
         result = {
           success: true,
           errors: {},
+          pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
             messages: [],
             context: context,
@@ -286,6 +287,7 @@ describe Idv::PhoneController do
           errors: {
             phone: ['The phone number could not be verified.'],
           },
+          pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
             messages: [],
             context: context,

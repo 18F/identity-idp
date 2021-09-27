@@ -391,6 +391,7 @@ describe Idv::DocAuthController do
           step: 'verify_document_status',
           flow_path: 'standard',
           step_count: 1,
+          pii_like_keypaths: [[:pii]],
         }
       )
       expect(@analytics).to have_received(:track_event).with(
@@ -402,6 +403,7 @@ describe Idv::DocAuthController do
           step: 'verify_document_status',
           flow_path: 'standard',
           step_count: 1,
+          pii_like_keypaths: [[:pii]],
         }
       )
     end

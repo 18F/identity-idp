@@ -254,6 +254,7 @@ describe Idv::ImageUploadsController do
           errors: {},
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          pii_like_keypaths: [[:pii]],
         )
 
         action
@@ -329,6 +330,7 @@ describe Idv::ImageUploadsController do
               },
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              pii_like_keypaths: [[:pii]],
             )
 
             action
@@ -378,6 +380,7 @@ describe Idv::ImageUploadsController do
               },
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              pii_like_keypaths: [[:pii]],
             )
 
             action
@@ -427,6 +430,7 @@ describe Idv::ImageUploadsController do
               },
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              pii_like_keypaths: [[:pii]],
             )
 
             action
