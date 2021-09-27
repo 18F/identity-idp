@@ -104,10 +104,6 @@ module Deploy
       @secrets_s3 ||= Identity::Hostdata.secrets_s3(s3_client: s3_client, logger: logger)
     end
 
-    def ec2_data
-      @ec2_data ||= Identity::Hostdata::EC2.load
-    end
-
     def default_logger
       logger = Logger.new(STDOUT)
       logger.progname = 'deploy/activate'

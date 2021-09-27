@@ -2,7 +2,7 @@
 
 # The defaults set in this file are used as the basis for configuration in all
 # production and development environments. On deployed EC2 servers, we run
-# bin/activate to generate the final application.yml using this file for
+# deploy/activate to generate the final application.yml using this file for
 # defaults and deep merging any overrides set in the application.yml from the
 # app secrets S3 bucket. Deployed EC2 servers always set RAILS_ENV=production,
 # so they will use values from top-level and from the production block.
