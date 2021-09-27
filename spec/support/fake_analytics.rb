@@ -5,12 +5,12 @@ class FakeAnalytics
     def track_event(event, attributes = {})
       raise PiiDetected, 'pii detected in analytics' if attributes.to_json.include?('pii')
 
-      pii_attr_names = Pii::Attributes.members.map(&:to_s)
+      pii_attr_names = Pii::Attributes.members
 
       check_recursive = ->(value) do
         case value
         when String, Symbol
-          if pii_attr_names.include?(value.to_s.downcase)
+          if pii_attr_names.include?(value.to_sym.downcase)
             raise PiiDetected, "pii key #{value} passed to track_event"
           end
         when Hash, Array
