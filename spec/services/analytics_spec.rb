@@ -156,5 +156,18 @@ describe Analytics do
 
       analytics.track_event('Trackable Event')
     end
+
+    # relies on prepending the FakeAnalytics::PiiAlerter mixin
+    it 'throws an error when pii is passed in' do
+      allow(ahoy).to receive(:track)
+
+      expect { analytics.track_event('Trackable Event') }.to_not raise_error
+
+      expect { analytics.track_event('Trackable Event', first_name: 'Bobby') }.
+        to raise_error(FakeAnalytics::PiiDetected)
+
+      expect { analytics.track_event('Trackable Event', decrypted_pii: '{"first_name":"Bobby"}') }.
+        to raise_error(FakeAnalytics::PiiDetected)
+    end
   end
 end

@@ -1,4 +1,31 @@
 class FakeAnalytics
+  PiiDetected = Class.new(StandardError)
+
+  module PiiAlerter
+    def track_event(event, attributes = {})
+      raise PiiDetected, 'pii detected in analytics' if attributes.to_json.include?('pii')
+
+      pii_attr_names = Pii::Attributes.members.map(&:to_s)
+
+      check_recursive = ->(value) do
+        case value
+        when String, Symbol
+          if pii_attr_names.include?(value.to_s.downcase)
+            raise PiiDetected, "pii key #{value} passed to track_event"
+          end
+        when Hash, Array
+          value.each(&check_recursive)
+        end
+      end
+
+      attributes.each(&check_recursive)
+
+      super(event, attributes)
+    end
+  end
+
+  prepend PiiAlerter
+
   attr_reader :events
 
   def initialize
