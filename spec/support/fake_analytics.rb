@@ -3,26 +3,30 @@ class FakeAnalytics
 
   module PiiAlerter
     def track_event(event, attributes = {})
+      pii_like_keypaths = attributes.delete(:pii_like_keypaths) || []
+
       if attributes.to_json.include?('pii')
         raise PiiDetected, "pii detected in analytics, full event: #{attributes}"
       end
 
-      pii_attr_names = Pii::Attributes.members - [
-        :state, # useful for aggregation, on its own not enough to warrant a PII leak
-      ]
+      pii_attr_names = Pii::Attributes.members
 
-      check_recursive = ->(value) do
+      check_recursive = ->(value, keypath = []) do
         case value
-        when String, Symbol
-          if pii_attr_names.include?(value.to_sym.downcase)
-            raise PiiDetected, "pii key #{value} passed to track_event, full event: #{attributes}"
+        when Hash
+          value.each do |key, val|
+            if pii_attr_names.include?(key) && !pii_like_keypaths.include?(keypath + [key])
+              raise PiiDetected, "pii key #{value} passed to track_event, full event: #{attributes}"
+            end
+
+            check_recursive.call(val, [key])
           end
-        when Hash, Array
+        when Array
           value.each(&check_recursive)
         end
       end
 
-      attributes.each(&check_recursive)
+      check_recursive.call(attributes)
 
       super(event, attributes)
     end

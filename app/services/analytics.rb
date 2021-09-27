@@ -8,6 +8,7 @@ class Analytics
   end
 
   def track_event(event, attributes = {})
+    attributes.delete(:pii_like_keypaths)
     update_session_events_and_paths_visited_for_analytics(event) if attributes[:success] != false
     analytics_hash = {
       event_properties: attributes.except(:user_id),
