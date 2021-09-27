@@ -1,9 +1,9 @@
 namespace :deploy do
   desc 'Run activate script'
-  # rubocop:disable [Rails/EnvironmentRakeTask] or something
+  # rubocop:disable Rails/RakeEnvironment
   task :activate do
-  # rubocop:enable [Rails/EnvironmentRakeTask] or something
     require_relative '../deploy/activate'
     Deploy::Activate.new.run
   end
+  # rubocop:enable Rails/RakeEnvironment
 end
