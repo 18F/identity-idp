@@ -166,6 +166,10 @@ describe Analytics do
       expect { analytics.track_event('Trackable Event', first_name: 'Bobby') }.
         to raise_error(FakeAnalytics::PiiDetected)
 
+      expect do
+        analytics.track_event('Trackable Event', nested: [{ value: { first_name: 'Bobby' } }])
+      end.to raise_error(FakeAnalytics::PiiDetected)
+
       expect { analytics.track_event('Trackable Event', decrypted_pii: '{"first_name":"Bobby"}') }.
         to raise_error(FakeAnalytics::PiiDetected)
     end
