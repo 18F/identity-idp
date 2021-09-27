@@ -5,24 +5,33 @@ class FakeAnalytics
     def track_event(event, attributes = {})
       pii_like_keypaths = attributes.delete(:pii_like_keypaths) || []
 
-      if attributes.to_json.include?('pii')
-        raise PiiDetected, "pii detected in analytics, full event: #{attributes}"
+      if attributes.to_json.include?('pii') && !pii_like_keypaths.include?([:pii])
+        raise PiiDetected, "string 'pii' detected in analytics, full event: #{attributes}"
       end
 
-      pii_attr_names = Pii::Attributes.members
+      pii_attr_names = Pii::Attributes.members - [
+        :state, # state on its own is not enough to be a pii leak
+      ]
+      constant_name = Analytics.constants.find { |c| Analytics.const_get(c) == event }
 
       check_recursive = ->(value, keypath = []) do
         case value
         when Hash
           value.each do |key, val|
-            if pii_attr_names.include?(key) && !pii_like_keypaths.include?(keypath + [key])
-              raise PiiDetected, "pii key #{value} passed to track_event, full event: #{attributes}"
+            current_keypath = keypath + [key]
+            if pii_attr_names.include?(key) && !pii_like_keypaths.include?(current_keypath)
+              raise PiiDetected, <<~ERROR
+                track_event received pii key path: #{current_keypath.inspect}
+                event: #{event} (#{constant_name})
+                full event: #{attributes.inspect}
+                allowlisted keypaths: #{pii_like_keypaths.inspect}
+              ERROR
             end
 
             check_recursive.call(val, [key])
           end
         when Array
-          value.each(&check_recursive)
+          value.each { |val| check_recursive.call(val, keypath) }
         end
       end
 

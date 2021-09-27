@@ -52,7 +52,7 @@ module Idv
       {
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
-        pii_like_keypaths: %i[phone], # see errors.add(:phone)
+        pii_like_keypaths: [[:phone]], # see errors.add(:phone)
       }
     end
 

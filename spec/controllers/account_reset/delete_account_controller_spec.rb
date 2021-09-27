@@ -19,6 +19,7 @@ describe AccountReset::DeleteAccountController do
         success: true,
         errors: {},
         mfa_method_counts: { backup_codes: 10, webauthn: 2, phone: 2 },
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
       }
       expect(@analytics).
@@ -39,6 +40,7 @@ describe AccountReset::DeleteAccountController do
         errors: { token: [t('errors.account_reset.granted_token_invalid')] },
         error_details: { token: [t('errors.account_reset.granted_token_invalid')] },
         mfa_method_counts: {},
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
       }
       expect(@analytics).
@@ -59,6 +61,7 @@ describe AccountReset::DeleteAccountController do
         errors: { token: [t('errors.account_reset.granted_token_missing')] },
         error_details: { token: [:blank] },
         mfa_method_counts: {},
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
       }
       expect(@analytics).to receive(:track_event).
@@ -83,6 +86,7 @@ describe AccountReset::DeleteAccountController do
         errors: { token: [t('errors.account_reset.granted_token_expired')] },
         error_details: { token: [t('errors.account_reset.granted_token_expired')] },
         mfa_method_counts: {},
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 2,
       }
       expect(@analytics).to receive(:track_event).
