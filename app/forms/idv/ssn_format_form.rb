@@ -18,7 +18,11 @@ module Idv
     def submit(params)
       consume_params(params)
 
-      FormResponse.new(success: valid?, errors: errors)
+      FormResponse.new(
+        success: valid?,
+        errors: errors,
+        extra: { pii_like_keypaths: [[:errors, :ssn ], [:error_details, :ssn]] },
+      )
     end
 
     private
