@@ -11,7 +11,6 @@ linters:
       - '*/app/views/accounts/_connected_app.html.erb'
       - '*/app/views/accounts/_emails.html.erb'
       - '*/app/views/accounts/_identity_item.html.erb'
-      - '*/app/views/accounts/_nav_auth.html.erb'
       - '*/app/views/accounts/_password_reset.html.erb'
       - '*/app/views/accounts/_pending_profile_bounced_gpo.html.erb'
       - '*/app/views/accounts/_pending_profile_gpo.html.erb'
