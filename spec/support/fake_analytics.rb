@@ -3,7 +3,7 @@ class FakeAnalytics
 
   module PiiAlerter
     def track_event(event, attributes = {})
-      pii_like_keypaths = attributes.delete(:pii_like_keypaths) || []
+      pii_like_keypaths = (attributes.delete(:pii_like_keypaths) || []) # .map { |path| path.map(&:to_sym) }
 
       if attributes.to_json.include?('pii') && !pii_like_keypaths.include?([:pii])
         raise PiiDetected, "string 'pii' detected in analytics, full event: #{attributes}"
