@@ -138,7 +138,7 @@ module Idv
         errors: result[:errors],
         extra: {
           pii_like_keypaths: [[:errors, :zipcode]],
-        }
+        },
       )
     end
 

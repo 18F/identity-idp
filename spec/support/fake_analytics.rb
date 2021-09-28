@@ -3,7 +3,7 @@ class FakeAnalytics
 
   module PiiAlerter
     def track_event(event, attributes = {})
-      pii_like_keypaths = (attributes.delete(:pii_like_keypaths) || []) # .map { |path| path.map(&:to_sym) }
+      pii_like_keypaths = attributes.delete(:pii_like_keypaths) || []
 
       constant_name = Analytics.constants.find { |c| Analytics.const_get(c) == event }
 

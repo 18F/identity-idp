@@ -19,7 +19,7 @@ module Idv
         errors: errors,
         extra: {
           pii_like_keypaths: [[:pii]], # see errors.add(:pii)
-        }
+        },
       )
     end
 
