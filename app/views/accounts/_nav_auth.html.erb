@@ -2,10 +2,16 @@
   <div class="container tablet:padding-x-2 tablet:padding-y-4">
     <div class="clearfix">
       <div class="margin-y-105 margin-left-2 tablet:margin-0 col col-4">
-        <%= link_to image_tag(asset_url('logo.svg'),
-                              alt: APP_NAME,
-                              class: 'text-bottom',
-                              width: 170), root_path %>
+        <%= link_to(
+              image_tag(
+                asset_url('logo.svg'),
+                alt: APP_NAME,
+                class: 'text-bottom',
+                width: 170,
+                height: 23,
+              ),
+              root_path,
+            ) %>
       </div>
       <div class="col col-8 padding-right-1 display-none desktop:display-flex flex-justify-end">
         <div class="margin-right-1 truncate-inline">
