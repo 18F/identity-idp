@@ -49,6 +49,7 @@ describe Idv::ImageUploadsController do
           },
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          pii_like_keypaths: [[:pii]],
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -101,6 +102,7 @@ describe Idv::ImageUploadsController do
           },
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          pii_like_keypaths: [[:pii]],
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -197,6 +199,7 @@ describe Idv::ImageUploadsController do
           },
           user_id: user.uuid,
           remaining_attempts: 0,
+          pii_like_keypaths: [[:pii]],
         )
 
         expect(@analytics).not_to receive(:track_event).with(
@@ -228,6 +231,7 @@ describe Idv::ImageUploadsController do
           errors: {},
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          pii_like_keypaths: [[:pii]],
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -246,6 +250,7 @@ describe Idv::ImageUploadsController do
             front: { glare: 99.99 },
             back: { glare: 99.99 },
           },
+          pii_like_keypaths: [[:pii]],
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -299,6 +304,7 @@ describe Idv::ImageUploadsController do
               errors: {},
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              pii_like_keypaths: [[:pii]],
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -317,6 +323,7 @@ describe Idv::ImageUploadsController do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
+              pii_like_keypaths: [[:pii]],
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -349,6 +356,7 @@ describe Idv::ImageUploadsController do
               errors: {},
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              pii_like_keypaths: [[:pii]],
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -367,6 +375,7 @@ describe Idv::ImageUploadsController do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
+              pii_like_keypaths: [[:pii]],
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -399,6 +408,7 @@ describe Idv::ImageUploadsController do
               errors: {},
               user_id: user.uuid,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+              pii_like_keypaths: [[:pii]],
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -417,6 +427,7 @@ describe Idv::ImageUploadsController do
                 front: { glare: 99.99 },
                 back: { glare: 99.99 },
               },
+              pii_like_keypaths: [[:pii]],
             )
 
             expect(@analytics).to receive(:track_event).with(
@@ -473,6 +484,7 @@ describe Idv::ImageUploadsController do
           errors: {},
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          pii_like_keypaths: [[:pii]],
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -491,6 +503,7 @@ describe Idv::ImageUploadsController do
             front: { glare: 99.99 },
             back: { glare: 99.99 },
           },
+          pii_like_keypaths: [[:pii]],
         )
 
         action
@@ -523,6 +536,7 @@ describe Idv::ImageUploadsController do
           errors: {},
           user_id: user.uuid,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+          pii_like_keypaths: [[:pii]],
         )
 
         expect(@analytics).to receive(:track_event).with(
@@ -543,6 +557,7 @@ describe Idv::ImageUploadsController do
             front: { glare: 99.99 },
             back: { glare: 99.99 },
           },
+          pii_like_keypaths: [[:pii]],
         )
 
         action

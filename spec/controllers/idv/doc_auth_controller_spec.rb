@@ -183,7 +183,6 @@ describe Idv::DocAuthController do
         step: 'welcome',
         flow_path: 'standard',
         step_count: 1,
-        pii_like_keypaths: [[:errors, :ssn], [:error_details, :ssn]],
       }
 
       put :update, params: {
