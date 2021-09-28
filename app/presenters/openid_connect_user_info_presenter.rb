@@ -13,8 +13,9 @@ class OpenidConnectUserInfoPresenter
       sub: uuid_from_sp_identity(identity),
       iss: root_url,
       email: email_from_sp_identity(identity),
-      alternate_emails: alternate_emails_from_sp_identity(identity),
       email_verified: true,
+      alternate_emails: alternate_emails_from_sp_identity(identity),
+      alternate_emails_verified: true,
     }
 
     info.merge!(ial2_attributes) if scoper.ial2_scopes_requested?
