@@ -9,10 +9,13 @@ class GpoDailyTestSender
         otp: otp_from_date,
       ).perform
     else
-      raise 'missing valid designated receiver pii'
+      Rails.logger.warn(
+        {
+          source: 'GpoDailyTestSender',
+          message: 'missing valid designated receiver pii, not enqueueing a test sender',
+        }.to_json,
+      )
     end
-  rescue => err
-    NewRelic::Agent.notice_error(err)
   end
 
   # @return [String] 10-digit OTP from the date
@@ -24,7 +27,7 @@ class GpoDailyTestSender
 
   # @return [Hash]
   def designated_receiver_pii
-    @designated_receiver_pii ||= IdentityConfig.store.gpo_designated_receiver_pii
+    @designated_receiver_pii ||= (IdentityConfig.store.gpo_designated_receiver_pii || {})
   end
 
   def valid_designated_receiver_pii?
