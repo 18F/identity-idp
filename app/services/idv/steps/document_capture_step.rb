@@ -44,6 +44,9 @@ module Idv
           doc_auth_form_result = DocAuth::Response.new(
             success: false,
             errors: doc_pii_form_result.errors,
+            extra: {
+              pii_like_keypaths: [[:pii]],
+            },
           )
           doc_auth_form_result = doc_auth_form_result.merge(response)
           return handle_document_verification_failure(doc_auth_form_result)

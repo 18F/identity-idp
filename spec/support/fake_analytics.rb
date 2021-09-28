@@ -5,14 +5,19 @@ class FakeAnalytics
     def track_event(event, attributes = {})
       pii_like_keypaths = (attributes.delete(:pii_like_keypaths) || []) # .map { |path| path.map(&:to_sym) }
 
+      constant_name = Analytics.constants.find { |c| Analytics.const_get(c) == event }
+
       if attributes.to_json.include?('pii') && !pii_like_keypaths.include?([:pii])
-        raise PiiDetected, "string 'pii' detected in analytics, full event: #{attributes}"
+        raise PiiDetected, <<~ERROR
+          track_event string 'pii' detected in attributes
+          event: #{event} (#{constant_name})
+          full event: #{attributes}"
+        ERROR
       end
 
       pii_attr_names = Pii::Attributes.members - [
         :state, # state on its own is not enough to be a pii leak
       ]
-      constant_name = Analytics.constants.find { |c| Analytics.const_get(c) == event }
 
       check_recursive = ->(value, keypath = []) do
         case value

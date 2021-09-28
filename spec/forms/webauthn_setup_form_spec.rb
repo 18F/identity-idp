@@ -19,6 +19,7 @@ describe WebauthnSetupForm do
         extra_attributes = {
           mfa_method_counts: { webauthn: 1 },
           multi_factor_auth_method: 'webauthn',
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
         expect(subject.submit(protocol, params).to_h).to eq(
@@ -53,6 +54,7 @@ describe WebauthnSetupForm do
         extra_attributes = {
           mfa_method_counts: {},
           multi_factor_auth_method: 'webauthn',
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
         expect(subject.submit(protocol, params).to_h).to eq(
@@ -74,6 +76,7 @@ describe WebauthnSetupForm do
         extra_attributes = {
           mfa_method_counts: {},
           multi_factor_auth_method: 'webauthn',
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
         }
 
         expect(subject.submit(protocol, params).to_h).to eq(
