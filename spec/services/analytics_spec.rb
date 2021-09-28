@@ -174,6 +174,13 @@ describe Analytics do
         to raise_error(FakeAnalytics::PiiDetected)
     end
 
+    it 'throws an error when it detects sample PII in the payload' do
+      allow(ahoy).to receive(:track)
+
+      expect { analytics.track_event('Trackable Event', some_benign_key: 'FAKEY MCFAKERSON') }.
+        to raise_error(FakeAnalytics::PiiDetected)
+    end
+
     it 'does not alert when pii_like_keypaths is passed' do
       allow(ahoy).to receive(:track) do |_name, attributes|
         # does not forward :pii_like_keypaths

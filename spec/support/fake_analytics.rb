@@ -7,12 +7,31 @@ class FakeAnalytics
 
       constant_name = Analytics.constants.find { |c| Analytics.const_get(c) == event }
 
-      if attributes.to_json.include?('pii') && !pii_like_keypaths.include?([:pii])
+      string_payload = attributes.to_json
+
+      if string_payload.include?('pii') && !pii_like_keypaths.include?([:pii])
         raise PiiDetected, <<~ERROR
           track_event string 'pii' detected in attributes
           event: #{event} (#{constant_name})
           full event: #{attributes}"
         ERROR
+      end
+
+      DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC.slice(
+        :first_name,
+        :last_name,
+        :address1,
+        :zipcode,
+        :dob,
+        :state_id_number,
+      ).each do |key, default_pii_value|
+        if string_payload.include?(default_pii_value)
+          raise PiiDetected, <<~ERROR
+            track_event example PII #{key} (#{default_pii_value}) detected in attributes
+            event: #{event} (#{constant_name})
+            full event: #{attributes}"
+          ERROR
+        end
       end
 
       pii_attr_names = Pii::Attributes.members - [
