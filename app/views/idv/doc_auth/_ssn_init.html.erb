@@ -28,8 +28,6 @@
     </div>
   </div>
 
-  
-
   <p><%= flow_session[:error_message] %></p>
 
   <div class='margin-top-0'>
@@ -39,5 +37,3 @@
   </div>
 <% end %>
 <%= render 'idv/doc_auth/start_over_or_cancel', step: 'ssn' %>
-
-<%= javascript_packs_tag_once('inline-validation') %>

@@ -27,27 +27,55 @@ function checkInputValidity(event) {
   input.setCustomValidity('');
   input.setAttribute('aria-invalid', String(!input.validity.valid));
   if (
-    event.type === 'invalid' &&
+    (event.type === 'invalid' &&
     !input.validity.valid &&
-    input.parentNode?.querySelector('.display-if-invalid')
+    input.parentNode?.querySelector('.display-if-invalid'))
   ) {
     event.preventDefault();
     input.focus();
   }
-  const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
+  
+  if (input.classList.contains('usa-input--inline')) {
+    event.preventDefault();
+    inlineValidation(event)
+  } else {
+    input.setCustomValidity(determineErrorText(input));
+  }
+}
 
+function inlineValidation(event) {
+  const input = /** @type {HTMLInputElement} */ (event.target);
+  let alert  = input.parentNode?.querySelector('.invalid-alert-inline')
+  input.classList.remove('usa-input--error');
+  if (alert) {
+    alert.remove();
+  }
+  if (!input.validity.valid && event.type == 'invalid') {
+    input.classList.add('usa-input--error');
+    const el = `
+      <span class='usa-error-message--with-icon usa-error-message invalid-alert-inline margin-top-1 margin-bottom-1' role='alert'>
+        ${determineErrorText(input)}
+      </span>`;
+    input.insertAdjacentHTML('afterend', el);
+  }
+}
+
+function determineErrorText(input) {
+  const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
+  let errorText = ''
   if (input.validity.valueMissing) {
-    input.setCustomValidity(I18n.t('simple_form.required.text'));
+    errorText = I18n.t('simple_form.required.text');
   } else if (input.validity.patternMismatch) {
     PATTERN_TYPES.forEach((type) => {
       if (input.classList.contains(type)) {
         // i18n-tasks-use t('idv.errors.pattern_mismatch.personal_key')
         // i18n-tasks-use t('idv.errors.pattern_mismatch.ssn')
         // i18n-tasks-use t('idv.errors.pattern_mismatch.zipcode')
-        input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${I18n.key(type)}`));
+        errorText += I18n.t(`idv.errors.pattern_mismatch.${I18n.key(type)}`);
       }
     });
   }
+  return errorText;
 }
 
 /**
