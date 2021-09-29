@@ -91,6 +91,7 @@ es:
     no_auth_option: No se pudo encontrar ninguna opción de autenticación para iniciar sesión
     otp_delivery_preference:
       instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
+      no_supported_options: We’re unable to verify phone numbers from %{location} at this time.
       sms: Mensaje de texto (SMS, sigla en inglés)
       sms_unsupported: We’re unable to send text messages to people in %{location} at this time.
       title: '¿Cómo deberíamos enviarle un código?'

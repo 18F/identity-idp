@@ -91,6 +91,7 @@ fr:
     no_auth_option: Aucune option d’authentification n’a été trouvée pour vous connecter
     otp_delivery_preference:
       instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
+      no_supported_options: We’re unable to verify phone numbers from %{location} at this time.
       sms: Message texte (SMS)
       sms_unsupported: We’re unable to send text messages to people in %{location} at this time.
       title: Comment devrions-nous vous envoyer un code?

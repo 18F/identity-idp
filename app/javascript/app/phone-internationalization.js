@@ -57,6 +57,14 @@ function setHintText(
 }
 
 /**
+ * Returns true if all inputs are disabled, or false otherwise.
+ *
+ * @param {HTMLInputElement[]} inputs
+ * @return {boolean}
+ */
+const isAllDisabled = (inputs) => inputs.every((input) => input.disabled);
+
+/**
  * Returns the next non-disabled input in the set of inputs, if one exists.
  *
  * @param {HTMLInputElement[]} inputs
@@ -86,6 +94,14 @@ const updateOTPDeliveryMethods = () => {
       }
     }
   });
+
+  if (isAllDisabled(methods)) {
+    const location = selectedInternationCodeOption().dataset.countryName;
+    const hintText = I18n.t(
+      'two_factor_authentication.otp_delivery_preference.no_supported_options',
+    ).replace('%{location}', location);
+    setHintText(hintText);
+  }
 };
 
 const internationalCodeFromPhone = (phone) => {

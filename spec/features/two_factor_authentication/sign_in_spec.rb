@@ -123,7 +123,7 @@ feature 'Two Factor Authentication' do
         select_country_and_type_phone_number(country: option_with_all_disabled['value'].downcase)
         expect(page).to have_content(
           t(
-            'two_factor_authentication.otp_delivery_preference.voice_unsupported',
+            'two_factor_authentication.otp_delivery_preference.no_supported_options',
             location: option_with_all_disabled['data-country-name'],
           ),
         )
