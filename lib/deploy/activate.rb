@@ -93,7 +93,9 @@ module Deploy
     end
 
     def download_from_secrets_s3_unless_exists(s3_path:, local_path:)
-      return if File.exist?(local_path)
+      if File.exist?(local_path) || File.symlink?(local_path)
+        logger.info("Skipping #{local_path}") && return
+      end
       secrets_s3.download_file(
         s3_path: s3_path,
         local_path: local_path,
@@ -102,10 +104,6 @@ module Deploy
 
     def secrets_s3
       @secrets_s3 ||= Identity::Hostdata.secrets_s3(s3_client: s3_client, logger: logger)
-    end
-
-    def ec2_data
-      @ec2_data ||= Identity::Hostdata::EC2.load
     end
 
     def default_logger

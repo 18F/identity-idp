@@ -105,7 +105,7 @@ es:
         necesitamos en este momento, puede continuar más tarde.
       clear_and_start_over: Borrar mi información y empezar de nuevo
       come_back_later: Una vez llegue tu carta, regístrate en %{app} e introduce tu
-        código de verificación cuando se te solicite.
+        código de confirmación cuando se te solicite.
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app}</strong>.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
@@ -155,14 +155,13 @@ es:
       mailing_address: Dirección postal
       ssn: Número de Seguro Social (SSN, sigla en inglés)
     titles:
-      activated: Su identidad ha sido verificada.
+      activated: Ya se verificó tu identidad.
       cancel: No podemos verificar su identidad.
       come_back_later: Vuelve pronto.
       mail:
         resend: '¿Desea otra carta?'
         verify: '¿Desea una carta?'
       otp_delivery_method: '¿Cómo te gustaría recibir el código?'
-      phone: Número de teléfono del registro
       review: Revise y envíe
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad

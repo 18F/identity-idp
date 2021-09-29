@@ -3,16 +3,19 @@ class GpoDailyTestSender
   def run
     if valid_designated_receiver_pii?
       GpoConfirmationMaker.new(
-        pii: designated_receiver_pii,
+        pii: IdentityConfig.store.gpo_designated_receiver_pii,
         issuer: nil,
         profile_id: -1, # profile_id can't be null on GpoConfirmationCode
         otp: otp_from_date,
       ).perform
     else
-      raise 'missing valid designated receiver pii'
+      Rails.logger.warn(
+        {
+          source: 'GpoDailyTestSender',
+          message: 'missing valid designated receiver pii, not enqueueing a test sender',
+        }.to_json,
+      )
     end
-  rescue => err
-    NewRelic::Agent.notice_error(err)
   end
 
   # @return [String] 10-digit OTP from the date
@@ -22,14 +25,9 @@ class GpoDailyTestSender
     date.strftime('%b%d_%Y').upcase
   end
 
-  # @return [Hash]
-  def designated_receiver_pii
-    @designated_receiver_pii ||= IdentityConfig.store.gpo_designated_receiver_pii
-  end
-
   def valid_designated_receiver_pii?
     %i[first_name last_name address1 city state zipcode].all? do |key|
-      designated_receiver_pii[key].present?
+      IdentityConfig.store.gpo_designated_receiver_pii[key].present?
     end
   end
 end

@@ -49,6 +49,38 @@ describe SignUpCompletionsShow do
         end
       end
     end
+
+    describe '#title' do
+      subject(:title) { view_model.title }
+
+      context 'for ial2 flow' do
+        before do
+          allow(@user).to receive(:active_profile).and_return(Profile.new)
+        end
+
+        it 'returns proper title name' do
+          expect(title).
+            to include(I18n.t('titles.sign_up.verified', app: APP_NAME))
+        end
+      end
+
+      context 'for ial1 flow' do
+        before do
+          allow(@user).to receive(:active_profile).and_return(nil)
+        end
+
+        it 'returns proper title name' do
+          expect(title).
+            to include(
+              I18n.t(
+                'titles.sign_up.completion_html',
+                accent: I18n.t('titles.sign_up.loa1'),
+                app: APP_NAME,
+              ),
+            )
+        end
+      end
+    end
   end
 
   context 'with no sp session' do

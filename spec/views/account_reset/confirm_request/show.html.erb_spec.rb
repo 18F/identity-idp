@@ -7,7 +7,7 @@ describe 'account_reset/confirm_request/show.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('account_reset.confirm_request.check_your_email'))
+    expect(view).to receive(:title).with(t('titles.verify_email'))
 
     render
   end

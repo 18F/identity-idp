@@ -133,7 +133,13 @@ module Idv
     end
 
     def form_response(result, success)
-      FormResponse.new(success: success, errors: result[:errors])
+      FormResponse.new(
+        success: success,
+        errors: result[:errors],
+        extra: {
+          pii_like_keypaths: [[:errors, :zipcode]],
+        },
+      )
     end
 
     def idv_throttle_params

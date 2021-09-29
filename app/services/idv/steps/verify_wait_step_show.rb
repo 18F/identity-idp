@@ -31,7 +31,9 @@ module Idv
         form_response = idv_result_to_form_response(
           idv_result: current_async_state.result,
           state: flow_session[:pii_from_doc][:state],
+          extra: { pii_like_keypaths: [[:errors, :ssn]] },
         )
+
         if form_response.success?
           response = check_ssn(flow_session[:pii_from_doc]) if form_response.success?
           form_response = form_response.merge(response)

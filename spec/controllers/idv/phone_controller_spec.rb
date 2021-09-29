@@ -140,6 +140,7 @@ describe Idv::PhoneController do
           error_details: {
             phone: [:must_have_us_country_code],
           },
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
           country_code: nil,
           area_code: nil,
         }
@@ -168,6 +169,7 @@ describe Idv::PhoneController do
           errors: {},
           area_code: '703',
           country_code: 'US',
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -234,6 +236,7 @@ describe Idv::PhoneController do
         result = {
           success: true,
           errors: {},
+          pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
             messages: [],
             context: context,
@@ -284,6 +287,7 @@ describe Idv::PhoneController do
           errors: {
             phone: ['The phone number could not be verified.'],
           },
+          pii_like_keypaths: [[:errors, :phone], [:context, :stages, :address]],
           vendor: {
             messages: [],
             context: context,

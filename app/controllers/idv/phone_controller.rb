@@ -102,7 +102,15 @@ module Idv
 
     def async_state_done(async_state)
       form_result = step.async_state_done(async_state)
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_VENDOR, form_result.to_h)
+      analytics.track_event(
+        Analytics::IDV_PHONE_CONFIRMATION_VENDOR,
+        form_result.to_h.merge(
+          pii_like_keypaths: [
+            [:errors, :phone],
+            [:context, :stages, :address],
+          ],
+        ),
+      )
       redirect_to_next_step and return if async_state.result[:success]
       handle_proofing_failure
     end

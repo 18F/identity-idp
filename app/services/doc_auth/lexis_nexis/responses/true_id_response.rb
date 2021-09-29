@@ -85,31 +85,25 @@ module DocAuth
 
         def pii_from_doc
           return {} unless true_id_product&.dig(:IDAUTH_FIELD_DATA).present?
-
           pii = {}
           PII_INCLUDES.each do |true_id_key, idp_key|
             pii[idp_key] = true_id_product[:IDAUTH_FIELD_DATA][true_id_key]
           end
-
           pii[:state_id_type] = DocAuth::Response::ID_TYPE_SLUGS[pii[:state_id_type]]
 
-          if pii[:dob_month] && pii[:dob_day] && pii[:dob_year]
-            pii[:dob] = Date.new(
-              pii.delete(:dob_year).to_i,
-              pii.delete(:dob_month).to_i,
-              pii.delete(:dob_day).to_i,
-            ).to_s
-          end
+          dob = parse_date(
+            year: pii.delete(:dob_year),
+            month: pii.delete(:dob_month),
+            day: pii.delete(:dob_day),
+          )
+          pii[:dob] = dob if dob
 
-          if pii[:state_id_expiration_month] &&
-             pii[:state_id_expiration_day] &&
-             pii[:state_id_expiration_year]
-            pii[:state_id_expiration] = Date.new(
-              pii.delete(:state_id_expiration_year).to_i,
-              pii.delete(:state_id_expiration_month).to_i,
-              pii.delete(:state_id_expiration_day).to_i,
-            ).to_s
-          end
+          exp_date = parse_date(
+            year: pii.delete(:state_id_expiration_year),
+            month: pii.delete(:state_id_expiration_month),
+            day: pii.delete(:state_id_expiration_day),
+          )
+          pii[:state_id_expiration] = exp_date if exp_date
 
           pii
         end
@@ -249,6 +243,12 @@ module DocAuth
           end
 
           new_metrics
+        end
+
+        def parse_date(year:, month:, day:)
+          if year.to_i.positive? && month.to_i.positive? && day.to_i.positive?
+            Date.new(year.to_i, month.to_i, day.to_i).to_s
+          end
         end
       end
     end

@@ -275,4 +275,14 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(output[:doc_auth_result]).to eq('Failed')
     end
   end
+
+  context 'when the dob is incorrectly parsed' do
+    let(:response) { described_class.new(success_response, false, config) }
+    let(:bad_pii) { { dob_year: 'OCR', dob_month: 'failed', dob_day: 'to parse' } }
+
+    it 'does not throw an exception when getting pii from doc' do
+      allow(response).to receive(:pii).and_return(bad_pii)
+      expect { response.pii_from_doc }.not_to raise_error
+    end
+  end
 end

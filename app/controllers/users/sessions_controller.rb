@@ -100,7 +100,7 @@ module Users
       analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN, controller: controller_info)
       sign_out
       flash[:error] = t('errors.invalid_authenticity_token')
-      redirect_back fallback_location: new_user_session_url
+      redirect_back fallback_location: new_user_session_url, allow_other_host: false
     end
 
     def check_user_needs_redirect
