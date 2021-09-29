@@ -32,7 +32,7 @@ RSpec.describe GpoDailyTestSender do
     end
 
     context 'when attempting handle the designated reciver renders an error' do
-      let(:designated_receiver_pii) { nil }
+      let(:designated_receiver_pii) { {} }
 
       it 'does not create gpo records' do
         expect { sender.run }.
@@ -50,12 +50,6 @@ RSpec.describe GpoDailyTestSender do
 
         expect { sender.run }.to_not raise_error
       end
-    end
-  end
-
-  describe '#designated_receiver_pii' do
-    it 'parses PII from the application config' do
-      expect(sender.designated_receiver_pii).to eq(designated_receiver_pii)
     end
   end
 
