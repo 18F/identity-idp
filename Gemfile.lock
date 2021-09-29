@@ -376,7 +376,7 @@ GEM
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (5.2.0)
-    newrelic_rpm (6.14.0)
+    newrelic_rpm (7.2.0)
     nio4r (2.5.8)
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
@@ -733,7 +733,7 @@ DEPENDENCIES
   lograge (>= 0.11.2)
   maxminddb
   net-sftp
-  newrelic_rpm
+  newrelic_rpm (~> 7.0)
   nokogiri (~> 1.12.5)
   octokit
   parallel_tests
