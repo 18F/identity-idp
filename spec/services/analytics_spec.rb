@@ -156,5 +156,44 @@ describe Analytics do
 
       analytics.track_event('Trackable Event')
     end
+
+    # relies on prepending the FakeAnalytics::PiiAlerter mixin
+    it 'throws an error when pii is passed in' do
+      allow(ahoy).to receive(:track)
+
+      expect { analytics.track_event('Trackable Event') }.to_not raise_error
+
+      expect { analytics.track_event('Trackable Event', first_name: 'Bobby') }.
+        to raise_error(FakeAnalytics::PiiDetected)
+
+      expect do
+        analytics.track_event('Trackable Event', nested: [{ value: { first_name: 'Bobby' } }])
+      end.to raise_error(FakeAnalytics::PiiDetected)
+
+      expect { analytics.track_event('Trackable Event', decrypted_pii: '{"first_name":"Bobby"}') }.
+        to raise_error(FakeAnalytics::PiiDetected)
+    end
+
+    it 'throws an error when it detects sample PII in the payload' do
+      allow(ahoy).to receive(:track)
+
+      expect { analytics.track_event('Trackable Event', some_benign_key: 'FAKEY MCFAKERSON') }.
+        to raise_error(FakeAnalytics::PiiDetected)
+    end
+
+    it 'does not alert when pii_like_keypaths is passed' do
+      allow(ahoy).to receive(:track) do |_name, attributes|
+        # does not forward :pii_like_keypaths
+        expect(attributes.to_s).to_not include('pii_like_keypaths')
+      end
+
+      expect do
+        analytics.track_event(
+          'Trackable Event',
+          mfa_method_counts: { phone: 1 },
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
+        )
+      end.to_not raise_error
+    end
   end
 end

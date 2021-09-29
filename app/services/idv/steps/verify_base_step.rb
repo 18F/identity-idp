@@ -43,13 +43,13 @@ module Idv
         idv_session['resolution_successful'] = 'phone'
       end
 
-      def idv_result_to_form_response(idv_result:, state: nil)
+      def idv_result_to_form_response(idv_result:, state: nil, extra: {})
         state_id = idv_result.dig(:context, :stages, :state_id)
         state_id[:state] = state if state && state_id
         FormResponse.new(
           success: idv_success(idv_result),
           errors: idv_errors(idv_result),
-          extra: { proofing_results: idv_extra(idv_result) },
+          extra: extra.merge(proofing_results: idv_extra(idv_result)),
         )
       end
 

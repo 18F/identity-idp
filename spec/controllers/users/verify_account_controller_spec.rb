@@ -94,7 +94,9 @@ RSpec.describe Users::VerifyAccountController do
       it 'redirects to the sign_up/completions page' do
         expect(@analytics).to receive(:track_event).with(
           Analytics::ACCOUNT_VERIFICATION_SUBMITTED,
-          success: true, errors: {},
+          success: true,
+          errors: {},
+          pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
 
         action
@@ -115,6 +117,7 @@ RSpec.describe Users::VerifyAccountController do
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
           error_details: { otp: [:confirmation_code_incorrect]},
+          pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         )
 
         action
@@ -134,6 +137,7 @@ RSpec.describe Users::VerifyAccountController do
           success: false,
           errors: { otp: [t('errors.messages.confirmation_code_incorrect')]},
           error_details: { otp: [:confirmation_code_incorrect]},
+          pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
         ).exactly(max_attempts).times
 
         expect(@analytics).to receive(:track_event).with(

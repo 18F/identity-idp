@@ -44,6 +44,7 @@ class OtpDeliverySelectionForm
       country_code: parsed_phone.country,
       area_code: parsed_phone.area_code,
       context: context,
+      pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
     }
   end
 
