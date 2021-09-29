@@ -14,10 +14,6 @@ module Users
       @presenter = BackupCodeCreatePresenter.new
     end
 
-    def depleted
-      @presenter = BackupCodeDepletedPresenter.new
-    end
-
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
