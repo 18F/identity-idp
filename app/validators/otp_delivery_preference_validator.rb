@@ -25,7 +25,7 @@ module OtpDeliveryPreferenceValidator
     errors.add(
       :phone,
       I18n.t(
-        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: phone_number_capabilities.unsupported_location,
       ),
     )

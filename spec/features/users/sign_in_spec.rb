@@ -559,7 +559,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
-        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: 'Australia',
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -577,7 +577,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
-        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: 'Algeria',
       )
       expect(user.reload.otp_delivery_preference).to eq 'voice'
@@ -602,7 +602,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
-        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: unsupported_country_name,
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -625,7 +625,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to have_content t(
-        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: unsupported_country_name,
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
@@ -648,7 +648,7 @@ feature 'Sign in' do
       expect(page).
         to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
       expect(page).to have_content t(
-        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: unsupported_country_name,
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'

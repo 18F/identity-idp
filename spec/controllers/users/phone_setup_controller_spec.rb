@@ -44,13 +44,13 @@ describe Users::PhoneSetupController do
         errors: {
           phone: [
             t('errors.messages.improbable_phone'),
-            t('two_factor_authentication.otp_delivery_preference.phone_unsupported', location: ''),
+            t('two_factor_authentication.otp_delivery_preference.voice_unsupported', location: ''),
           ],
         },
         error_details: {
           phone: [
             :improbable_phone,
-            t('two_factor_authentication.otp_delivery_preference.phone_unsupported', location: ''),
+            t('two_factor_authentication.otp_delivery_preference.voice_unsupported', location: ''),
           ],
         },
         otp_delivery_preference: 'sms',
