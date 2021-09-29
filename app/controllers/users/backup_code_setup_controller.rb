@@ -41,6 +41,11 @@ module Users
 
     def confirm_delete; end
 
+    def refreshed
+      @codes = user_session[:backup_codes]
+      render 'create'
+    end
+
     def delete
       current_user.backup_code_configurations.destroy_all
       event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
