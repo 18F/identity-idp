@@ -13,6 +13,8 @@ import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { trackEvent } from '@18f/identity-analytics';
 
+/** @typedef {import('@18f/identity-i18n').I18n} I18n */
+
 /**
  * @typedef NewRelicAgent
  *
@@ -21,17 +23,9 @@ import { trackEvent } from '@18f/identity-analytics';
  */
 
 /**
- * @typedef LoginGovI18n
- *
- * @prop {(key:string)=>string} t Translate a key.
- * @prop {()=>string} currentLocale Get current locale.
- * @prop {Record<string,string>} strings Object of strings.
- */
-
-/**
  * @typedef LoginGov
  *
- * @prop {LoginGovI18n} I18n
+ * @prop {I18n} I18n
  * @prop {Record<string,string>} assets
  */
 
@@ -117,7 +111,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
 
   const formData = {
     document_capture_session_uuid: appRoot.getAttribute('data-document-capture-session-uuid'),
-    locale: i18n.currentLocale(),
+    locale: document.documentElement.lang,
   };
 
   let backgroundUploadEncryptKey;
