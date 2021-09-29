@@ -93,7 +93,9 @@ module Deploy
     end
 
     def download_from_secrets_s3_unless_exists(s3_path:, local_path:)
-      return if File.exist?(local_path)
+      if File.exist?(local_path) || File.symlink?(local_path)
+        logger.info("Skipping #{local_path}") && return
+      end
       secrets_s3.download_file(
         s3_path: s3_path,
         local_path: local_path,
