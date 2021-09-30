@@ -51,10 +51,10 @@ export function formatHTML(html, handlers) {
 
 function useI18n() {
   const strings = useContext(I18nContext);
-  const i18n = useMemo(() => new I18n({ strings }), [strings]);
+  const { t } = useMemo(() => new I18n({ strings }), [strings]);
 
   return {
-    ...i18n,
+    t,
     formatHTML,
   };
 }
