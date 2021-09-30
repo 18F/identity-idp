@@ -65,7 +65,7 @@ en:
           your ID is too small or blurry in the photos. Make sure your ID is
           large within the image frame and try taking new pictures.
       file_type:
-        invalid: This file type is not accepted, please choose a JPG, PNG, or BMP file.
+        invalid: This file type is not accepted, please choose a JPG or PNG file.
       general:
         liveness: We couldn’t verify your ID and photo of yourself. Try taking new
           pictures.
@@ -231,7 +231,7 @@ en:
       welcome: 'To verify your identity, you will need:'
     tips:
       document_capture_header_text: 'For best results:'
-      document_capture_hint: Must be a JPG, PNG, or BMP
+      document_capture_hint: Must be a JPG or PNG
       document_capture_id_text1: Use a dark background
       document_capture_id_text2: Take the photo on a flat surface
       document_capture_id_text3: Do not use the flash on your camera
