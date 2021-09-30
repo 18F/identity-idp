@@ -484,7 +484,7 @@ function AcuantCapture(
         bannerText={bannerText}
         invalidTypeText={t('doc_auth.errors.file_type.invalid')}
         fileUpdatedText={t('doc_auth.info.image_updated')}
-        accept={isMockClient ? undefined : ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff']}
+        accept={isMockClient ? undefined : ['image/jpeg', 'image/png', 'image/bmp']}
         capture={capture}
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}

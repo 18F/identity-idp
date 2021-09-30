@@ -85,7 +85,7 @@ fr:
           dans le cadre de l’image puis essayez de prendre des nouvelles photos.
       file_type:
         invalid: Ce type de fichier n’est pas accepté, veuillez choisir un fichier JPG,
-          PNG, BMP ou TIFF.
+          PNG ou BMP.
       general:
         liveness: Nous n’avons pas pu vérifier votre pièce d’identité et votre photo.
           Essayez de prendre de nouvelles photos.
@@ -284,7 +284,7 @@ fr:
       welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
     tips:
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
-      document_capture_hint: Doit être un JPG, BMP, PNG ou TIFF
+      document_capture_hint: Doit être un JPG, PNG ou BMP
       document_capture_id_text1: Utilisez un fond sombre
       document_capture_id_text2: Prenez la photo sur une surface plane
       document_capture_id_text3: N’utilisez pas le flash de votre appareil photo
