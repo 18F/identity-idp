@@ -9,6 +9,8 @@
       } %>
 <% end %>
 
+<% title t('titles.idv.come_back_soon') %>
+
 <%= image_tag(
       asset_url('come-back.svg'),
       size: '140', class: 'block margin-x-auto',
@@ -18,7 +20,7 @@
   <%= t('idv.titles.come_back_later') %>
 </h2>
 
-<div class="margin-top-2 padding-4 col-12 center border-box border border-teal rounded-xl">
+<div class="margin-top-2 padding-4 col-12 center border-box border rounded-xl">
   <p>
     <%= t('idv.messages.come_back_later', app: APP_NAME) %>
     <% if decorated_session.sp_name.present? %>

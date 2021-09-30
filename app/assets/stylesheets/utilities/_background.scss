@@ -1,10 +1,6 @@
 .bg-gray-lighter { background-color: $gray-lighter; }
 .bg-light-blue { background-color: $blue-light; }
 .bg-lightest-blue { background-color: $blue-lightest; }
-// scss-lint:disable ImportantRule
-.bg-white { background-color: $white !important; }
-// scss-lint:enable ImportantRule
-
 
 @media #{$breakpoint-sm} {
   .sm-bg-light-blue { background-color: $blue-light; }

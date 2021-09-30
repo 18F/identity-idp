@@ -15,8 +15,7 @@ set -x
 id
 which bundle
 
-bundle exec bin/activate
-bundle exec rake db:check_for_pending_migrations
+bundle exec rake deploy:activate db:check_for_pending_migrations
 
 set +x
 

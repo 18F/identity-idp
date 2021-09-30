@@ -5,8 +5,7 @@ module Reports
     include GoodJob::ActiveJobExtensions::Concurrency
 
     good_job_control_concurrency_with(
-      enqueue_limit: 1,
-      perform_limit: 1,
+      total_limit: 1,
       key: -> { "#{REPORT_NAME}-#{arguments.first}" },
     )
 
@@ -29,12 +28,6 @@ module Reports
           content_type: 'application/json',
           bucket: bucket_name,
         )
-      end
-    end
-
-    def public_bucket_name
-      if (prefix = IdentityConfig.store.s3_report_public_bucket_prefix)
-        Identity::Hostdata.bucket_name("#{prefix}-#{Identity::Hostdata.env}")
       end
     end
 

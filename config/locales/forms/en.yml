@@ -112,6 +112,8 @@ en:
       try_again: Use another phone number
     two_factor_choice:
       legend: Select an option to secure your account
+    validation:
+      required_checkbox: Please check this box to continue
     verify_profile:
       instructions: Enter the ten-character code in the letter we sent you.
       name: Confirmation code

@@ -1,3 +1,5 @@
+<% title t('titles.idv.review') %>
+
 <% content_for(:pre_flash_content) do %>
   <%= render 'shared/step_indicator', {
         steps: @step_indicator_steps,
@@ -6,8 +8,6 @@
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
       } %>
 <% end %>
-
-<% title t('idv.titles.review') %>
 
 <h1>
   <%= t('idv.titles.session.review') %>

@@ -23,6 +23,7 @@ gem 'autoprefixer-rails', '~> 10.0'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'base32-crockford'
+gem 'bootsnap', '~> 1.9.0', require: false
 gem 'blueprinter', '~> 0.25.3'
 gem 'connection_pool'
 gem 'device_detector'
@@ -30,7 +31,7 @@ gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
 gem 'faraday'
 gem 'foundation_emails'
-gem 'good_job', '~> 2.0.0'
+gem 'good_job', '~> 2.2.0'
 gem 'hashie', '~> 4.1'
 gem 'hiredis', '~> 0.6.0'
 gem 'http_accept_language'
@@ -90,13 +91,12 @@ end
 
 group :development, :test do
   gem 'aws-sdk-cloudwatchlogs', require: false
-  gem 'bootsnap', '~> 1.9.0', require: false
   gem 'brakeman', require: false
   gem 'bullet', '>= 6.0.2'
   gem 'erb_lint', '~> 0.0.37', require: false
   gem 'i18n-tasks', '>= 0.9.31'
   gem 'knapsack'
-  gem 'nokogiri', '~> 1.11.4'
+  gem 'nokogiri', '~> 1.12.5'
   gem 'parallel_tests'
   gem 'pry-byebug'
   gem 'pry-doc'

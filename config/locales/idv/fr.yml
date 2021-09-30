@@ -34,12 +34,10 @@ fr:
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
       mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       pattern_mismatch:
-        dob: 'Votre date de naissance doit être inscrite de cette façon: mm/jj/aaaa'
         personal_key: 'Veuillez inscrire votre clé personnelle pour ce compte, par
           exemple : ABC1-DEF2-G3HI-J456'
         ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon :
           ###-##-####'
-        state_id_number: Votre numéro d’identification ne peut excéder 25 caractères
         zipcode: 'Votre code ZIP doit être inscrit de cette façon : #####-####'
       unsupported_otp_delivery_method: Sélectionnez une méthode pour recevoir un code.
     failure:
@@ -114,7 +112,7 @@ fr:
         tard.
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later: Une fois que votre lettre vous sera parvenue, veuillez vous
-        connecter à %{app}, puis saisissez votre code de vérification lorsque
+        connecter à %{app}, puis saisissez votre code de confirmation lorsque
         vous y serez invité.
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app}</strong> pour le moment.
@@ -179,7 +177,6 @@ fr:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
       otp_delivery_method: Comment souhaitez-vous recevoir le code ?
-      phone: Numéro de téléphone enregistré
       review: Réviser et soumettre
       session:
         phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité

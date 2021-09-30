@@ -54,7 +54,7 @@ class SignUpCompletionsShow
 
   def title
     if requested_ial == 'ial2'
-      I18n.t('titles.sign_up.verified')
+      I18n.t('titles.sign_up.verified', app: APP_NAME)
     else
       I18n.t(
         'titles.sign_up.completion_html',
