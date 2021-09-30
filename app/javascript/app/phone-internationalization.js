@@ -68,17 +68,15 @@ const isAllDisabled = (inputs) => inputs.every((input) => input.disabled);
  * Returns the next non-disabled input in the set of inputs, if one exists.
  *
  * @param {HTMLInputElement[]} inputs
- * @param {number} index
  * @return {HTMLInputElement=}
  */
-const getNextEnabledInput = (inputs, index) =>
-  [...inputs.slice(index + 1), ...inputs.slice(0, index)].find((input) => !input.disabled);
+const getFirstEnabledInput = (inputs) => inputs.find((input) => !input.disabled);
 
 const updateOTPDeliveryMethods = () => {
   const methods = getOTPDeliveryMethods();
   setHintText();
 
-  methods.forEach((method, index) => {
+  methods.forEach((method) => {
     const delivery = method.value;
     const isSupported = isDeliveryOptionSupported(delivery);
     method.disabled = !isSupported;
@@ -87,7 +85,7 @@ const updateOTPDeliveryMethods = () => {
 
       if (method.checked) {
         method.checked = false;
-        const nextEnabledInput = getNextEnabledInput(methods, index);
+        const nextEnabledInput = getFirstEnabledInput(methods);
         if (nextEnabledInput) {
           nextEnabledInput.checked = true;
         }
