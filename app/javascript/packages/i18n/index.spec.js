@@ -6,6 +6,13 @@ describe('replaceVariables', () => {
 
     expect(result).to.equal('The price is $2, not 2 €');
   });
+
+  it('leaves missing variables as-is', () => {
+    const original = 'The price is $%{price}';
+    const result = replaceVariables(original, {});
+
+    expect(result).to.equal(original);
+  });
 });
 
 describe('I18n', () => {

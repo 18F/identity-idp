@@ -1,3 +1,5 @@
+const hasOwn = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+
 /**
  * Returns string with variable substitution.
  *
@@ -6,12 +8,8 @@
  *
  * @return {string} String with variables substituted.
  */
-export function replaceVariables(string, variables) {
-  return Object.keys(variables).reduce(
-    (result, key) => result.replace(new RegExp(`%{${key}}`, 'g'), variables[key]),
-    string,
-  );
-}
+export const replaceVariables = (string, variables) =>
+  string.replace(/%{(\w+)}/g, (match, key) => (hasOwn(variables, key) ? variables[key] : match));
 
 class I18n {
   /**
