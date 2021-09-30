@@ -19,7 +19,7 @@
               form_name_label,
               :sms,
               form_obj.delivery_preference_sms?,
-              class: 'otp_delivery_preference_sms usa-radio__input usa-radio__input--bordered',
+              class: 'js-otp-delivery-preference usa-radio__input usa-radio__input--bordered',
             ) %>
         <label class="usa-radio__label width-full" for="<%= form_name_tag_sms %>">
           <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
@@ -30,7 +30,7 @@
               form_name_label,
               :voice,
               form_obj.delivery_preference_voice?,
-              class: 'otp_delivery_preference_voice usa-radio__input usa-radio__input--bordered',
+              class: 'js-otp-delivery-preference usa-radio__input usa-radio__input--bordered',
             ) %>
         <label class="usa-radio__label width-full" for="<%= form_name_tag_voice %>">
           <%= t('two_factor_authentication.otp_delivery_preference.voice') %>
