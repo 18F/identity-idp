@@ -101,14 +101,25 @@ module SignUp
       "#{pii[:first_name]} #{pii[:last_name]}"
     end
 
-    def emails
-      current_user.confirmed_email_addresses.map(&:email).join(', ')
+    def email
+      EmailContext.new(current_user).last_sign_in_email_address.email
+    end
+
+    def alternate_emails
+      emails = EmailContext.new(current_user).alternate_email_addresses
+      if emails.any?
+        emails.map(&:email).join(', ')
+      else
+        # TODO: Make this a translation
+        "You don't have any other email addresses on your account"
+      end
     end
 
     def displayable_attributes
       return pii_to_displayable_attributes if user_session['decrypted_pii'].present?
       {
-        email: emails,
+        email: email,
+        alternate_emails: alternate_emails,
         verified_at: verified_at,
         x509_subject: current_user.piv_cac_configurations.first&.x509_dn_uuid,
         x509_issuer: current_user.piv_cac_configurations.first&.x509_issuer,
@@ -147,7 +158,7 @@ module SignUp
         address: address,
         birthdate: dob,
         phone: PhoneFormatter.format(pii[:phone].to_s),
-        email: emails,
+        email: email,
         verified_at: verified_at,
         x509_subject: current_user.piv_cac_configurations.first&.x509_dn_uuid,
         x509_issuer: current_user.piv_cac_configurations.first&.x509_issuer,
