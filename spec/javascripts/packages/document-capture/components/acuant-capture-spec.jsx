@@ -5,6 +5,7 @@ import { waitFor, waitForElementToBeRemoved } from '@testing-library/dom';
 import AcuantCapture, {
   isAcuantCameraAccessFailure,
   getNormalizedAcuantCaptureFailureMessage,
+  getDecodedBase64ByteSize,
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import DeviceContext from '@18f/identity-document-capture/context/device';
@@ -25,6 +26,15 @@ const ACUANT_CAPTURE_SUCCESS_RESULT = {
   glare: 100,
   sharpness: 100,
 };
+
+describe('getDecodedBase64ByteSize', () => {
+  it('returns the decoded byte size', () => {
+    const original = 'Hello World';
+    const encoded = window.btoa(original);
+
+    expect(getDecodedBase64ByteSize(encoded)).to.equal(original.length);
+  });
+});
 
 describe('document-capture/components/acuant-capture', () => {
   const { initialize } = useAcuant();
@@ -309,6 +319,7 @@ describe('document-capture/components/acuant-capture', () => {
           source: 'acuant',
           width: sinon.match.number,
           attempt: sinon.match.number,
+          size: sinon.match.number,
         }),
       );
       await expect(window.AcuantCameraUI.end).to.eventually.be.called();
@@ -433,6 +444,7 @@ describe('document-capture/components/acuant-capture', () => {
           sharpness: 100,
           width: 1748,
           attempt: sinon.match.number,
+          size: sinon.match.number,
         },
       });
 
@@ -486,6 +498,7 @@ describe('document-capture/components/acuant-capture', () => {
           sharpness: 49,
           width: 1748,
           attempt: sinon.match.number,
+          size: sinon.match.number,
         },
       });
 
@@ -588,6 +601,7 @@ describe('document-capture/components/acuant-capture', () => {
           sharpness: 49,
           width: 1748,
           attempt: sinon.match.number,
+          size: sinon.match.number,
         },
       });
     });
@@ -818,6 +832,7 @@ describe('document-capture/components/acuant-capture', () => {
         source: 'upload',
         width: sinon.match.number,
         attempt: sinon.match.number,
+        size: sinon.match.number,
       },
     });
   });

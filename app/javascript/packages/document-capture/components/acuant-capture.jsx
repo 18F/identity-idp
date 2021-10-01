@@ -45,6 +45,7 @@ import './acuant-capture.scss';
  * @prop {string?} mimeType Mime type, or null if unknown.
  * @prop {ImageSource} source Method by which image was added.
  * @prop {number=} attempt Total number of attempts at this point.
+ * @prop {number} size Size of image, in bytes.
  */
 
 /**
@@ -213,6 +214,17 @@ function suspendFocusTrapForAnticipatedFocus(focusTrap) {
   }, 0);
 }
 
+export function getDecodedBase64ByteSize(data) {
+  let bytes = 0.75 * data.length;
+
+  let i = data.length;
+  while (data[--i] === '=') {
+    bytes--;
+  }
+
+  return bytes;
+}
+
 /**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
  * in supported devices.
@@ -280,11 +292,11 @@ function AcuantCapture(
   /**
    * Returns an analytics payload, decorated with common values.
    *
-   * @template {ImageAnalyticsPayload} P
+   * @template P
    *
    * @param {P} payload
    *
-   * @return {P & { attempt: number }}
+   * @return {P}
    */
   function getAddAttemptAnalyticsPayload(payload) {
     const enhancedPayload = { ...payload, attempt };
@@ -308,6 +320,7 @@ function AcuantCapture(
         height,
         mimeType: nextValue.type,
         source: 'upload',
+        size: nextValue.size,
       });
 
       addPageAction({
@@ -450,6 +463,7 @@ function AcuantCapture(
       sharpnessScoreThreshold: sharpnessThreshold,
       isAssessedAsBlurry,
       assessment,
+      size: getDecodedBase64ByteSize(nextCapture.image.data),
     });
 
     addPageAction({
