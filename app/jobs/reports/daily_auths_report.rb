@@ -31,12 +31,6 @@ module Reports
       end
     end
 
-    def public_bucket_name
-      if (prefix = IdentityConfig.store.s3_report_public_bucket_prefix)
-        Identity::Hostdata.bucket_name("#{prefix}-#{Identity::Hostdata.env}")
-      end
-    end
-
     def start
       report_date.beginning_of_day
     end

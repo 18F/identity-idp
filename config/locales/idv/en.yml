@@ -100,7 +100,7 @@ en:
         need at this time you can continue later.
       clear_and_start_over: Clear my information and start over
       come_back_later: Once your letter arrives, sign into %{app}, and enter your
-        verification code when prompted.
+        confirmation code when prompted.
       come_back_later_no_sp_html: You can return to your <strong>%{app} account</strong> for now.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
