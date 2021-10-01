@@ -308,6 +308,7 @@ describe('document-capture/components/acuant-capture', () => {
           sharpnessScoreThreshold: sinon.match.number,
           source: 'acuant',
           width: sinon.match.number,
+          attempt: sinon.match.number,
         }),
       );
       await expect(window.AcuantCameraUI.end).to.eventually.be.called();
@@ -431,6 +432,7 @@ describe('document-capture/components/acuant-capture', () => {
           assessment: 'glare',
           sharpness: 100,
           width: 1748,
+          attempt: sinon.match.number,
         },
       });
 
@@ -483,6 +485,7 @@ describe('document-capture/components/acuant-capture', () => {
           assessment: 'blurry',
           sharpness: 49,
           width: 1748,
+          attempt: sinon.match.number,
         },
       });
 
@@ -584,6 +587,7 @@ describe('document-capture/components/acuant-capture', () => {
           assessment: 'blurry',
           sharpness: 49,
           width: 1748,
+          attempt: sinon.match.number,
         },
       });
     });
@@ -813,6 +817,7 @@ describe('document-capture/components/acuant-capture', () => {
         mimeType: 'image/jpeg',
         source: 'upload',
         width: sinon.match.number,
+        attempt: sinon.match.number,
       },
     });
   });
@@ -860,6 +865,32 @@ describe('document-capture/components/acuant-capture', () => {
       payload: {
         source: 'upload',
       },
+    });
+  });
+
+  it('logs attempts', async () => {
+    const addPageAction = sinon.stub();
+    const { getByLabelText } = render(
+      <AnalyticsContext.Provider value={{ addPageAction }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCapture label="Image" name="test" />
+        </AcuantContextProvider>
+      </AnalyticsContext.Provider>,
+    );
+
+    const input = getByLabelText('Image');
+    userEvent.upload(input, validUpload);
+
+    await expect(addPageAction).to.eventually.be.calledWith({
+      label: 'IdV: test image added',
+      payload: sinon.match({ attempt: 1 }),
+    });
+
+    userEvent.upload(input, validUpload);
+
+    await expect(addPageAction).to.eventually.be.calledWith({
+      label: 'IdV: test image added',
+      payload: sinon.match({ attempt: 2 }),
     });
   });
 });

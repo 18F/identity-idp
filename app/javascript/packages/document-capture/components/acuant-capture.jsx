@@ -17,6 +17,7 @@ import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
+import useCounter from '../hooks/use-counter';
 import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -43,6 +44,7 @@ import './acuant-capture.scss';
  * @prop {number?} height Image height, or null if unknown.
  * @prop {string?} mimeType Mime type, or null if unknown.
  * @prop {ImageSource} source Method by which image was added.
+ * @prop {number=} attempt Total number of attempts at this point.
  */
 
 /**
@@ -252,6 +254,7 @@ function AcuantCapture(
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
+  const [attempt, incrementAttempt] = useCounter(1);
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
@@ -275,6 +278,21 @@ function AcuantCapture(
   }
 
   /**
+   * Returns an analytics payload, decorated with common values.
+   *
+   * @template {ImageAnalyticsPayload} P
+   *
+   * @param {P} payload
+   *
+   * @return {P & { attempt: number }}
+   */
+  function getAddAttemptAnalyticsPayload(payload) {
+    const enhancedPayload = { ...payload, attempt };
+    incrementAttempt();
+    return enhancedPayload;
+  }
+
+  /**
    * Handler for file input change events.
    *
    * @param {File?} nextValue Next value, if set.
@@ -285,12 +303,12 @@ function AcuantCapture(
     if (nextValue) {
       const { width, height } = await getImageDimensions(nextValue);
 
-      analyticsPayload = {
+      analyticsPayload = getAddAttemptAnalyticsPayload({
         width,
         height,
         mimeType: nextValue.type,
         source: 'upload',
-      };
+      });
 
       addPageAction({
         label: `IdV: ${name} image added`,
@@ -417,7 +435,7 @@ function AcuantCapture(
     }
 
     /** @type {AcuantImageAnalyticsPayload} */
-    const analyticsPayload = {
+    const analyticsPayload = getAddAttemptAnalyticsPayload({
       width,
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
@@ -432,7 +450,7 @@ function AcuantCapture(
       sharpnessScoreThreshold: sharpnessThreshold,
       isAssessedAsBlurry,
       assessment,
-    };
+    });
 
     addPageAction({
       key: 'documentCapture.acuantWebSDKResult',
