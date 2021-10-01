@@ -17,18 +17,40 @@ function disableFormSubmit(event) {
   });
 }
 
+function resetInput(input) {
+  input.setCustomValidity('');
+  input.setAttribute('aria-invalid', 'false');
+  input.classList.remove('usa-input--error');
+  const errorMessages = input.parentNode?.querySelectorAll('.invalid-inline');
+  errorMessages.forEach((message) => {
+    message.classList.add('display-none');
+  });
+}
+
+function toggleErrorForUnit(input) {
+  if (input.validity.valueMissing) {
+    const errorMessage = input.parentNode?.querySelector('.input-required');
+    errorMessage.classList.remove('display-none');
+  } else if (input.validity.patternMismatch) {
+    const errorMessage = input.parentNode?.querySelector('.pattern-mismatch');
+    errorMessage.classList.remove('display-none');
+  }
+}
+
 /**
  * Given an `input` or `invalid` event, updates custom validity of the given input.
  *
  * @param {Event} event Input or invalid event.
  */
+
 function checkInputValidity(event) {
   const input = /** @type {HTMLInputElement} */ (event.target);
-  resetInput(input)
-  if (event.type === 'invalid' &&
+  resetInput(input);
+  if (
+    event.type === 'invalid' &&
     !input.validity.valid &&
-    (input.parentNode?.querySelector('.display-if-invalid') || 
-    input.parentNode?.querySelector('.invalid-inline'))
+    (input.parentNode?.querySelector('.display-if-invalid') ||
+      input.parentNode?.querySelector('.invalid-inline'))
   ) {
     event.preventDefault();
     input.setAttribute('aria-invalid', 'true');
@@ -36,48 +58,20 @@ function checkInputValidity(event) {
     toggleErrorForUnit(input);
     input.focus();
   }
-  
-  input.setCustomValidity(determineErrorText(input));
-}
 
-
-function resetInput(input) {
-  input.setCustomValidity('');
-  input.setAttribute('aria-invalid', 'false');
-  input.classList.remove('usa-input--error');
-  let errorMessages = input.parentNode?.querySelectorAll('.invalid-inline')
-  errorMessages.forEach( (message) => {
-    message.classList.add('display-none');
-  })
-}
-
-function toggleErrorForUnit(input) {
-  if (input.validity.valueMissing) {
-    let errorMessage = input.parentNode?.querySelector('.input-required')
-    errorMessage.classList.remove('display-none')
-  } else if (input.validity.patternMismatch) {
-    let errorMessage = input.parentNode?.querySelector('.pattern-mismatch')
-    errorMessage.classList.remove('display-none')
-  }
-  
-}
-
-function determineErrorText(input) {
   const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
-  let errorText = ''
   if (input.validity.valueMissing) {
-    errorText = I18n.t('simple_form.required.text');
+    input.setCustomValidity(I18n.t('simple_form.required.text'));
   } else if (input.validity.patternMismatch) {
     PATTERN_TYPES.forEach((type) => {
       if (input.classList.contains(type)) {
         // i18n-tasks-use t('idv.errors.pattern_mismatch.personal_key')
         // i18n-tasks-use t('idv.errors.pattern_mismatch.ssn')
         // i18n-tasks-use t('idv.errors.pattern_mismatch.zipcode')
-        errorText += I18n.t(`idv.errors.pattern_mismatch.${I18n.key(type)}`);
+        input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${I18n.key(type)}`));
       }
     });
   }
-  return errorText;
 }
 
 /**

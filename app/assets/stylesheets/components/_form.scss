@@ -45,7 +45,6 @@ textarea {
 
 // error states
 .has-error input {
-  background-image: url(image-path('alert/error.svg'));
   background-position: center right $form-field-padding-x;
   background-repeat: no-repeat;
   background-size: 1rem 1rem;
@@ -73,6 +72,12 @@ input::-webkit-inner-spin-button {
 
   [aria-invalid="true"] ~ & {
     display: block;
+  }
+}
+
+.error-state {
+  &[aria-invalid="true"] {
+    border-color: $red;
   }
 }
 
