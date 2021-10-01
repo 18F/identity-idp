@@ -28,6 +28,7 @@ describe OtpDeliverySelectionForm do
           country_code: 'US',
           area_code: '202',
           context: 'authentication',
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
         expect(subject.submit(otp_delivery_preference: 'sms', resend: true).to_h).to eq(

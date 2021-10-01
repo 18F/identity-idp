@@ -27,6 +27,7 @@ module TwoFactorAuthentication
         configuration_id: configuration&.id,
         configuration_owner: configuration&.user&.uuid,
         mfa_method_counts: MfaContext.new(user.reload).enabled_two_factor_configuration_counts_hash,
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }
     end
 

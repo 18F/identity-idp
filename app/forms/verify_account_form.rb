@@ -21,7 +21,13 @@ class VerifyAccountForm
     else
       reset_sensitive_fields
     end
-    FormResponse.new(success: result, errors: errors)
+    FormResponse.new(
+      success: result,
+      errors: errors,
+      extra: {
+        pii_like_keypaths: [[:errors, :otp], [:error_details, :otp]],
+      },
+    )
   end
 
   protected

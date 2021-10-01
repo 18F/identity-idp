@@ -91,11 +91,15 @@ fr:
     no_auth_option: Aucune option d’authentification n’a été trouvée pour vous connecter
     otp_delivery_preference:
       instruction: Vous pouvez modifier cette sélection lors de votre prochaine connexion.
-      phone_unsupported: Nous ne sommes pas en mesure de passer des appels
-        téléphoniques aux personnes situées à %{location} pour le moment.
+      no_supported_options: Nous ne sommes pas en mesure de vérifier les numéros de
+        téléphone de %{location} pour le moment.
       sms: Message texte (SMS)
+      sms_unsupported: Nous ne sommes pas en mesure d’envoyer des SMS aux personnes se
+        trouvant en %{location} pour le moment.
       title: Comment devrions-nous vous envoyer un code?
       voice: Appel téléphonique
+      voice_unsupported: Nous ne sommes pas en mesure de passer des appels
+        téléphoniques aux personnes se trouvant en %{location} pour le moment.
     otp_make_default_number:
       instruction: Veuillez cocher la case ci-dessous si vous voulez que ce soit le
         téléphone par défaut. numéro que vous recevez des messages texte ou des

@@ -38,9 +38,6 @@ const sourceMapLoader = {
 };
 environment.loaders.append('sourceMap', sourceMapLoader);
 
-environment.plugins.prepend(
-  'RailsI18nWebpackPlugin',
-  new RailsI18nWebpackPlugin({ template: 'LoginGov.I18n.addStrings(%j);' }),
-);
+environment.plugins.prepend('RailsI18nWebpackPlugin', new RailsI18nWebpackPlugin());
 
 module.exports = environment;

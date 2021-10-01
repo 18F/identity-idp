@@ -271,6 +271,7 @@ describe Users::TwoFactorAuthenticationController do
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
         expect(@analytics).to receive(:track_event).
@@ -349,6 +350,7 @@ describe Users::TwoFactorAuthenticationController do
           context: 'authentication',
           country_code: 'US',
           area_code: '202',
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
         expect(@analytics).to receive(:track_event).

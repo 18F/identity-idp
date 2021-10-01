@@ -64,6 +64,7 @@ search:
     - app/views/shared/newrelic/_browser_instrumentation.html.erb
     - app/javascript/app/local-time.js
     - app/javascript/packages/rails-i18n-webpack-plugin
+    - app/javascript/packages/i18n
 
   ## Alternatively, the only files or `File.fnmatch patterns` to search in `paths`:
   ## If specified, this settings takes priority over `exclude`, but `exclude` still applies.

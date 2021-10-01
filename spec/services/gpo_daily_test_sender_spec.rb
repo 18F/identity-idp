@@ -32,9 +32,7 @@ RSpec.describe GpoDailyTestSender do
     end
 
     context 'when attempting handle the designated reciver renders an error' do
-      before do
-        allow(subject).to receive(:valid_designated_receiver_pii?).and_raise('test error')
-      end
+      let(:designated_receiver_pii) { {} }
 
       it 'does not create gpo records' do
         expect { sender.run }.
@@ -42,17 +40,16 @@ RSpec.describe GpoDailyTestSender do
             and(change { GpoConfirmationCode.count }.by(0)))
       end
 
-      it 'does not blow up (so the calling job can continue normally) and notifies NewRelic' do
-        expect(NewRelic::Agent).to receive(:notice_error)
+      it 'warns and does not blow up (so the calling job can continue normally)' do
+        expect(Rails.logger).to receive(:warn) do |msg|
+          payload = JSON.parse(msg, symbolize_names: true)
+          expect(payload[:message]).to eq(
+            'missing valid designated receiver pii, not enqueueing a test sender',
+          )
+        end
 
         expect { sender.run }.to_not raise_error
       end
-    end
-  end
-
-  describe '#designated_receiver_pii' do
-    it 'parses PII from the application config' do
-      expect(sender.designated_receiver_pii).to eq(designated_receiver_pii)
     end
   end
 

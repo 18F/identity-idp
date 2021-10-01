@@ -48,6 +48,10 @@ RSpec.configure do |config|
   config.before(:suite) do
     Rails.application.load_seed
 
+    class Analytics
+      prepend FakeAnalytics::PiiAlerter
+    end
+
     begin
       REDIS_POOL.with { |namespaced| namespaced.redis.info }
     rescue RuntimeError => error

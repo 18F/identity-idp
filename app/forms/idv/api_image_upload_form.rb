@@ -100,6 +100,7 @@ module Idv
       @extra_attributes ||= {
         remaining_attempts: remaining_attempts,
         user_id: user_uuid,
+        pii_like_keypaths: [[:pii]],
       }
     end
 

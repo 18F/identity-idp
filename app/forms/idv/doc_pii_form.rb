@@ -17,6 +17,9 @@ module Idv
       Idv::DocAuthFormResponse.new(
         success: valid?,
         errors: errors,
+        extra: {
+          pii_like_keypaths: [[:pii]], # see errors.add(:pii)
+        },
       )
     end
 

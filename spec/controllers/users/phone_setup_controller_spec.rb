@@ -44,13 +44,13 @@ describe Users::PhoneSetupController do
         errors: {
           phone: [
             t('errors.messages.improbable_phone'),
-            t('two_factor_authentication.otp_delivery_preference.phone_unsupported', location: ''),
+            t('two_factor_authentication.otp_delivery_preference.voice_unsupported', location: ''),
           ],
         },
         error_details: {
           phone: [
             :improbable_phone,
-            t('two_factor_authentication.otp_delivery_preference.phone_unsupported', location: ''),
+            t('two_factor_authentication.otp_delivery_preference.voice_unsupported', location: ''),
           ],
         },
         otp_delivery_preference: 'sms',
@@ -59,6 +59,7 @@ describe Users::PhoneSetupController do
         country_code: nil,
         phone_type: :mobile,
         types: [],
+        pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
       }
 
       expect(@analytics).to receive(:track_event).
@@ -90,6 +91,7 @@ describe Users::PhoneSetupController do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
         expect(@analytics).to receive(:track_event).
@@ -129,6 +131,7 @@ describe Users::PhoneSetupController do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
         expect(@analytics).to receive(:track_event).
@@ -167,6 +170,7 @@ describe Users::PhoneSetupController do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
+          pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
         }
 
         expect(@analytics).to receive(:track_event).

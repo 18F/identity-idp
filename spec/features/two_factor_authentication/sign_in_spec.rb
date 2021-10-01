@@ -49,7 +49,7 @@ feature 'Two Factor Authentication' do
 
         expect(current_path).to eq phone_setup_path
         expect(page).to have_content t(
-          'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          'two_factor_authentication.otp_delivery_preference.voice_unsupported',
           location: 'Bahamas',
         )
 
@@ -78,6 +78,64 @@ feature 'Two Factor Authentication' do
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
       end
 
+      scenario 'updates enabled delivery options based on deliverability to the country', :js do
+        sign_in_before_2fa
+        select_2fa_option(:phone)
+
+        option_with_none_disabled = page.find('.international-code > :nth-child(1)', visible: :all)
+        option_with_none_disabled.execute_script('this.dataset.supportsVoice = "true"')
+        option_with_none_disabled.execute_script('this.dataset.supportsSms = "true"')
+        option_with_disabled_voice = page.find('.international-code > :nth-child(2)', visible: :all)
+        option_with_disabled_voice.execute_script('this.dataset.supportsVoice = "false"')
+        option_with_disabled_voice.execute_script('this.dataset.supportsSms = "true"')
+        option_with_disabled_sms = page.find('.international-code > :nth-child(3)', visible: :all)
+        option_with_disabled_sms.execute_script('this.dataset.supportsVoice = "true"')
+        option_with_disabled_sms.execute_script('this.dataset.supportsSms = "false"')
+        option_with_all_disabled = page.find('.international-code > :nth-child(4)', visible: :all)
+        option_with_all_disabled.execute_script('this.dataset.supportsVoice = "false"')
+        option_with_all_disabled.execute_script('this.dataset.supportsSms = "false"')
+
+        sms_radio = page.find('.js-otp-delivery-preference[value="sms"]', visible: :all)
+        voice_radio = page.find('.js-otp-delivery-preference[value="voice"]', visible: :all)
+
+        expect(sms_radio).to match_css(':checked')
+
+        select_country_and_type_phone_number(country: option_with_disabled_sms['value'].downcase)
+        expect(page).to have_content(
+          t(
+            'two_factor_authentication.otp_delivery_preference.sms_unsupported',
+            location: option_with_disabled_sms['data-country-name'],
+          ),
+        )
+        expect(sms_radio).not_to match_css(':checked')
+        expect(voice_radio).to match_css(':checked')
+
+        select_country_and_type_phone_number(country: option_with_disabled_voice['value'].downcase)
+        expect(page).to have_content(
+          t(
+            'two_factor_authentication.otp_delivery_preference.voice_unsupported',
+            location: option_with_disabled_voice['data-country-name'],
+          ),
+        )
+        expect(sms_radio).to match_css(':checked')
+        expect(voice_radio).not_to match_css(':checked')
+
+        select_country_and_type_phone_number(country: option_with_all_disabled['value'].downcase)
+        expect(page).to have_content(
+          t(
+            'two_factor_authentication.otp_delivery_preference.no_supported_options',
+            location: option_with_all_disabled['data-country-name'],
+          ),
+        )
+        expect(sms_radio).not_to match_css(':checked')
+        expect(voice_radio).not_to match_css(':checked')
+
+        select_country_and_type_phone_number(country: option_with_none_disabled['value'].downcase)
+        expect(page).to have_content(
+          t('two_factor_authentication.otp_delivery_preference.instruction'),
+        )
+      end
+
       scenario 'allows a user to continue typing even if a number is invalid', :js do
         sign_in_before_2fa
         select_2fa_option(:phone)
@@ -100,7 +158,7 @@ feature 'Two Factor Authentication' do
     find('#new_phone_form_phone')
   end
 
-  def select_country_and_type_phone_number(country:, number:)
+  def select_country_and_type_phone_number(country:, number: '')
     find('.iti__flag').click
     find(".iti__country[data-country-code='#{country}']").click
     phone_field.send_keys(number)
