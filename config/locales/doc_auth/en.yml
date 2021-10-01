@@ -12,7 +12,9 @@ en:
       status_tap_to_capture: Automatic capture disabled
     buttons:
       change_address: Change
+      change_address_label: Change address
       change_ssn: Change
+      change_ssn_label: Change Social Security Number
       continue: Continue
       start_over: Start over
       take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or
