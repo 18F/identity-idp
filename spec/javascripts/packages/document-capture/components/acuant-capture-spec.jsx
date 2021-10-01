@@ -790,7 +790,7 @@ describe('document-capture/components/acuant-capture', () => {
 
     const input = getByLabelText('Image');
 
-    expect(input.getAttribute('accept')).to.equal('image/jpeg,image/png,image/bmp,image/tiff');
+    expect(input.getAttribute('accept')).to.equal('image/jpeg,image/png');
   });
 
   it('logs metrics for manual upload', async () => {
