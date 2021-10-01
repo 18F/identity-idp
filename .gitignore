@@ -55,6 +55,7 @@ Gemfile-dev.lock
 /docs/security/opencontrols
 /fixtures
 /geo_data/*
+!/geo_data/.gitkeep
 /identity-idp-config
 /keys
 /kitchen/cookbooks
