@@ -24,40 +24,42 @@ function disableFormSubmit(event) {
  */
 function checkInputValidity(event) {
   const input = /** @type {HTMLInputElement} */ (event.target);
-  input.setCustomValidity('');
-  input.setAttribute('aria-invalid', String(!input.validity.valid));
-  if (
-    (event.type === 'invalid' &&
+  resetInput(input)
+  if (event.type === 'invalid' &&
     !input.validity.valid &&
-    input.parentNode?.querySelector('.display-if-invalid'))
+    (input.parentNode?.querySelector('.display-if-invalid') || 
+    input.parentNode?.querySelector('.invalid-inline'))
   ) {
     event.preventDefault();
+    input.setAttribute('aria-invalid', 'true');
+    input.classList.add('usa-input--error');
+    toggleErrorForUnit(input);
     input.focus();
   }
   
-  if (input.classList.contains('usa-input--inline')) {
-    event.preventDefault();
-    inlineValidation(event)
-  } else {
-    input.setCustomValidity(determineErrorText(input));
-  }
+  input.setCustomValidity(determineErrorText(input));
 }
 
-function inlineValidation(event) {
-  const input = /** @type {HTMLInputElement} */ (event.target);
-  let alert  = input.parentNode?.querySelector('.invalid-alert-inline')
+
+function resetInput(input) {
+  input.setCustomValidity('');
+  input.setAttribute('aria-invalid', 'false');
   input.classList.remove('usa-input--error');
-  if (alert) {
-    alert.remove();
+  let errorMessages = input.parentNode?.querySelectorAll('.invalid-inline')
+  errorMessages.forEach( (message) => {
+    message.classList.add('display-none');
+  })
+}
+
+function toggleErrorForUnit(input) {
+  if (input.validity.valueMissing) {
+    let errorMessage = input.parentNode?.querySelector('.input-required')
+    errorMessage.classList.remove('display-none')
+  } else if (input.validity.patternMismatch) {
+    let errorMessage = input.parentNode?.querySelector('.pattern-mismatch')
+    errorMessage.classList.remove('display-none')
   }
-  if (!input.validity.valid && event.type == 'invalid') {
-    input.classList.add('usa-input--error');
-    const el = `
-      <span class='usa-error-message--with-icon usa-error-message invalid-alert-inline margin-top-1 margin-bottom-1' role='alert'>
-        ${determineErrorText(input)}
-      </span>`;
-    input.insertAdjacentHTML('afterend', el);
-  }
+  
 }
 
 function determineErrorText(input) {
