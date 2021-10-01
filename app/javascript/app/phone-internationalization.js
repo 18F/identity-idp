@@ -1,7 +1,12 @@
 const INTERNATIONAL_CODE_REGEX = /^\+(\d+) |^1 /;
 
-// @ts-ignore
-const { I18n } = window.LoginGov;
+/**
+ * @typedef {typeof window & {
+ *   LoginGov: { I18n: import('@18f/identity-i18n').I18n } }
+ * } GlobalWithLoginGov
+ */
+
+const { t } = /** @type {GlobalWithLoginGov} */ (window).LoginGov.I18n;
 
 const selectedInternationCodeOption = () => {
   const dropdown = /** @type {HTMLSelectElement} */ (document.querySelector(
@@ -29,26 +34,18 @@ const isDeliveryOptionSupported = (delivery) =>
  * @param {string} delivery
  * @return {string=}
  */
-function getHintTextForDisabledDeliveryOption(delivery) {
+const getHintTextForDisabledDeliveryOption = (delivery) =>
   // i18n-tasks-use t('two_factor_authentication.otp_delivery_preference.voice_unsupported')
   // i18n-tasks-use t('two_factor_authentication.otp_delivery_preference.sms_unsupported')
-  let hintText = I18n.t(
-    `two_factor_authentication.otp_delivery_preference.${delivery}_unsupported`,
-  );
-
-  if (hintText) {
-    const location = selectedInternationCodeOption().dataset.countryName;
-    hintText = hintText.replace('%{location}', location);
-  }
-
-  return hintText;
-}
+  t(`two_factor_authentication.otp_delivery_preference.${delivery}_unsupported`, {
+    location: /** @type {string} */ (selectedInternationCodeOption().dataset.countryName),
+  });
 
 /**
  * @param {string=} hintText
  */
 function setHintText(
-  hintText = I18n.t('two_factor_authentication.otp_delivery_preference.instruction'),
+  hintText = t('two_factor_authentication.otp_delivery_preference.instruction'),
 ) {
   const hintElement = document.querySelector('#otp_delivery_preference_instruction');
   if (hintElement) {
@@ -94,10 +91,10 @@ const updateOTPDeliveryMethods = () => {
   });
 
   if (isAllDisabled(methods)) {
-    const location = selectedInternationCodeOption().dataset.countryName;
-    const hintText = I18n.t(
-      'two_factor_authentication.otp_delivery_preference.no_supported_options',
-    ).replace('%{location}', location);
+    const hintText = t('two_factor_authentication.otp_delivery_preference.no_supported_options', {
+      location: /** @type {string} */ (selectedInternationCodeOption().dataset.countryName),
+    });
+
     setHintText(hintText);
   }
 };
