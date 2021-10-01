@@ -72,7 +72,7 @@ class DocumentProofingJob < ApplicationJob
       pii: proofer_result.pii_from_doc,
     )
 
-    remaining_attempts = Throttle.for(user: user, throttle_type: :idv_doc_auth).remaining_count
+    throttle = Throttle.for(user: user, throttle_type: :idv_doc_auth)
 
     analytics.track_event(
       Analytics::IDV_DOC_AUTH_SUBMITTED_IMAGE_UPLOAD_VENDOR,
@@ -80,7 +80,8 @@ class DocumentProofingJob < ApplicationJob
         state: proofer_result.pii_from_doc[:state],
         state_id_type: proofer_result.pii_from_doc[:state_id_type],
         async: true,
-        remaining_attempts: remaining_attempts,
+        attempts: throttle.attempts,
+        remaining_attempts: throttle.remaining_count,
         client_image_metrics: image_metadata,
       ).merge(analytics_data),
     )
