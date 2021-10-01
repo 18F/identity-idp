@@ -30,7 +30,7 @@
     "clipboard": "^2.0.6",
     "domready": "^1.0.8",
     "focus-trap": "^6.2.3",
-    "identity-style-guide": "^6.1.0",
+    "identity-style-guide": "^6.2.0",
     "intl-tel-input": "^17.0.8",
     "libphonenumber-js": "^1.9.6",
     "postcss-clean": "^1.1.0",

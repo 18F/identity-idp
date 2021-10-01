@@ -4751,10 +4751,10 @@ icss-utils@^4.0.0, icss-utils@^4.1.1:
   dependencies:
     postcss "^7.0.14"
 
-identity-style-guide@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-6.1.0.tgz#167cc83b65a68f595ea349048d4db2e634363aee"
-  integrity sha512-8+PgovkibnL3wm+xrHoPXRq0mmEgFaIMHGpN40ieCqlEiB7LFubQE3wEXc/x1gfctrH8cmYT0A1oMOpiVzmewA==
+identity-style-guide@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/identity-style-guide/-/identity-style-guide-6.2.0.tgz#ff6e4014e85a73358d284a50c0902c9e40bc376f"
+  integrity sha512-9LocCBwM7fsilYk7zy7HxTmHyDRiw5bArOpK384Kyv/AhrUQRpBaCoZPdcMY45kZO81p3yCtv3Re16TOHq0kdw==
   dependencies:
     domready "^1.0.8"
     uswds "^2.12.1"
