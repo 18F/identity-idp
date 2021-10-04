@@ -19,24 +19,12 @@ function disableFormSubmit(event) {
   });
 }
 
+function kebabCase(string) { return string.replace(/(.)([A-Z])/g, '$1-$2').toLowerCase(); }
+
 function resetInput(input) {
   input.setCustomValidity('');
   input.setAttribute('aria-invalid', 'false');
   input.classList.remove('usa-input--error');
-  const errorMessages = input.parentNode?.querySelectorAll('.invalid-inline');
-  errorMessages.forEach((message) => {
-    message.classList.add('display-none');
-  });
-}
-
-function toggleErrorForUnit(input) {
-  if (input.validity.valueMissing) {
-    const errorMessage = input.parentNode?.querySelector('.input-required');
-    errorMessage.classList.remove('display-none');
-  } else if (input.validity.patternMismatch) {
-    const errorMessage = input.parentNode?.querySelector('.pattern-mismatch');
-    errorMessage.classList.remove('display-none');
-  }
 }
 
 /**
@@ -51,13 +39,18 @@ function checkInputValidity(event) {
   if (
     event.type === 'invalid' &&
     !input.validity.valid &&
-    (input.parentNode?.querySelector('.display-if-invalid') ||
-      input.parentNode?.querySelector('.invalid-inline'))
+    input.parentNode?.querySelector('.display-if-invalid')
   ) {
     event.preventDefault();
-    input.setAttribute('aria-invalid', 'true');
+    const errors = Object.keys(ValidityState.prototype)
+    .filter((key) => key !== 'valid')
+    .filter((key) => input.validity[key]);
+  
+    input.setAttribute(
+      'aria-invalid',
+      errors.length ? kebabCase(errors[0]) : 'false'
+    );
     input.classList.add('usa-input--error');
-    toggleErrorForUnit(input);
     input.focus();
   }
 

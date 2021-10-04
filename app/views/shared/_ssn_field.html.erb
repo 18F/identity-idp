@@ -14,11 +14,11 @@ locals:
       maxlength: 11,
       input_html: { aria: { invalid: false }, class: 'ssn ssn-toggle usa-input error-state', value: '' }
     ) %>
-<span class='usa-error-message margin-top-7 input-required invalid-inline display-none margin-bottom-1' role='alert'>
+<span class='usa-error-message margin-top-7 input-required display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
   <%= t('simple_form.required.text') %>
 </span>
 
-<span class='usa-error-message margin-top-7 pattern-mismatch invalid-inline display-none margin-bottom-1' role='alert'>
+<span class='usa-error-message margin-top-7 pattern-mismatch display-if-invalid display-if-invalid--pattern-mismatch margin-bottom-1' role='alert'>
   <%= t('idv.errors.pattern_mismatch.ssn') %>
 </span>
 <%= javascript_packs_tag_once('ssn-field') %>
