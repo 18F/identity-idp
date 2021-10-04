@@ -31,8 +31,11 @@ module TwoFactorAuthentication
     end
 
     def handle_last_code
-      BackupCodeGenerator.new(current_user).delete_existing_codes
-      redirect_to backup_code_depleted_url
+      generator = BackupCodeGenerator.new(current_user)
+      generator.delete_existing_codes
+      user_session[:backup_codes] = generator.generate
+      generator.save(user_session[:backup_codes])
+      redirect_to backup_code_refreshed_url
     end
 
     def presenter_for_two_factor_authentication_method

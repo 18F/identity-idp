@@ -14,10 +14,6 @@ module Users
       @presenter = BackupCodeCreatePresenter.new
     end
 
-    def depleted
-      @presenter = BackupCodeDepletedPresenter.new
-    end
-
     def create
       generate_codes
       result = BackupCodeSetupForm.new(current_user).submit
@@ -40,6 +36,11 @@ module Users
     end
 
     def confirm_delete; end
+
+    def refreshed
+      @codes = user_session[:backup_codes]
+      render 'create'
+    end
 
     def delete
       current_user.backup_code_configurations.destroy_all

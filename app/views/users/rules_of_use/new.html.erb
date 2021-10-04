@@ -21,7 +21,7 @@
         <%= t('users.rules_of_use.check_box_to_accept') %>
         <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
       <% end %>
-      <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
+      <div class="usa-error-message display-if-invalid display-if-invalid--value-missing" role="alert">
         <%= t('errors.rules_of_use') %>
       </div>
     </div>

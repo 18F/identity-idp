@@ -69,6 +69,7 @@ gem 'subprocess', require: false
 gem 'uglifier', '~> 4.2'
 gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
+gem 'view_component', '~> 2.40.0', require: 'view_component/engine'
 gem 'webauthn', '~> 2.1'
 gem 'webpacker', '~> 5.1'
 gem 'xmldsig', '~> 0.6'

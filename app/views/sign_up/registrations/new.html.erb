@@ -51,7 +51,7 @@
         <%= t('sign_up.terms') %>
         <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
       </label>
-      <div class="usa-error-message usa-error-message--with-icon display-if-invalid" role="alert">
+      <div class="usa-error-message display-if-invalid display-if-invalid--value-missing" role="alert">
         <%= t('forms.validation.required_checkbox') %>
       </div>
     </div>
