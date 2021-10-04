@@ -1,9 +1,14 @@
 class RiscDeliveryJob < ApplicationJob
   queue_as :low
 
-  retry_on Faraday::TimeoutError,
-           Faraday::ConnectionFailed,
-           Faraday::SSLError,
+  NETWORK_ERRORS = [
+    Faraday::TimeoutError,
+    Faraday::ConnectionFailed,
+    Faraday::SSLError,
+    Errno::ECONNREFUSED,
+  ].freeze
+
+  retry_on *NETWORK_ERRORS,
            wait: :exponentially_longer,
            attempts: 5
   retry_on RedisRateLimiter::LimitError,
@@ -41,8 +46,7 @@ class RiscDeliveryJob < ApplicationJob
         }.to_json,
       )
     end
-  rescue Faraday::TimeoutError, Faraday::ConnectionFailed, Faraday::SSLError,
-         RedisRateLimiter::LimitError => err
+  rescue *NETWORK_ERRORS, RedisRateLimiter::LimitError => err
     raise err if !inline?
 
     Rails.logger.warn(
@@ -69,7 +73,7 @@ class RiscDeliveryJob < ApplicationJob
   end
 
   def faraday
-    Faraday.new do |f|
+    @faraday ||= Faraday.new do |f|
       f.request :instrumentation, name: 'request_log.faraday'
       f.adapter :net_http
       f.options.timeout = 3
