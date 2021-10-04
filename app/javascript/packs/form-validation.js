@@ -19,7 +19,9 @@ function disableFormSubmit(event) {
   });
 }
 
-function kebabCase(string) { return string.replace(/(.)([A-Z])/g, '$1-$2').toLowerCase(); }
+function kebabCase(string) {
+  return string.replace(/(.)([A-Z])/g, '$1-$2').toLowerCase();
+}
 
 function resetInput(input) {
   input.setCustomValidity('');
@@ -43,13 +45,10 @@ function checkInputValidity(event) {
   ) {
     event.preventDefault();
     const errors = Object.keys(ValidityState.prototype)
-    .filter((key) => key !== 'valid')
-    .filter((key) => input.validity[key]);
-  
-    input.setAttribute(
-      'aria-invalid',
-      errors.length ? kebabCase(errors[0]) : 'false'
-    );
+      .filter((key) => key !== 'valid')
+      .filter((key) => input.validity[key]);
+
+    input.setAttribute('aria-invalid', errors.length ? kebabCase(errors[0]) : 'false');
     input.classList.add('usa-input--error');
     input.focus();
   }
