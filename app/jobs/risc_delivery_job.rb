@@ -8,9 +8,11 @@ class RiscDeliveryJob < ApplicationJob
     Errno::ECONNREFUSED,
   ].freeze
 
-  retry_on *NETWORK_ERRORS,
-           wait: :exponentially_longer,
-           attempts: 5
+  retry_on(
+    *NETWORK_ERRORS,
+    wait: :exponentially_longer,
+    attempts: 5,
+  )
   retry_on RedisRateLimiter::LimitError,
            wait: :exponentially_longer,
            attempts: 10
