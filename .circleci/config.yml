@@ -190,7 +190,7 @@ jobs:
           name: Install AWS CLI
           command: |
             sudo apt-get update
-            sudo apt-get install python-pip python-dev jq
+            sudo apt-get install python3-pip python-dev jq
             sudo pip install awscli
       - run:
           name: Install Code Climate Test Reporter
