@@ -83,18 +83,8 @@ input::-webkit-inner-spin-button {
   }
 }
 
-.error-state {
-  &[aria-invalid="true"] {
-    border-color: $red;
-  }
-
-  &[aria-invalid="value-missing"] {
-    border-color: $red;
-  }
-
-  &[aria-invalid="pattern-mismatch"] {
-    border-color: $red;
-  }
+.usa-input--error.field:invalid {
+  @include u-border($theme-input-state-border-width, 'error');
 }
 
 .text-hint {

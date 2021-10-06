@@ -5,7 +5,7 @@ function toggleButton() {
 
   function sync() {
     continueButton.classList.toggle('usa-button--disabled', !checkbox.checked);
-    errorMessage.classList.toggle('display-none', checkbox.getAttribute('aria-invalid') !== 'true');
+    errorMessage.classList.toggle('display-none', checkbox.getAttribute('aria-invalid') !== 'value-missing');
   }
 
   sync();

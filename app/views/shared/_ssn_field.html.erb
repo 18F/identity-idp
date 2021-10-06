@@ -12,9 +12,9 @@ locals:
       required: true,
       pattern: '^\d{3}-?\d{2}-?\d{4}$',
       maxlength: 11,
-      input_html: { aria: { invalid: false }, class: 'ssn ssn-toggle usa-input error-state', value: '' }
+      input_html: { aria: { invalid: false }, class: 'ssn ssn-toggle usa-input', value: '' }
     ) %>
-<span class='usa-error-message margin-top-7 input-required display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+<span class='usa-error-message margin-top-7 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
   <%= t('simple_form.required.text') %>
 </span>
 
