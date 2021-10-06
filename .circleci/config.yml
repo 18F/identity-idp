@@ -50,26 +50,26 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
-            - v1-identity-idp-yarn-
+            - v2-identity-idp-yarn-{{ checksum "yarn.lock" }}
+            - v2-identity-idp-yarn-
       - run:
           name: Install Yarn
           command: yarn install --frozen-lockfile --ignore-engines --cache-folder ~/.cache/yarn
       - save_cache:
-          key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
+          key: v2-identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
   yarn-production-install:
     steps:
       - restore_cache:
           keys:
-            - v1-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
-            - v1-identity-idp-yarn-production
+            - v2-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
+            - v2-identity-idp-yarn-production
       - run:
           name: Install Yarn
           command: yarn install --production --frozen-lockfile --ignore-engines --cache-folder ~/.cache/yarn
       - save_cache:
-          key: v1-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
+          key: v2-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
 
@@ -78,13 +78,13 @@ commands:
       - run: gem install bundler --version $BUNDLER_VERSION
       - restore_cache:
           keys:
-            - v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
+            - v3-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
       - run:
           name: Install dependencies
           command: |
             bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/bundle
       - save_cache:
-          key: v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
+          key: v3-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
   # Custom version of "checkout" that checks out a SHA deployed to sha_url param
