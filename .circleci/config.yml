@@ -5,6 +5,7 @@
 version: 2.1
 
 orbs:
+  browser-tools: circleci/browser-tools@1.1
   jq: circleci/jq@2.2.0
   slack: circleci/slack@3.4.2
 executors:
@@ -12,7 +13,7 @@ executors:
   ruby_browsers:
     docker:
       # Specify the Ruby version you desire here
-      - image: circleci/ruby:2.7.3-node-browsers
+      - image: cimg/ruby:2.7.3-browsers
         environment:
           CIRCLE_CI: 'true'
           RAILS_ENV: test
@@ -180,6 +181,7 @@ jobs:
     working_directory: ~/identity-idp
 
     steps:
+      - browser-tools/install-browser-tools
       - checkout
       - node-install
       - yarn-install
@@ -246,6 +248,7 @@ jobs:
     working_directory: ~/identity-idp
     executor: ruby_browsers
     steps:
+      - browser-tools/install-browser-tools
       - checkout
       - node-install
       - yarn-install
@@ -285,6 +288,7 @@ jobs:
     environment:
       MONITOR_ENV: DEV
     steps:
+      - browser-tools/install-browser-tools
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
@@ -303,6 +307,7 @@ jobs:
     environment:
       MONITOR_ENV: INT
     steps:
+      - browser-tools/install-browser-tools
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.int.identitysandbox.gov/api/deploy.json
@@ -321,6 +326,7 @@ jobs:
     environment:
       MONITOR_ENV: STAGING
     steps:
+      - browser-tools/install-browser-tools
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.staging.login.gov/api/deploy.json
@@ -339,6 +345,7 @@ jobs:
     environment:
       MONITOR_ENV: PROD
     steps:
+      - browser-tools/install-browser-tools
       - checkout
       - node-install
       - yarn-install
