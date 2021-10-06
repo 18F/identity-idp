@@ -42,14 +42,6 @@ module.exports = function (api) {
         },
       ],
     ].filter(Boolean),
-    plugins: [
-      [
-        '@babel/plugin-proposal-class-properties',
-        {
-          loose: true,
-        },
-      ],
-    ],
     // For third-party dependencies compiled using Babel, don't assume module source type. Use
     // "unambiguous" for best-effort attempt to identify source type by patterns.
     overrides: [
