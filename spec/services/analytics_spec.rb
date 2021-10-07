@@ -195,5 +195,18 @@ describe Analytics do
         )
       end.to_not raise_error
     end
+
+    it 'does not alert when pii values are inside words' do
+      expect(ahoy).to receive(:track)
+
+      stub_const('DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC', zipcode: '12345')
+
+      expect do
+        analytics.track_event(
+          'Trackable Event',
+          some_uuid: '12345678-1234-1234-1234-123456789012',
+        )
+      end.to_not raise_error
+    end
   end
 end
