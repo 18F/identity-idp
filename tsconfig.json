@@ -14,17 +14,24 @@
   "include": [
     "app/javascript/app/phone-internationalization.js",
     "app/javascript/packages",
-    "app/javascript/packs/doc-capture-polling.js",
-    "app/javascript/packs/document-capture.jsx",
-    "app/javascript/packs/form-steps-wait.jsx",
-    "app/javascript/packs/form-validation.js",
-    "app/javascript/packs/masked-text-toggle.js",
-    "app/javascript/packs/one-time-code-input.js",
-    "app/javascript/packs/intl-tel-input.js",
-    "app/javascript/packs/spinner-button.js",
-    "app/javascript/packs/step-indicator.js",
-    "app/javascript/packs/session-expire-session.js",
-    "app/javascript/packs/session-timeout-ping.js"
+    "app/javascript/packs"
   ],
-  "exclude": ["**/fixtures", "**/*.spec.js"]
+  "exclude": [
+    "**/fixtures",
+    "**/*.spec.js",
+    "app/javascript/packs/accept-terms-button.js",
+    "app/javascript/packs/application.js",
+    "app/javascript/packs/email-validation.js",
+    "app/javascript/packs/ial2-consent-button.js",
+    "app/javascript/packs/personal-key-page-controller.js",
+    "app/javascript/packs/pw-strength.js",
+    "app/javascript/packs/reactivate-account-modal.js",
+    "app/javascript/packs/saml-post.js",
+    "app/javascript/packs/ssn-field.js",
+    "app/javascript/packs/upload-step.js",
+    "app/javascript/packs/webauthn-authenticate.js",
+    "app/javascript/packs/webauthn-setup.js",
+    "app/javascript/packs/webauthn-unhide-signin.js",
+    "app/javascript/packs/webauthn-unhide-signup.js"
+  ]
 }
