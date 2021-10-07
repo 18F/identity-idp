@@ -59,7 +59,6 @@ linters:
       - '*/app/views/users/service_provider_revoke/*'
       - '*/app/views/users/shared/_otp_delivery_preference_selection.html.erb'
       - '*/app/views/users/shared/_otp_make_default_number.html.erb'
-      - '*/app/views/users/shared/_phone_number_edit.html.erb'
       - '*/app/views/users/totp_setup/*'
       - '*/app/views/users/two_factor_authentication_setup/*'
       - '*/app/views/users/verify_password/*'

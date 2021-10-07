@@ -109,6 +109,7 @@ en:
       question: Don’t have access to your phone right now?
     phone_fee_disclosure: Message and data rates may apply.
     phone_info_html: We’ll send you a security code <strong>each time you sign in</strong>.
+    phone_code_label: International code
     phone_label: Phone number
     phone_sms_info_html: We’ll text a security code <strong>each time you sign in</strong>.
     phone_sms_label: Mobile phone number

@@ -120,6 +120,7 @@ es:
     phone_fee_disclosure: Se pueden aplicar tarifas por mensajes y datos.
     phone_info_html: Le enviaremos o llamaremos con un código de seguridad
       <strong>cada vez que inicie sesión</strong>.
+    phone_code_label: Código Internacional # Google Translate'd
     phone_label: Número de teléfono
     phone_sms_info_html: Le enviaremos un mensaje de texto con un código de
       seguridad <strong>cada vez que inicie sesión</strong>.

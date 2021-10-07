@@ -17,7 +17,7 @@
                        data: {international_phone_form: true},
                        url: add_phone_path) do |f| %>
 
-  <%= render 'users/shared/phone_number_edit', f: f %>
+  <%= render PhoneInputComponent.new(form: f, required: true) %>
 
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>
@@ -29,6 +29,3 @@
 <% end %>
 
 <%= render 'shared/cancel', link: account_path %>
-
-<%= stylesheet_link_tag 'intl-tel-input/build/css/intlTelInput' %>
-<%= javascript_packs_tag_once 'intl-tel-input' %>

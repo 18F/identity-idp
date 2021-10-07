@@ -18,7 +18,7 @@
                        data: { international_phone_form: true },
                        url: phone_setup_path) do |f| %>
 
-  <%= render 'users/shared/phone_number_edit', f: f %>
+  <%= render PhoneInputComponent.new(form: f, required: true) %>
 
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>
@@ -37,7 +37,4 @@
 
 <div class="margin-top-4 padding-top-1 border-top border-primary-light">
   <%= link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path %>
-
-  <%= stylesheet_link_tag 'intl-tel-input/build/css/intlTelInput' %>
-  <%= javascript_packs_tag_once 'intl-tel-input' %>
 </div>

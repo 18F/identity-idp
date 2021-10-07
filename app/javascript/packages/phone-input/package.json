@@ -1,0 +1,9 @@
+{
+  "name": "@18f/identity-phone-input",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "libphonenumber-js": "^1.9.6",
+    "intl-tel-input": "^17.0.8"
+  }
+}
