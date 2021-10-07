@@ -11,7 +11,7 @@ feature 'doc auth upload step' do
 
   context 'on a mobile device' do
     before do
-      allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
+      allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
     end
 
     it 'is on the correct page' do
@@ -31,7 +31,7 @@ feature 'doc auth upload step' do
 
   context 'on a desktop device' do
     before do
-      allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('desktop')
+      allow_any_instance_of(Browser).to receive(:mobile?).and_return(false)
     end
 
     it 'is on the correct page' do

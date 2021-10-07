@@ -45,6 +45,6 @@ module ApplicationHelper
   end
 
   def desktop_device?
-    DeviceDetector.new(request.user_agent)&.device_type == 'desktop'
+    !BROWSER_CACHE[request.user_agent].mobile?
   end
 end

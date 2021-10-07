@@ -181,6 +181,7 @@ GEM
     bootsnap (1.9.1)
       msgpack (~> 1.0)
     brakeman (5.1.1)
+    browser (5.3.1)
     builder (3.2.4)
     bullet (6.1.5)
       activesupport (>= 3.0.0)
@@ -703,13 +704,13 @@ DEPENDENCIES
   blueprinter (~> 0.25.3)
   bootsnap (~> 1.9.0)
   brakeman
+  browser
   bullet (>= 6.0.2)
   bundler-audit
   capybara-screenshot (>= 1.0.23)
   capybara-selenium (>= 0.0.6)
   connection_pool
   derailed_benchmarks (~> 1.8)
-  device_detector
   devise (~> 4.8)
   dotiw (>= 4.0.1)
   email_spec

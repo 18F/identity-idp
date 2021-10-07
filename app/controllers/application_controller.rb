@@ -395,7 +395,6 @@ class ApplicationController < ActionController::Base
   end
 
   def mobile?
-    client = DeviceDetector.new(request.user_agent)
-    client.device_type != 'desktop'
+    BROWSER_CACHE[request.user_agent].mobile?
   end
 end

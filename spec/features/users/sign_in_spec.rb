@@ -110,7 +110,7 @@ feature 'Sign in' do
   end
 
   scenario 'user attempts sign in with a PIV/CAC on mobile' do
-    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    allow(BROWSER_CACHE).to receive(:[]).and_return(mobile_device)
     visit root_path
 
     expect(page).to_not have_link t('account.login.piv_cac')
