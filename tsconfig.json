@@ -12,6 +12,7 @@
     "target": "ESNext"
   },
   "include": [
+    "app/components",
     "app/javascript/app/phone-internationalization.js",
     "app/javascript/packages",
     "app/javascript/packs/doc-capture-polling.js",
