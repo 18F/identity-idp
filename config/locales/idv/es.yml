@@ -120,7 +120,8 @@ es:
           clase de USPS y por lo general tardan entre 3 y 7 días laborables.
       mail_sent: Su carta está en camino
       otp_delivery_method:
-        phone_number_html: Te enviaremos un código a <strong>%{phone}</strong>
+        phone_number_html: Enviaremos un código a <strong>%{phone}</strong> para
+          verificar que el número de teléfono le pertenece.
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
