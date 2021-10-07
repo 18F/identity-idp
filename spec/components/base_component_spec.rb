@@ -15,7 +15,7 @@ RSpec.describe BaseComponent, type: :component do
   end
 
   it 'does nothing when rendered' do
-    expect(view_context).not_to receive(:javascript_packs_tag_once)
+    expect(view_context).not_to receive(:render_component_script)
 
     render_inline(ExampleComponent.new)
   end
@@ -24,7 +24,7 @@ RSpec.describe BaseComponent, type: :component do
     class ExampleComponentWithScript < ExampleComponent; renders_script; end
 
     it 'adds script to class variable when rendered' do
-      expect(view_context).to receive(:javascript_packs_tag_once).
+      expect(view_context).to receive(:render_component_script).
         with('example_component_with_script')
 
       render_inline(ExampleComponentWithScript.new)
@@ -35,7 +35,7 @@ RSpec.describe BaseComponent, type: :component do
     class ExampleComponentWithNamedScript < ExampleComponent; renders_script 'my_script'; end
 
     it 'adds script to class variable when rendered' do
-      expect(view_context).to receive(:javascript_packs_tag_once).with('my_script')
+      expect(view_context).to receive(:render_component_script).with('my_script')
 
       render_inline(ExampleComponentWithNamedScript.new)
     end
