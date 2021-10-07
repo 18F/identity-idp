@@ -26,7 +26,7 @@ class FakeAnalytics
         :dob,
         :state_id_number,
       ).each do |key, default_pii_value|
-        if string_payload.include?(default_pii_value)
+        if string_payload.match?(Regexp.new('\b' + Regexp.quote(default_pii_value) + '\b', 'i'))
           raise PiiDetected, <<~ERROR
             track_event example PII #{key} (#{default_pii_value}) detected in attributes
             event: #{event} (#{constant_name})
