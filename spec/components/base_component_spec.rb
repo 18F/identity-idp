@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe BaseComponent, type: :component do
-  class ExampleComponent < described_class
-    def render_in(...)
+  class ExampleComponent < BaseComponent
+    def call
       ''
     end
   end
@@ -20,24 +20,23 @@ RSpec.describe BaseComponent, type: :component do
     render_inline(ExampleComponent.new)
   end
 
-  context 'declares rendered script' do
-    class ExampleComponentWithScript < ExampleComponent; renders_script; end
+  context 'with sidecar script' do
+    class ExampleComponentWithScript < BaseComponent
+      def call
+        ''
+      end
+
+      def self._sidecar_files(extensions)
+        return ['/path/to/app/components/example_component_with_script.js'] if extensions == ['js']
+        super(extensions)
+      end
+    end
 
     it 'adds script to class variable when rendered' do
       expect(view_context).to receive(:render_component_script).
         with('example_component_with_script')
 
       render_inline(ExampleComponentWithScript.new)
-    end
-  end
-
-  context 'declares named rendered script' do
-    class ExampleComponentWithNamedScript < ExampleComponent; renders_script 'my_script'; end
-
-    it 'adds script to class variable when rendered' do
-      expect(view_context).to receive(:render_component_script).with('my_script')
-
-      render_inline(ExampleComponentWithNamedScript.new)
     end
   end
 end
