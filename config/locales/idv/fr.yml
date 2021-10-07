@@ -129,7 +129,8 @@ fr:
           ouvrables.
       mail_sent: Votre lettre est en route
       otp_delivery_method:
-        phone_number_html: Nous enverrons un code au <strong>%{phone}</strong>
+        phone_number_html: Nous enverrons un code à <strong>%{phone}</strong> pour
+          vérifier que le numéro de téléphone vous appartient.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
         conservez-la dans un endroit sécuritaire. Vous en aurez besoin si vous
         perdez votre mot de passe.
