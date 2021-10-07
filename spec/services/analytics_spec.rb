@@ -197,7 +197,7 @@ describe Analytics do
     end
 
     it 'does not alert when pii values are inside words' do
-      allow(ahoy).to receive(:track)
+      expect(ahoy).to receive(:track)
 
       stub_const('DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC', zipcode: '12345')
 
