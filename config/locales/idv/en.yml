@@ -49,7 +49,7 @@ en:
         fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
           we limit the number of times you can attempt to verify your phone
           number online.'
-        heading: We could not match your name and address to this phone number
+        heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again.
         timeout: Our request to verify your information timed out. Please try again.
