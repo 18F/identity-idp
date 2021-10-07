@@ -1,5 +1,4 @@
 class AccordionComponent < BaseComponent
-  renders_script
   renders_one :header
 
   def initialize
