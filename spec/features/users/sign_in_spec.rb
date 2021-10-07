@@ -117,7 +117,7 @@ feature 'Sign in' do
   end
 
   scenario 'user attempts sign in with the default MFA on mobile and a PIV/CAC configured' do
-    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    allow(BROWSER_CACHE).to receive(:[]).and_return(mobile_device)
     sign_in_before_2fa(user_with_piv_cac)
 
     expect(current_path).to eq(login_otp_path(otp_delivery_preference: :sms))
