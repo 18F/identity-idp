@@ -7,26 +7,27 @@ RSpec.describe BaseComponent, type: :component do
     end
   end
 
-  let!(:initial_rendered_scripts) { described_class.rendered_scripts }
-  after { described_class.rendered_scripts = initial_rendered_scripts }
+  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
+  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
 
-  def rendered_scripts
-    described_class.rendered_scripts - initial_rendered_scripts
+  before do
+    allow_any_instance_of(ApplicationController).to receive(:view_context).and_return(view_context)
   end
 
   it 'does nothing when rendered' do
-    render_inline(ExampleComponent.new)
+    expect(view_context).not_to receive(:javascript_packs_tag_once)
 
-    expect(rendered_scripts).to eq([])
+    render_inline(ExampleComponent.new)
   end
 
   context 'declares rendered script' do
     class ExampleComponentWithScript < ExampleComponent; renders_script; end
 
     it 'adds script to class variable when rendered' do
-      render_inline(ExampleComponentWithScript.new)
+      expect(view_context).to receive(:javascript_packs_tag_once).
+        with('example_component_with_script')
 
-      expect(rendered_scripts).to eq(['example_component_with_script'])
+      render_inline(ExampleComponentWithScript.new)
     end
   end
 
@@ -34,9 +35,9 @@ RSpec.describe BaseComponent, type: :component do
     class ExampleComponentWithNamedScript < ExampleComponent; renders_script 'my_script'; end
 
     it 'adds script to class variable when rendered' do
-      render_inline(ExampleComponentWithNamedScript.new)
+      expect(view_context).to receive(:javascript_packs_tag_once).with('my_script')
 
-      expect(rendered_scripts).to eq(['my_script'])
+      render_inline(ExampleComponentWithNamedScript.new)
     end
   end
 end
