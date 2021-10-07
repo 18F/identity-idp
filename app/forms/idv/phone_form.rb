@@ -52,6 +52,7 @@ module Idv
       {
         country_code: parsed_phone.country,
         area_code: parsed_phone.area_code,
+        pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]], # see errors.add(:phone)
       }
     end
 

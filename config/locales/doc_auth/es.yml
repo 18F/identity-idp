@@ -5,13 +5,16 @@ es:
       camera_video_capture_instructions: Tomaremos la foto automáticamente
       camera_video_capture_label: Visor con encuadre para centrar tu documento
       document_capture_dialog: Captura del documento
+      selfie_alt_text: Una foto subida
       status_align: Alinea el documento dentro del encuadre
       status_capturing: La foto se tomará en tres segundos
       status_move_closer: Acerca la cámara al documento
       status_tap_to_capture: Captura automática desactivada
     buttons:
       change_address: Cambio
+      change_address_label: Cambiar dirección
       change_ssn: Cambio
+      change_ssn_label: Cambiar número de Seguridad Social
       continue: Continuar
       start_over: Comenzar de nuevo
       take_or_upload_picture: '<lg-take-photo>Toma una foto</lg-take-photo> o
@@ -80,8 +83,7 @@ es:
           identificación ocupe un gran espacio dentro del marco de la imagen e
           intente tomar nuevas fotos.
       file_type:
-        invalid: Ese formato no es admitido, por favor elija un archivo JPG, PNG, BMP, o
-          TIFF.
+        invalid: Ese formato no es admitido, por favor elija un archivo JPG o PNG.
       general:
         liveness: No pudimos verificar su documento de identidad y su foto. Intente
           tomar nuevas fotografías.
@@ -269,7 +271,7 @@ es:
       welcome: 'Deberá contar con lo siguiente para verificar su identidad:'
     tips:
       document_capture_header_text: 'Para obtener los mejores resultados:'
-      document_capture_hint: Debe ser un JPG, BMP, PNG o TIFF
+      document_capture_hint: Debe ser un JPG o PNG
       document_capture_id_text1: Use un fondo oscuro
       document_capture_id_text2: Tome la foto en una superficie plana
       document_capture_id_text3: No use el flash de su cámara

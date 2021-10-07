@@ -1,4 +1,5 @@
-import { createElement, cloneElement, useContext } from 'react';
+import { createElement, cloneElement, useContext, useMemo } from 'react';
+import { I18n } from '@18f/identity-i18n';
 import I18nContext from '../context/i18n';
 
 /** @typedef {import('react').FC|import('react').ComponentClass} Component */
@@ -48,36 +49,9 @@ export function formatHTML(html, handlers) {
   return parts.filter(Boolean);
 }
 
-/**
- * Returns string with variable substitution.
- *
- * @param {string} string Original string.
- * @param {Record<string,string>} variables Variables to replace.
- *
- * @return {string} String with variables substituted.
- */
-export function replaceVariables(string, variables) {
-  return Object.keys(variables).reduce(
-    (result, key) => result.replace(new RegExp(`%{${key}}`, 'g'), variables[key]),
-    string,
-  );
-}
-
 function useI18n() {
   const strings = useContext(I18nContext);
-
-  /**
-   * Returns the translated string by the given key.
-   *
-   * @param {string} key Key to retrieve.
-   * @param {Record<string,string>=} variables Variables to substitute in string.
-   *
-   * @return {string} Translated string.
-   */
-  function t(key, variables) {
-    const string = Object.prototype.hasOwnProperty.call(strings, key) ? strings[key] : key;
-    return variables ? replaceVariables(string, variables) : string;
-  }
+  const { t } = useMemo(() => new I18n({ strings }), [strings]);
 
   return {
     t,

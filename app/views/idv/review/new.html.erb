@@ -35,7 +35,8 @@
         ) %>
 
   </div>
-  <%= accordion('review-verified-info', t('idv.messages.review.intro')) do %>
+  <%= render AccordionComponent.new do |c| %>
+    <% c.header { t('idv.messages.review.intro') } %>
     <%= render 'shared/pii_review', pii: @applicant,
                                     phone: PhoneFormatter.format(@applicant[:phone]) %>
   <% end %>

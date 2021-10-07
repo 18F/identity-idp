@@ -72,6 +72,7 @@ describe Users::WebauthnSetupController do
           mfa_method_counts: {
             auth_app: 1, phone: 1, webauthn: 1
           },
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
           multi_factor_auth_method: 'webauthn',
         }
         expect(@analytics).to receive(:track_event).
@@ -99,7 +100,11 @@ describe Users::WebauthnSetupController do
       end
 
       it 'tracks the delete in analytics' do
-        result = { success: true, mfa_method_counts: { auth_app: 1, phone: 1 } }
+        result = {
+          success: true,
+          mfa_method_counts: { auth_app: 1, phone: 1 },
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
+        }
         expect(@analytics).to receive(:track_event).with(Analytics::WEBAUTHN_DELETED, result)
 
         delete :delete, params: { id: webauthn_configuration.id }

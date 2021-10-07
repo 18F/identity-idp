@@ -98,14 +98,19 @@ module Idv
 
     def extra_attributes
       @extra_attributes ||= {
+        attempts: attempts,
         remaining_attempts: remaining_attempts,
         user_id: user_uuid,
+        pii_like_keypaths: [[:pii]],
       }
     end
 
     def remaining_attempts
-      return nil unless document_capture_session
-      throttle.remaining_count
+      throttle.remaining_count if document_capture_session
+    end
+
+    def attempts
+      throttle.attempts if document_capture_session
     end
 
     def determine_response(form_response:, client_response:, doc_pii_response:)

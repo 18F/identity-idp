@@ -570,6 +570,10 @@ describe Users::SessionsController, devise: true do
   end
 
   describe 'POST /sessions/keepalive' do
+    around do |ex|
+      freeze_time { ex.run }
+    end
+
     context 'when user is present' do
       before do
         stub_sign_in

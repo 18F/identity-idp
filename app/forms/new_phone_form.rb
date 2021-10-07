@@ -65,6 +65,7 @@ class NewPhoneForm
       carrier: @phone_info&.carrier,
       country_code: parsed_phone.country,
       area_code: parsed_phone.area_code,
+      pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
     }.tap do |extra|
       extra[:redacted_phone] = @redacted_phone if @redacted_phone
     end

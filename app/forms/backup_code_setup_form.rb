@@ -17,6 +17,9 @@ class BackupCodeSetupForm
   attr_accessor :user
 
   def extra_analytics_attributes
-    { mfa_method_counts: MfaContext.new(user).enabled_two_factor_configuration_counts_hash }
+    {
+      mfa_method_counts: MfaContext.new(user).enabled_two_factor_configuration_counts_hash,
+      pii_like_keypaths: [[:mfa_method_counts, :phone]],
+    }
   end
 end

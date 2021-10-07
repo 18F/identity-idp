@@ -13,6 +13,8 @@ require 'rspec/rails'
 require 'spec_helper'
 require 'email_spec'
 require 'factory_bot'
+require 'view_component/test_helpers'
+require 'capybara/rspec'
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -38,6 +40,8 @@ RSpec.configure do |config|
   config.include Features::MailerHelper, type: :feature
   config.include Features::SessionHelper, type: :feature
   config.include Features::StripTagsHelper, type: :feature
+  config.include ViewComponent::TestHelpers, type: :component
+  config.include Capybara::RSpecMatchers, type: :component
   config.include AgreementsHelper
   config.include AnalyticsHelper
   config.include AwsKmsClientHelper
@@ -47,6 +51,10 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     Rails.application.load_seed
+
+    class Analytics
+      prepend FakeAnalytics::PiiAlerter
+    end
 
     begin
       REDIS_POOL.with { |namespaced| namespaced.redis.info }

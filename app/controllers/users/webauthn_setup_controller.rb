@@ -85,6 +85,7 @@ module Users
         Analytics::WEBAUTHN_DELETED,
         success: success,
         mfa_method_counts: counts_hash,
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
       )
     end
 

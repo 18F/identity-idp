@@ -1,0 +1,17 @@
+<div class="usa-accordion usa-accordion--bordered">
+  <div class="usa-accordion__heading">
+    <button
+      type="button"
+      class="usa-accordion__button"
+      aria-expanded="false"
+      aria-controls="<%= @target_id %>"
+    >
+      <%= header %>
+    </button>
+  </div>
+  <div id="<%= @target_id %>" class="usa-accordion__container">
+    <div class="usa-accordion__content usa-prose">
+      <%= content %>
+    </div>
+  </div>
+</div>

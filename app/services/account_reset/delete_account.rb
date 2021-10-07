@@ -63,6 +63,7 @@ module AccountReset
         email: user.email_addresses.take&.email,
         account_age_in_days: account_age,
         mfa_method_counts: mfa_method_counts,
+        pii_like_keypaths: [[:mfa_method_counts, :phone]],
       }
     end
   end

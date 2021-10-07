@@ -31,7 +31,7 @@
         </div>
       </div>  
       <div class='grid-auto'>
-        <%= link_to(t('doc_auth.buttons.change_address'), idv_address_url) %>
+        <%= link_to(t('doc_auth.buttons.change_address'), idv_address_url, 'aria-label': t('doc_auth.buttons.change_address_label')) %>
       </div>        
     </div>
     <div class='grid-row padding-top-1'>
@@ -54,6 +54,7 @@
           idv_doc_auth_step_path(step: :redo_ssn),
           method: :put,
           class: 'usa-button usa-button--unstyled',
+          'aria-label': t('doc_auth.buttons.change_ssn_label')
         ) { t('doc_auth.buttons.change_ssn') } %>
       </div>
     </div>  

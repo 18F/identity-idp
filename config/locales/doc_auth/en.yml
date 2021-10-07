@@ -5,13 +5,16 @@ en:
       camera_video_capture_instructions: We will automatically take the picture
       camera_video_capture_label: Viewfinder with frame to center your ID
       document_capture_dialog: Document capture
+      selfie_alt_text: An uploaded image
       status_align: Align document in frame
       status_capturing: Taking photo in three seconds
       status_move_closer: Move camera closer to document
       status_tap_to_capture: Automatic capture disabled
     buttons:
       change_address: Change
+      change_address_label: Change address
       change_ssn: Change
+      change_ssn_label: Change Social Security Number
       continue: Continue
       start_over: Start over
       take_or_upload_picture: '<lg-take-photo>Take photo</lg-take-photo> or
@@ -65,8 +68,7 @@ en:
           your ID is too small or blurry in the photos. Make sure your ID is
           large within the image frame and try taking new pictures.
       file_type:
-        invalid: This file type is not accepted, please choose a JPG, PNG, BMP, or TIFF
-          file.
+        invalid: This file type is not accepted, please choose a JPG or PNG file.
       general:
         liveness: We couldn’t verify your ID and photo of yourself. Try taking new
           pictures.
@@ -232,7 +234,7 @@ en:
       welcome: 'To verify your identity, you will need:'
     tips:
       document_capture_header_text: 'For best results:'
-      document_capture_hint: Must be a JPG, BMP, PNG, or TIFF
+      document_capture_hint: Must be a JPG or PNG
       document_capture_id_text1: Use a dark background
       document_capture_id_text2: Take the photo on a flat surface
       document_capture_id_text3: Do not use the flash on your camera

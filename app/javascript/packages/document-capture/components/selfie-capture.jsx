@@ -189,9 +189,17 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
               </button>
             </div>
             {value instanceof window.Blob ? (
-              <FileImage file={value} alt="" className="selfie-capture__preview-image" />
+              <FileImage
+                file={value}
+                alt={t('doc_auth.accessible_labels.selfie_alt_text')}
+                className="selfie-capture__preview-image"
+              />
             ) : (
-              <img src={value} alt="" className="selfie-capture__preview-image" />
+              <img
+                src={value}
+                alt={t('doc_auth.accessible_labels.selfie_alt_text')}
+                className="selfie-capture__preview-image"
+              />
             )}
           </>
         ) : (

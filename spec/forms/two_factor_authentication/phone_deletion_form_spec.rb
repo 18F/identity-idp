@@ -20,6 +20,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
           configuration_id: configuration.id,
           configuration_owner: user.uuid,
           mfa_method_counts: { phone: 1 },
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
         )
       end
 
@@ -45,6 +46,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
           configuration_id: configuration.id,
           configuration_owner: user.uuid,
           mfa_method_counts: { piv_cac: 1 },
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
         )
       end
 
@@ -67,6 +69,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
           configuration_id: nil,
           configuration_owner: nil,
           mfa_method_counts: { phone: 1, piv_cac: 1 },
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
         )
       end
 
@@ -90,6 +93,7 @@ describe TwoFactorAuthentication::PhoneDeletionForm do
           configuration_id: configuration.id,
           configuration_owner: other_user.uuid,
           mfa_method_counts: { phone: 1, piv_cac: 1 },
+          pii_like_keypaths: [[:mfa_method_counts, :phone]],
         )
       end
 

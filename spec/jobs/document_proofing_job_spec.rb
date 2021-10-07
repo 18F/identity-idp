@@ -149,6 +149,7 @@ RSpec.describe DocumentProofingJob, type: :job do
             state: 'MT',
             state_id_type: 'drivers_license',
             async: true,
+            attempts: 0,
             remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
             client_image_metrics: {
               front: front_image_metadata,
@@ -202,6 +203,7 @@ RSpec.describe DocumentProofingJob, type: :job do
             state: 'MT',
             state_id_type: 'drivers_license',
             async: true,
+            attempts: 0,
             remaining_attempts: IdentityConfig.store.doc_auth_max_attempts,
             face_match_results: { is_match: true, match_score: nil },
             selfie_liveness_results: {
