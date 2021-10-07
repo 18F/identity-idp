@@ -204,7 +204,7 @@ describe Analytics do
       expect do
         analytics.track_event(
           'Trackable Event',
-          some_uuid: "12345678-1234-1234-1234-123456789012"
+          some_uuid: '12345678-1234-1234-1234-123456789012',
         )
       end.to_not raise_error
     end
