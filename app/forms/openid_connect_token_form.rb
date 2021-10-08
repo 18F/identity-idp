@@ -32,6 +32,7 @@ class OpenidConnectTokenForm
     ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
+    @session_expiration = IdentityConfig.store.session_timeout_in_minutes.minutes.ago
     @identity = find_identity_with_code
   end
 
@@ -67,7 +68,6 @@ class OpenidConnectTokenForm
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")
 
-    @session_expiration = IdentityConfig.store.session_timeout_in_minutes.minutes.ago
     @identity = ServiceProviderIdentity.where(session_uuid: code).
                 order(updated_at: :desc).first
   end
