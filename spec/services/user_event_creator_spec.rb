@@ -6,7 +6,7 @@ describe UserEventCreator do
   let(:existing_device_cookie) { 'existing_device_cookie' }
   let(:cookie_jar) do
     {
-      device: existing_device_cookie
+      device: existing_device_cookie,
     }.with_indifferent_access.tap do |cookie_jar|
       allow(cookie_jar).to receive(:permanent).and_return({})
     end
