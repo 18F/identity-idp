@@ -8,7 +8,7 @@ class UserEventCreator
 
   def create_user_event(event_type, user = current_user)
     return unless user&.id
-    existing_device = DeviceTracking::LookupDeviceForUser.call(user.id, cookies[:device])
+    existing_device = Device.find_by(user_id: user.id, cookie_uuid: cookies[:device])
     if existing_device.present?
       create_event_for_existing_device(event_type: event_type, user: user, device: existing_device)
     else
