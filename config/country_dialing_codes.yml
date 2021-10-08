@@ -981,7 +981,7 @@ TJ:
 TL:
   country_code: '670'
   name: Timor-Leste
-  supports_sms: true
+  supports_sms: false
   supports_voice: false
 TM:
   country_code: '993'
