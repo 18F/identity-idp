@@ -35,11 +35,15 @@ class OpenidConnectUserInfoPresenter
   end
 
   def email_from_sp_identity(identity)
-    EmailContext.new(identity.user).last_sign_in_email_address.email
+    email_context.last_sign_in_email_address.email
   end
 
   def alternate_emails_from_sp_identity(identity)
-    EmailContext.new(identity.user).alternate_email_addresses.map(&:email)
+    email_context.alternate_email_addresses.map(&:email)
+  end
+
+  def email_context
+    @email_context ||= EmailContext.new(identity.user)
   end
 
   def ial2_attributes
