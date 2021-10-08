@@ -30,7 +30,7 @@ class UserEventCreator
   private
 
   def create_event_for_existing_device(event_type:, user:, device:)
-    DeviceTracking::UpdateDevice.call(device, request.remote_ip)
+    device.update_last_used_ip(request.remote_ip)
     create_event_for_device(event_type: event_type, user: user, device: device)
   end
 

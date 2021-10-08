@@ -12,4 +12,12 @@ class Device < ApplicationRecord
   def decorate
     DeviceDecorator.new(self)
   end
+
+  # @return [Device]
+  def update_last_used_ip(remote_ip, now: Time.zone.now)
+    self.last_used_at = now
+    self.last_ip = remote_ip
+    save
+    self
+  end
 end
