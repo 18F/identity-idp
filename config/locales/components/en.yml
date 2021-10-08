@@ -3,3 +3,4 @@ en:
   components:
     phone_input:
       flag_label: Country code
+      phone_code_label: International code

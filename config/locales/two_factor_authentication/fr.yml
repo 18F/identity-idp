@@ -120,7 +120,6 @@ fr:
     phone_fee_disclosure: Des messages et débits de données peuvent être appliqués.
     phone_info_html: Nous vous enverrons ou appellerons avec un code de sécurité
       <strong>chaque fois que vous vous connectez</strong>.
-    phone_code_label: Code international # Google Translate'd
     phone_label: Numéro de téléphone
     phone_sms_info_html: Nous vous enverrons un code de sécurité <strong>chaque fois
       que vous vous connectez</strong>.
