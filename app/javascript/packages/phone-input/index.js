@@ -2,6 +2,12 @@ import { isValidNumber } from 'libphonenumber-js';
 import 'intl-tel-input/build/js/utils.js';
 import * as intlTelInput from 'intl-tel-input/build/js/intlTelInput';
 
+/**
+ * @typedef PhoneInputStrings
+ *
+ * @prop {string=} flag_label
+ */
+
 const INTERNATIONAL_CODE_REGEX = /^\+(\d+) |^1 /;
 
 const isPhoneValid = (phone, countryCode) => {
@@ -24,17 +30,16 @@ const updateInternationalCodeInPhone = (phone, newCode) =>
   phone.replace(new RegExp(`^\\+?(\\d+\\s+|${newCode})?`), `+${newCode} `);
 
 export class PhoneInput extends HTMLElement {
+  /** @type {PhoneInputStrings} */
+  #_strings;
+
   connectedCallback() {
     /** @type {HTMLInputElement?} */
     this.textInput = this.querySelector('.phone-input__number');
-
     /** @type {HTMLSelectElement?} */
     this.codeInput = this.querySelector('.phone-input__international-code');
-
     this.codeWrapper = this.querySelector('.phone-input__international-code-wrapper');
-
     this.exampleText = this.querySelector('.phone-input__example');
-
     if (!this.textInput || !this.codeInput || !this.codeWrapper) {
       return;
     }
@@ -57,7 +62,9 @@ export class PhoneInput extends HTMLElement {
     return codeInput && codeInput.selectedOptions[0];
   }
 
-  /** @return {string[]|undefined} */
+  /**
+   * @return {string[]|undefined}
+   */
   get supportedCountryCodes() {
     const { codeInput } = this;
 
@@ -68,6 +75,21 @@ export class PhoneInput extends HTMLElement {
     }
 
     return undefined;
+  }
+
+  /**
+   * @return {PhoneInputStrings}
+   */
+  get strings() {
+    if (!this.#_strings) {
+      try {
+        this.#_strings = JSON.parse(this.querySelector('.phone-input__strings')?.textContent || '');
+      } catch {
+        this.#_strings = {};
+      }
+    }
+
+    return this.#_strings;
   }
 
   /**
@@ -105,7 +127,7 @@ export class PhoneInput extends HTMLElement {
     });
 
     // set accessibility label
-    iti.flagsContainer.setAttribute('aria-label', 'Country code');
+    iti.flagsContainer.setAttribute('aria-label', this.strings.flag_label);
 
     // fix knapsack error where aria-owns requires aria-expanded, use pop-up instead
     iti.selectedFlag.setAttribute('aria-haspopup', 'true');

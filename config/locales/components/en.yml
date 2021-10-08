@@ -1,0 +1,5 @@
+---
+en:
+  components:
+    phone_input:
+      flag_label: Country code

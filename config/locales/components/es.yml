@@ -1,0 +1,5 @@
+---
+es:
+  components:
+    phone_input:
+      flag_label: Código de país # Google Translate'd
