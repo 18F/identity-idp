@@ -111,21 +111,17 @@ export class PhoneInput extends HTMLElement {
 
       // set accessibility label
       const flagContainer = iti.querySelectorAll('.iti__flag-container');
-      if (flagContainer) {
-        [].slice.call(flagContainer).forEach((element) => {
-          element.setAttribute('aria-label', 'Country code');
-        });
-      }
+      [].slice.call(flagContainer).forEach((element) => {
+        element.setAttribute('aria-label', 'Country code');
+      });
 
       // fix knapsack error where aria-owns requires aria-expanded, use pop-up instead
       const selectedFlag = iti.querySelectorAll('.iti__flag-container .iti__selected-flag');
-      if (selectedFlag) {
-        [].slice.call(selectedFlag).forEach((element) => {
-          element.setAttribute('aria-haspopup', 'true');
-          element.setAttribute('role', 'button');
-          element.removeAttribute('aria-owns');
-        });
-      }
+      [].slice.call(selectedFlag).forEach((element) => {
+        element.setAttribute('aria-haspopup', 'true');
+        element.setAttribute('role', 'button');
+        element.removeAttribute('aria-owns');
+      });
     });
 
     return input;
