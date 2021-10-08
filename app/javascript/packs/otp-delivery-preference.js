@@ -26,10 +26,10 @@ const isDeliveryOptionSupported = (delivery, selectedOption) =>
 
 /**
  * @param {HTMLOptionElement} input
- * @return {HTMLButtonElement|HTMLInputElement|null}
+ * @return {HTMLButtonElement|HTMLInputElement|null|undefined}
  */
 const getFormSubmitFromInput = (input) =>
-  input.form.querySelector('button:not([type]),[type="submit"]');
+  input.form?.querySelector('button:not([type]),[type="submit"]');
 
 /**
  * @param {string} delivery
