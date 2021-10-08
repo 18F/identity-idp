@@ -208,7 +208,7 @@ feature 'Sign Up' do
   end
 
   it 'does not allow PIV/CAC during setup on mobile' do
-    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
 
     sign_in_user
 
