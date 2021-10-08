@@ -24,7 +24,7 @@ class EventsController < ApplicationController
     user_id = current_user.id
     @device = Device.where(user_id: user_id).find(device_id)
     @events = if @device
-      Event.where(user_id: user_id, device_id: device.id).order(created_at: :desc).
+      Event.where(user_id: user_id, device_id: @device.id).order(created_at: :desc).
         limit(EVENTS_PAGE_SIZE).
         map(&:decorate)
     else
