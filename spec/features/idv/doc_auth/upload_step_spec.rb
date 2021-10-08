@@ -11,7 +11,7 @@ feature 'doc auth upload step' do
 
   context 'on a mobile device' do
     before do
-      allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
+      allow(BROWSER_CACHE).to receive(:[]).and_return(mobile_device)
     end
 
     it 'is on the correct page' do
@@ -30,10 +30,6 @@ feature 'doc auth upload step' do
   end
 
   context 'on a desktop device' do
-    before do
-      allow_any_instance_of(Browser).to receive(:mobile?).and_return(false)
-    end
-
     it 'is on the correct page' do
       expect(page).to have_current_path(idv_doc_auth_upload_step)
     end

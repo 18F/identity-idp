@@ -60,10 +60,7 @@ module Idv
       end
 
       def mobile_device?
-        return @mobile_device if defined?(@mobile_device)
-
-        client = BROWSER_CACHE[request.user_agent]
-        @mobile_device = client.mobile?
+        BROWSER_CACHE[request.user_agent].mobile?
       end
     end
   end
