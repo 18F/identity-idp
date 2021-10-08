@@ -1,4 +1,6 @@
 class UserEventCreator
+  COOKIE_LENGTH = 128
+
   attr_reader :request, :current_user
 
   def initialize(current_user:, request: nil)
@@ -47,8 +49,14 @@ class UserEventCreator
   end
 
   def create_device_for_user(user)
-    device = DeviceTracking::CreateDevice.call(
-      user.id, request.remote_ip, request.user_agent, cookies[:device]
+    cookie_uuid = cookies[:device].presence || SecureRandom.hex(COOKIE_LENGTH / 2)
+
+    device = Device.create!(
+      user: user,
+      user_agent: request.user_agent.to_s,
+      cookie_uuid: cookie_uuid,
+      last_used_at: Time.zone.now,
+      last_ip: request.remote_ip,
     )
     assign_device_cookie(device.cookie_uuid)
     device
