@@ -32,7 +32,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
         expect(user_info[:email_verified]).to eq(true)
         expect(user_info[:alternate_emails]).to eq([])
-        expect(user_info[:alternate_emails_verified]).to eq(true)
       end
     end
 

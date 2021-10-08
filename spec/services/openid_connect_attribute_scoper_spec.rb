@@ -35,7 +35,6 @@ RSpec.describe OpenidConnectAttributeScoper do
         email: 'foo@example.com',
         email_verified: true,
         alternate_emails: ['bar@example.com'],
-        alternate_emails_verified: true,
         given_name: 'John',
         family_name: 'Jones',
         birthdate: '1970-01-01',
@@ -85,9 +84,8 @@ RSpec.describe OpenidConnectAttributeScoper do
     context 'with the alternate_emails scope' do
       let(:scope) { 'openid alternate_emails' }
 
-      it 'includes the alternate_emails and alternate_emails_verified attributes' do
+      it 'includes the alternate_emails attributes' do
         expect(filtered[:alternate_emails]).to eq(['bar@example.com'])
-        expect(filtered[:alternate_emails_verified]).to eq(true)
       end
     end
 

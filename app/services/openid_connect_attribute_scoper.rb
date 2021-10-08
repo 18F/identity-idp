@@ -33,7 +33,6 @@ class OpenidConnectAttributeScoper
     email: %w[email],
     email_verified: %w[email],
     alternate_emails: %w[alternate_emails],
-    alternate_emails_verified: %w[alternate_emails],
     address: %w[address],
     phone: %w[phone],
     phone_verified: %w[phone],
