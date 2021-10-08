@@ -17,6 +17,7 @@ import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
+import useCounter from '../hooks/use-counter';
 import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -43,6 +44,8 @@ import './acuant-capture.scss';
  * @prop {number?} height Image height, or null if unknown.
  * @prop {string?} mimeType Mime type, or null if unknown.
  * @prop {ImageSource} source Method by which image was added.
+ * @prop {number=} attempt Total number of attempts at this point.
+ * @prop {number} size Size of image, in bytes.
  */
 
 /**
@@ -211,6 +214,17 @@ function suspendFocusTrapForAnticipatedFocus(focusTrap) {
   }, 0);
 }
 
+export function getDecodedBase64ByteSize(data) {
+  let bytes = 0.75 * data.length;
+
+  let i = data.length;
+  while (data[--i] === '=') {
+    bytes--;
+  }
+
+  return bytes;
+}
+
 /**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
  * in supported devices.
@@ -252,6 +266,7 @@ function AcuantCapture(
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
+  const [attempt, incrementAttempt] = useCounter(1);
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
@@ -275,6 +290,21 @@ function AcuantCapture(
   }
 
   /**
+   * Returns an analytics payload, decorated with common values.
+   *
+   * @template P
+   *
+   * @param {P} payload
+   *
+   * @return {P}
+   */
+  function getAddAttemptAnalyticsPayload(payload) {
+    const enhancedPayload = { ...payload, attempt };
+    incrementAttempt();
+    return enhancedPayload;
+  }
+
+  /**
    * Handler for file input change events.
    *
    * @param {File?} nextValue Next value, if set.
@@ -285,12 +315,13 @@ function AcuantCapture(
     if (nextValue) {
       const { width, height } = await getImageDimensions(nextValue);
 
-      analyticsPayload = {
+      analyticsPayload = getAddAttemptAnalyticsPayload({
         width,
         height,
         mimeType: nextValue.type,
         source: 'upload',
-      };
+        size: nextValue.size,
+      });
 
       addPageAction({
         label: `IdV: ${name} image added`,
@@ -417,7 +448,7 @@ function AcuantCapture(
     }
 
     /** @type {AcuantImageAnalyticsPayload} */
-    const analyticsPayload = {
+    const analyticsPayload = getAddAttemptAnalyticsPayload({
       width,
       height,
       mimeType: 'image/jpeg', // Acuant Web SDK currently encodes all images as JPEG
@@ -432,7 +463,8 @@ function AcuantCapture(
       sharpnessScoreThreshold: sharpnessThreshold,
       isAssessedAsBlurry,
       assessment,
-    };
+      size: getDecodedBase64ByteSize(nextCapture.image.data),
+    });
 
     addPageAction({
       key: 'documentCapture.acuantWebSDKResult',
@@ -484,7 +516,7 @@ function AcuantCapture(
         bannerText={bannerText}
         invalidTypeText={t('doc_auth.errors.file_type.invalid')}
         fileUpdatedText={t('doc_auth.info.image_updated')}
-        accept={isMockClient ? undefined : ['image/jpeg', 'image/png', 'image/bmp', 'image/tiff']}
+        accept={isMockClient ? undefined : ['image/jpeg', 'image/png']}
         capture={capture}
         value={value}
         errorMessage={ownErrorMessage ?? errorMessage}

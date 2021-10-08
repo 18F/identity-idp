@@ -16,11 +16,6 @@ fr:
       caution_delete: Si vous supprimez vos codes de sauvegarde, vous ne pourrez plus
         les utiliser pour vous connecter.
       confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
-      depleted_desc: Vous avez utilisé tous vos codes de sauvegarde. Nous allons
-        générer de nouveaux codes de sauvegarde après avoir cliqué sur
-        Continuer. Rangez-les dans un endroit sûr pour pouvoir vous connecter à
-        nouveau ultérieurement.
-      depleted_title: Créer de nouveaux codes de sauvegarde
       download: Télécharger
       generate: Obtenir des codes
       print: Impression

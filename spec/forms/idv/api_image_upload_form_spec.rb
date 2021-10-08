@@ -109,6 +109,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           exception: nil,
           doc_auth_result: 'Passed',
           billed: true,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           state: 'MT',
           state_id_type: 'drivers_license',
@@ -149,6 +150,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           exception: nil,
           doc_auth_result: 'Passed',
           billed: true,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           user_id: document_capture_session.user.uuid,
           client_image_metrics: {

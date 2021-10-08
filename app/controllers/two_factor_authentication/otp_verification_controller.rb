@@ -49,7 +49,7 @@ module TwoFactorAuthentication
       return if capabilities.supports_voice?
 
       flash[:error] = t(
-        'two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        'two_factor_authentication.otp_delivery_preference.voice_unsupported',
         location: capabilities.unsupported_location,
       )
       redirect_to login_two_factor_url(otp_delivery_preference: 'sms', reauthn: reauthn?)

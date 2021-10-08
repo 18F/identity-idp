@@ -72,6 +72,77 @@ RSpec.describe RiscDeliveryJob do
       end
     end
 
+    context 'Errno::ECONNREFUSED error' do
+      before do
+        # stub_request().to_raise wraps this in Faraday::ConnectionFailed, but
+        # in actual usage, the original error is unwrapped
+        expect(job.faraday).to receive(:post).and_raise(Errno::ECONNREFUSED)
+      end
+
+      context 'when performed inline' do
+        it 'prints a warning' do
+          expect(Rails.logger).to receive(:warn) do |msg|
+            payload = JSON.parse(msg, symbolize_names: true)
+
+            expect(payload[:event]).to eq('http_push_error')
+            expect(payload[:transport]).to eq('direct')
+          end
+
+          expect { perform }.to_not raise_error
+        end
+      end
+
+      context 'when performed in a worker' do
+        before do
+          allow(job).to receive(:queue_adapter).
+            and_return(ActiveJob::QueueAdapters::GoodJobAdapter.new)
+        end
+
+        it 'raises and retries via ActiveJob' do
+          expect(Rails.logger).to_not receive(:warn)
+
+          expect { perform }.to raise_error(Errno::ECONNREFUSED)
+        end
+      end
+    end
+
+    context 'non-200 response' do
+      before do
+        stub_request(:post, push_notification_url).to_return(status: 403)
+      end
+
+      context 'when performed inline' do
+        it 'prints a warning' do
+          expect(Rails.logger).to receive(:warn) do |msg|
+            payload = JSON.parse(msg, symbolize_names: true)
+
+            expect(payload[:event]).to eq('http_push_error')
+            expect(payload[:transport]).to eq('direct')
+          end
+
+          expect { perform }.to_not raise_error
+        end
+      end
+
+      context 'when performed in a worker' do
+        before do
+          allow(job).to receive(:queue_adapter).
+            and_return(ActiveJob::QueueAdapters::GoodJobAdapter.new)
+        end
+
+        it 'prints a warning' do
+          expect(Rails.logger).to receive(:warn) do |msg|
+            payload = JSON.parse(msg, symbolize_names: true)
+
+            expect(payload[:event]).to eq('http_push_error')
+            expect(payload[:transport]).to eq('async')
+          end
+
+          expect { perform }.to_not raise_error
+        end
+      end
+    end
+
     context 'slow network errors' do
       before do
         stub_request(:post, push_notification_url).to_timeout

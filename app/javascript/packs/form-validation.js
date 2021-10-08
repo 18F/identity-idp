@@ -5,6 +5,8 @@ import { loadPolyfills } from '@18f/identity-polyfill';
 
 const PATTERN_TYPES = ['personal-key', 'ssn', 'zipcode'];
 
+const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').toLowerCase();
+
 /**
  * Given a submit event, disables all submit buttons within the target form.
  *
@@ -44,7 +46,7 @@ function checkInputValidity(event) {
         // i18n-tasks-use t('idv.errors.pattern_mismatch.personal_key')
         // i18n-tasks-use t('idv.errors.pattern_mismatch.ssn')
         // i18n-tasks-use t('idv.errors.pattern_mismatch.zipcode')
-        input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${I18n.key(type)}`));
+        input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${snakeCase(type)}`));
       }
     });
   }

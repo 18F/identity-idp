@@ -5,6 +5,7 @@
 version: 2.1
 
 orbs:
+  browser-tools: circleci/browser-tools@1.1
   jq: circleci/jq@2.2.0
   slack: circleci/slack@3.4.2
 executors:
@@ -12,7 +13,7 @@ executors:
   ruby_browsers:
     docker:
       # Specify the Ruby version you desire here
-      - image: circleci/ruby:2.7.3-node-browsers
+      - image: cimg/ruby:2.7.3-browsers
         environment:
           CIRCLE_CI: 'true'
           RAILS_ENV: test
@@ -49,26 +50,26 @@ commands:
     steps:
       - restore_cache:
           keys:
-            - v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
-            - v1-identity-idp-yarn-
+            - v2-identity-idp-yarn-{{ checksum "yarn.lock" }}
+            - v2-identity-idp-yarn-
       - run:
           name: Install Yarn
           command: yarn install --frozen-lockfile --ignore-engines --cache-folder ~/.cache/yarn
       - save_cache:
-          key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
+          key: v2-identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
   yarn-production-install:
     steps:
       - restore_cache:
           keys:
-            - v1-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
-            - v1-identity-idp-yarn-production
+            - v2-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
+            - v2-identity-idp-yarn-production
       - run:
           name: Install Yarn
           command: yarn install --production --frozen-lockfile --ignore-engines --cache-folder ~/.cache/yarn
       - save_cache:
-          key: v1-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
+          key: v2-identity-idp-yarn-production-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
 
@@ -77,13 +78,13 @@ commands:
       - run: gem install bundler --version $BUNDLER_VERSION
       - restore_cache:
           keys:
-            - v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
+            - v3-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
       - run:
           name: Install dependencies
           command: |
             bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/bundle
       - save_cache:
-          key: v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
+          key: v3-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
   # Custom version of "checkout" that checks out a SHA deployed to sha_url param
@@ -180,6 +181,7 @@ jobs:
     working_directory: ~/identity-idp
 
     steps:
+      - browser-tools/install-browser-tools
       - checkout
       - node-install
       - yarn-install
@@ -188,7 +190,7 @@ jobs:
           name: Install AWS CLI
           command: |
             sudo apt-get update
-            sudo apt-get install python-pip python-dev jq
+            sudo apt-get install python3-pip python-dev jq
             sudo pip install awscli
       - run:
           name: Install Code Climate Test Reporter
@@ -246,6 +248,7 @@ jobs:
     working_directory: ~/identity-idp
     executor: ruby_browsers
     steps:
+      - browser-tools/install-browser-tools
       - checkout
       - node-install
       - yarn-install
@@ -285,6 +288,7 @@ jobs:
     environment:
       MONITOR_ENV: DEV
     steps:
+      - browser-tools/install-browser-tools
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.dev.identitysandbox.gov/api/deploy.json
@@ -303,6 +307,7 @@ jobs:
     environment:
       MONITOR_ENV: INT
     steps:
+      - browser-tools/install-browser-tools
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.int.identitysandbox.gov/api/deploy.json
@@ -321,6 +326,7 @@ jobs:
     environment:
       MONITOR_ENV: STAGING
     steps:
+      - browser-tools/install-browser-tools
       - jq/install
       - checkout-deployed-sha:
           sha_url: https://idp.staging.login.gov/api/deploy.json
@@ -339,6 +345,7 @@ jobs:
     environment:
       MONITOR_ENV: PROD
     steps:
+      - browser-tools/install-browser-tools
       - checkout
       - node-install
       - yarn-install

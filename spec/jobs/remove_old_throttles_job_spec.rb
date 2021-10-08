@@ -19,13 +19,12 @@ RSpec.describe RemoveOldThrottlesJob do
       expect(Throttle.all.map(&:id)).to match_array([new_throttle.id])
     end
 
-    # This can be removed after the updated_at column has been deployed for 30+ days
-    it 'does not delete legacy rows with updated_at: nil' do
-      legacy_throttle = create(:throttle, target: SecureRandom.hex, updated_at: nil)
+    it 'deletes legacy rows with updated_at: nil' do
+      legacy_throttle = create(:throttle, target: SecureRandom.hex)
+      legacy_throttle.update(updated_at: nil)
+      expect(legacy_throttle.reload.updated_at).to be_nil
 
-      perform
-
-      expect(legacy_throttle.reload).to be
+      expect { perform }.to(change { Throttle.count }.to(0))
     end
 
     it 'stops after total_limit jobs' do

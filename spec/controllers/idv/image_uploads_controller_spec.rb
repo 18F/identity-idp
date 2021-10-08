@@ -48,6 +48,7 @@ describe Idv::ImageUploadsController do
             front: [:blank],
           },
           user_id: user.uuid,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
         )
@@ -101,6 +102,7 @@ describe Idv::ImageUploadsController do
             front: [I18n.t('doc_auth.errors.not_a_file')],
           },
           user_id: user.uuid,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
         )
@@ -198,6 +200,7 @@ describe Idv::ImageUploadsController do
             limit: [I18n.t('errors.doc_auth.throttled_heading')],
           },
           user_id: user.uuid,
+          attempts: IdentityConfig.store.doc_auth_max_attempts,
           remaining_attempts: 0,
           pii_like_keypaths: [[:pii]],
         )
@@ -230,6 +233,7 @@ describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
         )
@@ -245,6 +249,7 @@ describe Idv::ImageUploadsController do
           state: 'MT',
           state_id_type: 'drivers_license',
           user_id: user.uuid,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           client_image_metrics: {
             front: { glare: 99.99 },
@@ -258,6 +263,7 @@ describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
         )
@@ -303,6 +309,7 @@ describe Idv::ImageUploadsController do
               success: true,
               errors: {},
               user_id: user.uuid,
+              attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
             )
@@ -318,6 +325,7 @@ describe Idv::ImageUploadsController do
               state: 'ND',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
+              attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
@@ -336,6 +344,7 @@ describe Idv::ImageUploadsController do
                 pii: [I18n.t('doc_auth.errors.alerts.full_name_check')],
               },
               user_id: user.uuid,
+              attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
             )
@@ -355,6 +364,7 @@ describe Idv::ImageUploadsController do
               success: true,
               errors: {},
               user_id: user.uuid,
+              attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
             )
@@ -370,6 +380,7 @@ describe Idv::ImageUploadsController do
               state: 'Maryland',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
+              attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
@@ -388,6 +399,7 @@ describe Idv::ImageUploadsController do
                 pii: [I18n.t('doc_auth.errors.general.no_liveness')],
               },
               user_id: user.uuid,
+              attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
             )
@@ -407,6 +419,7 @@ describe Idv::ImageUploadsController do
               success: true,
               errors: {},
               user_id: user.uuid,
+              attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
             )
@@ -422,6 +435,7 @@ describe Idv::ImageUploadsController do
               state: 'ND',
               state_id_type: 'drivers_license',
               user_id: user.uuid,
+              attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               client_image_metrics: {
                 front: { glare: 99.99 },
@@ -440,6 +454,7 @@ describe Idv::ImageUploadsController do
                 pii: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
               },
               user_id: user.uuid,
+              attempts: 1,
               remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
               pii_like_keypaths: [[:pii]],
             )
@@ -483,6 +498,7 @@ describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
         )
@@ -494,6 +510,7 @@ describe Idv::ImageUploadsController do
             front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
           },
           user_id: user.uuid,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           state: nil,
           state_id_type: nil,
@@ -535,6 +552,7 @@ describe Idv::ImageUploadsController do
           success: true,
           errors: {},
           user_id: user.uuid,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           pii_like_keypaths: [[:pii]],
         )
@@ -552,6 +570,7 @@ describe Idv::ImageUploadsController do
           state_id_type: nil,
           exception: nil,
           user_id: user.uuid,
+          attempts: 1,
           remaining_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
           client_image_metrics: {
             front: { glare: 99.99 },

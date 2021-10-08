@@ -5,13 +5,16 @@ fr:
       camera_video_capture_instructions: Nous prendrons automatiquement la photo
       camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d'identité
       document_capture_dialog: Capture du document
+      selfie_alt_text: Une photo téléversée
       status_align: Alignez le document dans le cadre
       status_capturing: Prise de photo en trois secondes
       status_move_closer: Rapprochez l'appareil photo du document
       status_tap_to_capture: Capture automatique désactivée
     buttons:
       change_address: Changement
+      change_address_label: Changement d'adresse
       change_ssn: Changement
+      change_ssn_label: Changement de numéro de sécurité sociale
       continue: Continuer
       start_over: Recommencer
       take_or_upload_picture: '<lg-take-photo>Prendre une photo</lg-take-photo> ou
@@ -84,8 +87,8 @@ fr:
           la taille de votre pièce d’identité est grande et qu’elle est située
           dans le cadre de l’image puis essayez de prendre des nouvelles photos.
       file_type:
-        invalid: Ce type de fichier n’est pas accepté, veuillez choisir un fichier JPG,
-          PNG, BMP ou TIFF.
+        invalid: Ce type de fichier n’est pas accepté, veuillez choisir un fichier JPG
+          ou PNG.
       general:
         liveness: Nous n’avons pas pu vérifier votre pièce d’identité et votre photo.
           Essayez de prendre de nouvelles photos.
@@ -284,7 +287,7 @@ fr:
       welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
     tips:
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
-      document_capture_hint: Doit être un JPG, BMP, PNG ou TIFF
+      document_capture_hint: Doit être un JPG ou PNG
       document_capture_id_text1: Utilisez un fond sombre
       document_capture_id_text2: Prenez la photo sur une surface plane
       document_capture_id_text3: N’utilisez pas le flash de votre appareil photo

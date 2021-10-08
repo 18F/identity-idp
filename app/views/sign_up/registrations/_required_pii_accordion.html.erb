@@ -9,7 +9,8 @@
 </p>
 
 <div class="margin-top-2">
-  <%= accordion('you-will-need', t('devise.registrations.start.accordion')) do %>
+  <%= render AccordionComponent.new do |c| %>
+    <% c.header { t('devise.registrations.start.accordion') } %>
     <p class="clearfix">
       <%= image_tag(
             asset_url('get-started/email-password.svg'),
