@@ -8,6 +8,17 @@ import * as intlTelInput from 'intl-tel-input/build/js/intlTelInput';
  * @prop {string=} flag_label
  */
 
+/**
+ * @typedef IntlTelInputUtilsGlobal
+ *
+ * @prop {(iso2: string, nationalMode: boolean, numberType: string) => string} getExampleNumber
+ * @prop {Record<string, string>} numberType
+ */
+
+const {
+  intlTelInputUtils,
+} = /** @type {window & { intlTelInputUtils: IntlTelInputUtilsGlobal }} */ (window);
+
 const INTERNATIONAL_CODE_REGEX = /^\+(\d+) |^1 /;
 
 const isPhoneValid = (phone, countryCode) => {
@@ -50,10 +61,10 @@ export class PhoneInput extends HTMLElement {
     this.textInput.addEventListener('countrychange', () => this.syncCountryChangeToCodeInput());
     this.textInput.addEventListener('input', () => this.validate());
     this.codeInput.addEventListener('change', () => this.formatTextInput());
-    this.codeInput.addEventListener('change', () => this.updatePlaceholder());
+    this.codeInput.addEventListener('change', () => this.setExampleNumber());
     this.codeInput.addEventListener('change', () => this.validate());
 
-    this.updatePlaceholder();
+    this.setExampleNumber();
     this.validate();
   }
 
@@ -111,6 +122,7 @@ export class PhoneInput extends HTMLElement {
     const iti = intlTelInput(this.textInput, {
       preferredCountries: ['US', 'CA'],
       onlyCountries: supportedCountryCodes,
+      autoPlaceholder: 'off',
     });
 
     // Remove duplicate items in the country list
@@ -170,12 +182,14 @@ export class PhoneInput extends HTMLElement {
     return !!selectedOption && selectedOption.getAttribute(`data-supports-${delivery}`) !== 'false';
   }
 
-  updatePlaceholder() {
-    const { textInput, exampleText } = this;
+  setExampleNumber() {
+    const { exampleText, iti } = this;
+    const { iso2 = 'us' } = iti.selectedCountryData;
 
-    if (textInput && textInput.placeholder && exampleText) {
-      exampleText.textContent = textInput.placeholder;
-      textInput.placeholder = '';
+    if (exampleText) {
+      const { nationalMode } = iti.options;
+      const numberType = intlTelInputUtils.numberType[iti.options.placeholderNumberType];
+      exampleText.textContent = intlTelInputUtils.getExampleNumber(iso2, nationalMode, numberType);
     }
   }
 }
