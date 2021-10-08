@@ -87,44 +87,34 @@ export class PhoneInput extends HTMLElement {
   initializeIntlTelInput() {
     const { supportedCountryCodes } = this;
 
-    const input = intlTelInput(this.textInput, {
+    const iti = intlTelInput(this.textInput, {
       preferredCountries: ['US', 'CA'],
       onlyCountries: supportedCountryCodes,
     });
 
-    this.querySelectorAll('.iti').forEach((node) => {
-      const iti = /** @type {HTMLDivElement} */ (node);
-
-      // remove duplicate items in the country list
+    // remove duplicate items in the country list
+    /** @type {NodeListOf<HTMLLIElement>} */
+    const preferred = iti.countryList.querySelectorAll('.iti__preferred');
+    preferred.forEach((listItem) => {
+      const { countryCode } = listItem.dataset;
       /** @type {NodeListOf<HTMLLIElement>} */
-      const preferred = iti.querySelectorAll('.iti__preferred');
-      preferred.forEach((listItem) => {
-        const { countryCode } = listItem.dataset;
-        /** @type {NodeListOf<HTMLLIElement>} */
-        const duplicates = iti.querySelectorAll(
-          `.iti__standard[data-country-code="${countryCode}"]`,
-        );
-        duplicates.forEach((duplicateListItem) => {
-          duplicateListItem.parentNode?.removeChild(duplicateListItem);
-        });
-      });
-
-      // set accessibility label
-      const flagContainer = iti.querySelectorAll('.iti__flag-container');
-      [].slice.call(flagContainer).forEach((element) => {
-        element.setAttribute('aria-label', 'Country code');
-      });
-
-      // fix knapsack error where aria-owns requires aria-expanded, use pop-up instead
-      const selectedFlag = iti.querySelectorAll('.iti__flag-container .iti__selected-flag');
-      [].slice.call(selectedFlag).forEach((element) => {
-        element.setAttribute('aria-haspopup', 'true');
-        element.setAttribute('role', 'button');
-        element.removeAttribute('aria-owns');
+      const duplicates = iti.countryList.querySelectorAll(
+        `.iti__standard[data-country-code="${countryCode}"]`,
+      );
+      duplicates.forEach((duplicateListItem) => {
+        duplicateListItem.parentNode?.removeChild(duplicateListItem);
       });
     });
 
-    return input;
+    // set accessibility label
+    iti.flagsContainer.setAttribute('aria-label', 'Country code');
+
+    // fix knapsack error where aria-owns requires aria-expanded, use pop-up instead
+    iti.selectedFlag.setAttribute('aria-haspopup', 'true');
+    iti.selectedFlag.setAttribute('role', 'button');
+    iti.selectedFlag.removeAttribute('aria-owns');
+
+    return iti;
   }
 
   validate() {
