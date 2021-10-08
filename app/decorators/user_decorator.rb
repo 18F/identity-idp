@@ -143,7 +143,8 @@ class UserDecorator
   end
 
   def recent_devices
-    DeviceTracking::ListDevices.call(user.id, 0, MAX_RECENT_DEVICES).map(&:decorate)
+    @recent_devices ||= user.devices.order(last_used_at: :desc).limit(MAX_RECENT_DEVICES).
+      map(&:decorate)
   end
 
   def devices?

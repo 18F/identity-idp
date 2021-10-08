@@ -12,8 +12,4 @@ class Device < ApplicationRecord
   def decorate
     DeviceDecorator.new(self)
   end
-
-  def device_name
-    DeviceTracking::DeviceName.call(self)
-  end
 end
