@@ -60,7 +60,7 @@ module Idv
       end
 
       def mobile_device?
-        BROWSER_CACHE[request.user_agent].mobile?
+        BrowserCache.parse(request.user_agent).mobile?
       end
     end
   end

@@ -358,6 +358,7 @@ GEM
     loofah (2.12.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
+    lru_redux (1.1.0)
     lumberjack (1.2.8)
     macaddr (1.7.2)
       systemu (~> 2.6.5)
@@ -735,6 +736,7 @@ DEPENDENCIES
   knapsack
   local_time
   lograge (>= 0.11.2)
+  lru_redux
   maxminddb
   net-sftp
   newrelic_rpm (~> 7.0)

@@ -87,7 +87,7 @@ class Analytics
   end
 
   def browser
-    @browser ||= BROWSER_CACHE[request.user_agent]
+    @browser ||= BrowserCache.parse(request.user_agent)
   end
 
   def browser_attributes

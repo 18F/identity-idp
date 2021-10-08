@@ -395,6 +395,6 @@ class ApplicationController < ActionController::Base
   end
 
   def mobile?
-    BROWSER_CACHE[request.user_agent].mobile?
+    BrowserCache.parse(request.user_agent).mobile?
   end
 end

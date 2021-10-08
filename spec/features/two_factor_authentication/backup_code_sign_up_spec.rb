@@ -22,7 +22,7 @@ feature 'sign up with backup code' do
   end
 
   it 'does not show download button on a mobile device' do
-    allow(BROWSER_CACHE).to receive(:[]).and_return(mobile_device)
+    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
 
     sign_up_and_set_password
 

@@ -100,7 +100,7 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_email_sent_step
-    allow(BROWSER_CACHE).to receive(:[]).and_return(mobile_device)
+    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.info.upload_computer_link')
   end

@@ -11,7 +11,7 @@ feature 'doc auth upload step' do
 
   context 'on a mobile device' do
     before do
-      allow(BROWSER_CACHE).to receive(:[]).and_return(mobile_device)
+      allow(BrowserCache).to receive(:parse).and_return(mobile_device)
     end
 
     it 'is on the correct page' do
