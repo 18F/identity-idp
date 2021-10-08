@@ -18,7 +18,7 @@ class SignUpCompletionsShow
     [[:address], :address],
     [[:phone], :phone],
     [[:email], :email],
-    [[:alternate_emails], :alternate_emails],
+    [[:all_emails], :all_emails],
     [[:birthdate], :birthdate],
     [[:social_security_number], :social_security_number],
     [[:x509_subject], :x509_subject],
@@ -28,7 +28,7 @@ class SignUpCompletionsShow
 
   SORTED_IAL1_ATTRIBUTE_MAPPING = [
     [[:email], :email],
-    [[:alternate_emails], :alternate_emails],
+    [[:all_emails], :all_emails],
     [[:x509_subject], :x509_subject],
     [[:x509_issuer], :x509_issuer],
     [[:verified_at], :verified_at],

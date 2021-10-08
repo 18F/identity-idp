@@ -105,8 +105,8 @@ module SignUp
       EmailContext.new(current_user).last_sign_in_email_address.email
     end
 
-    def alternate_emails
-      emails = EmailContext.new(current_user).alternate_email_addresses
+    def all_emails
+      emails = EmailContext.new(current_user).all_email_addresses
       if emails.any?
         emails.map(&:email).join(', ')
       else
@@ -119,7 +119,7 @@ module SignUp
       return pii_to_displayable_attributes if user_session['decrypted_pii'].present?
       {
         email: email,
-        alternate_emails: alternate_emails,
+        all_emails: all_emails,
         verified_at: verified_at,
         x509_subject: current_user.piv_cac_configurations.first&.x509_dn_uuid,
         x509_issuer: current_user.piv_cac_configurations.first&.x509_issuer,

@@ -9,8 +9,8 @@ class EmailContext
     user.confirmed_email_addresses.order('last_sign_in_at DESC NULLS LAST').first
   end
 
-  def alternate_email_addresses
-    user.confirmed_email_addresses.excluding(last_sign_in_email_address)
+  def all_email_addresses
+    user.confirmed_email_addresses
   end
 
   def email_address_count
