@@ -40,7 +40,8 @@ export class PhoneInput extends HTMLElement {
     this.codeInput = this.querySelector('.phone-input__international-code');
     this.codeWrapper = this.querySelector('.phone-input__international-code-wrapper');
     this.exampleText = this.querySelector('.phone-input__example');
-    if (!this.textInput || !this.codeInput || !this.codeWrapper) {
+
+    if (!this.textInput || !this.codeInput) {
       return;
     }
 
