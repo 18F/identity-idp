@@ -39,8 +39,6 @@ export class PhoneInput extends HTMLElement {
       return;
     }
 
-    this.codeWrapper.classList.add('display-none');
-
     this.iti = this.initializeIntlTelInput();
 
     this.textInput.addEventListener('countrychange', () => this.syncCountryChangeToCodeInput());
