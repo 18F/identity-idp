@@ -105,3 +105,11 @@ input::-webkit-inner-spin-button {
   font-weight: font-weight('bold');
   padding-left: 1.5rem;
 }
+
+.usa-success-message--checkmark {
+  background-image: url(image-path('alert/success.svg'));
+  background-repeat: no-repeat;
+  background-position: 0 center;
+  background-size: 1rem;
+  padding-left: 1.5rem;
+}

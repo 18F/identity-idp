@@ -216,7 +216,7 @@ function FileInput(props, ref) {
         </span>
       )}
       {isUpdated && !shownErrorMessage && (
-        <span className="usa-success-message" role="alert">
+        <span className="usa-success-message usa-success-message--checkmark" role="alert">
           {fileUpdatedText ?? t('forms.file_input.file_updated')}
         </span>
       )}
