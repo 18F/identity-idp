@@ -71,9 +71,13 @@ class SignUpCompletionsShow
   end
 
   def requested_attributes_sorted
-    sorted_attribute_mapping.map do |raw_attribute, display_attribute|
+    sorted_attributes = sorted_attribute_mapping.map do |raw_attribute, display_attribute|
       display_attribute if (requested_attributes & raw_attribute).present?
     end.compact
+    # If the SP requests all emails, there is no reason to show them the sign
+    # in email address in the consent screen
+    sorted_attributes.delete(:email) if sorted_attributes.include?(:all_emails)
+    sorted_attributes
   end
 
   def sorted_attribute_mapping

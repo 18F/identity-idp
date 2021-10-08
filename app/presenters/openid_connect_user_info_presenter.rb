@@ -39,7 +39,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def all_emails_from_sp_identity(identity)
-    email_context.all_email_addresses.map(&:email)
+    identity.user.confirmed_email_addresses.map(&:email)
   end
 
   def email_context

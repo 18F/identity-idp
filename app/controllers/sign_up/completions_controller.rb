@@ -106,13 +106,7 @@ module SignUp
     end
 
     def all_emails
-      emails = EmailContext.new(current_user).all_email_addresses
-      if emails.any?
-        emails.map(&:email).join(', ')
-      else
-        # TODO: Make this a translation
-        "You don't have any other email addresses on your account"
-      end
+      current_user.confirmed_email_addresses.map(&:email)
     end
 
     def displayable_attributes

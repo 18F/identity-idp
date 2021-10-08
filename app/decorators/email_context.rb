@@ -9,10 +9,6 @@ class EmailContext
     user.confirmed_email_addresses.order('last_sign_in_at DESC NULLS LAST').first
   end
 
-  def all_email_addresses
-    user.confirmed_email_addresses
-  end
-
   def email_address_count
     user.email_addresses.count
   end
