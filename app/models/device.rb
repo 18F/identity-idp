@@ -14,6 +14,6 @@ class Device < ApplicationRecord
   end
 
   def device_name
-    DeviceTracking::DeviceName.call(UserAgentParser::Parser.new, self)
+    DeviceTracking::DeviceName.call(self)
   end
 end
