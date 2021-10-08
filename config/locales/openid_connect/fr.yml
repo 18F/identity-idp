@@ -22,12 +22,13 @@ fr:
         id_token_hint: id_token_hint n’a pas été reconnu
     token:
       errors:
+        expired_code: est expiré
         invalid_aud: Affirmation liée à l’auditoire non valide, attendu %{url}
         invalid_authentication: Le client doit s’authentifier par PKCE ou
           private_key_jwt, code_challenge ou client_assertion manquant
-        invalid_code: est non valide soit parce qu’il est périmé, soit parce qu’il ne
-          correspond à aucun utilisateur. Veuillez consulter notre documentation
-          à https://developers.login.gov/oidc/#token
+        invalid_code: n’est pas valide, car il ne correspond à aucun utilisateur.
+          Veuillez consulter notre documentation à
+          https://developers.login.gov/oidc/#token
         invalid_code_verifier: code_verifier ne correspondait pas à code_challenge
         invalid_iat: iat doit être un horodatage Unix entier ou à virgule flottante
           représentant une heure dans le passé

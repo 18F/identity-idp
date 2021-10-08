@@ -102,7 +102,7 @@ RSpec.describe OpenidConnectTokenForm do
 
         it 'is invalid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+          expect(form.errors[:code]).to eq([t('openid_connect.token.errors.expired_code')])
         end
       end
 

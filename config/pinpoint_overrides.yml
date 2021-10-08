@@ -178,6 +178,8 @@ TH:
   supports_voice_unconfirmed: false
 TJ:
   supports_voice: false
+TL:
+  supports_sms: false
 TT:
   supports_voice: false
 TW:
