@@ -1,6 +1,6 @@
 import { isValidNumber } from 'libphonenumber-js';
 import 'intl-tel-input/build/js/utils.js';
-import * as intlTelInput from 'intl-tel-input/build/js/intlTelInput';
+import intlTelInput from 'intl-tel-input';
 
 /**
  * @typedef PhoneInputStrings
