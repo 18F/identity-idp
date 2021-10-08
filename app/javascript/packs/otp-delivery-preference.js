@@ -25,11 +25,10 @@ const isDeliveryOptionSupported = (delivery, selectedOption) =>
   selectedOption.getAttribute(`data-supports-${delivery}`) !== 'false';
 
 /**
- * @param {HTMLOptionElement} input
- * @return {HTMLButtonElement|HTMLInputElement|null|undefined}
+ * @param {HTMLFormElement} form
+ * @return {HTMLButtonElement|HTMLInputElement|null}
  */
-const getFormSubmitFromInput = (input) =>
-  input.form?.querySelector('button:not([type]),[type="submit"]');
+const getSubmitButton = (form) => form.querySelector('button:not([type]),[type="submit"]');
 
 /**
  * @param {string} delivery
@@ -70,9 +69,20 @@ const isAllDisabled = (inputs) => inputs.every((input) => input.disabled);
 const getFirstEnabledInput = (inputs) => inputs.find((input) => !input.disabled);
 
 /**
- * @param {HTMLOptionElement} selectedOption
+ * @param {Event} event
  */
-function updateOTPDeliveryMethods(selectedOption) {
+function updateOTPDeliveryMethods(event) {
+  if (!(event.target instanceof HTMLSelectElement)) {
+    return;
+  }
+
+  const { target: select, currentTarget } = event;
+  const { textInput } = /** @type {PhoneInput} */ (currentTarget);
+  if (!textInput) {
+    return;
+  }
+
+  const selectedOption = select.selectedOptions[0];
   const methods = getOTPDeliveryMethods();
   setHintText();
 
@@ -96,26 +106,43 @@ function updateOTPDeliveryMethods(selectedOption) {
   });
 
   const isAllMethodsDisabled = isAllDisabled(methods);
-
-  const submitButton = getFormSubmitFromInput(selectedOption);
-  if (submitButton) {
-    submitButton.disabled = isAllMethodsDisabled;
-  }
-
+  const hintText = t('two_factor_authentication.otp_delivery_preference.no_supported_options', {
+    location,
+  });
   if (isAllMethodsDisabled) {
-    const hintText = t('two_factor_authentication.otp_delivery_preference.no_supported_options', {
-      location,
-    });
-
     setHintText(hintText);
+    textInput.setCustomValidity(hintText);
+    textInput.reportValidity();
+  } else if (textInput.validationMessage === hintText) {
+    textInput.setCustomValidity('');
+    textInput.reportValidity();
   }
 }
 
-document.querySelectorAll('lg-phone-input').forEach((phoneInput) => {
-  phoneInput.addEventListener('change', () => {
-    const { selectedOption } = /** @type {PhoneInput} */ (phoneInput);
-    if (selectedOption) {
-      updateOTPDeliveryMethods(selectedOption);
+document.querySelectorAll('lg-phone-input').forEach((node) => {
+  const phoneInput = /** @type {PhoneInput} */ (node);
+  const form = /** @type {HTMLFormElement} */ (phoneInput.closest('form'));
+
+  function setSubmitDisabled(isDisabled) {
+    const submitButton = getSubmitButton(form);
+    if (submitButton && submitButton.disabled !== isDisabled) {
+      submitButton.disabled = isDisabled;
     }
+  }
+
+  phoneInput.addEventListener('input', () => setSubmitDisabled(!form.checkValidity()));
+  phoneInput.addEventListener('change', (event) => {
+    setSubmitDisabled(!form.checkValidity());
+    updateOTPDeliveryMethods(event);
   });
+  phoneInput.addEventListener(
+    'invalid',
+    (event) => {
+      setSubmitDisabled(true);
+      event.preventDefault();
+    },
+    true,
+  );
+
+  setSubmitDisabled(!form.checkValidity());
 });

@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "dependencies": {
-    "libphonenumber-js": "^1.9.6",
-    "intl-tel-input": "^17.0.8"
+    "intl-tel-input": "^17.0.8",
+    "libphonenumber-js": "^1.9.6"
   }
 }

@@ -6,6 +6,7 @@ import intlTelInput from 'intl-tel-input';
  * @typedef PhoneInputStrings
  *
  * @prop {string=} flag_label
+ * @prop {string=} invalid_phone
  */
 
 /**
@@ -150,8 +151,10 @@ export class PhoneInput extends HTMLElement {
 
   validate() {
     const { textInput, codeInput } = this;
-    if (textInput && codeInput && !isPhoneValid(textInput.value, codeInput.value)) {
-      textInput.dispatchEvent(new CustomEvent('invalid'));
+    if (textInput && codeInput) {
+      const isValid = isPhoneValid(textInput.value, codeInput.value);
+      const validity = (!isValid && this.strings.invalid_phone) || '';
+      textInput.setCustomValidity(validity);
     }
   }
 

@@ -2,7 +2,8 @@
   <%= content_tag(
         :script,
         {
-          flag_label: t('components.phone_input.flag_label')
+          flag_label: t('components.phone_input.flag_label'),
+          invalid_phone: t('errors.messages.improbable_phone'),
         }.to_json,
         {
           type: 'application/json',
