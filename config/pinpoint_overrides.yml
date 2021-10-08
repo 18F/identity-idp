@@ -176,10 +176,10 @@ TD:
   supports_voice: false
 TH:
   supports_voice_unconfirmed: false
-TL:
-  supports_sms: false
 TJ:
   supports_voice: false
+TL:
+  supports_sms: false
 TT:
   supports_voice: false
 TW:
