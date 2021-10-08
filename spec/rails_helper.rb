@@ -105,4 +105,9 @@ RSpec.configure do |config|
     example.run
     Bullet.enable = false
   end
+
+  config.after(:each, type: :feature, js: true) do |spec|
+    javascript_errors = page.driver.browser.manage.logs.get(:browser).map(&:message)
+    raise javascript_errors.join("\n\n") if javascript_errors.present?
+  end
 end
