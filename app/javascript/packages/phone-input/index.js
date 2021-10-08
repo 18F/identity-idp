@@ -112,7 +112,7 @@ export class PhoneInput extends HTMLElement {
       onlyCountries: supportedCountryCodes,
     });
 
-    // remove duplicate items in the country list
+    // Remove duplicate items in the country list
     /** @type {NodeListOf<HTMLLIElement>} */
     const preferred = iti.countryList.querySelectorAll('.iti__preferred');
     preferred.forEach((listItem) => {
@@ -126,10 +126,8 @@ export class PhoneInput extends HTMLElement {
       });
     });
 
-    // set accessibility label
+    // Improve base accessibility of intl-tel-input
     iti.flagsContainer.setAttribute('aria-label', this.strings.flag_label);
-
-    // fix knapsack error where aria-owns requires aria-expanded, use pop-up instead
     iti.selectedFlag.setAttribute('aria-haspopup', 'true');
     iti.selectedFlag.setAttribute('role', 'button');
     iti.selectedFlag.removeAttribute('aria-owns');
