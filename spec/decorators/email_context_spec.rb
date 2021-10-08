@@ -21,24 +21,31 @@ describe EmailContext do
     end
   end
 
-  describe '#all_emails_addresse' do
-    it 'returns all of a users emails except the last sign in email' do
-      last_sign_in_email_address = create(:email_address, user: user, last_sign_in_at: 1.day.ago)
+  describe '#all_emails_address' do
+    it 'returns all of a users confirmed emails' do
+      last_sign_in_email_address = user.email_addresses.first
+      last_sign_in_email_address.update!(last_sign_in_at: 1.day.ago)
       other_sign_in_email = create(:email_address, user: user, last_sign_in_at: 2.days.ago)
       never_sign_in_email = create(:email_address, user: user, last_sign_in_at: nil)
+      unconfirmed_email = create(:email_address, user: user, confirmed_at: nil)
 
       email_addresses = subject.all_email_addresses
 
-      expect(email_addresses).to_not include(last_sign_in_email_address)
-      expect(email_addresses).to include(other_sign_in_email)
-      expect(email_addresses).to include(never_sign_in_email)
+      expect(email_addresses).to match_array(
+        [
+          last_sign_in_email_address,
+          other_sign_in_email,
+          never_sign_in_email,
+        ],
+      )
+      expect(email_addresses).to_not include(unconfirmed_email)
     end
 
     it 'returns an empty array if the user only has one email' do
       last_sign_in_email_address = user.email_addresses.first
       last_sign_in_email_address.update!(last_sign_in_at: 1.day.ago)
 
-      expect(subject.all_email_addresses).to eq([])
+      expect(subject.all_email_addresses).to eq([last_sign_in_email_address])
     end
   end
 end
