@@ -18,7 +18,7 @@ class CompletionsDecider
   end
 
   def client
-    @client ||= UserAgegentParser.parse(user_agent)
+    @client ||= BrowserCache.parse(user_agent)
   end
 
   def redirect_uri
