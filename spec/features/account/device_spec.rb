@@ -18,6 +18,6 @@ AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36',
   end
 
   scenario 'viewing devices' do
-    expect(page).to have_content('Chrome 71 on Mac OS X 10')
+    expect(page).to have_content('Chrome 71 on macOS 10')
   end
 end
