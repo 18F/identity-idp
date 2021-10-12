@@ -82,18 +82,20 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa
         select_2fa_option(:phone)
 
-        option_with_none_disabled = page.find('.international-code > :nth-child(1)', visible: :all)
-        option_with_none_disabled.execute_script('this.dataset.supportsVoice = "true"')
-        option_with_none_disabled.execute_script('this.dataset.supportsSms = "true"')
-        option_with_disabled_voice = page.find('.international-code > :nth-child(2)', visible: :all)
-        option_with_disabled_voice.execute_script('this.dataset.supportsVoice = "false"')
-        option_with_disabled_voice.execute_script('this.dataset.supportsSms = "true"')
-        option_with_disabled_sms = page.find('.international-code > :nth-child(3)', visible: :all)
-        option_with_disabled_sms.execute_script('this.dataset.supportsVoice = "true"')
-        option_with_disabled_sms.execute_script('this.dataset.supportsSms = "false"')
-        option_with_all_disabled = page.find('.international-code > :nth-child(4)', visible: :all)
-        option_with_all_disabled.execute_script('this.dataset.supportsVoice = "false"')
-        option_with_all_disabled.execute_script('this.dataset.supportsSms = "false"')
+        within('.phone-input__international-code') do
+          option_with_none_disabled = page.find(':nth-child(1)', visible: :all)
+          option_with_none_disabled.execute_script('this.dataset.supportsVoice = "true"')
+          option_with_none_disabled.execute_script('this.dataset.supportsSms = "true"')
+          option_with_disabled_voice = page.find(':nth-child(2)', visible: :all)
+          option_with_disabled_voice.execute_script('this.dataset.supportsVoice = "false"')
+          option_with_disabled_voice.execute_script('this.dataset.supportsSms = "true"')
+          option_with_disabled_sms = page.find(':nth-child(3)', visible: :all)
+          option_with_disabled_sms.execute_script('this.dataset.supportsVoice = "true"')
+          option_with_disabled_sms.execute_script('this.dataset.supportsSms = "false"')
+          option_with_all_disabled = page.find(':nth-child(4)', visible: :all)
+          option_with_all_disabled.execute_script('this.dataset.supportsVoice = "false"')
+          option_with_all_disabled.execute_script('this.dataset.supportsSms = "false"')
+        end
 
         sms_radio = page.find('.js-otp-delivery-preference[value="sms"]', visible: :all)
         voice_radio = page.find('.js-otp-delivery-preference[value="voice"]', visible: :all)
