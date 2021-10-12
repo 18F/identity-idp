@@ -52,7 +52,7 @@ describe Idv::GpoMail do
     event = hash[:event_type]
     now = Time.zone.now
     updated_at = hash[:updated_at] || now
-    device = DeviceTracking::LookupDeviceForUser.call(user.id, uuid)
+    device = Device.find_by(user_id: user.id, cookie_uuid: uuid)
     if device
       device.last_used_at = now
       device.last_ip = remote_ip

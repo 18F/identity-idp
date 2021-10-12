@@ -73,7 +73,7 @@ class TwoFactorOptionsPresenter
   end
 
   def current_device_is_desktop?
-    DeviceDetector.new(@user_agent)&.device_type == 'desktop'
+    !BrowserCache.parse(@user_agent).mobile?
   end
 
   def piv_cac_required?

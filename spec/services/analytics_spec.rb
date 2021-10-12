@@ -5,12 +5,12 @@ describe Analytics do
     {
       user_ip: FakeRequest.new.remote_ip,
       user_agent: FakeRequest.new.user_agent,
-      browser_name: nil,
-      browser_version: nil,
-      browser_platform_name: nil,
-      browser_platform_version: nil,
-      browser_device_name: nil,
-      browser_device_type: nil,
+      browser_name: 'Unknown Browser',
+      browser_version: '0.0',
+      browser_platform_name: 'Unknown',
+      browser_platform_version: '0',
+      browser_device_name: 'Unknown',
+      browser_mobile: false,
       browser_bot: false,
       hostname: FakeRequest.new.host,
       pid: Process.pid,
@@ -111,31 +111,6 @@ describe Analytics do
       end
     end
 
-    it 'uses the DeviceDetector gem to parse the user agent' do
-      user = build_stubbed(:user, uuid: '123')
-      analytics = Analytics.new(
-        user: user,
-        request: FakeRequest.new,
-        sp: nil,
-        session: {},
-        ahoy: ahoy,
-      )
-
-      browser = instance_double(DeviceDetector)
-      allow(DeviceDetector).to receive(:new).and_return(browser)
-
-      expect(ahoy).to receive(:track)
-      expect(browser).to receive(:name)
-      expect(browser).to receive(:full_version)
-      expect(browser).to receive(:os_name)
-      expect(browser).to receive(:os_full_version)
-      expect(browser).to receive(:device_name)
-      expect(browser).to receive(:device_type)
-      expect(browser).to receive(:bot?)
-
-      analytics.track_event('Trackable Event')
-    end
-
     it 'includes the locale of the current request' do
       locale = :fr
       allow(I18n).to receive(:locale).and_return(locale)
@@ -192,6 +167,19 @@ describe Analytics do
           'Trackable Event',
           mfa_method_counts: { phone: 1 },
           pii_like_keypaths: [[:mfa_method_counts, :phone]],
+        )
+      end.to_not raise_error
+    end
+
+    it 'does not alert when pii values are inside words' do
+      expect(ahoy).to receive(:track)
+
+      stub_const('DocAuth::Mock::ResultResponseBuilder::DEFAULT_PII_FROM_DOC', zipcode: '12345')
+
+      expect do
+        analytics.track_event(
+          'Trackable Event',
+          some_uuid: '12345678-1234-1234-1234-123456789012',
         )
       end.to_not raise_error
     end
