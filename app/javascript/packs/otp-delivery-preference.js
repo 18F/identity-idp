@@ -110,11 +110,11 @@ function updateOTPDeliveryMethods(event) {
   });
   if (isAllMethodsDisabled) {
     setHintText(hintText);
-    textInput.setCustomValidity(hintText);
-    textInput.reportValidity();
-  } else if (textInput.validationMessage === hintText) {
-    textInput.setCustomValidity('');
-    textInput.reportValidity();
+    select.setCustomValidity(hintText);
+    select.reportValidity();
+  } else if (!select.validity.valid) {
+    select.setCustomValidity('');
+    select.reportValidity();
   }
 }
 
