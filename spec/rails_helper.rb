@@ -108,6 +108,7 @@ RSpec.configure do |config|
 
   config.after(:each, type: :feature, js: true) do |spec|
     javascript_errors = page.driver.browser.manage.logs.get(:browser).map(&:message)
-    raise javascript_errors.join("\n\n") if javascript_errors.present?
+    # Consider any browser console logging as a failure.
+    raise BrowserConsoleLogError.new(javascript_errors) if javascript_errors.present?
   end
 end
