@@ -21,19 +21,22 @@
 <%= validated_form_for(:doc_auth, url: url_for, method: 'PUT',
         html: { autocomplete: 'off', class: 'margin-top-2' }) do |f| %>
   <div class='clearfix margin-x-neg-1'>
-    <div class='sm-col sm-col-8 padding-x-1'>
+    <div class='sm-col sm-col-8 padding-x-1 margin-right-2'>
       <!-- using :phone for mobile numeric keypad -->
-      <%= f.label :phone, label: t('idv.form.phone'), class: 'bold' %>
       <%= f.input(
         :phone,
         required: true,
-        input_html: { aria: { invalid: false }, class: 'sm-col-8' },
-        label: false,
-        wrapper_html: { class: 'margin-right-2' }
+        label: t('idv.form.phone'),
+        input_html: { aria: { invalid: false }, class: 'sm-col-8 usa-input' },
+        wrapper: false,
       ) %>
+  
+      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing' role='alert'>
+        <%= t('simple_form.required.text') %>
+      </span>
     </div>
   </div>
-  <div class='margin-top-0'>
+  <div class='margin-top-2'>
     <button type='submit' class='usa-button usa-button--big usa-button--wide'>
       <%= t('forms.buttons.continue') %>
     </button>
