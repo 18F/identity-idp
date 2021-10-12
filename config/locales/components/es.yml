@@ -2,5 +2,4 @@
 es:
   components:
     phone_input:
-      flag_label: Código de país # Google Translate'd
-      phone_code_label: Código Internacional # Google Translate'd
+      country_code_label: Código de país # Google Translate'd

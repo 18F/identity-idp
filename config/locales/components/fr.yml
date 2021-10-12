@@ -2,5 +2,4 @@
 fr:
   components:
     phone_input:
-      flag_label: Code postal # Google Translate'd
-      phone_code_label: Code international # Google Translate'd
+      country_code_label: Code postal # Google Translate'd

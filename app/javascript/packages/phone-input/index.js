@@ -5,7 +5,7 @@ import intlTelInput from 'intl-tel-input';
 /**
  * @typedef PhoneInputStrings
  *
- * @prop {string=} flag_label
+ * @prop {string=} country_code_label
  * @prop {string=} invalid_phone
  */
 
@@ -141,7 +141,7 @@ export class PhoneInput extends HTMLElement {
     });
 
     // Improve base accessibility of intl-tel-input
-    iti.flagsContainer.setAttribute('aria-label', this.strings.flag_label);
+    iti.flagsContainer.setAttribute('aria-label', this.strings.country_code_label);
     iti.selectedFlag.setAttribute('aria-haspopup', 'true');
     iti.selectedFlag.setAttribute('role', 'button');
     iti.selectedFlag.removeAttribute('aria-owns');
