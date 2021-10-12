@@ -7,7 +7,7 @@ module Users
     end
 
     def destroy
-      DeviceTracking::ForgetAllBrowsers.new(current_user).call
+      ForgetAllBrowsers.new(current_user).call
 
       analytics.track_event(Analytics::FORGET_ALL_BROWSERS_SUBMITTED)
 
