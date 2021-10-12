@@ -107,6 +107,8 @@ RSpec.configure do |config|
   end
 
   config.after(:each, type: :feature, js: true) do |spec|
+    next if spec.metadata[:allow_js_error]
+
     javascript_errors = page.driver.browser.manage.logs.get(:browser).map(&:message)
     # Temporarily allow for document-capture bundle, since it uses React error boundaries to poll.
     javascript_errors.reject! { |e| e.include? 'js/document-capture-' }
