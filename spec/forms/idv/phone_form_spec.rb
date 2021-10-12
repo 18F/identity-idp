@@ -111,7 +111,8 @@ describe Idv::PhoneForm do
       let(:delivery_methods) { [:voice] }
 
       it 'validates to only allow numbers from permitted countries' do
-        invalid_phones = ['3065551234']
+        invalid_unconfirmed_phones = ['+63 0905 123 4567']
+        invalid_phones = ['3065551234', *invalid_unconfirmed_phones]
         invalid_phones.each do |phone|
           result = subject.submit(phone: phone)
 

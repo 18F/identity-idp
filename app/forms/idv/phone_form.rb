@@ -69,7 +69,7 @@ module Idv
     end
 
     def user_phone?(phone)
-      MfaContext.new(user).phone_configurations.any? { |configuration| configuration.phone = phone }
+      MfaContext.new(user).phone_configurations.any? { |config| config.phone == phone }
     end
 
     def extra_analytics_attributes
