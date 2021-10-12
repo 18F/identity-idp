@@ -41,25 +41,18 @@ const internationalCodeFromPhone = (phone) => {
 const updateInternationalCodeInPhone = (phone, newCode) =>
   phone.replace(new RegExp(`^\\+?(\\d+\\s+|${newCode})?`), `+${newCode} `);
 
-export class PhoneInput {
+export class PhoneInput extends HTMLElement {
   /** @type {PhoneInputStrings} */
   #_strings;
 
-  /**
-   * @param {Element} rootNode
-   */
-  constructor(rootNode) {
-    this.rootNode = rootNode;
-
+  connectedCallback() {
     /** @type {HTMLInputElement?} */
-    this.textInput = rootNode.querySelector('.phone-input__number');
+    this.textInput = this.querySelector('.phone-input__number');
     /** @type {HTMLSelectElement?} */
-    this.codeInput = rootNode.querySelector('.phone-input__international-code');
-    this.codeWrapper = rootNode.querySelector('.phone-input__international-code-wrapper');
-    this.exampleText = rootNode.querySelector('.phone-input__example');
-  }
+    this.codeInput = this.querySelector('.phone-input__international-code');
+    this.codeWrapper = this.querySelector('.phone-input__international-code-wrapper');
+    this.exampleText = this.querySelector('.phone-input__example');
 
-  bind() {
     if (!this.textInput || !this.codeInput) {
       return;
     }
@@ -103,8 +96,7 @@ export class PhoneInput {
   get strings() {
     if (!this.#_strings) {
       try {
-        const stringsScript = this.rootNode.querySelector('.phone-input__strings');
-        this.#_strings = JSON.parse(stringsScript?.textContent || '');
+        this.#_strings = JSON.parse(this.querySelector('.phone-input__strings')?.textContent || '');
       } catch {
         this.#_strings = {};
       }
