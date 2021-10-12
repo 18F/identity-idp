@@ -63,17 +63,27 @@ feature 'Two Factor Authentication' do
       scenario 'updates international code as user types', :js do
         sign_in_before_2fa
         select_2fa_option(:phone)
-        fill_in 'new_phone_form_phone', with: '+81 54 354 3643'
 
+        expect(page).to have_button(nil, disabled: true)
+
+        fill_in 'new_phone_form_phone', with: '+81 54 354 3643'
+        expect(page).to have_button(nil, disabled: false)
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
 
-        fill_in 'new_phone_form_phone', with: ''
-        fill_in 'new_phone_form_phone', with: '+212 5376'
+        fill_in 'new_phone_form_phone', with: '+81 54 354 364'
+        expect(page).to have_button(nil, disabled: true)
 
+        fill_in 'new_phone_form_phone', with: ''
+        expect(page).to have_button(nil, disabled: true)
+
+        fill_in 'new_phone_form_phone', with: '+212 5376'
+        expect(page).to have_button(nil, disabled: true)
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'MA'
 
         fill_in 'new_phone_form_phone', with: ''
+        expect(page).to have_button(nil, disabled: true)
         fill_in 'new_phone_form_phone', with: '+81 54354'
+        expect(page).to have_button(nil, disabled: true)
 
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
       end
