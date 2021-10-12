@@ -39,45 +39,23 @@ describe PhoneNumberCapabilities do
   end
 
   describe '#supports_all?' do
-    let(:methods) { nil }
+    let(:methods) { [:sms] }
     subject(:result) { capabilities.supports_all?(methods) }
 
-    context 'nil argument' do
-      context 'sms is supported, voice is unsupported' do
-        let(:phone) { '+1 (306) 234-5678' }
+    context 'sms is supported, voice is unsupported' do
+      let(:phone) { '+1 (306) 234-5678' }
 
-        it { should eq(false) }
-      end
-
-      context 'voice is supported, sms is unsupported' do
-        let(:phone) { '+84 091 234 56 78' }
-
-        it { should eq(false) }
-      end
-
-      context 'both sms and voice are supported' do
-        it { should eq(true) }
-      end
+      it { should eq(true) }
     end
 
-    context 'array of arguments' do
-      let(:methods) { [:sms] }
+    context 'voice is supported, sms is unsupported' do
+      let(:phone) { '+84 091 234 56 78' }
 
-      context 'sms is supported, voice is unsupported' do
-        let(:phone) { '+1 (306) 234-5678' }
+      it { should eq(false) }
+    end
 
-        it { should eq(true) }
-      end
-
-      context 'voice is supported, sms is unsupported' do
-        let(:phone) { '+84 091 234 56 78' }
-
-        it { should eq(false) }
-      end
-
-      context 'both sms and voice are supported' do
-        it { should eq(true) }
-      end
+    context 'both sms and voice are supported' do
+      it { should eq(true) }
     end
   end
 

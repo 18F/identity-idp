@@ -41,6 +41,7 @@ describe Idv::PhoneForm do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
         expect(result.errors).to include(:phone)
+        expect(result.errors[:phone]).to include(t('errors.messages.improbable_phone'))
       end
     end
 
@@ -88,7 +89,7 @@ describe Idv::PhoneForm do
     end
 
     context 'with specific allowed countries' do
-      let(:allowed_countries) { ['US'] }
+      let(:allowed_countries) { ['MP'] }
 
       it 'validates to only allow numbers from permitted countries' do
         invalid_phones = ['+81 54 354 3643', '+12423270143']
@@ -96,13 +97,33 @@ describe Idv::PhoneForm do
           result = subject.submit(phone: phone)
 
           expect(result.success?).to eq(false)
-          expect(result.errors[:phone]).to include(t('errors.messages.must_have_us_country_code'))
+          expect(result.errors[:phone]).to include(t('errors.messages.improbable_phone'))
         end
-        valid_phones = ['7035551234']
+        valid_phones = ['+1 (670) 555-0123']
         valid_phones.each do |phone|
           result = subject.submit(phone: phone)
 
           expect(result.success?).to eq(true)
+        end
+      end
+
+      context 'with US as the sole allowed country' do
+        let(:allowed_countries) { ['US'] }
+
+        it 'validates to only allow numbers from permitted countries' do
+          invalid_phones = ['+81 54 354 3643', '+12423270143']
+          invalid_phones.each do |phone|
+            result = subject.submit(phone: phone)
+
+            expect(result.success?).to eq(false)
+            expect(result.errors[:phone]).to include(t('errors.messages.must_have_us_country_code'))
+          end
+          valid_phones = ['7035551234']
+          valid_phones.each do |phone|
+            result = subject.submit(phone: phone)
+
+            expect(result.success?).to eq(true)
+          end
         end
       end
     end
@@ -111,13 +132,19 @@ describe Idv::PhoneForm do
       let(:delivery_methods) { [:voice] }
 
       it 'validates to only allow numbers from permitted countries' do
-        invalid_unconfirmed_phones = ['+63 0905 123 4567']
-        invalid_phones = ['3065551234', *invalid_unconfirmed_phones]
-        invalid_phones.each do |phone|
+        invalid_phones = {
+          Philippines: '+63 0905 123 4567',
+          Canada: '3065551234',
+        }
+        invalid_phones.each do |location, phone|
           result = subject.submit(phone: phone)
+          message = t(
+            'two_factor_authentication.otp_delivery_preference.voice_unsupported',
+            location: location,
+          )
 
           expect(result.success?).to eq(false)
-          expect(result.errors[:phone]).to include(t('errors.messages.must_have_us_country_code'))
+          expect(result.errors[:phone]).to include(message)
         end
         valid_phones = ['5135551234']
         valid_phones.each do |phone|

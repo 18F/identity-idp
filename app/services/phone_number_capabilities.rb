@@ -3,8 +3,6 @@ class PhoneNumberCapabilities
     Rails.root.join('config', 'country_dialing_codes.yml'),
   ).freeze
 
-  ALL_METHODS = [:sms, :voice].freeze
-
   attr_reader :phone, :phone_confirmed
 
   def initialize(phone, phone_confirmed:)
@@ -23,8 +21,8 @@ class PhoneNumberCapabilities
   end
 
   # @param [Array<Symbol>] methods
-  def supports_all?(methods = nil)
-    (methods || ALL_METHODS).all? { |method| supports?(method) }
+  def supports_all?(methods)
+    methods.all? { |method| supports?(method) }
   end
 
   def sms_only?

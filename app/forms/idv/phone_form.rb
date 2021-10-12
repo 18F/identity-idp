@@ -2,9 +2,12 @@ module Idv
   class PhoneForm
     include ActiveModel::Model
 
+    ALL_DELIVERY_METHODS = [:sms, :voice].freeze
+
     attr_reader :user, :phone, :allowed_countries, :delivery_methods
 
-    validate :validate_phone
+    validate :validate_valid_phone_for_allowed_countries
+    validate :validate_phone_delivery_methods
 
     # @param [User] user
     # @param [Hash] previous_params
@@ -13,7 +16,7 @@ module Idv
       previous_params ||= {}
       @user = user
       @allowed_countries = allowed_countries
-      @delivery_methods = delivery_methods
+      @delivery_methods = delivery_methods || ALL_DELIVERY_METHODS
       self.phone = initial_phone_value(previous_params[:phone]) unless user_has_multiple_phones?
     end
 
@@ -46,18 +49,29 @@ module Idv
       user_phone if valid_phone?(user_phone, phone_confirmed: true)
     end
 
-    def validate_phone
-      return if valid_phone?(phone, phone_confirmed: user_phone?(phone))
+    def validate_valid_phone_for_allowed_countries
+      return if valid_phone_for_allowed_countries?(phone)
 
-      errors.add(:phone, :must_have_us_country_code)
+      if allowed_countries == ['US']
+        errors.add(:phone, :must_have_us_country_code)
+      else
+        errors.add(:phone, :improbable_phone)
+      end
     end
 
-    def valid_phone?(phone, phone_confirmed:)
-      return false if !valid_phone_for_allowed_countries?(phone)
-      PhoneNumberCapabilities.new(
-        phone,
-        phone_confirmed: phone_confirmed,
-      ).supports_all?(delivery_methods)
+    def validate_phone_delivery_methods
+      return unless valid_phone_for_allowed_countries?(phone)
+
+      capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: user_phone?(phone))
+      unsupported_delivery_methods(capabilities).each do |delivery_method|
+        errors.add(
+          :phone,
+          I18n.t(
+            "two_factor_authentication.otp_delivery_preference.#{delivery_method}_unsupported",
+            location: capabilities.unsupported_location,
+          ),
+        )
+      end
     end
 
     def valid_phone_for_allowed_countries?(phone)
@@ -66,6 +80,16 @@ module Idv
       else
         Phonelib.valid?(phone)
       end
+    end
+
+    def valid_phone?(phone, phone_confirmed:)
+      return false if !valid_phone_for_allowed_countries?(phone)
+      capabilities = PhoneNumberCapabilities.new(phone, phone_confirmed: phone_confirmed)
+      unsupported_delivery_methods(capabilities).blank?
+    end
+
+    def unsupported_delivery_methods(capabilities)
+      delivery_methods.select { |delivery_method| !capabilities.supports?(delivery_method) }
     end
 
     def user_phone?(phone)
