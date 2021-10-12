@@ -1,5 +1,3 @@
-/** @typedef {import('@18f/identity-phone-input').PhoneInput} PhoneInput */
-
 /**
  * @typedef {typeof window & {
  *   LoginGov: { I18n: import('@18f/identity-i18n').I18n } }
@@ -72,12 +70,13 @@ const getFirstEnabledInput = (inputs) => inputs.find((input) => !input.disabled)
  * @param {Event} event
  */
 function updateOTPDeliveryMethods(event) {
-  if (!(event.target instanceof HTMLSelectElement)) {
+  const { target: select, currentTarget } = event;
+  if (!(select instanceof HTMLSelectElement) || !currentTarget) {
     return;
   }
 
-  const { target: select, currentTarget } = event;
-  const { textInput } = /** @type {PhoneInput} */ (currentTarget);
+  /** @type {HTMLInputElement?} */
+  const textInput = /** @type {Element} */ (currentTarget).querySelector('.phone-input__number');
   if (!textInput) {
     return;
   }
@@ -119,8 +118,7 @@ function updateOTPDeliveryMethods(event) {
   }
 }
 
-document.querySelectorAll('lg-phone-input').forEach((node) => {
-  const phoneInput = /** @type {PhoneInput} */ (node);
+document.querySelectorAll('.phone-input').forEach((phoneInput) => {
   const form = /** @type {HTMLFormElement} */ (phoneInput.closest('form'));
 
   function setSubmitDisabled(isDisabled) {
