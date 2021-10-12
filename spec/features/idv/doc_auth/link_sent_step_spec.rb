@@ -80,10 +80,6 @@ feature 'doc auth link sent step' do
     metadata[:js] = true
     let(:doc_capture_polling_enabled) { true }
 
-    before do
-      visit current_path
-    end
-
     it 'automatically advances when the mobile flow is complete' do
       expect(page).to_not have_css 'meta[http-equiv="refresh"]', visible: false
       expect(page).to_not have_button(t('forms.buttons.continue'))
@@ -99,10 +95,6 @@ feature 'doc auth link sent step' do
 
   shared_examples 'with doc capture polling disabled' do
     let(:doc_capture_polling_enabled) { false }
-
-    before do
-      visit current_path
-    end
 
     context 'clicks back link' do
       before do
