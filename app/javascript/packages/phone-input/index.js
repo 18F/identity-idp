@@ -46,7 +46,7 @@ export class PhoneInput {
   #_strings;
 
   /**
-   * @param {HTMLElement} rootNode
+   * @param {Element} rootNode
    */
   constructor(rootNode) {
     this.rootNode = rootNode;
