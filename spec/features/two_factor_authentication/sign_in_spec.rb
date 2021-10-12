@@ -64,9 +64,12 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa
         select_2fa_option(:phone)
 
+        expect(page).to have_css('.phone-input__example', text: '(201) 555-0123')
         expect(page).to have_button(nil, disabled: true)
 
         fill_in 'new_phone_form_phone', with: '+81 54 354 3643'
+
+        expect(page).to have_css('.phone-input__example', text: '090-1234-5678')
         expect(page).to have_button(nil, disabled: false)
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
 
@@ -77,6 +80,7 @@ feature 'Two Factor Authentication' do
         expect(page).to have_button(nil, disabled: true)
 
         fill_in 'new_phone_form_phone', with: '+212 5376'
+        expect(page).to have_css('.phone-input__example', text: '0650-123456')
         expect(page).to have_button(nil, disabled: true)
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'MA'
 
@@ -85,6 +89,7 @@ feature 'Two Factor Authentication' do
         fill_in 'new_phone_form_phone', with: '+81 54354'
         expect(page).to have_button(nil, disabled: true)
 
+        expect(page).to have_css('.phone-input__example', text: '090-1234-5678')
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
       end
 
