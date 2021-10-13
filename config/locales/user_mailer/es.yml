@@ -45,10 +45,10 @@ es:
     account_verified:
       contact_link: contacto con nosotros
       disavowal_link: cambiar tu contraseña
-      intro_html: Verificaste correctamente tu identidad con %{app_name} el %{date} a
+      intro_html: Verificaste correctamente tu identidad con %{sp_name} el %{date} a
         través de %{app_name}. Si no realizaste esta acción, ponte en
         %{contact_link} e inicia sesión para %{disavowal_link}.
-      subject: Verificaste tu identidad con %{app_name}
+      subject: Verificaste tu identidad con %{sp_name}
     add_email:
       footer: Este enlace expira en %{confirmation_period}.
       header: Gracias por enviar su correo electrónico. Haga clic en el enlace debajo

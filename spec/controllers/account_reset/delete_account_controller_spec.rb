@@ -58,7 +58,7 @@ describe AccountReset::DeleteAccountController do
         user_id: 'anonymous-uuid',
         event: 'delete',
         success: false,
-        errors: { token: [t('errors.account_reset.granted_token_missing')] },
+        errors: { token: [t('errors.account_reset.granted_token_missing', app_name: APP_NAME)] },
         error_details: { token: [:blank] },
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
@@ -70,7 +70,7 @@ describe AccountReset::DeleteAccountController do
       delete :delete
 
       expect(response).to redirect_to(root_url)
-      expect(flash[:error]).to eq t('errors.account_reset.granted_token_missing')
+      expect(flash[:error]).to eq t('errors.account_reset.granted_token_missing', app_name: APP_NAME)
     end
 
     it 'displays a flash and redirects to root if the token is expired' do

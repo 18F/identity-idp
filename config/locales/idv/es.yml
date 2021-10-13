@@ -24,7 +24,7 @@ es:
         warning_1: No podremos verificar tu identidad
         warning_2: No guardaremos tu nombre, dirección, fecha de nacimiento ni número de
           la seguridad social
-        warning_3: No podrás acceder de forma segura a tu información usando %{app}
+        warning_3: No podrás acceder de forma segura a tu información usando %{app_name}
         warning_4: Seguirás teniendo una cuenta %{app_name} para tu dirección de correo
           electrónico
         warning_5: Puedes gestionar o eliminar esa cuenta desde tu página de perfil
@@ -100,7 +100,7 @@ es:
       activated_link: Contáctenos
       agencies_login: Ahora puede continuar e iniciar sesión en estas agencias.
       agency_login_html: Ahora puedes continuar e iniciar sesión en <br><strong>%{sp}</strong>.
-      cancel: Para continuar %{app} necesita verificar su identidad. Necesitamos
+      cancel: Para continuar %{app_name} necesita verificar su identidad. Necesitamos
         recopilar información personal básica, así como su información
         financiera para completar este proceso. Si no tiene la información que
         necesitamos en este momento, puede continuar más tarde.

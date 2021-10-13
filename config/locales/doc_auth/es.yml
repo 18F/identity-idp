@@ -116,7 +116,7 @@ es:
       no_camera:
         explanation: Recopilaremos información sobre usted leyendo su documento de
           identidad expedido por el estado. Luego, se tomará una foto para
-          confirmar que es el propietario de la identificación.
+          confirmar que es el propietario de la identificación con %{app_name} TODO RETRANSLATE
         heading: Necesita una cámara para verificar su identidad
         title: Necesita cámara
       not_a_file: La selección no era un archivo válido.

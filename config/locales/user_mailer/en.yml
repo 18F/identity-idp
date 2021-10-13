@@ -43,10 +43,10 @@ en:
     account_verified:
       contact_link: contact us
       disavowal_link: change your password
-      intro_html: You successfully verified your identity with %{app_name} on %{date} using
+      intro_html: You successfully verified your identity with %{sp_name} on %{date} using
         %{app_name}. If you did not perform this action, please %{contact_link}
         and sign in to %{disavowal_link}.
-      subject: You verified your identity with %{app_name}.
+      subject: You verified your identity with %{sp_name}.
     add_email:
       footer: This link will expire in %{confirmation_period}.
       header: Thanks for adding an email. Please click the link below or copy and

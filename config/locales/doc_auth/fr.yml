@@ -122,7 +122,7 @@ fr:
         explanation: Nous recueillons des informations vous concernant en lisant votre
           carte d’identité délivrée par l’État. Ensuite, vous prendrez une photo
           de vous-même pour confirmer que vous êtes bien le propriétaire de la
-          carte d’identité.
+          carte d’identité con %{app_name} TODO RE-TRANSLATE
         heading: Vous avez besoin d’une caméra pour vérifier votre identité
         title: Appareil photo nécessaire
       not_a_file: La sélection n’était pas un fichier valide.

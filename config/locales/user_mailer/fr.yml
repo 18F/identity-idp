@@ -45,11 +45,11 @@ fr:
     account_verified:
       contact_link: nous contacter
       disavowal_link: changer votre mot de passe
-      intro_html: Vous avez vérifié avec succès votre identité auprès de %{app} le
-        %{date} en utilisant %{app_name}.gov. Si vous n’avez pas effectué cette
+      intro_html: Vous avez vérifié avec succès votre identité auprès de %{sp_name} le
+        %{date} en utilisant %{app_name}. Si vous n’avez pas effectué cette
         action, veuillez %{contact_link} et vous connecter pour
         %{disavowal_link}.
-      subject: Vous avez vérifié votre identité avec %{app}
+      subject: Vous avez vérifié votre identité avec %{sp_name}
     add_email:
       footer: Ce lien expirera dans %{confirmation_period}.
       header: Merci d’avoir ajouté un email. S’il vous plaît cliquez sur le lien
@@ -57,7 +57,7 @@ fr:
       subject: Confirmez votre email
     add_email_associated_with_another_account:
       help_html: Si vous n’avez pas demandé de nouvel email ou que vous suspectez une
-        erreur, veuillez visiter le %{app} %{help_link} ou %{contact_link}.
+        erreur, veuillez visiter le %{app_name} %{help_link} ou %{contact_link}.
       intro_html: Cette adresse électronique est déjà associée à un compte %{app},
         nous ne pouvons donc pas l’ajouter à un autre compte. Vous devez d’abord
         le supprimer ou le supprimer du compte auquel il est associé. Pour ce
@@ -204,16 +204,16 @@ fr:
       subject: Réinitialisez votre mot de passe
     signup_with_your_email:
       help_html: Si vous n’avez pas demandé un nouveau compte ou que vous soupçonnez
-        qu’une erreur s’est produite, veuillez visiter le %{help_link} de %{app}
+        qu’une erreur s’est produite, veuillez visiter le %{help_link} de %{app_name}
         ou %{contact_link}.
       intro_html: Cette adresse courriel est déjà associée à un compte %{app}, nous ne
         pouvons donc pas l’utiliser pour créer un nouveau compte. Pour vous
         connecter à votre compte existant, suivez le lien ci-dessous. Si vous ne
         tentez pas de vous connecter avec cette adresse courriel, vous pouvez
         ignorer ce message.
-      link_text: Allez à %{app}
+      link_text: Allez à %{app_name}
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
-        à %{app} pour le réinitialiser.
+        à %{app_name} pour le réinitialiser.
     sps_over_quota_limit:
       help: ''
       info: Certains SP ont dépassé leur limite de quota.

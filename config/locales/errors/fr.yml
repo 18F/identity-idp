@@ -9,7 +9,7 @@ fr:
       granted_token_invalid: Le lien de suppression de votre compte %{app_name} n’est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre
         e-mail.
-      granted_token_missing: Le lien de suppression de votre compte %{app_namee} n’est
+      granted_token_missing: Le lien de suppression de votre compte %{app_name} n’est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre
         e-mail.
     attributes:

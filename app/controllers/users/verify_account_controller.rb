@@ -33,7 +33,7 @@ module Users
           UserAlerts::AlertUserAboutAccountVerified.call(
             user: current_user,
             date_time: event.created_at,
-            app: decorated_session.sp_name,
+            sp_name: decorated_session.sp_name,
             disavowal_token: event.disavowal_token,
           )
           flash[:success] = t('account.index.verification.success')

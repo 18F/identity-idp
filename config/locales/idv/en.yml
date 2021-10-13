@@ -94,7 +94,7 @@ en:
       activated_link: contact us
       agencies_login: You can now continue to and sign in to these agencies.
       agency_login_html: You can now continue to and into <br><strong>%{sp}</strong>.
-      cancel: To continue, %{app} needs to verify your identity. We need to collect
+      cancel: To continue, %{app_name} needs to verify your identity. We need to collect
         some basic personal information as well as some financial information
         from you to complete this process. If you don’t have the information we
         need at this time you can continue later.
