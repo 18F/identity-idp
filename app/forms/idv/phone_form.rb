@@ -11,7 +11,7 @@ module Idv
 
     # @param [User] user
     # @param [Hash] previous_params
-    # @param [Array<string>, nil] allowed_countries
+    # @param [Array<String>, nil] allowed_countries
     def initialize(user:, previous_params:, allowed_countries: nil, delivery_methods: nil)
       previous_params ||= {}
       @user = user
