@@ -14,7 +14,7 @@ es:
       reset_link: restablecer su cuenta
       reset_your_account: Restablecer su cuenta
       reverify_link: vuelva a verificar su identidad
-      successful_cancel: Gracias. Su solicitud para eliminar su cuenta de Login.gov ha
+      successful_cancel: Gracias. Su solicitud para eliminar su cuenta de %{app_name} ha
         sido cancelada.
       text_html: Si no puede usar ninguna de estas opciones de seguridad anteriores,
         puede restablecer tus preferencias por %{link}.
