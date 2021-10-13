@@ -6,14 +6,14 @@ describe Idv::PhoneForm do
   let(:params) { { phone: phone } }
   let(:previous_params) { nil }
   let(:allowed_countries) { nil }
-  let(:delivery_methods) { nil }
+  let(:optional_params) { {} }
 
   subject do
     Idv::PhoneForm.new(
       user: user,
       previous_params: previous_params,
       allowed_countries: allowed_countries,
-      delivery_methods: delivery_methods,
+      **optional_params,
     )
   end
 
@@ -129,7 +129,7 @@ describe Idv::PhoneForm do
     end
 
     context 'with specific delivery methods' do
-      let(:delivery_methods) { [:voice] }
+      let(:optional_params) { { delivery_methods: [:voice] } }
 
       it 'validates to only allow numbers from permitted countries' do
         invalid_phones = {

@@ -12,11 +12,17 @@ module Idv
     # @param [User] user
     # @param [Hash] previous_params
     # @param [Array<String>, nil] allowed_countries
-    def initialize(user:, previous_params:, allowed_countries: nil, delivery_methods: nil)
+    # @param [Array<String>, nil] delivery_methods
+    def initialize(
+      user:,
+      previous_params:,
+      allowed_countries: nil,
+      delivery_methods: ALL_DELIVERY_METHODS
+    )
       previous_params ||= {}
       @user = user
       @allowed_countries = allowed_countries
-      @delivery_methods = delivery_methods || ALL_DELIVERY_METHODS
+      @delivery_methods = delivery_methods
       self.phone = initial_phone_value(previous_params[:phone]) unless user_has_multiple_phones?
     end
 
