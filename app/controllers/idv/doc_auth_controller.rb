@@ -28,7 +28,7 @@ module Idv
     end
 
     def redirect_if_pending_profile
-      redirect_to verify_account_url if current_user.decorate.pending_profile_requires_verification?
+      redirect_to verify_account_url if current_user.pending_profile_requires_verification?
     end
 
     def update_if_skipping_upload

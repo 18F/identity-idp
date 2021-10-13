@@ -10,7 +10,7 @@ module Idv
     private
 
     def confirm_user_needs_gpo_confirmation
-      redirect_to account_url unless current_user.decorate.pending_profile_requires_verification?
+      redirect_to account_url unless current_user.pending_profile_requires_verification?
     end
   end
 end

@@ -33,7 +33,7 @@ class VerifyAccountForm
   protected
 
   def pending_profile
-    @_pending_profile ||= user.decorate.pending_profile
+    @_pending_profile ||= user.pending_profile
   end
 
   def gpo_confirmation_code

@@ -13,7 +13,7 @@ module VerifyProfileConcern
 
   def profile_needs_verification?
     return false if current_user.blank?
-    current_user.decorate.pending_profile_requires_verification?
+    current_user.pending_profile_requires_verification?
   end
 
   def gpo_mail_bounced?

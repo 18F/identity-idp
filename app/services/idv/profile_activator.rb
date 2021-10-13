@@ -5,7 +5,7 @@ module Idv
     end
 
     def call
-      user.decorate.pending_profile&.activate
+      user.pending_profile&.activate
     end
 
     private
