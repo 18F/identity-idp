@@ -12,6 +12,7 @@
     "target": "ESNext"
   },
   "include": [
+    "spec/javascripts/spec_helper.d.ts",
     "app/javascript/app/phone-internationalization.js",
     "app/javascript/packages",
     "app/javascript/packs"

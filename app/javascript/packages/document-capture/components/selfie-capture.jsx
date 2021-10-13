@@ -8,9 +8,9 @@ import {
   useImperativeHandle,
 } from 'react';
 import { Icon } from '@18f/identity-components';
+import { useI18n } from '@18f/identity-react-i18n';
 import FileImage from './file-image';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
-import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
 import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 import './selfie-capture.scss';

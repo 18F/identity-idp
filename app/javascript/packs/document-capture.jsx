@@ -2,7 +2,6 @@ import { render } from 'react-dom';
 import {
   DocumentCapture,
   AssetContext,
-  I18nContext,
   DeviceContext,
   AcuantContextProvider,
   UploadContextProvider,
@@ -12,6 +11,7 @@ import {
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { trackEvent } from '@18f/identity-analytics';
+import { I18nContext } from '@18f/identity-react-i18n';
 
 /** @typedef {import('@18f/identity-i18n').I18n} I18n */
 

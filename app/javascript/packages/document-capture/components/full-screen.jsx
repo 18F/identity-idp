@@ -1,6 +1,6 @@
 import { forwardRef, useImperativeHandle, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import useI18n from '../hooks/use-i18n';
+import { useI18n } from '@18f/identity-react-i18n';
 import useAsset from '../hooks/use-asset';
 import useToggleBodyClassByPresence from '../hooks/use-toggle-body-class-by-presence';
 import useImmutableCallback from '../hooks/use-immutable-callback';

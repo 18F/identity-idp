@@ -1,7 +1,7 @@
 import { useContext, useMemo, useEffect, useRef, useState } from 'react';
+import { useI18n } from '@18f/identity-react-i18n';
 import AcuantContext from '../context/acuant';
 import useAsset from '../hooks/use-asset';
-import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
 import useImmutableCallback from '../hooks/use-immutable-callback';
 
