@@ -74,7 +74,7 @@ RSpec.describe 'I18n' do
     )
   end
 
-  it 'does not have keys with missing interpolation arguments' do
+  it 'does not have keys with missing interpolation arguments (check callsites for correct args)' do
     missing_interpolation_argument_keys = []
 
     i18n.data[i18n.base_locale].select_keys do |key, _node|
