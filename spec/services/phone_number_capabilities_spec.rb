@@ -36,6 +36,15 @@ describe PhoneNumberCapabilities do
         it { should eq(false) }
       end
     end
+
+    context 'unknown method' do
+      let(:method) { :unknown }
+      subject(:result) { nil }
+
+      it 'should raise an error' do
+        expect { capabilities.supports?(method) }.to raise_error('Unknown method=unknown')
+      end
+    end
   end
 
   describe '#supports_all?' do

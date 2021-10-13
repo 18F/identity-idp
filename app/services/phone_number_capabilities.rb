@@ -17,6 +17,8 @@ class PhoneNumberCapabilities
       supports_sms?
     when :voice
       supports_voice?
+    else
+      raise "Unknown method=#{method}"
     end
   end
 
