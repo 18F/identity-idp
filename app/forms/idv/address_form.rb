@@ -35,7 +35,7 @@ module Idv
       params.each do |key, value|
         raise_invalid_address_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
         send("#{key}=", value)
-        unless send(key) == @pii[key] || (send(key).blank? && @pii[key].blank?)
+        if send(key) != @pii[key] && (send(key).present? || @pii[key].present?)
           @address_edited = true
         end
       end
