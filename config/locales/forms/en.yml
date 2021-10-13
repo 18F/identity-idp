@@ -46,7 +46,7 @@ en:
     email:
       buttons:
         delete: Delete email address
-    example: 'example:'
+    example: 'Example:'
     file_input:
       file_updated: File updated
     messages:
