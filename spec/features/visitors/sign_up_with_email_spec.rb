@@ -44,7 +44,7 @@ feature 'Visitor signs up with email address' do
         to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(last_email.html_part.body).to have_content(
-        t('user_mailer.signup_with_your_email.intro_html', app: APP_NAME),
+        t('user_mailer.signup_with_your_email.intro_html', app_name: APP_NAME),
       )
     end
   end
