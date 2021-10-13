@@ -25,7 +25,7 @@ es:
         warning_2: No guardaremos tu nombre, dirección, fecha de nacimiento ni número de
           la seguridad social
         warning_3: No podrás acceder de forma segura a tu información usando %{app}
-        warning_4: Seguirás teniendo una cuenta Login.gov para tu dirección de correo
+        warning_4: Seguirás teniendo una cuenta %{app_name} para tu dirección de correo
           electrónico
         warning_5: Puedes gestionar o eliminar esa cuenta desde tu página de perfil
     errors:
@@ -136,7 +136,7 @@ es:
             no es necesario que usted sea el titular principal de la cuenta.
           - no es un teléfono virtual (como Google Voice o Skype)
           - un número de EE. UU.
-      return_to_profile: '‹ Volver a tu perfil de Login.gov'
+      return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
@@ -148,8 +148,8 @@ es:
       sessions:
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
-        read_more_encrypt: Lea más sobre cómo Login.gov protege su información personal
-        review_message: Cuando vuelva a ingresar su contraseña, Login.gov cifrará sus
+        read_more_encrypt: Lea más sobre cómo %{app_name} protege su información personal
+        review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
           datos para asegurarse de que nadie más pueda acceder a ellos.
     review:
       dob: Fecha de nacimiento
@@ -167,7 +167,7 @@ es:
       review: Revise y envíe
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
-        review: Vuelve a ingresar tu contraseña de Login.gov para encriptar tus datos
+        review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:
         having_trouble: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'

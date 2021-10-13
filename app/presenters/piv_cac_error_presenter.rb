@@ -52,6 +52,7 @@ class PivCacErrorPresenter
     when 'user.not_found'
       t(
         'instructions.mfa.piv_cac.account_not_found_html',
+        app_name: APP_NAME,
         sign_in: @view.link_to(t('headings.sign_in_without_sp'), root_url),
         create_account: @view.link_to(t('links.create_account'), sign_up_email_url),
       )

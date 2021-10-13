@@ -27,8 +27,8 @@ fr:
           adresse, votre date de naissance, ou votre numéro de sécurité sociale
           américain.
         warning_3: Vous ne pourrez pas accéder de façon sécurisée à vos renseignements
-          en utilisant %{app}
-        warning_4: Votre adresse e-mail sera encore associée à un compte Login.gov
+          en utilisant %{app_name}
+        warning_4: Votre adresse e-mail sera encore associée à un compte %{app_name}
         warning_5: Vous pouvez gérer ou supprimer ce compte sur votre page de profil
     errors:
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
@@ -147,7 +147,7 @@ fr:
             nécessaire que vous soyez le titulaire principal du compte.
           - pas un téléphone virtuel (comme Google Voice ou Skype)
           - un numéro américain
-      return_to_profile: '‹ Revenir à votre profil Login.gov'
+      return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
           %{phone_message}
