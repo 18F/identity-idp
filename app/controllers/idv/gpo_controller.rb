@@ -29,7 +29,7 @@ module Idv
       update_tracking
       idv_session.address_verification_mechanism = :gpo
 
-      if current_user.pending_profile_requires_verification?
+      if current_user.decorate.pending_profile_requires_verification?
         resend_letter
         redirect_to idv_come_back_later_url
       else
@@ -98,7 +98,7 @@ module Idv
     def confirm_user_completed_idv_profile_step
       # If the user has a pending profile, they may have completed idv in a
       # different session and need a letter resent now
-      return if current_user.pending_profile_requires_verification?
+      return if current_user.decorate.pending_profile_requires_verification?
       return if idv_session.profile_confirmation == true
 
       redirect_to idv_doc_auth_url
