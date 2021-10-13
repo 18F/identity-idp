@@ -77,7 +77,7 @@
   }
 }
 
-.usa-file-input__box + input:not([disabled]):focus {
+.usa-file-input__input:not([disabled]):focus {
   outline: 3px solid $blue;
   outline-offset: 6px;
 }
