@@ -66,6 +66,6 @@ class VerifyAccountForm
   end
 
   def activate_profile
-    Idv::ProfileActivator.new(user: user).call
+    user.pending_profile&.activate
   end
 end
