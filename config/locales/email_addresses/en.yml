@@ -4,7 +4,7 @@ en:
     add:
       duplicate: This email address is already registered to your account.
     delete:
-      bullet1: You won’t be able to sign in to Login.gov (or any of the government
+      bullet1: You won’t be able to sign in to %{app_name} (or any of the government
         applications linked to your account) using this email address
       bullet2: You won’t get account notifications at this email address
       confirm: Are you sure you want to delete %{email}?

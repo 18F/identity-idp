@@ -199,7 +199,8 @@ es:
         verifiques tu identidad a través de tu teléfono.
       link_sent_complete_nojs: Cuando termines, haz clic en “Continuar” para completar
         la verificación de tu identidad.
-      privacy_html: Login.gov es un sitio web gubernamental seguro que cumple con las
+      privacy_html: >
+        %{app_name} es un sitio web gubernamental seguro que cumple con las
         normas más estrictas de protección de datos. Solo utilizamos sus datos
         para verificar su identidad. %{link} sobre nuestras medidas de
         privacidad y seguridad.
@@ -219,7 +220,7 @@ es:
         expedido por el estado.
       upload_computer_link: Sube desde tu computadora
       upload_from_computer: '¿No tiene un teléfono?'
-      upload_from_computer_not_allowed: Inicie sesión en su cuenta de Login.gov en
+      upload_from_computer_not_allowed: Inicie sesión en su cuenta de %{app_name} en
         cualquier dispositivo que tenga una cámara, como una tableta o una
         computadora con una cámara web.
       upload_from_phone: Sube imágenes directamente desde la cámara de tu teléfono
@@ -238,18 +239,20 @@ es:
       bullet1a: Un dispositivo con cámara
       bullet2: Su Número de Seguridad Social.
       bullet3: Un número de teléfono con un plan tarifario vinculado a su nombre.
-      consent: Al marcar esta casilla, usted permite que Login.gov solicite, utilice,
+      consent: Al marcar esta casilla, usted permite que %{app_name} solicite, utilice,
         conserve y comparta su información personal. Solo la utilizaremos para
         verificar su identidad.
       document_capture_selfie_consent_action: '<lg-underline>Permita el acceso a la
         cámara</lg-underline> y busque una notificación en su navegador o revise
         la configuración del sistema para confirmar el acceso a la cámara.'
-      document_capture_selfie_consent_banner: Login.gov necesita permiso para usar la cámara de su dispositivo
-      document_capture_selfie_consent_blocked: Login.gov necesita permiso para usar su
+      document_capture_selfie_consent_banner: >
+        %{app_name} necesita permiso para usar la cámara de su dispositivo
+      document_capture_selfie_consent_blocked: >
+        %{app_name} necesita permiso para usar su
         cámara para que pueda probar que su identificación le pertenece.
       document_capture_selfie_consent_blocked_action: Verifique la configuración de su
         navegador web para este sitio o la configuración del sistema de su
-        computadora para permitir que Login.gov acceda a la cámara.
+        computadora para permitir que %{app_name} acceda a la cámara.
       document_capture_selfie_instructions: Ahora toma una foto de ti mismo. Lo
         compararemos con la imagen en el frente de su identificación.
       email_sent: Enlace enviado a %{email}. Compruebe el correo electrónico de su

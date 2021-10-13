@@ -6,7 +6,7 @@ en:
       confirmed: You have confirmed your email address
       confirmed_but_must_set_password: You have confirmed your email address
       confirmed_but_remove_from_other_account: This email address is already
-        associated with a Login.gov account, so we can’t add it to another
+        associated with a %{app_name} account, so we can’t add it to another
         account. You must first delete or remove it from the account it is
         associated with. To do this, sign in with this email address.
       confirmed_but_sign_in: You have confirmed your email address. Please sign in to

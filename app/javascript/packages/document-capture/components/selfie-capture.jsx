@@ -15,6 +15,8 @@ import useInstanceId from '../hooks/use-instance-id';
 import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 import './selfie-capture.scss';
 
+const APP_NAME = 'Login.gov';
+
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
@@ -229,13 +231,13 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
               <>
                 <div className="selfie-capture__consent-prompt">
                   <strong className="selfie-capture__consent-prompt-banner usa-file-input__banner-text">
-                    {t('doc_auth.instructions.document_capture_selfie_consent_banner')}
+                    {t('doc_auth.instructions.document_capture_selfie_consent_banner', { app_name: APP_NAME })}
                   </strong>
                   {isAccessRejected ? (
                     <>
-                      <p>{t('doc_auth.instructions.document_capture_selfie_consent_blocked')}</p>
+                      <p>{t('doc_auth.instructions.document_capture_selfie_consent_blocked', { app_name: APP_NAME })}</p>
                       <p>
-                        {t('doc_auth.instructions.document_capture_selfie_consent_blocked_action')}
+                        {t('doc_auth.instructions.document_capture_selfie_consent_blocked_action', { app_name: APP_NAME })}
                       </p>
                     </>
                   ) : (
