@@ -94,10 +94,10 @@ en:
       activated_link: contact us
       agencies_login: You can now continue to and sign in to these agencies.
       agency_login_html: You can now continue to and into <br><strong>%{sp}</strong>.
-      cancel: To continue, %{app_name} needs to verify your identity. We need to collect
-        some basic personal information as well as some financial information
-        from you to complete this process. If you don’t have the information we
-        need at this time you can continue later.
+      cancel: To continue, %{app_name} needs to verify your identity. We need to
+        collect some basic personal information as well as some financial
+        information from you to complete this process. If you don’t have the
+        information we need at this time you can continue later.
       clear_and_start_over: Clear my information and start over
       come_back_later: Once your letter arrives, sign into %{app}, and enter your
         confirmation code when prompted.

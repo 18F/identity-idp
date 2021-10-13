@@ -14,7 +14,8 @@ es:
         eliminar su cuenta de %{app_name}.
       subject: Eliminar su cuenta
     account_reset_complete:
-      intro: Este correo electrónico confirma que ha eliminado su cuenta de %{app_name}.
+      intro: Este correo electrónico confirma que ha eliminado su cuenta de
+        %{app_name}.
       subject: Cuenta borrada
     account_reset_granted:
       button: Sí, continúa eliminando
@@ -23,24 +24,24 @@ es:
       intro_html: Su período de espera de 24 horas ha finalizado. Complete el paso 2
         del proceso.<br><br>Si no ha podido localizar sus métodos de
         autenticación, seleccione “confirmar eliminación” para eliminar su
-        cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los sitios
-        web gubernamentales participantes que utilizan %{app_name}, puede crear una
-        nueva cuenta %{app_name} con la misma dirección de correo electrónico después
-        de que se elimine su cuenta.<br><br>
+        cuenta de %{app_name}.<br><br> En el futuro, si necesita acceder a los
+        sitios web gubernamentales participantes que utilizan %{app_name}, puede
+        crear una nueva cuenta %{app_name} con la misma dirección de correo
+        electrónico después de que se elimine su cuenta.<br><br>
       subject: Elimina tu cuenta %{app_name}
     account_reset_request:
       cancel: '¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta %{app_name}
         para cancelar.'
       header: Su cuenta será eliminada en 24 horas
-      intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos pasos
-        para eliminar su cuenta:<br><br> Paso uno: hay un período de espera de
-        24 horas si ha perdido el acceso a sus métodos de autenticación y
-        necesita eliminar su cuenta. Si encuentra sus métodos de autenticación,
-        puede iniciar sesión en su cuenta %{app_name} para cancelar esta
-        solicitud.<br><br> Paso dos: Después de su período de espera de 24
-        horas, recibirá un correo electrónico que le pedirá que confirme la
-        eliminación de su cuenta %{app_name}. Su cuenta no se eliminará hasta que
-        confirme.'
+      intro_html: 'Como medida de seguridad, %{app_name} requiere un proceso de dos
+        pasos para eliminar su cuenta:<br><br> Paso uno: hay un período de
+        espera de 24 horas si ha perdido el acceso a sus métodos de
+        autenticación y necesita eliminar su cuenta. Si encuentra sus métodos de
+        autenticación, puede iniciar sesión en su cuenta %{app_name} para
+        cancelar esta solicitud.<br><br> Paso dos: Después de su período de
+        espera de 24 horas, recibirá un correo electrónico que le pedirá que
+        confirme la eliminación de su cuenta %{app_name}. Su cuenta no se
+        eliminará hasta que confirme.'
       subject: Cómo eliminar su cuenta de %{app_name}
     account_verified:
       contact_link: contacto con nosotros
@@ -86,8 +87,8 @@ es:
       email_not_found: El correo electrónico no encontrado
       first_sentence:
         confirmed: '¿Desea cambiar su email?'
-        forgot_password: Intentó restablecer su contraseña de %{app_name} pero no tenemos
-          una cuenta vinculada a esta dirección de correo electrónico.
+        forgot_password: Intentó restablecer su contraseña de %{app_name} pero no
+          tenemos una cuenta vinculada a esta dirección de correo electrónico.
         unconfirmed: Gracias por enviar su dirección de correo electrónico.
       footer: Este enlace expira en %{confirmation_period}.
       header: '%{intro} Haga clic en el enlace de abajo o copie y pegue el enlace
@@ -99,7 +100,8 @@ es:
       try_diff_email: Pruebe con una dirección de correo electrónico diferente
       use_this_email: O use este correo electrónico y
     email_deleted:
-      header: Se eliminó una dirección de correo electrónico de su perfil de %{app_name}.
+      header: Se eliminó una dirección de correo electrónico de su perfil de
+        %{app_name}.
       help_html: Si no desea eliminar esta dirección de correo electrónico, visite el
         %{app_name} %{help_link} o el %{contact_link}.
       subject: Dirección de correo electrónico eliminada
@@ -113,8 +115,8 @@ es:
     new_device_sign_in:
       disavowal_link: aquí
       help_html: Si no realizó este cambio puede restablecer su contraseña
-        %{disavowal_link}. Para más ayuda, visite el %{app_name} %{help_link} o el
-        %{contact_link}.
+        %{disavowal_link}. Para más ayuda, visite el %{app_name} %{help_link} o
+        el %{contact_link}.
       info_html: '<p>Su cuenta %{app_name} acaba de iniciar sesión en un nuevo
         dispositivo.</p><br/><br/>
         <p><strong>%{date}<br/>%{location}</strong></p>'
@@ -122,47 +124,48 @@ es:
     password_changed:
       disavowal_link: aquí
       help_html: Si no realizó este cambio puede restablecer su contraseña
-        %{disavowal_link}. Para más ayuda, visite el %{app_name} %{help_link} o el
-        %{contact_link}.
+        %{disavowal_link}. Para más ayuda, visite el %{app_name} %{help_link} o
+        el %{contact_link}.
       intro_html: Tiene una contraseña nueva para su cuenta de %{app_name}.
     personal_key_regenerated:
-      help_html: <p>Tu cuenta de %{app_name} acaba de emitir una nueva clave personal de
-        16 caracteres. Estás recibiendo este correo electrónico para verificar
-        que eras tú. </p><p>Si acabas de iniciar sesión y has regenerado tu
-        clave personal, ¡fantástico! No es necesario que hagas nada.</p><p>Si no
-        acabas de regenerar tu clave personal, o si no estás seguro, sigue estos
-        pasos para proteger tu cuenta:<ol><li><strong><a
+      help_html: <p>Tu cuenta de %{app_name} acaba de emitir una nueva clave personal
+        de 16 caracteres. Estás recibiendo este correo electrónico para
+        verificar que eras tú. </p><p>Si acabas de iniciar sesión y has
+        regenerado tu clave personal, ¡fantástico! No es necesario que hagas
+        nada.</p><p>Si no acabas de regenerar tu clave personal, o si no estás
+        seguro, sigue estos pasos para proteger tu cuenta:<ol><li><strong><a
         href="%{reset_password_url}">Cambia tu contraseña</a>.</strong> Elige
         una contraseña que aún no hayas utilizado con esta cuenta.
         </li><li><strong><a href="%{account_url}">Inicia sesión en tu cuenta de
-        %{app_name}</a></strong> y asegúrate de que reconoces toda la información
-        de la página de tu cuenta, como los métodos que utilizas para la
-        autenticación de dos factores, como el número de teléfono, la aplicación
-        de autenticación o la clave de seguridad. </li><li><strong>En la <a
-        href="%{account_url}">página de tu cuenta de %{app_name}</a>, solicita una
-        nueva clave personal</strong>. Recuerda no compartirla nunca a menos que
-        la estés usando para acceder a un sitio web de confianza que utilice
-        %{app_name}.</li></ol></p><br>Gracias,<br>El equipo de %{app_name}
+        %{app_name}</a></strong> y asegúrate de que reconoces toda la
+        información de la página de tu cuenta, como los métodos que utilizas
+        para la autenticación de dos factores, como el número de teléfono, la
+        aplicación de autenticación o la clave de seguridad. </li><li><strong>En
+        la <a href="%{account_url}">página de tu cuenta de %{app_name}</a>,
+        solicita una nueva clave personal</strong>. Recuerda no compartirla
+        nunca a menos que la estés usando para acceder a un sitio web de
+        confianza que utilice %{app_name}.</li></ol></p><br>Gracias,<br>El
+        equipo de %{app_name}
       intro: Nueva clave personal emitida
       subject: Alerta de seguridad de la cuenta
     personal_key_sign_in:
-      help_html: <p>Su cuenta %{app_name} acaba de iniciar sesión con su clave personal
-        de 16 caracteres. Usted está recibiendo este e-mail para asegurarse de
-        que era usted.</p><p>Si acaba de iniciar sesión con su clave personal,
-        ¡genial! No hay nada que tenga que hacer.</p><p>Si no inició sesión con
-        una clave personal, o si no está seguro, por favor, siga estos pasos de
-        inmediato para proteger su cuenta.<ol><li><strong><a
+      help_html: <p>Su cuenta %{app_name} acaba de iniciar sesión con su clave
+        personal de 16 caracteres. Usted está recibiendo este e-mail para
+        asegurarse de que era usted.</p><p>Si acaba de iniciar sesión con su
+        clave personal, ¡genial! No hay nada que tenga que hacer.</p><p>Si no
+        inició sesión con una clave personal, o si no está seguro, por favor,
+        siga estos pasos de inmediato para proteger su cuenta.<ol><li><strong><a
         href="%{reset_password_url}">Cambie tu contraseña</a>.</strong> Elija
         una contraseña que no haya utilizado con esta cuenta.</li><li><strong><a
-        href="%{account_url}">Inicie sesión en su cuenta %{app_name}</a></strong>
-        y asegúrese de reconocer toda la información en la página de su cuenta,
-        incluidos los métodos que utiliza para la autenticación de dos factores,
-        como el número de teléfono, la aplicación de autenticación, o la clave
-        de seguridad.</li><li><strong>En la página de su cuenta %{app_name},
-        solicite una nueva clave personal.</strong> Recuerde, nunca lo comparta
-        a menos que lo esté utilizando para iniciar sesión en un sitio web de
-        confianza que utiliza %{app_name}.</li></ol></p><br>Gracias,<br>El equipo
-        de %{app_name}
+        href="%{account_url}">Inicie sesión en su cuenta
+        %{app_name}</a></strong> y asegúrese de reconocer toda la información en
+        la página de su cuenta, incluidos los métodos que utiliza para la
+        autenticación de dos factores, como el número de teléfono, la aplicación
+        de autenticación, o la clave de seguridad.</li><li><strong>En la página
+        de su cuenta %{app_name}, solicite una nueva clave personal.</strong>
+        Recuerde, nunca lo comparta a menos que lo esté utilizando para iniciar
+        sesión en un sitio web de confianza que utiliza
+        %{app_name}.</li></ol></p><br>Gracias,<br>El equipo de %{app_name}
       intro: Clave personal utilizada para iniciar sesión
       subject: Alerta de seguridad de cuenta
     phone_added:
@@ -194,12 +197,12 @@ es:
       link_text: Restablezca su contraseña
       subject: Restablezca su contraseña.
     signup_with_your_email:
-      help_html: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app_name}
-        %{help_link} o el %{contact_link}.
-      intro_html: Este email ya está asociado a una cuenta %{app_name}, por lo tanto no
-        podemos usarlo para crear una cuenta nueva. Para iniciar una sesión con
-        su cuenta existente, siga el siguiente enlace. Si no intenta iniciar una
-        sesión con este email, puede ignorar este mensaje.
+      help_html: Si no solicitó una cuenta nueva o sospecha un error, visite el
+        %{app_name} %{help_link} o el %{contact_link}.
+      intro_html: Este email ya está asociado a una cuenta %{app_name}, por lo tanto
+        no podemos usarlo para crear una cuenta nueva. Para iniciar una sesión
+        con su cuenta existente, siga el siguiente enlace. Si no intenta iniciar
+        una sesión con este email, puede ignorar este mensaje.
       link_text: Ir a %{app_name}
       reset_password_html: Si no recuerda su contraseña, vaya a %{app_name} para restablecerla.
     sps_over_quota_limit:

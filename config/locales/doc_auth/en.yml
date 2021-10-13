@@ -205,8 +205,8 @@ en:
       bullet1a: A device with a camera
       bullet2: Your Social Security number
       bullet3: A phone number on a phone plan associated with your name
-      consent: By checking this box, you are letting %{app_name} ask for, use, keep, and
-        share your personal information. We will only use it to verify your
+      consent: By checking this box, you are letting %{app_name} ask for, use, keep,
+        and share your personal information. We will only use it to verify your
         identity.
       document_capture_selfie_consent_action: '<lg-underline>Allow access to the
         camera</lg-underline> and look for a notification in your browser or
@@ -214,8 +214,8 @@ en:
       document_capture_selfie_consent_banner: >
         %{app_name} needs permission to use your device’s camera
       document_capture_selfie_consent_blocked: >
-        %{app_name} needs permission to use your
-        camera so that you can prove your ID belongs to you.
+        %{app_name} needs permission to use
+        your camera so that you can prove your ID belongs to you.
       document_capture_selfie_consent_blocked_action: Check your web browser’s
         settings for this site or your computer’s system settings to allow
         %{app_name} to access the camera.

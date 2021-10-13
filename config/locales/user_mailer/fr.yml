@@ -2,12 +2,12 @@
 fr:
   user_mailer:
     account_does_not_exist:
-      intro_html: Cette adresse e-mail n’est pas encore associée à un compte %{app_name}.
-        Si vous souhaitez créer un compte %{app_name} avec cette adresse e-mail,
-        veuillez cliquer sur le lien ci-dessous ou faites un copier-coller de
-        l’intégralité du lien sur votre navigateur. Si vous n’avez pas sollicité
-        une réinitialisation de votre mot de passe, nous vous prions de bien
-        vouloir ignorer ce message.
+      intro_html: Cette adresse e-mail n’est pas encore associée à un compte
+        %{app_name}. Si vous souhaitez créer un compte %{app_name} avec cette
+        adresse e-mail, veuillez cliquer sur le lien ci-dessous ou faites un
+        copier-coller de l’intégralité du lien sur votre navigateur. Si vous
+        n’avez pas sollicité une réinitialisation de votre mot de passe, nous
+        vous prions de bien vouloir ignorer ce message.
       link_text: Créer votre compte
       subject: Votre demande de réinitialisation de votre mot de passe %{app_name}
     account_reset_cancel:
@@ -24,21 +24,23 @@ fr:
       intro_html: Votre période d’attente de 24 heures est terminée. Veuillez terminer
         l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos
         méthodes d’authentification, sélectionnez “confirmer la suppression”
-        pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez
-        accéder aux sites Web gouvernementaux participants qui utilisent %{app_name},
-        vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse
-        e-mail après la suppression de votre compte.<br><br>
+        pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous
+        devez accéder aux sites Web gouvernementaux participants qui utilisent
+        %{app_name}, vous pouvez créer un nouveau compte %{app_name} en
+        utilisant la même adresse e-mail après la suppression de votre
+        compte.<br><br>
       subject: Supprimer votre compte %{app_name}
     account_reset_request:
-      cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour annuler.
+      cancel: Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte
+        %{app_name} pour annuler.
       header: Votre compte sera supprimé dans 24 heures
       intro_html: 'Par mesure de sécurité, %{app_name} nécessite un processus en deux
         étapes pour supprimer votre compte: <br> <br> Étape 1: Il y a une
         période d’attente de 24 heures si vous avez perdu l’accès à vos méthodes
         d’authentification et devez supprimer votre compte. Si vous trouvez vos
         méthodes d’authentification, vous pouvez vous connecter à votre compte
-        %{app_name} pour annuler cette demande. <br> <br> Deuxième étape: après votre
-        période d’attente de 24 heures, vous recevrez un e-mail qui vous
+        %{app_name} pour annuler cette demande. <br> <br> Deuxième étape: après
+        votre période d’attente de 24 heures, vous recevrez un e-mail qui vous
         demandera de confirmer la suppression de votre compte %{app_name}. Votre
         compte ne sera pas supprimé tant que vous ne l’aurez pas confirmé.'
       subject: Comment supprimer votre compte %{app_name}
@@ -58,12 +60,12 @@ fr:
     add_email_associated_with_another_account:
       help_html: Si vous n’avez pas demandé de nouvel email ou que vous suspectez une
         erreur, veuillez visiter le %{app_name} %{help_link} ou %{contact_link}.
-      intro_html: Cette adresse électronique est déjà associée à un compte %{app_name},
-        nous ne pouvons donc pas l’ajouter à un autre compte. Vous devez d’abord
-        le supprimer ou le supprimer du compte auquel il est associé. Pour ce
-        faire, suivez le lien ci-dessous et connectez-vous avec cette adresse
-        e-mail. Si vous n’essayez pas d’ajouter cette adresse électronique à un
-        compte, vous pouvez ignorer ce message.
+      intro_html: Cette adresse électronique est déjà associée à un compte
+        %{app_name}, nous ne pouvons donc pas l’ajouter à un autre compte. Vous
+        devez d’abord le supprimer ou le supprimer du compte auquel il est
+        associé. Pour ce faire, suivez le lien ci-dessous et connectez-vous avec
+        cette adresse e-mail. Si vous n’essayez pas d’ajouter cette adresse
+        électronique à un compte, vous pouvez ignorer ce message.
       link_text: Allez à %{app_name}
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
         à %{app_name} pour le réinitialiser.
@@ -88,8 +90,8 @@ fr:
       first_sentence:
         confirmed: Vous tentez de changer votre adresse courriel?
         forgot_password: Vous avez essayé de réinitialiser le mot de passe de votre
-          compte %{app_name}, mais nous ne possédons pas de compte associé à cette
-          adresse courriel.
+          compte %{app_name}, mais nous ne possédons pas de compte associé à
+          cette adresse courriel.
         unconfirmed: Merci d’avoir envoyé votre adresse email.
       footer: Ce lien expirera dans %{confirmation_period}.
       header: '%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller le
@@ -183,9 +185,9 @@ fr:
         conserver votre informations sûres. Veuillez suivre les étapes
         ci-dessous pour réinitialiser votre mot de passe et Sécurise ton
         compte:'
-      intro: Nous avons détecté une activité inhabituelle sur votre compte %{app_name}.
-        Nous sommes concernés quelqu’un d’autre que vous tente peut-être
-        d’accéder à vos informations.
+      intro: Nous avons détecté une activité inhabituelle sur votre compte
+        %{app_name}. Nous sommes concernés quelqu’un d’autre que vous tente
+        peut-être d’accéder à vos informations.
       learn_more_link_text: En savoir plus sur vos options
       reminder_html: Pour rappel, <b>%{app_name} ne vous demandera jamais vos
         identifiants de connexion par téléphone ou par e-mail</b>. Vous pouvez
@@ -204,13 +206,13 @@ fr:
       subject: Réinitialisez votre mot de passe
     signup_with_your_email:
       help_html: Si vous n’avez pas demandé un nouveau compte ou que vous soupçonnez
-        qu’une erreur s’est produite, veuillez visiter le %{help_link} de %{app_name}
-        ou %{contact_link}.
-      intro_html: Cette adresse courriel est déjà associée à un compte %{app_name}, nous ne
-        pouvons donc pas l’utiliser pour créer un nouveau compte. Pour vous
-        connecter à votre compte existant, suivez le lien ci-dessous. Si vous ne
-        tentez pas de vous connecter avec cette adresse courriel, vous pouvez
-        ignorer ce message.
+        qu’une erreur s’est produite, veuillez visiter le %{help_link} de
+        %{app_name} ou %{contact_link}.
+      intro_html: Cette adresse courriel est déjà associée à un compte %{app_name},
+        nous ne pouvons donc pas l’utiliser pour créer un nouveau compte. Pour
+        vous connecter à votre compte existant, suivez le lien ci-dessous. Si
+        vous ne tentez pas de vous connecter avec cette adresse courriel, vous
+        pouvez ignorer ce message.
       link_text: Allez à %{app_name}
       reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez
         à %{app_name} pour le réinitialiser.

@@ -127,7 +127,8 @@ es:
       confirm: '¿Estás seguro de que quieres eliminar tu clave de seguridad?'
     webauthn_setup:
       continue: Continuar
-      instructions_text: Presione el botón en su clave de seguridad para registrarlo con %{app_name}
+      instructions_text: Presione el botón en su clave de seguridad para registrarlo
+        con %{app_name}
       instructions_title: Conecte su llave de seguridad
       intro_html: Agregue una clave de seguridad como método de autenticación a su
         cuenta. Su clave de seguridad debe ser compatible con el estándar FIDO.

@@ -77,7 +77,8 @@ en:
           instead of your email. You will need to provide your password to
           unlock your profile.
     navigation:
-      access_services: Access your government benefits and services from your %{app_name} account.
+      access_services: Access your government benefits and services from your
+        %{app_name} account.
       add_authentication_apps: Add authentication apps
       add_email: Add email address
       add_federal_id: Add Federal Employee ID

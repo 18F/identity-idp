@@ -7,8 +7,8 @@ en:
         button_text: View my %{app_name} account
         heading: '%{sp_name} no longer uses %{app_name}'
         instructions: '%{sp_name} no longer uses %{app_name} as a sign-in service for
-          their website. If you already created a %{app_name} account, it is still
-          active and can be used to access other participating government
+          their website. If you already created a %{app_name} account, it is
+          still active and can be used to access other participating government
           websites.'
         instructions2: Please visit the agency’s website to contact them for more information.
     help_text:
@@ -21,5 +21,5 @@ en:
           and password won’t work. Please <a href=%{sp_create_link}>create a
           %{app_name} account</a> using the same email address you use for
           %{sp_name}. <p><a href="https://login.gov/help/">Learn more</a>
-        sign_up: Please create a %{app_name} account using the same email address you use
-          for %{sp_name} <p><a href="https://login.gov/help/">Learn more</a>
+        sign_up: Please create a %{app_name} account using the same email address you
+          use for %{sp_name} <p><a href="https://login.gov/help/">Learn more</a>

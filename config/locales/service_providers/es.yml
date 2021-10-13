@@ -24,6 +24,6 @@ es:
           secundaria que usó para %{sp_name} para <a
           href=%{sp_create_link}>crear un nueva cuenta de %{app_name}</a> <p><a
           href="https://login.gov/help/">Obtenga más información.</a>
-        sign_up: Por favor crea un %{app_name} cuenta usando la misma dirección de correo
-          electrónico que utiliza para %{sp_name}. <p><a
+        sign_up: Por favor crea un %{app_name} cuenta usando la misma dirección de
+          correo electrónico que utiliza para %{sp_name}. <p><a
           href="https://login.gov/help/">Obtenga más información.</a>
