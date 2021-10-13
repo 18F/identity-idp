@@ -115,7 +115,7 @@ module Idv
       confirmation_maker = GpoConfirmationMaker.new(
         pii: Pii::Cacher.new(current_user, user_session).fetch,
         issuer: sp_session[:issuer],
-        profile: current_user.decorate.pending_profile,
+        profile: current_user.pending_profile,
       )
       confirmation_maker.perform
       confirmation_maker

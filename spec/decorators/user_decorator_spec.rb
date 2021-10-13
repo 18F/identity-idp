@@ -156,48 +156,6 @@ describe UserDecorator do
     end
   end
 
-  describe '#pending_profile' do
-    context 'when a profile with a verification_pending deactivation_reason exists' do
-      it 'returns the most recent profile' do
-        user = User.new
-        _old_profile = create(
-          :profile,
-          deactivation_reason: :verification_pending,
-          created_at: 1.day.ago,
-          user: user,
-        )
-        new_profile = create(
-          :profile,
-          deactivation_reason: :verification_pending,
-          user: user,
-        )
-        user_decorator = UserDecorator.new(user)
-
-        expect(user_decorator.pending_profile).to eq new_profile
-      end
-    end
-
-    context 'when a verification_pending profile does not exist' do
-      it 'returns nil' do
-        user = User.new
-        create(
-          :profile,
-          deactivation_reason: :password_reset,
-          created_at: 1.day.ago,
-          user: user,
-        )
-        create(
-          :profile,
-          deactivation_reason: :encryption_error,
-          user: user,
-        )
-        user_decorator = UserDecorator.new(user)
-
-        expect(user_decorator.pending_profile).to be_nil
-      end
-    end
-  end
-
   describe '#identity_not_verified?' do
     it 'returns true if identity_verified returns false' do
       user = User.new
