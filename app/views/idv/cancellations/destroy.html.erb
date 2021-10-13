@@ -3,7 +3,7 @@
       title: t('titles.idv.cancelled'),
       heading: @hybrid_session ?
         t('idv.cancel.headings.confirmation.hybrid') :
-        t('headings.cancellations.confirmation'),
+        t('headings.cancellations.confirmation', app_name: APP_NAME),
     ) do %>
       <% if @hybrid_session %>
         <p><%= t('doc_auth.instructions.switch_back') %></p>

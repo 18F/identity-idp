@@ -7,7 +7,7 @@
   <hr class="margin-top-4 margin-bottom-2 border-width-05 border-yellow" />
 </div>
 <br />
-<p><%= t('forms.webauthn_delete.caution') %></p>
+<p><%= t('forms.webauthn_delete.caution', app_name: APP_NAME) %></p>
 <br />
 <br />
 <%= button_to(webauthn_setup_path(id: params[:id]), method: :delete, class: 'usa-button usa-button--big usa-button--wide margin-bottom-2') { t('account.index.webauthn_confirm_delete') } %>

@@ -105,7 +105,7 @@ fr:
       agencies_login: Vous pouvez maintenant continuer à vous connecter à ces agences.
       agency_login_html: Vous pouvez maintenant accéder et vous connecter à
         <br><strong>%{sp}</strong>.
-      cancel: Pour continuer, %{app} doit vérifier votre identité. Nous devons
+      cancel: Pour continuer, %{app_name} doit vérifier votre identité. Nous devons
         recueillir quelques informations personnelles de base ainsi que
         certaines informations financières pour compléter ce processus. Si vous
         n’avez pas cette information sous la main, vous pouvez continuer plus
@@ -161,9 +161,9 @@ fr:
       sessions:
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST
-        read_more_encrypt: En savoir plus sur la façon dont Login.gov protège vos
+        read_more_encrypt: En savoir plus sur la façon dont %{app_name} protège vos
           informations personnelles
-        review_message: Lorsque vous entrez à nouveau votre mot de passe, Login.gov
+        review_message: Lorsque vous entrez à nouveau votre mot de passe, %{app_name}
           crypte vos données pour vous assurer que personne ne peut y accéder.
     review:
       dob: Date de naissance
@@ -181,7 +181,7 @@ fr:
       review: Réviser et soumettre
       session:
         phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
-        review: Entrez à nouveau votre mot de passe Login.gov pour crypter vos données
+        review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
     troubleshooting:
       headings:
         having_trouble: 'Des difficultés? Voici ce que vous pouvez faire:'
