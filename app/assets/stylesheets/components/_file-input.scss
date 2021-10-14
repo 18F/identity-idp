@@ -21,11 +21,6 @@
       border-color: color('primary-dark');
     }
   }
-
-  .usa-file-input__input:focus {
-    outline: 3px solid $blue;
-    outline-offset: 6px;
-  }
 }
 
 .usa-form-group--error .usa-file-input .usa-file-input__target {
@@ -80,4 +75,8 @@
 .usa-file-input__input:not([disabled]):focus {
   outline: 3px solid $blue;
   outline-offset: 6px;
+}
+
+.usa-file-input--has-value .usa-file-input__input:not([disabled]):focus {
+  outline-offset: 4px;
 }
