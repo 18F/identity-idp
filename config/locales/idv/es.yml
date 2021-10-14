@@ -174,7 +174,7 @@ es:
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
       options:
-        change_phone_number: Usa un número de teléfono diferente # Temporary
+        change_phone_number: Utiliza un número de teléfono diferente
         contact_support: Póngase en contacto con el servicio de asistencia de %{app}
         get_help_at_sp: Obtenga ayuda en %{sp_name}
         learn_more_address_verification_options: Obtenga más información sobre la verificación por teléfono o por correo
