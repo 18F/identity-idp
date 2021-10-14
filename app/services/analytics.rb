@@ -87,7 +87,7 @@ class Analytics
   end
 
   def browser
-    @browser ||= DeviceDetector.new(request.user_agent)
+    @browser ||= BrowserCache.parse(request.user_agent)
   end
 
   def browser_attributes
@@ -95,10 +95,10 @@ class Analytics
       user_agent: request.user_agent,
       browser_name: browser.name,
       browser_version: browser.full_version,
-      browser_platform_name: browser.os_name,
-      browser_platform_version: browser.os_full_version,
-      browser_device_name: browser.device_name,
-      browser_device_type: browser.device_type,
+      browser_platform_name: browser.platform.name,
+      browser_platform_version: browser.platform.version,
+      browser_device_name: browser.device.name,
+      browser_mobile: browser.device.mobile?,
       browser_bot: browser.bot?,
     }
   end

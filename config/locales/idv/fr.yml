@@ -55,8 +55,8 @@ fr:
         fail_html: '<strong>Veuillez réessayer dans %{timeout}.</strong> Pour votre
           sécurité, nous limitons le nombre de fois où vous pouvez tenter de
           vérifier votre numéro de téléphone en ligne.'
-        heading: Nous n’avons pas pu associer votre nom et votre adresse à ce numéro de
-          téléphone
+        heading: Nous n'avons pas pu faire correspondre ce numéro de téléphone à
+          d'autres enregistrements
         jobfail: Un problème s’est produit et nous ne pouvons pas traiter votre demande
           pour le moment. Veuillez réessayer.
         timeout: Notre demande de vérification de vos renseignements a expiré. Veuillez
@@ -129,7 +129,8 @@ fr:
           ouvrables.
       mail_sent: Votre lettre est en route
       otp_delivery_method:
-        phone_number_html: Nous enverrons un code au <strong>%{phone}</strong>
+        phone_number_html: Nous enverrons un code à <strong>%{phone}</strong> pour
+          vérifier que le numéro de téléphone vous appartient.
       personal_key: Il s’agit de votre nouvelle clé personnelle. Notez-la et
         conservez-la dans un endroit sécuritaire. Vous en aurez besoin si vous
         perdez votre mot de passe.

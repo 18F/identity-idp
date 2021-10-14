@@ -49,7 +49,7 @@ en:
         fail_html: '<strong>Please try again in %{timeout}.</strong> For your security,
           we limit the number of times you can attempt to verify your phone
           number online.'
-        heading: We could not match your name and address to this phone number
+        heading: We could not match this phone number to other records
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again.
         timeout: Our request to verify your information timed out. Please try again.
@@ -114,7 +114,8 @@ en:
           typically take 3 to 7 business days.
       mail_sent: Your letter is on its way
       otp_delivery_method:
-        phone_number_html: We’ll send a code to <strong>%{phone}</strong>
+        phone_number_html: We’ll send a code to <strong>%{phone}</strong> to verify that
+          the phone number belongs to you.
       personal_key: This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
       phone:

@@ -51,7 +51,7 @@ lint:
 	bundle exec scss-lint
 
 lint_erb:
-	bundle exec erblint app/views
+	bundle exec erblint app/views app/components
 
 lint_yaml: normalize_yaml
 	(! git diff --name-only | grep "^config/.*\.yml$$") || (echo "Error: Run 'make normalize_yaml' to normalize YAML"; exit 1)

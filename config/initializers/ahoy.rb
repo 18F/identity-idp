@@ -5,7 +5,8 @@ Ahoy.api = false
 Ahoy.visit_duration = IdentityConfig.store.session_timeout_in_minutes.minutes
 Ahoy.server_side_visits = false
 Ahoy.geocode = false
-Ahoy.user_agent_parser = :device_detector
+Ahoy.user_agent_parser = :browser
+Ahoy.track_bots = true
 
 module Ahoy
   class Store < Ahoy::BaseStore

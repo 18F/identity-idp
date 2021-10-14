@@ -4,16 +4,19 @@ describe UserEventCreator do
   let(:user_agent) { 'A computer on the internet' }
   let(:ip_address) { '4.4.4.4' }
   let(:existing_device_cookie) { 'existing_device_cookie' }
+  let(:cookie_jar) do
+    {
+      device: existing_device_cookie,
+    }.with_indifferent_access.tap do |cookie_jar|
+      allow(cookie_jar).to receive(:permanent).and_return({})
+    end
+  end
   let(:request) do
-    request = double
-
-    allow(request).to receive(:remote_ip).and_return(ip_address)
-    allow(request).to receive(:user_agent).and_return(user_agent)
-
-    cookie_jar = { device: existing_device_cookie }.with_indifferent_access
-    allow(cookie_jar).to receive(:permanent).and_return({})
-    allow(request).to receive(:cookie_jar).and_return(cookie_jar)
-    request
+    double(
+      remote_ip: ip_address,
+      user_agent: user_agent,
+      cookie_jar: cookie_jar,
+    )
   end
   let(:user) { create(:user) }
   let(:device) { create(:device, user: user, cookie_uuid: existing_device_cookie) }
@@ -79,6 +82,16 @@ describe UserEventCreator do
         expect(event.ip).to eq(ip_address)
         expect(event.device.last_ip).to eq(ip_address)
         expect(event.device.last_used_at).to be_within(1).of(Time.zone.now)
+      end
+
+      context 'when there is no device cookie' do
+        let(:existing_device_cookie) { nil }
+
+        it 'assigns one to the device' do
+          event = subject.create_user_event(event_type, user)
+
+          expect(event.device.cookie_uuid.length).to eq(UserEventCreator::COOKIE_LENGTH)
+        end
       end
 
       it 'alerts the user if they have other devices' do

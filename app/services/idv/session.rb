@@ -81,7 +81,7 @@ module Idv
     end
 
     def complete_profile
-      ProfileActivator.new(user: current_user).call
+      current_user.pending_profile&.activate
       move_pii_to_user_session
     end
 
