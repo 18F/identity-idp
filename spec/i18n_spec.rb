@@ -143,7 +143,7 @@ RSpec.describe 'I18n' do
   end
 
   def extract_interpolation_arguments(translation)
-    translation.scan(Regexp.union(I18n::DEFAULT_INTERPOLATION_PATTERNS)).
+    translation.scan(I18n::INTERPOLATION_PATTERN).
       map(&:compact).map(&:first).to_set
   end
 

@@ -56,6 +56,10 @@ RSpec.configure do |config|
       prepend FakeAnalytics::PiiAlerter
     end
 
+    module I18n
+      include I18nHelpers
+    end
+
     begin
       REDIS_POOL.with { |namespaced| namespaced.redis.info }
     rescue RuntimeError => error
