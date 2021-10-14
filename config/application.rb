@@ -54,7 +54,7 @@ module Upaya
     config.good_job.queues = IdentityConfig.store.good_job_queues
     # see config/initializers/job_configurations.rb for cron schedule
 
-    # Configure GoodJob even if it's not enabled, to avoid errors if the good_job process is started,
+    # Configure GoodJob even if it's not enabled to avoid errors if the good_job process is started,
     # such as in local development.
     GoodJob.active_record_parent_class = 'WorkerJobApplicationRecord'
     GoodJob.retry_on_unhandled_error = false
