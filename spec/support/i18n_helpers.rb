@@ -25,12 +25,6 @@ module I18nHelpers
         if missing_args.present?
           raise "missing i18n interpolation args, key=#{key} missing=#{missing_args.join(',')}"
         end
-
-        activemodel_error_args = [:model, :attribute, :value, :object]
-        extra_args = options.keys - expected_args - known_options - activemodel_error_args
-        if extra_args.present?
-          raise "extra i18n interpolation args, key=#{key} extra=#{extra_args.join(',')}"
-        end
       end
 
       original_translate(key, throw: throw, raise: raise, locale: locale, **options)
