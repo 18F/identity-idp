@@ -32,7 +32,7 @@ fr:
     session_cleared: Pour votre sécurité, nous effacerons l’information que vous
       avez entrée si vous ne vous déplacez pas vers une nouvelle page dans les
       %{minutes} prochaines minutes.
-    session_timedout: Nous vous avons déconnecté. Pour votre sécurité, %{app}
+    session_timedout: Nous vous avons déconnecté. Pour votre sécurité, %{app_name}
       désactive votre session lorsque vous demeurez sur une page sans vous
       déplacer pendant %{minutes} minutes.
     signed_up_and_confirmed:

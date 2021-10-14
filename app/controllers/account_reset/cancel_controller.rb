@@ -41,7 +41,10 @@ module AccountReset
 
     def handle_success
       sign_out if current_user
-      flash[:success] = t('two_factor_authentication.account_reset.successful_cancel')
+      flash[:success] = t(
+        'two_factor_authentication.account_reset.successful_cancel',
+        app_name: APP_NAME,
+      )
     end
 
     def token

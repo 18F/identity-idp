@@ -15,7 +15,7 @@ describe 'idv/session_errors/throttled.html.erb' do
   context 'without an SP' do
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
-        t('idv.troubleshooting.options.contact_support', app: APP_NAME),
+        t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
         href: MarketingSite.contact_url,
       )
       expect(rendered).not_to have_link(href: return_to_sp_cancel_path)
@@ -27,7 +27,7 @@ describe 'idv/session_errors/throttled.html.erb' do
 
     it 'renders a list of troubleshooting options' do
       expect(rendered).to have_link(
-        t('idv.troubleshooting.options.contact_support', app: APP_NAME),
+        t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
         href: MarketingSite.contact_url,
       )
       expect(rendered).to have_link(

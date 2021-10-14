@@ -16,16 +16,16 @@ es:
         confirmation:
           hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono
         prompt:
-          hybrid: ¿Seguro que desea cancelar la carga de fotos de su identificación en
-            este teléfono?
+          hybrid: '¿Seguro que desea cancelar la carga de fotos de su identificación en
+            este teléfono?'
       warnings:
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.
         warning_1: No podremos verificar tu identidad
         warning_2: No guardaremos tu nombre, dirección, fecha de nacimiento ni número de
           la seguridad social
-        warning_3: No podrás acceder de forma segura a tu información usando %{app}
-        warning_4: Seguirás teniendo una cuenta Login.gov para tu dirección de correo
+        warning_3: No podrás acceder de forma segura a tu información usando %{app_name}
+        warning_4: Seguirás teniendo una cuenta %{app_name} para tu dirección de correo
           electrónico
         warning_5: Puedes gestionar o eliminar esa cuenta desde tu página de perfil
     errors:
@@ -100,14 +100,14 @@ es:
       activated_link: Contáctenos
       agencies_login: Ahora puede continuar e iniciar sesión en estas agencias.
       agency_login_html: Ahora puedes continuar e iniciar sesión en <br><strong>%{sp}</strong>.
-      cancel: Para continuar %{app} necesita verificar su identidad. Necesitamos
+      cancel: Para continuar %{app_name} necesita verificar su identidad. Necesitamos
         recopilar información personal básica, así como su información
         financiera para completar este proceso. Si no tiene la información que
         necesitamos en este momento, puede continuar más tarde.
       clear_and_start_over: Borrar mi información y empezar de nuevo
-      come_back_later: Una vez llegue tu carta, regístrate en %{app} e introduce tu
-        código de confirmación cuando se te solicite.
-      come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app}</strong>.
+      come_back_later: Una vez llegue tu carta, regístrate en %{app_name} e introduce
+        tu código de confirmación cuando se te solicite.
+      come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app_name}</strong>.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
       gpo:
@@ -136,7 +136,7 @@ es:
             no es necesario que usted sea el titular principal de la cuenta.
           - no es un teléfono virtual (como Google Voice o Skype)
           - un número de EE. UU.
-      return_to_profile: '‹ Volver a tu perfil de Login.gov'
+      return_to_profile: '‹ Volver a tu perfil de %{app_name}'
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
@@ -148,8 +148,8 @@ es:
       sessions:
         no_pii: SITIO DE PRUEBA - No utilice información personal real (sólo para
           propósitos de demostración) - SITIO DE PRUEBA
-        read_more_encrypt: Lea más sobre cómo Login.gov protege su información personal
-        review_message: Cuando vuelva a ingresar su contraseña, Login.gov cifrará sus
+        read_more_encrypt: Lea más sobre cómo %{app_name} protege su información personal
+        review_message: Cuando vuelva a ingresar su contraseña, %{app_name} cifrará sus
           datos para asegurarse de que nadie más pueda acceder a ellos.
     review:
       dob: Fecha de nacimiento
@@ -167,7 +167,7 @@ es:
       review: Revise y envíe
       session:
         phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
-        review: Vuelve a ingresar tu contraseña de Login.gov para encriptar tus datos
+        review: Vuelve a ingresar tu contraseña de %{app_name} para encriptar tus datos
     troubleshooting:
       headings:
         having_trouble: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'
@@ -175,7 +175,7 @@ es:
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
       options:
         change_phone_number: Utiliza un número de teléfono diferente
-        contact_support: Póngase en contacto con el servicio de asistencia de %{app}
+        contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
         get_help_at_sp: Obtenga ayuda en %{sp_name}
         learn_more_address_verification_options: Obtenga más información sobre la verificación por teléfono o por correo
         learn_more_verify_by_mail: Obtenga más información sobre la verificación de su

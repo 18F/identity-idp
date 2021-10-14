@@ -7,14 +7,14 @@ en:
       actions:
         cancel: Cancel and return to your profile
         delete: Delete account
-      bullet_1: You won’t have a %{app} account
+      bullet_1: You won’t have a %{app_name} account
       bullet_2_loa1: We’ll delete your email address, password, and phone number
-      bullet_2_loa3: '%{app} will delete your email address, password, phone number,
-        name, address, date of birth and Social Security number from our
+      bullet_2_loa3: '%{app_name} will delete your email address, password, phone
+        number, name, address, date of birth and Social Security number from our
         system.'
-      bullet_3: You won’t be able to securely access your information using %{app}.
-      bullet_4: We will notify the agencies you access with %{app} that you no longer
-        have an account
+      bullet_3: You won’t be able to securely access your information using %{app_name}.
+      bullet_4: We will notify the agencies you access with %{app_name} that you no
+        longer have an account
       heading: Are you sure you want to delete your account?
       instructions: Enter your password to confirm that you want to delete your account.
       subheading: If you delete your account
@@ -25,14 +25,14 @@ en:
       header: Your personal key
       print: Print
     rules_of_use:
-      check_box_to_accept: Check this box to accept the Login.gov
+      check_box_to_accept: Check this box to accept the %{app_name}
       details_html: |-
         <div class="bold margin-bottom-1">Rules of Use:</div>
         <ul>
-        <li>Explain how the Login.gov service works and what you can expect from it,</li>
-        <li>The terms under which we provide the Login.gov service to you,</li>
+        <li>Explain how the %{app_name} service works and what you can expect from it,</li>
+        <li>The terms under which we provide the %{app_name} service to you,</li>
         <li>How we use your information and your rights to that information, and</li>
-        <li>The conditions you agree to when you take certain actions on the Login.gov service.</li>
+        <li>The conditions you agree to when you take certain actions on the %{app_name} service.</li>
         </ul>
       overview_html: We’ve updated our %{link}. Please review and check the box below
         to continue.

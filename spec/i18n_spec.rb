@@ -74,7 +74,7 @@ RSpec.describe 'I18n' do
     )
   end
 
-  it 'does not have keys with missing interpolation arguments' do
+  it 'does not have keys with missing interpolation arguments (check callsites for correct args)' do
     missing_interpolation_argument_keys = []
 
     i18n.data[i18n.base_locale].select_keys do |key, _node|
@@ -131,11 +131,19 @@ RSpec.describe 'I18n' do
 
         expect(bad_keys).to be_empty
       end
+
+      it 'does not contain any translations that hardcode APP_NAME' do
+        bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
+          value.include?(APP_NAME)
+        end
+
+        expect(bad_keys).to be_empty
+      end
     end
   end
 
   def extract_interpolation_arguments(translation)
-    translation.scan(Regexp.union(I18n::DEFAULT_INTERPOLATION_PATTERNS)).
+    translation.scan(I18n::INTERPOLATION_PATTERN).
       map(&:compact).map(&:first).to_set
   end
 

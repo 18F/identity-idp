@@ -24,9 +24,9 @@ es:
       are_you_sure: '¿Seguro que quieres eliminar tu cuenta?'
       info: Eliminar su cuenta debe ser su último recurso si su cuenta está bloqueada.
         No podrá recuperar ninguna información vinculada a su cuenta.
-        Notificaremos a las agencias a las que acceda con %{app} que ya no tiene
-        una cuenta. Cuando su cuenta sea eliminada podrá crear una nueva usando
-        la misma dirección de correo electrónico.
+        Notificaremos a las agencias a las que acceda con %{app_name} que ya no
+        tiene una cuenta. Cuando su cuenta sea eliminada podrá crear una nueva
+        usando la misma dirección de correo electrónico.
       title: Eliminar tu cuenta debería ser tu último recurso
     pending:
       cancel_request: Cancelar petición

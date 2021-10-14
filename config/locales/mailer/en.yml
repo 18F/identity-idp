@@ -1,7 +1,7 @@
 ---
 en:
   mailer:
-    about: About %{app}
+    about: About %{app_name}
     email_reuse_notice:
       subject: This email address is already associated with an account.
     help: If you need help, visit %{link}

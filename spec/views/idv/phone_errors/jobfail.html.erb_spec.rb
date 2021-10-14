@@ -24,7 +24,7 @@ describe 'idv/phone_errors/jobfail.html.erb' do
 
   it 'shows contact support option' do
     expect(rendered).to have_link(
-      t('idv.troubleshooting.options.contact_support', app: APP_NAME),
+      t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
       href: MarketingSite.contact_url,
     )
   end

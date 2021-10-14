@@ -1,13 +1,13 @@
-<% title t('service_providers.errors.inactive.heading', sp_name: @sp_name) %>
+<% title t('service_providers.errors.inactive.heading', sp_name: @sp_name, app_name: APP_NAME) %>
 
 <%= image_tag(asset_url('alert/fail-x.svg'), width: 54, alt: '') %>
 
 <h3 class="margin-bottom-1 margin-top-4">
-  <%= t('service_providers.errors.inactive.heading', sp_name: @sp_name) %>
+  <%= t('service_providers.errors.inactive.heading', sp_name: @sp_name, app_name: APP_NAME) %>
 </h3>
 
 <p>
-  <%= t('service_providers.errors.inactive.instructions', sp_name: @sp_name) %>
+  <%= t('service_providers.errors.inactive.instructions', sp_name: @sp_name, app_name: APP_NAME) %>
 </p>
 
 <p>
@@ -16,7 +16,7 @@
 
 <%=
   link_to(
-    t('service_providers.errors.inactive.button_text'),
+    t('service_providers.errors.inactive.button_text', app_name: APP_NAME),
     root_path,
     class: 'usa-button usa-button--wide usa-button--big margin-top-3'
   )

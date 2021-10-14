@@ -8,7 +8,7 @@ module TwoFactorAuthCode
       t(
         "instructions.mfa.#{two_factor_authentication_method}.confirm_code_html",
         email: content_tag(:strong, user_email),
-        app: content_tag(:strong, APP_NAME),
+        app_name: content_tag(:strong, APP_NAME),
       )
     end
 

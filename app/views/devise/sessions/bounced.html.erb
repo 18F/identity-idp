@@ -5,6 +5,7 @@
 <p class='margin-top-2 margin-bottom-2'>
   <%= t(
         'instructions.sp_handoff_bounced',
+        app_name: APP_NAME,
         sp_name: @sp_name,
         sp_link: @sp_link.blank? ? @sp_name : link_to(@sp_name, @sp_link),
       ) %>

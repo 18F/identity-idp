@@ -1,3 +1,4 @@
+export { default as AppContext } from './app';
 export { default as AssetContext } from './asset';
 export { default as DeviceContext } from './device';
 export { default as AcuantContext, Provider as AcuantContextProvider } from './acuant';

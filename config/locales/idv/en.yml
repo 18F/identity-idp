@@ -23,8 +23,8 @@ en:
         warning_1: We won’t be able to verify your identity
         warning_2: We won’t keep a record of your name, address, birth date, or Social
           Security number
-        warning_3: You won’t be able to securely access your information using %{app}
-        warning_4: You’ll still have a Login.gov account for your email address
+        warning_3: You won’t be able to securely access your information using %{app_name}
+        warning_4: You’ll still have a %{app_name} account for your email address
         warning_5: You can manage or delete that account on your profile page
     errors:
       incorrect_password: The password you entered is not correct.
@@ -94,14 +94,14 @@ en:
       activated_link: contact us
       agencies_login: You can now continue to and sign in to these agencies.
       agency_login_html: You can now continue to and into <br><strong>%{sp}</strong>.
-      cancel: To continue, %{app} needs to verify your identity. We need to collect
-        some basic personal information as well as some financial information
-        from you to complete this process. If you don’t have the information we
-        need at this time you can continue later.
+      cancel: To continue, %{app_name} needs to verify your identity. We need to
+        collect some basic personal information as well as some financial
+        information from you to complete this process. If you don’t have the
+        information we need at this time you can continue later.
       clear_and_start_over: Clear my information and start over
-      come_back_later: Once your letter arrives, sign into %{app}, and enter your
+      come_back_later: Once your letter arrives, sign into %{app_name}, and enter your
         confirmation code when prompted.
-      come_back_later_no_sp_html: You can return to your <strong>%{app} account</strong> for now.
+      come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       gpo:
@@ -130,7 +130,7 @@ en:
             primary account holder.
           - not be a virtual phone (such as Google Voice or Skype)
           - be a U.S. number
-      return_to_profile: '‹ Return to your Login.gov profile'
+      return_to_profile: '‹ Return to your %{app_name} profile'
       review:
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
@@ -141,8 +141,8 @@ en:
       sessions:
         no_pii: TEST SITE - Do not use real personal information (demo purposes only) -
           TEST SITE
-        read_more_encrypt: Read more about how Login.gov protects your personal information
-        review_message: When you re-enter your password, Login.gov will protect the
+        read_more_encrypt: Read more about how %{app_name} protects your personal information
+        review_message: When you re-enter your password, %{app_name} will protect the
           information you’ve given us, so that only you can access it
     review:
       dob: Date of birth
@@ -160,7 +160,7 @@ en:
       review: Review and submit
       session:
         phone: Enter a phone number with your name on the plan
-        review: Re-enter your Login.gov password to protect your data
+        review: Re-enter your %{app_name} password to protect your data
     troubleshooting:
       headings:
         having_trouble: 'Having trouble? Here’s what you can do:'
@@ -168,7 +168,7 @@ en:
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
       options:
         change_phone_number: Use a different phone number
-        contact_support: Contact %{app} Support
+        contact_support: Contact %{app_name} Support
         get_help_at_sp: Get help at %{sp_name}
         learn_more_address_verification_options: Learn more about verifying by phone or mail
         learn_more_verify_by_mail: Learn more about verifying your address by mail

@@ -1,7 +1,7 @@
 ---
 es:
   mailer:
-    about: Sobre %{app}
+    about: Sobre %{app_name}
     email_reuse_notice:
       subject: Este email ya está asociado a una cuenta.
     help: Si necesita ayuda, visite %{link}

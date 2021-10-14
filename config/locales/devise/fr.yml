@@ -6,10 +6,10 @@ fr:
       confirmed: Vous avez confirmé votre adresse courriel
       confirmed_but_must_set_password: Vous avez confirmé votre adresse courriel
       confirmed_but_remove_from_other_account: Cette adresse électronique est déjà
-        associée à un compte Login.gov, nous ne pouvons donc pas l’ajouter à un
-        autre compte. Vous devez d’abord le supprimer ou le supprimer du compte
-        auquel il est associé. Pour ce faire, connectez-vous avec cette adresse
-        e-mail.
+        associée à un compte %{app_name}, nous ne pouvons donc pas l’ajouter à
+        un autre compte. Vous devez d’abord le supprimer ou le supprimer du
+        compte auquel il est associé. Pour ce faire, connectez-vous avec cette
+        adresse e-mail.
       confirmed_but_sign_in: Vous avez confirmé votre adresse email. Veuillez vous
         connecter pour voir votre profil.
       sign_in: Veuillez vous connecter de nouveau.

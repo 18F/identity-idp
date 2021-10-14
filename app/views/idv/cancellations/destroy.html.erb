@@ -3,7 +3,7 @@
       title: t('titles.idv.cancelled'),
       heading: @hybrid_session ?
         t('idv.cancel.headings.confirmation.hybrid') :
-        t('headings.cancellations.confirmation'),
+        t('headings.cancellations.confirmation', app_name: APP_NAME),
     ) do %>
       <% if @hybrid_session %>
         <p><%= t('doc_auth.instructions.switch_back') %></p>
@@ -11,8 +11,8 @@
       <% else %>
         <ul class="red-dots margin-bottom-2">
           <li><%= t('idv.cancel.warnings.warning_2') %></li>
-          <li><%= t('idv.cancel.warnings.warning_3', app: APP_NAME) %></li>
-          <li><%= t('idv.cancel.warnings.warning_4') %></li>
+          <li><%= t('idv.cancel.warnings.warning_3', app_name: APP_NAME) %></li>
+          <li><%= t('idv.cancel.warnings.warning_4', app_name: APP_NAME) %></li>
           <li><%= t('idv.cancel.warnings.warning_5') %></li>
         </ul>
         <%= link_to(

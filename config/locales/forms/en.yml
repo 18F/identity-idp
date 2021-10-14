@@ -71,7 +71,7 @@ en:
         delete: Remove phone
     piv_cac_delete:
       caution: If you remove your PIV/CAC card you won’t be able to use it to access
-        your Login.gov account.
+        your %{app_name} account.
       confirm: Are you sure you want to remove your PIV/CAC card?
     piv_cac_login:
       submit: Insert your PIV/CAC
@@ -93,7 +93,7 @@ en:
       show: Show Social Security Number
     totp_delete:
       caution: If you remove your authentication app you won’t be able to use it to
-        access your Login.gov account.
+        access your %{app_name} account.
       confirm: Are you sure you want to remove your authentication app?
     totp_setup:
       totp_intro_html: Set up an authentication app to sign in using temporary
@@ -119,11 +119,11 @@ en:
       title: Confirm your account
     webauthn_delete:
       caution: If you remove your security key you won’t be able to use it to access
-        your Login.gov account.
+        your %{app_name} account.
       confirm: Are you sure you want to remove your security key?
     webauthn_setup:
       continue: Continue
-      instructions_text: Press the button on your security key to register it with Login.gov
+      instructions_text: Press the button on your security key to register it with %{app_name}
       instructions_title: Connect your security key
       intro_html: Add a security key as an authentication method to your
         account.  Your security key must support the FIDO standard.  You can add

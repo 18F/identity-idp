@@ -23,7 +23,7 @@ feature 'idv phone step' do
 
       click_idv_continue
 
-      expect(page).to have_content(t('idv.titles.session.review'))
+      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
       expect(page).to have_current_path(idv_review_path)
     end
 
@@ -83,7 +83,7 @@ feature 'idv phone step' do
       click_submit_default
 
       visit idv_phone_path
-      expect(page).to have_content(t('idv.titles.session.review'))
+      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
       expect(page).to have_current_path(idv_review_path)
 
       fill_in 'Password', with: user_password

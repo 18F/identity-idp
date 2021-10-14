@@ -32,7 +32,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       click_on t('forms.buttons.cancel')
 
-      expect(page).to have_content(t('headings.cancellations.confirmation'))
+      expect(page).to have_content(t('headings.cancellations.confirmation', app_name: APP_NAME))
       expect(current_path).to eq(idv_cancel_path)
 
       expect(page).to have_link(
@@ -56,7 +56,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       click_on t('forms.buttons.cancel')
 
-      expect(page).to have_content(t('headings.cancellations.confirmation'))
+      expect(page).to have_content(t('headings.cancellations.confirmation', app_name: APP_NAME))
       expect(current_path).to eq(idv_cancel_path)
       expect(page).to have_link(
         "‹ #{t('links.back_to_sp', sp: t('links.my_account'))}",

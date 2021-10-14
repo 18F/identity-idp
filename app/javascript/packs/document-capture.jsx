@@ -1,5 +1,6 @@
 import { render } from 'react-dom';
 import {
+  AppContext,
   DocumentCapture,
   AssetContext,
   DeviceContext,
@@ -133,39 +134,45 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
   const keepAlive = () =>
     window.fetch(keepAliveEndpoint, { method: 'POST', headers: { 'X-CSRF-Token': csrf } });
 
+  const appContext = {
+    appName: /** @type string */ (appRoot.dataset.appName),
+  };
+
   render(
-    <DeviceContext.Provider value={device}>
-      <AnalyticsContext.Provider value={{ addPageAction, noticeError }}>
-        <AcuantContextProvider
-          credentials={getMetaContent('acuant-sdk-initialization-creds')}
-          endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
-          glareThreshold={glareThreshold}
-          sharpnessThreshold={sharpnessThreshold}
-        >
-          <UploadContextProvider
-            endpoint={/** @type {string} */ (appRoot.getAttribute('data-endpoint'))}
-            statusEndpoint={/** @type {string} */ (appRoot.getAttribute('data-status-endpoint'))}
-            statusPollInterval={
-              Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined
-            }
-            method={isAsyncForm ? 'PUT' : 'POST'}
-            csrf={csrf}
-            isMockClient={isMockClient}
-            backgroundUploadURLs={backgroundUploadURLs}
-            backgroundUploadEncryptKey={backgroundUploadEncryptKey}
-            formData={formData}
+    <AppContext.Provider value={appContext}>
+      <DeviceContext.Provider value={device}>
+        <AnalyticsContext.Provider value={{ addPageAction, noticeError }}>
+          <AcuantContextProvider
+            credentials={getMetaContent('acuant-sdk-initialization-creds')}
+            endpoint={getMetaContent('acuant-sdk-initialization-endpoint')}
+            glareThreshold={glareThreshold}
+            sharpnessThreshold={sharpnessThreshold}
           >
-            <I18nContext.Provider value={i18n.strings}>
-              <ServiceProviderContextProvider value={getServiceProvider()}>
-                <AssetContext.Provider value={assets}>
-                  <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
-                </AssetContext.Provider>
-              </ServiceProviderContextProvider>
-            </I18nContext.Provider>
-          </UploadContextProvider>
-        </AcuantContextProvider>
-      </AnalyticsContext.Provider>
-    </DeviceContext.Provider>,
+            <UploadContextProvider
+              endpoint={/** @type {string} */ (appRoot.getAttribute('data-endpoint'))}
+              statusEndpoint={/** @type {string} */ (appRoot.getAttribute('data-status-endpoint'))}
+              statusPollInterval={
+                Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined
+              }
+              method={isAsyncForm ? 'PUT' : 'POST'}
+              csrf={csrf}
+              isMockClient={isMockClient}
+              backgroundUploadURLs={backgroundUploadURLs}
+              backgroundUploadEncryptKey={backgroundUploadEncryptKey}
+              formData={formData}
+            >
+              <I18nContext.Provider value={i18n.strings}>
+                <ServiceProviderContextProvider value={getServiceProvider()}>
+                  <AssetContext.Provider value={assets}>
+                    <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
+                  </AssetContext.Provider>
+                </ServiceProviderContextProvider>
+              </I18nContext.Provider>
+            </UploadContextProvider>
+          </AcuantContextProvider>
+        </AnalyticsContext.Provider>
+      </DeviceContext.Provider>
+    </AppContext.Provider>,
     appRoot,
   );
 });

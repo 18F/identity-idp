@@ -24,7 +24,7 @@ fr:
       info: La suppression de votre compte devrait être votre dernier recours si vous
         êtes en lock-out de votre compte Vous ne pourrez pas récupérer les
         informations liées à ton compte. Nous informerons les agences auxquelles
-        vous accédez avec %{app} que vous ne plus avoir un compte. Une fois
+        vous accédez avec %{app_name} que vous ne plus avoir un compte. Une fois
         votre compte supprimé, vous pouvez en créer un nouveau en utilisant la
         même adresse e-mail.
       title: La suppression de votre compte devrait être votre dernier recours

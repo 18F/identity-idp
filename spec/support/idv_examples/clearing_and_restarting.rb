@@ -32,7 +32,7 @@ shared_examples 'clearing and restarting idv' do
 
     gpo_confirmation = GpoConfirmation.order(created_at: :desc).first
 
-    expect(page).to have_content(t('idv.messages.come_back_later', app: APP_NAME))
+    expect(page).to have_content(t('idv.messages.come_back_later', app_name: APP_NAME))
     expect(page).to have_current_path(idv_come_back_later_path)
     expect(user.reload.decorate.identity_verified?).to eq(false)
     expect(user.pending_profile?).to eq(true)

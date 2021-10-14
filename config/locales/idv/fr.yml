@@ -27,8 +27,8 @@ fr:
           adresse, votre date de naissance, ou votre numéro de sécurité sociale
           américain.
         warning_3: Vous ne pourrez pas accéder de façon sécurisée à vos renseignements
-          en utilisant %{app}
-        warning_4: Votre adresse e-mail sera encore associée à un compte Login.gov
+          en utilisant %{app_name}
+        warning_4: Votre adresse e-mail sera encore associée à un compte %{app_name}
         warning_5: Vous pouvez gérer ou supprimer ce compte sur votre page de profil
     errors:
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
@@ -105,17 +105,17 @@ fr:
       agencies_login: Vous pouvez maintenant continuer à vous connecter à ces agences.
       agency_login_html: Vous pouvez maintenant accéder et vous connecter à
         <br><strong>%{sp}</strong>.
-      cancel: Pour continuer, %{app} doit vérifier votre identité. Nous devons
+      cancel: Pour continuer, %{app_name} doit vérifier votre identité. Nous devons
         recueillir quelques informations personnelles de base ainsi que
         certaines informations financières pour compléter ce processus. Si vous
         n’avez pas cette information sous la main, vous pouvez continuer plus
         tard.
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later: Une fois que votre lettre vous sera parvenue, veuillez vous
-        connecter à %{app}, puis saisissez votre code de confirmation lorsque
-        vous y serez invité.
+        connecter à %{app_name}, puis saisissez votre code de confirmation
+        lorsque vous y serez invité.
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
-        %{app}</strong> pour le moment.
+        %{app_name}</strong> pour le moment.
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le moment.
       confirm: Vous avez crypté vos données vérifiées
       gpo:
@@ -147,7 +147,7 @@ fr:
             nécessaire que vous soyez le titulaire principal du compte.
           - pas un téléphone virtuel (comme Google Voice ou Skype)
           - un numéro américain
-      return_to_profile: '‹ Revenir à votre profil Login.gov'
+      return_to_profile: '‹ Revenir à votre profil %{app_name}'
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
           %{phone_message}
@@ -161,9 +161,9 @@ fr:
       sessions:
         no_pii: SITE DE TEST - N’utilisez pas de véritables données personnelles (il
           s’agit d’une démonstration seulement) - SITE DE TEST
-        read_more_encrypt: En savoir plus sur la façon dont Login.gov protège vos
+        read_more_encrypt: En savoir plus sur la façon dont %{app_name} protège vos
           informations personnelles
-        review_message: Lorsque vous entrez à nouveau votre mot de passe, Login.gov
+        review_message: Lorsque vous entrez à nouveau votre mot de passe, %{app_name}
           crypte vos données pour vous assurer que personne ne peut y accéder.
     review:
       dob: Date de naissance
@@ -181,7 +181,7 @@ fr:
       review: Réviser et soumettre
       session:
         phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
-        review: Entrez à nouveau votre mot de passe Login.gov pour crypter vos données
+        review: Entrez à nouveau votre mot de passe %{app_name} pour crypter vos données
     troubleshooting:
       headings:
         having_trouble: 'Des difficultés? Voici ce que vous pouvez faire:'
@@ -190,7 +190,7 @@ fr:
           obtenir de l’aide:'
       options:
         change_phone_number: Utiliser un autre numéro de téléphone
-        contact_support: Contacter le service d’assistance de %{app}
+        contact_support: Contacter le service d’assistance de %{app_name}
         get_help_at_sp: Demandez de l’aide à %{sp_name}
         learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier

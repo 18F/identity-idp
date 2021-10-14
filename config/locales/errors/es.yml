@@ -4,11 +4,11 @@ es:
     account_reset:
       cancel_token_invalid: el token de cancelación no es válido
       cancel_token_missing: falta el token de cancelación
-      granted_token_expired: El enlace para eliminar su cuenta de Login.gov ha
+      granted_token_expired: El enlace para eliminar su cuenta de %{app_name} ha
         caducado. Crea otra solicitud para eliminar tu cuenta.
-      granted_token_invalid: El enlace para eliminar tu cuenta de Login.gov no es
+      granted_token_invalid: El enlace para eliminar tu cuenta de %{app_name} no es
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
-      granted_token_missing: El enlace para eliminar tu cuenta de Login.gov no es
+      granted_token_missing: El enlace para eliminar tu cuenta de %{app_name} no es
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
     attributes:
       password:

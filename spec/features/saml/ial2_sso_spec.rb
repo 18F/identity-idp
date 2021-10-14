@@ -62,7 +62,7 @@ feature 'IAL2 Single Sign On' do
     it 'shows user the start page with accordion' do
       sp_content = [
         'Test SP',
-        t('headings.create_account_with_sp.sp_text'),
+        t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
       ].join(' ')
 
       visit saml_ial2_request_url

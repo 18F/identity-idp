@@ -30,13 +30,16 @@ describe 'layouts/user_mailer.html.erb' do
   it 'includes the support text and link' do
     expect(rendered).to have_content(t('mailer.no_reply'))
     expect(rendered).to have_content(
-      t('mailer.help', app: APP_NAME, link: MarketingSite.nice_help_url),
+      t('mailer.help', app_name: APP_NAME, link: MarketingSite.nice_help_url),
     )
     expect(rendered).to have_link(MarketingSite.nice_help_url, href: MarketingSite.help_url)
   end
 
   it 'includes link to About Login.gov' do
-    expect(rendered).to have_link(t('mailer.about', app: APP_NAME), href: MarketingSite.base_url)
+    expect(rendered).to have_link(
+      t('mailer.about', app_name: APP_NAME),
+      href: MarketingSite.base_url,
+    )
   end
 
   it 'includes link to the privacy policy' do

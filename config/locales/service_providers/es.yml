@@ -4,10 +4,10 @@ es:
     errors:
       generic_sp_name: Esta agencia
       inactive:
-        button_text: Ver mi cuenta de Login.gov
-        heading: '%{sp_name} ya no utiliza Login.gov'
-        instructions: '%{sp_name} ya no utiliza Login.gov como servicio de acceso a su
-          sitio web. Si ya ha creado una cuenta de Login.gov, todavía está
+        button_text: Ver mi cuenta de %{app_name}
+        heading: '%{sp_name} ya no utiliza %{app_name}'
+        instructions: '%{sp_name} ya no utiliza %{app_name} como servicio de acceso a su
+          sitio web. Si ya ha creado una cuenta de %{app_name}, todavía está
           activa y se puede usar para acceder a otros sitios web del gobierno
           participante.'
         instructions2: Por favor, visite la agencia para contactarlos y obtener más
@@ -17,13 +17,13 @@ es:
         forgot_password: Si tiene un perfil de %{sp_name} existente, favor de usar la
           dirección de correo electrónico primaria o secundaria que usó para
           %{sp_name} para <a href=%{sp_create_link}>crear su nueva cuenta de
-          Login.gov</a>. <p><a href="https://login.gov/help/">Obtenga más
+          %{app_name}</a>. <p><a href="https://login.gov/help/">Obtenga más
           información.</a>
         sign_in: <b>¿Ha venido de %{sp_name}?</b><p>Si tiene un perfil de %{sp_name}
           existente, favor de usar la dirección de correo electrónico primaria o
           secundaria que usó para %{sp_name} para <a
-          href=%{sp_create_link}>crear un nueva cuenta de Login.gov</a> <p><a
+          href=%{sp_create_link}>crear un nueva cuenta de %{app_name}</a> <p><a
           href="https://login.gov/help/">Obtenga más información.</a>
-        sign_up: Por favor crea un Login.gov cuenta usando la misma dirección de correo
-          electrónico que utiliza para %{sp_name}. <p><a
+        sign_up: Por favor crea un %{app_name} cuenta usando la misma dirección de
+          correo electrónico que utiliza para %{sp_name}. <p><a
           href="https://login.gov/help/">Obtenga más información.</a>

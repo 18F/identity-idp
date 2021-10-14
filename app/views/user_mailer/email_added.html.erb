@@ -1,5 +1,5 @@
 <p class="lead">
-  <%= t('user_mailer.email_added.header') %>
+  <%= t('user_mailer.email_added.header', app_name: APP_NAME) %>
 </p>
 
 <table class="spacer">
@@ -22,7 +22,7 @@
 
 <p>
   <%= t('user_mailer.email_added.help',
-        app: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'),
+        app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'),
         help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
         contact_link: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url)) %>
 </p>

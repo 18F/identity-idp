@@ -44,7 +44,7 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
       expected_help_text = t(
         'instructions.mfa.piv_cac.confirm_piv_cac_html',
         email: content_tag(:strong, user_email),
-        app: content_tag(:strong, APP_NAME),
+        app_name: content_tag(:strong, APP_NAME),
       )
       expect(presenter.piv_cac_help).to eq expected_help_text
     end

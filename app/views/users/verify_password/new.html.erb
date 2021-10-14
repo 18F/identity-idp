@@ -1,11 +1,11 @@
 <% title t('idv.titles.review') %>
 
 <h1>
-  <%= t('idv.titles.session.review') %>
+  <%= t('idv.titles.session.review', app_name: APP_NAME) %>
 </h1>
 
 <p>
-  <%= t('idv.messages.sessions.review_message') %>
+  <%= t('idv.messages.sessions.review_message', app_name: APP_NAME) %>
 </p>
 
 <%= validated_form_for(current_user, url: update_verify_password_path,

@@ -4,12 +4,12 @@ fr:
     account_reset:
       cancel_token_invalid: le jeton d’annulation n’est pas valide
       cancel_token_missing: le jeton d’annulation est manquant
-      granted_token_expired: Le lien pour supprimer votre compte Login.gov a expiré.
+      granted_token_expired: Le lien pour supprimer votre compte %{app_name} a expiré.
         Veuillez créer une autre demande pour supprimer votre compte.
-      granted_token_invalid: Le lien de suppression de votre compte Login.gov n’est
+      granted_token_invalid: Le lien de suppression de votre compte %{app_name} n’est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre
         e-mail.
-      granted_token_missing: Le lien de suppression de votre compte Login.gov n’est
+      granted_token_missing: Le lien de suppression de votre compte %{app_name} n’est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre
         e-mail.
     attributes:
