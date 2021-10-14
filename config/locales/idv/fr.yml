@@ -112,8 +112,8 @@ fr:
         tard.
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later: Une fois que votre lettre vous sera parvenue, veuillez vous
-        connecter à %{app_name}, puis saisissez votre code de confirmation lorsque
-        vous y serez invité.
+        connecter à %{app_name}, puis saisissez votre code de confirmation
+        lorsque vous y serez invité.
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
         %{app_name}</strong> pour le moment.
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le moment.

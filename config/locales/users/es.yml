@@ -10,12 +10,12 @@ es:
       bullet_1: Usted no tendrá una %{app_name} cuenta.
       bullet_2_loa1: Eliminaremos su dirección de correo electrónico, contraseña y
         número de teléfono
-      bullet_2_loa3: '%{app_name} borrará su email, contraseña, número de teléfono, nombre,
-        dirección, fecha de nacimiento y número de Seguro Social de nuestro
-        sistema.'
+      bullet_2_loa3: '%{app_name} borrará su email, contraseña, número de teléfono,
+        nombre, dirección, fecha de nacimiento y número de Seguro Social de
+        nuestro sistema.'
       bullet_3: Usted no podrá tener acceso seguro a su información usando %{app_name}
-      bullet_4: Notificaremos a las agencias a las que acceda con %{app_name} que no ya
-        tengo una cuenta
+      bullet_4: Notificaremos a las agencias a las que acceda con %{app_name} que no
+        ya tengo una cuenta
       heading: '¿Está seguro que desea eliminar su cuenta?'
       instructions: Ingrese su contraseña para confirmar que desea eliminar su cuenta.
       subheading: Si elimina su cuenta

@@ -208,10 +208,10 @@ fr:
         vous aurez confirmé votre identifiant à l’aide de votre téléphone.
       link_sent_complete_nojs: Quand vous aurez fini, cliquez sur « Continuer » ici
         pour terminer la vérification de votre identité.
-      privacy_html: "%{app_name} est un site gouvernemental sécurisé qui respecte les
+      privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
         n’utilisons vos données uniquement pour vérifier votre identité. %{link}
-        sur nos mesures de confidentialité et de sécurité."
+        sur nos mesures de confidentialité et de sécurité.'
       secure_account: Après avoir vérifié votre identité, nous vous demanderons de
         crypter votre compte. Le cryptage garantit la protection de vos données
         et seul vous, le titulaire du compte, pourrez accéder à vos informations
@@ -260,9 +260,9 @@ fr:
         l’accès à la caméra.'
       document_capture_selfie_consent_banner: "%{app_name} a besoin d’une autorisation
         pour utiliser la caméra de votre appareil\n"
-      document_capture_selfie_consent_blocked: "%{app_name} a besoin d’une
+      document_capture_selfie_consent_blocked: '%{app_name} a besoin d’une
         autorisation pour utiliser votre caméra afin que vous puissiez prouver
-        que votre identifiant vous appartient."
+        que votre identifiant vous appartient.'
       document_capture_selfie_consent_blocked_action: Vérifiez les paramètres de votre
         navigateur Web pour ce site ou les paramètres système de votre
         ordinateur pour permettre à %{app_name} d’accéder à la caméra.

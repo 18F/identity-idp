@@ -105,8 +105,8 @@ es:
         financiera para completar este proceso. Si no tiene la información que
         necesitamos en este momento, puede continuar más tarde.
       clear_and_start_over: Borrar mi información y empezar de nuevo
-      come_back_later: Una vez llegue tu carta, regístrate en %{app_name} e introduce tu
-        código de confirmación cuando se te solicite.
+      come_back_later: Una vez llegue tu carta, regístrate en %{app_name} e introduce
+        tu código de confirmación cuando se te solicite.
       come_back_later_no_sp_html: Ahora puedes volver a tu <strong>cuenta de %{app_name}</strong>.
       come_back_later_sp_html: Ahora puedes volver a <strong>%{sp}</strong>.
       confirm: Usted ha encriptado sus datos verificados.
