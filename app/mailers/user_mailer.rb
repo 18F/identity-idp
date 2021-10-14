@@ -72,7 +72,7 @@ class UserMailer < ActionMailer::Base
 
   def account_does_not_exist(email, request_id)
     @sign_up_email_url = sign_up_email_url(request_id: request_id, locale: locale_url_param)
-    mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
+    mail(to: email, subject: t('user_mailer.account_does_not_exist.subject', app_name: APP_NAME))
   end
 
   def personal_key_sign_in(user, email, disavowal_token:)
@@ -110,7 +110,10 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @header = t('user_mailer.account_reset_request.header')
-      mail(to: email_address.email, subject: t('user_mailer.account_reset_request.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
+      )
     end
   end
 
@@ -118,7 +121,10 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
-      mail(to: email_address.email, subject: t('user_mailer.account_reset_granted.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_reset_granted.subject', app_name: APP_NAME),
+      )
     end
   end
 
@@ -136,7 +142,10 @@ class UserMailer < ActionMailer::Base
 
   def please_reset_password(user, email_address)
     with_user_locale(user) do
-      mail(to: email_address, subject: t('user_mailer.please_reset_password.subject'))
+      mail(
+        to: email_address,
+        subject: t('user_mailer.please_reset_password.subject', app_name: APP_NAME),
+      )
     end
   end
 
