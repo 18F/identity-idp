@@ -10,6 +10,7 @@ describe Idv::PhoneController do
   end
   let(:normalized_phone) { '7035550000' }
   let(:bad_phone) { '+1 (703) 555-5555' }
+  let(:international_phone) { '+81 54 354 3643' }
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -122,6 +123,13 @@ describe Idv::PhoneController do
 
       it 'renders #new' do
         put :create, params: { idv_phone_form: { phone: '703' } }
+
+        expect(flash[:warning]).to be_nil
+        expect(response).to render_template(:new)
+      end
+
+      it 'disallows non-US numbers' do
+        put :create, params: { idv_phone_form: { phone: international_phone } }
 
         expect(flash[:warning]).to be_nil
         expect(response).to render_template(:new)

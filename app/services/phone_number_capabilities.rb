@@ -10,6 +10,23 @@ class PhoneNumberCapabilities
     @phone_confirmed = phone_confirmed
   end
 
+  # @param [Symbol] method
+  def supports?(method)
+    case method
+    when :sms
+      supports_sms?
+    when :voice
+      supports_voice?
+    else
+      raise "Unknown method=#{method}"
+    end
+  end
+
+  # @param [Array<Symbol>] methods
+  def supports_all?(methods)
+    methods.all? { |method| supports?(method) }
+  end
+
   def sms_only?
     supports_sms? && !supports_voice?
   end
@@ -57,6 +74,6 @@ class PhoneNumberCapabilities
   end
 
   def parsed_phone
-    Phonelib.parse(phone)
+    @parsed_phone ||= Phonelib.parse(phone)
   end
 end
