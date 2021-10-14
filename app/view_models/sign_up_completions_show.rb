@@ -39,14 +39,14 @@ class SignUpCompletionsShow
     return handoff_heading if handoff?
 
     if requested_ial == 'ial2'
-      return content_tag(:strong, I18n.t('titles.sign_up.verified', app: APP_NAME))
+      return content_tag(:strong, I18n.t('titles.sign_up.verified', app_name: APP_NAME))
     end
 
     safe_join(
       [I18n.t(
         'titles.sign_up.completion_html',
         accent: content_tag(:strong, I18n.t('titles.sign_up.loa1')),
-        app: APP_NAME,
+        app_name: APP_NAME,
       ).html_safe],
     )
   end
@@ -54,12 +54,12 @@ class SignUpCompletionsShow
 
   def title
     if requested_ial == 'ial2'
-      I18n.t('titles.sign_up.verified', app: APP_NAME)
+      I18n.t('titles.sign_up.verified', app_name: APP_NAME)
     else
       I18n.t(
         'titles.sign_up.completion_html',
         accent: I18n.t('titles.sign_up.loa1'),
-        app: APP_NAME,
+        app_name: APP_NAME,
       )
     end
   end

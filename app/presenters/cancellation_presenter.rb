@@ -20,10 +20,10 @@ class CancellationPresenter < FailurePresenter
 
   def cancellation_warnings
     [
-      t('users.delete.bullet_1', app: APP_NAME),
+      t('users.delete.bullet_1', app_name: APP_NAME),
       t('users.delete.bullet_2_loa1'),
-      t('users.delete.bullet_3', app: APP_NAME),
-      t('users.delete.bullet_4', app: APP_NAME),
+      t('users.delete.bullet_3', app_name: APP_NAME),
+      t('users.delete.bullet_4', app_name: APP_NAME),
     ]
   end
 

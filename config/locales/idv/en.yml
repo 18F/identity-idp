@@ -99,9 +99,9 @@ en:
         information from you to complete this process. If you don’t have the
         information we need at this time you can continue later.
       clear_and_start_over: Clear my information and start over
-      come_back_later: Once your letter arrives, sign into %{app}, and enter your
+      come_back_later: Once your letter arrives, sign into %{app_name}, and enter your
         confirmation code when prompted.
-      come_back_later_no_sp_html: You can return to your <strong>%{app} account</strong> for now.
+      come_back_later_no_sp_html: You can return to your <strong>%{app_name} account</strong> for now.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       gpo:
@@ -168,7 +168,7 @@ en:
         need_assistance: 'Need immediate assistance? Here’s how to get help:'
       options:
         change_phone_number: Use a different phone number
-        contact_support: Contact %{app} Support
+        contact_support: Contact %{app_name} Support
         get_help_at_sp: Get help at %{sp_name}
         learn_more_address_verification_options: Learn more about verifying by phone or mail
         learn_more_verify_by_mail: Learn more about verifying your address by mail

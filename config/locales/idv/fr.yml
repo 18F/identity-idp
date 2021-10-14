@@ -112,10 +112,10 @@ fr:
         tard.
       clear_and_start_over: Supprimer mes données et recommencer
       come_back_later: Une fois que votre lettre vous sera parvenue, veuillez vous
-        connecter à %{app}, puis saisissez votre code de confirmation lorsque
+        connecter à %{app_name}, puis saisissez votre code de confirmation lorsque
         vous y serez invité.
       come_back_later_no_sp_html: Vous pouvez revenir à votre <strong>compte
-        %{app}</strong> pour le moment.
+        %{app_name}</strong> pour le moment.
       come_back_later_sp_html: Vous pouvez revenir à <strong>%{sp}</strong> pour le moment.
       confirm: Vous avez crypté vos données vérifiées
       gpo:
@@ -190,7 +190,7 @@ fr:
           obtenir de l’aide:'
       options:
         change_phone_number: Utiliser un autre numéro de téléphone # Temporary
-        contact_support: Contacter le service d’assistance de %{app}
+        contact_support: Contacter le service d’assistance de %{app_name}
         get_help_at_sp: Demandez de l’aide à %{sp_name}
         learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier

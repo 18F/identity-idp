@@ -10,12 +10,12 @@ class ConfirmationEmailPresenter
     if user.confirmed_at?
       I18n.t(
         'user_mailer.email_confirmation_instructions.first_sentence.confirmed',
-        app: app_link, confirmation_period: confirmation_period,
+        app_name: app_link, confirmation_period: confirmation_period,
       )
     else
       I18n.t(
         'user_mailer.email_confirmation_instructions.first_sentence.unconfirmed',
-        app: app_link, confirmation_period: confirmation_period,
+        app_name: app_link, confirmation_period: confirmation_period,
       )
     end
   end
