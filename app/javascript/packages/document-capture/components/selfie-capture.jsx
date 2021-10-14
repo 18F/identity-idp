@@ -15,7 +15,7 @@ import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
 import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 import './selfie-capture.scss';
-import { AppContext } from '..';
+import AppContext from '../context/app';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -154,7 +154,7 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
 
   const labelId = `selfie-capture-label-${instanceId}`;
 
-  const appName = useContext(AppContext).appName;
+  const { appName } = useContext(AppContext);
 
   return (
     <>
