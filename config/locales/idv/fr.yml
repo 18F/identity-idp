@@ -189,7 +189,7 @@ fr:
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
       options:
-        change_phone_number: Utiliser un autre numéro de téléphone # Temporary
+        change_phone_number: Utiliser un autre numéro de téléphone
         contact_support: Contacter le service d’assistance de %{app}
         get_help_at_sp: Demandez de l’aide à %{sp_name}
         learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
