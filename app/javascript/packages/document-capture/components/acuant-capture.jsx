@@ -7,13 +7,13 @@ import {
   useEffect,
   useImperativeHandle,
 } from 'react';
+import { useI18n } from '@18f/identity-react-i18n';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
 import FullScreen from './full-screen';
 import Button from './button';
-import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';

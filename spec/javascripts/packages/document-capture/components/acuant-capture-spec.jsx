@@ -9,7 +9,7 @@ import AcuantCapture, {
 } from '@18f/identity-document-capture/components/acuant-capture';
 import { AcuantContextProvider, AnalyticsContext } from '@18f/identity-document-capture';
 import DeviceContext from '@18f/identity-document-capture/context/device';
-import I18nContext from '@18f/identity-document-capture/context/i18n';
+import { I18nContext } from '@18f/identity-react-i18n';
 import { render, useAcuant } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 

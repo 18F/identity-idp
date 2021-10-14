@@ -1,6 +1,6 @@
+import { useI18n } from '@18f/identity-react-i18n';
 import { UploadFormEntryError } from '../services/upload';
 import { BackgroundEncryptedUploadError } from '../higher-order/with-background-encrypted-upload';
-import useI18n from '../hooks/use-i18n';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 

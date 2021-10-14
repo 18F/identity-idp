@@ -1,0 +1,8 @@
+{
+  "name": "@18f/identity-react-i18n",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "^17.0.1"
+  }
+}

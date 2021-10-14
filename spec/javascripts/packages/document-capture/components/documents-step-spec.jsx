@@ -1,10 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
-import {
-  I18nContext,
-  DeviceContext,
-  ServiceProviderContextProvider,
-} from '@18f/identity-document-capture';
+import { DeviceContext, ServiceProviderContextProvider } from '@18f/identity-document-capture';
+import { I18nContext } from '@18f/identity-react-i18n';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
 import { render } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
