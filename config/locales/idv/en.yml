@@ -33,7 +33,7 @@ en:
         personal_key: 'Please enter your personal key for this account. Example:
           ABC1-DEF2-G3HI-J456'
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
-        zipcode: 'Your zipcode must be entered in as #####-####'
+        zipcode: Enter a 5 or 9 digit ZIP code
       unsupported_otp_delivery_method: Select a method to receive a code.
     failure:
       attempts:
