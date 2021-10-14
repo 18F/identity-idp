@@ -8,7 +8,10 @@ module I18nHelpers
       locale: nil,
       **options
     )
-      without_interpolation = original_translate(key, throw: throw, raise: raise, locale: locale)
+      known_options = [:default, :scope, :count, :base]
+      without_interpolation = original_translate(
+        key, throw: throw, raise: raise, locale: locale, **options.slice(*known_options)
+      )
 
       if without_interpolation.is_a?(String)
         expected_args = without_interpolation.
@@ -23,9 +26,8 @@ module I18nHelpers
           raise "missing i18n interpolation args, key=#{key} missing=#{missing_args.join(',')}"
         end
 
-        # There are other i18n options like :scope that could cause false positives here...
-        # will cross that bridge when we come to it
-        extra_args = options.keys - expected_args - [:default]
+        activemodel_error_args = [:model, :attribute, :value, :object]
+        extra_args = options.keys - expected_args - known_options - activemodel_error_args
         if extra_args.present?
           raise "extra i18n interpolation args, key=#{key} extra=#{extra_args.join(',')}"
         end
