@@ -6,7 +6,7 @@ module Features
 
     def sign_up_with(email)
       visit sign_up_email_path
-      check t('sign_up.terms')
+      check t('sign_up.terms', app_name: APP_NAME)
       fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
@@ -458,7 +458,7 @@ module Features
     end
 
     def submit_form_with_valid_but_wrong_email
-      check t('sign_up.terms')
+      check t('sign_up.terms', app_name: APP_NAME)
       fill_in t('forms.registration.labels.email'), with: 'test@example.com'
       click_button t('forms.buttons.submit.default')
     end
@@ -468,7 +468,7 @@ module Features
     end
 
     def submit_form_with_valid_email(email = 'test@test.com')
-      check t('sign_up.terms')
+      check t('sign_up.terms', app_name: APP_NAME)
       fill_in t('forms.registration.labels.email'), with: email
       click_button t('forms.buttons.submit.default')
     end
