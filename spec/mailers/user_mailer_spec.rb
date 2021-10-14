@@ -365,7 +365,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(strip_tags(mail.html_part.body)).
+      expect(mail.html_part.body).
         to have_content(
           strip_tags(t('user_mailer.account_reset_complete.intro_html', app_name: APP_NAME)),
         )

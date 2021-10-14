@@ -91,7 +91,10 @@ class UserMailer < ActionMailer::Base
       @login_date = date
       @login_location = location
       @disavowal_token = disavowal_token
-      mail(to: email_address.email, subject: t('user_mailer.new_device_sign_in.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
+      )
     end
   end
 
