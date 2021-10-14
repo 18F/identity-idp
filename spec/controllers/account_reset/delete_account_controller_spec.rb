@@ -38,7 +38,9 @@ describe AccountReset::DeleteAccountController do
         event: 'delete',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)] },
-        error_details: { token: [t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)] },
+        error_details: {
+          token: [t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)],
+        },
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 0,
@@ -49,7 +51,9 @@ describe AccountReset::DeleteAccountController do
       delete :delete
 
       expect(response).to redirect_to(root_url)
-      expect(flash[:error]).to eq t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)
+      expect(flash[:error]).to eq(
+        t('errors.account_reset.granted_token_invalid', app_name: APP_NAME),
+      )
     end
 
     it 'displays a flash and redirects to root if the token is missing' do
@@ -87,7 +91,9 @@ describe AccountReset::DeleteAccountController do
         event: 'delete',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
-        error_details: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
+        error_details: {
+          token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)],
+        },
         mfa_method_counts: {},
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         account_age_in_days: 2,
@@ -101,7 +107,9 @@ describe AccountReset::DeleteAccountController do
       end
 
       expect(response).to redirect_to(root_url)
-      expect(flash[:error]).to eq t('errors.account_reset.granted_token_expired', app_name: APP_NAME)
+      expect(flash[:error]).to eq(
+        t('errors.account_reset.granted_token_expired', app_name: APP_NAME),
+      )
     end
   end
 
@@ -113,7 +121,9 @@ describe AccountReset::DeleteAccountController do
         event: 'granted token validation',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)] },
-        error_details: { token: [t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)] },
+        error_details: {
+          token: [t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)],
+        },
       }
       expect(@analytics).
         to receive(:track_event).with(Analytics::ACCOUNT_RESET, properties)
@@ -121,7 +131,9 @@ describe AccountReset::DeleteAccountController do
       get :show, params: { token: 'FOO' }
 
       expect(response).to redirect_to(root_url)
-      expect(flash[:error]).to eq t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)
+      expect(flash[:error]).to eq(
+        t('errors.account_reset.granted_token_invalid', app_name: APP_NAME),
+      )
     end
 
     it 'displays a flash and redirects to root if the token is expired' do
@@ -135,7 +147,9 @@ describe AccountReset::DeleteAccountController do
         event: 'granted token validation',
         success: false,
         errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
-        error_details: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
+        error_details: {
+          token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)],
+        },
       }
       expect(@analytics).to receive(:track_event).
         with(Analytics::ACCOUNT_RESET, properties)
@@ -145,7 +159,9 @@ describe AccountReset::DeleteAccountController do
       end
 
       expect(response).to redirect_to(root_url)
-      expect(flash[:error]).to eq t('errors.account_reset.granted_token_expired', app_name: APP_NAME)
+      expect(flash[:error]).to eq(
+        t('errors.account_reset.granted_token_expired', app_name: APP_NAME),
+      )
     end
 
     it 'renders the show view if the token is missing' do

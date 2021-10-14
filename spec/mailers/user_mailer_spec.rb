@@ -344,7 +344,9 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to \
-        have_content(strip_tags(t('user_mailer.account_reset_granted.intro_html', app_name: APP_NAME)))
+        have_content(
+          strip_tags(t('user_mailer.account_reset_granted.intro_html', app_name: APP_NAME)),
+        )
     end
   end
 
@@ -363,8 +365,10 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(strip_tags(mail.html_part.body.to_s)).
-        to include(strip_tags(t('user_mailer.account_reset_complete.intro_html', app_name: APP_NAME)))
+      expect(strip_tags(mail.html_part.body)).
+        to have_content(
+          strip_tags(t('user_mailer.account_reset_complete.intro_html', app_name: APP_NAME)),
+        )
     end
   end
 
@@ -384,7 +388,9 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.please_reset_password.intro', app_name: APP_NAME)))
+        to have_content(
+          strip_tags(t('user_mailer.please_reset_password.intro', app_name: APP_NAME)),
+        )
 
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.please_reset_password.call_to_action')))
