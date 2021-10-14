@@ -132,9 +132,9 @@ RSpec.describe 'I18n' do
         expect(bad_keys).to be_empty
       end
 
-      it 'does not contain any translations that hardcode Login.gov' do
+      it 'does not contain any translations that hardcode APP_NAME' do
         bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
-          value.include?('Login.gov')
+          value.include?(APP_NAME)
         end
 
         expect(bad_keys).to be_empty
