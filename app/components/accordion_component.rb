@@ -1,4 +1,4 @@
-class AccordionComponent < ViewComponent::Base
+class AccordionComponent < BaseComponent
   renders_one :header
 
   def initialize

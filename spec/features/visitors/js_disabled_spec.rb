@@ -15,6 +15,10 @@ feature 'JavaScript progressive enhancement' do
         visit root_path
 
         expect(page).to have_css('#gov-banner', visible: :hidden)
+
+        click_on t('shared.banner.how')
+
+        expect(page).to have_css('#gov-banner', visible: true)
       end
     end
   end
