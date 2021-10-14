@@ -112,8 +112,8 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#new_device_sign_in' do
-    date = 'Washington, DC'
-    location = 'February 25, 2019 15:02'
+    date = 'February 25, 2019 15:02'
+    location = 'Washington, DC'
     disavowal_token = 'asdf1234'
     let(:mail) do
       UserMailer.new_device_sign_in(

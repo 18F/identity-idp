@@ -1,6 +1,6 @@
 SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/BlockLength
   config.hsts = "max-age=#{365.days.to_i}; includeSubDomains; preload"
-  config.x_frame_options = 'DENY'
+  config.x_frame_options = Rails.env.development? ? 'ALLOWALL' : 'DENY'
   config.x_content_type_options = 'nosniff'
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'
