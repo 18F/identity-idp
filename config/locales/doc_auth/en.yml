@@ -170,10 +170,9 @@ en:
       link_sent_complete_js: The next step will load automatically once you verify
         your ID using your phone.
       link_sent_complete_nojs: When you are done, click Continue here to finish verifying your identity.
-      privacy_html: >
-        %{app_name} is a secure, government website that adheres to the
+      privacy_html: "%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We only use your data to verify
-        your identity. %{link} about our privacy and security measures.
+        your identity. %{link} about our privacy and security measures."
       secure_account: After you verify, we’ll ask you to encrypt your account.
         Encryption means your data is protected and only you, the account
         holder, will be able to access or change your information.
@@ -211,11 +210,9 @@ en:
       document_capture_selfie_consent_action: '<lg-underline>Allow access to the
         camera</lg-underline> and look for a notification in your browser or
         check your system settings to confirm camera access.'
-      document_capture_selfie_consent_banner: >
-        %{app_name} needs permission to use your device’s camera
-      document_capture_selfie_consent_blocked: >
-        %{app_name} needs permission to use
-        your camera so that you can prove your ID belongs to you.
+      document_capture_selfie_consent_banner: "%{app_name} needs permission to use your device’s camera\n"
+      document_capture_selfie_consent_blocked: "%{app_name} needs permission to use
+        your camera so that you can prove your ID belongs to you."
       document_capture_selfie_consent_blocked_action: Check your web browser’s
         settings for this site or your computer’s system settings to allow
         %{app_name} to access the camera.

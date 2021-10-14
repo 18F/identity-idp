@@ -37,6 +37,7 @@ describe 'reset password with multiple emails' do
 
     create_account_instructions_text = I18n.t(
       'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
+      app_name: APP_NAME,
     )
 
     mail = double

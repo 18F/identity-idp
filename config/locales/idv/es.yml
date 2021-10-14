@@ -16,8 +16,8 @@ es:
         confirmation:
           hybrid: Ha cancelado la carga de fotos de su identificación en este teléfono
         prompt:
-          hybrid: ¿Seguro que desea cancelar la carga de fotos de su identificación en
-            este teléfono?
+          hybrid: '¿Seguro que desea cancelar la carga de fotos de su identificación en
+            este teléfono?'
       warnings:
         hybrid: Si cancela ahora, se le pedirá regresar a su computadora para continuar
           con la verificación de su identidad.

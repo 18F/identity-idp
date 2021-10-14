@@ -18,7 +18,7 @@ describe 'Account Reset Request: Cancellation' do
 
         expect(page).to have_current_path new_user_session_path
         expect(page).
-          to have_content t('two_factor_authentication.account_reset.successful_cancel')
+          to have_content t('two_factor_authentication.account_reset.successful_cancel', app_name: APP_NAME)
 
         signin(user.email, user.password)
 

@@ -14,7 +14,7 @@ es:
         eliminar su cuenta de %{app_name}.
       subject: Eliminar su cuenta
     account_reset_complete:
-      intro: Este correo electrónico confirma que ha eliminado su cuenta de
+      intro_html: Este correo electrónico confirma que ha eliminado su cuenta de
         %{app_name}.
       subject: Cuenta borrada
     account_reset_granted:
