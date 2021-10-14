@@ -54,7 +54,7 @@ fr:
     email:
       buttons:
         delete: Supprimer l’email
-    example: 'exemple:'
+    example: 'Exemple:'
     file_input:
       file_updated: Fichier mis à jour
     messages:

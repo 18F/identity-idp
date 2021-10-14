@@ -53,7 +53,7 @@ es:
     email:
       buttons:
         delete: Eliminar correo electrónico
-    example: 'ejemplo:'
+    example: 'Ejemplo:'
     file_input:
       file_updated: Archivo actualizado
     messages:
