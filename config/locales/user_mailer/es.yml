@@ -10,7 +10,7 @@ es:
       link_text: Crea tu cuenta
       subject: Tu solicitud para restablecer tu contraseña de %{app_name}
     account_reset_cancel:
-      intro: Este correo electrónico confirma que ha cancelado su solicitud para
+      intro_html: Este correo electrónico confirma que ha cancelado su solicitud para
         eliminar su cuenta de %{app_name}.
       subject: Eliminar su cuenta
     account_reset_complete:

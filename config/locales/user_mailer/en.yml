@@ -10,7 +10,7 @@ en:
       link_text: Create your account
       subject: Your %{app_name} password reset request
     account_reset_cancel:
-      intro: This email confirms you have cancelled your request to delete your
+      intro_html: This email confirms you have cancelled your request to delete your
         %{app_name} account.
       subject: Delete your account
     account_reset_complete:

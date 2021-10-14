@@ -11,8 +11,8 @@ fr:
       link_text: Créer votre compte
       subject: Votre demande de réinitialisation de votre mot de passe %{app_name}
     account_reset_cancel:
-      intro: Cet e-mail confirme que vous avez annulé votre demande de suppression de
-        votre compte %{app_name}.
+      intro_html: Cet e-mail confirme que vous avez annulé votre demande de
+        suppression de votre compte %{app_name}.
       subject: Supprimer votre compte
     account_reset_complete:
       intro_html: Cet e-mail confirme que vous avez supprimé votre compte %{app_name}.
