@@ -261,7 +261,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_does_not_exist.subject')
+      expect(mail.subject).to eq t('user_mailer.account_does_not_exist.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
@@ -296,7 +296,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_request.subject')
+      expect(mail.subject).to eq t('user_mailer.account_reset_request.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
@@ -339,7 +339,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_granted.subject')
+      expect(mail.subject).to eq t('user_mailer.account_reset_granted.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
@@ -383,7 +383,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.please_reset_password.subject')
+      expect(mail.subject).to eq t('user_mailer.please_reset_password.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
