@@ -24,12 +24,12 @@
           input_html: {
             class: 'phone-input__international-code',
             data: { countries: supported_country_codes },
-          }
+          },
         ) %>
   </div>
   <%= f.label(
         :phone,
-        class: 'usa-label'
+        class: 'usa-label',
       ) { t('two_factor_authentication.phone_label') } %>
   <div class="margin-bottom-1 usa-hint js">
     <%= t('forms.example') %>
@@ -42,8 +42,8 @@
         label: false,
         input_html: {
           aria: { invalid: false },
-          class: 'phone-input__number'
-        }
+          class: 'phone-input__number',
+        },
       ) %>
 </lg-phone-input>
 <%= stylesheet_link_tag 'intl-tel-input/build/css/intlTelInput' %>
