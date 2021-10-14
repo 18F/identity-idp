@@ -36,7 +36,10 @@ describe 'layouts/user_mailer.html.erb' do
   end
 
   it 'includes link to About Login.gov' do
-    expect(rendered).to have_link(t('mailer.about', app_name: APP_NAME), href: MarketingSite.base_url)
+    expect(rendered).to have_link(
+      t('mailer.about', app_name: APP_NAME),
+      href: MarketingSite.base_url,
+    )
   end
 
   it 'includes link to the privacy policy' do
