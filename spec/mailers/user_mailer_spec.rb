@@ -269,7 +269,7 @@ describe UserMailer, type: :mailer do
         t('user_mailer.account_does_not_exist.intro_html', app_name: APP_NAME),
       )
       expect(mail.html_part.body).to have_link(
-        t('user_mailer.account_does_not_exist.link_text', app_name: APP_NAME),
+        t('user_mailer.account_does_not_exist.link_text'),
         href: sign_up_email_url(request_id: 'request_id'),
       )
     end
@@ -303,10 +303,7 @@ describe UserMailer, type: :mailer do
       reset_text = t('user_mailer.account_reset_granted.cancel_link_text')
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t(
-            'user_mailer.account_reset_request.intro_html', app_name: APP_NAME,
-                                                            cancel_account_reset: reset_text
-          ),
+          t('user_mailer.account_reset_request.intro_html', app_name: APP_NAME),
         ),
       )
     end
@@ -314,7 +311,7 @@ describe UserMailer, type: :mailer do
     it 'does not render the subject in the body' do
       expect(mail.html_part.body).not_to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.subject'),
+          t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
         ),
       )
     end
