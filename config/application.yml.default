@@ -87,7 +87,6 @@ idv_max_attempts: '5'
 idv_min_age_years: '13'
 idv_send_link_attempt_window_in_minutes: '10'
 idv_send_link_max_attempts: '5'
-job_run_healthchecks_enabled: 'true'
 liveness_checking_enabled: 'false'
 logins_per_ip_track_only_mode: 'false'
 # LexisNexis #####################################################

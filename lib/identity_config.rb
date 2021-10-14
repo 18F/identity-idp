@@ -152,7 +152,6 @@ class IdentityConfig
     config.add(:idv_min_age_years, type: :integer)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
     config.add(:idv_send_link_max_attempts, type: :integer)
-    config.add(:job_run_healthchecks_enabled, type: :boolean)
     config.add(:lexisnexis_base_url, type: :string)
     config.add(:lexisnexis_request_mode, type: :string)
     config.add(:lexisnexis_account_id, type: :string)
