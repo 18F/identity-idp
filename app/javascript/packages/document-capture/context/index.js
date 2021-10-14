@@ -1,3 +1,4 @@
+export { default as AppContext } from './app';
 export { default as AssetContext } from './asset';
 export { default as I18nContext } from './i18n';
 export { default as DeviceContext } from './device';
