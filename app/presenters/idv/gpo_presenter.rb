@@ -48,7 +48,7 @@ module Idv
     end
 
     def user_needs_address_otp_verification?
-      current_user.decorate.pending_profile?
+      current_user.pending_profile?
     end
   end
 end

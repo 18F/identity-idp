@@ -1,6 +1,6 @@
 import { useContext } from 'react';
+import { useI18n } from '@18f/identity-react-i18n';
 import DeviceContext from '../context/device';
-import useI18n from '../hooks/use-i18n';
 
 /**
  * Renders a document usage disclosure for desktop devices only. On mobile devices, an equivalent

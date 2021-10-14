@@ -7,10 +7,10 @@ import {
   useRef,
   useImperativeHandle,
 } from 'react';
+import { useI18n } from '@18f/identity-react-i18n';
 import FileImage from './file-image';
 import DeviceContext from '../context/device';
 import useInstanceId from '../hooks/use-instance-id';
-import useI18n from '../hooks/use-i18n';
 import usePrevious from '../hooks/use-previous';
 
 /** @typedef {import('react').MouseEvent} ReactMouseEvent */

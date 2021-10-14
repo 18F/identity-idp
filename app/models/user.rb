@@ -88,6 +88,14 @@ class User < ApplicationRecord
     @_active_profile ||= profiles.verified.find(&:active?)
   end
 
+  def pending_profile?
+    pending_profile.present?
+  end
+
+  def pending_profile
+    profiles.verification_pending.order(created_at: :desc).first
+  end
+
   def default_phone_configuration
     phone_configurations.order('made_default_at DESC NULLS LAST, created_at').first
   end

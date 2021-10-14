@@ -94,7 +94,7 @@ module Idv
     end
 
     def pending_profile?
-      current_user.decorate.pending_profile?
+      current_user.pending_profile?
     end
   end
 end
