@@ -19,12 +19,12 @@
 
   <%= yield(:meta_tags) if content_for?(:meta_tags) %>
 
-  
+
   <%= content_tag(
         'title',
         content_for?(:title) ? raw("#{yield(:title)} - #{APP_NAME}") : APP_NAME,
       ) %>
-  
+
 
   <%= nonced_javascript_tag do %>
     document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/, 'js');
@@ -102,7 +102,7 @@
   <% end %>
 
   <%= content_tag 'script', '', data: { analytics_endpoint: api_logger_path } %>
-  <%= javascript_packs_tag_once 'application', prepend: true %>
+  <%= javascript_packs_tag_once('application', prepend: true) %>
   <%= render_javascript_pack_once_tags %>
 
   <%= render 'shared/dap_analytics' if IdentityConfig.store.participate_in_dap && !session_with_trust? %>

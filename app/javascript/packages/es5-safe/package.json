@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "acorn": "^6.4.2",
-    "fast-glob": "^3.2.4",
+    "fast-glob": "^3.2.7",
     "p-all": "^3.0.0"
   }
 }

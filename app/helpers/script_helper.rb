@@ -20,6 +20,8 @@ module ScriptHelper
     nil
   end
 
+  alias_method :render_component_script, :javascript_packs_tag_once
+
   def render_javascript_pack_once_tags
     return if !@scripts
 

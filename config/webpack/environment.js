@@ -1,5 +1,11 @@
+const { parse, resolve } = require('path');
 const { environment } = require('@rails/webpacker');
+const { sync: glob } = require('fast-glob');
 const RailsI18nWebpackPlugin = require('@18f/identity-rails-i18n-webpack-plugin');
+
+glob('app/components/*.js').forEach((path) => {
+  environment.entry[parse(path).name] = resolve(path);
+});
 
 environment.loaders.delete('file');
 environment.loaders.delete('nodeModules');

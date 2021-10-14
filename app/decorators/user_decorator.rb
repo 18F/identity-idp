@@ -1,6 +1,8 @@
 class UserDecorator
   include ActionView::Helpers::DateHelper
 
+  delegate :pending_profile, to: :user
+
   attr_reader :user
 
   MAX_RECENT_EVENTS = 5
@@ -79,14 +81,6 @@ class UserDecorator
     return true if identity_not_verified?
     return false if active_profile_newer_than_pending_profile?
     true
-  end
-
-  def pending_profile?
-    pending_profile.present?
-  end
-
-  def pending_profile
-    user.profiles.verification_pending.order(created_at: :desc).first
   end
 
   def identity_not_verified?
