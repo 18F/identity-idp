@@ -452,7 +452,7 @@ module Features
     end
 
     def submit_form_with_invalid_email
-      check t('sign_up.terms')
+      check t('sign_up.terms', app_name: APP_NAME)
       fill_in t('forms.registration.labels.email'), with: 'invalidemail'
       click_button t('forms.buttons.submit.default')
     end
