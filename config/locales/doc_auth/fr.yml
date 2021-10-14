@@ -258,8 +258,8 @@ fr:
         caméra</lg-underline> et recherchez une notification dans votre
         navigateur ou vérifiez les paramètres de votre système pour confirmer
         l’accès à la caméra.'
-      document_capture_selfie_consent_banner: "%{app_name} a besoin d’une autorisation
-        pour utiliser la caméra de votre appareil\n"
+      document_capture_selfie_consent_banner: '%{app_name} a besoin d’une autorisation
+        pour utiliser la caméra de votre appareil'
       document_capture_selfie_consent_blocked: '%{app_name} a besoin d’une
         autorisation pour utiliser votre caméra afin que vous puissiez prouver
         que votre identifiant vous appartient.'

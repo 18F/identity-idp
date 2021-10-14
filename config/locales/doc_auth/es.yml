@@ -244,7 +244,7 @@ es:
       document_capture_selfie_consent_action: '<lg-underline>Permita el acceso a la
         cámara</lg-underline> y busque una notificación en su navegador o revise
         la configuración del sistema para confirmar el acceso a la cámara.'
-      document_capture_selfie_consent_banner: "%{app_name} necesita permiso para usar la cámara de su dispositivo\n"
+      document_capture_selfie_consent_banner: '%{app_name} necesita permiso para usar la cámara de su dispositivo'
       document_capture_selfie_consent_blocked: '%{app_name} necesita permiso para usar
         su cámara para que pueda probar que su identificación le pertenece.'
       document_capture_selfie_consent_blocked_action: Verifique la configuración de su
