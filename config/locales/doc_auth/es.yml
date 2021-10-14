@@ -114,10 +114,9 @@ es:
           nuevamente. La profundidad de píxeles de la imagen admitida es de 24
           bits RGB.
       no_camera:
-        explanation: Recopilaremos información sobre usted leyendo su documento de
-          identidad expedido por el estado. Luego, se tomará una foto para
-          confirmar que es el propietario de la identificación con %{app_name}
-          TODO RETRANSLATE
+        explanation: Para continuar, inicie sesión en su cuenta de %{app_name} en
+          cualquier dispositivo que tenga una cámara, como un teléfono móvil,
+          una tableta o una computadora con cámara web.
         heading: Necesita una cámara para verificar su identidad
         title: Necesita cámara
       not_a_file: La selección no era un archivo válido.
