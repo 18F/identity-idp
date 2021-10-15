@@ -31,7 +31,6 @@ linters:
       - '*/app/views/idv/doc_auth/link_sent.html.erb'
       - '*/app/views/idv/doc_auth/no_camera.html.erb'
       - '*/app/views/idv/doc_auth/upload.html.erb'
-      - '*/app/views/idv/doc_auth/send_link.html.erb'
       - '*/app/views/idv/doc_auth/verify.html.erb'
       - '*/app/views/idv/doc_auth/verify_wait.html.erb'
       - '*/app/views/idv/phone/new.html.erb'
