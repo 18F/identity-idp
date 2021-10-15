@@ -84,6 +84,7 @@ module Idv
       @idv_form ||= Idv::PhoneForm.new(
         user: current_user,
         previous_params: idv_session.previous_phone_step_params,
+        allowed_countries: ['US'],
       )
     end
 

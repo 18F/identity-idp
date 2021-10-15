@@ -11,8 +11,9 @@ module Idv
       ActiveModel::Name.new(self, nil, 'Address')
     end
 
-    def initialize(user)
-      @user = user
+    def initialize(pii)
+      @pii = pii
+      @address_edited = false
     end
 
     def submit(params)
@@ -21,7 +22,10 @@ module Idv
       FormResponse.new(
         success: valid?,
         errors: errors,
-        extra: { pii_like_keypaths: [[:errors, :zipcode ], [:error_details, :zipcode]] },
+        extra: {
+          address_edited: @address_edited,
+          pii_like_keypaths: [[:errors, :zipcode ], [:error_details, :zipcode]],
+        },
       )
     end
 
@@ -31,6 +35,9 @@ module Idv
       params.each do |key, value|
         raise_invalid_address_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
         send("#{key}=", value)
+        if send(key) != @pii[key] && (send(key).present? || @pii[key].present?)
+          @address_edited = true
+        end
       end
     end
 

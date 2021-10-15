@@ -1,5 +1,5 @@
 <p class="lead">
-  <%= t('user_mailer.account_does_not_exist.intro_html', app: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray')) %>
+  <%= t('user_mailer.account_does_not_exist.intro_html', app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray')) %>
 </p>
 
 <table class="button expanded large radius">
@@ -11,7 +11,7 @@
             <tr>
               <td>
                 <center>
-                  <%= link_to t('user_mailer.account_does_not_exist.link_text', app: APP_NAME),
+                  <%= link_to t('user_mailer.account_does_not_exist.link_text'),
                               @sign_up_email_url, target: '_blank',
                               class: 'float-center', align: 'center' %>
                 </center>

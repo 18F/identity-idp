@@ -21,10 +21,6 @@
       border-color: color('primary-dark');
     }
   }
-
-  .usa-file-input__input:focus {
-    outline-offset: 3px;
-  }
 }
 
 .usa-form-group--error .usa-file-input .usa-file-input__target {
@@ -37,6 +33,7 @@
 
 .usa-form-group--success .usa-file-input .usa-file-input__target {
   border-color: color('success');
+  border-style: solid;
 
   &:hover {
     border-color: color('success-dark');
@@ -73,4 +70,13 @@
     margin-right: 0;
     width: 100%;
   }
+}
+
+.usa-file-input__input:not([disabled]):focus {
+  outline: 3px solid $blue;
+  outline-offset: 6px;
+}
+
+.usa-file-input--has-value .usa-file-input__input:not([disabled]):focus {
+  outline-offset: 4px;
 }

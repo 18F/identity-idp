@@ -4,16 +4,18 @@ import {
   useState,
   useEffect,
   useCallback,
+  useContext,
   useMemo,
   useImperativeHandle,
 } from 'react';
 import { Icon } from '@18f/identity-components';
+import { useI18n } from '@18f/identity-react-i18n';
 import FileImage from './file-image';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
-import useI18n from '../hooks/use-i18n';
 import useInstanceId from '../hooks/use-instance-id';
 import useFocusFallbackRef from '../hooks/use-focus-fallback-ref';
 import './selfie-capture.scss';
+import AppContext from '../context/app';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
@@ -152,6 +154,8 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
 
   const labelId = `selfie-capture-label-${instanceId}`;
 
+  const { appName } = useContext(AppContext);
+
   return (
     <>
       <div
@@ -229,13 +233,21 @@ function SelfieCapture({ value, onChange, errorMessage, className }, ref) {
               <>
                 <div className="selfie-capture__consent-prompt">
                   <strong className="selfie-capture__consent-prompt-banner usa-file-input__banner-text">
-                    {t('doc_auth.instructions.document_capture_selfie_consent_banner')}
+                    {t('doc_auth.instructions.document_capture_selfie_consent_banner', {
+                      app_name: appName,
+                    })}
                   </strong>
                   {isAccessRejected ? (
                     <>
-                      <p>{t('doc_auth.instructions.document_capture_selfie_consent_blocked')}</p>
                       <p>
-                        {t('doc_auth.instructions.document_capture_selfie_consent_blocked_action')}
+                        {t('doc_auth.instructions.document_capture_selfie_consent_blocked', {
+                          app_name: appName,
+                        })}
+                      </p>
+                      <p>
+                        {t('doc_auth.instructions.document_capture_selfie_consent_blocked_action', {
+                          app_name: appName,
+                        })}
                       </p>
                     </>
                   ) : (

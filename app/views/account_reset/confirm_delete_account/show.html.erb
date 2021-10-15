@@ -5,7 +5,7 @@
                 alt: '',
                 class: 'absolute top-n24 left-0 right-0 margin-x-auto') %>
   <h3><%= t('account_reset.confirm_delete_account.title') %></h3>
-  <p><%= t('account_reset.confirm_delete_account.info_html', app: APP_NAME, email: email) %></p>
+  <p><%= t('account_reset.confirm_delete_account.info_html', email: email) %></p>
   <p><%= t('account_reset.confirm_delete_account.cta_html',
            link: link_to(t('account_reset.confirm_delete_account.link_text'),
                            sign_up_email_path)) %></p>

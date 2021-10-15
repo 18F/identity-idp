@@ -1,8 +1,11 @@
-import { createElement, cloneElement, useContext, useMemo } from 'react';
+import { createElement, cloneElement, createContext, useContext, useMemo } from 'react';
 import { I18n } from '@18f/identity-i18n';
-import I18nContext from '../context/i18n';
 
 /** @typedef {import('react').FC|import('react').ComponentClass} Component */
+
+export const I18nContext = createContext({});
+
+I18nContext.displayName = 'I18nContext';
 
 /**
  * Given an HTML string and an object of tag names to React component, returns a new React node
@@ -49,14 +52,9 @@ export function formatHTML(html, handlers) {
   return parts.filter(Boolean);
 }
 
-function useI18n() {
+export function useI18n() {
   const strings = useContext(I18nContext);
   const { t } = useMemo(() => new I18n({ strings }), [strings]);
 
-  return {
-    t,
-    formatHTML,
-  };
+  return { t, formatHTML };
 }
-
-export default useI18n;

@@ -65,7 +65,7 @@ module Users
       sign_out
       flash[:info] = t(
         'notices.session_timedout',
-        app: APP_NAME,
+        app_name: APP_NAME,
         minutes: IdentityConfig.store.session_timeout_in_minutes,
       )
       redirect_to root_url(request_id: request_id)

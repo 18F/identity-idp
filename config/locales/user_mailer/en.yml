@@ -2,19 +2,19 @@
 en:
   user_mailer:
     account_does_not_exist:
-      intro_html: This email address is not yet associated with a %{app} account. If
-        you’d like to create a Login.gov account using this email address,
+      intro_html: This email address is not yet associated with a %{app_name} account.
+        If you’d like to create a %{app_name} account using this email address,
         please click the link below or copy and paste the entire link into your
         browser. If you didn’t request a password reset, you can ignore this
         message.
       link_text: Create your account
-      subject: Your Login.gov password reset request
+      subject: Your %{app_name} password reset request
     account_reset_cancel:
-      intro: This email confirms you have cancelled your request to delete your
-        Login.gov account.
+      intro_html: This email confirms you have cancelled your request to delete your
+        %{app_name} account.
       subject: Delete your account
     account_reset_complete:
-      intro: This email confirms you have deleted your Login.gov account.
+      intro_html: This email confirms you have deleted your %{app_name} account.
       subject: Account deleted
     account_reset_granted:
       button: Yes, continue deleting
@@ -22,31 +22,32 @@ en:
       help_html: If you don’t want to delete your account, %{cancel_account_reset}.
       intro_html: Your 24 hour waiting period has ended. Please complete step 2 of the
         process.<br><br> If you’ve been unable to locate your authentication
-        methods, select “confirm deletion” to delete your %{app}
+        methods, select “confirm deletion” to delete your %{app_name}
         account.<br><br> In the future, if you need to access participating
-        government websites who use %{app}, you can create a new %{app} account
-        using the same email address after your account is deleted.<br><br>
-      subject: Delete your Login.gov account
+        government websites who use %{app_name}, you can create a new
+        %{app_name} account using the same email address after your account is
+        deleted.<br><br>
+      subject: Delete your %{app_name} account
     account_reset_request:
-      cancel: Don’t want to delete your account? Sign in to your Login.gov account to
-        cancel.
+      cancel: Don’t want to delete your account? Sign in to your %{app_name} account
+        to cancel.
       header: Your account will be deleted in 24 hours
-      intro_html: 'As a security measure, %{app} requires a two-step process to delete
-        your account:<br><br> Step One: There is a 24 hour waiting period if you
-        have lost access to your authentication methods and need to delete your
-        account. If you locate your authentication methods, you can sign in to
-        your %{app} account to cancel this request.<br><br> Step Two: After your
-        24 hour waiting period, you will receive an email that will ask you to
-        confirm the deletion of your %{app} account. Your account will not be
-        deleted until you confirm.'
-      subject: How to delete your Login.gov account
+      intro_html: 'As a security measure, %{app_name} requires a two-step process to
+        delete your account:<br><br> Step One: There is a 24 hour waiting period
+        if you have lost access to your authentication methods and need to
+        delete your account. If you locate your authentication methods, you can
+        sign in to your %{app_name} account to cancel this request.<br><br> Step
+        Two: After your 24 hour waiting period, you will receive an email that
+        will ask you to confirm the deletion of your %{app_name} account. Your
+        account will not be deleted until you confirm.'
+      subject: How to delete your %{app_name} account
     account_verified:
       contact_link: contact us
       disavowal_link: change your password
-      intro_html: You successfully verified your identity with %{app} on %{date} using
-        %{app_name}. If you did not perform this action, please %{contact_link}
-        and sign in to %{disavowal_link}.
-      subject: You verified your identity with %{app}.
+      intro_html: You successfully verified your identity with %{sp_name} on %{date}
+        using %{app_name}. If you did not perform this action, please
+        %{contact_link} and sign in to %{disavowal_link}.
+      subject: You verified your identity with %{sp_name}.
     add_email:
       footer: This link will expire in %{confirmation_period}.
       header: Thanks for adding an email. Please click the link below or copy and
@@ -54,14 +55,14 @@ en:
       subject: Confirm your email
     add_email_associated_with_another_account:
       help_html: If you did not request a new email or suspect an error, please visit
-        the %{app} %{help_link} or %{contact_link}.
-      intro_html: This email address is already associated with a %{app} account, so
-        we can’t add it to another account. You must first delete or remove it
-        from the account it is associated with. To do this, follow the link
+        the %{app_name} %{help_link} or %{contact_link}.
+      intro_html: This email address is already associated with a %{app_name} account,
+        so we can’t add it to another account. You must first delete or remove
+        it from the account it is associated with. To do this, follow the link
         below and sign in with this email address. If you are not trying to add
         this email address to an account, you can ignore this message.
-      link_text: Go to %{app}
-      reset_password_html: If you can’t remember your password, go to %{app} to reset it.
+      link_text: Go to %{app_name}
+      reset_password_html: If you can’t remember your password, go to %{app_name} to reset it.
     contact_link_text: contact us
     deleted_accounts_report:
       issuers: Issuers
@@ -72,7 +73,7 @@ en:
         sign in to %{sp_link}
       subject: Verify your identity on a desktop computer
     email_added:
-      header: A new email address was added to your Login.gov profile.
+      header: A new email address was added to your %{app_name} profile.
       help: If you did not make this change, sign in to your profile and manage your
         email addresses. We recommend that you also change your password.
       subject: New email address added
@@ -81,8 +82,8 @@ en:
       email_not_found: Email not found
       first_sentence:
         confirmed: Trying to change your email address?
-        forgot_password: You tried to reset your Login.gov password but we don’t have an
-          account linked to this email address.
+        forgot_password: You tried to reset your %{app_name} password but we don’t have
+          an account linked to this email address.
         unconfirmed: Thanks for submitting your email address.
       footer: This link will expire in %{confirmation_period}.
       header: '%{intro} Please click the link below or copy and paste the entire link
@@ -94,9 +95,9 @@ en:
       try_diff_email: Try a different email address
       use_this_email: Or use this email address and
     email_deleted:
-      header: An email address was deleted from your Login.gov profile.
+      header: An email address was deleted from your %{app_name} profile.
       help_html: If you did not want to delete this email address, please visit the
-        %{app} %{help_link} or %{contact_link}.
+        %{app_name} %{help_link} or %{contact_link}.
       subject: Email address deleted
     help_link_text: Help Center
     letter_reminder:
@@ -108,37 +109,39 @@ en:
     new_device_sign_in:
       disavowal_link: here
       help_html: If you did not make this change, you can reset your password
-        %{disavowal_link}. For more help, please visit the %{app} %{help_link}
-        or %{contact_link}.
-      info_html: '<p>Your Login.gov account was just used to sign in on a new
+        %{disavowal_link}. For more help, please visit the %{app_name}
+        %{help_link} or %{contact_link}.
+      info_html: '<p>Your %{app_name} account was just used to sign in on a new
         device.</p><br/> <p><strong>%{date}<br/>%{location}</strong></p>'
-      subject: New sign-in with your Login.gov account
+      subject: New sign-in with your %{app_name} account
     password_changed:
       disavowal_link: here
       help_html: If you did not make this change, you can reset your password
-        %{disavowal_link}. For more help, please visit the %{app} %{help_link}
-        or %{contact_link}.
-      intro_html: You have a new password for your %{app} account.
+        %{disavowal_link}. For more help, please visit the %{app_name}
+        %{help_link} or %{contact_link}.
+      intro_html: You have a new password for your %{app_name} account.
     personal_key_regenerated:
-      help_html: <p>Your Login.gov account was just issued a new 16-character personal
-        key. You’re getting this email to make sure it was you.</p><p>If you
-        just signed in and regenerated your personal key, great! There’s nothing
-        you need to do.</p><p>If you did not just regenerate your personal key,
-        or if you’re not sure, please immediately take these steps to secure
-        your account:<ol><li><strong><a href="%{reset_password_url}">Change your
-        password</a>.</strong> Choose a password that you haven’t already used
-        with this account.</li><li><strong><a href="%{account_url}">Sign in to
-        your Login.gov account</a></strong> and make sure you recognize all of
-        the information on your account page, including the methods you use for
+      help_html: <p>Your %{app_name} account was just issued a new 16-character
+        personal key. You’re getting this email to make sure it was
+        you.</p><p>If you just signed in and regenerated your personal key,
+        great! There’s nothing you need to do.</p><p>If you did not just
+        regenerate your personal key, or if you’re not sure, please immediately
+        take these steps to secure your account:<ol><li><strong><a
+        href="%{reset_password_url}">Change your password</a>.</strong> Choose a
+        password that you haven’t already used with this
+        account.</li><li><strong><a href="%{account_url}">Sign in to your
+        %{app_name} account</a></strong> and make sure you recognize all of the
+        information on your account page, including the methods you use for
         two-factor authentication, such as phone number, authentication app, or
-        security key.</li><li><strong>On your <a href="%{account_url}">Login.gov
-        account page</a>, request a new personal key.</strong> Remember, never
-        share it unless you are using it to sign into a trusted website that
-        uses Login.gov.</li></ol></p><br>Thanks,<br>The Login.gov team
+        security key.</li><li><strong>On your <a
+        href="%{account_url}">%{app_name} account page</a>, request a new
+        personal key.</strong> Remember, never share it unless you are using it
+        to sign into a trusted website that uses
+        %{app_name}.</li></ol></p><br>Thanks,<br>The %{app_name} team
       intro: New personal key issued
       subject: Account Security Alert
     personal_key_sign_in:
-      help_html: <p>Your Login.gov account was just signed into using your
+      help_html: <p>Your %{app_name} account was just signed into using your
         16-character personal key. You’re getting this email to make sure it was
         you.</p> <p>If you just signed in using your personal key, great!
         There’s nothing you need to do.</p><p>If you did not sign in with a
@@ -147,36 +150,37 @@ en:
         href="%{reset_password_url}">Change your password</a>.</strong> Choose a
         password that you haven’t already used with this
         account.</li><li><strong><a href="%{account_url}">Sign in to your
-        Login.gov account</a></strong> and make sure you recognize all of the
+        %{app_name} account</a></strong> and make sure you recognize all of the
         information on your account page, including the methods you use for
         two-factor authentication, such as phone number, authentication app, or
-        security key.</li><li><strong>On your <a href="%{account_url}">Login.gov
-        account page</a>, request a new personal key.</strong> Remember, never
-        share it unless you are using it to sign into a trusted website that
-        uses Login.gov.</li></ol></p> <br>Thanks,<br>The Login.gov team
+        security key.</li><li><strong>On your <a
+        href="%{account_url}">%{app_name} account page</a>, request a new
+        personal key.</strong> Remember, never share it unless you are using it
+        to sign into a trusted website that uses %{app_name}.</li></ol></p>
+        <br>Thanks,<br>The %{app_name} team
       intro: Personal key used to sign in
       subject: Account Security Alert
     phone_added:
       disavowal_link: reset your password
       help: If you did not make this change, sign in to your profile and manage your
         phone numbers. We also recommend that you %{disavowal_link}.
-      intro: A new phone number was added to your %{app} profile.
+      intro: A new phone number was added to your %{app_name} profile.
       subject: New phone number added
     please_reset_password:
       call_to_action: 'As a precaution, we’ve disabled your password to keep your
         information safe. Please follow the steps below to reset your password
         and secure your account:'
-      intro: We’ve detected unusual activity on your Login.gov account. We are
+      intro: We’ve detected unusual activity on your %{app_name} account. We are
         concerned someone other than you may be trying to access your
         information.
       learn_more_link_text: Learn more about your options
-      reminder_html: As a reminder, <b>Login.gov will never ask for your login
+      reminder_html: As a reminder, <b>%{app_name} will never ask for your login
         credentials by phone or email</b>. You can take additional steps to
         secure your account by enabling two-factor authentication.
-      step_1: Visit the Login.gov website and select sign in
+      step_1: Visit the %{app_name} website and select sign in
       step_2: Select “forgot your password?” at the bottom of the page
       step_3: Follow the instructions to reset your password
-      subject: Unusual activity — reset your Login.gov password
+      subject: Unusual activity — reset your %{app_name} password
     reset_password_instructions:
       footer: This link expires in %{expires} hours.
       header: To finish resetting your password, please click the link below  or copy
@@ -185,13 +189,13 @@ en:
       subject: Reset your password
     signup_with_your_email:
       help_html: If you did not request a new account or suspect an error, please
-        visit the %{app} %{help_link} or %{contact_link}.
-      intro_html: This email address is already associated with a %{app} account, so
-        we can’t use it to create a new account. To sign in with your existing
-        account, follow the link below.  If you are not trying to sign in with
-        this email address, you can ignore this message.
-      link_text: Go to %{app}
-      reset_password_html: If you can’t remember your password, go to %{app} to reset it.
+        visit the %{app_name} %{help_link} or %{contact_link}.
+      intro_html: This email address is already associated with a %{app_name} account,
+        so we can’t use it to create a new account. To sign in with your
+        existing account, follow the link below.  If you are not trying to sign
+        in with this email address, you can ignore this message.
+      link_text: Go to %{app_name}
+      reset_password_html: If you can’t remember your password, go to %{app_name} to reset it.
     sps_over_quota_limit:
       help: ''
       info: There are SPs that have gone over their quota limit.

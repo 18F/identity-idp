@@ -18,6 +18,9 @@ fr:
       confirm_delete: Êtes-vous sûr de vouloir supprimer vos codes de sauvegarde?
       download: Télécharger
       generate: Obtenir des codes
+      last_code: Vous avez utilisé votre dernier code de sauvegarde. Veuillez
+        imprimer, copier ou télécharger les codes ci-dessous. Vous pourrez
+        utiliser ces nouveaux codes la prochaine fois que vous vous connecterez.
       print: Impression
       regenerate: Obtenir de nouveaux codes
       subinfo_html: '<b>Ne pas perdre ces codes</b>. Téléchargez, imprimez ou
@@ -51,7 +54,7 @@ fr:
     email:
       buttons:
         delete: Supprimer l’email
-    example: 'exemple:'
+    example: 'Exemple:'
     file_input:
       file_updated: Fichier mis à jour
     messages:
@@ -75,7 +78,7 @@ fr:
         delete: Supprimer le numéro de teléfono
     piv_cac_delete:
       caution: Si vous retirez votre carte PIV/CAC, vous ne pourrez plus l’utiliser
-        pour accéder à votre compte Login.gov.
+        pour accéder à votre compte %{app_name}.
       confirm: Êtes-vous sûr de vouloir retirer votre carte PIV/CAC?
     piv_cac_login:
       submit: Insérez votre PIV/CAC
@@ -98,7 +101,7 @@ fr:
       show: Afficher le numéro de sécurité sociale
     totp_delete:
       caution: Si vous supprimez votre application d’authentification, vous ne pourrez
-        plus l’utiliser pour accéder à votre compte Login.gov.
+        plus l’utiliser pour accéder à votre compte %{app_name}.
       confirm: Voulez-vous vraiment supprimer votre application d’authentification?
     totp_setup:
       totp_intro_html: Configurez une application d’authentification pour vous
@@ -125,12 +128,12 @@ fr:
       title: Confirmez votre compte
     webauthn_delete:
       caution: Si vous supprimez votre clé de sécurité, vous ne pourrez plus
-        l’utiliser pour accéder à votre compte Login.gov.
+        l’utiliser pour accéder à votre compte %{app_name}.
       confirm: Êtes-vous sûr de vouloir supprimer votre clé de sécurité?
     webauthn_setup:
       continue: Continuer
       instructions_text: Appuyez sur le bouton de votre clé de sécurité pour
-        l’enregistrer avec Login.gov
+        l’enregistrer avec %{app_name}
       instructions_title: Connectez votre clé de sécurité
       intro_html: Ajoutez une clé de sécurité en tant que méthode d’authentification à
         votre compte. Votre clé de sécurité doit prendre en charge le standard

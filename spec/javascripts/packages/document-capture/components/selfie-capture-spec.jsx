@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import userEvent from '@testing-library/user-event';
 import { cleanup } from '@testing-library/react';
-import { I18nContext } from '@18f/identity-document-capture';
+import { I18nContext } from '@18f/identity-react-i18n';
 import SelfieCapture from '@18f/identity-document-capture/components/selfie-capture';
 import { render } from '../../../support/document-capture';
 import { useSandbox } from '../../../support/sinon';

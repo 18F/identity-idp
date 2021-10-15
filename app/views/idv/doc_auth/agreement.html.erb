@@ -31,7 +31,7 @@
           aria: {invalid: false}
         ) %>
     <label class="usa-checkbox__label" for="ial2_consent_given">
-      <%= t('doc_auth.instructions.consent') %>
+      <%= t('doc_auth.instructions.consent', app_name: APP_NAME) %>
       <%= new_window_link_to t('doc_auth.instructions.learn_more'), MarketingSite.security_and_privacy_practices_url %>
     </label>
 

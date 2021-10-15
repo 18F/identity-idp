@@ -10,15 +10,15 @@
 <% end %>
 
 <h1>
-  <%= t('idv.titles.session.review') %>
+  <%= t('idv.titles.session.review', app_name: APP_NAME) %>
 </h1>
 
 <p>
-  <%= t('idv.messages.sessions.review_message') %>
+  <%= t('idv.messages.sessions.review_message', app_name: APP_NAME) %>
 </p>
 
 <%= new_window_link_to(
-      t('idv.messages.sessions.read_more_encrypt'),
+      t('idv.messages.sessions.read_more_encrypt', app_name: APP_NAME),
       MarketingSite.security_url,
     ) %>
 

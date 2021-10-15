@@ -3,12 +3,18 @@ locals:
 * f: from validated_form_for
 %>
 
+<%= f.label :ssn, class: 'usa-label' do %>
+  <%= t('idv.form.ssn_label_html') %>
+<% end %>
+<div class="margin-bottom-1 usa-hint">
+  <%= t('forms.example') %> 123-45-6789
+</div>
 <%# maxlength set and includes '-' delimiters to work around cleave bug %>
 <%= f.input(
       :ssn,
       as: :password,
       wrapper: false,
-      label: t('idv.form.ssn_label_html'),
+      label: false,
       required: true,
       pattern: '^\d{3}-?\d{2}-?\d{4}$',
       maxlength: 11,

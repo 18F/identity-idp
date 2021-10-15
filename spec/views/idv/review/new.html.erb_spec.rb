@@ -37,7 +37,7 @@ describe 'idv/review/new.html.erb' do
     end
 
     it 'renders the correct content heading' do
-      expect(rendered).to have_content t('idv.titles.session.review')
+      expect(rendered).to have_content t('idv.titles.session.review', app_name: APP_NAME)
     end
 
     it 'contains an accordion with verified user information' do

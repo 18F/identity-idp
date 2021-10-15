@@ -1,5 +1,6 @@
 import { useState, useMemo, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
+import { useI18n } from '@18f/identity-react-i18n';
 import FormSteps from './form-steps';
 import { UploadFormEntriesError } from '../services/upload';
 import DocumentsStep, { documentsStepValidator } from './documents-step';
@@ -9,7 +10,6 @@ import ServiceProviderContext from '../context/service-provider';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
 import DesktopDocumentDisclosure from './desktop-document-disclosure';
-import useI18n from '../hooks/use-i18n';
 import { RetrySubmissionError } from './submission-complete';
 import { BackgroundEncryptedUploadError } from '../higher-order/with-background-encrypted-upload';
 import SuspenseErrorBoundary from './suspense-error-boundary';

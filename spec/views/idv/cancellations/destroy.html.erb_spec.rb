@@ -30,7 +30,7 @@ describe 'idv/cancellations/destroy.html.erb' do
     let(:hybrid_session) { false }
 
     it 'renders heading' do
-      expect(rendered).to have_text(t('headings.cancellations.confirmation'))
+      expect(rendered).to have_text(t('headings.cancellations.confirmation', app_name: APP_NAME))
     end
 
     it 'renders content' do

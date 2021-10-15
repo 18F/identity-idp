@@ -31,8 +31,8 @@ en:
       success: We sent another confirmation email.
     session_cleared: For your security, we clear what you entered if you don’t move
       to a new page within %{minutes} minutes.
-    session_timedout: We signed you out. For your security, %{app} ends your session
-      when you haven’t moved to a new page for %{minutes} minutes.
+    session_timedout: We signed you out. For your security, %{app_name} ends your
+      session when you haven’t moved to a new page for %{minutes} minutes.
     signed_up_and_confirmed:
       first_paragraph_end: with a link to confirm your email address. Follow the link
         to continue adding this email to your account.

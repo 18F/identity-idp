@@ -18,14 +18,14 @@ es:
     add_info:
       phone: Agregar un número de teléfono
     cancellations:
-      confirmation: Ha cancelado la verificación de su identidad con Login.gov
+      confirmation: Ha cancelado la verificación de su identidad con %{app_name}
       prompt: '¿Estas seguro que quieres cancelar?'
     confirmations:
       new: Enviar otro email de confirmación
     create_account_with_sp:
-      sp_text: está utilizando Login.gov para permitirle iniciar sesión en su cuenta
+      sp_text: está utilizando %{app_name} para permitirle iniciar sesión en su cuenta
         de forma segura.
-    create_account_without_sp: Establezca una cuenta de Login.gov
+    create_account_without_sp: Establezca una cuenta de %{app_name}
     edit_info:
       password: Cambie su contraseña
       phone: Administrar la configuración de su teléfono

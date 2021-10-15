@@ -109,7 +109,7 @@ feature 'phone otp rate limiting', :idv_job do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(page).to have_content(t('idv.titles.session.review'))
+      expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
       expect(current_path).to eq(idv_review_path)
     end
   end

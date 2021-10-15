@@ -8,7 +8,7 @@
                                MarketingSite.rules_of_use_url)) %>
 </p>
 
-<%= t('users.rules_of_use.details_html') %>
+<%= t('users.rules_of_use.details_html', app_name: APP_NAME) %>
 <div class='margin-bottom-6'>
   <%= validated_form_for(@rules_of_use_form,
       html: { autocomplete: 'off' },
@@ -18,7 +18,7 @@
       <%= f.check_box :terms_accepted, { id: 'user_terms_accepted', class: 'usa-checkbox__input',
                                          required: true, aria: { invalid: false } }, true, false %>
       <%= f.label :terms_accepted, for: 'user_terms_accepted', class: 'usa-checkbox__label' do %>
-        <%= t('users.rules_of_use.check_box_to_accept') %>
+        <%= t('users.rules_of_use.check_box_to_accept', app_name: APP_NAME) %>
         <%= new_window_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
       <% end %>
       <div class="usa-error-message display-if-invalid display-if-invalid--value-missing" role="alert">

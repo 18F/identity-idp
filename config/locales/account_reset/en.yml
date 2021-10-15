@@ -23,9 +23,9 @@ en:
       are_you_sure: Are you sure you want to delete your account?
       info: Deleting your account should be your last resort if you are locked out of
         your account. You will not be able to recover any information linked to
-        your account. We will notify the agencies you access with %{app} that
-        you no longer have an account. Once your account is deleted, you can
-        create a new one using the same email address.
+        your account. We will notify the agencies you access with %{app_name}
+        that you no longer have an account. Once your account is deleted, you
+        can create a new one using the same email address.
       title: Deleting your account should be your last resort
     pending:
       cancel_request: Cancel request

@@ -5,9 +5,6 @@
     "browser": true,
     "commonjs": true
   },
-  "globals": {
-    "expect": true
-  },
   "rules": {
     "no-restricted-syntax": [
       "error",
@@ -26,9 +23,19 @@
   },
   "overrides": [
     {
-      "files": "spec/javascripts/**/*",
+      "files": ["*.spec.*", "*-spec.*", "*_spec.*", "spec/**"],
+      "globals": {
+        "expect": true
+      },
       "rules": {
-        "react/jsx-props-no-spreading": "off"
+        "react/jsx-props-no-spreading": "off",
+        "import/no-extraneous-dependencies": [
+          "error",
+          {
+            "devDependencies": true,
+            "packageDir": "."
+          }
+        ]
       }
     }
   ]

@@ -17,6 +17,7 @@
    session_id = flow_session[:document_capture_session_uuid]
 %>
 <%= tag.div id: 'document-capture-form', data: {
+  app_name: APP_NAME,
   liveness_required: liveness_checking_enabled?.presence,
   mock_client: (DocAuthRouter.doc_auth_vendor(discriminator: session_id) == 'mock').presence,
   document_capture_session_uuid: flow_session[:document_capture_session_uuid],

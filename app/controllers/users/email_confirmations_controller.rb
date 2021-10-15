@@ -68,7 +68,7 @@ module Users
       if email_address_already_confirmed_by_current_user?
         t('devise.confirmations.already_confirmed', action: nil)
       elsif user_signed_in?
-        t('devise.confirmations.confirmed_but_remove_from_other_account')
+        t('devise.confirmations.confirmed_but_remove_from_other_account', app_name: APP_NAME)
       else
         action_text = t('devise.confirmations.sign_in')
         t('devise.confirmations.already_confirmed', action: action_text)

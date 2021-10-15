@@ -1,5 +1,5 @@
 <p class="lead">
-  <%= t('user_mailer.signup_with_your_email.intro_html', app: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray')) %>
+  <%= t('user_mailer.signup_with_your_email.intro_html', app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray')) %>
 </p>
 
 <table class="button expanded large radius">
@@ -11,7 +11,7 @@
             <tr>
               <td>
                 <center>
-                  <%= link_to t('user_mailer.signup_with_your_email.link_text', app: APP_NAME),
+                  <%= link_to t('user_mailer.signup_with_your_email.link_text', app_name: APP_NAME),
                               @root_url, target: '_blank',
                               class: 'float-center', align: 'center' %>
                 </center>
@@ -50,12 +50,12 @@
 
 <p>
   <%= t('user_mailer.signup_with_your_email.reset_password_html',
-        app: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray')) %>
+        app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray')) %>
 </p>
 
 <p>
   <%= t('user_mailer.signup_with_your_email.help_html',
-        app: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'),
+        app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'),
         help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
         contact_link: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url)) %>
 </p>

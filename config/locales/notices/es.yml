@@ -31,8 +31,9 @@ es:
       success: Enviamos otro email de confirmación.
     session_cleared: Para su seguridad, borramos lo que ingresó si no pasa a una
       página nueva dentro de %{minutes} minutos.
-    session_timedout: Hemos terminado su sesión. Para su seguridad, %{app} cierra su
-      sesión cuando usted no pasa a una nueva página durante %{minutes} minutos.
+    session_timedout: Hemos terminado su sesión. Para su seguridad, %{app_name}
+      cierra su sesión cuando usted no pasa a una nueva página durante
+      %{minutes} minutos.
     signed_up_and_confirmed:
       first_paragraph_end: con un enlace para confirmar su dirección de correo
         electrónico. Siga el enlace para continuar agregando este correo

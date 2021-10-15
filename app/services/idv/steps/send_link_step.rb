@@ -40,7 +40,11 @@ module Idv
       end
 
       def form_submit
-        Idv::PhoneForm.new(previous_params: {}, user: current_user).submit(permit(:phone))
+        Idv::PhoneForm.new(
+          previous_params: {},
+          user: current_user,
+          delivery_methods: [:sms],
+        ).submit(permit(:phone))
       end
 
       def formatted_destination_phone

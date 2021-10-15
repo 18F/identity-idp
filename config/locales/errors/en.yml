@@ -4,17 +4,17 @@ en:
     account_reset:
       cancel_token_invalid: cancel token is invalid
       cancel_token_missing: cancel token is missing
-      granted_token_expired: The link to delete your Login.gov account has expired.
+      granted_token_expired: The link to delete your %{app_name} account has expired.
         Please create another request to delete your account.
-      granted_token_invalid: The link to delete your Login.gov account is invalid.
+      granted_token_invalid: The link to delete your %{app_name} account is invalid.
         Please try clicking the link in your email again.
-      granted_token_missing: The link to delete your Login.gov account is invalid.
+      granted_token_missing: The link to delete your %{app_name} account is invalid.
         Please try clicking the link in your email again.
     attributes:
       password:
         too_short:
-          one: 'This password is too short (minimum is 1 character)'
-          other: 'This password is too short (minimum is %{count} characters)'
+          one: This password is too short (minimum is 1 character)
+          other: This password is too short (minimum is %{count} characters)
     capture_doc:
       invalid_link: This link is expired or not valid.  Please request another link to
         verify your identity on a mobile phone.

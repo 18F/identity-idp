@@ -21,7 +21,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       expect(page).to have_content t(
         'titles.sign_up.verified',
-        app: APP_NAME,
+        app_name: APP_NAME,
       )
       expect_csp_headers_to_be_present if sp == :oidc
 
@@ -52,7 +52,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
 
       expect(page).to have_content t(
         'titles.sign_up.verified',
-        app: APP_NAME,
+        app_name: APP_NAME,
       )
       expect_csp_headers_to_be_present if sp == :oidc
 
