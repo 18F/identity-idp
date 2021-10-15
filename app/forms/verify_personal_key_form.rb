@@ -17,9 +17,7 @@ class VerifyPersonalKeyForm
     extra = {}
     success = valid?
 
-    if !success
-      reset_sensitive_fields
-    end
+    reset_sensitive_fields if !success
 
     FormResponse.new(success: valid?, errors: errors, extra: extra)
   end
