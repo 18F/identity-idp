@@ -43,7 +43,7 @@ fr:
         <li>Votre identifiant n’a pas de code à barres endommagé</li>
         <li>Votre pièce d’identité représente 80% de l’image globale</li>
         <li>Votre pièce d’identité est sur un fond sombre et uni</li>
-        <li>Votre selfie est pris dans une zone bien éclairée avec un arrière-plan uni</li>
+        <li>Votre photo est prise dans un endroit bien éclairé avec un fond uni</li>
         <li>Vous ne portez pas de chapeau ni de lunettes et votre tête est entièrement visible</li>
         </ul>
       document_verification_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
