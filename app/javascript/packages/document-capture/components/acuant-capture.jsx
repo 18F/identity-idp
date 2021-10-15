@@ -10,6 +10,7 @@ import {
 import { useI18n } from '@18f/identity-react-i18n';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
+import CaptureAttemptsContext from '../context/capture-attempts';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
 import FullScreen from './full-screen';
@@ -17,7 +18,6 @@ import Button from './button';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
-import useCounter from '../hooks/use-counter';
 import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -266,7 +266,7 @@ function AcuantCapture(
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
-  const [attempt, incrementAttempt] = useCounter(1);
+  const { captureAttempts, onCaptureAttempt } = useContext(CaptureAttemptsContext);
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
@@ -299,8 +299,8 @@ function AcuantCapture(
    * @return {P}
    */
   function getAddAttemptAnalyticsPayload(payload) {
-    const enhancedPayload = { ...payload, attempt };
-    incrementAttempt();
+    const enhancedPayload = { ...payload, attempt: captureAttempts + 1 };
+    onCaptureAttempt();
     return enhancedPayload;
   }
 

@@ -123,6 +123,7 @@ class IdentityConfig
     config.add(:doc_auth_error_sharpness_threshold, type: :integer)
     config.add(:doc_auth_extend_timeout_by_minutes, type: :integer)
     config.add(:doc_auth_max_attempts, type: :integer)
+    config.add(:doc_auth_max_capture_attempts_before_tips, type: :integer)
     config.add(:doc_auth_vendor, type: :string)
     config.add(:doc_auth_vendor_randomize, type: :boolean)
     config.add(:doc_auth_vendor_randomize_percent, type: :integer)

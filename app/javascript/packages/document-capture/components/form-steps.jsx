@@ -252,6 +252,21 @@ function FormSteps({
           );
           setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
         })}
+        onGoToStep={() => {}}
+        Button={() => (
+          <Button
+            type="submit"
+            isBig
+            isWide
+            className="display-block margin-y-5"
+            isVisuallyDisabled={!canContinue}
+          >
+            {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
+          </Button>
+        )}
+        isLastStep={isLastStep}
+        onGoToNextStep={() => {}}
+        isValid={canContinue}
         onError={ifStillMounted((error, { field } = {}) => {
           if (field) {
             setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
@@ -277,18 +292,13 @@ function FormSteps({
           return fields.current[field].refCallback;
         }}
       />
-      <Button
-        type="submit"
-        isBig
-        isWide
-        className="display-block margin-y-5"
-        isVisuallyDisabled={!canContinue}
-      >
-        {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
-      </Button>
+
       {Footer && <Footer />}
     </form>
   );
 }
 
 export default FormSteps;
+
+// <FormStepsContinueButton>Try again</FormStepsContinueButton>
+// {children ? children : hasNextStep ? 'Continue' : 'Submit'}

@@ -15,6 +15,7 @@ import { BackgroundEncryptedUploadError } from '../higher-order/with-background-
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import PromptOnNavigate from './prompt-on-navigate';
+import CaptureAttemptsTroubleshooting from './capture-attempts-troubleshooting';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./form-steps').FormStep} FormStep */
@@ -93,6 +94,10 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
   const steps = submissionError
     ? [
         {
+          name: 'post-submission-erro',
+          form: PostSubmissionError,
+        },
+        {
           name: 'review',
           title: t('doc_auth.headings.review_issues'),
           form: ReviewIssuesStep,
@@ -141,14 +146,16 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
           {t('doc_auth.errors.general.network_error')}
         </Alert>
       )}
-      <FormSteps
-        steps={steps}
-        initialValues={initialValues}
-        initialActiveErrors={initialActiveErrors}
-        onComplete={submitForm}
-        onStepChange={onStepChange}
-        autoFocus={!!submissionError}
-      />
+      <CaptureAttemptsTroubleshooting>
+        <FormSteps
+          steps={steps}
+          initialValues={initialValues}
+          initialActiveErrors={initialActiveErrors}
+          onComplete={submitForm}
+          onStepChange={onStepChange}
+          autoFocus={!!submissionError}
+        />
+      </CaptureAttemptsTroubleshooting>
     </>
   );
 }

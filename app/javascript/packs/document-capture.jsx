@@ -8,6 +8,7 @@ import {
   UploadContextProvider,
   ServiceProviderContextProvider,
   AnalyticsContext,
+  CaptureAttemptsContextProvider,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -53,6 +54,9 @@ const isMockClient = appRoot.hasAttribute('data-mock-client');
 const keepAliveEndpoint = /** @type {string} */ (appRoot.getAttribute('data-keep-alive-endpoint'));
 const glareThreshold = Number(appRoot.getAttribute('data-glare-threshold')) ?? undefined;
 const sharpnessThreshold = Number(appRoot.getAttribute('data-sharpness-threshold')) ?? undefined;
+const maxCaptureAttemptsBeforeTips = Number(
+  appRoot.getAttribute('data-max-capture-attempts-before-tips'),
+);
 
 function getServiceProvider() {
   const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
@@ -161,13 +165,15 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
               backgroundUploadEncryptKey={backgroundUploadEncryptKey}
               formData={formData}
             >
-              <I18nContext.Provider value={i18n.strings}>
-                <ServiceProviderContextProvider value={getServiceProvider()}>
-                  <AssetContext.Provider value={assets}>
-                    <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
-                  </AssetContext.Provider>
-                </ServiceProviderContextProvider>
-              </I18nContext.Provider>
+              <CaptureAttemptsContextProvider maxAttemptsBeforeTips={maxCaptureAttemptsBeforeTips}>
+                <I18nContext.Provider value={i18n.strings}>
+                  <ServiceProviderContextProvider value={getServiceProvider()}>
+                    <AssetContext.Provider value={assets}>
+                      <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
+                    </AssetContext.Provider>
+                  </ServiceProviderContextProvider>
+                </I18nContext.Provider>
+              </CaptureAttemptsContextProvider>
             </UploadContextProvider>
           </AcuantContextProvider>
         </AnalyticsContext.Provider>
