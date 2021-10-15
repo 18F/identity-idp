@@ -8,7 +8,7 @@ import isSafe from './is-safe';
  */
 
 /**
- * @typedef {"fetch"|"classlist"|"crypto"|"custom-event"|"url"} SupportedPolyfills
+ * @typedef {"fetch"|"classlist"|"crypto"|"custom-elements"|"custom-event"|"url"} SupportedPolyfills
  */
 
 /**
@@ -26,6 +26,11 @@ const POLYFILLS = {
   crypto: {
     test: () => 'crypto' in window,
     load: () => import(/* webpackChunkName: "webcrypto-shim" */ 'webcrypto-shim'),
+  },
+  'custom-elements': {
+    test: () => 'customElements' in window,
+    load: () =>
+      import(/* webpackChunkName: "custom-elements-polyfill" */ '@webcomponents/custom-elements'),
   },
   'custom-event': {
     test: () => isSafe(() => new window.CustomEvent('test')),
