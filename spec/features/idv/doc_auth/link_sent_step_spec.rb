@@ -109,7 +109,7 @@ feature 'doc auth link sent step' do
     end
 
     it 'refreshes page 4x with meta refresh extending timeout by 40 min and can start over' do
-      3.times do
+      4.times do
         expect(page).to have_css 'meta[http-equiv="refresh"]', visible: false
         visit idv_doc_auth_link_sent_step
       end
