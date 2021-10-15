@@ -8,6 +8,7 @@ inteval_24h = 24 * 60 * 60
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
 else
+  # rubocop:disable Metrics/BlockLength
   Rails.application.configure do
     config.good_job.cron = {
       # Daily GPO letter mailings
@@ -179,12 +180,13 @@ else
         args: -> { [Time.zone.now] },
       },
       # Queue heartbeat job to GoodJob
-      heartbeat_job:  {
+      heartbeat_job: {
         class: 'HeartbeatJob',
         cron: cron_5m,
-      }
+      },
     }
   end
+  # rubocop:enable Metrics/BlockLength
 
   Rails.logger.info 'job_configurations: jobs scheduled with good_job.cron'
 end
