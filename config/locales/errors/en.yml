@@ -40,7 +40,7 @@ en:
         <li>Your ID does not have any damaged barcodes</li>
         <li>Your ID represents 80% of the overall image</li>
         <li>Your ID is against a solid, dark background</li>
-        <li>Your selfie is taken in a well-lit area with a plain background</li>
+        <li>Your picture is taken in a well-lit area with a plain background</li>
         <li>You are not wearing a hat or glasses, and your head is fully visible</li>
         </ul>
       document_verification_timeout: The server took too long to respond. Please try again.
