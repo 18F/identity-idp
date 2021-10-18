@@ -16,6 +16,9 @@ es:
       confirm_delete: '¿Estás seguro de que deseas eliminar tus códigos de respaldo?'
       download: Descargar
       generate: Obtener códigos
+      last_code: Usted utilizó el último código de seguridad. Imprima, copie o
+        descargue los códigos que aparecen a continuación. Puede introducir
+        estos nuevos códigos la próxima vez que se registre.
       print: Impresión
       regenerate: Obtener nuevos códigos
       subinfo_html: '<b>No pierdas estos códigos</b>. Descarga, imprime, o copialos.
@@ -50,7 +53,7 @@ es:
     email:
       buttons:
         delete: Eliminar correo electrónico
-    example: 'ejemplo:'
+    example: 'Ejemplo:'
     file_input:
       file_updated: Archivo actualizado
     messages:
@@ -74,7 +77,7 @@ es:
         delete: Eliminar el teléfono
     piv_cac_delete:
       caution: Si retira su tarjeta PIV/CAC, no podrá usarla para acceder a su cuenta
-        Login.gov.
+        %{app_name}.
       confirm: '¿Estás seguro de que deseas eliminar tu tarjeta PIV/CAC?'
     piv_cac_login:
       submit: Inserte su PIV/CAC
@@ -97,7 +100,7 @@ es:
       show: Mostrar Número de Seguro Social
     totp_delete:
       caution: Si elimina su aplicación de autenticación, no podrá usarla para acceder
-        a su cuenta Login.gov.
+        a su cuenta %{app_name}.
       confirm: '¿Seguro que quieres eliminar tu aplicación de autenticación?'
     totp_setup:
       totp_intro_html: Configure una aplicación de autenticación para iniciar sesión
@@ -123,11 +126,12 @@ es:
       title: Confirme su cuenta
     webauthn_delete:
       caution: Si elimina su clave de seguridad, no podrá usarla para acceder a su
-        cuenta Login.gov.
+        cuenta %{app_name}.
       confirm: '¿Estás seguro de que quieres eliminar tu clave de seguridad?'
     webauthn_setup:
       continue: Continuar
-      instructions_text: Presione el botón en su clave de seguridad para registrarlo con Login.gov
+      instructions_text: Presione el botón en su clave de seguridad para registrarlo
+        con %{app_name}
       instructions_title: Conecte su llave de seguridad
       intro_html: Agregue una clave de seguridad como método de autenticación a su
         cuenta. Su clave de seguridad debe ser compatible con el estándar FIDO.

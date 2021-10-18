@@ -4,7 +4,7 @@ fr:
     add:
       duplicate: Cette adresse e-mail est déjà enregistrée sur votre compte.
     delete:
-      bullet1: Vous ne pourrez pas vous connecter à Login.gov (ni à aucune des
+      bullet1: Vous ne pourrez pas vous connecter à %{app_name} (ni à aucune des
         applications gouvernementales associées à votre compte) en utilisant
         cette adresse électronique
       bullet2: Vous ne recevrez pas de notifications de compte à cette adresse email

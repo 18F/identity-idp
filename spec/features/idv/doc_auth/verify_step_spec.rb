@@ -27,6 +27,8 @@ feature 'doc auth verify step' do
   end
 
   it 'proceeds to the next page upon confirmation' do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
     click_idv_continue
 
     expect(page).to have_current_path(idv_phone_path)
@@ -35,6 +37,10 @@ feature 'doc auth verify step' do
     expect(user.proofing_component.resolution_check).to eq('lexis_nexis')
     expect(user.proofing_component.source_check).to eq('aamva')
     expect(DocAuthLog.find_by(user_id: user.id).aamva).to eq(true)
+    expect(fake_analytics).to have_logged_event(
+      'IdV: doc auth optional verify_wait submitted',
+      address_edited: false,
+    )
   end
 
   it 'proceeds to address page prepopulated with defaults if the user clicks change address' do
@@ -44,6 +50,21 @@ feature 'doc auth verify step' do
     expect(page).to have_selector("input[value='1 FAKE RD']")
     expect(page).to have_selector("input[value='GREAT FALLS']")
     expect(page).to have_selector("input[value='59010']")
+  end
+
+  it 'tracks when the user edits their address' do
+    allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+
+    click_link t('doc_auth.buttons.change_address')
+    fill_out_address_form_ok
+    click_idv_continue # address form
+
+    click_idv_continue
+
+    expect(fake_analytics).to have_logged_event(
+      'IdV: doc auth optional verify_wait submitted',
+      address_edited: true,
+    )
   end
 
   it 'proceeds to the ssn page if the user clicks change ssn and allows user to go back' do

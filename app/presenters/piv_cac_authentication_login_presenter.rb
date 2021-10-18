@@ -26,7 +26,7 @@ class PivCacAuthenticationLoginPresenter
   end
 
   def info
-    t('instructions.mfa.piv_cac.sign_in')
+    t('instructions.mfa.piv_cac.sign_in', app_name: APP_NAME)
   end
 
   def url_options

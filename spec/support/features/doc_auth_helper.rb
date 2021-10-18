@@ -87,7 +87,7 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_upload_step(expect_accessible: false)
     complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
     click_on t('doc_auth.buttons.continue')
-    find('label', text: t('doc_auth.instructions.consent')).click
+    find('label', text: t('doc_auth.instructions.consent', app_name: APP_NAME)).click
     click_on t('doc_auth.buttons.continue')
   end
 

@@ -96,7 +96,7 @@ describe 'devise/sessions/new.html.erb' do
 
       sp_content = [
         'Awesome Application!',
-        t('headings.create_account_with_sp.sp_text'),
+        t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
       ].join(' ')
 
       expect(rendered).to have_content(sp_content, normalize_ws: true)

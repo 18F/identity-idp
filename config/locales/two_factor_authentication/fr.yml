@@ -16,7 +16,7 @@ fr:
       reset_your_account: Réinitialiser votre compte
       reverify_link: re-vérifier votre identité
       successful_cancel: Je vous remercie. Votre demande de suppression de votre
-        compte Login.gov a été annulée.
+        compte %{app_name} a été annulée.
       text_html: Si vous ne pouvez pas utiliser l’une de ces options de sécurité
         ci-dessus, vous pouvez réinitialiser vos préférences par %{link}.
     backup_code_fallback:

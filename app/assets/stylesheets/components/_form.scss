@@ -87,8 +87,8 @@ input::-webkit-inner-spin-button {
   @include u-border($theme-input-state-border-width, 'error');
 }
 
-.text-hint {
-  color: #707070;
+.usa-hint {
+  font-style: italic;
 }
 
 //================================================
@@ -107,7 +107,12 @@ input::-webkit-inner-spin-button {
 
 .usa-success-message {
   @include u-padding-y(.5);
+  background-image: url(image-path('alert/success.svg'));
+  background-position: 0 center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
   color: color('success');
   display: block;
   font-weight: font-weight('bold');
+  padding-left: 1.5rem;
 }

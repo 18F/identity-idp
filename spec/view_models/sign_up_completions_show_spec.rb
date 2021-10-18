@@ -60,7 +60,7 @@ describe SignUpCompletionsShow do
 
         it 'returns proper title name' do
           expect(title).
-            to include(I18n.t('titles.sign_up.verified', app: APP_NAME))
+            to include(I18n.t('titles.sign_up.verified', app_name: APP_NAME))
         end
       end
 
@@ -75,7 +75,7 @@ describe SignUpCompletionsShow do
               I18n.t(
                 'titles.sign_up.completion_html',
                 accent: I18n.t('titles.sign_up.loa1'),
-                app: APP_NAME,
+                app_name: APP_NAME,
               ),
             )
         end

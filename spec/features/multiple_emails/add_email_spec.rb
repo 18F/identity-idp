@@ -69,7 +69,7 @@ feature 'adding email address' do
 
     expect(page).to have_current_path(account_path)
     expect(page).to have_content(
-      t('devise.confirmations.confirmed_but_remove_from_other_account'),
+      t('devise.confirmations.confirmed_but_remove_from_other_account', app_name: APP_NAME),
     )
   end
 
@@ -80,7 +80,7 @@ feature 'adding email address' do
     sign_in_user_and_add_email(user, false)
 
     expect(last_email_sent.default_part_body.to_s).to have_content(
-      t('user_mailer.add_email_associated_with_another_account.intro_html', app: APP_NAME),
+      t('user_mailer.add_email_associated_with_another_account.intro_html', app_name: APP_NAME),
     )
   end
 

@@ -119,10 +119,9 @@ fr:
           réessayer. La profondeur de pixel de l'image prise en charge est de 24
           bits RGB.
       no_camera:
-        explanation: Nous recueillons des informations vous concernant en lisant votre
-          carte d’identité délivrée par l’État. Ensuite, vous prendrez une photo
-          de vous-même pour confirmer que vous êtes bien le propriétaire de la
-          carte d’identité.
+        explanation: Pour continuer, connectez-vous à votre compte %{app_name} sur tout
+          appareil équipé d’une caméra, comme un téléphone portable, une
+          tablette ou un ordinateur avec une webcam.
         heading: Vous avez besoin d’une caméra pour vérifier votre identité
         title: Appareil photo nécessaire
       not_a_file: La sélection n’était pas un fichier valide.
@@ -209,10 +208,10 @@ fr:
         vous aurez confirmé votre identifiant à l’aide de votre téléphone.
       link_sent_complete_nojs: Quand vous aurez fini, cliquez sur « Continuer » ici
         pour terminer la vérification de votre identité.
-      privacy_html: Login.gov est un site gouvernemental sécurisé qui respecte les
+      privacy_html: '%{app_name} est un site gouvernemental sécurisé qui respecte les
         normes les plus strictes en matière de protection des données. Nous
         n’utilisons vos données uniquement pour vérifier votre identité. %{link}
-        sur nos mesures de confidentialité et de sécurité.
+        sur nos mesures de confidentialité et de sécurité.'
       secure_account: Après avoir vérifié votre identité, nous vous demanderons de
         crypter votre compte. Le cryptage garantit la protection de vos données
         et seul vous, le titulaire du compte, pourrez accéder à vos informations
@@ -230,7 +229,7 @@ fr:
         d’identité délivrée par l’État.
       upload_computer_link: Téléchargez depuis votre ordinateur
       upload_from_computer: Vous n’avez pas de téléphone?
-      upload_from_computer_not_allowed: Connectez-vous à votre compte Login.gov sur
+      upload_from_computer_not_allowed: Connectez-vous à votre compte %{app_name} sur
         tout appareil doté d’une caméra, comme une tablette ou un ordinateur
         avec une caméra Web.
       upload_from_phone: Téléchargez des images directement depuis l’appareil photo de
@@ -252,21 +251,21 @@ fr:
       bullet1a: Un appareil équipé d’une caméra
       bullet2: Votre numéro de sécurité sociale
       bullet3: Un numéro de téléphone associé à un forfait téléphonique à votre nom
-      consent: En cochant cette case, vous autorisez Login.gov à demander, utiliser,
+      consent: En cochant cette case, vous autorisez %{app_name} à demander, utiliser,
         conserver et partager vos renseignements personnels. Nous ne les
         utiliserons que pour vérifier votre identité.
       document_capture_selfie_consent_action: '<lg-underline>Autorisez l’accès à la
         caméra</lg-underline> et recherchez une notification dans votre
         navigateur ou vérifiez les paramètres de votre système pour confirmer
         l’accès à la caméra.'
-      document_capture_selfie_consent_banner: Login.gov a besoin d’une autorisation
-        pour utiliser la caméra de votre appareil
-      document_capture_selfie_consent_blocked: Login.gov a besoin d’une autorisation
-        pour utiliser votre caméra afin que vous puissiez prouver que votre
-        identifiant vous appartient.
+      document_capture_selfie_consent_banner: '%{app_name} a besoin d’une autorisation
+        pour utiliser la caméra de votre appareil'
+      document_capture_selfie_consent_blocked: '%{app_name} a besoin d’une
+        autorisation pour utiliser votre caméra afin que vous puissiez prouver
+        que votre identifiant vous appartient.'
       document_capture_selfie_consent_blocked_action: Vérifiez les paramètres de votre
         navigateur Web pour ce site ou les paramètres système de votre
-        ordinateur pour permettre à Login.gov d’accéder à la caméra.
+        ordinateur pour permettre à %{app_name} d’accéder à la caméra.
       document_capture_selfie_instructions: Maintenant, prenez une photo de vous. Nous
         le comparerons à l’image au recto de votre pièce d’identité.
       email_sent: Lien envoyé à %{email}. Veuillez vérifier votre email de bureau et

@@ -1,7 +1,7 @@
 <p class="lead">
   <%= t('user_mailer.account_verified.intro_html',
-        app: @app,
-        app_name: @app_name,
+        sp_name: @sp_name,
+        app_name: APP_NAME,
         date: @date,
         disavowal_link: link_to(
           t('user_mailer.account_verified.disavowal_link'),

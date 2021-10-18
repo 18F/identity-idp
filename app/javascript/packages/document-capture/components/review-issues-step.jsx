@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
-import useI18n from '../hooks/use-i18n';
+import { useI18n } from '@18f/identity-react-i18n';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantCapture from './acuant-capture';

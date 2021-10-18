@@ -3,7 +3,7 @@ es:
   account:
     connected_apps:
       associated: Conectado %{timestamp}
-      description: Con su cuenta Login.gov, puede conectarse de manera segura a
+      description: Con su cuenta %{app_name}, puede conectarse de manera segura a
         múltiples cuentas gubernamentales en línea. A continuación se muestra
         una lista de todas las cuentas que tiene actualmente conectadas.
     email_language:
@@ -79,7 +79,7 @@ es:
           desbloquear su perfil.
     navigation:
       access_services: Acceda a los beneficios y servicios de su gobierno desde su
-        cuenta Login.gov.
+        cuenta %{app_name}.
       add_authentication_apps: Agregar aplicaciones de autenticación
       add_email: Agregar dirección de correo electrónico
       add_federal_id: Agregar identificación de empleado federal
@@ -92,7 +92,7 @@ es:
       forget_browsers: Olvídese de todos los navegadores
       get_backup_codes: Obtener códigos de respaldo
       history: Historia
-      learn_more: Obtenga más información sobre Login.gov
+      learn_more: Obtenga más información sobre %{app_name}
       menu: Menú
       two_factor_authentication: Tus métodos de autenticación
       your_account: Su cuenta

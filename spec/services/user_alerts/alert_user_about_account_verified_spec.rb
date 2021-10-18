@@ -17,7 +17,7 @@ describe UserAlerts::AlertUserAboutAccountVerified do
       described_class.call(
         user: user,
         date_time: date_time,
-        app: '',
+        sp_name: '',
         disavowal_token: disavowal_token,
       )
 
@@ -29,7 +29,7 @@ describe UserAlerts::AlertUserAboutAccountVerified do
           with(user,
                email,
                date_time: date_time,
-               app: '',
+               sp_name: '',
                disavowal_token: disavowal_token)
       end
     end

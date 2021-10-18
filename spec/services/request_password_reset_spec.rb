@@ -14,6 +14,7 @@ RSpec.describe RequestPasswordReset do
           hash_including(
             instructions: I18n.t(
               'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
+              app_name: APP_NAME,
             ),
           ),
         )
@@ -84,6 +85,7 @@ RSpec.describe RequestPasswordReset do
           hash_including(
             instructions: I18n.t(
               'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
+              app_name: APP_NAME,
             ),
           ),
         )

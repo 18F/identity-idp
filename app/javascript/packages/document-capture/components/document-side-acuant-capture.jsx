@@ -1,6 +1,6 @@
+import { useI18n } from '@18f/identity-react-i18n';
 import AcuantCapture from './acuant-capture';
 import FormErrorMessage, { CameraAccessDeclinedError } from './form-error-message';
-import useI18n from '../hooks/use-i18n';
 
 /** @typedef {import('./form-steps').FormStepError<*>} FormStepError */
 /** @typedef {import('./form-steps').RegisterFieldCallback} RegisterFieldCallback */

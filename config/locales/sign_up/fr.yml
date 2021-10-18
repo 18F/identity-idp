@@ -9,4 +9,4 @@ fr:
       invalid_email_alert_head: 'Erreur: Ce n’est pas une vraie adresse email.
         Assurez-vous qu’il comprend un @ et un nom de domaine.'
       invalid_email_alert_inline: Entrez une adresse email réelle
-    terms: Cochez cette case pour accepter les règles d’utilisation de Login.gov
+    terms: Cochez cette case pour accepter les règles d’utilisation de %{app_name}

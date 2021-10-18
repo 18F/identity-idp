@@ -3,7 +3,7 @@ en:
   account:
     connected_apps:
       associated: Connected %{timestamp}
-      description: With your Login.gov account, you can securely connect to multiple
+      description: With your %{app_name} account, you can securely connect to multiple
         government accounts online. Below is a list of all the accounts you
         currently have connected.
     email_language:
@@ -77,7 +77,8 @@ en:
           instead of your email. You will need to provide your password to
           unlock your profile.
     navigation:
-      access_services: Access your government benefits and services from your Login.gov account.
+      access_services: Access your government benefits and services from your
+        %{app_name} account.
       add_authentication_apps: Add authentication apps
       add_email: Add email address
       add_federal_id: Add Federal Employee ID
@@ -90,7 +91,7 @@ en:
       forget_browsers: Forget all browsers
       get_backup_codes: Get backup codes
       history: History
-      learn_more: Learn more about Login.gov
+      learn_more: Learn more about %{app_name}
       menu: Menu
       two_factor_authentication: Your authentication methods
       your_account: Your Account

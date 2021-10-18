@@ -1,4 +1,4 @@
-import { I18nContext } from '@18f/identity-document-capture';
+import { I18nContext } from '@18f/identity-react-i18n';
 import FormErrorMessage, {
   RequiredValueMissingError,
   CameraAccessDeclinedError,

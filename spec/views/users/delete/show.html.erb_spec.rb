@@ -12,29 +12,29 @@ describe 'users/delete/show.html.erb' do
   it 'displays headings' do
     render
 
-    expect(rendered).to have_content(t('users.delete.heading', app: APP_NAME))
-    expect(rendered).to have_content(t('users.delete.subheading', app: APP_NAME))
+    expect(rendered).to have_content(t('users.delete.heading', app_name: APP_NAME))
+    expect(rendered).to have_content(t('users.delete.subheading', app_name: APP_NAME))
   end
 
   it 'displays bullets' do
     render
 
-    expect(rendered).to have_content(t('users.delete.bullet_1', app: APP_NAME))
+    expect(rendered).to have_content(t('users.delete.bullet_1', app_name: APP_NAME))
     expect(rendered).to have_content(user.decorate.delete_account_bullet_key)
-    expect(rendered).to have_content(t('users.delete.bullet_3', app: APP_NAME))
-    expect(rendered).to have_content(t('users.delete.bullet_4', app: APP_NAME))
+    expect(rendered).to have_content(t('users.delete.bullet_3', app_name: APP_NAME))
+    expect(rendered).to have_content(t('users.delete.bullet_4', app_name: APP_NAME))
   end
 
   it 'displays bullets for loa1' do
     allow(decorated_user).to receive(:identity_verified?).and_return(false)
     expect(user.decorate.delete_account_bullet_key).
-      to eq t('users.delete.bullet_2_loa1', app: APP_NAME)
+      to eq t('users.delete.bullet_2_loa1', app_name: APP_NAME)
   end
 
   it 'displays bullets for loa1' do
     allow(decorated_user).to receive(:identity_verified?).and_return(true)
     expect(user.decorate.delete_account_bullet_key).
-      to eq t('users.delete.bullet_2_loa3', app: APP_NAME)
+      to eq t('users.delete.bullet_2_loa3', app_name: APP_NAME)
   end
 
   it 'contains link to delete account button' do

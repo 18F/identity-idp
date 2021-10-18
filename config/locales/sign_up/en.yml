@@ -9,4 +9,4 @@ en:
       invalid_email_alert_head: 'Error: This is not a real email address. Make sure it
         includes an @ and a domain name.'
       invalid_email_alert_inline: Enter a real email address
-    terms: Check this box to accept the Login.gov
+    terms: Check this box to accept the %{app_name}

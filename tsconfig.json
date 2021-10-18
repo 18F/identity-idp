@@ -12,9 +12,11 @@
     "target": "ESNext"
   },
   "include": [
+    "app/components",
     "app/javascript/app/phone-internationalization.js",
     "app/javascript/packages",
-    "app/javascript/packs"
+    "app/javascript/packs",
+    "spec/javascripts/spec_helper.d.ts"
   ],
   "exclude": [
     "**/fixtures",

@@ -5,6 +5,69 @@ describe PhoneNumberCapabilities do
   let(:phone_confirmed) { false }
   subject(:capabilities) { PhoneNumberCapabilities.new(phone, phone_confirmed: phone_confirmed) }
 
+  describe '#supports?' do
+    let(:method) { nil }
+    subject(:result) { capabilities.supports?(method) }
+
+    context 'sms' do
+      let(:method) { :sms }
+
+      context 'sms is supported' do
+        it { should eq(true) }
+      end
+
+      context 'sms is unsupported' do
+        let(:phone) { '+84 091 234 56 78' }
+
+        it { should eq(false) }
+      end
+    end
+
+    context 'voice' do
+      let(:method) { :voice }
+
+      context 'voice is supported' do
+        it { should eq(true) }
+      end
+
+      context 'voice is unsupported' do
+        let(:phone) { '+1 (441) 295-9644' }
+
+        it { should eq(false) }
+      end
+    end
+
+    context 'unknown method' do
+      let(:method) { :unknown }
+      subject(:result) { nil }
+
+      it 'should raise an error' do
+        expect { capabilities.supports?(method) }.to raise_error('Unknown method=unknown')
+      end
+    end
+  end
+
+  describe '#supports_all?' do
+    let(:methods) { [:sms] }
+    subject(:result) { capabilities.supports_all?(methods) }
+
+    context 'sms is supported, voice is unsupported' do
+      let(:phone) { '+1 (306) 234-5678' }
+
+      it { should eq(true) }
+    end
+
+    context 'voice is supported, sms is unsupported' do
+      let(:phone) { '+84 091 234 56 78' }
+
+      it { should eq(false) }
+    end
+
+    context 'both sms and voice are supported' do
+      it { should eq(true) }
+    end
+  end
+
   describe '#sms_only?' do
     context 'voice is supported' do
       it { expect(subject.sms_only?).to eq(false) }

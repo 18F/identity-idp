@@ -1,7 +1,7 @@
 import { useContext } from 'react';
+import { useI18n } from '@18f/identity-react-i18n';
 import BlockLink from './block-link';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
-import useI18n from '../hooks/use-i18n';
 import DeviceContext from '../context/device';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';

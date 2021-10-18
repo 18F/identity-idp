@@ -39,7 +39,7 @@ feature 'Sign Up' do
 
     it 'allows a user to pick a language when entering email' do
       visit sign_up_email_path
-      check t('sign_up.terms')
+      check t('sign_up.terms', app_name: APP_NAME)
       fill_in t('forms.registration.labels.email'), with: email
       choose 'Español'
       click_button t('forms.buttons.submit.default')

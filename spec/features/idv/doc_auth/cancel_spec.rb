@@ -18,7 +18,7 @@ feature 'doc auth cancel' do
 
     click_button t('forms.buttons.cancel')
 
-    expect(page).to have_content(t('headings.cancellations.confirmation'))
+    expect(page).to have_content(t('headings.cancellations.confirmation', app_name: APP_NAME))
     expect(current_path).to eq(idv_cancel_path)
 
     visit account_path
