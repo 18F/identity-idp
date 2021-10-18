@@ -47,6 +47,17 @@ module Upaya
     config.active_job.logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
     config.active_job.logger.formatter = config.log_formatter
 
+    config.good_job.execution_mode = :external
+    config.good_job.poll_interval = 5
+    config.good_job.enable_cron = true
+    config.good_job.max_threads = IdentityConfig.store.good_job_max_threads
+    config.good_job.queues = IdentityConfig.store.good_job_queues
+    # see config/initializers/job_configurations.rb for cron schedule
+
+    GoodJob.active_record_parent_class = 'WorkerJobApplicationRecord'
+    GoodJob.retry_on_unhandled_error = false
+    GoodJob.on_thread_error = ->(exception) { NewRelic::Agent.notice_error(exception) }
+
     config.time_zone = 'UTC'
 
     # Generate CSRF tokens that are encoded in URL-safe Base64.

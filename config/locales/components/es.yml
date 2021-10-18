@@ -1,0 +1,5 @@
+---
+es:
+  components:
+    phone_input:
+      country_code_label: Código del país
