@@ -200,7 +200,6 @@ module TwoFactorAuthenticatableMethods # rubocop:disable Metrics/ModuleLength
 
   def after_otp_verification_confirmation_url
     return account_url if @updating_existing_number
-    return reactivate_account_url if user_needs_to_reactivate_account?
     after_sign_in_path_for(current_user)
   end
 
