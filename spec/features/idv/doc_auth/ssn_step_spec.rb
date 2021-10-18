@@ -27,8 +27,9 @@ feature 'doc auth ssn step' do
 
     it 'does not proceed to the next page with invalid info', js: true do
       fill_out_ssn_form_fail
-      expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('true')
       click_idv_continue
+
+      expect(page.find('#doc_auth_ssn')['aria-invalid']).to eq('value-missing')
 
       expect(page).to have_current_path(idv_doc_auth_ssn_step)
     end
