@@ -13,19 +13,21 @@
   <% end %>
 </p>
 
-<%= validated_form_for(@new_phone_form,
-                       html: { autocomplete: 'off', method: :patch },
-                       data: { international_phone_form: true },
-                       url: phone_setup_path) do |f| %>
+<%= simple_form_for(
+      @new_phone_form,
+      html: { autocomplete: 'off', method: :patch },
+      data: { international_phone_form: true },
+      url: phone_setup_path,
+    ) do |f| %>
 
-  <%= render 'users/shared/phone_number_edit', f: f %>
+  <%= render PhoneInputComponent.new(form: f, required: true) %>
 
   <%= render 'users/shared/otp_delivery_preference_selection',
              form_obj: @new_phone_form %>
 
   <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
               MarketingSite.messaging_practices_url,
-              class: "display-block margin-bottom-4" %>
+              class: 'display-block margin-bottom-4' %>
 
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
     <%= render 'users/shared/otp_make_default_number',
@@ -37,7 +39,4 @@
 
 <div class="margin-top-4 padding-top-1 border-top border-primary-light">
   <%= link_to t('two_factor_authentication.choose_another_option'), two_factor_options_path %>
-
-  <%= stylesheet_link_tag 'intl-tel-input/build/css/intlTelInput' %>
-  <%= javascript_packs_tag_once 'intl-tel-input' %>
 </div>
