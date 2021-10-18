@@ -63,18 +63,33 @@ feature 'Two Factor Authentication' do
       scenario 'updates international code as user types', :js do
         sign_in_before_2fa
         select_2fa_option(:phone)
+
+        expect(page).to have_css('.phone-input__example', text: '(201) 555-0123')
+        expect(page).to have_button(nil, disabled: true)
+
         fill_in 'new_phone_form_phone', with: '+81 54 354 3643'
 
+        expect(page).to have_css('.phone-input__example', text: '090-1234-5678')
+        expect(page).to have_button(nil, disabled: false)
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
 
-        fill_in 'new_phone_form_phone', with: ''
-        fill_in 'new_phone_form_phone', with: '+212 5376'
+        fill_in 'new_phone_form_phone', with: '+81 54 354 364'
+        expect(page).to have_button(nil, disabled: true)
 
+        fill_in 'new_phone_form_phone', with: ''
+        expect(page).to have_button(nil, disabled: true)
+
+        fill_in 'new_phone_form_phone', with: '+212 5376'
+        expect(page).to have_css('.phone-input__example', text: '0650-123456')
+        expect(page).to have_button(nil, disabled: true)
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'MA'
 
         fill_in 'new_phone_form_phone', with: ''
+        expect(page).to have_button(nil, disabled: true)
         fill_in 'new_phone_form_phone', with: '+81 54354'
+        expect(page).to have_button(nil, disabled: true)
 
+        expect(page).to have_css('.phone-input__example', text: '090-1234-5678')
         expect(page.find('#new_phone_form_international_code', visible: false).value).to eq 'JP'
       end
 
@@ -82,16 +97,28 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa
         select_2fa_option(:phone)
 
-        option_with_none_disabled = page.find('.international-code > :nth-child(1)', visible: :all)
+        option_with_none_disabled = page.find(
+          '.phone-input__international-code :nth-child(1)',
+          visible: :all,
+        )
         option_with_none_disabled.execute_script('this.dataset.supportsVoice = "true"')
         option_with_none_disabled.execute_script('this.dataset.supportsSms = "true"')
-        option_with_disabled_voice = page.find('.international-code > :nth-child(2)', visible: :all)
+        option_with_disabled_voice = page.find(
+          '.phone-input__international-code :nth-child(2)',
+          visible: :all,
+        )
         option_with_disabled_voice.execute_script('this.dataset.supportsVoice = "false"')
         option_with_disabled_voice.execute_script('this.dataset.supportsSms = "true"')
-        option_with_disabled_sms = page.find('.international-code > :nth-child(3)', visible: :all)
+        option_with_disabled_sms = page.find(
+          '.phone-input__international-code :nth-child(3)',
+          visible: :all,
+        )
         option_with_disabled_sms.execute_script('this.dataset.supportsVoice = "true"')
         option_with_disabled_sms.execute_script('this.dataset.supportsSms = "false"')
-        option_with_all_disabled = page.find('.international-code > :nth-child(4)', visible: :all)
+        option_with_all_disabled = page.find(
+          '.phone-input__international-code :nth-child(4)',
+          visible: :all,
+        )
         option_with_all_disabled.execute_script('this.dataset.supportsVoice = "false"')
         option_with_all_disabled.execute_script('this.dataset.supportsSms = "false"')
 

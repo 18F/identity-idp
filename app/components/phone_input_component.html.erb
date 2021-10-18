@@ -1,0 +1,49 @@
+<lg-phone-input>
+  <%= content_tag(
+        :script,
+        {
+          country_code_label: t('components.phone_input.country_code_label'),
+          invalid_phone: t('errors.messages.improbable_phone'),
+        }.to_json,
+        {
+          type: 'application/json',
+          class: 'phone-input__strings',
+        },
+        false,
+      ) %>
+  <div class="phone-input__international-code-wrapper">
+    <%= f.label(
+          :international_code,
+          class: 'usa-label',
+        ) { t('components.phone_input.country_code_label') } %>
+    <%= f.input(
+          :international_code,
+          collection: international_phone_codes,
+          include_blank: false,
+          label: false,
+          input_html: {
+            class: 'phone-input__international-code',
+            data: { countries: supported_country_codes },
+          },
+        ) %>
+  </div>
+  <%= f.label(
+        :phone,
+        class: 'usa-label',
+      ) { t('two_factor_authentication.phone_label') } %>
+  <div class="margin-bottom-1 usa-hint js">
+    <%= t('forms.example') %>
+    <span class="phone-input__example"></span>
+  </div>
+  <%= f.input(
+        :phone,
+        as: :tel,
+        required: required,
+        label: false,
+        input_html: {
+          aria: { invalid: false },
+          class: 'phone-input__number',
+        },
+      ) %>
+</lg-phone-input>
+<%= stylesheet_link_tag 'intl-tel-input/build/css/intlTelInput' %>
