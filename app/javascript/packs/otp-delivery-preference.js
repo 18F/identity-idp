@@ -82,7 +82,7 @@ function updateOTPDeliveryMethods(event) {
     return;
   }
 
-  const selectedOption = select.selectedOptions[0];
+  const selectedOption = select.options[select.selectedIndex];
   const methods = getOTPDeliveryMethods();
   setHintText();
 
