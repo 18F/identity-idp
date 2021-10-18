@@ -10,6 +10,7 @@ RSpec.describe DeviceDecorator do
     end
 
     it 'does not fail if OS version cannot be parsed' do
+      # This user agent currently does not parse the OS version
       user_agent = 'Mozilla/5.0 (X11; CrOS armv7l 11316.165.0) AppleWebKit/537.36 (KHTML, '\
                    'like Gecko) Chrome/72.0.3626.122 Safari/537.36'
       device.user_agent = user_agent
