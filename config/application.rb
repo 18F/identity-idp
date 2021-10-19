@@ -107,9 +107,18 @@ module Upaya
       end
 
       allow do
-        origins %r|www.login.gov|,
-                %r|https://login.gov|,
-                %r|https://federalist-[0-9a-f-]+\.app\.cloud\.gov|
+        allowed_origins = [
+          %r|https://www.login.gov|,
+          %r|https://login.gov|,
+          %r|https://federalist-[0-9a-f-]+\.app\.cloud\.gov|,
+        ]
+
+        if Rails.env.development?
+          allowed_origins << %r|localhost:|
+          allowed_origins << %r|127\.0\.0\.1:|
+        end
+
+        origins allowed_origins
         resource '/api/country-support', headers: :any, methods: [:get]
       end
     end
