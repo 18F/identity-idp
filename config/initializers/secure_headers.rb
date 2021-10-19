@@ -41,8 +41,9 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
 
   if IdentityConfig.store.rails_mailer_previews_enabled
     # CSP 2.0 only; overriden by x_frame_options in some browsers
-    default_csp_config[:frame_ancestors] = %w('self')
+    default_csp_config[:frame_ancestors] = %w['self']
   end
+
   config.csp = if !Rails.env.production?
                  default_csp_config.merge(
                    script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
