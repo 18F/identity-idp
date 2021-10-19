@@ -32,7 +32,7 @@ class GpoConfirmationUploader
   end
 
   def remote_path
-    timestamp = @now.strftime('%Y%m%d')
+    timestamp = @now.strftime('%Y%m%d-%H%M%S')
     File.join(IdentityConfig.store.usps_upload_sftp_directory, "batch#{timestamp}.psv")
   end
 
