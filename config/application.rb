@@ -105,6 +105,13 @@ module Upaya
                  methods: %i[post options]
         resource '/api/openid_connect/userinfo', headers: :any, methods: [:get]
       end
+
+      allow do
+        origins %r|www.login.gov|,
+                %r|https://login.gov|,
+                %r|https://federalist-[0-9a-f-]+\.app\.cloud\.gov|
+        resource '/api/country-support', headers: :any, methods: [:get]
+      end
     end
 
     if IdentityConfig.store.enable_rate_limiting
