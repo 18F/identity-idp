@@ -8,9 +8,11 @@ module Idv
     include IdvSession # remove if we retire the non docauth LOA3 flow
     include Flow::FlowStateMachine
     include Idv::DocumentCaptureConcern
+    include VendorOutageConcern
 
     before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
+    before_action :check_for_outage, only: :show
 
     FSM_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
@@ -53,6 +55,10 @@ module Idv
 
     def flow_session
       user_session['idv/doc_auth']
+    end
+
+    def check_for_outage
+      redirect_if_outage(from: "IdV: #{current_step}")
     end
   end
 end
