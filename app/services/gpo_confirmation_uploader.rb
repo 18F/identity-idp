@@ -11,6 +11,7 @@ class GpoConfirmationUploader
     clear_confirmations(confirmations)
   rescue StandardError => error
     NewRelic::Agent.notice_error(error)
+    raise error
   end
 
   private
