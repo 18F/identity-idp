@@ -208,6 +208,26 @@ RSpec.describe DocAuth::Mock::ResultResponseBuilder do
       end
     end
 
+    context 'with a malformed yaml file' do
+      let(:input) do
+        # the lack of a space after the "phone" key makes this invalid
+        <<~YAML
+          document:
+            dob: 2000-01-01
+            phone:+1 234-567-8901
+        YAML
+      end
+
+      it 'returns a result with the appopriate error' do
+        response = builder.call
+
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq(general: ['invalid YAML file'])
+        expect(response.exception).to eq(nil)
+        expect(response.pii_from_doc).to eq({})
+      end
+    end
+
     context 'with a yaml file containing a passing result' do
       subject(:builder) {
         config = DocAuth::Mock::Config.new(
