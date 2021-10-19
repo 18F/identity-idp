@@ -295,6 +295,15 @@ describe SamlIdpController do
       end
     end
 
+    context 'with IAL2 and the profile is reset' do
+      it 'redirects to IdV URL for IAL2 proofer' do
+        user = create(:profile, :password_reset).user
+        generate_saml_response(user, ial2_settings)
+
+        expect(response).to redirect_to reactivate_account_path
+      end
+    end
+
     context 'with IAL1' do
       it 'does not redirect the user to the IdV URL' do
         user = create(:user, :signed_up)

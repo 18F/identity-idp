@@ -29,11 +29,7 @@ Rails.application.configure do
   # Annotate rendered view with file names.
   # config.action_view.annotate_rendered_view_with_filenames = true
 
-  config.action_controller.asset_host = if ENV.key?('RAILS_ASSET_HOST')
-                                          ENV['RAILS_ASSET_HOST']
-                                        else
-                                          '//'
-                                        end
+  config.action_controller.asset_host = ENV['RAILS_ASSET_HOST'] if ENV.key?('RAILS_ASSET_HOST')
 
   config.assets.digest = ENV.key?('RAILS_DISABLE_ASSET_DIGEST') ? false : true
 
