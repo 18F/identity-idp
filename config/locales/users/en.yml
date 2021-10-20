@@ -21,6 +21,7 @@ en:
     personal_key:
       close: Close
       confirmation_error: You’ve entered an incorrect personal key.
+      invalid_error: Please fill out this field
       generated_on_html: Generated on %{date}
       header: Your personal key
       print: Print

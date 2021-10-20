@@ -22,6 +22,7 @@ es:
     personal_key:
       close: Cerrar
       confirmation_error: Ha ingresado una clave personal incorrecta.
+      invalid_error: Por favor, rellene este campo
       generated_on_html: Generado el %{date}
       header: Su clave personal
       print: Imprima esta página
