@@ -7,7 +7,7 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
     end
 
     context 'origin is www.login.gov' do
-      let(:http_origin) { 'https://www.login.gov/' }
+      let(:http_origin) { 'https://www.login.gov' }
 
       it 'allows origin' do
         aggregate_failures do
@@ -18,7 +18,7 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
     end
 
     context 'origin is login.gov' do
-      let(:http_origin) { 'https://login.gov/' }
+      let(:http_origin) { 'https://login.gov' }
 
       it 'allows origin' do
         aggregate_failures do
@@ -29,7 +29,18 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
     end
 
     context 'origin is federalist preview' do
-      let(:http_origin) { 'https://federalist-abcdef.app.cloud.gov/' }
+      let(:http_origin) { 'https://federalist-abcdef.app.cloud.gov' }
+
+      it 'allows origin' do
+        aggregate_failures do
+          expect(response['Access-Control-Allow-Origin']).to eq(http_origin)
+          expect(response['Access-Control-Allow-Methods']).to eq('GET')
+        end
+      end
+    end
+
+    context 'origin is local in development' do
+      let(:http_origin) { 'http://127.0.0.1:4000' }
 
       it 'allows origin' do
         aggregate_failures do
@@ -41,6 +52,17 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
 
     context 'origin is not allowed' do
       let(:http_origin) { 'https://foo.com' }
+
+      it 'does not allow origin' do
+        aggregate_failures do
+          expect(response).to be_ok
+          expect(response['Access-Control-Allow-Origin']).to be_nil
+        end
+      end
+    end
+
+    context 'origin includes but is not login.gov' do
+      let(:http_origin) { 'https://login.gov.evil.com' }
 
       it 'does not allow origin' do
         aggregate_failures do

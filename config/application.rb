@@ -109,14 +109,14 @@ module Upaya
 
       allow do
         allowed_origins = [
-          %r{https://www\.login\.gov},
-          %r{https://login\.gov},
-          %r{https://federalist-[0-9a-f-]+\.app\.cloud\.gov},
+          'https://www.login.gov',
+          'https://login.gov',
+          %r{^https://federalist-[0-9a-f-]+\.app\.cloud\.gov$},
         ]
 
-        if Rails.env.development?
-          allowed_origins << %r{localhost:}
-          allowed_origins << %r{127\.0\.0\.1:}
+        if Rails.env.development? || Rails.env.test?
+          allowed_origins << %r{https?://localhost(:\d+)?$}
+          allowed_origins << %r{https?://127\.0\.0\.1(:\d+)?$}
         end
 
         origins allowed_origins
