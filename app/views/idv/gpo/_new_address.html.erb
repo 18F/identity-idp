@@ -5,8 +5,8 @@
     ) do |f| %>
 
   <div class="margin-bottom-4">
-    <%= f.input :address1, label: t('idv.form.address1'), wrapper: false,
-                          required: true, input_html: { aria: { invalid: false } }, maxlength: 255 %>
+    <%= f.input :address1,  label: t('idv.form.address1'), wrapper: false,
+                            required: true, input_html: { aria: { invalid: false } }, maxlength: 255 %>
     <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
       <%= t('simple_form.required.text') %>
     </span>
