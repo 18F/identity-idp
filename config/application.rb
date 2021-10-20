@@ -109,8 +109,8 @@ module Upaya
 
       allow do
         allowed_origins = [
-          %r{https://www.login.gov},
-          %r{https://login.gov},
+          %r{https://www\.login\.gov},
+          %r{https://login\.gov},
           %r{https://federalist-[0-9a-f-]+\.app\.cloud\.gov},
         ]
 
