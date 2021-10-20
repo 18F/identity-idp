@@ -34,7 +34,7 @@ RSpec.describe OpenidConnectAttributeScoper do
         iss: 'https://login.gov',
         email: 'foo@example.com',
         email_verified: true,
-        all_emails: ['bar@example.com'],
+        all_emails: ['foo@example.com', 'bar@example.com'],
         given_name: 'John',
         family_name: 'Jones',
         birthdate: '1970-01-01',
@@ -85,7 +85,7 @@ RSpec.describe OpenidConnectAttributeScoper do
       let(:scope) { 'openid all_emails' }
 
       it 'includes the all_emails attributes' do
-        expect(filtered[:all_emails]).to eq(['bar@example.com'])
+        expect(filtered[:all_emails]).to eq(['foo@example.com', 'bar@example.com'])
       end
     end
 
