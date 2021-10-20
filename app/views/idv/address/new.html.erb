@@ -38,22 +38,20 @@
     <%= f.input :state, collection: us_states_territories,
                         label: t('idv.form.state'), required: true,
                         selected: @pii['state'] %>
-    <div class="tablet:grid-col-6">
+    <div class="tablet:grid-col-6 margin-bottom-4">
       <%# using :tel for mobile numeric keypad %>
-      <div class="margin-bottom-4">
-        <%= f.input :zipcode, as: :tel,
-                              label: t('idv.form.zipcode'), required: true,
-                              pattern: '(\d{5}([\-]\d{4})?)',
-                              wrapper: false,
-                              input_html: { aria: { invalid: false }, class: 'zipcode usa-input', value: @pii['zipcode'] } %>
-        <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
-          <%= t('simple_form.required.text') %>
-        </span>
+      <%= f.input :zipcode, as: :tel,
+                            label: t('idv.form.zipcode'), required: true,
+                            pattern: '(\d{5}([\-]\d{4})?)',
+                            wrapper: false,
+                            input_html: { aria: { invalid: false }, class: 'usa-input', value: @pii['zipcode'] } %>
+      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+        <%= t('simple_form.required.text') %>
+      </span>
 
-        <span class='usa-error-message margin-top-1 pattern-mismatch display-if-invalid display-if-invalid--pattern-mismatch margin-bottom-1' role='alert'>
-          <%= t('idv.errors.pattern_mismatch.zipcode') %>
-        </span>
-      </div>
+      <span class='usa-error-message margin-top-1 pattern-mismatch display-if-invalid display-if-invalid--pattern-mismatch margin-bottom-1' role='alert'>
+        <%= t('idv.errors.pattern_mismatch.zipcode') %>
+      </span>
     </div>
     <div class="margin-top-0">
       <button type="submit" class="usa-button usa-button--big usa-button--wide margin-top-2">
