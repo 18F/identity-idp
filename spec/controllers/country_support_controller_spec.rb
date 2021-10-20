@@ -7,7 +7,12 @@ RSpec.describe CountrySupportController do
 
       json = JSON.parse(response.body, symbolize_names: true)
 
-      expect(json[:countries][:US][:supports_sms]).to eq(true)
+      expect(json[:countries][:US]).to eq(
+        name: 'United States',
+        country_code: '1',
+        supports_sms: true,
+        supports_voice: true,
+      )
     end
   end
 end
