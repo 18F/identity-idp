@@ -1,6 +1,5 @@
 import OneTimeCodeInput from '@18f/identity-one-time-code-input';
 
-
 function checkInputValidity(event) {
   const input = /** @type {HTMLInputElement} */ (event.target);
   input.setAttribute('aria-invalid', 'false');
@@ -22,5 +21,3 @@ if (input) {
   input.addEventListener('input', checkInputValidity);
   input.addEventListener('invalid', checkInputValidity);
 }
-
-
