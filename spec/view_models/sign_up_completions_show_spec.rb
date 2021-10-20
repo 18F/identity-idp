@@ -7,6 +7,7 @@ describe SignUpCompletionsShow do
 
   let(:handoff) { false }
   let(:consent_has_expired?) { false }
+  let(:sp_session) {}
 
   subject(:view_model) do
     SignUpCompletionsShow.new(
@@ -24,7 +25,7 @@ describe SignUpCompletionsShow do
       ServiceProviderSessionDecorator.new(
         sp: build_stubbed(:service_provider),
         view_context: ActionController::Base.new.view_context,
-        sp_session: {},
+        sp_session: sp_session,
         service_provider_request: ServiceProviderRequestProxy.new,
       )
     end
@@ -78,6 +79,25 @@ describe SignUpCompletionsShow do
                 app_name: APP_NAME,
               ),
             )
+        end
+      end
+    end
+
+    describe '#requested_attributes_sorted' do
+      context 'the requested attributes include email' do
+        let(:sp_session) { { requested_attributes: [:email] } }
+
+        it 'includes the sign in email address' do
+          expect(view_model.requested_attributes_sorted).to include(:email)
+        end
+      end
+
+      context 'the requrested attributes include all_emails' do
+        let(:sp_session) { { requested_attributes: [:email, :all_emails] } }
+
+        it 'includes all email addresses and not the individual email address' do
+          expect(view_model.requested_attributes_sorted).to include(:all_emails)
+          expect(view_model.requested_attributes_sorted).to_not include(:email)
         end
       end
     end

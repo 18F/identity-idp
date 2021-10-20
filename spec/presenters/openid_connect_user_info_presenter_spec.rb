@@ -4,7 +4,9 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   include Rails.application.routes.url_helpers
 
   let(:rails_session_id) { SecureRandom.uuid }
-  let(:scope) { 'openid email address phone profile social_security_number x509:subject' }
+  let(:scope) do
+    'openid email all_emails address phone profile social_security_number x509:subject'
+  end
   let(:service_provider_ial) { 2 }
   let(:service_provider) { create(:service_provider, ial: service_provider_ial) }
   let(:profile) { build(:profile, :active, :verified) }
@@ -29,6 +31,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
         expect(user_info[:iss]).to eq(root_url)
         expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
         expect(user_info[:email_verified]).to eq(true)
+        expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
       end
     end
 
