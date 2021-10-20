@@ -160,6 +160,7 @@ push_notifications_enabled: 'false'
 pwned_passwords_file_path: 'pwned_passwords/pwned_passwords.txt'
 rack_mini_profiler: 'false'
 rack_timeout_service_timeout_seconds: '15'
+rails_mailer_previews_enabled: 'false'
 reauthn_window: '120'
 recovery_code_length: '4'
 redis_throttle_url: redis://localhost:6379/1
@@ -258,6 +259,7 @@ development:
   otp_delivery_blocklist_findtime: '5'
   password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
   piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
+  rails_mailer_previews_enabled: 'true'
   recurring_jobs_disabled_names: "[]"
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
