@@ -20,7 +20,7 @@ class ResetUserPassword
   end
 
   def forget_all_browsers
-    DeviceTracking::ForgetAllBrowsers.new(
+    ForgetAllBrowsers.new(
       user,
       remember_device_revoked_at: remember_device_revoked_at,
     ).call

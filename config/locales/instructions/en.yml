@@ -20,12 +20,12 @@ en:
       authenticator:
         confirm_code_html: Enter the code from your authenticator app. If you have
           several accounts set up in your app, enter the code corresponding to
-          %{email} at %{app}.
+          %{email} at %{app_name}.
         manual_entry: Or enter this code manually into your authentication app
       piv_cac:
         account_not_found_html: '<p><strong>%{sign_in}</strong> with your email address
           and password. Then add your PIV/CAC to your account.</p>
-          <p><strong>Don’t have a Login.gov account?</strong>
+          <p><strong>Don’t have a %{app_name} account?</strong>
           %{create_account}</p>'
         add_from_sign_in_html: '<strong>Instructions:</strong> Insert your PIV or CAC on
           <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a
@@ -53,7 +53,7 @@ en:
           Please %{please_try_again} with a different certificate. If this
           problem continues, contact your agency administrator.
         please_try_again: try again
-        sign_in: Make sure <strong>you have a Login.gov account</strong> and
+        sign_in: Make sure <strong>you have a %{app_name} account</strong> and
           <strong>you’ve set up PIV/CAC</strong> as a two-factor authentication
           method.
         step_1: Give it a nickname
@@ -106,5 +106,5 @@ en:
         reset your password and don’t have this key, you’ll have to verify your
         identity again.
     sp_handoff_bounced: Your sign in was successful, but %{sp_name} sent you back to
-      Login.gov. Please contact %{sp_link} for help.
+      %{app_name}. Please contact %{sp_link} for help.
     sp_handoff_bounced_with_no_sp: your service provider

@@ -42,6 +42,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
       expect(json.key?('duration_ms'))
       expect(json.key?('job_id'))
       expect(json.key?('timestamp'))
+      expect(json['exception_class']).to eq('ArgumentError')
       expect(json['exception_message']).to eq 'invalid base64'
     end
 

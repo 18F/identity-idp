@@ -10,7 +10,7 @@ gem 'rails', '~> 6.1.4'
 @logging_gem ||= { github: '18F/identity-logging', tag: 'v0.1.0' }
 @saml_gem ||= { github: '18F/saml_idp', tag: 'v0.14.3-18f' }
 @telephony_gem ||= { github: '18f/identity-telephony', tag: 'v0.4.2' }
-@validations_gem ||= { github: '18F/identity-validations', tag: 'v0.7.0' }
+@validations_gem ||= { github: '18F/identity-validations', tag: 'v0.7.1' }
 
 gem 'identity-hostdata', @hostdata_gem
 gem 'identity-logging', @logging_gem
@@ -25,8 +25,8 @@ gem 'aws-sdk-ses', '~> 1.6'
 gem 'base32-crockford'
 gem 'bootsnap', '~> 1.9.0', require: false
 gem 'blueprinter', '~> 0.25.3'
+gem 'browser'
 gem 'connection_pool'
-gem 'device_detector'
 gem 'devise', '~> 4.8'
 gem 'dotiw', '>= 4.0.1'
 gem 'faraday'
@@ -38,6 +38,7 @@ gem 'http_accept_language'
 gem 'jwt'
 gem 'local_time'
 gem 'lograge', '>= 0.11.2'
+gem 'lru_redux'
 gem 'maxminddb'
 gem 'net-sftp'
 gem 'newrelic_rpm', '~> 7.0'
@@ -67,7 +68,6 @@ gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'subprocess', require: false
 gem 'uglifier', '~> 4.2'
-gem 'user_agent_parser'
 gem 'valid_email', '>= 0.1.3'
 gem 'view_component', '~> 2.40.0', require: 'view_component/engine'
 gem 'webauthn', '~> 2.1'

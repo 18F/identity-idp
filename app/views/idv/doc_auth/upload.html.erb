@@ -81,7 +81,7 @@
   <div id="upload-comp-liveness"
        class='sm-col sm-col-12 <%= 'hidden' unless liveness_checking_enabled? %>'>
     <strong><%= t('doc_auth.info.upload_from_computer') %></strong>
-    <%= t('doc_auth.info.upload_from_computer_not_allowed') %>
+    <%= t('doc_auth.info.upload_from_computer_not_allowed', app_name: APP_NAME) %>
   </div>
 </div>
 

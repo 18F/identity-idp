@@ -1,4 +1,6 @@
 class UserEventCreator
+  COOKIE_LENGTH = 128
+
   attr_reader :request, :current_user
 
   def initialize(current_user:, request: nil)
@@ -8,7 +10,7 @@ class UserEventCreator
 
   def create_user_event(event_type, user = current_user)
     return unless user&.id
-    existing_device = DeviceTracking::LookupDeviceForUser.call(user.id, cookies[:device])
+    existing_device = Device.find_by(user_id: user.id, cookie_uuid: cookies[:device])
     if existing_device.present?
       create_event_for_existing_device(event_type: event_type, user: user, device: existing_device)
     else
@@ -30,7 +32,7 @@ class UserEventCreator
   private
 
   def create_event_for_existing_device(event_type:, user:, device:)
-    DeviceTracking::UpdateDevice.call(device, request.remote_ip)
+    device.update_last_used_ip(request.remote_ip)
     create_event_for_device(event_type: event_type, user: user, device: device)
   end
 
@@ -47,8 +49,14 @@ class UserEventCreator
   end
 
   def create_device_for_user(user)
-    device = DeviceTracking::CreateDevice.call(
-      user.id, request.remote_ip, request.user_agent, cookies[:device]
+    cookie_uuid = cookies[:device].presence || SecureRandom.hex(COOKIE_LENGTH / 2)
+
+    device = Device.create!(
+      user: user,
+      user_agent: request.user_agent.to_s,
+      cookie_uuid: cookie_uuid,
+      last_used_at: Time.zone.now,
+      last_ip: request.remote_ip,
     )
     assign_device_cookie(device.cookie_uuid)
     device

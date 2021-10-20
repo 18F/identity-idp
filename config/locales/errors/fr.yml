@@ -4,12 +4,12 @@ fr:
     account_reset:
       cancel_token_invalid: le jeton d’annulation n’est pas valide
       cancel_token_missing: le jeton d’annulation est manquant
-      granted_token_expired: Le lien pour supprimer votre compte Login.gov a expiré.
+      granted_token_expired: Le lien pour supprimer votre compte %{app_name} a expiré.
         Veuillez créer une autre demande pour supprimer votre compte.
-      granted_token_invalid: Le lien de suppression de votre compte Login.gov n’est
+      granted_token_invalid: Le lien de suppression de votre compte %{app_name} n’est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre
         e-mail.
-      granted_token_missing: Le lien de suppression de votre compte Login.gov n’est
+      granted_token_missing: Le lien de suppression de votre compte %{app_name} n’est
         pas valide. Veuillez réessayer en cliquant sur le lien dans votre
         e-mail.
     attributes:
@@ -43,7 +43,7 @@ fr:
         <li>Votre identifiant n’a pas de code à barres endommagé</li>
         <li>Votre pièce d’identité représente 80% de l’image globale</li>
         <li>Votre pièce d’identité est sur un fond sombre et uni</li>
-        <li>Votre selfie est pris dans une zone bien éclairée avec un arrière-plan uni</li>
+        <li>Votre photo est prise dans un endroit bien éclairé avec un fond uni</li>
         <li>Vous ne portez pas de chapeau ni de lunettes et votre tête est entièrement visible</li>
         </ul>
       document_verification_timeout: Le serveur a mis trop de temps à répondre. Veuillez réessayer.

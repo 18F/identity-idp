@@ -22,6 +22,7 @@ class OpenidConnectTokenForm
                          in: [CLIENT_ASSERTION_TYPE],
                          if: :private_key_jwt?
 
+  validate :validate_expired
   validate :validate_code
   validate :validate_pkce_or_private_key_jwt
   validate :validate_code_verifier, if: :pkce?
@@ -31,6 +32,7 @@ class OpenidConnectTokenForm
     ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
+    @session_expiration = IdentityConfig.store.session_timeout_in_minutes.minutes.ago
     @identity = find_identity_with_code
   end
 
@@ -61,14 +63,12 @@ class OpenidConnectTokenForm
 
   private
 
-  attr_reader :identity
+  attr_reader :identity, :session_expiration
 
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")
 
-    session_expiration = IdentityConfig.store.session_timeout_in_minutes.minutes.ago
     @identity = ServiceProviderIdentity.where(session_uuid: code).
-                where('updated_at >= ?', session_expiration).
                 order(updated_at: :desc).first
   end
 
@@ -92,6 +92,12 @@ class OpenidConnectTokenForm
   def validate_pkce_or_private_key_jwt
     return if pkce? || private_key_jwt?
     errors.add :code, t('openid_connect.token.errors.invalid_authentication')
+  end
+
+  def validate_expired
+    if identity&.updated_at && identity.updated_at < session_expiration
+      errors.add :code, t('openid_connect.token.errors.expired_code')
+    end
   end
 
   def validate_code

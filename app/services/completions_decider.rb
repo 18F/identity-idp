@@ -14,11 +14,11 @@ class CompletionsDecider
   attr_reader :user_agent, :request_url
 
   def desktop_and_app_redirect_uri?
-    client.device_type == 'desktop' && !redirect_uri.start_with?('http')
+    !client.mobile? && !redirect_uri.start_with?('http')
   end
 
   def client
-    @client ||= DeviceDetector.new(user_agent)
+    @client ||= BrowserCache.parse(user_agent)
   end
 
   def redirect_uri

@@ -22,7 +22,7 @@ feature 'sign up with backup code' do
   end
 
   it 'does not show download button on a mobile device' do
-    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
 
     sign_up_and_set_password
 
@@ -47,6 +47,7 @@ feature 'sign up with backup code' do
       if index == BackupCodeGenerator::NUMBER_OF_CODES - 1
         expect(current_path).to eq backup_code_refreshed_path
         expect(page).to have_content(t('forms.backup_code.subtitle'))
+        expect(page).to have_content(t('forms.backup_code.last_code'))
         expect(user.backup_code_configurations.count).to eq(10)
         click_on 'Continue'
 

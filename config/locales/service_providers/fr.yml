@@ -4,12 +4,12 @@ fr:
     errors:
       generic_sp_name: Cette agence
       inactive:
-        button_text: Voir mon compte Login.gov
-        heading: '%{sp_name} n’utilise plus Login.gov'
-        instructions: '%{sp_name} n’utilise plus Login.gov comme service de connexion à
-          son site Web. Si vous avez déjà créé un compte Login.gov, sachez qu’il
-          est toujours actif et qu’il peut être utilisé pour accéder aux autres
-          sites Web gouvernementaux participants.'
+        button_text: Voir mon compte %{app_name}
+        heading: '%{sp_name} n’utilise plus %{app_name}'
+        instructions: '%{sp_name} n’utilise plus %{app_name} comme service de connexion
+          à son site Web. Si vous avez déjà créé un compte %{app_name}, sachez
+          qu’il est toujours actif et qu’il peut être utilisé pour accéder aux
+          autres sites Web gouvernementaux participants.'
         instructions2: Veuillez vous rendre sur le site de l’agence afin de les
           contacter pour plus d’informations.
     help_text:
@@ -17,12 +17,13 @@ fr:
         forgot_password: Si vous avez déjà un profil %{sp_name}, veuillez utiliser
           l’adresse e-mail principale ou secondaire que vous avez utilisée pour
           %{sp_name} pour <a href=%{sp_create_link}> créer votre nouveau compte
-          Login.gov</a> <p><a href="https://login.gov/help/">En savoir plus.</a>
+          %{app_name}</a> <p><a href="https://login.gov/help/">En savoir
+          plus.</a>
         sign_in: <b>Êtes-vous venu(e) de %{sp_name}?</b><p> Si vous avez déjà un profil
           %{sp_name}, veuillez utiliser l’adresse e-mail principale ou
           secondaire que vous avez utilisée pour %{sp_name} pour <a
-          href=%{sp_create_link}> créer votre nouveau compte Login.gov</a> <p><a
+          href=%{sp_create_link}> créer votre nouveau compte %{app_name}</a>
+          <p><a href="https://login.gov/help/">En savoir plus.</a>
+        sign_up: Veuillez créer un compte %{app_name} avec la même adresse e-mail que
+          vous avez utilisée pour %{sp_name}. <p><a
           href="https://login.gov/help/">En savoir plus.</a>
-        sign_up: Veuillez créer un compte Login.gov avec la même adresse e-mail que vous
-          avez utilisée pour %{sp_name}. <p><a href="https://login.gov/help/">En
-          savoir plus.</a>

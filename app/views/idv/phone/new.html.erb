@@ -57,10 +57,15 @@
                          method: :put,
                          class: 'margin-top-2',
                        }) do |f| %>
- <%= f.label :phone, label: t('idv.form.phone'), class: 'bold' %>
- <%= f.input :phone, required: true, input_html: { aria: { invalid: false }, class: 'sm-col-8' }, label: false,
-   wrapper_html: { class: 'margin-right-2' } %>
-
+  <%= f.input :phone, required: true, 
+              input_html: { aria: { invalid: false }, 
+              class: 'sm-col-8' }, 
+              label: t('idv.form.phone'),
+              wrapper: false,
+              label_html: { class: 'bold' } %>
+  <span class='usa-error-message margin-top-2 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+    <%= t('simple_form.required.text') %>
+  </span>
   <div class="margin-y-5">
     <%= render('shared/spinner_button', action_message: t('doc_auth.info.verifying')) do %>
       <%= f.button :submit, t('forms.buttons.continue'), class: 'usa-button--big usa-button--wide' %>

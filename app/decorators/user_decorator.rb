@@ -1,6 +1,8 @@
 class UserDecorator
   include ActionView::Helpers::DateHelper
 
+  delegate :pending_profile, to: :user
+
   attr_reader :user
 
   MAX_RECENT_EVENTS = 5
@@ -81,14 +83,6 @@ class UserDecorator
     true
   end
 
-  def pending_profile?
-    pending_profile.present?
-  end
-
-  def pending_profile
-    user.profiles.verification_pending.order(created_at: :desc).first
-  end
-
   def identity_not_verified?
     !identity_verified?
   end
@@ -143,7 +137,8 @@ class UserDecorator
   end
 
   def recent_devices
-    DeviceTracking::ListDevices.call(user.id, 0, MAX_RECENT_DEVICES).map(&:decorate)
+    @recent_devices ||= user.devices.order(last_used_at: :desc).limit(MAX_RECENT_DEVICES).
+      map(&:decorate)
   end
 
   def devices?
@@ -156,9 +151,9 @@ class UserDecorator
 
   def delete_account_bullet_key
     if identity_verified?
-      I18n.t('users.delete.bullet_2_loa3', app: APP_NAME)
+      I18n.t('users.delete.bullet_2_loa3', app_name: APP_NAME)
     else
-      I18n.t('users.delete.bullet_2_loa1', app: APP_NAME)
+      I18n.t('users.delete.bullet_2_loa1', app_name: APP_NAME)
     end
   end
 

@@ -55,7 +55,7 @@ feature 'IAL1 Single Sign On' do
     it 'shows user the start page without accordion' do
       sp_content = [
         'Your friendly Government Agency',
-        t('headings.create_account_with_sp.sp_text'),
+        t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
       ].join(' ')
 
       visit saml_authn_request_url

@@ -16,10 +16,10 @@
     </div>
     <div class="grid-col-5">
       <div>
-        <%= t('account.navigation.access_services') %>
+        <%= t('account.navigation.access_services', app_name: APP_NAME) %>
       </div>
       <div>
-        <%= link_to t('account.navigation.learn_more'), MarketingSite.base_url %>
+        <%= link_to t('account.navigation.learn_more', app_name: APP_NAME), MarketingSite.base_url %>
       </div>
     </div>
   </div>

@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "dependencies": {
+    "@webcomponents/custom-elements": "^1.5.0",
     "classlist-polyfill": "^1.2.0",
     "custom-event-polyfill": "^1.0.7",
     "js-polyfills": "^0.1.43",

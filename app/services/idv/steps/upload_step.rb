@@ -60,10 +60,7 @@ module Idv
       end
 
       def mobile_device?
-        return @mobile_device if defined?(@mobile_device)
-
-        client = DeviceDetector.new(request.user_agent)
-        @mobile_device = client.device_type != 'desktop'
+        BrowserCache.parse(request.user_agent).mobile?
       end
     end
   end

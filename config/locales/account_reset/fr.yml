@@ -24,7 +24,7 @@ fr:
       info: La suppression de votre compte devrait être votre dernier recours si vous
         êtes en lock-out de votre compte Vous ne pourrez pas récupérer les
         informations liées à ton compte. Nous informerons les agences auxquelles
-        vous accédez avec %{app} que vous ne plus avoir un compte. Une fois
+        vous accédez avec %{app_name} que vous ne plus avoir un compte. Une fois
         votre compte supprimé, vous pouvez en créer un nouveau en utilisant la
         même adresse e-mail.
       title: La suppression de votre compte devrait être votre dernier recours
@@ -38,7 +38,6 @@ fr:
         Dans <strong>%{interval}</strong>, vous recevrez un e-mail avec des
         instructions pour terminer la suppression.
     request:
-      access_your_account: accéder à votre compte
       are_you_sure: Êtes-vous sûr de n’avoir accès à aucune de vos méthodes de sécurité?
       delete_account: Supprimer votre compte
       delete_account_info: Supprimer votre compte existant et en créer un nouveau vous
@@ -56,11 +55,5 @@ fr:
         assurez-vous que vous n’avez pas une autre option de sécurité que vous
         pouvez utiliser à la place.
       no_cancel: Non, annuler
-      personal_key: Avez-vous votre clé personnelle?
-      personal_key_info: Votre clé personnelle est un code de 16 caractères qui a été
-        donné à vous à la création de compte comme une méthode de récupération -
-        voir l’exemple ci-dessous.
-      personal_key_trailer: Si vous avez votre clé personnelle, vous pouvez l’utiliser
-        pour %{link} au lieu de réinitialiser.
       title: Suppression de compte et réinitialisation
       yes_continue: Oui, continuez la suppression.

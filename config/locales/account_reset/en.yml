@@ -23,9 +23,9 @@ en:
       are_you_sure: Are you sure you want to delete your account?
       info: Deleting your account should be your last resort if you are locked out of
         your account. You will not be able to recover any information linked to
-        your account. We will notify the agencies you access with %{app} that
-        you no longer have an account. Once your account is deleted, you can
-        create a new one using the same email address.
+        your account. We will notify the agencies you access with %{app_name}
+        that you no longer have an account. Once your account is deleted, you
+        can create a new one using the same email address.
       title: Deleting your account should be your last resort
     pending:
       cancel_request: Cancel request
@@ -37,7 +37,6 @@ en:
         <strong>%{interval}</strong>, you will receive an email with
         instructions to complete the deletion.
     request:
-      access_your_account: access your account
       are_you_sure: Are you sure you don’t have access to any of your authentication methods?
       delete_account: Delete your account
       delete_account_info: Deleting your existing account and creating a new one will
@@ -53,10 +52,5 @@ en:
         option. <br><br> We can’t undo an account delete, so please verify if
         you have another authentication method you can use instead.
       no_cancel: No, cancel
-      personal_key: Do you have your personal key?
-      personal_key_info: Your personal key is a 16 character code that was given to
-        you at account creation as a recovery method–see example below.
-      personal_key_trailer: If you have your personal key, you can use it to %{link}
-        instead of resetting.
       title: Account deletion and reset
       yes_continue: Yes, continue deletion.

@@ -92,7 +92,7 @@ en:
           new photos of your ID and try again. Supported image pixel depth is
           24-bit RGB.
       no_camera:
-        explanation: To continue, sign in to your Login.gov account on any device that
+        explanation: To continue, sign in to your %{app_name} account on any device that
           has a camera, like a mobile phone, tablet or computer with a webcam.
         heading: You need a camera to verify your identity
         title: Camera needed
@@ -170,9 +170,9 @@ en:
       link_sent_complete_js: The next step will load automatically once you verify
         your ID using your phone.
       link_sent_complete_nojs: When you are done, click Continue here to finish verifying your identity.
-      privacy_html: Login.gov is a secure, government website that adheres to the
+      privacy_html: '%{app_name} is a secure, government website that adheres to the
         highest standards in data protection. We only use your data to verify
-        your identity. %{link} about our privacy and security measures.
+        your identity. %{link} about our privacy and security measures.'
       secure_account: After you verify, we’ll ask you to encrypt your account.
         Encryption means your data is protected and only you, the account
         holder, will be able to access or change your information.
@@ -186,7 +186,7 @@ en:
       upload: We’ll collect information about you by reading your state-issued ID.
       upload_computer_link: Upload from your computer
       upload_from_computer: Don’t have a phone?
-      upload_from_computer_not_allowed: Sign in to your Login.gov account on any
+      upload_from_computer_not_allowed: Sign in to your %{app_name} account on any
         device that has a camera, like a tablet or computer with a webcam.
       upload_from_phone: Upload pictures directly from your phone camera
       upload_liveness_enabled: We’ll collect information about you by reading your
@@ -204,18 +204,18 @@ en:
       bullet1a: A device with a camera
       bullet2: Your Social Security number
       bullet3: A phone number on a phone plan associated with your name
-      consent: By checking this box, you are letting Login.gov ask for, use, keep, and
-        share your personal information. We will only use it to verify your
+      consent: By checking this box, you are letting %{app_name} ask for, use, keep,
+        and share your personal information. We will only use it to verify your
         identity.
       document_capture_selfie_consent_action: '<lg-underline>Allow access to the
         camera</lg-underline> and look for a notification in your browser or
         check your system settings to confirm camera access.'
-      document_capture_selfie_consent_banner: Login.gov needs permission to use your device’s camera
-      document_capture_selfie_consent_blocked: Login.gov needs permission to use your
-        camera so that you can prove your ID belongs to you.
+      document_capture_selfie_consent_banner: '%{app_name} needs permission to use your device’s camera'
+      document_capture_selfie_consent_blocked: '%{app_name} needs permission to use
+        your camera so that you can prove your ID belongs to you.'
       document_capture_selfie_consent_blocked_action: Check your web browser’s
         settings for this site or your computer’s system settings to allow
-        Login.gov to access the camera.
+        %{app_name} to access the camera.
       document_capture_selfie_instructions: Now take a picture of yourself. We’ll
         compare it to the image on the front of your ID.
       email_sent: Link sent to %{email}. Please check your desktop email and follow

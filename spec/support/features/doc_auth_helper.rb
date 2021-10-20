@@ -87,7 +87,7 @@ module DocAuthHelper
   def complete_doc_auth_steps_before_upload_step(expect_accessible: false)
     complete_doc_auth_steps_before_welcome_step(expect_accessible: expect_accessible)
     click_on t('doc_auth.buttons.continue')
-    find('label', text: t('doc_auth.instructions.consent')).click
+    find('label', text: t('doc_auth.instructions.consent', app_name: APP_NAME)).click
     click_on t('doc_auth.buttons.continue')
   end
 
@@ -100,13 +100,13 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_email_sent_step
-    allow(DeviceDetector).to receive(:new).and_return(mobile_device)
+    allow(BrowserCache).to receive(:parse).and_return(mobile_device)
     complete_doc_auth_steps_before_upload_step
     click_on t('doc_auth.info.upload_computer_link')
   end
 
   def mobile_device
-    DeviceDetector.new(
+    Browser.new(
       'Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) \
 AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1',
     )

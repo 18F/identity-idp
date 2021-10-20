@@ -1,4 +1,4 @@
-import useI18n from '../hooks/use-i18n';
+import { useI18n } from '@18f/identity-react-i18n';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 

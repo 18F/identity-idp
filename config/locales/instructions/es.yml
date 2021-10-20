@@ -22,12 +22,12 @@ es:
       authenticator:
         confirm_code_html: Ingrese el código de su app de autenticación. Si tiene varias
           cuentas configuradas en su app, ingrese el código correspondiente a
-          %{email} en %{app}.
+          %{email} en %{app_name}.
         manual_entry: O ingrese este código manualmente en su aplicación de autenticación
       piv_cac:
         account_not_found_html: '<p><strong>%{sign_in}</strong> con su dirección de
           correo electrónico y contraseña. Luego agregue su PIV/CAC a su
-          cuenta.</p> <p><strong>¿No tiene una cuenta Login.gov?</strong>
+          cuenta.</p> <p><strong>¿No tiene una cuenta %{app_name}?</strong>
           %{create_account}</p>'
         add_from_sign_in_html: '<strong> Instrucciones: </strong> inserte su PIV o CAC
           en <strong> “AGREGAR PIV / CAC” </strong>. Tendrá que <strong> elegir
@@ -56,7 +56,7 @@ es:
           %{please_try_again} con un certificado diferente. Comuníquese con el
           encargado de su organismo si persiste este problema.
         please_try_again: Vuelva a intentarlo
-        sign_in: Asegúrese de que <strong>tenga una cuenta Login.gov</strong> y
+        sign_in: Asegúrese de que <strong>tenga una cuenta %{app_name}</strong> y
           <strong>haya configurado PIV/CAC</strong> como método de autenticación
           de dos factores.
         step_1: Darle un apodo
@@ -111,6 +111,6 @@ es:
         restableces tu contraseña y no tienes esta clave, deberás verificar tu
         identidad nuevamente.
     sp_handoff_bounced: Su inicio de sesión fue exitoso, pero %{sp_name} lo envió de
-      regreso a Login.gov. Póngase en contacto con %{sp_link} para obtener
+      regreso a %{app_name}. Póngase en contacto con %{sp_link} para obtener
       ayuda.
     sp_handoff_bounced_with_no_sp: su proveedor de servicios

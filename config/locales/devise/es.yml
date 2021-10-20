@@ -6,10 +6,10 @@ es:
       confirmed: Usted ha confirmado su email.
       confirmed_but_must_set_password: Usted ha confirmado su email.
       confirmed_but_remove_from_other_account: Esta dirección de correo electrónico ya
-        está asociada con una cuenta Login.gov, por lo que no podemos agregarla
-        a otra cuenta. Primero debe eliminarlo o eliminarlo de la cuenta con la
-        que está asociado. Para ello, inicie sesión con esta dirección de correo
-        electrónico.
+        está asociada con una cuenta %{app_name}, por lo que no podemos
+        agregarla a otra cuenta. Primero debe eliminarlo o eliminarlo de la
+        cuenta con la que está asociado. Para ello, inicie sesión con esta
+        dirección de correo electrónico.
       confirmed_but_sign_in: Has confirmado tu dirección de correo electrónico. Por
         favor inicia sesión para ver tu perfil.
       sign_in: Inicie la sesión de nuevo.

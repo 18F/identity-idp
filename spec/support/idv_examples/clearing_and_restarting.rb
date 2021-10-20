@@ -2,7 +2,7 @@ shared_examples 'clearing and restarting idv' do
   it 'allows the user to retry verification with phone' do
     click_on t('idv.messages.clear_and_start_over')
 
-    expect(user.reload.decorate.pending_profile?).to eq(false)
+    expect(user.reload.pending_profile?).to eq(false)
 
     complete_all_doc_auth_steps
     click_idv_continue
@@ -17,7 +17,7 @@ shared_examples 'clearing and restarting idv' do
   it 'allows the user to retry verification with gpo' do
     click_on t('idv.messages.clear_and_start_over')
 
-    expect(user.reload.decorate.pending_profile?).to eq(false)
+    expect(user.reload.pending_profile?).to eq(false)
 
     complete_all_doc_auth_steps
     click_on t('idv.troubleshooting.options.verify_by_mail')
@@ -32,10 +32,10 @@ shared_examples 'clearing and restarting idv' do
 
     gpo_confirmation = GpoConfirmation.order(created_at: :desc).first
 
-    expect(page).to have_content(t('idv.messages.come_back_later', app: APP_NAME))
+    expect(page).to have_content(t('idv.messages.come_back_later', app_name: APP_NAME))
     expect(page).to have_current_path(idv_come_back_later_path)
     expect(user.reload.decorate.identity_verified?).to eq(false)
-    expect(user.decorate.pending_profile?).to eq(true)
+    expect(user.pending_profile?).to eq(true)
     expect(gpo_confirmation.entry[:address1]).to eq('1 FAKE RD')
   end
 

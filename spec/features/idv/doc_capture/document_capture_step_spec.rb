@@ -23,7 +23,7 @@ feature 'doc capture document capture step' do
     else
       visit_idp_from_oidc_sp_with_ial2
     end
-    allow_any_instance_of(DeviceDetector).to receive(:device_type).and_return('mobile')
+    allow_any_instance_of(Browser).to receive(:mobile?).and_return(true)
   end
 
   it 'offers the user the option to cancel and return to desktop' do

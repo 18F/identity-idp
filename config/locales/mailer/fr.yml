@@ -1,7 +1,7 @@
 ---
 fr:
   mailer:
-    about: À propos de %{app}
+    about: À propos de %{app_name}
     email_reuse_notice:
       subject: Cette adresse courriel est déjà associée à un compte.
     help: Si vous avez besoin d’aide, visitez le site %{link}

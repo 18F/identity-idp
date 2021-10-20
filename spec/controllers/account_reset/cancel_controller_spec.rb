@@ -30,8 +30,10 @@ describe AccountReset::CancelController do
       stub_analytics
       analytics_hash = {
         success: false,
-        errors: { token: [t('errors.account_reset.cancel_token_invalid')] },
-        error_details: { token: [t('errors.account_reset.cancel_token_invalid')] },
+        errors: { token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)] },
+        error_details: {
+          token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)],
+        },
         event: 'cancel',
         user_id: 'anonymous-uuid',
       }
@@ -47,7 +49,7 @@ describe AccountReset::CancelController do
       stub_analytics
       analytics_hash = {
         success: false,
-        errors: { token: [t('errors.account_reset.cancel_token_missing')] },
+        errors: { token: [t('errors.account_reset.cancel_token_missing', app_name: APP_NAME)] },
         error_details: { token: [:blank] },
         event: 'cancel',
         user_id: 'anonymous-uuid',
@@ -71,7 +73,7 @@ describe AccountReset::CancelController do
       post :create
 
       expect(flash[:success]).
-        to eq t('two_factor_authentication.account_reset.successful_cancel')
+        to eq t('two_factor_authentication.account_reset.successful_cancel', app_name: APP_NAME)
       expect(response).to redirect_to root_url
     end
 
@@ -94,8 +96,10 @@ describe AccountReset::CancelController do
         user_id: 'anonymous-uuid',
         event: 'cancel token validation',
         success: false,
-        errors: { token: [t('errors.account_reset.cancel_token_invalid')] },
-        error_details: { token: [t('errors.account_reset.cancel_token_invalid')] },
+        errors: { token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)] },
+        error_details: {
+          token: [t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)],
+        },
       }
       expect(@analytics).
         to receive(:track_event).with(Analytics::ACCOUNT_RESET, properties)
@@ -103,7 +107,7 @@ describe AccountReset::CancelController do
       get :show, params: { token: 'FOO' }
 
       expect(response).to redirect_to(root_url)
-      expect(flash[:error]).to eq t('errors.account_reset.cancel_token_invalid')
+      expect(flash[:error]).to eq t('errors.account_reset.cancel_token_invalid', app_name: APP_NAME)
     end
 
     it 'renders the show view if the token is missing' do

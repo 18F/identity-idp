@@ -13,7 +13,11 @@ class Device < ApplicationRecord
     DeviceDecorator.new(self)
   end
 
-  def device_name
-    DeviceTracking::DeviceName.call(UserAgentParser::Parser.new, self)
+  # @return [Device]
+  def update_last_used_ip(remote_ip, now: Time.zone.now)
+    self.last_used_at = now
+    self.last_ip = remote_ip
+    save
+    self
   end
 end

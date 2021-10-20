@@ -4,11 +4,11 @@ es:
     account_reset:
       cancel_token_invalid: el token de cancelación no es válido
       cancel_token_missing: falta el token de cancelación
-      granted_token_expired: El enlace para eliminar su cuenta de Login.gov ha
+      granted_token_expired: El enlace para eliminar su cuenta de %{app_name} ha
         caducado. Crea otra solicitud para eliminar tu cuenta.
-      granted_token_invalid: El enlace para eliminar tu cuenta de Login.gov no es
+      granted_token_invalid: El enlace para eliminar tu cuenta de %{app_name} no es
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
-      granted_token_missing: El enlace para eliminar tu cuenta de Login.gov no es
+      granted_token_missing: El enlace para eliminar tu cuenta de %{app_name} no es
         válido. Haz clic de nuevo en el enlace en tu correo electrónico.
     attributes:
       password:
@@ -40,7 +40,7 @@ es:
         <li>Su identificación no tiene ningún código de barras dañado</li>
         <li>Su identificación representa el 80% de la imagen general</li>
         <li>Su identificación está contra un fondo sólido y oscuro</li>
-        <li>Su selfie se toma en un área bien iluminada con un fondo liso</li>
+        <li>La foto se hace en un espacio bien iluminado y con un fondo uniforme</li>
         <li>No lleva puesto un sombrero o anteojos, y su cabeza es completamente visible</li>
         </ul>
       document_verification_timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.
