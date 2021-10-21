@@ -1,5 +1,5 @@
 <p class="lead">
-  <%= t('.info', link: link_to(APP_NAME, root_url)) %>
+  <%= t('.info') %>
 </p>
 <table class="spacer">
   <tbody>
@@ -16,10 +16,5 @@
   </tbody>
 </table>
 <p>
-  <%=
-    t('.help',
-      app: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'),
-      help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
-      contact_link: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url))
-  %>
+  <%= t('.help') %>
 </p>

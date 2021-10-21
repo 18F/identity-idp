@@ -79,19 +79,14 @@ describe Users::VerifyPersonalKeyController do
         ),
       ]
     }
-    let(:form) { instance_double(VerifyPersonalKeyForm) }
-    let(:error_text) { 'bad_key' }
+    let(:error_text) { 'Incorrect personal key' }
     let(:personal_key_error) { { personal_key: [error_text] } }
     let(:response_ok) { FormResponse.new(success: true, errors: {}) }
     let(:response_bad) { FormResponse.new(success: false, errors: personal_key_error, extra: {}) }
 
     context 'with a valid form' do
       it 'redirects to the next step of the account recovery flow' do
-        allow(VerifyPersonalKeyForm).to receive(:new).
-          with(user: subject.current_user, personal_key: personal_key).
-          and_return(form)
-        allow(form).to receive(:submit).and_return(response_ok)
-        post :create, params: { personal_key: personal_key }
+        post :create, params: { personal_key: profiles.first.personal_key }
 
         expect(response).to redirect_to(verify_password_url)
       end
@@ -117,10 +112,6 @@ describe Users::VerifyPersonalKeyController do
       let(:bad_key) { 'baaad' }
 
       before do
-        allow(VerifyPersonalKeyForm).to receive(:new).
-          with(user: subject.current_user, personal_key: bad_key).
-          and_return(form)
-        allow(form).to receive(:submit).and_return(response_bad)
         post :create, params: { personal_key: bad_key }
       end
 
@@ -135,18 +126,14 @@ describe Users::VerifyPersonalKeyController do
 
     context 'with throttle reached' do
       let(:bad_key) { 'baaad' }
-      before do
-        allow(VerifyPersonalKeyForm).to receive(:new).
-          with(user: subject.current_user, personal_key: bad_key).
-          and_return(form)
-        allow(form).to receive(:submit).and_return(response_bad)
-      end
 
       it 'renders throttled page' do
         stub_analytics
         expect(@analytics).to receive(:track_event).with(
           Analytics::PERSONAL_KEY_REACTIVATION_SUBMITTED,
-          { errors: { personal_key: ['bad_key'] }, success: false },
+          errors: { personal_key: ['Please fill in this field.', 'Incorrect personal key'] },
+          error_details: { personal_key: [:blank, :personal_key_incorrect] },
+          success: false,
         ).once
         expect(@analytics).to receive(:track_event).with(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,

@@ -106,11 +106,6 @@
                                                     MarketingSite.nice_help_url,
                                                     MarketingSite.help_url,
                                                   ),
-                                                  app: link_to(
-                                                    APP_NAME,
-                                                    IdentityConfig.store.mailer_domain_name,
-                                                    style: 'text-decoration: none;',
-                                                  ),
                                                 )).html_safe %>
                                           </p>
                                         </th>
@@ -142,7 +137,7 @@
                                         <th>
                                           <p>
                                             <%= link_to(
-                                                  t('mailer.about', app: APP_NAME),
+                                                  t('mailer.about', app_name: APP_NAME),
                                                   MarketingSite.base_url,
                                                   style: 'text-decoration: underline;',
                                                 ).html_safe %>

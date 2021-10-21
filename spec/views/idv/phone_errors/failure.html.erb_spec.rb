@@ -24,7 +24,7 @@ describe 'idv/phone_errors/failure.html.erb' do
       href: return_to_sp_failure_to_proof_path(step: 'phone', location: 'failure'),
     )
     expect(rendered).to have_link(
-      t('idv.troubleshooting.options.contact_support', app: APP_NAME),
+      t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
       href: MarketingSite.contact_url,
     )
   end

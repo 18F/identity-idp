@@ -35,6 +35,7 @@ describe 'redirect_uri validation' do
         to have_content t(
           'service_providers.errors.inactive.heading',
           sp_name: 'Example iOS App (inactive)',
+          app_name: APP_NAME,
         )
     end
   end

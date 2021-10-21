@@ -24,7 +24,7 @@ describe 'account_reset/confirm_delete_account/show.html.erb' do
     render
 
     expect(rendered).to have_link(
-      t('account_reset.confirm_delete_account.link_text', app: APP_NAME),
+      t('account_reset.confirm_delete_account.link_text', app_name: APP_NAME),
       href: sign_up_email_path,
     )
   end

@@ -2,41 +2,31 @@
 
 <% if flow_session[:error_message] %>
   <%= render 'shared/alert', {
-    type: 'error',
-    class: 'margin-bottom-4',
-    message: flow_session[:error_message],
-  } %>
+        type: 'error',
+        class: 'margin-bottom-4',
+        message: flow_session[:error_message],
+      } %>
 <% end %>
 
 <h1>
   <%= t('doc_auth.headings.take_picture') %>
 </h1>
 
-<p class='mt-tiny margin-bottom-4'><%= t('doc_auth.info.take_picture') %></p>
+<p><%= t('doc_auth.info.take_picture') %></p>
 
-<p class='mt-tiny margin-bottom-4'><strong><%= t('doc_auth.info.camera_required') %></strong></p>
+<p class="margin-y-4"><strong><%= t('doc_auth.info.camera_required') %></strong></p>
 
-<p class='mt-tiny margin-bottom-4'><%= t('doc_auth.instructions.send_sms') %></p>
-
-<%= validated_form_for(:doc_auth, url: url_for, method: 'PUT',
-        html: { autocomplete: 'off', class: 'margin-top-2' }) do |f| %>
-  <div class='clearfix margin-x-neg-1'>
-    <div class='sm-col sm-col-8 padding-x-1'>
-      <!-- using :phone for mobile numeric keypad -->
-      <%= f.label :phone, label: t('idv.form.phone'), class: 'bold' %>
-      <%= f.input(
-        :phone,
-        required: true,
-        input_html: { aria: { invalid: false }, class: 'sm-col-8' },
-        label: false,
-        wrapper_html: { class: 'margin-right-2' }
-      ) %>
-    </div>
-  </div>
-  <div class='margin-top-0'>
-    <button type='submit' class='usa-button usa-button--big usa-button--wide'>
-      <%= t('forms.buttons.continue') %>
-    </button>
-  </div>
+<p><%= t('doc_auth.instructions.send_sms') %></p>
+<%= validated_form_for(
+      :doc_auth,
+      url: url_for,
+      method: 'PUT',
+      html: { autocomplete: 'off', class: 'margin-top-4' },
+    ) do |f| %>
+  <%= render PhoneInputComponent.new(form: f, required: true) %>
+  <div class="usa-error-message margin-bottom-4 display-none" role="alert"></div>
+  <button class="margin-top-1 usa-button usa-button--big usa-button--wide">
+    <%= t('forms.buttons.continue') %>
+  </button>
 <% end %>
 <%= render 'idv/doc_auth/back', action: 'cancel_send_link' %>

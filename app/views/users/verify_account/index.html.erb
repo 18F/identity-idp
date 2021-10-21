@@ -34,10 +34,14 @@
                     value: @code,
                   },
                   label: t('forms.verify_profile.name'),
-                  class: 'margin-bottom-5' %>
+                  wrapper: false %>
+      
+      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing' role='alert'>
+        <%= t('simple_form.required.text') %>
+      </span>
       <%= f.button :submit,
                    t('forms.verify_profile.submit'),
-                   class: 'usa-button--big usa-button--full-width' %>
+                   class: 'usa-button--big usa-button--full-width margin-top-5' %>
     </div>
   </div>
 <% end %>

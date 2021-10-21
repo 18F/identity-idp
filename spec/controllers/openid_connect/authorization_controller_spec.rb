@@ -146,6 +146,15 @@ RSpec.describe OpenidConnect::AuthorizationController do
               expect(controller).to redirect_to(idv_url)
             end
           end
+
+          context 'profile is reset' do
+            let(:user) { create(:profile, :password_reset).user }
+
+            it 'redirects to have the user enter their personal key' do
+              action
+              expect(controller).to redirect_to(reactivate_account_url)
+            end
+          end
         end
 
         context 'user has not approved this application' do

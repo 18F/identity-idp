@@ -4,9 +4,9 @@ es:
     add:
       duplicate: Esta dirección de correo electrónico ya está registrada en su cuenta.
     delete:
-      bullet1: No podrá iniciar sesión en Login.gov (ni en ninguna de las aplicaciones
-        gubernamentales vinculadas a su cuenta) utilizando esta dirección de
-        correo electrónico
+      bullet1: No podrá iniciar sesión en %{app_name} (ni en ninguna de las
+        aplicaciones gubernamentales vinculadas a su cuenta) utilizando esta
+        dirección de correo electrónico
       bullet2: No recibirás notificaciones de la cuenta en esta dirección de correo
         electrónico
       confirm: '¿Estas seguro que quieres borrarlo %{email}?'

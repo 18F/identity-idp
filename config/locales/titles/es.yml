@@ -65,13 +65,13 @@ es:
     revoke_consent: Revocar consentimiento
     rules_of_use: Reglas de uso
     sign_up:
-      completion_html: Tiene %{accent} con %{app}
+      completion_html: Tiene %{accent} con %{app_name}
       confirmation: Continuar para iniciar sesión
       loa1: creó una cuenta
       new_sp: Acabas de iniciar sesión por primera vez
       refresh_consent: Ha pasado un año desde que nos dio su consentimiento para
         compartir su información
-      verified: Tiene verificó su identidad con %{app}
+      verified: Tiene verificó su identidad con %{app_name}
     totp_setup:
       new: Agregar aplicación de autenticación
     two_factor_setup: Configuración de autenticación de dos factores

@@ -10,15 +10,15 @@
 <% end %>
 
 <h1>
-  <%= t('idv.titles.session.review') %>
+  <%= t('idv.titles.session.review', app_name: APP_NAME) %>
 </h1>
 
 <p>
-  <%= t('idv.messages.sessions.review_message') %>
+  <%= t('idv.messages.sessions.review_message', app_name: APP_NAME) %>
 </p>
 
 <%= new_window_link_to(
-      t('idv.messages.sessions.read_more_encrypt'),
+      t('idv.messages.sessions.read_more_encrypt', app_name: APP_NAME),
       MarketingSite.security_url,
     ) %>
 
@@ -26,8 +26,14 @@
       current_user, url: idv_review_path,
                     html: { autocomplete: 'off', method: :put }
     ) do |f| %>
-  <%= f.input :password, label: t('idv.form.password'), required: true,
-                         input_html: { aria: { invalid: false }, class: 'password-toggle' } %>
+ 
+  <div class="margin-bottom-4">
+    <%= f.input :password, label: t('idv.form.password'), required: true,
+                           input_html: { aria: { invalid: false }, class: 'password-toggle' }, wrapper: false %>
+    <span class='usa-error-message margin-top-2 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+      <%= t('simple_form.required.text') %>
+    </span>
+  </div>
   <div class="right-align margin-top-neg-2 margin-bottom-6">
     <%= t(
           'idv.forgot_password.link_html',

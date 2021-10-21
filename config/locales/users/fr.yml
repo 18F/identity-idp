@@ -7,16 +7,16 @@ fr:
       actions:
         cancel: Annuler et retourner à votre profil
         delete: Supprimer le compte
-      bullet_1: Vous n’aurez pas de compte %{app}.
+      bullet_1: Vous n’aurez pas de compte %{app_name}.
       bullet_2_loa1: Nous effacerons votre adresse email, votre mot de passe et votre
         numéro de téléphone
-      bullet_2_loa3: '%{app} supprimera votre adresse e-mail, votre mot de passe et
-        votre numéro de téléphone, votre nom, votre adresse, votre date de
+      bullet_2_loa3: '%{app_name} supprimera votre adresse e-mail, votre mot de passe
+        et votre numéro de téléphone, votre nom, votre adresse, votre date de
         naissance et votre numéro de sécurité sociale de notre système.'
       bullet_3: Vous ne pourrez pas accéder en toute sécurité à vos informations en
-        utilisant %{app}.
-      bullet_4: Nous informerons les agences auxquelles vous accédez avec %{app} que
-        vous ne plus avoir un compte
+        utilisant %{app_name}.
+      bullet_4: Nous informerons les agences auxquelles vous accédez avec %{app_name}
+        que vous ne plus avoir un compte
       heading: Êtes-vous sûr de vouloir supprimer votre compte?
       instructions: Saisissez votre mot de passe pour confirmer que vous souhaitez
         supprimer votre compte.
@@ -28,14 +28,14 @@ fr:
       header: Votre clé personnelle
       print: Imprimer cette page
     rules_of_use:
-      check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation de Login.gov
+      check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation de %{app_name}
       details_html: |-
         <div class="bold margin-bottom-1">Règles d’utilisation:</div>
         <ul>
-        <li>Expliquez le fonctionnement du service Login.gov et ce que vous pouvez en attendre,</li>
-        <li>Les conditions dans lesquelles nous vous fournissons le service Login.gov,</li>
+        <li>Expliquez le fonctionnement du service %{app_name} et ce que vous pouvez en attendre,</li>
+        <li>Les conditions dans lesquelles nous vous fournissons le service %{app_name},</li>
         <li>Comment nous utilisons vos informations et vos droits sur ces informations, et</li>
-        <li>Les conditions que vous acceptez lorsque vous effectuez certaines actions sur le service Login.gov.</li>
+        <li>Les conditions que vous acceptez lorsque vous effectuez certaines actions sur le service %{app_name}.</li>
         </ul>
       overview_html: Nous avons mis à jour notre %{link}. Veuillez consulter et cocher
         la case ci-dessous pour continuer.

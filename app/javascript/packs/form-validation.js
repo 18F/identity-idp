@@ -19,25 +19,41 @@ function disableFormSubmit(event) {
   });
 }
 
+function kebabCase(string) {
+  return string.replace(/(.)([A-Z])/g, '$1-$2').toLowerCase();
+}
+
+function resetInput(input) {
+  input.setCustomValidity('');
+  input.setAttribute('aria-invalid', 'false');
+  input.classList.remove('usa-input--error');
+}
+
 /**
  * Given an `input` or `invalid` event, updates custom validity of the given input.
  *
  * @param {Event} event Input or invalid event.
  */
+
 function checkInputValidity(event) {
   const input = /** @type {HTMLInputElement} */ (event.target);
-  input.setCustomValidity('');
-  input.setAttribute('aria-invalid', String(!input.validity.valid));
+  resetInput(input);
   if (
     event.type === 'invalid' &&
     !input.validity.valid &&
     input.parentNode?.querySelector('.display-if-invalid')
   ) {
     event.preventDefault();
+    const errors = Object.keys(ValidityState.prototype)
+      .filter((key) => key !== 'valid')
+      .filter((key) => input.validity[key]);
+
+    input.setAttribute('aria-invalid', errors.length ? kebabCase(errors[0]) : 'false');
+    input.classList.add('usa-input--error');
     input.focus();
   }
-  const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
 
+  const { I18n } = /** @type {typeof window & LoginGovGlobal} */ (window).LoginGov;
   if (input.validity.valueMissing) {
     input.setCustomValidity(I18n.t('simple_form.required.text'));
   } else if (input.validity.patternMismatch) {

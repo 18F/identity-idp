@@ -31,7 +31,10 @@ module Idv
         form_response = idv_result_to_form_response(
           idv_result: current_async_state.result,
           state: flow_session[:pii_from_doc][:state],
-          extra: { pii_like_keypaths: [[:errors, :ssn]] },
+          extra: {
+            address_edited: !!flow_session['address_edited'],
+            pii_like_keypaths: [[:errors, :ssn]],
+          },
         )
 
         if form_response.success?

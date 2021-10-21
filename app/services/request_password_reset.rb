@@ -31,7 +31,10 @@ RequestPasswordReset = RedactedStruct.new(
   end
 
   def instructions
-    I18n.t('user_mailer.email_confirmation_instructions.first_sentence.forgot_password')
+    I18n.t(
+      'user_mailer.email_confirmation_instructions.first_sentence.forgot_password',
+      app_name: APP_NAME,
+    )
   end
 
   ##

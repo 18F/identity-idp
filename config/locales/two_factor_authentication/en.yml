@@ -14,8 +14,8 @@ en:
       reset_link: reset your account
       reset_your_account: Reset your account
       reverify_link: re-verify your identity
-      successful_cancel: Thank you. Your request to delete your Login.gov account has
-        been cancelled.
+      successful_cancel: Thank you. Your request to delete your %{app_name} account
+        has been cancelled.
       text_html: If you can’t use any of the authentication methods above, you can
         reset your preferences by %{link}.
     backup_code_fallback:

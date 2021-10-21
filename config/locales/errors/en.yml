@@ -4,17 +4,17 @@ en:
     account_reset:
       cancel_token_invalid: cancel token is invalid
       cancel_token_missing: cancel token is missing
-      granted_token_expired: The link to delete your Login.gov account has expired.
+      granted_token_expired: The link to delete your %{app_name} account has expired.
         Please create another request to delete your account.
-      granted_token_invalid: The link to delete your Login.gov account is invalid.
+      granted_token_invalid: The link to delete your %{app_name} account is invalid.
         Please try clicking the link in your email again.
-      granted_token_missing: The link to delete your Login.gov account is invalid.
+      granted_token_missing: The link to delete your %{app_name} account is invalid.
         Please try clicking the link in your email again.
     attributes:
       password:
         too_short:
-          one: 'This password is too short (minimum is 1 character)'
-          other: 'This password is too short (minimum is %{count} characters)'
+          one: This password is too short (minimum is 1 character)
+          other: This password is too short (minimum is %{count} characters)
     capture_doc:
       invalid_link: This link is expired or not valid.  Please request another link to
         verify your identity on a mobile phone.
@@ -40,7 +40,7 @@ en:
         <li>Your ID does not have any damaged barcodes</li>
         <li>Your ID represents 80% of the overall image</li>
         <li>Your ID is against a solid, dark background</li>
-        <li>Your selfie is taken in a well-lit area with a plain background</li>
+        <li>Your picture is taken in a well-lit area with a plain background</li>
         <li>You are not wearing a hat or glasses, and your head is fully visible</li>
         </ul>
       document_verification_timeout: The server took too long to respond. Please try again.

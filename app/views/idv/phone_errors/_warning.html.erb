@@ -16,7 +16,7 @@ locals:
       options: [
         local_assigns[:contact_support_option] && {
           url: MarketingSite.contact_url,
-          text: t('idv.troubleshooting.options.contact_support', app: APP_NAME),
+          text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
           new_tab: true,
         },
         FeatureManagement.enable_gpo_verification? && {

@@ -21,7 +21,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.email_deleted.header', app: APP_NAME),
+        t('user_mailer.email_deleted.header', app_name: APP_NAME),
       )
       expect_email_body_to_have_help_and_contact_links
     end
@@ -48,7 +48,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.password_changed.intro_html', app: APP_NAME),
+        t('user_mailer.password_changed.intro_html', app_name: APP_NAME),
       )
       expect(mail.html_part.body).to include(
         '/events/disavow?disavowal_token=123abc',
@@ -112,8 +112,8 @@ describe UserMailer, type: :mailer do
   end
 
   describe '#new_device_sign_in' do
-    date = 'Washington, DC'
-    location = 'February 25, 2019 15:02'
+    date = 'February 25, 2019 15:02'
+    location = 'Washington, DC'
     disavowal_token = 'asdf1234'
     let(:mail) do
       UserMailer.new_device_sign_in(
@@ -132,7 +132,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.new_device_sign_in.subject')
+      expect(mail.subject).to eq t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
@@ -141,7 +141,7 @@ describe UserMailer, type: :mailer do
           strip_tags(
             t(
               'user_mailer.new_device_sign_in.info_html',
-              date: date, location: location,
+              date: date, location: location, app_name: APP_NAME,
             ),
           ),
         )
@@ -208,7 +208,7 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         I18n.t(
           'user_mailer.signup_with_your_email.intro_html',
-          app: APP_NAME,
+          app_name: APP_NAME,
         ),
       )
       expect_email_body_to_have_help_and_contact_links
@@ -240,7 +240,7 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.phone_added.intro', app: APP_NAME),
+        t('user_mailer.phone_added.intro', app_name: APP_NAME),
       )
     end
 
@@ -261,15 +261,15 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_does_not_exist.subject')
+      expect(mail.subject).to eq t('user_mailer.account_does_not_exist.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.account_does_not_exist.intro_html', app: APP_NAME),
+        t('user_mailer.account_does_not_exist.intro_html', app_name: APP_NAME),
       )
       expect(mail.html_part.body).to have_link(
-        t('user_mailer.account_does_not_exist.link_text', app: APP_NAME),
+        t('user_mailer.account_does_not_exist.link_text'),
         href: sign_up_email_url(request_id: 'request_id'),
       )
     end
@@ -296,17 +296,14 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_request.subject')
+      expect(mail.subject).to eq t('user_mailer.account_reset_request.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
       reset_text = t('user_mailer.account_reset_granted.cancel_link_text')
       expect(mail.html_part.body).to have_content(
         strip_tags(
-          t(
-            'user_mailer.account_reset_request.intro_html', app: APP_NAME,
-                                                            cancel_account_reset: reset_text
-          ),
+          t('user_mailer.account_reset_request.intro_html', app_name: APP_NAME),
         ),
       )
     end
@@ -314,7 +311,7 @@ describe UserMailer, type: :mailer do
     it 'does not render the subject in the body' do
       expect(mail.html_part.body).not_to have_content(
         strip_tags(
-          t('user_mailer.account_reset_request.subject'),
+          t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
         ),
       )
     end
@@ -339,12 +336,14 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_granted.subject')
+      expect(mail.subject).to eq t('user_mailer.account_reset_granted.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
       expect(mail.html_part.body).to \
-        have_content(strip_tags(t('user_mailer.account_reset_granted.intro_html', app: APP_NAME)))
+        have_content(
+          strip_tags(t('user_mailer.account_reset_granted.intro_html', app_name: APP_NAME)),
+        )
     end
   end
 
@@ -364,7 +363,9 @@ describe UserMailer, type: :mailer do
 
     it 'renders the body' do
       expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.account_reset_complete.intro')))
+        to have_content(
+          strip_tags(t('user_mailer.account_reset_complete.intro_html', app_name: APP_NAME)),
+        )
     end
   end
 
@@ -379,12 +380,14 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.please_reset_password.subject')
+      expect(mail.subject).to eq t('user_mailer.please_reset_password.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
       expect(mail.html_part.body).
-        to have_content(strip_tags(t('user_mailer.please_reset_password.intro')))
+        to have_content(
+          strip_tags(t('user_mailer.please_reset_password.intro', app_name: APP_NAME)),
+        )
 
       expect(mail.html_part.body).
         to have_content(strip_tags(t('user_mailer.please_reset_password.call_to_action')))
@@ -488,11 +491,11 @@ describe UserMailer, type: :mailer do
 
   describe '#account_verified' do
     disavowal_token = 'i_am_disavowal_token'
-    let(:app) { '' }
+    let(:sp_name) { '' }
     let(:date_time) { Time.zone.now }
     let(:mail) do
       UserMailer.account_verified(
-        user, email_address, date_time: date_time, app: app,
+        user, email_address, date_time: date_time, sp_name: sp_name,
                              disavowal_token: disavowal_token
       )
     end
@@ -505,13 +508,13 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_verified.subject', app: app)
+      expect(mail.subject).to eq t('user_mailer.account_verified.subject', sp_name: sp_name)
     end
 
     it 'does not send mail to emails in nonessential email banlist' do
       email_address = EmailAddress.new(email: banned_email)
       mail = UserMailer.account_verified(
-        user, email_address, date_time: date_time, app: app,
+        user, email_address, date_time: date_time, sp_name: sp_name,
                              disavowal_token: disavowal_token
       )
       expect(mail.to).to eq(nil)

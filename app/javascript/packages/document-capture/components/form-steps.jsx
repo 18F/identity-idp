@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Alert } from '@18f/identity-components';
+import { useI18n } from '@18f/identity-react-i18n';
 import Button from './button';
 import PageHeading from './page-heading';
 import FormErrorMessage, { RequiredValueMissingError } from './form-error-message';
 import PromptOnNavigate from './prompt-on-navigate';
-import useI18n from '../hooks/use-i18n';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';

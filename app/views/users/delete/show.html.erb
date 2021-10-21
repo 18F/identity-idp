@@ -9,10 +9,10 @@
     <%= t('users.delete.subheading') %>
   </div>
   <ul class="padding-x-2">
-    <li class="margin-bottom-1"><%= t('users.delete.bullet_1', app: APP_NAME) %></li>
+    <li class="margin-bottom-1"><%= t('users.delete.bullet_1', app_name: APP_NAME) %></li>
     <li class="margin-bottom-1"><%= current_user.decorate.delete_account_bullet_key %></li>
-    <li class="margin-bottom-1"><%= t('users.delete.bullet_3', app: APP_NAME) %></li>
-    <li class="margin-bottom-1"><%= t('users.delete.bullet_4', app: APP_NAME) %></li>
+    <li class="margin-bottom-1"><%= t('users.delete.bullet_3', app_name: APP_NAME) %></li>
+    <li class="margin-bottom-1"><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
   </ul>
   <div>
     <%= validated_form_for(current_user, url: account_delete_path,

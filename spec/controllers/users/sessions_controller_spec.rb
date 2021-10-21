@@ -140,7 +140,7 @@ describe Users::SessionsController, devise: true do
 
       expect(flash[:info]).to eq t(
         'notices.session_timedout',
-        app: APP_NAME,
+        app_name: APP_NAME,
         minutes: IdentityConfig.store.session_timeout_in_minutes,
       )
 

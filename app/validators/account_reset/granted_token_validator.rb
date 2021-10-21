@@ -5,7 +5,9 @@ module AccountReset
     included do
       validates :token,
                 presence: {
-                  message: proc { I18n.t('errors.account_reset.granted_token_missing') },
+                  message: proc do
+                    I18n.t('errors.account_reset.granted_token_missing', app_name: APP_NAME)
+                  end,
                 }
       validate :token_exists, if: :token_present?
       validate :token_not_expired, if: :token_present?
@@ -18,12 +20,12 @@ module AccountReset
     def token_exists
       return if account_reset_request
 
-      errors.add(:token, I18n.t('errors.account_reset.granted_token_invalid'))
+      errors.add(:token, I18n.t('errors.account_reset.granted_token_invalid', app_name: APP_NAME))
     end
 
     def token_not_expired
       return unless account_reset_request&.granted_token_expired?
-      errors.add(:token, I18n.t('errors.account_reset.granted_token_expired'))
+      errors.add(:token, I18n.t('errors.account_reset.granted_token_expired', app_name: APP_NAME))
     end
 
     def token_present?

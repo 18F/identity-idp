@@ -21,7 +21,9 @@ class ServiceProviderSessionDecorator
     return if sp.help_text.nil?
     language = I18n.locale.to_s
     alert = sp.help_text.dig(section, language)
-    format(alert, sp_name: sp_name, sp_create_link: sp_create_link) if alert.present?
+    if alert.present?
+      format(alert, sp_name: sp_name, sp_create_link: sp_create_link, app_name: APP_NAME)
+    end
   end
 
   def sp_logo

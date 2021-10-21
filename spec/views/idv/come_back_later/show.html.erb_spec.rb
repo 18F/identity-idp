@@ -48,7 +48,7 @@ describe 'idv/come_back_later/show.html.erb' do
         strip_tags(
           t(
             'idv.messages.come_back_later_no_sp_html',
-            app: APP_NAME,
+            app_name: APP_NAME,
           ),
         ),
       )

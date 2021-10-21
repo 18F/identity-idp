@@ -8,7 +8,7 @@ feature 'idv gpo step' do
     complete_idv_steps_before_gpo_step
     click_on t('idv.buttons.mail.send')
 
-    expect(page).to have_content(t('idv.titles.session.review'))
+    expect(page).to have_content(t('idv.titles.session.review', app_name: APP_NAME))
     expect(page).to have_current_path(idv_review_path)
   end
 

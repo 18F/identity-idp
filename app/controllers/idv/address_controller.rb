@@ -12,6 +12,7 @@ module Idv
     def update
       form_result = idv_form.submit(profile_params)
       analytics.track_event(Analytics::IDV_ADDRESS_SUBMITTED, form_result.to_h)
+      capture_address_edited(form_result)
       if form_result.success?
         success
       else
@@ -28,10 +29,7 @@ module Idv
     end
 
     def idv_form
-      Idv::AddressForm.new(
-        user: current_user,
-        previous_params: idv_session.previous_profile_step_params,
-      )
+      Idv::AddressForm.new(@pii)
     end
 
     def success
@@ -47,6 +45,11 @@ module Idv
 
     def profile_params
       params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
+    end
+
+    def capture_address_edited(result)
+      address_edited = result.to_h[:address_edited]
+      user_session['idv/doc_auth']['address_edited'] = address_edited if address_edited
     end
   end
 end

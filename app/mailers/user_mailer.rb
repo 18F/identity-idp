@@ -72,7 +72,7 @@ class UserMailer < ActionMailer::Base
 
   def account_does_not_exist(email, request_id)
     @sign_up_email_url = sign_up_email_url(request_id: request_id, locale: locale_url_param)
-    mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
+    mail(to: email, subject: t('user_mailer.account_does_not_exist.subject', app_name: APP_NAME))
   end
 
   def personal_key_sign_in(user, email, disavowal_token:)
@@ -91,7 +91,10 @@ class UserMailer < ActionMailer::Base
       @login_date = date
       @login_location = location
       @disavowal_token = disavowal_token
-      mail(to: email_address.email, subject: t('user_mailer.new_device_sign_in.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.new_device_sign_in.subject', app_name: APP_NAME),
+      )
     end
   end
 
@@ -107,7 +110,10 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @header = t('user_mailer.account_reset_request.header')
-      mail(to: email_address.email, subject: t('user_mailer.account_reset_request.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
+      )
     end
   end
 
@@ -115,7 +121,10 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @granted_token = account_reset&.granted_token
-      mail(to: email_address.email, subject: t('user_mailer.account_reset_granted.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_reset_granted.subject', app_name: APP_NAME),
+      )
     end
   end
 
@@ -133,7 +142,10 @@ class UserMailer < ActionMailer::Base
 
   def please_reset_password(user, email_address)
     with_user_locale(user) do
-      mail(to: email_address, subject: t('user_mailer.please_reset_password.subject'))
+      mail(
+        to: email_address,
+        subject: t('user_mailer.please_reset_password.subject', app_name: APP_NAME),
+      )
     end
   end
 
@@ -197,15 +209,17 @@ class UserMailer < ActionMailer::Base
     mail(to: email, subject: t('user_mailer.deleted_accounts_report.subject'))
   end
 
-  def account_verified(user, email_address, date_time:, app:, disavowal_token:)
+  def account_verified(user, email_address, date_time:, sp_name:, disavowal_token:)
     return unless email_should_receive_nonessential_notifications?(email_address.email)
 
     with_user_locale(user) do
       @date = I18n.localize(date_time, format: t('time.formats.event_date'))
-      @app = app
+      @sp_name = sp_name
       @disavowal_token = disavowal_token
-      @app_name = APP_NAME
-      mail(to: email_address.email, subject: t('user_mailer.account_verified.subject', app: @app))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_verified.subject', sp_name: @sp_name),
+      )
     end
   end
 
