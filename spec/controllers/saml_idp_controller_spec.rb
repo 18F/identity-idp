@@ -284,6 +284,15 @@ describe SamlIdpController do
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ial2_settings)
       end
+
+      context 'profile is not in session' do
+        let(:pii) { nil }
+
+        it 'redirects to password capture if profile is verified but not in session' do
+          saml_get_auth(ial2_settings)
+          expect(response).to redirect_to capture_password_url
+        end
+      end
     end
 
     context 'with IAL2 and the identity is not already verified' do
