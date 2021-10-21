@@ -14,16 +14,6 @@ class UserMailer < ActionMailer::Base
     ),
   )
 
-  def deliver_now_or_later(opts = {})
-    # rubocop:disable IdentityIdp/MailLaterLinter
-    if IdentityConfig.store.deliver_mail_async
-      deliver_later(opts)
-    else
-      deliver_now(opts)
-    end
-    # rubocop:enable IdentityIdp/MailLaterLinter
-  end
-
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
