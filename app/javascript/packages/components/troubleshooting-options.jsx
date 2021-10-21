@@ -4,7 +4,7 @@ import { BlockLink } from '@18f/identity-components';
  * @typedef TroubleshootingOption
  *
  * @prop {string} url
- * @prop {string} text
+ * @prop {string|JSX.Element} text
  * @prop {boolean} isExternal
  */
 
