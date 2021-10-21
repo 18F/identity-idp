@@ -9,13 +9,11 @@ import ReviewIssuesStep, { reviewIssuesStepValidator } from './review-issues-ste
 import ServiceProviderContext from '../context/service-provider';
 import Submission from './submission';
 import SubmissionStatus from './submission-status';
-import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import { RetrySubmissionError } from './submission-complete';
 import { BackgroundEncryptedUploadError } from '../higher-order/with-background-encrypted-upload';
 import SuspenseErrorBoundary from './suspense-error-boundary';
 import SubmissionInterstitial from './submission-interstitial';
 import PromptOnNavigate from './prompt-on-navigate';
-import CaptureAttemptsTroubleshooting from './capture-attempts-troubleshooting';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 /** @typedef {import('./form-steps').FormStep} FormStep */
@@ -144,16 +142,14 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
           {t('doc_auth.errors.general.network_error')}
         </Alert>
       )}
-      <CaptureAttemptsTroubleshooting>
-        <FormSteps
-          steps={steps}
-          initialValues={initialValues}
-          initialActiveErrors={initialActiveErrors}
-          onComplete={submitForm}
-          onStepChange={onStepChange}
-          autoFocus={!!submissionError}
-        />
-      </CaptureAttemptsTroubleshooting>
+      <FormSteps
+        steps={steps}
+        initialValues={initialValues}
+        initialActiveErrors={initialActiveErrors}
+        onComplete={submitForm}
+        onStepChange={onStepChange}
+        autoFocus={!!submissionError}
+      />
     </>
   );
 }
