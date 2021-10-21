@@ -1,6 +1,7 @@
 class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
+
   before_action :attach_images
   default(
     from: email_with_name(
@@ -12,6 +13,16 @@ class UserMailer < ActionMailer::Base
       IdentityConfig.store.email_from_display_name,
     ),
   )
+
+  def deliver_now_or_later(opts = {})
+    # rubocop:disable IdentityIdp/MailLaterLinter
+    if IdentityConfig.store.deliver_mail_async
+      deliver_later(opts)
+    else
+      deliver_now(opts)
+    end
+    # rubocop:enable IdentityIdp/MailLaterLinter
+  end
 
   def email_confirmation_instructions(user, email, token, request_id:, instructions:)
     with_user_locale(user) do
