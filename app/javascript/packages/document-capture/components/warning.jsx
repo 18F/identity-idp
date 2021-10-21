@@ -46,7 +46,7 @@ function Warning({
         src={getAssetPath('alert/warning-lg.svg')}
         width={54}
         height={54}
-        className="display-block"
+        className="display-block margin-bottom-4"
       />
       <PageHeading ref={headingRef} tabIndex={-1}>
         {heading}
