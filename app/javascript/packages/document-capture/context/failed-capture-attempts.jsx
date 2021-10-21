@@ -16,6 +16,7 @@ import useCounter from '../hooks/use-counter';
  * @prop {number} failedCaptureAttempts Current number of failed attempts.
  * @prop {(metadata: CaptureAttemptMetadata)=>void} onFailedCaptureAttempt Callback to trigger on
  * attempt, to increment attempts.
+ * @prop {() => void} onResetFailedCaptureAttempts Callback to trigger a reset of attempts.
  * @prop {number} maxFailedAttemptsBeforeTips Number of failed attempts before showing tips.
  * @prop {CaptureAttemptMetadata} lastAttemptMetadata Metadata about the last attempt.
  */
@@ -30,6 +31,7 @@ const FailedCaptureAttemptsContext = createContext(
   /** @type {FailedCaptureAttemptsContext} */ ({
     failedCaptureAttempts: 0,
     onFailedCaptureAttempt: () => {},
+    onResetFailedCaptureAttempts: () => {},
     maxFailedAttemptsBeforeTips: Infinity,
     lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
   }),
@@ -51,7 +53,11 @@ function FailedCaptureAttemptsContextProvider({ children, maxFailedAttemptsBefor
   const [lastAttemptMetadata, setLastAttemptMetadata] = useState(
     /** @type {CaptureAttemptMetadata} */ (DEFAULT_LAST_ATTEMPT_METADATA),
   );
-  const [failedCaptureAttempts, incrementFailedCaptureAttempts] = useCounter();
+  const [
+    failedCaptureAttempts,
+    incrementFailedCaptureAttempts,
+    onResetFailedCaptureAttempts,
+  ] = useCounter();
 
   /**
    * @param {CaptureAttemptMetadata} metadata
@@ -66,6 +72,7 @@ function FailedCaptureAttemptsContextProvider({ children, maxFailedAttemptsBefor
       value={{
         failedCaptureAttempts,
         onFailedCaptureAttempt,
+        onResetFailedCaptureAttempts,
         maxFailedAttemptsBeforeTips,
         lastAttemptMetadata,
       }}

@@ -268,7 +268,9 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [attempt, incrementAttempt] = useCounter(1);
-  const { onFailedCaptureAttempt } = useContext(FailedCaptureAttemptsContext);
+  const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
+    FailedCaptureAttemptsContext,
+  );
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
@@ -476,6 +478,7 @@ function AcuantCapture(
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
+      onResetFailedCaptureAttempts();
     } else {
       onFailedCaptureAttempt({ isAssessedAsGlare, isAssessedAsBlurry });
     }
