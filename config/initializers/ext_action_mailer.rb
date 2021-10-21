@@ -7,7 +7,7 @@ module ActionMailer
       if IdentityConfig.store.deliver_mail_async
         deliver_later(opts)
       else
-        deliver_now(opts)
+        deliver_now
       end
       # rubocop:enable IdentityIdp/MailLaterLinter
     end
