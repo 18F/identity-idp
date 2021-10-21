@@ -15,10 +15,17 @@ import CaptureAdvice from './capture-advice';
  */
 function CaptureAttemptsTroubleshooting({ children }) {
   const [didShowTroubleshooting, setDidShowTroubleshooting] = useState(false);
-  const { captureAttempts, maxAttemptsBeforeTips } = useContext(CaptureAttemptsContext);
+  const { captureAttempts, maxAttemptsBeforeTips, lastAttemptMetadata } = useContext(
+    CaptureAttemptsContext,
+  );
+  const { isAssessedAsGlare, isAssessedAsBlurry } = lastAttemptMetadata;
 
   return captureAttempts >= maxAttemptsBeforeTips && !didShowTroubleshooting ? (
-    <CaptureAdvice onTryAgain={() => setDidShowTroubleshooting(true)} />
+    <CaptureAdvice
+      onTryAgain={() => setDidShowTroubleshooting(true)}
+      isAssessedAsGlare={isAssessedAsGlare}
+      isAssessedAsBlurry={isAssessedAsBlurry}
+    />
   ) : (
     <>{children}</>
   );

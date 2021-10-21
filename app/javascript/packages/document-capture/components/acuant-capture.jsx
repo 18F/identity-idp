@@ -18,6 +18,7 @@ import Button from './button';
 import DeviceContext from '../context/device';
 import UploadContext from '../context/upload';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
+import useCounter from '../hooks/use-counter';
 import './acuant-capture.scss';
 
 /** @typedef {import('react').ReactNode} ReactNode */
@@ -266,7 +267,8 @@ function AcuantCapture(
   useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
-  const { captureAttempts, onCaptureAttempt } = useContext(CaptureAttemptsContext);
+  const [attempt, incrementAttempt] = useCounter(1);
+  const { onCaptureAttempt: onFailedCaptureAttempt } = useContext(CaptureAttemptsContext);
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
@@ -292,15 +294,15 @@ function AcuantCapture(
   /**
    * Returns an analytics payload, decorated with common values.
    *
-   * @template P
+   * @template {ImageAnalyticsPayload|AcuantImageAnalyticsPayload} P
    *
    * @param {P} payload
    *
    * @return {P}
    */
   function getAddAttemptAnalyticsPayload(payload) {
-    const enhancedPayload = { ...payload, attempt: captureAttempts + 1 };
-    onCaptureAttempt();
+    const enhancedPayload = { ...payload, attempt };
+    incrementAttempt();
     return enhancedPayload;
   }
 
@@ -328,6 +330,13 @@ function AcuantCapture(
         payload: analyticsPayload,
       });
     }
+
+    onFailedCaptureAttempt({
+      isAssessedAsGlare: true,
+      isAssessedAsBlurry: false,
+      // isAssessedAsGlare: 'isAssessedAsGlare' in payload && payload.isAssessedAsGlare,
+      // isAssessedAsBlurry: 'isAssessedAsBlurry' in payload && payload.isAssessedAsBlurry,
+    });
 
     onChangeAndResetError(nextValue, analyticsPayload);
   }
