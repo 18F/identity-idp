@@ -30,4 +30,17 @@ describe('document-capture/hooks/use-counter', () => {
 
     expect(count).to.equal(1);
   });
+
+  it('can be reset', () => {
+    const { result } = renderHook(() => useCounter());
+
+    const [, incrementCount, resetCount] = result.current;
+
+    act(incrementCount);
+    act(resetCount);
+
+    const [count] = result.current;
+
+    expect(count).to.equal(0);
+  });
 });
