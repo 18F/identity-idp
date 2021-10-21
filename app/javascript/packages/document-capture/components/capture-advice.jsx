@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { ServiceProviderContext } from '..';
 import useAsset from '../hooks/use-asset';
 import Button from './button';
-import PageHeading from './page-heading';
+import Warning from './warning';
 
 /** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
 
@@ -23,8 +23,27 @@ function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
   const { getAssetPath } = useAsset();
 
   return (
-    <>
-      <PageHeading>Having trouble adding your state-issued ID?</PageHeading>
+    <Warning
+      heading="Having trouble adding your state-issued ID?"
+      autoFocus
+      actionText="Try again"
+      actionOnClick={onTryAgain}
+      troubleshootingHeading="Still having trouble?"
+      troubleshootingOptions={
+        /** @type {TroubleshootingOption[]} */ ([
+          { url: '/', text: 'More tips for adding photos of your ID', isExternal: true },
+          spName && {
+            url: '/',
+            text: (
+              <>
+                Get help at <strong>{spName}</strong>
+              </>
+            ),
+            isExternal: true,
+          },
+        ].filter(Boolean))
+      }
+    >
       <p>
         {isAssessedAsGlare && 'The photo you added has glare. '}
         {isAssessedAsBlurry && 'The photo you added is too blurry. '}
@@ -65,27 +84,7 @@ function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
           be read.
         </li>
       </ul>
-      <Button type="button" onClick={onTryAgain} isBig isWide className="display-block margin-y-5">
-        Try again
-      </Button>
-      <TroubleshootingOptions
-        heading="Still having trouble?"
-        options={
-          /** @type {TroubleshootingOption[]} */ ([
-            { url: '/', text: 'More tips for adding photos of your ID', isExternal: true },
-            spName && {
-              url: '/',
-              text: (
-                <>
-                  Get help at <strong>{spName}</strong>
-                </>
-              ),
-              isExternal: true,
-            },
-          ].filter(Boolean))
-        }
-      />
-    </>
+    </Warning>
   );
 }
 
