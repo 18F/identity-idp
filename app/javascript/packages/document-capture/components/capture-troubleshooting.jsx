@@ -1,26 +1,26 @@
 import { useContext, useState } from 'react';
-import CaptureAttemptsContext from '../context/capture-attempts';
+import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import CaptureAdvice from './capture-advice';
 
 /** @typedef {import('react').ReactNode} ReactNode */
 
 /**
- * @typedef CaptureAttemptsTroubleshootingProps
+ * @typedef CaptureTroubleshootingProps
  *
  * @prop {ReactNode} children
  */
 
 /**
- * @param {CaptureAttemptsTroubleshootingProps} props
+ * @param {CaptureTroubleshootingProps} props
  */
-function CaptureAttemptsTroubleshooting({ children }) {
+function CaptureTroubleshooting({ children }) {
   const [didShowTroubleshooting, setDidShowTroubleshooting] = useState(false);
-  const { captureAttempts, maxAttemptsBeforeTips, lastAttemptMetadata } = useContext(
-    CaptureAttemptsContext,
+  const { failedCaptureAttempts, maxFailedAttemptsBeforeTips, lastAttemptMetadata } = useContext(
+    FailedCaptureAttemptsContext,
   );
   const { isAssessedAsGlare, isAssessedAsBlurry } = lastAttemptMetadata;
 
-  return captureAttempts >= maxAttemptsBeforeTips && !didShowTroubleshooting ? (
+  return failedCaptureAttempts >= maxFailedAttemptsBeforeTips && !didShowTroubleshooting ? (
     <CaptureAdvice
       onTryAgain={() => setDidShowTroubleshooting(true)}
       isAssessedAsGlare={isAssessedAsGlare}
@@ -31,4 +31,4 @@ function CaptureAttemptsTroubleshooting({ children }) {
   );
 }
 
-export default CaptureAttemptsTroubleshooting;
+export default CaptureTroubleshooting;

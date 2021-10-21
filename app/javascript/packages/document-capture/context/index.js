@@ -9,6 +9,6 @@ export {
 } from './service-provider';
 export { default as AnalyticsContext } from './analytics';
 export {
-  default as CaptureAttemptsContext,
-  Provider as CaptureAttemptsContextProvider,
-} from './capture-attempts';
+  default as FailedCaptureAttemptsContext,
+  Provider as FailedCaptureAttemptsContextProvider,
+} from './failed-capture-attempts';

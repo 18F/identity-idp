@@ -8,7 +8,7 @@ import {
   UploadContextProvider,
   ServiceProviderContextProvider,
   AnalyticsContext,
-  CaptureAttemptsContextProvider,
+  FailedCaptureAttemptsContextProvider,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -165,15 +165,17 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
               backgroundUploadEncryptKey={backgroundUploadEncryptKey}
               formData={formData}
             >
-              <CaptureAttemptsContextProvider maxAttemptsBeforeTips={maxCaptureAttemptsBeforeTips}>
-                <I18nContext.Provider value={i18n.strings}>
-                  <ServiceProviderContextProvider value={getServiceProvider()}>
-                    <AssetContext.Provider value={assets}>
+              <I18nContext.Provider value={i18n.strings}>
+                <ServiceProviderContextProvider value={getServiceProvider()}>
+                  <AssetContext.Provider value={assets}>
+                    <FailedCaptureAttemptsContextProvider
+                      maxFailedAttemptsBeforeTips={maxCaptureAttemptsBeforeTips}
+                    >
                       <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
-                    </AssetContext.Provider>
-                  </ServiceProviderContextProvider>
-                </I18nContext.Provider>
-              </CaptureAttemptsContextProvider>
+                    </FailedCaptureAttemptsContextProvider>
+                  </AssetContext.Provider>
+                </ServiceProviderContextProvider>
+              </I18nContext.Provider>
             </UploadContextProvider>
           </AcuantContextProvider>
         </AnalyticsContext.Provider>

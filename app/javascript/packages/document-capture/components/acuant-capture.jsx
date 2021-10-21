@@ -10,7 +10,7 @@ import {
 import { useI18n } from '@18f/identity-react-i18n';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
-import CaptureAttemptsContext from '../context/capture-attempts';
+import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
 import FullScreen from './full-screen';
@@ -268,7 +268,7 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [attempt, incrementAttempt] = useCounter(1);
-  const { onCaptureAttempt: onFailedCaptureAttempt } = useContext(CaptureAttemptsContext);
+  const { onFailedCaptureAttempt } = useContext(FailedCaptureAttemptsContext);
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
