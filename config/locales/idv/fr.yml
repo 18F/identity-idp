@@ -188,9 +188,11 @@ fr:
         missing_required_items: Est-ce qu’il vous manque un de ces éléments?
         need_assistance: 'Avez-vous besoin d’une assistance immédiate? Voici comment
           obtenir de l’aide:'
+        still_having_trouble: Vous rencontrez toujours des difficultés?
       options:
         change_phone_number: Utiliser un autre numéro de téléphone
         contact_support: Contacter le service d’assistance de %{app_name}
+        doc_capture_tips: Plus de conseils pour ajouter des photos de votre carte d'identité
         get_help_at_sp: Demandez de l’aide à %{sp_name}
         learn_more_address_verification_options: En savoir plus sur la vérification par téléphone ou par courrier
         learn_more_verify_by_mail: En savoir plus sur la vérification de votre adresse par courrier

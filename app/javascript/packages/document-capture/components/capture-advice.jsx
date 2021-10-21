@@ -1,8 +1,7 @@
-import { TroubleshootingOptions } from '@18f/identity-components';
 import { useContext } from 'react';
+import { useI18n } from '@18f/identity-react-i18n';
 import { ServiceProviderContext } from '..';
 import useAsset from '../hooks/use-asset';
-import Button from './button';
 import Warning from './warning';
 
 /** @typedef {import('@18f/identity-components/troubleshooting-options').TroubleshootingOption} TroubleshootingOption */
@@ -21,67 +20,65 @@ import Warning from './warning';
 function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
   const { name: spName } = useContext(ServiceProviderContext);
   const { getAssetPath } = useAsset();
+  const { t } = useI18n();
 
   return (
     <Warning
-      heading="Having trouble adding your state-issued ID?"
+      heading={t('doc_auth.headings.capture_troubleshooting_tips')}
       autoFocus
-      actionText="Try again"
+      actionText={t('idv.failure.button.warning')}
       actionOnClick={onTryAgain}
-      troubleshootingHeading="Still having trouble?"
+      troubleshootingHeading={t('idv.troubleshooting.headings.still_having_trouble')}
       troubleshootingOptions={
         /** @type {TroubleshootingOption[]} */ ([
-          { url: '/', text: 'More tips for adding photos of your ID', isExternal: true },
+          {
+            url: '/',
+            text: t('idv.troubleshooting.options.doc_capture_tips'),
+            isExternal: true,
+          },
           spName && {
             url: '/',
-            text: (
-              <>
-                Get help at <strong>{spName}</strong>
-              </>
-            ),
+            text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
             isExternal: true,
           },
         ].filter(Boolean))
       }
     >
       <p>
-        {isAssessedAsGlare && 'The photo you added has glare. '}
-        {isAssessedAsBlurry && 'The photo you added is too blurry. '}
-        Here are some tips for taking a successful photo:
+        {isAssessedAsGlare && t('doc_auth.tips.capture_troubleshooting_glare')}
+        {isAssessedAsBlurry && t('doc_auth.tips.capture_troubleshooting_blurry')}{' '}
+        {t('doc_auth.tips.capture_troubleshooting_lead')}
       </p>
       <ul className="add-list-reset margin-y-3">
         <li className="clearfix margin-bottom-3">
           <img
             width="82"
             height="82"
-            src={getAssetPath('idv/capture-tips-flat-surface.svg')}
-            alt=""
+            src={getAssetPath('idv/capture-tips-surface.svg')}
+            alt={t('doc_auth.tips.capture_troubleshooting_surface_image')}
             className="float-left margin-right-2"
           />
-          Take a photo on a flat surface with a dark background. Make sure the edges of your ID are
-          clear.
+          {t('doc_auth.tips.capture_troubleshooting_surface')}
         </li>
         <li className="clearfix margin-bottom-3">
           <img
             width="82"
             height="82"
-            src={getAssetPath('idv/capture-tips-indirect-sunlight.svg')}
-            alt=""
+            src={getAssetPath('idv/capture-tips-lighting.svg')}
+            alt={t('doc_auth.tips.capture_troubleshooting_lighting_image')}
             className="float-left margin-right-2"
           />
-          Make sure there is plenty of light. Indirect sunlight is best. Avoid glares, shadows and
-          reflections.
+          {t('doc_auth.tips.capture_troubleshooting_lighting')}
         </li>
         <li className="clearfix">
           <img
             width="82"
             height="82"
             src={getAssetPath('idv/capture-tips-clean.svg')}
-            alt=""
+            alt={t('doc_auth.tips.capture_troubleshooting_clean_image')}
             className="float-left margin-right-2"
           />
-          Make sure that the barcode is not damaged or dirty and all the information on your ID can
-          be read.
+          {t('doc_auth.tips.capture_troubleshooting_clean')}
         </li>
       </ul>
     </Warning>

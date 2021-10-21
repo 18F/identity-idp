@@ -154,6 +154,7 @@ fr:
       address: Mettre à jour votre adresse postale
       back: Verso
       capture_complete: Nous avons vérifié votre carte d’identité délivrée par l’État
+      capture_troubleshooting_tips: Vous rencontrez des difficultés pour ajouter votre pièce d'identité?
       document_capture: Ajoutez votre carte d’identité délivrée par l’État
       document_capture_back: Verso de votre carte d’identité
       document_capture_front: Recto de votre carte d’identité
@@ -285,6 +286,21 @@ fr:
         dans un délai de 3 à 7 jours ouvrables.
       welcome: 'Pour vérifier votre identité, vous aurez besoin de:'
     tips:
+      capture_troubleshooting_blurry: La photo que vous avez ajoutée est trop floue.
+      capture_troubleshooting_clean: Assurez-vous que le code-barres ne soit pas
+        endommagé ou sale et que toutes les informations figurant sur votre
+        pièce d'identité soient lisibles.
+      capture_troubleshooting_clean_image: Verso de la carte d’identité
+      capture_troubleshooting_glare: La photo que vous avez ajoutée est éblouissante.
+      capture_troubleshooting_lead: 'Voici quelques conseils pour réussir votre photo:'
+      capture_troubleshooting_lighting: Assurez-vous que la luminosité soit
+        suffisante. La lumière indirecte du soleil est la meilleure. Évitez les
+        éblouissements, les ombres et les reflets.
+      capture_troubleshooting_lighting_image: Soleil avec nuage
+      capture_troubleshooting_surface: Prenez une photo sur une surface plane avec un
+        fond sombre. Assurez-vous que les bords de votre pièce d'identité soient
+        dégagés.
+      capture_troubleshooting_surface_image: Recto de la carte d’identité
       document_capture_header_text: 'Pour obtenir les meilleurs résultats:'
       document_capture_hint: Doit être un JPG ou PNG
       document_capture_id_text1: Utilisez un fond sombre
