@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
-import { ServiceProviderContext } from '..';
+import ServiceProviderContext from '../context/service-provider';
+import MarketingSiteContext from '../context/marketing-site';
 import useAsset from '../hooks/use-asset';
 import Warning from './warning';
 
@@ -18,7 +19,8 @@ import Warning from './warning';
  * @param {CaptureAdviceProps} props
  */
 function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
-  const { name: spName } = useContext(ServiceProviderContext);
+  const { name: spName, getFailureToProofURL } = useContext(ServiceProviderContext);
+  const { documentCaptureTipsURL } = useContext(MarketingSiteContext);
   const { getAssetPath } = useAsset();
   const { t } = useI18n();
 
@@ -32,12 +34,12 @@ function CaptureAdvice({ onTryAgain, isAssessedAsGlare, isAssessedAsBlurry }) {
       troubleshootingOptions={
         /** @type {TroubleshootingOption[]} */ ([
           {
-            url: '/',
+            url: documentCaptureTipsURL,
             text: t('idv.troubleshooting.options.doc_capture_tips'),
             isExternal: true,
           },
           spName && {
-            url: '/',
+            url: getFailureToProofURL('capture_tips'),
             text: t('idv.troubleshooting.options.get_help_at_sp', { sp_name: spName }),
             isExternal: true,
           },
