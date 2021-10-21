@@ -331,13 +331,6 @@ function AcuantCapture(
       });
     }
 
-    onFailedCaptureAttempt({
-      isAssessedAsGlare: true,
-      isAssessedAsBlurry: false,
-      // isAssessedAsGlare: 'isAssessedAsGlare' in payload && payload.isAssessedAsGlare,
-      // isAssessedAsBlurry: 'isAssessedAsBlurry' in payload && payload.isAssessedAsBlurry,
-    });
-
     onChangeAndResetError(nextValue, analyticsPayload);
   }
 
@@ -483,6 +476,8 @@ function AcuantCapture(
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
+    } else {
+      onFailedCaptureAttempt({ isAssessedAsGlare, isAssessedAsBlurry });
     }
 
     setIsCapturingEnvironment(false);
