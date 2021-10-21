@@ -1,8 +1,8 @@
 module RuboCop
   module Cop
     module IdentityIdp
-      # This lint ensures `deliver_later` is used to minimize the amount of work
-      # in main IDP processes
+      # This lint ensures `deliver_now_or_later` is used so that we can consistently
+      # use either sync or async delivery depending on a feature flag
       #
       # @example
       #   #bad
