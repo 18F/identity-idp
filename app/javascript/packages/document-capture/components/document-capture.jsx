@@ -102,7 +102,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
           title: t('doc_auth.headings.review_issues'),
           form: ReviewIssuesStep,
           validator: reviewIssuesStepValidator,
-          footer: DesktopDocumentDisclosure,
         },
       ]
     : /** @type {FormStep[]} */ ([
@@ -111,7 +110,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
           title: t('doc_auth.headings.document_capture'),
           form: DocumentsStep,
           validator: documentsStepValidator,
-          footer: DesktopDocumentDisclosure,
         },
         serviceProvider.isLivenessRequired && {
           name: 'selfie',

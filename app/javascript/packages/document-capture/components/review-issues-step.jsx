@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
 import { BlockLink } from '@18f/identity-components';
+import { FormStepsContinueButton } from './form-steps';
 import DeviceContext from '../context/device';
 import DocumentSideAcuantCapture from './document-side-acuant-capture';
 import AcuantCapture from './acuant-capture';
@@ -10,6 +11,7 @@ import FormErrorMessage from './form-error-message';
 import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import './review-issues-step.scss';
+import DesktopDocumentDisclosure from './desktop-document-disclosure';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -133,6 +135,8 @@ function ReviewIssuesStep({
           })}
         </BlockLink>
       )}
+      <FormStepsContinueButton />
+      <DesktopDocumentDisclosure />
     </>
   );
 }

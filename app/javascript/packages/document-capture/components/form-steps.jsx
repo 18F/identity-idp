@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, createContext, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import Button from './button';
@@ -55,7 +55,6 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
  * @prop {string} name Step name, used in history parameter.
  * @prop {string} title Step title, shown as heading.
  * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} form Step form component.
- * @prop {import('react').FC=} footer Optional step footer component.
  * @prop {(object)=>boolean=} validator Optional function to validate values for the step
  */
 
@@ -77,6 +76,20 @@ import useIfStillMounted from '../hooks/use-if-still-mounted';
  * @prop {(values:Record<string,any>)=>void=} onComplete Form completion callback.
  * @prop {()=>void=} onStepChange Callback triggered on step change.
  */
+
+/**
+ * @typedef FormStepsContext
+ *
+ * @prop {boolean} isLastStep
+ * @prop {boolean} canContinueToNextStep
+ */
+
+const FormStepsContext = createContext(
+  /** @type {FormStepsContext} */ ({
+    isLastStep: true,
+    canContinueToNextStep: true,
+  }),
+);
 
 /**
  * Returns the index of the step in the array which matches the given name. Returns `-1` if there is
@@ -125,7 +138,6 @@ function FormSteps({
   const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step', null);
   const [stepErrors, setStepErrors] = useState(/** @type {Error[]} */ ([]));
-  const { t } = useI18n();
   const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
@@ -183,7 +195,7 @@ function FormSteps({
   const isValidStep = step.validator?.(values) ?? true;
   const hasUnresolvedFieldErrors =
     activeErrors.length && activeErrors.length > unknownFieldErrors.length;
-  const canContinue = isValidStep && !hasUnresolvedFieldErrors;
+  const canContinueToNextStep = isValidStep && !hasUnresolvedFieldErrors;
 
   /**
    * Increments state to the next step, or calls onComplete callback if the current step is the last
@@ -222,7 +234,7 @@ function FormSteps({
     headingRef.current?.focus();
   }
 
-  const { form: Form, footer: Footer, name, title } = step;
+  const { form: Form, name, title } = step;
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
@@ -242,63 +254,62 @@ function FormSteps({
       <PageHeading key="title" ref={headingRef} tabIndex={-1}>
         {title}
       </PageHeading>
-      <Form
-        key={name}
-        value={values}
-        errors={activeErrors}
-        onChange={ifStillMounted((nextValuesPatch) => {
-          setActiveErrors((prevActiveErrors) =>
-            prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),
-          );
-          setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
-        })}
-        onGoToStep={() => {}}
-        Button={() => (
-          <Button
-            type="submit"
-            isBig
-            isWide
-            className="display-block margin-y-5"
-            isVisuallyDisabled={!canContinue}
-          >
-            {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
-          </Button>
-        )}
-        isLastStep={isLastStep}
-        onGoToNextStep={() => {}}
-        isValid={canContinue}
-        onError={ifStillMounted((error, { field } = {}) => {
-          if (field) {
-            setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
-          } else {
-            setStepErrors([error]);
-          }
-        })}
-        registerField={(field, options = {}) => {
-          if (!fields.current[field]) {
-            fields.current[field] = {
-              refCallback(fieldNode) {
-                fields.current[field].element = fieldNode;
+      <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep }}>
+        <Form
+          key={name}
+          value={values}
+          errors={activeErrors}
+          onChange={ifStillMounted((nextValuesPatch) => {
+            setActiveErrors((prevActiveErrors) =>
+              prevActiveErrors.filter(({ field }) => !(field in nextValuesPatch)),
+            );
+            setValues((prevValues) => ({ ...prevValues, ...nextValuesPatch }));
+          })}
+          onError={ifStillMounted((error, { field } = {}) => {
+            if (field) {
+              setActiveErrors((prevActiveErrors) => prevActiveErrors.concat({ field, error }));
+            } else {
+              setStepErrors([error]);
+            }
+          })}
+          registerField={(field, options = {}) => {
+            if (!fields.current[field]) {
+              fields.current[field] = {
+                refCallback(fieldNode) {
+                  fields.current[field].element = fieldNode;
 
-                if (activeErrors.length) {
-                  forceRender();
-                }
-              },
-              element: null,
-              isRequired: !!options.isRequired,
-            };
-          }
+                  if (activeErrors.length) {
+                    forceRender();
+                  }
+                },
+                element: null,
+                isRequired: !!options.isRequired,
+              };
+            }
 
-          return fields.current[field].refCallback;
-        }}
-      />
-
-      {Footer && <Footer />}
+            return fields.current[field].refCallback;
+          }}
+        />
+      </FormStepsContext.Provider>
     </form>
   );
 }
 
-export default FormSteps;
+export function FormStepsContinueButton() {
+  const { canContinueToNextStep, isLastStep } = useContext(FormStepsContext);
+  const { t } = useI18n();
 
-// <FormStepsContinueButton>Try again</FormStepsContinueButton>
-// {children ? children : hasNextStep ? 'Continue' : 'Submit'}
+  return (
+    <Button
+      type="submit"
+      isBig
+      isWide
+      className="display-block margin-y-5"
+      isVisuallyDisabled={!canContinueToNextStep}
+    >
+      {isLastStep ? t('forms.buttons.submit.default') : t('forms.buttons.continue')}
+    </Button>
+  );
+}
+
+export default FormSteps;

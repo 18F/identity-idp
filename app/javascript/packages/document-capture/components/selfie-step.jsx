@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { hasMediaAccess } from '@18f/identity-device';
 import { useI18n } from '@18f/identity-react-i18n';
+import { FormStepsContinueButton } from './form-steps';
 import DeviceContext from '../context/device';
 import AcuantCapture from './acuant-capture';
 import SelfieCapture from './selfie-capture';
@@ -62,6 +63,7 @@ function SelfieStep({
           errorMessage={error ? <FormErrorMessage error={error} /> : undefined}
         />
       )}
+      <FormStepsContinueButton />
     </>
   );
 }
