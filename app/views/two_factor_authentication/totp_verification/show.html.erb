@@ -4,7 +4,7 @@
   <%= @presenter.header %>
 </h1>
 
-<%= form_tag(:login_two_factor_authenticator, method: :post, class: 'margin-top-4 tablet:margin-top-6') do %>
+<%= validated_form_for(:login_two_factor_authenticator, method: :post, class: 'margin-top-4 tablet:margin-top-6') do %>
   <% if @presenter.reauthn %>
     <%= render 'two_factor_authentication/totp_verification/reauthn' %>
   <% end %>

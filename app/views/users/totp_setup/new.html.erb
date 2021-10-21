@@ -4,7 +4,7 @@
                                   MarketingSite.help_authentication_app_url %>
 <h1 class="margin-y-0"><%= t('headings.totp_setup.new') %></h1>
 <p class="mt-tiny margin-bottom-4"><%= t('forms.totp_setup.totp_intro_html', link: help_link) %></p>
-<%= form_tag(authenticator_setup_path, method: :patch, class: 'margin-bottom-1') do %>
+<%= validated_form_for(authenticator_setup_path, method: :patch, class: 'margin-bottom-1') do %>
   <ul class="list-reset">
     <li class="padding-y-2 border-top border-primary-light">
       <div class="margin-bottom-2">
