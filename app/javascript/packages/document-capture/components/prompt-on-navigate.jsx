@@ -9,8 +9,8 @@ function PromptOnNavigate() {
   // See: https://reactjs.org/blog/2020/08/10/react-v17-rc.html#effect-cleanup-timing
   useLayoutEffect(() => {
     function onBeforeUnload(event) {
-      event.preventDefault();
-      event.returnValue = '';
+      // event.preventDefault();
+      // event.returnValue = '';
     }
 
     window.onbeforeunload = onBeforeUnload;
