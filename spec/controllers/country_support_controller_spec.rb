@@ -20,6 +20,5 @@ RSpec.describe CountrySupportController do
 
       expect(response['Cache-Control']).to eq("max-age=#{15.minutes.to_i}, public")
     end
-
   end
 end
