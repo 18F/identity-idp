@@ -85,6 +85,7 @@ module Upaya
     require 'utf8_sanitizer'
     config.middleware.use Utf8Sanitizer
 
+    # rubocop:disable Metrics/BlockLength
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
@@ -105,7 +106,24 @@ module Upaya
                  methods: %i[post options]
         resource '/api/openid_connect/userinfo', headers: :any, methods: [:get]
       end
+
+      allow do
+        allowed_origins = [
+          'https://www.login.gov',
+          'https://login.gov',
+          %r{^https://federalist-[0-9a-f-]+\.app\.cloud\.gov$},
+        ]
+
+        if Rails.env.development? || Rails.env.test?
+          allowed_origins << %r{https?://localhost(:\d+)?$}
+          allowed_origins << %r{https?://127\.0\.0\.1(:\d+)?$}
+        end
+
+        origins allowed_origins
+        resource '/api/country-support', headers: :any, methods: [:get]
+      end
     end
+    # rubocop:enable Metrics/BlockLength
 
     if IdentityConfig.store.enable_rate_limiting
       config.middleware.use Rack::Attack

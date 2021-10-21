@@ -43,7 +43,7 @@ module Users
       @totp_setup_form ||= TotpSetupForm.new(
         current_user,
         new_totp_secret,
-        params[:code].strip,
+        params[:code].to_s.strip,
         params[:name].to_s.strip,
       )
     end
@@ -52,8 +52,7 @@ module Users
       @presenter = SetupPresenter.new(
         current_user: current_user,
         user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie:
-                                                  user_opted_remember_device_cookie,
+        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
         remember_device_default: remember_device_default,
       )
     end

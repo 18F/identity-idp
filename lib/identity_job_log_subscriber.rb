@@ -9,7 +9,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     json = default_attributes(event, job)
 
     if ex
-      json[:exception_class] = ex.class
+      json[:exception_class] = ex.class.name
       json[:exception_message] = ex.message
 
       error(json.to_json)
@@ -29,7 +29,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     json = default_attributes(event, job)
 
     if ex
-      json[:exception_class] = ex.class
+      json[:exception_class] = ex.class.name
       json[:exception_message] = ex.message
 
       error(json.to_json)
@@ -65,7 +65,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
 
     if ex
       # NewRelic?
-      json[:exception_class] = ex.class
+      json[:exception_class] = ex.class.name
       json[:exception_message] = ex.message
       json[:exception_backtrace] = Array(ex.backtrace).join("\n")
 
@@ -88,7 +88,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
       wait_ms: wait.to_i.in_milliseconds,
     }
 
-    json[:exception_class] = ex.class if ex
+    json[:exception_class] = ex.class.name if ex
 
     info(json.to_json)
   end
@@ -98,7 +98,7 @@ class IdentityJobLogSubscriber < ActiveSupport::LogSubscriber
     ex = event.payload[:error]
 
     json = default_attributes(event, job).merge(
-      exception_class: ex.class,
+      exception_class: ex.class.name,
       attempts: job.executions,
     )
 

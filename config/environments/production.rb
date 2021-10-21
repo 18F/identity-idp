@@ -33,6 +33,11 @@ Rails.application.configure do
                                            :ses
                                          end
 
+  if IdentityConfig.store.rails_mailer_previews_enabled
+    config.action_mailer.show_previews = true
+    config.action_mailer.preview_path = Rails.root.join('spec/mailers/previews')
+  end
+
   routes.default_url_options[:protocol] = :https
 
   # turn off IP spoofing protection since the network configuration in the production environment
