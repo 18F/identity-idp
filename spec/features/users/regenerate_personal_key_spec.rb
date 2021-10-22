@@ -76,6 +76,10 @@ feature 'View personal key' do
       click_acknowledge_personal_key
       submit_form_without_entering_the_code
 
+      click_back_button
+      click_acknowledge_personal_key
+      submit_form_with_the_wrong_code
+
       expect(current_path).not_to eq account_path
 
       visit manage_personal_key_path
@@ -142,4 +146,15 @@ end
 
 def submit_form_without_entering_the_code
   click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
+  expect(page).to have_selector('.validation-message')
+  expect(page).not_to have_selector('#personal-key-alert')
 end
+
+def submit_form_with_the_wrong_code
+  fill_in :personal_key_form_personal_key, with: 'ABCD-EFGH-IJKL-MNOP'
+  click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
+  expect(page).to have_selector('#personal-key-alert')
+  expect(page).not_to have_selector('.validation-message')
+end
+
+def sub

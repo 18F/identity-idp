@@ -8,6 +8,7 @@ locals:
   classes = [
     'usa-error-message',
     'display-if-invalid',
+    'validation-message'
   ]
   classes << local_assigns[:class] if local_assigns[:class]
   message = local_assigns.fetch(:message, yield.presence)
