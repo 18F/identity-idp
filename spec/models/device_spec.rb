@@ -19,16 +19,16 @@ describe Device do
   describe '#update_last_used_ip' do
     let(:user) { create(:user) }
     let(:remote_ip) { '1.2.3.4' }
-    let(:user_agent) { 'Chrome/58.0.3029.110 Safari/537.36' }
-    let(:uuid) { 'abc123' }
-    let(:now) { Time.zone.now }
-    let(:old_timestamp) { now - 1.hour }
+    let(:old_timestamp) { 1.hour.ago }
     let(:device) { create(:device, last_used_at: old_timestamp) }
 
     it 'updates the last ip and last_used_at' do
-      expect { device.update_last_used_ip(remote_ip) }.
-        to(change { device.reload.last_used_at.to_i }.from(old_timestamp.to_i).to(now.to_i).
-          and(change { device.reload.last_ip }.to(remote_ip)))
+      freeze_time do
+        now = Time.zone.now
+        device.update_last_used_ip(remote_ip)
+        expect(device.last_ip).to eq(remote_ip)
+        expect(device.last_used_at.to_i).to eq(now.to_i)
+      end
     end
   end
 end
