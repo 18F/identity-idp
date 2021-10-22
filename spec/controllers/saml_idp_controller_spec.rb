@@ -231,6 +231,8 @@ describe SamlIdpController do
           verified_attributes: %w[given_name family_name social_security_number address],
         )
         allow(subject).to receive(:attribute_asserter) { asserter }
+
+        controller.user_session[:decrypted_pii] = pii
       end
 
       it 'calls AttributeAsserter#build' do
