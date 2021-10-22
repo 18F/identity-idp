@@ -212,8 +212,10 @@ describe('document-capture/components/document-capture', () => {
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    const heading = getByText('doc_auth.headings.review_issues');
-    expect(document.activeElement).to.equal(heading);
+    // Make sure that the first element after a tab is what we expect it to be.
+    userEvent.tab();
+    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
+    expect(document.activeElement).to.equal(firstFocusable);
 
     const hasValueSelected = getAllByText('doc_auth.forms.change_file').length === 3;
     expect(hasValueSelected).to.be.true();
@@ -277,8 +279,10 @@ describe('document-capture/components/document-capture', () => {
       /React will try to recreate this component tree from scratch using the error boundary you provided/,
     );
 
-    const heading = getByText('doc_auth.headings.review_issues');
-    expect(document.activeElement).to.equal(heading);
+    // Make sure that the first focusable element after a tab is what we expect it to be.
+    userEvent.tab();
+    const firstFocusable = getByLabelText('doc_auth.headings.document_capture_front');
+    expect(document.activeElement).to.equal(firstFocusable);
 
     const hasValueSelected = !!getByLabelText('doc_auth.headings.document_capture_front');
     expect(hasValueSelected).to.be.true();

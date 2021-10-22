@@ -37,9 +37,7 @@ function SelfieStep({
 
   return (
     <>
-      <PageHeading key="title" tabIndex={-1}>
-        {t('doc_auth.headings.selfie')}
-      </PageHeading>
+      <PageHeading>{t('doc_auth.headings.selfie')}</PageHeading>
       <p>{t('doc_auth.instructions.document_capture_selfie_instructions')}</p>
       <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
       <ul>

@@ -133,7 +133,6 @@ function FormSteps({
 }) {
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
-  const firstAlertRef = useRef(/** @type {?HTMLElement} */ (null));
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
   const focusRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step', null);
@@ -159,12 +158,6 @@ function FormSteps({
       focusRef.current.focus();
     }
   }, []);
-
-  useEffect(() => {
-    if (stepErrors.length && firstAlertRef.current) {
-      firstAlertRef.current.focus();
-    }
-  }, [stepErrors]);
 
   useDidUpdateEffect(onStepChange, [step]);
 
@@ -246,7 +239,7 @@ function FormSteps({
         aria-label="Beginning of Step Content"
       />
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
-      {stepErrors.concat(unknownFieldErrors.map(({ error }) => error)).map((error, i) => (
+      {stepErrors.concat(unknownFieldErrors.map(({ error }) => error)).map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
           <FormErrorMessage error={error} isDetail />
         </Alert>

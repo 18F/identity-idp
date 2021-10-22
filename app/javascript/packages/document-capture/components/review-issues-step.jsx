@@ -68,9 +68,7 @@ function ReviewIssuesStep({
 
   return (
     <>
-      <PageHeading key="title" tabIndex={-1}>
-        {t('doc_auth.headings.review_issues')}
-      </PageHeading>
+      <PageHeading>{t('doc_auth.headings.review_issues')}</PageHeading>
       <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.review_issues_id_text1')}</li>

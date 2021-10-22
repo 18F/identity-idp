@@ -1,8 +1,3 @@
-.focus-anchor {
-  @include u-margin-top(0);
-  @include u-margin-bottom(2);
-}
-
 // Disable reason: Technically the qualifiers are redundant, but are included to communicate
 // expectations and precautions around why the qualifiers exist:
 // 1. A page heading should always be an H1
