@@ -11,7 +11,16 @@ import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [
-    { name: 'first', form: () => <PageHeading>First Title</PageHeading> },
+    {
+      name: 'first',
+      form: () => (
+        <>
+          <PageHeading>First Title</PageHeading>
+          <span>First</span>
+          <FormStepsContinueButton />
+        </>
+      ),
+    },
     {
       name: 'second',
       form: ({ value = {}, errors = [], onChange, onError, registerField }) => (
@@ -48,7 +57,16 @@ describe('document-capture/components/form-steps', () => {
         </>
       ),
     },
-    { name: 'last', title: 'Last Title', form: () => <span>Last</span> },
+    {
+      name: 'last',
+      form: () => (
+        <>
+          <PageHeading>Last Title</PageHeading>
+          <span>Last</span>
+          <FormStepsContinueButton />
+        </>
+      ),
+    },
   ];
 
   let originalHash;
@@ -227,12 +245,15 @@ describe('document-capture/components/form-steps', () => {
     expect(window.location.hash).to.equal('');
   });
 
-  it('shifts focus to next heading on step change', () => {
+  it('shifts focus to focus target on step change', () => {
     const { getByText } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(document.activeElement).to.equal(getByText('Second Title'));
+    const newHeading = getByText('Second Title');
+    expect(document.activeElement.compareDocumentPosition(newHeading)).to.equal(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
   });
 
   it("doesn't assign focus on mount", () => {
@@ -252,7 +273,10 @@ describe('document-capture/components/form-steps', () => {
   it('optionally auto-focuses', () => {
     const { getByText } = render(<FormSteps steps={STEPS} autoFocus />);
 
-    expect(document.activeElement).to.equal(getByText('First Title'));
+    const heading = getByText('First Title');
+    expect(document.activeElement.compareDocumentPosition(heading)).to.equal(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
   });
 
   it('accepts initial values', () => {
@@ -287,7 +311,10 @@ describe('document-capture/components/form-steps', () => {
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
     userEvent.click(getByText('forms.buttons.continue'));
 
-    expect(document.activeElement).to.equal(getByText('Last Title'));
+    const lastHeading = getByText('Last Title');
+    expect(document.activeElement.compareDocumentPosition(lastHeading)).to.equal(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
   });
 
   it('distinguishes empty errors from progressive error removal', async () => {
@@ -297,20 +324,6 @@ describe('document-capture/components/form-steps', () => {
 
     await userEvent.type(getByLabelText('Second Input One'), 'one');
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
-  });
-
-  it('renders with optional footer', () => {
-    const steps = [
-      {
-        name: 'one',
-        title: 'Step One',
-        form: () => <span>Form Fields</span>,
-        footer: () => <span>Footer</span>,
-      },
-    ];
-    const { getByText } = render(<FormSteps steps={steps} />);
-
-    expect(getByText('Footer')).to.be.ok();
   });
 
   it('renders with initial active errors', async () => {
