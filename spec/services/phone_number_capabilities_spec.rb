@@ -178,4 +178,32 @@ describe PhoneNumberCapabilities do
       expect(support['supports_voice']).to eq true if support['supports_voice_unconfirmed']
     end
   end
+
+  describe '.load_config' do
+    subject(:config) { PhoneNumberCapabilities.load_config }
+
+    it 'loads the config' do
+      expect(config).to eq(YAML.load_file(Rails.root.join('config', 'country_dialing_codes.yml')))
+    end
+
+    context 'when there are country_phone_number_overrides' do
+      before do
+        allow(IdentityConfig.store).to receive(:country_phone_number_overrides).and_return(
+          'AD' => {
+            'supports_sms' => false,
+          },
+          'AE' => {
+            'supports_voice' => false,
+          },
+        )
+      end
+
+      it 'overrides the YAML but does not erase values', :aggregate_failures do
+        expect(config['AD']['supports_sms']).to eq(false) # override
+        expect(config['AD']['supports_voice']).to eq(false) # existing
+        expect(config['AE']['supports_sms']).to eq(false) # existing
+        expect(config['AE']['supports_voice']).to eq(false) # override
+      end
+    end
+  end
 end

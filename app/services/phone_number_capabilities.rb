@@ -1,7 +1,11 @@
 class PhoneNumberCapabilities
-  INTERNATIONAL_CODES = YAML.load_file(
-    Rails.root.join('config', 'country_dialing_codes.yml'),
-  ).freeze
+  def self.load_config
+    YAML.load_file(
+      Rails.root.join('config', 'country_dialing_codes.yml'),
+    ).deep_merge(IdentityConfig.store.country_phone_number_overrides)
+  end
+
+  INTERNATIONAL_CODES = load_config.freeze
 
   attr_reader :phone, :phone_confirmed
 
