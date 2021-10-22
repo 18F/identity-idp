@@ -8,6 +8,7 @@ import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import DesktopDocumentDisclosure from './desktop-document-disclosure';
 import CaptureTroubleshooting from './capture-troubleshooting';
+import PageHeading from './page-heading';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -52,6 +53,9 @@ function DocumentsStep({
 
   return (
     <CaptureTroubleshooting>
+      <PageHeading key="title" tabIndex={-1}>
+        {t('doc_auth.headings.document_capture')}
+      </PageHeading>
       {isMobile && <p>{t('doc_auth.info.document_capture_intro_acknowledgment')}</p>}
       <p className="margin-bottom-0">{t('doc_auth.tips.document_capture_header_text')}</p>
       <ul>

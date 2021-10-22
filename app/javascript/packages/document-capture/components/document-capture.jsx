@@ -92,12 +92,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
   const steps = submissionError
     ? [
         {
-          name: 'post-submission-erro',
-          form: PostSubmissionError,
-        },
-        {
           name: 'review',
-          title: t('doc_auth.headings.review_issues'),
           form: ReviewIssuesStep,
           validator: reviewIssuesStepValidator,
         },
@@ -105,13 +100,11 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
     : /** @type {FormStep[]} */ ([
         {
           name: 'documents',
-          title: t('doc_auth.headings.document_capture'),
           form: DocumentsStep,
           validator: documentsStepValidator,
         },
         serviceProvider.isLivenessRequired && {
           name: 'selfie',
-          title: t('doc_auth.headings.selfie'),
           form: SelfieStep,
           validator: selfieStepValidator,
         },
@@ -142,6 +135,7 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
           {t('doc_auth.errors.general.network_error')}
         </Alert>
       )}
+
       <FormSteps
         steps={steps}
         initialValues={initialValues}

@@ -12,6 +12,7 @@ import ServiceProviderContext from '../context/service-provider';
 import withBackgroundEncryptedUpload from '../higher-order/with-background-encrypted-upload';
 import './review-issues-step.scss';
 import DesktopDocumentDisclosure from './desktop-document-disclosure';
+import PageHeading from './page-heading';
 
 /**
  * @typedef {'front'|'back'} DocumentSide
@@ -67,6 +68,9 @@ function ReviewIssuesStep({
 
   return (
     <>
+      <PageHeading key="title" tabIndex={-1}>
+        {t('doc_auth.headings.review_issues')}
+      </PageHeading>
       <p className="margin-bottom-0">{t('doc_auth.tips.review_issues_id_header_text')}</p>
       <ul>
         <li>{t('doc_auth.tips.review_issues_id_text1')}</li>

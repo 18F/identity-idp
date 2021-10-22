@@ -2,13 +2,13 @@ import { useEffect, useRef, useState, createContext, useContext } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import Button from './button';
-import PageHeading from './page-heading';
 import FormErrorMessage, { RequiredValueMissingError } from './form-error-message';
 import PromptOnNavigate from './prompt-on-navigate';
 import useHistoryParam from '../hooks/use-history-param';
 import useForceRender from '../hooks/use-force-render';
 import useDidUpdateEffect from '../hooks/use-did-update-effect';
 import useIfStillMounted from '../hooks/use-if-still-mounted';
+import './form-steps.scss';
 
 /**
  * @typedef FormStepError
@@ -135,7 +135,7 @@ function FormSteps({
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const firstAlertRef = useRef(/** @type {?HTMLElement} */ (null));
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
-  const headingRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
+  const focusRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step', null);
   const [stepErrors, setStepErrors] = useState(/** @type {Error[]} */ ([]));
   const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
@@ -155,8 +155,8 @@ function FormSteps({
 
   useEffect(() => {
     // Treat explicit initial step the same as step transition, placing focus to header.
-    if (autoFocus && headingRef.current) {
-      headingRef.current.focus();
+    if (autoFocus && focusRef.current) {
+      focusRef.current.focus();
     }
   }, []);
 
@@ -231,29 +231,26 @@ function FormSteps({
       setStepName(nextStepName);
     }
 
-    headingRef.current?.focus();
+    focusRef.current?.focus();
   }
 
-  const { form: Form, name, title } = step;
+  const { form: Form, name } = step;
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
     <form ref={formRef} onSubmit={toNextStep}>
+      <div
+        ref={focusRef}
+        tabIndex={-1}
+        className="focus-anchor"
+        aria-label="Beginning of Step Content"
+      />
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.concat(unknownFieldErrors.map(({ error }) => error)).map((error, i) => (
-        <Alert
-          ref={i === 0 ? firstAlertRef : undefined}
-          isFocusable={i === 0}
-          key={error.message}
-          type="error"
-          className="margin-bottom-4"
-        >
+        <Alert key={error.message} type="error" className="margin-bottom-4">
           <FormErrorMessage error={error} isDetail />
         </Alert>
       ))}
-      <PageHeading key="title" ref={headingRef} tabIndex={-1}>
-        {title}
-      </PageHeading>
       <FormStepsContext.Provider value={{ isLastStep, canContinueToNextStep }}>
         <Form
           key={name}
