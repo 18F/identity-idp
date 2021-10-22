@@ -41,6 +41,14 @@ function unsetInvalidHTML() {
   isInvalidForm = false;
 }
 
+function unsetEmptyResponse() {
+  input.setAttribute('aria-invalid', 'false');
+  input.classList.remove('margin-bottom-3');
+  input.classList.add('margin-bottom-6');
+
+  isInvalidForm = false;
+}
+
 function resetErrors() {
   unsetEmptyResponse();
   unsetInvalidHTML();
@@ -57,14 +65,6 @@ function setEmptyResponse() {
   input.classList.add('margin-bottom-3');
 
   isInvalidForm = true;
-}
-
-function unsetEmptyResponse() {
-  input.setAttribute('aria-invalid', 'false');
-  input.classList.remove('margin-bottom-3');
-  input.classList.add('margin-bottom-6');
-
-  isInvalidForm = false;
 }
 
 function handleSubmit(event) {

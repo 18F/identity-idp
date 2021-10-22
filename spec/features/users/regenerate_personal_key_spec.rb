@@ -156,5 +156,3 @@ def submit_form_with_the_wrong_code
   expect(page).to have_selector('#personal-key-alert')
   expect(page).not_to have_selector('.validation-message')
 end
-
-def sub
