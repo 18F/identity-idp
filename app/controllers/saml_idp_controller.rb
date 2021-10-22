@@ -62,15 +62,16 @@ class SamlIdpController < ApplicationController
   def redirect_to_verification_url
     return redirect_to(account_or_verify_profile_url) if profile_needs_verification?
     redirect_to(idv_url) if identity_needs_verification?
-    if UserDecorator.new(current_user).identity_verified? && user_session[:decrypted_pii].blank?
-      redirect_to capture_password_url
-    end
+    redirect_to capture_password_url if identity_needs_decryption?
   end
 
   def profile_or_identity_needs_verification_or_decryption?
     return false unless ial2_requested?
-    profile_needs_verification? || identity_needs_verification? ||
-      (UserDecorator.new(current_user).identity_verified? && user_session[:decrypted_pii].blank?)
+    profile_needs_verification? || identity_needs_verification? || identity_needs_decryption?
+  end
+
+  def identity_needs_decryption?
+    UserDecorator.new(current_user).identity_verified? && user_session[:decrypted_pii].blank?
   end
 
   def capture_analytics
