@@ -8,6 +8,7 @@ const formEl = document.getElementById('confirm-key');
 const input = formEl.querySelector('input[type="text"]');
 const modalTrigger = document.querySelector('[data-toggle="modal"]');
 const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]');
+const keyLength = 19;
 
 let isInvalidForm = false;
 
@@ -78,7 +79,7 @@ function handleSubmit(event) {
   }
 
   const value = encodeInput(input.value);
-  if (input.value.length < 19 || value !== personalKey) {
+  if (input.value.length < keyLength || value !== personalKey) {
     setInvalidHTML();
     return;
   }
