@@ -18,23 +18,40 @@
         :idv_form, url: idv_address_path, method: 'POST',
                    html: {autocomplete: 'off', class: 'margin-top-2'}
       ) do |f| %>
-
-    <%= f.input :address1, label: t('idv.form.address1'), wrapper_html: {class: 'margin-bottom-1'},
-                           required: true, maxlength: 255, input_html: { aria: { invalid: false }, value: @pii['address1'] } %>
+    <div class="margin-bottom-4">
+      <%= f.input :address1,  label: t('idv.form.address1'), wrapper: false,
+                              required: true, maxlength: 255, input_html: { aria: { invalid: false }, value: @pii['address1'] } %>
+      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+        <%= t('simple_form.required.text') %>
+      </span>
+    </div>
     <%= f.input :address2, label: t('idv.form.address2'), required: false, maxlength: 255,
                            input_html: { value: @pii['address2'] } %>
-    <%= f.input :city, label: t('idv.form.city'), required: true, maxlength: 255,
-                       input_html: { aria: { invalid: false }, value: @pii['city'] } %>
+    <div class="margin-bottom-4">
+      <%= f.input :city,  label: t('idv.form.city'), required: true, maxlength: 255, wrapper: false,
+                          input_html: { aria: { invalid: false }, class: 'usa-input', value: @pii['city'] } %>
+      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+        <%= t('simple_form.required.text') %>
+      </span>
+    </div>
 
     <%= f.input :state, collection: us_states_territories,
                         label: t('idv.form.state'), required: true,
                         selected: @pii['state'] %>
-    <div class="tablet:grid-col-6">
+    <div class="tablet:grid-col-6 margin-bottom-4">
       <%# using :tel for mobile numeric keypad %>
       <%= f.input :zipcode, as: :tel,
                             label: t('idv.form.zipcode'), required: true,
                             pattern: '(\d{5}([\-]\d{4})?)',
-                            input_html: { aria: { invalid: false }, class: 'zipcode', value: @pii['zipcode'] } %>
+                            wrapper: false,
+                            input_html: { aria: { invalid: false }, class: 'usa-input', value: @pii['zipcode'] } %>
+      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+        <%= t('simple_form.required.text') %>
+      </span>
+
+      <span class='usa-error-message margin-top-1 pattern-mismatch display-if-invalid display-if-invalid--pattern-mismatch margin-bottom-1' role='alert'>
+        <%= t('idv.errors.pattern_mismatch.zipcode') %>
+      </span>
     </div>
     <div class="margin-top-0">
       <button type="submit" class="usa-button usa-button--big usa-button--wide margin-top-2">

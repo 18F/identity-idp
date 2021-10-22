@@ -3,7 +3,7 @@ import { loadPolyfills } from '@18f/identity-polyfill';
 /** @typedef {{t:(key:string)=>string, key:(key:string)=>string}} LoginGovI18n */
 /** @typedef {{LoginGov:{I18n:LoginGovI18n}}} LoginGovGlobal */
 
-const PATTERN_TYPES = ['personal-key', 'ssn', 'zipcode'];
+const PATTERN_TYPES = ['personal-key', 'ssn'];
 
 const snakeCase = (string) => string.replace(/[ -]/g, '_').replace(/\W/g, '').toLowerCase();
 
@@ -60,8 +60,6 @@ function checkInputValidity(event) {
     PATTERN_TYPES.forEach((type) => {
       if (input.classList.contains(type)) {
         // i18n-tasks-use t('idv.errors.pattern_mismatch.personal_key')
-        // i18n-tasks-use t('idv.errors.pattern_mismatch.ssn')
-        // i18n-tasks-use t('idv.errors.pattern_mismatch.zipcode')
         input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${snakeCase(type)}`));
       }
     });
