@@ -53,7 +53,6 @@ import './form-steps.scss';
  * @typedef FormStep
  *
  * @prop {string} name Step name, used in history parameter.
- * @prop {string} title Step title, shown as heading.
  * @prop {import('react').FC<FormStepComponentProps<Record<string,any>>>} form Step form component.
  * @prop {(object)=>boolean=} validator Optional function to validate values for the step
  */
