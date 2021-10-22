@@ -31,7 +31,7 @@ function SubmissionInterstitial({ autoFocus = false }) {
         height="116"
         className="margin-bottom-4"
       />
-      <PageHeading>{t('doc_auth.headings.interstitial')}</PageHeading>
+      <PageHeading ref={headingRef}>{t('doc_auth.headings.interstitial')}</PageHeading>
       <p className="margin-top-4">{t('doc_auth.info.interstitial_eta')}</p>
       <p>{t('doc_auth.info.interstitial_thanks')}</p>
     </div>
