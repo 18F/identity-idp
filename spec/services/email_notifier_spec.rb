@@ -19,7 +19,7 @@ describe EmailNotifier do
         UpdateUser.new(user: user, attributes: { email: 'new@example.com' }).call
 
         expect(UserMailer).to receive(:email_changed).with(old_email).and_return(mailer)
-        expect(mailer).to receive(:deliver_now)
+        expect(mailer).to receive(:deliver_now_or_later)
 
         EmailNotifier.new(user).send_email_changed_email
       end

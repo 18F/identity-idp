@@ -6,7 +6,7 @@ describe 'reset password with multiple emails' do
     email1, email2 = user.reload.email_addresses.map(&:email)
 
     mail1 = double
-    expect(mail1).to receive(:deliver_now)
+    expect(mail1).to receive(:deliver_now_or_later)
     expect(UserMailer).to receive(:reset_password_instructions).
       with(user, email1, hash_including(:token)).
       and_return(mail1)
@@ -19,7 +19,7 @@ describe 'reset password with multiple emails' do
     Capybara.reset_session!
 
     mail2 = double
-    expect(mail2).to receive(:deliver_now)
+    expect(mail2).to receive(:deliver_now_or_later)
     expect(UserMailer).to receive(:reset_password_instructions).
       with(user, email2, hash_including(:token)).
       and_return(mail2)
@@ -41,7 +41,7 @@ describe 'reset password with multiple emails' do
     )
 
     mail = double
-    expect(mail).to receive(:deliver_now)
+    expect(mail).to receive(:deliver_now_or_later)
     expect(UserMailer).to receive(:unconfirmed_email_instructions).with(
       instance_of(User),
       unconfirmed_email_address.email,

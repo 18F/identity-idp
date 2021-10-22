@@ -50,7 +50,7 @@ describe Users::PasswordsController do
       it 'sends the user an email' do
         user = create(:user)
         mail = double
-        expect(mail).to receive(:deliver_now)
+        expect(mail).to receive(:deliver_now_or_later)
         expect(UserMailer).to receive(:password_changed).
           with(user, user.email_addresses.first, hash_including(:disavowal_token)).
           and_return(mail)

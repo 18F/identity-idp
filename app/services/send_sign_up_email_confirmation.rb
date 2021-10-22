@@ -66,7 +66,7 @@ class SendSignUpEmailConfirmation
       confirmation_token,
       request_id: request_id,
       instructions: instructions,
-    ).deliver_now
+    ).deliver_now_or_later
   end
 
   def send_pw_reset_request_unconfirmed_user_email(request_id, instructions)
@@ -76,7 +76,7 @@ class SendSignUpEmailConfirmation
       confirmation_token,
       request_id: request_id,
       instructions: instructions,
-    ).deliver_now
+    ).deliver_now_or_later
   end
 
   def handle_multiple_email_address_error

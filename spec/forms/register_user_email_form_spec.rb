@@ -14,7 +14,7 @@ describe RegisterUserEmailForm do
         mailer = instance_double(ActionMailer::MessageDelivery)
         allow(UserMailer).to receive(:signup_with_your_email).
           with(existing_user, existing_user.email).and_return(mailer)
-        allow(mailer).to receive(:deliver_now)
+        allow(mailer).to receive(:deliver_now_or_later)
 
         extra = {
           email_already_exists: true,
@@ -29,7 +29,7 @@ describe RegisterUserEmailForm do
           **extra,
         )
         expect(subject.email).to eq 'taken@gmail.com'
-        expect(mailer).to have_received(:deliver_now)
+        expect(mailer).to have_received(:deliver_now_or_later)
       end
 
       it 'creates throttle events after reaching throttle limit' do

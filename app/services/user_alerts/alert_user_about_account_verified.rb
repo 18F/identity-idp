@@ -9,7 +9,7 @@ module UserAlerts
           date_time: date_time,
           sp_name: sp_name,
           disavowal_token: disavowal_token,
-        ).deliver_now
+        ).deliver_now_or_later
       end
     end
   end

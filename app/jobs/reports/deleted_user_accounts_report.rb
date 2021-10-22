@@ -25,7 +25,7 @@ module Reports
             name: name,
             issuers: issuers,
             data: report,
-          ).deliver_now
+          ).deliver_now_or_later
         end
       end
     end

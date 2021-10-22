@@ -15,7 +15,7 @@ feature 'View personal key' do
 
         # The user should receive an SMS and an email
         personal_key_sign_in_mail = double
-        expect(personal_key_sign_in_mail).to receive(:deliver_now)
+        expect(personal_key_sign_in_mail).to receive(:deliver_now_or_later)
         expect(UserMailer).to receive(:personal_key_regenerated).
           with(user, user.email).
           and_return(personal_key_sign_in_mail)
