@@ -135,7 +135,6 @@ function DocumentCapture({ isAsyncForm = false, onStepChange }) {
           {t('doc_auth.errors.general.network_error')}
         </Alert>
       )}
-
       <FormSteps
         steps={steps}
         initialValues={initialValues}

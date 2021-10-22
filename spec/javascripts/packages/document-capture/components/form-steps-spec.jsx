@@ -1,20 +1,22 @@
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
+import PageHeading from '@18f/identity-document-capture/components/page-heading';
 import FormSteps, {
   getStepIndexByName,
+  FormStepsContinueButton,
 } from '@18f/identity-document-capture/components/form-steps';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [
-    { name: 'first', title: 'First Title', form: () => <span>First</span> },
+    { name: 'first', form: () => <PageHeading>First Title</PageHeading> },
     {
       name: 'second',
-      title: 'Second Title',
       form: ({ value = {}, errors = [], onChange, onError, registerField }) => (
         <>
+          <PageHeading>Second Title</PageHeading>
           <input
             aria-label="Second Input One"
             ref={registerField('secondInputOne', { isRequired: true })}
@@ -42,6 +44,7 @@ describe('document-capture/components/form-steps', () => {
           <button type="button" onClick={() => onError(new Error())}>
             Create Step Error
           </button>
+          <FormStepsContinueButton />
         </>
       ),
     },
@@ -95,6 +98,7 @@ describe('document-capture/components/form-steps', () => {
 
     userEvent.click(getByText('forms.buttons.continue'));
 
+    // todo: update to find input from second step
     expect(getByText('Second Title')).to.be.ok();
   });
 
@@ -333,8 +337,9 @@ describe('document-capture/components/form-steps', () => {
 
     // Unknown errors show prior to title, and persist until submission.
     const alert = getByRole('alert');
+    const heading = getByText('Second Title');
     expect(alert.textContent).to.equal('An unknown error occurred');
-    expect(alert.nextElementSibling.textContent).to.equal('Second Title');
+    expect(alert.compareDocumentPosition(heading)).to.equal(Node.DOCUMENT_POSITION_FOLLOWING);
 
     // Field associated errors are handled by the field. There should only be one.
     const inputOne = getByLabelText('Second Input One');
