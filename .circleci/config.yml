@@ -299,7 +299,7 @@ jobs:
           name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
-      - notify-slack-smoke-test-status
+      # - notify-slack-smoke-test-status
       - store-smoketest-results
   smoketest-int:
     working_directory: ~/identity-idp
@@ -318,7 +318,7 @@ jobs:
           name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
-      - notify-slack-smoke-test-status
+      # - notify-slack-smoke-test-status
       - store-smoketest-results
   smoketest-staging:
     working_directory: ~/identity-idp
@@ -337,7 +337,7 @@ jobs:
           name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
-      - notify-slack-smoke-test-status
+      # - notify-slack-smoke-test-status
       - store-smoketest-results
   smoketest-prod:
     working_directory: ~/identity-idp
@@ -354,7 +354,7 @@ jobs:
           name: 'Smoke tests'
           command: |
             bin/smoke_test --remote --no-source-env
-      - notify-slack-smoke-test-status
+      # - notify-slack-smoke-test-status
       - store-smoketest-results
   check-pinpoint-config:
     executor: ruby_browsers
