@@ -60,33 +60,28 @@ class NewPhoneForm
   def extra_analytics_attributes
     {
       otp_delivery_preference: otp_delivery_preference,
-      phone_type: @phone_info&.type, # comes from pinpoint API
+      phone_type: phone_info&.type, # comes from pinpoint API
       types: parsed_phone.types, # comes from Phonelib gem
-      carrier: @phone_info&.carrier,
+      carrier: phone_info&.carrier,
       country_code: parsed_phone.country,
       area_code: parsed_phone.area_code,
       pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
     }.tap do |extra|
       extra[:redacted_phone] = @redacted_phone if @redacted_phone
+      extra[:warn] = @warning_message if @warning_message
     end
   end
 
   def validate_not_voip
     return if phone.blank? || !IdentityConfig.store.voip_check
-
-    @phone_info = Telephony.phone_info(phone)
-
     return unless IdentityConfig.store.voip_block
 
-    if @phone_info.type == :voip &&
+    if phone_info.type == :voip &&
        !FeatureManagement.voip_allowed_phones.include?(parsed_phone.e164)
       errors.add(:phone, I18n.t('errors.messages.voip_phone'))
-    elsif @phone_info.error
+    elsif phone_info.error
       errors.add(:phone, I18n.t('errors.messages.voip_check_error'))
     end
-  rescue Aws::Pinpoint::Errors::BadRequestException
-    errors.add(:phone, :improbable_phone)
-    @redacted_phone = redact(phone)
   end
 
   def validate_not_duplicate
@@ -101,6 +96,23 @@ class NewPhoneForm
   def validate_not_premium_rate
     if (parsed_phone.types & BLOCKED_PHONE_TYPES).present?
       errors.add(:phone, I18n.t('errors.messages.premium_rate_phone'))
+    end
+  end
+
+  # @return [Telephony::PhoneNumberInfo, nil]
+  def phone_info
+    return if !IdentityConfig.store.voip_check
+
+    return @phone_info if defined?(@phone_info)
+    @phone_info = begin
+      Telephony.phone_info(phone)
+    rescue Aws::Pinpoint::Errors::TooManyRequestsException
+      @warning_message = 'AWS pinpoint phone info rate limit'
+      Telephony::PhoneNumberInfo.new(type: :unknown)
+    rescue Aws::Pinpoint::Errors::BadRequestException
+      errors.add(:phone, :improbable_phone)
+      @redacted_phone = redact(phone)
+      Telephony::PhoneNumberInfo.new(type: :unknown)
     end
   end
 

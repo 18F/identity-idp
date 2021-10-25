@@ -247,6 +247,20 @@ describe NewPhoneForm do
           end
         end
 
+        context 'when AWS rate limits info type checks' do
+          before do
+            expect(Telephony).to receive(:phone_info).
+              and_raise(Aws::Pinpoint::Errors::TooManyRequestsException.new(nil, 'error message'))
+          end
+
+          it 'logs a warning and fails open' do
+            expect(result.extra[:warn]).to include('AWS pinpoint phone info rate limit')
+
+            expect(result.success?).to eq(true)
+            expect(result.errors).to be_blank
+          end
+        end
+
         context 'when voip checks are disabled' do
           let(:voip_check) { false }
 
