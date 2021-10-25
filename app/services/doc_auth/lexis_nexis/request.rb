@@ -83,16 +83,16 @@ module DocAuth
           end,
         }
 
-        Faraday.new(request: faraday_request_params, url: url.to_s, headers: headers) do |conn|
+        Faraday.new(url: url.to_s, headers: headers) do |conn|
           conn.request :retry, retry_options
           conn.request :instrumentation, name: 'request_metric.faraday'
           conn.basic_auth username, password
           conn.adapter :net_http
+          conn.options.timeout = timeout
+          conn.options.read_timeout = timeout
+          conn.options.open_timeout = timeout
+          conn.options.write_timeout = timeout
         end
-      end
-
-      def faraday_request_params
-        { open_timeout: timeout, timeout: timeout }
       end
 
       def path

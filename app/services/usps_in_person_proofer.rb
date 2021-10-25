@@ -199,10 +199,10 @@ class UspsInPersonProofer
 
   def faraday
     Faraday.new do |conn|
-      conn.options.timeout = 10
-      conn.options.read_timeout = 10
-      conn.options.open_timeout = 10
-      conn.options.write_timeout = 10
+      conn.options.timeout = IdentityConfig.store.usps_ipp_request_timeout
+      conn.options.read_timeout = IdentityConfig.store.usps_ipp_request_timeout
+      conn.options.open_timeout = IdentityConfig.store.usps_ipp_request_timeout
+      conn.options.write_timeout = IdentityConfig.store.usps_ipp_request_timeout
     end
   end
 
