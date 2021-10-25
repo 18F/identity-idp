@@ -34,6 +34,7 @@ global.navigator = window.navigator;
 global.document = window.document;
 global.Document = window.Document;
 global.Element = window.Element;
+global.Node = window.Node;
 global.getComputedStyle = window.getComputedStyle;
 global.self = window;
 
