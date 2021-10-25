@@ -78,10 +78,10 @@ class RiscDeliveryJob < ApplicationJob
     @faraday ||= Faraday.new do |f|
       f.request :instrumentation, name: 'request_log.faraday'
       f.adapter :net_http
-      f.options.timeout = 3
-      f.options.read_timeout = 3
-      f.options.open_timeout = 3
-      f.options.write_timeout = 3
+      f.options.timeout = IdentityConfig.store.risc_notifications_request_timeout
+      f.options.read_timeout = IdentityConfig.store.risc_notifications_request_timeout
+      f.options.open_timeout = IdentityConfig.store.risc_notifications_request_timeout
+      f.options.write_timeout = IdentityConfig.store.risc_notifications_request_timeout
     end
   end
 

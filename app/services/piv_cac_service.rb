@@ -60,6 +60,10 @@ module PivCacService
 
       Faraday.new(ssl: ssl_config) do |f|
         f.request :instrumentation, name: 'request_metric.faraday'
+        f.options.timeout = IdentityConfig.store.piv_cac_service_timeout
+        f.options.read_timeout = IdentityConfig.store.piv_cac_service_timeout
+        f.options.open_timeout = IdentityConfig.store.piv_cac_service_timeout
+        f.options.write_timeout = IdentityConfig.store.piv_cac_service_timeout
       end.post(
         verify_token_uri,
         URI.encode_www_form({ token: token }),
