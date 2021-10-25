@@ -101,9 +101,10 @@ class NewPhoneForm
 
   # @return [Telephony::PhoneNumberInfo, nil]
   def phone_info
-    return if !IdentityConfig.store.voip_check
-
     return @phone_info if defined?(@phone_info)
+
+    return if phone.blank? || !IdentityConfig.store.voip_check
+
     @phone_info = begin
       Telephony.phone_info(phone)
     rescue Aws::Pinpoint::Errors::TooManyRequestsException
