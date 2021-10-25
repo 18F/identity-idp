@@ -1,12 +1,19 @@
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
-import { DeviceContext, ServiceProviderContextProvider } from '@18f/identity-document-capture';
+import {
+  DeviceContext,
+  ServiceProviderContextProvider,
+  FailedCaptureAttemptsContextProvider,
+  AcuantContextProvider,
+} from '@18f/identity-document-capture';
 import { I18nContext } from '@18f/identity-react-i18n';
 import DocumentsStep from '@18f/identity-document-capture/components/documents-step';
-import { render } from '../../../support/document-capture';
+import { render, useAcuant } from '../../../support/document-capture';
 import { getFixtureFile } from '../../../support/file';
 
 describe('document-capture/components/documents-step', () => {
+  const { initialize } = useAcuant();
+
   it('renders with front and back inputs', () => {
     const { getByLabelText } = render(<DocumentsStep />);
 
@@ -42,6 +49,35 @@ describe('document-capture/components/documents-step', () => {
     getByText = render(<DocumentsStep />).getByText;
 
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).not.to.throw();
+  });
+
+  it('renders additional tips after failed attempts', async () => {
+    const { getByLabelText, findByText } = render(
+      <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={1}>
+        <DeviceContext.Provider value={{ isMobile: true }}>
+          <AcuantContextProvider sdkSrc="about:blank">
+            <DocumentsStep />
+          </AcuantContextProvider>
+        </DeviceContext.Provider>
+      </FailedCaptureAttemptsContextProvider>,
+    );
+
+    initialize();
+    window.AcuantCameraUI.start.callsFake(async (callbacks) => {
+      await Promise.resolve();
+      callbacks.onCaptured();
+      await Promise.resolve();
+      callbacks.onCropped({
+        glare: 10,
+        sharpness: 70,
+        image: { data: '' },
+      });
+    });
+    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+
+    await findByText(
+      'doc_auth.tips.capture_troubleshooting_glare doc_auth.tips.capture_troubleshooting_lead',
+    );
   });
 
   context('service provider context', () => {
