@@ -44,6 +44,8 @@ describe AccountsController do
         view_model = AccountShow.new(
           decrypted_pii: nil,
           personal_key: nil,
+          sp_session_request_url: nil,
+          sp_name: nil,
           decorated_user: user.decorate,
           locked_for_session: false,
         )
@@ -86,6 +88,8 @@ describe AccountsController do
           view_model = AccountShow.new(
             decrypted_pii: nil,
             personal_key: nil,
+            sp_session_request_url: nil,
+            sp_name: nil,
             decorated_user: user.decorate,
             locked_for_session: false,
           )
