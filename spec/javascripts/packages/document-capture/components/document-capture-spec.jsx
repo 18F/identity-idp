@@ -123,7 +123,7 @@ describe('document-capture/components/document-capture', () => {
     const submitButton = getByText('forms.buttons.submit.default');
     expect(submitButton.classList.contains('usa-button--disabled')).to.be.true();
 
-    userEvent.click(continueButton);
+    userEvent.click(submitButton);
     errors = await findAllByText('simple_form.required.text');
     expect(errors).to.have.lengthOf(1);
     expect(document.activeElement).to.equal(
