@@ -246,13 +246,16 @@ describe('document-capture/components/form-steps', () => {
   });
 
   it('shifts focus to focus target on step change', () => {
-    const { getByText } = render(<FormSteps steps={STEPS} />);
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
 
     const newHeading = getByText('Second Title');
     expect(document.activeElement.compareDocumentPosition(newHeading)).to.equal(
       Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(document.activeElement).to.equal(
+      getByLabelText('doc_auth.accessible_labels.beginning_of_step_content'),
     );
   });
 
@@ -271,11 +274,14 @@ describe('document-capture/components/form-steps', () => {
   });
 
   it('optionally auto-focuses', () => {
-    const { getByText } = render(<FormSteps steps={STEPS} autoFocus />);
+    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} autoFocus />);
 
     const heading = getByText('First Title');
     expect(document.activeElement.compareDocumentPosition(heading)).to.equal(
       Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(document.activeElement).to.equal(
+      getByLabelText('doc_auth.accessible_labels.beginning_of_step_content'),
     );
   });
 
@@ -314,6 +320,9 @@ describe('document-capture/components/form-steps', () => {
     const lastHeading = getByText('Last Title');
     expect(document.activeElement.compareDocumentPosition(lastHeading)).to.equal(
       Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(document.activeElement).to.equal(
+      getByLabelText('doc_auth.accessible_labels.beginning_of_step_content'),
     );
   });
 
@@ -405,13 +414,16 @@ describe('document-capture/components/form-steps', () => {
   it('renders and moves focus to step errors', () => {
     const steps = [STEPS[1]];
 
-    const { getByRole } = render(<FormSteps steps={steps} />);
+    const { getByRole, getByLabelText } = render(<FormSteps steps={steps} />);
     const button = getByRole('button', { name: 'Create Step Error' });
     userEvent.click(button);
 
     const alert = getByRole('alert');
     expect(document.activeElement.compareDocumentPosition(alert)).to.equal(
       Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+    expect(document.activeElement).to.equal(
+      getByLabelText('doc_auth.accessible_labels.beginning_of_step_content'),
     );
   });
 });
