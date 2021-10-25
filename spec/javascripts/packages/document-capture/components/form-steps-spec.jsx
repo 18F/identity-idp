@@ -409,6 +409,9 @@ describe('document-capture/components/form-steps', () => {
     const button = getByRole('button', { name: 'Create Step Error' });
     userEvent.click(button);
 
-    expect(getByRole('alert')).to.equal(document.activeElement);
+    const alert = getByRole('alert');
+    expect(document.activeElement.compareDocumentPosition(alert)).to.equal(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
   });
 });

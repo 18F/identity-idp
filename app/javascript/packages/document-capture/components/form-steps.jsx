@@ -158,6 +158,12 @@ function FormSteps({
     }
   }, []);
 
+  useEffect(() => {
+    if (stepErrors.length && focusRef.current) {
+      focusRef.current.focus();
+    }
+  }, [stepErrors]);
+
   useDidUpdateEffect(onStepChange, [step]);
 
   /**
