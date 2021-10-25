@@ -53,6 +53,8 @@ import { I18nContext } from '@18f/identity-react-i18n';
  *
  * @prop {string} documentCaptureTipsUrl URL to Marketing Site document capture tips.
  * @prop {string} appName Application canonical name.
+ * @prop {string} maxCaptureAttemptsBeforeTips Number of failed attempts to allow before capture
+ * tips are shown.
  */
 
 const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
@@ -62,9 +64,6 @@ const isMockClient = appRoot.hasAttribute('data-mock-client');
 const keepAliveEndpoint = /** @type {string} */ (appRoot.getAttribute('data-keep-alive-endpoint'));
 const glareThreshold = Number(appRoot.getAttribute('data-glare-threshold')) ?? undefined;
 const sharpnessThreshold = Number(appRoot.getAttribute('data-sharpness-threshold')) ?? undefined;
-const maxCaptureAttemptsBeforeTips = Number(
-  appRoot.getAttribute('data-max-capture-attempts-before-tips'),
-);
 
 function getServiceProvider() {
   const { spName: name = null, failureToProofUrl: failureToProofURL = '' } = appRoot.dataset;
@@ -148,6 +147,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
 
   const {
     documentCaptureTipsUrl: documentCaptureTipsURL,
+    maxCaptureAttemptsBeforeTips,
     appName,
   } = /** @type {AppRootData} */ (appRoot.dataset);
 
@@ -181,7 +181,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
                   <ServiceProviderContextProvider value={getServiceProvider()}>
                     <AssetContext.Provider value={assets}>
                       <FailedCaptureAttemptsContextProvider
-                        maxFailedAttemptsBeforeTips={maxCaptureAttemptsBeforeTips}
+                        maxFailedAttemptsBeforeTips={Number(maxCaptureAttemptsBeforeTips)}
                       >
                         <DocumentCapture isAsyncForm={isAsyncForm} onStepChange={keepAlive} />
                       </FailedCaptureAttemptsContextProvider>
