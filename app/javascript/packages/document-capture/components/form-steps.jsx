@@ -140,6 +140,7 @@ function FormSteps({
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
+  const { t } = useI18n();
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
       getFieldActiveErrorFieldElement(activeErrors, fields.current)?.focus();
@@ -241,7 +242,7 @@ function FormSteps({
         ref={focusRef}
         tabIndex={-1}
         className="focus-anchor"
-        aria-label="Beginning of Step Content"
+        aria-label={t('doc_auth.accessible_labels.beginning_of_step_content')}
       />
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.concat(unknownFieldErrors.map(({ error }) => error)).map((error) => (
