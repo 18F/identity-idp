@@ -150,4 +150,26 @@ describe 'accounts/show.html.erb' do
       expect(user.email_addresses.size).to eq(5)
     end
   end
+
+  context 'when a profile has just been re-activated with personal key during SP auth' do
+    let(:sp) { build(:service_provider, return_to_sp_url: 'https://www.example.com/auth') }
+    before do
+      assign(
+        :view_model,
+        AccountShow.new(
+          decrypted_pii: nil, personal_key: 'abc123', decorated_user: decorated_user,
+          sp_session_request_url: sp.return_to_sp_url, sp_name: sp.friendly_name,
+          locked_for_session: false
+        ),
+      )
+    end
+
+    it 'renders the link to continue to the SP' do
+        render
+
+        expect(rendered).to have_link(
+          "Continue to #{sp.friendly_name}", href: sp.return_to_sp_url
+        )
+    end
+  end
 end
