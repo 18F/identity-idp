@@ -155,8 +155,8 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
     [
       UploadContextProvider,
       {
-        endpoint: /** @type {string} */ (appRoot.getAttribute('data-endpoint')),
-        statusEndpoint: /** @type {string} */ (appRoot.getAttribute('data-status-endpoint')),
+        endpoint: String(appRoot.getAttribute('data-endpoint')),
+        statusEndpoint: String(appRoot.getAttribute('data-status-endpoint')),
         statusPollInterval:
           Number(appRoot.getAttribute('data-status-poll-interval-ms')) || undefined,
         method: isAsyncForm ? 'PUT' : 'POST',
