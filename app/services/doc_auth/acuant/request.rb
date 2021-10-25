@@ -100,7 +100,6 @@ module DocAuth
           conn.request :retry, retry_options
           conn.adapter :net_http
 
-
           timeout = config.timeout&.to_i || 45
           conn.options.timeout = timeout
           conn.options.read_timeout = timeout
