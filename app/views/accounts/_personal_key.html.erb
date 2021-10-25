@@ -10,9 +10,10 @@
     <%= view_model.personal_key %>
   </div>
 
-  <p>
-    <% if view_model.sp_session_request_url %>
+  <% if view_model.sp_session_request_url %>
+    <p>
+      <%# TODO: translate %>
       <%= link_to("Continue to #{view_model.sp_name}", view_model.sp_session_request_url) %>
-    <% end %>
-  </p>
+    </p>
+  <% end %>
 <% end %>
