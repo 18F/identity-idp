@@ -14,7 +14,6 @@ linters:
       - '*/app/views/accounts/_password_reset.html.erb'
       - '*/app/views/accounts/_pending_profile_bounced_gpo.html.erb'
       - '*/app/views/accounts/_pending_profile_gpo.html.erb'
-      - '*/app/views/accounts/_personal_key.html.erb'
       - '*/app/views/accounts/_phone.html.erb'
       - '*/app/views/accounts/_piv_cac.html.erb'
       - '*/app/views/accounts/_webauthn.html.erb'
