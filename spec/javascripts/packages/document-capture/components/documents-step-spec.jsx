@@ -51,7 +51,7 @@ describe('document-capture/components/documents-step', () => {
     expect(() => getByText('doc_auth.tips.document_capture_id_text4')).not.to.throw();
   });
 
-  it('renders additional tips after failed attempts', async () => {
+  it('renders additional tips after failed attempts', () => {
     const { getByLabelText, getByText, getByRole } = render(
       <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={2}>
         <DeviceContext.Provider value={{ isMobile: true }}>
