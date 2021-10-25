@@ -21,20 +21,20 @@ import { createElement } from 'react';
  *
  * @example
  * ```jsx
- * const App = composeComponents([
+ * const App = composeComponents(
  *   [FirstContext.Provider, { value: 1 }],
  *   [SecondContext.Provider, { value: 2 }],
  *   AppRoot,
- * ]);
+ * );
  *
  * render(App, document.getElementById('app-root'));
  * ```
  *
- * @param {ComponentPair<*>[]} components
+ * @param {...ComponentPair<*>} components
  *
  * @return {ComponentType<*>}
  */
-export function composeComponents(components) {
+export function composeComponents(...components) {
   return function ComposedComponent() {
     /** @type {JSX.Element?} */
     let element = null;

@@ -13,12 +13,12 @@ describe('composeComponents', () => {
       </>
     );
 
-    const ComposedComponent = composeComponents([
+    const ComposedComponent = composeComponents(
       [FirstContext.Provider, { value: 1 }],
       [SecondContext.Provider, { value: 2 }],
       [({ children }) => <>{children}3</>],
       AppRoot,
-    ]);
+    );
 
     const { getByText } = render(<ComposedComponent />);
 

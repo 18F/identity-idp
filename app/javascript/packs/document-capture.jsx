@@ -139,7 +139,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
     appName: /** @type string */ (appRoot.dataset.appName),
   };
 
-  const App = composeComponents([
+  const App = composeComponents(
     [AppContext.Provider, { value: appContext }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContext.Provider, { value: { addPageAction, noticeError } }],
@@ -171,7 +171,7 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
     [ServiceProviderContextProvider, { value: getServiceProvider() }],
     [AssetContext.Provider, { value: assets }],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
-  ]);
+  );
 
   render(<App />, appRoot);
 });

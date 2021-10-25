@@ -7,11 +7,11 @@ Convenient for flattening a deeply-nested arrangement of context providers, for 
 ## Example
 
 ```jsx
-const App = composeComponents([
+const App = composeComponents(
   [FirstContext.Provider, { value: 1 }],
   [SecondContext.Provider, { value: 2 }],
   AppRoot,
-]);
+);
 
 render(App, document.getElementById('app-root'));
 ```
