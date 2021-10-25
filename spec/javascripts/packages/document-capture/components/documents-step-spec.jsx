@@ -52,32 +52,45 @@ describe('document-capture/components/documents-step', () => {
   });
 
   it('renders additional tips after failed attempts', async () => {
-    const { getByLabelText, findByText } = render(
-      <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={1}>
+    const { getByLabelText, getByText, getByRole } = render(
+      <FailedCaptureAttemptsContextProvider maxFailedAttemptsBeforeTips={2}>
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank">
-            <DocumentsStep />
+            <DocumentsStep onChange={() => {}} />
           </AcuantContextProvider>
         </DeviceContext.Provider>
       </FailedCaptureAttemptsContextProvider>,
     );
 
     initialize();
-    window.AcuantCameraUI.start.callsFake(async (callbacks) => {
-      await Promise.resolve();
-      callbacks.onCaptured();
-      await Promise.resolve();
-      callbacks.onCropped({
-        glare: 10,
-        sharpness: 70,
-        image: { data: '' },
-      });
-    });
+    const result = { sharpness: 100, image: { data: '' } };
+
+    window.AcuantCameraUI.start.callsFake(({ onCropped }) => onCropped({ ...result, glare: 10 }));
     userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
 
-    await findByText(
+    // Reset after successful attempt.
+    window.AcuantCameraUI.start.callsFake(({ onCropped }) => onCropped({ ...result, glare: 80 }));
+    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+
+    // Fail twice more to trigger troubleshooting.
+    window.AcuantCameraUI.start.callsFake(({ onCropped }) => onCropped({ ...result, glare: 10 }));
+    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+
+    getByText(
       'doc_auth.tips.capture_troubleshooting_glare doc_auth.tips.capture_troubleshooting_lead',
     );
+
+    userEvent.click(getByRole('button', { name: 'idv.failure.button.warning' }));
+
+    // Only show troubleshooting a single time, even after 2 more failed attempts.
+    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    userEvent.click(getByLabelText('doc_auth.headings.document_capture_front'));
+    expect(() =>
+      getByText(
+        'doc_auth.tips.capture_troubleshooting_glare doc_auth.tips.capture_troubleshooting_lead',
+      ),
+    ).to.throw();
   });
 
   context('service provider context', () => {
