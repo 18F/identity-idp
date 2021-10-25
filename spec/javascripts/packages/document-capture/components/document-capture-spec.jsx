@@ -64,32 +64,6 @@ describe('document-capture/components/document-capture', () => {
     expect(step).to.be.ok();
   });
 
-  context('mobile', () => {
-    it('does not show document step footer', () => {
-      const { getByText } = render(
-        <DeviceContext.Provider value={{ isMobile: true }}>
-          <DocumentCapture />
-        </DeviceContext.Provider>,
-      );
-
-      userEvent.click(getByText('forms.buttons.continue'));
-
-      expect(() => getByText('doc_auth.info.document_capture_upload_image')).to.throw();
-    });
-  });
-
-  context('desktop', () => {
-    it('shows document step footer', () => {
-      const { getByText } = render(
-        <DeviceContext.Provider value={{ isMobile: false }}>
-          <DocumentCapture />
-        </DeviceContext.Provider>,
-      );
-
-      expect(getByText('doc_auth.info.document_capture_upload_image')).to.be.ok();
-    });
-  });
-
   it('progresses through steps to completion', async () => {
     const { getByLabelText, getByText, getAllByText, findAllByText } = render(
       <DeviceContext.Provider value={{ isMobile: true }}>
