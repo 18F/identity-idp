@@ -103,18 +103,18 @@ class NewPhoneForm
   def phone_info
     return @phone_info if defined?(@phone_info)
 
-    return if phone.blank? || !IdentityConfig.store.voip_check
-
-    @phone_info = begin
-      Telephony.phone_info(phone)
-    rescue Aws::Pinpoint::Errors::TooManyRequestsException
-      @warning_message = 'AWS pinpoint phone info rate limit'
-      Telephony::PhoneNumberInfo.new(type: :unknown)
-    rescue Aws::Pinpoint::Errors::BadRequestException
-      errors.add(:phone, :improbable_phone)
-      @redacted_phone = redact(phone)
-      Telephony::PhoneNumberInfo.new(type: :unknown)
+    if phone.blank? || !IdentityConfig.store.voip_check
+      @phone_info = nil
+    else
+      @phone_info = Telephony.phone_info(phone)
     end
+  rescue Aws::Pinpoint::Errors::TooManyRequestsException
+    @warning_message = 'AWS pinpoint phone info rate limit'
+    @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
+  rescue Aws::Pinpoint::Errors::BadRequestException
+    errors.add(:phone, :improbable_phone)
+    @redacted_phone = redact(phone)
+    @phone_info = Telephony::PhoneNumberInfo.new(type: :unknown)
   end
 
   def parsed_phone
