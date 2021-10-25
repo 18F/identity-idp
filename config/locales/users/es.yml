@@ -22,9 +22,9 @@ es:
     personal_key:
       close: Cerrar
       confirmation_error: Ha ingresado una clave personal incorrecta.
-      invalid_error: Por favor, rellene este campo
       generated_on_html: Generado el %{date}
       header: Su clave personal
+      invalid_error: Por favor, rellene este campo
       print: Imprima esta página
     rules_of_use:
       check_box_to_accept: Marque esta casilla para aceptar las reglas de uso de %{app_name}
