@@ -75,10 +75,7 @@ feature 'View personal key' do
 
       click_acknowledge_personal_key
       submit_form_without_entering_the_code
-
-      click_back_button
-      click_acknowledge_personal_key
-      expect_to_be_on_personal_key_modal_page
+      submit_form_with_the_wrong_code
 
       expect(current_path).not_to eq account_path
 
@@ -144,13 +141,6 @@ def expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
   )
 end
 
-def expect_to_be_on_personal_key_modal_page
-  expect(page).to have_xpath(
-    "//div[@id='personal-key-confirm']", visible: true
-  )
-    expect(page).to have_content(t('forms.personal_key.title'))
-end
-
 def submit_form_without_entering_the_code
   click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
   expect(page).to have_selector('.validation-message')
@@ -158,8 +148,8 @@ def submit_form_without_entering_the_code
 end
 
 def submit_form_with_the_wrong_code
-  fill_in 'personal_key', with: personal_key, disabled: :all
+  fill_in 'personal_key', with: 'hellohellohello'
   click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
-  expect(page).to have_selector('#personal-key-alert')
+  expect(page).to have_content(t('users.personal_key.confirmation_error'))
   expect(page).not_to have_selector('.validation-message')
 end
