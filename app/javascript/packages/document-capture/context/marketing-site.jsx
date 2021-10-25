@@ -10,4 +10,6 @@ const MarketingSiteContext = createContext(
   /** @type {MarketingSiteContext} */ ({ documentCaptureTipsURL: '' }),
 );
 
+MarketingSiteContext.displayName = 'MarketingSiteContext';
+
 export default MarketingSiteContext;
