@@ -9,4 +9,10 @@
   <div class="margin-bottom-1 padding-y-1 padding-x-2 inline-block fs-20p text-normal monospace bg-white radius-sm">
     <%= view_model.personal_key %>
   </div>
+
+  <p>
+    <% if view_model.sp_session_request_url %>
+      <%= link_to("Continue to #{view_model.sp_name}", view_model.sp_session_request_url) %>
+    <% end %>
+  </p>
 <% end %>

@@ -1,10 +1,14 @@
 class AccountShow
-  attr_reader :decorated_user, :decrypted_pii, :personal_key, :locked_for_session, :pii
+  attr_reader :decorated_user, :decrypted_pii, :personal_key, :locked_for_session, :pii,
+              :sp_session_request_url, :sp_name
 
-  def initialize(decrypted_pii:, personal_key:, decorated_user:, locked_for_session:)
+  def initialize(decrypted_pii:, personal_key:, sp_session_request_url:, sp_name:, decorated_user:,
+                 locked_for_session:)
     @decrypted_pii = decrypted_pii
     @personal_key = personal_key
     @decorated_user = decorated_user
+    @sp_name = sp_name
+    @sp_session_request_url = sp_session_request_url
     @locked_for_session = locked_for_session
     @pii = determine_pii
   end
