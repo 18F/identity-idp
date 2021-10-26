@@ -175,10 +175,6 @@ RSpec.describe Throttle do
   end
 
   describe '#expires_at' do
-    around do |ex|
-      freeze_time { ex.run }
-    end
-
     let(:attempted_at) { nil }
     let(:throttle) { create(:throttle, user: create(:user), throttle_type: throttle_type) }
 

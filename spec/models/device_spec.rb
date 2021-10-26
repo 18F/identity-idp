@@ -23,12 +23,10 @@ describe Device do
     let(:device) { create(:device, last_used_at: old_timestamp) }
 
     it 'updates the last ip and last_used_at' do
-      freeze_time do
-        now = Time.zone.now
-        device.update_last_used_ip(remote_ip)
-        expect(device.last_ip).to eq(remote_ip)
-        expect(device.last_used_at.to_i).to eq(now.to_i)
-      end
+      now = Time.zone.now
+      device.update_last_used_ip(remote_ip)
+      expect(device.last_ip).to eq(remote_ip)
+      expect(device.last_used_at.to_i).to eq(now.to_i)
     end
   end
 end

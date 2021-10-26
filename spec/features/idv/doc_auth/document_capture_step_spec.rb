@@ -137,22 +137,20 @@ feature 'doc auth document capture step' do
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
       allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
-      freeze_time do
-        max_attempts.times do
-          attach_and_submit_images
-
-          expect(page).to have_current_path(next_step)
-          click_on t('doc_auth.buttons.start_over')
-          complete_doc_auth_steps_before_document_capture_step
-        end
-
+      max_attempts.times do
         attach_and_submit_images
-        timeout = distance_of_time_in_words(
-          Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
-        )
-        message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
-        expect(page).to have_content(message)
+
+        expect(page).to have_current_path(next_step)
+        click_on t('doc_auth.buttons.start_over')
+        complete_doc_auth_steps_before_document_capture_step
       end
+
+      attach_and_submit_images
+      timeout = distance_of_time_in_words(
+        Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
+      )
+      message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
+      expect(page).to have_content(message)
 
       expect(page).to have_current_path(idv_session_errors_throttled_path)
       expect(fake_analytics).to have_logged_event(
@@ -230,22 +228,20 @@ feature 'doc auth document capture step' do
 
     it 'throttles calls to acuant and allows retry after the attempt window' do
       allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(max_attempts)
-      freeze_time do
-        max_attempts.times do
-          attach_and_submit_images
-
-          expect(page).to have_current_path(next_step)
-          click_on t('doc_auth.buttons.start_over')
-          complete_doc_auth_steps_before_document_capture_step
-        end
-
+      max_attempts.times do
         attach_and_submit_images
-        timeout = distance_of_time_in_words(
-          Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
-        )
-        message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
-        expect(page).to have_content(message)
+
+        expect(page).to have_current_path(next_step)
+        click_on t('doc_auth.buttons.start_over')
+        complete_doc_auth_steps_before_document_capture_step
       end
+
+      attach_and_submit_images
+      timeout = distance_of_time_in_words(
+        Throttle.attempt_window_in_minutes(:idv_doc_auth).minutes,
+      )
+      message = strip_tags(t('errors.doc_auth.throttled_text_html', timeout: timeout))
+      expect(page).to have_content(message)
 
       expect(page).to have_current_path(idv_session_errors_throttled_path)
       expect(fake_analytics).to have_logged_event(

@@ -406,21 +406,19 @@ feature 'Two Factor Authentication' do
       Db::AuthAppConfiguration.create(user, secret, nil, 'foo')
       otp = generate_totp_code(secret)
 
-      freeze_time do
-        sign_in_user(user)
-        fill_in 'code', with: otp
-        click_submit_default
+      sign_in_user(user)
+      fill_in 'code', with: otp
+      click_submit_default
 
-        expect(current_path).to eq(account_path)
+      expect(current_path).to eq(account_path)
 
-        set_new_browser_session
-        sign_in_user(user)
-        fill_in 'code', with: otp
-        click_submit_default
+      set_new_browser_session
+      sign_in_user(user)
+      fill_in 'code', with: otp
+      click_submit_default
 
-        # expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
-        expect(current_path).to eq login_two_factor_authenticator_path
-      end
+      # expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
+      expect(current_path).to eq login_two_factor_authenticator_path
     end
   end
 

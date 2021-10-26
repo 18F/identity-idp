@@ -184,40 +184,38 @@ describe Users::ResetPasswordsController, devise: true do
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
 
-        freeze_time do
-          user = create(
-            :user,
-            :signed_up,
-            reset_password_token: db_confirmation_token,
-            reset_password_sent_at: Time.zone.now,
-          )
-          old_confirmed_at = user.reload.confirmed_at
-          allow(user).to receive(:active_profile).and_return(nil)
+        user = create(
+          :user,
+          :signed_up,
+          reset_password_token: db_confirmation_token,
+          reset_password_sent_at: Time.zone.now,
+        )
+        old_confirmed_at = user.reload.confirmed_at
+        allow(user).to receive(:active_profile).and_return(nil)
 
-          stub_user_mailer(user)
+        stub_user_mailer(user)
 
-          password = 'a really long passw0rd'
-          params = { password: password, reset_password_token: raw_reset_token }
+        password = 'a really long passw0rd'
+        params = { password: password, reset_password_token: raw_reset_token }
 
-          get :edit, params: { reset_password_token: raw_reset_token }
-          put :update, params: { reset_password_form: params }
+        get :edit, params: { reset_password_token: raw_reset_token }
+        put :update, params: { reset_password_form: params }
 
-          analytics_hash = {
-            success: true,
-            errors: {},
-            user_id: user.uuid,
-            profile_deactivated: false,
-          }
+        analytics_hash = {
+          success: true,
+          errors: {},
+          user_id: user.uuid,
+          profile_deactivated: false,
+        }
 
-          expect(@analytics).to have_received(:track_event).
-            with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
 
-          expect(user.events.password_changed.size).to be 1
+        expect(user.events.password_changed.size).to be 1
 
-          expect(response).to redirect_to new_user_session_path
-          expect(flash[:info]).to eq t('devise.passwords.updated_not_active')
-          expect(user.reload.confirmed_at).to eq old_confirmed_at
-        end
+        expect(response).to redirect_to new_user_session_path
+        expect(flash[:info]).to eq t('devise.passwords.updated_not_active')
+        expect(user.reload.confirmed_at).to eq old_confirmed_at
       end
     end
 

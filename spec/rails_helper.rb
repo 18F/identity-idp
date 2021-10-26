@@ -65,6 +65,21 @@ RSpec.configure do |config|
     end
   end
 
+  config.around(:each) do |example|
+    now = Time.zone.now
+    simple_stubs = IsolatedSimpleStubs.new
+    simple_stubs.stub_object(Time, :now) { at(now.to_i) }
+    simple_stubs.stub_object(Date, :today) { jd(now.to_date.jd) }
+    simple_stubs.stub_object(DateTime, :now) do
+      jd(now.to_date.jd, now.hour, now.min, now.sec, Rational(now.utc_offset, 86400))
+    end
+    begin
+      example.run
+    ensure
+      simple_stubs.unstub_all!
+    end
+  end
+
   config.before(:each) do
     I18n.locale = :en
   end

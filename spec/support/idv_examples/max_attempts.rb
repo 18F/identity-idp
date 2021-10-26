@@ -14,10 +14,6 @@ shared_examples 'verification step max attempts' do |step, sp|
   end
 
   context 'after completing the max number of attempts' do
-    around do |ex|
-      freeze_time { ex.run }
-    end
-
     before do
       perfom_maximum_allowed_idv_step_attempts { fill_out_phone_form_fail }
     end

@@ -110,10 +110,6 @@ describe Idv::SessionErrorsController do
     context 'while throttled' do
       let(:ssn) { '666666666' }
 
-      around do |ex|
-        freeze_time { ex.run }
-      end
-
       before do
         stub_sign_in
         create(

@@ -166,10 +166,7 @@ describe SignUp::CompletionsController do
           last_consented_at: now,
           clear_deleted_at: true,
         )
-        freeze_time do
-          travel_to(now)
-          patch :update
-        end
+        patch :update
       end
 
       it 'redirects to account page if the session request_url is removed' do
@@ -218,10 +215,7 @@ describe SignUp::CompletionsController do
           last_consented_at: now,
           clear_deleted_at: true,
         )
-        freeze_time do
-          travel_to(now)
-          patch :update
-        end
+        patch :update
       end
     end
   end

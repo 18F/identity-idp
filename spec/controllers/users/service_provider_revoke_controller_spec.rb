@@ -61,13 +61,8 @@ RSpec.describe Users::ServiceProviderRevokeController do
     subject { delete :destroy, params: { sp_id: sp_id } }
 
     it 'marks the identity as deleted and redirects' do
-      expect do
-        freeze_time do
-          travel_to(now)
-          subject
-        end
-      end.to change { @identity.reload.deleted_at&.to_i }.
-      from(nil).to(now.to_i)
+      expect { subject }.to change { @identity.reload.deleted_at&.to_i }.
+        from(nil).to(now.to_i)
 
       expect(response).to redirect_to(account_connected_accounts_path)
     end
