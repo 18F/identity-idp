@@ -57,7 +57,6 @@ linters:
       - '*/app/views/users/shared/_otp_delivery_preference_selection.html.erb'
       - '*/app/views/users/shared/_otp_make_default_number.html.erb'
       - '*/app/views/users/totp_setup/*'
-      - '*/app/views/users/two_factor_authentication_setup/*'
       - '*/app/views/users/verify_password/*'
       - '*/app/views/users/verify_personal_key/*'
       - '*/app/views/users/webauthn_setup/*'
