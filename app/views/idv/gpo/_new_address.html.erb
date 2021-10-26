@@ -4,10 +4,21 @@
       html: { autocomplete: 'off', class: 'margin-top-2' }
     ) do |f| %>
 
-  <%= f.input :address1, label: t('idv.form.address1'), wrapper_html: { class: 'margin-bottom-1' },
-                         required: true, input_html: { aria: { invalid: false } }, maxlength: 255 %>
+  <div class="margin-bottom-4">
+    <%= f.input :address1, label: t('idv.form.address1'), wrapper: false,
+                           required: true, input_html: { aria: { invalid: false } }, maxlength: 255 %>
+    <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+      <%= t('simple_form.required.text') %>
+    </span>
+  </div>
   <%= f.input :address2, label: t('idv.form.address2'), required: false, maxlength: 255 %>
-  <%= f.input :city, label: t('idv.form.city'), required: true, maxlength: 255 %>
+
+  <div class="margin-bottom-4">
+    <%= f.input :city, label: t('idv.form.city'), wrapper: false, required: true, maxlength: 255 %>
+    <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+      <%= t('simple_form.required.text') %>
+    </span>
+  </div>
 
   <div class="clearfix margin-x-neg-1">
     <div class="sm-col sm-col-8 padding-x-1">
@@ -20,8 +31,15 @@
       <%# using :tel for mobile numeric keypad %>
       <%= f.input :zipcode, as: :tel,
                             label: t('idv.form.zipcode'), required: true,
-                            pattern: '(\d{5}([\-]\d{4})?)',
-                            input_html: { class: 'zipcode' } %>
+                            wrapper: false,
+                            pattern: '(\d{5}([\-]\d{4})?)' %>
+      <span class='usa-error-message margin-top-1 display-if-invalid display-if-invalid--value-missing margin-bottom-1' role='alert'>
+        <%= t('simple_form.required.text') %>
+      </span>
+
+      <span class='usa-error-message margin-top-1 pattern-mismatch display-if-invalid display-if-invalid--pattern-mismatch margin-bottom-1' role='alert'>
+        <%= t('idv.errors.pattern_mismatch.zipcode') %>
+      </span>
     </div>
   </div>
   <div class="margin-top-0">

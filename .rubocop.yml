@@ -6,9 +6,10 @@
 require:
   - rubocop-rails
   - rubocop-performance
-  - ./lib/linters/url_options_linter.rb
   - ./lib/linters/localized_validation_message_linter.rb
+  - ./lib/linters/mail_later_linter.rb
   - ./lib/linters/redirect_back_linter.rb
+  - ./lib/linters/url_options_linter.rb
 
 AllCops:
   Exclude:
@@ -41,6 +42,9 @@ Gemspec/DuplicatedAssignment:
   Enabled: true
 
 IdentityIdp/LocalizedValidationMessageLinter:
+  Enabled: true
+
+IdentityIdp/MailLaterLinter:
   Enabled: true
 
 IdentityIdp/UrlOptionsLinter:

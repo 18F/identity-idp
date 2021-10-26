@@ -5,7 +5,7 @@ module UserAlerts
       emails = user.confirmed_email_addresses.map do |email_address|
         UserMailer.personal_key_sign_in(
           user, email_address.email, disavowal_token: disavowal_token
-        ).deliver_now
+        ).deliver_now_or_later
       end
       telephony_responses = MfaContext.new(user).phone_configurations.map do |phone_configuration|
         phone = phone_configuration.phone

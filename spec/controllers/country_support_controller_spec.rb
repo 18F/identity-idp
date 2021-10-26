@@ -14,5 +14,11 @@ RSpec.describe CountrySupportController do
         supports_voice: true,
       )
     end
+
+    it 'sets HTTP headers to cache for 15 minutes' do
+      get :index
+
+      expect(response['Cache-Control']).to eq("max-age=#{15.minutes.to_i}, public")
+    end
   end
 end

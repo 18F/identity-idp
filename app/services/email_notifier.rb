@@ -1,6 +1,6 @@
 EmailNotifier = Struct.new(:user) do
   def send_email_changed_email
-    UserMailer.email_changed(old_email).deliver_now if email_changed?
+    UserMailer.email_changed(old_email).deliver_now_or_later if email_changed?
   end
 
   private
