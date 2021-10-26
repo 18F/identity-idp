@@ -110,12 +110,17 @@ describe Idv::SessionErrorsController do
     context 'while throttled' do
       let(:ssn) { '666666666' }
 
+      around do |ex|
+        freeze_time { ex.run }
+      end
+
       before do
         stub_sign_in
         create(
           :throttle,
+          :with_throttled,
           target: Pii::Fingerprinter.fingerprint(ssn),
-          throttle_type: :proof_address,
+          throttle_type: :proof_ssn,
         )
         controller.user_session['idv/doc_auth'] = { 'pii_from_doc' => { 'ssn' => ssn } }
       end
@@ -123,7 +128,7 @@ describe Idv::SessionErrorsController do
       it 'assigns expiration time' do
         get action
 
-        expect(assigns(:expires_at)).to be_kind_of(Time)
+        expect(assigns(:expires_at)).not_to eq(Time.zone.now)
       end
     end
   end
