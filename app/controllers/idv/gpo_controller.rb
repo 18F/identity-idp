@@ -145,7 +145,7 @@ module Idv
     def idv_throttle_params
       {
         user: idv_session.current_user,
-        throttle_type: :idv_resolution,
+        throttle_type: :proof_address,
       }
     end
 
@@ -171,7 +171,7 @@ module Idv
       if idv_attempter_throttled?
         analytics.track_event(
           Analytics::THROTTLER_RATE_LIMIT_TRIGGERED,
-          throttle_type: :idv_resolution,
+          throttle_type: :proof_address,
           step_name: :gpo,
         )
         flash_error

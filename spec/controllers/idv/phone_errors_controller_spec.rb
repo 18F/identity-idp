@@ -61,7 +61,7 @@ describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        create(:throttle, user: user, throttle_type: :idv_resolution, attempts: 1)
+        create(:throttle, user: user, throttle_type: :proof_address, attempts: 1)
       end
 
       it 'assigns remaining count' do
@@ -82,7 +82,7 @@ describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        create(:throttle, user: user, throttle_type: :idv_resolution, attempts: 1)
+        create(:throttle, user: user, throttle_type: :proof_address, attempts: 1)
       end
 
       it 'assigns remaining count' do
@@ -103,7 +103,7 @@ describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        create(:throttle, user: user, throttle_type: :idv_resolution, attempts: 1)
+        create(:throttle, user: user, throttle_type: :proof_address, attempts: 1)
       end
 
       it 'assigns remaining count' do
@@ -124,7 +124,7 @@ describe Idv::PhoneErrorsController do
       let(:user) { create(:user) }
 
       before do
-        create(:throttle, :with_throttled, user: user, throttle_type: :idv_resolution)
+        create(:throttle, :with_throttled, user: user, throttle_type: :proof_address)
       end
 
       it 'assigns expiration time' do

@@ -24,7 +24,7 @@ module Idv
     private
 
     def throttle
-      Throttle.for(user: idv_session.current_user, throttle_type: :idv_resolution)
+      Throttle.for(user: idv_session.current_user, throttle_type: :proof_address)
     end
 
     def confirm_idv_phone_step_needed

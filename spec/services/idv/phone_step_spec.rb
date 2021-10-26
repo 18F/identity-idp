@@ -40,7 +40,7 @@ describe Idv::PhoneStep do
   }
 
   describe '#submit' do
-    let(:throttle) { create(:throttle, user: user, throttle_type: :idv_resolution) }
+    let(:throttle) { create(:throttle, user: user, throttle_type: :proof_address) }
 
     it 'succeeds with good params' do
       context = { stages: [{ address: 'AddressMock' }] }
@@ -172,8 +172,8 @@ describe Idv::PhoneStep do
         create(
           :throttle,
           user: user,
-          throttle_type: :idv_resolution,
-          attempts: max_attempts_less_one,
+          throttle_type: :proof_address,
+          attempts: Throttle.max_attempts(:proof_address) - 1,
         )
 
         subject.submit(phone: bad_phone)
