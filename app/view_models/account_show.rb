@@ -34,6 +34,20 @@ class AccountShow
     end
   end
 
+  def show_service_provider_continue_partial?
+    sp_name.present? && sp_session_request_url.present?
+  end
+
+  def show_gpo_partial?
+    decorated_user.pending_profile_requires_verification?
+  end
+
+  def showing_any_partials?
+    show_service_provider_continue_partial? || show_manage_personal_key_partial? ||
+      show_pii_partial? || show_password_reset_partial? || show_personal_key_partial? ||
+      show_gpo_partial?
+  end
+
   def backup_codes_generated_at
     decorated_user.user.backup_code_configurations.order(created_at: :asc).first&.created_at
   end

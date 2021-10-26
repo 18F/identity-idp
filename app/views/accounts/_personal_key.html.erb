@@ -1,15 +1,8 @@
-<%= render 'shared/alert', { type: 'warning', class: 'margin-bottom-8', text_tag: 'div' } do %>
+<%= render 'shared/alert', { type: 'warning', class: 'margin-bottom-2', text_tag: 'div' } do %>
   <p>
     <%= t('idv.messages.personal_key') %>
   </p>
   <div class="margin-bottom-1 padding-y-1 padding-x-2 inline-block fs-20p text-normal monospace bg-white radius-sm">
     <%= view_model.personal_key %>
   </div>
-
-  <% if view_model.sp_session_request_url %>
-    <p>
-      <%# TODO: translate %>
-      <%= link_to("Continue to #{view_model.sp_name}", view_model.sp_session_request_url) %>
-    </p>
-  <% end %>
 <% end %>
