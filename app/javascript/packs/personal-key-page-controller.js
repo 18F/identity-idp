@@ -45,6 +45,7 @@ function unsetEmptyResponse() {
   input.setAttribute('aria-invalid', 'false');
   input.classList.remove('margin-bottom-3');
   input.classList.add('margin-bottom-6');
+  input.classList.remove('usa-input--error');
 
   isInvalidForm = false;
 }
@@ -63,6 +64,8 @@ function setEmptyResponse() {
   input.setAttribute('aria-invalid', 'true');
   input.classList.remove('margin-bottom-6');
   input.classList.add('margin-bottom-3');
+  input.classList.add('usa-input--error');
+  input.focus();
 
   isInvalidForm = true;
 }

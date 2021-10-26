@@ -26,7 +26,6 @@ fr:
       confirmation_error: Vous avez entré un clé personnelle erronée.
       generated_on_html: Générée le %{date}
       header: Votre clé personnelle
-      invalid_error: Veuillez remplir ce champ
       print: Imprimer cette page
     rules_of_use:
       check_box_to_accept: Cochez cette case pour accepter les règles d’utilisation de %{app_name}

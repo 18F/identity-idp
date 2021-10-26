@@ -23,7 +23,6 @@ en:
       confirmation_error: You’ve entered an incorrect personal key.
       generated_on_html: Generated on %{date}
       header: Your personal key
-      invalid_error: Please fill out this field
       print: Print
     rules_of_use:
       check_box_to_accept: Check this box to accept the %{app_name}
