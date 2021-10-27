@@ -1,12 +1,8 @@
 ---
 en:
   vendor_outage:
-    get_updates: Get updates
     get_updates_on_status_page: Get updates on our status page
     working: We are working to resolve an error
     doc_auth:
       full: We are having technical difficulties on our end and cannot verify
         your identity at this time. Please try again later.
-    lexisnexis:
-      partial: We are having technical difficulties on our end and may not be able to verify
-        your identity at this time. If you have trouble, please try again later.
