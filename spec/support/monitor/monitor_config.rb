@@ -32,7 +32,7 @@ class MonitorConfig
     if ENV['MONITOR_EMAIL_DOMAIN'] && ENV['MONITOR_ENV']
       "smoketest-#{ENV['MONITOR_ENV'].downcase}@#{ENV['MONITOR_EMAIL_DOMAIN']}"
     else
-      ENV['MONITOR_EMAIL'] || 'test@example.com'
+      'test@example.com'
     end
   end
 
