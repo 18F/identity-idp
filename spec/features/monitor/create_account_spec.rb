@@ -62,7 +62,7 @@ RSpec.describe 'smoke test: create account' do
     it 'creates new account with TOTP for 2FA' do
       visit_idp_from_saml_sp
       click_on 'Create an account'
-      email_address = create_new_account_with_totp
+      email_address, totp_secret = create_new_account_with_totp
 
       expect_user_is_redirected_to_saml_sp(email_address)
 

@@ -21,11 +21,16 @@ class MonitorEmailHelper
       contents.sort_by { |x| x.last_modified.to_i }.reverse
 
     objects.each do |x|
-      object = s3.get_object(bucket: @s3_bucket, key: x.key)
+      object = begin
+        s3.get_object(bucket: @s3_bucket, key: x.key)
+      rescue Aws::S3::Errors::AccessDenied
+        nil
+      end
+
       next if object.nil?
       body = object.body.read
       mail = Mail.new(body)
-      next unless mail.to.include?(email_address)
+      next unless mail.to&.include?(email_address)
       next unless subjects.blank? || subjects.include?(mail.subject)
       match_data = mail.text_part.to_s.match(regex)
       next unless match_data
