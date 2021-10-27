@@ -2,13 +2,13 @@ module VendorOutageConcern
   extend ActiveSupport::Concern
 
   def redirect_if_outage(from: nil)
-    if full_outage?
+    if full_ial2_outage?
       session[:vendor_outage_redirect] = from
       return redirect_to vendor_outage_url
     end
   end
 
-  def full_outage?
+  def full_ial2_outage?
     acuant_outage? || instant_verify_outage? || trueid_outage?
   end
 
@@ -29,6 +29,6 @@ module VendorOutageConcern
   end
 
   def outage_message
-    t('vendor_outage.doc_auth.full') if full_outage?
+    t('vendor_outage.doc_auth.full') if full_ial2_outage?
   end
 end
