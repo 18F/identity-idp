@@ -33,6 +33,7 @@ es:
       backup_code_confirm_regenerate: Sí, regenerar códigos.
       backup_codes_exist: Generado
       backup_codes_no_exist: No generado
+      continue_to_service_provider: Continuar con %{service_provider}
       default: defecto
       device: '%{browser} en %{os}'
       dob: Fecha de nacimiento

@@ -168,7 +168,8 @@ describe 'accounts/show.html.erb' do
         render
 
         expect(rendered).to have_link(
-          "Continue to #{sp.friendly_name}", href: sp.return_to_sp_url
+          t('account.index.continue_to_service_provider', service_provider: sp.friendly_name),
+          href: sp.return_to_sp_url,
         )
     end
   end
