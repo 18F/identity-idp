@@ -17,8 +17,8 @@ class MonitorEmailHelper
 
   def find_in_inbox(regex:, subjects:, email_address:)
     s3 = Aws::S3::Client.new
-    objects = s3.list_objects(bucket: @s3_bucket, prefix: @s3_prefix, max_keys: 100).contents
-    objects.sort_by! { |x| x.last_modified.to_i * -1 }
+    objects = s3.list_objects(bucket: @s3_bucket, prefix: @s3_prefix, max_keys: 100).
+      contents.sort_by { |x| x.last_modified.to_i }.reverse
 
     objects.each do |x|
       object = s3.get_object(bucket: @s3_bucket, key: x.key)
