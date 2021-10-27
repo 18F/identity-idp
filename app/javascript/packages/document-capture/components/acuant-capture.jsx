@@ -10,6 +10,7 @@ import {
 import { useI18n } from '@18f/identity-react-i18n';
 import AnalyticsContext from '../context/analytics';
 import AcuantContext from '../context/acuant';
+import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
 import AcuantCaptureCanvas from './acuant-capture-canvas';
 import FileInput from './file-input';
 import FullScreen from './full-screen';
@@ -272,6 +273,9 @@ function AcuantCapture(
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [attempt, incrementAttempt] = useCounter(1);
+  const { onFailedCaptureAttempt, onResetFailedCaptureAttempts } = useContext(
+    FailedCaptureAttemptsContext,
+  );
   const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
@@ -297,7 +301,7 @@ function AcuantCapture(
   /**
    * Returns an analytics payload, decorated with common values.
    *
-   * @template P
+   * @template {ImageAnalyticsPayload|AcuantImageAnalyticsPayload} P
    *
    * @param {P} payload
    *
@@ -480,6 +484,9 @@ function AcuantCapture(
 
     if (assessment === 'success') {
       onChangeAndResetError(data, analyticsPayload);
+      onResetFailedCaptureAttempts();
+    } else {
+      onFailedCaptureAttempt({ isAssessedAsGlare, isAssessedAsBlurry });
     }
 
     setIsCapturingEnvironment(false);

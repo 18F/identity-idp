@@ -78,6 +78,14 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'help/signing-in/what-is-a-hardware-security-key/').to_s
   end
 
+  def self.help_document_capture_tips_url
+    URI.join(
+      BASE_URL,
+      locale_segment,
+      'help/verify-your-identity/how-to-add-images-of-your-state-issued-id/',
+    ).to_s
+  end
+
   def self.security_url
     URI.join(BASE_URL, locale_segment, 'security/').to_s
   end

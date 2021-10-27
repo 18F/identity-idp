@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
-import BlockLink from '@18f/identity-document-capture/components/block-link';
+import BlockLink from './block-link';
 
-describe('document-capture/components/block-link', () => {
+describe('BlockLink', () => {
   const linkText = 'link text';
   const url = '/example';
 

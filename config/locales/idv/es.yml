@@ -173,9 +173,11 @@ es:
         having_trouble: '¿Tiene alguna dificultad? Esto es lo que puede hacer:'
         missing_required_items: '¿Le falta alguno de estos puntos?'
         need_assistance: '¿Necesita ayuda inmediata? Así es como puede obtener ayuda:'
+        still_having_trouble: ¿Sigue teniendo dificultades?
       options:
         change_phone_number: Utiliza un número de teléfono diferente
         contact_support: Póngase en contacto con el servicio de asistencia de %{app_name}
+        doc_capture_tips: Más consejos para agregar fotos de su identificación
         get_help_at_sp: Obtenga ayuda en %{sp_name}
         learn_more_address_verification_options: Obtenga más información sobre la verificación por teléfono o por correo
         learn_more_verify_by_mail: Obtenga más información sobre la verificación de su

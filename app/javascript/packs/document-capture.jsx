@@ -9,6 +9,8 @@ import {
   UploadContextProvider,
   ServiceProviderContextProvider,
   AnalyticsContext,
+  FailedCaptureAttemptsContextProvider,
+  MarketingSiteContext,
 } from '@18f/identity-document-capture';
 import { loadPolyfills } from '@18f/identity-polyfill';
 import { isCameraCapableMobile } from '@18f/identity-device';
@@ -45,6 +47,15 @@ import { I18nContext } from '@18f/identity-react-i18n';
 
 /**
  * @typedef {typeof window & NewRelicGlobals & LoginGovGlobals} DocumentCaptureGlobal
+ */
+
+/**
+ * @typedef AppRootData
+ *
+ * @prop {string} documentCaptureTipsUrl URL to Marketing Site document capture tips.
+ * @prop {string} appName Application canonical name.
+ * @prop {string} maxCaptureAttemptsBeforeTips Number of failed attempts to allow before capture
+ * tips are shown.
  */
 
 const { I18n: i18n, assets } = /** @type {DocumentCaptureGlobal} */ (window).LoginGov;
@@ -135,12 +146,15 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
   const keepAlive = () =>
     window.fetch(keepAliveEndpoint, { method: 'POST', headers: { 'X-CSRF-Token': csrf } });
 
-  const appContext = {
-    appName: /** @type string */ (appRoot.dataset.appName),
-  };
+  const {
+    documentCaptureTipsUrl: documentCaptureTipsURL,
+    maxCaptureAttemptsBeforeTips,
+    appName,
+  } = /** @type {AppRootData} */ (appRoot.dataset);
 
   const App = composeComponents(
-    [AppContext.Provider, { value: appContext }],
+    [AppContext.Provider, { value: { appName } }],
+    [MarketingSiteContext.Provider, { value: { documentCaptureTipsURL } }],
     [DeviceContext.Provider, { value: device }],
     [AnalyticsContext.Provider, { value: { addPageAction, noticeError } }],
     [
@@ -170,6 +184,12 @@ loadPolyfills(['fetch', 'crypto', 'url']).then(async () => {
     [I18nContext.Provider, { value: i18n.strings }],
     [ServiceProviderContextProvider, { value: getServiceProvider() }],
     [AssetContext.Provider, { value: assets }],
+    [
+      FailedCaptureAttemptsContextProvider,
+      {
+        maxFailedAttemptsBeforeTips: Number(maxCaptureAttemptsBeforeTips),
+      },
+    ],
     [DocumentCapture, { isAsyncForm, onStepChange: keepAlive }],
   );
 

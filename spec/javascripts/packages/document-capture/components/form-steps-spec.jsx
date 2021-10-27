@@ -1,20 +1,31 @@
 import userEvent from '@testing-library/user-event';
 import { waitFor } from '@testing-library/dom';
 import sinon from 'sinon';
+import PageHeading from '@18f/identity-document-capture/components/page-heading';
 import FormSteps, {
   getStepIndexByName,
+  FormStepsContinueButton,
 } from '@18f/identity-document-capture/components/form-steps';
 import { toFormEntryError } from '@18f/identity-document-capture/services/upload';
 import { render } from '../../../support/document-capture';
 
 describe('document-capture/components/form-steps', () => {
   const STEPS = [
-    { name: 'first', title: 'First Title', form: () => <span>First</span> },
+    {
+      name: 'first',
+      form: () => (
+        <>
+          <PageHeading>First Title</PageHeading>
+          <span>First</span>
+          <FormStepsContinueButton />
+        </>
+      ),
+    },
     {
       name: 'second',
-      title: 'Second Title',
       form: ({ value = {}, errors = [], onChange, onError, registerField }) => (
         <>
+          <PageHeading>Second Title</PageHeading>
           <input
             aria-label="Second Input One"
             ref={registerField('secondInputOne', { isRequired: true })}
@@ -42,10 +53,20 @@ describe('document-capture/components/form-steps', () => {
           <button type="button" onClick={() => onError(new Error())}>
             Create Step Error
           </button>
+          <FormStepsContinueButton />
         </>
       ),
     },
-    { name: 'last', title: 'Last Title', form: () => <span>Last</span> },
+    {
+      name: 'last',
+      form: () => (
+        <>
+          <PageHeading>Last Title</PageHeading>
+          <span>Last</span>
+          <FormStepsContinueButton />
+        </>
+      ),
+    },
   ];
 
   let originalHash;
@@ -293,20 +314,6 @@ describe('document-capture/components/form-steps', () => {
 
     await userEvent.type(getByLabelText('Second Input One'), 'one');
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
-  });
-
-  it('renders with optional footer', () => {
-    const steps = [
-      {
-        name: 'one',
-        title: 'Step One',
-        form: () => <span>Form Fields</span>,
-        footer: () => <span>Footer</span>,
-      },
-    ];
-    const { getByText } = render(<FormSteps steps={steps} />);
-
-    expect(getByText('Footer')).to.be.ok();
   });
 
   it('renders with initial active errors', async () => {
