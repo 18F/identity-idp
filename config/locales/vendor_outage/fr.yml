@@ -1,8 +1,8 @@
 ---
 fr:
   vendor_outage:
-    get_updates_on_status_page: Obtenez des mises à jour sur notre page de statut
-    working: "Nous travaillons à la résolution d'une erreur"
     doc_auth:
       full: Nous rencontrons des difficultés techniques et ne pouvons pas vérifier
         votre identité pour le moment. Veuillez réessayer plus tard.
+    get_updates_on_status_page: Obtenez des mises à jour sur notre page de statut
+    working: "Nous travaillons à la résolution d'une erreur"
