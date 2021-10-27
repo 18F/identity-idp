@@ -12,7 +12,9 @@ module Idv
 
     before_action :override_document_capture_step_csp
     before_action :update_if_skipping_upload
+    # rubocop:disable Rails/LexicallyScopedActionFilter
     before_action :check_for_outage, only: :show
+    # rubocop:enable Rails/LexicallyScopedActionFilter
 
     FSM_SETTINGS = {
       step_url: :idv_doc_auth_step_url,
