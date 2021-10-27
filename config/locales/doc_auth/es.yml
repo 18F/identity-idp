@@ -2,7 +2,6 @@
 es:
   doc_auth:
     accessible_labels:
-      beginning_of_step_content: Beginning of step content
       camera_video_capture_instructions: Tomaremos la foto automáticamente
       camera_video_capture_label: Visor con encuadre para centrar tu documento
       document_capture_dialog: Captura del documento

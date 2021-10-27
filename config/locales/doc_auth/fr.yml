@@ -2,7 +2,6 @@
 fr:
   doc_auth:
     accessible_labels:
-      beginning_of_step_content: Beginning of step content
       camera_video_capture_instructions: Nous prendrons automatiquement la photo
       camera_video_capture_label: Viseur avec cadre pour centrer votre pièce d'identité
       document_capture_dialog: Capture du document

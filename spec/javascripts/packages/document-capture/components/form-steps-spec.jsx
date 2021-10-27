@@ -116,7 +116,6 @@ describe('document-capture/components/form-steps', () => {
 
     userEvent.click(getByText('forms.buttons.continue'));
 
-    // todo: update to find input from second step
     expect(getByText('Second Title')).to.be.ok();
   });
 
@@ -245,18 +244,12 @@ describe('document-capture/components/form-steps', () => {
     expect(window.location.hash).to.equal('');
   });
 
-  it('shifts focus to focus target on step change', () => {
-    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} />);
+  it('shifts focus to next heading on step change', () => {
+    const { getByText } = render(<FormSteps steps={STEPS} />);
 
     userEvent.click(getByText('forms.buttons.continue'));
 
-    const newHeading = getByText('Second Title');
-    expect(document.activeElement.compareDocumentPosition(newHeading)).to.equal(
-      Node.DOCUMENT_POSITION_FOLLOWING,
-    );
-    expect(document.activeElement).to.equal(
-      getByLabelText('doc_auth.accessible_labels.beginning_of_step_content'),
-    );
+    expect(document.activeElement).to.equal(getByText('Second Title'));
   });
 
   it("doesn't assign focus on mount", () => {
@@ -274,15 +267,9 @@ describe('document-capture/components/form-steps', () => {
   });
 
   it('optionally auto-focuses', () => {
-    const { getByText, getByLabelText } = render(<FormSteps steps={STEPS} autoFocus />);
+    const { getByText } = render(<FormSteps steps={STEPS} autoFocus />);
 
-    const heading = getByText('First Title');
-    expect(document.activeElement.compareDocumentPosition(heading)).to.equal(
-      Node.DOCUMENT_POSITION_FOLLOWING,
-    );
-    expect(document.activeElement).to.equal(
-      getByLabelText('doc_auth.accessible_labels.beginning_of_step_content'),
-    );
+    expect(document.activeElement).to.equal(getByText('First Title'));
   });
 
   it('accepts initial values', () => {
@@ -317,13 +304,7 @@ describe('document-capture/components/form-steps', () => {
     expect(container.querySelectorAll('[data-is-error]')).to.have.lengthOf(0);
     userEvent.click(getByText('forms.buttons.continue'));
 
-    const lastHeading = getByText('Last Title');
-    expect(document.activeElement.compareDocumentPosition(lastHeading)).to.equal(
-      Node.DOCUMENT_POSITION_FOLLOWING,
-    );
-    expect(document.activeElement).to.equal(
-      getByLabelText('doc_auth.accessible_labels.beginning_of_step_content'),
-    );
+    expect(document.activeElement).to.equal(getByText('Last Title'));
   });
 
   it('distinguishes empty errors from progressive error removal', async () => {
@@ -359,9 +340,8 @@ describe('document-capture/components/form-steps', () => {
 
     // Unknown errors show prior to title, and persist until submission.
     const alert = getByRole('alert');
-    const heading = getByText('Second Title');
     expect(alert.textContent).to.equal('An unknown error occurred');
-    expect(alert.compareDocumentPosition(heading)).to.equal(Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(alert.nextElementSibling.textContent).to.equal('Second Title');
 
     // Field associated errors are handled by the field. There should only be one.
     const inputOne = getByLabelText('Second Input One');
@@ -414,16 +394,10 @@ describe('document-capture/components/form-steps', () => {
   it('renders and moves focus to step errors', () => {
     const steps = [STEPS[1]];
 
-    const { getByRole, getByLabelText } = render(<FormSteps steps={steps} />);
+    const { getByRole } = render(<FormSteps steps={steps} />);
     const button = getByRole('button', { name: 'Create Step Error' });
     userEvent.click(button);
 
-    const alert = getByRole('alert');
-    expect(document.activeElement.compareDocumentPosition(alert)).to.equal(
-      Node.DOCUMENT_POSITION_FOLLOWING,
-    );
-    expect(document.activeElement).to.equal(
-      getByLabelText('doc_auth.accessible_labels.beginning_of_step_content'),
-    );
+    expect(getByRole('alert')).to.equal(document.activeElement);
   });
 });

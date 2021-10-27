@@ -133,14 +133,12 @@ function FormSteps({
   const [values, setValues] = useState(initialValues);
   const [activeErrors, setActiveErrors] = useState(initialActiveErrors);
   const formRef = useRef(/** @type {?HTMLFormElement} */ (null));
-  const focusRef = useRef(/** @type {?HTMLHeadingElement} */ (null));
   const [stepName, setStepName] = useHistoryParam('step', null);
   const [stepErrors, setStepErrors] = useState(/** @type {Error[]} */ ([]));
   const fields = useRef(/** @type {Record<string,FieldsRefEntry>} */ ({}));
   const didSubmitWithErrors = useRef(false);
   const forceRender = useForceRender();
   const ifStillMounted = useIfStillMounted();
-  const { t } = useI18n();
   useEffect(() => {
     if (activeErrors.length && didSubmitWithErrors.current) {
       getFieldActiveErrorFieldElement(activeErrors, fields.current)?.focus();
@@ -152,20 +150,33 @@ function FormSteps({
   const stepIndex = Math.max(getStepIndexByName(steps, stepName), 0);
   const step = steps[stepIndex];
 
+  /**
+   * After a change in content, maintain focus by resetting to the beginning of the new content.
+   */
+  function focusFirstContent() {
+    const firstElementChild = formRef.current?.firstElementChild;
+    if (firstElementChild instanceof window.HTMLElement) {
+      firstElementChild.classList.add('form-steps__focus-anchor');
+      firstElementChild.setAttribute('tabindex', '-1');
+      firstElementChild.focus();
+    }
+  }
+
   useEffect(() => {
     // Treat explicit initial step the same as step transition, placing focus to header.
-    if (autoFocus && focusRef.current) {
-      focusRef.current.focus();
+    if (autoFocus) {
+      focusFirstContent();
     }
   }, []);
 
   useEffect(() => {
-    if (stepErrors.length && focusRef.current) {
-      focusRef.current.focus();
+    if (stepErrors.length) {
+      focusFirstContent();
     }
   }, [stepErrors]);
 
   useDidUpdateEffect(onStepChange, [step]);
+  useDidUpdateEffect(focusFirstContent, [step]);
 
   /**
    * Returns array of form errors for the current set of values.
@@ -229,8 +240,6 @@ function FormSteps({
       const { name: nextStepName } = steps[nextStepIndex];
       setStepName(nextStepName);
     }
-
-    focusRef.current?.focus();
   }
 
   const { form: Form, name } = step;
@@ -238,12 +247,6 @@ function FormSteps({
 
   return (
     <form ref={formRef} onSubmit={toNextStep}>
-      <div
-        ref={focusRef}
-        tabIndex={-1}
-        className="focus-anchor"
-        aria-label={t('doc_auth.accessible_labels.beginning_of_step_content')}
-      />
       {Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.concat(unknownFieldErrors.map(({ error }) => error)).map((error) => (
         <Alert key={error.message} type="error" className="margin-bottom-4">
