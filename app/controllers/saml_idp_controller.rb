@@ -21,7 +21,7 @@ class SamlIdpController < ApplicationController
 
   def auth
     capture_analytics
-    return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
+    return redirect_to_verification_url if profile_or_identity_needs_verification_or_decryption?
     return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
     return redirect_to(user_authorization_confirmation_url) if auth_count == 1
     link_identity_from_session_data
@@ -59,14 +59,19 @@ class SamlIdpController < ApplicationController
     SamlEndpoint.new(request).saml_metadata
   end
 
-  def redirect_to_account_or_verify_profile_url
+  def redirect_to_verification_url
     return redirect_to(account_or_verify_profile_url) if profile_needs_verification?
     redirect_to(idv_url) if identity_needs_verification?
+    redirect_to capture_password_url if identity_needs_decryption?
   end
 
-  def profile_or_identity_needs_verification?
+  def profile_or_identity_needs_verification_or_decryption?
     return false unless ial2_requested?
-    profile_needs_verification? || identity_needs_verification?
+    profile_needs_verification? || identity_needs_verification? || identity_needs_decryption?
+  end
+
+  def identity_needs_decryption?
+    UserDecorator.new(current_user).identity_verified? && user_session[:decrypted_pii].blank?
   end
 
   def capture_analytics

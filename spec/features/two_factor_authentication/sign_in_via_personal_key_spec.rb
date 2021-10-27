@@ -10,7 +10,7 @@ feature 'Signing in via one-time use personal key' do
     old_key = user.reload.encrypted_recovery_code_digest
 
     personal_key_sign_in_mail = double
-    expect(personal_key_sign_in_mail).to receive(:deliver_now)
+    expect(personal_key_sign_in_mail).to receive(:deliver_now_or_later)
     expect(UserMailer).to receive(:personal_key_sign_in).and_return(personal_key_sign_in_mail)
     expect(Telephony).to receive(:send_personal_key_sign_in_notice).
       with(to: '+1 (202) 345-6789', country_code: 'US')

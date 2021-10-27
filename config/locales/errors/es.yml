@@ -40,7 +40,7 @@ es:
         <li>Su identificación no tiene ningún código de barras dañado</li>
         <li>Su identificación representa el 80% de la imagen general</li>
         <li>Su identificación está contra un fondo sólido y oscuro</li>
-        <li>Su selfie se toma en un área bien iluminada con un fondo liso</li>
+        <li>La foto se hace en un espacio bien iluminado y con un fondo uniforme</li>
         <li>No lleva puesto un sombrero o anteojos, y su cabeza es completamente visible</li>
         </ul>
       document_verification_timeout: El servidor tardó demasiado en responder. Inténtalo de nuevo.

@@ -59,7 +59,7 @@ module AccountReset
 
       arr = arr.reload
       user.confirmed_email_addresses.each do |email_address|
-        UserMailer.account_reset_granted(user, email_address, arr).deliver_now
+        UserMailer.account_reset_granted(user, email_address, arr).deliver_now_or_later
       end
       true
     end

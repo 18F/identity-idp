@@ -1,6 +1,6 @@
 SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/BlockLength
   config.hsts = "max-age=#{365.days.to_i}; includeSubDomains; preload"
-  config.x_frame_options = Rails.env.development? ? 'ALLOWALL' : 'DENY'
+  config.x_frame_options = 'DENY'
   config.x_content_type_options = 'nosniff'
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'
@@ -12,7 +12,6 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
   default_csp_config = {
     default_src: ["'self'"],
     child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
-    # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     form_action: ["'self'"],
     block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: connect_src.flatten,
@@ -39,6 +38,11 @@ SecureHeaders::Configuration.default do |config| # rubocop:disable Metrics/Block
     style_src: ["'self'", IdentityConfig.store.asset_host.presence],
     base_uri: ["'self'"],
   }
+
+  if IdentityConfig.store.rails_mailer_previews_enabled
+    # CSP 2.0 only; overriden by x_frame_options in some browsers
+    default_csp_config[:frame_ancestors] = %w['self']
+  end
 
   config.csp = if !Rails.env.production?
                  default_csp_config.merge(

@@ -17,12 +17,14 @@ class OpenidConnectAttributeScoper
 
   VALID_SCOPES = %w[
     email
+    all_emails
     openid
     profile:verified_at
   ] + X509_SCOPES + IAL2_SCOPES
 
   VALID_IAL1_SCOPES = %w[
     email
+    all_emails
     openid
     profile:verified_at
   ] + X509_SCOPES
@@ -30,6 +32,7 @@ class OpenidConnectAttributeScoper
   ATTRIBUTE_SCOPES_MAP = {
     email: %w[email],
     email_verified: %w[email],
+    all_emails: %w[all_emails],
     address: %w[address],
     phone: %w[phone],
     phone_verified: %w[phone],

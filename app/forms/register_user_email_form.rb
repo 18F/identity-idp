@@ -149,7 +149,7 @@ class RegisterUserEmailForm
         throttle_type: :reg_confirmed_email,
       )
     else
-      UserMailer.signup_with_your_email(existing_user, email).deliver_now
+      UserMailer.signup_with_your_email(existing_user, email).deliver_now_or_later
     end
   end
 

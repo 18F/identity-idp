@@ -867,18 +867,43 @@ describe('document-capture/components/acuant-capture', () => {
       label: 'IdV: test image clicked',
       payload: {
         source: 'placeholder',
+        isDrop: false,
       },
     });
     expect(addPageAction.getCall(1)).to.have.been.calledWith({
       label: 'IdV: test image clicked',
       payload: {
         source: 'button',
+        isDrop: false,
       },
     });
     expect(addPageAction.getCall(2)).to.have.been.calledWith({
       label: 'IdV: test image clicked',
       payload: {
         source: 'upload',
+        isDrop: false,
+      },
+    });
+  });
+
+  it('logs drag-and-drop as click interaction', () => {
+    const addPageAction = sinon.stub();
+    const { getByLabelText } = render(
+      <AnalyticsContext.Provider value={{ addPageAction }}>
+        <AcuantContextProvider sdkSrc="about:blank">
+          <AcuantCapture label="Image" name="test" />
+        </AcuantContextProvider>
+      </AnalyticsContext.Provider>,
+    );
+
+    const input = getByLabelText('Image');
+    fireEvent.drop(input);
+
+    expect(addPageAction.getCall(0)).to.have.been.calledWith({
+      label: 'IdV: test image clicked',
+      payload: {
+        source: 'placeholder',
+        isDrop: true,
       },
     });
   });

@@ -101,7 +101,11 @@ module DocAuth
           { general: ["YAML data should have been a hash, got #{data.class}"] }
         end
       rescue Psych::SyntaxError
-        {}
+        if uploaded_file.ascii_only? # don't want this error for images
+          { general: ['invalid YAML file'] }
+        else
+          {}
+        end
       end
 
       def pii_from_doc

@@ -5,7 +5,7 @@ feature 'doc auth verify step' do
   include DocAuthHelper
 
   let(:skip_step_completion) { false }
-  let(:max_attempts) { idv_max_attempts }
+  let(:max_attempts) { Throttle.max_attempts(:idv_resolution) }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:user) { create(:user, :signed_up) }
   before do

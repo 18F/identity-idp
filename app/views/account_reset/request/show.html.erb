@@ -1,50 +1,18 @@
 <% title t('account_reset.request.title') %>
 
-<h3 class='margin-y-0'><%= t('account_reset.request.title') %></h3>
+<h1 class='margin-y-0'><%= t('account_reset.request.title') %></h1>
 
 <p class='mt-tiny margin-bottom-0'>
   <%= t('account_reset.request.info').html_safe %>
 </p>
-<% if current_user&.encrypted_recovery_code_digest&.present? %>
-  <br/>
-
-  <h4 class='margin-y-0'><%= t('account_reset.request.personal_key') %></h4>
-
-  <p class='mt-tiny margin-bottom-0'>
-    <%= t('account_reset.request.personal_key_info') %>
-  </p>
-
-  <hr/>
-
-  <%= render 'partials/personal_key/key', code: 'XXXX-XXXX-XXXX-XXXX' %>
-
-  <div class='margin-bottom-4 right-align'>
-    <%= link_to(
-      t('users.personal_key.print'),
-      '#',
-      data: { print: true },
-      class: 'usa-button usa-button--outline margin-top-2 ico ico-print',
-    ) %>
-  </div>
-  <hr/>
-  <p class='mt-tiny margin-bottom-0'>
-    <%= t(
-      'account_reset.request.personal_key_trailer',
-      link: link_to(
-        t('account_reset.request.access_your_account'),
-        login_two_factor_personal_key_url),
-      ).html_safe %>
-  </p>
-<% end %>
-
 <br/>
 
-<h4 class='margin-y-0'><%= t('account_reset.request.delete_account') %></h4>
+<h2 class='margin-y-0'><%= t('account_reset.request.delete_account') %></h2>
 <p class='mt-tiny margin-bottom-0'><%= t('account_reset.request.delete_account_info').html_safe %></p>
 
 <br/>
 
-<h5 class='margin-y-2'><%= t('account_reset.request.are_you_sure') %></h5>
+<p class='margin-y-2 text-bold'><%= t('account_reset.request.are_you_sure') %></p>
 <%= button_to(
   root_url,
   method: :get,

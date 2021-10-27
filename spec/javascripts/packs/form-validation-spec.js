@@ -57,7 +57,6 @@ describe('form-validation', () => {
         <input type="text" aria-label="required field" required class="field">
         <input type="text" aria-label="format" pattern="\\\\A\\\\d{5}(-?\\\\d{4})?\\\\z">
         <input type="text" aria-label="format unknown field" pattern="\\\\A\\\\d{5}(-?\\\\d{4})?\\\\z" class="field">
-        <input type="text" aria-label="format field" pattern="\\\\A\\\\d{5}(-?\\\\d{4})?\\\\z" class="field zipcode">
       </form>`;
 
     initialize(document.querySelector('form'));
@@ -83,9 +82,5 @@ describe('form-validation', () => {
     expect(formatUnknownField.validationMessage).to.not.be.empty.and.not.match(
       /^idv\.errors\.pattern_mismatch\./,
     );
-
-    const formatField = screen.getByLabelText('format field');
-    await userEvent.type(formatField, 'a');
-    expect(formatField.validationMessage).to.equal('idv.errors.pattern_mismatch.zipcode');
   });
 });

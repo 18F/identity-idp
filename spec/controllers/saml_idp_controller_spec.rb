@@ -231,6 +231,8 @@ describe SamlIdpController do
           verified_attributes: %w[given_name family_name social_security_number address],
         )
         allow(subject).to receive(:attribute_asserter) { asserter }
+
+        controller.user_session[:decrypted_pii] = pii
       end
 
       it 'calls AttributeAsserter#build' do
@@ -284,6 +286,15 @@ describe SamlIdpController do
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
         saml_get_auth(ial2_settings)
       end
+
+      context 'profile is not in session' do
+        let(:pii) { nil }
+
+        it 'redirects to password capture if profile is verified but not in session' do
+          saml_get_auth(ial2_settings)
+          expect(response).to redirect_to capture_password_url
+        end
+      end
     end
 
     context 'with IAL2 and the identity is not already verified' do
@@ -292,6 +303,15 @@ describe SamlIdpController do
         generate_saml_response(user, ial2_settings)
 
         expect(response).to redirect_to idv_path
+      end
+    end
+
+    context 'with IAL2 and the profile is reset' do
+      it 'redirects to IdV URL for IAL2 proofer' do
+        user = create(:profile, :password_reset).user
+        generate_saml_response(user, ial2_settings)
+
+        expect(response).to redirect_to reactivate_account_path
       end
     end
 

@@ -47,6 +47,17 @@ module Upaya
     config.active_job.logger = ActiveSupport::Logger.new(Rails.root.join('log', 'workers.log'))
     config.active_job.logger.formatter = config.log_formatter
 
+    config.good_job.execution_mode = :external
+    config.good_job.poll_interval = 5
+    config.good_job.enable_cron = true
+    config.good_job.max_threads = IdentityConfig.store.good_job_max_threads
+    config.good_job.queues = IdentityConfig.store.good_job_queues
+    # see config/initializers/job_configurations.rb for cron schedule
+
+    GoodJob.active_record_parent_class = 'WorkerJobApplicationRecord'
+    GoodJob.retry_on_unhandled_error = false
+    GoodJob.on_thread_error = ->(exception) { NewRelic::Agent.notice_error(exception) }
+
     config.time_zone = 'UTC'
 
     # Generate CSRF tokens that are encoded in URL-safe Base64.
@@ -74,6 +85,7 @@ module Upaya
     require 'utf8_sanitizer'
     config.middleware.use Utf8Sanitizer
 
+    # rubocop:disable Metrics/BlockLength
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
@@ -94,7 +106,24 @@ module Upaya
                  methods: %i[post options]
         resource '/api/openid_connect/userinfo', headers: :any, methods: [:get]
       end
+
+      allow do
+        allowed_origins = [
+          'https://www.login.gov',
+          'https://login.gov',
+          %r{^https://federalist-[0-9a-f-]+\.app\.cloud\.gov$},
+        ]
+
+        if Rails.env.development? || Rails.env.test?
+          allowed_origins << %r{https?://localhost(:\d+)?$}
+          allowed_origins << %r{https?://127\.0\.0\.1(:\d+)?$}
+        end
+
+        origins allowed_origins
+        resource '/api/country-support', headers: :any, methods: [:get]
+      end
     end
+    # rubocop:enable Metrics/BlockLength
 
     if IdentityConfig.store.enable_rate_limiting
       config.middleware.use Rack::Attack

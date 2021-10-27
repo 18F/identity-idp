@@ -161,8 +161,11 @@ module Rack
         # increments the count), so requests below the limit are not blocked until
         # they hit the limit. At that point, `filter` will return true and block.
         user = req.params.fetch('user', {})
-        email = user['email'].to_s.downcase.strip
-        email_fingerprint = Pii::Fingerprinter.fingerprint(email) if email.present?
+        email_fingerprint = nil
+        if user.is_a?(Hash)
+          email = user['email'].to_s.downcase.strip
+          email_fingerprint = Pii::Fingerprinter.fingerprint(email) if email.present?
+        end
         email_and_ip = "#{email_fingerprint}-#{req.remote_ip}"
         maxretry = IdentityConfig.store.logins_per_email_and_ip_limit
         findtime = IdentityConfig.store.logins_per_email_and_ip_period
