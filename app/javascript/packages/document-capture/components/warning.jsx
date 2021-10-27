@@ -53,7 +53,7 @@ function Warning({
       </PageHeading>
       {children}
       {actionText && actionOnClick && (
-        <div className="margin-top-2">
+        <div className="margin-y-5">
           <button
             type="button"
             className="usa-button usa-button--big usa-button--wide"
